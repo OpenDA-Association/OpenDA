@@ -1,0 +1,18 @@
+C ** , dser.inp Time Series FILE,  DDD  2012-04-30 ¿ÀÈÄ 6:05:50
+C ** REPEATS NCSER(3) TIMES
+C ** 
+C ** InType  MCSER(NS)  TCCSER(NS)  TACSER(NS)  RMULADJ(NS)  ADDADJ(NS)
+C ** 
+C **  IF InType.EQ.1 THEN READ DEPTH WEIGHTS AND SINGLE VALUE OF Dye
+C **                      ELSE READ A VALUE OF DYE FOR EACH LAYER
+C **  
+C **  InType=1 Structure
+C **  WKQ(K),K=1,KC
+C **  TCSER(M,NS)    CSER(M,1,NS)          !(MCSER(NS,3) PAIRS FOR NS=1,NCSER(3) SERIES)
+C **
+C **  InType=0 Structure
+C **  TCSER(M,NS)    (CSER(M,K,NS),K=1,KC) !(MCSER(NS) PAIRS)
+C ** 
+       0      2   86400       0       1       0 ' *** Tracer 01
+     0.000    0.0000
+   999.000    0.0000

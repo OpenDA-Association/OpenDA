@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+	<analysisTimes type="fromObservationTimes"/>
+	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a
+	twin-experpiment -->
+	<mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
+	<ensembleSize>5</ensembleSize>
+	<!-- selection to add noise to the ensemble members.
+	This should probably be true unless your model has difficulty with the changes of parameters, initial state
+	or the forcing -->
+	<ensembleModel stochParameter="false" stochForcing="true" stochInit="false"/>
+        <gainMatrixSmoother timeRegularisationPerDay="0.01"></gainMatrixSmoother>
+</EnkfConfig>

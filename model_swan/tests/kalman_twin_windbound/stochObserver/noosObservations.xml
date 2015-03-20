@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 1st series uses header lines for meta data
+	contents of this file look like:
+	#======================================================
+	# Timeseries retrieved from the MATROOS series database
+	# Created at Mon Mar 17 10:37:38 CET 2008
+	#======================================================
+	# Location    : aberdeen
+	# Position    : (-2.045543,57.361939)
+	# Source      : observed
+	# Unit        : waterlevel_astro
+	# Analyse time: most recent
+	# Timezone    : GMT
+	#======================================================
+	200801010000   -0.8300
+	200801010010   -0.8800
+	200801010020   -0.9100
+        ...
+	<timeSeries status="use" standardDeviation="0.1" quantity="waterlevel"  location="STAT-WL1">
+		stat_waterlevel.goot
+	</timeSeries>
+	-->
+
+	<timeSeries status="use" standardDeviation="0.1" minValue="0.0" maxValue="30.0">
+		twin_wave_height_hm0_north_cormorant.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.1" minValue="0.0" maxValue="30.0">
+		twin_wave_height_hm0_anasuria.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.1" minValue="0.0" maxValue="30.0">
+		twin_wave_height_hm0_d151.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.1" minValue="0.0" maxValue="30.0">
+		twin_wave_height_hm0_k13.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.1" minValue="0.0" maxValue="30.0">
+		twin_wave_height_hm0_europlatform.noos
+	</timeSeries>
+</noosObserver>

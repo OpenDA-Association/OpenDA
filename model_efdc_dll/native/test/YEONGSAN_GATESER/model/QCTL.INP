@@ -1,0 +1,60 @@
+**********************************************************************
+**  READ IN FREE SURFACE ELEVATION OR PRESSURE CONTROLLED FLOW
+**  SPECIFICATION FROM THE FILE QCTL.INP
+**
+**  THE FLOW IS GIVEN BY:
+**    HUP=HP()+BELV()+HCTLUA(NS)=ADJUSTED ELEVATION OF UPSTREAM CELL FREE SURFACE
+**    HDW=HP()+BELV()+HCTLDA(NS)=ADJUSTED ELEVATION OF DOWNSTREAM CELL FREE SURFACE
+**    DELH = HCTLUM(NS) * HUP - HCTLDM(NS) * HDW
+**    If DELH <= 0 Then FLOW = 0  ELSE  FLOW = Lookup(QCTL() VS HDIFCTL())
+**
+**  InType MQCTL() HCTLUA() HCTLUM() HCTLDA() HCTLDM() RMULADJ() ADDADJ()
+**    IF ISTYP=0 THEN                             If ISTYP=1 THEN
+**      Loop Over MQCTL HDIFCTL vs QCTL Pairs       Read (WKQ(K),K=1,KC)
+**        (explicit assignment for each layer)      Loop Over MQCTL HDIFCTL vs QCTL Pairs
+       1      21    -7.5       1       0       0       1       0       0
+ 1 
+       0       0
+     .05       5
+     .06     7.5
+     .08    11.3
+     .11    16.9
+     .15    25.3
+     .19      38
+     .25      57
+     .32    85.4
+     .43   128.1
+     .55   150.2
+     .71   200.3
+      .9   250.5
+    1.14   300.7
+    1.43  350.13
+     1.8  400.59
+    2.27  450.05
+    2.86  500.14
+    3.63  550.13
+    4.61  600.64
+    5.64   650.3
+       1      21    -3.5       1       0       0       1       0       0
+ 1 
+       0       0
+     .07       5
+     .09     7.5
+     .12   11.25
+     .16   16.88
+     .21   25.31
+     .25   37.95
+     .29   56.88
+     .35   85.18
+     .42  127.45
+     .51  150.39
+     .64  200.75
+     .79  250.58
+     .99  300.77
+    1.25  350.55
+    1.59  400.86
+    2.02  450.46
+    2.58  500.27
+    3.29  550.35
+    4.21  600.66
+    5.71  650.95

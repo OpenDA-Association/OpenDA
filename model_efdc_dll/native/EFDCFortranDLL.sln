@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "EfdcFortranDLL", "efdc_fortran_dll\EfdcFortranDLL.vfproj", "{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release OpenMP|Win32 = Release OpenMP|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|Win32.Build.0 = Debug|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release OpenMP|Win32.ActiveCfg = Release OpenMP|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release OpenMP|Win32.Build.0 = Release OpenMP|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|Win32.ActiveCfg = Release|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

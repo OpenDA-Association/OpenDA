@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectType="typeDynamicLibrary" ProjectCreator="Intel Fortran" Keyword="Dll" Version="11.0" ProjectIdGuid="{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}">
+	<Platforms>
+		<Platform Name="Win32"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" InitLocalVarToNAN="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" Traceback="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) D:\krame_wr\Desktop\testen-dll\OpenDaInFews\bin_dll\win32_ifort"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug 64|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release OpenMP|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd"/>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<Filter Name="OpenDA wrapper">
+		<File RelativePath=".\openDA_wrapper\chdir_mod.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_aser_time_series.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_cser_time_series.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_end.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_exchange_items.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_extra_global.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_gateser_time_series.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_init.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_init_1.for"/>
+		<File RelativePath=".\openDA_wrapper\model_init_2.FOR"/>
+		<File RelativePath=".\openDA_wrapper\model_init_3.for"/>
+		<File RelativePath=".\openDA_wrapper\model_make_step.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_pser_time_series.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_qser_time_series.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_restart_init.for"/>
+		<File RelativePath=".\openDA_wrapper\model_state.f90"/>
+		<File RelativePath=".\openDA_wrapper\openDA_wrapper.F90"/></Filter>
+		<Filter Name="Original EFDC files">
+		<File RelativePath=".\original_efdc_files\ACON.for"/>
+		<File RelativePath=".\original_efdc_files\AINIT.for"/>
+		<File RelativePath=".\original_efdc_files\BAL2T1.for"/>
+		<File RelativePath=".\original_efdc_files\BAL2T2.for"/>
+		<File RelativePath=".\original_efdc_files\BAL2T3A.for"/>
+		<File RelativePath=".\original_efdc_files\BAL2T3B.for"/>
+		<File RelativePath=".\original_efdc_files\BAL2T4.for"/>
+		<File RelativePath=".\original_efdc_files\BAL2T5.for"/>
+		<File RelativePath=".\original_efdc_files\BEDINIT.for"/>
+		<File RelativePath=".\original_efdc_files\BEDLOAD.for"/>
+		<File RelativePath=".\original_efdc_files\BEDPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\BUDGET1.for"/>
+		<File RelativePath=".\original_efdc_files\BUDGET2.for"/>
+		<File RelativePath=".\original_efdc_files\BUDGET3.for"/>
+		<File RelativePath=".\original_efdc_files\BUDGET5.for"/>
+		<File RelativePath=".\original_efdc_files\CALAVB.for"/>
+		<File RelativePath=".\original_efdc_files\CALAVB2.for"/>
+		<File RelativePath=".\original_efdc_files\CALAVBOLD.for"/>
+		<File RelativePath=".\original_efdc_files\CALBAL1.for"/>
+		<File RelativePath=".\original_efdc_files\CALBAL2.for"/>
+		<File RelativePath=".\original_efdc_files\CALBAL3.for"/>
+		<File RelativePath=".\original_efdc_files\CALBAL4.for"/>
+		<File RelativePath=".\original_efdc_files\CALBAL5.for"/>
+		<File RelativePath=".\original_efdc_files\CALBED.for"/>
+		<File RelativePath=".\original_efdc_files\CALBED9.for"/>
+		<File RelativePath=".\original_efdc_files\CALBLAY.for"/>
+		<File RelativePath=".\original_efdc_files\CALBUOY.for"/>
+		<File RelativePath=".\original_efdc_files\CALCONC.for"/>
+		<File RelativePath=".\original_efdc_files\CALCSER.for"/>
+		<File RelativePath=".\original_efdc_files\CALDIFF.for"/>
+		<File RelativePath=".\original_efdc_files\CALDISP2.for"/>
+		<File RelativePath=".\original_efdc_files\CALDISP3.for"/>
+		<File RelativePath=".\original_efdc_files\CALEBI.for"/>
+		<File RelativePath=".\original_efdc_files\CALEXP.for"/>
+		<File RelativePath=".\original_efdc_files\CALEXP2T.for"/>
+		<File RelativePath=".\original_efdc_files\CALEXP2T0.for"/>
+		<File RelativePath=".\original_efdc_files\CALFQC.for"/>
+		<File RelativePath=".\original_efdc_files\CALHDMF.for"/>
+		<File RelativePath=".\original_efdc_files\CALHEAT.for"/>
+		<File RelativePath=".\original_efdc_files\CALHTA.for"/>
+		<File RelativePath=".\original_efdc_files\CALIMP2T.for"/>
+		<File RelativePath=".\original_efdc_files\CALMMT.for"/>
+		<File RelativePath=".\original_efdc_files\CALPGCORR.for"/>
+		<File RelativePath=".\original_efdc_files\CALPNHS.for"/>
+		<File RelativePath=".\original_efdc_files\CALPSER.for"/>
+		<File RelativePath=".\original_efdc_files\CALPUV2C.for"/>
+		<File RelativePath=".\original_efdc_files\CALPUV2T.for"/>
+		<File RelativePath=".\original_efdc_files\CALPUV9.for"/>
+		<File RelativePath=".\original_efdc_files\CALPUV9C.for"/>
+		<File RelativePath=".\original_efdc_files\CALPUVTT.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ1.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ1OLD.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ2.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ2T.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ2TOLD.for"/>
+		<File RelativePath=".\original_efdc_files\CALQVS.for"/>
+		<File RelativePath=".\original_efdc_files\CALSED.for"/>
+		<File RelativePath=".\original_efdc_files\CALSFT.for"/>
+		<File RelativePath=".\original_efdc_files\CALSND.for"/>
+		<File RelativePath=".\original_efdc_files\CALSTEP.for"/>
+		<File RelativePath=".\original_efdc_files\CALSTEPD.for"/>
+		<File RelativePath=".\original_efdc_files\CALTBXY.for"/>
+		<File RelativePath=".\original_efdc_files\CALTOX.for"/>
+		<File RelativePath=".\original_efdc_files\CALTOXB.for"/>
+		<File RelativePath=".\original_efdc_files\CALTRAN.for"/>
+		<File RelativePath=".\original_efdc_files\CALTRANQ.for"/>
+		<File RelativePath=".\original_efdc_files\CALTSXY.for"/>
+		<File RelativePath=".\original_efdc_files\CALUVW.for"/>
+		<File RelativePath=".\original_efdc_files\CALVEGSER.for"/>
+		<File RelativePath=".\original_efdc_files\CALWQC.for"/>
+		<File RelativePath=".\original_efdc_files\CBALEV1.for"/>
+		<File RelativePath=".\original_efdc_files\CBALEV2.for"/>
+		<File RelativePath=".\original_efdc_files\CBALEV3.for"/>
+		<File RelativePath=".\original_efdc_files\CBALEV4.for"/>
+		<File RelativePath=".\original_efdc_files\CBALEV5.for"/>
+		<File RelativePath=".\original_efdc_files\CBALOD1.for"/>
+		<File RelativePath=".\original_efdc_files\CBALOD2.for"/>
+		<File RelativePath=".\original_efdc_files\CBALOD3.for"/>
+		<File RelativePath=".\original_efdc_files\CBALOD4.for"/>
+		<File RelativePath=".\original_efdc_files\CBALOD5.for"/>
+		<File RelativePath=".\original_efdc_files\CELLMAP.for"/>
+		<File RelativePath=".\original_efdc_files\CELLMASK.for"/>
+		<File RelativePath=".\original_efdc_files\CEQICM.for"/>
+		<File RelativePath=".\original_efdc_files\CGATEFLX.for"/>
+		<File RelativePath=".\original_efdc_files\CONGRAD.for"/>
+		<File RelativePath=".\original_efdc_files\CONGRADC.for"/>
+		<File RelativePath=".\original_efdc_files\COSTRAN.for"/>
+		<File RelativePath=".\original_efdc_files\COSTRANW.for"/>
+		<File RelativePath=".\original_efdc_files\CSEDRESB.for"/>
+		<File RelativePath=".\original_efdc_files\CSEDRESS.for"/>
+		<File RelativePath=".\original_efdc_files\CSEDSET.for"/>
+		<File RelativePath=".\original_efdc_files\CSEDTAUB.for"/>
+		<File RelativePath=".\original_efdc_files\CSEDTAUS.for"/>
+		<File RelativePath=".\original_efdc_files\CSEDVIS.for"/>
+		<File RelativePath=".\original_efdc_files\CSNDEQC.for"/>
+		<File RelativePath=".\original_efdc_files\CSNDSET.for"/>
+		<File RelativePath=".\original_efdc_files\CSNDZEQ.for"/>
+		<File RelativePath=".\original_efdc_files\DEPPLT.for"/>
+		<File RelativePath=".\original_efdc_files\DRIFTER.f90"/>
+		<File RelativePath=".\original_efdc_files\DUMP.for"/>
+		<File RelativePath=".\original_efdc_files\EEXPOUT.for"/>
+		<File RelativePath=".\original_efdc_files\FDSTRSE.for"/>
+		<File RelativePath=".\original_efdc_files\FHYDCN.for"/>
+		<File RelativePath=".\original_efdc_files\foodchain.for"/>
+		<File RelativePath=".\original_efdc_files\FSBDLD.for"/>
+		<File RelativePath=".\original_efdc_files\FSEDMODE.for"/>
+		<File RelativePath=".\original_efdc_files\FSTRSE.for"/>
+		<File RelativePath=".\original_efdc_files\FUNDEN.for"/>
+		<File RelativePath=".\original_efdc_files\GATECTLREAD.for"/>
+		<File RelativePath=".\original_efdc_files\HDMT.for"/>
+		<File RelativePath=".\original_efdc_files\HDMT2T.for"/>
+		<File RelativePath=".\original_efdc_files\initbin.for"/>
+		<File RelativePath=".\original_efdc_files\initbin0.for"/>
+		<File RelativePath=".\original_efdc_files\initbin2.for"/>
+		<File RelativePath=".\original_efdc_files\INITBIN3.for"/>
+		<File RelativePath=".\original_efdc_files\INITBIN4.for"/>
+		<File RelativePath=".\original_efdc_files\INITBIN5.for"/>
+		<File RelativePath=".\original_efdc_files\INPUT.for"/>
+		<File RelativePath=".\original_efdc_files\JPEFDC.for"/>
+		<File RelativePath=".\original_efdc_files\LSQHARM.for"/>
+		<File RelativePath=".\original_efdc_files\LUBKSB.for"/>
+		<File RelativePath=".\original_efdc_files\LUDCMP.for"/>
+		<File RelativePath=".\original_efdc_files\NEGDEP.for"/>
+		<File RelativePath=".\original_efdc_files\OILCHEM.for"/>
+		<File RelativePath=".\original_efdc_files\OUT3D.for"/>
+		<File RelativePath=".\original_efdc_files\OUTOIL.for"/>
+		<File RelativePath=".\original_efdc_files\OUTPUT1.for"/>
+		<File RelativePath=".\original_efdc_files\OUTPUT2.for"/>
+		<File RelativePath=".\original_efdc_files\pbm_cut.for"/>
+		<File RelativePath=".\original_efdc_files\PPLOT.for"/>
+		<File RelativePath=".\original_efdc_files\QUIT.for"/>
+		<File RelativePath=".\original_efdc_files\RCAHQ.for"/>
+		<File RelativePath=".\original_efdc_files\READOIL.for"/>
+		<File RelativePath=".\original_efdc_files\READTOX.for"/>
+		<File RelativePath=".\original_efdc_files\READWIMS1.for"/>
+		<File RelativePath=".\original_efdc_files\READWIMS2.for"/>
+		<File RelativePath=".\original_efdc_files\RELAX2T.for"/>
+		<File RelativePath=".\original_efdc_files\RESTIN1.for"/>
+		<File RelativePath=".\original_efdc_files\RESTIN10.for"/>
+		<File RelativePath=".\original_efdc_files\RESTIN2.for"/>
+		<File RelativePath=".\original_efdc_files\RESTMOD.for"/>
+		<File RelativePath=".\original_efdc_files\RESTOUT.for"/>
+		<File RelativePath=".\original_efdc_files\RESTRAN.for"/>
+		<File RelativePath=".\original_efdc_files\ROUT3D.for"/>
+		<File RelativePath=".\original_efdc_files\RSALPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\RSALPLTV.for"/>
+		<File RelativePath=".\original_efdc_files\RSMICI.for"/>
+		<File RelativePath=".\original_efdc_files\RSMRST.for"/>
+		<File RelativePath=".\original_efdc_files\RSURFPLT.for"/>
+		<File RelativePath=".\original_efdc_files\RVELPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\RVELPLTV.for"/>
+		<File RelativePath=".\original_efdc_files\RWQAGR.for"/>
+		<File RelativePath=".\original_efdc_files\RWQATM.for"/>
+		<File RelativePath=".\original_efdc_files\RWQBEN2.for"/>
+		<File RelativePath=".\original_efdc_files\RWQC1.for"/>
+		<File RelativePath=".\original_efdc_files\RWQCSR.for"/>
+		<File RelativePath=".\original_efdc_files\RWQICI.for"/>
+		<File RelativePath=".\original_efdc_files\RWQPSL.for"/>
+		<File RelativePath=".\original_efdc_files\RWQRST.for"/>
+		<File RelativePath=".\original_efdc_files\RWQSTL.for"/>
+		<File RelativePath=".\original_efdc_files\RWQSUN.for"/>
+		<File RelativePath=".\original_efdc_files\s_bedload.f90"/>
+		<File RelativePath=".\original_efdc_files\s_main.f90"/>
+		<File RelativePath=".\original_efdc_files\s_morph.f90"/>
+		<File RelativePath=".\original_efdc_files\s_sedic.f90"/>
+		<File RelativePath=".\original_efdc_files\s_sedzlj.f90"/>
+		<File RelativePath=".\original_efdc_files\s_shear.f90"/>
+		<File RelativePath=".\original_efdc_files\SALPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\SALPLTV.for"/>
+		<File RelativePath=".\original_efdc_files\SALTSMTH.for"/>
+		<File RelativePath=".\original_efdc_files\SCANASER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANDSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANEFDC.for"/>
+		<File RelativePath=".\original_efdc_files\SCANGATECTL.for"/>
+		<File RelativePath=".\original_efdc_files\SCANGSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANGWSR.for"/>
+		<File RelativePath=".\original_efdc_files\SCANMASK.for"/>
+		<File RelativePath=".\original_efdc_files\SCANMODC.for"/>
+		<File RelativePath=".\original_efdc_files\SCANPSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANQCTL.for"/>
+		<File RelativePath=".\original_efdc_files\SCANQSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANSEDZLJ.f90"/>
+		<File RelativePath=".\original_efdc_files\SCANSFSR.for"/>
+		<File RelativePath=".\original_efdc_files\SCANSSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANTSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANWQ.for"/>
+		<File RelativePath=".\original_efdc_files\SCANWSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCNTXSED.for"/>
+		<File RelativePath=".\original_efdc_files\SEDFLUX.for"/>
+		<File RelativePath=".\original_efdc_files\SEEK.for"/>
+		<File RelativePath=".\original_efdc_files\SETBCS.for"/>
+		<File RelativePath=".\original_efdc_files\SETFPOCB.for"/>
+		<File RelativePath=".\original_efdc_files\SETOBC2T.for"/>
+		<File RelativePath=".\original_efdc_files\SETOPENBC.for"/>
+		<File RelativePath=".\original_efdc_files\SETOPENBC2.for"/>
+		<File RelativePath=".\original_efdc_files\SETSHLD.for"/>
+		<File RelativePath=".\original_efdc_files\SETSTVEL.for"/>
+		<File RelativePath=".\original_efdc_files\SHOWVAL.f90"/>
+		<File RelativePath=".\original_efdc_files\SKIPCOMM.for"/>
+		<File RelativePath=".\original_efdc_files\SMINIT.for"/>
+		<File RelativePath=".\original_efdc_files\SMMBE.for"/>
+		<File RelativePath=".\original_efdc_files\SMRIN1.for"/>
+		<File RelativePath=".\original_efdc_files\SOLVSMBE.for"/>
+		<File RelativePath=".\original_efdc_files\SSEDTOX.for"/>
+		<File RelativePath=".\original_efdc_files\SUBCHAN.for"/>
+		<File RelativePath=".\original_efdc_files\SURFPLT.for"/>
+		<File RelativePath=".\original_efdc_files\SVBKSB.for"/>
+		<File RelativePath=".\original_efdc_files\SVDCMP.for"/>
+		<File RelativePath=".\original_efdc_files\tecplot.f90"/>
+		<File RelativePath=".\original_efdc_files\TIMELOG.for"/>
+		<File RelativePath=".\original_efdc_files\TMSR.for"/>
+		<File RelativePath=".\original_efdc_files\TOXCHEM.for"/>
+		<File RelativePath=".\original_efdc_files\VALKH.for"/>
+		<File RelativePath=".\original_efdc_files\Var_Global_Mod.f90"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC1.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC2.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC3.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC4.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC5.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC6.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC7.for"/>
+		<File RelativePath=".\original_efdc_files\VARALLOC8.for"/>
+		<File RelativePath=".\original_efdc_files\VARINIT.for"/>
+		<File RelativePath=".\original_efdc_files\VARZEROInt.f90"/>
+		<File RelativePath=".\original_efdc_files\VARZEROReal.f90"/>
+		<File RelativePath=".\original_efdc_files\VELPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\VELPLTV.for"/>
+		<File RelativePath=".\original_efdc_files\VSFP.for"/>
+		<File RelativePath=".\original_efdc_files\WASP4.for"/>
+		<File RelativePath=".\original_efdc_files\WASP5.for"/>
+		<File RelativePath=".\original_efdc_files\WASP6.for"/>
+		<File RelativePath=".\original_efdc_files\WASP7.for"/>
+		<File RelativePath=".\original_efdc_files\WASP7EPA.for"/>
+		<File RelativePath=".\original_efdc_files\WAVEBL.for"/>
+		<File RelativePath=".\original_efdc_files\WAVESXY.for"/>
+		<File RelativePath=".\original_efdc_files\WELCOME.f90"/>
+		<File RelativePath=".\original_efdc_files\WINDWAVE.f90"/>
+		<File RelativePath=".\original_efdc_files\WQ3D.for"/>
+		<File RelativePath=".\original_efdc_files\WQ3DINP.for"/>
+		<File RelativePath=".\original_efdc_files\WQSKE0.for"/>
+		<File RelativePath=".\original_efdc_files\WQSKE1.for"/>
+		<File RelativePath=".\original_efdc_files\WQSKE2.for"/>
+		<File RelativePath=".\original_efdc_files\WQSKE3.for"/>
+		<File RelativePath=".\original_efdc_files\WQSKE4.for"/>
+		<File RelativePath=".\original_efdc_files\WQZERO.for"/>
+		<File RelativePath=".\original_efdc_files\WQZERO2.for"/>
+		<File RelativePath=".\original_efdc_files\WQZERO3.for"/>
+		<File RelativePath=".\original_efdc_files\WQZERO4.for"/>
+		<File RelativePath=".\original_efdc_files\WSMRST.for"/>
+		<File RelativePath=".\original_efdc_files\WSMTS.for"/>
+		<File RelativePath=".\original_efdc_files\WSMTSBIN.for"/>
+		<File RelativePath=".\original_efdc_files\WWQNC.for"/>
+		<File RelativePath=".\original_efdc_files\WWQRST.for"/>
+		<File RelativePath=".\original_efdc_files\WWQTS.for"/>
+		<File RelativePath=".\original_efdc_files\WWQTSBIN.for"/>
+		<File RelativePath=".\original_efdc_files\ZBRENT.for"/></Filter>
+		<Filter Name="Unused EFDC files"/></Filter></Files>
+	<Globals/></VisualStudioProject>

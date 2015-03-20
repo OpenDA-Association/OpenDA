@@ -1,0 +1,61 @@
+******************************************************************************
+* PROJECT NAME : NIER2010
+******************************************************************************
+C1 PARTITIONING RELATED PARAMETERS
+*
+* FPOCWST : FRACTION OF OC IN SUSPENDED SEDIMENT
+* FPOCBST : FRACTION OF OC IN DEPOSITED SEDIMENT 
+* ISTOXB  : TOXIC-BED INTERACTION SWITCH
+*
+C1  FPOCWST  FPOCBST  ISTOXB
+      0.1      0.1      0
+-------------------------------------------------------------------------------
+C2 LIST & PROPERTIES INFORMATION
+*
+*  ISTXD1ST: 1ST ORDER DECAY RATE
+*  TX1ST   : FIRST ORDER WATER COL DECAY RATE FOR TOX VARIABLE IN 1/DAY  (1.157E-06/SEC=0.1/DAY)
+*  
+C2  ISTXD1ST    TX1ST
+       1       1.157E-06
+-------------------------------------------------------------------------------
+C3 DECAY RATE CONDITION FOR Volatilization
+*
+*  ISTXDCV : DECAY RATE BY Volatilization  [ONLY FOR ISTXD1ST=0]
+*  ISTXKLL : OPTION FOR OXYGEN TRANSPORT COEFF. CALCULATION   (VOL)  (1=Broecker et al.(1978), 2=Banks(1975), 3=Wanninkhof et al.(1991))
+*  TXSC    : SCHEMIT NUMBER(500)                              (VOL)      
+*  ISTXKL  : OPTION FOR LIQUID FILM COEFF. CALCULATION        (VOL)  (1=Mills(1982), 2= Rathbun and Tai(1982))
+*
+C3  ISTXDCV  ISTXKLL  TXSC    ISTXKL   
+       1        1      500.      1     
+-------------------------------------------------------------------------------
+C4 DECAY RATE CONDITION FOR Hydrolysis
+*
+*  ISTXDCH : DECAY RATE BY Hydrolysis      [ONLY FOR ISTXD1ST=0]
+*  TXKH    : Hydrolysis RATE                                  (HYD) (10^-1 ~ 10^-7/DAY)
+*
+C4 ISTXDCH  TXKH
+      1     0.001
+-------------------------------------------------------------------------------
+C5 DECAY RATE CONDITION FOR Photolysis  (10-3(O) ~ 10-4(O))
+*
+*  ISTXDCP : DECAY RATE BY Photolysis      [ONLY FOR ISTXD1ST=0]
+*  TXKDO   : LIGHT DECAY RATE AT SURFACE LAYER                (PHT) (CHAPRA, 1997; THOMANN & MUELLER, 1987)
+*  TXD     : RADIANCE DISTRIBUTION FUNCTION  (1.2~1.6)        (PHT) (CHAPRA, 1997)    
+*  TXD0    : RADIANCE DISTRIBUTION FUNCTION AT SURFACE (1.2)  (PHT) (CHAPRA, 1997)    
+*  TXAW    : ATTENUATION COEFF. OF WATER   (MILLS, 1985)
+*  TXAA    : ATTENUATION COEFF. OF CHL-A   (MILLS, 1985)
+*  TXAC    : ATTENUATION COEFF. OF DOC     (MILLS, 1985)
+*  TXAS    : ATTENUATION COEFF. OF SSC     (MILLS, 1985)
+*
+C5  ISTXDCP  TXKDO   TXD    TXD0   TXAW   TXAA   TXAC   TXAS    ! FOR 320nm WAVE LENGTH
+      1      0.46    1.4    1.2   0.084   63.0   4.68   0.35
+-------------------------------------------------------------------------------
+C6 DECAY RATE CONDITION FOR Biodegradation     
+*
+*  ISTXDCB : DECAY RATE BY Biodegradation  [ONLY FOR ISTXD1ST=0]
+*  TXKB    : Biodegradation RATE      (DIAZINON:0.016 ~ PHENOL:4.0)  (BIO) [/DAY] (MILLS, 1982. 
+*  TXTHETA : TEM. COMPENSATION COEFF. (1.04~1.095)            (BIO)   
+*
+C6  ISTXDCB         TXKB       TXTHETA
+      1             4.0         1.07
+-------------------------------------------------------------------------------                           

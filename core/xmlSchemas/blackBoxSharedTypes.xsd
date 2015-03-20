@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by J Huijssen (VORtech) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="indexStringType">
+		<xs:annotation>
+			<xs:documentation>index (e.g. 12) or index line (e.g. 11:18) in an array</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([-+]?[0-9]+)(:[-+]?[0-9]+)?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="IndicesXML">
+		<xs:attribute name="index1" type="openda:indexStringType" use="required">
+			<xs:annotation>
+				<xs:documentation>Indices of the selected array elements of the first dimension. Format:  "ind1" (single index)," ind1:" (from ind1 up to the last index), ":ind1" (from the first index up to ind1), "ind1:ind2" (from ind1 up to ind2). Example: 8, :4, 19:, 7:12.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="index2" type="openda:indexStringType" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indices of the selected array elements of the second dimension. Format:  "ind1" (single index)," ind1:" (from ind1 up to the last index), ":ind1" (from the first index up to ind1), "ind1:ind2" (from ind1 up to ind2). Example: 8, :4, 19:, 7:12.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="index3" type="openda:indexStringType" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indices of the selected array elements of the third dimension. Format:  "ind1" (single index)," ind1:" (from ind1 up to the last index), ":ind1" (from the first index up to ind1), "ind1:ind2" (from ind1 up to ind2). Example: 8, :4, 19:, 7:12.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="base" type="xs:int" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>Base number, which gives the index of the vector's first element (sometimes 1 instead of 0)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SubArrayXML">
+		<xs:attribute name="sourceArray" type="xs:string" use="required"/>
+		<xs:attribute name="index1" type="openda:indexStringType" use="required"/>
+		<xs:attribute name="index2" type="openda:indexStringType" use="optional"/>
+		<xs:attribute name="index3" type="openda:indexStringType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="VariableXML">
+		<xs:attribute name="id" type="xs:string" use="required"/>
+	</xs:complexType>
+</xs:schema>

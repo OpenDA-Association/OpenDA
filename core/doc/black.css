@@ -1,0 +1,695 @@
+/*
+ *   template.css
+ */
+/**
+ * CSS Document for the system template.css
+ * @version $Id: template.css
+ * @package Joomla
+ * @copyright Copyright (C) 2005 - 2009 Open Source Matters. All rights reserved.
+ * @license GNU/GPL, see LICENSE.php
+ * Joomla! is free software and parts of it may contain or be derived from the
+ * GNU General Public License or other free or open source software licenses.
+ * See COPYRIGHT.php for copyright notices and details.
+ */
+
+/* Based on work by Eric Meyer, and Blueprint CSS which is licensed under the GNU/GPL */
+
+
+
+/* CSS Reset */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;}
+body {line-height:1.5;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;}
+table, td, th {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:"";}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+
+/* Typography */
+body {font-size:75%;color:#222;background:#fff;font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;}
+h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
+h1 {font-size:3em;line-height:1;margin-bottom:0.5em;}
+h2 {font-size:2em;margin-bottom:0.75em;}
+h3 {font-size:1.5em;line-height:1;margin-bottom:1em;}
+h4 {font-size:1.2em;line-height:1.25;margin-bottom:1.25em;}
+h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+h6 {font-size:1em;font-weight:bold;}
+h1 img, h2 img, h3 img, h4 img, h5 img, h6 img {margin:0;}
+p {margin:0 0 1.5em;}
+p img.left {float:left;margin:1.5em 1.5em 1.5em 0;padding:0;}
+p img.right {float:right;margin:1.5em 0 1.5em 1.5em;}
+a:focus, a:hover {color:#000;}
+a {color:#009;text-decoration:underline;}
+blockquote {margin:1.5em;color:#666;font-style:italic;}
+strong {font-weight:bold;}
+em, dfn {font-style:italic;}
+dfn {font-weight:bold;}
+sup, sub {line-height:0;}
+abbr, acronym {border-bottom:1px dotted #666;}
+address {margin:0 0 1.5em;font-style:italic;}
+del {color:#666;}
+pre {margin:1.5em 0;white-space:pre;}
+pre, code, tt {font:1em 'andale mono', 'lucida console', monospace;line-height:1.5;}
+li ul, li ol {margin:0 1.5em;}
+ul, ol {margin:0 1.5em 1.5em 1.5em;}
+ul {list-style-type:disc;}
+ol {list-style-type:decimal;}
+dl {margin:0 0 1.5em 0;}
+dl dt {font-weight:bold;}
+dd {margin-left:1.5em;}
+table {margin-bottom:1.4em;width:100%;}
+th {font-weight:bold;}
+thead th {background:#c3d9ff;}
+th, td, caption {padding:4px 10px 4px 5px;}
+tr.even td {background:#e5ecf9;}
+tfoot {font-style:italic;}
+caption {background:#eee;}
+.small {font-size:.8em;margin-bottom:1.875em;line-height:1.875em;}
+.large {font-size:1.2em;line-height:2.5em;margin-bottom:1.25em;}
+.hide {display:none;}
+.quiet {color:#666;}
+.loud {color:#000;}
+.highlight {background:#ff0;}
+.added {background:#060;color:#fff;}
+.removed {background:#900;color:#fff;}
+.first {margin-left:0;padding-left:0;}
+.last {margin-right:0;padding-right:0;}
+.top {margin-top:0;padding-top:0;}
+.bottom {margin-bottom:0;padding-bottom:0;}
+
+/*
+ *  http://www.openda.org/joomla/templates/ja_purity/css/menu.css */
+
+/* Default Joomla! Menu */
+ul.menu {
+	margin: 0;
+	padding: 1px 0 0;
+	list-style: none;
+	background: url(images/hdot2.gif) repeat-x top;
+}
+
+ul.menu li {
+	margin: 0 !important;
+	padding: 0 !important;
+	background: none !important;
+}
+
+ul.menu li a {
+	padding: 2px 0;
+	display: block;
+	color: #333333;
+	background: url(images/hdot2.gif) repeat-x bottom;
+	text-decoration: none;
+	outline: none;
+}
+
+ul.menu li a span {
+	padding-left: 16px;
+	background: url(images/bullet.gif) no-repeat 5px 5px;
+}
+
+ul.menu li a:hover,
+ul.menu li a:active,
+ul.menu li a:focus {
+	color: #333333;
+	background: url(images/hdot2.gif) repeat-x bottom #DDDDDD;
+	text-decoration: none;
+}
+
+ul.menu li.active a {
+	background: url(images/hdot2.gif) repeat-x bottom #FFFFFF;
+	color: #7BA566;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+ul.menu li.active a span {
+	background: url(images/bullet3.gif) no-repeat 5px 5px;
+}
+
+ul.menu li li a span {
+	background: none;
+}
+
+ul.menu li ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+ul.menu li li {
+	padding: 0 0 0 15px !important;
+	list-style: none;
+}
+
+ul.menu li li a {
+	color: #333333;
+	background: none !important;
+	font-size: 92%;
+	font-weight: normal;
+}
+
+ul.menu li li a:hover,
+ul.menu li li a:active,
+ul.menu li li a:focus {
+	color: #006699;
+}
+
+ul.menu li li a span {
+	background: url(images/bullet.gif) no-repeat 5px;
+	font-weight: normal;
+}
+
+/*
+ * http://www.openda.org/joomla/templates/ja_purity/styles/header/blue/style.css
+ */
+#ja-headerwrap {
+	background: #006699;
+	color: #C3DFED;
+}
+
+.ja-headermask {
+	background: url(images/header-mask.png) no-repeat top right;
+}
+
+#ja-header a {
+	color: #C3DFED;
+}
+
+h1.logo-text a {
+	color: #C3DFED !important;
+}
+
+p.site-slogan {
+	background: #1E7CAB;
+}
+
+#ja-search {
+	background: url(images/icon-search.gif) no-repeat center left;
+}
+
+#ja-search .inputbox {
+	border: 1px solid #005A87;
+	color: #C3DFED;
+	background: #1E7CAB;
+}
+
+.sectiontableheader {
+	background: #1374A5;
+}
+
+#ja-botslwrap {
+	background: #006699;
+	color: #C3DFED;
+}
+
+.ja-box-right div.moduletable {
+	background: url(images/vdot2.gif) repeat-y left;
+}
+
+.ja-box-center div.moduletable {
+	background: url(images/vdot2.gif) repeat-y left;
+}
+
+#ja-botsl a {
+	color: #C3DFED;
+}
+
+/*--------------------------- VISUAL ----------------------------*/
+/* -------- All levels -------- */
+#ja-mainnavwrap {
+	border-top: 1px solid #4394BD;
+	background: #1374A5;
+}
+#ja-mainnav ul, #ja-mainnav li {
+	background-image: none;
+	list-style: none;
+}
+
+#ja-mainnav span.separator {
+	display:none;
+}
+
+/* -------- Top level -------- */
+#ja-mainnav > ul {
+	background-color: #1374A5;
+	padding-left: 20px;
+}
+
+#ja-mainnav > ul > li {
+	background-color: #1374A5;
+	border-left: 1px solid #4394BD;
+	border-right: 1px solid #005A87;
+	margin-right: 1px;
+}
+
+#ja-mainnav > ul > li.active {
+	background: url(../../../images/arrow2.png) no-repeat bottom center #1374A5;
+	color: #C3DFED;
+}
+
+#ja-mainnav > ul > li:hover,
+#ja-mainnav > ul > li:active,
+#ja-mainnav > ul > li:focus {
+	background: url(../../../images/arrow2.png) no-repeat bottom center #2A84B1;
+	color: #C3DFED;
+}
+
+/* -------- sub-levels -------- */
+#ja-mainnav ul ul li {
+	border-left: 1px solid #4394BD;
+	border-right: 1px solid #005A87;
+	border-top: 1px solid #4394BD;
+	border-bottom: 1px solid #005A87;
+	margin-bottom: 1px;
+}
+
+#ja-mainnav li ul { /* second-level lists */
+	background-color: #2A84B1;
+}
+
+#ja-mainnav li a {
+	color: #C3DFED;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#ja-mainnav ul ul  li:hover,
+#ja-mainnav ul ul  li:active,
+#ja-mainnav ul ul  li:focus {
+	background: #006699;
+	color: #C3DFED;
+}
+
+/*
+ *   http://www.openda.org/joomla/templates/ja_purity/styles/background/lighter/style.css
+ */
+/* BONUS TYPOGRAPHY STYLES
+--------------------------------------------------------- */
+pre, .code {
+	border-left: 5px solid #999999;
+	background: #F6F6F6;
+}
+
+blockquote span.open {
+	background: url(images/so-q.gif) no-repeat left top;
+}
+
+blockquote span.close {
+	background: url(images/sc-q.gif) no-repeat bottom right;
+}
+
+/* Quote hilight */
+.quote-hilite {
+	border: 1px solid #CACACC;
+	background: #FFFFFF;
+}
+
+/* Small quote */
+.small-quote span.open-quote {
+	background: url(images/so-q.gif) no-repeat center left;
+}
+
+.small-quote span.close-quote {
+	background: url(images/sc-q.gif) no-repeat center right;
+}
+
+.small-quote span.author {
+	border-top: 1px solid #DCDDE0;
+}
+
+/* Rropcap */
+.dropcap {
+	color: #999999;
+}
+
+/* Tips, Error, Message, Hightlight*/
+.error {
+	color: #666666;
+}
+
+.message {
+	color: #999999;
+}
+
+.tips {
+	color: #666666;
+}
+
+.highlight {
+	background: #FFFFCC;
+}
+
+/* Note Style */
+p.stickynote {
+	border: 1px solid #CACACC;
+	background: url(images/sticky-bg.gif) no-repeat 5px center #FFFFFF;
+}
+
+p.download {
+	border: 1px solid #CACACC;
+	background: url(images/download-bg.gif) no-repeat 5px center #FFFFFF;
+}
+
+/* Check list */
+ul.checklist li {
+	background: url(images/checklist-bg.gif) no-repeat 0 3px;
+}
+
+/* Small checklist */
+ul.small-checklist li {
+	background: url(images/icon_list.gif) no-repeat 0 3px;
+}
+
+/* Check list */
+ul.stars li {
+	background: url(images/star-bg.gif) no-repeat 0 3px;
+}
+
+/* Bignumber */
+.bignumber {
+	background: url(images/ol-bg.gif) no-repeat top left;
+	color: #7BA566;
+}
+
+/* Talking box. Thinking box. */
+div.bubble1 span.author,
+div.bubble2 span.author,
+div.bubble3 span.author,
+div.bubble4 span.author {
+}
+
+div.bubble1 div {
+	background: url(images/bub1-br.gif) no-repeat bottom right;
+}
+
+div.bubble1 div div {
+	background: url(images/bub1-bl.gif) no-repeat bottom left;
+}
+
+div.bubble1 div div div {
+	background: url(images/bub1-tr.gif) no-repeat top right;
+}
+
+div.bubble1 div div div div {
+	background: url(images/bub1-tl.gif) no-repeat top left;
+}
+
+div.bubble2 div {
+	background: url(images/bub2-br.gif) no-repeat bottom right;
+}
+
+div.bubble2 div div {
+	background: url(images/bub2-bl.gif) no-repeat bottom left;
+}
+
+div.bubble2 div div div {
+	background: url(images/bub2-tr.gif) no-repeat top right;
+}
+
+div.bubble2 div div div div {
+	background: url(images/bub2-tl.gif) no-repeat top left;
+}
+
+div.bubble3 div {
+	background: url(images/bub3-br.gif) no-repeat bottom right;
+}
+
+div.bubble3 div div {
+	background: url(images/bub3-bl.gif) no-repeat bottom left;
+}
+
+div.bubble3 div div div {
+	background: url(images/bub3-tr.gif) no-repeat top right;
+}
+
+div.bubble3 div div div div {
+	background: url(images/bub3-tl.gif) no-repeat top left;
+}
+
+div.bubble4 div {
+	background: url(images/bub4-br.gif) no-repeat bottom right;
+}
+
+div.bubble4 div div {
+	background: url(images/bub4-bl.gif) no-repeat bottom left;
+}
+
+div.bubble4 div div div {
+	background: url(images/bub4-tr.gif) no-repeat top right;
+}
+
+div.bubble4 div div div div {
+	background: url(images/bub4-tl.gif) no-repeat top left;
+}
+
+/* Legend */
+.legend-title {
+	background: #FFFFFF;
+}
+
+.legend {
+	border: 1px solid #CACACC;
+	background: #FFFFFF;
+}
+
+/* MAIN LAYOUT DIVS
+--------------------------------------------------------- */
+#ja-wrapper {
+	background: #F2F2F2;
+}
+
+#ja-containerwrap {
+	background: url(images/cw-bg1.gif) repeat-y 50% 0;
+}
+
+div.modules {
+	background: url(images/cw-bg2.gif) no-repeat 50% 0;
+}
+
+#ja-container {
+	background: url(images/c-bg1.gif) repeat-y 18% 0;
+}
+
+#ja-container2 {
+	padding: 20px 0;
+	background: url(images/c-bg2.gif) no-repeat 18% 0;
+}
+
+/* Full */
+#ja-containerwrap-f {
+	background: url(images/cwf-bg.gif) repeat-x top left #FFFFFF;
+}
+
+/* Full left */
+#ja-containerwrap-fl {
+	background: url(images/cwf-bg.gif) repeat-x top left #FFFFFF;
+}
+
+/* Full right */
+#ja-containerwrap-fr {
+	background: url(images/cw-bg1.gif) repeat-y 50% 0;
+}
+
+#ja-containerwrap-fr #ja-containerwrap2 {
+	background: url(images/cw-bg2.gif) no-repeat 50% 0;
+}
+
+/* Module rounded */
+div.module h3 {
+	border-bottom: 1px solid #E9E9E9;
+	color: #7BA566;
+}
+
+div.module_black,
+div.module_green,
+div.module_blue,
+div.module_red,
+div.module {
+	background: url(images/b-br.gif) no-repeat bottom right #FFFFFF;
+}
+
+div.module div {
+	background: url(images/b-bl.gif) no-repeat bottom left;
+}
+
+div.module div div {
+	background: url(images/b-tr.gif) no-repeat top right;
+}
+
+div.module div div div {
+	background: url(images/b-tl.gif) no-repeat top left;
+}
+
+div.module_text span {
+	background: #FFFFFF;
+}
+
+div.module_text {
+	background: url(images/bt-br.gif) no-repeat bottom right #F6F6F6;
+}
+
+div.module_text div {
+	background: url(images/bt-bl.gif) no-repeat bottom left;
+}
+
+div.module_text div div {
+	background: url(images/bt-tr.gif) no-repeat top right;
+}
+
+div.module_text div div div {
+	background: url(images/bt-tl.gif) no-repeat top left;
+}
+
+/* red */
+div.module_black h3,
+div.module_green h3,
+div.module_blue h3,
+div.module_red h3 {
+	border-bottom: 1px solid #F6F6F6;
+	color: #FFFFFF;
+}
+
+div.module_red {
+	background: url(images/br-br.gif) no-repeat bottom right #BF0000;
+	color: #FFFFFF;
+}
+
+div.module_red div {
+	background: url(images/br-bl.gif) no-repeat bottom left;
+}
+
+div.module_red div div {
+	background: url(images/br-tr.gif) no-repeat top right;
+}
+
+div.module_red div div div {
+	padding: 0 15px 10px;
+	background: url(images/br-tl.gif) no-repeat top left;
+}
+
+/* blue */
+div.module_blue {
+	background: url(images/bb-br.gif) no-repeat bottom right #025291;
+	color: #FFFFFF;
+}
+
+div.module_blue div {
+	background: url(images/bb-bl.gif) no-repeat bottom left;
+}
+
+div.module_blue div div {
+	background: url(images/bb-tr.gif) no-repeat top right;
+}
+
+div.module_blue div div div {
+	background: url(images/bb-tl.gif) no-repeat top left;
+}
+
+/* green */
+div.module_green {
+	background: url(images/bg-br.gif) no-repeat bottom right #7BA566;
+	color: #FFFFFF;
+}
+
+div.module_green div {
+	background: url(images/bg-bl.gif) no-repeat bottom left;
+}
+
+div.module_green div div {
+	background: url(images/bg-tr.gif) no-repeat top right;
+}
+
+div.module_green div div div {
+	padding: 0 15px 10px;
+	background: url(images/bg-tl.gif) no-repeat top left;
+}
+
+/* black */
+div.module_black {
+	background: url(images/bl-br.gif) no-repeat bottom right #333333;
+	color: #FFFFFF;
+}
+
+div.module_black div {
+	background: url(images/bl-bl.gif) no-repeat bottom left;
+}
+
+div.module_black div div {
+	background: url(images/bl-tr.gif) no-repeat top right;
+}
+
+div.module_black div div div {
+	background: url(images/bl-tl.gif) no-repeat top left;
+}
+
+/* JOOMLA STYLE
+--------------------------------------------------------- */
+a.readon {
+	border: 1px solid #ECECEC;
+	background: url(images/arrow.png) no-repeat 5px 48%;
+	color: #006699;
+}
+
+a.readon:hover, a.readon:active, a.readon:focus {
+	border: 1px solid #DDDDDD;
+	background: url(images/arrow.png) no-repeat 5px 48% #F6F6F6;
+}
+
+ul.menu li.active a {
+	background-color: #ECECEC;
+}
+
+ul.menu li a:hover,
+ul.menu li a:active,
+ul.menu li a:focus {
+	background-color: #F6F6F6;
+}
+
+/*
+ * +  http://www.openda.org/joomla/templates/ja_purity/styles/elements/blue/style.css
+ */
+a {
+	color: #006699;
+	text-decoration: underline;
+}
+
+a.readon {
+	color: #006699;
+}
+
+ul.menu li li a:hover,
+ul.menu li li a:active,
+ul.menu li li a:focus {
+	color: #006699;
+}
+
+.bignumber {
+	color: #006699;
+}
+
+ul.menu li.active a {
+	color: #006699;
+}
+
+div.moduletable h3,
+div.moduletable_menu h3,
+div.moduletable_text h3 {
+	color: #006699;
+}
+
+div.module h3 {
+	color: #006699;
+}
+
+ul.menu li.active a span {
+	background: url(images/bullet3.gif) no-repeat 5px;
+}
+
+/*
+ * 	inline
+ */
+
+#ja-header,#ja-mainnav,#ja-container,#ja-botsl,#ja-footer {width: 97%;margin: 0 auto;}
+#ja-wrapper {min-width: 100%;}

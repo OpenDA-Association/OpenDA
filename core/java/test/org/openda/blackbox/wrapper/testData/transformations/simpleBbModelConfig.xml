@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>simpleBbWrapperConfig.xml</file>
+	</wrapperConfig>
+
+	<!-- no alias values -->
+    <aliasValues/>
+
+	<exchangeItems>
+        <vector id="locA.Ampl" ioObjectId="DummyAstroIoObject" elementId="locA.Ampl"/>
+        <vector id="locA.Phase" ioObjectId="DummyAstroIoObject" elementId="locA.Phase"/>
+        <vector id="locB.Ampl" ioObjectId="DummyAstroIoObject" elementId="locB.Ampl"/>
+        <vector id="locB.Phase" ioObjectId="DummyAstroIoObject" elementId="locB.Phase"/>
+        <vector id="locC.Ampl" ioObjectId="DummyAstroIoObject" elementId="locC.Ampl"/>
+        <vector id="locC.Phase" ioObjectId="DummyAstroIoObject" elementId="locC.Phase"/>
+        <vector id="locD.Ampl" ioObjectId="DummyAstroIoObject" elementId="locD.Ampl"/>
+        <vector id="locD.Phase" ioObjectId="DummyAstroIoObject" elementId="locD.Phase"/>
+        <vector id="locE.Ampl" ioObjectId="DummyAstroIoObject" elementId="locE.Ampl"/>
+        <vector id="locE.Phase" ioObjectId="DummyAstroIoObject" elementId="locE.Phase"/>
+    </exchangeItems>
+
+	<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

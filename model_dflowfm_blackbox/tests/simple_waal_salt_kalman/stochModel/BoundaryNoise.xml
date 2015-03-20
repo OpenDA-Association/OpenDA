@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<simulationTimespan timeFormat="dateTimeString">199208311200,199209010000,...,199212090000</simulationTimespan>
+	<timeSeries id="salinitynoise" location="eastboundary" quantity="salinity" standardDeviation="1.0" timeCorrelationScale="24.0" timeCorrelationScaleUnit="hours" />"
+</mapsNoiseModelConfig>

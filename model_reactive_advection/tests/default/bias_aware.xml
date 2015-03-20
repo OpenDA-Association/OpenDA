@@ -1,0 +1,10 @@
+<BiasAwareModelConfig>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>polluteStochModel_ar0.xml</configFile>
+	</stochModelFactory>
+	<state standard_deviation="100.0"
+		maxSize="6"  localization="false"  checkObservationID="true">
+	</state>
+</BiasAwareModelConfig>
+

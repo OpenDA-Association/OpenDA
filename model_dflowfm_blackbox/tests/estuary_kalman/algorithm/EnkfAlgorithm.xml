@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+    <analysisTimes type="fromObservationTimes"/>
+    <mainModel stochParameter="false" stochForcing="true" stochInit="false"/>
+    <ensembleSize>8</ensembleSize>
+</EnkfConfig>

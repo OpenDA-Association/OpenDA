@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by J Huijssen (VORtech) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="blackBoxModelConfig.xsd"/>
+	<xs:complexType name="BlackBoxModelConfigReferenceXML">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select one of the options</xs:documentation>
+			</xs:annotation>
+			<xs:element name="config" type="openda:BlackBoxModelConfigXML">
+				<xs:annotation>
+					<xs:documentation>Specify black box model configuration directly in the blackBoxModelConfig format</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="file" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify filename of the black box model configuration file. File format: blackBoxModelConfig</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="UncertaintyOrNoiseModelExchangeItemXML">
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of the model exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="UncertaintyOrNoiseExchangeItemXML">
+		<xs:sequence>
+			<xs:element name="modelExchangeItem" type="openda:UncertaintyOrNoiseModelExchangeItemXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify one or more model exchange items on which to impose noise defined by this noise model's exchange item (for a single model exchange item, use modelExchangeItemId in the attributes instead of this list)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of this noise model's exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="modelExchangeItemId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of model exchange item on which to impose this noise model's exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="operation" type="openda:NoiseOperationTypesXML" use="optional" default="add">
+			<xs:annotation>
+				<xs:documentation>Type of operation to performed when noise is added to an (parameter or state) exchange item: 'add' the noise to the exchange item's values, 'multiply' the exchange item's values with the noise, or 'set' the values (used in those cases where the noise in fact is a realization)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="transformation" type="openda:ParameterTransformationTypesXML" use="optional" default="identity">
+			<xs:annotation>
+				<xs:documentation>Transformation of noise variable. 'identity' means that the value will be added directly  without any transformation to the adjusted parameter. 'ln' means that the value is transformed logarithmically before it is added to the parameter; this gives a correction, which is a fraction of the parameter value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="UncertaintyOrNoiseExchangeItemsXML">
+		<xs:sequence>
+			<xs:element name="exchangeItem" type="openda:UncertaintyOrNoiseExchangeItemXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The list of relations</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UncertaintyOrNoiseXML">
+		<xs:sequence>
+			<xs:element name="configFile" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify name of xml file containing configuration of the noise model. File format depends on class.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify list of input arguments for the noise model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="exchangeItems" type="openda:UncertaintyOrNoiseExchangeItemsXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The relations between the noise model's  Exchange Items and the model's Exchange Items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The class name implementing the noise model</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="workingDirectory" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The noise model's working directory</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelUncertainParameterXML">
+		<xs:attribute name="id" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of model's exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="uncertainItemId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of noise model's exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="transformation" type="openda:ParameterTransformationTypesXML" use="optional" default="identity">
+			<xs:annotation>
+				<xs:documentation>Transformation of noise variable. 'identity' means that the value will be added directly  without any transformation to the adjusted parameter. 'ln' means that the value is transformed logarithmically before it is added to the parameter; this gives a correction, which is a fraction of the parameter value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="StandardDeviationXML">
+		<xs:attribute name="value" type="xs:double" use="required">
+			<xs:annotation>
+				<xs:documentation>The standard deviation value</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="StandardDeviationAndTransformationXML">
+		<xs:attribute name="value" type="xs:double" use="required">
+			<xs:annotation>
+				<xs:documentation>The standard deviation value</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="transformation" type="openda:ParameterTransformationTypesXML" use="optional" default="identity">
+			<xs:annotation>
+				<xs:documentation>Transformation of correction factor. 'identity' means that the correction will be added directly  without any transformation to the adjusted parameter. 'ln' means that the correction is transformed logarithmically before it is added to the parameter; this gives a correction, which is a fraction of the parameter value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RegularisationConstantXML">
+		<xs:sequence>
+			<xs:element name="stdDev" type="openda:StandardDeviationAndTransformationXML">
+				<xs:annotation>
+					<xs:documentation>Set the standard deviation of this parameter and the method how the parameter should be corrected</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Select the parameter vector(s) and/or subvector(s) to adjust</xs:documentation>
+				</xs:annotation>
+				<xs:element name="vector" type="openda:BlackBoxStochModelVectorXML">
+					<xs:annotation>
+						<xs:documentation>Select the whole parameter vector</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="subVector" type="openda:BlackBoxStochModelSubVectorXML">
+					<xs:annotation>
+						<xs:documentation>Select only a part of the parameter vector</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="scale" type="xs:double" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>Set the scaling factor for this parameter (optional)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CartesianToPolarXML">
+		<xs:sequence>
+			<xs:element name="stdDev" type="openda:StandardDeviationAndTransformationXML">
+				<xs:annotation>
+					<xs:documentation>Specify standard deviation for dx and dy                                                                             Set the standard deviation of this parameter and the method how the parameter should be corrected</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="2" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Select the sets of parameter vectors to adjust, in pairs of two: amplitude and phase</xs:documentation>
+				</xs:annotation>
+				<xs:element name="vector" type="openda:BlackBoxStochModelVectorXML">
+					<xs:annotation>
+						<xs:documentation>Select whole parameter vector</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="subVector" type="openda:BlackBoxStochModelSubVectorXML">
+					<xs:annotation>
+						<xs:documentation>Select only a part of the parameter vector</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="xScale" type="xs:double" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>Scaling factor for dx</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="yScale" type="xs:double" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>Scaling factor for dy</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="xSuffixCaption" type="xs:string" use="optional" default="dX">
+			<xs:annotation>
+				<xs:documentation>Name suffix for dx in the noise model exchange items</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ySuffixCaption" type="xs:string" use="optional" default="dY">
+			<xs:annotation>
+				<xs:documentation>Name suffix for dy in the noise model exchange items</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="xCaption" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name for dx in the noise model exchange items</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="yCaption" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name for dy in the noise model exchange items</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="UncertaintyOrModelExchangeItemXML">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select the way the subvector is derived from the source vector.</xs:documentation>
+			</xs:annotation>
+			<xs:element name="selection" type="openda:IndicesXML">
+				<xs:annotation>
+					<xs:documentation>Derive subvector by specifying indices of source vector.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="selector" type="openda:BlackBoxConfigurableXML">
+				<xs:annotation>
+					<xs:documentation>Derive subvector by using a configuration file or string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Set the identity of this subVector.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sourceVectorId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the identity of the source vector as defined in blackBoxModelConfig.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="StateNoiseXML">
+		<xs:sequence>
+			<xs:element name="configFile" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify name of xml file containing configuration of the noise model. File format depends on class.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="exchangeItems" type="openda:UncertaintyOrNoiseExchangeItemsXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The relations between the noise model's  exchange items and the model's exchange items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the identity of the noise model vector. This is required if the noise model contains more than one source vector. If the noise model contains one source vector, it may be omitted. In that case the source vector's id is used.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="className" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The class that implements the noise model</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="workingDirectory" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The working directory where the noise model is started</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelVectorXML">
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of the vector</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sourceVectorId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of the source vector as defined in blackBoxModelConfig</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelSubVectorXML">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select the way the subvector is derived from the source vector</xs:documentation>
+			</xs:annotation>
+			<xs:element name="selection" type="openda:IndicesXML">
+				<xs:annotation>
+					<xs:documentation>Select subvector using indices of the vector elements</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="selector" type="openda:BlackBoxConfigurableXML">
+				<xs:annotation>
+					<xs:documentation>Define operator for deriving the subvector</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of the subVector</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sourceVectorId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of the source vector as defined in blackBoxModelConfig</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelParametersXML">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="uncertaintyModule" type="openda:UncertaintyOrNoiseXML">
+				<xs:annotation>
+					<xs:documentation>The uncertainty module that defines and generates the noise correction factor Exchange Items </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="regularisationConstant" type="openda:RegularisationConstantXML">
+				<xs:annotation>
+					<xs:documentation>Specify which model parameters to adjust and how</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cartesianToPolar" type="openda:CartesianToPolarXML">
+				<xs:annotation>
+					<xs:documentation>Specify which model parameters to adjust and how, under a transformation of the vector representation, from Cartesian (dx,dy) in the stochastic model to Polar (amplitude,phase) in the deterministic model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelStateXML">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="noiseModel" type="openda:StateNoiseXML">
+				<xs:annotation>
+					<xs:documentation>Add a noise model to the state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="vector" type="openda:BlackBoxStochModelVectorXML">
+				<xs:annotation>
+					<xs:documentation>Add a vector to the state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="subVector" type="openda:BlackBoxStochModelSubVectorXML">
+				<xs:annotation>
+					<xs:documentation>Add a subvector to the state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelVectorsXML">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="vector" type="openda:BlackBoxStochModelVectorXML">
+				<xs:annotation>
+					<xs:documentation>Add a vector to the predictor</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="subVector" type="openda:BlackBoxStochModelSubVectorXML">
+				<xs:annotation>
+					<xs:documentation>Add a subvector to the predictor</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelVectorSpecificationXML">
+		<xs:sequence>
+			<xs:element name="parameters" type="openda:BlackBoxStochModelParametersXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the model parameters vectors and the uncertainty/noise module that imposes noise on the model parameters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="state" type="openda:BlackBoxStochModelStateXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the model state vectors and the noise model that imposes noise on the model state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="predictor" type="openda:BlackBoxStochModelVectorsXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the predictor vectors. i.e. the model variables that correspond to the observer variables</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelRestartInfoXML">
+		<xs:attribute name="dirPrefix" type="xs:string" use="optional" default="./savedStochModelState_">
+			<xs:annotation>
+				<xs:documentation>Specify the model directory that will contain a set of restart files for a certain time stamp
+				(written when the algorithm requests to store states, read when the algorithm asks to restore a state)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="noiseModelPrefix" type="xs:string" use="optional" default="./noiseModel_">
+			<xs:annotation>
+				<xs:documentation>Specify the file name prefix for storing the state of the noise model(s)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="modelStateFile" type="xs:string" use="optional" default="./modelState.zip">
+			<xs:annotation>
+				<xs:documentation>Specify the file name prefix for storing the model state (must end with .zip)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxStochModelConfigXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>Deterministic model: specify either a black box model or a black box model factory</xs:documentation>
+				</xs:annotation>
+				<xs:element name="modelConfig" type="openda:BlackBoxModelConfigReferenceXML">
+					<xs:annotation>
+						<xs:documentation>Specify a specific black box model configuration. This can be either by writing directly the model configuration or by referring to a black box model configuration file.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="modelFactory" type="openda:ActionXML">
+					<xs:annotation>
+						<xs:documentation>Define a model factory. Specify class or executable, arguments to supply and fail/success checks to perform</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="vectorSpecification" type="openda:BlackBoxStochModelVectorSpecificationXML">
+				<xs:annotation>
+					<xs:documentation>Define stochastic model by specifying the vectors of parameters, state, and/or predictor</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restartInfo" type="openda:BlackBoxStochModelRestartInfoXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Restart dir./files information</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="blackBoxStochModel" type="openda:BlackBoxStochModelConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration file for the Stochastic model class org.openda.blackbox.wrapper.BBStochModelFactory. Specifies either the deterministic model in the modelConfig element, or the model instances generator in the modelFactory element, and the stochastic model that acts as umbrella over the deterministic model, in the vectorSpecification element, and an optional restartInfo element for non-default handling of deterministic model restarts.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="NoiseOperationTypesXML">
+		<xs:annotation>
+			<xs:documentation>Type of operation to performed when noise is added to an (parameter or state) exchange item: add the noise to the exchange item's values, multiply the exchange item's values with the noise, or set the values (used in those cases where the noise in fact is a realization)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="add"/>
+			<xs:enumeration value="multiply"/>
+			<xs:enumeration value="set"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParameterTransformationTypesXML">
+		<xs:annotation>
+			<xs:documentation>Tranformation of correction factor. Two values are possible: 'identity' and 'ln'. The 'identity' means that the correction will be added directly  without any transformation to the adjusted parameter. On the other hand,  'ln' means that correction is transformed logarithmically before it is added to the parameter; this gives a correction, which is a fraction of the parameter value. </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="identity"/>
+			<xs:enumeration value="ln"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

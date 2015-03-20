@@ -1,0 +1,46 @@
+
+In order to create an Ensemble of models using these scripts.
+authors: Marc Ridler & Nils van Velzen
+
+
+--> Copy the file out ofDropbox. 
+
+1) Setup Matlab
+
+a - Install the DHI Matlab toobox   http://www.mikebydhi.com/Download/DocumentsAndTools/Tools/DHIMatLabToolbox.aspx
+b - Include Recursevly the lib direcory in "Set Path"  
+
+2)  In Matlab
+
+a - in "Main_createEnsembles.m" , change according...
+% The directory where ther is the BaseModel directory.
+baseModelDir = 'C:\Dropbox\!Share_NilsUmerMarc\BaseModel\';
+% Number of Ensembles to Create
+numEns = 20;
+
+then RUN
+
+b - 
+
+in "Main_PerturbParameters.m", change
+
+EnsembleDir  to the newly created Ensemble directory
+numEns --> to the number of ensembles you created.
+
+
+NOTE
+This will create a number of ensemble models 0 to N-1 with perturbed forcing (Precipitation and referenece evapotranspiration) from the Main_createEnsemble.  ALSO parameters in the SZ and the UZ will be changed from the Main_perturbParameters.
+
+The parameters perturbations script uses String Replacemnts looking for strings 1.01e-35, 1.02e-35, ..., 2.01e-35.
+
+
+The Karup.SHE should run         
+SIMSTART = 1969, 12, 1, 0, 0
+SIMEND = 1973, 1, 1, 0, 0
+
+You can create the input files for the data assimilation simulationm (Karup_DA.SHE) using the script Main_createDAfile
+
+
+
+
+

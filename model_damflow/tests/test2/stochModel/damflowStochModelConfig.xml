@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>./damflowModel.xml</file>
+	</modelConfig>
+
+	<vectorSpecification>
+		<parameters>
+			    <regularisationConstant>
+				<stdDev value=".02" transformation="identity"/>
+				<vector id="layer1.Kx"/>
+			    </regularisationConstant>
+		</parameters>
+		<predictor>
+			<vector id="location0.hydraulichead" sourceVectorId="loc0.head" />
+		</predictor>
+	</vectorSpecification>
+
+</blackBoxStochModel>

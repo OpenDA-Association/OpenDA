@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<timeSeries status="use" standardDeviation="0.1" >
+		obs_oscill.noos
+	</timeSeries>
+</noosObserver>

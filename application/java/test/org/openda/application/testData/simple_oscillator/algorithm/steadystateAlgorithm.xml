@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+        <analysisTimes type="fixed" timeFormat="mjd" >0.0,1.0,...,10.0</analysisTimes>
+	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a 
+	twin-experpiment -->
+	<mainModel stochParameter="false" stochForcing="false" stochInit="false" />
+	<readGain>
+		<dirPrefix>../enkf_oscillator_</dirPrefix>
+		<!-- <time timeFormat="dateTimeString">201008240000</time> -->
+		<time timeFormat="mjd">10.0</time>
+		<file>enkf_oscillator_gain.xml</file>
+	</readGain>
+</EnkfConfig>

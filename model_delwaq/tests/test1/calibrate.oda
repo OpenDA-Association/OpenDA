@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>delwaqMapStochObsConfig.xml</configFile>
+	</stochObserver>
+    <algorithm className="org.openda.algorithms.Dud">
+        <workingDirectory>./algorithm</workingDirectory>
+        <configString>dudAlgorithm.xml</configString>
+    </algorithm>
+    <stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>efdcStochModel.xml</configFile>
+	</stochModelFactory>
+ <resultWriters>
+     <resultWriter
+        className="org.openda.resultwriters.MatlabResultWriter">
+       <workingDirectory>.</workingDirectory>
+       <configFile>results_dud.m</configFile>
+     </resultWriter>
+   </resultWriters>
+
+</openDaApplication>

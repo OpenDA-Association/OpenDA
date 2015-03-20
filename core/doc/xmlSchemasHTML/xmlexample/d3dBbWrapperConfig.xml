@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxWrapperConfig.xsd">
+
+	<!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+		<alias key="D3D_HOME"/>
+		<alias key="NATIVE_DLL_DIR" value="D:/src/openda/openda/bin"/>
+		<alias key="instanceDir"/>
+		<alias key="templateDir" value="../model"/>
+		<alias key="runid"/>
+    </aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+		<!-- computation actions -->
+		<!-- define actions relative to working dir. -->
+		<computeActions>
+			<action workingDirectory="%instanceDir%" windowsExe="%D3D_HOME%/w32/flow/bin/tdatom.exe"/>
+			<action workingDirectory="%instanceDir%" windowsExe="%D3D_HOME%/w32/flow/bin/trisim.exe"/>
+		</computeActions>
+
+		<!-- actions to finalize (e.g. cleanup) an instance -->
+		<finalizeActions/>
+
+	</run>
+
+	<inputOutput>
+
+		<!-- u/v rougness -->
+		<ioObject className="nl.deltares.openda.models.d3dflow.D3dField2DFile">
+			<file>%runid%.mdf</file>
+			<id>roughness</id>
+			<arg>rgh</arg>
+        </ioObject>
+
+		<!-- depth -->
+		<ioObject className="nl.deltares.openda.models.d3dflow.D3dField2DFile">
+			<file>%runid%.mdf</file>
+			<id>depth</id>
+			<arg>dep</arg>
+        </ioObject>
+
+		<!-- time series results -->
+		<ioObject className="nl.deltares.openda.models.d3dflow.D3dResults">
+            <file>trih-%runid%.dat</file>
+            <id>trih-file</id>
+			<arg>%NATIVE_DLL_DIR%</arg>
+        </ioObject>
+    </inputOutput>
+
+</blackBoxWrapperConfig>

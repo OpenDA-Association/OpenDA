@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<noiseItem id="sm_noise" quantity="soilmoisture" unit="mm" height="2.0" standardDeviation="0.5" timeCorrelationScale="4.0" timeCorrelationScaleUnit="hours" initialValue="0.0" horizontalCorrelationScale="30000." horizontalCorrelationScaleUnit="m">
+			<!--grid type="cartesian" coordinates="wgs84"-->
+		      <grid type="cartesian" coordinates="xy">
+		      <x>650378.3,651378.3,...,739378.3</x>
+		      <y>5527612.3,5528612.3,...,5621612.3</y> 
+		</grid>
+	</noiseItem>
+</mapsNoiseModelConfig>

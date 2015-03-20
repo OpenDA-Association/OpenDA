@@ -1,0 +1,352 @@
+substance 'DetC' active
+   description        'Detritus Carbon  (DetC)'
+   concentration-unit '(gC/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'DetN' active
+   description        'Detritus Nitrogen (DetN)'
+   concentration-unit '(gN/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'DetP' active
+   description        'Detritus Phosphorus (DetP)'
+   concentration-unit '(gP/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'DIAT' active
+   description        'Diatoms'
+   concentration-unit '(gC/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'GREEN' active
+   description        'Algae (non-Diatoms)'
+   concentration-unit '(gC/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'NH4' active
+   description        'Ammonium (NH4)'
+   concentration-unit '(gN/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'NO3' active
+   description        'Nitrate (NO3)'
+   concentration-unit '(gN/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'OOC' active
+   description        'Other Organic Carbon (OOC)'
+   concentration-unit '(gC/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'OON' active
+   description        'Other Organic Nitrogen (OON)'
+   concentration-unit '(gN/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'OOP' active
+   description        'Other Organic Phosphorus (OOP)'
+   concentration-unit '(gN/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'PO4' active
+   description        'Ortho-Phosphate (PO4)'
+   concentration-unit '(gP/m3)'
+   waste-load-unit    '-'
+end-substance
+substance 'OXY' active
+   description        'Dissolved Oxygen'
+   concentration-unit '(g/m3)'
+   waste-load-unit    '-'
+end-substance
+parameter 'Temp'
+   description   'ambient water temperature'
+   unit          '(oC)'
+   value          0.1500E+02
+end-parameter
+parameter 'NCRatGreen'
+   description   'N:C ratio Greens'
+   unit          '(gN/gC)'
+   value          0.1600E+00
+end-parameter
+parameter 'PCRatGreen'
+   description   'P:C ratio Greens'
+   unit          '(gP/gC)'
+   value          0.2000E-01
+end-parameter
+parameter 'NCRatDiat'
+   description   'N:C ratio Diatoms'
+   unit          '(gN/gC)'
+   value          0.1600E+00
+end-parameter
+parameter 'PCRatDiat'
+   description   'P:C ratio Diatoms'
+   unit          '(gP/gC)'
+   value          0.2000E-01
+end-parameter
+parameter 'VSedDetC'
+   description   'sedimentation velocity DetC'
+   unit          '(m/d)'
+   value          0.1000E+00
+end-parameter
+parameter 'Tau'
+   description   'total bottom shear stress'
+   unit          '(N/m2)'
+   value         -0.9990E+03
+end-parameter
+parameter 'TauCSDetC'
+   description   'critical shear stress for sedimentation DetC'
+   unit          '(N/m2)'
+   value          0.1000E+00
+end-parameter
+parameter 'Salinity'
+   description   'Salinity'
+   unit          '(g/kg)'
+   value          0.3500E+02
+end-parameter
+parameter 'PPMaxDiat'
+   description   'maximum production rate Diatoms'
+   unit          '(1/d)'
+   value          0.2300E+01
+end-parameter
+parameter 'Mort0Diat'
+   description   'mortality rate constant Diatoms'
+   unit          '(1/d)'
+   value          0.2500E+00
+end-parameter
+parameter 'MortSDiat'
+   description   'mortality rate Diatoms at high salinity'
+   unit          '(1/d)'
+   value          0.2500E+00
+end-parameter
+parameter 'SalM1Diat'
+   description   'lower salinity limit for mortality Diatoms'
+   unit          '(g/kg)'
+   value         -0.9990E+03
+end-parameter
+parameter 'SalM2Diat'
+   description   'upper salinity limit for mortality Diatoms'
+   unit          '(g/kg)'
+   value         -0.9990E+03
+end-parameter
+parameter 'Si'
+   description   'dissolved Silica (Si)'
+   unit          '(gSi/m3)'
+   value          0.0000E+00
+end-parameter
+parameter 'VSedDiat'
+   description   'sedimentation velocity Diatoms'
+   unit          '(m/d)'
+   value          0.1000E+00
+end-parameter
+parameter 'TaucSDiat'
+   description   'critical shear stress for sedimentation Diatoms'
+   unit          '(N/m2)'
+   value          0.1000E+00
+end-parameter
+parameter 'PPMaxGreen'
+   description   'maximum production rate Greens'
+   unit          '(1/d)'
+   value          0.1800E+01
+end-parameter
+parameter 'Mort0Green'
+   description   'mortality rate constant Greens'
+   unit          '(1/d)'
+   value          0.3500E+00
+end-parameter
+parameter 'MortSGreen'
+   description   'mortality rate Greens at high salinity'
+   unit          '(1/d)'
+   value          0.3500E+00
+end-parameter
+parameter 'SalM1Green'
+   description   'lower salinity limit for mortality Greens'
+   unit          '(g/kg)'
+   value         -0.9990E+03
+end-parameter
+parameter 'SalM2Green'
+   description   'upper salinity limit for mortality Greens'
+   unit          '(g/kg)'
+   value         -0.9990E+03
+end-parameter
+parameter 'VSedGreen'
+   description   'sedimentation velocity Greens'
+   unit          '(m/d)'
+   value          0.0000E+00
+end-parameter
+parameter 'TaucSGreen'
+   description   'critical shear stress for sedimentation Greens'
+   unit          '(N/m2)'
+   value          0.1000E+00
+end-parameter
+parameter 'fDfwastNH4'
+   description   'diffusive waste flux NH4'
+   unit          '(gN/m2/d)'
+   value         -0.9990E+03
+end-parameter
+parameter 'sw1DfwaNH4'
+   description   'load option 0=all, 1=top, 2=bottom segments'
+   unit          '(-)'
+   value          0.1000E+01
+end-parameter
+parameter 'fDfwastNO3'
+   description   'diffusive waste flux NO3'
+   unit          '(gN/m2/d)'
+   value         -0.9990E+03
+end-parameter
+parameter 'sw1DfwaNO3'
+   description   'load option 0=all, 1=top, 2=bottom segments'
+   unit          '(-)'
+   value          0.1000E+01
+end-parameter
+parameter 'VSedOOC'
+   description   'sedimentation velocity OOC'
+   unit          '(m/d)'
+   value          0.1000E+00
+end-parameter
+parameter 'TaucSOOC'
+   description   'critical shear stress for sedimentation OOC'
+   unit          '(N/m2)'
+   value          0.1000E+00
+end-parameter
+parameter 'fDfwastPO4'
+   description   'diffusive waste flux PO4'
+   unit          '(gP/m2/d)'
+   value         -0.9990E+03
+end-parameter
+parameter 'sw1DfwaPO4'
+   description   'load option 0=all, 1=top, 2=bottom segments'
+   unit          '(-)'
+   value          0.1000E+01
+end-parameter
+parameter 'VWind'
+   description   'wind speed'
+   unit          '(m/s)'
+   value          0.3000E+01
+end-parameter
+parameter 'SWRear'
+   description   'switch for oxygen reaeration formulation (1-12)'
+   unit          '(-)'
+   value          0.1000E+01
+end-parameter
+parameter 'PrfNH4diat'
+   description   'ammonium preferency over nitrate Diatoms'
+   unit          '(-)'
+   value          0.1000E+01
+end-parameter
+parameter 'KMDINdiat'
+   description   'half-saturation value N Diatoms'
+   unit          '(gN/m3)'
+   value          0.5000E-02
+end-parameter
+parameter 'KMPdiat'
+   description   'half-saturation value P Diatoms'
+   unit          '(gP/m3)'
+   value          0.1000E-02
+end-parameter
+parameter 'KMSidiat'
+   description   'half-saturation value Si Diatoms'
+   unit          '(gSi/m3)'
+   value          0.2700E-01
+end-parameter
+parameter 'TcGroDiat'
+   description   'temperature coeff. for growth processes Diatoms'
+   unit          '(-)'
+   value          0.1040E+01
+end-parameter
+parameter 'TcDecDiat'
+   description   'temp. coeff. for respiration and mortality Diatoms'
+   unit          '(-)'
+   value          0.1070E+01
+end-parameter
+parameter 'PrfNH4gree'
+   description   'ammonium preferency over nitrate Greens'
+   unit          '(-)'
+   value          0.1000E+01
+end-parameter
+parameter 'KMDINgreen'
+   description   'half-saturation value N Greens'
+   unit          '(gN/m3)'
+   value          0.5000E-02
+end-parameter
+parameter 'KMPgreen'
+   description   'half-saturation value P Greens'
+   unit          '(gP/m3)'
+   value          0.1000E-02
+end-parameter
+parameter 'Latitude'
+   description   'latitude of study area'
+   unit          '(degrees)'
+   value          0.5210E+02
+end-parameter
+parameter 'RadSurf'
+   description   'irradiation at the water surface'
+   unit          '(W/m2)'
+   value         -0.9990E+03
+end-parameter
+parameter 'ExtVlBak'
+   description   'background extinction visible light'
+   unit          '(1/m)'
+   value          0.8000E-01
+end-parameter
+parameter 'ExtVlGreen'
+   description   'VL specific extinction coefficient Greens'
+   unit          '(m2/gC)'
+   value          0.2200E+00
+end-parameter
+parameter 'ExtVlDiat'
+   description   'VL specific extinction coefficient Diatoms'
+   unit          '(m2/gC)'
+   value          0.2200E+00
+end-parameter
+output 'VSedDiat'
+   description   'sedimentation velocity Diatoms'
+end-output
+output 'PSedDiat'
+   description   'sedimentation probability <0-1> Diatoms'
+end-output
+output 'fSedDiat'
+   description   'sedimentation flux Diatoms'
+end-output
+output 'fDfwastPO4'
+   description   'diffusive waste flux PO4'
+end-output
+active-processes
+   name  'WM_DetC' 'Mineralisation detritus carbon'
+   name  'NutRel_Alg' 'Release (nutrients/detritus) by of mortality algae'
+   name  'SedDetC' 'Sedimentation detritus carbon'
+   name  'WM_DetN' 'Mineralisation detritus nitrogen'
+   name  'WM_DetP' 'Mineralisation detritus phosphorus'
+   name  'GroMrt_Dia' 'Nett primary production and mortality diatoms'
+   name  'PPrLim' 'Limitation (numerical) on primary production'
+   name  'SedDiat' 'Sedimentation diatoms'
+   name  'GroMrt_Gre' 'Nett primary production and mortality green algae'
+   name  'Sed_Gre' 'Sedimentation green algae'
+   name  'NutUpt_Alg' 'Uptake of nutrients by growth of algae'
+   name  'Nitrif_NH4' 'Nitrification of ammonium'
+   name  'WM_OON' 'Mineralisation other organic nitrogen'
+   name  'Dfwast_NH4' 'Diffusive waste NH4'
+   name  'DenWat_NO3' 'Denitrification in water column'
+   name  'Dfwast_NO3' 'Diffusive waste NO3'
+   name  'WM_OOC' 'Mineralisation other organic carbon'
+   name  'Sed_OOC' 'Sedimentation other organic carbon'
+   name  'SedN_OOC' 'Sedim. nutrients in OOC'
+   name  'WM_OOP' 'Mineralisation other organic phosphorus'
+   name  'Dfwast_PO4' 'Diffusive waste PO4'
+   name  'RearOXY' 'Reaeration of oxygen'
+   name  'DynDepth' 'dynamic calculation of the depth'
+   name  'DL_Diat' 'Daylength function for diatoms'
+   name  'NLDiat' 'Nutrient limiation function for diatoms'
+   name  'Rad_Diat' 'Light efficiency function diatoms'
+   name  'TF_Diat' 'Temperature functions for diatoms'
+   name  'DL_Green' 'Daylength function for green algae'
+   name  'NLGreen' 'Nutrient limiation function for green algae'
+   name  'Rad_Green' 'Light efficiency function green algae'
+   name  'TF_Green' 'Temperature functions for green algae'
+   name  'Veloc' 'horizontal flow velocity'
+   name  'SaturOXY' 'Saturation concentration oxygen'
+   name  'TotDepth' 'depth water column'
+   name  'Daylength' 'Daylength calculation'
+   name  'CalcRad' 'Radiation at segment upper and lower boundaries'
+   name  'Extinc_VL' 'Extinction of visible-light (370-680nm)'
+   name  'ExtPhDVL' 'Extinction of visual light by algae (Dynamo)'
+end-active-processes

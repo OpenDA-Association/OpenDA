@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<State xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.wldelft.nl/fews/PI" xsi:schemaLocation="http://www.wldelft.nl/fews/PI http://fews.wldelft.nl/schemas/version1.0/pi-schemas/pi_state.xsd" version="1.2">
+    <stateId>Default</stateId>
+    <timeZone>0.0</timeZone>
+    <dateTime date="2012-01-31" time="15:00:00"/>
+    <stateLoc type="file">
+        <readLocation>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\input_state\inputState.zip</readLocation>
+        <writeLocation>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\input_state\outputState.zip</writeLocation>
+    </stateLoc>
+</State>

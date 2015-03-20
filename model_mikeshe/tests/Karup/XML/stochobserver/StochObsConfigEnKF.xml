@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd" xmlns:openda="http://www.openda.org" xmlns:xsi="http://www.w3.org/20.2/XMLSchema-instance">
+
+	<timeSeries status="use" standardDeviation="0.2">
+		head1.txt
+	</timeSeries>
+
+		<timeSeries status="use" standardDeviation="0.2">
+		head2.txt
+	</timeSeries>
+
+		<timeSeries status="use" standardDeviation="0.2">
+		head3.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head4.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head5.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head6.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head7.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head8.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head9.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head10.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head11.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head12.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head13.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head14.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head15.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head16.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head17.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head18.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head19.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head20.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head21.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head22.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head23.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head24.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head25.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head26.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head27.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head28.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head29.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head30.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head31.txt
+	</timeSeries>
+	
+			<timeSeries status="use" standardDeviation="0.2">
+		head32.txt
+	</timeSeries>
+	
+				<timeSeries status="use" standardDeviation="0.2">
+		head33.txt
+	</timeSeries>
+	
+				<timeSeries status="use" standardDeviation="0.2">
+		head34.txt
+	</timeSeries>
+	
+				<timeSeries status="use" standardDeviation="0.2">
+		head35.txt
+	</timeSeries>
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+	
+	</noosObserver>

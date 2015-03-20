@@ -1,0 +1,4 @@
+delwaq1_lib.dll
+         Deltares, PART Version 3.75.0.30555, Oct 10 2013, 14:49:43
+         Deltares, NEFIS Version 5.07.00.3019, Oct 10 2013, 14:49:49
+         Deltares, DELWAQ1 Version 5.01.03.3019, Oct 10 2013, 14:49:45

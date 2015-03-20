@@ -1,0 +1,57 @@
+Revision 676: 09-Oct-2008
+* Parallel model builder is extended such that within a worker-worker model it is possible to denote
+  a process that does not take part in the worker-worker model. This is e.g. for models that have some additional 
+  process for monitoring stuff.
+* A bug is fixed in the rrsqrt filter. Due to this bug, the observations were assimilated of one timestep in the future
+* The default setting for the rrsqrt filter is to NOT propagate the noise parameters
+* Several small bugs are fixed in the coffee filter implementation
+* The treevector is extended with a function to find the number of subtrees. 
+* The rrsqrt_kalmina filter is extended in order to be able to handle the noise of concatinated models. This works fine
+  now for parallel models but done in a more elegant way, but this will need some additional work on this filter
+* several small bugs are solved in the parallel model builder.
+
+
+Revision 36: 19-Oct-2006
+* Added function CTA_Tree_CountHandlesStr (Similar to CTA_Tree_CountHandles
+  but path may be provided directly as a string
+* The oscill model is upgraded. Model parameters can now be set through the
+* COSTA interface and XML-input-file (by Julius H. Sumihar)
+
+Revision 35: 19-Oct-2006
+* The separate library containing the Fortran interfacing is removed. All
+  interfacing is now moved to the code of the components in the
+  src-directory.
+* The SP-Modelbuilder is now a part of the COSTA-core library and will be
+  automatically initialized.
+24/02/2007
+*CTA_FILE_STDOUT
+ New constante CTA_FILE_STDOUT: Handle to a COSTA file that writes to standard out.
+
+*Interface change of export functions
+ The interface of the export functions is changed. The "ndata" argument is removed for all export functions. The configuration (argument ursdata) is
+ no longer an array but a single COSTA handle.
+ This change resulted in changes on the interface of
+ Vector
+ State-vector
+ Matrix
+ Stoch observer
+
+*Fortran interface of tree-methods
+ The Fortran interface of the tree functions was different for Fortran than
+ for C. This is changed. As a rusult the following method names have been
+ changed:
+ cta_tree_add_handle       -> cta_tree_addhandle
+ cta_tree_count_handles    -> cta_tree_counthandles
+ cta_tree_count_handlesstr -> cta_tree_counthandlesstr
+ cta_tree_get_handlestr    -> cta_tree_gethandlestr
+ cta_tree_get_valuestr     -> cta_tree_getvaluestr
+ cta_tree_get_handle       -> cta_tree_gethandle
+ cta_tree_get_value        -> cta_tree_getvalue
+ cta_tree_count_items      -> cta_tree_countitems
+ cta_tree_get_item         -> cta_tree_getitem
+ cta_tree_get_itemvalue    -> cta_tree_getitemvalue
+
+*Change te model interface
+ The function CTA_Model_Axpy is renamed to CTA_Model_AxpyState. This is
+ more conform to the other methods of the model interface.
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/outerLoopSimplex.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/costFunction.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/additionalStopCriteria.xsd"/>
+	<xs:complexType name="SimplexConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+				<xs:annotation>
+					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stopCriteria" type="openda:additionalStopCriteria" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Additional optional stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SimplexConfig" type="openda:SimplexConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Simplex algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

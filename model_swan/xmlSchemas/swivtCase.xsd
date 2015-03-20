@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="root">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="swivt">
+					<xs:complexType>
+						<xs:choice>
+							<xs:sequence>
+								<xs:element name="case" type="case"/>
+							</xs:sequence>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="case">
+		<xs:sequence>
+			<xs:element name="code" type="xs:string"/>
+			<xs:element name="settings" type="settings"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="settings">
+		<xs:sequence>
+			<xs:element name="physics" type="physics"/>
+			<xs:element name="numerics" type="numerics"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="physics">
+		<xs:sequence>
+			<xs:element name="user" type="settingsForSwan"/>
+			<xs:element name="SWAN4041A" type="settingsForSwan" minOccurs="0"/>
+			<xs:element name="SWAN4051A" type="settingsForSwan" minOccurs="0"/>
+			<xs:element name="SWAN4072A" type="settingsForSwan" minOccurs="0"/>
+			<xs:element name="SWAN4072ABCDE" type="settingsForSwan"  minOccurs="0"/>
+			<xs:element name="SWAN4081" type="settingsForSwan" minOccurs="0"/>
+			<xs:element name="ONR" type="settingsForSwan"  minOccurs="0"/>
+			<xs:element name="HR2006" type="settingsForSwan" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="numerics">
+		<xs:sequence>
+			<xs:element name="user">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NUM" type="NUM"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NUM">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="dabs" type="xs:string"/>
+			<xs:element name="drel" type="xs:string"/>
+			<xs:element name="curvat" type="xs:string"/>
+			<xs:element name="npnts" type="xs:string"/>
+			<xs:element name="mxitst" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="settingsForSwan">
+		<xs:sequence>
+			<xs:element name="GEN3" type="GEN3"/>
+			<xs:element name="WCAP" type="WCAP"/>
+			<xs:element name="WCAP1" type="WCAP1" minOccurs="0"/>
+			<xs:element name="QUAD" type="QUAD"/>
+			<xs:element name="FRIC" type="FRIC"/>
+			<xs:element name="BREA" type="BREA"/>
+			<xs:element name="BREA1" type="BREA1" minOccurs="0"/>
+			<xs:element name="TRIAD" type="TRIAD"/>
+			<xs:element name="NUMREFRL" type="NUMREFRL" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GEN3">
+		<xs:sequence>
+			<xs:element name="model" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WCAP">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="cds2" type="xs:string"/>
+			<xs:element name="stpm" type="xs:string"/>
+			<xs:element name="powst" type="xs:integer"/>
+			<xs:element name="delta" type="xs:integer"/>
+			<xs:element name="powk" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WCAP1">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="cds2" type="xs:string"/>
+			<xs:element name="br" type="xs:string"/>
+			<xs:element name="p0" type="xs:string"/>
+			<xs:element name="powst" type="xs:string"/>
+			<xs:element name="powk" type="xs:string"/>
+			<xs:element name="nldisp" type="xs:integer"/>
+			<xs:element name="cds3" type="xs:string"/>
+			<xs:element name="powfsh" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="QUAD">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="iquad" type="xs:integer"/>
+			<xs:element name="lambda" type="xs:string"/>
+			<xs:element name="Cnl4" type="xs:integer"/>
+			<xs:element name="ursell" type="xs:integer"/>
+			<xs:element name="qb" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FRIC">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="cfjon" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BREA">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="alpha" type="xs:integer"/>
+			<xs:element name="gamma" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BREA1">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="alpha" type="xs:string"/>
+			<xs:element name="pown" type="xs:string"/>
+			<xs:element name="bref" type="xs:string"/>
+			<xs:element name="shfac" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TRIAD">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="trfac" type="xs:string"/>
+			<xs:element name="cutfr" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NUMREFRL">
+		<xs:sequence>
+			<xs:element name="selected" type="textbool"/>
+			<xs:element name="frlim" type="xs:string"/>
+			<xs:element name="power" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="textbool">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="off"/>
+			<xs:enumeration value="on"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

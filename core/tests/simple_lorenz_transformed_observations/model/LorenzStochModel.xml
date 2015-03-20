@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lorenzConfig>
+     <!-- <simulationTimespan>[0.0,0.05,30.0]</simulationTimespan> -->
+     <simulationTimespan>[0.0,0.05,10.0]</simulationTimespan>
+     <!-- parameters for the model -->
+     <parameters names="sigma,rho,beta">[10.0,28.0,2.6666667]</parameters>
+     <!-- uncertain parameters (for calibration) and their uncertainty -->
+     <parameterUncertainty names="sigma,rho,beta">[1.0,2.0,0.3]</parameterUncertainty>
+     <!-- system noise for each state variable with bias and std per time-unit -->
+     <systemNoise>{[0.0,0.0,0.0],[0.01,0.01,0.01]}</systemNoise>
+     <!-- state vactor at initial time -->
+     <initialState>[1.508870, -1.531271, 25.46091]</initialState>
+     <!-- std of uncertainty of state vector at initial time -->
+     <initialStateUncertainty>[0.5,0.5,0.5]</initialStateUncertainty>
+</lorenzConfig> 

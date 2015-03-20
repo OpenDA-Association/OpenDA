@@ -1,0 +1,4 @@
+EFDC initialized
+get_reference_period(  0.0417)
+get_reference_period(  0.0417)
+get_reference_period(  0.0417)

@@ -1,0 +1,127 @@
+<project name="model_example_fortran" default="help" basedir=".">
+<!--
+================================================================================
+  Ant build file for openda java code
+  install ant and type
+  "ant help"
+  for a list of options
+================================================================================
+-->
+    <target name="help">
+        <echo>
+            ant help                     --> print this help
+            ant build_for_stand_alone    --> build model_example_fortran if checked out stand alone
+            ant clean    --> remove output
+        </echo>
+    </target>
+
+<property file="module.properties"/>
+<property name="resourcesdir_for_stand_alone" value="../bin"/>
+
+    <target name="debug">
+        <echo>
+		module=${module}
+		srcdir=${srcdir}
+		jarname=${jarname}
+		builddir=${builddir}
+		bindir=${bindir}
+	</echo>
+    </target>
+
+<!--
+===========================================================================
+	Compilation
+===========================================================================
+-->
+    <target name="build_for_stand_alone" depends="jarfile-for-stand-alone">
+    </target>
+
+    <target name="jarfile-for-stand-alone" depends="moduleclasses-for-stand-alone,manifest">
+	    <jar jarfile="${modulelibdir}/${jarname}" manifest="MANIFEST.MF">
+  		<fileset dir="${builddir}">
+                	<include name="**/*.class"/>
+                	<include name="**/*.gif"/>
+        	</fileset>
+    	</jar>
+    </target>
+
+    <target name="moduleclasses-for-stand-alone" depends="init,copy-module-resources-for-stand-alone">
+	    <javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
+		<classpath>
+			<fileset dir="${resourcesdir}">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${resourcesdir_for_stand_alone}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</classpath>
+        </javac>
+		<!-- Include the test classes, so that the module can be tested from the command line -->
+	    <javac srcdir="${testdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
+		<classpath>
+			<fileset dir="${resourcesdir}">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${resourcesdir_for_stand_alone}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</classpath>
+        </javac>
+    </target>
+
+<!--
+===========================================================================
+	Tools: init, clean, etc.
+===========================================================================
+-->
+    <target name="init" depends="clean">
+        <tstamp/>
+	<mkdir dir="${builddir}"/>
+	<mkdir dir="${modulebindir}"/>
+	<mkdir dir="${modulelibdir}"/>
+	<mkdir dir="${javadocdir}"/>
+    </target>
+
+    <target name="clean">
+	<delete dir="${modulebindir}"/>
+	<delete dir="${modulelibdir}"/>
+	<delete dir="${builddir}"/>
+	<delete dir="${javadocdir}"/>
+	<delete file="MANIFEST.MF"/>
+    </target>
+
+    <target name="manifest">
+        <tstamp/>
+        <manifest file="MANIFEST.MF">
+		<attribute name="Specification-Title" value="${projectname}"/>
+            <attribute name="Specification-Version" value="${version} ${TODAY}"/>
+	    <attribute name="Specification-Vendor" value="${vendor}"/>
+	    <attribute name="Implementation-Title" value="${projectname}"/>
+            <attribute name="Implementation-Version" value="${version} ${TODAY}"/>
+	    <attribute name="Implementation-Vendor" value="${vendor}"/>
+        </manifest>
+    </target>
+
+    <target name="copy-module-resources-for-stand-alone">
+	<!-- copy resources for running/building the f90dll example alone -->
+	<copy todir="${modulebindir}" flatten="yes">
+		<fileset dir="${external}">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+	<chmod dir="${modulebindir}" perm="ugo+rx"
+		includes="**/*.sh"/>
+	<copy todir="${modulelibdir}" flatten="yes">
+		<!-- copy resources -->
+		<fileset dir="${resourcesdir}">
+                <include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${resourcesdir_for_stand_alone}">
+                <include name="**/*.jar"/>
+		</fileset>
+	</copy>
+    </target>
+
+
+</project>
+

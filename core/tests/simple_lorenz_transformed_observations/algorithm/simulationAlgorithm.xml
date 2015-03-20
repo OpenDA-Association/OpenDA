@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SimulationConfig>
+    <instance repeat="1" stochParameter="false" stochForcing="true" />
+    <writeObservations filename="../generated_observations.csv" addNoise="true" format="csv" />
+</SimulationConfig>
+

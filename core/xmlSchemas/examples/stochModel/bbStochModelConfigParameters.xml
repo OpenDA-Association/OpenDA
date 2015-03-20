@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+    <modelFactory className="...myModelFactoryClass..." workingDirectory=".">
+        <arg>d3dModelFactoryConfig_win32_ifort.xml</arg>
+    </modelFactory>
+    <uncertaintyModule className="...UncertaintyEngine..." workingDirectory=".">
+        <arg>uncertainties.xml</arg>
+    </uncertaintyModule>
+    <vectorSpecification>
+        <parameters>
+            <!-- Add the "parameter drawer" for the parameters for the previous GLUE analysis (on catchment 1) -->
+            <uncertaintyModule className="org.openda.algorithms.GLUEParameterDrawerFactory" workingDirectory=".">
+                <configFile>previous-run.csv</configFile>
+                <exchangeItems>
+                    <exchangeItem id="fc">
+                        <modelExchangeItem id="Ahr.fc"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </uncertaintyModule>
+			<!-- Add the uncertainty specification for the parameters for the next GLUE analysis (on catchment 2) -->
+            <regularisationConstant>
+                <uncertainItem uncertainItemId="Catchment2.param1" transformation="identity"/>
+                <vector id="Catchment2.param1"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <uncertainItem uncertainItemId="Catchment2.param2" transformation="identity"/>
+                <vector id="Catchment2.param2"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <uncertainItem uncertainItemId="Catchment2.param3" transformation="identity"/>
+                <vector id="Catchment2.param3"/>
+            </regularisationConstant>
+        </parameters>
+        <predictor>
+            <vector id="Observation_A" sourceVectorId="Catchment2.someResultVariable"/>
+            <vector id="Observation_B" sourceVectorId="Catchment2.someResultVariable"/>
+        </predictor>
+    </vectorSpecification>
+</blackBoxStochModel>

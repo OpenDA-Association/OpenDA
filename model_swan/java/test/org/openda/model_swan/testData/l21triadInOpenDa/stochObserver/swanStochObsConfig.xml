@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaStochObserver.xsd">
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>stochObsUncertainties.xml</arg>
+	</uncertaintyModule>
+	<ioObject workingDirectory="." className="org.openda.model_swan.SwanResults">
+		<fileName>observ/meas_l021triad001_loc.tab</fileName>
+	</ioObject>
+</ioObjectStochObserver>
+

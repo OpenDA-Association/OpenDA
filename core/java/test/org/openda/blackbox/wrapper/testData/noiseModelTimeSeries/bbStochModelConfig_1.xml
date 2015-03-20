@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                            xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelFactory className="org.openda.blackbox.wrapper.DummyModelFactoryForTestingNoise" workingDirectory=".">
+        <arg>timeHorizon=201008241200,201008241210,...,201008242350</arg>
+        <arg>tsEI=model-item-not-used-1</arg>
+        <arg>tsEI=model-item-A-1-a</arg>
+        <arg>tsEI=model-item-A-1-b</arg>
+        <arg>tsEI=model-item-not-used-2</arg>
+        <arg>tsEI=model-item-A-2</arg>
+        <arg>tsEI=model-item-not-used-3</arg>
+    </modelFactory>
+
+    <vectorSpecification>
+        <state>
+            <noiseModel id="noiseModel_A"
+                        className="org.openda.noiseModels.TimeSeriesNoiseModelFactory"
+                                workingDirectory=".">
+                <configFile>noiseModel_A.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="noise-item-A">
+                        <modelExchangeItem id="model-item-A-1-a"/>
+                        <modelExchangeItem id="model-item-A-1-b"/>
+                    </exchangeItem>
+                    <exchangeItem id="noise-item-B">
+                        <modelExchangeItem id="model-item-A-2"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            <vector id="state"/>
+        </state>
+    </vectorSpecification>
+
+</blackBoxStochModel>

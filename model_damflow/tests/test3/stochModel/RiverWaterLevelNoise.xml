@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+<!--
+	<simulationTimespan timeFormat="dateTimeString">201001020000,201001020100,...,201001100000</simulationTimespan>
+-->	
+	<timeSeries id="riverwlNoise" location="location0" quantity="riverwaterlevel" standardDeviation="1.0" timeCorrelationScale="6.0" timeCorrelationScaleUnit="hours" />"
+</mapsNoiseModelConfig>

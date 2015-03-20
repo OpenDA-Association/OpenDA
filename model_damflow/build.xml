@@ -1,0 +1,156 @@
+<project name="openDA" default="help" basedir=".">
+<!--
+================================================================================
+  Ant build file for openda java code
+  install ant and type
+  "ant help"
+  for a list of options
+================================================================================
+-->
+    <target name="help">
+        <echo>
+            ant help                     --> print this help
+            ant build                    --> compile, make jar and copy resources
+            ant build-test               --> compile test classes
+            ant clean                    --> remove output
+            ant javadoc                  --> build javadoc
+        </echo>
+    </target>
+
+<property file="module.properties"/>
+
+    <target name="debug">
+        <echo>
+		module=${module}
+		srcdir=${srcdir}
+		jarname=${jarname}
+		builddir=${builddir}
+		bindir=${bindir}
+	</echo>
+    </target>
+
+<!--
+===========================================================================
+	Compilation
+===========================================================================
+-->
+    <target name="build" depends="jarfile">
+    </target>
+
+    <target name="build-test" depends="init">
+        <javac srcdir="${testdir}" destdir="${buildtestdir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" includeantruntime="false">
+            <classpath>
+                <fileset dir="${projectdir}">
+                    <include name="${projectlib}/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>    
+    </target>
+
+    <target name="jarfile" depends="moduleclasses,manifest">
+	    <jar jarfile="${modulelibdir}/${jarname}" manifest="MANIFEST.MF">
+  		<fileset dir="${builddir}">
+                	<include name="**/*.class"/>
+                	<include name="**/*.gif"/>
+        	</fileset>
+    	</jar>
+    </target>
+
+    <target name="moduleclasses" depends="init,copy-module-resources">
+	    <javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" includeantruntime="false">
+		<classpath>
+			<fileset dir=".">
+				<include name="${modulelibdir}/*.jar"/>
+			</fileset>
+			<fileset dir="${projectdir}">
+				<include name="${projectlib}/*.jar"/>
+			</fileset>
+		</classpath>
+        </javac>
+    </target>
+
+    <target name="javadoc" depends="init">
+	    <javadoc destdir="${javadocdir}/${module}" classpath="${projectfiles}" verbose="yes" windowtitle="openDA.Module: ${module} Version: ${version}" source="${source}">
+		<fileset dir="${srcdir}">
+                	<include name="**/*.java"/>
+		</fileset>
+        </javadoc>
+    </target>
+
+
+<!--
+===========================================================================
+	Tools: init, clean, etc.
+===========================================================================
+-->
+    <target name="init" depends="clean">
+        <tstamp/>
+	<mkdir dir="${builddir}"/>
+   	<mkdir dir="${buildtestdir}"/>
+	<mkdir dir="${modulebindir}"/>
+	<mkdir dir="${modulelibdir}"/>
+	<mkdir dir="${javadocdir}"/>
+    </target>
+
+    <target name="clean">
+	<delete dir="${modulebindir}"/>
+	<delete dir="${modulelibdir}"/>
+	<delete dir="${builddir}"/>
+   	<delete dir="${buildtestdir}"/>
+	<delete dir="${javadocdir}"/>
+	<delete file="MANIFEST.MF"/>
+    </target>
+
+	<taskdef resource="org/tigris/subversion/svnant/svnantlib.xml">
+		<classpath>
+			<fileset dir="../core/java/resources/svnant-1.3.0/lib" includes="**/*.jar" />
+		</classpath>
+	</taskdef>
+
+    <target name="svn-revision" >
+		<svn>
+			<status path="." revisionProperty="svn.revision" />
+		</svn>
+		<echo>Subversion Revision: ${svn.revision}</echo>
+	</target>
+
+    <target name="manifest" depends="svn-revision">
+        <tstamp/>
+        <manifest file="MANIFEST.MF">
+	    <attribute name="Title" value="${projectname}"/>
+            <attribute name="Version" value="${version}.${svn.revision} ${TODAY}"/>
+	    <attribute name="Vendor" value="${vendor}"/>
+        </manifest>
+    </target>
+
+    <target name="copy-module-resources">
+	<!-- copy openda resources and additional binaries -->
+	<copy todir="${modulelibdir}" flatten="yes">
+		<!-- copy resources -->
+		<fileset dir="${resourcesdir}">
+                <include name="**/*.jar"/>
+                <include name="**/*.dll"/>
+                <include name="**/*.DLL"/>
+                <include name="**/*.so"/>
+                <include name="**/*.lic"/>
+                <include name="**/*.LIC"/>
+                <include name="**/*.xsd"/>
+                <include name="**/*.exe"/>
+                <include name="**/*.EXE"/>
+                <include name="**/*.bat"/>
+                <include name="**/*.BAT"/>
+                <include name="**/*.test"/>
+            </fileset>
+        </copy>
+	<copy todir="${modulebindir}" flatten="yes">
+		<fileset dir="${external}">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+	<chmod dir="${modulebindir}" perm="ugo+rx"
+		includes="**/*.sh"/>
+    </target>
+
+
+</project>
+

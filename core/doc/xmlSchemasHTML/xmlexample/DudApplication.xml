@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xsi:schemaLocation="http://www.openda.org openDaApplication.xsd" xmlns:openda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<stochObserver className="org.openda.exchange.timeseries.NoosTimeSeriesStochObserver">
+		<workingDirectory>./stochobserver</workingDirectory>
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>waquaStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Dud">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>dudAlgorithm.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>dud_results.m</configFile>
+	</resultWriter>
+</openDaApplication>

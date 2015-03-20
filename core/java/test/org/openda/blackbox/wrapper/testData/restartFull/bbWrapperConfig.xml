@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+		<alias key="instanceDir"/>
+		<alias key="templateDir"/>
+		<alias key="binDir"/>
+		<alias key="noosfile_1"/>
+		<alias key="noosfile_2"/>
+		<alias key="noosfile_3"/>
+        <alias key="statefile"/>
+	</aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+		<!-- computation actions -->
+		<!-- define actions relative to config dir. -->
+		<computeActions>
+			<action workingDirectory="%instanceDir%" windowsExe="./%binDir%/compute.bat" linuxExe="./%binDir%/compute.sh">
+			<arg>%instanceDir%%instanceNumber%</arg>
+			</action>
+		</computeActions>
+
+		<!-- actions to finalize (e.g. cleanup) an instance -->
+		<finalizeActions/>
+
+	</run>
+
+	<inputOutput>
+
+		<!-- noos time series 1 -->
+
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosfile_1%</file>
+			<id>noosfile_1</id>
+		</ioObject>
+
+		<!-- noos time series 2 -->
+
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosfile_2%</file>
+			<id>noosfile_2</id>
+		</ioObject>
+
+		<!-- noos time series 3 -->
+
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosfile_3%</file>
+			<id>noosfile_3</id>
+		</ioObject>
+
+		<!-- simple state file -->
+
+		<ioObject className="org.openda.blackbox.wrapper.DummyState">
+			<file>%statefile%</file>
+			<id>statefile</id>
+		</ioObject>
+
+	</inputOutput>
+
+</blackBoxWrapperConfig>

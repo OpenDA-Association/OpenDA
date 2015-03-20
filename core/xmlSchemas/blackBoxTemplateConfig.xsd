@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="TemplateKeyDefinitionXML">
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The id to be referred to by the alias.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name to be associated with the aliased key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="targetType" type="xs:string" use="optional" default="org.openda.blackbox.config.KeyTypeString">
+			<xs:annotation>
+				<xs:documentation>The data type to which the alias key will be replaced (default String).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keyPrefix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the prefix for the alias key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keySuffix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the suffix for the alias key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TemplateKeyDefinitionsXML">
+		<xs:sequence>
+			<xs:element name="key" type="openda:TemplateKeyDefinitionXML" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Create list of keys, stating their id, name and targetType. The id is to be used in the file definition section. The name is the "KEY" - string to be placed in the template file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="defaultKeyPrefix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the default prefix for the alias keys.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="defaultKeySuffix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the default suffix for the alias keys.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TemplateFileXML">
+		<xs:sequence>
+			<xs:element name="keys" type="openda:TemplateFileKeysXML">
+				<xs:annotation>
+					<xs:documentation>Specify list of keys to be replaced in the templateFile.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="templateFile" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Name of the template file.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="targetFile" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Name of the target file.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TemplateFileKeysXML">
+		<xs:sequence>
+			<xs:element name="keyId" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the id of the key defined in the keyDefinitions section.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxTemplateFilesXML">
+		<xs:sequence>
+			<xs:element name="file" type="openda:TemplateFileXML" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the file definitions where KEY strings need to be replaced by values. Specify template file and target file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxTemplateConfigXML">
+		<xs:sequence>
+			<xs:element name="keyDefinitions" type="openda:TemplateKeyDefinitionsXML">
+				<xs:annotation>
+					<xs:documentation>Define keys which need to be substituted by valiues in the template files. Specify the prefix and suffix for the keys.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="files" type="openda:BlackBoxTemplateFilesXML">
+				<xs:annotation>
+					<xs:documentation>Specify the files with template definitions.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="valuesFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the file containing the KEY and VALUE pairs.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="blackBoxTemplateConfig" type="openda:BlackBoxTemplateConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of a black box template object. It contains of three main components: key definitions, file definitions, and valueFile definition.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="BlackBoxTemplateKeyTypesXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Date"/>
+			<xs:enumeration value="Double"/>
+			<xs:enumeration value="Integer"/>
+			<xs:enumeration value="String"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

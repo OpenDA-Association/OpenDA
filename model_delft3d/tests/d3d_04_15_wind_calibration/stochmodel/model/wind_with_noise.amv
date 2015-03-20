@@ -1,0 +1,23 @@
+### START OF HEADER
+### This file is created by Deltares
+### Additional commments
+FileVersion      =    1.03                                               # Version of meteo input file, to check if the newest file format is used
+filetype         =    meteo_on_curvilinear_grid                          # Type of meteo input file: meteo_on_flow_grid, meteo_on_curvilinear_grid, meteo_on_equidistant_grid or meteo_on_spiderweb_grid
+NODATA_value     =    -9999.0                                            # Value used for undefined or missing data
+grid_file        =    meteo.grd                                          # Separate (curvi-linear) grid on which the wind can be specified
+first_data_value =    grid_llcorner                                      # Options: grid_llcorner, grid_ulcorner, grid_lrcorner or grid_urcorner
+data_row         =    grid_row                                           # Options: grid_row or grid_col, for switching rows and colums
+n_quantity       =    1                                                  # Number of quantities prescribed in the file
+quantity1        =    y_wind                                             # Name of quantity1
+unit1            =    m s-1                                              # Unit of quantity1
+### END OF HEADER
+TIME = 0 hours since 2006-01-01 00:00:00 +00:00                       # Fixed format: time unit since date time time difference (time zone) 
+0.8 1.8 3 4 5
+5.8 7 8 9 10
+10.8 12 13 14 15
+16 17 18 19 20
+TIME = 2000 hours since 2006-01-01 00:00:00 +00:00                       # Fixed format: time unit since date time time difference (time zone) 
+0.8 1.8 3 4 5
+5.8 7 8 9 10
+10.8 12 13 14 15
+16 17 18 19 20

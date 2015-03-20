@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="likelihoodFunctionGLUE.xsd"/>
+	<xs:complexType name="GLUEConfigXML">
+		<xs:sequence>
+			<xs:element name="likelihoodFunction" type="openda:LikelihoodFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Specify the likelihood function to use for evaluation of each model run.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ensembleSize" type="xs:integer" default="20" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the ensemble size / number of model runs.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GLUEConfig" type="openda:GLUEConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of GLUE algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

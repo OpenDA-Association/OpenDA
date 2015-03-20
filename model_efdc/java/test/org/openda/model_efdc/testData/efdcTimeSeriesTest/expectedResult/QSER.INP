@@ -1,0 +1,33 @@
+C **  qctl.inp file, in free format across line, repeats nqctl times  DDD  2011-03-21 ¿ÀÈÄ 3:53:35
+C **    
+C **  ISTYP MQSER(NS) TCQSER(NS) TAQSER(NS) RMULADJ(NS) ADDADJ(NS) 
+C **    
+C **  IF ISTYP.EQ.1 THEN READ DEPTH WEIGHTS AND SINGLE VALUE OF QSER 
+C **                       
+C **  WKQ(K),K=1,KC 
+C **   
+C **  TQSER(M,NS)    QSER(M,1,NS)          '(MQSER(NS) PAIRS FOR NS=1,NQSER SERIES) 
+C **    
+C **  ELSE READ A VALUE OF QSER FOR EACH LAYER 
+C **    
+C **  TQSER(M,NS)    (QSER(M,K,NS),K=1,KC) '(MQSER(NS) PAIRS) 
+C **   
+ 0 5 86400.0 0.0 1.0 0.0 0 ' *** QSER_1
+  1.0 1.0
+  1.5 -2.2
+  2.0 3.33
+  2.5 -4.444
+  3.0 5.5555
+ 0 5 86400.0 0.0 1.0 0.0 0 ' *** QSER_2
+  1.0 8888.8888
+  1.5 99999.9999
+  2.0 1.0E9
+  2.5 1.000000000000001E7
+  3.0 1.0E-10
+ 0 2 86400.0 0.0 1.0 0.0 0 ' *** QSER_3
+  1.0 1.0
+  3.0 5.0
+ 0 3 86400.0 0.0 1.0 0.0 0 ' *** QSER_4
+  1.0 1.1574E-5
+  2.0 0.0
+  3.0 2.8E-6

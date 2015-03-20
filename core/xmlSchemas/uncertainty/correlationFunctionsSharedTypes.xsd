@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<!-- Probability Density Functions Shared Schema Definition (Copyright 2005 WL | Delft Hydraulics) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dh="http://www.wldelft.nl" targetNamespace="http://www.wldelft.nl" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<complexType name="CorrelationCircularComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationExponentialComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationGaussianComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationLinearComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationNuggetComplexType">
+		<attribute name="sill" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationPentasphericalComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationPeriodicComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+	<complexType name="CorrelationSphericalComplexType">
+		<attribute name="sill" type="float" use="required"/>
+		<attribute name="range" type="float" use="required"/>
+	</complexType>
+</schema>

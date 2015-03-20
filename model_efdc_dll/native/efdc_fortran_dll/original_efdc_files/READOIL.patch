@@ -1,0 +1,24 @@
+Index: READOIL.for
+===================================================================
+--- READOIL.for	(revision 3544)
++++ READOIL.for	(working copy)
+@@ -8,7 +8,7 @@
+ 
+       INTEGER(4):: NP1, I, J, K
+       REAL(RKD) :: XC(4), YC(4), AREA2, RANVAL
+-      REAL(8), EXTERNAL::DRAND
++      !REAL(8), EXTERNAL::RAND
+   
+       REAL(RKD) :: OILAREAP
+       REAL(RKD) :: ACCRAD
+@@ -68,7 +68,7 @@
+        KLA = 0  
+        HPLA= 0
+ 
+-      IF(LA_PRAN>0) RANVAL = DRAND(1)
++      IF(LA_PRAN>0) RANVAL = RAND(1)
+        XLA(1)=XTX
+        YLA(1)=YTX
+       IF (DEPOP==1) THEN
+
+

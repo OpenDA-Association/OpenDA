@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<LinkableComponent Type="DHI.OpenMI.MikeShe.MSheWMLinkableComponent" Assembly="DHI.OpenMI.MikeShe, Version=13.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf" xmlns="http://www.OpenMI.org/LinkableComponent.xsd">
+  <Arguments>
+    <Argument Key="SetupPath" ReadOnly="true" Value="c:\OpenDA_MI\Test_5x5\Distributed\6" />
+    <Argument Key="SetupFileName" ReadOnly="true" Value="Test_5x5.she" />
+   </Arguments>
+</LinkableComponent>

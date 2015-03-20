@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stochObserver>	   
+   <stochObserver id="oscillator1" className="org.openda.utils.CsvStochObserver">
+      <workingDirectory>stochobserver1</workingDirectory>
+      <configFile>observations_oscillator_generated_for_calibration.csv</configFile>
+   </stochObserver>
+   <stochObserver id="oscillator2" className="org.openda.utils.CsvStochObserver">
+      <workingDirectory>stochobserver2</workingDirectory>
+      <configFile>observations_oscillator_generated_for_calibration.csv</configFile>
+   </stochObserver>
+</stochObserver>
+	

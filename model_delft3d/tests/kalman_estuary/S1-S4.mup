@@ -1,0 +1,275 @@
+# Muppet v3.21 - File created by Stef Hummel - 2010-12-03 16:47:16 
+ 
+Dataset   "water level - S1 - Truth" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   Parameter   "water level" 
+   Station     "S1" 
+EndDataset 
+ 
+Dataset   "water level - S2 - Truth" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   Parameter   "water level" 
+   Station     "S2" 
+EndDataset 
+ 
+Dataset   "water level - S3 - Truth" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   Parameter   "water level" 
+   Station     "S3" 
+EndDataset 
+ 
+Dataset   "water level - S4 - Truth" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   Parameter   "water level" 
+   Station     "S4" 
+EndDataset 
+ 
+Dataset   "water level - S1 - First Guess" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\firstGuess\trih-Est1D-firstGuess.dat" 
+   Parameter   "water level" 
+   Station     "S1" 
+EndDataset 
+ 
+Dataset   "water level - S2 - First Guess" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\firstGuess\trih-Est1D-firstGuess.dat" 
+   Parameter   "water level" 
+   Station     "S2" 
+EndDataset 
+ 
+Dataset   "water level - S3 - First Guess" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\firstGuess\trih-Est1D-firstGuess.dat" 
+   Parameter   "water level" 
+   Station     "S3" 
+EndDataset 
+ 
+Dataset   "water level - S4 - First Guess" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\firstGuess\trih-Est1D-firstGuess.dat" 
+   Parameter   "water level" 
+   Station     "S4" 
+EndDataset 
+ 
+Dataset   "water level - S1 - Filtered" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\stochModel\model\trih-Est1D.dat" 
+   Parameter   "water level" 
+   Station     "S1" 
+EndDataset 
+ 
+Dataset   "water level - S2 - Filtered" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\stochModel\model\trih-Est1D.dat" 
+   Parameter   "water level" 
+   Station     "S2" 
+EndDataset 
+ 
+Dataset   "water level - S3 - Filtered" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\stochModel\model\trih-Est1D.dat" 
+   Parameter   "water level" 
+   Station     "S3" 
+EndDataset 
+ 
+Dataset   "water level - S4 - Filtered" 
+   FileType    "Delft3D" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\stochModel\model\trih-Est1D.dat" 
+   Parameter   "water level" 
+   Station     "S4" 
+EndDataset 
+ 
+Figure "1" 
+ 
+   Orientation l 
+   PaperSize   29.7 21 
+   Frame       none 
+ 
+   Subplot   "S1" 
+ 
+      Position   3   3  10   6 
+      PlotType   "timeseries" 
+      TMin       20100624 000000
+      TMax       20100625 000000
+      TTick      0 0 0 4 0 0
+      DateFormat "HH"
+      YAxis      -1.6 1.5
+      YTick      0.3875
+      DecimalsY  1
+      XGrid      no
+      YGrid      no
+      Title      "S1"
+      Legend     yes
+      LegendPosition  "NorthEast"
+      LegendBox  yes
+ 
+      Dataset "water level - S1 - Truth"
+         PlotRoutine   "PlotLine"
+         LineColor     "black" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S1 - Truth" 
+      EndDataset
+ 
+      Dataset "water level - S1 - First Guess"
+         PlotRoutine   "PlotLine"
+         LineColor     "red" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S1 - First Guess" 
+      EndDataset
+ 
+      Dataset "water level - S1 - Filtered"
+         PlotRoutine   "PlotLine"
+         LineColor     "blue" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S1 - Filtered" 
+      EndDataset
+ 
+   EndSubplot 
+ 
+   Subplot   "S2" 
+ 
+      Position   15   3  10   6 
+      PlotType   "timeseries" 
+      TMin       20100624 000000
+      TMax       20100625 000000
+      TTick      0 0 0 4 0 0
+      DateFormat "HH"
+      YAxis      -1.6 1.7
+      YTick      0.4125
+      DecimalsY  1
+      XGrid      no
+      YGrid      no
+      Title      "S2"
+      Legend     yes
+      LegendPosition  "NorthEast"
+      LegendBox  yes
+ 
+      Dataset "water level - S2 - Truth"
+         PlotRoutine   "PlotLine"
+         LineColor     "black" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S2 - Truth" 
+      EndDataset
+ 
+      Dataset "water level - S2 - First Guess"
+         PlotRoutine   "PlotLine"
+         LineColor     "red" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S2 - First Guess" 
+      EndDataset
+ 
+      Dataset "water level - S2 - Filtered"
+         PlotRoutine   "PlotLine"
+         LineColor     "blue" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S2 - Filtered" 
+      EndDataset
+ 
+   EndSubplot 
+ 
+   Subplot   "S3" 
+ 
+      Position   3  11  10   6 
+      PlotType   "timeseries" 
+      TMin       20100624 000000
+      TMax       20100625 000000
+      TTick      0 0 0 4 0 0
+      DateFormat "HH"
+      YAxis      -1.7 1.9
+      YTick      0.45
+      DecimalsY  -1
+      XGrid      no
+      YGrid      no
+      Title      "S3"
+      Legend     yes
+      LegendPosition  "NorthEast"
+      LegendBox  yes
+ 
+      Dataset "water level - S3 - Truth"
+         PlotRoutine   "PlotLine"
+         LineColor     "black" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S3 - Truth" 
+      EndDataset
+ 
+      Dataset "water level - S3 - First Guess"
+         PlotRoutine   "PlotLine"
+         LineColor     "red" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S3 - First Guess" 
+      EndDataset
+ 
+      Dataset "water level - S3 - Filtered"
+         PlotRoutine   "PlotLine"
+         LineColor     "blue" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S3 - Filtered" 
+      EndDataset
+ 
+   EndSubplot 
+ 
+   Subplot   "S4" 
+ 
+      Position   15  11  10   6 
+      PlotType   "timeseries" 
+      TMin       20100624 000000
+      TMax       20100625 000000
+      TTick      0 0 0 4 0 0
+      DateFormat "HH"
+      YAxis      -1.8 2
+      YTick      0.475
+      DecimalsY  1
+      XGrid      no
+      YGrid      no
+      Title      "S4"
+      Legend     yes
+      LegendPosition  "NorthEast"
+      LegendBox  yes
+ 
+      Dataset "water level - S4 - Truth"
+         PlotRoutine   "PlotLine"
+         LineColor     "black" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S4 - Truth" 
+      EndDataset
+ 
+      Dataset "water level - S4 - First Guess"
+         PlotRoutine   "PlotLine"
+         LineColor     "red" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S4 - First Guess" 
+      EndDataset
+ 
+      Dataset "water level - S4 - Filtered"
+         PlotRoutine   "PlotLine"
+         LineColor     "blue" 
+         LineStyle     "-" 
+         Marker        "none" 
+         LegendText    "water level - S4 - Filtered" 
+      EndDataset
+ 
+   EndSubplot 
+ 
+   OutputFile "S1-S4.png" 
+   Format     "png" 
+   Resolution 300 
+   Renderer   "zbuffer" 
+ 
+EndFigure 
+ 

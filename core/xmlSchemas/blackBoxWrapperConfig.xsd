@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="AliasDefinitionXML">
+		<xs:sequence>
+			<xs:element name="listValue" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This type of alias can only be used for BBAction arguments, where the argument must be specified	by means of only naming the 'list value' alias. If the listValue element is present, it overrules the value attribute, indicating that the actual value is in fact a list of string arguments instead of one argument.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="key" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The alias key name</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Actual value referred to by the alias key</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keyPrefix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the prefix for the alias key</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keySuffix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the suffix for the alias key</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AliasDefinitionsXML">
+		<xs:sequence>
+			<xs:element name="alias" type="openda:AliasDefinitionXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Create list of aliases containing keys and (optional) the corresponding values</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="defaultKeyPrefix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the default prefix for the alias keys</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="defaultKeySuffix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the default suffix for the alias keys</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ActionXML">
+		<xs:sequence>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify list of  input arguments of the model executable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="checkOutput" type="openda:CheckOutputXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify list of output files to be checked after the command execution has finished</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="checkReturnStatus" type="openda:CheckReturnStatusXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify return value after the command execution has finished</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="exe" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name and path of the executable file</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="windowsExe" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name and path of the executable file for Windows operating system</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="linuxExe" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name and path of the executable file for Linux operating system</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="macExe" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Name and path of the executable file for Mac operating system</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="className" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The openda:class name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="workingDirectory" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Directory where executable file is run. This is usually the instance dir.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="actualWorkingDirectory" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Subdirectory of instance dir, where executable file has to be run. To be specified as relative path to instance dir.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ignoreStatus" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>Flag for ignoring the status of the previous action step (ignoreStatus=true). Not yet implemented.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CheckOutputXML">
+		<xs:attribute name="file" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Name of output file</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="expect" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Expected content of the output file when the action is successful</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CheckReturnStatusXML">
+		<xs:attribute name="expect" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Expected return value when the action is successful</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CloneFileXML">
+		<xs:attribute name="templateFile" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CloneDirXML">
+		<xs:attribute name="templateDir" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ActionsXML">
+		<xs:sequence>
+			<xs:element name="action" type="openda:ActionXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the consecutive actions  by model executables or classes to run, arguments to supply and fail/success checks to perform</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InitialActionsDirCloneXML">
+		<xs:sequence>
+			<xs:element name="action" type="openda:ActionXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the consecutive actions  by model executables or classes to run, arguments to supply and fail/success checks to perform</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="templateDir" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Directory where the template files are stored</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="instanceDir" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The working directory where the template directory will be copied into</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="InitialActionsFileCloneXML">
+		<xs:sequence>
+			<xs:element name="action" type="openda:ActionXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the consecutive actions  by model executables or classes to run, arguments to supply and fail/success checks to perform</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="templateFile" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Name of the template file.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="instanceFile" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>File name of the instance of the template file.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IoObjectXML">
+		<xs:sequence>
+			<xs:element name="file" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of input/output file</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="id" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Identity of the input/output object</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Input argument for the corresponding openda:class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The openda:class name of the input/output object</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="InputOutputXML">
+		<xs:sequence>
+			<xs:element name="ioObject" type="openda:IoObjectXML" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the input/output object</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxWrapperRunXML">
+		<xs:sequence>
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>Configure method for model initialization. Select one of the three options.</xs:documentation>
+				</xs:annotation>
+				<xs:element name="initializeActions" type="openda:ActionsXML">
+					<xs:annotation>
+						<xs:documentation>Generic method of initialization actions</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="initializeActionsUsingDirClone" type="openda:InitialActionsDirCloneXML">
+					<xs:annotation>
+						<xs:documentation>The directory, in which the model executables and input files are located, will be copied to a new working directory. The actions are executed in this new working directory.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="initializeActionsUsingFileClone" type="openda:InitialActionsFileCloneXML">
+					<xs:annotation>
+						<xs:documentation>Some of the model files (template) will be copied to the working directory where the actions will be executed</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="computeActions" type="openda:ActionsXML">
+				<xs:annotation>
+					<xs:documentation>Configure the method for model computation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalComputeActions" type="openda:ActionsXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Configure the actions that should be performed after all other computation actions (used for instance when the actual computation is sent to a queue. The additional computation action can then be used to start a script that checks the status of the queue.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="finalizeActions" type="openda:ActionsXML">
+				<xs:annotation>
+					<xs:documentation>Configure the method for model finalization</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxWrapperConfigXML">
+		<xs:sequence>
+			<xs:element name="aliasDefinitions" type="openda:AliasDefinitionsXML">
+				<xs:annotation>
+					<xs:documentation>Define aliases for specific model information (directory names, file names etc.). Specify the prefix and suffix for the alias keys.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="run" type="openda:BlackBoxWrapperRunXML">
+				<xs:annotation>
+					<xs:documentation>Specify the initialize, compute and finalize actions that direct the model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inputOutput" type="openda:InputOutputXML">
+				<xs:annotation>
+					<xs:documentation>Specify the list of input/output objects</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="blackBoxWrapperConfig" type="openda:BlackBoxWrapperConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of a black box model wrapper. It contains of three main components: alias definitions, model run, and input-output definition.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

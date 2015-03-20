@@ -1,0 +1,43 @@
+    RRSQRT
+#
+      GENeral
+          USE_ZEROS
+         NMODE = 20
+         TIKAL = 99999.
+#        CHAR_DIST = 0.0
+#
+      WATerlevel_stations
+         S: ( STATion=' Wick'              , STANDard_dev=0.05 )
+         S: ( STATion=' North Shields'     , STANDard_dev=0.05 )
+         S: ( STATion=' Lowestoft'         , STANDard_dev=0.05 )
+         S: ( STATion=' Sheerness'         , STANDard_dev=0.05 )
+         S: ( STATion=' Dover'             , STANDard_dev=0.05 )
+         S: ( STATion=' Vlissingen'        , STANDard_dev=0.05 )
+         S: ( STATion=' Hoek van Holland'  , STANDard_dev=0.05 )
+         S: ( STATion=' Den Helder'        , STANDard_dev=0.05 )
+#
+      WIND_noise
+         STATistics
+            STANdard_dev      = 0.00069
+            TIME_correlation  = 0.9
+            CHAR_Psi          = 24.
+         GRID
+            M_Increment=28,   M_Start=1
+            N_Increment=28,   N_Start=1
+#
+      BOUNDaries
+        STATistics
+           STANdard_dev      = 0.01
+            SMOOTH            = 20.0
+           TIME_correlation  = 0.9
+        LINE_sections
+           S: SECtion=( 1, 5)
+           S: SECtion=( 6,13)
+           S: SECtion=(14,19)
+           S: SECtion=(20,23)
+#
+      COMPute_steady_state
+        TFKALman = 4400
+        TIKALman = 1440
+        TLKALman = 7200
+

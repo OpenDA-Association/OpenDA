@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxStochModelConfig.xsd">
+
+    <modelFactory className="org.openda.dotnet.ModelFactoryN2J" workingDirectory=".">
+        <arg>OpenDA.DotNet.OpenMI.Bridge.ModelFactory</arg>
+    </modelFactory>
+
+    <vectorSpecification>
+        <state>
+            <vector id="state"/>
+        </state>
+    </vectorSpecification>
+
+</blackBoxStochModel>

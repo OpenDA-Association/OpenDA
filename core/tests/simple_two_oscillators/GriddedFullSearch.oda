@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.GroupStochObserver">
+		<workingDirectory>.</workingDirectory>
+		<configFile>groupStochObserverForCalibration.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile>groupStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.GriddedFullSearch">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>griddedFullSearchAlgorithm.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>gfs_results.m</configFile>
+	</resultWriter>
+</openDaApplication>

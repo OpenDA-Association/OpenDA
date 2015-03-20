@@ -1,0 +1,8 @@
+<threadConfig>
+   <maxThreads>4</maxThreads>
+   <stochModelFactory className="org.openda.models.rmiModel.RmiClientStochModelFactory">
+      <workingDirectory>./model</workingDirectory>
+      <configFile>RmiStochModel4.xml</configFile>
+      </stochModelFactory>
+</threadConfig>
+

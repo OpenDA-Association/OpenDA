@@ -1,0 +1,112 @@
+\documentclass[12pt,twoside]{report}
+\usepackage{./styles/openda}
+
+\title{OpenDA User Documentation}
+% if the title is too large for display in the pageheader, you may specify:
+%\shorttitle{OpenDA documentation}
+% to put a subtitle on the frontpage:
+%\subtitle{demonstration of style file options (subtitle)}
+\date{}
+\reportnumber{}
+\revision{}
+
+\begin{document}
+
+\pagestyle{odareport}
+\maketitle
+
+% alternatively, prestart numbering with i, ii, etc.:
+% \renewcommand{\thepage}{\roman{page}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (Management) summary
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \chapter*{Summary}
+% \addcontentsline{toc}{chapter}{Summary}
+
+% \input{summary.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% change depth of table of contents
+% \setcounter{tocdepth}{1}
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% reset page numbering:
+\renewcommand{\thepage}{\arabic{page}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% finished
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% possible to compile as an include file, text to be reviewed
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{./getting_started/getting_started.tex}
+
+\input{./blackbox/BBintroduction.tex}
+
+\input{./toymodels/toymodels.tex}
+\input{./algorithms/calibration.tex}
+\input{./algorithms/data_assimilation.tex}
+\input{./noise/noise_models.tex}
+
+\input{./blackbox/bb_cookbook.tex}
+\input{./model_wrapper/model_wrapper.tex}
+
+\input{./do_not_forget.tex}
+
+\input{./usedoc/resultwriter.tex}
+\input{./parallel/rmi_thread/rmi_thread.tex}
+\input{./performance/performance.tex}
+\input{./bias_modelling/bias_modelling.tex}
+
+\input{./native_model_builders/m06005.tex}
+\input{./native_model_builders/m06006.tex}
+\input{./parallel/native_costa/m08001.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TO DO:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% index.html
+% docustart.html
+% getting_started.html
+% ./usedoc/*.html
+%
+% developers_corner.html
+% ./doxygen/html/index.html
+%./xmlSchemasHTML/index.html
+% ./programmersGuide/buildingLinux.htm
+% ./programmersGuide/buildingMac.html
+% ./programmersGuide/buildingOpenda.html
+% ./programmersGuide/buildingWindows.html
+% ./programmersGuide/installationWithinEclipse.html
+%
+%\input{./time_advancement/time_advancement.tex}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% References
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addcontentsline{toc}{chapter}{References}
+\renewcommand{\bibname}{References}
+\bibliographystyle{apalike}
+\bibliography{./styles/openda}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendices
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\appendix
+\input{./GFDL/fdl-1.3.tex}
+
+\end{document}

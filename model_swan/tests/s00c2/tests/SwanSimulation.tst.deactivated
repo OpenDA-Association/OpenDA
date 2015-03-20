@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testConfig>
+        <id>/home/verlaanm/deltares/src/openda_20110523/public/model_swan/tests/s00c2/./SwanSimulation.oda</id>
+        <odaFile>../SwanSimulation.oda</odaFile>
+        <checks>
+                <check>
+                        <file removeBeforeTest="yes" >../SwanSimulation.log</file>
+                        <find>===DONE===</find>
+                </check>
+                <check>
+                        <file removeBeforeTest="yes" >../simulation_results.m</file>
+			<!-- last line looks like
+			pred_a_central{24}	=[0.96841, 1.09968, 1.05504, 1.11558, 0.96841, 1.09968];
+			-->
+			<regexp>pred_a_central\{24\}(.*)0.9(.*)1.0(.*)</regexp>
+                </check>
+        </checks>
+</testConfig>

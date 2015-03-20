@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<costa xmlns:xi="http://www.w3.org/2001/XInclude">
+  <CTA_MODELCLASS id="modelclass" implements="pollute2d" name="CTA_MODBUILD_SP" />
+</costa>

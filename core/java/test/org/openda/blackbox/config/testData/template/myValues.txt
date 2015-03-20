@@ -1,0 +1,8 @@
+itdate=02 DEC 2011
+starttime=1440
+endtime=14400
+barfile=BARRIERS.inc
+multiline=SPACE_VAR_WIND  \
+  WCONVERSIONFACTOR = 1.0 \
+  WUNIT = 'm/s'  \
+  FINISH = YES

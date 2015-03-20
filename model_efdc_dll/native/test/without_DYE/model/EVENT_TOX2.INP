@@ -1,0 +1,16 @@
+2012 01 01 09 00			! MODEL START			: ISYEAR,ISMONTH,ISDATE,ISHR,ISMN 		[year,month,day,hour,minute] 
+2012 01 20 09 00            ! MODEL STOP			: ISYEAR,ISMONTH,ISDATE,ISHR,ISMN		[year,month,day,hour,minute] 
+2                           ! TIME STEP				:[sec]
+131-52-2                    ! TOXIC ID				: CAS NO.-TOXIC, 444#-OI           
+235875.9     329956.4       ! ACCIDENT LOC.			: X   Y	TM coordinate (referred in LXLY.INP)                         
+2012 01 10 09 00            ! ACCIDENT TIME			: IEVYEAR,IEVMONTH,IEVDATE,IEVHR,IEVMN [year,month,day,hour,minute]                                  
+10                          ! spill duration		: [MIN]
+500000.                     ! spill material mass	: [G]              
+10.                         ! CHLA					: CHLA CONC. [UG/L] FOR TOXIC CALCULATION             
+5.                          ! TEM					: WATER TEMPERATURE [DEGREE C] FOR TOXIC CALCULATION  
+5.                          ! SSC					: Suspended Solid Conc.  [MG/L] FOR TOXIC CALCULATION       
+0.1                         ! DOC					: DOC CONC.  [MG/L] FOR TOXIC CALCULATION 
+100.                        ! I						: IRADIATION [LY/DAY]  
+5.                          ! WSPD					: WINDSPEED  [M/S]     
+73                          ! simulation number 
+

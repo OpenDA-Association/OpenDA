@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+		<alias key="SWANDIR"/>
+		<alias key="templateDir"/>
+		<alias key="instanceDir"/>
+		<alias key="inputFile"/>
+		<alias key="hotFile"/>
+		<alias key="windFile"/>
+		<alias key="openboundaryFile"/>
+        <alias key="outFile"/>
+	</aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+		<computeActions>
+            <action workingDirectory="%instanceDir%" windowsExe="%SWANDIR%/bin/win32/copyInput.bat" linuxExe="%SWANDIR%/bin/linux/copyInput.sh" macExe="%SWANDIR%/bin/darwin/copyInput.sh"/>
+			<action workingDirectory="%instanceDir%" windowsExe="%SWANDIR%/bin/win32/swan_4081_del_w32_i11_omp.exe" linuxExe="%SWANDIR%/bin/linux/swan_4072ABCDE_del_l32_i11_ser.exe" macExe="%SWANDIR%/bin/darwin/swan_4072ABCDE_del_l32_i11_ser.exe"/>
+		</computeActions>
+
+		<finalizeActions/>
+
+	</run>
+
+
+<inputOutput>
+
+    <ioObject className="org.openda.model_swan.SwanOpenBoundaryTPARFile">
+		<file>%openboundaryFile%</file>
+		<id>openBoundary</id>
+		<arg></arg>
+    </ioObject>
+
+    <!--
+    <ioObject className="org.openda.model_swan.SwanField2DXYFile">
+		<file>%windFile%</file>
+		<id>windFile</id>
+		 <arg>%inputFile%</arg>
+         <arg>WIND</arg>
+    </ioObject>
+    -->
+
+    <ioObject className="org.openda.model_swan.SwanStateFile">
+            <file>%hotFile%</file>
+            <id>hotFile</id>
+            <arg></arg>
+    </ioObject>
+
+    <ioObject className="org.openda.model_swan.SwanResultsTimeDependent">
+            <file>%outFile%</file>
+            <id>outFile</id>
+            <arg></arg>
+    </ioObject>
+
+    <ioObject className="org.openda.model_swan.SwanTimeInfo">
+            <file>%inputFile%</file>
+            <id>timeInfo</id>
+            <arg></arg>
+    </ioObject>
+
+</inputOutput>
+
+</blackBoxWrapperConfig>

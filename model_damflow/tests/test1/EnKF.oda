@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>damflowStochObsConfig.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>damflowStochModelConfig.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>enkfAlgorithm.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_results.m</configFile>
+		<selection>
+		    <doLog algorithm="true" model="false" observer="false" nonConfiguredItems="false"/>
+		    <resultItem id="x_a" doLog="true"/>
+		    <resultItem id="pred_f" doLog="true"/>
+		    <resultItem id="pred_a_linear" doLog="true"/>
+		    <resultItem id="obs" doLog="true"/>
+		</selection>
+	</resultWriter>
+</openDaApplication>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="SwanCalibStochModelConfigXML">
+		<xs:sequence>
+			<xs:element name="model" type="openda:SwanCalibComponentXML">
+				<xs:annotation>
+					<xs:documentation>Specify the information about the model wrapper class name, working directory containing all model related files to be cloned, and input arguments to the model wrapper object.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="uncertaintyModule" type="openda:SwanCalibComponentXML">
+				<xs:annotation>
+					<xs:documentation>Specify the openda:class of the uncertainty module, its working directory containing configuration file, and argument to the openda:class (configuration file name).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SwanCalibComponentXML">
+		<xs:sequence>
+			<xs:element name="workingDir" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Working directory relative to the configuration directory.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="argument" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Input argument to the respective openda:class.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Openda:class name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="swanCalibStochModelConfig" type="openda:SwanCalibStochModelConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for a stochastic model.  It contains information on which directory to be cloned and pointers to other configuration files.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

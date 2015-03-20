@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequentialEnsembleSimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/sequentialEnsembleSimulation.xsd">
+	<analysisTimes type="fromObservationTimes" continueWithoutObservation="true"/>
+    <mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
+    <ensembleSize>2</ensembleSize>
+    <ensembleModel stochParameter="false" stochForcing="false" stochInit="false"/>
+</SequentialEnsembleSimulationConfig>

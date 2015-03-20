@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="text/css"> .textElement { font-family: Arial; font-size: 10pt; color: #800000; }</style>
+		<style type="text/css"> .textAttr { font-family: Arial; font-size: 10pt; color: #FF0000; }</style>
+		<style type="text/css"> .textContents { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .textOperator { font-family: Arial; font-size: 10pt; color: #0000FF; }</style>
+		<style type="text/css"> .schemaHeader { font-family: Arial; font-size: 11pt; color: #000000; }</style>
+		<style type="text/css"> .schemaHeader2 { font-family: Arial; font-size: 11pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .elementHeader { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .elementHeader2 { font-family: Arial; font-size: 10pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaName { font-family: Arial; font-size: 8pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaSubTitle { font-family: Arial; font-size: 8pt; color: #808080; }</style>
+		<style type="text/css"> .schemaSubData { font-family: Arial; font-size: 8pt; color: #000000; }</style>
+		<style type="text/css"> pre { margin-top: 0; margin-bottom: 0; }</style>
+		<style type="text/css"> .table-no-border { line-height: 100%; }</style>
+		<style type="text/css"> .table-border { line-height: 100%; border-style: solid; border-left-color: #ECE9D8; border-top-color: #ECE9D8; border-right-color: #ACA899; border-bottom-color: #ACA899; }</style>
+		<style type="text/css"> .table-borderwithoutoutline { line-height: 100%; border-style: solid; border-width: 0px; }</style>
+		<style type="text/css"> .td-border { border-style: solid; border-width: 1px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-left { border-style: solid; border-left-width: 0px; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-left { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-right { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-right { border-style: solid; border-right-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-right { border-style: solid; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-bottom { border-style: solid; border-bottom-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-left { border-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-color: #ECE9D8; border-top-color: #ACA899; }</style>
+		<style type="text/css"> .td-border-left-single { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-right-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+	<title>About 3D-Var algorithm</title>
+	</head>
+	<body>
+	<h1>3D-Var</h1>
+	<p>3D-Var is a sequential method that updates the state of a model at each assimilation time, by minimizing a cost function like </p>
+	J(x) = (x- x_b)' inv(B) (x - x_b) + (y - H x)' inv(R) (y - H x)
+	<p>	where:
+	<ul> x is the updated estimate of the model state, </ul>
+	<ul> x_b is the prior estimate based on previous forecast, </ul>
+	<ul> B is the forecast error covariance, </ul>
+	<ul> y are the observations, </ul>
+	<ul> R is the observational error covariance, </ul>
+	</p>
+
+	<p> To use the 3D-Var algorithm with a model, user needs to provide also the adjoint of the model. In OpenDA, the minimization of the cost function is performed by using either the (L)BFGS algorithm or a conjugate gradient algorithm like the Fletcher-Reeves, Polak-Ribieri or Steepest Descent. </p>
+	</body>
+</html>

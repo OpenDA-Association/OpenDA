@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>installation</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Brief introduction to OpenDA native components</h1>
+
+<hr>
+
+<h2>Current practice in data assimilation software</h2>
+
+Data assimilation techniques are widely used in various modeling areas like
+meteorology, oceanography and chemistry. Most implementations of data
+assimilation methods however are custom implementations specially designed
+for a particular model. This is probably a consequence of the lack of
+generic data assimilation software packages and tools. An advantage of
+these custom implementations is that they are in general very
+computationally efficient. But the use of custom implementations has a
+number of significant disadvantages:
+<ul>
+<li>Costs - The development and implementation of these methods is very
+time consuming and therefore expensive.
+<li>Incompatibility - It is very hard to reuse these data assimilation
+methods and tools for other models than they were originally developed for.
+</ul>
+
+<h2>How OpenDA improves the situation</h2>
+
+The OpenDA project tries to enhance the reuse of data assimilation software
+by offering a modular framework for data assimilation, containing methods
+and tools that can be easily applied for general applications. OpenDA is set
+up in order to be as computationally efficient as possible, without losing
+its generic properties. The aim is that applications developed with OpenDA
+have a comparable computational performance as custom implementations.
+<p>
+OpenDA offers support for both users and developers of data assimilation
+methods. For users it allows models to be quickly connected to the OpenDA
+framework and hence to all the methods that are available in OpenDA. For
+developers, OpenDA offers efficient basic building blocks that save a lot of
+programming work and at the same time makes the new data assimilation
+software directly connectable to all OpenDA compliant models. 
+
+<h2>How OpenDA works</h2>
+
+OpenDA provides a generic framework for data assimilation. It is aimed both
+at model programmers that want to use data assimilation methods and at
+developers of data assimilation methods.
+
+<p><h3>OpenDA for model programmers</h3>
+For model programmers, OpenDA provides a rich set of data assimilation
+methods. To use them, you have to make your model OpenDA compliant. Once
+your model can interact with OpenDA, all the OpenDA methods are at your
+disposal.
+
+<p><h3>What is OpenDA compliant?</h3>
+Making your model OpenDA compliant involves implementing a number of
+routines that are going to be called from the data assimilation methods.
+The set of routines that you must implement is called the stochastic model
+interface. There are other interfaces as well, each one defining a specific
+entity called a component. You will read more about components in the next
+section.
+
+<p><h3>How OpenDA calls your implementation of the interface routines</h3>
+OpenDA connects your implementations of these methods to their standard
+names. These standard names are used in the implementation of the
+data assimilation methods. There are provisions for working with black-box
+models(i.e. models for which you do not have the source code), but this
+will not be discussed in this document.
+
+<p><h3>Providing your observations</h3>
+Likewise, your observations must be provided in a OpenDA compliant way. For
+the observations there is also a set of routines, called the stochastic
+observer interface. Usually, you will not implement the interface but
+convert your observations to a format that can be handled by the standard
+OpenDA implementation of the stochastic observer component.
+
+<p>
+<h2>OpenDA for developers of data assimilation methods</h2>
+
+For developers of data assimilation methods, OpenDA offers a
+platform for quickly building data assimilation methods that can be used
+from a wide range of models. OpenDA provides various sets of routines that
+can be used as building blocks. Such a set is called a component. You will
+read more about components in the section Components.
+
+<p><h3>Routines to interact with models</h3>
+First of all, OpenDA specifies a set of routines to interact with the model
+to which the data assimilation must be applied. Each OpenDA compliant model
+implements these routines (otherwise it will not be OpenDA compliant). The
+specification of this set of routines is called the stochastic model
+interface.
+
+<p><h3>Routines to interact with observations</h3>
+A second set of routines that is essential for data assimilation methods
+comprises routines to interact with the observations. These include
+routines to retrieve values and routines to retrieve meta-information.
+
+<p><h3>Basic building blocks</h3>
+Finally, there are various sets of basic building blocks (e.g. for handling
+vectors, matrices and time). These interact seamlessly with the other OpenDA
+components to let you construct data assimilation methods with a minimum of
+coding.
+
+</body>
+</html>

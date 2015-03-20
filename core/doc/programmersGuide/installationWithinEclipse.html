@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>installation within the Eclipse IDE</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Installation of Eclipse for Java</h1>
+<hr>
+<ol>
+   <li>Install sun Java version 1.6, 32-bit version for Windows, 32- or 64-bit version for Linux.<br/>
+   Other versions and vendors may work, but your
+   mileage may vary. Note that OpenDA does not yet support 64-bit for Windows, because all binaries for native libraries were compiled as 32-bit.
+   The reason is that the type (32-bit or 64-bit) of the Java virtual machine and the native libraries should match.<br>
+   (<em>Linux:</em> On rpm-based distro's, you can check with the following command if the sun jvm is
+   already installed: <span style="font-style: italic;">rpm -qa |grep -i sun</span> The reply may look like <span
+      style="font-style: italic;">java-1_6_0-sun-1.6.0.u18-0.1.1.i586</span>)</li>
+   <li>(<em>Linux:</em>) Use your package manager to install <!--TDR subversion and--> ant.</li>
+   <li>(<em>Windows:</em>) Eclipse comes with <!--TDR subversion and--> ant.</li>
+   <li>Download Eclipse from <a href="http://www.eclipse.org/downloads/" target="_blank">http://www.eclipse.org/downloads/</a> The remainder of
+   this installation will assume you download the version for &#8220;Java Developers&#8221;. When you prefer another option you may
+   need to install other additional packages.</li>
+   <li>(<em>Linux:</em>) Unpack the zip file with <span style="font-style: italic;">tar -xzf
+   eclipse-java-galileo-SR2-linux-gtk.tar.gz</span> or e.g. with a gui like ark.</li>
+   <li>(<em>Windows:</em>) Extract the content of the zip file (eclipse-java-galileo-SR2-win32.zip)</li>
+   <li>Now start Eclipse with <span style="font-style: italic;">eclipse/eclipse</span>.
+   It may be conventient to create an alias or link to your desktop or something similar here. Eclipse will now start and ask for
+   the location of your workspace. For now you can accept the suggested directory and check the &#8220;Use this as the default and
+   do not ask again&#8221;. You can change this later from the preferences dialog.</li>
+   <li>Next install the Subversion modules for Eclipse. For this we use the built in installation menu, under
+   &#8220;help---&gt;Install software&#8221;. There select work with and copy paste the following url there <a
+      href="http://subclipse.tigris.org/update_1.6.x" target="_blank">http://subclipse.tigris.org/update_1.6.x</a>. A list of additional subverions
+   modules should now appear. Select all listed modules (3) and finish the installation.</li>
+</ol>
+<em>Note</em>: If you want to develop native code (fortran, c or c++) some additional modules are needed, see <a href="#native">below</a>.
+<br/>
+<br/>
+<br/>
+<img style="width: 604px; height: 285px;" alt="eclipse_ask_for_workspace" title="eclipse_ask_for_workspace"
+   src="figs/eclipse_ask_for_workspace.png">
+<br>
+<img style="width: 645px; height: 613px;" alt="eclipse_install_software" title="eclipse_install_software"
+   src="figs/eclipse_install_software.png">
+<br>
+
+<!--TDR
+
+<h2>Checkout from Subversion repository</h2>
+<br>
+There are 2 possible ways of setting up an OpenDA project within Eclipse. By default all files are kept internally within the
+workspace. This makes it difficult to use other tools to access the software. A second option is to keep the code outside the
+workspace and link to this code from your project.
+<br>
+<ol>
+   <li><em></em>Note</li>
+   <li>Check out all public OpenDA sources with: <span style="font-style: italic;">svn co --username &lt;username&gt;
+   https://&lt;path to repository&gt;/public/trunk public</span>. Alternatively you can download the source from <a
+      href="http://www.openda.org">http://www.openda.org</a>. In both cases you should end up with a directory named public. <br>
+   </li>
+   <li>Now add this code to a project in Eclipse. First select &#8220;File---&gt;New Java Project&#8221;. Add a name (label for
+   yourself) for this project. Select &#8220;Create project from existing source&#8221; and &#8220;Browse&#8221; to the
+   &#8220;public&#8221; directory with the OpenDA source. Now click &#8220;Next&#8221;. The next dialog shows the directories with
+   sources and libraries. These values are read from the file named &#8220;.classpath&#8221; in the public directory. Please check
+   that the output directory contains a sensible value, since it may easily get corrupted and then eclipe will destroy the selected
+   directory.</li>
+   <li>Now test the installation with the unit tests. Right-click on the project in the &#8220;Package&#8221; browser and
+   select&nbsp; &#8220;Run as&#8221; &#8220;Junit test&#8221;. A list of tests will appear. Green ticks denote successful tests.<br>
+   </li>
+</ol>
+-->
+<br>
+<br>
+<img style="width: 547px; height: 784px;" alt="eclipse_create_new_project_1" title="eclipse_create_new_project_1"
+   src="figs/eclipse_create_new_project_1.png">
+<br>
+<img style="width: 547px; height: 784px;" alt="eclipse_create_new_project_2" title="eclipse_create_new_project_2"
+   src="figs/eclipse_create_new_project_2.png">
+<br>
+<img style="width: 1026px; height: 771px;" alt="eclipse_junit_tests" title="eclipse_junit_tests" src="figs/eclipse_junit_tests.png">
+<br>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+<h2>Development of native code (Fortran, C or C++)</h2>
+
+If you are going to develop native code on Windows it is recommended to use the Microsoft Visual Studio
+(see <a href="./buildingWindows.html">Building the OpenDA native source code on Windows).</a>
+&nbsp;
+On linux you may want to use Eclipse for native code development. In that case, follow the steps below.
+
+<h2>Installation of Eclipse on Linux for native code development<br>
+</h2>
+<ol>
+   <li>Add the following packages in your package manager: gcc, automake,</li>
+   <li>Install the Intell Fortran compiler (tested with version 11.0) and include the startup script in your startup. This
+   typically mean adding the line <br>
+   &#8220;. /opt/intel/Compiler/11.0/081/bin/ifortvars.sh ia32&#8221; to your .bashrc file.</li>
+   <li>Add some additional modules to Eclipse. Select &#8220;Help ---&gt; Install software&#8221;. Then paste the following url
+   http://download.Eclipse.org/tools/ptp/releases/galileo and select photran.</li>
+   <li>Consult the documentation (See http://wiki.eclipse.org/PTP/photran/documentation/photran5 ) for how to use this module.
+   In short: create a new project from an existing makefile, i.e. &#8220;File ---&gt; New ---&gt; Fortran project&#8221;</li>
+</ol>
+<em>Note</em>: To be able to run native code from java, the native libraries (*.so) must be included in the &quot;load library path&quot;.
+To do this, extend the LD_LIBRARY_PATH before starting Eclipse:<br/
+&#8220;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/public/core/native/bin&#8221;
+<br>
+<br>
+<br>
+<img style="width: 1123px; height: 777px;" alt="eclipse_fortran_edit" title="eclipse_fortran_edit"
+   src="figs/eclipse_fortran_edit.png">
+<br>
+<img style="width: 1123px; height: 777px;" alt="eclipse_fortran_debug" title="eclipse_fortran_debug"
+   src="figs/eclipse_fortran_debug.png">
+<br>
+
+<h2>Installation for Windows</h2>
+<br>
+<b>Yet to be documented</b>. As soon as the source code will be made available, information on how to develop in java on Windows will be put here.
+<br>
+<br>
+
+</body>
+</html>

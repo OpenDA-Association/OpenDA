@@ -1,0 +1,10 @@
+%
+% 
+% Observational data - integral wave parameters
+%
+%     Xp     Yp     Depth    Hsig   RTpeak Tm01   Tm02   Fspr    Tm-4-3  Tm-3-2  Tm-2-1  Tm-10   Tpeq    Tpb     Tpbeq   Tpm
+%     [m]    [m]    [m]      [sec]  [sec]  [sec]  [sec]  [ ]     [sec]   [sec]   [sec]   [sec]   [sec]   [sec]   [sec]   [sec] 
+%
+  196215.  608476.  -999.0   0.563  3.571  3.072  2.865  0.201  40.865  14.231   5.468   3.705   3.866   3.587   4.004   4.004
+  200738.  607693.  -999.0   0.532  3.846  2.958  2.683  0.167  42.053  11.334   5.029   3.663   4.736   3.730   4.518   4.518
+ 

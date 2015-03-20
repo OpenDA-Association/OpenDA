@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="CostFunctionXML">
+		<xs:attribute name="class" use="required">
+			<xs:annotation>
+				<xs:documentation>Set openda:class name of the cost function.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="org.openda.algorithms.SimulationKwadraticCostFunction"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="weakParameterConstraint" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>Specify whether to use weak constraint (weakParameterConstraint=true) or strong constraint (weakParameterConstraint=false).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="biasRemoval">
+			<xs:annotation>
+				<xs:documentation>Specify whether bias should be removed (true) from the cost computation. Default: false.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="tryParallel" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>Specify whether to use parallel or serial run. If tryParallel="true", the models will all be started before the results are evaluated. Otherwise,  if tryParallel="false", then the first run is evaluated before starting the second run.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="factor" type="xs:double" use="optional" default="0.5">
+			<xs:annotation>
+				<xs:documentation>Specify the multiplication factor to use in the cost function.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

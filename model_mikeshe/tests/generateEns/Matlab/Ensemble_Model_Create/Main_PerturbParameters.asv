@@ -1,0 +1,266 @@
+% A simple routine to perturb ensemble parameters. Used for the DA framework
+% 
+%
+clear all
+historicalTSdfs = '';
+EnsembleDir = 'c:\devel_nils\public\model_mikeshe\tests\generateEns\Ensembles\';
+
+numEns = 50;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Techniques for adding noise
+% Options:
+% 1. Random Gausian ( negative values OK )
+% 2. Parater value based on another parameter.  Pa = Pb * fraction.
+
+% SZ
+PerturbationOption{1} = 1;
+PerturbationOption{2} = 2;
+PerturbationOption{3} = 1;
+PerturbationOption{4} = 2;
+PerturbationOption{5} = 1;
+PerturbationOption{6} = 2;
+PerturbationOption{7} = 1;
+PerturbationOption{8} = 2;
+PerturbationOption{9} = 1;
+PerturbationOption{10} = 2;
+PerturbationOption{11} = 1;
+PerturbationOption{12} = 2;
+
+% UZ
+PerturbationOption{13} = 1;
+PerturbationOption{14} = 1;
+PerturbationOption{15} = 1;
+PerturbationOption{16} = 1;
+PerturbationOption{17} = 1;
+
+%Overland
+PerturbationOption{18} = 1;
+
+% PARAMETER INFORMATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 1 % saturated zone --> Meltwater sand
+% FileName
+parameter{1,1} = 'Karup.SHE';
+% Perturbation Mean 
+parameter{1,2} = 0.0005;
+% Perturbation St. Dev
+parameter{1,3} = 1.5e-5;
+% The Search String
+parameter{1,4} = '1.51e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 2% saturated zone --> Meltwater sand
+% FileName
+parameter{2,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{2,2} = 0.1; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{2,3} = 1; 
+% The Search String
+parameter{2,4} = '1.61e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 1 % saturated zone --> Clay
+% FileName
+parameter{3,1} = 'Karup.SHE';
+% Perturbation Mean 
+parameter{3,2} = 8e-007;
+% Perturbation St. Dev
+parameter{3,3} = 3e-8;
+% The Search String
+parameter{3,4} = '1.52e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 2% saturated zone --> Clay
+% FileName
+parameter{4,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{4,2} = 0.1; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{4,3} = 3; 
+% The Search String
+parameter{4,4} = '1.62e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 1 % saturated zone --> Quartz sand
+% FileName
+parameter{5,1} = 'Karup.SHE';
+% Perturbation Mean 
+parameter{5,2} = 0.000899;
+% Perturbation St. Dev
+parameter{5,3} = 3e-5;
+% The Search String
+parameter{5,4} = '1.53e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 2% saturated zone --> Quartz sand
+% FileName
+parameter{6,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{6,2} = 0.1; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{6,3} = 5; 
+% The Search String
+parameter{6,4} = '1.63e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 1 % saturated zone --> Mica sand
+% FileName
+parameter{7,1} = 'Karup.SHE';
+% Perturbation Mean 
+parameter{7,2} = 5e-005;
+% Perturbation St. Dev
+parameter{7,3} = 2e-6;
+% The Search String
+parameter{7,4} = '1.54e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 2% saturated zone --> Mica sand
+% FileName
+parameter{8,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{8,2} = 0.1; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{8,3} = 7; 
+% The Search String
+parameter{8,4} = '1.64e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 1 % saturated zone --> Mica clay/silt
+% FileName
+parameter{9,1} = 'Karup.SHE';
+% Perturbation Mean 
+parameter{9,2} = 1e-008;
+% Perturbation St. Dev
+parameter{9,3} = 5e-10;
+% The Search String
+parameter{9,4} = '1.55e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 2% saturated zone --> Mica sand
+% FileName
+parameter{10,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{10,2} = 0.1; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{10,3} = 9; 
+% The Search String
+parameter{10,4} = '1.65e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 1 % saturated zone --> Limestone
+% FileName
+parameter{11,1} = 'Karup.SHE';
+% Perturbation Mean 
+parameter{11,2} = 7.4e-005;
+% Perturbation St. Dev
+parameter{11,3} = 3e-6;
+% The Search String
+parameter{11,4} = '1.56e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 2% saturated zone --> Limestone
+% FileName
+parameter{12,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{12,2} = 0.1; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{12,3} = 11; 
+% The Search String
+parameter{12,4} = '1.66e-35';
+
+
+%**********
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 13 % Unsaturated zone --> JB-1
+% FileName
+parameter{13,1} = 'MAPS/DKsoils.uzs';
+% Perturbation Mean 
+parameter{13,2} = 1.445;
+% Perturbation St. Dev
+parameter{13,3} = 0.07;
+% The Search String
+parameter{13,4} = '1.31e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 14 % Unsaturated zone --> JB-2
+% FileName
+parameter{14,1} = 'MAPS/DKsoils.uzs';
+% Perturbation Mean 
+parameter{14,2} = 1.382;
+% Perturbation St. Dev
+parameter{14,3} = 0.07;
+% The Search String
+parameter{14,4} = '1.32e-35';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 15 % Unsaturated zone --> JB-3
+% FileName
+parameter{15,1} = 'MAPS/DKsoils.uzs';
+% Perturbation Mean 
+parameter{15,2} = 1.337;
+% Perturbation St. Dev
+parameter{15,3} = 0.07;
+% The Search String
+parameter{15,4} = '1.33e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 16 % Unsaturated zone --> JB-4
+% FileName
+parameter{16,1} = 'MAPS/DKsoils.uzs';
+% Perturbation Mean 
+parameter{16,2} = 1.304;
+% Perturbation St. Dev
+parameter{16,3} = 0.07;
+% The Search String
+parameter{16,4} = '1.34e-35';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 17 % Unsaturated zone --> JB-5
+% FileName
+parameter{17,1} = 'MAPS/DKsoils.uzs';
+% Perturbation Mean 
+parameter{17,2} = 1.251;
+% Perturbation St. Dev
+parameter{17,3} = 0.07;
+% The Search String
+parameter{17,4} = '1.35e-35';
+
+%*************************************************************
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter 18% OVERLAND FLOW
+% FileName
+parameter{18,1} = 'Karup.SHE';
+% Fraction of other value 
+parameter{18,2} = 5; 
+% The Parameter Number to be used (the one above is 'Parameter 1'
+parameter{18,3} = 0.2; 
+% The Search String
+parameter{18,4} = '1.21e-35';
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Purturb the parameter data
+%
+numToPerturb = size(parameter,1);
+
+paramValues = nan(numToPerturb,numEns);
+
+% Perturb data according to user selection then saves the perturbed data
+% to the dfs0 file.
+for i = 1:numToPerturb
+    disp(num2str(i));
+
+    % For each ensemble Member
+    for ens = 1:numEns
+        filename = strcat( EnsembleDir , num2str(ens-1),'\', parameter{i} ); 
+        % Calls function that gets the data and perturbs it according to the
+        % option
+        paramValues(i,ens) = DA_PerturbParameter(PerturbationOption{i} , parameter, i,ens,filename,paramValues);
+
+    end
+    
+end
+disp('DONE');
+
+
+
+
+
+

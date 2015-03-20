@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.utils.CsvStochObserver">
+		<workingDirectory>./stochobserver</workingDirectory>
+		<!-- <configFile>OscillatorSimpleStochObsConfig.xml</configFile> -->
+		<configFile>observations_oscillator_generated_for_calibration.csv</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.oscillator.OscillatorStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>OscillatorStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Simplex">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>simplexAlgorithm_withConstraint.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simplex_constraint_results.m</configFile>
+	</resultWriter>
+</openDaApplication>

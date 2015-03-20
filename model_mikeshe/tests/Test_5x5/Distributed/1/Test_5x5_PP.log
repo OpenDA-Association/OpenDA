@@ -1,0 +1,47 @@
+ ERRORS AND MESSAGES FROM 32-bit version of MIKE SHE Pre-processor. Input file : c:\OpenDA_MI\Test_5x5\Distributed\1\Test_5x5.she
+ ================================================================================================================================
+ 
+Print Log file : c:\OpenDA_MI\Test_5x5\Distributed\1\Test_5x5.she - Result Files\Test_5x5_PP_Print.log
+Fif file : c:\OpenDA_MI\Test_5x5\Distributed\1\Test_5x5.she - Result Files\Test_5x5.Fif
+ 
+Processing...
+SimSpec and storing
+Opening fif file
+Grid Output
+Catchment Grid
+Frame Data
+Topography
+Precipitation
+potential ET
+Landuse data
+ET/Vegetation
+SZ Data
+Geo Layer 1 : Levels
+Geo Lense 1 : Bdry
+Geo Lense 1 : Levels
+Geo Layer 1 : Hydr.data
+Geo Lense 1 : Hydr.data
+Processing geology into comp. layers
+Processing boundary data
+Initial potential heads 1
+Processing extractions
+SZ Drainage
+UZ data
+Two-layer UZ data
+
+INFO   : The specific yield of the top SZ layer has been adjusted. The new specific yield is the difference between the
+         water contents at saturation and field capacity, based on the two-layer UZ soil type.
+         This adjustment will provide an optimal stability for the UZ-SZ coupling.
+Storing
+ 
+Writing fif file...
+- DFS output of PreProcessed Data...
+  Done.
+ 
+- Writing PreProcessed Data tree to pfs file :
+  c:\OpenDA_MI\Test_5x5\Distributed\1\Test_5x5.she - Result Files\Test_5x5_PreProcessed.PFS...
+ 
+Termination...
+ 
+ 
+Preprocessing succeeded

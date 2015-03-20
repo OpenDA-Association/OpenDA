@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 sp2 (http://www.altova.com) by WL | Delft Hydraulics (WL | Delft Hydraulics) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- -->
+	<!-- openda xsd's -->
+	<!-- -->
+	<xs:include schemaLocation="openDaApplication.xsd"/>
+	<xs:include schemaLocation="openDaCalibrationRestart.xsd"/>
+	<xs:include schemaLocation="openDaFilterRestart.xsd"/>
+	<xs:include schemaLocation="opendaKalmanGainStorage.xsd"/>
+	<xs:include schemaLocation="blackBoxStochModelConfig.xsd"/>
+	<xs:include schemaLocation="blackBoxTemplateConfig.xsd"/>
+	<xs:include schemaLocation="rangeValidationConfig.xsd"/>
+</xs:schema>

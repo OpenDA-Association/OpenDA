@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelFactory className="org.openda.dotnet.ModelFactoryN2J" workingDirectory=".">
+        <arg>OpenDA.DotNet.OpenMI.Bridge.ModelFactory;MikeSheInOpenDA</arg>
+    </modelFactory>
+	
+<!--
+    <uncertaintyModule className="org.openda.uncertainties.UncertaintyEngine" workingDirectory="uncertainties">
+        <arg>Agoufou_uncertaintySpecification.xml</arg>
+    </uncertaintyModule>
+-->
+
+	<vectorSpecification>
+		<state>
+		<noiseModel id="stateNoiseModel"
+			className="org.openda.noiseModels.MapsNoiseModelFactory"
+			workingDirectory=".">
+			<configFile>ModelNoiseCorrelated.xml</configFile>
+			<exchangeItems>
+			<exchangeItem id="openBoundary" operation="add">
+			<modelExchangeItem id="head elevation in saturated zone"/>
+			</exchangeItem>
+			</exchangeItems>
+		</noiseModel>
+		<vector id="head elevation in saturated zone"></vector>
+		
+		
+		<!--
+  			<vector id="2.Surface temperature (effective)" />
+          -->
+		 <!--  <vector id="10.head elevation in saturated zone"/>
+			<noiseModel>
+				<ar1Model operation="add">
+					<stdDevColouredNoised value="0.2"/>
+					<decorrelationTimeScale>PT144000M</decorrelationTimeScale>
+					<noiseModelPeriod>PT14400M</noiseModelPeriod>
+				</ar1Model>
+                <subVector id="10.head elevation in saturated zone">
+					<selection index1="10" />
+				</subVector>
+            </noiseModel>  -->
+		<!--
+  			<vector id="2.global radiation" />
+          -->		
+			
+		</state>
+		
+		<predictor>
+			<subVector id="CenterPoint.Head" sourceVectorId="10.head elevation in saturated zone">
+			<selection index1="10" />
+			</subVector>
+		</predictor>
+		
+		
+	</vectorSpecification>
+
+</blackBoxStochModel>

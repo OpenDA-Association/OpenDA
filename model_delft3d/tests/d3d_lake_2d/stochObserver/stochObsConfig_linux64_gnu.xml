@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/openDaStochObserver.xsd">
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>stochObsUncertainties.xml</arg>
+	</uncertaintyModule>
+	<!-- IoObject that reads the observations from a D3D result file -->
+	<ioObject workingDirectory="." className="org.openda.model_delft3d.D3dResults">
+		<!-- D3D result file containing the "truth" -->
+		<fileName>trih-Lake2D.dat</fileName>
+		<!-- First argument: path to the directory containing the native DLL for reading D3D results-->
+		<arg>../../../../bin/linux64_gnu/lib/libODS.so.0</arg>
+	</ioObject>
+</ioObjectStochObserver>

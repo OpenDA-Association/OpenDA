@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <blackBoxModelConfig xmlns="http://www.openda.org"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+
+   <!-- Specify wrapper configuration for which this model is defined -->
+   <wrapperConfig>
+      <file>D3DWrapper.xml</file>
+   </wrapperConfig>
+
+   <!-- Specify wrapper configuration for which this model is defined -->
+   <aliasValues>
+      <alias key="templateDir" value="../input_d3d_2domains"/>
+      <alias key="instanceDir" value="../work/work"/>
+      <alias key="runid" value="estuary"/>
+      <!--
+      <alias key="exedir" value="P:\1204257-dcsmzuno\modellen\DCSVv5_test_d3d\d3d\"/>
+      -->
+      <alias key="exedir" value="C:\Delft3D\w32\flow\bin"/>
+      <alias key="linexedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin"/>
+</aliasValues>
+
+<!--  --><!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!--><!--
+    <timeInfo start="2004-01-01T00:00:00" end="2004-01-01T12:00:00" />
+-->
+   <exchangeItems>
+
+     <vector id="depth1" ioObjectId="depth1" elementId="depth"></vector>
+     <vector id="depth2" ioObjectId="depth2" elementId="depth"></vector>
+     <vector id="roughness-u1" ioObjectId="roughness1" elementId="roughness-u"></vector>
+     <vector id="roughness-u2" ioObjectId="roughness2" elementId="roughness-u"></vector>
+     <vector id="M2.Amplitude" ioObjectId="astro-components" elementId="downstream.M2.Amplitude" />
+     <vector id="M2.Phase" ioObjectId="astro-components" elementId="downstream.M2.Phase" />
+     <vector id="S2.Amplitude" ioObjectId="astro-components" elementId="downstream.S2.Amplitude" />
+     <vector id="S2.Phase" ioObjectId="astro-components" elementId="downstream.S2.Phase" />
+ 
+        
+<!--        <vector id="roughness-v" ioObjectId="roughness" elementId="roughness-v"></vector>
+-->
+      <vector id="station01.waterlevel" ioObjectId="trih-file1" elementId="station01.water level"/>
+      <vector id="station02.waterlevel" ioObjectId="trih-file2" elementId="station02.water level"/>
+      <vector id="station03.waterlevel" ioObjectId="trih-file2" elementId="station03.water level"/>
+
+    </exchangeItems>
+
+   <doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

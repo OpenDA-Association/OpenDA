@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>building Openda from source</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Building the OpenDA Java source code</h1>
+
+<hr>
+
+This page describes how to build the OpenDA Java source code. These sources are located in the
+<tt>core/java</tt>
+directory of the source distribution, but when building everything,
+<tt>ant</tt>
+can be run from the OpenDA root directory (it will use the
+<tt>build.xml</tt>
+file located there).
+
+<h2>Introduction</h2>
+
+OpenDA software consists of four different modules. The first module is the core module, which contains the core of OpenDA software.
+The three other modules are named after the components of data assimilation: models, observers, and algorithms. Each of these
+modules contains all programs and files related to the respective data assimilation component. The core module contains programs,
+which interface the other three modules. Modules for larger models with real applications are stored separately.
+<br>
+
+<br>
+
+Native libraries, written e.g. in C or Fortran are provided both as source and binaries with OpenDA. By default the build processes
+use the binaries. All binaries provided are 32-bit and therefore need a 32-bit version of Java. You can recompile the required
+native libraries as 64-bit if needed, for which you will need a 64-bit version of Java. For some blackbox-wrappers en small models
+you may not need any native libraries, so both 32-bit and 64-bit Java can be used.
+<br>
+
+<h2>Installation of Ant</h2>
+
+To build OpenDA software, a command-line tool ant is used. Ant is similar to make, but written in Java, so that it is portable
+between different platforms. If ant is not installed in your computer yet, you can download it from
+<a href="http://ant.apache.org/bindownload.cgi" target="_blank">ant.apache.org/bindownload.cgi</a>
+. For Linux users it is probably easier to use their package manager to install ant. Before installing ant, please check that a
+recent 32-bit version of Java is installed (which can be downloaded from
+<a href="http://Java.com/nl/download/" target="_blank">www.java.com/download</a>
+or in case of Linux, installed with the package manager).
+<br>
+
+<h2>Build commands</h2>
+
+For the following description it is assumed that the OpenDA source is available in a directory named
+<tt>&lt;path_to_openda&gt;/public</tt>
+.
+<br>
+
+
+Start by opening a command window (Windows) or a command shell (Linux) and change directory to the OpenDA main directory.
+
+<p>
+
+<h3>Compiling OpenDA</h3>
+
+
+From the OpenDA main directory, you can compile all modules at once. Besides compilation there are several other options:
+<ul>
+   <li><tt>ant</tt> (without any argument): to show help with list of possible ant arguments (the same as <tt>ant help</tt>).</li>
+   <li><tt>ant build</tt>: to compile OpenDA, make jar files and copy resources. This doesn't generate Javadoc documentation.</li>
+   <li><tt>ant doc</tt>: to build Javadoc for all modules and collect this documentation.</li>
+   <li><tt>ant clean</tt>: to remove the generated files.</li>
+   <li><tt>ant zip</tt>: to compile OpenDA, collect documentation and xml-schemas and create a set of zip files which contain
+   the subversion revision number in the filename as well as in the name of the readme file. This makes it easy to wrap everything
+   for exporting to a website or user. Exports with the same version numbers will extract to the same <tt>openda_&lt;version&gt;</tt>
+   directory, but new versions can coexist.</li>
+   <li><tt>ant zip-tests</tt>: to create zip files for the various test cases. Each case is stored as separate zip file. Each
+   file is named after the case followed by the version number.</li>
+</ul>
+<h3>Compiling individual modules</h3>
+
+From the module directory, you can compile a single module. Within a module directory the build file has somewhat different options:
+<br>
+
+<ul>
+   <li><tt>ant</tt> (without any argument): to show help with list of possible ant arguments.</li>
+   <li><tt>ant build</tt>: to compile the module, make jar files and copy resources. This doesn't generate Javadoc
+   documentation.</li>
+   <li><tt>ant javadoc</tt>: to build Java doc.</li>
+   <li><tt>ant clean</tt>: to remove the generated files.</li>
+   <li><tt>ant make-standalone</tt> copy required external binaries to the module directory.</li>
+</ul>
+
+<h3>Compiling stand-alone modules</h3>
+
+when providing others with a stand-alone module, you will have to provide other modules your stand-alone module depends upon (if
+any). The easiest way to achieve this, is by using <tt>ant make-standalone</tt> (after building all OpenDA modules) in the module
+directory. This will copy the files needed to the module directory.
+
+<h2>Directory structure</h2>
+
+Upon the execution of the command <tt>ant build</tt> or <tt>ant doc</tt> , the following folders are created in the main directory:
+<ul>
+   <li><tt>bin</tt>: contains all binary files required for running OpenDA. This will be the content of OpenDA distribution
+   file.</li>
+   <li><tt>doc</tt>: contains OpenDA documentation, including some examples.</li>
+   <li><tt>xmlSchemas</tt>: contains the XML Schema files for the OpenDA configuration files.</li>
+</ul>
+
+<p>Each module directory has the following structure:
+<ul>
+   <li><tt>bin</tt>: contains all binary files related to the respective module.</li>
+   <li><tt>build</tt>: contains the class files resulting from compiling the Java files of the respective module.</li>
+   <li><tt>javadoc</tt>: will contain Java documentation files when they are generated by executing <tt>ant javadoc</tt> on the
+   command-line.</li>
+</ul>
+<h2>Removal of generated files</h2>
+
+To remove the files generated by a build, you can use <tt>ant clean</tt> on the command-line. From within a module directory, this
+command will remove the <tt>bin</tt> , <tt>build</tt> and <tt>javadoc</tt> directories, and the <tt>MANIFEST.MF</tt> file. It does
+not affect other modules nor the folder <tt>bin</tt> in the OpenDA main directory. Executing the command line <tt>ant clean</tt>
+from the OpenDA main directory will delete the folders <tt>bin</tt> , <tt>doc</tt> , and <tt>xmlSchemas</tt> in the main directory,
+as well as removing all modules' generated files. Note: to be able to delete files, they cannot be in use (obviously), so close them
+first.
+</body>
+</html>

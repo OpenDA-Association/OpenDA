@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions/>
+
+	<run>
+		<initializeActions/>
+		<computeActions/>
+		<finalizeActions/>
+	</run>
+
+	<inputOutput>
+
+		<!-- dummy test object that contains the start time / end time exchange items -->
+		<ioObject className="org.openda.blackbox.wrapper.DummyTimeInfoIoObject">
+			<file>noRealFile</file>
+			<id>timeInfoIoObject</id>
+			<arg>2010-07-16 23:59:59</arg>
+			<arg>2010-07-17 00:01:01</arg>
+        </ioObject>
+
+    </inputOutput>
+
+</blackBoxWrapperConfig>

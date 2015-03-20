@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SimulationConfig>
+    <!--
+    <analysisTimes type="fixed" timeFormat="dateTimeString" >200101010000,200101020000,...,200201020000</analysisTimes>
+    -->
+    <instance repeat="1" stochParameter="false" stochForcing="false" />
+    <writeObservations filename="../generated_observations.csv" addNoise="false" format="csv" />
+</SimulationConfig>
+

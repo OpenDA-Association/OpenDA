@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="ToyModelConfigXML">
+		<xs:sequence>
+			<xs:element name="simulationTimespan" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify simulation time-span: [t_start,t_step,t_stop]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="parameters">
+				<xs:annotation>
+					<xs:documentation>Specify names and values of parameters. Values: [ValueParam1,ValueParam2,...]</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="names" type="xs:string" use="required">
+								<xs:annotation>
+									<xs:documentation>Names of model parameters: "NameParam1,NameParam2,..."</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="parameterUncertainty">
+				<xs:annotation>
+					<xs:documentation>Specify uncertain parameters (for calibration) and their uncertainty. Uncertainty: [StdParam1,StdParam2,...]</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="names" type="xs:string" use="required">
+								<xs:annotation>
+									<xs:documentation>Names of model parameters: "NameParam1,NameParam2,..."</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="systemNoise" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>System noise statistics per time-unit for each state variable: {[biasVar1,biasVar2,...],[stdVar1,stdVar2,...]}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="initialState" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>State vector at initial time: [Var1,Var2,...]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="initialStateUncertainty" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Std of state vector uncertainty at initial time: [StdVar1,StdVar2,...].</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="OscillatorConfig" type="openda:ToyModelConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Oscillator model.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

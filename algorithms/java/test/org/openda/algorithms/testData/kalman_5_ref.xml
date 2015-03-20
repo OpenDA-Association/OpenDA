@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opendaKalmanGainStorage
+    xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/opendaKalmanGainStorage.xsd"
+    xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <comment>algorithm = EnKF
+model = OscillatorStochModelInstance
+observer = CsvStochObserver
+</comment>
+    <timeStampAsMJD>5.0</timeStampAsMJD>
+    <timeStampAsDateTime>1858-11-22T01:00:00.000+01:00</timeStampAsDateTime>
+    <observations>
+        <observation>
+            <id>0.0</id>
+            <timeOffsetInDays>0.0</timeOffsetInDays>
+            <vector>0.8964452862831562,-0.17338131870660203</vector>
+        </observation>
+    </observations>
+</opendaKalmanGainStorage>

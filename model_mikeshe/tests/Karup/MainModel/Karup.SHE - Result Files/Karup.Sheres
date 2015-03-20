@@ -1,0 +1,234 @@
+// Created     : 2014-04-11 14:2:59
+// DLL id      : C:\Program Files (x86)\DHI\2016\bin\x64\pfs2004.dll
+// PFS version : Jan  4 2014 19:56:45
+
+[SHERES]
+   [general]
+      [version]
+         VersionNumber = 1004
+      EndSect  // version
+
+   EndSect  // general
+
+   [files]
+      [files_general]
+         NrOfFiles = 9
+      EndSect  // files_general
+
+      [files_id]
+         FileName = |.\Karup_ET_AllCells.dfs2|
+         Filecode = 7
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Filecode = 8
+         FileName = |.\Karup_overland.dfs2|
+         Filecode = 1
+         FileName = |.\Karup_2DUZ_AllCells.dfs2|
+         Filecode = 10
+         FileName = |.\Karup_3DSZ.dfs3|
+         Filecode = 3
+         FileName = |.\Karup_2DSZflow.dfs2|
+         Filecode = 6
+         FileName = |.\Karup_3DSZflow.dfs3|
+         Filecode = 4
+         FileName = |.\Karup.frf|
+         Filecode = 17
+         FileName = |.\Karup.hot|
+         Filecode = 21
+      EndSect  // files_id
+
+   EndSect  // files
+
+   [data]
+      [data_general]
+         NrofData = 32
+      EndSect  // data_general
+
+      [data_id]
+         Datatypes = 10, 16, 13, 17, 18, 19, 14, 61, 58, 59, 121, 122, 57, 101, 107, 108, 102, 103, 104, 115, 112, 96, 249, 160, 161, 163, 165, 166, 167, 168, 169, 178
+         InstanceNumbers = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+         InstanceNames = '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+         FileReferences = 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9
+         EumTypes = 100431, 100387, 100387, 100387, 100387, 100386, 100387, 100280, 100001, 100001, 100061, 100062, 100392, 100180, 100361, 100361, 100001, 100001, 100361, 100001, 100001, 100001, 100001, 100212, 100212, 100386, 100280, 100353, 100390, 100361, 100361, 100180
+         EumUnits = 2004, 2004, 2004, 2004, 2004, 1002, 2004, 1000, 1800, 1800, 2004, 2004, 1002, 1000, 2004, 2004, 1800, 1800, 2004, 1800, 1800, 1800, 1800, 1402, 1402, 1002, 1000, 1000, 1002, 2000, 2000, 1000
+      EndSect  // data_id
+
+   EndSect  // data
+
+   [extra]
+      [extra_files]
+         NrofFiles = 1
+         Filename = ''
+      EndSect  // extra_files
+
+   EndSect  // extra
+
+   [DATA_AREA]
+      x0 = 493525.155
+      y0 = 6220425.962
+      x1 = 525525.155
+      y1 = 6256425.962
+      CellSize_Meter = 1000
+      MapProj = 'NON-UTM'
+   EndSect  // DATA_AREA
+
+   [OutputPeriodAndMaxTimestep]
+      StartDate = 1970, 1, 1, 0, 0
+      EndDate = 1972, 12, 28, 0, 0
+      MaxTimestep_Hrs = 336
+      HotstartData = 1
+      HotstartStoringTimestep_Hrs = 26208
+   EndSect  // OutputPeriodAndMaxTimestep
+
+   [Items]
+      NrofItems = 21
+      [Item]
+         Name = 'precipitation rate'
+         FileName = |.\Karup_ET_AllCells.dfs2|
+         Itemno = 1
+         DataType = 10
+      EndSect  // Item
+
+      [Item]
+         Name = 'actual transpiration'
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Itemno = 1
+         DataType = 16
+      EndSect  // Item
+
+      [Item]
+         Name = 'actual soil  evaporation'
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Itemno = 2
+         DataType = 13
+      EndSect  // Item
+
+      [Item]
+         Name = 'actual evaporation from interception'
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Itemno = 3
+         DataType = 17
+      EndSect  // Item
+
+      [Item]
+         Name = 'actual evaporation from ponded water'
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Itemno = 4
+         DataType = 18
+      EndSect  // Item
+
+      [Item]
+         Name = 'canopy interception storage'
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Itemno = 5
+         DataType = 19
+      EndSect  // Item
+
+      [Item]
+         Name = 'evapotranspiration from SZ'
+         FileName = |.\Karup_ET_UzCells.dfs2|
+         Itemno = 6
+         DataType = 14
+      EndSect  // Item
+
+      [Item]
+         Name = 'depth of overland water'
+         FileName = |.\Karup_overland.dfs2|
+         Itemno = 1
+         DataType = 61
+      EndSect  // Item
+
+      [Item]
+         Name = 'overland flow in x-direction'
+         FileName = |.\Karup_overland.dfs2|
+         Itemno = 2
+         DataType = 58
+      EndSect  // Item
+
+      [Item]
+         Name = 'overland flow in y-direction'
+         FileName = |.\Karup_overland.dfs2|
+         Itemno = 3
+         DataType = 59
+      EndSect  // Item
+
+      [Item]
+         Name = 'infiltration to UZ (negative)'
+         FileName = |.\Karup_2DUZ_AllCells.dfs2|
+         Itemno = 1
+         DataType = 121
+      EndSect  // Item
+
+      [Item]
+         Name = 'exchange between UZ and SZ (pos.up)'
+         FileName = |.\Karup_2DUZ_AllCells.dfs2|
+         Itemno = 2
+         DataType = 122
+      EndSect  // Item
+
+      [Item]
+         Name = 'UZ deficit'
+         FileName = |.\Karup_2DUZ_AllCells.dfs2|
+         Itemno = 3
+         DataType = 57
+      EndSect  // Item
+
+      [Item]
+         Name = 'head elevation in saturated zone'
+         FileName = |.\Karup_3DSZ.dfs3|
+         Itemno = 1
+         DataType = 101
+      EndSect  // Item
+
+      [Item]
+         Name = 'seepage flow SZ -overland'
+         FileName = |.\Karup_2DSZflow.dfs2|
+         Itemno = 1
+         DataType = 107
+      EndSect  // Item
+
+      [Item]
+         Name = 'seepage flow overland - SZ (negative)'
+         FileName = |.\Karup_2DSZflow.dfs2|
+         Itemno = 2
+         DataType = 108
+      EndSect  // Item
+
+      [Item]
+         Name = 'groundwater flow in x-direction'
+         FileName = |.\Karup_3DSZflow.dfs3|
+         Itemno = 1
+         DataType = 102
+      EndSect  // Item
+
+      [Item]
+         Name = 'groundwater flow in y-direction'
+         FileName = |.\Karup_3DSZflow.dfs3|
+         Itemno = 2
+         DataType = 103
+      EndSect  // Item
+
+      [Item]
+         Name = 'groundwater flow in z-direction'
+         FileName = |.\Karup_3DSZflow.dfs3|
+         Itemno = 3
+         DataType = 104
+      EndSect  // Item
+
+      [Item]
+         Name = 'SZ exchange flow with river'
+         FileName = |.\Karup_3DSZflow.dfs3|
+         Itemno = 4
+         DataType = 115
+      EndSect  // Item
+
+      [Item]
+         Name = 'SZ drainage flow from point'
+         FileName = |.\Karup_3DSZflow.dfs3|
+         Itemno = 5
+         DataType = 112
+      EndSect  // Item
+
+   EndSect  // Items
+
+EndSect  // SHERES
+

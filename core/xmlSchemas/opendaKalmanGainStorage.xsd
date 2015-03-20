@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="treeVector.xsd"/>
+	<!-- root element filter restart settings -->
+	<xs:element name="opendaKalmanGainStorage" type="openda:KalmanGainStorageXML">
+		<xs:annotation>
+			<xs:documentation>Restart settings for an Algoritm. Generic part: params. Algorithm specific parts per algorithm</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="KalmanGainStorageXML">
+		<xs:sequence>
+			<xs:element name="comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional comment on the stored kalman gain</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeStampAsMJD" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The time stamp for which the kalman gain is valid, represented as Modified Julian Day</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stateSize" type="xs:int" minOccurs="0"/>
+			<xs:element name="timeStampAsDateTime" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>The time step mentioned above, represented as Date Time</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="observations" type="openda:KalmanGainObservationsXML"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Dud specific restart settings -->
+	<xs:complexType name="KalmanGainObservationsXML">
+		<xs:sequence>
+			<xs:element name="observation" type="openda:KalmanGainObservationXML" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="KalmanGainObservationXML">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The identifier for the observation (unique with the list of stored observations)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeOffsetInDays" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The time offset of the observation, expressed in days, relative to the time stamp for this kalman gain (0 means: same time stamp as the gain, negative means before the kalman gain time stamp)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="vector" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The values of the kalman gain for this observation. This optional field is only present if the size is limited (default max 40 values; this maximum can be overridden by the filter)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="treeVector" type="openda:TreeVectorXML" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The values of the kalman gain for this observation, represented as tree vector. Present if the size is limited (see above)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="fileName" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The netCdfFile containing the values. This optional field is present if the gain is at TreeVector, or if there are more values than the maximum mentioned above</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

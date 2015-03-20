@@ -1,0 +1,13 @@
+       <modelbuild_sp>
+          <functions>
+             <CTA_FUNCTION id="create"     name="oscill_create"  library="liboscill.so" function="oscill_create" />
+             <CTA_FUNCTION id="covariance" name="oscill_covar"   library="liboscill.so" function="oscill_covar"  />
+             <CTA_FUNCTION id="getobsvals" name="oscill_obs"     library="liboscill.so" function="oscill_obs"    />
+             <CTA_FUNCTION id="compute"    name="oscill_compute" library="liboscill.so" function="oscill_compute"/>
+          </functions>
+          <model>  
+             <!-- Original values: avg_t_damp=8.0, avg_omega=2.2*2*pi -->
+             <parameters avg_t_damp="8.0" avg_omega="13.8230076757951"> 
+             </parameters> 
+          </model> 
+       </modelbuild_sp> 

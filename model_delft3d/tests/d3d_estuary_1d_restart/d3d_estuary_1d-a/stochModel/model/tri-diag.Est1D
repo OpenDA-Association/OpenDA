@@ -1,0 +1,104 @@
+
+********************************************************************************
+***
+*** Deltares, Delft3D-FLOW Version 4.00.06.819, Sep 20 2011, 12:29:13
+***
+***           runid     : Est1D
+***           date,time : 2012-09-26, 16:41:41
+***
+********************************************************************************
+
+*** MESSAGE Executable for 32-bits platform. 
+*** MESSAGE Double precision computation using reals of kind    8 
+*** Start of User Defined Model description 
+ -
+ -  Test Case 1                   
+ -  Estuary 1D                    
+ -  MHBOX-RAMA                    
+ -  1-D Estuary Model             
+ -  The estuary is streched from  
+ -  east to west. At the eastern  
+ -  open boundary,the flowvelocity
+ -  is specified to zero, while at
+ -  the western one periodic water
+ -  level is set. The width of the
+ -
+*** End   of User Defined Model description 
+
+*** MESSAGE Using UNESCO density formulation by default 
+*** MESSAGE Momentum solver cyclic method is specified 
+*** MESSAGE DRYFLP and DPSOPT both specified in MD-file. Using DPSOPT: MAX 
+*** ERROR Flrst - insufficient number of values or record is corrupt 
+*** WARNING Latitude of your model is 0 degrees, model located at equator
+*** WARNING File will not be created - Inconsistent comm. file times 
+ 
+*** Simulation finished *******************************************************
+ 
+Performance timers:
+|---------------------------------------------------------------------|
+|Timer name           |       wall clock      |       CPU time        |
+|                     |-----------------------|-----------------------|
+|                     |       sec     |  %    |       sec     |  %    |
+|---------------------------------------------------------------------|
+|Initialization       |         0.19  |  0.8  |         0.14  |  0.5  | 
+|Simulation           |         0.69  |  2.8  |         0.61  |  2.3  | 
+|Close and stop       |         0.00  |  0.0  |         0.00  |  0.0  | 
+|                     |------------- +|----- +|------------- +|----- +|
+|Total                |        24.64  |100.0  |        26.50  |100.0  | 
+|---------------------------------------------|-----------------------|
+|Momentum eq.         |         0.09  |  0.4  |         0.09  |  0.4  | 
+|Continuity eq.       |         0.09  |  0.4  |         0.11  |  0.4  | 
+|Transport eq.        |         0.00  |  0.0  |         0.00  |  0.0  | 
+|Turbulence           |         0.00  |  0.0  |         0.00  |  0.0  | 
+|3D Morphology        |         0.00  |  0.0  |         0.00  |  0.0  | 
+|Wait (dd   module)   |         0.00  |  0.0  |         0.00  |  0.0  | 
+|Wait (ext. modules)  |         0.00  |  0.0  |         0.00  |  0.0  | 
+|---------------------------------------------------------------------|
+| Performance = CPU time / (TimeSteps*MMAX*NMAX*KMAX)                 |
+|   TimeSteps   :           1                                         |
+|   MMAX        :          82                                         |
+|   NMAX        :           5                                         |
+|   KMAX        :           1                                         |
+|   Performance : 0.64634E-01 [sec]                                   |
+|---------------------------------------------------------------------|
+|Explanation:                                                         |
+|                                                                     |
+|Initialization : Everything up to the first time step                |
+|Simulation     : All time steps                                      |
+|Close and stop : Everything after the last time step                 |
+|Total          : FLOW for this subdomain,                            |
+|                 excluding allocation/deallocation of global data    |
+|                                                                     |
+|Momentum eq.   : Part of Simulation ("UZD")                          |
+|Continuity eq. : Part of Simulation ("SUD")                          |
+|Transport eq.  : Part of Simulation ("DIFU")                         |
+|                 Only relevant when constituents are modelled.       |
+|Turbulence     : Part of Simulation ("TURCLO, TRATUR, TUR2D")        |
+|3D Morphology  : Part of Simulation ("EROSED, BOTT3D")               |
+|                 Only relevant when sediments are modelled.          |
+|Wait (dd)      : Part of Initialization, Simulation and Closing.     |
+|                 ("NXTSTP, NXTDRY")                                  |
+|                 Only relevant when DomainDecomposition is used.     |
+|                 Communication with and execution of the "mappers".  |
+|                 Mappers are separate threads, possibly in another   |
+|                 executable, possibly on another node. They copy     |
+|                 data from one subdomain to another.                 |
+|                 FLOWs must wait while the mappers are executing,    |
+|                 mappers must wait while the FLOWs are executing.    |
+|Wait (ext)     : Part of Initialization, Simulation and Closing.     |
+|                 ("SYNC, _TO_, _FROM_")                              |
+|                 Communication with and execution of all "external"  |
+|                 modules:                                            |
+|                 Online WAVES, Online WAQ, Online RTC, Fluid Mud.    |
+|                                                                     |
+|---------------------------------------------------------------------|
+ 
+
+********************************************************************************
+***
+*** FINISHED    Delft3D-FLOW
+***             runid      : Est1D
+***             date, time : 2012-09-26, 16:42:06
+***
+********************************************************************************
+

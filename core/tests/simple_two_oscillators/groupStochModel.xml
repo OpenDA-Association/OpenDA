@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stochModelFactory>	   
+   <stochModelFactory id="oscillator1" className="org.openda.models.simpleModel.SimpleOscillatorStochModelFactory">
+      <workingDirectory>model1</workingDirectory>
+      <configFile>OscillatorStochModel.xml</configFile>
+   </stochModelFactory>
+   <stochModelFactory id="oscillator2" className="org.openda.models.simpleModel.SimpleOscillatorStochModelFactory">
+      <workingDirectory>model2</workingDirectory>
+      <configFile>OscillatorStochModel.xml</configFile>
+   </stochModelFactory>
+</stochModelFactory>
+	

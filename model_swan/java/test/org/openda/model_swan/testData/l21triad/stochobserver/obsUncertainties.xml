@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlUncertainties version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.2/wl/wlUncertainties.xsd">
+
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 0.0,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 5.7,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 10.5,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 12.5,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 13.5,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 14.5,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 15.7,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+	<uncertainty uncertaintyType="Normal" uncertainVarID="Tm02 @ 17.3,0.0">
+		<values spread="0.1" spread_is_factor="true"/>
+	</uncertainty>
+
+</wlUncertainties>

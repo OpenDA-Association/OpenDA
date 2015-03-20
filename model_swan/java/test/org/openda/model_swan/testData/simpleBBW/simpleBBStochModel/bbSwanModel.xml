@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>bbSwanWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+        <alias key="SWANDIR" value="."/>
+		<alias key="templateDir" value="swanModel"/>
+		<alias key="instanceDir" value="ens"/>
+		<alias key="inputFile" value="s11.swn"/>
+		<alias key="hotFile" value="s11.HOT"/>
+        <alias key="windFile" value="rotating.SER"/>     
+		<alias key="openboundaryFile" value="wam_adapted.bnd"/>
+        <alias key="openboundaryTPARFile" value="simple_0m_20s.RVW"/>
+	</aliasValues>
+
+    <timeInfoExchangeItems start="start_time" end="end_time"/>
+
+	<exchangeItems>
+                <vector id="start_time" ioObjectId="timeInfo" elementId="start_time"/>
+                <vector id="end_time" ioObjectId="timeInfo" elementId="end_time"/>
+                <vector id="state" ioObjectId="hotFile" elementId="swanstate"/>
+                <vector id="wind.x" ioObjectId="windFile" elementId="wind.x"/>
+                <vector id="wind.y" ioObjectId="windFile" elementId="wind.y"/>
+                <vector id="openboundary" ioObjectId="openBoundary" elementId="openboundary"/>
+                <vector id="obHs" ioObjectId="openBoundaryTPAR" elementId="Hs"/>
+                <vector id="obPeriod" ioObjectId="openBoundaryTPAR" elementId="period"/>
+                <vector id="obPeakDir" ioObjectId="openBoundaryTPAR" elementId="peakdir"/>
+                <vector id="obDirSpread" ioObjectId="openBoundaryTPAR" elementId="dirspread"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

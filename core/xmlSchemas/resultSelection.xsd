@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="ResultWriterSourceTypeXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="stochasticModel"/>
+			<xs:enumeration value="stochModel"/>
+			<xs:enumeration value="model"/>
+			<xs:enumeration value="alg"/>
+			<xs:enumeration value="algorithm"/>
+			<xs:enumeration value="stochasticObserver"/>
+			<xs:enumeration value="stochObserver"/>
+			<xs:enumeration value="observer"/>
+			<xs:enumeration value="other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResultWriterMessageTypeXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="step"/>
+			<xs:enumeration value="outer"/>
+			<xs:enumeration value="outerIter"/>
+			<xs:enumeration value="outerIteration"/>
+			<xs:enumeration value="inner"/>
+			<xs:enumeration value="innerIter"/>
+			<xs:enumeration value="innerIteration"/>
+			<xs:enumeration value="evaluation"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResultWriterOutputLevelXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Essential"/>
+			<xs:enumeration value="Normal"/>
+			<xs:enumeration value="Verbose"/>
+			<xs:enumeration value="All"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ResultLoggingXML">
+		<xs:attribute name="observer" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Output source is observer</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="model" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Output source is model</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="algorithm" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Output source is algorithm</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="nonConfiguredItems" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Output source is other non-declared component</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="resultSelection" type="openda:ResultSelectionXML"/>
+	<xs:complexType name="ResultItemXML">
+		<xs:sequence>
+			<xs:element name="messageType" type="openda:ResultWriterMessageTypeXML" minOccurs="0" maxOccurs="4">
+				<xs:annotation>
+					<xs:documentation>Type of message ("step", "inner", "outer", or "evaluation"). Deprecated function, will not be supported in future versions of OpenDA.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity (name) of the result item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="minSize" type="xs:integer" use="optional">
+			<xs:annotation>
+				<xs:documentation>Minimum size (number of elements) of the result item.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxSize" type="xs:integer" use="optional">
+			<xs:annotation>
+				<xs:documentation>Maximum size (number of elements) of the result item.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="outputLevel" type="openda:ResultWriterOutputLevelXML" use="optional">
+			<xs:annotation>
+				<xs:documentation>Grouping of the result items according to their level of significance: None, Essential,Normal,Verbose,All.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="context" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Context in which the result item should be written in the output, for example model instance id, iteration id, etc.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="doLog" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Switch output of result item on or off</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="source" type="openda:ResultWriterSourceTypeXML" use="optional">
+			<xs:annotation>
+				<xs:documentation>Source of the result item ("observer", "model", "algorithm" or "other")</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ResultSelectionXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<xs:element name="doLog" type="openda:ResultLoggingXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Switch sources on or off for output</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resultItem" type="openda:ResultItemXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Select the items to be switched on/off for output</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

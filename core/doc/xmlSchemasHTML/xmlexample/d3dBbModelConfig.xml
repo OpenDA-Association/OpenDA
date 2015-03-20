@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>d3dBbWrapperConfig.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="templateDir" value="../model"/>
+		<alias key="instanceDir" value="../work"/>
+		<alias key="runid" value="f34"/>
+	</aliasValues>
+
+    <timeInfo start="1990-08-06T00:00:00" end="1990-08-06T01:00:00"/>
+
+	<exchangeItems>
+        <vector id="depth" ioObjectId="depth"/>
+        <vector id="H-W1" ioObjectId="trih-file" elementId="W1.water level"/>
+        <vector id="H-W2" ioObjectId="trih-file" elementId="W2.water level"/>
+        <vector id="H-W3" ioObjectId="trih-file" elementId="W3.water level"/>
+        <vector id="H-W4" ioObjectId="trih-file" elementId="W4.water level"/>
+        <vector id="H-W5" ioObjectId="trih-file" elementId="W5.water level"/>
+    </exchangeItems>
+
+	<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

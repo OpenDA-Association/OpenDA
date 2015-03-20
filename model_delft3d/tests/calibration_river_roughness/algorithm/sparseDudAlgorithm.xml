@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SparseDudConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <outerLoop maxIterations="12" absTolerance="0.002" relTolerance="0.01" />
+   <lineSearch maxIterations="2" maxRelStepSize="1.0" >
+   <!--  lineSearch maxIterations="5" maxRelStepSize="2.0" !-->
+      <backtracking shorteningFactor="0.5" startIterationNegativeLook="3" />
+   </lineSearch>
+   <dependencies>
+      <obs id="M20.waterlevel">  <depends_on> <par id="A-411"/>                                                                         </depends_on> </obs>
+      <obs id="M60.waterlevel">  <depends_on> <par id="A-411"/> <par id="A-412"/>                                                       </depends_on> </obs>
+      <obs id="M100.waterlevel"> <depends_on> <par id="A-412"/> <par id="A-413"/>                                     </depends_on> </obs>
+      <obs id="M140.waterlevel"> <depends_on> <par id="A-413"/> <par id="A-414"/>                   </depends_on> </obs>
+      <obs id="M180.waterlevel"> <depends_on> <par id="A-414"/> <par id="A-415"/> </depends_on> </obs>
+   </dependencies>
+</SparseDudConfig>

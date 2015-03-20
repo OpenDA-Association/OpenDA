@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- root element filter restart settings -->
+	<xs:element name="filterRestart" type="openda:FilterRestartXML">
+		<xs:annotation>
+			<xs:documentation>Restart settings for an Algoritm. Generic part: params. Algorithm specific parts per algorithm</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="FilterRestartXML">
+		<xs:sequence>
+			<xs:element name="filterName" type="openda:FilterNameXML"/>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:element name="ensemble" type="openda:EnsembleFiltersRestartXML" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- EnKF specific restartSettings -->
+	<xs:complexType name="EnsembleFiltersRestartXML">
+		<xs:sequence>
+			<xs:element name="size" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Known filter types -->
+	<xs:simpleType name="FilterNameXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="particle"/>
+			<xs:enumeration value="ensr"/>
+			<xs:enumeration value="enkf"/>
+			<xs:enumeration value="ensskf"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

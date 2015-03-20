@@ -1,0 +1,2 @@
+waq_plugin_wasteload.dll
+         Intel Fortran RTL Message Catalog	V13.1-101 Aug 09 2012

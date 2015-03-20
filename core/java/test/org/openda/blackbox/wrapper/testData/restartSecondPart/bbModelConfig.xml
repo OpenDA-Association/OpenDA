@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>./bbWrapperConfig.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify actual values for aliases used in wrapper configuration -->
+	<aliasValues>
+		<alias key="templateDir" value="../restartFull/model"/>
+		<alias key="instanceDir" value="work"/>
+		<alias key="binDir" value="../restartFull/bin"/>
+		<alias key="noosfile_1" value="noosTimeSeriesA.txt"/>
+		<alias key="noosfile_2" value="noosTimeSeriesB.txt"/>
+		<alias key="noosfile_3" value="noosTimeSeriesC.txt"/>
+		<alias key="statefile" value="model_state_file.txt"/>
+	</aliasValues>
+
+	<!-- Specify model's time info -->
+	<!-- TODO: REMOVE 2 HOURS AFTER BB times vs. NOOS times is clear!!! -->
+	<timeInfo start="2010-08-04T10:00:00" end="2010-08-05T02:00:00"/>
+
+	<exchangeItems>
+		<vector id="bc-A" ioObjectId="noosfile_1" elementId="boundary-condition-A.waterlevel"/>
+		<vector id="bc-B" ioObjectId="noosfile_2" elementId="boundary-condition-B.waterlevel"/>
+		<vector id="bc-C" ioObjectId="noosfile_3" elementId="boundary-condition-C.waterlevel"/>
+		<vector id="state" ioObjectId="statefile"/>
+	</exchangeItems>
+
+	<doCleanUp>false</doCleanUp>
+
+	<restartInfo>
+		<modelStateFile>model_state_file.txt</modelStateFile>
+	</restartInfo>
+
+</blackBoxModelConfig>

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>installation</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>OpenDA tutorial: Introduction to Data Assimilation</h1>
+
+<hr>
+
+Data assimilation is about the combination of two sources of information,
+computational models and observations, in order to exploit both of their
+strengths and compensate for their weaknesses.
+<p>
+Computational models are available nowadays for a wide range of
+applications: weather prediction, environmental management, oil
+exploration, traffic management and so on. They use knowledge of different
+aspects of reality, e.g. physical laws, empirical relations, human
+behaviour, etc., in order to construct a sequence of computational steps,
+by which simulations of different aspects of reality can be made. 
+
+<p>
+
+The strengths of computational models are the ability to describe/forecast
+future situations (also to explore what-if scenarios), and a large amount
+of spatial and temporal detail. For instance weather forecasts are
+run at ECMWF using a horizontal resolution of about 50 km for the entire
+earth and a time step of 12 minutes. This is achieved with the tremendous
+computing power of modern day computers, and with carefully designed
+numerical algorithms.
+<p>
+However, computations are worthless if the system is not initialized
+properly. &quot;Garbage in, garbage out&quot;. Further the &quot;state&quot; of a
+computational model may deviate from reality more and more because of
+inaccuracies in the model, aspects that are not considered or not modelled
+well, inappropriate parameter settings and so on. Observations or
+measurements are generally considered to be more accurate than model 
+results. They always concern the true state of the physical system under
+consideration. On the other hand, the number of observations is often
+limited in space and in time.
+<p>
+The idea of data assimilation is to combine model and observations, and
+exploit as much of the information contained in them.
+<p>
+<ul>
+<li>off-line versus on-line;
+<li>combine values: weights needed;
+<li>statistical framework, std.error;
+<li>deterministic versus stochastic models;
+<li>noise model;
+<li>data-assimilation on top of model.
+</ul>
+
+</body>
+</html>

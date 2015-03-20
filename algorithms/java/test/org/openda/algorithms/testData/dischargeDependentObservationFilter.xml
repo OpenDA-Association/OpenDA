@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DischargeDependentFilterConfig>
+    <!--<limitCriteria minValue="60.0" maxValue="300.0"/>-->
+    <listOfStationPairs>
+        <!--<stationsPair discharge="den helder.discharge" waterlevel="den helder.waterlevel"/>-->
+        <stationsPair discharge="den helder.discharge" waterlevel="den helder.waterlevel" minValue="60.0" maxValue="300.0"/>
+        <stationsPair discharge="aberdeen.discharge" waterlevel="aberdeen.waterlevel" minValue="400.0" maxValue="600.0"/>
+    </listOfStationPairs>
+</DischargeDependentFilterConfig>

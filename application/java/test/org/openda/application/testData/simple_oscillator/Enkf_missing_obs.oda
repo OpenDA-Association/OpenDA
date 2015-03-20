@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<!--
+	This example shows the use of the NoosStochObserver for toy-problems.
+	The x-position is converted from double to integer and serves as the index to the state-vector;
+	here 0=position and 1=velocity.
+	Also, it tests the hanling of missing observations.
+	The observation for velocity for the second timesetep is missing here.
+	Thus the arrays obs, pred should have length=1 (only position) for this time.
+	-->
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>./noosobserver</workingDirectory>
+		<!-- <configFile>OscillatorSimpleStochObsConfig.xml</configFile> -->
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.oscillator.OscillatorStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>OscillatorStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>EnkfAlgorithm.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_missingdata_results.m</configFile>
+	</resultWriter>
+	<!--
+	<resultWriters>
+		<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+			<workingDirectory>.</workingDirectory>
+			<configFile>results_enkf.m</configFile>
+		</resultWriter>
+		<resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+			<workingDirectory>.</workingDirectory>
+			<configFile>results_enkf_.nc</configFile>
+		</resultWriter>
+	</resultWriters>
+	-->
+</openDaApplication>

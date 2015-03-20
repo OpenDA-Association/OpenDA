@@ -1,0 +1,172 @@
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Pre-processor. Input file : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE
+ =======================================================================================================================================================
+ 
+Print Log file : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE - Result Files\Karup_DA_PP_Print.log
+Fif file : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE - Result Files\Karup_DA.fif
+ 
+Processing...
+SimSpec and storing
+Opening fif file
+Grid Output
+Catchment Grid
+Frame Data
+Topography
+Precipitation
+potential ET
+Landuse data
+ET/Vegetation
+Overland Data
+River Data
+ 
+Loading the MIKE 11 dll...
+Transferring MIKE 11 data...
+Processing MIKE 11 setup...
+Inundation areas...
+Overland reference system
+SZ Data
+Geo Layer 1 : Levels
+Geo Layer 1 : Geo units
+Geo Layer 2 : Levels
+Geo Layer 2 : Geo units
+Geo Layer 3 : Levels
+Geo Layer 3 : Geo units
+Geo Layer 4 : Levels
+Geo Layer 4 : Geo units
+Geo Layer 5 : Levels
+Geo Layer 5 : Geo units
+Geo Layer 6 : Levels
+Geo Layer 6 : Geo units
+Geo Layer 7 : Levels
+Geo Layer 7 : Geo units
+Geo Layer 8 : Levels
+Geo Layer 8 : Geo units
+Geo Layer 9 : Levels
+Geo Layer 9 : Geo units
+Geo Layer 10 : Levels
+Geo Layer 10 : Geo units
+Geo Layer 11 : Levels
+Geo Layer 11 : Geo units
+Geo Layer 12 : Levels
+Geo Layer 12 : Geo units
+Geo Layer 13 : Levels
+Geo Layer 13 : Geo units
+Geo Layer 14 : Levels
+Geo Layer 14 : Geo units
+Geo Layer 15 : Levels
+Geo Layer 15 : Geo units
+Geo Layer 16 : Levels
+Geo Layer 16 : Geo units
+Geo Layer 17 : Levels
+Geo Layer 17 : Geo units
+Geo Layer 18 : Levels
+Geo Layer 18 : Geo units
+Geo Layer 19 : Levels
+Geo Layer 19 : Geo units
+Geo Layer 20 : Levels
+Geo Layer 20 : Geo units
+Geo Layer 21 : Levels
+Geo Layer 21 : Geo units
+Geo Layer 22 : Levels
+Geo Layer 22 : Geo units
+Geo Layer 23 : Levels
+Geo Layer 23 : Geo units
+Transfer from Geo units to layer 1
+Transfer from Geo units to layer 2
+Transfer from Geo units to layer 3
+Transfer from Geo units to layer 4
+Transfer from Geo units to layer 5
+Transfer from Geo units to layer 6
+Transfer from Geo units to layer 7
+Transfer from Geo units to layer 8
+Transfer from Geo units to layer 9
+Transfer from Geo units to layer 10
+Transfer from Geo units to layer 11
+Transfer from Geo units to layer 12
+Transfer from Geo units to layer 13
+Transfer from Geo units to layer 14
+Transfer from Geo units to layer 15
+Transfer from Geo units to layer 16
+Transfer from Geo units to layer 17
+Transfer from Geo units to layer 18
+Transfer from Geo units to layer 19
+Transfer from Geo units to layer 20
+Transfer from Geo units to layer 21
+Transfer from Geo units to layer 22
+Transfer from Geo units to layer 23
+Computational layer levels 1
+Processing geology into comp. layers
+Processing boundary data
+Initial potential heads 1
+SZ Drainage
+- processing ...
+- making reference maps ...
+UZ data
+Soil Profiles and Soil Data
+ 
+WARNING: Retention curve too steep. Processed water contents
+         and/or capacities have been adjusted.
+         - average reduction of Theta = -2.5768217E-03
+           Max = -4.5283586E-03 from 1.0999222E-02 to 6.4708637E-03 at pF =6.950000
+         - average rel. change of capacity = 1.0361999E-03
+           Max = 3.3955857E-02 from 5.0485216E-09 to 5.2199485E-09 at pF =6.950000
+
+Soil   : JB-1
+DBase  : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\MAPS\DKsoils.uzs
+------------------------------------------------------------------------------------
+ 
+WARNING: Retention curve too steep. Processed water contents
+         and/or capacities have been adjusted.
+         - average reduction of Theta = -2.4585982E-03
+           Max = -4.6413774E-03 from 1.4312292E-02 to 9.6709142E-03 at pF =6.950000
+         - average rel. change of capacity = 7.8603788E-04
+           Max = 3.1479582E-02 from 1.6770148E-08 to 1.7298065E-08 at pF =6.950000
+
+Soil   : JB-2
+DBase  : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\MAPS\DKsoils.uzs
+------------------------------------------------------------------------------------
+Classification Data
+
+WARNING: The UZ classification option is being phased out.
+         We recommend that you calculate UZ in all cells.
+ 
+
+INFO   : The specific yield of the top SZ layer has been adjusted. The new specific yield is the difference between the
+         water contents at saturation and field capacity, based on the UZ soil type at the depth of the initial water table.
+         This adjustment will provide an optimal stability for the UZ-SZ coupling.
+Storing
+ 
+ERROR  : Invalid chainage of branch Karup River : 51400.00
+- too far from nearest H-point : 50875.00 (tolerance for this check = 112.5000)
+- Detailed Timeseries item ( Name = 20.05_WL ) :
+  water level in M11 h-point (Branch: Karup River, 51400.00)
+  The item has been ignored.
+ 
+ERROR  : Invalid chainage of branch Haderup River : 11000.00
+- too far from nearest H-point : 10500.50 (tolerance for this check = 100.0500)
+- Detailed Timeseries item ( Name = 20.06_WL ) :
+  water level in M11 h-point (Branch: Haderup River, 11000.00)
+  The item has been ignored.
+ 
+ERROR  : Invalid chainage of branch Haderup River : 8868.000
+- too far from nearest H-point : 8237.000 (tolerance for this check = 123.6948)
+- Detailed Timeseries item ( Name = 20.07_WL ) :
+  water level in M11 h-point (Branch: Haderup River, 8868.000)
+  The item has been ignored.
+ 
+ERROR  : Invalid chainage of branch Feldborg Creek : 7138.000
+- too far from nearest H-point : 6177.000 (tolerance for this check = 158.4500)
+- Detailed Timeseries item ( Name = 20.08_WL ) :
+  water level in M11 h-point (Branch: Feldborg Creek, 7138.000)
+  The item has been ignored.
+ 
+Writing fif file...
+- DFS output of PreProcessed Data...
+  Done.
+ 
+- Writing PreProcessed Data tree to pfs file :
+  C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE - Result Files\Karup_DA_PreProcessed.PFS...
+ 
+Termination...
+ 
+ 
+Preprocessing succeeded

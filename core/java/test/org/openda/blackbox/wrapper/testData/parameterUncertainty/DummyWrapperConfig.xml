@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig
+	xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+		<alias key="templateDir" value="model"/>
+		<alias key="instanceDir" value="work"/>
+	</aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+		<computeActions/>
+		<finalizeActions/>
+
+	</run>
+
+	<inputOutput>
+
+		<ioObject className="org.openda.blackbox.wrapper.DummyParametersIoObject">
+			<file>not-needed</file>
+			<id>parametersIoObject</id>
+		</ioObject>
+
+	</inputOutput>
+
+</blackBoxWrapperConfig>

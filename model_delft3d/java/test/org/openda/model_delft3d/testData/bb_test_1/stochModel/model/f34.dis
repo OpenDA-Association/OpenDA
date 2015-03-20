@@ -1,0 +1,12 @@
+table-name           'Discharge : 1'
+contents             'regular  '
+location             '(14,2)              '
+time-function        'non-equidistant'
+reference-time       19900805
+time-unit            'minutes'
+interpolation        'linear'
+parameter            'time                '                     unit '[min]'
+parameter            'flux/discharge rate '                     unit '[m**3/s]'
+records-in-table     2
+0.000000 10.0000
+1500.00 10.0000

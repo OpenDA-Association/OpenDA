@@ -1,0 +1,69 @@
+      SUMMARY OF THE HDF5 CONFIGURATION
+      =================================
+
+General Information:
+-------------------
+                   HDF5 Version: 1.8.10
+                  Configured on: 
+                  Configured by: Visual Studio 10
+                 Configure mode: CMAKE 2.8.6
+                    Host system: Windows-6.1
+              Uname information: Windows
+                       Byte sex: little-endian
+                      Libraries: 
+             Installation point: C:/Program Files/HDF5
+
+Compiling Options:
+------------------
+               Compilation Mode: RelWithDebInfo
+                     C Compiler: cl
+                         CFLAGS:  /DWIN32 /D_WINDOWS /W3 /Zm1000
+                      H5_CFLAGS: 
+                      AM_CFLAGS: 
+                       CPPFLAGS:  /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR
+                    H5_CPPFLAGS: 
+                    AM_CPPFLAGS: 
+               Shared Libraries: YES
+               Static Libraries: NO
+  Statically Linked Executables: OFF
+                        LDFLAGS:  /STACK:10000000 /machine:X86 
+                     AM_LDFLAGS: 
+                Extra libraries: zlib;szip
+                       Archiver: 
+                         Ranlib: 
+              Debugged Packages: 
+                    API Tracing: OFF
+
+Languages:
+----------
+                        Fortran: ON
+               Fortran Compiler: ifort
+          Fortran 2003 Compiler: OFF
+                  Fortran Flags:  /W1 /nologo /fpp /libs:dll /threads
+               H5 Fortran Flags: 
+               AM Fortran Flags: 
+                            C++: ON
+                   C++ Compiler: cl
+                      C++ Flags:  /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR
+                   H5 C++ Flags: 
+                   AM C++ Flags: 
+
+Features:
+---------
+                  Parallel HDF5: OFF
+             High Level library: ON
+                   Threadsafety: OFF
+            Default API Mapping: v18
+ With Deprecated Public Symbols: ON
+         I/O filters (external):  DEFLATE DECODE ENCODE
+         I/O filters (internal):  SHUFFLE FLETCHER32 NBIT SCALEOFFSET
+                            MPE: 
+                     Direct VFD: 
+                        dmalloc: 
+Clear file buffers before write: ON
+           Using memory checker: OFF
+         Function Stack Tracing: OFF
+                           GPFS: OFF
+      Strict File Format Checks: OFF
+   Optimization Instrumentation: 
+       Large File Support (LFS): 

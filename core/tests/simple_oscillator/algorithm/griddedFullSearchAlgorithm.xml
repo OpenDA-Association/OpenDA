@@ -1,0 +1,7 @@
+<GriddedFullSearchConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <gridRange min="[7.0,1.5]" max="[9.0,1.8]" step="[0.2,0.05]" />
+   <stopCriteria>
+	   <stopCriterion class="org.openda.algorithms.AbsoluteAveragePerLocationStopCriterion" threshold="1.0E-3" />
+   </stopCriteria>
+</GriddedFullSearchConfig>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns="http://www.openda.org"
+                    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>DummyModelConfig.xml</file>
+	</modelConfig>
+
+    <uncertaintyModule className="org.openda.uncertainties.UncertaintyEngine" workingDirectory=".">
+        <arg>UncertaintyEngineParameters_3.xml</arg>
+        <arg>useFixedSeed</arg>
+    </uncertaintyModule>
+
+    <vectorSpecification>
+
+        <parameters>
+
+            <regularisationConstant>
+                <uncertainItem uncertainItemId="locB.Par1" transformation="identity"/>
+                <vector id="locB.Par1"/>
+            </regularisationConstant>
+
+            <regularisationConstant>
+                <uncertainItem uncertainItemId="locC.Par_I" transformation="identity"/>
+                <vector id="locC.Par_I"/>
+            </regularisationConstant>
+
+            <uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+                <configFile>paramsForDrawer.csv</configFile>
+                <exchangeItems>
+                    <exchangeItem id="p1"/>
+                    <exchangeItem id="p2"/>
+                </exchangeItems>
+            </uncertaintyModule>
+
+            <regularisationConstant>
+                <stdDev value="0.1001" transformation="identity"/>
+                <vector id="locA.Par1" sourceVectorId="locA.Par1"/>
+            </regularisationConstant>
+
+            <regularisationConstant>
+                <stdDev value="0.1002" transformation="identity"/>
+                <vector id="locA.Par2" sourceVectorId="locA.Par2"/>
+            </regularisationConstant>
+
+        </parameters>
+
+        <predictor>
+            <vector id="dummyPredictorItem"/>
+        </predictor>
+
+    </vectorSpecification>
+
+</blackBoxStochModel>

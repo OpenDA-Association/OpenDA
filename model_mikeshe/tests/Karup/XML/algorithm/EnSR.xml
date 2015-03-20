@@ -1,0 +1,18 @@
+﻿<EnSRConfig>
+<!--
+<EnkfConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
+ -->
+   <ensembleSize>5</ensembleSize>
+   <!-- <analysisTimes type="fixed" timeFormat="dateTimeString">197302200000,197302210000,...,199909220000</analysisTimes>  -->
+   <!--
+   <localization>hamill</localization>
+   <distance>100</distance>
+   -->
+   
+   <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="false" />
+
+</EnSRConfig>

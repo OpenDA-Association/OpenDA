@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./d3dBbModelConfig.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        <parameters>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="identity"/>
+                <subVector id="depth" sourceVectorId="depth">
+                    <selector className="nl.deltares.openda.models.d3dflow.D3dField2DMask">
+                        <arg>6,9:9,11</arg>
+                    </selector>
+                </subVector>
+            </regularisationConstant>
+		</parameters>
+        <predictor>
+			<vector id="W3.water level" sourceVectorId="H-W3"/>
+			<vector id="W4.water level" sourceVectorId="H-W4"/>
+		</predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

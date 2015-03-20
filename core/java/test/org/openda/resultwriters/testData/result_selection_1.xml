@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resultSelection xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/resultSelection.xsd">
+	<doLog nonConfiguredItems="false" />
+	<resultItem id="someValues" source="algorithm" doLog="true" />
+	<resultItem id="someValues" source="model" doLog="false" />
+</resultSelection>

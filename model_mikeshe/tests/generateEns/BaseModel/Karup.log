@@ -1,0 +1,272 @@
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Pre-processor. Input file : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE
+ ===========================================================================================================================================================
+ 
+Print Log file : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE - Result Files\Karup_PP_Print.log
+Fif file : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE - Result Files\Karup.Fif
+ 
+Processing...
+SimSpec and storing
+Opening fif file
+Grid Output
+Catchment Grid
+Frame Data
+Topography
+Precipitation
+potential ET
+Landuse data
+ET/Vegetation
+Overland Data
+River Data
+MIKE 11 loading...
+Transferring MIKE 11 data...
+Processing MIKE 11 setup...
+Inundation areas...
+Overland reference system
+SZ Data
+Geo Layer 1 : Levels
+Geo Layer 1 : Geo units
+Geo Layer 2 : Levels
+Geo Layer 2 : Geo units
+Geo Layer 3 : Levels
+Geo Layer 3 : Geo units
+Geo Layer 4 : Levels
+Geo Layer 4 : Geo units
+Geo Layer 5 : Levels
+Geo Layer 5 : Geo units
+Geo Layer 6 : Levels
+Geo Layer 6 : Geo units
+Geo Layer 7 : Levels
+Geo Layer 7 : Geo units
+Geo Layer 8 : Levels
+Geo Layer 8 : Geo units
+Geo Layer 9 : Levels
+Geo Layer 9 : Geo units
+Geo Layer 10 : Levels
+Geo Layer 10 : Geo units
+Geo Layer 11 : Levels
+Geo Layer 11 : Geo units
+Geo Layer 12 : Levels
+Geo Layer 12 : Geo units
+Geo Layer 13 : Levels
+Geo Layer 13 : Geo units
+Geo Layer 14 : Levels
+Geo Layer 14 : Geo units
+Geo Layer 15 : Levels
+Geo Layer 15 : Geo units
+Geo Layer 16 : Levels
+Geo Layer 16 : Geo units
+Geo Layer 17 : Levels
+Geo Layer 17 : Geo units
+Geo Layer 18 : Levels
+Geo Layer 18 : Geo units
+Geo Layer 19 : Levels
+Geo Layer 19 : Geo units
+Geo Layer 20 : Levels
+Geo Layer 20 : Geo units
+Geo Layer 21 : Levels
+Geo Layer 21 : Geo units
+Geo Layer 22 : Levels
+Geo Layer 22 : Geo units
+Geo Layer 23 : Levels
+Geo Layer 23 : Geo units
+Transfer from Geo units to layer 1
+Transfer from Geo units to layer 2
+Transfer from Geo units to layer 3
+Transfer from Geo units to layer 4
+Transfer from Geo units to layer 5
+Transfer from Geo units to layer 6
+Transfer from Geo units to layer 7
+Transfer from Geo units to layer 8
+Transfer from Geo units to layer 9
+Transfer from Geo units to layer 10
+Transfer from Geo units to layer 11
+Transfer from Geo units to layer 12
+Transfer from Geo units to layer 13
+Transfer from Geo units to layer 14
+Transfer from Geo units to layer 15
+Transfer from Geo units to layer 16
+Transfer from Geo units to layer 17
+Transfer from Geo units to layer 18
+Transfer from Geo units to layer 19
+Transfer from Geo units to layer 20
+Transfer from Geo units to layer 21
+Transfer from Geo units to layer 22
+Transfer from Geo units to layer 23
+Computational layer levels 1
+Processing geology into comp. layers
+Processing boundary data
+Initial potential heads 1
+SZ Drainage
+- processing ...
+- making reference maps ...
+UZ data
+Soil Profiles and Soil Data
+ 
+WARNING: Retention curve too steep. Processed water contents
+         and/or capacities have been adjusted.
+         - average reduction of Theta = -2.5685972E-03
+           Max = -4.5250496E-03 from 1.1071756E-02 to 6.5467069E-03 at pF =6.950000
+         - average rel. change of capacity = 1.0173304E-03
+           Max = 3.3839643E-02 from 5.3512661E-09 to 5.5323510E-09 at pF =6.950000
+
+Soil   : JB-1
+DBase  : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\MAPS\DKsoils.uzs
+-------------------------------------------------------------------------------------------
+ 
+WARNING: Retention curve too steep. Processed water contents
+         and/or capacities have been adjusted.
+         - average reduction of Theta = -2.5338405E-03
+           Max = -4.6766847E-03 from 1.2713637E-02 to 8.0369525E-03 at pF =6.950000
+         - average rel. change of capacity = 8.8698196E-04
+           Max = 3.2348052E-02 from 1.1630951E-08 to 1.2007190E-08 at pF =6.950000
+
+Soil   : JB-2
+DBase  : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\MAPS\DKsoils.uzs
+-------------------------------------------------------------------------------------------
+Classification Data
+
+WARNING: The UZ classification option is being phased out.
+         We recommend that you calculate UZ in all cells.
+ 
+
+INFO   : The specific yield of the top SZ layer has been adjusted. The new specific yield is the difference between the
+         water contents at saturation and field capacity, based on the UZ soil type at the depth of the initial water table.
+         This adjustment will provide an optimal stability for the UZ-SZ coupling.
+Storing
+ 
+Writing fif file...
+- DFS output of PreProcessed Data...
+  Done.
+ 
+- Writing PreProcessed Data tree to pfs file :
+  C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE - Result Files\Karup_PreProcessed.PFS...
+ 
+Termination...
+ 
+ 
+Preprocessing succeeded
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Water Movement. Input file : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE
+ ============================================================================================================================================================
+ 
+ 
+17:39:43 : INITIALIZATION PHASE
+===============================
+
+Opening files...
+Print file : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE - Result Files\Karup_WM_Print.log
+Fif   file : C:\work\SOLProjects\11810549_HydroCast\TestModels\Karup\BaseModel\Karup.SHE - Result Files\Karup.fif
+ 
+Group:
+Frame Data
+Size and Specifications
+Checks
+
+ WARNING: The specified maximum UZ water balance error in
+          one node (fraction) =0.0100 can be expected
+          to result in a large number of warnings
+          from the UZ solver during the simulation.
+          The recommended error limit is 0.02 (2 %).
+          NOTE: Using the specified value anyway !
+ 
+INFO: Using NEW TS module
+Copying to frf file
+Vegetation module initialisation
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+Initializing Met. data...
+Memory allocation
+Initializations and reference systems
+Initializing components...
+ET
+Overland
+River
+MIKE 11 loading...
+Processing...
+SZ
+UZ Module
+SZ fif-output
+ 
+INFO   : Disabling storing of data type(s) which are not relevant for this simulation:
+         - SZ flow to general head boundary
+Storing initial conditions...
+done
+
+
+
+Parallelization info
+--------------------
+Number of processors  : 4
+Max. number of threads: 4
+Number of threads allowed by actual license: Unlimited
+Setting number of threads for actual application to 4
+ 
+ 
+ 
+ 
+17:39:45 : Start of simulation from 1969/12/01,00:00
+====================================================
+
+- further initializations...
+- UZ
+- Overland
+- River
+17:39:45 => 1969/12/01,04:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 0, avg: 0.0
+17:39:47 => 1970/01/22,18:00 : Time step: 5.51 hrs, avg: 5.48 hrs; SZ Iter/step: 2, avg: 2.4
+17:39:49 => 1970/03/10,06:00 : Time step: 4.61 hrs, avg: 5.03 hrs; SZ Iter/step: 2, avg: 2.2
+17:39:51 => 1970/04/22,18:00 : Time step: 3.68 hrs, avg: 4.53 hrs; SZ Iter/step: 2, avg: 2.1
+ 
+WARNING: Ignoring call to MTimestep_SetReducedTimeStep
+         with max time step = 3.89744860738996 hrs
+         - not smaller than actual max time step : 3.72439496875722 hrs
+17:39:53 => 1970/06/02,18:00 : Time step: 4.51 hrs, avg: 4.52 hrs; SZ Iter/step: 2, avg: 2.1
+17:39:55 => 1970/07/01,20:00 : Time step: 4.67 hrs, avg: 4.54 hrs; SZ Iter/step: 2, avg: 2.1
+17:39:57 => 1970/07/20,12:00 : Time step: 3.39 hrs, avg: 4.42 hrs; SZ Iter/step: 2, avg: 2.1
+17:39:59 => 1970/09/04,20:00 : Time step: 3.52 hrs, avg: 4.24 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:01 => 1970/10/19,02:00 : Time step: 3.18 hrs, avg: 4.05 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:03 => 1970/11/25,12:00 : Time step: 2.58 hrs, avg: 3.83 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:05 => 1971/01/07,20:00 : Time step: 3.66 hrs, avg: 3.81 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:07 => 1971/02/13,06:00 : Time step: 4.60 hrs, avg: 3.86 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:09 => 1971/03/21,00:00 : Time step: 4.21 hrs, avg: 3.89 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:11 => 1971/05/07,18:00 : Time step: 4.86 hrs, avg: 3.96 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:13 => 1971/06/14,18:00 : Time step: 2.83 hrs, avg: 3.85 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:15 => 1971/07/26,14:00 : Time step: 3.02 hrs, avg: 3.78 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:17 => 1971/08/26,06:00 : Time step: 1.51 hrs, avg: 3.52 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:19 => 1971/10/15,14:00 : Time step: 4.05 hrs, avg: 3.56 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:21 => 1971/11/20,22:00 : Time step: 2.19 hrs, avg: 3.45 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:23 => 1972/01/05,12:00 : Time step: 3.20 hrs, avg: 3.43 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:25 => 1972/02/26,06:00 : Time step: 5.31 hrs, avg: 3.51 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:27 => 1972/04/05,00:00 : Time step: 3.66 hrs, avg: 3.52 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:29 => 1972/05/17,06:00 : Time step: 3.73 hrs, avg: 3.53 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:31 => 1972/06/20,04:00 : Time step: 1.78 hrs, avg: 3.41 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:33 => 1972/07/31,00:47 : Time step: 2.50 hrs, avg: 3.36 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:35 => 1972/09/10,01:34 : Time step: 3.02 hrs, avg: 3.34 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:37 => 1972/10/28,12:00 : Time step: 4.07 hrs, avg: 3.37 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:39 => 1972/12/04,16:00 : Time step: 2.21 hrs, avg: 3.31 hrs; SZ Iter/step: 2, avg: 2.1
+17:40:41 => 1973/01/01,00:00 : Time step: 2.57 hrs, avg: 3.29 hrs; SZ Iter/step: 2, avg: 2.1
+ 
+Termination...
+
+ WARNING: Max. no. UZ flow iterations exceeded in      1 time steps.
+
+ WARNING: Reduction of UZ time step length in    8 time steps
+          because of water balance errors.
+
+ WARNING: Evaporation from ponded water on ground surface has been reduced
+          in UZ class(es) with less ponded water in transfer point(s)
+          than in the corresponding computational point(s).
+          Total apriori :   1.426619     [ catchment mm ]
+          Total used    :   1.398173     [ - - ]  ( 98.01 % of apriori ).
+          Please check the applied UZ classification.
+
+          See warnings in the print log file.
+17:40:41 : WM Simulation succeeded

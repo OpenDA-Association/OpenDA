@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+		<alias key="DAMFLOWDIR"/>
+		<alias key="templateDir"/>
+		<alias key="instanceDir"/>
+		<alias key="inputFileName"/>
+        <alias key="outFile"/>
+	</aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="output/%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+		<computeActions>
+			<action workingDirectory="%instanceDir%" windowsExe="%DAMFLOWDIR%/bin/DikeFlow.exe">
+				<arg>%inputFileName%</arg>
+				<!-- TODO: check if it is actually possible to use other name than dupuit -->
+			</action>
+		</computeActions>
+
+		<finalizeActions/>
+
+	</run>
+
+
+<inputOutput>
+
+	<ioObject className="org.openda.model_damflow.DupuitCFile">
+		<file>%inputFileName%.C000</file>
+		<id>state0</id>
+		<arg></arg>
+	</ioObject>
+
+	<ioObject className="org.openda.model_damflow.DupuitCFile">
+		<file>%inputFileName%.C001</file>
+		<id>state1</id>
+		<arg></arg>
+	</ioObject>
+
+	<ioObject className="org.openda.model_damflow.DupuitPFile">
+		<file>%inputFileName%.P</file>
+		<id>timeInfo</id>
+		<arg></arg>
+	</ioObject>
+
+	<ioObject className="org.openda.model_damflow.DupuitBHOFile">
+		<file>%inputFileName%.O</file>
+		<id>output</id>
+		<arg></arg>
+	</ioObject>
+
+	<ioObject className="org.openda.model_damflow.DupuitBHOFile">
+		<file>%inputFileName%.B</file>
+		<id>input</id>
+		<arg></arg>
+	</ioObject>
+
+	<ioObject className="org.openda.model_damflow.DupuitGFile">
+		<file>%inputFileName%.G</file>
+		<id>materialProperty</id>
+		<arg></arg>
+	</ioObject>
+
+</inputOutput>
+
+</blackBoxWrapperConfig>

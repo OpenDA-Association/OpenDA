@@ -1,0 +1,7 @@
+template file example: output.inp
+
+DATE=1986-05-03 TSTART=1440.0 TSTOP=14400.0
+first key which should be replaced 1986-05-03
+second key which should be replaced 1440.0 some text after
+third key which should be replaced 14400.0 some text after
+fourth key wich should be replaced as integer 7 text after

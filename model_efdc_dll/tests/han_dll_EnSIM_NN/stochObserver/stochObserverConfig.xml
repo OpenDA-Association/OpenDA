@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioObjectStochObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.openda.org"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
+
+	<!-- specification of the uncertainty for the observations -->
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>stochObserverUncertainties.xml</arg>
+	</uncertaintyModule>
+
+	<!-- IDataObject that reads the observations from a netcdf file -->
+	<!-- <ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject"> -->
+	<ioObject workingDirectory="." className="org.openda.model_efdc_dll.EfdcNetcdfDataObject">
+		<!-- netcdf file containing measurements -->
+		<fileName>WaterTemperature.nc</fileName>
+		<arg>true</arg>
+		<arg>false</arg>
+	</ioObject>
+
+</ioObjectStochObserver>

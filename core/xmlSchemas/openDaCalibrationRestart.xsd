@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- include TreeVector definition -->
+	<xs:include schemaLocation="treeVector.xsd"/>
+	<!-- root element calibration restart settings -->
+	<xs:element name="dudRestart" type="openda:DudXML"/>
+	<xs:element name="powelRestart" type="openda:PowellXML"/>
+	<xs:element name="simplexRestart" type="openda:SimplexXML"/>
+	<xs:element name="calibrationRestart" type="openda:CalibrationRestartXML">
+		<xs:annotation>
+			<xs:documentation>Restart settings for an Algoritm. Generic part: params. Algorithm specific parts per algorithm</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="CalibrationRestartXML">
+		<xs:sequence>
+			<xs:element name="methodName" type="openda:MethodNameXML"/>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:choice>
+				<xs:element name="dud" type="openda:DudXML"/>
+				<xs:element name="powell" type="openda:PowellXML"/>
+				<xs:element name="simplex" type="openda:SimplexXML"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Dud specific restart settings -->
+	<xs:complexType name="DudXML">
+		<xs:sequence>
+			<xs:choice minOccurs="2" maxOccurs="unbounded">
+				<xs:element name="params" type="openda:TreeVectorXML"/>
+				<xs:element name="paramVector" type="openda:VectorXML"/>
+			</xs:choice>
+			<xs:element name="costValue" type="xs:double" minOccurs="2" maxOccurs="unbounded"/>
+			<xs:choice minOccurs="2" maxOccurs="unbounded">
+				<xs:element name="predictions" type="openda:TreeVectorXML"/>
+				<xs:element name="predictionVector" type="openda:VectorXML"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Powell specific restart settings -->
+	<xs:complexType name="PowellXML">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="baseParams" type="openda:TreeVectorXML"/>
+				<xs:element name="baseParamVector" type="openda:VectorXML"/>
+			</xs:choice>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="searchDirParams" type="openda:TreeVectorXML"/>
+				<xs:element name="searchDirParamVector" type="openda:VectorXML"/>
+			</xs:choice>
+			<xs:element name="costValue" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Simplex specific restart settings -->
+	<xs:complexType name="SimplexXML">
+		<xs:sequence>
+			<xs:choice minOccurs="2" maxOccurs="unbounded">
+				<xs:element name="params" type="openda:TreeVectorXML"/>
+				<xs:element name="paramVector" type="openda:VectorXML"/>
+			</xs:choice>
+			<xs:element name="costValue" type="xs:double" minOccurs="2" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="MethodNameXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="dud"/>
+			<xs:enumeration value="powell"/>
+			<xs:enumeration value="simplex"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SparseDudConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/sparseDudConfig.xsd">
+	<costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction"/>
+	<outerLoop maxIterations="12" absTolerance="0.002" relTolerance="0.01"/>
+	<lineSearch maxIterations="2" maxRelStepSize="1.0">
+		<backTracking shorteningFactor="0.5" startIterationNegativeLook="3"/>
+	</lineSearch>
+	<dependencies>
+		<obs id="M230.waterlevel"> <depends_on> <par id="A-411"/> <par id="A-412"/> <par id="A-413"/> </depends_on>	</obs>
+		<obs id="M260.waterlevel"> <depends_on> <par id="A-411"/> <par id="A-412"/> <par id="A-413"/> </depends_on> </obs>
+	</dependencies>
+</SparseDudConfig>

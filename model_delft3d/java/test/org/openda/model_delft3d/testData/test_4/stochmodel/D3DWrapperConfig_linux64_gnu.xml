@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://www.schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+		<alias key="D3D_HOME" />
+		<alias key="NATIVE_DLL_DIR" value="../../../../../../../../model_delft3d/native_bin/linux64_gnu/lib/libODS.so.0.0.0" />
+		<alias key="instanceDir"/>
+		<alias key="templateDir" value="../model"/>
+		<alias key="runid"/>
+		<alias key="roughness"/>
+        <alias key="exedir"/>
+    </aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+		<!-- computation actions -->
+		<!-- define actions relative to working dir. -->
+		<computeActions>
+			<action workingDirectory="%instanceDir%" linuxExe="%exedir%/d_hydro.exe" >
+				<arg>config_d_hydro.xml</arg>
+			</action>
+		</computeActions>
+		<!--additionalComputeActions>
+			<action workingDirectory="%instanceDir%" linuxExe="%OPENDADIR%/delftFlowRunWait.sh">
+				<arg>%runid%</arg>
+				<arg>%runid%_%instanceNumber%</arg>
+			</action>
+		</additionalComputeActions-->
+
+		<!-- actions to finalize (e.g. cleanup) an instance -->
+		<finalizeActions/>
+
+	</run>
+
+	<inputOutput>
+
+	<!-- astro -->
+		<ioObject className="org.openda.model_delft3d.D3dAstroComponentFiles">
+			<file>%runid%.mdf</file>
+		<id>astro-components</id>
+	</ioObject>
+
+		<!-- u/v rougness -->
+		<ioObject className="org.openda.model_delft3d.D3dField2DFile">
+			<file>%runid%.mdf</file>
+			<id>roughness</id>
+			<arg>rgh</arg>
+		</ioObject>
+
+
+		<!-- depth -->
+		<ioObject className="org.openda.model_delft3d.D3dField2DFile">
+			<file>%runid%.mdf</file>
+			<id>depth</id>
+			<arg>dep</arg>
+		</ioObject>
+
+		<!-- wind, u- direction -->
+		<ioObject className="org.openda.model_delft3d.D3dWindFile">
+			<file>%runid%.mdf</file>
+			<id>windguFile</id>
+			<arg>gu</arg>
+		</ioObject>
+
+		<!-- wind, v- direction -->
+		<ioObject className="org.openda.model_delft3d.D3dWindFile">
+			<file>%runid%.mdf</file>
+			<id>windgvFile</id>
+			<arg>gv</arg>
+		</ioObject>
+
+		<!-- time series results -->
+		<ioObject className="org.openda.model_delft3d.D3dResults">
+			<file>trih-%runid%.dat</file>
+			<id>trih-file</id>
+			<arg>%NATIVE_DLL_DIR%</arg>
+		</ioObject>
+	</inputOutput>
+
+</blackBoxWrapperConfig>

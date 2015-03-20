@@ -1,0 +1,14 @@
+<biasAwareModelConfig>
+	<stochModelFactory	className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile>KarupModelConfig.xml</configFile>
+	</stochModelFactory>
+	<state localization="true" checkObservationID="true">
+		<observation id="head5" standard_deviation="0.01"></observation>
+		<observation id="head10" standard_deviation="0.01"></observation>
+		<observation id="head15" standard_deviation="0.01"></observation>
+		<observation id="head20" standard_deviation="0.01"></observation>
+		<observation id="head25" standard_deviation="0.01"></observation>
+		<observation id="head30" standard_deviation="0.01"></observation>
+	</state>
+</biasAwareModelConfig>

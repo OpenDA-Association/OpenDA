@@ -1,0 +1,4 @@
+<SimplexConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <outerLoop maxIterations="100" absTolerance="0.001" relTolerance="0.001" />
+</SimplexConfig>

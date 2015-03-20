@@ -1,0 +1,94 @@
+\documentclass[12pt]{article}
+
+\title{Time-advancement of Stochastic Models with limitations due to forcing terms}
+\author{Alja Vrieling}
+\date{May 30, 2012}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+An OpenDA Stochastic Model may be limited in the number of time steps that can
+be advanced without recomputing the forcing terms. Storage of the forcing terms
+can be quite expensive in memory and may therefore be limited to a maximum.
+
+A problem arises when the first observation, i.e.\ the first analysis time,
+falls outside the interval for which the forcing terms are computed. In that
+case, the first model instantiation already needs to compute new forcing terms,
+while these terms should still be kept in memory for the other instantiations.
+
+There are two possibilities to circumvent this problem:
+\begin{itemize}
+\item use option {\tt<analysisTimes type="fixed">} in the ModelConfig file to
+  force the stochastic model to stop at a point in time that falls within the
+  interval for which the forcing terms were computed.
+\item use attribute \verb1flag_barrier1 in the model\_class file to indicate
+  that the computation of a model instantiation must be temporarily blocked at a
+  certain moment in time until all instantiations have reached this point. Once
+  all instantiations have reached this point, the computation of all model
+  instantiation is advanced until the next barrier moment.
+\end{itemize}
+More details on both options are presented in the following sections.
+
+\section{Setting fixed analysis times}
+
+Fixed analysis time must be specified in the ModelConfig file. For example, the
+line
+\begin{verbatim}
+<analysisTimes type="fixed" timeFormat="dateTimeString">
+200701010000,200701010060,...,200701020000</analysisTimes>}
+\end{verbatim}
+forces an OpenDA run to interrupt the computation every hour. This means that
+the stochastic model is restarted a number of times. Depending on the file I/O
+that is needed for a restart, this may slow down the OpenDA computation more
+than necessary.
+
+\section{Setting a barrier for a model computation}
+
+The {\tt CTA\_MODELCLASS} is created in the model\_class file. The line
+\begin{verbatim}
+<CTA_MODELCLASS id="modelclass"  name="example">
+\end{verbatim}
+may be augmented with the option {\tt flag\_barrier}. If this flag is set {\tt
+  true}, then one must also specify a parameter {\tt T\_step}, representing the
+maximum time interval that the model may run without recomputing the forcing
+terms. This parameter must be specified by the user as only the user knows what
+the time-stepping limitations of his stochastic model are.
+
+The default unit for {\tt T\_step} is Modified Julian Day ({\tt MJD}). It is
+also possible to specify the time in hours ({\tt HOUR}), minutes ({\tt MIN}) or
+seconds ({\tt SEC}). Other time units are not supported yet and it is also not
+possible to use a combination of units.
+
+Examples:
+\begin{itemize}
+\item set a maximum time step of 0.1 Modified Julian Day:
+\begin{verbatim}
+<CTA_MODELCLASS id="modelclass"  name="example"
+flag_barrier="true" T_step = "0.1">
+\end{verbatim}
+which is equivalent to:
+\begin{verbatim}
+<CTA_MODELCLASS id="modelclass"  name="example"
+flag_barrier="true" T_step = "0.1 MJD">
+\end{verbatim}
+
+\item set a maximum time step of 1 hour and 30 min:
+\begin{verbatim}
+<CTA_MODELCLASS id="modelclass" name="example" flag_barrier="true"
+T_step = "1.5 HOUR">
+\end{verbatim}
+or
+\begin{verbatim}
+<CTA_MODELCLASS id="modelclass" name="example" flag_barrier="true"
+T_step = "90 MIN">
+\end{verbatim}
+or 
+\begin{verbatim}
+<CTA_MODELCLASS id="modelclass" name="example" flag_barrier="true"
+T_step = "5400 SEC">
+\end{verbatim}
+\end{itemize}
+\end{document}
+

@@ -1,0 +1,9 @@
+C ** pser.inp file, in free format across line, repeats npser times  DDD  2011-05-12 ¿ÀÈÄ 6:39:10
+C **
+C **  MPSER(NS) TCPSER(NS) TAPSER(NS) RMULADJ(NS) ADDADJ(NS)
+C **
+C **  TPSER(M,NS) PSER(M,NS) !(mpser(ns) pairs for ns=1,npser series)
+C **
+     2        86400       0       1       0 ! *** Paldang_dam_WL_20120101_0128
+     0.000    0.0
+     730.000  0.0

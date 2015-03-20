@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SteadyStateFilterConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/steadyStateFilter.xsd">
+	<analysisTimes type="fixed" timeFormat="mjd" skipAtInitialTime="true" skipAtFinalTime="false" continueWithoutObservation="true">0.0,1.0,...,10.0</analysisTimes>
+	<!-- selection to add noise to a model. This should probably be false unless you are performing a special experiment -->
+	<mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
+	<readGain>
+		<dirPrefix>../enkf_oscillator_</dirPrefix>
+		<!-- <time timeFormat="dateTimeString">201008240000</time> -->
+		<time timeFormat="mjd">10.0</time>
+		<file>enkf_oscillator_gain.xml</file>
+	</readGain>
+</SteadyStateFilterConfig>

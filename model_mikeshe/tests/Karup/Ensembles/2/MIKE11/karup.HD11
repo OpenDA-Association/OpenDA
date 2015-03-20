@@ -1,0 +1,261 @@
+// Created     : 2012-07-25 18:21:46
+// DLL id      : C:\Program Files (x86)\DHI\2011\Bin\pfs2004.dll
+// PFS version : Jan  6 2011 20:45:15
+
+[MIKE0_HD]
+   [Global_Variables]
+      [Global_Values]
+         G_waterlevel = 0
+         iLevelDepth = 0
+         G_discharge = 0
+         G_wind_factor = 1
+         G_resistance = 25
+         G_S_max = 0
+         G_f = 0
+         G_k_100 = 1
+         G_min_width = 0
+         G_flood_plan_res = -99
+         G_wave = 3
+         ResisZone = 0, 30, 25, 20
+      EndSect  // Global_Values
+
+      [Defalt_Values]
+         delta = 0.75
+         delhs = 0.01
+         delh = 0.001
+         alpha = 1
+         theta = 1
+         eps = 0.0001
+         dh_node = 0.01
+         zeta_min = 0.1
+         struc_fac = 0
+         froude_exp = -1
+         froude_max = -1
+         no_iter = 1
+         max_iter = 100
+         inter1_max = 10
+         wind_shear_stress = false
+         resist_num = 0
+         spilfc = 0
+         storfc = 0
+      EndSect  // Defalt_Values
+
+      [Quasi_steady]
+         relax = 0.5
+         beta_limit = 1e-008
+         fac_0 = 2.5
+         qconv_factor = 0.001
+         hconv_factor = 0.01
+         min_hconv = 1e-005
+         qstruc_factor = 0.005
+         hstop = 0.0001
+         EnergyEquation = false, 0
+         ContractExpansion = false
+         SlopeUpstream = false
+         VelocityCoefficient = false
+         NoConvectiveSuppression = false
+         G_ContractExpansion = 0.1, 0.3
+      EndSect  // Quasi_steady
+
+      [Add_Output]
+         ReducedOut = 0
+         Velo_H = false
+         Velo_struc = false
+         Discharge_H = false
+         CrossSec_H = false
+         FlowWidth_H = false
+         Radius_H = false
+         Resistance_H = false
+         Conveyance_H = false
+         FroudeNum_H = false
+         Volume_H = false
+         Volume_Total = false
+         FloodArea_H = false
+         FloodArea_Total = false
+         MassError_H = false
+         MassError_Total = false
+         AcumMassError_Total = false
+         Topo_print = false
+         Coef_print = false
+         Test_print = false
+         LatInflows_H = false
+         EnergyLevel = false
+         EnergySlope = false
+         WaterSlope = false
+         BedShearStress = false
+         GroundwaterHead = false
+         TimeStep = false
+      EndSect  // Add_Output
+
+      [MixingCoefficients]
+         MixingCoef = 0, 1.2, 0.04, 0.1, 0.03
+      EndSect  // MixingCoefficients
+
+      [WaterLevelMarkTitles]
+         MarkTitles = 0, ''
+         MarkInterpolate = 0, false
+      EndSect  // WaterLevelMarkTitles
+
+      [BedResistTools]
+         BRTools = 0, false, false, false, 0, 0, 0, 0, 0
+      EndSect  // BedResistTools
+
+      [WaterLevelCurve]
+         WLDueToCurve = true, false, true, true, true, 0, 0, 0, 0
+      EndSect  // WaterLevelCurve
+
+      [WaterLevelSandBars]
+         WLDueToSand = true, 0, 0, 0, 0, 0
+      EndSect  // WaterLevelSandBars
+
+      [Encroachment]
+         Max_no_iter = 20
+      EndSect  // Encroachment
+
+      [Heat_Balance]
+         Calc = false
+         Latitude = 55
+         Longitude = -12
+         TimeZone = -15
+         DisTime = 0
+         LightAtt = 10
+         betaBeer = 0
+         RadA = 0.2
+         RadB = 0.5
+         VapA = 1
+         VapB = 1
+      EndSect  // Heat_Balance
+
+      [Stratification]
+         npv = 10
+         dens = true
+         visc = 0.003
+         vmf = 3
+         vmb = 0
+         Rich = true
+         bpr1 = 1
+         bpr2 = 0
+         uu = 1
+         uw = 1
+         uwc = 1
+         dfx = 1
+         dfz = 1
+      EndSect  // Stratification
+
+      [M12Param]
+         fricfac = 0.002
+         maxvol = 100
+         maxvelo = 0.008999999999999999
+         minthick = 0.01
+         densdiff = 0.001
+         action = 0
+         R1 = 0.05
+         R2 = 0.05
+         Rs = 0.15
+      EndSect  // M12Param
+
+      [M12Init]
+         h1 = 0
+         h0 = 0
+         Q1 = 0
+         Q0 = 0
+         G_friction_factor = 0.0024
+      EndSect  // M12Init
+
+      [TextOutput]
+         GenerateOutput = false
+         Delimiter = ''
+         ColumnWidth = 20
+         SummaryInfo = false, false, false, false
+         GridPointOutputType = 1
+         LimitedPeriod = false
+         LimitedPeriodStart = 2012, 7, 25, 11, 38, 14
+         LimitedPeriodEnd = 2012, 7, 25, 11, 38, 14
+         [OutputItems]
+            data = 0, '', 2
+         EndSect  // OutputItems
+
+         [OutputFiles]
+            data = 'dfs Timeseries Bridge', false, ||
+         EndSect  // OutputFiles
+
+      EndSect  // TextOutput
+
+      [MapOutput]
+         GenerateOutput = false
+         ApplyDemInRiverXsec = false
+         ApplyDemGroundElevation = false
+         MapAreaGeoDb = false
+         GeoDb = ||
+         AddToCalculation = false
+         [MapOutputFiles]
+         EndSect  // MapOutputFiles
+
+         [DemInputFiles]
+         EndSect  // DemInputFiles
+
+      EndSect  // MapOutput
+
+      [Leakage]
+         IncludeLeakage = false
+         LeakageCoefficient = 0
+      EndSect  // Leakage
+
+   EndSect  // Global_Variables
+
+   [InitList]
+   EndSect  // InitList
+
+   [WindList]
+   EndSect  // WindList
+
+   [BedList]
+   EndSect  // BedList
+
+   [WaveList]
+   EndSect  // WaveList
+
+   [WaterList]
+   EndSect  // WaterList
+
+   [FloodList]
+   EndSect  // FloodList
+
+   [MixingCoefList]
+   EndSect  // MixingCoefList
+
+   [WaterLevelMarkList]
+   EndSect  // WaterLevelMarkList
+
+   [BedResistanceToolboxList]
+   EndSect  // BedResistanceToolboxList
+
+   [WLCurveList]
+   EndSect  // WLCurveList
+
+   [WLSandBarsList]
+   EndSect  // WLSandBarsList
+
+   [Encroachment_Setup]
+   EndSect  // Encroachment_Setup
+
+   [M12ParamList]
+   EndSect  // M12ParamList
+
+   [M12InitList]
+   EndSect  // M12InitList
+
+   [QSSContractionExpansionList]
+   EndSect  // QSSContractionExpansionList
+
+   [QSSReachLengthsList]
+   EndSect  // QSSReachLengthsList
+
+   [OutputGridPoints]
+   EndSect  // OutputGridPoints
+
+   [LeakageList]
+   EndSect  // LeakageList
+
+EndSect  // MIKE0_HD
+

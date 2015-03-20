@@ -1,0 +1,40 @@
+C  aser.inp file, Sep. 10, 2004 to Sep. 21, 2005 from KunSan data DDD 2010-12-06 ¿ÀÀü 10:14:48
+C
+C  MASER   TCASER   TAASER   IRELH  RAINCVT  EVAPCVT SOLRCVT  CLDCVT
+C
+C  TASER(M) PATM(M) TDRY(M) TWET(M) RAIN(M) EVAP(M) SOLSWR(M) CLOUD(M)
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+C
+EE    EFDC_DS_SOLRAD (COMPUTE SOLAR RADIATION FROM LAT/LONG & CLOUD COVER): False
+EE    EFDC_DS_LATITUDE  (DEC DEGREES):34.700
+EE    EFDC_DS_LONGITUDE (DEC DEGREES):0.000
+EE    EFDC_DS_USESHADE  (T/F): False
+C
+C
+C
+         2 86400.000     0.000         0  1.1574E-05  1.1574E-05     1.000     1.000   ! *** ASER_1
+         0        0.        0.        0.        0.        0.        0.        0.        0.        0.
+     0.000 1000.0000   10.0000   10.0000    0.0000    0.0000    0.0000    5.0000
+   999.000 1000.0000   10.0000   10.0000    0.0000    0.0000    0.0000    5.0000

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesNoiseModelConfig>
+	<simulationTimespan timeFormat="mjd">0,0.05,...,40</simulationTimespan>
+	<timeSeries id="noise-on-state[0]" location="state[0]" quantity="quantity1" standardDeviation="8.0"
+				timeCorrelationScale="0.1" timeCorrelationScaleUnit="days" />"
+	<timeSeries id="noise-on-state[1]" location="state[1]" quantity="quantity2" standardDeviation="8.0"
+				timeCorrelationScale="0.1" timeCorrelationScaleUnit="days" />"
+</timeSeriesNoiseModelConfig>

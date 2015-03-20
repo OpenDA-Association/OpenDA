@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+
+	<probabilityDistributionFunction id="Hsig @ 206767.0,622696.0" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="RTpeak @ 206767.0,622696.0" isActive="true">
+		<normal mean="0" stdv="0.9876" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="Tpeq @ 206767.0,622696.0" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+
+
+	<probabilityDistributionFunction id="Hsig @ 196992.0,612714.0" isActive="true">
+		<normal mean="0" stdv="3" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="RTpeak @ 196992.0,612714.0" isActive="true">
+		<normal mean="0" stdv="20" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="Tm-2-1 @ 196992.0,612714.0" isActive="true">
+		<normal mean="0" stdv=".75" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="Tpeq @ 196992.0,612714.0" isActive="true">
+		<normal mean="0" stdv=".4" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="Hsig @ 196215.0,608476.0" isActive="true">
+		<normal mean="0" stdv="0.01" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="RTpeak @ 196215.0,608476.0" isActive="true">
+		<normal mean="0" stdv="0.01" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="Tpeq @ 196215.0,608476.0" isActive="true">
+		<normal mean="0" stdv="0.01" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="Hsig @ 205996.0,604802.0" isActive="true">
+		<normal mean="0" stdv=".5" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="RTpeak @ 205996.0,604802.0" isActive="true">
+		<normal mean="0" stdv="0.4444" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="Tpeq @ 205996.0,604802.0" isActive="true">
+		<normal mean="0" stdv="33.333" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+</uncertainties>

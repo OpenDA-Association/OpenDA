@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="OuterLoopXML">
+		<xs:attribute name="type" default="BFGS">
+			<xs:annotation>
+				<xs:documentation>Specify the optimization algorithm to use: BFGS (default),  fletcher reeves, polak ribiere, or Steepest Descent.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="limitedMemory" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>If 'type'= BFGS, specify whether to use LBFGS (limited memory BFGS).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="numOfVectors" type="xs:integer" use="optional" default="3">
+			<xs:annotation>
+				<xs:documentation>Maximum number of  stored vectors.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="200">
+			<xs:annotation>
+				<xs:documentation>Maximum number of iterations for (L)BFGS.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absTolGrad" type="xs:double" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Absolute tolerance for gradient.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolGrad" type="xs:double" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Relative tolerance for gradient.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absTolStep" type="xs:double" use="optional" default="0.001">
+			<xs:annotation>
+				<xs:documentation>Absolute tolerance for step size.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolStep" type="xs:double" use="optional" default="0.001">
+			<xs:annotation>
+				<xs:documentation>Relative tolerance for step size.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

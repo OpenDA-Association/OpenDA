@@ -1,0 +1,4 @@
+<DelsaConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <regularGrid min="[7.0,1.7]" max="[9.0,1.75]" nPointsPerParameter="10" />
+</DelsaConfig>

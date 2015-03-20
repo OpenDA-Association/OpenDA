@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+		<alias key="SWANDIR"/>
+		<alias key="templateDir"/>
+		<alias key="instanceDir"/>
+		<alias key="inputFile"/>
+		<alias key="hotFile"/>
+		<alias key="windFile"/>
+		<alias key="openboundaryFile"/>
+        <alias key="openboundaryTPARFile"/>
+	</aliasDefinitions>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+		<computeActions>
+			<!--<action workingDirectory="%instanceDir%" windowsExe="%SWANDIR%/bin/win32/swan_4081_del_w32_i11_omp.exe" linuxExe="%SWANDIR%/bin/linux/swan4051A.exe"/>--> 
+			<action windowsExe="%SWANDIR%/action.bat" linuxExe="%SWANDIR%/action.sh" workingDirectory="%instanceDir%"/>
+		    <!--<action exe="%SWANDIR%/action.bat" workingDirectory="%instanceDir%"/>-->
+		</computeActions>
+
+		<finalizeActions/>
+
+	</run>
+
+
+<inputOutput>
+
+	<ioObject className="org.openda.model_swan.SwanOpenBoundarySpectralFile">
+		<file>%openboundaryFile%</file>
+		<id>openBoundary</id>
+		<arg></arg>
+    </ioObject>
+
+     <ioObject className="org.openda.model_swan.SwanOpenBoundaryTPARFile">
+		<file>%openboundaryTPARFile%</file>
+		<id>openBoundaryTPAR</id>
+		<arg></arg>
+    </ioObject>
+
+	<ioObject className="org.openda.model_swan.SwanField2DXYFile">
+		<file>%inputFile%</file>
+		<id>windFile</id>
+        	<arg>WIND</arg>
+    </ioObject>
+
+	<ioObject className="org.openda.model_swan.SwanStateFile">
+            <file>%hotFile%</file>
+            <id>hotFile</id>
+            <arg></arg>
+    </ioObject>
+
+    <ioObject className="org.openda.model_swan.SwanTimeInfo">
+            <file>%inputFile%</file>
+            <id>timeInfo</id>
+            <arg></arg>
+    </ioObject>
+
+</inputOutput>
+
+</blackBoxWrapperConfig>

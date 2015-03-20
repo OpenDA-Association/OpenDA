@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>building Openda from source</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Building the OpenDA native source code (Linux)</h1>
+
+<hr>
+
+This page describes how to build the OpenDA native source code on Linux computers. The source code is located in the
+<tt>core/native</tt>
+directory of the source distribution. On Linux, the native sources are compiled using the
+<a href="http://www.gnu.org/software/automake" target="_blank">GNU Automake system</a>
+<p>
+Directory <tt>scripts</tt> of the source distribution contains a script <tt>openda_build_native.sh</tt> that
+may be useful to compile the native code. It was tested for Ubuntu 8.04 lts 32-bit only. In this script, you
+will recognize the steps described below.
+
+<h2>Building step-by-step</h2>
+
+<ol>
+
+   <li>The first step is starting the <tt>configure</tt> script, usually through <tt>./configure</tt> (to ensure the script you
+   are starting is the one in the current directory and not another one from the search path). This will detect the configuration of
+   the computer being used and will warn when specific requirements are not met. When all requirements are met, make files will be
+   generated. It is possible to alter the behaviour of the <tt>configure</tt> script by using command-line arguments. The most
+   important ones are:
+   <ul>
+      <li><tt>--help</tt> will list all options with some help text.</li>
+      <li><tt>--prefix=PATH</tt> indicates the place the library should be copied to after <tt>make install</tt>.</li>
+      <li><tt>--disable-mpi</tt> disables MPI.</li>
+      <li><tt>--with-blas=PATH</tt> indicates the location of the BLAS library. By default, an unoptimized BLAS library is
+      used.</li>
+      <li><tt>--with-lapack=PATH</tt> indicates the location of the LAPACK library, an unoptimized LAPACK library is used.</li>
+      <li><tt>--with-jdk=PATH</tt> indicates the location of the Java Development Kit (JDK) if it differs from the value of <tt>$JAVA_HOME</tt>.</li>
+      <li><tt>--with-jikes=PATH</tt> indicates the location of the Jikes Java compiler in case that compiler is to be used.
+      Default: no.</li>
+   </ul>
+   Do not forget to scan the <tt>configure</tt> output for warnings. Those are often very informative.
+   </li>
+   <li>The second step is using <tt>make</tt> to build (compile and link) the source files.</li>
+   <li>The final step is copying the resulting libraries (and executables) to the place specified using <tt>configure</tt>'s <tt>--prefix=</tt>
+   command-line argument. This step is activated by <tt>make install</tt>.
+</ol>
+The Automake system also generated the other usual
+<tt>make</tt>
+options (like
+<tt>make clean</tt>
+). It is unlikely that you want to remove the libraries and executables you just built, but in case you want to, this is nice to
+know.
+
+<h2>Note about OpenMPI</h2>
+
+There is a known problem with OpenMPI versions 1.3 and 1.4 where an external dependency
+<tt>mca_base_param_reg_int</tt>
+cannot be found during run-time. This can be avoided by recompiling OpenMPI itself. Use command-line arguments
+<tt>--enable-shared --enable-static</tt>
+when running the
+<tt>config</tt>
+script.
+</body>
+</html>

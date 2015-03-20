@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<costa xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- Used model class -->
+  <CTA_MODELCLASS id="modelclass"                  name="waqua-triwaq-stochastic">
+     <CTA_FUNCTION id="CTA_MODEL_CREATE_SIZE"      name="cwssiz"  library="libwaqcosta_single.so" function="cwssiz" />
+     <CTA_FUNCTION id="CTA_MODEL_CREATE_INIT"      name="cwscin"  library="libwaqcosta_single.so" function="cwscin" />
+     <CTA_FUNCTION id="CTA_MODEL_COMPUTE"          name="cwsstp"  library="libwaqcosta_single.so" function="cwsstp" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_STATE"        name="cwsget"  library="libwaqcosta_single.so" function="cwsget" />
+     <CTA_FUNCTION id="CTA_MODEL_SET_STATE"        name="cwsset"  library="libwaqcosta_single.so" function="cwsset" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_NOISE_COVAR"  name="cwscov"  library="libwaqcosta_single.so" function="cwscov" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_OBSVALUES"    name="cwsobs"  library="libwaqcosta_single.so" function="cwsobs" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_STATESCALING" name="cwssca"  library="libwaqcosta_single.so" function="cwssca" />
+     <CTA_FUNCTION id="CTA_MODEL_AXPY_STATE"       name="cwssax"  library="libwaqcosta_single.so" function="cwssax" />
+     <CTA_FUNCTION id="CTA_MODEL_AXPY_MODEL"       name="cwsmax"  library="libwaqcosta_single.so" function="cwsmax" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_NOISE_COUNT"  name="cwsnnz"  library="libwaqcosta_single.so" function="cwsnnz" />
+     <CTA_FUNCTION id="CTA_MODEL_FREE"             name="cwsfri"  library="libwaqcosta_single.so" function="cwsfri" />
+     <CTA_FUNCTION id="CTA_MODEL_EXPORT"           name="cwsexp"  library="libwaqcosta_single.so" function="cwsexp" />
+     <CTA_FUNCTION id="CTA_MODEL_IMPORT"           name="cwsimp"  library="libwaqcosta_single.so" function="cwsimp" />
+     <CTA_FUNCTION id="CTA_MODEL_GETCURRENTTIME"   name="cwsctm"  library="libwaqcosta_single.so" function="cwsctm" />
+     <CTA_FUNCTION id="CTA_MODEL_GETTIMEHORIZON"   name="cwshor"  library="libwaqcosta_single.so" function="cwshor" />
+     <CTA_FUNCTION id="CTA_MODEL_ADD_NOISE"        name="cwsadn"  library="libwaqcosta_single.so" function="cwsadn" />
+  </CTA_MODELCLASS> 
+
+  <!-- Used model class -->
+  <CTA_MODELCLASS id="modelclass_deterministic"  name="waqua-triwaq-deterministic">
+     <CTA_FUNCTION id="CTA_MODEL_CREATE_SIZE"      name="cwqsiz"  library="libwaqcosta_single.so" function="cwqsiz" />
+     <CTA_FUNCTION id="CTA_MODEL_CREATE_INIT"      name="cwqcin"  library="libwaqcosta_single.so" function="cwqcin" />
+     <CTA_FUNCTION id="CTA_MODEL_COMPUTE"          name="cwqstp"  library="libwaqcosta_single.so" function="cwqstp" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_STATE"        name="cwqget"  library="libwaqcosta_single.so" function="cwqget" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_STATESCALING" name="cwqsca"  library="libwaqcosta_single.so" function="cwqsca" />
+     <CTA_FUNCTION id="CTA_MODEL_SET_STATE"        name="cwqset"  library="libwaqcosta_single.so" function="cwqset" />
+     <CTA_FUNCTION id="CTA_MODEL_GET_OBSVALUES"    name="cwqobs"  library="libwaqcosta_single.so" function="cwqobs" />
+     <CTA_FUNCTION id="CTA_MODEL_AXPY_STATE"       name="cwqsax"  library="libwaqcosta_single.so" function="cwqsax" />
+     <CTA_FUNCTION id="CTA_MODEL_AXPY_MODEL"       name="cwqmax"  library="libwaqcosta_single.so" function="cwqmax" />
+     <CTA_FUNCTION id="CTA_MODEL_AXPY_FORC"        name="cwqfax"  library="libwaqcosta_single.so" function="cwqfax" />
+     <CTA_FUNCTION id="CTA_MODEL_FREE"             name="cwqfri"  library="libwaqcosta_single.so" function="cwqfri" />
+     <CTA_FUNCTION id="CTA_MODEL_EXPORT"           name="cwqexp"  library="libwaqcosta_single.so" function="cwqexp" />
+     <CTA_FUNCTION id="CTA_MODEL_IMPORT"           name="cwqimp"  library="libwaqcosta_single.so" function="cwqimp" />
+     <CTA_FUNCTION id="CTA_MODEL_GETCURRENTTIME"   name="cwqctm"  library="libwaqcosta_single.so" function="cwqctm" />
+     <CTA_FUNCTION id="CTA_MODEL_GETTIMEHORIZON"   name="cwqhor"  library="libwaqcosta_single.so" function="cwqhor" />
+  </CTA_MODELCLASS> 
+</costa>

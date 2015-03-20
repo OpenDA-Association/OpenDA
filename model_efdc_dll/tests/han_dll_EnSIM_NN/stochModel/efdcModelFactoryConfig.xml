@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<efdcModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/efdcModelFactoryConfig.xsd">
+	<efdcDllFile>../../../OpenDaInFews/bin/win32_ifort/EfdcFortranDLL.dll</efdcDllFile>
+	<timeZoneOffset>9.0</timeZoneOffset>
+	<templateDirectory>model</templateDirectory>
+	<instanceDirectory>work</instanceDirectory>
+	<inputFile>Precipitation.nc</inputFile>
+<inputFile>AirTemperature.nc</inputFile>
+<inputFile>CloudCover.nc</inputFile>
+<inputFile>GlobalRadiation.nc</inputFile>
+<inputFile>AtmosphericPressure.nc</inputFile>
+<inputFile>RelativeHumidity.nc</inputFile>
+<inputFile>PotentialEvaporation.nc</inputFile>
+<inputFile>WaterLevel.nc</inputFile>
+<inputFile>Discharge.nc</inputFile>
+<inputFile>WaterTemperature.nc</inputFile>
+<inputFile>AlgalCyanobacteria.nc</inputFile>
+<inputFile>AlgalDiatom.nc</inputFile>
+<inputFile>AlgalGreenAlgae.nc</inputFile>
+<inputFile>RefractoryPOCarbon.nc</inputFile>
+<inputFile>LabilePOCarbon.nc</inputFile>
+<inputFile>DissolvedOCarbon.nc</inputFile>
+<inputFile>RefractoryPOPhosphorus.nc</inputFile>
+<inputFile>LabilePOPhosphorus.nc</inputFile>
+<inputFile>DissolvedOPhosphorus.nc</inputFile>
+<inputFile>Phosphate.nc</inputFile>
+<inputFile>RefractoryPONitrogen.nc</inputFile>
+<inputFile>LabilePONitrogen.nc</inputFile>
+<inputFile>DissolvedONitrogen.nc</inputFile>
+<inputFile>Ammonia.nc</inputFile>
+<inputFile>Nitrate.nc</inputFile>
+<inputFile>DissolvedOxygen.nc</inputFile>
+
+	<modelOutputFile>model_output.nc</modelOutputFile>
+	<analysisOutputFile>analysis_output.nc</analysisOutputFile>
+</efdcModelFactoryConfig>

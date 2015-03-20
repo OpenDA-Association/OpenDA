@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./simpleBbModelConfig.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        <parameters>
+            <cartesianToPolar yScale="1.5">
+                <stdDev value=".05"/>
+                <vector id="locA.Ampl"/>
+                <vector id="locA.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar>
+                <stdDev value=".03"/>
+                <vector id="locB.Ampl"/>
+                <vector id="locB.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar>
+                <stdDev value=".1"/>
+                <vector id="locC.Ampl"/>
+                <vector id="locC.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar>
+                <stdDev value="2"/>
+                <vector id="locD.Ampl"/>
+                <vector id="locD.Phase"/>
+                <vector id="locE.Ampl"/>
+                <vector id="locE.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar xSuffixCaption="H" ySuffixCaption="G">
+                <stdDev value="2"/>
+                <vector id="locD.Ampl"/>
+                <vector id="locD.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar xCaption="SpecificXCaption">
+                <stdDev value="2"/>
+                <vector id="locD.Ampl"/>
+                <vector id="locD.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar xCaption="locD.H" yCaption="locD.G" >
+                <stdDev value="2"/>
+                <vector id="locD.Ampl"/>
+                <vector id="locD.Phase"/>
+            </cartesianToPolar>
+            <cartesianToPolar xCaption="locD/locE.H" yCaption="locD/locE.G" >
+                <stdDev value="2"/>
+                <vector id="locD.Ampl"/>
+                <vector id="locD.Phase"/>
+                <vector id="locE.Ampl"/>
+                <vector id="locE.Phase"/>
+            </cartesianToPolar>
+		</parameters>
+        <predictor>
+            <vector id="not used"/>
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

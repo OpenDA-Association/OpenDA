@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opendaKalmanGainStorage
+    xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/opendaKalmanGainStorage.xsd"
+    xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <comment>Test file for openda kalman gain storage  </comment>
+    <timeStampAsMJD>55610.75</timeStampAsMJD>
+    <timeStampAsDateTime>2011-02-18T19:00:00.000+01:00</timeStampAsDateTime>
+    <observations>
+        <observation>
+            <id>loc 1</id>
+            <timeOffsetInDays>-0.25</timeOffsetInDays>
+            <vector>19.0,18.0,17.0,16.0,15.0</vector>
+        </observation>
+        <observation>
+            <id>loc 2</id>
+            <timeOffsetInDays>0.0</timeOffsetInDays>
+            <vector>29.0,38.0,47.0,56.0,65.0</vector>
+        </observation>
+    </observations>
+</opendaKalmanGainStorage>

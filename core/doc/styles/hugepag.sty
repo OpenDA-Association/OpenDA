@@ -1,0 +1,22 @@
+%
+% hugepag.sty
+%
+%   Vergroten van een pagina met ong. 24%
+%
+%   Let op, het gaat van \marginparwidth af!!
+%
+%   Versie 1.0: 12-09-1988
+%   Versie 1.1: 27-12-1999 - vergroot textheight met 2.5 ipv 4.0 cm, omdat
+%                            regels wegvallen van vtletter's met lpps -2
+%   Versie 1.2: 29-10-2001 - aparte margins voor oneside vs. twoside
+%
+\addtolength{\textheight}{2.5cm}
+\addtolength{\topmargin}{-1.0cm}
+\addtolength{\textwidth}{3cm}
+\addtolength{\marginparwidth}{-1.5cm}
+\if@twoside
+   \addtolength{\oddsidemargin}{-0.3cm}
+   \addtolength{\evensidemargin}{-3.0cm}
+\else
+   \addtolength{\oddsidemargin}{-1.5cm}
+\fi

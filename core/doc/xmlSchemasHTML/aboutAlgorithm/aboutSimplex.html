@@ -1,0 +1,453 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 10">
+<meta name=Originator content="Microsoft Word 10">
+<link rel=File-List href="aboutSimplex_files/filelist.xml">
+<link rel=Edit-Time-Data href="aboutSimplex_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Simplex</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Administrator</o:Author>
+  <o:Template>normal</o:Template>
+  <o:LastAuthor>Julius Sumihar</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>68</o:TotalTime>
+  <o:Created>2010-02-23T12:51:00Z</o:Created>
+  <o:LastSaved>2010-02-23T12:51:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>229</o:Words>
+  <o:Characters>1308</o:Characters>
+  <o:Company>TNO-NITG</o:Company>
+  <o:Lines>10</o:Lines>
+  <o:Paragraphs>3</o:Paragraphs>
+  <o:CharactersWithSpaces>1534</o:CharactersWithSpaces>
+  <o:Version>10.6858</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>2,85 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>2,85 pt</w:DrawingGridVerticalSpacing>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+  <o:regrouptable v:ext="edit">
+   <o:entry new="1" old="0"/>
+   <o:entry new="2" old="0"/>
+   <o:entry new="3" old="0"/>
+   <o:entry new="4" old="0"/>
+  </o:regrouptable>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US style='tab-interval:36.0pt'>
+
+<div class=Section1>
+
+<!--<p class=MsoNormal>Simplex Algorithm</p>-->
+<h1>Simplex Algorithm</h1>
+
+<p class=MsoNormal>The simplex algorithm implemented in <span class=SpellE>OpenDa</span>
+is the one due to <span class=SpellE>Nelder</span>-Mead. This is also called a
+Downhill Simplex Method. Simplex algorithm is one of the popular techniques in
+solving minimization problems, without using any derivative of the cost
+function to minimize. For minimization of a cost function with N parameters, it
+uses a <span class=SpellE>polytope</span> of (N+1) vertices. Each vertex
+represents a possible set of parameters, which is associated with a cost value.
+The minimization is performed by replacing the highest-cost vertex with a new
+vertex with a lower cost. The new vertex is sought for systematically by trying
+a sequence of different steps of moving the vertex relative to the other N
+vertices, until a new vertex with smaller cost is found. This procedure is
+repeated for the new <span class=SpellE>polytope</span> until convergence is
+reached, that is when the costs of all vertices are within a predefined bound
+of tolerance. The first trial step is simply to reflect the worst vertex with
+respect to the <span class=SpellE>centroid</span> of the remaining N vertices. Depending
+on whether the reflected cost is higher or lower than the previous ones, the
+algorithm will try out different step to see if it will produce a vertex with
+even smaller cost. In short the possible steps are reflection, expansion, contraction,
+and reduction. The figures below illustrate all these steps for a case of two
+parameters (N=2). The left most vertex is the one with highest cost. The white
+vertex is the newly tried vertex.</p>
+
+<p class=MsoNormal><!--[if gte vml 1]><v:oval id="_x0000_s1084" style='position:absolute;
+ margin-left:296.4pt;margin-top:304.5pt;width:5.7pt;height:5.7pt;z-index:23'
+ o:regroupid="4"/><![endif]--><![if !vml]><span style='mso-ignore:vglayout;
+position:absolute;z-index:23;margin-left:394px;margin-top:405px;width:10px;
+height:10px'><img width=10 height=10 src="aboutSimplex_files/image001.gif"
+v:shapes="_x0000_s1084"></span><![endif]><!--[if gte vml 1]><v:oval id="_x0000_s1074"
+ style='position:absolute;margin-left:347.7pt;margin-top:278.85pt;width:5.7pt;
+ height:5.7pt;z-index:18' o:regroupid="4"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:18;margin-left:463px;
+margin-top:371px;width:9px;height:9px'><img width=9 height=9
+src="aboutSimplex_files/image002.gif" v:shapes="_x0000_s1074"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1085" style='position:absolute;margin-left:347.7pt;margin-top:327.3pt;
+ width:5.7pt;height:5.7pt;z-index:24' o:regroupid="4"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:24;margin-left:463px;
+margin-top:435px;width:9px;height:10px'><img width=9 height=10
+src="aboutSimplex_files/image003.gif" v:shapes="_x0000_s1085"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1081" style='position:absolute;rotation:1437949fd;flip:x y;
+ z-index:3' from="293.8pt,318.65pt" to="353.25pt,319.25pt" o:regroupid="4"
+ strokeweight="2pt">
+ <v:stroke dashstyle="1 1"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:3;margin-left:393px;margin-top:408px;width:77px;height:34px'><img
+width=77 height=34 src="aboutSimplex_files/image004.gif" v:shapes="_x0000_s1081"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1083" style='position:absolute;flip:x;z-index:4' from="350.55pt,281.7pt"
+ to="350.55pt,330.15pt" o:regroupid="4" strokeweight="2pt">
+ <v:stroke dashstyle="1 1"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:4;margin-left:466px;margin-top:374px;width:3px;height:68px'><img
+width=3 height=68 src="aboutSimplex_files/image005.gif" v:shapes="_x0000_s1083"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1082" style='position:absolute;rotation:-22104374fd;flip:y;
+ z-index:16' from="293.85pt,293.35pt" to="353.85pt,295.8pt" o:regroupid="4"
+ strokeweight="2pt">
+ <v:stroke dashstyle="1 1"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:16;margin-left:394px;margin-top:374px;width:76px;height:38px'><img
+width=76 height=38 src="aboutSimplex_files/image006.gif" v:shapes="_x0000_s1082"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1089" style='position:absolute;rotation:-3278651fd;flip:x;
+ z-index:2' from="320.95pt,328.4pt" to="375.95pt,329.9pt">
+ <v:stroke dashstyle="dashDot"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:2;margin-left:439px;margin-top:410px;width:51px;height:57px'><img
+width=51 height=57 src="aboutSimplex_files/image007.gif" v:shapes="_x0000_s1089"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1088" style='position:absolute;rotation:3160976fd;flip:x;
+ z-index:5' from="319.1pt,284.15pt" to="376.85pt,285.85pt">
+ <v:stroke dashstyle="dashDot"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:5;margin-left:438px;margin-top:349px;width:52px;height:61px'><img
+width=52 height=61 src="aboutSimplex_files/image008.gif" v:shapes="_x0000_s1088"></span><![endif]><!--[if gte vml 1]><v:shapetype
+ id="_x0000_t202" coordsize="21600,21600" o:spt="202" path="m,l,21600r21600,l21600,xe">
+ <v:stroke joinstyle="miter"/>
+ <v:path gradientshapeok="t" o:connecttype="rect"/>
+</v:shapetype><v:shape id="_x0000_s1078" type="#_x0000_t202" style='position:absolute;
+ margin-left:253.65pt;margin-top:253.2pt;width:96.9pt;height:22.8pt;z-index:22'
+ o:regroupid="4" filled="f" stroked="f">
+ <v:textbox style='mso-next-textbox:#_x0000_s1078'/>
+</v:shape><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:22;margin-left:338px;margin-top:338px;width:133px;height:34px'>
+
+<table cellpadding=0 cellspacing=0>
+ <tr>
+  <td width=133 height=34 style='vertical-align:top'><![endif]><![if !mso]><span
+  style='position:absolute;mso-ignore:vglayout;z-index:22'>
+  <table cellpadding=0 cellspacing=0 width="100%">
+   <tr>
+    <td><![endif]>
+    <div v:shape="_x0000_s1078" style='padding:3.6pt 7.2pt 3.6pt 7.2pt'
+    class=shape>
+    <p class=MsoNormal>Reduction:</p>
+    </div>
+    <![if !mso]></td>
+   </tr>
+  </table>
+  </span><![endif]><![if !mso & !vml]>&nbsp;<![endif]><![if !vml]></td>
+ </tr>
+</table>
+
+</span><![endif]><!--[if gte vml 1]><v:oval id="_x0000_s1077" style='position:absolute;
+ margin-left:364.2pt;margin-top:346.65pt;width:6.3pt;height:6.3pt;z-index:21'
+ o:regroupid="4" fillcolor="black"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:21;margin-left:485px;
+margin-top:461px;width:10px;height:11px'><img width=10 height=11
+src="aboutSimplex_files/image009.gif" v:shapes="_x0000_s1077"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1076" style='position:absolute;margin-left:364.8pt;margin-top:258.9pt;
+ width:6.3pt;height:6.3pt;z-index:20' o:regroupid="4" fillcolor="black"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:20;margin-left:485px;
+margin-top:344px;width:11px;height:11px'><img width=11 height=11
+src="aboutSimplex_files/image010.gif" v:shapes="_x0000_s1076"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1075" style='position:absolute;margin-left:256.5pt;margin-top:303.9pt;
+ width:6.3pt;height:6.3pt;z-index:19' o:regroupid="4" fillcolor="black"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:19;margin-left:341px;
+margin-top:404px;width:10px;height:11px'><img width=10 height=11
+src="aboutSimplex_files/image011.gif" v:shapes="_x0000_s1075"></span><![endif]><!--[if gte vml 1]><v:group
+ id="_x0000_s1079" style='position:absolute;margin-left:255pt;margin-top:261.75pt;
+ width:117pt;height:90pt;z-index:17' coordorigin="2340,13353" coordsize="2340,1800"
+ o:regroupid="4">
+ <v:line id="_x0000_s1068" style='position:absolute;rotation:-1437949fd;flip:x'
+  from="2340,14706" to="4680,14707" o:regroupid="2" strokeweight="1.5pt"/>
+ <v:line id="_x0000_s1069" style='position:absolute;rotation:22104374fd'
+  from="2340,13806" to="4680,13807" o:regroupid="2" strokeweight="1.5pt"/>
+ <v:line id="_x0000_s1070" style='position:absolute' from="4592,13353" to="4593,15153">
+  <v:stroke dashstyle="dash"/>
+ </v:line></v:group><![endif]--><![if !vml]><span style='mso-ignore:vglayout;
+position:absolute;z-index:17;margin-left:344px;margin-top:348px;width:148px;
+height:122px'><img width=148 height=122 src="aboutSimplex_files/image012.gif"
+v:shapes="_x0000_s1079 _x0000_s1068 _x0000_s1069 _x0000_s1070"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1087" style='position:absolute;z-index:25' from="258.9pt,307.35pt"
+ to="330.6pt,307.35pt">
+ <v:stroke dashstyle="dashDot"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:25;margin-left:344px;margin-top:409px;width:98px;height:2px'><img
+width=98 height=2 src="aboutSimplex_files/image013.gif" v:shapes="_x0000_s1087"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1062" style='position:absolute;margin-left:153.9pt;margin-top:309.3pt;
+ width:5.7pt;height:5.7pt;z-index:11'/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:11;margin-left:204px;
+margin-top:411px;width:10px;height:10px'><img width=10 height=10
+src="aboutSimplex_files/image014.gif" v:shapes="_x0000_s1062"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1059" style='position:absolute;rotation:1437949fd;flip:y;
+ z-index:8' from="130.75pt,318.2pt" to="164pt,351.1pt" strokeweight="2pt">
+ <v:stroke dashstyle="1 1"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:8;margin-left:182px;margin-top:416px;width:29px;height:61px'><img
+width=29 height=61 src="aboutSimplex_files/image015.gif" v:shapes="_x0000_s1059"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1060" style='position:absolute;rotation:-22104374fd;flip:x y;
+ z-index:9' from="130.75pt,271.75pt" to="163.4pt,305pt" strokeweight="2pt">
+ <v:stroke dashstyle="1 1"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:9;margin-left:183px;margin-top:354px;width:26px;height:61px'><img
+width=26 height=61 src="aboutSimplex_files/image016.gif" v:shapes="_x0000_s1060"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1065" style='position:absolute;margin-left:136.2pt;margin-top:351.45pt;
+ width:6.3pt;height:6.3pt;z-index:14' fillcolor="black"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:14;margin-left:181px;
+margin-top:468px;width:10px;height:10px'><img width=10 height=10
+src="aboutSimplex_files/image017.gif" v:shapes="_x0000_s1065"></span><![endif]><!--[if gte vml 1]><v:shape
+ id="_x0000_s1066" type="#_x0000_t202" style='position:absolute;margin-left:25.65pt;
+ margin-top:258pt;width:96.9pt;height:22.8pt;z-index:15' filled="f" stroked="f">
+ <v:textbox style='mso-next-textbox:#_x0000_s1066'/>
+</v:shape><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:15;margin-left:34px;margin-top:344px;width:133px;height:34px'>
+
+<table cellpadding=0 cellspacing=0>
+ <tr>
+  <td width=133 height=34 style='vertical-align:top'><![endif]><![if !mso]><span
+  style='position:absolute;mso-ignore:vglayout;z-index:15'>
+  <table cellpadding=0 cellspacing=0 width="100%">
+   <tr>
+    <td><![endif]>
+    <div v:shape="_x0000_s1066" style='padding:3.6pt 7.2pt 3.6pt 7.2pt'
+    class=shape>
+    <p class=MsoNormal>Contraction:</p>
+    </div>
+    <![if !mso]></td>
+   </tr>
+  </table>
+  </span><![endif]><![if !mso & !vml]>&nbsp;<![endif]><![if !vml]></td>
+ </tr>
+</table>
+
+</span><![endif]><!--[if gte vml 1]><v:group id="_x0000_s1055" style='position:absolute;
+ margin-left:27pt;margin-top:289.2pt;width:117pt;height:45.05pt;z-index:6'
+ coordorigin="2340,6936" coordsize="2340,901">
+ <v:line id="_x0000_s1056" style='position:absolute;rotation:-1437949fd;flip:x'
+  from="2340,7836" to="4680,7837" strokeweight="1.5pt"/>
+ <v:line id="_x0000_s1057" style='position:absolute;rotation:22104374fd'
+  from="2340,6936" to="4680,6937" strokeweight="1.5pt"/>
+</v:group><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:6;margin-left:40px;margin-top:354px;width:148px;height:122px'><img
+width=148 height=122 src="aboutSimplex_files/image018.gif" v:shapes="_x0000_s1055 _x0000_s1056 _x0000_s1057"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1058" style='position:absolute;z-index:7' from="139.6pt,266.55pt"
+ to="139.65pt,356.55pt">
+ <v:stroke dashstyle="dash"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:7;margin-left:185px;margin-top:354px;width:2px;height:122px'><img
+width=2 height=122 src="aboutSimplex_files/image019.gif" v:shapes="_x0000_s1058"></span><![endif]><!--[if gte vml 1]><v:line
+ id="_x0000_s1061" style='position:absolute;z-index:10' from="31.35pt,312.15pt"
+ to="160.05pt,312.2pt">
+ <v:stroke dashstyle="dashDot"/>
+</v:line><![endif]--><![if !vml]><span style='mso-ignore:vglayout;position:
+absolute;z-index:10;margin-left:41px;margin-top:415px;width:173px;height:2px'><img
+width=173 height=2 src="aboutSimplex_files/image020.gif" v:shapes="_x0000_s1061"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1063" style='position:absolute;margin-left:28.5pt;margin-top:308.7pt;
+ width:6.3pt;height:6.3pt;z-index:12' fillcolor="black"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:12;margin-left:37px;
+margin-top:411px;width:10px;height:10px'><img width=10 height=10
+src="aboutSimplex_files/image021.gif" v:shapes="_x0000_s1063"></span><![endif]><!--[if gte vml 1]><v:oval
+ id="_x0000_s1064" style='position:absolute;margin-left:136.8pt;margin-top:263.7pt;
+ width:6.3pt;height:6.3pt;z-index:13' fillcolor="black"/><![endif]--><![if !vml]><span
+style='mso-ignore:vglayout;position:absolute;z-index:13;margin-left:181px;
+margin-top:351px;width:11px;height:10px'><img width=11 height=10
+src="aboutSimplex_files/image022.gif" v:shapes="_x0000_s1064"></span><![endif]><!--[if mso & !supportInlineShapes & supportFields]><span
+style='mso-element:field-begin;mso-field-lock:yes'></span><span
+style='mso-spacerun:yes'> </span>SHAPE<span style='mso-spacerun:yes'> 
+</span>\* MERGEFORMAT <span style='mso-element:field-separator'></span><![endif]--><!--[if gte vml 1]><v:group
+ id="_x0000_s1027" editas="canvas" style='width:6in;height:252pt;
+ mso-position-horizontal-relative:char;mso-position-vertical-relative:line'
+ coordorigin="1800,5856" coordsize="8640,5040">
+ <o:lock v:ext="edit" aspectratio="t"/>
+ <v:shapetype id="_x0000_t75" coordsize="21600,21600" o:spt="75"
+  o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f">
+  <v:stroke joinstyle="miter"/>
+  <v:formulas>
+   <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+   <v:f eqn="sum @0 1 0"/>
+   <v:f eqn="sum 0 0 @1"/>
+   <v:f eqn="prod @2 1 2"/>
+   <v:f eqn="prod @3 21600 pixelWidth"/>
+   <v:f eqn="prod @3 21600 pixelHeight"/>
+   <v:f eqn="sum @0 0 1"/>
+   <v:f eqn="prod @6 1 2"/>
+   <v:f eqn="prod @7 21600 pixelWidth"/>
+   <v:f eqn="sum @8 21600 0"/>
+   <v:f eqn="prod @7 21600 pixelHeight"/>
+   <v:f eqn="sum @10 21600 0"/>
+  </v:formulas>
+  <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+  <o:lock v:ext="edit" aspectratio="t"/>
+ </v:shapetype><v:shape id="_x0000_s1026" type="#_x0000_t75" style='position:absolute;
+  left:1800;top:5856;width:8640;height:5040' o:preferrelative="f">
+  <v:fill o:detectmouseclick="t"/>
+  <v:path o:extrusionok="t" o:connecttype="none"/>
+  <o:lock v:ext="edit" text="t"/>
+ </v:shape><v:group id="_x0000_s1031" style='position:absolute;left:2340;top:6936;
+  width:2340;height:901' coordorigin="2340,6936" coordsize="2340,901">
+  <v:line id="_x0000_s1028" style='position:absolute;rotation:-1437949fd;
+   flip:x' from="2340,7836" to="4680,7837" strokeweight="1.5pt"/>
+  <v:line id="_x0000_s1029" style='position:absolute;rotation:22104374fd'
+   from="2340,6936" to="4680,6937" strokeweight="1.5pt"/>
+ </v:group><v:line id="_x0000_s1030" style='position:absolute' from="4592,6483"
+  to="4593,8283">
+  <v:stroke dashstyle="dash"/>
+ </v:line><v:group id="_x0000_s1032" style='position:absolute;left:4479;top:6939;
+  width:2340;height:901;flip:x' coordorigin="2340,6936" coordsize="2340,901">
+  <v:line id="_x0000_s1033" style='position:absolute;rotation:-1437949fd;
+   flip:x' from="2340,7836" to="4680,7837" strokeweight="2pt">
+   <v:stroke dashstyle="1 1"/>
+  </v:line><v:line id="_x0000_s1034" style='position:absolute;rotation:22104374fd'
+   from="2340,6936" to="4680,6937" strokeweight="2pt">
+   <v:stroke dashstyle="1 1"/>
+  </v:line></v:group><v:line id="_x0000_s1035" style='position:absolute'
+  from="2427,7395" to="6759,7395">
+  <v:stroke dashstyle="dashDot"/>
+ </v:line><v:oval id="_x0000_s1036" style='position:absolute;left:6645;top:7338;
+  width:114;height:114'/>
+ <v:oval id="_x0000_s1037" style='position:absolute;left:2370;top:7326;width:126;
+  height:126' fillcolor="black"/>
+ <v:oval id="_x0000_s1038" style='position:absolute;left:4536;top:6426;width:126;
+  height:126' fillcolor="black"/>
+ <v:oval id="_x0000_s1039" style='position:absolute;left:4524;top:8181;width:126;
+  height:126' fillcolor="black"/>
+ <v:shape id="_x0000_s1040" type="#_x0000_t202" style='position:absolute;
+  left:2313;top:6312;width:1938;height:456' filled="f" stroked="f">
+  <v:textbox style='mso-next-textbox:#_x0000_s1040'>
+   <![if !mso]>
+   <table cellpadding=0 cellspacing=0 width="100%">
+    <tr>
+     <td><![endif]>
+     <div>
+     <p class=MsoNormal>Reflection:</p>
+     </div>
+     <![if !mso]></td>
+    </tr>
+   </table>
+   <![endif]></v:textbox>
+ </v:shape><v:group id="_x0000_s1041" style='position:absolute;left:2340;top:9330;
+  width:2340;height:901' coordorigin="2340,6936" coordsize="2340,901">
+  <v:line id="_x0000_s1042" style='position:absolute;rotation:-1437949fd;
+   flip:x' from="2340,7836" to="4680,7837" strokeweight="1.5pt"/>
+  <v:line id="_x0000_s1043" style='position:absolute;rotation:22104374fd'
+   from="2340,6936" to="4680,6937" strokeweight="1.5pt"/>
+ </v:group><v:line id="_x0000_s1044" style='position:absolute' from="4592,8877"
+  to="4593,10677">
+  <v:stroke dashstyle="dash"/>
+ </v:line><v:line id="_x0000_s1046" style='position:absolute;rotation:-1437949fd'
+  from="4555,9820" to="8944,10630" o:regroupid="1" strokeweight="2pt">
+  <v:stroke dashstyle="1 1"/>
+ </v:line><v:line id="_x0000_s1047" style='position:absolute;rotation:22104374fd;
+  flip:x' from="4567,8895" to="8899,9751" o:regroupid="1" strokeweight="2pt">
+  <v:stroke dashstyle="1 1"/>
+ </v:line><v:line id="_x0000_s1048" style='position:absolute' from="2427,9789"
+  to="8913,9790">
+  <v:stroke dashstyle="dashDot"/>
+ </v:line><v:oval id="_x0000_s1049" style='position:absolute;left:8811;top:9732;
+  width:114;height:114'/>
+ <v:oval id="_x0000_s1050" style='position:absolute;left:2370;top:9720;width:126;
+  height:126' fillcolor="black"/>
+ <v:oval id="_x0000_s1051" style='position:absolute;left:4536;top:8820;width:126;
+  height:126' fillcolor="black"/>
+ <v:oval id="_x0000_s1052" style='position:absolute;left:4524;top:10575;
+  width:126;height:126' fillcolor="black"/>
+ <v:shape id="_x0000_s1053" type="#_x0000_t202" style='position:absolute;
+  left:2313;top:8706;width:1938;height:456' filled="f" stroked="f">
+  <v:textbox style='mso-next-textbox:#_x0000_s1053'>
+   <![if !mso]>
+   <table cellpadding=0 cellspacing=0 width="100%">
+    <tr>
+     <td><![endif]>
+     <div>
+     <p class=MsoNormal>Expansion:</p>
+     </div>
+     <![if !mso]></td>
+    </tr>
+   </table>
+   <![endif]></v:textbox>
+ </v:shape><w:wrap type="none"/>
+ <w:anchorlock/>
+</v:group><![endif]--><![if !vml]><img width=576 height=336
+src="aboutSimplex_files/image023.gif" v:shapes="_x0000_s1027 _x0000_s1026 _x0000_s1031 _x0000_s1028 _x0000_s1029 _x0000_s1030 _x0000_s1032 _x0000_s1033 _x0000_s1034 _x0000_s1035 _x0000_s1036 _x0000_s1037 _x0000_s1038 _x0000_s1039 _x0000_s1040 _x0000_s1041 _x0000_s1042 _x0000_s1043 _x0000_s1044 _x0000_s1046 _x0000_s1047 _x0000_s1048 _x0000_s1049 _x0000_s1050 _x0000_s1051 _x0000_s1052 _x0000_s1053"><![endif]><!--[if mso & !supportInlineShapes & supportFields]><v:shape
+ id="_x0000_i1025" type="#_x0000_t75" style='width:6in;height:252pt'>
+ <v:imagedata croptop="-65520f" cropbottom="65520f"/>
+</v:shape><span style='mso-element:field-end'></span><![endif]--></p>
+
+</div>
+
+</body>
+
+</html>

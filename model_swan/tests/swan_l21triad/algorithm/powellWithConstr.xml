@@ -1,0 +1,7 @@
+<PowellConfig>
+   <costFunction weakParameterConstraint="true" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <outerLoop maxIterations="10" absTolerance="0.0001" relTolerance="0.0001" />
+   <lineSearch type="brent" maxIterations="100" relTolerance="0.001" maxRelStepSize="10.0" >
+      <brent startBracketValue="1.0" />
+   </lineSearch>
+</PowellConfig>

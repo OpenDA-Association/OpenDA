@@ -1,0 +1,107 @@
+
+Jakarta Commons Math Version 1.1 
+         RELEASE NOTES
+
+      This is a maintenance release containing bug fixes and enhancements. All API 
+changes are binary compatible with version 1.0. The enhancements include some 
+new probability distributions, a Fraction class, new matrix and numerical 
+utilities, and a PRNG pluggability framework making it possible to replace the 
+JDK-supplied random number generator in commons-math (and elsewhere) with 
+alternative PRNG implementations. 
+
+For more information on Jakarta Commons Math, see
+http://jakarta.apache.org/commons/math/
+      
+Changes in this version include:
+
+  New Features:
+
+o Added Weibull distribution implementation. 
+o Added Cauchy distribution implementation. 
+o Added convenience methods for rounding. 
+o Added Fraction class based on commons-lang implementation. With the 
+  fraction class, FractionFormat and ProperFractionFormat classes were added 
+  to provide fraction formatting and parsing. Thanks to C. Scott Ananian. 
+
+  Fixed bugs:
+
+o Made NewtonSolver derivative field transient and implemented readObject to 
+  initialize. Issue: 36491. 
+o Made sampleStats field private and changed getUpperBounds to return a fresh 
+  copy in EmpiricalDistributionImpl. Issue: 36491. 
+o Made all serialVersionUIDs private. Issue: 37162. Thanks to Elliotte 
+  Harold. 
+o Improved documentation and test cases related to handling of infinite and 
+  NaN values in Complex, ComplexUtils classes. Issue: 37086. 
+o Fixed incorrect NaN handling in o.a.m.s.d.rank.Min, Max Issue: 37019. 
+  Thanks to Mauro Talevi. 
+o Changed RealMatrixImpl.equals to use Double.doubleToLongBits to compare 
+  corresponding matrix entries. Issue: 36491. 
+o Eliminated floating point equals comparison in Percentile.evaluate. Issue: 
+  36491. 
+o Eliminated unnecessary assignment statements in Skewness.getResult method. 
+  Issue: 36491. 
+o Synchronized getters in ResizeableDoubleArray. Issue: 36491. 
+o Eliminated unnecessary assignment statement in BisectionSolver.solve 
+  method. Issue: 36491. 
+o Implemented hashCode in the Complex class and changed the semantics of 
+  equals to make all instances with real or imaginary part NaN equal. Issue: 
+  36491. 
+o Fixed bin index overflow problem in EmpiricalDistributionImpl. Issue: 
+  36450. Thanks to Keith McDonald. 
+o Added protection against numerical overflow and underflow in the 
+  isBracketing method. Issue: 36232. Thanks to Xiaogang Zhang. 
+o Fixed division by zero error in rounding methods. Issue: 36300. Thanks to 
+  Nikhil Gupte. 
+o Added upper tail cumulative probability method to 
+  HypergeometricDistributionImpl. Issue: 36215. Thanks to Mike Hu. 
+o Added better handling of numerical overflow and division by zero in Complex 
+  calculations. Issue: 36205. Thanks to Xiaogang Zhang. 
+o Changed ContinuedFraction to better handle infinite convergents that 
+  resulted in divergent continued fraction evaluations. Issue: 36105. Thanks 
+  to Mikael Weigelt. 
+o Changed rounding methods to not rely on BigDecimal conversions which was 
+  causing numerical error. Issue: 35904. Thanks to Srinivas Vemury. 
+o Changed Fraction(double) to correctly handle near-integral arguments. 
+  Issue: 35434. Thanks to Jörg Weimar. 
+o Changed lcm to throw ArithmeticException (instead of returning bogus value) 
+  if the result is too large to store as an integer. Issue: 35431. Thanks to 
+  Jörg Weimar. 
+o Added factories for TTest, ChiSquareTest and TestUtils class with static 
+  methods to create instances and execute tests. Issue: 32663. Thanks to Mary 
+  Ellen Foster. 
+o Fixed error in TTestImpl.homoscedasticTtest. Implementation was incorrectly 
+  using heteroscedastic t statistic. Also improved sensitivity of test cases. 
+  Issue: 34677. Thanks to Gilles Gaillard. 
+o Fixed javadoc errors. One-sided t-test significance adjustment was reversed 
+  in javadoc for boolean-valued test methods. Issue: 34448. Thanks to Gilles 
+  Gaillard. 
+o Fixed bug in PolynomialSplineFunction to allow evaluation of the function 
+  at the last knot point. Thanks to Ben Litchfield. 
+
+  Changes:
+
+o Added polar2Complex method to ComplexUtils to create Complex numbers from 
+  polar representations. 
+o Eliminated repeated endpoint function evalutations in BrentSolver, 
+  SecantSolver. Issue: 35042. Thanks to Paul Field. 
+o Added setSubMatrix methods to RealMatrixImpl, BigMatrixImpl. To Preserve 
+  backward compatibility with version 1.0, these methods were not added to 
+  the RealMatrix, BigMatrix interfaces. Issue: 35007. Thanks to Rodrigo di 
+  Lorenzo Lopes. 
+o Added createXIdentityMatrix methods to MatrixUtils and deprecated 
+  getIdentity methods in RealMatrixImpl, BigMatrixImpl. Modified 
+  RealMatrixImpl, BigMatrixImpl constructors to throw 
+  IllegalArgumentExceptions instead of ArrayIndexOutOfBounds when dimension 
+  arguments are not positive. 
+o Made PRNG pluggable for classes in the random package. Added 
+  RandomGenerator interface extracted from java.util.random and abstract 
+  implementation, AbstractRandomGenerator providing default implementations 
+  of methods based on nextDouble(). Added a constructor taking a 
+  RandomGenerator as an argument to RandomDataImpl. Changed ValueServer to 
+  use a RandomData in its constructor. Changes to 1.0 classes should be 
+  backward compatible (including serialization). 
+o Added utility methods for overflow-checked integer arithmetic and improved 
+  gcd method in MathUtils. Thanks to C. Scott Ananian.  
+
+      

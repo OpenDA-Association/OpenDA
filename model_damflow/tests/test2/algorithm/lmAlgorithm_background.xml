@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LMConfig>
+	<costFunction weakParameterConstraint="true" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+	<outerLoop maxIterations="20" absTolGrad="0.01" relTolGrad="0.01" absTolStep="0.01" relTolStep="0.01"/>
+	<innerLoop levenbergParam="0.001" marquardtParam="10" maxIterations="5"/>--> <!-- here innerLoop's maxIterations is maximum unsuccessful downhill steps-->
+	<!-- <innerLoop maxIterations="5"/> --><!-- here innerLoop's maxIterations is maximum unsuccessful downhill steps-->
+	<forwardDifference eps="[0.1]"/>  -->
+	<!--v2: <forwardDifference eps="[0.01]"/>  -->
+	<!--v3: <forwardDifference eps="[0.001]"/>  -->
+	<!--v4: <forwardDifference eps="[0.0001]"/>  -->
+	<!--v5: <forwardDifference eps="[0.00001]"/>  -->
+	<!--v6: <forwardDifference eps="[0.000001]"/>  -->	
+	<!-- vector of deltaParam used in the forward difference calculation of the Jacobian matrix. The order should be consistent with the order of the parameter vector specification in the stochModelConfig.xml-->
+</LMConfig>

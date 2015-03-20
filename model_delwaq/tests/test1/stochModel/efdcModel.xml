@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" 
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                     xsi:schemaLocation="http://schemas.openda.org/blackBoxModelConfig.xsd">
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>efdcWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="instanceDir" value="./work"/>
+		<alias key="templateDir" value="./model/base"/>
+      <alias key="inpConstantsFile" value="./inp_constants.cfg"/>
+      <alias key="inpConstantsDataFile" value="./inp_constants_data.cfg"/>
+      <alias key="delwaqOutputFile" value="./efdc_res.map"/>
+	</aliasValues>
+
+    <timeInfo start="2010-12-30T16:00:00" end="2011-01-01T16:00:00"/>
+
+	<exchangeItems>
+       <vector id="allElementsFromIoObject" ioObjectId="constantsFile"/>
+       <vector id="DetC_Segment0" ioObjectId="outputFile"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+				
+</blackBoxModelConfig>

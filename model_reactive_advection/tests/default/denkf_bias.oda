@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.biasAwareObservations.BiasAwareObservationsModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile>bias_aware.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.DEnKF">
+		<workingDirectory>./algorithms</workingDirectory>
+		<configString>EnKF.xml</configString>
+	</algorithm>
+        <resultWriters>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>denkf_bias_results.m</configFile>
+		<selection><resultItem id="x_a" outputLevel="All"/>
+		           <resultItem id="pred_a" outputLevel="All"/>
+		           <resultItem id="obs" outputLevel="All"/></selection>
+	</resultWriter>
+	</resultWriters>
+</openDaApplication>

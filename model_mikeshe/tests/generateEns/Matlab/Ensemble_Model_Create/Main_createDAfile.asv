@@ -1,0 +1,78 @@
+% A simple routine to perturb ensemble parameters. Used for the DA framework
+% 
+%
+clear all
+historicalTSdfs = '';
+EnsembleDir = 'c:\devel_nils\public\model_mikeshe\tests\generateEns\Ensembles\';
+infile = 'Karup.SHE';
+outfile = 'Karup_DA.SHE_testje'
+
+tijdsblokje= ['[SimulationPeriod]\n',...                                               '
+      '   Touched = 1\n',...
+      '   IsDataUsedInSetup = 1\n',...
+      '   HotStart = 1\n',...
+      '   HotStartResultFile = |.\Karup.she - Result Files\Karup.Sheres|\n',...
+      '   HotStartDate = 1972, 12, 28, 0, 0\n',...
+      '   HotStartDateIndex = 0\n',...
+      '   SimStartFromHotStartDate = 1\n',...
+      '   SIMSTART = 1972, 12, 28, 0, 0\n',...
+      '   SIMEND = 1976, 1, 1, 0, 0\n',...
+      'EndSect  // SimulationPeriod\n'];
+
+numEns = 1;
+
+   
+    % For each ensemble Member
+for ens = 1:numEns
+   filenameIn = strcat( EnsembleDir , num2str(ens-1),'\', infile ); 
+   filenameOut = strcat( EnsembleDir , num2str(ens-1),'\', outfile ); 
+   
+   wholeFile = fileread(filenameIn);
+   
+   %Find start of time block
+   p1=findstr(wholeFile,'[SimulationPeriod]')
+   p2=findstr(wholeFile,'
+   
+   
+
+%   newStr = num2str(paramvalue);
+%   oldStr = parameter{i,4};
+%   newFileData = strrep(wholeFile,oldStr,newStr);
+
+   %fileID = fopen(filenameOut,'w');
+
+   %fprintf(fileID,'%s',newFileData);
+
+    %fclose(fileID);
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+end
+    
+disp('DONE');
+
+
+
+
+
+

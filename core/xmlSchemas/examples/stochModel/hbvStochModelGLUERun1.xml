@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<blackBoxStochModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openda.org" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelConfig>
+		<file>./hbvModel.xml</file>
+	</modelConfig>
+	<uncertaintyModule className="org.openda.uncertainties.UncertaintyEngine" workingDirectory=".">
+		<arg>uncertaintySpecification.xml</arg>
+	</uncertaintyModule>
+	<vectorSpecification>
+		<parameters>
+			<regularisationConstant>
+				<uncertainItem uncertainItemId="fc" transformation="identity"/>
+				<vector id="alzette.fc"/>
+				<vector id="sure.fc"/>
+				<vector id="sauer1.fc"/>
+				<vector id="pruem.fc"/>
+				<vector id="nims.fc"/>
+				<vector id="blies_1.fc"/>
+				<vector id="nied_1.fc"/>
+				<vector id="prims_1.fc"/>
+				<vector id="obsa.fc"/>
+				<vector id="omos2.fc"/>
+				<vector id="omos1.fc"/>
+				<vector id="our.fc"/>
+				<vector id="seille.fc"/>
+				<vector id="kyll.fc"/>
+				<vector id="lieser.fc"/>
+				<vector id="orne.fc"/>
+			</regularisationConstant>
+			<regularisationConstant>
+				<uncertainItem uncertainItemId="lp" transformation="identity"/>
+				<vector id="alzette.lp"/>
+				<vector id="sure.lp"/>
+				<vector id="sauer1.lp"/>
+				<vector id="pruem.lp"/>
+				<vector id="nims.lp"/>
+				<vector id="blies_1.lp"/>
+				<vector id="nied_1.lp"/>
+				<vector id="prims_1.lp"/>
+				<vector id="obsa.lp"/>
+				<vector id="omos2.lp"/>
+				<vector id="omos1.lp"/>
+				<vector id="our.lp"/>
+				<vector id="seille.lp"/>
+				<vector id="kyll.lp"/>
+				<vector id="lieser.lp"/>
+				<vector id="orne.lp"/>
+			</regularisationConstant>
+			<regularisationConstant>
+				<uncertainItem uncertainItemId="beta" transformation="identity"/>
+				<vector id="alzette.beta"/>
+				<vector id="sure.beta"/>
+				<vector id="sauer1.beta"/>
+				<vector id="pruem.beta"/>
+				<vector id="nims.beta"/>
+				<vector id="blies_1.beta"/>
+				<vector id="nied_1.beta"/>
+				<vector id="prims_1.beta"/>
+				<vector id="obsa.beta"/>
+				<vector id="omos2.beta"/>
+				<vector id="omos1.beta"/>
+				<vector id="our.beta"/>
+				<vector id="seille.beta"/>
+				<vector id="kyll.beta"/>
+				<vector id="lieser.beta"/>
+				<vector id="orne.beta"/>
+			</regularisationConstant>
+			<regularisationConstant>
+				<uncertainItem uncertainItemId="alfa" transformation="identity"/>
+				<vector id="alzette.alfa"/>
+				<vector id="sure.alfa"/>
+				<vector id="sauer1.alfa"/>
+				<vector id="pruem.alfa"/>
+				<vector id="nims.alfa"/>
+				<vector id="blies_1.alfa"/>
+				<vector id="nied_1.alfa"/>
+				<vector id="prims_1.alfa"/>
+				<vector id="obsa.alfa"/>
+				<vector id="omos2.alfa"/>
+				<vector id="omos1.alfa"/>
+				<vector id="our.alfa"/>
+				<vector id="seille.alfa"/>
+				<vector id="kyll.alfa"/>
+				<vector id="lieser.alfa"/>
+				<vector id="orne.alfa"/>
+			</regularisationConstant>
+			<regularisationConstant>
+				<uncertainItem uncertainItemId="khq" transformation="identity"/>
+				<vector id="alzette.khq"/>
+				<vector id="sure.khq"/>
+				<vector id="sauer1.khq"/>
+				<vector id="pruem.khq"/>
+				<vector id="nims.khq"/>
+				<vector id="blies_1.khq"/>
+				<vector id="nied_1.khq"/>
+				<vector id="prims_1.khq"/>
+				<vector id="obsa.khq"/>
+				<vector id="omos2.khq"/>
+				<vector id="omos1.khq"/>
+				<vector id="our.khq"/>
+				<vector id="seille.khq"/>
+				<vector id="kyll.khq"/>
+				<vector id="lieser.khq"/>
+				<vector id="orne.khq"/>
+			</regularisationConstant>
+			<regularisationConstant>
+				<uncertainItem uncertainItemId="perc" transformation="identity"/>
+				<vector id="alzette.perc"/>
+				<vector id="sure.perc"/>
+				<vector id="sauer1.perc"/>
+				<vector id="pruem.perc"/>
+				<vector id="nims.perc"/>
+				<vector id="blies_1.perc"/>
+				<vector id="nied_1.perc"/>
+				<vector id="prims_1.perc"/>
+				<vector id="obsa.perc"/>
+				<vector id="omos2.perc"/>
+				<vector id="omos1.perc"/>
+				<vector id="our.perc"/>
+				<vector id="seille.perc"/>
+				<vector id="kyll.perc"/>
+				<vector id="lieser.perc"/>
+				<vector id="orne.perc"/>
+			</regularisationConstant>
+		</parameters>
+		<predictor>
+			<vector id="H-RN-BFG001.Q.m" sourceVectorId="I-RN-0054.Q.uh"/>
+			<vector id="H-RN-BFG019.Q.m" sourceVectorId="I-RN-0052.Q.uh"/>
+			<vector id="H-RN-BFG031.Q.m" sourceVectorId="I-RN-0059.Q.uh"/>
+			<vector id="H-RN-BFG039.Q.m" sourceVectorId="I-RN-0039.Q.uh"/>
+			<vector id="H-RN-BFG044.Q.m" sourceVectorId="I-RN-0040.Q.uh"/>
+			<vector id="H-RN-BFG046.Q.m" sourceVectorId="I-RN-0047.Q.uh"/>
+			<vector id="H-RN-BFG050.Q.m" sourceVectorId="I-RN-0046.Q.uh"/>
+			<vector id="H-RN-BFG059.Q.m" sourceVectorId="I-RN-0060.Q.uh"/>
+			<vector id="H-RN-BFG061.Q.m" sourceVectorId="I-RN-0053.Q.uh"/>
+			<vector id="H-RN-BFG063.Q.m" sourceVectorId="I-RN-0045.Q.uh"/>
+			<vector id="H-RN-BFG074.Q.m" sourceVectorId="I-RN-0038.Q.uh"/>
+			<vector id="H-RN-BFG078.Q.m" sourceVectorId="I-RN-0044.Q.uh"/>
+			<vector id="H-RN-BFG080.Q.m" sourceVectorId="I-RN-0042.Q.uh"/>
+			<vector id="H-RN-BOLL.Q.m" sourceVectorId="I-RN-0055.Q.uh"/>
+		</predictor>
+	</vectorSpecification>
+</blackBoxStochModel>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Run xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.wldelft.nl/fews/PI" xsi:schemaLocation="http://www.wldelft.nl/fews/PI http://fews.wldelft.nl/schemas/version1.0/pi-schemas/pi_run.xsd" version="1.8">
+    <logLevel>info</logLevel>
+    <timeZone>0.0</timeZone>
+    <startDateTime date="2012-01-31" time="15:00:00"/>
+    <endDateTime date="2012-02-03" time="15:00:00"/>
+    <time0 date="2012-02-03" time="15:00:00"/>
+    <lastObservationDateTime date="2012-02-03" time="15:00:00"/>
+    <workDir>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN</workDir>
+    <inputStateDescriptionFile>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\input_state\input_state_info.xml</inputStateDescriptionFile>
+    <outputDiagnosticFile>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\output\diagnostic.xml</outputDiagnosticFile>
+    <outputStateDescriptionFile>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\output_state\output_state_info.xml</outputStateDescriptionFile>
+    <outputNetcdfFile>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\stochModel\work0\model_output.nc</outputNetcdfFile>
+    <outputNetcdfFile>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\stochModel\work1\model_output.nc</outputNetcdfFile>
+    <outputNetcdfFile>D:\FEWS-NIER\FEWS-FMRK\Models\EFDC\han_dll_EnSIM_NN\stochModel\work2\model_output.nc</outputNetcdfFile>
+</Run>

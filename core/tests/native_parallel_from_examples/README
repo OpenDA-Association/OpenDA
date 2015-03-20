@@ -1,0 +1,27 @@
+Parallel example model.
+The polution model, can be run in parallel in two different modes
+1) The worker-worker mode. The computational domain is split up over the worker
+   processes.  OpenDA communicates with all these worker processes (at the same
+   time) when a method is called.
+
+2) The master-worker mode. One of the processes is the master processes (of the
+   model) OpenDA only communicated with this process. The other processes are
+   managed by the master process (of the model) OpenDA has no control/knowledge    on these processes.
+
+Note: This is an simple example model that will probably run slower in parallel
+      then it will do sequential
+
+
+Quick start (run in worker-worker mode) 2 procs per model  :
+
+mpiexec -np 3 Application.sh -p PolluteEnKFOpenDaConfig.oda
+
+or 
+
+mpiexec -np 1+2*Nproc Application.sh -p PolluteEnKFOpenDaConfig.oda
+
+
+
+
+
+

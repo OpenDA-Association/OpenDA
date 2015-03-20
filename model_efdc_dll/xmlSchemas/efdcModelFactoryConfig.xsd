@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="EfdcModelFactoryConfigXML">
+		<xs:sequence>
+			<xs:element name="efdcDllFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The path and name of the EFDC model dll file to use (relative to this configuration file).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeZoneOffset">
+				<xs:annotation>
+					<xs:documentation>The timeZone that is used by the EFDC model. This should be the offset of the timeZone with respect to GMT, in hours between -12 and 12.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="-12.0"/>
+						<xs:maxInclusive value="12.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="templateDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The model template directory (relative to this configuration file). This directory will be cloned to create instance directories.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="instanceDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Base name for instance directories (relative to this configuration file). The number of the instance will be appended to this base name to create the instance directory name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inputFile" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The path and name of one or more input netcdf files (relative to the instance directory). Together these input files must contain all input data that is needed for the model to run.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="useGateWaterLevel" type="xs:boolean" default="false" minOccurs="0"/>
+			<xs:element name="modelOutputFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The path and name of the model output netcdf file (relative to the instance directory). This file will be created during the model run. After each model timestep the model output data will be written to this file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="analysisOutputFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The path and name of the analysis output netcdf file (relative to the instance directory). This file will be created during the model run. After each analysis time the updated state will be written to this file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="efdcModelFactoryConfig" type="openda:EfdcModelFactoryConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for an EFDC model factory. It contains information on the dll file to be loaded, the model to be used and the input and output files for the model.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

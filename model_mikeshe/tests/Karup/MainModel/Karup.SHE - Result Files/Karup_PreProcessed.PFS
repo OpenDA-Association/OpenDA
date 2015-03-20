@@ -1,0 +1,2236 @@
+// Created     : 2014-04-11 14:2:55
+// DLL id      : C:\Program Files (x86)\DHI\2016\bin\x64\pfs2004.dll
+// PFS version : Jan  4 2014 19:56:45
+
+[PreProcessed_Data]
+   [PAGE]
+      TITLE = 'Processed data'
+      Abbrev = ''
+      [PAGE]
+         TITLE = 'Model domain and grid'
+         Abbrev = 'Model domain and grid'
+         [DFS2_PLOT]
+            Filename = |.\Karup_PreProcessed.DFS2|
+            ItemNo = 1
+         EndSect  // DFS2_PLOT
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Surface topography'
+         Abbrev = 'Surface topography'
+         [DFS2_PLOT]
+            Filename = |.\Karup_PreProcessed.DFS2|
+            ItemNo = 8
+         EndSect  // DFS2_PLOT
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Climate'
+         Abbrev = 'Climate'
+         [PAGE]
+            TITLE = 'Precipitation rate : Station Grid Codes'
+            Abbrev = 'Precipitation rate'
+            [DFS2_PLOT]
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 2
+            EndSect  // DFS2_PLOT
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 1'
+               Abbrev = 'Grid Code = 1'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 1
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 2'
+               Abbrev = 'Grid Code = 2'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 2
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 3'
+               Abbrev = 'Grid Code = 3'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 3
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 4'
+               Abbrev = 'Grid Code = 4'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 4
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 5'
+               Abbrev = 'Grid Code = 5'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 5
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 6'
+               Abbrev = 'Grid Code = 6'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 6
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 7'
+               Abbrev = 'Grid Code = 7'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 7
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 8'
+               Abbrev = 'Grid Code = 8'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 8
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Precipitation rate, Grid Code = 9'
+               Abbrev = 'Grid Code = 9'
+               [DFS0_PLOT]
+                  Filename = |..\Time\Precipitation.dfs0|
+                  ItemNo = 9
+                  StartDate = 1970, 1, 1, 0, 0
+                  EndDate = 1973, 1, 1, 0, 0
+               EndSect  // DFS0_PLOT
+
+            EndSect  // PAGE
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Reference Evapotranspiration (Uniform)'
+            Abbrev = 'Reference Evapotranspiration'
+            [DFS0_PLOT]
+               Filename = |..\TIME\PotentialEvap.dfs0|
+               ItemNo = 1
+               StartDate = 1970, 1, 1, 0, 0
+               EndDate = 1973, 1, 1, 0, 0
+            EndSect  // DFS0_PLOT
+
+         EndSect  // PAGE
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Land Use'
+         Abbrev = 'Land Use'
+         [PAGE]
+            TITLE = 'Vegetation'
+            Abbrev = 'Vegetation'
+            [PAGE]
+               TITLE = 'Leaf Area Index : Station Grid Codes'
+               Abbrev = 'LAI'
+               [DFS2_PLOT]
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 3
+               EndSect  // DFS2_PLOT
+
+               [PAGE]
+                  TITLE = 'Leaf Area Index, Grid Code = 1'
+                  Abbrev = 'Grid Code = 1'
+                  [TEXT]
+                     Text = 'Using Rotation Scheme'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+               [PAGE]
+                  TITLE = 'Leaf Area Index, Grid Code = 2'
+                  Abbrev = 'Grid Code = 2'
+                  [TEXT]
+                     Text = 'Constant Value = 6.000000 ()'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+               [PAGE]
+                  TITLE = 'Leaf Area Index, Grid Code = 3'
+                  Abbrev = 'Grid Code = 3'
+                  [TEXT]
+                     Text = 'Constant Value = 2.000000 ()'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+               [PAGE]
+                  TITLE = 'Leaf Area Index, Grid Code = 4'
+                  Abbrev = 'Grid Code = 4'
+                  [TEXT]
+                     Text = 'Using Rotation Scheme'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Root Depth : Station Grid Codes'
+               Abbrev = 'Root Depth'
+               [DFS2_PLOT]
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 4
+               EndSect  // DFS2_PLOT
+
+               [PAGE]
+                  TITLE = 'Root Depth, Grid Code = 1'
+                  Abbrev = 'Grid Code = 1'
+                  [TEXT]
+                     Text = 'Using Rotation Scheme'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+               [PAGE]
+                  TITLE = 'Root Depth, Grid Code = 2'
+                  Abbrev = 'Grid Code = 2'
+                  [TEXT]
+                     Text = 'Constant Value = 800.0000 millimeter'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+               [PAGE]
+                  TITLE = 'Root Depth, Grid Code = 3'
+                  Abbrev = 'Grid Code = 3'
+                  [TEXT]
+                     Text = 'Constant Value = 400.0000 millimeter'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+               [PAGE]
+                  TITLE = 'Root Depth, Grid Code = 4'
+                  Abbrev = 'Grid Code = 4'
+                  [TEXT]
+                     Text = 'Using Rotation Scheme'
+                  EndSect  // TEXT
+
+               EndSect  // PAGE
+
+            EndSect  // PAGE
+
+         EndSect  // PAGE
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Rivers and Lakes'
+         Abbrev = 'Rivers and Lakes'
+         [PAGE]
+            TITLE = 'MIKE SHE River Links and MIKE 11 River Network on Surface topography'
+            Abbrev = 'River Links'
+            [DFS2_PLOT]
+               RIVER_OVERLAY = 1
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 8
+            EndSect  // DFS2_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'River Bank level minus Ground level (max value if multiple river links per cell)'
+            Abbrev = 'Bank minus Ground'
+            [DFS2_PLOT]
+               RIVER_OVERLAY = 1
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 9
+            EndSect  // DFS2_PLOT
+
+         EndSect  // PAGE
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Overland Flow'
+         Abbrev = 'Overland Flow'
+         [PAGE]
+            TITLE = 'Overland Manning number'
+            Abbrev = 'Manning number'
+            [DFS2_PLOT]
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 5
+            EndSect  // DFS2_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Overland Detention storage'
+            Abbrev = 'Detention storage'
+            [DFS2_PLOT]
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 6
+            EndSect  // DFS2_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Initial Overland water depth'
+            Abbrev = 'Initial water depth'
+            [DFS2_PLOT]
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 7
+            EndSect  // DFS2_PLOT
+
+         EndSect  // PAGE
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Unsaturated Flow'
+         Abbrev = 'Unsaturated Flow'
+         [PAGE]
+            TITLE = 'Classification grid codes for the unsaturated zone'
+            Abbrev = 'Classification grid codes'
+            [DFS2_PLOT]
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 10
+            EndSect  // DFS2_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Soil Profile and -Property definitions for the unsaturated zone : Profile Grid Codes'
+            Abbrev = 'Soil Profile definitions'
+            [DFS2_PLOT]
+               Filename = |.\Karup_PreProcessed.DFS2|
+               ItemNo = 11
+            EndSect  // DFS2_PLOT
+
+            [PAGE]
+               TITLE = 'Soil Profile and -Property definitions for the unsaturated zone, Grid Code = 1'
+               Abbrev = 'Grid Code = 1'
+               [TXT_FILE]
+                  Filename = |.\Karup_PreProcessed_SoilProf1.txt|
+               EndSect  // TXT_FILE
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Soil Profile and -Property definitions for the unsaturated zone, Grid Code = 2'
+               Abbrev = 'Grid Code = 2'
+               [TXT_FILE]
+                  Filename = |.\Karup_PreProcessed_SoilProf2.txt|
+               EndSect  // TXT_FILE
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Soil Profile and -Property definitions for the unsaturated zone, Grid Code = 3'
+               Abbrev = 'Grid Code = 3'
+               [TXT_FILE]
+                  Filename = |.\Karup_PreProcessed_SoilProf3.txt|
+               EndSect  // TXT_FILE
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Soil Profile and -Property definitions for the unsaturated zone, Grid Code = 4'
+               Abbrev = 'Grid Code = 4'
+               [TXT_FILE]
+                  Filename = |.\Karup_PreProcessed_SoilProf4.txt|
+               EndSect  // TXT_FILE
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Soil Profile and -Property definitions for the unsaturated zone, Grid Code = 11'
+               Abbrev = 'Grid Code = 11'
+               [TXT_FILE]
+                  Filename = |.\Karup_PreProcessed_SoilProf11.txt|
+               EndSect  // TXT_FILE
+
+            EndSect  // PAGE
+
+         EndSect  // PAGE
+
+      EndSect  // PAGE
+
+      [PAGE]
+         TITLE = 'Saturated Zone'
+         Abbrev = 'Saturated Zone'
+         [PAGE]
+            TITLE = 'Boundary conditions for the saturated zone'
+            Abbrev = 'Boundary conditions'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 1
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Lower level of computational layers in the saturated zone'
+            Abbrev = 'Lower level'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 2
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Depth to bottom of computational layers in the saturated zone'
+            Abbrev = 'Depth to bottom'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 3
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Thickness of computational layers in the saturated zone'
+            Abbrev = 'Layer thickness'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 4
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Horizontal conductivity in the saturated zone'
+            Abbrev = 'Horizontal conductivity'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 5
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Vertical conductivity in the saturated zone'
+            Abbrev = 'Vertical conductivity'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 6
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Transmissivity in the saturated zone'
+            Abbrev = 'Transmissivity'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 7
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Specific yield in the saturated zone'
+            Abbrev = 'Specific yield'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 8
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Specific storage in the saturated zone'
+            Abbrev = 'Specific storage'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 9
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Initial potential head in the saturated zone'
+            Abbrev = 'Initial potential head'
+            [DFS3_PLOT]
+               Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+               ItemNo = 10
+            EndSect  // DFS3_PLOT
+
+         EndSect  // PAGE
+
+         [PAGE]
+            TITLE = 'Drainage from the saturated zone'
+            Abbrev = 'Drainage'
+            [TEXT]
+               Text = 'Drainage routing based on grid codes'
+            EndSect  // TEXT
+
+            [PAGE]
+               TITLE = 'Drainage Levels in the saturated zone'
+               Abbrev = 'Drain Level'
+               [DFS2_PLOT]
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 12
+               EndSect  // DFS2_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Drainage Depths in the saturated zone'
+               Abbrev = 'Drain Depth'
+               [DFS2_PLOT]
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 13
+               EndSect  // DFS2_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Drainage Constants in the saturated zone'
+               Abbrev = 'Drain Constant'
+               [DFS2_PLOT]
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 14
+               EndSect  // DFS2_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Drainage Codes for the saturated zone'
+               Abbrev = 'Drain Codes'
+               [DFS2_PLOT]
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 15
+               EndSect  // DFS2_PLOT
+
+            EndSect  // PAGE
+
+            [PAGE]
+               TITLE = 'Drainage to river in the saturated zone'
+               Abbrev = 'Drain to River'
+               [DFS2_PLOT]
+                  RIVER_OVERLAY = 1
+                  Filename = |.\Karup_PreProcessed.DFS2|
+                  ItemNo = 16
+               EndSect  // DFS2_PLOT
+
+               [PAGE]
+                  TITLE = 'Drain height above Bed Level of receiving river point'
+                  Abbrev = 'Drain H above Bed'
+                  [DFS2_PLOT]
+                     RIVER_OVERLAY = 1
+                     Filename = |.\Karup_PreProcessed.DFS2|
+                     ItemNo = 17
+                  EndSect  // DFS2_PLOT
+
+               EndSect  // PAGE
+
+            EndSect  // PAGE
+
+         EndSect  // PAGE
+
+      EndSect  // PAGE
+
+   EndSect  // PAGE
+
+EndSect  // PreProcessed_Data
+
+[Extra_Data]
+   [Topography]
+      Filename = |.\Karup_PreProcessed.DFS2|
+      ItemNo = 8
+   EndSect  // Topography
+
+   [LowerLevel]
+      SZ_Included = 1
+      NumberOfLayers = 1
+      Filename = |.\Karup_PreProcessed_3DSZ.DFS3|
+      ItemNo = 2
+   EndSect  // LowerLevel
+
+   [River]
+      River_Included = 1
+      Filename = |.\Karup_PreProcessed_River.bin|
+   EndSect  // River
+
+   [DetailedTimeseriesOutput]
+      NumberOfItems = 109
+      [Item_1]
+         Name = 'Well 5'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 518136
+         Y = 6.22933e+006
+         iX = 25
+         iY = 9
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 1
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_1
+
+      [Item_2]
+         Name = 'Well 6'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 515927
+         Y = 6.22671e+006
+         iX = 23
+         iY = 7
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 2
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_2
+
+      [Item_3]
+         Name = 'Well 8'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 515033
+         Y = 6.23141e+006
+         iX = 22
+         iY = 11
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 3
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_3
+
+      [Item_4]
+         Name = 'Well 9'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 516188
+         Y = 6.23146e+006
+         iX = 23
+         iY = 12
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 4
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_4
+
+      [Item_5]
+         Name = 'Well 11'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 517447
+         Y = 6.23221e+006
+         iX = 24
+         iY = 12
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 5
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_5
+
+      [Item_6]
+         Name = 'Well 12'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 518236
+         Y = 6.23303e+006
+         iX = 25
+         iY = 13
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 6
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_6
+
+      [Item_7]
+         Name = 'Well 21'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 497013
+         Y = 6.24697e+006
+         iX = 4
+         iY = 27
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 7
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_7
+
+      [Item_8]
+         Name = 'Well 22'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 517791
+         Y = 6.23666e+006
+         iX = 25
+         iY = 17
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 8
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_8
+
+      [Item_9]
+         Name = 'Well 24'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 513354
+         Y = 6.23475e+006
+         iX = 20
+         iY = 15
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 9
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_9
+
+      [Item_10]
+         Name = 'Well 25'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 512360
+         Y = 6.23384e+006
+         iX = 19
+         iY = 14
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 10
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_10
+
+      [Item_11]
+         Name = 'Well 27'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 510597
+         Y = 6.23375e+006
+         iX = 18
+         iY = 14
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 11
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_11
+
+      [Item_12]
+         Name = 'Well 34'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 508003
+         Y = 6.23743e+006
+         iX = 15
+         iY = 18
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 12
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_12
+
+      [Item_13]
+         Name = 'Well 35'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 507859
+         Y = 6.23852e+006
+         iX = 15
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 13
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_13
+
+      [Item_14]
+         Name = 'Well 36'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 508877
+         Y = 6.23914e+006
+         iX = 16
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 14
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_14
+
+      [Item_15]
+         Name = 'Well 37'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 511504
+         Y = 6.24182e+006
+         iX = 18
+         iY = 22
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 15
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_15
+
+      [Item_16]
+         Name = 'Well 38'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 512767
+         Y = 6.24328e+006
+         iX = 20
+         iY = 23
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 16
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_16
+
+      [Item_17]
+         Name = 'Well 39'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 512063
+         Y = 6.24599e+006
+         iX = 19
+         iY = 26
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 17
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_17
+
+      [Item_18]
+         Name = 'Well 41'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 514071
+         Y = 6.24434e+006
+         iX = 21
+         iY = 24
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 18
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_18
+
+      [Item_19]
+         Name = 'Well 44'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 504437
+         Y = 6.24418e+006
+         iX = 11
+         iY = 24
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 19
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_19
+
+      [Item_20]
+         Name = 'Well 45'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 503486
+         Y = 6.24304e+006
+         iX = 10
+         iY = 23
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 20
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_20
+
+      [Item_21]
+         Name = 'Well 46'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 502756
+         Y = 6.24222e+006
+         iX = 10
+         iY = 22
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 21
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_21
+
+      [Item_22]
+         Name = 'Well 47'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 501935
+         Y = 6.2402e+006
+         iX = 9
+         iY = 20
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 22
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_22
+
+      [Item_23]
+         Name = 'Well 49'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 502209
+         Y = 6.23862e+006
+         iX = 9
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 23
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_23
+
+      [Item_24]
+         Name = 'Well 51'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 503877
+         Y = 6.2382e+006
+         iX = 11
+         iY = 18
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 24
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_24
+
+      [Item_25]
+         Name = 'Well 52'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 506965
+         Y = 6.23915e+006
+         iX = 14
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 25
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_25
+
+      [Item_26]
+         Name = 'Well 54'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 497717
+         Y = 6.23996e+006
+         iX = 5
+         iY = 20
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 26
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_26
+
+      [Item_27]
+         Name = 'Well 55'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 500149
+         Y = 6.24131e+006
+         iX = 7
+         iY = 21
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 27
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_27
+
+      [Item_28]
+         Name = 'Well 56'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 497902
+         Y = 6.24129e+006
+         iX = 5
+         iY = 21
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 28
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_28
+
+      [Item_29]
+         Name = 'Well 62'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 495963
+         Y = 6.24764e+006
+         iX = 3
+         iY = 28
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 29
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_29
+
+      [Item_30]
+         Name = 'Well 63'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 501423
+         Y = 6.24603e+006
+         iX = 8
+         iY = 26
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 30
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_30
+
+      [Item_31]
+         Name = 'Well 64'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 502272
+         Y = 6.24645e+006
+         iX = 9
+         iY = 27
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 31
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_31
+
+      [Item_32]
+         Name = 'Well 66'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 503787
+         Y = 6.24661e+006
+         iX = 11
+         iY = 27
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 32
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_32
+
+      [Item_33]
+         Name = 'Well 69'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 506003
+         Y = 6.24987e+006
+         iX = 13
+         iY = 30
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 33
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_33
+
+      [Item_34]
+         Name = 'Well 72'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 502467
+         Y = 6.25309e+006
+         iX = 9
+         iY = 33
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 34
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_34
+
+      [Item_35]
+         Name = 'Well 78'
+         DataTypeName = 'head elevation in saturated zone'
+         X = 503164
+         Y = 6.25338e+006
+         iX = 10
+         iY = 33
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS_SZ.dfs0|
+         SimDataFileItemNo = 35
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_35
+
+      [Item_36]
+         Name = 'Well 5'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 518136
+         Y = 6.22933e+006
+         iX = 25
+         iY = 9
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 1
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_36
+
+      [Item_37]
+         Name = 'Well 6'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 515927
+         Y = 6.22671e+006
+         iX = 23
+         iY = 7
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 2
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_37
+
+      [Item_38]
+         Name = 'Well 8'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 515033
+         Y = 6.23141e+006
+         iX = 22
+         iY = 11
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 3
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_38
+
+      [Item_39]
+         Name = 'Well 9'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 516188
+         Y = 6.23146e+006
+         iX = 23
+         iY = 12
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 4
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_39
+
+      [Item_40]
+         Name = 'Well 12'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 518236
+         Y = 6.23303e+006
+         iX = 25
+         iY = 13
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 5
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_40
+
+      [Item_41]
+         Name = 'Well 11'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 517447
+         Y = 6.23221e+006
+         iX = 24
+         iY = 12
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 6
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_41
+
+      [Item_42]
+         Name = 'Well 21'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 497013
+         Y = 6.24697e+006
+         iX = 4
+         iY = 27
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 7
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_42
+
+      [Item_43]
+         Name = 'Well 24'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 513354
+         Y = 6.23475e+006
+         iX = 20
+         iY = 15
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 8
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_43
+
+      [Item_44]
+         Name = 'Well 22'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 517791
+         Y = 6.23666e+006
+         iX = 25
+         iY = 17
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 9
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_44
+
+      [Item_45]
+         Name = 'Well 25'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 512360
+         Y = 6.23384e+006
+         iX = 19
+         iY = 14
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 10
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_45
+
+      [Item_46]
+         Name = 'Well 27'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 510597
+         Y = 6.23375e+006
+         iX = 18
+         iY = 14
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 11
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_46
+
+      [Item_47]
+         Name = 'Well 34'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 508003
+         Y = 6.23743e+006
+         iX = 15
+         iY = 18
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 12
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_47
+
+      [Item_48]
+         Name = 'Well 35'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 507859
+         Y = 6.23852e+006
+         iX = 15
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 13
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_48
+
+      [Item_49]
+         Name = 'Well 36'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 508877
+         Y = 6.23914e+006
+         iX = 16
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 14
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_49
+
+      [Item_50]
+         Name = 'Well 37'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 511504
+         Y = 6.24182e+006
+         iX = 18
+         iY = 22
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 15
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_50
+
+      [Item_51]
+         Name = 'Well 38'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 512767
+         Y = 6.24328e+006
+         iX = 20
+         iY = 23
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 16
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_51
+
+      [Item_52]
+         Name = 'Well 39'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 512063
+         Y = 6.24599e+006
+         iX = 19
+         iY = 26
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 17
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_52
+
+      [Item_53]
+         Name = 'Well 41'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 514071
+         Y = 6.24434e+006
+         iX = 21
+         iY = 24
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 18
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_53
+
+      [Item_54]
+         Name = 'Well 44'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 504437
+         Y = 6.24418e+006
+         iX = 11
+         iY = 24
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 19
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_54
+
+      [Item_55]
+         Name = 'Well 45'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503486
+         Y = 6.24304e+006
+         iX = 10
+         iY = 23
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 20
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_55
+
+      [Item_56]
+         Name = 'Well 46'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502756
+         Y = 6.24222e+006
+         iX = 10
+         iY = 22
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 21
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_56
+
+      [Item_57]
+         Name = 'Well 47'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 501935
+         Y = 6.2402e+006
+         iX = 9
+         iY = 20
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 22
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_57
+
+      [Item_58]
+         Name = 'Well 49'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502209
+         Y = 6.23862e+006
+         iX = 9
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 23
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_58
+
+      [Item_59]
+         Name = 'Well 51'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503877
+         Y = 6.2382e+006
+         iX = 11
+         iY = 18
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 24
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_59
+
+      [Item_60]
+         Name = 'Well 52'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 506965
+         Y = 6.23915e+006
+         iX = 14
+         iY = 19
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 25
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_60
+
+      [Item_61]
+         Name = 'Well 54'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 497717
+         Y = 6.23996e+006
+         iX = 5
+         iY = 20
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 26
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_61
+
+      [Item_62]
+         Name = 'Well 55'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 500149
+         Y = 6.24131e+006
+         iX = 7
+         iY = 21
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 27
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_62
+
+      [Item_63]
+         Name = 'Well 56'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 497902
+         Y = 6.24129e+006
+         iX = 5
+         iY = 21
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 28
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_63
+
+      [Item_64]
+         Name = 'Well 62'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 495963
+         Y = 6.24764e+006
+         iX = 3
+         iY = 28
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 29
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_64
+
+      [Item_65]
+         Name = 'Well 63'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 501423
+         Y = 6.24603e+006
+         iX = 8
+         iY = 26
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 30
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_65
+
+      [Item_66]
+         Name = 'Well 64'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502272
+         Y = 6.24645e+006
+         iX = 9
+         iY = 27
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 31
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_66
+
+      [Item_67]
+         Name = 'Well 66'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503787
+         Y = 6.24661e+006
+         iX = 11
+         iY = 27
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 32
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_67
+
+      [Item_68]
+         Name = 'Well 69'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 506003
+         Y = 6.24987e+006
+         iX = 13
+         iY = 30
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 33
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_68
+
+      [Item_69]
+         Name = 'Well 72'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502467
+         Y = 6.25309e+006
+         iX = 9
+         iY = 33
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 34
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_69
+
+      [Item_70]
+         Name = 'Well 78'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503164
+         Y = 6.25338e+006
+         iX = 10
+         iY = 33
+         iLay = 1
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 35
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_70
+
+      [Item_71]
+         Name = 'Well 5'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 518136
+         Y = 6.22933e+006
+         iX = 25
+         iY = 9
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 36
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_71
+
+      [Item_72]
+         Name = 'Well 6'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 515927
+         Y = 6.22671e+006
+         iX = 23
+         iY = 7
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 37
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_72
+
+      [Item_73]
+         Name = 'Well 8'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 515033
+         Y = 6.23141e+006
+         iX = 22
+         iY = 11
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 38
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_73
+
+      [Item_74]
+         Name = 'Well 9'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 516188
+         Y = 6.23146e+006
+         iX = 23
+         iY = 12
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 39
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_74
+
+      [Item_75]
+         Name = 'Well 12'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 517447
+         Y = 6.23221e+006
+         iX = 24
+         iY = 12
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 40
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_75
+
+      [Item_76]
+         Name = 'Well 11'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 518236
+         Y = 6.23303e+006
+         iX = 25
+         iY = 13
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 41
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_76
+
+      [Item_77]
+         Name = 'Well 22'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 497013
+         Y = 6.24697e+006
+         iX = 4
+         iY = 27
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 42
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_77
+
+      [Item_78]
+         Name = 'Well 21'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 517791
+         Y = 6.23666e+006
+         iX = 25
+         iY = 17
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 43
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_78
+
+      [Item_79]
+         Name = 'Well 25'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 513354
+         Y = 6.23475e+006
+         iX = 20
+         iY = 15
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 44
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_79
+
+      [Item_80]
+         Name = 'Well 24'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 512360
+         Y = 6.23384e+006
+         iX = 19
+         iY = 14
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 45
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_80
+
+      [Item_81]
+         Name = 'Well 34'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 510597
+         Y = 6.23375e+006
+         iX = 18
+         iY = 14
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 46
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_81
+
+      [Item_82]
+         Name = 'Well 27'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 508003
+         Y = 6.23743e+006
+         iX = 15
+         iY = 18
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 47
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_82
+
+      [Item_83]
+         Name = 'Well 36'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 507859
+         Y = 6.23852e+006
+         iX = 15
+         iY = 19
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 48
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_83
+
+      [Item_84]
+         Name = 'Well 35'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 508877
+         Y = 6.23914e+006
+         iX = 16
+         iY = 19
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 49
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_84
+
+      [Item_85]
+         Name = 'Well 38'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 511504
+         Y = 6.24182e+006
+         iX = 18
+         iY = 22
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 50
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_85
+
+      [Item_86]
+         Name = 'Well 37'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 512767
+         Y = 6.24328e+006
+         iX = 20
+         iY = 23
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 51
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_86
+
+      [Item_87]
+         Name = 'Well 41'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 512063
+         Y = 6.24599e+006
+         iX = 19
+         iY = 26
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 52
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_87
+
+      [Item_88]
+         Name = 'Well 39'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 514071
+         Y = 6.24434e+006
+         iX = 21
+         iY = 24
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 53
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_88
+
+      [Item_89]
+         Name = 'Well 44'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 504437
+         Y = 6.24418e+006
+         iX = 11
+         iY = 24
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 54
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_89
+
+      [Item_90]
+         Name = 'Well 46'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503486
+         Y = 6.24304e+006
+         iX = 10
+         iY = 23
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 55
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_90
+
+      [Item_91]
+         Name = 'Well 45'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502756
+         Y = 6.24222e+006
+         iX = 10
+         iY = 22
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 56
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_91
+
+      [Item_92]
+         Name = 'Well 47'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 501935
+         Y = 6.2402e+006
+         iX = 9
+         iY = 20
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 57
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_92
+
+      [Item_93]
+         Name = 'Well 49'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502209
+         Y = 6.23862e+006
+         iX = 9
+         iY = 19
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 58
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_93
+
+      [Item_94]
+         Name = 'Well 51'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503877
+         Y = 6.2382e+006
+         iX = 11
+         iY = 18
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 59
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_94
+
+      [Item_95]
+         Name = 'Well 52'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 506965
+         Y = 6.23915e+006
+         iX = 14
+         iY = 19
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 60
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_95
+
+      [Item_96]
+         Name = 'Well 54'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 497717
+         Y = 6.23996e+006
+         iX = 5
+         iY = 20
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 61
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_96
+
+      [Item_97]
+         Name = 'Well 55'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 500149
+         Y = 6.24131e+006
+         iX = 7
+         iY = 21
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 62
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_97
+
+      [Item_98]
+         Name = 'Well 56'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 497902
+         Y = 6.24129e+006
+         iX = 5
+         iY = 21
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 63
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_98
+
+      [Item_99]
+         Name = 'Well 62'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 495963
+         Y = 6.24764e+006
+         iX = 3
+         iY = 28
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 64
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_99
+
+      [Item_100]
+         Name = 'Well 63'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 501423
+         Y = 6.24603e+006
+         iX = 8
+         iY = 26
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 65
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_100
+
+      [Item_101]
+         Name = 'Well 64'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502272
+         Y = 6.24645e+006
+         iX = 9
+         iY = 27
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 66
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_101
+
+      [Item_102]
+         Name = 'Well 66'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503787
+         Y = 6.24661e+006
+         iX = 11
+         iY = 27
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 67
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_102
+
+      [Item_103]
+         Name = 'Well 69'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 506003
+         Y = 6.24987e+006
+         iX = 13
+         iY = 30
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 68
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_103
+
+      [Item_104]
+         Name = 'Well 72'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 502467
+         Y = 6.25309e+006
+         iX = 9
+         iY = 33
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 69
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_104
+
+      [Item_105]
+         Name = 'Well 78'
+         DataTypeName = 'water content in unsaturated zone'
+         X = 503164
+         Y = 6.25338e+006
+         iX = 10
+         iY = 33
+         iLay = 7
+         SimDataFileName = |.\KarupDetailedTS.dfs0|
+         SimDataFileItemNo = 70
+         InclObsData = 0
+         ObsDataFileName = ||
+         ObsDataFileItemNo = 0
+      EndSect  // Item_105
+
+      [Item_106]
+         Name = '20.05 (Karup River, 51437.50)'
+         DataTypeName = 'discharge in M11 q-point'
+         X = 500004
+         Y = 6.25246e+006
+         iX = 0
+         iY = 0
+         iLay = 0
+         SimDataFileName = |.\KarupDetailedTS_M11.dfs0|
+         SimDataFileItemNo = 1
+         InclObsData = 1
+         ObsDataFileName = |..\Time\KarupQobs.dfs0|
+         ObsDataFileItemNo = 1
+      EndSect  // Item_106
+
+      [Item_107]
+         Name = '20.06 (Haderup River, 11000.75)'
+         DataTypeName = 'discharge in M11 q-point'
+         X = 499758
+         Y = 6.24822e+006
+         iX = 0
+         iY = 0
+         iLay = 0
+         SimDataFileName = |.\KarupDetailedTS_M11.dfs0|
+         SimDataFileItemNo = 2
+         InclObsData = 1
+         ObsDataFileName = |..\Time\KarupQobs.dfs0|
+         ObsDataFileItemNo = 2
+      EndSect  // Item_107
+
+      [Item_108]
+         Name = '20.07 (Haderup River, 8868.500)'
+         DataTypeName = 'discharge in M11 q-point'
+         X = 499562
+         Y = 6.24614e+006
+         iX = 0
+         iY = 0
+         iLay = 0
+         SimDataFileName = |.\KarupDetailedTS_M11.dfs0|
+         SimDataFileItemNo = 3
+         InclObsData = 1
+         ObsDataFileName = |..\Time\KarupQobs.dfs0|
+         ObsDataFileItemNo = 3
+      EndSect  // Item_108
+
+      [Item_109]
+         Name = '20.08 (Feldborg Creek, 7138.500)'
+         DataTypeName = 'discharge in M11 q-point'
+         X = 498377
+         Y = 6.24604e+006
+         iX = 0
+         iY = 0
+         iLay = 0
+         SimDataFileName = |.\KarupDetailedTS_M11.dfs0|
+         SimDataFileItemNo = 4
+         InclObsData = 1
+         ObsDataFileName = |..\Time\KarupQobs.dfs0|
+         ObsDataFileItemNo = 4
+      EndSect  // Item_109
+
+   EndSect  // DetailedTimeseriesOutput
+
+EndSect  // Extra_Data
+

@@ -1,0 +1,36 @@
+!-------------------------------------------------------------------------------
+! zoop_params
+!-------------------------------------------------------------------------------
+! zoop_name [sring]	Name of zooplankton group
+! zoop_initial [real]	Initial concentration of zooplankton (mmol/m3)
+! min_zoo [real]	Minimum concentration of zooplankton (mmol/m3)
+! Rgrz_zoo [real]   Zooplankton grazing rate (/day)
+! fassim_zoo [real]	Assimilation efficiency for zooplankton grazing (-)
+! Kgrz_zoo [real]	Half saturation constant for zooplankton grazing (mmol/m3)
+! theta_grz_zoo [real]	Temperature multiplier for zooplankton grazing (-)
+! Rresp_zoo [real]	Respiration rate coefficient (/day)
+! Rmort_zoo [real]	Mortaility rate coefficient (/day)
+! ffecal_zoo [real] Fecal Pellet fraction of respiration (-)
+! fexcr_zoo [real] 	Excretion fraction of respiration (-)
+! ffecal_sed[real] 	Fraction of fecal pellets that sink directly to sediments (hard fraction) (-)
+! theta_resp_zoo [real]	Temperature multiplier for zooplankton respiration (-)
+! Tstd_zoo [real]	Standard temperature for zooplankton respiration temperature dependence (oC)
+! Topt_zoo [real]	Optimal temperature for zooplankton temperature dependence (oC)
+! Tmax_zoo [real]	Maximum temperature for zooplankton temperature dependence (oC)
+! saltfunc_zoo [integer] Type of salinity limitation function used in mortality
+! Smin_zoo [real] 	Minimum salinity for zooplankton survival (psu)
+! Smax_zoo [real] 	Maximum salinity for zooplankton survival (psu)
+! Sint_zoo [real] 	Intercept for salinity = 0 (psu)
+! INC_zoo [real] 	Ratio of internal nitrogen to carbon (/)
+! IPC_zoo [real]	Ratio of internal phosphorus to carbon (/)
+! DOmin_zoo	[real]	Minimum concentration of oxygen for zooplankton survival (mmolO2/m3]
+! zoop_prey [string] State variable name for zooplankton prey
+! Pzoo_prey [real]	Preference factors for zooplankton predators grazing on prey
+! Cmin_grz_zoo [real] Minumum prey concentration for grazing by zooplankton (mmol/m3)
+!-------------------------------------------------------------------------------
+ 
+!	zoop_name, zoop_initial, min_zoo, Rgrz_zoo, fassim_zoo, K_grz_zoo, theta_grz_zoo, Rresp_zoo, Rmort_zoo, ffecal_zoo, fexcr_zoo, ffecal_sed, theta_resp_zoo, Tstd_zoo, Topt_zoo, Tmax_zoo, saltfunc_zoo, Smin_zoo, Smax_zoo, Sint_zoo, INC_zoo, IPC_zoo, DOmin_zoo, zoop_prey1, zoop_prey2, zoop_prey3, Pzoo_prey1, Pzoo_prey2, Pzoo_prey3, Cmin_grz_zoo
+&zoop_params																																													
+ zoop_param(1) ='zoo01',	16.0,	0.1,	1.5,	0.9,	40.0,	1.08,	0.1,	0.01,	0.2,	0.7,	0.15,	1.00,	20.0,	22.0,	30.0,	1,	0.0,	35.0,	10.0,	0.2,	0.01,	10.0,	0.05,	3, aed_phytoplankton_green,	0.7, aed_organic_matter_poc, 0.1,	aed_organic_matter_poc,	0.2
+ zoop_param(2) ='zoo02',	40.0,	0.1,	0.5,	0.9,	1.0,	1.08,	0.3,	0.1,	0.2,	0.7,	0.15,	1.08,	20.0,	22.0,	30.0,	1,	0.0,	35.0,	10.0,	0.2,	0.01,	10.0,	0.05,	3, aed_phytoplankton_green,	0.7, aed_organic_matter_poc, 0.1,	aed_organic_matter_poc,	0.2
+/																																														

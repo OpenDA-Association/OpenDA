@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templateConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxTemplateConfig.xsd">
+	<keyDefinitions defaultKeyPrefix="$" defaultKeySuffix="$" >
+		<key id="starttime" name="TSTART" targetType="org.openda.blackbox.config.KeyTypeSwanStartDateString"/>
+		<key id="endtime" name="TSTOP" targetType="org.openda.blackbox.config.KeyTypeSwanEndDateString"/>
+		<key id="stationary" name="STATIONARY" targetType="org.openda.blackbox.config.KeyTypeSwanStationaryString"/>
+		<key id="restart" name="HOTSTART" targetType="org.openda.blackbox.config.KeyTypeSwanRestartString"/>
+		<key id="ncrestart" name="NCRESTART" targetType="org.openda.blackbox.config.KeyTypeSwanNetcdfRestartString"/>
+	</keyDefinitions>
+	<files>
+		<file templateFile="templateStationary.swn" targetFile="inputStationary.swn">
+			<keys>
+				<keyId>starttime</keyId>
+				<keyId>endtime</keyId>
+				<keyId>restart</keyId>
+				<keyId>ncrestart</keyId>
+				<keyId>stationary</keyId>
+			</keys>
+		</file>
+	</files>
+	<valuesFile>myValuesStationary.txt</valuesFile>
+</templateConfig>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+   <modelConfig>
+      <file>./D3DModel.xml</file>
+   </modelConfig>
+
+   <vectorSpecification>
+      <parameters>
+	  <regularisationConstant>
+             <stdDev value=".5" transformation="identity"/>
+             <subVector id="depth1" sourceVectorId="depth1">
+		<selector className="org.openda.model_delft3d.D3dField2DMask">
+                   <arg>1,1:101,3</arg>
+                </selector>
+             </subVector>
+             <subVector id="depth2" sourceVectorId="depth2">
+		<selector className="org.openda.model_delft3d.D3dField2DMask">
+                   <arg>1,1:101,3</arg>
+                </selector>
+             </subVector>
+          </regularisationConstant>
+          <!--
+	  <regularisationConstant scale="1">
+               <stdDev value="0.05" transformation="identity"/>
+               <vector id="M2.Amplitude"/>
+          </regularisationConstant>
+          <regularisationConstant scale="1">
+               <stdDev value="10" transformation="identity"/>
+               <vector id="M2.Phase"/>
+	  </regularisationConstant>
+	  -->
+          <!--
+	  <regularisationConstant scale="1">
+               <stdDev value="0.05" transformation="identity"/>
+               <vector id="S2.Amplitude"/>
+          </regularisationConstant>
+          <regularisationConstant scale="1">
+               <stdDev value="10" transformation="identity"/>
+               <vector id="S2.Phase"/>
+	  </regularisationConstant>
+          -->
+	  <!--
+          <regularisationConstant>
+             <stdDev value="0.00025" transformation="identity"/>
+               <subVector id="roughness-u" sourceVectorID="roughness-u">
+		  <selector className="org.openda.model_delft3d.D3dField2DMask">
+                      <arg>1,1:198,3</arg>
+                  </selector>
+               </subVector>
+          </regularisationConstant>
+	  -->
+   </parameters>
+        <predictor>
+            <vector id="station01.waterlevel"/>
+            <vector id="station02.waterlevel"/>
+	    <vector id="station03.waterlevel"/>
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

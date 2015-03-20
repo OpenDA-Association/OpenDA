@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<treeVectorFile xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/treeVector.xsd">
+
+	<timeStamp date="2007-05-07" time="07:40:00" timeZone="GMT"/>
+
+	<treeVector id="velocity" caption="velocity field from our model">
+
+		<description>velocity field that consists of a U and a V-velocity component</description>
+
+		<treeVectorLeaf id="U" caption="u-component">
+			<unit>m/s</unit>
+			<missingValue>NaN</missingValue>
+			<grid>
+				<computationalSpace>
+					<dimension id="xi" length="3"/>
+					<dimension id="eta" length="2"/>
+				</computationalSpace>
+				<physicalSpace>
+					<dimension id="x" axes="xi eta" ref="geometricalData/xCoordUPoints"/>
+					<dimension id="y" axes="xi eta" ref="geometricalData/yCoordUPoints"/>
+				</physicalSpace>
+			</grid>
+			<vector>2.0 3.0 4.0    2.5 3.5 4.5</vector>
+		</treeVectorLeaf>
+
+		<treeVectorLeaf id="V" caption="v-component">
+			<unit>m/s</unit>
+			<missingValue>NaN</missingValue>
+			<grid>
+				<computationalSpace>
+					<dimension id="xi" length="3"/>
+					<dimension id="eta" length="2"/>
+				</computationalSpace>
+				<physicalSpace>
+					<dimension id="x" axes="xi eta" ref="geometricalData/xCoordVPoints"/>
+					<dimension id="y" axes="xi eta" ref="geometricalData/yCoordVPoints"/>
+				</physicalSpace>
+			</grid>
+			<vector>6.0 7.0 8.0 6.5 7.5 8.5</vector>
+		</treeVectorLeaf>
+
+		<subTreeVector id="geometricalData" caption="This data is not included in the vector representation" excludeFromVector="true">
+
+			<treeVectorLeaf id="xCoordUPoints">
+				<unit>m</unit>
+				<missingValue>NaN</missingValue>
+				<vector>100.0 200.0 300.0 400.0 600.0 600.0</vector>
+			</treeVectorLeaf>
+	
+			<treeVectorLeaf id="yCoordUPoints">
+				<unit>m</unit>
+				<missingValue>NaN</missingValue>
+				<vector>10.0 20.0 30.0 40.0 60.0 60.0</vector>
+			</treeVectorLeaf>
+	
+			<treeVectorLeaf id="xCoordVPoints">
+				<unit>m</unit>
+				<missingValue>NaN</missingValue>
+				<vector>
+				100.5 NaN 300.5e-12   400.5
+500.5
+				600.5
+				</vector>
+			</treeVectorLeaf>
+	
+			<treeVectorLeaf id="yCoordVPoints">
+				<unit>m</unit>
+				<missingValue>NaN</missingValue>
+				<vector>10.5 20.5 30.5 40.5 60.5 60.5</vector>
+			</treeVectorLeaf>
+
+		</subTreeVector>
+
+	</treeVector>
+</treeVectorFile>

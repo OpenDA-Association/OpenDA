@@ -1,0 +1,24 @@
+netcdf /home/verlaanm/deltares/src/openda_1_20100401/public/opendaTestRuns/core/org/openda/resultwriters/de_test_simplematrix_7.nc {
+ dimensions:
+   time = UNLIMITED;   // (1 currently)
+   one = 1;
+   from-SimpleMatrix_x = 2;
+   from-SimpleMatrix_y = 3;
+ variables:
+   int time(time=1);
+   int ntime(one=1);
+   double from-SimpleMatrix(time=1, from-SimpleMatrix_y=3, from-SimpleMatrix_x=2);
+ data:
+time =
+  {1}
+ntime =
+  {1}
+from-SimpleMatrix =
+  {
+    {
+      {1.0, 4.0},
+      {2.0, 5.0},
+      {3.0, 6.0}
+    }
+  }
+}

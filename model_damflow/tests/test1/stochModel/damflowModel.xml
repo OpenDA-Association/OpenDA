@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>damflowWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+        	<alias key="DAMFLOWDIR" value="."/>
+		<alias key="templateDir" value="damflowModel"/>
+		<alias key="instanceDir" value="ens"/>
+		<alias key="inputFileName" value="dupuit"/>
+	</aliasValues>
+
+	<timeInfoExchangeItems start="sTime" end="eTime"/>
+
+	<exchangeItems>
+                <vector id="sTime" ioObjectId="dupuitP" elementId="sTime"/>
+                <vector id="eTime" ioObjectId="dupuitP" elementId="eTime"/>        
+                <vector id="state.head" ioObjectId="dupuitC" elementId="grid.hydraulichead"/>
+                <vector id="loc0.head" ioObjectId="dupuitO" elementId="location0.hydraulichead"/>
+                <vector id="riverwl" ioObjectId="dupuitB" elementId="riverwaterlevel"/>
+                <vector id="layer0.Kx" ioObjectId="dupuitG" elementId="layer0.Kx"/>
+                <vector id="layer1.Kx" ioObjectId="dupuitG" elementId="layer1.Kx"/>
+                <vector id="layer2.Kx" ioObjectId="dupuitG" elementId="layer2.Kx"/>
+                <vector id="layer3.Kx" ioObjectId="dupuitG" elementId="layer3.Kx"/>
+                <vector id="layer4.Kx" ioObjectId="dupuitG" elementId="layer4.Kx"/>
+                <vector id="layer5.Kx" ioObjectId="dupuitG" elementId="layer5.Kx"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

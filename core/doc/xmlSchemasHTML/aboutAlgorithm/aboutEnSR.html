@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="text/css"> .textElement { font-family: Arial; font-size: 10pt; color: #800000; }</style>
+		<style type="text/css"> .textAttr { font-family: Arial; font-size: 10pt; color: #FF0000; }</style>
+		<style type="text/css"> .textContents { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .textOperator { font-family: Arial; font-size: 10pt; color: #0000FF; }</style>
+		<style type="text/css"> .schemaHeader { font-family: Arial; font-size: 11pt; color: #000000; }</style>
+		<style type="text/css"> .schemaHeader2 { font-family: Arial; font-size: 11pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .elementHeader { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .elementHeader2 { font-family: Arial; font-size: 10pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaName { font-family: Arial; font-size: 8pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaSubTitle { font-family: Arial; font-size: 8pt; color: #808080; }</style>
+		<style type="text/css"> .schemaSubData { font-family: Arial; font-size: 8pt; color: #000000; }</style>
+		<style type="text/css"> pre { margin-top: 0; margin-bottom: 0; }</style>
+		<style type="text/css"> .table-no-border { line-height: 100%; }</style>
+		<style type="text/css"> .table-border { line-height: 100%; border-style: solid; border-left-color: #ECE9D8; border-top-color: #ECE9D8; border-right-color: #ACA899; border-bottom-color: #ACA899; }</style>
+		<style type="text/css"> .table-borderwithoutoutline { line-height: 100%; border-style: solid; border-width: 0px; }</style>
+		<style type="text/css"> .td-border { border-style: solid; border-width: 1px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-left { border-style: solid; border-left-width: 0px; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-left { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-right { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-right { border-style: solid; border-right-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-right { border-style: solid; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-bottom { border-style: solid; border-bottom-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-left { border-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-color: #ECE9D8; border-top-color: #ACA899; }</style>
+		<style type="text/css"> .td-border-left-single { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-right-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+	<title>About EnSR algorithm</title>
+	</head>
+	<body>
+	<h1>EnSR Algorithm</h1>
+	<p>EnSR is a variant of Kalman filter like EnKF. There are two fundamental problems associated with the use of EnKF.
+       First is that the ensemble size is limited by the computational cost of
+       applying the forecast model to each ensemble member. The second one is
+       that small ensembles have few degrees of freedom available to represent
+       errors and suffer from sampling errors that will further degrade
+       the forecast error covariance representation. Sampling errors lead to loss
+       of accuracy and underestimation of error covariances. This problem can
+       progressively worsen, resulting in filter divergence.</p>
+
+       <p>In ensemble square-root filters (EnSR), the analysis step is done
+       deterministically without generating any observation noise realization
+       (see Tippett,et.al,2003; Evensen, 2004). Since no random sample is
+       generated, this extra source of sampling error is eliminated. Therefore,
+       this method is expected to perform better than the ones with
+       perturbed observations for a certain type of applications.</p>
+	</body>
+</html>

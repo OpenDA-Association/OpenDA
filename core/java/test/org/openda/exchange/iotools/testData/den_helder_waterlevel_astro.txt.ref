@@ -1,0 +1,59 @@
+id = den helder.waterlevel_astro
+  description = null
+  role = InOut
+  quantityInfo:
+	quantityId = waterlevel_astro
+	unitId = m
+  geometryInfo:
+    latitude:
+      quantityId = latitude
+      unitId = degrees_north
+      coordinateValues:
+        52.966001
+    longitude:
+      quantityId = longitude
+      unitId = degrees_east
+      coordinateValues:
+        4.745356
+  timeInfo:
+    times:
+      54466.0
+      54466.006944444445
+      54466.01388888889
+      54466.020833333336
+      54466.02777777778
+      54466.03472222222
+      54466.041666666664
+      54466.04861111111
+      54466.055555555555
+      54466.0625
+      54466.069444444445
+      54466.07638888889
+      54466.083333333336
+      54466.09027777778
+      54466.09722222222
+      54466.104166666664
+      54466.11111111111
+      54466.118055555555
+      54466.125
+  values:
+    0.73
+    0.73
+    0.72
+    0.7
+    0.68
+    0.66
+    0.63
+    0.59
+    0.55
+    0.51
+    0.46
+    0.4
+    0.35
+    0.29
+    0.23
+    0.17
+    0.12
+    0.06
+    0.0
+

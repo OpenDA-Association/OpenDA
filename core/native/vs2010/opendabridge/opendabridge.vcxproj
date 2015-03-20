@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{26BF455E-DD7C-48A3-B13F-48F427AC216F}</ProjectGuid>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>opendabridge</RootNamespace>
+    <ProjectName>opendabridge</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\src\openda\bridge\jni_include;..\..\src\openda\bridge\jni_include\win32;..\..\src\openda\bridge\openda_include;..\..\external\sqlite3</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist $(SolutionDir)..\..\native_bin\win32_ifort (
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win32_ifort\
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win32_ifort\
+)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\src\openda\bridge\jni_include;..\..\src\openda\bridge\jni_include\win32;..\..\src\openda\bridge\openda_include;..\..\external\sqlite3</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist $(SolutionDir)..\..\native_bin\win64_ifort (
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win64_ifort\
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win64_ifort\
+)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\src\openda\bridge\jni_include;..\..\src\openda\bridge\jni_include\win32;..\..\src\openda\bridge\openda_include;..\..\external\sqlite3</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist $(SolutionDir)..\..\native_bin\win32_ifort (
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win32_ifort\
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win32_ifort\
+)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\src\openda\bridge\jni_include;..\..\src\openda\bridge\jni_include\win32;..\..\src\openda\bridge\openda_include;..\..\external\sqlite3</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist $(SolutionDir)..\..\native_bin\win64_ifort (
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win64_ifort\
+   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win64_ifort\
+)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\openda\bridge\jni_cta_CtaObsdescr_NativeToJava.c" />
+    <ClCompile Include="..\..\src\openda\bridge\jni_cta_utils.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaArray.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaInitialize.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaModelState.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaObject.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaObservationDescriptions.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaOpenDaModel.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaParallel.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaRelationTable.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaStochObserver.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaTime.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaTreeVector.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaVector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\openda\bridge\jni_cta_CtaObsdescr_NativeToJava.h" />
+    <ClInclude Include="..\..\src\openda\bridge\jni_cta_utils.h" />
+    <ClInclude Include="..\..\src\openda\bridge\jni_datatypes.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaArray.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaInitialize.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaModelState.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaObject.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaObservationDescriptions.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaOpenDaModel.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaParallel.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaRelationTable.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaStochObserver.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaTime.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaTreeVector.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaUtils.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaVector.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_resultwriters_NativeResultWriter.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

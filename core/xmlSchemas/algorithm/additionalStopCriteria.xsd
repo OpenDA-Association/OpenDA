@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="additionalStopCriteria">
+		<xs:annotation>
+			<xs:documentation>Additional optional stopping criteria.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="stopCriterion">
+				<xs:annotation>
+					<xs:documentation>A stopping criterion</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="threshold" use="required">
+						<xs:annotation>
+							<xs:documentation>Threshold value of the stopping parameter.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="class" use="required">
+						<xs:annotation>
+							<xs:documentation>Java class of the corresponding stopping criterion</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

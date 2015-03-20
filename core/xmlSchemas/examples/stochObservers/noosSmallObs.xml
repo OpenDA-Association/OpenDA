@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd">
+	<!-- 1st series uses header lines for meta data
+	contents of this file look like:
+        # Location    : location1
+        # Position    : (-2.0,53.3)
+        # Source      : observed
+        # Unit        : pressure
+        # Analyse time: most recent
+        # Timezone    : GMT
+        200801010000   -0.8300
+        200801010030   -0.9500
+        200801010100   -0.9900
+        200801010130   -0.9700
+        200801010200   -0.8900
+	-->
+	<timeSeries standardDeviation="0.05" 
+		id="pressure@location-one"
+		minDateTime="200801010030"
+		maxDateTime="200801010130" >
+		series1.noos
+	</timeSeries>
+
+	<!-- 2nd series sets or overrules header lines
+        # Location    : location2
+        # Position    : (-2.0,43.3)
+        # Source      : observed
+        # Unit        : pressure
+        # Analyse time: most recent
+        # Timezone    : GMT
+        200801010000   -1.0000
+        200801010030    0.0000
+        200801010100   -999.99
+        200801010130    999.00
+        200801010200    1.0000
+	-->
+	<timeSeries location="location2" 
+		quantity="cloud-fraction" 
+		standardDeviation="0.052"
+		minValue="-10.0"
+	    maxValue="10.0"	>
+		series2.noos
+	</timeSeries>
+	<!--
+	Empty selection
+	-->
+	<timeSeries standardDeviation="0.05" 
+		id="pressure2@location-one"
+		minDateTime="200901010030"
+		maxDateTime="200901010130" >
+		series1.noos
+	</timeSeries>
+</noosObserver>

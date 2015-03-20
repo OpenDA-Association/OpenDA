@@ -1,0 +1,4 @@
+<DelsaConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <sobolSequence min="[7.0,1.7]" max="[9.0,1.75]" totalSample="100"/>
+</DelsaConfig>

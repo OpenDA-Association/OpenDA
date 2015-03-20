@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:ant="http://www.fiset.ca/ant-docs/v1" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252"/>
+<title>Svn Types</title>
+<META HTTP-EQUIV="Content-Language" CONTENT="en-us"/>
+<style type="text/css">	
+				
+				body {
+					font: 80% Verdana, Arial, Helvetica, sans-serif;
+					margin: 5px; padding: 0;
+				/*	background: rgb(95%,95%,80%);  */
+					color: black;
+				}
+				h1 {
+					font-size: 200%; letter-spacing: 3px;
+					margin-bottom: 1em; 
+					padding: 0.66em 0 0.33em 1em;
+					background: rgb(85%,85%,70%);
+				}
+				h2 {
+					background: rgb(90%,90%,80%);
+				}
+				h3 {
+					background-color: rgb(95%,95%,85%);
+				}
+				.sample {
+					font-family: Courier, "Courier New", monospace;
+					background-color: #f3f1f4;
+				 }
+				div.sample {
+					margin-left: 10px;
+					margin-right: 10px;
+					padding-top: 3px;
+					padding-bottom: 3px;
+					padding-left: 3px;
+					padding-right: 3px;
+					border:1px dashed black;
+					width: 80%;
+				 }
+				 table.params {
+					width: 80%;
+					border: 1px solid gray;
+					margin-bottom:1em;
+				 }
+				 th.params, td.params {
+					padding: 0 0.5em;
+					border-left: 1px solid #DDD;
+					border-bottom: 1px solid #DDD;
+					font: 70%
+				}
+				th.params {
+					
+				}
+				table.toc {
+					width: 80%;
+					border: 1px solid gray;
+					margin-bottom:1em;
+				}
+				td.toc {
+					padding: 0 0.5em;
+					border: none
+					font: 70%
+				}
+				table.type {
+					width: 80%;
+					border: none;
+					margin-bottom:1em;
+				}
+				th.type, td.type {
+					text-align: left;
+					padding: 0 0.5em;
+					border: none
+					font: 70%
+				}
+				th.type {
+					font-weight: bold;
+				}
+				
+			</style>
+</head>
+<body lang="en-US" dir="LTR">
+<h1>Svn Types</h1>
+<h2>Table of Content</h2>
+<table class="toc">
+<tbody class="toc">
+<tr class="toc">
+<td class="toc">
+<a href="#svnFileSet">svnFileSet</a>
+</td>
+<td class="toc">FileSet replacement that operates on list of files obtained from Subversion.</td>
+</tr>
+</tbody>
+</table>
+<h2>Introduction</h2>
+<ant:introduction xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<p>
+			This document describes the type extensions that svn-ant brings to Ant. To use those types,
+			you must first obtain a copy of svnant.jar, add it to the classpath of your ant project
+			and define the types. Fortunately, there is a resource file, within the distributed JAR file,
+			and all those steps can be accomplished with the following code:
+			<div class="sample">
+<pre class="sample">
+				
+&lt;path id="svnant.classpath"&gt;
+  &lt;pathelement location="${svnant.dir}/lib/svnant.jar" /&gt;
+  &lt;pathelement location="${svnant.dir}/lib/svnClientAdapter.jar" /&gt;
+&lt;/path&gt;  
+
+&lt;typedef resource="svntypes.xml" classpathref="project.classpath"/&gt;
+				
+			</pre>
+</div>
+		</p>
+		<p>
+			If you are upgrading from an earlier version of svnAnt, and the following line was used
+			in your <i>build.xml</i> file, then replace it with the ones above.
+			<div class="sample">
+<pre class="sample">
+				
+&lt;taskdef resource="svntask.properties" classpathref="svnant.classpath"/&gt;
+				
+			</pre>
+</div>
+		</p>
+		<h3>
+<a name="bindings">Bindings</a>
+</h3>
+		<p>
+			All types offer two parameters: <b>javahl</b> and <b>svnkit</b>. Those parameters
+			are booleans, which means their values can be set to either <b>true</b> or <b>false</b>. 
+			If not specified, those parameters are assumed to be set (true). These two parameters are used
+			to select which client is used to access Subversion.
+		</p>
+		<p>
+			There are three clients used by svnAnt to access Subversion:
+			<ul>
+				<li>JavaHL;</li>
+				<li>SVNKit; and,</li>
+				<li>Command Line Interface.</li>
+			</ul>
+			To better understand the difference between those three clients, please refer to
+			documentation on <b>svnClientAdapter.jar</b>.
+		</p>
+		<p>
+			The property <b>javahl</b> is considered only if the javahl libraries are available. Similarly,
+			the property <b>svnkit</b> is considered only if SVNKit is present. Finally, <b>javahl</b>
+			takes precedence over <b>svnkit</b>.
+		</p>
+		<p>
+			To better illustrate the previous paragraph, use the following steps:
+			<ol>
+				<li>If <b>javahl</b> is <i>true</i> and JavaHL bindings are available, then JavaHL is used.</li>
+				<li>If <b>svnkit</b> is <i>true</i> and SVNKit is present, then SVNKit is used.</li>
+				<li>If the two previous tests failed, for any reason, then the Command Line Interface is used.</li>
+			</ol>
+		</p>
+	</ant:introduction>
+<h1>
+<a name="">svnFileSet</a>
+</h1>
+<p>FileSet replacement that operates on list of files obtained from Subversion.</p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.SvnFileSet</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">dir</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Specifies the root directory used by the file set. It should specify
+				a directory managed by Subversion.
+			</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Either dir or file must be specified
+			</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">file</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				If used, specifies a fileset that contains a single file.
+			</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Either dir or file must be specified
+			</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">includes</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Comma-seperated or space-separated list of patterns, which describe files that are 
+				included. If this attribute if not specified, then all files are included.
+			</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				No
+			</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">excludes</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Comma-seperated or space-separated list of patterns, which describe files that are 
+				excluded. If this attribute if not specified, then no files are excluded.
+			</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				No
+			</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>
+<h3>exclude</h3>
+				The type svnFileSet can include the nested type 'exclude', similar to a classic FileSet.
+			<h3>include</h3>
+				The type svnFileSet can include the nested type 'include', similar to a classic FileSet.
+			<h3>patternSet</h3>
+				The type svnFileSet can include the nested type 'patternSet', similar to a classic FileSet.
+			<h3>selector</h3>
+				The type svnFileSet can include the any file selector, such as <b xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">contains</b>, <b xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">date</b>
+				<b xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">size</b>, or any <a xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" href="selectors.html">file selector defined by svn-ant</a>
+			<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This type implements a FileSet. Instances of FileSet are used in tasks that operates on a number of files. The files
+				selected by a FileSet can be tailored by a number of patterns and selectors. More information about file sets is available
+				with the Ant documentation.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				The motivation with creating a replacement FileSet that is based on Subversion was to have the ability of creating
+				sets of files that include deleted and missing files. In fact, the classic fileset operates only on files that are reported
+				by the file system and can not predict deleted and missing files. Furthermore, there are useful commands that can be performed
+				on deleted and missing files, such as 'revert', 'delete', 'update' and others.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				At the present time, <b>svnFileSet</b> is experimental. It supports selectors but it does not yet accept any patterns 
+				(include, exclude). Those enhancments are to come later.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<b>svnFileSet</b> can be used within any svn-ant task that supports a nested file sets. It can also be used in any task
+				that is based on a file set. If you have a problem using <b>svnFileSet</b> within a task that works well with the classic
+				fileset, then report the problem to the author of the task. However, for the time being, there is a work around your 
+				problem. Instead of using a <b>svnFileSet</b> directly in the targeted task, use it indirectly via a classic fileset and
+				a reference. For example, if ANT complains about a task similar to the following:
+				<div class="sample">
+<pre class="sample">
+
+&lt;target name="example"&gt;
+	&lt;mkdir dir="test"/&gt;
+	&lt;copy todir="test"&gt;
+		&lt;svnFileSet dir="workingcopy"&gt;
+			&lt;svnAdded/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/copy&gt;
+&lt;/target&gt;
+					
+				</pre>
+</div>
+				
+				you can rewrite it, using a reference, as:
+				
+				<div class="sample">
+<pre class="sample">
+
+&lt;target name="example"&gt;
+	&lt;svnFileSet id="svnFileSetId_1" dir="workingcopy"&gt;
+		&lt;svnAdded/&gt;
+	&lt;/svnFileSet&gt;
+	&lt;mkdir dir="test"/&gt;
+	&lt;copy todir="test"&gt;
+		&lt;fileset refid="svnFileSetId_1"/&gt;
+	&lt;/copy&gt;
+&lt;/target&gt;
+					
+				</pre>
+</div>
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+				If you are the author of a fileset-based task and that you can not understand 
+				why your task does not accept <b>svnFileSet</b> while it works perfectly well 
+				with the classic fileset, here is a thing you can check. If your task
+				accepts instances of FileSet with a method similar to:
+				<div class="sample">
+<pre class="sample">
+
+public void addFileset(FileSet set) {
+	...
+}
+					
+				</pre>
+</div>
+				then adding the following method should fix the problem:
+				<div class="sample">
+<pre class="sample">
+
+public void add(FileSet set) {
+	addFileSet(set);
+}
+					
+				</pre>
+</div>
+			</p>
+			<h3 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Examples</h3>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				The following ant script can be used to remove all missing files from the associated repository:
+				<div class="sample">
+<pre class="sample">
+
+&lt;svn&gt;
+	&lt;delete&gt;
+		&lt;svnFileSet dir="workingcopy"&gt;
+			&lt;svnMissing/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/delete&gt;
+	&lt;commit 
+		dir="workingcopy" 
+		message="automatically removing missing files"/&gt;
+&lt;/svn&gt;
+					
+				</pre>
+</div>
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				The following ant script can be used to add all new files to the associated repository:
+				<div class="sample">
+<pre class="sample">
+
+&lt;svn&gt;
+	&lt;add&gt;
+		&lt;svnFileSet dir="workingcopy"&gt;
+			&lt;svnUnversioned/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/add&gt;
+	&lt;commit
+		dir="workingcopy" 
+		message="automatically adding files"/&gt;
+&lt;/svn&gt;
+					
+				</pre>
+</div>
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				The following ant script can be used to restore all deleted files:
+				<div class="sample">
+<pre class="sample">
+
+&lt;svn&gt;
+	&lt;revert&gt;
+		&lt;svnFileSet dir="workingcopy"&gt;
+			&lt;svnDeleted/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/revert&gt;
+&lt;/svn&gt;
+					
+				</pre>
+</div>
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				If, in the previous example, you wanted svn-ant to use the command line adapter:
+				<div class="sample">
+<pre class="sample">
+
+&lt;svn javahl="false" svnkit="false"&gt;
+	&lt;revert&gt;
+		&lt;svnFileSet 
+			dir="workingcopy" 
+			javahl="false" 
+			svnkit="false"&gt;
+			&lt;svnDeleted 
+				javahl="false" 
+				svnkit="false"/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/revert&gt;
+&lt;/svn&gt;
+					
+				</pre>
+</div>
+			</p>
+		</body>
+</html>

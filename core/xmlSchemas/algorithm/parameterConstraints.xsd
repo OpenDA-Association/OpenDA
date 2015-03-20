@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="BoundsXML">
+		<xs:attribute name="bounds" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Array with values.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="parameterConstraints">
+		<xs:annotation>
+			<xs:documentation>Specify (phyisical) limits on parameter values in calibration process.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lowerbounds" type="openda:BoundsXML">
+				<xs:annotation>
+					<xs:documentation>Lower limits.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperbounds" type="openda:BoundsXML">
+				<xs:annotation>
+					<xs:documentation>Upper limits.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="parameterConstraint" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>Specify whether to use the constraints (parameterParameterConstraint=true) or not (parameterrConstraint=false).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

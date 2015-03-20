@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<blackBoxStochModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openda.org" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelConfig>
+		<file>./hbvModel.xml</file>
+	</modelConfig>
+	<vectorSpecification>
+		<parameters>
+			<!-- Below the parameters belonging to the already calibrated areas upstream of Umos1 are given (see also Moselle1 config) -->
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG001.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.nims">
+						<modelExchangeItem id="nims.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.nims">
+						<modelExchangeItem id="nims.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.nims">
+						<modelExchangeItem id="nims.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.nims">
+						<modelExchangeItem id="nims.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.nims">
+						<modelExchangeItem id="nims.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.nims">
+						<modelExchangeItem id="nims.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG019.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.our">
+						<modelExchangeItem id="our.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.our">
+						<modelExchangeItem id="our.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.our">
+						<modelExchangeItem id="our.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.our">
+						<modelExchangeItem id="our.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.our">
+						<modelExchangeItem id="our.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.our">
+						<modelExchangeItem id="our.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG031.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.kyll">
+						<modelExchangeItem id="kyll.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.kyll">
+						<modelExchangeItem id="kyll.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.kyll">
+						<modelExchangeItem id="kyll.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.kyll">
+						<modelExchangeItem id="kyll.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.kyll">
+						<modelExchangeItem id="kyll.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.kyll">
+						<modelExchangeItem id="kyll.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG039.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.omos2">
+						<modelExchangeItem id="omos2.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.omos2">
+						<modelExchangeItem id="omos2.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.omos2">
+						<modelExchangeItem id="omos2.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.omos2">
+						<modelExchangeItem id="omos2.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.omos2">
+						<modelExchangeItem id="omos2.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.omos2">
+						<modelExchangeItem id="omos2.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG044.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.seille">
+						<modelExchangeItem id="seille.fc"/>
+						<modelExchangeItem id="orne.fc"/>
+						<modelExchangeItem id="omos3.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.seille">
+						<modelExchangeItem id="seille.lp"/>
+						<modelExchangeItem id="orne.lp"/>
+						<modelExchangeItem id="omos3.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.seille">
+						<modelExchangeItem id="seille.beta"/>
+						<modelExchangeItem id="orne.beta"/>
+						<modelExchangeItem id="omos3.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.seille">
+						<modelExchangeItem id="seille.alfa"/>
+						<modelExchangeItem id="orne.alfa"/>
+						<modelExchangeItem id="omos3.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.seille">
+						<modelExchangeItem id="seille.khq"/>
+						<modelExchangeItem id="orne.khq"/>
+						<modelExchangeItem id="omos3.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.seille">
+						<modelExchangeItem id="seille.perc"/>
+						<modelExchangeItem id="orne.perc"/>
+						<modelExchangeItem id="omos3.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG046.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.prims_1">
+						<modelExchangeItem id="prims_1.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.prims_1">
+						<modelExchangeItem id="prims_1.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.prims_1">
+						<modelExchangeItem id="prims_1.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.prims_1">
+						<modelExchangeItem id="prims_1.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.prims_1">
+						<modelExchangeItem id="prims_1.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.prims_1">
+						<modelExchangeItem id="prims_1.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG050.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.nied_1">
+						<modelExchangeItem id="nied_1.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.nied_1">
+						<modelExchangeItem id="nied_1.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.nied_1">
+						<modelExchangeItem id="nied_1.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.nied_1">
+						<modelExchangeItem id="nied_1.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.nied_1">
+						<modelExchangeItem id="nied_1.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.nied_1">
+						<modelExchangeItem id="nied_1.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG059.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.lieser">
+						<modelExchangeItem id="lieser.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.lieser">
+						<modelExchangeItem id="lieser.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.lieser">
+						<modelExchangeItem id="lieser.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.lieser">
+						<modelExchangeItem id="lieser.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.lieser">
+						<modelExchangeItem id="lieser.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.lieser">
+						<modelExchangeItem id="lieser.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG061.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.pruem">
+						<modelExchangeItem id="pruem.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.pruem">
+						<modelExchangeItem id="pruem.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.pruem">
+						<modelExchangeItem id="pruem.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.pruem">
+						<modelExchangeItem id="pruem.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.pruem">
+						<modelExchangeItem id="pruem.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.pruem">
+						<modelExchangeItem id="pruem.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG063.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.blies_1">
+						<modelExchangeItem id="blies_1.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.blies_1">
+						<modelExchangeItem id="blies_1.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.blies_1">
+						<modelExchangeItem id="blies_1.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.blies_1">
+						<modelExchangeItem id="blies_1.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.blies_1">
+						<modelExchangeItem id="blies_1.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.blies_1">
+						<modelExchangeItem id="blies_1.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG074.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.omos1">
+						<modelExchangeItem id="omos1.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.omos1">
+						<modelExchangeItem id="omos1.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.omos1">
+						<modelExchangeItem id="omos1.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.omos1">
+						<modelExchangeItem id="omos1.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.omos1">
+						<modelExchangeItem id="omos1.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.omos1">
+						<modelExchangeItem id="omos1.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BFG078.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.obsa">
+						<modelExchangeItem id="obsa.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.obsa">
+						<modelExchangeItem id="obsa.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.obsa">
+						<modelExchangeItem id="obsa.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.obsa">
+						<modelExchangeItem id="obsa.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.obsa">
+						<modelExchangeItem id="obsa.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.obsa">
+						<modelExchangeItem id="obsa.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<uncertaintyModule className="org.openda.uncertaintyModels.ParameterDrawerFactory" workingDirectory=".">
+				<configFile>paramsFromMoselle1_H-RN-BOLL.Q.m.csv</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc.sauer1">
+						<modelExchangeItem id="alzette.fc"/>
+						<modelExchangeItem id="sure.fc"/>
+						<modelExchangeItem id="sauer1.fc"/>
+						<modelExchangeItem id="sauer2.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp.sauer1">
+						<modelExchangeItem id="alzette.lp"/>
+						<modelExchangeItem id="sure.lp"/>
+						<modelExchangeItem id="sauer1.lp"/>
+						<modelExchangeItem id="sauer2.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta.sauer1">
+						<modelExchangeItem id="alzette.beta"/>
+						<modelExchangeItem id="sure.beta"/>
+						<modelExchangeItem id="sauer1.beta"/>
+						<modelExchangeItem id="sauer2.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa.sauer1">
+						<modelExchangeItem id="alzette.alfa"/>
+						<modelExchangeItem id="sure.alfa"/>
+						<modelExchangeItem id="sauer1.alfa"/>
+						<modelExchangeItem id="sauer2.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq.sauer1">
+						<modelExchangeItem id="alzette.khq"/>
+						<modelExchangeItem id="sure.khq"/>
+						<modelExchangeItem id="sauer1.khq"/>
+						<modelExchangeItem id="sauer2.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc.sauer1">
+						<modelExchangeItem id="alzette.perc"/>
+						<modelExchangeItem id="sure.perc"/>
+						<modelExchangeItem id="sauer1.perc"/>
+						<modelExchangeItem id="sauer2.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+			<!-- Parameters of current calibration -->
+			<uncertaintyModule className="org.openda.uncertainties.UncertaintyEngine" workingDirectory=".">
+				<configFile>uncertaintySpecification.xml</configFile>
+				<exchangeItems>
+					<exchangeItem id="fc">
+						<modelExchangeItem id="unsaar.fc"/>
+						<modelExchangeItem id="rest_1.fc"/>
+						<modelExchangeItem id="omos4.fc"/>
+						<modelExchangeItem id="umos1.fc"/>
+					</exchangeItem>
+					<exchangeItem id="lp">
+						<modelExchangeItem id="unsaar.lp"/>
+						<modelExchangeItem id="rest_1.lp"/>
+						<modelExchangeItem id="omos4.lp"/>
+						<modelExchangeItem id="umos1.lp"/>
+					</exchangeItem>
+					<exchangeItem id="beta">
+						<modelExchangeItem id="unsaar.beta"/>
+						<modelExchangeItem id="rest_1.beta"/>
+						<modelExchangeItem id="omos4.beta"/>
+						<modelExchangeItem id="umos1.beta"/>
+					</exchangeItem>
+					<exchangeItem id="alfa">
+						<modelExchangeItem id="unsaar.alfa"/>
+						<modelExchangeItem id="rest_1.alfa"/>
+						<modelExchangeItem id="omos4.alfa"/>
+						<modelExchangeItem id="umos1.alfa"/>
+					</exchangeItem>
+					<exchangeItem id="khq">
+						<modelExchangeItem id="unsaar.khq"/>
+						<modelExchangeItem id="rest_1.khq"/>
+						<modelExchangeItem id="omos4.khq"/>
+						<modelExchangeItem id="umos1.khq"/>
+					</exchangeItem>
+					<exchangeItem id="perc">
+						<modelExchangeItem id="unsaar.perc"/>
+						<modelExchangeItem id="rest_1.perc"/>
+						<modelExchangeItem id="omos4.perc"/>
+						<modelExchangeItem id="umos1.perc"/>
+					</exchangeItem>
+				</exchangeItems>
+			</uncertaintyModule>
+		</parameters>
+		<predictor>
+			<vector id="H-RN-TRIE.Q.m" sourceVectorId="H-RN-TRIE.Q.uh"/>
+		</predictor>
+	</vectorSpecification>
+</blackBoxStochModel>

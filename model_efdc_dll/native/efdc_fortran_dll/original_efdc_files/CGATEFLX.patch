@@ -1,0 +1,55 @@
+Index: CGATEFLX.for
+===================================================================
+--- CGATEFLX.for	(revision 3544)
++++ CGATEFLX.for	(working copy)
+@@ -38,17 +38,17 @@
+         OPEN(711,FILE=TRIM(FSINK),STATUS='UNKNOWN')  ! OPEN OLD FILE
+         CLOSE(711,STATUS='DELETE')             ! DELETE OLD FILE
+         OPEN(711,FILE=FSINK,STATUS='UNKNOWN')  ! OPEN NEW FILE
+-        WRITE(711,7101) 
+- 7101   FORMAT('       N      TIME  '
+-     &        ,<NQCTL>('ID     HUP     HDW     DIF    Q',<8*(KC-1)+5>X
+-     &                ,20X))
++c 7101   FORMAT('       N      TIME  '
++c     &        ,<NQCTL>('ID     HUP     HDW     DIF    Q',<8*(KC-1)+5>X
++c     &                ,20X))
++C       WRITE(711,7101)
+         CLOSE(711)
+ 
+         OPEN(712,FILE='SINKT.OUT',STATUS='UNKNOWN')  ! OPEN OLD FILE
+         CLOSE(712,STATUS='DELETE')             ! DELETE OLD FILE
+         OPEN(712,FILE='SINKT.OUT',STATUS='UNKNOWN')  ! OPEN NEW FILE
+-        WRITE(712,7102) '       N      TIME',(NS,NS=1,NQCTL)
+- 7102   FORMAT(A,<NQCTL>I8)
++c        WRITE(712,7102) '       N      TIME',(NS,NS=1,NQCTL)
++c 7102   FORMAT(A,<NQCTL>I8)
+ 
+ 
+ 
+@@ -1011,10 +1011,10 @@
+ C
+           FSINK='SINK.OUT'
+           OPEN(711,FILE=TRIM(FSINK),POSITION='APPEND')  
+-          WRITE(711,7110) N,TIMEDAY,(IGCHECK(NS),HUPG(NS),HDWG(NS)
+-     &                   ,DELHG(NS),(QCTLT(K,NS),K=1,KC),GGQSUM(NS)
+-     &                   ,NS=1,NQCTL) !,(GGQSUM(NS),NS=1,NQCTL)
+- 7110 FORMAT(I8,F10.4,<NQCTL>(I4,3F8.2,<KC>F8.2,F20.1))
++c          WRITE(711,7110) N,TIMEDAY,(IGCHECK(NS),HUPG(NS),HDWG(NS)
++c     &                   ,DELHG(NS),(QCTLT(K,NS),K=1,KC),GGQSUM(NS)
++c     &                   ,NS=1,NQCTL) !,(GGQSUM(NS),NS=1,NQCTL)
++c 7110 FORMAT(I8,F10.4,<NQCTL>(I4,3F8.2,<KC>F8.2,F20.1))
+           CLOSE(711)
+ C
+           OPEN(712,FILE='SINKT.OUT',POSITION='APPEND')  ! OPEN NEW FILE
+@@ -1023,8 +1023,8 @@
+               GQT(NS)=GQT(NS)+QCTLT(K,NS)
+             ENDDO
+           ENDDO
+-          WRITE(712,7120) N,TIMEDAY,(GQT(NS),NS=1,NQCTL)
+- 7120 FORMAT(I8,F10.4,<NQCTL>F8.2)
++c          WRITE(712,7120) N,TIMEDAY,(GQT(NS),NS=1,NQCTL)
++c 7120 FORMAT(I8,F10.4,<NQCTL>F8.2)
+ 
+         ENDIF  ! IF (MOD(FLOAT(N),SNKW).EQ.0.) THEN
+       ENDIF    ! IF (ISINK.EQ.2) THEN
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>getting started with openda</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>OpenDA tutorial: Starting OpenDA</h1>
+
+<hr>
+
+<h2>Starting OpenDA on Microsoft Windows:</h2>
+Either:
+<ul>
+   <li>Run the <tt>run_openda_gui.bat</tt> batch file to open the OpenDA GUI.</li>
+   <li>Run the <tt>run_openda_app.bat</tt> batch file from a command window, supplied with the full path to the main configuration file as its input argument to
+   immediately start the calculations. For example:<br>
+   <tt>run_openda_app.bat c:\openda_2.0\examples\simple_lorenz\lorenzEnkf.oda</tt><br>
+   Running with a relative path may work as well, but is known to cause problems in some situations.
+   </li>
+
+</ul>
+
+<h2>Starting OpenDA on Linux/Mac:</h2>
+
+Run the
+<tt>oda_run.sh</tt>
+shell script, with at least one of the following command-line options:
+<ul>
+   <li><tt>-gui</tt> to start the OpenDA graphical user interface (GUI).</li>
+   <li>The full path to the main configuration file.<br>
+   Running with a relative path may work as well, but is known to cause problems in some situations.</li>
+</ul>
+Examples:
+<ul>
+   <li><tt>oda_run.sh -gui</tt> will start the user interface.</li>
+   <li><tt>oda_run.sh ~/openda_2.0/examples/simple_lorenz/lorenzEnkf.oda</tt> will run the specified application.</li>
+   <li><tt>oda_run.sh -gui ~/openda_2.0/examples/simple_lorenz/lorenzEnkf.oda</tt> will start the user interface and load the configuration files of the specified application.</li>
+</ul>
+
+</body>
+</html>

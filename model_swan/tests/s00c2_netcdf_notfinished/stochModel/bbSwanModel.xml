@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>bbSwanWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+        <alias key="SWANDIR" value="."/>
+		<alias key="templateDir" value="swanModel"/>
+		<alias key="instanceDir" value="ens"/>
+		<alias key="inputFile" value="s00.swn"/>
+		<alias key="hotFile" value="s00.nc"/>
+		<alias key="openboundaryFile" value="INPUT_files/OB/simple_1m_20s.RVW"/>
+        <alias key="outFile" value="timeseries.out"/>
+	</aliasValues>
+
+    <timeInfoExchangeItems start="start_time" end="end_time"/>
+
+	<exchangeItems>
+                <vector id="start_time" ioObjectId="timeInfo" elementId="start_time"/>
+                <vector id="end_time" ioObjectId="timeInfo" elementId="end_time"/>        
+                <vector id="state" ioObjectId="hotFile" elementId="sea_surface_wave_directional_variance_spectral_density"/>
+                <vector id="openboundary" ioObjectId="openBoundary" elementId="Hs"/>
+                <vector id="Hsig1" ioObjectId="outFile" elementId="Hsig @ 1000.0,1000.0"/>
+                <vector id="Hsig2" ioObjectId="outFile" elementId="Hsig @ 1000.0,2500.0"/>
+                <vector id="Hsig3" ioObjectId="outFile" elementId="Hsig @ 3000.0,1000.0"/>
+                <vector id="Hsig4" ioObjectId="outFile" elementId="Hsig @ 3000.0,2500.0"/>
+                <vector id="Hsig5" ioObjectId="outFile" elementId="Hsig @ 5000.0,1000.0"/>
+                <vector id="Hsig6" ioObjectId="outFile" elementId="Hsig @ 5000.0,2500.0"/>
+                <vector id="Tm011" ioObjectId="outFile" elementId="Tm01 @ 1000.0,1000.0"/>
+                <vector id="Tm012" ioObjectId="outFile" elementId="Tm01 @ 1000.0,2500.0"/>
+                <vector id="Tm013" ioObjectId="outFile" elementId="Tm01 @ 3000.0,1000.0"/>
+                <vector id="Tm014" ioObjectId="outFile" elementId="Tm01 @ 3000.0,2500.0"/>
+                <vector id="Tm015" ioObjectId="outFile" elementId="Tm01 @ 5000.0,1000.0"/>
+                <vector id="Tm016" ioObjectId="outFile" elementId="Tm01 @ 5000.0,2500.0"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<treeVectorFile xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/treeVector.xsd">
+    <treeVector id="positions" caption="start and finish of robot movement">
+        <description>This file describes the track off a robot in our laboratory.
+            All coordinates in this file are cartesian and relative to a local frame
+        </description>
+        <treeVectorLeaf id="start" caption="initial position in space">
+            <unit>m</unit>
+            <vector>0.0 0.0 -1.5</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="finish" caption="final position in space">
+            <unit>m</unit>
+            <vector>2.0 3.0 4.5</vector>
+        </treeVectorLeaf>
+    </treeVector>
+</treeVectorFile>

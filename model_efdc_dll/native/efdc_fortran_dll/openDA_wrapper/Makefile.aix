@@ -1,0 +1,133 @@
+#
+#
+# Makefile for EFDC shared library
+#
+#-----	Known suffixes  ---------------------------------------------
+#
+.SUFFIXES: .f90 .for .o .po .F90
+
+
+#-----	Fortran Compiler Settings  ---------------------------------------------# gfortran compiler
+MAKE_FF =xlf90_r
+
+#FCFLAGS1 = -qsmp=noauto -q64 -qreport -qnosave -O3
+FCFLAGS1 = -qsmp=noauto -q64 -qreport -qnosave -qrealsize=8 -O3
+FCFLAGS2 = -qarch=pwr7 -qtune=pwr7 -qsource -qlist -qattr=full
+FCFLAGS3 = -bdatapsize:64k -bstackpsize:64k -btextpsize:64k -lmass
+FCFLAGS4 = -qfixed=132 -qsuffix=f=for 
+FCFLAGS5 = -qnodirective -qnoescape -qfloat=nomaf:nofold 
+#MAKE_FOPTIBUG1= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) $(FCFLAGS4)
+MAKE_FOPTIBUG1= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) 
+#MAKE_FOPTIBUG1= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) $(FCFLAGS5)
+
+
+#MAKE_FOPTIBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow	# debug
+MAKE_FOPTIBUG = -O   	# optimize
+#MAKE_FFLAGS_SPECIFIC = -fPIC -ffree-line-length-none -x f95-cpp-input #gfortran
+#MAKE_FFLAGS_SPECIFIC = -x f95-cpp-input
+MAKE_FFLAGS_SPECIFIC = 
+
+MAKE_FFLAGS = \
+	$(MAKE_FFLAGS_SPECIFIC) \
+	$(MAKE_FOPTIBUG1) \
+
+# additional libs (if required)
+MAKE_INC = -I../original_efdc_files 
+
+#-----	Link Settings  --------------------------------------------------
+
+MAKE_SO_OPTIONS_SPECIFIC = -qmkshrobj -b64 -lm # xlf90
+
+MAKE_SO =  $(MAKE_FF) $(MAKE_SO_OPTIONS_SPECIFIC) $(MAKE_FOPTIBUG1) -bnoquiet -lmass
+
+MAKE_EXE_OPTIONS_SPECIFIC =  	# gfortran
+MAKE_EXE =  $(MAKE_FF) $(MAKE_EXE_OPTIONS_SPECIFIC)
+
+#-----	Source and binary names  ----------------------------------------
+BINDIR = .
+ARCH := $(shell getconf LONG_BIT)
+
+NATIVE_BIN = ../../../native_bin/aix64_xlf
+
+SO = libEFDC.so
+
+SRC_OPENDA_F90 = \
+	chdir_mod.f90 \
+	model_exchange_items.f90 \
+	model_extra_global.f90 model_state.f90 \
+	model_aser_time_series.f90 model_end.f90 model_init.f90 \
+	model_pser_time_series.f90 \
+	model_cser_time_series.f90 \
+	model_gateser_time_series.f90 \
+	model_make_step.f90 model_qser_time_series.f90 openDA_wrapper.F90 
+
+SRC_OPENDA_FOR = \
+	model_init_1.for model_init_2.for model_init_3.for  \
+	model_restart_init.for dtime.for
+
+#OBJS_LIB = \
+#	$(SRC_ORIGINAL_EFDC_F90:.f90=.o) \
+#	$(SRC_ORIGINAL_EFDC_FOR:.for=.o) \
+#	$(SRC_OPENDA_F90:.f90=.o) \
+#	$(SRC_OPENDA_FOR:.for=.o) \
+
+OBJS_LIB = \
+	model_exchange_items.o \
+	model_extra_global.o model_state.o \
+	model_aser_time_series.o model_end.o model_init.o \
+	model_pser_time_series.o \
+	model_cser_time_series.o \
+	model_gateser_time_series.o \
+	model_make_step.o model_qser_time_series.o openDA_wrapper.o \
+	model_init_1.o model_init_2.o model_init_3.o  \
+	model_restart_init.o dtime.o 
+
+
+
+ORIG_EFDC = ../original_efdc_files/libEfdcOrig.a 
+ORIG_EFDC_DIR = ../original_efdc_files/ 
+ORIG_EFDC_NAME = EfdcOrig 
+
+TEST_DATA_BIN_DIR = ../../../java/test/org/openda/model_efdc_dll/testData/bin
+#BIN_EXTERNAL_DIR = ../../bin_external
+
+#-----	Targets  ---------------------------------------------------------------
+
+all: $(SO)
+
+# EFDC wrapper library
+#$(SO): $(OBJS_LIB)
+#	@echo Creating library $(SO)
+#	@mkdir -p $(BINDIR)
+#	@rm -f $(SO)
+#	$(MAKE_SO)  -o $(SO) $(OBJS_LIB) -Wl,--whole-archive $(ORIG_EFDC)  -Wl,--no-whole-archive
+
+
+$(SO): $(OBJS_LIB) $(ORIG_EFDC)
+	@echo Creating library $(SO)
+	@mkdir -p $(BINDIR)
+	@rm -f $(SO)
+	$(MAKE_SO) -L$(ORIG_EFDC_DIR) -l$(ORIG_EFDC_NAME) -o $(SO) $(OBJS_LIB) 
+
+install: $(SO)
+	@cp $(SO) $(TEST_DATA_BIN_DIR)
+	@echo Copying lib to $(NATIVE_BIN)
+	@cp $(SO) $(NATIVE_BIN)
+
+clean:
+	@rm -f \
+	    *.o \
+	    *.mod \
+
+clobber:
+	@make clean
+	@rm -f $(SO) $(EXE)
+
+.for.o:
+	$(MAKE_FF) -qfixed=132 -qsuffix=f=for $(MAKE_INC) $(MAKE_FFLAGS) -c $< -o $@
+
+.f90.o:
+	$(MAKE_FF) $(MAKE_INC) $(MAKE_FFLAGS) -c $< -o $@
+
+.F90.o:
+	$(MAKE_FF) $(MAKE_INC) $(MAKE_FFLAGS) -c $< -o $@

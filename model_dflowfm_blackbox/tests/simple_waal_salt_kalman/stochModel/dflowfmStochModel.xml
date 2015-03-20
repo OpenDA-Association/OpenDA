@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./dflowfmModel.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        <state>
+            <noiseModel id="boundaryNoiseModel" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>BoundaryNoise.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="salinitynoise" operation="add" modelExchangeItemId="eastboundary.1:salinitybnd"/>
+                </exchangeItems>
+            </noiseModel>
+            <vector id="s1" ioObjectId="mapfile" elementId="s1"/>
+            <vector id="unorm" ioObjectId="mapfile" elementId="unorm"/>
+            <vector id="sa1" ioObjectId="mapfile" elementId="sa1"/>
+        </state>
+        <predictor>
+            <vector id="Obs01.salinity"/>
+            <vector id="Obs02.salinity"/>
+            <vector id="Obs03.salinity"/>
+        </predictor>
+
+    </vectorSpecification>
+
+</blackBoxStochModel>

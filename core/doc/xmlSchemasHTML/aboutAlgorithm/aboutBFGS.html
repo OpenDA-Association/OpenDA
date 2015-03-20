@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="text/css"> .textElement { font-family: Arial; font-size: 10pt; color: #800000; }</style>
+		<style type="text/css"> .textAttr { font-family: Arial; font-size: 10pt; color: #FF0000; }</style>
+		<style type="text/css"> .textContents { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .textOperator { font-family: Arial; font-size: 10pt; color: #0000FF; }</style>
+		<style type="text/css"> .schemaHeader { font-family: Arial; font-size: 11pt; color: #000000; }</style>
+		<style type="text/css"> .schemaHeader2 { font-family: Arial; font-size: 11pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .elementHeader { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .elementHeader2 { font-family: Arial; font-size: 10pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaName { font-family: Arial; font-size: 8pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaSubTitle { font-family: Arial; font-size: 8pt; color: #808080; }</style>
+		<style type="text/css"> .schemaSubData { font-family: Arial; font-size: 8pt; color: #000000; }</style>
+		<style type="text/css"> pre { margin-top: 0; margin-bottom: 0; }</style>
+		<style type="text/css"> .table-no-border { line-height: 100%; }</style>
+		<style type="text/css"> .table-border { line-height: 100%; border-style: solid; border-left-color: #ECE9D8; border-top-color: #ECE9D8; border-right-color: #ACA899; border-bottom-color: #ACA899; }</style>
+		<style type="text/css"> .table-borderwithoutoutline { line-height: 100%; border-style: solid; border-width: 0px; }</style>
+		<style type="text/css"> .td-border { border-style: solid; border-width: 1px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-left { border-style: solid; border-left-width: 0px; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-left { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-right { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-right { border-style: solid; border-right-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-right { border-style: solid; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-bottom { border-style: solid; border-bottom-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-left { border-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-color: #ECE9D8; border-top-color: #ACA899; }</style>
+		<style type="text/css"> .td-border-left-single { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-right-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+	<title>About (L-)BFGS Algorithm</title>
+	</head>
+	<body>
+	<h1>The (L-)BFGS Algorithm</h1>
+	<p>The BFGS (Broyden-Fletcher-Goldfarb-Shanno) Algorithm is a Quasi Newton Method. It is based on the Newton Method which iteratively determines a root of an N-dimensional function (based on the first order Taylor approximation of this function). Since at a minimum of a (cost-)function the gradient is equal to zero, the method can also be used as a minimization algorithm. The algorithm needs to be able to evaluate the gradient of the function in any N-dimensional parameter. Since the inverse of the Hessian is also needed but hard to find, a certain approximation of this inverse is determined at each iteration (hence the term Quasi). A user should provide an initial parameter guess (and possibly an initial approximation of the inverse of the Hessian) and the method determines iteratively better approximations of the actual minimum, after updating the approximation of the inverse of the Hessian. This is done by reducing the multi-dimensional problem into a sequence of line minimizations. The line minimizations are done by Brent's method, which determines the minimum of the (cost-)function on a line with starting point the current parameters and direction the so-called search direction. The search direction is determined by the approximation of the inverse Hessian. The iteration is performed until one of the stopping criteria is satisfied. </p>
+	<p>The L-BFGS (Limited Memory-BFGS) Algorithm does not compute and store an entire matrix but instead uses a number of vectors of updates of the position and of the gradient, which represent the approximation of the inverse Hessian implicitly. </p>
+	</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>Classes for OpenDA application</title>
+	</head>
+	<body>
+	<h1>Attribute "className" in openDaApplication.xsd</h1>
+
+	<h3>stochObserver:</h3>
+	<table border="2" cellpadding="3" cellspacing="0">
+		<tbody align="left">
+			<tr>
+				<th><b>className</b></th>
+				<th><b>Description</b></th>
+				<th><b>ConfigFile</b></th>
+			</tr>
+			<tr>
+				<td>org.openda.exchange.timesseries.NoosTimesSeriesStochObserver</td>
+				<td>Stochastic observer with NOOS data format.</td>
+				<td>noosObservations.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.observers.GroupStochObserver</td>
+				<td>Group of stochastic observers.</td>
+				<td>...</td>
+			</tr>
+			<tr>
+				<td>org.openda.observers.IoObjectStochObserver</td>
+				<td>Stochastic observer created from an IoObject.</td>
+				<td>openDaStochObserver</td>
+			</tr>
+			<tr>
+				<td>org.openda.observers.SwanResults</td>
+				<td>Stochastic observer for SWAN model, time independent results.</td>
+				<td>none</td>
+			</tr>
+			<tr>
+				<td>org.openda.observers.SwanResultsTimeDependent</td>
+				<td>Stochastic observer for SWAN model, time dependent results.</td>
+				<td>none</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>stochModelFactory:</h3>
+	<table border="2" cellpadding="3" cellspacing="0">
+		<tbody align="left">
+			<tr>
+				<th><b>className</b></th>
+				<th><b>Description</b></th>
+				<th><b>ConfigFile</b></th>
+			</tr>
+			<tr>
+				<td>org.openda.blackbox.wrapper.BBStochModelFactory</td>
+				<td>Black box model wrapper.</td>
+				<td>blackBoxStochModelConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>nl.deltares.openda.models.DaModelFactory</td>
+				<td>Stochastic SWAN model factory</td>
+				<td>...</td>
+			</tr>
+			<tr>
+				<td>org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelFactory</td>
+				<td>Group of stochastic model factory.</td>
+				<td>...</td>
+			</tr>
+			<tr>
+				<td>org.openda.models.oscillator.OscillatorStochModelFactory</td>
+				<td>Stochastic oscillator model factory.</td>
+				<td>OscillatorConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.models.lorenz.LorenzStochModelFactory</td>
+				<td>Stochastic lorenz model factory.</td>
+				<td>LorenzConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.models.lorenz96.Lorenz96StochModelFactory</td>
+				<td>Stochastic lorenz96 model factory.</td>
+				<td>Lorenz96Config.xsd</td>
+		</tbody>
+	</table>
+
+	<h3>algorithm:</h3>
+	<table border="2" cellpadding="3" cellspacing="0">
+		<tbody align="left">
+			<tr>
+				<th><b>className</b></th>
+				<th><b>Description</b></th>
+				<th><b>ConfigFile</b></th>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.Dud</td>
+				<td>Dud (Doesn't use derivative) algorithm</td>
+				<td>dudConfiguration.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.SparseDud</td>
+				<td>Sparse Dud (Doesn't use derivative) algorithm</td>
+				<td>sparseDudConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.Simplex</td>
+				<td>Simplex algorithm</td>
+				<td>simplexConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.Powell</td>
+				<td>Powell algorithm</td>
+				<td>powellConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.ConjugateGradient</td>
+				<td>Conjugate Gradient algorithm</td>
+				<td>cgConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.BFGS</td>
+				<td>BFGS algorithm</td>
+				<td>bfgsConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.GriddedFullSearch</td>
+				<td>Gridded Full Search algorithm</td>
+				<td>griddedFullSearchConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.SCE</td>
+				<td>SCE algorithm</td>
+				<td>sceConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.GLUE</td>
+				<td>GLUE algorithm</td>
+				<td>glueConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.ThreeDVar</td>
+				<td>3D-Var algorithm</td>
+				<td>threeDVarConfig.xsd</td>
+			</tr>
+			<tr>
+
+				<td>org.openda.algorithms.kalmanFilter.EnKF</td>
+				<td>Ensemble Kalman Filter algorithm</td>
+				<td>enkf.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.EnSR</td>
+				<td>Ensemble Square Root Filter algorithm</td>
+				<td>ensr.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.SteadyStateFilter</td>
+				<td>Steady State Kalman Filter algorithm</td>
+				<td>steadyStateFilter.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.ParticleFilter</td>
+				<td>Particle Filter (Residual Resampling Filter) algorithm</td>
+				<td>particleFilter.xsd</td>
+			</tr>
+<!--			<tr>
+				<td>org.openda.algorithms.kalmanFilter.DudEnKF</td>
+				<td>Iterative Ensemble Kalman Filter algorithm (still experimental)</td>
+				<td>...</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.DudENSR</td>
+				<td>Iterative Ensemble Square Root Filter algorithm (still experimental)</td>
+				<td>...</td>
+			</tr>
+-->
+			<tr>
+				<td>org.openda.algorithms.Simulation</td>
+				<td>Simulation algorithm</td>
+				<td>simulationConfig.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.SequentialSimulation</td>
+				<td>Sequential Simulation algorithm</td>
+				<td>sequentialSimulation.xsd</td>
+			</tr>
+			<tr>
+				<td>org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation</td>
+				<td>Sequential Ensemble Simulation algorithm</td>
+				<td>sequentialEnsembleSimulation.xsd</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>resultWriter:</h3>
+	<table border="2" cellpadding="3" cellspacing="0">
+		<tbody align="left">
+			<tr>
+				<th><b>className</b></th>
+				<th><b>Description</b></th>
+				<th><b>ConfigFile</b></th>
+			</tr>
+			<tr>
+				<td>org.openda.resultwriters.MatlabResultWriter</td>
+				<td>Writing output as a Matlab script.</td>
+				<td>none</td>
+			</tr>
+			<tr>
+				<td>org.openda.resultwriters.TextTableWriter</td>
+				<td>Writing output in ASCII, with table format.</td>
+				<td>none</td>
+			</tr>
+			<tr>
+				<td>org.openda.resultwriters.NetcdfResultWriter</td>
+				<td>Writing output in NetCDF format.</td>
+				<td>none</td>
+			</tr>
+		</tbody>
+	</table>
+
+</html>

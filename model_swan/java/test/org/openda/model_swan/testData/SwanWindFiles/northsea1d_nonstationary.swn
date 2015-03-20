@@ -1,0 +1,76 @@
+ $************************************** HEADING *************************************************
+ $
+ $
+ PROJ 'xxx  ' ' xxx' 
+ $
+ $      Runid:	northsea_1d model
+ $ 	 Wind:	10m/s north
+ $      Bound:  generated timeseries 
+ $       Type:  nonstationary
+ $
+ $****************************************** MODEL INPUT ******************************************
+ SET LEVEL = 0 NOR=0 MAXERR = 2 CART
+
+ MODE  ONED
+
+ $ Definitieve rooster en bodem
+ $ REGular [xpc] [ypc] [alpc] [xlenc] [ylenc] [mxc] [myc] CIRCLE [mdc] [flow] [fhigh] [msc]
+ CGRID REG 0. 0. 0. 1046550. 0. 24 0 CIR 36 0.02 3
+
+ $ INPgrid BOTtom REGular [xpinp] [ypinp] [alpinp] [mxinp] [myinp] [dxinp] [dyinp]
+ INP  BOTTOM REG 0. 0. 0. 24 0 43606. 0.
+ $ READinp BOTtom [fac] 'fname1' [idla] [nhedf] ([nhedt]) ([nhedvec]) FREe
+ READ BOTTOM 1. 'northsea1d_25.bot' IDLA=1 NHEDF=0 FREE
+
+ $************************************* WIND INPUT ***********************************************
+
+ INPGRID WIND REGULAR 0. 0. 0. 1 0 1046550. 0. NONSTAT 20110101.0000 3 HR 20120208.2100
+ READINP WIND 1.0  'hirlam_wind_k13.WND' 1 2 1 1 FREE
+ 
+ $************************************* BOUNDARY CONDITIONS **************************************
+
+ BOUND SHAPESPEC JONSWAP PEAK DSPR POWER
+ BOUND SOUTH CON FILE 'bound_south_small.BND' 1
+
+ $INIT HOTSTART SING 's00.HOT'
+
+
+ $****************************************** PHYSICA *********************************************
+
+ $WIND [vel] [dir]
+ $WIND 1. 0.
+ $OFF QUAD
+ GEN3 WESTH
+ 
+ TRIAD trfac=0.1 cutfr=2.5
+ BREA WESTH alpha=0.96 pown=2.5 bref=-1.39630 shfac=500.0
+
+ FRIC JON CON 0.038
+
+ $************************************ NUMERIEKE PARAMETERS ***************************************
+
+ NUM ACCUR 0.01 0.01 0.01 99.99 STAT MXITST=200 
+
+ $ ************************************ TABEL UITVOER *********************************************
+
+ $TABLE 'COMPGRID' HEAD 'northsea_1d_nonstationary.tab' TIME XP DEP HS TPS TMM10 DIR OUT 20110101.000000 1 HR
+ $TODOMORE    XP DEP HS TPS TMM10 TM01 TM02 DIR FSPR STEEP WLEN DSPR
+
+ $ ************************************ UITVOER OBS LOCS*******************************************
+
+ POINTS 'points' FILE 'locations.txt'
+ TABLE 'points' HEAD 'northsea_1d_nonstationary_points.tab' TIME XP DEP HS TPS TMM10 DIR WIND OUT 20110101.000000 1 HR
+
+
+ $ ************************************ SP1 UITVOER ***********************************************
+
+ $SPEC 'points' SPEC1D 'northsea_1d_nonstationary.s1d'
+
+ $ ************************************ COMPUTE ***************************************************
+ $ COMPUTE NONSTAT 20110101.000000 1 HR 20110201.000000
+ COMPUTE NONSTAT 20110101.000000 1 HR 20120208.000000
+
+ HOTFILE 'northsea_1d.HOT'
+
+
+ STOP

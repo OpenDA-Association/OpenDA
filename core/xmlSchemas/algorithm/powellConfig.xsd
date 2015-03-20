@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/outerLoopPowell.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/costFunction.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/additionalStopCriteria.xsd"/>
+	<xs:complexType name="PowellLineSearchXML">
+		<xs:choice>
+			<xs:element name="brent">
+				<xs:complexType>
+					<xs:attribute name="startBracketValue" type="xs:float" use="optional" default="1.0"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="type" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Type of linesearch.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="200">
+			<xs:annotation>
+				<xs:documentation>Maximum number of inner iterations.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolerance" type="xs:float" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Relative tolerance.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxRelStepSize" type="xs:float" use="optional" default="100.0">
+			<xs:annotation>
+				<xs:documentation>Maximum size of relative step.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PowellConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+				<xs:annotation>
+					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lineSearch" type="openda:PowellLineSearchXML">
+				<xs:annotation>
+					<xs:documentation>Specify inner-loop / linesearch criteria. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stopCriteria" type="openda:additionalStopCriteria" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Additional optional stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PowellConfig" type="openda:PowellConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Dud algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

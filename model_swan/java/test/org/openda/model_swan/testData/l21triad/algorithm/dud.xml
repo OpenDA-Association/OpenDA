@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DudConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <outerLoop maxIterations="5" absTolerance="0.01" relTolerance="0.01" />
+   <lineSearch maxIterations="5" maxRelStepSize="10.0" >
+      <backTracking shorteningFactor="0.5" startIterationNegativeLook="3" />
+   </lineSearch>
+</DudConfig>

@@ -1,0 +1,19 @@
+netcdf /Users/nils/Devel/public/opendaTestRuns/core/org/openda/resultwriters/de_test_ctatv_from_model_1.nc {
+ dimensions:
+   time = UNLIMITED;   // (1 currently)
+   one = 1;
+   oscill-model_x = 2;
+ variables:
+   int time(time=1);
+   int ntime(one=1);
+   double oscill-model(time=1, oscill-model_x=2);
+ data:
+time =
+  {1}
+ntime =
+  {1}
+oscill-model =
+  {
+    {1.0, 1.0}
+  }
+}

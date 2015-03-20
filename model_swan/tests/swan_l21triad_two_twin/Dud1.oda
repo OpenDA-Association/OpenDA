@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver1</workingDirectory>
+		<configFile>swanStochObsConfig.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.model_swan.SwanCalibStochModelFactory">
+		<workingDirectory>./swanModel1/config</workingDirectory>
+		<configFile>swanStochModelConfig.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Dud">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>dud.xml</configString>
+	</algorithm>
+	<resultWriters>
+		<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+			<workingDirectory>.</workingDirectory>
+			<configFile>results_dud1.m</configFile>
+		</resultWriter>
+		<resultWriter className="org.openda.resultwriters.TextTableWriter">
+			<workingDirectory>.</workingDirectory>
+			<configFile>results_dud1.csv</configFile>
+		</resultWriter>
+	</resultWriters>
+</openDaApplication>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="OuterLoopXML">
+		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="200">
+			<xs:annotation>
+				<xs:documentation>Maximum number of outer iterations.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absTolerance" type="xs:float" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Maximum absolute difference between the costs of two best parameter estimates.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolerance" type="xs:float" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Maximum relative difference between the costs of two best parameter estimates.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

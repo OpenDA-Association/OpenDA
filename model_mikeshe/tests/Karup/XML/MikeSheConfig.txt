@@ -1,0 +1,5 @@
+<MikeSheConfig>
+  <inputFile>..\BaseModel\Karup_DA.SHE</inputFile>
+  <copyModels>false</copyModels>
+  <useExchangeItems>head elevation in saturated zone</useExchangeItems>
+</MikeSheConfig>

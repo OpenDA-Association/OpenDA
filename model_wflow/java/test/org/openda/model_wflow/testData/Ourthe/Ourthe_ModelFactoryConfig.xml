@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wflowModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/wflowModelFactoryConfig.xsd">
+	<pythonModuleName>wflow_hbv</pythonModuleName>
+	<timeHorizon>
+		<startDateTime date="2013-01-01" time="00:00:00"></startDateTime>
+		<endDateTime date="2013-01-02" time="00:00:00"></endDateTime>
+		<timeZoneOffset>0</timeZoneOffset>
+	</timeHorizon>	
+	<caseDirectory>OurtheCase_hbv</caseDirectory>
+	<templateRunId>work</templateRunId>
+	<modelConfigFileName>wflow_hbv_openda.ini</modelConfigFileName>
+	<cloneMapFileName>subcatchments_ordinal_1km.map</cloneMapFileName>
+	<inputFile>.\inmaps\mapstackPrecipitation.nc</inputFile>
+	<modelOutputFile>.\outmaps\model_output.nc</modelOutputFile>
+	<analysisOutputFile>.\outmaps\analysis_output.nc</analysisOutputFile>
+</wflowModelFactoryConfig>

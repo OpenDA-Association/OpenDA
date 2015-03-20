@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stochObserver>	   
+	<stochObserver id="swan1" className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver1</workingDirectory>
+		<configFile>swanStochObsConfig.xml</configFile>
+	</stochObserver>
+	<stochObserver id="swan2" className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver2</workingDirectory>
+		<configFile>swanStochObsConfig.xml</configFile>
+	</stochObserver>
+</stochObserver>

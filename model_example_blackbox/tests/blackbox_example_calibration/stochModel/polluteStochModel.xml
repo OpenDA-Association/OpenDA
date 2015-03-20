@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>./polluteModel.xml</file>
+	</modelConfig>
+
+	<vectorSpecification>
+		<parameters>
+			<regularisationConstant>
+				<stdDev value="0.1" transformation="ln" />
+				<vector id="source.factory1.discharge" />
+			</regularisationConstant>
+			<regularisationConstant>
+				<stdDev value="0.1" transformation="ln" />
+				<vector id="source.factory2.discharge" />
+			</regularisationConstant>
+		</parameters>
+		<!--<state> <vector id="" /> </state> -->
+		<predictor>
+			<vector id="locA.concentration" />
+			<vector id="locB.concentration" />
+			<vector id="locC.concentration" />
+		</predictor>
+	</vectorSpecification>
+
+
+</blackBoxStochModel>

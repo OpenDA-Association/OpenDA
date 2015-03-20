@@ -1,0 +1,46 @@
+  Warning No 65: In river HADERUP RIVER : 14200.000 meter there is a difference
+                 in the bed level of the rivers meeting at the intersection.
+                 The lowest bed level (8.500 meter) is found in river KARUP RIVER at
+                 chainage 49750.000 meter. The highest level (9.500 meter) is found in river HADERUP RIVER at
+                 chainage 14200.000 meter.
+                 A difference in bed level for the rivers meeting may cause
+                 mass errors and instabilities especially if low flow is simulated.
+  Warning No 65: In river BRANCHY : 9277.000 meter there is a difference
+                 in the bed level of the rivers meeting at the intersection.
+                 The lowest bed level (9.050 meter) is found in river KARUP RIVER at
+                 chainage 49161.244 meter. The highest level (9.500 meter) is found in river BRANCHY at
+                 chainage 9277.000 meter.
+                 A difference in bed level for the rivers meeting may cause
+                 mass errors and instabilities especially if low flow is simulated.
+  Warning No 65: In river KARUP RIVER : 43866.822 meter there is a difference
+                 in the bed level of the rivers meeting at the intersection.
+                 The lowest bed level (0.000 meter) is found in river BRANCHQ at
+                 chainage 5784.000 meter. The highest level (14.000 meter) is found in river KARUP RIVER at
+                 chainage 43866.822 meter.
+                 A difference in bed level for the rivers meeting may cause
+                 mass errors and instabilities especially if low flow is simulated.
+  Warning No 65: In river BRANCHX : 7349.000 meter there is a difference
+                 in the bed level of the rivers meeting at the intersection.
+                 The lowest bed level (26.751 meter) is found in river KARUP RIVER at
+                 chainage 30847.189 meter. The highest level (27.000 meter) is found in river BRANCHX at
+                 chainage 7349.000 meter.
+                 A difference in bed level for the rivers meeting may cause
+                 mass errors and instabilities especially if low flow is simulated.
+  Warning No 42: The lateral outflow in HADERUP RIVER : 0.000 meter
+                 was greater than  the amount of water available.
+                 The lateral outflow has been modified to avoid the local water
+                 level falling below the bed level. This modification has
+                 occured 595 times. First time at time step 4203.
+  Warning No 53: The total corrected volume is 2.791 m^3.
+  Warning No 42: The lateral outflow in FELDBORG CREEK : 0.000 meter
+                 was greater than  the amount of water available.
+                 The lateral outflow has been modified to avoid the local water
+                 level falling below the bed level. This modification has
+                 occured 9948 times. First time at time step 2.
+  Warning No 53: The total corrected volume is 244.937 m^3.
+  Warning No 42: The lateral outflow in BRANCHY : 0.000 meter
+                 was greater than  the amount of water available.
+                 The lateral outflow has been modified to avoid the local water
+                 level falling below the bed level. This modification has
+                 occured 13235 times. First time at time step 2.
+  Warning No 53: The total corrected volume is 769.824 m^3.

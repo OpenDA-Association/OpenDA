@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <blackBoxModelConfig xmlns="http://www.openda.org"
+                                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>D3DWrapperConfig.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="templateDir" value="./model"/>
+		<alias key="instanceDir" value="./work"/>
+		<alias key="runid" value="test_windnoise"/>
+        <alias key="exedir" value="D:\src\delft3d_TRUNK\bin\w32\flow\bin"/>
+	<alias key="linux_exedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin/"/>
+
+</aliasValues>
+
+  <!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!-->
+    <timeInfo start="2006-01-01T00:00:00" end="2006-01-01T01:30:00" />
+
+	<exchangeItems>
+
+<!--M2 Component-->
+<!--S2 Component-->
+<!--N2 Component-->
+<!--K2 Component-->
+<!--K1 Component-->
+<!--O1 Component-->
+<!--P1 Component-->
+<!--Q1 Component-->
+<!--Depth and Roughness Component-->
+        <!--
+        <vector id="depth" ioObjectId="depth"></vector>
+        <vector id="roughness-u" ioObjectId="roughness" elementId="roughness-u"></vector>
+        <vector id="roughness-v" ioObjectId="roughness" elementId="roughness-v"></vector>
+            -->
+
+<!--Wind Component-->
+<vector id="wind-u" ioObjectId="windguFile" elementId="windgu"></vector>
+<vector id="wind-v" ioObjectId="windgvFile" elementId="windgv"></vector>
+
+<!--ObservationDataSet-->
+<vector id="pred-stat1" ioObjectId="trih-file" elementId="stat1.water level"></vector>
+<vector id="pred-stat2" ioObjectId="trih-file" elementId="stat2.water level"></vector>
+
+
+    </exchangeItems>
+
+	<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

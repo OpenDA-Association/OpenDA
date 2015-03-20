@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 2nd series sets or overrules header lines
+	Location    : aberdeen
+	Position    : (-2.045543,57.361939)
+	Source      : observed
+	Unit        : waterlevel_astro
+	Analyse time: most recent
+	Timezone    : GMT
+	-->
+	<timeSeries status="validate" location="aberdeen2" position="(10.0,11.0)" source="observed2" quantity="waterlevel2" unit="m2" timezone="GMT2" height="0.02" standardDeviation="0.052" >
+		aberdeen_waterlevel_astro.noos
+	</timeSeries>
+</noosObserver>

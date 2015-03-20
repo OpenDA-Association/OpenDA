@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testConfig>
+        <id>/home/verlaanm/deltares/src/openda_20110523/public/tests/native_heat/./denkf_native_result.oda</id>
+        <odaFile>../denkf_native_result.oda</odaFile>
+        <checks>
+                <check>
+                        <file removeBeforeTest="yes" >../denkf_native_result.log</file>
+                        <find>===DONE===</find>
+                </check>
+                <check>
+                        <file removeBeforeTest="yes" >../from_first_native.txt</file>
+			<regex> variable (.*)</regex>
+                </check>
+                <check>
+                        <file removeBeforeTest="yes" >../from_second.txt</file>
+			<regex> variable (.*)</regex>
+                </check>
+        </checks>
+</testConfig>

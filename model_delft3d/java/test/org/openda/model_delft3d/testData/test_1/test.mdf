@@ -1,0 +1,177 @@
+Ident = #DELFT3D.UI    .03.02 3.15.00.03#
+Runid = #o3d#
+Commnt=                              
+Runtxt= #Upgrade WAHMO models - Z 2170 #
+        #Overall model 3D              #
+        #Wet Season 1996               #
+        #18 Jul 14:00 - 20 Jul 12:00   #
+        #restart from 004, mapped to   #
+        #present grid                  #
+        #salinity, wind 5 m/s SW       #
+        #with 2 cm set-up from W to E  #
+        #generation of BC for SIU LAM  #
+        #in SIU LAM region depth from S#
+Filcco= #hkcrs04.grd #
+Fmtcco= #FR#
+DxDy  = [.] [.]
+Anglat= 22.0000
+Grdang= 0.00000
+Filgrd= #hkcrs04.enc #
+Fmtgrd= #FR#
+MNgrd = [ ] [ ]
+MNKmax= 29	12	10
+Thick = 10.0000
+        10.0000
+        10.0000
+        10.0000
+        10.0000
+        10.0000
+        10.0000
+        10.0000
+        10.0000
+        10.0000
+Fildep= #depth.dep   #
+Fmtdep= #FR#
+Commnt=                              
+Fildry= #hkcrs02.dry #
+Fmtdry= #FR#
+Filtd = #hkcrs02.thd #
+Fmttd = #FR#
+Nambar= #                    #
+MNbar = [ ] [ ] # #
+MNwlos= [ ] [ ]
+Commnt=                              
+Itdate= #1996-07-18#
+Tunit = #M#
+Tstart= 840.000
+Tstop = 940.00
+Dt    = 2.00000
+Tzone = 0
+Commnt=                              
+Sub1  = #S W #
+Sub2  = #P  #
+Namc1 = #                    #
+Namc2 = #                    #
+Namc3 = #                    #
+Namc4 = #                    #
+Namc5 = #                    #
+Wnsvwp= #N#
+Filwnd= #hkcrs5sw.wnd#
+Fmtwnd= #FR#
+Wndint= #Y#
+Commnt=                              
+Restid= #   #
+Commnt=                              initial conditions from file
+Filic = #overal3d.ini#
+Fmtic = #FR#
+Commnt=                              
+Filbnd= #hkcrs0i.bnd #
+Fmtbnd= #FR#
+FilbcH= #            #
+FmtbcH= #FR#
+FilbcT= #            #
+FmtbcT= #FR#
+Filana= #hkcrswet.bca#
+Filcor= #hkcrs3a.cor #
+FilbcC= #hkcrsw3d.bcc#
+FmtbcC= #FR#
+Rettis= 60.0000
+        60.0000
+        60.0000
+        60.0000
+Rettib= 60.0000
+        60.0000
+        60.0000
+        60.0000
+Commnt=                              
+Ag    = 9.81300
+Rhow  = 1023.00
+Alph0 = [.]
+Tempw = 26.0000
+Salw  = 0.00000
+Rouwav= #    #
+Wstres= 0.000630000 0.00000 0.00723000 100.000 
+Rhoa  = 1.25000
+Betac = 0.500000
+Equili= #N#
+Tkemod= #K-epsilon   #
+Ktemp = 0
+Fclou = 0.00000
+Sarea = 0.00000
+Filtmp= #            #
+Fmttmp= #FR#
+Temint= #Y#
+Tstmp = [.] [.]
+Tidfor= #------------#
+        #------------#
+        #------------#
+Commnt=                              
+Roumet= #M#
+Filrgh= #rough.rgh   #
+Fmtrgh= #FR#
+Xlo   = 0.00000
+Filedy= #            #
+Vicouv= 5.00000
+Dicouv= 1.00000
+Vicoww= 0.000500000
+Dicoww= 0.00000
+Irov  = 0
+Z0v   = [.]
+Cmu   = [.]
+Cpran = [.]
+Commnt=                              
+Iter  =      2
+Dryflp= #MAX #
+Dryflc= 0.100000
+Dco   = -999.999
+Tlfsmo= 360.000
+Forfuv= #Y#
+Forfww= #N#
+Sigcor= #N#
+Trasol= #Cyclic-method#
+Commnt=                              
+Filsrc= #hkcrs3d.src #
+Fmtsrc= #FR#
+Fildis= #hkcrsw3d.dis#
+Fmtdis= #FR#
+Commnt=                              no. observation points: 154
+Filsta= #hkcrssl1.obs#
+Fmtsta= #FR#
+Filpar= #hkcrs01.par #
+Fmtpar= #FR#
+Commnt=                              
+Eps   = [.]
+Commnt=                              
+Commnt=                              no. cross sections: 11
+Filcrs= #hkcrs02.crs #
+Fmtcrs= #FR#
+Commnt=                              
+PMhydr= #YYYYYY#    
+PMproc= #YYYYYYYYYY#
+PMderv= #YYY#       
+PHhydr= #YYYYYY#    
+PHproc= #YYYYYYYYYY#
+PHderv= #YYY#       
+PHflux= #YYYY#      
+SMhydr= #YYYYY#     
+SMproc= #YYYYYYYYYY#
+SMderv= #YYYYY#     
+SHhydr= #YYYY#      
+SHproc= #YYYYYYYYYY#
+SHderv= #YYYYY#     
+SHflux= #YYYY#      
+Commnt=                              attribute file fourier analyzed
+Filfou= #            #
+Online= #NO #
+Prmap = [.]
+Prhis = 1.67904e+06 0.00000 1.67904e+06
+Flmap = 940.00 360.000 3600.00
+Flhis = 840.000 10.0000 3600.00
+Flpp  = 0.00000 0.00000 0.00000
+Flrst = 0.00
+Commnt=                              
+Runtxt= #comfil 19 Jul 1200-20 Jul 1100#
+Lwdry = #MEAN#
+Dedict= 0
+Tstprt= #Y#
+Commnt=                              

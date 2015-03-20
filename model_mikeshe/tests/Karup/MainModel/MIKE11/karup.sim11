@@ -1,0 +1,89 @@
+// Created     : 2013-04-1 21:47:30
+// DLL id      : C:\Program Files (x86)\DHI\2013\bin\pfs2004.dll
+// PFS version : Feb 16 2013 19:43:47
+
+[Run11]
+   format_version = 107, 'MIKEZero, 2011'
+   Comment = ''
+   [Models]
+      hd = true, false
+      ad = false
+      st = false
+      wq = false, 1, 0
+      rr = false
+      ff = false
+      da = false
+      ice = false
+      SimMode = 0
+      QSS = 0
+   EndSect  // Models
+
+   [Input]
+      nwk = |.\karup.nwk11|
+      xs = |.\karup.xns11|
+      bnd = |.\karup.bnd11|
+      rr = ||
+      hd = |.\karup.HD11|
+      ad = ||
+      wq = ||
+      st = ||
+      ff = ||
+      rhd = ||
+      rrr = ||
+      da = ||
+      ice = ||
+   EndSect  // Input
+
+   [Simulation]
+      [Simulation_Period]
+         start = 1960, 1, 1, 12, 0, 0
+         end = 1990, 1, 5, 0, 0, 30
+         TimeStepType = 0
+         timestep = 2
+         timestepunit = 1
+         dtFileName = ||
+         dtItemName = ''
+         dtItemNo = 0
+         ddtMin = 1
+         ddtMax = 30
+         idtMinMaxUnit = 2
+         ddtChangeRatio = 1.3
+         bDelB_BFlag = true
+         dDelB_BVal = 0.01
+         dDelB_BLim = 0.01
+         bDelQFlag = false
+         dDelQVal = 1
+         bDelQ_QFlag = true
+         dDelQ_QVal = 0.01
+         dDelQ_QLim = 0.01
+         bDelhFlag = false
+         dDelhVal = 0.01
+         bDelh_hFlag = true
+         dDelh_hVal = 0.01
+         dDelh_hLim = 0.01
+         bCourantFlagHD = false
+         dCourantValHD = 10
+         bCourantFlagAD = true
+         dCourantValAD = 1
+         ST_timestep_multiplier = 1
+         RR_timestep_multiplier = 1
+      EndSect  // Simulation_Period
+
+      [Initial_Conditions]
+         hd = 1, |.\KARUP_HOT.RES11|, false, 1971, 1, 1, 0, 0, 0
+         ad = 0, ||, false, 1990, 1, 1, 12, 0, 0
+         st = 0, ||, false, 1990, 1, 1, 12, 0, 0
+         rr = 0, ||, false, 1990, 1, 1, 12, 0, 0
+      EndSect  // Initial_Conditions
+
+   EndSect  // Simulation
+
+   [Results]
+      hd = |.\karup.res11|, '', 12, 0
+      ad = ||, '', 1, 0
+      st = ||, '', 1, 0
+      rr = ||, '', 1, 0
+   EndSect  // Results
+
+EndSect  // Run11
+

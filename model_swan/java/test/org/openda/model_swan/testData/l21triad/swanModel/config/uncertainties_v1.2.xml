@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uaUncertainties xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.2/ua/uaUncertainties.xsd" version="1.0">
+	<monteCarlo id="BREA.alpha">
+		<normal stdv=".5" stdvIsFactor="false"/>
+	</monteCarlo>
+	<monteCarlo id="WCAP.cds2">
+		<normal stdv="0.5e-5" stdvIsFactor="false"/>
+	</monteCarlo>
+	<monteCarlo id="FRIC.cfjon">
+		<normal stdv=".025" stdvIsFactor="false"/>
+	</monteCarlo>
+</uaUncertainties>

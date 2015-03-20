@@ -1,0 +1,11 @@
+<PowellConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/powellConfig.xsd">
+	<costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" factor="0.5"/>
+	<outerLoop maxIterations="10" absTolerance="0.01" relTolerance="0.01"/>
+	<lineSearch type="brent" maxIterations="10" relTolerance="0.01" maxRelStepSize="100.0">
+		<brent startBracketValue="1.0"/>
+	</lineSearch>
+	<!-- optional additional criteria for stopping the calibration -->
+	<stopCriteria>
+		<stopCriterion class="org.openda.algorithms.AbsoluteAveragePerLocationStopCriterion" threshold="1.0E-5"/>
+	</stopCriteria> 
+</PowellConfig>

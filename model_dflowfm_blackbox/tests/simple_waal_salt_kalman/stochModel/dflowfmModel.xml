@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" 
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                     xsi:schemaLocation="http://schemas.openda.org/blackBoxModelConfig.xsd">
+    <!-- Specify wrapper configuration for which this model is defined -->
+    <wrapperConfig>
+        <file>dflowfmWrapper.xml</file>
+    </wrapperConfig>
+
+    <!-- Specify wrapper configuration for which this model is defined -->
+    <aliasValues>
+        <alias key="exedir" value="./bin"/> 
+        <alias key="instanceDir" value="./work"/>
+        <alias key="templateDir" value="./input_dflowfm"/>
+        <alias key="runid" value="simplewaal_salt"/>
+        <alias key="outputdir" value="DFM_OUTPUT_simplewaal_salt"/>
+        <alias key="mdufile" value="simplewaal_salt.mdu"/>
+        <alias key="hisfile" value="simplewaal_salt_his.nc"/>
+        <alias key="mapfile" value="simplewaal_salt_map.nc"/>
+        <alias key="openda_bindir" value="../../../../bin"/>
+    </aliasValues>
+
+    <timeInfoExchangeItems start="start_time" end="end_time"/>
+
+    <exchangeItems>
+        <vector id="start_time" ioObjectId="mdufile" elementId="start_time" />
+        <vector id="end_time" ioObjectId="mdufile" elementId="end_time" />
+
+        <vector id="s1" ioObjectId="mapfile" elementId="s1"/>
+        <vector id="s0" ioObjectId="mapfile" elementId="s0"/>
+        <vector id="unorm" ioObjectId="mapfile" elementId="unorm"/>
+        <vector id="u0" ioObjectId="mapfile" elementId="u0"/>   
+        <vector id="sa1" ioObjectId="mapfile" elementId="sa1"/>   
+
+        <vector id="Obs01.salinity" ioObjectId="hisfile" elementId="Obs01.salinity"/>
+        <vector id="Obs02.salinity" ioObjectId="hisfile" elementId="Obs02.salinity"/>
+        <vector id="Obs03.salinity" ioObjectId="hisfile" elementId="Obs03.salinity"/>
+
+        <vector id="eastboundary.1:salinitybnd" ioObjectId="boundaries" elementId="eastboundary.1:salinitybnd"/>
+
+    </exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+                
+</blackBoxModelConfig>

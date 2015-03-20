@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+	    <file>./bbSwanModel.xml</file>
+    </modelConfig>
+
+    <uncertaintyModule className="org.openda.uncertainties.UncertaintyEngine" workingDirectory="uncertainties">
+        <arg>uncertaintySpecification.xml</arg>
+    </uncertaintyModule>    
+
+    <vectorSpecification>
+        
+        <state>
+            <vector id="state"/>
+            <vector id="wind.x"/>
+            <vector id="wind.y"/>
+            <vector id="openboundary"/>
+            <vector id="obHs"/>
+            <vector id="obPeriod"/>
+            <vector id="obPeakDir"/>
+            <vector id="obDirSpread"/>
+        </state>
+        <!--
+        <predictor>
+		   <vector id="state" sourceVectorId="state"/>
+        </predictor>
+        -->
+    </vectorSpecification>
+
+</blackBoxStochModel>

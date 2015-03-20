@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>.</workingDirectory>
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.river1.River1StochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile>river1StochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Dud">
+		<workingDirectory>.</workingDirectory>
+		<configString>dud_average.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>dud_average_results.m</configFile>
+	</resultWriter>
+</openDaApplication>

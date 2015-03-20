@@ -1,0 +1,640 @@
+<project name="openDA" default="help" basedir=".">
+<!--
+================================================================================
+  Ant build file for OpenDA Java code
+  install ant and type
+  "ant help"
+  for a list of options
+================================================================================
+-->
+    <target name="help">
+        <echo>
+            ======================================================================================
+            This build script assumes that the OpenDA code is located in a folder called "public".
+            ======================================================================================
+            ant help                     --> print this help
+            ant build                    --> compile, make jar and copy resources for all
+        	                                 platforms
+            ant build-win32              --> compile, make jar, copy resources for win32
+        	                                 remove resources for other platforms
+            ant clean                    --> remove output
+            ant doc                      --> collect documentation
+            ant test                     --> execute unit tests (excluding broken tests)
+            ant test-all                 --> execute all unit tests
+            ant test-broken              --> execute broken unit tests
+            ant zip                      --> creates zip files with sources, binaries,
+                                             documentation and xml schemas
+            ant zip-win32                --> creates zip files with sources, binaries,
+                                             documentation and xml schemas for win32
+            ant zip-tests                --> zip public test cases
+            ant tgz                      --> creates tgz files with sources, binaries,
+                                             documentation and xml schemas
+            ant tgz-tests                --> zip public test cases
+        </echo>
+    </target>
+
+<property file="project.properties"/>
+
+    <macrodef name="testing">
+	    <attribute name="v" default="NOT SET"/>
+	    <sequential>
+		    <echo>v is @{v}</echo>
+	    </sequential>
+    </macrodef>
+
+    <target name="debug">
+        <echo>
+            module=${module}
+            srcdir=${srcdir}
+            jarname=${jarname}
+            bindir=${bindir}
+        </echo>
+        <testing v="This is v"/>
+        <testing v="This is w"/>
+    </target>
+
+
+<!--
+===========================================================================
+	Compilation
+===========================================================================
+-->
+   <target name="build" depends="init, tests">
+      <buildmodule module="core" />
+      <buildmodule module="observers" />
+      <buildmodule module="models" />
+      <buildmodule module="algorithms" />
+      <buildmodule module="application" />
+      <buildmodule module="model_delwaq"/>
+      <buildmodule module="model_delft3d"/>
+      <buildmodule module="model_damflow"/>
+      <buildmodule module="model_efdc" />
+      <buildmodule module="model_efdc_dll"/>
+      <buildmodule module="model_example_blackbox" />
+      <buildmodule module="model_example_fortran" />
+      <buildmodule module="model_glm" />
+      <buildmodule module="model_hspf" />
+      <buildmodule module="model_nemo"/>
+      <buildmodule module="model_reactive_advection"/>
+      <buildmodule module="model_swan"/>
+      <buildmodule module="model_wflow"/>
+      <buildmodule module="model_dflowfm_blackbox"/>
+      <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.sh"/>
+      <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
+   </target>
+
+   <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
+
+   <target name="doc" depends="init">
+      <docmodule module="core" />
+      <docmodule module="observers" />
+      <docmodule module="models" />
+      <docmodule module="algorithms" />
+      <docmodule module="model_efdc"/>
+      <docmodule module="model_efdc_dll"/>
+      <docmodule module="model_example_blackbox" />
+      <docmodule module="model_example_fortran" />
+      <docmodule module="model_hspf"/>
+      <docmodule module="model_swan" />
+      <docmodule module="model_wflow"/>
+      <docmodule module="model_delft3d"/>
+      <docmodule module="model_nemo"/>
+      <docmodule module="model_dflowfm_blackbox"/>
+      <copy todir="${projectdoc}/javadoc" >
+         <fileset dir="core/doc/javadoc_menu" />
+      </copy>
+   </target>
+
+    <macrodef name="docmodule">
+	    <attribute name="module" default="NOT SET"/>
+	    <sequential>
+		    <echo>doc module @{module}</echo>
+		    <ant antfile="build.xml" dir="@{module}" target="javadoc" inheritAll="false" />
+		    <mkdir dir="${projectdoc}/javadoc" />
+		    <copy todir="${projectdoc}/javadoc" >
+			    <fileset dir="@{module}/javadoc" />
+		    </copy>
+		    <copy todir="${projectdoc}" >
+			    <fileset dir="@{module}/doc" />
+		    </copy>
+		    <copy todir="${xmlschemadir}" >
+			    <fileset dir="@{module}/xmlSchemas" includes="**/*.xsd"  />
+		    </copy>
+	    </sequential>
+    </macrodef>
+
+   <target name="tests" depends="init">
+      <moduletests module="core" />
+      <moduletests module="model_example_blackbox" />
+      <moduletests module="model_swan" />
+      <moduletests module="model_nemo" />
+      <moduletests module="model_delft3d"/>
+      <moduletests module="model_reactive_advection"/>
+      <moduletests module="model_dflowfm_blackbox"/>
+   </target>
+
+    <macrodef name="moduletests">
+	    <attribute name="module" default="NOT SET"/>
+	    <sequential>
+		    <echo>tests for module @{module}</echo>
+		    <mkdir dir="${projecttests}" />
+		    <copy todir="${projecttests}/@{module}" >
+			    <fileset dir="@{module}/tests" />
+		    </copy>
+	    </sequential>
+    </macrodef>
+
+    <macrodef name="buildmodule">
+	    <attribute name="module" default="NOT SET"/>
+	    <sequential>
+		    <echo>build for module @{module}</echo>
+		    <ant antfile="build.xml" dir="@{module}" target="build" inheritAll="false" />
+		    <copy todir="${projectlib}" >
+			    <fileset dir="@{module}/bin" />
+		    </copy>
+	    </sequential>
+    </macrodef>
+
+    <target name="copy-win32-executables">
+
+        <copy  toDir="${modulebindir}" flatten="yes">
+	   		<fileset dir = "${modulebindir}/win32_ifort"/>
+            <fileset dir = "${modulebindir}/win32_gfortran"/>
+        </copy>
+
+        <delete dir="${modulebindir}/win32_ifort"/>
+        <delete dir="${modulebindir}/win32_gfortran"/>
+        <delete dir="${modulebindir}/darwin"/>
+        <delete dir="${modulebindir}/linux32_gnu"/>
+        <delete dir="${modulebindir}/linux64_gnu"/>
+
+    	<delete>
+            <fileset dir="${modulebindir}">
+                <include name="**.sh"/>
+                <include name="**.csh"/>
+            </fileset>
+    	</delete>
+
+    </target>
+
+	<target name="copy-jre-win32">
+		<copy  toDir="${projectjre}">
+		    <fileset dir = "thirdparty/jre/jre1.7.0_71_win32"/>
+		</copy>
+	</target>
+
+<!--
+===========================================================================
+	Tools: init, clean, etc.
+===========================================================================
+-->
+    <target name="init">
+        <tstamp/>
+	    <mkdir dir="${projectbin}"/>
+	    <mkdir dir="${projectdoc}"/>
+	    <mkdir dir="${xmlschemadir}"/>
+    </target>
+
+    <target name="clean">
+    	<delete dir="${projectbin}"/>
+    	<delete dir="${projectdoc}"/>
+    	<delete dir="${projecttests}"/>
+    	<delete dir="${xmlschemadir}"/>
+    	<delete dir="${testrundir}"/>
+        <delete dir="${testbuilddir}"/>
+        <delete dir="${testreportdir}"/>
+        <delete dir="${projectjre}"/>
+    	<cleanmodule module="core" />
+    	<cleanmodule module="observers" />
+    	<cleanmodule module="models" />
+    	<cleanmodule module="algorithms" />
+        <cleanmodule module="application" />
+        <cleanmodule module="model_damflow" />
+    	<cleanmodule module="model_delft3d" />
+        <cleanmodule module="model_delwaq" />
+        <cleanmodule module="model_efdc" />
+        <cleanmodule module="model_efdc_dll" />
+        <cleanmodule module="model_example_blackbox" />
+        <cleanmodule module="model_example_fortran" />
+        <cleanmodule module="model_glm" />
+        <cleanmodule module="model_hspf" />
+        <cleanmodule module="model_nemo" />
+        <cleanmodule module="model_reactive_advection" />
+        <cleanmodule module="model_swan" />
+        <cleanmodule module="model_wflow" />
+        <cleanmodule module="model_dflowfm_blackbox"/>
+    </target>
+
+    <macrodef name="cleanmodule">
+	    <attribute name="module" default="NOT SET"/>
+	    <sequential>
+		    <echo>clean for module @{module}</echo>
+		    <ant antfile="build.xml" dir="@{module}" target="clean" inheritAll="false" />
+	    </sequential>
+    </macrodef>
+
+	<taskdef resource="org/tigris/subversion/svnant/svnantlib.xml">
+		<classpath>
+			<fileset dir="core/java/resources/svnant-1.3.0/lib" includes="**/*.jar" />
+		</classpath>
+	</taskdef>
+
+    <target name="svn-revision" >
+		<svn>
+			<status path="." revisionProperty="svn.revision" />
+		</svn>
+		<echo>Subversion Revision: ${svn.revision}</echo>
+	</target>
+
+   <!--
+   ============================================================================================================
+   build archives
+   ============================================================================================================
+   -->
+    <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
+    <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
+    <target name="zip-win32" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+
+    <target name="zip-src">
+        <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
+	        <zipfileset dir="core" prefix="openda_${version}/public/core" excludes="*.svn" />
+	        <zipfileset dir="models" prefix="openda_${version}/public/models" excludes="*.svn" />
+	        <zipfileset dir="observers" prefix="openda_${version}/public/observers" excludes="*.svn" />
+	        <zipfileset dir="algorithms" prefix="openda_${version}/public/algorithms" excludes="*.svn" />
+	        <zipfileset dir="application" prefix="openda_${version}/public/application" excludes="*.svn" />
+	        <zipfileset dir="module_template" prefix="openda_${version}/public/module_template" excludes="*.svn" />
+	        <zipfileset dir="model_delwaq" prefix="openda_${version}/public/model_delwaq" excludes="*.svn"/>
+	        <zipfileset dir="model_efdc" prefix="openda_${version}/public/model_efdc" excludes="*.svn"/>
+	        <zipfileset dir="model_efdc_dll" prefix="openda_${version}/public/model_efdc_dll" excludes="*.svn"/>
+	        <zipfileset dir="model_example_fortran" prefix="openda_${version}/public/model_example_fortran" excludes="*.svn" />
+	        <zipfileset dir="model_example_blackbox" prefix="openda_${version}/public/model_example_blackbox" excludes="*.svn" />
+	        <zipfileset dir="model_glm" prefix="openda_${version}/public/model_glm" excludes="*.svn"/>
+	        <zipfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
+	        <zipfileset dir="model_nemo" prefix="openda_${version}/public/model_nemo" excludes="*.svn"/>
+	        <zipfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
+	        <zipfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
+	        <zipfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
+	        <zipfileset dir="model_delft3d" prefix="openda_${version}/public/model_delft3d" excludes="*.svn"/>
+	        <zipfileset dir="model_dflowfm_blackbox" prefix="openda_${version}/public/model_dflowfm_blackbox" excludes="*.svn"/>
+	        <zipfileset dir="dotnet_bridge" prefix="openda_${version}/public/dotnet_bridge" excludes="*.svn" />
+	        <zipfileset dir="thirdparty" prefix="openda_${version}/public/thirdparty" excludes="*.svn" />
+	        <zipfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
+	        <zipfileset dir="." includes="project.properties" prefix="openda_${version}/public" />
+	        <zipfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
+	        <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_r${svn.revision}.txt"/>
+	        <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/public/license.txt"/>
+	        <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/public/release-notes-2.0.pdf"/>-->
+	        <zipfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}/public" />
+	        <zipfileset dir="." includes=".project" fullpath="openda_${version}/public/.project"/>
+	        <zipfileset dir="." includes=".classpath" fullpath="openda_${version}/public/.classpath"/>
+	        <zipfileset dir="." includes="build_incl_dotnet_bridge.xml" fullpath="openda_${version}/public/build_incl_dotnet_bridge.xml"/>
+        </zip>
+    </target>
+
+    <target name="zip-bin">
+        <zip destfile="${projectname}_${version}_r${svn.revision}_bin.zip">
+            <zipfileset dir="bin" prefix="openda_${version}/bin"/>
+            <zipfileset dir="doc" prefix="openda_${version}/doc"/>
+            <zipfileset dir="examples" prefix="openda_${version}/examples" excludes="*.svn" />
+            <zipfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
+            <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
+            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
+            <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
+            <zipfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}" />
+        </zip>
+    </target>
+
+    <target name="zip-doc">
+        <zip destfile="${projectname}_${version}_r${svn.revision}_doc.zip">
+            <zipfileset dir="doc" prefix="openda_${version}/doc"/>
+            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
+            <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
+        </zip>
+    </target>
+
+    <target name="zip-schemas">
+        <zip destfile="${projectname}_${version}_r${svn.revision}_schemas.zip">
+            <zipfileset dir="xmlSchemas" prefix="openda_${version}" excludes="*.svn" />
+            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
+            <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
+        </zip>
+    </target>
+
+    <target name="zip-jre">
+        <zip destfile="${projectname}_${version}_r${svn.revision}_jre.zip">
+            <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
+        </zip>
+    </target>
+
+    <target name="zip-native" depends="svn-revision">
+       <zip destfile="${projectname}_${version}_r${svn.revision}_native.zip">
+	       <zipfileset dir="core/native_bin/win32_ifort" prefix="win32_ifort"/>
+       </zip>
+    </target>
+
+    <macrodef name="ziptest">
+        <attribute name="testname" default="NOT SET"/>
+        <sequential>
+            <echo>zip example @{testname}</echo>
+            <zip destfile="${projectname}_${version}_r${svn.revision}_examples_@{testname}.zip">
+                <zipfileset dir="examples/@{testname}"  prefix="openda_${version}/examples/@{testname}"/>
+                <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            </zip>
+        </sequential>
+    </macrodef>
+
+    <target name="zip-tests" depends="svn-revision,tests" > <!-- depends="svn-revision"> -->
+        <ziptest testname="core" />
+        <ziptest testname="model_example_blackbox" />
+    	<ziptest testname="model_swan" />
+        <ziptest testname="model_delft3d" />
+        <ziptest testname="model_dflowfm_blackbox" />
+    </target>
+
+    <target name="chmod-linux-native">
+	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/" includes="*.sh" verbose="true"/>
+	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/linux32_gnu/lib" includes="**" verbose="true"/>
+	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/linux64_gnu/lib" includes="**" verbose="true"/>
+    </target>
+
+    <!-- tgz archives: mainly for non-windows platforms as they preserve file-permissions -->
+    <target name="tgz-bin">
+        <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_bin.tgz">
+	        <tarfileset dir="bin" prefix="openda_${version}/bin" excludes="*.sh" />
+	        <tarfileset dir="bin" includes="*.sh" filemode="755" prefix="openda_${version}/bin" />
+            <tarfileset dir="doc" prefix="openda_${version}/doc"/>
+            <tarfileset dir="examples" prefix="openda_${version}/examples" excludes="*.svn" />
+            <tarfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
+            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
+            <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
+            <tarfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}" />
+        </tar>
+    </target>
+
+    <target name="tgz-src">
+      <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_src.tgz">
+	    <tarfileset dir="core" prefix="openda_${version}/public/core" excludes="*.svn" >
+	    <exclude name="bin_external/*.sh" />
+	  </tarfileset>
+	  <tarfileset dir="core/bin_external" includes="*.sh" filemode="755" prefix="openda_${version}/public/core/bin_external" excludes="*.svn" />
+	  <tarfileset dir="models" prefix="openda_${version}/public/models" excludes="*.svn" />
+	  <tarfileset dir="observers" prefix="openda_${version}/public/observers" excludes="*.svn" />
+	  <tarfileset dir="algorithms" prefix="openda_${version}/public/algorithms" excludes="*.svn" />
+	  <tarfileset dir="application" prefix="openda_${version}/public/application" excludes="*.svn" />
+	  <tarfileset dir="module_template" prefix="openda_${version}/public/module_template" excludes="*.svn" />
+	  <tarfileset dir="model_delwaq" prefix="openda_${version}/public/model_efdc" excludes="*.svn"/>
+	  <tarfileset dir="model_efdc" prefix="openda_${version}/public/model_efdc" excludes="*.svn"/>
+	  <tarfileset dir="model_efdc_dll" prefix="openda_${version}/public/model_efdc_dll" excludes="*.svn"/>
+	  <tarfileset dir="model_example_fortran" prefix="openda_${version}/public/model_example_fortran" excludes="*.svn" />
+	  <tarfileset dir="model_example_blackbox" prefix="openda_${version}/public/model_example_blackbox" excludes="*.svn" />
+	  <tarfileset dir="model_glm" prefix="openda_${version}/public/model_glm" excludes="*.svn"/>
+	  <tarfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
+	  <tarfileset dir="model_nemo" prefix="openda_${version}/public/model_nemo" excludes="*.svn"/>
+	  <tarfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
+	  <tarfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
+	  <tarfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
+	  <tarfileset dir="model_delft3d" prefix="openda_${version}/public/model_delf3d" excludes="*.svn"/>
+	  <tarfileset dir="model_dflowfm_blackbox" prefix="openda_${version}/public/model_dflowfm_blackbox" excludes="*.svn"/>
+	  <tarfileset dir="dotnet_bridge" prefix="openda_${version}/public/dotnet_bridge" excludes="*.svn" />
+	  <tarfileset dir="thirdparty" prefix="openda_${version}/public/thirdparty" excludes="*.svn" />
+	  <tarfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
+	  <tarfileset dir="." includes="project.properties" prefix="openda_${version}/public" />
+	  <tarfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
+	  <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_r${svn.revision}.txt"/>
+	  <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/public/license.txt"/>
+	  <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/public/release-notes-2.0.pdf"/>-->
+	  <tarfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}/public" />
+	  <tarfileset dir="." includes=".project" fullpath="openda_${version}/public/.project"/>
+	  <tarfileset dir="." includes=".classpath" fullpath="openda_${version}/public/.classpath"/>
+      <tarfileset dir="." includes="build_incl_dotnet_bridge.xml" fullpath="openda_${version}/public/build_incl_dotnet_bridge.xml"/>
+      </tar>
+    </target>
+
+    <target name="tgz-doc">
+        <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_doc.tgz">
+            <tarfileset dir="doc" prefix="openda_${version}/doc" />
+            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
+            <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
+        </tar>
+    </target>
+
+    <target name="tgz-schemas">
+      <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_schemas.tgz">
+         <tarfileset dir="xmlSchemas" prefix="openda_${version}" excludes="*.svn" />
+         <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+         <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
+         <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
+      </tar>
+    </target>
+
+    <macrodef name="tgztest">
+       <attribute name="testname" default="NOT SET"/>
+       <sequential>
+         <echo>zip example @{testname}</echo>
+         <tar destfile="${projectname}_${version}_r${svn.revision}_examples_@{testname}.tgz">
+            <tarfileset dir="examples/@{testname}"  prefix="openda_${version}/examples/@{testname}"/>
+            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+         </tar>
+       </sequential>
+    </macrodef>
+
+    <target name="tgz-tests" depends="svn-revision,tests" > <!-- depends="svn-revision"> -->
+        <tgztest testname="core" />
+        <tgztest testname="model_example_blackbox" />
+    	<tgztest testname="model_swan" />
+        <tgztest testname="model_delft3d" />
+        <tgztest testname="model_dflowfm_blackbox" />
+    </target>
+
+    <target name="tgz-native" depends="svn-revision,chmod-linux-native" >
+       <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_native.tgz">
+	       <tarfileset dir="core/native_bin/linux64_gnu" prefix="linux64_gnu" excludes="*.svn"/>
+	       <tarfileset dir="core/native_bin/linux32_gnu" prefix="linux32_gnu" excludes="*.svn"/>
+	       <tarfileset dir="core/native_bin/darwin" prefix="darwin" excludes="*.svn"/>
+       </tar>
+    </target>
+
+
+	<!--
+	===========================================================================
+	    Tests: Unit tests
+	===========================================================================
+	-->
+
+     <!-- compile test classes -->
+    <target name="testclasses">
+        <mkdir dir="${testbuilddir}"/>
+    	<buildmoduletests module="core" />
+    	<buildmoduletests module="observers" />
+    	<buildmoduletests module="models" />
+    	<buildmoduletests module="algorithms" />
+    	<buildmoduletests module="application" />
+        <buildmoduletests module="model_efdc" />
+        <buildmoduletests module="model_efdc_dll"/>
+        <buildmoduletests module="model_example_blackbox" />
+        <buildmoduletests module="model_example_fortran" />
+        <buildmoduletests module="model_hspf" />
+        <buildmoduletests module="model_swan"/>
+        <buildmoduletests module="model_wflow"/>
+        <buildmoduletests module="model_delft3d"/>
+        <buildmoduletests module="model_dflowfm_blackbox"/>
+    </target>
+
+    <target name="testclassesPPC">
+        <mkdir dir="${testbuilddir}"/>
+    	<buildmoduletests module="core" />
+    	<buildmoduletests module="observers" />
+    	<buildmoduletests module="models" />
+    	<buildmoduletests module="algorithms" />
+    	<buildmoduletests module="application" />
+        <!--<buildmoduletests module="model_efdc" />
+        <buildmoduletests module="model_efdc_dll"/> -->
+        <buildmoduletests module="model_example_blackbox" />
+        <buildmoduletests module="model_example_fortran" />
+        <buildmoduletests module="model_hspf" />
+        <!--<buildmoduletests module="model_swan"/>-->
+        <buildmoduletests module="model_wflow"/>
+        <buildmoduletests module="model_delft3d"/>
+    </target>
+
+
+    <macrodef name="buildmoduletests">
+        <attribute name="module" default="NOT SET"/>
+        <sequential>
+            <echo>build tests for module @{module}</echo>
+            <ant antfile="build.xml" dir="@{module}" target="build-test" inheritAll="false" />
+            <copy todir="${testbuilddir}" >
+                <fileset dir="@{module}/build-test" />
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <target name="test" depends="testclasses">
+        <mkdir dir="${testreportdir}"/>
+        <mkdir dir="${testrundir}"/>
+
+        <echo>Java library path = ${java.library.path}</echo>
+
+    	<junit printsummary="withOutAndErr" dir="${projectdir}" fork="yes" timeout="1200000" maxmemory="${maxmemory}">
+            <jvmarg value="-ea"/>
+            <jvmarg value="-esa"/>
+            <batchtest todir="${testreportdir}">
+                <fileset dir="${testbuilddir}">
+                    <include name="**/*Test.class"/>
+
+                    <!-- BROKEN - FIX THEM -->
+                   <exclude name="**/SomeBrokenTest.class"/>
+		   
+                </fileset>
+            </batchtest>
+        	<formatter type="xml" usefile="true"/>
+            <!--<formatter type="plain" usefile="true"/>-->
+            <classpath>
+                <fileset dir="${projectbin}">
+                    <include name="*.jar"/>
+                </fileset>
+                <pathelement path="${testbuilddir}"/>
+            </classpath>
+        </junit>
+
+    </target>
+
+
+    <target name="testPPC" depends="build,testclassesPPC">
+        <mkdir dir="${testreportdir}"/>
+        <mkdir dir="${testrundir}"/>
+
+        <echo>Java library path = ${java.library.path}</echo>
+
+    	<junit printsummary="withOutAndErr" dir="${projectdir}" fork="yes" timeout="1200000" maxmemory="${maxmemory}">
+            <jvmarg value="-ea"/>
+            <jvmarg value="-esa"/>
+            <batchtest todir="${testreportdir}">
+                <fileset dir="${testbuilddir}">
+                    <include name="**/*Test.class"/>
+
+                    <!-- BROKEN - FIX THEM -->
+                   <!-- <exclude name="**/*SwanBBTest.class"/>
+		    <exclude name="**/*EfdcDLLTest.class"/> -->
+                </fileset>
+            </batchtest>
+        	<formatter type="xml" usefile="true"/>
+            <!--<formatter type="plain" usefile="true"/>-->
+            <classpath>
+                <fileset dir="${projectbin}">
+                    <include name="*.jar"/>
+                </fileset>
+                <pathelement path="${testbuilddir}"/>
+            </classpath>
+        </junit>
+
+    </target>
+
+
+    <target name="test-linux32-teamcity" >
+
+	<!--
+        <chmod perm="ugo+rx" dir="${projectbin}" includes="*.sh" verbose="true"/>
+	<chmod perm="ugo+rx" dir="${projectbin}/linux32_gnu/bin" includes="**" verbose="true"/>
+	<chmod perm="ugo+rx" dir="${projectbin}/linux32_gnu/lib" includes="**" verbose="true"/>
+	-->
+
+        <echo>Turning on X11 Windows server for GUI tests... </echo>
+        <exec executable="Xvfb" os="Linux" spawn="true" searchpath="true">
+           <arg value=":1"/>
+           <arg value="-screen"/>
+           <arg value="0"/>
+           <arg value="1024x768x24"/>
+        </exec>
+        <exec executable="Xvfb" os="Mac OS,Mac OS X,Darwin" spawn="true" searchpath="true">
+           <arg value=":2"/>
+           <arg value="-screen"/>
+           <arg value="0"/>
+           <arg value="1024x768x24"/>
+        </exec>
+
+
+        <ant target="test"/>
+
+        <echo>Turning off X11 Windows server... </echo>
+       	<exec executable="killall" os="Linux,Mac OS,Mac OS X,Darwin" searchpath="true">
+    	         <arg value="Xvfb"/>
+    	</exec>
+   </target>
+
+    <target name="test-linux64-teamcity" >
+
+	<!--
+        <chmod perm="ugo+rx" dir="${projectbin}" includes="*.sh" verbose="true"/>
+	<chmod perm="ugo+rx" dir="${projectbin}/linux64_gnu/bin" includes="**" verbose="true"/>
+        <chmod perm="ugo+rx" dir="${projectbin}/linux64_gnu/lib" includes="**" verbose="true"/>
+	-->
+
+        <echo>Turning on X11 Windows server for GUI tests... </echo>
+        <exec executable="Xvfb" os="Linux" spawn="true" searchpath="true" >
+           <arg value=":1"/>
+           <arg value="-screen"/>
+           <arg value="0"/>
+           <arg value="1024x768x24"/>
+        </exec>
+        <exec executable="Xvfb" os="Mac OS,Mac OS X,Darwin" spawn="true" searchpath="true">
+           <arg value=":2"/>
+           <arg value="-screen"/>
+           <arg value="0"/>
+           <arg value="1024x768x24"/>
+        </exec>
+
+        <ant target="test"/>
+
+        <echo>Turning off X11 Windows server... </echo>
+       	<exec executable="killall" os="Linux,Mac OS,Mac OS X,Darwin" searchpath="true" >
+    	         <arg value="Xvfb"/>
+    	</exec>
+   </target>
+</project>
+

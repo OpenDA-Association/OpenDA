@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+
+	<probabilityDistributionFunction id="noise-on-bc-A" isActive="true">
+		<normal mean="0.0" stdv=".10" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="noise-on-bc-B" isActive="true">
+		<normal mean="0.0" stdv="44.44" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+</uncertainties>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+    <modelFactory className="...myModelFactoryClass..." workingDirectory=".">
+        <arg>d3dModelFactoryConfig_win32_ifort.xml</arg>
+    </modelFactory>
+    <uncertaintyModule className="...UncertaintyEngine..." workingDirectory=".">
+        <arg>uncertainties.xml</arg>
+    </uncertaintyModule>
+    <vectorSpecification>
+        <state>
+            <!-- new noise model specification -->
+            <noiseModel id="NM_A" className="class.that.implements.noise.model.A" workingDirectory=".">
+                <configFile>config_file_or_string_for_noise_model_b</configFile>
+                <exchangeItems>
+                    <exchangeItem id="bc-noise-Lobith.Q" modelExchangeItemId="Lobith.Q" operation="add"/>
+                    <exchangeItem id="state" modelExchangeItemId="state" operation="add"/>
+                </exchangeItems>
+            </noiseModel>
+            <!-- deprecated noise model specification -->
+            <noiseModel>
+                <vector id="the model's BC"/>
+                <ar1Model>
+                    <stdDevColouredNoised value="0.05"/>
+                    <decorrelationTimeScale>P1D</decorrelationTimeScale>
+                    <noiseModelPeriod>P6D</noiseModelPeriod>
+                </ar1Model>
+            </noiseModel>
+        </state>
+        <predictor>
+            <vector id="Observation_A" sourceVectorId="Catchment2.someResultVariable"/>
+            <vector id="Observation_B" sourceVectorId="Catchment2.someResultVariable"/>
+        </predictor>
+    </vectorSpecification>
+</blackBoxStochModel>

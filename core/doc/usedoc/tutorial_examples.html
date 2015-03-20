@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>getting started with openda</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>OpenDA tutorial: Examples</h1>
+
+<hr>
+
+You can find examples in the <tt>doc/examples</tt> directory.
+
+<h2>Example 1: Oscillator-Dud application</h2>
+
+<br>
+
+In this example, we will learn how to use OpenDA for model calibration. To do so, we use an Oscillator model, which is one of the
+OpenDA internal/toy models. The algorithm used in this example is the Dud (which stands for
+<b>D</b>
+oesn't
+<b>U</b>
+se
+<b>D</b>
+erivative).
+<br>
+
+<ol>
+
+   <li>Check and examine the <tt>simple_oscillator</tt> directory. It should contain a main configuration file <tt>Dud.oda</tt>
+   and three directories, each contains a data-assimilation component: algorithm, model, and stochobserver. Each directory contains a
+   configuration file for the respective component: <tt>dudAlgorithm.xml</tt>, <tt>OscillatorStochModel.xml</tt>, and <tt>observations_oscillator_generated_for_calibration.csv</tt>.</li>
+   <li>Run the OpenDA application with <tt>Dud.oda</tt> as the main configuration file in the mode that you prefer (with or
+   without GUI). In GUI mode, you can get a real time update of the execution by checking either Control, Output, or Cost Function
+   tabs. See the screenshots below.</li>
+   <li>Check the results. Upon completion a new file dud_results.m is created. This file contains the results of OpenDA-Dud
+   application, which are written in Matlab format. If you have no access to Matlab, then <a
+      href="http://www.gnu.org/software/octave/" target="_blank">Octave</a> can be used as an alternative.<br>
+   </li>
+   <li>Play around with the stopping criteria in <tt>dudAlgorithm.xml</tt> and see if the results are different from the
+   previous ones. See the <a href="../xmlSchemasHTML/index.html" target="_blank">XML documentation</a> for the description of each
+   XML attribute. <br>
+   <img width="95%" alt="openda_gui_control" title="openda_gui_control" src="figs/openda_gui_control.png"> <br>
+   <img width="95%" alt="openda_gui_output" title="openda_gui_output" src="figs/openda_gui_output.png"> <br>
+   <img width="95%" alt="openda_gui_costfunction" title="openda_gui_costfunction" src="figs/openda_gui_costfunction.png"></li>
+</ol>
+
+<br>
+
+<br>
+
+<h2>Example 2: Oscillator-Simplex application</h2>
+
+To edit the .xml files, the user is adviced to use a XML validity editor, of which many can be found on-line (for free).
+In this example, we are going to use the same set of model and observation as in the previous one, but use a different algorithm for
+solving the parameter estimation problem. This will illustrate how easy it is in OpenDA to couple different algorithms to the
+existing model and observation.
+<br>
+
+<ol>
+
+   <li>Create a new algorithm configuration file: <tt>simplexAlgorithm.xml</tt>. Store it in the algorithm directory.</li>
+   <li>Edit the simplexAlgorithm.xml. See the <a href="../xmlSchemasHTML/index.html" target="_blank">XML documentation</a> for
+   the description of each XML attribute and example of simplex algorithm configuration file.</li>
+   <li>Create a new main configuration file <tt>Oscillator-Simplex.oda</tt>, by copying <tt>Oscillator-Dud.oda</tt>.</li>
+   <li>Edit <tt>Oscillator-Simplex.oda</tt>:</li>
+   <ul style="margin-left: 40px;">
+      <li>set the algorithm className to the one of Simplex.</li>
+      <li>set another name for the resultWriter configString to be different from the previous one to avoid overwriting the
+      previous result.</li>
+   </ul>
+   <li>Run OpenDA application with <tt>Oscillator-Simplex.oda</tt> as input.</li>
+   <li>Check the results and compare them to the ones obtained using Dud algorithm.</li>
+</ol>
+
+<br>
+<h2>Example 3: Oscillator-Powell application</h2>
+
+Follow the same procedure as in Example 2, but this time we use the Powell algorithm.
+<br>
+
+<br>
+<h2>Example 4: Oscillator-GriddedFullSearch application</h2>
+
+Follow the same procedure as in Example 2, but this time we use the Gridded Full Search algorithm.
+<br>
+
+<br>
+<h2>Example 5: Oscillator-EnKF application</h2>
+
+In the previous examples, we learnt how to use OpenDA for model calibration/parameter estimation. In this example, we will learn how
+to use OpenDA for Kalman filtering. In this particular example we use the Ensemble Kalman Filter (EnKF) algorithm. Follow the same
+procedure as in Example 2, but this time we use the EnKF algorithm.
+<br>
+
+Check the results <tt>Enkf_results.m</tt>. It contains a number of variables. For this tutorial, the following variables are of importance:
+<ul>
+
+<li><tt>x_f{time}</tt>: model state before data assimilation (forecast state)</li>
+<li><tt>x_a{time}</tt>: model state after data assimilation (analysis state)</li>
+<li><tt>obs{time}</tt>: observation data. Note that only one state variable is observed.</li>
+<li><tt>pred_f{time}</tt>: forecast state variable which corresponds to the observed variable.</li>
+<li><tt>pred_a{time}</tt>: analysis state variable which corresponds to the observed variable.</li>
+</ul>
+
+Notice that <tt>pred_a</tt> is much closer to the obs at each time then <tt>pred_f</tt>. This illustrates how data assimilation improves the model
+accuracy.
+<br>
+
+<br>
+<h2>Example 6: Oscillator-EnSR application</h2>
+
+Follow the same procedure in Example 6 for Ensemble Square Root filter (EnSR).
+<br>
+
+<br>
+<h2>Example 7: Lorenz-EnKF application</h2>
+
+In the previous examples, we learnt how to use different algorithms for the same set of model and observation. In this example, we
+will learn to couple another set of model and observation to the existing algorithms. We use the Lorenz model, which is another toy
+model available in OpenDA. Adjust the relevant XML attributes and elements in the main configuration files created in the previous
+examples to work with the Lorenz model and its available observation data <tt>observations_lorenz_generated.csv</tt>.
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<!-- DATools/UATools Schema Definition (Copyright 2005 WL | Delft Hydraulics) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dh="http://www.wldelft.nl" targetNamespace="http://www.wldelft.nl" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<!--    -->
+	<simpleType name="idStringType">
+		<restriction base="string">
+			<maxLength value="64"/>
+		</restriction>
+	</simpleType>
+	<!-- -->
+	<simpleType name="idIntType">
+		<restriction base="int"/>
+	</simpleType>
+	<!--    -->
+	<simpleType name="versionStringType">
+		<restriction base="string"/>
+	</simpleType>
+	<!--    -->
+	<simpleType name="nameStringType">
+		<restriction base="string"/>
+	</simpleType>
+	<!--    -->
+	<simpleType name="directoryStringType">
+		<restriction base="string"/>
+	</simpleType>
+	<!--    -->
+	<simpleType name="fileStringType">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="nonNegativeDouble">
+		<restriction base="double">
+			<minInclusive value="0"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="percentageType">
+		<restriction base="integer">
+			<minInclusive value="0"/>
+			<maxInclusive value="100"/>
+		</restriction>
+	</simpleType>
+	<!-- -->
+	<complexType name="DateTimeComplexType">
+		<attribute name="date" type="date" use="required"/>
+		<attribute name="time" type="time" use="required"/>
+	</complexType>
+	<!-- -->
+	<simpleType name="variableStringType">
+		<restriction base="string"/>
+	</simpleType>
+	<complexType name="TimeStepComplexType">
+		<annotation>
+			<documentation>The timeunit element has three attributes, unit and devider and multiplier.
+            the unit is second, minute, hour, week, month year.
+            The devider attribute is optional (default = 1).</documentation>
+		</annotation>
+		<attribute name="unit" type="dh:timeStepUnitEnumStringType" use="required"/>
+		<attribute name="divider" type="int" use="optional" default="1"/>
+		<attribute name="multiplier" type="int" use="optional" default="1"/>
+	</complexType>
+	<!-- -->
+	<complexType name="TimeSpanComplexType">
+		<attribute name="unit" type="dh:timeUnitEnumStringType" use="required"/>
+		<attribute name="divider" type="int" use="optional" default="1"/>
+		<attribute name="multiplier" type="int" use="optional" default="1"/>
+	</complexType>
+	<!--    -->
+	<simpleType name="timeStepUnitEnumStringType">
+		<annotation>
+			<documentation>Same as timeUnitEnumStringType plus the nonequidistant time step</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="second"/>
+			<enumeration value="minute"/>
+			<enumeration value="hour"/>
+			<enumeration value="day"/>
+			<enumeration value="week"/>
+			<enumeration value="nonequidistant"/>
+		</restriction>
+	</simpleType>
+	<!-- -->
+	<simpleType name="timeUnitEnumStringType">
+		<restriction base="string">
+			<enumeration value="second"/>
+			<enumeration value="minute"/>
+			<enumeration value="hour"/>
+			<enumeration value="day"/>
+			<enumeration value="week"/>
+		</restriction>
+	</simpleType>
+	<!-- TimePeriodComplexType -->
+	<complexType name="PeriodComplexType">
+		<sequence>
+			<element name="startDate" type="dateTime"/>
+			<element name="endDate" type="dateTime"/>
+		</sequence>
+	</complexType>
+	<!-- -->
+	<!-- Time Zone Types -->
+	<simpleType name="timeZoneSimpleType">
+		<annotation>
+			<documentation>The timeZone (in decimal hours shift from GMT) 
+            e.g. -1.0 or 3.5. If not present GMT is assumed</documentation>
+		</annotation>
+		<restriction base="double"/>
+	</simpleType>
+	<!--    -->
+	<complexType name="StringPropertyComplexType">
+		<sequence>
+			<element name="description" type="string" minOccurs="0"/>
+		</sequence>
+		<attribute name="key" type="string" use="required"/>
+		<attribute name="value" type="string" use="required"/>
+	</complexType>
+	<!-- -->
+	<complexType name="IntPropertyComplexType">
+		<sequence>
+			<element name="description" type="string" minOccurs="0"/>
+		</sequence>
+		<attribute name="key" type="string" use="required"/>
+		<attribute name="value" type="int" use="required"/>
+	</complexType>
+	<!-- -->
+	<complexType name="FloatPropertyComplexType">
+		<sequence>
+			<element name="description" type="string" minOccurs="0"/>
+		</sequence>
+		<attribute name="key" type="string" use="required"/>
+		<attribute name="value" type="float" use="required"/>
+	</complexType>
+	<!-- -->
+	<!-- CommandComplexType -->
+	<complexType name="CommandComplexType">
+		<choice>
+			<element name="executable" type="dh:fileStringType">
+				<annotation>
+					<documentation>Absolute path plus file name of the executable.</documentation>
+				</annotation>
+			</element>
+			<element name="className" type="string">
+				<annotation>
+					<documentation>Fully qualifying name of a Java runnable class.</documentation>
+				</annotation>
+			</element>
+		</choice>
+	</complexType>
+	<!-- ArgumentsComplexType -->
+	<complexType name="ArgumentsComplexType">
+		<sequence>
+			<element name="argument" type="string" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<!-- EnvironmentVariablesComplexType -->
+	<complexType name="EnvironmentVariablesComplexType">
+		<sequence>
+			<element name="environmentVariable" type="dh:EnvironmentVariableComplexType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<!-- EnvironmentVariableComplexType -->
+	<complexType name="EnvironmentVariableComplexType">
+		<sequence>
+			<element name="name" type="string">
+				<annotation>
+					<documentation>Name of the environment variable.</documentation>
+				</annotation>
+			</element>
+			<element name="value" type="string">
+				<annotation>
+					<documentation>Value of the environment variable.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<!-- ExecuteActivityComplexType -->
+	<complexType name="ExecuteActivityComplexType">
+		<sequence>
+			<element name="description" type="string" minOccurs="0">
+				<annotation>
+					<documentation>Optional description of the execute activity.</documentation>
+				</annotation>
+			</element>
+			<element name="command" type="dh:CommandComplexType">
+				<annotation>
+					<documentation>Command to execute. This can be either an executable or a Java class.</documentation>
+				</annotation>
+			</element>
+			<element name="arguments" type="dh:ArgumentsComplexType" minOccurs="0">
+				<annotation>
+					<documentation>Arguments to be passed to the executable.</documentation>
+				</annotation>
+			</element>
+			<element name="environmentVariables" type="dh:EnvironmentVariablesComplexType" minOccurs="0">
+				<annotation>
+					<documentation>Environment variables to be pass ed to the executable.</documentation>
+				</annotation>
+			</element>
+			<element name="timeOut" type="dh:timeOutIntegerType" minOccurs="0">
+				<annotation>
+					<documentation>Timeout for execute activity in milliseconds.</documentation>
+				</annotation>
+			</element>
+			<element name="overrulingDiagnosticFile" type="dh:fileStringType" minOccurs="0">
+				<annotation>
+					<documentation>File containing diagnostic information about activity. This file always is located in the importDir and overrules the global diagnostic file.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<!-- timeOutIntegerType -->
+	<simpleType name="timeOutIntegerType">
+		<restriction base="nonNegativeInteger"/>
+	</simpleType>
+	<!--defines the type  for the data in data string-->
+	<simpleType name="dataTypeEnumStringType">
+		<annotation>
+			<documentation>to define the type of the data (double, flow, string, boolean etc</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="boolean"/>
+			<enumeration value="int"/>
+			<enumeration value="float"/>
+			<enumeration value="double"/>
+			<enumeration value="file"/>
+		</restriction>
+	</simpleType>
+	<!-- -->
+	<simpleType name="fileLocationTypeEnumStringType">
+		<annotation>
+			<documentation>type: either file or directory</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="file"/>
+			<enumeration value="directory"/>
+		</restriction>
+	</simpleType>
+	<!-- Known parts of a model state  -->
+	<simpleType name="mappingTypeEnumStringType">
+		<restriction base="string">
+			<enumeration value="id"/>
+			<enumeration value="spatialIndices"/>
+			<enumeration value="spatialMappingMatrix"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="statePartEnumStringType">
+		<restriction base="string">
+			<enumeration value="computed"/>
+			<enumeration value="forces"/>
+			<enumeration value="params"/>
+			<enumeration value="output"/>
+			<enumeration value="observation"/>
+		</restriction>
+	</simpleType>
+	<complexType name="ModuleComplexType">
+		<sequence>
+			<element name="workingDirectory" type="dh:directoryStringType"/>
+			<element name="executeActivity" type="dh:ExecuteActivityComplexType"/>
+		</sequence>
+	</complexType>
+	<complexType name="ModelComplexType">
+		<sequence>
+			<element name="executeActivity" type="dh:ExecuteActivityComplexType"/>
+		</sequence>
+	</complexType>
+	<simpleType name="indexStringType">
+		<annotation>
+			<documentation>index (e.g. 12) or index line (e.g. 11:18) in an array</documentation>
+		</annotation>
+		<restriction base="string">
+			<pattern value="([-+]?[0-9]+)(:[-+]?[0-9]+)?"/>
+		</restriction>
+	</simpleType>
+	<complexType name="ModelRunInfoComplexType">
+		<sequence>
+			<element name="runPeriod" type="dh:PeriodComplexType"/>
+			<element name="timeStep" type="dh:TimeStepComplexType"/>
+			<element name="resultTimeStep" type="dh:TimeStepComplexType" minOccurs="0"/>
+		</sequence>
+		<attribute name="version" type="dh:versionStringType" fixed="1.2"/>
+	</complexType>
+	<complexType name="TimeSeedSettingsComplexType">
+		<sequence>
+			<element name="start" type="integer"/>
+			<element name="end" type="integer"/>
+		</sequence>
+	</complexType>
+</schema>

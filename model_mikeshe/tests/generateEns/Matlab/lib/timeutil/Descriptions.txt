@@ -1,0 +1,29 @@
+
+date2jd	 - 	Julian day number from Gregorian date.
+date2mjd	 - 	Modified Julian day number.
+date2unixsecs	 - 	Number of seconds since 00:00:00 1 January 1970.
+dayofmonth	 - 	Ordinal number of month in year.
+dayofweek	 - 	Day of week.
+dayofyear	 - 	Ordinal number of day in a year.
+days2hms	 - 	Convert days into hours, minutes, and seconds.
+daysinmonth	 - 	Number of days in a month.
+daysinyear	 - 	Number of days in a year.
+easterday	 - 	Easter day for a given year.
+hms2days	 - 	Convert hours, minutes, and seconds to days.
+hms2sec	 - 	Convert from hours, minutes and seconds to seconds.
+isdate	 - 	True for valid dates (Gregorian calendar).
+isjdate	 - 	True for valid dates (Julian calendar).
+isleapyear	 - 	True for leap years.
+istime	 - 	True for valid times.
+jd2date	 - 	Gregorian calendar date from modified Julian day number.
+jd2jdate	 - 	Julian day number to Julian calendar date.
+jd2mjd	 - 	Modified Julian day number from Julian day number.
+jdate2jd	 - 	Julian day number from Julian date.
+mjd2date	 - 	Gregorian calendar date from Julian day number.
+mjd2jd	 - 	Modified Julian day number from Julian day number.
+monthofyear	 - 	Ordinal number of month in year.
+sec2hms	 - 	Convert seconds to hours, minutes and seconds.
+unixsecs2date	 - 	Number of seconds since 00:00:00 1 January 1970 to date.
+weekofyear	 - 	Ordinal week number.
+weeksinyear	 - 	Number of weeks in a year.
+yearnum	 - 	Ordinal year number.

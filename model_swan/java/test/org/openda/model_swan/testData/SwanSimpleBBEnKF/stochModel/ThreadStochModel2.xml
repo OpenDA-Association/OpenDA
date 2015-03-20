@@ -1,0 +1,10 @@
+<threadConfig>
+   <maxThreads>2</maxThreads>
+   <cashState>true</cashState>
+   <nonBlockingAxpy>false</nonBlockingAxpy>
+   <stochModelFactory className="org.openda.models.rmiModel.RmiClientStochModelFactory">
+      <workingDirectory>./stochModel</workingDirectory>
+      <configFile>RmiStochModel2.xml</configFile>
+      </stochModelFactory>
+</threadConfig>
+

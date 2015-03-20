@@ -1,0 +1,8 @@
+<rmiConfig>
+   <serverAdress></serverAdress>
+   <factoryID>IRmiIStochModel_1,IRmiIStochModel_2</factoryID>
+   <stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+      <workingDirectory>./stochModel</workingDirectory>
+      <configFile>bbSwanStochModelConfig.xml</configFile>
+   </stochModelFactory>
+</rmiConfig>

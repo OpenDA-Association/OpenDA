@@ -1,0 +1,75 @@
+package org.openda.model_delft3d;
+
+import junit.framework.TestCase;
+import org.openda.application.ApplicationRunner;
+import org.openda.application.OpenDaApplication;
+import org.openda.blackbox.config.BBUtils;
+import org.openda.utils.OpenDaTestSupport;
+import java.io.File;
+import java.io.IOException;
+//import sun.nio.cs.ext.EUC_TW;
+
+/**
+ * Test for d3d-flow in black box wrapper
+ */
+public class D3dBlackBoxTest extends TestCase {
+
+    OpenDaTestSupport testData = null;
+
+    protected void setUp() throws IOException {
+    	testData = new OpenDaTestSupport(D3dBlackBoxTest.class,"public","model_delft3d");
+    }
+
+    public static void testDummy() {
+        // No action. Test only exist to avoid warnings on empty test class when
+        //            the test below is de-activated by renaming it to tst...()
+    }
+
+    public void tstF34NoActualComputation() {
+    	String configFileName=null;
+    	if (!BBUtils.RUNNING_ON_WINDOWS) {
+    		if(System.getProperty("sun.arch.data.model").equals("64")){
+    			configFileName="d3dDudOpenDaConfig_linux64_gnu.xml";
+    		}else{
+    			//no testing on linux 32-bit
+    			return;
+    		}
+    	}else{
+    		configFileName="d3dDudOpenDaConfig.xml";
+    	}
+        File applicationConfigDir = new File(testData.getTestRunDataDir(), "bb_test_1");
+        File applicationConfigFile = new File(applicationConfigDir, configFileName);
+        ApplicationRunner.setRunningInTest(true);
+        OpenDaApplication.main(new String[]{applicationConfigFile.getAbsolutePath()});
+    }
+
+    public void tstWithMissingObservedValues() {
+    	String configFileName=null;
+    	if (!BBUtils.RUNNING_ON_WINDOWS) {
+    		if(System.getProperty("sun.arch.data.model").equals("64")){
+    			configFileName="d3dDudConfigWithErrors_linux64_gnu.xml";
+    		}else{
+    			//no testing on linux 32-bit
+    			return;
+    		}
+    	}else{
+    		configFileName="d3dDudConfigWithErrors.xml";
+    	}
+        File applicationConfigDir = new File(testData.getTestRunDataDir(), "bb_test_1");
+        File applicationConfigFile = new File(applicationConfigDir, configFileName);
+        ApplicationRunner.setRunningInTest(true);
+        try {
+            OpenDaApplication.main(new String[]{applicationConfigFile.getAbsolutePath()});
+        } catch (RuntimeException e) {
+            String message = e.getMessage();
+            assertEquals("Expected exception",message,"Error, see exception thrown by ApplicationRunner)");
+            // TODO: get real exception level
+//            assertTrue("Expected exception, 1",
+//                    message.equals("Error(s) in getting observed values from black box model"));
+//            assertTrue("Expected exception, 2",
+//                    message.equals("No computed values available for W3.water level, 199008042345, 199008060115"));
+//            assertTrue("Expected exception, 3",
+//                    message.equals("No computed values available for W4.water level, 199008050131, 199008050317, 199008050732, 199008051718, 199008052019"));
+        }
+    }
+}

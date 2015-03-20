@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by J Huijssen (VORtech) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- -->
+	<!-- -->
+	<!-- general includes -->
+	<!-- -->
+	<xs:include schemaLocation="resultSelection.xsd"/>
+	<!-- -->
+	<!-- selectable algorithms-->
+	<!-- -->
+	<xs:complexType name="OpenDaAlgorithmXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<!-- -->
+			<!-- working directory for the algorithm, relative to dir. with main config file  -->
+			<xs:element name="workingDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the directory, relative to the main configuration directory, where the algorithm configuration files are stored</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- -->
+			<!-- configuration information -->
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>Select one of the options</xs:documentation>
+				</xs:annotation>
+				<!-- -->
+				<!-- configFile (can be used by unknown algorithm, specified by className attribute) -->
+				<xs:element name="configFile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the name of the algorithm configuration file stored in the working directory</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+				<!-- configString (can be used by unknown algorithm, specified by className attribute) -->
+				<xs:element name="configString" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the configuration string (whether a configFile or configString is required depends on the choice of algorithm) </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+				<!-- xml configuration for known algorithms -->
+				<!-- <xs:element name="dud" type="openda:DudAlgorithmXML"/> (not used (yet?)) -->
+				<!-- <xs:element name="powell" type="openda:PowellAlgorithmXML"/> (not used (yet?)) -->
+				<!-- <xs:element name="simplex" type="openda:SimplexAlgorithmXML"/> (not used (yet?)) -->
+				<!-- -->
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Set the openda:java class name of the algorithm</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- class name for algorithm to be launched -->
+	</xs:complexType>
+	<!-- -->
+	<!-- -->
+	<!-- selectable stoch observer types -->
+	<!-- -->
+	<xs:complexType name="OpenDaStochObserverXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<!-- -->
+			<!-- working directory for the stoch observer, relative to dir. with main config file  -->
+			<xs:element name="workingDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the directory, relative to the main configuration directory, where the stochastic observer configuration files are stored</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- -->
+			<!-- configuration information -->
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>Select one of the options</xs:documentation>
+				</xs:annotation>
+				<!-- -->
+				<!-- configFile (can be used by unknown stoch observer type, specified by className attribute) -->
+				<xs:element name="configFile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the name of the stochastic observer configuration file stored in the working directory</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+				<!-- configString (can be used by unknown stoch observer type, specified by className attribute) -->
+				<xs:element name="configString" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the configuration string (whether a configFile or configString is required depends on the choice of stochastic observer) </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Set the openda:java class name of the stochastic observer</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- class name for stoch observer to be launched -->
+	</xs:complexType>
+	<!-- -->
+	<!-- -->
+	<!-- selectable stoch model factories -->
+	<!-- -->
+	<xs:complexType name="OpenDaStochModelXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<!-- -->
+			<!-- working directory for the stoch observer, relative to dir. with main config file  -->
+			<xs:element name="workingDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the directory, relative to the main configuration directory, where the stochastic model configuration files are stored</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- -->
+			<!-- configuration information -->
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>Select one of the options</xs:documentation>
+				</xs:annotation>
+				<!-- -->
+				<!-- configFile (can be used by unknown stoch model factory type, specified by className attribute) -->
+				<xs:element name="configFile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the name of the stochastic model configuration file stored in the working directory</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+				<!-- configString (can be used by unknown stoch model factory type, specified by className attribute) -->
+				<xs:element name="configString" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the configuration string (whether a configFile or configString is required depends on the choice of stochastic model) </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Set the openda:java class name of the stochastic model.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- class name for stoch model factory to be launched -->
+	</xs:complexType>
+	<!-- -->
+	<!-- -->
+	<!-- selectable output writers -->
+	<!-- -->
+	<xs:complexType name="OpenDaResultWriterXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<!-- -->
+			<!-- working directory for the stoch observer, relative to dir. with main config file  -->
+			<xs:element name="workingDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the working directory where the results file should be stored</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- -->
+			<!-- configuration information -->
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>Select one of the options</xs:documentation>
+				</xs:annotation>
+				<!-- -->
+				<!-- configFile (can be used by unknown stoch model factory type, specified by className attribute) -->
+				<xs:element name="configFile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the results filename</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+				<!-- configString (can be used by unknown stoch model factory type, specified by className attribute) -->
+				<xs:element name="configString" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the configuration string (whether a configFile or configString is required depends on the choice of resultwriter) </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<!-- -->
+				<!-- xml configuration for known result writer types -->
+				<!-- (none yet) -->
+			</xs:choice>
+			<!-- -->
+			<!-- optionally, specify which output item should be passed to the resultwriter  -->
+			<xs:element name="selection" type="openda:ResultSelectionXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify subselection of output sources and items to be written</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specify the openda class name of the result writer</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- class name for output writer to be launched -->
+	</xs:complexType>
+	<!-- -->
+	<xs:complexType name="OpenDaResultWritersXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<xs:element name="resultWriter" type="openda:OpenDaResultWriterXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the content and format of the results file</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- -->
+	<!-- -->
+	<!-- The application (algorithm, stoch. observer and  stoch. model factory) -->
+	<!-- -->
+	<xs:simpleType name="RestartFormatTypesXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="mjd"/>
+			<xs:enumeration value="dateTimeString"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="RestartOutFileTimesXML">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+					A list of one or more times separated by comma's ','
+					Eg. 201012312359,201101012359
+					or 1.0,2.0,...,10.0
+					Formatted dates require format YYYMMDDhhmm.
+					Three dots can be used to shorten a regular list
+				</xs:documentation>
+				</xs:annotation>
+				<xs:attribute name="timeFormat" type="openda:RestartFormatTypesXML" use="optional" default="dateTimeString">
+					<xs:annotation>
+						<xs:documentation>
+					Specify the time format: 'mjd' (Modified Julian Day) or date/time string (formatted as yyyymmddhhmm) 'dateTimeString'.
+				</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="OpenDaApplicationXML">
+		<xs:all>
+			<xs:annotation>
+				<xs:documentation>Contains the elements - required (continuous lines) or optional (dashed lines)</xs:documentation>
+			</xs:annotation>
+			<xs:element name="stochObserver" type="openda:OpenDaStochObserverXML">
+				<xs:annotation>
+					<xs:documentation>Specify the stochastic observer component</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stochModelFactory" type="openda:OpenDaStochModelXML">
+				<xs:annotation>
+					<xs:documentation>Specify the stochastic model component</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="algorithm" type="openda:OpenDaAlgorithmXML">
+				<xs:annotation>
+					<xs:documentation>Specify the algorithm for data assimilation or parameter calibration</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resultWriter" type="openda:OpenDaResultWriterXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the content and format of the results file</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resultWriters" type="openda:OpenDaResultWritersXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the results files in case more than one format is needed</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restartInFile" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the input file from which the algoritm should restart. If omitted, no restart file is read.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restartOutFilePrefix" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the prefix to be used for the output restart files to be written. If ommitted, no restart files are written.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restartOutFileExtension" type="xs:string" default=".xml" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the file extension to be used for restart output files (default: .xml). Overrules only the extension, but not the output format chosen by Openda (could be a zip file as well). Use of this option is discouraged.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restartOutFileTimes" type="openda:RestartOutFileTimesXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the time stamps for which to write restarts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:element name="openDaApplication" type="openda:OpenDaApplicationXML">
+		<xs:annotation>
+			<xs:documentation>Main configuration for an OpenDA application. There are three mandatory components, which make up an OpenDA application: stochModelFactory, stochObserver and algorithm. Each component is configured by specifying its className attribute, workingDirectory and configFile/configString. An optional component is available for configuring the output of the results, and optional components for defining OpenDA restart input and output files.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

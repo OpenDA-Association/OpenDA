@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelFactory className="org.openda.dotnet.ModelFactoryN2J" workingDirectory=".">
+		<arg>OpenDA.DotNet.Models.SimpleOscillatorModelFactory;OscillatorModel.xml</arg>
+	</modelFactory>
+	<vectorSpecification>
+		<parameters>
+			<regularisationConstant>
+				<stdDev value="0.10" transformation="identity"/>
+				<vector id="omega" sourceVectorId="omega"/>
+			</regularisationConstant>
+		</parameters>
+		<state>
+			<noiseModel id="noiseModel_A" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+				<configFile>noiseModel_A.xml</configFile>
+				<exchangeItems>
+					<exchangeItem id="noise-on-state[0]">
+						<modelExchangeItem id="state[0]"/>
+					</exchangeItem>
+					<exchangeItem id="noise-on-state[1]">
+						<modelExchangeItem id="state[1]"/>
+					</exchangeItem>
+				</exchangeItems>
+			</noiseModel>
+			<vector id="state[0]"/>
+			<vector id="state[1]"/>
+		</state>
+		<predictor>
+			<vector id="0.0" sourceVectorId="state[0]"/>
+		</predictor>
+	</vectorSpecification>
+</blackBoxStochModel>

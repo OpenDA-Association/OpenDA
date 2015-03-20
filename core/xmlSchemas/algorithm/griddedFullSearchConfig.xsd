@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/costFunction.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/additionalStopCriteria.xsd"/>
+	<xs:complexType name="GridRangeXML">
+		<xs:attribute name="min" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Vector of lower limits of search range. Each element refers to one calibration parameter: [param1_min, param2_min, ..., paramN_min].</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="max" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Vector of upper limits of search range. Each element refers to one calibration parameter: [param1_max, param2_max, ..., paramN_max].</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="step" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Vector of step size of the grid: [param1_step, param2_step, ..., paramN_step].</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="GriddedFullSearchConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="gridRange" type="openda:GridRangeXML">
+				<xs:annotation>
+					<xs:documentation>Specify grid range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stopCriteria" type="openda:additionalStopCriteria" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Additional optional stopping criteria</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GriddedFullSearchConfig" type="openda:GriddedFullSearchConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Gridded Full Search algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,9 @@
+nl.wldelft.da.tools.stochmodel.NoiseModel Saved State File, Version 1.1
+TimeStamp: 55371.416666666664
+Values per time step Count: 1
+History Count: 1
+ArmaConstant: 1 0.94595947
+Current Values: 
+-0.11001673599766983
+Values for previous step: 1
+-0.12766398044738694

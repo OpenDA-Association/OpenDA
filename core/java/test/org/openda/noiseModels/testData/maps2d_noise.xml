@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<simulationTimespan timeFormat="dateTimeString">201008241200,201008241210,...,201008242350</simulationTimespan>
+	<!-- <simulationTimespan timeFormat="mjd">48259.0,48259.125,...,48260.00</simulationTimespan> -->
+
+	<!-- timezone and unit are just metadata and are not used to transform the 
+		data -->
+	<noiseItem id="windU" quantity="wind-u" unit="m/s" height="10.0"
+	 standardDeviation="1.0" timeCorrelationScale="12.0" timeCorrelationScaleUnit="hours" 
+	 initialValue="0.0" horizontalCorrelationScale="500" horizontalCorrelationScaleUnit="km" >
+	 	<grid type="cartesian" coordinates="wgs84">
+	 		<x>-12,-10,...,14</x>
+	 		<y>48,50,...,64</y>
+	 	</grid>
+	</noiseItem>
+	<noiseItem id="windV" quantity="wind-v" unit="m/s" height="10.0"
+	 standardDeviation="1.0" timeCorrelationScale="12.0" timeCorrelationScaleUnit="hours" 
+	 initialValue="0.0" horizontalCorrelationScale="500" horizontalCorrelationScaleUnit="km">
+	 	<grid type="cartesian" coordinates="wgs84">
+	 		<x>-12,-10,...,14</x>
+	 		<y>48,50,...,64</y>
+	 	</grid>
+	</noiseItem>
+</mapsNoiseModelConfig>

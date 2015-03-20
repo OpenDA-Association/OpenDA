@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>DummyWrapperConfig.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify actual values for aliases -->
+	<aliasValues>
+		<alias key="templateDir"     value="base"/>
+		<alias key="instanceDir"     value="work"/>
+	</aliasValues>
+
+	<exchangeItems>
+
+        <vector id="allElementsFromIoObject" ioObjectId="parametersIoObject"/>
+
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

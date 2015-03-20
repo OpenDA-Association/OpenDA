@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+
+	<probabilityDistributionFunction id="locA.Par1" isActive="false">
+		<normal mean="0" stdv="0.101" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locA.Par2" isActive="false">
+		<normal mean="0" stdv="0.102" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locB.Par1" isActive="true">
+		<normal mean="0" stdv="0.201" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locB.Par2" isActive="false">
+		<normal mean="0" stdv="0.202" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locC.Par_I" isActive="true">
+		<normal mean="0" stdv="0.301" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locC.Par_II" isActive="false">
+		<normal mean="0" stdv="0.302" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locD.Par_I" isActive="false">
+		<normal mean="0" stdv="0.401" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locD.Par_II" isActive="false">
+		<normal mean="0" stdv="0.402" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locE.Par_m" isActive="false">
+		<normal mean="0" stdv="0.501" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="locE.Par_n" isActive="false">
+		<normal mean="0" stdv="0.502" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+</uncertainties>

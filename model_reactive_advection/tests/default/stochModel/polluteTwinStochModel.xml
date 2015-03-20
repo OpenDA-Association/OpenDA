@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>./polluteTwinModel.xml</file>
+	</modelConfig>
+
+	<vectorSpecification>
+		<state>
+  			<vector id="concentration1.grid_init" />
+  			<vector id="concentration2.grid_init" />
+			<noiseModel>
+				<vector id="source.factory1.discharge"/>
+				<ar1Model operation="add">
+					<stdDevColouredNoised value="40.0"/>
+					<decorrelationTimeScale>PT60M</decorrelationTimeScale>
+					<noiseModelPeriod>PT1M</noiseModelPeriod>
+				</ar1Model>
+			</noiseModel>
+			<noiseModel>
+				<vector id="source.factory2.discharge"/>
+				<ar1Model operation="add">
+					<stdDevColouredNoised value="40.0"/>
+					<decorrelationTimeScale>PT60M</decorrelationTimeScale>
+					<noiseModelPeriod>PT1M</noiseModelPeriod>
+				</ar1Model>
+			</noiseModel>
+		</state>
+		<predictor>
+			<vector id="locA.concentration1" />
+			<vector id="locB.concentration1" />
+			<vector id="locC.concentration1" />
+			<vector id="locA.concentration2" />
+			<vector id="locB.concentration2" />
+			<vector id="locC.concentration2" />
+		</predictor>
+	</vectorSpecification>
+
+
+</blackBoxStochModel>

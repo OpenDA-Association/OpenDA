@@ -1,0 +1,1883 @@
+******************************************************************************
+*                                                                            *
+*  WELCOME TO THE ENVIRONMENTAL FLUID DYNAMICS COMPUTER CODE SERIES          *
+*  DEVELOPED BY JOHN M. HAMRICK.                                             *
+*                                                                            *
+*  THIS IS THE MASTER INPUT FILE EFDC.INP.                                   *
+*    FOR EFDC EPA GVC VERSION 1.01 OR LATER, AND                             *
+*    FOR EFDC DYNAMIC SOLUTIONS GVC VERSION DATED AFTER MAR 2008, AND        *
+*                                                                            *
+*                                                                            *
+*  GENERATED WITH DYNAMIC SOLUTIONS-INTERNATIONAL'S EFDC_EXPLORER_GVC        *
+*                                                                            *
+******************************************************************************
+* PROJECT NAME: 
+******************************************************************************
+C1 RUN TITLE
+*   TEXT DESCRIPTION UP TO 80 CHARACTERS IN LENGTH FOR THIS INPUT FILE AND RUN
+C1 TITLE 
+Title
+-------------------------------------------------------------------------------
+C2 RESTART, GENERAL CONTROL AND AND DIAGNOSTIC SWITCHES
+*
+*  ISRESTI: 1 FOR READING INITIAL CONDITIONS FROM FILE restart.inp
+*          -1 AS ABOVE BUT ADJUST FOR CHANGING BOTTOM ELEVATION
+*           2 INITIALIZES A KC LAYER RUN FROM A KC/2 LAYER RUN FOR KC.GE.4
+*          10 FOR READING IC'S FROM restart.inp WRITTEN BEFORE 8 SEPT 92
+*  ISRESTO:-1 FOR WRITING RESTART FILE restart.out AT END OF RUN
+*           N INTEGER.GE.0 FOR WRITING restart.out EVERY N REF TIME PERIODS
+*  ISRESTR: 1 FOR WRITING RESIDUAL TRANSPORT FILE RESTRAN.OUT
+*  ISLOG:   1 FOR WRITING LOG FILE EFDC.LOG
+*  IS_SEDZLJ: SEDZLJ SEDIMENT DYNAMICS: 0-NOT USED,  1-USE (READ SEDFLUME FILES)
+*  ISDIVEX: 1 FOR WRITING EXTERNAL MODE DIVERGENCE TO SCREEN
+*  ISNEGH:  1 FOR SEARCHING FOR NEGATIVE DEPTHS AND WRITING TO SCREEN
+*  ISDIAG:  -1 TO ENABLE EFDC DIAGNOSTICS FILES, 0 TO GLOBALLY DISABLE
+*             (OLD VARIABLE-ISMMC)
+*  ISBAL:   1 FOR ACTIVATING MASS, MOMENTUM AND ENERGY BALANCES AND
+*             WRITING RESULTS TO FILE BAL.OUT
+*  IS2TIM:  0 FOR USING 3 TIME LEVELS,
+*           1 FOR 2 TIME LEVEL, EXPLICIT MOMENTUM SOLUTION
+*           2 FOR 2 TIME LEVEL, IMPLICIT MOMENTUM SOLUTION
+*  ISHOW:   1 TO SHOW PUV&S ON SCREEN, SEE INSTRUCTIONS FOR FILE show.inp
+*  ISTIMING:1 TO EVALUATE PROCEDURE SIMULATION TIMES
+*
+C2 ISRESTI ISRESTO ISRESTR IS_SEDZLJ  ISLOG  ISDIVEX ISNEGH   ISMMC   ISBAL  IS2TIM   ISHOW ISTIMING
+       0       -30       0       0       1       0       0      -1       0       1       1       1
+-------------------------------------------------------------------------------
+C3 EXTERNAL MODE SOLUTION OPTION PARAMETERS AND SWITCHES
+*
+*  RP:        OVER RELAXATION PARAMETER
+*  RSQM:      TARGET SQUARE RESIDUAL OF ITERATIVE SOLUTION SCHEME
+*  ITERM:     MAXIMUN NUMBER OF ITERATIONS
+*  IRVEC:   0 CONJUGATE GRADIENT SOLUTION - NO SCALING
+*           9 CONJUGATE GRADIENT SOLUTION - SCALE BY MINIMUM DIAGONAL
+*          99 CONJUGATE GRADIENT SOLUTION - SCALE TO NORMAL FORM
+*        9999 NEW RED-BLACK ORDERED SOR FOR 2TL ONLY
+*        
+*  RPADJ:     RELAXATION PARAMETER FOR AUXILLARY POTENTIAL ADJUSTMENT
+*             OF THE MEAN MASS TRANSPORT ADVECTION FIELD
+*             (FOR RESEARCH PURPOSES)
+*  RSQMADJ:   TRAGET SQUARED RESIDUAL ERROR FOR ADJUSTMENT
+*             (FOR RESEARCH PURPOSES)
+*  ITRMADJ:   NUMBER OF INITIAL LOOPS TO HOLD TIMESTEP CONSTANT FOR DYN-STEP (DSLLC)
+*  ITERHPM:   MAXIMUM ITERATIONS FOR STRONGLY NONLINER DRYING AND WETTING
+*             SCHEME (ISDRY=3 OR OR 4)  ITERHPM.LE.4
+*  IDRYCK:    ITERATIONS PER DRYING CHECK (ISDRY.GE.1)  2.LE.IDRYCK.LE.20
+*  ISDSOLV: 1 TO WRITE DIAGNOSTICS FILES FOR EXTERNAL MODE SOLVER
+*     FILT:   FILTER COEFFICIENT FOR 3 TIME LEVEL EXPLICIT ( 0.0625 )
+*
+C3    RP    RSQM   ITERM    IRVEC  RPADJ RSQMADJ NRAMPUP ITERHPM  IDRYCK ISDSOLV    FILT
+     1.8   1E-09     200       9     1.8   1E-15    1000       3      20       0   .0625
+-------------------------------------------------------------------------------
+C4 LONGTERM MASS TRANSPORT INTEGRATION ONLY SWITCHES
+*
+*  ISLTMT:  1 FOR LONG-TERM MASS TRANSPORT ONLY (FOR RESEARCH PURPOSES)
+*  ISSSMMT: 0 WRITES MEAN MASS TRANSPORT TO RESTRAN.OUT AFTER EACH
+*             AVERAGING PERIOD  (FOR RESEARCH PURPOSES)
+*           1 WRITES MEAN MASS TRANSPORT TO RESTRAN.OUT AFTER LAST
+*             AVERAGING PERIOD  (FOR RESEARCH PURPOSES)
+*  ISLTMTS: 0 ASSUMES LONG-TERM TRANSPORT SOLUTION IS TRANSIENT
+*             (FOR RESEARCH PURPOSES)
+*           1 ASSUMES LONG-TERM TRANSPORT SOLUTION IS ITERATED TOWARD
+*             STEADY STATE (FOR RESEARCH PURPOSES)
+*  ISIA:    1 FOR IMPLICIT LONG-TERM ADVECTION INTEGRATION FOR ZEBRA
+*             VERTICAL LINE R-B SOR (FOR RESEARCH PURPOSES)
+*  RPIA:      RELAXATION PARAMETER FOR ZEBRA SOR(FOR RESEARCH PURPOSES)
+*  RSQMIA:    TARGET RESIDUAL ERROR FOR ZEBRA SOR (FOR RESEARCH PURPOSES)
+*  ITRMIA:    MAXIMUM ITERATIONS FOR ZEBRA SOR (FOR RESEARCH PURPOSES)
+*  ISAVEC:  1 USE ALTIVEC ENABLED SUBROUTINES (MAC G4 ONLY) 
+*
+C4 ISLTMT ISSSMMT ISLTMTS   ISIA    RPIA  RSQMIA  ITRMIA  ISAVEC
+       0       2       0       0     1.8   1E-10       0       0
+-------------------------------------------------------------------------------
+C5 MOMENTUM ADVEC AND HORIZ DIFF SWITCHES AND MISC SWITCHES
+*
+*  ISCDMA:  1 FOR CENTRAL DIFFERENCE MOMENTUM ADVECTION (USED FOR 3TL ONLY)
+*           0 FOR UPWIND DIFFERENCE MOMENTUM ADVECTION  (USED FOR 3TL ONLY)
+*           2 FOR EXPERIMENTAL UPWIND DIFF MOM ADV (FOR RESEARCH PURPOSES)
+*  ISAHMF:  1 TO ACTIVE HORIZONTAL MOMENTUM DIFFUSION
+*  ISDISP:  1 CALCULATE MEAN HORIZONTAL SHEAR DISPERSION TENSOR OVER LAST MEAN MASS TRANSPORT AVERAGING PERIOD
+*  ISWASP: 4 OR 5 TO WRITE FILES FOR WASP4 OR WASP5 MODEL LINKAGE, 99 - CE-QUAL-ICM
+*  ISDRY:   0 NO WETTING & DRYING OF SHALLOW AREAS
+*           1 CONSTANT WETTING DEPTH SPECIFIED BY HWET ON CARD 11
+*             WITH NONLINEAR ITERATIONS SPECIFIED BY ITERHPM ON CARD C3
+*           2 VARIABLE WETTING DEPTH CALCULATED INTERNALLY IN CODE
+*             WITH NONLINEAR ITERATIONS SPECIFIED BY ITERHPM ON CARD C3
+*          11 SAME AS 1, WITHOUT NONLINEAR ITERATION  
+*         -11 SAME AS 11 BUT WITH CELL MASKING
+*          99 VARIABLE WETTING & DRYING USING CELL FACES
+*         -99 SAME AS 11 BUT WITH CELL MASKING
+*  ISQQ:    1 TO USE STANDARD TURBULENT INTENSITY ADVECTION SCHEME
+*  ISRLID:  1 TO RUN IN RIGID LID MODE (NO FREE SURFACE)
+*  ISVEG:   1 TO IMPLEMENT VEGETATION RESISTANCE
+*           2 IMPLEMENT WITH DIAGNOSTICS TO FILE CBOT.LOG
+*  ISVEGL:  1 TO INCLUDE LAMINAR FLOW OPTION IN VEGETATION RESISTANCE
+*  ISITB:   1 FOR IMPLICIT BOTTOM & VEGETATION RESISTANCE IN EXTERNAL MODE
+*             FOR SINGLE LAYER APPLICATIONS (KC=1) ONLY
+*  ISEVER:  1 TO DEFAULT TO EVERGLADES HYDRO SOLUTION OPTIONS
+*  IINTPG:  0 ORIGINAL INTERNAL PRESSURE GRADIENT FORMULATION
+*           1 JACOBIAN FORMULATION
+*           2 FINITE VOLUME FORMULATION
+*  
+*
+C5 ISCDMA  ISAHMF  ISDISP  ISWASP   ISDRY    ISQQ  ISRLID   ISVEG  ISVEGL   ISITB  ISEVER  IINTPG
+       0       0       0       0     -99       1       0       0       0       0       0       0
+-------------------------------------------------------------------------------
+C6 DISSOLVED AND SUSPENDED CONSTITUENT TRANSPORT SWITCHES
+*  TURB INTENSITY=0,SAL=1,TEM=2,DYE=3,SFL=4,TOX=5,SED=6,SND=7,CWQ=8
+*
+*  ISTRAN:  1 OR GREATER TO ACTIVATE TRANSPORT
+*  ISTOPT:    NONZERO FOR TRANSPORT OPTIONS, SEE USERS MANUAL
+*  ISCDCA:  0 FOR STANDARD DONOR CELL UPWIND DIFFERENCE ADVECTION (3TL ONLY)
+*           1 FOR CENTRAL DIFFERENCE ADVECTION FOR THREE TIME LEVEL STEPS (3TL ONLY)
+*           2 FOR EXPERIMENTAL UPWIND DIFFERENCE ADVECTION (FOR RESEARCH) (3TL ONLY)
+*  ISADAC:  1 TO ACTIVATE ANTI-NUMERICAL DIFFUSION CORRECTION TO
+*             STANDARD DONOR CELL SCHEME
+*  ISFCT:   1 TO ADD FLUX LIMITING TO ANTI-NUMERICAL DIFFUSION CORRECTION
+*  ISPLIT:  1 TO OPERATOR SPLIT HORIZONTAL AND VERTICAL ADVECTION
+*             (FOR RESEARCH PURPOSES)
+*  ISADAH:  1 TO ACTIVATE ANTI-NUM DIFFUSION CORRECTION TO HORIZONTAL
+*             SPLIT ADVECTION STANDARD DONOR CELL SCHEME (FOR RESEARCH)
+*  ISADAV:  1 TO ACTIVATE ANTI-NUM DIFFUSION CORRECTION TO VERTICAL
+*             SPLIT ADVECTION STANDARD DONOR CELL SCHEME (FOR RESEARCH)
+*  ISCI:    1 TO READ CONCENTRATION FROM FILE restart.inp
+*  ISCO:    1 TO WRITE CONCENTRATION TO FILE restart.out
+*
+C6  ISTRAN  ISTOPT  ISCDCA  ISADAC   ISFCT  ISPLIT  ISADAH  ISADAV   ISCI    ISCO
+       1       1       0       0       0       0       0       0       0       1  !TURB 0
+       0       0       0       0       0       0       0       0       0       0  !SAL  1
+       1       4       0       0       0       0       0       0       1       1  !TEM  2
+       0       0       0       0       0       0       0       0       0       0  !DYE  3
+       0       0       0       0       0       0       0       0       0       0  !SFL  4
+       0       0       0       0       0       0       0       0       0       0  !TOX  5
+       0       0       0       0       0       0       0       0       0       0  !SED  6
+       0       0       0       0       0       0       0       0       0       0  !SND  7
+       0       0       0       0       0       0       0       0       1       1  !CWQ  8
+-------------------------------------------------------------------------------
+C7 TIME-RELATED INTEGER PARAMETERS
+*
+*  NTC:     NUMBER OF REFERENCE TIME PERIODS IN RUN
+*  NTSPTC:  NUMBER OF TIME STEPS PER REFERENCE TIME PERIOD
+*  NLTC:    NUMBER OF LINEARIZED REFERENCE TIME PERIODS
+*  NLTC:    NUMBER OF TRANSITION REF TIME PERIODS TO FULLY NONLINEAR
+*  NTCPP:   NUMBER OF REFERENCE TIME PERIODS BETWEEN FULL PRINTED OUTPUT
+*           TO FILE EFDC.OUT
+*  NTSTBC:  NUMBER OF TIME STEPS BETWEEN USING A TWO TIME LEVEL TRAPEZOIDAL
+*           CORRECTION TIME STEP, ** MASS BALANCE PRINT INTERVAL **
+*  NTCNB:   NUMBER OF REFERENCE TIME PERIODS WITH NO BUOYANCY FORCING (not used)
+*  NTCVB:   NUMBER OF REF TIME PERIODS WITH VARIABLE BUOYANCY FORCING
+*  NTSMMT:  NUMBER OF NUMBER OF REF TIME TO AVERAGE OVER TO OBTAIN
+*           RESIDUAL OR MEAN MASS TRANSPORT VARIABLES
+*  NFLTMT:  USE 1 (FOR RESEARCH PURPOSES)
+*  NDRYSTP: MIN NO. OF TIME STEPS A CELL REMAINS DRY AFTER INTIAL DRYING
+*           -NDRYSTP FOR ISDRY=-99 TO ACTIVATE WASTING WATER IN DRY CELLS 
+C7   NTC  NTSPTC    NLTC    NTTC   NTCPP  NTSTBC   NTCNB  NTCVB  NTSMMT  NFLTMT NDRYSTP
+     $N_REF_PERIODS$   17280       0       0      10       4       0       0      10       1     100
+-------------------------------------------------------------------------------
+C8 TIME-RELATED REAL PARAMETERS
+*
+*  TCON:     CONVERSION MULTIPLIER TO CHANGE TBEGIN TO SECONDS
+*  TBEGIN:   TIME ORIGIN OF RUN
+*  TREF:     REFERENCE TIME PERIOD IN sec (i.e. 44714.16S OR 86400S)
+*  CORIOLIS: CONSTANT CORIOLIS PARAMETER IN 1/sec =2*7.29E-5*SIN(LAT)
+*  ISCORV:   1 TO READ VARIABLE CORIOLIS COEFFICIENT FROM LXLY.INP FILE
+*  ISCCA:    WRITE DIAGNOSTICS FOR MAX CORIOLIS-CURV ACCEL TO FILEEFDC.LOG
+*  ISCFL:    1 WRITE DIAGNOSTICS OF MAX THEORETICAL TIME STEP TO CFL.OUT
+*            GT 1  TIME STEP ONLY AT INTERVAL ISCFL FOR ENTIRE RUN
+*  ISCFLM:   1  TO MAP LOCATIONS OF MAX TIME STEPS OVER ENTIRE RUN
+*  DTSSFAC:  DYNAMIC TIME STEPPING IF 0.0.LT.DTSSFAC.LT.1.0
+*
+C8  TCON  TBEGIN    TREF CORIOLIS ISCORV   ISCCA   ISCFL  ISCFLM DTSSFAC
+   86400   $RELATIVE_TSTART$   86400 8.5E-05       0       0       0       0       0
+-------------------------------------------------------------------------------
+C9 SPACE-RELATED AND SMOOTHING  PARAMETERS
+*
+*  KC:      NUMBER OF VERTICAL LAYERS
+*  IC:      NUMBER OF CELLS IN I DIRECTION
+*  JC:      NUMBER OF CELLS IN J DIRECTION
+*  LC:      NUMBER OF ACTIVE CELLS IN HORIZONTAL + 2
+*  LVC:     NUMBER OF VARIABLE SIZE HORIZONTAL CELLS
+*  ISCO:    1 FOR CURVILINEAR-ORTHOGONAL GRID (LVC=LC-2)
+*  NDM:     NUMBER OF DOMAINS FOR HORIZONTAL DOMAIN DECOMPOSITION
+*           ( NDM=1, FOR MODEL EXECUTION ON A SINGLE PROCESSOR SYSTEM OR
+*             NDM=MM*NCPUS, WHERE MM IS AN INTEGER AND NCPUS IS THE NUMBER
+*             OF AVAILABLE CPU'S FOR MODEL EXECUTION ON A PARALLEL MULTIPLE PROCESSOR SYSTEM )
+*  LDM:     NUMBER OF WATER CELLS PER DOMAIN (LDM=(LC-2)/NDM, FOR MULTIPE VECTOR PROCESSORS, 
+*             LDM MUST BE AN INTEGER MULTIPLE OF THE VECTOR LENGTH OR 
+*             STRIDE NVEC THUS CONSTRAINING LC-2 TO BE AN INTEGER MULTIPLE OF NVEC )
+*  ISMASK:  1 FOR MASKING WATER CELL TO LAND OR ADDING THIN BARRIERS
+*            USING INFORMATION IN FILE MASK.INP
+*  ISPGNS:  1 FOR IMPLEMENTING A PERIODIC GRID IN COMP N-S DIRECTION OR
+*            CONNECTING ARBITRATY CELLS USING INFO IN FILE MAPPGNS.INP
+*  NSHMAX:  NUMBER OF DEPTH SMOOTHING PASSES
+*  NSBMAX:  NUMBER OF INITIAL SALINITY FIELD SMOOTHING PASSES
+*  WSMH:    DEPTH SMOOTHING WEIGHT
+*  WSMB:    SALINITY SMOOTHING WEIGHT
+* 
+* 
+C
+C9   KC   IC   JC   LC  LVC ISCO  NDM  LDM  ISMASK  ISPGNS  NSHMAX  NSBMAX    WSMH    WSMB
+      1   15 2215 10916 10914    1    1 10914       0       0       0       0 0.06250 0.06250
+-------------------------------------------------------------------------------
+C10 LAYER THICKNESS IN VERTICAL
+*
+*    K:  LAYER NUMBER, K=1,KC
+*  DZC:  DIMENSIONLESS LAYER THICKNESS (THICKNESSES MUST SUM TO 1.0)
+*
+C10  K   DZC 
+     1  1.00000
+-------------------------------------------------------------------------------
+C11 GRID, ROUGHNESS AND DEPTH PARAMETERS
+*
+*  DX:       CARTESIAN CELL LENGTH IN X OR I DIRECTION
+*  DY:       CARTESION CELL LENGHT IN Y OR J DIRECTION
+*  DXYCVT:   MULTIPLY DX AND DY BY TO OBTAIN METERS
+*  IMD:      GREATER THAN 0 TO READ MODDXDY.INP FILE
+*  ZBRADJ:   LOG BDRY LAYER CONST OR VARIABLE ROUGH HEIGHT ADJ IN METERS
+*  ZBRCVRT:  LOG BDRY LAYER VARIABLE ROUGHNESS HEIGHT CONVERT TO METERS
+*  HMIN:     MINIMUM DEPTH OF INPUTS DEPTHS IN METERS
+*  HADJ:     ADJUCTMENT TO DEPTH FIELD IN METERS
+*  HCVRT:    CONVERTS INPUT DEPTH FIELD TO METERS
+*  HDRY:     DEPTH AT WHICH CELL OR FLOW FACE BECOMES DRY
+*  HWET:     DEPTH AT WHICH CELL OR FLOW FACE BECOMES WET
+*  BELADJ:   ADJUCTMENT TO BOTTOM BED ELEVATION FIELD IN METERS
+*  BELCVRT:  CONVERTS INPUT BOTTOM BED ELEVATION FIELD TO METERS
+*
+C11   DX      DY   DXYCVT    IMD  ZBRADJ ZBRCVRT    HMIN    HADJ   HCVRT    HDRY    HWET  BELADJ BELCVRT
+       1       1       1       0    .023       1      .1       0       1     .25      .3       0       1
+-------------------------------------------------------------------------------
+C11A TWO-LAYER MOMENTUM FLUX AND CURVATURE ACCELERATION CORRECTION FACTORS 
+*  (ONLY USED FOR 2 TIME LEVEL SOLUTION & ISDRY=0  PMC-Check to see if still true)
+*  ICK2COR: 0 NO CORRECTION
+*  ICK2COR: 1 CORRECTION USING CK2UUC,CK2VVC,CK2UVC FOR CURVATURE
+*  ICK2COR: 2 CORRECTION USING CK2FCX,CK2FCY FOR CURVATURE
+*  CK2UUM:  CORRECTION FOR UU MOMENTUM FLUX
+*  CK2VVM:  CORRECTION FOR UU MOMENTUM FLUX
+*  CK2UVM:  CORRECTION FOR UU MOMENTUM FLUX
+*  CK2UUC:  CORRECTION FOR UU CURVATURE ACCELERATION   (NOT ACTIVE)
+*  CK2VVC:  CORRECTION FOR VV CURVATURE ACCELERATION   (NOT ACTIVE)
+*  CK2UVC:  CORRECTION FOR UV CURVATURE ACCELERATION   (NOT ACTIVE)
+*  CK2FCX:  CORRECTION FOR X EQUATION CURVATURE ACCELERATION 
+*  CK2FCY:  CORRECTION FOR Y EQUATION CURVATURE ACCELERATION
+*
+C11A ICK2COR CK2UUM CK2VVM CK2UVM CK2UUC  CK2VVC  CK2UVC  CK2FCX  CK2FCY
+       0   .0825   .0825   .0825   .0825   .0825   .0825   .0825   .0825
+-------------------------------------------------------------------------------
+C11B CORNER CELL BOTTOM STRESS CORRECTION OPTIONS
+*
+*    ISCORTBC: 1 TO CORRECT BED STRESS AVERAGING TO CELL CENTERS IN CORNERS
+*              2 TO USE SPATIALLY VARYING CORRECTION FOR CELLS IN CORNERC.INP
+*   ISCORTBCD: 1 WRITE DIAGNOSTICS EVERY NSPTC TIME STEPS
+*    FSCORTBC: CORRECTION FACTOR, 0.0 GE FSCORTBC LE 1.0
+*              1.0 = NO CORRECTION, 0.0 = MAXIMUM CORRECTION, 0.5 SUGGESTED
+*
+C11B ISCORTBC ISCORTBCD FSCORTBC
+       0       1      .5
+-------------------------------------------------------------------------------
+C12 TURBULENT DIFFUSION PARAMETERS
+*
+*  AHO:      CONSTANT HORIZONTAL MOMENTUM AND MASS DIFFUSIVITY m*m/s
+*  AHD:      DIMESIONLESS HORIZONTAL MOMENTUM DIFFUSIVITY (ONLY FOR ISHDMF>0)
+*  AVO:      BACKGROUND, CONSTANT OR EDDY (KINEMATIC) VISCOSITY m*m/s
+*  ABO:      BACKGROUND, CONSTANT OR MOLECULAR DIFFUSIVITY m*m/s
+*  AVMX:     MAXIMUM KINEMATIC EDDY VISCOSITY m*m/s (DS-INTL)
+*  ABMX:     MAXIMUM EDDY DIFFUSIVITY m*m/s (DS-INTL)
+*  VISMUD:   CONSTANT FLUID MUD VISCOSITY m*m/s
+*  AVCON:    EQUALS ZERO FOR CONSTANT VERTICAL MOLECULAR VISCOSITY AND DIFFUSIVITY
+*              WHICH ARE SET EQUAL TO AVO AND ABO, OTHERWISE SET TO 1.0
+*  ZBRWALL:  SIDE WALL LOG LAW ROUGHNESS HEIGHT
+*  ISAVBMX:  SET TO 1 TO ACTIVATE MAX VISC AND DIFF OF AVMX AND ABMX (DS-INTL)
+*  ISFAVB:   SET TO 1 TO SQRT FILTER AVO AND ABO
+*  ICHKCOUR: 0 - NO COURANT NUMBER DIAGNOSTICS
+*            1 - WRITE COURANT NUMBER DIAGNOSTICS TO CFLMAX.OUT
+*
+C12  AHO     AHD     AVO     ABO    AVMX    ABMX   VISMUD  AVCON ZBRWALL ISAVBMX  ISFAVB  ICHKCOUR
+       0       0 .000001   1E-09 .000001   1E-09 .000001       1       0       0       0       0
+-------------------------------------------------------------------------------
+C13 TURBULENCE CLOSURE PARAMETERS
+*
+*  VKC:    VON KARMAN CONSTANT
+*  CTURB1: TURBULENT CONSTANT (UNIVERSAL)
+*  CTURB2: TURBULENT CONSTANT (UNIVERSAL)
+*  CTE1:   TURBULENT CONSTANT (UNIVERSAL)
+*  CTE2:   TURBULENT CONSTANT (UNIVERSAL)
+*  CTE3:   TURBULENT CONSTANT (UNIVERSAL)
+*  QQMIN:  MINIMUM TURBULENT INTENSITY SQUARED
+*  QQLMIN: MINIMUM TURBULENT INTENSITY SQUARED * LENGTH-SCALE
+*  DMLMIN: MINIMUM DIMENSIONLESS LENGTH SCALE
+*
+C13 VKC   CTURB1  CTURB2    CTE1    CTE2    CTE3   QQMIN  QQLMIN  DMLMIN
+      .4    16.6    10.1     1.8    1.33     .53   1E-08   1E-12   .0001
+-------------------------------------------------------------------------------
+C14 TIDAL & ATMOSPHERIC FORCING, GROUND WATER AND SUBGRID CHANNEL PARAMETERS
+*
+*   MTIDE:     NUMBER OF PERIOD (TIDAL) FORCING CONSTITUENTS
+*   NWSER:     NUMBER OF WIND TIME SERIES (0 SETS WIND TO ZERO)
+*   NASER:     NUMBER OF ATMOSPHERIC CONDITION TIME SERIES (0 SETS ALL  ZERO)
+*   ISGWI:     1 TO ACTIVATE SOIL MOISTURE BALANCE WITH DRYING AND WETTING
+*              2 TO ACTIVATE GROUNDWATER INTERACTION WITH BED AND WATER COL
+*  ISCHAN:    >0 ACTIVATE SUBGRID CHANNEL MODEL AND READ MODCHAN.INP
+*  ISWAVE:     1-FOR BL IMPACTS (WAVEBL.INP), 2-FOR BL & CURRENT IMPACTS (WAVE.INP)
+*              3-FOR INTERNALLY COMPUTED WIND WAVE BOUNDARY LAYER IMPACTS (DS)
+* ITIDASM:     1 FOR TIDAL ELEVATION ASSIMILATION (NOT ACTIVE)
+*  ISPERC:     1 TO PERCOLATE OR ELIMINATE EXCESS WATER IN DRY CELLS
+* ISBODYF:     TO INCLUDE EXTERNAL MODE BODY FORCES FROM FBODY.INP
+*              1 FOR UNIFORM OVER DEPTH, 2 FOR SURFACE LAYER ONLY
+* ISPNHYDS: 1 FOR QUASI-NONHYDROSTATIC OPTION
+*
+C14 MTIDE  NWSER   NASER   ISGWI  ISCHAN  ISWAVE ITIDASM  ISPERC ISBODYF ISPNHYDS
+       0       0       1       0       0       0       0       0       0       0
+-------------------------------------------------------------------------------
+C15 PERIODIC FORCING (TIDAL) CONSTITUENT SYMBOLS AND PERIODS
+*
+*  SYMBOL:  FORCING SYMBOL (CHARACTER VARIABLE) FOR TIDES, THE NOS SYMBOL
+*  PERIOD:  FORCING PERIOD IN SECONDS
+*
+C15 SYMBOL   PERIOD
+-------------------------------------------------------------------------------
+C16 SURFACE ELEVATION OR PRESSURE BOUNDARY CONDITION PARAMETERS
+*
+*  NPBS:    NUMBER OF SURFACE ELEVATION OR PRESSURE BOUNDARY CONDITIONS
+*           CELLS ON SOUTH OPEN BOUNDARIES
+*  NPBW:    NUMBER OF SURFACE ELEVATION OR PRESSURE BOUNDARY CONDITIONS
+*           CELLS ON WEST OPEN BOUNDARIES
+*  NPBE:    NUMBER OF SURFACE ELEVATION OR PRESSURE BOUNDARY CONDITIONS
+*           CELLS ON EAST OPEN BOUNDARIES
+*  NPBN:    NUMBER OF SURFACE ELEVATION OR PRESSURE BOUNDARY CONDITIONS
+*           CELLS ON NORTH OPEN BOUNDARIES
+*  NPFOR:   NUMBER OF HARMONIC FORCINGS
+*  NPFORT:  FORCING TYPE, 0=CONSTANT, 1=LINEAR, 2= QUADRATIC VARIATION
+*  NPSER:   NUMBER OF TIME SERIES FORCINGS
+*  PDGINIT: ADD THIS CONSTANT ADJUSTMENT GLOBALLY TO THE SURFACE ELEVATION
+*
+C16  NPBS    NPBW    NPBE    NPBN   NPFOR  NPFORT   NPSER PDGINIT
+       6       0       0       0       0       0       1       0
+-------------------------------------------------------------------------------
+C17 PERIODIC FORCING (TIDAL) SURF ELEV OR PRESSURE BOUNDARY COND. FORCINGS
+*
+*  NPFOR:     FORCING NUMBER
+*  SYMBOL:    FORCING SYMBOL (FOR REFERENCE HERE ONLY)
+*  AMPLITUDE:  AMPLITUDE IN M (PRESSURE DIVIDED BY RHO*G), NPFORT=0
+*               COSINE AMPLITUDE IN M, NPFORT.GE.1
+*  PHASE:      FORCING PHASE RELATIVE TO TBEGIN IN SECONDS, NPFORT=0
+*               SINE AMPLITUDE IN M, NPFORT.GE.1
+*  NOTE:  FOR NPFORT=0 SINGLE AMPLITUDE AND PHASE ARE READ, FOR NPFORT=1 
+*         CONST AND LINEAR COS AND SIN AMPS ARE READ FOR EACH FORCING, FOR  
+*         NPFORT=2, CONST, LINEAR, QUAD COS AND SIN AMPS ARE READ FOR EACH 
+*         FOR EACH FORCING 
+*
+C17 NPFOR SYMBOL AMPLITUDE PHASE
+-------------------------------------------------------------------------------
+C18 PERIODIC FORCING (TIDAL) SURF ELEV OR PRESSURE ON SOUTH OPEN BOUNDARIES
+*  IPBS:     I CELL INDEX OF BOUNDARY CELL
+*  JPBS:     J CELL INDEX OF BOUNDARY CELL
+*  ISPBS: 0 FOR ELEVATION SPECIFIED
+*         1 FOR RADIATION-SEPARATION CONDITION, ZERO TANGENTIAL VELOCITY
+*         2 FOR RADIATION-SEPARATION CONDITION, FREE TANGENTIAL VELOCITY
+*  NPFORS:   APPLY HARMONIC FORCING NUMBER NPFORS
+*  NPSERS:   APPLY TIME SERIES FORCING NUMBER NPSERS
+*  NPSERS1:  APPLY TIME SERIES FORCING NUMBER NPSERS1 FOR 2ND SERIES (NPFORT.GE.1)
+*  TPCOORDS: TANGENTIAL COORDINATE ALONG BOUNDARY                    (NPFORT.GE.1)
+*
+C18  IPBS    JPBS   ISPBS  NPFORS  NPSERS
+       3       3       0       0       1
+       4       3       0       0       1
+       5       3       0       0       1
+       7       3       0       0       1
+       8       3       0       0       1
+       9       3       0       0       1
+-------------------------------------------------------------------------------
+C19 PERIODIC FORCING (TIDAL) SURF ELEV OR PRESSURE ON WEST OPEN BOUNDARIES
+*
+*  IPBW: SEE CARD 18
+*  JPBW:
+*  ISPBW:
+*  NPFORW:
+*  NPSERW:
+*  TPCOORDW: 
+*
+C19  IPBW    JPBW   ISPBW  NPFORW  NPSERW
+-------------------------------------------------------------------------------
+C20 PERIODIC FORCING (TIDAL) SURF ELEV OR PRESSURE ON EAST OPEN BOUNDARIES
+*
+*  IPBE: SEE CARD 18
+*  JPBE:
+*  ISPBE:
+*  NPFORE:
+*  NPSERE:
+*  TPCOORDE: 
+*
+C20  IPBE    JPBE   ISPBE  NPFORE  NPSERE
+-------------------------------------------------------------------------------
+C21 PERIODIC FORCING (TIDAL) SURF ELEV OR PRESSURE ON NORTH OPEN BOUNDARIES
+*
+*  IPBN: SEE CARD 18
+*  JPBN:
+*  ISPBN:
+*  NPFORN:
+*  NPSERN:
+*  TPCOORDN: 
+*
+C21  IPBN    JPBN   ISPBN  NPFORN  NPSERN
+-------------------------------------------------------------------------------
+C22 SPECIFY NUM OF SEDIMENT AND TOXICS AND NUM OF CONCENTRATION TIME SERIES
+*
+*  NTOX:   NUMBER OF TOXIC CONTAMINANTS (DEFAULT = 1)
+*  NSED:   NUMBER OF COHESIVE SEDIMENT SIZE CLASSES (DEFAULT = 1)
+*  NSND:   NUMBER OF NON-COHESIVE SEDIMENT SIZE CLASSES (DEFAULT = 1)
+*  NCSER1: NUMBER OF SALINITY TIME SERIES
+*  NCSER2: NUMBER OF TEMPERATURE TIME SERIES
+*  NCSER3: NUMBER OF DYE CONCENTRATION TIME SERIES
+*  NCSER4: NUMBER OF SHELLFISH LARVAE CONCENTRATION TIME SERIES
+*  NCSER5: NUMBER OF TOXIC CONTAMINANT CONCENTRATION TIME SERIES
+*          EACH TIME SERIES MUST HAVE DATA FOR NTOX TOXICICANTS
+*  NCSER6: NUMBER OF COHESIVE SEDIMENT CONCENTRATION TIME SERIES
+*          EACH TIME SERIES MUST HAVE DATA FOR NSED COHESIVE SEDIMENTS
+*  NCSER7: NUMBER OF NON-COHESIVE SEDIMENT CONCENTRATION TIME SERIES
+*          EACH TIME SERIES MUST HAVE DATA FOR NSND NON-COHESIVE SEDIMENTS
+*  ISSBAL: SET TO 1 FOR SEDIENT MASS BALANCE           ! JOHN & JI, 4/25/97
+*
+C22 NTOX    NSED    NSND  NCSER1  NCSER2  NCSER3  NCSER4  NCSER5  NCSER6  NCSER7  ISSBAL
+       0       0       0       0      42       0       0       0       0       0       0
+-------------------------------------------------------------------------------
+C23 VELOCITY, VOLUMN SOURCE/SINK, FLOW CONTROL, AND WITHDRAWAL/RETURN DATA
+*
+*  NVBS:   VEL BC (NOT USED)
+*  NUBW:   VEL BC (NOT USED)
+*  NUBE:   VEL BC (NOT USED)
+*  NVBN:   VEL BC (NOT USED)
+*  NQSIJ:  NUMBER OF CONSTANT AND/OR TIME SERIES SPECIFIED SOURCE/SINK
+*          LOCATIONS (RIVER INFLOWS,ETC)             .
+*  NQJPIJ: NUMBER OF CONSTANT AND/OR TIME SERIES SPECIFIED SOURCE
+*          LOCATIONS TREATED AS JETS/PLUMES          .
+*  NQSER:  NUMBER OF VOLUME SOURCE/SINK TIME SERIES
+*  NQCTL:  NUMBER OF PRESSURE CONTROLED WITHDRAWAL/RETURN PAIRS
+*  NQCTLT: NUMBER OF PRESSURE CONTROLED WITHDRAWAL/RETURN TABLES
+*  NQWR:   NUMBER OF CONSTANT OR TIME SERIES SPECIFIED WITHDRAWL/RETURN
+*          PAIRS
+*  NQWRSR: NUMBER OF TIME SERIES SPECIFYING WITHDRAWL,RETURN AND
+*          CONCENTRATION RISE SERIES
+*  ISDIQ:  SET TO 1 TO WRITE DIAGNOSTIC FILE, DIAQ.OUT
+*
+C23 NVBS    NUBW    NUBE    NVBN   NQSIJ  NQJPIJ   NQSER   NQCTL  NQCTLT    NQWR  NQWRSR   ISDIQ
+       0       0       0       0      52       0      50       0       0       0       0       0
+-------------------------------------------------------------------------------
+C24 VOLUMETRIC SOURCE/SINK LOCATIONS, MAGNITUDES, AND CONCENTRATION SERIES
+*
+*  IQS:      I CELL INDEX OF VOLUME SOURCE/SINK
+*  JQS:      J CELL INDEX OF VOLUME SOURCE/SINK
+*  QSSE:     CONSTANT INFLOW/OUTFLOW RATE IN M*m*m/s
+*  NQSMUL:   MULTIPLIER SWITCH FOR CONSTANT AND TIME SERIES VOL S/S
+*            = 0  MULT BY 1. FOR NORMAL IN/OUTFLOW (L*L*L/T)
+*            = 1  MULT BY DY FOR LATERAL IN/OUTFLOW (L*L/T) ON U FACE
+*            = 2  MULT BY DX FOR LATERAL IN/OUTFLOW (L*L/T) ON V FACE
+*            = 3  MULT BY DX+DY FOR LATERAL IN/OUTFLOW (L*L/T) ON U&V FACES
+*  NQSMFF:   IF NON ZERO ACCOUNT FOR VOL S/S MOMENTUM FLUX
+*            = 1  MOMENTUM FLUX ON NEG U FACE
+*            = 2  MOMENTUM FLUX ON NEG V FACE
+*            = 3  MOMENTUM FLUX ON POS U FACE
+*            = 4  MOMENTUM FLUX ON POS V FACE
+*  IQSERQ:   ID NUMBER OF ASSOCIATED VOLUMN FLOW TIME SERIES
+*  ICSER1:   ID NUMBER OF ASSOCIATED SALINITY TIME SERIES
+*  ICSER2:   ID NUMBER OF ASSOCIATED TEMPERATURE TIME SERIES
+*  ICSER3:   ID NUMBER OF ASSOCIATED DYE CONC TIME SERIES
+*  ICSER4:   ID NUMBER OF ASSOCIATED SHELL FISH LARVAE RELEASE TIME SERIES
+*  ICSER5:   ID NUMBER OF ASSOCIATED TOXIC CONTAMINANT CONC TIME SERIES
+*  ICSER6:   ID NUMBER OF ASSOCIATED COHESIVE SEDIMENT CONC TIME SERIES
+*  ICSER7:   ID NUMBER OF ASSOCIATED NON-COHESIVE SED CONC TIME SERIES
+*  QSFACTOR: FRACTION OF TIME SERIES FLOW NQSERQ ASSIGNED TO THIS CELL
+*  
+C24  IQS     JQS     QSSE     NQSMUL  NQSMFF  IQSERQ  ICSER1  ICSER2  ICSER3  ICSER4  ICSER5  ICSER6  ICSER7   QSFACTOR  ! ID
+       7    2213  0.0000E+00       0       0       1       0       1       0       0       0       0       0  3.4000E-01  ! ! ! ! 1Andongdam
+       8    2213  0.0000E+00       0       0       1       0       1       0       0       0       0       0  3.3000E-01  ! ! ! ! 1Andongdam
+       9    2213  0.0000E+00       0       0       1       0       1       0       0       0       0       0  3.3000E-01  ! ! ! ! 1Andongdam
+       8    2172  0.0000E+00       0       0       2       0       2       0       0       0       0       0  1.0000E+00  ! ! ! ! 2Banbyeon
+       8    2066  0.0000E+00       0       0       3       0       3       0       0       0       0       0  1.0000E+00  ! ! ! ! 3Mi
+       8    1707  0.0000E+00       0       0       4       0       4       0       0       0       0       0  1.0000E+00  ! ! ! ! 4Naesung
+       8    1625  0.0000E+00       0       0       5       0       5       0       0       0       0       0  1.0000E+00  ! ! ! ! 5Young
+       7    1517  0.0000E+00       0       0       6       0       6       0       0       0       0       0  1.0000E+00  ! ! ! ! 6Byoungsung
+       8    1430  0.0000E+00       0       0       7       0       7       0       0       0       0       0  1.0000E+00  ! ! ! ! 7Wi
+       8    1284  0.0000E+00       0       0       8       0       8       0       0       0       0       0  1.0000E+00  ! ! ! ! 8Gam
+       8    1006  0.0000E+00       0       0       8       0       9       0       0       0       0       0  2.8800E-01  ! ! ! ! 9Baik
+       8     972  0.0000E+00       0       0      10       0      10       0       0       0       0       0  1.0000E+00  ! ! ! ! 10Geumho
+       8     679  0.0000E+00       0       0      11       0      11       0       0       0       0       0  1.0000E+00  ! ! ! ! 11Hoi
+       8     640  0.0000E+00       0       0      12       0      12       0       0       0       0       0  1.0000E+00  ! ! ! ! 12Hwang
+       9     588  0.0000E+00       0       0       8       0      13       0       0       0       0       0  1.2300E-01  ! ! ! ! 13Topyoung
+       8     571  0.0000E+00       0       0       8       0      14       0       0       0       0       0  1.9300E-01  ! ! ! ! 14Sinban
+       8     423  0.0000E+00       0       0      15       0      15       0       0       0       0       0  1.0000E+00  ! ! ! ! 15Nam
+       8     360  0.0000E+00       0       0       8       0      16       0       0       0       0       0  1.5700E-01  ! ! ! ! 16Gwangryeo
+       8     298  0.0000E+00       0       0       8       0      17       0       0       0       0       0  1.3700E-01  ! ! ! ! 17Cheongdo
+       8     239  0.0000E+00       0       0       8       0      18       0       0       0       0       0  1.3700E-01  ! ! ! ! 18Hwapo
+       8     222  0.0000E+00       0       0      19       0      19       0       0       0       0       0  1.0000E+00  ! ! ! ! 19Milyang
+       8     104  0.0000E+00       0       0       8       0      20       0       0       0       0       0  2.4400E-01  ! ! ! ! 20Yangsan
+       8     131  0.0000E+00       0       0      21       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W1.Maeri
+       8     133  0.0000E+00       0       0      22       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W2.Sindosi_2
+       8     119  0.0000E+00       0       0      23       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W3.Sindosi_1
+       8     213  0.0000E+00       0       0      24       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W4.Changam
+       8     396  0.0000E+00       0       0      25       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W5.Chilseo
+       8     978  0.0000E+00       0       0      26       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W6.Maegok
+       8     976  0.0000E+00       0       0      27       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W7.Jukgok
+       8     974  0.0000E+00       0       0      28       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W8.Gangjung
+       8     125  0.0000E+00       0       0      29       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W9.Mulgum
+       8    1261  0.0000E+00       0       0      30       0       0       0       0       0       0       0  1.0000E+00  ! ! ! ! W10.Haepyoung
+       8     963  0.0000E+00       0       0      31       0      23       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-27A0041
+       8     868  0.0000E+00       0       0      32       0      24       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-27C0011
+       8    1506  0.0000E+00       0       0      33       0      25       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0101
+       8    1143  0.0000E+00       0       0      34       0      26       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0071
+       8    1166  0.0000E+00       0       0      35       0      27       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0081
+       8     962  0.0000E+00       0       0      36       0      28       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-27F0011
+       8    2142  0.0000E+00       0       0      37       0      29       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0191
+       8    1109  0.0000E+00       0       0      38       0      30       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0241
+       8    1054  0.0000E+00       0       0      39       0      31       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0252
+       8     778  0.0000E+00       0       0      40       0      32       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0261
+       8    1035  0.0000E+00       0       0      41       0      33       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0281
+       8    2001  0.0000E+00       0       0      42       0      34       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0321
+       8    1826  0.0000E+00       0       0      43       0      35       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-47A0361
+       9     104  0.0000E+00       0       0      44       0      36       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48A0061
+       8     327  0.0000E+00       0       0      45       0      37       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48A0151
+       8     260  0.0000E+00       0       0      46       0      38       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48A0231
+       8     394  0.0000E+00       0       0      47       0      39       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48A0271
+       8     204  0.0000E+00       0       0      48       0      40       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48A0301
+       9     260  0.0000E+00       0       0      49       0      41       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48A0311
+       7     360  0.0000E+00       0       0      50       0      42       0       0       0       0       0  1.0000E+00  ! ! ! ! TMS-48C0031
+-------------------------------------------------------------------------------
+C25 TIME CONSTANT INFLOW CONCENTRATIONS FOR TIME CONSTANT VOLUMETRIC SOURCES
+*
+*  SAL: SALT CONCENTRATION CORRESPONDING TO INFLOW ABOVE
+*  TEM: TEMPERATURE CORRESPONDING TO INFLOW ABOVE
+*  DYE: DYE CONCENTRATION CORRESPONDING TO INFLOW ABOVE
+*  SFL: SHELL FISH LARVAE CONCENTRATION CORRESPONDING TO INFLOW ABOVE
+*  TOX: NTOX TOXIC CONTAMINANT CONCENTRATIONS CORRESPONDING TO
+*       INFLOW ABOVE  WRITTEN AS TOXC(N), N=1,NTOX A SINGLE DEFAULT
+*       VALUE IS REQUIRED EVEN IF TOXIC TRANSPORT IS NOT ACTIVE
+*
+C25    SAL       TEM       DYE       SFL  ! ID
+         0         0         0         0  ! ! ! ! 1Andongdam
+         0         0         0         0  ! ! ! ! 1Andongdam
+         0         0         0         0  ! ! ! ! 1Andongdam
+         0         0         0         0  ! ! ! ! 2Banbyeon
+         0         0         0         0  ! ! ! ! 3Mi
+         0         0         0         0  ! ! ! ! 4Naesung
+         0         0         0         0  ! ! ! ! 5Young
+         0         0         0         0  ! ! ! ! 6Byoungsung
+         0         0         0         0  ! ! ! ! 7Wi
+         0         0         0         0  ! ! ! ! 8Gam
+         0         0         0         0  ! ! ! ! 9Baik
+         0         0         0         0  ! ! ! ! 10Geumho
+         0         0         0         0  ! ! ! ! 11Hoi
+         0         0         0         0  ! ! ! ! 12Hwang
+         0         0         0         0  ! ! ! ! 13Topyoung
+         0         0         0         0  ! ! ! ! 14Sinban
+         0         0         0         0  ! ! ! ! 15Nam
+         0         0         0         0  ! ! ! ! 16Gwangryeo
+         0         0         0         0  ! ! ! ! 17Cheongdo
+         0         0         0         0  ! ! ! ! 18Hwapo
+         0         0         0         0  ! ! ! ! 19Milyang
+         0         0         0         0  ! ! ! ! 20Yangsan
+         0         0         0         0  ! ! ! ! W1.Maeri
+         0         0         0         0  ! ! ! ! W2.Sindosi_2
+         0         0         0         0  ! ! ! ! W3.Sindosi_1
+         0         0         0         0  ! ! ! ! W4.Changam
+         0         0         0         0  ! ! ! ! W5.Chilseo
+         0         0         0         0  ! ! ! ! W6.Maegok
+         0         0         0         0  ! ! ! ! W7.Jukgok
+         0         0         0         0  ! ! ! ! W8.Gangjung
+         0         0         0         0  ! ! ! ! W9.Mulgum
+         0         0         0         0  ! ! ! ! W10.Haepyoung
+         0         0         0         0  ! ! ! ! TMS-27A0041
+         0         0         0         0  ! ! ! ! TMS-27C0011
+         0         0         0         0  ! ! ! ! TMS-47A0101
+         0         0         0         0  ! ! ! ! TMS-47A0071
+         0         0         0         0  ! ! ! ! TMS-47A0081
+         0         0         0         0  ! ! ! ! TMS-27F0011
+         0         0         0         0  ! ! ! ! TMS-47A0191
+         0         0         0         0  ! ! ! ! TMS-47A0241
+         0         0         0         0  ! ! ! ! TMS-47A0252
+         0         0         0         0  ! ! ! ! TMS-47A0261
+         0         0         0         0  ! ! ! ! TMS-47A0281
+         0         0         0         0  ! ! ! ! TMS-47A0321
+         0         0         0         0  ! ! ! ! TMS-47A0361
+         0         0         0         0  ! ! ! ! TMS-48A0061
+         0         0         0         0  ! ! ! ! TMS-48A0151
+         0         0         0         0  ! ! ! ! TMS-48A0231
+         0         0         0         0  ! ! ! ! TMS-48A0271
+         0         0         0         0  ! ! ! ! TMS-48A0301
+         0         0         0         0  ! ! ! ! TMS-48A0311
+         0         0         0         0  ! ! ! ! TMS-48C0031
+-------------------------------------------------------------------------------
+C26 TIME CONSTANT INFLOW CONCENTRATIONS FOR TIME CONSTANT VOLUMETRIC SOURCES
+*
+*  SED: NSED COHESIVE SEDIMENT CONCENTRATIONS CORRESPONDING TO
+*       INFLOW ABOVE  WRITTEN AS SEDC(N), N=1,NSED. I.E., THE FIRST
+*       NSED VALUES ARE COHESIVE A SINGLE DEFAULT VALUE IS REQUIRED
+*       EVEN IF COHESIVE SEDIMENT TRANSPORT IS INACTIVE
+*  SND: NSND NON-COHESIVE SEDIMENT CONCENTRATIONS CORRESPONDING TO
+*       INFLOW ABOVE  WRITTEN AS SND(N), N=1,NSND. I.E., THE LAST
+*       NSND VALUES ARE NON-COHESIVE. A SINGLE DEFAULT VALUE IS
+*       REQUIRED EVEN IF NON-COHESIVE SEDIMENT TRANSPORT IS INACTIVE
+*
+C26   SED1    SND1
+  ! ! ! ! 1Andongdam
+  ! ! ! ! 1Andongdam
+  ! ! ! ! 1Andongdam
+  ! ! ! ! 2Banbyeon
+  ! ! ! ! 3Mi
+  ! ! ! ! 4Naesung
+  ! ! ! ! 5Young
+  ! ! ! ! 6Byoungsung
+  ! ! ! ! 7Wi
+  ! ! ! ! 8Gam
+  ! ! ! ! 9Baik
+  ! ! ! ! 10Geumho
+  ! ! ! ! 11Hoi
+  ! ! ! ! 12Hwang
+  ! ! ! ! 13Topyoung
+  ! ! ! ! 14Sinban
+  ! ! ! ! 15Nam
+  ! ! ! ! 16Gwangryeo
+  ! ! ! ! 17Cheongdo
+  ! ! ! ! 18Hwapo
+  ! ! ! ! 19Milyang
+  ! ! ! ! 20Yangsan
+  ! ! ! ! W1.Maeri
+  ! ! ! ! W2.Sindosi_2
+  ! ! ! ! W3.Sindosi_1
+  ! ! ! ! W4.Changam
+  ! ! ! ! W5.Chilseo
+  ! ! ! ! W6.Maegok
+  ! ! ! ! W7.Jukgok
+  ! ! ! ! W8.Gangjung
+  ! ! ! ! W9.Mulgum
+  ! ! ! ! W10.Haepyoung
+  ! ! ! ! TMS-27A0041
+  ! ! ! ! TMS-27C0011
+  ! ! ! ! TMS-47A0101
+  ! ! ! ! TMS-47A0071
+  ! ! ! ! TMS-47A0081
+  ! ! ! ! TMS-27F0011
+  ! ! ! ! TMS-47A0191
+  ! ! ! ! TMS-47A0241
+  ! ! ! ! TMS-47A0252
+  ! ! ! ! TMS-47A0261
+  ! ! ! ! TMS-47A0281
+  ! ! ! ! TMS-47A0321
+  ! ! ! ! TMS-47A0361
+  ! ! ! ! TMS-48A0061
+  ! ! ! ! TMS-48A0151
+  ! ! ! ! TMS-48A0231
+  ! ! ! ! TMS-48A0271
+  ! ! ! ! TMS-48A0301
+  ! ! ! ! TMS-48A0311
+  ! ! ! ! TMS-48C0031
+-------------------------------------------------------------------------------
+C27 JET/PLUME SOURCE LOCATIONS, GEOMETRY AND ENTRAINMENT PARAMETERS
+*
+*    ID: ID COUNTER FOR JET/PLUME
+*  ICAL: 1 ACTIVE, 0 BYPASS
+*  IQJP: I CELL INDEX OF JET/PLUME
+*  JQJP: J CELL INDEX OF JET/PLUME
+*  KQJP: K CELL INDEX OF JET/PLUME (DEFAULT, QJET=0 OR JET COMP DIVERGES)
+* NPORT: NUMBER OF IDENTIAL PORTS IN THIS CELL
+*  XJET: LOCAL EAST JET LOCATION RELATIVE TO DISCHARGE CELL CENTER (m) (NOT USED)
+*  YJET: LOCAL NORTH JET LOCATION RELATIVE TO DISCHARGE CELL CENTER (m)(NOT USED)
+*  ZJET: ELEVATION OF DISCHARGE (m)
+* PHJET: VERTICAL JET ANGLE POSITIVE FROM HORIZONTAL (DEGREES)
+* THJET: HORIZONTAL JET ANGLE POS COUNTER CLOCKWISE FROM EAST (DEGREES)
+*  DJET: DIAMETER OF DISCHARGE PORT (m)
+*  CFRD: ADJUSTMENT FACTOR FOR FROUDE NUMBER
+* DJPER: ENTRAINMENT ERROR CRITERIA
+*
+C27   ID    ICAL    IQJP    JQJP    KQJP   NPORT    XJET    YJET    ZJET   PHJET   THJET    DJET    CFRD   DJPER
+-------------------------------------------------------------------------------
+C28 JET/PLUME SOLUTION CONTROL AND OUTPUT CONTROL PARAMETERS
+*
+*     ID:  ID COUNTER FOR JET/PLUME
+*   NJEL:  MAXIMUM NUMBER OF ELEMENTS ALONG JET/PLUME LENGTH
+*  NJPMX:  MAXIMUM NUMBER OF ITERATIONS
+*  ISENT:  0 USE MAXIMUM OF SHEAR AND FORCED ENTRAINMENT
+*          1 USE SUM OF SHEAR AND FORCED ENTRAINMENT
+*  ISTJP:  0 STOP AT SPECIFIED NUMBER OF ELEMENTS
+*          1 STOP WHEN CENTERLINE PENETRATES BOTTOM OR SURFACE
+*          2 STOP WITH BOUNDARY PENETRATES BOTTOM OR SURFACE
+*  NUDJP: FREQUENCY FOR UPDATING JET/PLUME (NUMBER OF TIME STEPS)
+*   IOJP: 1 FOR FULL ASCII, 2 FOR COMPACT ASCII OUTPUT AT EACH UPDATE
+*         3 FOR FULL AND COMPACT ASCII OUTPUT, 4 FOR BINARY OUTPUT
+*   IPJP: NUMBER OF SPATIAL PRINT/SAVE POINT IN VERTICAL
+*  ISDJP: 1 WRITE DIAGNOSTIS TO JPLOG__.OUT
+*  IUPJP:   I INDEX OF UPSTREAM WITHDRAWAL CELL IF ICAL=2 
+*  JUPJP:   J INDEX OF UPSTREAM WITHDRAWAL CELL IF ICAL=2 
+*  KUPJP:   K INDEX OF UPSTREAM WITHDRAWAL CELL IF ICAL=2 
+*
+C28   ID    NJEL   NJPMX   ISENT   ISTJP   NUDJP    IOJP    IPJP   ISDJP   IUPJP   JUPJP   KUPJP
+-------------------------------------------------------------------------------
+C29 JET/PLUME SOURCE PARAMETERS AND DISCHARGE/CONCENTRATION SERIES IDS
+*
+*        ID: ID COUNTER FOR JET/PLUME
+*      QQJP: CONSTANT JET/PLUME FLOW RATE IN M*m*m/s
+*              FOR ICAL = 1 OR 2  (FOR SINGLE PORT)
+*   NQSERJP: ID NUMBER OF ASSOCIATED VOLUMN FLOW TIME SERIES
+* NQWRSERJP: ID NUMBER OF ASSOCIATED WITHDAWAL-RETURN TIME SERIES (ICAL=2)
+*    ICSER1: ID NUMBER OF ASSOCIATED SALINITY TIME SERIES
+*    ICSER2: ID NUMBER OF ASSOCIATED TEMPERATURE TIME SERIES
+*    ICSER3: ID NUMBER OF ASSOCIATED DYE CONC TIME SERIES
+*    ICSER4: ID NUMBER OF ASSOCIATED SHELL FISH LARVAE RELEASE TIME SERIES
+*    ICSER5: ID NUMBER OF ASSOCIATED TOXIC CONTAMINANT CONC TIME SERIES
+*    ICSER6: ID NUMBER OF ASSOCIATED COHESIVE SEDIMENT CONC TIME SERIES
+*    ICSER7: ID NUMBER OF ASSOCIATED NON-COHESIVE SED CONC TIME SERIES
+*
+C29   ID    QQJP NQSERJP NQWRSERJP ICSER1 ICSER2  ICSER3  ICSER4  ICSER5  ICSER6  ICSER7
+-------------------------------------------------------------------------------
+C30 TIME CONSTANT INFLOW CONCENTRATIONS FOR TIME CONSTANT JET/PLUME SOURCES
+*
+*  SAL: SALT CONCENTRATION CORRESPONDING TO INFLOW ABOVE
+*  TEM: TEMPERATURE CORRESPONDING TO INFLOW ABOVE
+*  DYE: DYE CONCENTRATION CORRESPONDING TO INFLOW ABOVE
+*  SFL: SHELL FISH LARVAE CONCENTRATION CORRESPONDING TO INFLOW ABOVE
+*  TOX: NTOX TOXIC CONTAMINANT CONCENTRATIONS CORRESPONDING TO
+*       INFLOW ABOVE  WRITTEN AS TOXC(N), N=1,NTOX A SINGLE DEFAULT
+*       VALUE IS REQUIRED EVEN IF TOXIC TRANSPORT IS NOT ACTIVE
+*
+C30    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C31 TIME CONSTANT INFLOW CONCENTRATIONS FOR TIME CONSTANT JET/PLUME SOURCES
+*
+*  SED: NSED COHESIVE SEDIMENT CONCENTRATIONS CORRESPONDING TO
+*       INFLOW ABOVE  WRITTEN AS SEDC(N), N=1,NSED. I.E., THE FIRST
+*       NSED VALUES ARE COHESIVE A SINGLE DEFAULT VALUE IS REQUIRED
+*       EVEN IF COHESIVE SEDIMENT TRANSPORT IS INACTIVE
+*  SND: NSND NON-COHESIVE SEDIMENT CONCENTRATIONS CORRESPONDING TO
+*       INFLOW ABOVE  WRITTEN AS SND(N), N=1,NSND. I.E., THE LAST
+*       NSND VALUES ARE NON-COHESIVE. A SINGLE DEFAULT VALUE IS
+*       REQUIRED EVEN IF NON-COHESIVE SEDIMENT TRANSPORT IS INACTIVE
+*
+C31   SED1    SND1
+-------------------------------------------------------------------------------
+C32 SURFACE ELEV OR PRESSURE DEPENDENT FLOW INFORMATION
+*
+*  IQCTLU: I INDEX OF UPSTREAM OR WITHDRAWAL CELL
+*  JQCTLU: J INDEX OF UPSTREAM OR WITHDRAWAL CELL
+*  IQCTLD: I INDEX OF DOWNSTREAM OR RETURN CELL
+*  JQCTLD: J INDEX OF DOWNSTREAM OR RETURN CELL
+*  NQCTYP: FLOW CONTROL TYPE
+*          = 0  HYDRAULIC STRUCTURE: INSTANT FLOW DRIVEN BY ELEVATION
+*               OR PRESSURE DIFFERCENCE TABLE
+*          = 1  ACCELERATING FLOW THROUGH TIDAL INLET
+*  NQCTLQ: ID NUMBER OF CONTROL CHARACTERIZATION TABLE
+*  NQCMUL: MULTIPLIER SWITCH FOR FLOWS FROM UPSTREAM CELL
+*          = 0  MULT BY 1. FOR CONTROL TABLE IN (L*L*L/T)
+*          = 1  MULT BY DY FOR CONTROL TABLE IN (L*L/T) ON U FACE
+*          = 2  MULT BY DX FOR CONTROL TABLE IN (L*L/T) ON V FACE
+*          = 3  MULT BY DX+DY FOR CONTROL TABLE IN (L*L/T) ON U&V FACES
+*  NQCMFU: IF NON ZERO ACCOUNT FOR FLOW MOMENTUM FLUX IN UPSTREAM CELL
+*          = 1  MOMENTUM FLUX ON NEG U FACE
+*          = 2  MOMENTUM FLUX ON NEG V FACE
+*          = 3  MOMENTUM FLUX ON POS U FACE
+*          = 4  MOMENTUM FLUX ON POS V FACE
+*  NQCMFD: IF NON ZERO ACCOUNT FOR FLOW MOMENTUM FLUX IN DOWNSTREAM CELL
+*          = 1  MOMENTUM FLUX ON NEG U FACE
+*          = 2  MOMENTUM FLUX ON NEG V FACE
+*          = 3  MOMENTUM FLUX ON POS U FACE
+*          = 4  MOMENTUM FLUX ON POS V FACE
+*  BQCMFU: UPSTREAM MOMENTUM FLUX WIDTH (m)
+*  BQCMFD: DOWNSTREAM MOMENTUM FLUX WIDTH (m)
+*
+C32 IQCTLU JQCTLU IQCTLD  JQCTLD  NQCTYP  NQCTLQ  NQCMUL   NQC_U   NQC_D   BQC_U   BQC_D
+-------------------------------------------------------------------------------
+C33 FLOW WITHDRAWAL, HEAT OR MATERIAL ADDITION, AND RETURN DATA
+*
+*  IWRU:     I INDEX OF UPSTREAM OR WITHDRAWAL CELL
+*  JWRU:     J INDEX OF UPSTREAM OR WITHDRAWAL CELL
+*  KWRU:     K INDEX OF UPSTREAM OR WITHDRAWAL LAYER
+*  IWRD:     I INDEX OF DOWNSTREAM OR RETURN CELL
+*  JWRD:     J INDEX OF DOWNSTREAM OR RETURN CELL
+*  KWRD:     J INDEX OF DOWNSTREAM OR RETURN LAYER
+*  QWRE:       CONSTANT VOLUME FLOW RATE FROM WITHDRAWAL TO RETURN
+*  NQWRSERQ: ID NUMBER OF ASSOCIATED VOLUMN WITHDRAWAL-RETURN FLOW AND
+*               CONCENTRATION RISE TIME SERIES
+*  NQWRMFU:  IF NON ZERO ACCOUNT FOR WITHDRAWAL FLOW MOMENTUM FLUX
+*            = 1  MOMENTUM FLUX ON NEG U FACE
+*            = 2  MOMENTUM FLUX ON NEG V FACE
+*            = 3  MOMENTUM FLUX ON POS U FACE
+*            = 4  MOMENTUM FLUX ON POS V FACE
+*  NQWRMFD:   IF NON ZERO ACCOUNT FOR RETURN FLOW MOMENTUM FLUX
+*            = 1  MOMENTUM FLUX ON NEG U FACE
+*            = 2  MOMENTUM FLUX ON NEG V FACE
+*            = 3  MOMENTUM FLUX ON POS U FACE
+*            = 4  MOMENTUM FLUX ON POS V FACE
+*  BQWRMFU:  UPSTREAM MOMENTUM FLUX WIDTH (m)
+*  BQWRMFD:  DOWNSTREAM MOMENTUM FLUX WIDTH (m)
+*  ANGWRMFD: ANGLE FOR HORIZONTAL FOR RETURN FLOW MOMENTUM FLUX
+*
+C33 IWRU    JWRU    KWRU    IWRD    JWRD    KWRD    QWRE  NQW_RQ  NQWR_U  NQWR_D  BQWR_U  BQWR_D   ANG_D
+-------------------------------------------------------------------------------
+C34 TIME CONSTANT WITHDRAWAL AND RETURN CONCENTRATION RISES
+*
+*  SAL:  SALTINITY RISE
+*  TEM:  TEMPERATURE RISE
+*  DYE:  DYE CONCENTRATION RISE
+*  SFL:  SHELLFISH LARVAE CONCENTRATION RISE
+*  TOX#: NTOX TOXIC CONTAMINANT CONCENTRATION RISES
+*
+C34 SALT    TEMP    DYEC    SFLC    TOX1
+-------------------------------------------------------------------------------
+C35 TIME CONSTANT WITHDRAWAL AND RETURN CONCENTRATION RISES
+*
+*  SED#: NSEDC COHESIVE SEDIMENT CONCENTRATION RISE
+*  SND#: NSEDN NON-COHESIVE SEDIMENT CONCENTRATION RISE
+*
+C35   SED1    SND1
+-------------------------------------------------------------------------------
+C36 SEDIMENT INITIALIZATION AND WATER COLUMN/BED REPRESENTATION OPTIONS
+*   DATA REQUIRED IF ISTRAN(6) OR ISTRAN(7) <> 0
+*
+*  ISEDINT: 0 FOR CONSTANT INITIAL CONDITIONS
+*           1 FOR SPATIALLY VARIABLE WATER COLUMN INITIAL CONDITIONS
+*             FROM SEDW.INP AND SNDW.INP
+*           2 FOR SPATIALLY VARIABLE BED INITIAL CONDITIONS
+*             FROM SEDB.INP AND SNDB.INP
+*           3 FOR SPATIALLY VARIABLE WATER COL AND BED INITIAL CONDITIONS
+* ISEDBINT: 0 FOR SPATIALLY VARYING BED INITIAL CONDITIONS IN MASS/AREA
+*           1 FOR SPATIALLY VARYING BED INITIAL CONDITIONS IN MASS FRACTION
+*             OF TOTAL SEDIMENT MASS (REQUIRES BED LAYER THICKNESS
+*             FILE BEDLAY.INP)
+*   ISEDWC: 0 COHESIVE SED WC/BED EXCHANGE BASED ON BOTTOM LAYER CONDITIONS
+*           1 COHESIVE SED WC/BED EXCHANGE BASED ON WAVE/CURRENT/SEDIMENT
+*             BOUNDARY LAYERS EMBEDDED IN BOTTOM LAYER
+*    ISMUD: 1 INCLUDE COHESIVE FLUID MUD VISCOUS EFFECTS USING EFDC
+*             FUNCTION CSEDVIS(SEDT)
+*   ISNDWC: 0 NONCOH SED WC/BED EXCHANGE BASED ON BOTTOM LAYER CONDITIONS
+*           1 NONCOH SED WC/BED EXCHANGE BASED ON WAVE/CURRENT/SEDIMENT
+*             BOUNDARY LAYERS EMBEDDED IN BOTTOM LAYER
+*   ISEDVW: 0 FOR CONSTANT OR SIMPLE CONCENTRATION DEPENDENT
+*             COHESIVE SEDIMENT SETTLING VELOCITY
+*          >1 CONCENTRATION AND/OR SHEAR/TURBULENCE DEPENDENT COHESIVE
+*             SEDIMENT SETTLING VELOCITY. VALUE INDICATES OPTION TO BE USED
+*             IN EFDC FUNCTION CSEDSET(SED,SHEAR,ISEDVWC)
+*           1 HUANG AND METHA - LAKE OKEECHOBEE
+*           2 SHRESTA AND ORLOB - FOR KRONES SAN FRANCISCO BAY DATA
+*           3 ZIEGLER AND NESBIT  - FRESH WATER
+*   ISNDVW: 0 USE CONSTANT SPECIFIED NON-COHESIVE SED SETTLING VELOCITIES
+*             OR CALCULATE FOR CLASS DIAMETER IF SPECIFIED VALUE IS NEG
+*          >1 FOLLOW OPTION 0 PROCEDURE BUT APPLY HINDERED SETTLING
+*             CORRECTION. VALUE INDICATES OPTION TO BE USED WITH EFDC
+*             FUNCTION CSNDSET(SND,SDEN,ISNDVW) VALUE OF ISNDVW INDICATES
+*             EXPONENTIAL IN CORRECT (1-SDEN(NS)*SND(NS)**ISNDVW
+*       KB:   MAXIMUM NUMBER OF BED LAYERS (EXCLUDING ACTIVE LAYER)
+* ISDTXBUG: 1 TO ACTIVATE SEDIMENT AND TOXICS DIAGNOSTICS
+*   
+C36 ISEDINT ISEDBINT ISEDWC ISMUD ISNDWC  ISEDVW  ISNDVW      KB  ISDTXBUG
+-------------------------------------------------------------------------------
+C36a SEDIMENT INITIALIZATION/BED SHEAR STRESS REPRESENTATION OPTIONS
+*    DATA REQUIRED IF ISTRAN(6) OR ISTRAN(7) <> 0
+*
+* ISBEDSTR:  0 USE HYDRODYNAMIC MODEL STRESS FOR SEDIMENT TRANSPORT
+*            1 SEPARATE GRAIN STRESS FROM TOTAL IN COH AND NONCOH COMPONENTS
+*            2 SEPARATE GRAIN STRESS FROM TOTAL APPLY TO COH AND NONCOH SEDS
+*            3 USE INDEPENDENT LOG LAW ROUGHNESS HEIGHT FOR SEDIMENT TRANSPORT
+               READ FROM FILE SEDROUGH.INP*
+* ISBSDFUF:  1 CORRECT GRAIN STRESS PARTITIONING FOR NONUNIFORM FLOW EFFECTS
+* COEFTSBL:    COEFFICIENT SPECIFYING THE HYDRODYNAMIC SMOOTHNESS OF
+*              TURBULENT BOUNDARY LAYER OVER COEHESIVE BED IN TERMS OF
+*              EQUIVALENT GRAIN SIZE FOR COHESIVE GRAIN STRESS
+*              CALCULATION,  FULLY SMOOTH = 4, FULL ROUGH = 100.
+* VISMUDST:    KINEMATIC VISCOSITY TO USE IN DETERMINING COHESIVE GRAIN STRESS
+*
+C36a ISBEDSTR ISBSDFUF COEFTSBL VISMUDST
+-------------------------------------------------------------------------------
+C36b SEDIMENT INITIALIZATION AND WATER COLUMN/BED REPRESENTATION OPTIONS
+*    DATA REQUIRED IF ISTRAN(6) OR ISTRAN(7) <> 0
+*
+*   ISEDAL:  1 TO ACTIVATE STATIONARY COHESIVE MUD ACTIVE LAYER
+*   ISNDAL:  1 TO ACTIVATE NON-COHESIVE ARMORING EFFECTS
+*            2 SAME AS 1 WITH ACTIVE-PARENT LAYER FORMULATION
+*   IALTYP:  0 CONSTANT THICKNESS ARMORING LAYER
+*            1 CONSTANT TOTAL SEDIMENT MASS ARMORING LAYER
+*   IALSTUP: 1 CREATE ARMORING LAYER FROM INITIAL TOP LAYER AT START UP
+*   ISEDEFF: 1 MODIFY NONCOHESIVE RESUSPENSION TO ACCOUNT FOR COHESIVE EFFECTS
+*              USING MULTIPLICATION FACTOR: EXP(-COEHEFF*FRACTION COHESIVE)
+*            2 MODIFY NONCOHESIVE CRITICAL STRESS TO ACCOUNT FOR COHESIVE
+*              EFFECTS USING MULTIPLICATION FACTOR:
+*              1+(COEHEFF2-1)*(1-EXP(-COEHEFF*FRACTION COHESIVE))
+*   HBEDAL:    ACTIVE ARMORING LAYER THICKNESS
+*   IALSTUP:   COHESIVE EFFECTS COEFFICIENT
+*
+C36b ISEDAL ISNDAL IALTYP IALSTUP ISEDEFF HBEDAL COEHEFF COEHEFF2
+-------------------------------------------------------------------------------
+C37 BED MECHANICAL PROPERTIES PARAMETER SET 1
+*   DATA REQUIRED IF NSED>0, EVEN IF ISTRAN(6) = 0
+*
+*  ISEDDT:   NUMBER OF SED/TOX BED PROCESSES STEPS PER HYDRO/WC TRANS STEPS
+*  IBMECH: 0 TIME INVARIANT CONSTANT BED MECHANICAL PROPERITES
+*          1 SIMPLE CONSOLIDATION CALCULATION WITH CONSTANT COEFFICIENTS
+*          2 SIMPLE CONSOLIDATION WITH VARIABLE COEFFICIENTS DETERMINED
+*            EFDC FUNCTIONS CSEDCON1,2,3(IBMECH)
+*          3 COMPLEX CONSOLIDATION WITH VARIABLE COEFFICIENTS DETERMINED
+*            EFDC FUNCTIONS CSEDCON1,2,3(IBMECH). IBMECH > 0 SETS THE
+*            C38 PARAMETER ISEDBINT=1 AND REQUIRES INITIAL CONDITIONS
+*            FILES BEDLAY.INP, BEDBDN.INP AND BEDDDN.IN
+*          9 TYPE OF CONSOLIDATION VARIES BY CELL WITH IBMECH FOR EACH
+*            DEFINED IN INPUT FILE CONSOLMAP.INP
+*  IMORPH: 0 CONSTANT BED MORPHOLOGY (IBMECH=0, ONLY)
+*          1 ACTIVE BED MORPHOLOGY: NO WATER ENTRAIN/EXPULSION EFFECTS
+*          2 ACTIVE BED MORPHOLOGY: WITH WATER ENTRAIN/EXPULSION EFFECTS
+*  HBEDMAX:  TOP BED LAYER THICKNESS (m) AT WHICH NEW LAYER IS ADDED OR IF
+*            KBT(I,J)=KB, NEW LAYER ADDED AND LOWEST TWO LAYERS COMBINED
+*  BEDPORC:  CONSTANT BED POROSITY (IBMECH=0, OR NSED=0)
+*            ALSO USED AS POROSITY OF DEPOSITIN NON-COHESIVE SEDIMENT
+*  SEDMDMX:  MAXIMUM FLUID MUD COHESIVE SEDIMENT CONCENTRATION (MG/L)
+*  SEDMDMN:  MINIMUM FLUID MUD COHESIVE SEDIMENT CONCENTRATION (MG/L)
+*  SEDVDRD:  VOID RATIO OF DEPOSITING COHESIVE SEDIMENT
+*  SEDVDRM:  MINIMUM COHESIVE SEDIMENT BED VOID RATIO (IBMECH > 0)
+*  SEDVDRT:  BED CONSOLIDATION RATE CONSTANT (sec) (IBMECH = 1,2), EXP(-DELT/SEDVDRT) 
+*              > 0 CONSOLIDATE OVER TIME TO SEDVDRM
+*              = 0 CONSOLIDATE INSTANTANEOUSLY TO SEDVDRM (0.0>=SEDVDRT<=0.0001)
+*              < 0 CONSOLIDATE TO INITIAL VOID RATIOS
+*
+C37 ISEDDT IBMECH IMORPH HBEDMAX BEDPORC SEDMDMX SEDMDMN SEDVDRD SEDVDRM SEDVRDT
+-------------------------------------------------------------------------------
+C38 BED MECHANICAL PROPERTIES PARAMETER SET 2
+*   DATA REQUIRED IF NSED>0, EVEN IF ISTRAN(6) = 0
+*
+*  IBMECHK: 0 FOR HYDRAULIC CONDUCTIVITY, K, FUNCTION K=KO*EXP((E-EO)/EK)
+*           1 FOR HYD COND/(1+VOID RATIO),K', FUNCTION K'=KO'*EXP((E-EO)/EK)
+*   BMECH1:   REFERENCE EFFECTIVE STRESS/WATER SPECIFIC WEIGHT, SEO (m)
+*             IF BMECH1<0 USE INTERNAL FUNCTION, BMECH1,BMECH2,BMECH3 NOT USED
+*   BMECH2:   REFERENCE VOID RATIO FOR EFFECTIVE STRESS FUNCTION, EO
+*   BMECH3:   VOID RATIO RATE TERM ES IN SE=SEO*EXP(-(E-EO)/ES)
+*   BMECH4:   REFERENCE HYDRAULIC CONDUCTIVITY, KO (m/s)
+*             IF BMECH4<0 USE INTERNAL FUNCTION, BMECH1,BMECH2,BMECH3 NOT USED
+*   BMECH5:   REFERENCE VOID RATIO FOR HYDRAULIC CONDUCTIVITY, EO
+*   BMECH6:   VOID RATIO RATE TERM EK IN (K OR K')=(KO OR KO')*EXP((E-EO)/EK)
+*
+C38 IBMECHK BMECH1  BMECH2  BMECH3  BMECH4  BMECH5  BMECH6
+-------------------------------------------------------------------------------
+C39 COHESIVE SEDIMENT PARAMETER SET 1 REPEAT DATA LINE NSED TIMES
+*   DATA REQUIRED IF NSED>0, EVEN IF ISTRAN(6) = 0
+*
+*  SEDO:   CONSTANT INITIAL COHESIVE SEDIMENT CONC IN WATER COLUMN
+*           (MG/LITER=GM/M**3)
+*  SEDBO:  CONSTANT INITIAL COHESIVE SEDIMENT IN BED PER UNIT AREA
+*           (GM/SQ METER)  IE 1CM THICKNESS BED WITH SSG=2.5 AND
+*           N=.6,.5 GIVES SEDBO 1.E4, 1.25E4
+*  SDEN:   SEDIMENT SPEC VOLUME (IE 1/2.25E6 M**3/GM)
+*  SSG:    SEDIMENT SPECIFIC GRAVITY
+*  WSEDO:  CONSTANT OR REFERENCE SEDIMENT SETTLING VELOCITY
+*            IN FORMULA WSED=WSEDO*( (SED/SEDSN)**SEXP )
+*  SEDSN:  (Not Used)
+*  SEXP:   (Not Used)
+*  TAUD:   BOUNDARY STRESS BELOW WHICH DEPOSITION TAKES PLACE ACCORDING
+*           TO (TAUD-TAU)/TAUD
+*  ISEDSCOR:  1 TO CORRECT BOTTOM LAYER CONCENTRATION TO NEAR BED CONCENTRATION
+*
+C39 SEDO  SEDBO   SDEN      SSG   WSEDO   MORPHD   SEXP    TAUD  ISEDSCOR
+-------------------------------------------------------------------------------
+C40 COHESIVE SEDIMENT PARAMETER SET 2 REPEAT DATA LINE NSED TIMES
+*   DATA REQUIRED IF NSED>0, EVEN IF ISTRAN(6) = 0
+*
+*  IWRSP: 0 USE RESUSPENSION RATE AND CRITICAL STRESS BASED ON PARAMETERS
+*           ON THIS DATA LINE
+*        >0 USE BED PROPERTIES DEPENDEDNT RESUSPENSION RATE AND CRITICAL
+*           STRESS GIVEN BY EFDC FUNCTIONS CSEDRESS,CSEDTAUS,CSEDTAUB
+*           FUNCTION ARGUMENSTS ARE (BDENBED,IWRSP)
+*         1 HWANG AND METHA - LAKE OKEECHOBEE
+*         2 HAMRICK'S MODIFICATION OF SANFORD AND MAA
+*         3 SAME AS 2 EXCEPT VOID RATIO OF COHESIVE SEDIMENT FRACTION IS USED
+*     >= 99 SITE SPECIFIC
+*  IWRSPB:0 NO BULK EROSION
+*         1 USE BULK EROSION CRITICAL STRESS AND RATE IN FUNCTIONS
+*           CSEDTAUB AND CSEDRESSB
+*  WRSPO:   REF SURFACE EROSION  RATE IN FORMULA
+*           WRSP=WRSP0*( ((TAU-TAUR)/TAUN)**TEXP ) (gm/m**2/sec)
+*  TAUR:    BOUNDARY STRESS ABOVE WHICH SURFACE EROSION OCCURS (m/s)**2
+*  TAUN:    (Not Used, TAUN=TAUR SET IN CODE)
+*  TEXP:    EXPONENT OF   WRSP=WRSP0*( ((TAU-TAUR)/TAUN)**TEXP )
+*  VDRRSPO: REFERENCE VOID RATIO FOR CRITICAL STRESS AND RESUSPENSION RATE
+*            IWRSP=2,3
+* COSEDHID: COHESIVE SEDIMENT RESUSPENSION HIDING FACTOR TO REDUCE COHESIVE
+*           RESUSPENSION BY FACTOR = (COHESIVE FRACTION OF SEDIMENT)**COSEDHID
+*
+C40 IWRSP  IWRSPB  WRSPO    TAUR    TAUN    TEXP  VDRRSPO  COSEDHID
+-------------------------------------------------------------------------------
+C41 NON-COHESIVE SEDIMENT PARAMETER SET 1 REPEAT DATA LINE NSND TIMES
+*    DATA REQUIRED IF NSND>0, EVEN IF ISTRAN(7) = 0
+*
+*  SNDO:     CONSTANT INITIAL NON-COHESIVE SEDIMENT CONC IN WATER COLUMN
+*             (MG/LITER=GM/M**3)
+*  SNDBO:    CONSTANT INITIAL NON-COHESIVE SEDIMENT IN BED PER UNIT AREA
+*             (GM/SQ METER)  IE 1CM THICKNESS BED WITH SSG=2.5 AND
+*             N=.6,.5 GIVES SNDBO 1.E4, 1.25E4
+*  SDEN:     SEDIMENT SPEC VOLUME (IE 1/2.65E6 M**3/GM)
+*  SSG:      SEDIMENT SPECIFIC GRAVITY
+*  SNDDIA:   REPRESENTATIVE DIAMETER OF SEDIMENT CLASS (m)
+*  WSNDO:    CONSTANT OR REFERENCE SEDIMENT SETTLING VELOCITY
+*            WSNDO < 0, SETTLING VELOCITY INTERNALLY COMPUTED
+*  SNDN:     (Not Used)
+*  SEXP:     (Not Used)
+*  TAUD:     (Not Used)
+*  ISNDSCOR: (Not Used)
+*
+C41 SNDO   SNDBO    SDEN     SSG  SNDDIA   WSNDO    SNDN    SEXP    TAUD ISNDSCOR
+-------------------------------------------------------------------------------
+C42 NON-COHESIVE SEDIMENT PARAMETER SET 2 REPEAT DATA LINE NSND TIMES
+*    DATA REQUIRED IF NSND>0, EVEN IF ISTRAN(7) = 0
+*
+*    ISNDEQ: >1 CALCULATE ABOVE BED REFERENCE NON-COHESIVE SEDIMENT
+*               EQUILIBRIUM CONCENTRATION USING EFDC FUNCTION
+*               CSNDEQC(SNDDIA,SSG,WS,TAUR,TAUB,SIGPHI,SNDDMX,IOTP)
+*               WHICH IMPLEMENT FORMULATIONS OF
+*             1 GARCIA AND PARKER
+*             2 SMITH AND MCLEAN
+*             3 VAN RIJN
+*    ISBDLD:  0 BED LOAD PHI FUNCTION IS CONSTANT, SBDLDP
+*             1 VAN RIJN PHI FUNCTION
+*             2 MODIFIED ENGULAND-HANSEN
+*             3 WU, WANG, AND JIA
+*             4 (Not Used)
+*     TAUR:     CRITICAL STRESS IN (m/s)**2 
+*               NOTE: IF TAUR < 0, THEN TAUR AND TAUN ARE INTERNALLY
+*               COMPUTED USING VAN RIJN'S FORMULAS
+*     TAUN:     EQUAL TO TAUR FOR NON-COHESIVE SED TRANS
+* TCSHIELDS:    CRITICAL SHIELDS STRESS (DIMENSIONLESS)
+*   ISLTAUC:  1 TO IMPLEMENT SUSP LOAD ONLY WHEN STRESS EXCEEDS TAUC FOR EACH GRAINSIZE
+*             2 TO IMPLEMENT SUSP LOAD ONLY WHEN STRESS EXCEEDS TAUCD50
+*             3 TO USE TAUC FOR NONUNIFORM BEDS, THESE APPLY ONLY TO RESUSPENSION
+*               FORMULAS NOT EXPLICITLY CONTAINING CRITICAL SHIELDS STRESS SUCH AS G-P
+*   IBLTAUC:  1 TO IMPLEMENT BEDLOAD ONLY WHEN STRESS EXCEEDS TAUC FOR EACH GRAINSIZE
+*             2 TO IMPLEMENT BEDLOAD ONLY WHEN STRESS EXCEEDS TAUCD50
+*             3 TO USE TAUC FOR NONUNIFORM BEDS, THESE APPLY ONLY TO BED LOAD
+*               FORMULAS NOT EXPLICITLY CONTAINING CRITICAL SHIELDS STRESS SUCH AS E-H
+*    IROUSE:  0 USE TOTAL STRESS FOR CALCULATING ROUSE NUMBER
+*             1 USE GRAIN STRESS FOR ROUSE NUMBER
+*    ISNDM1:  0 SET BOTH BEDLOAD AND SUSPENDED LOAD FRACTIONS TO 1.0
+*             1 SET BEDLOAD FRACTION TO 1. USE BINARY RELATIONSHIP FOR SUSPENDED
+*             2 SET BEDLOAD FRACTION TO 1, USE LINEAR RELATIONSHIP FOR SUSPENDED
+*             3 USE BINARY RELATIONSHIP FOR BEDLOAD AND SUSPENDED LOAD
+*             4 USE LINEAR RELATIONSHIP FOR BEDLOAD AND SUSPENDED LOAD
+*    ISNDM2:  0 USE TOTAL SHEAR VELOCITY IN USTAR/WSET RATIO
+*             1 USE GRAIN SHEAR VELOCITY IN USTAR/WSET RATIO
+*     RSNDM:    VALUE OF USTAR/WSET FOR BINARY SWITCH BETWEEN BEDLOAD AND SUSPENDED LOAD
+*
+C42 ISNDEQ ISBDLD   TAUR       TAUN    TCSHIELDS ISLTAUC IBLTAUC IROUSE  ISNDM1  ISNDM2   RSNDM
+-------------------------------------------------------------------------------
+C42A NON-COHESIVE SEDIMENT PARAMETER SET 3 (BED LOAD FORMULA PARAMETERS)
+*    DATA REQUIRED IF NSND>0, EVEN IF ISTRAN(7) = 0
+*                                                                      
+*     IBEDLD:  0 DISABLE BEDLOAD       
+*              1 ACTIVATE BEDLOAD OPTION.  MUST USE SEDBLBC.INP
+*     SBDLDA:    ALPHA EXPONENTIAL FOR BED LOAD FORMULA 
+*     SBDLDB:    BETA EXPONENTIAL FOR BED LOAD FORMULA
+*    SBDLDG1:    GAMMA1 CONSTANT FOR BED LOAD FORMULA 
+*    SBDLDG2:    GAMMA2 CONSTANT FOR BED LOAD FORMULA 
+*    SBDLDG3:    GAMMA3 CONSTANT FOR BED LOAD FORMULA
+*    SBDLDG4:    GAMMA4 CONSTANT FOR BED LOAD FORMULA
+*     SBDLDP:    CONSTANT PHI FOR BED LOAD FORMULA 
+*    ISBLFUC:    BED LOAD FACE FLUX , 0 FOR DOWN WIND PROJECTION,1 FOR DOWN WIND
+*                WITH CORNER CORRECTION,2 FOR CENTERED AVERAGING
+*     BLBSNT:    ADVERSE BED SLOPE (POSITIVE VALUE) ACROSS A CELL FACE ABOVE
+*                WHICH NO BED LOAD TRANSPORT CAN OCCUR.  NOT ACTIVE FOR BLBSNT=0.0
+*
+C42a IBEDLD SBDLDA SBDLDB SBDLDG1 SBDLDG2 SBDLDG3 SBDLDG4 SBDLDP ISBLFUC  BLBSNT
+-------------------------------------------------------------------------------
+C43 TOXIC CONTAMINANT INITIAL CONDITIONS AND PARAMETERS
+*  USER MAY CHANGE UNITS OF WATER AND SED PHASE TOX CONCENTRATION
+*  AND PARTIATION COEFFICIENT ON C44 - C46 BUT CONSISTENT UNITS MUST
+*  MUST BE USED FOR MEANINGFUL RESULTS
+*  DATA REQUIRED EVEN IT ISTRAN(5) IS 0
+*
+*    NTOXN: TOXIC CONTAMINANT NUMBER ID (1 LINE OF DATA BY DEFAULT)
+*   ITXINT: 0 FOR SPATIALLY CONSTANT WATER COL AND BED INITIAL CONDITIONS
+*           1 FOR SPATIALLY VARIABLE WATER COLUMN INITIAL CONDITIONS
+*           2 FOR SPATIALLY VARIABLE BED INITIAL CONDITIONS
+*           3 FOR SPATIALLY VARIABLE WATER COL AND BED INITIAL CONDITION
+*  ITXBDUT: SET TO 0 FOR INITIAL BED GIVEN BY TOTAL TOX (MG/M^3)
+*           SET TO 1 FOR INITIAL BED GIVEN BY SORBED MASS TOX/MASS SED(mg/kg)
+*  TOXINTW: INIT WATER COLUNM TOT TOXIC VARIABLE CONCENTRATION (ugm/l)
+*  TOXINTB: INIT SED BED TOXIC CONC SEE ITXBDUT
+*             
+*   RKTOXW: FIRST ORDER WATER COL DECAY RATE FOR TOX VARIABLE IN 1/sec
+*   TKTOXW: REF TEMP FOR 1ST ORDER WATER COL DECAY DEG C
+*   RKTOXB: FIRST ORDER SED BED DECAY RATE FOR TOX VARIABLE IN 1/sec
+*   TKTOXB: REF TEMP FOR 1ST ORDER SED BED DECAY DEG C
+*
+C43 NTOXN ITXINT ITXBDUT TOXINTW TOXINTB  RKTOXW  TKTOXW  RKTOXB  TRTOXB COMMENTS
+-------------------------------------------------------------------------------
+C44 ADDITIONAL TOXIC CONTAMINANT PARAMETERS
+*   DATA REQUIRED EVEN IT ISTRAN(5) IS 0
+*
+*    NTOXN: TOXIC CONTAMINANT NUMBER ID (1 LINE OF DATA BY DEFAULT)
+*    ISTOC: 1 FOR DISS AND PART ORGANIC CARBON SORPTION
+*           2 FOR DISS ORGANIC CARBON SORPTION AND POC FRACTIONALLY
+*             DISTRIBUTED TO INORGANIC SEDIMENT CLASSES
+*           3 FOR NO DISS ORGANIC CARBON SORPTION AND POC FRACTIONALLY
+*             DISTRIBUTED TO INORGANIC SEDIMENT CLASSES
+*   VOLTOX:   WATER SURFACE VOLITIALIZATION RATE MULTIPLIER (0. OR 1.)
+*   RMOLTX:   MOLECULAR WEIGHT FOR DETERMINING VOLATILIZATION RATE
+*   RKTOXP:   REFERENCE PHOTOLOYSIS DECAY RATE 1/sec
+*   SKTOXP:   REFERENCE SOLAR RADIATION FOR PHOTOLOYSIS (watts/m**2)
+*   DIFTOX:   DIFFUSION COEFF FOR TOXICANT IN SED BED PORE WATER (m**2/s)
+*   DIFTOXS:  DIFFUSION COEFF FOR TOXICANT BETWEEN WATER COLUMN AND
+*              PORE WATER IN TOP LAYER OF THE BED(m**2/s)
+*              > 0.0 INTERPRET AS DIFFUSION COEFFICIENT (m**2/s)
+*              < 0.0 INTERPRET AS FLUX VELOCITY (m/s)
+*   PDIFTOX:  PARTICLE MIXING DIFFUSION COEFF FOR TOXICANT IN SED BED (m**2/s)
+*   DPDIFTOX: DEPTH IN BED OVER WHICH PARTICLE MIXING IS ACTIVE (m)
+*
+C44 NTOXN  ISTOC  VOLTOX  RMOLTX  RKTOXP  SKTOXP  DIFTOX  DIFTOXS PDIFTOX DPDIFTOX
+-------------------------------------------------------------------------------
+C45 TOXIC CONTAMINANT SEDIMENT INTERACTION PARAMETERS
+*   
+*
+*    NTOXC: TOXIC CONTAMINANT NUMBER ID.  NSEDC+NSEDN LINES OF DATA
+*             FOR EACH TOXIC CONTAMINANT (DEFAULT = 2)
+* NSEDN/NSNDN: FIRST NSED LINES COHESIVE, NEXT NSND LINES NON-COHESIVE.
+*           REPEATED FOR EACH CONTAMINANT
+*  ITXPARW: EQUAL 1 FOR SOLIDS DEPENDENT PARTITIONING (WC) GIVEN BY
+*           TOXPAR=PARO*(CSED**CONPAR)
+*  TOXPARW: WATER COLUMN PARO (ITXPARW=1) OR EQUIL TOX CON PART COEFF BETWEEN
+*           EACH TOXIC IN WATER AND ASSOCIATED SEDIMENT PHASES (LITERS/MG)
+*  CONPARW: EXPONENT IN  TOXPAR=PARO*(CSED**CONPARW) IF ITXPARW=1
+*  ITXPARB: EQUAL 1 FOR SOLIDS DEPENDENT PARTITIONING (BED)
+*  TOXPARB: SEDIMENT BED PARO (ITXPARB=1) OR EQUIL TOX CON PART COEFF BETWEEN
+*           EACH TOXIC IN WATER AND ASSOCIATED SEDIMENT PHASES (LITERS/MG)
+*  CONPARB: EXPONENT IN  TOXPAR=PARO*(CSED**CONPARB) IF ITXPARB=1
+*               1       0.8770  -0.943          0.025
+C45 NTOXN  NSEDN ITXPARW TOXPARW CONPARW ITXPARB TOXPARB CONPARB COMMENTS
+-------------------------------------------------------------------------------
+C45A TOXIC CONTAMINANT ORGANIC CARBON INTERACTION PARAMETERS
+*
+* ISTDOCW: 0 CONSTANT DOC IN WATER COLUMN OF STDOCWC (DEFAULT=0.)
+*          1 TIME CONSTANT, SPATIALLY VARYING DOC IN WATER COLUMN FROM docw.inp
+* ISTPOCW: 0 CONSTANT POC IN WATER COLUMN OF STPOCWC (DEFAULT=0.)
+*          1 TIME CONSTANT, SPATIALLY VARYING POC IN WATER COLUMN FROM pocw.inp
+*          2 TIME CONSTANT, FPOC IN WATER COLUMN, SEE C45C
+*          3 TIME CONSTANT, SPATIALLY VARYING FPOC IN WATER COLUMN FORM fpocw.inp
+*          4 FUNTIONAL SPECIFICATION OF TIME AND SPATIALLY VARYING
+*              FPOC IN WATER COLUMN
+* ISTDOCB: 0 CONSTANT DOC IN BED OF STDOCBC (DEFAULT=0.)
+*          1 TIME CONSTANT, SPATIALLY VARYING DOC IN BED FROM docb.inp
+* ISTPOCB: 0 CONSTANT POC IN BED OF STPOCBC (DEFAULT=0.)
+*          1 TIME CONSTANT, SPATIALLY VARYING POC IN BED FROM pocb.inp
+*          2 TIME CONSTANT, FPOC IN BED, SEE C45D
+*          3 TIME CONSTANT, SPATIALLY VARYING FPOC IN BED FROM fpocb.inp
+*          4 FUNTIONAL SPECIFICATION OF TIME AND SPATIALLY VARYING
+*              FPOC IN BED
+* STDOCWC:   CONSTANT WATER COLUMN DOC (ISTDOCW=0)
+* STPOCWC:   CONSTANT WATER COLUMN POC (ISTPOCW=0)
+* STDOCBC:   CONSTANT BED DOC (ISTDOCB=0)
+* STPOCBC:   CONSTANT BED POC (ISTPOCB=0)
+*
+C45A ISTDOCW ISTPOCW ISTDOCB ISTPOCB STDOCWC STPOCWC STDOCBC STPOCBC
+-------------------------------------------------------------------------------
+C45B TOXIC CONTAMINANT ORGANIC CARBON INTERACTION PARAMETERS
+*   
+*
+*    NTOXC: TOXIC CONTAMINANT NUMBER ID.  NSEDC+NSEDN LINES OF DATA
+*             FOR EACH TOXIC CONTAMINANT (DEFAULT = 2)
+*     NOC : FIRST LINE FOR DISSOLVED ORGANIC CARBON, SECOND FOR PART OC
+*           REPEATED FOR EACH CONTAMINANT
+*  ITXPARW: -1 FOR NO ORGANIC CARBON, O FOR NORMAL PARTITION AND 1 FOR SOLIDS
+*           DEPENDENT TOXPAR=PARO*(CSED**CONPAR)
+*  TOXPARW: WATER COLUMN PARO (ITXPARW=1) OR EQUIL TOX CON PART COEFF BETWEEN
+*           EACH TOXIC IN WATER AND ASSOCIATED SEDIMENT PHASES (liters/mg)
+*  CONPARW: EXPONENT IN  TOXPAR=PARO*(CSED**CONPARW) IF ITXPARW=1
+*  ITXPARB: CONVENTION FOLLOWS ITXPARW (BED)
+*  TOXPARB: SEDIMENT BED PARO (ITXPARB=1) OR EQUIL TOX CON PART COEFF BETWEEN
+*           EACH TOXIC IN WATER AND ASSOCIATED SEDIMENT PHASES (liters/mg)
+*  CONPARB: EXPONENT IN  TOXPAR=PARO*(CSED**CONPARB) IF ITXPARB=1
+*               1       0.8770  -0.943          0.025
+C45B NTOXN  NOC ITXPARW TOXPARW CONPARW ITXPARB TOXPARB CONPARB  *CARBON*
+ -------------------------------------------------------------------------------
+C45C TOXIC CONTAMINANT POC FRACTIONAL DISTRIBUTIONS IN WATER COLUMN
+*    1 LINE  OF DATA REQUIRED EVEN IT ISTRAN(5) IS 0. DATA USED WHEN
+*      ISTOC(NT)=1 OR 2
+*
+*     NTOXN:      TOXIC CONTAMINANT NUMBER ID.  NSEDC+NSEDN 1 LINE OF DATA
+*                 FOR EACH TOXIC CONTAMINANT (DEFAULT = 2)
+*  FPOCSED1-NSED: FRACTION OF OC ASSOCIATED WITH SED CLASSES 1,NSED
+*  FPOCSND1-NSND: FRACTION OF OC ASSOCIATED WITH SND CLASSES 1,NSND
+*
+C45C NTOXN  FPOCSED1 FPOCSND1 FPOCSND2 FPOCSND3
+ -------------------------------------------------------------------------------
+C45D TOXIC CONTAMINANT POC FRACTIONAL DISTRIBUTIONS IN SEDIMENT BED
+*   1 LINE  OF DATA REQUIRED EVEN IT ISTRAN(5) IS 0. DATA USED WHEN
+*   ISTOC(NT)=1 OR 2
+*
+*     NTOXN:      TOXIC CONTAMINANT NUMBER ID.  NSEDC+NSEDN 1 LINE OF DATA
+*                FOR EACH TOXIC CONTAMINANT (DEFAULT = 2)
+* FPOCSED1-NSED: FRACTION OF OC ASSOCIATED WITH SED CLASSES 1,NSED
+* FPOCSND1-NSND: FRACTION OF OC ASSOCIATED WITH SND CLASSES 1,NSND
+*
+C45D NTOXN  FPOCSED1  FPOCSND1  FPOCSND2 FPOCSND3
+-------------------------------------------------------------------------------
+C46 BUOYANCY, TEMPERATURE, DYE DATA AND CONCENTRATION BC DATA
+*
+* BSC:         BUOYANCY INFLUENCE COEFFICIENT 0 TO 1, BSC=1. FOR REAL PHYSICS
+* TEMO:        REFERENCE, INITIAL, EQUILIBRUM AND/OR ISOTHERMAL TEMP IN DEG C
+* HEQT:        EQUILIBRUM TEMPERTURE TRANSFER COEFFICIENT M/sec
+* RKDYE:       FIRST ORDER DECAY RATE FOR DYE VARIABLE IN 1/sec
+* NCBS:        NUMBER OF CONCENTRATION BOUNDARY CONDITIONS ON SOUTH OPEN
+*               BOUNDARIES
+* NCBW:        NUMBER OF CONCENTRATION BOUNDARY CONDITIONS ON WEST OPEN
+*               BOUNDARIES
+* NCBE:        NUMBER OF CONCENTRATION BOUNDARY CONDITIONS ON EAST OPEN
+*               BOUNDARIES
+* NCBN:        NUMBER OF CONCENTRATION BOUNDARY CONDITIONS ON NORTH OPEN
+*               BOUNDARIES
+*
+C46    BSC  TEMO    HEQT       RKDYE NCBS NCBW NCBE NCBN
+         1  -1.0 0.000E+00 0.000E+00    6    0    0    0
+-------------------------------------------------------------------------------
+C47 LOCATION OF CONC BC'S ON SOUTH BOUNDARIES
+*
+*  ICBS:    I CELL INDEX
+*  JCBS:    J CELL INDEX
+*  NTSCRS:  NUMBER OF TIME STEPS TO RECOVER SPECIFIED VALUES ON CHANGE
+*           TO INFLOW FROM OUTFLOW
+*  NSSERS:  SOUTH BOUNDARY CELL SALINITY TIME SERIES ID NUMBER
+*  NTSERS:  SOUTH BOUNDARY CELL TEMPERATURE TIME SERIES ID NUMBER
+*  NDSERS:  SOUTH BOUNDARY CELL DYE CONC TIME SERIES ID NUMBER
+*  NSFSERS: SOUTH BOUNDARY CELL SHELLFISH LARVAE TIME SERIES ID NUMBER
+*  NTXSERS: SOUTH BOUNDARY CELL TOXIC CONTAMINANT CONC TIME SERIES ID NUM.
+*  NSDSERS: SOUTH BOUNDARY CELL COHESIVE SED CONC TIME SERIES ID NUMBER
+*  NSNSERS: SOUTH BOUNDARY CELL NON-COHESIVE SED CONC TIME SERIES ID NUMBER
+C
+C47   IBBS JBBS  NTSCRS  NSSERS  NTSERS  NDSERS NSFSERS NTXSERS NSDSERS NSNSERS
+         3    3    0       0      21       0       0       0       0       0
+         4    3    0       0      21       0       0       0       0       0
+         5    3    0       0      21       0       0       0       0       0
+         7    3    0       0      21       0       0       0       0       0
+         8    3    0       0      21       0       0       0       0       0
+         9    3    0       0      21       0       0       0       0       0
+-------------------------------------------------------------------------------
+C48 TIME CONSTANT BOTTOM CONC ON SOUTH CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING BOTTOM LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING BOTTOM LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING BOTTOM LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING BOTTOM LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING BOTTOM LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C48    SAL       TEM       DYE       SFL
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+-------------------------------------------------------------------------------
+C49 TIME CONSTANT BOTTOM CONC ON SOUTH CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING BOTTOM LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING BOTTOM LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C49   SED1    SND1
+
+
+
+
+
+
+------------------------------------------------------------------------------
+C50 TIME CONSTANT SURFACE CONC ON SOUTH CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING SURFAC LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING SURFAC LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING SURFAC LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING SURFAC LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING SURFAC LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C50    SAL       TEM       DYE       SFL
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+         0         0         0         0
+-------------------------------------------------------------------------------
+C51 TIME CONSTANT SURFACE CONC ON SOUTH CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING SURFAC LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING SURFAC LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C51   SED1    SND1
+
+
+
+
+
+
+-------------------------------------------------------------------------------
+C52 LOCATION OF CONC BC'S ON WEST BOUNDARIES AND SERIES IDENTIFIERS
+*
+*  ICBW:    I CELL INDEX
+*  JCBW:    J CELL INDEX
+*  NTSCRW:  NUMBER OF TIME STEPS TO RECOVER SPECIFIED VALUES ON CHANGE
+*           TO INFLOW FROM OUTFLOW
+*  NSSERW:  WEST BOUNDARY CELL SALINITY TIME SERIES ID NUMBER
+*  NTSERW:  WEST BOUNDARY CELL TEMPERATURE TIME SERIES ID NUMBER
+*  NDSERW:  WEST BOUNDARY CELL DYE CONC TIME SERIES ID NUMBER
+*  NSFSERW: WEST BOUNDARY CELL SHELLFISH LARVAE TIME SERIES ID NUMBER
+*  NTXSERW: WEST BOUNDARY CELL TOXIC CONTAMINANT CONC TIME SERIES ID NUM.
+*  NSDSERW: WEST BOUNDARY CELL COHESIVE SED CONC TIME SERIES ID NUMBER
+*  NSNSERW: WEST BOUNDARY CELL NON-COHESIVE SED CONC TIME SERIES ID NUMBER
+*
+C52 IBBW JBBW NTSCRW NSSERW NTSERW NDSERW NSFSERW NTXSERW NSDSERW NSNSERW
+-------------------------------------------------------------------------------
+C53 TIME CONSTANT BOTTOM CONC ON WEST CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING BOTTOM LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING BOTTOM LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING BOTTOM LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING BOTTOM LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING BOTTOM LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C53    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C54 TIME CONSTANT BOTTOM CONC ON WEST CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING BOTTOM LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING BOTTOM LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C54   SED1    SND1
+-------------------------------------------------------------------------------
+C55 TIME CONSTANT SURFACE CONC ON WEST CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING SURFAC LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING SURFAC LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING SURFAC LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING SURFAC LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING SURFAC LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C55    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C56 TIME CONSTANT SURFACE CONC ON WEST CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING SURFAC LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING SURFAC LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C56   SED1    SND1
+-------------------------------------------------------------------------------
+C57 LOCATION OF CONC BC'S ON EAST BOUNDARIES AND SERIES IDENTIFIERS
+*
+*  ICBE:    I CELL INDEX
+*  JCBE:    J CELL INDEX
+*  NTSCRE:  NUMBER OF TIME STEPS TO RECOVER SPECIFIED VALUES ON CHANGE
+*           TO INFLOW FROM OUTFLOW
+*  NSSERE:  EAST BOUNDARY CELL SALINITY TIME SERIES ID NUMBER
+*  NTSERE:  EAST BOUNDARY CELL TEMPERATURE TIME SERIES ID NUMBER
+*  NDSERE:  EAST BOUNDARY CELL DYE CONC TIME SERIES ID NUMBER
+*  NSFSERE: EAST BOUNDARY CELL SHELLFISH LARVAE TIME SERIES ID NUMBER
+*  NTXSERE: EAST BOUNDARY CELL TOXIC CONTAMINANT CONC TIME SERIES ID NUM.
+*  NSDSERE: EAST BOUNDARY CELL COHESIVE SED CONC TIME SERIES ID NUMBER
+*  NSNSERE: EAST BOUNDARY CELL NON-COHESIVE SED CONC TIME SERIES ID NUMBER
+*
+C57 IBBE JBBE NTSCRE NSSERE NTSERE NDSERE NSFSERE NTXSERE NSDSERE NSNSERE
+-------------------------------------------------------------------------------
+C58 TIME CONSTANT BOTTOM CONC ON EAST CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING BOTTOM LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING BOTTOM LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING BOTTOM LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING BOTTOM LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING BOTTOM LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C58    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C59 TIME CONSTANT BOTTOM CONC ON EAST CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING BOTTOM LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING BOTTOM LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C59   SED1    SND1
+-------------------------------------------------------------------------------
+C60 TIME CONSTANT SURFACE CONC ON EAST CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING SURFAC LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING SURFAC LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING SURFAC LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING SURFAC LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING SURFAC LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C60    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C61 TIME CONSTANT SURFACE CONC ON EAST CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING SURFAC LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING SURFAC LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C61   SED1    SND1
+-------------------------------------------------------------------------------
+C62 LOCATION OF CONC BC'S ON NORTH BOUNDARIES AND SERIES IDENTIFIERS
+*
+*  ICBN:    I CELL INDEX
+*  JCBN:    J CELL INDEX
+*  NTSCRN:  NUMBER OF TIME STEPS TO RECOVER SPECIFIED VALUES ON CHANGE
+*           TO INFLOW FROM OUTFLOW
+*  NSSERN:  NORTH BOUNDARY CELL SALINITY TIME SERIES ID NUMBER
+*  NTSERN:  NORTH BOUNDARY CELL TEMPERATURE TIME SERIES ID NUMBER
+*  NDSERN:  NORTH BOUNDARY CELL DYE CONC TIME SERIES ID NUMBER
+*  NSFSERN: NORTH BOUNDARY CELL SHELLFISH LARVAE TIME SERIES ID NUMBER
+*  NTXSERN: NORTH BOUNDARY CELL TOXIC CONTAMINANT CONC TIME SERIES ID NUM.
+*  NSDSERN: NORTH BOUNDARY CELL COHESIVE SED CONC TIME SERIES ID NUMBER
+*  NSNSERN: NORTH BOUNDARY CELL NON-COHESIVE SED CONC TIME SERIES ID NUMBER
+*
+C62 IBBN JBBN NTSCRN NSSERN NTSERN NDSERN NSFSERN NTXSERN NSDSERN NSNSERN
+-------------------------------------------------------------------------------
+C63 TIME CONSTANT BOTTOM CONC ON NORTH CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING BOTTOM LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING BOTTOM LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING BOTTOM LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING BOTTOM LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING BOTTOM LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C63    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C64 TIME CONSTANT BOTTOM CONC ON NORTH CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING BOTTOM LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING BOTTOM LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C64   SED1    SND1
+-------------------------------------------------------------------------------
+C65 TIME CONSTANT SURFACE CONC ON NORTH CONC BOUNDARIES
+*
+*  SAL: ULTIMATE INFLOWING SURFAC LAYER SALINITY
+*  TEM: ULTIMATE INFLOWING SURFAC LAYER TEMPERATURE
+*  DYE: ULTIMATE INFLOWING SURFAC LAYER DYE CONCENTRATION
+*  SFL: ULTIMATE INFLOWING SURFAC LAYER SHELLFISH LARVAE CONCENTRAION
+*  TOX: NTOX ULTIMATE INFLOWING SURFAC LAYER TOXIC CONTAMINANT
+*       CONCENTRATIONS NTOX VALUES TOX(N), N=1,NTOX
+*
+C65    SAL       TEM       DYE       SFL
+-------------------------------------------------------------------------------
+C66 TIME CONSTANT SURFACE CONC ON NORTH CONC BOUNDARIES
+*
+*  SED: NSED ULTIMATE INFLOWING SURFAC LAYER COHESIVE SEDIMENT
+*       CONCENTRAIONS  FIRST NSED VALUES SED(N), N=1,NSND
+*  SND: NSND ULTIMATE INFLOWING SURFAC LAYER NON-COHESIVE SEDIMENT
+*       CONCENTRATIONS LAST NSND VALUES SND(N), N=1,NSND
+*
+C66   SED1    SND1
+-------------------------------------------------------------------------------
+C66A CONCENTRATION DATA ASSIMILATION
+*
+*  NLCDA: NUMBER OF HORIZONTAL LOCATIONS FOR DATA ASSIMILATION
+*  TSCDA: WEIGHTING FACTOR, 0 to 1, 1 = FULL ASSIMILATION
+*  ISCDA: 1 FOR CONCENTRATION DATA ASSIMILATION VALUES (NC=1,7)
+*
+C66A NLCDA TSCDA ISCDA
+       0       0       0       0       0       0       0       0       0
+-------------------------------------------------------------------------------
+C66B CONCENTRATION DATA ASSIMILATION
+*
+*  ITPCDA: 0 ASSIMILATE DATA FROM TIME SERIES
+*          1 ASSIMIATED DATA FROM ANOTHER CELL IN GRID
+*    ICDA: I INDEX OF CELL ASSIMILATING DATA
+*    JCDA: J INDEX OF CELL ASSIMILATING DATA
+*   ICCDA: I INDEX OF CELL PROVIDING DATA, ITPCDA=1
+*   JCCDA: J INDEX OF CELL PROVIDING DATA, ITPCDA=1
+*  NCSERA:   ID OF TIME SERIES PROVIDING DATA
+*
+C66B ITPCDA ICDA    JCDA   ICCDA   JCCDA    NS      NT      ND     NSF     NTX     NSD     NSN
+-------------------------------------------------------------------------------
+C67 DRIFTER DATA (FIRST 4 PARAMETER FOR SUB DRIFER, SECOND 6 FOR SUB LAGRES)
+*
+*  ISPD:   1 TO ACTIVE SIMULTANEOUS RELEASE AND LAGRANGIAN TRANSPORT OF
+*            NEUTRALLY BUOYANT PARTICLE DRIFTERS AT LOCATIONS INPUT ON C68
+*  NPD:      NUMBER OF PARTICLE DIRIFERS
+*  NPDRT:    TIME STEP AT WHICH PARTICLES ARE RELEASED
+*  NWPD:     NUMBER OF TIME STEPS BETWEEN WRITING TO TRACKING FILE
+*            DRIFTER.OUT
+*  ISLRPD: 1 TO ACTIVATE CALCULATION OF LAGRANGIAN MEAN VELOCITY OVER TIME
+*            INTERVAL TREF AND SPATIAL INTERVAL ILRPD1<I<ILRPD2,
+*            JLRPD1<J<JLRPD2, 1<K<KC, WITH MLRPDRT RELEASES.  ANY AVERGE
+*            OVER ALL RELEASE TIMES IS ALSO CALCULATED
+*          2 SAME BUT USES A HIGER ORDER TRAJECTORY INTEGRATION
+*  ILRPD1    WEST BOUNDARY OF REGION
+*  ILRPD2    EAST BOUNDARY OF REGION
+*  JLRPD1    NORTH BOUNDARY OF REGION
+*  JLRPD2    SOUTH BOUNDARY OF REGION
+*  MLRPDRT   NUMBER OF RELEASE TIMES
+*  IPLRPD    1,2,3 WRITE FILES TO PLOT ALL,EVEN,ODD HORIZ LAG VEL VECTORS
+*
+C67 ISPD NPD NPDRT NWPD ISLRPD ILRPD1 ILRPD2 JLRPD1 JLRPD2 MLRPDRT IPLRPD
+       0       0       0       0       0       0       0       0       0       0       2
+-------------------------------------------------------------------------------
+C68 INITIAL DRIFTER POSITIONS (FOR USE WITH SUB DRIFTER)
+*
+*  RI: I CELL INDEX IN WHICH PARTICLE IS RELEASED IN
+*  RJ: J CELL INDEX IN WHICH PARTICLE IS RELEASED IN
+*  RK: K CELL INDEX IN WHICH PARTICLE IS RELEASED IN
+*
+C68 RI RJ RK
+-------------------------------------------------------------------------------
+C69 CONSTANTS FOR CARTESION GRID CELL CENTER LONGITUDE AND LATITUDE
+*
+*  CDLON1: 6 CONSTANTS TO GIVE CELL CENTER LAT AND LON OR OTHER
+*  CDLON2: COORDINATES FOR CARTESIAN GRIDS USING THE FORMULAS
+*  CDLON3: DLON(L)=CDLON1+(CDLON2*FLOAT(I)+CDLON3)/60.
+*  CDLAT1: DLAT(L)=CDLAT1+(CDLAT2*FLOAT(J)+CDLAT3)/60.
+*  CDLAT2:
+*  CDLAT3:
+*
+C69 CDLON1 CDLON2 CDLON3 CDLAT1 CDLAT2 CDLAT3
+       0       0       0       0       0       0
+-------------------------------------------------------------------------------
+C70 CONTROLS FOR WRITING ASCII OR BINARY DUMP FILES
+*
+*  ISDUMP: GREATER THAN 0 TO ACTIVATE
+*          1 SCALED ASCII INTERGER (0<VAL<65535)
+*          2 SCALED 16BIT BINARY INTEGER (0<VAL<65535) OR (-32768<VAL<32767)
+*          3 UNSCALED ASCII FLOATING POINT
+*          4 UNSCALED BINARY FLOATING POINT
+*  ISADMP: GREATER THAN 0 TO APPEND EXISTING DUMP FILES
+*  NSDUMP: NUMBER OF TIME STEPS BETWEEN DUMPS
+*  TSDUMP: STARTING TIME FOR DUMPS - DAYS (NO DUMPS BEFORE THIS TIME)
+*  TEDUMP: ENDING TIME FOR DUMPS - DAYS (NO DUMPS AFTER THIS TIME)
+*  ISDMPP: GREATER THAN 0 FOR WATER SURFACE ELEVATION DUMP
+*  ISDMPU: GREATER THAN 0 FOR HORIZONTAL VELOCITY DUMP
+*  ISDMPW: GREATER THAN 0 FOR VERTICAL VELOCITY DUMP
+*  ISDMPT: GREATER THAN 0 FOR TRANSPORTED VARIABLE DUMPS
+*  IADJDMP: 0 FOR SCALED BINARY INTEGERS (0<VAL<65535)
+*           -32768 FOR SCALED BINARY INTEGERS (-32768<VAL<32767)
+*
+C70 ISDUMP ISADMP NSDUMP TSDUMP TEDUMP ISDMPP ISDMPU ISDMPW ISDMPT IADJDMP
+       0       0     450       1 1000000       0       0       0       1  -32768
+-------------------------------------------------------------------------------
+C71 CONTROLS FOR HORIZONTAL PLANE SCALAR FIELD CONTOURING
+*
+*  ISSPH:  1 TO WRITE FILE FOR SCALAR FIELD CONTOURING IN HORIZONTAL PLANE
+*          2 WRITE ONLY DURING LAST REFERENCE TIME PERIOD
+*  NPSPH:    NUMBER OF WRITES PER REFERENCE TIME PERIOD
+*  ISRSPH: 1 TO WRITE FILE FOR RESIDUAL SALINITY PLOTTING IN
+*            HORIZONTAL
+*  ISPHXY: 0 DOES NOT WRITE I,J,X,Y IN ***CNH.OUT AND R***CNH.OUT FILES
+*          1 WRITES I,J ONLY IN ***CNH.OUT AND R***CNH.OUT FILES
+*          2 WRITES I,J,X,Y  IN ***CNH.OUT AND R***CNH.OUT FILES
+*          3 WRITES EFDC_EXPLORER BINARY FORMAT FILES
+*  DATA LINE REPEATS 7 TIMES FOR SAL,TEM,DYE,SFL,TOX,SED,SND
+*
+C71 ISSPH NPSPH ISRSPH ISPHXY
+       0       1       0       3    !SAL
+       0       1       0       3    !TEM
+       0       1       0       3    !DYE
+       1       1       0       3 !EE WC/Sediment Top Layer Flag
+       0       1       0       3    !TOX
+       0       1       0       3    !SED
+       0       1       0       3    !SND
+-------------------------------------------------------------------------------
+C71A CONTROLS FOR HORIZONTAL PLANE SEDIMENT BED PROPERTIES CONTOURING
+* 
+*  ISBPH:  1 TO WRITE FILES FOR SED BED PROPERTY CONTOURING IN HORIZONTAL
+*          2 WRITE ONLY DURING LAST REFERENCE TIME PERIOD 
+* ISBEXP:  0 ASCII FORMAT, 1 EXPLORER BINARY FORMAT 
+*  NPBPH:    NUMBER OF WRITES PER REFERENCE TIME PERIOD 
+* ISRBPH:  1 TO WRITE FILES FOR RESIDUAL SED BED PROPERTY CONTOURING
+* ISBBDN:  1 WRITE LAYER WET DENSITY
+* ISBLAY:  1 WRITE LAYER THICKNESSES
+* ISBPOR:  1 WRITE LAYER POROSITY 
+*  SBSED:  1 WRITE COHESIVE SEDIMENT (MASS PER UNIT AREA)
+*          2 WRITE COHESIVE SEDIMENT (FRACTION OF TOTAL SEDIMENT)
+*          3 WRITE COHESIVE SEDIMENT (FRACTION OF TOTAL SEDIMENT+WATER)
+* ISBSED:  1 WRITE NONCOHESIVE SEDIMENT (MASS PER UNIT AREA)
+*          2 WRITE NONOOHESIVE SEDIMENT (FRACTION OF TOTAL SEDIMENT)
+*          3 WRITE NONCOHESIVE SEDIMENT (FRACTION OF TOTAL SEDIMENT+WATER) 
+* ISBVDR:  1 WRITE LAYER VOID RATIOS 
+* ISBARD:  1 WRITES ACCUMULATED MASS/AREA RESUSPENSION AND DEPOSITION FOR
+*            EACH SEDIMENT CLASS TO ASCII FILE BEDARD.OUT FOR ISBEXP=0 OR 1
+*
+C71A ISBPH ISBEXP NPBPH ISRBPH ISBBDN ISBLAY ISBPOR ISBSED ISBSND ISBVDR
+       0       0       0       0       0       0       0       0       0       0       0
+-------------------------------------------------------------------------------
+C71B FOOD CHAIN MODEL OUTPUT CONTROL
+* 
+*     ISFDCH: 1 TO WRITE OUTPUT FOR HOUSATONIC RIVER FOOD CHAIN MODEL
+*     NFDCHZ:   NUMBER OF SPATIAL ZONES
+*     HBFDCH:   AVERAGING DEPTH FOR TOP PORTION OF BED (METERS)
+*     TFCAVG:   TIME AVERAGING INTERVAL FOR FOOD CHAIN OUTPUT (SECONDS)
+* 
+C71B ISFDCH NFDCHZ HBFDCH TFCAVG 
+       0       5   .1524   86400
+-------------------------------------------------------------------------------
+C72 CONTROLS FOR HORIZONTAL SURFACE ELEVATION OR PRESSURE CONTOURING
+*
+*  ISPPH:  1 TO WRITE FILE FOR SURFACE ELEVATION OR PRESSURE CONTOURING
+*          2 WRITE ONLY DURING LAST REFERENCE TIME PERIOD
+*  NPPPH:    NUMBER OF WRITES PER REFERENCE TIME PERIOD
+*  ISRPPH: 1 TO WRITE FILE FOR RESIDUAL SURFACE ELEVATION  CONTOURNG IN
+*            HORIZONTAL PLANE
+*  IPPHXY: 0 DOES NOT WRITE I,J,X,Y IN surfplt.out and rsurfplt.out FILES 
+*          1 WRITES I,J ONLY IN surfplt.out and rsurfplt.out FILES
+*          2 WRITES I,J,X,Y  IN surfplt.out and rsurfplt.out FILES
+*          3 WRITES EFDC EXPLORER BINARY FORMAT FILES
+*
+C72 ISPPH NPPPH ISRPPH IPPHXY
+       1       1       0       3
+-------------------------------------------------------------------------------
+C73 CONTROLS FOR HORIZONTAL PLANE VELOCITY VECTOR PLOTTING
+*
+*  ISVPH:  1 TO WRITE FILE FOR VELOCITY PLOTTING IN HORIZONTAL PLANE
+*          2 WRITE ONLY DURING LAST REFERENCE TIME PERIOD
+*  NPVPH:    NUMBER OF WRITES PER REFERENCE TIME PERIOD
+*  ISRVPH: 1 TO WRITE FILE FOR RESIDUAL VELOCITY PLOTTIN IN
+*            HORIZONTAL PLANE
+*  IVPHXY: 0 DOES NOT WRITE I,J,X,Y IN velplth.out and rvelplth.out FILES
+*          1 WRITES I,J ONLY IN velplth.out and rvelplth.out FILES
+*          2 WRITES I,J,X,Y  IN velplth.out and rvelplth.out FILES
+*          3 WRITES EFDC EXPLORER BINARY FORMAT FILES
+*
+C73 ISVPH NPVPH ISRVPH IVPHXY
+       1       1       0       3
+-------------------------------------------------------------------------------
+C74 CONTROLS FOR VERTICAL PLANE SCALAR FIELD CONTOURING
+*
+*  ISECSPV:  N AN INTEGER NUMBER OF VERTICAL SECTIONS (N.LE.9) TO WRITE
+*              N FILES FOR SCALAR  FIELD CONTOURING
+*  NPSPV:      NUMBER OF WRITES PER REFERENCE TIME PERIOD
+*  ISSPV:    1 TO ACTIVATE INSTANTANEOUS SCALAR FIELDS
+*            2 WRITE ONLY DURING LAST REFERENCE TIME PERIOD
+*  ISRSPV:   1 TO ACTIVATE FOR RESIDUAL SCALAR FIELDS
+*  ISHPLTV:  1 FOR VERTICAL PLANE PLOTTING FOR MSL DATUMS, ZERO OTHERWISE
+*  DATA LINE REPEATS 7 TIMES FOR SAL,TEM,DYE,SFL,TOX,SED,SND
+*  ISECSPV IS DETERMINED FOR ALL 7 VARIABLES BY VALUE ON FIRST DATA LINE
+*
+C74 ISECSPV NPSPV ISSPV ISRSPV ISHPLTV
+       0       0       0       0       0    !SAL
+       0       0       0       0       0    !TEM
+       0       0       0       0       0    !DYE
+       0       0       0       0       0    !SFL
+       0       0       0       0       0    !TOX
+       0       0       0       0       0    !SED
+       0       0       0       0       0    !SND
+-------------------------------------------------------------------------------
+C75 MORE CONTROLS FOR VERTICAL PLANE SCALAR FIELD CONTOURING
+*
+*  ISECSPV: SECTION NUMBER
+*  NIJSPV:  NUMBER OF CELLS OR I,J PAIRS IN SECTION
+*  SEC ID:  CHARACTER FORMAT SECTION TITLE
+*
+C75 ISECSPV NIJSPV SEC ID
+-------------------------------------------------------------------------------
+C76 I,J LOCATIONS FOR VERTICAL PLANE SCALAR FIELD CONTOURING
+*
+*  ISECSPV: SECTION NUMBER
+*  ISPV:    I CELL
+*  JSPV:    J CELL
+*
+C76 ISECSPV ISPV JSPV
+-------------------------------------------------------------------------------
+C77 CONTROLS FOR VERTICAL PLANE VELOCITY VECTOR PLOTTING
+*
+*  ISECVPV: N AN INTEGER NUMBER (N.LE.9) OF VERTICAL SECTIONS
+*             TO WRITE N FILES FOR VELOCITY PLOTTING
+*  NPVPV:     NUMBER OF WRITES PER REFERENCE TIME PERIOD
+*  ISVPV:   1 TO ACTIVATE INSTANTANEOUS VELOCITY
+*            2 WRITE ONLY DURING LAST REFERENCE TIME PERIOD
+*  ISRSPV:  1 TO ACTIVATE FOR RESIDUAL VELOCITY
+*
+C77 ISECVPV NPVPV ISVPV ISRSPV
+       0       1       0       0
+-------------------------------------------------------------------------------
+C78 MORE CONTROLS FOR VERTICAL PLANE VELOCITY VECTOR PLOTTING
+*
+*  ISCEVPV: SECTION NUMBER
+*  NIJVPV:  NUMBER IS CELLS OR I,J PAIRS IN SECTION
+*  ANGVPV:  CCW POSITIVE ANGLE FROM EAST TO SECTION NORMAL
+*  SEC ID:  CHARACTER FORMAT SECTION TITLE
+*
+C78 ISECVPV NIJVPV ANGVPV SEC ID
+-------------------------------------------------------------------------------
+C79 CONTROLS FOR VERTICAL PLANE VELOCITY PLOTTING
+*
+*  ISECVPV: SECTION NUMBER (REFERENCE USE HERE)
+*  IVPV:    I CELL INDEX
+*  JVPV:    J CELL INDEX
+*
+C79 ISECVPV IVPV JVPV
+-------------------------------------------------------------------------------
+C80 CONTROLS FOR 3D FIELD OUTPUT
+*
+*  IS3DO:  1 TO WRITE TO 3D ASCI INTEGER FORMAT FILES, JS3DVAR.LE.2     SEE|
+*          1 TO WRITE TO 3D ASCI FLOAT POINT FORMAT FILES, JS3DVAR.EQ.3 C57|
+*          2 TO WRITE TO 3D CHARACTER ARRAY FORMAT FILES (NOT ACTIVE)
+*          3 TO WRITE TO 3D HDF IMAGE FORMAT FILES (NOT ACTIVE)
+*          4 TO WRITE TO 3D HDF FLOATING POINT FORMAT FILES (NOT ACTIVE)
+*  ISR3DO:   SAME AS IS3DO EXCEPT FOR RESIDUAL VARIABLES
+*  NP3DO:    NUMBER OF WRITES PER LAST REF TIME PERIOD FOR INST VARIABLES
+*  KPC:      NUMBER OF UNSTRETCHED PHYSICAL VERTICAL LAYERS
+*  NWGG:     IF NWGG IS GREATER THAN ZERO, NWGG DEFINES THE NUMBER OF !2877|
+*            WATER CELLS IN CARTESIAN 3D GRAPHICS GRID OVERLAY OF THE
+*            CURVILINEAR GRID. FOR NWGG>0 AND EFDC RUNS ON A CURVILINEAR
+*            GRID, I3DMI,I3DMA,J3DMI,J3DMA REFER TO CELL INDICES ON THE
+*            ON THE CARTESIAN GRAPHICS GRID OVERLAY DEFINED BY FILE
+*            GCELL.INP.  THE FILE GCELL.INP IS NOT USED BY EFDC, BUT BY
+*            THE COMPANION GRID GENERATION CODE GEFDC.F.  INFORMATION
+*            DEFINING THE OVERLAY IS READ BY EFDC.F FROM THE FILE
+*            GCELLMP.INP. IF NWGG EQUALS 0, I3DMI,I3DMA,J3DMI,J3DMA REFER
+*            TO INDICES ON THE EFDC GRID DEFINED BY CELL.INP.
+*            ACTIVATION OF THE REWRITE OPTION I3DRW=1 WRITES TO THE FULL
+*            GRID DEFINED BY CELL.INP AS IF CELL.INP DEFINES A CARTESIAN
+*            GRID.  IF NWGG EQ 0 AND THE EFDC COMP GRID IS CO, THE REWRITE
+*            OPTION IS NOT RECOMMENDED AND A POST PROCESSOR SHOULD BE USED
+*            TO TRANSFER THE SHORT FORM, I3DRW=0, OUTPUT TO AN APPROPRIATE
+*            FORMAT FOR VISUALIZATION. CONTACT DEVELOPER FOR MORE DETAILS
+*  I3DMI:    MINIMUM OR BEGINNING I INDEX FOR 3D ARRAY OUTPUT
+*  I3DMA:    MAXIMUM OR ENDING I INDEX FOR 3D ARRAY OUTPUT
+*  J3DMI:    MINIMUM OR BEGINNING J INDEX FOR 3D ARRAY OUTPUT
+*  J3DMA:    MAXIMUM OR ENDING J INDEX FOR 3D ARRAY OUTPUT
+*  I3DRW:  0 FILES WRITTEN FOR ACTIVE CO WATER CELLS ONLY
+*          1 REWRITE FILES TO CORRECT ORIENTATION DEFINED BY GCELL.INP
+*            AND GCELLMP.INP FOR CO WITH NWGG.GT.O OR BY CELL.INP IF THE
+*            COMPUTATIONAL GRID IS CARTESIAN AND NWGG.EQ.0
+*  SELVMAX:  MAXIMUM SURFACE ELEVATION FOR UNSTRETCHING (ABOVE MAX SELV )
+*  BELVMIN:  MINIMUM BOTTOM ELEVATION FOR UNSTRETCHING (BELOW MIN BELV)
+*
+C80 IS3DO ISR3DO NP3DO KPC NWGG I3DMI I3DMA J3DMI J3DMA I3DRW SELVMAX BELVMIN
+       0       0       0       1       0       1      88       1     132       0      15    -315
+-------------------------------------------------------------------------------
+C81 OUTPUT ACTIVATION AND SCALES FOR 3D FIELD OUTPUT
+*
+*  VARIABLE:     DUMMY VARIBLE ID (DO NOT CHANGE ORDER)
+*  IS3(VARID): 1 TO ACTIVATE THIS VARIBLES
+*  JS3(VARID): 0 FOR NO SCALING OF THIS VARIABLE
+*              1 FOR AUTO SCALING OF THIS VARIABLE OVER RANGE 0<VAL<255
+*                AUTO SCALES FOR EACH FRAME OUTPUT IN FILES OUT3D.DIA AND
+*                ROUT3D.DIA  OUTPUT IN I4 FORMAT
+*              2 FOR SCALING SPECIFIED IN NEXT TWO COLUMNS WITH OUTPUT
+*                DEFINED OVER RANGE  0<VAL<255 AND WRITTEN IN I4 FORMAT
+*              3 FOR MULTIPLIER SCALING BY MAX SCALE VALUE WITH OUTPUT
+*                WRITTEN IN F7.1 FORMAT (IS3DO AND ISR3DO MUST BE 1)
+*
+C81 VARIABLE IS3D JS3D SMAX  SMIN
+ 'U VEL'       0       0       0       0
+ 'V VEL'       0       0       0       0
+ 'W VEL'       0       0       0       0
+ 'SALINITY'       0       0       0       0
+  'TEMP'       0       0       0       0
+   'DYE'       0       0       0       0
+ 'COH SED'       0       0       0       0
+ 'NCH SED'       0       0       0       0
+ 'TOX CON'       0       0       0       0
+-------------------------------------------------------------------------------
+C82 INPLACE HARMONIC ANALYSIS PARAMETERS
+*
+*  ISLSHA:  1 FOR IN PLACE LEAST SQUARES HARMONIC ANALYSIS
+*  MLLSHA:  NUMBER OF LOCATIONS FOR LSHA
+*  NTCLSHA: LENGTH OF LSHA IN INTEGER NUMBER OF REFERENCE TIME PERIODS
+*  ISLSTR:  1 FOR TREND REMOVAL
+*  ISHTA :  1 FOR SINGLE TREF PERIOD SURFACE ELEV ANALYSIS
+*                    90
+C82 ISLSHA MLLSHA NTCLSHA ISLSTR ISHTA
+       0       0       0       0       0
+-------------------------------------------------------------------------------
+C83 HARMONIC ANALYSIS LOCATIONS AND SWITCHES
+*
+*  ILLSHA:   I CELL INDEX
+*  JLLSHA:   J CELL INDEX
+*  LSHAP:  1 FOR ANALYSIS OF SURFACE ELEVATION
+*  LSHAB:  1 FOR ANALYSIS OF SALINITY
+*  LSHAUE: 1 FOR ANALYSIS OF EXTERNAL MODE HORIZONTAL VELOCITY
+*  LSHAU:  1 FOR ANALYSIS OF HORIZONTAL VELOCITY IN EVERY LAYER
+*  CLSL:     LOCATION AS A CHARACTER VARIALBLE
+*
+C83 ILLSHA JLLSHA LSHAP LSHAB LSHAUE LSHAU CLSL
+-------------------------------------------------------------------------------
+C84 CONTROLS FOR WRITING TO TIME SERIES FILES
+*
+*  ISTMSR:  1 OR 2 TO WRITE TIME SERIES OF SURF ELEV, VELOCITY, NET
+*           INTERNAL AND EXTERNAL MODE VOLUME SOURCE-SINKS, AND
+*           CONCENTRATION VARIABLES,  2 APPENDS EXISTING TIME SERIES FILES
+*  MLTMSR:  NUMBER HORIZONTAL LOCATIONS TO WRITE TIME SERIES OF SURF ELEV,
+*           VELOCITY, AND CONCENTRATION VARIABLES
+*  NBTMSR:  TIME STEP TO BEGIN WRITING TO TIME SERIES FILES (Inactive)
+*  NSTMSR:  TIME STEP TO STOP WRITING TO TIME SERIES FILES (Inactive)
+*  NWTMSR:  NUMBER OF TIME STEPS TO SKIP BETWEEN OUTPUT
+*  NTSSTSP: NUMBER OF TIME SERIES START-STOP SCENARIOS,  1 OR GREATER
+*  TCTMSR:  UNIT CONVERSION FOR TIME SERIES TIME.  FOR SECONDS, MINUTES,
+*           HOURS,DAYS USE 1.0, 60.0, 3600.0, 86400.0 RESPECTIVELY
+*
+*
+C84 ISTMSR MLTMSR  NBTMSR  NSTMSR  NWTMSR NTSSTSP TCTMSR
+       1       0       0       0       1       0   86400
+-------------------------------------------------------------------------------
+C85 CONTROLS FOR WRITING TO TIME SERIES FILES
+*
+*  ITSSS:   START-STOP SCENARIO NUMBER 1.GE.ISSS.LE.NTSSTSP
+*  MTSSTSP: NUMBER OF STOP-START PAIRS FOR SCENARIO ISSS
+*
+C85 ITSSS MTSSTSP
+-------------------------------------------------------------------------------
+C86 CONTROLS FOR WRITING TO TIME SERIES FILES
+*
+*  ITSSS:  START-STOP SCENARIO NUMBER 1.GE.ISSS.LE.NTSSTSP
+*  MTSSS:  NUMBER OF STOP-START PAIRS FOR SCENARIO ISSS
+*  TSSTRT: STARTING TIME FOR SCENARIO ITSSS, SAVE INTERVAL MTSSS
+*  TSSTOP: STOPING TIME FOR SCENARIO ITSSS, SAVE INTERVAL MTSSS
+*                   -1000.
+C86 ISSS MTSSS TSSTRT TSSTOP COMMENT
+-------------------------------------------------------------------------------
+C87 CONTROLS FOR WRITING TO TIME SERIES FILES
+*
+*  ILTS:    I CELL INDEX
+*  JLTS:    J CELL INDEX
+*  NTSSSS:  WRITE SCENARIO FOR THIS LOCATION
+*  MTSP:  1 FOR TIME SERIES OF SURFACE ELEVATION
+*  MTSC:  1 FOR TIME SERIES OF TRANSPORTED CONCENTRATION VARIABLES
+*  MTSA:  1 FOR TIME SERIES OF EDDY VISCOSITY AND DIFFUSIVITY
+*  MTSUE: 1 FOR TIME SERIES OF EXTERNAL MODE HORIZONTAL VELOCITY
+*  MTSUT: 1 FOR TIME SERIES OF EXTERNAL MODE HORIZONTAL TRANSPORT
+*  MTSU:  1 FOR TIME SERIES OF HORIZONTAL VELOCITY IN EVERY LAYER
+*  MTSQE: 1 FOR TIME SERIES OF NET EXTERNAL MODE VOLUME SOURCE/SINK
+*  MTSQ:  1 FOR TIME SERIES OF NET EXTERNAL MODE VOLUME SOURCE/SINK
+*  CLTS:    LOCATION AS A CHARACTER VARIALBLE
+*
+C87 ILTS JLTS NTSSSS MTSP MTSC MTSA MTSUE MTSUT MTSU MTSQE MTSQ CLTS
+-------------------------------------------------------------------------------
+C88 CONTROLS FOR EXTRACTING INSTANTANEOUS VERTICAL SCALAR FIELD PROFILES
+*
+*  ISVSFP: 1 FOR EXTRACTING INSTANTANEOUS VERTICAL FIELD PROFILES
+*  MDVSFP: MAXIMUM NUMBER OF DEPTHS FOR SAMPLING VALUES
+*  MLVSFP: NUMBER OF HORIZONTAL SPACE-TIME LOCATION PAIRS TO BE SAMPLED
+*  TMVSFP: MULTIPLIER TO CONVERT SAMPLING TIMES TO SECONDS
+*  TAVSFP: ADDITIVE ADJUSTMENT TO SAMPLING TIME BEFORE CONVERSION TO SEC
+*       200MAX   1600MAX
+C88 ISVSFP MDVSFP MLVSFP TMVSFP TAVSFP
+       0       0       0   86400       0
+-------------------------------------------------------------------------------
+C89 SAMPLING DEPTHS FOR EXTRACTING INST VERTICAL SCALAR FIELD PROFILES
+*
+*  MMDVSFP: MTH SAMPLING DEPTH
+*  DMSFP:   SAMPLING DEPTH BELOW SURFACE, IN METERS
+*
+C89 MMDVSFP DMVSFP
+-------------------------------------------------------------------------------
+C90 HORIZONTAL SPACE-TIME LOCATIONS FOR SAMPLING
+*
+*  MMLVSFP: MTH SPACE TIME SAMPLING LOCATION
+*  TIMVSFP: SAMPLING TIME
+*  IVSFP:   I HORIZONTAL LOCATON INDEX
+*  JVSFP:   J HORIZONTAL LOCATON INDEX
+*
+C90 MMLVSFP TIMVSFP IVSFP JVSFP

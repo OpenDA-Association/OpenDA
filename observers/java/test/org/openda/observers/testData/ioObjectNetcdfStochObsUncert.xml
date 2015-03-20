@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.wldelft.nl" xsi:schemaLocation="http://www.wldelft.nl http://schemas.openda.org/uncertainty/uncertainties.xsd" version="1.0">
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+	<probabilityDistributionFunction id="VAR_40_GDS4_SFC" isActive="true">
+		<normal mean="0" stdv="0.05" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+</uncertainties>

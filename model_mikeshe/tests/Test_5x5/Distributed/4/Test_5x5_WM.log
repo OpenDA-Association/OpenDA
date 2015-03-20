@@ -1,0 +1,280 @@
+ ERRORS AND MESSAGES FROM 32-bit version of MIKE SHE Water Movement. Input file : c:\OpenDA_MI\Test_5x5\Distributed\4\Test_5x5.she
+ =================================================================================================================================
+ 
+ 
+13:03:11 : INITIALIZATION PHASE
+===============================
+
+Opening files...
+Print file : c:\OpenDA_MI\Test_5x5\Distributed\4\Test_5x5.she - Result Files\Test_5x5_WM_Print.log
+Fif   file : c:\OpenDA_MI\Test_5x5\Distributed\4\Test_5x5.she - Result Files\Test_5x5.fif
+ 
+Group:
+Frame Data
+Size and Specifications
+Checks
+Copying to frf file
+Vegetation module initialisation
+Initializing Met. data...
+Memory allocation
+Initializations and reference systems
+Initializing components...
+ET
+SZ
+Two-Layer UZ Module
+SZ fif-output
+Storing initial conditions...
+done
+
+
+
+Parallelization info
+--------------------
+Number of processors  : 4
+Max. number of threads: 4
+Number of threads allowed by actual license: Unlimited
+Setting number of threads for actual application to 4
+ 
+ 
+PREPARE:
+NrOfQuantities, NrOfExchangeItems, NrOfInputExchangeItems, NrOfOutputExchangeItems:33,43,12,31
+ 
+Quantity IDs:
+precipitation rate
+average water content in the rootzone
+rooting depth
+leaf area index
+crop coefficient
+potential evapotranspiration
+ETref x Kc
+actual evapotranspiration
+actual transpiration
+actual evaporation from interception
+actual evaporation from ponded water
+canopy interception storage
+evapotranspiration from SZ
+depth of overland water
+overland water elevation
+infiltration to UZ (negative)
+exchange between UZ and SZ (pos.up)
+Total recharge to SZ (pos.down)
+Total recharge (flow) to SZ (pos.down)
+depth to phreatic surface (negative)
+elevation of phreatic surface
+head elevation in saturated zone
+SZ horizontal conductivity (for DA-OpenMI)
+SZ vertical conductivity (for DA-OpenMI)
+seepage flow SZ -overland
+seepage flow overland - SZ (negative)
+Leakage (flux) to SZ
+Leakage (flow) to SZ
+groundwater flow in x-direction
+groundwater flow in y-direction
+groundwater flow in z-direction
+groundwater extraction
+External sources to SZ (for OpenMI)
+ 
+ExchangeItems:
+precipitation rate, Global value
+precipitation rate, BaseGrid
+average water content in the rootzone, BaseGrid
+rooting depth, Global value
+rooting depth, BaseGrid
+leaf area index, Global value
+leaf area index, BaseGrid
+crop coefficient, Global value
+crop coefficient, BaseGrid
+potential evapotranspiration, Global value
+potential evapotranspiration, BaseGrid
+ETref x Kc, BaseGrid
+actual evapotranspiration, BaseGrid
+actual transpiration, BaseGrid
+actual evaporation from interception, BaseGrid
+actual evaporation from ponded water, BaseGrid
+canopy interception storage, BaseGrid
+evapotranspiration from SZ, BaseGrid
+depth of overland water, BaseGrid
+overland water elevation, BaseGrid
+infiltration to UZ (negative), BaseGrid
+exchange between UZ and SZ (pos.up), BaseGrid
+Total recharge to SZ (pos.down), BaseGrid
+Total recharge (flow) to SZ (pos.down), BaseGrid
+depth to phreatic surface (negative), BaseGrid
+elevation of phreatic surface, BaseGrid
+head elevation in saturated zone, SZ3DGrid
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+seepage flow SZ -overland, BaseGrid
+seepage flow overland - SZ (negative), BaseGrid
+Leakage (flux) to SZ, BaseGrid
+Leakage (flow) to SZ, BaseGrid
+groundwater flow in x-direction, SZ3DGrid
+groundwater flow in y-direction, SZ3DGrid
+groundwater flow in z-direction, SZ3DGrid
+groundwater extraction, Well_LR
+groundwater extraction, SZ3DGrid
+groundwater extraction, Well_LR
+External sources to SZ (for OpenMI), SZ3DGrid
+ 
+InputExchangeItems:
+precipitation rate, Global value
+rooting depth, Global value
+leaf area index, Global value
+crop coefficient, Global value
+potential evapotranspiration, Global value
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+Leakage (flux) to SZ, BaseGrid
+Leakage (flow) to SZ, BaseGrid
+groundwater extraction, Well_LR
+External sources to SZ (for OpenMI), SZ3DGrid
+ 
+OutputExchangeItems:
+precipitation rate, BaseGrid
+average water content in the rootzone, BaseGrid
+rooting depth, BaseGrid
+leaf area index, BaseGrid
+crop coefficient, BaseGrid
+potential evapotranspiration, BaseGrid
+ETref x Kc, BaseGrid
+actual evapotranspiration, BaseGrid
+actual transpiration, BaseGrid
+actual evaporation from interception, BaseGrid
+actual evaporation from ponded water, BaseGrid
+canopy interception storage, BaseGrid
+evapotranspiration from SZ, BaseGrid
+depth of overland water, BaseGrid
+overland water elevation, BaseGrid
+infiltration to UZ (negative), BaseGrid
+exchange between UZ and SZ (pos.up), BaseGrid
+Total recharge to SZ (pos.down), BaseGrid
+Total recharge (flow) to SZ (pos.down), BaseGrid
+depth to phreatic surface (negative), BaseGrid
+elevation of phreatic surface, BaseGrid
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+seepage flow SZ -overland, BaseGrid
+seepage flow overland - SZ (negative), BaseGrid
+groundwater flow in x-direction, SZ3DGrid
+groundwater flow in y-direction, SZ3DGrid
+groundwater flow in z-direction, SZ3DGrid
+groundwater extraction, SZ3DGrid
+groundwater extraction, Well_LR
+ 
+listOfUsedquantityIDs_ : head elevation in saturated zone;SZ horizontal conductivity (for DA-OpenMI)
+ 
+localQuantityIDs, NrOfUsedQuantities=2:
+head elevation in saturated zone
+SZ horizontal conductivity (for DA-OpenMI)
+ 
+- after removing doublets :
+head elevation in saturated zone
+SZ horizontal conductivity (for DA-OpenMI)
+ 
+SortedQuantityList:
+head elevation in saturated zone
+SZ horizontal conductivity (for DA-OpenMI)
+rooting depth
+leaf area index
+crop coefficient
+potential evapotranspiration
+ETref x Kc
+actual evapotranspiration
+actual transpiration
+actual evaporation from interception
+actual evaporation from ponded water
+canopy interception storage
+evapotranspiration from SZ
+depth of overland water
+overland water elevation
+infiltration to UZ (negative)
+exchange between UZ and SZ (pos.up)
+Total recharge to SZ (pos.down)
+Total recharge (flow) to SZ (pos.down)
+depth to phreatic surface (negative)
+elevation of phreatic surface
+precipitation rate
+average water content in the rootzone
+SZ vertical conductivity (for DA-OpenMI)
+seepage flow SZ -overland
+seepage flow overland - SZ (negative)
+Leakage (flux) to SZ
+Leakage (flow) to SZ
+groundwater flow in x-direction
+groundwater flow in y-direction
+groundwater flow in z-direction
+groundwater extraction
+External sources to SZ (for OpenMI)
+ 
+SortedInputExchangeItemList:
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+rooting depth, Global value
+leaf area index, Global value
+crop coefficient, Global value
+potential evapotranspiration, Global value
+precipitation rate, Global value
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+Leakage (flux) to SZ, BaseGrid
+Leakage (flow) to SZ, BaseGrid
+groundwater extraction, Well_LR
+External sources to SZ (for OpenMI), SZ3DGrid
+ 
+SortedOutputExchangeItemList:
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+rooting depth, BaseGrid
+leaf area index, BaseGrid
+crop coefficient, BaseGrid
+potential evapotranspiration, BaseGrid
+ETref x Kc, BaseGrid
+actual evapotranspiration, BaseGrid
+actual transpiration, BaseGrid
+actual evaporation from interception, BaseGrid
+actual evaporation from ponded water, BaseGrid
+canopy interception storage, BaseGrid
+evapotranspiration from SZ, BaseGrid
+depth of overland water, BaseGrid
+overland water elevation, BaseGrid
+infiltration to UZ (negative), BaseGrid
+exchange between UZ and SZ (pos.up), BaseGrid
+Total recharge to SZ (pos.down), BaseGrid
+Total recharge (flow) to SZ (pos.down), BaseGrid
+depth to phreatic surface (negative), BaseGrid
+elevation of phreatic surface, BaseGrid
+precipitation rate, BaseGrid
+average water content in the rootzone, BaseGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+seepage flow SZ -overland, BaseGrid
+seepage flow overland - SZ (negative), BaseGrid
+groundwater flow in x-direction, SZ3DGrid
+groundwater flow in y-direction, SZ3DGrid
+groundwater flow in z-direction, SZ3DGrid
+groundwater extraction, SZ3DGrid
+groundwater extraction, Well_LR
+ 
+WARNING: Floating point control word reset to "0001001101110010" from "0000001001111111" (check: GetTSValueR4Avg)
+ 
+ 
+ 
+13:03:13 : Start of simulation from 1973/01/01,00:00
+====================================================
+
+- further initializations...
+- Two-Layer UZ
+ 
+WARNING: Floating point control word reset to "0001001101110010" from "0000001001111111" (check: GetTSValueR4Avg)
+13:03:13 => 1973/01/01,04:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 0, avg: 0.0
+ 
+WARNING: Floating point control word reset to "0001001101110010" from "0000001001111111" (check: GetTSValueR4Avg)
+ 
+WARNING: Floating point control word reset to "0001001101110010" from "0000001001111111" (check: GetTSValueR4Avg)
+ 
+WARNING: Floating point control word reset to "0001001101110010" from "0000001001111111" (check: GetTSValueR4Avg)
+         (no more FP control word warnings will be printed)
+13:03:51 => 1973/01/02,02:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 2, avg: 2.0

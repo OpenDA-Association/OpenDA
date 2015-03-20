@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+	<probabilityDistributionFunction id="state" isActive="true">
+		<normal mean="0.0" stdv=".03" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+</uncertainties>

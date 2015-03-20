@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="SwivtVisualizationFilesXML">
+		<xs:all>
+			<xs:element name="observationDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>directory containing the observations</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modelDirectory" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>directory containing the model results (should be ommited, in which case default, the instance directory, is taken)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="presentationSettingsDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>directory containing the *.mat file(s) with visualization settings</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="SwivtVisualizationXML">
+		<xs:all>
+			<xs:element name="isActive" type="xs:boolean" default="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify whether this swivt presentation setting is active.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="executable" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>visualization executable</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outputDirectoryParent" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Directory where per instance a subdirectory is created that will contain the figures (default instanceDir/../figures). If omitted, the files are placed in "modelDirectory", the directory where the model results are.			</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="visualizationFiles" type="openda:SwivtVisualizationFilesXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>visualization visualizationFiles</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="SwanVisualizationXML">
+		<xs:choice>
+			<xs:element name="swivt" type="openda:SwivtVisualizationXML"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="swanVisualization" type="openda:SwanVisualizationXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for the presentation of the results.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,4 @@
+<GriddedFullSearchConfig>
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <gridRange min="[7.0,1.5]" max="[9.0,1.8]" step="[0.2,0.05]" />
+</GriddedFullSearchConfig>

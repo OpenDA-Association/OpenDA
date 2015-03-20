@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>XML Schema Reference</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>XML Schema Reference</h1>
+
+<hr>
+
+<h2>Introduction</h2>
+
+The XML configuration input files for OpenDA follow a format specified in XML Schema Definition (XSD) files.
+The xsd schemas are located on <a href="http://schemas.openda.org">schemas.openda.org</a> and are referred to in the XML file header. A convenient way to write XML
+files that are valid (i.e. agree with the prescribed schema) is to use an XML editor that incorporates the schema for
+suggesting possible options and for validity checking. <p>
+These pages contains the following reference information for setting up valid XML input files for OpenDA:
+<li>The XML schemas are described in the form of diagrams that conform with the Content Model View as employed by XMLSpy,
+and they include extensive documentation.
+<li>At various locations, OpenDA classes may be included in the XML input files; the possible classnames are
+listed on the pages "classNames for ...".
+<li>Numerous examples further clarify the format of the XML input files.
+</ul>
+<p>
+The menu on the left is organized as follows:
+<li> Main input file (application): the top-level OpenDA configuration file that specifies the basic components and
+     that contains references to lower-level configuration files.
+<li> Stochastic observers: configuration files for a number of possible stochastic observers.
+<li> Stochastic model factories - Black box models: configuration files for the black box model wrapper, subdivided in three layers.
+<li> Stochastic model factories - Toy models: configuration files for a number of small models that are readily available in OpenDA for tutoring
+and for testing and validation of algorithms.
+<li> Algorithms: configuration files for the calibration and assimilation algorithms that are
+     available in OpenDA.
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="OuterLoopXML">
+		<xs:attribute name="method" type="xs:string" default="fletcher-reeves">
+			<xs:annotation>
+				<xs:documentation>Specify conjugate gradient method: (1) fletcher-reeves, (2) polak ribiere, (3) Steepest Descent.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="200">
+			<xs:annotation>
+				<xs:documentation>Maximum number of outer iterations.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absTolGrad" type="xs:double" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Absolute tolerance for gradient.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolGrad" type="xs:double" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Relative tolerance for gradient.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absTolStep" type="xs:double" use="optional" default="0.001">
+			<xs:annotation>
+				<xs:documentation>Absolute tolerance for step size.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolStep" type="xs:double" use="optional" default="0.001">
+			<xs:annotation>
+				<xs:documentation>Relative tolerance for step size.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

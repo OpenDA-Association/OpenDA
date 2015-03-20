@@ -1,0 +1,570 @@
+\svnidlong
+{$HeadURL: https://repos.deltares.nl/repos/openda/public/trunk/core/doc/native_model_builders/m06006.tex $}
+{$LastChangedDate: 2014-04-03 16:20:38 +0200 (Thu, 03 Apr 2014) $}
+{$LastChangedRevision: 4395 $}
+{$LastChangedBy: vrielin $}
+
+\odachapter{The COSTA parallel modelbuilder}
+
+{\bf{Remark:}}
+COSTA is incorporated in \oda, {\tt /public/core/native/src/cta}.\\
+
+\begin{tabular}{p{4cm}l}
+\textbf{Contributed by:} & Nils van Velzen, CTA memo200606\\
+\textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
+\end{tabular}
+
+\section{Introduction}
+The COSTA environment makes a number of building blocks available for
+creating data assimilation and calibration systems. Combining and creating
+building new building blocks should be possible with a minimum of effort.
+
+COSTA contains tools for rapidly creating COSTA model components. These
+tools are called modelbuilders. This document describes the parallel model
+builder. This modelbuilder will create a mode-parallel model from an
+arbitrary COSTA model.
+
+This memo describes the first version of the parallel modelbuilder.
+Section \ref{Sec:Mode-parallel} describes the form of parallelization
+implemented by the parallel modelbuilder. The usage of the modelbuilder
+and how to adjust your existing sequential data assimilation system is
+described in Section \ref{Sec:Using the COSTA modelbuilder}. The design
+of the parallel modelbuilder is described in Section 
+\ref{Sec:Technical aspects of the modelbuilder}. The modelbuilder is
+tested with a number of models and data assimilation methods. The results
+of these tests are presented in Section \ref{Sec:Tests and Performance}.
+This document describes the initial version. The testing and development
+stages yielded some ideas for future improvement of the modelbuilder.
+These ideas are presented in Section \ref{Sec:Future improvements}.
+
+
+
+\section{Mode-parallel} \label{Sec:Mode-parallel}
+Data assimilation and model calibration algorithms need to perform a large
+number of model computations for a given timespan, called model
+propagations. These propagations are often very computational expensive and
+dominate the total time needed to do the assimilation or calibration run.
+
+Not all propagations depend on each other, therefore it is possible to
+perform them in arbitrary order and in parallel. For example:
+\begin{itemize}
+\item The propagations of all ensemble members of an ensemble Kalman filter; 
+\item The propagation of the L-matrix of the RRSQRT-filter and the 
+      'central' state.
+\item Computation of the gradient of the model with respect to some model
+      parameters using a finite difference approach.
+\end{itemize}
+
+The COSTA parallel modelbuilder makes it possible to perform the
+propagations of different model instances in parallel. Significantly decreasing
+the computational time for most data assimilation applications.
+
+\section{Using the COSTA modelbuilder} \label{Sec:Using the COSTA modelbuilder}
+\subsection{Adjusting the code}
+In order to use the parallel modelbuilder it is necessary to make a small
+extension to the code of an (existing) COSTA data assimilation system.
+After the initialization of the model the function 
+{\tt CTA\_MODBUILD\_PAR\_CREATECLASS} must be called. From that
+point the parallel modelbuilder is initialized and the available processes
+are divided into  a master process and several worker processes.
+
+\horzline
+\begin{tabbing}
+\functab
+\funcdef{CTA\_MODBUILD\_PAR\_CREATECLASS(modelcls)}
+\funcline{OUT} {modelcls}  {Class handle of the parallel modelbuilder }\\
+\end{tabbing}
+\horzline
+
+\begin{verbatim}
+void CTA_Modbuild_par_CreateClass (CTA_ModelClass *modelcls)
+\end{verbatim}
+
+\begin{verbatim}
+CTA_MODBUILD_PAR_CREATECLASS (MODELCLS)
+   INTEGER MODELCLS
+\end{verbatim}
+
+Note that the worker processes will not execute any code after this function
+call. As a consequence, the modelbuilder must be initialized after the
+class initialization of the model. The parallel model class handle must be
+used for the creation of all models. The XML-configuration of the
+modelbuilder will realize the link with the existing simulation model. This is
+explained in Section \ref{Sec:input-file}. 
+
+The First lines of a typical application using the parallel modelbuilder
+are similar to the code in Table \ref{Tab: main program}.
+
+
+\begin{table}[h]
+\begin{tabular}{|l|}
+\hline
+\begin{minipage}{16cm}
+\begin{verbatim}
+
+call cta_initialise(retval)
+!
+!    Initialise model (oscillation model)
+!
+call oscill_model_createfunc()
+!
+! Initialise parallel modelbuilder and start workers
+!
+call cta_modbuild_par_createclass(CTA_MODBUILD_PAR)
+!
+!    Process input and call method
+!     
+   :
+call cta_finalise(retval)
+
+\end{verbatim}
+\end{minipage}
+\\
+\hline
+\end{tabular}
+\caption{\em Main program of a data assimilation system using the parallel
+modelbuilder.}
+\label{Tab: main program}
+\end{table}
+
+
+\subsection{input-file} \label{Sec:input-file}
+The input of the modelbuilder is quite simple. The input of a simulation
+system using the parallel modelbuilder is given in Table \ref{Tab: input
+modbuild_par}. In the current version only two things need to
+be specified:
+\begin{itemize}
+\item name (tag) of the modelclass of the model,
+\item the name of the input-file of the model.
+\end{itemize}
+
+
+\begin{table}[h]
+\begin{tabular}{|l|}
+\hline
+\begin{minipage}{16cm}
+\begin{verbatim}
+
+<modelbuild_par modelclass="modelbuild_sp"> 
+   <model>oscill.xml</model>
+</modelbuild_par> 
+
+\end{verbatim}
+\end{minipage}
+\\
+\hline
+\end{tabular}
+\caption{\em The input-file of the parallel model-builder}
+\label{Tab: input modbuild_par}
+\end{table}
+
+As we can see there is one limitation compared to arbitrary models. The
+model-input can only consist of a single string, in most cases the name of
+a file containing the model configuration. Most models can however be quickly
+adjusted, when necessary. COSTA provides a special function {\tt
+CTA\_Model\_Util\_InputTree} for handling
+the input and configuration of model instances. If a COSTA tree is given
+at model creation nothing is done. When however a string with the name of
+XML-configuration file is passed, the file is parsed and the corresponding
+configuration tree is created.
+
+\horzline
+\begin{tabbing}
+\functab
+\funcdef{CTA\_MODEL\_UTIL\_INPUTTREE(hinput, tinput, cleanup)}
+\funcline{IN}  {hinput}  {Models configuration; a string of the
+configuration file or a}\\
+\funcline{}    {}        {COSTA tree}\\
+\funcline{OUT} {tinput}  {COSTA tree with model configuration.
+                          When {\tt hinput} is a }\\
+\funcline{}    {}        {COSTA tree than {\tt tinput} is equal to
+                          {\tt hinput}.}\\
+\funcline{OUT} {cleanup}  {Flag {\tt CTA\_TRUE}/{\tt CTA\_FALSE}. When
+{\tt tinput} is a filename, a }\\
+\funcline{}    {}        {COSTA tree is created and this tree must be
+cleaned/freed }\\
+\funcline{}    {}        {by the caller of this function.}\\
+\end{tabbing}
+\horzline
+
+\begin{verbatim}
+int CTA_Model_Util_InputTree(CTA_Handle hinput, CTA_Tree *tinput,
+                             int *cleanup)
+\end{verbatim}
+
+\begin{verbatim}
+CTA_MODEL_UTIL_INPUTTREE(HINPUT, TINPUT, CLEANUP)
+   INTEGER HINPUT, TINPUT, CLEANUP
+\end{verbatim}
+
+\subsection{Axpy model between two model instances}
+The Axpy operation between two models is supported in the parallel model
+builder. There is a limitation. In order to perform the Axpy for models
+that are on different workers a copy of the model on the remote worker must
+be created. Therefore it is necessary that Export and Import methods of the
+model are implemented.
+
+\subsection{Random numbers}
+Stochastic models will use a random generator. When working with multiple
+processes we must be careful. There is a change that all processes will
+generate the same sequence of random numbers leading to undesired results. 
+
+The modelbuilder handles this issue. Therefore nothing needs to be done
+for models that use the COSTA random generator
+{\tt CTA\_RAND\_N} or a random generator that is based on the {\tt rand}
+function of C and did not set the random seed ({\tt srand}).
+
+Models that use a different random generator must be checked and optionally
+adjusted.
+
+\subsection{Running}
+The parallel modelbuilder is uses the MPI system for starting up the
+processes and handling the communication between these processes. The
+program {\tt mpirun} or {\tt mpiexec} must be used to start the
+application.  It is far behind the scope of this document to describe all
+features of MPI, {\tt mpirun} and {\tt mpiexec}. We will only give some
+instructions on how to start up your program in a way that will work for
+most MPI distributions.
+
+In order to startup your program {\tt myfilter.exe} using 5
+processes type on the command line:
+\begin{verbatim}
+% mpiexec -n 5 myfilter.exe
+\end{verbatim}
+or 
+\begin{verbatim}
+% mpirun -np 5 myfilter.exe
+\end{verbatim}
+In this case we will have 1 master and 4 workers.
+
+Some MPI distribution allow to start a sequential simulation without the
+use of {\tt mpirun} or {\tt mpiexec}. 
+\begin{verbatim}
+% myfilter.exe
+\end{verbatim}
+However this does not always work. If this does not work, start the
+sequential version of the application using:
+\begin{verbatim}
+% mpiexec -n 1 myfilter.exe
+\end{verbatim}
+
+Note that the master process is idle for most assimilation methods when the
+workers are performing their computations. Therefore it is possible to
+start $n+1$ processes on $n$ processors.
+
+The model instances are equally distributed over the available workers. For
+that reason it is wise to select the number of model instances e.g.
+ensemble members as a multiple of the number of worker processes. When this
+is not done not all resources are optimally used. The propagation of 11
+modes on 5 processors will take as much time as the propagation of 15
+modes on the same number of processes for example.
+
+
+\section{Technical aspects of the modelbuilder}
+ \label{Sec:Technical aspects of the modelbuilder}
+\subsection{Master worker}
+The goal of the parallel modelbuilder is to provide parallel computing and
+decrease computational (wall) time of computations on clusters of
+workstations or advanced multiprocessor machines. The modelbuilder must be
+easy to use with no or minimum adjustments to existing models and
+assimilation method implementations.
+
+COSTA models have no idea about the context they are used in. Therefore
+they have no clue on what methods in what sequence are called.
+Configuration files describing all algorithmic steps can be used to tackle
+this. This approach will result in an optimal performance and is used in
+\cite{Roest2002}. The creation of a detailed configuration file
+it quite complicated and configuration files have to be written
+for all assimilation methods. To overcome this problem a master worker
+approach is chosen for the parallel modelbuilder.
+
+In the master worker approach we use a single master process. In our case
+this process will run the assimilation algorithm like the sequential case.
+The remaining processes are worker processes executing all model component
+related computations. Depending on the number of model instances a worker
+holds one or more model instances.
+
+The necessary information, the header variables of the call, will be send
+to the worker process when the master executes a method of a COSTA model.
+Whenever the method returns information, the master will wait for the
+worker to send the result back. Some optimization can be performed using
+non-blocking communication but this issue will be discussed in more detail
+in Section \ref{Sec:Nonblocking}. The advantage of this approach is that
+the assimilation code does not need to be adjusted. All communication is
+handled by the parallel modelbuilder. The disadvantage is however that the
+parallelization will not be optimal. 
+
+\subsection{Sequential bottleneck}
+The parallel modelbuilder will speedup most data assimilation systems but
+the improvement is limited by the sequential parts in the assimilation
+method. We will illustrate this using the ensemble Kalman filter. 
+
+A time step of the ensemble Kalman filter consists of the following steps:
+\begin{enumerate}
+\item \label{Lab:Propagate} Propagate all ensemble members
+\item \label{Lab:Assim} Assimilate observations and adjust state of all modes
+\end{enumerate}
+
+The propagation part \ref{Lab:Propagate} is performed in parallel. In the
+most optimal situation it will take the time of a single mode propagation.
+The assimilation part \ref{Lab:Assim} is performed by the master process.
+The usage of the modelbuilder will not improve the computational time of
+this part\footnote{Due to some communication with the model for performing
+interpolation and setting of states it is likely that this step will be
+more expensive than in the sequential case}.
+
+The wall time of the computations in the sequential run is approximately
+defined by
+\begin{equation}
+t_{wall}=n t_{prop} + t_{assim}
+\end{equation}
+Where $n$ denotes the number of members in the ensemble. Increasing the
+number of workers will only influence the wall time of the propagation. The
+lower bound on the computational time using the parallel modelbuilder is
+therefore
+\begin{equation}
+t_{wall}=t_{prop} + t_{assim}
+\end{equation}
+
+The simulation results that are presented in Section \ref{Sec:Tests and
+Performance} will illustrate this behavior.
+
+\subsection{Sequential runs}
+A data assimilation system that uses the parallel modelbuilder should be
+equally efficient as the sequential implementation when running on one
+process. The parallel modelbuilder recognizes when it is initialized in a
+sequential run. In that case all methods of the model are directly
+connected to the parallel modelbuilder.
+
+\subsection{Communications}
+The master will send information to the worker when a method of the model
+is called and will wait for the results. In this section some insight is
+given on the actual implementation.
+
+\subsubsection{Local administration}
+For each model instance the master holds a limited administration currently
+only containing the rank of the worker that holds the model instance and
+the (integer) handle of the model instance at the worker.
+
+\subsubsection{Packing of data}
+In order to send information between the processes it is possible to pack
+and unpack COSTA objects like vectors state vectors and observation
+description instances. 
+When an object is packed all information is copied into a continuous block
+of memory. The unpack operation will reconstruct the object from the packed
+information.
+
+The COSTA pack component is used to hold packed data. Multiple components
+can be packed and unpacked into a single pack component. The export and
+import methods of components will perform the actual packing and unpacking. 
+
+\subsubsection{Communication sequence}
+The parallel modelbuilder will perform the following actions when the worker
+executes a method of the model.
+
+The master performs the following steps:
+\begin{enumerate}
+\item Send the name of the action including the local model handle to the
+      worker handling the model instance,
+\item (optional) pack all data; input arguments of method,
+\item (optional) send packed input arguments to method,
+\item (optional) receive packed results from worker.
+\item (optional) unpack results from worker.
+\end{enumerate}
+
+The worker performs the following steps:
+\begin{enumerate}
+\item receive the name of the action and local model handle
+\item (optional) Receive packed input arguments,
+\item execute method,
+\item (optional) pack returned data; output arguments of method,
+\item (optional) Send packed output arguments to method.
+\end{enumerate}
+
+Some of the steps are marked as optional. It depends on the method that is
+called whether these steps are performed or not.
+
+%\subsection{Observation Description Component}
+
+
+\section{Tests and performance}\label{Sec:Tests and Performance}
+\subsection{Small test-models}
+The parallel modelbuilder is tested using two existing COSTA test models; 
+\begin{enumerate}
+\item the heat model with the COSTA RRSQRT filter,
+\item the oscillation model with the COSTA ensemble Kalman filter.
+\end{enumerate}
+
+The purpose of these tests was to find errors in the modelbuilder. Since
+these models are very small we don not expect a lot of improvement in
+performance. These tests are therefore not run on a cluster of computers or
+a large multiprocessor machine.
+
+Figure \ref{Fig:twee} gives the simulation results of a parallel and
+sequential run of the Ensemble Kalman filter for the oscillation model. The
+small differences in the results are due to different random seeds.
+
+\begin{figure}
+\hbox{\epsfig{figure=./native_model_builders/figs/oscil_1_cpu.pdf,width=7cm}
+      \epsfig{figure=./native_model_builders/figs/oscil_10_cpu.pdf,width=7cm}}
+
+\caption{\em Results of the Ensemble Kalman filter with 10 modes for the
+             oscillation model. The left graph presents the results of a
+             sequential run and the right graph the results of a parallel
+             run with 10 workers. Differences are the result of different
+             random seeds.}
+\label{Fig:twee}
+\end{figure}
+
+\subsection{Lotos-Euros}
+Lotos-Euros is an operational used simulation model for air pollution in
+Europe. The model computations are computational expensive compared to the
+small models like the oscillation and heat model. The COSTA model component
+of this model was already available and therefore we have selected this
+model to look at the performance of the parallel model builder.
+
+The tests have been performed on two different machines.
+\begin{itemize}
+\item Laptop with Intel centrino duo, 1.66GHz CPU,
+\item Aster, an SGI Altix 3700 system with 416 Intel Itanium 2, 1.3GHz CPU's
+\end{itemize}
+
+The tests on the Intel centrino duo processor will illustrate that parallel
+computing is also useful on a single machine with a dual core processor.
+The simulation results are given in Table \ref{Table:Lotos Laptop}. 
+
+\begin{table}[h]
+\begin{tabular}{|l|lll|}
+\hline
+Gridsize & 1 process & 3 processes & Speedup \\
+\hline
+30x30x4 & 43.9 (s) & 29.9 (s) & 1.5 \\
+60x60x4 & 234.7 (s) & 164.8 (s) & 1.4 \\
+\hline
+\end{tabular}
+\caption{Sequential and parallel run of the Lotos Euros model on a
+dual core processor. The run is an Ensemble Kalman filter with 24 modes for
+a simulation period of 2 hours.}
+\label{Table:Lotos Laptop}
+\end{table}
+
+The same simulation is also performed on the Aster on a number of CPU's
+varying from 1 to 12. The results are presented in Figure \ref{Fig:drie}
+and Figure \ref{Fig:vier}. The speedup of the small model is much better
+than of the big model. We have not yet investigated this behavior.
+A possibility is that the sending of the states to worker is
+nonblocking for the small model as a result of an optimization in the MPI
+implementation and blocking for the large model.
+
+\begin{figure}
+\hbox{\epsfig{figure=./native_model_builders/figs/aster_30_24.pdf,width=7cm}
+      \epsfig{figure=./native_model_builders/figs/aster_30_24_su.pdf,width=7cm}}
+
+\caption{\em Computational time and speedup. Lotos Euros simulation of 24 
+             hours grid size 30x30x4 on ASTER. The ensemble Kalman filter
+             used 24 model instances (23 members for covariance approximation
+             and 1 background run)}
+\label{Fig:drie}
+\end{figure}
+
+\begin{figure}
+\hbox{\epsfig{figure=./native_model_builders/figs/aster_60_24.pdf,width=7cm}
+      \epsfig{figure=./native_model_builders/figs/aster_60_24_su.pdf,width=7cm}}
+
+\caption{\em Computational time and speedup. Lotos Euros simulation of 24 
+             hours grid size 60x60x4 on ASTER. The ensemble Kalman filter
+             used 24 model instances (23 members for covariance approximation
+             and 1 background run)}
+\label{Fig:vier}
+\end{figure}
+
+\subsection{Observation description}
+The default observations handling in COSTA is currently based on an
+SQLITE-database. Testing with the Lotos-Euros model revealed a performance
+issue. The time needed for reading from the database is not constant and
+requires a lot of wall-time, degenerating the performance of the parallel
+implementation. 
+
+The parallel modelbuilder will will remember the data from the last send
+observation description. This will save some time because the information
+only needs to be read from the database once and not for all workers.
+This performance issue needs to be investigated in more detail in the
+future.
+
+
+
+\section{Future improvements} \label{Sec:Future improvements}
+\subsection{MPI initialization}
+The current implementation uses the {\tt MPI\_COMM\_WORD} communicator and
+initializes MPI. For creating combinations with models that use MPI by them
+selves, this does not work. The initialization of the parallel model
+builder must be extended in order to create separate communication groups
+for the COSTA master and worker processes and the used model
+implementation.
+
+\subsection{Model state on master}
+The sequential bottleneck of the getstate method can be overcome by holding
+a model state of each model instance at the master. The value of this state
+is set using a nonblocking communication after every propagation.
+
+This option can be switched on in the configuration file.
+
+\subsection{States on workers}
+The worker processes are now limited to holding model instances. The
+implementation of the workers is general and not limited to handling
+models. An extension to the parallel modelbuilder is the possibility to
+remotely hold state-vectors.  This has two advantages:
+\begin{enumerate}
+\item part of the linear algebra computations with state-vectors in the
+assimilation part of the data assimilation method can be performed
+in parallel resulting in a better performance,
+\item when the computations are performed on a non-shared memory machine
+the memory consumption is better distributed over the various machines and
+larger models and more model instances can be handled. 
+\end{enumerate}
+
+\subsection{Constant obsselect}
+When the obsselect method results a constant selection criterion during the
+whole simulation. It can be specified in the input, saving communications.
+
+
+\subsection{Column selection for observation description}
+When the model must provide values that correspond to the observation
+description component, the whole observation description component is
+packed and send. In some cases not all data is needed by the model to
+perform the interpolation. Some of the data is only relevant for post
+processing etc. The column selection option in the configuration file of
+the parallel modelbuilder will specify what columns of the observation
+description component need to be send to the model.
+
+\subsection{Mode on all workers}
+In some situations like RRSQRT we have a central mode that is used in a
+large number of computations. A lot of communication can be saved when the
+value of this central state resides on all workers. This option is
+specified in the input-file of the modelbuilder.
+
+\subsection{Nonblocking communication} \label{Sec:Nonblocking}
+All receiving of data is currently blocking. This means that the Master
+must wait until the worker has send the requested data. MPI offers the
+possibility of a nonblocking receive. In the case of a non blocking receive
+the master will indicate at what position in memory it expects the data to
+put and continues. At the point the Master is actually going to use the
+data it has to wait until it is received. 
+
+The usage of the non-blocking receive can eliminate some of the sequential
+parts of the filter algorithm. For example; the assimilation method wants
+to have a copy of the states of all model instances using the following
+code:
+
+\begin{verbatim}
+do imode = 1,nmode
+   call cta_model_getstate(hmodel(imode),sl(imode),ierr)
+enddo
+\end{verbatim}
+In the current implementation this procedure is sequential. Because no new
+state is requested before a state is received and unpacked.
+
+Using non-blocking receive (what will probably need an extension of the
+state-vector) this operation can be performed parallel.
+
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+        <!-- status can be "use", "validate" or "ignore" -->
+
+	<timeSeries status="use" location="M20" standardDeviation="0.5" > 
+		M20.waterlevels
+	</timeSeries>
+
+	<timeSeries status="use" location="M60" standardDeviation="0.5" > 
+		M60.waterlevels
+	</timeSeries>
+
+	<timeSeries status="use" location="M100" standardDeviation="0.5" > 
+		M100.waterlevels
+	</timeSeries>
+
+	<timeSeries status="use" location="M140" standardDeviation="0.5" > 
+		M140.waterlevels
+	</timeSeries>
+
+	<timeSeries status="use" location="M180" standardDeviation="0.5" > 
+		M180.waterlevels
+	</timeSeries>
+
+</noosObserver>

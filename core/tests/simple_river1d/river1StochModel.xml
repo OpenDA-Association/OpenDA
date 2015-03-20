@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<riverConfig>
+	<simulationTimespan>[0.0,0.05,10.0]</simulationTimespan>
+	<parameters names="alpha_a,alpha_b">[0.0,0.0]</parameters>
+	<parameterUncertainty names="alpha_a,alpha_b">[0.1,0.1]</parameterUncertainty>
+	<systemNoise>{[0.0,0.0],[0.1,0.1]}</systemNoise>
+	<initialState>[0.0,0.0]</initialState> <!-- start from zero -->
+	<initialStateUncertainty>[0.0,0.0]</initialStateUncertainty>
+</riverConfig>
+
+

@@ -1,0 +1,65 @@
+openfile '.\firstGuess\trih-Est1D-firstGuess.dat'
+station 'S1'
+defvariable 'WL S1 First Guess'
+colour [ 0 0 1 ]
+quickview
+openfile '.\truth-noNoise\trih-Est1D-truth-noNoise.dat'
+defvariable 'WL S1 Truth'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Est1D.dat'
+defvariable 'WL S1 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS1.png' 'PNG file' 2 150 1 1
+closefigure
+
+openfile '.\firstGuess\trih-Est1D-firstGuess.dat'
+station 'S2'
+defvariable 'WL S2 First Guess'
+colour [ 0 0 1 ]
+quickview
+openfile '.\truth-noNoise\trih-Est1D-truth-noNoise.dat'
+defvariable 'WL S2 Truth'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Est1D.dat'
+defvariable 'WL S2 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS2.png' 'PNG file' 2 150 1 1
+closefigure
+
+openfile '.\firstGuess\trih-Est1D-firstGuess.dat'
+station 'S3'
+defvariable 'WL S3 First Guess'
+colour [ 0 0 1 ]
+quickview
+openfile '.\truth-noNoise\trih-Est1D-truth-noNoise.dat'
+defvariable 'WL S3 Truth'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Est1D.dat'
+defvariable 'WL S3 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS3.png' 'PNG file' 2 150 1 1
+closefigure
+
+openfile '.\firstGuess\trih-Est1D-firstGuess.dat'
+station 'S4'
+defvariable 'WL S4 First Guess'
+colour [ 0 0 1 ]
+quickview
+openfile '.\truth-noNoise\trih-Est1D-truth-noNoise.dat'
+defvariable 'WL S4 Truth'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Est1D.dat'
+defvariable 'WL S4 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS4.png' 'PNG file' 2 150 1 1
+closefigure
+
+closeallfiles

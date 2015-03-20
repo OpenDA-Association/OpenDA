@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BiasAwareModelConfig>
+	<stochModelFactory
+		className="org.openda.models.lorenz.LorenzStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile></configFile>
+	</stochModelFactory>
+	<state localization="false"  checkObservationID="true">
+		<observation id="point1.waterlevel"
+					 standard_deviation="0.01"></observation>
+		<observation id="point2.waterlevel"
+					 standard_deviation="0.02"></observation>
+		<observation id="point3.waterlevel"
+					 standard_deviation="0.03"></observation>
+		<observation id="point4.waterlevel"
+					 standard_deviation="0.04"></observation>
+		<observation id="point5.waterlevel"
+					 standard_deviation="0.05"></observation>
+	</state>
+</BiasAwareModelConfig>

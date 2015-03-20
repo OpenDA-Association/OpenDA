@@ -1,0 +1,102 @@
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Pre-processor. Input file : C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she
+ ====================================================================================================================================
+ 
+Print Log file : C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she - Result Files\Test_5x5_PP_Print.log
+Fif file : C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she - Result Files\Test_5x5.Fif
+ 
+Processing...
+SimSpec and storing
+Opening fif file
+Grid Output
+Catchment Grid
+Frame Data
+Topography
+Precipitation
+potential ET
+Landuse data
+ET/Vegetation
+SZ Data
+Geo Layer 1 : Levels
+Geo Lense 1 : Bdry
+Geo Lense 1 : Levels
+Geo Layer 1 : Hydr.data
+Geo Lense 1 : Hydr.data
+Processing geology into comp. layers
+Processing boundary data
+Initial potential heads 1
+Processing extractions
+SZ Drainage
+UZ data
+Two-layer UZ data
+
+INFO   : The specific yield of the top SZ layer has been adjusted. The new specific yield is the difference between the
+         water contents at saturation and field capacity, based on the two-layer UZ soil type.
+         This adjustment will provide an optimal stability for the UZ-SZ coupling.
+Storing
+ 
+Writing fif file...
+- DFS output of PreProcessed Data...
+  Done.
+ 
+- Writing PreProcessed Data tree to pfs file :
+  C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she - Result Files\Test_5x5_PreProcessed.PFS...
+ 
+Termination...
+ 
+ 
+Preprocessing succeeded
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Water Movement. Input file : C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she
+ =====================================================================================================================================
+ 
+ 
+10:49:43 : INITIALIZATION PHASE
+===============================
+
+Opening files...
+Print file : C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she - Result Files\Test_5x5_WM_Print.log
+Fif   file : C:\devel_nils\Test_5x5\Distributed\base\Test_5x5.she - Result Files\Test_5x5.fif
+ 
+Group:
+Frame Data
+Size and Specifications
+Checks
+Copying to frf file
+Vegetation module initialisation
+Initializing Met. data...
+Memory allocation
+Initializations and reference systems
+Initializing components...
+ET
+SZ
+Two-Layer UZ Module
+SZ fif-output
+Storing initial conditions...
+done
+
+
+
+Parallelization info
+--------------------
+Number of processors  : 4
+Max. number of threads: 4
+Number of threads allowed by actual license: Undefined!
+Setting number of threads for actual application to 1
+- Parallel code will not be utilized.
+
+WARNING: Undefined maximum number of threads (MaxNode_2).
+         Please contact DHI for an updated license file.
+ 
+ 
+ 
+ 
+10:49:44 : Start of simulation from 1973/01/01,00:00
+====================================================
+
+- further initializations...
+- Two-Layer UZ
+10:49:44 => 1973/01/01,04:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 0, avg: 0.0
+10:49:46 => 1976/05/07,02:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 2, avg: 2.1
+10:49:47 => 1978/01/01,00:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 2, avg: 2.1
+ 
+Termination...
+10:49:47 : WM Simulation succeeded

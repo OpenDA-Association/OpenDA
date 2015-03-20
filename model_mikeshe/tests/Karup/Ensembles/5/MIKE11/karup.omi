@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<LinkableComponent Type="DHI.OpenMI.Mike11.Mike11LinkableComponent" Assembly="DHI.OpenMI.Mike11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf" xmlns="http://www.openmi.org/LinkableComponent.xsd">
+<Arguments>
+<Argument Key="SimFile" ReadOnly="true" Value="D:\SkyDrive\Karup_model_euref89\MIKE11\karup.sim11" />
+</Arguments>
+</LinkableComponent>

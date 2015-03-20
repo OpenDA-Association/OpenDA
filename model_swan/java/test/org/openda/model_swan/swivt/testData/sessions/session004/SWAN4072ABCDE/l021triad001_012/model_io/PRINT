@@ -1,0 +1,295 @@
+1
+
+                    Execution started at 20091023.124405         
+
+
+
+                    ---------------------------------------
+                                     SWAN
+                    SIMULATION OF WAVES IN NEAR SHORE AREAS
+                    DELTARES VERSION NUMBER 40.72ABCdel         
+                    ---------------------------------------
+
+
+    
+ $*************HEADING***********************************
+    
+ $
+    
+ PROJ 'l021triad001' 'l021'
+    
+ $
+    
+ $  Beji & Battjes (1992) triad-wave interaction test
+    
+ $
+    
+ $ --|--------------------------------------------------------------|--
+    
+ $   | This SWAN input file is part of the bench mark tests for     |
+    
+ $   | SWAN. More information about this test can be found in       |
+    
+ $   | an accompanied document.                                    |
+    
+ $ --|--------------------------------------------------------------|--
+    
+ $
+    
+ $***********MODEL INPUT*********************************
+    
+ $
+    
+ MODE STAT ONED
+    
+ $
+    
+ $
+    
+ $ --- Add wave-induced setup
+    
+ $
+    
+ SETUP
+    
+ $
+    
+ CGRID 0. 0. 0. 30. 0. 300 0 SECTOR -10. 10. 40 0.0837 2.5 40
+ Resolution in sigma-space: df/f =  0.0886
+    
+ $
+    
+ INPGRID BOTTOM 0. 0. 0. 30 0 1. 1.
+    
+ READINP BOTTOM 1. 'l021triad001.bot' 1 1 FREE
+ **  Heading lines file l021triad001.bot **
+ -> Bathymetry for Beji and Battjes test case                                       
+    
+ $
+    
+ BOU SIDE W CCW CON FILE 'l021triad001.bnd' 1
+    
+ $
+    
+ $ --- Begin of settings physical process parameters
+    
+ $
+    
+ GEN3 KOM
+    
+ OFF WCAP
+    
+ WCAP KOM cds2=2.36E-005 stpm=0.00302 powst=2 delta=0 powk=0
+    
+ OFF QUAD
+    
+ FRIC JONSWAP cfjon=0.067
+    
+ OFF BREA
+    
+ OFF BREA
+    
+ TRIAD trfac=0.05 cutfr=2.5
+    
+ $
+    
+ $ --- End of settings physical process parameters
+    
+ $
+    
+ $ --- Begin of convergence criterion
+    
+ $
+    
+ $
+    
+ $
+    
+ $ --- End of convergence criterion
+    
+ $
+    
+ $***************** OUTPUT REQUEST ************************
+    
+ QUANT XP HEXP=10.
+    
+ QUANT YP HEXP=10.
+    
+ $
+    
+ $ --- Integrate over frequency range [FMIN,FMAX] to obtain
+    
+ $     wave parameters
+    
+ QUANT HS TMM10 TM01 TM02 FMIN 0.0837 FMAX 2.5
+    
+ $
+    
+ $ --- Begin of SWIVT output
+    
+ $
+    
+ $     Define locations for data output
+    
+ $
+    
+ POINTS 'POINT1' FILE   'l021triad001.loc'
+    
+ CURVE  'CURVE1' 0. 0.  100  30. 0.
+    
+ $
+    
+ $     Write output data (tables, 1D and 2D spectra) for
+    
+ $     these locations
+    
+ $
+    
+ $     +++ Point +++
+    
+ $
+    
+ TABLE  'POINT1' HEAD   'swivt_l021triad001_loc.tab' &
+         XP YP DEP BOTLEV WATLEV HS RTP TMM10 TM01 TM02 FSPR DIR DSPR   &
+         WLENGTH TPS DHSIGN DRTM01 WIND VEL DISSIP QB FORCE UBOT STEEP SETUP
+    
+ SPEC   'POINT1' SPEC1D 'swivt_l021triad001_loc.sp1'
+    
+ SPEC   'POINT1' SPEC2D 'swivt_l021triad001_loc.sp2'
+    
+ $
+    
+ $     +++ Curve +++
+    
+ $
+    
+ TABLE  'CURVE1' HEAD   'swivt_l021triad001_loc.cuv' &
+         XP YP DEP BOTLEV WATLEV HS RTP TMM10 TM01 TM02 FSPR DIR DSPR   &
+         WLENGTH TPS DHSIGN DRTM01 WIND VEL DISSIP QB FORCE UBOT STEEP SETUP
+    
+ $
+    
+ $ --- End of SWIVT output
+    
+ $
+    
+ COMPUTE
+ ** Warning          : Limiter is de-activated in case of no quadruplets
+
+----------------------------------------------------------------
+                  COMPUTATIONAL PART OF SWAN
+----------------------------------------------------------------
+
+ One-dimensional mode of SWAN is activated
+ Gridresolution       : MXC             301 MYC              1
+                      : MCGRD           302
+                      : MSC              41 MDC             41
+                      : MTC               1
+                      : NSTATC            0 ITERMX          50
+ Propagation flags    : ITFRE             1 IREFR            1
+ Source term flags    : IBOT              1 ISURF            0
+                      : IWCAP             1 IWIND            0
+                      : ITRIAD            1 IQUAD            0
+ Spatial step         : DX       0.1000E+00 DY      0.1000E+00
+ Spectral bin         : df/f     0.8863E-01 DDIR    0.5000E+00
+ Physical constants   : GRAV     0.9810E+01 RHO     0.1025E+04
+ Wind input           : WSPEED   0.0000E+00 DIR     0.0000E+00
+ Tail parameters      : E(f)     0.4000E+01 E(k)    0.2500E+01
+                      : A(f)     0.5000E+01 A(k)    0.3000E+01
+ Accuracy parameters  : DREL     0.2000E-01 NPNTS   0.9800E+02
+                      : DHOVAL   0.2000E-01 DTOVAL  0.2000E-01
+                      : GRWMX    0.1000E+21
+ Drying/flooding      : LEVEL    0.0000E+00 DEPMIN  0.5000E-01
+ The Cartesian convention for wind and wave directions is used
+ Scheme for geographic propagation is SORDUP
+ Scheme geogr. space  : PROPSC            2 ICMAX            5
+ Scheme spectral space: CSS      0.5000E+00 CDD     0.5000E+00
+ Current is off
+ Quadruplets is off
+ Triads               : ITRIAD            1 TRFAC   0.5000E-01
+                      : CUTFR    0.2500E+01 URCRI   0.2000E+00
+ Minimum Ursell nr for Snl3 :    0.1000E-01
+ JONSWAP (`73)        : GAMMA    0.6700E-01
+ W-cap Komen (`84)    : EMPCOF   0.2360E-04 APM     0.3020E-02
+ Surf breaking is off
+ Set-up               : SUPCOR   0.0000E+00
+ Diffraction is off
+ Janssen (`89,`90)    : ALPHA    0.1000E-01 KAPPA   0.4100E+00
+ Janssen (`89,`90)    : RHOA     0.1280E+01 RHOW    0.1025E+04
+ 
+ 1st and 2nd gen. wind: CF10     0.1880E+03 CF20    0.5900E+00
+                      : CF30     0.1200E+00 CF40    0.2500E+03
+                      : CF50     0.2300E-02 CF60   -0.2230E+00
+                      : CF70     0.0000E+00 CF80   -0.5600E+00
+                      : RHOAW    0.1249E-02 EDMLPM  0.3600E-02
+                      : CDRAG    0.1230E-02 UMIN    0.1000E+01
+                      : LIM_PM   0.1300E+00
+ 
+ iteration    1; sweep 1
+ iteration    1; sweep 2
+ iteration    1; sweep 3
+ iteration    1; sweep 4
+ accuracy OK in   0.36 % of wet grid points ( 98.00 % required)
+
+ iteration    2; sweep 1
+ iteration    2; sweep 2
+ iteration    2; sweep 3
+ iteration    2; sweep 4
+ accuracy OK in  43.17 % of wet grid points ( 98.00 % required)
+
+ iteration    3; sweep 1
+ iteration    3; sweep 2
+ iteration    3; sweep 3
+ iteration    3; sweep 4
+ accuracy OK in  97.84 % of wet grid points ( 98.00 % required)
+
+ iteration    4; sweep 1
+ iteration    4; sweep 2
+ iteration    4; sweep 3
+ iteration    4; sweep 4
+ accuracy OK in  98.56 % of wet grid points ( 98.00 % required)
+
+ 
+    
+ STOP
+
+
+  1 #
+  1 # Details on timings of the simulation:
+  1 #
+  1 #                          cpu-time wall-clock
+  1 #
+  1 #            total time:       1.91       1.93
+  1 #
+  1 #  total pre-processing:       0.02       0.03
+  1 #     total calculation:       1.81       1.82
+  1 #   total communication:       0.00       0.00
+  1 # total post-processing:       0.08       0.08
+  1 #
+  1 # Splitting up calc. + comm. times:
+  1 #
+  1 #     calc. propagation:       0.47       0.48
+  1 #       exchanging data:       0.00       0.00
+  1 #         calc. sources:       0.34       0.34
+  1 #        solving system:       0.19       0.19
+  1 #            reductions:       0.00       0.00
+  1 #       collecting data:       0.00       0.00
+  1 #           calc. setup:       0.02       0.01
+  1 #       other computing:       0.80       0.78
+  1 #
+  1 # Overview source contributions:
+  1 #
+  1 #      prop. velocities:       0.19       0.20
+  1 #         x-y advection:       0.16       0.15
+  1 #       sigma advection:       0.02       0.02
+  1 #       theta advection:       0.11       0.11
+  1 #                  wind:       0.00       0.00
+  1 #          whitecapping:       0.03       0.03
+  1 #       bottom friction:       0.03       0.03
+  1 #         wave breaking:       0.00       0.00
+  1 #           quadruplets:       0.02       0.02
+  1 #                triads:       0.17       0.17
+  1 #               limiter:       0.00       0.00
+  1 #             rescaling:       0.08       0.08
+  1 #           reflections:       0.02       0.02
+  1 #           diffraction:       0.00       0.00

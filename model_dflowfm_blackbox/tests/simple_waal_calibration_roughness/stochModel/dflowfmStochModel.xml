@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./dflowfmModel.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        
+        <parameters>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="friction_1"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="friction_2"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="friction_3"/>
+            </regularisationConstant>
+        </parameters>
+
+        <predictor>
+            <vector id="Obs01.waterlevel"/>
+            <vector id="Obs02.waterlevel"/>
+            <vector id="Obs03.waterlevel"/>
+        </predictor>
+
+    </vectorSpecification>
+
+</blackBoxStochModel>

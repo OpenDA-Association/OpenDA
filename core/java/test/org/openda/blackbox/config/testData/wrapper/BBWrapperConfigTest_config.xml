@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+		<alias key="templateDir" value="model"/>
+		<alias key="instanceDir" value="work"/>
+		<alias key="outputFile" value="anotherDir/file.DAT"/>
+		<alias key="startTime"/>
+		<alias key="timeZone" value="9.0"/>
+	</aliasDefinitions>
+	<run>
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+		<computeActions>
+			<action exe="dir/model.exe" actualWorkingDirectory="dir">
+				<arg>128.303.0.1</arg>
+				<arg>dir/%instanceDir%%instanceNumber%</arg>
+				<arg>%outputFile%</arg>
+				<arg>%timeZone%</arg>
+			</action>
+		</computeActions>
+		<finalizeActions/>
+	</run>
+	<inputOutput>
+		<ioObject className="org.openda.model_efdc.EfdcGridTimeSeriesIoObject">
+			<file>%outputFile%</file>
+			<id>outputIoObject</id>
+			<arg>%timeZone%</arg>
+			<arg>%startTime%</arg>
+		</ioObject>
+	</inputOutput>
+</blackBoxWrapperConfig>

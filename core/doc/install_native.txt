@@ -1,0 +1,13 @@
+Installation of OpenDA for developers on a clean installation of Ubuntu 11.4 (32 bit)
+
+In this instalation guide, the user is "openda" and OpenDA and additional packages are installed
+in $HOME/develop.
+
+Note for users of the Virtual box Ubuntu installation of OpenDA, the pwd of user "openda" is "openda"
+
+
+1) Open terminal
+2) create directory
+3) get the latest version from the repository, for this we need subversion
+
+

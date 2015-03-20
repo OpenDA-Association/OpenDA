@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<treeVectorFile xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/treeVector.xsd">
+
+	<timeStamp date="2007-05-07" time="07:40:00" timeZone="GMT"/>
+
+	<treeVector id="veloc" caption="velocity field">
+		<description>velocity field that consists of a U and a V-velocity component. 
+		     The field is 3x2 with a columnwise ordering of the data</description>
+
+		<treeVectorLeaf id="U" caption="u-component">
+			<unit>m/s</unit>
+			<missingValue>NaN</missingValue>
+			<grid>
+				<computationalSpace>
+					<dimension id="m" length="3"/>
+					<dimension id="n" length="2"/>
+				</computationalSpace>
+			</grid>
+			<vector>2.0 3.0 4.0   2.5 3.5 4.5</vector>
+		</treeVectorLeaf>
+
+		<treeVectorLeaf id="V" caption="v-component">
+			<unit>m/s</unit>
+			<missingValue>NaN</missingValue>
+			<grid>
+				<computationalSpace>
+					<dimension id="m" length="3"/>
+					<dimension id="n" length="2"/>
+				</computationalSpace>
+			</grid>
+			<vector>6.0 7.0 8.0   6.5 7.5 8.5</vector>
+		</treeVectorLeaf>
+
+	</treeVector>
+</treeVectorFile>

@@ -1,0 +1,9 @@
+template file example: template.inp
+
+first key which should be replaced $ITDATE$
+second key which should be replaced $STARTTIME$ some text after
+third key which should be replaced $ENDTIME$ some text after
+
+Finally we replace some key with multiple lines:
+$MULTILINE$
+See if it all works.

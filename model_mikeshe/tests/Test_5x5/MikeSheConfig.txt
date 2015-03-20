@@ -1,0 +1,5 @@
+<MikeSheConfig>
+  <inputFile>c:\OpenDA_MI\Test_5x5\Distributed\base\Test_5x5.she</inputFile>
+  <copyModels>true</copyModels>
+  <useExchangeItems>head elevation in saturated zone;SZ horizontal conductivity (for DA-OpenMI)</useExchangeItems>
+</MikeSheConfig>

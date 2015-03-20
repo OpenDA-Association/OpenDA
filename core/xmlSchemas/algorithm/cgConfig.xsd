@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="costFunctionCG.xsd"/>
+	<xs:include schemaLocation="outerLoopCg.xsd"/>
+	<xs:include schemaLocation="additionalStopCriteria.xsd"/>
+	<xs:complexType name="LineSearchXML">
+		<xs:sequence>
+			<xs:element name="brent">
+				<xs:annotation>
+					<xs:documentation>Back tracking if the line search produces estimate with larger cost.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="startBracketValue" type="xs:double" default="1.0">
+						<xs:annotation>
+							<xs:documentation>First value evaluated for bracketing in linesearch.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="maxItBracket" type="xs:double" use="optional" default="0.5">
+						<xs:annotation>
+							<xs:documentation>Maximum number of iterations for bracketing.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="maxExtension" type="xs:double" use="optional" default="100.0">
+						<xs:annotation>
+							<xs:documentation>Maximum number of iterations before searching in opposite direction.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" default="brent">
+			<xs:annotation>
+				<xs:documentation>Type of linesearch algorithm. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="100">
+			<xs:annotation>
+				<xs:documentation>Maximum iterations of linesearch.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absTolBrent" type="xs:double" use="optional" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Tolerance of the absolute search range.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relTolBrent" type="xs:double" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Tolerance of the relative search range.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CgConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+				<xs:annotation>
+					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lineSearch" type="openda:LineSearchXML">
+				<xs:annotation>
+					<xs:documentation>Specify inner-loop / linesearch criteria. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ConjugateGradientConfig" type="openda:CgConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Conjugate Gradient algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

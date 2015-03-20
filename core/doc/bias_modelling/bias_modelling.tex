@@ -1,0 +1,117 @@
+\svnidlong
+{$HeadURL: https://repos.deltares.nl/repos/openda/public/trunk/core/doc/bias_modelling/bias_modelling.tex $}
+{$LastChangedDate: 2014-07-08 18:10:04 +0200 (Tue, 08 Jul 2014) $}
+{$LastChangedRevision: 4511 $}
+{$LastChangedBy: vrielin $}
+
+\odachapter{\oda bias aware model}
+
+\begin{tabular}{p{4cm}l}
+\textbf{Contributed by:} & Nils van Velzen, \vortech\\
+\textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
+\end{tabular}
+
+\section{Bias aware modelling}
+Data assimilation methods normally assume no bias in the model and the
+observation errors. In real life this is unfortunately not always the case.
+There are some mathematical methods available to detect and estimate structural
+differences between observations and mode (bias). \oda contains a wrapper
+model that enables perform experiments to estimate and the bias between model
+and observations.
+
+\section{Algorithm}
+\oda uses state augmentation to estimate the bias. The method is explained in more details in \cite{decourt2006} and ..
+A model is defined in \oda according to
+\begin{equation}\label{eq:normal_step}
+x^{k+1}=M\left(x^k, u^k, p, w^k\right)
+\end{equation}
+With the model state $x$, forcings $y$, parameters $p$ and noise $w$.
+The interpolation operation to compare the model predictions to the observations $y^k$ is defined by
+\begin{equation}\label{eq:normal_hx}
+Hx^k
+\end{equation} 
+We assume there is a bias $b$ between model prediction $Hx$ and observations $y$. If we would know this bias we can correct the observations $y$ with $b$ before assimilating. 
+\begin{equation}\label{eq:aug_step} 
+\left[\begin{array}{c}
+x^{k+1} \\
+b^{k+1}
+\end{array}\right] = 
+\left[\begin{array}{c}
+M\left(x^k, u^k, p, w^k\right) \\
+b^k + n^k
+\end{array}\right]
+\end{equation}
+The interpolation operation for this bias correcting model is
+\begin{equation}\label{eq:aug_hx}
+Hx^k-b^k
+\end{equation}
+
+The bias aware model in \oda is a generic wrapper model that extents an arbitrary \oda model, implementing Equations \ref{eq:normal_step} and \ref{eq:normal_hx} into a model that implements Equations\ref{eq:aug_step} and \ref{eq:aug_hx}.
+
+
+\section{configuration}
+The model configuration contains of two parts:
+\begin{enumerate}
+\item Definition of the child model (xml-tag {\tt stochModelFactory})
+\item Definition of the bias model (xml-tag {\tt state}
+\end{enumerate}
+The format of the {\tt stochModelFactory} is exactly the same as in the definition of a stochastic model factory in the main \oda configuration file. It contains:
+\begin{itemize}
+\item the attribute {\tt className} (mandatory), specifying the implementation of the model factory
+\item the tag {\tt workingDirectory} (mandatory), specifying the main directory of the model configuration
+\item  the tag {\tt configFile} (mandatory), file containing the model configuration
+\end{itemize} 
+The second part with tag {\tt state} defines the augmented state that is used to model the bias. This tag contains:
+\begin{itemize}
+\item the attribute {\tt maxSize} (optional), the size of the augmented state. This attribute can only be left out when all observations are individually specified using the {\tt observation} attributes.
+\item the attribute {\tt localization} (optional, default="true") If set "true" we assume all elements in the augmented state to be non correlated. If the filter uses localisation, only the single matching observation is used to update each element of the augmented state. If set to "false" no localization is used, all localization weights of  the augmented state are set to one.
+\item the attribute {\tt standard\_deviation}. The standard deviation of the random walk noise for a one day period.
+\item the attribute {\tt checkObservationID} (optional, default="true"). Match elements in the augmented state using the ID of the observations. If set to "false" the algorithm expects that the i-th observation at each assimilation step corresponds to the i-th element of the augmented state.  
+\item the tag {\tt observation} (optional,repetitive).Specification of biases corresponding to individual observations. This attribute has the following attributes:
+   \begin{itemize}
+   \item {\tt id} (mandatory) name of the observation device/location
+   \item {\tt standard\_deviation} (mandatory) standard deviation of the random walk noise for a one day
+            period
+   \end{itemize} 
+\end{itemize}
+
+It is sometimes not known in advance what the id's are of the observations. A trick is to perform a small run, not individually specifying the observations. In the message file you will then find the id's of the observations when they are assigned to an element of the augmented state for the first time.
+
+A typical configuration where all observations have the same bias uncertainty looks like:
+\begin{verbatim}
+<BiasAwareModelConfig>
+	<stochModelFactory
+		className="org.openda.models.lorenz.LorenzStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile></configFile>
+	</stochModelFactory>
+	<state standard_deviation="3.0"
+	maxSize="10"  localization="false"  checkObservationID="true">
+	</state>
+</BiasAwareModelConfig>
+\end{verbatim}
+
+A configuration that individually configures the biases looks like:
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<BiasAwareModelConfig>
+	<stochModelFactory
+		className="org.openda.models.lorenz.LorenzStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile></configFile>
+	</stochModelFactory>
+	<state localization="false"  checkObservationID="true">
+		<observation id="point1.waterlevel"
+		             standard_deviation="0.01"></observation>
+		<observation id="point2.waterlevel" 
+		             standard_deviation="0.02"></observation>
+		<observation id="point3.waterlevel"
+		             standard_deviation="0.03"></observation>
+		<observation id="point4.waterlevel" 
+		             standard_deviation="0.04"></observation>
+		<observation id="point5.waterlevel" 
+		             standard_deviation="0.05"></observation>
+	</state>
+</BiasAwareModelConfig>
+\end{verbatim}
+

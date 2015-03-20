@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd" xmlns:openda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<timeSeries status="use" standardDeviation="0.05">
+		waterlevelObs1.txt
+	</timeSeries>
+
+	<timeSeries status="use" standardDeviation="0.05">
+		waterlevelObs2.txt
+	</timeSeries>
+
+</noosObserver>

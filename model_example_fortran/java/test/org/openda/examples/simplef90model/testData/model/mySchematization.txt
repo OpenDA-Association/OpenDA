@@ -1,0 +1,1 @@
+# dummy schematization file (not really needed yet)

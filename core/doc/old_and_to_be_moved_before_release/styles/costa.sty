@@ -1,0 +1,494 @@
+%
+%  costa.sty
+%  ---------
+%  Derived from of VORtech style-file for memo's
+%
+%  Options:
+%  --------
+%
+%  ned,bel,eng             switch between Dutch, Belgium and English (address,
+%                          title-page, head-text)
+%
+%  \pagestyle{vtmemo}      change the headtext: VORtech, memo number, date
+%                          automatically selected by \memotitlepage
+%  \memotitlepage          create a title-page with:
+%     \title{}
+%     \author
+%     \memonum             sets the memo number
+%
+%  \begin{vtlogsheet}
+%     \vtlogentry{version}{author}{date}{description}{reviewer}
+%     \vtfilelocation{directoryname}
+%  \end{vtlogsheet}
+%
+%  \memosection{...}       increase paragraph number and print section
+%                          heading
+%  \memosubsection{...}    start a new sub-section
+%  \memoappendix           declaration to restart numbering of sections
+%                          and use letters A, B, instead of numbers
+%
+%  style parameters:
+%     ...
+%
+%
+%  Additional commands:
+%  --------------------
+%
+%  \begin{vtitemize}       creates a less spacy itemize
+%  \tabulminpg{9cm}{text}  creates a minipage with extra height
+%
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\setlength\overfullrule{0pt}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   - for using pdflatex:
+%                  \ifpdf
+%                      \psfig{figure=*.{jpg,pdf},...}
+%                  \else
+%                      \psfig{figure=*.{eps,ps},...}
+%                  \fi
+%
+%                  \psfig{figure=<name>.\pdfps,...}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+   \pdffalse            % we are not running pdflatex
+   \def\pdfps{ps}       % extension for PostScript files in \psfig is .ps
+   \def\pdfpstex{pstex}
+   \def\pdfeps{eps}
+   \def\gifps{ps}
+   \def\gifeps{eps}
+   \def\jpgps{ps}
+   \def\jpgeps{eps}
+   \def\rotangle{-90}
+\else
+   \pdfoutput=1         % we are running pdflatex
+   \pdftrue
+   \def\pdfps{pdf}      % extension for PostScript files in \psfig is .pdf
+   \def\pdfpstex{pdf}
+   \def\pdfeps{pdf}
+   \def\gifps{jpg}      % pdflatex does not support .gif, convert to jpg!
+   \def\gifeps{jpg}
+   \def\jpgps{jpg}
+   \def\jpgeps{jpg}
+   \def\rotangle{0}
+\fi
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Define options `eng', `ned', `bel' for VORtech memos:
+% affects strings and the outlook of the address
+%
+% Note: option bel is implemented as a refinement of option ned,
+%       i.e. ned=F implies bel=F.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newif\if@ned
+\newif\if@bel
+\DeclareOption{eng}{\@nedfalse\@belfalse}
+\DeclareOption{ned}{\@nedtrue\@belfalse}
+\DeclareOption{bel}{\@nedtrue\@beltrue}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Set default options, process
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\ExecuteOptions{ned}
+\ProcessOptions
+%
+\usepackage{a4wide}
+%
+% Import packages graphicx and epsfig for PostScript/PDF-figures
+%
+\ifpdf
+   \usepackage[pdftex]{graphicx}
+   \pdfcompresslevel=9
+\else
+   \usepackage{graphicx}
+\fi
+\usepackage{epsfig}
+%
+% Import package Babel in case of Dutch letter/report
+%
+\if@ned
+   \usepackage[dutch]{babel}
+\fi
+%
+% Adjust some elements of head-text etc.
+%
+\if@ned
+    \def\pageheadtext{Blad}
+    \def\datetext{Datum}
+    \def\contentstext{Inhoudsopgave}
+    \def\referencetext{Referenties}
+\else
+    \def\pageheadtext{Page}
+    \def\datetext{Date}
+    \def\contentstext{Table of contents}
+    \def\referencetext{References}
+\fi
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% font for VORtech address etc., independent of pointsize
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newfont{\faxfont}{cmss10 scaled\magstep0}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+% commands VORtech 
+%   vortech       - company name standard style
+%   addrtxt       - the text of the address, tel,fax,email
+%   vtaddrtop     - command for displaying the address on the top of a
+%                   page
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+\usepackage{xspace}
+\newcommand{\vortech}{{\sf V\kern -0.15ex$\cal O$Rtech}\xspace}
+
+\if@ned
+   \def\vtdscrplong{Experts in Technisch Rekenwerk}
+   \def\vtdscrpshrt{technish rekenwerk}
+\else
+   \def\vtdscrplong{Industrial and Scientific Computing}
+   \def\vtdscrpshrt{industrial computing}
+\fi
+
+\if@ned
+   \if@bel
+      \def\addrtxt{
+          \begin{picture}(40,40)(0,0)
+          \put(40,28.5){\makebox(0,0)[tr]{Postbus 260}}
+          \put(40,24.0){\makebox(0,0)[tr]{2600 AG~~Delft}}
+          \put(40,19.5){\makebox(0,0)[tr]{NEDERLAND}}
+          \put(40,14  ){\makebox(0,0)[tr]{tel.\ +31-15-285 0125}}
+          \put(40, 9.5){\makebox(0,0)[tr]{fax.\ +31-15-285 0126}}
+          \put(40, 5  ){\makebox(0,0)[tr]{vortech@vortech.nl}}
+          \end{picture}}
+   \else
+      \def\addrtxt{
+          \begin{picture}(40,40)(0,0)
+          \put(40,26.5){\makebox(0,0)[tr]{Postbus 260}}
+          \put(40,22  ){\makebox(0,0)[tr]{2600 AG~~DELFT}}
+          \put(40,15  ){\makebox(0,0)[tr]{tel. 015-285 0125}}
+          \put(40,10.5){\makebox(0,0)[tr]{fax. 015-285 0126}}
+          \put(40, 6  ){\makebox(0,0)[tr]{vortech@vortech.nl}}
+          \end{picture}}
+   \fi
+\else
+   \def\addrtxt{
+       \begin{picture}(40,40)(0,0)
+       \put(40,29  ){\makebox(0,0)[tr]{P.O.\ Box~~260}}
+       \put(40,24.5){\makebox(0,0)[tr]{2600 AG~~Delft}}
+       \put(40,20  ){\makebox(0,0)[tr]{The Netherlands}}
+       \put(40,14  ){\makebox(0,0)[tr]{tel. +31(0)15-285 0125}}
+       \put(40, 9.5){\makebox(0,0)[tr]{fax. +31(0)15-285 0126}}
+       \put(40, 5  ){\makebox(0,0)[tr]{vortech@vortech.nl}}
+       \end{picture}}
+\fi
+
+\def\vtaddrtop{
+\hbox{
+    \psfig{figure=\styles/costa_logo2.\pdfeps,width=7cm}
+}
+}
+
+%       \setlength{\unitlength}{1mm}
+%       \begin{picture}(170,55)(0,0)
+%       \put(  3,38.5){\makebox(0,0)[bl]{\LARGE COSTA \vortech}}
+%       \put(  0,36.7){\makebox(0,0)[bl]{\rule{173mm}{0.3mm}}}
+%       \put(170,35  ){\makebox(0,0)[tr]{\large\vtdscrplong}}
+%       \put(170,-2  ){\makebox(0,0)[br]{\faxfont\addrtxt}}
+%       \end{picture}}
+
+% Noot: voor article+12pt+hugepag is \textwidth=167mm, rule steekt links
+%       3mm uit.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Define commands and strings for customizing memos
+%         user commands                    internal string-commands
+%   - title, author, date;             @title, @author, @date
+%   - shorttitle, reportnumber;        @shorttitle, @reportnumber
+%   - memonum;                         memonumt
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\def\title#1{\def\@title{#1}\def\@shorttitle{#1}}
+\def\revision#1{\def\@revisiontext{#1}}
+%
+\def\memonum#1{\def\memonumt{\normalsize #1}}
+
+\def\@revisiontext{}
+%
+\def\memonumt{}
+
+%
+% Parameters in head- en foot-texts in eigen page-styles:
+%
+\newlength{\textwidthhead}
+\setlength{\headheight}{0.5in}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Define \memotitlepage for VORtech memo's:
+%   - address, memotext, number, author, title
+%   - set pagestyle to vtmemo (for head of next pages)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% tekst-elementen in Nederlands en Engels:
+%
+\if@ned
+    \def\memotypetext{MEMO}
+    \def\memoauthtext{Auteur(s)}
+    \def\memotitltext{Onderwerp}
+\else
+    \def\memotypetext{MEMO}
+    \def\memoauthtext{Author(s)}
+    \def\memotitltext{Subject}
+\fi
+\def\memoheadtext{Memo }
+%
+% page-style voor memos:
+%
+\def\ps@vtmemo{%
+      \let\@mkboth\markboth
+      \def\@oddhead{%
+          \setlength{\textwidthhead}{\textwidth}%
+          \addtolength{\textwidthhead}{4mm}%
+          \begin{picture}(1,1)(0,35)
+          \put(  0, 40.5){\makebox(0,0)[bl]{\normalsize COSTA}}
+          \put(  0, 39  ){\makebox(0,0)[bl]{\rule{\textwidthhead}{0.2mm}}}
+          \put(  0, 38.2){\makebox(0,0)[tl]{\makebox[\textwidthhead]{\slshape
+                          \memoheadtext \memonumt%
+                          \ifx\@empty\tmplbl\hfill\@date
+                          \else\hfill \@revisiontext\fi
+                          \hfill\thepage}}}
+          \end{picture}\hfill}
+      \def\@evenhead{\@oddhead}
+      \def\@evenfoot{}
+      \def\@oddfoot{}
+      \parskip 1ex\parindent 0em}
+%
+% titelpagina van memos:
+%
+\newcommand{\memotitlepage}{
+   \pagestyle{vtmemo}
+   % \renewcommand{\contentsname}{\normalsize\bf \contentstext}
+   % \renewcommand{\refname}{\normalsize\bf \referencetext}
+   \renewcommand{\contentsname}{\contentstext}
+   \renewcommand{\refname}{\referencetext}
+   \thispagestyle{empty}
+   \setlength{\unitlength}{1mm}
+  
+   \noindent
+   \begin{picture}(160,21)( 2,  7)
+   \put( -5,64){\makebox(0,0)[tl]{\vtaddrtop}}
+   \put(  3,35){\large \memotypetext}
+   \put( 43,35){\memonumt}
+   \put(  3,28){\datetext}
+   \put( 43,28){\@date}
+   \put(  3,21){\memoauthtext}
+   \put( 43,21){\begin{minipage}[t]{120mm}
+         	     \@author
+         	     \end{minipage}}
+   \put(  3,13){\memotitltext}
+   \put( 43,13){\begin{minipage}[t]{120mm}\raggedright\baselineskip 3.3ex
+                      {\large\@title}
+                      \end{minipage}}
+   \end{picture}
+   \allowfloatsattop
+
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Define \memosection, \memosubsection for layout of sections in VORtech
+% memos:
+%
+% argumenten van startsection:
+%  - section  - counter die wordt gebruikt
+%  - 1        - niveau voor tableofcontents
+%  - \z@      - het argument, de sectietitel ?
+%  - -2.5ex   - gewenste verticale ruimte boven de sectie
+%  -   -1ex   - toegestane variatie ? maximaal -3.5ex ?
+%  -  -.2ex   - toegestane variatie ? minimaal -2.3ex ?
+%  -  1.5ex   - gewenste verticale ruimte onder de sectietitel
+%  -   .2ex   - toegestane variatie ? maximaal  1.7ex ?
+%  -   -1em   - optioneel voor tekst achter ipv onder titel: tussenruimte
+%  - {\norm.} - stijl voor weergave van de titel
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% UITGEZET BEGIN
+%\renewcommand{\l@section}[2]{\l@subsection{#1}{#2}}
+%
+%\renewcommand{\thesection}{\arabic{section}}
+%\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+%
+%\newcommand\memosection{\@startsection{section}{1}{\z@}%
+%                            {-2.5ex \@plus -1ex \@minus -.2ex}%
+%                            {1.5ex \@plus .2ex}%
+%                            {\normalfont\normalsize\bfseries}}
+%\newcommand\memosubsection{\@startsection{subsection}{2}{\z@}%
+%                            {-2.5ex \@plus -1ex \@minus -.2ex}%
+%                            {1.5ex \@plus 5.2ex}%
+%                            {\normalfont\normalsize\bfseries}}
+%\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+%                            {1.5ex \@plus 1ex \@minus .2ex}%
+%                            {-1em}%
+%                            {\normalfont\normalsize\bfseries}}
+% UIGEZET EINDE
+\newcommand{\memoappendix}{
+   \setcounter{section}{0}
+   \setcounter{subsection}{0}
+   \renewcommand{\thesection}{\Alph{section}}
+   \renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+% environment vtitemize
+%
+%  currently done with a fast-hack, better to create a dedicated itemize
+%  implementation based on a list
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+\newenvironment{vtitemize}
+       {\begin{itemize}\setlength{\parskip}{0mm}}
+       {\end{itemize}}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+% Commando \tabulminpg voor het maken van 'hoge' minipages binnen een
+% tabular-omgeving.
+%
+% --> eerste regel 2.5ex hoog, onder minipage 2mm extra ruimte
+%
+\newcommand{\tabulminpg}[2]{%
+        \begin{minipage}[t]{#1}%
+                \rule{0mm}{2.5ex}#2\rule[-2mm]{0mm}{2mm}%
+        \end{minipage}}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Environment vtlogsheet en commando vtlogentry voor aanmaken log-sheet
+%
+% table[b] - onderaan pagina
+% breedte kolommen vast m.u.v. 1e - wg. centreren
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newlength{\logdscrpwidth}
+\setlength{\logdscrpwidth}{94mm}
+
+\newlength{\logfilelocwidth}
+\setlength{\logfilelocwidth}{\logdscrpwidth}
+\addtolength{\logfilelocwidth}{20mm}
+
+\newenvironment{vtlogsheet}{%
+%  \if@memostyle
+      \begin{table}[h]
+         \if@ned
+         % {\bf Documentinformatie}\\[5mm]
+         \section*{Documentinformatie}
+      \else
+         % {\bf Document information}\\[5mm]
+         \section*{Document information}
+      \fi
+      \begin{tabular}{|p{13mm}|p{18mm}|p{19.5mm}|p{\logdscrpwidth}|}
+      \hline
+      % \vtlogentry{Versie}{Auteur}{Datum}{Opmerkingen}
+      \if@ned
+         Versie & Auteur & Datum & \tabulminpg{\logdscrpwidth}{Opmerkingen} \\
+      \else
+            \mbox{Version\hspace{-1mm}} & Author & Date &
+                   \tabulminpg{\logdscrpwidth}{Description} \\
+      \fi
+      \hline\hline
+%  \else
+%     \chapter*{Log-sheet}
+%     \addcontentsline{toc}{chapter}{Log-sheet}
+%
+%     \begin{table}[h]
+%     \begin{tabular}{|p{11mm}|p{18mm}|p{19.5mm}|p{\logdscrpwidth}|}
+%     \hline
+%     % \vtlogentry{Versie}{Auteur}{Datum}{Opmerkingen}
+%     \if@ned
+%        Versie & Auteur & Datum & \tabulminpg{\logdscrpwidth}{Opmerkingen} \\
+%     \else
+%        \mbox{\hspace{-1mm}Version\hspace{-2mm}} & Author & Date &
+%                  \tabulminpg{\logdscrpwidth}{Description} \\
+%     \fi
+%     \hline\hline
+%  \fi
+}{
+   \end{tabular}
+   \end{table}
+}
+
+% Note: ignoring fifth argument (reviewer)
+\newcommand{\vtlogentry}[5]{\multicolumn{1}{|c|}{#1} & #2 & #3 &
+            \tabulminpg{\logdscrpwidth}{\raggedright #4} \\ \hline}
+
+\newcommand{\vtfilelocation}[1]{
+   \multicolumn{2}{|l}{\if@ned
+                          Bestandslokatie:
+                       \else
+                          File location:
+                       \fi
+       } & \multicolumn{2}{l|}{\tabulminpg{\logfilelocwidth}{#1}} \\ \hline
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+% Prohibit figures and tables to be placed at the top of the first page:
+%  - topnumber is the number of floats allowed at the top of a page
+%  - save the original value now, i.e. when reading the preamble of
+%    the document
+%  - set value 0, no floats allowed at this page, i.e. the first page
+%  - within maketitle: restore the original value of topnumber, which
+%    then takes effect on the following page
+%
+\newcounter{orig_topnumber}
+\setcounter{orig_topnumber}{\value{topnumber}}
+\setcounter{topnumber}{0}
+\newcommand{\allowfloatsattop}{\setcounter{topnumber}{\value{orig_topnumber}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% some extra commands used in Costa memos:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newcommand{\horzline}{
+\noindent
+\begin{picture}(100,1)(1,1)
+\put(1,1){\line(1,0){162}}
+\end{picture}
+}
+
+% Tabbing definities voor functie omscrijvingen
+\newcommand{\functab}{==\=====\==========\=====\kill}
+\newcommand{\funcdef}[1]{\tt #1\\}
+\newcommand{\funcline}[3]{\> {\tt #1} \> {\tt #2} \> #3}
+
+% Tabbing definities voor parameter lijsten
+\newcommand{\partab}{=================\========\kill}
+\newcommand{\parheader}[1]{{\tt #1}: \\ {\tt Name} \> Description \\}
+\newcommand{\parline}[2]{{\tt #1} \>  {#2}} 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<blackBoxStochModel xmlns="http://www.openda.org"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelFactory className="org.openda.model_delft3d.dll.D3dFlowModelFactory" workingDirectory=".">
+        <arg>d3dModelFactoryConfig_win32_ifort.xml</arg>
+    </modelFactory>
+
+    <vectorSpecification>
+        <state>
+            <noiseModel>
+                <vector id="windv"/>
+                <armaModel operation="add">
+                    <stdDev value="0.01" transformation="identity"/>
+                    <armaConstant>0.99307961</armaConstant>
+                </armaModel>
+            </noiseModel>
+            <vector id="state"/>
+        </state>
+        <predictor>
+            <vector id="S1.water level" sourceVectorId="S1.waterlevel"/>
+            <vector id="S2.water level" sourceVectorId="S2.waterlevel"/>
+            <vector id="S3.water level" sourceVectorId="S3.waterlevel"/>
+            <vector id="S4.water level" sourceVectorId="S4.waterlevel"/>
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

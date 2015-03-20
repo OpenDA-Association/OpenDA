@@ -1,0 +1,40 @@
+
+
+C tser.inp file, in free format across line, repeats ntser times  DDD  2011-05-27 16:00:00
+C
+C ISTYP MTSER(NS) TCTSER(NS) TATSER(NS) RMULADJ(NS) ADDADJ(NS)
+C
+C if istyp.eq.1 then read depth weights and single value of TSER
+C
+C (WKQ(K),K=1,KC)
+C
+
+C TTSER(M,NS) TSER(M,1,NS) !(mtser(ns) pairs for ns=1,ntser series)
+C
+C else read a value of tser for each layer
+C
+C TTSER(M,NS) (TSER(M,K,NS),K=1,KC) !(mtser(ns) pairs)
+C
+
+
+C
+
+ 0 5 86400.0 0.0 1.0 0.0 ' *** TSER_1
+  1.0 1.0
+  1.5 -2.2
+  2.0 3.33
+  2.5 -4.444
+  3.0 5.5555
+ 0 5 86400.0 0.0 1.0 0.0 ' *** TSER_2
+  1.0 8888.8888
+  1.5 99999.9999
+  2.0 1.0E9
+  2.5 1.000000000000001E7
+  3.0 1.0E-10
+ 0 2 86400.0 0.0 1.0 0.0 ' *** TSER_3
+  1.0 1.0
+  3.0 5.0
+ 0 3 86400.0 0.0 1.0 0.0 ' *** TSER_4
+  1.0 1.1574E-5
+  2.0 0.0
+  3.0 2.8E-6

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<!-- Probability Density Functions Shared Schema Definition (Copyright 2005 WL | Delft Hydraulics) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dh="http://www.wldelft.nl" targetNamespace="http://www.wldelft.nl" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<include schemaLocation="sharedTypes.xsd"/>
+	<include schemaLocation="probabilityFunctionsSharedTypes.xsd"/>
+	<include schemaLocation="correlationFunctionsSharedTypes.xsd"/>
+	<include schemaLocation="variationFunctionsSharedTypes.xsd"/>
+	<complexType name="ProbabiltyDistributionFunctionComplexType">
+		<choice>
+			<annotation>
+				<documentation>Select a pdf and specify its corresponding parameters.</documentation>
+			</annotation>
+			<element name="beta" type="dh:PdfBetaComplexType"/>
+			<element name="cauchy" type="dh:PdfCauchyComplexType"/>
+			<element name="chisquare" type="dh:PdfChiSquareComplexType"/>
+			<element name="exponential" type="dh:PdfExponentialComplexType"/>
+			<element name="gamma" type="dh:PdfGammaComplexType"/>
+			<element name="gumbelminimum" type="dh:PdfGumbelMinimumComplexType"/>
+			<element name="lognormal" type="dh:PdfLognormalComplexType"/>
+			<element name="normal" type="dh:PdfNormalComplexType"/>
+			<element name="triangular" type="dh:PdfTriangularComplexType"/>
+			<element name="uniform" type="dh:PdfUniformComplexType"/>
+			<element name="weibull" type="dh:PdfWeibullComplexType"/>
+			<element name="gumbelmaximum" type="dh:PdfGumbelMaximumComplexType"/>
+		</choice>
+		<attribute name="id" type="dh:idStringType" use="required">
+			<annotation>
+				<documentation>Id of the uncertain parameter/variable.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="basicValue" type="float" use="optional">
+			<annotation>
+				<documentation>Not used. Depricated.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="isActive" type="boolean" use="optional" default="true">
+			<annotation>
+				<documentation>Specify whether this parameter is to be calibrated (isActive=true) or not (isActive=false).</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<complexType name="AutoCorrelationComplexType">
+		<choice>
+			<annotation>
+				<documentation>Select an auto-correlation model and specify its corresponding parameters.</documentation>
+			</annotation>
+			<element name="circular" type="dh:CorrelationCircularComplexType"/>
+			<element name="exponential" type="dh:CorrelationExponentialComplexType"/>
+			<element name="gaussian" type="dh:CorrelationGaussianComplexType"/>
+			<element name="linear" type="dh:CorrelationLinearComplexType"/>
+			<element name="nugget" type="dh:CorrelationNuggetComplexType"/>
+			<element name="pentaSpherical" type="dh:CorrelationPentasphericalComplexType"/>
+			<element name="periodic" type="dh:CorrelationPeriodicComplexType"/>
+			<element name="spherical" type="dh:CorrelationSphericalComplexType"/>
+		</choice>
+		<attribute name="id" type="dh:idStringType" use="required">
+			<annotation>
+				<documentation>Id of the uncertain parameter/variable.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="isActive" type="boolean" use="optional" default="true">
+			<annotation>
+				<documentation>Specify whether this parameter is to be calibrated (isActive=true) or not (isActive=false).</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<complexType name="VariationPerParameterComplexType">
+		<choice>
+			<annotation>
+				<documentation>Select how parameter variation is defined.</documentation>
+			</annotation>
+			<element name="range" type="dh:VariationRangeComplexType">
+				<annotation>
+					<documentation>Specify the range of possible values in term of minimum and maximum values.</documentation>
+				</annotation>
+			</element>
+			<element name="percent" type="dh:VariationPercentComplexType">
+				<annotation>
+					<documentation>Specify the range of possible values in term of a percentage with respect to basic value.</documentation>
+				</annotation>
+			</element>
+		</choice>
+		<attribute name="id" type="dh:idStringType" use="required">
+			<annotation>
+				<documentation>Id of the uncertain parameter/variable.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="basicValue" type="float" use="optional"/>
+		<attribute name="isActive" type="boolean" use="optional" default="true">
+			<annotation>
+				<documentation>Specify whether this parameter is to be calibrated (isActive=true) or not (isActive=false).</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<element name="uncertainties" type="dh:UncertaintiesComplexType">
+		<annotation>
+			<documentation>Configuration of uncertainty characteristics of the uncertain parameters / variables.</documentation>
+		</annotation>
+	</element>
+	<complexType name="UncertaintiesComplexType">
+		<sequence>
+			<element name="uncertaintyType" type="dh:uncertaintyEnumStringType">
+				<annotation>
+					<documentation>Specify the representation type of uncertainty. Possible types are ProbabilityDistributionFunction, VariationPerParameter, and AutoCorrelation.</documentation>
+				</annotation>
+			</element>
+			<element name="probabilityDistributionFunction" type="dh:ProbabiltyDistributionFunctionComplexType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>Specify the probability distribution function of the uncertain parameter/variable.</documentation>
+				</annotation>
+			</element>
+			<element name="variationPerParameter" type="dh:VariationPerParameterComplexType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>Specify the variation-per-parameter of the uncertain parameter/variable.</documentation>
+				</annotation>
+			</element>
+			<element name="autoCorrelation" type="dh:AutoCorrelationComplexType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>Specify the auto-correlation of the uncertain parameter/variable.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="version" type="dh:versionStringType" use="required" fixed="1.0">
+			<annotation>
+				<documentation>version number to check if XML file is compatible with this schema</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<simpleType name="uncertaintyEnumStringType">
+		<restriction base="string">
+			<enumeration value="ProbabilityDistributionFunction"/>
+			<enumeration value="VariationPerParameter"/>
+		</restriction>
+	</simpleType>
+</schema>

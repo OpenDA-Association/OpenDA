@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>damflowWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+        	<alias key="DAMFLOWDIR" value="."/>
+		<alias key="templateDir" value="damflowModel"/>
+		<alias key="instanceDir" value="ens"/>
+		<alias key="inputFileName" value="dupuit"/>
+	</aliasValues>
+
+	<timeInfoExchangeItems start="sTime" end="eTime"/>
+
+	<exchangeItems>
+                <vector id="sTime" ioObjectId="timeInfo" elementId="sTime"/>
+                <vector id="eTime" ioObjectId="timeInfo" elementId="eTime"/>        
+                <vector id="state0.head" ioObjectId="state0" elementId="grid.hydraulichead"/>
+                <vector id="state1.head" ioObjectId="state1" elementId="grid.hydraulichead"/>
+                <vector id="loc0.head" ioObjectId="output" elementId="location0.hydraulichead"/>
+                <vector id="riverwl" ioObjectId="input" elementId="riverwaterlevel"/>
+                <vector id="layer1.Kx" ioObjectId="materialProperty" elementId="layer1.Kx"/>
+                <vector id="layer5.Kx" ioObjectId="materialProperty" elementId="layer5.Kx"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

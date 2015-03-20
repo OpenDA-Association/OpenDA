@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opendaKalmanGainStorage
+    xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/opendaKalmanGainStorage.xsd"
+    xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <comment>algorithm = EnKF
+model = BBStochModelInstance
+observer = IoObjectStochObserver
+</comment>
+    <timeStampAsMJD>55371.0</timeStampAsMJD>
+    <stateSize>2583</stateSize>
+    <timeStampAsDateTime>2010-06-24T02:00:00.000+02:00</timeStampAsDateTime>
+    <observations>
+        <observation>
+            <id>S1.water level</id>
+            <timeOffsetInDays>0.0</timeOffsetInDays>
+            <fileName>obsColumn_1.nc</fileName>
+        </observation>
+    </observations>
+</opendaKalmanGainStorage>

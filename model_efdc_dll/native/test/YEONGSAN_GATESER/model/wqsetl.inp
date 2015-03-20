@@ -1,0 +1,12 @@
+C ** WQ Settling, , DDD 2011-05-16 ¿ÀÈÄ 3:05:30
+C ** 
+C ** Loop over each cell for vertically averaged concentration
+C ** 
+C ** MM,WQWSC(MM),WQWSD(MM),WQWSG(MM),WQWSRP(MM),WQWSLP(MM),WQWSS(MM), WQWSM
+      1   0.000   0.000      0.000      0.000      0.000      0.000     0.000
+      2   0.000   0.000      0.000      0.000      0.000      0.000     0.000
+      3   0.000   0.000      0.000      0.000      0.000      0.000     0.000
+      4   0.000   0.000      0.000      0.000      0.000      0.000     0.000
+      5   0.000   0.200      0.000      0.000      0.000      0.000     0.000
+      0 END
+

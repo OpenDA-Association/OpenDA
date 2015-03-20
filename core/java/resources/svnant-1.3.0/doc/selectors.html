@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:ant="http://www.fiset.ca/ant-docs/v1" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252"/>
+<title>Svn Selectors</title>
+<META HTTP-EQUIV="Content-Language" CONTENT="en-us"/>
+<style type="text/css">	
+				
+				body {
+					font: 80% Verdana, Arial, Helvetica, sans-serif;
+					margin: 5px; padding: 0;
+				/*	background: rgb(95%,95%,80%);  */
+					color: black;
+				}
+				h1 {
+					font-size: 200%; letter-spacing: 3px;
+					margin-bottom: 1em; 
+					padding: 0.66em 0 0.33em 1em;
+					background: rgb(85%,85%,70%);
+				}
+				h2 {
+					background: rgb(90%,90%,80%);
+				}
+				h3 {
+					background-color: rgb(95%,95%,85%);
+				}
+				.sample {
+					font-family: Courier, "Courier New", monospace;
+					background-color: #f3f1f4;
+				 }
+				div.sample {
+					margin-left: 10px;
+					margin-right: 10px;
+					padding-top: 3px;
+					padding-bottom: 3px;
+					padding-left: 3px;
+					padding-right: 3px;
+					border:1px dashed black;
+					width: 80%;
+				 }
+				 table.params {
+					width: 80%;
+					border: 1px solid gray;
+					margin-bottom:1em;
+				 }
+				 th.params, td.params {
+					padding: 0 0.5em;
+					border-left: 1px solid #DDD;
+					border-bottom: 1px solid #DDD;
+					font: 70%
+				}
+				th.params {
+					
+				}
+				table.toc {
+					width: 80%;
+					border: 1px solid gray;
+					margin-bottom:1em;
+				}
+				td.toc {
+					padding: 0 0.5em;
+					border: none
+					font: 70%
+				}
+				table.type {
+					width: 80%;
+					border: none;
+					margin-bottom:1em;
+				}
+				th.type, td.type {
+					text-align: left;
+					padding: 0 0.5em;
+					border: none
+					font: 70%
+				}
+				th.type {
+					font-weight: bold;
+				}
+				
+			</style>
+</head>
+<body lang="en-US" dir="LTR">
+<h1>Svn Selectors</h1>
+<h2>Table of Content</h2>
+<table class="toc">
+<tbody class="toc">
+<tr class="toc">
+<td class="toc">
+<a href="#svnAdded">svnAdded</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'added' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnModified">svnModified</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'modified' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnUnversioned">svnUnversioned</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'unversioned' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnConflicted">svnConflicted</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'conflicted' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnIgnored">svnIgnored</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'ignored' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnLocked">svnLocked</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'locked' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnNormal">svnNormal</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'normal' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnReplaced">svnReplaced</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'replaced' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnMissing">svnMissing</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'missing' subversion status. </td>
+</tr>
+<tr class="toc">
+<td class="toc">
+<a href="#svnDeleted">svnDeleted</a>
+</td>
+<td class="toc">File selector that performs discrimination based on the 'deleted' subversion status. </td>
+</tr>
+</tbody>
+</table>
+<h2>Introduction</h2>
+<ant:introduction xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<p>
+			This document describes the file selectors offered in svnAnt. To use those selectors,
+			you must first obtain a copy of svnant.jar, add it to the classpath of your ant project
+			and define the types. Fortunately, there is a resource file, within the distributed JAR file,
+			and all those steps can be accomplished with the following code:
+			<div class="sample">
+<pre class="sample">
+				
+&lt;path id="svnant.classpath"&gt;
+  &lt;pathelement location="${svnant.dir}/lib/svnant.jar" /&gt;
+  &lt;pathelement location="${svnant.dir}/lib/svnClientAdapter.jar" /&gt;
+&lt;/path&gt;  
+
+&lt;typedef resource="svntypes.xml" classpathref="project.classpath"/&gt;
+				
+			</pre>
+</div>
+		</p>
+		<p>
+			If you are upgrading from an earlier version of svnAnt, and the following line was used
+			in your <i>build.xml</i> file, then replace it with the ones above.
+			<div class="sample">
+<pre class="sample">
+				
+&lt;taskdef resource="svntask.properties" classpathref="svnant.classpath"/&gt;
+				
+			</pre>
+</div>
+		</p>
+		<h3>
+<a name="bindings">Bindings</a>
+</h3>
+		<p>
+			All file selectors offer two parameters: <b>javahl</b> and <b>svnkit</b>. Those parameters
+			are booleans, which means their values can be set to either <b>true</b> or <b>false</b>. 
+			If not specified, those parameters are assumed to be set (true). These two parameters are used
+			to select which client is used to access Subversion.
+		</p>
+		<p>
+			There are three clients used by svnAnt to access Subversion:
+			<ul>
+				<li>JavaHL;</li>
+				<li>SVNKit; and,</li>
+				<li>Command Line Interface.</li>
+			</ul>
+			To better understand the difference between those three clients, please refer to
+			documentation on <b>svnClientAdapter.jar</b>.
+		</p>
+		<p>
+			The property <b>javahl</b> is considered only if the javahl libraries are available. Similarly,
+			the property <b>svnkit</b> is considered only if SVNKit is present. Finally, <b>javahl</b>
+			takes precedence over <b>svnkit</b>.
+		</p>
+		<p>
+			To better illustrate the previous paragraph, use the following steps:
+			<ol>
+				<li>If <b>javahl</b> is <i>true</i> and JavaHL bindings are available, then JavaHL is used.</li>
+				<li>If <b>svnkit</b> is <i>true</i> and SVNKit is present, then SVNKit is used.</li>
+				<li>If the two previous tests failed, for any reason, then the Command Line Interface is used.</li>
+			</ol>
+		</p>
+	</ant:introduction>
+<h1>
+<a name="">svnAdded</a>
+</h1>
+<p>File selector that performs discrimination based on the 'added' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Added</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'added'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				An 'added' file or directory is one that has been added to the repository, but not yet
+				commited. In general, <b>svn status</b> displays those items with the letter <i>A</i>
+				preceeding the name.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'added' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnAdded/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+					
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnModified</a>
+</h1>
+<p>File selector that performs discrimination based on the 'modified' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Modified</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'modified'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				A 'modified' file or directory is one that has been changed since the last update and where 
+				the changes have not yet been commited to the repository. In general, <b>svn status</b>
+				display those items with the letter <i>M</i> preceeding the name. It is important to note
+				that other items can also be considered modified, such as conflicted ones.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'modified' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnModified/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+					
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnUnversioned</a>
+</h1>
+<p>File selector that performs discrimination based on the 'unversioned' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Unversioned</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'unversioned'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				An 'unversioned' file or directory is one that is present in a working copy but is not yet
+				known to the repository. In general, <b>svn status</b>
+				display those items with a question mark (<i>?</i>) preceeding the name. Note that 'ignored'
+				items are not considered 'unversioned'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Eexample: to copy a number of files with the status 'unversioned' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnUnversioned/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnConflicted</a>
+</h1>
+<p>File selector that performs discrimination based on the 'conflicted' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Conflicted</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'conflicted'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				When updating a subversion item (file or directory), it is possible to have two sets of 
+				changes merged into the	working item. This happens when the item was modified locally as 
+				well as remotely during the period since the last update. If the two sets of changes conflict
+				(same lines of a file changes, same directory entries modified), then the item is marked
+				as 'conflicted'. In general, <b>svn status</b> displays 'conflicted' items with the letter
+				<i>C</i> preceeding the name. Note that 'conflicted' items are also considered 'modified'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'conflicted' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnConflicted/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnIgnored</a>
+</h1>
+<p>File selector that performs discrimination based on the 'ignored' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Ignored</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'ignored'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				An 'ignored' file or directory is one which name match the patterns found in the parent
+				directory's <b>svn:ignore</b> property. In general, <b>svn status --no-ignore</b>
+				display those items with the letter <i>I</i> preceeding the name.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'ignored' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnIgnored/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnLocked</a>
+</h1>
+<p>File selector that performs discrimination based on the 'locked' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Locked</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'locked'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				A 'locked' file or directory is one where the repository has been informed of the
+				intent of a user to prevent others from modifying the file. For a working copy to
+				be aware of this fact, it must have been 'updated' since the lock status was changed.
+				In general, <b>svn status</b> displays those items with one of the letters <i>K</i>,
+				<i>O</i> or <i>B</i> in the sixth column. The 'lock' status is independent of most other
+				conditions such as 'modified', 'conflicted', etc.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'locked' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnLocked/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnNormal</a>
+</h1>
+<p>File selector that performs discrimination based on the 'normal' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Normal</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'normal'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				A 'normal' file or directory is one that has not undergone any changes since the last
+				update. In general, this is the great majority of the files in a working copy. <b>svn status</b>
+				returns no special character for those items (a space in the first column).
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'normal' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnNormal/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnReplaced</a>
+</h1>
+<p>File selector that performs discrimination based on the 'replaced' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Replaced</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'replaced'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				A 'replaced' file or directory is one that has been deleted, then created anew and finally 
+				added back to the repository. Also, those changes must not have been comitted.
+				In general, <b>svn status</b> displays those items with the letter <i>R</i> preceeding 
+				the name.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to copy a number of files with the status 'replaced' from their location in
+				<b>workingcopy</b> to a new directory called <b>test</b>, the following ant task can
+				be used:
+				<div class="sample">
+<pre class="sample">
+
+&lt;copy todir="test"&gt;
+	&lt;fileset dir="workingcopy"&gt;
+		&lt;svnReplaced/&gt;
+	&lt;/fileset&gt;
+&lt;/copy&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnMissing</a>
+</h1>
+<p>File selector that performs discrimination based on the 'missing' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Missing</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'missing'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				A 'missing' file or directory is one that is managed by Subversion and
+				has been deleted without using the remove command. In general, <b>svn status</b> 
+				displays those items with the exclamation point (<i>!</i>) preceeding the name.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				It is important to note that a regular FileSet (the one supplied by ANT) can not
+				detect a missing item, since it does not exist on the file system. To detect
+				Subversion missing items, use the FileSet provided by svn-ant (svnFileSet).
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to delete missing files from the repository associated with a <b>workingcopy</b>:
+				<div class="sample">
+<pre class="sample">
+
+&lt;svn&gt;
+	&lt;delete&gt;
+		&lt;svnFileSet dir="workingcopy"&gt;
+			&lt;svnMissing/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/delete&gt;
+&lt;/svn&gt;
+		
+				</pre>
+</div>
+			</p>
+		<h1>
+<a name="">svnDeleted</a>
+</h1>
+<p>File selector that performs discrimination based on the 'deleted' subversion status. </p>
+<table class="type">
+<tbody class="type">
+<tr class="type">
+<th class="type">Implementation:</th>
+<td class="type">org.tigris.subclipse.svnant.selectors.Deleted</td>
+</tr>
+</tbody>
+</table>
+<h2>Parameters</h2>
+<table class="params">
+<tr class="params">
+<th class="params">Attribute</th>
+<th class="params">Description</th>
+<th class="params">Required</th>
+</tr>
+<tr class="params">
+<td class="params">javahl</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of JavaHL bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">svnkit</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		If set, instructs the use of SVNKit bindings, if available.
+		Set to <b>false</b> to use command line client interface to subversion. 
+		Defaults to true. See <a href="#bindings">note</a> for more details.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No
+	</ant:required>
+</td>
+</tr>
+<tr class="params">
+<td class="params">failonerror</td>
+<td class="params">
+<ant:description xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		Controls whether an error stops the build or is merely reported to the screen.
+	</ant:description>
+</td>
+<td class="params">
+<ant:required xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		No (defaults to "true")
+	</ant:required>
+</td>
+</tr>
+</table>
+<h2>Nested Types</h2>No nested types defined for this type.<h2>Description</h2>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				This file selector is used to discriminate files within a <b>fileset</b> based on a Subversion
+				status. In particular, this selector keeps files that are recognized as 'deleted'.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				A 'deleted' file or directory is one that has been erased using Subversion's 'remove'
+				command. In general, <b>svn status</b> displays those items with the letter <i>D</i>
+				preceeding the name.
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				It is important to note that a regular FileSet (the one supplied by ANT) can not
+				detect a deleted item, since it does not exist on the file system. To detect
+				Subversion deleted items, use the FileSet provided by svn-ant (svnFileSet).
+			</p>
+			<p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				Example: to revert deleted files from a <b>workingcopy</b>:
+				<div class="sample">
+<pre class="sample">
+
+&lt;svn&gt;
+	&lt;revert&gt;
+		&lt;svnFileSet dir="workingcopy"&gt;
+			&lt;svnDeleted/&gt;
+		&lt;/svnFileSet&gt;
+	&lt;/revert&gt;
+&lt;/svn&gt;
+		
+				</pre>
+</div>
+			</p>
+		</body>
+</html>

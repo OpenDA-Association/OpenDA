@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>installation</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>OpenDA installation for Linux users</h1>
+
+<hr>
+
+<h2>Note about csh</h2>
+At the moment, scripts for
+<tt>csh</tt>
+and related shells are not included with OpenDA. If is possible to use OpenDA in conjunction with for instance
+<tt>tcsh</tt>
+, but you will have to convert the scripts yourself.
+
+<h2>Note about GNU C Library</h2>
+All native components of OpenDA are compiled both for 32-bit and 64-bit versions of Linux. For
+32 bit systems a GLIBC version 2.4 or higher is needed, for 64 bit version 2.7 or higher.
+
+If you have an older version of GLIBC, you have to compile the libraries yourself. It is important
+that you remove <b>all</b> .so bestanden in the lib-directory before building.
+
+<h2>Step-by-step installation</h2>
+<ol>
+   <li>Ensure that Java version 1.6 or higher is installed in your computer. You can check what version is installed with <i>java
+   -version</i>. We have only tested our software with the jre from SUN, with other jre's your mileage may vary. The easiest way to
+   install Java is often with the package manager that comes with your distribution (e.g. <i>APT</i>, <i>yum</i> for Red Hat-, <i>dpkg</i>
+   for Debian- or <i>YaST</i> for SUSE-related distributions).<br>
+   </li>
+   <li>Download OpenDA from <a href="http://www.openda.org/" target="_blank">www.openda.org</a>.
+       There is a script available to perform this download: <a href="openda_checkout_sf.sh">openda_checkout_sf.sh</a></li>
+   <li>Extract the OpenDA distribution file to the desired location on your computer. On some Linux systems unzip/ark is not
+   installed by default, in that case try the package manager again.<br>
+   </li>
+   <li>A number of system variables need to be set before OpenDA can be run. The first variable that should be set is $OPENDADIR.
+       This variable should point to the bin-directory of your OpenDA installation. For example:<br>
+       <tt>export OPENDADIR=/myhome/openda/bin</tt><br>
+       The other variables are set by the script <tt>settings_local.sh</tt> in the directory $OPENDADIR. This script will try to call the local
+       script with machine specific settings $OPENDADIR/settings_local_&lt;hostname&gt;.sh. You must create this sript yourself.<br>
+       Copy the <tt>settings_local_base.sh</tt> file to a new file
+   named <tt>settings_local_&lt;hostname&gt;.sh</tt> in your $OPENDADIR (unless that file already exists). You can check your hostname with the <i>hostname</i>
+   command. Then edit that file: enable the relevant lines and change the values of the environment variables. <br>
+   For linux there is a default local settings script as well that might work out of the box for your system. You can use this script by<br>
+   <tt>. $OPENDADIR/settings_local.sh linux</tt><br></li>
+
+   <li>Most convenient is to set the varables automatically. Add in the <tt>.bashrc</tt> in your home directory, the following two lines:<br>
+   <tt>export OPENDADIR=&lt;bindir&gt;</tt>, with <tt>&lt;bindir&gt;</tt> the location of the <tt>bin</tt> directory of your OpenDA
+   installation.<br>
+   <tt>. $OPENDADIR/setup_openda.sh</tt><br>
+   Note that the '.' is significant in the latter of these lines.</li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OscillatorConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/toymodels/OscillatorConfig.xsd">
+	<simulationTimespan>[0.0,0.05,10.0]</simulationTimespan>
+	<!-- <parameters names="t_damp,omega">[8.0,1.5708]</parameters> -->
+	<parameters names="t_damp,omega">[9.0,1.7]</parameters>
+	<parameterUncertainty names="t_damp,omega">[1.0,0.1257]</parameterUncertainty>
+	<systemNoise>{[0.0,0.0],[0.0,0.0]}</systemNoise>
+	<initialState>[0.8,0.0]</initialState>
+	<initialStateUncertainty>[0.8,0.8]</initialStateUncertainty>
+</OscillatorConfig>
+
+

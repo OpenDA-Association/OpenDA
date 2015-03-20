@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="SimulationWriteObservationsXML">
+		<xs:attribute name="filename" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>File name to store output.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="addNoise" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>Flag whether to add noise to the output.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="format" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Format in which the output is stored.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SimulationInstanceXML">
+		<xs:attribute name="repeat" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Number of repetition.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="stochParameter" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>Flag whether random perturbation is added to parameter.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="stochForcing" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>Flag whether random perturbation is added to forcing.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SimulationConfigXML">
+		<xs:sequence>
+			<xs:element name="instance" type="openda:SimulationInstanceXML">
+				<xs:annotation>
+					<xs:documentation>Configure model instances.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="writeObservations" type="openda:SimulationWriteObservationsXML">
+				<xs:annotation>
+					<xs:documentation>Configure output.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SimulationConfig" type="openda:SimulationConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of simulation algorithm, which is simply to perform a deterministic model run.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

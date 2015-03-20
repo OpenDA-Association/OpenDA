@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GriddedFullSearchConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/griddedFullSearchConfig.xsd">
+	<costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction"/>
+	<!-- for each parameter a regular grid is defined. The computations cover all possible combinations of these values. 
+	Note that the number of model runs increases quickly with the number of parameters, eg 10 steps for 3 parameters give 10x10x10=1000 model runs -->
+	<gridRange min="[7.0,1.5]" max="[9.0,1.8]" step="[0.2,0.05]"/>
+	<!-- optional additional criteria for stopping the calibration -->
+	<stopCriteria>
+		<stopCriterion class="org.openda.algorithms.AbsoluteAveragePerLocationStopCriterion" threshold="1.0E-3"/>
+	</stopCriteria>
+</GriddedFullSearchConfig>

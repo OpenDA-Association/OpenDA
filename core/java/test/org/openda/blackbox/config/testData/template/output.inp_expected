@@ -1,0 +1,9 @@
+template file example: template.inp
+
+first key which should be replaced 02 DEC 2011
+second key which should be replaced 1440.0 some text after
+third key which should be replaced 14400.0 some text after
+
+Finally we replace some key with multiple lines:
+SPACE_VAR_WIND  WCONVERSIONFACTOR = 1.0 WUNIT = 'm/s'  FINISH = YES
+See if it all works.

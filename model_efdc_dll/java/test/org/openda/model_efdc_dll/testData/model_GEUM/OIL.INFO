@@ -1,0 +1,25 @@
+***  OIL.INFO FILE 
+* Comment Lines Starts With '*'
+* OUTPUT FREQ[min]
+         10
+**********************************************************************
+* DEFINE OIL INFORMATION
+* EXPERT ONLY
+**********************************************************************
+*
+* Number Of Drifters: NPD
+       1000
+* Oil Thickness limit    Specific Gravity > 0.95 : 1.0e-4  
+*                        Specific Gravity < 0.80 : 1.0e-5
+*                        0.80 <= SG <= 0.95 : 1.5727e-4-3.2727e-6*(141.5/SG-131.5)   
+     0.00003
+* OIL CHEM MODULE SWITCH
+* EVAPORATION     DISSOLUTION
+        1           1
+* Fingas Evaporation Constants (ONLY IDTOX=2004) 
+* More information - Finags, 1993, 'The evaporation of oil spills:
+* development and implementation of new prediction methodology' 
+*      ALPHA       BETA 
+        0.          0.
+
+

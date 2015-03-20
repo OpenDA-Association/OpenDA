@@ -1,0 +1,44 @@
+C cwqsr02.inp, Diatoms (mg/l as C)  DDD  2011-05-27 16:00:00
+C
+C ISTYP MCSER(NS,8) TCCSER(NS,8) TACSER(NS,8) RMULADJ(NS,8) ADDADJ(NS,8)
+C
+C if istyp.eq.1 then read depth weights and single value of CSER
+C
+C (WKQ(K),K=1,KC)
+C
+C TCSER(M,NS,8) CSER(M,NS,8) !(mcser(ns,8) pairs for ns=8,ncser(8) series)
+C
+C else read a value of cser for each layer
+C
+C TCSER(M,NS,8) (CSER(M,K,NS,8),K=1,KC) !(mcser(ns,8) pairs)
+C
+ 0 14 86400.0 0.0 1.0 0.0 ' *** CWQSR02_1
+  0.0 6.7181
+  7.5 6.7181
+  34.5 7.1966
+  69.5 5.7133
+  91.5 4.517
+  122.5 1.3589
+  155.5 0.4306
+  182.5 1.1867
+  213.5 1.2728
+  245.5 1.7896
+  274.5 2.1628
+  308.5 1.78
+  337.5 0.1436
+  366.5 0.1436
+ 0 14 86400.0 0.0 1.0 0.0 ' *** CWQSR02_2
+  0.0 1.0
+  7.5 2.0
+  34.5 3.0
+  69.5 4.0
+  91.5 5.0
+  122.5 6.0
+  155.5 7.0
+  182.5 8.0
+  213.5 9.0
+  245.5 10.0
+  274.5 11.0
+  308.5 12.0
+  337.5 13.0
+  366.5 14.0

@@ -1,0 +1,82 @@
+**********************************************************************
+**  READ IN FREE SURFACE ELEVATION OR PRESSURE CONTROLLED FLOW
+**  SPECIFICATION FROM THE FILE QCTL.INP
+**
+**  THE FLOW IS GIVEN BY:
+**    HUP=HP()+BELV()+HCTLUA(NS)=ADJUSTED ELEVATION OF UPSTREAM CELL FREE SURFACE
+**    HDW=HP()+BELV()+HCTLDA(NS)=ADJUSTED ELEVATION OF DOWNSTREAM CELL FREE SURFACE
+**    DELH = HCTLUM(NS) * HUP - HCTLDM(NS) * HDW
+**    If DELH <= 0 Then FLOW = 0  ELSE  FLOW = Lookup(QCTL() VS HDIFCTL())
+**
+**  InType MQCTL() HCTLUA() HCTLUM() HCTLDA() HCTLDM() RMULADJ() ADDADJ()
+**    IF ISTYP=0 THEN                             If ISTYP=1 THEN
+**      Loop Over MQCTL HDIFCTL vs QCTL Pairs       Read (WKQ(K),K=1,KC)
+**        (explicit assignment for each layer)      Loop Over MQCTL HDIFCTL vs QCTL Pairs
+       1      20   -4.2     .25       0       0       1       0       0
+ 1 
+       0       0
+     .22    62.9
+     .36   125.8
+     .73   377.4
+    1.16   754.8
+    1.62    1258
+    5.99    7548
+    8.47   12580
+    8.75   13210
+     8.9   13590
+       9   13840
+    9.11   14090
+    9.21   14340
+    9.31   14590
+    9.41   14840
+    9.51   15100
+    9.76   15730
+    9.99   16350
+   10.46   17610
+   10.89   18870
+       1      21   -8.75     .33       0       0       1       0       0
+ 1 
+       0       0
+     .28    60.2
+     .45   120.4
+     .93   361.2
+    1.46   722.4
+    2.03    1204
+    6.15    7224
+    8.47   12040
+    8.47   12040
+    8.76   12640
+    8.93   13000
+    9.04   13240
+    9.16   13480
+    9.27   13730
+    9.38   13970
+    9.49   14210
+    9.61   14450
+    9.89   15050
+   10.17   15650
+   10.72   16860
+   11.26   18060
+       1      21  -11.8     .25       0       0       1       0       0
+ 1 
+       0       0
+      .2    57.7
+     .32   115.4
+     .67   346.2
+    1.06   692.4
+    1.48    1154
+    6.85    6924
+   10.16   11540
+   10.16   11540
+   10.53   12120
+   10.75   12460
+   10.89   12690
+   11.04   12920
+   11.18   13160
+   11.32   13390
+   11.46   13620
+   11.59   13850
+   11.94   14430
+   12.28   15000
+   12.92   16160
+   13.56   17310

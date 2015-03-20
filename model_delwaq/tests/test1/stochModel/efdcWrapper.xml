@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+        <alias key="instanceDir"/>
+        <alias key="templateDir"/>
+        <alias key="delwaqOutputFile"/>
+        <alias key="inpConstantsFile"/>
+        <alias key="inpConstantsDataFile"/>
+    </aliasDefinitions>
+
+    <run>
+        <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+        <computeActions>
+            <action exe="../model/bin/delwaq1.exe" workingDirectory="%instanceDir%">
+                <arg>"efdc.inp"</arg>
+                <arg>"-p"</arg>
+                <arg>"../model/bin/proc_def"</arg>
+            </action>
+            <action exe="../model/bin/delwaq2.exe" workingDirectory="%instanceDir%">
+                <arg>"efdc.inp"</arg>
+                <checkOutput file="%delwaqOutputFile%"/>
+            </action>
+        </computeActions>
+        <finalizeActions/>
+    </run>
+
+    <inputOutput>
+        <ioObject className="org.openda.model_delwaq.delwaqInpConstants">
+            <file>%inpConstantsFile%</file>
+            <arg>%inpConstantsDataFile%</arg>
+            <id>constantsFile</id>
+        </ioObject>
+
+        <ioObject className="org.openda.model_delwaq.delwaqBinaryFile">
+            <file>%delwaqOutputFile%</file>
+            <id>outputFile</id>
+        </ioObject>
+    </inputOutput>
+
+</blackBoxWrapperConfig>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxStochModelConfig.xsd">
+
+    <modelFactory className="org.openda.dotnet.ModelFactoryN2J" workingDirectory=".">
+        <arg>OpenDA.DotNet.OpenMI.Bridge.ModelFactory;OpenDA.DotNet.OpenMI.UnitTests.SimpleComponent.SimpleLinkableComponentFactory;modelConfig.xml</arg>
+    </modelFactory>
+
+    <vectorSpecification>
+        <state>
+            <noiseModel>
+                <vector id="loc.1.quant.a"/>
+                <armaModel operation="add">
+                    <stdDev value="0.01" transformation="identity"/>
+                    <armaConstant>0.99307961</armaConstant>
+                </armaModel>
+            </noiseModel>
+            <vector id="state"/>
+        </state>
+        <predictor>
+            <vector id="location A Measurement" sourceVectorId="loc.1.quant.a"/>
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

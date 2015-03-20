@@ -1,0 +1,14 @@
+prefix=/u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu
+exec_prefix=${prefix}
+libdir=/u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/lib
+includedir=${prefix}/include
+
+# Note: libraries will only be present for mutex-based emulation builds
+
+Name: OpenPA
+Description: Portable library for atomic operations
+Version: 1.0.2
+Libs: 
+Libs.private: 
+Cflags: -I${includedir}
+

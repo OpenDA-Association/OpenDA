@@ -1,0 +1,47 @@
+Domain, Checked : No        
+     Grid                  : Lake2D.grd
+     Grid enclosure        : Lake2D.enc
+     Bathymetry            : none
+     Dry points            : none
+     Thin dams             : none
+
+Time frame, Checked : No        
+
+Processes, Checked : No        
+
+Initial conditions, Checked : No        
+
+Boundaries, Checked : No        
+     Boundary definitions  : none
+     Astronomical flow conditions : none
+     Astronomical corrections : none
+     Harmonic flow conditions : none
+     QH-relation flow conditions : none
+     Time series flow conditions : none
+     Transport conditions  : none
+
+Physical parameters, Checked : No        
+     Roughness coefficients : none
+     Hor. viscosity/diffusivity : none
+     Heat flux model data  : none
+     Sediment data         : none
+     Morphology data       : none
+     Uniform wind data     : Lake2D.wnd
+     Space varying wind data : none
+
+Numerical parameters, Checked : No        
+
+Operations, Checked : No        
+     Discharge definitions : none
+     Discharge data        : none
+     Dredging and dumping data : none
+
+Monitoring, Checked : No        
+     Observation points    : Lake2D.obs
+     Drogues               : none
+     Cross-sections        : none
+
+Additional parameters, Checked : No        
+
+Output, Checked : No        
+     Fourier analysis data : none

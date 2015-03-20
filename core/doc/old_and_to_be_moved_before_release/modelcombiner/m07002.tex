@@ -1,0 +1,687 @@
+\documentclass[a4paper,12pt]{article}
+\newcommand{\styles}{../styles}
+\newcommand{\figs}{.}
+\usepackage[eng]{\styles/costa}
+
+\title{The COSTA ModelCombiner}
+\author{Erwin Loots and Nils van Velzen}
+\memonum{CTA memo200701}
+\date{\today}
+
+\begin{document}
+\memotitlepage
+
+\begin{vtlogsheet}
+\vtlogentry{1.0}{EL}{2007-07-11}{Initial version}{CvV}
+\vtfilelocation{$<$COSTA\_DIR$>$/doc/modelcombiner}
+\end{vtlogsheet}
+
+\tableofcontents
+
+%===============================================================================
+
+\section{Introduction}
+
+One of the building blocks that COSTA offers is the 
+{\em COSTA-model}
+component.  {\em COSTA-model} objects have an internal state, and a number of
+{\em methods} to set, change or get this state.  In the COSTA project, a
+number of such methods has been designed.  The implementation is left to
+the user: existing code may be used to create the methods of the
+COSTA-model component.  COSTA also offers a set of building blocks to help
+setting up a COSTA-model component.  It is not necessary that all methods are
+available for a COSTA-model component: a component lacking certain methods
+simply cannot be used for certain tasks. 
+
+The {\em COSTA ModelCombiner} is a tool which can be used to create a new
+COSTA-model component. It combines two or more COSTA-model componentes into
+one COSTA-model component. The combined method, including its methods, of
+the combined model can be configured using an XML input file. 
+
+The COSTA ModelCombiner is a generic tool for the construction of larger
+COSTA-model componentes, and may be used to couple all kinds of COSTA models.
+A specific type of combination for which the ModelCombiner is especially
+intended, is the coupling of a deterministic (simulation) model and a noise
+model into a stochastic model. 
+
+Combining a deterministic model and a noise model is an important buidling
+block in data assimilation, because existing simulation models are in
+general deterministic, and many data assimilation methods need a stochastic
+model.  This means that existing models have to be extended into a
+stochastic model before assimilation techniques can be applied.
+
+This memo gives a description of this generic tool called COSTA 
+ModelCombiner.
+
+
+
+
+\section{COSTA-models}\label{Sec: models}
+\subsection{Mathematical description of a COSTA-model}
+\label{Sec: model math}
+The COSTA ModelCombiner is a tool for the construction of COSTA model
+components. Its explanation requires a clear understanding of what a
+COSTA-model is. This section is intended to explain the COSTA-model
+component in sufficient detail. 
+
+COSTA-models are COSTA components and therefore have an state (value)
+and an interface. COSTA-models are intended to describe stochastic models,
+which means that a model is available for the uncertainties 
+(differences between model results and reality). Deterministic models 
+are seen as a special case of a stochastic model, in which the uncertainties 
+are ignored (assumed zero).
+
+The 'value' of a COSTA-model $s=(x,u,g,G^u,W^u,G^A,W^A,t)$
+consists of the following three parts:
+\begin{itemize}
+\item $x=(\phi,p^u,p^A)$: the 'extended state' (extended solution),
+consisting of
+     \begin{itemize}
+        \item $\phi$: 'model state' or (model solution)
+        \item $p^u$: forcing-noise parameters
+        \item $p^A$: operator-noise parameters
+     \end{itemize}
+\item $u$: the {\em forcings}
+\item $g$: the {\em parameters} or {\em schematization} of the model.
+\item $W^u$, $W^A$, $G^u$, $G^A$: interpolation and covariance matrices used 
+      in noise models.
+\item $t$ internal 'time' of the model (not very important in this memo).
+\end{itemize}
+
+In the case of a deterministic simulation, there are no noise parameters. 
+The model state is {\em propagated} in the following way.
+\begin{eqnarray}\label{Eq:GeneralModel}
+\phi\left( t_{i+1} \right) &=& 
+ A \left[ \phi \left(t_i\right), u \left( t_i \right), g\right]:
+\end{eqnarray}
+The new values are calculated from the old values using some (often very
+complicated) function $A$, under the influence of
+the current values for the forcings $u$ and the values of the parameters
+$g$, which are time-independent.
+
+
+In the general case of a stochastic model, uncertainties are included
+in the propagation equation. The propagation of the 'true' state $\phi^t$ 
+is assumed to follow the propagation operator $A$, except for an error 
+$\delta A$:
+\begin{eqnarray}
+\phi^t \left(t_{i+1} \right) &=& A \left[ \phi^t \left( t_i \right),
+                                 u^t \left(t_i \right), 
+                                 g \right] + \delta A \left( t_i \right).
+\end{eqnarray}
+The 'true' state $\phi^t$ is of only found when the 'true' previous state, 
+forcings and parameters are entered into the propagation operator. These
+'true' values are thought to be given by the forecast values (indicated 
+with the superscript $f$) and an error term:
+
+\begin{eqnarray}
+\phi^t(t_i) &=& \phi^f \left(t_i \right) +
+                                 \delta \phi\left(t_i\right),
+\nonumber \\
+u^t\left(t_i\right) &=& u^f\left(t_i\right) +
+                        \delta u \left(t_i\right),
+\nonumber \\
+g^t &=& g^f+ \delta g
+\label{Eq: error terms in phi, u, g}
+\end{eqnarray}
+The error terms $\delta A$ and $\delta u$ can be
+obtained (through interplation) from the {\em noise parameter} vectors 
+$p^A$ and $p^u$ with a much smaller dimension:
+\begin{eqnarray}
+ \delta u(t_i) = W^u p^u(t_i) &,&
+ \delta A(t_i) = W^A p^A(t_i).
+\end{eqnarray}
+The noise parameters may be described by AR(1) processes:
+\begin{eqnarray}
+   \delta u^f(t_{i+1}) &=& \mbox{diag}(\alpha^u) \delta u(t_i) +
+\eta^u(t_i),
+\nonumber \\
+   \delta A^f(t_{i+1}) &=& \mbox{diag}(\alpha^A) \delta A(t_i) + 
+\eta^A(t_i),
+\label{eq: AR 1}
+\end{eqnarray}
+Where $\eta^A$ and $\eta^u$ are normally distributed stochastic variables, 
+with their covariance matrices $G^A$ and $G^u$ given by 
+\begin{eqnarray}
+G^u = E(\eta^u(t_i) \eta^u(t_i)^T) &,& 
+G^A = E(\eta^A(t_i) \eta^A(t_i)^T).
+\end{eqnarray}
+
+The propagation of the complete system is described in the following
+equation:
+\begin{eqnarray}
+ x^t(t_{i+1}) = A_x[x^t(t_i),u(t_i),g] + \left( \begin{array}{l} 0 \\ \eta
+  \label{eq: alles-vergelijking}
+\end{array}\right),
+\end{eqnarray}
+where 
+\begin{itemize}
+ \item The propagation operator $A_x$ is given by
+  \begin{eqnarray}
+      A_x[(\phi,p^u,p^A),u,g] = \left(
+       \begin{array}{ll}
+         A[\phi,u+W^up^u,g] + W^A p^A\\
+         \mbox{diag}(\alpha^u)p^u\\
+         \mbox{diag}(\alpha^A)p^A
+      \end{array} \right)
+  \end{eqnarray}
+ \item The covariance matrix $G$ of the normally distributed vector $\eta$
+       is given by
+       \begin{eqnarray}
+         G = \left(\begin{array}{ll}
+                G^u & 0 \\ 0 & G^A \end{array}
+             \right).
+       \end{eqnarray}
+\end{itemize}
+The internal structure of the model, given in equations (\ref{eq: AR 1}), 
+is not essential for most data assimilation methods. 
+The extended state vector $x$ may also be composed of different parts, and 
+the extended propagation operator $A_x$ may have a different structure.
+The overall
+propagation equation (\ref{eq: alles-vergelijking}), however, is crucial,
+because it is the starting point of most data-assimilation methods.
+
+The interface of the COSTA model component was designed to perform all the
+necessary manipulations of stochastic models of the kind described in this
+section.  Models with a simpler structure are obtained by leaving certain
+parts of the model empty. 
+
+
+
+\subsection{Interface functions of the COSTA model component}
+\label{Sec: model interface}
+The previous section discussed the structure of COSTA models. The section
+concluded by stating that the interface of the COSTA model component 
+contains all the functions necessary to support data assimilation methods.
+
+The COSTA ModelCombiner is a {\em COSTA component class}. 
+This means that it is one of the possible {\em implementations} of the
+COSTA model interface. Since this memo intends to describe the usage of 
+the COSTA ModelBuilder and the way it works, it is important to know
+all the functions in the interface.
+
+A COSTA model provides the following functions:
+\begin{itemize}
+ \item {\tt DefineCLass}, {\tt Create}, {\tt Free}: 
+                      functions necessary for the construction and
+                      descruction of COSTA models.
+ \item {\tt Compute}: carry out the time steps necessary to step through a 
+                      given time span.
+
+ \begin{itemize}
+   \item FOR $i=i_{start},\cdots,i_{end}$, DO
+    \begin{eqnarray}
+       \phi &:=& A[\phi,u(t_i)+W^u p^u,g+\delta g] + W^A p^A,
+    \nonumber \\
+      p^u &:= & \mbox{diag}(\alpha^u)p^u + \eta^u(t_i),
+    \nonumber \\
+      p^A &:= & \mbox{diag}(\alpha^A)p^A + \eta^A(t_i).
+    \end{eqnarray}
+    END
+ \end{itemize}
+
+ \item {\tt AddNoise}: specify the noise which is to be added to the
+                      forcings, state and schematization;
+ \begin{itemize}
+   \item FOR $i=i_{start},\cdots,i_{end}$, DO
+    \begin{eqnarray}
+      \eta^u(t_i) &:= & G^u~ {\tt randn(size(}p^u{\tt ))}
+    \nonumber \\
+      \eta^A(t_i) &:= & G^A~ {\tt randn(size(}p^A{\tt ))}
+    \end{eqnarray}
+    END
+ \end{itemize}
+
+ \item {\tt SetState}, {\tt GetState}, {\tt Axpy}: 
+                      set, return or modify the state values $\phi$
+                      in the form of a {\em COSTA state vector} object;
+ \item {\tt SetForc}, {\tt GetForc}, {\tt AxpyForc}: 
+                      set, return or modify the forcing values $u$
+                      in the form of a {\em COSTA state vector} object;
+ \item {\tt SetParam}, {\tt GetParam}, {\tt AxpyParam}: 
+                      set, return or modify the model schemetization $g$
+                      in the form of a {\em COSTA state vector} object; 
+\item {\tt GetNoiseCount}, {\tt GetNoiseCovar}: 
+                      return (dimension of) covariance matrix $G$ of the 
+                      noise model;
+ \item {\tt GetObsValues}: interpolate the model state to the observations.
+ \item {\tt GetObsSelect}: return information which can be used to
+                      read only the observations from a 
+                      {\em COSTA stochastic observer} object for which
+                      predictions can be generated by the model.
+\end{itemize}
+
+Using the existing COSTA models, the ModelCombiner provides all the 
+functions of the interface.
+
+
+\subsection{Extension of the interface, necessary for the ModelCombiner}
+In the current project, the interface of the COSTA model will be extended:
+when getting, setting or updating the state, forcings or schematization,
+so-called {\em meta-information} will be supplied to describe the
+information given or asked. This will make it possible for the model to
+interpret and meaningfully process the information given, or to supply the
+correct information. It will also make it possible to get, set or change
+only {\em part} of the state, forcings or schematization, because only the
+information described by the meta-information is returned, set or changed.
+The new interface makes it (much) easier to combine COSTA models,
+beacuse it makes it possible to pass the information from one model to
+another. 
+
+The meta-information will have to be obtained from the COSTA models. 
+This is similar to the meta-information which is given about the COSTA
+Stochastic Observer component by the COSTA Observer Description component.  
+The meta-information object is be constructed in an analogous way.
+
+More specific, a metainfo structure is attached to each state. In general, it
+consists of some detailed information, description and unit of the quantity. An
+important part is the grid information. The vector in a state leaf lives on a
+grid. Up to now only linear grids are supported.
+
+The advantage is that in the case of an axpy-operation, the grid can be used to
+perform necessary operations. In this way a coarse noise vector can be added to
+a dense state vector.
+
+
+Metainfo is not obligatory. States can be used without metainfo, as always was
+the case, but operations are restricted somewhat. For example, an axpy
+operation between two states is only possible if the states and their substates
+have the same length.
+
+
+{\bf Description of the current metainfo structure:}
+\begin{itemize}
+\item tag: a short unique description for identification purposes like 'sep' or
+  'u'. This is used for binary operations like axpy: the function, when called
+  with two large states as input, knowns that it performs the operation on
+  substates with the same tag. Substates which do not have a matching
+  metainfo-tag in any of the substates of the other state, are ignored.
+  it can 
+\item belongs\_to: a second tag, also for binary operations. The user can in
+  this way specify that 'sep' and 'noise\_of\_sep' belong to each other.
+\item unit: the unit of the quantity described.
+\item grid This is a separate structure attached on the metainfo.
+   \begin{itemize}
+     \item type: 2D or 3D
+     \item name
+     \item x\_origin, y\_origin
+     \item nx,ny,nz: dimension in each direction
+     \item dx,dy,dz: distance between two grid points in each direction
+   \end{itemize}
+
+
+\end{itemize}
+
+{\bf description of metainfo operations:}
+
+CTA\-Metainfo\_Create(CTA\_Metainfo *minfo);
+
+CTA\-Metainfo\_Copy(CTA\_Metainfo minfo1, CTA\_Metainfo minfo2 );
+
+CTA\-Metainfo\_SetUnit(CTA\_Metainfo minfo, char* unit );
+
+CTA\-Metainfo\_GetUnit(CTA\_Metainfo minfo, char* unit );
+
+CTA\-Metainfo\_SetTag(CTA\_Metainfo minfo, char* tag );
+
+CTA\-Metainfo\_GetTag(CTA\_Metainfo minfo, char* tag );
+
+CTA\-Metainfo\_SetBelongsTo(CTA\_Metainfo minfo, char* tag );
+
+CTA\-Metainfo\_GetBelongsTo(CTA\_Metainfo minfo, char* tag );
+
+CTA\_Metainfo\_GetGrid(CTA\_Metainfo minfo, CTAI\_Gridm *hgrid);
+
+CTA\_Metainfo\_SetGrid(CTA\_Metainfo minfo, CTAI\_Gridm *hgrid);
+
+
+
+ 
+
+
+\section{Combining COSTA models}
+\subsection{Combining noise models and a deterministic model}
+\label{Sec: example combi}
+A very important example of a combined model is the combination of a 
+deterministic model and a noise model. 
+\begin{itemize}
+\item The {\bf deterministic model} has the state $s_d = (\phi,u,g)$. There are
+      no noise parameters.
+      The propagation rule is:
+\begin{eqnarray}
+      \phi(t_{i+1}) := A[\phi(t_i),u(t_i),g]
+\end{eqnarray}
+\item The {\bf noise model for the forcings} has the state $s_u = (p^u)$. 
+      The propagation rule is:
+\begin{eqnarray} 
+   p^u &:=& \mbox{diag}(\alpha^u) ~ p^u + \eta^u(t_i),
+\nonumber \\
+   \eta^u(t_i) &\equiv& N(0,1).
+\end{eqnarray}
+\item The {\bf noise model for the solution} has the state $s_A = (p^A)$. 
+      The propagation rule is:
+\begin{eqnarray} 
+   p^A &:=& \mbox{diag}(\alpha^A) ~ p^u + \eta^A(t_i).
+\nonumber \\
+   \eta^A(t_i) &\equiv& N(0,1).
+\end{eqnarray}
+\end{itemize}
+These three submodels are each considerably simpler than the stochastic
+model described in Section \ref{Sec: model math}.
+
+The state $\phi$ of the combined model is the concatenation of the 
+states of the three submodels; so are the other . The COSTA state vector 
+component has the functionality to handle concatenated vectors.
+
+The same thing can be said for the forcings, schematization and 
+noise parameters. The combined covariance matrix has a block diagonal
+structure.
+
+The propagation of the combined model consists of the following steps:
+\begin{enumerate}
+ \item Interpolate the forcings-parameters and add the forcings-noise to
+       the forcings
+    \begin{eqnarray}
+       u(t_i) := u(t_i) + W^u p^u
+    \end{eqnarray}
+ \item Propagate the deterministic model
+    \begin{eqnarray}
+       \phi := A[\phi,u(t_i),g]
+    \end{eqnarray}
+ \item Interpolate the model-noise and add the model-noise to the solution 
+    \begin{eqnarray}
+       \phi := \phi + W^A p^A. 
+    \end{eqnarray}
+ \item Propagate forcings-noise
+    \begin{eqnarray}
+       p^u := \mbox{diag}(\alpha^u)~p^u + \eta_u(t_i)
+    \end{eqnarray}
+ \item Propagate model-noise
+    \begin{eqnarray}
+       p^A := \mbox{diag}(\alpha^A)~p^A + \eta_A(t_i)
+    \end{eqnarray}
+\end{enumerate}
+In this example, it is clear how the submodels should be combined into a 
+combined model, using the functions in the interface of the COSTA model
+component, and interpolations needed for the commnunication between the
+submodels.
+
+
+\subsection{Configuration file for ModelCombiner}
+\label{Sec: usage}
+The previous sections provide some insight into the way a combined 
+model will work and the things that must be specified to the ModelCombiner.
+In this Section, it will be explained how the COSTA user (i.e. the model 
+programmer) can describe the coupled model to the ModelCombiner.
+
+The information is presented to the ModelCombiner in the form of a 
+configuration file, written in XML.
+
+The overall structure of an input file for the ModelCombiner is given
+in Table \ref{Tab: example input file}. It consists of two parts: the 
+definitions of the submodels and the specification of the propagation step 
+of the combined model.
+
+
+\begin{table}
+\begin{tabular}{|l|}
+\hline
+{\small
+\begin{minipage}{15cm}
+\begin{verbatim}
+
+  <modelbuilder model="stochastic model" tagstate="a" 
+                      tagforc="b" tagparam="c">
+
+
+   <submodels>
+\end{verbatim}
+\hspace{1.4cm}
+{\em submodel definitions, between {\tt <submodel>}}
+\begin{verbatim}
+   </submodels>
+
+   <propagation>
+       <deterministic>
+\end{verbatim}
+\hspace{1.2cm}
+\begin{tabular}{p{12cm}}
+\begin{minipage}{12cm}
+\begin{itemize}
+\item[]
+{\em things to be done for the propagation of the combined, extended
+     solution, between {\tt <action type=*>}, except the propagation of 
+     stochastic models}
+\end{itemize}
+\end{minipage}
+\end{tabular}
+\begin{verbatim}
+       </deterministic>
+       <stochastic>
+          <action type=propagate> boundary noise model  </action>
+          <action type=propagate> wind noise model      </action>
+          <action type=propagate> viscosity noise model </action>
+          <action type=propagate> velocity noise model  </action>
+       </stochastic>
+   </propagation>
+
+</modelbuilder>
+
+\end{verbatim}
+\end{minipage}
+}
+\\ \hline
+\end{tabular}
+\caption{\em Overall structure of the input file for the ModelCombiner}
+\label{Tab: example input file}
+\end{table}
+
+An example of the definitions of the submodels is given in Table \ref{Tab:
+submodel definitions}. Every submodel is given a name. Some additional 
+information is necessary since the combined model creates its own submodels. 
+
+\begin{table}
+\begin{tabular}{|l|}
+\hline
+{\small
+\begin{minipage}{15cm}
+\begin{verbatim}
+
+<submodel> 
+       <name>         deterministic model      </name>
+       <model_class>  CTA_WAQUA_MODEL          </model_class>
+       <create_input> control_simona.txt       </create_input>
+</submodel>
+
+<submodel>
+       <name>         boundary noise model     </name>
+       <model_class>  CTA_MODEL_BUILDER        </model_class>
+       <create_input> boundary_noise_model.xml </create_input>
+</submodel>
+\end{verbatim}
+{\em submodel definitions for {\tt wind noise model}, 
+{\tt viscosity noise model} and {\tt velocity noise model}, similar to that 
+of {\tt boundary noise model}}\\[1ex]
+\end{minipage}}\\
+\hline
+\end{tabular}
+\caption{Example of the submodel definitions in the input file}
+\label{Tab: submodel definitions}
+\end{table}
+
+Table \ref{Tab: example deterministic propagation} gives an example of the
+'actions' which constitute the propagation of the extended solution in the
+combined model. The example is very similar to (but a little more extended
+than) the steps given in Section \ref{Sec: example combi}.  Every step in
+the propagation is called an 'action'.  Several kinds of actions are
+distiguished:
+\begin{itemize}
+
+ \item {\tt set}, {\tt get}, {\tt axpy}:
+
+       Set , get or adjust a part of the submodel state, forcings or
+       parameters, using the values and meta-information of the state,
+       forcings or parameters of an other submodel.
+
+ \item {\tt propagate}:
+ 
+       Carry out time step calculation(s) until 
+       the desired simulated time level.
+
+\end{itemize}
+
+\begin{table}
+\begin{tabular}{|l|}
+\hline
+{\small
+\begin{minipage}{15cm}
+\begin{verbatim}
+
+<action type="x=axpy"> 
+      <var_y  var="state">    boundary noise model </var_y>
+      <const_a>               1.0                  </const_a>
+      <var_x var="forcings"> deterministic model  </var_x>
+</action>
+
+\end{verbatim}
+{\em forcing adaptations for {\tt wind noise model} and
+{\tt viscosity noise model}, similar to that 
+of {\tt boundary noise model}}\\
+\begin{verbatim}
+<action type="propagate">    deterministic model     </action>
+
+<action type="y=axpy"> 
+      <var_x  var="state"> velocity noise model    </var_x>
+      <const_a>            1.0                     </const_a>
+      <var_y var="state"> deterministic model     </var_y>
+</action>
+
+\end{verbatim}
+\end{minipage}
+}
+\\ \hline
+\end{tabular}
+\caption{\em Example of the specification of all the steps in the 
+             propagation of the combined model, except propagation of
+             stochastic models.}
+\label{Tab: example deterministic propagation}
+\end{table}
+
+
+
+
+%--------------------------
+
+\subsection{The AR(1) noise model}
+
+Most users start with their own deterministic model. To make things easier,
+this model can be combined with a standard AR(1) noise model provided by COSTA.
+The AR(1) model can be created using a special variant of the Model Builder.
+That means that the functions that normally have to be provided by the user,
+are now already given by COSTA. The only aspects that the user has to specify
+are the characteristic parameters and the grid. An example of the specification
+in XML is shown in Table \ref{Tab: ar1}. The XML-code represents the 
+{\verb <create_input>} entry in the submodel definition.
+
+
+\begin{table}
+\begin{tabular}{|l|}
+\hline
+{\small
+\begin{minipage}{15cm}
+
+\begin{verbatim}
+
+       <modelbuild_sp>
+          <special_ar1>
+            <tag>noise-bc-n</tag>
+            <parameters std_dev="1.0" kar_t="105.90" kar_l="0.5">
+            </parameters>
+            <grid>
+               <type_id>2D</type_id>
+               <gridsize  nx="4"  ny="1">  </gridsize>
+               <gridparams x_origin="0.0" y_origin="2.5"
+                          dx="0.5" dy="0.0">
+               </gridparams>
+            </grid>
+          </special_ar1>
+
+       </modelbuild_sp>
+
+
+
+
+\end{verbatim}
+
+
+
+{\em submodel definition: an AR(1) noise model} \\[1ex]
+\end{minipage}}\\
+\hline
+\end{tabular}
+\caption{Example of the AR(1) submodel in the input file}
+\label{Tab: ar1}
+\end{table}
+
+The necessary parameters are the standard deviation {\tt std\_dev}, the
+characteristic time {\tt kar\_t} and the characteristic length {\tt kar\_l}.
+$$
+x_{n+1} = \alpha \cdot x_{n} + \sqrt{1 - \alpha^2} \cdot\eta
+$$
+where $\alpha = \exp{(- \delta t  kar_t)} $ and $\eta$ the covariance matrix
+  computed from the grid and the characteristic length {\tt kar\_l}.
+
+
+\section{examples}
+\subsection{oscillation model}
+As a first example, the oscillation model (without noise) has been 
+combined with an AR(1) process. Note that the grid specification is in this
+case not entirely logical since the first element of the state describes the
+(non-constant) position. However, this example will provide some insight in the
+working of the ModelCombiner.
+
+Files:
+
+{\tt models\slash oscill\slash oscill.f90}
+
+{\tt models\slash oscill\slash c\_oscill.c}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash ens\_combine\_oscill\_ar1.f90}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash ens\_combine\_oscill\_ar1.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_oscill\_model.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_ar1\_model.xml}
+
+
+\subsection{heat model}
+As a second example, a second instance of the heat model has been made.
+The model consists now of the single temperature state, and five forcings:
+the heat and four boundary  condition states. The idea is that the forcings are
+adjusted using the axpy operation with the corresponding five ar(1) models. In
+this case, the grids of the ar(1) models are twice as coarse as the grids where
+the forcings live.
+
+Files:
+
+{\tt models\slash heat\_modelcombiner\slash heat\_model.f}
+
+{\tt models\slash heat\_modelcombiner\slash c\_heatmodel.c}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash ens\_combine\_heat\_ar1.f90}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash ens\_combine\_heat\_ar1.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_ar1\_model\_nheat\_n.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_ar1\_model\_nbc\_n.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_ar1\_model\_nbc\_e.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_ar1\_model\_nbc\_w.xml}
+
+{\tt applications\slash da\_tools\slash ens\_proto\slash sm\_ar1\_model\_nbc\_s.xml}
+
+
+\end{document}

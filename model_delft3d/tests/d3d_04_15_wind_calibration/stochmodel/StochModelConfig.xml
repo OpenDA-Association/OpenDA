@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+    <blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+
+    <modelConfig>
+        <file>./ModelConfig.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        <parameters>
+
+
+<!--Wind in Malacca Strait-->
+            <regularisationConstant>
+	                    <stdDev value="0.05" transformation="ln"/>
+	                    <subVector id="wind-u">
+	                        <selector className="org.openda.model_delft3d.D3dWindMask">
+	                            <arg>mnselection.mns</arg>
+	                        </selector>
+	                    </subVector>
+            </regularisationConstant>
+            <regularisationConstant>
+	                     <stdDev value="0.05" transformation="ln"/>
+			             <subVector id="wind-v">
+			                  <selector className="org.openda.model_delft3d.D3dWindMask">
+			                      <arg>mnselection.mns</arg>
+			                   </selector>
+	                    </subVector>
+             </regularisationConstant>
+
+
+
+
+        </parameters>
+
+        <predictor>
+
+        <vector id="stat1.water level" sourceVectorId="pred-stat1"/>
+        <vector id="stat2.water level" sourceVectorId="pred-stat2"/>
+
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

@@ -1,0 +1,7 @@
+template file example: output.inp
+
+DATE=$ITDATE$ TSTART=$STARTTIME$ TSTOP=$ENDTIME$
+first key which should be replaced $ITDATE$
+second key which should be replaced $STARTTIME$ some text after
+third key which should be replaced $ENDTIME$ some text after
+fourth key wich should be replaced as integer #ITER# text after

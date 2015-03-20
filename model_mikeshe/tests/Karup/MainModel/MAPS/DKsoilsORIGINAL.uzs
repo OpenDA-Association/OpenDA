@@ -1,0 +1,840 @@
+// Created     : 2012-10-2 16:55:59
+// DLL id      : C:\Program Files (x86)\DHI\2011\Bin\pfs2004.dll
+// PFS version : Jan  6 2011 20:45:15
+
+[UzSoilProp]
+   [UzSoilPropDocVersion]
+      Touched = 0
+      Version = 2
+   EndSect  // UzSoilPropDocVersion
+
+   [SOILSETUP]
+      Touched = 1
+      MzSEPfsListItemCount = 9
+      NO_SOILS = 9
+      [SoilNo_1]
+         SOILNAME = 'JB-1'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.062
+            M = 0.307959
+            N = 1.445
+            ThetaR = 0.01
+            ThetaS = 0.395
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.062
+            Ks = 1.4e-005
+            L = -0.973
+            M = 0.307959
+            N = 1.445
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_1
+
+      [SoilNo_2]
+         SOILNAME = 'JB-2'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.054
+            M = 0.276411
+            N = 1.382
+            ThetaR = 0.01
+            ThetaS = 0.412
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.054
+            Ks = 9.7e-006
+            L = -0.922
+            M = 0.276411
+            N = 1.382
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_2
+
+      [SoilNo_3]
+         SOILNAME = 'JB-3'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.057
+            M = 0.252057
+            N = 1.337
+            ThetaR = 0.01
+            ThetaS = 0.406
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.057
+            Ks = 8.7e-006
+            L = -1.461
+            M = 0.252057
+            N = 1.337
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_3
+
+      [SoilNo_4]
+         SOILNAME = 'JB-4'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.048
+            M = 0.233129
+            N = 1.304
+            ThetaR = 0.01
+            ThetaS = 0.42
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.048
+            Ks = 6.9e-006
+            L = -1.492
+            M = 0.233129
+            N = 1.304
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_4
+
+      [SoilNo_5]
+         SOILNAME = 'JB-5'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.05
+            M = 0.20064
+            N = 1.251
+            ThetaR = 0.01
+            ThetaS = 0.391
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.05
+            Ks = 4.9e-006
+            L = -2.389
+            M = 0.20064
+            N = 1.251
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_5
+
+      [SoilNo_6]
+         SOILNAME = 'JB-6'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.044
+            M = 0.197432
+            N = 1.246
+            ThetaR = 0.01
+            ThetaS = 0.386
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.044
+            Ks = 4.1e-006
+            L = -2.365
+            M = 0.197432
+            N = 1.246
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_6
+
+      [SoilNo_7]
+         SOILNAME = 'JB-7'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = 'Ref. Daisy man'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.046
+            M = 0.167361
+            N = 1.201
+            ThetaR = 0.01
+            ThetaS = 0.386
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.046
+            Ks = 3.8e-006
+            L = -3.197
+            M = 0.167361
+            N = 1.201
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_7
+
+      [SoilNo_8]
+         SOILNAME = 'JB-8'
+         HYDRCONDCURVETYPE = 2
+         RETENTIONCURVETYPE = 1
+         COMMENT = ''
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.385
+            NO_ITEM = 0
+            Green_Ampt_Suction = -1
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.048
+            M = 0.14966
+            N = 1.176
+            ThetaR = 0.01
+            ThetaS = 0.386
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 2e-006
+            N = 13
+            ThetaR = 0.01
+            ThetaS = 0.38
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.048
+            Ks = 3.5e-006
+            L = -3.42
+            M = 0.134948
+            N = 1.156
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_8
+
+      [SoilNo_9]
+         SOILNAME = 'JB-11'
+         HYDRCONDCURVETYPE = 0
+         RETENTIONCURVETYPE = 0
+         COMMENT = 'Organic SubSoil'
+         BulkDensity = 1700
+         IncludeMacropores = 0
+         [ReteTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 14
+            PFfc = 2
+            PFw = 4.2
+            ThetaEff = 0.766
+            NO_ITEM = 14
+            Green_Ampt_Suction = -1
+            [Item_1]
+               Touched = 1
+               Pf = 0
+               Theta = 0.766
+            EndSect  // Item_1
+
+            [Item_2]
+               Touched = 1
+               Pf = 1
+               Theta = 0.756
+            EndSect  // Item_2
+
+            [Item_3]
+               Touched = 1
+               Pf = 1.3
+               Theta = 0.743
+            EndSect  // Item_3
+
+            [Item_4]
+               Touched = 1
+               Pf = 1.7
+               Theta = 0.708
+            EndSect  // Item_4
+
+            [Item_5]
+               Touched = 1
+               Pf = 2
+               Theta = 0.663
+            EndSect  // Item_5
+
+            [Item_6]
+               Touched = 1
+               Pf = 2.3
+               Theta = 0.604
+            EndSect  // Item_6
+
+            [Item_7]
+               Touched = 1
+               Pf = 2.4
+               Theta = 0.583
+            EndSect  // Item_7
+
+            [Item_8]
+               Touched = 1
+               Pf = 2.7
+               Theta = 0.517
+            EndSect  // Item_8
+
+            [Item_9]
+               Touched = 1
+               Pf = 3
+               Theta = 0.455
+            EndSect  // Item_9
+
+            [Item_10]
+               Touched = 1
+               Pf = 3.3
+               Theta = 0.398
+            EndSect  // Item_10
+
+            [Item_11]
+               Touched = 1
+               Pf = 3.7
+               Theta = 0.332
+            EndSect  // Item_11
+
+            [Item_12]
+               Touched = 1
+               Pf = 4
+               Theta = 0.29
+            EndSect  // Item_12
+
+            [Item_13]
+               Touched = 1
+               Pf = 4.17
+               Theta = 0.269
+            EndSect  // Item_13
+
+            [Item_14]
+               Touched = 1
+               Pf = 4.2
+               Theta = 0.265
+            EndSect  // Item_14
+
+         EndSect  // ReteTabulated
+
+         [ReteGenuchten]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Alpha = 0.067
+            M = 0.308437
+            N = 1.446
+            ThetaR = 0.01
+            ThetaS = 0.38
+            Green_Ampt_Suction = -1
+         EndSect  // ReteGenuchten
+
+         [ReteCamp]
+            Touched = 1
+            PFfc = 2
+            PFw = 4.2
+            Lambda = 0.14
+            ThetaS = 0.38
+            PsiB = 0.14
+            Green_Ampt_Suction = -1
+         EndSect  // ReteCamp
+
+         [HydrAverjanov]
+            Touched = 1
+            Ks = 9.26e-005
+            N = 12.8
+            ThetaR = 0.01
+            ThetaS = 0.766
+         EndSect  // HydrAverjanov
+
+         [HydrTabulated]
+            Touched = 1
+            MzSEPfsListItemCount = 0
+            NO_ITEM = 0
+            UserInputAs = 0
+         EndSect  // HydrTabulated
+
+         [HydrGenuchten]
+            Touched = 1
+            Alpha = 0.067
+            Ks = 2e-006
+            L = 0.5
+            M = 0.308437
+            N = 1.446
+         EndSect  // HydrGenuchten
+
+         [HydrCampBurd]
+            Touched = 1
+            Ks = 2e-006
+            Lambda = 0.14
+            PsiB = 0.14
+         EndSect  // HydrCampBurd
+
+         [Macropores]
+            Touched = 1
+            Matrix_MP = 0
+            Mp_Matrix = 0
+            Porosity = 0
+            PsiThreshold = 0
+            SaturatedConductivity = 0
+            ConductivityExponent = 0
+         EndSect  // Macropores
+
+      EndSect  // SoilNo_9
+
+   EndSect  // SOILSETUP
+
+EndSect  // UzSoilProp
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="core/java/src"/>
+	<classpathentry kind="src" path="core/java/test"/>
+	<classpathentry kind="src" path="models/java/src"/>
+	<classpathentry kind="src" path="models/java/test"/>
+	<classpathentry kind="src" path="observers/java/src"/>
+	<classpathentry kind="src" path="observers/java/test"/>
+	<classpathentry kind="src" path="algorithms/java/src"/>
+	<classpathentry kind="src" path="algorithms/java/test"/>
+	<classpathentry kind="src" path="application/java/src"/>
+	<classpathentry kind="src" path="application/java/test"/>
+	<classpathentry kind="src" path="model_example_blackbox/java/src"/>
+	<classpathentry kind="src" path="model_example_blackbox/java/test"/>
+	<classpathentry kind="src" path="model_example_fortran/java/src"/>
+	<classpathentry kind="src" path="model_example_fortran/java/test"/>
+	<classpathentry kind="src" path="model_swan/java/src"/>
+	<classpathentry kind="src" path="model_swan/java/test"/>
+	<classpathentry kind="src" path="model_efdc/java/src"/>
+	<classpathentry kind="src" path="model_efdc/java/test"/>
+	<classpathentry kind="src" path="model_efdc_dll/java/src"/>
+	<classpathentry kind="src" path="model_efdc_dll/java/test"/>
+	<classpathentry kind="src" path="model_hspf/java/src"/>
+	<classpathentry kind="src" path="model_hspf/java/test"/>
+	<classpathentry kind="src" path="model_wflow/java/src"/>
+	<classpathentry kind="src" path="model_wflow/java/test"/>
+	<classpathentry kind="src" path="model_delft3d/java/src"/>
+	<classpathentry kind="src" path="model_delft3d/java/test"/>
+	<classpathentry kind="src" path="model_glm/java/src"/>
+	<classpathentry kind="src" path="model_glm/java/test"/>
+        <classpathentry kind="src" path="model_dflowfm_blackbox/java/src"/>
+        <classpathentry kind="src" path="model_dflowfm_blackbox/java/test"/>
+	<classpathentry kind="src" path="module_template/java/src"/>
+	<classpathentry kind="src" path="module_template/java/test"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/castor/castor-0.9.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/commons-math/commons-discovery-0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/commons-math/commons-math-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/datools/DATools_castor.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/datools/DUE_subset.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/gui/alloy.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/gui/swing-layout-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/jama/Jama-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/junit/junit-3.8.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/openDA/core_castor.jar" sourcepath="core/java/resources/openDA/core_castor_src.zip"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/sgt/sgt_v30.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/xerces/xalan.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/xerces/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/xom/xom-1.2.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/netcdf_toolsui/toolsUI-4.1.jar" sourcepath="core/java/resources/netcdf_toolsui/ncSrc-4.1.zip"/>
+	<classpathentry exported="true" kind="lib" path="observers/java/resources/openda/observers_castor.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/jna/jna-3.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="model_swan/java/resources/openda/model_swan_castor.jar" sourcepath="model_swan/java/resources/openda/model_swan_castor_src.zip"/>
+	<classpathentry exported="true" kind="lib" path="model_wflow/java/resources/jepp/jep-2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="model_efdc_dll/java/resources/openda/model_edfc_dll_castor.jar"/>
+	<classpathentry exported="true" kind="lib" path="model_wflow/java/resources/openda/model_wflow_castor.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/log4j-1.2.14.jar"/>
+	<classpathentry exported="true" kind="lib" path="model_delft3d/java/resources/openda/d3d_openda_castor.jar"/>
+	<classpathentry exported="true" kind="lib" path="algorithms/java/resources/commons-math3-3.3/commons-math3-3.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="core/java/resources/ini4j/ini4j-0.5.2.jar"/>
+	<classpathentry kind="lib" path="core/java/resources/XMLSpy/AltovaAutomation.jar"/>
+	<classpathentry kind="lib" path="core/java/resources/XMLSpy/XMLSpyAPI.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="eclipse_temp"/>
+</classpath>

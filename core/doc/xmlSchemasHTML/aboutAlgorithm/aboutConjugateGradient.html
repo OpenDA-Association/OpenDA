@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="text/css"> .textElement { font-family: Arial; font-size: 10pt; color: #800000; }</style>
+		<style type="text/css"> .textAttr { font-family: Arial; font-size: 10pt; color: #FF0000; }</style>
+		<style type="text/css"> .textContents { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .textOperator { font-family: Arial; font-size: 10pt; color: #0000FF; }</style>
+		<style type="text/css"> .schemaHeader { font-family: Arial; font-size: 11pt; color: #000000; }</style>
+		<style type="text/css"> .schemaHeader2 { font-family: Arial; font-size: 11pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .elementHeader { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .elementHeader2 { font-family: Arial; font-size: 10pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaName { font-family: Arial; font-size: 8pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaSubTitle { font-family: Arial; font-size: 8pt; color: #808080; }</style>
+		<style type="text/css"> .schemaSubData { font-family: Arial; font-size: 8pt; color: #000000; }</style>
+		<style type="text/css"> pre { margin-top: 0; margin-bottom: 0; }</style>
+		<style type="text/css"> .table-no-border { line-height: 100%; }</style>
+		<style type="text/css"> .table-border { line-height: 100%; border-style: solid; border-left-color: #ECE9D8; border-top-color: #ECE9D8; border-right-color: #ACA899; border-bottom-color: #ACA899; }</style>
+		<style type="text/css"> .table-borderwithoutoutline { line-height: 100%; border-style: solid; border-width: 0px; }</style>
+		<style type="text/css"> .td-border { border-style: solid; border-width: 1px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-left { border-style: solid; border-left-width: 0px; border-top-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-left { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-right-color: #ECE9D8; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-top-right { border-style: solid; border-top-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-right { border-style: solid; border-right-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-bottom-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-right { border-style: solid; border-left-color: #ACA899; border-top-color: #ACA899; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-bottom { border-style: solid; border-bottom-width: 0px; border-left-color: #ACA899; border-top-color: #ACA899; border-right-color: #ECE9D8; }</style>
+		<style type="text/css"> .td-border-bottom-left { border-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-color: #ECE9D8; border-top-color: #ACA899; }</style>
+		<style type="text/css"> .td-border-left-single { border-style: solid; border-left-width: 0px; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-right-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; }</style>
+		<style type="text/css"> .td-border-single { border-style: solid; border-left-color: #ACA899; border-top-width: 0px; border-right-color: #ECE9D8; border-bottom-width: 0px; }</style>
+	<title>About Conjugate Gradient Method</title>
+	</head>
+	<body>
+	<h1>Conjugate Gradient Method</h1>
+	<p>The Conjugate Gradient Method is an optimization method based on the second order Taylor approximation of a (cost-)function depending on N parameters. The method needs to be able to evaluate the gradient of the function in any N-dimensional parameter. A user should provide an initial parameter guess and the method determines iteratively better approximations of the desired minimum. This is done by reducing the multi-dimensional problem into a sequence of line minimizations. These line minimizations are done by Brent's method, which determines the minimum of the (cost-)function on a line with starting point the current parameters and direction the so-called search direction. The search directions are determined either by the Fletcher-Reeves method (method 1) or the Polak-Ribieri method (method 2). For these methods, the new search direction is conjugate to the gradient at the previous parameters. It is also possible to choose the search direction equal to the negative of the gradient, which is known as Steepest Descent (method 3). In this case, the search direction is perpendicular to the gradient at the previous parameters. The iteration is performed until one of the stopping criteria is satisfied. </p>
+	</body>
+</html>

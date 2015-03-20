@@ -1,0 +1,48 @@
+Domain, Checked : No        
+     Grid                  : TotORTOGrid10x3.grd
+     Grid enclosure        : TotORTOGrid10x3.enc
+     Bathymetry            : depthsInterpolN.dep
+     Dry points            : none
+     Thin dams             : none
+
+Time frame, Checked : Yes       
+
+Processes, Checked : Yes       
+
+Initial conditions, Checked : Yes       
+     Initial conditions    : tri-rst.r06.20111116.000000
+
+Boundaries, Checked : Yes       
+     Boundary definitions  : r01.bnd
+     Astronomical flow conditions : none
+     Astronomical corrections : none
+     Harmonic flow conditions : none
+     QH-relation flow conditions : none
+     Time series flow conditions : r01.bct
+     Transport conditions  : r01.bcc
+
+Physical parameters, Checked : Yes       
+     Roughness coefficients : none
+     Hor. viscosity/diffusivity : none
+     Heat flux model data  : r01.tem
+     Sediment data         : none
+     Morphology data       : none
+     Uniform wind data     : none
+     Space varying wind data : none
+
+Numerical parameters, Checked : No        
+
+Operations, Checked : Yes       
+     Discharge definitions : r01.src
+     Discharge data        : r01.dis
+     Dredging and dumping data : none
+
+Monitoring, Checked : No        
+     Observation points    : r01.obs
+     Drogues               : none
+     Cross-sections        : r01.crs
+
+Additional parameters, Checked : No        
+
+Output, Checked : No        
+     Fourier analysis data : none

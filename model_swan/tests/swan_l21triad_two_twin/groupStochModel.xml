@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stochModelFactory>	   
+	<stochModelFactory id="swan1" className="org.openda.model_swan.SwanCalibStochModelFactory">
+		<workingDirectory>./swanModel1/config</workingDirectory>
+		<configFile>swanStochModelConfig.xml</configFile>
+	</stochModelFactory>
+	<stochModelFactory id="swan2" className="org.openda.model_swan.SwanCalibStochModelFactory">
+		<workingDirectory>./swanModel2/config</workingDirectory>
+		<configFile>swanStochModelConfig.xml</configFile>
+	</stochModelFactory>
+</stochModelFactory>

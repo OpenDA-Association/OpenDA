@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <ioObjectStochObserver xmlns="http://www.openda.org"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
+
+
+
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>stochObsUncertainties.xml</arg>
+	</uncertaintyModule>
+	<ioObject workingDirectory="." className="org.openda.model_delft3d.D3dResults">
+		<fileName>trih-obs.dat</fileName>
+		<arg>../../../../../../../model_delft3d/native_bin/linux64_gnu/lib/libODS.so.0.0.0</arg>
+	</ioObject>
+</ioObjectStochObserver>

@@ -1,0 +1,1 @@
+SUBDIRS = $(BRIDGE_DIR)

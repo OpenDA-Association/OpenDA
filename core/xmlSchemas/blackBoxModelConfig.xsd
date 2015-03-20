@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by J Huijssen (VORtech) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="blackBoxWrapperConfig.xsd"/>
+	<xs:include schemaLocation="blackBoxSharedTypes.xsd"/>
+	<xs:complexType name="BlackBoxConfigurableXML">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select one of the options, depending on whether a file, sring or arg list is required by this openda:class</xs:documentation>
+			</xs:annotation>
+			<xs:element name="configFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the configuration filename</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="configString" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the configuration string</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the input argument of this openda:class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specify the openda:class name for performing this operation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxWrapperConfigReferenceXML">
+		<xs:sequence>
+			<xs:element name="file" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the name of the black box wrapper configuration file, relative to local directory. File format: blackBoxWrapperConfig</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AliasValueXML">
+		<xs:sequence>
+			<xs:element name="listValue" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This type of alias can only be used for BBAction arguments, where the argument must be specified	by means of only naming the 'list value' alias. If the listValue element is present, it overrules the value attribute, indicating that the actual value is in fact a list of string arguments instead of one argument.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="key" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The alias key name as defined in the black box wrapper configuration</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The actual value referred to by the alias key</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AliasValuesXML">
+		<xs:sequence>
+			<xs:element name="alias" type="openda:AliasValueXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the alias keys and (optionally) the corresponding actual values</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TimeInfoXML">
+		<xs:attribute name="start" type="xs:dateTime" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the start time of the simulation (yyyy-mm-ddThh:mm:ss)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="end" type="xs:dateTime" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the end time of the simulation (yyyy-mm-ddThh:mm:ss)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="timeStepInSeconds" type="xs:double" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the time step of the simulation in seconds</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TimeInfoExchangeItemsXML">
+		<xs:attribute name="start" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The identifier of the exchange item that contains the start time of the simulation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="end" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The identifier of the exchange item that contains the end time of the simulation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="timeStep" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The identifier of the exchange item that contains the model time step of the simulation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxIoVectorXML">
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of the exchange item vector to be used in the stochastic model configuration. Note: by using the reserved id "allElementsFromIoObject" all the elements in the data/io object are exposed as exchange items (with the element id in the data/io object as id)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ioObjectId" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="elementId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The corresponding identity of the exchange item as used internally within the model</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="role" type="openda:BlackBoxModelRoleTypesXML" use="optional" default="InOut">
+			<xs:annotation>
+				<xs:documentation>The corresponding role type of the exchange item, choose "Input", "Output" or "InOut"</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxIoSubVectorXML">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select one of the options</xs:documentation>
+			</xs:annotation>
+			<xs:element name="selection" type="openda:IndicesXML">
+				<xs:annotation>
+					<xs:documentation>Select subvector using indices of the vector elements</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="selector" type="openda:BlackBoxConfigurableXML">
+				<xs:annotation>
+					<xs:documentation>Define operator for deriving the subvector</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of the exchange item vector to be used in the stochastic model configuration</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ioObjectId" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="elementId" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The corresponding identity of the exchange item as used internally within the model</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="role" type="openda:BlackBoxModelRoleTypesXML" use="optional" default="InOut">
+			<xs:annotation>
+				<xs:documentation>The corresponding role type of the exchange item, choose "Input", "Output" or "InOut"</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ExchangeItemXML">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="vector" type="openda:BlackBoxIoVectorXML">
+				<xs:annotation>
+					<xs:documentation>Specify vector of the exchange item</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="subVector" type="openda:BlackBoxIoSubVectorXML">
+				<xs:annotation>
+					<xs:documentation>Specify subvector of the exchange item</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxModelRestartInfoXML">
+		<xs:sequence>
+			<xs:element name="modelStateFile" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the file name(s) containing the model state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="dirPrefix" type="xs:string" use="optional" default="./savedModelState_">
+			<xs:annotation>
+				<xs:documentation>Specify the prefix of model directory name that will contain a set of restart files for a certain time stamp
+				(written when the stoch model level requests to store states, read when the algorithm asks to restore a state)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BlackBoxModelConfigXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Contains the elements in fixed order of occurrence</xs:documentation>
+			</xs:annotation>
+			<xs:element name="wrapperConfig" type="openda:BlackBoxWrapperConfigReferenceXML">
+				<xs:annotation>
+					<xs:documentation>Specify black box wrapper configuration that addresses the deterministic model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="aliasValues" type="openda:AliasValuesXML">
+				<xs:annotation>
+					<xs:documentation>Specify the actual values referred to by the alias keys defined in the black box wrapper configuration</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Select one of the options</xs:documentation>
+				</xs:annotation>
+				<xs:element name="timeInfo" type="openda:TimeInfoXML">
+					<xs:annotation>
+						<xs:documentation>Specify the time information of the simulation (optional)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="timeInfoExchangeItems" type="openda:TimeInfoExchangeItemsXML" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Specify the time information of the simulation in terms of ioObject exchange item id's (optional). Multiple timeInfoExchangeItems can be specified, each one with a unique id. This is needed if there are multiple ioObjects that have exchangeItems for the start and/or end time.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="exchangeItems" type="openda:ExchangeItemXML">
+				<xs:annotation>
+					<xs:documentation>Specify the list of items to exchange between the model and OpenDA components. An exchange item may be defined either as vector or subvector.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="doCleanUp" type="xs:boolean" default="false" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify whether to remove unnecessary files upon completion of a model run (boolean, optional)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="skipModelActionsIfInstanceDirExists" type="xs:boolean" default="false" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>If set to true, no actions are executed on a model instance that already exists (boolean, optional)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restartInfo" type="openda:BlackBoxModelRestartInfoXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Restart dir./files information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="blackBoxModelConfig" type="openda:BlackBoxModelConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for a black box model. Here the reference to a specific model configuration is made.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="BlackBoxModelRoleTypesXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Input"/>
+			<xs:enumeration value="InOut"/>
+			<xs:enumeration value="Output"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

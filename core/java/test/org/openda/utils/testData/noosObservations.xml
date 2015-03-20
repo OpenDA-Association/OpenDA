@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 1st series uses header lines for meta data
+	contents of this file look like:
+	#======================================================
+	# Timeseries retrieved from the MATROOS series database
+	# Created at Mon Mar 17 10:37:38 CET 2008
+	#======================================================
+	# Location    : aberdeen
+	# Position    : (-2.045543,57.361939)
+	# Source      : observed
+	# Unit        : waterlevel_astro
+	# Analyse time: most recent
+	# Timezone    : GMT
+	#======================================================
+	200801010000   -0.8300
+	200801010010   -0.8800
+	200801010020   -0.9100
+        ...
+	-->
+	<timeSeries status="use" standardDeviation="0.05" > <!-- status can be "use", "validate" or "ignore" -->
+		den_helder_waterlevel_astro.noos
+	</timeSeries>
+
+	<!-- 2nd series sets or overrules header lines
+	Location    : aberdeen
+	Position    : (-2.045543,57.361939)
+	Source      : observed
+	Unit        : waterlevel_astro
+	Analyse time: most recent
+	Timezone    : GMT
+	-->
+	<timeSeries status="validate" location="aberdeen" position="(-2.045543,57.361939)" source="observed" quantity="waterlevel" unit="m" timezone="GMT" height="0.0" standardDeviation="0.05" >
+		aberdeen_waterlevel_astro.noos
+	</timeSeries>
+</noosObserver>

@@ -1,0 +1,27 @@
+#
+# M,N Selection file
+#
+# Lists the M,N pairs that should be selected out of a 2d field
+#
+
+11,2
+11,3
+11,4
+11,5
+11,6
+11,7
+
+12,3
+12,4
+12,5
+12,6
+12,7
+
+13,3
+13,4
+13,5
+13,6
+
+14,4
+14,5
+14,6

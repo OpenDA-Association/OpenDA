@@ -1,0 +1,181 @@
+﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Diagnostics;
+using DHI.OpenMI2.Sdk.Backbone;
+using OpenDA.DotNet.AdditionalInterfaces;
+using OpenMI.Standard2.TimeSpace;
+using System.Xml.Linq;
+using System.Xml;
+using System.IO;
+using DHI.MikeShe.Engine;
+using DHI.OpenMI2.MikeShe;
+using DHI.DHIfl;
+
+
+namespace MikeSheInOpenDA
+{
+    public class MikeSheOpenMIModelFactory : IOpenDaModelProvider
+    {
+
+        private static int _instanceCounter;
+        private string _omiFileRef;
+        private string _msheFileName;
+
+        /// <summary>
+        /// The path should point to where the OMI-file is located.
+        /// The first args is the omi file name without path.
+        /// </summary>
+        /// <param name="workingDirPath"></param>
+        /// <param name="args"></param>
+        public void Initialize(string workingDirPath, params string[] args)
+        {
+
+            /* Read OpenMI MikeShe specific configuration
+               * name and directory of the Mike-She inputfile 
+               * time configuration (precicion of time handling) (may-be from the java side)
+               * buffering of exchageItems
+               * whether or not to copy the models 
+               * which exchangeItems to consider
+            
+               <MikeSheConfig>
+                  <inputFile>C:\some\path\model.she</inputFile>
+                  <copyModels>false</copyModels>
+                  <useExchangeItems>Name1;Name2;Name3</useExchangeItems>
+               </MikeSheCongig>
+             
+             
+             */
+            
+            
+            _omiFileRef = Path.Combine(workingDirPath, args[0]);
+
+            //Get the she file name
+            Hashtable properties = new Hashtable();
+            XmlTextReader reader = new XmlTextReader(_omiFileRef);
+            while (reader.Read())
+            {
+                if (reader.LocalName.Equals("Argument"))
+                {
+                    string key = reader.GetAttribute("Key");
+                    string value = reader.GetAttribute("Value");
+                    if (key != null && value != null) properties.Add(key, value);
+                }
+            }
+
+            _msheFileName = Path.Combine(properties["SetupPath"].ToString(), properties["SetupFileName"].ToString());
+        }
+
+        public ITimeSpaceComponent CreateInstance()
+        {
+
+            // Copy Entire 'base' directory to a new one in the same root directory with instancenumber name   
+            DirectoryInfo sourceDirectory = Directory.GetParent(_msheFileName);
+            DirectoryInfo targetDirectory = Directory.GetParent(Directory.GetParent(sourceDirectory.ToString()) + "\\" + _instanceCounter + "\\" + _instanceCounter);
+            CopyDirectory(sourceDirectory, targetDirectory);
+
+            string correct = targetDirectory.ToString() + "\\" + Path.GetFileName(_omiFileRef);
+            XDocument omi = XDocument.Load(targetDirectory.ToString() + "\\" + Path.GetFileName(_omiFileRef));
+            var ominamespace = omi.Elements().First().Name.Namespace;
+            var v = omi.Element(XName.Get("LinkableComponent", ominamespace.NamespaceName)).Element(XName.Get("Arguments", ominamespace.NamespaceName)).Elements();
+            var vv = v.First(var => var.Attribute("Key").Value == "SetupPath").Attribute("Value").Value = targetDirectory.ToString();
+            omi.Save(targetDirectory.ToString() + "\\" + Path.GetFileName(_omiFileRef));
+
+            string newSheFileName = targetDirectory.ToString() + "\\" + Path.GetFileName(_msheFileName);
+            //Preprocess mshe before initializing. Should have put this in the engine years ago
+            string path;
+            DHIRegistry key = new DHIRegistry(DHIProductAreas.COMMON_COMPONNETS, false);
+            key.GetHomeDirectory(out path);
+            Process runner = new Process();
+            runner.StartInfo.FileName = System.IO.Path.Combine(path, "Mshe_preprocessor.exe");
+            runner.StartInfo.Arguments = newSheFileName;
+            //ZZZ Change the Working Directory necessary for the SVAT
+            runner.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(newSheFileName);
+            runner.StartInfo.UseShellExecute = false;
+            runner.Start();
+            runner.WaitForExit();
+
+            _instanceCounter++;
+
+            //Create the mshe engine
+            var mshe = MsheEngineFactory.CreateWM(true); mshe.Initialize(newSheFileName, false);
+
+
+            //Create the linkable component
+            WMEngineAccess wm = new WMEngineAccess();
+            wm.Id = newSheFileName;
+            wm.Initialize(mshe);
+
+            // For OpenMI 2.0 we need to add a consumer ( a dummy in this case ) for each Output
+            // Exchange Item. 
+            Input dummyInput1 = new Input("dummyIn");
+            foreach (ITimeSpaceOutput actualOutput in wm.EngineOutputItems)
+            {
+                if (actualOutput is ITimeSpaceOutput)
+                {
+                    actualOutput.AddConsumer(dummyInput1);
+                }
+
+            }
+
+            wm.Prepare();
+            wm.Update();
+            return wm;
+        }
+
+        public void SaveInstance(ITimeSpaceComponent timeSpaceComponent)
+        {
+            //throw new NotImplementedException();
+        }
+
+
+        private string InsertInFileNameAndCopy(string oldFileName, string insertion)
+        {
+            string ext = Path.GetExtension(oldFileName);
+            string newname = oldFileName.Substring(0, oldFileName.Length - ext.Length) + insertion + ext;
+            if (File.Exists(oldFileName))
+            {
+                File.Copy(oldFileName, newname, true);
+                FileInfo f = new FileInfo(newname);
+                f.IsReadOnly = false; //Will not be possible to owerwrite later if readonly
+            }
+            return newname;
+        }
+
+
+        static void CopyDirectory(DirectoryInfo source, DirectoryInfo destination)
+        {
+            if (!destination.Exists)
+            {
+                try
+                {
+                    destination.Create();
+
+                    // Copy all files.
+                    FileInfo[] files = source.GetFiles();
+                    foreach (FileInfo file in files)
+                    {
+                        file.CopyTo(Path.Combine(destination.FullName,
+                            file.Name));
+                    }
+
+                    // Process subdirectories.
+                    DirectoryInfo[] dirs = source.GetDirectories();
+                    foreach (DirectoryInfo dir in dirs)
+                    {
+                        // Get destination directory.
+                        string destinationDir = Path.Combine(destination.FullName, dir.Name);
+
+                        // Call CopyDirectory() recursively.
+                        CopyDirectory(dir, new DirectoryInfo(destinationDir));
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Problem Copying Directory from: {0}   to  {1}", source, destination);
+                }
+            }
+
+        }
+    }
+}

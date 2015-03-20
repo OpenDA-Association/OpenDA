@@ -1,0 +1,73 @@
+task      full-coupling
+geometry  curvilinear-grid
+horizontal-aggregation       no
+minimum-vert-diffusion-used  no
+vertical-diffusion           calculated
+description
+'                                                            '
+'                                                            '
+'                                                            '
+end-description
+reference-time           '20100101000000'
+hydrodynamic-start-time  '20101229160000'
+hydrodynamic-stop-time   '20101231160000'
+hydrodynamic-timestep    '00000000000100'
+conversion-ref-time      '20100101000000'
+conversion-start-time    '20101229160000'
+conversion-stop-time     '20101231160000'
+conversion-timestep      '00000000010000'
+grid-cells-first-direction      12
+grid-cells-second-direction   2117
+number-hydrodynamic-layers       1
+number-water-quality-layers      1
+hydrodynamic-file        'com-r01.dat'
+aggregation-file         none
+grid-indices-file        'com-r01.lga'
+grid-coordinates-file    'com-r01.cco'
+volumes-file             'com-r01.vol'
+areas-file               'com-r01.are'
+flows-file               'com-r01.flo'
+pointers-file            'com-r01.poi'
+lengths-file             'com-r01.len'
+salinity-file            none
+temperature-file         'com-r01.tem'
+vert-diffusion-file      none
+surfaces-file            'com-r01.srf'
+total-grid-file          'com-r01.lgt'
+discharges-file          'com-r01.src'
+chezy-coefficients-file  none
+shear-stresses-file      'com-r01.tau'
+walking-discharges-file  'com-r01.wlk'
+attributes-file          'com-r01.atr'
+constant-dispersion       
+   first-direction    0.1000E+01
+   second-direction   0.1000E+01
+   third-direction    0.1000E-06
+end-constant-dispersion
+hydrodynamic-layers
+          1.000
+end-hydrodynamic-layers
+water-quality-layers   
+        1.000
+end-water-quality-layers
+discharges
+  379    3    0   '2004A96' normal
+  410   10    0   'N0120' normal
+  506   11    0   'N0140' normal
+  576    2    0   '2008590' normal
+  715   11    0   '2010590' normal
+ 1042    2    0   '2012596' normal
+ 1306   11    0   '2013590' normal
+ 1336   11    0   '2016550' normal
+ 1510   11    0   '2019595' normal
+ 1781    2    0   '2021585' normal
+ 1957    2    0   '2022570' normal
+  103    2    0   '2003550' normal
+  979   11    0   '2011A50' normal
+ 1387   11    0   '2017A20' normal
+ 1387    2    0   '2017A40' normal
+ 1583   11    0   '2020540' normal
+ 1664    2    0   '2020503' normal
+ 1761   11    0   '2020580' normal
+   18    5    0   '2002592' normal
+end-discharges

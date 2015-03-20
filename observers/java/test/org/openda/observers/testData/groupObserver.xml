@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stochObserver>	   
+   <stochObserver id="den_helder_group" className="org.openda.observers.NoosTimeSeriesStochObserver">
+      <workingDirectory>.</workingDirectory>
+      <configFile>noosObservations1.xml</configFile>
+   </stochObserver>
+   <stochObserver id="aberdeen_group" className="org.openda.observers.NoosTimeSeriesStochObserver">
+      <workingDirectory>.</workingDirectory>
+      <configFile>noosObservations2.xml</configFile>
+   </stochObserver>
+</stochObserver>
+	

@@ -1,0 +1,29 @@
+netcdf /home/verlaanm/deltares/src/openda_1_20100401/public/opendaTestRuns/core/org/openda/resultwriters/de_test_ctatv_B_4.nc {
+ dimensions:
+   time = UNLIMITED;   // (3 currently)
+   one = 1;
+   total_first_x = 3;
+   total_second_x = 3;
+ variables:
+   int time(time=3);
+   int ntime(one=1);
+   double total_first(time=3, total_first_x=3);
+   double total_second(time=3, total_second_x=3);
+ data:
+time =
+  {1, 2, 3}
+ntime =
+  {3}
+total_first =
+  {
+    {1.0, 2.2, 3.0},
+    {1.0, 2.2, 3.0},
+    {1.0, 2.2, 3.0}
+  }
+total_second =
+  {
+    {4.0, 5.2, 6.0},
+    {4.0, 5.2, 6.0},
+    {4.0, 5.2, 6.0}
+  }
+}

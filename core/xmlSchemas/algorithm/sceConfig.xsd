@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="outerLoopSce.xsd"/>
+	<xs:include schemaLocation="costFunctionSCE.xsd"/>
+	<xs:include schemaLocation="additionalStopCriteria.xsd"/>
+	<xs:complexType name="parameterRange">
+		<xs:annotation>
+			<xs:documentation>Range of values from where random numbers are drawn for perturbing the optimization/calibration parameters</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="min" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Vector of lower bounds of random perturbations. Each element refers to one calibration parameter: [param1_min, param2_min, ..., paramN_min].</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="max" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Vector of upper bounds of random perturbations. Each element refers to one calibration parameter: [param1_max, param2_max, ..., paramN_max].</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="innerLoop">
+		<xs:annotation>
+			<xs:documentation>Splitting each complex into simplexes and propagating each simplex to obtain better parameter estimates.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="numIterations" type="xs:integer" use="optional" default="30">
+			<xs:annotation>
+				<xs:documentation>Number of steps in the simplex propagation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SCEConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+				<xs:annotation>
+					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="innerLoop" type="openda:innerLoop">
+				<xs:annotation>
+					<xs:documentation>Splitting each complex into simplexes and propagating each simplex to obtain better parameter estimates.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="parameterRange" type="openda:parameterRange">
+				<xs:annotation>
+					<xs:documentation>Range of values from where random numbers are drawn for perturbing the optimization/calibration parameters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SCEConfig" type="openda:SCEConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of SCE algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

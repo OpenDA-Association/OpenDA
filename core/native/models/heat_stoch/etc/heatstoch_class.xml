@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<costa xmlns:xi="http://www.w3.org/2001/XInclude">
+<!--$URL: https://repos.deltares.nl/repos/openda/openda_1/public/trunk/core/native/examples/heat_stoch/etc/heatstoch_cls.xml $-->
+<!--$Revision: 671 $, $Date: 2008-10-07 14:49:42 +0200 (Tue, 07 Oct 2008) $-->
+
+  <CTA_MODELCLASS id="modelclass"  name="heatstoch_modelclass">
+     <CTA_FUNCTION id="CTA_MODEL_CREATE_SIZE"     name="heatstoch_create_size"    library="libheat_stoch.so" function="heatstoch_create_size"    />
+     <CTA_FUNCTION id="CTA_MODEL_CREATE_INIT"     name="heatstoch_create_init"    library="libheat_stoch.so" function="heatstoch_create_init"    />
+     <CTA_FUNCTION id="CTA_MODEL_COMPUTE"         name="heatstoch_compute"        library="libheat_stoch.so" function="heatstoch_compute"        />
+     <CTA_FUNCTION id="CTA_MODEL_GET_STATE"       name="heatstoch_getstate"       library="libheat_stoch.so" function="heatstoch_getstate"       />
+     <CTA_FUNCTION id="CTA_MODEL_SET_STATE"       name="heatstoch_setstate"       library="libheat_stoch.so" function="heatstoch_setstate"       />
+     <CTA_FUNCTION id="CTA_MODEL_GET_NOISE_COUNT" name="heatstoch_getnoisecount"  library="libheat_stoch.so" function="heatstoch_getnoisecount"  />
+     <CTA_FUNCTION id="CTA_MODEL_GET_NOISE_COVAR" name="heatstoch_getnoisecovar"  library="libheat_stoch.so" function="heatstoch_getnoisecovar"  />
+     <CTA_FUNCTION id="CTA_MODEL_GET_OBSVALUES"   name="heatstoch_getobsvalues"   library="libheat_stoch.so" function="heatstoch_getobsvalues"   />
+     <CTA_FUNCTION id="CTA_MODEL_ADD_NOISE"       name="heatstoch_addnoise"       library="libheat_stoch.so" function="heatstoch_addnoise"       />
+     <CTA_FUNCTION id="CTA_MODEL_GETTIMEHORIZON"  name="heatstoch_gettimehorizon" library="libheat_stoch.so" function="heatstoch_gettimehorizon" />
+     <CTA_FUNCTION id="CTA_MODEL_GETCURRENTTIME"  name="heatstoch_getcurrenttime" library="libheat_stoch.so" function="heatstoch_getcurrenttime" />
+  </CTA_MODELCLASS> 
+</costa>

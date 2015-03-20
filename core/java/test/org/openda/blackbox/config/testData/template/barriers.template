@@ -1,0 +1,4 @@
+template file example: barriers.template
+
+first key which should be replaced $STARTTIME$ as double
+second key which should be replaced #BARFILE# as string

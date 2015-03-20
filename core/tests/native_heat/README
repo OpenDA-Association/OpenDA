@@ -1,0 +1,31 @@
+Native model, a 2 dimensional heat model.
+
+This model directly implements the natice interface. It does not use the "simple model builder class" CTA_MODBUILD_SP for native models.
+
+Since this is a native model, make sure that the dynamic libraries are on you 
+%PATH% (Windows), LD_LIBRARY_PATH (Linux) or DYLD_LIBRARY_PATH (Mac).
+
+files:
+README                      This file
+enkf.oda                    The main OpenDA configuration file for running EnKF
+algorithms/enkf.xml         EnFK options
+model/heatstoch_class.xml   Class description of the model (=list of all functions in model library that implement the methods).
+model/heat_params.xml       model with model parameters/options (empty)
+observations/obs_heat.sql   observations in a SQLite database
+observations/obs_heat_3.sql observations but now every 3 timesteps in SQLite database
+load_ensemble.m             Octave/Matlab function for loading ensemble from result file
+make_plot.m                 Octave/Matlab script for making a picture of mean ensemble at end of run
+
+
+run model (linux/mac) with
+$ oda_run.sh enkf.oda
+
+(windows)
+oda_run_app.bat enkf.oda
+or 
+oda_run_gui.bat and select enkf.oda through gui
+
+
+
+
+

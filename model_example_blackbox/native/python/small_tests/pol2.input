@@ -1,0 +1,34 @@
+#
+# inflow from left boundary 
+#
+# lines with a hash-sign are ignored
+#
+# input for 1d pollution model
+#
+# grid
+x = [0.0, 10.0, 100.0] 
+# stationary flow
+u = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+# cross sectional area
+a = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+# initial concentrations
+c = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# simulation timespan
+refdate = '01 jan 2000'
+#unit is always seconds
+unit = 'seconds'
+time = [ 0,10,40]
+# sources mass/m^3/s 
+source_locations = [5]
+source_labels = ['factory1']
+source_values['factory1'] = [0.0]
+#output (index based and 0 based)
+output_file = 'pol2.output'
+output_locations = [5, 6, 7]
+output_labels = ['locA','locB','locC']
+# boundaries
+# only left and right at locations 0 and -1 allowed at the moment
+bound_labels=['left', 'right']
+bound_locations=[0, -1]
+bound_values['left']=[0.1, 0.2, 0.3, 0.4]
+bound_values['right']=[0.0]

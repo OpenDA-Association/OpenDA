@@ -1,0 +1,87 @@
+!!! *************************HEADING************************
+
+PROJ 'B1' '001'
+
+!!! ********************MODEL INPUT*************************
+
+SET NAUTICAL 
+
+MODE NONST 
+COORDINATES SPHERICAL CCM
+
+CGRID REGULAR -12 48 0 25 14.245 200 171 CIRCLE 36 0.03 0.6
+
+INPGRID BOTTOM REGULAR -12.0 48.0 0.0 200 172 0.125 0.0833 EXC -9999.
+READINP BOTTOM 1. 'csm8_bot.asc' idla=3 nhedf=3 FREE
+
+INPGRID WLEV   REGULAR -12 48 0 200 171 0.125 0.0833 EXC -99.00000    NONSTAT 20100304.040000 30 MIN 20100305.160000
+READINP WLEV 1.0 SERIES 'waterlevels.dat' 4
+
+INPGRID WIND   REGULAR -12 48 0 200 171 0.125 0.0833 & 
+   NONSTAT 20100304.040000 30 MIN 20100305.160000
+READINP WIND FAC=1.0 SERIES 'wind.dat' IDLA=4
+
+!!! ************************************* BOUNDARY CONDITIONS **************************************
+
+BOUND SHAPESPEC JONSWAP PEAK DSPR POWER
+BOUND SEGM IJ 0 171 200 171 &
+              VAR FILE  0.  'swan_rvw_p1.dat' 1 &             
+                        5.5 'swan_rvw_p2.dat' 1 &
+                       10.  'swan_rvw_p3.dat' 1 &                    
+                       16.5 'swan_rvw_p4.dat' 1  
+
+!!! ****************************************** HOTFILE *********************************************
+INITIAL HOTSTART SINGLE 'swan_csm8_restart.hot'
+
+!!! ****************************************** PHYSICA *********************************************
+
+GEN3 WESTH
+TRIAD trfac=0.05 cutfr=2.5
+BREAKING 1 0.73
+FRICTION JONSWAP CFJON=0.038
+
+!!! ************************************ NUMERIEKE PARAMETERS ***************************************
+
+PROP BSBT
+NUM STOPC 0.00 0.01 0.001 98 NONSTAT mxitns=35
+
+!!! ************************************ OUTPUT ***************************************
+
+!!! BLOCK 'COMPGRID' NOHEAD  'RES/B2resnonstat.mat' &
+!!! LAYOUT 3 XP YP DEPTH WIND HSIGN TM02 TMM10 TPS DIR DSPR WATLEV OUT &
+!!! #TBEGIN         3 HR
+  BLOCK 'COMPGRID' NOHEAD 'swan_csm8.mat' LAY-OUT 3 &
+   XP YP HS HSWELL WATLEV BOTLEV DIR WIND TM01 TM02 TMM10 TPS DSPR RTP PER &
+              OUTPUT 20100304.040000 1 HR
+
+!!! POINTS 'P1' FILE 'INP/POINTS.ASC'
+POINTS 'points' FILE 'points.dat'
+
+!!! CURVE  'C1' -4.0 62.33    200   3.635  51.49   
+
+!!! SPECOUT 'P1' SPEC1D ABS 'RES/B2P1.SP1'   OUT &
+!!! #TBEGIN         1 HR
+
+!!! SPECOUT 'P1' SPEC2D ABS 'RES/B2P1.SP2'   OUT &
+!!! #TBEGIN         2 HR
+
+TABLE 'points' HEAD 'timeseries.out' &
+  TIME XP YP HS HSWELL WATLEV BOTLEV DIR WIND TM01 TM02 TMM10 TPS DSPR RTP PER &
+                OUTPUT 20100304.040000 30 MIN
+
+!!! TABLE   'C1' HEADER     'RES/B2C1.TAB'   XP YP DIST DEP HS TMM10 RTP DIR WATLEV WIND OUT &
+!!! #TBEGIN         1 HR 
+
+!!! TABLE   'P1' HEADER     'RES/B2P1.TAB'   XP YP DEP HS TMM10 RTP DIR WATLEV WIND OUT &
+!!! #TBEGIN         1 HR 
+
+
+!!! TEST 1 0
+!!! COMPUTE NONSTAT &
+!!! #TBEGIN         1 HR #TEND                     
+
+           COMPUTE NONSTAT 20100304.040000 30 MIN 20100304.053000
+           HOTFILE 'swan_csm8.hot'
+          
+
+STOP

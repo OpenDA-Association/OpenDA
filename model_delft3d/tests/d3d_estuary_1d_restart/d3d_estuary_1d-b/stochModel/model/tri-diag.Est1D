@@ -1,0 +1,33 @@
+
+********************************************************************************
+***
+*** Deltares, Delft3D-FLOW Version 4.00.06.819, Sep 20 2011, 12:29:13
+***
+***           runid     : Est1D
+***           date,time : 2012-09-26, 16:54:34
+***
+********************************************************************************
+
+*** MESSAGE Executable for 32-bits platform. 
+*** MESSAGE Double precision computation using reals of kind    8 
+*** Start of User Defined Model description 
+ -
+ -  Test Case 1                   
+ -  Estuary 1D                    
+ -  MHBOX-RAMA                    
+ -  1-D Estuary Model             
+ -  The estuary is streched from  
+ -  east to west. At the eastern  
+ -  open boundary,the flowvelocity
+ -  is specified to zero, while at
+ -  the western one periodic water
+ -  level is set. The width of the
+ -
+*** End   of User Defined Model description 
+
+*** MESSAGE Using UNESCO density formulation by default 
+*** MESSAGE Momentum solver cyclic method is specified 
+*** MESSAGE DRYFLP and DPSOPT both specified in MD-file. Using DPSOPT: MAX 
+*** ERROR Flrst - insufficient number of values or record is corrupt 
+*** WARNING Latitude of your model is 0 degrees, model located at equator
+*** WARNING File will not be created - Inconsistent comm. file times 

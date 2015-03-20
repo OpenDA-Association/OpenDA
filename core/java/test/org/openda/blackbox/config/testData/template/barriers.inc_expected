@@ -1,0 +1,4 @@
+template file example: barriers.template
+
+first key which should be replaced 1440.0 as double
+second key which should be replaced BARRIERS.inc as string

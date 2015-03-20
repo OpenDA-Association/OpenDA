@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.GroupStochObserver">
+		<workingDirectory>.</workingDirectory>
+		<configFile>groupStochObserverForCalibration.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile>groupStochModelWithOtherParameters.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Simulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>simulationAlgorithm.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_results.m</configFile>
+		<selection>
+			<resultItem outputLevel="Normal" />
+			<resultItem id="model_time" outputLevel="Verbose" />
+			<resultItem id="x" outputLevel="Verbose" />
+		</selection>
+	</resultWriter>
+</openDaApplication>

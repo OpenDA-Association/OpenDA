@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="RangeValidationConstantLimitsConstraintXML">
+		<xs:sequence>
+			<xs:element name="targetExchangeItemIdSuffix" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Each sourceExchangeItem is wrapped in a new targetExchangeItem. The targetExchangeItemId is the sourceExchangeItemId with the configured suffix appended. Use that id to refer to this targetExchangeItem in other parts of the configuration.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sourceExchangeItemId" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>One or more ids of exchange items to which this constraint should be applied. This can e.g. be a modelExchangeItem or a targetExchangeItem from another constraint.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lowerLimit" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional. If the value of a model exchange item is below the lower limit, then the value is changed to the lower limit.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperLimit" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional. If the value of a model exchange item is above the upper limit, then the value is changed to the upper limit. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RangeValidationConstraintXML">
+		<xs:choice>
+			<xs:element name="constantLimits" type="openda:RangeValidationConstantLimitsConstraintXML">
+				<xs:annotation>
+					<xs:documentation>Constraint that limits the range of the specified exchange item using the specified lower and/or upper limit. If the value of the exchange item is below the lower limit, then the value is changed to the lower limit. If the value of a model exchange item is above the upper limit, then the value is changed to the upper limit. If an exchange item has more than one value (e.g. a 2D grid), then the specified limits are applied to all values in the exchange item.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Id of this constraint. This is only used to refer to this constraint in log messages.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RangeValidationConfigXML">
+		<xs:sequence>
+			<xs:element name="constraint" type="openda:RangeValidationConstraintXML" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>One or more constraints that constrain the values of certain exchange items. If a constraint is applied on a given sourceExchangeItem, then a new targetExchangeIitem is created with the specified constraint and an id that is the sourceExchangeItemId with the configured suffix appended. To use the targetExchangeItem in other parts of the configuration refer to it using its own id. It is also possible to apply multiple constraints on a given exchangeItem recursively. This can be done by configuring a constraint that works on a targetExchangeItem from another constraint. If multiple constraints are applied to a given exchangeItem recursively, then the outermost constraint is applied first.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="rangeValidationConfig" type="openda:RangeValidationConfigXML">
+		<xs:annotation>
+			<xs:documentation>Contains one or more constraints that constrain the values of certain exchange items.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

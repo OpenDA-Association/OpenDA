@@ -1,0 +1,47 @@
+Domain, Checked : No        
+     Grid                  : estuary.grd
+     Grid enclosure        : estuary.enc
+     Bathymetry            : bathymetryslope5e-05b.dep
+     Dry points            : none
+     Thin dams             : none
+
+Time frame, Checked : Yes       
+
+Processes, Checked : No        
+
+Initial conditions, Checked : No        
+
+Boundaries, Checked : No        
+     Boundary definitions  : estuary.bnd
+     Astronomical flow conditions : estuary.bca
+     Astronomical corrections : estuary.cor
+     Harmonic flow conditions : none
+     QH-relation flow conditions : none
+     Time series flow conditions : estuary.bct
+     Transport conditions  : none
+
+Physical parameters, Checked : No        
+     Roughness coefficients : manning.rgh
+     Hor. viscosity/diffusivity : none
+     Heat flux model data  : none
+     Sediment data         : none
+     Morphology data       : none
+     Uniform wind data     : none
+     Space varying wind data : none
+
+Numerical parameters, Checked : No        
+
+Operations, Checked : No        
+     Discharge definitions : none
+     Discharge data        : none
+     Dredging and dumping data : none
+
+Monitoring, Checked : No        
+     Observation points    : estuary.obs
+     Drogues               : none
+     Cross-sections        : none
+
+Additional parameters, Checked : No        
+
+Output, Checked : No        
+     Fourier analysis data : none

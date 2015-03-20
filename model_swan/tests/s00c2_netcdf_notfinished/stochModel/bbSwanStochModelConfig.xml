@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>./bbSwanModel.xml</file>
+	</modelConfig>
+
+	<vectorSpecification>
+
+		<state>
+			<noiseModel id="boundaryNoiseModel"
+				className="org.openda.noiseModels.TimeSeriesNoiseModelFactory"
+				workingDirectory=".">
+				<configFile>BoundaryNoise.xml</configFile>
+				<exchangeItems>
+					<exchangeItem id="openBoundary" operation="add">
+					<modelExchangeItem id="openboundary"/>
+					</exchangeItem>
+				</exchangeItems>
+			</noiseModel>
+
+			<vector id="state" />
+		</state>
+		<predictor>
+			<vector id="Hsig @ 1000.0,1000.0" sourceVectorId="Hsig1" />
+			<vector id="Hsig @ 1000.0,2500.0" sourceVectorId="Hsig2" />
+			<vector id="Hsig @ 3000.0,1000.0" sourceVectorId="Hsig3" />
+			<vector id="Hsig @ 3000.0,2500.0" sourceVectorId="Hsig4" />
+			<vector id="Hsig @ 5000.0,1000.0" sourceVectorId="Hsig5" />
+			<vector id="Hsig @ 5000.0,2500.0" sourceVectorId="Hsig6" />
+		</predictor>
+	</vectorSpecification>
+
+</blackBoxStochModel>

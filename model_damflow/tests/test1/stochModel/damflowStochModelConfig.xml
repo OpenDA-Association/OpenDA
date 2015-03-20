@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>./damflowModel.xml</file>
+	</modelConfig>
+
+	<vectorSpecification>
+		<state>
+			<noiseModel id="riverwlNoiseModel"
+				className="org.openda.noiseModels.TimeSeriesNoiseModelFactory"
+				workingDirectory=".">
+				<configFile>RiverWaterLevelNoise.xml</configFile>
+				<exchangeItems>
+					<exchangeItem id="riverwlNoise" operation="add">
+					<modelExchangeItem id="riverwl"/>
+					</exchangeItem>
+				</exchangeItems>
+			</noiseModel>
+			<vector id="state.head" />
+		</state>
+		<predictor>
+			<vector id="location0.hydraulichead" sourceVectorId="loc0.head" />
+		</predictor>
+	</vectorSpecification>
+
+</blackBoxStochModel>

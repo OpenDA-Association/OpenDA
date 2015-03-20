@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" 
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                     xsi:schemaLocation="http://schemas.openda.org/blackBoxModelConfig.xsd">
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>dflowfmWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="exedir" value="./bin"/> 
+		<alias key="instanceDir" value="./work"/>
+		<alias key="templateDir" value="./input_dflowfm"/>
+		<alias key="runid" value="simple_waal"/>
+		<alias key="frictionCoefFile" value="sw_frcfact_all.xyz"/>
+		<alias key="inputFile" value="simple_waal.mdu"/>
+		<alias key="netcdfoutput" value="DFM_OUTPUT_simple_waal/simple_waal_his.nc"/>
+	</aliasValues>
+
+    <timeInfo start="1992-08-31T02:00:00" end="1992-09-10T02:00:00"/>
+
+	<exchangeItems>
+            <vector id="allElementsFromIoObject" ioObjectId="frictionCoefFile"/>
+	    <vector id="Obs01.waterlevel" ioObjectId="%netcdfoutput%" elementId="Obs01.waterlevel"/>
+	    <vector id="Obs02.waterlevel" ioObjectId="%netcdfoutput%" elementId="Obs02.waterlevel"/>
+	    <vector id="Obs03.waterlevel" ioObjectId="%netcdfoutput%" elementId="Obs03.waterlevel"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+				
+</blackBoxModelConfig>

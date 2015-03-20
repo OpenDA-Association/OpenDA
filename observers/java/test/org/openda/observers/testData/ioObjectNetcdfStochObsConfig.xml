@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioObjectStochObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openda.org" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
+	<!-- specification of the uncertainty for the observations -->
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>ioObjectNetcdfStochObsUncert.xml</arg>
+		<arg>useFixedSeed</arg>
+	</uncertaintyModule>
+	<!-- IDataObject that reads the observations from a netcdf file -->
+	<ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject">
+		<!-- netcdf file containing measurements -->
+		<fileName>netcdf-test-file-1.nc</fileName>
+		<!-- argument "lazyReading" = true, i.e. do not store values in memory, read the values from the file at the moment they are asked for. -->
+		<arg>true</arg>
+		<!-- argument "lazyWriting" = false, i.e. do not store values in memory, write the values to the file at the moment they are supplied. -->
+		<arg>false</arg>
+	</ioObject>
+</ioObjectStochObserver>

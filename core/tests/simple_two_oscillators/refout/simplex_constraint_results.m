@@ -1,0 +1,1307 @@
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./groupStochObserverForCalibration.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./groupStochModel.xml
+% Starting Algorithm: 
+%	className: org.openda.algorithms.Simplex
+%	dir.: /home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./algorithm
+%	config.: simplexAlgorithm_withConstraint.xml
+% configstring = simplexAlgorithm_withConstraint.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./algorithm/simplexAlgorithm_withConstraint.xml
+% costFunction@class=org.openda.algorithms.SimulationKwadraticCostFunction
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% costFunction@weakParameterConstraint=true
+% costFunction@factor=0.5
+% Application initializing finished
+% Initializing application
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% ========================================================================
+% no1
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{1}	=[8.0,1.5708];
+costWeakConstraintPenalty{1}	=0.0;
+%  combined: oscillator1, oscillator2
+predicted{1}	=[0.80.059874050823311174-0.622514741258897-0.052099759107992780.48435734708656860.04483119930100093-0.3768240910010292-0.038225585989916820.293135120402237550.03234578622602441-0.2280097266602124,0.80.059874050823311174-0.622514741258897-0.052099759107992780.48435734708656860.04483119930100093-0.3768240910010292-0.038225585989916820.293135120402237550.03234578622602441-0.2280097266602124];
+%  combined: oscillator1, oscillator2
+observed{1}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{1}	=[0.0-0.10300849000705582-0.0084074290224488420.22805168831317807-0.018591390128484264-0.29011759891774050.058845312474454790.30590623973760833-0.09851447303582975-0.290309329203038370.12998862887590798,0.0-0.17338851662001990.035343145939906620.37509848337793017-0.14862058630102226-0.433498148158251440.265896072968163530.3894759465761312-0.34501651706073294-0.28934002911712360.37111766634875387];
+%  combined: oscillator1, oscillator2
+obs_stdev{1}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{1}	=65.00104173743813;
+costTotal{1}	=65.00104173743813;
+% SimulationKwadraticCostFunction: evaluation 1 : cost = 65.001
+% ========================================================================
+% no2
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{2}	=[9.0,1.5708];
+costWeakConstraintPenalty{2}	=0.5;
+%  combined: oscillator1, oscillator2
+predicted{2}	=[0.80.0535786279459891-0.6402131222275624-0.047407003522354540.51230918018727150.041565211398558684-0.4099327838549162-0.036167141830807830.327994131939141450.03126817887015455-0.26241723932575955,0.80.0535786279459891-0.6402131222275624-0.047407003522354540.51230918018727150.041565211398558684-0.4099327838549162-0.036167141830807830.327994131939141450.03126817887015455-0.26241723932575955];
+%  combined: oscillator1, oscillator2
+observed{2}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{2}	=[0.0-0.096713067129733750.0092909519462165410.22335893272753982-0.046543223229187136-0.286851611015298270.09195400532834180.30384779557849934-0.13337348457273365-0.28923172184716850.16439614154145513,0.0-0.167093093742697820.0530415269085720.3704057277922919-0.17657241940172513-0.43023216025580920.299004765822050540.3874175024170222-0.37987552859763685-0.28826242176125370.405525179014301];
+%  combined: oscillator1, oscillator2
+obs_stdev{2}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{2}	=69.42932908650751;
+costTotal{2}	=69.92932908650751;
+% SimulationKwadraticCostFunction: evaluation 2 : cost = 69.929
+% ========================================================================
+% no3
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{3}	=[8.0,1.6965];
+costWeakConstraintPenalty{3}	=0.49999999999999933;
+%  combined: oscillator1, oscillator2
+predicted{3}	=[0.8-0.03350311927911278-0.61589789360598120.157404219702119820.4461027450327285-0.21769751450176725-0.301011315850664430.233719913185970320.1845979073251928-0.22137835983632012-0.09656628411831196,0.8-0.03350311927911278-0.61589789360598120.157404219702119820.4461027450327285-0.21769751450176725-0.301011315850664430.233719913185970320.1845979073251928-0.22137835983632012-0.09656628411831196];
+%  combined: oscillator1, oscillator2
+observed{3}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{3}	=[0.0-0.009631319904631869-0.0150242766753646560.0185477095030654740.019663211925355806-0.027588885114972345-0.0169674626759099830.033960740561721190.010022740041215006-0.03658518314069384-0.0014548136659924688,0.0-0.080011346517595950.0287262982869908030.16559450456781755-0.11036598424718219-0.170969434355483260.190083297817798760.11753044740024407-0.23647930398368816-0.035615883054779060.23967422380685344];
+%  combined: oscillator1, oscillator2
+obs_stdev{3}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{3}	=12.266603855137104;
+costTotal{3}	=12.766603855137104;
+% SimulationKwadraticCostFunction: evaluation 3 : cost = 12.767
+% outerLoop@maxIterations=30
+% outerLoop@absTolerance=0.01
+% outerLoop@relTolerance=0.01
+% Application initialized
+% Application starting next step
+costs{1}	=[65.00104173743813,69.92932908650751,12.766603855137104];
+% Iteration step no.1
+% ========================================================================
+% no4
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{4}	=[9.0,1.4451];
+costWeakConstraintPenalty{4}	=0.9999999999999992;
+%  combined: oscillator1, oscillator2
+predicted{4}	=[0.80.14752315336770708-0.606370838278394-0.25878007624676890.425517727627188370.3059172956115961-0.2697679780698142-0.307534392096698970.144678202918522350.27981365126873675-0.05094417588228275,0.80.14752315336770708-0.606370838278394-0.25878007624676890.425517727627188370.3059172956115961-0.2697679780698142-0.307534392096698970.144678202918522350.27981365126873675-0.05094417588228275];
+%  combined: oscillator1, oscillator2
+observed{4}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{4}	=[0.0-0.19065759255145173-0.0245513320029518980.434732005451954230.040248229330895946-0.5512036952283357-0.048210800456760240.57521504584439050.04994244444788545-0.5377771942457508-0.04707692190202168,0.0-0.26103761916441580.0191992429594035620.5817788005167063-0.08978096684164205-0.69458424446884660.15883996003694850.6587847526829134-0.1965595995770177-0.5368078941598360.19405211557082422];
+%  combined: oscillator1, oscillator2
+obs_stdev{4}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{4}	=143.98338380460225;
+costTotal{4}	=144.98338380460225;
+% SimulationKwadraticCostFunction: evaluation 4 : cost = 144.983
+% ========================================================================
+% no5
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{5}	=[8.25,1.6336499999999998];
+costWeakConstraintPenalty{5}	=0.1562499999999994;
+%  combined: oscillator1, oscillator2
+predicted{5}	=[0.80.011309485588505721-0.62894727706656550.056107862373923390.4877526449568503-0.09442364285791426-0.3729951247208750.112634216080809740.281060692081189-0.1174258370184203-0.20842251507666973,0.80.011309485588505721-0.62894727706656550.056107862373923390.4877526449568503-0.09442364285791426-0.3729951247208750.112634216080809740.281060692081189-0.1174258370184203-0.20842251507666973];
+%  combined: oscillator1, oscillator2
+observed{5}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{5}	=[0.0-0.054443924772250366-0.00197489321478039330.1198440668312619-0.021986687998765964-0.150862756758825320.055016346194300570.15504643766688175-0.0864400447147812-0.140537705958593660.1104014172923653,0.0-0.124823951385214450.0417756817475750660.26689086189601396-0.15201588417130396-0.294243305999336240.26206710668800930.23861614450540464-0.3329420887396844-0.139568405872678880.35153045476521116];
+%  combined: oscillator1, oscillator2
+obs_stdev{5}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{5}	=34.24081015785918;
+costTotal{5}	=34.39706015785918;
+% SimulationKwadraticCostFunction: evaluation 5 : cost = 34.397
+% ========================================================================
+% no6
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{6}	=[8.5,1.5708];
+costWeakConstraintPenalty{6}	=0.125;
+%  combined: oscillator1, oscillator2
+predicted{6}	=[0.80.05655179594166106-0.6318275927143532-0.049647751104602420.49896856559232780.04314978079060869-0.3940158829695735-0.0371914952816329160.31111443129343950.03183259567874311-0.24563622031570642,0.80.05655179594166106-0.6318275927143532-0.049647751104602420.49896856559232780.04314978079060869-0.3940158829695735-0.0371914952816329160.31111443129343950.03183259567874311-0.24563622031570642];
+%  combined: oscillator1, oscillator2
+observed{6}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{6}	=[0.0-0.09968623512540579.054224330072858E-40.22559968030978772-0.03320260863424346-0.28843618040734830.07603710444299910.3048721490293244-0.11649378392703172-0.289796138655757040.147615122531402,0.0-0.170066261738369780.0446559973953627450.37264647537453977-0.16323180480678146-0.43181672964785920.283087864936707840.3884418558678473-0.3629958279519349-0.288826838569842260.3887441600042479];
+%  combined: oscillator1, oscillator2
+obs_stdev{6}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{6}	=67.17149342877323;
+costTotal{6}	=67.29649342877323;
+% SimulationKwadraticCostFunction: evaluation 6 : cost = 67.296
+% ========================================================================
+% no7
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{7}	=[8.0,1.6336499999999998];
+costWeakConstraintPenalty{7}	=0.12499999999999939;
+%  combined: oscillator1, oscillator2
+predicted{7}	=[0.80.013117584678946087-0.62438442711531120.053736434802523430.4807673230272821-0.09109247004451315-0.36509198480235820.108337371996683830.27323760188902185-0.11235955726546693-0.2012893381869515,0.80.013117584678946087-0.62438442711531120.053736434802523430.4807673230272821-0.09109247004451315-0.36509198480235820.108337371996683830.27323760188902185-0.11235955726546693-0.2012893381869515];
+%  combined: oscillator1, oscillator2
+observed{7}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{7}	=[0.0-0.056252023862690737-0.0065377431660347260.12221549440266186-0.015001366069197775-0.154193929572226440.04711320627578380.15934328175100768-0.07861695452261405-0.145603985711547030.10326824040264707,0.0-0.126632050475654820.037212831796320730.26926228946741393-0.14503056224173577-0.297574478812737350.254163966769492540.24291298858953056-0.32511899854751725-0.144634685625632250.34439727787549296];
+%  combined: oscillator1, oscillator2
+obs_stdev{7}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{7}	=33.80720240567888;
+costTotal{7}	=33.93220240567888;
+% SimulationKwadraticCostFunction: evaluation 7 : cost = 33.932
+% SHRINK
+maximumCost{1}	=67.29649342877323;
+% WARNING: SHRINK produces worse parameter set
+% costs[33.93220240567888,65.00104173743813,67.29649342877323]costs in simplex
+% Application starting next step
+costs{2}	=[33.93220240567888,65.00104173743813,67.29649342877323];
+% Iteration step no.1
+% ========================================================================
+% no8
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{8}	=[7.5,1.6336499999999998];
+costWeakConstraintPenalty{8}	=0.24999999999999942;
+%  combined: oscillator1, oscillator2
+predicted{8}	=[0.80.017072034614144187-0.61445729047827360.048627716502922860.46574725767797337-0.08401560675827444-0.348292338186496960.099325406498802520.25679284323740004-0.10186325995853383-0.1864559078395128,0.80.017072034614144187-0.61445729047827360.048627716502922860.46574725767797337-0.08401560675827444-0.348292338186496960.099325406498802520.25679284323740004-0.10186325995853383-0.1864559078395128];
+%  combined: oscillator1, oscillator2
+observed{8}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{8}	=[0.0-0.060206473797888835-0.016464879803072320.127324212702262431.869928011094535E-5-0.161270792858465160.030313559659922550.168355247248889-0.062172195870992236-0.15610028301848010.08843481005520837,0.0-0.13058650041085290.027285695159283140.2743710077670145-0.13001049689242705-0.304651342098976040.23736432015363130.2519249540874119-0.30867423989589543-0.155130982932565330.32956384752805423];
+%  combined: oscillator1, oscillator2
+obs_stdev{8}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{8}	=33.09945682431678;
+costTotal{8}	=33.34945682431678;
+% SimulationKwadraticCostFunction: evaluation 8 : cost = 33.349
+% ========================================================================
+% no9
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{9}	=[7.0,1.6650749999999999];
+costWeakConstraintPenalty{9}	=0.7812499999999994;
+%  combined: oscillator1, oscillator2
+predicted{9}	=[0.8-0.001556824121719801-0.60094452751586950.092881727442395660.43742144268461813-0.13655464011250718-0.30787245525582620.149603028014843510.20852793620342214-0.14424735764277097-0.13469009433011217,0.8-0.001556824121719801-0.60094452751586950.092881727442395660.43742144268461813-0.13655464011250718-0.30787245525582620.149603028014843510.20852793620342214-0.14424735764277097-0.13469009433011217];
+%  combined: oscillator1, oscillator2
+observed{9}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{9}	=[0.0-0.04157761506202485-0.029977642765476430.083070201762789630.02834451427346618-0.10873175950423242-0.010106323270748230.118077625732848-0.013907288837014337-0.113716185334242990.03666899654580774,0.0-0.111957641674988920.0137729321968790290.23011699682754172-0.10168468189907182-0.252112308744743330.19694443722296050.20164733257137088-0.26040933286191753-0.112746885248328210.27779803401865366];
+%  combined: oscillator1, oscillator2
+obs_stdev{9}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{9}	=21.369585079011365;
+costTotal{9}	=22.150835079011365;
+% SimulationKwadraticCostFunction: evaluation 9 : cost = 22.151
+% EXPAND!
+% costs[22.150835079011365,33.93220240567888,65.00104173743813]costs in simplex
+% Application starting next step
+costs{3}	=[22.150835079011365,33.93220240567888,65.00104173743813];
+% Iteration step no.1
+% ========================================================================
+% no10
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{10}	=[7.0,1.7279249999999995];
+costWeakConstraintPenalty{10}	=1.281249999999995;
+%  combined: oscillator1, oscillator2
+predicted{10}	=[0.8-0.047590832787110536-0.58875298135248130.189526591119415830.39293655114543885-0.2450472616926392-0.231284676084573840.244551592175602180.10993634958831318-0.21248686908314823-0.027120051721934813,0.8-0.047590832787110536-0.58875298135248130.189526591119415830.39293655114543885-0.2450472616926392-0.231284676084573840.244551592175602180.10993634958831318-0.21248686908314823-0.027120051721934813];
+%  combined: oscillator1, oscillator2
+observed{10}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{10}	=[0.00.004456393603365888-0.042169188928864565-0.013574661914230540.07282940581264546-2.3913792410037993E-4-0.086694102442000570.0231290615720893270.08468429777809462-0.04547667389386573-0.07090104606236962,0.0-0.065923633009598190.00158138603349089470.13347213315052153-0.05719979035989253-0.14361968716461130.120356658051708160.10669876841061221-0.16181774624680856-0.0445073738079509450.1702279914104763];
+%  combined: oscillator1, oscillator2
+obs_stdev{10}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{10}	=7.933968302997272;
+costTotal{10}	=9.215218302997267;
+% SimulationKwadraticCostFunction: evaluation 10 : cost = 9.215
+% ========================================================================
+% no11
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{11}	=[6.5,1.8064874999999994];
+costWeakConstraintPenalty{11}	=2.882812499999991;
+%  combined: oscillator1, oscillator2
+predicted{11}	=[0.8-0.09869607422195723-0.54967339469695550.286642706093615860.292446244488851-0.32462520392504957-0.088554322325446520.27313580186771463-0.04128107234295796-0.184715423774238250.10229050833926737,0.8-0.09869607422195723-0.54967339469695550.286642706093615860.292446244488851-0.32462520392504957-0.088554322325446520.27313580186771463-0.04128107234295796-0.184715423774238250.10229050833926737];
+%  combined: oscillator1, oscillator2
+observed{11}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{11}	=[0.00.05556163503821258-0.08124877558439036-0.110690776888430570.173319712469233330.07933880430830997-0.2294244562011279-0.0054551481200231230.23590171970936577-0.07324811920277571-0.2003116061235718,0.0-0.014818391574751497-0.0374982006220349050.03635601817632150.043290516296695336-0.06404174493220094-0.0223736957074191640.07811455871849976-0.01060032431553741-0.072278819116860930.0408174313492741];
+%  combined: oscillator1, oscillator2
+obs_stdev{11}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{11}	=11.730413033788558;
+costTotal{11}	=14.61322553378855;
+% SimulationKwadraticCostFunction: evaluation 11 : cost = 14.613
+% REFLECT ALSO!
+% costs[9.215218302997267,22.150835079011365,33.93220240567888]costs in simplex
+% Application starting next step
+costs{4}	=[9.215218302997267,22.150835079011365,33.93220240567888];
+% Iteration step no.1
+% ========================================================================
+% no12
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{12}	=[6.0,1.7593499999999995];
+costWeakConstraintPenalty{12}	=3.1249999999999947;
+%  combined: oscillator1, oscillator2
+predicted{12}	=[0.8-0.05827072747745399-0.55550194878569310.21071307390863090.33394479171881253-0.2525545286751927-0.162465637588177480.230378541481343460.046340368899865515-0.17916833640630680.02129109680473478,0.8-0.05827072747745399-0.55550194878569310.21071307390863090.33394479171881253-0.2525545286751927-0.162465637588177480.230378541481343460.046340368899865515-0.17916833640630680.02129109680473478];
+%  combined: oscillator1, oscillator2
+observed{12}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{12}	=[0.00.01513628829370934-0.07542022149565275-0.03476114470344560.13182116523927180.007268129058453088-0.155513140938396940.037302112266348050.1482802784665423-0.07879520657070715-0.11931219458903922,0.0-0.055243738319254734-0.031669646533297290.112285650361306470.0017919690667337895-0.136112420182057830.051537619555311790.12087181910487094-0.09822176555836089-0.077825906484792370.12181684288380668];
+%  combined: oscillator1, oscillator2
+obs_stdev{12}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{12}	=8.778238448910285;
+costTotal{12}	=11.90323844891028;
+% SimulationKwadraticCostFunction: evaluation 12 : cost = 11.903
+% REFLECT!
+% costs[9.215218302997267,11.90323844891028,22.150835079011365]costs in simplex
+% Application starting next step
+costs{5}	=[9.215218302997267,11.90323844891028,22.150835079011365];
+% Iteration step no.1
+% ========================================================================
+% no13
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{13}	=[6.0,1.8221999999999987];
+costWeakConstraintPenalty{13}	=3.999999999999979;
+%  combined: oscillator1, oscillator2
+predicted{13}	=[0.8-0.1030836102432221-0.53110451729280980.290877246509247570.2616979976524469-0.3153552064277005-0.058657702988022910.24993017408989693-0.060093825082587864-0.154528005208236120.10620081105560158,0.8-0.1030836102432221-0.53110451729280980.290877246509247570.2616979976524469-0.3153552064277005-0.058657702988022910.24993017408989693-0.060093825082587864-0.154528005208236120.10620081105560158];
+%  combined: oscillator1, oscillator2
+observed{13}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{13}	=[0.00.05994917105947745-0.09981765298853607-0.114925317304062270.204067959305637430.07006880681096089-0.25932107553855150.0177504796577945820.25471447244899564-0.10343553776877784-0.204221908839906,0.0-0.01043085555348662-0.0560670780261806060.03212147776068980.07403876313309943-0.07331174242955002-0.052270315044842770.101320186496317470.008212428424092491-0.102466237682863060.03690712863293988];
+%  combined: oscillator1, oscillator2
+obs_stdev{13}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{13}	=14.911673066221738;
+costTotal{13}	=18.911673066221717;
+% SimulationKwadraticCostFunction: evaluation 13 : cost = 18.912
+% ========================================================================
+% no14
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{14}	=[6.25,1.782918749999999];
+costWeakConstraintPenalty{14}	=2.9550781249999867;
+%  combined: oscillator1, oscillator2
+predicted{14}	=[0.8-0.07858662771875169-0.5536644836544690.24908568599142650.31565615543723125-0.29034825581771595-0.12851597259058490.255407727043300560.004742170859516961-0.187108867126472070.06144893886882803,0.8-0.07858662771875169-0.5536644836544690.24908568599142650.31565615543723125-0.29034825581771595-0.12851597259058490.255407727043300560.004742170859516961-0.187108867126472070.06144893886882803];
+%  combined: oscillator1, oscillator2
+observed{14}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{14}	=[0.00.03545218853500704-0.07725768662687693-0.07313375678624120.150109801520853070.04506185620097636-0.189462805935989520.0122729267043909520.18987847650689085-0.07085467585054189-0.15947003665313247,0.0-0.03492783807795703-0.033507111664521470.073913038278510870.020080605348315073-0.098318693039534550.0175879545577192070.09584263354291384-0.056623567518012334-0.069885375764627110.08165900081971343];
+%  combined: oscillator1, oscillator2
+obs_stdev{14}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{14}	=9.090925876538266;
+costTotal{14}	=12.046004001538254;
+% SimulationKwadraticCostFunction: evaluation 14 : cost = 12.046
+% CONTRACT OUTSIDE!
+% costs[9.215218302997267,11.90323844891028,12.046004001538254]costs in simplex
+% Application starting next step
+costs{6}	=[9.215218302997267,11.90323844891028,12.046004001538254];
+% Iteration step no.1
+% ========================================================================
+% no15
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{15}	=[6.75,1.70435625];
+costWeakConstraintPenalty{15}	=1.3457031250000002;
+%  combined: oscillator1, oscillator2
+predicted{15}	=[0.8-0.02774319256175104-0.58878871068304630.149351100725086620.4051527008375835-0.19962791479837766-0.257615318409865350.204757201182530740.14678994411136728-0.18434230684512096-0.06884694498786414,0.8-0.02774319256175104-0.58878871068304630.149351100725086620.4051527008375835-0.19962791479837766-0.257615318409865350.204757201182530740.14678994411136728-0.18434230684512096-0.06884694498786414];
+%  combined: oscillator1, oscillator2
+observed{15}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{15}	=[0.0-0.015391246621993607-0.0421334595982996160.0266008284800986760.060613256120500836-0.04565848481836193-0.060363460116709070.062923452565160770.04783070325504052-0.073621236131893-0.029174152796440284,0.0-0.085771273234957670.00161711536405584330.17364762354485075-0.06941594005203716-0.189039034058872850.146687300376999670.14649315940368365-0.19867134076986265-0.072651936045978220.2119548846764056];
+%  combined: oscillator1, oscillator2
+obs_stdev{15}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{15}	=11.76792650497576;
+costTotal{15}	=13.11362962997576;
+% SimulationKwadraticCostFunction: evaluation 15 : cost = 13.114
+% ========================================================================
+% no16
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{16}	=[6.375,1.7632781249999994];
+costWeakConstraintPenalty{16}	=2.4926757812499925;
+%  combined: oscillator1, oscillator2
+predicted{16}	=[0.8-0.06609142989911247-0.56373702841545590.226043995964938960.34066093217194027-0.27258731603842984-0.162979364951495450.25057339141160020.04008500086975038-0.1957380458067360.03242646391806685,0.8-0.06609142989911247-0.56373702841545590.226043995964938960.34066093217194027-0.27258731603842984-0.162979364951495450.25057339141160020.04008500086975038-0.1957380458067360.03242646391806685];
+%  combined: oscillator1, oscillator2
+observed{16}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{16}	=[0.00.022956990715367824-0.06718514186588997-0.050092066759753670.125105024786144050.027300916421690247-0.154999413575078960.0171072623360913330.1545356464966574-0.06222549717027795-0.13044756170237126,0.0-0.04742303589759625-0.0234345669035345150.0969547283049984-0.00492417138639395-0.116079632818820670.052051346918629770.10067696917461422-0.09196639752824576-0.061256197084363170.11068147577047462];
+%  combined: oscillator1, oscillator2
+obs_stdev{16}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{16}	=7.8018402871202195;
+costTotal{16}	=10.294516068370212;
+% SimulationKwadraticCostFunction: evaluation 16 : cost = 10.295
+% CONTRACT INSIDE!
+% costs[9.215218302997267,10.294516068370212,11.90323844891028]costs in simplex
+% Application starting next step
+costs{7}	=[9.215218302997267,10.294516068370212,11.90323844891028];
+% Iteration step no.1
+% ========================================================================
+% no17
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{17}	=[7.375,1.7318531249999989];
+costWeakConstraintPenalty{17}	=1.016113281249989;
+%  combined: oscillator1, oscillator2
+predicted{17}	=[0.8-0.05415693520502582-0.59530946072798870.202553834323026650.39903957126487966-0.26253610394452687-0.233140431671613550.263331441426853550.10643108677577767-0.2296141760673038-0.018951923921535982,0.8-0.05415693520502582-0.59530946072798870.202553834323026650.39903957126487966-0.26253610394452687-0.233140431671613550.263331441426853550.10643108677577767-0.2296141760673038-0.018951923921535982];
+%  combined: oscillator1, oscillator2
+observed{17}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{17}	=[0.00.011022496021281171-0.03561270955335716-0.0266019051178413570.066726385693204660.017249704327787274-0.084838346854960860.00434921232083795850.08818956059063013-0.028349366909710155-0.07906917386276845,0.0-0.05935753059168290.0081378654089983020.12044488994691072-0.06330281047933334-0.126130844912723640.122212413638747870.08791891915936084-0.15831248343427304-0.0273800668237953740.16205986361007746];
+%  combined: oscillator1, oscillator2
+obs_stdev{17}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{17}	=7.082556691038386;
+costTotal{17}	=8.098669972288375;
+% SimulationKwadraticCostFunction: evaluation 17 : cost = 8.099
+% ========================================================================
+% no18
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{18}	=[8.0625,1.7181046874999986];
+costWeakConstraintPenalty{18}	=0.6885986328124866;
+%  combined: oscillator1, oscillator2
+predicted{18}	=[0.8-0.04996049694268971-0.61168583515313910.192806859714541170.42882013735894053-0.2582859052067434-0.26966168622854530.269356029971036140.14268462227496603-0.24606295627704564-0.04946047280424626,0.8-0.04996049694268971-0.61168583515313910.192806859714541170.42882013735894053-0.2582859052067434-0.26966168622854530.269356029971036140.14268462227496603-0.24606295627704564-0.04946047280424626];
+%  combined: oscillator1, oscillator2
+observed{18}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{18}	=[0.00.006826057758945063-0.019236335128206772-0.016854930509355880.036945819599143780.01299950559000379-0.04831709229802911-0.00167537622334462680.05193602509144177-0.011900586699968324-0.04856062498005817,0.0-0.063553968854019010.0245142398341486880.1301918645553962-0.09308337657339422-0.130381043650507120.158733668195679630.08189433061517826-0.1945660189334614-0.0109312866140535430.19256841249278772];
+%  combined: oscillator1, oscillator2
+obs_stdev{18}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{18}	=8.199197370902652;
+costTotal{18}	=8.887796003715138;
+% SimulationKwadraticCostFunction: evaluation 18 : cost = 8.888
+% REFLECT ALSO!
+% costs[8.098669972288375,9.215218302997267,10.294516068370212]costs in simplex
+% Application starting next step
+costs{8}	=[8.098669972288375,9.215218302997267,10.294516068370212];
+% Iteration step no.1
+% ========================================================================
+% no19
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{19}	=[8.0,1.6964999999999986];
+costWeakConstraintPenalty{19}	=0.4999999999999888;
+%  combined: oscillator1, oscillator2
+predicted{19}	=[0.8-0.03350311927911187-0.6158978936059820.15740421970211750.44610274503273-0.21769751450176475-0.30101131585066680.233719913185968160.18459790732519557-0.22137835983631846-0.09656628411831523,0.8-0.03350311927911187-0.6158978936059820.15740421970211750.44610274503273-0.21769751450176475-0.30101131585066680.233719913185968160.18459790732519557-0.22137835983631846-0.09656628411831523];
+%  combined: oscillator1, oscillator2
+observed{19}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{19}	=[0.0-0.009631319904632778-0.0150242766753638790.0185477095030678050.019663211925354307-0.027588885114974843-0.0169674626759075960.033960740561723350.01002274004121223-0.036585183140695504-0.0014548136659891936,0.0-0.080011346517596850.028726298286991580.16559450456781988-0.11036598424718369-0.170969434355485760.190083297817801140.11753044740024624-0.23647930398369094-0.035615883054780720.2396742238068567];
+%  combined: oscillator1, oscillator2
+obs_stdev{19}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{19}	=12.266603855137443;
+costTotal{19}	=12.766603855137433;
+% SimulationKwadraticCostFunction: evaluation 19 : cost = 12.767
+% ========================================================================
+% no20
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{20}	=[6.78125,1.7465835937499992];
+costWeakConstraintPenalty{20}	=1.7204895019531163;
+%  combined: oscillator1, oscillator2
+predicted{20}	=[0.8-0.058828906363103034-0.57853540456356240.212276570256755610.36895149516047915-0.26549887366427105-0.197400071216638250.25517035298017470.07267345046346282-0.21115864663314980.0073794167448858385,0.8-0.058828906363103034-0.57853540456356240.212276570256755610.36895149516047915-0.26549887366427105-0.197400071216638250.25517035298017470.07267345046346282-0.21115864663314980.0073794167448858385];
+%  combined: oscillator1, oscillator2
+observed{20}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{20}	=[0.00.015694467179358386-0.052386765717783446-0.036324641051570320.096814461797605170.02021247404753146-0.120578707309936170.0125103007675168020.12194719690294498-0.04680489634386417-0.10540051452919026,0.0-0.05468555943360569-0.0086361907554279860.11072215401318175-0.03321473437493283-0.123168075192979450.086472053183772560.09608000760603969-0.12455484712195819-0.045835596257949390.13572852294365562];
+%  combined: oscillator1, oscillator2
+obs_stdev{20}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{20}	=7.06512408080302;
+costTotal{20}	=8.785613582756136;
+% SimulationKwadraticCostFunction: evaluation 20 : cost = 8.786
+% CONTRACT INSIDE!
+% costs[8.098669972288375,8.785613582756136,9.215218302997267]costs in simplex
+% Application starting next step
+costs{9}	=[8.098669972288375,8.785613582756136,9.215218302997267];
+% Iteration step no.1
+% ========================================================================
+% no21
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{21}	=[7.15625,1.7505117187499986];
+costWeakConstraintPenalty{21}	=1.3779602050781088;
+%  combined: oscillator1, oscillator2
+predicted{21}	=[0.8-0.06565594221451748-0.58516138888044340.225963287313866470.37440229724343754-0.2836805144521898-0.19763958779811780.27406459821322570.06687248910012672-0.227391667890903680.01794794897339845,0.8-0.06565594221451748-0.58516138888044340.225963287313866470.37440229724343754-0.2836805144521898-0.19763958779811780.27406459821322570.06687248910012672-0.227391667890903680.01794794897339845];
+%  combined: oscillator1, oscillator2
+observed{21}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{21}	=[0.00.022521503030772834-0.04576078140090245-0.050011358108681180.091363659714646770.03839411483545019-0.12033919072845661-0.0063839444655341970.12774815826628108-0.030571875086110284-0.11596904675770288,0.0-0.04785852358219124-0.0020102064385469910.09703543695607089-0.038665536457891225-0.104986434405060720.086711569765252110.07718576237298869-0.11875388575862209-0.0296025750001955020.125159990715143];
+%  combined: oscillator1, oscillator2
+obs_stdev{21}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{21}	=6.42485230455123;
+costTotal{21}	=7.802812509629339;
+% SimulationKwadraticCostFunction: evaluation 21 : cost = 7.803
+% ========================================================================
+% no22
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{22}	=[7.234375,1.7618050781249979];
+costWeakConstraintPenalty{22}	=1.447578430175756;
+%  combined: oscillator1, oscillator2
+predicted{22}	=[0.8-0.07466295269425301-0.58277719476375840.24392547929884520.3636225553822494-0.30187221413991167-0.178777972468839360.28641646358075080.04354689850831472-0.231232489411975440.04128593946569113,0.8-0.07466295269425301-0.58277719476375840.24392547929884520.3636225553822494-0.30187221413991167-0.178777972468839360.28641646358075080.04354689850831472-0.231232489411975440.04128593946569113];
+%  combined: oscillator1, oscillator2
+observed{22}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{22}	=[0.00.03152851351050836-0.04814497551758745-0.06797355009365990.10214340157583490.05658581452317207-0.13920080605773505-0.018735809833059280.15107374885809308-0.02673105356503852-0.13930703724999555,0.0-0.038851513102455715-0.0043944005552319920.07907324497109217-0.027885794596703095-0.086794734717338840.067849954435973680.0648338970054636-0.09542829516681009-0.025761753479123740.10182200022285033];
+%  combined: oscillator1, oscillator2
+obs_stdev{22}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{22}	=6.463853038899267;
+costTotal{22}	=7.911431469075023;
+% SimulationKwadraticCostFunction: evaluation 22 : cost = 7.911
+% REFLECT ALSO!
+% costs[7.802812509629339,8.098669972288375,8.785613582756136]costs in simplex
+% Application starting next step
+costs{10}	=[7.802812509629339,8.098669972288375,8.785613582756136];
+% Iteration step no.1
+% ========================================================================
+% no23
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{23}	=[7.75,1.7357812499999978];
+costWeakConstraintPenalty{23}	=0.8925781249999776;
+%  combined: oscillator1, oscillator2
+predicted{23}	=[0.8-0.060407332986678636-0.60109964948344430.21520329976606410.40403844847341613-0.2795383961526269-0.233761425857706070.28149805809840860.1016651845311438-0.2459749412208407-0.009574737623172597,0.8-0.060407332986678636-0.60109964948344430.21520329976606410.40403844847341613-0.2795383961526269-0.233761425857706070.28149805809840860.1016651845311438-0.2459749412208407-0.009574737623172597];
+%  combined: oscillator1, oscillator2
+observed{23}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{23}	=[0.00.017272893802933988-0.029822520797901597-0.0392513705608787960.061727508484668180.034251996535887286-0.08421735266886834-0.01381740435071710.092955462835264-0.01198860175617325-0.08844636016113183,0.0-0.0531071328100300860.0139280541644538620.10779542450387328-0.06830168768786982-0.109128552704623630.122833407824840380.06975230248780578-0.15354658118963918-0.0110193016702584690.15268267731171406];
+%  combined: oscillator1, oscillator2
+obs_stdev{23}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{23}	=6.488717868739453;
+costTotal{23}	=7.381295993739431;
+% SimulationKwadraticCostFunction: evaluation 23 : cost = 7.381
+% ========================================================================
+% no24
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{24}	=[8.234375,1.7303800781249974];
+costWeakConstraintPenalty{24}	=0.833320617675755;
+%  combined: oscillator1, oscillator2
+predicted{24}	=[0.8-0.060353727610900534-0.61095292973940130.214743028113913460.4203681142839157-0.2836191422835061-0.252008142095049740.29151161292174410.11779029624923389-0.26092588574031644-0.02089545631010001,0.8-0.060353727610900534-0.61095292973940130.214743028113913460.4203681142839157-0.2836191422835061-0.252008142095049740.29151161292174410.11779029624923389-0.26092588574031644-0.02089545631010001];
+%  combined: oscillator1, oscillator2
+observed{24}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{24}	=[0.00.017219288427155886-0.0199692405419446-0.038791098908728170.045397842674168630.038332742666766506-0.06597063643152468-0.023830959174052590.076830351117173910.0029623427633024835-0.07712564147420442,0.0-0.053160738185808190.023781334420410860.1082556961560239-0.08463135349836937-0.10504780657374440.141080124062184060.05973874766447029-0.169671692907729270.0039316428492172650.16400339599864147];
+%  combined: oscillator1, oscillator2
+obs_stdev{24}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{24}	=6.749613165590409;
+costTotal{24}	=7.582933783266164;
+% SimulationKwadraticCostFunction: evaluation 24 : cost = 7.583
+% REFLECT ALSO!
+% costs[7.381295993739431,7.802812509629339,8.098669972288375]costs in simplex
+% Application starting next step
+costs{11}	=[7.381295993739431,7.802812509629339,8.098669972288375];
+% Iteration step no.1
+% ========================================================================
+% no25
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{25}	=[7.53125,1.7544398437499975];
+costWeakConstraintPenalty{25}	=1.1770324707030964;
+%  combined: oscillator1, oscillator2
+predicted{25}	=[0.8-0.07213334496362483-0.59097753958971770.239189043869683980.3787256747926847-0.3012426551994753-0.19666830471150330.29217793488324660.05989138316365733-0.242670055675588660.029581915283275646,0.8-0.07213334496362483-0.59097753958971770.239189043869683980.3787256747926847-0.3012426551994753-0.19666830471150330.29217793488324660.05989138316365733-0.242670055675588660.029581915283275646];
+%  combined: oscillator1, oscillator2
+observed{25}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{25}	=[0.00.028998905779880187-0.039944630691628236-0.063237114664498690.087040282165399610.0559562555827357-0.12131047381507112-0.0244972811355551050.13472926420275047-0.015293487301425296-0.12760301306758007,0.0-0.041381120833083890.0038059442707272240.08380968040025338-0.04298891400713839-0.087424293657775210.08574028667863760.05907242570296778-0.1117727798221527-0.0143241872155105140.11352602440526582];
+%  combined: oscillator1, oscillator2
+obs_stdev{25}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{25}	=6.089837000629223;
+costTotal{25}	=7.26686947133232;
+% SimulationKwadraticCostFunction: evaluation 25 : cost = 7.267
+% ========================================================================
+% no26
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{26}	=[7.609375,1.7657332031249968];
+costWeakConstraintPenalty{26}	=1.2787551879882426;
+%  combined: oscillator1, oscillator2
+predicted{26}	=[0.8-0.08109651366428676-0.58823133301803790.25721583423514430.3670657483907634-0.3193632980375556-0.176430562562573280.30399499252033420.03494790576102004-0.2453098612085550.05439329094986716,0.8-0.08109651366428676-0.58823133301803790.25721583423514430.3670657483907634-0.3193632980375556-0.176430562562573280.30399499252033420.03494790576102004-0.2453098612085550.05439329094986716];
+%  combined: oscillator1, oscillator2
+observed{26}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{26}	=[0.00.03796207448054211-0.042690837263308024-0.081263905029959030.098700208567320920.074076898420816-0.14154821596400113-0.0363143387726426740.15967274160538775-0.012653681768458963-0.1524143887341716,0.0-0.032417952132421960.0010597376990474360.06578289003479304-0.031328987605217073-0.069303650819694920.06550254452970760.04725536806588021-0.08682930241951542-0.0116843816825441820.0887146487386743];
+%  combined: oscillator1, oscillator2
+obs_stdev{26}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{26}	=6.428528647993327;
+costTotal{26}	=7.707283835981569;
+% SimulationKwadraticCostFunction: evaluation 26 : cost = 7.707
+% REFLECT ALSO!
+% costs[7.26686947133232,7.381295993739431,7.802812509629339]costs in simplex
+% Application starting next step
+costs{12}	=[7.26686947133232,7.381295993739431,7.802812509629339];
+% Iteration step no.1
+% ========================================================================
+% no27
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{27}	=[8.125,1.7397093749999968];
+costWeakConstraintPenalty{27}	=0.9106445312499658;
+%  combined: oscillator1, oscillator2
+predicted{27}	=[0.8-0.06638277877211037-0.60621187481959560.227507515948360360.40803276683160394-0.29606607715857514-0.23323563085294110.299029550038210860.09572035985380094-0.26151055639691379.207788155937121E-4,0.8-0.06638277877211037-0.60621187481959560.227507515948360360.40803276683160394-0.29606607715857514-0.23323563085294110.299029550038210860.09572035985380094-0.26151055639691379.207788155937121E-4];
+%  combined: oscillator1, oscillator2
+observed{27}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{27}	=[0.00.023248339588365717-0.024710295461750298-0.0515555867431750640.057733190126480370.050779677541835544-0.0847431476736333-0.0313488962905193460.098900287512606860.003547013419899714-0.09894187659989814,0.0-0.047131687024598360.019040279500605160.09549120832157701-0.07229600604605763-0.092600871698675370.122307612820075420.05222081054800354-0.147601756512296320.0045163135058144950.14218716087294775];
+%  combined: oscillator1, oscillator2
+obs_stdev{27}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{27}	=6.134120970440757;
+costTotal{27}	=7.044765501690723;
+% SimulationKwadraticCostFunction: evaluation 27 : cost = 7.045
+% ========================================================================
+% no28
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{28}	=[8.609375,1.7343082031249955];
+costWeakConstraintPenalty{28}	=1.0316848754882346;
+%  combined: oscillator1, oscillator2
+predicted{28}	=[0.8-0.0660058183865579-0.61548271125067220.226518023976367860.42378656314991203-0.2995026585521141-0.25117189218165250.308504243773071450.1117917831568081-0.2761922619643627-0.01044950025699359,0.8-0.0660058183865579-0.61548271125067220.226518023976367860.42378656314991203-0.2995026585521141-0.25117189218165250.308504243773071450.1117917831568081-0.2761922619643627-0.01044950025699359];
+%  combined: oscillator1, oscillator2
+observed{28}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{28}	=[0.00.022871379202813256-0.015439459030673675-0.050566094771182570.041979393808172280.05421625893537452-0.06680688634492193-0.040823590025379940.08282886420959970.018228718987348735-0.08757159752731083,0.0-0.047508647410150820.0283111159316817850.0964807002935695-0.08804980236436571-0.08916429030513640.14024387414878680.04274611681314294-0.163673179815303470.0191980190732635170.15355743994553506];
+%  combined: oscillator1, oscillator2
+obs_stdev{28}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{28}	=6.465729342242831;
+costTotal{28}	=7.497414217731066;
+% SimulationKwadraticCostFunction: evaluation 28 : cost = 7.497
+% REFLECT ALSO!
+% costs[7.044765501690723,7.26686947133232,7.381295993739431]costs in simplex
+% Application starting next step
+costs{13}	=[7.044765501690723,7.26686947133232,7.381295993739431];
+% Iteration step no.1
+% ========================================================================
+% no29
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{29}	=[7.90625,1.7583679687499965];
+costWeakConstraintPenalty{29}	=1.1177062988280833;
+%  combined: oscillator1, oscillator2
+predicted{29}	=[0.8-0.07830741793469208-0.59607992603466640.25199560389376170.38202704630232537-0.3182071745716835-0.19457877243717280.30949691446106390.05181973867256005-0.25694405292529980.04217594743929898,0.8-0.07830741793469208-0.59607992603466640.25199560389376170.38202704630232537-0.3182071745716835-0.19457877243717280.30949691446106390.05181973867256005-0.25694405292529980.04217594743929898];
+%  combined: oscillator1, oscillator2
+observed{29}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{29}	=[0.00.03517297875094743-0.03484224424667948-0.07604367468857640.083738910655758950.07292077495494392-0.1234000060894016-0.041816260713372410.14280090869384776-0.0010194900517141448-0.1401970452236034,0.0-0.0352070478620166440.0089083307156759830.07100312037617568-0.04629028551677905-0.070459774285566990.083650754404307120.04175344612515047-0.10370113533105543-5.018996579936319E-50.10093199224924249];
+%  combined: oscillator1, oscillator2
+obs_stdev{29}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{29}	=6.036880950980505;
+costTotal{29}	=7.154587249808588;
+% SimulationKwadraticCostFunction: evaluation 29 : cost = 7.155
+% REFLECT!
+% costs[7.044765501690723,7.154587249808588,7.26686947133232]costs in simplex
+% Application starting next step
+costs{14}	=[7.044765501690723,7.154587249808588,7.26686947133232];
+% Iteration step no.1
+% ========================================================================
+% no30
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{30}	=[8.5,1.7436374999999957];
+costWeakConstraintPenalty{30}	=1.0703124999999536;
+%  combined: oscillator1, oscillator2
+predicted{30}	=[0.8-0.07211724975531375-0.61072062465159050.239494866360550650.4111094039755317-0.3121313078083201-0.231643436847792040.31591001058545540.08867536944037784-0.27617421520004750.01244383046252679,0.8-0.07211724975531375-0.61072062465159050.239494866360550650.4111094039755317-0.3121313078083201-0.231643436847792040.31591001058545540.08867536944037784-0.27617421520004750.01244383046252679];
+%  combined: oscillator1, oscillator2
+observed{30}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{30}	=[0.00.028982810571569102-0.020201545629755402-0.063542937155365350.054656552982552620.06684490819158051-0.08633534167878237-0.0482293568377639150.105945277926029970.01821067222303352-0.11046492824683121,0.0-0.041397216041394970.0235490293326000580.08350385790938672-0.07537264318998538-0.07653564104893040.120715418814926350.03534035000075897-0.140556766098873210.01917997230894830.13066410922601468];
+%  combined: oscillator1, oscillator2
+obs_stdev{30}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{30}	=6.003902115696094;
+costTotal{30}	=7.0742146156960475;
+% SimulationKwadraticCostFunction: evaluation 30 : cost = 7.074
+% REFLECT!
+% costs[7.044765501690723,7.0742146156960475,7.154587249808588]costs in simplex
+% Application starting next step
+costs{15}	=[7.044765501690723,7.0742146156960475,7.154587249808588];
+% Iteration step no.1
+% ========================================================================
+% no31
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{31}	=[8.71875,1.724978906249996];
+costWeakConstraintPenalty{31}	=1.0105285644530866;
+%  combined: oscillator1, oscillator2
+predicted{31}	=[0.8-0.05985536465805447-0.62002527380827350.21321474542301450.4359748801629118-0.2859724801597761-0.27021554205599430.29953656687664420.13481044835725814-0.2741492183992805-0.03394270938144319,0.8-0.05985536465805447-0.62002527380827350.21321474542301450.4359748801629118-0.2859724801597761-0.27021554205599430.29953656687664420.13481044835725814-0.2741492183992805-0.03394270938144319];
+%  combined: oscillator1, oscillator2
+observed{31}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{31}	=[0.00.016720925474309825-0.010896896473072348-0.03726281621782920.029791076795172510.04068608054303652-0.04776323647058012-0.0318559131289526950.059810199009149660.016185675422266566-0.06407838840286123,0.0-0.053659101138654250.032853678489283110.10978397884692287-0.10023811937736549-0.10269446869747440.159287524023128620.05171379370957019-0.18669184501575350.0171549755081813470.17705064906998466];
+%  combined: oscillator1, oscillator2
+obs_stdev{31}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{31}	=7.335901924709096;
+costTotal{31}	=8.346430489162183;
+% SimulationKwadraticCostFunction: evaluation 31 : cost = 8.346
+% ========================================================================
+% no32
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{32}	=[8.109375,1.7500207031249964];
+costWeakConstraintPenalty{32}	=1.0224075317382402;
+%  combined: oscillator1, oscillator2
+predicted{32}	=[0.8-0.07384538849722344-0.602430572979470.243011670396185240.396008338299706-0.31170844426899974-0.213572478184988620.3092733349441940.07176036723715865-0.263749315760933130.025052991955865783,0.8-0.07384538849722344-0.602430572979470.243011670396185240.396008338299706-0.31170844426899974-0.213572478184988620.3092733349441940.07176036723715865-0.263749315760933130.025052991955865783];
+%  combined: oscillator1, oscillator2
+observed{32}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{32}	=[0.00.030710949313478793-0.028491597301875893-0.067059741190999940.069757618658378320.06642204465226015-0.1044063003415858-0.04159268119650250.122860280129249160.005785772783919174-0.12307408974017021,0.0-0.039669077299485280.0152589776604795670.07998705387375213-0.06027157751415968-0.076958504588250760.102644460152122930.04197702564202038-0.123641763895654010.0067550728698339560.11805494773267568];
+%  combined: oscillator1, oscillator2
+obs_stdev{32}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{32}	=5.888172817747915;
+costTotal{32}	=6.910580349486155;
+% SimulationKwadraticCostFunction: evaluation 32 : cost = 6.911
+% CONTRACT INSIDE!
+% costs[6.910580349486155,7.044765501690723,7.0742146156960475]costs in simplex
+% Application starting next step
+costs{16}	=[6.910580349486155,7.044765501690723,7.0742146156960475];
+% Iteration step no.1
+% ========================================================================
+% no33
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{33}	=[7.734375,1.7460925781249976];
+costWeakConstraintPenalty{33}	=1.0076370239257553;
+%  combined: oscillator1, oscillator2
+predicted{33}	=[0.8-0.06783896294178596-0.59748517572388480.230549180517450940.3925951837751309-0.29508734408001525-0.215145753138828060.2920053020465220.07904844953298795-0.249041829569708050.01322660386756138,0.8-0.06783896294178596-0.59748517572388480.230549180517450940.3925951837751309-0.29508734408001525-0.215145753138828060.2920053020465220.07904844953298795-0.249041829569708050.01322660386756138];
+%  combined: oscillator1, oscillator2
+observed{33}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{33}	=[0.00.02470452375804131-0.033436994557461075-0.054597251312265640.07317077318295340.049800944463275654-0.10283302538774636-0.0243246482988304650.11557219783341985-0.008921713407305909-0.11124770165186582,0.0-0.0456755028549227640.0103135804048943850.09244954375248643-0.0568584229895846-0.093579604777235260.104217735105962370.05924505853969242-0.13092984619148332-0.0079524133213911270.12988133582098008];
+%  combined: oscillator1, oscillator2
+obs_stdev{33}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{33}	=6.034905260142763;
+costTotal{33}	=7.042542284068518;
+% SimulationKwadraticCostFunction: evaluation 33 : cost = 7.043
+% REFLECT!
+% costs[6.910580349486155,7.042542284068518,7.044765501690723]costs in simplex
+% Application starting next step
+costs{17}	=[6.910580349486155,7.042542284068518,7.044765501690723];
+% Iteration step no.1
+% ========================================================================
+% no34
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{34}	=[7.71875,1.7564039062499974];
+costWeakConstraintPenalty{34}	=1.1296691894530946;
+%  combined: oscillator1, oscillator2
+predicted{34}	=[0.8-0.07525573279760389-0.59361258956174450.245642335727742050.3804980867610034-0.30979826253021264-0.19575787001505740.300937288328823770.0559864437987716-0.249935167794896050.035765417389520666,0.8-0.07525573279760389-0.59361258956174450.245642335727742050.3804980867610034-0.30979826253021264-0.19575787001505740.300937288328823770.0559864437987716-0.249935167794896050.035765417389520666];
+%  combined: oscillator1, oscillator2
+observed{34}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{34}	=[0.00.03212129361385924-0.03730958071960144-0.069690406522556760.085267870197080930.06451186291347305-0.12222090851151701-0.033256634581132260.1386342035676362-0.008028375182117908-0.1337865151738251,0.0-0.038258732999104830.0064409942427540170.07735638854219531-0.04476132597545707-0.078868686327037860.084829851982191710.05031307225739062-0.10786784045726697-0.0070590750962031270.1073425222990208];
+%  combined: oscillator1, oscillator2
+obs_stdev{34}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{34}	=6.02939549258943;
+costTotal{34}	=7.1590646820425246;
+% SimulationKwadraticCostFunction: evaluation 34 : cost = 7.159
+% ========================================================================
+% no35
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{35}	=[8.0234375,1.743883007812497];
+costWeakConstraintPenalty{35}	=0.9482746124267244;
+%  combined: oscillator1, oscillator2
+predicted{35}	=[0.8-0.0686421675714443-0.60315574569254790.232227326447299960.4012669691748482-0.29989616900121896-0.223868973201820750.30006791412241540.08555938611801936-0.25921728268418320.010129938700118215,0.8-0.0686421675714443-0.60315574569254790.232227326447299960.4012669691748482-0.29989616900121896-0.223868973201820750.30006791412241540.08555938611801936-0.25921728268418320.010129938700118215];
+%  combined: oscillator1, oscillator2
+observed{35}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{35}	=[0.00.02550772838769965-0.027766424588797967-0.0562753972421146660.06449898778323610.05460976938447937-0.09410980532475366-0.032387260374723890.109061261248388440.0012537397071692435-0.10815103648442265,0.0-0.044872298225264420.0159841503735574930.0907713978226374-0.0655302083893019-0.088770779856031550.112940955168955070.05118244646379899-0.137440782776514720.0022230397930840250.13297800098842325];
+%  combined: oscillator1, oscillator2
+obs_stdev{35}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{35}	=5.9932668306499215;
+costTotal{35}	=6.941541443076646;
+% SimulationKwadraticCostFunction: evaluation 35 : cost = 6.942
+% CONTRACT INSIDE!
+% costs[6.910580349486155,6.941541443076646,7.042542284068518]costs in simplex
+% Application starting next step
+costs{18}	=[6.910580349486155,6.941541443076646,7.042542284068518];
+% Iteration step no.1
+% ========================================================================
+% no36
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{36}	=[8.3984375,1.7478111328124957];
+costWeakConstraintPenalty{36}	=1.0708942413329596;
+%  combined: oscillator1, oscillator2
+predicted{36}	=[0.8-0.07444816341936217-0.60772690865486490.24436233591081870.4042807382636707-0.3161077763206137-0.222024484200826820.316961673357244070.07812868550336577-0.27366742885042780.02204609043862674,0.8-0.07444816341936217-0.60772690865486490.24436233591081870.4042807382636707-0.3161077763206137-0.222024484200826820.316961673357244070.07812868550336577-0.27366742885042780.02204609043862674];
+%  combined: oscillator1, oscillator2
+observed{36}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{36}	=[0.00.03131372423561752-0.023195261626481-0.068410406705633420.061485218694413590.07082137670387412-0.09595429432574759-0.049281019609552560.116491961863042030.015703885873413814-0.12006718822293116,0.0-0.0390663023773465540.020555313335874460.07863638835911865-0.06854397747812441-0.07255917253663680.111096466167961140.03428868722897033-0.130010082161861130.0166731859593285960.12106184924991473];
+%  combined: oscillator1, oscillator2
+obs_stdev{36}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{36}	=5.915691638730943;
+costTotal{36}	=6.9865858800639025;
+% SimulationKwadraticCostFunction: evaluation 36 : cost = 6.987
+% ========================================================================
+% no37
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model1/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+% configstring = OscillatorStochModel.xml
+% opening :/home/verlaanm/tudelft/svn_costa/trunk/openda/tests/two_oscillators/./model2/OscillatorStochModel.xml
+% simulationTimespan =[0.0,0.05,10.0]
+% parameters@names =t_damp,omega parameters=[8.0,1.5708]
+% parameterUncertainty@names =t_damp,omega parameterUncertainty=[1.0,0.1257]
+% systemNoise = {[0.0,0.0],[0.3,0.3]}
+% initialState = [0.8,0.0]
+% initialStateUncertainty = [0.8,0.8]
+evaluatedParameters{37}	=[8.232421875,1.7473814941406212];
+costWeakConstraintPenalty{37}	=1.0137206315993839;
+%  combined: oscillator1, oscillator2
+predicted{37}	=[0.8-0.07287068277302332-0.60531763894703940.241034458536425520.4015408166199241-0.3110258249736879-0.220453428847523340.31091135205976460.07845820200796713-0.26768688832337170.019780598337266284,0.8-0.07287068277302332-0.60531763894703940.241034458536425520.4015408166199241-0.3110258249736879-0.220453428847523340.31091135205976460.07845820200796713-0.26768688832337170.019780598337266284];
+%  combined: oscillator1, oscillator2
+observed{37}	=[0.8-0.04313443918374465-0.63092217028134590.17595192920518530.4657659569580843-0.2452863996167396-0.31797877852657440.26768065374769150.1946206473664078-0.25796354297701396-0.09802109778430443,0.8-0.11351446579670872-0.58717159531899040.322998724269937370.3357367607855463-0.3886669488572505-0.110928018032865690.3512503605862144-0.05188139665849537-0.25699424289109920.14310793968854146];
+%  combined: oscillator1, oscillator2
+residuals{37}	=[0.00.02973624358927867-0.025604531334306513-0.065082529331240230.064225140338160240.06573942535694832-0.09752534967905108-0.04323069831207310.116162445358440670.009723345346357715-0.11780169612157071,0.0-0.0406437830236854040.0181460436280489470.08196426573351184-0.06580405583437776-0.077641123883562590.109525410814657650.04033900852644978-0.13033959866646250.0106926454322724960.12332734135127518];
+%  combined: oscillator1, oscillator2
+obs_stdev{37}	=[0.10.10.10.10.10.10.10.10.10.10.1,0.10.10.10.10.10.10.10.10.10.10.1];
+costObserved{37}	=5.903038956673511;
+costTotal{37}	=6.916759588272894;
+% SimulationKwadraticCostFunction: evaluation 37 : cost = 6.917
+% CONTRACT OUTSIDE!
+% costs[6.910580349486155,6.916759588272894,6.941541443076646]costs in simplex
+% costs[6.910580349486155,6.916759588272894,6.941541443076646]costs in simplex
+% Convergence on relative error (max(cost)-min(cost))/abs(min(cost))=0.004480245077071224<0.01
+% ===================================================================
+% SimulationKwadraticCostfunction: optimal results
+%     number of evaluations: 37
+%     all cost values:
+%         [65.001,69.929,12.767,144.983,34.397,67.296,33.932,33.349,22.151,9.215,...,7.497,7.155,7.074,8.346,6.911,7.043,7.159,6.942,6.987,6.917]
+%     all parameter values
+%         [8,9,8,9,8.25,8.5,8,7.5,7,7,6.5,6,6,6.25,6.75,6.375,7.375,8.062,8,6.781,7.156,7.234,7.75,8.234,7.531,7.609,8.125,8.609,7.906,8.5,8.719,8.109,7.734,7.719,8.023,8.398,8.232;1.571,1.571,1.696,1.445,1.634,1.571,1.634,1.634,1.665,1.728,1.806,1.759,1.822,1.783,1.704,1.763,1.732,1.718,1.696,1.747,1.751,1.762,1.736,1.73,1.754,1.766,1.74,1.734,1.758,1.744,1.725,1.75,1.746,1.756,1.744,1.748,1.747]
+%     number of observations: 22
+%     best cost:
+%         cost = 6.911
+%     best parameters:
+%                 [8.109,1.75]
+% ===================================================================
+% Error estimate for this outer iteration
+parameterErrorEstimateStd{1}	=[0.7266215549627726,0.015078838067500685];
+parameterErrorCorrelations{1}	=[1.0,-0.13907555163714072;-0.13907555163714064,0.9999999999999999];
+% Application Done

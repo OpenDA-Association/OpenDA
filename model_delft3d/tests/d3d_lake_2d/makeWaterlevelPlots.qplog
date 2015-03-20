@@ -1,0 +1,128 @@
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S1'
+defvariable 'WL S1 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S1 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S1 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS1.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S2'
+defvariable 'WL S2 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S2 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S2 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS2.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S3'
+defvariable 'WL S3 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S3 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S3 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS3.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S4'
+defvariable 'WL S4 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S4 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S4 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS4.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S5'
+defvariable 'WL S5 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S5 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S5 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS5.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S6'
+defvariable 'WL S6 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S6 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S6 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS6.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S7'
+defvariable 'WL S7 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S7 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S7 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS7.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles
+openfile '.\notFiltered\trih-Lake2D.dat'
+station 'S8'
+defvariable 'WL S5 Original'
+colour [ 0 0 1 ]
+quickview
+openfile '.\stochObserver\trih-Lake2D.dat'
+defvariable 'WL S8 Observed'
+colour [ 1 0 0 ]
+addtoplot
+openfile '.\stochModel\model\trih-Lake2D.dat'
+defvariable 'WL S8 Filtered'
+colour [ 0 0.5 0 ]
+addtoplot
+printfigure '.\wlS8.png' 'PNG file' 2 150 1 1
+closefigure
+closeallfiles

@@ -1,0 +1,1310 @@
+// Created     : 2012-08-29 15:42:57
+// DLL id      : C:\Program Files (x86)\DHI\2011\Bin\pfs2004.dll
+// PFS version : Jan  6 2011 20:45:15
+
+[ETVegProp]
+   FileVersion = 3
+   [VEGSETUP]
+      Touched = 1
+      MzSEPfsListItemCount = 4
+      NO_VEG = 4
+      [VegNo_1]
+         Touched = 1
+         MzSEPfsListItemCount = 7
+         VEGNAME = 'Agriculture'
+         VEGDEVELOPMENT = 'User defined'
+         IRRIGATION = 0
+         DEFAULT_EVA_PARAM = 0
+         C1 = 0.3
+         C2 = 0.2
+         C3 = 20
+         C_INT = 0.05
+         A_ROOT = 0.5
+         COMMENTS = ''
+         ETReduced = 1
+         [UserDefVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 7
+            NO_ITEM = 7
+            [Stage_1]
+               Touched = 1
+               LAI = 0.5
+               ROOT = 500
+               Kc = 1
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               LAI = 0.5
+               ROOT = 500
+               Kc = 1
+            EndSect  // Stage_2
+
+            [Stage_3]
+               Touched = 1
+               LAI = 5
+               ROOT = 1000
+               Kc = 1
+            EndSect  // Stage_3
+
+            [Stage_4]
+               Touched = 1
+               LAI = 5
+               ROOT = 1000
+               Kc = 1
+            EndSect  // Stage_4
+
+            [Stage_5]
+               Touched = 1
+               LAI = 5
+               ROOT = 1000
+               Kc = 1
+            EndSect  // Stage_5
+
+            [Stage_6]
+               Touched = 1
+               LAI = 5
+               ROOT = 1000
+               Kc = 1
+            EndSect  // Stage_6
+
+            [Stage_7]
+               Touched = 1
+               LAI = 0.5
+               ROOT = 500
+               Kc = 1
+            EndSect  // Stage_7
+
+         EndSect  // UserDefVegDevelopment
+
+         [GrowthModVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 7
+            NO_ITEM = 7
+            CALC_PARAMETERS = 0
+            GROWTH_RATE = 0
+            LAI_DAMPING_D = 0
+            LAI_DAMPING_A = 0
+            MAX_CROP_YIELD = 0
+            MAX_LAI = 0
+            MAX_ROOT_DEPTH = 0
+            SENESENSE = 0
+            SPECIFIC_LAI = 0
+            TIME_TO_MAX_LAI = 0
+            [Stage_1]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_2
+
+            [Stage_3]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_3
+
+            [Stage_4]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_4
+
+            [Stage_5]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_5
+
+            [Stage_6]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_6
+
+            [Stage_7]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_7
+
+         EndSect  // GrowthModVegDevelopment
+
+         [Irrigation]
+            Touched = 1
+            MzSEPfsListItemCount = 7
+            NO_ITEM = 7
+            [Stage_1]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_2
+
+            [Stage_3]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_3
+
+            [Stage_4]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_4
+
+            [Stage_5]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_5
+
+            [Stage_6]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_6
+
+            [Stage_7]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_7
+
+         EndSect  // Irrigation
+
+         [Stage_1]
+            Touched = 1
+            STAGE_NAME = '1'
+            END_DAY = 0
+         EndSect  // Stage_1
+
+         [Stage_2]
+            Touched = 1
+            STAGE_NAME = '2'
+            END_DAY = 160
+         EndSect  // Stage_2
+
+         [Stage_3]
+            Touched = 1
+            STAGE_NAME = '3'
+            END_DAY = 205
+         EndSect  // Stage_3
+
+         [Stage_4]
+            Touched = 1
+            STAGE_NAME = '4'
+            END_DAY = 235
+         EndSect  // Stage_4
+
+         [Stage_5]
+            Touched = 1
+            STAGE_NAME = '5'
+            END_DAY = 255
+         EndSect  // Stage_5
+
+         [Stage_6]
+            Touched = 1
+            STAGE_NAME = '6'
+            END_DAY = 305
+         EndSect  // Stage_6
+
+         [Stage_7]
+            Touched = 1
+            STAGE_NAME = '7'
+            END_DAY = 365
+         EndSect  // Stage_7
+
+      EndSect  // VegNo_1
+
+      [VegNo_2]
+         Touched = 1
+         MzSEPfsListItemCount = 2
+         VEGNAME = 'Forest'
+         VEGDEVELOPMENT = 'User defined'
+         IRRIGATION = 0
+         DEFAULT_EVA_PARAM = 0
+         C1 = 0.3
+         C2 = 0.2
+         C3 = 20
+         C_INT = 0.05
+         A_ROOT = 0.5
+         COMMENTS = ''
+         ETReduced = 1
+         [UserDefVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 2
+            NO_ITEM = 2
+            [Stage_1]
+               Touched = 1
+               LAI = 6
+               ROOT = 800
+               Kc = 1
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               LAI = 6
+               ROOT = 800
+               Kc = 1
+            EndSect  // Stage_2
+
+         EndSect  // UserDefVegDevelopment
+
+         [GrowthModVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 2
+            NO_ITEM = 2
+            CALC_PARAMETERS = 0
+            GROWTH_RATE = 0
+            LAI_DAMPING_D = 0
+            LAI_DAMPING_A = 0
+            MAX_CROP_YIELD = 0
+            MAX_LAI = 0
+            MAX_ROOT_DEPTH = 0
+            SENESENSE = 0
+            SPECIFIC_LAI = 0
+            TIME_TO_MAX_LAI = 0
+            [Stage_1]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_2
+
+         EndSect  // GrowthModVegDevelopment
+
+         [Irrigation]
+            Touched = 1
+            MzSEPfsListItemCount = 2
+            NO_ITEM = 2
+            [Stage_1]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_2
+
+         EndSect  // Irrigation
+
+         [Stage_1]
+            Touched = 1
+            STAGE_NAME = '1'
+            END_DAY = 0
+         EndSect  // Stage_1
+
+         [Stage_2]
+            Touched = 1
+            STAGE_NAME = '2'
+            END_DAY = 10000
+         EndSect  // Stage_2
+
+      EndSect  // VegNo_2
+
+      [VegNo_3]
+         Touched = 1
+         MzSEPfsListItemCount = 2
+         VEGNAME = 'Heath'
+         VEGDEVELOPMENT = 'User defined'
+         IRRIGATION = 0
+         DEFAULT_EVA_PARAM = 0
+         C1 = 0.3
+         C2 = 0.2
+         C3 = 20
+         C_INT = 0.05
+         A_ROOT = 0.5
+         COMMENTS = ''
+         ETReduced = 1
+         [UserDefVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 2
+            NO_ITEM = 2
+            [Stage_1]
+               Touched = 1
+               LAI = 2
+               ROOT = 400
+               Kc = 1
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               LAI = 2
+               ROOT = 400
+               Kc = 1
+            EndSect  // Stage_2
+
+         EndSect  // UserDefVegDevelopment
+
+         [GrowthModVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 2
+            NO_ITEM = 2
+            CALC_PARAMETERS = 0
+            GROWTH_RATE = 0
+            LAI_DAMPING_D = 0
+            LAI_DAMPING_A = 0
+            MAX_CROP_YIELD = 0
+            MAX_LAI = 0
+            MAX_ROOT_DEPTH = 0
+            SENESENSE = 0
+            SPECIFIC_LAI = 0
+            TIME_TO_MAX_LAI = 0
+            [Stage_1]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_2
+
+         EndSect  // GrowthModVegDevelopment
+
+         [Irrigation]
+            Touched = 1
+            MzSEPfsListItemCount = 2
+            NO_ITEM = 2
+            [Stage_1]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_2
+
+         EndSect  // Irrigation
+
+         [Stage_1]
+            Touched = 1
+            STAGE_NAME = '1'
+            END_DAY = 0
+         EndSect  // Stage_1
+
+         [Stage_2]
+            Touched = 1
+            STAGE_NAME = '2'
+            END_DAY = 10000
+         EndSect  // Stage_2
+
+      EndSect  // VegNo_3
+
+      [VegNo_4]
+         Touched = 1
+         MzSEPfsListItemCount = 29
+         VEGNAME = 'Wetland'
+         VEGDEVELOPMENT = 'User defined'
+         IRRIGATION = 0
+         DEFAULT_EVA_PARAM = 0
+         C1 = 0.3
+         C2 = 0.2
+         C3 = 20
+         C_INT = 0.05
+         A_ROOT = 0.5
+         COMMENTS = ''
+         ETReduced = 1
+         [UserDefVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 29
+            NO_ITEM = 29
+            [Stage_1]
+               Touched = 1
+               LAI = 3
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               LAI = 3
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_2
+
+            [Stage_3]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_3
+
+            [Stage_4]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_4
+
+            [Stage_5]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_5
+
+            [Stage_6]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_6
+
+            [Stage_7]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_7
+
+            [Stage_8]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_8
+
+            [Stage_9]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_9
+
+            [Stage_10]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_10
+
+            [Stage_11]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_11
+
+            [Stage_12]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_12
+
+            [Stage_13]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_13
+
+            [Stage_14]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_14
+
+            [Stage_15]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_15
+
+            [Stage_16]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_16
+
+            [Stage_17]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_17
+
+            [Stage_18]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_18
+
+            [Stage_19]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_19
+
+            [Stage_20]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_20
+
+            [Stage_21]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_21
+
+            [Stage_22]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_22
+
+            [Stage_23]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_23
+
+            [Stage_24]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_24
+
+            [Stage_25]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_25
+
+            [Stage_26]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_26
+
+            [Stage_27]
+               Touched = 1
+               LAI = 5.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_27
+
+            [Stage_28]
+               Touched = 1
+               LAI = 3.5
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_28
+
+            [Stage_29]
+               Touched = 1
+               LAI = 3
+               ROOT = 700
+               Kc = 1
+            EndSect  // Stage_29
+
+         EndSect  // UserDefVegDevelopment
+
+         [GrowthModVegDevelopment]
+            Touched = 1
+            MzSEPfsListItemCount = 29
+            NO_ITEM = 29
+            CALC_PARAMETERS = 0
+            GROWTH_RATE = 0
+            LAI_DAMPING_D = 0
+            LAI_DAMPING_A = 0
+            MAX_CROP_YIELD = 0
+            MAX_LAI = 0
+            MAX_ROOT_DEPTH = 0
+            SENESENSE = 0
+            SPECIFIC_LAI = 0
+            TIME_TO_MAX_LAI = 0
+            [Stage_1]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_2
+
+            [Stage_3]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_3
+
+            [Stage_4]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_4
+
+            [Stage_5]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_5
+
+            [Stage_6]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_6
+
+            [Stage_7]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_7
+
+            [Stage_8]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_8
+
+            [Stage_9]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_9
+
+            [Stage_10]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_10
+
+            [Stage_11]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_11
+
+            [Stage_12]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_12
+
+            [Stage_13]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_13
+
+            [Stage_14]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_14
+
+            [Stage_15]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_15
+
+            [Stage_16]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_16
+
+            [Stage_17]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_17
+
+            [Stage_18]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_18
+
+            [Stage_19]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_19
+
+            [Stage_20]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_20
+
+            [Stage_21]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_21
+
+            [Stage_22]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_22
+
+            [Stage_23]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_23
+
+            [Stage_24]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_24
+
+            [Stage_25]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_25
+
+            [Stage_26]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_26
+
+            [Stage_27]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_27
+
+            [Stage_28]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_28
+
+            [Stage_29]
+               Touched = 1
+               Ky = 0
+            EndSect  // Stage_29
+
+         EndSect  // GrowthModVegDevelopment
+
+         [Irrigation]
+            Touched = 1
+            MzSEPfsListItemCount = 29
+            NO_ITEM = 29
+            [Stage_1]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_1
+
+            [Stage_2]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_2
+
+            [Stage_3]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_3
+
+            [Stage_4]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_4
+
+            [Stage_5]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_5
+
+            [Stage_6]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_6
+
+            [Stage_7]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_7
+
+            [Stage_8]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_8
+
+            [Stage_9]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_9
+
+            [Stage_10]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_10
+
+            [Stage_11]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_11
+
+            [Stage_12]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_12
+
+            [Stage_13]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_13
+
+            [Stage_14]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_14
+
+            [Stage_15]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_15
+
+            [Stage_16]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_16
+
+            [Stage_17]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_17
+
+            [Stage_18]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_18
+
+            [Stage_19]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_19
+
+            [Stage_20]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_20
+
+            [Stage_21]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_21
+
+            [Stage_22]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_22
+
+            [Stage_23]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_23
+
+            [Stage_24]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_24
+
+            [Stage_25]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_25
+
+            [Stage_26]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_26
+
+            [Stage_27]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_27
+
+            [Stage_28]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_28
+
+            [Stage_29]
+               Touched = 1
+               MOISTURE_DEF_START = 0
+               MOISTURE_DEF_STOP = 0
+               REFERENCE = 2
+               PRESCRIBED = 0
+               CROPSTRESSFACTOR = 0
+               PONDINGDEPTH = 0
+            EndSect  // Stage_29
+
+         EndSect  // Irrigation
+
+         [Stage_1]
+            Touched = 1
+            STAGE_NAME = '1'
+            END_DAY = 0
+         EndSect  // Stage_1
+
+         [Stage_2]
+            Touched = 1
+            STAGE_NAME = '2'
+            END_DAY = 100
+         EndSect  // Stage_2
+
+         [Stage_3]
+            Touched = 1
+            STAGE_NAME = '3'
+            END_DAY = 110
+         EndSect  // Stage_3
+
+         [Stage_4]
+            Touched = 1
+            STAGE_NAME = '4'
+            END_DAY = 115
+         EndSect  // Stage_4
+
+         [Stage_5]
+            Touched = 1
+            STAGE_NAME = '5'
+            END_DAY = 125
+         EndSect  // Stage_5
+
+         [Stage_6]
+            Touched = 1
+            STAGE_NAME = '6'
+            END_DAY = 130
+         EndSect  // Stage_6
+
+         [Stage_7]
+            Touched = 1
+            STAGE_NAME = '7'
+            END_DAY = 140
+         EndSect  // Stage_7
+
+         [Stage_8]
+            Touched = 1
+            STAGE_NAME = '8'
+            END_DAY = 145
+         EndSect  // Stage_8
+
+         [Stage_9]
+            Touched = 1
+            STAGE_NAME = '9'
+            END_DAY = 155
+         EndSect  // Stage_9
+
+         [Stage_10]
+            Touched = 1
+            STAGE_NAME = '10'
+            END_DAY = 160
+         EndSect  // Stage_10
+
+         [Stage_11]
+            Touched = 1
+            STAGE_NAME = '11'
+            END_DAY = 170
+         EndSect  // Stage_11
+
+         [Stage_12]
+            Touched = 1
+            STAGE_NAME = '12'
+            END_DAY = 175
+         EndSect  // Stage_12
+
+         [Stage_13]
+            Touched = 1
+            STAGE_NAME = '13'
+            END_DAY = 185
+         EndSect  // Stage_13
+
+         [Stage_14]
+            Touched = 1
+            STAGE_NAME = '14'
+            END_DAY = 190
+         EndSect  // Stage_14
+
+         [Stage_15]
+            Touched = 1
+            STAGE_NAME = '15'
+            END_DAY = 200
+         EndSect  // Stage_15
+
+         [Stage_16]
+            Touched = 1
+            STAGE_NAME = '16'
+            END_DAY = 205
+         EndSect  // Stage_16
+
+         [Stage_17]
+            Touched = 1
+            STAGE_NAME = '17'
+            END_DAY = 215
+         EndSect  // Stage_17
+
+         [Stage_18]
+            Touched = 1
+            STAGE_NAME = '18'
+            END_DAY = 220
+         EndSect  // Stage_18
+
+         [Stage_19]
+            Touched = 1
+            STAGE_NAME = '19'
+            END_DAY = 230
+         EndSect  // Stage_19
+
+         [Stage_20]
+            Touched = 1
+            STAGE_NAME = '20'
+            END_DAY = 235
+         EndSect  // Stage_20
+
+         [Stage_21]
+            Touched = 1
+            STAGE_NAME = '21'
+            END_DAY = 245
+         EndSect  // Stage_21
+
+         [Stage_22]
+            Touched = 1
+            STAGE_NAME = '22'
+            END_DAY = 250
+         EndSect  // Stage_22
+
+         [Stage_23]
+            Touched = 1
+            STAGE_NAME = '23'
+            END_DAY = 260
+         EndSect  // Stage_23
+
+         [Stage_24]
+            Touched = 1
+            STAGE_NAME = '24'
+            END_DAY = 265
+         EndSect  // Stage_24
+
+         [Stage_25]
+            Touched = 1
+            STAGE_NAME = '25'
+            END_DAY = 275
+         EndSect  // Stage_25
+
+         [Stage_26]
+            Touched = 1
+            STAGE_NAME = '26'
+            END_DAY = 280
+         EndSect  // Stage_26
+
+         [Stage_27]
+            Touched = 1
+            STAGE_NAME = '27'
+            END_DAY = 290
+         EndSect  // Stage_27
+
+         [Stage_28]
+            Touched = 1
+            STAGE_NAME = '28'
+            END_DAY = 295
+         EndSect  // Stage_28
+
+         [Stage_29]
+            Touched = 1
+            STAGE_NAME = '29'
+            END_DAY = 366
+         EndSect  // Stage_29
+
+      EndSect  // VegNo_4
+
+   EndSect  // VEGSETUP
+
+EndSect  // ETVegProp
+

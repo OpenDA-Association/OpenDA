@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ThreeDVarConfig>
+	<costFunction factor="0.5" />
+	<algorithm type="conjugategradient" method="1" maxIterations="20" absTolGrad="0.01" relTolGrad="0.01" absTolStep="0.01" relTolStep="0.01" /> 
+		<lineSearch type="brent" maxIterations="200" absTolBrent="0.01" relTolBrent="0.01">
+		<brent startBracketValue="1.0" maxItBracket="20.0" maxExtension="100.0"/>
+		</lineSearch>
+</ThreeDVarConfig>

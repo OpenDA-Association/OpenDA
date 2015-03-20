@@ -1,0 +1,14 @@
+<!--$URL: https://repos.deltares.nl/repos/openda/openda_1/public/trunk/core/native/examples/pollute2d/etc/pollute2d_sp_ww.xml $-->
+<!--$Revision: 671 $, $Date: 2008-10-07 14:49:42 +0200 (Tue, 07 Oct 2008) $-->
+
+       <modelbuild_sp>
+          <functions>
+             <CTA_FUNCTION id="create"     name="pollute2d_ww_create"  library="libpollute2d.so" function="POLLUTE2D_WW_CREATE" />
+             <CTA_FUNCTION id="covariance" name="pollute2d_ww_covar"   library="libpollute2d.so" function="POLLUTE2D_WW_COVAR"  />
+             <CTA_FUNCTION id="getobsvals" name="pollute2d_ww_obs"     library="libpollute2d.so" function="POLLUTE2D_WW_OBS"    />
+             <CTA_FUNCTION id="getobssel"  name="pollute2d_ww_obssel"  library="libpollute2d.so" function="POLLUTE2D_WW_OBSSEL"    />
+             <CTA_FUNCTION id="compute"    name="pollute2d_ww_compute" library="libpollute2d.so" function="POLLUTE2D_WW_COMPUTE"/>
+          </functions>
+          <model>  
+          </model> 
+       </modelbuild_sp> 

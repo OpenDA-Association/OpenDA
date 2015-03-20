@@ -1,0 +1,8 @@
+<rmiConfig>
+   <serverAdress></serverAdress>
+   <factoryID>IRmiIStochModel_nondefault</factoryID>
+   <stochModelFactory className="org.openda.models.lorenz.LorenzStochModelFactory">
+      <workingDirectory>./model</workingDirectory>
+      <configFile>LorenzStochModel.xml</configFile>
+   </stochModelFactory>
+</rmiConfig>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+    <modelConfig>
+        <file>./waquaModel.xml</file>
+    </modelConfig>
+    <vectorSpecification>
+        <parameters>
+          <regularisationConstant>
+             <stdDev value=".02" transformation="ln"/>
+             <subVector id="depth-fullBox-slice1" sourceVectorId="depth-fullBox">
+               <selector className="org.openda.blackbox.io.SimonaBoxMask">
+                        <arg>waquaModel/bodem/depth-mask1</arg>
+               </selector>
+             </subVector>
+          </regularisationConstant>
+          <regularisationConstant>
+             <stdDev value=".02" transformation="ln"/>
+             <subVector id="depth-fullBox-slice2" sourceVectorId="depth-fullBox">
+               <selector className="org.openda.blackbox.io.SimonaBoxMask">
+                        <arg>waquaModel/bodem/depth-mask2</arg>
+               </selector>
+             </subVector>
+          </regularisationConstant>
+          <regularisationConstant>
+             <stdDev value=".02" transformation="ln"/>
+             <subVector id="depth-fullBox-slice3" sourceVectorId="depth-fullBox">
+               <selector className="org.openda.blackbox.io.SimonaBoxMask">
+                        <arg>waquaModel/bodem/depth-mask3</arg>
+               </selector>
+             </subVector>
+          </regularisationConstant>
+          <regularisationConstant>
+             <stdDev value=".02" transformation="ln"/>
+             <subVector id="depth-fullBox-slice4" sourceVectorId="depth-fullBox">
+               <selector className="org.openda.blackbox.io.SimonaBoxMask">
+                        <arg>waquaModel/bodem/depth-mask4</arg>
+               </selector>
+             </subVector>
+          </regularisationConstant>
+<!--
+            <regularisationConstant>
+                <stdDev value=".02" transformation="identity"/>
+                <vector id="depth-fullBox"/>
+            </regularisationConstant>
+-->
+	</parameters>
+        <predictor>
+            <vector id="STAT-WL1.waterlevel"/>
+            <vector id="STAT-WL2.waterlevel"/>
+            <vector id="STAT-WL3.waterlevel"/>
+            <vector id="STAT-WL4.waterlevel"/>
+	</predictor>
+    </vectorSpecification>
+</blackBoxStochModel>

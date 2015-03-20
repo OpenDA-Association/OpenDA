@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LorenzConfig>
+    <simulationTimespan>[0.0,0.05,10.0]</simulationTimespan>
+    <!-- parameters for the model -->
+<!--    <parameters names="F">[9.0]</parameters> -->
+    <!-- uncertain parameters (for calibration) and their uncertainty -->
+<!--    <parameterUncertainty names="F">[1.0]</parameterUncertainty> -->
+    <!-- system noise for each state variable with bias and std per time-unit -->
+    <systemNoise>{[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]}</systemNoise>
+    <!-- state vactor at initial time -->
+    <initialState>[2.9432, 8.2790, 5.6142, 0.9046,-3.8377,-1.9521,-2.3153, 7.8081, 3.1460,-8.4118, 0.9981,-1.9022,-0.1401, 6.3834, 7.1045, 3.8540, 3.4667, 2.5425,5.1582, 3.6627,-2.9382, 1.3679, 8.8593, 1.6066,-3.9853, 1.8962,12.8660,3.2394, 0.2166, 2.9771, 4.5963, 3.9998,-4.5373,-2.5524,-1.8132, 3.6624,6.6582, 3.4951, 0.4849,-1.6945]</initialState>
+    <!-- std of uncertainty of state vector at initial time -->
+    <initialStateUncertainty correlationLength="1.5" >[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]</initialStateUncertainty>
+</LorenzConfig>

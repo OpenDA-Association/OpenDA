@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="WflowModelFactoryConfigXML">
+		<xs:sequence>
+			<xs:element name="pythonModuleName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the Python module that contains the model to use, e.g. wflow_hbv.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeHorizon" type="openda:WflowTimeHorizonXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional run period for the model. If the timeHorizon is set from 'outside' (e.g. when running from an operational system), then that timeHorizon overrules the timeHorizon that is configured here (if this is present). For runs with only OpenDA the timeHorizon for the model must be configured here.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="caseDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Case directory path (relative to this configuration file).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="templateRunId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Base name of the run id within the current case (relative to the case directory). The number of the instance will be appended to this base name to create the instance run id (instance directory name).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modelConfigFileName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the model configuration file (relative to the case directory).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cloneMapFileName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the map file that describes the catchment (relative to the staticmaps folder in the case directory).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inputFile" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The path and name of one or more input netcdf files (relative to the case directory). Together these input files must contain all input data that is needed for the model to run.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modelOutputFile" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The path and name of the model output netcdf file (relative to the instance directory). This file will be created during the model run. After each model timestep the model output data will be written to this file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="analysisOutputFile" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The path and name of the analysis output netcdf file (relative to the instance directory). This file will be created during the model run. After each analysis time the updated state will be written to this file.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outputExchangeItemId" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Selection of exchange items to be included in the model and analysis output files (2D gridded data).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="scalarModelOutput" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specification of scalar model output to be written to output netcdf files.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="modelOutputFile" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The path and name of the model output netcdf file (relative to the instance directory). This file will be created during the model run. After each model timestep the model output data will be written to this file.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="analysisOutputFile" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The path and name of the analysis output netcdf file (relative to the instance directory). This file will be created during the model run. After each analysis time the updated state will be written to this file.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="subVector" type="openda:WflowScalarModelOutput" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Specification of source exchange items and their corresponding selection.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WflowTimeHorizonXML">
+		<xs:sequence>
+			<xs:element name="startDateTime" type="openda:WflowDateTimeXML">
+				<xs:annotation>
+					<xs:documentation>Start of the model run.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endDateTime" type="openda:WflowDateTimeXML">
+				<xs:annotation>
+					<xs:documentation>End of the model run.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeZoneOffset">
+				<xs:annotation>
+					<xs:documentation>The time zone in which the startDateTime and endDateTime of the model run are specified. This should be the offset of the timeZone with respect to GMT, in hours between -12 and 12.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="-12.0"/>
+						<xs:maxInclusive value="12.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WflowDateTimeXML">
+		<xs:attribute name="date" type="openda:WflowDateXML" use="required"/>
+		<xs:attribute name="time" type="openda:WflowTimeXML" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="WflowScalarModelOutput">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select the way the subvector is derived from the source vector</xs:documentation>
+			</xs:annotation>
+			<xs:element name="selection" type="openda:WflowIndicesXML">
+				<xs:annotation>
+					<xs:documentation>Select subvector using indices of the vector elements</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="selector" type="openda:WflowConfigurableXML">
+				<xs:annotation>
+					<xs:documentation>Define operator for deriving the subvector</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of the subVector</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sourceVectorId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of the source vector as defined in blackBoxModelConfig</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="WflowDateXML">
+		<xs:restriction base="xs:date">
+			<xs:pattern value="\d\d\d\d-\d\d-\d\d"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="indexStringType">
+		<xs:annotation>
+			<xs:documentation>index (e.g. 12) or index line (e.g. 11:18) in an array</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([-+]?[0-9]+)(:[-+]?[0-9]+)?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WflowTimeXML">
+		<xs:restriction base="xs:time">
+			<xs:pattern value="\d\d:\d\d:\d\d"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="WflowConfigurableXML">
+		<xs:choice>
+			<xs:annotation>
+				<xs:documentation>Select one of the options, depending on whether a file, sring or arg list is required by this openda:class</xs:documentation>
+			</xs:annotation>
+			<xs:element name="configFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the configuration filename</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="configString" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the configuration string</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify the input argument of this openda:class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specify the openda:class name for performing this operation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="WflowIndicesXML">
+		<xs:attribute name="index1" type="openda:indexStringType" use="required">
+			<xs:annotation>
+				<xs:documentation>Indices of the selected array elements of the first dimension. Format:  "ind1" (single index)," ind1:" (from ind1 up to the last index), ":ind1" (from the first index up to ind1), "ind1:ind2" (from ind1 up to ind2). Example: 8, :4, 19:, 7:12.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="index2" type="openda:indexStringType" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indices of the selected array elements of the second dimension. Format:  "ind1" (single index)," ind1:" (from ind1 up to the last index), ":ind1" (from the first index up to ind1), "ind1:ind2" (from ind1 up to ind2). Example: 8, :4, 19:, 7:12.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="index3" type="openda:indexStringType" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indices of the selected array elements of the third dimension. Format:  "ind1" (single index)," ind1:" (from ind1 up to the last index), ":ind1" (from the first index up to ind1), "ind1:ind2" (from ind1 up to ind2). Example: 8, :4, 19:, 7:12.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="base" type="xs:int" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>Base number, which gives the index of the vector's first element (sometimes 1 instead of 0)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="wflowModelFactoryConfig" type="openda:WflowModelFactoryConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for a WFLOW model factory. It contains information on the Python module that contains the model to use and the input and output files for the model.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

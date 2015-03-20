@@ -1,0 +1,16 @@
+prefix=/u/verlaan/openda_v2.2/public/core/native/external/netcdf/linux64_gnu
+exec_prefix=${prefix}
+libdir=/u/verlaan/openda_v2.2/public/core/native/external/netcdf/linux64_gnu/lib
+includedir=${prefix}/include
+ccompiler=cc
+cppcompiler=c++
+fcompiler=/opt/gcc/4.9.2/bin/gfortran
+fflags=-fPIC -m64 -I${includedir}
+flibs=-lnetcdff -lnetcdf
+
+Name: netcdf
+Description: NetCDF Client Library
+Version: 4.1.1
+Libs: -L${libdir} -lnetcdf
+Cflags: -I${includedir}
+

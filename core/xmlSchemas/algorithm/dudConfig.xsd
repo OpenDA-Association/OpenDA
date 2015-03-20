@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="outerLoopDud.xsd"/>
+	<xs:include schemaLocation="costFunction.xsd"/>
+	<xs:include schemaLocation="additionalStopCriteria.xsd"/>
+	<xs:include schemaLocation="parameterConstraints.xsd"/>
+	<xs:complexType name="LineSearchXML">
+		<xs:sequence>
+			<xs:element name="backTracking">
+				<xs:annotation>
+					<xs:documentation>Back tracking if the line search produces estimate with larger cost.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="shorteningFactor" type="xs:double" use="optional" default="0.5">
+						<xs:annotation>
+							<xs:documentation>Factor for shortening step size.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="startIterationNegativeLook" type="xs:integer" use="optional" default="3">
+						<xs:annotation>
+							<xs:documentation>Maximum number of iterations before searching in opposite direction.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="6">
+			<xs:annotation>
+				<xs:documentation>Maximum number of inner iterations.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxRelStepSize" type="xs:double" use="optional" default="10.0">
+			<xs:annotation>
+				<xs:documentation>Maximum size of relative step.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DudConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="restartOutFilePrefix" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>For preparing restart files: specify the prefix of the restart file names.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="restartInFile" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>For running from restart: specify the name of a restart file.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+				<xs:annotation>
+					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lineSearch" type="openda:LineSearchXML">
+				<xs:annotation>
+					<xs:documentation>Specify inner-loop / linesearch criteria. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stopCriteria" type="openda:additionalStopCriteria" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Additional optional stopping criteria</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="constraints" type="openda:parameterConstraints" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Limits on parameter values in calibration process.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="DudConfig" type="openda:DudConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Dud algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

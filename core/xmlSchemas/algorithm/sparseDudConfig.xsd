@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/costFunction.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/outerLoopDud.xsd"/>
+	<xs:include schemaLocation="http://schemas.openda.org/algorithm/dudConfig.xsd"/>
+	<xs:element name="SparseDudConfig" type="openda:SparseDudConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration of Sparse Dud algorithm.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="dependenciesXML">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="obs" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify observation and one or more dependent calibration parameters.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="depends_on">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="par" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Specify one or more calibration parameters, which are dependent on the observation specified on element obs.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:attribute name="id" use="required">
+												<xs:annotation>
+													<xs:documentation>Parameter ID</xs:documentation>
+												</xs:annotation>
+												<xs:simpleType>
+													<xs:restriction base="xs:string">
+														<xs:enumeration value="A-411"/>
+														<xs:enumeration value="A-412"/>
+														<xs:enumeration value="A-413"/>
+													</xs:restriction>
+												</xs:simpleType>
+											</xs:attribute>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="id" use="required">
+						<xs:annotation>
+							<xs:documentation>Observation ID</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="M230.waterlevel"/>
+								<xs:enumeration value="M260.waterlevel"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SparseDudConfigXML">
+		<xs:sequence>
+			<xs:element name="costFunction" type="openda:CostFunctionXML">
+				<xs:annotation>
+					<xs:documentation>Configure cost function to minimize</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+				<xs:annotation>
+					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lineSearch" type="openda:LineSearchXML">
+				<xs:annotation>
+					<xs:documentation>Specify inner-loop / linesearch criteria. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dependencies" type="openda:dependenciesXML"/>
+			<xs:element name="stopCriteria" type="openda:additionalStopCriteria" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Additional optional stopping criteria</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

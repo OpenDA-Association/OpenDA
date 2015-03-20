@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxStochModelConfig.xsd">-->
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+	    <file>./bbSwanModel.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        <state>
+	   <!-- -->
+           <noiseModel id="windNoiseModel" className="org.openda.noiseModels.MapsNoiseModelFactory" workingDirectory=".">
+               <configFile>WindNoise.xml</configFile>
+               <exchangeItems>
+                  <exchangeItem id="windu_noise" operation="add">
+                     <modelExchangeItem id="wind.x"/>
+                  </exchangeItem>
+                  <exchangeItem id="windv_noise" operation="add">
+                     <modelExchangeItem id="wind.y"/>
+                  </exchangeItem>
+               </exchangeItems>
+           </noiseModel>
+	   <!-- -->
+	    <vector id="state"/>
+        </state>
+        <predictor>
+            <vector id="north_cormorant.wave_height_hm0" />
+            <vector id="anasuria.wave_height_hm0" />
+            <vector id="d151.wave_height_hm0" />
+            <vector id="k13.wave_height_hm0" />
+            <vector id="europlatform.wave_height_hm0" />
+	    <!-- <vector id="" sourceVectorId="Hsig6"/> -->
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

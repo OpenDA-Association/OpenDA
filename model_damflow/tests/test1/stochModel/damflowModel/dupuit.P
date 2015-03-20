@@ -1,0 +1,24 @@
+calculate 
+        version          7
+             nx         10
+             ny         10
+             nr         10
+        cutting          0
+    deformation          0
+     generation          0
+             x0 +4.833e+01
+             x1 +9.333e+01
+             y0 +1.200e+01
+             y1 +4.000e+01
+             r0 -1.000e+00
+             r1 -1.300e+01
+       nxdupuit         50
+       ntdupuit          1
+     stabmethod          0
+         ntstab          1
+         nxstab         20
+          sTime +0.000e+00
+          eTime +0.900e+01
+        sPolder -5.000e-01
+        aPolder -5.000e-01
+  climateModule          1

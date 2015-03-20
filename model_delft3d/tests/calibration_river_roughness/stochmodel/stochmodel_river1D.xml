@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi=
+                "http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=
+                "http://www.openda.org http://www.openda.org/schemas/blackBoxStochModelConfig.xsd">
+
+    <vectorSpecification>
+        <parameters>
+            <regularisationConstant>
+                <stdDev value=".5" transformation="identity"/>
+                <vector id="A-411"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".5" transformation="identity"/>
+                <vector id="A-412"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".5" transformation="identity"/>
+                <vector id="A-413"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".5" transformation="identity"/>
+                <vector id="A-414"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".5" transformation="identity"/>
+                <vector id="A-415"/>
+            </regularisationConstant>
+        </parameters>
+        <predictor>
+	       <vector id="M20.waterlevel"/>
+	       <vector id="M60.waterlevel"/>
+	       <vector id="M100.waterlevel"/>
+	       <vector id="M140.waterlevel"/>
+	       <vector id="M180.waterlevel"/>
+        </predictor>
+    </vectorSpecification>
+
+    <modelConfig>
+        <file>./detmodel/detmodel_river1D.xml</file>
+    </modelConfig>
+
+</blackBoxStochModel>

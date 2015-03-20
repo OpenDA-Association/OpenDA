@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<!-- Probability Density Functions Shared Schema Definition (Copyright 2005 WL | Delft Hydraulics) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dh="http://www.wldelft.nl" targetNamespace="http://www.wldelft.nl" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<complexType name="PdfBetaComplexType">
+		<attribute name="alpha" type="float" use="required"/>
+		<attribute name="beta" type="float" use="required"/>
+		<attribute name="min" type="float" use="required"/>
+		<attribute name="max" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfCauchyComplexType">
+		<attribute name="location" type="float" use="required"/>
+		<attribute name="scale" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfChiSquareComplexType">
+		<attribute name="degreeOfFreedom" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfExponentialComplexType">
+		<attribute name="location" type="float" use="required"/>
+		<attribute name="rate" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfGammaComplexType">
+		<attribute name="shape" type="float" use="required"/>
+		<attribute name="scale" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfGumbelMinimumComplexType">
+		<attribute name="location" type="float" use="required"/>
+		<attribute name="scale" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfGumbelMaximumComplexType">
+		<attribute name="location" type="float" use="required"/>
+		<attribute name="scale" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfLognormalComplexType">
+		<attribute name="mean" type="float" use="required"/>
+		<attribute name="stdv" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfNormalComplexType">
+		<attribute name="mean" type="float" use="required"/>
+		<attribute name="stdv" type="float" use="required"/>
+		<attribute name="stdvIsFactor" type="boolean" use="optional" default="false">
+			<annotation>
+				<documentation>Specify whether std is an absolute value (stdvIsFactor=false) or a fraction of the base value (stdvIsFactor=true).</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<complexType name="PdfTriangularComplexType">
+		<attribute name="min" type="float" use="required"/>
+		<attribute name="mode" type="float" use="required"/>
+		<attribute name="max" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfUniformComplexType">
+		<attribute name="min" type="float" use="required"/>
+		<attribute name="max" type="float" use="required"/>
+	</complexType>
+	<complexType name="PdfWeibullComplexType">
+		<attribute name="shape" type="float" use="required"/>
+		<attribute name="scale" type="float" use="required"/>
+	</complexType>
+</schema>

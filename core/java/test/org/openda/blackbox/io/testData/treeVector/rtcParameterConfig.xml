@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<treeVectorFile
+    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/treeVectorFile.xsd"
+    xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <treeVector id="TV">
+        <treeVectorLeaf id="B01.01">
+            <vector>70.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B01.02">
+            <vector>83.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B01.03">
+            <vector>86.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B02.01">
+            <vector>74.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B02.02">
+            <vector>78.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B03.01">
+            <vector>70.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B03.02">
+            <vector>75.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B04.01">
+            <vector>68.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B04.02">
+            <vector>88.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B05.01">
+            <vector>68.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B05.02">
+            <vector>88.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B10.01">
+            <vector>72.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B10.02">
+            <vector>76.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B10.03">
+            <vector>80.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B10.04">
+            <vector>85.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B11.01">
+            <vector>60.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B11.02">
+            <vector>64.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B13.01">
+            <vector>60.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B13.02">
+            <vector>80.0</vector>
+        </treeVectorLeaf>
+        <treeVectorLeaf id="B13.03">
+            <vector>100.0</vector>
+        </treeVectorLeaf>
+    </treeVector>
+</treeVectorFile>

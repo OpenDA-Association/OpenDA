@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testConfig>
+        <id>/home/verlaanm/deltares/src/openda_20110523/public/model_swan/tests/s00c2/./SwanEnKF.oda</id>
+        <odaFile>../SwanEnKF.oda</odaFile>
+        <checks>
+                <check>
+                        <file removeBeforeTest="yes" >../SwanEnKF.log</file>
+                        <find>===DONE===</find>
+                </check>
+                <check>
+                        <file removeBeforeTest="yes" >../EnKF_results.m</file>
+			<!-- last line looks like
+			pred_a{24}	=[3.128229333333333, 3.4981156666666666,...
+			-->
+			<regexp>pred_a\{24\}(.*)3.1(.*)3.4(.*)</regexp>
+                </check>
+        </checks>
+</testConfig>

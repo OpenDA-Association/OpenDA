@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParticleFilterConfig>
+	<samplingMethod>residual resampling</samplingMethod>
+	<ensembleSize>100</ensembleSize>
+	<analysisTimes type="fixed" timeFormat="mjd" >0.0,2.0,...,10.0</analysisTimes>
+</ParticleFilterConfig>

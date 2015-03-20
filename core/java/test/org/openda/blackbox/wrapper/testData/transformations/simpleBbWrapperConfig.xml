@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<!-- no aliases -->
+	<aliasDefinitions/>
+
+	<run>
+
+		<!-- for each model instance, the template directory will be cloned to create the instance directory -->
+		<!-- <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/> -->
+		<!-- initialize actions: none -->
+		<initializeActions/>
+
+		<!-- computation actions: none -->
+		<computeActions/>
+
+		<!-- actions to finalize: none -->
+		<finalizeActions/>
+
+	</run>
+
+	<inputOutput>
+
+		<!-- one test io object -->
+		<ioObject className="org.openda.blackbox.wrapper.DummyAstroIoObject">
+			<file>no file needed</file>
+			<id>DummyAstroIoObject</id>
+        </ioObject>
+
+    </inputOutput>
+
+</blackBoxWrapperConfig>

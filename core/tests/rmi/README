@@ -1,0 +1,28 @@
+Example models using RMI and Threading
+
+
+Before you start the simulation you need to start the servers. For this we
+have provided two scripts
+
+start_rmi.sh : This script starts a single client. This script needs to be
+               started before you can run lorenzSimulation.oda and
+               lorenzEnkf.oda
+
+start_rmi4.sh: This script starts 4 clients. This schript needs to be started
+               before you can run lorenzEnkf4.oda and lorenzEnkf4.oda
+
+NOTE: The clients will not stop. You have to terminate the processes manualy!
+
+Tests:
+lorenzSimulation.oda   Simulation with the Lorenz model. Model instances are
+                       created on a single server.
+lorenzEnkf.oda         EnKF with Lorenz model. All model instances are created
+                       on a single server.
+lorenzEnkf4.oda        EnKF with Lorenz model. the model instances are spread
+                       over 4 servers.
+lorenzEnkf4Thread.oda  Same as lorenzEnkf4.oda but now parallel model step
+                       computations due to combination of RMI front-end model
+                       with Thread front-end model. 
+ 
+
+

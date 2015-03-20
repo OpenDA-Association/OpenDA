@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelFactory className="org.openda.model_efdc_dll.EfdcModelFactory" workingDirectory=".">
+		<arg>efdcModelFactoryConfig.xml</arg>
+		<!-- TODO remove -->
+		<arg>../run_info.xml</arg>
+	</modelFactory>
+	<vectorSpecification>
+		<state>
+  			<vector id="Grid.WaterTemperature"/>
+  			<vector id="Grid.Phosphate"/>
+			<vector id="Grid.AlgalCyanobacteria"/>
+			<vector id="Grid.AlgalDiatom"/>
+			<vector id="Grid.AlgalGreenAlgae"/>
+			<vector id="Grid.RefractoryPOCarbon"/>
+			<vector id="Grid.LabilePOCarbon"/>
+			<vector id="Grid.DissolvedOCarbon"/>
+			<vector id="Grid.RefractoryPOPhosphorus"/>
+			<vector id="Grid.LabilePOPhosphorus"/>
+			<vector id="Grid.DissolvedOPhosphorus"/>
+			<vector id="Grid.RefractoryPONitrogen"/>
+			<vector id="Grid.LabilePONitrogen"/>
+			<vector id="Grid.DissolvedONitrogen"/>
+			<vector id="Grid.Ammonia"/>
+			<vector id="Grid.Nitrate"/>
+			<vector id="Grid.DissolvedOxygen"/>
+		</state>
+		<!-- TODO -->
+		<predictor>
+			<subVector id="100.WaterTemperature" sourceVectorId="Grid.WaterTemperature">
+				<selection index1="1568"/>
+			</subVector>
+		</predictor>
+		<!--<predictor>
+			<subVector id="100.Phospate" sourceVectorId="Grid.Phosphate">
+				<selection index1="1568"/>
+			</subVector>
+		</predictor>-->
+	</vectorSpecification>
+</blackBoxStochModel>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- File containing a TreeVector -->
+	<xs:element name="treeVectorFile" type="openda:TreeVectorFileXML">
+		<xs:annotation>
+			<xs:documentation>Costa / DATools Tree Vector File</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="TreeVectorFileXML">
+		<xs:sequence>
+			<xs:element name="timeStamp" type="openda:DateTimeXML" minOccurs="0"/>
+			<xs:element name="treeVector" type="openda:TreeVectorXML"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- TreeVector -->
+	<xs:complexType name="TreeVectorXML">
+		<xs:sequence>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="treeVectorLeaf" type="openda:TreeVectorLeafXML"/>
+				<xs:element name="subTreeVector" type="openda:TreeVectorXML"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string"/>
+		<xs:attribute name="caption" type="xs:string"/>
+		<xs:attribute name="excludeFromVector" type="xs:boolean" use="optional"/>
+		<xs:attribute name="className" type="xs:string"/>
+	</xs:complexType>
+	<!-- Known leaf types -->
+	<!-- Vector -->
+	<xs:complexType name="TreeVectorLeafXML">
+		<xs:sequence>
+			<xs:element name="unit" type="xs:string" minOccurs="0"/>
+			<xs:element name="missingValue" type="xs:double" minOccurs="0"/>
+			<xs:choice minOccurs="0">
+				<xs:element name="dimensions" type="openda:DimensionsXML"/>
+				<xs:element name="grid" type="openda:GridXML"/>
+			</xs:choice>
+			<xs:element name="vector" type="openda:VectorXML"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string"/>
+		<xs:attribute name="caption" type="xs:string"/>
+		<xs:attribute name="excludeFromVector" type="xs:boolean" use="optional"/>
+		<xs:attribute name="className" type="xs:string"/>
+	</xs:complexType>
+	<!-- nD-dimension type (to be elaborated)  -->
+	<xs:complexType name="DimensionsXML">
+		<xs:attribute name="dimSize1" type="xs:string" use="required"/>
+		<xs:attribute name="dimSize2" type="xs:string" use="optional"/>
+		<xs:attribute name="dimSize3" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<!-- Grid and Computational/Physical dimension types -->
+	<xs:complexType name="GridXML">
+		<xs:sequence>
+			<xs:element name="computationalSpace" type="openda:ComputationalSpaceXML"/>
+			<xs:element name="physicalSpace" type="openda:PhysicalSpaceXML" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ComputationalSpaceXML">
+		<xs:sequence>
+			<xs:element name="dimension" type="openda:ComputationalDimensionXML" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ComputationalDimensionXML">
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="length" type="xs:int" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="PhysicalSpaceXML">
+		<xs:sequence>
+			<xs:element name="dimension" type="openda:PhysicalDimensionXML" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PhysicalDimensionXML">
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="axes" type="xs:string" use="required"/>
+		<xs:attribute name="ref" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="MetaInfoXML">
+		<xs:sequence/>
+		<xs:attribute name="id" type="xs:string"/>
+	</xs:complexType>
+	<!-- Date / Time types -->
+	<xs:complexType name="DateTimeXML">
+		<xs:attribute name="date" type="openda:DateXML" use="required">
+			<xs:annotation>
+				<xs:documentation>ISO 8601 (yyyy-mm-dd)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="time" type="openda:TimeXML" use="required">
+			<xs:annotation>
+				<xs:documentation>ISO 8601 (hh:mm:ss[.msec])</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="timeZone" type="openda:TimeZoneXML" use="optional"/>
+	</xs:complexType>
+	<xs:simpleType name="DateXML">
+		<xs:restriction base="xs:date">
+			<xs:pattern value="\d\d\d\d-\d\d-\d\d"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimeXML">
+		<xs:restriction base="xs:time">
+			<xs:pattern value="\d\d:\d\d:\d\d"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Values types -->
+	<xs:simpleType name="VectorXML">
+		<xs:restriction base="xs:string">
+			<!-- (stack overflow:) <xs:pattern value="[ \n\t]*[\-+0-9.eENa]+([ \n\t]+[\-+0-9.eENa]+)*[ \n\t]*"/> -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimeZoneXML">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z][A-Z][A-Z][A-Z]?"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

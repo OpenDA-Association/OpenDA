@@ -1,0 +1,7 @@
+[FileInformation]
+  FileGeneratedBy  = Deltares, Delft3D-RGFGRID Version 4.17.03.7767, Jul 10 2009, 10:12:13
+  FileCreationDate = 2010-07-06, 10:17:20
+  FileVersion      = 0.02
+[Grid]
+  Type        = RGF
+  FileName    = Sea2D.grd

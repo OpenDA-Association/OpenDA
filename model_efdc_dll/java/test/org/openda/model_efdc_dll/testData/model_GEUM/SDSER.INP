@@ -1,0 +1,18 @@
+C  sdser.inp file,sediment is nc=3 conc  DDD  2010-12-06 ¿ÀÀü 10:14:48
+C  repeats ncser(3) times, test case                                                                
+C                                                                                                   
+C  ISTYP  MCSER(NS,3)  TCCSER(NS,3)  TACSER(NS,3)  RMULADJ(NS,3)  ADDADJ(NS,3)                      
+C                                                                                                   
+C  if istyp.eq.1 then read depth weights and single value of CSER                                   
+C                                                                                                   
+C  (WKQ(K),K=1,KC)                                                                                  
+C                                                                                                   
+C  TCSER(M,NS,3)   CSER(M,NS,3)  !(mcser(ns,3) pairs for ns=3,ncser(3) series)                      
+C                                                                                                   
+C  else read a value of dser for each layer                                                         
+C                                                                                                   
+C  TCSER(M,NS,3)   (CSER(M,K,NS,3),K=1,KC) !(mcser(ns,3) pairs)                                     
+C DATA START = 09/10
+       0       2   86400.      0.      1.     0. ' *** SED_1
+     0.000   5.0000
+   999.000   5.0000

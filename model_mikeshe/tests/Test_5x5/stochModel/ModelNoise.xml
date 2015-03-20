@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<simulationTimespan timeFormat="dateTimeString">197302200000,197302210000,...,199909220000</simulationTimespan>
+<timeSeries id="openBoundary" location="open-boundary" quantity="Hs" standardDeviation="1.0"
+            timeCorrelationScale="6.0" timeCorrelationScaleUnit="hours" />"
+</mapsNoiseModelConfig>

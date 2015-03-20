@@ -1,0 +1,27 @@
+<openDaApplication xmlns:oda="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>stochobserver</workingDirectory>
+		<configFile>StochObsConfigEnKF.xml</configFile>
+	</stochObserver>
+
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>stochModel</workingDirectory>
+		<configString>KarupModelConfig.xml</configString>
+	</stochModelFactory>
+
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>algorithm</workingDirectory>
+		<configFile>En5_GS.xml</configFile>
+	</algorithm>
+
+    <resultWriters>
+		<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+			<workingDirectory>.</workingDirectory>
+			<configFile>results_EnKF_GS_5.m</configFile>
+		</resultWriter>
+    </resultWriters>
+
+</openDaApplication>

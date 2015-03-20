@@ -1,0 +1,469 @@
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Water Movement. Input file : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE
+ ========================================================================================================================================================
+ 
+ 
+12:18:54 : INITIALIZATION PHASE
+===============================
+
+Opening files...
+Print file : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE - Result Files\Karup_DA_WM_Print.log
+Fif   file : C:\devel_nils\public\model_mikeshe\tests\Karup\Ensembles\0\Karup_DA.SHE - Result Files\Karup_DA.fif
+ 
+Group:
+Frame Data
+Size and Specifications
+Checks
+
+ WARNING: The specified maximum UZ water balance error in
+          one node (fraction) =0.0100 can be expected
+          to result in a large number of warnings
+          from the UZ solver during the simulation.
+          The recommended error limit is 0.02 (2 %).
+          NOTE: Using the specified value anyway !
+Initializing Hotstart...
+Copying to frf file
+Vegetation module initialisation
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+ 
+ Warning: Crop development of crop Wetland not over when changing crop to Wetland for scheme code 2
+Initializing Met. data...
+Memory allocation
+Initializations and reference systems
+Reading Hotstart data...
+ 
+INFO   : Using specified start time step        :2.00000000000000 hrs
+         - less than time step on hotstart file :3.00000000000000 hrs
+Initializing components...
+ET
+Overland
+River
+ 
+Loading the MIKE 11 dll...
+Processing...
+SZ
+
+INFO   : The specific yield of the top SZ layer has been taken from the initial hotstart input
+         to maintain a consistent UZ-SZ coupling.
+UZ Module
+ 
+INFO   : Disabling storing of data type(s) which are not relevant for this simulation:
+         - SZ flow to general head boundary
+Storing initial conditions...
+done
+
+
+
+Parallelization info
+--------------------
+Number of processors  : 4
+Max. number of threads: 4
+Number of threads allowed by actual license: 4
+Setting number of threads for actual application to 4
+ 
+ 
+PREPARE:
+NrOfQuantities, NrOfExchangeItems, NrOfInputExchangeItems, NrOfOutputExchangeItems:53,79,33,46
+ 
+Quantity IDs:
+precipitation rate
+average water content in the rootzone
+rooting depth
+leaf area index
+crop coefficient
+potential evapotranspiration
+precipitation rate of next time step
+updated precipitation rate
+ETref x Kc
+actual evapotranspiration
+actual transpiration
+actual soil  evaporation
+actual evaporation from interception
+actual evaporation from ponded water
+canopy interception storage
+evapotranspiration from SZ
+depth of overland water
+overland flow in x-direction
+overland flow in y-direction
+External sources to Overland (for OpenMI)
+overland water elevation
+infiltration to UZ (negative)
+exchange between UZ and SZ (pos.up)
+Total recharge to SZ (pos.down)
+Total recharge (flow) to SZ (pos.down)
+unsaturated zone flow
+water content in unsaturated zone
+root water uptake
+depth to phreatic surface (negative)
+elevation of phreatic surface
+head elevation in saturated zone
+SZ horizontal conductivity (for DA-OpenMI)
+SZ vertical conductivity (for DA-OpenMI)
+seepage flow SZ -overland
+seepage flow overland - SZ (negative)
+Leakage (flux) to SZ
+Leakage (flow) to SZ
+Inflow (flux) to SZ drain
+Inflow (flow) to SZ drain
+groundwater flow in x-direction
+groundwater flow in y-direction
+groundwater flow in z-direction
+SZ exchange flow with river
+SZ drainage flow from point
+External sources to SZ (for OpenMI)
+net precipitation rate for AD
+groundwater levels used by UZ
+overland to river flow (positive)
+river to overland flow (negative)
+positive baseflow (SZ to river)
+negative baseflow (river to SZ)
+exchange from mike 11 river to SZ
+exchange from mike 11 river to OL
+ 
+ExchangeItems:
+precipitation rate, Grid code = 1
+precipitation rate, Grid code = 2
+precipitation rate, Grid code = 3
+precipitation rate, Grid code = 4
+precipitation rate, Grid code = 5
+precipitation rate, Grid code = 6
+precipitation rate, Grid code = 7
+precipitation rate, Grid code = 8
+precipitation rate, Grid code = 9
+precipitation rate, BaseGrid
+average water content in the rootzone, BaseGrid
+rooting depth, Grid code = 1
+rooting depth, Grid code = 2
+rooting depth, Grid code = 3
+rooting depth, Grid code = 4
+rooting depth, BaseGrid
+leaf area index, Grid code = 1
+leaf area index, Grid code = 2
+leaf area index, Grid code = 3
+leaf area index, Grid code = 4
+leaf area index, BaseGrid
+crop coefficient, Grid code = 1
+crop coefficient, Grid code = 2
+crop coefficient, Grid code = 3
+crop coefficient, Grid code = 4
+crop coefficient, BaseGrid
+potential evapotranspiration, Global value
+potential evapotranspiration, BaseGrid
+precipitation rate of next time step, BaseGrid
+updated precipitation rate, BaseGrid
+ETref x Kc, BaseGrid
+actual evapotranspiration, BaseGrid
+actual transpiration, BaseGrid
+actual soil  evaporation, BaseGrid
+actual evaporation from interception, BaseGrid
+actual evaporation from ponded water, BaseGrid
+canopy interception storage, BaseGrid
+evapotranspiration from SZ, BaseGrid
+depth of overland water, BaseGrid
+overland flow in x-direction, BaseGrid
+overland flow in y-direction, BaseGrid
+External sources to Overland (for OpenMI), BaseGrid
+overland water elevation, BaseGrid
+infiltration to UZ (negative), BaseGrid
+exchange between UZ and SZ (pos.up), BaseGrid
+Total recharge to SZ (pos.down), BaseGrid
+Total recharge (flow) to SZ (pos.down), BaseGrid
+unsaturated zone flow, WMUZ3DGrid
+water content in unsaturated zone, WMUZ3DGrid
+water content in unsaturated zone, WMUZ3DGrid
+root water uptake, WMUZ3DGrid
+depth to phreatic surface (negative), BaseGrid
+elevation of phreatic surface, BaseGrid
+head elevation in saturated zone, SZ3DGrid
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+seepage flow SZ -overland, BaseGrid
+seepage flow overland - SZ (negative), BaseGrid
+Leakage (flux) to SZ, BaseGrid
+Leakage (flow) to SZ, BaseGrid
+Inflow (flux) to SZ drain, BaseGrid
+Inflow (flow) to SZ drain, BaseGrid
+groundwater flow in x-direction, SZ3DGrid
+groundwater flow in y-direction, SZ3DGrid
+groundwater flow in z-direction, SZ3DGrid
+SZ exchange flow with river, SZ3DGrid
+SZ drainage flow from point, SZ3DGrid
+External sources to SZ (for OpenMI), SZ3DGrid
+net precipitation rate for AD, BaseGrid
+groundwater levels used by UZ, WMUZ2DGrid
+overland to river flow (positive), RiverLinkCells
+river to overland flow (negative), RiverLinkCells
+positive baseflow (SZ to river), RiverLinkSZCells
+negative baseflow (river to SZ), RiverLinkSZCells
+exchange from mike 11 river to SZ, M11CoupHPoints
+exchange from mike 11 river to OL, M11CoupHPoints
+ 
+InputExchangeItems:
+precipitation rate, Grid code = 1
+precipitation rate, Grid code = 2
+precipitation rate, Grid code = 3
+precipitation rate, Grid code = 4
+precipitation rate, Grid code = 5
+precipitation rate, Grid code = 6
+precipitation rate, Grid code = 7
+precipitation rate, Grid code = 8
+precipitation rate, Grid code = 9
+rooting depth, Grid code = 1
+rooting depth, Grid code = 2
+rooting depth, Grid code = 3
+rooting depth, Grid code = 4
+leaf area index, Grid code = 1
+leaf area index, Grid code = 2
+leaf area index, Grid code = 3
+leaf area index, Grid code = 4
+crop coefficient, Grid code = 1
+crop coefficient, Grid code = 2
+crop coefficient, Grid code = 3
+crop coefficient, Grid code = 4
+potential evapotranspiration, Global value
+updated precipitation rate, BaseGrid
+External sources to Overland (for OpenMI), BaseGrid
+water content in unsaturated zone, WMUZ3DGrid
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+Leakage (flux) to SZ, BaseGrid
+Leakage (flow) to SZ, BaseGrid
+Inflow (flux) to SZ drain, BaseGrid
+Inflow (flow) to SZ drain, BaseGrid
+External sources to SZ (for OpenMI), SZ3DGrid
+ 
+OutputExchangeItems:
+precipitation rate, BaseGrid
+average water content in the rootzone, BaseGrid
+rooting depth, BaseGrid
+leaf area index, BaseGrid
+crop coefficient, BaseGrid
+potential evapotranspiration, BaseGrid
+precipitation rate of next time step, BaseGrid
+ETref x Kc, BaseGrid
+actual evapotranspiration, BaseGrid
+actual transpiration, BaseGrid
+actual soil  evaporation, BaseGrid
+actual evaporation from interception, BaseGrid
+actual evaporation from ponded water, BaseGrid
+canopy interception storage, BaseGrid
+evapotranspiration from SZ, BaseGrid
+depth of overland water, BaseGrid
+overland flow in x-direction, BaseGrid
+overland flow in y-direction, BaseGrid
+overland water elevation, BaseGrid
+infiltration to UZ (negative), BaseGrid
+exchange between UZ and SZ (pos.up), BaseGrid
+Total recharge to SZ (pos.down), BaseGrid
+Total recharge (flow) to SZ (pos.down), BaseGrid
+unsaturated zone flow, WMUZ3DGrid
+water content in unsaturated zone, WMUZ3DGrid
+root water uptake, WMUZ3DGrid
+depth to phreatic surface (negative), BaseGrid
+elevation of phreatic surface, BaseGrid
+head elevation in saturated zone, SZ3DGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+seepage flow SZ -overland, BaseGrid
+seepage flow overland - SZ (negative), BaseGrid
+groundwater flow in x-direction, SZ3DGrid
+groundwater flow in y-direction, SZ3DGrid
+groundwater flow in z-direction, SZ3DGrid
+SZ exchange flow with river, SZ3DGrid
+SZ drainage flow from point, SZ3DGrid
+net precipitation rate for AD, BaseGrid
+groundwater levels used by UZ, WMUZ2DGrid
+overland to river flow (positive), RiverLinkCells
+river to overland flow (negative), RiverLinkCells
+positive baseflow (SZ to river), RiverLinkSZCells
+negative baseflow (river to SZ), RiverLinkSZCells
+exchange from mike 11 river to SZ, M11CoupHPoints
+exchange from mike 11 river to OL, M11CoupHPoints
+ 
+listOfUsedquantityIDs_ : head elevation in saturated zone
+ 
+localQuantityIDs, NrOfUsedQuantities=1:
+head elevation in saturated zone
+ 
+- after removing doublets :
+head elevation in saturated zone
+ 
+SortedQuantityList:
+head elevation in saturated zone
+average water content in the rootzone
+rooting depth
+leaf area index
+crop coefficient
+potential evapotranspiration
+precipitation rate of next time step
+updated precipitation rate
+ETref x Kc
+actual evapotranspiration
+actual transpiration
+actual soil  evaporation
+actual evaporation from interception
+actual evaporation from ponded water
+canopy interception storage
+evapotranspiration from SZ
+depth of overland water
+overland flow in x-direction
+overland flow in y-direction
+External sources to Overland (for OpenMI)
+overland water elevation
+infiltration to UZ (negative)
+exchange between UZ and SZ (pos.up)
+Total recharge to SZ (pos.down)
+Total recharge (flow) to SZ (pos.down)
+unsaturated zone flow
+water content in unsaturated zone
+root water uptake
+depth to phreatic surface (negative)
+elevation of phreatic surface
+precipitation rate
+SZ horizontal conductivity (for DA-OpenMI)
+SZ vertical conductivity (for DA-OpenMI)
+seepage flow SZ -overland
+seepage flow overland - SZ (negative)
+Leakage (flux) to SZ
+Leakage (flow) to SZ
+Inflow (flux) to SZ drain
+Inflow (flow) to SZ drain
+groundwater flow in x-direction
+groundwater flow in y-direction
+groundwater flow in z-direction
+SZ exchange flow with river
+SZ drainage flow from point
+External sources to SZ (for OpenMI)
+net precipitation rate for AD
+groundwater levels used by UZ
+overland to river flow (positive)
+river to overland flow (negative)
+positive baseflow (SZ to river)
+negative baseflow (river to SZ)
+exchange from mike 11 river to SZ
+exchange from mike 11 river to OL
+ 
+SortedInputExchangeItemList:
+head elevation in saturated zone, SZ3DGrid
+rooting depth, Grid code = 1
+rooting depth, Grid code = 2
+rooting depth, Grid code = 3
+rooting depth, Grid code = 4
+leaf area index, Grid code = 1
+leaf area index, Grid code = 2
+leaf area index, Grid code = 3
+leaf area index, Grid code = 4
+crop coefficient, Grid code = 1
+crop coefficient, Grid code = 2
+crop coefficient, Grid code = 3
+crop coefficient, Grid code = 4
+potential evapotranspiration, Global value
+updated precipitation rate, BaseGrid
+External sources to Overland (for OpenMI), BaseGrid
+water content in unsaturated zone, WMUZ3DGrid
+precipitation rate, Grid code = 2
+precipitation rate, Grid code = 3
+precipitation rate, Grid code = 4
+precipitation rate, Grid code = 5
+precipitation rate, Grid code = 6
+precipitation rate, Grid code = 7
+precipitation rate, Grid code = 8
+precipitation rate, Grid code = 9
+precipitation rate, Grid code = 1
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+Leakage (flux) to SZ, BaseGrid
+Leakage (flow) to SZ, BaseGrid
+Inflow (flux) to SZ drain, BaseGrid
+Inflow (flow) to SZ drain, BaseGrid
+External sources to SZ (for OpenMI), SZ3DGrid
+ 
+SortedOutputExchangeItemList:
+head elevation in saturated zone, SZ3DGrid
+average water content in the rootzone, BaseGrid
+rooting depth, BaseGrid
+leaf area index, BaseGrid
+crop coefficient, BaseGrid
+potential evapotranspiration, BaseGrid
+precipitation rate of next time step, BaseGrid
+ETref x Kc, BaseGrid
+actual evapotranspiration, BaseGrid
+actual transpiration, BaseGrid
+actual soil  evaporation, BaseGrid
+actual evaporation from interception, BaseGrid
+actual evaporation from ponded water, BaseGrid
+canopy interception storage, BaseGrid
+evapotranspiration from SZ, BaseGrid
+depth of overland water, BaseGrid
+overland flow in x-direction, BaseGrid
+overland flow in y-direction, BaseGrid
+overland water elevation, BaseGrid
+infiltration to UZ (negative), BaseGrid
+exchange between UZ and SZ (pos.up), BaseGrid
+Total recharge to SZ (pos.down), BaseGrid
+Total recharge (flow) to SZ (pos.down), BaseGrid
+unsaturated zone flow, WMUZ3DGrid
+water content in unsaturated zone, WMUZ3DGrid
+root water uptake, WMUZ3DGrid
+depth to phreatic surface (negative), BaseGrid
+elevation of phreatic surface, BaseGrid
+precipitation rate, BaseGrid
+SZ horizontal conductivity (for DA-OpenMI), SZ3DGrid
+SZ vertical conductivity (for DA-OpenMI), SZ3DGrid
+seepage flow SZ -overland, BaseGrid
+seepage flow overland - SZ (negative), BaseGrid
+groundwater flow in x-direction, SZ3DGrid
+groundwater flow in y-direction, SZ3DGrid
+groundwater flow in z-direction, SZ3DGrid
+SZ exchange flow with river, SZ3DGrid
+SZ drainage flow from point, SZ3DGrid
+net precipitation rate for AD, BaseGrid
+groundwater levels used by UZ, WMUZ2DGrid
+overland to river flow (positive), RiverLinkCells
+river to overland flow (negative), RiverLinkCells
+positive baseflow (SZ to river), RiverLinkSZCells
+negative baseflow (river to SZ), RiverLinkSZCells
+exchange from mike 11 river to SZ, M11CoupHPoints
+exchange from mike 11 river to OL, M11CoupHPoints
+ 
+ 
+ 
+12:18:58 : Start of simulation from 1972/12/28,00:00
+====================================================
+
+- further initializations...
+- UZ
+- Overland
+- River
+ 
+WARNING: Floating point control word reset to "0000001100110010" from "0000001100111111" (check: End of M11COUP_ADDQLAT)
+12:18:58 => 1972/12/28,04:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 0, avg: 0.0
+ 
+WARNING: Floating point control word reset to "0000001100110010" from "0000001100111111" (check: End of M11COUP_ADDQLAT)
+12:19:34 => 1972/12/28,10:00 : Time step: 2.00 hrs, avg: 2.00 hrs; SZ Iter/step: 2, avg: 2.0
+ 
+WARNING: Floating point control word reset to "0000001100110010" from "0000001100111111" (check: End of M11COUP_ADDQLAT)
+ 
+WARNING: Floating point control word reset to "0000001100110010" from "0000001100111111" (check: End of M11COUP_ADDQLAT)
+ 
+WARNING: Floating point control word reset to "0000001100110010" from "0000001100111111" (check: End of M11COUP_ADDQLAT)
+         (no more FP control word warnings will be printed)
+12:19:50 => 1973/02/15,03:40 : Time step: 4.06 hrs, avg: 4.03 hrs; SZ Iter/step: 2, avg: 2.1

@@ -1,0 +1,1519 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenMI.Standard2</name>
+    </assembly>
+    <members>
+        <member name="T:OpenMI.Standard2.LinkableComponentStatus">
+            <summary>
+            <para>The LinkableComponentStatus enumerates the possible statuses that a linkable component can be in.
+            The state diagram showing the possible statuses and the transitions from one status to another
+            can be found in the documentation for OpenMI 2.0 on <see cref="!:http://www.openmi.org"/>.</para>
+            <para>They are also mentioned in the documentation of the various methods of the 
+            <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>.</para>
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Created">
+            <summary>
+             The linkable component instance has just been <code>Created</code>.
+             This status must and will be followed by <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Initializing"/>.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Initializing">
+            <summary>
+             The linkable component is initializing itself.
+             This status will end in a status change to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Initialized"/> or <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Failed"/>.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Initialized">
+            <summary>
+             The linkable component has succesfully initialized itself. The connections between its inputs/outputs
+             and those of other components can be established.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Validating">
+            <summary>
+             After links between the component's inputs/outputs and those of other components have
+             been established, the component is validating whether its required input will be available
+             when it updates itself, and whether indeed it will be able to provide the required output
+             during this update.
+             This <code>Validating</code> status will end in a status change to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Valid"/> or <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Invalid"/>.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Valid">
+            <summary>
+             The component is in a valid state. When updating itself its required input will be available, and it
+             it will be able to provide the required output.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.WaitingForData">
+            <summary>
+             The component wants to update itself, but is not yet able to perform the actual computation, because it is
+             still waiting for input data from other components.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Invalid">
+            <summary>
+             The component is in an invalid state. When updating itself not all required input will be available,
+             and/or it will not be able to provide the required output. After the user has modified the connections
+             between the component's inputs/outputs and those of other components, the <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Validating"/> state
+             can be entered again.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Preparing">
+            <summary>
+             The component is preparing itself for the first <code>GetValues()</code> call.
+             This <code>Preparing</code> state will end in a status change to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Updated"/> or <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Failed"/>.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Updating">
+            <summary>
+             The component is updating itself. It has received all required input data from other components, and is now
+             performing the actual computation.
+             This <code>Updating</code> state will end in a status change to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Updated"/>, <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Done"/> or <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Failed"/>.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Updated">
+            <summary>
+             The component has succesfully updated itself.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Done">
+            <summary>
+             The last update process that the component performed was the final one. A next call to the Update
+             method will leave the component's internal state unchanged.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Finishing">
+            <summary>
+             The ILinkableComponent was requested to perform the actions to be
+             performed before it will either be disposed or re-intialized again.
+             Typical actions would be writing the final result files, close all open
+             files, free memory, etc. When all required actions have been performed,
+             the status switches to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Created"/>when re-initialization is possible. The
+             status switches to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Finished"/>when the component is to be disposed.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Finished">
+            <summary>
+             The ILinkableComponent has successfully performed its finalization
+             actions. Re-initialization of the component instance is not possible and
+             should not be attempted. Instead the instance should be disposed, e.g.
+             through the garbage collection mechanism.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.LinkableComponentStatus.Failed">
+             The component was requisted to perform the actions to be perform before it will either be disposed
+             or re-initialized again.
+             Typical actions would be writing the final result files, close all open files, free memory, etcetera.
+             When all required actions have been performed, the status switches back to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Created"/> if the
+             component supports being re-initialized. If it cannot be re-initialized, it can be released from memory.
+            <summary>
+             The linkable component has failed initialize itself, failed to prepare itself for computation, or failed to complete its update process.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IIdentifiable">
+            <summary>
+            <para>
+            Defines a method to get the Id of an OpenMI entity. The <see cref="T:OpenMI.Standard2.IIdentifiable"/> extends
+            the <see cref="T:OpenMI.Standard2.IDescribable"/>, and therefore has, next to the id, a caption and a description. 
+            </para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IDescribable">
+            <summary>
+            Provides descriptive information on an OpenMI entity.
+            <para>
+            An entity that is describable has a caption (title or heading) and a
+            description. These are not to be used for identification (see <see cref="T:OpenMI.Standard2.IIdentifiable"/>).
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IDescribable.Caption">
+            <summary>
+            Caption string (not to be used as an id)
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IDescribable.Description">
+            <summary>
+            Additional descriptive information about the entity.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IIdentifiable.Id">
+            <summary>
+            Returns the Id as a String. The Id must be unique within its context but
+            does not need to be globally unique. E.g. the id of an input exchange
+            item must be unique in the list of inputs of a ILinkableComponent, but a
+            similar Id might be used by an exchange item of another
+            ILinkableComponent.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITime">
+            <summary>
+            <para>
+            Time interface based on a Modified Julian Date (number and fraction of days since 00:00 November 17, 1858).
+            </para>
+            <para>
+            The ITime interface supports a time stamp as well as a time interval. 
+            A time stamp will have its <see cref="P:OpenMI.Standard2.TimeSpace.ITime.DurationInDays"/> set to 0, while a time interval will have
+            a positive <see cref="P:OpenMI.Standard2.TimeSpace.ITime.DurationInDays"/> value.
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITime.StampAsModifiedJulianDay">
+            <summary>
+             Time stamp as a modified julian day value.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITime.DurationInDays">
+            <summary>
+            Duration in days. O if time is a time stamp.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.ExchangeItemChangeEventArgs">
+            <summary>
+             The ExchangeItemChangeEventArgs contains the information that will be passed when the
+             <see cref="T:OpenMI.Standard2.IBaseExchangeItem"/> fires the <code>ExchangeItemValueChanged</code> event.
+             <para>
+             Sending exchange item events is optional, so it should not be used as a
+             mechanism to build critical functionality upon.
+             </para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.ExchangeItemChangeEventArgs.#ctor">
+            <summary>
+             Default constructor. Creates a new instance with an empty message and
+             null as exchangeItem. Properties need to be set before actually using
+             the instance.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.ExchangeItemChangeEventArgs.#ctor(OpenMI.Standard2.IBaseExchangeItem,System.String)">
+            <summary>
+            Constructor that also initializes the <see cref="P:OpenMI.Standard2.ExchangeItemChangeEventArgs.ExchangeItem"/>
+            and the <see cref="P:OpenMI.Standard2.ExchangeItemChangeEventArgs.Message"/> property
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.ExchangeItemChangeEventArgs.ExchangeItem">
+            <summary>
+             The exchange item of which the status has been changed.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.ExchangeItemChangeEventArgs.Message">
+            <summary>
+             A message that describes the way in which the status of the exchange item has been changed.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.IElementSet">
+            <summary>
+            Data exchange between components in OpenMI is nearly always related to one or
+            more elements in a space, either geo-referenced or not. An element set in
+            OpenMI can be a list of 2D or 3D spatial elements or, as a special case, a
+            list of ID based (non spatial) elements. The latter is supported to allow the
+            exchange of arbitrary data that is not related to space in any way. Possible
+            element types are defined in <see cref="P:OpenMI.Standard2.TimeSpace.IElementSet.ElementType"/>.
+            <para>
+            An IElementSet is composed of an ordered list of elements having a common
+            type. The geometry of each element is described by an ordered list of
+            vertices. For 3D elements (i.e. polyhedrons) the shape can be queried by
+            face. When the element set is geo-referenced co-ordinates (X,Y,Z,M) can be
+            obtained for each vertex of an element.
+            </para>
+            <para>
+            A geo-referenced element set needs to have a valid SpatialReferenceSystemWkt
+            property set in the <see cref="T:OpenMI.Standard2.TimeSpace.ISpatialDefinition"/>. This is a string that
+            specifies the OGC Well-Known Text representation of the spatial reference. An
+            empty string indicates that there in no spatial reference, which is only
+            valid if the ElementType is ID_BASED.
+            </para>
+            <para>
+            While an IElementSet can be used to query the geometric description of a
+            model schematization, it does not necessarily provide all topological
+            knowledge on inter-element connections.
+            </para>
+            <para>
+            Although most models encapsulate static element sets, some advanced models
+            might contain dynamic elements (e.g. waves). A version number has been
+            introduced to enable tracking of element set changes over time. If the
+            version changes, the element set might need to be queried again during the
+            computation process.
+            </para>
+            </summary>
+            <remarks>
+            <para>
+            For ElementSets of type ElementType.IdBased the SpatialReferenceSystemWkt property an empty string.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ISpatialDefinition">
+            <summary>
+            Data in components in OpenMI is often related to spatial coordinates, 
+            either geo-referenced or not. The <see cref="T:OpenMI.Standard2.TimeSpace.ISpatialDefinition"/> 
+            is the general spatial construct that all other spatial constructions
+            extend from.
+            <para>
+            The currently most noticable extending interfaces is the <see cref="T:OpenMI.Standard2.TimeSpace.IElementSet"/>, 
+            which in previous versions of the standard was the only spatial construction, and
+            which all other spatial constructions had to be wrapped into, whereas in the current
+            version the <see cref="T:OpenMI.Standard2.TimeSpace.IElementSet"/> is an extension of the <see cref="T:OpenMI.Standard2.TimeSpace.ISpatialDefinition"/>.
+            </para>
+            <para>
+            Although most models encapsulate data with a static spatial definition, some advanced 
+            models might contain dynamic spatial definitions (e.g. waves, moving grids). The 
+            <see cref="P:OpenMI.Standard2.TimeSpace.ISpatialDefinition.Version"/> number has been introduced to enable tracking of spatial changes 
+            over time. If the version changes, the spatial definition might need to be queried again 
+            during the computation process.
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ISpatialDefinition.SpatialReferenceSystemWkt">
+            <summary>
+            <para>
+            The SpatialReferenceSystemWkt speficies the OGC Well-Known Text representation of the spatial reference 
+            system to be used in association with the coordinates in the <see cref="T:OpenMI.Standard2.TimeSpace.ISpatialDefinition"/>. 
+            </para>
+            <para>
+            For the list of WKT strings see <see cref="!:http://spatialreference.org/"/>.
+            </para>
+            </summary>
+            <example>
+            For all spatial axis a spatial reference can be defined in a form: 
+            <code>
+            PROJCS["Mercator Spheric", GEOGCS["WGS84based_GCS", DATUM["WGS84based_Datum", SPHEROID["WGS84based_Sphere", 6378137, 0], TOWGS84[0, 0, 0, 0, 0, 0, 0]], PRIMEM["Greenwich", 0, AUTHORITY["EPSG", "8901"]], UNIT["degree", 0.0174532925199433, AUTHORITY["EPSG", "9102"]], AXIS["E", EAST], AXIS["N", NORTH]], PROJECTION["Mercator"], PARAMETER["False_Easting", 0], PARAMETER["False_Northing", 0], PARAMETER["Central_Meridian", 0], PARAMETER["Latitude_of_origin", 0], UNIT["metre", 1, AUTHORITY["EPSG", "9001"]], AXIS["East", EAST], AXIS["North", NORTH]]
+            </code>
+            </example>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ISpatialDefinition.ElementCount">
+            <summary>
+            Number of data elements in the spatial axis.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ISpatialDefinition.Version">
+            <summary>
+            The current version number for the spatial axis.
+            <para>
+            The version must be incremented if anything inside the spatial axis 
+            is changed, or if an entirely new spatial axis is provided.
+            </para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetElementIndex(OpenMI.Standard2.IIdentifiable)">
+            <summary>
+            Index of element with id <paramref name="elementId"/> in the elementset. Indexes start from zero.
+            There are not restrictions to how elements are ordered.
+            </summary>
+            <param name="elementId">
+            Identification string for the element for which the element index is requested.
+            </param>
+            <returns>
+            Index of the element with the specified id.
+            If no element in the ElementSet has the specified elementId, -1 must be returned.
+            </returns>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetElementId(System.Int32)">
+            <summary>
+            Returns Id of the '<paramref name="index"/>-th' element in the ElementSet. Indexes start from zero.
+            If the ElementType of the ElementSet is not IdBased, a null or an empty string may be returned.
+            </summary>
+            <param name="index">
+            The element index for which the element Caption is requested. If the element index is outside
+            the range [0, number of elements -1], an exception must be thrown.
+            </param>
+            <returns>
+            The id of the element with the specified index.
+            If the index is out of range, an exception must be thrown.
+            </returns>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetVertexCount(System.Int32)">
+            <summary>
+            <para>Number of vertices for the element specified by the elementIndex.</para>
+            
+            <para>If the GetVertexCount()method is invoked for element sets of type <see cref="F:OpenMI.Standard2.TimeSpace.ElementType.IdBased"/>, an exception
+            must be thrown.</para>
+            </summary>
+            
+            <param name="elementIndex">
+            <para>The element index for the element for which the number of vertices is requested.</para>
+            
+            <para>If the element index is outside the range [0, number of elements -1], an exception
+            must be thrown.</para>
+            </param>
+            <returns>Number of vertices in element defined by the elementIndex.</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetFaceCount(System.Int32)">
+            <summary>
+            Returns the number of faces in a 3D element. For 2D elements this returns 0.
+            </summary>
+            <param name="elementIndex">
+            <para>Index for the element</para>
+            
+            <para>If the element index is outside the range [0, number of elements -1], an exception
+            must be thrown.</para>
+            </param>
+            <returns>Number of faces.</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetFaceVertexIndices(System.Int32,System.Int32)">
+            <summary>
+            Gives an array with the vertex indices for a face. 
+            </summary>
+            <param name="elementIndex">Element index.</param>
+            <param name="faceIndex">Face index.</param>
+            <returns>The vertex indices for this face.</returns>
+            <remarks>
+            The vertex indices for a face must be locally numbered for the element
+            (containing numbers in the range [0;<see cref="M:OpenMI.Standard2.TimeSpace.IElementSet.GetVertexCount(System.Int32)"/>(elementIndex)-1]).
+            </remarks>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetVertexXCoordinate(System.Int32,System.Int32)">
+            <summary>
+            <para>X co-ordinate for the vertex with vertexIndex of the element with elementIndex.</para>
+            </summary>
+            <param name="elementIndex">Element index.</param>
+            <param name="vertexIndex">Vertex index in the element with index elementIndex.</param>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetVertexYCoordinate(System.Int32,System.Int32)">
+            <summary>
+            <para>Y co-ordinate for the vertex with vertexIndex of the element with elementIndex.</para>
+            </summary>
+            <param name="elementIndex">Element index.</param>
+            <param name="vertexIndex">Vertex index in the element with index elementIndex.</param>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetVertexZCoordinate(System.Int32,System.Int32)">
+            <summary>
+            <para>Z co-ordinate for the vertex with vertexIndex of the element with elementIndex.</para>
+            </summary>
+            <param name="elementIndex">Element index.</param>
+            <param name="vertexIndex">Vertex index in the element with index elementIndex.</param>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.IElementSet.GetVertexMCoordinate(System.Int32,System.Int32)">
+            <summary>
+            <para>M co-ordinate for the vertex with VertexIndex of the element with elementIndex.</para>
+            </summary>
+            <param name="elementIndex">Element index.</param>
+            <param name="vertexIndex">Vertex index in the element with index elementIndex.</param>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.IElementSet.ElementType">
+            <summary>
+            <see cref="P:OpenMI.Standard2.TimeSpace.IElementSet.ElementType"/> of the elementset. All elements in the set are of his type.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.IElementSet.HasZ">
+            <summary>
+             True if the element set supports Z co-ordinates.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.IElementSet.HasM">
+            <summary>
+             True if the element set supports M co-ordinates.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IQuantity">
+            <summary>
+            A Quantity specifies values as an amount of some unit, usually as a 
+            floating point number.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IValueDefinition">
+            <summary>
+            A ValueDefinition describes a value returned by the Values property
+            and the GetValues function of the <see cref="T:OpenMI.Standard2.IBaseExchangeItem"/>.
+            </summary>
+            <remarks>
+            This interface is not meant to be implemented directly.
+            Instead, implement either <see cref="T:OpenMI.Standard2.IQuality"/> or <see cref="T:OpenMI.Standard2.IQuantity"/>,
+            or a custom derived vale definition interface.
+            </remarks>
+        </member>
+        <member name="P:OpenMI.Standard2.IValueDefinition.ValueType">
+            <summary>
+            The object types of value that will be available in the <see cref="T:OpenMI.Standard2.IBaseValueSet"/> that is
+            returned by the Values property and the GetValues function of the <see cref="T:OpenMI.Standard2.IBaseExchangeItem"/>.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IValueDefinition.MissingDataValue">
+            <summary>
+            The value representing that data is missing
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IQuantity.Unit">
+            <summary>
+            Unit of quantity
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IQuality">
+            <summary>
+            Qualitative data described items in terms of some quality or categorization
+            that may be 'informal' or may use relatively ill-defined characteristics such
+            as warmth and flavour. However, qualitative data can include well-defined
+            aspects such as gender, nationality or commodity type. OpenMI defines the
+            IQuality interface for working with qualitative data.
+            <para>
+            An IQuality describes qualitative data, where a value is specified as one
+            category within a number of predefined (possible) categories. These
+            categories can be ordered or not.
+            </para><para>
+            For qualitative data the IValueSet exchanged between ILinkableComponents
+            contains one of the possible ICategory instances per element in the
+            ElementSet involved.
+            </para><para>
+            <example>
+            Examples:
+            <list>
+            <li>Colors: red, green, blue</li>
+            <li>Land use: nature, recreation, industry, infrastructure</li>
+            <li>Rating: worse, same, better</li>
+            </list>
+            </example>
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IQuality.Categories">
+            <summary>
+            Returns a list of the possible <see cref="T:OpenMI.Standard2.ICategory"/> allowed for this
+            IQuality. If the quality is not ordered the list contains the
+            ICategory's in an unspecified order. When it is ordered the list
+            contains the ICategory's in the same sequence.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IQuality.IsOrdered">
+            <summary>
+            Checks if the IQuality is defined by an ordered set of ICategory or not.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.LinkableComponentStatusChangeEventArgs">
+            <summary>
+             The LinkableComponentStatusChangeEventArgs contains the information that will be passed when the
+             <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/> fires the <code>StatusChanged</code> event.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.LinkableComponentStatusChangeEventArgs.#ctor">
+            <summary>
+             Constructor.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.LinkableComponentStatusChangeEventArgs.LinkableComponent">
+            <summary>
+             The linkable component that fired the status change event.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.LinkableComponentStatusChangeEventArgs.OldStatus">
+            <summary>
+             The linkable component's status before the status change.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.LinkableComponentStatusChangeEventArgs.NewStatus">
+            <summary>
+             The linkable component's status after the status change.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.LinkableComponentStatusChangeEventArgs.Message">
+            <summary>
+             A message providing additional information on the status change.
+             If there is no message, an empty string is returned.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IBaseInput">
+            <summary>
+            <para>
+            An input item that can accept values for an <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IBaseExchangeItem">
+            <summary>
+             An item that can be exchanged, either as input or as output.
+            </summary>
+             <remarks>
+             <para>
+             This interface is not to be implemented directly, any class
+             is to implement either the <see cref="T:OpenMI.Standard2.IBaseInput"/> or 
+             <see cref="T:OpenMI.Standard2.IBaseOutput"/>.
+             </para>
+             </remarks>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseExchangeItem.ValueDefinition">
+            <summary>
+            Definition of the values in the exchange item.
+            </summary>
+            <remarks>
+            The <see cref="T:OpenMI.Standard2.IValueDefinition"/> should never be returned directly; all implementing
+            classes should return either an <see cref="T:OpenMI.Standard2.IQuality"/>, an <see cref="T:OpenMI.Standard2.IQuantity"/>, or a
+            custom derived vale definition interface.
+            </remarks>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseExchangeItem.Component">
+            <summary>
+            Gets the owner of the exchange item. For an output exchange item this is
+            the component responsible for providing the content of the output item.
+            It is possible for an exchange item to have no owner, in this case the
+            method will return null.
+            </summary>
+        </member>
+        <member name="E:OpenMI.Standard2.IBaseExchangeItem.ItemChanged">
+            <summary>
+            The ItemChanged event is fired when the content of an exchange item has changed.
+            This might be because its ValueDefinition has changed, its TimeSet has changed,
+            its ElementSet has changed, its Values have changed, or any permutation of these properties.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseInput.Provider">
+            <summary>
+             The provider this input should get its values from.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseInput.Values">
+            <summary>
+             The exchange item's values.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSpaceInput">
+            <summary>
+            <para>
+            An input item that can accept values for an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceComponent"/>.
+            </para>
+            <para>
+            The item is a combination of an <see cref="T:OpenMI.Standard2.IValueDefinition"/>, 
+            an <see cref="T:OpenMI.Standard2.TimeSpace.IElementSet"/>, and an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSet"/>. 
+            This combination specifies which type of data is required, where and 
+            when, as input for an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceComponent"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSpaceExchangeItem">
+            <summary>
+             A time / space dependent item that can be exchanged, either as input or as output.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSpaceExchangeItem.TimeSet">
+            <summary>
+             Time information on the values that are available in an output exchange item, 
+             or required by an input exchange item
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSpaceExchangeItem.SpatialDefinition">
+            <summary>
+             Spatial information (usually an element set) on the values that are available
+             in an output exchange item, or required by an input exchange item.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSpaceInput.Values">
+            <summary>
+             The exchange item's values, as a specialized <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet"/>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet">
+            <summary>
+            The <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet"/> represents an ordered two-dimensional 
+            list of values. The first dimension stands for the times for which values
+            are available, whereas in the second dimension each value belongs to
+            precisely one element in the corresponding <see cref="T:OpenMI.Standard2.TimeSpace.IElementSet"/> (that was
+            specified when asking for the values). In other words, the i-th value in
+            that dimension of the value set corresponds to the i-th element in the
+            IElementSet.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IBaseValueSet">
+            <summary>
+            The <see cref="T:OpenMI.Standard2.IBaseValueSet"/> represents a general multi-dimensional set of
+            values. Each value is of type <see cref="P:OpenMI.Standard2.IBaseValueSet.ValueType"/>
+            <para>
+            The size of each dimension can vary, depending on the indices provided, e.g.
+            in a 2D matrix each row can have different lengths. Example, assuming the data
+            is stored as a double[][] matrix, then matrix[1].Length need not equal 
+            matrix[2].Length.
+            </para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseValueSet.GetIndexCount(System.Int32[])">
+            <summary>
+            Returns the length (max index count) of the dimension specified by the
+            given indices. To get the size of the first dimension, use a zero-length
+            integer array as input argument. Length of indices must be a least one
+            smaller than the <see cref="P:OpenMI.Standard2.IBaseValueSet.NumberOfIndices"/>
+            </summary>
+            <param name="indices">indices of the dimension to get the length of</param>
+            <returns>length of the specified dimension</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseValueSet.GetValue(System.Int32[])">
+             <summary>
+             Returns the value object specified by the given array of indices.
+             The length of the array of indices is N, so that the index for
+             each dimension is specified. Otherwise an IllegalArgumentException must be thrown.
+             </summary>
+            <param name="indices">indices index value for each dimension</param>
+            <returns>the value object for the given indices</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseValueSet.SetValue(System.Int32[],System.Object)">
+            <summary>
+            Set the value object specified by the given array of indices.
+            The length of the array of indices is N, so that the index for
+            each dimension is specified. Otherwise an IllegalArgumentException must be thrown.
+            </summary>
+            <param name="indices">indices index value for each dimension</param>
+            <param name="value">value the value object for the given indices</param>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseValueSet.ValueType">
+            <summary>
+            The object type of the values that will be available in the value set that is
+            returned by the Values property and the GetValues function.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseValueSet.NumberOfIndices">
+            <summary>
+            Returns the number of possible indices (dimensions) for the value set.
+            </summary>
+            <returns>number of indices, zero based</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.GetValue(System.Int32,System.Int32)">
+            <summary>
+            Get the value for the specified <paramref name="timeIndex"/> and <paramref name="elementIndex"/> from <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D"/>.
+            If the data is time independent, <code>timeIndex</code> must be specified as 0.
+            If the data is not related to a location, <code>elementIndex</code> must be specified as 0.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.SetValue(System.Int32,System.Int32,System.Object)">
+            <summary>
+            Set the value in <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D"/>, for the specified <paramref name="timeIndex"/> and <paramref name="elementIndex"/>.
+            If the data is time independent, <code>timeIndex</code> must be specified as 0.
+            If the data is not related to a location, <code>elementIndex</code> must be specified as 0.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.GetTimeSeriesValuesForElement(System.Int32)">
+            <summary>
+            Get values from <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D"/>, for all times, for the specified <paramref name="elementIndex"/> .
+            If the data is not related to a location, <code>elementIndex</code> must be specified as 0.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.SetTimeSeriesValuesForElement(System.Int32,System.Collections.IList)">
+            <summary>
+            Set values in <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D"/>, for all times, for the specified <paramref name="elementIndex"/>.
+            If the data is not related to a location, <code>elementIndex</code> must be specified as 0.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.GetElementValuesForTime(System.Int32)">
+            <summary>
+            Get values from <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D"/>, for all elements, for the specified <paramref name="timeIndex"/> .
+            If the data is time independent, <code>timeIndex</code> must be specified as 0.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.SetElementValuesForTime(System.Int32,System.Collections.IList)">
+            <summary>
+            Set values in <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D"/>, for all elements, for the specified <paramref name="timeIndex"/>.
+            If the data is time independent, <code>timeIndex</code> must be specified as 0.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet.Values2D">
+            <summary>
+            Two-dimensional list of values.
+            The first IList represents time, and the contained IList the element in the IElementSet.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSpaceAdaptedOutput">
+            <summary>
+             An <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceAdaptedOutput"/> adds one or more data operations on top of an output item. 
+             It is in itself an <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>. The adaptedOutput extends an output 
+             item with functionality as spatial interpolation, temporal interpolation, unit conversion
+             etc.
+             <para>ITimeSpaceAdaptedOutput instances are created by means of an <see cref="T:OpenMI.Standard2.IAdaptedOutputFactory"/>.
+             </para>
+             <para>The IAdaptedOutput is based on the adaptor design pattern. It adapts
+             an IOutput or another IAdaptedOutput to make it suitable for new use or
+             purpose. The object being adapted is typically called the "adaptee". The
+             IAdaptedOutput replaces the DataOperation that was used in OpenMI 1.x.
+             </para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IBaseAdaptedOutput">
+            <summary>
+             An <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> adds one or more data operations on top of an output item. 
+             It is in itself an <see cref="T:OpenMI.Standard2.IBaseOutput"/>. The adaptedOutput extends an output 
+             item with functionality as spatial interpolation, temporal interpolation, unit conversion
+             etc.
+             <para>
+             <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> instances are created by means of an <see cref="T:OpenMI.Standard2.IAdaptedOutputFactory"/>.
+             </para>
+             <para>
+             The <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> is based on the adaptor design pattern. It adapts
+             an <see cref="T:OpenMI.Standard2.IBaseOutput"/> or another <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> to make it 
+             suitable for new use or purpose. The object being adapted is typically called the 
+             "adaptee". The <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> replaces the DataOperation that was
+             used in OpenMI Standard version 1.x.
+             </para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IBaseOutput">
+            <summary>
+            An output exchange item that can deliver values from an <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>.
+            <para>
+            If an output does not provide the data in the way a consumer would
+            like to have it the output can be adapted by an <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>, which can
+            transform the data according to the consumer's wishes. E.g. by performing
+            interpolation in time, spatial aggregation, etc.).
+            </para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseOutput.AddConsumer(OpenMI.Standard2.IBaseInput)">
+            <summary>
+             Add a consumer to this output item. Every input item that wants to call the GetValues() method,
+             needs to add itself as a consumer first.
+             <para>If a consumer is added that can not be handled, or that is incompatible with the already
+             added consumers, an exception will be thrown.</para>
+             <para>The AddConsumer method must and will automatically set the consumer's
+             Provider (see <see cref="P:OpenMI.Standard2.IBaseInput.Provider"/>)</para>
+             <param name="consumer">consumer that has to be added</param>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseOutput.RemoveConsumer(OpenMI.Standard2.IBaseInput)">
+            <summary>
+             Remove a consumer. If an input item is not interested any longer in calling the GetValues method,
+             it should remove itself by calling RemoveConsumer.
+             <param name="consumer">consumer that has to be removed</param>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseOutput.AddAdaptedOutput(OpenMI.Standard2.IBaseAdaptedOutput)">
+            <summary>
+             Add a <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> to this output item. 
+             Every adaptedOutput that uses data from this output item,
+             needs to add itself as a consumer first.
+             <para>If a adaptedOutput is added that can not be handled, or that is 
+             incompatible with the already added adaptedOutputs, an exception will be thrown.</para>
+             <param name="adaptedOutput">consumer that has to be added</param>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseOutput.RemoveAdaptedOutput(OpenMI.Standard2.IBaseAdaptedOutput)">
+            <summary>
+             Remove a <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>. If a adaptedOutput is not interested 
+             any longer in this output item data,
+             it should remove itself by calling RemoveConsumer.
+             <param name="adaptedOutput">consumer that has to be removed</param>
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:OpenMI.Standard2.IBaseOutput.GetValues(OpenMI.Standard2.IBaseExchangeItem)" -->
+        <member name="P:OpenMI.Standard2.IBaseOutput.Consumers">
+            <summary>
+            Input items that will consume the values, by calling the GetValues() method. Every input item
+            that will call this method, needs to call the AddConsumer method first. If the input item is not
+            interested any longer in calling the GetValues, it should remove itself by calling the RemoveConsumer method.
+            <para>
+            The list is readonly. Add and remove from the list by using <see cref="M:OpenMI.Standard2.IBaseOutput.AddConsumer(OpenMI.Standard2.IBaseInput)"/>
+            and <see cref="M:OpenMI.Standard2.IBaseOutput.RemoveConsumer(OpenMI.Standard2.IBaseInput)"/>.
+            </para>
+            </summary>
+            <remarks>
+            Please be aware that the "unadulterated" values in the output item, provided by the read only Values property,
+            may be called anyway, even if there are no values available.
+            </remarks>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseOutput.AdaptedOutputs">
+            <summary>
+             The adaptedOutputs that have this current output item as <code>Adaptee</code>.
+             As soon as the output item's values have been updated, for each adaptedOutput its 
+             <see cref="M:OpenMI.Standard2.IBaseAdaptedOutput.Refresh"/> method must be called.
+             <para>
+             The list is readonly. Add and remov from the list by using <see cref="M:OpenMI.Standard2.IBaseOutput.AddAdaptedOutput(OpenMI.Standard2.IBaseAdaptedOutput)"/>
+             and <see cref="M:OpenMI.Standard2.IBaseOutput.RemoveAdaptedOutput(OpenMI.Standard2.IBaseAdaptedOutput)"/>.
+             </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseOutput.Values">
+            <summary>
+             The exchange item's values
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseAdaptedOutput.Initialize">
+            <summary>
+            Let the adapted output initialize itself, based on the current values
+            specified by the arguments. Only after initialize is called the refresh
+            method might be called.
+            <para>
+            A component must invoke the <see cref="M:OpenMI.Standard2.IBaseAdaptedOutput.Initialize"/> method of all its
+            adapted outputs at the end of the component's Prepare phase.
+            In case of stacked adapted outputs, the adaptee must be initialized first.
+            </para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseAdaptedOutput.Refresh">
+            <summary>
+            Request the adapted output to refresh itself. This method will be
+            called by the adaptee, when it has been refreshed/updated. In the
+            implementation of the refresh method the adapted output should
+            update its contents according to the changes in the adaptee.
+            <para>
+            After updating itself the adapted output must call refresh on all
+            its adapted outputs, so the chain of outputs refreshes itself.
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseAdaptedOutput.Arguments">
+            <summary>
+             Arguments needed to let the adapted output do its work. An unmodifiable
+             list of the (modifiable) arguments should be returned that can be used to
+             get info on the arguments and to modify argument values. Validation of changes
+             is done when they occur (e.g. using notifications).
+             
+             <returns>Unmodifiable list of IArgument for the adapted output</returns>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseAdaptedOutput.Adaptee">
+            <summary>
+            Output item that this adaptedOutput extracts content from.
+            In the adapter design pattern, it is the item being adapted.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSpaceOutput">
+            <summary>
+            An output exchange item that can deliver values from a time / space dependent ILinkableComponent.
+            The output is a combination of an <see cref="T:OpenMI.Standard2.IValueDefinition"/>, an <see cref="T:OpenMI.Standard2.TimeSpace.IElementSet"/>,
+            and an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSet"/>. This combination specifies which type of data can be
+            provided where and when by the ILinkableComponent.
+            <para>
+            If an output does not provide the data in the way a consumer would
+            like to have it the output can be adapted by an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceAdaptedOutput"/>, which can
+            transform the data according to the consumer's wishes. E.g. by performing
+            interpolation in time, spatial aggregation, etc.).
+            </para>
+            <para>If a output item does provide the data in the way a consumer would lik to have it
+            the output item can be decorated by an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceAdaptedOutput"/>, which can
+            transform the data according to the consumer's wishes (e.g. by performing interpolation in time,
+            spatial interpolation etc.).
+            </para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.TimeSpace.ITimeSpaceOutput.GetValues(OpenMI.Standard2.IBaseExchangeItem)">
+            <summary>
+             Overridden version of the <see cref="M:OpenMI.Standard2.IBaseOutput.GetValues(OpenMI.Standard2.IBaseExchangeItem)"/> method.
+             <see cref="M:OpenMI.Standard2.TimeSpace.ITimeSpaceOutput.GetValues(OpenMI.Standard2.IBaseExchangeItem)"/> now returns an <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet"/>,
+             instead of an <see cref="T:OpenMI.Standard2.IBaseValueSet"/>.
+             </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSpaceOutput.Values">
+            <summary>
+             The exchange item's values, as a specialized <see cref="T:OpenMI.Standard2.TimeSpace.ITimeSpaceValueSet"/>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSet">
+            <summary>
+            <para>
+            A set of time stamps or time intervals, used to indicate where an output item has values and can provide values,
+            and where an input item does or may require values.
+            </para>
+            <para>
+            The <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSet.HasDurations"/> defines whether the set contains stamps or intervals.
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSet.Times">
+            <summary>
+             Time stamps or spans as available in the values of an output item, or as required by an input item.
+             <para>Specific values:</para>
+             <para><code>TimeSet.Times.Count == 0</code>, in case of output: time dependent item, but no values available yet or required yet</para>
+             <para><code>TimeSet.Times.Count == 0</code>, in case of in: time dependent item, but currently no values required</para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSet.HasDurations">
+            <summary>
+             True if the <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSet.Times"/> have durations, i.e. are time intervals.
+             In this case, a duration value greater then zero is expected for every ITime
+             in the <see cref="P:OpenMI.Standard2.TimeSpace.ITimeSet.Times"/> list.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSet.OffsetFromUtcInHours">
+            <summary>
+            Time zone offset from UTC, expressed in the number of hours. Since some of the world's time zones
+            differ half an hour from their neighbours the value is specified as a double.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeSet.TimeHorizon">
+            <summary>
+            The time horizon defines for an input item for what time span it may require values. This means
+            the providers of this input can assume that the input item never goes back further in time
+            than the time horizon's begin time, <code>TimeHorizon.StampAsModifiedJulianDay</code>.
+            Also, it will never go further ahead than the time horizon's end time,
+            <code>TimeHorizon.StampAsModifiedJulianDay+TimeHorizon.DurationInDays</code>.
+            For an output item, and thus for an adapted output item, the time horizon indicates in what time
+            span the item can provide values.
+            <para>Specific values:</para>
+            <para><code>TimeHorizon.StampAsModifiedJulianDay == Double.NegativeInfinity</code>: far back in time</para>
+            <para><code>TimeHorizon.Duration == Double.PositiveInfinity</code>: far in the future</para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeSpaceComponent">
+            <summary>
+            <para>
+            An <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/> providing exchange items of type time-space.
+            </para> <para>
+            See <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/> for details
+            </para>
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IBaseLinkableComponent">
+            <summary>
+            <para>The IBaseLinkableComponent is the key interface in the OpenMI standard.</para>
+            
+            <para>OpenMI-compliance definition (The compliancy refers to a set of basic interfaces as well as to 
+            optional extension interfaces, e.g. for time and space dependent components):</para>
+            
+            <para>§ 1) An OpenMI-compliant component must implement the IBaseLinkableComponent 
+            interface according to specifications provided as comments in the OpenMI.Standard2 
+            source code.</para>
+            
+            <para>§ 2) An OpenMI compliant component can also comply to one ore more extensions, 
+            by implementing the IBaseLinkableComponent interface and the extension interfaces 
+            which it wishes to comply to, according to the specifications provided as comments 
+            in the OpenMI.Standard2 source code.</para>
+            
+            <para>§ 3) An OpenMI-compliant component including its extensions must, 
+            when compiled, reference the OpenMI.Standard2*.dlls/jars, which are compiled and 
+            and released by the OpenMI Association.</para>
+            
+            <para>§ 4) An OpenMI-compliant component must be associated with an XML file, the so called
+            OMI file, which complies to (can be validated with) the LinkableComponent.xsd schema.</para>
+                
+            <para>§ 5) An OpenMI-compliant component must be associated with an XML file, the so called
+            compliancy info file, which complies to (can be validated with) the
+            OpenMICompliancyInfo.xsd schema. 
+            This file must be submitted to the OpenMI Association.</para>
+            
+            <para>§ 6) The OpenMI Association provides two additional interfaces that 
+            OpenMI-compliant components may or may not implement: the <see cref="T:OpenMI.Standard2.IManageState"/> 
+            interface and the <see cref="T:OpenMI.Standard2.IByteStateConverter"/> interface. However, if these 
+            interfaces are implemented, each method and property must be implemented according 
+            to the comments given in the OpenMI.Standard2 source code.</para>
+            
+            <para>§ 7) The OpenMI Association’s downloadable standard zip file provides the only 
+            recognized version of source files, XML schemas and assembly files.</para>
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize">
+             <summary>
+             <para>Initializes the LinkableComponent.</para>
+             
+             <para>The <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method will and must be invoked before any other 
+             method or property in the ILinkableComponent interface is invoked or accessed, except 
+             for the <see cref="P:OpenMI.Standard2.IBaseLinkableComponent.Arguments"/> property.</para>
+             
+             <para>Immediatly after the method is invoked, it changes the
+             linkable component's Status to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Initializing"/>.</para> 
+            
+             <para>When the method is executed and an error occurs, the Status of the component 
+             will change to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Failed"/>, and an exception will 
+             be thrown. If the component initializes succesfully, the  status is changed to 
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Initialized"/>.</para> 
+            
+             <para>When the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been finished and the Status 
+             is <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Initialized"/>, the properties Id, 
+             Caption, Description, <see cref="P:OpenMI.Standard2.IBaseLinkableComponent.Inputs"/>, <see cref="P:OpenMI.Standard2.IBaseLinkableComponent.Outputs"/>, have been set,
+             and the method <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Validate"/> can be called.</para>
+             
+             <para>It is only required that the method <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> can be invoked once. 
+             If the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method is invoked more than once and the LinkableComponent 
+             cannot handle this; an exception must be thrown.</para>
+             
+             <para>REMARKS:</para>
+             <para>The method will typically populate the component based on the
+             values specified in its arguments, which can be retrieved with
+             getArguments. Settings can be used to read input files, allocate memory,
+             and organize input and output exchange items.</para>
+             </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseLinkableComponent.Validate">
+             <summary>
+             <para>Validates the populated instance of the LinkableComponent</para>
+             
+             <para>This method must be accessible after the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been
+             invoked and until the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Finish"/> method has been invoked. If this property
+             is accessed before the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been invoked or after the
+             <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Finish"/> method has been invoked and the LinkableComponent cannot handle
+             this an exception must be thrown.</para> 
+            
+             <para>The method will and must be invoked after the various provider/consumer relations between
+             this component's exchange items and the exchange items of other components present
+             in the composition.</para> 
+            
+             <para>Immediatly after the method is invoked, it changes the
+             linkable component's Status to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Validating"/>.</para> 
+            
+             <para>When the Validate method has finished, the Status of the component has changed
+             to either <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Valid"/> or 
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Invalid"/>.</para> 
+            
+             </summary>
+             
+             <returns>
+             Returns null or an array of strings of length null if there are no messages
+             at all. If there are messages while the components Status is 
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Valid"/>, the messages are purely informative.
+             If there are messages while the components Status is 
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Invalid"/>, at least one of the messages 
+             indicates a fatal error.
+             </returns>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseLinkableComponent.Prepare">
+             <summary>
+             <para>Prepares the IBaseLinkableComponent for calls to the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Update(OpenMI.Standard2.IBaseOutput[])"/> method</para>
+             
+             <para>Before Prepare is called, the component are not required to honor
+             any type of action that retrieves values from the component. After Prepare
+             is called, the component must be ready for providing values.
+             </para>
+             
+             <para>This method must be accessible after the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been
+             invoked and until the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Finish"/> method has been invoked. If this property
+             is accessed before the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been invoked or after the
+             <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Finish"/> method has been invoked and the LinkableComponent cannot handle
+             this an exception must be thrown.</para>
+             
+             <para>Immediatly after the method is invoked, it changes the
+             linkable component's Status to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Preparing"/>.</para> 
+            
+             <para>When the method has finished, the Status of the component has changed
+             to either <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Updated"/> or 
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Failed"/>.</para> 
+             
+             <para>It is only required that the Prepare( ) method can be invoked once. If the 
+             Prepare method is invoked more that once and the LinkableComponent cannot handle 
+             this an exception must be thrown.</para>
+             </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseLinkableComponent.Update(OpenMI.Standard2.IBaseOutput[])">
+            <summary>
+             This method is called to let the component update itself, thus reaching its next state.
+             
+             <para>Immediately after the method is invoked, it changes the
+             linkable component's Status to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Updating"/>.</para> 
+            
+             <para>The type of actions a component takes during the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Update(OpenMI.Standard2.IBaseOutput[])"/> method depends
+             on the type of component. A numerical model that progresses in time will typically
+             compute a time step. A database whould typically look at the consumers of its output items,
+             and perform one or more queries to be able to provide the values that the consumers require.
+             A GIS system would typically re-evaluate the values in a grid coverage, so that its output
+             output items can provide up-to-date values.</para>
+             
+             <para>If the Update method is performed succesfully, the component sets its state to
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Updated"/>, unless after this Update action the 
+             component is at the end of its computation, in which case it will be set its State 
+             to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Done"/>.</para>
+             
+             <para>If during the Update method a problem arises, the component sets its state to
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Failed"/>, and throws an exception.</para>
+             
+            </summary>
+            <param name="requiredOutput">This optional parameter lets the caller specify the specific
+             output items that should be updated. If it is omitted or if the length is 0, the component 
+             will at least update its output items that have consumers, or all its output items, 
+             depending on the component's implementation.</param>
+        </member>
+        <member name="M:OpenMI.Standard2.IBaseLinkableComponent.Finish">
+             <summary>
+             <para>This method is and must be invoked as the last of any methods in the
+             ILinkableComponent interface.</para>
+             
+             <para>This method must be accessible after the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Prepare"/> method has been invoked.
+             If this method is invoked before the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Prepare"/> method has been invoked 
+             and the LinkableComponent cannot handled this, an exception must be thrown.</para>
+             
+             <para>Immediatly after the method is invoked, it changes the
+             linkable component's Status to <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Finishing"/>. 
+             Once the finishing is completed, the component changes its status to 
+             <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Finished"/> if it can not be restarted,
+             or <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Created"/> if it can.</para> 
+            
+             </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseLinkableComponent.Arguments">
+             <summary>
+             Arguments needed to let the component do its work. An unmodifiable list
+             of (modifiable) arguments must be returned that is to be used to get
+             information about the arguments and to set argument values. Validation of
+             changes can be done either when they occur (e.g. using notifications) or
+             when the initialize method is called. Initialize will always be called
+             before any call to the update method of the IBaseLinkableComponent.
+            
+             This property must be available as soon is the linkable component instance is created.
+             Arguments describes the arguments that can be set before the
+             Initialize() method is called.
+             </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseLinkableComponent.Status">
+            <summary>
+             Defines current status of the linkable component. See <see cref="T:OpenMI.Standard2.LinkableComponentStatus"/> for the
+             possible values.
+             <para>
+             The first Status that a component sets is <see cref="F:OpenMI.Standard2.LinkableComponentStatus.Created"/>, 
+             as soon after it has been created. In this Status, <see cref="P:OpenMI.Standard2.IBaseLinkableComponent.Arguments"/> is the 
+             only property that may be accessed.
+             </para>
+            </summary>
+        </member>
+        <member name="E:OpenMI.Standard2.IBaseLinkableComponent.StatusChanged">
+            <summary>
+            The StatusChanged event is fired when Status of the component changes.
+            See <see cref="T:OpenMI.Standard2.LinkableComponentStatus"/> for the possible states, and see
+            the documentation, e.g. the OpenMI Standard 2 Specification,
+            for possible state changes.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseLinkableComponent.Inputs">
+            <summary>
+            The list of input items for which a component can recieve values.
+            </summary>
+            <remarks>
+            <para>This property must be accessible after the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been
+            invoked and until the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Validate"/> method has been invoked. If this property
+            is accessed before the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been invoked or after the
+            <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Validate"/> method has been invoked and the LinkableComponent cannot handle
+            this an exception must be thrown.</para>
+            <para>This method basically returns references to <see cref="T:OpenMI.Standard2.IBaseInput"/> items.
+            There is no guarantee that the list of objects is not altered by other components
+            after it has been returned. It is the responsibility of the LinkableComponent
+            to make sure that such possible alterations do not subsequently corrupt
+            the LinkableComponent.</para>
+            </remarks>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseLinkableComponent.Outputs">
+            <summary>
+            The list of output items for which a component can produce results.
+            </summary>
+            <remarks>
+            <para>This property must be accessible after the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been
+            invoked and until the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Validate"/> method has been invoked. If this property
+            is accessed before the <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Initialize"/> method has been invoked or after the
+            <see cref="M:OpenMI.Standard2.IBaseLinkableComponent.Validate"/> method has been invoked and the LinkableComponent cannot handle
+            this an exception must be thrown.</para>
+            <para>
+            The list only contains the core IBaseOutput of the component, not
+            the IBaseAdaptedOutput derived from each IBaseOutput (etc.). To get a complete
+            list of outputs traverse the chain of IBaseAdaptedOutput that start with the
+            IOutputs returned in the list.
+            </para>
+            <para>This method basically returns references to <see cref="T:OpenMI.Standard2.IBaseOutput"/> items.
+            There is no guarantee that the list of objects is not altered by other components
+            after it has been returned. It is the responsibility of the LinkableComponent
+            to make sure that such possible alterations do not subsequently corrupt
+            the LinkableComponent.</para>
+            </remarks>
+        </member>
+        <member name="P:OpenMI.Standard2.IBaseLinkableComponent.AdaptedOutputFactories">
+            <summary>
+             Get a list of <see cref="T:OpenMI.Standard2.IAdaptedOutputFactory"/>, each allowing to 
+             create <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> item for making outputs fit to inputs
+             in case they do not already do so.
+             <para>
+             </para>
+             Factories can be added to and removed from the list so that third-party
+             factories and IBaseAdaptedOutput classes can be introduced.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ITimeExtension">
+            <summary>
+            <para>
+            Methods that are specific for an time-space component.
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.TimeSpace.ITimeExtension.TimeExtent">
+            <summary>
+            The <see cref="P:OpenMI.Standard2.TimeSpace.ITimeExtension.TimeExtent"/> property describes in what time span the component can operate. This can be used to support the user when creating 
+            a composition.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IUnit">
+            <summary>
+            Unit interface, describing the physical unit of a <see cref="T:OpenMI.Standard2.IQuantity"/>.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IUnit.Dimension">
+            <summary>
+            The unit's dimension
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IUnit.ConversionFactorToSI">
+            <summary>
+            Conversion factor to SI ('A' in: SI-value = A * quant-value + B)
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IUnit.OffSetToSI">
+            <summary>
+            OffSet to SI ('B' in: SI-value = A * quant-value + B)
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IAdaptedOutputFactory">
+            <summary>
+            Used to create instances of <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> items.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IAdaptedOutputFactory.GetAvailableAdaptedOutputIds(OpenMI.Standard2.IBaseOutput,OpenMI.Standard2.IBaseInput)">
+            <summary>
+            Get a list of identifiers of the available <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>s that can make 
+            the <paramref name="adaptee"/> match the <paramref name="target"/>. If the 
+            <paramref name="target"/>is <code>null</code>,
+            the identifiers of all <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>s that can adapt the 
+            <paramref name="adaptee"/> are returned.
+            </summary>
+            <param name="adaptee"><see cref="T:OpenMI.Standard2.IBaseOutput"/> to adapt.</param>
+            <param name="target"><see cref="T:OpenMI.Standard2.IBaseInput"/> to adapt the adaptee to, can be <code>null</code>.</param>
+            <returns>List of identifiers for the available <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>s.</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.IAdaptedOutputFactory.CreateAdaptedOutput(OpenMI.Standard2.IIdentifiable,OpenMI.Standard2.IBaseOutput,OpenMI.Standard2.IBaseInput)">
+            <summary>
+            Creates a <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> that adapts the <paramref name="adaptee"/>
+            so that it fits the target.
+            <para>
+            The adaptedOutputId used must be one of the IIdentifiable instances
+            returned by the <see cref="M:OpenMI.Standard2.IAdaptedOutputFactory.GetAvailableAdaptedOutputIds(OpenMI.Standard2.IBaseOutput,OpenMI.Standard2.IBaseInput)"/> method.
+            </para>
+            <para>
+            The returned <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/> will already be registered with the
+            <paramref name="adaptee"/>.
+            </para>
+            </summary>
+            <param name="adaptedOutputId">The identifier of the adaptedOutput to create.</param>
+            <param name="adaptee"><see cref="T:OpenMI.Standard2.IBaseOutput"/> to adapt.</param>
+            <param name="target"><see cref="T:OpenMI.Standard2.IBaseInput"/> to adapt the adaptee to, can be <code>null</code>.</param>
+            <returns></returns>
+        </member>
+        <member name="T:OpenMI.Standard2.IByteStateConverter">
+            <summary>
+            This interface is an optional complement to the <see cref="T:OpenMI.Standard2.IManageState"/> interface.
+            Both are extensions to <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>, meant to provide state management.
+            It defines methods for converting a state into a byte stream and reading
+            in a state from a byte stream.
+            This facilitates external modules, e.g. a GUI or an operational control system,
+            to save a model's state somewhere as persistent state.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IByteStateConverter.ConvertToByteArray(OpenMI.Standard2.IIdentifiable)">
+            <summary>
+            Converts the state with the <paramref name="stateId"/> into a byte stream.
+            </summary>
+            <param name="stateId">id of the state.</param>
+            <returns>The state identified by <paramref name="stateId"/> as an array of bytes.</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.IByteStateConverter.ConvertFromByteArray(System.Byte[])">
+            <summary>
+            Creates a state from a byte stream and returns the identifier of this state.
+            <remarks>The state does not become the current state of the <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>.
+            For state management the <see cref="T:OpenMI.Standard2.IManageState"/> interface is to be used.</remarks>
+            </summary>
+            <param name="byteArray">State as a byte stream.</param>
+            <returns><see cref="T:OpenMI.Standard2.IIdentifiable"/> identifying the state.</returns>
+        </member>
+        <member name="T:OpenMI.Standard2.IManageState">
+            <summary>
+            Optional interface to be implemented by components in addition to the
+            <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/> interface. It provides additional methods for handling
+            component state so it can be saved, restored and cleared. It
+            can be left completely to the component to handle persistence of state
+            or it can also implement <see cref="T:OpenMI.Standard2.IByteStateConverter"/> and provide ways
+            for state to be converted to and from an array of bytes. A third-party
+            could then handle the saving and loading of state data.
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IManageState.KeepCurrentState">
+            <summary>
+            Store the linkable component's current State
+            </summary>
+            <returns>Identifier of the stored state.</returns>
+        </member>
+        <member name="M:OpenMI.Standard2.IManageState.RestoreState(OpenMI.Standard2.IIdentifiable)">
+            <summary>
+            Restores the state identified by the parameter stateID. If the state identifier identified by
+            stateID is not known by the linkable component an IllegalArgumentException exception should be trown.
+            </summary>
+            <param name="stateId">Identifier of the state to be restored.</param>
+            <remark>
+            The method must throw an <code>ArgumentException</code> if an unknown <paramref name="stateId"/> is specified.
+            </remark>
+        </member>
+        <member name="M:OpenMI.Standard2.IManageState.ClearState(OpenMI.Standard2.IIdentifiable)">
+            <summary>
+            Clears a state from the linkable component's memory. If the state identifier identified by
+            stateID is not known by the linkable component an IllegalArgumentException exception should be thrown.
+            </summary>
+            <param name="stateId">Identifier of the state to be cleared.</param>
+            <remark>
+            The method must throw an <code>ArgumentException</code> if an unknown <paramref name="stateId"/> is specified.
+            </remark>
+        </member>
+        <member name="T:OpenMI.Standard2.IArgument">
+            <summary>
+            <para>
+            The IArgument interface is used to set the arguments of a <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>
+            and the arguments of an <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.ValueType">
+            <summary>
+            The type of the value of the argument, E.g. a integral type like string, integer or double,
+            or a non integral type, such as a time series object.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.IsOptional">
+            <summary>
+            Specifies whether the argument is optional or not.
+            If the <code>Values</code> property returns null
+            and <code>IsOptional == false</code>, a value has to be set before
+            the argument can be used.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.IsReadOnly">
+            <summary>
+            Defines whether the Values property may be edited. This is used to let a 
+            <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/> or an <see cref="T:OpenMI.Standard2.IBaseAdaptedOutput"/>
+            present the actual value of an argument that can not be changed by the user, 
+            but is needed to determine the values of other arguments or is informative 
+            in any other way.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.Value">
+            <summary>
+            The current value of the argument. If no value has been set yet, a 
+            default value is returned.
+            <para>
+            If <code>null</code> is returned, this means that the default 
+            value is <code>null</code>.
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.DefaultValue">
+            <summary>
+            The default value of the argument.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.PossibleValues">
+            <summary>
+            List of possible allowed values for this argument.
+            If for integral types or component specific types all possible values are allowed, <code>null</code> is returned.
+            A list with length 0 indicates that there is indeed a limitation on the possible values, but that currently
+            no values are possible. Effectively this means that the values will not and cannot be set.
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.IArgument.ValueAsString">
+            <summary>
+            The argument's value, represented as a string. If <code>ValueType</code> indicates that the argument's value
+            is not of the type string, the <code>ValueAsString</code> function offers the possibility to treat it as a string,
+            e.g. to let the GUI persist the value in the composition file.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.ICategory">
+            <summary>
+            The ICategory describes one item of a possible categorization. It is used by
+            the <see cref="T:OpenMI.Standard2.IQuality"/> interface for describing qualitative data.
+            <para>
+            For qualitative data the <see cref="T:OpenMI.Standard2.IBaseValueSet"/> exchanged between <see cref="T:OpenMI.Standard2.IBaseLinkableComponent"/>s
+            contains one of the possible <code>ICategory</code> instances per data element.
+            </para>
+            <para>
+            A category defines one "class" within a "set of classes".
+            </para>
+            </summary>
+        </member>
+        <member name="P:OpenMI.Standard2.ICategory.Value">
+            <summary>
+            Value for this category.
+            </summary>
+            <example>
+            "blue" in a "red"/"green"/"blue" set.
+            </example>
+        </member>
+        <member name="T:OpenMI.Standard2.TimeSpace.ElementType">
+            <summary>
+            Shape Type of elements in an <see cref="T:OpenMI.Standard2.TimeSpace.IElementSet"/>
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.TimeSpace.ElementType.IdBased">
+            <summary>
+            Identifiable based
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.TimeSpace.ElementType.Point">
+            <summary>
+            Points
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.TimeSpace.ElementType.PolyLine">
+            <summary>
+            Lines / Polylines
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.TimeSpace.ElementType.Polygon">
+            <summary>
+            Polygons
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.TimeSpace.ElementType.Polyhedron">
+            <summary>
+            Polyhedrons
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.DimensionBase">
+            <summary>
+            Enumeration for base dimensions
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.Length">
+            <summary>
+            Base dimension length.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.Mass">
+            <summary>
+            Base dimension mass.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.Time">
+            <summary>
+            Base dimension time.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.ElectricCurrent">
+            <summary>
+            Base dimension electric current.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.Temperature">
+            <summary>
+            Base dimension temperature.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.AmountOfSubstance">
+            <summary>
+            Base dimension amount of substance.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.LuminousIntensity">
+            <summary>
+            Base dimension luminous intensity.
+            </summary>
+        </member>
+        <member name="F:OpenMI.Standard2.DimensionBase.Currency">
+            <summary>
+            Base dimension currency.
+            </summary>
+        </member>
+        <member name="T:OpenMI.Standard2.IDimension">
+            <summary>
+            Defines the order of dimension in each <see cref="T:OpenMI.Standard2.DimensionBase"/> for a unit
+            </summary>
+        </member>
+        <member name="M:OpenMI.Standard2.IDimension.GetPower(OpenMI.Standard2.DimensionBase)">
+            <summary>
+            <para>Returns the power for the requested dimension</para>
+            
+            </summary>
+            <example>
+            <para>For a quantity such as flow, which may have the unit m3/s, the GetPower method must
+            work as follows:</para>
+            
+            <para>myDimension.GetPower(DimensionBase.AmountOfSubstance) --> returns 0</para>
+            <para>myDimension.GetPower(DimensionBase.Currency)          --> returns 0</para>
+            <para>myDimension.GetPower(DimensionBase.ElectricCurrent)   --> returns 0</para>
+            <para>myDimension.GetPower(DimensionBase.Length)            --> returns 3</para>
+            <para>myDimension.GetPower(DimensionBase.LuminousIntensity) --> returns 0</para>
+            <para>myDimension.GetPower(DimensionBase.Mass)              --> returns 0</para>
+            <para>myDimension.GetPower(DimensionBase.Temperature)       --> returns 0</para>
+            <para>myDimension.GetPower(DimensionBase.Time)              --> returns -1</para>
+            </example>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelFactory className="org.openda.model_wflow.WflowModelFactory" workingDirectory=".">
+		<arg>Ourthe_ModelFactoryConfig.xml</arg>
+		<arg>../../OurtheCase_hbv/run_info.xml</arg>
+	</modelFactory>
+	<rangeValidationConfigFile>rangeValidationConfig.xml</rangeValidationConfigFile>
+	<vectorSpecification>
+		<state>
+			<vector id="LowerZoneStorage_positive"/>
+			<vector id="InterceptionStorage_positive"/>
+			<vector id="FreeWater_positive"/>
+			<vector id="SoilMoisture_positive"/>
+      <vector id="DrySnow_positive"/>
+      
+      <vector id="UpperZoneStorage_positive"/>
+			<vector id="SurfaceRunoff_positive"/>
+			<vector id="WaterLevel_positive"/>  
+      
+<!--
+
+			<vector id="P"/>
+			<vector id="TEMP"/>
+			<vector id="PET"/>
+-->
+			<noiseModel id="SoilMoistureNoiseModel" className="org.openda.noiseModels.MapsNoiseModelFactory" workingDirectory=".">
+				<configFile>Ourthe_SoilMoistureNoise.xml</configFile>
+				<exchangeItems>
+					<exchangeItem id="sm_noise" operation="add">
+						<modelExchangeItem id="SoilMoisture_positive"/>
+					</exchangeItem>
+				</exchangeItems>
+			</noiseModel>
+		</state>
+		<predictor collectTimeSeries="true">
+			<subVector id="H-MS-0020.Q.m" sourceVectorId="SurfaceRunoff_positive">
+				<!-- select row and column indices to get a scalar value 33/31-->
+				<!--				<selection index1="32" index2="30"/> -->
+				<!--<selection index1="19"/>-->
+				<selection index1="2910"/>
+			</subVector>
+			<!--subVector id="H-MS-HOTT.Q.m" sourceVectorId="SurfaceRunoff">
+				<selection index1="4524"/>
+			</subVector>
+			<subVector id="H-MS-MABO.Q.m" sourceVectorId="SurfaceRunoff">
+				<selection index1="5805"/>
+			</subVector>
+      <subVector id="H-MS-ORTHq.Q.m" sourceVectorId="SurfaceRunoff">
+				<selection index1="6159"/>
+			</subVector-->
+		</predictor>
+	</vectorSpecification>
+</blackBoxStochModel>

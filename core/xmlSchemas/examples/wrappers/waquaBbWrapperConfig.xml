@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+	<alias key="inputFile" keyPrefix="${" keySuffix="}"/>
+	<alias key="finalInputFile"/>
+	<alias key="runid"/>
+	<alias key="seriesFiles"/>
+</aliasDefinitions>
+<run>
+    <initializeActionsUsingDirClone instanceDir="work%instanceNumber%" templateDir="./template"/>
+	<computeActions>
+		<action exe="tagStripper.pl" workingDirectory="%instanceDir%">
+			<arg>-input ${inputFile}</arg>
+			<arg>-output %finalInput%</arg>
+			<checkOutput file="%finalInput%"/> <!-- should exist -->
+		</action>
+		<action exe="waqpre.pl">
+			<arg>-runid</arg>
+			<arg>%runid%</arg>
+			<arg>-input</arg>
+			<arg>%finalInput%</arg>
+			<checkOutput file="waqpre-m.%runid%" expect="Finished Succesfully"/>
+			<checkOutput file="SDS-%runid%"/> <!-- should exist -->
+		</action>
+		<action exe="waqpro.pl">
+			<arg>-runid</arg>
+			<arg>%runid%</arg>
+			<checkOutput file="waqpro-m.%runid%" expect="Finished Succesfully"/>
+			<checkOutput file="SDS-%runid%"/> <!-- should exist -->
+		</action>
+		<action exe="getdata.pl">
+			<arg>-runid</arg>
+			<arg>%runid%</arg>
+			<arg>-input getdataInputFile</arg>
+			<checkOutput file="%wlfile%"/> <!-- should exist -->
+			<checkOutput file="%ufile%"/> <!-- should exist -->
+			<checkOutput file="%vfile%"/> <!-- should exist -->
+			<checkOutput file="%aFile%"/> <!-- should exist -->
+		</action>
+	</computeActions>
+	<finalizeActions>
+		<action exe="rm">
+			<arg>-rf</arg> <!-- recursive and no complaining -->
+			<arg>%instanceDir%</arg>
+		</action>
+	</finalizeActions>
+</run>
+<inputOutput>
+	<ioObject className="org.openda.utils.io.GenericIO.AsciiIoObject">
+		<file>${input}</file>
+		<id>diffusion</id>
+		<arg>diffusion</arg>
+	</ioObject>
+	<ioObject className="org.openda.utils.io.GenericIO.AsciiIoObject">
+		<file>%wlfile%</file>
+		<id>wlevel</id>
+		<arg>wlevel</arg>
+	</ioObject>
+	<ioObject className="org.openda.utils.io.GenericIO.AsciiIoObject">
+		<file>%ufile%</file>
+		<id>uvel</id>
+		<arg>uvelocity</arg>
+	</ioObject>
+	<ioObject className="org.openda.utils.io.GenericIO.AsciiIoObject">
+		<file>%vfile%</file>
+		<id>vvel</id>
+		<arg>vvelocity</arg>
+	</ioObject>
+	<ioObject className="org.openda.utils.io.GenericIO.SeriesFileObject">
+		<file>%seriesfile%</file>
+		<id>series</id>
+		<arg>seriesobs</arg>
+	</ioObject>
+</inputOutput>
+</blackBoxWrapperConfig>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>building Openda from source</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Building the OpenDA native source code (Mac)</h1>
+
+<hr>
+
+This page describes how to build the OpenDA native source code on Mac computers. The source code is located in the
+<tt>core/native</tt>
+directory of the source distribution. On Mac computers, the native sources are compiled using the
+<a href="http://developer.apple.com/xcode/" target="_blank">XCode development environment</a>. 
+
+
+<h2>Preliminaries</h2>
+
+<ol>
+   <li> Install XCode.
+   <li> Install a GFortran compiler that is compatible with your Xcode installation.</li>
+   <li> Install OpenMPI (the same version as Xcode) with fortran support (--ensable-static --enable-dynamic).
+        and insert the path in front of your %PATH% and %LD_LIBRARY_PATH% variables.</li>
+   <li> Install a Java Development Kit (JDK).</li>
+</ol>
+
+<h2>Building step-by-step</h2>
+
+
+<ol>
+   <li>The first step is starting the <tt>configure</tt> script, usually through <tt>./configure</tt>. This will
+   detect the configuration of the computer being used and will warn when specific requirements are not met.
+   When all requirements are met, make files will be generated. It is possible to alter the behaviour of the
+   <tt>configure</tt> script by using command-line arguments. The most important ones are:
+   <ul>
+      <li><tt>--help</tt> will list all options with some help text.</li>
+      <li><tt>--prefix=PATH</tt> indicates the place the library should be copied to after <tt>make install</tt>.</li>
+      <li><tt>--disable-mpi</tt> disables MPI.</li>
+      <li><tt>--with-netcdf=PATH</tt> indicates the location of the NetCDF library.</li>
+      <li><tt>--with-jdk=PATH</tt> indicates the location of the Java Development Kit (JDK) if it differs from the value of <tt>$JAVA_HOME</tt>.</li>
+   </ul>
+   Do not forget to scan the <tt>configure</tt> output for warnings. Those are often very informative.
+   </li>
+   <li>Build (compile and link) the source files.</li>
+   <li>Copy the resulting libraries (and executables) to the place specified using <tt>configure</tt>'s <tt>--prefix=</tt>
+   command-line argument.
+</ol>
+
+<ol>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

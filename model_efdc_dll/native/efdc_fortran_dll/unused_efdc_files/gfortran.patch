@@ -1,0 +1,19 @@
+Index: EFDC.for
+===================================================================
+--- EFDC.for	(revision 3544)
++++ EFDC.for	(working copy)
+@@ -138,12 +138,12 @@
+ 
+       !CALL CPU_TIME(TIME_START)        ! *** Intel Version 11.066 Bug - Work Around
+ 
+-      COUNT = NARGS()
++      COUNT = 0
+       PAUSEIT = .TRUE. !SCJ set to .FALSE. to turn off spacebar trap for calibration or sensitivity runs
+ 
+       ! *** GET THE COMMAND LINE ARGUMENTS, IF ANY
+       IF(COUNT.GT.0)THEN
+-        CALL GETARG(1, BUFFER, iStatus)
++        CALL GETARG(1, BUFFER)
+         IF (Buffer(1:4).EQ.'-NOP'.OR.Buffer(1:4).EQ.'-nop') THEN
+           PAUSEIT=.FALSE.
+         ENDIF

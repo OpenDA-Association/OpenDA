@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="DD3dAliasDefinitionXML">
+		<xs:sequence>
+			<xs:element name="listValue" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="key" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The name to be associated with the aliased value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Actual value referred to by the alias key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keyPrefix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the prefix for the alias key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keySuffix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the suffix for the alias key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DD3dAliasDefinitionsXML">
+		<xs:sequence>
+			<xs:element name="alias" type="openda:DD3dAliasDefinitionXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Create list of key and value pairs of aliases.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="defaultKeyPrefix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the default prefix for the alias keys.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="defaultKeySuffix" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify the default suffix for the alias keys.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DD3dDLLConfigXML">
+		<xs:sequence>
+			<xs:element name="binDir" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the native DLL's bin dir.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the native DLL: Win32_Ifort, etc. (TODO: make enumeration of possible values).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="file" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify name of the native DLL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DD3dModelConfigXML">
+		<xs:sequence>
+			<xs:element name="directory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify the model directory that contains the mdf-file (relative to this config file).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="mdFile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the name of the mdf-file.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="inputFile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Specify the name of the input file (Flow: .mdf file, Delwaq: .inp file)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Additional argument for delwaq</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="maxNumInstancesInMemory" type="xs:integer" default="256" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the maximum number of instances to be kept in memory (the other instances will be flushed to disk)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="directoryForSavedStates" type="xs:string" default="./savedStates" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the model directory that will contain the stored restart files if the algorithm requests to store states.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DD3dExchangeItemXML">
+		<xs:attribute name="id" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Exchange item identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Exchange item type, bound_HQ, etc.  (TODO: make enumeration of possible values) </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DD3dExchangeItemsXML">
+		<xs:sequence>
+			<xs:element name="exchangeItem" type="openda:DD3dExchangeItemXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of exchange items that will be part of the modelling process</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DD3dModelFactoryConfigXML">
+		<xs:sequence>
+			<xs:element name="aliases" type="openda:DD3dAliasDefinitionsXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Aliases (e.g. environment variables) used in the configuration</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dll" type="openda:DD3dDLLConfigXML">
+				<xs:annotation>
+					<xs:documentation>Model (i.e. schematization) specification .</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="model" type="openda:DD3dModelConfigXML">
+				<xs:annotation>
+					<xs:documentation>Model (i.e. schematization) specification .</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="exchangeItems" type="openda:DD3dExchangeItemsXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Exchange times.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="d3dModelFactoryConfig" type="openda:DD3dModelFactoryConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for a D3D model factory.  It contains information on the DLL to be loaded, and the model to be used.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

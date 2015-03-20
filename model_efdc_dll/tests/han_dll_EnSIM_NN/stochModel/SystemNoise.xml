@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<timeSeries id="GlobalRadiationNoise" location="1" quantity="GlobalRadiation" standardDeviation="200" timeCorrelationScale="12.0" timeCorrelationScaleUnit="hours" />
+</mapsNoiseModelConfig>

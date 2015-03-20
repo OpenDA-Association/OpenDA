@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DeltaShellOpenDAModelProviderSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectPath>D:\OpenDA_MI\Agoufou_OpenDA\Agoufou\Agoufou_IC</ProjectPath>
+  <ModelName>MIKESHE_WM_Agoufou_IC.omi</ModelName>
+  <StartTime>200707010000</StartTime>
+  <EndTime>200707020000</EndTime>
+  <quantityID>Surface temperature (effective)</quantityID> 
+  <elementSetID>BaseGrid</elementSetID>
+  <id>LSTinSitu</id>
+</DeltaShellOpenDAModelProviderSettings>

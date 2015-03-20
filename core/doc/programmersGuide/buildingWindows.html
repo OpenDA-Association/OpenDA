@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>building Openda from source</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Building the OpenDA native source code (Windows)</h1>
+
+<hr>
+
+This page describes how to build the OpenDA native source code on Windows computers. The source code is located in the
+<tt>core\native</tt>
+directory of the source distribution. The Microsoft Visual Studio solution file is located in the <tt>costa_vs2008</tt> subdirectory.
+
+<h2>Note about Microsoft Visual Studio and Intel Fortran</h2>
+
+The solution and project files provided are for the following version of the development environment:
+<ul>
+<li>vs2008 and Fortran 11.0 or higher</li>
+</ul>
+When you use a newer version of mentioned tools, it is fine to upgrade these files to your version.
+In case you are working from the repository, please do not check in these upgraded files.
+
+<h2>Building step-by-step</h2>
+
+<ol>
+<li> Load the solution file <tt>core\native\costa_vs2008\costa_core_vs2008.sln</tt> into Microsoft Visual Studio.</li>
+<li> Select whether you want to perform a <tt>Release</tt> build or a <tt>Debug</tt> build.</li>
+<li> Start the build process with <tt>Build All</tt>.</li>
+</ol>
+
+<h2>Note about the Intel Fortran library path</h2>
+
+In some installations of Microsoft Visual Studio, the Intel Fortran library path is not added to the library path during the installation (and integration) of Intel Visual Fortran.
+This will lead to a link error about one or more missing libraries, usually <tt>ifconsol.lib</tt>,
+<p>
+If this is the case, solve it by either:
+<ul>
+<li>Add the <tt>lib</tt> directory of the Intel Fortran installation to the global library path in Microsoft Visual Studio. This path can be found in Visual Studio menu path <tt>Tools/Options/Projects and Solutions/VC++ Directories/Library files</tt>.</li>
+<li>Add the <tt>lib</tt> directory of the Intel Fortran installation  to the project's (probably <tt>libcta</tt>'s) library path. This path can be found the project's right-click menu: path <tt>Properties/Configuration Properties/Linker/General/Additional Library Directories</tt>.</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>installation</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>OpenDA installation for Mac users</h1>
+
+<hr>
+
+<h2>Step-by-step installation</h2>
+<ol>
+   <li>Ensure that Java version 1.6 or higher is installed in your computer. You can check what version is
+       installed with <i>java -version</i>. </li>
+   <li>Download OpenDA from <a href="http://www.openda.org/" target="_blank">www.openda.org</a></li>
+   <li>Extract the OpenDA distribution file to the desired location on your computer.</li>
+   <li>A number of system variables need to be set before OpenDA can be run. The first variable that should be set
+       is $OPENDADIR. This variable should point to the bin-directory of your OpenDA installation. For example:<br>
+       <tt>export OPENDADIR=/myhome/openda/bin</tt>.<br>
+       The other variables are set by the script <tt>settings_local.sh</tt> in the directory $OPENDADIR. This
+       script will try to call the local script with machine specific settings
+       $OPENDADIR/settings_local_&lt;hostname&gt;.sh.<br>
+       You must create this sript yourself. Copy the <tt>settings_local_mac.sh</tt> file to a new file
+       named <tt>settings_local_&lt;hostname&gt;.sh</tt> in your $OPENDADIR (unless that file already exists).
+       You can check your hostname with the <i>hostname</i> command. Then edit that file: enable the relevant
+       lines and change the values of the environment variables.<br>
+       The default local settings script might work out of the box for your system. You can use this
+       script by<br> <tt>. $OPENDADIR/settings_local.sh mac</tt><br></li>
+   <li>Most convenient is to set the varables automatically. Add in the <tt>.bashrc</tt> in your home directory, the following two lines:<br>
+   <tt>export OPENDADIR=&lt;bindir&gt;</tt>, with <tt>&lt;bindir&gt;</tt> the location of the <tt>bin</tt> directory of your OpenDA
+   installation.<br>
+   <tt>. $OPENDADIR/setup_openda.sh</tt><br>
+   Note that the '.' is significant in the latter of these lines.</li>
+</ol>
+
+</body>
+</html>

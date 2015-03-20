@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>installation</title>
+<link type="text/css" href="http://www.openda.org/joomla//templates/mcwebtooh/css/black.css" rel="stylesheet">
+</head>
+<body class="contentblock">
+<h1>Welcome to the OpenDA documentation</h1>
+
+<hr>
+
+<h2>Introduction</h2>
+
+OpenDA is a generic environment for parameter calibration and data assimilation application. It provides a platform that allows an
+easy interchange of algorithms and models.
+<p>It is a modular framework, containing methods and tools that can be easily applied to a wide range of applications. It allows
+reuse of data assimilation software, thus reducing the costs of applying data assimilation methods. At the same time, it allows new
+developments in the field of data assimilation to quickly spread to all applications that might benefit from it.
+<p>We assume that the reader is familiar with computational modelling, and with the main aspects of data-assimilation: the
+distinction between off-line and on-line methods, the statistical framework used, the notions of deterministic and stochastic
+models, and the general structure of filtering methods.
+
+<h2>Installation</h2>
+
+The first thing that needs to be taken care of is the installation of OpenDA. Read the appropriate installation page to see how it's
+done and whether it's done properly. We offer installation pages for <a href="usedoc/installation_linux.html" target="docu">Linux</a>,
+<a href="usedoc/installation_mac.html" target="docu">Mac</a> and
+<a href="usedoc/installation_windows.html" target="docu">Windows</a>.
+
+<h2>Using OpenDA</h2>
+
+The next step will be learning how to start using OpenDA. <br>
+At first, a brief <a href="usedoc/intro_da.html" target="docu">introduction to data assimilation</a> is presented. <br>
+The next step is an <a href="usedoc/tutorial_intro.html" target="docu">introduction to OpenDA</a>. <br>
+After these introductions, you should be ready to <a href="usedoc/tutorial_start.html" target="docu">start OpenDA</a>, either from
+the command-line or the <a href="usedoc/tutorial_gui.html" target="docu">graphical user interface (GUI)</a>. <br>
+Some <a href="usedoc/tutorial_examples.html" target="docu">examples</a> are presented to see how it works. <br>
+OpenDA is configured using XML files. For instance, if you would like to use a different calibration algorithm
+or a stochastic observer, or if you would like to couple your own model to OpenDA, you should provide all necessary
+settings, file names, variable names etc. to OpenDA in XML input files. The format of the XML files is specified
+in XML schemas (.xsd) files that are deposited on this website. The diagrams describing the format of the XML schemas
+are found <a href="xmlSchemasHTML/index.html" target="_blank">here</a>.
+
+<h2>Developers' corner</h2>
+
+For people who want to (or have to) start from the OpenDA source code, the Developers' corner is added. The developers' corner is
+split in two parts: a Java section and a native section. The term
+<i>native</i>
+is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
+<br>
+This documentation can be navigated using the vertical menu bar to the left.
+</body>
+</html>

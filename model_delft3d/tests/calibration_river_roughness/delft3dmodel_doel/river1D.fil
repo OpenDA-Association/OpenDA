@@ -1,0 +1,47 @@
+Domain, Checked : No        
+     Grid                  : river1D.grd
+     Grid enclosure        : river1D.enc
+     Bathymetry            : riverslope1e-04.dep
+     Dry points            : none
+     Thin dams             : none
+
+Time frame, Checked : No        
+
+Processes, Checked : No        
+
+Initial conditions, Checked : No        
+
+Boundaries, Checked : No        
+     Boundary definitions  : river1D.bnd
+     Astronomical flow conditions : none
+     Astronomical corrections : none
+     Harmonic flow conditions : none
+     QH-relation flow conditions : none
+     Time series flow conditions : river1D.bct
+     Transport conditions  : none
+
+Physical parameters, Checked : No        
+     Roughness coefficients : none
+     Hor. viscosity/diffusivity : none
+     Heat flux model data  : none
+     Sediment data         : none
+     Morphology data       : none
+     Uniform wind data     : none
+     Space varying wind data : none
+
+Numerical parameters, Checked : Yes       
+
+Operations, Checked : Yes       
+     Discharge definitions : none
+     Discharge data        : none
+     Dredging and dumping data : none
+
+Monitoring, Checked : Yes       
+     Observation points    : river1D.obs
+     Drogues               : none
+     Cross-sections        : none
+
+Additional parameters, Checked : Yes       
+
+Output, Checked : Yes       
+     Fourier analysis data : none

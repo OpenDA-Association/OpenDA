@@ -1,0 +1,15 @@
+    4                                   version of initialisation file
+Delft University of Technology          name of institute
+    3                                   command file ref. number
+INPUT                                   command file name
+    4                                   print file ref. number
+PRINT                                   print file name
+    4                                   test file ref. number
+                                        test file name
+    6                                   screen ref. number
+   99                                   highest file ref. number
+$                                       comment identifier
+	                                       TAB character
+/                                       dir sep char in input file
+\                                       dir sep char replacing previous one
+    1                                   default time coding option

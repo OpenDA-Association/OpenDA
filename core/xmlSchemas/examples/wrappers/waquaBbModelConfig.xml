@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Class implementing the blackbox model factory org.openda.wrappers.BlackBoxWrapper  -->
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+    <wrapperConfig>
+        <file>./waquaBbWrapperConfig.xml</file>
+    </wrapperConfig>
+	<aliasValues>
+		<!-- These aliases can be used to setup a specific experiment. -->
+		<!-- The wrapperConfig contains references to the labels -->
+		<!-- The alias "instanceNumber" is special, its value is set by the Factory -->
+		<alias key="runid" value="run%instanceNumber%"/>
+		<alias key="templateDir" value="./template"/>
+		<alias key="instanceDir" value="./work%instanceNumber%"/>
+		<alias key="inputFile" value="waqpre_dcsm_template.inp"/>
+		<alias key="finalInputFile" value="waqpre_final.inp"/>
+		<alias key="seriesFile" value="series.txt"/>
+        <alias key="seriesFiles" value="series_VLISSGN.txt_ZWL.dat;series_DENHDR.txt_ZWL.dat"/>
+	</aliasValues>
+	<exchangeItems>
+        <vector ioObjectId="input" id="chezy"/>
+        <vector ioObjectId="input" id="diffusion"/>
+        <vector ioObjectId="series" id="waterlevelHoekvanholland"/>
+        <vector ioObjectId="series" id="waterlevelVlissingen"/>
+	</exchangeItems>
+</blackBoxModelConfig>

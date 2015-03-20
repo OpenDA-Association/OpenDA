@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.utils.CsvStochObserver">
+		<workingDirectory>./stochobserver1</workingDirectory>
+		<configFile>observations_oscillator_generated_for_calibration.csv</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.oscillator.OscillatorStochModelFactory">
+		<workingDirectory>./model1</workingDirectory>
+                <!-- generate observations with different parameters -->
+		<configFile>OscillatorStochModelWithOtherParameters.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Simulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>simulationAlgorithm.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation1_results.m</configFile>
+		<selection>
+			<resultItem outputLevel="Normal" />
+			<resultItem id="model_time" outputLevel="Verbose" />
+			<resultItem id="x" outputLevel="Verbose" />
+		</selection>
+	</resultWriter>
+</openDaApplication>

@@ -1,0 +1,118 @@
+!{GEOSR, OIL, CWCHO, 101110
+
+      SUBROUTINE OILCHEM  
+
+	USE GLOBAL
+
+	REAL AUXX1, AUXX2
+	REAL INTERNALCONSTANT
+
+	IF(OILTHICK>=THICKLIMIT) THEN
+
+	 BETA1_OLD=BETA1
+	 
+	 AUXX1=BETA1_OLD
+	 AUXX2=OILAREA/AUXX1
+	 OILAREA=AUXX1*SQRT((AUXX2)**2+DT)
+
+	 BETA1=PI*(CFAY_2**2)*(DELTARHO*G*(OILVOL**2)/ 
+     &       SQRT(WKVISC))**(1.0/3.0)
+
+
+	 OILTHICK=OILVOL/OILAREA
+
+      ENDIF
+	
+!****************************************************
+!************ EVAPORATION ***************************
+!****************************************************
+
+	IF(OILEVAP.EQ.1) THEN
+       INTERNALCONSTANT = (OILMASSINI/100.0) 
+     &                * (FINGAS_EVAP_CONST1 + FINGAS_EVAP_CONST2*TXTEM)
+
+
+	 IF(IDTOX.EQ.4441) THEN  !GASOLINE (LOGARITHMIC)
+		
+	  IF ((N*DT-NPTXLDS) .LE. 60 * exp(1.0)) THEN
+         MEVAPORATEDDT = INTERNALCONSTANT / (exp(1.0) * 60.0)
+	  ELSE
+	   MEVAPORATEDDT = INTERNALCONSTANT * 
+     &        		   exp(-MEVAPORATED/INTERNALCONSTANT)/60.0
+        ENDIF
+         VEVAPORATEDDT = MEVAPORATEDDT/OILRHO
+
+	 ELSE  ! OTHER OIL (SQUAREROOT)
+	
+        IF (OILCHEMN.EQ.1) THEN
+         MEVAPORATEDDT=INTERNALCONSTANT*SQRT(DT/60.)/DT
+	   OILCHEMN=0
+        ELSE
+         MEVAPORATEDDT=INTERNALCONSTANT*INTERNALCONSTANT/
+     &                 (2*MEVAPORATED*60.)
+        ENDIF
+         VEVAPORATEDDT=MEVAPORATEDDT/OILRHO
+
+	 ENDIF
+
+       IF((OILMASS-MEVAPORATEDDT*DT).GT.0.0) then
+        OILMASS = OILMASS - MEVAPORATEDDT* DT
+	  OILVOL  = max(0.0, OILVOL - VEVAPORATEDDT*DT)
+       ELSE
+        MEVAPORATEDDT = OILMASS / DT
+        VEVAPORATEDDT = MEVAPORATEDDT / OILRHO
+        OILMASS       = 0.0
+        OILVOL        = 0.0
+       ENDIF       
+
+       OILVOLT       = PETIT + OILVOL / (1 - VWaterContent)
+       SLICKTHICK    = OILVOLT / OILAREA
+       OILTHICK      = OILVOL  / OILAREA
+
+       MEVAPORATED   = MEVAPORATED + MEVAPORATEDDT * DT
+       VEVAPORATED   = VEVAPORATED + VEVAPORATEDDT * DT
+       FMEVAPORATED  = MEVAPORATED / OILMASSINI
+	
+	ENDIF
+
+
+!****************************************************
+!************ DISSOLUTION ***************************
+!****************************************************
+
+	IF(OILDISS.EQ.1) THEN
+	
+	 SOLUBILITYOILINWATER = SOLUBILITYOILINWATER * 
+     &                        exp(-CDISS_DECAYMENT/3600. * DT)
+	
+	 MDISSOLVEDDT         = (CDISS_KTRANSFMASS/3600.) * 
+     &                        (1 - MWATERCONTENT) *
+     &                        OILAREA * SOLUBILITYOILINWATER
+
+	 VDISSOLVEDDT         = MDISSOLVEDDT / OILRHO
+
+	 IF((OILMASS-MDISSOLVEDDT*DT).GT.0.0) then
+	  OILMASS = OILMASS - MDISSOLVEDDT* DT
+	  OILVOL  = max(0.0, OILVOL - VDISSOLVEDDT*DT)
+	 ELSE
+        MDISSOLVEDDT  = OILMASS / DT
+        VDISSOLVEDDT  = MDISSOLVEDDT / OILRHO
+        OILMASS       = 0.0
+        OILVOL        = 0.0
+       ENDIF 
+	  
+	 OILVOLT       = PETIT + OILVOL / (1 - VWATERCONTENT)
+       SLICKTHICK    = OILVOLT / OILAREA
+       OILTHICK      = OILVOL  / OILAREA
+
+       MDISSOLVED   = MDISSOLVED + MDISSOLVEDDT * DT
+       VDISSOLVED   = VDISSOLVED + VDISSOLVEDDT * DT
+       FMDISSOLVED  = MDISSOLVED / OILMASSINI
+	  
+	ENDIF
+
+
+      RETURN  
+      END  
+
+! GEOSR}

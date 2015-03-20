@@ -1,0 +1,7 @@
+swivtCaseDir=D:\temp\SWIVT_CalInstr\sessions\session001\SWAN4072A\f102am07z001_000
+windowsSwanExe=SWAN4072A
+storeWindowsSwanExeRelative=false
+linuxSwanCalBinDir=/u/hummel/sbw/perfTests/swan_cal_bin
+storelinuxSwanBinDirRelative=false
+linuxSwanExe=swan_4072ABC.exe
+linuxSwanParExe=swan_4072ABC.exe

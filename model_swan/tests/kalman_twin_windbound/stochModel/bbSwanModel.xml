@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>bbSwanWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+        <alias key="SWANDIR" value="."/>
+		<alias key="templateDir" value="swanModel"/>
+		<alias key="instanceDir" value="ens"/>
+		<alias key="inputFile" value="northsea1d_nonstationary_fg.swn"/>
+		<alias key="hotFile" value="northsea1d.HOT"/>
+		<alias key="openboundaryFile" value="bound_south_fg.BND"/>
+		<alias key="windFile" value="synthetic_wind_fg.WND"/>
+        	<alias key="outFile" value="northsea_1d_nonstationary_points_fg.tab"/>
+	</aliasValues>
+
+    <timeInfoExchangeItems start="start_time" end="end_time"/>
+
+	<exchangeItems>
+                <vector id="start_time" ioObjectId="timeInfo" elementId="start_time"/>
+                <vector id="end_time" ioObjectId="timeInfo" elementId="end_time"/>        
+                <vector id="state" ioObjectId="hotFile" elementId="swanstate"/>
+                <vector id="openboundary" ioObjectId="open-boundary" elementId="Hs"/>
+                <vector id="wind.x" ioObjectId="windFile" elementId="wind.x"/>
+                <vector id="wind.y" ioObjectId="windFile" elementId="wind.y"/>
+                <vector id="north_cormorant.wave_height_hm0" ioObjectId="outFile" elementId="Hsig @ 0.,0."/>
+                <vector id="anasuria.wave_height_hm0" ioObjectId="outFile" elementId="Hsig @ 454152.,0."/>
+                <vector id="d151.wave_height_hm0" ioObjectId="outFile" elementId="Hsig @ 786996.,0."/>
+                <vector id="k13.wave_height_hm0" ioObjectId="outFile" elementId="Hsig @ 911465.,0."/>
+                <vector id="europlatform.wave_height_hm0" ioObjectId="outFile" elementId="Hsig @ 1046551.,0."/>
+		<!--
+                <vector id="Hsig @ 0.0,0.0"       ioObjectId="outFile" elementId="north_cormorant.wave_height_hm0"/>
+                <vector id="Hsig @ 454151.0,0.0"  ioObjectId="outFile" elementId="anasuria.wave_height_hm0"       />
+                <vector id="Hsig @ 786995.0,0.0"  ioObjectId="outFile" elementId="d151.wave_height_hm0"           />
+                <vector id="Hsig @ 911464.0,0.0"  ioObjectId="outFile" elementId="k13.wave_height_hm0"            />
+                <vector id="Hsig @ 1046550.0,0.0" ioObjectId="outFile" elementId="europlatform.wave_height_hm0"   />
+                -->
+	</exchangeItems>
+	<!--
+	0.000000 0.000000 # North Cormorant 1
+	454151.534071 0.000000 # Anasuria 11
+	786995.478576 0.000000 # D151 19
+	911464.639728 0.000000 # K13 22
+	1046550.911792 0.000000 # Europlatform 25
+        -->
+
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

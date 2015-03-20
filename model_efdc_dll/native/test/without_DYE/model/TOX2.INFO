@@ -1,0 +1,43 @@
+******************************************************************************
+*                                                                            *
+*  TOXIC MATERIALS LIST & PROPERTIES                                         *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+*                                                                            *
+******************************************************************************
+* PROJECT NAME : NIER2010
+******************************************************************************
+C1 LIST & PROPERTIES INFORMATION
+*
+*  ID      : SEQUENCE ID NUMBER (CAS NO.)
+*  OC_TOX  : -1=ORGANIC TOXICANT
+*  TOXNAME : NAME OF TOXIC MATERIAL  
+*  SGRAV   : SPECIFIC GRAVITY
+*  PARCOEF : NORMAL TOXICANT   = Kd  (PARTITION COEFFICIENT) [L/KG]  (LOG VALUE)
+*            ORGANIC CHEMICALS = Kow (OCTANOL/WATER PARTITION COEFFICIENT) (LOG VALUE)
+*  MOLEW   : MOLECULAR WEIGHT  [G/MOLE]
+*  He      : HENRY'S CONSTANT
+-------------------------------------------------------------------------------
+  C2     ID     OC_TOX     NAME               SGRAV      PARCOEF    MOLEW   He             TXI
+             1     0     Cd                     8.7     10000.000   112.4   0.1            2100
+             2     0     Cu                     8.9     10000.000    63.5   0.1            2100
+             3     0     Pb                    11.3     10000.000   207.2   0.1            2100
+             4     0     Zn                     6.9     10000.000    65.4   0.1            2100
+       50-32-8     0     BENZOPYRENE            1.351   10000.000   252.3   0.1            2100
+             6    -1     PCB                    1.6    100000.000    84.9   0.1            2100
+      131-52-2    -1     PHENOL                 1.071      28.840    94.1   0.0013          600
+     5103-71-9    -1     cis-CHLORDANE          1.63      602.560   409.6   0.000048       2100
+     5103-74-2    -1     trans-CHLORDANE        1.63      602.560   409.6   0.000048       2100
+          1003    -1     CHLOROBENZENE          1.0       954.993   112.6   0.0037         2100
+          1004    -1     METHYL_PARATHION       1.0       870.964   263.2   0.00000024     2100
+          1005    -1     PCB-AROCHLOR_1242      1.0    173780.083   328.4   0.0000084      2100
+          4441     2     GASOLINE               0.73   173780.083   328.4   0.0000084      2100 
+          4442     2     DIESEL                 0.87   173780.083   328.4   0.0000084      2100 
+          4443     2     BUNKER-C               0.92   173780.083   328.4   0.0000084      2100 
+          4444     2     USERDEFINE             0.90   173780.083   328.4   0.0000084      2100          
