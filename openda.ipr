@@ -391,7 +391,6 @@
       <module fileurl="file://$PROJECT_DIR$/models/java/models.iml" filepath="$PROJECT_DIR$/models/java/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/observers/java/observers.iml" filepath="$PROJECT_DIR$/observers/java/observers.iml" />
       <module fileurl="file://$PROJECT_DIR$/public_project_view.iml" filepath="$PROJECT_DIR$/public_project_view.iml" />
-      <module fileurl="file://$PROJECT_DIR$/python_bridge/python_bridge.iml" filepath="$PROJECT_DIR$/python_bridge/python_bridge.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
@@ -440,14 +439,10 @@
             <SvnBranchConfiguration>
               <option name="branchUrls">
                 <list>
-                  <option value="https://repos.deltares.nl/repos/openda/branches" />
-                  <option value="https://repos.deltares.nl/repos/openda/chimere" />
-                  <option value="https://repos.deltares.nl/repos/openda/lotoseuros" />
-                  <option value="https://repos.deltares.nl/repos/openda/tags" />
-                  <option value="https://repos.deltares.nl/repos/openda/waqua" />
+                  <option value="https://svn.oss.deltares.nl/repos/openda/branches" />
                 </list>
               </option>
-              <option name="trunkUrl" value="https://repos.deltares.nl/repos/openda/trunk" />
+              <option name="trunkUrl" value="https://svn.oss.deltares.nl/repos/openda/trunk" />
             </SvnBranchConfiguration>
           </value>
         </entry>
