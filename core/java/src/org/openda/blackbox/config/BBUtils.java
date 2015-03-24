@@ -706,4 +706,31 @@ public class BBUtils {
 		return string != null
 				&& (string.toUpperCase().equals("COLD_START") || string.toUpperCase().equals("COLDSTART") || string.toUpperCase().equals("COLD START"));
 	}
+
+	/**
+	 * A path string in Python only works if there is no trailing path separator sign at the end of the path string.
+	 * A path string in Python only works with / signs as path separators, not with \ signs,
+	 * since the \ sign is an escape character in Python.
+	 *
+	 * @param file full path to a file or directory.
+	 * @return file path string that can be passed to Python.
+	 */
+	public static String getFilePathStringForPython(File file) {
+		String path;
+		try {
+			path = file.getCanonicalPath();
+		} catch (IOException e) {
+			throw new RuntimeException(BBUtils.class.getSimpleName() + ": cannot get canonical path of file '" + file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
+		}
+
+		//remove any trailing \ or / sign.
+		if (path.endsWith("\\") || path.endsWith("/")) {
+			path = path.substring(0, path.length() - 1);
+		}
+
+		//replace all \ signs with / signs.
+		path = path.replaceAll("\\\\", "/");
+
+		return path;
+	}
 }

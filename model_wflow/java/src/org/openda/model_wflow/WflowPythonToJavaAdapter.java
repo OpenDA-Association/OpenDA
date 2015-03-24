@@ -21,7 +21,6 @@
 package org.openda.model_wflow;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.ITime;
 import org.openda.utils.Time;
 
@@ -105,7 +105,7 @@ public class WflowPythonToJavaAdapter {
 			String runId, String configFileName, String cloneMapFileName) {
 		try {
 			this.jep.set("cloneMapFileName", cloneMapFileName);
-			String caseDirectoryPath = getPythonFilePathString(caseDirectory);
+			String caseDirectoryPath = BBUtils.getFilePathStringForPython(caseDirectory);
 			this.jep.set("caseDirectory", caseDirectoryPath);
 			this.jep.set("runId", runId);
 			this.jep.set("configFileName", configFileName);
@@ -637,7 +637,7 @@ public class WflowPythonToJavaAdapter {
 		try {
 			this.jep.eval("tempConfig = ConfigParser.SafeConfigParser()");
 			this.jep.eval("tempConfig.optionxform = str");
-			String configFilePath = getPythonFilePathString(configFile);
+			String configFilePath = BBUtils.getFilePathStringForPython(configFile);
 			this.jep.set("configFilePath", configFilePath);
 			this.jep.eval("tempConfig.read(configFilePath)");
 			this.jep.eval("tempOutputMaps = tempConfig.options('outputmaps')");
@@ -670,7 +670,7 @@ public class WflowPythonToJavaAdapter {
 	public void writePiMapStackXmlFile(File mapStackXmlFile, String mapStackFileNamePattern,
 			String locationId, String parameterId, ITime timeHorizon, long timeStepLength) {
 		try {
-			String mapStackXmlFilePath = getPythonFilePathString(mapStackXmlFile);
+			String mapStackXmlFilePath = BBUtils.getFilePathStringForPython(mapStackXmlFile);
 			this.jep.set("mapStackXmlFile", mapStackXmlFilePath);
 			this.jep.set("mapStackName", mapStackFileNamePattern);
 			this.jep.set("locationName", locationId);
@@ -762,34 +762,6 @@ public class WflowPythonToJavaAdapter {
 				.append(calendar.get(Calendar.SECOND)).append(")");
 
 		return stringBuilder.toString();
-	}
-
-	/**
-	 * A path string in Python only works if there is no trailing path separator sign at the end of the path string.
-	 * A path string in Python only works with / signs as path separators, not with \ signs,
-	 * since the \ sign is an escape character in Python.
-	 *
-	 * @param file full path to a file or directory.
-	 * @return file path string that can be passed to Python.
-	 */
-	private static String getPythonFilePathString(File file) {
-		String path;
-		try {
-			path = file.getCanonicalPath();
-		} catch (IOException e) {
-			throw new RuntimeException(WflowPythonToJavaAdapter.class.getSimpleName() + ": cannot get canonical path of file '"
-					+ file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
-		}
-
-		//remove any trailing \ or / sign.
-		if (path.endsWith("\\") || path.endsWith("/")) {
-			path = path.substring(0, path.length() - 1);
-		}
-
-		//replace all \ signs with / signs.
-		path = path.replaceAll("\\\\", "/");
-
-		return path;
 	}
 
 
