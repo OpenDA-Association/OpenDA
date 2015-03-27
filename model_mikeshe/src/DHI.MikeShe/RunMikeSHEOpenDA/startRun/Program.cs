@@ -8,7 +8,17 @@ using org.openda.application;
 using java.io;
 using MikeSheInOpenDA;
 using System.IO;
-
+/*
+ * Normal run: 
+ * ..\..\..\..\..\..\..\tests\Karup\XML\MikeSheConfig.txt  ..\..\..\..\..\..\..\tests\Karup\XML\EnKF_biasInit.oda
+ * "c:\devel_nils\hydrocast\Ahlergaard_model_for_Nils\ahl\XML\MikeSheConfig.txt"  "c:\devel_nils\hydrocast\Ahlergaard_model_for_Nils\ahl\XML\EnKF_2.oda" 
+ * 
+ * c:\devel_nils\public\model_mikeshe\tests\Karup\XML\MikeSheConfig.txt c:\devel_nils\public\model_mikeshe\tests\Karup\XML\EnKF_biasInit.oda
+ * 
+ *
+ * 
+ * 
+ */
 namespace startRun
 {
     class Program
@@ -30,13 +40,26 @@ namespace startRun
                 string currentDirectory = System.IO.Directory.GetCurrentDirectory();
                 
 
-                string arg1 = currentDirectory + args[0];
-                string arg2 = currentDirectory + args[1];
 
-                Uri uri1 = new Uri(Path.Combine(currentDirectory, arg1));
-                Uri uri2 = new Uri(Path.Combine(currentDirectory, arg2));
+                //string arg1 = currentDirectory + args[0];
+                //string arg2 = currentDirectory + args[1];
 
-
+                // Make full paths in case we are using a relative path
+                Uri uri1, uri2;
+                if (args[0].Substring(1,1).Equals(":")) {
+                    uri1 = new Uri(args[0]);
+                }
+                else{
+                    uri1 = new Uri(Path.Combine(currentDirectory, args[0]));
+                }
+                if (args[1].Substring(1, 1).Equals(":"))
+                {
+                    uri2 = new Uri(args[1]);
+                }
+                else
+                {
+                    uri2 = new Uri(Path.Combine(currentDirectory, args[1]));
+                }    
                 string file1 = Path.GetFullPath(uri1.AbsolutePath);
                 string file2 = Path.GetFullPath(uri2.AbsolutePath);
 

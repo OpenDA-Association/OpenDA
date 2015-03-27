@@ -145,14 +145,15 @@ namespace MikeSheInOpenDA
                 {
                 string parentPath = new DirectoryInfo(_msheFileName).Parent.Parent.FullName.ToString();
                 string filename = Path.GetFileName(_msheFileName);
-                newSheFileName = Path.Combine(parentPath, "Ensembles", _instanceCounter.ToString(), filename);
+                //newSheFileName = Path.Combine(parentPath, "Ensembles", _instanceCounter.ToString(), filename);
+                newSheFileName = Path.Combine(parentPath,_instanceCounter.ToString(), filename);
                     if (!File.Exists(newSheFileName))
                     {
                         Console.WriteLine(" ****************\n ");
                         Console.WriteLine("In  ModelAccess.cs at InitializeModel \n");
                         Console.WriteLine("\n  Error in Model Instance --> {0}\n", _instanceCounter);
                         Console.WriteLine("\n  File Not Found --> {0}\n", _instanceCounter);
-                        throw new Exception("Could not find the model .she file in ModelOpenMI2");
+                        throw new Exception("Could not find the model .she file in ModelOpenMI2 :"+newSheFileName);
                     }
                 }
                 // Else If (_instanceCounter == _numEnsembles)
@@ -168,7 +169,7 @@ namespace MikeSheInOpenDA
                         Console.WriteLine("In  ModelAccess.cs at InitializeModel \n");
                         Console.WriteLine("\n  Error in Model Instance --> {0}\n", _instanceCounter);
                         Console.WriteLine("\n  File Not Found --> {0}\n", _instanceCounter);
-                        throw new Exception("Could not find the model .she file in ModelOpenMI2");
+                        throw new Exception("Could not find the model .she file in ModelOpenMI2 :" + newSheFileName);
                     }
                 }
 

@@ -136,7 +136,8 @@ namespace org.openda.dotnet.DHIStochObserver
          */
         public int getCount()
         {
-            return 0;
+            int nObs = _selectedDataPoints.Count;
+            return nObs;
         }
 
 
@@ -273,15 +274,44 @@ namespace org.openda.dotnet.DHIStochObserver
         /// <returns>Properties (column of data from observation descriptions)</returns>
         public IVector GetValueProperties(String Key)
         {
-            //TODO: Check hos the key is passed. With '(' and ')'?
-            DataPoint point = _selectedDataPoints.First(p => System.String.CompareOrdinal(p.XYLayerPoint.ToString(), Key) == 0);
-            double[] vecDouble = new double[3];
-            vecDouble[0] = point.XYLayerPoint.X;
-            vecDouble[1] = point.XYLayerPoint.Y;
-            vecDouble[2] = (double)point.XYLayerPoint.Layer;
+            IVector values;
 
-            IVector vec = new Vector(vecDouble);
-            return vec;
+            //We assume no error so we first collect all coordinate data
+            int nObs = this.getCount();
+            double[] X = new double[nObs];
+            double[] Y = new double[nObs];
+            double[] Z = new double[nObs];
+            double[] Q = new double[nObs];
+            for (int iObs = 0; iObs < nObs; iObs++)
+            {
+                X[iObs] = _selectedDataPoints[iObs].XYLayerPoint.X;
+                Y[iObs] = _selectedDataPoints[iObs].XYLayerPoint.Y;
+                Z[iObs] = _selectedDataPoints[iObs].XYLayerPoint.Layer;
+                Q[iObs] = 1;  //MEANS HEAD
+            }
+
+            //See what we have to return
+            Key.ToLower();
+            if (System.String.CompareOrdinal(Key, "xposition") == 0)
+            {
+                values = new Vector(X);
+            }
+            else if (System.String.CompareOrdinal(Key, "yposition") == 0)
+            {
+                values = new Vector(Y);
+            }
+            else if (System.String.CompareOrdinal(Key, "height") == 0)
+            {
+                values = new Vector(Z);
+            }
+            else if (System.String.CompareOrdinal(Key, "quantity") == 0)
+                values = new Vector(Q);
+            else
+            {
+                throw new Exception("Property " + Key + " is not supported/known by the DHIStockObserver.");
+            }
+          
+            return values;
         }
 
         /// <summary>
@@ -291,7 +321,24 @@ namespace org.openda.dotnet.DHIStochObserver
         /// <returns>Properties (column of data from observation descriptions)</returns>
         public String[] GetStringProperties(String Key)
         {
-            return null;
+            int nObs = this.getCount();
+            
+            String[] Q = new String[nObs];
+            for (int iObs = 0; iObs < nObs; iObs++)
+            {
+               
+                Q[iObs] = "Head";   //TODO not hard coded
+            }
+
+            //See what we have to return
+            Key.ToLower();
+
+            if (System.String.CompareOrdinal(Key, "quantity") == 0)
+                return Q;
+            else
+            {
+                throw new Exception("Property " + Key + " is not supported/known by the DHIStockObserver.");
+            }
         }
 
         /// <summary>
@@ -318,7 +365,7 @@ namespace org.openda.dotnet.DHIStochObserver
         /// <returns>number of observations</returns>
         public int ObservationCount
         {
-            get { return 0; }
+            get { return this.getCount(); }
         }
 
         #region Static converts

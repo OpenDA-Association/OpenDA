@@ -6,6 +6,6 @@
     </StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>..\..\..\..\..\..\..\tests\Karup\XML\MikeSheConfig.txt  ..\..\..\..\..\..\..\tests\Karup\XML\EnKF_GS_5.oda</StartArguments>
+    <StartArguments>"c:\devel_nils\hydrocast\Ahlergaard_model_for_Nils\ahl\XML\MikeSheConfig.txt"  "c:\devel_nils\hydrocast\Ahlergaard_model_for_Nils\ahl\XML\EnKF_2.oda"</StartArguments>
   </PropertyGroup>
 </Project>

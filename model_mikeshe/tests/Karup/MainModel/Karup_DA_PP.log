@@ -1,8 +1,8 @@
- ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Pre-processor. Input file : C:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE
+ ERRORS AND MESSAGES FROM 64-bit version of MIKE SHE Pre-processor. Input file : c:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE
  =====================================================================================================================================================
  
-Print Log file : C:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE - Result Files\Karup_DA_PP_Print.log
-Fif file : C:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE - Result Files\Karup_DA.fif
+Print Log file : c:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE - Result Files\Karup_DA_PP_Print.log
+Fif file : c:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE - Result Files\Karup_DA.fif
  
 Processing...
 SimSpec and storing
@@ -111,7 +111,7 @@ WARNING: Retention curve too steep. Processed water contents
            Max = 3.3839643E-02 from 5.3512661E-09 to 5.5323510E-09 at pF =6.950000
 
 Soil   : JB-1
-DBase  : C:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\MAPS\DKsoils.uzs
+DBase  : c:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\MAPS\DKsoils.uzs
 ----------------------------------------------------------------------------------
  
 WARNING: Retention curve too steep. Processed water contents
@@ -122,7 +122,7 @@ WARNING: Retention curve too steep. Processed water contents
            Max = 3.2348052E-02 from 1.1630951E-08 to 1.2007190E-08 at pF =6.950000
 
 Soil   : JB-2
-DBase  : C:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\MAPS\DKsoils.uzs
+DBase  : c:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\MAPS\DKsoils.uzs
 ----------------------------------------------------------------------------------
 Classification Data
 
@@ -164,7 +164,7 @@ Writing fif file...
   Done.
  
 - Writing PreProcessed Data tree to pfs file :
-  C:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE - Result Files\Karup_DA_PreProcessed.PFS...
+  c:\devel_nils\public\model_mikeshe\tests\Karup\MainModel\Karup_DA.SHE - Result Files\Karup_DA_PreProcessed.PFS...
  
 Termination...
  

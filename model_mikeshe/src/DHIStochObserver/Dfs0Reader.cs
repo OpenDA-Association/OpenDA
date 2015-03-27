@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DHI.Generic.MikeZero.DFS;
+using System.IO;
 
 namespace org.openda.dotnet.DHIStochObserver
 {
@@ -19,6 +20,8 @@ namespace org.openda.dotnet.DHIStochObserver
 
         private readonly IDfsFile _dfs0File ;
         private readonly int _numTimeSteps;
+        private readonly int _firstTimeStepIndex;
+        private readonly double _refdateMJD;
         private readonly int _numItems;
         private readonly List<string> _itemIDs;
         private readonly List<DateTime> _times;
@@ -35,6 +38,22 @@ namespace org.openda.dotnet.DHIStochObserver
         /// <param name="dfsfile">full path string to dfs0 file.</param>
         public Dfs0Reader(string dfsfile)
         {
+            // Set ObservationFile
+            if (!File.Exists(dfsfile))
+                throw new FileNotFoundException("\n ERROR: DFS File Not Found! \n Could not find: {0} \n", dfsfile);
+
+            // Determine Type
+            string fileExtension = Path.GetExtension(dfsfile);
+            if (System.String.Compare(fileExtension, ".dfs0", System.StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                fileExtension = Path.GetExtension(dfsfile);
+            }
+            else
+            {
+                throw new Exception("\n ERROR: Observation File Type Incorrect! Expecting dfs0. \n  \n");
+            }
+
+
             // Open the file as a generic dfs file
             _dfs0File = DfsFileFactory.DfsGenericOpen(dfsfile);
 
@@ -43,39 +62,100 @@ namespace org.openda.dotnet.DHIStochObserver
 
             // Check for dfs compliance
             CheckDFSCompliance();
+
             
             // Number of time steps (same for all items)
             _numTimeSteps = fileInfo.TimeAxis.NumberOfTimeSteps;
+
+            // Starting from...
+            int _firstTimeStepIndex = fileInfo.TimeAxis.FirstTimeStepIndex;
 
             // Number of variable items in dfs0
             _numItems = _dfs0File.ItemInfo.Count;
 
             // Add the IDs to list (Keys)
             _itemIDs = new List<string>();
+            _xyLayerPoints = new List<IXYLayerPoint>();
+            
             foreach (var itemInfo in _dfs0File.ItemInfo)
             {
-                _itemIDs.Add(itemInfo.Name);
+                String name = itemInfo.Name;
+                _itemIDs.Add(name);
+
+                // Is the coordinate extracted from the name
+                // X.Y_Layer
+                int iPoint = name.IndexOf(".");
+                int iUnderscore = name.IndexOf("_");
+                if (iPoint > 0 && iUnderscore > 0 && iUnderscore > iPoint)
+                {
+                    String sX = name.Substring(0, iPoint);
+                    String sY = name.Substring(iPoint + 1, iUnderscore - iPoint - 1);
+                    String sL = name.Substring(iUnderscore + 1);
+                    Console.WriteLine("Observation location from name: " + sX + " " + sY + " " + sL);
+                    double x = Convert.ToDouble(sX);
+                    double y = Convert.ToDouble(sY);
+                    int zLayer = Convert.ToInt32(sL);
+                      
+                    _xyLayerPoints.Add(new XYLayerPoint(x, y, zLayer));
+                 }
+                 // Otherwise we hope it is stored in itemInfo.ReferenceCoordinate...
+                 else {
+
+                    double x = Convert.ToDouble(itemInfo.ReferenceCoordinateX);
+                    double y = Convert.ToDouble(itemInfo.ReferenceCoordinateY);
+                    // Check if an integer value.
+                    if(itemInfo.ReferenceCoordinateZ - Math.Round(itemInfo.ReferenceCoordinateZ)>0.001)
+                    {
+                        Console.WriteLine("WARNING. The Z position in DFS0 file is not an integer. Rounding to nearest integer to retrieve layer integer value.\n");
+                    }
+                    int zLayer = Convert.ToInt32(Math.Round(itemInfo.ReferenceCoordinateZ));
+                    _xyLayerPoints.Add(new XYLayerPoint(x, y,zLayer));
+                }
             }
 
+
+            //Gather all times
             _times = _dfs0File.FileInfo.TimeAxis.GetDateTimes().ToList();
+            
+           
+            
+            DateTime firstTime = _times[0];
+       
+            if (_dfs0File.FileInfo.TimeAxis.TimeAxisType != TimeAxisType.CalendarEquidistant){
+                //Handle pseudo irreggular files
+                double[] dates = new double[_numTimeSteps]; //just make 1 bigger for easy indexing
+                
+
+                for (int iTimeStep = _firstTimeStepIndex; iTimeStep < _numTimeSteps; iTimeStep++){
+                    for (int iItem = 1; iItem < _numItems+1; iItem++){
+                        IDfsItemData data1 = _dfs0File.ReadItemTimeStep(iItem, iTimeStep);
+                        double offsetTime = data1.Time;
+                        
+                        if (iItem==1){
+                            dates[iTimeStep]=offsetTime;
+                        }
+                        else {
+                            if (Math.Abs(offsetTime-dates[iTimeStep])>1.0){
+                                 throw new Exception("Non Equidistant Calander is not regular");
+                            }
+                        }
+                    }
+                    if (iTimeStep > 0)
+                    {
+                        _times[iTimeStep] =_times[0].AddSeconds(dates[iTimeStep]);
+                    }
+                }
+            }
+            
+         
+
+            IList<IDfsDynamicItemInfo> infoAllTimes = _dfs0File.ItemInfo;
+            String TimeSeriesName=infoAllTimes[0].Name;
 
             // Delelte Values
             _deleteValueDouble = _dfs0File.FileInfo.DeleteValueDouble;
             _deleteValueFloat = _dfs0File.FileInfo.DeleteValueFloat;
 
-            _xyLayerPoints = new List<IXYLayerPoint>();
-            foreach (var itemInfo in _dfs0File.ItemInfo)
-            {
-                double x = Convert.ToDouble(itemInfo.ReferenceCoordinateX);
-                double y = Convert.ToDouble(itemInfo.ReferenceCoordinateY);
-                // Check if an integer value.
-                if(itemInfo.ReferenceCoordinateZ - Math.Round(itemInfo.ReferenceCoordinateZ)>0.001)
-                {
-                    Console.WriteLine("WARNING. The Z position in DFS0 file is not an integer. Rounding to nearest integer to retrieve layer integer value.\n");
-                }
-                int zLayer = Convert.ToInt32(Math.Round(itemInfo.ReferenceCoordinateZ));
-                _xyLayerPoints.Add(new XYLayerPoint(x, y,zLayer));
-            }
         }
 
         /// <summary>
@@ -181,7 +261,8 @@ namespace org.openda.dotnet.DHIStochObserver
             // CHECK if Calendar Equidistant (only one supported).
             if (_dfs0File.FileInfo.TimeAxis.TimeAxisType != TimeAxisType.CalendarEquidistant)
             {
-                throw new Exception("Error in dfs0 file. Only CalendarEquidistant supported");
+                System.Console.WriteLine("Disables test on CalendarEquidistant");
+                //throw new Exception("Error in dfs0 file. Only CalendarEquidistant supported");
             }
 
             // CHECK if not all items are "Instantaneous", then error

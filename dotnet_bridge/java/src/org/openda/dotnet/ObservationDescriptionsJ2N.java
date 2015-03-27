@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 
-	private cli.OpenDA.DotNet.Interfaces.IObservationDescriptions _dotNetObsDescr;
+	public cli.OpenDA.DotNet.Interfaces.IObservationDescriptions _dotNetObsDescr;
 
     ObservationDescriptionsJ2N(cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObsDescr){
 		_dotNetObsDescr = dotNetObsDescr;

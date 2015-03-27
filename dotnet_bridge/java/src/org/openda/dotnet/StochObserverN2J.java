@@ -31,6 +31,7 @@ import org.openda.interfaces.ISqrtCovariance;
 import org.openda.interfaces.IStochObserver;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
+import org.openda.utils.SqrtCovariance;
 import org.openda.utils.Vector;
 
 import java.io.File;
@@ -110,10 +111,24 @@ public class StochObserverN2J implements IStochObserver {
 	}
 
 
-	public ISqrtCovariance getSqrtCovariance() {
-		throw new UnsupportedOperationException("Not implemented yet.");
-	}
+	public ISqrtCovariance getSqrtCovariance()
+	{
+		String errorMsg=
+			"The C# programmer has implemented the method getSqrtCovariance (it does not return null)\n" +
+			"The bridging from C# to java does not yet implement converting a C# ISqrtCovariance object"+
+			"into the java counterpart \n"+
+			"1) your matrix is diagonal -> have C# return null, we will use your method  getStandardDeviations\n"+
+			"2) you have correleted observations -> sorry you are the first, you have to implement the converting\n";
 
+		/* Check whether you are thirst one trying to deal with correlated observations */
+		cli.OpenDA.DotNet.Interfaces.ISqrtCovariance dotNetSqrtCovariance = _dotNetStochObs.getSqrtCovariance();
+		if (dotNetSqrtCovariance!=null){throw new RuntimeException(errorMsg);}
+
+		/* Construct matrix using standard deviations */
+		double [] returnValues =  _dotNetStochObs.getStandardDeviations();
+		ISqrtCovariance sqrtVariance = new SqrtCovariance(returnValues);
+		return sqrtVariance;
+	}
 
 	public IVector getStandardDeviations() {
 		double[] returnValues =  _dotNetStochObs.getStandardDeviations();
@@ -143,7 +158,10 @@ public class StochObserverN2J implements IStochObserver {
 
 
 	public void setParent(IInstance parent) {
-		throw new UnsupportedOperationException("Not implemented yet.");
+		//Hmm, do we care? Just write a message
+		System.out.println("StochObserverN2J: call to dummy implementation of setParent");
+
+		//throw new UnsupportedOperationException("Not implemented yet.");
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 

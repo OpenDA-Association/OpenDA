@@ -41,8 +41,9 @@ namespace MikeSheInOpenDA
             double[] ypos = observationDescriptions.GetValueProperties("yposition").Values;
             double[] height = observationDescriptions.GetValueProperties("height").Values;
 
+
             int observationCount = observationDescriptions.ObservationCount;
-            int nObs = quantity.Length; // same as observationCount?
+            int nObs = xpos.Length; // same as observationCount?
 
 
             // The heights should be specified in an array of integers representing the layer. Check if the values are indeed integers or close to integers before converting
@@ -73,7 +74,7 @@ namespace MikeSheInOpenDA
 
                 if (modelVariableIndex < 0)
                 {
-                    throw new Exception("The observation point was NOT in the model grid! For Point: (" + xpos[obsC].ToString() + "," + ypos[obsC].ToString() + "," + layer[obsC].ToString() + ") \n");
+                    throw new Exception("BLA The observation point was NOT in the model grid! For Point: (" + xpos[obsC].ToString() + "," + ypos[obsC].ToString() + "," + layer[obsC].ToString() + ") \n");
                 }
             }
             return modelIndices;
@@ -89,7 +90,7 @@ namespace MikeSheInOpenDA
             double[] height = observationDescriptions.GetValueProperties("height").Values;
 
             int observationCount = observationDescriptions.ObservationCount;
-            int nObs = quantity.Length; // same as observationCount?
+            int nObs = xpos.Length; // same as observationCount?
 
             List<string> exchangeItemId = new List<string>();
 
