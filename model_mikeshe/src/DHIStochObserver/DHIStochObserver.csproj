@@ -47,7 +47,15 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DHI.DHIfl, Version=15.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\DHI.DHIfl\v4.0_15.0.0.0__c513450b5d0bf0bf\DHI.DHIfl.dll</HintPath>
+    </Reference>
     <Reference Include="DHI.Generic.MikeZero.DFS, Version=15.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf, processorArchitecture=MSIL" />
+    <Reference Include="DHI.Generic.MikeZero.EUM, Version=15.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf, processorArchitecture=MSIL" />
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\external\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Oatc.OpenMI.Sdk, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\external\OpenMI2.0\Oatc.OpenMI.Sdk.dll</HintPath>
@@ -65,6 +73,7 @@
     <Compile Include="DataPoint.cs" />
     <Compile Include="Dfs0Reader.cs" />
     <Compile Include="DFS2Reader.cs" />
+    <Compile Include="DFSBase.cs" />
     <Compile Include="DHIStochObserver.cs" />
     <Compile Include="IDfsRead.cs" />
     <Compile Include="IXYLayerPoint.cs" />

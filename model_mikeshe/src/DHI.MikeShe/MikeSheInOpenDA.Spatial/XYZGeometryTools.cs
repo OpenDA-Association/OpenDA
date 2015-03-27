@@ -56,12 +56,38 @@ namespace MikeSheInOpenDA.Spatial
         /// Finds if the given point is located in the model grid.
         /// Cycles through every grid rectangle.
         /// </summary>
-        /// <param name="_point">point to check if it's within the grid.</param>
-        /// <param name="_grid">the model grid.</param>
+        /// <param name="pt">point to check if it's within the grid.</param>
+        /// <param name="modelCoordinates">the model grid.</param>
+        /// <param name="layerIndifferent">layer specific</param> 
         /// <returns></returns>
-        public static bool IsPointInModelPlain(ICoordinate pt, IDictionary<int, ISpatialDefine> modelCoordinates)
+        public static bool IsPointInModelPlain(IXYLayerPoint pt, IDictionary<int, ISpatialDefine> modelCoordinates, bool layerIndifferent = false)
         {
-            return modelCoordinates.Values.Any(rec => rec.PointInObject(new XYLayerPoint(pt.X, pt.Y, 0)));
+            return modelCoordinates.Values.Any(rec => rec.PointInObject(new XYLayerPoint(pt.X, pt.Y, 0), layerIndifferent));
+        }
+
+        /// <summary>
+        /// Finds if the given point is located in the model grid.
+        /// Cycles through every grid rectangle.
+        /// </summary>
+        /// <param name="pt">point to check if it's within the grid.</param>
+        /// <param name="modelCoordinates">the model grid.</param>
+        /// <param name="layerIndifferent">layer specific</param> 
+        /// <returns></returns>
+        public static bool IsPointInModelPlain(ICoordinate pt, IDictionary<int, ISpatialDefine> modelCoordinates, bool layerIndifferent = false)
+        {
+            return modelCoordinates.Values.Any(rec => rec.PointInObject(new XYLayerPoint(pt.X, pt.Y, 0), layerIndifferent));
+        }
+        /// <summary>
+        /// Finds if the given point is located in the model grid.
+        /// Cycles through every grid rectangle.
+        /// </summary>
+        /// <param name="pt">point to check if it's within the grid.</param>
+        /// <param name="modelCoordinates">the model grid.</param>
+        /// <param name="layerIndifferent">layer specific</param>
+        /// <returns></returns>
+        public static bool IsPointInModelPlain(ICoordinate pt, IList<ISpatialDefine> modelCoordinates, bool layerIndifferent = false)
+        {
+            return modelCoordinates.Any(rec => rec.PointInObject(new XYLayerPoint(pt.X, pt.Y, 0), layerIndifferent));
         }
 
 
@@ -71,29 +97,57 @@ namespace MikeSheInOpenDA.Spatial
         /// </summary>
         /// <param name="pt">point to check if it's within the grid.</param>
         /// <param name="modelCoordinates">the model grid.</param>
+        /// <param name="layerIndifferent">layer specific</param>
         /// <returns></returns>
-        public static bool IsPointInModelPlain(IXYLayerPoint pt, IDictionary<int, ISpatialDefine> modelCoordinates)
+        public static bool IsPointInModelPlain(IXYLayerPoint pt, IList<ISpatialDefine> modelCoordinates, bool layerIndifferent = false)
         {
-            return modelCoordinates.Values.Any(rec => rec.PointInObject(new XYLayerPoint(pt.X, pt.Y, pt.Layer)));
+            return modelCoordinates.Any(rec => rec.PointInObject(new XYLayerPoint(pt.X, pt.Y, 0), layerIndifferent));
+        }
+
+
+        /// <summary>
+        /// Seaches the model coordinates to find if the given point is locaded within the model. If so, return the model index.
+        /// NOTE the point is a Z LAYER!
+        /// </summary>
+        /// <param name="pt">a point to search for</param>
+        /// <param name="modelCoordinates">Dictionary containing the model coordinates as values and the key is the model index for each coordinate.</param>
+        /// <returns>Return model index if found, else return -1</returns>
+        public static int ModelIndexWherePointIsLocated(IXYLayerPoint pt, IDictionary<int, ISpatialDefine> modelCoordinates)
+        {
+            foreach (KeyValuePair<int, ISpatialDefine> pair in modelCoordinates)
+            {
+                if (pair.Value.PointInObject(new XYLayerPoint(pt.X, pt.Y, pt.Layer), false))
+                {
+                    return pair.Key;
+                }
+                ;
+            }
+            return -1;
         }
 
         /// <summary>
-        /// Model Index for given point
+        /// Seaches the model coordinates to find if the given point is locaded within the model. If so, return the model index.
+        /// NOTE the point is a Z LAYER!
         /// </summary>
-        /// <param name="pt">point to check if it's within the grid.</param>
-        /// <param name="modelCoordinates">the model grid.</param>
-        /// <returns></returns>
-        public static int ModelIndexForPoint(IXYLayerPoint pt, IDictionary<int, ISpatialDefine> modelCoordinates)
+        /// <param name="pt">a point to search for</param>
+        /// <param name="modelCoordinates">Dictionary containing the model coordinates as values and the key is the model index for each coordinate.</param>
+        /// <returns>Return model index if found, else return -1</returns>
+        public static int ModelIndexWherePointIsLocated(ICoordinate pt, IDictionary<int, ISpatialDefine> modelCoordinates)
         {
-            foreach(KeyValuePair<int,ISpatialDefine> modelGrid in modelCoordinates)
+            foreach (KeyValuePair<int, ISpatialDefine> pair in modelCoordinates)
             {
-                if ( modelGrid.Value.PointInObject( pt ) )
+                if (pair.Value.PointInObject(new XYLayerPoint(pt.X, pt.Y, Convert.ToInt32(pt.Z)), false))
                 {
-                    return modelGrid.Key;
+                    return pair.Key;
                 }
+                ;
             }
-            return -999;
+            return -1;
         }
+
+
+
+
 
     }
 }

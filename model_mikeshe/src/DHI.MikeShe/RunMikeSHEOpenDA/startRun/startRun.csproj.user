@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>..\..\..\..\..\..\..\tests\Karup\XML\MikeSheConfig.txt  ..\..\..\..\..\..\..\tests\Karup\XML\EnKF_GS_5.oda</StartArguments>
+    <StartArguments>C:\OpenDA\ahl\XML\MikeSheConfig.txt  C:\OpenDA\ahl\XML\EnKF_2.oda</StartArguments>
     <StartWorkingDirectory>
     </StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>"c:\devel_nils\hydrocast\Ahlergaard_model_for_Nils\ahl\XML\MikeSheConfig.txt"  "c:\devel_nils\hydrocast\Ahlergaard_model_for_Nils\ahl\XML\EnKF_2.oda"</StartArguments>
+    <StartArguments>"C:\devel_nils\ahl\XML\MikeSheConfig.txt"  "C:\devel_nils\ahl\XML\EnKF_2.oda"</StartArguments>
   </PropertyGroup>
 </Project>

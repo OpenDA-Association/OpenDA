@@ -31,8 +31,8 @@ namespace MikeSheInOpenDA.UnitTests
 
             ApplicationRunnerSingleThreaded applicationRunner = new ApplicationRunnerSingleThreaded();
 
-
-            applicationRunner.runSingleThreaded(new File(odaConfigDir), odaFileName);
+            applicationRunner.initialize(new File(odaConfigDir), odaFileName);
+            applicationRunner.runSingleThreaded();
         }
 
         [Test]
@@ -63,7 +63,8 @@ namespace MikeSheInOpenDA.UnitTests
             string odaFileName = "MikeSimulation.oda";
 
             ApplicationRunnerSingleThreaded applicationRunner = new ApplicationRunnerSingleThreaded();
-            applicationRunner.runSingleThreaded(new java.io.File(odaDirectoryPath), odaFileName);
+            applicationRunner.initialize(new java.io.File(odaDirectoryPath), odaFileName);
+            applicationRunner.runSingleThreaded();
 
         }
     }

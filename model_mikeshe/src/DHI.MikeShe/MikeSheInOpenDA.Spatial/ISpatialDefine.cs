@@ -44,13 +44,15 @@
         /// </summary>
         IXYLayerPoint MidPoint {get;}
 
+
         /// <summary>
         /// Return whether the point is inside this structure.
         /// If this structure is a 1D point, then the (x,y,layer) values must be the same.
         /// </summary>
         /// <param name="pt">The point to check wether it's within this object spatially.</param>
+        /// <param name="layerIndifferent">layer specific</param>
         /// <returns></returns>
-        bool PointInObject(IXYLayerPoint pt);
+        bool PointInObject(IXYLayerPoint pt, bool layerIndifferent);
 
     }
 }

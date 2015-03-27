@@ -178,28 +178,54 @@ namespace MikeSheInOpenDA.Spatial
         /// If this structure is a 1D point, then the (x,y,layer) values must be the same.
         /// </summary>
         /// <param name="pt">The point to check wether it's within this object spatially.</param>
+        /// <param name="layerIndifferent">layer specific</param>
         /// <returns></returns>
-        public bool PointInObject(IXYLayerPoint pt)
+        public bool PointInObject(IXYLayerPoint pt, bool layerIndifferent = false)
         {
-            if (_geometry == GeometryTypes.GeometryPoint)
+            if (!layerIndifferent)
             {
-                double EPSILON = 0.001;
-                if (Math.Abs(pt.X - _pt1.X) < EPSILON && Math.Abs(pt.Y - _pt1.Y) < EPSILON && pt.Layer == _pt1.Layer)
-                { return true; }
-                else
-                { return false; }
-            }
-            else // 2D or 3D case
+                if (_geometry == GeometryTypes.GeometryPoint)
+                {
+                    double EPSILON = 0.001;
+                    if (Math.Abs(pt.X - _pt1.X) < EPSILON && Math.Abs(pt.Y - _pt1.Y) < EPSILON && pt.Layer == _pt1.Layer)
+                    { return true; }
+                    else
+                    { return false; }
+                }
+                else // 2D or 3D case
 
-            if (pt.X > XMinCoordinate && pt.X < XMaxCoordinate &&
-                pt.Y > YMinCoordinate && pt.Y < YMaxCoordinate &&
-                pt.Layer == _pt1.Layer)
-            {
-                return true;
+                    if (pt.X > XMinCoordinate && pt.X < XMaxCoordinate &&
+                        pt.Y > YMinCoordinate && pt.Y < YMaxCoordinate &&
+                        pt.Layer == _pt1.Layer)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
             }
             else
             {
-                return false;
+                if (_geometry == GeometryTypes.GeometryPoint)
+                {
+                    double EPSILON = 0.001;
+                    if (Math.Abs(pt.X - _pt1.X) < EPSILON && Math.Abs(pt.Y - _pt1.Y) < EPSILON)
+                    { return true; }
+                    else
+                    { return false; }
+                }
+                else // 2D or 3D case
+
+                    if (pt.X > XMinCoordinate && pt.X < XMaxCoordinate &&
+                        pt.Y > YMinCoordinate && pt.Y < YMaxCoordinate)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
             }
 
         }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
+using DHI.MikeShe.Engine;
 using MikeSheInOpenDA.Spatial;
 using OpenDA.DotNet.OpenMI.Bridge;
 using OpenMI.Standard2;
@@ -33,52 +35,87 @@ namespace MikeSheInOpenDA
 
         public IList<int> CreateModelIndicesHashTable(OpenDA.DotNet.Interfaces.IObservationDescriptions observationDescriptions)
         {
-            IList<int> modelIndices = new List<int>();
-
+            
             String[] keys = observationDescriptions.PropertyKeys;
             String[] quantity = observationDescriptions.GetStringProperties("quantity");
+            IList<int> modelIndices = new List<int>(quantity.Count());
+
+
+            int headi = quantity.ToList().FindIndex(q => String.CompareOrdinal(q, "Head")==0);
+            int smi = quantity.ToList().FindIndex(q => String.CompareOrdinal(q, "SoilMoisture")==0);
+
+
+            if (headi != 1)
+            {
+                int starti = quantity.ToList().FindIndex(q => String.CompareOrdinal(q, "Head")==0);
+                int lasti = quantity.ToList().FindLastIndex(q => String.CompareOrdinal(q, "Head")==0);
+                ModelCoordinatesSZ(observationDescriptions, ref modelIndices, starti, lasti);
+            }
+            else if (smi != 1)
+            {
+                throw new NotImplementedException("Haven't implemented this for soil moisture.");
+            }
+            return modelIndices;
+        }
+
+
+        private void ModelCoordinatesSZ(OpenDA.DotNet.Interfaces.IObservationDescriptions observationDescriptions, ref IList<int> modelIndices, int starti, int lasti)
+        {
+            //IList<int> modelIndexCorrespondingToObss = new List<int>();
+
+            Full3DGrid grid = WMEngine.SzGrid;
+
+            IXYLayerPoint lowerleft = new XYLayerPoint(grid.GetVertexXCoordinate(0, 0), grid.GetVertexYCoordinate(0, 0), 0);
+            IXYLayerPoint upperright = new XYLayerPoint(grid.GetVertexXCoordinate(0, 2), grid.GetVertexYCoordinate(0, 2), 0);
+
+            double dx = upperright.X - lowerleft.X;
+            double dy = upperright.Y - lowerleft.Y;
+
+            int nz = WMEngine.SzGrid.NumberOfNodesPerColumn;
+
+            // First vertical from layer 0 to topo, then horizontal grid one by one. speficy the right location(order)  mod by DZ
+            int nElements = WMEngine.SzGrid.ElementCount;
+            IDictionary<int, ISpatialDefine> modelEntities = new Dictionary<int, ISpatialDefine>(nElements*nz);
+            for (int i = 0; i < nElements; i += nz)
+            {
+                //int zLayer = Convert.ToInt32(i % nz);
+                // Points in Polygon are defined as LL, LR, UR, UL  (l/l = lower/left, u = upper, r = right )
+                // Finds the mid x and mid y point in the polygon (assuming rectangular grid)
+                double LLx = grid.GetVertexXCoordinate(i, 0);
+                double LLy = grid.GetVertexYCoordinate(i, 0);
+                double URx = LLx + dx;
+                double URy = LLy + dy;
+
+                for (int j = 0; j < nz; j++)
+                {
+                    modelEntities.Add((nz - j - 1) * nElements / nz + i / nz, new SpatialDefine(new XYLayerPoint(LLx, LLy, j), new XYLayerPoint(URx, URy, j), GeometryTypes.Geometry3D));
+                }
+            }
+
             double[] xpos = observationDescriptions.GetValueProperties("xposition").Values;
             double[] ypos = observationDescriptions.GetValueProperties("yposition").Values;
             double[] height = observationDescriptions.GetValueProperties("height").Values;
 
 
-            int observationCount = observationDescriptions.ObservationCount;
-            int nObs = xpos.Length; // same as observationCount?
-
-
-            // The heights should be specified in an array of integers representing the layer. Check if the values are indeed integers or close to integers before converting
-            // the array of doubles to an array of integers.
-            const double tolerance = 1e-5;
-            int[] layer = new int[observationCount];
-            for (int i = 0; i < observationCount; i++)
+            // For each observation index in DFS file
+            for (int i = starti; i <= lasti; i++)
             {
-                layer[i] = Convert.ToInt32(height[i]);
-                if (Math.Abs(layer[i] - height[i]) > tolerance)
+                IXYLayerPoint obsPoint = new XYLayerPoint(xpos[i],ypos[i],Convert.ToInt32(height[i]));
+
+                int modelIdex = XYZGeometryTools.ModelIndexWherePointIsLocated(obsPoint, modelEntities);
+                if (modelIdex > 0)
                 {
-                    throw new Exception("The height specified in the observation was not an integer. Observation \n");
+                    if (!modelIndices.Contains(modelIdex))
+                    {
+                        modelIndices.Add(modelIdex);
+                    }
+                    else
+                    {
+                        throw new Exception("More than one observation for same model index");
+                    }
                 }
             }
-
-            // An array of model values corresponding to the observation points.
-            double[] Hx = new double[nObs];
-
-            List<string> listExchangeIds = ObsIDtoExchangeId(observationDescriptions);
-
-            for (int obsC = 0; obsC < nObs; obsC++)
-            {
-                IDictionary<int, ISpatialDefine> modelCoord = GetModelCoordinates(listExchangeIds[obsC]);
-                IXYLayerPoint obsPoint = new XYLayerPoint(xpos[obsC], ypos[obsC], layer[obsC]);
-
-                int modelVariableIndex = XYZGeometryTools.ModelIndexForPoint(obsPoint, modelCoord);
-                modelIndices.Add(modelVariableIndex);
-
-                if (modelVariableIndex < 0)
-                {
-                    throw new Exception("BLA The observation point was NOT in the model grid! For Point: (" + xpos[obsC].ToString() + "," + ypos[obsC].ToString() + "," + layer[obsC].ToString() + ") \n");
-                }
-            }
-            return modelIndices;
-        }
+        } 
 
 
         private List<string> ObsIDtoExchangeId(OpenDA.DotNet.Interfaces.IObservationDescriptions observationDescriptions)
@@ -209,7 +246,7 @@ namespace MikeSheInOpenDA
                 IXYLayerPoint obsPoint = new XYLayerPoint(xpos[obsC], ypos[obsC], layer[obsC]);
 
 
-                int modelVariableIndex = XYZGeometryTools.ModelIndexForPoint(obsPoint, modelCoord);
+                int modelVariableIndex = XYZGeometryTools.ModelIndexWherePointIsLocated(obsPoint, modelCoord);
 
 
                 if(modelVariableIndex >= 0)
@@ -414,7 +451,7 @@ namespace MikeSheInOpenDA
             {
                 localized2D[obsC] = new double[n];
                 IXYLayerPoint obsPoint = new XYLayerPoint(xpos[obsC], ypos[obsC], 0);
-                if (XYZGeometryTools.IsPointInModelPlain(obsPoint, modelCoord))
+                if (XYZGeometryTools.IsPointInModelPlain(obsPoint, modelCoord, false))
                 {
                     for (int i = 0; i < modelCoord.Count; i++)
                     {

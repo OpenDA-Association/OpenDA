@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DHI.Generic.MikeZero.DFS;
@@ -15,7 +16,7 @@ namespace org.openda.dotnet.DHIStochObserver
     /// 4) Each item has a name containing the x,y,z coordinate (where z is an integer layer).
     /// 5) Instantaneous time series only.
     /// </summary>
-    public class Dfs0Reader : IDfsRead
+    public class Dfs0Reader : DFSBase, IDfsRead
     {
 
         private readonly IDfsFile _dfs0File ;
@@ -37,6 +38,7 @@ namespace org.openda.dotnet.DHIStochObserver
         /// </summary>
         /// <param name="dfsfile">full path string to dfs0 file.</param>
         public Dfs0Reader(string dfsfile)
+            : base(dfsfile)
         {
             // Set ObservationFile
             if (!File.Exists(dfsfile))
@@ -80,45 +82,23 @@ namespace org.openda.dotnet.DHIStochObserver
             foreach (var itemInfo in _dfs0File.ItemInfo)
             {
                 String name = itemInfo.Name;
-                _itemIDs.Add(name);
+                var coords = name.Split(',');
 
-                // Is the coordinate extracted from the name
-                // X.Y_Layer
-                int iPoint = name.IndexOf(".");
-                int iUnderscore = name.IndexOf("_");
-                if (iPoint > 0 && iUnderscore > 0 && iUnderscore > iPoint)
-                {
-                    String sX = name.Substring(0, iPoint);
-                    String sY = name.Substring(iPoint + 1, iUnderscore - iPoint - 1);
-                    String sL = name.Substring(iUnderscore + 1);
-                    Console.WriteLine("Observation location from name: " + sX + " " + sY + " " + sL);
-                    double x = Convert.ToDouble(sX);
-                    double y = Convert.ToDouble(sY);
-                    int zLayer = Convert.ToInt32(sL);
-                      
-                    _xyLayerPoints.Add(new XYLayerPoint(x, y, zLayer));
-                 }
-                 // Otherwise we hope it is stored in itemInfo.ReferenceCoordinate...
-                 else {
 
-                    double x = Convert.ToDouble(itemInfo.ReferenceCoordinateX);
-                    double y = Convert.ToDouble(itemInfo.ReferenceCoordinateY);
-                    // Check if an integer value.
-                    if(itemInfo.ReferenceCoordinateZ - Math.Round(itemInfo.ReferenceCoordinateZ)>0.001)
-                    {
-                        Console.WriteLine("WARNING. The Z position in DFS0 file is not an integer. Rounding to nearest integer to retrieve layer integer value.\n");
-                    }
-                    int zLayer = Convert.ToInt32(Math.Round(itemInfo.ReferenceCoordinateZ));
-                    _xyLayerPoints.Add(new XYLayerPoint(x, y,zLayer));
-                }
+                double x = Convert.ToDouble(coords[0]);
+                double y = Convert.ToDouble(coords[1]);
+                int zLayer = Convert.ToInt32(coords[2]);
+
+                _itemIDs.Add(_dfs0File.FileInfo.FileTitle);
+                _xyLayerPoints.Add(new XYLayerPoint(x, y, zLayer));
             }
 
 
             //Gather all times
             _times = _dfs0File.FileInfo.TimeAxis.GetDateTimes().ToList();
-            
-           
-            
+            _times = _timesteps;
+
+
             DateTime firstTime = _times[0];
        
             if (_dfs0File.FileInfo.TimeAxis.TimeAxisType != TimeAxisType.CalendarEquidistant){
@@ -146,8 +126,6 @@ namespace org.openda.dotnet.DHIStochObserver
                     }
                 }
             }
-            
-         
 
             IList<IDfsDynamicItemInfo> infoAllTimes = _dfs0File.ItemInfo;
             String TimeSeriesName=infoAllTimes[0].Name;
@@ -157,6 +135,7 @@ namespace org.openda.dotnet.DHIStochObserver
             _deleteValueFloat = _dfs0File.FileInfo.DeleteValueFloat;
 
         }
+
 
         /// <summary>
         /// Get a dictionary of datetime,double values with real data.

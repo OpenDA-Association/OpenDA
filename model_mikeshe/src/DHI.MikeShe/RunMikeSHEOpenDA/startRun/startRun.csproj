@@ -150,6 +150,10 @@
       <Project>{50AC9F5F-33D1-43CC-86C0-2C20B07840CC}</Project>
       <Name>OpenDA.DotNet.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\DHIStochObserver\DHIStochObserver.csproj">
+      <Project>{f03b6cba-c485-4fa6-936b-64db5f2929c4}</Project>
+      <Name>DHIStochObserver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\OpenDA.DotNet.OpenMI.Bridge\OpenDA.DotNet.OpenMI.Bridge.csproj">
       <Project>{D7539965-AEF6-4493-9A42-5737A539D039}</Project>
       <Name>OpenDA.DotNet.OpenMI.Bridge</Name>

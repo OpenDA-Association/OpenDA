@@ -8,10 +8,13 @@ using Oatc.OpenMI.Sdk.Backbone;
 using OpenDA.DotNet.Bridge;
 using OpenDA.DotNet.Interfaces;
 using DHI.Generic.MikeZero.DFS;
+using MathNet.Numerics.Distributions;
+using MathNet.Numerics.Random;
 
 
 namespace org.openda.dotnet.DHIStochObserver
 {
+
     /// <summary>
     /// A DHI .NET stochastic observer class that reads DHI type .DFS files.
     /// This is used as part of OpenDA.
@@ -34,6 +37,8 @@ namespace org.openda.dotnet.DHIStochObserver
         public DHIStochObserver()
         {
         }
+
+
 
         /// <summary>
         /// Construct a DHI stoch observer from input file.
@@ -150,33 +155,30 @@ namespace org.openda.dotnet.DHIStochObserver
             return _selectedDataPoints.Select(p => p.Data).ToArray();
         }
 
-        //TODO: Implement. Get values plus noise. 
         /**
          * Get realization values for all observations, for one ensemble member.
+         * REALIZATION = MEASURED + NOISE
          * @return The realizations.
          */
         public double[] getRealizations()
         {
-            int n = _selectedDataPoints.Count;
-            double[] fakeRealization = new double[n];
-            Random random = new Random();
-            
-            //TODO: This is nonesense - fix it. 
-            for (int i = 0; i < n; i++)
+            var measured = getValues();
+            var noise = getStandardDeviations();
+            for (int i = 0; i < measured.Count(); i++)
             {
-                fakeRealization[i] = _selectedDataPoints[i].Data + _selectedDataPoints[i].Data*0.05*random.NextDouble();
+                measured[i] += noise[i];
             }
-
-            return fakeRealization;
+            return measured;
         }
 
         /**
          * Get expectation values for all stochastic observations.
+         * EXPECTATION = MEASURED VALUE
          * @return The expectations.
          */
         public double[] getExpectations()
         {
-            return null;
+            return getValues();
         }
 
         /**
@@ -215,17 +217,39 @@ namespace org.openda.dotnet.DHIStochObserver
          */
         public double[] getStandardDeviations()
         {
-            int n = _selectedDataPoints.Count;
-            double[] fakeStd = new double[n];
-            Random random = new Random();
+            const StandardDeviationTypes type = StandardDeviationTypes.Global;
 
-            //TODO: This is nonesense - fix it. 
-            for (int i = 0; i < n; i++)
+            switch (type)
             {
-                fakeStd[i] = _selectedDataPoints[i].Data * 0.05 * random.NextDouble();
+               case StandardDeviationTypes.Global:
+
+                    //TODO: FIX HARD CODED standard deviation.
+                    const double standardDeviation = 0.02;
+
+                    int n = _selectedDataPoints.Count;
+                    double[] generatedStd = new double[n];
+                    Random mt = new MersenneTwister();
+                    Normal.Samples(mt, generatedStd, 0.0, standardDeviation);
+
+
+                    return generatedStd;
+                break;
+
+                default:
+                    throw new NotImplementedException("Only global standard deviations supported for now.");
+                    break;
             }
-            return fakeStd;
+
+
         }
+
+        private enum StandardDeviationTypes
+        {
+            Global,
+            TimeVarying,
+            BasedOnObservationDesciption
+        }
+
 
         public ITime[] Times
         {

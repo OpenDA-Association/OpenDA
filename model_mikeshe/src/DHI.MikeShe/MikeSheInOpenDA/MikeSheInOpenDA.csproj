@@ -55,9 +55,6 @@
     <Reference Include="DHI.OpenMI2.EngineWrapper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf, processorArchitecture=MSIL" />
     <Reference Include="DHI.OpenMI2.MikeShe, Version=15.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf, processorArchitecture=MSIL" />
     <Reference Include="DHI.OpenMI2.Sdk, Version=15.0.0.0, Culture=neutral, PublicKeyToken=c513450b5d0bf0bf, processorArchitecture=MSIL" />
-    <Reference Include="OpenDA.DotNet.AdditionalInterfaces">
-      <HintPath>..\..\..\..\dotnet_bridge\dotnet\src\OpenDA.DotNet.AdditionalInterfaces\bin\Debug\OpenDA.DotNet.AdditionalInterfaces.dll</HintPath>
-    </Reference>
     <Reference Include="OpenMI.Standard2, Version=2.0.0.0, Culture=neutral, PublicKeyToken=82bbb00ca5ab39e4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -73,6 +70,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\dotnet_bridge\dotnet\src\OpenDA.DotNet.AdditionalInterfaces\OpenDA.DotNet.AdditionalInterfaces.csproj">
+      <Project>{cbd5426e-af5a-435a-8ad4-572a0b5a1334}</Project>
+      <Name>OpenDA.DotNet.AdditionalInterfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\dotnet_bridge\dotnet\src\OpenDA.DotNet.Interfaces\OpenDA.DotNet.Interfaces.csproj">
       <Project>{50AC9F5F-33D1-43CC-86C0-2C20B07840CC}</Project>
       <Name>OpenDA.DotNet.Interfaces</Name>

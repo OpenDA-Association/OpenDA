@@ -100,11 +100,10 @@ namespace startRun
 
             ModelFactory openDaModelFactory = new ModelFactory();
             openDaModelFactory.Initialize(null, null);
-
             ApplicationRunnerSingleThreaded applicationRunner = new ApplicationRunnerSingleThreaded();
+            applicationRunner.initialize(new java.io.File(odaDirectoryPath), odaFileName);
 
-
-            applicationRunner.runSingleThreaded(new java.io.File(odaDirectoryPath), odaFileName);
+            applicationRunner.runSingleThreaded();
 
             System.Console.WriteLine("Done. Hit a key!");
             System.Console.ReadKey();
