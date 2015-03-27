@@ -90,8 +90,11 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 *
 	 * @return Number of observations.
 	 */
-	public int getObservationCount() {
-		throw new UnsupportedOperationException("Not implemented yet.");
+	public int getObservationCount()
+	{
+		return _dotNetObsDescr.get_ObservationCount();
+
+		//throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
