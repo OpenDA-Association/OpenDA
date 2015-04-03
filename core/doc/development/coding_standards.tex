@@ -1,0 +1,24 @@
+\svnidlong
+{$HeadURL: $}
+{$LastChangedDate: $}
+{$LastChangedRevision: $}
+{$LastChangedBy: $}
+
+\odachapter{Data assimilation methods available in \oda}
+
+\begin{tabular}{p{4cm}l}
+\textbf{Origin:} \\
+\textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
+\end{tabular}
+
+\section{Introduction}
+Good coding is partially a matter of taste. For a large system like OpenDA which is developed by various programmers we need some consensus on coding issues. At the moment we do not have a agreed on a coding standard for OpenDA. However we will state a number of rules in this chapter on which the developers have had discussions in the past.
+
+\section{Use of @Override}
+Good coding is partially a matter of taste. For a large system like OpenDA which is developed by various programmers we need some consensus on coding issues. At the moment we do not have a agreed on a coding standard for OpenDA. However we will state a number of rules in this chapter on which the developers have had discussions in the past.
+
+In OpenDA we do not use @Override for methods which implement an interface and do not override any "real" implementation. 
+
+After developing OpenDA for a couple of years we noticed that the use of @Override in de code was very arbitrary. To uniform this we had to add @Overide in many locations or remove it. Modern development environments show the programmer whether a method overrides another implementation or only implements an interface. Manually adding @Override to the code does is therefore considered to be programming overhead which does not add insight in the code.
+
+
