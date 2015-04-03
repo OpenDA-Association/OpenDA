@@ -71,27 +71,27 @@ public class UncertaintyStochVector implements IStochVector {
 		return realization;
 	}
 
-    @Override
+    
     public double evaluatePdf(IVector tv) {
         throw new RuntimeException("UncertaintyStochVector.evaluatePdf() is not yet implemented");
     }
 
-    @Override
+    
     public IVector getExpectations() {
         return parameters;
     }
 
-    @Override
+    
     public ISqrtCovariance getSqrtCovariance() {
         return new SqrtCovariance(getStandardDeviations());
     }
 
-    @Override
+    
     public boolean hasCorrelatedElements() {
         throw new RuntimeException("UncertaintyStochVector.hasCorrelatedElements() is not yet implemented");
     }
 
-    @Override
+    
     public IVector getStandardDeviations() {
 		ArrayList<String> subTreeVectorIds = parameters.getSubTreeVectorIds();
 		double[] stdDevsVectorArray = new double[subTreeVectorIds.size()];

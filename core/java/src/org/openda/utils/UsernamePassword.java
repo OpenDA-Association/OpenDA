@@ -219,10 +219,10 @@ public final class UsernamePassword {
       final JOptionPane jop = new JOptionPane(main, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = jop.createDialog("User name and password");
       dialog.addComponentListener(new ComponentAdapter() {
-         @Override
+         
          public void componentShown(ComponentEvent e) {
             SwingUtilities.invokeLater(new Runnable() {
-               @Override
+               
                public void run() {
                   if (usernameField.getText().isEmpty())
                   {

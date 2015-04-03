@@ -95,7 +95,7 @@ public class CtaTreeVector extends CtaVector implements TreeVector {
     }
 
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public native TreeVector clone();
 
     public ArrayList<String> getSubTreeVectorIds() {

@@ -67,7 +67,7 @@ public class BaseTemplateDataObject implements IDataObject {
         return exchangeItems;
     }
 
-    @Override
+    
     public String[] getExchangeItemIDs() {
         if (exchangeItems == null) return new String[]{};
         IPrevExchangeItem[] items = getExchangeItems();
@@ -79,13 +79,13 @@ public class BaseTemplateDataObject implements IDataObject {
         return ids;
     }
 
-    @Override
+    
     public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
         return getExchangeItemIDs();
 
     }
 
-    @Override
+    
     public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
         int indexExchangeItem = Integer.MAX_VALUE;
         IPrevExchangeItem[] items = getExchangeItems();
@@ -106,7 +106,7 @@ public class BaseTemplateDataObject implements IDataObject {
 
     }
 
-    @Override
+    
     public void finish() {
         if (exchangeItems.length == 0)
             throw new RuntimeException("No exchange items to writeValuesFile");
@@ -160,7 +160,7 @@ public class BaseTemplateDataObject implements IDataObject {
         return bbTemplateConfig;
     }
 
-    @Override
+    
     public void initialize(File workingDir, String[] arguments) {
         String fileName = arguments[0];
         String[] remainingArguments = new String[arguments.length-1];

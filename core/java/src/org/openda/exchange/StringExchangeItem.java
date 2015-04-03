@@ -29,22 +29,22 @@ public class StringExchangeItem extends MyObservable implements IExchangeItem{
 		this(id, role, null);
 	}
 	
-	@Override
+	
 	public Role getRole() {
 		return this.role;
 	}
 
-	@Override
+	
 	public String getId() {
 		return this.id;
 	}
 
-	@Override
+	
 	public String getDescription() {
 		return this.id;
 	}
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		ValueType sourceType=sourceItem.getValuesType();
 		if(sourceType==ValueType.StringType){
@@ -53,27 +53,27 @@ public class StringExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		return null;
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		return null;
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		return null;
 	}
 
-	@Override
+	
 	public ValueType getValuesType() {
 		return ValueType.StringType;
 	}
 
-	@Override
+	
 	public Object getValues() {
 		return this.value;
 	}
@@ -95,42 +95,42 @@ public class StringExchangeItem extends MyObservable implements IExchangeItem{
 	
 	
 	@SuppressWarnings("rawtypes")
-	@Override
+	
 	@Deprecated public Class getValueType() {
 		return String.class;
 	}
 
-	@Override
+	
 	@Deprecated public double[] getTimes() {
 		return null;
 	}
 
-	@Override
+	
 	@Deprecated public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("setTimes method make no sense for a StringExchangeItem");		
 	}
 
-	@Override
+	
 	@Deprecated public void setValuesAsDoubles(double[] values) {
 		throw new UnsupportedOperationException("setValuesAsDoubles method make no sense for a StringExchangeItem");		
 	}
 
-	@Override
+	
 	@Deprecated public double[] getValuesAsDoubles() {
 		throw new UnsupportedOperationException("getValuesAsDoubles method make no sense for a StringExchangeItem");
 	}
 
-	@Override
+	
 	@Deprecated public void axpyOnValues(double alpha, double[] axpyValues) {
 		throw new UnsupportedOperationException("axpy method make no sense for a StringExchangeItem");
 	}
 
-	@Override
+	
 	@Deprecated public void multiplyValues(double[] multiplicationFactors) {
 		throw new UnsupportedOperationException("multiplyValues method make no sense for a StringExchangeItem");
 	}
 
-	@Override
+	
 	@Deprecated public void setValues(Object values) {
 		if(values instanceof String){
 			this.value = (String) values;

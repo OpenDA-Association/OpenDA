@@ -46,7 +46,7 @@ public class FileCopier implements IConfigurable {
      * @throws IllegalArgumentException when specified arguments are incorrect.
      * @throws RuntimeException when copying fails.
      */
-    @Override
+    
     public void initialize(File workingDir, String[] arguments) {
         //get arguments.
         if (arguments == null || arguments.length != 2 || arguments[0] == null || arguments[1] == null) {

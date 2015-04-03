@@ -710,7 +710,7 @@ public class Array implements IArray {
 		return new Array(values);
 	}
 
-	@Override
+	
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -742,7 +742,7 @@ public class Array implements IArray {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		int h = Arrays.hashCode(this.dimensions);
 		h = 31 * h + Arrays.hashCode(this.values);

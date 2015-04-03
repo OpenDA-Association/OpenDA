@@ -115,7 +115,7 @@ public class SpatialCorrelationStochVector implements IStochVector {
 		this.sqrtCovariance=this.covariance.sqrt();
 	}
 	
-	@Override
+	
 	public IVector createRealization() {
 		IVector result = this.mean.clone();
 		IVector whiteSample = this.whiteNoise.createRealization();
@@ -123,7 +123,7 @@ public class SpatialCorrelationStochVector implements IStochVector {
 		return result;
 	}
 
-	@Override
+	
 	public double evaluatePdf(IVector tv) {
 		IVector diff = tv.clone();
 		diff.axpy(-1.0, this.mean); //this=alpha*x+this
@@ -132,22 +132,22 @@ public class SpatialCorrelationStochVector implements IStochVector {
 		return this.whiteNoise.evaluatePdf(decorrelated)/Math.sqrt(this.determinantCov);
 	}
 
-	@Override
+	
 	public IVector getExpectations() {
 		return mean.clone();
 	}
 
-	@Override
+	
 	public ISqrtCovariance getSqrtCovariance() {
 		return new SqrtCovariance(this.sqrtCovariance);
 	}
 
-	@Override
+	
 	public boolean hasCorrelatedElements() {
 		return true;
 	}
 
-	@Override
+	
 	public IVector getStandardDeviations() {
 		// TODO Auto-generated method stub
 		return this.standardDeviations.clone();

@@ -140,7 +140,7 @@ public class TimeInfo implements IArrayTimeInfo, Serializable {
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -166,7 +166,7 @@ public class TimeInfo implements IArrayTimeInfo, Serializable {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		int h = Arrays.hashCode(this.timeIndex);
 		h = 31 * h + (this.times != null ? this.times.hashCode() : 0);

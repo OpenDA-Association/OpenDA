@@ -89,7 +89,7 @@ public class AsciiResultWriter implements IResultWriter {
 
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {}
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

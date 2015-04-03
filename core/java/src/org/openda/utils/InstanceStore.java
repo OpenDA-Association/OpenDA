@@ -71,7 +71,7 @@ public class InstanceStore implements IResultWriter {
         }
     }
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

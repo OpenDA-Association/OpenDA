@@ -60,12 +60,12 @@ public class IrregularGridGeometryInfo implements IGeometryInfo {
 		return this.cellCount;
 	}
 
-	@Override
+	
 	public String toString(){
 		return "{" + getClass().getSimpleName() + " cellCount=" + this.cellCount + "}";
 	}
 
-	@Override
+	
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -81,7 +81,7 @@ public class IrregularGridGeometryInfo implements IGeometryInfo {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		int h = this.cellCount;
 		h = 31 * h + Arrays.hashCode(this.xCoordinates);

@@ -41,7 +41,7 @@ import java.util.Vector;
  */
 public class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
 
-	@Override
+	
 	public TimeSeries read(InputStream in) {
 		TimeSeries result = null;
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
@@ -164,7 +164,7 @@ public class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
 		return result;
 	}
 
-	@Override
+	
 	public void write(OutputStream out, TimeSeries series) {
 		PrintWriter printer = new PrintWriter(out);
 		printer.println("# ----------------------------------------------------");

@@ -36,17 +36,17 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		this(id, role, 0);
 	}
 	
-	@Override
+	
 	public Role getRole() {
 		return this.role;
 	}
 
-	@Override
+	
 	public String getId() {
 		return this.id;
 	}
 
-	@Override
+	
 	public String getDescription() {
 		return this.description;
 	}
@@ -55,7 +55,7 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		this.description=description;
 	}
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		ValueType sourceType=sourceItem.getValuesType();
 		if(sourceType==ValueType.doubleType){
@@ -64,12 +64,12 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		return new TimeInfo(new double[]{this.time});
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		return this.quantityInfo;
 	}
@@ -79,17 +79,17 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		this.notifyObservers();
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		return null;
 	}
 
-	@Override
+	
 	public ValueType getValuesType() {
 		return ValueType.doubleType;
 	}
 
-	@Override
+	
 	public Object getValues() {
 		return this.value;
 	}
@@ -121,22 +121,22 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 	
 	
 	@SuppressWarnings("rawtypes")
-	@Override
+	
 	@Deprecated public Class getValueType() {
 		return double.class;
 	}
 
-	@Override
+	
 	@Deprecated public double[] getTimes() {
 		return null;
 	}
 
-	@Override
+	
 	@Deprecated public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("setTimes method make no sense for a DoubleExchangeItem");		
 	}
 
-	@Override
+	
 	@Deprecated public void setValuesAsDoubles(double[] values) {
 		if(values.length==1){
 			this.value = values[0];
@@ -146,12 +146,12 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	@Deprecated public double[] getValuesAsDoubles() {
 		return new double[]{this.value};
 	}
 
-	@Override
+	
 	@Deprecated public void axpyOnValues(double alpha, double[] axpyValues) {
 		if(axpyValues.length==1){
 			this.value += alpha*axpyValues[0];
@@ -161,7 +161,7 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	@Deprecated public void multiplyValues(double[] multiplicationFactors) {
 		if(multiplicationFactors.length==1){
 			this.value *= multiplicationFactors[0];
@@ -171,7 +171,7 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	@Deprecated public void setValues(Object values) {
 		if(values instanceof Double){
 			this.value = (Double) values;

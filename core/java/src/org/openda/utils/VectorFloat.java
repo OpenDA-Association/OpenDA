@@ -354,7 +354,7 @@ public class VectorFloat implements IVector, Externalizable {
      * {@inheritDoc}
      */
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public VectorFloat clone() {
         VectorFloat out = new VectorFloat(this.length);
         System.arraycopy(this.content, 0, out.content, 0, this.length);

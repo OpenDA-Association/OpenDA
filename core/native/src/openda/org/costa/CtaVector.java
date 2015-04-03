@@ -55,7 +55,7 @@ public class CtaVector extends CtaObject implements Vector {
 
 
 	@SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public native Vector clone();
 
     public native void setConstant(double value);

@@ -586,7 +586,7 @@ public class Matrix implements IMatrix {
      * Clone a matrix
      * @return copy of the matrix
      */
-    @Override
+    
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
     public Matrix clone(){
         return new Matrix(this.values);

@@ -34,7 +34,7 @@ public class TimeSeriesSetTest extends TestCase {
 
    private TimeSeries   ts1, ts2, ts3;
 
-   @Override
+   
    protected void setUp() {
       this.ts1 = new TimeSeries(this.times1, this.values1);
       this.ts1.setLocation("hoekvanholland");

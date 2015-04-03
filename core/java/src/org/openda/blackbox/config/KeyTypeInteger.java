@@ -20,7 +20,7 @@
 package org.openda.blackbox.config;
 public class KeyTypeInteger extends KeyTypeString {
 
-    @Override
+    
     public String getValueAsString(String value) throws NumberFormatException {
         Integer valueAsInteger = Integer.valueOf(value);
         return valueAsInteger.toString();

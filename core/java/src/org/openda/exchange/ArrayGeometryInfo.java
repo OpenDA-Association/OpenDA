@@ -170,22 +170,22 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		return result;
 	}
 
-	@Override
+	
 	public IArray getHeightArray() {
 		return this.heightCoordinateValues;
 	}
 
-	@Override
+	
 	public int[] getHeightValueIndices() {
 		return heightValueIndices;
 	}
 
-	@Override
+	
 	public IQuantityInfo getHeightQuantityInfo() {
 		return heightQuantityInfo;
 	}
 
-	@Override
+	
 	public int[] getActiveCellMask() {
 		return this.activeCellMask;
 	}
@@ -294,7 +294,7 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		throw new UnsupportedOperationException(getClass() + ".toCurvilinearGeometryInfo() only implemented for rectangular and curvilinear grid geometries.");
 	}
 
-	@Override
+	
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -353,7 +353,7 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		int h = this.latitudeCoordinateValues == null ? 0 : this.latitudeCoordinateValues.hashCode();
 		h = 31 * h + (this.longitudeCoordinateValues == null ? 0 : this.longitudeCoordinateValues.hashCode());

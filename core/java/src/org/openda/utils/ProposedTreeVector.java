@@ -392,7 +392,7 @@ public class ProposedTreeVector implements ProposedITreeVector {
     }
 
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public ProposedTreeVector clone(){
 
         ProposedTreeVector out = new ProposedTreeVector(this.id);

@@ -27,7 +27,7 @@ import java.io.File;
  * Utility class to remove files from an instance directory
  */
 public class FileRemover implements IConfigurable {
-    @Override
+    
     public void initialize(File workingDir, String[] arguments) {
         if (!workingDir.exists()) {
             throw new RuntimeException("working directory does not exist: " + workingDir.getAbsolutePath());

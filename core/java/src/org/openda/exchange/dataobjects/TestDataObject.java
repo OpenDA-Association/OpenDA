@@ -44,7 +44,7 @@ public class TestDataObject implements IComposableDataObject {
 	private File file = null;
 	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
 
-	@Override
+	
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		this.file = new File(workingDir, fileName);
@@ -57,7 +57,7 @@ public class TestDataObject implements IComposableDataObject {
 		}
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		String[] exchangeItemIDs = new String[this.exchangeItems.size()];
 
@@ -68,7 +68,7 @@ public class TestDataObject implements IComposableDataObject {
 		return exchangeItemIDs;
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(Role role) {
 		ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 
@@ -82,7 +82,7 @@ public class TestDataObject implements IComposableDataObject {
 		return exchangeItemIDs.toArray(new String[exchangeItemIDs.size()]);
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		for (int n = 0; n < this.exchangeItems.size(); n++) {
 			IExchangeItem exchangeItem = this.exchangeItems.get(n);
@@ -103,7 +103,7 @@ public class TestDataObject implements IComposableDataObject {
 		this.exchangeItems.add(itemCopy);
 	}
 
-	@Override
+	
 	public void finish() {
 		List<IExchangeItem> outputExchangeItems = new ArrayList<IExchangeItem>();
 		for (IExchangeItem exchangeItem : this.exchangeItems) {

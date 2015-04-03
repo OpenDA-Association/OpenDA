@@ -103,7 +103,7 @@ public class NetcdfDataObject implements IComposableDataObject {
 	 * @param arguments optional argument 2: lazyReading true/false.
 	 * @param arguments optional argument 3: lazyWriting true/false.
 	 */
-	@Override
+	
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		this.file = new File(workingDir, fileName);
@@ -297,7 +297,7 @@ public class NetcdfDataObject implements IComposableDataObject {
 		}
 	}
 
-    @Override
+    
     public String[] getExchangeItemIDs() {
         String[] exchangeItemIDs = new String[this.exchangeItems.size()];
 
@@ -308,7 +308,7 @@ public class NetcdfDataObject implements IComposableDataObject {
         return exchangeItemIDs;
     }
 
-    @Override
+    
     public String[] getExchangeItemIDs(Role role) {
         ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 
@@ -322,7 +322,7 @@ public class NetcdfDataObject implements IComposableDataObject {
         return exchangeItemIDs.toArray(new String[exchangeItemIDs.size()]);
     }
 
-    @Override
+    
     public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
         for (int n = 0; n < this.exchangeItems.size(); n++) {
             IExchangeItem exchangeItem = this.exchangeItems.get(n);
@@ -374,7 +374,7 @@ public class NetcdfDataObject implements IComposableDataObject {
         return newItem;
     }
 
-    @Override
+    
 	public void finish() {
 		makeSureFileHasBeenCreated();
 

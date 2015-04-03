@@ -45,43 +45,43 @@ public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
         concatenatedTimes.add(time.getMJD());
     }
 
-    @Override
+    
     public Role getRole() {
         return modelExchangeItem.getRole();
     }
 
-    @Override
+    
     public String getId() {
         return modelExchangeItem.getId();
     }
 
-    @Override
+    
     public String getDescription() {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.getDescription(): Not implemented yet.");
     }
 
-    @Override
+    
     public Class getValueType() {
 //        return this.valueType;
         return double[].class;
     }
 
-    @Override
+    
     public void copyValuesFromItem(IExchangeItem sourceItem) {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.copyValuesFromItem(): Not implemented yet.");
     }
 
-    @Override
+    
     public ITimeInfo getTimeInfo() {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.getTimeInfo(): Not implemented yet.");
     }
 
-    @Override
+    
     public IQuantityInfo getQuantityInfo() {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.getQuantityInfo(): Not implemented yet.");
     }
 
-    @Override
+    
     public IGeometryInfo getGeometryInfo() {
 		//TODO all exchangeItems should implement IExchangeItem. AK
 		if (this.modelExchangeItem instanceof IExchangeItem) {
@@ -90,17 +90,17 @@ public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
 		return null;
     }
 
-    @Override
+    
     public ValueType getValuesType() {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.getValuesType(): Not implemented yet.");
     }
 
-    @Override
+    
     public Object getValues() {
         return getValuesAsDoubles();
     }
 
-    @Override
+    
     public double[] getValuesAsDoubles() {
         double[] dblConcatenatedValues = new double[concatenatedValues.size()];
         for (int i=0; i<concatenatedValues.size(); i++){
@@ -109,27 +109,27 @@ public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
         return dblConcatenatedValues;
     }
 
-    @Override
+    
     public void axpyOnValues(double alpha, double[] axpyValues) {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.axpyOnValues(): Not implemented yet.");
     }
 
-    @Override
+    
     public void multiplyValues(double[] multiplicationFactors) {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.multiplyValues(): Not implemented yet.");
     }
 
-    @Override
+    
     public void setValues(Object values) {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.setValues(): Not implemented yet.");
     }
 
-    @Override
+    
     public void setValuesAsDoubles(double[] values) {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.setValuesAsDoubles(): Not implemented yet.");
     }
 
-    @Override
+    
     public double[] getTimes() {
         double[] dblConcatenatedTimes = new double[concatenatedTimes.size()];
         for (int i=0; i<concatenatedTimes.size(); i++){
@@ -138,7 +138,7 @@ public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
         return dblConcatenatedTimes;
     }
 
-    @Override
+    
     public void setTimes(double[] times) {
         throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.BBCollectTimeSeriesExchangeItem.setTimes(): Not implemented yet.");
     }

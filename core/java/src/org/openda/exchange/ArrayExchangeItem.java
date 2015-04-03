@@ -84,22 +84,22 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
         this.array = new Array(new int[]{0});
     }
 
-    @Override
+    
     public Role getRole() {
         return this.role;
     }
 
-    @Override
+    
     public String getId() {
         return id;
     }
 
-    @Override
+    
     public String getDescription() {
         return null;
     }
 
-    @Override
+    
     public void copyValuesFromItem(IExchangeItem sourceItem) {
 
         //copy time info.
@@ -143,22 +143,22 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
         this.notifyObservers();
     }
 
-    @Override
+    
     public ITimeInfo getTimeInfo() {
         return this.timeInfo;
     }
 
-    @Override
+    
     public IQuantityInfo getQuantityInfo() {
     	return this.quantityInfo;
     }
 
-    @Override
+    
     public IGeometryInfo getGeometryInfo() {
     	return this.geometryInfo;
     }
 
-    @Override
+    
 	//TODO remove when interface IOldExchangeItem is removed. MVL
     public Class<IArray> getValueType() {
         return IArray.class;
@@ -168,51 +168,51 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
     	return ValueType.IArrayType;
     }
 
-    @Override
+    
     public IArray getValues() {
         return this.array;
     }
 
-	@Override
+	
 	//TODO remove when interface IOldExchangeItem is removed. AK
 	public void setValues(Object values) {
 		throw new UnsupportedOperationException(this.getClass().getSimpleName() + ": setValues method of old interface IPrevExchangeItem not implemented.");
 	}
 
-	@Override
+	
 	//TODO remove when interface IOldExchangeItem is removed. AK
 	public double[] getValuesAsDoubles() {
 		return array.getValuesAsDoubles();
 	}
 
-	@Override
+	
 	//TODO remove when interface IOldExchangeItem is removed. AK
 	public void axpyOnValues(double alpha, double[] axpyValues) {
 		array.axpyOnValues(alpha, axpyValues);
 		this.notifyObservers();
 	}
 
-	@Override
+	
 	//TODO remove when interface IOldExchangeItem is removed. AK
 	public void multiplyValues(double[] multiplicationFactors) {
 		array.multiplyValues(multiplicationFactors);
 		this.notifyObservers();
 	}
 
-	@Override
+	
 	//TODO remove when interface IOldExchangeItem is removed. AK
 	public void setValuesAsDoubles(double[] values) {
 		array.setValuesAsDoubles(values);
 		this.notifyObservers();
 	}
 
-	@Override
+	
     //TODO remove when interface IOldExchangeItem is removed. AK
     public double[] getTimes() {
         return (getTimeInfo()!=null) ? getTimeInfo().getTimes() : null;
     }
 
-    @Override
+    
     //TODO remove when interface IOldExchangeItem is removed. AK
     public void setTimes(double[] times) {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + ": setTimes method of old interface IPrevExchangeItem not implemented.");
@@ -238,7 +238,7 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
 		this.notifyObservers();
 	}
 
-	@Override
+	
 	public IArray getArray() {
 		return this.array;
 	}
@@ -264,12 +264,12 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
     	return result;
     }
 
-	@Override
+	
 	public void addObserver(IMyObserver observer) {
 		this.observers.add(observer);
 	}
 
-	@Override
+	
 	public void notifyObservers() {
 		for(IMyObserver o : this.observers){
 			o.update(this, null);

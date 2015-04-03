@@ -37,12 +37,12 @@ public class QuantityInfo implements IQuantityInfo {
 		this.unit=unit;
 	}
 	
-	@Override
+	
 	public String getQuantity() {
 		return quantity;
 	}
 
-	@Override
+	
 	public String getUnit() {
 		return unit;
 	}
@@ -60,7 +60,7 @@ public class QuantityInfo implements IQuantityInfo {
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -84,7 +84,7 @@ public class QuantityInfo implements IQuantityInfo {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		int h = this.quantity == null ? 0 : this.quantity.hashCode();
 		h = 31 * h + (this.unit == null ? 0 : this.unit.hashCode());

@@ -95,7 +95,7 @@ public class Spatial2DCorrelationStochVector implements IStochVector {
 	}
 
 	
-	@Override
+	
 	public IVector createRealization() {
 		Vector whiteSample = (Vector) this.whiteNoise.createRealization();
 		Matrix sampleMatrix = new Matrix(whiteSample,yn,xn);
@@ -106,28 +106,28 @@ public class Spatial2DCorrelationStochVector implements IStochVector {
 		return xyCorrelatedSample.asVector();
 	}
 
-	@Override
+	
 	public double evaluatePdf(IVector tv) {
 		throw new UnsupportedOperationException("No evaluatePdf for Spatial2DCorrelationStochVector");
 	}
 
-	@Override
+	
 	public IVector getExpectations() {
 		Vector result = new Vector(this.xn*this.yn);
 		return result;
 	}
 
-	@Override
+	
 	public ISqrtCovariance getSqrtCovariance() {
 		throw new UnsupportedOperationException("No getSsqrtCovariance for Spatial2DCorrelationStochVector");
 	}
 
-	@Override
+	
 	public boolean hasCorrelatedElements() {
 		return true;
 	}
 
-	@Override
+	
 	public IVector getStandardDeviations() {
 		Vector result = new Vector(this.xn*this.yn);
 		result.setConstant(this.standardDeviation);

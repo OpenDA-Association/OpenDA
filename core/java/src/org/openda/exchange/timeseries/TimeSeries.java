@@ -344,7 +344,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 *
 	 * @return Copy of the time array.
 	 */
-	@Override
+	
 	public double[] getTimes() {
 		if (this.times != null) {
 			double[] result = new double[this.times.length];
@@ -357,7 +357,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * @see org.openda.interfaces.IPrevExchangeItem#setTimes(double[])
 	 */
-	@Override
+	
 	public void setTimes(double[] times) {
 		if ((this.values != null) && (this.values.length != times.length)) {
 			this.values = null;
@@ -374,7 +374,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 *
 	 * @return The value array as double array.
 	 */
-	@Override
+	
 	public double[] getValuesAsDoubles() {
 		if (this.values != null) {
 			double[] result = new double[this.values.length];
@@ -388,7 +388,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * @see org.openda.interfaces.IPrevExchangeItem#axpyOnValues(double, double[])
 	 */
-	@Override
+	
 	public void axpyOnValues(double alpha, double[] axpyValues) {
 		if (this.values == null) {
 			throw new RuntimeException(getId() + "this.values == null in axpyOnValues");
@@ -405,7 +405,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * @see org.openda.interfaces.IPrevExchangeItem#multiplyValues(double[])
 	 */
-	@Override
+	
 	public void multiplyValues(double[] multiplicationFactors) {
 		if (this.values != null) {
 			for (int i = 0; i < this.values.length; i++) {
@@ -825,7 +825,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * Briefly describe this TimeSeries
 	 */
-	@Override
+	
 	public String toString() {
 		String result = "TimeSeries(\n";
 		result += "   Location = " + this.getLocation() + "\n";
@@ -869,7 +869,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		return result;
 	}
 
-	@Override
+	
 	public String getId() {
 		return this.id;
 	}
@@ -878,7 +878,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		this.description = description;
 	}
 
-	@Override
+	
 	public String getDescription() {
 		return this.description;
 	}
@@ -889,7 +889,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		// location.quantity
 	}
 
-	@Override
+	
 	public void setValues(Object values) {
 		if (values instanceof org.openda.exchange.timeseries.TimeSeries) {
 			TimeSeries series = (TimeSeries) values;
@@ -915,7 +915,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	public void setValuesAsDoubles(double[] values) {
 		if ((this.times == null) || (this.times.length != values.length)) {
 			throw new RuntimeException(
@@ -946,7 +946,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 *
 	 * @return this as Array
 	 */
-	@Override
+	
 	public Object getValues() {
 		return new Array(this.getValuesAsDoubles());
 	}
@@ -1065,13 +1065,13 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * Show Type of this object for proper casting
 	 */
-	@Override
+	
 	@SuppressWarnings("rawtypes")
 	public Class getValueType() {
 		return org.openda.utils.Array.class;
 	}
 
-	@Override
+	
 	public Role getRole() {
 		return this.role;
 	}
@@ -1407,25 +1407,25 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		this.parent = parent;
 	}
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		ArrayTimeInfo tInfo=new ArrayTimeInfo(this.getTimes(), 0);
 		return tInfo;
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		QuantityInfo qInfo = new QuantityInfo(this.getQuantityId(), this.getUnitId());
 		return qInfo;
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		double pos[]=this.getPosition();
 		if((pos!=null) && (pos.length==2)){
@@ -1435,7 +1435,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		}
 	}
 
-	@Override
+	
 	public ValueType getValuesType() {
 		// TODO Auto-generated method stub
 		return ValueType.IArrayType;

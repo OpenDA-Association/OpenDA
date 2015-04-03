@@ -306,7 +306,7 @@ public class Vector implements IVector, Externalizable {
      * {@inheritDoc}
      */
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public Vector clone() {
 		Vector cloned=new Vector();
 		if (doublePrecision){

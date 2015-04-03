@@ -43,7 +43,7 @@ public class CtaObject extends Instance {
     protected int ctaHandle = CtaNULL; // Costa handle to tree vector
     protected int ctaLastError = CtaOK; // Result of last error call
 
-    @Override
+    
     public void finalize() throws Throwable {
         if (ctaHandle!=0){this.free();}
         super.finalize();

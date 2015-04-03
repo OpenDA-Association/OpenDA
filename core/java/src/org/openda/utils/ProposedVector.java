@@ -307,7 +307,7 @@ public class ProposedVector implements ProposedIVector, Externalizable{
      * {@inheritDoc}
      */
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public ProposedVector clone() {
         ProposedVector out = new ProposedVector(this.array,true);
         return out;

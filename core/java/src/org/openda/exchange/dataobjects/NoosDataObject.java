@@ -147,17 +147,17 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 	}
 
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		return this.timeSeriesSet.keySet().toArray(new String[this.timeSeriesSet.size()]);
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(Role role) {
 		return this.timeSeriesSet.keySet().toArray(new String[this.timeSeriesSet.size()]);
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		return this.timeSeriesSet.get(exchangeItemID);
 	}
@@ -220,7 +220,7 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 		}
 	}
 
-	@Override
+	
 	public void addExchangeItem(IExchangeItem item) {
 		// TODO Auto-generated method stub
 		String id=item.getId();

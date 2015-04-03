@@ -62,7 +62,7 @@ public class TextTableWriter implements IResultWriter {
         // Nothing to do
     }
 
-	@Override
+	
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
         // Nothing to do
 	}
@@ -94,7 +94,7 @@ public class TextTableWriter implements IResultWriter {
 		outputStream.print('\n');
     }
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

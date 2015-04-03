@@ -35,7 +35,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 	private File              testRunDataDir;
 	private OpenDaTestSupport testData;
 
-	@Override
+	
    protected void setUp() throws IOException {
 		this.testData = new OpenDaTestSupport(NoosTimeSeriesIoObjectTest.class, "core");
 		this.testRunDataDir = this.testData.getTestRunDataDir();

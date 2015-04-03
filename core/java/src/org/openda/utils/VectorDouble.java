@@ -354,7 +354,7 @@ public class VectorDouble implements IVector, Externalizable{
      * {@inheritDoc}
      */
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
+    
     public VectorDouble clone() {
         VectorDouble out = new VectorDouble(this.length);
         System.arraycopy(this.content, 0, out.content, 0, this.length);

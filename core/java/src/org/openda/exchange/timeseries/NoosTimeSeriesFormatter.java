@@ -57,7 +57,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
    public static final String PROPERTY_ANALTIME = "analTime";
    public static final String PROPERTY_TIMEZONE = "timeZone";
 
-   @Override
+   
    public TimeSeries read(InputStream in) {
       return read(new BufferedReader(new InputStreamReader(in)));
    }
@@ -237,7 +237,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       return result;
    }
 
-   @Override
+   
    public void write(OutputStream out, TimeSeries series) {
       write(new PrintWriter(out), series);
    }

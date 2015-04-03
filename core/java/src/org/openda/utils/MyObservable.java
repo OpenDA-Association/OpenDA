@@ -19,12 +19,12 @@ import java.util.ArrayList;
 public class MyObservable implements IMyObservable{
 	ArrayList<IMyObserver> observers = new ArrayList<IMyObserver>();
 	
-	@Override
+	
 	public void addObserver(IMyObserver observer) {
 		this.observers.add(observer);
 	}
 
-	@Override
+	
 	public void notifyObservers() {
 		for(IMyObserver o : this.observers){
 			o.update(this, null);

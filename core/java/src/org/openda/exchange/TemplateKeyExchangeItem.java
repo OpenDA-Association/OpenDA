@@ -84,7 +84,7 @@ public class TemplateKeyExchangeItem extends ExchangeItem implements IKeyType, I
 
     }
 
-    @Override
+    
     public void setStartDate(double date) {
         if (keyType instanceof IKeyDateType) {
             ((IKeyDateType)keyType).setStartDate(date);
@@ -94,7 +94,7 @@ public class TemplateKeyExchangeItem extends ExchangeItem implements IKeyType, I
 
     }
 
-    @Override
+    
     public void setEndDate(double date) {
         if (keyType instanceof IKeyDateType) {
             ((IKeyDateType)keyType).setEndDate(date);
@@ -104,7 +104,7 @@ public class TemplateKeyExchangeItem extends ExchangeItem implements IKeyType, I
 
     }
 
-    @Override
+    
     public String calculateValue() {
         if (keyType instanceof IKeyDateType) {
             return ((IKeyDateType)keyType).calculateValue();
