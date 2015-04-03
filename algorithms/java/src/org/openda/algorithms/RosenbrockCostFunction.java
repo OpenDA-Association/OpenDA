@@ -165,7 +165,7 @@ public class RosenbrockCostFunction implements ICostFunctionWithGradient{
 		return 1.0;
 	}
 
-	@Override
+	
 	public void prepare(IVector p) {
 		// no work needed
 	}
@@ -176,12 +176,12 @@ public class RosenbrockCostFunction implements ICostFunctionWithGradient{
 		// TODO this is not a proper deep copy
 	}
     
-	@Override
+	
 	public boolean getTryParallel() {
 		return false;
 	}
 
-	@Override
+	
 	public void setTryParallel(boolean tryParallel) {
 		// do nothing, never parallel.	
 	}

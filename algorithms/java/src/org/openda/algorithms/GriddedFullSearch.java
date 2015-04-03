@@ -46,7 +46,7 @@ public class GriddedFullSearch extends Instance implements IAlgorithm {
     private SimulationKwadraticCostFunction J=null;
     private GriddedFullSearchCoreOptimizer gfsOptimizer;
 
-    @Override
+    
     public void initialize(File workingDir, String[] arguments) {
         String configString = arguments[0];
         gfsConf = new ConfigTree(workingDir, configString);
@@ -183,23 +183,23 @@ public class GriddedFullSearch extends Instance implements IAlgorithm {
 		// in the cost function)
 	}
 
-	@Override
+	
 	public IVector getState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public ITime getTimeHorizon() {
 		throw new UnsupportedOperationException("method getTimeHorizon not implemented."+this.getClass().getName());
 	}
 
-	@Override
+	
 	public ITime getCurrentTime() {
 		return null;
 	}
 
-	@Override
+	
 	public void compute(ITime targetTime) {
 		throw new UnsupportedOperationException("method compute not implemented."+this.getClass().getName());
 	}

@@ -63,7 +63,7 @@ public class SparseDudCoreOptimizer extends BaseDudCoreOptimizer {
 		number_of_evaluations = sparsenessPattern.max_nnz_per_row;
 	}
 
-	@Override
+	
 	protected double InitialSearchStep(int i, int j) {
 		return nep_rand();
 	}
@@ -75,7 +75,7 @@ public class SparseDudCoreOptimizer extends BaseDudCoreOptimizer {
 	}
 
 
-	@Override
+	
 	protected Matrix CalculateGradSimu() {
 		// create the matrix which describes the gradient of predictions with respect to parameters
 
@@ -215,7 +215,7 @@ public class SparseDudCoreOptimizer extends BaseDudCoreOptimizer {
 		return A_obs.simpletranspose();
 	}
 
-	@Override
+	
 	protected Matrix CalculateParsMatrix() {
 		return IdentityMatrix(this.pCurrent[0]);
 	}
@@ -230,7 +230,7 @@ public class SparseDudCoreOptimizer extends BaseDudCoreOptimizer {
 		return new Matrix(vecs);
 	}
 
-	@Override
+	
 	protected Matrix BackgroundMatrix() {
 		IVector[] pars = this.pCurrent;
 		int npars      = pars[0].getSize();

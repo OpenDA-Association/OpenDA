@@ -258,7 +258,7 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
 		}
 	}
 
-	@Override
+	
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
 		IVector[] modelLocalization = childModel.getObservedLocalization(observationDescriptions, distance);
 		TreeVector [] x = new TreeVector[modelLocalization.length];
@@ -288,58 +288,58 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
 		return x;
 	}
 
-	@Override
+	
 	public IModelState saveInternalState() {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public void restoreInternalState(IModelState savedInternalState) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public void releaseInternalState(IModelState savedInternalState) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public IModelState loadPersistentState(File persistentStateFile) {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public File getModelRunDir() {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
 		return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public void finish() {
         childModel.finish();
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public void initialize(File workingDir, String[] arguments) {
        childModel.initialize(workingDir,arguments);
 	}
 
-	@Override
+	
 	public IInstance getParent() {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}

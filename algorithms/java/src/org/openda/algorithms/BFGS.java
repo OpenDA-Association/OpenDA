@@ -264,17 +264,17 @@ public class BFGS extends Instance implements IAlgorithm {
 		return null;
 	}
 
-	@Override
+	
 	public ITime getTimeHorizon() {
 		throw new UnsupportedOperationException("method getTimeHorizon not implemented."+this.getClass().getName());
 	}
 
-	@Override
+	
 	public ITime getCurrentTime() {
 		return null;
 	}
 
-	@Override
+	
 	public void compute(ITime targetTime) {
 		throw new UnsupportedOperationException("method compute not implemented."+this.getClass().getName());
 	}

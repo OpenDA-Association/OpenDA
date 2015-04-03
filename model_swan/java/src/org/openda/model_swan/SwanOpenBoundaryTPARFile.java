@@ -345,7 +345,7 @@ public class SwanOpenBoundaryTPARFile implements IDataObject, ITimeInfo {
 		initialize(workingDir, fileName, remainingArguments);
 	}
 
-	@Override
+	
 	public double[] getTimes() {
 		return getTimeDbl();
 	}

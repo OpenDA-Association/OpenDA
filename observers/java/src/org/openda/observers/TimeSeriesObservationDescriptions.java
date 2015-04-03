@@ -37,7 +37,7 @@ public class TimeSeriesObservationDescriptions implements IObservationDescriptio
        this.obs = obs;
 	}
 
-    @Override
+    
     public List<IPrevExchangeItem> getExchangeItems() {
         return obs.getExchangeItems();
     }

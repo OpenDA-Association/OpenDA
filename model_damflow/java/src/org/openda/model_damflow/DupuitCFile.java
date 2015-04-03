@@ -112,17 +112,17 @@ public class DupuitCFile implements IDataObject, ITimeInfo {
 		dupuitCFileData = new DupuitCFileData(time,nline,stateLines);
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		return exchangeItemId;
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitCFile - Method Name : getExchangeItemIDs");
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		if (exchangeItemID.equalsIgnoreCase(this.exchangeItemId[0])){
 			return this.exchangeItem;
@@ -131,12 +131,12 @@ public class DupuitCFile implements IDataObject, ITimeInfo {
 		}
 	}
 
-	@Override
+	
 	public void finish() {
 		writeDupuitCFile();
 	}
 
-	@Override
+	
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		String[] remainingArguments = new String[arguments.length-1];
@@ -179,7 +179,7 @@ public class DupuitCFile implements IDataObject, ITimeInfo {
 		setHydraulicHead(newHydraulicHead);
 	}
 
-	@Override
+	
 	public double[] getTimes() {
 		return new double[]{this.dupuitCFileData.time};
 	}

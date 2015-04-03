@@ -122,7 +122,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 		this.savedState=savedState;
 	}
 
-	@Override
+	
 	public IVector[] getAllPredictions() {
 		int n = this.allCosts.size();
 		IVector[] result = new IVector[n];
@@ -132,37 +132,37 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 		return result;
 	}
 
-	@Override
+	
 	public boolean doAddBackgroundTerm() {
 		return this.backGroundOn;
 	}
 
-	@Override
+	
 	public IVector getLastPredictions() {
         return this.lastPredicted.clone();
 	}
 
-	@Override
+	
 	public IStochVector getObservationUncertainty() {
         return this.observationUncertainty;
 	}
 
-	@Override
+	
 	public IVector getOptimalPredictions() {
 	   	return this.predMin.clone();
 	}
 
-	@Override
+	
 	public IStochVector getParameterUncertainty() {
         return this.parameterUncertainty;
 	}
 
-	@Override
+	
 	public void setBackgroundTerm(boolean onIsTrue) {
 		this.backGroundOn = onIsTrue;
 	}
 
-//	@Override
+//	
 //	public double evaluate(IVector p) {
 //		++this.numberEvaluations;
 //	    double totalCost=0.0;
@@ -234,7 +234,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 //	    return totalCost;
 //	}
 
-	@Override
+	
 	public double evaluate(IVector p, String context) {
         ++this.numberEvaluations;
         double totalCost=0.0;
@@ -306,7 +306,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
         return totalCost;
 	}
 
-	@Override
+	
 	public IVector getCosts() {
 		int n = this.allCosts.size();
 		Vector result = new Vector(n);
@@ -316,18 +316,18 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 		return result;
 	}
 
-	@Override
+	
 	public double getMultiplicationFactor() {
 		// TODO Auto-generated method stub
 		return this.factor;
 	}
 
-	@Override
+	
 	public double getOptimalCost() {
         return this.fMin;
 	}
 
-	@Override
+	
 	public IVector getOptimalParameters() {
 		if(this.pMin==null){
 		    throw new RuntimeException("No costs were computed, thus no optimal parameters exist.");
@@ -335,7 +335,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
         return this.pMin.clone();
 	}
 
-	@Override
+	
 	public IVector[] getParameters() {
 		int n = this.allCosts.size();
 		IVector[] result = new IVector[n];
@@ -345,7 +345,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 		return result;
 	}
 
-	@Override
+	
 	public void writeResults() {
 		//Results.putMessage("===================================================================");
 		//Results.putMessage("AnalysisLeastSquaresCost:");
@@ -374,7 +374,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
         return this.bestState;
 	}
 
-	@Override
+	
 	public void prepare(IVector p) {
 		// TODO Auto-generated method stub
 		
@@ -387,12 +387,12 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 		// TODO create content for this method
 	}
 
-	@Override
+	
 	public boolean getTryParallel() {
 		return false;
 	}
 
-	@Override
+	
 	public void setTryParallel(boolean tryParallel) {
 		// do nothing, never parallel.	
 	}

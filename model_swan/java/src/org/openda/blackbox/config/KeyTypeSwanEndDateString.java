@@ -24,7 +24,7 @@ package org.openda.blackbox.config;
  * Class implementation of SwanEndDateString KeyType
  */
 public class KeyTypeSwanEndDateString extends KeyTypeSwanStartDateString {
-    @Override
+    
     public String calculateValue() {
         if (Double.isNaN(endDate)) {
             throw new RuntimeException(this.getClass().getName() + ".calculateValue(): endDate needs to be set before calling this method.");

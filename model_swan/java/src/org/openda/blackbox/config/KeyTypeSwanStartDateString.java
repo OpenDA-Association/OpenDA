@@ -41,13 +41,13 @@ public class KeyTypeSwanStartDateString extends KeyTypeString implements IKeyDat
     protected double startDate = Double.NaN;
     protected double endDate = Double.NaN;
 
-    @Override
+    
     public void setStartDate(double date) {
         this.startDate = date;
 
     }
 
-    @Override
+    
     public void setEndDate(double date) {
         this.endDate = date;
 
@@ -63,7 +63,7 @@ public class KeyTypeSwanStartDateString extends KeyTypeString implements IKeyDat
         return dateFormatter.format(date) + "." + timeFormatter.format(date);
     }
 
-    @Override
+    
     public String calculateValue() {
         if (Double.isNaN(startDate)) {
             throw new RuntimeException(this.getClass().getName() + ".calculateValue(): startDate needs to be set before calling this method.");

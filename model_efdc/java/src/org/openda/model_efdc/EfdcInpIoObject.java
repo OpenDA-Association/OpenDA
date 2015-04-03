@@ -64,7 +64,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
      * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
      *                  the second and third arguments should be the ids of the startTime and endTime exchangeItems respectively.
      */
-    @Override
+    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         this.efdcInpFile = new File(workingDir, fileName);
 
@@ -93,12 +93,12 @@ public class EfdcInpIoObject implements IoObjectInterface {
         this.endTimeExchangeItem = new DoubleExchangeItem(arguments[2], 0);
     }
 
-    @Override
+    
     public IPrevExchangeItem[] getExchangeItems() {
         return new IPrevExchangeItem[]{this.startTimeExchangeItem, this.endTimeExchangeItem};
     }
 
-    @Override
+    
     public void finish() {
         writeControlFile();
     }

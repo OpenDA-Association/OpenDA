@@ -59,7 +59,7 @@ public class D3dFlowModelFactory implements IModelFactory {
 		modelDir = null;
 	}
 
-    @Override
+    
     public void finalize() {
 		// TODO: reactivate when 'finish instance' has been realized in D3dFlowModelInstance'
 		// For now: d3dFlowDll.finish() is called when closing main model

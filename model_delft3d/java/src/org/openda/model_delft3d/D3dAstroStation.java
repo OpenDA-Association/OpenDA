@@ -56,7 +56,7 @@ public class D3dAstroStation {
         this.dataChanged = true;
     }
 
-    @Override
+    
     public String toString() {
         Locale locale = new Locale("EN");
         String stringFormat = "%-6s";

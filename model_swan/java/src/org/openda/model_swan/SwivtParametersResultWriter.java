@@ -115,7 +115,7 @@ public class SwivtParametersResultWriter implements IResultWriter {
         }
     }
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

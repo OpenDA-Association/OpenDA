@@ -755,17 +755,17 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 		}
 	}
 	
-	@Override
+	
 	public ITime getTimeHorizon() {
 		return this.modelSpan;
 	}
 
-	@Override
+	
 	public ITime getCurrentTime() {
 		return this.currentTime;
 	}
 
-	@Override
+	
 	public void compute(ITime targetTime) {
 		while(this.hasNext() && targetTime.after(this.currentTime)){
 			this.next();

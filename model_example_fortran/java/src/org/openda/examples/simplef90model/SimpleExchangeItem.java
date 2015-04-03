@@ -122,7 +122,7 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
         return SimpleModelInstance.getTimes();
     }
 
-    @Override
+    
     public void setTimes(double[] times) {
         throw new RuntimeException("Method setTimes of " + this.getClass().getName() + " not implemented yet.");
     }

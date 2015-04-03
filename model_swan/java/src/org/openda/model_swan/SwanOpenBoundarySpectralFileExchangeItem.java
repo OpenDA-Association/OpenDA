@@ -117,22 +117,22 @@ public class SwanOpenBoundarySpectralFileExchangeItem implements IExchangeItem {
         this.iTime = -1;
     }
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanOpenBoundarySpectralFileExchangeItem.copyValuesFromItem(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		return swanOBFile;
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanOpenBoundarySpectralFileExchangeItem.getQuantityInfo(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		return null;
 	}

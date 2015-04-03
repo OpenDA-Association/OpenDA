@@ -36,57 +36,57 @@ public class DupuitBHOFileExchangeItem implements IExchangeItem {
 		return this.y;
 	}
 
-	@Override
+	
 	public Role getRole() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getRole");
 	}
 
-	@Override
+	
 	public String getId() {
 		return this.id;
 	}
 
-	@Override
+	
 	public String getDescription() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getDescription");
 	}
 
-	@Override
+	
 	public Class getValueType() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getValueType");
 	}
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : copyValuesFromItem");
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getTimeInfo");
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getQuantityInfo");
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getGeometryInfo");
 	}
 
-	@Override
+	
 	public ValueType getValuesType() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getValuesType");
 	}
 
-	@Override
+	
 	public Object getValues() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : getValues");
 	}
 
-	@Override
+	
 	public double[] getValuesAsDoubles() {
 		int nValues = this.phi.length;
 		double[] values = new double[nValues];
@@ -94,7 +94,7 @@ public class DupuitBHOFileExchangeItem implements IExchangeItem {
 		return values;
 	}
 
-	@Override
+	
 	public void axpyOnValues(double alpha, double[] axpyValues) {
 		int nValues = this.phi.length;
 		double[] newValues = new double[nValues];
@@ -107,7 +107,7 @@ public class DupuitBHOFileExchangeItem implements IExchangeItem {
 		System.arraycopy(newValues, 0, this.phi, 0, nValues);
 	}
 
-	@Override
+	
 	public void multiplyValues(double[] multiplicationFactors) {
         if (this.phi.length != multiplicationFactors.length){
             throw new RuntimeException(this.getClass() + ": vectors of different size, cannot perform multiplyValues.");
@@ -118,12 +118,12 @@ public class DupuitBHOFileExchangeItem implements IExchangeItem {
 //		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : multiplyValues");
 	}
 
-	@Override
+	
 	public void setValues(Object values) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : setValues");
 	}
 
-	@Override
+	
 	public void setValuesAsDoubles(double[] values) {
 		int nValues = this.phi.length;
 		if (nValues != values.length) {
@@ -132,12 +132,12 @@ public class DupuitBHOFileExchangeItem implements IExchangeItem {
 		System.arraycopy(values, 0, this.phi, 0, nValues);
 	}
 
-	@Override
+	
 	public double[] getTimes() {
 		return this.timeInfo.getTimes();
 	}
 
-	@Override
+	
 	public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitBHOFileExchangeItem - Method Name : setTimes");
 	}

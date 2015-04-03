@@ -43,7 +43,7 @@ public class DudCoreOptimizer extends BaseDudCoreOptimizer {
 		initialize(pInit);
 	}
 
-	@Override
+	
 	protected double InitialSearchStep(int i, int j) {
 		return (i==j ? 1 : 0);
 	}
@@ -67,7 +67,7 @@ public class DudCoreOptimizer extends BaseDudCoreOptimizer {
 	 * or
 	 *    pars = pars[0] + innerScaleFac * P_matrix * pStep.
 	 */
-	@Override
+	
 	protected Matrix CalculateParsMatrix() {
 		int ndirs        = number_of_evaluations;
 		IVector[] pars   = this.pCurrent;
@@ -79,7 +79,7 @@ public class DudCoreOptimizer extends BaseDudCoreOptimizer {
 		return new Matrix(vecs);
 	}
 
-	@Override
+	
 	protected Matrix CalculateGradSimu() {
 		int ndirs       = number_of_evaluations;
 		IVector[] preds = this.predCurrent;
@@ -92,7 +92,7 @@ public class DudCoreOptimizer extends BaseDudCoreOptimizer {
 		return new Matrix(vecs);
 	}
 
-	@Override
+	
 	protected Matrix BackgroundMatrix() {
 		int ndirs        = number_of_evaluations;
 		IVector[] pars   = this.pCurrent;

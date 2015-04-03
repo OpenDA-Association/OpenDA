@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class SparseDud extends BaseDud {
 
-	@Override
+	
 	protected BaseDudCoreOptimizer InitializeDudCoreOptimizer() {
 		boolean verbose=true;
 		return new SparseDudCoreOptimizer(J, findNonZeros(!verbose));

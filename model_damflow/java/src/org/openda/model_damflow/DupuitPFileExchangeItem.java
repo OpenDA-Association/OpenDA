@@ -19,52 +19,52 @@ public class DupuitPFileExchangeItem implements IExchangeItem {
 		this.dupuitPFile = dupuitPFile;
 	}
 
-	@Override
+	
 	public Role getRole() {
 		return IPrevExchangeItem.Role.InOut;
 	}
 
-	@Override
+	
 	public String getId() {
 		return this.id;
 	}
 
-	@Override
+	
 	public String getDescription() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : getDescription");
 	}
 
-	@Override
+	
 	public Class getValueType() {
 		return double.class;
 	}
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : copyValuesFromItem");
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : getTimeInfo");
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : getQuantityInfo");
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : getGeometryInfo");
 	}
 
-	@Override
+	
 	public ValueType getValuesType() {
 		return ValueType.doubleType;
 	}
 
-	@Override
+	
 	public Object getValues() {
 		double value;
 		if (this.id.equals(availableIDs[0])) {
@@ -77,22 +77,22 @@ public class DupuitPFileExchangeItem implements IExchangeItem {
 		return value;
 	}
 
-	@Override
+	
 	public double[] getValuesAsDoubles() {
         return new double[]{(Double)getValues()};
 	}
 
-	@Override
+	
 	public void axpyOnValues(double alpha, double[] axpyValues) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : axpyOnValues");
 	}
 
-	@Override
+	
 	public void multiplyValues(double[] multiplicationFactors) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : multiplyValues");
 	}
 
-	@Override
+	
 	public void setValues(Object values) {
 		if (this.id.equals(availableIDs[0])){
 			this.dupuitPFile.setSTime((Double)values);
@@ -103,7 +103,7 @@ public class DupuitPFileExchangeItem implements IExchangeItem {
 		}
 	}
 
-	@Override
+	
 	public void setValuesAsDoubles(double[] values) {
 		if (this.id.equals(availableIDs[0])){
 			this.dupuitPFile.setSTime((Double)values[0]);
@@ -114,12 +114,12 @@ public class DupuitPFileExchangeItem implements IExchangeItem {
 		}
 	}
 
-	@Override
+	
 	public double[] getTimes() {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : getTimes");
 	}
 
-	@Override
+	
 	public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFileExchangeItem - Method Name : setTimes");
 	}

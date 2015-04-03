@@ -36,7 +36,7 @@ public class SwanNetcdfRestartTemplateKeyExchangeItem extends SwanTemplateKeyExc
     public SwanNetcdfRestartTemplateKeyExchangeItem(String id, IKeyType keyType) {
         super(id, keyType);
     }
-    @Override
+    
     public String calculateValue() {
         if (getKeyType() instanceof KeyTypeSwanNetcdfRestartString) {
             return ((KeyTypeSwanNetcdfRestartString)getKeyType()).parseRestartFile(restartFile, restartFileName);

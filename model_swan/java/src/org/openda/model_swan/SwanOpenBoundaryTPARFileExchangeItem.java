@@ -131,22 +131,22 @@ public class SwanOpenBoundaryTPARFileExchangeItem implements IExchangeItem {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanOpenBoundaryTPARFileExchangeItem.setTimes(): Not implemented yet.");
     }
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanOpenBoundaryTPARFileExchangeItem.copyValuesFromItem(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		return swanOBFile;
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanOpenBoundaryTPARFileExchangeItem.getQuantityInfo(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		return null;
 	}

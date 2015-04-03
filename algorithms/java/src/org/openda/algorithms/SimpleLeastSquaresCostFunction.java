@@ -317,13 +317,13 @@ public class SimpleLeastSquaresCostFunction implements LeastSquaresCostFunction{
         }
     }
     
-	@Override
+	
 	public double getMultiplicationFactor() {
 		// TODO Auto-generated method stub
 		return 1.0;
 	}
 
-	@Override
+	
 	public void prepare(IVector p) {
 		// no computations needed
 	}
@@ -334,12 +334,12 @@ public class SimpleLeastSquaresCostFunction implements LeastSquaresCostFunction{
 		//TODO This is no proper deep copy 
 	}
 
-	@Override
+	
 	public boolean getTryParallel() {
 		return false;
 	}
 
-	@Override
+	
 	public void setTryParallel(boolean tryParallel) {
 		// do nothing, never parallel.	
 	}

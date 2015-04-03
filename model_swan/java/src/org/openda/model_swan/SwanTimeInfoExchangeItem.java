@@ -104,22 +104,22 @@ public class SwanTimeInfoExchangeItem implements IExchangeItem {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanTimeInfoExchangeItem.setTimes(): Not implemented yet.");
     }
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanTimeInfoExchangeItem.copyValuesFromItem(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanTimeInfoExchangeItem.getTimeInfo(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanTimeInfoExchangeItem.getQuantityInfo(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		return null;
 	}

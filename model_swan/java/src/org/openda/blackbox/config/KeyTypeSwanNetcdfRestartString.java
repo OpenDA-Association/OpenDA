@@ -28,7 +28,7 @@ import java.io.File;
 public class KeyTypeSwanNetcdfRestartString extends KeyTypeString {
     static String RESTART_PREFIX = "INITIAL HOTSTART";
     static String RESTART_POSTFIX=" NETCDF";
-    @Override
+    
     public String getValueAsString(String value) {
         return value;
     }

@@ -55,7 +55,7 @@ public class SwanTemplateDataObject extends BaseTemplateDataObject {
 	private double timeStep;
 
 
-    @Override
+    
     public IPrevExchangeItem[] getExchangeItems() {
         IPrevExchangeItem[] tempExchangeItems = super.getExchangeItems();
         exchangeItems = new IExchangeItem[tempExchangeItems.length + numberOfExtraExchangeItems];
@@ -69,7 +69,7 @@ public class SwanTemplateDataObject extends BaseTemplateDataObject {
 
     }
 
-    @Override
+    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         super.initialize(workingDir, fileName, arguments);
         this.startTimeExchangeItem = new DoubleExchangeItem(arguments[0], 0);
@@ -119,7 +119,7 @@ public class SwanTemplateDataObject extends BaseTemplateDataObject {
 
     }
 
-    @Override
+    
     public void writeValuesFile(PrintWriter printer) {
         double startDate = (Double) startTimeExchangeItem.getValues();
         double endDate = (Double) endTimeExchangeItem.getValues();

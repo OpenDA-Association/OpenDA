@@ -35,12 +35,12 @@ public class GlmNetcdfFileTimeSeries extends TimeSeries {
         this.ncFile = netcdfFile;
     }
 
-    @Override
+    
     public Role getRole() {
         return Role.Output;
     }
 
-    @Override
+    
     public Class getValueType() {
         return NetcdfFile.class;
     }
@@ -50,27 +50,27 @@ public class GlmNetcdfFileTimeSeries extends TimeSeries {
     }
     
 
-    @Override
+    
     public Object getValues() {
         return ncFile;
     }
 
-    @Override
+    
     public double[] getValuesAsDoubles() {
         return null;
     }
 
-    @Override
+    
     public void axpyOnValues(double alpha, double[] axpyValues) {
         throw new RuntimeException(this.getClass().getName() + ": axpyOnValues is not implemented");
     }
 
-    @Override
+    
     public void multiplyValues(double[] multiplicationFactors) {
         throw new RuntimeException(this.getClass().getName() + ": multiplyValues is not implemented");
     }
 
-    @Override
+    
     public void setValues(Object values) {
         if (values instanceof NetcdfFile) {
             this.ncFile = (NetcdfFile) values;
@@ -80,17 +80,17 @@ public class GlmNetcdfFileTimeSeries extends TimeSeries {
         throw new RuntimeException(this.getClass().getName() + ": cannot digest this type to set values");
     }
 
-    @Override
+    
     public void setValuesAsDoubles(double[] values) {
         //do nothing
     }
 
-    @Override
+    
     public double[] getTimes() {
         return null;
     }
 
-    @Override
+    
     public void setTimes(double[] times) {
         throw new RuntimeException(this.getClass().getName() + ": setTimes is not implemented");
     }

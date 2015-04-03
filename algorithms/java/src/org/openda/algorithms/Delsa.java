@@ -47,7 +47,7 @@ public class Delsa extends Instance implements IAlgorithm {
     private SimulationKwadraticCostFunction J=null;
     private DelsaCoreOptimizer delsaOptimizer;
 
-    @Override
+    
     public void initialize(File workingDir, String[] arguments) {
         String configString = arguments[0];
         delsaConf = new ConfigTree(workingDir, configString);
@@ -171,23 +171,23 @@ public class Delsa extends Instance implements IAlgorithm {
 		// in the cost function)
 	}
 
-	@Override
+	
 	public IVector getState() {
 		throw new UnsupportedOperationException("method getState not implemented."+this.getClass().getName());
 	}
 
-	@Override
+	
 	public ITime getTimeHorizon() {
 		throw new UnsupportedOperationException("method getTimeHorizon not implemented."+this.getClass().getName());
 	}
 
-	@Override
+	
 	public ITime getCurrentTime() {
 		throw new UnsupportedOperationException("method getCurrentTime not implemented."+this.getClass().getName());
 //		return null;
 	}
 
-	@Override
+	
 	public void compute(ITime targetTime) {
 		throw new UnsupportedOperationException("method compute not implemented."+this.getClass().getName());
 	}

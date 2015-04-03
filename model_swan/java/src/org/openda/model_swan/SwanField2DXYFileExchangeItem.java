@@ -142,22 +142,22 @@ public class SwanField2DXYFileExchangeItem implements IExchangeItem {
         }
     }
 
-	@Override
+	
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanField2DXYFileExchangeItem.copyValuesFromItem(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public ITimeInfo getTimeInfo() {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanField2DXYFileExchangeItem.getTimeInfo(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IQuantityInfo getQuantityInfo() {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanField2DXYFileExchangeItem.getQuantityInfo(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IGeometryInfo getGeometryInfo() {
 		return null;
 	}

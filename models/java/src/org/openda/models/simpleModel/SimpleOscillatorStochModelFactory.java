@@ -25,7 +25,7 @@ import java.io.File;
 
 public class SimpleOscillatorStochModelFactory extends SimpleStochModelFactory {
 
-	@Override
+	
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
 		return new SimpleOscillatorStochModelInstance(this.workingDir, this.arguments[0]);
 	}

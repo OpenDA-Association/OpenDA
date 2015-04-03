@@ -65,7 +65,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
      * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
      *                  the second argument should be the startTime of the model run.
      */
-    @Override
+    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         this.timeSeriesFile = new File(workingDir, fileName);
 
@@ -412,14 +412,14 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
         }
     }
 
-    @Override
+    
     public IPrevExchangeItem[] getExchangeItems() {
         //return all available exchange items.
         List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>(this.timeSeriesExchangeItems.values());
         return exchangeItems.toArray(new IPrevExchangeItem[exchangeItems.size()]);
     }
 
-    @Override
+    
     public void finish() {
         //do nothing.
     }

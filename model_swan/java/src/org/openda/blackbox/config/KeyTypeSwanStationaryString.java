@@ -22,13 +22,13 @@ public class KeyTypeSwanStationaryString extends KeyTypeString implements IKeyDa
 	protected double endDate = Double.NaN;
 	protected double timeStep;
 
-@Override
+
 	public void setStartDate(double date) {
 		this.startDate = date;
 
 	}
 
-	@Override
+	
 	public void setEndDate(double date) {
 		this.endDate = date;
 
@@ -48,7 +48,7 @@ public class KeyTypeSwanStationaryString extends KeyTypeString implements IKeyDa
 		return "COMPUTE STATIONARY " + dateFormatter.format(date) + "." + timeFormatter.format(date);
 	}
 
-	@Override
+	
 	public String calculateValue() {
 		if (Double.isNaN(startDate)) {
 			throw new RuntimeException(this.getClass().getName() + ".calculateValue(): startDate needs to be set before calling this method.");

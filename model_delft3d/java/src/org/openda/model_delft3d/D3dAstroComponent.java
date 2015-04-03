@@ -72,7 +72,7 @@ public class D3dAstroComponent {
         this.correction = correction;
     }
 
-    @Override
+    
     public String toString() {
         Locale locale = new Locale("EN");
         String stringFormat = "%-6s";

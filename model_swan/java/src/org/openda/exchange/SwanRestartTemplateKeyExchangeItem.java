@@ -35,7 +35,7 @@ public class SwanRestartTemplateKeyExchangeItem extends SwanTemplateKeyExchangeI
     public SwanRestartTemplateKeyExchangeItem(String id, IKeyType keyType) {
         super(id, keyType);
     }
-    @Override
+    
     public String calculateValue() {
         if (getKeyType() instanceof KeyTypeSwanRestartString) {
             return ((KeyTypeSwanRestartString)getKeyType()).parseRestartFile(restartFile, restartFileName);

@@ -56,37 +56,37 @@ public class ObservationDescriptionsN2J implements IObservationDescriptions {
 		return _dotNetObservationDescriptions;
 	}
 
-	@Override
+	
 	public List<IPrevExchangeItem> getExchangeItems() {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getExchangeItems(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IVector getValueProperties(String Key) {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getValueProperties(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public String[] getStringProperties(String Key) {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getStringProperties(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public String[] getPropertyKeys() {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getPropertyKeys(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public int getPropertyCount() {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getPropertyCount(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public int getObservationCount() {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getObservationCount(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public ITime[] getTimes() {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getTimes(): Not implemented yet.");
 	}

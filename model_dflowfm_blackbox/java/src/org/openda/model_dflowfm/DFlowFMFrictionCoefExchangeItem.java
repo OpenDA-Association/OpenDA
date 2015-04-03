@@ -93,7 +93,7 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 		return this.value;
 	}
 
-	@Override
+	
 	public void setValues(Object values) {
 		if(values instanceof Double){
 			this.value = (Double) values;
@@ -132,27 +132,27 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 	 * =======================================================================
 	 */
 
-	@Override
+	
 	@Deprecated public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("setTimes method make no sense for a DoubleExchangeItem");
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
+	
 	@Deprecated public Class getValueType() {
 		return double.class;
 	}
 
-	@Override
+	
 	@Deprecated public double[] getTimes() {
 		return null;
 	}
-	@Override
+	
 	@Deprecated public double[] getValuesAsDoubles() {
 		return new double[]{this.value};
 	}
 
-	@Override
+	
 	@Deprecated public void axpyOnValues(double alpha, double[] axpyValues) {
 		if(axpyValues.length==1){
 			this.value += alpha*axpyValues[0];
@@ -161,7 +161,7 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 		}
 	}
 
-	@Override
+	
 	@Deprecated public void multiplyValues(double[] multiplicationFactors) {
 		if(multiplicationFactors.length==1){
 			this.value *= multiplicationFactors[0];
@@ -170,7 +170,7 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 		}
 	}
 
-	@Override
+	
 	@Deprecated public void setValuesAsDoubles(double[] values) {
 		if (values.length !=1){
 			throw new UnsupportedOperationException("Length of value array must be 1");

@@ -47,24 +47,24 @@ public class BiasAwareObservationsModelFactory implements IStochModelFactory {
 	boolean localization;
 
 
-	@Override
+	
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
 
 		return new BiasAwareObservationsModelInstance(stochModelFactory.getInstance(outputLevel),this.std,
 				      this.obsIDstd, this.maxBias, this.checkObservationID, this.localization);
 	}
 
-	@Override
+	
 	public IStochModelPostProcessor getPostprocessorInstance(File instanceDir) {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
+	
 	public void finish() {
 		// no action needed (yet)
 	}
 
-	@Override
+	
 	public void initialize(File workingDir, String[] arguments) {
 		String className;
 		String workingDirModelStr;

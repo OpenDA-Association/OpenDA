@@ -228,7 +228,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       setVisible(true);
    }
 
-   @Override
+   
    public void actionPerformed(ActionEvent event) {
 
       Object source = event.getSource();

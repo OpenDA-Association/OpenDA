@@ -97,7 +97,7 @@ public class DflowfmFrictionCoefficientFile implements IDataObject {
 		this.exchangeItems = listOfExchangeItems;
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 		for (IExchangeItem item : this.exchangeItems) {
@@ -106,7 +106,7 @@ public class DflowfmFrictionCoefficientFile implements IDataObject {
 		return exchangeItemIDs.toArray(new String[exchangeItemIDs.size()]);
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(Role role) {
 		ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 		for (IExchangeItem item : this.exchangeItems) {
@@ -117,7 +117,7 @@ public class DflowfmFrictionCoefficientFile implements IDataObject {
 		return exchangeItemIDs.toArray(new String[exchangeItemIDs.size()]);
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		for (IExchangeItem exchangeItem : this.exchangeItems) {
 			if (exchangeItem.getId().equals(exchangeItemID)) {

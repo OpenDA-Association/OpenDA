@@ -100,7 +100,7 @@ public class EfdcAserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
         super(fileType);
     }
 
-    @Override
+    
     protected String getFileType() {
         return this.fileType;
     }
@@ -110,7 +110,7 @@ public class EfdcAserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
      *
      * @param inputFile
      */
-    @Override
+    
     public void readFile(File inputFile) {
         if (!inputFile.exists()) {
             throw new RuntimeException("Input file '" + inputFile.getAbsolutePath()
@@ -176,7 +176,7 @@ public class EfdcAserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
      * @param outputFile
      * @param timeSeriesList
      */
-    @Override
+    
     public void writeTimeSeriesToFile(File outputFile, Map<String, IPrevExchangeItem> timeSeriesMap) {
         if (timeSeriesMap == null || timeSeriesMap.isEmpty()) {
             throw new RuntimeException("No time series to write to file '" + outputFile.getAbsolutePath() + "'.");
@@ -220,7 +220,7 @@ public class EfdcAserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
      * @param locationId
      * @param timeSeriesMap
      */
-    @Override
+    
     protected void writeTimeSeriesForLocation(PrintWriter writer, int locationId, Map<String, IPrevExchangeItem> timeSeriesMap) {
 
         //get data.
@@ -282,7 +282,7 @@ public class EfdcAserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
         }
     }
 
-    @Override
+    
     protected void writeTimeSeriesHeaderForLocation(PrintWriter printer, int locationId, int numberOfNonMissingValues) {
         String[] timeSeriesHeaderLines = this.timeSeriesHeadersMap.get(String.valueOf(locationId));
         if (timeSeriesHeaderLines == null || timeSeriesHeaderLines.length != 2

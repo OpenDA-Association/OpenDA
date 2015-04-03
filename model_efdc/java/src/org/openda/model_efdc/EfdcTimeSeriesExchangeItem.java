@@ -34,7 +34,7 @@ public class EfdcTimeSeriesExchangeItem extends TimeSeries {
         super();
     }
 
-    @Override
+    
     public Role getRole() {
         return IPrevExchangeItem.Role.Input;
     }

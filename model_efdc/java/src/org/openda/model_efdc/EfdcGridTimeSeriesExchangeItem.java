@@ -41,12 +41,12 @@ public class EfdcGridTimeSeriesExchangeItem extends ExchangeItem {
         super(id);
     }
 
-    @Override
+    
     public Role getRole() {
         return Role.Output;
     }
 
-    @Override
+    
     @SuppressWarnings("rawtypes")
     public Class getValueType() {
         return double[][].class;
@@ -56,27 +56,27 @@ public class EfdcGridTimeSeriesExchangeItem extends ExchangeItem {
         return ValueType.doubles2dType;
     }
 
-    @Override
+    
     public Object getValues() {
         return this.data;
     }
 
-    @Override
+    
     public double[] getValuesAsDoubles() {
         return null;
     }
 
-    @Override
+    
     public void axpyOnValues(double alpha, double[] axpyValues) {
         throw new RuntimeException("Method axpyOnValues not implemented for " + this.getClass().getName());
     }
 
-    @Override
+    
     public void multiplyValues(double[] multiplicationFactors) {
         throw new RuntimeException("Method multiplyValues not implemented for " + this.getClass().getName());
     }
 
-    @Override
+    
     public void setValues(Object values) {
         if (values instanceof double[][]) {
             this.data = (double[][]) values;
@@ -85,7 +85,7 @@ public class EfdcGridTimeSeriesExchangeItem extends ExchangeItem {
         }
     }
 
-    @Override
+    
     public void setValuesAsDoubles(double[] values) {
         //do nothing
     }

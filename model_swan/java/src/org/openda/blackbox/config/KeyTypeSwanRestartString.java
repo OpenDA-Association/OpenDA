@@ -27,7 +27,7 @@ import java.io.File;
  */
 public class KeyTypeSwanRestartString extends KeyTypeString {
     static String HOTSTART_TXT = "INIT HOTSTART SING";
-    @Override
+    
     public String getValueAsString(String value) {
         return value;
     }

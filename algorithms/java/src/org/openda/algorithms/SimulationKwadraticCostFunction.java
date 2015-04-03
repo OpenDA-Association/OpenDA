@@ -784,12 +784,12 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 		return result;
 	}
 
-	//@Override
+	//
 	public boolean getTryParallel() {
 		return tryParallel;
 	}
 
-	//@Override
+	//
 	public void setTryParallel(boolean tryParallel) {
 		this.tryParallel=tryParallel;
 	}

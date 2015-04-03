@@ -72,7 +72,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return Copy of the time array.
      */
-    @Override
+    
     public double[] getTimes() {
         readValuesAndTimesFromFile();
         return super.getTimes();
@@ -84,7 +84,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return The value array as double array.
      */
-    @Override
+    
     public double[] getValuesAsDoubles() {
         readValuesAndTimesFromFile();
         return super.getValuesAsDoubles();
@@ -98,7 +98,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return A new time series with only the elements indicated by the mask.
      */
-    @Override
+    
     public TimeSeries selectMaskSubset(Mask mask) {
         readValuesAndTimesFromFile();
         return super.selectMaskSubset(mask);
@@ -112,7 +112,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return A new time series with only the elements matching the indicated time values.
      */
-    @Override
+    
     public TimeSeries selectTimeSubset(double[] onlyTimes) {
         readValuesAndTimesFromFile();
         return super.selectTimeSubset(onlyTimes);
@@ -129,7 +129,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           End time.
      * @return Time series containing the selection requested.
      */
-    @Override
+    
     public TimeSeries selectTimeSubset(double startTime, double endTime) {
         readValuesAndTimesFromFile();
         return super.selectTimeSubset(startTime, endTime);
@@ -147,7 +147,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           Maximum value.
      * @return Time series containing the selection requested.
      */
-    @Override
+    
     public TimeSeries selectValueSubset(double minValue, double maxValue) {
         readValuesAndTimesFromFile();
         return super.selectValueSubset(minValue, maxValue);
@@ -159,7 +159,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return this as TimeSeries object
      */
-    @Override
+    
     public Object getValues() {
         readValuesAndTimesFromFile();
         return super.getValues();
@@ -174,7 +174,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The time to search for.
      * @return The resulting index.
      */
-    @Override
+    
     public int findOnTime(double time) {
         readValuesAndTimesFromFile();
         return super.findOnTime(time);
@@ -191,7 +191,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The time to search for.
      * @return The resulting value.
      */
-    @Override
+    
     public double getValue(double time) {
         readValuesAndTimesFromFile();
         return super.getValue(time);
@@ -207,7 +207,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The time to search for.
      * @return The resulting value.
      */
-    @Override
+    
     public double getInterpolatedValue(double time) {
         readValuesAndTimesFromFile();
         return super.getInterpolatedValue(time);
@@ -225,7 +225,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           values to return for non-matching times
      * @return values at selected times
      */
-    @Override
+    
     public double[] getValuesAsDoubles(double[] selectTimes, double tolerance, double dummy) {
         readValuesAndTimesFromFile();
         return super.getValuesAsDoubles(selectTimes, tolerance, dummy);
@@ -234,7 +234,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The start time of the series.
      */
-    @Override
+    
     public double getStartTime() {
         readValuesAndTimesFromFile();
         return super.getStartTime();
@@ -243,7 +243,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The end time of the series.
      */
-    @Override
+    
     public double getStopTime() {
         readValuesAndTimesFromFile();
         return super.getStopTime();
@@ -255,7 +255,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return The time step.
      */
-    @Override
+    
     public double getTimeStep() {
         readValuesAndTimesFromFile();
         return super.getTimeStep();
@@ -266,7 +266,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *
      * @return Whether this time series is sorted ascending.
      */
-    @Override
+    
     public boolean isTimeOrdered() {
         readValuesAndTimesFromFile();
         return super.isTimeOrdered();
@@ -281,7 +281,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The end time of the interval.
      * @return Whether this time series intersects with the given time interval
      */
-    @Override
+    
     public boolean intersectsWithTimeInterval(double t_start, double t_stop) {
         readValuesAndTimesFromFile();
         return super.intersectsWithTimeInterval(t_start, t_stop);
@@ -295,7 +295,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The time series to compare to.
      * @return Whether this time series' data equals that of the other time series.
      */
-    @Override
+    
     public boolean equals(TimeSeries other) {
         readValuesAndTimesFromFile();
         return super.equals(other);
@@ -311,7 +311,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           Flag to indicate whether an indication should be given about the difference.
      * @return Whether this time series' data equals that of the other time series.
      */
-    @Override
+    
     public boolean equals(TimeSeries other, boolean verbose) {
         readValuesAndTimesFromFile();
         return super.equals(other, verbose);
@@ -320,7 +320,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The length of (number of elements in) this time series
      */
-    @Override
+    
     public int getSize() {
         readValuesAndTimesFromFile();
         return super.getSize();
@@ -329,7 +329,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The average value of the values in this time series
      */
-    @Override
+    
     public double average() {
         readValuesAndTimesFromFile();
         return super.average();
@@ -338,7 +338,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The average value of the absolute values in this time series
      */
-    @Override
+    
     public double averageAbs() {
         readValuesAndTimesFromFile();
         return super.averageAbs();
@@ -347,7 +347,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The RMS value of the values in this time series
      */
-    @Override
+    
     public double rms() {
         readValuesAndTimesFromFile();
         return super.rms();
@@ -356,7 +356,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The maximum value of the values in this time series
      */
-    @Override
+    
     public double maximum() {
         readValuesAndTimesFromFile();
         return super.maximum();
@@ -365,7 +365,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
     /**
      * @return The minimum value of the values in this time series
      */
-    @Override
+    
     public double minimum() {
         readValuesAndTimesFromFile();
         return super.minimum();
@@ -378,7 +378,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The average value calculated before
      * @return The standard deviation
      */
-    @Override
+    
     public double stdDev(double average) {
         readValuesAndTimesFromFile();
         return super.stdDev(average);
@@ -393,7 +393,7 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      *           The reference time series.
      * @return A new time series with the errors relative to the reference time series.
      */
-    @Override
+    
     public TimeSeries errorSeries(TimeSeries reference) {
         readValuesAndTimesFromFile();
         return super.errorSeries(reference);

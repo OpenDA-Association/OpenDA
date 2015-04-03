@@ -78,7 +78,7 @@ public class GroupObservationDesrciptions implements IObservationDescriptions {
         return exchangeItems;
     }
 
-	@Override
+	
 	public int getObservationCount() {
 		return this.obs.getCount();
 	}
@@ -87,25 +87,25 @@ public class GroupObservationDesrciptions implements IObservationDescriptions {
 		return obs.getTimes();
 	}
 
-	@Override
+	
 	public int getPropertyCount() {
 		//TODO
 		return 0;
 	}
 
-	@Override
+	
 	public String[] getPropertyKeys() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public String[] getStringProperties(String Key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public IVector getValueProperties(String Key) {
 		// TODO Auto-generated method stub
 		return null;

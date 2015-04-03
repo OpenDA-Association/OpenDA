@@ -64,7 +64,7 @@ public class PlotResultWriter implements IResultWriter {
 
     public void free(){};
 
-    @Override
+    
 	public void putMessage(Source source, String message) {
 		if (message.startsWith("CostFunction = ")) {
 			String costFunctionName = message.replace("CostFunction = ", "");
@@ -73,28 +73,28 @@ public class PlotResultWriter implements IResultWriter {
 		}
 	}
 
-    @Override
+    
     public void putMessage(IInstance source, String message) {
 		// do nothing
     }
 
-//	@Override
+//	
 //	public void putValue(Source source, String id, Object result) {
 //
 //	}
 //
-//    @Override
+//    
 //    public void putValue(IInstance source, String id, Object result) {
 //
 //    }
 //
 //
-//    @Override
+//    
 //	public void putValue(Source source, String id, Object result, int iteration) {
 //        putValue("", id, result, iteration);
 //    }
 
-	@Override
+	
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
 		if (id.toLowerCase().contains(this.id)){
             double currentValue;
@@ -130,7 +130,7 @@ public class PlotResultWriter implements IResultWriter {
 		}
 	}
 
-//	@Override
+//	
 //    public void putValue(IInstance source, String id, Object result, int iteration) {
 //        putValue("", id, result, iteration);
 //    }
@@ -184,7 +184,7 @@ public class PlotResultWriter implements IResultWriter {
 
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {}
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

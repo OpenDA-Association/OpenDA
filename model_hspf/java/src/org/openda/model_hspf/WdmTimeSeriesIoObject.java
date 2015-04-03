@@ -104,7 +104,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      *                  the other arguments should be the location and parameter ids of the time series
      *                  for which exchange items should be made.
      */
-    @Override
+    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         //initialize wdmTimeSeriesFilePath.
         File wdmTimeSeriesFile = new File(workingDir, fileName);
@@ -247,7 +247,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         }
     }
 
-    @Override
+    
     public IPrevExchangeItem[] getExchangeItems() {
         //return all available exchange items.
         List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>(this.wdmTimeSeriesExchangeItems);
@@ -288,7 +288,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      * from all wdmTimeSeriesExchangeItems in this IoObject to the wdm file
      * so that it can be used as input by the model.
      */
-    @Override
+    
     public void finish() {
         if (this.role == IPrevExchangeItem.Role.Output) {
             return;

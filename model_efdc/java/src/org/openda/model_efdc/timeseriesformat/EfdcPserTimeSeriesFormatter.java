@@ -53,7 +53,7 @@ public class EfdcPserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
         super(fileType);
     }
 
-    @Override
+    
     protected String getFileType() {
         return this.fileType;
     }
@@ -63,7 +63,7 @@ public class EfdcPserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
      *
      * @param inputFile
      */
-    @Override
+    
     public void readFile(File inputFile) {
         if (!inputFile.exists()) {
             throw new RuntimeException("Input file '" + inputFile.getAbsolutePath()
@@ -75,7 +75,7 @@ public class EfdcPserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
         removeAndStoreFileHeader(lines);
     }
 
-    @Override
+    
     protected void writeTimeSeriesHeaderForLocation(PrintWriter writer,
             int locationId, int numberOfNonMissingValues) {
 

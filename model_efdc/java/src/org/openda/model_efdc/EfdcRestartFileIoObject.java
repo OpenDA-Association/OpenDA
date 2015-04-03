@@ -57,7 +57,7 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
      * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
      *                  the second argument should be the id of the startTime exchangeItem.
      */
-    @Override
+    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         this.efdcRestartFile = new File(workingDir, fileName);
 
@@ -85,12 +85,12 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
         this.startTimeExchangeItem = new DoubleExchangeItem(arguments[1], 0);
     }
 
-    @Override
+    
     public IPrevExchangeItem[] getExchangeItems() {
         return new IPrevExchangeItem[]{this.startTimeExchangeItem};
     }
 
-    @Override
+    
     public void finish() {
         changeRelativeStartTimeInRestartFile();
     }

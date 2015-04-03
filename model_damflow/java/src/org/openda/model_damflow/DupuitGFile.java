@@ -167,7 +167,7 @@ public class DupuitGFile implements IDataObject {
 		}
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		int nExchangeItem = exchangeItems.length;
 		String[] exchangeItemIDs = new String[nExchangeItem];
@@ -177,12 +177,12 @@ public class DupuitGFile implements IDataObject {
 		return exchangeItemIDs;
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitGFile - Method Name : getExchangeItemIDs");
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		int i;
 		for (i=0; i<this.exchangeItems.length;i++){
@@ -193,12 +193,12 @@ public class DupuitGFile implements IDataObject {
 		return this.exchangeItems[i];
 	}
 
-	@Override
+	
 	public void finish() {
 		writeDupuitGFile();
 	}
 
-	@Override
+	
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		String[] remainingArguments = new String[arguments.length-1];

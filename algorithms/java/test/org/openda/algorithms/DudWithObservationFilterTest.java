@@ -414,7 +414,7 @@ public class DudWithObservationFilterTest extends TestCase {
 
         }
 
-        @Override
+        
         protected void initializeObservationFilters(List<IObservationSpaceFilter> obsFilters, List<File> obsFilterWorkingDirectory,List<String[]> obsFilterArguments) {
             int i = 0;
             for (IObservationSpaceFilter obsFilter : obsFilters){

@@ -55,7 +55,7 @@ public class ClearWdmFile implements IConfigurable {
      *                  the third argument should be the path of the wdm file to clear (relative to the working directory).
      *                  for which exchange items should be made.
      */
-    @Override
+    
     public void initialize(File workingDir, String[] arguments) {
         //initialize wdmDll.
         if (arguments == null || arguments.length < 1) {

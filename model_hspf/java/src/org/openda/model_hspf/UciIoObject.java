@@ -84,7 +84,7 @@ public class UciIoObject implements IoObjectInterface {
      *                  the second and third arguments should be the ids of the startTime and endTime exchangeItems respectively,
      *                  the (optional) fourth argument should be the startTimeExtension in hours relative to the startTime of the OpenDA runPeriod.
      */
-    @Override
+    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         this.uciFile = new File(workingDir, fileName);
 
@@ -130,12 +130,12 @@ public class UciIoObject implements IoObjectInterface {
         this.dateFormat.setTimeZone(this.timeZone);
     }
 
-    @Override
+    
     public IPrevExchangeItem[] getExchangeItems() {
         return new IPrevExchangeItem[]{this.startTimeExchangeItem, this.endTimeExchangeItem};
     }
 
-    @Override
+    
     public void finish() {
         writeDefinitionFile();
     }

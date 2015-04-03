@@ -29,13 +29,13 @@ import org.openda.utils.io.CalRestartSettings;
  */
 public class Dud extends BaseDud {
 
-	@Override
+	
 	protected BaseDudCoreOptimizer InitializeDudCoreOptimizer() {
 		return new DudCoreOptimizer(J);
 	}
 
 
-	@Override
+	
 	public void releaseInternalState(IModelState savedInternalState) {
 		if (!(savedInternalState instanceof CalRestartSettings)) {
 			throw new IllegalArgumentException("Unexpected saved State type: " + savedInternalState.getClass().getName());

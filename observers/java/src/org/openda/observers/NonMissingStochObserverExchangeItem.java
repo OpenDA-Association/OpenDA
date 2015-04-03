@@ -74,22 +74,22 @@ public class NonMissingStochObserverExchangeItem implements IPrevExchangeItem, I
         }
     }
 
-    @Override
+    
     public void copyValuesFromItem(IExchangeItem sourceItem) {
         throw new UnsupportedOperationException("org.openda.observers.NonMissingStochObserverExchangeItem.copyValuesFromItem(): Not implemented yet.");
     }
 
-    @Override
+    
     public ITimeInfo getTimeInfo() {
         throw new UnsupportedOperationException("org.openda.observers.NonMissingStochObserverExchangeItem.getTimeInfo(): Not implemented yet.");
     }
 
-    @Override
+    
     public IQuantityInfo getQuantityInfo() {
         throw new UnsupportedOperationException("org.openda.observers.NonMissingStochObserverExchangeItem.getQuantityInfo(): Not implemented yet.");
     }
 
-    @Override
+    
     public IGeometryInfo getGeometryInfo() {
 		//TODO all exchangeItems should implement IExchangeItem. AK
 		if (this.ioExchangeItem instanceof IExchangeItem) {
@@ -98,17 +98,17 @@ public class NonMissingStochObserverExchangeItem implements IPrevExchangeItem, I
 		return null;
     }
 
-    @Override
+    
     public String getId() {
         return this.ioExchangeItem.getId();
     }
 
-    @Override
+    
     public String getDescription() {
         return this.ioExchangeItem.getDescription();
     }
 
-    @Override
+    
     public Class getValueType() {
         return this.ioExchangeItem.getValueType();
     }
@@ -138,47 +138,47 @@ public class NonMissingStochObserverExchangeItem implements IPrevExchangeItem, I
     }
 
 
-    @Override
+    
     public Role getRole() {
         return this.ioExchangeItem.getRole();
     }
 
-    @Override
+    
     public Object getValues() {
         return this.values;
     }
 
-    @Override
+    
     public double[] getValuesAsDoubles() {
         return this.values;
     }
 
-    @Override
+    
     public void axpyOnValues(double alpha, double[] axpyValues) {
         this.ioExchangeItem.axpyOnValues(alpha,axpyValues);
     }
 
-    @Override
+    
     public void multiplyValues(double[] multiplicationFactors) {
         this.ioExchangeItem.multiplyValues(multiplicationFactors);
     }
 
-    @Override
+    
     public void setValues(Object values) {
         throw new RuntimeException("setValues not allowed for an observer");
     }
 
-    @Override
+    
     public void setValuesAsDoubles(double[] values) {
         throw new RuntimeException("setValuesAsDoubles not allowed for an observer");
     }
 
-    @Override
+    
     public double[] getTimes() {
         return this.times;
     }
 
-    @Override
+    
     public void setTimes(double[] times) {
         throw new RuntimeException("setTimes not allowed for an observer");
     }

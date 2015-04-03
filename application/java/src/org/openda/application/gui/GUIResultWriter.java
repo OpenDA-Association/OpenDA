@@ -58,14 +58,14 @@ public class GUIResultWriter implements IResultWriter {
 
     }
 
-    @Override
+    
     public void putMessage(Source source, String message) {
         progressDisplayer.append(message+"\n");
         setCursorToEnd(this.progressDisplayer);
 
     }
 
-    @Override
+    
     public void putMessage(IInstance source, String message) {
         progressDisplayer.append(message + "\n");
         setCursorToEnd(this.progressDisplayer);
@@ -77,7 +77,7 @@ public class GUIResultWriter implements IResultWriter {
     }
 
 
-//    @Override
+//    
 //    public void putValue(Source source, String id, Object result) {
 //        if (!writeResults) {
 //            return;
@@ -88,7 +88,7 @@ public class GUIResultWriter implements IResultWriter {
 //        setCursorToEnd(this.resultDisplayer);
 //    }
 //
-//    @Override
+//    
 //    public void putValue(IInstance source, String id, Object result) {
 //        if (!writeResults) {
 //            return;
@@ -99,7 +99,7 @@ public class GUIResultWriter implements IResultWriter {
 //        setCursorToEnd(this.resultDisplayer);
 //    }
 
-//    @Override
+//    
 //    public void putValue(Source source, String id, Object result, int iteration) {
 //        if (!writeResults) {
 //            return;
@@ -112,7 +112,7 @@ public class GUIResultWriter implements IResultWriter {
 //        setCursorToEnd(this.resultDisplayer);
 //    }
 
-	@Override
+	
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
         if (!writeResults) {
             return;
@@ -125,7 +125,7 @@ public class GUIResultWriter implements IResultWriter {
         setCursorToEnd(this.resultDisplayer);
 	}
 
-//	@Override
+//	
 //    public void putValue(IInstance source, String id, Object result, int iteration) {
 //        if (!writeResults) {
 //            return;
@@ -168,7 +168,7 @@ public class GUIResultWriter implements IResultWriter {
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {
     }
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

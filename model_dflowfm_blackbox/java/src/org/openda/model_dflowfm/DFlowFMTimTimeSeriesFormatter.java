@@ -33,7 +33,7 @@ public class DFlowFMTimTimeSeriesFormatter extends TimeSeriesFormatter {
 		factorToMjd = 1.0 / (60.0*24.0); 
 	}
 	
-	@Override
+	
 	public void write(OutputStream out, TimeSeries series) {
 		write(new PrintWriter(out), series);
 	}
@@ -55,7 +55,7 @@ public class DFlowFMTimTimeSeriesFormatter extends TimeSeriesFormatter {
 	}
 	
 	
-	@Override
+	
 	public TimeSeries read(InputStream in) {
 		return read(new BufferedReader(new InputStreamReader(in)));
 	}

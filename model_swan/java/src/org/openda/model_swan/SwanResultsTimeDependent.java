@@ -354,12 +354,12 @@ public class SwanResultsTimeDependent implements IDataObject, Serializable {
 	//        }
 	//    }
 
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		return this.ids.toArray(new String[this.ids.size()]);
 	}
 
-	@Override
+	
 	public String[] getExchangeItemIDs(Role role) {
 		if(role==Role.Output){
 			return this.ids.toArray(new String[this.ids.size()]);
@@ -368,12 +368,12 @@ public class SwanResultsTimeDependent implements IDataObject, Serializable {
 		}
 	}
 
-	@Override
+	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		return this.series.get(exchangeItemID);
 	}
 
-	@Override
+	
 	public void finish() {
 		// TODO Nothing todo since we cannot write for now
 	}

@@ -91,7 +91,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		this.observationUncertainty = new StochVector(this.obsValues,this.observations.getStandardDeviations());
 	}
 
-	@Override
+	
 	public void prepare(IVector p) {
 		// Auto-generated method stub
 	}
@@ -156,7 +156,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 //		return cost;
 //	}
 
-	@Override
+	
 	public double evaluate(IVector p, String context) {
 		//
 		// J = factor * p'*p + factor * (y_obs - H(x_f + L * p))' * inv(R) * (y_obs - H(x_f + L * p))
@@ -275,7 +275,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		return grad;
 	}
 
-	@Override
+	
 	public IVector[] getAllPredictions() {
 		int n = this.allCosts.size();
 		IVector[] result = new IVector[n];
@@ -285,37 +285,37 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		return result;
 	}
 
-	@Override
+	
 	public boolean doAddBackgroundTerm() {
 		return this.backGroundOn;
 	}
 
-	@Override
+	
 	public IVector getLastPredictions() {
 		return this.lastPredicted.clone();
 	}
 
-	@Override
+	
 	public IStochVector getObservationUncertainty() {
 		return this.observationUncertainty;
 	}
 
-	@Override
+	
 	public IVector getOptimalPredictions() {
 		return this.predMin.clone();
 	}
 
-	@Override
+	
 	public IStochVector getParameterUncertainty() {
 		throw new UnsupportedOperationException("TODO: should return identity of proper size");
 	}
 
-	@Override
+	
 	public void setBackgroundTerm(boolean onIsTrue) {
 		this.backGroundOn = onIsTrue;
 	}
 
-	@Override
+	
 	public IVector getCosts() {
 		int n = this.allCosts.size();
 		Vector result = new Vector(n);
@@ -325,18 +325,18 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		return result;
 	}
 
-	@Override
+	
 	public double getMultiplicationFactor() {
 		// Auto-generated method stub
 		return this.factor;
 	}
 
-	@Override
+	
 	public double getOptimalCost() {
 		return this.fMin;
 	}
 
-	@Override
+	
 	public IVector getOptimalParameters() {
 		if(this.pMin==null){
 			throw new RuntimeException("No costs were computed, thus no optimal parameters exist.");
@@ -344,7 +344,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		return this.pMin.clone();
 	}
 
-	@Override
+	
 	public IVector[] getParameters() {
 		int n = this.allCosts.size();
 		IVector[] result = new IVector[n];
@@ -354,7 +354,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		return result;
 	}
 
-	@Override
+	
 	public void writeResults() {
 		Results.putMessage("===================================================================");
 		Results.putMessage("AnalysisLeastSquaresCostWithGradient");
@@ -381,12 +381,12 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		// return result;
 	}
 
-	@Override
+	
 	public boolean getTryParallel() {
 		return false;
 	}
 
-	@Override
+	
 	public void setTryParallel(boolean tryParallel) {
 		// do nothing, never parallel.	
 	}

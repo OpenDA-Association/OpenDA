@@ -61,7 +61,7 @@ public class SimpleCostFunction implements ICostFunctionWithGradient{
 //		return result;
 //	}
 
-	@Override
+	
 	public double evaluate(IVector p, String context) { // Cost = Sum_i ((p(i)-means(i)/width(i))^2
         double result=0.0;
         for(int i=0;i<this.means.length;i++){
@@ -148,7 +148,7 @@ public class SimpleCostFunction implements ICostFunctionWithGradient{
 		return 1.0;
 	}
 
-	@Override
+	
 	public void prepare(IVector p) {
 		// do nothing in this case
 	}
@@ -159,17 +159,17 @@ public class SimpleCostFunction implements ICostFunctionWithGradient{
 		// TODO NOTE this is not a proper deep copy
 	}
 
-	@Override
+	
 	public boolean getTryParallel() {
 		return false;
 	}
 
-	@Override
+	
 	public void setTryParallel(boolean tryParallel) {
 		// do nothing, never parallel.	
 	}
 
-	@Override
+	
 	public IVector evaluateGradient(IVector p) {
 		IVector result = p.clone();
 	    for(int i=0;i<this.means.length;i++){

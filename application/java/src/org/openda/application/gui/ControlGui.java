@@ -202,7 +202,7 @@ public class ControlGui extends JPanel implements ActionListener {
    }
 
    private ActionListener disableLoggingButtonListener = new ActionListener() {
-       @Override
+       
        public void actionPerformed(ActionEvent e) {
            //toggle logging of results in guiResultWriter.
            guiResultWriter.setWriteResults(!guiResultWriter.isWriteResults());
@@ -216,7 +216,7 @@ public class ControlGui extends JPanel implements ActionListener {
        }
    };
 
-   @Override
+   
    public void actionPerformed(ActionEvent event) {
       Object source = event.getSource();
       if (source == this.openRestartButton) {

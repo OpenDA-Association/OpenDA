@@ -103,21 +103,21 @@ public class OutputGui extends JPanel implements IResultWriter {
         }
     }
 
-    @Override
+    
     public void putMessage(Source source, String message) {}
 
-    @Override
+    
     public void putMessage(IInstance source, String message) {}
 
 
-	@Override
+	
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {}
 
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {
         appendData(iteration, cost, parameters);
     }
 
-    @Override
+    
     public int getDefaultMaxSize() {
         return defaultMaxSize;
     }

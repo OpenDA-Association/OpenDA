@@ -126,7 +126,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	@Override
+	
 	public void announceObservedValues(
 			IObservationDescriptions observationDescriptions) {
 		// split descriptions and pair models vs descriptions
@@ -141,14 +141,14 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		}
 	}
 
-	@Override
+	
 	public void axpyOnParameters(double alpha, IVector change) {
 		IVector currentPars = this.getParameters();
 		currentPars.axpy(alpha, change);
 		this.setParameters(currentPars);
 	}
 
-	@Override
+	
 	public void axpyOnState(double alpha, IVector change) {
 		int n=this.childIds.size();
 		IVector[] stateParts = new IVector[n];
@@ -161,13 +161,13 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		}
 	}
 
-	@Override
+	
 	public void axpyOnWhiteNoise(double alpha, IVector[] vector) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public IVector getObservedValues(
 			IObservationDescriptions observationDescriptions) {
 		TreeVector result = new TreeVector("combined");
@@ -186,12 +186,12 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	@Override
+	
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
 		throw new UnsupportedOperationException("org.openda.models.simpleModel.simultaneousGroupStochModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public IStochVector getParameterUncertainty() {
 		IStochVector result = null;
 		IStochVector stochParts[] = new IStochVector[this.childIds.size()];
@@ -211,7 +211,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	@Override
+	
 	public IVector getParameters() {
 		IVector result = null;
 		IVector parts[] = new IVector[this.childIds.size()];
@@ -222,7 +222,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	@Override
+	
 	public IVector getState() {
 		IVector result = null;
 		IVector parts[] = new IVector[this.childIds.size()];
@@ -233,19 +233,19 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	@Override
+	
 	public IVector getStateScaling() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
+	
 	public IVector[] getStateScaling(
 			IObservationDescriptions observationDescriptions) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public IStochVector getStateUncertainty() {
 		IStochVector result = null;
 		IStochVector stochParts[] = new IStochVector[this.childIds.size()];
@@ -265,23 +265,23 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	@Override
+	
 	public IVector[] getWhiteNoise(ITime timeSpan) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getWhiteNoise: Not implemented yet.");
 	}
-	@Override
+	
 	public ITime[] getWhiteNoiseTimes(ITime timeSpan) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getWhiteNoiseTimes(ITime timeSpan): Not implemented yet.");
 	}
-	@Override
+	
 	public IStochVector[] getWhiteNoiseUncertainty(ITime time) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getWhiteNoiseUncertainty(ITime time): Not implemented yet.");
 	}
-	@Override
+	
 	public boolean isWhiteNoiseStationary() {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.isWhiteNoiseStationary(): Not implemented yet.");
 	}
-	@Override
+	
 	public void setAutomaticNoiseGeneration(boolean value) {
 		int n=this.childIds.size();
 		for(int i=0;i<n;i++){
@@ -289,7 +289,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		}
 	}
 
-	@Override
+	
 	public void setParameters(IVector parameters) {
 		int n=this.childIds.size();
 		IVector[] parParts = new IVector[n];
@@ -302,12 +302,12 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		}
 	}
 
-	@Override
+	
 	public void setWhiteNoise(IVector[] whiteNoise) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.setWhiteNoise(Vector[] whiteNoise): Not implemented yet.");
 	}
 
-	@Override
+	
 	public void compute(ITime targetTime) {
 		ITime groupTime = this.getCurrentTime();
 		if(targetTime.after(groupTime)){ //potentially there is something to do
@@ -330,7 +330,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 
 	}
 
-	@Override
+	
 	public ITime getCurrentTime() {
 		ITime result = new Time(this.currentTime);
 		return result;
@@ -368,7 +368,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 
 	}
 
-	@Override
+	
 	public ITime getTimeHorizon() {
 		ITime result = null;
 		int n=this.childIds.size();
@@ -392,15 +392,15 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 	}
 
 
-	@Override
+	
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getExchangeItem(String exchangeItemID): Not implemented yet.");
 	}
-	@Override
+	
 	public String[] getExchangeItemIDs() {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getExchangeItemIDs(): Not implemented yet.");
 	}
-	@Override
+	
 	public String[] getExchangeItemIDs(Role role) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getExchangeItemIDs(Role role): Not implemented yet.");
 	}
@@ -409,17 +409,17 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public File getModelRunDir() {
 		return null;
 	}
 
-    @Override
+    
 	public void finish() {
 		// no action needed (yet)
 	}
 
-	@Override
+	
 	public void releaseInternalState(IModelState savedInternalState) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.releaseInternalState(Object savedInternalState) : Not implemented yet.");
 	}
@@ -428,11 +428,11 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.loadPersistentState(): Not implemented yet.");
 	}
 
-	@Override
+	
 	public void restoreInternalState(IModelState savedInternalState) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.restoreInternalState(Object savedInternalState): Not implemented yet.");
 	}
-	@Override
+	
 	public IModelState saveInternalState() {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.saveInternalState(): Not implemented yet.");
 	}

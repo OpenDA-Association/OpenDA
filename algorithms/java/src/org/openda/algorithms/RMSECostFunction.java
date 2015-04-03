@@ -549,12 +549,12 @@ public class RMSECostFunction implements ICostFunction{
 		return result;
 	}
 
-	//@Override
+	//
 	public boolean getTryParallel() {
 		return tryParallel;
 	}
 
-	//@Override
+	//
 	public void setTryParallel(boolean tryParallel) {
 		this.tryParallel=tryParallel;
 	}
