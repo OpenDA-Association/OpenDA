@@ -160,9 +160,9 @@ namespace MikeSheInOpenDA
                 // NOW initialize the MainModel
                 else 
                 {
-                    string parentPath = new DirectoryInfo(_msheFileName).Parent.Parent.FullName.ToString();
+                    string parentPath = new DirectoryInfo(_msheFileName).Parent.Parent.Parent.FullName.ToString();
                     string filename = Path.GetFileName(_msheFileName);
-                    newSheFileName = Path.Combine(parentPath, "MainModel",filename);
+                    newSheFileName = Path.Combine(parentPath, "MainModel\\MainModel\\",filename);
                     if (!File.Exists(newSheFileName))
                     {
                         Console.WriteLine(" ****************\n ");
