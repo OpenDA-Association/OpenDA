@@ -19,6 +19,7 @@ package org.openda.dotnet;
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import org.openda.exchange.ExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.ITime;
@@ -43,8 +44,9 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 *
 	 * @return All exchange items in the stoch. observer.
 	 */
-	public List<IPrevExchangeItem> getExchangeItems() {
-		throw new UnsupportedOperationException("Not implemented yet.");
+	public List<IPrevExchangeItem> getExchangeItems()
+	{
+		return null;
 	}
 
 	/**
@@ -63,8 +65,19 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 * @param Key key for which the value is asked
 	 * @return Properties (column of data from observation descriptions).
 	 */
-	public String[] getStringProperties(String Key) {
-		throw new UnsupportedOperationException("Not implemented yet.");
+	public String[] getStringProperties(String Key)
+	{
+
+		// THIS MAKES NO SENSE . FIGURE THIS OUT.
+		String[] properties = _dotNetObsDescr.get_PropertyKeys();
+
+		for (int index = 0; index < properties.length; index++)
+		{
+			if ( properties[index] == Key )
+				return properties;
+		}
+		return properties;
+
 	}
 
 	/**
@@ -72,8 +85,9 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 *
 	 * @return All keys of the observation descriptions.
 	 */
-	public String[] getPropertyKeys() {
-		throw new UnsupportedOperationException("Not implemented yet.");
+	public String[] getPropertyKeys()
+	{
+		return _dotNetObsDescr.get_PropertyKeys();
 	}
 
 	/**
@@ -81,8 +95,9 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 *
 	 * @return Number of properties.
 	 */
-	public int getPropertyCount() {
-		throw new UnsupportedOperationException("Not implemented yet.");
+	public int getPropertyCount()
+	{
+		return _dotNetObsDescr.get_PropertyCount();
 	}
 
 	/**
