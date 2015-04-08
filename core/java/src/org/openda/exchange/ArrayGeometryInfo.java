@@ -191,30 +191,62 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 	}
 
 	/**
-	 * @return vector with the x coordinate for each grid cell.
+	 * @return whether this arrayGeometryInfo is a rectangular grid.
 	 */
-	public IVector getXCoordinates() {
-		//first create curvilinearGeometryInfo so that there is a separate pair of x,y coordinates for each grid cell.
-		return new Vector(this.toCurvilinearGeometryInfo().getLongitudeArray().getValuesAsDoubles());
+	public boolean isRectangular() {
+		if (this.latitudeCoordinateValues == null) throw new RuntimeException("GeometryInfo has no y coordinates.");
+		if (this.longitudeCoordinateValues == null) throw new RuntimeException("GeometryInfo has no x coordinates.");
+		return this.latitudeCoordinateValues.getNumberOfDimensions() == 1 && this.longitudeCoordinateValues.getNumberOfDimensions() == 1;
 	}
 
 	/**
-	 * @return vector with the y coordinate for each grid cell.
+	 * @return whether this arrayGeometryInfo is a curvilinear grid.
 	 */
-	public IVector getYCoordinates() {
-		//first create curvilinearGeometryInfo so that there is a separate pair of x,y coordinates for each grid cell.
-		return new Vector(this.toCurvilinearGeometryInfo().getLatitudeArray().getValuesAsDoubles());
+	public boolean isCurvilinear() {
+		if (this.latitudeCoordinateValues == null) throw new RuntimeException("GeometryInfo has no y coordinates.");
+		if (this.longitudeCoordinateValues == null) throw new RuntimeException("GeometryInfo has no x coordinates.");
+		return this.latitudeCoordinateValues.getNumberOfDimensions() == 2 && this.longitudeCoordinateValues.getNumberOfDimensions() == 2;
+	}
+
+	/**
+	 * @return vector with one x coordinate for each grid cell.
+	 */
+	public IVector getCellXCoordinates() {
+		if (!isCurvilinear()) throw new UnsupportedOperationException(getClass() + ".getCellXCoordinates() only implemented for curvilinear grid geometries.");
+		return new Vector(longitudeCoordinateValues.getValuesAsDoubles(false));
+	}
+
+	/**
+	 * @return vector with one y coordinate for each grid cell.
+	 */
+	public IVector getCellYCoordinates() {
+		if (!isCurvilinear()) throw new UnsupportedOperationException(getClass() + ".getCellYCoordinates() only implemented for curvilinear grid geometries.");
+		return new Vector(latitudeCoordinateValues.getValuesAsDoubles(false));
+	}
+
+	/**
+	 * @return vector with one x coordinate for each column.
+	 */
+	public IVector getColumnXCoordinates() {
+		if (!isRectangular()) throw new UnsupportedOperationException(getClass() + ".getColumnXCoordinates() only implemented for rectangular grid geometries.");
+		return new Vector(this.longitudeCoordinateValues.getValuesAsDoubles(false));
+	}
+
+	/**
+	 * @return vector with one y coordinate for each row.
+	 */
+	public IVector getRowYCoordinates() {
+		if (!isRectangular()) throw new UnsupportedOperationException(getClass() + ".getRowYCoordinates() only implemented for rectangular grid geometries.");
+		return new Vector(this.latitudeCoordinateValues.getValuesAsDoubles(false));
 	}
 
 	public int getCellCount() {
-		if (this.latitudeCoordinateValues == null) throw new RuntimeException("GeometryInfo has no y coordinates.");
-		if (this.longitudeCoordinateValues == null) throw new RuntimeException("GeometryInfo has no x coordinates.");
-
-		if (this.latitudeCoordinateValues.getNumberOfDimensions() == 2 && this.longitudeCoordinateValues.getNumberOfDimensions() == 2) {//if curvilinear grid.
+		if (isCurvilinear()) {//if curvilinear grid.
+			//each grid cell has a separate x coordinate.
 			return this.longitudeCoordinateValues.length();
 		}
 
-		if (this.latitudeCoordinateValues.getNumberOfDimensions() == 1 && this.longitudeCoordinateValues.getNumberOfDimensions() == 1) {//if rectangular grid.
+		if (isRectangular()) {//if rectangular grid.
 			//each row has a separate y coordinate.
 			int rowCount = this.latitudeCoordinateValues.length();
 			//each column has a separate x coordinate.
@@ -236,24 +268,15 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 	 *
 	 * @return curvilinear version of this ArrayGeometryInfo, or this object if it is already curvilinear.
 	 */
-	private ArrayGeometryInfo toCurvilinearGeometryInfo() {
-		if (this.latitudeCoordinateValues == null) {
-			throw new RuntimeException("GeometryInfo has no y coordinates.");
-		}
-		if (this.longitudeCoordinateValues == null) {
-			throw new RuntimeException("GeometryInfo has no x coordinates.");
-		}
+	public ArrayGeometryInfo toCurvilinearGeometryInfo() {
+		if (isCurvilinear()) return this;
 
-		if (this.latitudeCoordinateValues.getNumberOfDimensions() == 2 && this.longitudeCoordinateValues.getNumberOfDimensions() == 2) {//if curvilinear grid.
-			return this;
-		}
-
-		if (this.latitudeCoordinateValues.getNumberOfDimensions() == 1 && this.longitudeCoordinateValues.getNumberOfDimensions() == 1) {//if rectangular grid.
+		if (isRectangular()) {
 			//each row has a separate y coordinate.
-			double[] rowYCoordinates = this.latitudeCoordinateValues.getValuesAsDoubles();
+			double[] rowYCoordinates = this.latitudeCoordinateValues.getValuesAsDoubles(false);
 			int rowCount = rowYCoordinates.length;
 			//each column has a separate x coordinate.
-			double[] columnXCoordinates = this.longitudeCoordinateValues.getValuesAsDoubles();
+			double[] columnXCoordinates = this.longitudeCoordinateValues.getValuesAsDoubles(false);
 			int columnCount = columnXCoordinates.length;
 
 			//generate grid cell coordinates in the same order as the values in the exchangeItem.

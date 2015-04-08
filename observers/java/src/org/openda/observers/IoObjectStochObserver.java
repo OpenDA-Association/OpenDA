@@ -728,10 +728,14 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						IVector coordinates;
 						if (isY) {//if y.
 							//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
-							coordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).getYCoordinates() : ((IrregularGridGeometryInfo) geometryInfo).getYCoordinates();
+							//need one coordinate for each grid cell.
+							coordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellYCoordinates()
+									: ((IrregularGridGeometryInfo) geometryInfo).getYCoordinates();
 						} else {//if x.
 							//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
-							coordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).getXCoordinates() : ((IrregularGridGeometryInfo) geometryInfo).getXCoordinates();
+							//need one coordinate for each grid cell.
+							coordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellXCoordinates()
+									: ((IrregularGridGeometryInfo) geometryInfo).getXCoordinates();
 						}
 						//if more than one exchangeItem, then add coordinates for each exchangeItem in sequence.
 						for (int n = 0; n < coordinates.getSize(); n++) {

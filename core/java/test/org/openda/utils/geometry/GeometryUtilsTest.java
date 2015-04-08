@@ -29,6 +29,8 @@ import org.openda.interfaces.IVector;
 import org.openda.utils.Array;
 import org.openda.utils.Vector;
 
+import java.util.Arrays;
+
 public class GeometryUtilsTest extends TestCase {
 
 	public void testGetObservedValuesBilinearInterpolationRectangularGrid() {
@@ -37,7 +39,7 @@ public class GeometryUtilsTest extends TestCase {
 		IVector lat = new Vector(new double[]{50, 51, 52});
 		IArray modelLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
 		IArray modelLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
-		IGeometryInfo modelGeometryInfo = new ArrayGeometryInfo(modelLat, new int[]{0}, null, modelLon, new int[]{1}, null, null, null, null);
+		ArrayGeometryInfo modelGeometryInfo = new ArrayGeometryInfo(modelLat, new int[]{0}, null, modelLon, new int[]{1}, null, null, null, null);
 		double[] modelValues = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 		//square grid, shifted.
@@ -45,9 +47,10 @@ public class GeometryUtilsTest extends TestCase {
 		lat = new Vector(new double[]{49.5, 50.5, 51.5});
 		IArray obsLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
 		IArray obsLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
-		ArrayGeometryInfo observationsGeometryInfo = new ArrayGeometryInfo(obsLat, new int[]{0}, null, obsLon, new int[]{1}, null, null, null, null);
+		//need one coordinate for each grid cell.
+		ArrayGeometryInfo observationsGeometryInfo = new ArrayGeometryInfo(obsLat, new int[]{0}, null, obsLon, new int[]{1}, null, null, null, null).toCurvilinearGeometryInfo();
 
-		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationsGeometryInfo.getXCoordinates(), observationsGeometryInfo.getYCoordinates(), modelGeometryInfo, modelValues);
+		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationsGeometryInfo.getCellXCoordinates(), observationsGeometryInfo.getCellYCoordinates(), modelGeometryInfo, modelValues);
 		assertEquals(modelValues.length, observedModelValues.getSize());
 		assertTrue(Double.isNaN(observedModelValues.getValue(0)));
 		assertTrue(Double.isNaN(observedModelValues.getValue(1)));
@@ -111,9 +114,11 @@ public class GeometryUtilsTest extends TestCase {
 	public void testDistanceInMeters() {
 		assertEquals(20000 * 1000, GeometryUtils.distanceInMeters(0, 0, 0, 180), 5 * 1000);
 		assertEquals(5000 * 1000, GeometryUtils.distanceInMeters(0, 0, 45, 0), 2 * 1000);
+		//Note: near the pole the distance around the pole is calculated, instead of the distance across the pole. This error seems to be smaller than 50%.
+		assertEquals(10000 * 1000, GeometryUtils.distanceInMeters(45, 0, 45, 180), 5000 * 1000);
 	}
 
-	public void testGetLocalizationWeights1() {
+	public void testGetLocalizationWeights1CurvilinearGrid() {
 		//diagonal line from southwest to northeast.
 		IVector lon = new Vector(new double[]{0, 1, 2});
 		IVector lat = new Vector(new double[]{50, 51, 52});
@@ -121,7 +126,8 @@ public class GeometryUtilsTest extends TestCase {
 		//square grid.
 		IArray stateLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
 		IArray stateLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
-		IGeometryInfo stateGeometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null);
+		ArrayGeometryInfo stateGeometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null).toCurvilinearGeometryInfo();
+		assertTrue(stateGeometryInfo.isCurvilinear());
 
 		IVector[] weightVectors = GeometryUtils.getLocalizationWeights(lon, lat, stateGeometryInfo, 100 * 1000);
 		assertEquals(lon.getSize(), weightVectors.length);
@@ -137,7 +143,32 @@ public class GeometryUtilsTest extends TestCase {
 		assertEquals(0.0, weightVectors[0].getValue(8), 0.01);
 	}
 
-	public void testGetLocalizationWeights2() {
+	public void testGetLocalizationWeights1RectangularGrid() {
+		//diagonal line from southwest to northeast.
+		IVector lon = new Vector(new double[]{0, 1, 2});
+		IVector lat = new Vector(new double[]{50, 51, 52});
+
+		//square grid.
+		IArray stateLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
+		IArray stateLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
+		ArrayGeometryInfo stateGeometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null);
+		assertTrue(stateGeometryInfo.isRectangular());
+
+		IVector[] weightVectors = GeometryUtils.getLocalizationWeights(lon, lat, stateGeometryInfo, 100 * 1000);
+		assertEquals(lon.getSize(), weightVectors.length);
+		assertEquals(lon.getSize()*lat.getSize(), weightVectors[0].getSize());
+		assertEquals(1.0, weightVectors[0].getValue(0), 0.01);
+		assertEquals(0.46, weightVectors[0].getValue(1), 0.01);
+		assertEquals(0.027, weightVectors[0].getValue(2), 0.001);
+		assertEquals(0.14, weightVectors[0].getValue(3), 0.01);
+		assertEquals(0.053, weightVectors[0].getValue(4), 0.001);
+		assertEquals(0.0, weightVectors[0].getValue(5), 0.01);
+		assertEquals(0.0, weightVectors[0].getValue(6), 0.01);
+		assertEquals(0.0, weightVectors[0].getValue(7), 0.01);
+		assertEquals(0.0, weightVectors[0].getValue(8), 0.01);
+	}
+
+	public void testGetLocalizationWeights2CurvilinearGrid() {
 		//diagonal line from southwest to northeast.
 		IVector lon = new Vector(new double[]{0, 0.5, 1});
 		IVector lat = new Vector(new double[]{-0.5, 0, 0.5});
@@ -145,7 +176,33 @@ public class GeometryUtilsTest extends TestCase {
 		//square grid.
 		IArray stateLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
 		IArray stateLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
-		IGeometryInfo stateGeometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null);
+		ArrayGeometryInfo stateGeometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null).toCurvilinearGeometryInfo();
+		assertTrue(stateGeometryInfo.isCurvilinear());
+
+		IVector[] weightVectors = GeometryUtils.getLocalizationWeights(lon, lat, stateGeometryInfo, 100 * 1000);
+		assertEquals(lon.getSize(), weightVectors.length);
+		assertEquals(lon.getSize()*lat.getSize(), weightVectors[0].getSize());
+		assertEquals(0.390, weightVectors[1].getValue(0), 0.001);
+		assertEquals(0.627, weightVectors[1].getValue(1), 0.001);
+		assertEquals(0.390, weightVectors[1].getValue(2), 0.001);
+		assertEquals(0.627, weightVectors[1].getValue(3), 0.001);
+		assertEquals(1.0, weightVectors[1].getValue(4), 0.001);
+		assertEquals(0.627, weightVectors[1].getValue(5), 0.001);
+		assertEquals(0.390, weightVectors[1].getValue(6), 0.001);
+		assertEquals(0.627, weightVectors[1].getValue(7), 0.001);
+		assertEquals(0.390, weightVectors[1].getValue(8), 0.001);
+	}
+
+	public void testGetLocalizationWeights2RectangularGrid() {
+		//diagonal line from southwest to northeast.
+		IVector lon = new Vector(new double[]{0, 0.5, 1});
+		IVector lat = new Vector(new double[]{-0.5, 0, 0.5});
+
+		//square grid.
+		IArray stateLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
+		IArray stateLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
+		ArrayGeometryInfo stateGeometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null);
+		assertTrue(stateGeometryInfo.isRectangular());
 
 		IVector[] weightVectors = GeometryUtils.getLocalizationWeights(lon, lat, stateGeometryInfo, 100 * 1000);
 		assertEquals(lon.getSize(), weightVectors.length);
@@ -174,5 +231,29 @@ public class GeometryUtilsTest extends TestCase {
 		assertEquals(0.0, GeometryUtils.calculateCohnWeight(2.25, 1), 1e-6);
 		assertEquals(0.0, GeometryUtils.calculateCohnWeight(2.5, 1), 1e-6);
 		assertEquals(0.0, GeometryUtils.calculateCohnWeight(1e6, 1), 1e-6);
+	}
+
+	public void testToCurvilinearGeometryInfo() {
+		//diagonal line from southwest to northeast.
+		IVector lon = new Vector(new double[]{0, 1, 2});
+		IVector lat = new Vector(new double[]{50, 51, 52});
+
+		//square grid.
+		IArray stateLon = new Array(lon.getValues(), new int[]{lon.getSize()}, true);
+		IArray stateLat = new Array(lat.getValues(), new int[]{lat.getSize()}, true);
+		ArrayGeometryInfo geometryInfo = new ArrayGeometryInfo(stateLat, new int[]{0}, null, stateLon, new int[]{1}, null, null, null, null);
+		assertTrue(geometryInfo.isRectangular());
+		assertFalse(geometryInfo.isCurvilinear());
+		assertTrue(Arrays.equals(lon.getValues(), geometryInfo.getColumnXCoordinates().getValues()));
+		assertTrue(Arrays.equals(lat.getValues(), geometryInfo.getRowYCoordinates().getValues()));
+
+		geometryInfo = geometryInfo.toCurvilinearGeometryInfo();
+		assertTrue(geometryInfo.isCurvilinear());
+		assertFalse(geometryInfo.isRectangular());
+		assertTrue(Arrays.equals(new double[]{0, 1, 2, 0, 1, 2, 0, 1, 2}, geometryInfo.getCellXCoordinates().getValues()));
+		assertTrue(Arrays.equals(new double[]{50, 50, 50, 51, 51, 51, 52, 52, 52}, geometryInfo.getCellYCoordinates().getValues()));
+
+		//if geometryInfo is already curvilinear.
+		assertEquals(geometryInfo, geometryInfo.toCurvilinearGeometryInfo());
 	}
 }

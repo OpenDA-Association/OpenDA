@@ -31,6 +31,8 @@ import java.util.Arrays;
  * @author Arno Kockx
  */
 public class GeometryUtils {
+	private static final double METERS_PER_DEGREE = 60. * 1852.27;
+
 	private static final double p1_4 = 1.0/4.0;
 	private static final double p1_2 = 1.0/2.0;
 	private static final double p2_3 = 2.0/3.0;
@@ -77,7 +79,7 @@ public class GeometryUtils {
 	 * @param modelValues values on the model grid.
 	 * @return interpolated values.
 	 */
-	public static Vector getObservedValuesBilinearInterpolation(IVector observationXCoordinates, IVector observationYCoordinates, IGeometryInfo modelGeometryInfo, double[] modelValues) {
+	public static IVector getObservedValuesBilinearInterpolation(IVector observationXCoordinates, IVector observationYCoordinates, IGeometryInfo modelGeometryInfo, double[] modelValues) {
 		if (observationXCoordinates == null) throw new IllegalArgumentException("observationXCoordinates == null");
 		if (observationYCoordinates == null) throw new IllegalArgumentException("observationYCoordinates == null");
 		if (observationXCoordinates.getSize() != observationYCoordinates.getSize()) throw new IllegalArgumentException("observationXCoordinates.getSize() != observationYCoordinates.getSize()");
@@ -87,15 +89,14 @@ public class GeometryUtils {
 		int observationLocationCount = observationXCoordinates.getSize();
 
 		//interpolate values.
-		double[] observedModelValues = new double[observationLocationCount];
+		IVector observedModelValues = new Vector(observationLocationCount);
 		for (int observationLocationIndex = 0; observationLocationIndex < observationLocationCount; observationLocationIndex++) {
 			//this code assumes that the lat,lon coordinates for the observations and for the model are always in the same range, e.g. [-90,90][-180, 180].
 			double observationY = observationYCoordinates.getValue(observationLocationIndex);
 			double observationX = observationXCoordinates.getValue(observationLocationIndex);
-			observedModelValues[observationLocationIndex] = bilinearInterpolateValue(observationX, observationY, modelGeometryInfo, modelValues);
+			observedModelValues.setValue(observationLocationIndex, bilinearInterpolateValue(observationX, observationY, modelGeometryInfo, modelValues));
 		}
-
-		return new Vector(observedModelValues);
+		return observedModelValues;
 	}
 
 	private static double bilinearInterpolateValue(double destinationX, double destinationY, IGeometryInfo sourceGeometryInfo, double[] sourceValues) {
@@ -105,13 +106,10 @@ public class GeometryUtils {
 					+ ArrayGeometryInfo.class.getName() + " not for geometryInfo of type " + sourceGeometryInfo.getClass().getName());
 		}
 		ArrayGeometryInfo sourceArrayGeometryInfo = ((ArrayGeometryInfo) sourceGeometryInfo);
-		IArray latitudeArray = sourceArrayGeometryInfo.getLatitudeArray();
-		IArray longitudeArray = sourceArrayGeometryInfo.getLongitudeArray();
-		if (latitudeArray == null || latitudeArray.getNumberOfDimensions() != 1 || longitudeArray == null || longitudeArray.getNumberOfDimensions() != 1) {//if not rectangular grid.
-			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for rectangular source grid.");
-		}
-		double[] rowCenterYCoordinates = latitudeArray.getValuesAsDoubles();
-		double[] columnCenterXCoordinates = longitudeArray.getValuesAsDoubles();
+		if (!sourceArrayGeometryInfo.isRectangular()) throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for rectangular source grid.");
+
+		double[] rowCenterYCoordinates = sourceArrayGeometryInfo.getRowYCoordinates().getValues();
+		double[] columnCenterXCoordinates = sourceArrayGeometryInfo.getColumnXCoordinates().getValues();
 		if (rowCenterYCoordinates == null || rowCenterYCoordinates.length <= 1 || columnCenterXCoordinates == null || columnCenterXCoordinates.length <= 1) {//if not a grid.
 			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for source grid.");
 		}
@@ -119,13 +117,7 @@ public class GeometryUtils {
 			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for grids with coordinates that are sorted ascending.");
 		}
 
-		int[] latitudeValueIndices = sourceArrayGeometryInfo.getLatitudeValueIndices();
-		int[] longitudeValueIndices = sourceArrayGeometryInfo.getLongitudeValueIndices();
-		if (latitudeValueIndices == null || latitudeValueIndices.length < 1 || longitudeValueIndices == null || longitudeValueIndices.length < 1) {
-			throw new IllegalArgumentException("sourceGeometryInfo.latitudeValueIndices or sourceGeometryInfo.longitudeValueIndices not set." +
-					" This is needed to determine whether the coordinates in sourceGeometryInfo are stored in rowMajor or columnMajor order.");
-		}
-		boolean rowMajor = latitudeValueIndices[0] < longitudeValueIndices[0];//if value array in exchangeItem has dimensions (y, x).
+		boolean rowMajor = isRowMajor(sourceArrayGeometryInfo);
 		int rowCount = rowCenterYCoordinates.length;
 		int columnCount = columnCenterXCoordinates.length;
 
@@ -195,10 +187,26 @@ public class GeometryUtils {
 		int i = Arrays.binarySearch(coordinates, coordinate);
 		if (i >= 0) return i;
 		int insertionIndex = -i - 1;
-		if (insertionIndex <= 0 || insertionIndex >= coordinates.length) {//if outside grid.
+		if (insertionIndex <= 0) {//if outside grid.
 			return -1;
 		}
+		if (insertionIndex >= coordinates.length) {//if outside grid.
+			return coordinates.length;
+		}
 		return insertionIndex - 1;
+	}
+
+	private static int getClosestIndexEqualToOrLargerThanGivenCoordinate(double[] coordinates, double coordinate) {
+		int i = Arrays.binarySearch(coordinates, coordinate);
+		if (i >= 0) return i;
+		int insertionIndex = -i - 1;
+		if (insertionIndex <= 0) {//if outside grid.
+			return -1;
+		}
+		if (insertionIndex >= coordinates.length) {//if outside grid.
+			return coordinates.length;
+		}
+		return insertionIndex;
 	}
 
 	private static boolean isSortedAscending(double[] array) {
@@ -212,6 +220,16 @@ public class GeometryUtils {
 		}
 
 		return true;
+	}
+
+	private static boolean isRowMajor(ArrayGeometryInfo sourceArrayGeometryInfo) {
+		int[] latitudeValueIndices = sourceArrayGeometryInfo.getLatitudeValueIndices();
+		int[] longitudeValueIndices = sourceArrayGeometryInfo.getLongitudeValueIndices();
+		if (latitudeValueIndices == null || latitudeValueIndices.length < 1 || longitudeValueIndices == null || longitudeValueIndices.length < 1) {
+			throw new IllegalArgumentException("sourceGeometryInfo.latitudeValueIndices or sourceGeometryInfo.longitudeValueIndices not set." +
+					" This is needed to determine whether the coordinates in sourceGeometryInfo are stored in rowMajor or columnMajor order.");
+		}
+		return latitudeValueIndices[0] < longitudeValueIndices[0];
 	}
 
 	/**
@@ -238,10 +256,8 @@ public class GeometryUtils {
 					+ ArrayGeometryInfo.class.getName() + " not for geometryInfo of type " + stateGeometryInfo.getClass().getName());
 		}
 		ArrayGeometryInfo stateArrayGeometryInfo = ((ArrayGeometryInfo) stateGeometryInfo);
-		//this code assumes that the coordinates are stored in the same order as the values in the state exchangeItem.
-		IVector stateYCoordinates = stateArrayGeometryInfo.getYCoordinates();
-		IVector stateXCoordinates = stateArrayGeometryInfo.getXCoordinates();
-		int stateCellCount = stateXCoordinates.getSize();
+		boolean rectangularStateGeometry = stateArrayGeometryInfo.isRectangular();
+		boolean curvilinearStateGeometry = stateArrayGeometryInfo.isCurvilinear();
 
 		//compute weights for each observation location.
 		int observationLocationCount = observationXCoordinates.getSize();
@@ -251,18 +267,86 @@ public class GeometryUtils {
 			double observationY = observationYCoordinates.getValue(observationLocationIndex);
 
 			//calculate weights.
-			double[] weights = new double[stateCellCount];
-			//loop over state grid cells.
-			for (int stateCellIndex = 0; stateCellIndex < stateCellCount; stateCellIndex++) {
-				//this code assumes that the lat,lon coordinates for the observations and for the state are always in the same range, e.g. [-90,90][-180, 180].
-				//weights do not have to be normalised, i.e. sum of weights does not have to be 1.
-				weights[stateCellIndex] = calculateCohnWeightLatLonCoordinates(observationY, observationX,
-						stateYCoordinates.getValue(stateCellIndex), stateXCoordinates.getValue(stateCellIndex), cohnDistanceInMeters);
+			IVector weights;
+			if (rectangularStateGeometry) {
+				weights = getLocalizationWeightsRectangularStateGeometry(observationX, observationY, stateArrayGeometryInfo, cohnDistanceInMeters);
+			} else if (curvilinearStateGeometry) {
+				weights = getLocalizationWeightsCurvilinearStateGeometry(observationX, observationY, stateArrayGeometryInfo, cohnDistanceInMeters);
+			} else {
+				throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".getLocalizationWeights() only implemented for state geometries that are rectangular or curvilinear.");
 			}
-			weightVectors[observationLocationIndex] = new Vector(weights);
+			weightVectors[observationLocationIndex] = weights;
 		}
 
 		return weightVectors;
+	}
+
+	private static IVector getLocalizationWeightsRectangularStateGeometry(double observationX, double observationY, ArrayGeometryInfo rectangularStateGeometryInfo, double cohnDistanceInMeters) {
+		//each row has a separate y coordinate.
+		IVector stateRowYCoordinates = rectangularStateGeometryInfo.getRowYCoordinates();
+		int rowCount = stateRowYCoordinates.getSize();
+		//each column has a separate x coordinate.
+		IVector stateColumnXCoordinates = rectangularStateGeometryInfo.getColumnXCoordinates();
+		int columnCount = stateColumnXCoordinates.getSize();
+		boolean rowMajor = isRowMajor(rectangularStateGeometryInfo);
+
+		//first create a vector with only 0 values, then only fill in the values that are not 0.
+		IVector weights = new Vector(rowCount*columnCount);
+
+		//determine bounding latitudes of region of influence of the given observation. All weights outside this region are 0 anyway.
+		//always use all columns, because determining the bounding longitudes would be difficult for three reasons:
+		//1. thresholdLongitudeDifferenceInDegrees depends on latitude.
+		//2. region of influence can wrap around the pole(s).
+		//3. region of influence can wrap around the dateline.
+		double thresholdLatitudeDifferenceInDegrees = 2*cohnDistanceInMeters / METERS_PER_DEGREE;
+		//minLat and maxLat are both inclusive.
+		double minLat = observationY - thresholdLatitudeDifferenceInDegrees;
+		double maxLat = observationY + thresholdLatitudeDifferenceInDegrees;
+		//this code assumes that the coordinates are sorted ascending.
+		//minRow and maxRow are both inclusive.
+		int minRow = getClosestIndexEqualToOrLargerThanGivenCoordinate(stateRowYCoordinates.getValues(), minLat);
+		if (minRow >= rowCount) {//if region of influence completely outside grid.
+			//return all 0 weights.
+			return weights;
+		}
+		if (minRow < 0) minRow = 0;
+		int maxRow = getClosestIndexEqualToOrSmallerThanGivenCoordinate(stateRowYCoordinates.getValues(), maxLat);
+		if (maxRow < 0) {//if region of influence completely outside grid.
+			//return all 0 weights.
+			return weights;
+		}
+		if (maxRow >= rowCount) maxRow = rowCount - 1;
+
+		//loop over state grid cells.
+		for (int row = minRow; row <= maxRow; row++) {
+			for (int column = 0; column < columnCount; column++) {
+				int stateCellIndex = getCellIndex(row, column, rowMajor, rowCount, columnCount);
+				//this code assumes that the lat,lon coordinates for the observations and for the state are always in the same range, e.g. [-90,90][-180, 180].
+				//weights do not have to be normalised, i.e. sum of weights does not have to be 1.
+				weights.setValue(stateCellIndex, calculateCohnWeightLatLonCoordinates(observationY, observationX,
+						stateRowYCoordinates.getValue(row), stateColumnXCoordinates.getValue(column), cohnDistanceInMeters));
+			}
+		}
+
+		return weights;
+	}
+
+	private static IVector getLocalizationWeightsCurvilinearStateGeometry(double observationX, double observationY, ArrayGeometryInfo curvilinearStateGeometryInfo, double cohnDistanceInMeters) {
+		//get x,y coordinates for each grid cell.
+		IVector stateCellYCoordinates = curvilinearStateGeometryInfo.getCellYCoordinates();
+		IVector stateCellXCoordinates = curvilinearStateGeometryInfo.getCellXCoordinates();
+		int stateCellCount = curvilinearStateGeometryInfo.getCellCount();
+
+		//loop over state grid cells.
+		IVector weights = new Vector(stateCellCount);
+		double thresholdDistanceInDegrees = 2*cohnDistanceInMeters / METERS_PER_DEGREE;
+		for (int stateCellIndex = 0; stateCellIndex < stateCellCount; stateCellIndex++) {
+			//this code assumes that the lat,lon coordinates for the observations and for the state are always in the same range, e.g. [-90,90][-180, 180].
+			//weights do not have to be normalised, i.e. sum of weights does not have to be 1.
+			weights.setValue(stateCellIndex, calculateCohnWeightLatLonCoordinates(observationY, observationX,
+					stateCellYCoordinates.getValue(stateCellIndex), stateCellXCoordinates.getValue(stateCellIndex), cohnDistanceInMeters, thresholdDistanceInDegrees));
+		}
+		return weights;
 	}
 
 	/**
@@ -276,9 +360,9 @@ public class GeometryUtils {
 	 */
 	static double distanceInMeters(double lat1, double lon1, double lat2, double lon2) {
 		//this calculation is not the most accurate, but it takes less computation time.
-		double dy = 60. * (lat2 - lat1) * 1852.27;
+		double dy = (lat2 - lat1) * METERS_PER_DEGREE;
 		double phi = (lat2 + lat1) * 0.017453 / 2;
-		double dx = 60. * (lon2 - lon1) * 1852.27 * Math.cos(phi);
+		double dx = (lon2 - lon1) * METERS_PER_DEGREE * Math.cos(phi);
 
 		return Math.hypot(dx, dy);
 	}
@@ -295,6 +379,36 @@ public class GeometryUtils {
 	 * @return weight
 	 */
 	private static double calculateCohnWeightLatLonCoordinates(double lat1, double lon1, double lat2, double lon2, double cohnDistanceInMeters) {
+		if (cohnDistanceInMeters <= 0) throw new IllegalArgumentException("cohnDistanceInMeters <= 0");
+
+		//compute distance on a sphere.
+		double distanceInMeters = distanceInMeters(lat1, lon1, lat2, lon2);
+		return calculateCohnWeight(distanceInMeters, cohnDistanceInMeters);
+	}
+
+	/**
+	 * Calculates localization weight between the two given points according to Cohn's formula.
+	 * This method only works for WGS84 lat,lon coordinates in degrees.
+	 *
+	 * @param lat1 latitude of point 1
+	 * @param lon1 longitude of point 1
+	 * @param lat2 latitude of point 2
+	 * @param lon2 longitude of point 2
+	 * @param cohnDistanceInMeters characteristic distance for Cohn's formula in meters
+	 * @param thresholdDistanceInDegrees 2 * characteristic distance for Cohn's formula in degrees
+	 * @return weight
+	 */
+	private static double calculateCohnWeightLatLonCoordinates(double lat1, double lon1, double lat2, double lon2, double cohnDistanceInMeters, double thresholdDistanceInDegrees) {
+		if (cohnDistanceInMeters <= 0) throw new IllegalArgumentException("cohnDistanceInMeters <= 0");
+
+		//check distance in latitude direction.
+		//Note: check on distance in longitude direction would be more complicated, because shortest distance between two points on the earth can wrap around the dateline and/or poles.
+		double deltaLatitudeAbsolute = Math.abs(lat2 - lat1);
+		if (deltaLatitudeAbsolute > thresholdDistanceInDegrees) {
+			//weights outside radius of 2*cohnDistance are 0.
+			return 0;
+		}
+
 		//compute distance on a sphere.
 		double distanceInMeters = distanceInMeters(lat1, lon1, lat2, lon2);
 		return calculateCohnWeight(distanceInMeters, cohnDistanceInMeters);
@@ -313,9 +427,7 @@ public class GeometryUtils {
 	 */
 	@SuppressWarnings("UnusedDeclaration")
 	private static double calculateCohnWeightCartesianCoordinates(double x1, double y1, double x2, double y2, double cohnDistanceInMeters) {
-		if (cohnDistanceInMeters <= 0) {
-			throw new IllegalArgumentException("cohnDistanceInMeters <= 0");
-		}
+		if (cohnDistanceInMeters <= 0) throw new IllegalArgumentException("cohnDistanceInMeters <= 0");
 
 		//compute distance in each direction.
 		double deltaXAbsolute = Math.abs(x2 - x1);
