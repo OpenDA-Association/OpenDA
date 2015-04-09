@@ -49,8 +49,8 @@ namespace OpenDA.DotNet.OpenMI.UnitTests
         	{
         		DotNet.Bridge.ModelFactory.InsertModelFactory(new ModelFactory());
         		ApplicationRunnerSingleThreaded applicationRunner = new ApplicationRunnerSingleThreaded();
-                applicationRunner.runSingleThreaded(
-                    new File("."), @"..\..\testData\dummyModel\DummyModelSimulation.oda");
+                applicationRunner.initialize(new java.io.File("."), @"..\..\testData\dummyModel\DummyModelSimulation.oda");
+                applicationRunner.runSingleThreaded();
         	}
         	catch (Exception e)
         	{
