@@ -25,6 +25,7 @@ namespace MikeSheInOpenDA
         private string _msheFileName;
         private string _mikeSheConfigDa;
         private bool _copyModels;
+        private bool _runPreProcessor;
         private IList<string> _exchangeItems;
         private MikeSheOpenMITimespaceComponentExtensions _mshe;
 
@@ -110,6 +111,24 @@ namespace MikeSheInOpenDA
                         break;
 
 
+                   case "runPreProcessor":
+
+
+                        string rnPrPr = reader.ReadElementString().Trim();
+                        if (System.String.CompareOrdinal(rnPrPr, "true") == 0)
+                        {
+                            _runPreProcessor = true;
+                        }
+                        else if (System.String.CompareOrdinal(rnPrPr, "false") == 0)
+                        {
+                            _runPreProcessor = false;
+                        }
+                        else
+                        {
+                            throw new Exception("in MikeConfiguration, runPreProcessor must be either 'true' or 'false'. ");
+                        }
+                        break;
+
                    case "useExchangeItems":
                         _exchangeItems = new List<string>();
                         string[] words = reader.ReadElementString().Trim().Split(';');
@@ -143,10 +162,10 @@ namespace MikeSheInOpenDA
 
                 if (_instanceCounter != -1)
                 {
-                string parentPath = new DirectoryInfo(_msheFileName).Parent.Parent.FullName.ToString();
+                string parentPath = new DirectoryInfo(_msheFileName).Parent.Parent.Parent.FullName.ToString();
                 string filename = Path.GetFileName(_msheFileName);
                 //newSheFileName = Path.Combine(parentPath, "Ensembles", _instanceCounter.ToString(), filename);
-                newSheFileName = Path.Combine(parentPath,_instanceCounter.ToString(), filename);
+                newSheFileName = Path.Combine(parentPath,"Ensembles\\",_instanceCounter.ToString(), filename);
                     if (!File.Exists(newSheFileName))
                     {
                         Console.WriteLine(" ****************\n ");
@@ -197,21 +216,24 @@ namespace MikeSheInOpenDA
             DHIRegistry key = new DHIRegistry(DHIProductAreas.COMMON_COMPONNETS, false);
             key.GetHomeDirectory(out path);
             path = path + "x64";
-            Process runner = new Process();
-            runner.StartInfo.FileName = System.IO.Path.Combine(path, "MSHE_PreProcessor.exe");
-            // Check if file exisits
-            if( !System.IO.File.Exists(runner.StartInfo.FileName) )
-            {
-                Console.WriteLine("PreProcessor Executable not found:  {0}", runner.StartInfo.FileName);
+            if(_runPreProcessor)
+            { 
+                Process runner = new Process();
+                runner.StartInfo.FileName = System.IO.Path.Combine(path, "MSHE_PreProcessor.exe");
+                // Check if file exisits
+                if( !System.IO.File.Exists(runner.StartInfo.FileName) )
+                {
+                    Console.WriteLine("PreProcessor Executable not found:  {0}", runner.StartInfo.FileName);
 
+                }
+
+                runner.StartInfo.Arguments = newSheFileName;
+                // Change the Working Directory necessary for the SVAT module in MikeSHE
+                runner.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(newSheFileName);
+                runner.StartInfo.UseShellExecute = false;
+                runner.Start();
+                runner.WaitForExit();
             }
-
-            runner.StartInfo.Arguments = newSheFileName;
-            // Change the Working Directory necessary for the SVAT module in MikeSHE
-            runner.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(newSheFileName);
-            runner.StartInfo.UseShellExecute = false;
-            runner.Start();
-            runner.WaitForExit();
 
             _instanceCounter++;
 
@@ -228,7 +250,7 @@ namespace MikeSheInOpenDA
             }
             catch (System.Exception excep)
             {
-                Console.WriteLine("Problem with Model Initialization. ");
+                Console.WriteLine("Problem with Model Initialization. \nFile:\n {0}\n\n ", newSheFileName);
                 Console.WriteLine(excep.Message);
             }
 

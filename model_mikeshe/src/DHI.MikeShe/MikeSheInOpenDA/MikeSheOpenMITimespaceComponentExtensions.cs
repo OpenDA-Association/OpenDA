@@ -692,38 +692,3 @@ namespace MikeSheInOpenDA
     }
 }
 
-
-
-/*
-
-        /// <summary>
-        ///  Calculates Gaussian Localization Mask.
-        /// Given a point on a grid, return an array of doubles (of the same size as the grid) with localization values between 0 and 1.
-        /// </summary>
-        /// <param name="modelInstance">A model instance from WMengine</param>
-        /// <param name="elementSetID">Exchange item string id</param>
-        /// <param name="point">point around which to calcualte the licalization mask</param>
-        /// <param name="locDistance">the distance radius of the Gaussian mask</param>
-        /// <returns></returns>
-        private double[] GaussianLocalization(DHI.OpenMI2.MikeShe.WMEngineAccess modelInstance, string elementSetID, IXYLayerPoint point, double locDistance)
-        {
-            IDictionary<int, ISpatialDefine> modelCoord = GetModelCoordinates(elementSetID);
-
-            double[] localized2D = new double[modelCoord.Count];
-
-            if (XYZGeometryTools.IsPointInModelPlain(point, modelCoord))
-            {
-                for (int i = 0; i < modelCoord.Count; i++)
-                {
-                    if (Convert.ToInt32(point.Layer) == modelCoord[i].Layer)
-                    {
-                        double distance = XYZGeometryTools.CalculatePointToPointDistance2D(modelCoord[i].MidPoint, point);
-                        localized2D[i] = normalCooefs(distance, locDistance);
-                    }
-                }
-            }
-            return localized2D;
-        }
-
-
-*/
