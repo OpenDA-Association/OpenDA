@@ -71,7 +71,8 @@ namespace OpenDA.DotNet.SDK
 			try
 			{
 				applicationRunner = new ApplicationRunnerSingleThreaded();
-                applicationRunner.runSingleThreaded(new java.io.File(odaDirectoryName), odaFileName);
+                applicationRunner.initialize(new java.io.File(odaDirectoryName), odaFileName);
+                applicationRunner.runSingleThreaded();
 			}
 			catch (Exception e)
 			{
