@@ -6,6 +6,6 @@
     </StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>"E:\ahl\XML\MikeSheConfig.txt"  "E:\ahl\XML\EnKF_2.oda"</StartArguments>
+    <StartArguments>"C:\OpenDA\ahl\XML\MikeSheConfig.txt"  "C:\OpenDA\ahl\XML\EnKF_2.oda"</StartArguments>
   </PropertyGroup>
 </Project>

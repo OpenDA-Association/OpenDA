@@ -70,6 +70,16 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 
 		public IVector[] getObservedLocalization(String exchageItemID, IObservationDescriptions observationDescriptions, double distance) {
 
+			// Check whether we are dealing with a C# implemention. No concersion is needed in that case
+			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;
+			if (observationDescriptions instanceof ObservationDescriptionsJ2N){
+				dotNetObservationDescriptions=  ((ObservationDescriptionsJ2N) observationDescriptions)._dotNetObsDescr;
+			}
+			else {
+				dotNetObservationDescriptions = translateObservationDesciptions(observationDescriptions);
+			}
+
+            /*
 			List<IPrevExchangeItem> javaExchangeItems = observationDescriptions.getExchangeItems();
 			String [] keys =observationDescriptions.getPropertyKeys();
             int nKeys=observationDescriptions.getPropertyCount();
@@ -99,6 +109,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 			else {
 				dotNetObservationDescriptions = new ObservationDescriptions(dotnetExchangeItems);
 			}
+			*/
             // Call method
 			cli.OpenDA.DotNet.Interfaces.IVector[] dotNetVectors =
 					_dotNetModelInstance.GetObservedLocalization(exchageItemID, dotNetObservationDescriptions, distance);
@@ -110,6 +121,19 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 		}
 
         public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+
+			// Check whether we are dealing with a C# implemention. No concersion is needed in that case
+			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;
+			if (observationDescriptions instanceof ObservationDescriptionsJ2N){
+				dotNetObservationDescriptions=  ((ObservationDescriptionsJ2N) observationDescriptions)._dotNetObsDescr;
+			}
+			else {
+				dotNetObservationDescriptions = translateObservationDesciptions(observationDescriptions);
+			}
+
+			/*
+
+
 			List<IPrevExchangeItem> javaExchangeItems = observationDescriptions.getExchangeItems();
 			cli.OpenDA.DotNet.Interfaces.IExchangeItem[] dotnetExchangeItems =
 					new cli.OpenDA.DotNet.Interfaces.IExchangeItem[javaExchangeItems.size()];
@@ -123,8 +147,10 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 				dotnetExchangeItem.set_Values(javaExchangeItem.getValuesAsDoubles());
 				dotnetExchangeItems[i] = dotnetExchangeItem;
 			}
+
 			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions =
 					new ObservationDescriptions(dotnetExchangeItems);
+			*/
 			cli.OpenDA.DotNet.Interfaces.IVector[] dotNetVectors =
 					_dotNetModelInstance.GetObservedLocalization(dotNetObservationDescriptions, distance);
 			IVector[] javaVectors = new IVector[dotNetVectors.length];
@@ -139,13 +165,16 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 
 			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;
 
-
+			System.out.println("Nieuw spullen v1.0");
 
 			// Check whether we are dealing with a C# implemention. No concersion is needed in that case
 			if (observationDescriptions instanceof ObservationDescriptionsJ2N){
 				dotNetObservationDescriptions=  ((ObservationDescriptionsJ2N) observationDescriptions)._dotNetObsDescr;
 			}
 			else {
+				dotNetObservationDescriptions = translateObservationDesciptions(observationDescriptions);
+			}
+/*
 				List<IPrevExchangeItem> javaExchangeItems = observationDescriptions.getExchangeItems();
 				String [] keys =observationDescriptions.getPropertyKeys();
 				int nKeys=observationDescriptions.getPropertyCount();
@@ -177,6 +206,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 					dotNetObservationDescriptions = new ObservationDescriptions(dotnetExchangeItems);
 				}
 			}
+			*/
 			// Call method
 			cli.OpenDA.DotNet.Interfaces.IVector dotNetVector =
 					_dotNetModelInstance.GetObservedValues(dotNetObservationDescriptions);
@@ -254,4 +284,49 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 		public cli.OpenDA.DotNet.Interfaces.IModelInstance getDotNetModelInstance() {
             return _dotNetModelInstance;
         }
+
+
+		/**
+		 * Translate an Observation description instance into a C# instance.
+		 * This approach is far from optimal and generic but for now it works
+		 *
+		 * @param observationDescriptions      I An observation description instance
+		 *
+		 */
+		private cli.OpenDA.DotNet.Interfaces.IObservationDescriptions translateObservationDesciptions(IObservationDescriptions observationDescriptions){
+
+			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;
+
+			List<IPrevExchangeItem> javaExchangeItems = observationDescriptions.getExchangeItems();
+			String [] keys =observationDescriptions.getPropertyKeys();
+			int nKeys=observationDescriptions.getPropertyCount();
+			int nObs =observationDescriptions.getObservationCount();
+
+
+			cli.OpenDA.DotNet.Interfaces.IExchangeItem[] dotnetExchangeItems =
+					new cli.OpenDA.DotNet.Interfaces.IExchangeItem[javaExchangeItems.size()];
+			for (int i = 0; i < javaExchangeItems.size(); i++) {
+				IPrevExchangeItem javaExchangeItem = javaExchangeItems.get(i);
+				cli.OpenDA.DotNet.Interfaces.IExchangeItem dotnetExchangeItem =
+						new DoublesExchangeItem(javaExchangeItem.getId(),
+								javaExchangeItem.getDescription(),
+								javaExchangeItem.getRole().ordinal(), 0d);
+				dotnetExchangeItem.set_Times(javaExchangeItem.getTimes());
+				dotnetExchangeItem.set_Values(javaExchangeItem.getValuesAsDoubles());
+				dotnetExchangeItems[i] = dotnetExchangeItem;
+			}
+			if (nKeys>0 && nObs>0){
+				String[][] values = new String[nKeys][];
+				for (int iKey=0; iKey<keys.length; iKey++){
+					values[iKey] = observationDescriptions.getStringProperties(keys[iKey]);
+				}
+				if (values[0].length != 0 && nObs == javaExchangeItems.size()) {
+					dotNetObservationDescriptions = new ObservationDescriptions(dotnetExchangeItems,keys,values);
+				}
+			}
+			if (dotNetObservationDescriptions == null) {
+				dotNetObservationDescriptions = new ObservationDescriptions(dotnetExchangeItems);
+			}
+			return dotNetObservationDescriptions;
+		}
     }

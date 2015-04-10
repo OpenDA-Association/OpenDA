@@ -306,7 +306,8 @@ namespace MikeSheInOpenDA
             }
             if (geometrytype == GeometryTypes.Geometry3D)
             {
-                return GetLocalized3D(exchangeItemId, observationCount, locDistance, xpos, ypos, layer);
+                double[][] mask = GetLocalized3D(exchangeItemId, observationCount, locDistance, xpos, ypos, layer);
+                return mask;
             }
             else
             {

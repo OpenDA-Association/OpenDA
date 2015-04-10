@@ -108,9 +108,7 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	public int getObservationCount()
 	{
 		return _dotNetObsDescr.get_ObservationCount();
-
-		//throw new UnsupportedOperationException("Not implemented yet.");
-	}
+}
 
 	/**
 	 * Get all different times in increasing order. There is at least one observation for each time.
