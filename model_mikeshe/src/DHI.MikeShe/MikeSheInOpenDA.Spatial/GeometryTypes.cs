@@ -5,7 +5,7 @@
         /// <summary>
         /// For dfs3 SZ and UZ
         /// </summary>
-        Geometry3D,     
+        Geometry3DSZ,     
 
         /// <summary>
         /// For dfs2 BaseGrid

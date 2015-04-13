@@ -88,7 +88,7 @@ namespace MikeSheInOpenDA
 
                 for (int j = 0; j < nz; j++)
                 {
-                    modelEntities.Add((nz - j - 1) * nElements / nz + i / nz, new SpatialDefine(new XYLayerPoint(LLx, LLy, j), new XYLayerPoint(URx, URy, j), GeometryTypes.Geometry3D));
+                    modelEntities.Add((nz - j - 1) * nElements / nz + i / nz, new SpatialDefine(new XYLayerPoint(LLx, LLy, j), new XYLayerPoint(URx, URy, j), GeometryTypes.Geometry3DSZ));
                 }
             }
 
@@ -304,9 +304,9 @@ namespace MikeSheInOpenDA
             {
                 return GetLocalized2D(exchangeItemId, observationCount, locDistance, xpos, ypos);
             }
-            if (geometrytype == GeometryTypes.Geometry3D)
+            if (geometrytype == GeometryTypes.Geometry3DSZ)
             {
-                double[][] mask = GetLocalized3D(exchangeItemId, observationCount, locDistance, xpos, ypos, layer);
+                double[][] mask = GetLocalized3DSZ(exchangeItemId, observationCount, locDistance, xpos, ypos, layer);
                 return mask;
             }
             else
@@ -386,7 +386,7 @@ namespace MikeSheInOpenDA
         }
 
         /// <summary>
-        /// BASEGRID
+        /// For 3D SZ (hydraulic head).
         /// Returns a localization hash table.
         /// For each observation point, calculate the gaussian distance to all other points in the model grid.
         /// </summary>
@@ -397,32 +397,40 @@ namespace MikeSheInOpenDA
         /// <param name="ypos">array of observation Y coordinates</param>
         /// <param name="layer">array of observation Z heights (layer in the model)</param>
         /// <returns></returns>
-        private double[][] GetLocalized3D(string exchangeItemId, int observationCount, double locDistance, double[] xpos, double[] ypos, int[] layer)
+        private double[][] GetLocalized3DSZ(string exchangeItemId, int observationCount, double locDistance, double[] xpos, double[] ypos, int[] layer)
         {
             double[][] localized2D = new double[observationCount][];
 
             var mshe = base.WMEngine;
 
-            // SZGrid
-            int n = mshe.Grid.ElementCount;
-
             IDictionary<int, ISpatialDefine> modelCoord = GetModelCoordinates(exchangeItemId);
+
+            // SZGrid
+            int n = modelCoord.Count;
 
             for (int obsC = 0; obsC < observationCount; obsC++)
             {
+               // int countNormalizedCheck = 0;
+
                 localized2D[obsC] = new double[n];
                 IXYLayerPoint obsPoint = new XYLayerPoint(xpos[obsC], ypos[obsC], 0);
-                if (XYZGeometryTools.IsPointInModelPlain(obsPoint, modelCoord))
+                if (XYZGeometryTools.IsPointInModelPlain(obsPoint, modelCoord, true))
                 {
-                    for (int i = 0; i < modelCoord.Count; i++)
+                    for (int i = 0; i < n; i++)
                     {
-                        if (Convert.ToInt32(obsPoint.Layer) == modelCoord[i].Layer)
+                        double distanceC = XYZGeometryTools.CalculatePointToPointDistance2D(modelCoord[i].MidPoint,
+                            obsPoint);
+                        double normalized = normalCooefs(distanceC, locDistance);
+
+                        if (normalized > 0.001)
                         {
-                            double distanceC = XYZGeometryTools.CalculatePointToPointDistance2D(modelCoord[i].MidPoint, obsPoint);
-                            localized2D[obsC][i] = normalCooefs(distanceC, locDistance);
+                            localized2D[obsC][i] = normalized;
+                            //countNormalizedCheck = countNormalizedCheck + 1;
                         }
                     }
                 }
+
+                //Console.WriteLine("Number of normalized for observation:{0} is {1}", obsC,countNormalizedCheck);
             }
             return localized2D;
         }
@@ -487,7 +495,7 @@ namespace MikeSheInOpenDA
 
             if (string.Compare(gridTypewords, "SZ3DGrid", 0) == 0)
             {
-                return GeometryTypes.Geometry3D;
+                return GeometryTypes.Geometry3DSZ;
             }
             else if (string.Compare(gridTypewords, "BaseGrid", 0) == 0)
             {
@@ -582,7 +590,7 @@ namespace MikeSheInOpenDA
                 IXYLayerPoint min = new XYLayerPoint(modelpolygon.GetX(0), modelpolygon.GetY(0), zLayer);
                 IXYLayerPoint max = new XYLayerPoint(modelpolygon.GetX(1), modelpolygon.GetY(3), zLayer);
 
-                modelEntities.Add(i, new SpatialDefine(min, max, GeometryTypes.Geometry3D));
+                modelEntities.Add(i, new SpatialDefine(min, max, GeometryTypes.Geometry3DUZ));
             }
 
             return modelEntities;
@@ -630,7 +638,7 @@ namespace MikeSheInOpenDA
                     IXYLayerPoint min = new XYLayerPoint(modelpolygon.GetX(0), modelpolygon.GetY(0), zLayer);
                     IXYLayerPoint max = new XYLayerPoint(modelpolygon.GetX(1), modelpolygon.GetY(3), zLayer);
 
-                    _modelEntities.Add(i, new SpatialDefine(min, max, GeometryTypes.Geometry3D));
+                    _modelEntities.Add(i, new SpatialDefine(min, max, GeometryTypes.Geometry3DSZ));
                 }
 
             }
@@ -655,7 +663,7 @@ namespace MikeSheInOpenDA
             // Get the Grid Type from the elementID (delimiated by a ',');
             GeometryTypes gType = GetGridType(elementID);
 
-            if (gType == GeometryTypes.Geometry3D)
+            if (gType == GeometryTypes.Geometry3DSZ)
             {
                 return GetModelCoordinates3DSZ(gType, baseOut, elementID);
             }
@@ -680,7 +688,7 @@ namespace MikeSheInOpenDA
         /// </summary>
         /// <param name="dist"> array of doubles of distances to each other </param>
         /// <param name="radius"> radius factor </param>
-        /// <returns></returns>
+        /// <returns></returns>normalCooefs
         private double normalCooefs(double dist, double radius)
         {
             // Calculated result saved into iteself
