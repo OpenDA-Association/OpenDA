@@ -38,12 +38,15 @@ public class ObserverUtils {
 		this.numberOfObsValues = observationDescriptions.getObservationCount();
 		this.obsTimes = new double[numberOfObsValues];
 		List<IPrevExchangeItem> items = null;
+        boolean gelukt=false;
+		boolean whithExchangeItems=true;
 		try{
 			items = observationDescriptions.getExchangeItems();
 		}catch (Exception e) {
 			items = new ArrayList<IPrevExchangeItem>(); //Empty list
+			whithExchangeItems=false;
 		}
-		if(items!=null){
+		if(whithExchangeItems && items!=null){
 			int indFirst = 0;
 			int indLast = 0;
 			for(IPrevExchangeItem item : items){ // assume the exchangeItems are in the
@@ -62,12 +65,41 @@ public class ObserverUtils {
 				}
 				indFirst = indLast+1;
 			}
-		}else{ //if there is no metadata then use the index
-			for(int i=0;i<numberOfObsValues;i++){
-				this.indexFirst.add(i);
-				this.indexLast.add(i);
-				this.obsIds.add("index_"+i);
-				this.obsTimes[i]=0.0;
+			gelukt=true;
+		}else{
+		 	try {
+				String[] keys = observationDescriptions.getPropertyKeys();
+				String[] ids = null;
+				boolean notDone = true;
+				for (int i = 0; i < keys.length && notDone; i++) {
+					if (keys[i].toLowerCase().equals("id") ||
+							keys[i].toLowerCase().equals("name")) {
+						notDone = false;
+						ids = observationDescriptions.getStringProperties(keys[i]);
+					}
+
+				}
+				if (!notDone) {
+					for (int i = 0; i < numberOfObsValues; i++) {
+						this.indexFirst.add(i);
+						this.indexLast.add(i);
+						this.obsIds.add(ids[i]);
+						this.obsTimes[i] = 0.0;
+					}
+				}
+				gelukt=true;
+			}
+			catch(Exception e){
+				System.out.println("Cannot get observation ID using name/id property. I'll just make up an index_<num> ID");
+			}
+			if (!gelukt){
+		 		//if there is no metadata then use the index
+				for(int i=0;i<numberOfObsValues;i++) {
+					this.indexFirst.add(i);
+					this.indexLast.add(i);
+					this.obsIds.add("index_" + i);
+					this.obsTimes[i] = 0.0;
+				}
 			}
 		}
 	}

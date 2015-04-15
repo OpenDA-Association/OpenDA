@@ -25,6 +25,7 @@ namespace org.openda.dotnet.DHIStochObserver
         private readonly double _refdateMJD;
         private readonly int _numItems;
         private readonly List<string> _itemIDs;
+        private readonly List<string> _quantities;
         private readonly List<DateTime> _times;
         private readonly double _deleteValueDouble;
         private readonly float _deleteValueFloat;
@@ -77,6 +78,7 @@ namespace org.openda.dotnet.DHIStochObserver
 
             // Add the IDs to list (Keys)
             _itemIDs = new List<string>();
+            _quantities = new List<string>();
             _xyLayerPoints = new List<IXYLayerPoint>();
             
             foreach (var itemInfo in _dfs0File.ItemInfo)
@@ -89,7 +91,8 @@ namespace org.openda.dotnet.DHIStochObserver
                 double y = Convert.ToDouble(coords[1]);
                 int zLayer = Convert.ToInt32(coords[2]);
 
-                _itemIDs.Add(_dfs0File.FileInfo.FileTitle);
+                _quantities.Add(_dfs0File.FileInfo.FileTitle);
+                _itemIDs.Add(name);
                 _xyLayerPoints.Add(new XYLayerPoint(x, y, zLayer));
             }
 

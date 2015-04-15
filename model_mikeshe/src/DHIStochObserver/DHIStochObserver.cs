@@ -10,6 +10,7 @@ using OpenDA.DotNet.Interfaces;
 using DHI.Generic.MikeZero.DFS;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Random;
+using System.Globalization;
 
 
 namespace org.openda.dotnet.DHIStochObserver
@@ -30,6 +31,10 @@ namespace org.openda.dotnet.DHIStochObserver
         private IDfsRead _dfsInfo;
         private List<DataPoint> _selectedDataPoints; 
         private ITime _selectionTime;
+
+        private double _default_STD=-999.0;
+        Dictionary<String, double> _standardDeviation = new Dictionary<string,double>();
+
 
         /// <summary>
         /// Constructor 
@@ -61,11 +66,34 @@ namespace org.openda.dotnet.DHIStochObserver
 
             if (arguments != null)
             {
-                dfsFileName = Path.Combine(workingDir, arguments[0]);
+                string userFileName = arguments[0];
+
+                dfsFileName = Path.Combine(workingDir, userFileName);
                 if(!File.Exists(dfsFileName))
                 {
                     throw new FileNotFoundException("File does not exist:" + dfsFileName);
                 }
+                //Do we have a file containing the model errors
+                int iFileSep = dfsFileName.LastIndexOf(".");
+                if (iFileSep<1)
+                {
+                    throw new FileNotFoundException("File does not have an extention" + dfsFileName);
+                }
+                string dfsErrorFileName = dfsFileName.Substring(0, iFileSep)+".std";
+                if (!File.Exists(dfsErrorFileName))
+                {
+                    throw new FileNotFoundException("File does not exist:" + dfsErrorFileName + "\n" +
+                        "This file contains the error specification that corresponds to the observation file: "+
+                        dfsFileName+"\n"+
+                        "In its simplest form just create this file (ASCII) with one line containing the default standard deviation\n"+
+                        "Example:\n"+
+                        "DEFAULT_STD 1.2\n" +
+                        "In order to specify a standard deviation for a particular timeseries use the format:\n"+
+                        "<TIMESERIES_NAME> <STANDARDDEVIATION>\n"
+                        );
+                }
+                readStandardDeviationFile(dfsErrorFileName);
+               
             }
             else
             {
@@ -107,7 +135,52 @@ namespace org.openda.dotnet.DHIStochObserver
             _selectedDataPoints = _dfsInfo.GetDataFromTimeRange(new Oatc.OpenMI.Sdk.Backbone.Time(_selectionTime.BeginTime.MJD).ToDateTime(), new Oatc.OpenMI.Sdk.Backbone.Time(_selectionTime.EndTime.MJD).ToDateTime());
         }
 
+        private void readStandardDeviationFile(String dfsErrorFileName){
+            FileStream istream;
+            try
+            {
+                istream = new FileStream(dfsErrorFileName, FileMode.Open, FileAccess.Read);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Cannot open the observation uncrertainty file "+dfsErrorFileName+"\n"+
+                    " "+e.Message);
+            }
+            StreamReader reader = new StreamReader(istream, new ASCIIEncoding());
+            string str = reader.ReadToEnd();
+            String[] ObsStd = str.Split('\n');
+            for (int i=0;i<ObsStd.Length;i++){
+                String[] cols = ObsStd[i].Trim().Split(' ');
+                if (cols.Length<2) {
+                    throw new Exception("Error parsing line "+(i+1)+" of the observation uncrertainty file "+
+                        dfsErrorFileName+"\nExpecting at least two collumns\nLine="+ObsStd[i]+"\n");
+                }
+                double standardDeviation = Convert.ToDouble(cols[1], CultureInfo.InvariantCulture.NumberFormat);
+                if (standardDeviation < 0)
+                {
+                    throw new Exception("Error parsing line " + (i + 1) + " of the observation uncrertainty file " +
+                        dfsErrorFileName + "\nExpecting standard deviation to be positive\nLine=" + ObsStd[i] + "\n");
+                }
+                if (cols[0].ToUpper().Equals("DEFAULT_STD"))
+                {
+                    _default_STD = standardDeviation;
+                }
+                else
+                {
+                    _standardDeviation.Add(cols[0], standardDeviation);
+                }
 
+            }
+
+
+
+
+            //if (ObsStd.Length<0){
+            //   throw new Exception("Observation uncrertainty file "+dfsErrorFileName+"\n"
+
+
+
+        }
 
         /*
         * Create an new Stochastic Observer, containing a selection of the present stochastic observer.<br>
@@ -163,7 +236,7 @@ namespace org.openda.dotnet.DHIStochObserver
         public double[] getRealizations()
         {
             var measured = getValues();
-            var noise = getStandardDeviations();
+            var noise = drawObservationErrors();
             for (int i = 0; i < measured.Count(); i++)
             {
                 measured[i] += noise[i];
@@ -210,6 +283,31 @@ namespace org.openda.dotnet.DHIStochObserver
             return null;
         }
 
+
+        public double[] drawObservationErrors()
+        {
+            const StandardDeviationTypes type = StandardDeviationTypes.Global;
+
+            switch (type)
+            {
+                case StandardDeviationTypes.Global:
+
+
+                    double[] standardDeviations = this.getStandardDeviations();
+                    double[] generatedNoise = new double[standardDeviations.Length];
+                    Random mt = new MersenneTwister();
+                    Normal.Samples(mt, generatedNoise, 0.0, 1.0);
+                    for (int i = 0; i < standardDeviations.Length; i++){
+                        generatedNoise[i]*=standardDeviations[i];
+                    }
+                    return generatedNoise;
+
+                default:
+                    throw new NotImplementedException("Only global standard deviations supported for now.");
+            }
+        }
+
+
         //TODO: Implement return Standard deviation. 
         /**
          * Get the standard deviation for each each stochastic observation.
@@ -221,26 +319,37 @@ namespace org.openda.dotnet.DHIStochObserver
 
             switch (type)
             {
-               case StandardDeviationTypes.Global:
-
-                    //TODO: FIX HARD CODED standard deviation.
-                    const double standardDeviation = 0.02;
+                case StandardDeviationTypes.Global:
 
                     int n = _selectedDataPoints.Count;
-                    double[] generatedStd = new double[n];
-                    Random mt = new MersenneTwister();
-                    Normal.Samples(mt, generatedStd, 0.0, standardDeviation);
-
-
-                    return generatedStd;
-                break;
-
+                    string[] ids = this.GetStringProperties("id");
+                    double[] standardDeviations = new double[n];
+                    if (n != ids.Length)
+                    {
+                        throw new Exception("Internal error with dimensions number of id's is " + ids.Length +
+                            "\nNumber selected observations is " + n);
+                    }
+                    for (int i = 0; i < n; i++)
+                    {
+                        double std;
+                        if (_standardDeviation.TryGetValue(ids[i], out std))
+                        {
+                            standardDeviations[i] = std;
+                        }
+                        else
+                        {
+                            if (_default_STD < 0)
+                            {
+                                throw new Exception("Cannot set standard deviation of observation with ID='" + ids[i] +
+                                    "' Value is not explicitly specified in error specification file and default has been set\n");
+                            }
+                            standardDeviations[i] = _default_STD;
+                        }
+                    }
+                    return standardDeviations;
                 default:
                     throw new NotImplementedException("Only global standard deviations supported for now.");
-                    break;
             }
-
-
         }
 
         private enum StandardDeviationTypes
@@ -357,8 +466,14 @@ namespace org.openda.dotnet.DHIStochObserver
             //See what we have to return
             Key.ToLower();
 
-            if (System.String.CompareOrdinal(Key, "quantity") == 0)
+            if (System.String.CompareOrdinal(Key, "quantity") == 0){
                 return Q;
+            }
+            else if (System.String.CompareOrdinal(Key, "id") == 0)
+            {
+                String[] ObsIDs = _selectedDataPoints.Select(p => p.VariableID).ToArray();
+                return ObsIDs;
+            }
             else
             {
                 throw new Exception("Property " + Key + " is not supported/known by the DHIStockObserver.");
@@ -371,7 +486,17 @@ namespace org.openda.dotnet.DHIStochObserver
         /// <returns>error status: All keys of the observation descriptions</returns>
         public String[] PropertyKeys
         {
-            get { return _selectedDataPoints.Select(p => p.VariableID).ToArray(); }
+            get
+            {
+                String[] keys = new String[5];
+                keys[0] = "id";
+                keys[1] = "quantity";
+                keys[2] = "xposition";
+                keys[3] = "yposition";
+                keys[4] = "height";
+                return keys;
+            }
+                //return _selectedDataPoints.Select(p => p.VariableID).ToArray(); }
         }
 
         /// <summary>

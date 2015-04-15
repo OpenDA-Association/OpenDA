@@ -69,13 +69,7 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	{
 
 		// THIS MAKES NO SENSE . FIGURE THIS OUT.
-		String[] properties = _dotNetObsDescr.get_PropertyKeys();
-
-		for (int index = 0; index < properties.length; index++)
-		{
-			if ( properties[index] == Key )
-				return properties;
-		}
+		String[] properties = _dotNetObsDescr.GetStringProperties(Key);
 		return properties;
 
 	}
