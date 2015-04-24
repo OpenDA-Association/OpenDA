@@ -46,7 +46,7 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 */
 	public List<IPrevExchangeItem> getExchangeItems()
 	{
-		return null;
+			throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 	/**
