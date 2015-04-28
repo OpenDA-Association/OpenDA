@@ -1,8 +1,9 @@
 @echo off
+set executable=dflowfm.exe
 rem 
-rem check if unstruc.exe is available on PATH
+rem check if executable is available on PATH
 rem
-where /Q unstruc.exe
+where /Q %executable%
 if errorlevel 1 goto error_not_found
 if errorlevel 2 goto error_unknown
 rem 
@@ -13,7 +14,7 @@ set work=%cd%
 rem
 rem copy ini files to work-directory
 rem
-for /f %%j in ("unstruc.exe") do (
+for /f %%j in ("%executable%") do (
     set DFLOWFMDIR=%%~dp$PATH:j
 )
 copy %DFLOWFMDIR%unstruc.ini %work%
@@ -21,7 +22,7 @@ copy %DFLOWFMDIR%interact.ini %work%
 rem
 rem start D-Flow FM
 rem 
-unstruc.exe --autostartstop %mdufile% --nodisplay
+%executable% --autostartstop --nodisplay --quiet %mdufile%
 goto eof
 
 rem
@@ -36,7 +37,8 @@ goto eof
 
 :error_unknown
 echo ERROR in ./stochModel/bin/start_unstruc.bat:
-echo problem in command "where unstruc.exe"
+echo problem in command "where %executable%"
 goto eof
 
 :eof
+exit /B %ERRORLEVEL%
