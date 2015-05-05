@@ -105,6 +105,8 @@ namespace MikeSheInOpenDA
                 int modelIdex = XYZGeometryTools.ModelIndexWherePointIsLocated(obsPoint, modelEntities);
                 if (modelIdex > 0)
                 {
+                    modelIndices.Add(modelIdex);
+                    /*
                     if (!modelIndices.Contains(modelIdex))
                     {
                         modelIndices.Add(modelIdex);
@@ -113,6 +115,7 @@ namespace MikeSheInOpenDA
                     {
                         throw new Exception("More than one observation for same model index");
                     }
+                     */
                 }
             }
         } 
@@ -144,6 +147,14 @@ namespace MikeSheInOpenDA
                 else if (quantity[obsC].Equals("SurfaceTemperature", StringComparison.OrdinalIgnoreCase))
                 {
                     exchangeItemId.Add("Surface temperature (effective),BaseGrid");
+                }
+                else if (quantity[obsC].Equals("SZVerticalConductivity", StringComparison.OrdinalIgnoreCase))
+                {
+                    exchangeItemId.Add("SZ vertical conductivity (for DA-OpenMI),SZ3DGrid");
+                }
+                else if (quantity[obsC].Equals("SZHorizontalConductivity", StringComparison.OrdinalIgnoreCase))
+                {
+                    exchangeItemId.Add("SZ horizontal conductivity (for DA-OpenMI),SZ3DGrid");
                 }
                 else
                 {
@@ -236,6 +247,14 @@ namespace MikeSheInOpenDA
                 else if (quantity[obsC].Equals("SurfaceTemperature", StringComparison.OrdinalIgnoreCase))
                 {
                     exchangeItemId = "Surface temperature (effective),BaseGrid";
+                }
+                else if (quantity[obsC].Equals("SZVerticalConductivity", StringComparison.OrdinalIgnoreCase))
+                {
+                    exchangeItemId = "SZ vertical conductivity (for DA-OpenMI),SZ3DGrid";
+                }
+                else if (quantity[obsC].Equals("SZHorizontalConductivity", StringComparison.OrdinalIgnoreCase))
+                {
+                    exchangeItemId= "SZ horizontal conductivity (for DA-OpenMI),SZ3DGrid";
                 }
                 else
                 {

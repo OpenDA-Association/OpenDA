@@ -254,6 +254,9 @@ namespace MikeSheInOpenDA
                 Console.WriteLine(excep.Message);
             }
 
+            var outputItemsList = _mshe.EngineOutputItems.ToList();
+            var inputtItemsList = _mshe.EngineInputItems.ToList();
+
             // For OpenMI 2.0 we need to add a consumer ( a dummy in this case ) for each Output
             // Exchange Item. 
             Input dummyInput2 = new Input("dummyIn");
