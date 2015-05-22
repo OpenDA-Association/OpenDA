@@ -167,7 +167,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 
 			System.out.println("Nieuw spullen v1.0");
 
-			// Check whether we are dealing with a C# implemention. No concersion is needed in that case
+			// Check whether we are dealing with a C# implementation. No conversion is needed in that case
 			if (observationDescriptions instanceof ObservationDescriptionsJ2N){
 				dotNetObservationDescriptions=  ((ObservationDescriptionsJ2N) observationDescriptions)._dotNetObsDescr;
 			}

@@ -20,7 +20,7 @@ model that enables perform experiments to estimate and the bias between model
 and observations.
 
 \section{Algorithm}
-\oda uses state augmentation to estimate the bias. The method is explained in more details in \cite{decourt2006} and ..
+\oda uses state augmentation to estimate the bias. The method is explained in more details in \cite{decourt2006}.
 A model is defined in \oda according to
 \begin{equation}\label{eq:normal_step}
 x^{k+1}=M\left(x^k, u^k, p, w^k\right)
@@ -50,6 +50,13 @@ The bias aware model in \oda is a generic wrapper model that extents an arbitrar
 
 
 \section{configuration}
+In order to use the bias aware model, the user specifies the
+\begin{verbatim}
+org.openda.models.biasAwareObservations.BiasAwareObservationsModelFactory
+\end{verbatim}
+in the main OpenDA configuration file. The "real" dynamical model is specified in "child" model in the configuration of the bias aware model.
+
+
 The model configuration contains of two parts:
 \begin{enumerate}
 \item Definition of the child model (xml-tag {\tt stochModelFactory})
