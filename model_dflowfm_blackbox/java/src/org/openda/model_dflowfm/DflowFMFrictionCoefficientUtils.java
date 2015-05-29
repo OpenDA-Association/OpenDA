@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.io.*;
 
 /**
+ * @deprecated
+ * This class is replaced by the generic DFlowFMXynUtils class
  */
 public class DflowFMFrictionCoefficientUtils {
 
@@ -62,7 +64,7 @@ public class DflowFMFrictionCoefficientUtils {
         return content.toArray(sContent);
   }
 
-    // Write the whole forcingsfile as stored is given string array
+    // Write the whole forcings file as stored in given string array
     public static void writeWholeFile(File frictioncoefFile, String[] sContent) {
 
 
@@ -73,13 +75,13 @@ public class DflowFMFrictionCoefficientUtils {
                     output.write(sContent[i]);
                     output.newLine();
                 } catch (IOException e) {
-                    throw new RuntimeException("Cannot write line in file: "+frictioncoefFile);
+                    throw new RuntimeException("Cannot write line in file: " + frictioncoefFile);
                 }
             }
             output.close();
         }
         catch (IOException ex){
-            throw new RuntimeException("Cannot write file "+frictioncoefFile);
+            throw new RuntimeException("Cannot write file " + frictioncoefFile);
         }
     }
 

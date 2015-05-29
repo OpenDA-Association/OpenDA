@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
+ * @deprecated
+ * This class is replaced by the generic DFlowFMXynFile class
  */
 public class DflowfmFrictionCoefficientFile implements IDataObject {
 

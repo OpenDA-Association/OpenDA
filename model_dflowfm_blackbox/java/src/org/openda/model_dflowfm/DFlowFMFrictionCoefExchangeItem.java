@@ -27,6 +27,10 @@ import org.openda.interfaces.ITimeInfo;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * @deprecated
+ * This class is replaced by the generic DFlowFMXynExchangeItem class
+ */
 @SuppressWarnings("serial")
 public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 
