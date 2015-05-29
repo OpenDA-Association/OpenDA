@@ -22,9 +22,13 @@ public class DFlowFMExtInputFileTest extends TestCase{
 		File dataDir=testRunDataDir;
 		File testfile=new File(dataDir,"simple_waal.ext");
 		DFlowFMExtInputFile extOptions = new DFlowFMExtInputFile(testfile);
+		String[] ref_quantities = new String[4];
+		ref_quantities[0] = "dischargebnd";
+		ref_quantities[1] = "waterlevelbnd";
+		ref_quantities[2] = "frictioncoefficient";
+		ref_quantities[3] = "frictioncoefficient";
 		for (int i=0; i < extOptions.count(); i++ ) {
-			System.out.println(extOptions.get("QUANTITY", i));
-			
+			assertEquals(extOptions.get("QUANTITY", i), ref_quantities[i]);
 		}
 	}
 }

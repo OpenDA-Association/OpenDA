@@ -98,7 +98,7 @@ public class DFlowFMHistoryFileTest extends TestCase {
 //			}
 //		}
 		IExchangeItem obs1 = hisfile.getDataObjectExchangeItem("Obs01.waterlevel");
-		System.out.println("obs1="+obs1.toString());
+		//System.out.println("obs1="+obs1.toString());
 		String id1=obs1.getId();
 		assertEquals("Obs01.waterlevel", id1);
 		double[] times1=obs1.getTimes();
@@ -111,7 +111,7 @@ public class DFlowFMHistoryFileTest extends TestCase {
 		assertEquals(1.013,values1[2880],0.001);
 
 		IExchangeItem obs3 = hisfile.getDataObjectExchangeItem("Obs03.waterlevel");
-		System.out.println("obs3="+obs3.toString());
+		//System.out.println("obs3="+obs3.toString());
 		String id3=obs3.getId();
 		assertEquals("Obs03.waterlevel", id3);
 		double[] times3=obs3.getTimes();

@@ -68,7 +68,10 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	String netcdffileName = null;
 	HashMap<String,DFlowFMMetaExchangeItem> ExchangeItems = new LinkedHashMap<String,DFlowFMMetaExchangeItem>();
 	// No exchangeItems created for variables time*, NetLink*, BndLink*, FlowLink*, NetElem*, FlowElem*, NetNode*, wgs84 and projected_coordinate_system
-	private String[] excludePattern = new String[]{"time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
+	// private String[] excludePattern = new String[]{"time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
+	// TODO: remove salt when bug in dflowm is fixed
+	private String[] excludePattern = new String[]{"salt","time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
+
 
 	/**
 	 * Initialize.
@@ -186,16 +189,19 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						unitID = temp.getStringValue();
 					}
 				}
-				if (!(unitID==null)) {
-					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName),unitID);
+				//System.out.println("DEBUG: "+ fullName + " unitID: " + unitID  );
+				if (unitID != null) {
+					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName), unitID);
 					exchange.setValues(new Vector(dValues));
-					double[] timeinfo = {Reftime};
+					double[] timeinfo = { Reftime };
 					exchange.setTimes(timeinfo);
 					Attribute att = var.findAttribute("standard_name");
-					exchange.setQuantityId(att.getStringValue());
-					this.ExchangeItems.put(var.getName(),new DFlowFMMetaExchangeItem(exchange,true,fullName));
+					if (att != null) {
+						exchange.setQuantityId(att.getStringValue());
+					}
+					this.ExchangeItems.put(var.getName(), new DFlowFMMetaExchangeItem(exchange, true, fullName));
 				} else {
-					throw new RuntimeException("Error: no unit specified for variable in netcdf file "+ netcdffileName);
+					throw new RuntimeException("Error: no unit specified for variable "  + var.getName() + " in netcdf file " + netcdffileName);
 				}
 			}
 			inputFile.finish();

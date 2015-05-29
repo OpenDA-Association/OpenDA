@@ -29,30 +29,30 @@ import java.io.File;
 import java.io.IOException;
 
 public class DFlowFMTimTimeSeriesFormatterTest extends TestCase {
-   private File testRunDataDir;
-   private OpenDaTestSupport testData;
+	private File testRunDataDir;
+	private OpenDaTestSupport testData;
 
-   protected void setUp() throws IOException {
-      testData = new OpenDaTestSupport(DFlowFMMduInputFile.class,"model_dflowfm_blackbox");
-	  testRunDataDir = new File(testData.getTestRunDataDir(),"Timeseries");
-   }
+	protected void setUp() throws IOException {
+		testData = new OpenDaTestSupport(DFlowFMMduInputFile.class, "model_dflowfm_blackbox");
+		testRunDataDir = new File(testData.getTestRunDataDir(), "Timeseries");
+	}
 
-   public void testTimFormatter() {
-      TimeSeriesFormatter timFormatter = new DFlowFMTimTimeSeriesFormatter(48257.0, 24.0*60.0 );
-	  File timFile = new File(testRunDataDir, "estuary_02_0001.tim");
-	  TimeSeries series1 = timFormatter.readFile(timFile.getAbsolutePath());
-      //String location = series1.getLocation();
-      //assertEquals("1",location);
+	public void testTimFormatter() {
+		TimeSeriesFormatter timFormatter = new DFlowFMTimTimeSeriesFormatter(48257.0, 24.0 * 60.0);
+		File timFile = new File(testRunDataDir, "estuary_02_0001.tim");
+		TimeSeries series1 = timFormatter.readFile(timFile.getAbsolutePath());
+		//String location = series1.getLocation();
+		//assertEquals("1",location);
 
-      // write to screen
-      timFormatter.writeToStandardOut(series1);
+		// write to screen
+		timFormatter.writeToStandardOut(series1);
 
-      // write to file
-      boolean overwriteExistingFiles=true;
-      File copyOfTimFile = new File(testRunDataDir,"estuary_02_0001.tim.test");
-      timFormatter.writeFile(copyOfTimFile.getAbsolutePath(), series1, overwriteExistingFiles);
-	  assertFalse( testData.FilesAreIdentical(copyOfTimFile, timFile, 0) );
-   }
+		// write to file
+		boolean overwriteExistingFiles = true;
+		File copyOfTimFile = new File(testRunDataDir, "estuary_02_0001.tim.test");
+		timFormatter.writeFile(copyOfTimFile.getAbsolutePath(), series1, overwriteExistingFiles);
+		assertFalse(testData.FilesAreIdentical(copyOfTimFile, timFile, 0));
+	}
 
 
 }

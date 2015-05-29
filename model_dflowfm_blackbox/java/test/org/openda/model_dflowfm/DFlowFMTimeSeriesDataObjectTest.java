@@ -39,19 +39,19 @@ public class DFlowFMTimeSeriesDataObjectTest extends TestCase {
 	private File              testRunDataDir;
 	private OpenDaTestSupport testData;
 
-	
-   protected void setUp() throws IOException {
+
+	protected void setUp() throws IOException {
 		testData = new OpenDaTestSupport(DFlowFMTimeSeriesDataObject.class,"model_dflowfm_blackbox");
 		testRunDataDir = new File(testData.getTestRunDataDir(),"Timeseries");
 	}
 
-   public void testRead1() {
+	public void testRead1() {
 
 		// read noos file and create object
-	    DFlowFMTimeSeriesDataObject dataObject = new DFlowFMTimeSeriesDataObject();
+		DFlowFMTimeSeriesDataObject dataObject = new DFlowFMTimeSeriesDataObject();
 
-	    String[] args = new String[1];
-	    args[0] = "estuary.mdu"; 
+		String[] args = new String[1];
+		args[0] = "estuary.mdu";
 		dataObject.initialize(this.testRunDataDir, args);
 
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
@@ -124,7 +124,7 @@ public class DFlowFMTimeSeriesDataObjectTest extends TestCase {
 		args[0] = "estuary_test.mdu"; 
 		dataObject2.initialize(this.testRunDataDir, args);
 		TimeSeries series2 = (TimeSeries) dataObject2.getDataObjectExchangeItem("estuary_02.2:dischargebnd");
-		System.out.println( series2.getProperty("pathName") );
+		//System.out.println( series2.getProperty("pathName") );
 		assertEquals(timFile.getAbsolutePath(),series2.getProperty("pathName"));
 		assertTrue(series1.equals(series2));
 	}
