@@ -10,7 +10,8 @@
         <alias key="instanceDir"/>
         <alias key="templateDir"/>
         <alias key="runid"/>
-        <alias key="frictionCoefFile"/>
+        <alias key="frictionMultiplierFile"/>
+        <alias key="frictionMultiplierTemplateFile"/>
         <alias key="inputFile"/>
         <alias key="netcdfoutput"/>
     </aliasDefinitions>
@@ -32,9 +33,11 @@
     </run>
 
     <inputOutput>
-        <ioObject className="org.openda.model_dflowfm.DflowfmFrictionCoefficientFile">
-            <file>%frictionCoefFile%</file>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
+            <file>%frictionMultiplierFile%</file>
             <id>frictionCoefFile</id>
+            <arg>idsFromTemplateFile=%frictionMultiplierTemplateFile%</arg>
+            <arg>idPrefix=friction_</arg>
         </ioObject>
 
         <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">

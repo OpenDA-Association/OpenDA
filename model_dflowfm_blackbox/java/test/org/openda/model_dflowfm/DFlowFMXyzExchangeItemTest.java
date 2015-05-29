@@ -19,19 +19,22 @@
 */
 package org.openda.model_dflowfm;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IVector;
+
 import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
+
 import org.openda.utils.OpenDaTestSupport;
 
 
-public class DFlowFMFrictionCoefExchangeItemTest extends TestCase{
+public class DFlowFMXyzExchangeItemTest extends TestCase{
 	private File testRunDataDir;
 	private OpenDaTestSupport testData;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(DFlowFMFrictionCoefExchangeItem.class,"model_dflowfm_blackbox");
+		testData = new OpenDaTestSupport(DFlowFMXyzExchangeItem.class,"model_dflowfm_blackbox");
 		testRunDataDir = new File(testData.getTestRunDataDir(), "Forcingfile");
 	}
 
@@ -40,7 +43,7 @@ public class DFlowFMFrictionCoefExchangeItemTest extends TestCase{
 		File dataDir=testRunDataDir;
 		File testfile=new File(dataDir,"frcfact.xyz");
 		int lineNum = 1;
-		DFlowFMFrictionCoefExchangeItem item = new DFlowFMFrictionCoefExchangeItem("id",testfile, lineNum);
+		DFlowFMXyzExchangeItem item = new DFlowFMXyzExchangeItem("id",testfile, 2.0 ,lineNum);
 
 		String id = item.getId();
 		assertEquals("id", id);
@@ -48,9 +51,12 @@ public class DFlowFMFrictionCoefExchangeItemTest extends TestCase{
 		String unitId = item.getUnitId();
 		assertEquals("-",unitId);
 
-		item.setValues(2.0);
-		assertEquals(item.getValuesType(), IExchangeItem.ValueType.doubleType);
+		
+		IVector vector = (IVector) item.getValues();
+		vector.setConstant(2.0);
+		item.setValues(vector);
+		assertEquals(item.getValuesType(), IExchangeItem.ValueType.IVectorType);
 		String value = item.getValues().toString();
-		assertEquals("2.0", value);
+		assertEquals("[2.0]", value);
 	}
 }
