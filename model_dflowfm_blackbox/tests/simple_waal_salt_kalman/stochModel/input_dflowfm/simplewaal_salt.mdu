@@ -46,7 +46,7 @@ irov                 = 0                   # 0=free slip, 1 = partial slip using
 wall_ks              = 0.                  # Nikuradse roughness for side walls, wall_z0=wall_ks/30
 Vicoww               = 0.                  # Uniform vertical eddy viscosity
 TidalForcing         = 1                   # Tidal forcing (0=no, 1=yes) (only for jsferic == 1)
-Salinity             = 0                   # Include salinity, (0=no, 1=yes)
+Salinity             = 1                   # Include salinity, (0=no, 1=yes)
 
 [wind]
 ICdtyp               = 2                   # ( ), Cd = const, 2=S&B 2 breakpoints, 3= S&B 3 breakpoints
