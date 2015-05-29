@@ -44,7 +44,7 @@ import java.util.Random;
  */
 public class AutoLocalizationZhang2011 {
 	private double sigmaAlpha2=0.36;  //Optimal value (see paper)
-	private int nBootstrap=100;
+	private int nBootstrap=50;
 
 	//Use the DistributedCounter to make sure we have different seeds in a parallel run
 	//(probably not needed but is does not hurt ;-))
@@ -53,7 +53,7 @@ public class AutoLocalizationZhang2011 {
 
 	public IVector[] computeObservedLocalization(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors ){
 
-		System.out.println("Debug: We doen lokalizatie volgens Zhang");
+		System.out.println("Debug: We doen lokalizatie volgens Zhang +nbootstrap="+this.nBootstrap);
 		//Create an ensemble of gain matrices
 		IVector [][] gainMatrices = createBootstrapGainsMatrices(algorithmEnkF, obs, ensemblePredictions, ensembleVectors);
 		//for (int i=0; i<gainMatrices.length; i++){

@@ -10,6 +10,8 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,9 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 
     boolean only_ssh=true;
 
+    double [] xcoords;
+	double [] ycoords;
+
 
 
 	double [] allDatesMJD;
@@ -43,11 +48,15 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	double stdev_sshb=0.06;
 	IStochVector stochVec;
 
+	int offset_sshb = 656668-1;
+	int offset_tb   = 225424-1;
+	int nz=11, ny=121, nx=81;
 
 
 	public NemoNetcdfStochObserver(){
 		// Empty constructor to keep java happy
 	}
+
 
 	public NemoNetcdfStochObserver(double [] allDatesMJD, File [] allDirectories, int iStartDate, int iEndDate){
 	   	this.nDates=iEndDate-iStartDate+1;
@@ -111,6 +120,89 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		}
 	}
 
+    void setCoordinates(){
+		this.xcoords=new double[sshbOkIndex.length];
+		this.ycoords=new double[sshbOkIndex.length];
+        for (int i=0;i<this.xcoords.length; i++){this.xcoords[i]=0.0;}
+		for (int i=0;i<this.ycoords.length; i++){this.ycoords[i]=0.0;}
+
+		int nObsAll=this.sshb.length+this.tb.length;
+		double[] xAll=new double[nObsAll];
+		double[] yAll=new double[nObsAll];
+		double[] sumAlpha=new double[nObsAll];
+		int[]    maxIndex=new int[nObsAll];
+		int[]    minIndex=new int[nObsAll];
+
+		for (int i=0;i<nObsAll; i++){xAll[i]=0.0;}
+		for (int i=0;i<nObsAll; i++){yAll[i]=0.0;}
+		for (int i=0;i<nObsAll; i++){sumAlpha[i]=0.0;}
+		for (int i=0;i<nObsAll; i++){maxIndex[i]=0;}
+		for (int i=0;i<nObsAll; i++){minIndex[i]=99999;}
+
+
+		for (int iNnz=0; iNnz<Hi.length; iNnz++){
+			int i=(int) Hi[iNnz]-1;   //Note move to 0-indexing
+			int j=(int) Hj[iNnz]-1;   //Note move to 0-indexing
+			double alpha= (double) Hs[iNnz];
+			double x;
+			int ix,iy,jCorr;
+			if (i<this.sshb.length) {
+				jCorr=j-offset_sshb;
+			}
+			else {
+				jCorr=j - offset_tb;
+			}
+			iy=jCorr%ny;
+			ix=jCorr/ny;
+			xAll[i]+=alpha*(double) ix;
+			yAll[i]+=alpha*(double) iy;
+			sumAlpha[i]+=alpha;
+			if (alpha>0) minIndex[i]=java.lang.Math.min(minIndex[i], jCorr);
+			if (alpha>0) maxIndex[i]=java.lang.Math.max(maxIndex[i] ,jCorr);
+		}
+
+		int nSshOK=this.sshbOkIndex.length;
+		int [] minOK = new int[this.xcoords.length];
+		int [] maxOK = new int[this.xcoords.length];
+		for (int i=0;i<nSshOK;i++){
+			this.xcoords[i]=xAll[sshbOkIndex[i]];
+			this.ycoords[i]=yAll[sshbOkIndex[i]];
+			minOK[i] = minIndex[sshbOkIndex[i]];
+			maxOK[i] = maxIndex[sshbOkIndex[i]];
+		}
+        if (!this.only_ssh){
+			for (int i=0;i<this.tbOkIndex.length;i++) {
+				this.xcoords[nSshOK + i] = xAll[tbOkIndex[i]];
+				this.ycoords[nSshOK + i] = yAll[tbOkIndex[i]];
+				minOK[nSshOK + i] = minIndex[tbOkIndex[i]];
+				maxOK[nSshOK + i] = maxIndex[tbOkIndex[i]];
+			}
+		}
+
+		//write locations
+		if (false) {
+			try {
+				String fileName = "xyobs_" + this.iStartDate + ".txt";
+				PrintWriter fo = new PrintWriter(new FileOutputStream(new File(fileName)));
+				for (int i = 0; i < this.xcoords.length; i++) {
+					fo.println(this.xcoords[i] + " " + this.ycoords[i] + " " + minOK[i] + " " + maxOK[i]);
+				}
+				fo.close();
+			} catch (Exception e) {
+				throw new RuntimeException("Error writing xyobs file");
+			}
+
+		}
+
+
+
+
+
+	}
+
+
+
+
 
 	void initValues(){
 
@@ -170,6 +262,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		}
 
 		countValid();
+		setCoordinates();
 
 
 	//	nObsSshbOk=0;
@@ -195,7 +288,15 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	 * @return Properties (column of data from observation descriptions).
 	 */
 	public IVector getValueProperties(String Key) {
-		throw new RuntimeException("not yet implemented");
+		if (Key.equals("x")){
+			return new Vector(this.xcoords);
+		}
+		else if (Key.equals("y")){
+			return new Vector(this.ycoords);
+		}
+		else{
+				throw new RuntimeException("Not implemented for Key="+Key);
+			}
 	}
 
 	/**
@@ -282,6 +383,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		}
 	}
 
+
 	/**
 	 * Create an new Stochastic Observer, containing a selection of the present stochastic observer.<br>
 	 * The selection criteria is the type of observations: assimilation or validation
@@ -304,6 +406,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	public ISelector createSelector(Type observationType) {
 		throw new RuntimeException("not yet implemented");
 	}
+
 
 	/**
 	 * Number of observations in the Stochastic Observer.

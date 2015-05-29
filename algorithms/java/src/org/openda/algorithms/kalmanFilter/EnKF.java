@@ -231,16 +231,27 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		timerLocalization.stop();
 	}
 
-	protected void localizationHamill(IStochObserver obs, IVector[] Kvecs){
+	protected  void localizationHamill(IStochObserver obs, IVector[] Kvecs){
+		localizationHamill(obs, Kvecs, null, null);
+	}
+
+	protected void localizationHamill(IStochObserver obs, IVector[] Kvecs, int[] colIndexOutput, String resultWriterSubTreevectorID){
 		// Apply localization Method similar to
 		// Hamill, T., J. S. Whitaker, and C. Snyder, 2001:
 		// Distance-dependent filtering of back- ground error covariance estimates
+
+
 		System.out.print("Applying localization method according to Hamill\n");
 		// Get the localization correlation matrix for the ensemble
 		IVector[] rho = this.ensemble[0].getObservedLocalization(obs.getObservationDescriptions(), this.distance);
 		for(int i=0; i<rho.length; i++){
+			int indexOutput=i;
+			if (colIndexOutput!=null){indexOutput=colIndexOutput[i];}
+			resutlWriteSubTree("KpreLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+			resutlWriteSubTree("rho_" + indexOutput, rho[i], resultWriterSubTreevectorID);
 			Kvecs[i].pointwiseMultiply(rho[i]);
 			rho[i].free();
+			resutlWriteSubTree("KLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
 		}
 	}
 

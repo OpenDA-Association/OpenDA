@@ -335,17 +335,23 @@ public class EnKFSeq extends EnKF {
 	protected void applyLocalizationToGain(IStochObserver obs, IVector[] Kvecs, EnsembleVectors ensemblePredictionsForecast, EnsembleVectors ensembleVectorsForecast, int iObs){
 
 		timerLocalization.start();
+		int indexObs[]=new int[1];
+		indexObs[0]=iObs;
+
 		if (this.localizationMethod==LocalizationMethodType.hamill){
 			System.out.println("EnKFSeq Note: apply localization according to Hammil to state not augmented Hx!");
 			// We can only get localization for the model state
 			ITreeVector Kvecs_model[] = new ITreeVector[1];
 			Kvecs_model[0] = ((ITreeVector) Kvecs[0]).getSubTreeVector("model");
-			localizationHamill(obs, Kvecs_model);
+			indexObs[0]=iObs;
+			localizationHamill(obs, Kvecs_model, indexObs, null);
 		}
 		else if (this.localizationMethod==LocalizationMethodType.autoZhang){
-			int indexObs[]=new int[1];
-			indexObs[0]=iObs;
+
 			localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast, indexObs, "model");
+		}
+		else {
+			System.out.println("EnKFSeq Note: no localization");
 		}
 		timerLocalization.stop();
 	}
