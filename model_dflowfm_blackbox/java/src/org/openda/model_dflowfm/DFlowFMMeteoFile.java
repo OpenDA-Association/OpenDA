@@ -40,217 +40,233 @@ import java.util.regex.Pattern;
 
 /**
  * IDataobject implementation for DFlow FM meteo files
-
-
- ### START OF HEADER
- ### This file is created by Deltares
- ### Additional comments
- FileVersion = 1.03
- filetype = meteo_on_equidistant_grid
- NODATA_value = -9999.0
- n_cols = 5
- n_rows = 4
- grid_unit = m
- x_llcenter = 60
- y_llcenter = 60
- dx = 110
- dy = 110
- n_quantity = 1
- quantity1 = x_wind
- unit1 = m s-1
- ### END OF HEADER
- TIME = 0 hours since 2006-01-01 00:00:00 +00:00
- 10 10 10 10 10
- 10 10 10 10 10
- 10 10 10 10 10
- 10 10 10 10 10
- TIME = 1 hours since 2006-01-01 00:00:00 +00:00
- -10 -10 -10 -10 -10
- -10 -10 -10 -10 -10
- -10 -10 -10 -10 -10
- -10 -10 -10 -10 -10
+ * <p/>
+ * <p/>
+ * ### START OF HEADER
+ * ### This file is created by Deltares
+ * ### Additional comments
+ * FileVersion = 1.03
+ * filetype = meteo_on_equidistant_grid
+ * NODATA_value = -9999.0
+ * n_cols = 5
+ * n_rows = 4
+ * grid_unit = m
+ * x_llcenter = 60
+ * y_llcenter = 60
+ * dx = 110
+ * dy = 110
+ * n_quantity = 1
+ * quantity1 = x_wind
+ * unit1 = m s-1
+ * ### END OF HEADER
+ * TIME = 0 hours since 2006-01-01 00:00:00 +00:00
+ * 10 10 10 10 10
+ * 10 10 10 10 10
+ * 10 10 10 10 10
+ * 10 10 10 10 10
+ * TIME = 1 hours since 2006-01-01 00:00:00 +00:00
+ * -10 -10 -10 -10 -10
+ * -10 -10 -10 -10 -10
+ * -10 -10 -10 -10 -10
+ * -10 -10 -10 -10 -10
  */
 
 public class DFlowFMMeteoFile implements IDataObject {
 
-    private static String[] knownFileTypes = { "meteo_on_equidistant_grid"};
-    private Integer fileType = null;
-    private ArrayExchangeItem exchangeItem = null;
-    private File file = null;
-    private int endOfHeader = 0;
-    private int nCols, nRows;
-    private HashMap<String, Double> unitFactorToMjd = new HashMap<String, Double>( ) {{
-        put("hours", 1.0/ 24.0);
-        put("minutes", 1.0/ 1440.0 );
-    }};
-    private String timeUnits;
-    private List<String> headerContent = new ArrayList<>();
-    private double referenceDateInMjd;
-    private String referenceDateString;
+	private static String[] knownFileTypes = {"meteo_on_equidistant_grid"};
+	private Integer fileType = null;
+	private ArrayExchangeItem exchangeItem = null;
+	private File file = null;
+	private int endOfHeader = 0;
+	private int nCols, nRows;
+	private HashMap<String, Double> unitFactorToMjd = new HashMap<String, Double>() {{
+		put("hours", 1.0 / 24.0);
+		put("minutes", 1.0 / 1440.0);
+	}};
+	private String timeUnits;
+	private List<String> headerContent = new ArrayList<>();
+	private double referenceDateInMjd;
+	private String referenceDateString;
 
 
+	// date related
+	private static String dateFormat = "yyyy-MM-dd HH:mm:ss XXX"; // TIME minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
+	private TimeZone timeZone;
 
-    // date related
-    private static String dateFormat = "yyyy-MM-dd HH:mm:ss XXX"; // TIME minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
-    private TimeZone timeZone;
-
-    private Pattern datePattern = Pattern.compile("TIME\\s+=\\s+(\\d+)\\s+(minutes|hours)\\s+since(.+)$"); // TIME =  minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
-    private static String dateOutFormat = "TIME = %d %s since %s"; // TIME minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
-    private DateFormat dateFormatter;
-    private Date referenceDate;
-
+	private Pattern datePattern = Pattern.compile("TIME\\s+=\\s+(\\d+)\\s+(minutes|hours)\\s+since(.+)$"); // TIME =  minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
+	private static String dateOutFormat = "TIME = %d %s since %s"; // TIME minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
+	private DateFormat dateFormatter;
+	private Date referenceDate;
 
 
 //    private Pattern datePattern = Pattern.compile("TIME\\s+=\\s+(minutes|hours)\\s+since(.+)$"); // TIME =  minutes/hours since YYYY-MM-DD HH:MM:SS TIME ZONE
 
-    public void initialize(File workingDir, String[] arguments) {
+	public void initialize(File workingDir, String[] arguments) {
 
-         this.file = new File(workingDir, arguments[0]);
+		this.file = new File(workingDir, arguments[0]);
 
-         HashMap<String, String> headerInfo = new HashMap<String, String>();
+		HashMap<String, String> headerInfo = new HashMap<String, String>();
 
-         try {
-              Scanner input =  new Scanner(file);
-              try {
-                   String line;
+		try {
+			Scanner input = new Scanner(file);
+			try {
+				String line;
 
-                   // read header
-                   while (( line = input.nextLine()) != null){
-                        this.endOfHeader++;
-                        headerContent.add(line);
-                        if (line.startsWith("### END OF HEADER")) break;
-                        if (line.startsWith("###")) continue;
-                        String[] lineParts = line.split("=",2);
-                        headerInfo.put(lineParts[0].trim(),lineParts[1].trim());
-                   }
-                   // handle relevant header information
+				// read header
+				while ((line = input.nextLine()) != null) {
+					this.endOfHeader++;
+					headerContent.add(line);
+					if (line.startsWith("### END OF HEADER")) break;
+					if (line.startsWith("###")) continue;
+					String[] lineParts = line.split("=", 2);
+					headerInfo.put(lineParts[0].trim(), lineParts[1].trim());
+				}
 
-                   nCols = Integer.parseInt(headerInfo.get("n_cols"));
-                   nRows = Integer.parseInt(headerInfo.get("n_rows"));
-                   String exchangeItemId = headerInfo.get("quantity1");
+				if ( headerInfo.containsKey("filetype") ) {
+					if ( !headerInfo.get("filetype").contains("meteo_on_equidistant_grid") ) {
+						throw new RuntimeException("DFlowFMMeteoFile only supports filetype 'meteo_on_equidistant_grid'");
+					}
+				} else {
+					throw new RuntimeException("File " + this.file + " does not contain 'filetype' in header." );
+				}
 
-                  // read data
+				// handle relevant header information
+				if ( headerInfo.containsKey("n_cols") ) {
+					nCols = Integer.parseInt(headerInfo.get("n_cols"));
+				} else {
+					throw new RuntimeException("File " + this.file + " does not contain 'n_cols' in header." );
+				}
 
-                   Vector timesVector = new Vector(0);
-                   Vector valuesVector = new Vector(0);
+				if ( headerInfo.containsKey("n_rows") ) {
+					nRows = Integer.parseInt(headerInfo.get("n_rows"));
+				} else {
+					throw new RuntimeException("File " + this.file + " does not contain 'n_rows' in header." );
+				}
 
-                   while ( input.hasNextLine() )  {
-                       line = input.nextLine();
-                       if ( line.isEmpty() ) continue;
+				String exchangeItemId;
+				if ( headerInfo.containsKey("quantity1") ) {
+					exchangeItemId = headerInfo.get("quantity1");
+				} else {
+					throw new RuntimeException("File " + this.file + " does not contain 'quantity1' in header." );
+				}
 
-                       Matcher m = datePattern.matcher(line);
-                       if (m.find( )) {
-                           double[] timeInMjd = new double[1];
-                           timeInMjd[0] = Double.parseDouble(m.group(1));
-                           this.timeUnits = m.group(2);
-                           timeInMjd[0] *= this.unitFactorToMjd.get(this.timeUnits);
-                           try {
-                               this.referenceDateString = m.group(3).trim();
-                               this.referenceDateInMjd = TimeUtils.date2Mjd(this.referenceDateString, dateFormat);
-                               this.dateFormatter = new SimpleDateFormat(dateFormat);
-                               timeInMjd[0] += this.referenceDateInMjd;
-                               timesVector = Vector.concatenate( timesVector,  new Vector( timeInMjd ) );
-                           }
-                           catch ( ParseException e) {
-                               throw new RuntimeException("Cannot parse date from " + line + " for format " + dateFormat + " in file "  + file );
-                           }
-                       } else {
-                           throw new RuntimeException("Cannot parse date from " + line + " using regex in file " + file );
-                       }
 
-                        double[] values = new double[nCols*nRows];
-                        for (int i = 0; i < nCols*nRows ;i++ ) {
-                            values[i] = input.nextDouble();
-                        }
-                        valuesVector = Vector.concatenate( valuesVector, new Vector(values));
-                   }
+				// read data
 
-                   exchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.Input);
-                   exchangeItem.setValuesAsDoubles(valuesVector.getValues());
-                   exchangeItem.setTimeInfo(new TimeInfo(timesVector.getValues()));
-              }
-              finally {
-                   input.close();
-              }
+				Vector timesVector = new Vector(0);
+				Vector valuesVector = new Vector(0);
+
+				while (input.hasNextLine()) {
+					line = input.nextLine();
+					if (line.isEmpty()) continue;
+
+					Matcher m = datePattern.matcher(line);
+					if (m.find()) {
+						double[] timeInMjd = new double[1];
+						timeInMjd[0] = Double.parseDouble(m.group(1));
+						this.timeUnits = m.group(2);
+						timeInMjd[0] *= this.unitFactorToMjd.get(this.timeUnits);
+						try {
+							this.referenceDateString = m.group(3).trim();
+							this.referenceDateInMjd = TimeUtils.date2Mjd(this.referenceDateString, dateFormat);
+							this.dateFormatter = new SimpleDateFormat(dateFormat);
+							timeInMjd[0] += this.referenceDateInMjd;
+							timesVector = Vector.concatenate(timesVector, new Vector(timeInMjd));
+						} catch (ParseException e) {
+							throw new RuntimeException("Cannot parse date from " + line + " for format " + dateFormat + " in file " + file);
+						}
+					} else {
+						throw new RuntimeException("Cannot parse date from " + line + " using regex in file " + file);
+					}
+
+					double[] values = new double[nCols * nRows];
+					for (int i = 0; i < nCols * nRows; i++) {
+						values[i] = input.nextDouble();
+					}
+					valuesVector = Vector.concatenate(valuesVector, new Vector(values));
+				}
+
+				exchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.Input);
+				exchangeItem.setValuesAsDoubles(valuesVector.getValues());
+				exchangeItem.setTimeInfo(new TimeInfo(timesVector.getValues()));
+			} finally {
+				input.close();
+			}
 //              catch (NumberFormatException ex) {
 //                 throw new RuntimeException("Cannot read file");
 //              }
-         }
-         catch (IOException ex){
-              throw new RuntimeException("Cannot read file '" +
-              file.getAbsolutePath() + "'");
-         }
+		} catch (IOException ex) {
+			throw new RuntimeException("Cannot read file '" +
+					file.getAbsolutePath() + "'");
+		}
 
-    }
+	}
 
-    public String[] getExchangeItemIDs() {
-        String[] result = new String[1];
-        result[0] = exchangeItem.getId();
-        return result;
-    }
+	public String[] getExchangeItemIDs() {
+		String[] result = new String[1];
+		result[0] = exchangeItem.getId();
+		return result;
+	}
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-        if (exchangeItem.getRole() == role) {
-            String[] result = new String[1];
-            result[0] = exchangeItem.getId();
-            return result;
-        } else {
-            return null;
-        }
-    }
+	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+		if (exchangeItem.getRole() == role) {
+			String[] result = new String[1];
+			result[0] = exchangeItem.getId();
+			return result;
+		} else {
+			return null;
+		}
+	}
 
-    public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-        if (exchangeItem.getId() == exchangeItemID) {
-            return exchangeItem;
-        } else {
-            throw new RuntimeException("bla");
-        }
-    }
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		if (exchangeItem.getId() == exchangeItemID) {
+			return exchangeItem;
+		} else {
+			throw new RuntimeException("bla");
+		}
+	}
 
-    public void finish() {
+	public void finish() {
 
-        try {
-            BufferedWriter output =  new BufferedWriter(new FileWriter(this.file));
+		try {
+			BufferedWriter output = new BufferedWriter(new FileWriter(this.file));
 
-            // write header
-            for (int i=0; i<headerContent.size() ; i++ ){
-                try {
-                    //System.out.println("WRITE " + sContent[i]);
-                    output.write(headerContent.get(i));
-                    output.newLine();
-                } catch (IOException e) {
-                    throw new RuntimeException("Cannot write line in file: " + file);
-                }
-            }
+			// write header
+			for (int i = 0; i < headerContent.size(); i++) {
+				try {
+					//System.out.println("WRITE " + sContent[i]);
+					output.write(headerContent.get(i));
+					output.newLine();
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot write line in file: " + file);
+				}
+			}
 
-            double[] times = exchangeItem.getTimes();
-            double[] values = exchangeItem.getValuesAsDoubles();
+			double[] times = exchangeItem.getTimes();
+			double[] values = exchangeItem.getValuesAsDoubles();
 
-            int index = 0;
-            for (int timeIndex=0; timeIndex < times.length; timeIndex ++){
-                double timeDeltaInUnits = times[timeIndex] - referenceDateInMjd;
-                timeDeltaInUnits /= unitFactorToMjd.get(timeUnits);
-                output.write(String.format(this.dateOutFormat, Math.round(timeDeltaInUnits), this.timeUnits, this.referenceDateString));
-                output.newLine();
-                for (int m = 0; m < nRows; m++) {
-                    String line = "";
-                    String formatString = "%g ";
-                    for (int n = 0; n < nCols; n++) {
-                        line += String.format(formatString , values[timeIndex  * nRows  * nCols  + m*nCols + n ] ) ;
-                    }
-                    output.write( line.trim() );
-                    output.newLine();
-                }
-            }
-            output.close();
-        }
-        catch (IOException ex){
-            throw new RuntimeException("Cannot write file " + file);
-        }
+			int index = 0;
+			for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
+				double timeDeltaInUnits = times[timeIndex] - referenceDateInMjd;
+				timeDeltaInUnits /= unitFactorToMjd.get(timeUnits);
+				output.write(String.format(this.dateOutFormat, Math.round(timeDeltaInUnits), this.timeUnits, this.referenceDateString));
+				output.newLine();
+				for (int m = 0; m < nRows; m++) {
+					String line = "";
+					String formatString = "%g ";
+					for (int n = 0; n < nCols; n++) {
+						line += String.format(formatString, values[timeIndex * nRows * nCols + m * nCols + n]);
+					}
+					output.write(line.trim());
+					output.newLine();
+				}
+			}
+			output.close();
+		} catch (IOException ex) {
+			throw new RuntimeException("Cannot write file " + file);
+		}
 
-    }
-
-
+	}
 
 
 }
