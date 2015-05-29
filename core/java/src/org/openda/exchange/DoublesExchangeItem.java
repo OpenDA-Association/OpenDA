@@ -28,7 +28,7 @@ public class DoublesExchangeItem extends ArrayExchangeItem{
 	/**
 	 * Constructor starting from an array of doubles.
 	 * @param id The exchange item's id
-	 * @param role Input, Outpu or both
+	 * @param role Input, Output or both
 	 * @param values The exchange item's values
 	 */
 	public DoublesExchangeItem(String id, Role role, double[] values) {
@@ -39,7 +39,7 @@ public class DoublesExchangeItem extends ArrayExchangeItem{
 	/**
 	 * Simplified constructor for only one double
 	 * @param id The exchange item's id
-	 * @param role Input, Outpu or both
+	 * @param role Input, Output or both
 	 * @param value The exchange item's value
 	 */
 	public DoublesExchangeItem(String id, Role role, double value) {
