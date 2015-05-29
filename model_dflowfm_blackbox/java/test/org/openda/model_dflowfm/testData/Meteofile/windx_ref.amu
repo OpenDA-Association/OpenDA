@@ -1,0 +1,27 @@
+### START OF HEADER
+### This file is created by Deltares
+### Additional comments
+FileVersion = 1.03
+filetype = meteo_on_equidistant_grid
+NODATA_value = -9999.0
+n_cols = 5
+n_rows = 4
+grid_unit = m
+x_llcenter = 60
+y_llcenter = 60
+dx = 110
+dy = 110
+n_quantity = 1
+quantity1 = x_wind
+unit1 = m s-1
+### END OF HEADER
+TIME = 0 hours since 2006-01-01 00:00:00 +00:00
+11.0000 12.0000 13.0000 14.0000 15.0000
+21.0000 22.0000 23.0000 24.0000 25.0000
+31.0000 32.0000 33.0000 34.0000 35.0000
+41.0000 42.0000 43.0000 44.0000 45.0000
+TIME = 1 hours since 2006-01-01 00:00:00 +00:00
+-11.0000 -12.0000 -13.0000 -14.0000 -15.0000
+-21.0000 -22.0000 -23.0000 -24.0000 -25.0000
+-31.0000 -32.0000 -33.0000 -34.0000 -35.0000
+-41.0000 -42.0000 -43.0000 -44.0000 -45.0000
