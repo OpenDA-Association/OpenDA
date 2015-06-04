@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+		<alias key="binDir" />
+		<alias key="templateDir" />
+		<alias key="instanceDir" />
+		<alias key="outputFile" />
+		<alias key="inputFile" />
+
+		<alias key="noosFilec1A" />
+		<alias key="noosFilec2A" />
+		<alias key="noosFilec1B" />
+		<alias key="noosFilec2B" />
+		<alias key="noosFilec1C" />
+		<alias key="noosFilec2C" />
+	</aliasDefinitions>
+
+	<run>
+
+		<!--
+			for each model instance, the template directory will be cloned to
+			create the instance directory
+		-->
+		<initializeActionsUsingDirClone
+			instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%" />
+
+		<computeActions>
+			<action linuxExe="%binDir%/reactive_pollution_model.py" windowsExe="%binDir%/reactive_pollution_model.exe" workingDirectory="%instanceDir%">
+				<arg>%inputFile%</arg>
+				<!--
+					<checkOutput file="%outputFile%" expect="Finished Succesfully"/>
+				-->
+				<checkOutput file="%outputFile%" /> <!-- should exist -->
+			</action>
+                        <action exe="%binDir%/BBascii2noos.pl" workingDirectory="%instanceDir%" >
+                                <arg>%outputFile%</arg>
+                        </action>
+			<action className="org.openda.blackbox.io.myCopier" >
+				<arg>%outputFile%</arg>
+				<arg>%inputFile%</arg>
+			</action>
+			<!-- <action linuxExe="%binDir%/save.sh" windowsExe="save.bat" workingDirectory="%instanceDir%">
+				<arg>after_copy</arg>
+			</action> -->
+		</computeActions>
+
+		<additionalComputeActions></additionalComputeActions>
+
+		<finalizeActions></finalizeActions>
+
+	</run>
+
+
+	<inputOutput>
+		<ioObject className="org.openda.blackbox.io.myWrapper">
+			<file>%inputFile%</file>
+			<id>input</id>
+			<arg></arg>
+		</ioObject>
+
+		<ioObject className="org.openda.blackbox.io.myWrapper">
+			<file>%outputFile%</file>
+			<id>output</id>
+		</ioObject>
+
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosFilec1A%</file>
+			<id>c1_locA</id>
+		</ioObject>
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosFilec2A%</file>
+			<id>c2_locA</id>
+		</ioObject>
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosFilec1B%</file>
+			<id>c1_locB</id>
+		</ioObject>
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosFilec2B%</file>
+			<id>c2_locB</id>
+		</ioObject>
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosFilec1C%</file>
+			<id>c1_locC</id>
+		</ioObject>
+		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
+			<file>%noosFilec2C%</file>
+			<id>c2_locC</id>
+		</ioObject>
+
+	</inputOutput>
+
+</blackBoxWrapperConfig>

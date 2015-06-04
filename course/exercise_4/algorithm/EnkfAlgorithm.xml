@@ -1,0 +1,17 @@
+<EnkfConfig>
+<!--
+<EnkfConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
+ -->
+   <ensembleSize>100</ensembleSize>
+   <ensembleModel stochParameter="false"
+                  stochForcing="true"
+                  stochInit="false" />
+
+   <saveGain>
+      <times type="fixed" timeFormat="mjd" >2.0, 4.0, 6.0, 8.0, 10.0</times>
+      <file dirPrefix="../enkf_wave_" fileName="enkf_wave_gain.xml" fileType="xml" />
+   </saveGain>
+</EnkfConfig>
+

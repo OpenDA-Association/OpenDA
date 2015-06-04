@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequentialAlgorithm>
+	<analysisTimes type="fromObservationTimes" ></analysisTimes> 
+	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a 
+	twin-experpiment -->
+	<mainModel stochParameter="false" stochForcing="false" stochInit="false" />
+</sequentialAlgorithm>

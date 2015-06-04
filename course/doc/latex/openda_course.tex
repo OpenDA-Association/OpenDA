@@ -1,0 +1,620 @@
+\documentclass[a4paper,10pt]{article}
+%\usepackage[utf8x]{inputenc}
+
+%opening
+\title{OpenDA course and exercises}
+\author{Nils van Velzen, Martin Verlaan, Stef Hummel}
+
+\begin{document}
+
+\maketitle
+
+%\begin{abstract}
+
+%\end{abstract}
+
+\section*{Setting up OpenDA}
+Before you can start with the exercises you must first set up OpenDA. For the
+latest instructions, you are referred to {\tt \$OPENDA/doc/index.html}, 
+section "Installation".
+
+\section{Exercise 1: Getting started}
+
+Edward Lorenz (1963) developed
+a very simplified model of convection called the Lorenz model. The Lorenz model
+is defined by three differential equations giving the time evolution of the
+variables $x,y,z$:
+\begin{eqnarray}
+   \frac{dx}{dt}=\sigma(y-x) \\
+   \frac{dy}{dt}=\rho x - y -x z \\
+   \frac{dz}{dt}=x y - \beta z
+\end{eqnarray}
+where $\sigma$ is the ratio of the kinematic viscosity divided by the thermal
+diffusivity, $\rho$ the measure of stability, and $\beta$ a parameter which
+depends on the wave number.
+The implementation of the Lorenz model that is available in OpenDA is solved numerically by using a Runge-Kutta method.
+
+This model, although simple, is very nonlinear and has a chaotic nature.  Its
+solution is very sensitive to the parameters and the initial conditions: a
+small difference in those values can lead to a very different solution.
+
+The purpose of this exercise is to get you started with OpenDA. You will learn
+to run a model in OpenDA, make modifications to the input files and plot the
+results.
+
+\begin{itemize}
+\item The input for this exercise is located in directory {\tt Exercise\_1}.
+      For Linux and Mac OS X, go to this directory and start {\tt oda\_run.sh}, the
+      main application of OpenDA. For Windows, start the main application with 
+      {\tt oda\_run\_gui.bat} from the {\tt \$OPENDA/bin} directory. The main 
+      application allows you to view and edit the OpenDA configuration files, run your
+      simulations and visualize the results.
+\item Try to run a simulation with the Lorenz model. You can use the
+      configuration file {\tt simulation\_unperturbed.oda}. The results are
+      written to {\tt simulation\_unperturbed\_results.m}, You can make a
+      plot using Octave or Matlab. Load the results using the function
+      {\tt load\_results}:
+{\footnotesize
+\begin{verbatim}
+       [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
+       plot3(xyz(1,:),xyz(2,:),xyz(3,:));
+       grid on;
+\end{verbatim}
+}
+       Now make a plot of only the first variable of the model ({\tt xyz(1,:)}).
+{\footnotesize
+\begin{verbatim}
+      plot(t,xyz(1,:),'b')
+\end{verbatim}
+}
+%
+
+\item Observations of the first variable are available as well. Make a plot of
+      the observations together with the simulation results.
+{\footnotesize
+\begin{verbatim}
+       [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
+       plot(t,xyz(1,:),'b')
+       hold on
+       plot(tobs,obs,'r*');
+\end{verbatim}
+}
+\item Then you can start an alternative simulation with the lorenz model that
+       starts with a slightly different initial condition using the
+       configuration file {\tt simulation\_perturbed.oda} that starts with
+       slightly different initial conditions.
+
+\item  Visualize the unperturbed and perturbed results in a single plot. Make
+       a 3d trajectory plot and a 2d plot in time of first variable. Do you see
+       the solutions diverging like the theory predicts?
+{\footnotesize
+\begin{verbatim}
+       [t1,xyz1,tobs1,obs1]=load_results('simulation_unperturbed_results');
+       [t2,xyz2,tobs2,obs2]=load_results('simulation_perturbed_results');
+       figure(1)
+       plot3(xyz1(1,:),xyz1(2,:),xyz1(3,:),'b');
+       hold on
+       plot3(xyz2(1,:),xyz2(2,:),xyz2(3,:),'r');
+       hold off
+       legend('unperturbed','perturbed')
+
+       figure(2)
+       plot(t1,xyz1(1,:),'b')
+       hold on
+       plot(t2,xyz2(1,:),'r')
+       hold off
+       legend('unperturbed','perturbed')
+\end{verbatim}
+}
+
+\item Create a modified example that uses an ensemble forecast with perturbed
+      initial conditions. You can do this in a number of steps:
+      \begin{itemize}
+      \item Create the input file {\tt simulation\_Ens.oda} based on\\
+            {\tt simulation\_unperturbed.oda}. Change the algorithm and the
+            configuration of the algorithm.\\
+            hint: the algorithm is called \\
+            org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation.
+      \item Write the configuration file of the Ensemble algorithm (e.g. named
+            {\tt algorithm/EnsSimulation.xml}) with the following content:
+{\footnotesize
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<sequentialAlgorithm>
+   <analysisTimes type="fromObservationTimes" ></analysisTimes>
+   <ensembleSize>5</ensembleSize>
+   <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="true" />
+</sequentialAlgorithm>
+\end{verbatim}
+}
+      \end{itemize}
+\item Run this ensemble simulation and read the results in Octave or
+      Matlab using {\tt load\_ensemble.m}.
+      \begin{itemize}
+      \item make a plot of the first variable of the five ensemble
+            members in a single plot
+{\footnotesize
+\begin{verbatim}
+[t,ens]=load_ensemble('simulation_Ens_results');
+ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
+plot(t,ens1)
+\end{verbatim}
+}
+      \item make a plot of the mean of the first variable
+{\footnotesize
+\begin{verbatim}
+plot(t,mean(ens1,2))
+\end{verbatim}
+}
+      \item run the same simulation again\footnote{For large models or
+            ensemble sizes a huge amount of output is generated. Your
+            run will be much faster when you disable the messages in
+            the gui, by pressing the 'Disable Logging' button.
+            You can also run without the gui, by using the command
+            {\tt oda\_run.sh <inputfile>} (Linux/Mac OS X) or
+            {\tt oda\_run\_batch.bat <inputfile>} (Windows)}
+            but now with an ensemble size of 10, 50, 100 and 200 and
+            plot the mean of the first variable. What do you see, and
+            what does this mean?
+      \end{itemize}
+\end{itemize}
+
+\section{Exercise 2: Some basic properties of the EnKF}
+
+In this exercise you will learn how to set up and run the EnKF method in OpenDA.
+
+\begin{itemize}
+  \item Prepare the input files for a run with the EnKF method. Use the input
+        files from exercise 1 as template. Hint: the Ensemble Kalman filter
+        is called org.openda.algorithms.kalmanFilter.EnKF. The algorithm
+        configuration file has the following content
+{\footnotesize
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+   <ensembleSize>10</ensembleSize>
+   <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="true" />
+</EnkfConfig>
+\end{verbatim}
+}
+  \item Plot the ensemble mean of the first model variable and the observations.
+        With some luck the solution should track the observations.\\
+        Tip: use the scripts {\tt load\_obs.m} and {\tt load\_ensemble.m} for reading the
+        data, cf. Exercise1.
+  %oda_run EnKf.oda
+  %plot1.m
+ \item Look at the observation input file of the StochObserver. The
+       StochObserver does not only describe the observations but the accuracy
+       as well. Can you make a new observation input file with similar
+       observed values but with a 10 times larger standard deviation for the
+       observation error.
+       Tip: you can edit the file in OpenOffice or MS Excel or use the find
+       and replace function of an advanced text editor.
+ \item Repeat the run with EnKF but now for the new observations and plot
+       the first variable of the ensemble means and the observations. What do
+       you see and what is the reason for this behavior of the algorithm?
+ %oda_run EnKf10.oda
+ %plot1.m
+ \item The number of ensemble members controls the accuracy of the ensemble
+       approximation. What happens if you increase the number to e.g. 100, or
+       decrease it to 5? Use (initially) observations with a standard deviation
+       of 5.0. Experiment as well with various standard
+       deviations of the observations.
+\end{itemize}
+
+%extra: Belang van initial seed (een enkele run is ook maar een enkele realisatie) en gebruik van "ensembles van ensembles"
+%laat ze ook spelen met initiele seed van de randomgenerator (kan dat in OpenDA??) Zodat ze dan zien dat voor grote ensembles minder impact (zou moeten) hebben dan voor kleine aantallen ensembles.
+
+
+\section{Exercise 3: Writing your own toy model}
+
+{\bf Before you start:}\\
+In order to be able to compile your model you need to have a (current) version
+installed on your computer of:
+\begin{itemize}
+\item The Java Development Kit (JDK). You can download this from\\
+      {\tt www.oracle.com}\footnote{Java Runtime Environment (JRE), which is
+      installed on most computers is not sufficient since this will allow you
+      to run java programs but it does not include the java compiler {\tt javac} that is
+      needed to create you own (parts of) programs}
+\item Apache Ant, this is a command line tool we use for building your java
+      code. You can download Ant from {\tt ant.apache.org}.
+\end{itemize}
+
+In this exercise you will learn how to code your own model and use it in
+OpenDA. The directory {\tt exercise\_3} contains a template of the code for the
+1-D advection model we will create in this exercise. The content of this
+directory is similar to the OpenDA directories you have seen in the previous
+exercises. The difference is that we will not use a model that is already part
+of the OpenDA distribution but instead our own model. The model code can be
+found in the directory {\tt simple\_advection\_model}.
+
+The model you will create is build as an extension of the OpenDA \\{\tt
+  simpleStochModelInstance}. This will simplify and reduce the amount of
+programming because a significant part of the implementation is already
+available. For more complex models you might need to implement all methods of
+the\ {\tt IStochModelInstance} class.
+
+In the directory\\ {\tt
+  exercise\_3/simple\_advection\_model/java/src/org/openda} you will find the
+two java source files {\tt AdvectionStochModelFactory.java} and\\ {\tt
+  AdvectionStochModelInstance.java}. The first file implements the ModelFactory
+class. The model factory is a class in OpenDA that is responsible for creating
+model instances (e.g. the members of an ensemble Kalman filter). The second
+file implements the model. This is the file you have to edit in this exercise.
+
+\begin{itemize}
+\item Consider the 1-dimensional advection model:
+   \begin{eqnarray}
+      \frac{\partial c}{\partial t}=v \frac{\partial c}{\partial x}
+   \end{eqnarray}
+   where $c$ typically describes the density of the particle being studied and
+   $u$ is the velocity. On the left boundary $c$ is specified as
+   $c_b(t)=1+\frac{1}{2}sin(5 \pi t)$. Discretize this model on the interval
+   $x=[0..1]$ with velocity $v=1$ using a 1st order upwind scheme on a grid of
+   51 points. The time step is chosen such that the courant number $\frac{v
+     \Delta t}{\Delta x}$ is approximately 1.
+\item The deterministic model is extended into a stochastic model by adding a
+  noise parameter $\omega$ on the left boundary. We use an AR(1) model to
+  describe the noise.
+\item Code your model in {\tt AdvectionStochModelInstance.java}. For
+  inspiration, you will find in the same directory an implementation of the
+  Lorenz model.
+\item You can compile your model by typing "ant build" in the directory \\ {\tt
+  exercise\_3/simple\_advection\_model}. This will create the file \\ {\tt
+  bin/simple\_advection\_model.jar}.
+\item Run the model. You can use file {\tt advectionSimulation.oda}. In order
+  to be able to run your model, java must be able to find the file {\tt
+    simple\_advection\_model.jar}. To accomplish this, you can copy your
+  advection model jar-file to the bin-directory of your OpenDA installation or
+  add the full path of your jar-file ({\tt simple\_advection\_model.jar}) to
+  the java class path variable {\tt CLASSPATH}.\\ By default, the Windows
+  scripts {\tt oda\_run\_gui.bat} and {\tt oda\_run\_batch.bat} use the JRE
+  environment that is provided with OpenDA. If this JRE is incompatible with
+  your JDK installation (Error: Unsupported major.minor version 51.0), use {\tt
+    oda\_run\_batch.bat <inputfile> -jre "location of your JDK"} to overrule
+  the default JRE.
+\item Use the script {\tt plot\_movie.m} to visualize the model results. You
+  will see that the model suffers from numerical diffusion. You can solve this
+  by using a second order upwind method but this is not necessary for this
+  exercise.
+\item Create an ensemble of model simulations and study the model uncertainty
+  in space and time.
+\item The provided observation file {\tt observations.cvs} does not contain
+  observations that correspond to the advection model. Create your own
+  observation file for the locations $x=0.2$, $x=0.5$ and $x=0.7$. Use the
+  model to create the values. Run the model with noise on the left boundary.
+  Optionally generate some additional noise and add it to the generated
+  observations. You can use the script {\tt generate\_obs} to simplify the
+  creation of the observations file.
+\item Using your generated observations, setup an ensemble Kalman filter run.
+  Experiment with various numbers of ensembles, different settings of the AR(1)
+  model.
+\item Experiment with different intervals between the available observations.
+  What do you observe. Is this behavior different from the Lorenz model?
+  Evaluate the uncertainty of the estimates.
+\item Experiment with only assimilating the data from one of the three
+  locations and use the other locations as validation. What do you observe. Do
+  all the locations have the same impact? Explain the behavior you observe.
+\item Use the same data as generated before and use the Kalman filter now with
+  different values of the system noise covariance and measurement noise
+  covariance. Explain the behaviour that you observe.
+\end{itemize}
+
+\section{Exercise 4: Steady-state}
+  In this section you will learn how to create and use a steady-state Kalman
+  filter with OpenDA. The example model we use in this section is a
+  1-dimensional wave model:
+  \begin{eqnarray}
+  \frac{\partial h}{\partial t} + D \frac{\partial v}{\partial x} = 0 \\
+  \frac{\partial v}{\partial t} + g \frac{\partial h}{\partial x} + c_f v = 0 \\
+  \end{eqnarray}
+  With $h(x,t)$ the (water) level above the reference plane, $v(x,t)$ the
+  velocity, $D(x)$ the depth under the reference plane, $g$ the gravitational
+  acceleration $c_f$ the friction coefficient and $x\in [0,L]$ the location.
+  For our model we have selected the boundary values $v(x=L,t)=0$ and
+  $h(x=0,t)=\frac{1}{5} sin(2 \pi t)$. An AR(1) model is defined on the left
+  water level boundary.
+
+\begin{itemize}
+\item Look at the implementation of the model in {\tt
+  WaveStochModelInstance.java}. See how the state is defined and how the model
+  is discretized. Compile the model using {\tt ant build} like you have done
+  with your own model in exercise 3.
+\item Run the model ({\tt waveSimulation.oda}) and visualize the model results
+  ({\tt plot\_movie.m}). Do not forget to add the jar-file of the model to the
+  {\tt CLASSPATH} variable, or to copy the jar-file into the bin directory of
+  your OpenDA version
+\item Adjust the input files in order to run the model with stochastic
+  forcings.
+\item Generate water level observations from this stochastic run. We need
+  observations at (approximately) $x=\frac{1}{4} L$, $x=\frac{1}{2} L$ and
+  $x=\frac{3}{4} L$. You can use the script {\tt generate\_obs.m} for this
+  task. We want to have observations at $t=0.1, 0.2,...,10.0$, (initially)
+  select a standard deviation of 0.05.
+\item Run the Ensemble Kalman filter ({\tt waveEnkf.oda}). This run will
+  generate and write gain matrices at specified times. Find where and how this
+  is specified in the input.
+\item Plot the columns of the gain matrices. (The script {\tt plot\_gains.m}
+  plots the water level part of the gain matrices). What do these columns mean?
+\item (Re)generate the gain matrices using different numbers of ensembles. When
+  you compare the gain matrices, what do you notice. Note: The algorithm will
+  generate an enormous amount of output when you run the EnKF with a very large
+  number of ensembles (e.g. 500). You can suppress the output by commenting out
+  (or remove) the {\tt resultWriter}-part of the oda-input file.
+\item Use the generated steady state gain matrices for a steady state Kalman
+  run ({\tt waveSteadystate.oda}). Compare the performance of:
+  \begin{itemize}
+  \item a (non-stochastic) run without filtering,
+  \item an EnkF run with various numbers of ensembles (do not forget to
+    reinstate the resultWriter if you have switched it off),
+  \item the various steady state gains.
+  \end{itemize}
+ you can use the scripts {\tt plot\_ons\_sim.m}, {\tt plot\_ons\_ens.m}
+ and\\ {\tt plot\_ons\_steady.m}.
+
+\item Generate (observations) gain matrices but now for only a single
+  observation. Make sure that the observed values are exactly the same as in
+  the 3 observation observer. Compare the columns of the 3-observation gain
+  matrices to the single observation matrices. What is the main difference and
+  why?
+\end{itemize}
+
+\section{Exercise 5: A black box model - Calibration}
+
+A simple way to connect a model to OpenDA is by letting OpenDA access the input
+and output files of the model. OpenDA cannot directly understand the input and
+output files of an arbitrary model. Some code has to be written such that the
+black box model implementation of OpenDA can read and write these files. In
+this exercise you will learn how to connect an existing model to OpenDA
+assuming that all the input and output files of the model can indeed be
+accessed by OpenDA. The exercise focusses on the configuration of the black box
+wrapper in OpenDA.\\
+
+In the directory {\tt exercise\_5/} you will find a model written in python \\
+{\tt reactive\_pollution\_model.py} and a compiled version of this code for
+windows. There is also an input file ({\tt reactive\_pollution\_model.input})
+and the output file you should get when you run the model. The model describes
+the advection of two chemical substances. The first substance $c_1$ is emitted
+as a pollutant by a number sources. However, in this case this substance reacts
+with the oxygen in the air to form a more toxic substance $c_2$. The model
+implements the following equations:
+
+\begin{eqnarray}
+    \frac{\partial c_1}{\partial t} + u\frac{\partial c_1}{\partial x} & = & -
+    1/T c_1 \\
+    \frac{\partial c_2}{\partial t} + u\frac{\partial c_2}{\partial x} & = &
+    1/T c_1
+\end{eqnarray}
+
+\begin{itemize}
+\item Run the model from the command line, not using OpenDA. The model
+  generates the output files: {\tt reactive\_pollution\_model.output} and
+  \\ {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
+  of the output in order to study the behavior of the model. In order to check
+  the model (plotted) results you can look at the input file as well.
+\end{itemize}
+
+For this exercise, the Java-routines for reading and writing the input and
+output files are already programmed. However, it is not necessary to program
+this in Java. It is also possible to write your own conversion program (in any
+programming language) to convert the input and output files of your model to a
+format that OpenDA is able to handle.
+
+The Java-routines are located in directory {\tt reactive\_advection\_wrapper}.
+You can compile the code with 'ant build' as in exercise 3. To add the jar-file
+to OpenDA, either use the CLASSPATH environment variable or copy the jar-file
+into the bin directory of your OpenDA version.
+
+A black box wrapper configuration usually consists of three xml files. For our
+pollution model these files are:
+\begin{enumerate}
+   \item {\tt polluteWrapper.xml}: This file specifies the actions to performed
+     when the model has to be run, and the files and related reader and writers
+     that can be used to let OpenDA interact with the model.\\ This file
+     consists of the parts:
+     \begin{itemize}
+        \item {\tt aliasDefinitions:} This is a list of strings that can be
+          aliased in the other xml files. This helps to make the
+          wrapperxml-file more generic. E.g. the alias definition
+          \%outputFile\% can be used to refer to the output file of the model,
+          without having to know the actual name of that output file.\\ Note
+          the special alias definition \%instanceNumber\%. This will be
+          replaced internally at runtime with the member number of each created
+          model instance.
+        \item {\tt run:} the specification of what commands need to be executed
+          when the model is run.
+        \item {\tt inputOutput:} the list of 'input/output objects', usually
+          files, that are used to access the model, i.e. to adjust the model's
+          input, and to retrieve the model's results. For each 'ioObject' one
+          must specify:
+        \begin{itemize}
+           \item the java class that handles the reading from and/or writing to
+             the file
+           \item the identifier of the ioObject, so that the model
+             configuration file can refer to it when specifying the model
+             variables that can be accessed by OpenDA, the so called 'exchange
+             items' (see below)
+           \item optionally, the arguments that are needed to initialize the
+             ioObject, i.e. to open the file.
+        \end{itemize}
+     \end{itemize}
+   \item {\tt polluteModel.xml}: This is the main specification of the
+     (deterministic) model. It contains the following elements:
+     \begin{itemize}
+        \item {\tt wrapperConfig}: A reference to the wrapper config file
+          mentioned above.
+        \item {\tt aliasValues}: The actual values to be used for the aliases
+          defined in the wrapper config file. For instance the \%outputFile\%
+          alias is set to the value "reactive\_pollution\_model.output".
+        \item {\tt timeInfoExchangeItems}: The name of the model variables (the
+          'exchange items') that can be accessed to modify the start and end
+          time of the period to that the model should compute to propagate
+          itself to the next analysis time.
+        \item {\tt exchangeItems}: The model variables that are allowed to be
+          accessed by OpenDA, for instance parameters, boundary conditions, and
+          computed values at certain locations. Each variable exchange item
+          consists of its id, the ioObject that contains the item, and the
+          'element name', the name of the exchange item in the ioObject.
+     \end{itemize}
+   \item {\tt polluteStochModel.xml}: This is the specification of the
+     stochastic model. It contains of two parts:
+     \begin{itemize}
+        \item {\tt modelConfig}: A reference to the deterministic model
+          configuration file mentioned above {\tt polluteModel.xml}.
+        \item {\tt vectorSpecification}: The specification of the vectors that
+          will be accessed by the OpenDA algorithm. These vectors are grouped
+          in two parts:
+          \begin{itemize}
+             \item The state that is manipulated by an OpenDA filtering
+               algorithm, i.e. the state of the model combined with the noise
+               model(s).
+             \item The so called predictions, i.e. the values on observation
+               locations as computed by the model.
+          \end{itemize}
+     \end{itemize}
+\end{enumerate}
+
+Start with a single OpenDA-run to understand where the model results appear
+for this configuration:
+\begin{itemize}
+ \item Have a look at the files {\tt polluteWrapper.xml}, {\tt
+   polluteModel.xml} and {\tt polluteStochModel.xml}, and recognize the various
+   items mentioned above. Start the OpenDA GUI from the {\tt public/bin}
+   directory and run the model by using the {\tt Simulation.oda} configuration.
+   Note that the actual model results are available in the directory where the
+   black box wrapper has let the model perform its computation: {\tt
+     stochModel/output/work0}.
+\end{itemize}
+
+In this exercise, we will calibrate the value of the reaction-rate constant.
+The algorithm used in this example is the Dud (which stands for Doesn't Use
+Derivative).
+
+\begin{itemize}
+\item Have a look at the {\tt Dud.oda} and the configuration files it refers
+  to. Run it from the OpenDA GUI and have a look at the results. What could you
+  do to improve the results?
+
+\item Figure out where to change the control parameters for the calibration
+  procedure and play around with the settings to improve your results.
+
+\end{itemize}
+
+Calibration runs normally take longer than a few minutes. In that case, it
+becomes convenient to be able to restart from a previous run.
+
+\begin{itemize}
+\item Adapt the configuration in such a way that you are able to restart the
+  Dud.oda from the result of a previous run.
+\end{itemize}
+
+\section{Exercise 6: A black box model - Filtering}
+
+This exercise uses the same model as exercise~5: a model written in python that
+describes the advection of two chemical species. Please read the start of
+exercise~5 if you are not familiar with this model yet. A description of the
+black box wrapper configuration, usually consisting of three xml files, can
+also be found in exercise~5.
+
+\begin{itemize}
+\item Run the model from the command line, not using OpenDA. The model
+  generates the output files: {\tt reactive\_pollution\_model.output} and
+  \\ {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
+  of the output in order to study the behavior of the model. In order to check
+  the model (plotted) results you can look at the input file as well.
+\end{itemize}
+
+The Java-routines needed to access the model input and output files are the
+same as in exercise~5. Make sure that the jar-file is added to OpenDa, either
+by using the CLASSPATH environment variable or by copying the jar-file into the
+bin directory of your OpenDA version.
+
+%TODO: add this lines once the oda_dump tool is working correctly....
+%The utility oda\_dumpio assists in working with a black box wrapper in OpenDA.
+%If you run {\tt oda\_dumpio.sh \textless jar-file\textgreater} it will list the
+%available classes for reading and writing. In this case you should look for
+%org.openda.mywrapper.myWrapper.\\
+
+We start with some single and ensemble runs to understand where for our black
+box wrapper configuration the model results appear:
+\begin{itemize}
+
+ \item Have a look at the files {\tt polluteWrapper.xml}, {\tt
+   polluteModel.xml} and {\tt polluteStochModel.xml}, and recognize the various
+   items mentioned above (in exercise\_5). Run the model within OpenDA by using
+   the \\{\tt SequentialSimulation.oda} configuration. Use the script {\tt
+     plot\_movie.m} to visualize the model results. Compare the results with
+   those from the run you executed without using OpenDA. Note that the actual
+   model results are available in the directory where the black box wrapper has
+   let the model perform its computation: {\tt stochModel/output/work0}.
+ \item Run an ensemble forecast model by using the \\{\tt
+   SequentialEnsembleSimulation.oda} configuration. On which variable does the
+   algorithm impose stochastic forcing?\\ Have a look at the {\tt
+     stochModel/output} directory, and note that the black box wrapper created
+   the required ensemble members by repeatedly copying the template directory
+   {\tt stochModel/input} to\\ {\tt stochModel/output/work\textless
+     N\textgreater}.
+ \item A special model instance is {\tt stochModel/output/work0}. It is the so
+   called 'main' model, and is computed with the average of the perturbations
+   of the ensemble members. Compare the results of {\tt
+     stochModel/output/work0} with the results of {\tt
+     SequentialSimulation.oda}. Note the relatively large differences. Check if
+   these differences are reduced by increasing the ensemble size for the
+   sequential ensemble simulation to 20 and rerunning {\tt
+     SequentialEnsembleSimulation..oda} (this run may take a few minutes).
+\end{itemize}
+
+Now let us have a look at the configuration for performing OpenDA's Ensemble
+Kalman Filtering on our black box model, using a twin experiment as an example.
+The model has been run with the 'real' values (time dependent)for the
+concentrations for substance 1 as disposed by factory 1 and factory 2. This
+'truth' stored in the directory {\tt truthmodel}, and the results of that run
+have been used to generate observation time series at the output locations.
+These time series have been copied to the {\tt stochObserver} directory to
+serve as observations for the filtering run.
+
+The filter run takes the original model as input, which actually is a perturbed
+version of the 'truth' model: the concentrations for substance 1 as disposed by
+factories have been flattened out to a constant value. The filter process
+should modify these values in such a way that the results resemble the truth as
+much as possible.
+
+To do this the filter modifies the concentration at factory 2, and uses the
+observations downstream of factory 2 to optimize the forecast.
+
+\begin{itemize}
+ \item Note that the same black box configuration is used for the sequential
+   run, the sequential ensemble run, and for the EnKF run. Identify the part of
+   the {\tt polluteStochModel.xml} configuration that is used only by the EnKF
+   run, and not by the others.
+ \item Execute the Ensemble Kalman Filtering run by using the {\tt EnKF.oda}
+   configuration.\\ Check how good the run is performing, by analyzing to what
+   extent the filter has adjusted the predictions towards the
+   observation.\\ Note that the Matlab result file in {\tt
+     stochModel/output/work0} only contains a few time steps. Can you explain
+   why?\\ So to compare the observations with the predictions you have to use
+   the result file produced by the EnKF algorithm.
+\end{itemize}
+
+Now let us extend the filtering process by incorporating also the concentration
+disposed by factory 1, and by including the observation locations downstream of
+factory 1.
+
+\begin{itemize}
+ \item Make a copy of the involved config files, {\tt EnKF.oda} and \\{\tt
+   polluteStochModel.xml} (you could call them {\tt EnKF2.oda} and\\ {\tt
+   polluteStochModel2.xml}.\\ Adjust {\tt EnKF2.oda} so that it refers to the
+   right stochastic model config file and produces a matlab result file with a
+   recognizable name, e.g. {\tt enkf\_results2.m}.
+ \item Now adjust {\tt polluteStochModel2.xml} in such a way that the filtering
+   process is extended as described above.
+ \item Run the filtering process by using the {\tt EnKF2.oda} configuration,
+   and compare the results with the previous version of the filtering process.
+\end{itemize}
+
+\end{document}

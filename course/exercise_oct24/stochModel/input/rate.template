@@ -1,0 +1,5 @@
+#
+# lines with a hash-sign are ignored
+#
+starttime = [$STARTTIME$]
+reaction_time = [$REACTION_TIME$] 

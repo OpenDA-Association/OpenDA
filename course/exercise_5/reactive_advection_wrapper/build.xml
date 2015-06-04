@@ -1,0 +1,94 @@
+<project name="openDA" default="help" basedir=".">
+<!--
+================================================================================
+  Ant build file for openda java code
+  install ant and type
+  "ant help"
+  for a list of options
+================================================================================
+-->
+    <target name="help">
+        <echo>
+            ant help                     --> print this help
+            ant build                    --> compile, make jar and copy resources
+            ant clean                    --> remove output
+            ant javadoc                  --> build javadoc
+        </echo>
+    </target>
+
+<property file="module.properties"/>
+
+<!--
+===========================================================================
+	Compilation
+===========================================================================
+-->
+    <target name="build" depends="jarfile">
+    </target>
+
+    <target name="jarfile" depends="moduleclasses,manifest">
+	    <jar jarfile="${modulelibdir}/${jarname}" manifest="MANIFEST.MF">
+  		<fileset dir="${builddir}">
+                	<include name="**/*.class"/>
+                	<include name="**/*.gif"/>
+        	</fileset>
+    	</jar>
+    </target>
+
+    <target name="moduleclasses" depends="init">
+	    <javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemmory}" memoryMaximumSize="${maxmemmory}">
+		<classpath>
+			<fileset dir=".">
+				<include name="${external}/*.jar"/>
+			</fileset>
+			<fileset dir="${projectdir}">
+				<include name="${projectlib}/*.jar"/>
+			</fileset>
+		</classpath>
+        </javac>
+    </target>
+
+    <target name="javadoc" depends="init">
+	    <javadoc destdir="${javadocdir}/${module}" classpath="${projectfiles}" verbose="yes" windowtitle="openDA.Module: ${module} Version: ${version}" source="${source}">
+		<fileset dir="${srcdir}">
+                	<include name="**/*.java"/>
+		</fileset>
+        </javadoc>
+    </target>
+
+
+<!--
+===========================================================================
+	Tools: init, clean, etc.
+===========================================================================
+-->
+    <target name="init" depends="clean">
+        <tstamp/>
+	<mkdir dir="${builddir}"/>
+	<mkdir dir="${modulebindir}"/>
+	<mkdir dir="${modulelibdir}"/>
+	<mkdir dir="${javadocdir}"/>
+    </target>
+
+    <target name="clean">
+	<delete dir="${modulebindir}"/>
+	<delete dir="${modulelibdir}"/>
+	<delete dir="${builddir}"/>
+	<delete dir="${javadocdir}"/>
+	<delete file="MANIFEST.MF"/>
+    </target>
+
+
+    <target name="manifest" >
+        <tstamp/>
+        <manifest file="MANIFEST.MF">
+	    <attribute name="Title" value="${projectname}"/>
+            <attribute name="Version" value="${version} ${TODAY}"/>
+	    <attribute name="Vendor" value="${vendor}"/>
+        </manifest>
+    </target>
+
+
+</project>
+
+

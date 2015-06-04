@@ -1,0 +1,116 @@
+/* MOD_V1.0 
+* Copyright (c) 2010 OpenDA Association 
+* All rights reserved.
+* 
+* This file is part of OpenDA. 
+* 
+* OpenDA is free software: you can redistribute it and/or modify 
+* it under the terms of the GNU Lesser General Public License as 
+* published by the Free Software Foundation, either version 3 of 
+* the License, or (at your option) any later version. 
+* 
+* OpenDA is distributed in the hope that it will be useful, 
+* but WITHOUT ANY WARRANTY; without even the implied warranty of 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* GNU Lesser General Public License for more details. 
+* 
+* You should have received a copy of the GNU Lesser General Public License
+* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.openda;
+
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IVector;
+import org.openda.utils.StochVector;
+import org.openda.utils.Vector;
+import java.io.File;
+
+/** 
+* The one dimensional advection model :
+* 
+* Some concentration of eg a pollutant is measured along a one dimensional transport. This can
+* arise in a river or when considering a streamline of the flow in more dimensions. Advection or
+* transport models often use upwind schemes for numerical simulation. Many different schemes have
+* been proposed, but here we use a first-order upwind scheme. This scheme is known to show quite 
+* large numerical diffusion. 
+* 
+* Author: M.Verlaan/ N. van Velzen
+**/
+
+public class AdvectionStochModelInstance extends org.openda.models.simpleModel.SimpleStochModelInstance {
+
+        boolean secondOrder=false;
+
+	public AdvectionStochModelInstance(File workingDir, String configString){
+		//
+		//  DEFAULTS
+		//
+
+		// parameters of the model (deterministic part)
+		pars.put("v",1.0);                     // default for flow velocity
+		pars.put("dx",0.02);                   // default for size of grid cell
+		pars.put("T",0.2);                     // default for time correlation for noise on boundary		
+		pars.put("t_start",0.0);               //start time of simulation []
+		pars.put("t_stop",3.0);                //end time of simulation []
+                if (secondOrder){
+		   pars.put("t_step",0.01);            //timestep of simulation []
+                }
+                else {
+		   pars.put("t_step",0.02);           
+                }
+		// Internal state of the model
+		state = new Vector(52); // state[0] contains the ar(1) state
+		                         // state[1:51] contain concentrations at each grid cell
+		
+		// Parameter used for calibration
+		this.stochParNames.add("v");
+		double meanArr[] = {pars.get("v")};
+		Vector meanPars = new Vector(meanArr);
+		double stdArr[] = {0.1};
+		Vector stdPars  = new Vector(stdArr);
+	    stochPars = new StochVector(meanPars,stdPars);
+
+	    // System noise for Kalman filtering 
+	    // assign default for mean and standard deviation
+	    Vector stdSystemNoise = (new Vector(52));
+	    stdSystemNoise.setValue(0, 0.1);
+	    sysNoiseIntensity = new StochVector(new Vector(52),stdSystemNoise);
+	    initialStateUncertainty = new StochVector(new Vector(52),new Vector(52));
+	    
+	    /*
+	     * now parse configuration
+	     */
+		Initialize(workingDir, configString);
+	}
+	
+
+    /**
+     * Compute time derivative of state at current time.
+     * This is used by the time-integration "mod.compute(t)" as the core of the model.
+     * @return vector dt
+     */
+    protected IVector dx(IVector xt,double t){
+        int n = xt.getSize();
+        IVector result = new Vector(n);
+
+        /* Put time derivative of your model here */
+
+    	return result; 
+    }
+
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+        if (role == IExchangeItem.Role.InOut) {
+            return getExchangeItemIDs();
+        }
+        throw new UnsupportedOperationException("org.openda.models.lorenz.LorenzStochModelInstance.getExchangeItemIDs(): Role selection not implemented yet.");
+    }
+
+	public File getModelRunDir() {
+		return new File(".");
+	}
+
+	public void finish() {
+		// no action needed (yet)
+	}
+}
+

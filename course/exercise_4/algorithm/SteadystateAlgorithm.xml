@@ -1,0 +1,19 @@
+<EnkfConfig>
+<!--
+<EnkfConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
+ -->
+	<ensembleModel stochParameter="false"
+                   stochForcing="false"
+                   stochInit="false" />
+
+	<readGain>
+		<dirPrefix>../enkf_wave_</dirPrefix>
+		<!-- <time timeFormat="dateTimeString">201008240000</time> -->
+		<time timeFormat="mjd">10</time>
+		<file>enkf_wave_gain.xml</file>
+	</readGain>
+
+</EnkfConfig>
+
