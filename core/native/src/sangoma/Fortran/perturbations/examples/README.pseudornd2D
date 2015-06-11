@@ -1,0 +1,20 @@
+example_pseudornd2D 
+
+Generates a 100x100 2-dimensional random perturbation 
+the code for generating a 3D (x-y-z) or (x-y-t) random field is commented. 
+A random seed is generated based on the machine clock to avoid generating 
+the same field each time. 
+
+Compiling:
+Adapt the machine-specitic settings (compiler, etc.) in Makefile. The compilation
+needs the library fftw. Paths to the library and the include file fftw.f have
+to be specified.
+
+Execution:
+./pseudornd2D
+
+then in gnuplot type 
+splot 'PERT.txt' w l 
+or 
+plot 'PERT.txt' with image
+
