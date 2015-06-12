@@ -28,8 +28,10 @@
 	<classpathentry kind="src" path="model_delft3d/java/test"/>
 	<classpathentry kind="src" path="model_glm/java/src"/>
 	<classpathentry kind="src" path="model_glm/java/test"/>
-        <classpathentry kind="src" path="model_dflowfm_blackbox/java/src"/>
-        <classpathentry kind="src" path="model_dflowfm_blackbox/java/test"/>
+	<classpathentry kind="src" path="model_gotm/java/src"/>
+	<classpathentry kind="src" path="model_gotm/java/test"/>
+	<classpathentry kind="src" path="model_dflowfm_blackbox/java/src"/>
+	<classpathentry kind="src" path="model_dflowfm_blackbox/java/test"/>
 	<classpathentry kind="src" path="module_template/java/src"/>
 	<classpathentry kind="src" path="module_template/java/test"/>
 	<classpathentry exported="true" kind="lib" path="core/java/resources/castor/castor-0.9.5.jar"/>

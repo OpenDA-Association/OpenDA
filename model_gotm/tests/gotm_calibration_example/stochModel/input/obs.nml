@@ -1,0 +1,509 @@
+!-------------------------------------------------------------------------------
+! observed or prescribed salinity profiles
+!-------------------------------------------------------------------------------
+! s_prof_method   [integer]
+!                   method to create initial or observed salinity profiles
+!                   0: no initial values, S-equation is not solved
+!                   1: use analytically prescribed initial profile
+!                   2: read profiles at different dates from "s_prof_file" and
+!                     interpolate to GOTM timestep
+! s_analyt_method [integer]
+!                   method to create analytically precribed inital profile
+!                   1: set profile to constant value s_1
+!                   2: set "two layer" stratification (see user's guide)
+!                   3: set profile with constant N^2 (see user's guide)
+!                   This variable is only used if s_prof_method = 1
+! z_s1            [float, unit = m]
+!                   upper layer thickness if s_analyt_method=2
+!                   This variable is only used if (s_prof_method = 1 and
+!                     s_analyt_method = 2)
+! s_1             [float, unit = psu]
+!                   constant salinity if s_analyt_method=1, upper layer salinity
+!                     if s_analyt_method=2, surface salinity if
+!                     s_analyt_method=3
+!                   This variable is only used if s_prof_method = 1
+! z_s2            [float, unit = m]
+!                   lower layer thickness if s_analyt_method=2
+!                   This variable is only used if (s_prof_method = 1 and
+!                     s_analyt_method = 2)
+! s_2             [float, unit = psu]
+!                   lower layer salinity if s_analyt_method=2
+!                   This variable is only used if (s_prof_method = 1 and
+!                     s_analyt_method = 2)
+! s_obs_NN        [float]
+!                   constant value N^2 corresponding to salinity profile if
+!                     s_analyt_method=3
+!                   This variable is only used if (s_prof_method = 1 and
+!                     s_analyt_method = 3)
+! s_prof_file     [file path]
+!                   filename of file with salinity profiles if s_prof_method=2
+!                   This variable is only used if s_prof_method = 2
+! SRelaxTauM      [float, unit = s]
+!                   relaxation time for bulk of the flow
+!                   This variable is not used if s_prof_method = 0
+! SRelaxTauB      [float, unit = s]
+!                   relaxation time for bottom layer
+!                   This variable is only used if (s_prof_method != 0 and
+!                     SRelaxBott != 0)
+! SRelaxTauS      [float, unit = s]
+!                   relaxation time for surface layer
+!                   This variable is only used if (s_prof_method != 0 and
+!                     SRelaxSurf != 0)
+! SRelaxBott      [float, unit = m]
+!                   height of bottom relaxation layer (set to 0. if not used)
+!                   This variable is not used if s_prof_method = 0
+! SRelaxSurf      [float, unit = m]
+!                   height of surface relaxation layer (set to 0. if not used)
+!                   This variable is not used if s_prof_method = 0
+!-------------------------------------------------------------------------------
+
+&sprofile
+   s_prof_method = 2,
+   s_analyt_method = 1,
+   z_s1 = 30.0,
+   s_1 = 20.0,
+   z_s2 = 40.0,
+   s_2 = 15.0,
+   s_obs_NN = 0.000256,
+   s_prof_file = 'salt.txt',
+   SRelaxTauM = 1e+15,
+   SRelaxTauB = 1e+15,
+   SRelaxTauS = 1e+15,
+   SRelaxBott = 20.0,
+   SRelaxSurf = 20.0,
+/
+
+!-------------------------------------------------------------------------------
+! observed or prescribed potential temperature profiles
+!-------------------------------------------------------------------------------
+! t_prof_method   [integer]
+!                   observed or prescribed temperature profiles
+!                   0: no initial values, T-equation is not solved
+!                   1: use analytically prescribed initial profile
+!                   2: read profiles at different dates from "t_prof_file" and
+!                     interpolate to GOTM timestep
+! t_analyt_method [integer]
+!                   method to create analytically precribed inital profile
+!                   1: set profile to constant value s_1
+!                   2: set "two layer" stratification (see user's guide)
+!                   3: set profile with constant N^2 (see user's guide)
+!                   This variable is only used if t_prof_method = 1
+! z_t1            [float, unit = m]
+!                   upper layer thickness if t_analyt_method=2
+!                   This variable is only used if (t_prof_method = 1 and
+!                     t_analyt_method = 2)
+! t_1             [float, unit = degC]
+!                   constant temperature if t_analyt_method=1, upper layer
+!                     temperature if t_analyt_method=2, surface temperature if
+!                     t_analyt_method=3
+!                   This variable is only used if t_prof_method = 1
+! z_t2            [float, unit = m]
+!                   lower layer thickness if t_analyt_method=2
+!                   This variable is only used if (t_prof_method = 1 and
+!                     t_analyt_method = 2)
+! t_2             [float, unit = degC]
+!                   lower layer temperature if t_analyt_method=2
+!                   This variable is only used if (t_prof_method = 1 and
+!                     t_analyt_method = 2)
+! t_obs_NN        [float]
+!                   constant value N^2 corresponding to temperature profile if
+!                     t_analyt_method=3
+!                   This variable is only used if (t_prof_method = 1 and
+!                     t_analyt_method = 3)
+! t_prof_file     [file path]
+!                   filename of file with temperature profiles if
+!                     t_prof_method=2
+!                   This variable is only used if t_prof_method = 2
+! TRelaxTauM      [float, unit = s]
+!                   relaxation time for bulk of the flow
+!                   This variable is not used if t_prof_method = 0
+! TRelaxTauB      [float, unit = s]
+!                   relaxation time for bottom layer
+!                   This variable is only used if (t_prof_method != 0 and
+!                     TRelaxBott != 0)
+! TRelaxTauS      [float, unit = s]
+!                   relaxation time for surface layer
+!                   This variable is only used if (t_prof_method != 0 and
+!                     TRelaxSurf != 0)
+! TRelaxBott      [float, unit = m]
+!                   height of bottom relaxation layer (set to 0. if not used)
+!                   This variable is not used if t_prof_method = 0
+! TRelaxSurf      [float, unit = m]
+!                   height of surface relaxation layer (set to 0. if not used)
+!                   This variable is not used if t_prof_method = 0
+!-------------------------------------------------------------------------------
+
+&tprofile
+   t_prof_method = 2,
+   t_analyt_method = 3,
+   z_t1 = 30.0,
+   t_1 = 20.0,
+   z_t2 = 40.0,
+   t_2 = 15.0,
+   t_obs_NN = 0.000256,
+   t_prof_file = 'temp.txt',
+   TRelaxTauM = 1e+15,
+   TRelaxTauB = 1e+15,
+   TRelaxTauS = 1e+15,
+   TRelaxBott = 20.0,
+   TRelaxSurf = 20.0,
+/
+
+!-------------------------------------------------------------------------------
+! external pressure gradients
+!-------------------------------------------------------------------------------
+! ext_press_method [integer]
+!                    method to compute external pressure gradient from data
+!                    0: constant external pressure gradient
+!                    1: external pressure gradient from tidal constituents
+!                    2: external pressure gradient from data found in
+!                      "ext_press_file"
+! ext_press_mode   [integer]
+!                    how to interprete ANY prescribed data for the computation
+!                      of the external pressure gradient
+!                    0: interprete all data as surface elevation gradients
+!                    1: interprete all data as current meter measurements at a
+!                      given height "PressHeight" (see documentation)
+!                    2: interprete all data as vertically averaged current
+!                      speeds (see documentation)
+! ext_press_file   [file path]
+!                    filename of input file
+!                    This variable is only used if ext_press_method = 2
+! PressConstU      [float]
+!                    constant pressure gradient data for x-direction
+!                    This variable is not used if ext_press_method = 2
+! PressConstV      [float]
+!                    constant pressure gradient data for y-direction
+!                    This variable is not used if ext_press_method = 2
+! PressHeight      [float, unit = m]
+!                    height above bottom for current meter observations
+!                    This variable is only used if (ext_press_method != 2 and
+!                      ext_press_mode = 1)
+! PeriodM          [float, unit = s]
+!                    period of 1st harmonic (eg. M2-tide)
+!                    This variable is only used if ext_press_method = 1
+! AmpMu            [float]
+!                    u amplitude of 1st harmonic
+!                    This variable is only used if ext_press_method = 1
+! AmpMv            [float]
+!                    v amplitude of 1st harmonic
+!                    This variable is only used if ext_press_method = 1
+! PhaseMu          [float, unit = s]
+!                    u phase of 1st harmonic
+!                    This variable is only used if ext_press_method = 1
+! PhaseMv          [float, unit = s]
+!                    v phase of 1st harmonic
+!                    This variable is only used if ext_press_method = 1
+! PeriodS          [float, unit = s]
+!                    period of 2nd harmonic (eg. S2-tide)
+!                    This variable is only used if ext_press_method = 1
+! AmpSu            [float]
+!                    u amplitude of 2nd harmonic
+!                    This variable is only used if ext_press_method = 1
+! AmpSv            [float]
+!                    v amplitude of 2nd harmonic
+!                    This variable is only used if ext_press_method = 1
+! PhaseSu          [float, unit = s]
+!                    u phase of 2nd harmonic
+!                    This variable is only used if ext_press_method = 1
+! PhaseSv          [float, unit = s]
+!                    v phase of 2nd harmonic
+!                    This variable is only used if ext_press_method = 1
+!-------------------------------------------------------------------------------
+
+&ext_pressure
+   ext_press_method = 0,
+   ext_press_mode = 0,
+   ext_press_file = 'ext_press_file.dat',
+   PressConstU = 0.0,
+   PressConstV = 0.0,
+   PressHeight = 0.0,
+   PeriodM = 44714.0,
+   AmpMu = 0.0,
+   AmpMv = 0.0,
+   PhaseMu = 0.0,
+   PhaseMv = 0.0,
+   PeriodS = 43200.0,
+   AmpSu = 0.0,
+   AmpSv = 0.0,
+   PhaseSu = 0.0,
+   PhaseSv = 0.0,
+/
+
+!-------------------------------------------------------------------------------
+! internal pressure gradients
+!-------------------------------------------------------------------------------
+! int_press_method [integer]
+!                    method to compute internal pressure gradient from data
+!                    0: no internal pressure gradient
+!                    1: vertically and temporally constant internal pressure
+!                      gradient computed from fixed horizontal salinity and
+!                      temperature gradients
+!                    2: vertically and temporally variable int. pressure
+!                      gradient computed from data in file "int_press_file"
+! int_press_file   [file path]
+!                    file with profiles of dsdx,dsdy,dtdx,dtdy
+!                    This variable is only used if int_press_method = 2
+! const_dsdx       [float, unit = psu/m]
+!                    x-gradient of S
+!                    This variable is only used if int_press_method = 1
+! const_dsdy       [float, unit = psu/m]
+!                    y-gradient of S
+!                    This variable is only used if int_press_method = 1
+! const_dtdx       [float, unit = K/m]
+!                    x-gradient of T
+!                    This variable is only used if int_press_method = 1
+! const_dtdy       [float, unit = K/m]
+!                    y-gradient of T
+!                    This variable is only used if int_press_method = 1
+! s_adv            [bool]
+!                    advection of salinity
+!                    This variable is not used if int_press_method = 0
+! t_adv            [bool]
+!                    advection of temperature
+!                    This variable is not used if int_press_method = 0
+!-------------------------------------------------------------------------------
+
+&int_pressure
+   int_press_method = 0,
+   int_press_file = '',
+   const_dsdx = 0.0,
+   const_dsdy = 0.0,
+   const_dtdx = 0.0,
+   const_dtdy = 0.0,
+   s_adv = .false.,
+   t_adv = .false.,
+/
+
+!-------------------------------------------------------------------------------
+! light extinction
+!-------------------------------------------------------------------------------
+! extinct_method [integer]
+!                  which method used to compute the extinction coefficient
+!                  0: from file
+!                  1: Jerlov type I
+!                  2: Jerlov type 1 (upper 50 m)
+!                  3: Jerlov type IA
+!                  4: Jerlov type IB
+!                  5: Jerlov type II
+!                  6: Jerlov type III
+!                  7: Adolf Stips, Lago Maggiore
+! extinct_file   [file path]
+!                  name of file
+!                  This variable is only used if extinct_method = 0
+!-------------------------------------------------------------------------------
+
+&extinct
+   extinct_method = 1,
+   extinct_file = '',
+/
+
+!-------------------------------------------------------------------------------
+! vertical advection
+!-------------------------------------------------------------------------------
+! w_adv_method  [integer]
+!                 method to specify the vertical advection velocity
+!                 0: zero vertical advection velocity
+!                 1: temporally constant vertical advection velocity profile
+!                 2: temporally varying vertical advection velocity profile with
+!                   "w_adv" and "w_height" both read in from file "w_adv_file"
+! w_adv_height0 [float, unit = m]
+!                 constant height of maximum absolute value of vertical
+!                   advection velocity
+!                 This variable is only used if w_adv_method = 1
+! w_adv0        [float, unit = m/s]
+!                 constant vertical advection velocity
+!                 This variable is only used if w_adv_method = 1
+! w_adv_file    [file path]
+!                 filename for file with "w_height" and "w_adv"
+!                 This variable is only used if w_adv_method = 2
+! w_adv_discr   [integer]
+!                 method to discretize the vertical advection term
+!                 1: first-order upstream
+!                 2: second-order polynomial (P2)
+!                 3: third-order polynomial (P3)
+!                 4: TVD with Superbee limiter
+!                 5: TVD with MUSCL limiter
+!                 6: TVD with ULTIMATE QUICKEST
+!                 This variable is not used if w_adv_method = 0
+!-------------------------------------------------------------------------------
+
+&w_advspec
+   w_adv_method = 0,
+   w_adv_height0 = 0.0,
+   w_adv0 = 0.0,
+   w_adv_file = 'w_adv_file.dat',
+   w_adv_discr = 6,
+/
+
+!-------------------------------------------------------------------------------
+! sea surface elevations
+!-------------------------------------------------------------------------------
+! zeta_method [integer]
+!               method to prescribe the sea surface elevation
+!               0: constant sea surface elevation
+!               1: sea surface elevation from tidal constituents
+!               2: sea surface elevation from file
+! zeta_file   [file path]
+!               filename for file with sea surface elevations
+!               This variable is only used if zeta_method = 2
+! zeta_0      [float, unit = m]
+!               constant value for sea surface elevation
+!               This variable is not used if zeta_method = 2
+! period_1    [float, unit = s]
+!               period of 1st harmonic (eg. M2-tide)
+!               This variable is only used if zeta_method = 1
+! amp_1       [float, unit = m]
+!               amplitude of 1st harmonic
+!               This variable is only used if zeta_method = 1
+! phase_1     [float, unit = s]
+!               phase of 1st harmonic
+!               This variable is only used if zeta_method = 1
+! period_2    [float, unit = s]
+!               period of 2nd harmonic (eg. S2-tide)
+!               This variable is only used if zeta_method = 1
+! amp_2       [float, unit = m]
+!               amplitude of 2nd harmonic
+!               This variable is only used if zeta_method = 1
+! phase_2     [float, unit = s]
+!               phase of 2nd harmonic
+!               This variable is only used if zeta_method = 1
+!-------------------------------------------------------------------------------
+
+&zetaspec
+   zeta_method = 0,
+   zeta_file = '',
+   zeta_0 = 0.0,
+   period_1 = 44714.0,
+   amp_1 = 1.0,
+   phase_1 = 0.0,
+   period_2 = 43200.0,
+   amp_2 = 0.5,
+   phase_2 = 0.0,
+/
+
+!-------------------------------------------------------------------------------
+! Wind induced waves can be specified. Used in e.g. the spm module to account
+! for wave-current interaction.
+!-------------------------------------------------------------------------------
+! wave_method [integer]
+!               method to prescribe the wind waves
+!               0: nothing is done - all variables equal 0
+!               1: constant values
+!               2: time varying variables read from file
+! wave_file   [file path]
+!               filename for file wind waves
+!               This variable is only used if wave_method = 2
+! Hs          [float]
+!               constant value for significant wave-height
+!               This variable is only used if wave_method = 1
+! Tz          [float]
+!               constant value for mean zero-crossing period
+!               This variable is only used if wave_method = 1
+! phiw        [float]
+!               constant value for mean direction
+!               This variable is only used if wave_method = 1
+!-------------------------------------------------------------------------------
+
+&wave_nml
+   wave_method = 0,
+   wave_file = '',
+   Hs = 0.0,
+   Tz = 0.0,
+   phiw = 0.0,
+/
+
+!-------------------------------------------------------------------------------
+! observed or prescribed velocity profiles
+!-------------------------------------------------------------------------------
+! vel_prof_method [integer]
+!                   method to create initial or observed velocity profiles
+!                   0: start from zero inital velocities
+!                   1: (not implemented)
+!                   2: read profiles at different dates from "vel_prof_file" and
+!                     interpolate to GOTM timestep
+! vel_prof_file   [file path]
+!                   filename of file with u- and v profiles
+!                   This variable is only used if vel_prof_method = 2
+! vel_relax_tau   [float, unit = s]
+!                   relaxation time for velocity (set to 1.e15 s for no
+!                     relaxation)
+! vel_relax_ramp  [float, unit = s]
+!                   duration of initial relaxation (set to 1.e15 for constant
+!                     relaxation)
+!-------------------------------------------------------------------------------
+
+&velprofile
+   vel_prof_method = 0,
+   vel_prof_file = 'velo.txt',
+   vel_relax_tau = 1e+15,
+   vel_relax_ramp = 1e+15,
+/
+
+!-------------------------------------------------------------------------------
+! turbulent dissipation rate profiles
+!-------------------------------------------------------------------------------
+! e_prof_method [integer]
+!                 method to create initial or observed dissipation profiles
+!                 0: no observed dissipation rate profiles
+!                 1: (not implemented)
+!                 2: read profiles at different dates from "e_prof_file" and
+!                   interpolate to GOTM timestep
+! e_obs_const   [float, unit = W/kg]
+!                 a constant filling value
+!                 This variable is only used if e_prof_method = 0
+! e_prof_file   [file path]
+!                 filename of file with dissipation rate profiles
+!                 This variable is only used if e_prof_method = 2
+!-------------------------------------------------------------------------------
+
+&eprofile
+   e_prof_method = 2,
+   e_obs_const = 1e-12,
+   e_prof_file = 'eps.txt',
+/
+
+!-------------------------------------------------------------------------------
+! prescribed initial profile and initial surface boundary conditions for the
+! dynamic buoyancy equation
+!-------------------------------------------------------------------------------
+! b_obs_surf [float]
+!              prescribed initial buoyancy at the surface
+! b_obs_NN   [float]
+!              prescribed initial value of N^2 (=buoyancy gradient)
+! b_obs_sbf  [float]
+!              prescribed constant surface buoyancy flux
+!-------------------------------------------------------------------------------
+
+&bprofile
+   b_obs_surf = 0.0,
+   b_obs_NN = 0.0001,
+   b_obs_sbf = 0.0,
+/
+
+!-------------------------------------------------------------------------------
+! observed oxygen profiles
+!-------------------------------------------------------------------------------
+! o2_prof_method [integer]
+!                  method to select initial observed oxygen profiles
+!                  0: no observed oxygen profiles
+!                  1: (not used)
+!                  2: read profiles at different dates from "o2_prof_file" and
+!                    interpolate to GOTM timestep
+! o2_units       [integer]
+!                  which unit are the observations reported in
+!                  0: saturation (%)
+!                  1: mmol/m3 ???
+!                  2: ml/m3 ???
+!                  This variable is not used if o2_prof_method = 0
+! o2_prof_file   [file path]
+!                  filename of file with oxygen profiles
+!                  This variable is only used if o2_prof_method = 2
+!-------------------------------------------------------------------------------
+
+&o2_profile
+   o2_prof_method = 0,
+   o2_units = 1,
+   o2_prof_file = '',
+/
+

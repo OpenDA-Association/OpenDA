@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxModelConfig.xsd">
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>gotmWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="templateDir" value="input" />
+		<alias key="instanceDir" value="work" />
+		<alias key="binDir" value="bin" />
+		<alias key="inputFile" value="gotmrun.nml" />
+		<alias key="inputFileTurb" value="gotmturb.nml" />
+		<alias key="inputFileMeteo" value="meteo_test.dat" />
+		<alias key="outputFile" value="nns_seasonal.nc" />
+		<alias key="outputTemp" value="temp.txt" />
+		<alias key="outputSalt" value="salt.txt"/>
+		<alias key="outputEps" value="eps.txt"/>
+		<alias key="outputVelo" value="velo.txt"/>
+		<alias key="outputMeanTop" value="meantemptop.txt"/>
+		<alias key="outputMeanMid" value="meantempmid.txt"/>
+		<alias key="outputMeanBot" value="meantempbot.txt"/>
+		<alias key="meanVar" value="temp"/>
+		<alias key="meanDepth" value="100.0"/>
+	</aliasValues>
+    <!--i Get start and end time from inputFile -->
+    <timeInfoExchangeItems start="time_start" end="time_stop"/>
+    <!--timeInfo start="1998-10-27T00:00:00" end="1998-10-28T23:00:00" timeStepInSeconds="3600"-->
+    
+	<exchangeItems>
+                <!-- Time limit set by GOTM -->
+		<vector id="time_start" ioObjectId="input"
+			elementId="time_start" />
+		<vector id="time_stop" ioObjectId="input"
+			elementId="time_stop" />
+                <!-- To be calibration parameter -->
+		<vector id="turb_param_Ri_st" ioObjectId="inputTurb"
+			elementId="turb_param_Ri_st" />
+                <!-- State Data -->
+        <vector id="temp_0" ioObjectId="outTemp"
+			elementId="temp_0" />
+        <vector id="salt_0" ioObjectId="outSalt"
+			elementId="salt_0" />
+        <vector id="eps_0" ioObjectId="outEps"
+			elementId="eps_0" />
+        <vector id="velo_0" ioObjectId="outVelo"
+			elementId="velo_0" />
+                <!-- Calibration Data -->
+        <vector id="meantemptop_0" ioObjectId="meanTempTop"
+			elementId="meantemptop_0" />
+        <vector id="meantempmid_0" ioObjectId="meanTempMid"
+			elementId="meantempmid_0" />
+        <vector id="meantempbot_0" ioObjectId="meanTempBot"
+			elementId="meantempbot_0" />
+                <!-- Noise -->
+<!--         <vector id="u10noise_0" ioObjectId="noise" -->
+<!-- 			elementId="u10_0" /> -->
+        <vector id="disnoise_0" ioObjectId="noise"
+			elementId="eps_0" />
+	</exchangeItems>
+	<!--                 <vector id="meanTemp_0" ioObjectId="meanVar"
+			elementId="meanTemp_0" /> -->
+
+	<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

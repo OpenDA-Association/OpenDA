@@ -1,0 +1,175 @@
+!-------------------------------------------------------------------------------
+! airsea
+!-------------------------------------------------------------------------------
+! calc_fluxes           [bool]
+!                         surface fluxes calculated by means of bulk formulae
+! fluxes_method         [integer]
+!                         bulk formulae according to
+!                         1: Kondo (1975)
+!                         2: Fairall et al. (1996)
+!                         This variable is only used if calc_fluxes = True
+! back_radiation_method [integer]
+!                         calculation of long-wave back radiation according to
+!                         1: Clark et al. (1974)
+!                         2: Hastenrath and Lamb (1978)
+!                         3: Bignami et al. (1995)
+!                         4: Berliandand Berliand (1952)
+!                         This variable is only used if calc_fluxes = True
+! meteo_file            [file path]
+!                         file with meteo data
+!                         This variable is only used if calc_fluxes = True
+! wind_factor           [float]
+!                         Scale factor for wind. If set to one, the original
+!                           values are used. A value different from one might be
+!                           applied to convert from non-GOTM units, or to test
+!                           model sensitivity.
+!                         This variable is only used if calc_fluxes = True
+! hum_method            [integer]
+!                         decides what is given in 7. column in meteo_file
+!                         1: relative humidity (%)
+!                         2: wet bulb temperature
+!                         3: dew point temperature
+!                         4: specific humidity (kg/kg)
+!                         This variable is only used if calc_fluxes = True
+! rain_impact           [bool]
+!                         include effect of rain fall on fluxes of sensible heat
+!                           and momentum
+!                         This variable is only used if calc_fluxes = True
+! calc_evaporation      [bool]
+!                         calculate evaporation from meteorological conditions
+!                         This variable is only used if calc_fluxes = True
+! heat_method           [integer]
+!                         type of surface heat flux
+!                         0: none
+!                         1: constant value prescribed
+!                         2: custom, temporally variable
+!                         This variable is only used if calc_fluxes = False
+! const_heat            [float, minimum = -1000, maximum = 1000, unit = W/m^2]
+!                         Constant value for the surface heat flux, i.e., the
+!                           sum of the sensible, latent and back-radiation
+!                           fluxes (but not short wave radiation).
+!                         This variable is only used if (calc_fluxes = False and
+!                           heat_method = 1)
+! heatflux_file         [file path]
+!                         custom heat fluxes (negative for net outgoing)
+!                         This variable is only used if (calc_fluxes = False and
+!                           heat_method = 2)
+! swr_method            [integer]
+!                         type of short wave radiation
+!                         0: none
+!                         1: constant value prescribed
+!                         2: custom, temporally variable
+!                         3: calculated from time, location and cloud cover
+! albedo_method         [integer]
+!                         albedo correction method
+!                         0: constant albedo
+!                         1: according to Payne (1972)
+!                         2: according to Cogley (1979)
+! const_albedo          [float, minimum = 0, maximum = 1]
+!                         constant albedo
+!                         This variable is only used if albedo_method = 1
+! const_swr             [float, minimum = 0, maximum = 1000, unit = W/m^2]
+!                         constant incoming short wave radiation
+!                         This variable is only used if swr_method = 1
+! swr_file              [file path]
+!                         custom short wave radiation
+!                         This variable is only used if swr_method = 2
+! swr_factor            [float]
+!                         Scale factor for short wave solar radiation. If set to
+!                           one, the original values are used. A value different
+!                           from one might be applied to convert from non-GOTM
+!                           units, or to test model sensitivity.
+!                         This variable is only used if swr_method = 2
+! momentum_method       [integer]
+!                         type of momentum flux
+!                         0: none
+!                         1: constant surface momentum fluxes given
+!                         2: surface momentum fluxes given from file
+!                           momentumflux_file
+!                         This variable is only used if calc_fluxes = False
+! const_tx              [float, minimum = -1000, maximum = 1000, unit = N/m^2]
+!                         x-component of surface momentum flux
+!                         This variable is only used if (calc_fluxes = False and
+!                           momentum_method = 1)
+! const_ty              [float, minimum = -1000, maximum = 1000, unit = N/m^2]
+!                         y-component of surface momentum flux
+!                         This variable is only used if (calc_fluxes = False and
+!                           momentum_method = 1)
+! momentumflux_file     [file path]
+!                         file with tx and ty given in N/m^2
+!                         This variable is only used if (calc_fluxes = False and
+!                           momentum_method = 2)
+! precip_method         [integer]
+!                         method how precipitation is given
+!                         0: precipitation not used
+!                         1: constant value for precipitation (in m/s) used
+!                         2: values for precipitation read from file
+! const_precip          [float, minimum = -0.01, maximum = 0.01, unit = m/s]
+!                         constant value for precipitation
+!                         This variable is only used if precip_method = 1
+! precip_file           [file path]
+!                         file with value for precipitation
+!                         This variable is only used if precip_method = 2
+! precip_factor         [float]
+!                         precipitation factor
+!                         This variable is only used if precip_method = 2
+! sst_method            [integer]
+!                         method how sea surface temperature (SST) is given
+!                         0: no independent SST observation is read from file
+!                         2: independent SST observation is read from file, only
+!                           for output
+!                         This variable is only used if calc_fluxes = False
+! sst_file              [file path]
+!                         file with independent SST observation
+!                         This variable is only used if (calc_fluxes = False and
+!                           sst_method = 2)
+! sss_method            [integer]
+!                         method how sea surface salinity (SSS) is given
+!                         0: no independent SSS observation is read from file
+!                         2: independent SSS observation is read from file, only
+!                           for output
+!                         This variable is only used if calc_fluxes = False
+! sss_file              [file path]
+!                         file with independent SSS observation
+!                         This variable is only used if (calc_fluxes = False and
+!                           sss_method = 2)
+! ssuv_method           [integer]
+!                         wind speed correction for current velocity
+!                         0: use absolute wind speed
+!                         1: use relative wind speed
+!                         This variable is only used if calc_fluxes = True
+!-------------------------------------------------------------------------------
+
+&airsea
+   calc_fluxes = .true.,
+   fluxes_method = 1,
+   back_radiation_method = 1,
+   meteo_file = 'meteo_file.dat',
+   wind_factor = 1.0,
+   hum_method = 1,
+   rain_impact = .false.,
+   calc_evaporation = .false.,
+   heat_method = 0,
+   const_heat = 0.0,
+   heatflux_file = '',
+   swr_method = 3,
+   albedo_method = 1,
+   const_albedo = 0.0,
+   const_swr = 0.0,
+   swr_file = '',
+   swr_factor = 1.0,
+   momentum_method = 0,
+   const_tx = 0.0,
+   const_ty = 0.0,
+   momentumflux_file = '',
+   precip_method = 0,
+   const_precip = 0.0,
+   precip_file = '',
+   precip_factor = 1.0,
+   sst_method = 0,
+   sst_file = '',
+   sss_method = 0,
+   sss_file = '',
+   ssuv_method = 0,
+/
+

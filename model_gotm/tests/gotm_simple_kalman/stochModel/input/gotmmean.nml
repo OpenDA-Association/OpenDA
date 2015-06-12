@@ -1,0 +1,103 @@
+!-------------------------------------------------------------------------------
+! meanflow
+!-------------------------------------------------------------------------------
+! h0b          [float, unit = m]
+!                bottom roughness  - Note: z0b=0.03*h0b+0.1*nu/ustar
+! z0s_min      [float, unit = m]
+!                minimum value of z0s, default value if charnock=.false.
+! charnock     [bool]
+!                adaptation of Charnock 1955 formula used
+! charnock_val [float]
+!                emp. constant in Charnock 1955 formula (default = 1400.)
+!                This variable is only used if charnock = True
+! ddu          [float]
+!                grid zooming (surface), 0: no zooming; > 3 strong zooming
+!                This variable is only used if grid_method = 0
+! ddl          [float]
+!                grid zooming (bottom), 0: no zooming; > 3 strong zooming
+!                This variable is only used if grid_method = 0
+! grid_method  [integer]
+!                type of vertical grid
+!                0: zooming of grid with ddl, ddu >= 0
+!                1: sigma grid (relative depth fractions) read from file
+!                2: cartesian grid (fixed layer height in m) read from file
+!                3: adaptive grid
+! c1ad         [float]
+!                weighting factor for adaptation to buoyancy frequency
+!                This variable is only used if grid_method = 3
+! c2ad         [float]
+!                weighting factor for adaptation to shear frequency
+!                This variable is only used if grid_method = 3
+! c3ad         [float]
+!                weighting factor for adaptation to surface distance
+!                This variable is only used if grid_method = 3
+! c4ad         [float]
+!                weighting factor for adaptation to background
+!                This variable is only used if grid_method = 3
+! Tgrid        [float]
+!                grid adaptation time scale
+!                This variable is only used if grid_method = 3
+! NNnorm       [float]
+!                normalisation factor for adaptation to buoyancy frequency
+!                This variable is only used if grid_method = 3
+! SSnorm       [float]
+!                normalisation factor for adaptation to shear frequency
+!                This variable is only used if grid_method = 3
+! dsurf        [float]
+!                normalisation factor for adaptation to surface distance
+!                This variable is only used if grid_method = 3
+! dtgrid       [float]
+!                time step for grid adaptation (must be fraction of dt)
+!                This variable is only used if grid_method = 3
+! grid_file    [file path]
+!                file for sigma or cartesian grid. the first line gives the
+!                  number of layers, the following lines give fractions or layer
+!                  heights in m from the surface down to the bottom.
+!                This variable is only used if (grid_method = 1 or grid_method =
+!                  2)
+! gravity      [float, unit = m/s^2]
+!                gravitational acceleration
+! rho_0        [float, unit = kg/m^3]
+!                reference density
+! cp           [float, unit = J/kg/K]
+!                specific heat of sea water
+! avmolu       [float, unit = m^2/s]
+!                molecular viscosity for momentum
+! avmolt       [float, unit = m^2/s]
+!                molecular diffusity for temperature
+! avmols       [float, unit = m^2/s]
+!                molecular diffusity for salinity
+! MaxItz0b     [integer, minimum = 1, maximum = 1000]
+!                max # of iterations for z0b as function of u_taub
+! no_shear     [bool]
+!                .true.: shear production term P is set to zero
+!-------------------------------------------------------------------------------
+
+&meanflow
+   h0b = 0.03,
+   z0s_min = 0.02,
+   charnock = .true.,
+   charnock_val = 1400.0,
+   ddu = 0.0,
+   ddl = 0.0,
+   grid_method = 0,
+   c1ad = 0.4,
+   c2ad = 0.4,
+   c3ad = 0.1,
+   c4ad = 0.1,
+   Tgrid = 3600.0,
+   NNnorm = 0.2,
+   SSnorm = 0.2,
+   dsurf = 40.0,
+   dtgrid = 2.0,
+   grid_file = '',
+   gravity = 9.81,
+   rho_0 = 1027.0,
+   cp = 3985.0,
+   avmolu = 1.3e-06,
+   avmolt = 1.4e-07,
+   avmols = 1.1e-09,
+   MaxItz0b = 1,
+   no_shear = .false.,
+/
+

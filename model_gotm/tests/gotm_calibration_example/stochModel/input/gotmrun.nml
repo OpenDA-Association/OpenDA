@@ -1,0 +1,181 @@
+!-------------------------------------------------------------------------------
+! general model setup
+!-------------------------------------------------------------------------------
+! title       [string]
+!               title of simulation
+! nlev        [integer, minimum = 1, maximum = 1000]
+!               Number of depth levels used to describe the water column
+! dt          [float, minimum = 0.001, maximum = 86400, unit = s]
+!               Time step for integration
+! cnpar       [float, minimum = 0, maximum = 1]
+!               Constant for the theta scheme used for time integration of
+!                 diffusion-reaction components. \theta=0.5 for Cranck-Nicholson
+!                 (second-order accurate), \theta=0 for Forward Euler (first-
+!                 order accurate), \theta=1 for Backward Euler (first-order
+!                 accurate). Note that only \theta=1 guarantees positive
+!                 solutions for positive definite systems.
+! buoy_method [integer]
+!               method to compute mean buoyancy
+!               1: from equation of state (i.e. from potential temperature and
+!                 salinity)
+!               2: from prognostic equation
+!-------------------------------------------------------------------------------
+
+&model_setup
+   title = 'GOTM Simulation',
+   nlev = 110,
+   dt = 100.0,
+   cnpar = 1.0,
+   buoy_method = 1,
+/
+
+!-------------------------------------------------------------------------------
+! geographic location
+!-------------------------------------------------------------------------------
+! name      [string]
+!             name of the station
+! latitude  [float, minimum = -90, maximum = 90, unit = deg North]
+!             latitude
+! longitude [float, minimum = -360, maximum = 360, unit = deg East]
+!             longitude
+! depth     [float, minimum = 0, maximum = 5000, unit = m]
+!             water depth
+!-------------------------------------------------------------------------------
+
+&station
+   name = 'PROVESS Northern Experiment 1998',
+   latitude = 59.33333,
+   longitude = 1.283333,
+   depth = 110.0,
+/
+
+!-------------------------------------------------------------------------------
+! duration of run
+!-------------------------------------------------------------------------------
+! timefmt [integer]
+!           method to specify start and duration of model run
+!           1: duration computed from number of time steps, MaxN (bogus start
+!             date used)
+!           2: duration computed from given start and stop dates (number of time
+!             steps MaxN computed)
+!           3: duration computed from number of time steps, MaxN (start date as
+!             specified, stop date computed)
+! MaxN    [integer]
+!           nominal number of time steps
+!           This variable is not used if timefmt = 2
+! start   [string, format = "yyyy-mm-dd hh:mm:ss"]
+!           nominal start date
+!           This variable is not used if timefmt = 1
+! stop    [string, format = "yyyy-mm-dd hh:mm:ss"]
+!           nominal stop date
+!           This variable is only used if timefmt = 2
+!-------------------------------------------------------------------------------
+
+&time
+   timefmt = 2,
+   MaxN = 800,
+   start = '2005-01-01 00:00:00',
+   stop = '2005-12-31 00:00:00',
+/
+
+!-------------------------------------------------------------------------------
+! format for output and filename(s)
+!-------------------------------------------------------------------------------
+! out_fmt     [integer]
+!               format for GOTM output
+!               1: ASCII
+!               2: NetCDF
+!               3: GrADS
+! out_dir     [string]
+!               path to output directory (set permissions)
+! out_fn      [string]
+!               output string used to generate output file names
+! nfirst      [integer, minimum = 0]
+!               first time-step to save
+! nsave       [integer, minimum = 1, maximum = 86400]
+!               save results every 'nsave' timesteps
+! sync_out    [integer, minimum = 0]
+!               sync to disk every 'sync_out' (NetCDF output only)
+! diagnostics [bool]
+!               diagnostics are written to output (if .true.)
+! mld_method  [integer]
+!               how to diagnose mixed layer depth
+!               1: mixed layer depth computed from TKE threshold
+!               2: mixed layer depth from Ri threshold
+!               This variable is only used if diagnostics = True
+! diff_k      [float, minimum = 0, maximum = 1, unit = m^2/s^2]
+!               TKE threshold for mixed layer depth
+!               This variable is only used if (diagnostics = True and mld_method
+!                 = 1)
+! Ri_crit     [float, minimum = 0, maximum = 1000]
+!               Ri threshold for mixed layer depth
+!               This variable is only used if (diagnostics = True and mld_method
+!                 = 2)
+! rad_corr    [bool]
+!               correct surface buoyancy flux for solar radiation for output
+!               This variable is only used if diagnostics = True
+!-------------------------------------------------------------------------------
+
+&output
+   out_fmt = 2,
+   out_dir = '.',
+   out_fn = 'nns_seasonal',
+   nfirst = 0,
+   nsave = 432,
+   sync_out = 0,
+   diagnostics = .false.,
+   mld_method = 1,
+   diff_k = 1e-05,
+   Ri_crit = 0.5,
+   rad_corr = .true.,
+/
+
+!-------------------------------------------------------------------------------
+! equation of state
+!-------------------------------------------------------------------------------
+! eq_state_mode   [integer]
+!                   choice for empirical formula for equation of state
+!                   1: UNESCO equation of state by Fofonoff and Millard (1983)
+!                   2: equation of state according Jackett et al. (2005)
+! eq_state_method [integer]
+!                   method to compute density and buoyancy from salinity,
+!                     potential temperature and pressure
+!                   1: full equation of state (i.e. with the LOCAL pressure).
+!                     This implies that T is NOT treated as the potential
+!                     temperature but rather as the in-situ temperature!
+!                   2: equation of state with pressure evaluated at the surface.
+!                     This implies that T is treated as the potential
+!                     temperature and thus rho as the potential density.
+!                   3: linearized equation of state at T0,S0,p0 (again, use
+!                     p0=p_surf to work with potential temperature and density.)
+!                   4: linear equation of state with T0,S0,dtr0,dsr0
+! T0              [float, unit = degC]
+!                   reference temperature for linear equation of state
+!                   This variable is only used if (eq_state_method = 3 or
+!                     eq_state_method = 4)
+! S0              [float, unit = psu]
+!                   reference salinity for linear equation of state
+!                   This variable is only used if (eq_state_method = 3 or
+!                     eq_state_method = 4)
+! p0              [float, unit = bar]
+!                   reference pressure for linear equation of state
+!                   This variable is only used if (eq_state_method = 3 or
+!                     eq_state_method = 4)
+! dtr0            [float]
+!                   thermal expansion coefficient for linear equation of state
+!                   This variable is only used if eq_state_method = 4
+! dsr0            [float]
+!                   saline expansion coefficient for linear equation of state
+!                   This variable is only used if eq_state_method = 4
+!-------------------------------------------------------------------------------
+
+&eqstate
+   eq_state_mode = 1,
+   eq_state_method = 1,
+   T0 = 10.0,
+   S0 = 35.0,
+   p0 = 0.0,
+   dtr0 = -0.17,
+   dsr0 = 0.78,
+/
+

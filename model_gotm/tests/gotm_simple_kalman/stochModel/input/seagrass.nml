@@ -1,0 +1,19 @@
+!-------------------------------------------------------------------------------
+! canopy
+!-------------------------------------------------------------------------------
+! seagrass_calc [bool]
+!                 use seagrass model
+! grassfile     [file path]
+!                 depth-varying maximum excursion limit and friction coefficient
+!                 This variable is only used if seagrass_calc = True
+! XP_rat        [float]
+!                 efficiency of turbulence production by seagrass friction
+!                 This variable is only used if seagrass_calc = True
+!-------------------------------------------------------------------------------
+
+&canopy
+   seagrass_calc = .false.,
+   grassfile = '',
+   XP_rat = 1.0,
+/
+
