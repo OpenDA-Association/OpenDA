@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxStochModelConfig.xsd">
+
+	<modelConfig>
+		<file>./gotmModel.xml</file>
+	</modelConfig>
+
+	<vectorSpecification>
+<!-- Calibration of -->
+		<parameters>
+			<regularisationConstant>
+				<stdDev value="0.01" transformation="identity" />
+				<vector id="turb_param_Ri_st" />
+			</regularisationConstant>
+		</parameters>
+		<!--<state> <vector id="" /> </state> -->
+<!-- Calibration with -->
+		<predictor>
+			<vector id="meantemptop_0" />
+			<vector id="meantempbot_0" />
+			<vector id="meantempmid_0" />   
+		</predictor>
+	</vectorSpecification>
+
+
+</blackBoxStochModel>

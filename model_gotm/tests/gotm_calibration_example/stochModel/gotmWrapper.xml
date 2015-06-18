@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openda_1.0/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%"
+		defaultKeySuffix="%">
+		<alias key="binDir" />
+		<alias key="templateDir" />
+		<alias key="instanceDir" />
+		<alias key="outputFile" />
+		<alias key="outputTemp" />
+		<alias key="outputSalt" />
+		<alias key="outputEps" />
+		<alias key="outputVelo" />
+		<alias key="outputMeanTop" />
+		<alias key="outputMeanMid" />
+		<alias key="outputMeanBot" />
+		<alias key="meanVar" />
+		<alias key="meanDepth" />
+		<alias key="inputFile" />
+		<alias key="inputFileTurb" />
+	</aliasDefinitions>
+
+	<run>
+
+		<!--
+			for each model instance, the template directory will be cloned to
+			create the instance directory
+		-->
+		<initializeActionsUsingDirClone
+			instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%" />
+
+			<computeActions>
+				<action linuxExe="%binDir%/linux/gotm" workingDirectory="%instanceDir%">
+					<checkOutput file="%outputFile%" /> <!-- should exist -->
+				</action>
+			</computeActions>
+
+			<additionalComputeActions>
+				<!-- write restart files -->
+				<action exe="%binDir%/linux/saveStep.sh" workingDirectory="%instanceDir%">
+					<arg></arg>
+				</action>
+				<action exe="%binDir%/linux/profile.sh" workingDirectory="%instanceDir%">
+					<arg>--variables z,salt %outputFile% %outputSalt%</arg>
+					<checkOutput file="%outputSalt%" />
+				</action>
+				<action exe="%binDir%/linux/profile.sh" workingDirectory="%instanceDir%">
+					<arg>--variables z,temp %outputFile% %outputTemp%</arg>
+					<checkOutput file="%outputTemp%" />
+				</action>
+
+				<action exe="%binDir%/linux/profile.sh"  workingDirectory="%instanceDir%">
+					<arg>--variables z,eps %outputFile% %outputEps%</arg>
+					<checkOutput file="%outputEps%" />
+				</action>
+				<action exe="%binDir%/linux/profile.sh"  workingDirectory="%instanceDir%">
+					<arg>--variables z,u,v %outputFile% %outputVelo%</arg>
+					<checkOutput file="%outputVelo%" />
+				</action>
+				<!-- write file to compare with observations files -->
+				<action exe="%binDir%/linux/profilemean.sh"  workingDirectory="%instanceDir%">
+					<arg>--variables %meanVar% --depth1 0.0 --depth2 15.0  %outputFile% %outputMeanTop%</arg>
+					<checkOutput file="%outputMeanTop%" />
+				</action>
+				<action exe="%binDir%/linux/profilemean.sh"  workingDirectory="%instanceDir%">
+					<arg>--variables %meanVar% --depth1 20.0 --depth2 40.0  %outputFile% %outputMeanMid%</arg>
+					<checkOutput file="%outputMeanMid%" />
+				</action>
+				<action exe="%binDir%/linux/profilemean.sh"  workingDirectory="%instanceDir%">
+					<arg>--variables %meanVar% --depth1 50.0 --depth2 75.0  %outputFile% %outputMeanBot%</arg>
+					<checkOutput file="%outputMeanBot%" />
+				</action>
+			</additionalComputeActions>
+
+			<finalizeActions></finalizeActions>
+
+		</run>
+
+
+		<inputOutput>
+
+			<!-- manipulate namelists to start model -->
+			<ioObject className="org.openda.model_gotm.GotmNmlFile">
+				<file>%inputFile%</file>
+				<id>input</id>
+				<arg></arg>
+			</ioObject>
+
+			<ioObject className="org.openda.model_gotm.GotmNmlFile">
+				<file>%inputFileTurb%</file>
+				<id>inputTurb</id>
+				<arg></arg>
+			</ioObject>
+			<ioObject className="org.openda.model_gotm.GotmProfileFile">
+				<file>%outputMeanTop%</file>
+				<id>meanTempTop</id>
+				<arg></arg>
+			</ioObject>
+			<ioObject className="org.openda.model_gotm.GotmProfileFile">
+				<file>%outputMeanMid%</file>
+				<id>meanTempMid</id>
+				<arg></arg>
+			</ioObject>
+			<ioObject className="org.openda.model_gotm.GotmProfileFile">
+				<file>%outputMeanBot%</file>
+				<id>meanTempBot</id>
+				<arg></arg>
+			</ioObject>
+
+<!-- 		<ioObject className="org.openda.model_gotm.GotmProfileFile">
+			<file>%outputMean%</file>
+			<id>meanVar</id>
+			<arg></arg>
+		</ioObject> -->
+
+		<ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+			<file>%outputFile%</file>
+			<id>output</id>
+			<arg>true</arg>
+			<arg>false</arg>
+		</ioObject>
+
+	</inputOutput>
+
+</blackBoxWrapperConfig>
