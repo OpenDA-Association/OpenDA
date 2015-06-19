@@ -15,5 +15,12 @@
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>simulation_unperturbed_results.m</configFile>
-	</resultWriter>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="model_time" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+		</selection>
+		</resultWriter>
 </openDaApplication>

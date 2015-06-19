@@ -15,5 +15,15 @@
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>enkf_results_std5_ens5.m</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_4" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_5" outputLevel="All"  maxSize="100000"   />
+		</selection>
 	</resultWriter>
 </openDaApplication>
