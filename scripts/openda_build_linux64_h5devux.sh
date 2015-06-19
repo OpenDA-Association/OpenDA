@@ -7,7 +7,8 @@ export GCCDIR=/opt/gcc/4.9.2
 #source /usr/share/Modules/init/bash
 module load gcc
 module load java/jdk_1.7_oracle
-module load automake autoconf libtool ant
+module load ant/1.9.4_jdk1.7
+module load automake autoconf libtool
 rm -rf public/bin/*
 rm -rf public/*.tgz
 public/scripts/openda_build_linux64_gnu.sh
