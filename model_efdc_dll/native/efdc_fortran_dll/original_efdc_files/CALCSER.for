@@ -44,7 +44,7 @@ C
           M1=MCTLAST(NS,NC)  
   100     CONTINUE  
           M2=M1+1  
-          IF(TIME.GT.TCSER(M2,NS,NC))THEN  
+          IF((TIME-EPS).GT.TCSER(M2,NS,NC))THEN  
             M1=M2  
             GOTO 100  
           ELSE  
@@ -84,7 +84,7 @@ C
             M1=MCTLAST(NS,NC)  
   101       CONTINUE  
             M2=M1+1  
-            IF(TIME.GT.TCSER(M2,NS,NC))THEN  
+            IF((TIME-EPS).GT.TCSER(M2,NS,NC))THEN  
               M1=M2  
               GOTO 101  
             ELSE  
@@ -124,7 +124,7 @@ C
             M1=MCTLAST(NS,NC)  
   102       CONTINUE  
             M2=M1+1  
-            IF(TIME.GT.TCSER(M2,NS,NC))THEN  
+            IF((TIME-EPS).GT.TCSER(M2,NS,NC))THEN  
               M1=M2  
               GOTO 102  
             ELSE  
@@ -164,7 +164,7 @@ C
             M1=MCTLAST(NS,NC)  
   103       CONTINUE  
             M2=M1+1  
-            IF(TIME.GT.TCSER(M2,NS,NC))THEN  
+            IF((TIME-EPS).GT.TCSER(M2,NS,NC))THEN  
               M1=M2  
               GOTO 103  
             ELSE  
@@ -206,7 +206,7 @@ C
             M1=MCTLAST(NS,NC)  
   104       CONTINUE  
             M2=M1+1
-            IF(TIME.GT.TCSER(M2,NS,NC))THEN  
+            IF((TIME-EPS).GT.TCSER(M2,NS,NC))THEN  
               M1=M2  
               GOTO 104  
             ELSE  
@@ -262,7 +262,7 @@ C
       M1=MSFTLST  
   300 CONTINUE  
       M2=M1+1  
-      IF(TIME.GT.TSFSER(M2))THEN  
+      IF((TIME-EPS).GT.TSFSER(M2))THEN  
         M1=M2  
         GOTO 300  
       ELSE  

@@ -26,7 +26,7 @@ C
           M1=MVEGTLAST(NS)  
   100     CONTINUE  
           M2=M1+1  
-          IF(TIME.GT.TVEGSER(M2,NS))THEN  
+          IF((TIME-EPS).GT.TVEGSER(M2,NS))THEN  
             M1=M2  
             GOTO 100  
           ELSE  

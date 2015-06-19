@@ -52,7 +52,8 @@ C     Merged SNL and DS-INTL
         M1 = 0
         M2 = 0
         SUNSOL1 = 0.0
-        DO WHILE (TASER(M,1).LT.SUNDAY2+0.5)
+        DO WHILE (TASER(M,1).LT.
+     +      min(SUNDAY2+0.5,TASER(ubound(TASER,1),1)))
           M1 = M1+1
           IF(SOLSWR(M,1).GT.0.)THEN
             M2 = M2+1
@@ -66,27 +67,33 @@ C     Merged SNL and DS-INTL
         ELSE
           SUNFRC1=1.0
         ENDIF
-        
-        ! *** BUILD THE AVERAGE DAILY SOLAR RADIATION        
-        M1 = 0
-        M2 = 0
-        SUNSOL2 = 0.
-        DO WHILE (TASER(M,1).LT.SUNDAY2+1.5)
-          M1 = M1+1
-          IF(SOLSWR(M,1).GT.0.)THEN
-            M2 = M2+1
-            SUNSOL2=SUNSOL2+SOLSWR(M,1)
+!{ Geosr, jgcho, 2015.5.29 solswr
+        IF (M.ge.ubound(TASER,1))  then
+          SUNSOL2=SUNSOL1
+          SUNFRC2=SUNFRC1
+        ELSE ! IF (M.gt.ubound(TASER,1)) then
+          ! *** BUILD THE AVERAGE DAILY SOLAR RADIATION        
+          M1 = 0
+          M2 = 0
+          SUNSOL2 = 0.
+          DO WHILE (TASER(M,1).LT.
+     +        min(SUNDAY2+1.5,TASER(ubound(TASER,1),1)))
+            M1 = M1+1
+            IF(SOLSWR(M,1).GT.0.)THEN
+              M2 = M2+1
+              SUNSOL2=SUNSOL2+SOLSWR(M,1)
+            ENDIF
+            M = M+1
+          END DO
+          IF(M1.GT.0)THEN
+            SUNFRC2=FLOAT(M2)/FLOAT(M1)
+            SUNSOL2=SUNSOL2/FLOAT(M1)
+          ELSE
+            SUNFRC2=1.
           ENDIF
-          M = M+1
-        END DO
-        IF(M1.GT.0)THEN
-          SUNFRC2=FLOAT(M2)/FLOAT(M1)
-          SUNSOL2=SUNSOL2/FLOAT(M1)
-        ELSE
-          SUNFRC2=1.
-        ENDIF
+        ENDIF ! IF (M.gt.ubound(TASER,1)) then
+!} Geosr, jgcho, 2015.5.29 solswr
       ENDIF
-
 !{ GeoSR, YSSONG. 2012/12/15, RESTART
       IF(ITNWQ.EQ.0)THEN
 !        IF(ISUNDAY2.EQ.0)THEN
@@ -99,23 +106,30 @@ C     Merged SNL and DS-INTL
            M1 = 0
            M2 = 0
            SUNSOL0 = 0.
+!{ Geosr, jgcho, 2015.5.29 solswr
+           IF(TASER(M,1).LE.DAYNEXT-(FLOAT(NDUM))) Then
 !           DO WHILE (TASER(M,1).LT.SUNDAY2-0.5)
-           DO WHILE (TASER(M,1).LT.DAYNEXT-(FLOAT(NDUM))+1.0)
-             IF(TASER(M,1).GE.DAYNEXT-(FLOAT(NDUM)))THEN
-             M1 = M1+1
-             IF(SOLSWR(M,1).GT.0.)THEN
-               M2 = M2+1
-               SUNSOL0=SUNSOL0+SOLSWR(M,1)    !!! 1 day average 
+             DO WHILE (TASER(M,1).LT.DAYNEXT-(FLOAT(NDUM))+1.0)
+               IF(TASER(M,1).GE.DAYNEXT-(FLOAT(NDUM)))THEN
+                 M1 = M1+1
+                 IF(SOLSWR(M,1).GT.0.)THEN
+                   M2 = M2+1
+                   SUNSOL0=SUNSOL0+SOLSWR(M,1)    !!! 1 day average 
+                 ENDIF
+                 M = M+1
+               ENDIF
+             END DO
+             IF(M1.GT.0)THEN
+               SUNFRC0=FLOAT(M2)/FLOAT(M1)
+               SUNSOL0=SUNSOL0/FLOAT(M1)        !!! avg SUNSOL for timeday
+             ELSE
+               SUNFRC0=1.0
              ENDIF
-             M = M+1
-             ENDIF
-           END DO
-           IF(M1.GT.0)THEN
-             SUNFRC0=FLOAT(M2)/FLOAT(M1)
-             SUNSOL0=SUNSOL0/FLOAT(M1)        !!! avg SUNSOL for timeday
-           ELSE
-             SUNFRC0=1.0
-           ENDIF
+           ELSE ! IF(TASER(M,1).LE.DAYNEXT-(FLOAT(NDUM))) Then
+             SUNFRC0=SUNFRC1
+             SUNSOL0=SUNSOL1
+           ENDIF ! IF(TASER(M,1).LE.DAYNEXT-(FLOAT(NDUM))) Then
+!} Geosr, jgcho, 2015.5.29 solswr
            IF(NDUM.EQ.2)THEN     ! PREVIOUS DAY
              SUNSOL11=SUNSOL0
              SUNFRC11=SUNFRC0
@@ -251,7 +265,7 @@ C
 C **  CALCULATE PHYSICAL TRANSPORT  
 C **  WQV(L,K,NW) SENT TO PHYSICAL TRANSPORT AND TRANSPORTED  
 C **  VALUE RETURNED IN WQV(L,K,NW)  
-C  
+C 
       CALL CALWQC(ISTL_,IS2TL_) !transports (advects/disperses) WQV
 C  
 C   FOLLOWING THE CALL TO CALWQC MINUS OLD D.O. BEFORE THE CALL).  
@@ -270,7 +284,7 @@ C
 C **  UPDATE WATER COLUMN KINETICS AND SEDIMENT MODEL  
 C **  OVER LONGER TIME INTERVALS THAN PHYSICAL TRANSPORT  
 C **  IF NWQKDPT .GT. 1  
-C  
+C 
       NWQKCNT=NWQKCNT+1  
       IF(ITNWQ.EQ.0.OR.NWQKCNT.EQ.NWQKDPT)THEN  
         !IF(ITNWQ.NE.0)NWQKCNT=0   PMC
@@ -300,27 +314,39 @@ C
             SUNDAY1 = SUNDAY2
             SUNSOL1 = SUNSOL2
             SUNFRC1 = SUNFRC2
-            
-            ! *** BUILD THE AVERAGE DAILY SOLAR RADIATION        
-            M1 = 0
-            M2 = 0
-            SUNSOL2 = 0.
-            SUNDAY2 = SUNDAY2+1.
-            DO WHILE (TASER(M,1).LT.SUNDAY2+0.5)
-              M1 = M1+1
-              IF(SOLSWR(M,1).GT.0.)THEN
-                M2 = M2+1
-                SUNSOL2=SUNSOL2+SOLSWR(M,1)
-              ENDIF
+!{ Geosr, jgcho, 2015.5.29 solswr
+            ! *** FIND 1ST POINT
+            M = 1
+            DO WHILE (TASER(M,1).LT.(SUNDAY2+0.5-EPS))
               M = M+1
             END DO
-            IF(M1.GT.0)THEN
-              SUNFRC2=FLOAT(M2)/FLOAT(M1)
-              SUNSOL2=SUNSOL2/FLOAT(M1)
-            ELSE
-              SUNFRC2=1.
+            SUNDAY2 = SUNDAY2+1
+            ! If date for next day is not provided use values of today
+            IF( M.ge.ubound(TASER,1) ) then
+              SUNSOL2=SUNSOL1
+              SUNFRC2=SUNFRC1
+            ELSE ! IF (M.gt.ubound(TASER,1)) then
+              ! *** BUILD THE AVERAGE DAILY SOLAR RADIATION        
+              M1 = 0
+              M2 = 0
+              SUNSOL2 = 0.
+              DO WHILE (TASER(M,1).LT.
+     +            min(SUNDAY2+0.5-EPS, TASER(ubound(TASER,1),1)) )
+                M1 = M1+1
+                IF(SOLSWR(M,1).GT.0.)THEN
+                  M2 = M2+1
+                  SUNSOL2=SUNSOL2+SOLSWR(M,1)
+                ENDIF
+                M = M+1
+              END DO
+              IF(M1.GT.0)THEN
+                SUNFRC2=FLOAT(M2)/FLOAT(M1)
+                SUNSOL2=SUNSOL2/FLOAT(M1)
+              ELSE
+                SUNFRC2=1.
+              ENDIF
             ENDIF
-            
+!} Geosr, jgcho, 2015.5.29 solswr
           ENDIF
         ENDIF  
   

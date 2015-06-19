@@ -59,7 +59,7 @@ C      TEMP USE ISPAR FOR MCSUNDAY
 C  
   100 CONTINUE  
       M2=M1+1  
-      IF(TIME.GT.TSSRD(M2))THEN  
+      IF((TIME-EPS).GT.TSSRD(M2))THEN  
         M1=M2  
         GOTO 100  
       ELSE  

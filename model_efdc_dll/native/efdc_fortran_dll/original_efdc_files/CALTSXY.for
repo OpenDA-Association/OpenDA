@@ -144,7 +144,7 @@ C
           MSAVE=M1  
   200     CONTINUE  
           M2=M1+1  
-          IF(TIME.GT.TWSER(M2,NA))THEN  
+          IF((TIME-EPS).GT.TWSER(M2,NA))THEN  
             M1=M2  
             GOTO 200  
           ELSE  
@@ -254,7 +254,7 @@ C
           M1=MATLAST(NA)  
   100     CONTINUE  
           M2=M1+1  
-          IF(TIME.GT.TASER(M2,NA))THEN  
+          IF((TIME-EPS).GT.TASER(M2,NA))THEN  
             M1=M2  
             GOTO 100  
           ELSE  

@@ -105,7 +105,7 @@ C
         M1=MWQPTLT(NS)  
   100   CONTINUE  
         M2=M1+1  
-        IF(TIME.GT.TWQPSER(M2,NS))THEN  
+        IF((TIME-EPS).GT.TWQPSER(M2,NS))THEN  
           M1=M2  
           GOTO 100  
         ELSE  

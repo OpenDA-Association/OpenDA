@@ -15,7 +15,7 @@ C
         M1=MPTLAST(NS)  
   100   CONTINUE  
         M2=M1+1  
-        IF(TIME.GT.TPSER(M2,NS))THEN  
+        IF((TIME-EPS).GT.TPSER(M2,NS))THEN  
           M1=M2  
           GOTO 100  
         ELSE  
