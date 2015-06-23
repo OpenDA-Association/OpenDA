@@ -8,12 +8,13 @@
 		<workingDirectory>./stochModel</workingDirectory>
 		<configFile>dflowfmStochModel.xml</configFile>
 	</stochModelFactory>
-	<algorithm className="org.openda.algorithms.Simulation">
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
 		<workingDirectory>./algorithm</workingDirectory>
-		<configString>simulationAlgorithm.xml</configString>
+		<configString>SequentialSimulationNoise.xml</configString>
 	</algorithm>
+        <timingSettings doTiming="true"></timingSettings>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>simulation_results.m</configFile>
+		<configFile>SequentialSimulation_results.m</configFile>
 	</resultWriter>
 </openDaApplication>

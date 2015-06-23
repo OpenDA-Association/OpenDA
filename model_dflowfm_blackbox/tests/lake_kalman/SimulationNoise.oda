@@ -10,7 +10,7 @@
 	</stochModelFactory>
 	<algorithm className="org.openda.algorithms.Simulation">
 		<workingDirectory>./algorithm</workingDirectory>
-		<configString>simulationAlgorithm.xml</configString>
+		<configString>simulationAlgorithmNoise.xml</configString>
 	</algorithm>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>

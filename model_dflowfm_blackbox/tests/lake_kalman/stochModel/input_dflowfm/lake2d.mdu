@@ -86,8 +86,8 @@ DtUser                              = 600.0000000                        # User 
 DtMax                               = 600.0000000                        # Max timestep in seconds
 DtInit                              = 1.                                 # Initial timestep in seconds
 AutoTimestep                        = 1                                  # Use CFL timestep limit or not (1/0)
-TStart                              = 0.0000000e+00                      # Start time w.r.t. RefDate (in TUnit)
-TStop                               = 4.3200000e+03                      # Stop  time w.r.t. RefDate (in TUnit)
+TStart                              = 0.0000000                      # Start time w.r.t. RefDate (in TUnit)
+TStop                               = 4320.0000                      # Stop  time w.r.t. RefDate (in TUnit)
 
 [restart]
 RestartFile                         =                                    # Restart file, only map, hence: *_map.nc
@@ -101,7 +101,7 @@ OutputDir                           = DFM_OUTPUT_lake2d                  # Outpu
 ObsFile                             = lake2d_obs.xyn                     # *.xyn Coords+name of observation stations.
 CrsFile                             =                                    # *_crs.pli Polyline(s) definining cross section(s).
 HisFile                             = lake2d_his.nc                      # *_his.nc History file in NetCDF format.
-HisInterval                         = 600.0000000                        # History output, given as "interval" "start period" "end period" (s)
+HisInterval                         = 3600.0000000                        # History output, given as "interval" "start period" "end period" (s)
 XLSInterval                         =                                    # Interval (s) between XLS history
 FlowGeomFile                        =                                    # *_flowgeom.nc Flow geometry file in NetCDF format.
 MapFile                             = lake2d_map.nc                      # *_map.nc Map file in NetCDF format.
