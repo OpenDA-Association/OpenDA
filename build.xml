@@ -176,7 +176,6 @@
         <delete dir="${modulebindir}/win32_ifort"/>
         <delete dir="${modulebindir}/win32_gfortran"/>
         <delete dir="${modulebindir}/darwin"/>
-        <delete dir="${modulebindir}/linux32_gnu"/>
         <delete dir="${modulebindir}/linux64_gnu"/>
 
     	<delete>
@@ -369,7 +368,6 @@
 
     <target name="chmod-linux-native">
 	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/" includes="*.sh" verbose="true"/>
-	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/linux32_gnu/lib" includes="**" verbose="true"/>
 	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/linux64_gnu/lib" includes="**" verbose="true"/>
     </target>
 
@@ -468,7 +466,6 @@
     <target name="tgz-native" depends="svn-revision,chmod-linux-native" >
        <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_native.tgz">
 	       <tarfileset dir="core/native_bin/linux64_gnu" prefix="linux64_gnu" excludes="*.svn"/>
-	       <tarfileset dir="core/native_bin/linux32_gnu" prefix="linux32_gnu" excludes="*.svn"/>
 	       <tarfileset dir="core/native_bin/darwin" prefix="darwin" excludes="*.svn"/>
        </tar>
     </target>
@@ -590,36 +587,6 @@
     </target>
 
 
-    <target name="test-linux32-teamcity" >
-
-	<!--
-        <chmod perm="ugo+rx" dir="${projectbin}" includes="*.sh" verbose="true"/>
-	<chmod perm="ugo+rx" dir="${projectbin}/linux32_gnu/bin" includes="**" verbose="true"/>
-	<chmod perm="ugo+rx" dir="${projectbin}/linux32_gnu/lib" includes="**" verbose="true"/>
-	-->
-
-        <echo>Turning on X11 Windows server for GUI tests... </echo>
-        <exec executable="Xvfb" os="Linux" spawn="true" searchpath="true">
-           <arg value=":1"/>
-           <arg value="-screen"/>
-           <arg value="0"/>
-           <arg value="1024x768x24"/>
-        </exec>
-        <exec executable="Xvfb" os="Mac OS,Mac OS X,Darwin" spawn="true" searchpath="true">
-           <arg value=":2"/>
-           <arg value="-screen"/>
-           <arg value="0"/>
-           <arg value="1024x768x24"/>
-        </exec>
-
-
-        <ant target="test"/>
-
-        <echo>Turning off X11 Windows server... </echo>
-       	<exec executable="killall" os="Linux,Mac OS,Mac OS X,Darwin" searchpath="true">
-    	         <arg value="Xvfb"/>
-    	</exec>
-   </target>
 
     <target name="test-linux64-teamcity" >
 
