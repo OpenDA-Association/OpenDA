@@ -189,6 +189,9 @@ fi
 #
 # OpenDA settings
 #
+pushd $BASE
+$BASE/autoreconf_fix.sh
+popd
 
 # compile in a temporary direcory to avoid mixing sources and objects
 export TEMPDIR="openda_${SYSTEM}_temp"
@@ -214,7 +217,6 @@ if [ -d "$BASE/$SYSTEM" ];then
 	rm -rf $BASE/$SYSTEM
 fi
 
-$BASE/autoreconf_fix.sh
 
 # mpi compiler wrappers are the prefered option for configure and we have added them to the PATH above
 $BASE/configure --prefix=$BASE/$SYSTEM --libdir=$BASE/$SYSTEM/lib --disable-system-lapack --disable-system-blas --disable-system-sqlite3 --with-netcdf=$NETCDF_ROOT --with-jdk=$JAVA_HOME CFLAGS="$ARCHFLAG $OPTFLAG" FFLAGS="$ARCHFLAG $OPTFLAG" LDFLAGS="$ARCHFLAG" CPPFLAGS="$ARCHFLAG $OPTFLAG" >myconfig.log 2>&1
