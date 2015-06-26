@@ -12,8 +12,13 @@
 		<workingDirectory>./algorithm</workingDirectory>
 		<configString>simulationAlgorithm.xml</configString>
 	</algorithm>
+        <resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>simulation_results.m</configFile>
+                 <selection>
+			<resultItem outputLevel="All"  maxSize="100000"  />
+		</selection>
 	</resultWriter>
+        </resultWriters>
 </openDaApplication>

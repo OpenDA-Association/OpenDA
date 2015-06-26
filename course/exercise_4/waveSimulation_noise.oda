@@ -8,15 +8,17 @@
 		<workingDirectory>.</workingDirectory>
 		<configFile>WaveModel.xml</configFile>
 	</stochModelFactory>
-	<algorithm className="org.openda.algorithms.kalmanFilter.SteadyStateFilter">
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
 		<workingDirectory>./algorithm</workingDirectory>
-		<configString>SteadystateAlgorithm.xml</configString>
+		<configString>simulationAlgorithm_noise.xml</configString>
 	</algorithm>
+        <resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>steadystate_results.m</configFile>
+		<configFile>simulation_results.m</configFile>
                  <selection>
 			<resultItem outputLevel="All"  maxSize="100000"  />
 		</selection>
 	</resultWriter>
+        </resultWriters>
 </openDaApplication>

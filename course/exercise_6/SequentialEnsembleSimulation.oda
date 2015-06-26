@@ -15,5 +15,8 @@
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>sequentialEnsembleSimulation_results.m</configFile>
+		<selection>
+			<resultItem outputLevel="All"  maxSize="100000"  />
+		</selection>
 	</resultWriter>
 </openDaApplication>

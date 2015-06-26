@@ -4,7 +4,17 @@
 %
 % Author Nils van Velzen
 
-system('oda_run.sh simulation_unperturbed.oda');
+if (~ exist('simulation_unperturbed_results')) 
+   system('oda_run.sh simulation_unperturbed.oda');
+end
+if (~ exist('simulation_perturbed_results')) 
+   system('oda_run.sh simulation_perturbed.oda');
+end
+if (~ exist('simulation_ensemble_results')) 
+   system('oda_run.sh simulation_ensemble.oda');
+end
+
+
 [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
 figure(1)
 plot3(xyz(1,:),xyz(2,:),xyz(3,:))
@@ -28,7 +38,6 @@ hold off;
 disp('Push a button')
 pause
 
-system('oda_run.sh simulation_perturbed.oda');
 [t1,xyz1,tobs1,obs1]=load_results('simulation_unperturbed_results');
 [t2,xyz2,tobs2,obs2]=load_results('simulation_perturbed_results');
 figure(1)
@@ -46,7 +55,6 @@ legend('unperturbed','perturbed')
 disp('Push a button')
 pause
 
-system('oda_run.sh simulation_ensemble.oda');
 figure(1);
 [t,ens]=load_ensemble('simulation_ensemble_results');
 ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
