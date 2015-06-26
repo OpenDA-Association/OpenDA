@@ -249,12 +249,12 @@ public class GotmProfileFile implements IDataObject{
                 output.write(String.format( dateOutFormat, dateString, zData.length , axisDirection ));
                 output.newLine();
                 for ( int z=0 ; z < zData.length ; z++  ) {
-                    String formatString = "%13.10f ";
-                    String line = String.format("%6.1f ", zData[z]);
+                    String formatString = " %14.11f";
+                    String line = String.format("%6.1f", zData[z]);
                     for (int iVar = 0; iVar < this.nVar; iVar++) {
                         line += String.format(formatString , values[iVar][timeIndex  * zData.length  +  z ] ) ;
                     }
-                    output.write( line.trim() );
+                    output.write( line );
                     output.newLine();
                 }
             }

@@ -85,14 +85,10 @@ public class GotmProfileFileTest extends TestCase {
 		//double[] values = new double[1];
 		//values[0] = 1.0;
 		//item.setValues(1.0);
-		
-		//change some things
 
 		//write to file
 		ioObject.finish();
 		File reference = new File(testRunDataDir,"vel_prof_file.ref.dat");
-		//boolean containsLocA =testData.FileContains(reference, "102030");
-		//assertTrue(containsLocA);
 		boolean identical = testData.FilesAreIdentical(original,reference);
 		assertTrue(identical);
 	}
