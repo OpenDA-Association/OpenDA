@@ -1,9 +1,7 @@
 #! /bin/bash
 
-function module{ 
-    eval `/usr/bin/modulecmd bash $*`
-}
-
+module(){ eval `/usr/bin/modulecmd bash $*`;};
+ 
 export OPENDASCRIPTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${OPENDASCRIPTROOT}/../..
 
