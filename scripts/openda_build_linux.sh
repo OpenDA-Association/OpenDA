@@ -90,6 +90,11 @@ if [ "$SYSTEM" == "linux32_ifort" ]; then
 	echo "./linux_install.sh ifort 32 ignorempi ignorenetcdf"
 	./linux_install.sh ifort 32 ignorempi ignorenetcdf
 fi
+if [ $? -gt 0 ]; then
+        echo "error in building openda native libraries"
+        exit 1;
+fi
+
 popd
 
 # and the Java libraries

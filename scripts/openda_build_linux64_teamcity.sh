@@ -14,6 +14,10 @@ module load automake autoconf libtool
 rm -rf public/bin/*
 rm -rf public/*.tgz
 public/scripts/openda_build_linux64_gnu.sh
+if [ $? -gt 0 ]; then
+        echo "error while building openda native"
+        exit 1;
+fi
 export LIB64=public/core/native_bin/linux64_gnu/lib
 cp $GCCDIR/lib64/libgfortran.so.3 $LIB64
 cp $GCCDIR/lib64/libquadmath.so.0 $LIB64
