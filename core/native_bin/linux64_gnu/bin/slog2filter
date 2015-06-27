@@ -40,7 +40,7 @@ if [ -n "${JAVA_HOME}" -a -x "${JAVA_HOME}/bin/java" ] ; then
 elif [ -n "${JRE_HOME}" -a -x "${JRE_HOME}/bin/java" ] ; then
     JVM="${JRE_HOME}/bin/java"
 else
-    JVM=${JVM:-"/opt/java/jdk_1.7u71_x64/bin/java"}
+    JVM=${JVM:-"/opt/java/jdk_1.7_x64/bin/java"}
 fi
 JVMOPTS=" "
 # Assume user's environmental JVMFLAGS is better than what configure found.
@@ -48,7 +48,7 @@ JVMFLAGS=${JVMFLAGS:-${JVMOPTS}}
 
 # Set PATH to the jar needed by the filter program
 # The default path libbuild_dir will be modified by sed -e "^GUI_LIBDIR=..."
-GUI_LIBDIR=/u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/lib
+GUI_LIBDIR=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
 GUI_HOME="${GUI_LIBDIR}/.."
 if [ -n "${SLOG2_HOME}" -a -d "${SLOG2_HOME}/lib" ] ; then
     GUI_LIBDIR="${SLOG2_HOME}/lib"

@@ -1,7 +1,7 @@
 # this gives access to the mpich2 header files
-prefix=/u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu
+prefix=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu
 exec_prefix=${prefix}
-libdir=/u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/lib
+libdir=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
 includedir=${prefix}/include
 
 if test "no" = "yes" ; then
