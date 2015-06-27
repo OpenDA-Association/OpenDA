@@ -114,7 +114,7 @@
 		<echo>Subversion Revision: ${svn.revision}</echo>
 	</target>
 
-    <target name="manifest" depends="svn-revision">
+    <target name="manifest"> <!-- depends="svn-revision"> -->
         <tstamp/>
         <manifest file="MANIFEST.MF">
 	    <attribute name="Title" value="${projectname}"/>
