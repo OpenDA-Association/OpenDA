@@ -80,40 +80,40 @@ public class SpatialCorrelationTest extends TestCase {
     public void testSpatialCorrelation_latlon(){
     	double standardDeviation=1.0; 
 		double lengthscale=1.1123e+05; //approx 1 degree at the equator
-		double[] x= new double[]{0.0,1.0,1.0,0.0,0.0}; //counterclock square 
-		double[] y= new double[]{0.0,0.0,1.0,1.0,0.0};
+		double[] x= new double[]{0.0,1.0,1.0,0.0}; //counterclock square 
+		double[] y= new double[]{0.0,0.0,1.0,1.0};
     	SpatialCorrelationStochVector sv = new SpatialCorrelationStochVector(CoordinatesType.WGS84
     			, standardDeviation, lengthscale, x, y);
     	IVector mean = sv.getExpectations();
     	System.out.println("mean="+mean);
-    	System.out.println("Should be mean=[0.0,0.0,0.0,0.0,0.0]");
-    	assertEquals("[0.0,0.0,0.0,0.0,0.0]",mean.toString());
+    	System.out.println("Should be mean=[0.0,0.0,0.0,0.0]");
+    	assertEquals("[0.0,0.0,0.0,0.0]",mean.toString());
     	
     	IVector std = sv.getStandardDeviations();
     	System.out.println("std="+std);
-    	System.out.println("Should be std=[1.0,1.0,1.0,1.0,1.0]");
-    	assertEquals("[1.0,1.0,1.0,1.0,1.0]",std.toString());
+    	System.out.println("Should be std=[1.0,1.0,1.0,1.0]");
+    	assertEquals("[1.0,1.0,1.0,1.0]",std.toString());
     	
     	ISqrtCovariance sqrtCov = sv.getSqrtCovariance();
     	System.out.println("sqrtCov          ="+sqrtCov.toString());
-    	System.out.println("Should be sqrtCov=full([0.6565208964327816,0.25334955112875074,0.09792247783227047,0.2533492024306464,0.6565208964327819;0.2533495511287502,0.8802206825124356,0.2993063802412671,0.08517775947942266,0.25334955112875024;0.09792247783227007,0.2993063802412674,0.8953317495585582,0.2993645363927716,0.09792247783227029;0.25334920243064585,0.08517775947942272,0.2993645363927717,0.8802011059388181,0.25334920243064596;0.6565208964327817,0.2533495511287503,0.0979224778322704,0.2533492024306458,0.656520896432782])");
-		assertTrue(sqrtCov.toString().matches("(.*)0.6565208964327(.*),0.25334955112875(.*),0.09792247783227(.*),0.2533492024306(.*),0.6565208964327(.*);0.2533495511287(.*),0.8802206825124(.*),0.2993063802412(.*),0.08517775947942(.*),0.25334955112875(.*);0.09792247783227(.*),0.2993063802412(.*),0.8953317495585(.*),0.2993645363927(.*),0.09792247783227(.*);0.25334920243064(.*),0.08517775947942(.*),0.2993645363927(.*),0.8802011059388(.*),0.25334920243064(.*);0.6565208964327(.*),0.2533495511287(.*),0.0979224778322(.*),0.2533492024306(.*),0.656520896432(.*)"));
+    	System.out.println("Should be sqrtCov=full([0.8975226901358058,0.30327456509234374,0.1024797387051972,0.3032745653930625;0.30327456509234385,0.897522690135806,0.30327456539306225,0.10247973870519705;0.10247973870519728,0.30327456539306197,0.8975030567707566,0.3033326626456696;0.3032745653930621,0.10247973870519714,0.3033326626456696,0.8975030567707568])");
+		assertTrue(sqrtCov.toString().matches("(.*)0.8975(.*)0.3032(.*)0.89750(.*)"));
     	
     	StochVector.setSeed(123456);
     	IVector random = sv.createRealization();
     	System.out.println("random          ="+random);
-    	System.out.println("Should be random=[-0.3838887644308977,-0.3290483731175597,-0.7023584661001218,0.24635798307523635,-0.3838887644308983]");
-		assertTrue(random.toString().matches("(.*)-0.38388876443089(.*),-0.32904837311755(.*),-0.70235846610012(.*),0.246357983075236(.*),-0.3838887644308(.*)"));
+    	System.out.println("Should be random=[0.17025813743181678,-0.11842521482517256,-0.623919347942582,0.45698089244182905]");
+		assertTrue(random.toString().matches("(.*)0.1702(.*)-0.1184(.*)-0.6239(.*)0.4569(.*)"));
 
 
 		//assertEquals("[-0.3838887644308977,-0.3290483731175597,-0.7023584661001218,0.24635798307523635,-0.3838887644308983]",random.toString());
     	
-    	IVector someVector1 = new Vector("[0.0,0.0,0.0,0.0,0.0]");
-    	IVector someVector2 = new Vector("[1.0,0.0,0.0,0.0,0.0]");
+    	IVector someVector1 = new Vector("[0.0,0.0,0.0,0.0]");
+    	IVector someVector2 = new Vector("[1.0,0.0,0.0,0.0]");
     	double pdfVal1 = sv.evaluatePdf(someVector1);
     	double pdfVal2 = sv.evaluatePdf(someVector2);
-    	assertEquals(1343747.5, pdfVal1, 1.0);
-    	assertEquals(982746.9, pdfVal2, 1.0);
+    	assertEquals(0.063404, pdfVal1, 0.0001);
+    	assertEquals(0.018139, pdfVal2, 0.0001);
     }
 
     public void testSpatialCorrelation_xy_separable(){
