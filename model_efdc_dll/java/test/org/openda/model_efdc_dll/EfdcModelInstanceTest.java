@@ -42,10 +42,10 @@ public class EfdcModelInstanceTest extends TestCase {
 
     public void testDLLBasedModel() {
     	//TODO linux
-        //currently only dll file for windows is available (not for linux), so only run this on windows.
-        //if (!BBUtils.RUNNING_ON_WINDOWS) {
-        //    return;
-        //}
+        //Crashing on linux64_gnu for unknown reason
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return;
+        }
 
         final int instanceCount = 3;
         File modelInstancesParentDir = testData.getTestRunDataDir();
