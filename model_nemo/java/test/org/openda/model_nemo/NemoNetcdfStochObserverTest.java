@@ -51,9 +51,8 @@ public class NemoNetcdfStochObserverTest extends TestCase {
 		Time selection = new Time(56000);
 		IStochObserver subObs=observer.createSelection(selection);
 		ITime times[]=subObs.getTimes();
-		assertEquals("Checking date:",times.length,4413);
-		assertEquals(times[100].getMJD(), 56000, 0.001);
-		assertEquals(times[4412].getMJD(), 56000, 0.001);
+		assertEquals("Checking date:",times.length,1);
+		assertEquals(times[0].getMJD(), 56000, 0.001);
 	}
 
 	public void testGetValues(){
@@ -64,14 +63,13 @@ public class NemoNetcdfStochObserverTest extends TestCase {
 		Time selection = new Time(56000);
 		IStochObserver subObs=observer.createSelection(selection);
 		ITime times[]=subObs.getTimes();
-		assertEquals("Checking date:",times.length,4413);
-		assertEquals(times[100].getMJD(), 56000, 0.001);
-		assertEquals(times[4412].getMJD(), 56000, 0.001);
+		assertEquals("Checking date:",times.length,1);
+		assertEquals(times[0].getMJD(), 56000, 0.001);
 
 		IVector values = subObs.getValues();
 		double norm=values.norm2();
-		assertEquals("Checking number of measurements", 4413,values.getSize());
-		assertEquals("Checking norm of vector with measured values", 6708197.225,norm, 0.001);
+		assertEquals("Checking number of measurements", 143,values.getSize());
+		assertEquals("Checking norm of vector with measured values", 2.518143502444074,norm, 0.001);
 
 
 

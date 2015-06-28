@@ -73,11 +73,12 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 	String boundLabels[];
 	String outputLabels[];
 	String netcdfFile=null;
+	boolean debug=false;
 
 	public void initialize(File workingDir, String fileName, String[] arguments) {
 		this.workingDir = workingDir;
 		this.fileName = fileName;
-		System.out.println("ioObject : filename = "+fileName);
+		if (debug) System.out.println("ioObject : filename = "+fileName);
 
 		//Read NamelistFile;
 		try {
@@ -86,8 +87,6 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 			e.printStackTrace();
 		}
 
-
-		boolean debug=true;
 		if(debug){
 			for(String key: this.items.keySet()){
 				System.out.println("key="+key);
@@ -110,7 +109,7 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 	}
 
 	public void finish() {
-		System.out.println("Finish method is called for Namelist file");
+		if (debug) System.out.println("Finish method is called for Namelist file");
 		//update times
 		double startAsMjd = this.items.get("startTime").exchangeItem.getValuesAsDoubles()[0];
 		this.tstart = startAsMjd - this.refdate;
@@ -118,7 +117,7 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 		this.tstop = endAsMjd - this.refdate;
 
 		//write to file
-		System.out.println("Writing to file: "+this.workingDir+"/"+this.fileName);
+		if (debug) System.out.println("Writing to file: "+this.workingDir+"/"+this.fileName);
 		File outputFile = new File(this.workingDir,this.fileName);
 		try{
 			if(outputFile.isFile()){
@@ -140,11 +139,11 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 				}
 				else if (line.indexOf("   nn_it000")>=0){
 					int tstart_int=(int) (tstart*((60*60*24)/dt)+0.5);
-					System.out.println("tstart="+tstart);
+					if (debug) System.out.println("tstart="+tstart);
 					out.write("   nn_it000="+tstart_int+"\n");
 				}
 				else if (line.indexOf("   nn_itend")>=0){
-					System.out.println("tstop="+tstop);
+					if (debug) System.out.println("tstop="+tstop);
 					int tstop_int=(int) (tstop*((60*60*24)/dt)+0.5);
 					out.write("   nn_itend="+tstop_int+"\n");
 				//	tstop
@@ -306,7 +305,7 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 					else if (line.startsWith("&")){
 
 						String section= new String(line.trim());
-						System.out.println("New section: "+section);
+						if (debug) System.out.println("New section: "+section);
 					}
 				}
 			}
@@ -344,11 +343,12 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 				nDims[i]= (int) Integer.parseInt(str[1]);
 			}
 		}
-        if (nDims!=null){
-			System.out.println("fullName="+fullName+" nDims"+nDims.toString());
-		}
-		else {
-			System.out.println("fullName="+fullName+" NO-DIMENSIONS");
+		if (debug) {
+			if (nDims != null) {
+				System.out.println("fullName=" + fullName + " nDims" + nDims.toString());
+			} else {
+				System.out.println("fullName=" + fullName + " NO-DIMENSIONS");
+			}
 		}
 		return nDims;
 	}
@@ -357,7 +357,7 @@ public class NemoNamelistFileWrapper implements IoObjectInterface{
 		// The full name looks similar to
 		// hdivn(t=1, z=11, y=81, x=121)
 		String[] subStr = fullName.split("\\(");
-		System.out.println("Short name is "+subStr[0]);
+		if (debug) System.out.println("Short name is "+subStr[0]);
 		return subStr[0];
 	}
 }
