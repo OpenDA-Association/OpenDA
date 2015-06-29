@@ -153,7 +153,7 @@ C
           M1=MGTLAST(NCTL)
   200     CONTINUE
           M2=M1+1
-          IF (TIMEDAY.GT.GCSER(M2,NCTL)) THEN
+          IF ((TIMEDAY-EPS).GT.GCSER(M2,NCTL)) THEN
             M1=M2
             GOTO 200
           ELSE

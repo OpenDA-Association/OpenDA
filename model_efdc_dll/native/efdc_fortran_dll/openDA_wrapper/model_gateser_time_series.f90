@@ -86,9 +86,9 @@ contains
     gateser(id)%MQCTL = n
     gateser(id)%GCSER = 0.0
     gateser(id)%GCSER(n,:) = 1.0e30
+    gateser(id)%SEL1  = 0.0    
     gateser(id)%IAG   = 0
     gateser(id)%NGATE = 0
-    gateser(id)%SEL1  = 0.0
     gateser(id)%SEL2  = 0.0
     gateser(id)%GUPH  = 0.0
     gateser(id)%GQSUM = 0.0
@@ -235,6 +235,11 @@ contains
     integer :: n, m
     integer :: new_n,new_m, index
 
+    real, dimension(2, NQCTLM) :: sel2_orig, &
+        guph_orig, gqsum_orig
+    integer, dimension(2, NQCTLM) :: iag_orig, ngate_orig
+    integer, dimension(2,KCM, NQCTLM) :: gkmul_orig
+
     ret_val = -1
 
     n = gateser(id)%NDQCLT
@@ -298,6 +303,13 @@ contains
        if ( (gateser(id)%NDQCLT > NDQCLT_max ) & 
             .or. ( gateser(id)%NQCTLM  > NQCTLM_max )  ) then 
           ! enlarge EFDC arrays 
+          iag_orig(1:2,:)   = IAG(1:2,:) 
+          ngate_orig(1:2,:) = NGATE(1:2,:) 
+          sel2_orig(1:2,:)  = SEL2(1:2,:) 
+          gqsum_orig(1:2,:) = GQSUM(1:2,:) 
+          guph_orig(1:2,:)  = GUPH(1:2,:) 
+          gkmul_orig(1:2,:,:) = GKMUL(1:2,:,:) 
+          
           deallocate(GCSER, IAG, NGATE, SEL1, SEL2, GQSUM, GUPH, GKMUL)
           deallocate(HDIFCTD, HDIFCTL, QCTL) !?
 
@@ -315,6 +327,22 @@ contains
           allocate(GUPH(NDQCLT,NQCTLM)) ! GEOSR JGCHO 2011.10.27
           allocate(GKMUL(NDQCLT,KCM,NQCTLM)) ! GEOSR JGCHO 2011.10.27
       
+          IAG(1,:)   = iag_orig(1,:)   
+          NGATE(1,:) = ngate_orig(1,:) 
+          SEL2(1,:)  = sel2_orig(1,:)  
+          GQSUM(1,:) = gqsum_orig(1,:) 
+          GUPH(1,:)  = guph_orig(1,:)  
+          GKMUL(1,:,:) = gkmul_orig(1,:,:) 
+
+          do index = 2, new_n
+          
+          IAG(index,:)   = iag_orig(2,:)   
+          NGATE(index,:) = ngate_orig(2,:) 
+          SEL2(index,:)  = sel2_orig(2,:)  
+          GQSUM(index,:) = gqsum_orig(2,:) 
+          GUPH(index,:)  = guph_orig(2,:)  
+          GKMUL(index,:,:) = gkmul_orig(2,:,:) 
+          end do
           ! other arrays with this size
           allocate(HDIFCTD(NDQCLT,NQCTTM))               ! nodig?
           allocate(HDIFCTL(NDQCLT,NQCTTM))               ! nodig?
