@@ -25,6 +25,9 @@ import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openda.utils.Results;
 
 /**
@@ -41,6 +44,18 @@ public class DFlowFMTimeInfo implements IDataObject {
 	private String TStop = null;
 	private String[] DFlowFMTimeInfoId = new String[]{"start_time","end_time"};
 	private int NTimeInfoIds = DFlowFMTimeInfoId.length;
+	private static Map<String, String> timeFormat;
+
+
+
+	static {
+		timeFormat= new HashMap<String, String>();
+		timeFormat.put("S", "%.2f" );
+		timeFormat.put("M", "%.6f" );
+		timeFormat.put("H", "%.8f" );
+	}
+
+
 
 	private void initialize(File workingDir, String fileName, String[] arguments) {
 		if (arguments.length > 0) Results.putMessage("Initialize DFlowTimeInfo: additional arguments not used");
@@ -110,8 +125,8 @@ public class DFlowFMTimeInfo implements IDataObject {
 			setRestartOptions(dblTStart);
 		}
 		// round to 1 decimal place
-		tStartInMduUnit = Math.round(tStartInMduUnit*10)/10.0d;
-		TStart = tStartInMduUnit.toString();
+		// tStartInMduUnit = Math.round(tStartInMduUnit*10)/10.0d;
+		TStart =String.format(timeFormat.get( mduOptions.get("time","Tunit")), tStartInMduUnit);
 		mduOptions.put("time", "TStart", TStart);
 	}
 
@@ -131,7 +146,8 @@ public class DFlowFMTimeInfo implements IDataObject {
 		Double tStopInMduUnit = (dblTStop-dblTref)/ mduOptions.getTimeToMjdFactor();
 		// round to 1 decimal place
 	    tStopInMduUnit = Math.round(tStopInMduUnit*10)/10.0d;
-		TStop = tStopInMduUnit.toString();
+		//TStop = tStopInMduUnit.toString();
+		TStop =String.format(timeFormat.get( mduOptions.get("time","Tunit")), tStopInMduUnit);
 		mduOptions.put("time","TStop",TStop);
 	}
 

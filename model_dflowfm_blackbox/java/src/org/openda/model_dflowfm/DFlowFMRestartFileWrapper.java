@@ -68,9 +68,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	String netcdffileName = null;
 	HashMap<String,DFlowFMMetaExchangeItem> ExchangeItems = new LinkedHashMap<String,DFlowFMMetaExchangeItem>();
 	// No exchangeItems created for variables time*, NetLink*, BndLink*, FlowLink*, NetElem*, FlowElem*, NetNode*, wgs84 and projected_coordinate_system
-	// private String[] excludePattern = new String[]{"time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
-	// TODO: remove salt when bug in dflowm is fixed
-	private String[] excludePattern = new String[]{"salt","time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
+	private String[] excludePattern = new String[]{"time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
 
 
 	/**
@@ -272,7 +270,6 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			}
             inoutFile.finish();
 			inoutFile.close();
-
 
 		} catch (IOException e) {
 			e.printStackTrace();
