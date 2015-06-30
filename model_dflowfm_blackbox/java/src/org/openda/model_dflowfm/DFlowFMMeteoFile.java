@@ -109,6 +109,7 @@ public class DFlowFMMeteoFile implements IDataObject {
 
 		try {
 			Scanner input = new Scanner(file);
+			input.useLocale(Locale.US);
 			try {
 				String line;
 
@@ -186,7 +187,7 @@ public class DFlowFMMeteoFile implements IDataObject {
 					valuesVector = Vector.concatenate(valuesVector, new Vector(values));
 				}
 
-				exchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.Input);
+				exchangeItem = new ArrayExchangeItem(exchangeItemId, IExchangeItem.Role.Input);
 				exchangeItem.setValuesAsDoubles(valuesVector.getValues());
 				exchangeItem.setTimeInfo(new TimeInfo(timesVector.getValues()));
 			} finally {

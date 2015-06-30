@@ -35,23 +35,20 @@ public class DFlowFMMeteoFileTest extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(DFlowFMMeteoFile.class,"model_dflowfm_blackbox");
+        testData = new OpenDaTestSupport(DFlowFMMeteoFile.class,"model_dflowfm_blackbox");
         testRunDataDir = new File(testData.getTestRunDataDir(), "Meteofile");
     }
 
     public void testExistingfile(){
 
         // First write a test file
-    	File dataDir=testRunDataDir;
+        File dataDir=testRunDataDir;
 
-		DFlowFMMeteoFile frictionCoefficientFile = new DFlowFMMeteoFile();
-		String arg[] = new String[3];
-		arg[0] = "windx.amu";
-	
+        DFlowFMMeteoFile frictionCoefficientFile = new DFlowFMMeteoFile();
+        String arg[] = new String[3];
+        arg[0] = "windx.amu";
         frictionCoefficientFile.initialize(testRunDataDir, arg);
-
-		String ids[] = frictionCoefficientFile.getExchangeItemIDs();
-
+        String ids[] = frictionCoefficientFile.getExchangeItemIDs();
         frictionCoefficientFile.finish();
 
         // check output
@@ -60,8 +57,6 @@ public class DFlowFMMeteoFileTest extends TestCase {
         assertTrue(outputFile.exists());
         assertTrue(referenceFile.exists());
         assertTrue(testData.FilesAreIdentical(outputFile, referenceFile));
-
-
 
     }
 }
