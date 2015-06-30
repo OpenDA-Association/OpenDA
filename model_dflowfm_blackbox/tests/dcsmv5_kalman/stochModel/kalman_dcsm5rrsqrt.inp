@@ -1,0 +1,36 @@
+    OPENDA
+#
+      GENeral
+         NMODE = 30
+#
+WATerlevel_stations
+   S: ( STATion=' WICK'              , STANDard_dev=0.05 )
+   S: ( STATion=' NORTHSS'           , STANDard_dev=0.05 )
+   S: ( STATion=' LOWST'             , STANDard_dev=0.05 )
+   S: ( STATion=' SHEERNS'           , STANDard_dev=0.05 )
+   S: ( STATion=' DOVR'              , STANDard_dev=0.05 )
+   S: ( STATion=' VLISSGN'           , STANDard_dev=0.05 )
+   S: ( STATion=' HOEKVHLD'          , STANDard_dev=0.05 )
+   S: ( STATion=' DENHDR'            , STANDard_dev=0.05 )
+
+
+#
+WIND_noise
+   STATistics
+      STANdard_dev      = 0.00069
+      TIME_correlation  = 0.9
+      CHAR_Psi          = 19.
+   GRID
+      M_Increment=28,   M_Start=1
+      N_Increment=28,   N_Start=1
+#
+BOUNDaries
+  STATistics
+     STANdard_dev      = 0.
+     TIME_correlation  = 0.9
+  LINE_sections
+     S: SECtion=( 1, 5)
+     S: SECtion=( 6,13)
+     S: SECtion=(14,19)
+     S: SECtion=(20,23)
+#

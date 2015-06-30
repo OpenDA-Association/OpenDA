@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+    <modelConfig>
+        <file>./dflowfmModel.xml</file>
+    </modelConfig>
+    <vectorSpecification>
+        <state>
+            <noiseModel className="org.openda.noiseModels.MapsNoiseModelFactory" id="boundaryNoiseModel" workingDirectory=".">
+                <configFile>2DWindNoise.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="2DNoise" operation="add">
+                        <modelExchangeItem id="x_wind"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            <vector id="s1" ioObjectId="mapfile" elementId="s1" />
+            <vector id="ucx" ioObjectId="mapfile" elementId="ucx"/>
+            <vector id="ucy" ioObjectId="mapfile" elementId="ucy"/>
+        </state>
+        <predictor>
+            <vector id="WICK.waterlevel"/>
+			<vector id="NORTHSS.waterlevel" /> 
+			<vector id="LOWST.waterlevel" />
+			<vector id="SHEERNS.waterlevel" />
+			<vector id="DOVR.waterlevel" />
+			<vector id="VLISSGN.waterlevel" />
+			<vector id="HOEKVHLD.waterlevel" />
+			<vector id="DENHDR.waterlevel" />
+        </predictor>
+    </vectorSpecification>
+</blackBoxStochModel>
