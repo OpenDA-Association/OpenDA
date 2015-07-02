@@ -7,6 +7,7 @@
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/core/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/build_incl_dotnet_bridge.xml" />
+    <buildFile url="file://$PROJECT_DIR$/observers/build_castor.xml" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -129,6 +130,24 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration" detection-enabled="false" />
   <component name="IdProvider" IDEtalkID="C2C79F4DC58D73085D0C2DB2B53DDD2C" />
+  <component name="InspectionProjectProfileManager">
+    <profile version="1.0">
+      <option name="myName" value="Project Default" />
+      <option name="myLocal" value="true" />
+      <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WARNING" enabled_by_default="false">
+        <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />
+        <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
+      </inspection_tool>
+      <inspection_tool class="SpellCheckingInspection" enabled="true" level="TYPO" enabled_by_default="true">
+        <option name="processCode" value="false" />
+        <option name="processLiterals" value="false" />
+        <option name="processComments" value="false" />
+      </inspection_tool>
+    </profile>
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_PROFILE" value="true" />
+    <version value="1.0" />
+  </component>
   <component name="IssueNavigationConfiguration">
     <option name="links">
       <list>
