@@ -19,6 +19,7 @@
 */
 package org.openda.utils;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.utils.io.FileSupport;
 
 import java.io.*;
@@ -105,6 +106,11 @@ public class OpenDaTestSupport {
     static private String javaTestDirPrefix    = "java"+File.separator+"test";
     static private String publicProjectDirName = "openda_public";
 	static private String publicProjectDirNameDepricated = "public";
+
+	//global attribute names.
+	private static final String HISTORY_ATTRIBUTE = "history";
+	private static final String DATE_CREATED_ATTRIBUTE = "date_created";
+	private static final String CASE_NAME_ATTRIBUTE = "caseName";
 
 	// paths and files for this test
 	private File projectRoot    = null;
@@ -691,5 +697,39 @@ public class OpenDaTestSupport {
 		}
 
 		return content.toString();
+	}
+
+	/**
+	 * This can be used e.g. in unit tests to compare netcdf data in human readable text format instead of in binary format.
+	 *
+	 * @param textFileWithExpectedOutput
+	 * @param netcdfFileWithActualOutput
+	 * @param variableNames semicolon delimited list of variables of which the data should be used in the comparison.
+	 *                      If this is null or empty, then all variables are used.
+	 * @throws IOException
+	 */
+	public static void compareNetcdfFileInTextFormat(File textFileWithExpectedOutput, File netcdfFileWithActualOutput, String variableNames) throws IOException {
+		String expectedOutputString = readText(textFileWithExpectedOutput);
+		//convert netcdf data to text for text comparison.
+		String actualOutputString = NetcdfUtils.netcdfFileToString(netcdfFileWithActualOutput, variableNames);
+
+		//replace lines with history and date_created attributes by a dummy text before comparison,
+		//otherwise comparison might fail, because these attributes contain the current system time.
+		String historyAttributeRegularExpression = HISTORY_ATTRIBUTE + " = \".*\"";
+		String historyAttributeReplacement = HISTORY_ATTRIBUTE + " = \"actual " + HISTORY_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
+		String dateCreatedAttributeRegularExpression = DATE_CREATED_ATTRIBUTE + " = \".*\"";
+		String dateCreatedAttributeReplacement = DATE_CREATED_ATTRIBUTE + " = \"actual " + DATE_CREATED_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
+		String caseNameAttributeRegularExpression = CASE_NAME_ATTRIBUTE + " = \".*\"";
+		String caseNameAttributeReplacement = CASE_NAME_ATTRIBUTE + " = \"actual " + CASE_NAME_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
+
+		//TODO replace per line to avoid out of memory errors for large files. AK
+		String newExpectedOutputString = expectedOutputString.replaceFirst(historyAttributeRegularExpression, historyAttributeReplacement)
+				.replaceFirst(dateCreatedAttributeRegularExpression, dateCreatedAttributeReplacement)
+				.replaceFirst(caseNameAttributeRegularExpression, caseNameAttributeReplacement).trim();
+		String newActualOutputString = actualOutputString.replaceFirst(historyAttributeRegularExpression, historyAttributeReplacement)
+				.replaceFirst(dateCreatedAttributeRegularExpression, dateCreatedAttributeReplacement)
+				.replaceFirst(caseNameAttributeRegularExpression, caseNameAttributeReplacement).trim();
+		Assert.assertEquals("Actual output file '" + netcdfFileWithActualOutput + "' does not equal expected output file '" + textFileWithExpectedOutput + "'.",
+				newExpectedOutputString, newActualOutputString);
 	}
 }
