@@ -30,13 +30,13 @@ rem error messages
 rem
 
 :error_not_found
-echo ERROR in ./stochModel/bin/start_unstruc.bat:
+echo ERROR in ./stochModel/bin/start_dflowfm.bat:
 echo No installation directory of D-Flow FM found in PATH.
 echo PATH = %PATH%
 goto eof
 
 :error_unknown
-echo ERROR in ./stochModel/bin/start_unstruc.bat:
+echo ERROR in ./stochModel/bin/start_dflowfm.bat:
 echo problem in command "where %executable%"
 goto eof
 
