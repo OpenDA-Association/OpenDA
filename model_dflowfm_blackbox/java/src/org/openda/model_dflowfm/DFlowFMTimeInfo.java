@@ -26,6 +26,7 @@ import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import java.io.*;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.openda.utils.Results;
@@ -126,7 +127,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 		}
 		// round to 1 decimal place
 		// tStartInMduUnit = Math.round(tStartInMduUnit*10)/10.0d;
-		TStart =String.format(timeFormat.get( mduOptions.get("time","Tunit")), tStartInMduUnit);
+		TStart =String.format(Locale.US, timeFormat.get( mduOptions.get("time","Tunit")), tStartInMduUnit);
 		mduOptions.put("time", "TStart", TStart);
 	}
 
@@ -147,7 +148,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 		// round to 1 decimal place
 	    tStopInMduUnit = Math.round(tStopInMduUnit*10)/10.0d;
 		//TStop = tStopInMduUnit.toString();
-		TStop =String.format(timeFormat.get( mduOptions.get("time","Tunit")), tStopInMduUnit);
+		TStop =String.format(Locale.US, timeFormat.get( mduOptions.get("time","Tunit")), tStopInMduUnit);
 		mduOptions.put("time","TStop",TStop);
 	}
 

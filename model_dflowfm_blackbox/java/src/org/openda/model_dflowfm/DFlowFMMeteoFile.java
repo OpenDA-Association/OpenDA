@@ -250,13 +250,13 @@ public class DFlowFMMeteoFile implements IDataObject {
 			for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
 				double timeDeltaInUnits = times[timeIndex] - referenceDateInMjd;
 				timeDeltaInUnits /= unitFactorToMjd.get(timeUnits);
-				output.write(String.format(this.dateOutFormat, Math.round(timeDeltaInUnits), this.timeUnits, this.referenceDateString));
+				output.write(String.format(Locale.US,  this.dateOutFormat, Math.round(timeDeltaInUnits), this.timeUnits, this.referenceDateString));
 				output.newLine();
 				for (int m = 0; m < nRows; m++) {
 					String line = "";
 					String formatString = "%g ";
 					for (int n = 0; n < nCols; n++) {
-						line += String.format(formatString, values[timeIndex * nRows * nCols + m * nCols + n]);
+						line += String.format(Locale.US, formatString, values[timeIndex * nRows * nCols + m * nCols + n]);
 					}
 					output.write(line.trim());
 					output.newLine();
