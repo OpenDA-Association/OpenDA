@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaStochObserver.xsd">
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>stochObsUncertainties.xml</arg>
+	</uncertaintyModule>
+	<ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject">
+		<fileName>lake2d_his.nc</fileName>
+        <arg>true</arg>
+        <arg>false</arg>
+	</ioObject>
+</ioObjectStochObserver>
