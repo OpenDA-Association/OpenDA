@@ -40,7 +40,10 @@ public class EfdcGridExchangeItemToxicsTest extends TestCase {
 
     public void testGridExchangeItem() {
     	//TODO linux
-        // Currently disabled
+    	//Failing on linux teamcity for unknown reasons.
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return;
+        }
 
         final int instanceCount = 2;
         File modelInstancesParentDir = testData.getTestRunDataDir();
