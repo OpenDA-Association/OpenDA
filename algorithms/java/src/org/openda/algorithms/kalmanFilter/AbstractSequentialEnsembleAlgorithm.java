@@ -42,7 +42,7 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 
 
 	int ensembleSize = 100;
-	IStochModelInstance ensemble[] = null;
+	protected IStochModelInstance ensemble[] = null;
 
 	public boolean ensembleStochParameter=false;
 	public boolean ensembleStochForcing=true;
