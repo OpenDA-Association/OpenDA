@@ -190,6 +190,11 @@ public class OpenDaConfigurationReader {
 			vectorPrecisionIsFloat = applicationXML.getOptimizationSettings().getVectorPrecisionIsFloat();
 		}
 
+        boolean vectorIsNative = false;
+        if (applicationXML.getOptimizationSettings() != null) {
+            vectorIsNative = applicationXML.getOptimizationSettings().getVectorIsNative();
+        }
+
 
 		double timePrecision = 1.0/24.0/60.0/60.0; //1 second
 		if (applicationXML.getTimeSettings() != null) {
@@ -220,7 +225,7 @@ public class OpenDaConfigurationReader {
                 algorithmConfig, resultWriterConfigs,
 				restartInFile, restartOutFilePrefix, restartOutFileExtension,
 				restartOutFileTimes, restartOutFileTimeFormat,restartOutFileTimeTag,
-				doTiming, productionRun, timePrecision, vectorPrecisionIsFloat);
+				doTiming, productionRun, timePrecision, vectorPrecisionIsFloat, vectorIsNative);
     }
 
     private OpenDaResultWriterConfig parseResultWriterConfig(File openDaApplicationFile, OpenDaResultWriterXML resultWriterXML) {

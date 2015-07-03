@@ -47,6 +47,7 @@ public class OpenDaConfiguration {
 	private boolean productionRun;
 	private double timePrecision;
 	private boolean vectorPrecisionIsFloat;
+	private boolean vectorIsNative;
 
 	public OpenDaConfiguration(OpenDaComponentConfig stochObserverConfig,
 							   OpenDaComponentConfig stochModelFactoryConfig,
@@ -56,7 +57,7 @@ public class OpenDaConfiguration {
 							   File restartOutFilePrefix, String restartOutFileExtension,
 							   String restartOutFileTimes, String restartOutFileTimeFormat, boolean restartOutFileTimeTag,
 							   boolean doTiming, boolean productionRun,
-	                           double timePrecision, boolean vectorPrecisionIsFloat
+	                           double timePrecision, boolean vectorPrecisionIsFloat, boolean vectorIsNative
 	) {
 		componentConfigs = new OpenDaComponentConfig[NUM_COMPONENT_TYPES];
 		componentConfigs[STOCH_OBSERVER] = stochObserverConfig;
@@ -75,6 +76,7 @@ public class OpenDaConfiguration {
 		this.productionRun = productionRun;
 		this.timePrecision = timePrecision;
 		this.vectorPrecisionIsFloat = vectorPrecisionIsFloat;
+		this.vectorIsNative = vectorIsNative;
 	}
 
 	public OpenDaComponentConfig getComponentConfig(int componentIndex) {
@@ -132,5 +134,9 @@ public class OpenDaConfiguration {
 
 	public boolean getVectorPrecisionIsFloat(){
 		return vectorPrecisionIsFloat;
+	}
+
+	public boolean getVectorIsNative(){
+		return vectorIsNative;
 	}
 }

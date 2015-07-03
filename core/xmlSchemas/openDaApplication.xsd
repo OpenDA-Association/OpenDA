@@ -276,6 +276,11 @@
 				<xs:documentation>The storage and computation precision of the default OpenDA Vector class is float. Note this will not hava any impact on other (native) vector implementations used in OpenDA</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="VectorIsNative" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>The default vector used in OpenDA (class Vector) will use a native implementation (written in C) this is faster but at the cost of easy debugging of vector operations. Note the you need to have native OpenDA libraries compiled/installed on your system. Especially for debugging, not using the OpenDA start scripts, the libraties MUST be on you path</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>		
 	</xs:complexType>
 	<xs:complexType name="ApplicationTimeXML">
 		<xs:sequence>

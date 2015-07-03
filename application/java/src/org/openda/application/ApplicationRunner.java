@@ -388,6 +388,7 @@ public class ApplicationRunner implements Runnable{
 		OdaGlobSettings.setProductionRun(configuration.getProductionRun());
 		OdaGlobSettings.setTimePrecision(configuration.getTimePrecision());
 		OdaGlobSettings.setVectorPrecisionFloat(configuration.getVectorPrecisionIsFloat());
+        OdaGlobSettings.setVectorIsNative(configuration.getVectorIsNative());
 
         doReadRestart = configuration.getDoReadRestart();
         restartInFile = configuration.getRestartInFile();

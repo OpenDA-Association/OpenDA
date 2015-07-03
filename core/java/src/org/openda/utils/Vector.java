@@ -19,28 +19,38 @@
 */
 package org.openda.utils;
 
+import org.openda.costa.CtaVector;
 import org.openda.interfaces.IVector;
 import org.openda.utils.performance.OdaGlobSettings;
 
 import java.io.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Vector
  */
 public class Vector implements IVector, Externalizable {
 
-    VectorDouble dVec=null;
+    IVector dVec=null;
 	VectorFloat fVec=null;
 	public int maxFullExpandLength = 20;
 	private boolean doublePrecision=true;
+    private boolean nativeVector=false;
 
 
+	private void setAndCheckSettigs(){
+		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		nativeVector=OdaGlobSettings.getVectorIsNative();
+		if (doublePrecision==false && nativeVector==true){
+			throw new RuntimeException("You have specified to use single precision vectors in combination with native vector implementation. This combination is not yet supported. Either choose to use non-native vectors or select double precision or add support to OpenDA doing some programming ;-)");
+		}
+	}
 
 
     // simple constructor for derived simple-tree-vector
     public Vector() {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
     }
 
     /**
@@ -50,9 +60,15 @@ public class Vector implements IVector, Externalizable {
      * @param n Length of the vector
      */
     public Vector(int n) {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
+
 		if (doublePrecision){
-			dVec=new VectorDouble(n);
+			if (nativeVector){
+				dVec = (IVector) new CtaVector(n);
+			}
+			else {
+				dVec = new VectorDouble(n);
+			}
 		}
 		else {
 			fVec=new VectorFloat(n);
@@ -66,9 +82,15 @@ public class Vector implements IVector, Externalizable {
      * @param values content of the vector as array of doubles
      */
     public Vector(double[] values) {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
 		if (doublePrecision){
-			dVec=new VectorDouble(values);
+			if (nativeVector){
+				dVec = (IVector) new CtaVector(values.length);
+				dVec.setValues(values);
+			}
+			else {
+				dVec=new VectorDouble(values);
+			}
 		}
 		else {
 			fVec=new VectorFloat(values);
@@ -82,7 +104,7 @@ public class Vector implements IVector, Externalizable {
      * @param values content of the vector as array of ints
      */
     public Vector(int[] values) {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
 		if (doublePrecision){
 			dVec=new VectorDouble(values);
 		}
@@ -98,7 +120,7 @@ public class Vector implements IVector, Externalizable {
      * @param v content of the new vector, provide as source vector
      */
     public Vector(IVector v) {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
 		if (doublePrecision){
 			dVec=new VectorDouble(castVector(v));
 		}
@@ -114,7 +136,7 @@ public class Vector implements IVector, Externalizable {
      * @param valuestring content of the vector as array string, eg. "[1.0,2.0]"
      */
     public Vector(String valuestring) {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
 		if (doublePrecision){
 			dVec=new VectorDouble(valuestring);
 		}
@@ -124,7 +146,7 @@ public class Vector implements IVector, Externalizable {
     }
 
     public Vector(List<IVector> vectorList) {
-		doublePrecision=!OdaGlobSettings.getVectorPrecisionFloat();
+		setAndCheckSettigs();
 		if (doublePrecision){
 			dVec=new VectorDouble(vectorList);
 		}
@@ -142,7 +164,12 @@ public class Vector implements IVector, Externalizable {
 
     public String toString(int maxFullExpandLength) {
 		if (doublePrecision){
-			return dVec.toString(maxFullExpandLength);
+			if (dVec instanceof VectorDouble) {
+				return ((VectorDouble) dVec).toString(maxFullExpandLength);
+			}
+			else{
+				return dVec.toString();
+			}
 		}
 		else {
 			return fVec.toString(maxFullExpandLength);
@@ -379,7 +406,12 @@ public class Vector implements IVector, Externalizable {
 	 */
     public void invert() {
 		if (doublePrecision){
-			dVec.invert();
+			if (dVec instanceof VectorDouble) {
+				((VectorDouble) dVec).invert();
+			}
+			else {
+				throw new RuntimeException("Hmm, method is using invert with is not officially part of the vector interface. Please do not use a special default vector inplementation");
+			}
 		}
 		else {
 			fVec.invert();
@@ -388,7 +420,12 @@ public class Vector implements IVector, Externalizable {
 
 	public void serialize(PrintStream outputStream) {
 		if(doublePrecision){
-			dVec.serialize(outputStream);
+			if (dVec instanceof VectorDouble) {
+				((VectorDouble) dVec).serialize(outputStream);
+			}
+			else {
+				outputStream.print(this.toString());
+			}
 		}
 		else {
 			fVec.serialize(outputStream);
