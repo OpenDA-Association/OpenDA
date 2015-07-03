@@ -11,14 +11,22 @@
 		<state>
   			<vector id="concentration1.grid_init" />
   			<vector id="concentration2.grid_init" />
-			<noiseModel>
+			<noiseModel id="boundaryNoiseModel1" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+               			<configFile>BoundaryNoise1.xml</configFile>
+               			<exchangeItems>
+                  			<exchangeItem id="source.factory1.discharge" operation="add">
+                     				<modelExchangeItem id="source.factory1.discharge"/>
+                  			</exchangeItem>
+               			</exchangeItems>
+           		</noiseModel>
+		<!--	<noiseModel>
 				<vector id="source.factory2.discharge"/>
 				<ar1Model operation="add">
 					<stdDevColouredNoised value="40.0"/>
 					<decorrelationTimeScale>PT60M</decorrelationTimeScale>
 					<noiseModelPeriod>PT1M</noiseModelPeriod>
 				</ar1Model>
-			</noiseModel>
+			</noiseModel> -->
 		</state>
 		<predictor>
 			<vector id="locC.concentration1" />
