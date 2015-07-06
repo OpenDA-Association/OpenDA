@@ -219,7 +219,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
         feedComputationSpanToModel(currentTime, targetTime);
 
-        flushAndClearDataObjects();
+        flushAndClearDataObjects(true);
 
         // perform computation actions
         System.out.println("Start Instance computation, targetTime=" + targetTime);
@@ -352,7 +352,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
         //before the state is saved, the state exchangeItems are finished (if they are used).
         //This way the saved state will represent the latest data from the memory,
         //instead of previous data that happened to be still present in the state files.
-        flushAndClearDataObjects();
+        flushAndClearDataObjects(true);
 
 		// copy the model's restart files to a subdirectory for the current time stap,
 		// and gather them in a file based model state
@@ -376,11 +376,11 @@ public class BBModelInstance extends Instance implements IModelInstance {
 					" for " + this.getClass().getName() + ".restoreInternalState");
 		}
 
-        //flush and clear ioObjects and dataObjects before restoring a previous state. This is needed so that
+        //clear ioObjects and dataObjects before restoring a previous state. This is needed so that
         //after a previous state has been restored, the state exchangeItems are initialized again from scratch
         //(when they are used). This way the state exchangeItems will represent the data from the restored state,
         //instead of previous data that happened to be still present in the memory.
-        flushAndClearDataObjects();
+        flushAndClearDataObjects(false);
 
 		FileBasedModelState modelState = (FileBasedModelState) savedInternalState;
 		File savedStateDir = checkRestartDir(getCurrentTime(), false);
@@ -425,7 +425,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
         checkForPendingComputeActions();
 
-        flushAndClearDataObjects();
+        flushAndClearDataObjects(false);
 
         System.out.println("Start Instance finalization");
 		if (!bbModelConfig.skipModelActionsIfInstanceDirExists()) {
@@ -549,19 +549,22 @@ public class BBModelInstance extends Instance implements IModelInstance {
         }
     }
 
-    private void flushAndClearDataObjects() {
-        // flush and remove all IoObjects
-        for (IoObjectInterface ioObjectInterface : ioObjects.values()) {
-            ioObjectInterface.finish();
+    private void flushAndClearDataObjects(boolean flushDataObjects) {
+        if (flushDataObjects) {
+            //flush all IoObjects.
+            for (IoObjectInterface ioObjectInterface : ioObjects.values()) {
+                ioObjectInterface.finish();
+            }
+
+            //flush all DataObjects.
+            for (IDataObject dataObject : dataObjects.values()) {
+                dataObject.finish();
+            }
         }
+
+        //remove all IoObjects and DataObjects
         ioObjects.clear();
-
-        // flush and remove all DataObjects
-        for (IDataObject dataObject : dataObjects.values()) {
-            dataObject.finish();
-        }
         dataObjects.clear();
-
         bbExchangeItems.clear();
     }
 

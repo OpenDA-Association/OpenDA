@@ -535,11 +535,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	}
 
 	public void finish() {
-		//note: this method is not called after a single black box run from OpenDaInFews. In that case the output data
-		//should be flushed to the outputDataObjects before the run completes. This happens in methods writeModelOutputData and writeAnalysisOutputData.
-		//In that case also the analysis data for the last timeStep is not written to the netcdf file, but this is not really a problem
-		//for a single blackbox model run, since in that case no analyses (state updates) are made anyway.
-
 		//write output data after last analysis (state update).
 		writeAnalysisOutputData();
 
