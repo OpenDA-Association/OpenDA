@@ -568,6 +568,7 @@ public class NetcdfDataObject implements IComposableDataObject {
      * @param variable
      * @return String exchangeItemId.
      */
+    //TODO never use standard name or long name as exchangeItemId, since these are not always unique within a file. AK
     private static String createExchangeItemId(Variable variable) {
         String exchangeItemId;
 
