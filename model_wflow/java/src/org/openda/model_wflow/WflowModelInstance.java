@@ -478,8 +478,10 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * @return modelState object that refers to the saved state.
 	 */
 	public IModelState loadPersistentState(File persistentStateZipFile) {
+		Results.putMessage(this.getClass().getSimpleName() + ": unzipping state files from zip file " + persistentStateZipFile.getAbsolutePath() + " to directory " + this.stateInputDir.getAbsolutePath());
+
 		//unzip the given persistentStateZipFile to the folder with input state files.
-		WflowModelState persistentState = new WflowModelState(this.stateInputDir);
+		FileBasedModelState persistentState = new WflowModelState(this.stateInputDir);
 		persistentState.setZippedStateFile(persistentStateZipFile);
 		persistentState.restoreState();
 		this.stateStoredOnDisk = persistentState;
@@ -497,6 +499,9 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 		if (savedInternalState != this.stateStoredOnDisk) {
 			throw new IllegalStateException("Requested state does not exist anymore. A wflow model instance can only store one ModelState at a time.");
 		}
+
+		Results.putMessage(this.getClass().getSimpleName() + ": restoring internal state from input state files for instance " + this.modelRunDir.getAbsolutePath());
+
 		//load state from disk.
 		this.adapter.runResume();
 	}
@@ -510,20 +515,25 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * @return modelState object that refers to the saved state.
 	 */
 	public IModelState saveInternalState() {
+		Results.putMessage(this.getClass().getSimpleName() + ": saving internal state to output state files for instance " + this.modelRunDir.getAbsolutePath());
+
 		//save state to disk.
 		this.adapter.runSuspend();
 		//create a FileBasedModelState object that refers to the folder with output state files.
-		WflowModelState persistentState = new WflowModelState(this.stateOutputDir);
+		FileBasedModelState persistentState = new WflowModelState(this.stateOutputDir);
 		this.stateStoredOnDisk = persistentState;
 		return persistentState;
 	}
 
 	private class WflowModelState extends FileBasedModelState {
+		private final File stateFilesDirectory;
+
 		/**
 		 * @param stateFilesDirectory the directory that contains the model state files.
 		 */
 		public WflowModelState(File stateFilesDirectory) {
 			super(stateFilesDirectory);
+			this.stateFilesDirectory = stateFilesDirectory;
 		}
 
 		/**
@@ -538,6 +548,8 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 			if (this != stateStoredOnDisk) {
 				throw new IllegalStateException("This state does not exist anymore. A wflow model instance can only store one ModelState at a time.");
 			}
+
+			Results.putMessage(this.getClass().getSimpleName() + ": zipping state files from directory " + this.stateFilesDirectory.getAbsolutePath() + " to zip file " + savedStateFile.getAbsolutePath());
 			super.savePersistentState(savedStateFile);
 		}
 	}
