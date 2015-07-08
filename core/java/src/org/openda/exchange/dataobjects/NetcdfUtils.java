@@ -1380,4 +1380,14 @@ public class NetcdfUtils {
 
         return true;
     }
+
+	public static double convertUdUnitsTimeToMjd(double udUnitsTime, String udUnitsString) {
+		try {
+			DateUnit dateUnit = new DateUnit(udUnitsString);
+			Date date = dateUnit.makeDate(udUnitsTime);
+			return Time.milliesToMjd(date.getTime());
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot parse time " + udUnitsTime + " using time units '" + udUnitsString + "'. Message was: " + e.getMessage(), e);
+		}
+	}
 }
