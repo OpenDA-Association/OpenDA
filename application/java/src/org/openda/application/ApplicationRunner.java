@@ -256,6 +256,7 @@ public class ApplicationRunner implements Runnable{
 
             }
         } catch (Exception e) {
+			finishApplication();
             Results.putProgression("Error preparing algorithm.");
             Results.putProgression("Error message: "+e.getMessage());
             synchronized (this) {
@@ -287,6 +288,7 @@ public class ApplicationRunner implements Runnable{
 					this.writeRestart();
 				}
             } catch (Exception e) {
+				finishApplication();
                 Results.putProgression("Error running algorithm step.");
                 Results.putProgression("Error message: "+e.getMessage());
                 Results.putProgression("Error type :"+e.getClass().getSimpleName());
@@ -311,17 +313,27 @@ public class ApplicationRunner implements Runnable{
 		synchronized (this) {
             changeStatus(Status.FINISHED);
 		}
-		algorithm.finish();
-		if (stochModelFactory != null) {
-			stochModelFactory.finish();
-		}
-		if (stochObserver != null) {
-			stochObserver.free();
-		}
+		finishApplication();
 		Results.putProgression((this.status == Status.STOPPED) ? "Application Stopped" : "Application Done");
 		Results.reset();
 	}
 
+	protected void finishApplication() {
+		try {
+			if (algorithm != null) {
+				algorithm.finish();
+			}
+			if (stochModelFactory != null) {
+				stochModelFactory.finish();
+			}
+			if (stochObserver != null) {
+				stochObserver.free();
+			}
+		} catch (Exception e) {
+			//catch and log any exceptions during finish application, otherwise these might "overshadow" any exceptions thrown during the run.
+			Results.putMessage("Exception during call to finish application, message was: " + e.getMessage());
+		}
+	}
 
 	/* ===========================================================================================
 	 * 
@@ -342,6 +354,7 @@ public class ApplicationRunner implements Runnable{
 			algorithm.setStochComponents(stochObserver, stochModelFactory);
 			stochObserver.setParent(algorithm);
 		} catch (Exception e) {
+			finishApplication();
             if (runningInTest) {
                 throw new RuntimeException(e);  
             }

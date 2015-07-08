@@ -67,35 +67,32 @@ public class ApplicationRunnerSingleThreaded extends ApplicationRunner {
 
 		timerRunTotal.start();
 		timerRunInit.start();
-		Results.putProgression("Initializing Algorithm");
-		if (doReadRestart) {
-			IModelState savedInternalState = this.algorithm.loadPersistentState(restartInFile);
-			this.algorithm.restoreInternalState(savedInternalState);
-		} else {
-			this.algorithm.prepare();
-			if (doWriteRestart) {
-				this.writeRestart();
+		try {
+			Results.putProgression("Initializing Algorithm");
+			if (doReadRestart) {
+				IModelState savedInternalState = this.algorithm.loadPersistentState(restartInFile);
+				this.algorithm.restoreInternalState(savedInternalState);
+			} else {
+				this.algorithm.prepare();
+				if (doWriteRestart) {
+					this.writeRestart();
+				}
 			}
-		}
-		timerRunInit.stop();
-		Results.putProgression("Algorithm initialized");
-		timerRun.start();
-		while (this.algorithm.hasNext()) {
-			Results.putProgression("Algorithm starting next step");
-			this.algorithm.next();
-			if (doWriteRestart) {
-				this.writeRestart();
+			timerRunInit.stop();
+			Results.putProgression("Algorithm initialized");
+			timerRun.start();
+			while (this.algorithm.hasNext()) {
+				Results.putProgression("Algorithm starting next step");
+				this.algorithm.next();
+				if (doWriteRestart) {
+					this.writeRestart();
+				}
 			}
-		}
-		timerRun.stop();
-		timerRunFinish.start();
-		Results.putProgression("Algorithm Done");
-		algorithm.finish();
-		if (stochModelFactory != null) {
-			stochModelFactory.finish();
-		}
-		if (stochObserver != null) {
-			stochObserver.free();
+			timerRun.stop();
+			timerRunFinish.start();
+			Results.putProgression("Algorithm Done");
+		} finally {
+			finishApplication();
 		}
 		Results.putProgression("Application Done");
 		Results.reset();
