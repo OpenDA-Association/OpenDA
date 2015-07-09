@@ -12,8 +12,14 @@
 		<workingDirectory>./algorithms</workingDirectory>
 		<configString>simulationAlgorithm.xml</configString>
 	</algorithm>
+	<resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>simulation_results.m</configFile>
 	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_results.py</configFile>
+	</resultWriter>
+	</resultWriters>
 </openDaApplication>

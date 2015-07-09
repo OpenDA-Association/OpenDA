@@ -202,9 +202,23 @@ def collectOutput(c1, c2, output):
     #print 'c1='+str(c1)
     #print 'c2='+str(c2)
 
-def writeOutput(output, c1, c2):
-    outFile=open(output['output_file'], 'w')
+def writeOutput(outFile, c1, c2):
     print "writing output to file %s" % output['output_file']
+    outFile.write("source_values= {}\n")
+    outFile.write("bound_values= {}\n")
+    outFile.write("output_values= {}\n")
+    outFile.write("source_labels=["+','.join([ "'"+label+"'" for label in input['source_labels']])+"]\n")
+    outFile.write("source_locations=["+','.join(map(str, input['source_locations']))+"]\n")
+    outFile.write("source_substance=["+','.join(map(str, input['source_substance']))+"]\n")
+    source_locations=input['source_locations']
+    for i in range(len(source_locations)):
+        if (source_locations[i]<0):
+            source_locations[i] += len(source_locations)
+    outFile.write("source_locations=["+','.join(map(str, source_locations[:]))+"]\n")
+    source_values=input['source_values']
+    for i in range(len(source_locations)):
+        outFile.write("source_values['"+input['source_labels'][i]+"']=["+','.join(map(str, source_values[input['source_labels'][i]]))+"]\n")
+
     outFile.write("output_labels=["+','.join([ "'"+label+"'" for label in output['output_labels']])+"]\n")
     output_locations=output['output_locations']
     for i in range(len(output_locations)):
@@ -220,7 +234,6 @@ def writeOutput(output, c1, c2):
     outFile.write("refdate='%s'\n"%output['refdate'])
     outFile.write("unit='%s'\n" % output['unit'])
     outFile.write("time=[%f,%f,%f] \n" %(output['time'][0],output['time'][1],output['time'][2])) 
-    outFile.close()
 
 def writeMatlabOutput(matlabOutFile, c1, c2):
     matlabOutFile.write("output_labels=["+','.join([ "'"+label+"'" for label in output['output_labels']])+"];\n")
@@ -256,6 +269,15 @@ def writeMatlabMapOutput(matlabOutFile, c1, c2, timeIndex):
     matlabOutFile.write("c1_map{"+str(timeIndex)+"}=["+','.join(map(str, c1))+"];\n")
     matlabOutFile.write("c2_map{"+str(timeIndex)+"}=["+','.join(map(str, c2))+"];\n")
 
+def writePythonMapOutputInit(pythonOutFile):
+    pythonOutFile.write("c1_map={}\n")
+    pythonOutFile.write("c2_map={}\n")
+
+def writePythonMapOutput(pythonOutFile, c1, c2, timeIndex):
+    pythonOutFile.write("c1_map["+str(timeIndex-1)+"]=["+','.join(map(str, c1))+"]\n")
+    pythonOutFile.write("c2_map["+str(timeIndex-1)+"]=["+','.join(map(str, c2))+"]\n")
+
+
 def frange(start, end=None, inc=None):
     "A range function, that does accept float increments..."
     if end == None:
@@ -285,6 +307,9 @@ if __name__ == '__main__':
         input=defaultInput()
     output=initOutput(input)
     matlabOutFile=open(output['matlab_output_file'], 'w')
+    pythonOutFile=open(output['output_file'], 'w')
+    writePythonMapOutputInit(pythonOutFile)
+
     print 'main computations'
     tIndex = 0
     c1Now=input['c1'][:]
@@ -297,7 +322,9 @@ if __name__ == '__main__':
         collectOutput(c1Now, c2Now, output)
         tIndex+=1
         writeMatlabMapOutput(matlabOutFile, c1Now, c2Now, tIndex)
-    writeOutput(output, c1Now, c2Now)
+        writePythonMapOutput(pythonOutFile, c1Now, c2Now, tIndex)
+    writeOutput(pythonOutFile, c1Now, c2Now)
     writeMatlabOutput(matlabOutFile, c1Now, c2Now)
     matlabOutFile.close()
+    pythonOutFile.close()
     print 'simulation ended successfully'

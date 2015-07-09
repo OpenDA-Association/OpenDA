@@ -14,8 +14,14 @@
 		<workingDirectory>./algorithms</workingDirectory>
 		<configString>dudAlgorithm.xml</configString>
 	</algorithm>
+	<resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>dud_results.m</configFile>
 	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>dud_results.py</configFile>
+	</resultWriter>
+	</resultWriters>
 </openDaApplication>
