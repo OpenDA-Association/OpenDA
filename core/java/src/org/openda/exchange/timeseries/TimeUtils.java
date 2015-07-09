@@ -29,6 +29,7 @@ import java.util.TimeZone;
 
 import org.openda.utils.SortUtils;
 import org.openda.utils.Time;
+import ucar.nc2.units.DateUnit;
 
 /**
  * This class provides some static functions to convert between time formats. For now this is between Modified Julian Date and a
@@ -516,4 +517,27 @@ public class TimeUtils {
     public static int findMatchingTimeIndex(double values[], double toFind, double tolerance){
     	return SortUtils.findMatchingIndex(values, toFind, tolerance);
     }
+
+	public static double udUnitsTimeToMjd(double udUnitsTime, String udUnitsTimeUnitsString) {
+		DateUnit dateUnit = createDateUnit(udUnitsTimeUnitsString);
+		try {
+			Date date = dateUnit.makeDate(udUnitsTime);
+			return Time.milliesToMjd(date.getTime());
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot parse time " + udUnitsTime + " using UDUNITS time units '" + udUnitsTimeUnitsString + "'. Message was: " + e.getMessage(), e);
+		}
+	}
+
+	public static double mjdToUdUnitsTime(double mjd, String udUnitsTimeUnitsString) {
+		DateUnit dateUnit = createDateUnit(udUnitsTimeUnitsString);
+		return dateUnit.makeValue(new Date(Time.mjdToMillies(mjd)));
+	}
+
+	private static DateUnit createDateUnit(String udUnitsTimeUnitsString) {
+		try {
+			return new DateUnit(udUnitsTimeUnitsString);
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot create DateUnit from UDUNITS time units '" + udUnitsTimeUnitsString + "'. Message was: " + e.getMessage(), e);
+		}
+	}
 }

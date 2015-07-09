@@ -20,7 +20,11 @@
 package org.openda.exchange.timeseries;
 
 import junit.framework.TestCase;
-//import java.util.TimeZone;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 
 public class TimeUtilsTest extends TestCase {
@@ -163,6 +167,45 @@ public class TimeUtilsTest extends TestCase {
 		assertEquals("t[2]",55432.5,out4[12],delta);
 	}
 
+	public void testUdUnitsTimeToMjd() {
+		double timeStepDurationInModelUnits = 86400;
+		String timeUnitsString = "seconds since 1970-01-01 00:00:00.0 00:00";
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		calendar.set(2012, Calendar.JANUARY, 1, 0, 0, 0);
+		double startTime = calendar.getTimeInMillis() / 1000;
+		calendar.set(2012, Calendar.JANUARY, 21, 0, 0, 0);
+		double endTime = calendar.getTimeInMillis() / 1000;
+
+		double startTimeMjd = TimeUtils.udUnitsTimeToMjd(startTime, timeUnitsString);
+		assertEquals(55927, startTimeMjd, 1e-6);
+
+		double endTimeMjd = TimeUtils.udUnitsTimeToMjd(endTime, timeUnitsString);
+		assertEquals(55947, endTimeMjd, 1e-6);
+
+		//convert time step duration from model time units to MJD.
+		double timeStepDurationInDays = timeStepDurationInModelUnits * (endTimeMjd - startTimeMjd) / (endTime - startTime);
+		assertEquals(1, timeStepDurationInDays, 1e-6);
+	}
+
+	public void testMjdToUdUnitsTime() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS Z");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+		double timeStepDurationInDays = 1;
+		String timeUnitsString = "seconds since 1970-01-01 00:00:00.0 00:00";
+		double startTimeMjd = 55927;
+		double endTimeMjd = 55947;
+
+		double startTime = TimeUtils.mjdToUdUnitsTime(startTimeMjd, timeUnitsString);
+		assertEquals(1325376000, startTime, 1e-6);
+		assertEquals("2012-01-01 00:00:00 000 +0000", dateFormat.format(startTime * 1000));
+
+		double endTime = TimeUtils.mjdToUdUnitsTime(endTimeMjd, timeUnitsString);
+		assertEquals(1325376000 + 20 * 24 * 3600, endTime, 1e-6);
+		assertEquals("2012-01-21 00:00:00 000 +0000", dateFormat.format(endTime * 1000));
+
+		//convert time step duration from MJD to model time units.
+		double timeStepDurationInModelUnits = timeStepDurationInDays * (endTime - startTime) / (endTimeMjd - startTimeMjd);
+		assertEquals(86400, timeStepDurationInModelUnits, 1e-6);
+	}
 }
-
-
