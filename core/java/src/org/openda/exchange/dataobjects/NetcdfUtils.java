@@ -1381,13 +1381,26 @@ public class NetcdfUtils {
         return true;
     }
 
-	public static double convertUdUnitsTimeToMjd(double udUnitsTime, String udUnitsString) {
+	public static double convertUdUnitsTimeToMjd(double udUnitsTime, String udUnitsTimeUnitsString) {
+		DateUnit dateUnit = createDateUnit(udUnitsTimeUnitsString);
 		try {
-			DateUnit dateUnit = new DateUnit(udUnitsString);
 			Date date = dateUnit.makeDate(udUnitsTime);
 			return Time.milliesToMjd(date.getTime());
 		} catch (Exception e) {
-			throw new RuntimeException("Cannot parse time " + udUnitsTime + " using time units '" + udUnitsString + "'. Message was: " + e.getMessage(), e);
+			throw new RuntimeException("Cannot parse time " + udUnitsTime + " using UDUNITS time units '" + udUnitsTimeUnitsString + "'. Message was: " + e.getMessage(), e);
+		}
+	}
+
+	public static double convertMjdToUdUnitsTime(double mjd, String udUnitsTimeUnitsString) {
+		DateUnit dateUnit = createDateUnit(udUnitsTimeUnitsString);
+		return dateUnit.makeValue(new Date(Time.mjdToMillies(mjd)));
+	}
+
+	private static DateUnit createDateUnit(String udUnitsTimeUnitsString) {
+		try {
+			return new DateUnit(udUnitsTimeUnitsString);
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot create DateUnit from UDUNITS time units '" + udUnitsTimeUnitsString + "'. Message was: " + e.getMessage(), e);
 		}
 	}
 }
