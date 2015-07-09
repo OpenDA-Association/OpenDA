@@ -5,8 +5,8 @@
       <maximumHeapSize value="256" />
       <maximumStackSize value="32" />
     </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/core/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/build_incl_dotnet_bridge.xml" />
+    <buildFile url="file://$PROJECT_DIR$/core/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/observers/build_castor.xml" />
   </component>
   <component name="BuildJarProjectSettings">
