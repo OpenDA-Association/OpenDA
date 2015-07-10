@@ -24,7 +24,10 @@
 		<workingDirectory>.</workingDirectory>
 		<configFile>enkf_results2.py</configFile>
 		<selection>
-			<resultItem outputLevel="All"  maxSize="100000"  />
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x_a" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x_f_central" outputLevel="All"  maxSize="100000"   />
 		</selection>
 	</resultWriter>
 	</resultWriters>
