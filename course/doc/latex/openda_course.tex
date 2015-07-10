@@ -1,11 +1,31 @@
 \documentclass[a4paper,10pt]{article}
 %\usepackage[utf8x]{inputenc}
+\usepackage{listings}
+\usepackage{color}
 
 %opening
 \title{OpenDA course and exercises}
 \author{Nils van Velzen, Martin Verlaan, Stef Hummel}
 
 \begin{document}
+
+\lstset{ %
+ basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+ breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+ breaklines=true,                 % sets automatic line breaking
+ captionpos=b,                    % sets the caption-position to bottom
+ escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+ extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+ frame=single,	                   % adds a frame around the code
+ keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+ numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+ numbersep=5pt,                   % how far the line-numbers are from the code
+ numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+ showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+ showstringspaces=false,          % underline spaces within strings only
+ showtabs=false,                  % show tabs within strings adding particular underscores
+ tabsize=2,	                   % sets default tabsize to 2 spaces
+}
 
 \maketitle
 
@@ -54,31 +74,54 @@ results.
       written to {\tt simulation\_unperturbed\_results.m}, You can make a
       plot using Octave or Matlab. Load the results using the function
       {\tt load\_results}:
-{\footnotesize
-\begin{verbatim}
+      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
        [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
        plot3(xyz(1,:),xyz(2,:),xyz(3,:));
        grid on;
-\end{verbatim}
-}
-       Now make a plot of only the first variable of the model ({\tt xyz(1,:)}).
-{\footnotesize
-\begin{verbatim}
+      \end{lstlisting}
+      Or with python. We are using the packages numpy and matplotlib. Depending
+      on your environment you may need to import these packages.
+      \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
+      import numpy as np
+      import matplotlib.pyplot as plt
+      \end{lstlisting}
+      and next make the plot
+      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
+      #load data
+      import simulation_unperturbed_results as sim
+      # make 3d line plot
+      from mpl_toolkits.mplot3d import Axes3D
+      fig1 = plt.figure()
+      ax = fig1.add_subplot(111, projection='3d')
+      # note we start counting at 0 now
+      Axes3D.plot(ax,sim.x[:,0],sim.x[:,1],sim.x[:,2])
+      \end{lstlisting}
+      
+      Now make a plot of only the first variable of the model ({\tt xyz(1,:)}).
+      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
       plot(t,xyz(1,:),'b')
-\end{verbatim}
-}
+      \end{lstlisting}
+      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
+      plt.figure()
+      plt.plot(sim.model_time,sim.x[:,0],'b')
+      \end{lstlisting}
 %
 
 \item Observations of the first variable are available as well. Make a plot of
       the observations together with the simulation results.
-{\footnotesize
-\begin{verbatim}
-       [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
+      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
+      [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
        plot(t,xyz(1,:),'b')
        hold on
        plot(tobs,obs,'r*');
-\end{verbatim}
-}
+       hold off
+      \end{lstlisting}
+      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
+      import simulation_unperturbed_results as sim
+      plt.plot(sim.model_time,sim.x[:,0])
+      plt.plot(sim.analysis_time,sim.obs,'r*')
+      \end{lstlisting}
+
 \item Then you can start an alternative simulation with the lorenz model that
        starts with a slightly different initial condition using the
        configuration file {\tt simulation\_perturbed.oda} that starts with
@@ -87,8 +130,7 @@ results.
 \item  Visualize the unperturbed and perturbed results in a single plot. Make
        a 3d trajectory plot and a 2d plot in time of first variable. Do you see
        the solutions diverging like the theory predicts?
-{\footnotesize
-\begin{verbatim}
+      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
        [t1,xyz1,tobs1,obs1]=load_results('simulation_unperturbed_results');
        [t2,xyz2,tobs2,obs2]=load_results('simulation_perturbed_results');
        figure(1)
@@ -104,8 +146,20 @@ results.
        plot(t2,xyz2(1,:),'r')
        hold off
        legend('unperturbed','perturbed')
-\end{verbatim}
-}
+      \end{lstlisting}
+      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
+      #load unperturbed and perturbed results
+      import simulation_unperturbed_results as sim
+      import simulation_perturbed_results as simp
+      fig3 = plt.figure()
+      ax = fig3.add_subplot(111, projection='3d')
+      Axes3D.plot(ax,sim.x[:,0],sim.x[:,1],sim.x[:,2],'b')
+      Axes3D.plot(ax,simp.x[:,0],simp.x[:,1],simp.x[:,2],'r')
+
+      fig4 = plt.figure()
+      plt.plot(sim.model_time,sim.x[:,0],'b')
+      plt.plot(simp.model_time,simp.x[:,0],'r')
+      \end{lstlisting}
 
 \item Create a modified example that uses an ensemble forecast with perturbed
       initial conditions. You can do this in a number of steps:
@@ -117,37 +171,32 @@ results.
             org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation.
       \item Write the configuration file of the Ensemble algorithm (e.g. named
             {\tt algorithm/EnsSimulation.xml}) with the following content:
-{\footnotesize
-\begin{verbatim}
-<?xml version="1.0" encoding="UTF-8"?>
-<sequentialAlgorithm>
-   <analysisTimes type="fromObservationTimes" ></analysisTimes>
-   <ensembleSize>5</ensembleSize>
-   <ensembleModel stochParameter="false"
-                  stochForcing="false"
-                  stochInit="true" />
-</sequentialAlgorithm>
-\end{verbatim}
-}
+      \begin{lstlisting}[language=XML,frame=single,caption={XML-input for sequentialAlgorithm}]
+      <?xml version="1.0" encoding="UTF-8"?>
+      <sequentialAlgorithm>
+         <analysisTimes type="fromObservationTimes" ></analysisTimes>
+         <ensembleSize>5</ensembleSize>
+         <ensembleModel stochParameter="false"
+                        stochForcing="false"
+                        stochInit="true" />
+      </sequentialAlgorithm>
+      \end{lstlisting}
       \end{itemize}
+      
 \item Run this ensemble simulation and read the results in Octave or
       Matlab using {\tt load\_ensemble.m}.
       \begin{itemize}
       \item make a plot of the first variable of the five ensemble
             members in a single plot
-{\footnotesize
-\begin{verbatim}
-[t,ens]=load_ensemble('simulation_Ens_results');
-ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
-plot(t,ens1)
-\end{verbatim}
-}
+      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
+      [t,ens]=load_ensemble('simulation_Ens_results');
+      ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
+      plot(t,ens1)
+      \end{lstlisting}
       \item make a plot of the mean of the first variable
-{\footnotesize
-\begin{verbatim}
-plot(t,mean(ens1,2))
-\end{verbatim}
-}
+      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
+      plot(t,mean(ens1,2))
+      \end{lstlisting}
       \item run the same simulation again\footnote{For large models or
             ensemble sizes a huge amount of output is generated. Your
             run will be much faster when you disable the messages in
@@ -170,17 +219,16 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
         files from exercise 1 as template. Hint: the Ensemble Kalman filter
         is called org.openda.algorithms.kalmanFilter.EnKF. The algorithm
         configuration file has the following content
-{\footnotesize
-\begin{verbatim}
-<?xml version="1.0" encoding="UTF-8"?>
-<EnkfConfig>
-   <ensembleSize>10</ensembleSize>
-   <ensembleModel stochParameter="false"
-                  stochForcing="false"
-                  stochInit="true" />
-</EnkfConfig>
-\end{verbatim}
-}
+      \begin{lstlisting}[language=XML,frame=single,caption={XML-input for EnKF algorithm}]
+      <?xml version="1.0" encoding="UTF-8"?>
+      <EnkfConfig>
+         <ensembleSize>10</ensembleSize>
+         <ensembleModel stochParameter="false"
+                        stochForcing="false"
+                        stochInit="true" />
+      </EnkfConfig>
+      \end{lstlisting}
+
   \item Plot the ensemble mean of the first model variable and the observations.
         With some luck the solution should track the observations.\\
         Tip: use the scripts {\tt load\_obs.m} and {\tt load\_ensemble.m} for reading the
