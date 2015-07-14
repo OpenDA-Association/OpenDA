@@ -47,11 +47,6 @@ public class EfdcRestartTest extends TestCase {
     }
     
     public void testRestartDllBasedModel() {
-    	//TODO linux
-        //Failing on linux for unknown reason
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
-            return;
-        }
 
         final int instanceCount = 2;
         File modelInstancesParentDir = testData.getTestRunDataDir();

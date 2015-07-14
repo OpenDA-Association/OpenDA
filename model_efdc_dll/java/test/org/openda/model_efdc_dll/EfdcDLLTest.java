@@ -42,11 +42,6 @@ public class EfdcDLLTest extends TestCase {
     }
 
     public void testModelDLL() {
-    	//TODO linux
-        //Problems running this test on linux. No clear reason why.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
-            return;
-        }
 
         final int instanceCount = 2;
         EfdcDLL[] modelDLLs = new EfdcDLL[instanceCount];

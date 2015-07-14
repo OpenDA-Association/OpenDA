@@ -39,11 +39,6 @@ public class EfdcScalarExchangeItemTest extends TestCase {
     }
 
     public void testScalarExchangeItem() {
-    	//TODO linux
-    	//Failing on linux teamcity for unknown reasons.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
-            return;
-        }
 
         final int instanceCount = 2;
         File modelInstancesParentDir = testData.getTestRunDataDir();

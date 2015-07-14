@@ -41,11 +41,6 @@ public class EfdcModelInstanceTest extends TestCase {
     }
 
     public void testDLLBasedModel() {
-    	//TODO linux
-        //Crashing on linux64_gnu for unknown reason
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
-            return;
-        }
 
         final int instanceCount = 3;
         File modelInstancesParentDir = testData.getTestRunDataDir();
