@@ -39,5 +39,10 @@ plt.plot(sim.model_time,sim.x[:,0])
 plt.plot(simp.model_time,simp.x[:,0],'r')
 
 #load ensemble and plot
-#import simulation_ensemble_results as ens
-#plot(ens.analysis_time,np.transpose([ens.xi_f_0[:,0],ens.xi_f_1[:,0],ens.xi_f_2[:,0],ens.xi_f_3[:,0]]))
+import ensemble
+(t,ens)=ensemble.load_ensemble()
+ens1=ens[:,0,:] #note we start counting at 0
+fig5 = plt.figure()
+plt.plot(t,ens1)
+fig6 = plt.figure()
+plt.plot(t,np.mean(ens1,1))
