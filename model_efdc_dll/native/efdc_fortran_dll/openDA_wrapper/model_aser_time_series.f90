@@ -270,7 +270,8 @@ contains
   ! --------------------------------------------------------------------------
   ! Function for enlarging (if required) the arrays in instance memory 
   ! and EFDC memory, if longer time series are passed than are currently 
-  ! allocated 
+  ! allocated
+  ! Note: Only the NDASER dimension is considered
   ! --------------------------------------------------------------------------
   function enlarge_aser_time_series(id,size_n,size_m) result(ret_val)
 
@@ -294,7 +295,12 @@ contains
     type(aser_time_series) :: aser_orig
     integer :: n, m
     integer :: new_n,new_m
-
+    real, allocatable, dimension(:,:) :: TASER_orig, &!  (NDASER,NASERM)
+                                         RAIN_orig, EVAP_orig, &
+                                         TDRY_orig, TWET_orig, &
+                                         CLOUD_orig, SOLSWR_orig, &
+                                         PATM_orig
+    
     ret_val = -1
 
     n = aser(id)%NDASER
@@ -353,7 +359,26 @@ contains
        if ( (aser(id)%NDASER > ndaser_max ) & 
             .or. ( aser(id)%NASER  > naser_max )  ) then 
           ! enlarge EFDC arrays 
-          deallocate(MASER, TASER, EVAP, RAIN, TDRY, TWET, CLOUD, SOLSWR, PATM)
+          ! deallocate(MASER)
+          allocate(TASER_orig(n, NASERM))
+          allocate(EVAP_orig(n, NASERM))
+          allocate(RAIN_orig(n, NASERM))
+          allocate(TDRY_orig(n, NASERM))
+          allocate(TWET_orig(n, NASERM))
+          allocate(CLOUD_orig(n, NASERM))
+          allocate(SOLSWR_orig(n, NASERM))
+          allocate(PATM_orig(n, NASERM))
+          
+          TASER_orig = TASER  
+          EVAP_orig  = EVAP
+          RAIN_orig  = RAIN
+          TDRY_orig  = TDRY
+          TWET_orig  = TWET
+          CLOUD_orig = CLOUD
+          SOLSWR_orig= SOLSWR 
+          PATM_orig  = PATM
+          
+          deallocate(TASER, EVAP, RAIN, TDRY, TWET, CLOUD, SOLSWR, PATM)
           deallocate(SOLFRD, SOLSRD, TSSRD)
 
           ndaser_max = aser(id)%NDASER
@@ -361,7 +386,7 @@ contains
           NDASER = ndaser_max
           NASERM = naser_max
 
-          allocate(MASER(NASERM))
+          !allocate(MASER(NASERM))
           allocate(TASER(NDASER, NASERM))
           allocate(EVAP(NDASER, NASERM))
           allocate(RAIN(NDASER, NASERM))
@@ -371,10 +396,23 @@ contains
           allocate(SOLSWR(NDASER, NASERM))
           allocate(PATM(NDASER, NASERM))
 
+          TASER(1:n,1:m)  = TASER_orig
+          EVAP(1:n,1:m)   = EVAP_orig
+          RAIN(1:n,1:m)   = RAIN_orig
+          TDRY(1:n,1:m)   = TDRY_orig
+          TWET(1:n,1:m)   = TWET_orig
+          CLOUD(1:n,1:m)  = CLOUD_orig
+          SOLSWR(1:n,1:m) = SOLSWR_orig
+          PATM(1:n,1:m)   = PATM_orig
+          
           ! other (temporary) arrays with this size
           ALLOCATE(SOLFRD(NDASER))
           ALLOCATE(SOLSRD(NDASER))
           ALLOCATE(TSSRD(NDASER))
+          
+         deallocate(TASER_orig, EVAP_orig, RAIN_orig, TDRY_orig)
+         deallocate(TWET_orig, CLOUD_orig, SOLSWR_orig, PATM_orig)
+         
        end if
        ret_val = 0
     else 

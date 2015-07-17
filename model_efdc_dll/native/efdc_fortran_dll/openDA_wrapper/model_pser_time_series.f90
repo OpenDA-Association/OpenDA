@@ -154,7 +154,8 @@ contains
   ! --------------------------------------------------------------------------
   ! Function for enlarging (if required) the arrays in instance memory 
   ! and EFDC memory, if longer time series are passed than are currently 
-  ! allocated 
+  ! allocated
+  ! Note: only de NDPSER dimension is considered
   ! --------------------------------------------------------------------------
   function enlarge_pser_time_series(id,size_n,size_m) result(ret_val)
 
@@ -177,6 +178,8 @@ contains
     type(pser_time_series):: psert_orig
     integer :: n, m
     integer :: new_n,new_m
+    REAL,ALLOCATABLE,DIMENSION(:,:)::PSER_orig
+    REAL,ALLOCATABLE,DIMENSION(:,:)::TPSER_orig
 
     ret_val = -1
 
@@ -211,16 +214,25 @@ contains
 
        if (psert(id)%NDPSER > ndpser_max) then
           if (debug) print*, 'reallocating PSER times series variables'
-          deallocate(MPSER, TPSER, PSER)
+          allocate(PSER_orig(n,m))
+          allocate(TPSER_orig(n,m))
+          
+          TPSER_orig = TPSER
+          PSER_orig  = PSER
+          deallocate(TPSER, PSER)
 
           ndpser_max = psert(id)%NDPSER
           npser_max = psert(id)%NPSER
           NDPSER = ndpser_max
           NPSERM = npser_max
 
-          allocate(MPSER(NPSERM))
           allocate(TPSER(NDPSER, NPSERM))
           allocate(PSER(NDPSER, NPSERM))
+          
+          TPSER(1:n,1:m) = TPSER_orig
+          PSER(1:n,1:m)= PSER_orig
+          deallocate(TPSER_orig, PSER_orig)
+          
 
        end if
        ret_val = 0

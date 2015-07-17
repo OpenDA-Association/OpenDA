@@ -161,7 +161,8 @@ contains
   ! --------------------------------------------------------------------------
   ! Function for enlarging (if required) the arrays in instance memory 
   ! and EFDC memory, if longer time series are passed than are currently 
-  ! allocated 
+  ! allocated
+  ! Note: only de NDQSER dimension is considered
   ! --------------------------------------------------------------------------
   function enlarge_qser_time_series(id,size_n,size_k,size_m) result(ret_val)
 
@@ -186,7 +187,10 @@ contains
     type(qser_time_series) :: qsert_orig
     integer :: n, m, k
     integer :: new_n,new_m, new_k
-
+    
+    REAL,ALLOCATABLE,DIMENSION(:,:,:)::QSER_orig
+    REAL,ALLOCATABLE,DIMENSION(:,:)::TQSER_orig
+        
     n = qsert(id)%NDQSER
     m = qsert(id)%NQSER 
     k = qsert(id)%KCM
@@ -222,6 +226,11 @@ contains
        if (qsert(id)%NDQSER > ndqser_max ) then
           if (debug) write(debug_file_handle,*) 'reallocating QSER times series variables'
 
+          allocate(QSER_orig(n,k,m))
+          allocate(TQSER_orig(n,m))
+          
+          TQSER_orig = TQSER
+          QSER_orig  = QSER
           deallocate(TQSER, QSER)
 
           ndqser_max = qsert(id)%NDQSER
@@ -231,7 +240,12 @@ contains
 
           allocate(TQSER(NDQSER, NQSERM))
           allocate(QSER(NDQSER, KCM ,NQSERM))
-         
+
+          TQSER(1:n,1:m) = TQSER_orig
+          QSER(1:n,1:k,1:m)= QSER_orig
+          deallocate(TQSER_orig, QSER_orig)
+          
+          
        end if
        ret_val = 0
     else 

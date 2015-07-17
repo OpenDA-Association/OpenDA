@@ -79,12 +79,12 @@ contains
 
     !allocate(csert(id)%NCSER(NSTVM)) 
     allocate(csert(id)%MCSER(m,NSTVM))
-    allocate(csert(id)%TCSER(n,m,NSTVM))    
+    allocate(csert(id)%TCSER(n,m,NSTVM))
     allocate(csert(id)%CSER(n,k,m,NSTVM))
 
     csert(id)%MCSER = n
     csert(id)%TCSER = 0.0 
-    csert(id)%TCSER(n,:,:) = 1.0e30
+    csert(id)%TCSER(2,:,:) = 730
     csert(id)%CSER  = 0.0
 
   end subroutine model_cser_allocate
@@ -181,7 +181,8 @@ contains
   ! --------------------------------------------------------------------------
   ! Function for enlarging (if required) the arrays in instance memory 
   ! and EFDC memory, if longer time series are passed than are currently 
-  ! allocated 
+  ! allocated
+  ! Note only the NDCSER dimension is considered
   ! --------------------------------------------------------------------------
   function enlarge_cser_time_series(id,size_n,size_k,size_m) result(ret_val)
 
@@ -202,6 +203,9 @@ contains
 
     ! locals
     type(cser_time_series) :: csert_orig
+    REAL,ALLOCATABLE,DIMENSION(:,:,:)::TCSER_orig
+    REAL,ALLOCATABLE,DIMENSION(:,:,:,:)::CSER_orig
+
     integer :: n, m, k
     integer :: new_n,new_m, new_k
     
@@ -217,11 +221,12 @@ contains
     
     if ((size_n > csert(id)%NDCSER)) then 
 
+       !reallocate instance memory
        if (debug) print*, "enlarge_cser_time_series", id, n, m 
        if (debug) print*, "enlarge_cser_time_series", id, size_n, size_m, size_k 
 
        allocate(csert_orig%MCSER(m,NSTVM))
-       allocate(csert_orig%TCSER(n,m,NSTVM))    
+       allocate(csert_orig%TCSER(n,m,NSTVM))
        allocate(csert_orig%CSER(n,k,m,NSTVM))
 
        csert_orig%MCSER = csert(id)%MCSER  
@@ -239,21 +244,32 @@ contains
        deallocate(csert_orig%TCSER)
        deallocate(csert_orig%CSER)
 
+       ! reallocate model memory       
        if (csert(id)%NDCSER > ndcser_max ) then
           if (debug) print*, 'reallocating CSER times series variables'
 
-          deallocate(MCSER, TCSER, CSER)
+          allocate(CSER_orig(n,k,m,NSTVM))
+          allocate(TCSER_orig(n,m,NSTVM))
+          
+          TCSER_orig = TCSER  
+          CSER_orig  = CSER
+          
+          deallocate(TCSER, CSER)
           !deallocate(CSERT_EFDC, MCTLAST, TACSER, TCCSER)
-
+          
           NDCSER = csert(id)%NDCSER
           NCSERM = csert(id)%NCSERM
           KCM = csert(id)%KCM
           NSTVM = csert(id)%NSTVM
 
-          allocate(MCSER(NCSERM,NSTVM))
           allocate(TCSER(NDCSER, NCSERM, NSTVM))
           allocate(CSER(NDCSER, KCM ,NCSERM, NSTVM))
 
+          TCSER(1:n,1:m,:) = TCSER_orig
+          CSER(1:n,1:k,1:m,:)= CSER_orig
+                  
+          deallocate(TCSER_orig, CSER_orig)
+          
           !ALLOCATE(CSERT_EFDC(KCM,0:NCSERM,NSTVM))
           !ALLOCATE(MCTLAST(NCSERM,NSTVM))
           !ALLOCATE(TACSER(NCSERM,NSTVM))
