@@ -12,6 +12,7 @@
 		<workingDirectory>./algorithm</workingDirectory>
 		<configString>EnkfAlgorithm.xml</configString>
 	</algorithm>
+	<resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>enkf_results.m</configFile>
@@ -19,4 +20,12 @@
 			<resultItem outputLevel="All"  maxSize="100000"  />
 		</selection>
 	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_results.py</configFile>
+                 <selection>
+			<resultItem outputLevel="Normal"  maxSize="100000"  />
+		</selection>
+	</resultWriter>
+	</resultWriters>
 </openDaApplication>
