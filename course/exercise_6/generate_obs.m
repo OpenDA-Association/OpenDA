@@ -15,20 +15,21 @@ function generate_obs(indx, step, stdev)
    X=[x{:}];
    X=reshape(X,n,nt);
    Obs=X(indx,:);
-   indx2=1:step:nt;
+   indx2=step:step:nt;
    Obs=Obs(:,indx2);
    model_time=[model_time{:}];
    tObs=model_time(indx2);
 
-   FID=fopen('obs.cvs','w');
+   FID=fopen('obs.csv','w');
 
    plot(tObs, Obs);
 
 
-   fdisp(FID,'time,index,value,std');
+   fprintf(FID,'time,index,value,std\n');
    for i=1:length(tObs)
       for j=1:size(Obs,1)
-         fdisp(FID,[num2str(tObs(i)),',',num2str(indx(j)),',',num2str(Obs(j,i)),',',num2str(stdev)]);
+         %fprintf(FID,[num2str(tObs(i)),',',num2str(indx(j)),',',num2str(Obs(j,i)),',',num2str(stdev)]);
+         fprintf(FID,'%f,%f,%f,%f\n', tObs(i),indx(j),Obs(j,i),stdev);
       end
    end
 

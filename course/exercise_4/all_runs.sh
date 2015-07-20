@@ -2,11 +2,15 @@
 #
 # This script runs the standard tests
 #
-# It is assumed that SIMONA is set before running this script!
 
 #
-# Kalman filtering  
+# Simulation and Dud
 #
 
 oda_run.sh Simulation.oda
 oda_run.sh Dud.oda
+
+#ipython --matplotlib=gtk all_runs.py
+ipython --matplotlib=gtk all_runs.py
+
+

@@ -13,8 +13,20 @@
 		<workingDirectory>./algorithm</workingDirectory>
 		<configString>SequentialEnsembleSimulation.xml</configString>
 	</algorithm>
+	<resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>ensemble_simulation_results.m</configFile>
+		<selection>
+                        <resultItem outputLevel="Verbose"  maxSize="100000"  />
+                </selection>
 	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>ensemble_simulation_results.py</configFile>
+		<selection>
+                        <resultItem outputLevel="Verbose"  maxSize="100000"  />
+                </selection>
+	</resultWriter>
+	</resultWriters>
 </openDaApplication>

@@ -184,7 +184,7 @@ results.
       \end{itemize}
       
 \item Run this ensemble simulation and read the results in Octave or
-      Matlab using {\tt load\_ensemble.m}.
+      Matlab using {\tt load\_ensemble.m} and slightly different for python
       \begin{itemize}
       \item make a plot of the first variable of the five ensemble
             members in a single plot
@@ -193,9 +193,21 @@ results.
       ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
       plot(t,ens1)
       \end{lstlisting}
+      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
+      import ensemble
+      import simulation_ensemble_results as res
+      (t,ens)=ensemble.reshape_ensemble(res)
+      ens1=ens[:,0,:] #note we start counting at 0
+      fig5 = plt.figure()
+      plt.plot(t,ens1)
+      \end{lstlisting}
       \item make a plot of the mean of the first variable
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
       plot(t,mean(ens1,2))
+      \end{lstlisting}
+      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
+      fig6 = plt.figure()
+      plt.plot(t,np.mean(ens1,1))
       \end{lstlisting}
       \item run the same simulation again\footnote{For large models or
             ensemble sizes a huge amount of output is generated. Your
@@ -232,7 +244,7 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
   \item Plot the ensemble mean of the first model variable and the observations.
         With some luck the solution should track the observations.\\
         Tip: use the scripts {\tt load\_obs.m} and {\tt load\_ensemble.m} for reading the
-        data, cf. Exercise1.
+        data into matlab (cf. Exercise1), or {\tt load\_ensemble.py} for python.
   %oda_run EnKf.oda
   %plot1.m
  \item Look at the observation input file of the StochObserver. The
@@ -284,7 +296,7 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
 \item The model represents a "user" model that is not part of the OpenDA distribution. Therefore you have to copy the
  model jar-file to the bin directory of your OpenDA installation. In this way OpenDA can find this model.
 \item Run the model ({\tt waveSimulation.oda}) and visualize the model results
-  ({\tt plot\_movie.m}). Do not forget to add the jar-file of the model to the
+  ({\tt plot\_movie.m} or {\tt plot\_movie.py}). Do not forget to add the jar-file of the model to the
   {\tt CLASSPATH} variable, or to copy the jar-file into the bin directory of
   your OpenDA version
 \item Adjust the input files in order to run the model with stochastic
@@ -298,6 +310,7 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
   generate and write gain matrices at specified times. Find where and how this
   is specified in the input.
 \item Plot the columns of the gain matrices. (The script {\tt plot\_gains.m}
+  or {\tt plot\_gains.py}
   plots the water level part of the gain matrices). What do these columns mean?
 \item (Re)generate the gain matrices using different numbers of ensembles. When
   you compare the gain matrices, what do you notice. Note: The algorithm will
@@ -312,8 +325,8 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
     reinstate the resultWriter if you have switched it off),
   \item the various steady state gains.
   \end{itemize}
- you can use the scripts {\tt plot\_ons\_sim.m}, {\tt plot\_ons\_ens.m}
- and\\ {\tt plot\_ons\_steady.m}.
+ you can use the scripts {\tt plot\_obs\_sim.m}, {\tt plot\_obs\_ens.m}
+ and\\ {\tt plot\_obs\_steady.m} and similar routines for python.
 
 \item Generate (observations) gain matrices but now for only a single
   observation. Make sure that the observed values are exactly the same as in
@@ -351,7 +364,8 @@ implements the following equations:
 
 \begin{itemize}
 \item Run the model from the command line, not using OpenDA. The model
-  generates the output files: {\tt reactive\_pollution\_model.output} and
+  generates the output files: {\tt reactive\_pollution\_model.output} ,
+  {\tt reactive\_pollution\_model\_output.m} and
   \\ {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
   of the output in order to study the behavior of the model. In order to check
   the model (plotted) results you can look at the input file as well.
@@ -471,11 +485,11 @@ becomes convenient to be able to restart from a previous run.
 
 \section{Exercise 5: A black box model - Filtering}
 
-This exercise uses the same model as exercise~5: a model written in python that
+This exercise uses the same model as exercise~4: a model written in python that
 describes the advection of two chemical species. Please read the start of
-exercise~5 if you are not familiar with this model yet. A description of the
+exercise~4 if you are not familiar with this model yet. A description of the
 black box wrapper configuration, usually consisting of three xml files, can
-also be found in exercise~5.
+also be found in exercise~4.
 
 \begin{itemize}
 \item Run the model from the command line, not using OpenDA. The model
@@ -486,7 +500,7 @@ also be found in exercise~5.
 \end{itemize}
 
 The Java-routines needed to access the model input and output files are the
-same as in exercise~5. Make sure that the jar-file is added to OpenDa, either
+same as in exercise~4. Make sure that the jar-file is added to OpenDA, either
 by using the CLASSPATH environment variable or by copying the jar-file into the
 bin directory of your OpenDA version.
 
@@ -504,7 +518,8 @@ box wrapper configuration the model results appear:
    polluteModel.xml} and {\tt polluteStochModel.xml}, and recognize the various
    items mentioned above (in exercise\_5). Run the model within OpenDA by using
    the \\{\tt SequentialSimulation.oda} configuration. Use the script {\tt
-     plot\_movie.m} to visualize the model results. Compare the results with
+   plot\_movie.m} (or {\tt plot\_movie.py} for python) to visualize the model 
+   results. Compare the results with
    those from the run you executed without using OpenDA. Note that the actual
    model results are available in the directory where the black box wrapper has
    let the model perform its computation: {\tt stochModel/output/work0}.

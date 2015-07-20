@@ -1,12 +1,29 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Plot movie of model simulation output. 
-Uses directly the output of the model, not the output from OpenDA
+Make plots for exercise 4
 
 @author: verlaanm
 """
 
+#load numpy and matplotlib if needed
+import matplotlib.pyplot as plt
+
+#load data
+import dud_results as dud
+
+# create plot of cost and parameter
+plt.close("all")
+f,ax = plt.subplots(2,1)
+ax[0].plot(dud.costTotal);
+ax[0].set_xlabel("model run");
+ax[0].set_ylabel("cost function");
+ax[1].plot(dud.evaluatedParameters);
+ax[1].set_xlabel('model run');
+ax[1].set_ylabel('change of reaction\_time [seconds]');
+plt.savefig("figure_1.png")
+
+#plot_movie
 import shutil
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +33,6 @@ from time import sleep
 import reactive_pollution_model_original as ori
 import reactive_pollution_model_truth as truth
 
-plt.close("all")
 f,ax = plt.subplots(2,1)
 plt.ion()
 
