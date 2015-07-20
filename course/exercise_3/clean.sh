@@ -9,5 +9,6 @@ rm -f *_results.py
 rm -f openda_logfile.txt
 rm -f *.orp
 rm -f *.png
+rm -f *.pyc
 rm -f OpenDATimings_*
 rm -rf enkf_wave_*

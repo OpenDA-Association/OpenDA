@@ -12,3 +12,4 @@ rm -f *.orp
 rm -f OpenDATimings_*
 rm -f restart_*.xml
 rm -f *.png
+rm -f *.pyc

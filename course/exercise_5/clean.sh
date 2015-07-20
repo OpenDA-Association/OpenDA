@@ -12,4 +12,5 @@ rm -f *_results2.py
 rm -f openda_logfile.txt
 rm -f *.orp
 rm -f *.png
+rm -f *.pyc
 rm -f OpenDATimings_*

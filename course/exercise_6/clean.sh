@@ -15,4 +15,4 @@ rm -rf simple_advection_model/MANIFEST.MF
 rm -rf simple_advection_model/bin
 rm -rf simple_advection_model/build
 rm -rf simple_advection_model/javadoc
-
+rm -f *.pyc
