@@ -1,0 +1,45 @@
+# ignore everything in this directory
+#[^.]*
+
+# ignore these directories
+/bin/
+/bin_external/
+/build/
+/build-test/
+/javadoc/
+
+bild_backup.xml
+
+# Compiled source
+*.class
+*.dll
+*.o
+*.so
+
+# packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# eclipse generated files
+.classpath
+.project

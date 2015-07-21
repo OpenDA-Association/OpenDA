@@ -1,0 +1,10 @@
+# Location : Catchment
+# Position : (2.5,20.9)
+# Source : observed
+# Quantity : discharge_mm
+# Analyse time: most recent
+# Timezone : GMT
+25999 NaN
+26000 0.8
+26001 0.962206
+26435 NaN

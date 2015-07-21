@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxWrapperConfig.xsd">
+    
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+        <alias key="instanceDir"/>
+        <alias key="templateDir"/>
+        <alias key="binDir"/>
+        <alias key="outputFile"/>
+        <alias key="inputFileInitialStates"/>
+        <alias key="inputFileParameters"/>
+        <alias key="inputFileTimes"/>
+        <alias key="forcingPrecipFile"/>
+        <alias key="forcingPotETFile"/>
+    </aliasDefinitions>
+    
+    <run>
+        
+        <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+        
+        <!-- computation actions -->
+        <!-- define actions relative to working dir. -->
+        <computeActions>
+            <action macExe="%binDir%/matlab_batcher.sh" workingDirectory="%instanceDir%" >
+            	<!--<arg>"/Users/beamarti/Documents/openDAdev/public/model_RainfallRunoffZhang/tests/model/bin/"</arg> -->
+            	<arg>"same_as_script"</arg>
+                <arg>"rainfallRunoffModel"</arg>
+                <checkReturnStatus expect="0"/>
+            	<checkOutput file="%outputFile%"/>
+            </action>
+            
+        </computeActions>
+        
+        <additionalComputeActions></additionalComputeActions>
+        <!-- actions to finalize (e.g. cleanup) an instance -->
+        <finalizeActions></finalizeActions>
+        
+    </run>
+    
+    <inputOutput>
+        
+        <!-- input file initialStates.txt -->
+        <!-- read initial soil moisture and groundwater storage -->
+        <ioObject className="org.openda.model_RainfallRunoffZhang.InitialStatesWrapper">
+            <file>%inputFileInitialStates%</file>
+            <id>initialStates</id>
+            <arg>%instanceDir%%instanceNumber%</arg>
+        </ioObject>
+        
+        <!-- Read parameters file -->
+        <ioObject className="org.openda.model_RainfallRunoffZhang.ParametersWrapper">
+        	<file>%inputFileParameters%</file>
+        	<id>parameters</id>
+        	<arg>%instanceDir%%instanceNumber%</arg>
+        </ioObject>
+        
+        <!-- Read time specs -->
+        <!-- -->
+         <ioObject className="org.openda.model_RainfallRunoffZhang.TimesWrapper">
+        	<file>%inputFileTimes%</file>
+        	<id>timeConfig</id>
+        	<arg>%instanceDir%%instanceNumber%</arg>
+        </ioObject>
+        
+        <!-- Read model output -->
+        <ioObject className="org.openda.model_RainfallRunoffZhang.ResultFileWrapper">
+        	<file>%outputFile%</file>
+        	<id>output</id>
+        	<arg>%instanceDir%%instanceNumber%</arg>
+        </ioObject>
+        
+        <!-- Forcing -->
+        <ioObject className="org.openda.model_RainfallRunoffZhang.ForcingWrapper">
+            <file>%forcingPrecipFile%</file>
+            <id>forcingPrecip</id>
+            <arg>%instanceDir%%instanceNumber%</arg>
+        </ioObject>
+        
+        <ioObject className="org.openda.model_RainfallRunoffZhang.ForcingWrapper">
+            <file>%forcingPotETFile%</file>
+            <id>forcingPotET</id>
+            <arg>%instanceDir%%instanceNumber%</arg>
+        </ioObject>
+        
+    </inputOutput>
+    
+</blackBoxWrapperConfig>

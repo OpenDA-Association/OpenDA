@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ASCIIObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 1st series uses header lines for meta data
+	contents of this file look like:
+	# Location    : aberdeen
+	# Position    : (-2.045543,57.361939)
+	# Source      : observed
+	# Unit        : waterlevel_astro
+	# Analyse time: most recent
+	# Timezone    : GMT
+	20080 0.8300
+	20081 0.8800
+	20082 0.9100
+        ...
+	-->
+	<timeSeries status="use" standardDeviation="0.05" unit="mm" quantity="discharge"> <!-- status can be "use", "validate" or "ignore" -->
+		testObservationShort.txt
+	</timeSeries>
+
+</ASCIIObserver>

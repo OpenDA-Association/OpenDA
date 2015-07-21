@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesNoiseModelConfig>
+    
+    <simulationTimespan timeFormat="mjd">26000,26001,...,26150</simulationTimespan>
+    
+    <timeSeries id="noiseOnTotalRunoff" location="outflow" position="(2.0,2.0)" quantity="discharge" unit="mm" source="generated_noise" timezone="GMT" height="0.0" standardDeviation="0.05" timeCorrelationScale="0.0" timeCorrelationScaleUnit="days" initialValue="0.0" />
+    
+</timeSeriesNoiseModelConfig>

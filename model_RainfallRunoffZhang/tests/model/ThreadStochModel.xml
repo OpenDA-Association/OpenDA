@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<threadConfig>
+    <maxThreads>2</maxThreads>
+    <stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+        <workingDirectory>.</workingDirectory>
+        <configFile>StochModel.xml</configFile>
+    </stochModelFactory>
+</threadConfig>

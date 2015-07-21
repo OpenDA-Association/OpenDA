@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/openDaApplication.xsd">
+	<stochObserver className="org.openda.model_RainfallRunoffZhang.ASCIITimeSeriesStochObserver">
+		<workingDirectory>./observer</workingDirectory>
+		<configFile>Observations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>StochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>sequentialSimulation.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>SequentialSimulation_results.m</configFile>
+	</resultWriter>
+</openDaApplication>

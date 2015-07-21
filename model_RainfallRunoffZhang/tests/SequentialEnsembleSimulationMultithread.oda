@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns:oda="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.model_RainfallRunoffZhang.ASCIITimeSeriesStochObserver">
+		<workingDirectory>./observer</workingDirectory>
+		<configFile>Observations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.threadModel.ThreadStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>ThreadStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>SequentialEnsembleSimulation.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>SequentialEnsembleSimulationMultithread_results.m</configFile>
+        <selection>
+            <resultItem outputLevel="Verbose"/>
+        </selection>
+	</resultWriter>
+</openDaApplication>

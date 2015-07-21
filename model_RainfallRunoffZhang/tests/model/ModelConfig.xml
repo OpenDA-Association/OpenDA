@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Class implementing the blackbox model factory org.openda.wrappers.BlackBoxWrapper  -->
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+    <wrapperConfig>
+        <file>./WrapperConfig.xml</file>
+    </wrapperConfig>
+    
+    <aliasValues>
+        <!-- These aliases can be used to setup a specific experiment. -->
+        <!-- The wrapperConfig contains references to the labels -->
+        <!-- The alias "instanceNumber" is special, its value is set by the Factory -->
+        <alias key="templateDir" value="input"/>
+        <alias key="instanceDir" value="output/work"/>
+        <alias key="binDir" value="bin"/>
+        <alias key="outputFile" value="totalRunoff.txt"/>
+        <alias key="inputFileInitialStates" value="initialStates.m"/>
+        <alias key="inputFileParameters" value="parameters.m"/>
+        <alias key="inputFileTimes" value="timeConfig.m"/>
+        <alias key="forcingPrecipFile" value="precipitationNewTimes.txt"/>
+        <alias key="forcingPotETFile" value="potETNewTimes.txt"/>
+    </aliasValues>
+    
+    <timeInfoExchangeItems start="currentTime" end="finalTime" timeStep="simulationTimeStep"/>
+    
+    <exchangeItems>
+        <!-- forcing -->
+        <vector id="precipitation" ioObjectId="forcingPrecip" elementID="precipitation"/>
+        <vector id="potET" ioObjectId="forcingPotET" elementId="potET"/>
+        
+        <!-- parameter -->
+        <vector id="parameter_d" ioObjectId="parameters" elementId="parameter_d"/>
+        <vector id="parameter_Smax" ioObjectId="parameters" elementId="parameter_Smax"/>
+        <vector id="parameter_alpha1" ioObjectId="parameters" elementId="parameter_alpha1"/>
+        <vector id="parameter_alpha2" ioObjectId="parameters" elementId="parameter_alpha2"/>
+        
+        <!-- time configuration -->
+        <vector id="currentTime" ioObjectId="timeConfig" elementId="currentTime"/>
+        <vector id="finalTime" ioObjectId="timeConfig" elementId="finalTime"/>
+        <vector id="simulationTimeStep" ioObjectId="timeConfig" elementId="simulationTimeStep"/>
+        
+        <!-- initial states -->
+        <vector id="soilMoisture" ioObjectId="initialStates"/>
+        <vector id="gwStorage" ioObjectId="initialStates"/>
+        
+        <!-- state (no noise) and predictor -->
+        <vector id="totalRunoff" ioObjectId="output"/>
+    
+    </exchangeItems>
+    
+    <doCleanUp>false</doCleanUp>
+    
+    <restartInfo> <!-- this prefix is ignored -->
+        <modelStateFile>initialStates.m</modelStateFile>
+        <modelStateFile>parameters.m</modelStateFile>
+        <modelStateFile>timeConfig.m</modelStateFile>
+        <modelStateFile>precipitationNewTimes.txt</modelStateFile>
+        <modelStateFile>potETNewTimes.txt</modelStateFile>
+    </restartInfo>
+    
+</blackBoxModelConfig>

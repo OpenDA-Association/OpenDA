@@ -1,0 +1,5 @@
+The module model_RainfallRunoffZhang contains wrappers for an example rainfall runoff model that is programmed in matlab. The wrapper and model (available in tests/model/bin) have been tested extensively.
+
+Ant is used to build the jars. The description of how to build the module is given in the openDA documentation.
+
+author: Beatrice Marti, hydrosolutions ltd., marti@hydrosolutions.ch

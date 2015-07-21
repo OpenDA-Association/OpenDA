@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+    
+    <modelConfig>
+        <file>./ModelConfig.xml</file>
+    </modelConfig>
+    
+    <vectorSpecification>
+    	
+        <parameters>
+    		<regularisationConstant>
+    			<stdDev value="0.05" transformation="ln"/>
+    			<vector id="parameter_d"/>
+    		</regularisationConstant>
+    		<regularisationConstant>
+    			<stdDev value="0.05" transformation="ln"/>
+    			<vector id="parameter_Smax"/>
+    		</regularisationConstant>
+    		<regularisationConstant>
+    			<stdDev value="0.05" transformation="ln"/>
+    			<vector id="parameter_alpha1"/>
+    		</regularisationConstant>
+    		<regularisationConstant>
+    			<stdDev value="0.05" transformation="ln"/>
+    			<vector id="parameter_alpha2"/>
+    		</regularisationConstant>
+    	</parameters>
+        
+        <state>
+            
+            <!-- model states with noise that are not updated (commented out).
+            <vector id="soilMoisture"/>
+            <vector id="gwStorage"/>
+            -->
+            
+            <!-- state vector which is also the predictor in this example -->
+            <vector id="totalRunoff"/>
+            
+            <!-- noise on current state -->
+            <noiseModel id="noiseModelGwStorage" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>NoiseModelGwStorage.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="noiseOnGwStorage" operation="multiply">
+                        <modelExchangeItem id="gwStorage"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            
+            <noiseModel id="noiseModelSoilMoisture" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>NoiseModelSoilMoisture.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="noiseOnSoilMoisture" operation="multiply">
+                        <modelExchangeItem id="soilMoisture"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            
+            <!-- noise on forcing -->
+            <noiseModel id="noiseModelPrecipitation" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>NoiseModelPrecipitation.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="noiseOnPrecipitation" operation="multiply">
+                        <modelExchangeItem id="precipitation"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            
+            <noiseModel id="noiseModelPotET" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>NoiseModelPotET.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="noiseOnPotET" operation="multiply">
+                        <modelExchangeItem id="potET"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            
+            
+        </state>
+        
+        <predictor>
+            <vector id="totalRunoff"/>
+        </predictor>
+    </vectorSpecification>
+    
+    <!-- specify here if wish to modify the names of the restart directories from the default names. -->
+    <restartInfo dirPrefix="./restart_" noiseModelPrefix="./reNoiseModel_" modelStateFile="reModelStateFiles.zip">
+    </restartInfo>
+     
+</blackBoxStochModel>

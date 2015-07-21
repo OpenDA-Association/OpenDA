@@ -1,0 +1,6 @@
+A simple example can be tested with the wrapper module model_RainfallRunoffZhang. The model is a single reservoir implementation of Zhang et al., 2008 and it is written in Matlab. The functions are stored in the directory model/bin. The input to the model is stored in model/input.
+It is possible to run the example on multiple threads. An augmented state vector is updated in EnKFaugmentedMultithread.oda. Thereby the state vector is extended by the parameters of the model which are jointly updated with the states during the analysis step of the filter method.
+
+The tests are run with $oda_test.sh <directory with .tst-test files>
+
+author: Beatrice Mart, hydrosolutions ltd., marti@hydrosolutions.ch

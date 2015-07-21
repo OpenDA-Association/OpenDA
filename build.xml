@@ -82,6 +82,7 @@
       <buildmodule module="model_swan"/>
       <buildmodule module="model_wflow"/>
       <buildmodule module="model_dflowfm_blackbox"/>
+      <buildmodule module="model_RainfallRunoffZhang"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.sh"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
    </target>
