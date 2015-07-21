@@ -1,1 +1,1 @@
-SUBDIRS = cta cta_f90 openda
+SUBDIRS = cta cta_f90 openda sangoma

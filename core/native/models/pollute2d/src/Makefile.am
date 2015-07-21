@@ -11,7 +11,7 @@ libpollute2d_la_SOURCES =pollute2d.f90
 libpollute2d_la_LIBADD = @LTLIBOBJS@
 libpollute2d_la_LDFLAGS = -version-info 0:0:0 -lcta
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 AM_FFLAGS = -I$(top_srcdir)/include
 AM_FCFLAGS = -I$(top_srcdir)/include
 

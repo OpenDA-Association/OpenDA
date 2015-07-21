@@ -20,6 +20,5 @@ org_openda_resultwriters_NativeResultWriter.cpp
 libopendabridge_la_LIBADD = @LTLIBOBJS@
 libopendabridge_la_LDFLAGS = -no-undefined -version-info 0:0:0  -lcta ${LAPACK_LIBS} ${BLAS_LIBS} ${NETCDF_LIBS}
 
-#INCLUDES =   -I$(srcdir)/jni_include -I$(srcdir)/openda_include -I$(top_srcdir)/include
-INCLUDES =    -I$(srcdir)/openda_include -I$(top_srcdir)/include
+AM_CPPFLAGS =    -I$(srcdir)/openda_include -I$(top_srcdir)/include
 

@@ -34,4 +34,4 @@ libcta_la_LIBADD = @LTLIBOBJS@ @LTL_SQLITE3_ADD@ @LTL_BLAS_ADD@ @LTL_LAPACK_ADD@
 libcta_la_LDFLAGS = -version-info 0:0:0 ${SQLITELIB} ${BLASLIBS} ${LAPACK_LIBS}
 #libcta_la_LDFLAGS = -version-info 0:0:0 
 
-INCLUDES = -I$(top_srcdir)/include -I${OPENDA_NATIVE_DIR}/external/sqlite3
+AM_CPPFLAGS = -I$(top_srcdir)/include -I${OPENDA_NATIVE_DIR}/external/sqlite3

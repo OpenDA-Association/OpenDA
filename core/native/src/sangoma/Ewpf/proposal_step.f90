@@ -222,6 +222,7 @@ tau = 1.0 - real(obsVec -t_model)/dt_obs
    ! i.e. we only nudge the particle once we get closer 
    ! to the next set of observations 
    if(tau .le. freetime) then
+      print *,'Free time!'
       ! No deterministic forcing as we are still too far in time from next observation in comparison 
       ! to last set of observations
       kgain = 0.0 
@@ -230,7 +231,12 @@ tau = 1.0 - real(obsVec -t_model)/dt_obs
       ! Use only correlated random forcing betan = Q(normaln) (using cb_Qhalf twice)
       call cb_Qhalf(Ne,Nx,normaln,Btemp)
       call cb_Qhalf(Ne,Nx,Btemp,betan)
+      
+      print *,'betan=', betan
+      
+      
    else
+      print *,'No time!'
       ! increase the nudging strength linearly with time
       ! NOTE, some models can be very sensitive to the strength of nudging - 
       ! tune this parameter depending on your model

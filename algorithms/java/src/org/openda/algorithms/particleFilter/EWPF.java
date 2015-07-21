@@ -72,38 +72,6 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 
 	public void initialize(File workingDir, String[] arguments){
 		super.initialize(workingDir, arguments);
-
-
-		// Initialize the DLL, if not done yet
-/*		if (dllYetToBeInitialized) {
-			Results.putMessage(EWPF.class.getSimpleName() + ": initializing wdm dll " + EWPF.getAbsolutePath());
-
-		//	String nativeDllPath = wdmDllPath.getAbsolutePath();
-		//	File nativeDll = new File(nativeDllPath);
-		//	if (!nativeDll.exists()) {
-		//		throw new RuntimeException("WdmDll: Native DLL/SO does not exist: " + wdmDllPath.getAbsolutePath());
-		//	}
-
-			if(BBUtils.RUNNING_ON_WINDOWS) {
-				nativeDLL = (ISangomaEWPFNativeDLL) Native.loadLibrary("libsangoma.dll");
-			} else if {
-				// For now assumes that gfortran is used for linux and ifort for windows
-				//GfortranWdmFunctionMapper gfortranMapper = new GfortranWdmFunctionMapper();
-				//HashMap<String, String> gfortranMap = gfortranMapper.getMap();
-				nativeDLL = (ISangomaEWPFNativeDLL) Native.loadLibrary("libsangoma.so");
-			}
-
-			dllYetToBeInitialized = false;
-
-			Results.putMessage(WdmDll.class.getSimpleName() + ": wdm dll initialized.");
-		}
-	}
-
-*/
-
-
-
-
 		doMoreInit=true;
 
 
@@ -146,7 +114,7 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 		}
 		else {
 			/* Nudging */
-			nativeDLL.oda_proposal_step(p_Ne, p_nY, p_nXAug, weight, y, p_count, p_nextWeightStep,p_interval);
+			nativeDLL.oda_proposal_step(p_Ne, p_nXAug, p_nY, weight, y, p_count, p_nextWeightStep,p_interval);
 		}
 
 		UpdateEnsembleStates();

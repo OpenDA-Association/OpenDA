@@ -216,10 +216,11 @@ END INTERFACE
 !And passing stuff to the core routines
 real(REALPREC), dimension(:),   allocatable, save ::diagR   
 real(REALPREC), dimension(:,:), allocatable, save ::L       ! Ensembles
-real(REALPREC), dimension(:,:), allocatable, save ::L_1     ! Ensembles of previous timestep
 real(REALPREC), dimension(:,:), allocatable, save ::L_mean  ! Ensembles with mean subtracted  
 real(REALPREC), dimension(:,:), allocatable, save ::S_root
 real(REALPREC), dimension(:,:), allocatable, save ::Hx_mean !Hx-mean(Hx)
+
+logical, private ::debug=.true.
 
 
 contains
@@ -250,14 +251,20 @@ real(REALPREC), DIMENSION(Ny) ::Hxmean
 integer ::i
 real(REALPREC) ::alpha
 
+   if (debug) then
+      print *,'Welcome in oda_EWFP_setHx:',iEns
+   endif
+
 
    if (allocated(Hx_mean)) then
       if (size(Hx_mean,dim=1)/=Ny .OR. size(L,dim=2)/=Ne) then
          deallocate(Hx_mean)
          allocate(Hx_mean(Ny,Ne))
+         Hx_mean=-999999.0e9
       endif
    else
       allocate(Hx_mean(Ny,Ne))
+      Hx_mean=-999999.0e9
    endif
    Hx_mean(:,iEns) =Hx
 
@@ -268,6 +275,18 @@ real(REALPREC) ::alpha
          Hx_mean(:,i)=Hx_mean(:,i)-Hxmean
       enddo
    endif
+   
+   if (debug) then
+      if (iEns==Ne) then
+         print *,'Hx_mean=',Hxmean
+         do i=1,Ne
+            print *,'Hx_mean(:,',i,')=',Hx_mean(:,i)
+         enddo
+      endif
+   
+      print *,'Leaving oda_EWFP_setHx'
+   endif
+   
    
 end subroutine oda_EWFP_setHx
 
@@ -293,21 +312,23 @@ real(REALPREC) ::Lmean(Nx)
 !> Only set the old states equal to this state at start of algorithm
 logical, save  ::setOldStates = .false. 
 
+   if (debug) then
+      print *,'Welcome in oda_EWFP_set_L:',iEns
+   endif
+
    if (allocated(L)) then
       if (size(L,dim=1)/=Nx .OR. size(L,dim=2)/=Ne) then
-         deallocate(L, L_mean, L_1)
-         allocate(L(Nx,Ne),L_mean(Nx,Ne), L_1(Nx,Ne))
+         deallocate(L, L_mean)
+         allocate(L(Nx,Ne),L_mean(Nx,Ne))
          setOldStates=.true.
       endif
    else   
-      allocate(L(Nx,Ne),L_mean(Nx,Ne), L_1(Nx,Ne))
+      allocate(L(Nx,Ne),L_mean(Nx,Ne))
       setOldStates=.true.
    endif
    
    L(:,iEns) = newL
-   if (setOldStates) then
-     L_1(:,iEns) = newL 
-   endif
+
    
    if (iEns==Ne) then
       print *,'Last member is set:'
@@ -324,6 +345,10 @@ logical, save  ::setOldStates = .false.
       
       
       setOldStates=.false.
+   endif
+   
+   if (debug) then
+      print *,'Leaving oda_EWFP_set_L'
    endif
    
 end subroutine oda_EWFP_set_L
@@ -346,7 +371,16 @@ integer ::info
 integer        ::i
 real(REALPREC) ::Lmean(Nx)
 
+   if (debug) then
+      print *,'Welcome in oda_EWFP_get_L'
+   endif
+
+
    newL=L(1:Nx,iEns)
+
+   if (debug) then
+      print *,'Leaving oda_EWFP_get_L'
+   endif
    
 end subroutine oda_EWFP_get_L
 
@@ -378,13 +412,20 @@ INTERFACE
       END SUBROUTINE DGESVD
 END INTERFACE
 
-   print *,'Welcome in oda_EWFP_SetupRootError'
+   if (debug) then
+      print *,'Welcome in oda_EWFP_SetupRootError'
+   endif
    if (allocated(S_root)) deallocate(S_root)
    allocate(S_root(Ne,Ne))
 
    !Prepare stuff for root covariance matrix
    LTL=MATMUL(TRANSPOSE(L_mean),L_mean)
 
+   if (debug) then
+      print *,'LTL=',LTL
+   endif
+   
+   
    !Compute SVD from LTL
    if (REALPREC==8) THEN
       CALL DGESVD('A','A',Ne,Ne,LTL,Ne,S,U,Ne,VT,Ne,work,5*Ne*Ne,info)
@@ -402,12 +443,16 @@ END INTERFACE
    ENDDO
    S_root=MATMUL(S_root,TRANSPOSE(U))
 
-      print *,'Done oda_EWFP_SetupRootError'
+   if (debug) then
+      print *,'S_root=',S_root
+
+      print *,'Leaving oda_EWFP_SetupRootError'
+   endif
 end subroutine oda_EWFP_SetupRootError
 
 
 
-subroutine oda_proposal_step(Nx,Ny,Ne,weight,y,timestep,obsstep,steps_btw_obs)  bind(C, name="oda_proposal_step")
+subroutine oda_proposal_step(Ne,Nx,Ny,weight,y,timestep,obsstep,steps_btw_obs)  bind(C, name="oda_proposal_step")
           use, intrinsic :: ISO_C_BINDING
   use sangoma_base, only: REALPREC, INTPREC
   implicit none
@@ -449,7 +494,7 @@ end subroutine oda_equal_weight_step
 
         !Apply interpolation operator to ensemble:
         !Note :We augment the state. Hence the observations are always the last Ny elements of the state
-        subroutine oda_H(Nx,Ny,Ne,vec_in,vec_out) bind(C)
+        subroutine oda_H(Ne,Nx,Ny,vec_in,vec_out) bind(C)
           use, intrinsic :: ISO_C_BINDING
           use sangoma_base, only: REALPREC, INTPREC
           implicit none
@@ -460,14 +505,15 @@ end subroutine oda_equal_weight_step
           real(REALPREC), intent(inout), dimension(Ny,Ne) :: vec_out  ! resulting vector in observation space
   
           print *,'Welcome in oda_H'
-          
-          vec_out=vec_in(Nx-Ny:Nx,:)
+          print *,'Nx=',Nx,'Ny=',Ny,'Ne=',Ne
+
+          vec_out=vec_in(Nx-Ny+1:Nx,:)
         end subroutine oda_H
  
 
         !Apply transpose interpolation operator to ensemble of predictions:
         !Note :We augment the state. Hence the observations are always the last Ny elements of the state    
-        subroutine oda_HT(Nx,Ny,Ne,vec_in,vec_out) bind(C)
+        subroutine oda_HT(Ne,Nx,Ny,vec_in,vec_out) bind(C)
           use, intrinsic :: ISO_C_BINDING
           use sangoma_base, only: REALPREC, INTPREC
           implicit none
@@ -480,14 +526,14 @@ end subroutine oda_equal_weight_step
             print *,'Welcome in oda_HT'
           
           vec_out=0.0
-          vec_out(Nx-Ny:Nx,:)=vec_in
+          vec_out(Nx-Ny+1:Nx,:)=vec_in
           
           
         end subroutine oda_HT
 
 
 
-        subroutine oda_solve_r(Ny,Ne,vec_in,vec_out) bind(C)
+        subroutine oda_solve_r(Ne,Ny,vec_in,vec_out) bind(C)
           use, intrinsic :: ISO_C_BINDING
           use sangoma_base, only: REALPREC, INTPREC
           implicit none
@@ -523,7 +569,7 @@ end subroutine oda_equal_weight_step
 
 
 
-        subroutine oda_Qhalf(Nx,Ne,vec_in,vec_out) bind(C)
+        subroutine oda_Qhalf(Ne,Nx,vec_in,vec_out) bind(C)
           use, intrinsic :: ISO_C_BINDING
           use sangoma_base, only: REALPREC, INTPREC
           implicit none

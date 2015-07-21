@@ -15,8 +15,8 @@ from time import sleep
 import reactive_pollution_model_truth as truth
 import sequentialSimulation_results as sim
 #import sequentialEnsembleSimulation_results as ens
-import enkf_results as enkf
-#import enkf_results2 as enkf
+#import enkf_results as enkf
+import enkf_results2 as enkf
 
 # create initial plot
 plt.close("all")
