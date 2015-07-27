@@ -66,7 +66,6 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 	protected boolean skipAtInitialTime=false;
 	protected boolean skipAtFinalTime=false;
 
-	protected double timeAccuracy=1.0/1440.0/60.0; // 1 second by default 
 	//IStochModelInstance mod = null;
 	protected ITime currentTime = null;
 	protected ITime modelSpan = null;
@@ -245,7 +244,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 
 		// figure out analysis times
 		if(this.stepsFromObserver){
-			ITime selectionSpan = (new Time(modelSpan)).extendInterval(timeAccuracy);
+			ITime selectionSpan = (new Time(modelSpan)).extendInterval(OdaGlobSettings.getTimePrecision());
 			this.analysisTimes = this.stochObserver.createSelection(selectionSpan).getTimes();
 			if (continueWithoutObservation) {
 				Results.putProgression("analysisTimes acquired from OBSERVER.");

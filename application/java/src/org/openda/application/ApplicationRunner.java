@@ -62,7 +62,6 @@ public class ApplicationRunner implements Runnable{
     protected boolean doWriteRestart = false;
     protected boolean doReadRestart = false;
     protected Time[] restartTimes=new Time[0];
-	protected double timeAccuracy=1.0/1440.0/60.0; // 1 second by default
 
 	// possible status values
     public static enum Status {
@@ -569,7 +568,7 @@ public class ApplicationRunner implements Runnable{
 			writeAtThisTime=false;
 			for(int i=0;i<this.restartTimes.length;i++){
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
-				if(Math.abs(currentTime-this.restartTimes[i].getMJD())<this.timeAccuracy){
+				if(Math.abs(currentTime-this.restartTimes[i].getMJD())<OdaGlobSettings.getTimePrecision()){
 					writeAtThisTime=true;
 				}
 			}

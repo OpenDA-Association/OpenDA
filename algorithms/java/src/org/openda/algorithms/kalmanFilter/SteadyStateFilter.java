@@ -24,6 +24,7 @@ import org.openda.observers.ObserverUtils;
 import org.openda.utils.ConfigTree;
 import org.openda.utils.Results;
 import org.openda.utils.io.KalmanGainStorage;
+import org.openda.utils.performance.OdaGlobSettings;
 
 import java.io.File;
 import java.text.ParseException;
@@ -225,7 +226,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
         if(this.readGainTime!=null){
             for(int i=0;i<this.readGainTime.length;i++){
                 double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
-                if(Math.abs(currentTime-this.readGainTime[i])<this.timeAccuracy){
+                if(Math.abs(currentTime-this.readGainTime[i])< OdaGlobSettings.getTimePrecision()){
                     result=true;
                     steadyStateTimeCounter=i;
                 }

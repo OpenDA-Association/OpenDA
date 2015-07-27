@@ -382,7 +382,7 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 		if(this.saveGainTimes!=null){
 			for (ITime saveGainTime : this.saveGainTimes) {
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD()) / 2d;
-				if (Math.abs(currentTime - saveGainTime.getMJD()) < this.timeAccuracy) {
+				if (Math.abs(currentTime - saveGainTime.getMJD()) < OdaGlobSettings.getTimePrecision()) {
 					result = true;
 				}
 			}
