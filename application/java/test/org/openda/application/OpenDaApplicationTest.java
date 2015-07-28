@@ -21,7 +21,9 @@
 package org.openda.application;
 
 import junit.framework.TestCase;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +49,22 @@ public class OpenDaApplicationTest extends TestCase {
         OpenDaApplication.main(args);
     }
 
-    public void testEnsrOscillMultiResultWriters() throws IOException {
+	public void testFixedVersusRandomNoise() throws IOException {
+		OpenDaApplication.main(new String[] {
+				(new File(testRunDataDir,"oscillatorEnkfOpenDaConfig.xml") ).getAbsolutePath()} );
+		File resultFile = new File(testRunDataDir, "enkf_results.m");
+		File resultFile_1 = new File(testRunDataDir, "enkf_results_1.m");
+		File resultFile_random = new File(testRunDataDir, "enkf_results_random.m");
+		BBUtils.copyFile(resultFile, resultFile_1);
+		OpenDaApplication.main(new String[] {
+				(new File(testRunDataDir,"oscillatorEnkfOpenDaConfig.xml") ).getAbsolutePath()} );
+		assertTrue(testData.FilesAreIdentical(resultFile_1, resultFile));
+		OpenDaApplication.main(new String[] {
+				(new File(testRunDataDir,"oscillatorEnkfOpenDaConfigRandomNoise.xml") ).getAbsolutePath()} );
+		assertTrue(!testData.FilesAreIdentical(resultFile_1, resultFile_random));
+	}
+
+	public void testEnsrOscillMultiResultWriters() throws IOException {
     	String inputFile  = ( new File(testRunDataDir,"oscillEnsrMultiRes_1.xml") ).getAbsolutePath();
     	System.out.println("path ="+inputFile);
     	String args[] = new String[1];

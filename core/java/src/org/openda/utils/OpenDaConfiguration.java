@@ -48,6 +48,8 @@ public class OpenDaConfiguration {
 	private double timePrecision;
 	private boolean vectorPrecisionIsFloat;
 	private boolean vectorIsNative;
+	private StochVector.InitialSeedType initialSeedType = StochVector.InitialSeedType.fixed;
+	private int initialSeedValue;
 
 	public OpenDaConfiguration(OpenDaComponentConfig stochObserverConfig,
 							   OpenDaComponentConfig stochModelFactoryConfig,
@@ -57,8 +59,8 @@ public class OpenDaConfiguration {
 							   File restartOutFilePrefix, String restartOutFileExtension,
 							   String restartOutFileTimes, String restartOutFileTimeFormat, boolean restartOutFileTimeTag,
 							   boolean doTiming, boolean productionRun,
-	                           double timePrecision, boolean vectorPrecisionIsFloat, boolean vectorIsNative
-	) {
+							   double timePrecision, boolean vectorPrecisionIsFloat, boolean vectorIsNative,
+							   StochVector.InitialSeedType initialSeedType, int initialSeedValue) {
 		componentConfigs = new OpenDaComponentConfig[NUM_COMPONENT_TYPES];
 		componentConfigs[STOCH_OBSERVER] = stochObserverConfig;
 		componentConfigs[STOCH_MODEL_FACTORY] = stochModelFactoryConfig;
@@ -77,6 +79,8 @@ public class OpenDaConfiguration {
 		this.timePrecision = timePrecision;
 		this.vectorPrecisionIsFloat = vectorPrecisionIsFloat;
 		this.vectorIsNative = vectorIsNative;
+		this.initialSeedType = initialSeedType;
+		this.initialSeedValue = initialSeedValue;
 	}
 
 	public OpenDaComponentConfig getComponentConfig(int componentIndex) {
@@ -139,4 +143,8 @@ public class OpenDaConfiguration {
 	public boolean getVectorIsNative(){
 		return vectorIsNative;
 	}
+
+	public StochVector.InitialSeedType getInitialSeedType() { return initialSeedType; }
+
+	public int getInitialSeedValue() { return initialSeedValue; }
 }

@@ -32,16 +32,43 @@ import java.util.Random;
  * This class provide a simple implementation of the StochVector interface.
  */
 public class StochVector implements IStochVector {
+
 	IVector mean = null;  //assumes Gaussian distribution
 	IVector std = null;
 	Matrix covariance = null;
 	Matrix sqrtCovariance = null;
 	boolean correlated = false; // assumes independent elements
 
-	//Use the DistributedCounter to make sure we have different seeds in a parallel run
-	private static DistributedCounter SeedWithOffset = new DistributedCounter(20100816);
-	private static Random generator = new Random(SeedWithOffset.val());
+	private static Random generator;
 
+	static {
+		if (generator == null) {
+			setInitialSeedType(InitialSeedType.fixed);
+		}
+	}
+
+	public static void setInitialSeedType(StochVector.InitialSeedType initialSeedType) {
+		setInitialSeedType(initialSeedType, 20100816);
+	}
+
+	public static void setInitialSeedType(StochVector.InitialSeedType initialSeedType, int initialSeedValue) {
+		if (initialSeedType == InitialSeedType.random) {
+			initialSeedValue = (new Random()).nextInt();
+		}
+		// Use the DistributedCounter to make sure we have different seeds in a parallel run
+		DistributedCounter seedWithOffset = new DistributedCounter(initialSeedValue);
+		generator = new Random(seedWithOffset.val());
+	}
+
+	public static void setSeed(long seed) {
+		generator.setSeed(seed);
+	}
+
+	public enum InitialSeedType {
+		fixed,
+		random,
+		specify
+	}
 	/**
 	 * Create a stochvector of a certain size, from two double, mean and standard-deviation
 	 *
@@ -114,7 +141,7 @@ public class StochVector implements IStochVector {
 	 * Create a stochvector of a certain size, from a mean covariance
 	 *
 	 * @param mean average value as Vector
-	 * @param std  covariance as Matrix
+	 * @param covariance  covariance as Matrix
 	 * @param isSquareRoot
 	 */
 	public StochVector(IVector mean, IMatrix covariance, boolean isSquareRoot) {
@@ -276,9 +303,5 @@ public class StochVector implements IStochVector {
 		this.mean = new Vector(mean);
 		this.std = new Vector(std);
 
-	}
-
-	public static void setSeed(long seed) {
-		generator.setSeed(seed);
 	}
 }

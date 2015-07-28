@@ -23,13 +23,10 @@ package org.openda.utils.io;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.openda.core.io.castorgenerated.*;
+import org.openda.core.io.castorgenerated.types.ApplicationInitialSeedTypesXML;
 import org.openda.core.io.castorgenerated.types.ResultWriterSourceTypeXML;
 import org.openda.interfaces.IResultWriter;
-import org.openda.utils.OpenDaComponentConfig;
-import org.openda.utils.OpenDaConfiguration;
-import org.openda.utils.OpenDaResultWriterConfig;
-import org.openda.utils.ResultSelectionConfig;
-import org.openda.utils.Results;
+import org.openda.utils.*;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -221,11 +218,35 @@ public class OpenDaConfigurationReader {
 			timePrecision*=factor;
 		}
 
+		ApplicationInitialSeedXML initialSeedXML = applicationXML.getInitialSeed();
+		StochVector.InitialSeedType initialSeedType = StochVector.InitialSeedType.fixed; // default
+		int initialSeedValue = Integer.MIN_VALUE;
+		if (initialSeedXML != null) {
+			int type = initialSeedXML.getType().getType();
+			switch (type) {
+				case ApplicationInitialSeedTypesXML.FIXED_TYPE:
+					initialSeedType = StochVector.InitialSeedType.fixed;
+					break;
+				case ApplicationInitialSeedTypesXML.RANDOM_TYPE:
+					initialSeedType = StochVector.InitialSeedType.random;
+					break;
+				case ApplicationInitialSeedTypesXML.SPECIFY_TYPE:
+					initialSeedType = StochVector.InitialSeedType.specify;
+					if (!initialSeedXML.hasSeedValue()) {
+						throw new RuntimeException("\"specify\" defined, but no initialSeedValue specified in " +
+											openDaApplicationFile.getAbsolutePath());
+					}
+					initialSeedValue = initialSeedXML.getSeedValue();
+					break;
+			}
+		}
+
 		openDaConfiguration = new OpenDaConfiguration(stochObserverConfig, stochModelFactoryConfig,
-                algorithmConfig, resultWriterConfigs,
+				algorithmConfig, resultWriterConfigs,
 				restartInFile, restartOutFilePrefix, restartOutFileExtension,
 				restartOutFileTimes, restartOutFileTimeFormat,restartOutFileTimeTag,
-				doTiming, productionRun, timePrecision, vectorPrecisionIsFloat, vectorIsNative);
+				doTiming, productionRun, timePrecision, vectorPrecisionIsFloat, vectorIsNative,
+				initialSeedType, initialSeedValue);
     }
 
     private OpenDaResultWriterConfig parseResultWriterConfig(File openDaApplicationFile, OpenDaResultWriterXML resultWriterXML) {

@@ -280,7 +280,7 @@
 			<xs:annotation>
 				<xs:documentation>The default vector used in OpenDA (class Vector) will use a native implementation (written in C) this is faster but at the cost of easy debugging of vector operations. Note the you need to have native OpenDA libraries compiled/installed on your system. Especially for debugging, not using the OpenDA start scripts, the libraties MUST be on you path</xs:documentation>
 			</xs:annotation>
-		</xs:attribute>		
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ApplicationTimeXML">
 		<xs:sequence>
@@ -296,6 +296,30 @@
 		<xs:attribute name="unit" type="xs:string" use="optional" default="sec">
 			<xs:annotation>
 				<xs:documentation>Unit of precision supported values sec,min,hour,MJD</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="ApplicationInitialSeedTypesXML">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="fixed"/>
+			<xs:enumeration value="random"/>
+			<xs:enumeration value="specify"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ApplicationInitialSeedXML">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Settings for the initial seed of StochVector class</xs:documentation>
+			</xs:annotation>
+		</xs:sequence>
+		<xs:attribute name="type" type="openda:ApplicationInitialSeedTypesXML" use="required">
+			<xs:annotation>
+				<xs:documentation>Type of seed intialisation: fixed (i.e. always the same value), random value, or specific value. In the latter case, specify the seed value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="seedValue" type="xs:integer" use="optional">
+			<xs:annotation>
+				<xs:documentation>Value of initial seed, in case of type=="specify"</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -368,6 +392,11 @@
 			<xs:element name="timeSettings" type="openda:ApplicationTimeXML" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Specify the time settings</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="initialSeed" type="openda:ApplicationInitialSeedXML" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify the type of initial seed (if ommited, default: "fixed")</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:all>

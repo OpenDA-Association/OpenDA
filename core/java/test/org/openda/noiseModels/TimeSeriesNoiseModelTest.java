@@ -1,4 +1,4 @@
-/* MOD_V2.0 
+/* MOD_V2.0
 * Copyright (c) 2012 OpenDA Association
 * All rights reserved.
 * 
@@ -18,24 +18,17 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
-import java.io.File;
-import java.io.IOException;
-
+import junit.framework.TestCase;
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IModelState;
-import org.openda.interfaces.IStochModelFactory;
-import org.openda.interfaces.IStochModelInstance;
+import org.openda.interfaces.*;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
-import org.openda.interfaces.IStochVector;
-import org.openda.interfaces.ITime;
-import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
 import org.openda.utils.Time;
 import org.openda.utils.Vector;
 
-import junit.framework.TestCase;
+import java.io.File;
+import java.io.IOException;
 
 public class TimeSeriesNoiseModelTest extends TestCase {
 
@@ -197,4 +190,47 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	assertEquals(0.0, diff3_t10.norm2(), 0.0001);
     }
 
+	public void testNoiseFixedVersusRandom(){
+
+		IStochModelInstance modelWithRandomSeed = null;
+
+		double[][] resultsFixedSeed = new double[2][];
+		double[][] resultsRandomSeed = new double[2][];
+		for (int i = 0; i < 2; i++) {
+			StochVector.setInitialSeedType(StochVector.InitialSeedType.fixed);
+			IStochModelFactory factoryWithFixedSeed = new TimeSeriesNoiseModelFactory();
+			factoryWithFixedSeed.initialize(testRunDataDir, new String[]{"timeseries_noise.xml"});
+			IStochModelInstance modelWithFixedSeed = factoryWithFixedSeed.getInstance(OutputLevel.Debug);
+			modelWithFixedSeed.setAutomaticNoiseGeneration(true);
+			ITime targetTime = modelWithFixedSeed.getTimeHorizon().getEndTime();
+			modelWithFixedSeed.compute(targetTime);
+			IPrevExchangeItem seriesWithFixedSeed=modelWithFixedSeed.getExchangeItem("waterlevel@aberdeen");
+			resultsFixedSeed[i]=seriesWithFixedSeed.getValuesAsDoubles();
+
+			StochVector.setInitialSeedType(StochVector.InitialSeedType.random);
+			IStochModelFactory factoryWithRandomSeed = new TimeSeriesNoiseModelFactory();
+			factoryWithRandomSeed.initialize(testRunDataDir, new String[]{"timeseries_noise.xml"});
+			modelWithRandomSeed = factoryWithRandomSeed.getInstance(OutputLevel.Debug);
+			modelWithRandomSeed.setAutomaticNoiseGeneration(true);
+			modelWithRandomSeed.compute(targetTime);
+			IPrevExchangeItem seriesWithRandomSeed=modelWithRandomSeed.getExchangeItem("waterlevel@aberdeen");
+			resultsRandomSeed[i]=seriesWithRandomSeed.getValuesAsDoubles();
+		}
+
+		assertEquals("series length equal", resultsFixedSeed.length, resultsRandomSeed.length);
+		for (int i = 1; i < resultsFixedSeed[0].length; i++) {
+			assertEquals("fixed values[" + i + "]" , resultsFixedSeed[0][i], resultsFixedSeed[1][i]);
+			// java does not support assertNotEqual
+			if (epsilonCompare(resultsFixedSeed[0][i], resultsRandomSeed[1][i])) {
+				fail("resultsRandomSeed[" + i + "] should differ from resultsFixedSeed");
+			}
+			if (epsilonCompare(resultsRandomSeed[0][i], resultsRandomSeed[1][i])) {
+				fail("resultsRandomSeed[run0][" + i + "] should differ from resultsFixedSeed[run1]" + i + "]");
+			}
+		}
+	}
+	private boolean epsilonCompare(double d1, double d2) {
+		final double epsilon = 1.e-7;
+		return (d1 + epsilon > d2) && (d2 + epsilon > d1);
+	}
 }

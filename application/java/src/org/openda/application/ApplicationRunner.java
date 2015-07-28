@@ -328,6 +328,7 @@ public class ApplicationRunner implements Runnable{
 			if (stochObserver != null) {
 				stochObserver.free();
 			}
+			versionMessages.clear();
 		} catch (Exception e) {
 			//catch and log any exceptions during finish application, otherwise these might "overshadow" any exceptions thrown during the run.
 			Results.putMessage("Exception during call to finish application, message was: " + e.getMessage());
@@ -393,14 +394,22 @@ public class ApplicationRunner implements Runnable{
     }
 
     private OpenDaConfiguration readConfigAndCreateResultWriters(File applicationConfigFile) {
-        // Read configutation
+        // Read configuration
+
         OpenDaConfigurationReader openDaConfigurationReader = new OpenDaConfigurationReader(applicationConfigFile);
         OpenDaConfiguration configuration = openDaConfigurationReader.getOpenDaConfiguration();
+
+		// apply global settings immediatly
 		OdaTiming.setDoTiming(configuration.getDoTiming());
 		OdaGlobSettings.setProductionRun(configuration.getProductionRun());
 		OdaGlobSettings.setTimePrecision(configuration.getTimePrecision());
 		OdaGlobSettings.setVectorPrecisionFloat(configuration.getVectorPrecisionIsFloat());
         OdaGlobSettings.setVectorIsNative(configuration.getVectorIsNative());
+		if (configuration.getInitialSeedType() == StochVector.InitialSeedType.specify) {
+			StochVector.setInitialSeedType(configuration.getInitialSeedType(), configuration.getInitialSeedValue());
+		} else {
+			StochVector.setInitialSeedType(configuration.getInitialSeedType());
+		}
 
         doReadRestart = configuration.getDoReadRestart();
         restartInFile = configuration.getRestartInFile();
