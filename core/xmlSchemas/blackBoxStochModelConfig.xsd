@@ -549,6 +549,11 @@
 					<xs:documentation>Optional. Path and name of a range validation config file (relative to this configuration file) that contains range validation constraints for exchange items.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="boundaryProvider" type="openda:BoundaryProviderXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="vectorSpecification" type="openda:BlackBoxStochModelVectorSpecificationXML">
 				<xs:annotation>
 					<xs:documentation>Define stochastic model by specifying the vectors of parameters, state, and/or predictor</xs:documentation>
@@ -561,11 +566,65 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:element name="blackBoxStochModel" type="openda:BlackBoxStochModelConfigXML">
-		<xs:annotation>
-			<xs:documentation>Configuration file for the Stochastic model class org.openda.blackbox.wrapper.BBStochModelFactory. Specifies either the deterministic model in the modelConfig element, or the model instances generator in the modelFactory element, and the stochastic model that acts as umbrella over the deterministic model, in the vectorSpecification element, and an optional restartInfo element for non-default handling of deterministic model restarts. The element uncertaintyModule is included for backwards compatibility only.</xs:documentation>
-		</xs:annotation>
-	</xs:element>
+	<xs:complexType name="BoundaryProviderXML">
+		<xs:sequence>
+			<xs:element name="dataObject" type="openda:BoundaryDataObjectXML">
+				<xs:annotation>
+					<xs:documentation>The data object containing the noise series</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="boundaryMapping" type="openda:BoundaryMappingXML" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BoundaryDataObjectXML">
+		<xs:sequence>
+			<xs:element name="file" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of input/output file</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Input argument for the corresponding openda:class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The openda:class name of the input/output object</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BoundaryMappingXML">
+		<xs:sequence>
+			<xs:element name="exchangeItem" type="openda:BoundaryExchangeItemXML" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The list of relations</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="operation" type="openda:NoiseOperationTypesXML" use="required">
+			<xs:annotation>
+				<xs:documentation>TODO</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BoundaryExchangeItemXML">
+		<xs:attribute name="id" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Identity of this noise model's exchange item</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="modelExchangeItemId" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identity of model's exchange item on which to impose this noise model's exchange item </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 	<xs:simpleType name="NoiseOperationTypesXML">
 		<xs:annotation>
 			<xs:documentation>Type of operation to performed when noise is added to an (parameter or state) exchange item: add the noise to the exchange item's values, multiply the exchange item's values with the noise, or set the values (used in those cases where the noise in fact is a realization)</xs:documentation>
@@ -586,4 +645,9 @@
 			<xs:enumeration value="set"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:element name="blackBoxStochModel" type="openda:BlackBoxStochModelConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration file for the Stochastic model class org.openda.blackbox.wrapper.BBStochModelFactory. Specifies either the deterministic model in the modelConfig element, or the model instances generator in the modelFactory element, and the stochastic model that acts as umbrella over the deterministic model, in the vectorSpecification element, and an optional restartInfo element for non-default handling of deterministic model restarts. The element uncertaintyModule is included for backwards compatibility only.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
 </xs:schema>
