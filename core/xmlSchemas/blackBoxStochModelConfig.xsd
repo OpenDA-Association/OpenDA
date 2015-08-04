@@ -551,7 +551,7 @@
 			</xs:element>
 			<xs:element name="boundaryProvider" type="openda:BoundaryProviderXML" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>TODO</xs:documentation>
+					<xs:documentation>Specify external forcings, being either boundaries, noise on boundaries or boundaries including noise.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="vectorSpecification" type="openda:BlackBoxStochModelVectorSpecificationXML">
@@ -570,12 +570,12 @@
 		<xs:sequence>
 			<xs:element name="dataObject" type="openda:BoundaryDataObjectXML">
 				<xs:annotation>
-					<xs:documentation>The data object containing the noise series</xs:documentation>
+					<xs:documentation>The data object containing the forcing data.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="boundaryMapping" type="openda:BoundaryMappingXML" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>TODO</xs:documentation>
+					<xs:documentation>Specify the operation when imposing the forcing ExchangeItems on the model ExchangeItems.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
@@ -584,18 +584,18 @@
 		<xs:sequence>
 			<xs:element name="file" type="xs:string">
 				<xs:annotation>
-					<xs:documentation>Name of input/output file</xs:documentation>
+					<xs:documentation>Name of the forcing's data file.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>Input argument for the corresponding openda:class</xs:documentation>
+					<xs:documentation>Input argument(s) for the corresponding openda:class</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="className" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>The openda:class name of the input/output object</xs:documentation>
+				<xs:documentation>The openda:class name of the forcing's data object.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -603,25 +603,25 @@
 		<xs:sequence>
 			<xs:element name="exchangeItem" type="openda:BoundaryExchangeItemXML" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>The list of relations</xs:documentation>
+					<xs:documentation>List the forcing ExchangeItems for which to apply this mapping's operation.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="operation" type="openda:NoiseOperationTypesXML" use="required">
 			<xs:annotation>
-				<xs:documentation>TODO</xs:documentation>
+				<xs:documentation>(set): Replace model ExchangeItem's content by forcing ExchangeItem's content. (add): Add the forcing ExchangeItem's content to the model ExchangeItem's content. (multiply): Multiply the model ExchangeItem's content by the forcing ExchangeItem's content.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="BoundaryExchangeItemXML">
 		<xs:attribute name="id" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>Identity of this noise model's exchange item</xs:documentation>
+				<xs:documentation>Identity of a forcing ExchangeItem.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="modelExchangeItemId" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>Identity of model's exchange item on which to impose this noise model's exchange item </xs:documentation>
+				<xs:documentation>Identity of the model ExchangeItem on which to impose this forcing ExchangeItem. </xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
