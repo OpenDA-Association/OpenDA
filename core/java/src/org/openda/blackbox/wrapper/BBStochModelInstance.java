@@ -89,6 +89,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			IStochVector parameterUncertainty,
 			ITreeVector paramsTreeVector,
 			LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> noiseModels,
+			// boundaryProviderConfigs,
+			// List<IDataObject> boundaryProviderDataObjects (indiv. of met N ensemble members),
+			// ensembleMemberIndex,
 			BBStochModelVectorsConfig bbStochModelVectorsConfig,
 			String savedStatesDirPrefix,
 			String savedStatesNoiseModelPrefix,
@@ -121,6 +124,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		if (rangeValidationConstraints != null) {
 			initConstraintsExchangeItemIds(rangeValidationConstraints);
 		}
+
+//		if (boundaryProviderConfigs.length > 0) {
+//			processProvidedBoundaries(boundaryProviderConfigs, boundaryProviderDataObjects, ensembleMemberIndex);
+//		}
 	}
 
 	/**
