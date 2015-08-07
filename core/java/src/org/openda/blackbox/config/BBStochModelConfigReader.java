@@ -21,11 +21,13 @@
 
 package org.openda.blackbox.config;
 
+import javafx.util.Pair;
 import org.exolab.castor.types.Duration;
 import org.openda.core.io.castorgenerated.*;
 import org.openda.core.io.castorgenerated.types.NoiseOperationTypesXML;
 import org.openda.core.io.castorgenerated.types.ParameterTransformationTypesXML;
 import org.openda.uncertainties.UncertaintyEngine;
+import org.openda.utils.Array;
 import org.openda.utils.DimensionIndex;
 import org.openda.utils.io.CastorUtils;
 
@@ -111,13 +113,68 @@ public class BBStochModelConfigReader {
             rangeValidationConstraints = rangeValidationConfigReader.getRangeValidationConstraints();
 		}
 
+		// get boundary provider, if specified
+		ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs = new ArrayList<>();
+
+		BoundaryProviderXML[] boundaryProviderXMLs = bbStochModelConfigXML.getBoundaryProvider();
+		if (boundaryProviderXMLs.length > 0) {
+			for (BoundaryProviderXML boundaryProviderXML : boundaryProviderXMLs) {
+
+				BoundaryDataObjectXML dataObjectXML = boundaryProviderXML.getDataObject();
+
+				String dataObjectClassName = dataObjectXML.getClassName();
+				String fileName = dataObjectXML.getFile();
+				File dataObjectFile = new File(stochModelConfigFile.getParentFile(), fileName);
+				String[] dataObjectArguments = dataObjectXML.getArg();
+
+				ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs = new ArrayList<>();
+				BoundaryMappingXML[] boundaryMappingXMLs = boundaryProviderXML.getBoundaryMapping();
+				for (BoundaryMappingXML boundaryMappingXML : boundaryMappingXMLs) {
+					int operationType;
+					switch (boundaryMappingXML.getOperation().getType()) {
+						case NoiseOperationTypesXML.ADD_TYPE:
+							operationType = BBRegularisationConstantConfig.OPERATION_ADD;
+							break;
+						case NoiseOperationTypesXML.MULTIPLY_TYPE:
+							operationType = BBRegularisationConstantConfig.OPERATION_MULTIPLY;
+							break;
+						case NoiseOperationTypesXML.SET_TYPE:
+							operationType = BBRegularisationConstantConfig.OPERATION_SET;
+							break;
+						default:
+							throw new RuntimeException("Unexpected operation type " +
+									boundaryMappingXML.getOperation().getType() + " in " +
+									stochModelConfigFile.getAbsolutePath());
+					}
+					ArrayList<Pair<String,String>> mappingExchangeItems = new ArrayList<Pair<String, String>>();
+					for (BoundaryExchangeItemXML exchangeItemXML : boundaryMappingXML.getExchangeItem()) {
+						String id = exchangeItemXML.getId();
+						String modelExchangeItemId = id;
+						if (exchangeItemXML.getModelExchangeItemId() != null) {
+							modelExchangeItemId = exchangeItemXML.getModelExchangeItemId();
+						}
+						Pair<String,String> mappingExchange = new Pair<>(id, modelExchangeItemId);
+						mappingExchangeItems.add(mappingExchange);
+					}
+					BBBoundaryMappingConfig boundaryMappingConfig =
+							new BBBoundaryMappingConfig(operationType, mappingExchangeItems);
+					boundaryMappingConfigs.add(boundaryMappingConfig);
+
+				}
+				BBBoundaryProviderConfig boundaryProviderConfig = new BBBoundaryProviderConfig(
+						dataObjectClassName, dataObjectFile, dataObjectArguments, boundaryMappingConfigs);
+				boundaryProviderConfigs.add(boundaryProviderConfig);
+			}
+		}
+
+
 		BBStochModelVectorsConfig bbStochModelVectorsConfig = null;
 
         // parse vector spefication
-        Collection<BBRegularisationConstantConfig> regularisationConstantList = new ArrayList<BBRegularisationConstantConfig>();
-        Collection<BBCartesianToPolarConfig> cartesianToPolarList = new ArrayList<BBCartesianToPolarConfig>();
+        Collection<BBRegularisationConstantConfig> regularisationConstantList = new ArrayList<>();
+        Collection<BBCartesianToPolarConfig> cartesianToPolarList = new ArrayList<>();
         BBStochModelStateConfig stateConfig = null;
-        Collection<BBStochModelVectorConfig> predictorVectorCollection = new ArrayList<BBStochModelVectorConfig>();
+        Collection<BBStochModelVectorConfig> predictorVectorCollection = new ArrayList<>();
 
         BlackBoxStochModelVectorSpecificationXML vectorSpecificationXML = bbStochModelConfigXML.getVectorSpecification();
 
@@ -395,6 +452,7 @@ public class BBStochModelConfigReader {
 		bbStochModelConfig = new BBStochModelConfig(bbModelConfig,
                 modelFactoryWorkingDir, modelFactoryActionConfig,
                 uncertaintyWorkingDir, uncertaintyActionConfig,
+				boundaryProviderConfigs,
                 bbStochModelVectorsConfig,
 				restartStatesDirPrefix,
 				restartStatesNoiseModelPrefix,

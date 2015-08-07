@@ -22,6 +22,7 @@
 package org.openda.blackbox.config;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * TODO: description
@@ -32,7 +33,8 @@ public class BBStochModelConfig {
     private File modelFactoryWorkingDir;
     private BBAction modelFactoryAction;
     private BBAction uncertaintyAction;
-    private BBStochModelVectorsConfig bbStochModelVectorsConfig;
+	private ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs;
+	private BBStochModelVectorsConfig bbStochModelVectorsConfig;
     private File uncertaintyWorkingDir;
 	String restartStatesDirPrefix;
 	String restartStatesNoiseModelPrefix;
@@ -42,17 +44,19 @@ public class BBStochModelConfig {
     public BBStochModelConfig(BBModelConfig bbModelConfig,
 							  File modelFactoryWorkingDir, BBAction modelFactoryAction,
 							  File uncertaintyWorkingDir, BBAction uncertaintyAction,
+							  ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs,
 							  BBStochModelVectorsConfig bbStochModelVectorsConfig,
 							  String restartStatesDirPrefix,
 							  String restartStatesNoiseModelPrefix,
 							  String modelRestartStateFile,
-                              boolean useUncertaintyEngine) {
+							  boolean useUncertaintyEngine) {
         this.bbModelConfig = bbModelConfig;
         this.modelFactoryWorkingDir = modelFactoryWorkingDir;
         this.modelFactoryAction = modelFactoryAction;
         this.uncertaintyWorkingDir = uncertaintyWorkingDir;
         this.uncertaintyAction = uncertaintyAction;
-        this.bbStochModelVectorsConfig = bbStochModelVectorsConfig;
+		this.boundaryProviderConfigs = boundaryProviderConfigs;
+		this.bbStochModelVectorsConfig = bbStochModelVectorsConfig;
 		this.restartStatesDirPrefix = restartStatesDirPrefix;
 		this.restartStatesNoiseModelPrefix = restartStatesNoiseModelPrefix;
 		this.modelRestartStateFile = modelRestartStateFile;
@@ -79,7 +83,11 @@ public class BBStochModelConfig {
         return uncertaintyAction;
     }
 
-    public BBStochModelVectorsConfig getBbStochModelVectorsConfig() {
+	public ArrayList<BBBoundaryProviderConfig> getBoundaryProviderConfigs() {
+		return boundaryProviderConfigs;
+	}
+
+	public BBStochModelVectorsConfig getBbStochModelVectorsConfig() {
         return bbStochModelVectorsConfig;
     }
 
