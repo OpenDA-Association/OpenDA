@@ -20,11 +20,9 @@
 
 package org.openda.blackbox.config;
 
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.ITime;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -33,7 +31,7 @@ import java.util.Collection;
 public class BBModelConfig {
 
     private BBWrapperConfig wrapperConfig;
-    private Collection<BBModelVectorConfig> exchangeItems;
+    private Collection<BBModelVectorConfig> vectorConfigs;
 	private boolean skipModelActionsIfInstanceDirExists;
 	private boolean doCleanUp;
     private File configRootDir;
@@ -49,7 +47,7 @@ public class BBModelConfig {
     public BBModelConfig(File configRootDir, BBWrapperConfig wrapperConfig,
                          ITime startTime, ITime endTime,
                          double timeStepMJD, String[] startTimeExchangeItemIds, String[] endTimeExchangeItemIds,
-                         String[] timeStepExchangeItemIds, Collection<BBModelVectorConfig> exchangeItems,
+                         String[] timeStepExchangeItemIds, Collection<BBModelVectorConfig> vectorConfigs,
                          boolean skipModelActionsIfInstanceDirExists,
                          boolean doCleanUp,
                          String[] restartFileNames, String savedStatesDirPrefix) {
@@ -61,7 +59,7 @@ public class BBModelConfig {
         this.startTimeExchangeItemIds = startTimeExchangeItemIds;
         this.endTimeExchangeItemIds = endTimeExchangeItemIds;
         this.timeStepExchangeItemIds = timeStepExchangeItemIds;
-        this.exchangeItems = exchangeItems;
+        this.vectorConfigs = vectorConfigs;
 		this.skipModelActionsIfInstanceDirExists = skipModelActionsIfInstanceDirExists;
 		this.doCleanUp = doCleanUp;
 		this.restartFileNames = restartFileNames;
@@ -72,8 +70,8 @@ public class BBModelConfig {
         return wrapperConfig;
     }
 
-    public Collection<BBModelVectorConfig> getExchangeItems() {
-        return exchangeItems;
+    public Collection<BBModelVectorConfig> getVectorConfigs() {
+        return vectorConfigs;
     }
 
     public boolean doCleanUp() {
@@ -106,24 +104,6 @@ public class BBModelConfig {
 
     public String[] getEndTimeExchangeItemIds() {
         return endTimeExchangeItemIds;
-    }
-
-	public String[] getExchangeItemIds(IPrevExchangeItem.Role role) {
-		ArrayList<String> exchangeItemIdList = new ArrayList<String>();
-		for (BBModelVectorConfig subVectorConfig : exchangeItems) {
-			if (role.equals(subVectorConfig.getRole())) {
-				exchangeItemIdList.add(subVectorConfig.getId());
-			}
-		}
-		return exchangeItemIdList.toArray(new String[exchangeItemIdList.size()]);
-	}
-
-    public String[] getExchangeItemIds() {
-        ArrayList<String> exchangeItemIdList = new ArrayList<String>();
-        for (BBModelVectorConfig subVectorConfig : exchangeItems) {
-            exchangeItemIdList.add(subVectorConfig.getId());
-        }
-        return exchangeItemIdList.toArray(new String[exchangeItemIdList.size()]);
     }
 
 	public String[] getRestartFileNames() {

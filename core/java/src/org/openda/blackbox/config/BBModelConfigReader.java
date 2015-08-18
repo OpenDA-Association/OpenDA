@@ -75,7 +75,7 @@ public class BBModelConfigReader {
         }
 
         // parse io selections
-        ArrayList<BBModelVectorConfig> exchangeItems = new ArrayList<BBModelVectorConfig>();
+        ArrayList<BBModelVectorConfig> vectorConfigs = new ArrayList<BBModelVectorConfig>();
 
         for (ExchangeItemXMLItem exchangeItemXMLItem : bbModelConfigXML.getExchangeItems().getExchangeItemXMLItem()) {
 
@@ -113,7 +113,7 @@ public class BBModelConfigReader {
                         "(model file: " + modelConfigFile.getAbsolutePath() +
                         ", wrapper config. file: " + wrapperConfigFile.getAbsolutePath() + ")");
             }
-            exchangeItems.add(new BBModelVectorConfig(
+            vectorConfigs.add(new BBModelVectorConfig(
                     id, ioObjectConfig, elementId, selectionIndices, selectorConfig, role));
         }
 
@@ -161,7 +161,7 @@ public class BBModelConfigReader {
 		return new BBModelConfig(modelConfigFile.getParentFile(), bbWrapperConfig,
                 startTime, endTime,
                 timeStepMJD, startTimeExchangeItemIds, endTimeExchangeItemIds,
-                timeStepExchangeItemIds, exchangeItems,
+                timeStepExchangeItemIds, vectorConfigs,
 				skipModelActionsIfInstanceDirExists, doCleanUp, restartFileNames, savedStatesDirPrefix);
     }
 

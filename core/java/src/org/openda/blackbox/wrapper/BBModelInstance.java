@@ -33,15 +33,13 @@ import org.openda.utils.io.FileBasedModelState;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Black box module's implementation of a model instance
  */
 public class BBModelInstance extends Instance implements IModelInstance {
+    private final String ALL_ELEMENTS_FROM_IO_OBJECT = "allElementsFromIoObject";
 
     protected BBModelConfig bbModelConfig;
 
@@ -237,15 +235,59 @@ public class BBModelInstance extends Instance implements IModelInstance {
         }
     }
 
-    public String[] getExchangeItemIDs() {
-        checkForPendingComputeActions();
-        return bbModelConfig.getExchangeItemIds();
-    }
-
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	/**
+	 * Note: this method also works in combination with the option "allElementsFromIoObject".
+	 */
+	public String[] getExchangeItemIDs() {
 		checkForPendingComputeActions();
-		return bbModelConfig.getExchangeItemIds(role);
-    }
+
+		List<String> exchangeItemIds = new ArrayList<String>();
+		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
+			addAllExchangeItemIdsFromVectorConfig(vectorConfig, exchangeItemIds);
+		}
+
+		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
+	}
+
+	/**
+	 * Note: this method also works in combination with the option "allElementsFromIoObject".
+	 */
+	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+		checkForPendingComputeActions();
+
+		List<String> exchangeItemIds = new ArrayList<String>();
+		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
+			if (!role.equals(vectorConfig.getRole())) continue;
+
+			addAllExchangeItemIdsFromVectorConfig(vectorConfig, exchangeItemIds);
+		}
+
+		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
+	}
+
+	/**
+	 * Adds all exchangeItemIds from the given vectorConfig to the given exchangeItemIds list.
+	 */
+	private void addAllExchangeItemIdsFromVectorConfig(BBModelVectorConfig vectorConfig, List<String> exchangeItemIds) {
+		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
+			//add all exchange item ids from ioObject or dataObject.
+			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
+			if (ioObject != null) {
+				for (IPrevExchangeItem ioObjectExchangeItem : ioObject.getExchangeItems()) {
+					exchangeItemIds.add(ioObjectExchangeItem.getId());
+				}
+			} else {
+				IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
+				if (dataObject != null) {
+					Collections.addAll(exchangeItemIds, dataObject.getExchangeItemIDs());
+				} else {
+					throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" + vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+				}
+			}
+		} else {
+			exchangeItemIds.add(vectorConfig.getId());
+		}
+	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		IPrevExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
@@ -322,9 +364,10 @@ public class BBModelInstance extends Instance implements IModelInstance {
                             throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
                                     allElementVectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
                         }
-                        if (bbExchangeItem != null) {
-                            break;
-                        }
+                    }
+
+                    if (bbExchangeItem != null) {
+                        break;
                     }
                 }
             }
@@ -475,7 +518,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 	private BBModelVectorConfig findVectorConfig(String exchangeItemId) {
-		for (BBModelVectorConfig vectorConfig : bbModelConfig.getExchangeItems()) {
+		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
 			if (vectorConfig.getId().equalsIgnoreCase(exchangeItemId)) {
 				return vectorConfig;
 			}
@@ -485,8 +528,8 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
 	private List<BBModelVectorConfig> findAllElementsVectorConfig() {
 		List<BBModelVectorConfig> allElementsVectorConfigs = new ArrayList<BBModelVectorConfig>();
-		for (BBModelVectorConfig vectorConfig : bbModelConfig.getExchangeItems()) {
-			if (vectorConfig.getId().equalsIgnoreCase("allElementsFromIoObject")) {
+		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
+			if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
 				allElementsVectorConfigs.add(vectorConfig);
 			}
 		}
