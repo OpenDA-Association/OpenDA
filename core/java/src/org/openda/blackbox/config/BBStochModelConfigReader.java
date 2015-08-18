@@ -27,7 +27,6 @@ import org.openda.core.io.castorgenerated.*;
 import org.openda.core.io.castorgenerated.types.NoiseOperationTypesXML;
 import org.openda.core.io.castorgenerated.types.ParameterTransformationTypesXML;
 import org.openda.uncertainties.UncertaintyEngine;
-import org.openda.utils.Array;
 import org.openda.utils.DimensionIndex;
 import org.openda.utils.io.CastorUtils;
 
@@ -62,7 +61,7 @@ public class BBStochModelConfigReader {
             // bb model config, check how it is specified
             String bbModelRefConfigFile = blackBoxModelConfigReferenceXML.getFile();
             if (bbModelRefConfigFile != null) {
-                // actual model is defined in seperate config file
+                // actual model is defined in separate config file
                 File bbModelConfigFile = new File(stochModelConfigFile.getParentFile(),
                         bbModelRefConfigFile);
                 if (!bbModelConfigFile.exists()) {
@@ -114,7 +113,7 @@ public class BBStochModelConfigReader {
 		}
 
 		// get boundary provider, if specified
-		ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs = new ArrayList<>();
+		ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs = new ArrayList<BBBoundaryProviderConfig>();
 
 		BoundaryProviderXML[] boundaryProviderXMLs = bbStochModelConfigXML.getBoundaryProvider();
 		if (boundaryProviderXMLs.length > 0) {
@@ -127,7 +126,7 @@ public class BBStochModelConfigReader {
 				File dataObjectFile = new File(stochModelConfigFile.getParentFile(), fileName);
 				String[] dataObjectArguments = dataObjectXML.getArg();
 
-				ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs = new ArrayList<>();
+				ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs = new ArrayList<BBBoundaryMappingConfig>();
 				BoundaryMappingXML[] boundaryMappingXMLs = boundaryProviderXML.getBoundaryMapping();
 				for (BoundaryMappingXML boundaryMappingXML : boundaryMappingXMLs) {
 					int operationType;
@@ -153,7 +152,7 @@ public class BBStochModelConfigReader {
 						if (exchangeItemXML.getModelExchangeItemId() != null) {
 							modelExchangeItemId = exchangeItemXML.getModelExchangeItemId();
 						}
-						Pair<String,String> mappingExchange = new Pair<>(id, modelExchangeItemId);
+						Pair<String,String> mappingExchange = new Pair<String,String>(id, modelExchangeItemId);
 						mappingExchangeItems.add(mappingExchange);
 					}
 					BBBoundaryMappingConfig boundaryMappingConfig =
@@ -170,11 +169,11 @@ public class BBStochModelConfigReader {
 
 		BBStochModelVectorsConfig bbStochModelVectorsConfig = null;
 
-        // parse vector spefication
-        Collection<BBRegularisationConstantConfig> regularisationConstantList = new ArrayList<>();
-        Collection<BBCartesianToPolarConfig> cartesianToPolarList = new ArrayList<>();
+        // parse vector specification
+        Collection<BBRegularisationConstantConfig> regularisationConstantList = new ArrayList<BBRegularisationConstantConfig>();
+        Collection<BBCartesianToPolarConfig> cartesianToPolarList = new ArrayList<BBCartesianToPolarConfig>();
         BBStochModelStateConfig stateConfig = null;
-        Collection<BBStochModelVectorConfig> predictorVectorCollection = new ArrayList<>();
+        Collection<BBStochModelVectorConfig> predictorVectorCollection = new ArrayList<BBStochModelVectorConfig>();
 
         BlackBoxStochModelVectorSpecificationXML vectorSpecificationXML = bbStochModelConfigXML.getVectorSpecification();
 
@@ -255,8 +254,6 @@ public class BBStochModelConfigReader {
 
 					} else if (cartesianToPolarXML != null) {
 
-						CartesianToPolarXMLChoice[] stdDevOrUncItemXMLChoice =
-								cartesianToPolarXML.getCartesianToPolarXMLChoice();
 						if (cartesianToPolarXML.getStdDev() == null) {
 							// uncertainty engine can not any longer be used for cartesianToPolar
 							throw new RuntimeException(
@@ -349,7 +346,7 @@ public class BBStochModelConfigReader {
 									uncertainItemXML != null || itemWithArmaConstantsXML != null ||
 									armaModelXML != null || ar1ModelXML != null) ) {
 								throw new RuntimeException("You can not specify Noise Model class and " +
-										"arma model or uncertainy model (and their (sub)vectors) " +
+										"arma model or uncertainty model (and their (sub)vectors) " +
 										"at the same time" + stochModelConfigFile.getAbsolutePath());
 							}
 
@@ -490,7 +487,7 @@ public class BBStochModelConfigReader {
 				List<String> modelExchangeItemIds = new ArrayList<String>();
 				if (modelExchangeItemXMLs.length > 0 && exchangeItemXML.getModelExchangeItemId() != null) {
 					throw new RuntimeException(
-							"The attribute \"odelExchangeItemId\"and " +
+							"The attribute \"modelExchangeItemId\"and " +
 									"the elements <modelExchangeItem> can not be mixed, file: " +
 									stochModelConfigFile.getAbsolutePath());
 				} else if (modelExchangeItemXMLs.length == 0 && exchangeItemXML.getModelExchangeItemId() != null ) {
@@ -500,9 +497,9 @@ public class BBStochModelConfigReader {
 							determineOperationType(exchangeItemXML.getOperation()),
 							determineTransformationType(exchangeItemXML.getTransformation() ))
 					);
-				} else { 
-					for (int i = 0; i < modelExchangeItemXMLs.length; i++) {
-						modelExchangeItemIds.add(modelExchangeItemXMLs[i].getId());
+				} else {
+					for (UncertaintyOrNoiseModelExchangeItemXML modelExchangeItemXML : modelExchangeItemXMLs) {
+						modelExchangeItemIds.add(modelExchangeItemXML.getId());
 					}
 					exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
 							exchangeItemXML.getId(),
