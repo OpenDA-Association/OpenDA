@@ -83,19 +83,12 @@ public class WdmUtilsTest extends TestCase {
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.
-            String string;
-            string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
+            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
 
-            //see method WdmUtils.getDataSetNumber:
-            //assumed here that the attribute string always contains
-            //the scenario in characters with index 32 to 39 (both inclusive),
-            //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
-            //the location in characters with index 48 to 55 (both inclusive),
-            //the description (stationName) in characters with index 56 to 103 (both inclusive).
-            if (string != null && string.length() >= 104) {
-                String parameter = string.substring(40, 48).trim();
-                String location = string.substring(48, 56).trim();
-                String description = string.substring(56, 104).trim();
+            String parameter = WdmUtils.getParameterFromAttributeValue(string);
+            String location = WdmUtils.getLocationFromAttributeValue(string);
+            String description = WdmUtils.getDescriptionFromAttributeValue(string);
+            if (parameter != null && location != null && description != null) {
                 System.out.println(dataSetNumber + " " + location
                         + " " + parameter + " " + description);
             } else {//if cannot get location and parameter from attribute.

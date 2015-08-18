@@ -160,8 +160,8 @@ public class WdmUtils {
      * @param wdmFileNumber watershed data management file unit number.
      * @param wdmFilePath
      * @param wdmTimeSeriesExchangeItem
-     * @param startTime
-     * @param endTime
+     * @param requestedStartTime
+     * @param requestedEndTime
      * @param timeZone
      */
     public static void readTimesAndValues(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
@@ -495,23 +495,9 @@ public class WdmUtils {
             //get the first attributeValue.
             String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
 
-            //assumed here that the attribute string always contains
-            //the scenario in characters with index 32 to 39 (both inclusive),
-            //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
-            //the location in characters with index 48 to 55 (both inclusive),
-            //the description (stationName) in characters with index 56 to 103 (both inclusive).
-            //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
-            //setting "Language for non-Unicode programs":
-            //with English (United States):
-            //length = 104
-            //with Korean (Korea):
-            //length = 103
-            //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
-            //so then can find parameter and description starting from the end of the string.
-			if (string != null && string.length() >= 64) {
-				int stringLength = string.length();
-                String currentParameter = string.substring(stringLength - 64, stringLength - 56).trim();
-                String currentDescription = string.substring(stringLength - 48, stringLength).trim();
+            String currentParameter = getParameterFromAttributeValue(string);
+            String currentDescription = getDescriptionFromAttributeValue(string);
+            if (currentParameter != null && currentDescription != null) {
                 if (location.equalsIgnoreCase(currentDescription) && parameter.equalsIgnoreCase(currentParameter)) {
                     return dataSetNumber;
                 }
@@ -525,6 +511,69 @@ public class WdmUtils {
 
         //if dataSet not found.
         return -1;
+    }
+
+    public static String getParameterFromAttributeValue(String string) {
+        //assumed here that the attribute string always contains
+        //the scenario in characters with index 32 to 39 (both inclusive),
+        //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
+        //the location in characters with index 48 to 55 (both inclusive),
+        //the description (stationName) in characters with index 56 to 103 (both inclusive).
+        //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
+        //setting "Language for non-Unicode programs":
+        //with English (United States):
+        //length = 104
+        //with Korean (Korea):
+        //length = 103
+        //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
+        //so then can find parameter starting from the end of the string.
+        if (string == null || string.length() < 64) {
+            return null;
+        }
+        int stringLength = string.length();
+        return string.substring(stringLength - 64, stringLength - 56).trim();
+    }
+
+    public static String getLocationFromAttributeValue(String string) {
+        //assumed here that the attribute string always contains
+        //the scenario in characters with index 32 to 39 (both inclusive),
+        //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
+        //the location in characters with index 48 to 55 (both inclusive),
+        //the description (stationName) in characters with index 56 to 103 (both inclusive).
+        //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
+        //setting "Language for non-Unicode programs":
+        //with English (United States):
+        //length = 104
+        //with Korean (Korea):
+        //length = 103
+        //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
+        //so then can find location starting from the end of the string.
+        if (string == null || string.length() < 64) {
+            return null;
+        }
+        int stringLength = string.length();
+        return string.substring(stringLength - 56, stringLength - 48).trim();
+    }
+
+    public static String getDescriptionFromAttributeValue(String string) {
+        //assumed here that the attribute string always contains
+        //the scenario in characters with index 32 to 39 (both inclusive),
+        //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
+        //the location in characters with index 48 to 55 (both inclusive),
+        //the description (stationName) in characters with index 56 to 103 (both inclusive).
+        //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
+        //setting "Language for non-Unicode programs":
+        //with English (United States):
+        //length = 104
+        //with Korean (Korea):
+        //length = 103
+        //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
+        //so then can find description starting from the end of the string.
+        if (string == null || string.length() < 64) {
+            return null;
+        }
+        int stringLength = string.length();
+        return string.substring(stringLength - 48, stringLength).trim();
     }
 
     private static double convertDateArrayToMjd(int[] date, TimeZone timeZone) {
