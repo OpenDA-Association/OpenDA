@@ -20,10 +20,9 @@
 
 package org.openda.model_hspf;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
+import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 
@@ -476,6 +475,40 @@ public class WdmUtils {
     }
 
     /**
+     * Creates an exchange item with the given role for each dataSet in the wdm file with the given unit number.
+     *
+     * @param wdmDll
+     * @param wdmFileNumber watershed data management file unit number
+     * @param role
+     * @param wdmTimeSeriesIoObject
+     */
+    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsForWdmFile(WdmDll wdmDll, int wdmFileNumber, IPrevExchangeItem.Role role, WdmTimeSeriesIoObject wdmTimeSeriesIoObject) {
+        List<WdmTimeSeriesExchangeItem> exchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
+
+        //get first existing dataSet and put its number in the variable dataSetNumber.
+        //for dataSetNumber the valid range is 1 (inclusive) to 32000 (inclusive), so start with 1.
+        int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
+        while (dataSetNumber != -1) {
+            //get the first attributeValue.
+            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
+
+            String constituent = getConstituentFromAttributeValue(string);
+            String stationName = getStationNameFromAttributeValue(string);
+            if (constituent != null && stationName != null) {
+                String id = stationName + '.' + constituent;
+                exchangeItems.add(new WdmTimeSeriesExchangeItem(id, role, wdmTimeSeriesIoObject));
+            } else {//if cannot get location and parameter from attribute.
+                //ignore this dataSet (do nothing).
+            }
+
+            //get next existing dataSet and put its number in the variable dataSetNumber.
+            dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, dataSetNumber + 1);
+        }
+
+        return exchangeItems;
+    }
+
+    /**
      * Searches the wdm file with the given unit number for a dataSet that has data for the
      * given location (stationName) and parameter. If found, then returns the number of the found dataSet.
      * If no such dataSet found, then returns -1.
@@ -489,7 +522,6 @@ public class WdmUtils {
     public static int getDataSetNumber(WdmDll wdmDll, int wdmFileNumber, String location, String parameter) {
         //get first existing dataSet and put its number in the variable dataSetNumber.
         //for dataSetNumber the valid range is 1 (inclusive) to 32000 (inclusive), so start with 1.
-
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.

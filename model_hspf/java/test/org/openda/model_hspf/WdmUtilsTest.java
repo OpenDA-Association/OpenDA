@@ -27,6 +27,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 /**
@@ -151,6 +152,45 @@ public class WdmUtilsTest extends TestCase {
             System.out.println(expectedDataSetNumber + " " + parameter + " " + location + " " + actualDataSetNumber);
             assertEquals(expectedDataSetNumber, actualDataSetNumber);
         }
+
+        //close wdm file.
+        WdmUtils.closeWdmFile(wdmDll, wdmFileNumber);
+    }
+
+    /**
+     * Tests method WdmUtils.createExchangeItemsForWdmFile.
+     */
+    public void testCreateExchangeItemsForWdmFile() throws Exception {
+        //currently only wdm.dll available (not wdm.so), so only run this on windows.
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return;
+        }
+
+        //first copy input wdm files to directory openda_public/opendaTestRuns before running the test.
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String inputFileName = "wdmUtilsTest/POINT.wdm";
+        File inputFile = new File(testRunDataDir, inputFileName);
+
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String relativeWdmDllPath = "../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll";
+        File wdmDllFile = new File(testRunDataDir, relativeWdmDllPath);
+        WdmDll.initialize(wdmDllFile);
+        WdmDll wdmDll = WdmDll.getInstance();
+
+        //open wdm file.
+        int wdmFileNumber = WdmUtils.generateUniqueFortranFileUnitNumber();
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String relativeWdmMessageFilePath = "../../../../../model_hspf/native_bin/MESSAGE.WDM";
+        File wdmMessageFile = new File(testRunDataDir, relativeWdmMessageFilePath);
+        WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
+
+        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsForWdmFile(wdmDll, wdmFileNumber, IPrevExchangeItem.Role.Input, null);
+        assertEquals(923, exchangeItems.size());
+        WdmTimeSeriesExchangeItem exchangeItem = exchangeItems.get(42);
+        assertEquals(IPrevExchangeItem.Role.Input, exchangeItem.getRole());
+        assertEquals("48A0341.FLOW", exchangeItem.getId());
+        assertEquals("48A0341", exchangeItem.getLocation());
+        assertEquals("FLOW", exchangeItem.getQuantityId());
 
         //close wdm file.
         WdmUtils.closeWdmFile(wdmDll, wdmFileNumber);
