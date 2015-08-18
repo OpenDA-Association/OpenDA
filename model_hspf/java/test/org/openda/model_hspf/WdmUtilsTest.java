@@ -77,20 +77,17 @@ public class WdmUtilsTest extends TestCase {
         File wdmMessageFile = new File(testRunDataDir, relativeWdmMessageFilePath);
         WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
 
-        //parameter is called constituent in WDMUtil.
-        //description is called stationName in WDMUtil.
         System.out.println("DSN Location Constituent StationName");
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.
             String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
 
-            String parameter = WdmUtils.getParameterFromAttributeValue(string);
+            String constituent = WdmUtils.getConstituentFromAttributeValue(string);
             String location = WdmUtils.getLocationFromAttributeValue(string);
-            String description = WdmUtils.getDescriptionFromAttributeValue(string);
-            if (parameter != null && location != null && description != null) {
-                System.out.println(dataSetNumber + " " + location
-                        + " " + parameter + " " + description);
+            String stationName = WdmUtils.getStationNameFromAttributeValue(string);
+            if (constituent != null && location != null && stationName != null) {
+                System.out.println(dataSetNumber + " " + location + " " + constituent + " " + stationName);
             } else {//if cannot get location and parameter from attribute.
                 //ignore this dataSet (do nothing).
             }

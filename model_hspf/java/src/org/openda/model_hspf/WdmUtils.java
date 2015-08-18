@@ -495,10 +495,10 @@ public class WdmUtils {
             //get the first attributeValue.
             String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
 
-            String currentParameter = getParameterFromAttributeValue(string);
-            String currentDescription = getDescriptionFromAttributeValue(string);
-            if (currentParameter != null && currentDescription != null) {
-                if (location.equalsIgnoreCase(currentDescription) && parameter.equalsIgnoreCase(currentParameter)) {
+            String currentConstituent = getConstituentFromAttributeValue(string);
+            String currentStationName = getStationNameFromAttributeValue(string);
+            if (currentConstituent != null && currentStationName != null) {
+                if (location.equalsIgnoreCase(currentStationName) && parameter.equalsIgnoreCase(currentConstituent)) {
                     return dataSetNumber;
                 }
             } else {//if cannot get location and parameter from attribute.
@@ -513,7 +513,8 @@ public class WdmUtils {
         return -1;
     }
 
-    public static String getParameterFromAttributeValue(String string) {
+    //parameter is called constituent in WDMUtil.
+    public static String getConstituentFromAttributeValue(String string) {
         //assumed here that the attribute string always contains
         //the scenario in characters with index 32 to 39 (both inclusive),
         //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
@@ -555,7 +556,8 @@ public class WdmUtils {
         return string.substring(stringLength - 56, stringLength - 48).trim();
     }
 
-    public static String getDescriptionFromAttributeValue(String string) {
+    //description is called stationName in WDMUtil.
+    public static String getStationNameFromAttributeValue(String string) {
         //assumed here that the attribute string always contains
         //the scenario in characters with index 32 to 39 (both inclusive),
         //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
