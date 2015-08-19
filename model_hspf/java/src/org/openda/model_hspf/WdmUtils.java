@@ -124,13 +124,7 @@ public class WdmUtils {
             WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem, TimeZone timeZone) {
 
         //get dataSetNumber that corresponds to the time series for the given wdmTimeSeriesExchangeItem.
-        int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmTimeSeriesExchangeItem.getLocation(),
-                wdmTimeSeriesExchangeItem.getQuantityId());
-        if (dataSetNumber == -1) {//if dataSet not found.
-            throw new RuntimeException("WdmUtils: Data set for location " + wdmTimeSeriesExchangeItem.getLocation()
-                    + " and quantity " + wdmTimeSeriesExchangeItem.getQuantityId()
-                    + " not found in wdm file " + wdmFilePath);
-        }
+        int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmFilePath, wdmTimeSeriesExchangeItem);
 
         //get period to read.
         int[] startDateArray = getAvailableDataStartDateArray(wdmDll, wdmFileNumber, dataSetNumber);
@@ -168,13 +162,7 @@ public class WdmUtils {
            double requestedStartTime, double requestedEndTime, TimeZone timeZone) {
 
         //get dataSetNumber that corresponds to the time series for the given wdmTimeSeriesExchangeItem.
-        int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmTimeSeriesExchangeItem.getLocation(),
-                wdmTimeSeriesExchangeItem.getQuantityId());
-        if (dataSetNumber == -1) {//if dataSet not found.
-            throw new RuntimeException("WdmUtils: Data set for location " + wdmTimeSeriesExchangeItem.getLocation()
-                    + " and quantity " + wdmTimeSeriesExchangeItem.getQuantityId()
-                    + " not found in wdm file " + wdmFilePath);
-        }
+        int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmFilePath, wdmTimeSeriesExchangeItem);
 
         //get period to read.
         int[] availableDataStartDateArray = getAvailableDataStartDateArray(wdmDll, wdmFileNumber, dataSetNumber);
@@ -309,13 +297,7 @@ public class WdmUtils {
         double[] values = wdmTimeSeriesExchangeItem.getValuesRef();
         if (times != null && values != null && times.length > 0 && values.length > 0) {
             //get dataSetNumber that corresponds to the time series for the given wdmTimeSeriesExchangeItem.
-            int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmTimeSeriesExchangeItem.getLocation(),
-                    wdmTimeSeriesExchangeItem.getQuantityId());
-            if (dataSetNumber == -1) {//if dataSet not found.
-                throw new RuntimeException("WdmUtils: Data set for location " + wdmTimeSeriesExchangeItem.getLocation()
-                        + " and quantity " + wdmTimeSeriesExchangeItem.getQuantityId()
-                        + " not found in wdm file " + wdmFilePath);
-            }
+            int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmFilePath, wdmTimeSeriesExchangeItem);
 
             //get timeStep/Unit from dataSet, since the timeStep/Unit of a given dataSet can never change.
             int timeUnit = wdmDll.getTimeUnit(wdmFileNumber, dataSetNumber);
@@ -359,13 +341,7 @@ public class WdmUtils {
             double endTime, TimeZone timeZone) {
 
         //get dataSetNumber that corresponds to the time series for the given wdmTimeSeriesExchangeItem.
-        int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmTimeSeriesExchangeItem.getLocation(),
-                wdmTimeSeriesExchangeItem.getQuantityId());
-        if (dataSetNumber == -1) {//if dataSet not found.
-            throw new RuntimeException("WdmUtils: Data set for location " + wdmTimeSeriesExchangeItem.getLocation()
-                    + " and quantity " + wdmTimeSeriesExchangeItem.getQuantityId()
-                    + " not found in wdm file " + wdmFilePath);
-        }
+        int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmFilePath, wdmTimeSeriesExchangeItem);
 
         //initialize daysPerTimeUnit.
         //get timeStep/Unit from dataSet, since the timeStep/Unit of a given dataSet can never change.
@@ -496,7 +472,9 @@ public class WdmUtils {
             String stationName = getStationNameFromAttributeValue(string);
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
-                exchangeItems.add(new WdmTimeSeriesExchangeItem(id, role, wdmTimeSeriesIoObject));
+                WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role, wdmTimeSeriesIoObject);
+                exchangeItem.setDataSetNumber(dataSetNumber);
+                exchangeItems.add(exchangeItem);
             } else {//if cannot get location and parameter from attribute.
                 //ignore this dataSet (do nothing).
             }
@@ -506,6 +484,26 @@ public class WdmUtils {
         }
 
         return exchangeItems;
+    }
+
+    /**
+     * Returns the dataSetNumber that corresponds to the time series for the given wdmTimeSeriesExchangeItem.
+     */
+    private static int getDataSetNumber(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath, WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem) {
+        int dataSetNumber = wdmTimeSeriesExchangeItem.getDataSetNumber();
+        if (dataSetNumber != -1) return dataSetNumber;
+
+        //if dataSetNumber not cached.
+        dataSetNumber = searchDataSetNumber(wdmDll, wdmFileNumber, wdmTimeSeriesExchangeItem.getLocation(), wdmTimeSeriesExchangeItem.getQuantityId());
+        if (dataSetNumber != -1) {
+            wdmTimeSeriesExchangeItem.setDataSetNumber(dataSetNumber);
+            return dataSetNumber;
+        }
+
+        //if dataSet not found.
+        throw new RuntimeException("WdmUtils: Data set for location " + wdmTimeSeriesExchangeItem.getLocation()
+                + " and quantity " + wdmTimeSeriesExchangeItem.getQuantityId()
+                + " not found in wdm file " + wdmFilePath);
     }
 
     /**
@@ -519,7 +517,7 @@ public class WdmUtils {
      * @param parameter
      * @return found dataSet.
      */
-    public static int getDataSetNumber(WdmDll wdmDll, int wdmFileNumber, String location, String parameter) {
+    static int searchDataSetNumber(WdmDll wdmDll, int wdmFileNumber, String location, String parameter) {
         //get first existing dataSet and put its number in the variable dataSetNumber.
         //for dataSetNumber the valid range is 1 (inclusive) to 32000 (inclusive), so start with 1.
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);

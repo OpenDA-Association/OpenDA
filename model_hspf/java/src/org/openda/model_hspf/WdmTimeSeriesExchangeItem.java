@@ -50,7 +50,8 @@ import org.openda.utils.Mask;
  */
 public class WdmTimeSeriesExchangeItem extends TimeSeries {
 
-    private WdmTimeSeriesIoObject wdmTimeSeriesIoObject;
+    private final WdmTimeSeriesIoObject wdmTimeSeriesIoObject;
+    private int dataSetNumber = -1;
 
     public WdmTimeSeriesExchangeItem(String id, Role role,
             WdmTimeSeriesIoObject wdmTimeSeriesIoObject) {
@@ -404,5 +405,19 @@ public class WdmTimeSeriesExchangeItem extends TimeSeries {
      */
     private void readValuesAndTimesFromFile() {
         this.wdmTimeSeriesIoObject.readValuesAndTimesFromFile(this);
+    }
+
+    /**
+     * @return dataSetNumber of this time series in the wdm file. Returns -1 if unknown.
+     */
+    public int getDataSetNumber() {
+        return dataSetNumber;
+    }
+
+    /**
+     * @param dataSetNumber of this time series in the wdm file.
+     */
+    public void setDataSetNumber(int dataSetNumber) {
+        this.dataSetNumber = dataSetNumber;
     }
 }

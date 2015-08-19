@@ -102,11 +102,9 @@ public class WdmUtilsTest extends TestCase {
     }
 
     /**
-     * Tests method WdmUtils.getDataSetNumber.
-     *
-     * @throws Exception
+     * Tests method WdmUtils.searchDataSetNumber.
      */
-    public void testGetDataSetNumber() throws Exception {
+    public void testSearchDataSetNumber() throws Exception {
         //currently only wdm.dll available (not wdm.so), so only run this on windows.
         if (!BBUtils.RUNNING_ON_WINDOWS) {
             return;
@@ -147,7 +145,7 @@ public class WdmUtilsTest extends TestCase {
 
             String location = mapping[n][1];
             String parameter = mapping[n][2];
-            int actualDataSetNumber = WdmUtils.getDataSetNumber(wdmDll, wdmFileNumber, location, parameter);
+            int actualDataSetNumber = WdmUtils.searchDataSetNumber(wdmDll, wdmFileNumber, location, parameter);
 
             System.out.println(expectedDataSetNumber + " " + parameter + " " + location + " " + actualDataSetNumber);
             assertEquals(expectedDataSetNumber, actualDataSetNumber);

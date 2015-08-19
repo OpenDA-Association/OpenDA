@@ -327,7 +327,6 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         //open wdm file.
         WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
 
-        //TODO store dataSetNumber in exchangeItem, then pass to method writeTimesAndValues -> measure speed up
         for (WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem : this.wdmTimeSeriesExchangeItems) {
             //write data from wdmTimeSeriesExchangeItem to file.
             WdmUtils.writeTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath,
