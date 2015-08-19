@@ -1,17 +1,15 @@
 package org.openda.blackbox.config;
 
-import javafx.util.Pair;
-
-import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by hummel on 07-Aug-15.
  */
 public class BBBoundaryMappingConfig {
 	private int operationType;
-	private ArrayList<Pair<String, String>> mappingExchangeItems;
+	private Map<String, String> mappingExchangeItems;
 
-	public BBBoundaryMappingConfig(int operationType, ArrayList<Pair<String, String>> mappingExchangeItems) {
+	public BBBoundaryMappingConfig(int operationType, Map<String, String> mappingExchangeItems) {
 		this.operationType = operationType;
 		this.mappingExchangeItems = mappingExchangeItems;
 	}
@@ -20,7 +18,7 @@ public class BBBoundaryMappingConfig {
 		return operationType;
 	}
 
-	public ArrayList<Pair<String, String>> getMappingExchangeItems() {
+	public Map<String, String> getMappingExchangeItems() {
 		return mappingExchangeItems;
 	}
 }

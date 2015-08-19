@@ -21,7 +21,6 @@
 
 package org.openda.blackbox.config;
 
-import javafx.util.Pair;
 import org.exolab.castor.types.Duration;
 import org.openda.core.io.castorgenerated.*;
 import org.openda.core.io.castorgenerated.types.NoiseOperationTypesXML;
@@ -31,9 +30,7 @@ import org.openda.utils.DimensionIndex;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Reader for black box stochastic model configuration.
@@ -145,15 +142,14 @@ public class BBStochModelConfigReader {
 									boundaryMappingXML.getOperation().getType() + " in " +
 									stochModelConfigFile.getAbsolutePath());
 					}
-					ArrayList<Pair<String,String>> mappingExchangeItems = new ArrayList<Pair<String, String>>();
+					Map<String,String> mappingExchangeItems = new HashMap<String, String>();
 					for (BoundaryExchangeItemXML exchangeItemXML : boundaryMappingXML.getExchangeItem()) {
 						String id = exchangeItemXML.getId();
 						String modelExchangeItemId = id;
 						if (exchangeItemXML.getModelExchangeItemId() != null) {
 							modelExchangeItemId = exchangeItemXML.getModelExchangeItemId();
 						}
-						Pair<String,String> mappingExchange = new Pair<String,String>(id, modelExchangeItemId);
-						mappingExchangeItems.add(mappingExchange);
+						mappingExchangeItems.put(id, modelExchangeItemId);
 					}
 					BBBoundaryMappingConfig boundaryMappingConfig =
 							new BBBoundaryMappingConfig(operationType, mappingExchangeItems);
