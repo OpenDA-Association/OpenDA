@@ -156,9 +156,9 @@ public class WdmUtilsTest extends TestCase {
     }
 
     /**
-     * Tests method WdmUtils.createExchangeItemsForWdmFile.
+     * Tests method WdmUtils.createExchangeItemsFromFile.
      */
-    public void testCreateExchangeItemsForWdmFile() throws Exception {
+    public void testCreateExchangeItemsFromFile() throws Exception {
         //currently only wdm.dll available (not wdm.so), so only run this on windows.
         if (!BBUtils.RUNNING_ON_WINDOWS) {
             return;
@@ -182,15 +182,62 @@ public class WdmUtilsTest extends TestCase {
         File wdmMessageFile = new File(testRunDataDir, relativeWdmMessageFilePath);
         WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
 
-        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsForWdmFile(wdmDll, wdmFileNumber, IPrevExchangeItem.Role.Input, null);
+        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsFromFile(wdmDll, wdmFileNumber, IPrevExchangeItem.Role.Input, null);
+
+        //close wdm file.
+        WdmUtils.closeWdmFile(wdmDll, wdmFileNumber);
+
         assertEquals(923, exchangeItems.size());
         WdmTimeSeriesExchangeItem exchangeItem = exchangeItems.get(42);
         assertEquals(IPrevExchangeItem.Role.Input, exchangeItem.getRole());
         assertEquals("48A0341.FLOW", exchangeItem.getId());
         assertEquals("48A0341", exchangeItem.getLocation());
         assertEquals("FLOW", exchangeItem.getQuantityId());
+    }
+
+    /**
+     * Tests method WdmUtils.createExchangeItemsFromList.
+     */
+    public void testCreateExchangeItemsFromList() throws Exception {
+        //currently only wdm.dll available (not wdm.so), so only run this on windows.
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return;
+        }
+
+        //first copy input wdm files to directory openda_public/opendaTestRuns before running the test.
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String inputFileName = "wdmUtilsTest/POINT.wdm";
+        File inputFile = new File(testRunDataDir, inputFileName);
+
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String relativeWdmDllPath = "../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll";
+        File wdmDllFile = new File(testRunDataDir, relativeWdmDllPath);
+        WdmDll.initialize(wdmDllFile);
+        WdmDll wdmDll = WdmDll.getInstance();
+
+        //open wdm file.
+        int wdmFileNumber = WdmUtils.generateUniqueFortranFileUnitNumber();
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String relativeWdmMessageFilePath = "../../../../../model_hspf/native_bin/MESSAGE.WDM";
+        File wdmMessageFile = new File(testRunDataDir, relativeWdmMessageFilePath);
+        WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
+
+        String[] timeSeriesIdList = new String[]{"48A0341.FLOW", "47A0211.ORP"};
+        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsFromList(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), IPrevExchangeItem.Role.Input, null, timeSeriesIdList);
 
         //close wdm file.
         WdmUtils.closeWdmFile(wdmDll, wdmFileNumber);
+
+        assertEquals(2, exchangeItems.size());
+        WdmTimeSeriesExchangeItem exchangeItem1 = exchangeItems.get(0);
+        assertEquals(IPrevExchangeItem.Role.Input, exchangeItem1.getRole());
+        assertEquals("48A0341.FLOW", exchangeItem1.getId());
+        assertEquals("48A0341", exchangeItem1.getLocation());
+        assertEquals("FLOW", exchangeItem1.getQuantityId());
+        WdmTimeSeriesExchangeItem exchangeItem2 = exchangeItems.get(1);
+        assertEquals(IPrevExchangeItem.Role.Input, exchangeItem2.getRole());
+        assertEquals("47A0211.ORP", exchangeItem2.getId());
+        assertEquals("47A0211", exchangeItem2.getLocation());
+        assertEquals("ORP", exchangeItem2.getQuantityId());
     }
 }

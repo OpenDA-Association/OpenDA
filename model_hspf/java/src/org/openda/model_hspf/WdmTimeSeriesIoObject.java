@@ -22,10 +22,7 @@ package org.openda.model_hspf;
 
 import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
@@ -197,14 +194,14 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         //initialize wdmTimeSeriesExchangeItems.
         if (arguments.length < 7) {
             Results.putMessage(this.getClass().getSimpleName() + ": No time series ids arguments specified. Exchange items will be created for all time series in the file.");
-            createWdmTimeSeriesExchangeItems();
+            createWdmTimeSeriesExchangeItemsFromFile();
             return;
         }
 
         //create exchange items for specified time series only.
         Results.putMessage(this.getClass().getSimpleName() + ": Time series ids arguments specified. Exchange items will be created for specified time series ids only.");
         String[] timeSeriesIdList = Arrays.copyOfRange(arguments, 6, arguments.length);
-        createWdmTimeSeriesExchangeItems(timeSeriesIdList);
+        createWdmTimeSeriesExchangeItemsFromList(timeSeriesIdList);
     }
 
     private void initializeRole(String role) {
@@ -235,32 +232,25 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         this.wdmMessageFilePath = wdmMessageFile.getAbsolutePath();
     }
 
-    private void createWdmTimeSeriesExchangeItems(String[] timeSeriesIdList) {
-        if (timeSeriesIdList == null || timeSeriesIdList.length == 0) throw new IllegalArgumentException("timeSeriesIdList == null || timeSeriesIdList.length == 0");
-
+    private void createWdmTimeSeriesExchangeItemsFromList(String[] timeSeriesIdList) {
         //reset this.timeSeriesExchangeItems list.
         this.wdmTimeSeriesExchangeItems.clear();
 
-        //for all identifiers in the idList create a WdmTimeSeriesExchangeItem.
-        for (String timeSeriesId : timeSeriesIdList) {
-            WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(timeSeriesId, this.role, this);
-            this.wdmTimeSeriesExchangeItems.add(exchangeItem);
-        }
+        //create exchange items for all time series ids in the list.
+        WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
+        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsFromList(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.role, this, timeSeriesIdList));
+        WdmUtils.closeWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber);
 
         if (this.wdmTimeSeriesExchangeItems.isEmpty()) throw new IllegalStateException(this.getClass().getSimpleName() + ": this.wdmTimeSeriesExchangeItems.isEmpty()");
     }
 
-    private void createWdmTimeSeriesExchangeItems() {
+    private void createWdmTimeSeriesExchangeItemsFromFile() {
         //reset this.timeSeriesExchangeItems list.
         this.wdmTimeSeriesExchangeItems.clear();
 
-        //open wdm file.
-        WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
-
         //create exchange items for all time series in the file.
-        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsForWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.role, this));
-
-        //close wdm file.
+        WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
+        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsFromFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.role, this));
         WdmUtils.closeWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber);
 
         if (this.wdmTimeSeriesExchangeItems.isEmpty()) throw new IllegalArgumentException(this.getClass().getSimpleName() + ": No time series found in time series file '" + this.wdmTimeSeriesFilePath + "'.");

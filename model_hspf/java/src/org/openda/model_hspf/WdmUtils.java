@@ -452,13 +452,8 @@ public class WdmUtils {
 
     /**
      * Creates an exchange item with the given role for each dataSet in the wdm file with the given unit number.
-     *
-     * @param wdmDll
-     * @param wdmFileNumber watershed data management file unit number
-     * @param role
-     * @param wdmTimeSeriesIoObject
      */
-    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsForWdmFile(WdmDll wdmDll, int wdmFileNumber, IPrevExchangeItem.Role role, WdmTimeSeriesIoObject wdmTimeSeriesIoObject) {
+    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromFile(WdmDll wdmDll, int wdmFileNumber, IPrevExchangeItem.Role role, WdmTimeSeriesIoObject wdmTimeSeriesIoObject) {
         List<WdmTimeSeriesExchangeItem> exchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
 
         //get first existing dataSet and put its number in the variable dataSetNumber.
@@ -481,6 +476,48 @@ public class WdmUtils {
 
             //get next existing dataSet and put its number in the variable dataSetNumber.
             dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, dataSetNumber + 1);
+        }
+
+        return exchangeItems;
+    }
+
+    /**
+     * Creates an exchange item with the given role for each dataSet in the wdm file that is also in the given timeSeriesIdList.
+     */
+    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromList(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
+            IPrevExchangeItem.Role role, WdmTimeSeriesIoObject wdmTimeSeriesIoObject, String[] timeSeriesIdList) {
+        if (timeSeriesIdList == null || timeSeriesIdList.length == 0) throw new IllegalArgumentException("timeSeriesIdList == null || timeSeriesIdList.length == 0");
+        Set<String> timeSeriesIdSet = new HashSet<String>(Arrays.asList(timeSeriesIdList));
+
+        List<WdmTimeSeriesExchangeItem> exchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
+
+        //get first existing dataSet and put its number in the variable dataSetNumber.
+        //for dataSetNumber the valid range is 1 (inclusive) to 32000 (inclusive), so start with 1.
+        int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
+        while (dataSetNumber != -1) {
+            //get the first attributeValue.
+            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
+
+            String constituent = getConstituentFromAttributeValue(string);
+            String stationName = getStationNameFromAttributeValue(string);
+            if (constituent != null && stationName != null) {
+                String id = stationName + '.' + constituent;
+                if (timeSeriesIdSet.contains(id)) {
+                    WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role, wdmTimeSeriesIoObject);
+                    exchangeItem.setDataSetNumber(dataSetNumber);
+                    exchangeItems.add(exchangeItem);
+                    timeSeriesIdSet.remove(id);
+                }
+            } else {//if cannot get location and parameter from attribute.
+                //ignore this dataSet (do nothing).
+            }
+
+            //get next existing dataSet and put its number in the variable dataSetNumber.
+            dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, dataSetNumber + 1);
+        }
+
+        if (!timeSeriesIdSet.isEmpty()) {
+            throw new RuntimeException(WdmUtils.class.getSimpleName() + ": Data sets with exchangeItem ids " + Arrays.asList(timeSeriesIdSet) + " not found in wdm file " + wdmFilePath);
         }
 
         return exchangeItems;
