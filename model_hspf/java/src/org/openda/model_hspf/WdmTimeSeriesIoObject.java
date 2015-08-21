@@ -101,13 +101,11 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      *                  the (optional) seventh and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
      *                  if no seventh and further arguments present then exchange items will be created for all time series in the file.
      */
-    
     public void initialize(File workingDir, String fileName, String[] arguments) {
         //initialize wdmTimeSeriesFilePath.
         File wdmTimeSeriesFile = new File(workingDir, fileName);
         if (!wdmTimeSeriesFile.exists()) {
-            throw new IllegalArgumentException("WdmTimeSeriesIoObject: Time series file '"
-                    + wdmTimeSeriesFile.getAbsolutePath() + "' does not exist.");
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": Time series file '" + wdmTimeSeriesFile.getAbsolutePath() + "' does not exist.");
         }
         this.wdmTimeSeriesFilePath = wdmTimeSeriesFile.getAbsolutePath();
         //create a unique fortran file unit number to use for the wdmTimeSeriesFile.
@@ -115,39 +113,33 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         //initialize wdmDll.
         if (arguments == null || arguments.length < 1) {
-            throw new IllegalArgumentException("WdmTimeSeriesIoObject: No arguments specified."
-                    + ". The first argument should be the path of the wdm.dll file (relative to working directory).");
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The first argument should be the path of the wdm.dll file (relative to working directory).");
         }
         initializeWdmDll(workingDir, arguments[0]);
 
         //initialize wdmMessageFilePath.
         if (arguments.length < 2) {
-            throw new IllegalArgumentException("WdmTimeSeriesIoObject: No arguments specified."
-                    + ". The second argument should be the path of the message file (relative to working directory).");
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the message file (relative to working directory).");
         }
         initializeWdmMessageFilePath(workingDir, arguments[1]);
 
         //initialize role.
         if (arguments.length < 3) {
-            throw new IllegalArgumentException("WdmTimeSeriesIoObject: No role argument specified."
-                    + ". The third argument should be the role of this IoObject. Role can be 'input' or 'output'.");
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this IoObject. Role can be 'input' or 'output'.");
         }
         initializeRole(arguments[2]);
 
         //get timeZone.
         if (arguments.length < 4) {
-            throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
-                    + ". The fourth argument should be the timeZone that is used by the model"
-                    + " (in hours with respect to GMT, between -12 and 12).");
+            throw new IllegalArgumentException("No timeZone argument specified for " + getClass().getSimpleName()
+                    + ". The fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12).");
         }
         try {
             double timeZoneOffsetInHours = Double.parseDouble(arguments[3]);
             this.timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse fourth argument '" + arguments[3]
-                    + "' for " + this.getClass().getSimpleName()
-                    + ". The fourth argument should be the timeZone that is used by the model"
-                    + " (in hours with respect to GMT, between -12 and 12).", e);
+            throw new IllegalArgumentException("Cannot parse fourth argument '" + arguments[3] + "' for " + getClass().getSimpleName()
+                    + ". The fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12).", e);
         }
 
         //this object can be used for either input or output. In both cases the run startTime and endTime
@@ -161,7 +153,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         if (this.role == IPrevExchangeItem.Role.Input) {
             //create exchange items.
             if (arguments.length < 6) {
-                throw new IllegalArgumentException("No start/endTime exchange item ids arguments specified for " + this.getClass().getSimpleName()
+                throw new IllegalArgumentException("No start/endTime exchange item ids arguments specified for " + getClass().getSimpleName()
                         + ". For role INPUT the fifth and sixth arguments should be the ids of the startTime and endTime exchangeItems respectively.");
             }
             //get start and end time.
@@ -170,34 +162,32 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         } else {//if this.role == IPrevExchangeItem.Role.Output.
             if (arguments.length < 6) {
-                throw new IllegalArgumentException("No start/endTime arguments specified for " + this.getClass().getSimpleName()
+                throw new IllegalArgumentException("No start/endTime arguments specified for " + getClass().getSimpleName()
                         + ". For role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.");
             }
             //get start time.
             try {
                 this.startTimeDouble = TimeUtils.date2Mjd(arguments[4]);
             } catch (ParseException e) {
-                throw new IllegalArgumentException("Invalid startTime argument specified for " + this.getClass().getSimpleName()
-                        + ". Cannot parse fifth argument '" + arguments[4]
-                        + "'. For role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.", e);
+                throw new IllegalArgumentException("Invalid startTime argument specified for " + getClass().getSimpleName()
+                        + ". Cannot parse fifth argument '" + arguments[4] + "'. For role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.", e);
             }
             //get end time.
             try {
                 this.endTimeDouble = TimeUtils.date2Mjd(arguments[5]);
             } catch (ParseException e) {
-                throw new IllegalArgumentException("Invalid endTime argument specified for " + this.getClass().getSimpleName()
-                        + ". Cannot parse sixth argument '" + arguments[5]
-                        + "'. For role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.", e);
+                throw new IllegalArgumentException("Invalid endTime argument specified for " + getClass().getSimpleName()
+                        + ". Cannot parse sixth argument '" + arguments[5] + "'. For role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.", e);
             }
         }
 
         //initialize wdmTimeSeriesExchangeItems.
         if (arguments.length < 7) {
-            Results.putMessage(this.getClass().getSimpleName() + ": No time series ids arguments specified. Exchange items will be created for all time series in the file.");
+            Results.putMessage(getClass().getSimpleName() + ": No time series ids arguments specified. Exchange items will be created for all time series in the file.");
             createWdmTimeSeriesExchangeItemsFromFile();
         } else {
             //create exchange items for specified time series only.
-            Results.putMessage(this.getClass().getSimpleName() + ": Time series ids arguments specified. Exchange items will be created for specified time series ids only.");
+            Results.putMessage(getClass().getSimpleName() + ": Time series ids arguments specified. Exchange items will be created for specified time series ids only.");
             String[] timeSeriesIdList = Arrays.copyOfRange(arguments, 6, arguments.length);
             createWdmTimeSeriesExchangeItemsFromList(timeSeriesIdList);
         }
@@ -214,8 +204,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
             this.role = IPrevExchangeItem.Role.Output;
 
         } else {
-            throw new IllegalArgumentException("WdmTimeSeriesIoObject: unknown role type '"
-                    + role + "' specified.");
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": unknown role type '" + role + "' specified.");
         }
     }
 
@@ -228,8 +217,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
     private void initializeWdmMessageFilePath(File workingDir, String wdmMessageFilePath) {
         File wdmMessageFile = new File(workingDir, wdmMessageFilePath);
         if (!wdmMessageFile.exists()) {
-            throw new IllegalArgumentException("WdmTimeSeriesIoObject: Message file '"
-                    + wdmMessageFile.getAbsolutePath() + "' does not exist.");
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": Message file '" + wdmMessageFile.getAbsolutePath() + "' does not exist.");
         }
         this.wdmMessageFilePath = wdmMessageFile.getAbsolutePath();
     }
@@ -281,7 +269,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         }
 
         if (Double.isNaN(this.startTimeDouble) || Double.isNaN(this.endTimeDouble)) {
-            throw new IllegalStateException("WdmTimeSeriesIoObject not initialized yet.");
+            throw new IllegalStateException(getClass().getSimpleName() + " not initialized yet.");
         }
 
         //open wdm file.
@@ -289,8 +277,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         for (WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem : this.wdmTimeSeriesExchangeItems) {
             //read data from file and set in wdmTimeSeriesExchangeItem.
-            WdmUtils.readTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath,
-                    wdmTimeSeriesExchangeItem, this.startTimeDouble, this.endTimeDouble, this.timeZone);
+            WdmUtils.readTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, wdmTimeSeriesExchangeItem, this.startTimeDouble, this.endTimeDouble, this.timeZone);
         }
 
         //close wdm file.
@@ -308,12 +295,11 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         }
 
         if (this.startTimeExchangeItem == null || this.endTimeExchangeItem == null) {
-            throw new IllegalStateException("WdmTimeSeriesIoObject not initialized yet.");
+            throw new IllegalStateException(getClass().getSimpleName() + " not initialized yet.");
         }
 
-        Results.putMessage(this.getClass().getSimpleName() + ": writing " + this.wdmTimeSeriesExchangeItems.size()
-                + " input time series to file " + this.wdmTimeSeriesFilePath  + " with fortran unit number "
-                + this.wdmTimeSeriesFileNumber + ".");
+        Results.putMessage(getClass().getSimpleName() + ": writing " + this.wdmTimeSeriesExchangeItems.size()
+                + " input time series to file " + this.wdmTimeSeriesFilePath  + " with fortran unit number " + this.wdmTimeSeriesFileNumber + ".");
 
         //get start and end times.
         double startTime = (Double) this.startTimeExchangeItem.getValues();
@@ -324,8 +310,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         for (WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem : this.wdmTimeSeriesExchangeItems) {
             //write data from wdmTimeSeriesExchangeItem to file.
-            WdmUtils.writeTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath,
-                    wdmTimeSeriesExchangeItem, startTime, endTime, this.timeZone);
+            WdmUtils.writeTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, wdmTimeSeriesExchangeItem, startTime, endTime, this.timeZone);
         }
 
         //close wdm file.
