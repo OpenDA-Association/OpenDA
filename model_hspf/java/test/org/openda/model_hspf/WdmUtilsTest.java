@@ -182,7 +182,7 @@ public class WdmUtilsTest extends TestCase {
         File wdmMessageFile = new File(testRunDataDir, relativeWdmMessageFilePath);
         WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
 
-        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsFromFile(wdmDll, wdmFileNumber, IPrevExchangeItem.Role.Input, null);
+        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsFromFile(wdmDll, wdmFileNumber, IPrevExchangeItem.Role.Input);
 
         //close wdm file.
         WdmUtils.closeWdmFile(wdmDll, wdmFileNumber);
@@ -223,7 +223,7 @@ public class WdmUtilsTest extends TestCase {
         WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
 
         String[] timeSeriesIdList = new String[]{"48A0341.FLOW", "47A0211.ORP"};
-        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsFromList(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), IPrevExchangeItem.Role.Input, null, timeSeriesIdList);
+        List<WdmTimeSeriesExchangeItem> exchangeItems = WdmUtils.createExchangeItemsFromList(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), IPrevExchangeItem.Role.Input, timeSeriesIdList);
 
         //close wdm file.
         WdmUtils.closeWdmFile(wdmDll, wdmFileNumber);

@@ -453,7 +453,7 @@ public class WdmUtils {
     /**
      * Creates an exchange item with the given role for each dataSet in the wdm file with the given unit number.
      */
-    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromFile(WdmDll wdmDll, int wdmFileNumber, IPrevExchangeItem.Role role, WdmTimeSeriesIoObject wdmTimeSeriesIoObject) {
+    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromFile(WdmDll wdmDll, int wdmFileNumber, IPrevExchangeItem.Role role) {
         List<WdmTimeSeriesExchangeItem> exchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
 
         //get first existing dataSet and put its number in the variable dataSetNumber.
@@ -467,7 +467,7 @@ public class WdmUtils {
             String stationName = getStationNameFromAttributeValue(string);
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
-                WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role, wdmTimeSeriesIoObject);
+                WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role);
                 exchangeItem.setDataSetNumber(dataSetNumber);
                 exchangeItems.add(exchangeItem);
             } else {//if cannot get location and parameter from attribute.
@@ -485,7 +485,7 @@ public class WdmUtils {
      * Creates an exchange item with the given role for each dataSet in the wdm file that is also in the given timeSeriesIdList.
      */
     public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromList(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
-            IPrevExchangeItem.Role role, WdmTimeSeriesIoObject wdmTimeSeriesIoObject, String[] timeSeriesIdList) {
+            IPrevExchangeItem.Role role, String[] timeSeriesIdList) {
         if (timeSeriesIdList == null || timeSeriesIdList.length == 0) throw new IllegalArgumentException("timeSeriesIdList == null || timeSeriesIdList.length == 0");
         Set<String> timeSeriesIdSet = new HashSet<String>(Arrays.asList(timeSeriesIdList));
 
@@ -503,7 +503,7 @@ public class WdmUtils {
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
                 if (timeSeriesIdSet.contains(id)) {
-                    WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role, wdmTimeSeriesIoObject);
+                    WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role);
                     exchangeItem.setDataSetNumber(dataSetNumber);
                     exchangeItems.add(exchangeItem);
                     timeSeriesIdSet.remove(id);

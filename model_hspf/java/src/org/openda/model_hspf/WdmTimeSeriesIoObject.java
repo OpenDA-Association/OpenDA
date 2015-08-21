@@ -195,13 +195,15 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         if (arguments.length < 7) {
             Results.putMessage(this.getClass().getSimpleName() + ": No time series ids arguments specified. Exchange items will be created for all time series in the file.");
             createWdmTimeSeriesExchangeItemsFromFile();
-            return;
+        } else {
+            //create exchange items for specified time series only.
+            Results.putMessage(this.getClass().getSimpleName() + ": Time series ids arguments specified. Exchange items will be created for specified time series ids only.");
+            String[] timeSeriesIdList = Arrays.copyOfRange(arguments, 6, arguments.length);
+            createWdmTimeSeriesExchangeItemsFromList(timeSeriesIdList);
         }
 
-        //create exchange items for specified time series only.
-        Results.putMessage(this.getClass().getSimpleName() + ": Time series ids arguments specified. Exchange items will be created for specified time series ids only.");
-        String[] timeSeriesIdList = Arrays.copyOfRange(arguments, 6, arguments.length);
-        createWdmTimeSeriesExchangeItemsFromList(timeSeriesIdList);
+        //read all values for all exchangeItems in one go, so that not needed to open/close same file for each read separately.
+        readValuesAndTimesFromFile();
     }
 
     private void initializeRole(String role) {
@@ -238,7 +240,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         //create exchange items for all time series ids in the list.
         WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
-        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsFromList(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.role, this, timeSeriesIdList));
+        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsFromList(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.role, timeSeriesIdList));
         WdmUtils.closeWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber);
 
         if (this.wdmTimeSeriesExchangeItems.isEmpty()) throw new IllegalStateException(this.getClass().getSimpleName() + ": this.wdmTimeSeriesExchangeItems.isEmpty()");
@@ -250,7 +252,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         //create exchange items for all time series in the file.
         WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
-        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsFromFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.role, this));
+        this.wdmTimeSeriesExchangeItems.addAll(WdmUtils.createExchangeItemsFromFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.role));
         WdmUtils.closeWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber);
 
         if (this.wdmTimeSeriesExchangeItems.isEmpty()) throw new IllegalArgumentException(this.getClass().getSimpleName() + ": No time series found in time series file '" + this.wdmTimeSeriesFilePath + "'.");
@@ -270,8 +272,10 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      * If this IoObject has role Output (i.e. output from the model), then this method
      * reads the data from the wdm file and stores it in the wdmTimeSeriesExchangeItems
      * in this IoObject.
+     *
+     * Updates the in-memory stored values and times by reading from the wdm file.
      */
-    public void readValuesAndTimesFromFile(WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem) {
+    private void readValuesAndTimesFromFile() {
         if (this.role == IPrevExchangeItem.Role.Input) {
             return;
         }
@@ -283,9 +287,11 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         //open wdm file.
         WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
 
-        //read data from file and set in wdmTimeSeriesExchangeItem.
-        WdmUtils.readTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath,
-                wdmTimeSeriesExchangeItem, this.startTimeDouble, this.endTimeDouble, this.timeZone);
+        for (WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem : this.wdmTimeSeriesExchangeItems) {
+            //read data from file and set in wdmTimeSeriesExchangeItem.
+            WdmUtils.readTimesAndValues(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath,
+                    wdmTimeSeriesExchangeItem, this.startTimeDouble, this.endTimeDouble, this.timeZone);
+        }
 
         //close wdm file.
         WdmUtils.closeWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber);
@@ -296,7 +302,6 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      * from all wdmTimeSeriesExchangeItems in this IoObject to the wdm file
      * so that it can be used as input by the model.
      */
-    
     public void finish() {
         if (this.role == IPrevExchangeItem.Role.Output) {
             return;
