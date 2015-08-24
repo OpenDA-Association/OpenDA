@@ -115,19 +115,19 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         if (arguments == null || arguments.length < 1) {
             throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The first argument should be the path of the wdm.dll file (relative to working directory).");
         }
-        initializeWdmDll(workingDir, arguments[0]);
+        this.wdmDll = WdmUtils.initializeWdmDll(workingDir, arguments[0]);
 
         //initialize wdmMessageFilePath.
         if (arguments.length < 2) {
             throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the message file (relative to working directory).");
         }
-        initializeWdmMessageFilePath(workingDir, arguments[1]);
+        this.wdmMessageFilePath = WdmUtils.initializeWdmMessageFilePath(workingDir, arguments[1]);
 
         //initialize role.
         if (arguments.length < 3) {
             throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this IoObject. Role can be 'input' or 'output'.");
         }
-        initializeRole(arguments[2]);
+        this.role = WdmUtils.initializeRole(arguments[2]);
 
         //get timeZone.
         if (arguments.length < 4) {
@@ -194,32 +194,6 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
         //read all values for all exchangeItems in one go, so that not needed to open/close same file for each read separately.
         readValuesAndTimesFromFile();
-    }
-
-    private void initializeRole(String role) {
-        if ("input".equalsIgnoreCase(role)) {
-            this.role = IPrevExchangeItem.Role.Input;
-
-        } else if ("output".equalsIgnoreCase(role)) {
-            this.role = IPrevExchangeItem.Role.Output;
-
-        } else {
-            throw new IllegalArgumentException(getClass().getSimpleName() + ": unknown role type '" + role + "' specified.");
-        }
-    }
-
-    private void initializeWdmDll(File workingDir, String relativeWdmDllPath) {
-        File wdmDllFile = new File(workingDir, relativeWdmDllPath);
-        WdmDll.initialize(wdmDllFile);
-        this.wdmDll = WdmDll.getInstance();
-    }
-
-    private void initializeWdmMessageFilePath(File workingDir, String wdmMessageFilePath) {
-        File wdmMessageFile = new File(workingDir, wdmMessageFilePath);
-        if (!wdmMessageFile.exists()) {
-            throw new IllegalArgumentException(getClass().getSimpleName() + ": Message file '" + wdmMessageFile.getAbsolutePath() + "' does not exist.");
-        }
-        this.wdmMessageFilePath = wdmMessageFile.getAbsolutePath();
     }
 
     private void createWdmTimeSeriesExchangeItemsFromList(String[] timeSeriesIdList) {

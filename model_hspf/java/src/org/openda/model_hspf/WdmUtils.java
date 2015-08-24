@@ -20,6 +20,7 @@
 
 package org.openda.model_hspf;
 
+import java.io.File;
 import java.util.*;
 
 import org.openda.interfaces.IPrevExchangeItem;
@@ -108,6 +109,27 @@ public class WdmUtils {
         //call the normal fortran close statement for both files just to be on the safe side.
         wdmDll.closeFile(wdmTimeSeriesFileNumber);
         wdmDll.closeFile(WDM_MESSAGE_FILE_UNIT_NUMBER);
+    }
+
+    public static WdmDll initializeWdmDll(File workingDir, String relativeWdmDllPath) {
+        File wdmDllFile = new File(workingDir, relativeWdmDllPath);
+        WdmDll.initialize(wdmDllFile);
+        return WdmDll.getInstance();
+    }
+
+    public static String initializeWdmMessageFilePath(File workingDir, String relativeWdmMessageFilePath) {
+        File wdmMessageFile = new File(workingDir, relativeWdmMessageFilePath);
+        if (!wdmMessageFile.exists()) {
+            throw new IllegalArgumentException(WdmUtils.class.getSimpleName() + ": Message file '" + wdmMessageFile.getAbsolutePath() + "' does not exist.");
+        }
+        return wdmMessageFile.getAbsolutePath();
+    }
+
+    public static IPrevExchangeItem.Role initializeRole(String roleString) {
+        if ("input".equalsIgnoreCase(roleString)) return IPrevExchangeItem.Role.Input;
+        if ("output".equalsIgnoreCase(roleString)) return IPrevExchangeItem.Role.Output;
+
+        throw new IllegalArgumentException(WdmUtils.class.getSimpleName() + ": unknown role type '" + roleString + "' specified.");
     }
 
     /**
