@@ -52,13 +52,13 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface {
 	 * @param fileName the prefix for the names of the files containing the data for this IoObject (relative to the working directory).
 	 *                 The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>-out.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
 	 *                 Each file should contain the same data for a different ensemble member. The number of ensemble members is determined by the number of files that are present.
-	 *                 Exchange items will be created for all time series in the files.
 	 * @param arguments the first argument should be the path of the wdm.dll file (relative to the working directory),
 	 *                  the second argument should be the path of the message file (relative to working directory),
-	 *                  the third argument should be the role of this IoObject. Role can be 'input' or 'output',
+	 *                  the third argument should be the role of this IoObject. Role must be 'output',
 	 *                  the fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-	 *                  for role INPUT the fifth and sixth arguments should be the ids of the startTime and endTime exchangeItems respectively,
-	 *                  for role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.
+	 *                  for role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run,
+	 *                  the (optional) seventh and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
+	 *                  if no seventh and further arguments present then exchange items will be created for all time series in the files.
 	 */
 	public void initialize(File workingDir, String fileName, String[] arguments) {
 		//initialize role.
@@ -73,7 +73,7 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface {
 		}
 		Role role = WdmUtils.initializeRole(arguments[2]);
 		if (role == IPrevExchangeItem.Role.Input) {
-			throw new UnsupportedOperationException(getClass().getSimpleName() + " not implemented for role " + role);
+			throw new UnsupportedOperationException(getClass().getSimpleName() + " not implemented for role input.");
 		}
 
 		createWrappedIoObjects(workingDir, fileName, arguments);

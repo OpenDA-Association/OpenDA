@@ -85,7 +85,10 @@ public class WdmTimeSeriesTest extends TestCase {
         IPrevExchangeItem[] exchangeItems = wdmTimeSeriesIoObject.getExchangeItems();
         assertEquals(2, exchangeItems.length);
 
-        //check times for RCH103.FLOW.
+        //check id for RCH103.FLOW
+        String id = exchangeItems[0].getId();
+        assertEquals("RCH103.FLOW", id);
+        //check times for RCH103.FLOW
         double[] times1 = exchangeItems[0].getTimes();
         assertNotNull(times1);
         assertEquals(731, times1.length);
@@ -94,7 +97,7 @@ public class WdmTimeSeriesTest extends TestCase {
             assertEquals(currentModifiedJulianDate, times1[n]);
             currentModifiedJulianDate++;
         }
-        //check values for RCH103.FLOW.
+        //check values for RCH103.FLOW
         double[] values1 = exchangeItems[0].getValuesAsDoubles();
         assertNotNull(values1);
         assertEquals(731, values1.length);
@@ -105,7 +108,10 @@ public class WdmTimeSeriesTest extends TestCase {
         assertEquals(2075.54, values1[229], 1e-3);
         assertEquals(27.17, values1[times1.length - 1], 1e-6);
 
-        //check times for RCH104.BOD.
+        //check id for RCH104.BOD
+        id = exchangeItems[1].getId();
+        assertEquals("RCH104.BOD", id);
+        //check times for RCH104.BOD
         double[] times2 = exchangeItems[1].getTimes();
         assertNotNull(times2);
         assertEquals(1096, times2.length);
@@ -114,8 +120,106 @@ public class WdmTimeSeriesTest extends TestCase {
             assertEquals(currentModifiedJulianDate, times1[n]);
             currentModifiedJulianDate++;
         }
-        //check values for RCH104.BOD.
+        //check values for RCH104.BOD
         double[] values2 = exchangeItems[1].getValuesAsDoubles();
+        assertNotNull(values2);
+        assertEquals(1096, values2.length);
+        assertEquals(-999.0, values2[0], 1e-6);
+        assertEquals(1.2, values2[8], 1e-6);
+        assertEquals(1.3, values2[43], 1e-6);
+        assertEquals(0.9, values2[71], 1e-6);
+        assertEquals(0.8, values2[104], 1e-6);
+        assertEquals(-999.0, values2[times2.length - 1], 1e-6);
+    }
+
+    /**
+     * Copied and adapted code from method testReadTimeSeries.
+     */
+    public void testReadEnsembleTimeSeries() throws Exception {
+        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return;
+        }
+
+        //first copy input wdm file from template to work directory to start with a fresh file before running the test.
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String templateInputFileName = "wdmTimeSeriesTest/template/OBS(ND).wdm";
+        File templateInputFile = new File(testRunDataDir, templateInputFileName);
+
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String inputFileName1 = "wdmTimeSeriesTest/work/OBS(ND)1-out.wdm";
+        File inputFile1 = new File(testRunDataDir, inputFileName1);
+        //delete inputFile if present (e.g. from previous test).
+        if (inputFile1.exists()) {
+            inputFile1.delete();
+        }
+        BBUtils.copyFile(templateInputFile, inputFile1);
+        assertTrue(inputFile1.exists());
+
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String inputFileName2 = "wdmTimeSeriesTest/work/OBS(ND)2-out.wdm";
+        File inputFile2 = new File(testRunDataDir, inputFileName2);
+        //delete inputFile if present (e.g. from previous test).
+        if (inputFile2.exists()) {
+            inputFile2.delete();
+        }
+        BBUtils.copyFile(templateInputFile, inputFile2);
+        assertTrue(inputFile2.exists());
+
+        //MJD 54466.0 is 2008-01-01 00:00.
+        double startModifiedJulianDate = 54466;
+        //MJD 55562.0 is 2011-01-01 00:00.
+        double endModifiedJulianDate = 55562;
+
+        WdmEnsembleTimeSeriesOutputIoObject wdmEnsembleTimeSeriesOutputIoObject = new WdmEnsembleTimeSeriesOutputIoObject();
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String[] arguments = new String[]{"../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll",
+                "../../../../../model_hspf/native_bin/MESSAGE.WDM", "output", "0",
+                TimeUtils.mjdToString(startModifiedJulianDate), TimeUtils.mjdToString(endModifiedJulianDate),
+                "RCH103.FLOW", "RCH104.BOD"};
+        wdmEnsembleTimeSeriesOutputIoObject.initialize(testRunDataDir, "wdmTimeSeriesTest/work/OBS(ND)", arguments);
+
+        //get all exchangeItems.
+        IPrevExchangeItem[] exchangeItems = wdmEnsembleTimeSeriesOutputIoObject.getExchangeItems();
+        assertEquals(4, exchangeItems.length);
+
+        //check id for RCH103.FLOW.EM1
+        String id = exchangeItems[0].getId();
+        assertEquals("RCH103.FLOW.EM1", id);
+        //check times for RCH103.FLOW.EM1
+        double[] times1 = exchangeItems[0].getTimes();
+        assertNotNull(times1);
+        assertEquals(731, times1.length);
+        double currentModifiedJulianDate = startModifiedJulianDate;
+        for (int n = 0; n < times1.length; n++) {
+            assertEquals(currentModifiedJulianDate, times1[n]);
+            currentModifiedJulianDate++;
+        }
+        //check values for RCH103.FLOW.EM1
+        double[] values1 = exchangeItems[0].getValuesAsDoubles();
+        assertNotNull(values1);
+        assertEquals(731, values1.length);
+        assertEquals(38.29, values1[0], 1e-5);
+        assertEquals(111.96, values1[64], 1e-6);
+        assertEquals(1772.92, values1[207], 1e-3);
+        assertEquals(1757.17, values1[228], 1e-3);
+        assertEquals(2075.54, values1[229], 1e-3);
+        assertEquals(27.17, values1[times1.length - 1], 1e-6);
+
+        //check id for RCH104.BOD.EM2
+        id = exchangeItems[3].getId();
+        assertEquals("RCH104.BOD.EM2", id);
+        //check times for RCH104.BOD.EM2
+        double[] times2 = exchangeItems[3].getTimes();
+        assertNotNull(times2);
+        assertEquals(1096, times2.length);
+        currentModifiedJulianDate = startModifiedJulianDate;
+        for (int n = 0; n < times1.length; n++) {
+            assertEquals(currentModifiedJulianDate, times1[n]);
+            currentModifiedJulianDate++;
+        }
+        //check values for RCH104.BOD.EM2
+        double[] values2 = exchangeItems[3].getValuesAsDoubles();
         assertNotNull(values2);
         assertEquals(1096, values2.length);
         assertEquals(-999.0, values2[0], 1e-6);
@@ -224,7 +328,7 @@ public class WdmTimeSeriesTest extends TestCase {
         IPrevExchangeItem[] exchangeItems2 = wdmTimeSeriesIoObject2.getExchangeItems();
         assertEquals(2, exchangeItems2.length);
 
-        //get exchangeItem for RCH103.FLOW.
+        //get exchangeItem for RCH103.FLOW
         String timeSeriesId = "RCH103.FLOW";
         IPrevExchangeItem currentExchangeItem = null;
         for (IPrevExchangeItem exchangeItem : exchangeItems2) {
