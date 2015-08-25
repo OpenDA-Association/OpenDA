@@ -21,31 +21,26 @@
 package org.openda.model_hspf;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.interfaces.IEnsembleDataObject;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * IoObject for multiple WDM (Watershed Data Management) files that together form an ensemble.
- * Each wdm file gets a different ensemble member id.
+ * Each wdm file gets a different ensemble member index.
  *
  * @author Arno Kockx
  */
-public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface {
+public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface, IEnsembleDataObject {
 	/**
-	 * Map with wrapped ioObjects. One WdmTimeSeriesIoObject for each ensembleMemberId.
+	 * Wrapped ioObjects. One WdmTimeSeriesIoObject for each ensembleMemberIndex.
 	 */
-	private Map<String, IoObjectInterface> wrappedIoObjects = new LinkedHashMap<String, IoObjectInterface>();
-	/**
-	 * Contains all exchangeItems of all wrapped ioObjects. These exchangeItems are wrapped only to add an ensembleMemberId to their ids.
-	 */
-	private List<IPrevExchangeItem> wrappedExchangeItems = new ArrayList<IPrevExchangeItem>();
+	private ArrayList<WdmTimeSeriesIoObject> wrappedIoObjects = new ArrayList<WdmTimeSeriesIoObject>();
 
 	/**
 	 * @param workingDir the working directory.
@@ -77,7 +72,6 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface {
 		}
 
 		createWrappedIoObjects(workingDir, fileName, arguments);
-		wrapExchangeItems();
 	}
 
 	private void createWrappedIoObjects(File workingDir, String wdmTimeSeriesFilePrefix, String[] arguments) {
@@ -94,7 +88,7 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface {
 
 			WdmTimeSeriesIoObject ioObject = new WdmTimeSeriesIoObject();
 			ioObject.initialize(workingDir, wdmTimeSeriesFileName, arguments);
-			wrappedIoObjects.put(String.valueOf(ensembleMemberIndex + 1), ioObject);
+			wrappedIoObjects.add(ioObject);
 
 			ensembleMemberIndex++;
 		}
@@ -106,27 +100,75 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface {
 		Results.putMessage(getClass().getSimpleName() + ": Found wdm time series files for " + ensembleMemberCount + " ensemble members.");
 	}
 
-	/**
-	 * Wrap all exchangeItems of the wrapped ioObjects.
-	 */
-	private void wrapExchangeItems() {
-		wrappedExchangeItems.clear();
-
-		for (Map.Entry<String, IoObjectInterface> entry : wrappedIoObjects.entrySet()) {
-			String ensembleMemberId = entry.getKey();
-			IoObjectInterface wrappedIoObject = entry.getValue();
-			for (IPrevExchangeItem wrappedExchangeItem : wrappedIoObject.getExchangeItems()) {
-				wrappedExchangeItems.add(new EnsembleMemberExchangeItem(wrappedExchangeItem, ensembleMemberId));
-			}
-		}
+	public IPrevExchangeItem[] getExchangeItems() {
+		//ignore ensemble exchange items.
+		return new IPrevExchangeItem[0];
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
-		return wrappedExchangeItems.toArray(new IPrevExchangeItem[wrappedExchangeItems.size()]);
+	/**
+	 * Get the ensemble member indices of the ensemble exchange items.
+	 * The ensemble member indices must be the same for all ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return int[0] if there are no ensemble members.
+	 *
+	 * @return array of ensemble member indices.
+	 */
+	public int[] getEnsembleMemberIndices() {
+		int[] indices = new int[wrappedIoObjects.size()];
+		for (int n = 0; n < indices.length; n++) {
+			//start at 1.
+			indices[n] = n + 1;
+		}
+		return indices;
+	}
+
+	/**
+	 * Get the identifiers of the ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return String[0] if there are no matching ensemble items.
+	 *
+	 * @return array of ensemble exchange item identifiers.
+	 */
+	public String[] getEnsembleExchangeItemIds() {
+		if (wrappedIoObjects.isEmpty()) return new String[0];
+
+		ArrayList<String> exchangeItemIds = new ArrayList<String>();
+		//this code assumes that all wrappedIoObjects have exactly the same exchangeItems.
+		for (IPrevExchangeItem exchangeItem : wrappedIoObjects.get(0).getExchangeItems()) {
+			exchangeItemIds.add(exchangeItem.getId());
+		}
+
+		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
+	}
+
+	/**
+	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalArgumentException.
+	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
+	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
+	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
+	 *
+	 * @param exchangeItemId      ensemble exchange item identifier.
+	 * @param ensembleMemberIndex ensemble member index.
+	 * @return the requested ensemble exchange item.
+	 */
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) {
+		if (wrappedIoObjects.isEmpty()) return null;
+		if (ensembleMemberIndex < 1 || ensembleMemberIndex > wrappedIoObjects.size()) {
+			throw new IllegalArgumentException(getClass().getSimpleName() + ".getDataObjectExchangeItem: ensembleMemberIndex " + ensembleMemberIndex + " does not exist.");
+		}
+
+		for (IPrevExchangeItem exchangeItem : wrappedIoObjects.get(ensembleMemberIndex - 1).getExchangeItems()) {
+			//a WdmTimeSeriesIoObject returns WdmTimeSeriesExchangeItems that implement TimeSeries which implements both IPrevExchangeItem and IExchangeItem,
+			//so here can cast IPrevExchangeItem to IExchangeItem.
+			if (exchangeItem.getId().equals(exchangeItemId)) return (IExchangeItem) exchangeItem;
+		}
+
+		return null;
 	}
 
 	public void finish() {
-		for (IoObjectInterface wrappedIoObject : wrappedIoObjects.values()) {
+		for (WdmTimeSeriesIoObject wrappedIoObject : wrappedIoObjects) {
 			wrappedIoObject.finish();
 		}
 	}

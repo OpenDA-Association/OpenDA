@@ -24,15 +24,19 @@ package org.openda.interfaces;
  * Interface that can be implemented by DataObjects or IoObjects.
  * This interface contains methods to get ensemble exchange items (i.e. exchange items for which there are ensemble members available).
  *
- * IMPORTANT NOTE:
- * If a DataObject or an IoObject implements this interface, then the following methods should ignore any ensemble exchange items:
+ *
+ * IMPORTANT NOTES:
+ *
+ * If a DataObject implements this interface, then the following methods should ignore any ensemble exchange items:
  * getExchangeItemIDs()
  * getExchangeItemIDs(IPrevExchangeItem.Role role)
  *
- * If a DataObject or an IoObject implements this interface, then the following method
- * should throw an IllegalStateException whenever it is called for an ensemble exchange item:
+ * If a DataObject implements this interface, then the following method should throw an IllegalStateException when it is called for an ensemble exchange item:
  * getDataObjectExchangeItem(String exchangeItemID)
- * This IllegalStateException should state that the equivalent method with the additional argument "int ensembleMemberIndex" must be called instead.
+ * This IllegalStateException should state that the method getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) should be called instead.
+ *
+ * If an IoObject implements this interface, then the following method should ignore any ensemble exchange items:
+ * getExchangeItems()
  */
 public interface IEnsembleDataObject {
 
@@ -57,7 +61,7 @@ public interface IEnsembleDataObject {
 
 	/**
 	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
-	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalArgumentException.
 	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
 	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
 	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
