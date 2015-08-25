@@ -29,9 +29,9 @@
 					<xs:documentation>Base name for instance directories (relative to this configuration file). The number of the instance will be appended to this base name to create the instance directory name.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="inputFile" type="xs:string" maxOccurs="unbounded">
+			<xs:element name="inputFile" type="xs:string" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>The path and name of one or more input netcdf files (relative to the instance directory). Together these input files must contain all input data that is needed for the model to run.</xs:documentation>
+					<xs:documentation>The path and name of one or more input netcdf files (relative to the instance directory). Together these input files must contain all (boundary) input data that is needed for the model to run. If the (boundary) input data should be different for different model instances, then use the option boundaryProvider in the blackBoxStochModel config instead.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="useGateWaterLevel" type="xs:boolean" default="false" minOccurs="0"/>

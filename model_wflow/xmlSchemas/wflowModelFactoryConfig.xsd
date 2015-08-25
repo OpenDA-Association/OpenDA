@@ -33,9 +33,9 @@
 					<xs:documentation>The name of the map file that describes the catchment (relative to the staticmaps folder in the case directory).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="inputFile" type="xs:string" maxOccurs="unbounded">
+			<xs:element name="inputFile" type="xs:string" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>The path and name of one or more input netcdf files (relative to the case directory). Together these input files must contain all input data that is needed for the model to run.</xs:documentation>
+					<xs:documentation>The path and name of one or more input netcdf files (relative to the case directory). Together these input files must contain all (boundary) input data that is needed for the model to run. If the (boundary) input data should be different for different model instances, then use the option boundaryProvider in the blackBoxStochModel config instead.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="modelOutputFile" type="xs:string" minOccurs="0">
