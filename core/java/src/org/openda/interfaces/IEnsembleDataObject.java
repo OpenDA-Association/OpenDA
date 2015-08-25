@@ -22,61 +22,49 @@ package org.openda.interfaces;
 
 /**
  * Interface that can be implemented by DataObjects or IoObjects.
- * This interface contains methods to get exchange items for a specific ensemble member.
+ * This interface contains methods to get ensemble exchange items (i.e. exchange items for which there are ensemble members available).
  *
  * IMPORTANT NOTE:
- * If a DataObject or an IoObject implements this interface, then the following methods
- * should throw an IllegalStateException whenever the method getEnsembleMemberCount() returns a number > 1:
+ * If a DataObject or an IoObject implements this interface, then the following methods should ignore any ensemble exchange items:
  * getExchangeItemIDs()
  * getExchangeItemIDs(IPrevExchangeItem.Role role)
+ *
+ * If a DataObject or an IoObject implements this interface, then the following method
+ * should throw an IllegalStateException whenever it is called for an ensemble exchange item:
  * getDataObjectExchangeItem(String exchangeItemID)
- * This IllegalStateException should state that the equivalent method with an added argument "String ensembleMemberId" must be called instead.
+ * This IllegalStateException should state that the equivalent method with the additional argument "int ensembleMemberIndex" must be called instead.
  */
 public interface IEnsembleDataObject {
 
 	/**
-	 * Get the number of ensemble members for which exchange items can be retrieved.
-	 * Should return 0 if there are no ensemble members.
+	 * Get the ensemble member indices of the ensemble exchange items.
+	 * The ensemble member indices must be the same for all ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return int[0] if there are no ensemble members.
 	 *
-	 * @return number of ensemble members.
+	 * @return array of ensemble member indices.
 	 */
-	int getEnsembleMemberCount();
+	int[] getEnsembleMemberIndices();
 
 	/**
-	 * Get the identifiers of the ensemble members for which exchange items can be retrieved.
-	 * Should return String[0] if there are no ensemble members.
+	 * Get the identifiers of the ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return String[0] if there are no matching ensemble items.
 	 *
-	 * @return array of ensemble member identifiers.
+	 * @return array of ensemble exchange item identifiers.
 	 */
-	String[] getEnsembleMemberIds();
+	String[] getEnsembleExchangeItemIds();
 
 	/**
-	 * Get the identifiers of the exchange items that can be retrieved for the given ensembleMemberId.
-	 * Should return String[0] if there are no matching items.
+	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
+	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
+	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
+	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
 	 *
-	 * @param ensembleMemberId ensemble member identifier.
-	 * @return array of exchange item identifiers.
+	 * @param exchangeItemId ensemble exchange item identifier.
+	 * @param ensembleMemberIndex ensemble member index.
+	 * @return the requested ensemble exchange item.
 	 */
-	String[] getExchangeItemIds(String ensembleMemberId);
-
-	/**
-	 * Get the identifiers of the exchange items that can be retrieved for the given ensembleMemberId
-	 * according to the specified role (input, output, both).
-	 * Should return String[0] if there are no matching items.
-	 *
-	 * @param role Input, Output, or InOut (i.e. both)
-	 * @param ensembleMemberId ensemble member identifier.
-	 * @return The array of exchange item identifiers.
-	 */
-	String[] getExchangeItemIds(IPrevExchangeItem.Role role, String ensembleMemberId);
-
-	/**
-	 * Get the exchange item specified by the given exchangeItemId and ensembleMemberId.
-	 * Returns null if no exchangeItem with the given exchangeItemId and ensembleMemberId is found.
-	 *
-	 * @param exchangeItemId exchange item identifier.
-	 * @param ensembleMemberId ensemble member identifier.
-	 * @return the requested exchange item.
-	 */
-	IExchangeItem getDataObjectExchangeItem(String exchangeItemId, String ensembleMemberId);
+	IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex);
 }
