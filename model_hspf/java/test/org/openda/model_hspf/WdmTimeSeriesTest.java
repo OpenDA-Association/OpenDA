@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -179,15 +180,29 @@ public class WdmTimeSeriesTest extends TestCase {
                 "RCH103.FLOW", "RCH104.BOD"};
         wdmEnsembleTimeSeriesOutputIoObject.initialize(testRunDataDir, "wdmTimeSeriesTest/work/OBS(ND)", arguments);
 
-        //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = wdmEnsembleTimeSeriesOutputIoObject.getExchangeItems();
-        assertEquals(4, exchangeItems.length);
 
-        //check id for RCH103.FLOW.EM1
-        String id = exchangeItems[0].getId();
-        assertEquals("RCH103.FLOW.EM1", id);
-        //check times for RCH103.FLOW.EM1
-        double[] times1 = exchangeItems[0].getTimes();
+        //check exchangeItems.
+        IPrevExchangeItem[] nonEnsembleExchangeItems = wdmEnsembleTimeSeriesOutputIoObject.getExchangeItems();
+        assertNotNull(nonEnsembleExchangeItems);
+        assertEquals(0, nonEnsembleExchangeItems.length);
+
+        int[] ensembleMemberIndices = wdmEnsembleTimeSeriesOutputIoObject.getEnsembleMemberIndices();
+        assertEquals(2, ensembleMemberIndices.length);
+        assertEquals(1, ensembleMemberIndices[0]);
+        assertEquals(2, ensembleMemberIndices[1]);
+
+        String[] ensembleExchangeItemIds = wdmEnsembleTimeSeriesOutputIoObject.getEnsembleExchangeItemIds();
+        assertEquals(2, ensembleExchangeItemIds.length);
+        assertEquals("RCH103.FLOW", ensembleExchangeItemIds[0]);
+        assertEquals("RCH104.BOD", ensembleExchangeItemIds[1]);
+
+
+        //check id for RCH103.FLOW
+        IExchangeItem exchangeItem = wdmEnsembleTimeSeriesOutputIoObject.getDataObjectExchangeItem("RCH103.FLOW", 2);
+        assertEquals("RCH103.FLOW", exchangeItem.getId());
+
+        //check times for RCH103.FLOW
+        double[] times1 = exchangeItem.getTimes();
         assertNotNull(times1);
         assertEquals(731, times1.length);
         double currentModifiedJulianDate = startModifiedJulianDate;
@@ -195,8 +210,8 @@ public class WdmTimeSeriesTest extends TestCase {
             assertEquals(currentModifiedJulianDate, times1[n]);
             currentModifiedJulianDate++;
         }
-        //check values for RCH103.FLOW.EM1
-        double[] values1 = exchangeItems[0].getValuesAsDoubles();
+        //check values for RCH103.FLOW
+        double[] values1 = exchangeItem.getValuesAsDoubles();
         assertNotNull(values1);
         assertEquals(731, values1.length);
         assertEquals(38.29, values1[0], 1e-5);
@@ -206,11 +221,12 @@ public class WdmTimeSeriesTest extends TestCase {
         assertEquals(2075.54, values1[229], 1e-3);
         assertEquals(27.17, values1[times1.length - 1], 1e-6);
 
-        //check id for RCH104.BOD.EM2
-        id = exchangeItems[3].getId();
-        assertEquals("RCH104.BOD.EM2", id);
-        //check times for RCH104.BOD.EM2
-        double[] times2 = exchangeItems[3].getTimes();
+        //check id for RCH104.BOD
+        exchangeItem = wdmEnsembleTimeSeriesOutputIoObject.getDataObjectExchangeItem("RCH104.BOD", 1);
+        assertEquals("RCH104.BOD", exchangeItem.getId());
+
+        //check times for RCH104.BOD
+        double[] times2 = exchangeItem.getTimes();
         assertNotNull(times2);
         assertEquals(1096, times2.length);
         currentModifiedJulianDate = startModifiedJulianDate;
@@ -218,8 +234,8 @@ public class WdmTimeSeriesTest extends TestCase {
             assertEquals(currentModifiedJulianDate, times1[n]);
             currentModifiedJulianDate++;
         }
-        //check values for RCH104.BOD.EM2
-        double[] values2 = exchangeItems[3].getValuesAsDoubles();
+        //check values for RCH104.BOD
+        double[] values2 = exchangeItem.getValuesAsDoubles();
         assertNotNull(values2);
         assertEquals(1096, values2.length);
         assertEquals(-999.0, values2[0], 1e-6);
