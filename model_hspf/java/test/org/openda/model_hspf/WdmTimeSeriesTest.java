@@ -172,33 +172,38 @@ public class WdmTimeSeriesTest extends TestCase {
         //MJD 55562.0 is 2011-01-01 00:00.
         double endModifiedJulianDate = 55562;
 
-        WdmEnsembleTimeSeriesOutputIoObject wdmEnsembleTimeSeriesOutputIoObject = new WdmEnsembleTimeSeriesOutputIoObject();
+        WdmEnsembleTimeSeriesOutputDataObject wdmEnsembleTimeSeriesOutputDataObject = new WdmEnsembleTimeSeriesOutputDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        String[] arguments = new String[]{"../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll",
-                "../../../../../model_hspf/native_bin/MESSAGE.WDM", "output", "0",
-                TimeUtils.mjdToString(startModifiedJulianDate), TimeUtils.mjdToString(endModifiedJulianDate),
+        String[] arguments = new String[]{"wdmTimeSeriesTest/work/OBS(ND)",
+                "../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll", "../../../../../model_hspf/native_bin/MESSAGE.WDM",
+                "output", "0", TimeUtils.mjdToString(startModifiedJulianDate), TimeUtils.mjdToString(endModifiedJulianDate),
                 "RCH103.FLOW", "RCH104.BOD"};
-        wdmEnsembleTimeSeriesOutputIoObject.initialize(testRunDataDir, "wdmTimeSeriesTest/work/OBS(ND)", arguments);
+        wdmEnsembleTimeSeriesOutputDataObject.initialize(testRunDataDir, arguments);
 
 
         //check exchangeItems.
-        IPrevExchangeItem[] nonEnsembleExchangeItems = wdmEnsembleTimeSeriesOutputIoObject.getExchangeItems();
-        assertNotNull(nonEnsembleExchangeItems);
-        assertEquals(0, nonEnsembleExchangeItems.length);
+        String[] nonEnsembleExchangeItemIds = wdmEnsembleTimeSeriesOutputDataObject.getExchangeItemIDs();
+        assertNotNull(nonEnsembleExchangeItemIds);
+        assertEquals(0, nonEnsembleExchangeItemIds.length);
+        try {
+            wdmEnsembleTimeSeriesOutputDataObject.getDataObjectExchangeItem("RCH103.FLOW");
+            fail("Expected exception not thrown.");
+        } catch (IllegalStateException e) {
+        }
 
-        int[] ensembleMemberIndices = wdmEnsembleTimeSeriesOutputIoObject.getEnsembleMemberIndices();
+        int[] ensembleMemberIndices = wdmEnsembleTimeSeriesOutputDataObject.getEnsembleMemberIndices();
         assertEquals(2, ensembleMemberIndices.length);
         assertEquals(1, ensembleMemberIndices[0]);
         assertEquals(2, ensembleMemberIndices[1]);
 
-        String[] ensembleExchangeItemIds = wdmEnsembleTimeSeriesOutputIoObject.getEnsembleExchangeItemIds();
+        String[] ensembleExchangeItemIds = wdmEnsembleTimeSeriesOutputDataObject.getEnsembleExchangeItemIds();
         assertEquals(2, ensembleExchangeItemIds.length);
         assertEquals("RCH103.FLOW", ensembleExchangeItemIds[0]);
         assertEquals("RCH104.BOD", ensembleExchangeItemIds[1]);
 
 
         //check id for RCH103.FLOW
-        IExchangeItem exchangeItem = wdmEnsembleTimeSeriesOutputIoObject.getDataObjectExchangeItem("RCH103.FLOW", 2);
+        IExchangeItem exchangeItem = wdmEnsembleTimeSeriesOutputDataObject.getDataObjectExchangeItem("RCH103.FLOW", 2);
         assertEquals("RCH103.FLOW", exchangeItem.getId());
 
         //check times for RCH103.FLOW
@@ -222,7 +227,7 @@ public class WdmTimeSeriesTest extends TestCase {
         assertEquals(27.17, values1[times1.length - 1], 1e-6);
 
         //check id for RCH104.BOD
-        exchangeItem = wdmEnsembleTimeSeriesOutputIoObject.getDataObjectExchangeItem("RCH104.BOD", 1);
+        exchangeItem = wdmEnsembleTimeSeriesOutputDataObject.getDataObjectExchangeItem("RCH104.BOD", 1);
         assertEquals("RCH104.BOD", exchangeItem.getId());
 
         //check times for RCH104.BOD

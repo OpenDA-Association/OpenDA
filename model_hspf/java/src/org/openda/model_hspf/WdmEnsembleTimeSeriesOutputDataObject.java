@@ -20,7 +20,7 @@
 
 package org.openda.model_hspf;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IEnsembleDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -29,14 +29,15 @@ import org.openda.utils.Results;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * IoObject for multiple WDM (Watershed Data Management) files that together form an ensemble.
+ * DataObject for multiple WDM (Watershed Data Management) files that together form an ensemble.
  * Each wdm file gets a different ensemble member index.
  *
  * @author Arno Kockx
  */
-public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface, IEnsembleDataObject {
+public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnsembleDataObject {
 	/**
 	 * Wrapped ioObjects. One WdmTimeSeriesIoObject for each ensembleMemberIndex.
 	 */
@@ -44,34 +45,40 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface, I
 
 	/**
 	 * @param workingDir the working directory.
-	 * @param fileName the prefix for the names of the files containing the data for this IoObject (relative to the working directory).
-	 *                 The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>-out.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
-	 *                 Each file should contain the same data for a different ensemble member. The number of ensemble members is determined by the number of files that are present.
-	 * @param arguments the first argument should be the path of the wdm.dll file (relative to the working directory),
-	 *                  the second argument should be the path of the message file (relative to working directory),
-	 *                  the third argument should be the role of this IoObject. Role must be 'output',
-	 *                  the fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-	 *                  for role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run,
-	 *                  the (optional) seventh and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
-	 *                  if no seventh and further arguments present then exchange items will be created for all time series in the files.
+	 * @param arguments The first argument should be the prefix for the names of the wdm files containing the data for this DataObject (relative to the working directory).
+	 *                  The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>-out.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
+	 *                  Each file should contain the same data for a different ensemble member. The number of ensemble members is determined by the number of files that are present.
+	 *                  The second argument should be the path of the wdm.dll file (relative to the working directory).
+	 *                  The third argument should be the path of the message file (relative to working directory).
+	 *                  The fourth argument should be the role of this IoObject. Role must be 'output'.
+	 *                  The fifth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12).
+	 *                  The sixth and seventh arguments should be respectively the startTime and endTime of the model run.
+	 *                  The (optional) eight and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
+	 *                  if no eight and further arguments present then exchange items will be created for all time series in the files.
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	public void initialize(File workingDir, String[] arguments) {
 		//initialize role.
 		if (arguments == null || arguments.length < 1) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The first argument should be the path of the wdm.dll file (relative to working directory).");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The first argument should be the prefix for the names of the wdm files containing the data for this DataObject (relative to working directory).");
 		}
 		if (arguments.length < 2) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the message file (relative to working directory).");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the wdm.dll file (relative to working directory).");
 		}
 		if (arguments.length < 3) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this IoObject. Role can be 'input' or 'output'.");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The third argument should be the path of the message file (relative to working directory).");
 		}
-		Role role = WdmUtils.initializeRole(arguments[2]);
+		if (arguments.length < 4) {
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The fourth argument should be the role of this IoObject. Role can be 'input' or 'output'.");
+		}
+		Role role = WdmUtils.initializeRole(arguments[3]);
 		if (role == IPrevExchangeItem.Role.Input) {
 			throw new UnsupportedOperationException(getClass().getSimpleName() + " not implemented for role input.");
 		}
 
-		createWrappedIoObjects(workingDir, fileName, arguments);
+		String wdmTimeSeriesFilePrefix = arguments[0];
+		String[] otherArguments = new String[arguments.length - 1];
+		System.arraycopy(arguments, 1, otherArguments, 0, otherArguments.length);
+		createWrappedIoObjects(workingDir, wdmTimeSeriesFilePrefix, otherArguments);
 	}
 
 	private void createWrappedIoObjects(File workingDir, String wdmTimeSeriesFilePrefix, String[] arguments) {
@@ -100,9 +107,24 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface, I
 		Results.putMessage(getClass().getSimpleName() + ": Found wdm time series files for " + ensembleMemberCount + " ensemble members.");
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
+	public String[] getExchangeItemIDs() {
 		//ignore ensemble exchange items.
-		return new IPrevExchangeItem[0];
+		return new String[0];
+	}
+
+	public String[] getExchangeItemIDs(Role role) {
+		//ignore ensemble exchange items.
+		return new String[0];
+	}
+
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
+		String[] ensembleExchangeItemIds = getEnsembleExchangeItemIds();
+		if (Arrays.asList(ensembleExchangeItemIds).contains(exchangeItemId)) {//if ensemble exchange item.
+			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem: exchange item with id "
+					+ exchangeItemId + " is an ensemble exchange item. Call method getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) instead.");
+		}
+		//if not found.
+		return null;
 	}
 
 	/**
@@ -143,7 +165,7 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface, I
 
 	/**
 	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
-	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalArgumentException.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
 	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
 	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
 	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
@@ -155,7 +177,7 @@ public class WdmEnsembleTimeSeriesOutputIoObject implements IoObjectInterface, I
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) {
 		if (wrappedIoObjects.isEmpty()) return null;
 		if (ensembleMemberIndex < 1 || ensembleMemberIndex > wrappedIoObjects.size()) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ".getDataObjectExchangeItem: ensembleMemberIndex " + ensembleMemberIndex + " does not exist.");
+			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem: ensembleMemberIndex " + ensembleMemberIndex + " does not exist.");
 		}
 
 		for (IPrevExchangeItem exchangeItem : wrappedIoObjects.get(ensembleMemberIndex - 1).getExchangeItems()) {

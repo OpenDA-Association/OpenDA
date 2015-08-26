@@ -61,7 +61,7 @@ public interface IEnsembleDataObject {
 
 	/**
 	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
-	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalArgumentException.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
 	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
 	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
 	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
