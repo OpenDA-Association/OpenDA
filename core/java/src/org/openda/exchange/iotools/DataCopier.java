@@ -22,8 +22,10 @@ package org.openda.exchange.iotools;
 
 import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
-import org.openda.exchange.TimeInfo;
-import org.openda.interfaces.*;
+import org.openda.interfaces.IComposableDataObject;
+import org.openda.interfaces.IDataObject;
+import org.openda.interfaces.IDimensionIndex;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 
 import java.util.Collection;
@@ -77,59 +79,55 @@ public class DataCopier {
 	}
 
 	/**
-	 * Copies the values from the exchangeItem with the given inputExchangeItemId from the input IDataObject
-	 * to the exchangeItem with the given outputExchangeItemId in the output IDataObject.
-	 *
-	 * @param inputExchangeItemId
-	 * @param outputExchangeItemId
+	 * Copies the values from the exchangeItem with the given id from the given input IDataObject to the given output IDataObject.
 	 */
-	public void copyValuesForNamedItem(String inputExchangeItemId, String outputExchangeItemId) {
-		System.out.println("copying "+inputExchangeItemId+ " ---> "+outputExchangeItemId);
-		IExchangeItem inputExchangeItem = this.inputDataObject.getDataObjectExchangeItem(inputExchangeItemId);
+	private static void copyValuesForNamedItem(String exchangeItemId, IDataObject inputDataObject, IDataObject outputDataObject) {
+		System.out.println("copying " + exchangeItemId);
+
+		IExchangeItem inputExchangeItem = inputDataObject.getDataObjectExchangeItem(exchangeItemId);
 		if (inputExchangeItem == null) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": exchangeItem with id '" +
-					inputExchangeItemId + "' not found in input data object.");
+			throw new IllegalArgumentException(DataCopier.class.getSimpleName() + ": exchange item with id '" + exchangeItemId + "' not found in input data object.");
 		}
 
-		IExchangeItem outputExchangeItem = this.outputDataObject.getDataObjectExchangeItem(outputExchangeItemId);
+		IExchangeItem outputExchangeItem = outputDataObject.getDataObjectExchangeItem(exchangeItemId);
 		if (outputExchangeItem != null) {//if outputExchangeItem with the same id already exists, copy values.
 			outputExchangeItem.copyValuesFromItem(inputExchangeItem);
 
 		} else {//if outputExchangeItem with the same id does not exist yet, copy exchangeItem.
-			if (!(this.outputDataObject instanceof IComposableDataObject)) {
-				throw new RuntimeException(this.outputDataObject.getClass().getName() + " is not implementing the " +
-						IComposableDataObject.class.getName() + " interface.");
+			if (!(outputDataObject instanceof IComposableDataObject)) {
+				throw new RuntimeException(DataCopier.class.getSimpleName() + ": exchange item with id '" + exchangeItemId + "' not found in output data object."
+						+ " Also cannot create this exchange item, since " + outputDataObject.getClass().getName() + " does not implement the " + IComposableDataObject.class.getName() + " interface.");
 			}
-			((IComposableDataObject) this.outputDataObject).addExchangeItem(inputExchangeItem);
+			((IComposableDataObject) outputDataObject).addExchangeItem(inputExchangeItem);
 		}
 	}
 
-	/**
-	 * Copies the values from the exchangeItems with the given inputExchangeItemIds from the input IDataObject
-	 * to the exchangeItems with the given outputExchangeItemIds in the output IDataObject.
-	 */
-	public void copyValuesForNamedItems(String[] inputExchangeItemIds, String[] outputExchangeItemIds) {
-		if (inputExchangeItemIds.length != outputExchangeItemIds.length) {
-			throw new RuntimeException(getClass().getSimpleName() + ": inputExchangeItemIds length (" +
-					inputExchangeItemIds.length + ") and outputExchangeItemIds length (" +
-					outputExchangeItemIds.length + ") should be the same.");
-		}
-
-		//copy exchangeItems.
-		for (int n = 0; n < inputExchangeItemIds.length; n++) {
-			copyValuesForNamedItem(inputExchangeItemIds[n], outputExchangeItemIds[n]);
-		}
-	}
-
-	/**
-	 * Copy the values for the exchangeItems with the given ids from input to output IDataObject.
-	 */
-	public void copyValuesForNamedItems(String[] exchangeItemIds) {
-		//copy exchangeItems.
-		for (String exchangeItemId : exchangeItemIds) {
-			copyValuesForNamedItem(exchangeItemId, exchangeItemId);
-		}
-	}
+//	/**
+//	 * Copies the values from the exchangeItems with the given inputExchangeItemIds from the input IDataObject
+//	 * to the exchangeItems with the given outputExchangeItemIds in the output IDataObject.
+//	 */
+//	private void copyValuesForNamedItems(String[] inputExchangeItemIds, String[] outputExchangeItemIds) {
+//		if (inputExchangeItemIds.length != outputExchangeItemIds.length) {
+//			throw new RuntimeException(getClass().getSimpleName() + ": inputExchangeItemIds length (" +
+//					inputExchangeItemIds.length + ") and outputExchangeItemIds length (" +
+//					outputExchangeItemIds.length + ") should be the same.");
+//		}
+//
+//		//copy exchangeItems.
+//		for (int n = 0; n < inputExchangeItemIds.length; n++) {
+//			copyValuesForNamedItem(inputExchangeItemIds[n], outputExchangeItemIds[n]);
+//		}
+//	}
+//
+//	/**
+//	 * Copy the values for the exchangeItems with the given ids from input to output IDataObject.
+//	 */
+//	private void copyValuesForNamedItems(String[] exchangeItemIds) {
+//		//copy exchangeItems.
+//		for (String exchangeItemId : exchangeItemIds) {
+//			copyValuesForNamedItem(exchangeItemId, exchangeItemId);
+//		}
+//	}
 
 	/**
 	 * Copies all exchangeItems from the input dataObject to the output dataObject.
@@ -138,11 +136,9 @@ public class DataCopier {
 		//copy all exchangeItems.
 		String[] exchangeItemIds = this.inputDataObject.getExchangeItemIDs();
 		for (String exchangeItemId : exchangeItemIds) {
-			copyValuesForNamedItem(exchangeItemId, exchangeItemId);
+			copyValuesForNamedItem(exchangeItemId, inputDataObject, outputDataObject);
 		}
-	}
 
-	public void finish() {
 		//write output data.
 		this.outputDataObject.finish();
 	}
@@ -151,7 +147,7 @@ public class DataCopier {
 	 * Help text for the command line
 	 * @return
 	 */
-	public static String getUsageMessage() {
+	private static String getUsageMessage() {
 		StringBuffer message = new StringBuffer();
 		message.append("NAME\n"
 				+"\t oda_copy.sh - a tool for copying data between OpenDA data-objects\n");
@@ -252,7 +248,7 @@ public class DataCopier {
 		if(argIndex<arguments.length){
 			//TODO more options were given
 		}
-		
+
 		//
 		// Check input
 		//
@@ -268,7 +264,7 @@ public class DataCopier {
 		System.out.print("\t args: ");
 		for(int i=0;i<inputArgs.length;i++){System.out.print(inputArgs[i]+" ");}
 		System.out.println();
-		
+
 		if(outputClassName==null){
 			outputClassName=IoUtils.getDefaultClass(outputFileName);
 			if(outputClassName==null){
@@ -281,16 +277,13 @@ public class DataCopier {
 		System.out.print("\t args: ");
 		for(int i=0;i<outputArgs.length;i++){System.out.print(outputArgs[i]+" ");}
 		System.out.println();
-				
+
 		//
 		// Copy data
 		//
 		DataCopier copier = new DataCopier(inputFileName, inputClassName, inputArgs, 
 				outputFileName, outputClassName, outputArgs);
 		copier.copyAll();
-
-		//write output data.
-		copier.finish();
 	}
 
 	/**

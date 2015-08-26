@@ -36,12 +36,6 @@ public class DataCopierTest extends TestCase {
 		testData = new OpenDaTestSupport(DataCopierTest.class, "core");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
-	
-	public void testHelpText(){
-		String help=DataCopier.getUsageMessage();
-		System.out.println(help);
-		assertEquals("NAME", help.substring(0, 4));
-	}
 
 	public void testCopyNetcdfToTextObject(){
 		//read input.
@@ -53,9 +47,6 @@ public class DataCopierTest extends TestCase {
 		//copy data.
 		DataCopier copier = new DataCopier(input, output);
 		copier.copyAll();
-
-		//write output.
-		output.finish();
 
 		assertEquals(OpenDaTestSupport.readText(new File(this.testRunDataDir, "TestCopyNetcdfToText_expected_output.txt")),
 				OpenDaTestSupport.readText(new File(this.testRunDataDir, "fews_wind_small_copy1.txt")));
@@ -97,9 +88,6 @@ public class DataCopierTest extends TestCase {
 		//copy data.
 		DataCopier copier = new DataCopier(input, output);
 		copier.copyAll();
-
-		//write output.
-		output.finish();
 
 		//TODO this may not be an exact copy
 //		NetcdfDataObject expectedOutput = new NetcdfDataObject();

@@ -25,7 +25,6 @@ import org.openda.exchange.dataobjects.NoosDataObject;
 import org.openda.exchange.iotools.DataCopier;
 import org.openda.exchange.iotools.DataDumper;
 import org.openda.interfaces.IDataObject;
-import org.openda.model_swan.SwanResultsTimeDependent;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -79,7 +78,6 @@ public class SwanFormatConversionTest extends TestCase {
 
         DataCopier copier = new DataCopier(swanDataObject, noosDataObject);
         copier.copyAll();
-        copier.finish();
 		File outputFile = new File(outputDir,"Hsig_0._0..noos");
 		File referenceFile = new File(inputDir,"Hsig.noos.ref");
 		boolean test=testData.FilesAreIdentical(outputFile, referenceFile);
