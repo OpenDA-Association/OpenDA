@@ -22,10 +22,7 @@ package org.openda.exchange.iotools;
 
 import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
-import org.openda.interfaces.IComposableDataObject;
-import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IDimensionIndex;
-import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.*;
 import org.openda.utils.Results;
 
 import java.util.Collection;
@@ -79,7 +76,7 @@ public class DataCopier {
 	}
 
 	/**
-	 * Copies the values from the exchangeItem with the given id from the given input IDataObject to the given output IDataObject.
+	 * Copies the values from the exchangeItem with the given id from the given input DataObject to the given output DataObject.
 	 */
 	private static void copyValuesForNamedItem(String exchangeItemId, IDataObject inputDataObject, IDataObject outputDataObject) {
 		System.out.println("copying " + exchangeItemId);
@@ -99,6 +96,32 @@ public class DataCopier {
 						+ " Also cannot create this exchange item, since " + outputDataObject.getClass().getName() + " does not implement the " + IComposableDataObject.class.getName() + " interface.");
 			}
 			((IComposableDataObject) outputDataObject).addExchangeItem(inputExchangeItem);
+		}
+	}
+
+	/**
+	 * Copies the values from the ensemble exchangeItem with the given id and ensembleMemberIndex from the given input DataObject to the given output DataObject.
+	 */
+	private static void copyValuesForNamedEnsembleItem(String exchangeItemId, int ensembleMemberIndex, IEnsembleDataObject inputDataObject, IEnsembleDataObject outputDataObject) {
+		System.out.println("copying " + exchangeItemId + " for ensemble member index " + ensembleMemberIndex);
+
+		IExchangeItem inputExchangeItem = inputDataObject.getDataObjectExchangeItem(exchangeItemId, ensembleMemberIndex);
+		if (inputExchangeItem == null) {
+			throw new IllegalArgumentException(DataCopier.class.getSimpleName() + ": ensemble exchange item with id '" + exchangeItemId
+					+ "' and ensemble member index " + ensembleMemberIndex + " not found in input data object.");
+		}
+
+		IExchangeItem outputExchangeItem = outputDataObject.getDataObjectExchangeItem(exchangeItemId, ensembleMemberIndex);
+		if (outputExchangeItem != null) {//if outputExchangeItem with the same id and ensembleMemberIndex already exists, copy values.
+			outputExchangeItem.copyValuesFromItem(inputExchangeItem);
+
+		} else {//if outputExchangeItem with the same id and ensembleMemberIndex does not exist yet, copy exchangeItem.
+			if (!(outputDataObject instanceof IComposableEnsembleDataObject)) {
+				throw new RuntimeException(DataCopier.class.getSimpleName() + ": exchange item with id '" + exchangeItemId
+						+ "' and ensemble member index " + ensembleMemberIndex + " not found in output data object."
+						+ " Also cannot create this exchange item, since " + outputDataObject.getClass().getName() + " does not implement the " + IComposableEnsembleDataObject.class.getName() + " interface.");
+			}
+			((IComposableEnsembleDataObject) outputDataObject).addExchangeItem(inputExchangeItem, ensembleMemberIndex);
 		}
 	}
 
@@ -137,6 +160,23 @@ public class DataCopier {
 		String[] exchangeItemIds = this.inputDataObject.getExchangeItemIDs();
 		for (String exchangeItemId : exchangeItemIds) {
 			copyValuesForNamedItem(exchangeItemId, inputDataObject, outputDataObject);
+		}
+
+		//copy all ensemble exchangeItems.
+		if (inputDataObject instanceof IEnsembleDataObject) {
+			String[] ensembleExchangeItemIds = ((IEnsembleDataObject) inputDataObject).getEnsembleExchangeItemIds();
+			int[] ensembleMemberIndices = ((IEnsembleDataObject) inputDataObject).getEnsembleMemberIndices();
+
+			for (String ensembleExchangeItemId : ensembleExchangeItemIds) {
+				for (int ensembleMemberIndex : ensembleMemberIndices) {
+					if (!(outputDataObject instanceof IEnsembleDataObject)) {
+						throw new IllegalArgumentException("Cannot copy ensemble exchange item with id '" + ensembleExchangeItemId
+								+ "' since output data object does not implement the " + IEnsembleDataObject.class.getName() + " interface.");
+					}
+
+					copyValuesForNamedEnsembleItem(ensembleExchangeItemId, ensembleMemberIndex, (IEnsembleDataObject) inputDataObject, (IEnsembleDataObject) outputDataObject);
+				}
+			}
 		}
 
 		//write output data.

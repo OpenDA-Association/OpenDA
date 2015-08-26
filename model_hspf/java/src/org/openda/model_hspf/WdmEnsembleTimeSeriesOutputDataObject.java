@@ -45,30 +45,33 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 
 	/**
 	 * @param workingDir the working directory.
-	 * @param arguments The first argument should be the prefix for the names of the wdm files containing the data for this DataObject (relative to the working directory).
+	 * @param arguments Filename prefix:
+	 *                  This should be the prefix for the names of the wdm files containing the data for this DataObject (relative to the working directory).
 	 *                  The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>-out.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
 	 *                  Each file should contain the same data for a different ensemble member. The number of ensemble members is determined by the number of files that are present.
-	 *                  The second argument should be the path of the wdm.dll file (relative to the working directory).
-	 *                  The third argument should be the path of the message file (relative to working directory).
-	 *                  The fourth argument should be the role of this IoObject. Role must be 'output'.
-	 *                  The fifth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12).
-	 *                  The sixth and seventh arguments should be respectively the startTime and endTime of the model run.
-	 *                  The (optional) eight and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
-	 *                  if no eight and further arguments present then exchange items will be created for all time series in the files.
+	 *                  Other arguments:
+	 *                  The first argument should be the path of the wdm.dll file (relative to the working directory).
+	 *                  The second argument should be the path of the message file (relative to working directory).
+	 *                  The third argument should be the role of this IoObject. Role must be 'output'.
+	 *                  The fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12).
+	 *                  The fifth and sixth arguments should be respectively the startTime and endTime of the model run.
+	 *                  The (optional) seventh and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
+	 *                  if no seventh and further arguments present then exchange items will be created for all time series in the files.
 	 */
 	public void initialize(File workingDir, String[] arguments) {
 		//initialize role.
 		if (arguments == null || arguments.length < 1) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The first argument should be the prefix for the names of the wdm files containing the data for this DataObject (relative to working directory).");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": File name prefix for the names of the wdm files not specified.");
 		}
+		//the error messages ignore the first argument (fileName), because in config or in DataCopier the fileName is a separate element and not an argument.
 		if (arguments.length < 2) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the wdm.dll file (relative to working directory).");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The first argument should be the path of the wdm.dll file (relative to working directory).");
 		}
 		if (arguments.length < 3) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The third argument should be the path of the message file (relative to working directory).");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the message file (relative to working directory).");
 		}
 		if (arguments.length < 4) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The fourth argument should be the role of this IoObject. Role can be 'input' or 'output'.");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this IoObject. Role can be 'input' or 'output'.");
 		}
 		Role role = WdmUtils.initializeRole(arguments[3]);
 		if (role == IPrevExchangeItem.Role.Input) {
