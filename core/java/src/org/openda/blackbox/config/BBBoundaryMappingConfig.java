@@ -15,10 +15,10 @@ public class BBBoundaryMappingConfig {
 	}
 
 	public int getOperationType() {
-		return operationType;
+		return this.operationType;
 	}
 
 	public Map<String, String> getMappingExchangeItems() {
-		return mappingExchangeItems;
+		return this.mappingExchangeItems;
 	}
 }

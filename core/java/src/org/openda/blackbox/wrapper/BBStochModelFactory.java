@@ -151,18 +151,14 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
         }
 
 		int ensembleMemberIndex = instanceCounter.val();
-		// TODO
-		// List<IDataObject> boundaryProviderDataObjects =
-		// createBoundaryProviderDataObjects(bbStochModelConfig.getBoundaryProviderConfigs());
 
         return new BBStochModelInstance(configRootDir, modelInstance,
 				uncertaintyEngine,
 				getParameterUncertaintyForNewInstance(ensembleMemberIndex),
 				getParameters(),
 				getNoiseModelsForNewInstance(modelInstance.getTimeHorizon()),
-				// bbStochModelConfig.getBoundaryProviderConfigs(),
-				// List<IDataObject> boundaryProviderDataObjects (indiv. of met N ensemble members),
-				// ensembleMemberIndex,
+				bbStochModelConfig.getBoundaryProviderConfigs(),
+				ensembleMemberIndex,
 				bbStochModelConfig.getBbStochModelVectorsConfig(),
                 restartStatesDirPrefix,
 				bbStochModelConfig.getRestartStatesNoiseModelPrefix(),

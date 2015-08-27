@@ -120,7 +120,6 @@ public class BBStochModelConfigReader {
 
 				String dataObjectClassName = dataObjectXML.getClassName();
 				String fileName = dataObjectXML.getFile();
-				File dataObjectFile = new File(stochModelConfigFile.getParentFile(), fileName);
 				String[] dataObjectArguments = dataObjectXML.getArg();
 
 				ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs = new ArrayList<BBBoundaryMappingConfig>();
@@ -157,7 +156,7 @@ public class BBStochModelConfigReader {
 
 				}
 				BBBoundaryProviderConfig boundaryProviderConfig = new BBBoundaryProviderConfig(
-						dataObjectClassName, dataObjectFile, dataObjectArguments, boundaryMappingConfigs);
+						dataObjectClassName, stochModelConfigFile.getParentFile(), fileName, dataObjectArguments, boundaryMappingConfigs);
 				boundaryProviderConfigs.add(boundaryProviderConfig);
 			}
 		}

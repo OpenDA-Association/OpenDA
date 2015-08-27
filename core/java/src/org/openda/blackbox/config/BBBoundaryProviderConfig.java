@@ -8,31 +8,37 @@ import java.util.ArrayList;
  */
 public class BBBoundaryProviderConfig {
 	private String className;
-	private File dataObjectFile;
+	private File workDir;
+	private String fileName;
 	private String[] arguments;
 	private ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs;
 
-	public BBBoundaryProviderConfig(String className, File dataObjectFile, String[] arguments,
+	public BBBoundaryProviderConfig(String className, File workDir, String fileName, String[] arguments,
 									ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs) {
 		this.className = className;
-		this.dataObjectFile = dataObjectFile;
+		this.workDir = workDir;
+		this.fileName = fileName;
 		this.arguments = arguments;
 		this.boundaryMappingConfigs = boundaryMappingConfigs;
 	}
 
 	public String getClassName() {
-		return className;
+		return this.className;
 	}
 
-	public File getDataObjectFile() {
-		return dataObjectFile;
+	public String getDataObjectFileName() {
+		return this.fileName;
+	}
+
+	public File getDataObjectWorkDir() {
+		return this.workDir;
 	}
 
 	public String[] getArguments() {
-		return arguments;
+		return this.arguments;
 	}
 
 	public ArrayList<BBBoundaryMappingConfig> getBoundaryMappingConfigs() {
-		return boundaryMappingConfigs;
+		return this.boundaryMappingConfigs;
 	}
 }

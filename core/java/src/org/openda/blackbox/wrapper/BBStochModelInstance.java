@@ -32,7 +32,6 @@ import org.openda.utils.Vector;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
-
 import java.io.File;
 import java.util.*;
 
@@ -51,7 +50,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	OdaTiming timerGetState   = null;
 
 	List<BBCollectTimeSeriesExchangeItem> collectTimeSeriesBbExchangeItems = new ArrayList<BBCollectTimeSeriesExchangeItem>();
-
 
 	private File configRootDir;
 	protected IModelInstance model;
@@ -89,9 +87,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			IStochVector parameterUncertainty,
 			ITreeVector paramsTreeVector,
 			LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> noiseModels,
-			// boundaryProviderConfigs,
-			// List<IDataObject> boundaryProviderDataObjects (indiv. of met N ensemble members),
-			// ensembleMemberIndex,
+			ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs,
+			int ensembleMemberIndex,
 			BBStochModelVectorsConfig bbStochModelVectorsConfig,
 			String savedStatesDirPrefix,
 			String savedStatesNoiseModelPrefix,
@@ -125,9 +122,80 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			initConstraintsExchangeItemIds(rangeValidationConstraints);
 		}
 
-//		if (boundaryProviderConfigs.length > 0) {
-//			processProvidedBoundaries(boundaryProviderConfigs, boundaryProviderDataObjects, ensembleMemberIndex);
-//		}
+		if (boundaryProviderConfigs.size() > 0) {
+			processProvidedBoundaries(boundaryProviderConfigs, ensembleMemberIndex);
+		}
+	}
+
+	private void processProvidedBoundaries(ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs, int ensembleMemberIndex) {
+		// Process each boundaryProvider in the BlackBoxStochModelConfig.
+		for (BBBoundaryProviderConfig config: boundaryProviderConfigs) {
+			// Each boundaryProvider specifies a dataObject.
+			IDataObject dataObject = BBUtils.createDataObject(config.getDataObjectWorkDir(), config.getClassName(), config.getDataObjectFileName(), config.getArguments());
+
+			// Each boundaryProvider specifies 1 or more boundaryMappings.
+			for (BBBoundaryMappingConfig mappingConfig: config.getBoundaryMappingConfigs()) {
+				// A boundaryMapping specifies the operation with which boundaryExchangeItems are applied to modelExchangeItems.
+				int operationType = mappingConfig.getOperationType();
+
+				// A boundaryMapping can (1) specify exchangeItem mappings or (2) imply a 1:1 mapping when absent.
+				Map<String, String> mappingExchangeItems = mappingConfig.getMappingExchangeItems();
+
+				if (mappingExchangeItems.size() > 0) {
+					// (1) Use the boundaryMapping exchangeItem specification(s).
+					for (String boundaryExchangeItemId : mappingExchangeItems.keySet()) {
+						String modelExchangeItemId = mappingExchangeItems.get(boundaryExchangeItemId);
+
+						// Retrieve the boundary exchangeItem.
+						IPrevExchangeItem boundaryExchangeItem = null;
+						if (dataObject instanceof IEnsembleDataObject) {
+							if (Arrays.asList(((IEnsembleDataObject) dataObject).getEnsembleMemberIndices()).contains(ensembleMemberIndex)) {
+								boundaryExchangeItem = ((IEnsembleDataObject) dataObject).getDataObjectExchangeItem(boundaryExchangeItemId, ensembleMemberIndex);
+							}
+						} else {
+							boundaryExchangeItem = dataObject.getDataObjectExchangeItem(boundaryExchangeItemId);
+						}
+						if (boundaryExchangeItem == null) break;
+
+						// Retrieve the model exchangeItem.
+						IPrevExchangeItem modelExchangeItem = model.getExchangeItem(modelExchangeItemId);
+						performOperation(operationType, boundaryExchangeItem, modelExchangeItem);
+					}
+				} else {
+					// (2) No boundaryMapping::exchangeItem defined: assume 1:1 name-mapping between boundaryProvider::dataObject.getExchangeItemIDs and modelExchangeItemIDs.
+					if (dataObject instanceof IEnsembleDataObject) {
+						for (String boundaryExchangeItemId: ((IEnsembleDataObject) dataObject).getEnsembleExchangeItemIds()) {
+							if (Arrays.asList(((IEnsembleDataObject) dataObject).getEnsembleMemberIndices()).contains(ensembleMemberIndex)) {
+								IPrevExchangeItem boundaryExchangeItem = ((IEnsembleDataObject) dataObject).getDataObjectExchangeItem(boundaryExchangeItemId, ensembleMemberIndex);
+								IPrevExchangeItem modelExchangeItem = model.getExchangeItem(boundaryExchangeItemId);
+								performOperation(operationType, boundaryExchangeItem, modelExchangeItem);
+							}
+						}
+					} else {
+						for (String boundaryExchangeItemId: dataObject.getExchangeItemIDs()) {
+							IPrevExchangeItem boundaryExchangeItem = dataObject.getDataObjectExchangeItem(boundaryExchangeItemId);
+							IPrevExchangeItem modelExchangeItem = model.getExchangeItem(boundaryExchangeItemId);
+							performOperation(operationType, boundaryExchangeItem, modelExchangeItem);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void performOperation(int operationType, IPrevExchangeItem boundaryExchangeItem, IPrevExchangeItem modelExchangeItem) {
+		// TODO Evaluate assumption that the model run is configured for the same time period as the provided boundaries.
+		switch (operationType) {
+			case BBRegularisationConstantConfig.OPERATION_ADD:
+				modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItem.getValuesAsDoubles());
+				break;
+			case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
+				modelExchangeItem.multiplyValues(boundaryExchangeItem.getValuesAsDoubles());
+				break;
+			case BBRegularisationConstantConfig.OPERATION_SET:
+				modelExchangeItem.setValuesAsDoubles(boundaryExchangeItem.getValuesAsDoubles());
+				break;
+		}
 	}
 
 	/**
