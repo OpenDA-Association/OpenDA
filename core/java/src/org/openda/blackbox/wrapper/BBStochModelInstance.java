@@ -185,15 +185,22 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	private void performOperation(int operationType, IPrevExchangeItem boundaryExchangeItem, IPrevExchangeItem modelExchangeItem) {
 		// TODO Evaluate assumption that the model run is configured for the same time period as the provided boundaries.
+		double[] boundaryExchangeItemValues = boundaryExchangeItem.getValuesAsDoubles();
 		switch (operationType) {
 			case BBRegularisationConstantConfig.OPERATION_ADD:
-				modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItem.getValuesAsDoubles());
+				if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
+					throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
+				}
+				modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
 				break;
 			case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
-				modelExchangeItem.multiplyValues(boundaryExchangeItem.getValuesAsDoubles());
+				if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
+					throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
+				}
+				modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
 				break;
 			case BBRegularisationConstantConfig.OPERATION_SET:
-				modelExchangeItem.setValuesAsDoubles(boundaryExchangeItem.getValuesAsDoubles());
+				modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
 				break;
 		}
 	}
