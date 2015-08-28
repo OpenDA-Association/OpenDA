@@ -135,6 +135,109 @@ public class TreeVectorTest extends TestCase {
 
 	}
 
+
+    public static void testTreeVector_5() {
+        System.out.println("==============================================================================");
+        System.out.println("TreeVector advanced; old errors captured");
+        System.out.println("==============================================================================");
+
+        TreeVector x;
+        TreeVector y;
+        double[] values;
+        double value;
+
+        //Construct or vectors for the tests
+        Vector x1 = new Vector("[1.0, 2.0]");
+        Vector x2 = new Vector("[3.0, 4.0]");
+        TreeVector xt1= new TreeVector("top",x1);
+        TreeVector xt2= new TreeVector("top");
+        TreeVector xt3= new TreeVector("top",x2);
+        xt2.addChild(xt3);
+
+
+        //AXPY
+        x=xt1.clone();
+        y=xt2.clone();
+        x.axpy(1.0, y);
+        values = x.getValues();
+        assertEquals(4.0, values[0],1e-06);
+        assertEquals(6.0, values[1],1e-06);
+
+        x=xt1.clone();
+        y=xt2.clone();
+        y.axpy(1.0, x);
+        values = y.getValues();
+        assertEquals(4.0, values[0],1e-06);
+        assertEquals(6.0, values[1],1e-06);
+
+
+        x=xt1.clone();
+        y=xt2.clone();
+        x.axpy(0.5, y);
+        values = x.getValues();
+        assertEquals(2.5, values[0],1e-06);
+        assertEquals(4.0, values[1],1e-06);
+
+        x=xt1.clone();
+        y=xt2.clone();
+        y.axpy(0.5,x);
+        values = y.getValues();
+        assertEquals(3.5, values[0],1e-06);
+        assertEquals(5.0, values[1],1e-06);
+
+        //dot product
+        x=xt1.clone();
+        y=xt2.clone();
+        value=x.dotProduct(y);
+        assertEquals(11.0, value,1e-06);
+
+        x=xt1.clone();
+        y=xt2.clone();
+        value=y.dotProduct(x);
+        assertEquals(11.0, value,1e-06);
+
+        //point wise divide
+        x=xt1.clone();
+        y=xt2.clone();
+        x.pointwiseDivide(y);
+        values=x.getValues();
+        assertEquals(1.0/3.0, values[0],1e-06);
+        assertEquals(0.5, values[1],1e-06);
+
+        x=xt1.clone();
+        y=xt2.clone();
+        y.pointwiseDivide(x);
+        values=y.getValues();
+        assertEquals(3.0, values[0],1e-06);
+        assertEquals(2.0, values[1],1e-06);
+
+        //point wise multiply
+        x=xt1.clone();
+        y=xt2.clone();
+        x.pointwiseMultiply(y);
+        values=x.getValues();
+        assertEquals(3.0, values[0],1e-06);
+        assertEquals(8.0, values[1],1e-06);
+
+        x=xt1.clone();
+        y=xt2.clone();
+        y.pointwiseMultiply(x);
+        values=y.getValues();
+        assertEquals(3.0, values[0],1e-06);
+        assertEquals(8.0, values[1],1e-06);
+
+
+
+
+
+
+
+    }
+
+
+
+
+
 }
 
     //public TreeVector(String Id, Vector vector, int iSize, int jSize) {

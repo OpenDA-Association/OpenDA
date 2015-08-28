@@ -278,16 +278,17 @@ public class TreeVector implements ITreeVector {
 					vector.axpy(alpha, x);
 				}
 			}
-		    // Move into all sub-tree vectors
-		   if (xl.subTreeVectors.size()==subTreeVectors.size()){
-			   for (int iSub=0; iSub<subTreeVectors.size(); iSub++){
-				   subTreeVectors.get(iSub).axpy(alpha, xl.subTreeVectors.get(iSub));
-			   }
+           else {
+                // Move into all sub-tree vectors
+                if (xl.subTreeVectors.size() == subTreeVectors.size()) {
+                    for (int iSub = 0; iSub < subTreeVectors.size(); iSub++) {
+                        subTreeVectors.get(iSub).axpy(alpha, xl.subTreeVectors.get(iSub));
+                    }
 
-		   }
-		   else {
-		      extractMethod=true;
-		   }
+                } else {
+                    extractMethod = true;
+                }
+            }
 	   }
 	   else {
 		   extractMethod=true;
@@ -325,15 +326,16 @@ public class TreeVector implements ITreeVector {
 					dotProd=vector.dotProduct(otherVector);
 				}
 			}
-		    // Move into all sub-tree vectors
-		   if (xl.subTreeVectors.size()==subTreeVectors.size()){
-			   for (int iSub=0; iSub<subTreeVectors.size(); iSub++){
-				   dotProd+=subTreeVectors.get(iSub).dotProduct(xl.subTreeVectors.get(iSub));
-			   }
-		   }
-		   else {
-		      extractMethod=true;
-		   }
+           else {
+                // Move into all sub-tree vectors
+                if (xl.subTreeVectors.size() == subTreeVectors.size()) {
+                    for (int iSub = 0; iSub < subTreeVectors.size(); iSub++) {
+                        dotProd += subTreeVectors.get(iSub).dotProduct(xl.subTreeVectors.get(iSub));
+                    }
+                } else {
+                    extractMethod = true;
+                }
+            }
 	   }
 	   else {
 		   extractMethod=true;
@@ -374,26 +376,25 @@ public class TreeVector implements ITreeVector {
 
     public void pointwiseDivide(IVector otherVector) {
 		boolean extractMethod=false;
-		 if (otherVector instanceof TreeVector){
-			 TreeVector xl = (TreeVector) otherVector;
-			  if (vector != null){
-				  if (xl.vector != null){
-					  vector.pointwiseDivide(xl.vector);
-				  }
-				  else {
-					  vector.pointwiseDivide(otherVector);
-				  }
-			  }
-			  // Move into all sub-tree vectors
-			 if (xl.subTreeVectors.size()==subTreeVectors.size()){
-				 for (int iSub=0; iSub<subTreeVectors.size(); iSub++){
-					 subTreeVectors.get(iSub).pointwiseDivide(xl.subTreeVectors.get(iSub));
-				 }
-			 }
-			 else {
-				extractMethod=true;
-			 }
-		 }
+		 if (otherVector instanceof TreeVector) {
+             TreeVector xl = (TreeVector) otherVector;
+             if (vector != null) {
+                 if (xl.vector != null) {
+                     vector.pointwiseDivide(xl.vector);
+                 } else {
+                     vector.pointwiseDivide(otherVector);
+                 }
+             } else {
+                 // Move into all sub-tree vectors
+                 if (xl.subTreeVectors.size() == subTreeVectors.size()) {
+                     for (int iSub = 0; iSub < subTreeVectors.size(); iSub++) {
+                         subTreeVectors.get(iSub).pointwiseDivide(xl.subTreeVectors.get(iSub));
+                     }
+                 } else {
+                     extractMethod = true;
+                 }
+             }
+         }
 		 else {
 			 extractMethod=true;
 		 }
@@ -428,15 +429,16 @@ public class TreeVector implements ITreeVector {
 					  vector.pointwiseMultiply(otherVector);
 				  }
 			  }
-			  // Move into all sub-tree vectors
-			 if (xl.subTreeVectors.size()==subTreeVectors.size()){
-				 for (int iSub=0; iSub<subTreeVectors.size(); iSub++){
-					 subTreeVectors.get(iSub).pointwiseMultiply(xl.subTreeVectors.get(iSub));
-				 }
-			 }
-			 else {
-				extractMethod=true;
-			 }
+             else {
+                  // Move into all sub-tree vectors
+                  if (xl.subTreeVectors.size() == subTreeVectors.size()) {
+                      for (int iSub = 0; iSub < subTreeVectors.size(); iSub++) {
+                          subTreeVectors.get(iSub).pointwiseMultiply(xl.subTreeVectors.get(iSub));
+                      }
+                  } else {
+                      extractMethod = true;
+                  }
+              }
 		 }
 		 else {
 			 extractMethod=true;
