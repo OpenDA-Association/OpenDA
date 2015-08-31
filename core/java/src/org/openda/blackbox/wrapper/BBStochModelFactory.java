@@ -49,8 +49,8 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 	private List<IStochVector> paramsUncertaintyModelStochVectors = new ArrayList<IStochVector>();
 	private IStochVector parameterUncertaintyTotalStochVector = null;
 
-	LinkedHashMap<BBNoiseModelConfig, IStochModelFactory> noiseModelFactories =
-			new LinkedHashMap<BBNoiseModelConfig, IStochModelFactory>();
+	LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings = new LinkedHashMap<>();
+	LinkedHashMap<BBNoiseModelConfig, IStochModelFactory> noiseModelFactories = new LinkedHashMap<BBNoiseModelConfig, IStochModelFactory>();
 
     /* Note this model can be use in a parallel environment therefore we use the distributed counter. */
 	private DistributedCounter instanceCounter = new DistributedCounter(0);
@@ -88,6 +88,8 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 			uncertaintyEngine = (UncertaintyEngine) uncertaintyEngineInstance;
 			uncertaintyEngine.initialize(bbStochModelConfig.getUncertaintyWorkingDir(), uncertaintyAction.getArguments());
 		}
+
+		getDataObjectBoundaryMappings();
 
 		List<BBNoiseModelConfig> paramsUncertaintyModelModelConfigs =
 				bbStochModelConfig.getBbStochModelVectorsConfig().getParamsUncertaintyModelConfigs();
@@ -157,12 +159,20 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 				getParameterUncertaintyForNewInstance(ensembleMemberIndex),
 				getParameters(),
 				getNoiseModelsForNewInstance(modelInstance.getTimeHorizon()),
-				bbStochModelConfig.getBoundaryProviderConfigs(),
+				dataObjectBoundaryMappings,
 				ensembleMemberIndex,
 				bbStochModelConfig.getBbStochModelVectorsConfig(),
                 restartStatesDirPrefix,
 				bbStochModelConfig.getRestartStatesNoiseModelPrefix(),
 				bbStochModelConfig.getModelRestartStateFile());
+	}
+
+	private void getDataObjectBoundaryMappings() {
+		for (BBBoundaryProviderConfig config: bbStochModelConfig.getBoundaryProviderConfigs()) {
+			IDataObject dataObject = BBUtils.createDataObject(config.getDataObjectWorkDir(), config.getClassName(), config.getDataObjectFileName(), config.getArguments());
+			ArrayList<BBBoundaryMappingConfig> boundaryMappingConfigs = config.getBoundaryMappingConfigs();
+			dataObjectBoundaryMappings.put(dataObject, boundaryMappingConfigs);
+		}
 	}
 
 	private LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> getNoiseModelsForNewInstance(ITime modelTimeHorizon) {

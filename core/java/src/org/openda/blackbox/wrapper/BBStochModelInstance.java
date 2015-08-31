@@ -87,7 +87,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			IStochVector parameterUncertainty,
 			ITreeVector paramsTreeVector,
 			LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> noiseModels,
-			ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs,
+			LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings,
 			int ensembleMemberIndex,
 			BBStochModelVectorsConfig bbStochModelVectorsConfig,
 			String savedStatesDirPrefix,
@@ -122,19 +122,16 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			initConstraintsExchangeItemIds(rangeValidationConstraints);
 		}
 
-		if (boundaryProviderConfigs.size() > 0) {
-			processProvidedBoundaries(boundaryProviderConfigs, ensembleMemberIndex);
+		if (dataObjectBoundaryMappings.size() > 0) {
+			processProvidedBoundaries(dataObjectBoundaryMappings, ensembleMemberIndex);
 		}
 	}
 
-	private void processProvidedBoundaries(ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs, int ensembleMemberIndex) {
+	private void processProvidedBoundaries(LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> boundaryProviderConfigs, int ensembleMemberIndex) {
 		// Process each boundaryProvider in the BlackBoxStochModelConfig.
-		for (BBBoundaryProviderConfig config: boundaryProviderConfigs) {
-			// Each boundaryProvider specifies a dataObject.
-			IDataObject dataObject = BBUtils.createDataObject(config.getDataObjectWorkDir(), config.getClassName(), config.getDataObjectFileName(), config.getArguments());
-
+		for (IDataObject dataObject: boundaryProviderConfigs.keySet()) {
 			// Each boundaryProvider specifies 1 or more boundaryMappings.
-			for (BBBoundaryMappingConfig mappingConfig: config.getBoundaryMappingConfigs()) {
+			for (BBBoundaryMappingConfig mappingConfig: boundaryProviderConfigs.get(dataObject)) {
 				// A boundaryMapping specifies the operation with which boundaryExchangeItems are applied to modelExchangeItems.
 				int operationType = mappingConfig.getOperationType();
 
