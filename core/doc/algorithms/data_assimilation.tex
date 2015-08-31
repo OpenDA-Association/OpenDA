@@ -32,6 +32,17 @@ either based on the minimization of a criterion or on statistical principles.
 This difference divides the data assimilation methods into two classes: the
 variational and the sequential methods.
 
+The following data assimilation methods are implemented in \oda :
+\begin{itemize}
+\item Reduced-rank square-root filter (RRSQRT)
+\item Ensemble KF (EnKF)
+\item Ensemble Square-Root filter (EnSRF)
+\item Complementary Orthogonal subspace Filter For Efficient Ensembles (COFFEE)
+\item Steady State KF
+\item Particle Filter
+\item 3DVar
+\end{itemize}
+
 \subsection{Variational methods}
 Variational methods aim at adjusting a model solution to all the observations
 available over the assimilation period (\cite{Talagrand1997}). In variational

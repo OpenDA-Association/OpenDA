@@ -22,6 +22,19 @@ component as follows
 \end{equation}
 Where $x^b$ and $P^b$ are the background or initial estimate of $x_o$ and its covariance respectively. This additional component ensures that the solution will not be too far from the initial guess.
 
+The following calibration methods are implemented in \oda :
+\begin{itemize}
+\item Dud
+\item Sparse Dud
+\item Simplex
+\item Powell
+\item Gridded full search
+\item Shuffled Complex Evolution (SCE)
+\item Generalized Likelihood Uncertainty Estimation (GLUE)
+\item (L)BFGS
+\item Conjugate Gradient: Fletcher-Reeves, Polak-Ribiere, Steepest Descent
+\end{itemize}
+
 \section{Parameter estimation with the Simplex method}
 \label{sssec.simplex}
 The simplex method that is implemented in COSTA is the one due to Nelder and
@@ -301,7 +314,7 @@ This can easily be done by using the function cta\_state\_dot.
 
 \section{Parameter estimation with the LBFGS method}
 For the problem of minimizing a multivariable function quasi-Newton methods
-are widely employed. This methods involve the approximation of the Hessian
+are widely employed. These methods involve the approximation of the Hessian
 (or its inverse) matrix of the function. The LBFGS (Limited
 memory-Broyden-Fletcher-Goldfarb-Shanno) method is basically a method to
 approximate the Hessian matrix in the quasi-Newton method of optimization.
