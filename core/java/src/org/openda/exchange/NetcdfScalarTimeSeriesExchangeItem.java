@@ -42,6 +42,8 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 
 	private final int locationDimensionIndex;
 	private final int locationIndex;
+	private final int realizationDimensionIndex;
+	private final int realizationIndex;
 	private final String id;
 	private final Role role;
 	/**
@@ -61,12 +63,14 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	private ITimeInfo timesWithNonMissingValuesInfo;
 
 	public NetcdfScalarTimeSeriesExchangeItem(int locationDimensionIndex, int locationIndex,
-			String locationId, String parameterId, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
+			String locationId, String parameterId, int realizationDimensionIndex, int realizationIndex, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
 		this.locationDimensionIndex = locationDimensionIndex;
 		this.locationIndex = locationIndex;
 		//id = "locationId.parameterId"
 		this.id = locationId + "." + parameterId;
         this.stationId = locationId;
+		this.realizationDimensionIndex = realizationDimensionIndex;
+		this.realizationIndex = realizationIndex;
 		this.role = role;
 //		this.allTimesInfo = allTimesInfo;
 		this.quantityInfo = new QuantityInfo(parameterId, "unknown");
@@ -76,7 +80,7 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
             //determine times for which there are non-missing values for this scalar time series.
             //This is needed because the algorithms cannot cope with missing values.
             double[] allTimes = allTimesInfo.getTimes();
-            double[] allValues = getAllValues();
+			double[] allValues = getAllValues();
             List<Double> timesWithNonMissingValues = new ArrayList<Double>();
             for (int n = 0; n < allValues.length; n++) {
                 if (!Double.isNaN(allValues[n])) {
@@ -173,7 +177,11 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	 * Returns all values for this scalar time series (also missing values).
 	 */
 	private double[] getAllValues() {
-		return this.netcdfDataObject.readDataForExchangeItemForSingleLocation(this, this.locationDimensionIndex, this.locationIndex);
+		if (this.realizationDimensionIndex == -1) {
+			return this.netcdfDataObject.readDataForExchangeItemForSingleLocation(this, this.locationDimensionIndex, this.locationIndex);
+		} else {
+			return this.netcdfDataObject.readDataForExchangeItemForSingleLocationAndRealization(this, this.locationDimensionIndex, this.locationIndex, this.realizationDimensionIndex, this.realizationIndex);
+		}
 	}
 
 	public void axpyOnValues(double alpha, double[] axpyValues) {

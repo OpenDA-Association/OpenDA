@@ -22,12 +22,7 @@ package org.openda.exchange.dataobjects;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.openda.exchange.*;
 import org.openda.interfaces.IArray;
@@ -39,6 +34,7 @@ import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
+import org.openda.interfaces.IEnsembleDataObject;
 import org.openda.utils.Results;
 
 import ucar.ma2.ArrayDouble;
@@ -55,13 +51,82 @@ import ucar.nc2.Variable;
  *
  * @author Arno Kockx
  */
-public class NetcdfDataObject implements IComposableDataObject {
+public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObject {
 
-    public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
+	/**
+	 * Get the ensemble member indices of the ensemble exchange items.
+	 * The ensemble member indices must be the same for all ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return int[0] if there are no ensemble members.
+	 *
+	 * @return array of ensemble member indices.
+	 */
+	public int[] getEnsembleMemberIndices() {
+		if (this.ensembleExchangeItems.isEmpty()) {
+			return new int[0];
+		} else {
+			// Since Java has no range method.
+			// TODO Upgrade as soon as explicit ensemble indices are stored in the NetCDF file.
+			Set keys = this.ensembleExchangeItems.keySet();
+			int[] result = new int[keys.size()];
+			for(int i = 0; i < keys.size(); i++) {
+				result[i] = i;
+			}
+			return result;
+		}
+	}
+
+	/**
+	 * Get the identifiers of the ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return String[0] if there are no matching ensemble items.
+	 *
+	 * @return array of ensemble exchange item identifiers.
+	 */
+	public String[] getEnsembleExchangeItemIds() {
+		if (this.ensembleExchangeItems.isEmpty()) {
+			return new String[0];
+		} else {
+			Set keys = this.ensembleExchangeItems.keySet();
+			List<IExchangeItem> someItems = this.ensembleExchangeItems.get(keys.iterator().next());
+			String[] exchangeItemIDs = new String[someItems.size()];
+			for (int n = 0; n < someItems.size(); n++) {
+				exchangeItemIDs[n] = someItems.get(n).getId();
+			}
+			return exchangeItemIDs;
+		}
+	}
+
+	/**
+	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
+	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
+	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
+	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
+	 *
+	 * @param exchangeItemId      ensemble exchange item identifier.
+	 * @param ensembleMemberIndex ensemble member index.
+	 * @return the requested ensemble exchange item.
+	 */
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) {
+		if (!this.ensembleExchangeItems.isEmpty()) {
+			List<IExchangeItem> items = this.ensembleExchangeItems.get(ensembleMemberIndex);
+			for (int n = 0; n < items.size(); n++) {
+				IExchangeItem exchangeItem = items.get(n);
+				if (exchangeItem.getId().equals(exchangeItemId)) {
+					return exchangeItem;
+				}
+			}
+		}
+		return null;
+	}
+
+	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
 	private File file = null;
 	private NetcdfFileWriteable netcdfFile = null;
 	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
+	private Map<Integer, List<IExchangeItem>> ensembleExchangeItems = new LinkedHashMap<>();
 
 	private Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap = new LinkedHashMap<ITimeInfo, Dimension>();
     private List<String> stationIdList = new ArrayList<String>();
@@ -208,8 +273,16 @@ public class NetcdfDataObject implements IComposableDataObject {
 			}
 			ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
 
+
 			//skip variables that are not two or three dimensional.
 			int dimensionCount = variable.getDimensions().size();
+
+			// Test for ensembleIndex named "realization".
+			int realizationDimensionIndex = variable.findDimensionIndex("realization");
+			if (realizationDimensionIndex != -1) {
+				dimensionCount -= 1;
+			}
+
 			if (dimensionCount != 2 && dimensionCount != 3) {
 				continue;
 			}
@@ -224,14 +297,28 @@ public class NetcdfDataObject implements IComposableDataObject {
 				for (int n = 0; n < stationCount; n++) {
 					int stationIndex = n;
 					String stationId = stationIndexIdMap.get(n);
-					IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
-							stationId, parameterId, Role.InOut, timeInfo, this);
-					this.exchangeItems.add(exchangeItem);
+					if (realizationDimensionIndex == -1) {
+						IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
+								stationId, parameterId, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
+						this.exchangeItems.add(exchangeItem);
+					} else {
+						for (int realizationIndex = 0; realizationIndex < variable.getDimension(realizationDimensionIndex).getLength(); realizationIndex++) {
+							IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
+									stationId, parameterId, realizationDimensionIndex, realizationIndex, Role.InOut, timeInfo, this);
+							if (!this.ensembleExchangeItems.containsKey(realizationIndex)) {
+								this.ensembleExchangeItems.put(realizationIndex, new ArrayList<IExchangeItem>());
+							}
+							List<IExchangeItem> oldValue = this.ensembleExchangeItems.get(realizationIndex);
+							oldValue.add(exchangeItem);
+							this.ensembleExchangeItems.put(realizationIndex, oldValue);
+						}
+					}
 				}
 
 				continue;
 			}
 
+			// TODO Support realization
 			int timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
 			IGeometryInfo geometryInfo = NetcdfUtils.createGeometryInfo(variable, netcdfFile);
 			if (dimensionCount == 3 && geometryInfo != null) {
@@ -286,7 +373,12 @@ public class NetcdfDataObject implements IComposableDataObject {
 			} else {//if array.
 				ArrayExchangeItem arrayBasedExchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.InOut);
 				arrayBasedExchangeItem.setQuantityInfo(new QuantityInfo(exchangeItemId, variable.getUnitsString()));
-				arrayBasedExchangeItem.setTimeInfo(NetcdfUtils.createTimeInfo(variable, netcdfFile, timeInfoCache));
+				IArrayTimeInfo newTimeInfo = NetcdfUtils.createTimeInfo(variable, netcdfFile, timeInfoCache);
+				if (newTimeInfo != null) {
+					arrayBasedExchangeItem.setTimeInfo(newTimeInfo);
+				} else {
+					continue;
+				}
 				//TODO cache variables with spatial coordinates. AK
 				arrayBasedExchangeItem.setGeometryInfo(NetcdfUtils.createGeometryInfo(variable, netcdfFile));
 				arrayBasedExchangeItem.setArray((IArray) NetcdfUtils.readData(variable));
@@ -350,7 +442,7 @@ public class NetcdfDataObject implements IComposableDataObject {
 
         //create metadata for the given exchangeItem.
         NetcdfUtils.createScalarMetadata(this.netcdfFile, newItems, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
-                this.stationIdList);
+				this.stationIdList);
     }
 
     private IExchangeItem storeExchangeItem(IExchangeItem item) {
@@ -539,6 +631,11 @@ public class NetcdfDataObject implements IComposableDataObject {
 	public double[] readDataForExchangeItemForSingleLocation(IExchangeItem item, int stationDimensionIndex, int stationIndex) {
 		Variable variable = getVariableForExchangeItem(item);
 		return NetcdfUtils.readDataForVariableForSingleLocation(variable, stationDimensionIndex, stationIndex);
+	}
+
+	public double[] readDataForExchangeItemForSingleLocationAndRealization(IExchangeItem item, int stationDimensionIndex, int stationIndex, int realizationDimensionIndex, int realizationIndex) {
+		Variable variable = getVariableForExchangeItem(item);
+		return NetcdfUtils.readDataForVariableForSingleLocationAndRealization(variable, stationDimensionIndex, stationIndex, realizationDimensionIndex, realizationIndex);
 	}
 
 	public double[] readDataForExchangeItemFor2DGridForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex,
