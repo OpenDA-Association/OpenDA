@@ -277,7 +277,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 			//skip variables that are not two or three dimensional.
 			int dimensionCount = variable.getDimensions().size();
 
-			// Test for ensembleIndex named "realization".
+			// Test and correct for ensembleIndex named "realization".
 			int realizationDimensionIndex = variable.findDimensionIndex("realization");
 			if (realizationDimensionIndex != -1) {
 				dimensionCount -= 1;
@@ -318,7 +318,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 				continue;
 			}
 
-			// TODO Support realization
 			int timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
 			IGeometryInfo geometryInfo = NetcdfUtils.createGeometryInfo(variable, netcdfFile);
 			if (dimensionCount == 3 && geometryInfo != null) {
@@ -329,9 +328,22 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 				IQuantityInfo quantityInfo = new QuantityInfo(parameterId, variable.getUnitsString());
 				int dimensionIndexToFlipForReadData = NetcdfUtils.getDimensionIndexToFlipFor2DGrid(variable, this.netcdfFile,
 						this.internalGridStartCorner);
-				IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, Role.InOut,
-						timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
-				this.exchangeItems.add(exchangeItem);
+				if (realizationDimensionIndex == -1) {
+					IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, Role.InOut,
+							timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
+					this.exchangeItems.add(exchangeItem);
+				} else {
+					for (int realizationIndex = 0; realizationIndex < variable.getDimension(realizationDimensionIndex).getLength(); realizationIndex++) {
+						IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, realizationDimensionIndex, realizationIndex, Role.InOut,
+								timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
+						if (!this.ensembleExchangeItems.containsKey(realizationIndex)) {
+							this.ensembleExchangeItems.put(realizationIndex, new ArrayList<IExchangeItem>());
+						}
+						List<IExchangeItem> oldValue = this.ensembleExchangeItems.get(realizationIndex);
+						oldValue.add(exchangeItem);
+						this.ensembleExchangeItems.put(realizationIndex, oldValue);
+					}
+				}
 
 				continue;
 			}
@@ -642,6 +654,13 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 			int dimensionIndexToFlip) {
 		Variable variable = getVariableForExchangeItem(item);
 		return NetcdfUtils.readDataForVariableFor2DGridForSingleTime(variable, timeDimensionIndex, timeIndex,
+				dimensionIndexToFlip);
+	}
+
+	public double[] readDataForExchangeItemFor2DGridForSingleTimeAndRealization(
+			IExchangeItem item, int realizationDimensionIndex, int realizationIndex, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip) {
+		Variable variable = getVariableForExchangeItem(item);
+		return NetcdfUtils.readDataForVariableFor2DGridForSingleTimeAndRealization(variable, realizationDimensionIndex, realizationIndex, timeDimensionIndex, timeIndex,
 				dimensionIndexToFlip);
 	}
 

@@ -34,6 +34,8 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 
 	private final ITimeInfo timeInfo;
 	private final String id;
+	private final int realizationDimensionIndex;
+	private final int realizationIndex;
 	private final Role role;
 	private final IQuantityInfo quantityInfo;
 	private final IGeometryInfo geometryInfo;
@@ -51,10 +53,12 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 	 * @param timeDimensionIndex
 	 * @param dimensionIndexToFlipForReadData index of dimension to flip for read data. If this is -1, then nothing is flipped.
 	 */
-	public NetcdfGridTimeSeriesExchangeItem(String id, Role role, ITimeInfo timeInfo, IQuantityInfo quantityInfo,
+	public NetcdfGridTimeSeriesExchangeItem(String id, int realizationDimensionIndex, int realizationIndex, Role role, ITimeInfo timeInfo, IQuantityInfo quantityInfo,
 			IGeometryInfo geometryInfo, NetcdfDataObject netcdfDataObject, int timeDimensionIndex,
 			int dimensionIndexToFlipForReadData) {
 		this.id = id;
+		this.realizationDimensionIndex = realizationDimensionIndex;
+		this.realizationIndex = realizationIndex;
 		this.role = role;
 		this.timeInfo = timeInfo;
 		this.quantityInfo = quantityInfo;
@@ -62,6 +66,11 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 		this.netcdfDataObject = netcdfDataObject;
 		this.timeDimensionIndex = timeDimensionIndex;
 		this.dimensionIndexToFlipForReadData = dimensionIndexToFlipForReadData;
+	}
+
+	public NetcdfGridTimeSeriesExchangeItem(String id, Role role, ITimeInfo timeInfo, IQuantityInfo quantityInfo,
+			IGeometryInfo geometryInfo, NetcdfDataObject netcdfDataObject, int timeDimensionIndex, int dimensionIndexToFlipForReadData) {
+		this(id, -1, -1, role, timeInfo, quantityInfo, geometryInfo, netcdfDataObject, timeDimensionIndex, dimensionIndexToFlipForReadData);
 	}
 
 	public String getId() {
@@ -125,8 +134,14 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 	}
 
 	public double[] getValuesAsDoublesForSingleTimeIndex(int timeIndex) {
-		return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTime(this, this.timeDimensionIndex, timeIndex,
-				this.dimensionIndexToFlipForReadData);
+		if (this.realizationDimensionIndex == -1) {
+			return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTime(this, this.timeDimensionIndex, timeIndex,
+					this.dimensionIndexToFlipForReadData);
+		} else {
+			return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTimeAndRealization(this, this.realizationDimensionIndex, this.realizationIndex, this.timeDimensionIndex, timeIndex,
+					this.dimensionIndexToFlipForReadData);
+		}
+
 	}
 
 	public void axpyOnValues(double alpha, double[] axpyValues) {

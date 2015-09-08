@@ -2,6 +2,7 @@ package org.openda.exchange.dataobject;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.IExchangeItem;
@@ -37,13 +38,13 @@ public class NetcdfDataObjectTest extends TestCase {
 	public void testReadGridEnsemble() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
 		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_grid_with_ensemble.nc", "true"});
-		//int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
-		//assertEquals(3, ensembleIndices.length);
-		//String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
-		//assertEquals(4, ensembleIds.length);
-		//IExchangeItem item = dataObject.getDataObjectExchangeItem("27.waterlevel", 1);
-		//assertFalse(item == null);
-		//double[] itemValues = item.getValuesAsDoubles();
-		//assertEquals(3, itemValues.length);
+		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
+		assertEquals(3, ensembleIndices.length);
+		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
+		assertEquals(2, ensembleIds.length);
+		NetcdfGridTimeSeriesExchangeItem item = (NetcdfGridTimeSeriesExchangeItem)dataObject.getDataObjectExchangeItem("pressure", 1);
+		assertFalse(item == null);
+		double[] itemValues = item.getValuesAsDoublesForSingleTimeIndex(0);
+		assertEquals(2500, itemValues.length);
 	}
 }

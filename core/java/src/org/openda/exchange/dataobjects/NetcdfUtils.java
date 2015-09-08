@@ -620,7 +620,7 @@ public class NetcdfUtils {
 		origin[stationDimensionIndex] = stationIndex;
 		sizeArray[stationDimensionIndex] = 1;
 		//select only the given realization
-		origin[realizationDimensionIndex] = stationIndex;
+		origin[realizationDimensionIndex] = realizationIndex;
 		sizeArray[realizationDimensionIndex] = 1;
 		return readSelectedData(variable, origin, sizeArray, -1);
 	}
@@ -633,6 +633,20 @@ public class NetcdfUtils {
 		//select only the given time.
 		origin[timeDimensionIndex] = timeIndex;
 		sizeArray[timeDimensionIndex] = 1;
+		return readSelectedData(variable, origin, sizeArray, dimensionIndexToFlip);
+	}
+
+	public static double[] readDataForVariableFor2DGridForSingleTimeAndRealization(Variable variable,
+		   int realizationDimensionIndex, int realizationIndex, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip) {
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+
+		//select only the given time.
+		origin[timeDimensionIndex] = timeIndex;
+		sizeArray[timeDimensionIndex] = 1;
+		//select only the given realization
+		origin[realizationDimensionIndex] = realizationIndex;
+		sizeArray[realizationDimensionIndex] = 1;
 		return readSelectedData(variable, origin, sizeArray, dimensionIndexToFlip);
 	}
 
