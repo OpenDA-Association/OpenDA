@@ -94,6 +94,10 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
         }
 	}
 
+	public NetcdfScalarTimeSeriesExchangeItem(int locationDimensionIndex, int locationIndex, String locationId, String parameterId, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
+		this(locationDimensionIndex, locationIndex, locationId, parameterId, -1, -1, role, allTimesInfo, netcdfDataObject);
+	}
+
     public String getId() {
 		return this.id;
 	}
