@@ -108,14 +108,27 @@
 	<delete file="MANIFEST.MF"/>
     </target>
 
-    <target name="manifest">
+	<taskdef resource="org/tigris/subversion/svnant/svnantlib.xml">
+		<classpath>
+			<fileset dir="../core/java/resources/svnant-1.3.0/lib" includes="**/*.jar" />
+		</classpath>
+	</taskdef>
+
+    <target name="svn-revision" >
+		<svn>
+			<status path="." revisionProperty="svn.revision" />
+		</svn>
+		<echo>Subversion Revision: ${svn.revision}</echo>
+	</target>
+
+	<target name="manifest" depends="svn-revision">
         <tstamp/>
         <manifest file="MANIFEST.MF">
 		<attribute name="Specification-Title" value="${projectname}"/>
             <attribute name="Specification-Version" value="${version} ${TODAY}"/>
 	    <attribute name="Specification-Vendor" value="${vendor}"/>
 	    <attribute name="Implementation-Title" value="${projectname}"/>
-            <attribute name="Implementation-Version" value="${version} ${TODAY}"/>
+			<attribute name="Implementation-Version" value="${version}.${svn.revision} ${TODAY}"/>
 	    <attribute name="Implementation-Vendor" value="${vendor}"/>
         </manifest>
     </target>
