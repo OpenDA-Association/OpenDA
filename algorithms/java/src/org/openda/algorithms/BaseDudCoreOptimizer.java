@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseDudCoreOptimizer {
-
+	final double EPSILON = 1E-14;
 	// fields of this class
 	protected IVector pCurrent[] = null;    // parametervalues under consideration
 	protected IVector predCurrent[] = null; // predictions for each parameter vector
@@ -919,7 +919,11 @@ public abstract class BaseDudCoreOptimizer {
 			if (innerIter==0) {
 				costTry = this.f.evaluate(pTry,"outer iteration "+imain);
 				System.out.println("non-linear cost for new estimate "+costTry);
-				relErrorLinCost = Math.abs((costTry-costLinTry)/(costs[0]-costLinTry));
+				if (Math.abs(costs[0]-costLinTry) <= EPSILON) {
+					relErrorLinCost = 0.;
+				} else {
+					relErrorLinCost = Math.abs((costTry - costLinTry) / (costs[0] - costLinTry));
+				}
 			} else {
 				costTry = f.evaluate(pTry,"inner iteration "+innerIter);
 			}
