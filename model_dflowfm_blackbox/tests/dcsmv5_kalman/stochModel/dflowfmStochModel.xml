@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
     <modelConfig>
         <file>./dflowfmModel.xml</file>
     </modelConfig>
@@ -13,19 +13,19 @@
                     </exchangeItem>
                 </exchangeItems>
             </noiseModel>
-            <vector id="s1" ioObjectId="mapfile" elementId="s1" />
-            <vector id="ucx" ioObjectId="mapfile" elementId="ucx"/>
-            <vector id="ucy" ioObjectId="mapfile" elementId="ucy"/>
+            <vector id="s1"/>
+            <vector id="ucx"/>
+            <vector id="ucy"/>
         </state>
         <predictor>
             <vector id="WICK.waterlevel"/>
-			<vector id="NORTHSS.waterlevel" /> 
-			<vector id="LOWST.waterlevel" />
-			<vector id="SHEERNS.waterlevel" />
-			<vector id="DOVR.waterlevel" />
-			<vector id="VLISSGN.waterlevel" />
-			<vector id="HOEKVHLD.waterlevel" />
-			<vector id="DENHDR.waterlevel" />
+            <vector id="NORTHSS.waterlevel" /> 
+            <vector id="LOWST.waterlevel" />
+            <vector id="SHEERNS.waterlevel" />
+            <vector id="DOVR.waterlevel" />
+            <vector id="VLISSGN.waterlevel" />
+            <vector id="HOEKVHLD.waterlevel" />
+            <vector id="DENHDR.waterlevel" />
         </predictor>
     </vectorSpecification>
 </blackBoxStochModel>

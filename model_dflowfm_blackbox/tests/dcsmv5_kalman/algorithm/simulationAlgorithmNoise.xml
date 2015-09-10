@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<simulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/simulationConfig.xsd" >
-    <analysisTimes type="fixed" timeFormat="dateTimeString" >200701010100,200701010200,...,200701020000</analysisTimes> 
+<SimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/simulationConfig.xsd" >
     <instance repeat="1" stochParameter="false" stochForcing="true" />
-    <!-- <writeObservations filename="../generated_observations.csv" addNoise="false" format="csv" /> -->
-</simulationConfig>
+    <writeObservations filename="../generated_observations.csv" addNoise="false" format="csv" />
+</SimulationConfig>
 

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <timeSeries status="use" location="WICK" standardDeviation="0.05">
-                wick_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="NORTHSS" standardDeviation="0.05">
-                northshields_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="LOWST" standardDeviation="0.05">
-                lowestoft_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="SHEERNS" standardDeviation="0.05">
-                sheerness_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="DOVR" standardDeviation="0.05">
-                dover_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="VLISSGN" standardDeviation="0.05">
-                vlissingen_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="HOEKVHLD" standardDeviation="0.05">
-                hoekvanholland_observed_waterlevel.noos
-	</timeSeries>
-        <timeSeries status="use" location="DENHDR" standardDeviation="0.05">
-                denhelder_observed_waterlevel.noos
-	</timeSeries>
+<noosObserver xmlns="http://www.openda.org"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd">
+    <timeSeries status="use" location="WICK" standardDeviation="0.05">
+        wick_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="NORTHSS" standardDeviation="0.05">
+        northshields_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="LOWST" standardDeviation="0.05">
+        lowestoft_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="SHEERNS" standardDeviation="0.05">
+        sheerness_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="DOVR" standardDeviation="0.05">
+        dover_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="VLISSGN" standardDeviation="0.05">
+        vlissingen_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="HOEKVHLD" standardDeviation="0.05">
+        hoekvanholland_observed_waterlevel.noos
+    </timeSeries>
+    <timeSeries status="use" location="DENHDR" standardDeviation="0.05">
+        denhelder_observed_waterlevel.noos
+    </timeSeries>
 </noosObserver>

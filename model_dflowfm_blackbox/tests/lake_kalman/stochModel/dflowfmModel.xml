@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blackBoxModelConfig xmlns="http://www.openda.org" 
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                     xsi:schemaLocation="http://schemas.openda.org/blackBoxModelConfig.xsd">
+                     xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<wrapperConfig>
 		<file>dflowfmWrapper.xml</file>
@@ -18,7 +18,6 @@
 		<alias key="hisfile" value="lake2d_his.nc"/>
 		<alias key="mapfile" value="lake2d_map.nc"/>
 		<alias key="meteofile" value="Lake2d_windx_noise.amu"/>
-		<alias key="openda_bindir" value="../../../../bin"/>
 	</aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>

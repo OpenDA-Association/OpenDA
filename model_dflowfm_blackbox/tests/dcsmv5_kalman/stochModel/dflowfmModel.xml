@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blackBoxModelConfig xmlns="http://www.openda.org" 
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                     xsi:schemaLocation="http://schemas.openda.org/blackBoxModelConfig.xsd">
-	<!-- Specify wrapper configuration for which this model is defined -->
-	<wrapperConfig>
-		<file>dflowfmWrapper.xml</file>
-	</wrapperConfig>
+                     xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+    <!-- Specify wrapper configuration for which this model is defined -->
+    <wrapperConfig>
+        <file>dflowfmWrapper.xml</file>
+    </wrapperConfig>
 
-	<!-- Specify wrapper configuration for which this model is defined -->
-	<aliasValues>
-		<alias key="exedir" value="./bin"/> 
-		<alias key="instanceDir" value="./work"/>
-		<alias key="templateDir" value="./input_dflowfm"/>
-		<alias key="runid" value="dcsmv5"/>
-		<alias key="outputdir" value="DFM_OUTPUT_dcsmv5"/>
-		<alias key="mdufile" value="dcsmv5.mdu"/>
-		<alias key="hisfile" value="dcsmv5_his.nc"/>
-		<alias key="mapfile" value="dcsmv5_map.nc"/>
-		<alias key="meteofile" value="dcsmv5_windx_noise.amu"/>
-		<alias key="openda_bindir" value="../../../../bin"/>
-	</aliasValues>
+    <!-- Specify wrapper configuration for which this model is defined -->
+    <aliasValues>
+        <alias key="exedir" value="./bin"/> 
+        <alias key="instanceDir" value="./work"/>
+        <alias key="templateDir" value="./input_dflowfm"/>
+        <alias key="runid" value="dcsmv5"/>
+        <alias key="outputdir" value="DFM_OUTPUT_dcsmv5"/>
+        <alias key="mdufile" value="dcsmv5.mdu"/>
+        <alias key="hisfile" value="dcsmv5_his.nc"/>
+        <alias key="mapfile" value="dcsmv5_map.nc"/>
+        <alias key="meteofile" value="dcsmv5_windx_noise.amu"/>
+    </aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>
 
@@ -33,16 +32,16 @@
         <vector id="ucy" ioObjectId="mapfile" elementId="ucy"/>
         <vector id="u0" ioObjectId="mapfile" elementId="u0"/>
         <vector id="WICK.waterlevel"     ioObjectId="hisfile" elementId="WICK.waterlevel"     />
-		<vector id="NORTHSS.waterlevel"  ioObjectId="hisfile" elementId="NORTHSS.waterlevel"  />
-		<vector id="LOWST.waterlevel"    ioObjectId="hisfile" elementId="LOWST.waterlevel"    />
-		<vector id="SHEERNS.waterlevel"  ioObjectId="hisfile" elementId="SHEERNS.waterlevel"  />
-		<vector id="DOVR.waterlevel"     ioObjectId="hisfile" elementId="DOVR.waterlevel"     />
-		<vector id="VLISSGN.waterlevel"  ioObjectId="hisfile" elementId="VLISSGN.waterlevel"  />
-		<vector id="HOEKVHLD.waterlevel" ioObjectId="hisfile" elementId="HOEKVHLD.waterlevel" />
-		<vector id="DENHDR.waterlevel"   ioObjectId="hisfile" elementId="DENHDR.waterlevel"   />
+        <vector id="NORTHSS.waterlevel"  ioObjectId="hisfile" elementId="NORTHSS.waterlevel"  />
+        <vector id="LOWST.waterlevel"    ioObjectId="hisfile" elementId="LOWST.waterlevel"    />
+        <vector id="SHEERNS.waterlevel"  ioObjectId="hisfile" elementId="SHEERNS.waterlevel"  />
+        <vector id="DOVR.waterlevel"     ioObjectId="hisfile" elementId="DOVR.waterlevel"     />
+        <vector id="VLISSGN.waterlevel"  ioObjectId="hisfile" elementId="VLISSGN.waterlevel"  />
+        <vector id="HOEKVHLD.waterlevel" ioObjectId="hisfile" elementId="HOEKVHLD.waterlevel" />
+        <vector id="DENHDR.waterlevel"   ioObjectId="hisfile" elementId="DENHDR.waterlevel"   />
         <vector id="x_wind" ioObjectId="meteofile" elementId="x_wind"/>
     </exchangeItems>
 
-<doCleanUp>false</doCleanUp>
+    <doCleanUp>false</doCleanUp>
 
 </blackBoxModelConfig>

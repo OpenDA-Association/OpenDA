@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
     <modelConfig>
         <file>./dflowfmModel.xml</file>
     </modelConfig>
@@ -13,8 +13,8 @@
                     </exchangeItem>
                 </exchangeItems>
             </noiseModel>
-            <vector id="s1" ioObjectId="mapfile" elementId="s1" />
-            <vector id="unorm" ioObjectId="mapfile" elementId="unorm"/>
+            <vector id="s1"/>
+            <vector id="unorm"/>
         </state>
         <predictor>
             <vector id="S1.waterlevel"/>
