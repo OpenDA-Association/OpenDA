@@ -215,6 +215,16 @@
 	        </junit>
 	    </target>
 
+	<target name="validate-xml" >
+		<schemavalidate failonerror="false">
+			<fileset dir="tests">
+				<patternset id="validate-xml-tests">
+					<include name="**/*.xml"/>
+					<include name="**/*.oda"/>
+				</patternset>
+			</fileset>
+		</schemavalidate>
+	</target>
 
 </project>
 

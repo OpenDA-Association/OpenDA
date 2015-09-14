@@ -245,6 +245,9 @@
 	    </sequential>
     </macrodef>
 
+
+
+
 	<taskdef resource="org/tigris/subversion/svnant/svnantlib.xml">
 		<classpath>
 			<fileset dir="core/java/resources/svnant-1.3.0/lib" includes="**/*.jar" />
@@ -618,5 +621,18 @@
     	         <arg value="Xvfb"/>
     	</exec>
    </target>
+
+   <target name="validate-xml">
+       <validatexmlmodule module="model_dflowfm_blackbox"/>
+   </target>
+
+    <macrodef name="validatexmlmodule">
+        <attribute name="module" default="NOT SET"/>
+        <sequential>
+            <echo>validate xml for module @{module}</echo>
+            <ant antfile="build.xml" dir="@{module}" target="validate-xml" inheritAll="false" />
+        </sequential>
+    </macrodef>
+
 </project>
 
