@@ -23,7 +23,6 @@ package org.openda.model_efdc_dll;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,10 +45,7 @@ import org.openda.utils.Results;
 
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
-import ucar.nc2.Dimension;
-import ucar.nc2.NetcdfFileWriteable;
-import ucar.nc2.Variable;
+import ucar.nc2.*;
 
 /**
  * DataObject for data that is stored in a netcdf file.
@@ -67,11 +63,9 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
 
 	private Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap = new LinkedHashMap<ITimeInfo, Dimension>();
-	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap =
-			new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
+	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
 	private int[] uniqueTimeVariableCount = new int[]{0};
-	private int[] uniqueFaceDimensionCount = new int[]{0};
-	private int[] uniqueLatLonDimensionCount = new int[]{0};
+	private int[] uniqueGeometryCount = new int[]{0};
 
 	/**
 	 * Default is false for backwards compatibility.
@@ -139,7 +133,7 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 			}
 			//always create large file, in case much data needs to be written.
 			this.netcdfFile.setLargeFile(true);
-			addGlobalAttributes(this.netcdfFile);
+			NetcdfUtils.addGlobalAttributes(this.netcdfFile);
 		}
 	}
 
@@ -320,7 +314,7 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 
 		//create metadata for the given exchangeItem.
 		NetcdfUtils.createMetadata(this.netcdfFile, newItem, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
-				this.geometryInfoGridVariablePropertiesMap, this.uniqueFaceDimensionCount, this.uniqueLatLonDimensionCount);
+				this.geometryInfoGridVariablePropertiesMap, this.uniqueGeometryCount);
 	}
 
 	/**
@@ -391,15 +385,6 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 		}
 	}
 
-	private static void addGlobalAttributes(NetcdfFileWriteable netcdfFile) {
-		netcdfFile.addGlobalAttribute("title", "Netcdf data");
-		netcdfFile.addGlobalAttribute("institution", "Deltares");
-		netcdfFile.addGlobalAttribute("source", "written by OpenDA");
-		netcdfFile.addGlobalAttribute("history", "Created at " + new Date(System.currentTimeMillis()));
-		netcdfFile.addGlobalAttribute("references", "http://www.openda.org");
-		netcdfFile.addGlobalAttribute("Conventions", "CF-1.6");
-	}
-
 	/**
 	 * Writes all data for the given exchangeItems to the given netcdfFile.
 	 *
@@ -460,22 +445,13 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 		}
 	}
 
-	private Variable getVariableForExchangeItem(IExchangeItem item) {
-		Variable variable = this.netcdfFile.findVariable(item.getQuantityInfo().getQuantity());
-		if (variable == null) {
-			throw new IllegalStateException(getClass().getSimpleName() + ": Cannot find variable for exchangeItem with id '"
-					+ item.getId() + "' in netcdf file " + this.file.getAbsolutePath());
-		}
-		return variable;
-	}
-
 	public double[] readDataForExchangeItemForSingleLocation(IExchangeItem item, int stationDimensionIndex, int stationIndex) {
-		Variable variable = getVariableForExchangeItem(item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		return NetcdfUtils.readDataForVariableForSingleLocation(variable, stationDimensionIndex, stationIndex);
 	}
 
 	public void writeDataForExchangeItemForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex, double[] values) {
-		Variable variable = getVariableForExchangeItem(item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		makeSureFileHasBeenCreated();
 		NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFile, variable, timeDimensionIndex, timeIndex, values);
 	}

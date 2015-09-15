@@ -26,11 +26,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.IrregularGridGeometryInfo;
@@ -678,7 +674,7 @@ public class NetcdfUtils {
         writeSelectedData(netcdfFile, variable, origin, sizeArray, values);
     }
 
-    private static void writeSelectedData(NetcdfFileWriteable netcdfFile, Variable variable, int[] origin, int[] sizeArray, double[] values) {
+    public static void writeSelectedData(NetcdfFileWriteable netcdfFile, Variable variable, int[] origin, int[] sizeArray, double[] values) {
 		//replace NaN values with missing value for variable.
 		double missingValue = getMissingValueDouble(variable);
 		if (!Double.isNaN(missingValue)) {
@@ -700,10 +696,7 @@ public class NetcdfUtils {
 		//write data.
 		try {
 			netcdfFile.write(variable.getName(), origin, array);
-		} catch (IOException e) {
-			throw new RuntimeException("Error while writing data to netcdf variable '" + variable.getName()
-					+ "' in netcdf file " + netcdfFile.getLocation() + ". Message was: " + e.getMessage(), e);
-		} catch (InvalidRangeException e) {
+		} catch (IOException | InvalidRangeException e) {
 			throw new RuntimeException("Error while writing data to netcdf variable '" + variable.getName()
 					+ "' in netcdf file " + netcdfFile.getLocation() + ". Message was: " + e.getMessage(), e);
 		}
@@ -855,6 +848,35 @@ public class NetcdfUtils {
 		}
 	}
 
+	public static Variable getVariableForExchangeItem(NetcdfFile netcdfFile, IExchangeItem item) {
+		String variableName = getVariableName(item);
+		Variable variable = netcdfFile.findVariable(variableName);
+		if (variable == null) {
+			throw new IllegalStateException("Cannot find variable '" + variableName + "' for exchangeItem with id '" + item.getId() + "' in netcdf file " + netcdfFile.getLocation());
+		}
+		return variable;
+	}
+
+	private static String getVariableName(IExchangeItem item) {
+		IQuantityInfo quantityInfo = item.getQuantityInfo();
+		if (quantityInfo == null) {
+			throw new RuntimeException(NetcdfUtils.class.getSimpleName() + ": Can only write data for exchangeItems that contain a valid IQuantityInfo object.");
+		}
+		return quantityInfo.getQuantity();
+	}
+
+	private static DataType getDataType(IExchangeItem.ValueType valueType) {
+		switch (valueType) {
+			case doubles2dType: case doublesType: case doubleType: case floatsType: case intType: case IArrayType: case IVectorType:
+				//currently only double values are used in OpenDA, so always write numerical values as doubles for simplicity.
+				return DataType.DOUBLE;
+			case StringType:
+				return DataType.STRING;
+			default:
+				throw new IllegalArgumentException("Unknown values type " + valueType);
+		}
+	}
+
 	/**
 	 * Creates metadata for the given exchangeItem in the given netcdfFile, if not present yet.
 	 *
@@ -863,43 +885,17 @@ public class NetcdfUtils {
 	 * @param timeInfoTimeDimensionMap
 	 * @param uniqueTimeVariableCount
 	 * @param geometryInfoGridVariablePropertiesMap
-	 * @param uniqueFaceDimensionCount
+	 * @param uniqueGeometryCount
 	 */
 	public static void createMetadata(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem,
 			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int[] uniqueTimeVariableCount,
-			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap,
-			int[] uniqueFaceDimensionCount, int[] uniqueLatLonDimensionCount) {
-
-		ArrayList<Dimension> variableDimensions = new ArrayList<Dimension>();
+			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, int[] uniqueGeometryCount) {
 
 		//create time coordinate variable, if not present yet.
+		Dimension timeDimension = null;
 		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
 		if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-			Dimension timeDimension = timeInfoTimeDimensionMap.get(timeInfo);
-
-			if (timeDimension == null) {//if timeVariable with correct times not yet present.
-				//for each unique timeDimension use a unique numbered variable name, like e.g.
-				//time, time2, time3, etc.
-				uniqueTimeVariableCount[0]++;
-				String postfix = uniqueTimeVariableCount[0] <= 1 ? "" : String.valueOf(uniqueTimeVariableCount[0]);
-				String timeVariableName = TIME_VARIABLE_NAME + postfix;
-
-				//create time dimension and variable.
-				int timeCount = timeInfo.getTimes().length;
-				timeDimension = netcdfFile.addDimension(timeVariableName, timeCount);
-				netcdfFile.addVariable(timeVariableName, DataType.DOUBLE, new Dimension[]{timeDimension});
-				netcdfFile.addVariableAttribute(timeVariableName, STANDARD_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME);
-				netcdfFile.addVariableAttribute(timeVariableName, LONG_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME);
-				netcdfFile.addVariableAttribute(timeVariableName, UNITS_ATTRIBUTE_NAME, createTimeUnitString());
-				//use default calendar.
-				netcdfFile.addVariableAttribute(timeVariableName, CALENDAR_ATTRIBUTE_NAME, DEFAULT_CALENDAR_ATTRIBUTE_VALUE);
-				netcdfFile.addVariableAttribute(timeVariableName, AXIS_ATTRIBUTE_NAME, T_AXIS);
-
-				//put timeDimension in map so that it can be re-used later by other variables in the same file.
-				timeInfoTimeDimensionMap.put(timeInfo, timeDimension);
-			}
-
-			variableDimensions.add(timeDimension);
+			timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
 		}
 
 		//create spatial coordinate variables, if not present yet.
@@ -907,67 +903,132 @@ public class NetcdfUtils {
 		//because the coordinates are usually not available in exchangeItems that come from models.
 		IGeometryInfo geometryInfo = exchangeItem.getGeometryInfo();
 		if (geometryInfo != null) {//if variable depends on space.
-			GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(geometryInfo);
+			createGridVariables(netcdfFile, geometryInfo, uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
+		}
+
+		//create data variable.
+		createDataVariable(netcdfFile, exchangeItem, timeDimension, geometryInfoGridVariablePropertiesMap);
+	}
+
+	private static Dimension createTimeVariable(NetcdfFileWriteable netcdfFile, ITimeInfo timeInfo, int[] uniqueTimeVariableCount, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap) {
+		Dimension timeDimension = timeInfoTimeDimensionMap.get(timeInfo);
+
+		if (timeDimension == null) {//if timeVariable with correct times not yet present.
+			//create time dimension and variable.
+			//for each unique timeDimension use a unique numbered variable name, like e.g.
+			//time, time2, time3, etc.
+			uniqueTimeVariableCount[0]++;
+			String postfix = uniqueTimeVariableCount[0] <= 1 ? "" : String.valueOf(uniqueTimeVariableCount[0]);
+			String timeVariableName = TIME_VARIABLE_NAME + postfix;
+			int timeCount = timeInfo.getTimes().length;
+			timeDimension = createTimeVariable(netcdfFile, timeVariableName, timeCount, NetcdfUtils.createTimeUnitString());
+
+			//put timeDimension in map so that it can be re-used later by other variables in the same file.
+			timeInfoTimeDimensionMap.put(timeInfo, timeDimension);
+		}
+
+		return timeDimension;
+	}
+
+	/**
+	 * Creates a time dimension and variable.
+	 *
+	 * @param dataFile
+	 * @param timeCount      if timeCount is -1, then creates an unlimited timeDimension
+	 * @param timeUnitString
+	 * @return timeDimension
+	 */
+	public static Dimension createTimeVariable(NetcdfFileWriteable dataFile, String timeVariableName, int timeCount, String timeUnitString) {
+		//create time dimension.
+		Dimension timeDimension;
+		if (timeCount == -1 || timeCount == 0) {
+			timeDimension = dataFile.addUnlimitedDimension(timeVariableName);
+		} else {
+			timeDimension = dataFile.addDimension(timeVariableName, timeCount);
+		}
+
+		//create time variable.
+		dataFile.addVariable(timeVariableName, DataType.DOUBLE, new Dimension[]{timeDimension});
+		dataFile.addVariableAttribute(timeVariableName, STANDARD_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME);
+		dataFile.addVariableAttribute(timeVariableName, LONG_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME);
+		dataFile.addVariableAttribute(timeVariableName, UNITS_ATTRIBUTE_NAME, timeUnitString);
+		//use default calendar.
+		dataFile.addVariableAttribute(timeVariableName, CALENDAR_ATTRIBUTE_NAME, DEFAULT_CALENDAR_ATTRIBUTE_VALUE);
+		dataFile.addVariableAttribute(timeVariableName, AXIS_ATTRIBUTE_NAME, T_AXIS);
+		return timeDimension;
+	}
+
+	/**
+	 * For each unique geometryInfo in the given geometryInfos creates unique grid variables in the given netcdfFile
+	 * and stores the properties of the created grid variables in the returned geometryGridVariablePropertiesMap.
+	 * These properties are used later in the method NetcdfUtils.createDataVariables.
+	 *
+	 * @param netcdfFile
+	 * @param geometryInfos
+	 * @return geometryGridVariablePropertiesMap
+	 */
+	public static Map<IGeometryInfo, GridVariableProperties> createGridVariables(NetcdfFileWriteable netcdfFile, IGeometryInfo[] geometryInfos) {
+		Map<IGeometryInfo, GridVariableProperties> geometryGridVariablePropertiesMap = new LinkedHashMap<>();
+
+		int[] uniqueGeometryCount = new int[]{0};
+		for (IGeometryInfo geometryInfo : geometryInfos) {
+			if (geometryInfo == null) {
+				//if no data.
+				continue;
+			}
+
+			createGridVariables(netcdfFile, geometryInfo, uniqueGeometryCount, geometryGridVariablePropertiesMap);
+		}
+
+		return geometryGridVariablePropertiesMap;
+	}
+
+	private static void createGridVariables(NetcdfFileWriteable netcdfFile, IGeometryInfo geometryInfo, int[] uniqueGeometryCount,
+			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+
+		GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(geometryInfo);
+
+		if (gridVariableProperties == null) {//if spatial dimensions not yet present.
+			//for each unique set of dimensions use a unique numbered variable name, like e.g.
+			//lat, lon; lat2, lon2; lat3, lon3; etc.
+			uniqueGeometryCount[0]++;
+			String postfix = uniqueGeometryCount[0] <= 1 ? "" : String.valueOf(uniqueGeometryCount[0]);
 
 			if (geometryInfo instanceof IrregularGridGeometryInfo) {
-				Dimension faceDimension;
-				if (gridVariableProperties != null) {
-					faceDimension = gridVariableProperties.getDimensions().get(0);
-
-				} else {//if face dimension not yet present.
-					//for each unique faceDimension use a unique numbered variable name, like e.g.
-					//face, face2, face3, etc.
-					uniqueFaceDimensionCount[0]++;
-					String postfix = uniqueFaceDimensionCount[0] <= 1 ? "" : String.valueOf(uniqueFaceDimensionCount[0]);
-					String faceDimensionName = FACE_DIMENSION_NAME + postfix;
-					
-					//create face dimension.
-					int gridCellCount = ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
-					faceDimension = netcdfFile.addDimension(faceDimensionName, gridCellCount);
-					
-					//put timeDimension in map so that it can be re-used later by other variables in the same file.
-					gridVariableProperties = new GridVariableProperties();
-					gridVariableProperties.setDimensions(Arrays.asList(new Dimension[]{faceDimension}));
-					geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
-				}
-				variableDimensions.add(faceDimension);
+				String faceDimensionName = FACE_DIMENSION_NAME + postfix;
+				
+				//create face dimension.
+				int gridCellCount = ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
+				Dimension faceDimension = netcdfFile.addDimension(faceDimensionName, gridCellCount);
+				
+				//put faceDimension in map so that it can be re-used later by other variables in the same file.
+				gridVariableProperties = new GridVariableProperties();
+				gridVariableProperties.setDimensions(Arrays.asList(faceDimension));
+				geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
 
 			} else if (geometryInfo instanceof ArrayGeometryInfo) {
-				List<Dimension> dimensions;
-				if (gridVariableProperties != null) {
-					dimensions = gridVariableProperties.getDimensions();
+				String yDimensionName = Y_VARIABLE_NAME + postfix;
+				String xDimensionName = X_VARIABLE_NAME + postfix;
 
-				} else {//if lat,lon dimensions not yet present.
-					//for each unique set of dimensions use a unique numbered variable name, like e.g.
-					//lat, lon; lat2, lon2; lat3, lon3; etc.
-					uniqueLatLonDimensionCount[0]++;
-					String postfix = uniqueLatLonDimensionCount[0] <= 1 ? "" : String.valueOf(uniqueLatLonDimensionCount[0]);
-					String yDimensionName = Y_VARIABLE_NAME + postfix;
-					String xDimensionName = X_VARIABLE_NAME + postfix;
+				//create y,x dimensions.
+				int rowCount = ((ArrayGeometryInfo) geometryInfo).getLatitudeArray().length();
+				int columnCount = ((ArrayGeometryInfo) geometryInfo).getLongitudeArray().length();
+				Dimension yDimension = netcdfFile.addDimension(yDimensionName, rowCount);
+				Dimension xDimension = netcdfFile.addDimension(xDimensionName, columnCount);
 
-					//create y,x dimensions.
-					int rowCount = ((ArrayGeometryInfo) geometryInfo).getLatitudeArray().length();
-					int columnCount = ((ArrayGeometryInfo) geometryInfo).getLongitudeArray().length();
-					Dimension yDimension = netcdfFile.addDimension(yDimensionName, rowCount);
-					Dimension xDimension = netcdfFile.addDimension(xDimensionName, columnCount);
-					dimensions = Arrays.asList(new Dimension[]{yDimension, xDimension});
+				//put dimensions in map so that these can be re-used later by other variables in the same file.
+				gridVariableProperties = new GridVariableProperties();
+				gridVariableProperties.setDimensions(Arrays.asList(yDimension, xDimension));
+				geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
 
-					//put dimensions in map so that these can be re-used later by other variables in the same file.
-					gridVariableProperties = new GridVariableProperties();
-					gridVariableProperties.setDimensions(dimensions);
-					geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
+				IQuantityInfo yQuantityInfo = ((ArrayGeometryInfo) geometryInfo).getLatitudeQuantityInfo();
+				IQuantityInfo xQuantityInfo = ((ArrayGeometryInfo) geometryInfo).getLongitudeQuantityInfo();
+				if (yQuantityInfo != null && xQuantityInfo != null) {
+					//create x and y variables.
+					createYX1DVariables(netcdfFile, yDimension, xDimension, PROJECTION_Y_COORDINATE, PROJECTION_X_COORDINATE,
+							yQuantityInfo.getQuantity(), xQuantityInfo.getQuantity(), yQuantityInfo.getUnit(), xQuantityInfo.getUnit(), gridVariableProperties);
 
-					IQuantityInfo yQuantityInfo = ((ArrayGeometryInfo) geometryInfo).getLatitudeQuantityInfo();
-					IQuantityInfo xQuantityInfo = ((ArrayGeometryInfo) geometryInfo).getLongitudeQuantityInfo();
-					if (yQuantityInfo != null && xQuantityInfo != null) {
-						//create x and y variables.
-						createYX1DVariables(netcdfFile, yDimension, xDimension,
-								PROJECTION_Y_COORDINATE, PROJECTION_X_COORDINATE,
-								yQuantityInfo.getQuantity(), xQuantityInfo.getQuantity(),
-								yQuantityInfo.getUnit(), xQuantityInfo.getUnit(),
-								gridVariableProperties);
-
-						//TODO add grid mapping variable. This requires information about the coordinate system used for the grid. AK
+					//TODO add grid mapping variable. This requires information about the coordinate system used for the grid. AK
 //						//create grid mapping variable.
 //						String gridMappingVariableName = GRID_MAPPING_VARIABLE_NAME + postfix;
 //						gridVariableProperties.setGridMappingVariableName(gridMappingVariableName);
@@ -983,42 +1044,47 @@ public class NetcdfUtils {
 //
 //							//do nothing.
 //						}
-					}
 				}
-				variableDimensions.addAll(dimensions);
 
 			} else {
-				//TODO implement for other grid geometries. AK
+				throw new RuntimeException("Unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
 			}
 		}
+	}
 
-		//create data variable.
-            IQuantityInfo quantityInfo = exchangeItem.getQuantityInfo();
-            if (quantityInfo == null) {
-                throw new RuntimeException(NetcdfUtils.class.getSimpleName()
-                        + ": can only write data for exchangeItems that contain a valid IQuantityInfo object.");
-            }
-            String dataVariableName = quantityInfo.getQuantity();
-            DataType dataType;
-            switch (exchangeItem.getValuesType()) {
-                case doubles2dType: case doublesType: case doubleType: case floatsType: case intType: case IArrayType: case IVectorType:
-                    //currently only double values are used in OpenDA, so always write numerical values as doubles for simplicity.
-                    dataType = DataType.DOUBLE;
-                    break;
-                case StringType:
-                    dataType = DataType.STRING;
-                    break;
-			default:
-				throw new IllegalArgumentException("Unknown values type " + exchangeItem.getValuesType());
+	public static void createDataVariables(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems, Dimension timeDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+		for (IExchangeItem item : exchangeItems) {
+			String variableName = getVariableName(item);
+			if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
+				//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
+				continue;
+			}
+
+			//if variable does not exist yet.
+			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, geometryInfoGridVariablePropertiesMap);
 		}
-		netcdfFile.addVariable(dataVariableName, dataType, variableDimensions);
+	}
+
+	private static void createDataVariable(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem, Dimension timeDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+		List<Dimension> dimensions = new ArrayList<Dimension>();
+		if (timeDimension != null) {
+			dimensions.add(timeDimension);
+		}
+		GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(exchangeItem.getGeometryInfo());
+		if (gridVariableProperties != null) {
+			dimensions.addAll(gridVariableProperties.getDimensions());
+		}
+
+		DataType dataType = getDataType(exchangeItem.getValuesType());
+		String variableName = getVariableName(exchangeItem);
+		netcdfFile.addVariable(variableName, dataType, dimensions);
 		//at this point standard_name of data is unknown, so cannot add the optional standard_name attribute here.
-		netcdfFile.addVariableAttribute(dataVariableName, LONG_NAME_ATTRIBUTE_NAME, dataVariableName);
-		netcdfFile.addVariableAttribute(dataVariableName, UNITS_ATTRIBUTE_NAME, quantityInfo.getUnit());
-		netcdfFile.addVariableAttribute(dataVariableName, FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE);
+		netcdfFile.addVariableAttribute(variableName, LONG_NAME_ATTRIBUTE_NAME, variableName);
+		netcdfFile.addVariableAttribute(variableName, UNITS_ATTRIBUTE_NAME, exchangeItem.getQuantityInfo().getUnit());
+		netcdfFile.addVariableAttribute(variableName, FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE);
+
 		//TODO add grid mapping attribute. AK
-//		if (geometryInfo != null) {
-//			GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(geometryInfo);
+//		if (gridVariableProperties != null) {
 //			String gridMappingVariableName = gridVariableProperties.getGridMappingVariableName();
 //			if (gridMappingVariableName != null) {
 //				netcdfFile.addVariableAttribute(dataVariableName, GRID_MAPPING_ATTRIBUTE, gridMappingVariableName);
@@ -1046,31 +1112,7 @@ public class NetcdfUtils {
         //assume that all exchangeItems have identical time records.
         ITimeInfo timeInfo = exchangeItems[0].getTimeInfo();
         if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-            Dimension timeDimension = timeInfoTimeDimensionMap.get(timeInfo);
-
-            if (timeDimension == null) {//if timeVariable with correct times not yet present.
-                //for each unique timeDimension use a unique numbered variable name, like e.g.
-                //time, time2, time3, etc.
-                uniqueTimeVariableCount[0]++;
-                String postfix = uniqueTimeVariableCount[0] <= 1 ? "" : String.valueOf(uniqueTimeVariableCount[0]);
-                String timeVariableName = TIME_VARIABLE_NAME + postfix;
-
-                //create time dimension and variable.
-                int timeCount = timeInfo.getTimes().length;
-                timeDimension = netcdfFile.addDimension(timeVariableName, timeCount);
-                netcdfFile.addVariable(timeVariableName, DataType.DOUBLE, new Dimension[]{timeDimension});
-                netcdfFile.addVariableAttribute(timeVariableName, STANDARD_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME);
-                netcdfFile.addVariableAttribute(timeVariableName, LONG_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME);
-                netcdfFile.addVariableAttribute(timeVariableName, UNITS_ATTRIBUTE_NAME, createTimeUnitString());
-                //use default calendar.
-                netcdfFile.addVariableAttribute(timeVariableName, CALENDAR_ATTRIBUTE_NAME, DEFAULT_CALENDAR_ATTRIBUTE_VALUE);
-                netcdfFile.addVariableAttribute(timeVariableName, AXIS_ATTRIBUTE_NAME, T_AXIS);
-
-                //put timeDimension in map so that it can be re-used later by other variables in the same file.
-                timeInfoTimeDimensionMap.put(timeInfo, timeDimension);
-            }
-
-            variableDimensions.add(timeDimension);
+			variableDimensions.add(createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap));
         }
 
         //create dimension char_leng_id
@@ -1250,6 +1292,18 @@ public class NetcdfUtils {
 		}
 	}
 
+	public static void writeTimeVariableSingleValue(NetcdfFileWriteable netcdfFile, Variable timeVariable, int timeIndex, double time) throws Exception {
+		String timeUnitString = timeVariable.findAttribute(UNITS_ATTRIBUTE_NAME).getStringValue();
+		DateUnit dateUnit = new DateUnit(timeUnitString);
+
+		double newTime = dateUnit.makeValue(new Date(Time.mjdToMillies(time)));
+		ArrayDouble.D1 timeArray = new ArrayDouble.D1(1);
+		timeArray.set(0, newTime);
+
+		int[] origin = new int[]{timeIndex};
+		netcdfFile.write(timeVariable.getName(), origin, timeArray);
+	}
+
 	/**
 	 * Write values for all grid variables that are present.
 	 *
@@ -1407,4 +1461,35 @@ public class NetcdfUtils {
 
         return true;
     }
+
+	public static void addGlobalAttributes(NetcdfFileWriteable netcdfFile) {
+		netcdfFile.addGlobalAttribute("title", "Netcdf data");
+		netcdfFile.addGlobalAttribute("institution", "Deltares");
+		netcdfFile.addGlobalAttribute("source", "written by OpenDA");
+		netcdfFile.addGlobalAttribute("history", "Created at " + new Date(System.currentTimeMillis()));
+		netcdfFile.addGlobalAttribute("references", "http://www.openda.org");
+		netcdfFile.addGlobalAttribute("Conventions", "CF-1.6");
+	}
+
+	public static double[] addMissingValuesForNonActiveGridCells(IGeometryInfo geometryInfo, double[] values) {
+		if (geometryInfo == null || !(geometryInfo instanceof ArrayGeometryInfo)) {
+			return values;
+		}
+
+		int[] mask = ((ArrayGeometryInfo) geometryInfo).getActiveCellMask();
+		if (mask == null || values.length == mask.length) {//if all cells are active.
+			return values;
+		}
+
+		double[] allValues = new double[mask.length];
+		int index = 0;
+		for (int n = 0; n < allValues.length; n++) {
+			if (mask[n] != 0) {
+				allValues[n] = values[index++];
+			} else {//if mask[n] is 0
+				allValues[n] = Double.NaN;
+			}
+		}
+		return allValues;
+	}
 }

@@ -22,6 +22,7 @@ package org.openda.exchange.dataobjects;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.*;
 
 import org.openda.exchange.*;
@@ -130,11 +131,9 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 
 	private Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap = new LinkedHashMap<ITimeInfo, Dimension>();
     private List<String> stationIdList = new ArrayList<String>();
-	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap =
-			new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
+	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
 	private int[] uniqueTimeVariableCount = new int[]{0};
-	private int[] uniqueFaceDimensionCount = new int[]{0};
-	private int[] uniqueLatLonDimensionCount = new int[]{0};
+	private int[] uniqueGeometryCount = new int[]{0};
 
 	/**
 	 * Corner at which the grid values in the model start.
@@ -223,7 +222,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 			}
 			//always create large file, in case much data needs to be written.
 			this.netcdfFile.setLargeFile(true);
-			addGlobalAttributes(this.netcdfFile);
+			NetcdfUtils.addGlobalAttributes(this.netcdfFile);
 		}
 	}
 
@@ -443,7 +442,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 
 		//create metadata for the given exchangeItem.
 		NetcdfUtils.createMetadata(this.netcdfFile, newItem, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
-				this.geometryInfoGridVariablePropertiesMap, this.uniqueFaceDimensionCount, this.uniqueLatLonDimensionCount);
+				this.geometryInfoGridVariablePropertiesMap, this.uniqueGeometryCount);
 	}
 
     public void addScalarExchangeItems(IExchangeItem[] items) {
@@ -530,15 +529,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 						+ "'. Message was: " + e.getMessage(), e);
 			}
 		}
-	}
-
-	private static void addGlobalAttributes(NetcdfFileWriteable netcdfFile) {
-		netcdfFile.addGlobalAttribute("title", "Netcdf data");
-		netcdfFile.addGlobalAttribute("institution", "Deltares");
-		netcdfFile.addGlobalAttribute("source", "written by OpenDA");
-		netcdfFile.addGlobalAttribute("history", "Created at " + new Date(System.currentTimeMillis()));
-		netcdfFile.addGlobalAttribute("references", "http://www.openda.org");
-		netcdfFile.addGlobalAttribute("Conventions", "CF-1.6");
 	}
 
 	/**
@@ -631,47 +621,38 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		}
 	}
 
-	private Variable getVariableForExchangeItem(IExchangeItem item) {
-		Variable variable = this.netcdfFile.findVariable(item.getQuantityInfo().getQuantity());
-		if (variable == null) {
-			throw new IllegalStateException(getClass().getSimpleName() + ": Cannot find variable for exchangeItem with id '"
-					+ item.getId() + "' in netcdf file " + this.file.getAbsolutePath());
-		}
-		return variable;
-	}
-
 	public double[] readDataForExchangeItemForSingleLocation(IExchangeItem item, int stationDimensionIndex, int stationIndex) {
-		Variable variable = getVariableForExchangeItem(item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		return NetcdfUtils.readDataForVariableForSingleLocation(variable, stationDimensionIndex, stationIndex);
 	}
 
 	public double[] readDataForExchangeItemForSingleLocationAndRealization(IExchangeItem item, int stationDimensionIndex, int stationIndex, int realizationDimensionIndex, int realizationIndex) {
-		Variable variable = getVariableForExchangeItem(item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		return NetcdfUtils.readDataForVariableForSingleLocationAndRealization(variable, stationDimensionIndex, stationIndex, realizationDimensionIndex, realizationIndex);
 	}
 
 	public double[] readDataForExchangeItemFor2DGridForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex,
 			int dimensionIndexToFlip) {
-		Variable variable = getVariableForExchangeItem(item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		return NetcdfUtils.readDataForVariableFor2DGridForSingleTime(variable, timeDimensionIndex, timeIndex,
 				dimensionIndexToFlip);
 	}
 
 	public double[] readDataForExchangeItemFor2DGridForSingleTimeAndRealization(
 			IExchangeItem item, int realizationDimensionIndex, int realizationIndex, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip) {
-		Variable variable = getVariableForExchangeItem(item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		return NetcdfUtils.readDataForVariableFor2DGridForSingleTimeAndRealization(variable, realizationDimensionIndex, realizationIndex, timeDimensionIndex, timeIndex,
 				dimensionIndexToFlip);
 	}
 
     public void writeDataForExchangeItemForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex, double[] values) {
-        Variable variable = getVariableForExchangeItem(item);
+        Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         makeSureFileHasBeenCreated();
         NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFile, variable, timeDimensionIndex, timeIndex, values);
     }
 
     public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationIndex, double[] values) {
-        Variable variable = getVariableForExchangeItem(item);
+        Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         makeSureFileHasBeenCreated();
         NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFile, variable, timeIndex, stationIndex, values);
     }

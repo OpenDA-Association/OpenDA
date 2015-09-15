@@ -21,6 +21,7 @@
 package org.openda.exchange;
 
 import org.openda.exchange.dataobjects.NetcdfDataObject;
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 
@@ -226,21 +227,7 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 
         //add missing values for non-active grid cells.
         IGeometryInfo sourceGeometryInfo = sourceItem.getGeometryInfo();
-        if (sourceGeometryInfo != null && sourceGeometryInfo instanceof ArrayGeometryInfo) {
-            int[] mask = ((ArrayGeometryInfo) sourceGeometryInfo).getActiveCellMask();
-            if (mask != null && mask.length != valuesForSourceTime.length) {//if not all cells are active.
-                double[] allValues = new double[mask.length];
-                int index = 0;
-                for (int n = 0; n < allValues.length; n++) {
-                    if (mask[n] != 0) {
-                        allValues[n] = valuesForSourceTime[index++];
-                    } else {//if mask[n] is 0
-                        allValues[n] = Double.NaN;
-                    }
-                }
-                valuesForSourceTime = allValues;
-            }
-        }
+		valuesForSourceTime = NetcdfUtils.addMissingValuesForNonActiveGridCells(sourceGeometryInfo, valuesForSourceTime);
 
         double sourceTime = sourceItem.getTimeInfo().getTimes()[0];
 		setValuesAsDoublesForSingleTime(sourceTime, valuesForSourceTime);
