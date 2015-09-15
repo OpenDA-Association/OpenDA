@@ -1,70 +1,78 @@
+/* MOD_V2.0
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openda.utils.io;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Some utlities to simplify input and output to/from files in java for small commom datasets,
- * such as:
- * - some lines given as String
- * @author verlaanm
- *
- */
 public class AsciiFileUtils {
-
 	/**
-	 * Read an ascii file into an ArrayList of Strings. The ArrayList avoids the difficulties associated with
-	 * the fact that the number of lines is unknown beforehand.
-	 * @param inFile file to read 
+	 * Reads the contents of the given ascii file.
+	 *
+	 * @param inputFile file to read
 	 * @return each line is put in a separate String
-	 * @throws IOException problems reading data from the file
-	 * @throws FileNotFoundException file can not be opened 
 	 */
-	public static ArrayList<String> readLines(File inFile) throws IOException, FileNotFoundException{
-		ArrayList<String> lines = new ArrayList<String>();
-		BufferedReader input;
-		input = new BufferedReader(new FileReader(inFile));
-		String line = input.readLine();
-		while(line!=null){
-			lines.add(line);
-			line=input.readLine();
+	public static List<String> readLines(File inputFile) {
+		List<String> lines = new ArrayList<String>();
+
+		try {
+			BufferedReader input = new BufferedReader(new FileReader(inputFile));
+			try {
+				String line = input.readLine();
+				while (line != null) {
+					lines.add(line);
+					line = input.readLine();
+				}
+			} finally {
+				input.close();
+			}
+		} catch (FileNotFoundException e){
+			throw new RuntimeException("Problem while opening file " + inputFile.getAbsolutePath() + " Message was " + e.getMessage(), e);
+		} catch (IOException e){
+			throw new RuntimeException("Problem while reading file " + inputFile.getAbsolutePath() + " Message was " + e.getMessage(), e);
 		}
-		input.close();
+
 		return lines;
 	}
-	
-	/**
-	 * Write a number of lines of text, given as Strings to an ascii file
-	 * @param outFile file to write to
-	 * @param lines content to write
-	 * @throws IOException problems with file IO
-	 */
-	public static void writeLines(File outFile, ArrayList<String> lines) throws IOException{
-		PrintWriter output = new PrintWriter(new FileWriter(outFile));
-		for(String line : lines){
-			output.println(line);
-		}
-		output.close();
-	}
-	
-	/**
-	 * Write a number of lines of text, given as Strings to an ascii file
-	 * @param outFile file to write to
-	 * @param lines content to write
-	 * @throws IOException problems with file IO
-	 */
-	public static void writeLines(File outFile, String[] lines) throws IOException{
-		PrintWriter output = new PrintWriter(new FileWriter(outFile));
-		for(String line : lines){
-			output.println(line);
-		}
-		output.close();
-	}
 
+	/**
+	 * Writes the given list with Strings to the given ascii file.
+	 *
+	 * @param outputFile file to write to
+	 * @param lines content to write, each String is written on a separate line
+	 */
+	public static void writeLines(File outputFile, List<String> lines) {
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+			try {
+				for (String line : lines) {
+					writer.write(line);
+					writer.newLine();
+				}
+			} finally {
+				writer.close();
+			}
+		} catch (IOException e){
+			throw new RuntimeException("Problem while writing file " + outputFile.getAbsolutePath() + " Message was " + e.getMessage(), e);
+		}
+	}
 }

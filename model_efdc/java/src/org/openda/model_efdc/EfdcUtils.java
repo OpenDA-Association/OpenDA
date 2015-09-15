@@ -20,13 +20,6 @@
 
 package org.openda.model_efdc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -34,55 +27,6 @@ import java.util.TimeZone;
  * @author Arno Kockx
  */
 public class EfdcUtils {
-
-    /**
-     * Read content of the given file and store it in a list with Strings.
-     *
-     * @param inputFile
-     * @return ArrayList<String>
-     */
-    public static ArrayList<String> readFile(File inputFile) {
-        ArrayList<String> content = new ArrayList<String>();
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-            try {
-                String line = reader.readLine();
-                while (line != null) {
-                    content.add(line);
-                    line = reader.readLine();
-                }
-            } finally {
-               reader.close();
-            }
-        } catch (IOException e){
-            throw new RuntimeException("Problem while reading file '" + inputFile.getAbsolutePath() + "'.", e);
-        }
-
-        return content;
-    }
-
-    /**
-     * Write the given list with Strings to the given file.
-     *
-     * @param outputFile
-     * @param content
-     */
-    public static void writeFile(File outputFile, ArrayList<String> content) {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-            try {
-                for (int n = 0; n < content.size(); n++) {
-                    writer.write(content.get(n));
-                    writer.newLine();
-                }
-            } finally {
-                writer.close();
-            }
-        } catch (IOException e){
-            throw new RuntimeException("Problem while writing file '" + outputFile.getAbsolutePath() + "'.", e);
-        }
-    }
 
     public static int getLocationIdNumber(EfdcTimeSeriesExchangeItem timeSeries) {
         try {

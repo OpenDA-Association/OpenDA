@@ -34,6 +34,7 @@ import org.openda.model_efdc.EfdcTimeSeriesExchangeItem;
 import org.openda.model_efdc.EfdcUtils;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * Formatter for EFDC ASER.INP file.
@@ -118,7 +119,7 @@ public class EfdcAserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
         }
 
         //read header.
-        List<String> lines = EfdcUtils.readFile(inputFile);
+        List<String> lines = AsciiFileUtils.readLines(inputFile);
         removeAndStoreFileHeader(lines);
 
         //read time series header parameters.

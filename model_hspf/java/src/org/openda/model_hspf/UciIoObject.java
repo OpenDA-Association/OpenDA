@@ -23,7 +23,7 @@ package org.openda.model_hspf;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -33,6 +33,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * The UCI (User Control Input) file for the HSPF (Hydrological Simulation Program - FORTRAN) model
@@ -153,7 +154,7 @@ public class UciIoObject implements IoObjectInterface {
         Results.putMessage(this.getClass().getSimpleName() + ": replacing tags in file " + this.uciFile.getAbsolutePath());
 
         //read file.
-        ArrayList<String> content = HspfUtils.readFile(uciFile);
+        List<String> content = AsciiFileUtils.readLines(uciFile);
 
         //get start and stop times.
         double startTime = (Double) this.startTimeExchangeItem.getValues();
@@ -182,7 +183,7 @@ public class UciIoObject implements IoObjectInterface {
         }
 
         //write file.
-        HspfUtils.writeFile(this.uciFile, content);
+        AsciiFileUtils.writeLines(this.uciFile, content);
     }
 
     /**

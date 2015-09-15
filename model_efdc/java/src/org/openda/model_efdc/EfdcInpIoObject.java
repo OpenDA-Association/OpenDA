@@ -21,8 +21,8 @@
 package org.openda.model_efdc;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
@@ -31,6 +31,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * The EFDC.INP control input file for the EFDC (Environmental Fluid Dynamics Code) model
@@ -122,7 +123,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
         double endTimeDouble = (Double) this.endTimeExchangeItem.getValues();
 
         //read file.
-        ArrayList<String> content = EfdcUtils.readFile(this.efdcInpFile);
+        List<String> content = AsciiFileUtils.readLines(this.efdcInpFile);
         double secondsPerTimeUnit = getSecondsPerTimeUnit(content);
         double secondsPerReferencePeriod = getSecondsPerReferencePeriod(content);
 
@@ -152,7 +153,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
         }
 
         //write file.
-        EfdcUtils.writeFile(this.efdcInpFile, content);
+        AsciiFileUtils.writeLines(this.efdcInpFile, content);
     }
 
     /**
@@ -179,7 +180,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
      * @param content
      * @return secondsPerTimeUnit.
      */
-    private double getSecondsPerTimeUnit(ArrayList<String> content) {
+    private double getSecondsPerTimeUnit(List<String> content) {
         String parameterLine = getFirstParameterLineForCardImage(content, 8);
         if (parameterLine == null) {
             throw new RuntimeException("Card image with number 8 not found in EFDC.INP file.");
@@ -224,7 +225,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
      * @param content
      * @return secondsPerReferencePeriod.
      */
-    private double getSecondsPerReferencePeriod(ArrayList<String> content) {
+    private double getSecondsPerReferencePeriod(List<String> content) {
         String parameterLine = getFirstParameterLineForCardImage(content, 8);
         if (parameterLine == null) {
             throw new RuntimeException("Card image with number 8 not found in EFDC.INP file.");
@@ -254,7 +255,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
      * @param cardImageNumber
      * @return String.
      */
-    private String getFirstParameterLineForCardImage(ArrayList<String> content, int cardImageNumber) {
+    private String getFirstParameterLineForCardImage(List<String> content, int cardImageNumber) {
         String searchString = "C" + cardImageNumber;
 
         Iterator<String> iterator = content.iterator();

@@ -20,10 +20,7 @@
 
 package org.openda.model_wflow;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 import org.openda.blackbox.config.BBStochModelVectorConfig;
@@ -38,6 +35,7 @@ import org.openda.utils.Array;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
 import org.openda.utils.io.FileBasedModelState;
 
 /**
@@ -644,7 +642,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 			throw new RuntimeException("config file " + configFile.getAbsolutePath() + " does not exist.");
 		}
 
-		ArrayList<String> content = readFile(configFile);
+		List<String> content = AsciiFileUtils.readLines(configFile);
 		for (String line : content) {
 			if (line.toLowerCase().contains("timestepsecs")) {
 				int indexOfEqualsSign = line.indexOf('=');
@@ -667,33 +665,6 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 
 		//if not configured, then return 1 day by default.
 		return 24*3600*1000;
-	}
-
-	/**
-	 * Read content of the given file and store it in a list with Strings.
-	 *
-	 * @param inputFile
-	 * @return ArrayList<String>
-	 */
-	private static ArrayList<String> readFile(File inputFile) {
-		ArrayList<String> content = new ArrayList<String>();
-
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-			try {
-				String line = reader.readLine();
-				while (line != null) {
-					content.add(line);
-					line = reader.readLine();
-				}
-			} finally {
-			   reader.close();
-			}
-		} catch (IOException e){
-			throw new RuntimeException("Problem while reading file '" + inputFile.getAbsolutePath() + "'.", e);
-		}
-
-		return content;
 	}
 
 	/**

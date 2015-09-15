@@ -7,7 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.openda.interfaces.IArray;
 import org.openda.utils.Array;
@@ -379,14 +380,7 @@ public class SwanGridFileIo {
 		}
 
 		// cache filenames
-		ArrayList<String> seriesFileNames = null;
-		try {
-			seriesFileNames = AsciiFileUtils.readLines(inFile);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not find swan series file with name "+inFile.getAbsolutePath());
-		} catch (IOException e) {
-			throw new RuntimeException("Problems reading from swan series file: "+inFile.getAbsolutePath());
-		}
+		List<String> seriesFileNames = AsciiFileUtils.readLines(inFile);
 
 		// check sizes
 		if(seriesFileNames.size()<mt+nhedf){
@@ -484,14 +478,7 @@ public class SwanGridFileIo {
 		}
 
 		// cache filenames
-		ArrayList<String> seriesFileNames = null;
-		try {
-			seriesFileNames = AsciiFileUtils.readLines(inFile);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not find swan series file with name "+inFile.getAbsolutePath());
-		} catch (IOException e) {
-			throw new RuntimeException("Problems reading from swan series file: "+inFile.getAbsolutePath());
-		}
+		List<String> seriesFileNames = AsciiFileUtils.readLines(inFile);
 
 		// check sizes
 		if(seriesFileNames.size()<mt+nhedf){
@@ -763,11 +750,7 @@ public class SwanGridFileIo {
 		for(int iline=0;iline<mt;iline++){
 			lines[iline+nhedf]=includeNames[iline];
 		}
-		try {
-			AsciiFileUtils.writeLines(outFile, lines);
-		} catch (IOException e1) {
-			throw new RuntimeException("Problems writing to SWAN series file:"+outFile.getAbsolutePath());
-		}
+		AsciiFileUtils.writeLines(outFile, Arrays.asList(lines));
 		File workDir=outFile.getParentFile();
 		//write include files
 		//time loop
@@ -867,11 +850,7 @@ public class SwanGridFileIo {
 		for(int iline=0;iline<mt;iline++){
 			lines[iline+nhedf]=includeNames[iline];
 		}
-		try {
-			AsciiFileUtils.writeLines(outFile, lines);
-		} catch (IOException e1) {
-			throw new RuntimeException("Problems writing to SWAN series file:"+outFile.getAbsolutePath());
-		}
+		AsciiFileUtils.writeLines(outFile, Arrays.asList(lines));
 		File workDir=outFile.getParentFile();
 		//write include files
 		//time loop

@@ -23,8 +23,8 @@ package org.openda.model_efdc;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
@@ -33,6 +33,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * The EVENT_TOX2.INP control input file for the EFDC (Environmental Fluid Dynamics Code) model
@@ -131,7 +132,7 @@ public class EfdcEventTox2InpIoObject implements IoObjectInterface {
         Results.putMessage(this.getClass().getSimpleName() + ": replacing tags in file " + this.eventTox2InpFile.getAbsolutePath());
 
         //read file.
-        ArrayList<String> content = EfdcUtils.readFile(this.eventTox2InpFile);
+        List<String> content = AsciiFileUtils.readLines(this.eventTox2InpFile);
 
         //get start and stop times.
         double startTime = (Double) this.startTimeExchangeItem.getValues();
@@ -162,7 +163,7 @@ public class EfdcEventTox2InpIoObject implements IoObjectInterface {
         }
 
         //write file.
-        EfdcUtils.writeFile(this.eventTox2InpFile, content);
+        AsciiFileUtils.writeLines(this.eventTox2InpFile, content);
     }
 
     /**

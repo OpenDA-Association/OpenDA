@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * Test class for testing WdmUtils.
@@ -122,7 +123,7 @@ public class WdmUtilsTest extends TestCase {
 
         //get expected mapping.
         File mappingFile = new File(testRunDataDir, "wdmUtilsTest/POINT_mapping.txt");
-        List<String> content = HspfUtils.readFile(mappingFile);
+        List<String> content = AsciiFileUtils.readLines(mappingFile);
         String[][] mapping = new String[content.size() - 1][];
         for (int n = 1; n < content.size(); n++) {
             String[] strings = content.get(n).trim().split("\\s+");

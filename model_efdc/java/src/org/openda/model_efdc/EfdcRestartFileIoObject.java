@@ -21,7 +21,7 @@
 package org.openda.model_efdc;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -31,6 +31,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * This IoObject changes the relative startTime in the RESTART.INP file,
@@ -114,7 +115,7 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
                 EfdcTimeSeriesIoObject.SECONDS_PER_TIME_UNIT, this.timeZone);
 
         //read file.
-        ArrayList<String> content = EfdcUtils.readFile(this.efdcRestartFile);
+        List<String> content = AsciiFileUtils.readLines(this.efdcRestartFile);
         if (content == null || content.size() < 1) {
             throw new RuntimeException("Invalid RESTART.INP file. File is empty.");
         }
@@ -134,7 +135,7 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
                 + newFirstLine + "' in file " + this.efdcRestartFile.getAbsolutePath());
 
         //write file.
-        EfdcUtils.writeFile(this.efdcRestartFile, content);
+        AsciiFileUtils.writeLines(this.efdcRestartFile, content);
     }
 
     private int getIndexOfWhiteSpaceAfterFirstNumber(String line) {

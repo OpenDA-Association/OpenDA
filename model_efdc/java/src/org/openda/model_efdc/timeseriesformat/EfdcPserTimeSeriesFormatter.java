@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.openda.model_efdc.EfdcUtils;
+import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * Formatter for EFDC PSER.INP file.
@@ -71,7 +71,7 @@ public class EfdcPserTimeSeriesFormatter extends EfdcTimeSeriesFormatter {
         }
 
         //read header.
-        List<String> lines = EfdcUtils.readFile(inputFile);
+        List<String> lines = AsciiFileUtils.readLines(inputFile);
         removeAndStoreFileHeader(lines);
     }
 

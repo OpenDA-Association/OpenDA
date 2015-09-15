@@ -25,8 +25,8 @@ public abstract class delwaqInpFile implements IDataObject {
 	private File names_cfg = null;
 	private File values_cfg = null;
 	// Content of the the inp-file's configuration component files.
-	private ArrayList<String> names_lines = null;
-	private ArrayList<String> values_lines = null;
+	private List<String> names_lines = null;
+	private List<String> values_lines = null;
 	// Regular expression matcher.
 	private Matcher regexMatcherA = null;
 	private Matcher regexMatcherB = null;
@@ -114,11 +114,7 @@ public abstract class delwaqInpFile implements IDataObject {
 				}
 			}
 		}
-		try {
-			writeLines(values_cfg,values_lines.toArray(new String[values_lines.size()]));
-		} catch (IOException e) {
-			throw new RuntimeException("Could not write file "+values_cfg.getPath());
-		}
+		writeLines(values_cfg, values_lines);
 	}
 
 	/**
@@ -135,16 +131,8 @@ public abstract class delwaqInpFile implements IDataObject {
 		names_cfg = new File(workingDir, arguments[0]);
 		values_cfg = new File(workingDir, arguments[1]);
 		// Read the configuration files into ArrayLists.
-		try {
-			names_lines = readLines(names_cfg);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not open file "+names_cfg.getPath());
-		}
-		try {
-			values_lines = readLines(values_cfg);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not open file "+values_cfg.getPath());
-		}
+		names_lines = readLines(names_cfg);
+		values_lines = readLines(values_cfg);
 		// Process the ArrayLists into ExchangeItems.
 		ArrayList<String> names = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
