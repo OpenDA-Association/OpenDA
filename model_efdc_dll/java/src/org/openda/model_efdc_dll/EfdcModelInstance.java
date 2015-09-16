@@ -21,17 +21,11 @@ package org.openda.model_efdc_dll;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.TimeInfo;
 import org.openda.exchange.iotools.DataCopier;
-import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IModelInstance;
@@ -46,6 +40,7 @@ import org.openda.utils.Instance;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.FileBasedModelState;
+import org.openda.utils.io.NetcdfGridExchangeItemWriter;
 
 /**
  * Model instance of an EFDC model. This communicates in-memory with the dll version of the EFDC model.
@@ -67,11 +62,12 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private final double referenceTimePeriodInDays;
 	private final ITime timeHorizon;
 	private final Map<String, EfdcScalarTimeSeriesExchangeItem> boundaryExchangeItems = new LinkedHashMap<String, EfdcScalarTimeSeriesExchangeItem>();
-	private final Map<String, EfdcGridExchangeItem> stateExchangeItems = new LinkedHashMap<String, EfdcGridExchangeItem>();
+	private final Map<String, IExchangeItem> stateExchangeItems = new LinkedHashMap<String, IExchangeItem>();
 
 	private IDataObject[] inputDataObjects;
-	private IDataObject modelOutputDataObject;
-	private IDataObject analysisOutputDataObject;
+	private NetcdfGridExchangeItemWriter gridModelOutputWriter;
+	private NetcdfGridExchangeItemWriter gridAnalysisOutputWriter;
+	private boolean firstTime = true;
 
 	/**
 	 * State stored on disk. The efdc model can only store one state at a time.
@@ -84,8 +80,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @param modelOutputFilePath relative to the given instanceDir
 	 * @param analysisOutputFilePath relative to the given instanceDir
 	 */
-	public EfdcModelInstance(File instanceDir, String[] inputFilePaths,
-			String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, EfdcModelFactory parentFactory) {
+	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, EfdcModelFactory parentFactory) {
 		this.modelInstanceNumber = modelInstanceNumber;
 		this.parentFactory = parentFactory;
 
@@ -170,9 +165,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		}
 	}
 
-	private void createDataObjects(String[] inputFilePaths,
-			String modelOutputFilePath, String analysisOutputFilePath) {
-
+	private void createDataObjects(String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath) {
 		//check if input files exist.
 		for (int n = 0; n < inputFilePaths.length; n++) {
 			File inputFile = new File(instanceDir, inputFilePaths[n]);
@@ -206,25 +199,16 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			}
 		}
 
-		//create output dataObjects.
-		double[] modelOutputTimes = TimeUtils.getOutputTimes((Time) this.timeHorizon);
-		this.modelOutputDataObject = createOutputDataObject(modelOutputFilePath, modelOutputTimes);
+		//create output writers.
+		this.gridModelOutputWriter = createOutputWriter(modelOutputFile);
 		//analysisOutputDataObject can use the same times as modelOutputDataObject, only
 		//for the analysisOutputDataObject not all times will be filled with data.
-		this.analysisOutputDataObject = createOutputDataObject(analysisOutputFilePath, modelOutputTimes);
+		this.gridAnalysisOutputWriter = createOutputWriter(analysisOutputFile);
 	}
 
-	private IDataObject createOutputDataObject(String netcdfOutputFilePath, double[] outputTimes) {
-		EfdcNetcdfDataObject netcdfOutputDataObject = new EfdcNetcdfDataObject();
-		netcdfOutputDataObject.initialize(this.instanceDir, new String[]{netcdfOutputFilePath});
-
-		for (IExchangeItem item : this.stateExchangeItems.values()) {
-			IExchangeItem newItem = new EfdcNetcdfGridTimeSeriesExchangeItem(item.getId(), item.getRole(),
-					new TimeInfo(outputTimes), item.getQuantityInfo(), item.getGeometryInfo(), netcdfOutputDataObject, 0);
-			netcdfOutputDataObject.addExchangeItem(newItem);
-		}
-
-		return netcdfOutputDataObject;
+	private NetcdfGridExchangeItemWriter createOutputWriter(File outputFile) {
+		Collection<IExchangeItem> items = this.stateExchangeItems.values();
+		return new NetcdfGridExchangeItemWriter(items.toArray(new IExchangeItem[items.size()]), outputFile);
 	}
 
 	/*************************************
@@ -256,8 +240,12 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @param targetTime time stamp to compute to.
 	 */
 	public void compute(ITime targetTime) {
-		//write output data after analysis (state update).
-		writeAnalysisOutputData();
+		if (firstTime) {
+			firstTime = false;
+		} else {//if !firstTime.
+			//write output data after analysis (state update).
+			writeAnalysisOutputData();
+		}
 
 		//time update.
 		ITime endTime = targetTime.getEndTime();
@@ -368,7 +356,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 				BBUtils.copyFile(sourceFile, targetFile);
 			} catch (IOException e) {
 				throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
-						+ " to " + targetFile.getAbsolutePath() + " Message was: " + e.getMessage());
+						+ " to " + targetFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
 			}
 		}
 
@@ -512,26 +500,16 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * Write the current output data to the output exchange items.
 	 */
 	private void writeModelOutputData() {
-		Results.putMessage(this.getClass().getSimpleName() + ": writing model output data for time "
-				+ new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance "
-				+ this.instanceDir.getAbsolutePath());
-
-		String[] outputExchangeItemIds = this.modelOutputDataObject.getExchangeItemIDs();
-		DataCopier.copyDataFromDataObjectsToDataObject(outputExchangeItemIds, new IDataObject[]{this}, this.modelOutputDataObject);
-		((EfdcNetcdfDataObject) this.modelOutputDataObject).flush();
+		Results.putMessage(this.getClass().getSimpleName() + ": writing model output data for time " + new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance " + this.instanceDir.getAbsolutePath());
+		this.gridModelOutputWriter.writeDataForCurrentTimeStep();
 	}
 
 	/**
 	 * Write the current output data to the output exchange items.
 	 */
 	private void writeAnalysisOutputData() {
-		Results.putMessage(this.getClass().getSimpleName() + ": writing analysis output data for time "
-				+ new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance "
-				+ this.instanceDir.getAbsolutePath());
-
-		String[] outputExchangeItemIds = this.analysisOutputDataObject.getExchangeItemIDs();
-		DataCopier.copyDataFromDataObjectsToDataObject(outputExchangeItemIds, new IDataObject[]{this}, this.analysisOutputDataObject);
-		((EfdcNetcdfDataObject) this.analysisOutputDataObject).flush();
+		Results.putMessage(this.getClass().getSimpleName() + ": writing analysis output data for time " + new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance " + this.instanceDir.getAbsolutePath());
+		this.gridAnalysisOutputWriter.writeDataForCurrentTimeStep();
 	}
 
 	public void finish() {
@@ -540,8 +518,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 
 		this.boundaryExchangeItems.clear();
 		this.stateExchangeItems.clear();
-		this.modelOutputDataObject.finish();
-		this.analysisOutputDataObject.finish();
+		this.gridModelOutputWriter.close();
+		this.gridAnalysisOutputWriter.close();
 		for (IDataObject inputDataObject : this.inputDataObjects) {
 			inputDataObject.finish();
 		}
