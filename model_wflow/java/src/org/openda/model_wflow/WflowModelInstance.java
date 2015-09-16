@@ -20,12 +20,12 @@
 
 package org.openda.model_wflow;
 
-import java.io.File;
-import java.util.*;
-
 import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.*;
+import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
+import org.openda.exchange.QuantityInfo;
+import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.iotools.DataCopier;
 import org.openda.exchange.timeseries.TimeUtils;
@@ -37,6 +37,10 @@ import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
 import org.openda.utils.io.FileBasedModelState;
+import org.openda.utils.io.NetcdfGridExchangeItemWriter;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Model instance of a WFLOW model. This communicates in-memory with the WFLOW model.
@@ -76,10 +80,11 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	private FileBasedModelState stateStoredOnDisk = null;
 
 	private final IDataObject[] inputDataObjects;
-	private IDataObject modelOutputDataObject;
-	private IDataObject analysisOutputDataObject;
+	private NetcdfGridExchangeItemWriter gridModelOutputWriter;
+	private NetcdfGridExchangeItemWriter gridAnalysisOutputWriter;
     private IDataObject modelScalarOutputDataObject;
     private IDataObject analysisScalarOutputDataObject = null;
+	private boolean firstTime = true;
 
     /**
      * @param timeHorizon ITime object that includes the startTime and endTime for the model run.
@@ -257,7 +262,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
                 }
             }
             //create output dataObjects.
-            this.modelOutputDataObject = createOutputDataObject(modelOutputFilePath, modelOutputTimes);
+            this.gridModelOutputWriter = createGridOutputWriter(modelOutputFile);
         }
 
         if (analysisOutputFilePath != null){
@@ -271,7 +276,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
             //create output dataObjects.
             //analysisOutputDataObject can use the same times as modelOutputDataObject, only
             //for the analysisOutputDataObject not all times will be filled with data.
-            this.analysisOutputDataObject = createOutputDataObject(analysisOutputFilePath, modelOutputTimes);
+            this.gridAnalysisOutputWriter = createGridOutputWriter(analysisOutputFile);
         }
 
         if (scalarModelOutputFilePath != null){
@@ -313,19 +318,16 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 //        }
 	}
 
-	private IDataObject createOutputDataObject(String netcdfOutputFilePath, double[] outputTimes) {
-		NetcdfDataObject netcdfOutputDataObject = new NetcdfDataObject();
-		netcdfOutputDataObject.initialize(this.modelRunDir, new String[]{netcdfOutputFilePath, "true", "false"});
+	private NetcdfGridExchangeItemWriter createGridOutputWriter(File netcdfOutputFile) {
+		List<IExchangeItem> items = new ArrayList<IExchangeItem>();
 
         if (this.outputExchangeItemIds==null){
+            //if no outputExchangeItemIds configured, then use all output exchangeItems.
             for (IExchangeItem item : this.modelExchangeItems.values()) {
                 if (item.getRole() != Role.Output && item.getRole() != Role.InOut) {
                     continue;
                 }
-
-                IExchangeItem newItem = new NetcdfGridTimeSeriesExchangeItem(item.getId(), item.getRole(),
-                        new TimeInfo(outputTimes), item.getQuantityInfo(), item.getGeometryInfo(), netcdfOutputDataObject, 0, -1);
-                netcdfOutputDataObject.addExchangeItem(newItem);
+                items.add(item);
             }
         } else {
             for (String itemId : this.outputExchangeItemIds){
@@ -334,14 +336,12 @@ public class WflowModelInstance extends Instance implements IModelInstance {
                     throw new RuntimeException("Invalid value of output exchange item ID '" + itemId
                             + "' configured in the wflowModelFactoryConfig file. ");
                 }
-                IExchangeItem newItem = new NetcdfGridTimeSeriesExchangeItem(item.getId(), item.getRole(),
-                        new TimeInfo(outputTimes), item.getQuantityInfo(), item.getGeometryInfo(), netcdfOutputDataObject, 0, -1);
-                netcdfOutputDataObject.addExchangeItem(newItem);
+                items.add(item);
             }
         }
 
-        return netcdfOutputDataObject;
-	}
+        return new NetcdfGridExchangeItemWriter(items.toArray(new IExchangeItem[items.size()]), netcdfOutputFile);
+    }
 
     private IDataObject createScalarOutputDataObject(String netcdfOutputFilePath, double[] outputTimes) {
         NetcdfDataObject netcdfOutputDataObject = new NetcdfDataObject();
@@ -409,13 +409,17 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * @param targetTime time stamp to compute to.
 	 */
 	public void compute(ITime targetTime) {
-		//write output data after analysis (state update).
-        if (this.analysisOutputDataObject != null){
-		    writeAnalysisOutputData();
-        }
-        if (this.analysisScalarOutputDataObject != null){
-            writeAnalysisScalarOutputData();
-        }
+		if (firstTime) {
+			firstTime = false;
+		} else {//if !firstTime.
+			//write output data after analysis (state update).
+			if (this.gridAnalysisOutputWriter != null){
+				writeAnalysisOutputData();
+			}
+			if (this.analysisScalarOutputDataObject != null){
+				writeAnalysisScalarOutputData();
+			}
+		}
 
 		//time update.
 		ITime endTime = targetTime.getEndTime();
@@ -429,9 +433,9 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 			currentTime = getCurrentTime();
 
 			//write output data after model run (time update).
-            if (this.modelOutputDataObject != null){
-			    writeModelOutputData();
-            }
+			if (this.gridModelOutputWriter != null){
+				writeModelOutputData();
+			}
 
             if (this.modelScalarOutputDataObject != null){
                 writeModelScalarOutputData();
@@ -642,8 +646,8 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 			throw new RuntimeException("config file " + configFile.getAbsolutePath() + " does not exist.");
 		}
 
-		List<String> content = AsciiFileUtils.readLines(configFile);
-		for (String line : content) {
+		List<String> lines = AsciiFileUtils.readLines(configFile);
+		for (String line : lines) {
 			if (line.toLowerCase().contains("timestepsecs")) {
 				int indexOfEqualsSign = line.indexOf('=');
 				if (indexOfEqualsSign == -1) {
@@ -681,11 +685,8 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * Write the current output data to the output exchange items.
 	 */
 	private void writeModelOutputData() {
-		Results.putMessage(getClass().getSimpleName() + ": writing model output data for time "
-				+ new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance " + this.instanceRunId);
-
-		String[] outputExchangeItemIds = this.modelOutputDataObject.getExchangeItemIDs();
-		DataCopier.copyDataFromDataObjectsToDataObject(outputExchangeItemIds, new IDataObject[]{this}, this.modelOutputDataObject);
+		Results.putMessage(getClass().getSimpleName() + ": writing model output data for time " + new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance " + this.instanceRunId);
+		gridModelOutputWriter.writeDataForCurrentTimeStep();
 	}
 
     /**
@@ -707,11 +708,8 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * Write the current output data to the output exchange items.
 	 */
 	private void writeAnalysisOutputData() {
-		Results.putMessage(getClass().getSimpleName() + ": writing analysis output data for time "
-				+ new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance " + this.instanceRunId);
-
-		String[] outputExchangeItemIds = this.analysisOutputDataObject.getExchangeItemIDs();
-		DataCopier.copyDataFromDataObjectsToDataObject(outputExchangeItemIds, new IDataObject[]{this}, this.analysisOutputDataObject);
+		Results.putMessage(getClass().getSimpleName() + ": writing analysis output data for time " + new Date(Time.mjdToMillies(getCurrentTime().getMJD())) + " for instance " + this.instanceRunId);
+		gridAnalysisOutputWriter.writeDataForCurrentTimeStep();
 	}
 
 	/**
@@ -719,23 +717,24 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 */
 	public void finish() {
 		//write output data after last analysis (state update) and clear all data objects.
-        if (this.analysisOutputDataObject != null){
-		    writeAnalysisOutputData();
-            this.analysisOutputDataObject.finish();
-        }
+		if (this.gridAnalysisOutputWriter != null){
+			writeAnalysisOutputData();
+			this.gridAnalysisOutputWriter.close();
+		}
         if (this.analysisScalarOutputDataObject != null){
             writeAnalysisScalarOutputData();
             this.analysisScalarOutputDataObject.finish();
         }
 
 		this.modelExchangeItems.clear();
-        if (this.modelOutputDataObject != null){
-		    this.modelOutputDataObject.finish();
-        }
+		if (this.gridModelOutputWriter != null){
+			this.gridModelOutputWriter.close();
+		}
         if (this.modelScalarOutputDataObject != null){
 		    this.modelScalarOutputDataObject.finish();
         }
 		for (IDataObject inputDataObject : this.inputDataObjects) {
+			//TODO this should be called in modelFactory.finish, but that method is never called. Now this is called for every modelInstance, while they use the same inputDataObject. AK
 			inputDataObject.finish();
 		}
 
