@@ -1,7 +1,28 @@
+/* MOD_V2.0
+* Copyright (c) 2012 OpenDA Association
+* All rights reserved.
+*
+* This file is part of OpenDA.
+*
+* OpenDA is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* OpenDA is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package org.openda.utils.io;
 
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.IrregularGridGeometryInfo;
+import org.openda.exchange.PointGeometryInfo;
 import org.openda.exchange.dataobjects.GridVariableProperties;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IExchangeItem;
@@ -14,10 +35,7 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Writes grid data from one or more IExchangeItems to a NetCDF file. The data is written per time step.
@@ -59,9 +77,9 @@ public class NetcdfGridExchangeItemWriter {
 		List<IGeometryInfo> geometryInfos = new ArrayList<IGeometryInfo>();
 		for (IExchangeItem item : exchangeItems) {
 			IGeometryInfo geometryInfo = item.getGeometryInfo();
-			if (geometryInfo == null) {
-				throw new RuntimeException(getClass().getSimpleName() + " can only write data for grid exchange items. Exchange item '" + item.getId()
-						+ "' of type " + item.getClass().getSimpleName() + " has no geometry info.");
+			if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {
+			throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for grid exchange items. Exchange item '" + item.getId()
+						+ "' of type " + item.getClass().getSimpleName() + " has no grid geometry info.");
 			}
 			geometryInfos.add(geometryInfo);
 		}
@@ -185,7 +203,7 @@ public class NetcdfGridExchangeItemWriter {
 				origin[2] = 0;
 
 			} else {
-				throw new RuntimeException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
+				throw new UnsupportedOperationException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
 						+ " because it has an unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
 			}
 

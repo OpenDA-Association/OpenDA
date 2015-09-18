@@ -1047,7 +1047,7 @@ public class NetcdfUtils {
 				}
 
 			} else {
-				throw new RuntimeException("Unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
+				throw new UnsupportedOperationException("Unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
 			}
 		}
 	}
