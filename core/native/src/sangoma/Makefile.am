@@ -10,7 +10,6 @@ Ewpf/equal_weights_step.f90 \
 Ewpf/gen_random.f90         \
 Ewpf/proposal_step.f90      \
 Ewpf/quicksort.f90          \
-Ewpf/sangoma_base.f90       \
 Ewpf/subroutines_for_EWPF.f90 \
 openda/oda_EWPF_wrapper.f90
 

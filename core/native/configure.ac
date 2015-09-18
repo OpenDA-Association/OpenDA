@@ -102,7 +102,6 @@ if test "$BASE_FC" = "mpif90"; then
       AC_MSG_RESULT([Intel Fortran is not detected])
   fi
 fi
-AC_F77_WRAPPERS
 
 AC_CONFIG_MACRO_DIR([m4])
 
