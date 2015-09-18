@@ -34,10 +34,10 @@ import java.util.*;
  */
 //TODO move AnalysisOutputXML to core xsd
 public class AnalysisDataWriter {
-	private final NetcdfGridExchangeItemWriter beforeAnalysisScalarWriter;
+	private final NetcdfScalarExchangeItemWriter beforeAnalysisScalarWriter;
 	private final NetcdfGridExchangeItemWriter beforeAnalysisGridWriter;
 
-	private final NetcdfGridExchangeItemWriter afterAnalysisScalarWriter;
+	private final NetcdfScalarExchangeItemWriter afterAnalysisScalarWriter;
 	private final NetcdfGridExchangeItemWriter afterAnalysisGridWriter;
 
 	/**
@@ -62,14 +62,13 @@ public class AnalysisDataWriter {
 			}
 		}
 
-		//TODO also write scalars
-//		if (scalarItems.isEmpty()) {
+		if (scalarItems.isEmpty()) {
 			beforeAnalysisScalarWriter = null;
 			afterAnalysisScalarWriter = null;
-//		} else {
-//			beforeAnalysisScalarWriter = createScalarWriter(scalarItems, outputFolder, "model_scalar_data_before_analysis.nc");
-//			afterAnalysisScalarWriter = createScalarWriter(scalarItems, outputFolder, "model_scalar_data_after_analysis.nc");
-//		}
+		} else {
+			beforeAnalysisScalarWriter = createScalarWriter(scalarItems, outputFolder, "model_scalar_data_before_analysis.nc");
+			afterAnalysisScalarWriter = createScalarWriter(scalarItems, outputFolder, "model_scalar_data_after_analysis.nc");
+		}
 
 		if (gridItems.isEmpty()) {
 			beforeAnalysisGridWriter = null;
@@ -80,10 +79,10 @@ public class AnalysisDataWriter {
 		}
 	}
 
-//	private NetcdfScalarExchangeItemWriter createScalarWriter(List<IExchangeItem> scalarItems, File outputFolder, String outputFileName) {
-//		File outputFile = new File(outputFolder, outputFileName);
-//		return new NetcdfScalarExchangeItemWriter(scalarItems.toArray(new IExchangeItem[scalarItems.size()]), outputFile);
-//	}
+	private NetcdfScalarExchangeItemWriter createScalarWriter(List<IExchangeItem> scalarItems, File outputFolder, String outputFileName) {
+		File outputFile = new File(outputFolder, outputFileName);
+		return new NetcdfScalarExchangeItemWriter(scalarItems.toArray(new IExchangeItem[scalarItems.size()]), outputFile);
+	}
 
 	private NetcdfGridExchangeItemWriter createGridWriter(List<IExchangeItem> gridItems, File outputFolder, String outputFileName) {
 		File outputFile = new File(outputFolder, outputFileName);
@@ -101,7 +100,10 @@ public class AnalysisDataWriter {
 	}
 
 	public void close() {
+		if (beforeAnalysisScalarWriter != null) beforeAnalysisScalarWriter.close();
 		if (beforeAnalysisGridWriter != null) beforeAnalysisGridWriter.close();
+
+		if (afterAnalysisScalarWriter != null) afterAnalysisScalarWriter.close();
 		if (afterAnalysisGridWriter != null) afterAnalysisGridWriter.close();
 	}
 }

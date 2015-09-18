@@ -441,6 +441,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         IExchangeItem newItem = storeExchangeItem(item);
 
 		//create metadata for the given exchangeItem.
+		//TODO move this call to start of method createFile and merge method NetcdfUtils.createScalarMetadata with method NetcdfUtils.createMetadata. AK
 		NetcdfUtils.createMetadata(this.netcdfFile, newItem, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
 				this.geometryInfoGridVariablePropertiesMap, this.uniqueGeometryCount);
 	}
@@ -452,6 +453,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         }
 
         //create metadata for the given exchangeItem.
+		//TODO move this call to start of method createFile and merge method NetcdfUtils.createScalarMetadata with method NetcdfUtils.createMetadata. AK
         NetcdfUtils.createScalarMetadata(this.netcdfFile, newItems, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
 				this.stationIdList);
     }

@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.IrregularGridGeometryInfo;
 import org.openda.exchange.QuantityInfo;
@@ -76,6 +77,8 @@ public class NetcdfUtils {
 	public static final String SCALE_FACTOR_ATTRIBUTE_NAME = "scale_factor";
 	public static final String ADD_OFFSET_ATTRIBUTE_NAME = "add_offset";
 	public static final String COORDINATES_ATTRIBUTE_NAME = "coordinates";
+	public static final String FEATURE_TYPE_ATTRIBUTE_NAME = "featureType";
+	public static final String CF_ROLE_ATTRIBUTE_NAME = "cf_role";
 
 	//attribute values.
 	//see http://www.unidata.ucar.edu/software/netcdf/docs/netcdf.html#NetCDF-Classic-Format for default _FillValues for each dataType.
@@ -86,6 +89,8 @@ public class NetcdfUtils {
 	public static final String Y_AXIS = "Y";
 	public static final String PROJECTION_Y_COORDINATE = "projection_y_coordinate";
 	public static final String PROJECTION_X_COORDINATE = "projection_x_coordinate";
+	public static final String TIME_SERIES_FEATURE_TYPE = "timeSeries";
+	public static final String TIME_SERIES_ID_CF_ROLE = "timeseries_id";
 
 	//variable names.
 	public static final String TIME_VARIABLE_NAME = "time";
@@ -97,10 +102,15 @@ public class NetcdfUtils {
 	public static final String LONGITUDE_LONG_NAME = "longitude";
 	public static final String Y_VARIABLE_NAME = "y";
 	public static final String X_VARIABLE_NAME = "x";
-
-	public static final String STATION_DIMENSION_NAME = "stations";
 	public static final String STATION_ID_VARIABLE_NAME = "station_id";
-	public static final String FACE_DIMENSION_NAME = "n_face";
+
+	//dimension names.
+	public static final String STATION_DIMENSION_NAME = "stations";
+	private static final String CHAR_LEN_ID = "char_leng_id";
+	private static final String FACE_DIMENSION_NAME = "n_face";
+
+	//dimension lengths.
+	private static final int CHARLENGTH_ID = 64;
 
 	/**
 	 * Converts the data in the given netcdf file to text format and returns this as a String.
@@ -907,7 +917,7 @@ public class NetcdfUtils {
 		}
 
 		//create data variable.
-		createDataVariable(netcdfFile, exchangeItem, timeDimension, geometryInfoGridVariablePropertiesMap);
+		createDataVariable(netcdfFile, exchangeItem, timeDimension, null, geometryInfoGridVariablePropertiesMap);
 	}
 
 	private static Dimension createTimeVariable(NetcdfFileWriteable netcdfFile, ITimeInfo timeInfo, int[] uniqueTimeVariableCount, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap) {
@@ -1052,7 +1062,8 @@ public class NetcdfUtils {
 		}
 	}
 
-	public static void createDataVariables(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems, Dimension timeDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+	public static void createDataVariables(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems, Dimension timeDimension, Dimension stationDimension,
+			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 		for (IExchangeItem item : exchangeItems) {
 			String variableName = getVariableName(item);
 			if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
@@ -1061,14 +1072,18 @@ public class NetcdfUtils {
 			}
 
 			//if variable does not exist yet.
-			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, geometryInfoGridVariablePropertiesMap);
+			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
-	private static void createDataVariable(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem, Dimension timeDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+	private static void createDataVariable(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem, Dimension timeDimension, Dimension stationDimension,
+			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		if (timeDimension != null) {
 			dimensions.add(timeDimension);
+		}
+		if (stationDimension != null) {
+			dimensions.add(stationDimension);
 		}
 		GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(exchangeItem.getGeometryInfo());
 		if (gridVariableProperties != null) {
@@ -1100,78 +1115,26 @@ public class NetcdfUtils {
      * @param exchangeItems
      * @param timeInfoTimeDimensionMap
      * @param uniqueTimeVariableCount
-     * @param stationidDimensionMap
+     * @param stationIdList
      */
-    public static void createScalarMetadata(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems,
-                                      Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int[] uniqueTimeVariableCount,
-                                      List<String> stationidDimensionMap) {
-
+    public static void createScalarMetadata(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int[] uniqueTimeVariableCount, List<String> stationIdList) {
         ArrayList<Dimension> variableDimensions = new ArrayList<Dimension>();
 
         //create time coordinate variable, if not present yet.
         //assume that all exchangeItems have identical time records.
         ITimeInfo timeInfo = exchangeItems[0].getTimeInfo();
+		Dimension timeDimension = null;
         if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-			variableDimensions.add(createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap));
+			timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
         }
 
-        //create dimension char_leng_id
-        int nCharLengId = 30;
-        String charLengId = "char_leng_id";
-        Dimension char_leng_id = netcdfFile.addDimension(charLengId,nCharLengId);
+        //create stations variable.
+		stationIdList.clear();
+		stationIdList.addAll(NetcdfUtils.getStationIds(exchangeItems));
+		Dimension stationDimension = createStationsVariable(netcdfFile, stationIdList.size());
 
-        //create station_id
-        //put stationidDimension in list so that it can be re-used later by other variables in the same file.
-        for (int i=0; i<exchangeItems.length; i++){
-            IQuantityInfo quantityInfo = exchangeItems[i].getQuantityInfo();
-            if (quantityInfo == null) {
-                throw new RuntimeException(NetcdfUtils.class.getSimpleName()
-                        + ": can only write data for exchangeItems that contain a valid IQuantityInfo object.");
-            }
-            String dataVariableName = quantityInfo.getQuantity();
-            String stationId= exchangeItems[i].getId().replace("."+dataVariableName,"");
-            if (!stationidDimensionMap.contains(stationId)){
-                stationidDimensionMap.add(stationId);
-            }
-        }
-        int statCount = stationidDimensionMap.size();
-        Dimension stationsDimension = netcdfFile.addDimension(STATION_DIMENSION_NAME,statCount);
-        String stationIdVariableName = STATION_ID_VARIABLE_NAME;
-        netcdfFile.addVariable(stationIdVariableName, DataType.CHAR, new Dimension[]{stationsDimension,char_leng_id});
-        netcdfFile.addVariableAttribute(stationIdVariableName, LONG_NAME_ATTRIBUTE_NAME, "station identification code");
-        variableDimensions.add(stationsDimension);
-
-        //create data variable.
-        List<String> dataVariableNames = new ArrayList<String>();
-        for (int i=0; i<exchangeItems.length; i++){
-            IQuantityInfo quantityInfo = exchangeItems[i].getQuantityInfo();
-            if (quantityInfo == null) {
-                throw new RuntimeException(NetcdfUtils.class.getSimpleName()
-                        + ": can only write data for exchangeItems that contain a valid IQuantityInfo object.");
-            }
-            String dataVariableName = quantityInfo.getQuantity();
-            DataType dataType;
-            switch (exchangeItems[i].getValuesType()) {
-                case doubles2dType: case doublesType: case doubleType: case floatsType: case intType: case IArrayType: case IVectorType:
-                    //currently only double values are used in OpenDA, so always write numerical values as doubles for simplicity.
-                    dataType = DataType.DOUBLE;
-                    break;
-                case StringType:
-                    dataType = DataType.STRING;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown values type " + exchangeItems[i].getValuesType());
-            }
-            if (!dataVariableNames.contains((String) dataVariableName)){
-                netcdfFile.addVariable(dataVariableName, dataType, variableDimensions);
-                //at this point standard_name of data is unknown, so cannot add the optional standard_name attribute here.
-                netcdfFile.addVariableAttribute(dataVariableName, LONG_NAME_ATTRIBUTE_NAME, dataVariableName);
-                netcdfFile.addVariableAttribute(dataVariableName, UNITS_ATTRIBUTE_NAME, quantityInfo.getUnit());
-                netcdfFile.addVariableAttribute(dataVariableName, FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE);
-            }
-            dataVariableNames.add(i,dataVariableName);
-        }
-
+		//create data variables.
+		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
     }
 
     /**
@@ -1248,12 +1211,10 @@ public class NetcdfUtils {
         NetcdfUtils.writeGridVariablesValues(netcdfFile, geometryInfoGridVariablePropertiesMap);
 
         //write station_id if available.
-        NetcdfUtils.writeStationidVariablesValues(netcdfFile, stationIdList);
+        NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIdList);
     }
 
-    private static void writeStationidVariablesValues(NetcdfFileWriteable dataFile,
-            List<String> stationIdList) throws IOException, InvalidRangeException {
-
+    public static void writeStationIdVariableValues(NetcdfFileWriteable dataFile, List<String> stationIdList) throws IOException, InvalidRangeException {
         if (stationIdList.size()>0){
             ArrayObject.D1 statidsArray = new ArrayObject.D1(String.class, stationIdList.size());
             for (int i=0; i<stationIdList.size(); i++){
@@ -1491,5 +1452,40 @@ public class NetcdfUtils {
 			}
 		}
 		return allValues;
+	}
+
+	public static String getStationId(IExchangeItem item) {
+		String id = item.getId();
+		String locationId = id.contains(".") ? BBUtils.getLocationFromId(id) : id;
+		if (locationId == null || locationId.isEmpty()) {
+			throw new IllegalArgumentException("Exchange item '" + item.getId() + "' of type " + item.getClass().getSimpleName() + " has no station id.");
+		}
+		return locationId;
+	}
+
+	public static List<String> getStationIds(IExchangeItem[] exchangeItems) {
+		Set<String> uniqueStationIds = new LinkedHashSet<String>();
+		for (IExchangeItem item : exchangeItems) {
+			uniqueStationIds.add(getStationId(item));
+		}
+		return Arrays.asList(uniqueStationIds.toArray(new String[uniqueStationIds.size()]));
+	}
+
+	/**
+	 * Add variable for station_id.
+	 */
+	public static Dimension createStationsVariable(NetcdfFileWriteable netcdfFile, int stationCount) {
+		Dimension stationDimension = netcdfFile.addDimension(STATION_DIMENSION_NAME, stationCount);
+		Dimension charDimension = netcdfFile.addDimension(CHAR_LEN_ID, CHARLENGTH_ID);
+		ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
+		dimensions.add(stationDimension);
+		dimensions.add(charDimension);
+
+		String stationIdVariableName = STATION_ID_VARIABLE_NAME;
+		netcdfFile.addVariable(stationIdVariableName, DataType.CHAR, dimensions);
+		netcdfFile.addVariableAttribute(stationIdVariableName, LONG_NAME_ATTRIBUTE_NAME, "station identification code");
+		netcdfFile.addVariableAttribute(stationIdVariableName, CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE);
+
+		return stationDimension;
 	}
 }

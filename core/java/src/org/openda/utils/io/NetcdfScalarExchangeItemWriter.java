@@ -20,8 +20,6 @@
 
 package org.openda.utils.io;
 
-import org.openda.exchange.ArrayGeometryInfo;
-import org.openda.exchange.IrregularGridGeometryInfo;
 import org.openda.exchange.PointGeometryInfo;
 import org.openda.exchange.dataobjects.GridVariableProperties;
 import org.openda.exchange.dataobjects.NetcdfUtils;
@@ -35,64 +33,67 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
- * Writes grid data from one or more IExchangeItems to a NetCDF file. The data is written per time step.
- * This can only handle exchangeItems that contain grid data for a single timeStep at a time, e.g. a model state grid exchange item.
+ * Writes scalar data from one or more IExchangeItems to a NetCDF file. The data is written per time step.
+ * This can only handle exchangeItems that contain scalar data for a single timeStep at a time, e.g. a model state scalar exchange item.
  * The written NetCDF files are compliant with the NetCDF CF conventions as much as possible, see http://cfconventions.org/
  *
  * @author Arno Kockx
  */
-public class NetcdfGridExchangeItemWriter {
+public class NetcdfScalarExchangeItemWriter {
 	private final IExchangeItem[] exchangeItems;
 	private final NetcdfFileWriteable netcdfFile;
+	private final List<String> stationIds;
 
 	private final Variable timeVariable;
 	private int currentTimeIndex = -1;
 	private final List<Double> timesWrittenSoFar = new ArrayList<Double>();
 
-	public NetcdfGridExchangeItemWriter(IExchangeItem[] exchangeItems, File outputFile) {
+	public NetcdfScalarExchangeItemWriter(IExchangeItem[] exchangeItems, File outputFile) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
 		if (exchangeItems.length < 1) throw new IllegalArgumentException("exchangeItems.length < 1");
 		if (outputFile == null) throw new IllegalArgumentException("outputFile == null");
 
 		this.exchangeItems = exchangeItems;
 
+		//validate that all exchange items are scalars.
+		for (IExchangeItem item : exchangeItems) {
+			IGeometryInfo geometryInfo = item.getGeometryInfo();
+			if (geometryInfo != null && !(geometryInfo instanceof PointGeometryInfo)) {
+				throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for scalar exchange items. Exchange item '" + item.getId()
+						+ "' of type " + item.getClass().getSimpleName() + " has a grid geometry info.");
+			}
+		}
+
 		//create netcdf file.
 		try {
-			netcdfFile = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath(), false);
+			netcdfFile = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath(), true);
 		} catch (IOException e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while opening netcdf file " + outputFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
 		}
-		//always create large file, in case much data needs to be written.
-		netcdfFile.setLargeFile(true);
 
 		//create time dimension and variable.
 		Dimension timeDimension = NetcdfUtils.createTimeVariable(netcdfFile, NetcdfUtils.TIME_VARIABLE_NAME, -1, NetcdfUtils.createTimeUnitString());
 		timeVariable = netcdfFile.findVariable(NetcdfUtils.TIME_VARIABLE_NAME);
 
-		//create grid dimensions and variables.
-		//gather geometryInfos.
-		List<IGeometryInfo> geometryInfos = new ArrayList<IGeometryInfo>();
-		for (IExchangeItem item : exchangeItems) {
-			IGeometryInfo geometryInfo = item.getGeometryInfo();
-			if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for grid exchange items. Exchange item '" + item.getId()
-						+ "' of type " + item.getClass().getSimpleName() + " has no grid geometry info.");
-			}
-			geometryInfos.add(geometryInfo);
-		}
-		//create spatial coordinate variables, if not present yet.
-		//this only adds spatial dimensions, this does not add spatial variables with coordinates,
+		//create station dimension and variable.
+		//this only adds a station id variable, this does not add spatial variables with coordinates,
 		//because the coordinates are usually not available in exchangeItems that come from models.
-		Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = NetcdfUtils.createGridVariables(netcdfFile, geometryInfos.toArray(new IGeometryInfo[geometryInfos.size()]));
+		//gather locationIds.
+		stationIds = NetcdfUtils.getStationIds(exchangeItems);
+		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIds.size());
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, null, geometryInfoGridVariablePropertiesMap);
+		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
 
 		//add global metadata.
 		NetcdfUtils.addGlobalAttributes(netcdfFile);
+		netcdfFile.addGlobalAttribute(NetcdfUtils.FEATURE_TYPE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_FEATURE_TYPE);
 
 		try {
 			netcdfFile.create();
@@ -100,11 +101,11 @@ public class NetcdfGridExchangeItemWriter {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while creating netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
 		}
 
-		//write grid variables values.
+		//write station variable values.
 		try {
-			NetcdfUtils.writeGridVariablesValues(netcdfFile, geometryInfoGridVariablePropertiesMap);
+			NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIds);
 		} catch (Exception e) {
-			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing grid variable values to netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
+			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing station variable values to netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
 		}
 	}
 
@@ -165,46 +166,26 @@ public class NetcdfGridExchangeItemWriter {
 						+ " because its value type is not " + IExchangeItem.ValueType.IVectorType);
 			}
 			double[] values = ((IVector) item.getValues()).getValues();
-
-			//add missing values for non-active grid cells.
-			IGeometryInfo geometryInfo = item.getGeometryInfo();
-			if (geometryInfo == null) {
+			if (values == null || values.length != 1) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
-						+ " because it contains no geometry info.");
+						+ " because it has no value or stores multiple values for time index " + currentTimeIndex);
 			}
-			values = NetcdfUtils.addMissingValuesForNonActiveGridCells(geometryInfo, values);
+
+			int stationIndex = stationIds.indexOf(NetcdfUtils.getStationId(item));
+			if (stationIndex == -1) {
+				throw new IllegalStateException("stationIndex == -1");
+			}
 
 			//determine dimensions and prepare origin for writing.
-			int[] dimensions;
-			int[] origin;
-			if (geometryInfo instanceof IrregularGridGeometryInfo) {
-				int gridCellCount = ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
-				//dimensions are (time, node).
-				dimensions = new int[2];
-				dimensions[0] = 1;
-				dimensions[1] = gridCellCount;
-				origin = new int[dimensions.length];
-				origin[1] = 0;
-
-			} else if (geometryInfo instanceof ArrayGeometryInfo) {
-				int rowCount = ((ArrayGeometryInfo) geometryInfo).getLatitudeArray().length();
-				int columnCount = ((ArrayGeometryInfo) geometryInfo).getLongitudeArray().length();
-				//dimensions are (time, y, x).
-				dimensions = new int[3];
-				dimensions[0] = 1;
-				dimensions[1] = rowCount;
-				dimensions[2] = columnCount;
-				origin = new int[dimensions.length];
-				origin[1] = 0;
-				origin[2] = 0;
-
-			} else {
-				throw new UnsupportedOperationException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
-						+ " because it has an unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
-			}
+			//dimensions are (time, station).
+			int[] dimensions = new int[2];
+			dimensions[0] = 1;
+			dimensions[1] = 1;
+			int[] origin = new int[dimensions.length];
+			origin[0] = currentTimeIndex;
+			origin[1] = stationIndex;
 
 			//write values for current time.
-			origin[0] = currentTimeIndex;
 			Variable dataVariable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 			NetcdfUtils.writeSelectedData(netcdfFile, dataVariable, origin, dimensions, values);
 		}
