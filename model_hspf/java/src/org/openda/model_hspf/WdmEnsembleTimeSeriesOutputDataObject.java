@@ -47,7 +47,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 	 * @param workingDir the working directory.
 	 * @param arguments Filename prefix:
 	 *                  This should be the prefix for the names of the wdm files containing the data for this DataObject (relative to the working directory).
-	 *                  The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>-out.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
+	 *                  The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
 	 *                  Each file should contain the same data for a different ensemble member. The number of ensemble members is determined by the number of files that are present.
 	 *                  Other arguments:
 	 *                  The first argument should be the path of the wdm.dll file (relative to the working directory).
@@ -90,7 +90,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 		//create WdmTimeSeriesIoObjects.
 		int ensembleMemberIndex = 0;
 		while (true) {
-			String wdmTimeSeriesFileName = wdmTimeSeriesFilePrefix + (ensembleMemberIndex + 1) + "-out.wdm";
+			String wdmTimeSeriesFileName = wdmTimeSeriesFilePrefix + (ensembleMemberIndex + 1) + ".wdm";
 			File wdmTimeSeriesFile = new File(workingDir, wdmTimeSeriesFileName);
 			if (!wdmTimeSeriesFile.exists()) {
 				break;
@@ -105,7 +105,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 		int ensembleMemberCount = ensembleMemberIndex;
 		if (ensembleMemberCount == 0) {
 			throw new IllegalArgumentException(this.getClass().getSimpleName() + ": No wdm time series files found with prefix '" + wdmTimeSeriesFilePrefix
-					+ "' and postfix <ensembleMemberNumber>-out.wdm in directory " + workingDir.getAbsolutePath());
+					+ "' and postfix <ensembleMemberNumber>.wdm in directory " + workingDir.getAbsolutePath());
 		}
 		Results.putMessage(getClass().getSimpleName() + ": Found wdm time series files for " + ensembleMemberCount + " ensemble members.");
 	}
@@ -123,10 +123,10 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
 		String[] ensembleExchangeItemIds = getEnsembleExchangeItemIds();
 		if (Arrays.asList(ensembleExchangeItemIds).contains(exchangeItemId)) {//if ensemble exchange item.
-			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem: exchange item with id "
-					+ exchangeItemId + " is an ensemble exchange item. Call method getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) instead.");
+			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem: exchange item with id '"
+					+ exchangeItemId + "' is an ensemble exchange item. Call method getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) instead.");
 		}
-		//if not found.
+		//this object contains only ensemble exchange items.
 		return null;
 	}
 

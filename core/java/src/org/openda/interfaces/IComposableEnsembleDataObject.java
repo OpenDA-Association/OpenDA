@@ -23,7 +23,6 @@ package org.openda.interfaces;
 public interface IComposableEnsembleDataObject extends IEnsembleDataObject {
 
 	/**
-	 * TODO
 	 * Add a <b>copy</b> of exchangeItem to this dataObject. Since a dataObject owns its exchangeItems, it is
 	 * possible that the actual work is postponed until the finish method is called, so modification of an
 	 * exchangeItem after adding it, but before calling finish, may alter the outcome.
@@ -31,7 +30,8 @@ public interface IComposableEnsembleDataObject extends IEnsembleDataObject {
 	 * A RuntimeException is thrown if the type of data can not be handled. Note that in general, it is also
 	 * possible that the type of echchangeItem can be handled, but with degraded meta data.
 	 *
-	 * @param exchangeItem to be duplicated
+	 * @param exchangeItem to be duplicated.
+	 * @param ensembleMemberIndex ensemble member index of the exchangeItem.
 	 */
 	void addExchangeItem(IExchangeItem exchangeItem, int ensembleMemberIndex);
 }

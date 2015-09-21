@@ -648,14 +648,23 @@ public class BBUtils {
         return res;
     }
 
+    public static int[] unbox(Integer[] array) {
+        if (array == null) throw new IllegalArgumentException("array is null.");
+
+        int[] res = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            res[i] = array[i];
+        }
+
+        return res;
+    }
+
 	public static double[] unbox(Double[] array) {
-		if (array == null) {
-			throw new IllegalArgumentException("array is null.");
-		}
+		if (array == null) throw new IllegalArgumentException("array is null.");
 
 		double[] res = new double[array.length];
 		for (int i = 0; i < array.length; i++) {
-			res[i] = array[i].doubleValue();
+			res[i] = array[i];
 		}
 
 		return res;

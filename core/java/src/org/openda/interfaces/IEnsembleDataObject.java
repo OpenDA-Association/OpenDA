@@ -37,6 +37,8 @@ package org.openda.interfaces;
  *
  * If an IoObject implements this interface, then the following method should ignore any ensemble exchange items:
  * getExchangeItems()
+ *
+ * @author Arno Kockx
  */
 public interface IEnsembleDataObject {
 

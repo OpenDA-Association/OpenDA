@@ -149,7 +149,7 @@ public class WdmTimeSeriesTest extends TestCase {
         File templateInputFile = new File(testRunDataDir, templateInputFileName);
 
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        String inputFileName1 = "wdmTimeSeriesTest/work/OBS(ND)1-out.wdm";
+        String inputFileName1 = "wdmTimeSeriesTest/work/OBS(ND)_1.wdm";
         File inputFile1 = new File(testRunDataDir, inputFileName1);
         //delete inputFile if present (e.g. from previous test).
         if (inputFile1.exists()) {
@@ -159,7 +159,7 @@ public class WdmTimeSeriesTest extends TestCase {
         assertTrue(inputFile1.exists());
 
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        String inputFileName2 = "wdmTimeSeriesTest/work/OBS(ND)2-out.wdm";
+        String inputFileName2 = "wdmTimeSeriesTest/work/OBS(ND)_2.wdm";
         File inputFile2 = new File(testRunDataDir, inputFileName2);
         //delete inputFile if present (e.g. from previous test).
         if (inputFile2.exists()) {
@@ -175,7 +175,7 @@ public class WdmTimeSeriesTest extends TestCase {
 
         WdmEnsembleTimeSeriesOutputDataObject wdmEnsembleTimeSeriesOutputDataObject = new WdmEnsembleTimeSeriesOutputDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        String[] arguments = new String[]{"wdmTimeSeriesTest/work/OBS(ND)",
+        String[] arguments = new String[]{"wdmTimeSeriesTest/work/OBS(ND)_",
                 "../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll", "../../../../../model_hspf/native_bin/MESSAGE.WDM",
                 "output", "0", TimeUtils.mjdToString(startModifiedJulianDate), TimeUtils.mjdToString(endModifiedJulianDate),
                 "RCH103.FLOW", "RCH104.BOD"};
@@ -417,7 +417,7 @@ public class WdmTimeSeriesTest extends TestCase {
         File templateInputFile = new File(testRunDataDir, templateInputFileName);
 
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        String inputFileName1 = "wdmTimeSeriesTest/work/OBS(ND)1-out.wdm";
+        String inputFileName1 = "wdmTimeSeriesTest/work/OBS(ND)_1.wdm";
         File inputFile1 = new File(testRunDataDir, inputFileName1);
         //delete inputFile if present (e.g. from previous test).
         if (inputFile1.exists()) {
@@ -427,7 +427,7 @@ public class WdmTimeSeriesTest extends TestCase {
         assertTrue(inputFile1.exists());
 
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        String inputFileName2 = "wdmTimeSeriesTest/work/OBS(ND)2-out.wdm";
+        String inputFileName2 = "wdmTimeSeriesTest/work/OBS(ND)_2.wdm";
         File inputFile2 = new File(testRunDataDir, inputFileName2);
         //delete inputFile if present (e.g. from previous test).
         if (inputFile2.exists()) {
@@ -447,16 +447,17 @@ public class WdmTimeSeriesTest extends TestCase {
         //MJD 55562.0 is 2011-01-01 00:00.
         double endModifiedJulianDate = 55562;
 
-        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        File inputFilePrefix = new File(testRunDataDir, "wdmTimeSeriesTest/work/OBS(ND)");
         String inputClassName = "org.openda.model_hspf.WdmEnsembleTimeSeriesOutputDataObject";
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        File inputFilePrefix = new File(testRunDataDir, "wdmTimeSeriesTest/work/OBS(ND)_");
         //Note 1: DataCopier passes the parent folder of the input/output file as workingDir to the input/output DataObject.
         //Note 2: when running DataCopier from command line, these input arguments should be surrounded by double quotes as a whole, so that it becomes one large argument.
         String inputArgumentsAsOne = "../../../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll ../../../../../../../model_hspf/native_bin/MESSAGE.WDM output 0 "
                 + TimeUtils.mjdToString(startModifiedJulianDate) + " " + TimeUtils.mjdToString(endModifiedJulianDate) + " RCH103.FLOW RCH104.BOD";
         String outputClassName = "org.openda.exchange.dataobjects.NetcdfDataObject";
+        String outputArgumentsAsOne = "true false";
 
-        DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFilePrefix.getAbsolutePath(), "-c", outputClassName, outputFile.getAbsolutePath()});
+        DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFilePrefix.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
 
         //compare actual output file with expected output file.
         //convert netcdf data to text for human readable text comparison.
