@@ -582,6 +582,11 @@
 	</xs:complexType>
 	<xs:complexType name="BoundaryDataObjectXML">
 		<xs:sequence>
+			<xs:element name="className" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The openda class name of the forcing's data object.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="file" type="xs:string">
 				<xs:annotation>
 					<xs:documentation>Name of the forcing's data file.</xs:documentation>
@@ -593,25 +598,20 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="className" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:documentation>The openda:class name of the forcing's data object.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="BoundaryMappingXML">
 		<xs:sequence>
+			<xs:element name="operation" type="openda:NoiseOperationTypesXML">
+				<xs:annotation>
+					<xs:documentation>(set): Replace model ExchangeItem's content by forcing ExchangeItem's content. (add): Add the forcing ExchangeItem's content to the model ExchangeItem's content. (multiply): Multiply the model ExchangeItem's content by the forcing ExchangeItem's content.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="exchangeItem" type="openda:BoundaryExchangeItemXML" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>List the forcing ExchangeItems for which to apply this mapping's operation.</xs:documentation>
+					<xs:documentation>List the forcing ExchangeItems for which to apply this mapping's operation. If this list is not specified, then the specified operation will be used for all forcing ExchangeItems from the specified file (in that case the model ExchangeItems must have the same ids as the forcing ExchangeItems).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="operation" type="openda:NoiseOperationTypesXML" use="required">
-			<xs:annotation>
-				<xs:documentation>(set): Replace model ExchangeItem's content by forcing ExchangeItem's content. (add): Add the forcing ExchangeItem's content to the model ExchangeItem's content. (multiply): Multiply the model ExchangeItem's content by the forcing ExchangeItem's content.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="BoundaryExchangeItemXML">
 		<xs:attribute name="id" type="xs:string" use="required">
@@ -621,7 +621,7 @@
 		</xs:attribute>
 		<xs:attribute name="modelExchangeItemId" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>Identity of the model ExchangeItem on which to impose this forcing ExchangeItem. </xs:documentation>
+				<xs:documentation>Identity of the model ExchangeItem on which to impose this forcing ExchangeItem. If the model ExchangeItem id equals the id of the forcing ExchangeItem, then this attribute is not needed.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
