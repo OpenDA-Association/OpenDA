@@ -354,6 +354,10 @@ public class WflowModelInstance extends Instance implements IModelInstance {
             String id = vectorConfig.getId();
             String sourceExchangeItemId = vectorConfig.getSourceId();
             if (ids.contains(id)){
+				//TODO here wrap source grid exchangeItem in a new SubVector/SelectedIndicesExchangeItem that selects the configured indices in its getValues method,
+				//then use NetcdfScalarExchangeItemWriter to write data for the SubVector/SelectedIndicesExchangeItems (use vectorConfig.getId()
+				//as id for SubVector/SelectedIndicesExchangeItem, this becomes the locationId in the netcdf file).
+				//Then can remove hacks for writing scalars from NetcdfScalarTimeSeriesExchangeItem and NetcdfDataObject. AK
                 newItems[i] = new NetcdfScalarTimeSeriesExchangeItem(1,ids.indexOf(id),id,sourceExchangeItemId, Role.Output,new TimeInfo(outputTimes),netcdfOutputDataObject);
             } else {
                 newItems[i] = new NetcdfScalarTimeSeriesExchangeItem(1,i,id,sourceExchangeItemId, Role.Output,new TimeInfo(outputTimes),netcdfOutputDataObject);
