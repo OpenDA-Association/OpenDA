@@ -9,8 +9,7 @@
 	</uncertaintyModule>
 
 	<!-- IDataObject that reads the observations from a netcdf file -->
-	<!-- <ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject"> -->
-	<ioObject workingDirectory="." className="org.openda.model_efdc_dll.EfdcNetcdfDataObject">
+	<ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject">
 		<!-- netcdf file containing measurements -->
 		<fileName>AlgalGreenAlgae.nc</fileName>
 		<arg>true</arg>

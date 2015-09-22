@@ -25,6 +25,7 @@ import java.util.*;
 
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.iotools.DataCopier;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
@@ -177,8 +178,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		//create input dataObjects.
 		this.inputDataObjects = new IDataObject[inputFilePaths.length];
 		for (int n = 0; n < inputFilePaths.length; n++) {
-			IDataObject inputDataObject = new EfdcNetcdfDataObject();
-			inputDataObject.initialize(this.instanceDir, new String[]{inputFilePaths[n]});
+			IDataObject inputDataObject = new NetcdfDataObject();
+			inputDataObject.initialize(this.instanceDir, new String[]{inputFilePaths[n], "true", "false"});
 			this.inputDataObjects[n] = inputDataObject;
 		}
 		// START JS
