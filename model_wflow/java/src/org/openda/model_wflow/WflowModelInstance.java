@@ -366,7 +366,10 @@ public class WflowModelInstance extends Instance implements IModelInstance {
             i++;
         }
 
-        netcdfOutputDataObject.addScalarExchangeItems(newItems);
+		for (IExchangeItem newItem : newItems) {
+			netcdfOutputDataObject.addExchangeItem(newItem);
+		}
+
         return netcdfOutputDataObject;
     }
 

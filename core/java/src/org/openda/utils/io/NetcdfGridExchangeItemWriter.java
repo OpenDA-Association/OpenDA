@@ -78,7 +78,7 @@ public class NetcdfGridExchangeItemWriter {
 		for (IExchangeItem item : exchangeItems) {
 			IGeometryInfo geometryInfo = item.getGeometryInfo();
 			if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for grid exchange items. Exchange item '" + item.getId()
+				throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for grid exchange items. Exchange item '" + item.getId()
 						+ "' of type " + item.getClass().getSimpleName() + " has no grid geometry info.");
 			}
 			geometryInfos.add(geometryInfo);
@@ -89,7 +89,7 @@ public class NetcdfGridExchangeItemWriter {
 		Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = NetcdfUtils.createGridVariables(netcdfFile, geometryInfos.toArray(new IGeometryInfo[geometryInfos.size()]));
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, null, geometryInfoGridVariablePropertiesMap);
+		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, null, geometryInfoGridVariablePropertiesMap);
 
 		//add global metadata.
 		NetcdfUtils.addGlobalAttributes(netcdfFile);

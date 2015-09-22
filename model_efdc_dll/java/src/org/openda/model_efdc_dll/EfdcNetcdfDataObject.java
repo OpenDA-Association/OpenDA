@@ -64,8 +64,6 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 
 	private Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap = new LinkedHashMap<ITimeInfo, Dimension>();
 	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
-	private int[] uniqueTimeVariableCount = new int[]{0};
-	private int[] uniqueGeometryCount = new int[]{0};
 
 	/**
 	 * Default is false for backwards compatibility.
@@ -311,27 +309,8 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 
 		//store new item.
 		this.exchangeItems.add(newItem);
-
-		//create metadata for the given exchangeItem.
-		NetcdfUtils.createMetadata(this.netcdfFile, newItem, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
-				this.geometryInfoGridVariablePropertiesMap, this.uniqueGeometryCount);
 	}
 
-	/**
-	 * Make sure that any data written to this.netcdfFile object is moved from the cache to the actual netcdf file.
-	 */
-	public void flush() {
-		makeSureFileHasBeenCreated();
-
-		try {
-			this.netcdfFile.flush();
-		} catch (IOException e) {
-			throw new RuntimeException("Error while flushing data to netcdf file '" + this.file.getAbsolutePath()
-					+ "'. Message was: " + e.getMessage(), e);
-		}
-	}
-
-	
 	public void finish() {
 		makeSureFileHasBeenCreated();
 
@@ -367,6 +346,9 @@ public class EfdcNetcdfDataObject implements IComposableDataObject {
 	 * This method also writes the metadata variable values right after the file has been created.
 	 */
 	private void createFile() {
+		//create metadata for all exchange items.
+		NetcdfUtils.createGridMetadata(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
+
 		try {
 			this.netcdfFile.create();
 		} catch (IOException e) {

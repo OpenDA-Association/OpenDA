@@ -33,10 +33,7 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Writes scalar data from one or more IExchangeItems to a NetCDF file. The data is written per time step.
@@ -62,13 +59,7 @@ public class NetcdfScalarExchangeItemWriter {
 		this.exchangeItems = exchangeItems;
 
 		//validate that all exchange items are scalars.
-		for (IExchangeItem item : exchangeItems) {
-			IGeometryInfo geometryInfo = item.getGeometryInfo();
-			if (geometryInfo != null && !(geometryInfo instanceof PointGeometryInfo)) {
-				throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for scalar exchange items. Exchange item '" + item.getId()
-						+ "' of type " + item.getClass().getSimpleName() + " has a grid geometry info.");
-			}
-		}
+		validateExchangeItems(exchangeItems);
 
 		//create netcdf file.
 		try {
@@ -85,11 +76,11 @@ public class NetcdfScalarExchangeItemWriter {
 		//this only adds a station id variable, this does not add spatial variables with coordinates,
 		//because the coordinates are usually not available in exchangeItems that come from models.
 		//gather locationIds.
-		stationIds = NetcdfUtils.getStationIds(exchangeItems);
+		stationIds = NetcdfUtils.getStationIds(Arrays.asList(exchangeItems));
 		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIds.size());
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
+		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
 
 		//add global metadata.
 		NetcdfUtils.addGlobalAttributes(netcdfFile);
@@ -106,6 +97,16 @@ public class NetcdfScalarExchangeItemWriter {
 			NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIds);
 		} catch (Exception e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing station variable values to netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
+		}
+	}
+
+	private void validateExchangeItems(IExchangeItem[] exchangeItems) {
+		for (IExchangeItem item : exchangeItems) {
+			IGeometryInfo geometryInfo = item.getGeometryInfo();
+			if (geometryInfo != null && !(geometryInfo instanceof PointGeometryInfo)) {
+				throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for scalar exchange items. Exchange item '" + item.getId()
+						+ "' of type " + item.getClass().getSimpleName() + " has a grid geometry info.");
+			}
 		}
 	}
 

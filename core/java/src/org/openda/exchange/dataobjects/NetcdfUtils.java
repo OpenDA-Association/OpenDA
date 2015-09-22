@@ -29,10 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.ArrayGeometryInfo;
-import org.openda.exchange.IrregularGridGeometryInfo;
-import org.openda.exchange.QuantityInfo;
-import org.openda.exchange.TimeInfo;
+import org.openda.exchange.*;
 import org.openda.exchange.dataobjects.NetcdfDataObject.GridStartCorner;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IArrayGeometryInfo;
@@ -888,36 +885,55 @@ public class NetcdfUtils {
 	}
 
 	/**
-	 * Creates metadata for the given exchangeItem in the given netcdfFile, if not present yet.
-	 *
-	 * @param netcdfFile
-	 * @param exchangeItem
-	 * @param timeInfoTimeDimensionMap
-	 * @param uniqueTimeVariableCount
-	 * @param geometryInfoGridVariablePropertiesMap
-	 * @param uniqueGeometryCount
+	 * Creates metadata for the given array of exchangeItems in the given netcdfFile, if not present yet.
+	 * Each exchangeItem stores a scalar timeseries.
 	 */
-	public static void createMetadata(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem,
-			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int[] uniqueTimeVariableCount,
-			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, int[] uniqueGeometryCount) {
-
+	public static void createScalarMetadata(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, List<String> stationIdList) {
 		//create time coordinate variable, if not present yet.
+		//assume that all exchangeItems have identical time records. TODO validate this. AK
+		int[] uniqueTimeVariableCount = new int[]{0};
+		ITimeInfo timeInfo = exchangeItems.get(0).getTimeInfo();
 		Dimension timeDimension = null;
-		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
 		if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
 			timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
 		}
 
-		//create spatial coordinate variables, if not present yet.
-		//this only adds spatial dimensions, this does not add spatial variables with coordinates,
-		//because the coordinates are usually not available in exchangeItems that come from models.
-		IGeometryInfo geometryInfo = exchangeItem.getGeometryInfo();
-		if (geometryInfo != null) {//if variable depends on space.
-			createGridVariables(netcdfFile, geometryInfo, uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
-		}
+		//create stations variable.
+		stationIdList.clear();
+		stationIdList.addAll(NetcdfUtils.getStationIds(exchangeItems));
+		Dimension stationDimension = createStationsVariable(netcdfFile, stationIdList.size());
 
-		//create data variable.
-		createDataVariable(netcdfFile, exchangeItem, timeDimension, null, geometryInfoGridVariablePropertiesMap);
+		//create data variables.
+		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
+	}
+
+	/**
+	 * Creates metadata for the given exchangeItem in the given netcdfFile, if not present yet.
+	 */
+	public static void createGridMetadata(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
+			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+
+		int[] uniqueTimeVariableCount = new int[]{0};
+		int[] uniqueGeometryCount = new int[]{0};
+		for (IExchangeItem exchangeItem : exchangeItems) {
+			//create time coordinate variable, if not present yet.
+			Dimension timeDimension = null;
+			ITimeInfo timeInfo = exchangeItem.getTimeInfo();
+			if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
+				timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
+			}
+
+			//create spatial coordinate variables, if not present yet.
+			//this only adds spatial dimensions, this does not add spatial variables with coordinates,
+			//because the coordinates are usually not available in exchangeItems that come from models.
+			IGeometryInfo geometryInfo = exchangeItem.getGeometryInfo();
+			if (geometryInfo != null && !(geometryInfo instanceof PointGeometryInfo)) {//if grid.
+				createGridVariables(netcdfFile, geometryInfo, uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
+			}
+
+			//create data variable.
+			createDataVariable(netcdfFile, exchangeItem, timeDimension, null, geometryInfoGridVariablePropertiesMap);
+		}
 	}
 
 	private static Dimension createTimeVariable(NetcdfFileWriteable netcdfFile, ITimeInfo timeInfo, int[] uniqueTimeVariableCount, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap) {
@@ -982,8 +998,7 @@ public class NetcdfUtils {
 
 		int[] uniqueGeometryCount = new int[]{0};
 		for (IGeometryInfo geometryInfo : geometryInfos) {
-			if (geometryInfo == null) {
-				//if no data.
+			if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {//if scalar.
 				continue;
 			}
 
@@ -1016,7 +1031,7 @@ public class NetcdfUtils {
 				gridVariableProperties.setDimensions(Arrays.asList(faceDimension));
 				geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
 
-			} else if (geometryInfo instanceof ArrayGeometryInfo) {
+			} else if (geometryInfo instanceof ArrayGeometryInfo && !(geometryInfo instanceof PointGeometryInfo)) {
 				String yDimensionName = Y_VARIABLE_NAME + postfix;
 				String xDimensionName = X_VARIABLE_NAME + postfix;
 
@@ -1062,7 +1077,7 @@ public class NetcdfUtils {
 		}
 	}
 
-	public static void createDataVariables(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems, Dimension timeDimension, Dimension stationDimension,
+	public static void createDataVariables(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Dimension timeDimension, Dimension stationDimension,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 		for (IExchangeItem item : exchangeItems) {
 			String variableName = getVariableName(item);
@@ -1106,36 +1121,6 @@ public class NetcdfUtils {
 //			}
 //		}
 	}
-
-    /**
-     * Creates metadata for the given array of exchangeItems in the given netcdfFile, if not present yet.
-     * Each exchangeItem stores a scalar timeseries.
-     *
-     * @param netcdfFile
-     * @param exchangeItems
-     * @param timeInfoTimeDimensionMap
-     * @param uniqueTimeVariableCount
-     * @param stationIdList
-     */
-    public static void createScalarMetadata(NetcdfFileWriteable netcdfFile, IExchangeItem[] exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int[] uniqueTimeVariableCount, List<String> stationIdList) {
-        ArrayList<Dimension> variableDimensions = new ArrayList<Dimension>();
-
-        //create time coordinate variable, if not present yet.
-        //assume that all exchangeItems have identical time records.
-        ITimeInfo timeInfo = exchangeItems[0].getTimeInfo();
-		Dimension timeDimension = null;
-        if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-			timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
-        }
-
-        //create stations variable.
-		stationIdList.clear();
-		stationIdList.addAll(NetcdfUtils.getStationIds(exchangeItems));
-		Dimension stationDimension = createStationsVariable(netcdfFile, stationIdList.size());
-
-		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
-    }
 
     /**
 	 * Creates y and x variables with the given properties.
@@ -1463,7 +1448,7 @@ public class NetcdfUtils {
 		return locationId;
 	}
 
-	public static List<String> getStationIds(IExchangeItem[] exchangeItems) {
+	public static List<String> getStationIds(List<IExchangeItem> exchangeItems) {
 		Set<String> uniqueStationIds = new LinkedHashSet<String>();
 		for (IExchangeItem item : exchangeItems) {
 			uniqueStationIds.add(getStationId(item));
@@ -1487,5 +1472,33 @@ public class NetcdfUtils {
 		netcdfFile.addVariableAttribute(stationIdVariableName, CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE);
 
 		return stationDimension;
+	}
+
+	public static boolean isGrid(IExchangeItem item) {
+		IGeometryInfo geometryInfo = item.getGeometryInfo();
+		if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {//if scalar.
+			return false;
+		} else if (geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo) {//if grid.
+			return true;
+		} else {
+			throw new RuntimeException("Exchange item '" + item.getId() + "' of type " + item.getClass().getSimpleName() + " has an unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
+		}
+	}
+
+	/**
+	 * Validates that either all exchange items are scalars or all exchange items are grids.
+	 *
+	 * @param exchangeItems
+	 */
+	public static void validateExchangeItems(List<IExchangeItem> exchangeItems) {
+		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
+		if (exchangeItems.isEmpty()) throw new IllegalArgumentException("exchangeItems.isEmpty()");
+
+		boolean grids = isGrid(exchangeItems.get(0));
+		for (IExchangeItem item : exchangeItems) {
+			if (isGrid(item) != grids) {
+				throw new RuntimeException("Not all exchange items are of the same geometryInfo type.");
+			}
+		}
 	}
 }

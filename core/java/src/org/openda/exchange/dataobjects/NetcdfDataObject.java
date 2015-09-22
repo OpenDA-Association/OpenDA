@@ -132,8 +132,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	private Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap = new LinkedHashMap<ITimeInfo, Dimension>();
     private List<String> stationIdList = new ArrayList<String>();
 	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
-	private int[] uniqueTimeVariableCount = new int[]{0};
-	private int[] uniqueGeometryCount = new int[]{0};
 
 	/**
 	 * Corner at which the grid values in the model start.
@@ -438,25 +436,8 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
     }
 
 	public void addExchangeItem(IExchangeItem item) {
-        IExchangeItem newItem = storeExchangeItem(item);
-
-		//create metadata for the given exchangeItem.
-		//TODO move this call to start of method createFile and merge method NetcdfUtils.createScalarMetadata with method NetcdfUtils.createMetadata. AK
-		NetcdfUtils.createMetadata(this.netcdfFile, newItem, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
-				this.geometryInfoGridVariablePropertiesMap, this.uniqueGeometryCount);
+        storeExchangeItem(item);
 	}
-
-    public void addScalarExchangeItems(IExchangeItem[] items) {
-        IExchangeItem[] newItems = new IExchangeItem[items.length];
-        for (int i=0; i<items.length; i++){
-            newItems[i] = storeExchangeItem(items[i]);
-        }
-
-        //create metadata for the given exchangeItem.
-		//TODO move this call to start of method createFile and merge method NetcdfUtils.createScalarMetadata with method NetcdfUtils.createMetadata. AK
-        NetcdfUtils.createScalarMetadata(this.netcdfFile, newItems, this.timeInfoTimeDimensionMap, this.uniqueTimeVariableCount,
-				this.stationIdList);
-    }
 
     private IExchangeItem storeExchangeItem(IExchangeItem item) {
         if (!this.netcdfFile.isDefineMode()) {
@@ -479,7 +460,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         return newItem;
     }
 
-    
 	public void finish() {
 		makeSureFileHasBeenCreated();
 
@@ -495,8 +475,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		try {
 			this.netcdfFile.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Error while closing netcdf file '" + this.file.getAbsolutePath()
-					+ "'. Message was: " + e.getMessage(), e);
+			throw new RuntimeException("Error while closing netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 		}
 	}
 
@@ -511,24 +490,31 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 
 	/**
 	 * Actually creates the new netcdf file. This can be done only once and has to be done before any data can be written
-	 * and has to be done after all variables and attributes have been created.
-	 * This method also writes the metadata variable values right after the file has been created.
+	 * and has to be done after all new exchange items have been added.
+	 * This method also creates the metadata variables just before the file is created and writes the metadata variable values right after the file has been created.
 	 */
 	private void createFile() {
+		//create metadata for all exchange items at the last possible moment, so that information of all exchange items is available while creating the metadata.
+		//This is needed for e.g. scalar time series, since in that case the file should contain a single station dimension and variable that contains all stations.
+		NetcdfUtils.validateExchangeItems(this.exchangeItems);
+		boolean scalars = !NetcdfUtils.isGrid(this.exchangeItems.get(0));
+		if (scalars) {
+			NetcdfUtils.createScalarMetadata(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.stationIdList);
+		} else {//if grids.
+			NetcdfUtils.createGridMetadata(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
+		}
+
 		try {
 			this.netcdfFile.create();
 		} catch (IOException e) {
-			throw new RuntimeException("Error while creating new netcdf file '" + this.netcdfFile.getLocation()
-					+ "'. Message was: " + e.getMessage(), e);
+			throw new RuntimeException("Error while creating new netcdf file '" + this.netcdfFile.getLocation() + "'. Message was: " + e.getMessage(), e);
 		}
 
 		if (!this.lazyWriting) {//if lazyWriting is false, then here write the metadata variable values, i.e. times and spatial coordinates.
 			try {
-				NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap,
-                        this.stationIdList);
+				NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap, this.stationIdList);
 			} catch (Exception e) {
-				throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath()
-						+ "'. Message was: " + e.getMessage(), e);
+				throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -551,11 +537,9 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
                     // scalar time series
                     if (iItem==0){
                         try {
-                            NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap,
-                                    this.stationIdList);
+                            NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap, this.stationIdList);
                         } catch (Exception e) {
-                            throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath()
-                                    + "'. Message was: " + e.getMessage(), e);
+                            throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
                         }
                     }
                     int nTime = exchangeItem.getTimeInfo().getTimes().length;
