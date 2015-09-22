@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
@@ -39,6 +38,8 @@ import org.openda.utils.Vector;
  * @author Arno Kockx
  */
 public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TODO Please extend TimeSeries in the future or perhaps replace by that class
+	//TODO Martin: we cannot use TimeSeries here, because a TimeSeries stores all data in memory. The Netcdf exchangeItems have been added to make
+	//it possible to store data in a NetCDF file and only read/write part of the data when it is needed. AK
 
 	private final int locationDimensionIndex;
 	private final int locationIndex;
@@ -49,10 +50,8 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	/**
 	* ITimeInfo that stores all times.
 	*/
-//	private final ITimeInfo allTimesInfo;
 	private final IQuantityInfo quantityInfo;
 	private final NetcdfDataObject netcdfDataObject;
-    private final String stationId;
 
     /**
 	 * ITimeInfo that stores only the times for which there are non-missing values.
@@ -68,11 +67,9 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 		this.locationIndex = locationIndex;
 		//id = "locationId.parameterId"
 		this.id = locationId + "." + parameterId;
-        this.stationId = locationId;
 		this.realizationDimensionIndex = realizationDimensionIndex;
 		this.realizationIndex = realizationIndex;
 		this.role = role;
-//		this.allTimesInfo = allTimesInfo;
 		this.quantityInfo = new QuantityInfo(parameterId, "unknown");
 		this.netcdfDataObject = netcdfDataObject;
 

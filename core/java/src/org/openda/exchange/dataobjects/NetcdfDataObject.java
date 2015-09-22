@@ -275,6 +275,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 			int dimensionCount = variable.getDimensions().size();
 
 			// Test and correct for ensembleIndex named "realization".
+			//TODO Edwin: realization dimension can be called anything. Instead search for a dimension for which there is a coordinate variable that has standard_name "realization". AK
 			int realizationDimensionIndex = variable.findDimensionIndex("realization");
 			if (realizationDimensionIndex != -1) {
 				dimensionCount -= 1;
@@ -350,7 +351,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	/**
 	 * Read data from netcdf file.
 	 *
-	 * @param file
 	 * @throws IOException
 	 */
 	private void readNetcdfFile() throws IOException  {
@@ -383,11 +383,10 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 				ArrayExchangeItem arrayBasedExchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.InOut);
 				arrayBasedExchangeItem.setQuantityInfo(new QuantityInfo(exchangeItemId, variable.getUnitsString()));
 				IArrayTimeInfo newTimeInfo = NetcdfUtils.createTimeInfo(variable, netcdfFile, timeInfoCache);
-				if (newTimeInfo != null) {
-					arrayBasedExchangeItem.setTimeInfo(newTimeInfo);
-				} else {
-					continue;
-				}
+				//skip variables that do not depend on time.
+				if (newTimeInfo == null) continue;
+
+				arrayBasedExchangeItem.setTimeInfo(newTimeInfo);
 				//TODO cache variables with spatial coordinates. AK
 				arrayBasedExchangeItem.setGeometryInfo(NetcdfUtils.createGeometryInfo(variable, netcdfFile));
 				arrayBasedExchangeItem.setArray((IArray) NetcdfUtils.readData(variable));
@@ -436,10 +435,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
     }
 
 	public void addExchangeItem(IExchangeItem item) {
-        storeExchangeItem(item);
-	}
-
-    private IExchangeItem storeExchangeItem(IExchangeItem item) {
         if (!this.netcdfFile.isDefineMode()) {
             throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
         }
@@ -448,16 +443,15 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         if (this.lazyWriting) {
             //copy exchange item.
             ArrayExchangeItem itemCopy = new ArrayExchangeItem(item.getId(), item.getRole());
-            itemCopy.copyValuesFromItem((IExchangeItem) item);
+            itemCopy.copyValuesFromItem(item);
             newItem = itemCopy;
         } else {
             //add exchange item.
-            newItem = (IExchangeItem) item;
+            newItem = item;
         }
 
         //store new item.
         this.exchangeItems.add(newItem);
-        return newItem;
     }
 
 	public void finish() {
