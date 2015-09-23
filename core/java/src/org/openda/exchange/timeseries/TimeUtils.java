@@ -488,6 +488,7 @@ public class TimeUtils {
 	 * @param timeHorizon
 	 * @return times
 	 */
+    @Deprecated
 	public static double[] getOutputTimes(Time timeHorizon) {
 		//to avoid rounding errors, here first round period and timeStep to whole seconds.
 		long startTime = Time.mjdToMillies(timeHorizon.getBeginTime().getMJD());

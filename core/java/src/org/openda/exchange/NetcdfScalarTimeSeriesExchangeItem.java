@@ -40,6 +40,7 @@ import org.openda.utils.Vector;
 public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TODO Please extend TimeSeries in the future or perhaps replace by that class
 	//TODO Martin: we cannot use TimeSeries here, because a TimeSeries stores all data in memory. The Netcdf exchangeItems have been added to make
 	//it possible to store data in a NetCDF file and only read/write part of the data when it is needed. AK
+	//TODO remove hacks for writing per timeStep by using NetcdfScalarExchangeItemWriter, then replace this exchangeItem with TimeSeries. AK
 
 	private final int locationDimensionIndex;
 	private final int locationIndex;

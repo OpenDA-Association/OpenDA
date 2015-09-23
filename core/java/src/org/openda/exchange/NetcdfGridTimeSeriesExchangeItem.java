@@ -32,6 +32,7 @@ import org.openda.interfaces.*;
  * @author Arno Kockx
  */
 public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchangeItem {
+	//TODO remove hacks for writing per timeStep by using NetcdfGridExchangeItemWriter. AK
 
 	private final ITimeInfo timeInfo;
 	private final String id;

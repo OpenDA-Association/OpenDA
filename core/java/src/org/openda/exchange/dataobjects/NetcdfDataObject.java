@@ -212,8 +212,8 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 			//create file here, exchange items need to be added using method addExchangeItem.
 			//create new netcdf file.
 			try {
-				//this.netcdfFile = NetcdfFileWriteable.createNew(this.file.getAbsolutePath(), true); for speeding up based on mail Arno changed to
-				this.netcdfFile = NetcdfFileWriteable.createNew(this.file.getAbsolutePath(), false);
+				//set fill to true, otherwise missing values will not be written for scalar time series variables that do not have data for all stations.
+				this.netcdfFile = NetcdfFileWriteable.createNew(this.file.getAbsolutePath(), true);
 			} catch (IOException e) {
 				throw new RuntimeException("Error while creating handle for new netcdf file '" + this.file.getAbsolutePath()
 						+ "'. Message was: " + e.getMessage(), e);
@@ -442,6 +442,8 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         IExchangeItem newItem;
         if (this.lazyWriting) {
             //copy exchange item.
+			//here need to copy values to a temporary in-memory exchangeItem, because the values in a netcdf file cannot be written until after all metadata has been added.
+			//In other words: first add all exchangeItems, then add metadata for all exchangeItems, then create netcdf file, then write values for all exchangeItems.
             ArrayExchangeItem itemCopy = new ArrayExchangeItem(item.getId(), item.getRole());
             itemCopy.copyValuesFromItem(item);
             newItem = itemCopy;

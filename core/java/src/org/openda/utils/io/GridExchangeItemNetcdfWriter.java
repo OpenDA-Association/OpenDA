@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Arno Kockx
  */
-public class NetcdfGridExchangeItemWriter {
+public class GridExchangeItemNetcdfWriter {
 	private final IExchangeItem[] exchangeItems;
 	private final NetcdfFileWriteable netcdfFile;
 
@@ -52,7 +52,7 @@ public class NetcdfGridExchangeItemWriter {
 	private int currentTimeIndex = -1;
 	private final List<Double> timesWrittenSoFar = new ArrayList<Double>();
 
-	public NetcdfGridExchangeItemWriter(IExchangeItem[] exchangeItems, File outputFile) {
+	public GridExchangeItemNetcdfWriter(IExchangeItem[] exchangeItems, File outputFile) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
 		if (exchangeItems.length < 1) throw new IllegalArgumentException("exchangeItems.length < 1");
 		if (outputFile == null) throw new IllegalArgumentException("outputFile == null");
@@ -160,11 +160,7 @@ public class NetcdfGridExchangeItemWriter {
 	private void writeData() {
 		for (IExchangeItem item : exchangeItems) {
 			//get active values for current time.
-			if (item.getValuesType() != IExchangeItem.ValueType.IVectorType) {
-				throw new UnsupportedOperationException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
-						+ " because its value type is not " + IExchangeItem.ValueType.IVectorType);
-			}
-			double[] values = ((IVector) item.getValues()).getValues();
+			double[] values = item.getValuesAsDoubles();
 
 			//add missing values for non-active grid cells.
 			IGeometryInfo geometryInfo = item.getGeometryInfo();

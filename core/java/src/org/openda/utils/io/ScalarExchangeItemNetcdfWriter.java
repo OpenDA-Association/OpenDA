@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Arno Kockx
  */
-public class NetcdfScalarExchangeItemWriter {
+public class ScalarExchangeItemNetcdfWriter {
 	private final IExchangeItem[] exchangeItems;
 	private final NetcdfFileWriteable netcdfFile;
 	private final List<String> stationIds;
@@ -51,7 +51,7 @@ public class NetcdfScalarExchangeItemWriter {
 	private int currentTimeIndex = -1;
 	private final List<Double> timesWrittenSoFar = new ArrayList<Double>();
 
-	public NetcdfScalarExchangeItemWriter(IExchangeItem[] exchangeItems, File outputFile) {
+	public ScalarExchangeItemNetcdfWriter(IExchangeItem[] exchangeItems, File outputFile) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
 		if (exchangeItems.length < 1) throw new IllegalArgumentException("exchangeItems.length < 1");
 		if (outputFile == null) throw new IllegalArgumentException("outputFile == null");
@@ -63,6 +63,7 @@ public class NetcdfScalarExchangeItemWriter {
 
 		//create netcdf file.
 		try {
+			//set fill to true, otherwise missing values will not be written for variables that do not have data for all stations.
 			netcdfFile = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath(), true);
 		} catch (IOException e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while opening netcdf file " + outputFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
@@ -162,11 +163,7 @@ public class NetcdfScalarExchangeItemWriter {
 	private void writeData() {
 		for (IExchangeItem item : exchangeItems) {
 			//get active values for current time.
-			if (item.getValuesType() != IExchangeItem.ValueType.IVectorType) {
-				throw new UnsupportedOperationException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
-						+ " because its value type is not " + IExchangeItem.ValueType.IVectorType);
-			}
-			double[] values = ((IVector) item.getValues()).getValues();
+			double[] values = item.getValuesAsDoubles();
 			if (values == null || values.length != 1) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Cannot write data from exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
 						+ " because it has no value or stores multiple values for time index " + currentTimeIndex);

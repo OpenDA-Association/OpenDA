@@ -34,11 +34,11 @@ import java.util.*;
  */
 //TODO move AnalysisOutputXML to core xsd
 public class AnalysisDataWriter {
-	private final NetcdfScalarExchangeItemWriter beforeAnalysisScalarWriter;
-	private final NetcdfGridExchangeItemWriter beforeAnalysisGridWriter;
+	private final ScalarExchangeItemNetcdfWriter beforeAnalysisScalarWriter;
+	private final GridExchangeItemNetcdfWriter beforeAnalysisGridWriter;
 
-	private final NetcdfScalarExchangeItemWriter afterAnalysisScalarWriter;
-	private final NetcdfGridExchangeItemWriter afterAnalysisGridWriter;
+	private final ScalarExchangeItemNetcdfWriter afterAnalysisScalarWriter;
+	private final GridExchangeItemNetcdfWriter afterAnalysisGridWriter;
 
 	/**
 	 * @param exchangeItems with data to write.
@@ -79,14 +79,14 @@ public class AnalysisDataWriter {
 		}
 	}
 
-	private NetcdfScalarExchangeItemWriter createScalarWriter(List<IExchangeItem> scalarItems, File outputFolder, String outputFileName) {
+	private ScalarExchangeItemNetcdfWriter createScalarWriter(List<IExchangeItem> scalarItems, File outputFolder, String outputFileName) {
 		File outputFile = new File(outputFolder, outputFileName);
-		return new NetcdfScalarExchangeItemWriter(scalarItems.toArray(new IExchangeItem[scalarItems.size()]), outputFile);
+		return new ScalarExchangeItemNetcdfWriter(scalarItems.toArray(new IExchangeItem[scalarItems.size()]), outputFile);
 	}
 
-	private NetcdfGridExchangeItemWriter createGridWriter(List<IExchangeItem> gridItems, File outputFolder, String outputFileName) {
+	private GridExchangeItemNetcdfWriter createGridWriter(List<IExchangeItem> gridItems, File outputFolder, String outputFileName) {
 		File outputFile = new File(outputFolder, outputFileName);
-		return new NetcdfGridExchangeItemWriter(gridItems.toArray(new IExchangeItem[gridItems.size()]), outputFile);
+		return new GridExchangeItemNetcdfWriter(gridItems.toArray(new IExchangeItem[gridItems.size()]), outputFile);
 	}
 
 	public void writeDataBeforeAnalysis() {

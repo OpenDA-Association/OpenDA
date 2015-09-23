@@ -37,7 +37,7 @@ import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
 import org.openda.utils.io.FileBasedModelState;
-import org.openda.utils.io.NetcdfGridExchangeItemWriter;
+import org.openda.utils.io.GridExchangeItemNetcdfWriter;
 
 import java.io.File;
 import java.util.*;
@@ -80,8 +80,8 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	private FileBasedModelState stateStoredOnDisk = null;
 
 	private final IDataObject[] inputDataObjects;
-	private NetcdfGridExchangeItemWriter gridModelOutputWriter;
-	private NetcdfGridExchangeItemWriter gridAnalysisOutputWriter;
+	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
+	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
     private IDataObject modelScalarOutputDataObject;
     private IDataObject analysisScalarOutputDataObject = null;
 	private boolean firstTime = true;
@@ -318,7 +318,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 //        }
 	}
 
-	private NetcdfGridExchangeItemWriter createGridOutputWriter(File netcdfOutputFile) {
+	private GridExchangeItemNetcdfWriter createGridOutputWriter(File netcdfOutputFile) {
 		List<IExchangeItem> items = new ArrayList<IExchangeItem>();
 
         if (this.outputExchangeItemIds==null){
@@ -340,7 +340,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
             }
         }
 
-        return new NetcdfGridExchangeItemWriter(items.toArray(new IExchangeItem[items.size()]), netcdfOutputFile);
+        return new GridExchangeItemNetcdfWriter(items.toArray(new IExchangeItem[items.size()]), netcdfOutputFile);
     }
 
     private IDataObject createScalarOutputDataObject(String netcdfOutputFilePath, double[] outputTimes) {

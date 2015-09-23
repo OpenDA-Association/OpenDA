@@ -41,7 +41,7 @@ import org.openda.utils.Instance;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.FileBasedModelState;
-import org.openda.utils.io.NetcdfGridExchangeItemWriter;
+import org.openda.utils.io.GridExchangeItemNetcdfWriter;
 
 /**
  * Model instance of an EFDC model. This communicates in-memory with the dll version of the EFDC model.
@@ -66,8 +66,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private final Map<String, IExchangeItem> stateExchangeItems = new LinkedHashMap<String, IExchangeItem>();
 
 	private IDataObject[] inputDataObjects;
-	private NetcdfGridExchangeItemWriter gridModelOutputWriter;
-	private NetcdfGridExchangeItemWriter gridAnalysisOutputWriter;
+	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
+	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
 	private boolean firstTime = true;
 
 	/**
@@ -207,9 +207,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		this.gridAnalysisOutputWriter = createOutputWriter(analysisOutputFile);
 	}
 
-	private NetcdfGridExchangeItemWriter createOutputWriter(File outputFile) {
+	private GridExchangeItemNetcdfWriter createOutputWriter(File outputFile) {
 		Collection<IExchangeItem> items = this.stateExchangeItems.values();
-		return new NetcdfGridExchangeItemWriter(items.toArray(new IExchangeItem[items.size()]), outputFile);
+		return new GridExchangeItemNetcdfWriter(items.toArray(new IExchangeItem[items.size()]), outputFile);
 	}
 
 	/*************************************
