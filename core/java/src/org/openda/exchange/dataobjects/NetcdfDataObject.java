@@ -631,14 +631,16 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	}
 
     public void writeDataForExchangeItemForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex, double[] values) {
-        Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         makeSureFileHasBeenCreated();
+
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFile, variable, timeDimensionIndex, timeIndex, values);
     }
 
     public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationIndex, double[] values) {
-        Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
-        makeSureFileHasBeenCreated();
+		makeSureFileHasBeenCreated();
+
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		if (stationIndex == -1) {
 			stationIndex = stationIdList.indexOf(NetcdfUtils.getStationId(item));
 		}
