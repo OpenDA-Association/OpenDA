@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.openda.exchange.dataobjects.NetcdfDataObject;
-import org.openda.exchange.iotools.DataDumper;
 import org.openda.interfaces.IDataObject;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -43,7 +42,7 @@ public class DataDumperTest extends TestCase {
 		System.out.println("==============================================================================");
 
 		IDataObject netcdfDataObject = new NetcdfDataObject();
-		netcdfDataObject.initialize(this.testRunDataDir, new String[]{"fews_wind_small.nc"});
+		netcdfDataObject.initialize(this.testRunDataDir, new String[]{"fews_wind_small.nc", "false", "false"});
 		DataDumper dumper = new DataDumper(netcdfDataObject);
 		dumper.setOutputDir(testRunDataDir);
 		dumper.dump();
@@ -55,6 +54,6 @@ public class DataDumperTest extends TestCase {
 		System.out.println("==============================================================================");
 
 		File file = new File(testRunDataDir, "fews_wind_small.nc");
-		DataDumper.main(new String[]{file.getAbsolutePath(), "org.openda.exchange.dataobjects.NetcdfDataObject"});
+		DataDumper.main(new String[]{"-c", "org.openda.exchange.dataobjects.NetcdfDataObject", "-a", "false false", file.getAbsolutePath()});
 	}
 }

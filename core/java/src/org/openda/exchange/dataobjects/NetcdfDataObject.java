@@ -435,18 +435,35 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         return null;
     }
 
+	/**
+	 * Add a <b>copy</b> of exchangeItem to this dataObject. Since a dataObject owns its exchangeItems, it is
+	 * possible that the actual work is postponed until the finish method is called, so modification of an
+	 * exchangeItem after adding it, but before calling finish, may alter the outcome.
+	 * Throws an UnsupportedOperationException when the dataObject does not support the addition of items.
+	 * A RuntimeException is thrown if the type of data can not be handled. Note that in general, it is also
+	 * possible that the type of echchangeItem can be handled, but with degraded meta data.
+	 *
+	 * @param item  exchangeItem to be duplicated
+	 */
 	public void addExchangeItem(IExchangeItem item) {
         if (!this.netcdfFile.isDefineMode()) {
             throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
         }
+		if (!NetcdfUtils.isScalar(item)) {
+			throw new RuntimeException(getClass().getSimpleName() + ".addExchangeItem() only implemented for scalar exchange items.");
+		}
 
-		//store new item.
-        this.exchangeItems.add(item);
+		//create a new internal exchangeItem in this dataObject that matches the given external exchangeItem.
+		//This internal exchangeItem can then be used later to copy data from the matching external exchangeItem.
+		//assume here that stationDimensionIndex is always 1.
+		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), Role.Output, item.getTimeInfo(), this);
+        this.exchangeItems.add(newItem);
     }
 
 	public void finish() {
 		makeSureFileHasBeenCreated();
 
+		//TODO remove. This is only used for SWAN state files (see SwanStateNetcdfFileTest.testSwanNetcdfStateFile_1). AK
 		if (this.lazyWriting) {
 			//write data to netcdf file.
 			Results.putMessage(this.getClass().getSimpleName() + ": writing data to file " + this.file.getAbsolutePath());
@@ -454,8 +471,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		} else {//if lazyWriting is false, then the variable data has already been written to netcdf file in exchangeItem.setValues methods,
 			//and the metadata variable values have already been written to netcdf file in method createFile.
 			//do nothing.
-			//TODO when lazyWriting is false, then still need to write values for exchangeItems that have been added using method addExchangeItem and that are not of type
-			//directAccess (for the moment use instance of to determine type) -> add list to keep track of these items, unless this happens in DataCopier. AK
 		}
 
 		try {
@@ -482,12 +497,14 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	private void createFile() {
 		//create metadata for all exchange items at the last possible moment, so that information of all exchange items is available while creating the metadata.
 		//This is needed for e.g. scalar time series, since in that case the file should contain a single station dimension and variable that contains all stations.
-		NetcdfUtils.validateExchangeItems(this.exchangeItems);
-		boolean scalars = !NetcdfUtils.isGrid(this.exchangeItems.get(0));
-		if (scalars) {
-			NetcdfUtils.createMetadataAndDataVariablesForScalars(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.stationIdList);
-		} else {//if grids.
-			NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
+		if (!exchangeItems.isEmpty()) {
+			validateExchangeItems(this.exchangeItems);
+			boolean scalars = NetcdfUtils.isScalar(this.exchangeItems.get(0));
+			if (scalars) {
+				NetcdfUtils.createMetadataAndDataVariablesForScalars(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.stationIdList);
+			} else {//if grids.
+				NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
+			}
 		}
 
 		try {
@@ -506,32 +523,34 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	}
 
 	/**
+	 * Validates that either all exchange items are scalars or all exchange items are grids.
+	 *
+	 * @param exchangeItems
+	 */
+	private void validateExchangeItems(List<IExchangeItem> exchangeItems) {
+		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
+		if (exchangeItems.isEmpty()) throw new IllegalStateException("exchangeItems.isEmpty()");
+
+		boolean scalar = NetcdfUtils.isScalar(exchangeItems.get(0));
+		for (IExchangeItem item : exchangeItems) {
+			if (NetcdfUtils.isScalar(item) != scalar) {
+				throw new RuntimeException(getClass().getSimpleName() + ": Not all exchange items are of the same geometryInfo type. "
+						+ getClass().getSimpleName() + " can only write a NetCDF file for exchange items that are all of the same geometryInfo type.");
+			}
+		}
+	}
+
+	/**
 	 * Writes all data for the given exchangeItems to the given netcdfFile.
 	 * Only executed when this.lazyWriting = true
      *
 	 * @param netcdfFile
 	 * @param exchangeItems to write.
 	 */
+	//TODO remove. This is only used for SWAN state files (see SwanStateNetcdfFileTest.testSwanNetcdfStateFile_1). AK
 	private void writeData(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems) {
-		int iItem = 0;
 		for (IExchangeItem exchangeItem : exchangeItems){
-            IGeometryInfo geometryInfo = exchangeItem.getGeometryInfo();
-            if (geometryInfo != null){
-                int latLength = ((ArrayGeometryInfo) geometryInfo).getLatitudeArray().length();
-                int lonLength = ((ArrayGeometryInfo) geometryInfo).getLongitudeArray().length();
-                if (latLength == lonLength && latLength == 1) {
-                    // scalar time series
-                    int nTime = exchangeItem.getTimeInfo().getTimes().length;
-                    double[] values = ((IArray) exchangeItem.getValues()).getValuesAsDoubles(); // for the time being only for TimeSeries which is of type IArray
-                    for (int iTime=0; iTime<nTime; iTime++){
-                        writeDataForExchangeItemForSingleTimeSingleLocation(exchangeItem,iTime,iItem,new double[]{values[iTime]});
-                    }
-                    iItem++;
-                } else {
-                    // 2D/gridded time series
-                    throw new UnsupportedOperationException("method writeData not yet implemented for 2D data."+this.getClass().getName());
-                }
-            } else {
+			if (exchangeItem.getGeometryInfo() == null){
 				//TODO Julius: please remove this hack for SWAN state files. AK
                 //TODO: replace this SWAN specific implementation with the above generic ones.
 				String exchangeItemId = exchangeItem.getId();
@@ -620,6 +639,12 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
     public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationIndex, double[] values) {
         Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         makeSureFileHasBeenCreated();
+		if (stationIndex == -1) {
+			stationIndex = stationIdList.indexOf(NetcdfUtils.getStationId(item));
+		}
+		if (stationIndex == -1) {
+			throw new IllegalStateException("stationIndex == -1");
+		}
         NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFile, variable, timeIndex, stationIndex, values);
     }
 }

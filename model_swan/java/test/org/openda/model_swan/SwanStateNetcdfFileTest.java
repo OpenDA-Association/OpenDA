@@ -25,7 +25,7 @@ public class SwanStateNetcdfFileTest extends TestCase {
 	    public void testSwanNetcdfStateFile_1() throws IOException {
 			File stateFilesTestDir = new File(testData.getTestRunDataDir(), "StateFiles");
 			NetcdfDataObject swanStateNetcdf = new NetcdfDataObject();
-			swanStateNetcdf.initialize(stateFilesTestDir,new String[]{"s00nc_a.nc"});
+			swanStateNetcdf.initialize(stateFilesTestDir,new String[]{"s00nc_a.nc", "false", "true"});
 			IExchangeItem waveSpectrum = swanStateNetcdf.getDataObjectExchangeItem("wave_spectrum");
 			double[] values = waveSpectrum.getValuesAsDoubles();
 			assertEquals("values[9]",0.0,0.0,1e-8);
@@ -36,7 +36,7 @@ public class SwanStateNetcdfFileTest extends TestCase {
 			waveSpectrum.setValuesAsDoubles(values);
 			swanStateNetcdf.finish();
 			NetcdfDataObject swanStateNetcdf2 = new NetcdfDataObject();
-			swanStateNetcdf2.initialize(stateFilesTestDir,new String[]{"s00nc_a.nc"});
+			swanStateNetcdf2.initialize(stateFilesTestDir,new String[]{"s00nc_a.nc", "false", "false"});
 			waveSpectrum = swanStateNetcdf2.getDataObjectExchangeItem("wave_spectrum");
 			double[] values2 = waveSpectrum.getValuesAsDoubles();
 			assertEquals("values[9]",values[9],values2[9],1e-8);

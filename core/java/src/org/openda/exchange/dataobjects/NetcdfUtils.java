@@ -864,7 +864,7 @@ public class NetcdfUtils {
 		return variable;
 	}
 
-	private static String getVariableName(IExchangeItem item) {
+	public static String getVariableName(IExchangeItem item) {
 		IQuantityInfo quantityInfo = item.getQuantityInfo();
 		if (quantityInfo == null) {
 			throw new RuntimeException(NetcdfUtils.class.getSimpleName() + ": Can only write data for exchangeItems that contain a valid IQuantityInfo object.");
@@ -1474,31 +1474,14 @@ public class NetcdfUtils {
 		return stationDimension;
 	}
 
-	public static boolean isGrid(IExchangeItem item) {
+	public static boolean isScalar(IExchangeItem item) {
 		IGeometryInfo geometryInfo = item.getGeometryInfo();
 		if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {//if scalar.
-			return false;
-		} else if (geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo) {//if grid.
 			return true;
+		} else if (geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo) {//if grid.
+			return false;
 		} else {
 			throw new RuntimeException("Exchange item '" + item.getId() + "' of type " + item.getClass().getSimpleName() + " has an unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
-		}
-	}
-
-	/**
-	 * Validates that either all exchange items are scalars or all exchange items are grids.
-	 *
-	 * @param exchangeItems
-	 */
-	public static void validateExchangeItems(List<IExchangeItem> exchangeItems) {
-		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
-		if (exchangeItems.isEmpty()) throw new IllegalArgumentException("exchangeItems.isEmpty()");
-
-		boolean grids = isGrid(exchangeItems.get(0));
-		for (IExchangeItem item : exchangeItems) {
-			if (isGrid(item) != grids) {
-				throw new RuntimeException("Not all exchange items are of the same geometryInfo type.");
-			}
 		}
 	}
 }

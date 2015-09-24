@@ -22,9 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Set;
 
 import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
@@ -32,7 +32,6 @@ import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 import org.openda.interfaces.IExchangeItem.ValueType;
-import org.openda.utils.Reflection;
 
 /**
  * This class contains utility methods for IDataObjects and IExchangeItems.
@@ -147,10 +146,11 @@ public class IoUtils {
 	public static String getDefaultClass(String fileName){
 		String result=null;
 		HashMap<String,String> classNames = new HashMap<String,String>();
+		//TODO Martin: use .class.getName() so that this code does not break when classes are renamed or moved. AK
 		classNames.put("noos","org.openda.exchange.dataobjects.NoosDataObject");
 		classNames.put("tab","org.openda.model_swan.SwanResultsTimeDependent");
 		classNames.put("xml","nl.deltares.openda.fews.io.PiTimeSeriesDataObject");
-		classNames.put("nc", "org.openda.exchange.dataobjects.NetcdfDataObject");
+		classNames.put("nc", NetcdfDataObject.class.getName());
 		classNames.put("txt", "org.openda.exchange.dataobjects.TestDataObject");
 
 		String extension=fileName.replaceFirst(".*\\.", "");

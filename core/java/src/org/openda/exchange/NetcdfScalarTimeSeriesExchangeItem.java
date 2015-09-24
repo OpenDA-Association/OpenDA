@@ -40,10 +40,14 @@ import org.openda.utils.Vector;
 public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TODO Please extend TimeSeries in the future or perhaps replace by that class
 	//TODO Martin: we cannot use TimeSeries here, because a TimeSeries stores all data in memory. The Netcdf exchangeItems have been added to make
 	//it possible to store data in a NetCDF file and only read/write part of the data when it is needed. AK
-	//TODO remove hacks for writing per timeStep by using NetcdfScalarExchangeItemWriter, then replace this exchangeItem with TimeSeries. AK
+	//TODO remove hacks for writing per timeStep by using NetcdfScalarExchangeItemWriter. AK	
+	//TODO NetcdfScalarTimeSeriesExchangeItem should only be created by NetcdfDataObject itself, either in method NetcdfDataObject.createExchangeItems or in method NetcdfDataObject.addExchangeItem.
+	//Outside of NetcdfDataObject, use other exchangeItems. AK
 
+	//only used for reading.
 	private final int locationDimensionIndex;
 	private final int locationIndex;
+
 	private final int realizationDimensionIndex;
 	private final int realizationIndex;
 	private final String id;
@@ -230,37 +234,36 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 					+ " exchange item: NetcdfScalarTimeSeriesExchangeItem.");
 		}
 
-		double[] valuesForSourceTime = null;
-		if (sourceItem.getValuesType() == ValueType.IVectorType || sourceItem.getValuesType() == ValueType.IArrayType) {
-			if (sourceItem.getValuesType() == ValueType.IVectorType) {
-				valuesForSourceTime = ((IVector) sourceItem.getValues()).getValues();
-			} else if (sourceItem.getValuesType() == ValueType.IArrayType) {
-				valuesForSourceTime = ((IArray) sourceItem.getValues()).getValuesAsDoubles();
-			}
-		}
-		else {
+		double[] sourceValues;
+		if (sourceItem.getValuesType() == ValueType.IVectorType) {
+			sourceValues = ((IVector) sourceItem.getValues()).getValues();
+		} else if (sourceItem.getValuesType() == ValueType.IArrayType) {
+			sourceValues = ((IArray) sourceItem.getValues()).getValuesAsDoubles();
+		} else {
 			throw new RuntimeException(getClass().getSimpleName() + ": cannot copy data from sourceExchangeItem '"
 					+ sourceItem.getId() + "' of type " + sourceItem.getClass().getSimpleName()
-					+ " because its value type is not " + ValueType.IVectorType);
+					+ " because its value type is not " + ValueType.IVectorType + " or " + ValueType.IArrayType);
 		}
 
 		double[] sourceTimes = sourceItem.getTimeInfo().getTimes();
 		double[] targetTimes = this.getTimeInfo().getTimes();
 		if (sourceTimes.length != targetTimes.length) {
+			//TODO Julius: merge this tolerance with the tolerance that is already present in method setValuesForSingleTime. AK
 			double tolerance = 0.1*(targetTimes[1]-targetTimes[0]);
 			for (int stIndex=0; stIndex<sourceTimes.length; stIndex++) {
 				double sourceTime = sourceTimes[stIndex];
 				for (int ttIndex=0; ttIndex<targetTimes.length; ttIndex++) {
 					double targetTime = targetTimes[ttIndex];
 					if (Math.abs(sourceTime-targetTime) < tolerance) {
-						setValuesForSingleTime(sourceTimes[stIndex], valuesForSourceTime[stIndex]);
+						setValuesForSingleTime(sourceTimes[stIndex], sourceValues[stIndex]);
 					}
 				}
 			}
 		} else {
+			//TODO implement method setValuesAsDoubles and use that here. AK
 			for (int iTime = 0; iTime < sourceTimes.length; iTime++) {
 				// find matching time and copy value at the matching time; no value is set if no time matches.
-				setValuesForSingleTime(sourceTimes[iTime], valuesForSourceTime[iTime]);
+				setValuesForSingleTime(sourceTimes[iTime], sourceValues[iTime]);
 			}
 		}
     }
