@@ -888,7 +888,7 @@ public class NetcdfUtils {
 	 * Creates metadata for the given array of exchangeItems in the given netcdfFile, if not present yet.
 	 * Each exchangeItem stores a scalar timeseries.
 	 */
-	public static void createScalarMetadata(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, List<String> stationIdList) {
+	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, List<String> stationIdList) {
 		//create time coordinate variable, if not present yet.
 		//assume that all exchangeItems have identical time records. TODO validate this. AK
 		int[] uniqueTimeVariableCount = new int[]{0};
@@ -910,7 +910,7 @@ public class NetcdfUtils {
 	/**
 	 * Creates metadata for the given exchangeItem in the given netcdfFile, if not present yet.
 	 */
-	public static void createGridMetadata(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
+	public static void createMetadataAndDataVariablesForGrids(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		int[] uniqueTimeVariableCount = new int[]{0};

@@ -1,9 +1,7 @@
 package org.openda.exchange.dataobject;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
-import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
@@ -24,7 +22,7 @@ public class NetcdfDataObjectTest extends TestCase {
 
 	public void testReadTimeSeriesEnsemble() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
-		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_timeseries_ensemble.nc", "true"});
+		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_timeseries_ensemble.nc", "true", "false"});
 		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
 		assertEquals(3, ensembleIndices.length);
 		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
@@ -37,7 +35,7 @@ public class NetcdfDataObjectTest extends TestCase {
 
 	public void testReadGridEnsemble() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
-		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_grid_with_ensemble.nc", "true"});
+		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_grid_with_ensemble.nc", "true", "false"});
 		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
 		assertEquals(3, ensembleIndices.length);
 		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();

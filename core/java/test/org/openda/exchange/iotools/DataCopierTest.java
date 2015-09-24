@@ -40,9 +40,9 @@ public class DataCopierTest extends TestCase {
 	public void testCopyNetcdfToTextObject(){
 		//read input.
 		NetcdfDataObject input = new NetcdfDataObject();
-		input.initialize(this.testRunDataDir, new String[]{"fews_wind_small.nc"});
+		input.initialize(this.testRunDataDir, new String[]{"fews_wind_small.nc", "false", "false"});
 		TestDataObject output = new TestDataObject();
-		output.initialize(this.testRunDataDir, new String[]{"fews_wind_small_copy1.txt"});
+		output.initialize(this.testRunDataDir, new String[]{"fews_wind_small_copy1.txt", "true", "false"});
 
 		//copy data.
 		DataCopier copier = new DataCopier(input, output);
@@ -81,9 +81,9 @@ public class DataCopierTest extends TestCase {
 	public void todoTestCopyNetcdfToNetcdf() {
 		//read input.
 		NetcdfDataObject input = new NetcdfDataObject();
-		input.initialize(this.testRunDataDir, new String[]{"dcsm_v5_sample.nc"});
+		input.initialize(this.testRunDataDir, new String[]{"dcsm_v5_sample.nc", "true", "false"});
 		NetcdfDataObject output = new NetcdfDataObject();
-		output.initialize(this.testRunDataDir, new String[]{"output3.nc"});
+		output.initialize(this.testRunDataDir, new String[]{"output3.nc", "true", "false"});
 
 		//copy data.
 		DataCopier copier = new DataCopier(input, output);

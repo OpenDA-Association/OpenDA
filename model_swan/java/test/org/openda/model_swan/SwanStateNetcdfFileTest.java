@@ -26,7 +26,7 @@ public class SwanStateNetcdfFileTest extends TestCase {
 			File stateFilesTestDir = new File(testData.getTestRunDataDir(), "StateFiles");
 			NetcdfDataObject swanStateNetcdf = new NetcdfDataObject();
 			swanStateNetcdf.initialize(stateFilesTestDir,new String[]{"s00nc_a.nc"});
-			IExchangeItem waveSpectrum = swanStateNetcdf.getDataObjectExchangeItem("sea_surface_wave_directional_variance_spectral_density");
+			IExchangeItem waveSpectrum = swanStateNetcdf.getDataObjectExchangeItem("wave_spectrum");
 			double[] values = waveSpectrum.getValuesAsDoubles();
 			assertEquals("values[9]",0.0,0.0,1e-8);
 			assertEquals("values[10]",0.0008735809,values[10],1e-8);
@@ -37,7 +37,7 @@ public class SwanStateNetcdfFileTest extends TestCase {
 			swanStateNetcdf.finish();
 			NetcdfDataObject swanStateNetcdf2 = new NetcdfDataObject();
 			swanStateNetcdf2.initialize(stateFilesTestDir,new String[]{"s00nc_a.nc"});
-			waveSpectrum = swanStateNetcdf2.getDataObjectExchangeItem("sea_surface_wave_directional_variance_spectral_density");
+			waveSpectrum = swanStateNetcdf2.getDataObjectExchangeItem("wave_spectrum");
 			double[] values2 = waveSpectrum.getValuesAsDoubles();
 			assertEquals("values[9]",values[9],values2[9],1e-8);
 			assertEquals("values[10]",values[10],values2[10],1e-4);

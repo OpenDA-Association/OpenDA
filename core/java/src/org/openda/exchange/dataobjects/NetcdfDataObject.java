@@ -40,7 +40,6 @@ import org.openda.utils.Results;
 
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
@@ -353,6 +352,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	 *
 	 * @throws IOException
 	 */
+	//TODO remove, always read data lazily. AK
 	private void readNetcdfFile() throws IOException  {
 		this.exchangeItems.clear();
 
@@ -375,7 +375,8 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 
 			//create exchangeItem.
 			IExchangeItem exchangeItem;
-			String exchangeItemId = createExchangeItemId(variable);
+			//Note: never use standard name or long name as exchangeItemId, since these are not always unique within a netcdf file.
+			String exchangeItemId = variable.getName();
 			if (variable.getDimensions().isEmpty()) {//if scalar.
 				exchangeItem = new DoubleExchangeItem(exchangeItemId, Role.InOut, variable.readScalarDouble());
 
@@ -439,21 +440,8 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
             throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
         }
 
-        IExchangeItem newItem;
-        if (this.lazyWriting) {
-            //copy exchange item.
-			//here need to copy values to a temporary in-memory exchangeItem, because the values in a netcdf file cannot be written until after all metadata has been added.
-			//In other words: first add all exchangeItems, then add metadata for all exchangeItems, then create netcdf file, then write values for all exchangeItems.
-            ArrayExchangeItem itemCopy = new ArrayExchangeItem(item.getId(), item.getRole());
-            itemCopy.copyValuesFromItem(item);
-            newItem = itemCopy;
-        } else {
-            //add exchange item.
-            newItem = item;
-        }
-
-        //store new item.
-        this.exchangeItems.add(newItem);
+		//store new item.
+        this.exchangeItems.add(item);
     }
 
 	public void finish() {
@@ -466,6 +454,8 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		} else {//if lazyWriting is false, then the variable data has already been written to netcdf file in exchangeItem.setValues methods,
 			//and the metadata variable values have already been written to netcdf file in method createFile.
 			//do nothing.
+			//TODO when lazyWriting is false, then still need to write values for exchangeItems that have been added using method addExchangeItem and that are not of type
+			//directAccess (for the moment use instance of to determine type) -> add list to keep track of these items, unless this happens in DataCopier. AK
 		}
 
 		try {
@@ -495,9 +485,9 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		NetcdfUtils.validateExchangeItems(this.exchangeItems);
 		boolean scalars = !NetcdfUtils.isGrid(this.exchangeItems.get(0));
 		if (scalars) {
-			NetcdfUtils.createScalarMetadata(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.stationIdList);
+			NetcdfUtils.createMetadataAndDataVariablesForScalars(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.stationIdList);
 		} else {//if grids.
-			NetcdfUtils.createGridMetadata(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
+			NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
 		}
 
 		try {
@@ -506,12 +496,12 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 			throw new RuntimeException("Error while creating new netcdf file '" + this.netcdfFile.getLocation() + "'. Message was: " + e.getMessage(), e);
 		}
 
-		if (!this.lazyWriting) {//if lazyWriting is false, then here write the metadata variable values, i.e. times and spatial coordinates.
-			try {
-				NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap, this.stationIdList);
-			} catch (Exception e) {
-				throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
-			}
+		//write metadata variable values for all exchange items, i.e. times and spatial coordinates.
+		//This is only needed if a new file has been created. If an existing file has been opened, then the file should already contain these values.
+		try {
+			NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap, this.stationIdList);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 		}
 	}
 
@@ -531,13 +521,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
                 int lonLength = ((ArrayGeometryInfo) geometryInfo).getLongitudeArray().length();
                 if (latLength == lonLength && latLength == 1) {
                     // scalar time series
-                    if (iItem==0){
-                        try {
-                            NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap, this.stationIdList);
-                        } catch (Exception e) {
-                            throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
-                        }
-                    }
                     int nTime = exchangeItem.getTimeInfo().getTimes().length;
                     double[] values = ((IArray) exchangeItem.getValues()).getValuesAsDoubles(); // for the time being only for TimeSeries which is of type IArray
                     for (int iTime=0; iTime<nTime; iTime++){
@@ -549,11 +532,12 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
                     throw new UnsupportedOperationException("method writeData not yet implemented for 2D data."+this.getClass().getName());
                 }
             } else {
+				//TODO Julius: please remove this hack for SWAN state files. AK
                 //TODO: replace this SWAN specific implementation with the above generic ones.
 				String exchangeItemId = exchangeItem.getId();
 				//TODO: add netcdf writers for various data type / exchangeitems.
 				//For SWAN state file, only wave_spectrum is modified and rewritten.
-				if (exchangeItemId.equalsIgnoreCase("sea_surface_wave_directional_variance_spectral_density")){
+				if (exchangeItemId.equalsIgnoreCase("wave_spectrum")){
 					double[] dblValues = exchangeItem.getValuesAsDoubles();
 					int my=31;
 					int mx=61;
@@ -637,36 +621,5 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         makeSureFileHasBeenCreated();
         NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFile, variable, timeIndex, stationIndex, values);
-    }
-
-    /**
-     * If the given variable has a standard_name attribute, then returns that.
-     * Otherwise, if the given variable has a long_name attribute, then returns that.
-     * Otherwise returns the variable name.
-     *
-     * @param variable
-     * @return String exchangeItemId.
-     */
-    //TODO never use standard name or long name as exchangeItemId, since these are not always unique within a file. AK
-    private static String createExchangeItemId(Variable variable) {
-        String exchangeItemId;
-
-        Attribute standardNameAttribute = variable.findAttributeIgnoreCase(NetcdfUtils.STANDARD_NAME_ATTRIBUTE_NAME);
-        if (standardNameAttribute != null && standardNameAttribute.getStringValue() != null
-                && !standardNameAttribute.getStringValue().trim().isEmpty()) {
-            exchangeItemId = standardNameAttribute.getStringValue();
-
-        } else {//if standard name not defined.
-            Attribute longNameAttribute = variable.findAttributeIgnoreCase(NetcdfUtils.LONG_NAME_ATTRIBUTE_NAME);
-            if (longNameAttribute != null && longNameAttribute.getStringValue() != null
-                    && !longNameAttribute.getStringValue().trim().isEmpty()) {
-                exchangeItemId = longNameAttribute.getStringValue();
-
-            } else {//if long name not defined.
-                exchangeItemId = variable.getName();
-            }
-        }
-
-        return exchangeItemId;
     }
 }
