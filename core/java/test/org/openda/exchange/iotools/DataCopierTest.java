@@ -47,6 +47,7 @@ public class DataCopierTest extends TestCase {
 		//copy data.
 		DataCopier copier = new DataCopier(input, output);
 		copier.copyAll();
+		copier.finish();
 
 		assertEquals(OpenDaTestSupport.readText(new File(this.testRunDataDir, "TestCopyNetcdfToText_expected_output.txt")),
 				OpenDaTestSupport.readText(new File(this.testRunDataDir, "fews_wind_small_copy1.txt")));
@@ -78,7 +79,7 @@ public class DataCopierTest extends TestCase {
 	
 	//TODO also test copying to an existing file. AK
 	//TODO implement. AK
-	public void todoTestCopyNetcdfToNetcdf() {
+	public void testCopyNetcdfToNetcdf() {
 		//read input.
 		NetcdfDataObject input = new NetcdfDataObject();
 		input.initialize(this.testRunDataDir, new String[]{"dcsm_v5_sample.nc", "true", "false"});
@@ -88,6 +89,7 @@ public class DataCopierTest extends TestCase {
 		//copy data.
 		DataCopier copier = new DataCopier(input, output);
 		copier.copyAll();
+		copier.finish();
 
 		//TODO this may not be an exact copy
 //		NetcdfDataObject expectedOutput = new NetcdfDataObject();

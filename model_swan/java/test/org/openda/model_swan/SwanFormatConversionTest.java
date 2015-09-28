@@ -78,6 +78,7 @@ public class SwanFormatConversionTest extends TestCase {
 
         DataCopier copier = new DataCopier(swanDataObject, noosDataObject);
         copier.copyAll();
+		copier.finish();
 		File outputFile = new File(outputDir,"Hsig_0._0..noos");
 		File referenceFile = new File(inputDir,"Hsig.noos.ref");
 		boolean test=testData.FilesAreIdentical(outputFile, referenceFile);
