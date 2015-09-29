@@ -41,10 +41,7 @@ import org.openda.interfaces.ITimeInfo;
 import org.openda.utils.Array;
 import org.openda.utils.Time;
 
-import ucar.ma2.ArrayDouble;
-import ucar.ma2.ArrayObject;
-import ucar.ma2.DataType;
-import ucar.ma2.InvalidRangeException;
+import ucar.ma2.*;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NCdumpW;
@@ -100,6 +97,7 @@ public class NetcdfUtils {
 	public static final String Y_VARIABLE_NAME = "y";
 	public static final String X_VARIABLE_NAME = "x";
 	public static final String STATION_ID_VARIABLE_NAME = "station_id";
+	public static final String REALIZATION_VARIABLE_NAME = "realization";
 
 	//dimension names.
 	public static final String STATION_DIMENSION_NAME = "stations";
@@ -664,22 +662,38 @@ public class NetcdfUtils {
 		writeSelectedData(netcdfFile, variable, origin, sizeArray, values);
 	}
 
-    public static void writeDataForVariableForSingleTimeSingleLocation(NetcdfFileWriteable netcdfFile, Variable variable,
-            int timeIndex, int stationIndex, double[] values) {
-        int[] origin = createOrigin(variable);
-        int[] sizeArray = variable.getShape();
+	public static void writeDataForVariableForSingleTimeSingleLocation(NetcdfFileWriteable netcdfFile, Variable variable, int timeIndex, int stationDimensionIndex, int stationIndex, double[] values) {
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
 
-        //select only the given time.
-        //assume that timeDimensionIndex is always 0 here and stationDimensionIndex is always 1.
-        int timeDimensionIndex = 0;
-        int stationDimensionIndex = 1;
-        origin[timeDimensionIndex] = timeIndex;
-        origin[stationDimensionIndex] = stationIndex;
-        sizeArray[timeDimensionIndex] = 1;
-        sizeArray[stationDimensionIndex] = 1;
+		//here assume that timeDimensionIndex is 0.
+		int timeDimensionIndex = 0;
+		//select only the given time and station.
+		origin[timeDimensionIndex] = timeIndex;
+		sizeArray[timeDimensionIndex] = 1;
+		origin[stationDimensionIndex] = stationIndex;
+		sizeArray[stationDimensionIndex] = 1;
 
-        writeSelectedData(netcdfFile, variable, origin, sizeArray, values);
-    }
+		writeSelectedData(netcdfFile, variable, origin, sizeArray, values);
+	}
+
+	public static void writeDataForVariableForSingleTimeSingleLocationSingleRealization(NetcdfFileWriteable netcdfFile, Variable variable,
+			int timeIndex, int realizationDimensionIndex, int realizationIndex, int stationDimensionIndex, int stationIndex, double[] values) {
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+
+		//here assume that timeDimensionIndex is 0.
+		int timeDimensionIndex = 0;
+		//select only the given time, station and realization.
+		origin[timeDimensionIndex] = timeIndex;
+		sizeArray[timeDimensionIndex] = 1;
+		origin[realizationDimensionIndex] = realizationIndex;
+		sizeArray[realizationDimensionIndex] = 1;
+		origin[stationDimensionIndex] = stationIndex;
+		sizeArray[stationDimensionIndex] = 1;
+
+		writeSelectedData(netcdfFile, variable, origin, sizeArray, values);
+	}
 
     public static void writeSelectedData(NetcdfFileWriteable netcdfFile, Variable variable, int[] origin, int[] sizeArray, double[] values) {
 		//replace NaN values with missing value for variable.
@@ -885,26 +899,34 @@ public class NetcdfUtils {
 	}
 
 	/**
-	 * Creates metadata for the given array of exchangeItems in the given netcdfFile, if not present yet.
-	 * Each exchangeItem stores a scalar timeseries.
+	 * Creates metadata and data variables for the given exchangeItems and/or ensembleExchangeItems in the given netcdfFile, if not present yet.
+	 * Each exchangeItem stores a scalar timeseries for a single location (and a single ensemble member).
+	 * All exchangeItems must use the same ensemble member indices.
 	 */
-	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, List<String> stationIdList) {
+	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
+			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int stationCount, int ensembleMemberCount) {
+
 		//create time coordinate variable, if not present yet.
 		//assume that all exchangeItems have identical time records. TODO validate this. AK
 		int[] uniqueTimeVariableCount = new int[]{0};
-		ITimeInfo timeInfo = exchangeItems.get(0).getTimeInfo();
+		IExchangeItem firstItem = !exchangeItems.isEmpty() ? exchangeItems.get(0) : ensembleExchangeItems.values().iterator().next().values().iterator().next();
+		ITimeInfo timeInfo = firstItem.getTimeInfo();
 		Dimension timeDimension = null;
 		if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
 			timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
 		}
 
 		//create stations variable.
-		stationIdList.clear();
-		stationIdList.addAll(NetcdfUtils.getStationIds(exchangeItems));
-		Dimension stationDimension = createStationsVariable(netcdfFile, stationIdList.size());
+		Dimension stationDimension = createStationsVariable(netcdfFile, stationCount);
+
+		//create realization variable.
+		Dimension realizationDimension = null;
+		if (ensembleMemberCount > 0) {
+			realizationDimension = createRealizationVariable(netcdfFile, ensembleMemberCount);
+		}
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
+		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, ensembleExchangeItems, timeDimension, realizationDimension, stationDimension, null);
 	}
 
 	/**
@@ -932,7 +954,7 @@ public class NetcdfUtils {
 			}
 
 			//create data variable.
-			createDataVariable(netcdfFile, exchangeItem, timeDimension, null, geometryInfoGridVariablePropertiesMap);
+			createDataVariable(netcdfFile, exchangeItem, timeDimension, null, null, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
@@ -1077,8 +1099,10 @@ public class NetcdfUtils {
 		}
 	}
 
-	public static void createDataVariables(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Dimension timeDimension, Dimension stationDimension,
-			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+	public static void createDataVariables(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
+			Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+
+		//non-ensemble exchange items.
 		for (IExchangeItem item : exchangeItems) {
 			String variableName = getVariableName(item);
 			if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
@@ -1087,22 +1111,43 @@ public class NetcdfUtils {
 			}
 
 			//if variable does not exist yet.
-			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
+			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, null, stationDimension, geometryInfoGridVariablePropertiesMap);
+		}
+
+		//ensemble exchange items.
+		if (ensembleExchangeItems != null) {
+			for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
+				for (IExchangeItem item : ensemble.values()) {
+					String variableName = getVariableName(item);
+					if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
+						//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
+						continue;
+					}
+	
+					//if variable does not exist yet.
+					NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
+				}
+			}
 		}
 	}
 
-	private static void createDataVariable(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem, Dimension timeDimension, Dimension stationDimension,
+	private static void createDataVariable(NetcdfFileWriteable netcdfFile, IExchangeItem exchangeItem, Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		if (timeDimension != null) {
 			dimensions.add(timeDimension);
 		}
+		if (realizationDimension != null) {
+			dimensions.add(realizationDimension);
+		}
 		if (stationDimension != null) {
 			dimensions.add(stationDimension);
 		}
-		GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(exchangeItem.getGeometryInfo());
-		if (gridVariableProperties != null) {
-			dimensions.addAll(gridVariableProperties.getDimensions());
+		if (geometryInfoGridVariablePropertiesMap != null) {
+			GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(exchangeItem.getGeometryInfo());
+			if (gridVariableProperties != null) {
+				dimensions.addAll(gridVariableProperties.getDimensions());
+			}
 		}
 
 		DataType dataType = getDataType(exchangeItem.getValuesType());
@@ -1122,7 +1167,7 @@ public class NetcdfUtils {
 //		}
 	}
 
-    /**
+	/**
 	 * Creates y and x variables with the given properties.
 	 *
 	 * @param dataFile
@@ -1175,41 +1220,49 @@ public class NetcdfUtils {
 		dataFile.addVariableAttribute(variableName, FILL_VALUE_ATTRIBUTE_NAME, fillValue);
 	}
 
-    /**
-     * Writes all metadata variables for the given maps to the given netcdfFile,
-     * i.e. times and spatial coordinates.
-     *
-     * @param netcdfFile
-     * @param timeInfoTimeDimensionMap
-     * @param geometryInfoGridVariablePropertiesMap
-     * @param stationIdList
-     * @throws Exception
-     */
-    public static void writeMetadata(NetcdfFileWriteable netcdfFile, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
-                                     Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap,
-                                     List<String> stationIdList) throws Exception {
+	/**
+	 * Writes all metadata variables for the given maps to the given netcdfFile, i.e. times and spatial coordinates.
+	 */
+	public static void writeMetadata(NetcdfFileWriteable netcdfFile, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, 
+			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, List<String> stationIdList, List<Integer> ensembleMemberIndexList) throws Exception {
 
-        //write time variable values.
-        NetcdfUtils.writeTimeVariablesValues(netcdfFile, timeInfoTimeDimensionMap);
+		//write time variable values.
+		NetcdfUtils.writeTimeVariablesValues(netcdfFile, timeInfoTimeDimensionMap);
 
-        //write geometry variable values.
-        NetcdfUtils.writeGridVariablesValues(netcdfFile, geometryInfoGridVariablePropertiesMap);
+		//write geometry variable values.
+		NetcdfUtils.writeGridVariablesValues(netcdfFile, geometryInfoGridVariablePropertiesMap);
 
-        //write station_id if available.
-        NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIdList);
-    }
+		//write station_id if available.
+		NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIdList);
 
-    public static void writeStationIdVariableValues(NetcdfFileWriteable dataFile, List<String> stationIdList) throws IOException, InvalidRangeException {
-        if (stationIdList.size()>0){
-            ArrayObject.D1 statidsArray = new ArrayObject.D1(String.class, stationIdList.size());
-            for (int i=0; i<stationIdList.size(); i++){
-                statidsArray.set(i,stationIdList.get(i));
-            }
-            dataFile.writeStringData(STATION_ID_VARIABLE_NAME, statidsArray);
-        }
-    }
+		//write realization variable values.
+		NetcdfUtils.writeRealizationVariableValues(netcdfFile, ensembleMemberIndexList);
+	}
 
-    /**
+	public static void writeStationIdVariableValues(NetcdfFileWriteable dataFile, List<String> stationIdList) throws Exception {
+		if (stationIdList == null || stationIdList.isEmpty()) return;
+
+		ArrayObject.D1 statidsArray = new ArrayObject.D1(String.class, stationIdList.size());
+		for (int i=0; i<stationIdList.size(); i++){
+			statidsArray.set(i,stationIdList.get(i));
+		}
+		dataFile.writeStringData(STATION_ID_VARIABLE_NAME, statidsArray);
+	}
+
+	/**
+	 * Fills the realization variable with values.
+	 */
+	private static void writeRealizationVariableValues(NetcdfFileWriteable dataFile, List<Integer> ensembleMemberIndexList) throws Exception {
+		if (ensembleMemberIndexList == null || ensembleMemberIndexList.isEmpty()) return;
+
+		ArrayInt.D1 ensembleMemberIndices = new ArrayInt.D1(ensembleMemberIndexList.size());
+		for (int n = 0; n < ensembleMemberIndexList.size(); n++) {
+			ensembleMemberIndices.set(n, ensembleMemberIndexList.get(n));
+		}
+		dataFile.write(REALIZATION_VARIABLE_NAME, ensembleMemberIndices);
+	}
+
+	/**
 	 * Write values for all time variables that are present.
 	 *
 	 * @param dataFile
@@ -1448,11 +1501,23 @@ public class NetcdfUtils {
 		return locationId;
 	}
 
-	public static List<String> getStationIds(List<IExchangeItem> exchangeItems) {
-		Set<String> uniqueStationIds = new LinkedHashSet<String>();
+	public static List<String> getStationIds(List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems) {
+		Set<String> uniqueStationIds = new LinkedHashSet<>();
+
+		//non-ensemble exchange items.
 		for (IExchangeItem item : exchangeItems) {
 			uniqueStationIds.add(getStationId(item));
 		}
+
+		//ensemble exchange items.
+		if (ensembleExchangeItems != null) {
+			for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
+				for (IExchangeItem item : ensemble.values()) {
+					uniqueStationIds.add(getStationId(item));
+				}
+			}
+		}
+
 		return Arrays.asList(uniqueStationIds.toArray(new String[uniqueStationIds.size()]));
 	}
 
@@ -1472,6 +1537,37 @@ public class NetcdfUtils {
 		netcdfFile.addVariableAttribute(stationIdVariableName, CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE);
 
 		return stationDimension;
+	}
+
+	/**
+	 * Creates a realization dimension and variable.
+	 */
+	public static Dimension createRealizationVariable(NetcdfFileWriteable dataFile, int ensembleMemberCount) {
+		//See http://cf-pcmdi.llnl.gov/documents/cf-standard-names/standard-name-table/18/cf-standard-name-table.html
+		//standard name "realization":
+		//Realization is used to label a dimension that can be thought of as a statistical sample,
+		//e.g., labelling members of a model ensemble.
+		//See http://www.clivar.org/sites/default/files/imported/organization/wgsip/chfp/CHFP_metadata.pdf
+		//and http://www.ppt2txt.com/r/zd0ebf25/
+		//int realization(realization) ;
+		//realization:data_type = "int" ;
+		//realization:units = "1" ;
+		//realization:standard_name = "realization" ;
+		//realization:long_name = "Number of the simulation in the ensemble" ;
+		//float physical_field(time, realization, level, latitude, longitude) ;
+
+		//create realization dimension.
+		Dimension realizationDimension = dataFile.addDimension(REALIZATION_VARIABLE_NAME, ensembleMemberCount);
+
+		//create realization variable.
+		ArrayList<Dimension> realizationDimensionList = new ArrayList<>();
+		realizationDimensionList.add(realizationDimension);
+		dataFile.addVariable(REALIZATION_VARIABLE_NAME, DataType.INT, realizationDimensionList);
+		dataFile.addVariableAttribute(REALIZATION_VARIABLE_NAME, STANDARD_NAME_ATTRIBUTE_NAME, REALIZATION_VARIABLE_NAME);
+		dataFile.addVariableAttribute(REALIZATION_VARIABLE_NAME, LONG_NAME_ATTRIBUTE_NAME, "Index of an ensemble member within an ensemble");
+		dataFile.addVariableAttribute(REALIZATION_VARIABLE_NAME, UNITS_ATTRIBUTE_NAME, "1");
+
+		return realizationDimension;
 	}
 
 	public static boolean isScalar(IExchangeItem item) {

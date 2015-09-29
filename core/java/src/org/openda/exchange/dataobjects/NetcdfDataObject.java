@@ -20,29 +20,20 @@
 
 package org.openda.exchange.dataobjects;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.*;
-
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.*;
-import org.openda.interfaces.IArray;
-import org.openda.interfaces.IArrayTimeInfo;
-import org.openda.interfaces.IComposableDataObject;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.ITimeInfo;
-import org.openda.interfaces.IEnsembleDataObject;
 import org.openda.utils.Results;
-
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * DataObject for data that is stored in a netcdf file.
@@ -51,85 +42,21 @@ import ucar.nc2.Variable;
  *
  * @author Arno Kockx
  */
-public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObject {
-
-	/**
-	 * Get the ensemble member indices of the ensemble exchange items.
-	 * The ensemble member indices must be the same for all ensemble exchange items.
-	 * This should ignore any exchange items for which there are no ensemble members available.
-	 * Should return int[0] if there are no ensemble members.
-	 *
-	 * @return array of ensemble member indices.
-	 */
-	public int[] getEnsembleMemberIndices() {
-		if (this.ensembleExchangeItems.isEmpty()) {
-			return new int[0];
-		} else {
-			// Since Java has no range method.
-			// TODO Upgrade as soon as explicit ensemble indices are stored in the NetCDF file.
-			Set keys = this.ensembleExchangeItems.keySet();
-			int[] result = new int[keys.size()];
-			for(int i = 0; i < keys.size(); i++) {
-				result[i] = i;
-			}
-			return result;
-		}
-	}
-
-	/**
-	 * Get the identifiers of the ensemble exchange items.
-	 * This should ignore any exchange items for which there are no ensemble members available.
-	 * Should return String[0] if there are no matching ensemble items.
-	 *
-	 * @return array of ensemble exchange item identifiers.
-	 */
-	public String[] getEnsembleExchangeItemIds() {
-		if (this.ensembleExchangeItems.isEmpty()) {
-			return new String[0];
-		} else {
-			Set keys = this.ensembleExchangeItems.keySet();
-			List<IExchangeItem> someItems = this.ensembleExchangeItems.get(keys.iterator().next());
-			String[] exchangeItemIDs = new String[someItems.size()];
-			for (int n = 0; n < someItems.size(); n++) {
-				exchangeItemIDs[n] = someItems.get(n).getId();
-			}
-			return exchangeItemIDs;
-		}
-	}
-
-	/**
-	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
-	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
-	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
-	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
-	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
-	 *
-	 * @param exchangeItemId      ensemble exchange item identifier.
-	 * @param ensembleMemberIndex ensemble member index.
-	 * @return the requested ensemble exchange item.
-	 */
-	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) {
-		if (!this.ensembleExchangeItems.isEmpty()) {
-			List<IExchangeItem> items = this.ensembleExchangeItems.get(ensembleMemberIndex);
-			for (int n = 0; n < items.size(); n++) {
-				IExchangeItem exchangeItem = items.get(n);
-				if (exchangeItem.getId().equals(exchangeItemId)) {
-					return exchangeItem;
-				}
-			}
-		}
-		return null;
-	}
+public class NetcdfDataObject implements IComposableDataObject, IComposableEnsembleDataObject {
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
 	private File file = null;
 	private NetcdfFileWriteable netcdfFile = null;
 	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
-	private Map<Integer, List<IExchangeItem>> ensembleExchangeItems = new LinkedHashMap<>();
+	/**
+	 * For each exchangeItemId contains a map with one exchangeItem per ensembleMemberIndex.
+	 */
+	private Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems = new LinkedHashMap<>();
 
 	private Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap = new LinkedHashMap<ITimeInfo, Dimension>();
-    private List<String> stationIdList = new ArrayList<String>();
+    private List<String> uniqueStationIds = new ArrayList<>();
+	private List<Integer> uniqueEnsembleMemberIndices = new ArrayList<>();
 	private Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = new LinkedHashMap<IGeometryInfo, GridVariableProperties>();
 
 	/**
@@ -164,7 +91,6 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	 * @param arguments optional argument 2: lazyReading true/false.
 	 * @param arguments optional argument 3: lazyWriting true/false.
 	 */
-	
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		this.file = new File(workingDir, fileName);
@@ -299,15 +225,11 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 								stationId, parameterId, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
 						this.exchangeItems.add(exchangeItem);
 					} else {
+						//TODO Edwin: this code assumes that the realization indices are always the numbers 0, 1, 2, 3, etc. in sorted order. It should read the actual ensemble member indices from the file. AK
 						for (int realizationIndex = 0; realizationIndex < variable.getDimension(realizationDimensionIndex).getLength(); realizationIndex++) {
 							IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
 									stationId, parameterId, realizationDimensionIndex, realizationIndex, Role.InOut, timeInfo, this);
-							if (!this.ensembleExchangeItems.containsKey(realizationIndex)) {
-								this.ensembleExchangeItems.put(realizationIndex, new ArrayList<IExchangeItem>());
-							}
-							List<IExchangeItem> oldValue = this.ensembleExchangeItems.get(realizationIndex);
-							oldValue.add(exchangeItem);
-							this.ensembleExchangeItems.put(realizationIndex, oldValue);
+							addEnsembleExchangeItem(exchangeItem, realizationIndex);
 						}
 					}
 				}
@@ -330,15 +252,11 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 							timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
 					this.exchangeItems.add(exchangeItem);
 				} else {
+					//TODO Edwin: this code assumes that the realization indices are always the numbers 0, 1, 2, 3, etc. in sorted order. It should read the actual ensemble member indices from the file. AK
 					for (int realizationIndex = 0; realizationIndex < variable.getDimension(realizationDimensionIndex).getLength(); realizationIndex++) {
 						IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, realizationDimensionIndex, realizationIndex, Role.InOut,
 								timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
-						if (!this.ensembleExchangeItems.containsKey(realizationIndex)) {
-							this.ensembleExchangeItems.put(realizationIndex, new ArrayList<IExchangeItem>());
-						}
-						List<IExchangeItem> oldValue = this.ensembleExchangeItems.get(realizationIndex);
-						oldValue.add(exchangeItem);
-						this.ensembleExchangeItems.put(realizationIndex, oldValue);
+						addEnsembleExchangeItem(exchangeItem, realizationIndex);
 					}
 				}
 
@@ -398,10 +316,9 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		}
 	}
 
-    
     public String[] getExchangeItemIDs() {
+        //ignore ensemble exchange items.
         String[] exchangeItemIDs = new String[this.exchangeItems.size()];
-
         for (int n = 0; n < this.exchangeItems.size(); n++) {
             exchangeItemIDs[n] = this.exchangeItems.get(n).getId();
         }
@@ -409,31 +326,97 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
         return exchangeItemIDs;
     }
 
-    
-    public String[] getExchangeItemIDs(Role role) {
-        ArrayList<String> exchangeItemIDs = new ArrayList<String>();
+	public String[] getExchangeItemIDs(Role role) {
+		//ignore ensemble exchange items.
+		ArrayList<String> exchangeItemIDs = new ArrayList<>();
+		for (IExchangeItem exchangeItem : this.exchangeItems) {
+			if (exchangeItem.getRole().equals(role)) {
+				exchangeItemIDs.add(exchangeItem.getId());
+			}
+		}
 
-        for (int n = 0; n < this.exchangeItems.size(); n++) {
-            IExchangeItem exchangeItem = this.exchangeItems.get(n);
-            if (exchangeItem.getRole().equals(role)) {
-                exchangeItemIDs.add(exchangeItem.getId());
-            }
-        }
+		return exchangeItemIDs.toArray(new String[exchangeItemIDs.size()]);
+	}
 
-        return exchangeItemIDs.toArray(new String[exchangeItemIDs.size()]);
-    }
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		for (IExchangeItem exchangeItem : this.exchangeItems) {
+			if (exchangeItem.getId().equals(exchangeItemID)) {//if non-ensemble exchange item.
+				return exchangeItem;
+			}
+		}
 
-    
-    public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-        for (int n = 0; n < this.exchangeItems.size(); n++) {
-            IExchangeItem exchangeItem = this.exchangeItems.get(n);
-            if (exchangeItem.getId().equals(exchangeItemID)) {
-                return exchangeItem;
-            }
-        }
+		if (ensembleExchangeItems.keySet().contains(exchangeItemID)) {//if ensemble exchange item.
+			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem: exchange item with id '"
+					+ exchangeItemID + "' is an ensemble exchange item. Call method getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) instead.");
+		}
 
-        return null;
-    }
+		//if not found.
+		return null;
+	}
+
+	/**
+	 * Get the ensemble member indices of the ensemble exchange items.
+	 * The ensemble member indices must be the same for all ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return int[0] if there are no ensemble members.
+	 *
+	 * @return array of ensemble member indices.
+	 */
+	public int[] getEnsembleMemberIndices() {
+		if (ensembleExchangeItems.isEmpty()) return new int[0];
+
+		//ignore non-ensemble exchange items.
+		Set<Integer> uniqueIndices = new HashSet<>();
+		for (Map<Integer, IExchangeItem> ensembleMemberIndexExchangeItemMap : ensembleExchangeItems.values()) {
+			uniqueIndices.addAll(ensembleMemberIndexExchangeItemMap.keySet());
+		}
+
+		//return sorted indices.
+		int[] indices = BBUtils.unbox(uniqueIndices.toArray(new Integer[uniqueIndices.size()]));
+		Arrays.sort(indices);
+		return indices;
+	}
+
+	/**
+	 * Get the identifiers of the ensemble exchange items.
+	 * This should ignore any exchange items for which there are no ensemble members available.
+	 * Should return String[0] if there are no matching ensemble items.
+	 *
+	 * @return array of ensemble exchange item identifiers.
+	 */
+	public String[] getEnsembleExchangeItemIds() {
+		if (ensembleExchangeItems.isEmpty()) return new String[0];
+
+		//ignore non-ensemble exchange items.
+		Set<String> ensembleExchangeItemIds = ensembleExchangeItems.keySet();
+		return ensembleExchangeItemIds.toArray(new String[ensembleExchangeItemIds.size()]);
+	}
+
+	/**
+	 * Get the ensemble exchange item specified by the given exchangeItemId and ensembleMemberIndex.
+	 * If the given ensembleMemberIndex does not exist, then this method should throw an IllegalStateException.
+	 * If there are no ensemble members available for the given exchangeItem, then it should throw an
+	 * IllegalStateException stating that the equivalent method without the argument "int ensembleMemberIndex" must be called instead.
+	 * Returns null if no ensemble exchange item with the given exchangeItemId is found.
+	 *
+	 * @param exchangeItemId ensemble exchange item identifier.
+	 * @param ensembleMemberIndex ensemble member index.
+	 * @return the requested ensemble exchange item.
+	 */
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) {
+		Map<Integer, IExchangeItem> ensembleMemberIndexExchangeItemMap = ensembleExchangeItems.get(exchangeItemId);
+		if (ensembleMemberIndexExchangeItemMap != null) {//if ensemble exchange item.
+			return ensembleMemberIndexExchangeItemMap.get(ensembleMemberIndex);
+		}
+
+		if (Arrays.asList(getExchangeItemIDs()).contains(exchangeItemId)) {//if non-ensemble exchange item.
+			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex): exchange item with id '"
+					+ exchangeItemId + "' is a non-ensemble exchange item. Call method getDataObjectExchangeItem(String exchangeItemID) instead.");
+		}
+
+		//if not found.
+		return null;
+	}
 
 	/**
 	 * Add a <b>copy</b> of exchangeItem to this dataObject. Since a dataObject owns its exchangeItems, it is
@@ -450,15 +433,59 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
             throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
         }
 		if (!NetcdfUtils.isScalar(item)) {
-			throw new RuntimeException(getClass().getSimpleName() + ".addExchangeItem() only implemented for scalar exchange items.");
+			throw new RuntimeException(getClass().getSimpleName() + ".addExchangeItem(IExchangeItem item) only implemented for scalar exchange items.");
 		}
 
 		//create a new internal exchangeItem in this dataObject that matches the given external exchangeItem.
 		//This internal exchangeItem can then be used later to copy data from the matching external exchangeItem.
-		//assume here that stationDimensionIndex is always 1.
-		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), Role.Output, item.getTimeInfo(), this);
+		//here assume that stationDimensionIndex is 1.
+		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), -1, -1, Role.Output, item.getTimeInfo(), this);
+
+		//store new item.
         this.exchangeItems.add(newItem);
     }
+
+	/**
+	 * Add a <b>copy</b> of exchangeItem to this dataObject. Since a dataObject owns its exchangeItems, it is
+	 * possible that the actual work is postponed until the finish method is called, so modification of an
+	 * exchangeItem after adding it, but before calling finish, may alter the outcome.
+	 * Throws an UnsupportedOperationException when the dataObject does not support the addition of items.
+	 * A RuntimeException is thrown if the type of data can not be handled. Note that in general, it is also
+	 * possible that the type of echchangeItem can be handled, but with degraded meta data.
+	 *
+	 * @param item to be duplicated.
+	 * @param ensembleMemberIndex ensemble member index of the exchangeItem.
+	 */
+	public void addExchangeItem(IExchangeItem item, int ensembleMemberIndex) {
+		if (!this.netcdfFile.isDefineMode()) {
+			throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
+		}
+		if (!NetcdfUtils.isScalar(item)) {
+			throw new RuntimeException(getClass().getSimpleName() + ".addExchangeItem(IExchangeItem item, int ensembleMemberIndex) only implemented for scalar exchange items.");
+		}
+
+		//create a new internal ensemble exchangeItem in this dataObject that matches the given external ensemble exchangeItem.
+		//This internal ensemble exchangeItem can then be used later to copy data from the matching external ensemble exchangeItem.
+		//here assume that realizationDimensionIndex is 1.
+		//here assume that stationDimensionIndex is 2.
+		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(2, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), 1, -1, Role.Output, item.getTimeInfo(), this);
+
+		//store new item.
+		addEnsembleExchangeItem(newItem, ensembleMemberIndex);
+	}
+
+	private void addEnsembleExchangeItem(IExchangeItem item, int ensembleMemberIndex) {
+		String id = item.getId();
+		Map<Integer, IExchangeItem> ensemble = ensembleExchangeItems.get(id);
+		if (ensemble == null) {
+			ensemble = new LinkedHashMap<>();
+			ensembleExchangeItems.put(id, ensemble);
+		}
+		IExchangeItem previous = ensemble.put(ensembleMemberIndex, item);
+		if (previous != null) {
+			throw new IllegalStateException(getClass().getSimpleName() + ": exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " already present in data object.");
+		}
+	}
 
 	public void finish() {
 		makeSureFileHasBeenCreated();
@@ -483,7 +510,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	/**
 	 * If the netcdf file has not yet been created, then creates it. Otherwise does nothing.
 	 */
-	private void makeSureFileHasBeenCreated() {
+	public void makeSureFileHasBeenCreated() {
 		if (this.netcdfFile.isDefineMode()) {
 			createFile();
 		}
@@ -497,11 +524,18 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	private void createFile() {
 		//create metadata for all exchange items at the last possible moment, so that information of all exchange items is available while creating the metadata.
 		//This is needed for e.g. scalar time series, since in that case the file should contain a single station dimension and variable that contains all stations.
-		if (!exchangeItems.isEmpty()) {
-			validateExchangeItems(this.exchangeItems);
-			boolean scalars = NetcdfUtils.isScalar(this.exchangeItems.get(0));
+		//This cannot be done in method addExchangeItem, since at that moment it is not yet clear how many stations and how many ensemble indices there will be in total.
+		if (!exchangeItems.isEmpty() || !ensembleExchangeItems.isEmpty()) {
+			IExchangeItem firstItem = !exchangeItems.isEmpty() ? exchangeItems.get(0) : ensembleExchangeItems.values().iterator().next().values().iterator().next();
+			boolean scalars = NetcdfUtils.isScalar(firstItem);
+			validateExchangeItems(scalars, exchangeItems, ensembleExchangeItems);
 			if (scalars) {
-				NetcdfUtils.createMetadataAndDataVariablesForScalars(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.stationIdList);
+				uniqueStationIds = NetcdfUtils.getStationIds(exchangeItems, ensembleExchangeItems);
+				//here assume that all ensemble exchange items have the same ensemble member indices.
+				uniqueEnsembleMemberIndices = Arrays.asList(BBUtils.box(getEnsembleMemberIndices()));
+				//set station indices and realization indices in exchangeItems as soon as they are known.
+				setStationAndRealizationIndicesForWriting(exchangeItems, ensembleExchangeItems);
+				NetcdfUtils.createMetadataAndDataVariablesForScalars(netcdfFile, exchangeItems, ensembleExchangeItems, timeInfoTimeDimensionMap, uniqueStationIds.size(), uniqueEnsembleMemberIndices.size());
 			} else {//if grids.
 				NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
 			}
@@ -516,26 +550,49 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		//write metadata variable values for all exchange items, i.e. times and spatial coordinates.
 		//This is only needed if a new file has been created. If an existing file has been opened, then the file should already contain these values.
 		try {
-			NetcdfUtils.writeMetadata(this.netcdfFile, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap, this.stationIdList);
+			NetcdfUtils.writeMetadata(netcdfFile, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueStationIds, uniqueEnsembleMemberIndices);
 		} catch (Exception e) {
 			throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * Validates that either all exchange items are scalars or all exchange items are grids.
+	 * Validates that either all exchange items are scalars or all exchange items are grids, depending on the value of the given boolean.
 	 *
 	 * @param exchangeItems
 	 */
-	private void validateExchangeItems(List<IExchangeItem> exchangeItems) {
+	private void validateExchangeItems(boolean scalar, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
-		if (exchangeItems.isEmpty()) throw new IllegalStateException("exchangeItems.isEmpty()");
+		if (ensembleExchangeItems == null) throw new IllegalArgumentException("ensembleExchangeItems == null");
 
-		boolean scalar = NetcdfUtils.isScalar(exchangeItems.get(0));
 		for (IExchangeItem item : exchangeItems) {
 			if (NetcdfUtils.isScalar(item) != scalar) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Not all exchange items are of the same geometryInfo type. "
 						+ getClass().getSimpleName() + " can only write a NetCDF file for exchange items that are all of the same geometryInfo type.");
+			}
+		}
+
+		for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
+			for (IExchangeItem item : ensemble.values()) {
+				if (NetcdfUtils.isScalar(item) != scalar) {
+					throw new RuntimeException(getClass().getSimpleName() + ": Not all exchange items are of the same geometryInfo type. "
+							+ getClass().getSimpleName() + " can only write a NetCDF file for exchange items that are all of the same geometryInfo type.");
+				}
+			}
+		}
+	}
+
+	private void setStationAndRealizationIndicesForWriting(List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems) {
+		for (IExchangeItem item : exchangeItems) {
+			((NetcdfScalarTimeSeriesExchangeItem) item).setLocationIndex(uniqueStationIds.indexOf(NetcdfUtils.getStationId(item)));
+		}
+
+		for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
+			for (Map.Entry<Integer, IExchangeItem> entry : ensemble.entrySet()) {
+				Integer ensembleMemberIndex = entry.getKey();
+				IExchangeItem item = entry.getValue();
+				((NetcdfScalarTimeSeriesExchangeItem) item).setLocationIndex(uniqueStationIds.indexOf(NetcdfUtils.getStationId(item)));
+				((NetcdfScalarTimeSeriesExchangeItem) item).setRealizationIndex(uniqueEnsembleMemberIndices.indexOf(ensembleMemberIndex));
 			}
 		}
 	}
@@ -611,7 +668,7 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 		return NetcdfUtils.readDataForVariableForSingleLocation(variable, stationDimensionIndex, stationIndex);
 	}
 
-	public double[] readDataForExchangeItemForSingleLocationAndRealization(IExchangeItem item, int stationDimensionIndex, int stationIndex, int realizationDimensionIndex, int realizationIndex) {
+	public double[] readDataForExchangeItemForSingleLocationSingleRealization(IExchangeItem item, int stationDimensionIndex, int stationIndex, int realizationDimensionIndex, int realizationIndex) {
 		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
 		return NetcdfUtils.readDataForVariableForSingleLocationAndRealization(variable, stationDimensionIndex, stationIndex, realizationDimensionIndex, realizationIndex);
 	}
@@ -631,22 +688,18 @@ public class NetcdfDataObject implements IComposableDataObject, IEnsembleDataObj
 	}
 
     public void writeDataForExchangeItemForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex, double[] values) {
-        makeSureFileHasBeenCreated();
-
 		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
         NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFile, variable, timeDimensionIndex, timeIndex, values);
     }
 
-    public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationIndex, double[] values) {
-		makeSureFileHasBeenCreated();
-
+    public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationDimensionIndex, int stationIndex, double[] values) {
 		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
-		if (stationIndex == -1) {
-			stationIndex = stationIdList.indexOf(NetcdfUtils.getStationId(item));
-		}
-		if (stationIndex == -1) {
-			throw new IllegalStateException("stationIndex == -1");
-		}
-        NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFile, variable, timeIndex, stationIndex, values);
+        NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFile, variable, timeIndex, stationDimensionIndex, stationIndex, values);
     }
+
+	public void writeDataForExchangeItemForSingleTimeSingleLocationSingleRealization(IExchangeItem item, int timeIndex, int realizationDimensionIndex, int realizationIndex,
+			int stationDimensionIndex, int stationIndex, double[] values) {
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
+		NetcdfUtils.writeDataForVariableForSingleTimeSingleLocationSingleRealization(this.netcdfFile, variable, timeIndex, realizationDimensionIndex, realizationIndex, stationDimensionIndex, stationIndex, values);
+	}
 }

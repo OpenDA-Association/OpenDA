@@ -89,7 +89,7 @@ public class GridExchangeItemNetcdfWriter {
 		Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap = NetcdfUtils.createGridVariables(netcdfFile, geometryInfos.toArray(new IGeometryInfo[geometryInfos.size()]));
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, null, geometryInfoGridVariablePropertiesMap);
+		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), null, timeDimension, null, null, geometryInfoGridVariablePropertiesMap);
 
 		//add global metadata.
 		NetcdfUtils.addGlobalAttributes(netcdfFile);

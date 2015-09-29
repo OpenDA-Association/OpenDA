@@ -26,6 +26,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.iotools.DataCopier;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
@@ -405,7 +406,57 @@ public class WdmTimeSeriesTest extends TestCase {
         }
     }
 
-    public void testConvertEnsembleWdmToNetcdfWithDataCopier() throws Exception {
+    public void testConvertWdmToNetcdfWithDataCopier() throws Exception {
+        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return;
+        }
+
+        //first copy input wdm file from template to work directory to start with a fresh file before running the test.
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String templateInputFileName = "wdmTimeSeriesTest/template/OBS(ND).wdm";
+        File templateInputFile = new File(testRunDataDir, templateInputFileName);
+
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        String inputFileName = "wdmTimeSeriesTest/work/OBS(ND).wdm";
+        File inputFile = new File(testRunDataDir, inputFileName);
+        //delete inputFile if present (e.g. from previous test).
+        if (inputFile.exists()) {
+            inputFile.delete();
+        }
+        BBUtils.copyFile(templateInputFile, inputFile);
+        assertTrue(inputFile.exists());
+
+        //delete outputFile if present (e.g. from previous test).
+        File outputFile = new File(testRunDataDir, "wdmTimeSeriesTest/work/output.nc");
+        if (outputFile.exists()) {
+            outputFile.delete();
+        }
+
+        //MJD 54466.0 is 2008-01-01 00:00.
+        double startModifiedJulianDate = 54466;
+        //MJD 55562.0 is 2011-01-01 00:00.
+        double endModifiedJulianDate = 55562;
+
+        String inputClassName = WdmTimeSeriesIoObject.class.getName();
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        //Note 1: DataCopier passes the parent folder of the input/output file as workingDir to the input/output DataObject.
+        //Note 2: when running DataCopier from command line, these input arguments should be surrounded by double quotes as a whole, so that it becomes one large argument.
+        String inputArgumentsAsOne = "../../../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll ../../../../../../../model_hspf/native_bin/MESSAGE.WDM output 0 "
+                + TimeUtils.mjdToString(startModifiedJulianDate) + " " + TimeUtils.mjdToString(endModifiedJulianDate) + " RCH103.FLOW RCH104.BOD";
+        String outputClassName = NetcdfDataObject.class.getName();
+        String outputArgumentsAsOne = "true false";
+
+        DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFile.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
+
+        //compare actual output file with expected output file.
+        //convert netcdf data to text for human readable text comparison.
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertWdmToNetcdfWithDataCopier_expected_output.txt");
+        OpenDaTestSupport.compareNetcdfFileInTextFormat(expectedOutputFile, outputFile, null);
+    }
+
+    public void testConvertEnsembleWdmToEnsembleNetcdfWithDataCopier() throws Exception {
         //currently only wdm.dll available (not wdm.so), so only run this test on windows.
         if (!BBUtils.RUNNING_ON_WINDOWS) {
             return;
@@ -447,25 +498,22 @@ public class WdmTimeSeriesTest extends TestCase {
         //MJD 55562.0 is 2011-01-01 00:00.
         double endModifiedJulianDate = 55562;
 
-        String inputClassName = "org.openda.model_hspf.WdmEnsembleTimeSeriesOutputDataObject";
+        String inputClassName = WdmEnsembleTimeSeriesOutputDataObject.class.getName();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
         File inputFilePrefix = new File(testRunDataDir, "wdmTimeSeriesTest/work/OBS(ND)_");
         //Note 1: DataCopier passes the parent folder of the input/output file as workingDir to the input/output DataObject.
         //Note 2: when running DataCopier from command line, these input arguments should be surrounded by double quotes as a whole, so that it becomes one large argument.
         String inputArgumentsAsOne = "../../../../../../../model_hspf/native_bin/win32_gfortran/wdm.dll ../../../../../../../model_hspf/native_bin/MESSAGE.WDM output 0 "
                 + TimeUtils.mjdToString(startModifiedJulianDate) + " " + TimeUtils.mjdToString(endModifiedJulianDate) + " RCH103.FLOW RCH104.BOD";
-        String outputClassName = "org.openda.exchange.dataobjects.NetcdfDataObject";
+        String outputClassName = NetcdfDataObject.class.getName();
         String outputArgumentsAsOne = "true false";
 
         DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFilePrefix.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
 
         //compare actual output file with expected output file.
         //convert netcdf data to text for human readable text comparison.
-        //only compare key variables of the output to avoid out of memory problems in compare in TeamCity run and in IntelliJ.
-        assertTrue("Actual output file does not exist.", outputFile.exists());
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-        File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertEnsembleWdmToNetcdfWithDataCopier_expected_output.txt");
-        //TODO also compare data variables after fixing out of memory errors in OpenDaTestSupport.compareNetcdfFileInTextFormat. AK
+        File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertEnsembleWdmToEnsembleNetcdfWithDataCopier_expected_output.txt");
         OpenDaTestSupport.compareNetcdfFileInTextFormat(expectedOutputFile, outputFile, null);
     }
 }

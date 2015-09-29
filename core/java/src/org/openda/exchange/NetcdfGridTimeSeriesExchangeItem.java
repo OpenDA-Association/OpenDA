@@ -139,7 +139,7 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 		if (this.realizationDimensionIndex == -1) {
 			return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTime(this, this.timeDimensionIndex, timeIndex,
 					this.dimensionIndexToFlipForReadData);
-		} else {
+		} else {//if ensemble exchange item.
 			return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTimeAndRealization(this, this.realizationDimensionIndex, this.realizationIndex, this.timeDimensionIndex, timeIndex,
 					this.dimensionIndexToFlipForReadData);
 		}
@@ -190,6 +190,7 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 
     public void setValuesAsDoublesForSingleTimeIndex(int timeIndex, double[] values) {
         //write all values for given timeIndex.
+		this.netcdfDataObject.makeSureFileHasBeenCreated();
         this.netcdfDataObject.writeDataForExchangeItemForSingleTime(this, this.timeDimensionIndex, timeIndex, values);
     }
 

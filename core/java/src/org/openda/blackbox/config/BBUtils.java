@@ -648,6 +648,17 @@ public class BBUtils {
         return res;
     }
 
+    public static Integer[] box(int[] array) {
+        if (array == null) throw new IllegalArgumentException("array is null.");
+
+        Integer[] res = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            res[i] = array[i];
+        }
+
+        return res;
+    }
+
     public static int[] unbox(Integer[] array) {
         if (array == null) throw new IllegalArgumentException("array is null.");
 

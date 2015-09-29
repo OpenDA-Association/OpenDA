@@ -21,11 +21,9 @@
 package org.openda.utils.io;
 
 import org.openda.exchange.PointGeometryInfo;
-import org.openda.exchange.dataobjects.GridVariableProperties;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IVector;
 import org.openda.utils.Time;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriteable;
@@ -77,11 +75,11 @@ public class ScalarExchangeItemNetcdfWriter {
 		//this only adds a station id variable, this does not add spatial variables with coordinates,
 		//because the coordinates are usually not available in exchangeItems that come from models.
 		//gather locationIds.
-		stationIds = NetcdfUtils.getStationIds(Arrays.asList(exchangeItems));
+		stationIds = NetcdfUtils.getStationIds(Arrays.asList(exchangeItems), null);
 		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIds.size());
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, stationDimension, new HashMap<IGeometryInfo, GridVariableProperties>());
+		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), null, timeDimension, null, stationDimension, null);
 
 		//add global metadata.
 		NetcdfUtils.addGlobalAttributes(netcdfFile);

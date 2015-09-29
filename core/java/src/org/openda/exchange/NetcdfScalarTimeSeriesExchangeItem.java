@@ -44,12 +44,10 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	//TODO NetcdfScalarTimeSeriesExchangeItem should only be created by NetcdfDataObject itself, either in method NetcdfDataObject.createExchangeItems or in method NetcdfDataObject.addExchangeItem.
 	//Outside of NetcdfDataObject, use other exchangeItems. AK
 
-	//only used for reading.
 	private final int locationDimensionIndex;
-	private final int locationIndex;
-
+	private int locationIndex;
 	private final int realizationDimensionIndex;
-	private final int realizationIndex;
+	private int realizationIndex;
 	private final String id;
 	private final Role role;
 	/**
@@ -94,10 +92,6 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
         } else {
             this.timesWithNonMissingValuesInfo = new TimeInfo(allTimesInfo.getTimes());
         }
-	}
-
-	public NetcdfScalarTimeSeriesExchangeItem(int locationDimensionIndex, int locationIndex, String locationId, String parameterId, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
-		this(locationDimensionIndex, locationIndex, locationId, parameterId, -1, -1, role, allTimesInfo, netcdfDataObject);
 	}
 
     public String getId() {
@@ -185,8 +179,8 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	private double[] getAllValues() {
 		if (this.realizationDimensionIndex == -1) {
 			return this.netcdfDataObject.readDataForExchangeItemForSingleLocation(this, this.locationDimensionIndex, this.locationIndex);
-		} else {
-			return this.netcdfDataObject.readDataForExchangeItemForSingleLocationAndRealization(this, this.locationDimensionIndex, this.locationIndex, this.realizationDimensionIndex, this.realizationIndex);
+		} else {//if ensemble exchange item.
+			return this.netcdfDataObject.readDataForExchangeItemForSingleLocationSingleRealization(this, this.locationDimensionIndex, this.locationIndex, this.realizationDimensionIndex, this.realizationIndex);
 		}
 	}
 
@@ -216,8 +210,14 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
         }
 
         //write all values for current time.
-        this.netcdfDataObject.writeDataForExchangeItemForSingleTimeSingleLocation(this, sourceTimeIndex, this.locationIndex, new double[]{valueForSourceTime});
-    }
+		this.netcdfDataObject.makeSureFileHasBeenCreated();
+		if (this.realizationDimensionIndex != -1) {//if ensemble exchange item.
+			this.netcdfDataObject.writeDataForExchangeItemForSingleTimeSingleLocationSingleRealization(this, sourceTimeIndex, realizationDimensionIndex, realizationIndex,
+					locationDimensionIndex, locationIndex, new double[]{valueForSourceTime});
+		} else {
+			this.netcdfDataObject.writeDataForExchangeItemForSingleTimeSingleLocation(this, sourceTimeIndex, locationDimensionIndex, locationIndex, new double[]{valueForSourceTime});
+		}
+	}
 
     /**
      * From the given sourceItem copies only the values for the times
@@ -379,4 +379,17 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
         return dimSizes;
     }
 
+	/**
+	 * @param locationIndex the index of the location of this exchange item in the stations dimension in the netcdf file.
+	 */
+	public void setLocationIndex(int locationIndex) {
+		this.locationIndex = locationIndex;
+	}
+
+	/**
+	 * @param realizationIndex the index of the ensemble member of this exchange item in the realization dimension in the netcdf file.
+	 */
+	public void setRealizationIndex(int realizationIndex) {
+		this.realizationIndex = realizationIndex;
+	}
 }

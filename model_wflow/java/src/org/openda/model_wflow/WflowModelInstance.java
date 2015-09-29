@@ -346,27 +346,16 @@ public class WflowModelInstance extends Instance implements IModelInstance {
     private IDataObject createScalarOutputDataObject(String netcdfOutputFilePath, double[] outputTimes) {
         NetcdfDataObject netcdfOutputDataObject = new NetcdfDataObject();
         netcdfOutputDataObject.initialize(this.modelRunDir, new String[]{netcdfOutputFilePath, "true", "false"});
-        IExchangeItem[] newItems = new IExchangeItem[this.scalarOutputVectorCollection.size()];
-        List<String> ids = new ArrayList<String>();
-        int i = 0;
         for (java.util.Iterator<BBStochModelVectorConfig> it = this.scalarOutputVectorCollection.iterator(); it.hasNext();) {
             BBStochModelVectorConfig vectorConfig = it.next();
             String id = vectorConfig.getId();
             String sourceExchangeItemId = vectorConfig.getSourceId();
-            if (ids.contains(id)){
 				//TODO here wrap source grid exchangeItem in a new SubVector/SelectedIndicesExchangeItem that selects the configured indices in its getValues method,
 				//then use NetcdfScalarExchangeItemWriter to write data for the SubVector/SelectedIndicesExchangeItems (use vectorConfig.getId()
 				//as id for SubVector/SelectedIndicesExchangeItem, this becomes the locationId in the netcdf file).
 				//Then can remove hacks for writing scalars from NetcdfScalarTimeSeriesExchangeItem and NetcdfDataObject. AK
-                newItems[i] = new NetcdfScalarTimeSeriesExchangeItem(1,ids.indexOf(id),id,sourceExchangeItemId, Role.Output,new TimeInfo(outputTimes),netcdfOutputDataObject);
-            } else {
-                newItems[i] = new NetcdfScalarTimeSeriesExchangeItem(1,i,id,sourceExchangeItemId, Role.Output,new TimeInfo(outputTimes),netcdfOutputDataObject);
-            }
-            ids.add(id);
-            i++;
-        }
-
-		for (IExchangeItem newItem : newItems) {
+			//here assume that stationDimensionIndex is 1.
+			IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, id, sourceExchangeItemId, -1, -1, Role.Output, new TimeInfo(outputTimes), netcdfOutputDataObject);
 			netcdfOutputDataObject.addExchangeItem(newItem);
 		}
 
