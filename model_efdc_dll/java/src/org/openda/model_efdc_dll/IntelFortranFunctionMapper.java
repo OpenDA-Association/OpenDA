@@ -56,10 +56,16 @@ public class IntelFortranFunctionMapper{
 	    methodMap.put("m_openda_wrapper_get_values_count_","m_openda_wrapper_mp_get_values_count_");
 	    methodMap.put("m_openda_wrapper_get_values_","m_openda_wrapper_mp_get_values_");
 	    methodMap.put("m_openda_wrapper_set_values_","m_openda_wrapper_mp_set_values_");
-	    methodMap.put("m_openda_wrapper_get_values_count_for_location_","m_openda_wrapper_mp_get_values_count_for_location_");
-        methodMap.put("m_openda_wrapper_get_values_count_for_time_span_","m_openda_wrapper_mp_get_values_count_for_time_span_");
+		methodMap.put("m_openda_wrapper_get_values_count_for_location_","m_openda_wrapper_mp_get_values_count_for_location_");
+		methodMap.put("m_openda_wrapper_get_values_count_for_time_span_","m_openda_wrapper_mp_get_values_count_for_time_span_");
 		methodMap.put("m_openda_wrapper_get_values_for_time_span_","m_openda_wrapper_mp_get_values_for_time_span_");
 		methodMap.put("m_openda_wrapper_set_values_for_time_span_","m_openda_wrapper_mp_set_values_for_time_span_");
+		methodMap.put("m_openda_wrapper_get_layer_count_","m_openda_wrapper_mp_get_layer_count_");
+		methodMap.put("m_openda_wrapper_get_cell_count_","m_openda_wrapper_mp_get_cell_count_");
+		methodMap.put("m_openda_wrapper_get_times_count_for_location_","m_openda_wrapper_mp_get_times_count_for_location_");
+		methodMap.put("m_openda_wrapper_get_times_count_for_time_span_","m_openda_wrapper_mp_get_times_count_for_time_span_");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_location_","m_openda_wrapper_mp_get_layer_count_for_location_");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_time_span_","m_openda_wrapper_mp_get_layer_count_for_time_span_");
 	}
 	
 	public HashMap<String,String> getMap(){

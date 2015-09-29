@@ -22,6 +22,8 @@ package org.openda.model_efdc_dll;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IModelInstance;
+import org.openda.interfaces.ITreeVector;
+import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -34,7 +36,7 @@ public class EfdcGridExchangeItemTest extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() {
-    	testData = new OpenDaTestSupport(EfdcGridExchangeItemTest.class,"model_efdc_dll");
+        testData = new OpenDaTestSupport(EfdcGridExchangeItemTest.class,"model_efdc_dll");
     }
 
     public void testGridExchangeItem() {
@@ -46,16 +48,16 @@ public class EfdcGridExchangeItemTest extends TestCase {
         String operatingSystemName = System.getProperty("os.name");
         System.out.println(operatingSystemName);
         if ( EfdcDLL.RUNNING_ON_WINDOWS) {
-        	fortranDll = new File(moduleRootDir, "native_bin/win" + System.getProperty("sun.arch.data.model") + "_ifort/EfdcFortranDLL.dll");
-		} else if (EfdcDLL.RUNNING_ON_MAC){
-			System.out.println("native_bin/darwin/lib/libEFDC.dylib");
-			fortranDll = new File(moduleRootDir, "native_bin/darwin/lib/libEFDC.dylib");
-		} else if (operatingSystemName.equalsIgnoreCase("Linux")) {
-        	fortranDll = new File(moduleRootDir, "native_bin/linux" + System.getProperty("sun.arch.data.model") +  "_gnu/lib/libEFDC.so");
+            fortranDll = new File(moduleRootDir, "native_bin/win" + System.getProperty("sun.arch.data.model") + "_ifort/EfdcFortranDLL.dll");
+        } else if (EfdcDLL.RUNNING_ON_MAC){
+            System.out.println("native_bin/darwin/lib/libEFDC.dylib");
+            fortranDll = new File(moduleRootDir, "native_bin/darwin/lib/libEFDC.dylib");
+        } else if (operatingSystemName.equalsIgnoreCase("Linux")) {
+            fortranDll = new File(moduleRootDir, "native_bin/linux" + System.getProperty("sun.arch.data.model") +  "_gnu/lib/libEFDC.so");
         } else {
-        	throw new RuntimeException("EFDC is not supported on this archictecture or operating system");
+            throw new RuntimeException("EFDC is not supported on this archictecture or operating system");
         }
-        
+
 
         runModelInstancesTest(fortranDll, modelInstancesParentDir, instanceCount);
     }
@@ -71,7 +73,7 @@ public class EfdcGridExchangeItemTest extends TestCase {
 
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelParentDir, "work" + i);
-    		BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
+            BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
             modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, null);
         }
 
@@ -79,23 +81,26 @@ public class EfdcGridExchangeItemTest extends TestCase {
         for (int i = 0; i < modelInstances.length; i++) {
 
             IModelInstance modelInstance = modelInstances[i];
-            
+
             // Replace current values for boundary exchange item
             String[] exchangeItemIDs = modelInstance.getExchangeItemIDs();
             for (int j = 0; j < exchangeItemIDs.length; j++) {
-            //    System.out.println(exchangeItemIDs[j]); 
+                //    System.out.println(exchangeItemIDs[j]);
             }
-            
-            EfdcGridExchangeItem exchangeItem = 
+
+            EfdcGridExchangeItem exchangeItem =
                     (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.WaterLevel");
             double[] waterLevel = exchangeItem.getValuesAsDoubles();
             exchangeItem.setValuesAsDoubles(waterLevel);
-            
-            exchangeItem = 
+
+            exchangeItem =
                     (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.Discharge");
             double[] testValues = exchangeItem.getValuesAsDoubles();
+            ITreeVector testVector = (ITreeVector) exchangeItem.getValues();
+            assertEquals(testVector.getDimensionIndices()[0].getSize(), 3300 );
+            assertEquals(testVector.getDimensionIndices()[1].getSize(), 2 );
             exchangeItem.setValuesAsDoubles(testValues);
-            
+
         }
     }
 }

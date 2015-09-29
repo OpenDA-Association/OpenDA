@@ -152,7 +152,7 @@ public interface IEfdcFortranNativeDLL extends Library {
                                            IntByReference locationIndex, 
                                            IntByReference valuesCount, 
                                            double[] times);
-    
+
     /**
      * Get the number of values for a spatial exchange item (e.g. a quantity on the full grid).
      *
@@ -161,8 +161,26 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @return <0: error, >=0: the number of values for the exchange item.
      */
     int m_openda_wrapper_get_values_count_(IntByReference modelInstanceId, IntByReference exchangeItemId);
-    
-    
+
+    /**
+     * Get the number of values for a spatial exchange item (e.g. a quantity on the full grid).
+     *
+     * @param modelInstanceId (In:) The model instance identifier
+     * @param exchangeItemId (In:)  Integer identifying the exchange item
+     * @return <0: error, >=0: the number of values for the exchange item.
+     */
+    int m_openda_wrapper_get_cell_count_(IntByReference modelInstanceId, IntByReference exchangeItemId);
+
+    /**
+     * Get the number of layers for a spatial exchange item (e.g. a quantity on the full grid).
+     *
+     * @param modelInstanceId (In:) The model instance identifier
+     * @param exchangeItemId (In:)  Integer identifying the exchange item
+     * @return <0: error, >=0: the number of layers for the exchange item.
+     */
+    int m_openda_wrapper_get_layer_count_(IntByReference modelInstanceId, IntByReference exchangeItemId);
+
+
     /**
      * Get the number of values for a spatial forcing or boundary exchange item.
      *
@@ -171,10 +189,36 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param locationIndex   (In:)  Location index. Value == n means: the n-th lateral
      * @return <0: error, >=0: the number of values for the exchange item (length of the time series)
      */
-    int m_openda_wrapper_get_values_count_for_location_(IntByReference modelInstanceId, 
-                                                        IntByReference exchangeItemId, 
+    int m_openda_wrapper_get_values_count_for_location_(IntByReference modelInstanceId,
+                                                        IntByReference exchangeItemId,
                                                         IntByReference locationIndex);
-    
+
+
+    /**
+     * Get the number of values for a spatial forcing or boundary exchange item.
+     *
+     * @param modelInstanceId (In:)  The model instance identifier
+     * @param exchangeItemId  (In:)  Integer identifying the exchange item (in this case: discharge_on_laterals)
+     * @param locationIndex   (In:)  Location index. Value == n means: the n-th lateral
+     * @return <0: error, >=0: the number of values for the exchange item (length of the time series)
+     */
+    int m_openda_wrapper_get_times_count_for_location_(IntByReference modelInstanceId,
+                                                        IntByReference exchangeItemId,
+                                                        IntByReference locationIndex);
+
+
+    /**
+     * Get the number of values for a spatial forcing or boundary exchange item.
+     *
+     * @param modelInstanceId (In:)  The model instance identifier
+     * @param exchangeItemId  (In:)  Integer identifying the exchange item (in this case: discharge_on_laterals)
+     * @param locationIndex   (In:)  Location index. Value == n means: the n-th lateral
+     * @return <0: error, >=0: the number of values for the exchange item (length of the time series)
+     */
+    int m_openda_wrapper_get_layer_count_for_location_(IntByReference modelInstanceId,
+                                                        IntByReference exchangeItemId,
+                                                        IntByReference locationIndex);
+
     /**
      * Get the number of values for time dependent exchange item (e.g. a boundary condition),
      * for a certain time span. The number of values is not instance dependent.
@@ -188,7 +232,45 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param endTime         (In:) End of the time span
      * @return <0: error, >=0: the number of values for the boundary condition in the specified time span.
      */
-    int m_openda_wrapper_get_values_count_for_time_span_(IntByReference modelInstanceId, 
+    int m_openda_wrapper_get_values_count_for_time_span_(IntByReference modelInstanceId,
+                                                         IntByReference exchangeItemId,
+                                                         IntByReference locationIndex,
+                                                         DoubleByReference beginTime,
+                                                         DoubleByReference endTime);
+
+    /**
+     * Get the number of values for time dependent exchange item (e.g. a boundary condition),
+     * for a certain time span. The number of values is not instance dependent.
+     * This function is used to be able to set noise the boundary conditions.
+     *
+     *
+     * @param modelInstanceId (In:) The model instance identifier
+     * @param exchangeItemId  (In:) Integer identifying the exchange item (in this case: discharge_on_laterals)
+     * @param locationIndex   (In:) Location index. Value == n means: the n-th lateral
+     * @param beginTime       (In:) Begin of the time span
+     * @param endTime         (In:) End of the time span
+     * @return <0: error, >=0: the number of values for the boundary condition in the specified time span.
+     */
+    int m_openda_wrapper_get_times_count_for_time_span_(IntByReference modelInstanceId,
+                                                         IntByReference exchangeItemId,
+                                                         IntByReference locationIndex,
+                                                         DoubleByReference beginTime,
+                                                         DoubleByReference endTime);
+
+    /**
+     * Get the number of values for time dependent exchange item (e.g. a boundary condition),
+     * for a certain time span. The number of values is not instance dependent.
+     * This function is used to be able to set noise the boundary conditions.
+     *
+     *
+     * @param modelInstanceId (In:) The model instance identifier
+     * @param exchangeItemId  (In:) Integer identifying the exchange item (in this case: discharge_on_laterals)
+     * @param locationIndex   (In:) Location index. Value == n means: the n-th lateral
+     * @param beginTime       (In:) Begin of the time span
+     * @param endTime         (In:) End of the time span
+     * @return <0: error, >=0: the number of values for the boundary condition in the specified time span.
+     */
+    int m_openda_wrapper_get_layer_count_for_time_span_(IntByReference modelInstanceId,
                                                          IntByReference exchangeItemId,
                                                          IntByReference locationIndex,
                                                          DoubleByReference beginTime,

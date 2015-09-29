@@ -1126,12 +1126,12 @@ end function select_instance_from_restart_files
   ! --------------------------------------------------------------------------
   ! Function returns the number of grid points for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_values_count(instance, exchange_item_id) result(ret_val)
+  function get_cell_count(instance, exchange_item_id) result(ret_val)
 
     use global, only: LA, NWQV, NTOX
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_' :: get_values_count
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_cell_count_' :: get_cell_count
 #endif
 
     ! return value
@@ -1157,28 +1157,102 @@ end function select_instance_from_restart_files
     case ( gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ )  ! water quality grid items
        id = exchange_item_id - gridIndexWQ
        if (id .gt. NWQV) warn = 1
-       ret_val = LA-1 ! do not yet support multiple layers
+       ret_val = LA-1
     case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX)  ! water quality grid items
        id = exchange_item_id - gridIndexTOX
        if (NTOX .eq. 0) warn = 1
-       ret_val = LA-1 ! do not yet support multiple layers
+       ret_val = LA-1
     case default
        ret_val = -2
     end select
 
     if (ret_val < 0) then
-       write(dm_outfile_handle(instance),'(A,I4,A,I4)') 'Error in get_values_count: ', ret_val, ' for ', exchange_item_id
+       write(dm_outfile_handle(instance),'(A,I4,A,I4)') 'Error in get_cell_count: ', ret_val, ' for ', exchange_item_id
     elseif ( warn .eq. 1) then
        write(dm_outfile_handle(instance),'(A,I4,A)') 'Exchange item with id: ', exchange_item_id, ' is not configured in EFDC.'
        write(dm_outfile_handle(instance),'(A,I4)') 'Returning: ', ret_val
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I8)') 'get_values_count( instance: ', instance,  &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I8)') 'get_cell_count( instance: ', instance,  &
             ', exchange_item_id: ', exchange_item_id, ' ): ', ret_val
     endif
     call flush(dm_outfile_handle(instance))
 
+  end function get_cell_count
+
+  
+  ! --------------------------------------------------------------------------
+  ! Function returns the number of grid points for given exchange item 
+  ! --------------------------------------------------------------------------
+  function get_values_count(instance, exchange_item_id) result(ret_val)
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_' :: get_values_count
+#endif
+
+    ! return value
+    integer :: ret_val    ! number of values for a certain exchange item
+
+    ! arguments
+    integer, intent(in) :: instance          ! model instance identifier
+    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    
+    ret_val = get_cell_count(instance, exchange_item_id) * get_layer_count(instance, exchange_item_id)
+    
   end function get_values_count
 
+    ! --------------------------------------------------------------------------
+  ! Function returns the number of layers for given exchange item 
+  ! --------------------------------------------------------------------------
+  function get_layer_count(instance, exchange_item_id) result(ret_val)
+
+    use global, only: LA, NWQV, NTOX, KCM
+
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_count_' :: get_layer_count
+#endif
+
+    ! return value
+    integer :: ret_val    ! number of values for a certain exchange item
+
+    ! arguments
+    integer, intent(in) :: instance          ! model instance identifier
+    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+   
+    !local
+    integer :: id, warn
+
+    ! body
+    ret_val = -1
+    warn = 0
+    select case(exchange_item_id)
+    case (Grid_WaterLevel)
+       ret_val = 1
+    case (Grid_Discharge)
+       ret_val = KCM
+    case (Grid_WaterTemperature)
+       ret_val = KCM
+    case ( gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ )  ! water quality grid items
+       ret_val = KCM
+    case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX)  ! water quality grid items
+       ret_val = KCM
+    case default
+       ret_val = -2
+    end select
+
+    if (ret_val < 0) then
+       write(dm_outfile_handle(instance),'(A,I4,A,I4)') 'Error in get_layer_count: ', ret_val, ' for ', exchange_item_id
+    elseif ( warn .eq. 1) then
+       write(dm_outfile_handle(instance),'(A,I4,A)') 'Exchange item with id: ', exchange_item_id, ' is not configured in EFDC.'
+       write(dm_outfile_handle(instance),'(A,I4)') 'Returning: ', ret_val
+    else
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I8)') 'get_layer_count( instance: ', instance,  &
+            ', exchange_item_id: ', exchange_item_id, ' ): ', ret_val
+    endif
+    call flush(dm_outfile_handle(instance))
+
+  end function get_layer_count
+
+
+  
 
   ! --------------------------------------------------------------------------
   ! Pass a reference to the array with values for the given exchange item
@@ -1186,7 +1260,7 @@ end function select_instance_from_restart_files
   ! --------------------------------------------------------------------------
   function get_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val)
 
-    use global, only : LA, NTOX, NWQV
+    use global, only : LA, NTOX, NWQV, KCM
     
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_' :: get_values
@@ -1205,13 +1279,16 @@ end function select_instance_from_restart_files
     ! locals
     integer :: NCi          ! index of exchange item variable in CSER time series
     integer :: index1, index2, last_index
+    integer :: values_count ! total number of values
+    integer :: layer_count  ! total number of layer
     ! body
 
     ret_val = -1
-
+    values_count = end_index - start_index + 1
+    layer_count = get_layer_count(instance, exchange_item_id);
     ! shift to EFDC grid indices EFDC (2:LA), OpenDA java (0:LA-2)
     index1 = start_index + 2;
-    index2 = end_index + 2;
+    index2 = start_index + (end_index - start_index + 1)/layer_count + 1;
     if ( valid_model_instance(instance) ) then
        if ( check_grid_indices(instance, exchange_item_id, index1, index2) ) then
           select case(exchange_item_id)
@@ -1219,10 +1296,10 @@ end function select_instance_from_restart_files
              values = dble(state(instance)%HP(index1:index2)  +  state(instance)%BELV(index1:index2))
              ret_val = 0
           case (Grid_Discharge) ! Only one layer for now
-             values = dble(state(instance)%QSUM(index1:index2,1)) 
+             values = dble(reshape(state(instance)%QSUM(index1:index2,1:KCM), (/values_count/))) 
              ret_val = 0
           case (Grid_WaterTemperature) ! Only one layer for now
-             values = dble(state(instance)%TEM(index1:index2,1)) 
+             values = dble(reshape(state(instance)%TEM(index1:index2,1:KCM), (/values_count/))) 
              ret_val = 0
           case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality fields,  Only one layer for now
              NCi = exchange_item_id - gridIndexWQ
@@ -1230,7 +1307,7 @@ end function select_instance_from_restart_files
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(state(instance)%WQV(index1:index2,1, NCi))
+                values = dble(reshape(state(instance)%WQV(index1:index2,1:KCM, NCi), (/values_count/)))
                 ret_val = 0
              end if
           case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Water Quality fields,  Only one layer for now
@@ -1240,7 +1317,7 @@ end function select_instance_from_restart_files
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(state(instance)%TOX(index1:index2,1, NCi))
+                values = dble(reshape(state(instance)%TOX(index1:index2,1:KCM, NCi), (/values_count/)))
                 ret_val = 0
              end if
           case default
@@ -1259,10 +1336,10 @@ end function select_instance_from_restart_files
        last_index = end_index - start_index+1
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'get_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
-       write(dm_outfile_handle(instance),*) values(1:min(9,last_index) )
+       write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
            write(dm_outfile_handle(instance),*) '...'
-           write(dm_outfile_handle(instance),*) values(last_index - 2:last_index )
+           write(dm_outfile_handle(instance),*) values(last_index - 2:last_index)
        elseif ( last_index .ge. 10) then
            write(dm_outfile_handle(instance),*) values(10:last_index)
        end if
@@ -1277,7 +1354,7 @@ end function select_instance_from_restart_files
   ! --------------------------------------------------------------------------
   function set_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val)
 
-    use global, only : NTOX, NWQV
+    use global, only : NTOX, NWQV, KCM
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_values_' :: set_values
@@ -1298,11 +1375,17 @@ end function select_instance_from_restart_files
     integer :: NCi            ! index of exchange item variable in CSER time series
     integer :: index1, index2 ! EFDC start and end grid indices
     integer :: last_index     ! last index of values array
+    integer :: cell_count     ! cell count per layer
+    integer :: layer_count    ! layer count
     ! body
     
     ! shift to EFDC grid indices EFDC (2:LA), OpenDA java (0:LA-2)
+
+    layer_count = get_layer_count(instance, exchange_item_id);
+    cell_count = (end_index - start_index + 1)/layer_count
+
     index1 = start_index + 2;
-    index2 = end_index + 2;
+    index2 = start_index + cell_count + 1;
     ret_val = -1 ! indices not ok
     if (valid_model_instance(instance)) then
        if ( check_grid_indices(instance, exchange_item_id, index1, index2) ) then
@@ -1311,17 +1394,17 @@ end function select_instance_from_restart_files
              state(instance)%HP(index1:index2) = real(values) - state(instance)%BELV(index1:index2)
              ret_val = 0
           case (Grid_Discharge) ! Only one layer for now
-             state(instance)%QSUM(index1:index2,1) = real(values) 
+             state(instance)%QSUM(index1:index2,1:KCM) = real(reshape(values, (/cell_count, KCM/)))
              ret_val = 0
           case (Grid_WaterTemperature) ! Only one layer for now
-             state(instance)%TEM(index1:index2,1) = real(values) 
+             state(instance)%TEM(index1:index2,1:KCM) = real(reshape(values, (/cell_count, KCM/)))
              ret_val = 0
           case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality,  Only one layer for now
              NCi = exchange_item_id - gridIndexWQ
              if (NCi .gt. NWQV) then
                 ret_val = 1
              else 
-                state(instance)%WQV(index1:index2,1, NCi) = real(values) 
+                state(instance)%WQV(index1:index2,1:KCM, NCi) = real(reshape(values, (/cell_count, KCM/)))
                 ret_val = 0
              end if
           case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Toxics
@@ -1330,7 +1413,7 @@ end function select_instance_from_restart_files
              if (NTOX .eq. 0) then
                 ret_val = 1
              else 
-                state(instance)%TOX(index1:index2,1, NCi) = real(values) 
+                state(instance)%TOX(index1:index2,1:KCM, NCi) = real(reshape(values, (/cell_count, KCM/)))
                 ret_val = 0
              end if 
           case default
@@ -1349,7 +1432,7 @@ end function select_instance_from_restart_files
        last_index = end_index - start_index+1
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'set_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
-       write(dm_outfile_handle(instance),*) values(1:min(9,last_index) )
+       write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
            write(dm_outfile_handle(instance),*) '...'
            write(dm_outfile_handle(instance),*) values(last_index - 2:last_index )
@@ -1364,12 +1447,12 @@ end function select_instance_from_restart_files
   ! --------------------------------------------------------------------------
   ! Get the number of values for given exchange item and location
   ! --------------------------------------------------------------------------
-  function get_values_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
+  function get_times_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
 
     !use global, only: MASER, MPSER, MQSER
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_for_location_' :: get_values_count_for_location
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_times_count_for_location_' :: get_times_count_for_location
 #endif
 
     ! return value
@@ -1400,7 +1483,7 @@ end function select_instance_from_restart_files
     case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) ! Toxics
        !NC = NC_tox_start + exchange_item_id - indexTOX
        NC = NC_tox_start + 1 ! only one toxic active
-       if (debug) print*, "get_values_count_for_location", exchange_item_id, bc_index, NC
+       if (debug) print*, "get_times_count_for_location", exchange_item_id, bc_index, NC
        ret_val = csert(instance)%MCSER(bc_index,NC)
     case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
        ret_val = gateser(instance)%MQCTL(bc_index)   
@@ -1410,15 +1493,103 @@ end function select_instance_from_restart_files
 
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I4,A,I4)')  &
-         'Error in get_values_count_for_location: ', ret_val, ' for ', exchange_item_id
+         'Error in get_times_count_for_location: ', ret_val, ' for ', exchange_item_id
     else
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I8)') & 
-         'get_values_count_for_location( instance: ', instance, &
+         'get_times_count_for_location( instance: ', instance, &
          ', exchange_item_id:  ', exchange_item_id, '): ', ret_val
     endif
     call flush(dm_outfile_handle(instance))
 
+  end function get_times_count_for_location
+
+  ! --------------------------------------------------------------------------
+  ! Get the number of values for given exchange item and location
+  ! --------------------------------------------------------------------------
+  function get_values_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
+
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_for_location_' :: get_values_count_for_location
+#endif
+
+    ! return value
+    integer :: ret_val    ! number of values for a certain exchange item
+
+    ! arguments
+    integer, intent(in) :: instance ! model instance identifier
+    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    integer, intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
+
+    ret_val = get_times_count_for_location(instance, exchange_item_id, bc_index) * get_layer_count_for_location(instance, exchange_item_id, bc_index)
+
   end function get_values_count_for_location
+
+  
+  ! --------------------------------------------------------------------------
+  ! Get the number of values for given exchange item and location
+  ! --------------------------------------------------------------------------
+  function get_layer_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
+
+    use global, only: KCM
+
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_count_for_location_' :: get_layer_count_for_location
+#endif
+
+    ! return value
+    integer :: ret_val    ! number of values for a certain exchange item
+
+    ! arguments
+    integer, intent(in) :: instance ! model instance identifier
+    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    integer, intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
+
+    ! local
+    integer :: NC  ! index of exchange item variable in CSER time series
+
+    ! body
+    select case(exchange_item_id)
+    case (Precipitation)
+        ret_val = 1 
+    case (AirTemperature)
+        ret_val = 1
+    case (CloudCover)
+        ret_val = 1
+    case (GlobalRadiation)
+        ret_val = 1
+    case (AtmosphericPressure)
+        ret_val = 1
+    case (RelativeHumidity)
+        ret_val = 1
+    case (PotentialEvaporation)
+        ret_val = 1
+    case (WaterLevel)
+        ret_val = 1 
+    case (Discharge) ! Only one layer for now
+        ret_val = KCM
+    case (WaterTemperature) ! Only one layer for now
+        ret_val = KCM
+    case (indexWQ+1 : indexWQ+nrExchangeItemsWQ) ! Water Quality,  Only one layer for now
+        ret_val = KCM
+    case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) ! Toxics,  Only one layer for now
+        ret_val = KCM
+    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
+        ret_val = 1 
+    case default
+       ret_val = -1
+    end select
+
+    if (ret_val < 0) then
+       write(dm_outfile_handle(instance),'(A,I4,A,I4)')  &
+         'Error in get_layer_count_for_location: ', ret_val, ' for ', exchange_item_id
+    else
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I8)') & 
+         'get_layer_count_for_location( instance: ', instance, &
+         ', exchange_item_id:  ', exchange_item_id, '): ', ret_val
+    endif
+    call flush(dm_outfile_handle(instance))
+
+  end function get_layer_count_for_location
 
   ! --------------------------------------------------------------------------
   ! Get the number of locations for given exchange item
@@ -1490,19 +1661,19 @@ end function select_instance_from_restart_files
     endif
     call flush(dm_outfile_handle(instance))
 
-
   end function get_time_series_count
+
 
   ! --------------------------------------------------------------------------
   ! Get the number of values for exchange item and location within given time
   ! span.
   ! --------------------------------------------------------------------------
-  function get_values_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
+  function get_times_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
     result(ret_val)
 
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_for_time_span_' :: get_values_count_for_time_span
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_times_count_for_time_span_' :: get_times_count_for_time_span
 #endif
 
     ! return value
@@ -1544,22 +1715,131 @@ end function select_instance_from_restart_files
     endif
 
     if (ret_val .eq. -2) then
-       write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_values_count_for_time_span: ', ret_val
+       write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_times_count_for_time_span: ', ret_val
        write(dm_outfile_handle(instance),'(A,I4,A)') 'Time series with exchange item id: ', &
           exchange_item_id, ' is not configured in EFDC.' 
         
     elseif (ret_val < 0) then
-       write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_values_count_for_time_span: ', ret_val
+       write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_times_count_for_time_span: ', ret_val
     else
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4)') & 
-            'get_values_count_for_time_span( instance: ', instance, &
+            'get_times_count_for_time_span( instance: ', instance, &
+                ', exchange_item_id: ', exchange_item_id,& 
+                ', bc_index: ', bc_index,&
+                ', start_time: ', start_time, ', end_time: ', end_time, '): ', ret_val
+    endif
+    call flush(dm_outfile_handle(instance))
+    
+  end function get_times_count_for_time_span
+    
+
+  ! --------------------------------------------------------------------------
+  ! Get the number of values for exchange item and location within given time
+  ! span.
+  ! --------------------------------------------------------------------------
+  function get_layer_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
+    result(ret_val)
+
+    use global, only: KCM
+
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_count_for_time_span_' :: get_layer_count_for_time_span
+#endif
+
+    ! return value
+    integer :: ret_val
+
+    ! arguments
+    integer         , intent(in) :: instance         ! model instance
+    integer         , intent(in) :: exchange_item_id ! type of time dependent boundary
+    integer         , intent(in) :: bc_index         ! index of location
+    real(kind=dp), intent(in) :: start_time       ! start time of bc values
+    real(kind=dp), intent(in) :: end_time         ! end time of bc values
+
+    ! locals
+    integer :: start_index   ! index in bc's time series values for start_time
+    integer :: end_index     ! index in bc's time series values for end_time
+
+    ! body
+
+    ret_val = -1 ! indices not ok
+
+    select case(exchange_item_id)
+    case (Precipitation)
+        ret_val = 1 
+    case (AirTemperature)
+        ret_val = 1
+    case (CloudCover)
+        ret_val = 1
+    case (GlobalRadiation)
+        ret_val = 1
+    case (AtmosphericPressure)
+        ret_val = 1
+    case (RelativeHumidity)
+        ret_val = 1
+    case (PotentialEvaporation)
+        ret_val = 1
+    case (WaterLevel)
+        ret_val = 1 
+    case (Discharge) 
+        ret_val = KCM
+    case (WaterTemperature) 
+        ret_val = KCM
+    case (indexWQ+1 : indexWQ+nrExchangeItemsWQ) 
+        ret_val = KCM
+    case (indexTOX+1 : indexTOX+nrExchangeItemsTOX)
+        ret_val = KCM
+    case (indexControl+1 : indexControl+nrExchangeItemsControl) 
+        ret_val = 1
+    case default
+      ret_val = -2
+    end select
+
+    if (ret_val .eq. -2) then
+       write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_layer_count_for_time_span: ', ret_val
+       write(dm_outfile_handle(instance),'(A,I4,A)') 'Time series with exchange item id: ', &
+          exchange_item_id, ' is not configured in EFDC.' 
+        
+    elseif (ret_val < 0) then
+       write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_layer_count_for_time_span: ', ret_val
+    else
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4)') & 
+            'get_layer_count_for_time_span( instance: ', instance, &
                 ', exchange_item_id: ', exchange_item_id,& 
                 ', bc_index: ', bc_index,&
                 ', start_time: ', start_time, ', end_time: ', end_time, '): ', ret_val
     endif
     call flush(dm_outfile_handle(instance))
 
+  end function get_layer_count_for_time_span
+
+
+  ! --------------------------------------------------------------------------
+  ! Get the number of values for exchange item and location within given time
+  ! span.
+  ! --------------------------------------------------------------------------
+  function get_values_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
+    result(ret_val)
+
+
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_for_time_span_' :: get_values_count_for_time_span
+#endif
+
+    ! return value
+    integer :: ret_val
+
+    ! arguments
+    integer         , intent(in) :: instance         ! model instance
+    integer         , intent(in) :: exchange_item_id ! type of time dependent boundary
+    integer         , intent(in) :: bc_index         ! index of location
+    real(kind=dp), intent(in) :: start_time       ! start time of bc values
+    real(kind=dp), intent(in) :: end_time         ! end time of bc values
+
+    ret_val = get_layer_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
+            * get_times_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time)
   end function get_values_count_for_time_span
+
 
   ! --------------------------------------------------------------------------
   ! Pass the values as a reference to a double precission array for given 
@@ -1569,7 +1849,7 @@ end function select_instance_from_restart_files
   function get_values_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time, values_count, values) &
     result(ret_val)
 
-    use global, only: RAINCVT, NTOX, NWQV
+    use global, only: RAINCVT, NTOX, NWQV, KCM
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_for_time_span_' :: get_values_for_time_span
@@ -1636,11 +1916,11 @@ end function select_instance_from_restart_files
              values = dble(psert(instance)%PSER(start_index:end_index, bc_index))/gravity
              ret_val = 0 
           case (Discharge) ! Only one layer for now
-             values = dble(qsert(instance)%QSER(start_index:end_index,1,bc_index)) 
+             values = dble(reshape(qsert(instance)%QSER(start_index:end_index,1:KCM,bc_index), (/values_count/)))
              ret_val = 0 
           case (WaterTemperature) ! Only one layer for now
              NC = 2
-             values = dble(csert(instance)%CSER(start_index:end_index,1,bc_index, NC)) 
+             values = dble(reshape(csert(instance)%CSER(start_index:end_index,1:KCM,bc_index, NC), (/values_count/))) 
              ret_val = 0
           case (indexWQ+1 : indexWQ+nrExchangeItemsWQ) ! Water Quality,  Only one layer for now
              id = exchange_item_id - indexWQ;
@@ -1649,7 +1929,7 @@ end function select_instance_from_restart_files
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,1,bc_index, NC))
+                values = dble(reshape(csert(instance)%CSER(start_index:end_index,1:KCM,bc_index, NC), (/values_count/)))
                 ret_val = 0
              end if
           case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) ! Toxics,  Only one layer for now
@@ -1660,7 +1940,7 @@ end function select_instance_from_restart_files
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,1,bc_index, NC))
+                values = dble(reshape(csert(instance)%CSER(start_index:end_index,1:KCM,bc_index, NC), (/values_count/)))
                 ret_val = 0
              end if
           case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
@@ -1690,9 +1970,9 @@ end function select_instance_from_restart_files
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if (last_index .ge. 13) then 
           write(dm_outfile_handle(instance),*) '...'
-          write(dm_outfile_handle(instance),*) values(last_index -2:last_index )
+          write(dm_outfile_handle(instance),*) values(last_index -2:last_index)
        elseif (last_index .ge. 10) then
-          write(dm_outfile_handle(instance),*) values(10:last_index )
+          write(dm_outfile_handle(instance),*) values(10:last_index)
        end if
     endif
     call flush(dm_outfile_handle(instance))
@@ -1710,7 +1990,7 @@ end function select_instance_from_restart_files
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_values_for_time_span_' :: set_values_for_time_span
 #endif
 
-    use global, only: RAINCVT, NTOX, NWQV
+    use global, only: RAINCVT, NTOX, NWQV, KCM
 
     ! return value
     integer :: ret_val
@@ -1731,12 +2011,13 @@ end function select_instance_from_restart_files
     integer :: end_index     ! index in bc's time series values for end_time
     integer :: NC           ! index of exchange item variable in CSER time series
     integer :: i, id, last_index
+    integer :: times_count  ! times_count per layer
     real(kind=dp) :: gravity !should be the same as in INPUT.for
     character(len=max_message_length) :: message ! error message
     
     
     ! body
-
+    times_count = values_count / KCM
     ret_val = -1 ! indices not ok
     if (values_count == 0 ) then 
         write(message,'(A,I4)') 'Trying to set zero length data for exchange item', exchange_item_id
@@ -1788,11 +2069,12 @@ end function select_instance_from_restart_files
              psert(instance)%PSER(start_index:end_index, bc_index) = real(values * gravity) 
              ret_val = 0 
           case (Discharge) ! Only one layer for now
-             qsert(instance)%QSER(start_index:end_index,1,bc_index) = real(values)
+             
+             qsert(instance)%QSER(start_index:end_index,:,bc_index) = real(reshape(values, (/times_count, KCM/)))
              ret_val = 0 
           case (WaterTemperature) ! Only one layer for now
              NC = 2
-             csert(instance)%CSER(start_index:end_index,1,bc_index, NC) = real(values)
+             csert(instance)%CSER(start_index:end_index,:,bc_index, NC) = real(reshape(values, (/times_count, KCM/)))
              ret_val = 0
           case (indexWQ+1 : indexWQ+nrExchangeItemsWQ) !Water Quality, only one layer for now
              id = exchange_item_id - indexWQ
@@ -1800,7 +2082,7 @@ end function select_instance_from_restart_files
              if (id .gt. NWQV) then
                 ret_val = 1
              else
-                csert(instance)%CSER(start_index:end_index,1,bc_index, NC) = real(values)
+                csert(instance)%CSER(start_index:end_index,:,bc_index, NC) = real(reshape(values, (/times_count, KCM/)))
                 ret_val = 0
              end if
           case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) !Toxics, only one layer for now
@@ -1810,7 +2092,7 @@ end function select_instance_from_restart_files
              if (NTOX .eq. 0) then
                 ret_val = 1
              else
-                csert(instance)%CSER(start_index:end_index,1,bc_index, NC) = real(values)
+                csert(instance)%CSER(start_index:end_index,:,bc_index, NC) = real(reshape(values, (/times_count, KCM/)))
                 ret_val = 0
              end if
           case (indexControl+1 : indexControl+nrExchangeItemsControl) !Control

@@ -52,11 +52,11 @@ public class EfdcDLLTest extends TestCase {
         File fortranDll;
         if (EfdcDLL.RUNNING_ON_WINDOWS) {
             fortranDll = new File(moduleRootDir, "native_bin/win32_ifort/EfdcFortranDLL.dll");
-		} else if (EfdcDLL.RUNNING_ON_MAC){
-			System.out.println("native_bin/darwin/lib/libEFDC.dylib");
-			fortranDll = new File(moduleRootDir, "native_bin/darwin/lib/libEFDC.dylib");
-		}
-		else {
+        } else if (EfdcDLL.RUNNING_ON_MAC){
+            System.out.println("native_bin/darwin/lib/libEFDC.dylib");
+            fortranDll = new File(moduleRootDir, "native_bin/darwin/lib/libEFDC.dylib");
+        }
+        else {
             System.out.println("native_bin/linux" + System.getProperty("sun.arch.data.model") + "_gnu/lib/libEFDC.so");
             fortranDll = new File(moduleRootDir, "native_bin/linux" + System.getProperty("sun.arch.data.model") + "_gnu/lib/libEFDC.so");
         }
@@ -71,7 +71,7 @@ public class EfdcDLLTest extends TestCase {
         System.out.println("Creating instances");
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelInstancesParentDir, "work" + i);
-    		BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
+            BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
             modelDLLs[i] = EfdcDLL.getForModelInstance(instanceDir);
         }
         

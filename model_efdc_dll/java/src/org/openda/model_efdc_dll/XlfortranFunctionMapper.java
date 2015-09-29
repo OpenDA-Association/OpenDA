@@ -59,7 +59,13 @@ public class XlfortranFunctionMapper{
 	    methodMap.put("m_openda_wrapper_get_values_count_for_location_","__m_openda_wrapper_NMOD_get_values_count_for_location");
 	    methodMap.put("m_openda_wrapper_get_values_count_for_time_span_","__m_openda_wrapper_NMOD_get_values_count_for_time_span");
 	    methodMap.put("m_openda_wrapper_get_values_for_time_span_","__m_openda_wrapper_NMOD_get_values_for_time_span");
-	    methodMap.put("m_openda_wrapper_set_values_for_time_span_","__m_openda_wrapper_NMOD_set_values_for_time_span");		
+	    methodMap.put("m_openda_wrapper_set_values_for_time_span_","__m_openda_wrapper_NMOD_set_values_for_time_span");
+		methodMap.put("m_openda_wrapper_get_layer_count_","__m_openda_wrapper_NMOD_get_layer_count");
+		methodMap.put("m_openda_wrapper_get_cell_count_","__m_openda_wrapper_NMOD_get_cell_count");
+		methodMap.put("m_openda_wrapper_get_times_count_for_location_","__m_openda_wrapper_NMOD_get_times_count_for_location");
+		methodMap.put("m_openda_wrapper_get_times_count_for_time_span_","__m_openda_wrapper_NMOD_get_times_count_for_time_span");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_location_","__m_openda_wrapper_NMOD_get_layer_count_for_location");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_time_span_","__m_openda_wrapper_NMOD_get_layer_count_for_time_span");
 	}
 	
 	public HashMap<String,String> getMap(){

@@ -28,6 +28,8 @@ import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 import org.openda.interfaces.IVector;
+import org.openda.interfaces.ITreeVector;
+import org.openda.utils.TreeVector;
 import org.openda.utils.Vector;
 
 /**
@@ -111,8 +113,11 @@ public class EfdcGridExchangeItem implements IExchangeItem {
 	 * Returns only the current values, since the efdc model only stores the current values in memory.
 	 */
 	public Object getValues() {
+
 		double[] values = getValuesAsDoubles();
-		IVector vector = new Vector(values);
+		int cellCount = this.modelDll.getCellCount(this.parameterNumber);
+		int layerCount =  this.modelDll.getLayerCount(this.parameterNumber);
+		ITreeVector vector = new TreeVector(Integer.toString(this.parameterNumber), new Vector(values), cellCount, layerCount);
 		return vector;
 	}
 

@@ -53,13 +53,19 @@ public class GfortranFunctionMapper{
 	    methodMap.put("m_openda_wrapper_get_times_for_ei_","__m_openda_wrapper_MOD_get_times_for_ei");
 	    methodMap.put("m_openda_wrapper_set_times_for_ei_","__m_openda_wrapper_MOD_set_times_for_ei");
 	    methodMap.put("m_openda_wrapper_get_time_series_count_","__m_openda_wrapper_MOD_get_time_series_count");
-	    methodMap.put("m_openda_wrapper_get_values_count_","__m_openda_wrapper_MOD_get_values_count");
+		methodMap.put("m_openda_wrapper_get_values_count_","__m_openda_wrapper_MOD_get_values_count");
 	    methodMap.put("m_openda_wrapper_get_values_","__m_openda_wrapper_MOD_get_values");
 	    methodMap.put("m_openda_wrapper_set_values_","__m_openda_wrapper_MOD_set_values");
 	    methodMap.put("m_openda_wrapper_get_values_count_for_location_","__m_openda_wrapper_MOD_get_values_count_for_location");
 	    methodMap.put("m_openda_wrapper_get_values_count_for_time_span_","__m_openda_wrapper_MOD_get_values_count_for_time_span");
 	    methodMap.put("m_openda_wrapper_get_values_for_time_span_","__m_openda_wrapper_MOD_get_values_for_time_span");
-	    methodMap.put("m_openda_wrapper_set_values_for_time_span_","__m_openda_wrapper_MOD_set_values_for_time_span");		
+	    methodMap.put("m_openda_wrapper_set_values_for_time_span_","__m_openda_wrapper_MOD_set_values_for_time_span");
+		methodMap.put("m_openda_wrapper_get_layer_count_","__m_openda_wrapper_MOD_get_layer_count");
+		methodMap.put("m_openda_wrapper_get_cell_count_","__m_openda_wrapper_MOD_get_cell_count");
+		methodMap.put("m_openda_wrapper_get_times_count_for_location_","__m_openda_wrapper_MOD_get_times_count_for_location");
+		methodMap.put("m_openda_wrapper_get_times_count_for_time_span_","__m_openda_wrapper_MOD_get_times_count_for_time_span");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_location_","__m_openda_wrapper_MOD_get_layer_count_for_location");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_time_span_","__m_openda_wrapper_MOD_get_layer_count_for_time_span");
 	}
 	
 	public HashMap<String,String> getMap(){

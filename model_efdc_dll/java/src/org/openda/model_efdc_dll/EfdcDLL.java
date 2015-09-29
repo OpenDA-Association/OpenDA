@@ -38,19 +38,20 @@ import java.util.TimeZone;
  */
 public class EfdcDLL {
 
-	private static double modelTimeZoneOffsetInDays;
+    private static double modelTimeZoneOffsetInDays;
     //date of reference for the time used in EFDC (often the begin of a year)
     private double referenceDateInMjd;
     // Flag indicating whether the native code has been initialized or not 
-    private static boolean dllYetToBeInitialized = true; 
+    private static boolean dllYetToBeInitialized = true;
     // Flag indicating whether we are searching for dll or so 
     public static final boolean RUNNING_ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
-
-	// Flag indicating whether we are searching for dll or so
-	public static final boolean RUNNING_ON_MAC = System.getProperty("os.name").startsWith("Mac") || System.getProperty("os.name").startsWith("Darwin");
+    public static final boolean RUNNING_ON_MAC = System.getProperty("os.name").contains("OS X");
 
 
-	// handle to native library
+    // Flag indicating whether we are searching for dll or so
+    // public static final boolean RUNNING_ON_MAC = System.getProperty("os.name").startsWith("Mac") || System.getProperty("os.name").startsWith("Darwin");
+
+    // handle to native library
     private static IEfdcFortranNativeDLL nativeDLL;
 
     // keep track the model instance identifier that is currently in memory.
@@ -69,13 +70,13 @@ public class EfdcDLL {
      */
     public static void initialize(File modelDll, File modelInstanceParentDir, File modelTemplateDir, TimeZone modelTimeZone) {
 
-    	//Native.setProtected(true) will attempt to convert invalid accesses into exceptions.
+        //Native.setProtected(true) will attempt to convert invalid accesses into exceptions.
         Native.setProtected(false);
         System.out.println("Shared library protection: " + Native.isProtected() );
-        
+
         // Initialize the DLL, if not done yet
         if (dllYetToBeInitialized) {
-    		Results.putMessage(EfdcDLL.class.getSimpleName() + ": initializing EFDC dll.");
+            Results.putMessage(EfdcDLL.class.getSimpleName() + ": initializing EFDC dll.");
 
             // determine full paths for parent dir and model template dir
             String modelInstanceParentDirPath;
@@ -104,17 +105,17 @@ public class EfdcDLL {
             if(EfdcDLL.RUNNING_ON_WINDOWS){ //TODO create a better test here
                 nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
             } else if (System.getProperty("os.name").toUpperCase().startsWith("AIX")) {
-            	// IBM XL-Fortran is the default compiler for IBM AIX
-            	XlfortranFunctionMapper fortranMapper = new XlfortranFunctionMapper();
-            	HashMap<String, String> fortranMap = fortranMapper.getMap();
+                // IBM XL-Fortran is the default compiler for IBM AIX
+                XlfortranFunctionMapper fortranMapper = new XlfortranFunctionMapper();
+                HashMap<String, String> fortranMap = fortranMapper.getMap();
                 nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class,fortranMap);
             }else{
-            	// For now assumes that gfortran is used for linux and ifort for windows
-            	GfortranFunctionMapper fortranMapper = new GfortranFunctionMapper();
-            	HashMap<String, String> fortranMap = fortranMapper.getMap();
-                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class,fortranMap);            	
+                // For now assumes that gfortran is used for linux and ifort for windows
+                GfortranFunctionMapper fortranMapper = new GfortranFunctionMapper();
+                HashMap<String, String> fortranMap = fortranMapper.getMap();
+                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class,fortranMap);
             }
-            
+
             //nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
             int retValue = nativeDLL.m_openda_wrapper_init_(modelInstanceParentDirPath, modelTemplateDirPath,
                     modelInstanceParentDirPath.length(), modelTemplateDirPath.length());
@@ -122,12 +123,12 @@ public class EfdcDLL {
                 throw new RuntimeException("Error initializing EFDC model.");
             }
             dllYetToBeInitialized = false;
-            
-			modelTimeZoneOffsetInDays = (double) modelTimeZone.getRawOffset() / (1000.0 * 3600.0 * 24.0);
+
+            modelTimeZoneOffsetInDays = (double) modelTimeZone.getRawOffset() / (1000.0 * 3600.0 * 24.0);
 
 
         }else{
-        	EfdcDLL.currentModelInstance = -1;
+            EfdcDLL.currentModelInstance = -1;
         }
     }
 
@@ -177,24 +178,24 @@ public class EfdcDLL {
             //of the run, corresponds to a time of 1.0 days (see EVENT_TOX2.INP file).
             // get reference date from model
             System.out.println("myModelInstanceID" + myModelInstanceId);
-			int referenceYear = nativeDLL.m_openda_wrapper_get_reference_year_(new IntByReference(myModelInstanceId));
-			String dateString = Integer.toString(referenceYear - 1) + "12310000";
-			try {
-				//dateString is in the timeZone used by the model.
-				double referenceDateMjdInModelTimeZone = TimeUtils.date2Mjd(dateString);
-				//referenceDateInMjd has to be in GMT, since OpenDA uses GMT internally.
-				//Therefore here convert reference date from modelTimeZone to GMT.
-				referenceDateInMjd = referenceDateMjdInModelTimeZone - modelTimeZoneOffsetInDays;
-			} catch (ParseException e) {
-				throw new RuntimeException("Could not parse reference date '" + dateString + "' returned by nativeDLL.GET_REFERENCE_YEAR()"); 
-			}
+            int referenceYear = nativeDLL.m_openda_wrapper_get_reference_year_(new IntByReference(myModelInstanceId));
+            String dateString = Integer.toString(referenceYear - 1) + "12310000";
+            try {
+                //dateString is in the timeZone used by the model.
+                double referenceDateMjdInModelTimeZone = TimeUtils.date2Mjd(dateString);
+                //referenceDateInMjd has to be in GMT, since OpenDA uses GMT internally.
+                //Therefore here convert reference date from modelTimeZone to GMT.
+                referenceDateInMjd = referenceDateMjdInModelTimeZone - modelTimeZoneOffsetInDays;
+            } catch (ParseException e) {
+                throw new RuntimeException("Could not parse reference date '" + dateString + "' returned by nativeDLL.GET_REFERENCE_YEAR()");
+            }
         }
     }
 
     /**
      * Returns the time step used by the EFDC model in days
      *
-     * @return detlaT.getValue()
+     * @return deltaT.getValue()
      */
     public double getDeltaT() {
         DoubleByReference deltaT = new DoubleByReference();
@@ -205,7 +206,7 @@ public class EfdcDLL {
         }
         return deltaT.getValue();
     }
-    
+
     /**
      * Returns the reference period as set in the EFDC.INP file in days
      * The EFDC model can only be run in multiples of the reference period
@@ -221,7 +222,7 @@ public class EfdcDLL {
         }
         return referencePeriod.getValue();
     }
-    
+
 
     /**
      * Returns the start time of simulation in MJD (i.e. in GMT timeZone).
@@ -274,10 +275,10 @@ public class EfdcDLL {
     }
 
     /**
-     * Returns locationCount for a scalar time series parameter.
+     * Returns timeseriesCount for a scalar time series parameter.
      *
      * @param parameterNumber
-     * @return locationCount
+     * @return timeseriesCount
      */
     public int getTimeSeriesCount(int parameterNumber) {
         int timeSeriesCount = nativeDLL.m_openda_wrapper_get_time_series_count_(new IntByReference(myModelInstanceId), new IntByReference(parameterNumber));
@@ -287,24 +288,58 @@ public class EfdcDLL {
         }
         return timeSeriesCount;
     }
-   
+
     /**
-     * Returns cellCount for grid parameter.
+     * Returns total valuesCount for grid parameter.
      *
      * @param parameterNumber
-     * @return cellCount
+     * @return valuesCount
      */
     public int getValuesCount(int parameterNumber) {
         int valuesCount = nativeDLL.m_openda_wrapper_get_values_count_(
                 new IntByReference(myModelInstanceId),
-                new IntByReference(parameterNumber) );
+                new IntByReference(parameterNumber));
         if (valuesCount < 0) {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
             throw new RuntimeException("Invalid result from dll.GET_VALUES_COUNT call, valuesCount= " + valuesCount);
         }
         return valuesCount;
     }
-    
+    /**
+     * Returns cellCount for grid parameter.
+     *
+     * @param parameterNumber
+     * @return cellCount
+     */
+    public int getCellCount(int parameterNumber) {
+        int cellCount = nativeDLL.m_openda_wrapper_get_cell_count_(
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber));
+        if (cellCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.GET_CELL_COUNT call, cellCount= " + cellCount);
+        }
+        return cellCount;
+    }
+
+
+    /**
+     * Returns layer count for grid parameter.
+     *
+     * @param parameterNumber
+     * @return layerCount
+     */
+    public int getLayerCount(int parameterNumber) {
+        int layerCount = nativeDLL.m_openda_wrapper_get_layer_count_(
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber));
+        if (layerCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.GET_LAYER_COUNT call, layerCount= " + layerCount);
+        }
+        return layerCount;
+    }
+
     /**
      * Returns timeCount for a scalar time series parameter.
      *
@@ -314,8 +349,8 @@ public class EfdcDLL {
      */
     private int getValuesCount(int parameterNumber, int locationNumber) {
         int valuesCount = nativeDLL.m_openda_wrapper_get_values_count_for_location_(
-                new IntByReference(myModelInstanceId), 
-                new IntByReference(parameterNumber), 
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber),
                 new IntByReference(locationNumber));
         if (valuesCount < 0) {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(myModelInstanceId));
@@ -323,28 +358,115 @@ public class EfdcDLL {
         }
         return valuesCount;
     }
-    
+
     /**
-     * Returns timeCount for the given subPeriod of a scalar time series parameter.
+     * Returns timeCount for a scalar time series parameter.
+     *
+     * @param parameterNumber
+     * @param locationNumber
+     * @return timeCount
+     */
+    private int getTimesCount(int parameterNumber, int locationNumber) {
+        int cellCount = nativeDLL.m_openda_wrapper_get_times_count_for_location_(
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber),
+                new IntByReference(locationNumber));
+        if (cellCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(myModelInstanceId));
+            throw new RuntimeException("Invalid result from dll.GET_TIMES_COUNT_FOR_LOCATION call, cellCount= " + cellCount);
+        }
+        return cellCount;
+    }
+
+    /**
+     * Returns layer count for a scalar time series parameter.
+     *
+     * @param parameterNumber
+     * @param locationNumber
+     * @return layerCount
+     */
+    public int getLayerCount(int parameterNumber, int locationNumber) {
+        int layerCount = nativeDLL.m_openda_wrapper_get_layer_count_for_location_(
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber),
+                new IntByReference(locationNumber));
+        if (layerCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(myModelInstanceId));
+            throw new RuntimeException("Invalid result from dll.GET_LAYER_COUNT_FOR_LOCATION call, layerCount= " + layerCount);
+        }
+        return layerCount;
+    }
+
+    /**
+     * Returns valuesCount for the given subPeriod of a scalar time series parameter.
+     * This should return te product of timesCount and layerCount
+     *
      *
      * @param parameterNumber
      * @param locationNumber
      * @param startTime
      * @param endTime
-     * @return timeCount
+     * @return valuesCount
      */
     private int getValuesCount(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
         // The dll can handle different length time series, but we do not in this function
         int valuesCount = nativeDLL.m_openda_wrapper_get_values_count_for_time_span_(
                 new IntByReference(myModelInstanceId),
                 new IntByReference(parameterNumber), new IntByReference(locationNumber),
-                new DoubleByReference(startTime.getMJD() - referenceDateInMjd ),
-                new DoubleByReference(endTime.getMJD() - referenceDateInMjd ));
+                new DoubleByReference(startTime.getMJD() - referenceDateInMjd),
+                new DoubleByReference(endTime.getMJD() - referenceDateInMjd));
         if (valuesCount < 0) {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
             throw new RuntimeException("Invalid result from dll.GET_VALUES_COUNT_FOR_TIME_SPAN call, valuesCount= " + valuesCount);
         }
         return valuesCount;
+    }
+
+    /**
+     * Returns the number of time series (number of locations)
+     * for the given subPeriod of a scalar time series parameter.
+     *
+     * @param parameterNumber
+     * @param locationNumber
+     * @param startTime
+     * @param endTime
+     * @return timesCount
+     */
+    private int getTimesCount(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
+        // The dll can handle different length time series, but we do not in this function
+        int timesCount = nativeDLL.m_openda_wrapper_get_times_count_for_time_span_(
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber), new IntByReference(locationNumber),
+                new DoubleByReference(startTime.getMJD() - referenceDateInMjd),
+                new DoubleByReference(endTime.getMJD() - referenceDateInMjd));
+        if (timesCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.GET_TIMES_COUNT_FOR_TIME_SPAN call, timesCount= " + timesCount);
+        }
+        return timesCount;
+    }
+
+    /**
+     * Returns layer Count for the given subPeriod of a scalar time series parameter.
+     *
+     * @param parameterNumber
+     * @param locationNumber
+     * @param startTime
+     * @param endTime
+     * @return layerCount
+     */
+    private int getLayerCount(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
+        // The dll can handle different length time series, but we do not in this function
+        int layerCount = nativeDLL.m_openda_wrapper_get_layer_count_for_time_span_(
+                new IntByReference(myModelInstanceId),
+                new IntByReference(parameterNumber), new IntByReference(locationNumber),
+                new DoubleByReference(startTime.getMJD() - referenceDateInMjd ),
+                new DoubleByReference(endTime.getMJD() - referenceDateInMjd ));
+        if (layerCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.GET_LAYER_COUNT_FOR_TIME_SPAN call, layerCount= " + layerCount);
+        }
+        return layerCount;
     }
 
     /**
@@ -355,14 +477,14 @@ public class EfdcDLL {
      * @return times
      */
     public double[] getTimesForExchangeItem(int parameterNumber, int locationNumber) {
-        int valuesCount = getValuesCount(parameterNumber, locationNumber);
-        double[] times = new double[valuesCount];
+        int timesCount = getTimesCount(parameterNumber, locationNumber);
+        double[] times = new double[timesCount];
         //startModelInstanceAccess();
         int retVal = nativeDLL.m_openda_wrapper_get_times_for_ei_(
                 new IntByReference(myModelInstanceId),
                 new IntByReference(parameterNumber),
                 new IntByReference(locationNumber),
-                new IntByReference(valuesCount),
+                new IntByReference(timesCount),
                 times);
         //endModelInstanceAccess();
         if (retVal != 0) {
@@ -375,7 +497,7 @@ public class EfdcDLL {
         }
         return times;
     }
-    
+
     /**
      * Sets all times for a scalar time series parameter.
      *
@@ -384,19 +506,19 @@ public class EfdcDLL {
      * @param times
      */
     public void setTimesForExchangeItem(int parameterNumber, int locationNumber, double[] times) {
-        int valuesCount = times.length;
+        int timesCount = times.length;
         // correct for reference date
-        double[] myTimes = new double[valuesCount]; 
-        
+        double[] myTimes = new double[timesCount];
+
         for (int i = 0; i < myTimes.length; i++) {
             myTimes[i] = times[i] - referenceDateInMjd;
         }
-        
+
         int retVal = nativeDLL.m_openda_wrapper_set_times_for_ei_(
                 new IntByReference(myModelInstanceId),
                 new IntByReference(parameterNumber),
                 new IntByReference(locationNumber),
-                new IntByReference(valuesCount),
+                new IntByReference(timesCount),
                 myTimes);
         if (retVal != 0) {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
@@ -528,7 +650,7 @@ public class EfdcDLL {
             throw new RuntimeException("Invalid result from dll.SET_VALUES_FOR_TIME_SPAN call, retVal= " + retVal);
         }
     }
-    
+
     /**
      * Checks if exchangeItem is supported by current EFDC configuration.
      *
@@ -543,23 +665,23 @@ public class EfdcDLL {
             throw new RuntimeException("Invalid result from dll.SUPPORTS_EXCHANGE_ITEM call, retVal= " + retVal);
         }
         boolean supported = false;
-        if (retVal == 1) supported = true; 
+        if (retVal == 1) supported = true;
         return supported;
     }
-    
 
-	/**
-	 * In the EFDC model the model run period is divided in a number of referenceTimePeriods.
-	 * Each referenceTimePeriod is in turn divided in a number of timeSteps.
-	 * This method can only be called for a time period that is equal to an integer number of referenceTimePeriods.
-	 *
-	 * @param fromTime
-	 * @param toTime
-	 */
+
+    /**
+     * In the EFDC model the model run period is divided in a number of referenceTimePeriods.
+     * Each referenceTimePeriod is in turn divided in a number of timeSteps.
+     * This method can only be called for a time period that is equal to an integer number of referenceTimePeriods.
+     *
+     * @param fromTime
+     * @param toTime
+     */
     public void compute(ITime fromTime, ITime toTime) {
         startModelInstanceAccess();
         int retVal = nativeDLL.m_openda_wrapper_compute_(
-        		new IntByReference(myModelInstanceId),
+                new IntByReference(myModelInstanceId),
                 new DoubleByReference(fromTime.getMJD() - referenceDateInMjd ),
                 new DoubleByReference(toTime.getMJD() - referenceDateInMjd ));
         endModelInstanceAccess();
@@ -567,28 +689,28 @@ public class EfdcDLL {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
             throw new RuntimeException("Invalid result from dll.COMPUTE call, retVal= " + retVal);
         }
-    } 
-    
+    }
+
     public void storeCurrentInstanceToRestartFiles() {
-        startModelInstanceAccess(); 
+        startModelInstanceAccess();
         int retVal = nativeDLL.m_openda_wrapper_store_current_instance_restart_files_();
         if (retVal != 0) {
-        	nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
-        	throw new RuntimeException("Invalid result from dll.STORE_CURRENT_INSTANCE_RESTART_FILES call, retVal= " + retVal);
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.STORE_CURRENT_INSTANCE_RESTART_FILES call, retVal= " + retVal);
         }
     }
-    
+
     public void restoreInstanceFromRestartFiles() {
         startModelInstanceAccess();
         int retVal = nativeDLL.m_openda_wrapper_select_instance_from_restart_files_(
-                    new IntByReference(myModelInstanceId));
+                new IntByReference(myModelInstanceId));
         if (retVal != 0) {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
             throw new RuntimeException("Invalid result from dll.SELECT_INSTANCE_FROM_RESTART_FILES call, retVal= " + retVal);
         }
     }
-   
-    
+
+
     public void finish() {
         int retVal = nativeDLL.m_openda_wrapper_finish_(new IntByReference(myModelInstanceId));
         myModelInstanceId=-1;
@@ -599,15 +721,15 @@ public class EfdcDLL {
     }
 
     private void startModelInstanceAccess() {
-        
+
         // load required model instance
         if (myModelInstanceId >= 0) {
-        	// Model InstancSystem.out.print("Switching states");e switch, restore required instance
-        	int retVal = nativeDLL.m_openda_wrapper_restore_instance_(new IntByReference(myModelInstanceId));
-        	if (retVal != 0) {
-        		nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
-        		throw new RuntimeException("Error restoring model instance " + retVal);
-        	}
+            // Model InstancSystem.out.print("Switching states");e switch, restore required instance
+            int retVal = nativeDLL.m_openda_wrapper_restore_instance_(new IntByReference(myModelInstanceId));
+            if (retVal != 0) {
+                nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+                throw new RuntimeException("Error restoring model instance " + retVal);
+            }
         }
         // store id of currently active model instance
         currentModelInstance = myModelInstanceId;
@@ -616,11 +738,11 @@ public class EfdcDLL {
     private void endModelInstanceAccess() {
         // store currently active model instance
         if (currentModelInstance >= 0) {
-        	int retVal = nativeDLL.m_openda_wrapper_save_instance_(new IntByReference(currentModelInstance));
-        	if (retVal != 0) {
-        		nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
-        		throw new RuntimeException("Error saving model instance " + retVal);
-        	}
+            int retVal = nativeDLL.m_openda_wrapper_save_instance_(new IntByReference(currentModelInstance));
+            if (retVal != 0) {
+                nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+                throw new RuntimeException("Error saving model instance " + retVal);
+            }
         }
     }
 }

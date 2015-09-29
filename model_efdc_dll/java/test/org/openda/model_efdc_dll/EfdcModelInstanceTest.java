@@ -86,8 +86,9 @@ public class EfdcModelInstanceTest extends TestCase {
             EfdcScalarTimeSeriesExchangeItem exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("1.Precipitation");
             double[] times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
+            int layerCount = exchangeItem.getLayerCount();
             double[] values = new double[times.length];
-            for (int j = 0; j < times.length; j++) {
+            for (int j = 0; j < times.length * layerCount; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -109,21 +110,22 @@ public class EfdcModelInstanceTest extends TestCase {
             
             //Insert new time series longer than original
             if (i == -1) {
-            myTime1 = new double[times.length+10];
-            for (int j = 0; j < myTime1.length; j++) {
-               myTime1[j] = j;  
-            }
-            exchangeItem.setTimesForUnitTest(myTime1);
-            myTime2 = exchangeItem.getTimeInfo().getTimes();
-            assertEquals("times.length", myTime1.length, myTime2.length);
-            assertEquals("myTime[10]", myTime1[10], myTime2[10], 1e-5);
+                myTime1 = new double[times.length+10];
+                for (int j = 0; j < myTime1.length; j++) {
+                   myTime1[j] = j;
+                }
+                exchangeItem.setTimesForUnitTest(myTime1);
+                myTime2 = exchangeItem.getTimeInfo().getTimes();
+                assertEquals("times.length", myTime1.length, myTime2.length);
+                assertEquals("myTime[10]", myTime1[10], myTime2[10], 1e-5);
             }
          // Replace current values for boundary exchange item
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("1.WaterLevel");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            values = new double[times.length];
-            for (int j = 0; j < times.length; j++) {
+            layerCount = exchangeItem.getLayerCount();
+            values = new double[times.length * layerCount];
+            for (int j = 0; j < times.length * layerCount; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -137,8 +139,9 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("22.Discharge");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            values = new double[times.length];
-            for (int j = 0; j < times.length; j++) {
+            layerCount = exchangeItem.getLayerCount();
+            values = new double[times.length * layerCount];
+            for (int j = 0; j < times.length * layerCount; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -152,8 +155,9 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("19.WaterTemperature");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            values = new double[times.length];
-            for (int j = 0; j < times.length; j++) {
+            layerCount = exchangeItem.getLayerCount();
+            values = new double[times.length * layerCount];
+            for (int j = 0; j < times.length * layerCount; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -167,8 +171,9 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("19.RefractoryPOCarbon");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            values = new double[times.length];
-            for (int j = 0; j < times.length; j++) {
+            layerCount = exchangeItem.getLayerCount();
+            values = new double[times.length * layerCount];
+            for (int j = 0; j < times.length * layerCount; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);

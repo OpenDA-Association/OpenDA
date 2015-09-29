@@ -20,13 +20,9 @@
 package org.openda.model_efdc_dll;
 
 import org.openda.exchange.TimeInfo;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.ITime;
-import org.openda.interfaces.ITimeInfo;
-import org.openda.interfaces.IVector;
+import org.openda.interfaces.*;
 import org.openda.utils.Time;
+import org.openda.utils.TreeVector;
 import org.openda.utils.Vector;
 
 /**
@@ -110,11 +106,29 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	}
 
 	/**
+	 * Returns layer count this scalar time series.
+	 */
+	public int getLayerCount() {
+		return this.modelDll.getLayerCount(this.parameterNumber, this.locationNumber);
+	}
+
+
+	/**
+	 * Returns count of time points of this scalar time series.
+	 */
+	public int getTimesCount() {
+		return this.modelDll.getTimeSeriesCount(this.parameterNumber);
+	}
+
+
+	/**
 	 * Returns all values for this scalar time series.
 	 */
 	public Object getValues() {
 		double[] values = getValuesAsDoubles();
-		IVector vector = new Vector(values);
+		int timesCount = this.getTimesCount();
+		int layerCount =  this.getLayerCount();
+		ITreeVector vector = new TreeVector(Integer.toString(this.parameterNumber), new Vector(values), timesCount, layerCount);
 		return vector;
 	}
 
@@ -170,7 +184,8 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	 */
 	public void setValuesAsDoubles(double[] values) {
 		double[] times = getTimeInfo().getTimes();
-		if (values.length != times.length) {
+		int layerCount = getLayerCount();
+		if (values.length < times.length * layerCount) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": number of values (" + values.length
 					+ ") should be equal to number of times (" + times.length + ").");
 		}

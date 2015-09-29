@@ -63,11 +63,13 @@ public class EfdcScalarExchangeItemTest extends TestCase {
 
         IModelInstance[] modelInstances = new EfdcModelInstance[instanceCount];
 
-        String[] exchangeItemIDs = new String[2];
+        String[] exchangeItemIDs = new String[3];
         
         exchangeItemIDs[0] = "1.Precipitation";
         exchangeItemIDs[1] = "27.ControlsGateWaterLevel";
-        
+        exchangeItemIDs[2] = "1.Discharge";
+
+
         // create instance directories and intialize the model instances
         File modelTemplateDir = new File(modelParentDir, "model_GEUM");
 
@@ -97,16 +99,19 @@ public class EfdcScalarExchangeItemTest extends TestCase {
                 //newTimes = times;
                 exchangeItem.setTimesForUnitTest(newTimes);
                 // enlarge dataseries by one
-                double[] values = new double[newTimes.length];
-                for (int j = 0; j < times.length; j++) {
-                    values[j] = j + 100.0 *i;  
+                int layerCount = exchangeItem.getLayerCount();
+                double[] values = new double[newTimes.length * layerCount];
+                for (int l = 0; l < layerCount; l++) {
+                    for (int j = 0; j < times.length; j++) {
+                        values[j  + times.length * l] = j + 1.0e6 * l;
+                    }
                 }
                 exchangeItem.setValuesAsDoubles(values);
      
                 // Get them back
-                double[] precipitation = exchangeItem.getValuesAsDoubles();
-                assertEquals( exchangeItemIDs[id] + ".length", precipitation.length, values.length);
-                assertEquals( exchangeItemIDs[id] + "[2]", 2 + 100.0*i, precipitation[2], 1e-5);
+                double[] testValues = exchangeItem.getValuesAsDoubles();
+                assertEquals( exchangeItemIDs[id] + ".length", testValues.length, values.length);
+                assertEquals( exchangeItemIDs[id] + "[2]", 2 , testValues[2], 1e-5);
             	
             }
                 
