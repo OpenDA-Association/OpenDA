@@ -94,12 +94,12 @@ public class DataCopier {
 	 * Returns all ensemble exchange items from the given inputDataObject.
 	 */
 	private static Map<String, Map<Integer, IExchangeItem>> getAllEnsembleInputExchangeItems(IEnsembleDataObject inputDataObject) {
-		Map<String, Map<Integer, IExchangeItem>> ensembles = new HashMap<String, Map<Integer, IExchangeItem>>();
+		Map<String, Map<Integer, IExchangeItem>> ensembles = new LinkedHashMap<String, Map<Integer, IExchangeItem>>();
 
 		String[] ids = inputDataObject.getEnsembleExchangeItemIds();
 		int[] indices = inputDataObject.getEnsembleMemberIndices();
 		for (String id : ids) {
-			Map<Integer, IExchangeItem> ensemble = new HashMap<Integer, IExchangeItem>();
+			Map<Integer, IExchangeItem> ensemble = new LinkedHashMap<Integer, IExchangeItem>();
 			ensembles.put(id, ensemble);
 
 			for (int index : indices) {
@@ -212,7 +212,7 @@ public class DataCopier {
 		//get non-ensemble exchangeItems.
 		IExchangeItem[] inputExchangeItems = getAllInputExchangeItems(inputDataObject);
 		//get ensemble exchangeItems.
-		Map<String, Map<Integer, IExchangeItem>> ensembles = new HashMap<String, Map<Integer, IExchangeItem>>();
+		Map<String, Map<Integer, IExchangeItem>> ensembles = new LinkedHashMap<String, Map<Integer, IExchangeItem>>();
 		if (inputDataObject instanceof IEnsembleDataObject) {
 			ensembles = getAllEnsembleInputExchangeItems((IEnsembleDataObject) inputDataObject);
 			if (!ensembles.isEmpty() && !(outputDataObject instanceof IEnsembleDataObject)) {

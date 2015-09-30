@@ -79,7 +79,7 @@ public class ScalarExchangeItemNetcdfWriter {
 		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIds.size());
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), null, timeDimension, null, stationDimension, null);
+		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, null, stationDimension, null);
 
 		//add global metadata.
 		NetcdfUtils.addGlobalAttributes(netcdfFile);

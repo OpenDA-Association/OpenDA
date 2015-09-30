@@ -1103,6 +1103,20 @@ public class NetcdfUtils {
 			Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		//non-ensemble exchange items.
+		createDataVariables(netcdfFile, exchangeItems, timeDimension, null, stationDimension, geometryInfoGridVariablePropertiesMap);
+
+		//ensemble exchange items.
+		if (ensembleExchangeItems != null) {
+			for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
+				Collection<IExchangeItem> items = ensemble.values();
+				createDataVariables(netcdfFile, items, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
+			}
+		}
+	}
+
+	public static void createDataVariables(NetcdfFileWriteable netcdfFile, Collection<IExchangeItem> exchangeItems,
+			Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+
 		for (IExchangeItem item : exchangeItems) {
 			String variableName = getVariableName(item);
 			if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
@@ -1111,23 +1125,7 @@ public class NetcdfUtils {
 			}
 
 			//if variable does not exist yet.
-			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, null, stationDimension, geometryInfoGridVariablePropertiesMap);
-		}
-
-		//ensemble exchange items.
-		if (ensembleExchangeItems != null) {
-			for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
-				for (IExchangeItem item : ensemble.values()) {
-					String variableName = getVariableName(item);
-					if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
-						//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
-						continue;
-					}
-	
-					//if variable does not exist yet.
-					NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
-				}
-			}
+			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
