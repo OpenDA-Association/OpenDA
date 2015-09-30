@@ -906,16 +906,6 @@ public class NetcdfUtils {
 	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
 			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int stationCount, int ensembleMemberCount) {
 
-		//create time coordinate variable, if not present yet.
-		//assume that all exchangeItems have identical time records. TODO validate this. AK
-		int[] uniqueTimeVariableCount = new int[]{0};
-		IExchangeItem firstItem = !exchangeItems.isEmpty() ? exchangeItems.get(0) : ensembleExchangeItems.values().iterator().next().values().iterator().next();
-		ITimeInfo timeInfo = firstItem.getTimeInfo();
-		Dimension timeDimension = null;
-		if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-			timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
-		}
-
 		//create stations variable.
 		Dimension stationDimension = createStationsVariable(netcdfFile, stationCount);
 
@@ -926,7 +916,7 @@ public class NetcdfUtils {
 		}
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, ensembleExchangeItems, timeDimension, realizationDimension, stationDimension, null);
+		NetcdfUtils.createDataVariables(netcdfFile, exchangeItems, ensembleExchangeItems, realizationDimension, stationDimension, timeInfoTimeDimensionMap, null);
 	}
 
 	/**
@@ -1099,18 +1089,41 @@ public class NetcdfUtils {
 		}
 	}
 
-	public static void createDataVariables(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
-			Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
+	private static void createDataVariables(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
+			Dimension realizationDimension, Dimension stationDimension, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		//non-ensemble exchange items.
-		createDataVariables(netcdfFile, exchangeItems, timeDimension, null, stationDimension, geometryInfoGridVariablePropertiesMap);
+		int[] uniqueTimeVariableCount = new int[]{0};
+		createDataVariables(netcdfFile, exchangeItems, null, stationDimension, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueTimeVariableCount);
 
 		//ensemble exchange items.
 		if (ensembleExchangeItems != null) {
 			for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
 				Collection<IExchangeItem> items = ensemble.values();
-				createDataVariables(netcdfFile, items, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
+				createDataVariables(netcdfFile, items, realizationDimension, stationDimension, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueTimeVariableCount);
 			}
+		}
+	}
+
+	private static void createDataVariables(NetcdfFileWriteable netcdfFile, Collection<IExchangeItem> exchangeItems, Dimension realizationDimension, Dimension stationDimension,
+			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, int[] uniqueTimeVariableCount) {
+
+		for (IExchangeItem item : exchangeItems) {
+			String variableName = getVariableName(item);
+			if (netcdfFile.findVariable(variableName) != null) {//if variable already exists.
+				//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
+				continue;
+			}
+
+			//if variable does not exist yet.
+			//create time coordinate variable, if not present yet.
+			//assume that all exchangeItems for a given parameter have identical time records. TODO validate this. AK
+			Dimension timeDimension = null;
+			ITimeInfo timeInfo = item.getTimeInfo();
+			if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
+				timeDimension = createTimeVariable(netcdfFile, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
+			}
+			NetcdfUtils.createDataVariable(netcdfFile, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
