@@ -39,20 +39,20 @@ import java.util.Arrays;
  */
 public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnsembleDataObject {
 	/**
-	 * Wrapped ioObjects. One WdmTimeSeriesIoObject for each ensembleMemberIndex.
+	 * Wrapped dataObjects. One WdmTimeSeriesDataObject for each ensembleMemberIndex.
 	 */
-	private ArrayList<WdmTimeSeriesIoObject> wrappedIoObjects = new ArrayList<WdmTimeSeriesIoObject>();
+	private ArrayList<WdmTimeSeriesDataObject> wrappedDataObjects = new ArrayList<>();
 
 	/**
 	 * @param workingDir the working directory.
-	 * @param arguments Filename prefix:
-	 *                  This should be the prefix for the names of the wdm files containing the data for this DataObject (relative to the working directory).
+	 * @param arguments File pathname prefix:
+	 *                  This should be the prefix for the pathnames of the wdm files containing the data for this DataObject (relative to the working directory).
 	 *                  The file names are constructed by adding to the given prefix the following postfix: "<ensembleMemberNumber>.wdm"  where <ensembleMemberNumber> is an integer starting at 1.
 	 *                  Each file should contain the same data for a different ensemble member. The number of ensemble members is determined by the number of files that are present.
 	 *                  Other arguments:
 	 *                  The first argument should be the path of the wdm.dll file (relative to the working directory).
 	 *                  The second argument should be the path of the message file (relative to working directory).
-	 *                  The third argument should be the role of this IoObject. Role must be 'output'.
+	 *                  The third argument should be the role of this DataObject. Role must be 'output'.
 	 *                  The fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12).
 	 *                  The fifth and sixth arguments should be respectively the startTime and endTime of the model run.
 	 *                  The (optional) seventh and further arguments should be the location and parameter ids of the time series for which exchange items should be made,
@@ -61,7 +61,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 	public void initialize(File workingDir, String[] arguments) {
 		//initialize role.
 		if (arguments == null || arguments.length < 1) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": File name prefix for the names of the wdm files not specified.");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": File pathname prefix for the names of the wdm files not specified.");
 		}
 		//the error messages ignore the first argument (fileName), because in config or in DataCopier the fileName is a separate element and not an argument.
 		if (arguments.length < 2) {
@@ -71,23 +71,21 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": No arguments specified. The second argument should be the path of the message file (relative to working directory).");
 		}
 		if (arguments.length < 4) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this IoObject. Role can be 'input' or 'output'.");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this DataObject. Role must be 'output'.");
 		}
 		Role role = WdmUtils.initializeRole(arguments[3]);
 		if (role == IPrevExchangeItem.Role.Input) {
 			throw new UnsupportedOperationException(getClass().getSimpleName() + " not implemented for role input.");
 		}
 
-		String wdmTimeSeriesFilePrefix = arguments[0];
-		String[] otherArguments = new String[arguments.length - 1];
-		System.arraycopy(arguments, 1, otherArguments, 0, otherArguments.length);
-		createWrappedIoObjects(workingDir, wdmTimeSeriesFilePrefix, otherArguments);
+		createWrappedDataObjects(workingDir, arguments);
 	}
 
-	private void createWrappedIoObjects(File workingDir, String wdmTimeSeriesFilePrefix, String[] arguments) {
-		wrappedIoObjects.clear();
+	private void createWrappedDataObjects(File workingDir, String[] arguments) {
+		wrappedDataObjects.clear();
 
-		//create WdmTimeSeriesIoObjects.
+		//create WdmTimeSeriesDataObjects.
+		String wdmTimeSeriesFilePrefix = arguments[0];
 		int ensembleMemberIndex = 0;
 		while (true) {
 			String wdmTimeSeriesFileName = wdmTimeSeriesFilePrefix + (ensembleMemberIndex + 1) + ".wdm";
@@ -96,9 +94,12 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 				break;
 			}
 
-			WdmTimeSeriesIoObject ioObject = new WdmTimeSeriesIoObject();
-			ioObject.initialize(workingDir, wdmTimeSeriesFileName, arguments);
-			wrappedIoObjects.add(ioObject);
+			WdmTimeSeriesDataObject dataObject = new WdmTimeSeriesDataObject();
+			String[] otherArguments = new String[arguments.length];
+			otherArguments[0] = wdmTimeSeriesFileName;
+			System.arraycopy(arguments, 1, otherArguments, 1, otherArguments.length - 1);
+			dataObject.initialize(workingDir, otherArguments);
+			wrappedDataObjects.add(dataObject);
 
 			ensembleMemberIndex++;
 		}
@@ -139,7 +140,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 	 * @return array of ensemble member indices.
 	 */
 	public int[] getEnsembleMemberIndices() {
-		int[] indices = new int[wrappedIoObjects.size()];
+		int[] indices = new int[wrappedDataObjects.size()];
 		for (int n = 0; n < indices.length; n++) {
 			//start at 1.
 			indices[n] = n + 1;
@@ -155,15 +156,10 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 	 * @return array of ensemble exchange item identifiers.
 	 */
 	public String[] getEnsembleExchangeItemIds() {
-		if (wrappedIoObjects.isEmpty()) return new String[0];
+		if (wrappedDataObjects.isEmpty()) return new String[0];
 
-		ArrayList<String> exchangeItemIds = new ArrayList<String>();
-		//this code assumes that all wrappedIoObjects have exactly the same exchangeItems.
-		for (IPrevExchangeItem exchangeItem : wrappedIoObjects.get(0).getExchangeItems()) {
-			exchangeItemIds.add(exchangeItem.getId());
-		}
-
-		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
+		//this code assumes that all wrappedDataObjects have exactly the same exchangeItems.
+		return wrappedDataObjects.get(0).getExchangeItemIDs();
 	}
 
 	/**
@@ -178,23 +174,17 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 	 * @return the requested ensemble exchange item.
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId, int ensembleMemberIndex) {
-		if (wrappedIoObjects.isEmpty()) return null;
-		if (ensembleMemberIndex < 1 || ensembleMemberIndex > wrappedIoObjects.size()) {
+		if (wrappedDataObjects.isEmpty()) return null;
+		if (ensembleMemberIndex < 1 || ensembleMemberIndex > wrappedDataObjects.size()) {
 			throw new IllegalStateException(getClass().getSimpleName() + ".getDataObjectExchangeItem: ensembleMemberIndex " + ensembleMemberIndex + " does not exist.");
 		}
 
-		for (IPrevExchangeItem exchangeItem : wrappedIoObjects.get(ensembleMemberIndex - 1).getExchangeItems()) {
-			//a WdmTimeSeriesIoObject returns WdmTimeSeriesExchangeItems that implement TimeSeries which implements both IPrevExchangeItem and IExchangeItem,
-			//so here can cast IPrevExchangeItem to IExchangeItem.
-			if (exchangeItem.getId().equals(exchangeItemId)) return (IExchangeItem) exchangeItem;
-		}
-
-		return null;
+		return wrappedDataObjects.get(ensembleMemberIndex - 1).getDataObjectExchangeItem(exchangeItemId);
 	}
 
 	public void finish() {
-		for (WdmTimeSeriesIoObject wrappedIoObject : wrappedIoObjects) {
-			wrappedIoObject.finish();
+		for (IDataObject wrappedDataObject : wrappedDataObjects) {
+			wrappedDataObject.finish();
 		}
 	}
 }

@@ -438,7 +438,7 @@ public class WdmTimeSeriesTest extends TestCase {
         //MJD 55562.0 is 2011-01-01 00:00.
         double endModifiedJulianDate = 55562;
 
-        String inputClassName = WdmTimeSeriesIoObject.class.getName();
+        String inputClassName = WdmTimeSeriesDataObject.class.getName();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
         //Note 1: DataCopier passes the parent folder of the input/output file as workingDir to the input/output DataObject.
         //Note 2: when running DataCopier from command line, these input arguments should be surrounded by double quotes as a whole, so that it becomes one large argument.

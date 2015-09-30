@@ -59,6 +59,8 @@ import org.openda.utils.Results;
  *
  * @author Arno Kockx
  */
+@Deprecated
+//use WdmTimeSeriesDataObject instead.
 public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
     /**
@@ -91,9 +93,9 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
     /**
      * @param workingDir the working directory.
-     * @param fileName the name of the file containing the data for this IoObject (relative to the working directory).
-     * @param arguments the first argument should be the path of the wdm.dll file (relative to the working directory),
-     *                  the second argument should be the path of the message file (relative to working directory),
+     * @param fileName the pathname of the file containing the data for this IoObject (relative to the working directory).
+     * @param arguments the first argument should be the pathname of the wdm.dll file (relative to the working directory),
+     *                  the second argument should be the pathname of the message file (relative to working directory),
      *                  the third argument should be the role of this IoObject. Role can be 'input' or 'output',
      *                  the fourth argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
      *                  for role INPUT the fifth and sixth arguments should be the ids of the startTime and endTime exchangeItems respectively,
