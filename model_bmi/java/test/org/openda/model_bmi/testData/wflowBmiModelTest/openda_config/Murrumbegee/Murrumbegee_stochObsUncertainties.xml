@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+	<probabilityDistributionFunction id="410040.q_obs" isActive="true">
+		<normal mean="0" stdv="0.10" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+
+</uncertainties>

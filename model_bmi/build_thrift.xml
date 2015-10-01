@@ -1,0 +1,121 @@
+<project name="model_bmi-thrift" default="help" basedir=".">
+<!--
+================================================================================
+  Ant build file for openda java code
+  install ant and type
+  "ant help"
+  for a list of options
+================================================================================
+-->
+    <target name="help">
+        <echo>
+            Build thrift jar using:
+                - target thrift-jar
+            ant help                     --> print this help
+        </echo>
+    </target>
+
+    <property file="module.properties"/>
+
+    <!-- thrift properties (output) -->
+    <property name="openda_thrift_jar" value="${resourcesdir}/openda/${module}_thrift.jar"/>
+    <property name="openda_thrift_src" value="${resourcesdir}/openda/${module}_thrift_src.zip"/>
+    <!-- thrift properties (input/build) -->
+    <property name="thrift_temp_srcdir" value="thrift_temp_src"/>
+    <property name="thrift_temp_builddir" value="thrift_temp_build"/>
+
+    <target name="debug">
+        <echo>
+        module=${module}
+        srcdir=${srcdir}
+        openda_thrift_jar=${openda_thrift_jar}
+        openda_thrift_src=${openda_thrift_src}
+        thrift_temp_srcdir=${thrift_temp_srcdir}
+        thrift_temp_builddir=${thrift_temp_builddir}
+    </echo>
+    </target>
+
+<!--
+===========================================================================
+    Compilation
+===========================================================================
+-->
+    <target name="build" depends="thrift-jar">
+    </target>
+
+    <target name="thrift-jar" depends="thrift-classes, manifest">
+        <jar jarfile="${openda_thrift_jar}" manifest="MANIFEST.MF">
+            <fileset dir="${thrift_temp_builddir}" includes="**/*.class"/>
+        </jar>
+        <zip zipfile="${openda_thrift_src}">
+            <fileset dir="${thrift_temp_srcdir}" includes="**/*.java"/>
+        </zip>
+    </target>
+
+    <target name="manifest">
+        <tstamp/>
+        <manifest file="MANIFEST.MF">
+        <attribute name="Specification-Title" value="${projectname}"/>
+            <attribute name="Specification-Version" value="${version} ${TODAY}"/>
+        <attribute name="Specification-Vendor" value="${vendor}"/>
+        <attribute name="Implementation-Title" value="${projectname}"/>
+            <attribute name="Implementation-Version" value="${version} ${TODAY}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
+        </manifest>
+    </target>
+
+    <target name="thrift-classes" depends="thrift-src">
+        <!-- run javac on the thrift generated files -->
+        <javac srcdir="${thrift_temp_srcdir}" destdir="${thrift_temp_builddir}" debug="${debug}" source="1.7" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M" memoryMaximumSize="256M">
+            <classpath>
+                <fileset dir="${resourcesdir}">
+                    <include name="thrift/*.jar"/>
+					<include name="slf4j-api.jar"/>
+                </fileset>
+                <pathelement path="."/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="thrift-src" depends="init">
+        <antcall target="thrift-execute">
+            <param name="output_dir" value="${thrift_temp_srcdir}"/>
+            <param name="output_language" value="java"/>
+            <param name="input_file" value="thrift/src/bmi.thrift"/>
+        </antcall>
+        <antcall target="thrift-execute">
+            <param name="output_dir" value="python/resources/openda/thrift_generated_code"/>
+            <param name="output_language" value="py:new_style"/>
+            <param name="input_file" value="thrift/src/bmi.thrift"/>
+        </antcall>
+    </target>
+
+    <!-- This only works if thrift compiler is on the PATH environment variable and output directory already exists -->
+    <target name="thrift-execute">
+		<echo>Generating ${output_language} code in ${output_dir} using thrift code from ${input_file}</echo>
+        <exec executable="thrift" failonerror="${failonerror}">
+            <arg line="-out ${output_dir}"/>
+            <arg line="-gen ${output_language} ${input_file}"/>
+        </exec>
+    </target>
+
+<!--
+===========================================================================
+    Tools: init, clean, etc.
+===========================================================================
+-->
+    <target name="init" depends="clean">
+        <tstamp/>
+        <mkdir dir="${thrift_temp_srcdir}"/>
+        <mkdir dir="${thrift_temp_builddir}"/>
+    </target>
+
+    <target name="clean">
+        <delete file="${openda_thrift_jar}"/>
+        <delete file="${openda_thrift_src}"/>
+        <delete dir="${thrift_temp_builddir}"/>
+        <delete dir="${thrift_temp_srcdir}"/>
+    </target>
+
+</project>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelFactory className="org.openda.model_bmi.BmiModelFactory" workingDirectory=".">
+		<arg>Murrumbegee_ModelFactoryConfig.xml</arg>
+    </modelFactory>
+<!--	<rangeValidationConfigFile>rangeValidationConfig.xml</rangeValidationConfigFile>-->
+	<vectorSpecification>
+		<state>
+			<vector id="CanopyStorage"/>
+			<vector id="FirstZoneDepth"/>
+			<vector id="Snow"/>
+			<vector id="SnowWater"/>
+			<vector id="SurfaceRunoff"/>
+<!--    		<vector id="SurfaceRunoffDyn"/>-->
+<!--			<vector id="Tsoil"/>-->
+			<vector id="UStoreDepth"/>
+			<vector id="WaterLevel"/>
+<!--        	<vector id="WaterLevelDyn"/>-->
+<!--
+
+			<vector id="P"/>
+			<vector id="TEMP"/>
+			<vector id="PET"/>
+-->
+			<noiseModel id="PrecipNoiseModel" className="org.openda.noiseModels.MapsNoiseModelFactory" workingDirectory=".">
+				<configFile>Murrumbegee_PrecipNoise.xml</configFile>
+				<exchangeItems>
+					<exchangeItem id="precip_noise" operation="add">
+						<modelExchangeItem id="P"/>
+					</exchangeItem>
+				</exchangeItems>
+			</noiseModel>
+		</state>
+		<predictor collectTimeSeries="true">
+			<subVector id="410040.q_obs" sourceVectorId="SurfaceRunoff">
+				<selection index1="21166"/>
+			</subVector>
+<!--
+			<subVector id="H075170.q_obs" sourceVectorId="SurfaceRunoff">
+				<selection index1="2222"/>
+			</subVector>
+-->
+		</predictor>
+	</vectorSpecification>
+</blackBoxStochModel>

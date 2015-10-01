@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>.</workingDirectory>
+		<configFile>Murrumbegee_stochObsConfig.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>.</workingDirectory>
+		<configFile>Murrumbegee_StochModelConfig.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>../algorithm</workingDirectory>
+		<configString>enkfAlgorithmConfig.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_results.m</configFile>
+	</resultWriter>
+	<restartInFile>../../states/instate.zip</restartInFile>
+	<restartOutFilePrefix>../../states/outstate</restartOutFilePrefix>
+	<restartOutFileTimeTag>no</restartOutFileTimeTag>
+
+<!--
+
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_results.m</configFile>
+	</resultWriter>
+		<resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+			<workingDirectory>.</workingDirectory>
+			<configFile>results_enkf_.nc</configFile>
+		</resultWriter>
+-->
+</openDaApplication>

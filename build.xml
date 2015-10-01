@@ -67,6 +67,7 @@
       <buildmodule module="models" />
       <buildmodule module="algorithms" />
       <buildmodule module="application" />
+      <buildmodule module="model_bmi"/>
       <buildmodule module="model_delwaq"/>
       <buildmodule module="model_delft3d"/>
       <buildmodule module="model_damflow"/>
@@ -94,6 +95,7 @@
       <docmodule module="observers" />
       <docmodule module="models" />
       <docmodule module="algorithms" />
+      <docmodule module="model_bmi"/>
       <docmodule module="model_efdc"/>
       <docmodule module="model_efdc_dll"/>
       <docmodule module="model_example_blackbox" />
@@ -129,6 +131,7 @@
 
    <target name="tests" depends="init">
       <moduletests module="core" />
+      <moduletests module="model_bmi" />
       <moduletests module="model_example_blackbox" />
       <moduletests module="model_swan" />
       <moduletests module="model_nemo" />
@@ -220,6 +223,7 @@
     	<cleanmodule module="models" />
     	<cleanmodule module="algorithms" />
         <cleanmodule module="application" />
+        <cleanmodule module="model_bmi" />
         <cleanmodule module="model_damflow" />
     	<cleanmodule module="model_delft3d" />
         <cleanmodule module="model_delwaq" />
@@ -278,6 +282,7 @@
 	        <zipfileset dir="algorithms" prefix="openda_${version}/public/algorithms" excludes="*.svn" />
 	        <zipfileset dir="application" prefix="openda_${version}/public/application" excludes="*.svn" />
 	        <zipfileset dir="module_template" prefix="openda_${version}/public/module_template" excludes="*.svn" />
+	        <zipfileset dir="model_bmi" prefix="openda_${version}/public/model_bmi" excludes="*.svn"/>
 	        <zipfileset dir="model_delwaq" prefix="openda_${version}/public/model_delwaq" excludes="*.svn"/>
 	        <zipfileset dir="model_efdc" prefix="openda_${version}/public/model_efdc" excludes="*.svn"/>
 	        <zipfileset dir="model_efdc_dll" prefix="openda_${version}/public/model_efdc_dll" excludes="*.svn"/>
@@ -401,6 +406,7 @@
 	  <tarfileset dir="algorithms" prefix="openda_${version}/public/algorithms" excludes="*.svn" />
 	  <tarfileset dir="application" prefix="openda_${version}/public/application" excludes="*.svn" />
 	  <tarfileset dir="module_template" prefix="openda_${version}/public/module_template" excludes="*.svn" />
+	  <tarfileset dir="model_bmi" prefix="openda_${version}/public/model_bmi" excludes="*.svn"/>
 	  <tarfileset dir="model_delwaq" prefix="openda_${version}/public/model_efdc" excludes="*.svn"/>
 	  <tarfileset dir="model_efdc" prefix="openda_${version}/public/model_efdc" excludes="*.svn"/>
 	  <tarfileset dir="model_efdc_dll" prefix="openda_${version}/public/model_efdc_dll" excludes="*.svn"/>
@@ -489,6 +495,7 @@
     	<buildmoduletests module="models" />
     	<buildmoduletests module="algorithms" />
     	<buildmoduletests module="application" />
+        <buildmoduletests module="model_bmi" />
         <buildmoduletests module="model_efdc" />
         <buildmoduletests module="model_efdc_dll"/>
         <buildmoduletests module="model_example_blackbox" />
@@ -507,6 +514,7 @@
     	<buildmoduletests module="models" />
     	<buildmoduletests module="algorithms" />
     	<buildmoduletests module="application" />
+		<buildmoduletests module="model_bmi" />
         <!--<buildmoduletests module="model_efdc" />
         <buildmoduletests module="model_efdc_dll"/> -->
         <buildmoduletests module="model_example_blackbox" />

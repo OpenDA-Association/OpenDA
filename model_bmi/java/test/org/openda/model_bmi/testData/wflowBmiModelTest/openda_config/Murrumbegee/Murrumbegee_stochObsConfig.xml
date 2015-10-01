@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioObjectStochObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.openda.org"
+		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
+		
+	<!-- Specification of the uncertainty for the observations -->
+	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
+		<arg>Murrumbegee_stochObsUncertainties.xml</arg>
+	</uncertaintyModule>
+	
+	<!-- IoObject that reads the observations from a PI time series file -->
+	<ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject">
+		<fileName>../../observations.nc</fileName>
+		<arg>true</arg>
+		<arg>false</arg>
+	</ioObject>
+
+</ioObjectStochObserver>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="BmiModelFactoryConfigXML">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="pythonModel" type="openda:BmiPythonModelXML">
+					<xs:annotation>
+						<xs:documentation>BMI model that is written in Python.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="modelTemplateDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Path and name of the model template directory (relative to this configuration file). This directory will be cloned to create instance directories called work0, work1, work2, etc. The work directories will be created next to the model template directory, i.e. with the same parent directory. Before each run, any work directories from previous runs will be removed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modelConfigFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The path and name of the model configuration file (relative to the model template directory).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="hosts" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>DEPRECATED: This element will probably be removed in future.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BmiPythonModelXML">
+		<xs:sequence>
+			<xs:element name="pythonPath" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Path that contains the Python code of the model (relative to this configuration file).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="moduleName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The (fully qualified) name of the Python module that contains the class specified in className, e.g. wflow_bmi.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="className" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the Python class that implements the BMI interface, e.g. wflowbmi.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="bmiModelFactoryConfig" type="openda:BmiModelFactoryConfigXML">
+		<xs:annotation>
+			<xs:documentation>Configuration for a BMI model factory. It contains information on the Python module that contains the model to use and the input and output files for the model.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

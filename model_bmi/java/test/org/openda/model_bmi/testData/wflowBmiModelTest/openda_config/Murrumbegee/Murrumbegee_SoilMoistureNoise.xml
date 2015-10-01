@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<noiseItem id="sm_noise" quantity="soilmoisture" unit="mm" height="2.0" standardDeviation="1" timeCorrelationScale="4.0" timeCorrelationScaleUnit="hours" initialValue="0.0" horizontalCorrelationScale="30000." horizontalCorrelationScaleUnit="m">
+			<grid type="cartesian" coordinates="wgs84">
+			<y>-44.025,-44.0241666666,...,-33.610</y>
+			<x>143.205,143.2058333333,...,154.025</x>
+		</grid>
+	</noiseItem>
+</mapsNoiseModelConfig>
+
+
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<noiseItem id="sm_noise" quantity="soilmoisture" unit="mm" height="2.0" standardDeviation="1" timeCorrelationScale="4.0" timeCorrelationScaleUnit="hours" initialValue="0.0" horizontalCorrelationScale="30000." horizontalCorrelationScaleUnit="m">
+			<grid type="cartesian" coordinates="wgs84">
+			<y>47.91083333,47.919999998485,...,52.100000000005</y>
+			<x>3.32958333333,3.33875,...,6.647916668</x>
+		</grid>
+	</noiseItem>
+</mapsNoiseModelConfig>-->

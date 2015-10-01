@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bmiModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org bmiModelFactoryConfig.xsd">
+	<pythonModel>
+		<pythonPath>../../../wflow_bin</pythonPath>
+		<moduleName>wflow.wflow_bmi</moduleName>
+		<className>wflowbmi_csdms</className>
+	</pythonModel>
+	<modelTemplateDirectory>../../model_template</modelTemplateDirectory>
+	<modelConfigFile>wflow_sbm.ini</modelConfigFile>
+</bmiModelFactoryConfig>

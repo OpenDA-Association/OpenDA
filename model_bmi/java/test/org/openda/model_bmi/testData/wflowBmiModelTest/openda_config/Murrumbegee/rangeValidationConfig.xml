@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+	<rangeValidationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org G:\openda\workspace\public\core\xmlSchemas\rangeValidationConfig.xsd">
+	<constraint id="constraint1">
+	<constantLimits>
+	  <targetExchangeItemIdSuffix>_positive</targetExchangeItemIdSuffix>
+	  <sourceExchangeItemId>LowerZoneStorage</sourceExchangeItemId>
+	  <lowerLimit>0</lowerLimit> 
+	</constantLimits>
+	</constraint>
+	<constraint id="constraint2">
+	<constantLimits>
+	  <targetExchangeItemIdSuffix>_positive</targetExchangeItemIdSuffix>
+	  <sourceExchangeItemId>UpperZoneStorage</sourceExchangeItemId>
+	  <lowerLimit>0</lowerLimit> 
+	</constantLimits>
+	</constraint>
+	<constraint id="constraint3">
+	<constantLimits>
+	  <targetExchangeItemIdSuffix>_positive</targetExchangeItemIdSuffix>
+	  <sourceExchangeItemId>SoilMoisture</sourceExchangeItemId>
+	  <lowerLimit>0</lowerLimit> 
+	</constantLimits>
+	</constraint>
+	<constraint id="constraint4">
+	<constantLimits>
+	  <targetExchangeItemIdSuffix>_positive</targetExchangeItemIdSuffix>
+	  <sourceExchangeItemId>SurfaceRunoff</sourceExchangeItemId>
+	  <lowerLimit>0</lowerLimit> 
+	</constantLimits>
+	</constraint>
+
+  </rangeValidationConfig>
