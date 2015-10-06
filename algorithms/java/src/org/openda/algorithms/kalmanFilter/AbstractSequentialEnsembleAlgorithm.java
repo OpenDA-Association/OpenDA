@@ -73,14 +73,22 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 		this.ensembleSize = this.configurationAsTree.getAsInt("ensembleSize",this.ensembleSize);
 	    String localization = this.configurationAsTree.getAsString("localization","none");
 		System.out.println("Selected localization method:"+localization);
-		if (localization.toLowerCase().equals("hamill")){
+		if ( localization.toLowerCase().equals("none") ) {
+			this.localizationMethod = LocalizationMethodType.none;
+		}
+		else if (localization.toLowerCase().equals("hamill")){
 		   this.localizationMethod = LocalizationMethodType.hamill;
            this.distance = this.configurationAsTree.getAsDouble("distance",0.0);
-           if (this.distance == 0.0) throw new RuntimeException("Found Localization method 'Hamill' but no 'distance' (> 0) specified.");
+           if (this.distance <= 0.0) throw new RuntimeException("Found Localization method 'Hamill' but no 'distance' (> 0) specified.");
 		}
 		else if (localization.toLowerCase().equals("autozhang")){
 			this.localizationMethod = LocalizationMethodType.autoZhang;
 		}
+		else {
+			throw new RuntimeException("Configured localization type '" + localization +  "' is not supported");
+		}
+
+
 		this.timeRegularisationPerDay= this.configurationAsTree.getAsDouble("gainMatrixSmoother@timeRegularisationPerDay",0.0);
 
 		Results.putMessage("this.ensembleSize="+this.ensembleSize);

@@ -339,7 +339,7 @@ public class EnKFSeq extends EnKF {
 		indexObs[0]=iObs;
 
 		if (this.localizationMethod==LocalizationMethodType.hamill){
-			System.out.println("EnKFSeq Note: apply localization according to Hammil to state not augmented Hx!");
+			System.out.println("EnKFSeq Note: apply localization according to Hamill to state not augmented Hx!");
 			// We can only get localization for the model state
 			ITreeVector Kvecs_model[] = new ITreeVector[1];
 			Kvecs_model[0] = ((ITreeVector) Kvecs[0]).getSubTreeVector("model");
