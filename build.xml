@@ -552,7 +552,14 @@
 
                     <!-- BROKEN - FIX THEM -->
                    <exclude name="**/SomeBrokenTest.class"/>
-		   
+
+                    <!-- ignore unit tests that fail on Teamcity because Python, PCRaster, PCRGLOBWB, THRIFT and/or ssh are not installed -->
+                    <exclude name="**/AbstractModelBridgeTest.class"/>
+                    <exclude name="**/AbstractIncrementModelBridgeTest.class"/>
+                    <exclude name="**/ClusterPythonIncrementModelBridgeTest.class"/>
+                    <exclude name="**/LocalPythonIncrementModelBridgeTest.class"/>
+                    <exclude name="**/PcrglobwbBridgeTest.class"/>
+                    <exclude name="**/WflowBmiBridgeTest.class"/>
                 </fileset>
             </batchtest>
         	<formatter type="xml" usefile="true"/>
