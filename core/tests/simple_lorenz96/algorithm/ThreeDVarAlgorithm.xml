@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ThreeDVarConfig>
+<ThreeDVarConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/threeDVarConfig.xsd">
 	<costFunction factor="0.5" />
 	<algorithm type="conjugategradient" method="1" maxIterations="20" absTolGrad="0.01" relTolGrad="0.01" absTolStep="0.01" relTolStep="0.01" /> 
 		<lineSearch type="brent" maxIterations="200" absTolBrent="0.01" relTolBrent="0.01">
