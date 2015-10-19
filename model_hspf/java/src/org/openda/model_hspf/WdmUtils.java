@@ -484,9 +484,11 @@ public class WdmUtils {
         while (dataSetNumber != -1) {
             //get the first attributeValue.
             String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-
             String constituent = getConstituentFromAttributeValue(string);
             String stationName = getStationNameFromAttributeValue(string);
+            //if stationName is empty, use location.
+            if (stationName == null || stationName.isEmpty()) stationName = getLocationFromAttributeValue(string);
+
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
                 WdmTimeSeriesExchangeItem exchangeItem = new WdmTimeSeriesExchangeItem(id, role);
@@ -519,9 +521,11 @@ public class WdmUtils {
         while (dataSetNumber != -1) {
             //get the first attributeValue.
             String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-
             String constituent = getConstituentFromAttributeValue(string);
             String stationName = getStationNameFromAttributeValue(string);
+            //if stationName is empty, use location.
+            if (stationName == null || stationName.isEmpty()) stationName = getLocationFromAttributeValue(string);
+
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
                 if (timeSeriesIdSet.contains(id)) {
@@ -583,9 +587,11 @@ public class WdmUtils {
         while (dataSetNumber != -1) {
             //get the first attributeValue.
             String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-
             String currentConstituent = getConstituentFromAttributeValue(string);
             String currentStationName = getStationNameFromAttributeValue(string);
+            //if stationName is empty, use location.
+            if (currentStationName == null || currentStationName.isEmpty()) currentStationName = getLocationFromAttributeValue(string);
+
             if (currentConstituent != null && currentStationName != null) {
                 if (location.equalsIgnoreCase(currentStationName) && parameter.equalsIgnoreCase(currentConstituent)) {
                     return dataSetNumber;
