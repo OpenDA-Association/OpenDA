@@ -70,7 +70,7 @@ public class BBAction {
 
     public void validate() {
         if (exePath!= null) fullExePath = BBUtils.determineExe(configDir, aliasDefinitions.apply(exePath, aliasesUsedInExeName));
-        if (className !=null)  BBUtils.determineClass(className) ;
+        if (className !=null)  BBUtils.validateClass(className) ;
     }
 
     public String[] getArguments() {

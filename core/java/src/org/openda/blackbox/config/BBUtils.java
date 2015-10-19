@@ -87,7 +87,7 @@ public class BBUtils {
             copyFile(source, target);
         } catch (IOException e) {
             throw new RuntimeException("BBUtils.makeClone: could not copy file " +
-                    source.getAbsolutePath() + " to " + target.getAbsolutePath());
+                    source.getAbsolutePath() + " to " + target.getAbsolutePath(), e);
         }
     }
 
@@ -202,7 +202,7 @@ public class BBUtils {
         } catch (InterruptedException e) {
             process.destroy();
             throw new RuntimeException("Executable " + exePath +
-                    " on " + fileOrDir.getAbsolutePath() + "has been interrupted");
+                    " on " + fileOrDir.getAbsolutePath() + "has been interrupted", e);
         }
 		return exitValue;
     }
@@ -214,15 +214,15 @@ public class BBUtils {
         try {
             javaClass = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new ClassNotFoundException("Class " + className + " does not exist.");
+            throw new ClassNotFoundException("Class " + className + " does not exist.", e);
         }
-        Object object = javaClass.newInstance();
-        ClassLoader classLoader;
-        if (object instanceof IConfigurable) {
-            IConfigurable configurable = (IConfigurable) object;
+
+        if (IConfigurable.class.isAssignableFrom(javaClass)) {
+            IConfigurable configurable = (IConfigurable) javaClass.newInstance();
             configurable.initialize(fileOrDir, arguments);
+
         } else {
-            classLoader = BBUtils.class.getClassLoader();
+            ClassLoader classLoader = BBUtils.class.getClassLoader();
 
             Class<?> clz = classLoader.loadClass(className);
             try {
@@ -238,8 +238,7 @@ public class BBUtils {
                 }
                 retClass = startAndWait(mainMethod, args);
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("Class " + className +
-                        " should implement org.openda.utils.org.openda.blackbox.interfaces.BBActionClass or has a main() function");
+                throw new RuntimeException("Class " + className + " should implement org.openda.interfaces.IConfigurable or should have a main() method.", e);
             }
         }
 		return retClass;
@@ -402,7 +401,7 @@ public class BBUtils {
 			try {
 				BBUtils.deleteDirectory(instanceDir);
 			} catch (Exception e) {
-				throw new RuntimeException("Error deleting old directory " + instanceDir.getAbsolutePath());
+				throw new RuntimeException("Error deleting old directory " + instanceDir.getAbsolutePath(), e);
 			}
 		}
 	}
@@ -432,7 +431,7 @@ public class BBUtils {
                 fullExecutablePath = exe.getCanonicalPath();
                 fullExecutablePath = exe.getAbsolutePath();
             } catch (IOException e) {
-                throw new RuntimeException("could not create canonical path for " + exe.getAbsolutePath());
+                throw new RuntimeException("could not create canonical path for " + exe.getAbsolutePath(), e);
             }
             if (!exe.canExecute())  {
                 throw new RuntimeException(fullExecutablePath + " is not an executable");
@@ -495,28 +494,29 @@ public class BBUtils {
         }
     }
 
-    public static void determineClass(String className) {
-        // Create instance of class and run it
+    public static void validateClass(String className) {
+        //validate class by creating an instance or by finding the main method.
         final Class javaClass;
         try {
             javaClass = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Class " + className + " does not exist.");
+            throw new RuntimeException("Class " + className + " does not exist.", e);
         }
-        Object object = null;
-        try {
-            object = javaClass.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Error creating Class Instance " + className + ": " + e.getMessage());
-        }
-        if (!(object instanceof IConfigurable)) {
+
+        if (IConfigurable.class.isAssignableFrom(javaClass)) {
+            try {
+                javaClass.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("Error creating Class Instance " + className + ": " + e.getMessage(), e);
+            }
+
+        } else {
             try {
                 ClassLoader classLoader = BBUtils.class.getClassLoader();
                 Class<?> clz = classLoader.loadClass(className);
                 Method mainMethod = getMainMethod(clz);
             } catch (Exception e) {
-                throw new RuntimeException("Class " + className +
-                        " should implement org.openda.utils.org.openda.blackbox.interfaces.BBActionClass or has a main() function");
+                throw new RuntimeException("Class " + className + " should implement org.openda.interfaces.IConfigurable or should have a main() method.", e);
             }
         }
     }
