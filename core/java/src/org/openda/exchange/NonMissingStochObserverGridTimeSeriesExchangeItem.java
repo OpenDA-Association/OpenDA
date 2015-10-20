@@ -22,6 +22,7 @@ package org.openda.exchange;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.*;
+import org.openda.utils.geometry.GeometryUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,19 +95,17 @@ public class NonMissingStochObserverGridTimeSeriesExchangeItem implements IGridT
 
 		//get geometryInfo.
 		IGeometryInfo geometryInfo = this.exchangeItem.getGeometryInfoForSingleTimeIndex(timeIndex);
-		if (!(geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo)) {
-			throw new RuntimeException("No coordinates available for exchangeItem " + this.exchangeItem.getId());
+		if (GeometryUtils.isScalar(geometryInfo)) {
+			throw new RuntimeException("No coordinates available for scalar exchangeItem " + this.exchangeItem.getId());
 		}
 
 		//get coordinates.
 		//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
 		//need one coordinate for each grid cell.
-		IVector yCoordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellYCoordinates()
-				: ((IrregularGridGeometryInfo) geometryInfo).getYCoordinates();
+		IVector yCoordinates = GeometryUtils.getYCoordinates(geometryInfo);
 		//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
 		//need one coordinate for each grid cell.
-		IVector xCoordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellXCoordinates()
-				: ((IrregularGridGeometryInfo) geometryInfo).getXCoordinates();
+		IVector xCoordinates = GeometryUtils.getXCoordinates(geometryInfo);
 
 		//filter out cells with missing values.
 		List<Double> nonMissingXCoordinatesList = new ArrayList<Double>(values.length);

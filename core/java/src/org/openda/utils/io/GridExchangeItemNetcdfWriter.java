@@ -22,13 +22,13 @@ package org.openda.utils.io;
 
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.IrregularGridGeometryInfo;
-import org.openda.exchange.PointGeometryInfo;
+import org.openda.exchange.LayeredIrregularGridGeometryInfo;
 import org.openda.exchange.dataobjects.GridVariableProperties;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IVector;
 import org.openda.utils.Time;
+import org.openda.utils.geometry.GeometryUtils;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
@@ -50,7 +50,7 @@ public class GridExchangeItemNetcdfWriter {
 
 	private final Variable timeVariable;
 	private int currentTimeIndex = -1;
-	private final List<Double> timesWrittenSoFar = new ArrayList<Double>();
+	private final List<Double> timesWrittenSoFar = new ArrayList<>();
 
 	public GridExchangeItemNetcdfWriter(IExchangeItem[] exchangeItems, File outputFile) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
@@ -74,14 +74,13 @@ public class GridExchangeItemNetcdfWriter {
 
 		//create grid dimensions and variables.
 		//gather geometryInfos.
-		List<IGeometryInfo> geometryInfos = new ArrayList<IGeometryInfo>();
+		List<IGeometryInfo> geometryInfos = new ArrayList<>();
 		for (IExchangeItem item : exchangeItems) {
-			IGeometryInfo geometryInfo = item.getGeometryInfo();
-			if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {
+			if (GeometryUtils.isScalar(item.getGeometryInfo())) {
 				throw new IllegalArgumentException(getClass().getSimpleName() + " can only write data for grid exchange items. Exchange item '" + item.getId()
 						+ "' of type " + item.getClass().getSimpleName() + " has no grid geometry info.");
 			}
-			geometryInfos.add(geometryInfo);
+			geometryInfos.add(item.getGeometryInfo());
 		}
 		//create spatial coordinate variables, if not present yet.
 		//this only adds spatial dimensions, this does not add spatial variables with coordinates,
@@ -181,6 +180,18 @@ public class GridExchangeItemNetcdfWriter {
 				dimensions[1] = gridCellCount;
 				origin = new int[dimensions.length];
 				origin[1] = 0;
+
+			} else if (geometryInfo instanceof LayeredIrregularGridGeometryInfo) {
+				int gridCellCount = ((LayeredIrregularGridGeometryInfo) geometryInfo).getCellCount();
+				int layerCount = ((LayeredIrregularGridGeometryInfo) geometryInfo).getLayerCount();
+				//dimensions are (time, layer, node).
+				dimensions = new int[3];
+				dimensions[0] = 1;
+				dimensions[1] = layerCount;
+				dimensions[2] = gridCellCount;
+				origin = new int[dimensions.length];
+				origin[1] = 0;
+				origin[2] = 0;
 
 			} else if (geometryInfo instanceof ArrayGeometryInfo) {
 				int rowCount = ((ArrayGeometryInfo) geometryInfo).getLatitudeArray().length();

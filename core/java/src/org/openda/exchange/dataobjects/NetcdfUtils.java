@@ -31,16 +31,11 @@ import java.util.*;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.*;
 import org.openda.exchange.dataobjects.NetcdfDataObject.GridStartCorner;
-import org.openda.interfaces.IArray;
-import org.openda.interfaces.IArrayGeometryInfo;
-import org.openda.interfaces.IArrayTimeInfo;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.ITimeInfo;
+import org.openda.interfaces.*;
 import org.openda.utils.Array;
 import org.openda.utils.Time;
 
+import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.*;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
@@ -73,6 +68,7 @@ public class NetcdfUtils {
 	public static final String COORDINATES_ATTRIBUTE_NAME = "coordinates";
 	public static final String FEATURE_TYPE_ATTRIBUTE_NAME = "featureType";
 	public static final String CF_ROLE_ATTRIBUTE_NAME = "cf_role";
+	public static final String POSITIVE_ATTRIBUTE_NAME = "positive";
 
 	//attribute values.
 	//see http://www.unidata.ucar.edu/software/netcdf/docs/netcdf.html#NetCDF-Classic-Format for default _FillValues for each dataType.
@@ -81,10 +77,13 @@ public class NetcdfUtils {
 	public static final String T_AXIS = "T";
 	public static final String X_AXIS = "X";
 	public static final String Y_AXIS = "Y";
+	public static final String Z_AXIS = "Z";
 	public static final String PROJECTION_Y_COORDINATE = "projection_y_coordinate";
 	public static final String PROJECTION_X_COORDINATE = "projection_x_coordinate";
 	public static final String TIME_SERIES_FEATURE_TYPE = "timeSeries";
 	public static final String TIME_SERIES_ID_CF_ROLE = "timeseries_id";
+	public static final String Z_UNITS = "1";
+	public static final String Z_POSITIVE = "up";
 
 	//variable names.
 	public static final String TIME_VARIABLE_NAME = "time";
@@ -94,6 +93,7 @@ public class NetcdfUtils {
 	public static final String LONGITUDE_VARIABLE_NAME = "lon";
 	public static final String LONGITUDE_STANDARD_NAME = "longitude";
 	public static final String LONGITUDE_LONG_NAME = "longitude";
+	public static final String Z_VARIABLE_NAME = "z";
 	public static final String Y_VARIABLE_NAME = "y";
 	public static final String X_VARIABLE_NAME = "x";
 	public static final String STATION_ID_VARIABLE_NAME = "station_id";
@@ -938,9 +938,8 @@ public class NetcdfUtils {
 			//create spatial coordinate variables, if not present yet.
 			//this only adds spatial dimensions, this does not add spatial variables with coordinates,
 			//because the coordinates are usually not available in exchangeItems that come from models.
-			IGeometryInfo geometryInfo = exchangeItem.getGeometryInfo();
-			if (geometryInfo != null && !(geometryInfo instanceof PointGeometryInfo)) {//if grid.
-				createGridVariables(netcdfFile, geometryInfo, uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
+			if (!GeometryUtils.isScalar(exchangeItem.getGeometryInfo())) {//if grid.
+				createGridVariables(netcdfFile, exchangeItem.getGeometryInfo(), uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
 			}
 
 			//create data variable.
@@ -1042,6 +1041,27 @@ public class NetcdfUtils {
 				gridVariableProperties = new GridVariableProperties();
 				gridVariableProperties.setDimensions(Arrays.asList(faceDimension));
 				geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
+
+			} else if (geometryInfo instanceof LayeredIrregularGridGeometryInfo) {
+				String faceDimensionName = FACE_DIMENSION_NAME + postfix;
+				String layerDimensionName = Z_VARIABLE_NAME + postfix;
+
+				//create face dimension.
+				int gridCellCount = ((LayeredIrregularGridGeometryInfo) geometryInfo).getCellCount();
+				Dimension faceDimension = netcdfFile.addDimension(faceDimensionName, gridCellCount);
+
+				//create z dimension.
+				int layerCount = ((LayeredIrregularGridGeometryInfo) geometryInfo).getLayerCount();
+				Dimension layerDimension = netcdfFile.addDimension(layerDimensionName, layerCount);
+
+				//put dimensions in map so that they can be re-used later by other variables in the same file.
+				gridVariableProperties = new GridVariableProperties();
+				gridVariableProperties.setDimensions(Arrays.asList(layerDimension, faceDimension));
+				gridVariableProperties.setZVariableName(layerDimensionName);
+				geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
+
+				//create z variable.
+				createZVariable(netcdfFile, layerDimension);
 
 			} else if (geometryInfo instanceof ArrayGeometryInfo && !(geometryInfo instanceof PointGeometryInfo)) {
 				String yDimensionName = Y_VARIABLE_NAME + postfix;
@@ -1206,7 +1226,18 @@ public class NetcdfUtils {
 		gridVariableProperties.setX1DVariableName(xVariableName);
 	}
 
-	/**
+	private static void createZVariable(NetcdfFileWriteable dataFile, Dimension zDimension) {
+		String zVariableName = zDimension.getName();
+		ArrayList<Dimension> dimensions = new ArrayList<>();
+		dimensions.add(zDimension);
+		dataFile.addVariable(zVariableName, DataType.DOUBLE, dimensions);
+		dataFile.addVariableAttribute(zVariableName, UNITS_ATTRIBUTE_NAME, Z_UNITS);
+		dataFile.addVariableAttribute(zVariableName, AXIS_ATTRIBUTE_NAME, Z_AXIS);
+		dataFile.addVariableAttribute(zVariableName, POSITIVE_ATTRIBUTE_NAME, Z_POSITIVE);
+		dataFile.addVariableAttribute(zVariableName, FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE);
+	}
+
+ 	/**
 	 * General method to create a one dimensional coordinate variable with the given properties.
 	 *
 	 * @param dataFile
@@ -1335,6 +1366,12 @@ public class NetcdfUtils {
 			if (y1DVariableName != null && x1DVariableName != null && geometryInfo instanceof ArrayGeometryInfo) {
 				writeYX1DVariableValues(netcdfFile, (ArrayGeometryInfo) geometryInfo, y1DVariableName, x1DVariableName);
 			}
+
+			//write z variable values (if present).
+			String zVariableName = gridVariableProperties.getZVariableName();
+			if (zVariableName != null && geometryInfo instanceof LayeredIrregularGridGeometryInfo) {
+				writeZVariableValues(netcdfFile, (LayeredIrregularGridGeometryInfo) geometryInfo, zVariableName);
+			}
 		}
 	}
 
@@ -1349,7 +1386,7 @@ public class NetcdfUtils {
 	 * @param xVariableName
 	 * @throws Exception
 	 */
-	public static void writeYX1DVariableValues(NetcdfFileWriteable dataFile,
+	private static void writeYX1DVariableValues(NetcdfFileWriteable dataFile,
 			ArrayGeometryInfo geometryInfo, String yVariableName, String xVariableName) throws Exception {
 
 		IArray latitudeArray = geometryInfo.getLatitudeArray();
@@ -1375,6 +1412,18 @@ public class NetcdfUtils {
 			xArray.set(index, x);
 		}
 		dataFile.write(xVariableName, xArray);
+	}
+
+	private static void writeZVariableValues(NetcdfFileWriteable dataFile, LayeredIrregularGridGeometryInfo geometryInfo, String zVariableName) throws Exception {
+		int layerCount = geometryInfo.getLayerCount();
+		ArrayDouble.D1 zArray = new ArrayDouble.D1(layerCount);
+		for (int index = 0; index < layerCount; index++) {
+			//here write depth in meters relative to the top layer.
+			//here assume that each layer is 1 meter thick and that the first layer is the top layer, because z coordinates are not known here.
+			double z = (double) -index;
+			zArray.set(index, z);
+		}
+		dataFile.write(zVariableName, zArray);
 	}
 
 	/**
@@ -1579,16 +1628,5 @@ public class NetcdfUtils {
 		dataFile.addVariableAttribute(REALIZATION_VARIABLE_NAME, UNITS_ATTRIBUTE_NAME, "1");
 
 		return realizationDimension;
-	}
-
-	public static boolean isScalar(IExchangeItem item) {
-		IGeometryInfo geometryInfo = item.getGeometryInfo();
-		if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {//if scalar.
-			return true;
-		} else if (geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo) {//if grid.
-			return false;
-		} else {
-			throw new RuntimeException("Exchange item '" + item.getId() + "' of type " + item.getClass().getSimpleName() + " has an unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
-		}
 	}
 }

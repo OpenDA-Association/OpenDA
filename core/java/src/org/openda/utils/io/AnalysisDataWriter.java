@@ -20,11 +20,13 @@
 
 package org.openda.utils.io;
 
-import org.openda.exchange.*;
-import org.openda.interfaces.*;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.geometry.GeometryUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Class for writing data from model state exchange items before and after analysis (state update) to netcdf files.
@@ -51,14 +53,10 @@ public class AnalysisDataWriter {
 		List<IExchangeItem> scalarItems = new ArrayList<>();
 		List<IExchangeItem> gridItems = new ArrayList<>();
 		for (IExchangeItem item : exchangeItems) {
-			IGeometryInfo geometryInfo = item.getGeometryInfo();
-			if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {//if scalar.
+			if (GeometryUtils.isScalar(item.getGeometryInfo())) {//if scalar.
 				scalarItems.add(item);
-			} else if (geometryInfo instanceof IrregularGridGeometryInfo || geometryInfo instanceof ArrayGeometryInfo) {//if grid.
+			} else {//if grid.
 				gridItems.add(item);
-			} else {
-				throw new UnsupportedOperationException(getClass().getSimpleName() + ": exchangeItem '" + item.getId() + "' of type " + item.getClass().getSimpleName()
-						+ " has an unknown geometryInfo type: " + geometryInfo.getClass().getSimpleName());
 			}
 		}
 

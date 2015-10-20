@@ -21,8 +21,6 @@ package org.openda.observers;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.exchange.ArrayGeometryInfo;
-import org.openda.exchange.IrregularGridGeometryInfo;
 import org.openda.exchange.NonMissingStochObserverGridTimeSeriesExchangeItem;
 import org.openda.interfaces.*;
 import org.openda.uncertainties.UncertaintyEngine;
@@ -700,7 +698,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 							prevExchangeItem = ((IoObjectStochObsTimeSelectionExchangeItem) prevExchangeItem).exchangeItem;
 						}
 						if (!(prevExchangeItem instanceof IExchangeItem)) {
-							throw new RuntimeException("No coordinates available for exchangeItem " + exchangeItemId);
+							throw new RuntimeException("No coordinates available for IPrevExchangeItem exchangeItem " + exchangeItemId);
 						}
 						IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
 
@@ -720,8 +718,8 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						}
 
 						//get geometry.
-						if (!(geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo)) {
-							throw new RuntimeException("No coordinates available for exchangeItem " + exchangeItemId);
+						if (GeometryUtils.isScalar(geometryInfo)) {
+							throw new RuntimeException("No coordinates available for scalar exchangeItem " + exchangeItemId);
 						}
 
 						//get coordinates.
@@ -729,13 +727,11 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						if (isY) {//if y.
 							//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
 							//need one coordinate for each grid cell.
-							coordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellYCoordinates()
-									: ((IrregularGridGeometryInfo) geometryInfo).getYCoordinates();
+							coordinates = GeometryUtils.getYCoordinates(geometryInfo);
 						} else {//if x.
 							//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
 							//need one coordinate for each grid cell.
-							coordinates = (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellXCoordinates()
-									: ((IrregularGridGeometryInfo) geometryInfo).getXCoordinates();
+							coordinates = GeometryUtils.getXCoordinates(geometryInfo);
 						}
 						//if more than one exchangeItem, then add coordinates for each exchangeItem in sequence.
 						for (int n = 0; n < coordinates.getSize(); n++) {

@@ -31,6 +31,7 @@ import ucar.nc2.Dimension;
  */
 public class GridVariableProperties {
     private List<Dimension> dimensions = new ArrayList<Dimension>();
+    private String zVariableName = null;
     private String y1DVariableName = null;
     private String x1DVariableName = null;
     private String row1DVariableName = null;
@@ -42,16 +43,10 @@ public class GridVariableProperties {
     public GridVariableProperties() {
     }
 
-    /**
-     * @return dimensions.
-     */
     public List<Dimension> getDimensions() {
         return this.dimensions;
     }
 
-    /**
-     * @param dimensions the dimensions to set.
-     */
     public void setDimensions(List<Dimension> dimensions) {
         if (dimensions == null) {
             throw new IllegalArgumentException("dimensions is null.");
@@ -60,100 +55,66 @@ public class GridVariableProperties {
         this.dimensions = dimensions;
     }
 
-    /**
-     * @return y1DVariableName.
-     */
+    public String getZVariableName() {
+        return this.zVariableName;
+    }
+
+    public void setZVariableName(String zVariableName) {
+        this.zVariableName = zVariableName;
+    }
+
     public String getY1DVariableName() {
         return this.y1DVariableName;
     }
 
-    /**
-     * @param y1DVariableName the y1DVariableName to set.
-     */
     public void setY1DVariableName(String y1DVariableName) {
         this.y1DVariableName = y1DVariableName;
     }
 
-    /**
-     * @return x1DVariableName.
-     */
     public String getX1DVariableName() {
         return this.x1DVariableName;
     }
 
-    /**
-     * @param x1dVariableName the x1DVariableName to set.
-     */
     public void setX1DVariableName(String x1DVariableName) {
         this.x1DVariableName = x1DVariableName;
     }
 
-    /**
-     * @return row1DVariableName.
-     */
     public String getRow1DVariableName() {
         return this.row1DVariableName;
     }
 
-    /**
-     * @param row1dVariableName the row1DVariableName to set.
-     */
     public void setRow1DVariableName(String row1DVariableName) {
         this.row1DVariableName = row1DVariableName;
     }
 
-    /**
-     * @return column1DVariableName.
-     */
     public String getColumn1DVariableName() {
         return this.column1DVariableName;
     }
 
-    /**
-     * @param column1dVariableName the column1DVariableName to set.
-     */
     public void setColumn1DVariableName(String column1DVariableName) {
         this.column1DVariableName = column1DVariableName;
     }
 
-    /**
-     * @return trueLatitude2DVariableName.
-     */
     public String getTrueLatitude2DVariableName() {
         return this.trueLatitude2DVariableName;
     }
 
-    /**
-     * @param trueLatitude2DVariableName the trueLatitude2DVariableName to set.
-     */
     public void setTrueLatitude2DVariableName(String trueLatitude2DVariableName) {
         this.trueLatitude2DVariableName = trueLatitude2DVariableName;
     }
 
-    /**
-     * @return trueLongitude2DVariableName.
-     */
     public String getTrueLongitude2DVariableName() {
         return this.trueLongitude2DVariableName;
     }
 
-    /**
-     * @param trueLongitude2DVariableName the trueLongitude2DVariableName to set.
-     */
     public void setTrueLongitude2DVariableName(String trueLongitude2DVariableName) {
         this.trueLongitude2DVariableName = trueLongitude2DVariableName;
     }
 
-    /**
-     * @return gridMappingVariableName.
-     */
     public String getGridMappingVariableName() {
         return this.gridMappingVariableName;
     }
 
-    /**
-     * @param gridMappingVariableName the gridMappingVariableName to set.
-     */
     public void setGridMappingVariableName(String gridMappingVariableName) {
         this.gridMappingVariableName = gridMappingVariableName;
     }

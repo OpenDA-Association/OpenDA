@@ -25,6 +25,7 @@ import org.openda.exchange.*;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
+import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
@@ -432,7 +433,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
         if (!this.netcdfFile.isDefineMode()) {
             throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
         }
-		if (!NetcdfUtils.isScalar(item)) {
+		if (!GeometryUtils.isScalar(item.getGeometryInfo())) {
 			throw new RuntimeException(getClass().getSimpleName() + ".addExchangeItem(IExchangeItem item) only implemented for scalar exchange items.");
 		}
 
@@ -460,7 +461,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		if (!this.netcdfFile.isDefineMode()) {
 			throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
 		}
-		if (!NetcdfUtils.isScalar(item)) {
+		if (!GeometryUtils.isScalar(item.getGeometryInfo())) {
 			throw new RuntimeException(getClass().getSimpleName() + ".addExchangeItem(IExchangeItem item, int ensembleMemberIndex) only implemented for scalar exchange items.");
 		}
 
@@ -527,7 +528,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		//This cannot be done in method addExchangeItem, since at that moment it is not yet clear how many stations and how many ensemble indices there will be in total.
 		if (!exchangeItems.isEmpty() || !ensembleExchangeItems.isEmpty()) {
 			IExchangeItem firstItem = !exchangeItems.isEmpty() ? exchangeItems.get(0) : ensembleExchangeItems.values().iterator().next().values().iterator().next();
-			boolean scalars = NetcdfUtils.isScalar(firstItem);
+			boolean scalars = GeometryUtils.isScalar(firstItem.getGeometryInfo());
 			validateExchangeItems(scalars, exchangeItems, ensembleExchangeItems);
 			if (scalars) {
 				uniqueStationIds = NetcdfUtils.getStationIds(exchangeItems, ensembleExchangeItems);
@@ -566,7 +567,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		if (ensembleExchangeItems == null) throw new IllegalArgumentException("ensembleExchangeItems == null");
 
 		for (IExchangeItem item : exchangeItems) {
-			if (NetcdfUtils.isScalar(item) != scalar) {
+			if (GeometryUtils.isScalar(item.getGeometryInfo()) != scalar) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Not all exchange items are of the same geometryInfo type. "
 						+ getClass().getSimpleName() + " can only write a NetCDF file for exchange items that are all of the same geometryInfo type.");
 			}
@@ -574,7 +575,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 		for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
 			for (IExchangeItem item : ensemble.values()) {
-				if (NetcdfUtils.isScalar(item) != scalar) {
+				if (GeometryUtils.isScalar(item.getGeometryInfo()) != scalar) {
 					throw new RuntimeException(getClass().getSimpleName() + ": Not all exchange items are of the same geometryInfo type. "
 							+ getClass().getSimpleName() + " can only write a NetCDF file for exchange items that are all of the same geometryInfo type.");
 				}

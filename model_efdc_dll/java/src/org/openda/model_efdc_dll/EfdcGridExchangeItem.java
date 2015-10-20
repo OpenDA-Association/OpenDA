@@ -21,14 +21,10 @@ package org.openda.model_efdc_dll;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.IrregularGridGeometryInfo;
+import org.openda.exchange.LayeredIrregularGridGeometryInfo;
 import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.TimeInfo;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.ITimeInfo;
-import org.openda.interfaces.IVector;
-import org.openda.interfaces.ITreeVector;
+import org.openda.interfaces.*;
 import org.openda.utils.TreeVector;
 import org.openda.utils.Vector;
 
@@ -51,14 +47,20 @@ public class EfdcGridExchangeItem implements IExchangeItem {
 	private final IQuantityInfo quantityInfo;
 	private final IGeometryInfo geometryInfo;
 
-	public EfdcGridExchangeItem(int parameterNumber, String parameterId, int gridCellCount, Role role, EfdcDLL modelDll) {
+	public EfdcGridExchangeItem(int parameterNumber, String parameterId, Role role, EfdcDLL modelDll) {
 		//id = "locationId.parameterId"
 		this.id = BBUtils.getIdForGrid(parameterId);
 		this.parameterNumber = parameterNumber;
 		this.role = role;
 		this.modelDll = modelDll;
 		this.quantityInfo = new QuantityInfo(parameterId, "unknown");
-		this.geometryInfo = new IrregularGridGeometryInfo(gridCellCount, null, null);
+
+		int layerCount = getLayerCount();
+		if (layerCount <= 1) {
+			this.geometryInfo = new IrregularGridGeometryInfo(getCellCount(), null, null);
+		} else {//if multiple layers.
+			this.geometryInfo = new LayeredIrregularGridGeometryInfo(getCellCount(), layerCount, null, null);
+		}
 	}
 
 	public String getId() {
@@ -109,14 +111,21 @@ public class EfdcGridExchangeItem implements IExchangeItem {
 		return IVector.class;
 	}
 
+	private int getCellCount() {
+		return this.modelDll.getCellCount(this.parameterNumber);
+	}
+
+	private int getLayerCount() {
+		return this.modelDll.getLayerCount(this.parameterNumber);
+	}
+
 	/**
 	 * Returns only the current values, since the efdc model only stores the current values in memory.
 	 */
 	public Object getValues() {
-
 		double[] values = getValuesAsDoubles();
-		int cellCount = this.modelDll.getCellCount(this.parameterNumber);
-		int layerCount =  this.modelDll.getLayerCount(this.parameterNumber);
+		int cellCount = getCellCount();
+		int layerCount = getLayerCount();
 		ITreeVector vector = new TreeVector(Integer.toString(this.parameterNumber), new Vector(values), cellCount, layerCount);
 		return vector;
 	}

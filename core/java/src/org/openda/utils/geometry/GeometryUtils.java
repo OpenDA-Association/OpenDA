@@ -22,6 +22,8 @@ package org.openda.utils.geometry;
 
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.IrregularGridGeometryInfo;
+import org.openda.exchange.LayeredIrregularGridGeometryInfo;
+import org.openda.exchange.PointGeometryInfo;
 import org.openda.interfaces.*;
 import org.openda.utils.Vector;
 
@@ -60,13 +62,48 @@ public class GeometryUtils {
 		} else {
 			geometryInfo = exchangeItem.getGeometryInfo();
 		}
-		if (geometryInfo == null) return 1;
 
-		//get geometry.
-		if (!(geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo)) {
-			return 1;
+		//get cellCount.
+		return getGridCellCount(geometryInfo);
+	}
+
+	//TODO add getCellCount to IGeometryInfo interface. AK
+	private static int getGridCellCount(IGeometryInfo geometryInfo) {
+		if (isScalar(geometryInfo)) return 1;
+
+		//if grid.
+		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).getCellCount();
+		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
+		return ((LayeredIrregularGridGeometryInfo) geometryInfo).getCellCount();
+	}
+
+	public static boolean isScalar(IGeometryInfo geometryInfo) {
+		if (geometryInfo == null || geometryInfo instanceof PointGeometryInfo) {//if scalar.
+			return true;
 		}
-		return (geometryInfo instanceof ArrayGeometryInfo) ? ((ArrayGeometryInfo) geometryInfo).getCellCount() : ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
+		if (geometryInfo instanceof ArrayGeometryInfo || geometryInfo instanceof IrregularGridGeometryInfo || geometryInfo instanceof LayeredIrregularGridGeometryInfo) {//if grid.
+			return false;
+		}
+
+		throw new RuntimeException("Unknown grid geometryInfo type: " + geometryInfo.getClass().getSimpleName());
+	}
+
+	//TODO add getYCoordinates to IGeometryInfo interface. AK
+	public static IVector getYCoordinates(IGeometryInfo geometryInfo) {
+		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellYCoordinates();
+		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getYCoordinates();
+		if (geometryInfo instanceof LayeredIrregularGridGeometryInfo) return ((LayeredIrregularGridGeometryInfo) geometryInfo).getYCoordinates();
+
+		throw new RuntimeException("Unknown grid geometryInfo type: " + geometryInfo.getClass().getSimpleName());
+	}
+
+	//TODO add getXCoordinates to IGeometryInfo interface. AK
+	public static IVector getXCoordinates(IGeometryInfo geometryInfo) {
+		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellXCoordinates();
+		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getXCoordinates();
+		if (geometryInfo instanceof LayeredIrregularGridGeometryInfo) return ((LayeredIrregularGridGeometryInfo) geometryInfo).getXCoordinates();
+
+		throw new RuntimeException("Unknown grid geometryInfo type: " + geometryInfo.getClass().getSimpleName());
 	}
 
 	/**

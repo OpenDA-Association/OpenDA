@@ -154,9 +154,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 
 				case STATE:
 					//create a grid exchange item for this parameter.
-					int gridCellCount = this.modelDll.getValuesCount(parameterNumber);
-					EfdcGridExchangeItem gridExchangeItem = new EfdcGridExchangeItem(parameterNumber, parameterId,
-							gridCellCount, Role.InOut, this.modelDll);
+					EfdcGridExchangeItem gridExchangeItem = new EfdcGridExchangeItem(parameterNumber, parameterId, Role.InOut, this.modelDll);
 					this.stateExchangeItems.put(gridExchangeItem.getId(), gridExchangeItem);
 					break;
 
