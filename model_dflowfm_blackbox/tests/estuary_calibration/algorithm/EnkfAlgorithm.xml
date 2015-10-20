@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
+    <analysisTimes type="fromObservationTimes"/>
+    <mainModel stochParameter="false" stochForcing="true" stochInit="false"/>
+    <ensembleSize>8</ensembleSize>
+</EnkfConfig>

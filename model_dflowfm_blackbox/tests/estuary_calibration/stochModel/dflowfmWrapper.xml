@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+        <alias key="exedir"/>
+        <alias key="openda_bindir"/>
+        <alias key="instanceDir"/>
+        <alias key="templateDir"/>
+        <alias key="outputdir"/>
+        <alias key="runid"/>
+        <alias key="frictionCoefFile"/>
+        <alias key="mdufile"/>
+        <alias key="mapfile"/>
+        <alias key="hisfile"/>
+    </aliasDefinitions>
+
+    <run>
+
+        <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+        <computeActions>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dflowfm.bat">
+                <arg>%mdufile%</arg>
+                <checkOutput file="%outputdir%/%hisfile%"/>
+                <checkOutput file="%outputdir%/%mapfile%"/>
+            </action>
+            <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
+                <arg>%outputdir%/%mapfile%</arg>
+                <arg>%mapfile%</arg>
+            </action>
+        </computeActions>
+
+        <finalizeActions/>
+
+    </run>
+
+    <inputOutput>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
+            <file>%mdufile%</file>
+            <id>mdufile</id>
+        </ioObject>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
+            <file>%mapfile%</file>
+            <id>mapfile</id>
+        </ioObject>
+        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+            <file>%outputdir%/%hisfile%</file>
+            <id>hisfile</id>
+            <arg>true</arg>
+            <arg>false</arg>
+        </ioObject>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
+            <file>%mdufile%</file>
+            <id>boundaries</id>
+        </ioObject>
+    </inputOutput>
+
+</blackBoxWrapperConfig>
