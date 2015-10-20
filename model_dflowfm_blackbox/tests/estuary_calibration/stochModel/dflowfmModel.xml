@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blackBoxModelConfig xmlns="http://www.openda.org" 
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                     xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+					 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+					 xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<wrapperConfig>
 		<file>dflowfmWrapper.xml</file>
@@ -13,28 +13,24 @@
 		<alias key="instanceDir" value="./work"/>
 		<alias key="templateDir" value="./input_dflowfm"/>
 		<alias key="runid" value="estuary"/>
-		<alias key="outputdir" value="DFM_OUTPUT_estuary"/>
-		<alias key="mdufile" value="estuary.mdu"/>
-		<alias key="hisfile" value="estuary_his.nc"/>
-		<alias key="mapfile" value="estuary_map.nc"/>
+		<alias key="frictionMultiplierFile" value="estuary_friction_factor.xyz"/>
+		<alias key="frictionMultiplierTemplateFile" value="estuary_friction_factor_template.xyz"/>
+		<alias key="depthMultiplierFile" value="estuary_friction_factor.xyz"/>
+		<alias key="depthMultiplierTemplateFile" value="estuary_friction_factor_template.xyz"/>
+		<alias key="inputFile" value="estuary.mdu"/>
+		<alias key="netcdfoutput" value="DFM_OUTPUT_estuary/estuary_his.nc"/>
 	</aliasValues>
 
-    <timeInfoExchangeItems start="start_time" end="end_time"/>
+	<timeInfo start="1991-01-01T00:00:00" end="1991-01-30T00:00:00"/>
 
-    <exchangeItems>
-        <vector id="start_time" ioObjectId="mdufile" elementId="start_time" />
-        <vector id="end_time" ioObjectId="mdufile" elementId="end_time" />
-        <vector id="s1" ioObjectId="mapfile" elementId="s1"/>
-        <vector id="s0" ioObjectId="mapfile" elementId="s0"/>
-        <vector id="unorm" ioObjectId="mapfile" elementId="unorm"/>
-        <vector id="u0" ioObjectId="mapfile" elementId="u0"/>	
-        <vector id="station01.waterlevel" ioObjectId="hisfile" elementId="station01.waterlevel"/>
-        <vector id="station02.waterlevel" ioObjectId="hisfile" elementId="station02.waterlevel"/>
-        <vector id="station03.waterlevel" ioObjectId="hisfile" elementId="station03.waterlevel"/>
-        <vector id="westboundary_M2.1:waterlevelbnd" ioObjectId="boundaries" elementId="westboundary_M2.1:waterlevelbnd"/>
-        <vector id="westboundary_S2.1:waterlevelbnd" ioObjectId="boundaries" elementId="westboundary_S2.1:waterlevelbnd"/>
-    </exchangeItems>
+	<exchangeItems>
+		<vector id="allElementsFromIoObject" ioObjectId="frictionCoefFile"/>
+		<vector id="allElementsFromIoObject" ioObjectId="depthCoefFile"/>
+		<vector id="station01.waterlevel" ioObjectId="%netcdfoutput%" elementId="station01.waterlevel"/>
+		<vector id="station02.waterlevel" ioObjectId="%netcdfoutput%" elementId="station02.waterlevel"/>
+		<vector id="station03.waterlevel" ioObjectId="%netcdfoutput%" elementId="station03.waterlevel"/>
+	</exchangeItems>
 
 <doCleanUp>false</doCleanUp>
-
+				
 </blackBoxModelConfig>

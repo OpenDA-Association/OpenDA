@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mapsNoiseModelConfig>
-	<simulationTimespan timeFormat="dateTimeString">199101010000,199101010100,...,199101050000</simulationTimespan>
-	<timeSeries id="waterlevelnoise" location="westboundary" quantity="waterlevel_M2" standardDeviation="0.1" timeCorrelationScale="3.0" timeCorrelationScaleUnit="hours" initialValue="0.1"/>
-</mapsNoiseModelConfig>

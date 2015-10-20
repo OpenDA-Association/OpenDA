@@ -26,14 +26,14 @@ xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/
 
 	<timeSeries status="use" standardDeviation="0.05"
 	     minDateTime="199101010000" maxDateTime="199101050000">
-		waterlevel_station01.noos
+		waterlevel_station1.noos
 	</timeSeries>
 	<timeSeries status="use" standardDeviation="0.05"
 	     minDateTime="199101010000" maxDateTime="199101050000">
-		waterlevel_station02.noos
+		waterlevel_station2.noos
 	</timeSeries>
 	<timeSeries status="use" standardDeviation="0.05"
 	     minDateTime="199101010000" maxDateTime="199101050000">
-		waterlevel_station03.noos
+		waterlevel_station3.noos
 	</timeSeries>
 </noosObserver>
