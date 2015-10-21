@@ -39,17 +39,8 @@ import org.openda.interfaces.IExchangeItem.ValueType;
  * @author Arno Kockx
  */
 public class IoUtils {
-	
-	/**
-	 * Creates an IDataObject as specified by the given arguments.
-	 *
-	 * @param filePath full pathname of file.
-	 * @param className of IDataObject to use.
-	 * @param arguments optional one or more arguments that are passed to the IDataObject initialize method.
-	 * @return the created IDataObject.
-	 */
-	public static IDataObject initializeDataObject(String filePath, String className, String[] arguments) {
-		//create data object.
+
+	private static IDataObject createDataObject(String className) {
 		Object instance;
 		try {
 			Class<?> dataClass = Class.forName(className);
@@ -64,9 +55,42 @@ public class IoUtils {
 		if (!(instance instanceof IDataObject)) {
 			throw new RuntimeException(className + " is not implementing the IDataObject interface.");
 		}
-		IDataObject dataObject = (IDataObject) instance;
+		return (IDataObject) instance;
+	}
+
+	/**
+	 * Creates an IDataObject as specified by the given arguments.
+	 *
+	 * @param filePath full pathname of file.
+	 * @param className of IDataObject to use.
+	 * @param arguments optional one or more arguments that are passed to the IDataObject initialize method.
+	 * @return the created IDataObject.
+	 */
+	public static IDataObject initializeDataObject(File workingDir, String filePath, String className, String[] arguments) {
+		IDataObject dataObject = createDataObject(className);
 
 		//initialize data object.
+		String[] newArguments = new String[arguments.length + 1];
+		newArguments[0] = filePath;
+		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
+		dataObject.initialize(workingDir, newArguments);
+
+		return dataObject;
+	}
+
+	/**
+	 * Creates an IDataObject as specified by the given arguments.
+	 *
+	 * @param filePath full pathname of file.
+	 * @param className of IDataObject to use.
+	 * @param arguments optional one or more arguments that are passed to the IDataObject initialize method.
+	 * @return the created IDataObject.
+	 */
+	public static IDataObject initializeDataObject(String filePath, String className, String[] arguments) {
+		IDataObject dataObject = createDataObject(className);
+
+		//initialize data object.
+		//this code uses the parent folder of the given filePath as the workingDir for the DataObject.
 		File file = new File(filePath);
 		File workingDir = file.getParentFile();
 		String fileName = file.getName();

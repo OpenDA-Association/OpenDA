@@ -230,6 +230,14 @@ public class BBUtils {
                 final String[] args = new String[arguments.length];
                 for (int i = 0; i < arguments.length; i++) {
                     String argument = arguments[i];
+                    //Note:
+                    //The following code changes the pathnames in the arguments that are relative to the instanceDir to absolute pathnames,
+                    //before passing them to the main method, because the instanceDir cannot be passed as workingDir to the main method in any way.
+                    //This may cause problems when the mainMethod expects arguments with relative pathnames instead of absolute pathnames.
+                    //Furthermore, there is no way to know which arguments are pathnames. This code will not change pathnames of files/directories
+                    //that do not exist yet. This will cause problems for e.g. pathnames of output files.
+                    //This code cannot be repaired without losing backwards compatibility. Therefore make sure that each configured BBAction implements
+                    //the IConfigurable interface, so that this code is not used.
                     if (((new File(fileOrDir, argument)).isDirectory()) || (new File(fileOrDir, argument)).isFile()) {
                          args[i] = (new File(fileOrDir, arguments[i])).getAbsolutePath() ;
                     }else {

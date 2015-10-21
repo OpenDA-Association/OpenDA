@@ -93,12 +93,12 @@
 		</xs:attribute>
 		<xs:attribute name="workingDirectory" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>Directory where executable file is run. This is usually the instance dir.</xs:documentation>
+				<xs:documentation>Directory where executable file is run. This is usually the instance dir. This is only used in blackBoxStochModelConfig.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="actualWorkingDirectory" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>Subdirectory of instance dir, where executable file has to be run. To be specified as relative path to instance dir.</xs:documentation>
+				<xs:documentation>Subdirectory of instance dir, where executable file has to be run. To be specified as relative path to instance dir. This is only used in blackBoxWrapperConfig. This is only used for executable files, not for Java classes. For Java classes the instanceDir is used as workingDirectory.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="ignoreStatus" type="xs:boolean" use="optional" default="false">

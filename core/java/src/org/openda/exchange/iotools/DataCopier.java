@@ -24,7 +24,10 @@ import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.interfaces.*;
 import org.openda.utils.Results;
 
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The IDataObject is an important tool for creating file based connections to OpenDA.
@@ -33,10 +36,17 @@ import java.util.*;
  *
  * @author Arno Kockx
  */
-public class DataCopier {
+public class DataCopier implements IConfigurable {
 
-	private final IDataObject inputDataObject;
-	private final IDataObject outputDataObject;
+	private String inputFileName = null;
+	private String inputClassName = null;
+	private String[] inputArgs = null;
+	private String outputFileName = null;
+	private String outputClassName = null;
+	private String[] outputArgs = null;
+
+	private IDataObject inputDataObject = null;
+	private IDataObject outputDataObject = null;
 
 	/**
 	 * Creates a DataCopier for the given input IDataObject and output IDataObject.
@@ -56,21 +66,47 @@ public class DataCopier {
 		this.outputDataObject = output;
 	}
 
+	public DataCopier() {
+	}
+
 	/**
-	 * Creates a DataCopier with an input IDataObject and an output IDataObject as specified
-	 * by the given arguments.
-	 *
-	 * @param inputFilePath full pathname of input file.
-	 * @param inputClassName of input IDataObject to use to read data from the input file.
-	 * @param inputArguments optional one or more arguments that are passed to the input IDataObject initialize method.
-	 * @param outputFilePath full pathname of output file.
-	 * @param outputClassName of output IDataObject to use to write data to the output file.
-	 * @param outputArguments optional one or more arguments that are passed to the output IDataObject initialize method.
+	 * This method is only present to be able to run DataCopier as a BBAction. This is needed
+	 * because the configured workingDirectory in a BBAction cannot be passed to the main method of DataCopier in any way.
+	 * Also see comments in method BBUtils.runJavaClass.
 	 */
-	public DataCopier(String inputFilePath, String inputClassName, String[] inputArguments,
-			String outputFilePath, String outputClassName, String[] outputArguments) {
-		this.inputDataObject = IoUtils.initializeDataObject(inputFilePath, inputClassName, inputArguments);
-		this.outputDataObject = IoUtils.initializeDataObject(outputFilePath, outputClassName, outputArguments);
+	public void initialize(File workingDir, String[] arguments) {
+		processArguments(arguments);
+
+		initDataObjects(workingDir);
+
+		copyAll();
+		finish();
+	}
+
+	private void initDataObjects(File workingDir) {
+		inputDataObject = IoUtils.initializeDataObject(workingDir, inputFileName, inputClassName, inputArgs);
+		outputDataObject = IoUtils.initializeDataObject(workingDir, outputFileName, outputClassName, outputArgs);
+	}
+
+	private void initDataObjects() {
+		//Note: this code uses the parent folder of the input/outputFilePath as the workingDir for the input/outputDataObject. This does NOT work correctly when running DataCopier as a BBAction.
+		inputDataObject = IoUtils.initializeDataObject(inputFileName, inputClassName, inputArgs);
+		outputDataObject = IoUtils.initializeDataObject(outputFileName, outputClassName, outputArgs);
+	}
+
+	/**
+	 * Copies all data from the inputFile to the outputFile.
+	 *
+	 * @param arguments command line arguments: see help text above
+	 */
+	public static void main(String[] arguments) {
+		DataCopier copier = new DataCopier();
+		copier.processArguments(arguments);
+
+		copier.initDataObjects();
+
+		copier.copyAll();
+		copier.finish();
 	}
 
 	/**
@@ -209,6 +245,9 @@ public class DataCopier {
 	 * Copies all exchangeItems from the input dataObject to the output dataObject.
 	 */
 	public void copyAll() {
+		if (inputDataObject == null) throw new IllegalStateException(getClass().getSimpleName() + ": inputDataObject not initialized.");
+		if (outputDataObject == null) throw new IllegalStateException(getClass().getSimpleName() + ": outputDataObject not initialized.");
+
 		//get non-ensemble exchangeItems.
 		IExchangeItem[] inputExchangeItems = getAllInputExchangeItems(inputDataObject);
 		//get ensemble exchangeItems.
@@ -216,7 +255,7 @@ public class DataCopier {
 		if (inputDataObject instanceof IEnsembleDataObject) {
 			ensembles = getAllEnsembleInputExchangeItems((IEnsembleDataObject) inputDataObject);
 			if (!ensembles.isEmpty() && !(outputDataObject instanceof IEnsembleDataObject)) {
-				throw new RuntimeException(DataCopier.class.getSimpleName() + ": Cannot copy ensemble exchange items since output data object does not implement the " + IEnsembleDataObject.class.getName() + " interface.");
+				throw new RuntimeException(getClass().getSimpleName() + ": Cannot copy ensemble exchange items since output data object does not implement the " + IEnsembleDataObject.class.getName() + " interface.");
 			}
 		}
 
@@ -250,7 +289,7 @@ public class DataCopier {
 
 	public void finish() {
 		//make sure output data has been written.
-		this.outputDataObject.finish();
+		if (outputDataObject != null) outputDataObject.finish();
 	}
 
 	/**
@@ -281,11 +320,16 @@ public class DataCopier {
 	}
 
 	/**
-	 * Copies all data from the inputFile to the outputFile.
+	 * Gathers the following variables from the given arguments.
 	 *
-	 * @param command line arguments arguments: see help text above
+	 * inputFilePath: full pathname of input file.
+	 * inputClassName: fully qualified class name of input IDataObject to use to read data from the input file.
+	 * inputArguments: optional one or more arguments that are passed to the input IDataObject initialize method.
+	 * outputFilePath: full pathname of output file.
+	 * outputClassName: fully qualified class name of output IDataObject to use to write data to the output file.
+	 * outputArguments: optional one or more arguments that are passed to the output IDataObject initialize method.
 	 */
-	public static void main(String[] arguments) {
+	private void processArguments(String[] arguments) {
 		//
 		//read arguments.
 		//
@@ -298,8 +342,8 @@ public class DataCopier {
 		int argIndex=0;
 		String nextArg=(arguments[argIndex]).trim();
 		// 1) SRC OPTIONS
-		String inputClassName=null;
-		String inputArgs[]=new String[0];
+		inputClassName=null;
+		inputArgs=new String[0];
 		while(nextArg.startsWith("-")){
 			String argValue=null;
 			if((argIndex+1)<arguments.length){
@@ -321,7 +365,7 @@ public class DataCopier {
 			}
 		}
 		// 2) SRC file
-		String inputFileName=nextArg;
+		inputFileName=nextArg;
 		argIndex++;
 		if(argIndex<arguments.length){
 			nextArg=arguments[argIndex];
@@ -329,8 +373,8 @@ public class DataCopier {
 			throw new RuntimeException("Was expecting more arguments.");
 		}
 		// 3) DEST OPTIONS
-		String outputClassName=null;
-		String outputArgs[]=new String[0];
+		outputClassName=null;
+		outputArgs=new String[0];
 		while(nextArg.startsWith("-")){
 			String argValue=null;
 			if((argIndex+1)<arguments.length){
@@ -352,7 +396,7 @@ public class DataCopier {
 			}
 		}
 		// 4) DEST
-		String outputFileName=nextArg;
+		outputFileName=nextArg;
 		argIndex++;
 		// 5) ITEM OPTIONS
 		if(argIndex<arguments.length){
@@ -375,6 +419,9 @@ public class DataCopier {
 		for(int i=0;i<inputArgs.length;i++){System.out.print(inputArgs[i]+" ");}
 		System.out.println();
 
+		//
+		// Check output
+		//
 		if(outputClassName==null){
 			outputClassName=IoUtils.getDefaultClass(outputFileName);
 			if(outputClassName==null){
@@ -387,14 +434,6 @@ public class DataCopier {
 		System.out.print("\t args: ");
 		for(int i=0;i<outputArgs.length;i++){System.out.print(outputArgs[i]+" ");}
 		System.out.println();
-
-		//
-		// Copy data
-		//
-		DataCopier copier = new DataCopier(inputFileName, inputClassName, inputArgs, 
-				outputFileName, outputClassName, outputArgs);
-		copier.copyAll();
-		copier.finish();
 	}
 
 	/**

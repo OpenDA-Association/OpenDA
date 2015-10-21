@@ -89,7 +89,7 @@ public class BBAction {
                 returnValueAsObject = BBUtils.runJavaClass(localAliasDefinitions.apply(className, aliasesUsedInClassName), instanceFileOrDir, argumentsStrings);
             } catch (Exception e) {
                 throw new RuntimeException("Error running class " + className +
-                        " on " + instanceFileOrDir.getAbsolutePath() + ": " + e.getMessage());
+                        " on " + instanceFileOrDir.getAbsolutePath() + ": " + e.getMessage(), e);
             }
         } else {
             if (fullExePath == null) {
@@ -111,7 +111,7 @@ public class BBAction {
                 returnValueAsObject = BBUtils.runExecutable(fullExePath, actualRunDir, argumentsStrings);
             } catch (Exception e) {
                 throw new RuntimeException("Error running executable " + fullExePath +
-                        " on " + instanceFileOrDir.getAbsolutePath() + ": " + e.getMessage());
+                        " on " + instanceFileOrDir.getAbsolutePath() + ": " + e.getMessage(), e);
             }
         }
         for (BBCheckOutput checkOutput : checkOutputs) {
