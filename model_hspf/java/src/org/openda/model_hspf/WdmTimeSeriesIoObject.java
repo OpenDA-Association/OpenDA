@@ -248,6 +248,9 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
             throw new IllegalStateException(getClass().getSimpleName() + " not initialized yet.");
         }
 
+        Results.putMessage(getClass().getSimpleName() + ": reading " + this.wdmTimeSeriesExchangeItems.size()
+                + " output time series from file " + this.wdmTimeSeriesFilePath  + " with fortran unit number " + this.wdmTimeSeriesFileNumber + ".");
+
         //open wdm file.
         WdmUtils.openWdmFile(this.wdmDll, this.wdmTimeSeriesFileNumber, this.wdmTimeSeriesFilePath, this.wdmMessageFilePath);
 

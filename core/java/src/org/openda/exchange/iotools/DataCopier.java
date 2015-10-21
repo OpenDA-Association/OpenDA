@@ -20,14 +20,13 @@
 package org.openda.exchange.iotools;
 
 import org.openda.blackbox.config.BBStochModelVectorConfig;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.interfaces.*;
 import org.openda.utils.Results;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The IDataObject is an important tool for creating file based connections to OpenDA.
@@ -50,9 +49,6 @@ public class DataCopier implements IConfigurable {
 
 	/**
 	 * Creates a DataCopier for the given input IDataObject and output IDataObject.
-	 *
-	 * @param input
-	 * @param output
 	 */
 	public DataCopier(IDataObject input, IDataObject output) {
 		if (input == null) {
@@ -130,12 +126,12 @@ public class DataCopier implements IConfigurable {
 	 * Returns all ensemble exchange items from the given inputDataObject.
 	 */
 	private static Map<String, Map<Integer, IExchangeItem>> getAllEnsembleInputExchangeItems(IEnsembleDataObject inputDataObject) {
-		Map<String, Map<Integer, IExchangeItem>> ensembles = new LinkedHashMap<String, Map<Integer, IExchangeItem>>();
+		Map<String, Map<Integer, IExchangeItem>> ensembles = new LinkedHashMap<>();
 
 		String[] ids = inputDataObject.getEnsembleExchangeItemIds();
 		int[] indices = inputDataObject.getEnsembleMemberIndices();
 		for (String id : ids) {
-			Map<Integer, IExchangeItem> ensemble = new LinkedHashMap<Integer, IExchangeItem>();
+			Map<Integer, IExchangeItem> ensemble = new LinkedHashMap<>();
 			ensembles.put(id, ensemble);
 
 			for (int index : indices) {
@@ -250,19 +246,34 @@ public class DataCopier implements IConfigurable {
 
 		//get non-ensemble exchangeItems.
 		IExchangeItem[] inputExchangeItems = getAllInputExchangeItems(inputDataObject);
+		String message = "found " + inputExchangeItems.length + " input exchange items.";
+		System.out.println(message);
+		Results.putMessage(getClass().getSimpleName() + ": " + message);
+
 		//get ensemble exchangeItems.
-		Map<String, Map<Integer, IExchangeItem>> ensembles = new LinkedHashMap<String, Map<Integer, IExchangeItem>>();
+		Map<String, Map<Integer, IExchangeItem>> ensembles = new LinkedHashMap<>();
 		if (inputDataObject instanceof IEnsembleDataObject) {
 			ensembles = getAllEnsembleInputExchangeItems((IEnsembleDataObject) inputDataObject);
 			if (!ensembles.isEmpty() && !(outputDataObject instanceof IEnsembleDataObject)) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Cannot copy ensemble exchange items since output data object does not implement the " + IEnsembleDataObject.class.getName() + " interface.");
 			}
+			String[] ids = ((IEnsembleDataObject) inputDataObject).getEnsembleExchangeItemIds();
+			int[] indices = ((IEnsembleDataObject) inputDataObject).getEnsembleMemberIndices();
+			message = "found " + (ids.length * indices.length) + " ensemble input exchange items with ensemble member indices " + new Vector<>(Arrays.asList(BBUtils.box(indices)));
+			System.out.println(message);
+			Results.putMessage(getClass().getSimpleName() + ": " + message);
 		}
+
+		//validate all exchange items before copying any data, since adding new exchange items to an output DataObject may not be possible after writing data.
+		message = "validating output exchange items.";
+		System.out.println(message);
+		Results.putMessage(getClass().getSimpleName() + ": " + message);
 
 		//validate non-ensemble exchangeItems.
 		for (IExchangeItem inputExchangeItem : inputExchangeItems) {
 			validateOutputExchangeItem(inputExchangeItem, outputDataObject);
 		}
+
 		//validate ensemble exchangeItems.
 		for (Map<Integer, IExchangeItem> ensemble : ensembles.values()) {
 			for (Map.Entry<Integer, IExchangeItem> entry : ensemble.entrySet()) {
@@ -272,11 +283,15 @@ public class DataCopier implements IConfigurable {
 			}
 		}
 
-		//validate all exchange items before copying any data, since adding new exchange items to an output DataObject may not be possible after writing data.
+		message = "copying data from input exchange items to output exchange items.";
+		System.out.println(message);
+		Results.putMessage(getClass().getSimpleName() + ": " + message);
+
 		//copy non-ensemble exchangeItems.
 		for (IExchangeItem inputExchangeItem : inputExchangeItems) {
 			copyValuesFromItem(inputExchangeItem, outputDataObject);
 		}
+
 		//copy ensemble exchangeItems.
 		for (Map<Integer, IExchangeItem> ensemble : ensembles.values()) {
 			for (Map.Entry<Integer, IExchangeItem> entry : ensemble.entrySet()) {
@@ -335,7 +350,9 @@ public class DataCopier implements IConfigurable {
 		//
 		// check for -h (help) option
 		if(arguments.length==0 || arguments[0].trim().equalsIgnoreCase("-h")){
-			System.out.println(getUsageMessage());
+			String message = getUsageMessage();
+			System.out.println(message);
+			Results.putMessage(getClass().getSimpleName() + ":\n" + message);
 			return;
 		}
 
@@ -412,12 +429,15 @@ public class DataCopier implements IConfigurable {
 				throw new RuntimeException("Could not find code to read input file.");
 			}
 		}
-		System.out.println("input");
-		System.out.println("\t file: "+inputFileName);
-		System.out.println("\t class: "+inputClassName);
-		System.out.print("\t args: ");
-		for(int i=0;i<inputArgs.length;i++){System.out.print(inputArgs[i]+" ");}
-		System.out.println();
+		String message = "input\n";
+		message += "\t file: " + inputFileName + "\n";
+		message += "\t class: " + inputClassName + "\n";
+		message += "\t args: ";
+		for (String inputArg : inputArgs) {
+			message += inputArg + " ";
+		}
+		System.out.println(message);
+		Results.putMessage(getClass().getSimpleName() + ": " + message);
 
 		//
 		// Check output
@@ -428,12 +448,15 @@ public class DataCopier implements IConfigurable {
 				throw new RuntimeException("Could not find code to read output file.");
 			}
 		}
-		System.out.println("output");
-		System.out.println("\t file: "+outputFileName);
-		System.out.println("\t class: "+outputClassName);
-		System.out.print("\t args: ");
-		for(int i=0;i<outputArgs.length;i++){System.out.print(outputArgs[i]+" ");}
-		System.out.println();
+		message = "output\n";
+		message += "\t file: " + outputFileName + "\n";
+		message += "\t class: " + outputClassName + "\n";
+		message += "\t args: ";
+		for (String outputArg : outputArgs) {
+			message += outputArg + " ";
+		}
+		System.out.println(message);
+		Results.putMessage(getClass().getSimpleName() + ": " + message);
 	}
 
 	/**
