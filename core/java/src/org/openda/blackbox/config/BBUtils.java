@@ -43,7 +43,6 @@ public class BBUtils {
 	public static final boolean RUNNING_ON_MAC = System.getProperty("os.name").startsWith("Mac") || System.getProperty("os.name").startsWith("Darwin");
     private Map<File, ClassLoader> classLoaders = new HashMap<File, ClassLoader>();
     private static long runNanos = 0L;
-    private static Exception exception = null;
 
     /**
      * Copy file contents from source to destination
@@ -554,6 +553,7 @@ public class BBUtils {
     }
 
     private static Object startAndWait(final Method mainMethod, final String[] args)  {
+        Exception exception = null;
 		Object retMethod = null;
         try {
             long startNanoTime = System.nanoTime();
@@ -582,6 +582,11 @@ public class BBUtils {
         } catch (Throwable e) {
             exception = new Exception(e.getMessage(), e);
         }
+
+        if (exception != null) {
+            throw new RuntimeException(exception);
+        }
+
 		return retMethod;
     }
 
