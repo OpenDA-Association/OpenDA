@@ -85,26 +85,27 @@ public class BBModelConfigReader {
 			IPrevExchangeItem.Role role;
             DimensionIndex[] selectionIndices = null;
             BBConfigurable selectorConfig = null;
+            String idSuffix = null;
             if (exchangeItemXMLItem.getSubVector() != null) {
                 // subvector (with indices or selector)
-                id = exchangeItemXMLItem.getSubVector().getId();
-                objectId = exchangeItemXMLItem.getSubVector().getIoObjectId();
-                elementId = exchangeItemXMLItem.getSubVector().getElementId();
-    			role = determineRoleType(exchangeItemXMLItem.getSubVector().getRole());
-                selectionIndices = parseSelectionIndices(exchangeItemXMLItem.getSubVector().getSelection());
-                selectorConfig = BBWrapperConfigReader.parseBbConfigurable(
-                        modelConfigFile,
-                        bbWrapperConfig.getAliasDefinitions(),
-                        exchangeItemXMLItem.getSubVector().getSelector());
+                BlackBoxIoSubVectorXML subVector = exchangeItemXMLItem.getSubVector();
+                id = subVector.getId();
+                objectId = subVector.getIoObjectId();
+                elementId = subVector.getElementId();
+    			role = determineRoleType(subVector.getRole());
+                selectionIndices = parseSelectionIndices(subVector.getSelection());
+                selectorConfig = BBWrapperConfigReader.parseBbConfigurable(modelConfigFile, bbWrapperConfig.getAliasDefinitions(), subVector.getSelector());
             } else {
                 // simple vector
-                id = exchangeItemXMLItem.getVector().getId();
-                objectId = exchangeItemXMLItem.getVector().getIoObjectId();
-                elementId = exchangeItemXMLItem.getVector().getElementId();
-    			role = determineRoleType(exchangeItemXMLItem.getVector().getRole());
+                BlackBoxIoVectorXML vector = exchangeItemXMLItem.getVector();
+                id = vector.getId();
+                objectId = vector.getIoObjectId();
+                elementId = vector.getElementId();
+    			role = determineRoleType(vector.getRole());
                 if (elementId == null) {
                     elementId = id;
                 }
+                idSuffix = vector.getIdSuffix();
             }
 
             IoObjectConfig ioObjectConfig = bbWrapperConfig.getIoObject(objectId);
@@ -113,8 +114,7 @@ public class BBModelConfigReader {
                         "(model file: " + modelConfigFile.getAbsolutePath() +
                         ", wrapper config. file: " + wrapperConfigFile.getAbsolutePath() + ")");
             }
-            vectorConfigs.add(new BBModelVectorConfig(
-                    id, ioObjectConfig, elementId, selectionIndices, selectorConfig, role));
+            vectorConfigs.add(new BBModelVectorConfig(id, ioObjectConfig, elementId, selectionIndices, selectorConfig, role, idSuffix));
         }
 
         ITime startTime = null;

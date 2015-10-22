@@ -266,26 +266,38 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 	/**
-	 * Adds all exchangeItemIds from the given vectorConfig to the given exchangeItemIds list.
+	 * Adds all bbExchangeItemIds from the given vectorConfig to the given bbExchangeItemIds list.
 	 */
-	private void addAllExchangeItemIdsFromVectorConfig(BBModelVectorConfig vectorConfig, List<String> exchangeItemIds) {
+	private void addAllExchangeItemIdsFromVectorConfig(BBModelVectorConfig vectorConfig, List<String> bbExchangeItemIds) {
+        String idSuffix = vectorConfig.getIdSuffix();
+
 		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
 			//add all exchange item ids from ioObject or dataObject.
 			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
 			if (ioObject != null) {
-				for (IPrevExchangeItem ioObjectExchangeItem : ioObject.getExchangeItems()) {
-					exchangeItemIds.add(ioObjectExchangeItem.getId());
+				for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                    //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
+                    String bbExchangeItemId = sourceItem.getId();
+                    if (idSuffix != null) bbExchangeItemId += idSuffix;
+                    bbExchangeItemIds.add(bbExchangeItemId);
 				}
 			} else {
 				IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
 				if (dataObject != null) {
-					Collections.addAll(exchangeItemIds, dataObject.getExchangeItemIDs());
+                    String[] sourceIds = dataObject.getExchangeItemIDs();
+                    //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
+                    for (String bbExchangeItemId : sourceIds) {
+                        if (idSuffix != null) bbExchangeItemId += idSuffix;
+                        bbExchangeItemIds.add(bbExchangeItemId);
+                    }
 				} else {
 					throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" + vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
 				}
 			}
 		} else {
-			exchangeItemIds.add(vectorConfig.getId());
+            String bbExchangeItemId = vectorConfig.getId();
+            if (idSuffix != null) bbExchangeItemId += idSuffix;
+            bbExchangeItemIds.add(bbExchangeItemId);
 		}
 	}
 
@@ -297,68 +309,78 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		return (BBExchangeItem) exchangeItem;
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemId) {
+	public IPrevExchangeItem getExchangeItem(String searchedBBExchangeItemId) {
         checkForPendingComputeActions();
-        BBExchangeItem bbExchangeItem = bbExchangeItems.get(exchangeItemId);
+
+        BBExchangeItem bbExchangeItem = bbExchangeItems.get(searchedBBExchangeItemId);
         if (bbExchangeItem == null) {
 			List<String> newExchangeItemIDs = new ArrayList<String>();
-			BBModelVectorConfig vectorConfig = findVectorConfig(exchangeItemId);
+			BBModelVectorConfig vectorConfig = findVectorConfig(searchedBBExchangeItemId);
 			if (vectorConfig != null) {
+                //find exchangeItem for vectorConfig that does not have id="allElementsFromIoObject".
                 IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
                 if (ioObject != null) {
-                    for (IPrevExchangeItem ioObjectExchangeItem : ioObject.getExchangeItems()) {
-                        if (ioObjectExchangeItem.getId().equalsIgnoreCase(vectorConfig.getSourceId())) {
-                            bbExchangeItem = new BBExchangeItem(exchangeItemId, vectorConfig, ioObjectExchangeItem,
+                    for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                        String sourceId = sourceItem.getId();
+                        if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
+                            bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, sourceItem,
                                     selectors, bbModelConfig.getConfigRootDir());
                             break;
                         }
-                        newExchangeItemIDs.add(ioObjectExchangeItem.getId());
+                        newExchangeItemIDs.add(sourceId);
                     }
                 } else {
                     IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
                     if (dataObject != null) {
-                        for (String exchangeItemID : dataObject.getExchangeItemIDs()) {
-                            if (exchangeItemID.equalsIgnoreCase(vectorConfig.getSourceId())) {
-                                bbExchangeItem = new BBExchangeItem(exchangeItemId, vectorConfig,
-                                        dataObject.getDataObjectExchangeItem(exchangeItemID),
+                        for (String sourceId : dataObject.getExchangeItemIDs()) {
+                            if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
+                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, dataObject.getDataObjectExchangeItem(sourceId),
                                         selectors, bbModelConfig.getConfigRootDir());
                                 break;
                             }
-                            newExchangeItemIDs.add(exchangeItemID);
+                            newExchangeItemIDs.add(sourceId);
                         }
                     } else {
                         throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
                                 vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
                     }
                 }
+
 			} else {
-				List<BBModelVectorConfig> allElementVectorConfigs = findAllElementsVectorConfig();
+                //find exchangeItem for vectorConfig with id="allElementsFromIoObject".
+				List<BBModelVectorConfig> allElementVectorConfigs = findAllVectorConfigsWithAllElementsFromIoObject();
 				if (allElementVectorConfigs.size() == 0) {
-					throw new IllegalArgumentException("IO selection subvector not found for \"" + exchangeItemId + "\"");
+					throw new IllegalArgumentException("IO selection subvector not found for \"" + searchedBBExchangeItemId + "\"");
 				}
                 for (BBModelVectorConfig allElementVectorConfig : allElementVectorConfigs) {
+                    String idSuffix = allElementVectorConfig.getIdSuffix();
+
                     IoObjectInterface ioObject = findOrCreateIoObject(allElementVectorConfig.getIoObjectConfig());
                     if (ioObject != null) {
-                        for (IPrevExchangeItem ioObjectExchangeItem : ioObject.getExchangeItems()) {
-                            if (ioObjectExchangeItem.getId().equalsIgnoreCase(exchangeItemId)) {
-                                bbExchangeItem = new BBExchangeItem(exchangeItemId, allElementVectorConfig,
-                                        ioObjectExchangeItem,
+                        for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                            //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
+                            String bbExchangeItemId = sourceItem.getId();
+                            if (idSuffix != null) bbExchangeItemId += idSuffix;
+                            if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
+                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, sourceItem,
                                         selectors, bbModelConfig.getConfigRootDir());
                                 break;
                             }
-                            newExchangeItemIDs.add(ioObjectExchangeItem.getId());
+                            newExchangeItemIDs.add(sourceItem.getId());
                         }
                     } else {
                         IDataObject dataObject = findOrCreateDataObject(allElementVectorConfig.getIoObjectConfig());
                         if (dataObject != null) {
-                            for (String exchangeItemID : dataObject.getExchangeItemIDs()) {
-                                if (exchangeItemID.equalsIgnoreCase(exchangeItemId)) {
-                                    bbExchangeItem = new BBExchangeItem(exchangeItemId, allElementVectorConfig,
-                                            dataObject.getDataObjectExchangeItem(exchangeItemID),
+                            for (String sourceId : dataObject.getExchangeItemIDs()) {
+                                //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
+                                String bbExchangeItemId = sourceId;
+                                if (idSuffix != null) bbExchangeItemId += idSuffix;
+                                if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
+                                    bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, dataObject.getDataObjectExchangeItem(sourceId),
                                             selectors, bbModelConfig.getConfigRootDir());
                                     break;
                                 }
-                                newExchangeItemIDs.add(exchangeItemID);
+                                newExchangeItemIDs.add(sourceId);
                             }
                         } else {
                             throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
@@ -373,7 +395,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
             }
 
 			if (bbExchangeItem != null) {
-				bbExchangeItems.put(exchangeItemId, bbExchangeItem);
+				bbExchangeItems.put(searchedBBExchangeItemId, bbExchangeItem);
 				return bbExchangeItem;
 			}
 
@@ -382,8 +404,8 @@ public class BBModelInstance extends Instance implements IModelInstance {
 				allItems += "   " + availableExchangeItemID + "\n";
 			}
             throw new RuntimeException(
-                      "BBModelInstance.getExchangeItem(" + exchangeItemId + "):\n" +
-                      "Exchange item '" + exchangeItemId + "' not found\n" +
+                      "BBModelInstance.getExchangeItem(" + searchedBBExchangeItemId + "):\n" +
+                      "Exchange item '" + searchedBBExchangeItemId + "' not found\n" +
                       "Existing exchange items are:\n" +
                       allItems + "\n");
         }
@@ -517,16 +539,22 @@ public class BBModelInstance extends Instance implements IModelInstance {
 				getModelRunDir(), this.bbModelConfig.getSavedStatesDirPrefix());
 	}
 
-	private BBModelVectorConfig findVectorConfig(String exchangeItemId) {
+    /**
+     * If the vectorConfig that corresponds to the given searchedBBExchangeItemId has id="allElementsFromIoObject", then it will not be found in this method.
+     * In that case the vectorConfig will be found in the second part of method BBModelInstance.getExchangeItem.
+     */
+	private BBModelVectorConfig findVectorConfig(String searchedBBExchangeItemId) {
 		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
-			if (vectorConfig.getId().equalsIgnoreCase(exchangeItemId)) {
+            String bbExchangeItemId = vectorConfig.getId();
+            if (vectorConfig.getIdSuffix() != null) bbExchangeItemId += vectorConfig.getIdSuffix();
+            if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
 				return vectorConfig;
 			}
 		}
 		return null;
 	}
 
-	private List<BBModelVectorConfig> findAllElementsVectorConfig() {
+	private List<BBModelVectorConfig> findAllVectorConfigsWithAllElementsFromIoObject() {
 		List<BBModelVectorConfig> allElementsVectorConfigs = new ArrayList<BBModelVectorConfig>();
 		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
 			if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {

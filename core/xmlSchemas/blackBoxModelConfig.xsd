@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by J Huijssen (VORtech) -->
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
 <xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="blackBoxWrapperConfig.xsd"/>
 	<xs:include schemaLocation="blackBoxSharedTypes.xsd"/>
@@ -114,12 +114,17 @@
 		</xs:attribute>
 		<xs:attribute name="elementId" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>The corresponding identity of the exchange item as used internally within the model</xs:documentation>
+				<xs:documentation>The corresponding identity of the exchange item as used internally within the model. If this is not specified, then the elementId will be equal to the specified id.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="role" type="openda:BlackBoxModelRoleTypesXML" use="optional" default="InOut">
 			<xs:annotation>
 				<xs:documentation>The corresponding role type of the exchange item, choose "Input", "Output" or "InOut"</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="idSuffix" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Optional. This suffix will be appended to the specified id. If elementId not specified, then the elementId will still be equal to the specified id without this suffix. If id="allElementsFromIoObject", then this suffix will be appended to the ids of all exchangeItems of elements in the ioObject. In that case the elementIds will still be equal to the original ids of the elements in the ioObject, i.e. without this suffix.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>

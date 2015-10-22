@@ -30,11 +30,14 @@ public class BBModelVectorConfig extends BBStochModelVectorConfig {
 
     private IoObjectConfig ioObjectConfig;
 	private IPrevExchangeItem.Role role;
+    //can be null.
+    private final String idSuffix;
 
-    public BBModelVectorConfig(String id, IoObjectConfig ioObjectConfig, String elementId, IDimensionIndex[] selectionIndices, BBConfigurable selectorConfig, IPrevExchangeItem.Role role) {
+    public BBModelVectorConfig(String id, IoObjectConfig ioObjectConfig, String elementId, IDimensionIndex[] selectionIndices, BBConfigurable selectorConfig, IPrevExchangeItem.Role role, String idSuffix) {
         super(id, elementId, selectionIndices, selectorConfig);
 		this.role = role;
         this.ioObjectConfig = ioObjectConfig;
+        this.idSuffix = idSuffix;
     }
 
     public IoObjectConfig getIoObjectConfig() {
@@ -45,4 +48,7 @@ public class BBModelVectorConfig extends BBStochModelVectorConfig {
 		return role;
 	}
 
+    public String getIdSuffix() {
+        return idSuffix;
+    }
 }

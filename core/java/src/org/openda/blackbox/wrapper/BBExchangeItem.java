@@ -107,7 +107,7 @@ public class BBExchangeItem implements IExchangeItem {
                     configRootDir,
                     vectorConfig.getSelectorConfig().getClassName(),
                     vectorConfig.getSelectorConfig().getArguments());
-			selectors.put(vectorConfig.getId(), selector);
+			selectors.put(id, selector);
 			Object selectorResult = selector.select(valuesObject);
 			if (!(selectorResult instanceof IVector)) {
 				throw new RuntimeException("Unknown return type from selector " +
@@ -209,14 +209,14 @@ public class BBExchangeItem implements IExchangeItem {
 
 	public void setValues(Object values) {
         if (vectorConfig.getSelectorConfig() != null) {
-            SelectorInterface selector = selectors.get(vectorConfig.getId());
+            SelectorInterface selector = selectors.get(id);
             if (selector == null) {
                 throw new IllegalStateException("BBExchangeItem.setValues(" +
-                        vectorConfig.getId() + "): " +
+                        id + "): " +
                         "de-selection not possible, no selector created");
             }
 			setBaseOrOrgExchangeItemValues(selector.deselect(values));
-			selectors.remove(vectorConfig.getId());
+			selectors.remove(id);
         } else {
             IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
             if (selectionIndices == null) {
@@ -246,7 +246,7 @@ public class BBExchangeItem implements IExchangeItem {
                 } else if (values instanceof IVector) {
                     newValues = ((IVector) values).getValues();
                 } else {
-                    throw new IllegalArgumentException("BBExchangeItem.setValues(" + vectorConfig.getId() +
+                    throw new IllegalArgumentException("BBExchangeItem.setValues(" + id +
                             "): index de-selection can only be applied to vectors or arrays of doubles");
                 }
                 int[] dimSizes;
