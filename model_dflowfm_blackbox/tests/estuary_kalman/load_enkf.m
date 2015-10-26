@@ -1,4 +1,4 @@
-function [t, obs, pred_f, pred_a]=load_enkf(fname)
+function [t, obs, pred_f, pred_a, pred_f_std]=load_enkf(fname)
 %[t, pred_f, pred_a ]=function load_enkf(fname)
 %
 % Load the ensemble states at observation times and observations at analysis times as stored in fname.m
@@ -17,6 +17,8 @@ function [t, obs, pred_f, pred_a]=load_enkf(fname)
   pred_f=reshape(pred_f,nobs,length(pred_f)/nobs);
   pred_a=[pred_a_linear{:}];
   pred_a=reshape(pred_a,nobs,length(pred_a)/nobs);
-
+  pred_f_std=[pred_f_std{:}];
+  pred_f_std=reshape(pred_f_std,nobs,length(pred_f_std)/nobs);
+  
   t=[analysis_time{:}];
 
