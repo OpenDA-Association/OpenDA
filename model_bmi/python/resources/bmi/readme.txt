@@ -14,3 +14,5 @@ The following changes were made:
 2015-07-30 Added extension EBmi. Moved function save_state to EBmi.
 
 2015-09-15 Updated from GitHub
+
+2015-10-27 Downloaded most recent version of file bmi.py from https://github.com/eWaterCycle/bmi/blob/master/src/main/python/bmi.py

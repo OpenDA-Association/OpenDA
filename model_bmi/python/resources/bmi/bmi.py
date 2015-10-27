@@ -1,17 +1,12 @@
 #! /usr/bin/env python
 
 """
-2015-03-06
-Deltares
-Arno Kockx
+To create this file the original version of the CSDMS BMI Python Language Binding
+from https://github.com/csdms/bmi-python/blob/master/bmi/bmi.py was extended with a number of extra functions
+so that it can be used in OpenDA. All extra functions are contained in the class EBmi.
 
-To create this file the original version of the CSDMS BMI Python Language Binding (file bmi.py) from https://github.com/csdms/bmi-python/blob/master/bmi/bmi.py was extended so that it can be used in OpenDA.
-
-The following changes were made:
-1. All grid information functions have been merged into the Bmi class, so that different variables within the same model can have different grids.
-2. Added function get_grid_type to get the grid type for a given variable.
-3. Added function save_state to ask the model to save its state to disk.
-4. Added comments. Where the original version of the CSDMS BMI Python Language Binding was ambiguous, the information from http://csdms.colorado.edu/wiki/BMI_Description and common sense were used to fill in most of the gaps.
+Also added additional comments. Where the original version of the CSDMS BMI Python Language Binding was ambiguous, the
+information from http://csdms.colorado.edu/wiki/BMI_Description and common sense were used to fill in most of the gaps.
 """
 
 from abc import ABCMeta, abstractmethod
@@ -223,6 +218,7 @@ class Bmi(object):
 
         Return value:
         Numpy array of values in the data type returned by the function get_var_type: all values of the given variable.
+                                                                                      For a 2D grid these values must be in row major order, starting with the bottom row.
         """
         raise NotImplementedError
 
@@ -234,6 +230,7 @@ class Bmi(object):
         List of Lists of integers inds: each nested List contains one index for each dimension of the given variable,
                                         i.e. each nested List indicates one element in the multi-dimensional variable array,
                                         e.g. [[0, 0, 0], [0, 0, 1], [0, 15, 19], [0, 15, 20], [0, 15, 21]] indicates 5 elements in a 3D grid.
+                                        For a grid the indices start counting at the grid origin, i.e. the lower left corner for a 2D grid.
 
         Return value:
         Numpy array of values in the data type returned by the function get_var_type: one value for each of the indicated elements.
@@ -245,7 +242,8 @@ class Bmi(object):
         """
         Input parameters:
         String long_var_name: identifier of a variable in the model.
-        Numpy array of values src: all values to set for the given variable.
+        Numpy array of values in the data type returned by the function get_var_type src: all values to set for the given variable.
+                                                                                          For a 2D grid these values must be in row major order, starting with the bottom row.
         """
         raise NotImplementedError
 
@@ -257,7 +255,8 @@ class Bmi(object):
         List of Lists of integers inds: each nested List contains one index for each dimension of the given variable,
                                         i.e. each nested List indicates one element in the multi-dimensional variable array,
                                         e.g. [[0, 0], [0, 1], [15, 19], [15, 20], [15, 21]] indicates 5 elements in a 2D grid.
-        Numpy array of values src: one value to set for each of the indicated elements.
+                                        For a grid the indices start counting at the grid origin, i.e. the lower left corner for a 2D grid.
+        Numpy array of values in the data type returned by the function get_var_type src: one value to set for each of the indicated elements.
         """
         raise NotImplementedError
 
@@ -462,16 +461,3 @@ class EBmi(Bmi):
         File source_directory: the directory from which the state files should be read.
         """
         raise NotImplementedError
-
-
-
-    
-    
-
-
-
-
-    
-
-        
-    
