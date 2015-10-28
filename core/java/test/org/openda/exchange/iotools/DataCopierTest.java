@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.dataobjects.TestDataObject;
 import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.io.AsciiFileUtils;
 
 public class DataCopierTest extends TestCase {
 
@@ -49,8 +50,10 @@ public class DataCopierTest extends TestCase {
 		copier.copyAll();
 		copier.finish();
 
-		assertEquals(OpenDaTestSupport.readText(new File(this.testRunDataDir, "TestCopyNetcdfToText_expected_output.txt")),
-				OpenDaTestSupport.readText(new File(this.testRunDataDir, "fews_wind_small_copy1.txt")));
+		File actualOutputFile = new File(this.testRunDataDir, "fews_wind_small_copy1.txt");
+		File expectedOutputFile = new File(this.testRunDataDir, "TestCopyNetcdfToText_expected_output.txt");
+		assertEquals("Actual output file '" + actualOutputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
+				AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(actualOutputFile));
 	}
 
 	public void testCopyNetcdfToTextMain(){
@@ -59,8 +62,9 @@ public class DataCopierTest extends TestCase {
 		DataCopier.main(new String[]{"-c", "org.openda.exchange.dataobjects.NetcdfDataObject", "-a", "false false", inputFile.getAbsolutePath(),
 				"-c", "org.openda.exchange.dataobjects.TestDataObject", outputFile.getAbsolutePath()});
 
-		assertEquals(OpenDaTestSupport.readText(new File(this.testRunDataDir, "TestCopyNetcdfToText_expected_output.txt")),
-				OpenDaTestSupport.readText(outputFile));
+		File expectedOutputFile = new File(this.testRunDataDir, "TestCopyNetcdfToText_expected_output.txt");
+		assertEquals("Actual output file '" + outputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
+				AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(outputFile));
 	}
 	
 	public void testCopyNoosToText(){

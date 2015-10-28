@@ -20,17 +20,18 @@
 
 package org.openda.model_hspf;
 
+import junit.framework.TestCase;
+import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
-
-import junit.framework.TestCase;
-
-import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.OpenDaTestSupport;
-import org.openda.utils.Time;
 
 /**
  * Test class for testing UciIoObject and UciExchangeItem.
@@ -82,7 +83,7 @@ public class UciFileTest extends TestCase {
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, uciFilename);
-        File expectedOutputFile = new File(testRunDataDir, "uciFileTest/expectedResult/ndriver.uci");
+        File expectedOutputFile = new File(testRunDataDir, "uciFileTest/expectedResult/ndriver_expected.uci");
         assertTrue(testData.FilesAreIdentical(expectedOutputFile, actualOutputFile, 0));
     }
 
@@ -122,7 +123,42 @@ public class UciFileTest extends TestCase {
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, uciFilename);
-        File expectedOutputFile = new File(testRunDataDir, "uciFileTest/expectedResult/ndriver_extended_period.uci");
+        File expectedOutputFile = new File(testRunDataDir, "uciFileTest/expectedResult/ndriver_extended_period_expected.uci");
         assertTrue(testData.FilesAreIdentical(expectedOutputFile, actualOutputFile, 0));
     }
+
+	public void testWriteUciFileWithoutTags() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeUtils.createTimeZoneFromDouble(9));
+		calendar.set(2005, 0, 1, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
+		calendar.set(2007, 0, 1, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
+
+		UciDataObject uciDataObject = new UciDataObject();
+		String uciFilename = "uciFileTest/input/ndriver_without_tags.uci";
+		String[] arguments = new String[]{uciFilename, "9", "TSTART", "TSTOP"};
+		uciDataObject.initialize(testRunDataDir, arguments);
+
+		String[] exchangeItemIds = uciDataObject.getExchangeItemIDs();
+		assertEquals(2, exchangeItemIds.length);
+
+		//set start and end time in exchangeItems.
+		IExchangeItem startTimeExchangeItem = uciDataObject.getDataObjectExchangeItem("TSTART");
+		assertNotNull(startTimeExchangeItem);
+		startTimeExchangeItem.setValues(startDate);
+		IExchangeItem endTimeExchangeItem = uciDataObject.getDataObjectExchangeItem("TSTOP");
+		assertNotNull(endTimeExchangeItem);
+		endTimeExchangeItem.setValues(endDate);
+
+		//the call to method finish actually writes the data in the exchangeItems to the uci file.
+		uciDataObject.finish();
+
+		File actualOutputFile = new File(testRunDataDir, uciFilename);
+		File expectedOutputFile = new File(testRunDataDir, "uciFileTest/expectedResult/ndriver_without_tags_expected.uci");
+		assertEquals("Actual output file '" + actualOutputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
+				AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(actualOutputFile));
+	}
 }

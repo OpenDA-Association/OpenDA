@@ -20,20 +20,18 @@
 
 package org.openda.model_hspf;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
-import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * The UCI (User Control Input) file for the HSPF (Hydrological Simulation Program - FORTRAN) model
@@ -159,8 +157,8 @@ public class UciIoObject implements IoObjectInterface {
         //get start and stop times.
         double startTime = (Double) this.startTimeExchangeItem.getValues();
         double stopTime = (Double) this.endTimeExchangeItem.getValues();
-        String startTimeString = getStartTimeString(startTime);
-        String stopTimeString = getStopTimeString(stopTime);
+        String startTimeString = UciUtils.getStartTimeString(startTime, this.dateFormat, this.timeZone, this.startTimeExtension);
+        String stopTimeString = UciUtils.getEndTimeString(stopTime, this.dateFormat, this.timeZone);
 
         //replace key words for start and end time.
         final String startTimeTag = TAG + TSTART_TAG + TAG;
@@ -184,52 +182,5 @@ public class UciIoObject implements IoObjectInterface {
 
         //write file.
         AsciiFileUtils.writeLines(this.uciFile, content);
-    }
-
-    /**
-     * The dateFormat for dates in the UCI file is yyyy/MM/dd HH:mm, e.g.:
-     * "  START       2004/01/01 00:00  END    2004/01/10 00:00"
-     *
-     * @param startTimeDouble
-     * @return String startTime formatted for uci file.
-     */
-    private String getStartTimeString(double startTimeDouble) {
-        long startTime = Time.mjdToMillies(startTimeDouble);
-
-        //add startTimeExtension.
-        startTime += this.startTimeExtension*3600*1000;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(this.timeZone);
-        calendar.setTimeInMillis(startTime);
-        return this.dateFormat.format(calendar.getTime());
-    }
-
-    /**
-     * The dateFormat for dates in the UCI file is yyyy/MM/dd HH:mm, e.g.:
-     * "  START       2004/01/01 00:00  END    2004/01/10 00:00"
-     *
-     * @param stopTimeDouble
-     * @return String startTime formatted for uci file.
-     */
-    private String getStopTimeString(double stopTimeDouble) {
-        //Note: the HSPF model does not write output values at the stopTime of the run.
-        //In other words the HSPF model considers the run startTime to be inclusive
-        //and the run stopTime to be exclusive.
-        //To workaround this problem just increase the model run period in the run_info.xml
-        //file by a little bit, to get output for the stopTime of the run.
-        long stopTime = Time.mjdToMillies(stopTimeDouble);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(this.timeZone);
-        calendar.setTimeInMillis(stopTime);
-        //Note: for some reason the HSPF model runs a day too long when the endTime of the run period
-        //is at midnight in the timeZone of the model. This is probably a bug in the HSPF model.
-        //To workaround this problem here subtract one day from the endTime if the endTime is at midnight in the
-        //timeZone of the model.
-        if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
-            //if at midnight in timeZone of the model in this.dateFormat.
-            calendar.add(Calendar.DAY_OF_MONTH, -1);
-        }
-        return this.dateFormat.format(calendar.getTime());
     }
 }

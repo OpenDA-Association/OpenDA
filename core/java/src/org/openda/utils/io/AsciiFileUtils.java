@@ -25,6 +25,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AsciiFileUtils {
+
+	/**
+	 * Reads content of the given ascii file and returns it in the form of a single String.
+	 * This can be used to compare two text files in a unit test using the following line:
+	 * assertEquals("Actual output file '" + actualOutputFile + "' does not equal expected output file '" + expectedOutputFile + "'.", AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(actualOutputFile));
+	 *
+	 * @param inputFile
+	 * @return String
+	 */
+	public static String readText(File inputFile) {
+		StringBuilder content = new StringBuilder();
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+			try {
+				String line = reader.readLine();
+				while (line != null) {
+					content.append(line).append("\n");
+					line = reader.readLine();
+				}
+			} finally {
+				reader.close();
+			}
+		} catch (IOException e){
+			throw new RuntimeException("Problem while reading file '" + inputFile.getAbsolutePath() + "'.", e);
+		}
+
+		return content.toString();
+	}
+
 	/**
 	 * Reads the contents of the given ascii file.
 	 *
@@ -32,7 +62,7 @@ public class AsciiFileUtils {
 	 * @return each line is put in a separate String
 	 */
 	public static List<String> readLines(File inputFile) {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(inputFile));
@@ -45,8 +75,6 @@ public class AsciiFileUtils {
 			} finally {
 				input.close();
 			}
-		} catch (FileNotFoundException e){
-			throw new RuntimeException("Problem while opening file " + inputFile.getAbsolutePath() + " Message was " + e.getMessage(), e);
 		} catch (IOException e){
 			throw new RuntimeException("Problem while reading file " + inputFile.getAbsolutePath() + " Message was " + e.getMessage(), e);
 		}

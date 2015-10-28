@@ -20,10 +20,10 @@
 package org.openda.utils;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.dataobjects.NetcdfUtils;
+import org.openda.utils.io.AsciiFileUtils;
 import org.openda.utils.io.FileSupport;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -671,35 +671,6 @@ public class OpenDaTestSupport {
     }
 
 	/**
-	 * Reads content of the given file and returns it in the form of a String.
-	 * This can be used to compare two text files in a unit test using the following line:
-	 * assertEquals(OpenDaTestSupport.readFile(expectedFile), OpenDaTestSupport.readFile(actualFile));
-	 *
-	 * @param inputFile
-	 * @return String
-	 */
-	public static String readText(File inputFile) {
-		StringBuffer content = new StringBuffer();
-
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-			try {
-				String line = reader.readLine();
-				while (line != null) {
-					content.append(line).append("\n");
-					line = reader.readLine();
-				}
-			} finally {
-				reader.close();
-			}
-		} catch (IOException e){
-			throw new RuntimeException("Problem while reading file '" + inputFile.getAbsolutePath() + "'.", e);
-		}
-
-		return content.toString();
-	}
-
-	/**
 	 * This can be used e.g. in unit tests to compare netcdf data in human readable text format instead of in binary format.
 	 *
 	 * @param textFileWithExpectedOutput
@@ -709,7 +680,7 @@ public class OpenDaTestSupport {
 	 * @throws IOException
 	 */
 	public static void compareNetcdfFileInTextFormat(File textFileWithExpectedOutput, File netcdfFileWithActualOutput, String variableNames) throws IOException {
-		String expectedOutputString = readText(textFileWithExpectedOutput);
+		String expectedOutputString = AsciiFileUtils.readText(textFileWithExpectedOutput);
 		//convert netcdf data to text for text comparison.
 		String actualOutputString = NetcdfUtils.netcdfFileToString(netcdfFileWithActualOutput, variableNames);
 
