@@ -3,12 +3,14 @@
 %
 [t, obs, pred_f, pred_a, pred_f_std]=load_enkf('Enkf_results');
 
-for j = 1:3,
+nobs=size(obs,1);
+
+for j = 1:nobs,
     gcf=j; figure(gcf);
     std = [ pred_f(j,1:length(t)) - 2* pred_f_std(j,1:length(t)) ; 4* pred_f_std(j,1:length(t)) ];
     h = area(std','LineStyle','none');
-    h(1).FaceColor = [1 1 1];
-    h(2).FaceColor = [ 135 206 250 ]/255;
+    set(h(1),'FaceColor' , [1 1 1]);
+    set(h(2),'FaceColor', [ 135 206 250 ]/255);
     hold on
     h1 = plot(pred_f(j,1:length(t)));
     h0 = plot(obs(j,1:length(t)),'k+');
