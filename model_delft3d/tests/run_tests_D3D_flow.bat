@@ -9,8 +9,7 @@ cd ..\..\..\bin
 set OPENDA_BINDIR=%CD%
 set PATH=%CD%;%PATH%
 
-set CLASSPATH=
-for /r %OPENDA_BINDIR% %%G in (*.jar) do set CLASSPATH=!CLASSPATH!;"%%G"
+set CLASSPATH=%OPENDA_BINDIR%\*
 
 cd ..\models\java\tests
 if exist test_results rd /s/q test_results

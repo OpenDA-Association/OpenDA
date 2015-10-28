@@ -20,9 +20,7 @@ rem ==== check Java runtime ====
 if "%JAVA_HOME%" == "" set JAVA_HOME=..
 if not exist "%JAVA_HOME%\jre\bin\java.exe" goto Error0
 
-set addJar=
-for /r %OPENDA_BINDIR% %%G in (*.jar) do set addJar=!addJar!;"%%G"
-%JAVA_HOME%\jre\bin\java -classpath %addJar% org.openda.utils.Reflection %1
+"%JAVA_HOME%\jre\bin\java" -classpath %OPENDA_BINDIR%\* org.openda.utils.Reflection %1
 if errorlevel 1 goto Error3
 endlocal
 goto End

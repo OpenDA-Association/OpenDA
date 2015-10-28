@@ -25,9 +25,7 @@ if not exist "%JAVA_HOME%\jre\bin\java.exe" goto Error0
 rem ==== check availability and arguments ===
 if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
-set addJar=
-for /r %OPENDA_BINDIR% %%G in (*.jar) do set addJar=!addJar!;"%%G"
-..\jre\bin\java -classpath %addJar% org.openda.exchange.iotools.ioDumper %1 %2
+..\jre\bin\java -classpath %OPENDA_BINDIR%\* org.openda.exchange.iotools.ioDumper %1 %2
 if errorlevel 1 goto Error3
 endlocal
 goto End

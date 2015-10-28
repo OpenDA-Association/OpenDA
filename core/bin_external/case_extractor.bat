@@ -29,9 +29,7 @@ rem ==== check availability and arguments ===
 if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
 rem ==== run ===
-set addJar=
-for /r %OPENDA_BINDIR% %%G in (*.jar) do set addJar=!addJar!;"%%G"
-"%JAVA_HOME%\bin\java" -Xms128m -Xmx1024m -classpath %addJar% org.openda.model_swan.swivt.CaseExtractorGUI
+"%JAVA_HOME%\bin\java" -Xms128m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.model_swan.swivt.CaseExtractorGUI
 if errorlevel 1 goto Error2
 endlocal
 goto End

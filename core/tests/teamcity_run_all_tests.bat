@@ -12,8 +12,7 @@ set Path=%CD%;%Path%
 rem no openda jre is available, check if there is a default one
 if "%JDK_17%" == "" goto exitwitherror0
 
-set CLASSPATH=
-for /r %OPENDA_BINDIR% %%G in (*.jar) do set CLASSPATH=!CLASSPATH!;"%%G"
+set CLASSPATH=%OPENDA_BINDIR%\*
 
 cd ..\tests
 if exist test_results rd /s/q test_results

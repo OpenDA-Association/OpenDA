@@ -37,9 +37,7 @@ rem ==== check availability and arguments ===
 if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
 rem ==== run ===
-set addJar=
-for /r %OPENDA_BINDIR% %%G in (*.jar) do set addJar=!addJar!;"%%G"
-%OPENDA_JRE%\bin\java -Xms128m -Xmx1024m -classpath %addJar% org.openda.application.OpenDaApplication %1%
+"%OPENDA_JRE%\bin\java" -Xms128m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication %1%
 if errorlevel 1 goto Error3
 endlocal
 goto End
