@@ -16,13 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#TODO: remove dots in dynamic phase (default pcraster progress (how?)
-#TODO: formal test runs against SMHI model
 #TODO: split off routing
 
-# $Rev:: 904           $:  Revision of last commit
-# $Author:: schelle    $:  Author of last commit
-# $Date:: 2014-01-13 1#$:  Date of last commit
 """
 Run the wflow_hbv hydrological model..
 
@@ -62,7 +57,7 @@ wflow_hbv::
 -h: print usage information
 
 -U: The argument to this option should be a .tss file with measured discharge in
-    [m^3/s] which the progam will use to update the internal state to match 
+    [m^3/s] which the program will use to update the internal state to match
     the measured flow. The number of columns in this file should match the 
     number of gauges in the wflow\_gauges.map file.
     
@@ -70,20 +65,16 @@ wflow_hbv::
     -u [1 , 4 ,13]
     The above example uses column 1, 4 and 13
     
--P: set parameter multiply dictionary (e.g: -P {'self.FirstZoneDepth' : 1.2}
-    to increase self.FirstZoneDepth by 20%, multiply with 1.2)
+-P: set parameter change string (e.g: -P 'self.FC = self.FC * 1.6') for non-dynamic variables
     
--p: set input parameter (dynamic, e.g. precip) multiply dictionary 
-    (e.g: -p {'self.Precipitation' : 1.2} to increase Precipitation 
-    by 20%, multiply with 1.2)    
-    
+-p: set parameter change string (e.g: -P 'self.Precipitation = self.Precipitation * 1.11') for
+    dynamic variables
+
 -l: loglevel (most be one of DEBUG, WARNING, ERROR)
 
 -X overwrites the initial values at the end of each timestep
 
-$Author: schelle $
-$Id: wflow_hbv.py 904 2014-01-13 14:39:24Z schelle $
-$Rev: 904 $
+
 """
 
 import numpy
@@ -102,19 +93,12 @@ from wflow_adapt import *
 
 
 
-wflow = "wflow_hbv: "
-wflowVersion = "$Revision: 904 $  $Date: 2014-01-13 15:39:24 +0100 (Mon, 13 Jan 2014) $" 
-"""revision of the model"""
+wflow = "wflow_hbv"
 
 
 #: columns used in updating
 updateCols = [] #: columns used in updating
-""" Column sused in updating """
-
-
-multpars = {} #: Dictionary with parameters and multipliers (static) (used in calibration)
-multdynapars = {} #: Dictionary with parameters and multipliers (dynamic) (used in calibration)
-
+""" Column used in updating """
 
 
 def usage(*args):
@@ -122,26 +106,20 @@ def usage(*args):
     Print usage information
     
     -  *args: command line arguments given
-    
     """
     sys.stdout = sys.stderr
     for msg in args: print msg
     print __doc__
     sys.exit(0)
 
-
-
 class WflowModel(DynamicModel):
-  
-  
+
   """
-  The user defined model class. All maps are defined here for documentation 
-  purposes
-    
-  
+  The user defined model class.
+
   """
   
-  
+
   def __init__(self, cloneMap,Dir,RunDir,configfile):
       DynamicModel.__init__(self)
       self.caseName = os.path.abspath(Dir)
@@ -152,9 +130,7 @@ class WflowModel(DynamicModel):
       self.configfile = configfile
       self.SaveDir = os.path.join(self.Dir,self.runId)
 
-        
-  
-      
+
   def updateRunOff(self):
       """
       Updates the kinematic wave reservoir
@@ -374,38 +350,38 @@ class WflowModel(DynamicModel):
     wflow_riverwidth = configget(self.config,"model","wflow_riverwidth","staticmaps/wflow_riverwidth.map")
 
     # 2: Input base maps ########################################################  
-    subcatch=ordinal(readmap(os.path.join(self.Dir, wflow_subcatch))) # Determines the area of calculations (all cells > 0)
+    subcatch=ordinal(self.wf_readmap(os.path.join(self.Dir, wflow_subcatch),0.0,fail=True)) # Determines the area of calculations (all cells > 0)
     subcatch = ifthen(subcatch > 0, subcatch)
     if self.sCatch > 0:
         subcatch = ifthen(subcatch == sCatch,subcatch)
     
-    self.Altitude=readmap(os.path.join(self.Dir,wflow_dem)) * scalar(defined(subcatch)) #: The digital elevation map (DEM)
-    self.TopoLdd=readmap(os.path.join(self.Dir, wflow_ldd))        #: The local drinage definition map (ldd)
-    self.TopoId=readmap(os.path.join(self.Dir, wflow_subcatch))        #: Map define the area over which the calculations are done (mask)
-    self.River=cover(boolean(readmap(os.path.join(self.Dir, wflow_river))),0) #: river network map. Fro those cell that belong to a river a specific width is used in the kinematic wave caulations
-    self.RiverLength=pcrut.readmapSave(os.path.join(self.Dir, wflow_riverlength),0.0)
+    self.Altitude=self.wf_readmap(os.path.join(self.Dir,wflow_dem),0.0,fail=True) * scalar(defined(subcatch)) #: The digital elevation map (DEM)
+    self.TopoLdd=self.wf_readmap(os.path.join(self.Dir, wflow_ldd),0.0,fail=True)        #: The local drinage definition map (ldd)
+    self.TopoId=self.wf_readmap(os.path.join(self.Dir, wflow_subcatch),0.0,fail=True)        #: Map define the area over which the calculations are done (mask)
+    self.River=cover(boolean(self.wf_readmap(os.path.join(self.Dir, wflow_river),0.0,fail=True)),0) #: river network map. Fro those cell that belong to a river a specific width is used in the kinematic wave caulations
+    self.RiverLength=self.wf_readmap(os.path.join(self.Dir, wflow_riverlength),0.0)
     # Factor to multiply riverlength with (defaults to 1.0)    
-    self.RiverLengthFac=pcrut.readmapSave(os.path.join(self.Dir, wflow_riverlength_fact),1.0)
+    self.RiverLengthFac=self.wf_readmap(os.path.join(self.Dir, wflow_riverlength_fact),1.0)
 
     # read landuse and soilmap and make sure there are no missing points related to the
     # subcatchment map. Currently sets the lu and soil type  type to 1
-    self.LandUse=readmap(os.path.join(self.Dir , wflow_landuse))#: Map with lan-use/cover classes
+    self.LandUse=self.wf_readmap(os.path.join(self.Dir , wflow_landuse),0.0,fail=True)#: Map with lan-use/cover classes
     self.LandUse=cover(self.LandUse,nominal(ordinal(subcatch) > 0))
-    self.Soil=readmap(os.path.join(self.Dir , wflow_soil))#: Map with soil classes
+    self.Soil=self.wf_readmap(os.path.join(self.Dir , wflow_soil),0.0,fail=True)#: Map with soil classes
     self.Soil=cover(self.Soil,nominal(ordinal(subcatch) > 0))
-    self.OutputLoc=readmap(os.path.join(self.Dir , wflow_gauges))  #: Map with locations of output gauge(s)
-    self.InflowLoc=nominal(pcrut.readmapSave(os.path.join(self.Dir , wflow_inflow),0.0))  #: Map with location of abstractions/inflows.
-    self.SeepageLoc=pcrut.readmapSave(os.path.join(self.Dir , wflow_inflow),0.0)  #: Seapage from external model (if configured)
-    RiverWidth=pcrut.readmapSave(os.path.join(self.Dir, wflow_riverwidth),0.0)
+    self.OutputLoc=self.wf_readmap(os.path.join(self.Dir , wflow_gauges),0.0,fail=True)  #: Map with locations of output gauge(s)
+    self.InflowLoc=nominal(self.wf_readmap(os.path.join(self.Dir , wflow_inflow),0.0))  #: Map with location of abstractions/inflows.
+    self.SeepageLoc=self.wf_readmap(os.path.join(self.Dir , wflow_inflow),0.0)  #: Seapage from external model (if configured)
+    RiverWidth=self.wf_readmap(os.path.join(self.Dir, wflow_riverwidth),0.0)
     
     
      # Temperature correction per cell to add
-    self.TempCor=pcrut.readmapSave(os.path.join(self.Dir , configget(self.config,"model","TemperatureCorrectionMap","staticmapswflow_tempcor.map")),0.0)
+    self.TempCor=self.wf_readmap(os.path.join(self.Dir , configget(self.config,"model","TemperatureCorrectionMap","staticmap/swflow_tempcor.map")),0.0)
  
                       
     if self.scalarInput:
-        self.gaugesMap=readmap(os.path.join(self.Dir , wflow_mgauges)) #: Map with locations of rainfall/evap/temp gauge(s). Only needed if the input to the model is not in maps
-    self.OutputId=readmap(os.path.join(self.Dir , wflow_subcatch))       # location of subcatchment
+        self.gaugesMap=self.wf_readmap(os.path.join(self.Dir , wflow_mgauges),0.0,fail=True) #: Map with locations of rainfall/evap/temp gauge(s). Only needed if the input to the model is not in maps
+    self.OutputId=self.wf_readmap(os.path.join(self.Dir , wflow_subcatch),0.0,fail=True)       # location of subcatchment
   
     self.ZeroMap=0.0*scalar(defined(self.Altitude))                    #map with only zero's
   
@@ -485,14 +461,8 @@ class WflowModel(DynamicModel):
 
    
     # Multiply parameters with a factor (for calibration etc) -P option in command line
-    for k, v in multpars.iteritems():
-        if self.sCatch > 0:
-            estr = k + "= ifthenelse(self.TopoId == self.sCatch," +  k + "*" + str(v)+ "," + k + ")"
-        else:
-            estr = k + "=" + k + "*" + str(v)
-        self.logger.info("Parameter multiplication: " +  estr)
-        exec estr
-    
+
+    self.wf_multparameters()
     self.N=ifthenelse(self.River, self.NRiver, self.N)
     
 
@@ -703,12 +673,10 @@ class WflowModel(DynamicModel):
     self.Temperature=cover(self.wf_readmap(self.TEMP_mapstack,10.0),10.0)
     self.Temperature = self.Temperature + self.TempCor
 
-    # Multiply input parameters with a factor (for calibration etc) -p option in command line
-    for k, v in multdynapars.iteritems():
-        estr = k + "=" + k + "*" + str(v)
-        self.logger.debug("Dynamic Parameter multiplication: " +  estr)
-        exec estr    
-    
+    # Multiply input parameters with a factor (for calibration etc) -p option in command line (no also in ini)
+
+    self.wf_multparameters()
+
     RainFrac=ifthenelse(1.0*self.TTI == 0.0,ifthenelse(self.Temperature <= self.TT,scalar(0.0),scalar(1.0)),min((self.Temperature-(self.TT-self.TTI/2.0))/self.TTI,scalar(1.0)))  
     RainFrac=max(RainFrac,scalar(0.0))               #fraction of precipitation which falls as rain 
     SnowFrac=1.0-RainFrac                    #fraction of self.Precipitation which falls as snow
@@ -721,7 +689,6 @@ class WflowModel(DynamicModel):
     RainFall=RainFrac*self.Precipitation  #: rainfall depth
     PotSnowMelt=ifthenelse(self.Temperature > self.TT,self.Cfmax*(self.Temperature-self.TT),scalar(0.0)) #Potential snow melt, based on temperature
     PotRefreezing=ifthenelse(self.Temperature < self.TT, self.Cfmax*self.CFR*(self.TT-self.Temperature),0.0)    #Potential refreezing, based on temperature
-    
 
     Refreezing=ifthenelse(self.Temperature < self.TT,min(PotRefreezing,self.FreeWater),0.0)   	#actual refreezing    
     self.SnowMelt=min(PotSnowMelt,self.DrySnow)          #actual snow melt
@@ -913,7 +880,7 @@ def main(argv=None):
     ## Main model starts here
     ########################################################################
     try:
-        opts, args = getopt.getopt(argv, 'c:QXS:F:hC:Ii:T:NR:u:s:P:p:Xx:U:fl:')
+        opts, args = getopt.getopt(argv, 'c:QXS:F:hC:Ii:T:R:u:s:P:p:Xx:U:fl:L:')
     except getopt.error, msg:
         pcrut.usage(msg)
     
@@ -921,11 +888,7 @@ def main(argv=None):
         if o == '-F': 
             runinfoFile = a
             fewsrun = True
-        if o == '-P': 
-            exec ("multpars =" + a,globals(), globals())
-        if o == '-p': 
-            exec "multdynapars =" + a
-            exec ("multdynapars =" + a,globals(), globals())
+
         if o == '-C': caseName = a
         if o == '-R': runId = a
         if o == '-L': LogFileName = a 
@@ -957,26 +920,33 @@ def main(argv=None):
  
     myModel = WflowModel(wflow_cloneMap, caseName,runId,configfile)
     dynModelFw = wf_DynamicFramework(myModel, _lastTimeStep,firstTimestep=_firstTimeStep,datetimestart=starttime)
-    dynModelFw.createRunId(NoOverWrite=NoOverWrite,logfname=LogFileName,level=loglevel)    
-    
+    dynModelFw.createRunId(NoOverWrite=NoOverWrite,logfname=LogFileName,level=loglevel,doSetupFramework=False)
+
     for o, a in opts:
-        if o == '-X': configset(myModel.config,'model','OverWriteInit','1',overwrite=True) 
-        if o == '-I': configset(myModel.config,'model','reinit','1',overwrite=True) 
+        if o == '-P':
+            left = a.split('=')[0]
+            right = a.split('=')[1]
+            configset(myModel.config,'variable_change_once',left,right,overwrite=True)
+        if o == '-p':
+            left = a.split('=')[0]
+            right = a.split('=')[1]
+            configset(myModel.config,'variable_change_timestep',left,right,overwrite=True)
+        if o == '-X': configset(myModel.config,'model','OverWriteInit','1',overwrite=True)
+        if o == '-I': configset(myModel.config,'model','reinit','1',overwrite=True)
         if o == '-i': configset(myModel.config,'model','intbl',a,overwrite=True)
         if o == '-s': configset(myModel.config,'model','timestepsecs',a,overwrite=True)
         if o == '-x': configset(myModel.config,'model','sCatch',a,overwrite=True)
         if o == '-c': configset(myModel.config,'model','configfile', a,overwrite=True)
         if o == '-M': configset(myModel.config,'model','MassWasting',"0",overwrite=True)
-        if o == '-N': configset(myModel.config,'model','nolateral','1',overwrite=True) 
         if o == '-Q': configset(myModel.config,'model','ExternalQbase','1',overwrite=True)
-        if o == '-U': 
+        if o == '-U':
             configset(myModel.config,'model','updateFile',a,overwrite=True)
             configset(myModel.config,'model','updating',"1",overwrite=True)
-        if o == '-u': 
+        if o == '-u':
             exec "zz =" +  a
             updateCols = zz
 
-
+    dynModelFw.setupFramework()
     dynModelFw._runInitial()
     dynModelFw._runResume()
     dynModelFw._runDynamic(_firstTimeStep,_lastTimeStep)

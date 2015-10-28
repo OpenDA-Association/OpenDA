@@ -52,12 +52,15 @@ usage
     
     -h: print usage information
 
+    -P: set parameter change string (e.g: -P 'self.FC = self.FC * 1.6') for non-dynamic variables
+
+    -p: set parameter change string (e.g: -P 'self.Precipitation = self.Precipitation * 1.11') for
+        dynamic variables
+
+
     -l: loglevel (most be one of DEBUG, WARNING, ERROR)
 
 
-$Author: schelle $
-$Id: wflow_sbm.py 900 2014-01-09 17:41:06Z schelle $
-$Rev: 900 $
 """
 
 import numpy
@@ -74,13 +77,8 @@ import ConfigParser
 
 
 wflow = "wflow_routing: "
-wflowVersion = "$Revision: 900 $  $Date: 2014-01-09 18:41:06 +0100 (Thu, 09 Jan 2014) $"
 
 updateCols = []
-
-multpars = {}
-multdynapars = {}
-
 
 def usage(*args):
     sys.stdout = sys.stderr
@@ -96,6 +94,7 @@ class WflowModel(DynamicModel):
 
   """
 
+
     def __init__(self, cloneMap, Dir, RunDir, configfile):
         DynamicModel.__init__(self)
 
@@ -107,26 +106,77 @@ class WflowModel(DynamicModel):
         self.configfile = configfile
         self.SaveDir = os.path.join(self.Dir,self.runId)
 
-    def _initAPIVars(self):
-        """
-        Sets vars in the API that are forcing variables to the model
-        """
-        apivars = self.wf_supplyVariableNamesAndRoles()
 
-        for var in apivars:
-            exec "self."+ var[0] + " = self.ZeroMap"
+    def wetPerimiterFP(self,Waterlevel, floodplainwidth,threshold=0.0,sharpness=0.5):
+        """
+
+        :param Waterlevel:
+        :param bottomwidth:
+        :param bankfull:
+        :param floodplainwidth:
+        :return P: wetted perimiter
+        """
+        a = threshold
+        b = 1.0
+        c = sharpness  # not very sharp
+
+        floodplainfact = max(0.001,sCurve(Waterlevel, a=a, c=c,b=b) -0.5)
+        floodplainperimiter = min(1.0,2.0 * floodplainfact) * floodplainwidth
+
+        return floodplainperimiter
+
+
+    def wetPerimiterCH(self,Waterlevel,channelWidth):
+        """
+
+        :param Waterlevel:
+        :param bottomwidth:
+        :param bankfull:
+        :param floodplainwidth:
+        :return P: wetted perimiter
+        """
+
+        channelperimiter = 2.0 * Waterlevel + channelWidth
+
+        return  channelperimiter
+
+
 
     def updateRunOff(self):
         """
-      Updates the kinematic wave reservoir. Should be run after updates to Q
-      """
-        self.WaterLevel = (self.Alpha * pow(self.SurfaceRunoff, self.Beta)) / self.Bw
+        Updates the kinematic wave reservoir water level. Should be run after updates to Q
+
+        WL = A * pow(Q,B)/Bw
+        WL/A * Bw = pow(Q,B)
+        Q = pow(WL/A * Bw,1/B)
+        """
+
+        self.Qbankfull = pow(self.bankFull/self.AlphaCh * self.Bw,1.0/self.Beta)
+        self.Qchannel = min(self.SurfaceRunoff,self.Qbankfull)
+        self.floodcells  = boolean(ifthenelse(self.WaterLevelCH > self.bankFull, boolean(1), boolean(0)))
+        self.Qfloodplain = max(0.0,self.SurfaceRunoff - self.Qbankfull)
+
+        self.WaterLevelCH = self.AlphaCh * pow(self.Qchannel, self.Beta) / (self.Bw)
+        self.WaterLevelFP = ifthenelse(self.River,self.AlphaFP * pow(self.Qfloodplain, self.Beta) / (self.Bw + self.Pfp),0.0)
+        self.WaterLevel = self.WaterLevelCH + self.WaterLevelFP
+
+        # Determine Qtot as a check
+        self.Qtot = pow(self.WaterLevelCH/self.AlphaCh * self.Bw,1.0/self.Beta) + pow(self.WaterLevelFP/self.AlphaFP * (self.Pfp + self.Bw),1.0/self.Beta)
         # wetted perimeter (m)
-        P = self.Bw + (2 * self.WaterLevel)
+        self.Pch = self.wetPerimiterCH(self.WaterLevelCH,self.Bw)
+        self.Pfp = ifthenelse(self.River,self.wetPerimiterFP(self.WaterLevelFP,self.floodPlainWidth,sharpness=self.floodPlainDist),0.0)
+
         # Alpha
-        self.Alpha = self.AlpTerm * pow(P, self.AlpPow)
+        self.WetPComb = self.Pch + self.Pfp
+        self.Ncombined = (self.Pch/self.WetPComb*self.N**1.5 + self.Pfp/self.WetPComb*self.NFloodPlain**1.5)**(2./3.)
+        self.AlpTermFP = pow((self.NFloodPlain / (sqrt(self.SlopeDCL))), self.Beta)
+        self.AlpTermComb = pow((self.Ncombined / (sqrt(self.SlopeDCL))), self.Beta)
+        self.AlphaFP = self.AlpTermFP * pow(self.Pfp, self.AlpPow)
+        self.AlphaCh = self.AlpTerm * pow(self.Pch, self.AlpPow)
+        self.Alpha = ifthenelse(self.River,self.AlpTermComb * pow(self.Pch + self.Pfp, self.AlpPow),self.AlphaCh)
         self.OldKinWaveVolume = self.KinWaveVolume
-        self.KinWaveVolume = self.WaterLevel * self.Bw * self.DCL
+        self.KinWaveVolume = (self.WaterLevelCH * self.Bw * self.DCL) + (self.WaterLevelFP * (self.Pfp + self.Bw) * self.DCL)
+
 
     def stateVariables(self):
         """
@@ -138,7 +188,7 @@ class WflowModel(DynamicModel):
         :var self.SurfaceRunoff: Surface runoff in the kin-wave resrvoir [m^3/s]
         :var self.WaterLevel: Water level in the kin-wave resrvoir [m]
         """
-        states = ['SurfaceRunoff', 'WaterLevel']
+        states = ['SurfaceRunoff', 'WaterLevelCH','WaterLevelFP']
 
         return states
 
@@ -218,58 +268,65 @@ class WflowModel(DynamicModel):
         wflow_gauges = configget(self.config, "model", "wflow_gauges", "staticmaps/wflow_gauges.map")
         wflow_inflow = configget(self.config, "model", "wflow_inflow", "staticmaps/wflow_inflow.map")
         wflow_riverwidth = configget(self.config, "model", "wflow_riverwidth", "staticmaps/wflow_riverwidth.map")
+        wflow_floodplainwidth = configget(self.config, "model", "wflow_floodplainwidth", "staticmaps/wflow_floodplainwidth.map")
+        wflow_bankfulldepth = configget(self.config, "model", "wflow_bankfulldepth", "staticmaps/wflow_bankfulldepth.map")
+        wflow_floodplaindist = configget(self.config, "model", "wflow_bankfulldepth", "staticmaps/wflow_floodplaindist.map")
+
         wflow_landuse = configget(self.config, "model", "wflow_landuse", "staticmaps/wflow_landuse.map")
         wflow_soil = configget(self.config, "model", "wflow_soil", "staticmaps/wflow_soil.map")
 
         # 2: Input base maps ########################################################
-        subcatch = ordinal(readmap(os.path.join(self.Dir,wflow_subcatch)))  # Determines the area of calculations (all cells > 0)
+        subcatch = ordinal(self.wf_readmap(os.path.join(self.Dir,wflow_subcatch),0.0,fail=True))  # Determines the area of calculations (all cells > 0)
         subcatch = ifthen(subcatch > 0, subcatch)
 
-        self.Altitude = readmap(os.path.join(self.Dir,wflow_dem))  # * scalar(defined(subcatch)) # DEM
-        self.TopoLdd = readmap(os.path.join(self.Dir,wflow_ldd))  # Local
-        self.TopoId = readmap(os.path.join(self.Dir,wflow_subcatch))  # area map
-        self.River = cover(boolean(readmap(os.path.join(self.Dir,wflow_river))), 0)
+        self.Altitude = self.wf_readmap(os.path.join(self.Dir,wflow_dem),0.0,fail=True)  # * scalar(defined(subcatch)) # DEM
+        self.TopoLdd = self.wf_readmap(os.path.join(self.Dir,wflow_ldd),0.0,fail=True)  # Local
+        self.TopoId = self.wf_readmap(os.path.join(self.Dir,wflow_subcatch),0.0,fail=True)  # area map
+        self.River = cover(boolean(self.wf_readmap(os.path.join(self.Dir,wflow_river),0.0,fail=True)), 0)
 
-        self.RiverLength = cover(pcrut.readmapSave(os.path.join(self.Dir,wflow_riverlength), 0.0), 0.0)
+        self.RiverLength = cover(self.wf_readmap(os.path.join(self.Dir,wflow_riverlength), 0.0), 0.0)
         # Factor to multiply riverlength with (defaults to 1.0)
-        self.RiverLengthFac = pcrut.readmapSave(os.path.join(self.Dir,wflow_riverlength_fact), 1.0)
+        self.RiverLengthFac = self.wf_readmap(os.path.join(self.Dir,wflow_riverlength_fact), 1.0)
 
         # read landuse and soilmap and make sure there are no missing points related to the
         # subcatchment map. Currently sets the lu and soil type  type to 1
-        self.LandUse = readmap(os.path.join(self.Dir,wflow_landuse))
+        self.LandUse = self.wf_readmap(os.path.join(self.Dir,wflow_landuse),0.0,fail=True)
         self.LandUse = cover(self.LandUse, nominal(ordinal(subcatch) > 0))
-        self.Soil = readmap(os.path.join(self.Dir,wflow_soil))
+        self.Soil = self.wf_readmap(os.path.join(self.Dir,wflow_soil),0.0,fail=True)
         self.Soil = cover(self.Soil, nominal(ordinal(subcatch) > 0))
 
-        self.OutputLoc = readmap(os.path.join(self.Dir,wflow_gauges))  # location of output gauge(s)
-        self.InflowLoc = pcrut.readmapSave(os.path.join(self.Dir,wflow_inflow), 0.0)  # location abstractions/inflows.
-        self.RiverWidth = pcrut.readmapSave(os.path.join(self.Dir,wflow_riverwidth), 0.0)
-        self.OutputId = readmap(os.path.join(self.Dir,wflow_subcatch))  # location of subcatchment
+        self.OutputLoc = self.wf_readmap(os.path.join(self.Dir,wflow_gauges),0.0,fail=True)  # location of output gauge(s)
+        self.InflowLoc = self.wf_readmap(os.path.join(self.Dir,wflow_inflow), 0.0)  # location abstractions/inflows.
+        self.RiverWidth = self.wf_readmap(os.path.join(self.Dir,wflow_riverwidth), 0.0)
+        self.bankFull = self.wf_readmap(os.path.join(self.Dir,wflow_bankfulldepth), 999999.0)
+        self.floodPlainWidth = self.wf_readmap(os.path.join(self.Dir,wflow_floodplainwidth), 8000.0)
+        self.floodPlainDist = self.wf_readmap(os.path.join(self.Dir,wflow_floodplaindist), 0.5)
+
+        self.OutputId = self.wf_readmap(os.path.join(self.Dir,wflow_subcatch),0.0,fail=True)  # location of subcatchment
         self.ZeroMap = 0.0 * scalar(subcatch)  #map with only zero's
 
-        self.IW_mapstack = self.Dir + configget(self.config, "inputmapstacks", "Inwater",
-                                               "/inmaps/IW")  # timeseries for specific runoff
-
-        self.Inflow_mapstack = self.Dir + configget(self.config, "inputmapstacks", "Inflow",
-                                                    "/inmaps/IF")  # timeseries for rainfall "/inmaps/IF" # in/outflow locations (abstractions)
 
         self.Latitude = ycoordinate(boolean(self.Altitude))
         self.Longitude = xcoordinate(boolean(self.Altitude))
 
         self.logger.info("Linking parameters to landuse, catchment and soil...")
+        self.wf_updateparameters()
         self.Beta = scalar(0.6)  # For sheetflow
 
         self.N = self.readtblDefault(self.Dir + "/" + self.intbl + "/N.tbl", self.LandUse, subcatch, self.Soil,
                                      0.072)  # Manning overland flow
         self.NRiver = self.readtblDefault(self.Dir + "/" + self.intbl + "/N_River.tbl", self.LandUse, subcatch,
                                           self.Soil, 0.036)  # Manning river
-
+        self.NFloodPlain = self.readtblDefault(self.Dir + "/" + self.intbl + "/N_FloodPlain.tbl", self.LandUse, subcatch,
+                                          self.Soil, self.NRiver * 2.0)  # Manning river
         self.xl, self.yl, self.reallength = pcrut.detRealCellLength(self.ZeroMap, sizeinmetres)
         self.Slope = slope(self.Altitude)
         #self.Slope=ifthen(boolean(self.TopoId),max(0.001,self.Slope*celllength()/self.reallength))
         self.Slope = max(0.00001, self.Slope * celllength() / self.reallength)
         Terrain_angle = scalar(atan(self.Slope))
 
+
+        self.wf_multparameters()
         self.N = ifthenelse(self.River, self.NRiver, self.N)
 
         # Determine river width from DEM, upstream area and yearly average discharge
@@ -358,7 +415,6 @@ class WflowModel(DynamicModel):
             report(self.DistToUpdPt, self.Dir + "/" + self.runId + "/outsum/DistToUpdPt.map")
 
         #self.IF = self.ZeroMap
-        self._initAPIVars()
         self.logger.info("End of initial section")
 
     def default_summarymaps(self):
@@ -380,38 +436,83 @@ class WflowModel(DynamicModel):
 
           return lst
 
+
+    def parameters(self):
+        """
+        Define all model parameters here that the framework should handle for the model
+        See wf_updateparameters and the parameters section of the ini file
+        If you use this make sure to all wf_updateparameters at the start of the dynamic section
+        and at the start/end of the initial section
+        """
+        modelparameters = []
+
+        #Static model parameters e.g.
+        #modelparameters.append(self.ParamType(name="RunoffGeneratingGWPerc",stack="intbl/RunoffGeneratingGWPerc.tbl",type="static",default=0.1))
+        # 3: Input time series ###################################################
+        self.IW_mapstack = self.Dir + configget(self.config, "inputmapstacks", "Inwater",
+                                               "/inmaps/IW")  # timeseries for specific runoff
+
+        self.Inflow_mapstack = self.Dir + configget(self.config, "inputmapstacks", "Inflow",
+                                                    "/inmaps/IF")  # timeseries for rainfall "/inmaps/IF" # in/outflow locations (abstractions)
+
+        # Meteo and other forcing
+        modelparameters.append(self.ParamType(name="InwaterForcing",stack=self.IW_mapstack ,type="timeseries",default=0.0,verbose=True,lookupmaps=[]))
+        modelparameters.append(self.ParamType(name="Inflow",stack=self.Inflow_mapstack,type="timeseries",default=0.0,verbose=False,lookupmaps=[]))
+
+
+        return modelparameters
+
     def resume(self):
 
         if self.reinit == 1:
             self.logger.info("Setting initial conditions to default")
-            self.WaterLevel = self.ZeroMap
+            self.WaterLevelCH = self.ZeroMap
+            self.WaterLevelFP   = self.ZeroMap
             self.SurfaceRunoff = self.ZeroMap
+            self.WaterLevel = self.WaterLevelCH + self.WaterLevelFP
         else:
             self.logger.info("Setting initial conditions from state files")
             self.wf_resume(os.path.join(self.Dir,"instate"))
 
-        P = self.Bw + (2.0 * self.WaterLevel)
-        self.Alpha = self.AlpTerm * pow(P, self.AlpPow)
+        self.Pch = self.wetPerimiterCH(self.WaterLevelCH,self.Bw)
+        self.Pfp =  ifthenelse(self.River,self.wetPerimiterFP(self.WaterLevelFP,self.floodPlainWidth,sharpness=self.floodPlainDist),0.0)
+        self.WetPComb = self.Pch + self.Pfp
+        self.Ncombined = (self.Pch/self.WetPComb*self.N**1.5 + self.Pfp/self.WetPComb*self.NFloodPlain**1.5)**(2./3.)
+
+
+        self.AlpTermFP = pow((self.NFloodPlain / (sqrt(self.SlopeDCL))), self.Beta)
+        self.AlpTermComb = pow((self.Ncombined / (sqrt(self.SlopeDCL))), self.Beta)
+
+        self.AlphaFP = self.AlpTermFP * pow(self.Pfp, self.AlpPow)
+        self.AlphaCh = self.AlpTerm * pow(self.Pch, self.AlpPow)
+        self.Alpha = ifthenelse(self.River,self.AlpTermComb * pow(self.Pch + self.Pfp, self.AlpPow),self.AlphaCh)
         self.OldSurfaceRunoff = self.SurfaceRunoff
 
         self.SurfaceRunoffMM = self.SurfaceRunoff * self.QMMConv
         # Determine initial kinematic wave volume
-        self.KinWaveVolume = self.WaterLevel * self.Bw * self.DCL
+        self.KinWaveVolume = (self.WaterLevelCH * self.Bw * self.DCL) + (self.WaterLevelFP * (self.Pfp + self.Bw) * self.DCL)
         self.OldKinWaveVolume = self.KinWaveVolume
         self.SurfaceRunoffMM = self.SurfaceRunoff * self.QMMConv
 
     def dynamic(self):
         """
-        Stuf that is done for each timestep
+        Stuff that is done for each timestep
 
         Below a list of variables that can be save to disk as maps or as
         timeseries (see ini file for syntax):
 
         *Dynamic variables*
 
-        :var self.SurfaceRunoff: Surface runoff in the kinematic wave [m^3/s]
-        :var self.WaterLevel: Water level in the kinematic wave [m] (above the bottom)
-
+        :var self.SurfaceRunoff: Total Surface runoff in the kinematic wave [m^3/s]
+        :var self.Qbankfull: Discharge at bankfull level [m^3/s]
+        :var self.Qchannel: Discharge in the channel (maxed at bankfull) [m^3/s]
+        :var self.floodcells: All cells with an active floodplain [-]
+        :var self.Qfloodplain: Discharge over the floodplain [m^3/s]
+        :var self.WaterLevelCH: Water level in the channel [m] Cannot go above bankfull above the bottom
+        :var self.WaterLevelFP: Water level on the floodplain [m] above the floodplain level (bottom + bankfull)
+        :var self.WaterLevel: Total aater level in the kinematic wave [m] (above the bottom)
+        :var self.Pfp: Actual wetted perimiter of the floodplain [m]
+        :var self.Pch: Actual wetted perimiter of the channel [m]
 
         *Static variables*
 
@@ -424,17 +525,10 @@ class WflowModel(DynamicModel):
 
         self.logger.debug("Step: " + str(int(self.currentStep)) + "/" + str(int(self._d_nrTimeSteps)))
         self.thestep = self.thestep + 1
-        self.InwaterForcing = cover(self.wf_readmap(self.IW_mapstack, 1.0), scalar(0.0))
+        self.wf_updateparameters()
 
-        if self.thestep > 28:
-            self.InwaterForcing = cover(0.0)
-        #self.Inflow=cover(self.wf_readmap(self.Inflow),0)
-        if (os.path.exists(self.caseName + self.inflowTss)):
-            self.Inflow = cover(timeinputscalar(self.caseName + self.inflowTss, nominal(self.InflowLoc)), 0)
-        else:
-            self.Inflow = cover(self.wf_readmap(self.Inflow_mapstack, 0.0,verbose=False),0)
-
-        # The MAx here may lead to watbal error. Howevere, if inwaterMMM becomes < 0, the kinematic wave becomes very slow......
+        self.wf_multparameters()
+        # The MAx here may lead to watbal error. However, if inwaterMMM becomes < 0, the kinematic wave becomes very slow......
         self.InwaterMM = max(0.0,self.InwaterForcing)
         self.Inwater = self.InwaterMM * self.ToCubic  # m3/s
 
@@ -451,7 +545,7 @@ class WflowModel(DynamicModel):
         self.SurfaceRunoffMM = self.SurfaceRunoff * self.QMMConv  # SurfaceRunoffMM (mm) from SurfaceRunoff (m3/s)
         self.updateRunOff()
         self.InflowKinWaveCell = upstream(self.TopoLdd, self.SurfaceRunoff)
-        self.MassBalKinWave = (self.KinWaveVolume - self.OldKinWaveVolume) / self.timestepsecs + self.InflowKinWaveCell + self.Inwater - self.SurfaceRunoff
+        self.MassBalKinWave = (-self.KinWaveVolume + self.OldKinWaveVolume) / self.timestepsecs + self.InflowKinWaveCell + self.Inwater - self.SurfaceRunoff
 
         Runoff = self.SurfaceRunoff
 
@@ -556,7 +650,7 @@ def main(argv=None):
 
     myModel = WflowModel(wflow_cloneMap, caseName, runId, configfile)
     dynModelFw = wf_DynamicFramework(myModel, _lastTimeStep, firstTimestep=_firstTimeStep,datetimestart=starttime)
-    dynModelFw.createRunId(NoOverWrite=_NoOverWrite, level=loglevel, logfname=LogFileName)
+    dynModelFw.createRunId(NoOverWrite=_NoOverWrite, level=loglevel, logfname=LogFileName,doSetupFramework=False)
 
     for o, a in opts:
         if o == '-X': configset(myModel.config, 'model', 'OverWriteInit', '1', overwrite=True)
@@ -571,7 +665,16 @@ def main(argv=None):
         if o == '-u':
             exec "zz =" + a
             updateCols = zz
+        if o == '-P':
+            left = a.split('=')[0]
+            right = a.split('=')[1]
+            configset(myModel.config,'variable_change_once',left,right,overwrite=True)
+        if o == '-p':
+            left = a.split('=')[0]
+            right = a.split('=')[1]
+            configset(myModel.config,'variable_change_timestep',left,right,overwrite=True)
 
+    dynModelFw.setupFramework()
     dynModelFw._runInitial()
     dynModelFw._runResume()
     dynModelFw._runDynamic(_firstTimeStep, _lastTimeStep)
