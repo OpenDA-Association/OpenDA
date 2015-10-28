@@ -31,8 +31,7 @@
         <vector id="station01.waterlevel" ioObjectId="hisfile" elementId="station01.waterlevel"/>
         <vector id="station02.waterlevel" ioObjectId="hisfile" elementId="station02.waterlevel"/>
         <vector id="station03.waterlevel" ioObjectId="hisfile" elementId="station03.waterlevel"/>
-        <vector id="westboundary_M2.1:waterlevelbnd" ioObjectId="boundaries" elementId="westboundary_M2.1:waterlevelbnd"/>
-        <vector id="westboundary_S2.1:waterlevelbnd" ioObjectId="boundaries" elementId="westboundary_S2.1:waterlevelbnd"/>
+        <vector id="westboundary_noise.1:waterlevelbnd" ioObjectId="boundaries" elementId="westboundary_noise.1:waterlevelbnd"/>
     </exchangeItems>
 
 <doCleanUp>false</doCleanUp>

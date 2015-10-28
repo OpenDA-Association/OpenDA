@@ -2,4 +2,5 @@
 * COLUMN1=Period (min) or Astronomical Componentname
 * COLUMN2=Amplitude (ISO)
 * COLUMN3=Phase (deg)
-S2    0.1000000    0.0000000
+M2    0.6000000    0.0000000
+S2    0.2000000    0.0000000

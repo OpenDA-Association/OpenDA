@@ -8,18 +8,12 @@
 
     <vectorSpecification>
       <state>
-            <noiseModel id="boundaryNoiseModelM2" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
-                <configFile>BoundaryNoiseM2.xml</configFile>
+            <noiseModel id="boundaryNoiseModelSurge" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>BoundaryNoiseSurge.xml</configFile>
                 <exchangeItems>
-                    <exchangeItem id="waterlevelnoise" operation="add" modelExchangeItemId="westboundary_M2.1:waterlevelbnd"/>
+                    <exchangeItem id="waterlevelnoise" operation="add" modelExchangeItemId="westboundary_surge.1:waterlevelbnd"/>
                 </exchangeItems>
             </noiseModel>
-            <!--noiseModel id="boundaryNoiseModelS2" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
-                <configFile>BoundaryNoiseS2.xml</configFile>
-                <exchangeItems>
-                    <exchangeItem id="waterlevelnoise" operation="add" modelExchangeItemId="westboundary_S2.1:waterlevelbnd"/>
-                </exchangeItems>
-            </noiseModel-->
             <vector id="s1"/>
             <vector id="unorm"/>
         </state>

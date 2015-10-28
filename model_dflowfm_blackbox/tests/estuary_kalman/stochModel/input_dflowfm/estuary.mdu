@@ -86,8 +86,8 @@ DtUser                              = 600.0000000                        # User 
 DtMax                               = 600.0000000                        # Max timestep in seconds
 DtInit                              = 1.                                 # Initial timestep in seconds
 AutoTimestep                        = 1                                  # Use CFL timestep limit or not (1/0)
-TStart                              = 0.0000000e+00                      # Start time w.r.t. RefDate (in TUnit)
-TStop                               = 5.7600000e+03                      # Stop  time w.r.t. RefDate (in TUnit)
+TStart                              = 0.0                                # Start time w.r.t. RefDate (in TUnit)
+TStop                               = 2880.0                             # Stop  time w.r.t. RefDate (in TUnit)
 
 [restart]
 RestartFile                         =                                    # Restart file, only map, hence: *_map.nc
@@ -111,7 +111,7 @@ RstInterval                         =                                    # Inter
 S1incinterval                       =                                    # Interval (m) in incremental file for waterlevels S1
 WaqFileBase                         =                                    # Basename (without extension) for all Delwaq files to be written.
 WaqInterval                         =                                    # Interval (in s) between Delwaq file outputs
-StatsInterval                       =                                    # Interval (in s) between simulation statistics output.
+StatsInterval                       = 3600.0                             # Interval (in s) between simulation statistics output.
 WriteBalancefile                    = 0                                  # Write Balancefile, 1=yes, 0=no
 SnapshotDir                         =                                    # Directory where snapshots/screendumps are saved.
 TimingsInterval                     =                                    # Timings output interval
