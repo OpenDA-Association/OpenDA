@@ -86,9 +86,8 @@ public class EfdcModelInstanceTest extends TestCase {
             EfdcScalarTimeSeriesExchangeItem exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("1.Precipitation");
             double[] times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            int layerCount = exchangeItem.getLayerCount();
             double[] values = new double[times.length];
-            for (int j = 0; j < times.length * layerCount; j++) {
+            for (int j = 0; j < times.length; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -123,9 +122,8 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("1.WaterLevel");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            layerCount = exchangeItem.getLayerCount();
-            values = new double[times.length * layerCount];
-            for (int j = 0; j < times.length * layerCount; j++) {
+            values = new double[times.length];
+            for (int j = 0; j < times.length; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -139,9 +137,8 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("22.Discharge");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            layerCount = exchangeItem.getLayerCount();
-            values = new double[times.length * layerCount];
-            for (int j = 0; j < times.length * layerCount; j++) {
+            values = new double[times.length];
+            for (int j = 0; j < times.length; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -155,9 +152,8 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("19.WaterTemperature");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            layerCount = exchangeItem.getLayerCount();
-            values = new double[times.length * layerCount];
-            for (int j = 0; j < times.length * layerCount; j++) {
+            values = new double[times.length];
+            for (int j = 0; j < times.length; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);
@@ -171,9 +167,8 @@ public class EfdcModelInstanceTest extends TestCase {
             exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem("19.RefractoryPOCarbon");
             times = exchangeItem.getTimeInfo().getTimes();
             exchangeItem.setTimesForUnitTest(times);
-            layerCount = exchangeItem.getLayerCount();
-            values = new double[times.length * layerCount];
-            for (int j = 0; j < times.length * layerCount; j++) {
+            values = new double[times.length];
+            for (int j = 0; j < times.length; j++) {
                 values[j] = j + 100.0 *i;  
             }
             exchangeItem.setValuesAsDoubles(values);

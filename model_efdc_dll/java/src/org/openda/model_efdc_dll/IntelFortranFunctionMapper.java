@@ -40,7 +40,10 @@ public class IntelFortranFunctionMapper{
 		methodMap.put("m_openda_wrapper_get_start_time_","m_openda_wrapper_mp_get_start_time_");
 		methodMap.put("m_openda_wrapper_get_end_time_","m_openda_wrapper_mp_get_end_time_");
 		methodMap.put("m_openda_wrapper_get_current_time_","m_openda_wrapper_mp_get_current_time_");
-		
+		methodMap.put("m_openda_wrapper_get_layer_depths_","m_openda_wrapper_mp_get_layer_depths_");
+		methodMap.put("m_openda_wrapper_get_layer_count_model_","m_openda_wrapper_mp_get_layer_count_for_model_");
+
+
 		methodMap.put("m_openda_wrapper_save_instance_","m_openda_wrapper_mp_save_instance_");
 		methodMap.put("m_openda_wrapper_restore_instance_","m_openda_wrapper_mp_restore_instance_");
 		

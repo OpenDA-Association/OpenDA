@@ -40,7 +40,9 @@ public class XlfortranFunctionMapper{
 	    methodMap.put("m_openda_wrapper_get_start_time_","__m_openda_wrapper_NMOD_get_start_time");
 	    methodMap.put("m_openda_wrapper_get_end_time_","__m_openda_wrapper_NMOD_get_end_time");
 	    methodMap.put("m_openda_wrapper_get_current_time_","__m_openda_wrapper_NMOD_get_current_time");
-	    
+		methodMap.put("m_openda_wrapper_get_layer_depths_","__m_openda_wrapper_NMOD_get_layer_depths");
+		methodMap.put("m_openda_wrapper_get_layer_count_for_model_","__m_openda_wrapper_NMOD_get_layer_count_for_model");
+
 	    methodMap.put("m_openda_wrapper_save_instance_","__m_openda_wrapper_NMOD_save_instance");
 	    methodMap.put("m_openda_wrapper_restore_instance_","__m_openda_wrapper_NMOD_restore_instance");
 	    

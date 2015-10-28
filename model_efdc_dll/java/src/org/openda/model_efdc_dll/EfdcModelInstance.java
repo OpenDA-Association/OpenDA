@@ -122,7 +122,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		this.boundaryExchangeItems.clear();
 		this.stateExchangeItems.clear();
 
-		//create exchange items for all parameters and locations.
+		//create exchange items for all parameters, locations and layers
 		for (EfdcExchangeItemType exchangeItemType : EfdcExchangeItemType.values()) {
 			int parameterNumber = exchangeItemType.getParameterNumber();
 			String parameterId = exchangeItemType.getParameterId();
@@ -144,11 +144,21 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 				case FORCING: case BOUNDARY:
 					//create a scalar time series exchange item for each location for this parameter.
 					int locationCount = this.modelDll.getTimeSeriesCount(parameterNumber);
+					int layerCount    = this.modelDll.getLayerCount(parameterNumber);
 					for (int locationNumber = 1; locationNumber <= locationCount; locationNumber++) {
-						EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
-								new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, parameterId,
-										IExchangeItem.Role.Input, this.modelDll);
-						this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+						for (int layerNumber =1; layerNumber <= layerCount; layerNumber++) {
+							if ( layerCount == 1) {
+								EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+										new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, parameterId,
+												IExchangeItem.Role.Input, this.modelDll);
+								this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+							} else {
+								EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+										new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId,
+												IExchangeItem.Role.Input, this.modelDll);
+								this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+							}
+						}
 					}
 					break;
 

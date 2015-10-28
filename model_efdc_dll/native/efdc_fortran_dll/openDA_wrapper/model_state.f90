@@ -38,7 +38,7 @@ module model_state
      real, allocatable, dimension(:) :: VHDXE, VHDX1E ! (LCM)
      ! horizontal velocity fields
      real, allocatable, dimension(:,:) :: U, U1 ! (LCM,KCM)
-     real, allocatable, dimension(:,:) :: V, V1 ! (LCM,KCM
+     real, allocatable, dimension(:,:) :: V, V1 ! (LCM,KCM)
      ! turbulence intensities
      real, allocatable, dimension(:,:) :: QQ, QQ1 ! (LCM,0:KCM)
      real, allocatable, dimension(:,:) :: QQL, QQL1 ! (LCM,0:KCM)

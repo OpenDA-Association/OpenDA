@@ -98,7 +98,7 @@ public class EfdcGridExchangeItemTest extends TestCase {
             double[] testValues = exchangeItem.getValuesAsDoubles();
             ITreeVector testVector = (ITreeVector) exchangeItem.getValues();
             assertEquals(testVector.getDimensionIndices()[0].getSize(), 3300 );
-            assertEquals(testVector.getDimensionIndices()[1].getSize(), 2 );
+            assertEquals(testVector.getDimensionIndices()[1].getSize(), 1 );
             exchangeItem.setValuesAsDoubles(testValues);
 
         }

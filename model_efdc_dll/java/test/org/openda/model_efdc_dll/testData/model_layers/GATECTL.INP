@@ -1,0 +1,159 @@
+******************************************************************************
+*                                                                            *
+*  GATE CONTROL FILE                                                         *
+*  EDITED BY GEOSR (JGCHO 2010.5.6)                                          *
+*                                                                            *
+******************************************************************************
+GC1 NUMBER OF GATE TYPE
+*   NGTYPES: NUMBER OF GATE TYPE
+*   GARTM: GARBAGE TIME [min.]
+*
+GC1 NGTYPES  GARTM  IWSYS
+          9     0.      3
+------------------------------------------------------------------------------
+GC2 GATE INFORMATION 1            LINE=NQCTL
+*   NGATE:  NUMBER OF GATE
+*   NGATEC: NUMBER OF GATE CELL
+*   NGTYP: ID OF GATE TYPE
+*
+GC2 NGATE  NGATEC  NGTYP
+        4       1    301 ' *** GATESER_1-1 SC가동보
+        1       1    302 ' *** GATESER_1-2 SC고정보
+        2       1    303 ' *** GATESER_1-3 sc소수력발전
+        1       1    304 ' *** GATESER_1-4 sc어도
+        2       1    305 ' *** GATESER_1-5 js가동보
+        2       1    306 ' *** GATESER_1-6 js가동보
+        1       1    307 ' *** GATESER_1-7 js고정보
+        2       1    308 ' *** GATESER_1-8 js소수력발전
+        1       1    309 ' *** GATESER_1-9 js어도
+------------------------------------------------------------------------------
+GC3 GATE INFORMATION 2
+*   SILL: SILL LEVEL [m]
+*   SILLHH : DISTANCE FROM SILL BOTTOM TO END OF GATE BOTTOM [m]
+*   GATEHI: GATE HEIGHT OF INSIDE (UPSTREAM) [m]
+*   GATEHO: GATE HEIGHT OF OUTSIDE (DOWNSTREAM) [m]
+*   GATEWI: GATE WIDTH OF INSIDE (UPSTREAM) [m]
+*   GATEWO: GATE WIDTH OF OUTSIDE (DOWNSTREAM) [m]
+*   MAXQ: MAXIMUM GATE FLUX [m^3/S] (NEGATIVE VALUE MEANS UNLIMITED MAX.)
+*   GOTIME: GATE COMPLETELY OPEN TIME INTERVAL (GOTIME > 0.) [min.]
+*   GCTIME: GATE COMPLETELY CLOSE TIME INTERVAL (GOTIME > 0.) [min.]
+*
+GC3 SILL  SILLHH  GATEHI  GATEHO  GATEWI  GATEWO  MAXQ   GOTIME  GCTIME
+     2.50   0.      5.05    5.05    40.0    40.0  1139.     20.     20. ' *** GATESER_1-1 SC가동보                 
+     7.40   0.      100.    100.    332.    332.   -1       20.     20. ' *** GATESER_1-2 SC고정보                 
+     2.50   0.      100.    100.    100.    100.   -1       20.     20. ' *** GATESER_1-3 sc소수력발전                
+     7.10   0.      100.    100.    12.0    12.0   -1       20.     20. ' *** GATESER_1-4 sc어도                       
+    -3.63   0.      7.13    7.13    36.5    36.5  524.      20.     20. ' *** GATESER_1-5 js가동보                 
+    -3.63   0.      7.13    7.13    36.5    36.5  524.      20.     20. ' *** GATESER_1-6 js가동보                 
+     3.50   0.      100.    100.    184     184    -1       20.     20. ' *** GATESER_1-7 js고정보                 
+    -3.63   0.      100.    100.    100.    100.   -1       20.     20. ' *** GATESER_1-8 js소수력발전               
+     2.60   0.      100.    100.    5.0     5.0    -1       20.     20. ' *** GATESER_1-9 js어도                      
+------------------------------------------------------------------------------
+GC4 FLOW CONSTANT & FOMULAR CHOICE
+*   CG1 : DISCHARGE COEFFICIENT : COMPLETE OVERFLOW
+*   CG2 : DISCHARGE COEFFICIENT : SUBMERGED WEIR
+*   CG3 : DISCHARGE COEFFICIENT : COMPLETE ORIFICE 1
+*   CG4 : DISCHARGE COEFFICIENT : COMPLETE ORIFICE 2
+*   CG5 : DISCHARGE COEFFICIENT : SUBMERGED ORIFICE
+*   NCG3FOM : CHOICE SUBMERGED INCOMPLETE ORIFICE FOMULAR
+*             1 = KOREA RURAL COMMUNITY CORPORATION, 2004.12, MIN,BM. & WJ.KIM, 2009.
+*             2 = TEXT BOOK
+*
+GC4   CG1    CG2  CG3  CG4  CG5  NCG3FOM
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-1 SC가동보            
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-2 SC고정보            
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-3 sc소수력발전        
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-4 sc어도              
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-5 js가동보            
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-6 js가동보            
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-7 js고정보            
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-8 js소수력발전        
+      0.8    0.8  0.6  0.9  0.7        1 ' *** GATESER_1-9 js어도              
+------------------------------------------------------------------------------
+
+GC5 GATE CONTROL
+*   DELHINOUT: GATE OPEN CONTIDION1 - DIFFERENCE OF INSIDE LEVEL - OUTSIDE LEVEL [m]
+*   DELHSEL1:  GATE OPEN CONDITION2 - DIFFERENCE OF INSIDE LEVEL - TARGET LEVEL [m]
+*   SEL1:      TARGET LOW LEVEL OF GATE INSIDE [m]
+*   SEL2:      TARGET HIGH LEVEL OF GATE INSIDE [m]
+*   TIDCHK:    TIDE CHECK TIME INTERVAL [min.]
+*
+GC5 DELHINOUT  DELHSEL1  SEL1  SEL2  TIDCHK
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-1 SC가동보        
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-2 SC고정보        
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-3 sc소수력발전    
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-4 sc어도          
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-5 js가동보        
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-6 js가동보        
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-7 js고정보        
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-8 js소수력발전    
+         0.05      0.01   0.0   0.0    -1. ' *** GATESER_1-9 js어도          
+------------------------------------------------------------------------------
+GC6 NUMBER OF SURFACE LEVEL COMPARE CELL
+*   NICMP:  NUMBER OF COMPARE CELL OF IN-SIDE (UPSTREAM)
+*   NOCMP:  NUMBER OF COMPARE CELL OF OUT-SIDE (DOWNSTREAM)
+*
+GC6 NICMP  NOCMP
+        1      1 ' *** GATESER_1-1 SC가동보        
+        1      1 ' *** GATESER_1-2 SC고정보        
+        1      1 ' *** GATESER_1-3 sc소수력발전    
+        1      1 ' *** GATESER_1-4 sc어도          
+        1      1 ' *** GATESER_1-5 js가동보        
+        1      1 ' *** GATESER_1-6 js가동보        
+        1      1 ' *** GATESER_1-7 js고정보        
+        1      1 ' *** GATESER_1-8 js소수력발전    
+        1      1 ' *** GATESER_1-9 js어도          
+------------------------------------------------------------------------------
+GC7 CELL INDEX OF UPSTREAM
+*   ICMPI:  COMPARE CELL I INDEX (UPSTREAM)
+*   JCMPI:  COMPARE CELL J INDEX (UPSTREAM)
+*
+GC7 ICMPI  JCMPI
+        5    277 ' *** GATESER_1-1 SC가동보        
+        6    277 ' *** GATESER_1-2 SC고정보        
+        6    277 ' *** GATESER_1-3 sc소수력발전    
+        6    277 ' *** GATESER_1-4 sc어도          
+        5    192 ' *** GATESER_1-5 js가동보        
+        6    192 ' *** GATESER_1-6 js가동보        
+        6    192 ' *** GATESER_1-7 js고정보        
+        6    192 ' *** GATESER_1-8 js소수력발전    
+        6    192 ' *** GATESER_1-9 js어도          
+------------------------------------------------------------------------------
+GC8 CELL INDEX OF DOWNSTREAM
+*   ICMPO:  COMPARE CELL I INDEX (DOWNSTREAM)
+*   JCMPO:  COMPARE CELL J INDEX (DOWNSTREAM)
+*
+GC8 ICMPO  JCMPO
+        5    264 ' *** GATESER_1-1 SC가동보        
+        6    264 ' *** GATESER_1-2 SC고정보        
+        6    264 ' *** GATESER_1-3 sc소수력발전    
+        6    264 ' *** GATESER_1-4 sc어도          
+        5    182 ' *** GATESER_1-5 js가동보        
+        6    182 ' *** GATESER_1-6 js가동보        
+        6    182 ' *** GATESER_1-7 js고정보        
+        6    182 ' *** GATESER_1-8 js소수력발전    
+        6    182 ' *** GATESER_1-9 js어도          
+------------------------------------------------------------------------------
+GC9 CONSIDER ESTUARY DIKE OUTER TIDE START TIME (FOR NQCTYP=6) LINE=NGTYPES
+*    IGYY:  YEAR  (-1 : NOT USE)
+*    IGMM:  MONTH (-1 : NOT USE)
+*    IGDD:  DAY   (-1 : NOT USE)
+*    
+*
+GC9 IGYY IGMM IGDD CLOC
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-1 SC가동보         
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-2 SC고정보         
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-3 sc소수력발전     
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-4 sc어도           
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-5 js가동보         
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-6 js가동보         
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-7 js고정보         
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-8 js소수력발전     
+     -1   -1   -1   'NONE'                                ' *** GATESER_1-9 js어도          
+------------------------------------------------------------------------------
+GC10 GATE FLUX MONITORING
+*    ISINK: 0= NOT MONITORING, 1= WRITE SINK##.OUT
+*    DTSNK: WRITE INTERVAL [min.]
+*
+GC10 ISINK  DTSNK
+         1   60.

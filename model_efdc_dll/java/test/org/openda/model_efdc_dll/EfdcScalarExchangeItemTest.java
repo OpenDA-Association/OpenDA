@@ -99,12 +99,9 @@ public class EfdcScalarExchangeItemTest extends TestCase {
                 //newTimes = times;
                 exchangeItem.setTimesForUnitTest(newTimes);
                 // enlarge dataseries by one
-                int layerCount = exchangeItem.getLayerCount();
-                double[] values = new double[newTimes.length * layerCount];
-                for (int l = 0; l < layerCount; l++) {
-                    for (int j = 0; j < times.length; j++) {
-                        values[j  + times.length * l] = j + 1.0e6 * l;
-                    }
+                double[] values = new double[newTimes.length];
+                for (int j = 0; j < times.length; j++) {
+                    values[j ] = j ;
                 }
                 exchangeItem.setValuesAsDoubles(values);
      

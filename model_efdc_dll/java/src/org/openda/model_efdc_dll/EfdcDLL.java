@@ -41,7 +41,7 @@ public class EfdcDLL {
     private static double modelTimeZoneOffsetInDays;
     //date of reference for the time used in EFDC (often the begin of a year)
     private double referenceDateInMjd;
-    // Flag indicating whether the native code has been initialized or not 
+    // Flag indicating whether the native code has been initialized or not
     private static boolean dllYetToBeInitialized = true;
     // Flag indicating whether we are searching for dll or so 
     public static final boolean RUNNING_ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
@@ -322,7 +322,6 @@ public class EfdcDLL {
         return cellCount;
     }
 
-
     /**
      * Returns layer count for grid parameter.
      *
@@ -339,6 +338,42 @@ public class EfdcDLL {
         }
         return layerCount;
     }
+
+
+    /**
+     * Returns layer count used by model.
+     *
+     * @return layerCount
+     */
+    public int getLayerCount() {
+        int layerCount = nativeDLL.m_openda_wrapper_get_layer_count_for_model_(
+                new IntByReference(myModelInstanceId));
+        if (layerCount < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.GET_LAYER_COUNT_FOR_MODEL call, layerCount= " + layerCount);
+        }
+        return layerCount;
+    }
+
+
+    /**
+     * Returns layer depths
+     *
+     * @return layerDepths
+     */
+    public double[] getLayerDepths() {
+        int layerCount = this.getLayerCount();
+        double[] layerDepths = new double[layerCount];
+        int status = nativeDLL.m_openda_wrapper_get_layer_depths_(
+                new IntByReference(myModelInstanceId),
+                layerDepths);
+        if (status < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.GET_LAYER_DEPTHS call, status= " + status);
+        }
+        return layerDepths;
+    }
+
 
     /**
      * Returns timeCount for a scalar time series parameter.
@@ -385,6 +420,7 @@ public class EfdcDLL {
      * @param locationNumber
      * @return layerCount
      */
+    /**
     public int getLayerCount(int parameterNumber, int locationNumber) {
         int layerCount = nativeDLL.m_openda_wrapper_get_layer_count_for_location_(
                 new IntByReference(myModelInstanceId),
@@ -396,7 +432,7 @@ public class EfdcDLL {
         }
         return layerCount;
     }
-
+    **/
     /**
      * Returns valuesCount for the given subPeriod of a scalar time series parameter.
      * This should return te product of timesCount and layerCount
@@ -455,6 +491,7 @@ public class EfdcDLL {
      * @param endTime
      * @return layerCount
      */
+    /**
     private int getLayerCount(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
         // The dll can handle different length time series, but we do not in this function
         int layerCount = nativeDLL.m_openda_wrapper_get_layer_count_for_time_span_(
@@ -468,6 +505,7 @@ public class EfdcDLL {
         }
         return layerCount;
     }
+     **/
 
     /**
      * Returns all times for a scalar time series parameter.
@@ -565,16 +603,17 @@ public class EfdcDLL {
      *
      * @param parameterNumber
      * @param locationNumber
+     * @param layerNumber
      * @param startTime
      * @param endTime
      * @return values
      */
-    public double[] getValues(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
+    public double[] getValues(int parameterNumber, int locationNumber, int layerNumber, ITime startTime, ITime endTime) {
         int valuesCount = getValuesCount(parameterNumber, locationNumber, startTime, endTime);
         double[] values = new double[valuesCount];
         int retVal = nativeDLL.m_openda_wrapper_get_values_for_time_span_(
                 new IntByReference(myModelInstanceId),
-                new IntByReference(parameterNumber), new IntByReference(locationNumber),
+                new IntByReference(parameterNumber), new IntByReference(locationNumber), new IntByReference(layerNumber),
                 new DoubleByReference(startTime.getMJD() - referenceDateInMjd ),
                 new DoubleByReference(endTime.getMJD() - referenceDateInMjd),
                 new IntByReference(valuesCount), values);
@@ -629,10 +668,11 @@ public class EfdcDLL {
      * @param parameterNumber
      * @param values
      * @param locationNumber
+     * @param layerNumber
      * @param startTime
      * @param endTime
      */
-    public void setValues(int parameterNumber, double[] values, int locationNumber, ITime startTime, ITime endTime) {
+    public void setValues(int parameterNumber, double[] values, int locationNumber, int layerNumber, ITime startTime, ITime endTime) {
         int valuesCount = getValuesCount(parameterNumber, locationNumber, startTime, endTime);
         if (valuesCount != values.length) {
             nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
@@ -641,7 +681,7 @@ public class EfdcDLL {
         }
         int retVal = nativeDLL.m_openda_wrapper_set_values_for_time_span_(
                 new IntByReference(myModelInstanceId),
-                new IntByReference(parameterNumber), new IntByReference(locationNumber),
+                new IntByReference(parameterNumber), new IntByReference(locationNumber), new IntByReference(layerNumber),
                 new DoubleByReference(startTime.getMJD() - referenceDateInMjd),
                 new DoubleByReference(endTime.getMJD() - referenceDateInMjd),
                 new IntByReference(valuesCount), values);

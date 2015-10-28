@@ -202,7 +202,7 @@ contains
     integer, intent(in) :: size_m ! number of time series/locations
 
     ! locals
-    type(cser_time_series) :: csert_orig
+    type(cser_time_series) :: csert_new
     REAL,ALLOCATABLE,DIMENSION(:,:,:)::TCSER_orig
     REAL,ALLOCATABLE,DIMENSION(:,:,:,:)::CSER_orig
 
@@ -225,24 +225,32 @@ contains
        if (debug) print*, "enlarge_cser_time_series", id, n, m 
        if (debug) print*, "enlarge_cser_time_series", id, size_n, size_m, size_k 
 
-       allocate(csert_orig%MCSER(m,NSTVM))
-       allocate(csert_orig%TCSER(n,m,NSTVM))
-       allocate(csert_orig%CSER(n,k,m,NSTVM))
+       allocate(csert_new%MCSER(new_m,NSTVM))
+       allocate(csert_new%TCSER(new_n,new_m,NSTVM))
+       allocate(csert_new%CSER(new_n,new_k,new_m,NSTVM))
 
-       csert_orig%MCSER = csert(id)%MCSER  
-       csert_orig%TCSER = csert(id)%TCSER  
-       csert_orig%CSER  = csert(id)%CSER
+       csert_new%MCSER(1:m,:) = csert(id)%MCSER  
+       csert_new%TCSER(1:n,1:m,:) = csert(id)%TCSER  
+       csert_new%CSER(1:n,1:k,1:m,:)  = csert(id)%CSER
        
-       call model_cser_deallocate(id)
-       call model_cser_allocate(id, new_n, new_k, new_m)
+       call move_alloc( to=csert(id)%MCSER, from=csert_new%MCSER )
+       call move_alloc( to=csert(id)%TCSER, from=csert_new%TCSER )
+       call move_alloc( to=csert(id)%CSER, from=csert_new%CSER )
        
-       csert(id)%MCSER(1:m,:) = csert_orig%MCSER  
-       csert(id)%TCSER(1:n,1:m,:) = csert_orig%TCSER  
-       csert(id)%CSER(1:n,1:k,1:m,:)  = csert_orig%CSER
+       !csert_orig%MCSER = csert(id)%MCSER  
+       !csert_orig%TCSER = csert(id)%TCSER  
+       !csert_orig%CSER  = csert(id)%CSER
        
-       deallocate(csert_orig%MCSER)
-       deallocate(csert_orig%TCSER)
-       deallocate(csert_orig%CSER)
+       !call model_cser_deallocate(id)
+       !call model_cser_allocate(id, new_n, new_k, new_m)
+
+       !csert(id)%MCSER(1:m,:) = csert_orig%MCSER  
+       !csert(id)%TCSER(1:n,1:m,:) = csert_orig%TCSER  
+       !csert(id)%CSER(1:n,1:k,1:m,:)  = csert_orig%CSER
+       
+       !deallocate(csert_orig%MCSER)
+       !deallocate(csert_orig%TCSER)
+       !deallocate(csert_orig%CSER)
 
        ! reallocate model memory       
        if (csert(id)%NDCSER > ndcser_max ) then

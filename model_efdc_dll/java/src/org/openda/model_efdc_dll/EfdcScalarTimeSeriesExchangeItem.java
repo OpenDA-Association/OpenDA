@@ -43,17 +43,32 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	 * Integer that corresponds to a certain parameter within the efdc model.
 	 */
 	private final int parameterNumber;
+	private final int layerNumber; // integer that corresponds to layer (1=bottom layer)
 	private final Role role;
 	private final EfdcDLL modelDll;
 
-	public EfdcScalarTimeSeriesExchangeItem(int locationNumber, int parameterNumber, String parameterId, Role role, EfdcDLL modelDll) {
-		//id = "locationId.parameterId"
-		this.id = locationNumber + "." + parameterId;
+	public EfdcScalarTimeSeriesExchangeItem(int locationNumber, int parameterNumber, Integer layerNumber, String parameterId, Role role, EfdcDLL modelDll) {
+		//id = "locationId.layerNumber.parameterNumber"
+		//id = "locationId.parameterNumber" for a model with one layer
+		if (layerNumber == null) { // one layer only model
+			this.id = locationNumber + "." + parameterId;
+			this.layerNumber = 1;
+		} else {
+			this.id = locationNumber + "." + parameterId + "_layer" + layerNumber;
+			this.layerNumber = layerNumber;
+		}
 		this.locationNumber = locationNumber;
 		this.parameterNumber = parameterNumber;
 		this.role = role;
 		this.modelDll = modelDll;
 	}
+
+	public EfdcScalarTimeSeriesExchangeItem(int locationNumber, int parameterNumber, String parameterId, Role role, EfdcDLL modelDll) {
+		//id = "locationId.layerNumber.parameterNumber"
+		//id = "locationId.parameterNumber" for a model with one layer
+		this( locationNumber, parameterNumber, null , parameterId, role, modelDll);
+	}
+
 
 	public String getId() {
 		return this.id;
@@ -106,14 +121,6 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	}
 
 	/**
-	 * Returns layer count this scalar time series.
-	 */
-	public int getLayerCount() {
-		return this.modelDll.getLayerCount(this.parameterNumber, this.locationNumber);
-	}
-
-
-	/**
 	 * Returns count of time points of this scalar time series.
 	 */
 	public int getTimesCount() {
@@ -127,8 +134,7 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	public Object getValues() {
 		double[] values = getValuesAsDoubles();
 		int timesCount = this.getTimesCount();
-		int layerCount =  this.getLayerCount();
-		ITreeVector vector = new TreeVector(Integer.toString(this.parameterNumber), new Vector(values), timesCount, layerCount);
+		IVector vector = new Vector(values);
 		return vector;
 	}
 
@@ -139,7 +145,7 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 		double[] times = getTimeInfo().getTimes();
 		ITime firstTime = new Time(times[0]);
 		ITime lastTime = new Time(times[times.length - 1]);
-		return this.modelDll.getValues(this.parameterNumber, this.locationNumber, firstTime, lastTime);
+		return this.modelDll.getValues(this.parameterNumber, this.locationNumber, this.layerNumber, firstTime, lastTime);
 	}
 
 	public void axpyOnValues(double alpha, double[] axpyValues) {
@@ -184,15 +190,14 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	 */
 	public void setValuesAsDoubles(double[] values) {
 		double[] times = getTimeInfo().getTimes();
-		int layerCount = getLayerCount();
-		if (values.length < times.length * layerCount) {
+		if (values.length < times.length ) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": number of values (" + values.length
 					+ ") should be equal to number of times (" + times.length + ").");
 		}
 
 		ITime firstTime = new Time(times[0]);
 		ITime lastTime = new Time(times[times.length - 1]);
-		this.modelDll.setValues(this.parameterNumber, values, this.locationNumber, firstTime, lastTime);
+		this.modelDll.setValues(this.parameterNumber, values, this.locationNumber, this.layerNumber , firstTime, lastTime);
 	}
 
 	/**

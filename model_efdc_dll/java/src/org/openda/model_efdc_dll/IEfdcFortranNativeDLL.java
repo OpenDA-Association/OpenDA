@@ -98,7 +98,6 @@ public interface IEfdcFortranNativeDLL extends Library {
     /**
      * Get the model's time step size
      *
-     * @param modelInstanceId (In:)  The the model instance identifier
      * @param time (Out:) the model's time step size
      * @return 0: success, /=0: error
      */
@@ -111,6 +110,25 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @return 0: success, /=0: error
      */
     int m_openda_wrapper_get_reference_period_(DoubleByReference time);
+
+
+    /**
+     * Get the dimensionless depth of the layers bottom = 1
+     *
+     * @param modelInstanceId (In:)  The model instance identifier
+     * @param values          (Out:) The retrieved values
+     * @return 0: success, /=0: error
+     */
+    int m_openda_wrapper_get_layer_depths_(IntByReference modelInstanceId, double[] values);
+
+    /**
+     * Get the number of the layers used by model
+     *
+     * @param modelInstanceId (In:)  The model instance identifier
+     * @return nr of layers , <=0: error
+     */
+    int m_openda_wrapper_get_layer_count_for_model_(IntByReference modelInstanceId );
+
 
     /**
      * Get the model's current time
@@ -128,7 +146,7 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param exchangeItemId  (In:)  Integer identifying the exchange item
      * @param locationIndex  (In:) Location index. Value == n means: the n-th lateral
      * @param valuesCount     (In:)  The number of points in the time span
-     * @param values          (Out:) The retrieved times
+     * @param times          (Out:) The retrieved times
      * @return <0: error, /=0: error.
      */
     int m_openda_wrapper_get_times_for_ei_(IntByReference modelInstanceId, 
@@ -144,7 +162,7 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param exchangeItemId  (In:)  Integer identifying the exchange item
      * @param locationIndex  (In:) Location index. Value == n means: the n-th lateral
      * @param valuesCount     (In:)  The number of points in the time span
-     * @param values          (In:) The retrieved times
+     * @param times          (In:) The retrieved times
      * @return <0: error, /=0: error.
      */
     int m_openda_wrapper_set_times_for_ei_(IntByReference modelInstanceId, 
@@ -215,10 +233,10 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param locationIndex   (In:)  Location index. Value == n means: the n-th lateral
      * @return <0: error, >=0: the number of values for the exchange item (length of the time series)
      */
-    int m_openda_wrapper_get_layer_count_for_location_(IntByReference modelInstanceId,
+    /**int m_openda_wrapper_get_layer_count_for_location_(IntByReference modelInstanceId,
                                                         IntByReference exchangeItemId,
                                                         IntByReference locationIndex);
-
+     **/
     /**
      * Get the number of values for time dependent exchange item (e.g. a boundary condition),
      * for a certain time span. The number of values is not instance dependent.
@@ -270,11 +288,12 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param endTime         (In:) End of the time span
      * @return <0: error, >=0: the number of values for the boundary condition in the specified time span.
      */
-    int m_openda_wrapper_get_layer_count_for_time_span_(IntByReference modelInstanceId,
+    /**int m_openda_wrapper_get_layer_count_for_time_span_(IntByReference modelInstanceId,
                                                          IntByReference exchangeItemId,
                                                          IntByReference locationIndex,
                                                          DoubleByReference beginTime,
                                                          DoubleByReference endTime);
+    **/
 
     /**
      * Get the values for time dependent exchange item (e.g. a boundary condition),
@@ -283,6 +302,7 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param modelInstanceId (In:)  The model instance identifier
      * @param exchangeItemId  (In:)  Integer identifying the exchange item
      * @param locationIndex   (In:)  Location index. Value == n means: the n-th lateral
+     * @param layerIndex      (In:)  Layer index.
      * @param beginTime       (In:)  Begin of the time span
      * @param endTime         (In:)  End of the time span
      * @param valueCountRef   (In:)  Expected number of values
@@ -292,6 +312,7 @@ public interface IEfdcFortranNativeDLL extends Library {
     int m_openda_wrapper_get_values_for_time_span_(IntByReference modelInstanceId,
                                                    IntByReference exchangeItemId, 
                                                    IntByReference locationIndex,
+                                                   IntByReference layerIndex,
                                                    DoubleByReference beginTime, 
                                                    DoubleByReference endTime,
                                                    IntByReference valueCountRef,
@@ -304,6 +325,7 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @param modelInstanceId (In:)  The model instance identifier
      * @param exchangeItemId  (In:)  Integer identifying the exchange item (in this case: discharge_on_laterals)
      * @param locationIndex   (In:)  Location index. Value == n means: the n-th lateral
+     * @param layerIndex      (In:)  Layer index. Value == n means: the n-th lateral
      * @param beginTime       (In:)  Begin of the time span
      * @param endTime         (In:)  End of the time span
      * @param valueCountRef   (In:)  Expected number of values
@@ -312,6 +334,7 @@ public interface IEfdcFortranNativeDLL extends Library {
      */
     int m_openda_wrapper_set_values_for_time_span_(IntByReference modelInstanceId,
                                                     IntByReference exchangeItemId, IntByReference locationIndex,
+                                                    IntByReference layerIndex,
                                                     DoubleByReference beginTime, DoubleByReference endTime,
                                                     IntByReference valueCountRef, double[] values);
 
@@ -410,7 +433,6 @@ public interface IEfdcFortranNativeDLL extends Library {
     /**
      * Finalize a model static data
      *
-     * @param modelInstanceId The identifier of the model instance to be finalized
      * @return 0: success, <0: error
      */
     int m_openda_wrapper_destroy_();
