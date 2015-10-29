@@ -28,7 +28,8 @@ import java.util.Arrays;
 
 /**
  * A layered irregular grid is just a list with grid cell centers for one or more layers.
- * The xCoordinates and yCoordinates are for one layer only and are the same for each layer.
+ * The xCoordinates and yCoordinates are given for one layer only and are the same for each layer.
+ * Furthermore there is one zCoordinate for each layer.
  *
  * @author Arno Kockx
  */
@@ -37,12 +38,17 @@ public class LayeredIrregularGridGeometryInfo implements IGeometryInfo {
 	private final int layerCount;
 	private final double[] xCoordinates;
 	private final double[] yCoordinates;
+	private final double[] zCoordinates;
 
-	public LayeredIrregularGridGeometryInfo(int cellCount, int layerCount, double[] xCoordinates, double[] yCoordinates) {
+	public LayeredIrregularGridGeometryInfo(int cellCount, int layerCount, double[] xCoordinates, double[] yCoordinates, double[] zCoordinates) {
+		if (zCoordinates == null) throw new IllegalArgumentException("zCoordinates == null");
+		if (zCoordinates.length != layerCount) throw new IllegalArgumentException("zCoordinates.length != layerCount");
+
 		this.cellCount = cellCount;
 		this.layerCount = layerCount;
 		this.xCoordinates = xCoordinates;
 		this.yCoordinates = yCoordinates;
+		this.zCoordinates = zCoordinates;
 	}
 
 	/**
@@ -57,6 +63,13 @@ public class LayeredIrregularGridGeometryInfo implements IGeometryInfo {
 	 */
 	public IVector getYCoordinates() {
 		return this.yCoordinates == null ? null : new Vector(this.yCoordinates);
+	}
+
+	/**
+	 * @return vector with the z coordinate for each layer.
+	 */
+	public IVector getZCoordinates() {
+		return new Vector(this.zCoordinates);
 	}
 
 	public int getCellCount() {
@@ -84,6 +97,7 @@ public class LayeredIrregularGridGeometryInfo implements IGeometryInfo {
 		if (this.layerCount != that.layerCount) return false;
 		if (!Arrays.equals(this.xCoordinates, that.xCoordinates)) return false;
 		if (!Arrays.equals(this.yCoordinates, that.yCoordinates)) return false;
+		if (!Arrays.equals(this.zCoordinates, that.zCoordinates)) return false;
 		return true;
 	}
 
@@ -92,6 +106,7 @@ public class LayeredIrregularGridGeometryInfo implements IGeometryInfo {
 		h = 31 * h + this.layerCount;
 		h = 31 * h + Arrays.hashCode(this.xCoordinates);
 		h = 31 * h + Arrays.hashCode(this.yCoordinates);
+		h = 31 * h + Arrays.hashCode(this.zCoordinates);
 
 		return h;
 	}

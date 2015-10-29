@@ -97,7 +97,9 @@
           <root url="jar://$MODULE_DIR$/resources/openDA/core_castor.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/resources/openDA/core_castor_src.zip!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -154,4 +156,3 @@
     </orderEntry>
   </component>
 </module>
-

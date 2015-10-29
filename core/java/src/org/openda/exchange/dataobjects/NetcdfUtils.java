@@ -82,7 +82,7 @@ public class NetcdfUtils {
 	public static final String PROJECTION_X_COORDINATE = "projection_x_coordinate";
 	public static final String TIME_SERIES_FEATURE_TYPE = "timeSeries";
 	public static final String TIME_SERIES_ID_CF_ROLE = "timeseries_id";
-	public static final String Z_UNITS = "1";
+	public static final String Z_UNITS = "m";
 	public static final String Z_POSITIVE = "up";
 
 	//variable names.
@@ -1415,13 +1415,10 @@ public class NetcdfUtils {
 	}
 
 	private static void writeZVariableValues(NetcdfFileWriteable dataFile, LayeredIrregularGridGeometryInfo geometryInfo, String zVariableName) throws Exception {
-		int layerCount = geometryInfo.getLayerCount();
-		ArrayDouble.D1 zArray = new ArrayDouble.D1(layerCount);
-		for (int index = 0; index < layerCount; index++) {
-			//here write depth in meters relative to the top layer.
-			//here assume that each layer is 1 meter thick and that the first layer is the top layer, because z coordinates are not known here.
-			double z = (double) -index;
-			zArray.set(index, z);
+		IVector zCoordinates = geometryInfo.getZCoordinates();
+		ArrayDouble.D1 zArray = new ArrayDouble.D1(zCoordinates.getSize());
+		for (int n = 0; n < zArray.getSize(); n++) {
+			zArray.set(n, zCoordinates.getValue(n));
 		}
 		dataFile.write(zVariableName, zArray);
 	}

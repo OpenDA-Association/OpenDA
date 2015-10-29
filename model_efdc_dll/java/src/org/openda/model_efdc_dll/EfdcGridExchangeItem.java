@@ -59,7 +59,18 @@ public class EfdcGridExchangeItem implements IExchangeItem {
 		if (layerCount <= 1) {
 			this.geometryInfo = new IrregularGridGeometryInfo(getCellCount(), null, null);
 		} else {//if multiple layers.
-			this.geometryInfo = new LayeredIrregularGridGeometryInfo(getCellCount(), layerCount, null, null);
+			//convert relative layer thicknesses to relative z-coordinates.
+			//in EFDC the layers do not have z coordinates, because for each grid cell the layers have a different absolute thickness (because the total water depth in the river varies)
+			//and a different absolute height (because the river goes downstream). The layers only have relative thicknesses (without a unit) that sum to a total of 1 by definition.
+			double[] relativeThicknesses = this.modelDll.getLayerDepths();
+			double[] zCoordinates = new double[relativeThicknesses.length];
+			//in EFDC the layers start counting at the bottom, so the first layer is the lowest layer.
+			double z = 0;
+			for (int n = 0; n < zCoordinates.length; n++) {
+				zCoordinates[n] = z;
+				z += relativeThicknesses[n];
+			}
+			this.geometryInfo = new LayeredIrregularGridGeometryInfo(getCellCount(), layerCount, null, null, zCoordinates);
 		}
 	}
 

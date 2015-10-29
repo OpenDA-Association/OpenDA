@@ -358,6 +358,7 @@ public class EfdcDLL {
 
     /**
      * Returns layer depths
+     * In EFDC the layers start counting at the bottom, so the first layer is the lowest layer.
      *
      * @return layerDepths
      */
