@@ -142,20 +142,18 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			EfdcExchangeItemRole role = exchangeItemType.getRole();
 			switch (role) {
 				case FORCING: case BOUNDARY:
-					//create a scalar time series exchange item for each location for this parameter.
+					//create a scalar time series exchange item for each location and layer for this parameter.
 					int locationCount = this.modelDll.getTimeSeriesCount(parameterNumber);
 					int layerCount    = this.modelDll.getLayerCount(parameterNumber);
 					for (int locationNumber = 1; locationNumber <= locationCount; locationNumber++) {
-						for (int layerNumber =1; layerNumber <= layerCount; layerNumber++) {
-							if ( layerCount == 1) {
+						if (layerCount <= 1) {
+							EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+									new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, null, parameterId, IExchangeItem.Role.Input, this.modelDll);
+							this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+						} else {//if multiple layers.
+							for (int layerNumber = 1; layerNumber <= layerCount; layerNumber++) {
 								EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
-										new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, parameterId,
-												IExchangeItem.Role.Input, this.modelDll);
-								this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
-							} else {
-								EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
-										new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId,
-												IExchangeItem.Role.Input, this.modelDll);
+										new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId, IExchangeItem.Role.Input, this.modelDll);
 								this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
 							}
 						}

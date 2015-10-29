@@ -22,11 +22,10 @@ package org.openda.model_efdc_dll;
 import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
 import org.openda.utils.Time;
-import org.openda.utils.TreeVector;
 import org.openda.utils.Vector;
 
 /**
- * Exchange item representing values for a time series for a single location
+ * Exchange item representing values for a time series for a single location, a single parameter and a single layer
  * that are stored in the dll version of the EFDC model.
  *
  * @author Arno Kockx
@@ -36,25 +35,36 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 
 	private final String id;
 	/**
-	 * Integer that corresponds to a certain parameter within the efdc model.
+	 * Integer that corresponds to a certain location within the efdc model.
 	 */
 	private final int locationNumber;
 	/**
 	 * Integer that corresponds to a certain parameter within the efdc model.
 	 */
 	private final int parameterNumber;
+	/**
+	 * Integer that corresponds to a certain layer within the efdc model.
+	 */
 	private final int layerNumber; // integer that corresponds to layer (1=bottom layer)
 	private final Role role;
 	private final EfdcDLL modelDll;
 
+	/**
+	 * @param locationNumber
+	 * @param parameterNumber
+	 * @param layerNumber can be null if no layers.
+	 * @param parameterId
+	 * @param role
+	 * @param modelDll
+	 */
 	public EfdcScalarTimeSeriesExchangeItem(int locationNumber, int parameterNumber, Integer layerNumber, String parameterId, Role role, EfdcDLL modelDll) {
-		//id = "locationId.layerNumber.parameterNumber"
-		//id = "locationId.parameterNumber" for a model with one layer
+		//id = "locationNumber_layerNumber.parameterId"
+		//id = "locationNumber.parameterId" for a model with one layer
 		if (layerNumber == null) { // one layer only model
 			this.id = locationNumber + "." + parameterId;
 			this.layerNumber = 1;
-		} else {
-			this.id = locationNumber + "." + parameterId + "_layer" + layerNumber;
+		} else {//if multiple layers.
+			this.id = locationNumber + "_layer" + layerNumber + "." + parameterId;
 			this.layerNumber = layerNumber;
 		}
 		this.locationNumber = locationNumber;
@@ -62,13 +72,6 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 		this.role = role;
 		this.modelDll = modelDll;
 	}
-
-	public EfdcScalarTimeSeriesExchangeItem(int locationNumber, int parameterNumber, String parameterId, Role role, EfdcDLL modelDll) {
-		//id = "locationId.layerNumber.parameterNumber"
-		//id = "locationId.parameterNumber" for a model with one layer
-		this( locationNumber, parameterNumber, null , parameterId, role, modelDll);
-	}
-
 
 	public String getId() {
 		return this.id;
@@ -121,21 +124,10 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	}
 
 	/**
-	 * Returns count of time points of this scalar time series.
-	 */
-	public int getTimesCount() {
-		return this.modelDll.getTimeSeriesCount(this.parameterNumber);
-	}
-
-
-	/**
 	 * Returns all values for this scalar time series.
 	 */
 	public Object getValues() {
-		double[] values = getValuesAsDoubles();
-		int timesCount = this.getTimesCount();
-		IVector vector = new Vector(values);
-		return vector;
+		return new Vector(getValuesAsDoubles());
 	}
 
 	/**
@@ -190,7 +182,7 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	 */
 	public void setValuesAsDoubles(double[] values) {
 		double[] times = getTimeInfo().getTimes();
-		if (values.length < times.length ) {
+		if (values.length != times.length ) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": number of values (" + values.length
 					+ ") should be equal to number of times (" + times.length + ").");
 		}

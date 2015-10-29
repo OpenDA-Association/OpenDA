@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IModelInstance;
 import org.openda.interfaces.ITreeVector;
-import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;

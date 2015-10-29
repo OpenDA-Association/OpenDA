@@ -65,9 +65,9 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
         String[] exchangeItemIDs = new String[4];
         
         exchangeItemIDs[0] = "1.Precipitation";
-        exchangeItemIDs[1] = "1.DissolvedONitrogen_layer1";
-        exchangeItemIDs[2] = "22.DissolvedONitrogen_layer5";
-        exchangeItemIDs[3] = "1.Discharge_layer3";
+        exchangeItemIDs[1] = "1_layer1.DissolvedONitrogen";
+        exchangeItemIDs[2] = "22_layer5.DissolvedONitrogen";
+        exchangeItemIDs[3] = "1_layer3.Discharge";
 
         // create instance directories and intialize the model instances
         File modelTemplateDir = new File(modelParentDir, "model_layers");
