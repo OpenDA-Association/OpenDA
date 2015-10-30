@@ -55,7 +55,7 @@ public class WflowBmiBridgeTest extends AbstractModelBridgeTest {
 
 		shape = new int[] { 169, 187 };
 		gridSpacing = new double[] { 0.036666665226221085, 0.036666665226221085 };
-		gridOrigin = new double[]{5.227163314819336, 45.89426803588867};
+		gridOrigin = new double[]{52.05426788330078, 5.227163314819336};
 
 		variableName = "SurfaceRunoff";
 		variableType = "float32";

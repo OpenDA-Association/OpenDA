@@ -15,3 +15,5 @@
 2015-09-17: Downloaded most recent development version of WFLOW Python code from https://github.com/openstreams/wflow.git/trunk
 
 2015-10-28: Downloaded most recent development version of WFLOW Python code from https://github.com/openstreams/wflow.git/trunk
+
+2015-10-30: Downloaded most recent development version of WFLOW Python code from https://github.com/openstreams/wflow.git/trunk

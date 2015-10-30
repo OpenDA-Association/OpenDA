@@ -663,8 +663,10 @@ class wflowbmi_csdms(bmi.Bmi):
 
         :return: The size of a grid cell for each of the dimensions of the given variable, e.g. [width, height]: for a 2D grid cell.
         """
-
-        return self.dynModel.wf_supplyGridDim()[2:4]
+        dims = self.dynModel.wf_supplyGridDim()[2:4]
+        x = dims[0]
+        y = dims[1]
+        return [y, x]
 
     def get_grid_origin(self, long_var_name):
         """
@@ -676,8 +678,8 @@ class wflowbmi_csdms(bmi.Bmi):
         """
         dims = self.dynModel.wf_supplyGridDim()
         x = dims[0]
-        y = dims[7]
-        return [x, y]
+        y = dims[1]
+        return [y, x]
 
     def get_grid_x(self, long_var_name):
         """
