@@ -137,8 +137,7 @@ public class EfdcGridExchangeItem implements IExchangeItem {
 		double[] values = getValuesAsDoubles();
 		int cellCount = getCellCount();
 		int layerCount = getLayerCount();
-		ITreeVector vector = new TreeVector(Integer.toString(this.parameterNumber), new Vector(values), cellCount, layerCount);
-		return vector;
+		return new TreeVector(Integer.toString(this.parameterNumber), new Vector(values), layerCount, cellCount);
 	}
 
 	/**
