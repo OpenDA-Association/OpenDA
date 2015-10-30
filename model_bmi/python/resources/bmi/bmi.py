@@ -284,7 +284,8 @@ class Bmi(object):
         String long_var_name: identifier of a variable in the model.
 
         Return value:
-        List of integers: the sizes of the dimensions of the given variable, e.g. [500, 400] for a 2D grid with 500x400 grid cells.
+        List of integers: the sizes of the dimensions of the given variable, e.g. [400, 500] for a 2D grid with 400 rows and 500 columns.
+                          The dimensions are ordered [y, x] or [z, y, x].
         """
         raise NotImplementedError
 
@@ -297,7 +298,8 @@ class Bmi(object):
         String long_var_name: identifier of a variable in the model.
 
         Return value:
-        List of doubles: the size of a grid cell for each of the dimensions of the given variable, e.g. [width, height] for a 2D grid cell.
+        List of doubles: the size of a grid cell for each of the dimensions of the given variable, e.g. [cellHeight, cellWidth] for a 2D grid.
+                         The dimensions are ordered [y, x] or [z, y, x].
         """
         raise NotImplementedError
 
@@ -310,7 +312,9 @@ class Bmi(object):
         String long_var_name: identifier of a variable in the model.
 
         Return value:
-        List of doubles: the coordinate of the grid origin for each of the dimensions of the given variable. For a 2D grid this must be the lower left corner of the grid.
+        List of doubles: the coordinate of the grid origin for each of the dimensions of the given variable.
+                         For a 2D grid this must be the lower left corner of the grid.
+                         The dimensions are ordered [y, x] or [z, y, x].
         """
         raise NotImplementedError
 

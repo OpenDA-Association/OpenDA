@@ -16,3 +16,5 @@ The following changes were made:
 2015-09-15 Updated from GitHub
 
 2015-10-27 Downloaded most recent version of file bmi.py from https://github.com/eWaterCycle/bmi/blob/master/src/main/python/bmi.py
+
+2015-10-30 Downloaded most recent version of file bmi.py from https://github.com/eWaterCycle/bmi/blob/master/src/main/python/bmi.py
