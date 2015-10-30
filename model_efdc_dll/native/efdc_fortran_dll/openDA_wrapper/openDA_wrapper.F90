@@ -611,6 +611,7 @@ contains
     end if
     
     depths = real(DZC,dp)
+    ret_val = 0
     
     write(dm_outfile_handle(instance), '(A,I4,A,I4, A, I2)') & 
       'get_layer_depths( instance: ', instance, '): ', ret_val, 'depths: ', depths
