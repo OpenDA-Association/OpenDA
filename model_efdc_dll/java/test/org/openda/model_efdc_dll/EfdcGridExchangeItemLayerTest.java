@@ -96,8 +96,8 @@ public class EfdcGridExchangeItemLayerTest extends TestCase {
                     (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.Discharge");
             double[] testValues = exchangeItem.getValuesAsDoubles();
             ITreeVector testVector = (ITreeVector) exchangeItem.getValues();
-            assertEquals(testVector.getDimensionIndices()[0].getSize(), 1854 );
-            assertEquals(testVector.getDimensionIndices()[1].getSize(), 5 );
+            assertEquals(testVector.getDimensionIndices()[0].getSize(), 5 );
+            assertEquals(testVector.getDimensionIndices()[1].getSize(), 1854 );
             exchangeItem.setValuesAsDoubles(testValues);
 
         }

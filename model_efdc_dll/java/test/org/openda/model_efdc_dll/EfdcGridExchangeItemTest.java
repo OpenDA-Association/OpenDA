@@ -22,7 +22,6 @@ package org.openda.model_efdc_dll;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IModelInstance;
-import org.openda.interfaces.ITreeVector;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -95,9 +94,6 @@ public class EfdcGridExchangeItemTest extends TestCase {
             exchangeItem =
                     (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.Discharge");
             double[] testValues = exchangeItem.getValuesAsDoubles();
-            ITreeVector testVector = (ITreeVector) exchangeItem.getValues();
-            assertEquals(testVector.getDimensionIndices()[0].getSize(), 3300 );
-            assertEquals(testVector.getDimensionIndices()[1].getSize(), 1 );
             exchangeItem.setValuesAsDoubles(testValues);
 
         }
