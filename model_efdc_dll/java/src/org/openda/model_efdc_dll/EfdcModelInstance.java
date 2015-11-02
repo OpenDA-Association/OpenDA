@@ -494,13 +494,51 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 
 	/**
 	 * Set input data for the entire run period in the boundary condition exchange items.
+	 * If for a given location and parameter there is only one inputExchangeItem and multiple boundaryExchangeItems for multiple layers,
+	 * then the values of that inputExchangeItem are copied to the boundaryExchangeItems for all layers.
 	 */
 	private void putInputDataInBoundaryConditionExchangeItems() {
-		Results.putMessage(this.getClass().getSimpleName() + ": setting model input data for instance "
-				+ this.instanceDir.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": setting model input data for instance " + instanceDir.getAbsolutePath());
 
-		String[] inputExchangeItemIds = this.boundaryExchangeItems.keySet().toArray(new String[this.boundaryExchangeItems.size()]);
-		DataCopier.copyDataFromDataObjectsToDataObject(inputExchangeItemIds, this.inputDataObjects, this);
+		String[] boundaryExchangeItemIds = boundaryExchangeItems.keySet().toArray(new String[boundaryExchangeItems.size()]);
+		for (String id : boundaryExchangeItemIds) {
+			IExchangeItem boundaryExchangeItem = getDataObjectExchangeItem(id);
+
+			//find corresponding inputExchangeItem.
+			IExchangeItem inputExchangeItem = null;
+			for (IDataObject inputDataObject : inputDataObjects) {
+				inputExchangeItem = inputDataObject.getDataObjectExchangeItem(id);
+				if (inputExchangeItem != null) {
+					break;
+				}
+			}
+			if (inputExchangeItem == null) {//if item not found.
+				String locationId = BBUtils.getLocationFromId(id);
+				if (!locationId.contains("_layer")) {
+					throw new RuntimeException("Exchange item with id '" + id + "' not found in given inputDataObjects.");
+				}
+
+				//if boundaryExchangeItem has layers.
+				//try to find inputExchangeItem with same location and parameter but without layer.
+				String newLocationId = locationId.substring(0, locationId.lastIndexOf('_'));
+				String parameterId = BBUtils.getParameterFromId(id);
+				String newId = newLocationId + "." + parameterId;
+				for (IDataObject inputDataObject : inputDataObjects) {
+					inputExchangeItem = inputDataObject.getDataObjectExchangeItem(newId);
+					if (inputExchangeItem != null) {
+						break;
+					}
+				}
+				if (inputExchangeItem == null) {//if item not found.
+					throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
+				}
+			}
+
+			//ask the boundaryExchangeItem to copy all value(s) that it currently needs from the inputExchangeItem.
+			Results.putMessage(getClass().getSimpleName() + ": copying data from inputExchangeItem '" + id + "' of type " + inputExchangeItem.getClass().getSimpleName()
+					+ " to boundaryExchangeItem '" + id + "' of type " + boundaryExchangeItem.getClass().getSimpleName());
+			boundaryExchangeItem.copyValuesFromItem(inputExchangeItem);
+		}
 	}
 
 	/**
