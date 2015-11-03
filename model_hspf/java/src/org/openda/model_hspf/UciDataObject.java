@@ -125,13 +125,6 @@ public class UciDataObject implements IDataObject {
 		return new String[]{startTimeExchangeItem.getId(), endTimeExchangeItem.getId()};
 	}
 
-	/**
-	 * Get the identifiers of the exchange items that can be retrieved from and set to the model,
-	 * according to the specified role (input, output, both)
-	 * Should return String[0] if there are no matching items.
-	 * @param role Input, Output, or InOut (i.e. both)
-	 * @return The array of exchange item identifiers.
-	 */
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
 		if (role == IPrevExchangeItem.Role.Input || role == IPrevExchangeItem.Role.InOut) {
 			return new String[]{startTimeExchangeItem.getId(), endTimeExchangeItem.getId()};

@@ -161,4 +161,38 @@ public class UciFileTest extends TestCase {
 		assertEquals("Actual output file '" + actualOutputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
 				AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(actualOutputFile));
 	}
+
+    public void testReadUciStateFile() {
+        UciStateDataObject uciStateDataObject = new UciStateDataObject();
+        String uciFilename = "uciFileTest/input/ndriver_without_tags.uci";
+        String[] arguments = new String[]{uciFilename};
+        uciStateDataObject.initialize(testRunDataDir, arguments);
+
+        String[] exchangeItemIds = uciStateDataObject.getExchangeItemIDs();
+        assertEquals(3944, exchangeItemIds.length);
+
+        //HEAT-INIT
+        IExchangeItem item = uciStateDataObject.getDataObjectExchangeItem("1.AIRTMP");
+        assertNotNull(item);
+        assertEquals(34d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("42.AIRTMP");
+        assertNotNull(item);
+        assertEquals(34d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("232.AIRTMP");
+        assertNotNull(item);
+        assertEquals(34d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("233.AIRTMP");
+        assertNull(item);
+
+        //HYDR-INIT
+        item = uciStateDataObject.getDataObjectExchangeItem("56.VOL");
+        assertNotNull(item);
+        assertEquals(100d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("57.VOL");
+        assertNotNull(item);
+        assertEquals(400000d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("58.VOL");
+        assertNotNull(item);
+        assertEquals(100d, item.getValues());
+    }
 }

@@ -23,7 +23,9 @@ package org.openda.model_hspf;
 import org.openda.utils.Time;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -83,5 +85,22 @@ public class UciUtils {
 			calendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		return dateFormat.format(calendar.getTime());
+	}
+
+	/**
+	 * Splits the given string into parts that are 10 characters long.
+	 * If the last part is shorter than 10 characters, then the last part will be ignored.
+	 */
+	public static String[] splitEvery10Characters(String string) {
+		if (string == null || string.isEmpty()) return null;
+
+		List<String> parts = new ArrayList<>();
+		while (string.length() >= 10) {
+			String part = string.substring(0, 10);
+			parts.add(part);
+			string = string.substring(10);
+		}
+
+		return parts.toArray(new String[parts.size()]);
 	}
 }
