@@ -54,6 +54,10 @@
             <arg>true</arg>
             <arg>false</arg>
         </ioObject>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
+            <file>%inputFile%</file>
+            <id>boundaries</id>
+        </ioObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

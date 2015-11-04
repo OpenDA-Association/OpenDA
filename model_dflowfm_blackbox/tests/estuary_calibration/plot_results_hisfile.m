@@ -1,4 +1,4 @@
- filename = '.\stochModel\input_dflowfm\DFM_OUTPUT_estuary\estuary_his.nc';
+ filename = ['stochModel',filesep,'work0',filesep,'DFM_OUTPUT_estuary',filesep,'estuary_his.nc'];
  time = ncread(filename,'time');
  time_days = time./(24*60*60);
  waterlevel = ncread(filename,'waterlevel');

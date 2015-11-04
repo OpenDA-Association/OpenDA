@@ -11,9 +11,25 @@
         <parameters>
             <regularisationConstant>
                 <stdDev value=".05" transformation="identity"/>
-                <vector id="depth_1"/>
+                <vector id="M2_amplitude"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value="5.0" transformation="identity"/>
+                <vector id="M2_phase"/>
             </regularisationConstant>
 <!--
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="depth_1"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="S2_amplitude"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value="5.0" transformation="identity"/>
+                <vector id="S2_phase"/>
+            </regularisationConstant>
             <regularisationConstant>
                 <stdDev value=".05" transformation="identity"/>
                 <vector id="depth_2"/>

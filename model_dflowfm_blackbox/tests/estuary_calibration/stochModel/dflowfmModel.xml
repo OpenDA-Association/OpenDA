@@ -29,6 +29,10 @@
 		<vector id="station01.waterlevel" ioObjectId="%netcdfoutput%" elementId="station01.waterlevel"/>
 		<vector id="station02.waterlevel" ioObjectId="%netcdfoutput%" elementId="station02.waterlevel"/>
 		<vector id="station03.waterlevel" ioObjectId="%netcdfoutput%" elementId="station03.waterlevel"/>
+		<vector id="M2_amplitude" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.M2_amplitude"/>
+		<vector id="M2_phase" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.M2_phase"/>
+		<vector id="S2_amplitude" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.S2_amplitude"/>
+		<vector id="S2_phase" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.S2_phase"/>
 	</exchangeItems>
 
 <doCleanUp>false</doCleanUp>

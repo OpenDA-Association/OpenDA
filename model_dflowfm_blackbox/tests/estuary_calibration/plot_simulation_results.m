@@ -1,6 +1,6 @@
  fprintf('Attention: results only useful after running Simulation.oda \n')
 
- file = '.\stochModel\work0\DFM_OUTPUT_estuary\estuary_his.nc';
+ file = ['stochModel',filesep,'work0',filesep,'DFM_OUTPUT_estuary',filesep,'estuary_his.nc']
  time_work = ncread(file,'time');
  time_work = time_work/(24*60*60);
  wl_work = ncread(file,'waterlevel');

@@ -31,6 +31,6 @@ parameter settings. The differences are:
 - 10% added to the sloping bathymetry varying from -8m to -5 m
 - 2 tidal constituents at western boundary
  M2 0.6m 0.0degr
- S2 0.2m 0.0degr (i.e 10cm more S3 amplitude)
+ S2 0.2m 0.0degr (i.e 10cm more S2 amplitude)
 - uniform bed friction of 0.02 Manning corrected by
  10% 0% and 20% relative to the first-guess.
