@@ -19,13 +19,15 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 	private String id;
 	private String description="";
 	private Role role=Role.InOut;
-	private IQuantityInfo quantityInfo;
+	private IQuantityInfo quantityInfo=null;
+	private PointGeometryInfo geometryInfo=null;
 	
 	
 	public DoubleExchangeItem(String id, Role role, double value){
 		this.value = value;
 		this.role = role;
 		this.id = id;
+		this.geometryInfo = new PointGeometryInfo(0.,0., 0.); //fill with defaults
 	}
 	
 	public DoubleExchangeItem(String id, double value){
@@ -81,10 +83,39 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 
 	
 	public IGeometryInfo getGeometryInfo() {
-		return null;
+		return this.geometryInfo;
 	}
-
 	
+    public String getLocation(){
+    	return this.geometryInfo.getLocation();
+    }
+    
+    public void setLocation(String location){
+    	this.geometryInfo.setLocation(location);
+    }
+    
+    public double[] getPosition(){
+    	return new double[]{ this.geometryInfo.getLongitude() , this.geometryInfo.getLatitude() }; 
+    }
+    
+    public void setLatitude(double latitude){
+    	String location = this.geometryInfo.getLocation();
+    	this.geometryInfo = new PointGeometryInfo(this.geometryInfo.getLongitude(), latitude, this.geometryInfo.getHeight());
+    	this.geometryInfo.setLocation(location);
+    }
+
+    public void setLongitude(double longitude){
+    	String location = this.geometryInfo.getLocation();
+    	this.geometryInfo = new PointGeometryInfo(longitude, this.geometryInfo.getLatitude(), this.geometryInfo.getHeight());
+    	this.geometryInfo.setLocation(location);
+    }
+
+    public void setHeight(double height){
+    	String location = this.geometryInfo.getLocation();
+    	this.geometryInfo = new PointGeometryInfo(this.geometryInfo.getLongitude(), this.geometryInfo.getLatitude(), height);
+    	this.geometryInfo.setLocation(location);
+    }
+
 	public ValueType getValuesType() {
 		return ValueType.doubleType;
 	}

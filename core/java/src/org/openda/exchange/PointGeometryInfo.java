@@ -15,6 +15,7 @@ import org.openda.utils.Array;
  *
  */
 public class PointGeometryInfo extends ArrayGeometryInfo {
+	private String location="";
 
 	/**
 	 * Constructor for a point.
@@ -44,8 +45,16 @@ public class PointGeometryInfo extends ArrayGeometryInfo {
 	public double getLongitude(){
 		return this.getLongitudeArray().getValueAsDouble(0);
 	}
-
+	
 	public double getHeight(){
 		return this.getHeightArray().getValueAsDouble(0);
+	}
+	
+	public String getLocation(){
+		return this.location;
+	}
+	
+	public void setLocation(String location){
+		this.location=location;
 	}
 }
