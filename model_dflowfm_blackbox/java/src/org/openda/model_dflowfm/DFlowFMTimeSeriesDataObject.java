@@ -20,22 +20,34 @@
 
 package org.openda.model_dflowfm;
 
+import org.openda.exchange.DoubleExchangeItem;
+import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Set;
+
+import jj2000.j2k.NotImplementedError;
 
 public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	public static final String PROPERTY_PATHNAME = "pathName";
 	private TimeSeriesSet timeSeriesSet = null;
+	private LinkedHashMap<String, DoubleExchangeItem> amplitudes=null; 
+	private LinkedHashMap<String, DoubleExchangeItem> phases=null; 
+	private ArrayList<String> cmpFileNames =null;
+	private LinkedHashMap<String, String> cmpNameFromId;
 	private static final String idSeparator= ":";
 	String fileName = null;
+	File workingDir = null;
 
 	/**
 	 * Initialize the IDataObject
@@ -53,6 +65,11 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 			}
 		}
 		this.timeSeriesSet = new TimeSeriesSet();
+		this.amplitudes = new LinkedHashMap<String, DoubleExchangeItem>();
+		this.phases = new LinkedHashMap<String, DoubleExchangeItem>();
+		this.cmpFileNames = new ArrayList<String>();
+		this.cmpNameFromId = new LinkedHashMap<String, String>();
+		this.workingDir=workingDir;
 		parseConfigurationFiles(workingDir, fileName);
 	}
 
@@ -109,27 +126,40 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 						series.setId(identifier);
 						series.setProperty(PROPERTY_PATHNAME, timFile.getAbsolutePath() );
 						this.timeSeriesSet.add(series);
-					}
+					}else if ( cmpFile.isFile() ) {
 					// CMP file
-					if ( cmpFile.isFile() ) {
-						TimeSeries series;
+						this.cmpFileNames.add(cmpFilePath);
+						DoubleExchangeItem amplitude;
+						DoubleExchangeItem phase;
 						DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(workingDir,cmpFilePath);
 						String[] AC = cmpfile.getACname();
 						for (String var: AC) {
-							if (var.contentEquals("period")){
-								// noise is only applied to the Amplitude
-								double times[] = { cmpfile.getPeriod() };
-								double values[] = { cmpfile.getAmplitude(var) };
-								series = new TimeSeries(times,values);								
+							if (! var.contentEquals("period")){
+								double lon = pliFile.getX(fileNr);
+								double lat = pliFile.getY(fileNr);
+								//amplitude
 								String location = String.format("%s.%d" , locationId ,fileNr+1);
-								series.setLocation(location);
-								series.setQuantity(quantity + ".amplitude");
-								String identifier = location + idSeparator + quantity + ".amplitude" ;
-								//String identifier = "amplitude" + idSeparator + cmpFilePath;
-								series.setId(identifier);
-								this.timeSeriesSet.add(series);
-//							} else {
-								// astro components
+								String amplitudeId = location + idSeparator + quantity + "."+var+"_amplitude" ;
+								double ampl = cmpfile.getAmplitude(var);
+								amplitude = new DoubleExchangeItem(amplitudeId, Role.InOut, ampl);
+								amplitude.setQuantityInfo(new QuantityInfo(quantity + ".amplitude","m"));
+								amplitude.setLatitude(lat);
+								amplitude.setLongitude(lon);
+								amplitude.setLocation(location);
+								this.amplitudes.put(amplitudeId, amplitude);
+								this.cmpNameFromId.put(amplitudeId,cmpFilePath);
+                                //phase
+								String phaseId = location + idSeparator + quantity + "."+var+"_phase" ;
+								double phi = cmpfile.getPhase(var);
+								phase = new DoubleExchangeItem(phaseId, Role.InOut, phi);
+								phase.setQuantityInfo(new QuantityInfo(quantity + ".phase","degrees"));
+								phase.setLatitude(lat);
+								phase.setLongitude(lon);
+								phase.setLocation(location);
+								this.cmpNameFromId.put(phaseId,cmpFilePath);
+								this.phases.put(phaseId, phase);								
+							} else {
+								throw new NotImplementedError("DFLOW-FM tidal components of fourier type with user specified frequency not implemented in OpenDA yet.");
 							}
 						}
 					}
@@ -146,7 +176,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	}
 	
  	public String [] getExchangeItemIDs() {
-		String [] result = new String[this.timeSeriesSet.size()];
+		String [] result = new String[this.timeSeriesSet.size()+2*this.amplitudes.size()];
 		Set<String> quantities = this.timeSeriesSet.getQuantities();
 		int idx=0;
 		for (String quantity: quantities) {
@@ -158,6 +188,14 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 				result[idx]= id;
 				idx++;	
 			}
+		}
+		for( String id : this.amplitudes.keySet()){
+			result[idx]=id;
+			idx++;
+		}
+		for( String id : this.phases.keySet()){
+			result[idx]=id;
+			idx++;
 		}
 		return result;
 	}
@@ -197,19 +235,35 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 		String quantity = parts[1];
 //		System.out.println(location + ", " + quantity );
 		
-		// Get the single time series based on location and quantity
-		TimeSeriesSet myTimeSeriesSet = this.timeSeriesSet.getOnQuantity(quantity)
-				.getOnLocation(location);
-		Iterator<TimeSeries> iterator = myTimeSeriesSet.iterator();
-		if (!iterator.hasNext()) {
-		    throw new RuntimeException("No time series found for " + exchangeItemID);
-		}
-		TimeSeries timeSeries = iterator.next();
-		if (iterator.hasNext()) {
-		    throw new RuntimeException("Time series is not uniquely defined for  " + exchangeItemID);
+		if(exchangeItemID.endsWith("_amplitude")){
+			if(this.amplitudes.containsKey(exchangeItemID)){
+				DoubleExchangeItem amplitude = this.amplitudes.get(exchangeItemID);
+				return amplitude;
+			}else{
+				throw new RuntimeException("No tidal amplitude found for " + exchangeItemID);
+			}
+		}else if(exchangeItemID.endsWith("_phase")){
+			if(this.phases.containsKey(exchangeItemID)){
+				DoubleExchangeItem phase = this.phases.get(exchangeItemID);
+				return phase;
+			}else{
+				throw new RuntimeException("No tidal phase found for " + exchangeItemID);
+			}			
+		}else{
+			// Get the single time series based on location and quantity
+			TimeSeriesSet myTimeSeriesSet = this.timeSeriesSet.getOnQuantity(quantity)
+					.getOnLocation(location);
+			Iterator<TimeSeries> iterator = myTimeSeriesSet.iterator();
+			if (!iterator.hasNext()) {
+			    throw new RuntimeException("No time series found for " + exchangeItemID);
+			}
+			TimeSeries timeSeries = iterator.next();
+			if (iterator.hasNext()) {
+			    throw new RuntimeException("Time series is not uniquely defined for  " + exchangeItemID);
+			}
+			return timeSeries;
 		}
 
-		return timeSeries;
 	}
 	
 	
@@ -221,6 +275,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 		if (this.timeSeriesSet == null) return;
 		for (TimeSeries series : this.timeSeriesSet)
 			if (series.hasProperty(PROPERTY_PATHNAME)) writeTimTimeSeries(series);
+		this.writeComponents();
 	}
 
 	/**
@@ -284,5 +339,32 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	 */
 	public void setTimeSeriesSet(TimeSeriesSet set) {
 		this.timeSeriesSet = set;
+	}
+	
+	/*
+	 * Internal routine to write all the updates to amplitudes and phases to file.
+	 * Called from finish.
+	 */
+	private void writeComponents(){
+		for(String cmpFilePath : this.cmpFileNames){
+			DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(workingDir,cmpFilePath);
+			// Check for updates to exchangeItem
+			for(String id : this.cmpNameFromId.keySet()){
+				if(cmpFilePath.equalsIgnoreCase(this.cmpNameFromId.get(id))){
+					String[] dotParts = id.split("\\."); //remove upto and including the last dot
+					String afterLastDot = dotParts[dotParts.length-1];
+					String[] parts=afterLastDot.split("_");
+					String var = parts[0];
+					if(parts[1].equalsIgnoreCase("amplitude")){
+						double ampl=this.amplitudes.get(id).getValue();
+						cmpfile.setAmplitude(var,ampl);
+					}else{
+						double phase=this.phases.get(id).getValue();
+						cmpfile.setPhase(var,phase);
+					}
+				}
+			}
+			cmpfile.WriteInputFile();
+		}
 	}
 }

@@ -21,6 +21,7 @@ package org.openda.model_dflowfm;
 
 import junit.framework.TestCase;
 
+import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
@@ -129,4 +130,63 @@ public class DFlowFMTimeSeriesDataObjectTest extends TestCase {
 		assertTrue(series1.equals(series2));
 	}
 
+	
+	public void test_components() {
+		// read noos file and create object
+		DFlowFMTimeSeriesDataObject dataObject = new DFlowFMTimeSeriesDataObject();
+
+		String[] args = new String[1];
+		args[0] = "estuary_b.mdu";
+		dataObject.initialize(this.testRunDataDir, args);
+
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertEquals(4, exchangeItemIDs.length);
+		System.out.println("Component ids are:");
+		for(String id : exchangeItemIDs){
+			System.out.println(id);
+		}
+		
+		IExchangeItem cmpEx = dataObject.getDataObjectExchangeItem("estuary_01.1:waterlevelbnd.M2_amplitude");
+		assertEquals("DoubleExchangeItem", cmpEx.getClass().getSimpleName());
+
+		System.out.println();
+		System.out.print(cmpEx.getId()+":");
+		System.out.println(cmpEx.toString());
+		
+		DoubleExchangeItem ampl = (DoubleExchangeItem) (cmpEx);
+		assertEquals("estuary_01.1:waterlevelbnd.M2_amplitude", ampl.getId());
+		assertEquals("m", ampl.getQuantityInfo().getUnit());
+		assertEquals("waterlevelbnd.amplitude", ampl.getQuantityInfo().getQuantity());
+		assertEquals(-250.0, ampl.getPosition()[0]);
+		assertEquals(0.0, ampl.getPosition()[1]);
+		assertEquals("estuary_01.1", ampl.getLocation());
+
+		double a=ampl.getValue();
+		assertEquals(0.6,a);
+
+		IExchangeItem phaseEx = dataObject.getDataObjectExchangeItem("estuary_01.1:waterlevelbnd.S2_phase");
+		assertEquals("DoubleExchangeItem", phaseEx.getClass().getSimpleName());
+
+		System.out.println();
+		System.out.print(phaseEx.getId()+":");
+		System.out.println(phaseEx.toString());
+		
+		DoubleExchangeItem phase = (DoubleExchangeItem) (phaseEx);
+		assertEquals("estuary_01.1:waterlevelbnd.S2_phase", phase.getId());
+		assertEquals("degrees", phase.getQuantityInfo().getUnit());
+		assertEquals("waterlevelbnd.phase", phase.getQuantityInfo().getQuantity());
+		assertEquals(-250.0, phase.getPosition()[0]);
+		assertEquals(0.0, phase.getPosition()[1]);
+		assertEquals("estuary_01.1", ampl.getLocation());
+
+		double f=phase.getValue();
+		assertEquals(0.0,f);	
+
+		// Now start changing values
+		ampl.setValue(2.2);
+		phase.setValue(0.22);
+		dataObject.finish(); //write changes
+		
+		assertTrue(testData.FilesAreIdentical(new File(testRunDataDir,"estuary_b_comp_0001.cmp"),new File(testRunDataDir,"estuary_b_comp_0001.cmp.check")));
+	}
 }

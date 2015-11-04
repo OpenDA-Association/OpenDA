@@ -17,7 +17,7 @@ public class DFlowFMCmpInputFileTest extends TestCase{
 		testRunDataDir = new File(testData.getTestRunDataDir(),"Timeseries");
 	}
 
-	public void testDflowfmParseAstrocompontentFile() {
+	public void testDflowfmAstrocompontentFile() {
 		DFlowFMCmpInputFile cmpFile = new DFlowFMCmpInputFile(testRunDataDir , "astro.cmp");
 		String[] AC = cmpFile.getACname();
 		for (String var : AC) {
@@ -30,6 +30,15 @@ public class DFlowFMCmpInputFileTest extends TestCase{
 				assertEquals(cmpFile.getPhase(var),0.0);
 			}
 		}
+		
+		cmpFile.setAmplitude("M2", 0.7);
+		cmpFile.setPhase("M2", 0.1);
+		cmpFile.setAmplitude("S2", 0.3);
+		cmpFile.setPhase("S2", 0.2);
+		
+		cmpFile.WriteInputFile();
+		
+		assertTrue(testData.FilesAreIdentical(new File(testRunDataDir, "astro.cmp"),new File(testRunDataDir,"astro.cmp.check")));
 	}
 
 	public void testDflowfmParsePeriodFile() {

@@ -21,11 +21,16 @@ package org.openda.model_dflowfm;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.Vector;
+
+import javax.management.RuntimeErrorException;
 
 public class DFlowFMCmpInputFile {
 	
@@ -144,6 +149,39 @@ public class DFlowFMCmpInputFile {
 			}
 		}
 		return Double.parseDouble(null);
+	}
+
+	public void setAmplitude(String Id,double value) {
+		for (int i=0 ; i < ACname.length ; i++ ) {
+			if (ACname[i].matches(Id)) {
+				this.Amplitude[i]=value;
+			}
+		}
+	}
+
+	public void setPhase(String Id,double value) {
+		for (int i=0 ; i < ACname.length ; i++ ) {
+			if (ACname[i].matches(Id)) {
+				this.Phase[i]=value;
+			}
+		}
+	}
+	
+	public void WriteInputFile() {
+		File cmpFile = new File(workingDir, fileName);
+		try{
+			Writer writer = new OutputStreamWriter(new FileOutputStream(cmpFile));
+			writer.write("* COLUMNN=3\n");
+			writer.write("* COLUMN2=Amplitude (ISO)\n");
+			writer.write("* COLUMN3=Phase (deg)\n");
+			for (int i=0 ; i < ACname.length ; i++ ) {
+				String line=this.ACname[i]+" "+this.Amplitude[i]+" "+this.Phase[i]+"\n";
+				writer.write(line);
+			}
+			writer.close();
+		}catch(Exception e){
+			throw new RuntimeException("Could not write changes to .cmp file with name : "+fileName);
+		}
 	}
 }
 

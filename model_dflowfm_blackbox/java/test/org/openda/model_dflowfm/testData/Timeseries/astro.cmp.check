@@ -1,0 +1,5 @@
+* COLUMNN=3
+* COLUMN2=Amplitude (ISO)
+* COLUMN3=Phase (deg)
+M2 0.7 0.1
+S2 0.3 0.2
