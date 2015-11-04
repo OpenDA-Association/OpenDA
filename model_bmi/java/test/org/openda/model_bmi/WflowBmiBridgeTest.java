@@ -34,17 +34,18 @@ import java.util.TimeZone;
 /**
  * Test that creates a BMI Thrift connection to a local WFLOW BMI model.
  *
- * For information about the WFLOW model see
- * https://github.com/openstreams/wflow
+ * For information about the WFLOW model see www.openstreams.org
+ * and https://publicwiki.deltares.nl/display/OpenS/wflow+-+PCRaster-Python+based+distributed+hydrological+models
+ * For information about the PCRaster framework see http://pcraster.geo.uu.nl/
  *
- * For this test to work, CPython version 2.7, PCRaster version 4.0 and the
- * Thrift Python package need to be installed. For this test to work, the openda
- * python code and python resources must be present in the folder
- * public/bin/python. For this test to work, the following folders need to be
- * present in the corresponding environment variables: PATH: folder containing
- * python executable (e.g. C:\Anaconda), folder with PCRaster dll files (e.g.
- * C:\pcraster-4.0.1_x86-64\bin) PYTHONPATH: folder with PCRaster python scripts
- * (e.g. C:\pcraster-4.0.1_x86-64\python).
+ * For this test to work, CPython version 2.7, PCRaster version 4.0 and the Thrift Python package need to be installed.
+ * For this test to work, the openda python code and python resources must be present in the folder public/bin/python.
+ * For this test to work, the following folders need to be present in the corresponding environment variables:
+ * PATH: folder containing python executable (e.g. C:\Anaconda),
+ *       folder with PCRaster dll files (e.g. C:\pcraster-4.0.1_x86-64\bin),
+ *       folder with gdal dll files (e.g. C:\programs\gdal_release-1800-x64-gdal-1-11-1-mapserver-6-4-1\bin)
+ * PYTHONPATH: folder with PCRaster python scripts (e.g. C:\pcraster-4.0.1_x86-64\python)
+ * PYTHONHOME: folder containing python executable (e.g. C:\Anaconda\)
  *
  * @author Arno Kockx
  */
@@ -94,17 +95,19 @@ public class WflowBmiBridgeTest extends AbstractModelBridgeTest {
 				"model:OverWriteInit",
 				"model:updating",
 				"model:updateFile",
-				"model:lateralmethod",
 				"model:sCatch",
 				"model:intbl",
 				"model:timestepsecs",
+				"model:P_style",
+				"model:PET_style",
+				"model:TEMP_style",
 				"model:MaxUpdMult",
 				"model:MinUpdMult",
 				"model:UpFrac",
-				"model:waterdem",
-				"model:WIMaxScale",
-				"model:reInfilt",
+				"model:ExternalQbase",
+				"model:SetKquickFlow",
 				"model:MassWasting",
+				"model:SubCatchFlowOnly",
 				"model:wflow_subcatch",
 				"model:wflow_dem",
 				"model:wflow_ldd",
@@ -115,9 +118,8 @@ public class WflowBmiBridgeTest extends AbstractModelBridgeTest {
 				"model:wflow_soil",
 				"model:wflow_gauges",
 				"model:wflow_inflow",
+				"model:wflow_mgauges",
 				"model:wflow_riverwidth",
-				"model:RunoffGenSigmaFunction",
-				"model:SubCatchFlowOnly",
 				"model:TemperatureCorrectionMap",
 				"run:starttime",
 				"run:endtime",
@@ -150,12 +152,13 @@ public class WflowBmiBridgeTest extends AbstractModelBridgeTest {
 				"outputmaps:self.SurfaceRunoff",
 				"outputmaps:self.WaterLevel",
 				"outputmaps:self.Percolation",
+				"outputcsv_0:samplemap",
+				"outputtss_0:samplemap",
 				"inputmapstacks:Precipitation",
 				"inputmapstacks:EvapoTranspiration",
 				"inputmapstacks:Temperature",
 				"inputmapstacks:Inflow",
-				"outputcsv_0:samplemap",
-				"outputtss_0:samplemap"};
+				"inputmapstacks:Seepage"};
 	}
 
 	protected String getConfigFile() {
