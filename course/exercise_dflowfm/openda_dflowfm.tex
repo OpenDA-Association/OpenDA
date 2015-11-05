@@ -1,0 +1,184 @@
+\documentclass[a4paper,10pt]{article}
+%\usepackage[utf8x]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\reversemarginpar
+
+\newcommand{\question}[1]{#1 \marginpar{ ? }}
+\newcommand{\actionsingleline}[1] {\marginpar{ $\Rightarrow$ }\fbox{\parbox[c][][t]{\textwidth}{#1}\\} }
+\newcommand{\actionmultiline}[1] {\marginpar{ \hspace{\stretch{1}} \newline $\Rightarrow$ } \noindent \fbox{\parbox[c][][t]{\textwidth}{#1}\\} }
+
+\newcommand{\driveloc}[1]{{\tt #1}}
+
+%opening
+\title{OpenDA course, dflowFM exercises}
+\author{Nils van Velzen, Dirk van Meeuwen, Martin Verlaan}
+
+\begin{document}
+
+\lstset{ %
+ basicstyle=\ttfamily,            % the size of the fonts that are used for the code
+ breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+ breaklines=true,                 % sets automatic line breaking
+ captionpos=b,                    % sets the caption-position to bottom
+ columns=flexible, 		    				% Prevent additional spaces to be entered by the listing, when keepspaces = true --> enable copy - paste
+ escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+ extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+ frame=single,	                  % adds a frame around the code
+ keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+ numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+ numbersep=5pt,                   % how far the line-numbers are from the code
+ numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+ showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+ showstringspaces=false,          % underline spaces within strings only
+ showtabs=false,                  % show tabs within strings adding particular underscores
+ tabsize=2,	                      % sets default tabsize to 2 spaces
+}
+
+\maketitle
+
+%\begin{abstract}
+
+%\end{abstract}
+\section*{Course overview}
+This course consist of the following parts:
+\begin{enumerate}
+	\item Setting up the correct environment
+	\item Running OpenDA and plotting the results
+	\item Understanding the configuration
+	\item Study the effect of some variables
+\end{enumerate}
+
+\section{Setting up the correct environment}
+Before you can start with the exercises you must first set up OpenDA. For the
+latest instructions, you are referred to \driveloc{\$OPENDA/doc/index.html}, 
+section "Installation".
+
+\subsection{Install the model configuration}
+In this exercise we will use one of the example configurations for the dflowfm wrapper in OpenDA. The standard binary distribution of OpenDA does not contain these example models, therefore you need a source distribution of OpenDA.
+
+You do not necessarily need to compile the source version of OpenDA, you can run using a compatible binary distribution of OpenDA and only extract the example configuration from the source distribution of OpenDA.
+
+\actionmultiline{Copy the example configuration \driveloc{estuary\_kalman} from \driveloc{\$OPENDA/model\_dflowfm/tests} to some suitable location on your computer.}
+	
+\subsection{Adjust runscript to match you DFLOWFM installation}
+
+The dflowfm is not part of OpenDA and should be installed separately on your system. The current version of the wrapper needs a command-line installation of the dflowfm software. The OpenDA configuration must be able to find the dflowfm executable on your system. In the folder \driveloc{estuary\_kalman\textbackslash stochModel\textbackslash bin} you will find two scripts \driveloc{start\_dflowfm.bat} for Windows systems and \driveloc{start\_dflowfm.sh} for Linux systems. You need to check and adjust whether these scripts use the correct installation of dflowfm.
+
+The next steps need to be taken, assuming you are using Windows: \newline
+\actionsingleline{Open the file \driveloc{start\_dflowfm.bat} in a text editor}
+The first lines of this file look like:
+
+\begin{verbatim}
+@echo off
+set executable=dflowfm.exe
+rem 
+rem check if executable is available on PATH
+rem
+where /Q %executable%
+if errorlevel 1 goto error_not_found
+if errorlevel 2 goto error_unknown
+\end{verbatim}
+
+The standard script assumes that the executable is called dflowfm.exe and it is present on the path, which means that you can start, in cmd, dflowfm by just typing dflowfm.exe.
+When your executable is on the path but with an other name, only update the line
+\begin{verbatim}
+set executable=dflowfm.exe
+\end{verbatim}
+
+As an alternative, you can set the whole path to the executable. In this case you have to disable the check whether dflowfm is on the path. Example:
+
+\begin{verbatim}
+rem @echo off
+set executable="c:\OpenDA\cursus\delft3d-win64\dflowfm\bin\dflowfm-cli.exe" 
+rem 
+rem check if executable is available on PATH
+rem
+rem where /Q %executable%
+rem if errorlevel 1 goto error_not_found
+rem if errorlevel 2 goto error_unknown
+\end{verbatim}
+
+When running the script it needs as an argument the name of the mdu file. Example:
+\begin{verbatim}
+..\bin\start_dflowfm.bat estuary.mdu
+\end{verbatim}
+
+Now, it is time to make the changes and check if it is running. \\
+
+\actionmultiline{
+\begin{itemize}
+	\item Adjust the file \driveloc{start\_dflowfm.bat} as described above
+	\item Copy the folder \driveloc{estuary\_kalman\textbackslash stochmodel\textbackslash input\_dflowfm} to some location e.g. \driveloc{estuary\_kalman\textbackslash input\_test}
+	\item Open CMD and cd to the folder \driveloc{input\_test}
+	\item Start the script
+\end{itemize}
+ }
+ 
+If you see the model running, you are ready to start experimenting.
+
+\section{Running OpenDA and plotting the results}
+In the folder \driveloc{estuary\_kalman} you will find the input file \driveloc{SequentialSimulation.oda}. This configuration will not assimilate any data yet. It will run the model from observation time to observation time and generate output such that the model predictions can be compared to the available measurements. The output will be written to a file that can be further processed with Matlab. \\
+\actionsingleline{Open the configuration file}
+
+Can you find: 
+\begin{enumerate}
+  \item \question{Where the configuration of the algorithm can be found?}
+  \item \question{Where the observations are stored?}
+  \item \question{To which file the results will be written?}
+\end{enumerate}
+
+\actionmultiline{
+Open the OpenDA GUI in the bin directory of your OpenDA distribution and open and run \driveloc{SequentialSimulation.oda}.
+}
+
+\subsection{Plot the results}
+We have prepared a Matlab script \driveloc{plot\_sequential.m} to visualize the results of the \driveloc{SequentialSimulation.oda}. \\
+\actionsingleline{Visualize the results of the simulation}
+When you execute this script you will see time series information at the three observation locations. You will see that the model is well capable to follow the "truth" but at some point starts to deviate.  The difference between the model and truth could be caused by a big tidal wave due to a storm that is not present in the boundary conditions in model set-up.
+
+Later we will try to fix this using data assimilation.
+
+\section{Understanding the configuration}
+It is important to understand the configuration in order to be able to set-up your own experiments. All aspects of the model configuration can be found in the directory  
+\driveloc{StochModel}. What can you find in this directory:
+\begin{description}
+\item [bin directory] We have already seen this directory, it contains the scripts, started by OpenDA for running the dflowfm executable
+\item [input\_dflowfm] This directory contains the model input of your dflowfm model
+\item [work \textless number\textgreater] These directories are created by OpenDA, all model instances get their own working folder (initially a copy of \driveloc{input\_dflowfm}). These directories contain model output at the end of the run and allow you to debug your model in case something goes wrong.
+\item [dflowfmWrapper.xml] This is the model wrapper configuration file. It specifies how OpenDA can run dflowfm and what code (IOObjects) need to be used to process the various input and output files. In general you do not have to change this file and you will be able to use it for many different model configurations/schematizations. When you need to change it, it will probably have to do with processing more input and output files.
+\item [dflowfmmodel.xml] In this file you will find information that is more specific to your model schematization (in \driveloc{input\_dflowfm}). Here you specify the actual names of the input and output files and which time series can be used used to compare model results to observations. When you setup your own model schematization you probably have to set or adjust some values in this file.
+\item [dflowfmStochModel] In this file you set up information needed in your data assimilation run. Here you specify the variables that form the model state vector, the observations used and the uncertainty model.
+\item [BoundaryNoiseSurge.xml] In this file you specify the model uncertainty.
+\end{description}
+
+Let's see if we can find the following configuration items:
+\begin{itemize}
+\item \question{Can you find which variables form the model state vector?}
+\item \question{How is the uncertainty specified, what should be changed to add more uncertainty to the boundary values of the model?}
+\item \question{Can you find to which input file noise (uncertainty) will be added?}
+\item \question{What do you have to change when you put the model input in a different folder?}
+\item \question{Assume (not the case here) there is a 4-th time series as well written to the estuary\_his.nc file where do you need to make changes in order to be able to use this time series?}
+\end{itemize}
+
+\section{Study the effect of some variables}
+The various configuration files are stored in the folder algorithm. 
+\begin{itemize}
+	\item \question{Can you find why no noise is added to the model in the SequentialSimulation.oda?} 
+	\item \question{Can you change the configuration of the SequentialSimulation such that noise is added to the boundary values?}
+\end{itemize}
+Let us examine the effect of the noise in the model. \\
+\actionsingleline{Run the model and compare the results}
+
+\subsection{EnKF}
+Now it is time to improve your model run using observations. We have prepared the configuration file \driveloc{Enkf.oda} and the visualisation script \driveloc{plot\_enkf.m}.
+\actionmultiline{
+\begin{itemize}
+\item Run the EnKF algorithm and plot the results.
+\item Increase and decrease the observation error.
+\item Change the ensemble size. 
+\end{itemize}
+}
+\question{Can you explain what you notice?}
+
+\end{document}
