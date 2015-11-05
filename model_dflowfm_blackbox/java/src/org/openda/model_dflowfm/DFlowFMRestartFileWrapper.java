@@ -160,7 +160,12 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			   	e.printStackTrace();
 		    } catch (InvalidRangeException e) {
 			  	 e.printStackTrace();
+			} catch (ArrayIndexOutOfBoundsException e) {
+				System.out.println("Error processing "+var.getName());
+				continue;
+				//e.printStackTrace();
 			}
+
 
 		    // Create exchange items
 			double[] dValues;

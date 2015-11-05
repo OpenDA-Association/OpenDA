@@ -22,7 +22,7 @@ copy %DFLOWFMDIR%interact.ini %work%
 rem
 rem start D-Flow FM
 rem 
-%executable% --autostartstop --nodisplay --quiet %mdufile%
+%executable% --autostartstop --nodisplay %mdufile%
 goto eof
 
 rem

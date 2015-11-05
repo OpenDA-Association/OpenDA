@@ -57,11 +57,13 @@
       <entry name="?*.tld" />
       <entry name="?*.ftl" />
     </wildcardResourcePatterns>
-    <annotationProcessing enabled="false" useClasspath="true" />
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+    </annotationProcessing>
   </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
-  </component>
+  <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -74,22 +76,6 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="790414797F4F779FAEC519C16D750569" />
-  <component name="InspectionProjectProfileManager">
-    <profiles>
-      <profile version="1.0" is_locked="false">
-        <option name="myName" value="Project Default" />
-        <option name="myLocal" value="false" />
-        <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
-          <option name="processCode" value="true" />
-          <option name="processLiterals" value="true" />
-          <option name="processComments" value="true" />
-        </inspection_tool>
-      </profile>
-    </profiles>
-    <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_PROFILE" value="true" />
-    <version value="1.0" />
-  </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
     <option name="OPTION_SCOPE" value="protected" />
@@ -247,8 +233,8 @@
       <module fileurl="file://$PROJECT_DIR$/../algorithms/java/algorithms.iml" filepath="$PROJECT_DIR$/../algorithms/java/algorithms.iml" />
       <module fileurl="file://$PROJECT_DIR$/../application/java/application.iml" filepath="$PROJECT_DIR$/../application/java/application.iml" />
       <module fileurl="file://$PROJECT_DIR$/../core/java/core.iml" filepath="$PROJECT_DIR$/../core/java/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/java/model_simona_blackbox.iml" filepath="$PROJECT_DIR$/java/model_simona_blackbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/../model_example_fortran/java/model_example_fortran.iml" filepath="$PROJECT_DIR$/../model_example_fortran/java/model_example_fortran.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/model_simona_blackbox.iml" filepath="$PROJECT_DIR$/java/model_simona_blackbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/../models/java/models.iml" filepath="$PROJECT_DIR$/../models/java/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/../observers/java/observers.iml" filepath="$PROJECT_DIR$/../observers/java/observers.iml" />
     </modules>
@@ -272,20 +258,6 @@
         <entry key="$PROJECT_DIR$/../algorithms/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -299,20 +271,6 @@
         <entry key="$PROJECT_DIR$/../application/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -326,20 +284,6 @@
         <entry key="$PROJECT_DIR$/../core/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -353,20 +297,6 @@
         <entry key="$PROJECT_DIR$/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -380,20 +310,6 @@
         <entry key="$PROJECT_DIR$/../model_example_fortran/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -407,20 +323,6 @@
         <entry key="$PROJECT_DIR$/../models/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -434,20 +336,6 @@
         <entry key="$PROJECT_DIR$/../observers/java">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://repos.deltares.nl/repos/openda/openda_1/public/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://repos.deltares.nl/repos/openda/openda_1/public/branches" />
@@ -482,4 +370,3 @@
     </library>
   </component>
 </project>
-

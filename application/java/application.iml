@@ -30,6 +30,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="model_dflowfm_blackbox" />
   </component>
 </module>
-
