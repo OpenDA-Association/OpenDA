@@ -164,7 +164,7 @@ public class UciFileTest extends TestCase {
 
     public void testReadUciStateFile() {
         UciStateDataObject uciStateDataObject = new UciStateDataObject();
-        String uciFilename = "uciFileTest/input/ndriver_without_tags.uci";
+        String uciFilename = "uciFileTest/input/ndriver_state_file.uci";
         String[] arguments = new String[]{uciFilename};
         uciStateDataObject.initialize(testRunDataDir, arguments);
 
@@ -194,5 +194,43 @@ public class UciFileTest extends TestCase {
         item = uciStateDataObject.getDataObjectExchangeItem("58.VOL");
         assertNotNull(item);
         assertEquals(100d, item.getValues());
+    }
+
+    public void testWriteUciStateFile() {
+        UciStateDataObject uciStateDataObject = new UciStateDataObject();
+        String uciFilename = "uciFileTest/input/ndriver_state_file.uci";
+        String[] arguments = new String[]{uciFilename};
+        uciStateDataObject.initialize(testRunDataDir, arguments);
+
+        //set values in exchangeItems.
+        //HEAT-INIT
+        IExchangeItem item = uciStateDataObject.getDataObjectExchangeItem("1.AIRTMP");
+        assertNotNull(item);
+        item.setValues(-1d);
+        item = uciStateDataObject.getDataObjectExchangeItem("42.AIRTMP");
+        assertNotNull(item);
+        item.setValues(42d);
+        item = uciStateDataObject.getDataObjectExchangeItem("232.AIRTMP");
+        assertNotNull(item);
+        item.setValues(1000d);
+
+        //HYDR-INIT
+        item = uciStateDataObject.getDataObjectExchangeItem("56.VOL");
+        assertNotNull(item);
+        item.setValues(0.56d);
+        item = uciStateDataObject.getDataObjectExchangeItem("57.VOL");
+        assertNotNull(item);
+        item.setValues(0.57d);
+        item = uciStateDataObject.getDataObjectExchangeItem("58.VOL");
+        assertNotNull(item);
+        item.setValues(0.58d);
+
+        //the call to method finish actually writes the data in the exchangeItems to the uci file.
+        uciStateDataObject.finish();
+
+        File actualOutputFile = new File(testRunDataDir, uciFilename);
+        File expectedOutputFile = new File(testRunDataDir, "uciFileTest/expectedResult/ndriver_state_file_expected.uci");
+        assertEquals("Actual output file '" + actualOutputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
+                AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(actualOutputFile));
     }
 }
