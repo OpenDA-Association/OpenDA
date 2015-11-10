@@ -297,6 +297,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
                     double compareEpsilon = 1e-6;
                     int startIndex = Integer.MAX_VALUE;
                     int i = 0;
+					//startIndex is inclusive.
                     while (startIndex == Integer.MAX_VALUE && i < times.length) {
                         if (isSpan) {//if time span selected.
                             if (times[i] > child.beginTimeAsMJD + compareEpsilon) startIndex = i;
@@ -312,6 +313,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
                     }
 
                     // truncate after the end time
+					//endIndex is exclusive.
                     int endIndex = startIndex + 1;
                     if (isSpan) {
                         while (endIndex < times.length && !(times[endIndex] > child.endTimeAsMJD))
@@ -325,6 +327,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 					//TODO this only checks if the time indices are the same, also need to check whether the times itself are the same, in order to initialize timesEqualForAllItems correctly. AK
 //                    child.timesEqualForAllItems &= sameTimesAsPreviousExchangeItem;
                     child.timesEqualForAllItems = false;
+					//startIndex is inclusive, endIndex is exclusive.
                     SelectedTimeIndexRange selectedIndices = (sameTimesAsPreviousExchangeItem && lastSelectedIndices != null) ? lastSelectedIndices : new SelectedTimeIndexRange(startIndex, endIndex);
                     child.selectedTimeIndices.put(exchangeItem, selectedIndices);
                     child.exchangeItemIds.add(exchangeItem.getId());
@@ -592,19 +595,20 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 	private class IoObjectStochObsDescriptions implements IObservationDescriptions, Serializable {
 
-		private List<String> exchangeItemIds = null;
+		private final List<String> exchangeItemIds;
 		//exchangeItems in map can be wrapped within an IoObjectStochObsTimeSelectionExchangeItem.
-		private HashMap<String, IPrevExchangeItem> exchangeItems = null;
-		private IoObjectStochObserver stochObserver;
-
+		private final HashMap<String, IPrevExchangeItem> exchangeItems;
+		private final IoObjectStochObserver stochObserver;
+		private final HashMap<IPrevExchangeItem, SelectedTimeIndexRange> selectedTimeIndices;
 
 		private IoObjectStochObsDescriptions(List<String> exchangeItemIds,
 											HashMap<String, IPrevExchangeItem> exchangeItems,
 											HashMap<IPrevExchangeItem, SelectedTimeIndexRange> selectionIndices,
 											IoObjectStochObserver stochObserver) {
 			this.stochObserver = stochObserver;
+			this.selectedTimeIndices = selectionIndices;
 
-			if (selectedTimeIndices == null) {//if time independent.
+			if (selectionIndices == null) {//if time independent.
 				if (selectionIndices != null && selectionIndices.size() > 0) {
 					throw new RuntimeException(
 							"org.openda.observers.IoObjectStochObsDescriptions.IoObjectStochObsDescriptions() " +
@@ -707,7 +711,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						if (exchangeItem instanceof IGridTimeSeriesExchangeItem) {
 							//this code assumes that this method is only called after the time selection has been made and that only one time step is selected.
 							//Note: in case of IoObjectStochObsTimeSelectionExchangeItem this uses the wrapped exchangeItem to lookup the selected time indices.
-							SelectedTimeIndexRange selectedIndices = selectedTimeIndices.get(exchangeItem);
+							SelectedTimeIndexRange selectedIndices = this.selectedTimeIndices.get(exchangeItem);
 							if (selectedIndices.getSize() != 1) {
 								throw new UnsupportedOperationException(getClass().getSimpleName()
 										+ ": getValueProperties only works for exchangeItems of type IGridTimeSeriesExchangeItem if only one time is selected.");
@@ -743,7 +747,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 			} else if (keyIsTime(key)) {
 				List<Double> timesList = new ArrayList<Double>();
-				if (selectedTimeIndices == null) {
+				if (this.selectedTimeIndices == null) {
 					// Time independent. Return empty list.
 
 				} else {//if time dependent.
@@ -756,7 +760,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 							//unwrap exchangeItem.
 							exchangeItem = ((IoObjectStochObsTimeSelectionExchangeItem)exchangeItem).exchangeItem;
 						}
-						SelectedTimeIndexRange selectedIndices = selectedTimeIndices.get(exchangeItem);
+						SelectedTimeIndexRange selectedIndices = this.selectedTimeIndices.get(exchangeItem);
 						//if more than one exchangeItem, then add times for each exchangeItem in sequence.
 						for (int i = selectedIndices.getStart(); i < selectedIndices.getEnd(); i++) {
 							timesList.add(exchangeItem.getTimes()[i]);
