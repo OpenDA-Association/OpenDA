@@ -80,7 +80,7 @@ public class NonMissingStochObserverGridTimeSeriesExchangeItem implements IGridT
 	}
 
 	public IGeometryInfo getGeometryInfo() {
-		throw new IllegalStateException("geometryInfo depends on time. Call method getGeometryInfoForSingleTimeIndex instead.");
+		return this.exchangeItem.getGeometryInfo();
 	}
 
 	/**
@@ -124,31 +124,35 @@ public class NonMissingStochObserverGridTimeSeriesExchangeItem implements IGridT
 	}
 
 	public ValueType getValuesType() {
-		return this.exchangeItem.getValuesType();
+		return ValueType.doublesType;
 	}
 
-	public Class<?> getValueType() {
-		return this.exchangeItem.getValueType();
+	public Class getValueType() {
+		return double[].class;
 	}
 
 	public Object getValues() {
-		throw new IllegalStateException("values depend on time. Call method getValuesAsDoublesForSingleTimeIndex instead.");
+		return getValuesAsDoubles();
 	}
 
 	public double[] getValuesAsDoubles() {
-		throw new IllegalStateException("values depend on time. Call method getValuesAsDoublesForSingleTimeIndex instead.");
+		double[] values = exchangeItem.getValuesAsDoubles();
+		return getNonMissingValuesAsDoubles(values);
 	}
 
 	public double[] getValuesAsDoublesForSingleTimeIndex(int timeIndex) {
 		double[] values = getAllValuesForSingleTimeIndex(timeIndex);
+		return getNonMissingValuesAsDoubles(values);
+	}
+
+	private static double[] getNonMissingValuesAsDoubles(double[] values) {
 		if (!BBUtils.containsNaN(values)) {
 			return values;
 		}
 
 		//filter out missing values.
-		List<Double> nonMissingValuesList = new ArrayList<Double>(values.length);
-		for (int cellIndex = 0; cellIndex < values.length; cellIndex++) {
-			double value = values[cellIndex];
+		List<Double> nonMissingValuesList = new ArrayList<>(values.length);
+		for (double value : values) {
 			if (Double.isNaN(value)) {
 				continue;
 			}

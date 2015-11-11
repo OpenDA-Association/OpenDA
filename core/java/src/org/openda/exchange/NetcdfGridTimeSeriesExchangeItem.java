@@ -111,6 +111,7 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 	}
 
 	public IGeometryInfo getGeometryInfo() {
+		//within one NetCDF file the grid geometry is constant in time.
 		return this.geometryInfo;
 	}
 

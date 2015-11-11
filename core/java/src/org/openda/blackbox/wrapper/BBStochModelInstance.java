@@ -29,9 +29,11 @@ import org.openda.interfaces.*;
 import org.openda.uncertainties.UncertaintyEngine;
 import org.openda.utils.*;
 import org.openda.utils.Vector;
+import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
+
 import java.io.File;
 import java.util.*;
 
@@ -798,6 +800,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 		}
 
+	/**
+	 * Returns the values that would be observed, if reality would be equal to the current model state.
+	 */
 	private IVector getObservedValuesBB(IObservationDescriptions observationDescriptions) {
 		if ( timerGetObs == null){
 			timerGetObs = new OdaTiming(ModelID);
@@ -807,6 +812,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		TreeVector treeVector = new TreeVector("predictions");
 		String errorMessage = "";
 		for (IPrevExchangeItem observationExchangeItem : observationDescriptions.getExchangeItems()) {
+			//get modelExchangeItem that corresponds to current observationExchangeItem.
 			BBStochModelVectorConfig vectorConfig = findPredictionVectorConfig(observationExchangeItem.getId());
             IPrevExchangeItem modelExchangeItem = null;
             if (this.bbStochModelVectorsConfig.isCollectPredictorTimeSeries()) {
@@ -823,17 +829,36 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			if (modelExchangeItem == null) {
 				errorMessage += "\n\tExchange item not found: "
 						+ vectorConfig.getSourceId();
+				continue;
 			}
-			IPrevExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig,
-					modelExchangeItem, selectors, configRootDir);
+
+			//Note: mappedExchangeItem can be a subVector with only a selection of the modelExchangeItem. Therefore below only use mappedExchangeItem.
+			IExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig, modelExchangeItem, selectors, configRootDir);
+			//get model values.
 			double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 
+			//get the model values at the observed coordinates.
+			if (!GeometryUtils.isScalar(observationExchangeItem)) {//if grid observationExchangeItem.
+				//this code only works for grid modelExchangeItems.
+				if (GeometryUtils.isScalar(mappedExchangeItem.getGeometryInfo())) {
+					throw new IllegalArgumentException(getClass().getSimpleName() + ": Observation exchange item with id '" + observationExchangeItem.getId()
+							+ "' is a grid, therefore the corresponding model exchange item must also be a grid. Found scalar model exchange item.");
+				}
+				IVector observedModelValues = getObservedModelValuesForGrid(observationExchangeItem, observationDescriptions, mappedExchangeItem.getGeometryInfo(), computedValues);
+				ITreeVector treeVectorLeaf = new TreeVector(mappedExchangeItem.getId(), observedModelValues);
+				treeVector.addChild(treeVectorLeaf);
+				continue;
+			}
+
+			//if scalar observationExchangeItem.
+			//this code assumes that the observationExchangeItem and the mappedExchangeItem have the same coordinates (i.e. their coordinates are not used).
+			//If the modelExchangeItem is a grid, then the mappedExchangeItem must be a subVector of the modelExchangeItem with only one selected grid cell.
 			ITreeVector treeVectorLeaf;
 			double[] observationTimes = observationExchangeItem.getTimes();
 			if (observationTimes != null) {
 				double[] computedTimes = mappedExchangeItem.getTimes();
 				if (computedTimes != null) {
-					//TODO this code assumes that the computedValues are scalar time series -> why is this not implemented for grids?
+					//this code only works for scalar time series.
 					if (computedTimes.length != computedValues.length) {
 						errorMessage += "\n\tInconsistency in #times (" +
 								computedTimes.length + ") and #values (" + computedValues.length + ") for" +
@@ -875,6 +900,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 			treeVector.addChild(treeVectorLeaf);
 		}
+
 		if (errorMessage.length() > 0) {
 			throw new RuntimeException("Error(s) in getting observed values from black box model" + errorMessage);
 		}
@@ -882,6 +908,86 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return treeVector;
 	}
 
+	/**
+	 * Get the observed values of the Model. This returns what the observations
+	 * would look like, if reality would be equal to the current model state.
+	 *
+	 * In other words this method returns a grid with values that would be
+	 * observed by the satellite if reality would be equal to the current model
+	 * state. This is needed, because, to compare the satellite observations
+	 * with the model output, they should be defined on the same grid. The grid
+	 * of the satellite has a different position, size and orientation than the
+	 * grid of the model state. The values of the model state grid are
+	 * interpolated to the observations grid using bilinear interpolation. For
+	 * satellite observations the interpolation has to be done for each
+	 * observation separately, since for each time step the satellite grid can
+	 * be different, as the satellite moves along its orbit.
+	 *
+	 * @param allObservationDescriptions observation description
+	 * @return model prediction interpolated to each observation (location).
+	 */
+	private static IVector getObservedModelValuesForGrid(IPrevExchangeItem observationExchangeItem, IObservationDescriptions allObservationDescriptions, IGeometryInfo modelGeometryInfo, double[] modelValues) {
+		//if there are multiple observationExchangeItems for the current time, e.g. soilMoisture and discharge, then the coordinates of these exchangeItems are present in sequence
+		//in the given allObservationDescriptions, i.e. not just the coordinates of the given observationExchangeItem.
+		IVector allObservationXCoordinates = allObservationDescriptions.getValueProperties("x");
+		IVector allObservationYCoordinates = allObservationDescriptions.getValueProperties("y");
+
+		//get index range of the coordinates for the given observationExchangeItem within allObservationXCoordinates.
+		String searchedObservationExchangeItemId = observationExchangeItem.getId();
+		int startIndex = -1;
+		int gridCellCount = -1;
+		int currentIndex = 0;
+		//this code assumes that method allObservationDescriptions.getValueProperties returns properties for multiple exchangeItems in the same order
+		//as the exchangeItems returned by method observationDescriptions.getExchangeItems.
+		for (IPrevExchangeItem exchangeItem : allObservationDescriptions.getExchangeItems()) {
+			int currentGridCellCount = GeometryUtils.getGridCellCount(exchangeItem);
+
+			if (exchangeItem.getId().equals(searchedObservationExchangeItemId)) {
+				//startIndex is inclusive.
+				startIndex = currentIndex;
+				gridCellCount = currentGridCellCount;
+				break;
+			}
+
+			currentIndex += currentGridCellCount;
+		}
+		if (startIndex == -1 || gridCellCount == -1) {
+			throw new IllegalStateException("Observation exchangeItem with id '" + searchedObservationExchangeItemId + "' not found in observationDescriptions.");
+		}
+
+		//get the coordinates for the given observationExchangeItem.
+		IVector observationXCoordinates = new Vector(gridCellCount);
+		IVector observationYCoordinates = new Vector(gridCellCount);
+		//startIndex is inclusive.
+		int index = startIndex;
+		for (int n = 0; n < gridCellCount; n++) {
+			double x = allObservationXCoordinates.getValue(index);
+			double y = allObservationYCoordinates.getValue(index);
+
+			observationXCoordinates.setValue(n, x);
+			observationYCoordinates.setValue(n, y);
+
+			index++;
+		}
+
+		//get the model values at the observed coordinates.
+		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationXCoordinates, observationYCoordinates, modelGeometryInfo, modelValues);
+
+		int errorCount = 0;
+		for (int i = 0; i < observedModelValues.getSize(); i++) {
+			double value = observedModelValues.getValue(i);
+
+			if (Double.isNaN(value)) {
+				errorCount += 1;
+			}
+		}
+
+		if (errorCount > 0) {
+			throw new RuntimeException("The model returned missing values for " + errorCount + " observation locations.");
+		}
+
+		return observedModelValues;
+	}
 
 	private IVector[] getObservedLocalizationExtended(IObservationDescriptions observationDescriptions, double distance){
 

@@ -27,7 +27,7 @@ import java.util.Hashtable;
  * TODO: korte beschrijving
  * TODO: implement the IExchangeItem methods. Consult Stef.
  */
-public class NonMissingStochObserverExchangeItem implements IPrevExchangeItem, IExchangeItem, Serializable {
+public class NonMissingStochObserverExchangeItem implements IExchangeItem, Serializable {
 
     private IPrevExchangeItem ioExchangeItem;
     private double[] values;

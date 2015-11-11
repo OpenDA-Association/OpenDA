@@ -51,6 +51,7 @@ public class GeometryUtils {
 	public static int getGridCellCount(IPrevExchangeItem prevExchangeItem, int timeIndex) {
 		//get exchangeItem.
 		if (!(prevExchangeItem instanceof IExchangeItem)) {
+			//IPrevExchangeItem has no geometryInfo, so can never be a grid.
 			return 1;
 		}
 		IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
@@ -67,6 +68,20 @@ public class GeometryUtils {
 		return getGridCellCount(geometryInfo);
 	}
 
+	/**
+	 * Returns the number of grid cells for the given exchangeItem. If item is not a grid, then that is the same as a grid with only one cell.
+	 */
+	public static int getGridCellCount(IPrevExchangeItem prevExchangeItem) {
+		//get exchangeItem.
+		if (!(prevExchangeItem instanceof IExchangeItem)) {
+			//IPrevExchangeItem has no geometryInfo, so can never be a grid.
+			return 1;
+		}
+		IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
+
+		return getGridCellCount(exchangeItem.getGeometryInfo());
+	}
+
 	//TODO add getCellCount to IGeometryInfo interface. AK
 	private static int getGridCellCount(IGeometryInfo geometryInfo) {
 		if (isScalar(geometryInfo)) return 1;
@@ -75,6 +90,17 @@ public class GeometryUtils {
 		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).getCellCount();
 		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
 		return ((LayeredIrregularGridGeometryInfo) geometryInfo).getCellCount();
+	}
+
+	public static boolean isScalar(IPrevExchangeItem prevExchangeItem) {
+		//get exchangeItem.
+		if (!(prevExchangeItem instanceof IExchangeItem)) {
+			//IPrevExchangeItem has no geometryInfo, so can never be a grid.
+			return true;
+		}
+		IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
+
+		return isScalar(exchangeItem.getGeometryInfo());
 	}
 
 	public static boolean isScalar(IGeometryInfo geometryInfo) {
@@ -143,15 +169,15 @@ public class GeometryUtils {
 					+ ArrayGeometryInfo.class.getName() + " not for geometryInfo of type " + sourceGeometryInfo.getClass().getName());
 		}
 		ArrayGeometryInfo sourceArrayGeometryInfo = ((ArrayGeometryInfo) sourceGeometryInfo);
-		if (!sourceArrayGeometryInfo.isRectangular()) throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for rectangular source grid.");
+		if (!sourceArrayGeometryInfo.isRectangular()) throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for a rectangular source grid.");
 
 		double[] rowCenterYCoordinates = sourceArrayGeometryInfo.getRowYCoordinates().getValues();
 		double[] columnCenterXCoordinates = sourceArrayGeometryInfo.getColumnXCoordinates().getValues();
 		if (rowCenterYCoordinates == null || rowCenterYCoordinates.length <= 1 || columnCenterXCoordinates == null || columnCenterXCoordinates.length <= 1) {//if not a grid.
-			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for source grid.");
+			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for a source grid with at least two rows and at least two columns.");
 		}
 		if (!isSortedAscending(rowCenterYCoordinates) || !isSortedAscending(columnCenterXCoordinates)) {
-			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for grids with coordinates that are sorted ascending.");
+			throw new UnsupportedOperationException(GeometryUtils.class.getName() + ".bilinearInterpolateValue() only implemented for a source grid with coordinates that are sorted ascending.");
 		}
 
 		boolean rowMajor = isRowMajor(sourceArrayGeometryInfo);

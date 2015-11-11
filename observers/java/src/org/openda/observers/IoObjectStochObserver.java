@@ -22,19 +22,18 @@ package org.openda.observers;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.NonMissingStochObserverGridTimeSeriesExchangeItem;
+import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
 import org.openda.uncertainties.UncertaintyEngine;
 import org.openda.uncertainties.pdfs.NormalDistribution;
 import org.openda.uncertainties.pdfs.PDF;
 import org.openda.utils.*;
+import org.openda.utils.Vector;
 import org.openda.utils.geometry.GeometryUtils;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Stochastic Observer based on IOobjects
@@ -154,7 +153,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
                     	if(ioExchangeItem.getTimes()==null){removeMissingValues=false;}
 
 					if (removeMissingValues) {
-						IPrevExchangeItem nonMissingExchangeItem;
+						IExchangeItem nonMissingExchangeItem;
 						if (ioExchangeItem instanceof IGridTimeSeriesExchangeItem) {
 							nonMissingExchangeItem = new NonMissingStochObserverGridTimeSeriesExchangeItem((IGridTimeSeriesExchangeItem) ioExchangeItem);
 						} else {
@@ -662,6 +661,8 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 			return selection;
 		}
 
+		//Note: this should return the exchangeItems in the same order as the ids in this.exchangeItemIds.
+		//This is important for the code in method BBStochModelInstance.getObservedModelValuesForGrid.
 		public List<IPrevExchangeItem> getExchangeItems() {
 			List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
 			for (String exchangeItemId : exchangeItemIds) {
@@ -670,6 +671,8 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 			return exchangeItems;
 		}
 
+		//Note: this should return the properties in the same order as the ids in this.exchangeItemIds.
+		//This is important for the code in method BBStochModelInstance.getObservedModelValuesForGrid.
 		public IVector getValueProperties(String key) {
 
 			IVector properties;
@@ -695,30 +698,13 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						}
 						coordinatesList.add(pos);
 					}else{
-						//get exchangeItem.
-						//in case of IoObjectStochObsTimeSelectionExchangeItem then need to use the wrapped exchangeItem to get the geometryInfo.
-						if (prevExchangeItem instanceof IoObjectStochObsTimeSelectionExchangeItem) {
-							//unwrap exchangeItem.
-							prevExchangeItem = ((IoObjectStochObsTimeSelectionExchangeItem) prevExchangeItem).exchangeItem;
-						}
-						if (!(prevExchangeItem instanceof IExchangeItem)) {
-							throw new RuntimeException("No coordinates available for IPrevExchangeItem exchangeItem " + exchangeItemId);
-						}
-						IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
-
 						//get geometryInfo.
 						IGeometryInfo geometryInfo;
-						if (exchangeItem instanceof IGridTimeSeriesExchangeItem) {
-							//this code assumes that this method is only called after the time selection has been made and that only one time step is selected.
-							//Note: in case of IoObjectStochObsTimeSelectionExchangeItem this uses the wrapped exchangeItem to lookup the selected time indices.
-							SelectedTimeIndexRange selectedIndices = this.selectedTimeIndices.get(exchangeItem);
-							if (selectedIndices.getSize() != 1) {
-								throw new UnsupportedOperationException(getClass().getSimpleName()
-										+ ": getValueProperties only works for exchangeItems of type IGridTimeSeriesExchangeItem if only one time is selected.");
-							}
-							geometryInfo = ((IGridTimeSeriesExchangeItem) exchangeItem).getGeometryInfoForSingleTimeIndex(selectedIndices.getStart());
+						if (!(prevExchangeItem instanceof IExchangeItem)) {
+							//IPrevExchangeItem has no geometryInfo, so can never be a grid.
+							geometryInfo = null;
 						} else {
-							geometryInfo = exchangeItem.getGeometryInfo();
+							geometryInfo = ((IExchangeItem) prevExchangeItem).getGeometryInfo();
 						}
 
 						//get geometry.
@@ -831,7 +817,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 	/**
 	 * ExchangeItem that selects certain times from another exchangeItem.
 	 */
-	private class IoObjectStochObsTimeSelectionExchangeItem implements IPrevExchangeItem, Serializable {
+	private class IoObjectStochObsTimeSelectionExchangeItem implements IExchangeItem, Serializable {
 
 		private IPrevExchangeItem exchangeItem;
 		private SelectedTimeIndexRange selectedIndices;
@@ -853,6 +839,10 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		public Class getValueType() {
 			return double[].class;
+		}
+
+		public ValueType getValuesType() {
+			return ValueType.doublesType;
 		}
 
 		public Role getRole() {
@@ -945,14 +935,44 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 			exchangeItem.setValuesAsDoubles(allValues);
 		}
 
+		//get the geometryInfo for the selected times.
+		public IGeometryInfo getGeometryInfo() {
+			if (this.exchangeItem instanceof IGridTimeSeriesExchangeItem) {
+				if (this.selectedIndices.getSize() != 1) {
+					throw new UnsupportedOperationException(getClass().getSimpleName() + ": getGeometryInfo only works for exchangeItems of type IGridTimeSeriesExchangeItem if only one time is selected.");
+				}
+				return ((IGridTimeSeriesExchangeItem) this.exchangeItem).getGeometryInfoForSingleTimeIndex(this.selectedIndices.getStart());
+			}
+
+			//TODO all exchangeItems should implement IExchangeItem. AK
+			if (exchangeItem instanceof IExchangeItem) {
+				return ((IExchangeItem) exchangeItem).getGeometryInfo();
+			}
+			return null;
+		}
+
 		//return only the selected times.
 		public double[] getTimes() {
 			return times;
 		}
 
+		public ITimeInfo getTimeInfo() {
+			return new TimeInfo(getTimes());
+		}
+
 		public void setTimes(double[] times) {
-			throw new UnsupportedOperationException(
-					"IoObjectStochObsTimeSelectionExchangeItem.setTimes(): Setting times not allowed.");
+			throw new UnsupportedOperationException(getClass().getSimpleName() + ".setTimes(): Setting times not allowed.");
+		}
+
+		public IQuantityInfo getQuantityInfo() {
+			if (exchangeItem instanceof IExchangeItem) {
+				return ((IExchangeItem) exchangeItem).getQuantityInfo();
+			}
+			return null;
+		}
+
+		public void copyValuesFromItem(IExchangeItem sourceItem) {
+			throw new UnsupportedOperationException(getClass().getSimpleName() + ".copyValuesFromItem() not implemented.");
 		}
 	}
 }
