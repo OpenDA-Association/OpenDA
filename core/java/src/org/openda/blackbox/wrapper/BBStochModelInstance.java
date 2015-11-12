@@ -844,7 +844,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					throw new IllegalArgumentException(getClass().getSimpleName() + ": Observation exchange item with id '" + observationExchangeItem.getId()
 							+ "' is a grid, therefore the corresponding model exchange item must also be a grid. Found scalar model exchange item.");
 				}
-				IVector observedModelValues = getObservedModelValuesForGrid(observationExchangeItem, observationDescriptions, mappedExchangeItem.getGeometryInfo(), computedValues);
+				//grid exchangeItems are always IExchangeItems.
+				IVector observedModelValues = getObservedModelValuesForGrid(((IExchangeItem) observationExchangeItem).getGeometryInfo(), mappedExchangeItem.getGeometryInfo(), computedValues);
 				ITreeVector treeVectorLeaf = new TreeVector(mappedExchangeItem.getId(), observedModelValues);
 				treeVector.addChild(treeVectorLeaf);
 				continue;
@@ -923,52 +924,17 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * observation separately, since for each time step the satellite grid can
 	 * be different, as the satellite moves along its orbit.
 	 *
-	 * @param allObservationDescriptions observation description
+	 * @param observationGeometryInfo
+	 * @param modelGeometryInfo
+	 * @param modelValues
 	 * @return model prediction interpolated to each observation (location).
 	 */
-	private static IVector getObservedModelValuesForGrid(IPrevExchangeItem observationExchangeItem, IObservationDescriptions allObservationDescriptions, IGeometryInfo modelGeometryInfo, double[] modelValues) {
-		//if there are multiple observationExchangeItems for the current time, e.g. soilMoisture and discharge, then the coordinates of these exchangeItems are present in sequence
-		//in the given allObservationDescriptions, i.e. not just the coordinates of the given observationExchangeItem.
-		IVector allObservationXCoordinates = allObservationDescriptions.getValueProperties("x");
-		IVector allObservationYCoordinates = allObservationDescriptions.getValueProperties("y");
-
-		//get index range of the coordinates for the given observationExchangeItem within allObservationXCoordinates.
-		String searchedObservationExchangeItemId = observationExchangeItem.getId();
-		int startIndex = -1;
-		int gridCellCount = -1;
-		int currentIndex = 0;
-		//this code assumes that method allObservationDescriptions.getValueProperties returns properties for multiple exchangeItems in the same order
-		//as the exchangeItems returned by method observationDescriptions.getExchangeItems.
-		for (IPrevExchangeItem exchangeItem : allObservationDescriptions.getExchangeItems()) {
-			int currentGridCellCount = GeometryUtils.getGridCellCount(exchangeItem);
-
-			if (exchangeItem.getId().equals(searchedObservationExchangeItemId)) {
-				//startIndex is inclusive.
-				startIndex = currentIndex;
-				gridCellCount = currentGridCellCount;
-				break;
-			}
-
-			currentIndex += currentGridCellCount;
-		}
-		if (startIndex == -1 || gridCellCount == -1) {
-			throw new IllegalStateException("Observation exchangeItem with id '" + searchedObservationExchangeItemId + "' not found in observationDescriptions.");
-		}
-
-		//get the coordinates for the given observationExchangeItem.
-		IVector observationXCoordinates = new Vector(gridCellCount);
-		IVector observationYCoordinates = new Vector(gridCellCount);
-		//startIndex is inclusive.
-		int index = startIndex;
-		for (int n = 0; n < gridCellCount; n++) {
-			double x = allObservationXCoordinates.getValue(index);
-			double y = allObservationYCoordinates.getValue(index);
-
-			observationXCoordinates.setValue(n, x);
-			observationYCoordinates.setValue(n, y);
-
-			index++;
-		}
+	private static IVector getObservedModelValuesForGrid(IGeometryInfo observationGeometryInfo, IGeometryInfo modelGeometryInfo, double[] modelValues) {
+		//get the coordinates for the observations.
+		//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
+		//need one coordinate for each grid cell.
+		IVector observationYCoordinates = GeometryUtils.getYCoordinates(observationGeometryInfo);
+		IVector observationXCoordinates = GeometryUtils.getXCoordinates(observationGeometryInfo);
 
 		//get the model values at the observed coordinates.
 		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationXCoordinates, observationYCoordinates, modelGeometryInfo, modelValues);
