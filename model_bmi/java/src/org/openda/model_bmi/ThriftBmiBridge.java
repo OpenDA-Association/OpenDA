@@ -695,7 +695,7 @@ public class ThriftBmiBridge implements EBMI {
 	@Override
 	public void loadState(String sourceFolder) throws BMIModelException {
 		try {
-			client.save_state(sourceFolder);
+			client.load_state(sourceFolder);
 		} catch (ModelException e) {
 			throw new BMIModelException("model function resulted in exception: " + e.getMessage());
 		} catch (TException e) {
