@@ -1,4 +1,4 @@
-/* MOD_V2.0
+/* V2.2.2
  * Copyright (c) 2012 OpenDA Association
  * All rights reserved.
  *
@@ -148,8 +148,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						// Retrieve the boundary exchangeItem.
 						IPrevExchangeItem boundaryExchangeItem = null;
 						if (dataObject instanceof IEnsembleDataObject) {
-							if (Arrays.asList(((IEnsembleDataObject) dataObject).getEnsembleMemberIndices()).contains(ensembleMemberIndex)) {
-								boundaryExchangeItem = ((IEnsembleDataObject) dataObject).getDataObjectExchangeItem(boundaryExchangeItemId, ensembleMemberIndex);
+							for (int aMemberIndex: ((IEnsembleDataObject) dataObject).getEnsembleMemberIndices()){
+								if (aMemberIndex == ensembleMemberIndex) {
+									boundaryExchangeItem = ((IEnsembleDataObject) dataObject).getDataObjectExchangeItem(boundaryExchangeItemId, ensembleMemberIndex);
+									break;
+								}
 							}
 						} else {
 							boundaryExchangeItem = dataObject.getDataObjectExchangeItem(boundaryExchangeItemId);
