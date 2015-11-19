@@ -52,6 +52,34 @@ public class RchresInitTable {
 	private final Map<Integer, String> reachNumberAdditionalInfoMap = new HashMap<>();
 
 	/**
+	 * The following parameters with initial conditions in the UCI file are supported by this class:
+	 *
+	 * <table type>: <parameters>
+	 * BED-INIT:   BEDDEP
+	 * BENAL-INIT: BENAL1, BENAL2, BENAL3, BENAL4
+	 * HEAT-INIT:  TW, AIRTMP
+	 * HYDR-INIT:  VOL
+	 * IWT-INIT:   SOTMP, SODOX, SOCO2
+	 * OX-INIT:    DOX, BOD, SATDO
+	 * PH-INIT:    TIC, CO2, PH
+	 * PLNK-INIT:  PHYTO, ZOO, BENAL, ORN, ORP, ORC
+	 * NUT-DINIT:  NO3, TAM, NO2, PO4, PHVAL
+	 */
+	public static boolean isRchresTableWithInitialConditions(String tableType) {
+		//tableType HYDR-CINIT is currently not supported, because it is not clear which parameters should be used for the exchange items.
+		//tableType SSED-INIT is currently not supported, because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
+		return tableType.equals("BED-INIT")
+				|| tableType.equals("BENAL-INIT")
+				|| tableType.equals("HEAT-INIT")
+				|| tableType.equals("HYDR-INIT")
+				|| tableType.equals("IWT-INIT")
+				|| tableType.equals("OX-INIT")
+				|| tableType.equals("PH-INIT")
+				|| tableType.equals("PLNK-INIT")
+				|| tableType.equals("NUT-DINIT");
+	}
+
+	/**
 	 * Read one RCHRES init table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
 	 */
@@ -146,7 +174,7 @@ public class RchresInitTable {
 		valuesRow.append(String.format("%1$5d", reachNumber)).append("     ");
 
 		//write other columns.
-		String locationId = String.valueOf(reachNumber);
+		String locationId = "RCH" + String.valueOf(reachNumber);
 		for (String parameterId : parameterIds) {
 			String id = locationId + "." + parameterId;
 			IExchangeItem item = exchangeItems.get(id);
@@ -247,44 +275,20 @@ public class RchresInitTable {
 
 		for (int reachNumber = firstReachNumber; reachNumber <= lastReachNumber; reachNumber++) {
 			uniqueReachNumbers.add(reachNumber);
-			String locationId = String.valueOf(reachNumber);
+			String locationId = "RCH" + String.valueOf(reachNumber);
 
 			for (int n = 0; n < values.size(); n++) {
 				String parameterId = parameterIds.get(n);
 				String id = locationId + "." + parameterId;
 
-				IExchangeItem newItem = new DoubleExchangeItem(id, IPrevExchangeItem.Role.InOut, values.get(n));
+				DoubleExchangeItem newItem = new DoubleExchangeItem(id, IPrevExchangeItem.Role.InOut, values.get(n));
+				//this code assumes that the time of the state in the uci file is equal to the end time of the run.
+				//TODO read endTime from uci file or create runtime argument for state time?
+//				double stateTime = endTime;
+//				newItem.setTime(stateTime);
 				IExchangeItem previous = exchangeItems.put(id, newItem);
 				if (previous != null) throw new IllegalArgumentException("Multiple exchange items with id '" + id + "' found in uci state file.");
 			}
 		}
-	}
-
-	/**
-	 * The following parameters with initial conditions in the UCI file are supported by this class:
-	 *
-	 * <table type>: <parameters>
-	 * BED-INIT:   BEDDEP
-	 * BENAL-INIT: BENAL1, BENAL2, BENAL3, BENAL4
-	 * HEAT-INIT:  TW, AIRTMP
-	 * HYDR-INIT:  VOL
-	 * IWT-INIT:   SOTMP, SODOX, SOCO2
-	 * OX-INIT:    DOX, BOD, SATDO
-	 * PH-INIT:    TIC, CO2, PH
-	 * PLNK-INIT:  PHYTO, ZOO, BENAL, ORN, ORP, ORC
-	 * NUT-DINIT:  NO3, TAM, NO2, PO4, PHVAL
-	 */
-	public static boolean isRchresTableWithInitialConditions(String tableType) {
-		//tableType HYDR-CINIT is currently not supported, because it is not clear which parameters should be used for the exchange items.
-		//tableType SSED-INIT is currently not supported, because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
-		return tableType.equals("BED-INIT")
-				|| tableType.equals("BENAL-INIT")
-				|| tableType.equals("HEAT-INIT")
-				|| tableType.equals("HYDR-INIT")
-				|| tableType.equals("IWT-INIT")
-				|| tableType.equals("OX-INIT")
-				|| tableType.equals("PH-INIT")
-				|| tableType.equals("PLNK-INIT")
-				|| tableType.equals("NUT-DINIT");
 	}
 }

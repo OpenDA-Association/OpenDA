@@ -6816,7 +6816,7 @@ RCHRES
   231          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  232          40.00      1000
+  232          40.00     10.00
   END HEAT-INIT
 
   BENTH-FLAG
