@@ -204,6 +204,26 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				}
 			}
 		}
+		else if (boundaryExchangeItem instanceof IGridTimeSeriesExchangeItem && !(modelExchangeItem instanceof IGridTimeSeriesExchangeItem)) {
+			double currentTime = modelExchangeItem.getTimes()[0];
+			double[] times = boundaryExchangeItem.getTimes();
+			for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
+				if (currentTime == times[aTimeIndex]) {
+					double[] boundaryExchangeItemValues = ((IGridTimeSeriesExchangeItem)boundaryExchangeItem).getValuesAsDoublesForSingleTimeIndex(aTimeIndex);
+					switch (operationType) {
+						case BBRegularisationConstantConfig.OPERATION_ADD:
+							modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
+							break;
+						case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
+							modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
+							break;
+						case BBRegularisationConstantConfig.OPERATION_SET:
+							modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
+							break;
+					}
+				}
+			}
+		}
 		else if (!(boundaryExchangeItem instanceof IGridTimeSeriesExchangeItem) && !(modelExchangeItem instanceof IGridTimeSeriesExchangeItem)) {
 			double[] boundaryExchangeItemValues = boundaryExchangeItem.getValuesAsDoubles();
 			switch (operationType) {
