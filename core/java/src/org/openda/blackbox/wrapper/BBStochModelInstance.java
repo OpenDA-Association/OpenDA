@@ -187,23 +187,45 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	private void performOperation(int operationType, IPrevExchangeItem boundaryExchangeItem, IPrevExchangeItem modelExchangeItem) {
 		// TODO Evaluate assumption that the model run is configured for the same time period as the provided boundaries.
-		double[] boundaryExchangeItemValues = boundaryExchangeItem.getValuesAsDoubles();
-		switch (operationType) {
-			case BBRegularisationConstantConfig.OPERATION_ADD:
-				if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
-					throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
+		if (boundaryExchangeItem instanceof IGridTimeSeriesExchangeItem && modelExchangeItem instanceof IGridTimeSeriesExchangeItem) {
+			double[] times = boundaryExchangeItem.getTimes();
+			for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++){
+				double[] boundaryExchangeItemValues = ((IGridTimeSeriesExchangeItem)boundaryExchangeItem).getValuesAsDoublesForSingleTimeIndex(aTimeIndex);
+				switch (operationType) {
+					case BBRegularisationConstantConfig.OPERATION_ADD:
+						((IGridTimeSeriesExchangeItem)modelExchangeItem).axpyOnValuesForSingleTimeIndex(aTimeIndex, 1.0d, boundaryExchangeItemValues);
+						break;
+					case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
+						((IGridTimeSeriesExchangeItem)modelExchangeItem).multiplyValuesForSingleTimeIndex(aTimeIndex, boundaryExchangeItemValues);
+						break;
+					case BBRegularisationConstantConfig.OPERATION_SET:
+						((IGridTimeSeriesExchangeItem)modelExchangeItem).setValuesAsDoublesForSingleTimeIndex(aTimeIndex, boundaryExchangeItemValues);
+						break;
 				}
-				modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
-				break;
-			case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
-				if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
-					throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
-				}
-				modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
-				break;
-			case BBRegularisationConstantConfig.OPERATION_SET:
-				modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
-				break;
+			}
+		}
+		else if (!(boundaryExchangeItem instanceof IGridTimeSeriesExchangeItem) && !(modelExchangeItem instanceof IGridTimeSeriesExchangeItem)) {
+			double[] boundaryExchangeItemValues = boundaryExchangeItem.getValuesAsDoubles();
+			switch (operationType) {
+				case BBRegularisationConstantConfig.OPERATION_ADD:
+					if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
+						throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
+					}
+					modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
+					break;
+				case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
+					if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
+						throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
+					}
+					modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
+					break;
+				case BBRegularisationConstantConfig.OPERATION_SET:
+					modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
+					break;
+			}
+		}
+		else {
+			throw new UnsupportedOperationException(getClass().getSimpleName() + "Model and Boundary ExchangeItems do not match in shape.");
 		}
 	}
 
