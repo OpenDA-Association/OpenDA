@@ -496,7 +496,10 @@
 			</xs:element>
 			<xs:element name="predictor" type="openda:BlackBoxStochModelVectorsXML" minOccurs="0">
 				<xs:annotation>
-					<xs:documentation>Specify the predictor vectors. i.e. the model variables that correspond to the observer variables</xs:documentation>
+					<xs:documentation>Specify the predictor vectors. i.e. the model variables that correspond to the observer variables. This can contain three different types of mappings between model and observer variables:
+1. a vector for a mapping between an observed scalar and a scalar in the model. In this case the coordinates are not used and no interpolation is done.
+2. a vector for a mapping between an observed grid and a grid in the model. In this case the model values are interpolated to get values at the cell centers of the observed grid. This uses the coordinates of both grids and bilinear interpolation.
+3. a subVector for a mapping between an observed scalar and a cell of a grid in the model. In this case the coordinates are not used and no interpolation is done.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
