@@ -1,9 +1,11 @@
 package org.openda.exchange;
 
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
+import org.openda.utils.Array;
 import org.openda.utils.MyObservable;
 
 /**
@@ -63,10 +65,30 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		if(sourceType==ValueType.doubleType){
 			this.value=(Double)sourceItem.getValues();
 			this.notifyObservers();
+
+		} else if (sourceType == ValueType.IArrayType) {
+			if (sourceItem.getTimeInfo() == null || sourceItem.getTimeInfo().getTimes() == null) {
+				throw new RuntimeException(getClass().getSimpleName() + ": cannot copy data from sourceExchangeItem '" + sourceItem.getId()
+						+ "' of type " + sourceItem.getClass().getSimpleName() + " because it contains no time info.");
+			}
+
+			//get index of wantedTime in sourceItem.
+			double[] sourceTimes = sourceItem.getTimeInfo().getTimes();
+			double wantedTime = this.time;
+			int wantedTimeIndex = TimeUtils.findMatchingTimeIndex(sourceTimes, wantedTime, 1e-5);
+			if (wantedTimeIndex == -1) {//if sourceItem does not contain wantedTime.
+				//no data to copy.
+				return;
+			}
+
+			//get value for wanted time.
+			//this code assumes that the sourceItem is a scalar time series.
+			Array sourceValues = (Array) sourceItem.getValues();
+			double valueForWantedTime = sourceValues.getValueAsDouble(wantedTimeIndex);
+			setValue(valueForWantedTime);
 		}
 	}
 
-	
 	public ITimeInfo getTimeInfo() {
 		return new TimeInfo(new double[]{this.time});
 	}
