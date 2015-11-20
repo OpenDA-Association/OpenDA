@@ -66,26 +66,6 @@ public class IoUtils {
 	 * @param arguments optional one or more arguments that are passed to the IDataObject initialize method.
 	 * @return the created IDataObject.
 	 */
-	public static IDataObject initializeDataObject(File workingDir, String filePath, String className, String[] arguments) {
-		IDataObject dataObject = createDataObject(className);
-
-		//initialize data object.
-		String[] newArguments = new String[arguments.length + 1];
-		newArguments[0] = filePath;
-		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
-		dataObject.initialize(workingDir, newArguments);
-
-		return dataObject;
-	}
-
-	/**
-	 * Creates an IDataObject as specified by the given arguments.
-	 *
-	 * @param filePath full pathname of file.
-	 * @param className of IDataObject to use.
-	 * @param arguments optional one or more arguments that are passed to the IDataObject initialize method.
-	 * @return the created IDataObject.
-	 */
 	public static IDataObject initializeDataObject(String filePath, String className, String[] arguments) {
 		IDataObject dataObject = createDataObject(className);
 

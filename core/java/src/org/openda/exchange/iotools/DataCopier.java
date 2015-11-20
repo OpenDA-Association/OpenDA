@@ -66,22 +66,10 @@ public class DataCopier implements IConfigurable {
 	}
 
 	/**
-	 * This method is only present to be able to run DataCopier as a BBAction. This is needed
-	 * because the configured workingDirectory in a BBAction cannot be passed to the main method of DataCopier in any way.
-	 * Also see comments in method BBUtils.runJavaClass.
+	 * This method is only present to be able to run DataCopier as a BBAction. Also see comments in method BBUtils.runJavaClass.
 	 */
 	public void initialize(File workingDir, String[] arguments) {
-		processArguments(arguments);
-
-		initDataObjects(workingDir);
-
-		copyAll();
-		finish();
-	}
-
-	private void initDataObjects(File workingDir) {
-		inputDataObject = IoUtils.initializeDataObject(workingDir, inputFileName, inputClassName, inputArgs);
-		outputDataObject = IoUtils.initializeDataObject(workingDir, outputFileName, outputClassName, outputArgs);
+		run(arguments);
 	}
 
 	private void initDataObjects() {
@@ -97,12 +85,16 @@ public class DataCopier implements IConfigurable {
 	 */
 	public static void main(String[] arguments) {
 		DataCopier copier = new DataCopier();
-		copier.processArguments(arguments);
+		copier.run(arguments);
+	}
 
-		copier.initDataObjects();
+	private void run(String[] arguments) {
+		processArguments(arguments);
 
-		copier.copyAll();
-		copier.finish();
+		initDataObjects();
+
+		copyAll();
+		finish();
 	}
 
 	/**
