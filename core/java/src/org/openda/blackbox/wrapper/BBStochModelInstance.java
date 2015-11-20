@@ -226,17 +226,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 		else if (!(boundaryExchangeItem instanceof IGridTimeSeriesExchangeItem) && !(modelExchangeItem instanceof IGridTimeSeriesExchangeItem)) {
 			double[] boundaryExchangeItemValues = boundaryExchangeItem.getValuesAsDoubles();
+			if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
+				throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
+			}
 			switch (operationType) {
 				case BBRegularisationConstantConfig.OPERATION_ADD:
-					if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
-						throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
-					}
 					modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
 					break;
 				case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
-					if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
-						throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
-					}
 					modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
 					break;
 				case BBRegularisationConstantConfig.OPERATION_SET:
