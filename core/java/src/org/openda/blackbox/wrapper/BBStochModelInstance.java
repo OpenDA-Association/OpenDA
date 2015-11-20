@@ -69,6 +69,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private IStochVector parameterUncertainty;
 	private ITreeVector paramsTreeVector;
 	private HashMap<String,Double> lastNoiseTimes;//avoid adding noise more than once
+	private LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings;
+	private int ensembleMemberIndex;
 
 	/**
 	 * For each constraintExchangeItemId for which there is a range validation constraint this map contains
@@ -113,6 +115,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		this.savedStatesDirPrefix = savedStatesDirPrefix;
 		this.savedStatesNoiseModelPrefix = savedStatesNoiseModelPrefix;
 		this.modelSavedStateFile = modelSavedStateFile;
+		this.dataObjectBoundaryMappings = dataObjectBoundaryMappings;
+		this.ensembleMemberIndex = ensembleMemberIndex;
 		selectors = new LinkedHashMap<String, SelectorInterface>();
 		armaNoiseModels = new LinkedHashMap<BBUncertOrArmaNoiseConfig, ArmaNoiseModel>();
 		createStateNoiseModels();
@@ -125,7 +129,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 		if (dataObjectBoundaryMappings.size() > 0) {
-			processProvidedBoundaries(dataObjectBoundaryMappings, ensembleMemberIndex);
+			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex);
 		}
 	}
 
@@ -295,6 +299,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD). This is consistent with the one used in getObservedValues.
             boolean firstStep = true;
 
+			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex);
             propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime);
 			while (model.getCurrentTime().getMJD()+tolerance < targetTime.getMJD()) {
 				ITime loopTimeStep = new Time(model.getCurrentTime().getMJD() + modelDeltaT);
@@ -321,6 +326,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 		} else
 		{
+			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex);
 			propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime);
 			model.compute(targetTime);
 		}
