@@ -20,6 +20,7 @@
 
 package org.openda.model_hspf;
 
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -27,6 +28,7 @@ import org.openda.utils.Results;
 import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -45,16 +47,29 @@ public class UciStateDataObject implements IDataObject {
 
 	/**
 	 * @param workingDir the working directory.
-	 * @param arguments the first argument should be the name of the file containing the data for this DataObject (relative to the working directory).
+	 * @param arguments the first argument should be the name of the .uci file containing the data for this DataObject (relative to the working directory).
+	 *                  the second argument should be the timestamp of the state in the .uci file.
 	 */
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments == null || arguments.length < 1) {
 			throw new IllegalArgumentException("No fileName argument specified for " + getClass().getSimpleName()
-					+ ". The first argument should be the name of the file containing the data for this DataObject (relative to the working directory).");
+					+ ". The first argument should be the name of the .uci file containing the data for this DataObject (relative to the working directory).");
 		}
 		uciFile = new File(workingDir, arguments[0]);
 
-		readUciFile();
+		//get state time.
+		if (arguments.length < 2) {
+			throw new IllegalArgumentException("No startTime argument specified for " + getClass().getSimpleName() + ". The second argument should be the timestamp of the state in the .uci file.");
+		}
+		double stateTime;
+		try {
+			stateTime = TimeUtils.date2Mjd(arguments[1]);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Invalid stateTime argument specified for " + getClass().getSimpleName() + ". Cannot parse second argument '" + arguments[1]
+					+ "'. The second argument should be the timestamp of the state in the .uci file.", e);
+		}
+
+		readUciFile(stateTime);
 	}
 
 	public String[] getExchangeItemIDs() {
@@ -79,7 +94,7 @@ public class UciStateDataObject implements IDataObject {
 	 * Read uci state file and create state exchangeItems for all state variables.
 	 * Also read and store the values of all state variables into memory.
 	 */
-	private void readUciFile() {
+	private void readUciFile(double stateTime) {
 		if (!uciFile.exists()) throw new RuntimeException(getClass().getSimpleName() + ": Cannot find uci state file " + uciFile.getAbsolutePath());
 
 		//create exchangeItems.
@@ -94,7 +109,7 @@ public class UciStateDataObject implements IDataObject {
 
 			String tableType = inputLine.trim().toUpperCase();
 			if (RchresInitTable.isRchresTableWithInitialConditions(tableType)) {
-				RchresInitTable newInitTable = new RchresInitTable(tableType, inputIterator, exchangeItems);
+				RchresInitTable newInitTable = new RchresInitTable(tableType, inputIterator, stateTime, exchangeItems);
 				RchresInitTable previous = initTables.put(tableType, newInitTable);
 				if (previous != null) throw new IllegalArgumentException("Multiple RCHRES init tables '" + tableType + "' found in uci state file.");
 			}

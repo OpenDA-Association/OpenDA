@@ -83,7 +83,7 @@ public class RchresInitTable {
 	 * Read one RCHRES init table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
 	 */
-	public RchresInitTable(String tableType, Iterator<String> inputLines, Map<String, IExchangeItem> exchangeItems) {
+	public RchresInitTable(String tableType, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
 		if (tableType == null) throw new IllegalArgumentException("tableType == null");
 		this.tableType = tableType;
 
@@ -123,7 +123,7 @@ public class RchresInitTable {
 				int firstReachNumber = readFirstReachNumber(tableType, firstColumn);
 				int lastReachNumber = readLastReachNumber(tableType, firstColumn, firstReachNumber);
 				List<Double> values = readValues(tableType, columns);
-				createExchangeItems(firstReachNumber, lastReachNumber, parameterIds, values, uniqueReachNumbers, exchangeItems);
+				createExchangeItems(firstReachNumber, lastReachNumber, parameterIds, values, stateTime, uniqueReachNumbers, exchangeItems);
 
 				//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be stored, because these are needed during writing.
 				//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be stored, because these are needed during writing.
@@ -267,7 +267,7 @@ public class RchresInitTable {
 		return values;
 	}
 
-	private void createExchangeItems(int firstReachNumber, int lastReachNumber, List<String> parameterIds, List<Double> values, Set<Integer> uniqueReachNumbers, Map<String, IExchangeItem> exchangeItems) {
+	private void createExchangeItems(int firstReachNumber, int lastReachNumber, List<String> parameterIds, List<Double> values, double stateTime, Set<Integer> uniqueReachNumbers, Map<String, IExchangeItem> exchangeItems) {
 		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in RCHRES init table '" + tableType + "' in uci state file.");
 		if (values.size() != parameterIds.size()) {
 			throw new IllegalArgumentException("Number of values (" + values.size() + ") not equal to number of parameters (" + parameterIds.size() + ") in RCHRES init table '" + tableType + "' in uci state file.");
@@ -282,10 +282,7 @@ public class RchresInitTable {
 				String id = locationId + "." + parameterId;
 
 				DoubleExchangeItem newItem = new DoubleExchangeItem(id, IPrevExchangeItem.Role.InOut, values.get(n));
-				//this code assumes that the time of the state in the uci file is equal to the end time of the run.
-				//TODO read endTime from uci file or create runtime argument for state time?
-//				double stateTime = endTime;
-//				newItem.setTime(stateTime);
+				newItem.setTime(stateTime);
 				IExchangeItem previous = exchangeItems.put(id, newItem);
 				if (previous != null) throw new IllegalArgumentException("Multiple exchange items with id '" + id + "' found in uci state file.");
 			}
