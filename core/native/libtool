@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (costa) 0.1.0
-# Libtool was configured on host wlan-145-94-149-132.wlan.tudelft.nl:
+# Libtool was configured on host vortech74.vortech.nl:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -66,13 +66,13 @@ PATH_SEPARATOR=":"
 
 # The host system.
 host_alias=
-host=i386-apple-darwin14.4.0
-host_os=darwin14.4.0
+host=i386-apple-darwin15.0.0
+host_os=darwin15.0.0
 
 # The build system.
 build_alias=
-build=i386-apple-darwin14.4.0
-build_os=darwin14.4.0
+build=i386-apple-darwin15.0.0
+build_os=darwin15.0.0
 
 # A sed program that does not truncate output.
 SED="/usr/bin/sed"
@@ -161,7 +161,7 @@ old_postuninstall_cmds=""
 lock_old_archive_extraction=yes
 
 # A C compiler.
-LTCC="mpicc-openmpi-mp"
+LTCC="mpicc-openmpi-devel-gcc5"
 
 # LTCC compiler flags.
 LTCFLAGS="-g -O2"
@@ -272,7 +272,7 @@ finish_eval=""
 hardcode_into_libs=no
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/6.1.0  /usr/local/lib"
+sys_lib_search_path_spec="/opt/local/lib/gcc5/gcc/x86_64-apple-darwin15/5.2.0 /opt/local/lib/gcc5 /usr/lib  /usr/local/lib"
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/usr/local/lib /lib /usr/lib"
@@ -292,7 +292,7 @@ striplib="strip -x"
 
 
 # The linker used to build libraries.
-LD="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld"
+LD="/opt/local/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -302,13 +302,13 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpicc-openmpi-mp"
+CC="mpicc-openmpi-devel-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
+no_builtin_flag=" -fno-builtin"
 
 # Additional compiler flags for building library objects.
 pic_flag=" -fno-common -DPIC"
@@ -10096,7 +10096,7 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
 # The linker used to build libraries.
-LD="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld"
+LD="/opt/local/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -10106,7 +10106,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpicxx-openmpi-mp"
+CC="mpicxx-openmpi-devel-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -10245,7 +10245,7 @@ compiler_lib_search_path=""
 # ### BEGIN LIBTOOL TAG CONFIG: F77
 
 # The linker used to build libraries.
-LD="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld"
+LD="/opt/local/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -10255,7 +10255,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpif90-openmpi-mp"
+CC="mpif90-openmpi-devel-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -10394,7 +10394,7 @@ compiler_lib_search_path=""
 # ### BEGIN LIBTOOL TAG CONFIG: FC
 
 # The linker used to build libraries.
-LD="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld"
+LD="/opt/local/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -10404,7 +10404,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpif90-openmpi-mp"
+CC="mpif90-openmpi-devel-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes

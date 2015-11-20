@@ -31,9 +31,6 @@ public interface ISangomaEWPFNativeDLL extends Library {
 
   void oda_equal_weight_step(IntByReference Ne,IntByReference Nx,IntByReference Ny,double [] weight, double[] y);
 
-  void oda_ewfp_sethx(double[] Hx, IntByReference iEns, IntByReference Ny,IntByReference Ne);
-
-
   void oda_ewfp_set_l(double[] newL, IntByReference iEns, IntByReference Nx, IntByReference Ne);
 
   void oda_ewfp_get_l(double[] newL, IntByReference iEns, IntByReference Nx, IntByReference Ne);

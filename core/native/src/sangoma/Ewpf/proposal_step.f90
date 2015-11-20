@@ -120,11 +120,18 @@ subroutine proposal_step(Ne,Nx,Ny,weight,x_n,y,t_model,obsVec,dt_obs, &
 
   !Get a Gaussian random noise with 0 mean and std 1 for all particles
     call NormalRandomNumbers(nmean,nstd,Nx,Ne,normaln)
+
   
   !compute the relaxation or nudging term Qkgain, the intermediate
   !term kgain and apply correlation to noise
     call Bprime(Ne,Nx,Ny,y_Hx_n,kgain,Qkgain,normaln,betan,t_model,obsVec,dt_obs, & 
           cb_Qhalf, cb_solve_r, cb_HT)
+
+  !Debug stuff: 
+  print *, 'Warning: we do not ad noise like in original implementation "proposal_step.f90"'
+  betan=0.0
+
+
 
   !Nudge the state and update weights based on these terms
     DO j = 1,Ne
@@ -231,9 +238,7 @@ tau = 1.0 - real(obsVec -t_model)/dt_obs
       ! Use only correlated random forcing betan = Q(normaln) (using cb_Qhalf twice)
       call cb_Qhalf(Ne,Nx,normaln,Btemp)
       call cb_Qhalf(Ne,Nx,Btemp,betan)
-      
-      print *,'betan=', betan
-      
+      !call cb_Qhalf(Ne,Nx,normaln,betan)
       
    else
       print *,'No time!'
@@ -254,12 +259,14 @@ tau = 1.0 - real(obsVec -t_model)/dt_obs
       kgain = p*HtR_1d
 
       ! Compute QHtR_1d = Q*H^T*R^{-1}*(y-h(x)), i.e. apply Q to kgain above
+      !Remark Nils: THIS MUST BE COMPLETELY WRONG sqrt(Q) makes sence Q not!
       call cb_Qhalf(Ne,Nx,kgain,Btemp)
       call cb_Qhalf(Ne,Nx,Btemp,QHtR_1d)
 
       ! Compute correlated random forcing betan = Q(normaln)
-      call cb_Qhalf(Ne,Nx,normaln,Btemp)
-      call cb_Qhalf(Ne,Nx,Btemp,betan)
+      !Remark Nils: THIS MUST BE COMPLETELY WRONG sqrt(Q) makes sence Q not!
+     call cb_Qhalf(Ne,Nx,normaln,Btemp)
+     call cb_Qhalf(Ne,Nx,Btemp,betan)
    end if
 
 end subroutine Bprime

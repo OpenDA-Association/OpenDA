@@ -219,6 +219,9 @@ subroutine equal_weight_step(Ne,Nx,Ny,weight,x_n,y, &
   ! Given random noise in statev (computed in MixtureRandomNumbers2D)
   ! compute correlated noise betan with correlation matrix Q^{1/2}
   call cb_Qhalf(Ne,Nx,statev,betan)
+  print *, 'Warning: we do not ad noise like in original implementation "equal_weights_step.f90"'
+  betan=0.0
+
 
   !update the weights and the new state
   do i = 1,Ne_keep

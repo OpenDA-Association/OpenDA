@@ -218,9 +218,8 @@ real(REALPREC), dimension(:),   allocatable, save ::diagR
 real(REALPREC), dimension(:,:), allocatable, save ::L       ! Ensembles
 real(REALPREC), dimension(:,:), allocatable, save ::L_mean  ! Ensembles with mean subtracted  
 real(REALPREC), dimension(:,:), allocatable, save ::S_root
-real(REALPREC), dimension(:,:), allocatable, save ::Hx_mean !Hx-mean(Hx)
 
-logical, private ::debug=.true.
+logical, private ::debug=.false.
 
 
 contains
@@ -240,57 +239,6 @@ real(REALPREC), DIMENSION(Ny), INTENT(IN) ::newDiagR
 end subroutine oda_EWFP_set_diagR
 
 
-subroutine oda_EWFP_setHx(Hx,iEns, Ny,Ne) bind(C, name="oda_ewfp_sethx")
-          use, intrinsic :: ISO_C_BINDING
-implicit none
-integer(INTPREC), INTENT(IN) ::Ny,Ne
-integer(INTPREC), INTENT(IN) ::iEns
-real(REALPREC), DIMENSION(Ny), INTENT(IN) ::Hx
-
-real(REALPREC), DIMENSION(Ny) ::Hxmean
-integer ::i
-real(REALPREC) ::alpha
-
-   if (debug) then
-      print *,'Welcome in oda_EWFP_setHx:',iEns
-   endif
-
-
-   if (allocated(Hx_mean)) then
-      if (size(Hx_mean,dim=1)/=Ny .OR. size(L,dim=2)/=Ne) then
-         deallocate(Hx_mean)
-         allocate(Hx_mean(Ny,Ne))
-         Hx_mean=-999999.0e9
-      endif
-   else
-      allocate(Hx_mean(Ny,Ne))
-      Hx_mean=-999999.0e9
-   endif
-   Hx_mean(:,iEns) =Hx
-
-   !When we set the last column we assume we are done and compute/substract mean
-   if (iEns==Ne) then
-      Hxmean=SUM(Hx_mean,DIM=2)/dble(Ne)
-      do i=1,Ne
-         Hx_mean(:,i)=Hx_mean(:,i)-Hxmean
-      enddo
-   endif
-   
-   if (debug) then
-      if (iEns==Ne) then
-         print *,'Hx_mean=',Hxmean
-         do i=1,Ne
-            print *,'Hx_mean(:,',i,')=',Hx_mean(:,i)
-         enddo
-      endif
-   
-      print *,'Leaving oda_EWFP_setHx'
-   endif
-   
-   
-end subroutine oda_EWFP_setHx
-
-
 
 subroutine oda_EWFP_set_L(newL, iEns, Nx, Ne) bind(C, name="oda_ewfp_set_l")
           use, intrinsic :: ISO_C_BINDING
@@ -305,49 +253,67 @@ real(REALPREC), DIMENSION(Ne)    ::S    !Singular values
 real(REALPREC), DIMENSION(5*Ne*Ne) ::work
 integer ::info
 
+logical, parameter ::loc_debug=.true.
+
+
+
 !> Loop counter over ensembles
 integer        ::i
 !> Mean of the ensemble (only used when setting last ensemble)
 real(REALPREC) ::Lmean(Nx)
+real(REALPREC) ::Lstd(Nx)
 !> Only set the old states equal to this state at start of algorithm
-logical, save  ::setOldStates = .false. 
 
-   if (debug) then
+   if (debug .and. loc_debug) then
       print *,'Welcome in oda_EWFP_set_L:',iEns
    endif
-
-   if (allocated(L)) then
-      if (size(L,dim=1)/=Nx .OR. size(L,dim=2)/=Ne) then
-         deallocate(L, L_mean)
-         allocate(L(Nx,Ne),L_mean(Nx,Ne))
-         setOldStates=.true.
-      endif
-   else   
+  
+   if (iEns==1) then
+      if (allocated(L))      deallocate (L)
+      if (allocated(L_mean)) deallocate (L_mean)
       allocate(L(Nx,Ne),L_mean(Nx,Ne))
-      setOldStates=.true.
    endif
    
    L(:,iEns) = newL
 
-   
    if (iEns==Ne) then
-      print *,'Last member is set:'
-      print *,'Compute mean and ensemble -mean'
+      if (debug .and. loc_debug) then
+         print *,'Last member is set:'
+         print *,'Compute mean and ensemble -mean'
+      endif
+
       Lmean=SUM(L,DIM=2)/dble(Ne)
-      print *,'Lmean=',Lmean
-      
+
+      if (debug .and. loc_debug) then
+         print *,'Lmean=',Lmean
+      endif
+ 
       do i=1,Ne
          L_mean(:,i)=L(:,i)-Lmean
       enddo
+
       
-      print *,'L=',L
-      print *,'L-mean=',L_mean
+   
+      if (debug .and. loc_debug) then
+         Lstd=SUM(L_mean*L_mean,DIM=2)/dble(Ne)
+         Lstd=SQRT(Lstd)
+
+         call print_matrix('L',L)
+         call print_vector('Lmean',Lmean)
+         call print_vector('L-std',Lstd)
+
+      endif
+
+      ! Make it root covariance
+      L_mean=L_mean/SQRT(DBLE(Ne)-1.0)
+
+
+
+
       
-      
-      setOldStates=.false.
    endif
    
-   if (debug) then
+   if (debug .and. loc_debug) then
       print *,'Leaving oda_EWFP_set_L'
    endif
    
@@ -370,15 +336,16 @@ integer ::info
 
 integer        ::i
 real(REALPREC) ::Lmean(Nx)
+logical, parameter ::loc_debug=.false.
 
-   if (debug) then
+   if (debug .and. loc_debug) then
       print *,'Welcome in oda_EWFP_get_L'
    endif
 
 
    newL=L(1:Nx,iEns)
 
-   if (debug) then
+   if (debug .and. loc_debug) then
       print *,'Leaving oda_EWFP_get_L'
    endif
    
@@ -402,6 +369,9 @@ real(REALPREC), DIMENSION(Ne)    ::S    !Singular values
 real(REALPREC), DIMENSION(5*Ne*Ne) ::work
 integer ::info
 integer ::iEns
+!Testing
+integer ::iX, Nx
+real(REALPREC), DIMENSION(:,:), ALLOCATABLE ::LLT, QhI, Imat
 
 INTERFACE
    SUBROUTINE DGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, LWORK, INFO )
@@ -422,9 +392,8 @@ END INTERFACE
    LTL=MATMUL(TRANSPOSE(L_mean),L_mean)
 
    if (debug) then
-      print *,'LTL=',LTL
+      call print_matrix('LTL',LTL)
    endif
-   
    
    !Compute SVD from LTL
    if (REALPREC==8) THEN
@@ -438,16 +407,37 @@ END INTERFACE
       call exit(-1)
    endif
 
-   DO iEns=1,Ne
-      S_root(:,iEns)=U(:,iEns)*sqrt(S(iEns))
-   ENDDO
+   do iEns=1,Ne
+      S_root(:,iEns)=U(:,iEns)*1.0/sqrt(S(iEns))
+   enddo
    S_root=MATMUL(S_root,TRANSPOSE(U))
 
-   if (debug) then
-      print *,'S_root=',S_root
+   !if (debug) then
+   !   call print_matrix('S_root',S_root)
+   !   call print_matrix('S*S',MATMUL(S_root,TRANSPOSE(S_root)))
+   !
+   !   print *,'Leaving oda_EWFP_SetupRootError'
+   !endif
 
-      print *,'Leaving oda_EWFP_SetupRootError'
+   if (.false.) then
+   !Check in state space
+      Nx=SIZE(L_mean,1)
+      print *,'Nx=',Nx
+
+
+      allocate(Imat(Nx,Nx))
+      allocate(QhI(Nx,Nx))
+      allocate(LLT(Nx,Nx))
+      Imat=0.0
+      do iX=1,nX; Imat(iX,iX)=1.0; enddo
+      call oda_Qhalf(Nx,Nx,Imat,QhI)
+      call oda_Qhalf(Nx,Nx,QhI,LLT)
+      call print_matrix('LLT-root',LLT)
+      call print_matrix('LLT',MATMUL(L_mean,TRANSPOSE(L_mean)))
+
    endif
+
+
 end subroutine oda_EWFP_SetupRootError
 
 
@@ -584,19 +574,15 @@ end subroutine oda_equal_weight_step
           real(REALPREC), dimension(Ne,Ne) ::LTL
 
 
-          real(REALPREC), dimension(Ne,Ne) ::T1,T2
+          real(REALPREC), dimension(size(L_mean,2),Ne) ::T1
+          real(REALPREC), dimension(size(L_mean,2),Ne) ::T2
 
-          print *,'Welcome in oda_Qhalf'
+          !print *,'Welcome in oda_Qhalf'
 
           T1=MATMUL(TRANSPOSE(L_mean),vec_in)
 
-
           T2=MATMUL(S_root,T1)
           vec_out=MATMUL(L_mean,T2)
-
-        
-
-
 
 
 
@@ -632,22 +618,20 @@ end subroutine oda_equal_weight_step
 
 
           real(REALPREC), dimension(Ne,Ne) ::A
+          integer                          ::Nx,Hx1
           integer                          ::iObs
           integer                          ::info
           
           
           print *,'Welcome in oda_solve_hqht_plus_r'
-          
-          A=MATMUL(Hx_mean,TRANSPOSE(Hx_mean))
-          print *,'HQHT=',A
+          Nx=size(L_mean,1)
+          Hx1=Nx-Ny+1
+
+          A=MATMUL(L_mean(Hx1:Nx,:),TRANSPOSE(L_mean(Hx1:Nx,:)))
 
           do iObs=1,Ny
             A(iObs,iObs)=A(iObs,iObs)+diagR(iObs)
           enddo
-
-          print *,'HQHT+R=',A
-          print *,'rhs   =',vec_in
- 
 
           vec_out=vec_in
           CALL DPOSV( 'U', Ny, 1, A, Ny, vec_out, Ny, info )
@@ -657,13 +641,36 @@ end subroutine oda_equal_weight_step
               call exit(-1)
           endif
           
-          print *,'d=',vec_out
           
         end subroutine oda_solve_hqht_plus_r
         
         
-        
-        
+        subroutine print_vector(name,a)
+        implicit none
+        character(len=*),               intent(in) ::name
+        real(realprec), dimension(:), intent(in) ::a
+
+
+        print *,trim(name),'='
+        print *, a
+
+        end subroutine print_vector
+         
+        subroutine print_matrix(name,a)
+        implicit none
+        character(len=*),               intent(in) ::name
+        real(realprec), dimension(:,:), intent(in) ::a
+
+        integer ::m,n,i,j
+
+        m=size(a,1)
+        n=size(a,2)
+        print *,trim(name),'='
+        do j=1,n
+           print *, a(j,:)
+        enddo
+
+        end subroutine print_matrix
         
         
         

@@ -4,7 +4,7 @@
 
 figi=1;
 
-if(1==1),
+if(0==1),
    %
    %  SIMULATION
    %
@@ -22,7 +22,7 @@ if(1==1),
 end;
 
 
-if(1==1),
+if(0==1),
    %
    %  ENSEMBLE KALMAN FILTER
    %
@@ -39,7 +39,7 @@ if(1==1),
 end;
 
 
-if(1==1),
+if(0==1),
    %
    %  PARTICLE FILTER
    %
@@ -55,7 +55,7 @@ if(1==1),
    ylabel('position');
 end;
 
-if(1==1),
+if(0==1),
    %
    %  ENSEMBLE SQUARE-ROOT FILTER
    %
@@ -71,7 +71,7 @@ if(1==1),
    ylabel('position');
 end;
 
-if(1==1),
+if(0==1),
    %
    %  DETERMINISTIC ENSEMBLE SQUARE-ROOT FILTER
    %
@@ -86,4 +86,21 @@ if(1==1),
    xlabel('analysis step');
    ylabel('position');
 end;
+
+if(1==1),
+   %
+   %  EWPF
+   %
+   figure(figi);clf;figi=figi+1;
+   ewpf_results; %load enkf results
+   plot([obs{:}],'k+');
+   hold on;
+   plot([pred_f{:}],'b-');  
+ %  plot([pred_a{:}],'g-');  
+   hold off
+   title('Results of EWPF');
+   xlabel('analysis step');
+   ylabel('position');
+end;
+
 

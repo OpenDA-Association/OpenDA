@@ -4,19 +4,19 @@
 	<stochObserver className="org.openda.utils.CsvStochObserver">
 		<workingDirectory>./stochobserver</workingDirectory>
 		<!-- <configFile>OscillatorSimpleStochObsConfig.xml</configFile> -->
-		<configFile>observations_lorenz_generated.csv</configFile>
+		<configFile>observations_lorenz_generated_ewpf.csv</configFile>
 	</stochObserver>
 	<stochModelFactory className="org.openda.models.lorenz.LorenzStochModelFactory">
 		<workingDirectory>./model</workingDirectory>
-		<configFile>LorenzStochModel.xml</configFile>
+		<configFile>LorenzStochModelEWPF.xml</configFile>
 	</stochModelFactory>
 	<algorithm className="org.openda.algorithms.particleFilter.EWPF">
 		<workingDirectory>./algorithm</workingDirectory>
-		<configString>EnkfAlgorithm.xml</configString>
+		<configString>EWPF.xml</configString>
 	</algorithm>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>enkf_results.m</configFile>
+		<configFile>ewpf_results.m</configFile>
 		<selection>
 			<resultItem outputLevel="Normal" />
 			<resultItem id="x_f_central" outputLevel="Verbose" />
