@@ -20,7 +20,6 @@
 
 package org.openda.model_hspf;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -62,7 +61,7 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 	/**
 	 * Wrapped WdmTimeSeriesIoObject.
 	 */
-	private IoObjectInterface wrappedIoObject = null;
+	private WdmTimeSeriesIoObject wrappedIoObject = null;
 
 	/**
 	 * @param workingDir the working directory.
