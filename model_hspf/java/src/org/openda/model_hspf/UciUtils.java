@@ -20,13 +20,13 @@
 
 package org.openda.model_hspf;
 
+import org.openda.exchange.DoubleExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Time;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Util methods for reading/writing data from/to a uci file.
@@ -102,5 +102,130 @@ public class UciUtils {
 		}
 
 		return parts.toArray(new String[parts.size()]);
+	}
+
+	public static List<String> readParameterIds(String[] columns) {
+		//skip first column.
+		int firstValueColumnIndex = 1;
+		int lastValueColumnIndex = columns.length - 1;
+
+		List<String> parameterIds = new ArrayList<>();
+		for (int k = firstValueColumnIndex; k <= lastValueColumnIndex; k++) {
+			String parameterId = columns[k].trim();
+			parameterIds.add(parameterId);
+		}
+		return parameterIds;
+	}
+
+	public static List<Double> readValues(String moduleName, String tableType, String[] columns) {
+		//skip first column.
+		int firstValueColumnIndex = 1;
+		int lastValueColumnIndex = columns.length - 1;
+
+		List<Double> values = new ArrayList<>();
+		for (int k = firstValueColumnIndex; k <= lastValueColumnIndex; k++) {
+			String valueString = columns[k].trim();
+			try {
+				values.add(Double.parseDouble(valueString));
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + moduleName + " init table '" + tableType + "' in uci state file.", e);
+			}
+		}
+		return values;
+	}
+
+	public static int readFirstLocationNumber(String moduleName, String tableType, String firstColumn) {
+		String part1 = firstColumn.substring(0, 5).trim();
+		try {
+			return Integer.parseInt(part1);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Cannot parse integer '" + part1 + "' in " + moduleName + " init table '" + tableType + "' in uci state file.", e);
+		}
+	}
+
+	public static int readLastLocationNumber(String moduleName, String tableType, String firstColumn, int firstLocationNumber) {
+		String part2 = firstColumn.substring(5, 10).trim();
+		if (part2.isEmpty()) {
+			return firstLocationNumber;
+		} else {
+			try {
+				return Integer.parseInt(part2);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse integer '" + part2 + "' in " + moduleName + " init table '" + tableType + "' in uci state file.", e);
+			}
+		}
+	}
+
+	/**
+	 * @param moduleName
+	 * @param tableType
+	 * @param locationIdPrefix
+	 * @param firstLocationNumber inclusive.
+	 * @param lastLocationNumber inclusive.
+	 * @param parameterIds
+	 * @param values
+	 * @param stateTime
+	 * @param uniqueLocationNumbers
+	 * @param exchangeItems
+	 */
+	public static void createExchangeItems(String moduleName, String tableType, String locationIdPrefix, int firstLocationNumber, int lastLocationNumber,
+			List<String> parameterIds, List<Double> values, double stateTime, Set<Integer> uniqueLocationNumbers, Map<String, IExchangeItem> exchangeItems) {
+
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + moduleName + " init table '" + tableType + "' in uci state file.");
+		if (values.size() != parameterIds.size()) {
+			throw new IllegalArgumentException("Number of values (" + values.size() + ") not equal to number of parameters (" + parameterIds.size() + ") in " + moduleName + " init table '" + tableType + "' in uci state file.");
+		}
+
+		for (int locationNumber = firstLocationNumber; locationNumber <= lastLocationNumber; locationNumber++) {
+			uniqueLocationNumbers.add(locationNumber);
+			String locationId = locationIdPrefix + String.valueOf(locationNumber);
+
+			for (int n = 0; n < values.size(); n++) {
+				String parameterId = parameterIds.get(n);
+				String id = locationId + "." + parameterId;
+
+				DoubleExchangeItem newItem = new DoubleExchangeItem(id, IPrevExchangeItem.Role.InOut, values.get(n));
+				newItem.setTime(stateTime);
+				IExchangeItem previous = exchangeItems.put(id, newItem);
+				if (previous != null) throw new IllegalArgumentException("Multiple exchange items with id '" + id + "' found in uci state file.");
+			}
+		}
+	}
+
+	/**
+	 * Continue reading until the next line that starts with "END".
+	 */
+	public static void skipToEnd(Iterator<String> inputIterator) {
+		while (inputIterator.hasNext()) {
+			String line = inputIterator.next();
+			if (line.trim().toUpperCase().startsWith("END")) break;
+		}
+	}
+
+	public static String writeValuesRow(String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
+		StringBuilder valuesRow = new StringBuilder();
+
+		//write first column.
+		//format locationNumber:
+		//d means integer.
+		//5 means minimum width of 5 characters (left-padded with spaces).
+		valuesRow.append(String.format("%1$5d", locationNumber)).append("     ");
+
+		//write other columns.
+		String locationId = locationIdPrefix + String.valueOf(locationNumber);
+		for (String parameterId : parameterIds) {
+			String id = locationId + "." + parameterId;
+			IExchangeItem item = exchangeItems.get(id);
+			if (item == null) throw new IllegalStateException("Exchange item with id '" + id + "' not initialized during reading of uci state file.");
+
+			double value = (double) item.getValues();
+			//format value.
+			//G means floating point or scientific notation if it would not fit otherwise.
+			//10 means minimum width of 10 characters (left-padded with spaces).
+			//.4 means 4 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 10 characters.
+			valuesRow.append(String.format("%1$10.4G", value));
+		}
+
+		return valuesRow.toString();
 	}
 }

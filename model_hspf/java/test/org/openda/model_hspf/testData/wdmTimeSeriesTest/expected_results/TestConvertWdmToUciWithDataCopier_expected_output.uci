@@ -868,7 +868,859 @@ PERLND
   PWAT-STATE1
 *** < PLS>  PWATER state variables (in)
 *** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
-   11  295      0.01      0.01       0.3      0.01       1.5      0.01      0.01
+   11        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   12        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   13        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   14        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   15        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   16        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   17        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   18        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   19        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   20        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   21        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   22        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   23        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   24        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   25        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   26        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   27        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   28        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   29        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   30        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   31        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   32        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   33        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   34        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   35        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   36        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   37        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   38        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   39        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   40        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   41        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   42        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   43        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   44        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   45        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   46        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   47        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   48        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   49        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   50        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   51        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   52        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   53        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   54        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   55        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   56        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   57        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   58        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   59        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   60        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   61        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   62        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   63        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   64        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   65        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   66        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   67        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   68        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   69        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   70        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   71        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   72        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   73        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   74        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   75        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   76        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   77        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   78        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   79        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   80        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   81        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   82        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   83        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   84        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   85        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   86        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   87        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   88        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   89        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   90        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   91        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   92        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   93        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   94        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   95        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   96        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   97        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   98        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+   99        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  100        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  101        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  102        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  103        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  104        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  105        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  106        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  107        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  108        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  109        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  110        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  111        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  112        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  113        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  114        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  115        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  116        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  117        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  118        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  119        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  120        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  121        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  122        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  123        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  124        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  125        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  126        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  127        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  128        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  129        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  130        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  131        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  132        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  133        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  134        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  135        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  136        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  137        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  138        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  139        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  140        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  141        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  142        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  143        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  144        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  145        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  146        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  147        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  148        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  149        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  150        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  151        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  152        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  153        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  154        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  155        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  156        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  157        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  158        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  159        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  160        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  161        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  162        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  163        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  164        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  165        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  166        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  167        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  168        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  169        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  170        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  171        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  172        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  173        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  174        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  175        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  176        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  177        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  178        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  179        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  180        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  181        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  182        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  183        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  184        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  185        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  186        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  187        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  188        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  189        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  190        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  191        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  192        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  193        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  194        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  195        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  196        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  197        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  198        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  199        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  200        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  201        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  202        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  203        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  204        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  205        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  206        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  207        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  208        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  209        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  210        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  211        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  212        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  213        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  214        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  215        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  216        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  217        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  218        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  219        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  220        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  221        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  222        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  223        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  224        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  225        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  226        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  227        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  228        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  229        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  230        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  231        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  232        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  233        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  234        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  235        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  236        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  237        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  238        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  239        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  240        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  241        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  242        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  243        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  244        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  245        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  246        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  247        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  248        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  249        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  250        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  251        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  252        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  253        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  254        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  255        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  256        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  257        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  258        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  259        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  260        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  261        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  262        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  263        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  264        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  265        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  266        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  267        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  268        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  269        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  270        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  271        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  272        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  273        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  274        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  275        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  276        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  277        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  278        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  279        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  280        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  281        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  282        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  283        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  284        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  285        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  286        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  287        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  288        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  289        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  290        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  291        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  292        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  293        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  294        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
+*** < PLS>  PWATER state variables (in)
+*** x  - x      CEPS      SURS       UZS      IFWS       LZS      AGWS      GWVS
+  295        0.01000   0.01000    0.3000   0.01000     1.500   0.01000   0.01000
   END PWAT-STATE1
 
   MON-INTERCEP
@@ -1147,7 +1999,859 @@ PERLND
   PSTEMP-TEMPS
 *** <PLS >  Initial temperatures (deg F)
 *** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
-   11  295       30.       30.       40.       40.
+   11          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   12          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   13          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   14          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   15          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   16          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   17          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   18          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   19          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   20          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   21          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   22          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   23          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   24          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   25          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   26          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   27          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   28          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   29          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   30          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   31          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   32          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   33          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   34          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   35          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   36          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   37          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   38          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   39          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   40          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   41          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   42          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   43          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   44          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   45          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   46          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   47          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   48          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   49          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   50          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   51          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   52          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   53          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   54          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   55          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   56          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   57          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   58          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   59          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   60          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   61          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   62          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   63          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   64          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   65          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   66          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   67          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   68          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   69          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   70          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   71          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   72          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   73          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   74          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   75          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   76          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   77          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   78          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   79          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   80          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   81          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   82          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   83          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   84          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   85          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   86          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   87          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   88          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   89          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   90          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   91          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   92          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   93          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   94          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   95          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   96          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   97          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   98          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+   99          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  100          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  101          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  102          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  103          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  104          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  105          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  106          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  107          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  108          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  109          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  110          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  111          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  112          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  113          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  114          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  115          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  116          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  117          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  118          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  119          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  120          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  121          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  122          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  123          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  124          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  125          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  126          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  127          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  128          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  129          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  130          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  131          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  132          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  133          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  134          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  135          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  136          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  137          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  138          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  139          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  140          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  141          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  142          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  143          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  144          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  145          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  146          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  147          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  148          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  149          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  150          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  151          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  152          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  153          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  154          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  155          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  156          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  157          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  158          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  159          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  160          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  161          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  162          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  163          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  164          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  165          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  166          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  167          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  168          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  169          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  170          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  171          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  172          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  173          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  174          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  175          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  176          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  177          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  178          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  179          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  180          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  181          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  182          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  183          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  184          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  185          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  186          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  187          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  188          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  189          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  190          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  191          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  192          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  193          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  194          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  195          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  196          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  197          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  198          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  199          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  200          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  201          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  202          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  203          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  204          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  205          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  206          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  207          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  208          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  209          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  210          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  211          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  212          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  213          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  214          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  215          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  216          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  217          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  218          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  219          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  220          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  221          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  222          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  223          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  224          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  225          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  226          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  227          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  228          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  229          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  230          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  231          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  232          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  233          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  234          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  235          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  236          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  237          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  238          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  239          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  240          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  241          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  242          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  243          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  244          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  245          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  246          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  247          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  248          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  249          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  250          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  251          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  252          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  253          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  254          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  255          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  256          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  257          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  258          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  259          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  260          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  261          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  262          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  263          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  264          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  265          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  266          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  267          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  268          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  269          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  270          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  271          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  272          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  273          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  274          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  275          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  276          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  277          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  278          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  279          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  280          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  281          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  282          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  283          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  284          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  285          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  286          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  287          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  288          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  289          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  290          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  291          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  292          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  293          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  294          30.00     30.00     40.00     40.00
+*** <PLS >  Initial temperatures (deg F)
+*** x -  x     AIRTC     SLTMP     ULTMP     LGTMP
+  295          30.00     30.00     40.00     40.00
   END PSTEMP-TEMPS
 
   PWT-PARM1
@@ -1344,10 +3048,861 @@ PERLND
   END MON-GRNDDOX
 
   PWT-GASES
-***                   Initial DO and CO2 concentrations
-*** <PLS >     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
-*** x -  x    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
-   11  295      14.5       0.0      12.7       0.0      10.0       0.0
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   11          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   12          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   13          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   14          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   15          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   16          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   17          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   18          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   19          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   20          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   21          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   22          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   23          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   24          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   25          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   26          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   27          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   28          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   29          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   30          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   31          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   32          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   33          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   34          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   35          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   36          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   37          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   38          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   39          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   40          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   41          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   42          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   43          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   44          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   45          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   46          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   47          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   48          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   49          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   50          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   51          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   52          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   53          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   54          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   55          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   56          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   57          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   58          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   59          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   60          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   61          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   62          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   63          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   64          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   65          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   66          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   67          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   68          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   69          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   70          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   71          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   72          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   73          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   74          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   75          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   76          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   77          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   78          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   79          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   80          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   81          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   82          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   83          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   84          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   85          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   86          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   87          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   88          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   89          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   90          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   91          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   92          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   93          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   94          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   95          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   96          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   97          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   98          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+   99          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  100          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  101          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  102          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  103          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  104          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  105          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  106          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  107          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  108          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  109          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  110          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  111          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  112          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  113          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  114          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  115          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  116          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  117          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  118          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  119          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  120          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  121          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  122          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  123          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  124          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  125          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  126          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  127          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  128          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  129          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  130          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  131          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  132          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  133          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  134          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  135          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  136          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  137          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  138          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  139          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  140          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  141          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  142          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  143          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  144          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  145          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  146          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  147          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  148          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  149          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  150          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  151          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  152          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  153          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  154          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  155          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  156          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  157          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  158          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  159          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  160          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  161          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  162          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  163          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  164          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  165          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  166          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  167          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  168          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  169          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  170          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  171          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  172          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  173          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  174          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  175          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  176          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  177          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  178          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  179          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  180          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  181          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  182          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  183          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  184          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  185          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  186          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  187          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  188          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  189          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  190          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  191          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  192          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  193          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  194          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  195          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  196          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  197          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  198          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  199          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  200          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  201          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  202          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  203          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  204          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  205          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  206          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  207          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  208          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  209          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  210          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  211          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  212          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  213          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  214          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  215          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  216          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  217          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  218          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  219          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  220          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  221          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  222          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  223          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  224          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  225          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  226          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  227          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  228          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  229          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  230          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  231          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  232          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  233          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  234          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  235          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  236          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  237          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  238          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  239          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  240          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  241          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  242          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  243          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  244          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  245          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  246          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  247          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  248          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  249          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  250          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  251          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  252          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  253          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  254          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  255          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  256          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  257          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  258          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  259          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  260          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  261          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  262          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  263          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  264          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  265          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  266          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  267          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  268          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  269          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  270          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  271          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  272          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  273          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  274          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  275          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  276          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  277          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  278          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  279          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  280          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  281          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  282          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  283          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  284          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  285          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  286          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  287          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  288          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  289          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  290          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  291          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  292          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  293          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  294          14.50     0.000     12.70     0.000     10.00     0.000
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
+  295          14.50     0.000     12.70     0.000     10.00     0.000
   END PWT-GASES
 
   NQUALS
@@ -3799,7 +6354,847 @@ IMPLND
   IWAT-STATE1
 *** <ILS >  IWATER state variables (inches)
 *** x -  x      RETS      SURS
-   11  291      0.01      0.01
+   11        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   12        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   13        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   14        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   15        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   16        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   17        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   18        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   19        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   20        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   21        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   22        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   23        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   24        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   25        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   26        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   27        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   28        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   29        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   30        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   31        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   32        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   33        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   34        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   35        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   36        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   37        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   38        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   39        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   40        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   41        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   42        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   43        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   44        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   45        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   46        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   47        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   48        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   49        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   50        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   51        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   52        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   53        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   54        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   55        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   56        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   57        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   58        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   59        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   60        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   61        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   62        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   63        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   64        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   65        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   66        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   67        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   68        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   69        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   70        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   71        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   72        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   73        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   74        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   75        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   76        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   77        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   78        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   79        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   80        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   81        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   82        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   83        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   84        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   85        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   86        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   87        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   88        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   89        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   90        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   91        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   92        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   93        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   94        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   95        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   96        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   97        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   98        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+   99        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  100        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  101        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  102        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  103        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  104        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  105        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  106        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  107        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  108        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  109        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  110        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  111        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  112        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  113        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  114        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  115        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  116        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  117        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  118        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  119        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  120        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  121        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  122        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  123        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  124        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  125        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  126        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  127        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  128        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  129        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  130        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  131        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  132        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  133        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  134        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  135        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  136        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  137        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  138        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  139        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  140        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  141        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  142        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  143        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  144        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  145        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  146        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  147        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  148        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  149        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  150        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  151        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  152        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  153        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  154        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  155        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  156        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  157        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  158        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  159        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  160        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  161        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  162        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  163        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  164        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  165        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  166        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  167        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  168        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  169        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  170        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  171        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  172        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  173        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  174        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  175        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  176        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  177        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  178        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  179        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  180        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  181        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  182        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  183        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  184        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  185        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  186        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  187        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  188        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  189        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  190        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  191        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  192        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  193        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  194        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  195        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  196        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  197        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  198        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  199        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  200        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  201        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  202        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  203        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  204        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  205        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  206        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  207        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  208        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  209        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  210        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  211        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  212        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  213        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  214        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  215        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  216        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  217        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  218        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  219        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  220        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  221        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  222        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  223        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  224        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  225        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  226        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  227        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  228        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  229        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  230        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  231        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  232        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  233        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  234        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  235        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  236        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  237        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  238        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  239        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  240        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  241        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  242        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  243        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  244        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  245        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  246        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  247        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  248        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  249        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  250        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  251        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  252        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  253        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  254        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  255        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  256        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  257        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  258        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  259        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  260        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  261        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  262        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  263        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  264        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  265        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  266        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  267        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  268        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  269        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  270        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  271        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  272        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  273        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  274        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  275        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  276        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  277        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  278        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  279        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  280        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  281        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  282        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  283        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  284        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  285        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  286        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  287        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  288        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  289        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  290        0.01000   0.01000
+*** <ILS >  IWATER state variables (inches)
+*** x -  x      RETS      SURS
+  291        0.01000   0.01000
   END IWAT-STATE1
 
   IWT-PARM1

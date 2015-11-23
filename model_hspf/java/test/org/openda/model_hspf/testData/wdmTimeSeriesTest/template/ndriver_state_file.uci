@@ -1345,8 +1345,8 @@ PERLND
 
   PWT-GASES
 ***                   Initial DO and CO2 concentrations
-*** <PLS >     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
-*** x -  x    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** <PLS >    (mg/l)  (mg C/l)    (mg/l)   (mg C/l)   (mg/l)  (mg C/l)
+*** x -  x     SODOX     SOCO2     IODOX     IOCO2     AODOX     AOCO2
    11  295      14.5       0.0      12.7       0.0      10.0       0.0
   END PWT-GASES
 

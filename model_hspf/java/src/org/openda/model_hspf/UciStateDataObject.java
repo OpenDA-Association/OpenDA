@@ -43,12 +43,16 @@ public class UciStateDataObject implements IDataObject {
 
 	private File uciFile = null;
 	private Map<String, IExchangeItem> exchangeItems = new HashMap<>();
-	private Map<String, RchresInitTable> initTables = new HashMap<>();
+	private Map<String, ReachesInitTable> reachesInitTables = new HashMap<>();
+	private Map<String, PerviousLandSegmentsInitTable> perviousLandSegmentsInitTables = new HashMap<>();
+	private Map<String, ImperviousLandSegmentsInitTable> imperviousLandSegmentsInitTables = new HashMap<>();
 
 	/**
 	 * @param workingDir the working directory.
-	 * @param arguments the first argument should be the name of the .uci file containing the data for this DataObject (relative to the working directory).
-	 *                  the second argument should be the timestamp of the state in the .uci file.
+	 * @param arguments File pathname:
+	 *                  The pathname of the .uci state file containing the data for this DataObject (relative to the working directory).
+	 *                  Other arguments:
+	 *                  The first argument should be the timestamp of the state in the .uci file.
 	 */
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments == null || arguments.length < 1) {
@@ -59,7 +63,7 @@ public class UciStateDataObject implements IDataObject {
 
 		//get state time.
 		if (arguments.length < 2) {
-			throw new IllegalArgumentException("No startTime argument specified for " + getClass().getSimpleName() + ". The second argument should be the timestamp of the state in the .uci file.");
+			throw new IllegalArgumentException("No stateTime argument specified for " + getClass().getSimpleName() + ". The second argument should be the timestamp of the state in the .uci file.");
 		}
 		double stateTime;
 		try {
@@ -99,6 +103,9 @@ public class UciStateDataObject implements IDataObject {
 
 		//create exchangeItems.
 		exchangeItems.clear();
+		reachesInitTables.clear();
+		perviousLandSegmentsInitTables.clear();
+		imperviousLandSegmentsInitTables.clear();
 
 		//read file.
 		Results.putMessage(getClass().getSimpleName() + ": reading uci state file " + uciFile.getAbsolutePath());
@@ -106,12 +113,27 @@ public class UciStateDataObject implements IDataObject {
 		Iterator<String> inputIterator = inputLines.iterator();
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
-
 			String tableType = inputLine.trim().toUpperCase();
-			if (RchresInitTable.isRchresTableWithInitialConditions(tableType)) {
-				RchresInitTable newInitTable = new RchresInitTable(tableType, inputIterator, stateTime, exchangeItems);
-				RchresInitTable previous = initTables.put(tableType, newInitTable);
+
+			if (ReachesInitTable.isReachesInitTable(tableType)) {
+				ReachesInitTable initTable = new ReachesInitTable(tableType, inputIterator, stateTime, exchangeItems);
+				ReachesInitTable previous = reachesInitTables.put(tableType, initTable);
 				if (previous != null) throw new IllegalArgumentException("Multiple RCHRES init tables '" + tableType + "' found in uci state file.");
+				continue;
+			}
+
+			if (PerviousLandSegmentsInitTable.isPerviousLandSegmentsInitTable(tableType)) {
+				PerviousLandSegmentsInitTable initTable = new PerviousLandSegmentsInitTable(tableType, inputIterator, stateTime, exchangeItems);
+				PerviousLandSegmentsInitTable previous = perviousLandSegmentsInitTables.put(tableType, initTable);
+				if (previous != null) throw new IllegalArgumentException("Multiple PERLND init tables '" + tableType + "' found in uci state file.");
+				continue;
+			}
+
+			if (ImperviousLandSegmentsInitTable.isImperviousLandSegmentsInitTable(tableType)) {
+				ImperviousLandSegmentsInitTable initTable = new ImperviousLandSegmentsInitTable(tableType, inputIterator, stateTime, exchangeItems);
+				ImperviousLandSegmentsInitTable previous = imperviousLandSegmentsInitTables.put(tableType, initTable);
+				if (previous != null) throw new IllegalArgumentException("Multiple IMPLND init tables '" + tableType + "' found in uci state file.");
+				continue;
 			}
 		}
 	}
@@ -134,18 +156,34 @@ public class UciStateDataObject implements IDataObject {
 		List<String> outputLines = new ArrayList<>();
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
-
 			String tableType = inputLine.trim().toUpperCase();
-			if (RchresInitTable.isRchresTableWithInitialConditions(tableType)) {
-				//skip reading to end of table.
-				while (inputIterator.hasNext()) {
-					String line2 = inputIterator.next();
-					if (line2.trim().toUpperCase().startsWith("END")) break;
-				}
 
+			if (ReachesInitTable.isReachesInitTable(tableType)) {
+				//skip reading to end of table.
+				UciUtils.skipToEnd(inputIterator);
 				//write new table.
-				RchresInitTable initTable = initTables.get(tableType);
-				if (initTable == null) throw new IllegalStateException("RCHRES init table '" + tableType + "' not initialized during reading of uci state file.");
+				ReachesInitTable initTable = reachesInitTables.get(tableType);
+				if (initTable == null) throw new IllegalStateException(ReachesInitTable.RCHRES_MODULE_NAME + " init table '" + tableType + "' not initialized during reading of uci state file.");
+				initTable.write(exchangeItems, outputLines);
+				continue;
+			}
+
+			if (PerviousLandSegmentsInitTable.isPerviousLandSegmentsInitTable(tableType)) {
+				//skip reading to end of table.
+				UciUtils.skipToEnd(inputIterator);
+				//write new table.
+				PerviousLandSegmentsInitTable initTable = perviousLandSegmentsInitTables.get(tableType);
+				if (initTable == null) throw new IllegalStateException(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " init table '" + tableType + "' not initialized during reading of uci state file.");
+				initTable.write(exchangeItems, outputLines);
+				continue;
+			}
+
+			if (ImperviousLandSegmentsInitTable.isImperviousLandSegmentsInitTable(tableType)) {
+				//skip reading to end of table.
+				UciUtils.skipToEnd(inputIterator);
+				//write new table.
+				ImperviousLandSegmentsInitTable initTable = imperviousLandSegmentsInitTables.get(tableType);
+				if (initTable == null) throw new IllegalStateException(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " init table '" + tableType + "' not initialized during reading of uci state file.");
 				initTable.write(exchangeItems, outputLines);
 				continue;
 			}

@@ -165,13 +165,13 @@ public class UciFileTest extends TestCase {
     public void testReadUciStateFile() {
         UciStateDataObject uciStateDataObject = new UciStateDataObject();
         String uciFilename = "uciFileTest/input/ndriver_state_file.uci";
-        String[] arguments = new String[]{uciFilename};
+        String[] arguments = new String[]{uciFilename, "200612311500"};
         uciStateDataObject.initialize(testRunDataDir, arguments);
 
         String[] exchangeItemIds = uciStateDataObject.getExchangeItemIDs();
-        assertEquals(3944, exchangeItemIds.length);
+        assertEquals(9351, exchangeItemIds.length);
 
-        //HEAT-INIT
+        //RCHRES HEAT-INIT
         IExchangeItem item = uciStateDataObject.getDataObjectExchangeItem("RCH1.AIRTMP");
         assertNotNull(item);
         assertEquals(34d, item.getValues());
@@ -184,7 +184,7 @@ public class UciFileTest extends TestCase {
         item = uciStateDataObject.getDataObjectExchangeItem("RCH233.AIRTMP");
         assertNull(item);
 
-        //HYDR-INIT
+        //RCHRES HYDR-INIT
         item = uciStateDataObject.getDataObjectExchangeItem("RCH56.VOL");
         assertNotNull(item);
         assertEquals(100d, item.getValues());
@@ -194,16 +194,42 @@ public class UciFileTest extends TestCase {
         item = uciStateDataObject.getDataObjectExchangeItem("RCH58.VOL");
         assertNotNull(item);
         assertEquals(100d, item.getValues());
+
+        //PERLND PWT-GASES
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS11.SODOX");
+        assertNotNull(item);
+        assertEquals(14.5d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS42.IODOX");
+        assertNotNull(item);
+        assertEquals(12.7d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS295.AOCO2");
+        assertNotNull(item);
+        assertEquals(0d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS296.AOCO2");
+        assertNull(item);
+
+        //IMPLND IWAT-STATE1
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS11.SURS");
+        assertNotNull(item);
+        assertEquals(0.01d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS42.SURS");
+        assertNotNull(item);
+        assertEquals(0.01d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS291.SURS");
+        assertNotNull(item);
+        assertEquals(0.01d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS292.SURS");
+        assertNull(item);
     }
 
     public void testWriteUciStateFile() {
         UciStateDataObject uciStateDataObject = new UciStateDataObject();
         String uciFilename = "uciFileTest/input/ndriver_state_file.uci";
-        String[] arguments = new String[]{uciFilename};
+        String[] arguments = new String[]{uciFilename, "200612311500"};
         uciStateDataObject.initialize(testRunDataDir, arguments);
 
         //set values in exchangeItems.
-        //HEAT-INIT
+        //RCHRES HEAT-INIT
         IExchangeItem item = uciStateDataObject.getDataObjectExchangeItem("RCH1.AIRTMP");
         assertNotNull(item);
         item.setValues(-1d);
@@ -214,7 +240,7 @@ public class UciFileTest extends TestCase {
         assertNotNull(item);
         item.setValues(10d);
 
-        //HYDR-INIT
+        //RCHRES HYDR-INIT
         item = uciStateDataObject.getDataObjectExchangeItem("RCH56.VOL");
         assertNotNull(item);
         item.setValues(0.56d);
@@ -224,6 +250,28 @@ public class UciFileTest extends TestCase {
         item = uciStateDataObject.getDataObjectExchangeItem("RCH58.VOL");
         assertNotNull(item);
         item.setValues(0.58d);
+
+        //PERLND PWT-GASES
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS11.SODOX");
+        assertNotNull(item);
+        item.setValues(0.11d);
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS12.IODOX");
+        assertNotNull(item);
+        item.setValues(0.12d);
+        item = uciStateDataObject.getDataObjectExchangeItem("PLS295.AOCO2");
+        assertNotNull(item);
+        item.setValues(2.95d);
+
+        //IMPLND IWAT-STATE1
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS11.SURS");
+        assertNotNull(item);
+        item.setValues(0.11d);
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS42.SURS");
+        assertNotNull(item);
+        item.setValues(0.42d);
+        item = uciStateDataObject.getDataObjectExchangeItem("ILS291.SURS");
+        assertNotNull(item);
+        item.setValues(2.91d);
 
         //the call to method finish actually writes the data in the exchangeItems to the uci file.
         uciStateDataObject.finish();
