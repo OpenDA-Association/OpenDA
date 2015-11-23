@@ -97,7 +97,7 @@ public class WdmTimeSeriesTest extends TestCase {
         //check times for RCH103.FLOW
         double[] times1 = exchangeItems[0].getTimes();
         assertNotNull(times1);
-        assertEquals(731, times1.length);
+        assertEquals(732, times1.length);
         double currentModifiedJulianDate = startModifiedJulianDate;
         for (int n = 0; n < times1.length; n++) {
             assertEquals(currentModifiedJulianDate, times1[n]);
@@ -106,13 +106,14 @@ public class WdmTimeSeriesTest extends TestCase {
         //check values for RCH103.FLOW
         double[] values1 = exchangeItems[0].getValuesAsDoubles();
         assertNotNull(values1);
-        assertEquals(731, values1.length);
+        assertEquals(732, values1.length);
         assertEquals(38.29, values1[0], 1e-5);
         assertEquals(111.96, values1[64], 1e-6);
         assertEquals(1772.92, values1[207], 1e-3);
         assertEquals(1757.17, values1[228], 1e-3);
         assertEquals(2075.54, values1[229], 1e-3);
-        assertEquals(27.17, values1[times1.length - 1], 1e-6);
+        assertEquals(27.17, values1[times1.length - 2], 1e-6);
+        assertEquals(0, values1[times1.length - 1], 1e-6);
 
         //check id for RCH104.BOD
         id = exchangeItems[1].getId();
@@ -120,22 +121,23 @@ public class WdmTimeSeriesTest extends TestCase {
         //check times for RCH104.BOD
         double[] times2 = exchangeItems[1].getTimes();
         assertNotNull(times2);
-        assertEquals(1096, times2.length);
+        assertEquals(1097, times2.length);
         currentModifiedJulianDate = startModifiedJulianDate;
-        for (int n = 0; n < times1.length; n++) {
-            assertEquals(currentModifiedJulianDate, times1[n]);
+        for (int n = 0; n < times2.length; n++) {
+            assertEquals(currentModifiedJulianDate, times2[n]);
             currentModifiedJulianDate++;
         }
         //check values for RCH104.BOD
         double[] values2 = exchangeItems[1].getValuesAsDoubles();
         assertNotNull(values2);
-        assertEquals(1096, values2.length);
+        assertEquals(1097, values2.length);
         assertEquals(-999.0, values2[0], 1e-6);
         assertEquals(1.2, values2[8], 1e-6);
         assertEquals(1.3, values2[43], 1e-6);
         assertEquals(0.9, values2[71], 1e-6);
         assertEquals(0.8, values2[104], 1e-6);
-        assertEquals(-999.0, values2[times2.length - 1], 1e-6);
+        assertEquals(-999.0, values2[times2.length - 2], 1e-6);
+        assertEquals(0, values2[times2.length - 1], 1e-6);
     }
 
     /**
@@ -214,7 +216,7 @@ public class WdmTimeSeriesTest extends TestCase {
         //check times for RCH103.FLOW
         double[] times1 = exchangeItem.getTimes();
         assertNotNull(times1);
-        assertEquals(731, times1.length);
+        assertEquals(732, times1.length);
         double currentModifiedJulianDate = startModifiedJulianDate;
         for (int n = 0; n < times1.length; n++) {
             assertEquals(currentModifiedJulianDate, times1[n]);
@@ -223,13 +225,14 @@ public class WdmTimeSeriesTest extends TestCase {
         //check values for RCH103.FLOW
         double[] values1 = exchangeItem.getValuesAsDoubles();
         assertNotNull(values1);
-        assertEquals(731, values1.length);
+        assertEquals(732, values1.length);
         assertEquals(38.29, values1[0], 1e-5);
         assertEquals(111.96, values1[64], 1e-6);
         assertEquals(1772.92, values1[207], 1e-3);
         assertEquals(1757.17, values1[228], 1e-3);
         assertEquals(2075.54, values1[229], 1e-3);
-        assertEquals(27.17, values1[times1.length - 1], 1e-6);
+        assertEquals(27.17, values1[times1.length - 2], 1e-6);
+        assertEquals(0, values1[times1.length - 1], 1e-6);
 
         //check id for RCH104.BOD
         exchangeItem = wdmEnsembleTimeSeriesOutputDataObject.getDataObjectExchangeItem("RCH104.BOD", 1);
@@ -238,22 +241,23 @@ public class WdmTimeSeriesTest extends TestCase {
         //check times for RCH104.BOD
         double[] times2 = exchangeItem.getTimes();
         assertNotNull(times2);
-        assertEquals(1096, times2.length);
+        assertEquals(1097, times2.length);
         currentModifiedJulianDate = startModifiedJulianDate;
-        for (int n = 0; n < times1.length; n++) {
-            assertEquals(currentModifiedJulianDate, times1[n]);
+        for (int n = 0; n < times2.length; n++) {
+            assertEquals(currentModifiedJulianDate, times2[n]);
             currentModifiedJulianDate++;
         }
         //check values for RCH104.BOD
         double[] values2 = exchangeItem.getValuesAsDoubles();
         assertNotNull(values2);
-        assertEquals(1096, values2.length);
+        assertEquals(1097, values2.length);
         assertEquals(-999.0, values2[0], 1e-6);
         assertEquals(1.2, values2[8], 1e-6);
         assertEquals(1.3, values2[43], 1e-6);
         assertEquals(0.9, values2[71], 1e-6);
         assertEquals(0.8, values2[104], 1e-6);
-        assertEquals(-999.0, values2[times2.length - 1], 1e-6);
+        assertEquals(-999.0, values2[times2.length - 2], 1e-6);
+        assertEquals(0, values2[times2.length - 1], 1e-6);
     }
 
     /**
@@ -294,7 +298,8 @@ public class WdmTimeSeriesTest extends TestCase {
         assertEquals(4, exchangeItems1.length);
 
         //set times and values.
-        double[] expectedTimes = new double[546];
+        //startDate and endDate are both inclusive, so the number of times (and values) is one more than the number of timeSteps between the times.
+        double[] expectedTimes = new double[547];
         //written period: MJD 54832.0 (2009-01-01 00:00) to MJD 55378.0 (2010-07-01 00:00).
         double currentModifiedJulianDate = 54832;
         for (int n = 0; n < expectedTimes.length; n++) {
