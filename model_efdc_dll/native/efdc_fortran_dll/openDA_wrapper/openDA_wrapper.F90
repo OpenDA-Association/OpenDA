@@ -619,8 +619,9 @@ contains
     depths = real(DZC,dp)
     ret_val = 0
     
-    write(dm_outfile_handle(instance), '(A,I4,A,I4, A, I2)') & 
-      'get_layer_depths( instance: ', instance, '): ', ret_val, 'depths: ', depths
+    write(dm_outfile_handle(instance), '(A,I4,A,I4, A)') & 
+      'get_layer_depths( instance: ', instance, '): ', ret_val, 'depths: '
+    write(dm_outfile_handle(instance), *)  depths
     call flush(dm_outfile_handle(instance))
     
   end function get_layer_depths
