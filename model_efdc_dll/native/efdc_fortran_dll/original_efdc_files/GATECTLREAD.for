@@ -1,3 +1,5 @@
+! Advanced EFDC Hydraulic structure ! GEOSR. 2011. 12. JGCHO
+!
       SUBROUTINE GATECTLREAD
 C  
 C GEOSR 2010.5.7
@@ -49,9 +51,11 @@ C GC4** READ FLOW CONSTANT
       NCARD='4'
       CALL SEEK('GC4')
       DO L=1,NGTYPES
-        READ(1,*,ERR=1000) CG1(L),CG2(L),CG3(L),CG4(L),CG5(L),NCG3FOM(L)
+        READ(1,*,ERR=1000) CGH1(L),CGH2(L),CG1(L),CG2(L),CG3(L),CG4(L)			!ung 20141108
+     &  ,CG5(L),CG6(L),CG7(L),CG8(L),NCG3FOM(L)															!ung 20141108
         WRITE(7,1002)NCARD
-        WRITE(7,*) CG1(L),CG2(L),CG3(L),CG4(L),CG5(L),NCG3FOM(L),L
+        WRITE(7,*) CGH1(L),CGH2(L),CG1(L),CG2(L),CG3(L),CG4(L)							!ung 20141108
+     &  ,CG5(L),CG6(L),CG7(L),CG8(L),NCG3FOM(L),L														!ung 20141108
       ENDDO
 C
 C GC5** READ GATE CONTROL

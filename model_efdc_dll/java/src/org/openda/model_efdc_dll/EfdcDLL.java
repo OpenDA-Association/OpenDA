@@ -70,6 +70,8 @@ public class EfdcDLL {
      */
     public static void initialize(File modelDll, File modelInstanceParentDir, File modelTemplateDir, TimeZone modelTimeZone) {
 
+
+        System.out.println("Loading EFDC library: " + modelDll );
         //Native.setProtected(true) will attempt to convert invalid accesses into exceptions.
         Native.setProtected(false);
         System.out.println("Shared library protection: " + Native.isProtected() );

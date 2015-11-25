@@ -37,6 +37,15 @@ SUBROUTINE DRIFTERC   ! ********************************************************
   REAL(RKD) ::UOIL, VOIL, DIFFVEL, TRANSTIME
 !}
 
+!{GEOSR, 2014.11.25 CWCHO, OIL WIND TRANSFER COEFF.
+  INTEGER(4):: NA, M1, M2, MSAVE
+  REAL(RKD) ::TIME, TDIFF, TIME_PRE
+  REAL(RKD) ::WTM1, WTM2, DEGM1, DEGM2
+  REAL(RKD) ::WINDS1, WINDS2, WINDE1, WINDE2, WINDN1, WINDN2
+  REAL(RKD) ::WINDEE, WINDNN, WINDSPD
+  REAL(RKD) ::UWIND, VWIND
+!}GEOSR, 2014.11.25 CWCHO, OIL WIND TRANSFER COEFF.  
+  
   TITLE='PREDICTION OF TRAJECTORIES OF DRIFTERS'  
 
 !{GEOSR, OIL, CWCHO, 101103
@@ -126,8 +135,60 @@ SUBROUTINE DRIFTERC   ! ********************************************************
       UOIL = R1*COS(2.*PI*R2)*DIFFVEL
 	  VOIL = R1*SIN(2.*PI*R2)*DIFFVEL
 
-	  U1NP=U1NP+UOIL !+UWIND : not use u-vel due wind
-	  V1NP=V1NP+VOIL !+VWIND : not use v-vel due wind
+!{GEOSR, 2014.11.25 CWCHO, OIL WIND TRANSFER COEFF.
+      IF(NWSER.GT.0)THEN  
+        ! *** UPDATE THE FORCING WIND DATA TO THE CURRENT TIME
+        DO NA=1,NWSER  
+          
+          IF(ISDYNSTP.EQ.0)THEN  
+            TIME=DT*FLOAT(N)/TCWSER(NA)+TBEGIN*(TCON/TCWSER(NA))  
+          ELSE  
+            TIME=TIMESEC/TCWSER(NA)  
+          ENDIF  
+          
+          M1=MWTLAST(NA)  
+          MSAVE=M1  
+          
+200       CONTINUE  
+          
+          M2=M1+1  
+          IF(TIME.GT.TWSER(M2,NA))THEN  
+            M1=M2  
+            GOTO 200  
+          ELSE  
+            MWTLAST(NA)=M1  
+          ENDIF 
+          TDIFF=TWSER(M2,NA)-TWSER(M1,NA)  
+          WTM1=(TWSER(M2,NA)-TIME)/TDIFF  
+          WTM2=(TIME-TWSER(M1,NA))/TDIFF  
+          DEGM1=90.-WINDD(M1,NA)  
+          DEGM2=90.-WINDD(M2,NA)  
+          WINDS1=WTM1*WINDS(M1,NA)+WTM2*WINDS(M2,NA)  
+          WINDS2=WTM1*WINDS(M1,NA)+WTM2*WINDS(M2,NA)  
+          WINDE1=WINDS(M1,NA)*COS(DEGM1/57.29578)  
+          WINDN1=WINDS(M1,NA)*SIN(DEGM1/57.29578)  
+          WINDE2=WINDS(M2,NA)*COS(DEGM2/57.29578)  
+          WINDN2=WINDS(M2,NA)*SIN(DEGM2/57.29578)  
+          WINDEE=WTM1*WINDE1+WTM2*WINDE2  
+          WINDNN=WTM1*WINDN1+WTM2*WINDN2  
+          WINDSPD=SQRT(WINDEE**2+WINDNN**2)
+        ENDDO  
+	
+      ENDIF
+     
+          UWIND=WINDEE*WTC
+          VWIND=WINDNN*WTC
+      
+!          IF(TIME_PRE.NE.TIME) THEN
+!          WRITE(9412,'(F15.7,5F10.4)') TIME, WINDEE, WINDNN, WTC, UWIND, VWIND
+!  	       ENDIF
+!          TIME_PRE=TIME          
+      
+	  U1NP=U1NP+UOIL +UWIND  ! add u-vel due wind (oil only)
+	  V1NP=V1NP+VOIL +VWIND  ! add v-vel due wind (oil only)
+!	  U1NP=U1NP+UOIL !+UWIND : not use u-vel due wind
+!	  V1NP=V1NP+VOIL !+VWIND : not use v-vel due wind
+!}GEOSR, 2014.11.25 CWCHO, OIL WIND TRANSFER COEFF.
 
       XLA(NP) = XLA1 + DT*U1NP  
       YLA(NP) = YLA1 + DT*V1NP  

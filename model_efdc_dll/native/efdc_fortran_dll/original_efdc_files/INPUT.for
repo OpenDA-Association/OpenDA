@@ -1858,6 +1858,14 @@ C
         ENDDO  
       ENDIF  
 C  
+!{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
+        NCARD='101'
+        CALL SEEK('C101')
+        READ(1,*,IOSTAT=ISO) ISWIND, ISICE  !{GeoSR, 2015.01.15 JHLEE, NEGATIVE WATER TEMPERATURE PROBLEM
+        WRITE(7,1002)NCARD
+        WRITE(7,*)ISWIND, ISICE  !{GeoSR, 2015.01.15 JHLEE, NEGATIVE WATER TEMPERATURE PROBLEM
+        IF(ISO.GT.0) GOTO 100                  
+!} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
       NTS=NTC*NTSPTC  
       NBVSFP=NTC*NTSPTC  
       NSVSFP=0  
@@ -1901,6 +1909,38 @@ C
    22 FORMAT (A80)  
    23 FORMAT (1X,A80)  
 C  
+!{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
+      IF(ISWIND.EQ.1)THEN
+      PRINT *,'READING WINDCOEFF.INP'
+      OPEN(1,FILE='WINDCOEFF.INP',STATUS='UNKNOWN')  
+
+      DO IS=1,16 
+        READ(1,*)  
+      ENDDO        
+      READ(1,*,IOSTAT=ISO) ISCD,WNDCM,WNDB,WNDCR,CDCON
+      
+      IF(ISO.GT.0) GOTO 9886  
+      
+      CLOSE(1)  
+
+C***INITIALIZES HORIZONTAL DIST. VARIABLE FOR WINDCOEFF
+       
+      DO L=2,LC-1  
+        CDDN(L)  =CDCON
+      ENDDO  
+
+      ENDIF
+
+C        CALL  INPUT_WINDCOEF  !! INPUT FOR WINDCOEFF.INP BY GEOSR
+
+      GOTO 9883
+            
+ 9886 PRINT *,'READ ERROR FOR FILE WINDCOEFF.INP_CSG-01'
+      STOP  
+
+ 9883 CONTINUE
+!} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
+C
 C **  READ CELL TYPES FROM FILES CELL.INP  
 C  
       PRINT *,'READING CELL.INP'
@@ -4026,6 +4066,9 @@ C
               IF(ISO.GT.0) GOTO 904  
               DO M=1,MCSER(NS,NC)  
                 READ(1,*,IOSTAT=ISO)TCSER(M,NS,NC),CSERTMP  
+!{GeoSR, 2014.09.14 YSSONG, TOXIC TIME
+                TCSER(M,NS,NC)=TCSER(M,NS,NC)/86400.    
+!}                
                 IF(ISO.GT.0) GOTO 904  
                 TCSER(M,NS,NC)=TCSER(M,NS,NC)+TACSER(NS,NC)  
                 DO K=1,KC  
@@ -4045,6 +4088,9 @@ C
               DO M=1,MCSER(NS,NC)  
                 READ(1,*,IOSTAT=ISO)TCSER(M,NS,NC),(CSER(M,K,NS,NC),
      &              K=1,KC)  
+!{GeoSR, 2014.09.14 YSSONG, TOXIC TIME
+                TCSER(M,NS,NC)=TCSER(M,NS,NC)/86400. 
+!}  
                 IF(ISO.GT.0) GOTO 904  
                 TCSER(M,NS,NC)=TCSER(M,NS,NC)+TACSER(NS,NC)  
                 DO K=1,KC  
@@ -4255,6 +4301,25 @@ C **  SKIP OVER TITLE AND AND HEADER LINES
         IF(DEBUG)CLOSE(99)  
 !!!!!!!!!!!!!!!!!!!!!!!!!! } READ GATESER.INP JGCHO 2011.10.27
       ENDIF
+!!!!!!!!!!!!!!!!!!!!!!!!!! { READ GATETAB.INP Ung 2014.11.04
+      IF (NQCTYPM.ge.13) THEN
+          PRINT *,'READING GATETAB.INP'
+          OPEN(1,file='GATETAB.INP',status='unknown')
+          DO IS=1,3
+            READ(1,*)
+          ENDDO
+          DO IS1=1,16
+          	READ(1,*)NOELE(IS1),NOGELE(IS1)
+          	READ(1,*)GELE(IS1,1:NOGELE(IS1))
+          	DO IS=1,NOELE(IS1)
+            	READ(1,*)ELET(IS1,IS),QT(IS1,IS,1:NOGELE(IS1))
+          	ENDDO
+              ELET(IS1,NOELE(IS1)+1)=ELET(IS1,NOELE(IS1))
+              QT(IS1,NOELE(IS1)+1,:)=QT(IS1,NOELE(IS1),:)
+          ENDDO
+          CLOSE(1)
+      ENDIF
+!!!!!!!!!!!!!!!!!!!!!!!!!! } READ GATETAB.INP Ung 2014.11.04
 C **  READ GATE CONTROL FILE : GATECTL.INP
 C }   EDITED BY GEOSR 2010.5.7
 

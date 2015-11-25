@@ -1,3 +1,5 @@
+! Advanced EFDC Hydraulic structure ! GEOSR. 2011. 12. JGCHO
+!
       SUBROUTINE SCANGSER
       USE GLOBAL
       CHARACTER*80 SKIP

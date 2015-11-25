@@ -1,3 +1,5 @@
+! Advanced EFDC Hydraulic structure ! GEOSR. 2011. 12. JGCHO
+!
       SUBROUTINE CGATEFLX
 C  
 C CHANGE RECORD  
@@ -6,8 +8,10 @@ C    GATE CONTROL FLUX
 C  
       USE GLOBAL  
       INTEGER IGCHECK(NQCTLM)
-      REAL GKMULT(NDQCLT,KCM) ! GEOSR JGCHO 2011.10.27       ALLOCATE(GKMUL(NDQCLT,KCM,NQCTLM)) ! GEOSR JGCHO 2011.10.27
+      REAL GKMULT(KCM) ! GEOSR JGCHO 2011.10.27       ALLOCATE(GKMUL(NDQCLT,KCM,NQCTLM)) ! GEOSR JGCHO 2011.10.27
       REAL GQT(NQCTLM),LUA(NQCTLM),LDA(NQCTLM)
+      REAL CG10
+      REAL CQ(LCM),CV(LCM)				! GEOSR UNG 2014.11.12 Warning message writing
       CHARACTER*80 CTLE1
       ! open time control : jgcho 2010.8.17 temporary
 !      IF (N.EQ.1) GATEOTM=1.0
@@ -15,6 +19,9 @@ C
 
       IGCHECK=0              ! GATE FORMULA ID
       GQT=0.
+      DUMPG(:)=0.0d0
+      CQ(:)=0.0d0					! GEOSR UNG 2014.11.12 Warning message writing
+			CV(:)=0.0d0					! GEOSR UNG 2014.11.12 Warning message writing
 
       DO K=1,KC
         DO NCTL=1,NQCTL
@@ -85,7 +92,7 @@ c
             M1=MTIDELAST(LG)
   100       CONTINUE
             M2=M1+1
-            IF(TIMEDAY.GT.ESTIME(LG,M2))THEN  
+            IF((TIMEDAY-EPS).GT.ESTIME(LG,M2))THEN  
               M1=M2  
               GOTO 100  
             ELSE  
@@ -149,47 +156,60 @@ C
         ENDIF  
 ! } GEOSR ESTUARY DIKE : JGCHO 2010.11.15
 C
+! { GEOSR FIXED WEIR TS remove : jgcho 2014.10.14
+        if (NQCTLQ(NCTL).eq.0) then
+          IAGT=1
+          SEL1T=SILL(NCTL)
+          SEL2T=0.
+          GUPHT=0.
+          GQSUMT=-1.
+        else
 
-          M1=MGTLAST(NCTL)
+          M1=MGTLAST(NQCTLQ(NCTL))
   200     CONTINUE
           M2=M1+1
-          IF ((TIMEDAY-EPS).GT.GCSER(M2,NCTL)) THEN
+          IF ((TIMEDAY-EPS).GT.GCSER(M2,NQCTLQ(NCTL))) THEN
             M1=M2
             GOTO 200
           ELSE
-            MGTLAST(NCTL)=M1
+            MGTLAST(NQCTLQ(NCTL))=M1
           ENDIF
 
-          IAGT=IAG(M1,NCTL) !0:CLOSE, 1:AUTO, 2:USER_DEFINE
-          SEL1T=SEL1(M1,NCTL)
-          SEL2T=SEL2(M1,NCTL)
-          GUPHT=GUPH(M1,NCTL)
-          GQSUMT=GQSUM(M1,NCTL)
+          IAGT=IAG(M1,NQCTLQ(NCTL)) !0:CLOSE, 1:AUTO, 2:USER_DEFINE
+          SEL1T=SEL1(M1,NQCTLQ(NCTL))
+          SEL2T=SEL2(M1,NQCTLQ(NCTL))
+          GUPHT=GUPH(M1,NQCTLQ(NCTL)) !/100.
+          GQSUMT=GQSUM(M1,NQCTLQ(NCTL))
+          NGATET=NGATE(M1,NQCTLQ(NCTL))
+          
+        endif
+
           DO K=1,KC
-            GKMULT(M1,K)=GKMUL(M1,K,NCTL)
+            GKMULT(K)=1./float(kc)
           ENDDO
           IF (GUPHT.LE.0.) THEN
-            GUPHT=SILLHH(LG) ! GATE OPEN HEIGHT
+            GUPHT=0. ! 2014.11.09 JGCHO SILLHH(LG) ! GATE OPEN HEIGHT
           ENDIF
           IF (IAGT.EQ.2 .AND. IAGUSER(NCTL).LT.M1) THEN
-            IAGUSER(NCTL)=M1          
-            GGQSUM(NCTL)=0.
+            IAGUSER(NQCTLQ(NCTL))=M1          
+            GGQSUM(NQCTLQ(NCTL))=0.
           ENDIF
           IF (GQSUMT.EQ.-1.) GQSUMT=9.0E+20
 
           IF (NQCTYP(NCTL).EQ.9) THEN
-            GLOLEV=SEL1(M1,NCTL)   !X1
-            GHILEV=SEL2(M1,NCTL)   !X2
-            GQPLO=GUPH(M1,NCTL)   !Y1
-            GQPHI=GQSUM(M1,NCTL) !Y2
+            GLOLEV=SEL1(M1,NQCTLQ(NCTL))   !X1
+            GHILEV=SEL2(M1,NQCTLQ(NCTL))   !X2
+            GQPLO=GUPH(M1,NQCTLQ(NCTL))   !Y1
+            GQPHI=GQSUM(M1,NQCTLQ(NCTL)) !Y2
           ENDIF
+! } GEOSR FIXED WEIR TS remove : jgcho 2014.10.14
 
 C###########################################################
 C#      UPSTREAM -> DOWNSTREAM (START)
 C###########################################################
-        IF(NQCTYP(NCTL).EQ.3 .AND. NGCCHECK(LG).EQ.0)THEN   ! UPSTREAM -> DOWNSTREAM
+        IF( (NQCTYP(NCTL).GE.31 .AND. NQCTYP(NCTL).LE.33)
+     &   													.AND. NGCCHECK(LG).EQ.0)THEN   			! UPSTREAM -> DOWNSTREAM
           IF (TIDCHK(LG).EQ.-1.) DIFEL(LG)=1.  ! NOT CONSIDER TIDE LEVLE
-
                          IF (IAGT.EQ.0) THEN
                            NGCHECK(LG)=0                 
                            CALL EBBMASKRE
@@ -198,8 +218,8 @@ C###########################################################
           IF (DIFEL(LG).GT.0.02) THEN         ! EBB PERIOD
             IF (DELHG(LG).GE.DELHINOUT(LG)
      &         .AND. HUPG(LG).GT.HDWG(LG)) THEN ! UPSTREAM LEVEL HIGHER THAN DOWNSTREAM
-              IF (HUPG(LG).GE.SEL1T
-     &           .AND. (HUPG(LG)-SEL1T).GE.DELHSEL1(LG)) THEN  ! UPSTREAM LEVEL HIGHER THAN TARGET LOW LEVEL
+              IF (HUPG(LG).GE.SEL1T   ! SILL(LG) -> SEL1T !GEOSR 2014.12.24 jgcho
+     &           .AND. (HUPG(LG)-SEL1T).GE.DELHSEL1(LG)) THEN  ! UPSTREAM LEVEL HIGHER THAN TARGET LOW LEVEL     ! SILL(LG) -> SEL1T !GEOSR 2014.12.24 jgcho
 C
               ! open time control : jgcho 2010.8.17 temporary
 !              IF (N*DT/86400. .GE. GATEOTM) THEN
@@ -225,42 +245,138 @@ C
 C                SILLHHO(LG)=SILLHH(LG)*GRAMPUP(LG)                    ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
 C
 C++++++++++++++ BEGIN NORMAL FORMULA
-                IF (DEPUPG(LG).LE.GUPHT) THEN                    ! OVERFLOW OR WEIR
-                  IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW
-                    IGCHECK(LG)=31
-                    DUMPG(LG)=1.704*CG1(LG)*GATEWI(LG)                
+                !!20141024-UNG
+                IF (NQCTYP(NCTL).EQ.31) THEN																			! Elevator type rise and fall system
+                  IF (HUPG(LG).LE.GUPHT+SILL(LG)) THEN  ! 2014.11.08 jgcho  DEPUPG(LG) -> HUPG(LG)   +SILL(LG)
+                   	IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW(WEIR)
+                    	IGCHECK(LG)=313
+                    	DUMPG(LG)=1.704*CG3(LG)*GATEWI(LG)            
      &                       *(DEPUPG(LG)**(3./2.))                
                   ELSEIF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN            ! SUBMERGED WEIR
-                    IGCHECK(LG)=32
-                    DUMPG(LG)=CG2(LG)*(DEPUPG(LG)-DELHG(LG))
+                  		IGCHECK(LG)=314
+                    	DUMPG(LG)=CG4(LG)*(DEPUPG(LG)-DELHG(LG))
      &                       *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
-                  ENDIF
-                ELSE                                                  ! ORIFICE CONDITION
-                  IF (GUPHT.GT.DEPDWG(LG)) THEN                  ! COMPLETE ORIFICE
+                  	ENDIF   ! IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN
+                	ELSE
+                   IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN                 				! COMPLETE ORIFICE
+                    IF (SILL(LG).LT.HDWG(LG))	THEN
                     DELCH=DEPUPG(LG)-GUPHT
+                   		IGCHECK(LG)=311
                     IF (NCG3FOM(LG).EQ.1) THEN
-                      IGCHECK(LG)=33
-                      GQ1=CG3(LG)*(GUPHT-DEPDWG(LG))
+                      	GQ1=CG5(LG)*(GUPHT+SILL(LG)-HDWG(LG))
      &                    *GATEWI(LG)*SQRT(2.*9.806*(DELHG(LG)-DELCH))
                     ELSEIF (NCG3FOM(LG).EQ.2) THEN
-                      IGCHECK(LG)=34
-                      GQ1=2./3.*CG3(LG)*GATEWI(LG)*SQRT(2.*9.806)
-     &                       *( DELHG(LG)**(3./2.) - DELCH**(3./2.) )
-                    ENDIF
-                    DUMPG(LG)=GQ1 + CG4(LG)*(DEPUPG(LG)-DELHG(LG))
+                     		GQ1=2./3.*CG5(LG)*GATEWI(LG)*SQRT((2.
+     &                      *9.806)*(DELHG(LG)**(3./2.)-DELCH**(3./2.)))
+                    	ENDIF
+                    	DUMPG(LG)=GQ1+CG5(LG)*(DEPUPG(LG)-DELHG(LG))
      &                        *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
-                  ELSE                                                ! SUBMERGED ORIFICE
-                    IGCHECK(LG)=35
-                    DUMPG(LG)=CG5(LG)*GUPHT*GATEWI(LG)
+     								ELSE
+     									IGCHECK(LG)=315
+     									DUMPG(LG)=CG7(LG)*GUPHT*GATEWI(LG)
+     &                			*SQRT(2.*9.806*(DEPUPG(LG)-GUPHT/2.))
+                    ENDIF
+                   ELSE                                              		! SUBMERGED ORIFICE
+                    IGCHECK(LG)=312
+                    DUMPG(LG)=CG6(LG)*GUPHT*GATEWI(LG)
      &                       *SQRT(2.*9.806*DELHG(LG))
-                  ENDIF  ! IF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN
-                ENDIF  ! IF (DEPUPG(LG).GT.GUPHT) THEN
+                   ENDIF  ! IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN
+                  ENDIF   ! IF (DEPUPG(LG).LE.GUPHT) THEN
+
+                ENDIF  ! IF (NQCTYP(NCTL).EQ.31) THEN
+                IF (NQCTYP(NCTL).EQ.32) THEN																			! Turning type floodgate
+
+                	IF (HUPG(LG).GT.(SILLHH(LG)-GUPHT)) THEN ! JGCHO 2014.11.11 ADD SILL(LG)+
+!                     
+                		IF (HDWG(LG).LT.SILLHH(LG)-GUPHT) THEN !DELCH) THEN  JGCHO 2014.11.11
+                	       IGCHECK(LG)=321
+                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                              DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
+     &        				 *SQRT(2.*9.806*h11)
+                      ELSE
+                	       IGCHECK(LG)=322
+                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                               h22=HDWG(LG)-(SILLHH(LG)-GUPHT)
+                              DUMPG(LG)=2.6*CG8(LG)
+     &                            *GATEWI(LG)*h22
+     &        					*SQRT(2.*9.806*(h11-h22))
+     								ENDIF
+                	ENDIF
+!                	write(*,*)DUMPG(LG)				testwriting-ung 1105
+!                	write(*,*)CG8(LG),NGTYP(LG),DEPUPG(LG),DELCH
+!                	write(*,*)GATEWI(LG)
+!                	write(*,*)GATEHI(LG),GUPHT,SILL(LG)
+!                	PAUSE
+                ENDIF  ! IF (NQCTYP(NCTL).EQ.32) THEN
+                IF (NQCTYP(NCTL).EQ.33) THEN																			! Roller floodgate
+									IF (GUPHT.GE.0) THEN																		! OVERFLOW
+										IF (HUPG(LG).GT.(SILLHH(LG)-GUPHT)) THEN ! JGCHO 2014.11.08 ADD SILL(LG)+
+
+                			IF (HDWG(LG).LT.SILLHH(LG)-GUPHT) THEN
+										IGCHECK(LG)=336
+                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                      DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
+     &        				 *SQRT(2.*9.806*h11)
+                          ELSE
+										IGCHECK(LG)=337
+                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                               h22=HDWG(LG)-(SILLHH(LG)-GUPHT)
+                      DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
+     &        				 *SQRT(2.*9.806*h11)
+!                              DUMPG(LG)=2.6*CG8(LG)
+!     &                            *GATEWI(LG)*h22
+!     &        					*SQRT(2.*9.806*(h11-h22))
+     									ENDIF		!  IF (HDWG(LG).LT.DELCH) THEN
+                		ENDIF		!  IF (HUPG(LG).GT.(GATEHI(LG)-GUPHT)) THEN
+									ELSE		!  IF (GUPHT.GE.0) THEN
+										IF (DEPUPG(LG).LE.GUPHT*(-1.)) THEN
+                   		IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW(WEIR)
+                    		IGCHECK(LG)=333
+                    		DUMPG(LG)=1.704*CG3(LG)*GATEWI(LG)            
+     &                       *(DEPUPG(LG)**(3./2.))                
+                  		ELSEIF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN            ! SUBMERGED WEIR
+                  			IGCHECK(LG)=334
+                    		DUMPG(LG)=CG4(LG)*(DEPUPG(LG)-DELHG(LG))
+     &                        *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
+                  		ENDIF   ! IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN
+                		ELSE		!  IF (DEPUPG(LG).LE.GUPHT*(-1.)) THEN
+                   		IF ((GUPHT*(-1.)+SILL(LG)).GT.HDWG(LG)) THEN                 				! COMPLETE ORIFICE
+                    		IF (SILL(LG).LT.HDWG(LG))	THEN
+                    			DELCH=DEPUPG(LG)-GUPHT*(-1.)
+                   				IGCHECK(LG)=331
+                    			IF (NCG3FOM(LG).EQ.1) THEN
+                      			GQ1=CG5(LG)*(GUPHT*(-1.)+SILL(LG)
+     &                    		-HDWG(LG))*GATEWI(LG)
+     &                    		*SQRT(2.*9.806*(DELHG(LG)-DELCH))
+                    			ELSEIF (NCG3FOM(LG).EQ.2) THEN
+                     				GQ1=2./3.*CG5(LG)*GATEWI(LG)*SQRT
+     &                       (2.*9.806)*(DELHG(LG)**(3./2.)
+     &                       -DELCH**(3./2.))
+                    			ENDIF
+                    			DUMPG(LG)=GQ1+CG5(LG)*(DEPUPG(LG)
+     &                        -DELHG(LG))*GATEWI(LG)
+     &                        *SQRT(2.*9.806*DELHG(LG))
+     										ELSE																								! DIFF SILL
+     											IGCHECK(LG)=335
+     											DUMPG(LG)=CG7(LG)*GUPHT*(-1.)*GATEWI(LG)
+     &                			*SQRT(2.*9.806*(DEPUPG(LG)-GUPHT*(-1.)/2.))
+     										ENDIF		!  IF (SILL(LG).LT.HDWG(LG))	THEN
+                  ELSE                                                ! SUBMERGED ORIFICE
+                    		IGCHECK(LG)=332
+                    		DUMPG(LG)=CG6(LG)*GUPHT*(-1.)*GATEWI(LG)
+     &                       *SQRT(2.*9.806*DELHG(LG))
+                   		ENDIF  ! IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN
+                  	ENDIF   ! IF (DEPUPG(LG).LE.GUPHT) THEN
+									ENDIF		!  IF (GUPHT.GE.0) THEN
+                ENDIF  ! IF (NQCTYP(NCTL).EQ.33) THEN
+                !!20141024-UNG
+                
 C++++++++++++++++ END NORMAL FORMULA
 C
 C
 !     CHECK MAXIMUM GATE FLUX
-                DUMPG(LG)=DUMPG(LG)*FLOAT(NGATE(M1,NCTL))    ! CONSIDER GATE NUMBER
-                RMAXQ=FLOAT(NGATE(M1,NCTL))*MAXQ(LG)/FLOAT(NGATEM(NCTL))
+                DUMPG(LG)=DUMPG(LG)*FLOAT(NGATET)    ! CONSIDER GATE NUMBER     !NGATET 2014.10.14 jgcho
+                RMAXQ=FLOAT(NGATET)*MAXQ(LG)/FLOAT(NGATEM(NCTL))                !NGATET 2014.10.14 jgcho
                 IF (RMAXQ.GT.0. .AND. DUMPG(LG).GT.RMAXQ) THEN  ! MAX. FLUX CHECK
                   DUMPG(LG)=RMAXQ/FLOAT(NGATEC(NCTL))  ! APPLIED MAX. FLUX AND CONSIDER CELL NO.
                 ELSE
@@ -271,7 +387,7 @@ C DUMP=DUMP*FLOAT(NGGATE(NCTL))/FLOAT(NGGATEC(NCTL))
                 DUMPGPREV(LG)=DUMPG(LG)                   ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
 C
                 DO K=1,KC  
-                  QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !DZC(K)       ! SAVE GATE FLUX
+                  QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !DZC(K)       ! SAVE GATE FLUX
                 ENDDO  
 
 C
@@ -346,11 +462,11 @@ C++++++++++++++ BEGIN NORMAL FORMULA
      &                      *GATEWI(LG)*SQRT(2.*9.806*(DELHG(LG)-DELCH))
                       ELSEIF (NCG3FOM(LG).EQ.2) THEN
                         IGCHECK(LG)=44
-                        GQ1=2./3.*CG3(LG)*GATEWI(LG)*SQRT(2.*9.806)
-     &                         *( DELHG(LG)**(3./2.) - DELCH**(3./2.) )
+                        GQ1=2./3.*CG3(LG)*GATEWI(LG)*SQRT((2.
+     &                      *9.806)*(DELHG(LG)**(3./2.)-DELCH**(3./2.)))
                       ENDIF
-                      DUMPG(LG)=GQ1 + CG4(LG)*(DEPUPG(LG)-DELHG(LG))
-     &                          *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
+                      DUMPG(LG)=GQ1 + CG4(LG)*(DEPUPG(LG)
+     &                   -DELHG(LG))*GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
                     ELSE                                                ! SUBMERGED ORIFICE
                       IGCHECK(LG)=45
                       DUMPG(LG)=CG5(LG)*GUPHT*GATEWI(LG)
@@ -371,7 +487,7 @@ C++++++++++++++++ END NORMAL FORMULA
                   DUMPGPREV(LG)=DUMPG(LG)                   ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
 
                   DO K=1,KC  
-                    QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !DZC(K)       ! SAVE GATE FLUX
+                    QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !DZC(K)       ! SAVE GATE FLUX
                     GGQSUM(NCTL)=GGQSUM(NCTL)+QCTLT(K,NCTL)*DT
                   ENDDO  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (EBB)
@@ -489,7 +605,7 @@ C
                 DUMPGPREV(LG)=DUMPG(LG)                   ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
 
                 DO K=1,KC  
-                  QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+                  QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
                 ENDDO  
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (FLOOD)
@@ -558,11 +674,11 @@ C++++++++++++++ BEGIN NORMAL FORMULA
      &                    *GATEWO(LG)*SQRT(2.*9.806*(DELHG(LG)-DELCH))
                       ELSEIF (NCG3FOM(LG).EQ.2) THEN
                         IGCHECK(LG)=64
-                        GQ1=2./3.*CG3(LG)*GATEWO(LG)*SQRT(2.*9.806)
-     &                       *( DELHG(LG)**(3./2.) - DELCH**(3./2.) )
+                        GQ1=2./3.*CG3(LG)*GATEWO(LG)*SQRT((2.
+     &                      *9.806)*(DELHG(LG)**(3./2.)-DELCH**(3./2.)))
                       ENDIF
-                      DUMPG(LG)=GQ1 + CG4(LG)*(DEPDWG(LG)-DELHG(LG))
-     &                        *GATEWO(LG)*SQRT(2.*9.806*DELHG(LG))
+                      DUMPG(LG)=GQ1+CG4(LG)*(DEPDWG(LG)
+     &                   -DELHG(LG))*GATEWO(LG)*SQRT(2.*9.806*DELHG(LG))
                     ELSE                                                ! SUBMERGED ORIFICE
                       IGCHECK(LG)=65
                       DUMPG(LG)=CG5(LG)*GUPHT*GATEWO(LG)
@@ -585,7 +701,7 @@ C
                   DUMPGPREV(LG)=DUMPG(LG)                   ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
 
                   DO K=1,KC  
-                    QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+                    QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
                   ENDDO  
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (FLOOD)
@@ -704,7 +820,7 @@ C DUMP=DUMP*FLOAT(NGGATE(NCTL))/FLOAT(NGGATEC(NCTL))
                 DUMPGPREV(LG)=DUMPG(LG)                   ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
 C
                 DO K=1,KC  
-                  QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+                  QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
                 ENDDO  
 
 C
@@ -740,14 +856,14 @@ C#      UPSTREAM -> DOWNSTREAM : WEIR (START) NQCTYP(NCTL).EQ.7 (2011.3.4 jgcho)
 C###########################################################
         IF(NQCTYP(NCTL).EQ.7 .AND. NGCCHECK(LG).EQ.0) THEN
 
+          !SEL1T=SILL(LG)-GUPHT ! 2014.10.14 jgcho ! ! GEOSR 2015.01.09 UNG ERROR::To using a 'sel1t' at weir
+            
                          IF (IAGT.EQ.0) THEN
                            NGCHECK(LG)=0                 
                            CALL EBBMASKRE
                          ELSEIF (IAGT.EQ.1) THEN
-
           IF (HUPG(LG).GT.HDWG(LG)
      &      .AND. HUPG(LG).GT.SEL1T )THEN   ! UPSTREAM -> DOWNSTREAM 
-
             IF (NGCHECK(LG).EQ.0) THEN                        ! GATE OPEN CHECK
               NGCOUNT(LG)=1                                   ! TIME STEP COUNT AFTER GATE OPEN
               NGCHECK(LG)=1                                   ! GATE OPEN CHECK
@@ -767,22 +883,51 @@ C
 C++++++++++++++ BEGIN NORMAL FORMULA
             IF (HDWG(LG) .LT. SEL1T ) THEN   ! (1) IF (DEPDWG(LG) .LT. SILL(LG))
               IGCHECK(LG)=71
-              DUMPG(LG)=CG1(LG)*GATEWI(LG)*(HUPG(LG)-SILL(LG))
-     &                 *SQRT(2.*9.806*(HUPG(LG)-SILL(LG)))
+              tcdiff=CGH2(LG)-CGH1(LG)
+              h11=HUPG(LG)-SEL1T
+              wctm1=(CGH2(LG)-h11)/tcdiff
+              wctm2=(h11-CGH1(LG))/tcdiff
+              CG10=wctm1*CG1(LG) + wctm2*CG2(LG)
+!              CG10=((HUPG(LG)-SEL1T)/(CGH2(LG)-CGH1(LG))		! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+!     &             *(CG2(LG)-CG1(LG))+CG1(LG))							! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     					IF((HUPG(LG)-SEL1T).LT.CGH1(LG)) THEN
+     						CG10=CG1(LG)
+     					ELSEIF((HUPG(LG)-SEL1T).GT.CGH2(LG)) THEN
+     						CG10=CG2(LG)
+     					ENDIF		
+              DUMPG(LG)=CG10*GATEWI(LG)*(HUPG(LG)-SEL1T)    ! 2014.10.14 jgcho SILL(LG) -> SEL1T
+     &                 *SQRT(2.*9.806*(HUPG(LG)-SEL1T))     ! 2014.10.14 jgcho SILL(LG) -> SEL1T
             ELSE                                 ! (2) DEPDWG(LG) .GE. SILL(LG)
               IGCHECK(LG)=72
-              DUMPG(LG)=2.6*CG1(LG)*GATEWI(LG)*(HDWG(LG)-SILL(LG))
-     &                 *SQRT(2.*9.806
-     &                 *((HUPG(LG)-SILL(LG)) - (HDWG(LG)-SILL(LG))) )
+              tcdiff=CGH2(LG)-CGH1(LG)
+              h11=HUPG(LG)-SEL1T
+              wctm1=(CGH2(LG)-h11)/tcdiff
+              wctm2=(h11-CGH1(LG))/tcdiff
+              CG10=wctm1*CG1(LG) + wctm2*CG2(LG)
+!              CG10=((HUPG(LG)-SEL1T)/(CGH2(LG)-CGH1(LG))		! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+!     &             *(CG2(LG)-CG1(LG))+CG1(LG))							! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     					IF((HUPG(LG)-SEL1T).LT.CGH1(LG)) THEN
+     						CG10=CG1(LG)
+     					ELSEIF((HUPG(LG)-SEL1T).GT.CGH2(LG)) THEN
+     						CG10=CG2(LG)
+     					ENDIF
+              DUMPG(LG)=CG10*2.6*GATEWI(LG)*(HDWG(LG)-SEL1T)  ! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     &           				*SQRT(2.*9.806   											! 2014.10.14 jgcho SILL(LG) -> SEL1T
+     &                  *((HUPG(LG)-SEL1T)-(HDWG(LG)-SEL1T))) ! 2014.10.14 jgcho SILL(LG) -> SEL1T
             ENDIF                                ! (1) IF (DEPDWG(LG) .LT. SILL(LG))
 C++++++++++++++++ END NORMAL FORMULA
-
-            DUMPG(LG)=DUMPG(LG)*FLOAT(NGATE(M1,NCTL))  ! CONSIDER GATE NUMBER
+! { 2014.10.14 jgcho 
+            if (NQCTLQ(LG).eq.0) then
+              DUMPG(LG)=DUMPG(LG)*FLOAT(NGATEM(NCTL))  ! CONSIDER GATE NUMBER
+            else
+              DUMPG(LG)=DUMPG(LG)*FLOAT(NGATET)  ! CONSIDER GATE NUMBER
+            endif
+! } 2014.10.14 jgcho 
             DUMPG(LG)=DUMPG(LG)/FLOAT(NGATEC(NCTL)) ! CONSIDER CELL NO.
             DUMPG(LG)=DUMPG(LG)*GRAMPUP(LG)           ! ADJUST GATE FLUX
             DUMPGPREV(LG)=DUMPG(LG)                 ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
             DO K=1,KC  
-              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
             ENDDO
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (EBB)
             CALL EBBMASK
@@ -839,7 +984,7 @@ C++++++++++++++++ END NORMAL FORMULA
             DUMPG(LG)=DUMPG(LG)*GRAMPUP(LG)           ! ADJUST GATE FLUX
             DUMPGPREV(LG)=DUMPG(LG)                 ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
             DO K=1,KC  
-              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
             ENDDO
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (EBB)
             CALL EBBMASK
@@ -911,7 +1056,7 @@ C++++++++++++++++ END NORMAL FORMULA
             DUMPG(LG)=DUMPG(LG)*GRAMPUP(LG)           ! ADJUST GATE FLUX
             DUMPGPREV(LG)=DUMPG(LG)                 ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
             DO K=1,KC  
-              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
             ENDDO
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (EBB)
             CALL EBBMASK
@@ -927,6 +1072,140 @@ C++++++++++++++++ END NORMAL FORMULA
 C###########################################################
 C#      UPSTREAM -> DOWNSTREAM : POWER GENERATOR (END) NQCTYP(NCTL).EQ.9 (2011.10.27 jgcho)
 C###########################################################
+
+C###########################################################
+C#      UPSTREAM -> DOWNSTREAM : USE FLUX TABLE (END) NQCTYP(NCTL).EQ.13 (2014.9 ung)
+C###########################################################
+        IF(NQCTYP(NCTL).EQ.13 .AND. NGCCHECK(LG).EQ.0) THEN
+                         IF (IAGT.EQ.0) THEN
+                           NGCHECK(LG)=0
+                           CALL EBBMASKRE
+                         ELSEIF (IAGT.EQ.1) THEN
+          IF (HUPG(LG).GT.HDWG(LG)
+     &      .AND. HUPG(LG).GT.SEL1T )THEN   ! UPSTREAM -> DOWNSTREAM 
+            IF (NGCHECK(LG).EQ.0) THEN                        ! GATE OPEN CHECK
+              NGCOUNT(LG)=1                                   ! TIME STEP COUNT AFTER GATE OPEN
+              NGCHECK(LG)=1                                   ! GATE OPEN CHECK
+            ELSE
+              NGCOUNT(LG)=NGCOUNT(LG)+1                       ! ADD TIME STEP 
+            ENDIF
+C
+            IF (GOTIME(LG).GT.0.) THEN
+              GRAMPUP(LG)=FLOAT(NGCOUNT(LG)) / 
+     &                    (NGATEC(NCTL)*GOTIME(LG)*60./DT)  ! GATE OPEN TIME INTERVAL RAMPUP TERM
+            ELSE
+              GRAMPUP(LG)=1.
+            ENDIF
+C
+            IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+! { GEOSR 2015.01.09 UNG !fixed interpolation
+C++++++++++++++ BEGIN NORMAL FORMULA
+            EP=0;EPG=0
+            DO I=1,NOELE(NGTYP(LG))
+              IF(HUPG(LG).GE.ELET(NGTYP(LG),I)) THEN
+                EP=I
+              ENDIF
+            ENDDO
+            DO I=1,NOGELE(NGTYP(LG))
+            	IF(GUPHT.GE.GELE(NGTYP(LG),I)) THEN
+            		EPG=I
+            	ENDIF
+            ENDDO
+            IF(EPG.EQ.0) THEN
+              DUMPG(LG)=0.
+            ELSE
+             IF(NOELE(NGTYP(LG)).eq.EP) then
+              DUMPG(LG)=(QT(NGTYP(LG),EP,EPG)+(QT(NGTYP(LG),EP,EPG+1)
+     &        -QT(NGTYP(LG),EP,EPG))*(GUPHT-GELE(NGTYP(LG),EPG))
+     &        /(GELE(NGTYP(LG),EPG+1)-GELE(NGTYP(LG),EPG)))
+             ELSE
+               DUMPG(LG)=(QT(NGTYP(LG),EP,EPG)+(QT(NGTYP(LG),EP,EPG+1)
+     &        -QT(NGTYP(LG),EP,EPG))*(GUPHT-GELE(NGTYP(LG),EPG))
+     &        /(GELE(NGTYP(LG),EPG+1)-GELE(NGTYP(LG),EPG)))+
+     &         ((QT(NGTYP(LG),EP+1,EPG)+(QT(NGTYP(LG),EP+1,EPG+1)
+     &        -QT(NGTYP(LG),EP+1,EPG))*(GUPHT-GELE(NGTYP(LG),EPG))
+     &        /(GELE(NGTYP(LG),EPG+1)-GELE(NGTYP(LG),EPG)))-
+     &				 (QT(NGTYP(LG),EP,EPG)+(QT(NGTYP(LG),EP,EPG+1)
+     &        -QT(NGTYP(LG),EP,EPG))*(GUPHT-GELE(NGTYP(LG),EPG))
+     &        /(GELE(NGTYP(LG),EPG+1)-GELE(NGTYP(LG),EPG))))*
+     &					(HUPG(LG)-ELET(NGTYP(LG),EP))
+     &        /(ELET(NGTYP(LG),EP+1)-ELET(NGTYP(LG),EP))
+            ENDIF
+            ENDIF
+C++++++++++++++++ END NORMAL FORMULA
+! } GEOSR 2015.01.09 UNG !fixed interpolation
+            DUMPG(LG)=DUMPG(LG)*FLOAT(NGATE(M1,NCTL))  ! CONSIDER GATE NUMBER
+            DUMPG(LG)=DUMPG(LG)/FLOAT(NGATEC(NCTL)) ! CONSIDER CELL NO.
+            DUMPG(LG)=DUMPG(LG)*GRAMPUP(LG)           ! ADJUST GATE FLUX
+            DUMPGPREV(LG)=DUMPG(LG)                 ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
+
+            DO K=1,KC  
+              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
+            ENDDO
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (EBB)
+            CALL EBBMASK
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK END
+
+          ELSE  ! IF (HUPG(LG).GT.HDWG(LG)
+            NGCHECK(LG)=0
+            CALL EBBMASKRE
+          ENDIF ! IF (HUPG(LG).GT.HDWG(LG)
+                         ENDIF !IF (IAGT.EQ.0) THEN
+
+        ENDIF      ! IF(NQCTYP(NCTL).EQ.13 ...
+C###########################################################
+C#      UPSTREAM -> DOWNSTREAM : USE FLUX TABLE (END) NQCTYP(NCTL).EQ.13 (2014.9 ung)
+C###########################################################
+
+!###########################################################
+!# Movable weir convert to Fixed weir Geosr jgcho 2014.9.18 START
+!###########################################################
+        IF( (NQCTYP(NCTL).GE.31 .or. NQCTYP(NCTL).EQ.7)
+     &      .AND. IAGT.EQ.0) THEN
+          GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+
+C++++++++++++++ BEGIN NORMAL FORMULA         ! Below SILLHH(LG) edited by jgcho 2014.11.08
+          IF (HUPG(LG).GT.HDWG(LG)
+     &      .AND. HUPG(LG).GT. SILLHH(LG) )THEN ! 2014.11.08 jgcho   .AND. HUPG(LG).GT.SEL1T )THEN   ! UPSTREAM -> DOWNSTREAM           
+            IF (HDWG(LG) .LT. SILLHH(LG) )THEN ! 2014.11.08 jgcho SEL1T ) THEN   ! (1) IF (DEPDWG(LG) .LT. SILL(LG))
+              IGCHECK(LG)=73
+              CG10=((HUPG(LG)-SILLHH(LG))/(CGH2(LG)-CGH1(LG))		! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     &             *(CG2(LG)-CG1(LG))+CG1(LG))							! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     					IF((HUPG(LG)-SILLHH(LG)).LT.CGH1(LG)) THEN       
+     						CG10=CG1(LG)
+     					ELSEIF((HUPG(LG)-SILLHH(LG)).GT.CGH2(LG)) THEN
+     						CG10=CG2(LG)
+     					ENDIF              
+              DUMPG(LG)=CG10*GATEWI(LG)
+     &               *(HUPG(LG)-SILLHH(LG))
+     &               *SQRT(2.*9.806*(HUPG(LG)-SILLHH(LG)))
+            ELSE                                 ! (2) DEPDWG(LG) .GE. SILL(LG)
+              IGCHECK(LG)=74
+              CG10=((HUPG(LG)-SILLHH(LG))/(CGH2(LG)-CGH1(LG))		! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     &             *(CG2(LG)-CG1(LG))+CG1(LG))							! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
+     					IF((HUPG(LG)-SILLHH(LG)).LT.CGH1(LG)) THEN
+     						CG10=CG1(LG)
+     					ELSEIF((HUPG(LG)-SILLHH(LG)).GT.CGH2(LG)) THEN
+     						CG10=CG2(LG)
+     					ENDIF
+              DUMPG(LG)=2.6*CG10*GATEWI(LG)*(HDWG(LG)-SILLHH(LG))
+     &               *SQRT(2.*9.806
+     &               *((HUPG(LG)-SILLHH(LG))-(HDWG(LG)-SILLHH(LG))))
+            ENDIF                                ! (1) IF (DEPDWG(LG) .LT. SILL(LG))
+C++++++++++++++++ END NORMAL FORMULA
+
+            DUMPG(LG)=DUMPG(LG)*FLOAT(NGATEM(NCTL))  ! CONSIDER GATE NUMBER  ! 2014.10.14 NGATEM
+            DUMPG(LG)=DUMPG(LG)/FLOAT(NGATEC(NCTL)) ! CONSIDER CELL NO.
+            DUMPG(LG)=DUMPG(LG)*GRAMPUP(LG)           ! ADJUST GATE FLUX
+            DUMPGPREV(LG)=0. !DUMPG(LG)                 ! SAVE GATE FLUX FOR CONTROL AFTER CLOSE
+            DO K=1,KC  
+              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
+            ENDDO
+          ENDIF !IF (HUPG(LG).GT.HDWG(LG)
+        ENDIF      ! IF(NQCTYP(NCTL).EQ.3 ...
+!###########################################################
+!# Movable weir convert to Fixed weir Geosr jgcho 2014.9.18 END
+!###########################################################
 
 
 !     BEGIN --- GRADUALLY DECREASE GATE FLUX AFTER GATE CLOSE
@@ -959,14 +1238,13 @@ C###########################################################
           ENDIF
 
           DO K=1,KC
-              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(M1,K) !*DZC(K)       ! SAVE GATE FLUX
+              QCTLT(K,NCTL)=DUMPG(LG)*GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
           ENDDO
         ENDIF
 !     END   --- GRADUALLY DECREASE GATE FLUX AFTER GATE CLOSE
 
       ENDDO                               ! DO NCTL=1,NQCTL
 C
-
 
           DO NCTL=1,NQCTL                 ! GATE CELL
             IU=IQCTLU(NCTL)               ! I CELL INDEX UPSTREAM
@@ -1001,10 +1279,28 @@ C
                 ENDIF
               ENDIF
             ENDDO
+          	CQ(LU)=CQ(LU)+ABS(SUM(QSUM(LU,:)))								! GEOSR UNG 2014.11.12 Warning message writing
+            CV(LU)=DXP(LU)*DYP(LU)*HMP(LU)										! GEOSR UNG 2014.11.12 Warning message writing
+!            WRITE(*,*)DXP(LU),DYP(LU),HMP(LU)
+!            WRITE(*,*)LU,NCTL
+!            PAUSE
 !      IF (NCTL.EQ.4) WRITE(*,*) N,(QSUM(LU,K),K=1,KC)
           ENDDO                           ! DO NCTL=1,NQCTL
 
-
+			DO NCTL=1,NQCTL																					! GEOSR UNG 2014.11.12 Warning message writing
+!				WRITE(*,*)CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
+!				WRITE(*,*)CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
+!				PAUSE
+				IF((CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))).GE.
+     &  									CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))))
+     &		 .AND. (CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))).LT.0.0)) THEN	! GEOSR UNG 2014.11.12 Warning message writing
+					WRITE(713,*) "QSUM is greater than UPSTREAM CELL WATER VOLUME"	! GEOSR UNG 2014.11.12 Warning message writing
+					WRITE(713,*) N,TIMEDAY,NCTL,IQCTLU(NCTL),JQCTLU(NCTL),
+     &              "QSUM=",CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))		! GEOSR UNG 2014.11.12 Warning message writing
+     &              ,",       CellVOL.="
+     &							,CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
+     		ENDIF																									! GEOSR UNG 2014.11.12 Warning message writing
+			ENDDO																										! GEOSR UNG 2014.11.12 Warning message writing
 !     START: WRITE SINK#.OUT
       IF (ISINK.EQ.2) THEN
         IF (MOD(FLOAT(N),SNKW).EQ.0. .OR. DTSNK.EQ.-1.) THEN

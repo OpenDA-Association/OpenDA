@@ -192,7 +192,25 @@ C
             WNDVELN(L)=WNDFAC*WNDVELN(L)  
             WINDST(L)=SQRT( WNDVELE(L)*WNDVELE(L)  
      &          +WNDVELN(L)*WNDVELN(L) )  
-            C2=1.2E-6*(0.8+0.065*WINDST(L))
+!{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
+!            C2=1.2E-6*(0.8+0.065*WINDST(L))
+            IF(ISCD.EQ.1)THEN
+                C2=1.2E-6*(0.26+0.46*WINDST(L)/CDDN(L))             ! Dean(1997)
+            ELSEIF(ISCD.EQ.2)THEN
+                IF(WINDST(L).NE.0.0)THEN
+                  IF(WINDST(L).GE.WNDCR)THEN 
+                    CD10=(WNDCM*WINDST(L)+WNDB)**2/WINDST(L)**2     ! Foreman(2012)
+                  ELSE
+                    CD10=(WNDCM*WNDCR+WNDB)**2/WNDCR**2             ! Foreman(2012)
+                  ENDIF
+                  C2=1.2E-3*CD10                                     ! Foreman(2012)
+                ELSE
+                  C2=0.0
+                ENDIF  
+            ELSE
+                C2=1.2E-6*(WNDCM+WNDB*WINDST(L))
+            ENDIF    
+!} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
             TSEAST=C2*WINDST(L)*WNDVELE(L)  
             TSNORT=C2*WINDST(L)*WNDVELN(L)  
             TSX(L)=WINDSXX(L)*TSEAST+WINDSXY(L)*TSNORT  
@@ -206,7 +224,25 @@ C
               WNDVELN(L)=WNDFAC*WNDVELN(L)  
               WINDST(L)=SQRT( WNDVELE(L)*WNDVELE(L)  
      &            +WNDVELN(L)*WNDVELN(L) )
-              C2=1.2E-6*(0.8+0.065*WINDST(L))
+!{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
+!              C2=1.2E-6*(0.8+0.065*WINDST(L))
+            IF(ISCD.EQ.1)THEN
+                C2=1.2E-6*(0.26+0.46*WINDST(L)/CDDN(L))             ! Dean(1997)
+            ELSEIF(ISCD.EQ.2)THEN
+                IF(WINDST(L).NE.0.0)THEN
+                  IF(WINDST(L).GE.WNDCR)THEN 
+                    CD10=(WNDCM*WINDST(L)+WNDB)**2/WINDST(L)**2      ! Foreman(2012)
+                  ELSE
+                    CD10=(WNDCM*WNDCR+WNDB)**2/WNDCR**2              ! Foreman(2012)
+                  ENDIF
+                  C2=1.2E-3*CD10                                     !Foreman(2012)
+                ELSE
+                  C2=0.0
+                ENDIF  
+            ELSE
+                C2=1.2E-6*(WNDCM+WNDB*WINDST(L))                
+            ENDIF
+!} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.            
               TSEAST=C2*WINDST(L)*WNDVELE(L)  
               TSNORT=C2*WINDST(L)*WNDVELN(L)  
               TSX(L)=WINDSXX(L)*TSEAST+WINDSXY(L)*TSNORT  
@@ -222,7 +258,26 @@ C
 !{GeoSR, YSSONG, ICE COVER, 1111031
               IF(PSHADE(L).NE.1.0) WINDST(L)=0.0
 !}
-              TSX(L)=1.2E-6*(0.8+0.065*WINDST(L))*WINDST(L)*WINDXX  
+!{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.              
+!              TSX(L)=1.2E-6*(0.8+0.065*WINDST(L))*WINDST(L)*WINDXX  
+            IF(ISCD.EQ.1)THEN
+              TSX(L)=1.2E-6*(0.26+0.46*WINDST(L)/CDDN(L))             ! Dean(1997)
+     &               *WINDST(L)*WINDXX 
+            ELSEIF(ISCD.EQ.2)THEN
+              IF(WINDST(L).NE.0.0)THEN
+                IF(WINDST(L).GE.WNDCR)THEN 
+                  CD10=(WNDCM*WINDST(L)+WNDB)**2/WINDST(L)**2            ! Foreman(2012)
+                ELSE
+                  CD10=(WNDCM*WNDCR+WNDB)**2/WNDCR**2                    ! Foreman(2012)                   
+                ENDIF
+                TSX(L)=1.2E-3*CD10*WINDST(L)*WINDXX                    ! Foreman(2012)                  
+              ELSE
+                TSX(L)=0.0
+              ENDIF  
+            ELSE
+              TSX(L)=1.2E-6*(WNDCM+WNDB*WINDST(L))*WINDST(L)*WINDXX
+            ENDIF               
+!} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.            
               TSY(L)=0.  
             ENDIF  
   
@@ -232,8 +287,27 @@ C
               WNDFAC=ABS(WINDSTKA(L))  
               WINDYY=WNDFAC*WINDYY  
               WINDST(L)=ABS(WINDYY)  
+              TSX(L)=0 
+!{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.              
+!              TSY(L)=1.2E-6*(0.8+0.065*WINDST(L))*WINDST(L)*WINDYY  
+            IF(ISCD.EQ.1)THEN
+              TSY(L)=1.2E-6*(0.26+0.46*WINDST(L)/CDDN(L))             ! Dean(1997)
+     &               *WINDST(L)*WINDYY 
+            ELSEIF(ISCD.EQ.2)THEN
+              IF(WINDST(L).NE.0.0)THEN
+                IF(WINDST(L).GE.WNDCR)THEN 
+                  CD10=(WNDCM*WINDST(L)+WNDB)**2/WINDST(L)**2            ! Foreman(2012)
+                ELSE 
+                  CD10=(WNDCM*WNDCR+WNDB)**2/WNDCR**2                    ! Foreman(2012)
+                ENDIF                  
+                TSY(L)=1.2E-3*CD10*WINDST(L)*WINDYY                     ! Foreman(2012)                 
+              ELSE
               TSX(L)=0.0  
-              TSY(L)=1.2E-6*(0.8+0.065*WINDST(L))*WINDST(L)*WINDYY  
+              ENDIF  
+            ELSE
+              TSY(L)=1.2E-6*(WNDCM+WNDB*WINDST(L))*WINDST(L)*WINDYY
+            ENDIF               
+!} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
             ENDIF  
           ENDIF  
         ENDDO  

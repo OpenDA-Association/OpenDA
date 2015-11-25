@@ -71,8 +71,8 @@ public enum EfdcExchangeItemType {
 	TOXICS_BUNKER_C		   		(615, "BunkerC", EfdcExchangeItemRole.BOUNDARY),
 	TOXICS_USER_DEFINED			(616, "UserDefined", EfdcExchangeItemRole.BOUNDARY),
 	
-	CONTROLS_GATE_WATERLEVEL		(701, "ControlsGateWaterLevel", EfdcExchangeItemRole.FORCING),
-
+	CONTROLS_GATE_WATERLEVEL	(701, "ControlsGateWaterLevel", EfdcExchangeItemRole.FORCING),
+	CONTROLS_GATE_OPENINGHEIGHT	(702, "ControlsGateOpeningHeight", EfdcExchangeItemRole.FORCING),
 	
 	//state variables (output).
 	GRID_WATER_LEVEL				(1201, "WaterLevel", EfdcExchangeItemRole.STATE),

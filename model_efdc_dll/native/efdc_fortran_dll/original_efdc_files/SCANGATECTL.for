@@ -1,3 +1,5 @@
+! Advanced EFDC Hydraulic structure ! GEOSR. 2011. 12. JGCHO
+!
       SUBROUTINE SCANGATECTL
       USE GLOBAL
 
@@ -21,6 +23,13 @@
       ENDDO
       CLOSE(1)
 	
+! { GEOSR 2014.11.12 UNG Warning message writing
+      OPEN(1,FILE='GateWarning.LOG',STATUS='UNKNOWN')  		! GEOSR UNG 2014.11.12 Warning message writing
+      CLOSE(1,STATUS='DELETE')											  		! GEOSR UNG 2014.11.12 Warning message writing
+	OPEN(713,FILE='GateWarning.LOG',STATUS='UNKNOWN')		! GEOSR UNG 2014.11.12 Warning message writing
+	WRITE(713,'(A)')'TIME   N    NCTL    IQCTLU   JQCTLU    QSUM   CellVOL'
+! } GEOSR 2014.11.12 UNG Warning message writing
+      
       RETURN
 
    10 FORMAT(A80)   

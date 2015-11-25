@@ -1814,3 +1814,11 @@ C100 WQ STAND ALONE
 *  IWQONLY : 1=WQ STAND ALONE
 C100 IWQONLY
          1
+-------------------------------------------------------------------------------
+C101 WIND DRAG COEFFICIENT PARAMETERS MODIFIED BY GEOSR
+*
+*  ISWIND : 
+*       0 = USE MODULE IN ORIGINAL CODE
+*       1 = USE MODULE EDITED BY GEOSR
+C101 ISWIND
+        0

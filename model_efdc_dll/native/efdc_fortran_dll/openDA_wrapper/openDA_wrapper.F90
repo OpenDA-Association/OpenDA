@@ -128,6 +128,11 @@ contains
         return
     end if
 
+    ! Pause or sleep for attaching debugger
+    !pause
+    !print*, "Sleeping for 20 seconds, please attach debugger"
+    !call sleep(20)
+    
     dm_model_parent_dir    = trim(parent_directory)
     dm_template_model_dir  = trim(template_directory)
 
@@ -597,6 +602,7 @@ contains
     !local
     character(len=max_message_length) :: message
     
+
     ret_val = -1
     if (instance > dm_model_instance_count .or. instance < 1) then
         write(dm_general_log_handle,'(A,I3)') 'instance id out of range:', instance
@@ -1961,10 +1967,14 @@ contains
                 values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC))
                 ret_val = 0
              end if
-          case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
+          case (ControlsGateWaterLevel) ! Control
              id = exchange_item_id - indexControl
              values = dble(gateser(instance)%SEL1(start_index:end_index,bc_index))
              ret_val = 0
+          case (ControlsGateOpeningHeight) ! Control
+             id = exchange_item_id - indexControl
+             values = dble(gateser(instance)%GUPH(start_index:end_index,bc_index))
+             ret_val = 0   
           case default
              ret_val = -2 ! unhandled item
           end select
@@ -2115,9 +2125,13 @@ contains
                 csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC) = real(values)
                 ret_val = 0
              end if
-          case (indexControl+1 : indexControl+nrExchangeItemsControl) !Control
+          case (ControlsGateWaterLevel) !Control
              id = exchange_item_id - indexControl
              gateser(instance)%SEL1(start_index:end_index,bc_index) = real(values)
+             ret_val = 0
+          case (ControlsGateOpeningHeight) !Control
+             id = exchange_item_id - indexControl
+             gateser(instance)%GUPH(start_index:end_index,bc_index) = real(values)
              ret_val = 0
           case default
              ret_val = -2 ! unhandled item
@@ -2251,7 +2265,7 @@ contains
           bc_time_interval =  (bc_end_time - bc_start_time) / dble(csert(instance)%MCSER(bc_index, NC)-1) & 
                            * dble(TCCSER(bc_index,NC)) / 86400.0d0
        end if
-    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Water Quality 
+    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
        success  =  bc_index >= 1 .and. bc_index <= gateser(instance)%NQCTLM
        if (success) then  
           bc_start_time = gateser(instance)%GCSER(1, bc_index) * dble(GCCSER(bc_index)) / 86400.0d0

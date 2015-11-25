@@ -5,12 +5,15 @@ C **  SUBROUTINE CALSND CALCULATES NONCOHESIVER SEDIMENT SETTLING,
 C **  DEPOSITION AND RESUSPENSION AND IS CALLED FOR SSEDTOX  
 C  
 C
-C GEOSR MODIFY 2010.11.02
+C GEOSR MODIFY 2010.11.02, 2014.09.11
 C
 C ** ADD THE DECAY CONDITION (Volatilization, Hydrolysis, Photolysis, Biodegradation
 C
 
       USE GLOBAL  
+!{GeoSR, 2014.09.16. YSSONG
+	INTEGER::L,K,NS,NT
+!}      
       IF(ISTRAN(5).GE.1)THEN  
 
         DO NT=1,NTOX  
@@ -106,7 +109,7 @@ C
            TXKE=TXD*(TXAW+TXAA*TXCHLA+TXAC*TXDOC+TXAS*TXSSC)
            TXKP1=TXKDO*TXI/TXI0*TXD/TXD0
            DO L=2,LA 
-             TXKP=TXKP1*(1.-EXP(TXKE*HP(L)))/(TXKE-HP(L))
+             TXKP=TXKP1*(1.-EXP(-TXKE*HP(L)))/(TXKE*HP(L))
              RKTOXWP(L)=TXKP
            ENDDO
           ENDIF
@@ -123,16 +126,31 @@ C
           ENDIF
 
 C SUMMATION ---------------------------------------------------------------
-         DO L=2,LA 
-           RKTOXWT(L,NT)=(RKTOXWV(L)+RKTOXWH+RKTOXWP(L)+RKTOXWB)/86400.
-         ENDDO
+!{GeoSR, 2014.09.16. YSSONG
+C          DO L=2,LA 
+C            RKTOXWT(L,NT)=(RKTOXWV(L)+RKTOXWH+RKTOXWP(L)+RKTOXWB)/86400.
+C          ENDDO
+          DO K=1,KC     
+          DO L=2,LA 
+            RKTOXWT(L,K,NT)=(RKTOXWV(L)+RKTOXWH+RKTOXWP(L)+RKTOXWB)
+     &                     /86400.
+          ENDDO
+          ENDDO
+!}
          ELSE
 C
 C 1ST ORDER DECAY----------------------------------------------------------
 C
+!{GeoSR, 2014.09.16. YSSONG
+C         DO L=2,LA
+C          RKTOXWT(L,NT)=TX1ST/86400.
+C         ENDDO
+         DO K=1,KC  
          DO L=2,LA
-          RKTOXWT(L,NT)=TX1ST/86400.
+          RKTOXWT(L,K,NT)=TX1ST/86400.
          ENDDO
+         ENDDO
+!}
          ENDIF
 C
 C DECAY RATE PRINT AT TIMESTEP=1
@@ -140,20 +158,26 @@ C
          IF(N.EQ.1)THEN
           OPEN(2,FILE='DECAYR.OUT',STATUS='UNKNOWN')
           WRITE(2,8999)
+!{GeoSR, 2014.09.16. YSSONG
+C          DO L=2,LA     
+C  	      WRITE(2,8998) L,RKTOXWT(L,1)*86400.,RKTOXWV(L),RKTOXWH,
+C     &                      RKTOXWP(L),RKTOXWB,HP(L)
+          DO K=1,KC  
           DO L=2,LA     
-  	      WRITE(2,8998) L,RKTOXWT(L,1)*86400.,RKTOXWV(L),RKTOXWH,
+  	      WRITE(2,8998) L,RKTOXWT(L,K,1)*86400.,RKTOXWV(L),RKTOXWH,
      &                      RKTOXWP(L),RKTOXWB,HP(L)
+! GeoSR}
+          ENDDO
           ENDDO
  8999    FORMAT('    L     TOTAL         VOL         HYD          PHT
      &              BIO          DEP')
  8998    FORMAT(I5,1X,6(E12.5,1X))
           CLOSE(2)
          ENDIF
-! GeoSR}
 
           DO K=1,KC  
             DO L=2,LA  
-              CDECAYW(L,K)=1./(1.+DELT*RKTOXWT(L,NT))  
+              CDECAYW(L,K)=1./(1.+DELT*RKTOXWT(L,K,NT))  
             ENDDO  
           ENDDO  
           DO K=1,KC  

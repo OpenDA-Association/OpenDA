@@ -73,11 +73,7 @@ C
       TLOADTX=EVDAY-SDAY
       NPTXLDS=FLOAT(NINT(TLOADTX*86400.))                ! LOADING START TIME  [SEC]
       NPTXLDE=NPTXLDS+FLOAT(NINT(FLOAT(ITXPRD)*60.))     ! LOADING END TIME    [SEC]
-      if (ITXPRD .eq. 0) then
-          TXMASS2=0.0
-      else 
           TXMASS2=TXMASS/(FLOAT(ITXPRD)*60.)          ! RELEASED MASS/TIME   [KG/SEC]
-      endif
       TXVOL=0.000001                              ! LOADING VOL/SEC     [M3/SEC]
       TXLDC=TXMASS2/TXVOL                         ! CONC. FOR TXSER.INP [MG/L]
 
@@ -103,10 +99,15 @@ C
           TXMASS_3D(1)=TXLDC
         ELSE
           TXMASS_3D(KC)=TXLDC
-          TXMASS0(KC)=0.0
+! {GEOSR 2014.09.14 YSSONG
+C          TXMASS0(KC)=0.0
+          TXMASS0(KC)=TXLDC
           DO K=1,KC-1
-            TXMASS_3D(K)=0.0
-            TXMASS0(K)=0.0
+C            TXMASS_3D(K)=0.0
+C            TXMASS0(K)=0.0
+            TXMASS_3D(K)=TXLDC
+            TXMASS0(K)=TXLDC
+!}
           ENDDO
         ENDIF
 

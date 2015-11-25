@@ -19,7 +19,7 @@
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreLinkEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
@@ -253,6 +253,7 @@
 		<File RelativePath=".\original_efdc_files\SCANEFDC.for"/>
 		<File RelativePath=".\original_efdc_files\SCANGATECTL.for"/>
 		<File RelativePath=".\original_efdc_files\SCANGSER.for"/>
+		<File RelativePath=".\original_efdc_files\SCANGTAB.for"/>
 		<File RelativePath=".\original_efdc_files\SCANGWSR.for"/>
 		<File RelativePath=".\original_efdc_files\SCANMASK.for"/>
 		<File RelativePath=".\original_efdc_files\SCANMODC.for"/>

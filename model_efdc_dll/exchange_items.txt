@@ -78,7 +78,8 @@ MethylParathion         611               1611
 PcbArchor1242           612               1612
 
 Controls:
-GateControlWaterLevel   701
+ControlsGateWaterLevel    701
+ControlsGateOpeningHeight 702
 
 Adding exchange items
 ---------------------

@@ -35,9 +35,14 @@ C
         ENDDO  
       ENDDO  
       ITNWQ = 0  
-      RKCWQ = 1.0/REAL(KC)  
-      DO K=1,KC  
-        WQHT(K)=REAL(KC-K)*RKCWQ  
+!{GeoSR, 2013.07.08 YSSONG, VARIABLE DZC
+C      RKCWQ = 1.0/REAL(KC)  
+C      DO K=1,KC  
+C        WQHT(K)=REAL(KC-K)*RKCWQ  
+C      ENDDO  
+       WQHT(KC)=0.0
+       DO K=KS,1,-1
+         WQHT(K)=WQHT(K+1)+DZC(K+1)
       ENDDO  
 C  
 C      WQTSNAME(1)  = 'CHL'  

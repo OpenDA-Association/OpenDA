@@ -56,9 +56,11 @@ module model_exchange_items
   integer :: NC_tox_start  ! index in WQV array   
 
   !controls
-  integer, parameter :: nrExchangeItemsControl = 1
-  integer, parameter :: indexControl           = 700  ! timeseries (701)
-
+  integer, parameter :: nrExchangeItemsControl    = 2
+  integer, parameter :: indexControl              = 700  ! timeseries (701:702)
+  integer, parameter :: ControlsGateWaterLevel    = 701
+  integer, parameter :: ControlsGateOpeningHeight = 702
+  
   type exchangeItem
       integer :: active = 0
       integer :: id = 0 
@@ -170,8 +172,9 @@ contains
     gridExchangeItemsTOX(15) = exchangeItem( id = 1615, name = "GRID.BunkerC",         efdc_name = "4443")
     gridExchangeItemsTOX(16) = exchangeItem( id = 1616, name = "GRID.UserDefined",     efdc_name = "4444")
 
-    exchangeItemsControl(1)  = exchangeItem( id = 701, name = "GateControlWaterLevel", efdc_name = "SEL1")
-
+    exchangeItemsControl(1)  = exchangeItem( id = 701, name = "ControlsGateWaterLevel", efdc_name = "SEL1")
+    exchangeItemsControl(2)  = exchangeItem( id = 702, name = "ControlsGateOpeningHeight", efdc_name = "GUPH")
+    
     
     write(general_log_handle,*) "number of water quality specified in EFDC: ", NWQV
     do i = 1, nrExchangeItemsWQ
@@ -255,7 +258,7 @@ contains
     case (indexTOX+1:indexTOX+nrExchangeItemsTOX)
       id = exchange_item_id - indexTOX
       ret_val = exchangeItemsTOX(id)%active
-    case (indexControl+1) 
+    case (indexControl+1:indexControl+nrExchangeItemsControl)
       id = exchange_item_id - indexControl
       ret_val = exchangeItemsControl(id)%active
     case (gridIndexWQ+1:gridIndexWQ+nrExchangeItemsWQ)

@@ -1,3 +1,5 @@
+! Advanced EFDC Hydraulic structure ! GEOSR. 2011. 12. JGCHO
+!
       SUBROUTINE SCANGWSR  
       USE GLOBAL  
       WRITE(*,'(A)')'SCANNING INPUT FILE: GWSER.INP'  
