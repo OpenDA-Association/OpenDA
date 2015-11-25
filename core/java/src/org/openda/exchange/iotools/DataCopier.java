@@ -496,11 +496,10 @@ public class DataCopier implements IConfigurable {
 
         for (java.util.Iterator<BBStochModelVectorConfig> it = scalarOutputVectorCollection.iterator(); it.hasNext();) {
             BBStochModelVectorConfig vectorConfig = it.next();
-            String locId = vectorConfig.getId();
+            String id = vectorConfig.getId();
             String sourceExchangeItemId = vectorConfig.getSourceId();
             IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
             //find outputExchangeItem.
-            String id = locId+"."+sourceExchangeItemId;
             IExchangeItem outputExchangeItem = outputDataObject.getDataObjectExchangeItem(id);
             if (outputExchangeItem == null) {
                 throw new RuntimeException("Exchange item with id '" + id + "' not found in given outputDataObject.");
