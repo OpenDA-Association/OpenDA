@@ -1,0 +1,20 @@
+# Example file where the user has left out some table data
+
+[General]
+    majorVersion          = 1
+    minorVersion          = 0
+    fileType              = boundConds
+
+[Boundary]
+    name                  = Node003
+    function              = timeseries
+    time-interpolation    = linear
+    quantity              = time
+    unit                  = minutes since 2015-11-20 00:00:00
+    quantity              = water_discharge
+    unit                  = m³/s
+    920.5 11.13
+    980.5 13.17
+    17.19
+    1100.5 19.23
+    1160.5 23.29

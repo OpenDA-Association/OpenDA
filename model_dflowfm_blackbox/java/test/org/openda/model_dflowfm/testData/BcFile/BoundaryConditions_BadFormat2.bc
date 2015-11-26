@@ -1,0 +1,14 @@
+# Example file where the user has added non-double data
+
+[General]
+    majorVersion          = 1
+    minorVersion          = 0
+    fileType              = boundConds
+
+[Boundary]
+    name                  = Node001
+    function              = constant
+    time-interpolation    = linear
+    quantity              = water_discharge
+    unit                  = m³/s
+    ABCDE
