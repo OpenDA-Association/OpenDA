@@ -1,0 +1,101 @@
+# Test file where the 'values' (i.e. discharge and water level) have been halved for all timeseries boundaries
+
+[General]
+    majorVersion          = 1
+    minorVersion          = 0
+    fileType              = boundConds
+
+[Boundary]
+    name                  = Node001
+    function              = constant
+    time-interpolation    = linear
+    quantity              = water_discharge
+    unit                  = m³/s
+    19.63
+
+[Boundary]
+    name                  = Node002
+    function              = constant
+    time-interpolation    = linear
+    quantity              = water_level
+    unit                  = m
+    13.57
+
+[Boundary]
+    name                  = Node003
+    function              = timeseries
+    time-interpolation    = linear
+    quantity              = time
+    unit                  = minutes since 2015-11-20 00:00:00
+    quantity              = water_discharge
+    unit                  = m³/s
+    920.5 5.565
+    980.5 6.585
+    1040.5 8.595
+    1100.5 9.615
+    1160.5 11.645
+
+[Boundary]
+    name                  = Node004
+    function              = qhtable
+    time-interpolation    = linear
+    quantity              = water_level
+    unit                  = m
+    quantity              = water_discharge
+    unit                  = m³/s
+    11.13 51.13
+    13.17 53.17
+    17.19 57.19
+    19.23 59.23
+    23.29 63.29
+
+[Boundary]
+    name                  = Node005
+    function              = timeseries
+    time-interpolation    = linear
+    quantity              = time
+    unit                  = minutes since 2015-11-20 00:00:00
+    quantity              = water_level
+    unit                  = m
+    920.5 5.565
+    980.5 6.585
+    1040.5 8.595
+    1100.5 9.615
+    1160.5 11.645
+
+[LateralDischarge]
+    name                  = Lateral001
+    function              = constant
+    time-interpolation    = linear
+    quantity              = water_discharge
+    unit                  = m³/s
+    47.92
+
+[LateralDischarge]
+    name                  = Lateral002
+    function              = timeseries
+    time-interpolation    = linear
+    quantity              = time
+    unit                  = minutes since 2015-11-20 00:00:00
+    quantity              = water_discharge
+    unit                  = m³/s
+    920.5 5.565
+    980.5 6.585
+    1040.5 8.595
+    1100.5 9.615
+    1160.5 11.645
+
+[LateralDischarge]
+    name                  = Lateral003
+    function              = qhtable
+    time-interpolation    = linear
+    quantity              = water_level
+    unit                  = m
+    quantity              = water_discharge
+    unit                  = m³/s
+    11.13 51.13
+    13.17 53.17
+    17.19 57.19
+    19.23 59.23
+    23.29 63.29
+
