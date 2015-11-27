@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<deltaresHydro xmlns="http://schemas.deltares.nl/deltaresHydro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.deltares.nl/deltaresHydro http://content.oss.deltares.nl/schemas/d_hydro-1.00.xsd">
+  <documentation>
+    <fileVersion>1.00</fileVersion>
+    <createdBy>Deltares, Coupling Team</createdBy>
+    <creationDate>2015-11-23T22:04:14+01:00</creationDate>
+  </documentation>
+  <!--<control>
+          The <control> specifies the workflow of the deltaresHydro executable.
+          It indicates which components are started in which order. If the data
+          transfer is to be arranged by the main program "d_hydro", then a coupler
+          should be included.
+          The main <control> block is a sequential block; this means that each
+          component is initialized, time stepped, and finalized before the next
+          component starts.
+      <parallel>
+          Within a <parallel> tag the components are started
+          concurrently (if the mpi process ids listed per component don't overlap)
+          or executed synchronously in sequence (first all initialize, then time
+          stepping, and to conclude all finalization calls).
+      <start>
+          A <parallel> block contains exactly one <start/> component, defining the
+          start and end time of the simulation. This is the component inside
+          the <parallel> block with the smallest time step. All other
+          components must be defined with a <startGroup>.
+      <startGroup>
+          A <startGroup> should be used if a component (possibly including couplers)
+          should only be executed at a subset of simulation time steps.
+
+      For each component/coupler there will be a corresponding component/coupler
+      specification block defined below.-->
+  <control>
+    <parallel>
+      <startGroup>
+        <time>555 3600 86777</time>
+        <coupler name="flow1d2rtc" />
+        <start name="real-time control" />
+        <coupler name="rtc2flow1d" />
+      </startGroup>
+      <start name="flow model 1d" />
+    </parallel>
+  </control>
+  <component name="real-time control">
+    <library>RTCTools_BMI</library>
+    <process>0</process>
+    <workingDir>rtc</workingDir>
+    <inputFile>.</inputFile>
+  </component>
+  <component name="flow model 1d">
+    <library>dflow1d</library>
+    <process>0</process>
+    <workingDir>dflow1d</workingDir>
+    <inputFile>flow model 1d</inputFile>
+  </component>
+  <coupler name="rtc2flow1d">
+    <sourceComponent>real-time control</sourceComponent>
+    <targetComponent>flow model 1d</targetComponent>
+    <item>
+      <sourceName>output_Weir1_IntervalCntrl_Crest level (s)</sourceName>
+      <targetName>structures/Weir1_IntervalCntrl - Crest level (s)/Crest level (s)</targetName>
+    </item>
+    <item>
+      <sourceName>output_Weir2_TimeCntrl_Crest level (s)</sourceName>
+      <targetName>structures/Weir2_TimeCntrl - Crest level (s)/Crest level (s)</targetName>
+    </item>
+    <item>
+      <sourceName>output_Weir3_HydraulicCntrl_Crest level (s)</sourceName>
+      <targetName>structures/Weir3_HydraulicCntrl - Crest level (s)/Crest level (s)</targetName>
+    </item>
+    <item>
+      <sourceName>output_Weir4_PIDCntr_Crest level (s)</sourceName>
+      <targetName>structures/Weir4_PIDCntr - Crest level (s)/Crest level (s)</targetName>
+    </item>
+    <item>
+      <sourceName>output_Weir5_RelTimeCntrl_Crest level (s)</sourceName>
+      <targetName>structures/Weir5_RelTimeCntrl - Crest level (s)/Crest level (s)</targetName>
+    </item>
+    <item>
+      <sourceName>output_Weir6_RelValueCntrl_Crest level (s)</sourceName>
+      <targetName>structures/Weir6_RelValueCntrl - Crest level (s)/Crest level (s)</targetName>
+    </item>
+  </coupler>
+  <coupler name="flow1d2rtc">
+    <sourceComponent>flow model 1d</sourceComponent>
+    <targetComponent>real-time control</targetComponent>
+    <item>
+      <sourceName>Weir1_MS - Water level (op)/Water level (op)</sourceName>
+      <targetName>input_Weir1_MS_Water level (op)</targetName>
+    </item>
+    <item>
+      <sourceName>HydrMeaStation - Water level (op)/Water level (op)</sourceName>
+      <targetName>input_HydrMeaStation_Water level (op)</targetName>
+    </item>
+    <item>
+      <sourceName>Weir4_MS - Water level (op)/Water level (op)</sourceName>
+      <targetName>input_Weir4_MS_Water level (op)</targetName>
+    </item>
+  </coupler>
+</deltaresHydro>
