@@ -14,7 +14,7 @@ public class BcUtils
 	*/
 
 	private static final Calendar MJD_ZERO = new GregorianCalendar(1858, Calendar.NOVEMBER, 17, 0, 0, 0);
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private static final String TIME_UNIT_SECONDS = "seconds since";
 	private static final String TIME_UNIT_MINUTES = "minutes since";
