@@ -66,7 +66,7 @@ public class BcUtils
 
 		for(Double value : valuesInMilliSeconds)
 		{
-			double mjdValue = (value + Math.abs(reference_zero.getTimeInMillis() - MJD_ZERO.getTimeInMillis())) / (double)ONE_DAY_IN_MILLISECONDS;
+			double mjdValue = (value + (reference_zero.getTimeInMillis() - MJD_ZERO.getTimeInMillis())) / (double)ONE_DAY_IN_MILLISECONDS;
 			modifiedJulianDayValues.add(mjdValue);
 		}
 
@@ -114,7 +114,7 @@ public class BcUtils
 		// Step 3: Convert ModifiedJulianDay values to unit factor values
 		for(Double mjdValue : modifiedJulianDayValues)
 		{
-			Double value = ((mjdValue * ONE_DAY_IN_MILLISECONDS) - Math.abs(reference_zero.getTimeInMillis() - MJD_ZERO.getTimeInMillis())) / unitFactor;
+			Double value = ((mjdValue * ONE_DAY_IN_MILLISECONDS) - (reference_zero.getTimeInMillis() - MJD_ZERO.getTimeInMillis())) / unitFactor;
 			values.add(value);
 		}
 
