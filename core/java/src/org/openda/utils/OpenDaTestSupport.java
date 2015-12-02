@@ -112,12 +112,18 @@ public class OpenDaTestSupport {
 	private static final String HISTORY_ATTRIBUTE = "history";
 	private static final String DATE_CREATED_ATTRIBUTE = "date_created";
 	private static final String CASE_NAME_ATTRIBUTE = "caseName";
+
 	private static final String HISTORY_ATTRIBUTE_REGULAR_EXPRESSION = HISTORY_ATTRIBUTE + " = \".*\"";
 	private static final String HISTORY_ATTRIBUTE_REPLACEMENT = HISTORY_ATTRIBUTE + " = \"actual " + HISTORY_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
+	private static final Pattern HISTORY_ATTRIBUTE_PATTERN = Pattern.compile(HISTORY_ATTRIBUTE_REGULAR_EXPRESSION);
+
 	private static final String DATE_CREATED_ATTRIBUTE_REGULAR_EXPRESSION = DATE_CREATED_ATTRIBUTE + " = \".*\"";
 	private static final String DATE_CREATED_ATTRIBUTE_REPLACEMENT = DATE_CREATED_ATTRIBUTE + " = \"actual " + DATE_CREATED_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
+	private static final Pattern DATE_CREATED_ATTRIBUTE_PATTERN = Pattern.compile(DATE_CREATED_ATTRIBUTE_REGULAR_EXPRESSION);
+
 	private static final String CASE_NAME_ATTRIBUTE_REGULAR_EXPRESSION = CASE_NAME_ATTRIBUTE + " = \".*\"";
 	private static final String CASE_NAME_ATTRIBUTE_REPLACEMENT = CASE_NAME_ATTRIBUTE + " = \"actual " + CASE_NAME_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
+	private static final Pattern CASE_NAME_ATTRIBUTE_PATTERN = Pattern.compile(CASE_NAME_ATTRIBUTE_REGULAR_EXPRESSION);
 
 	// paths and files for this test
 	private File projectRoot    = null;
@@ -686,9 +692,9 @@ public class OpenDaTestSupport {
 
 		//replace per line to avoid out of memory errors for large files.
 		for (int n = 0; n < lines.length; n++) {
-			lines[n] = lines[n].replaceFirst(HISTORY_ATTRIBUTE_REGULAR_EXPRESSION, HISTORY_ATTRIBUTE_REPLACEMENT)
-					.replaceFirst(DATE_CREATED_ATTRIBUTE_REGULAR_EXPRESSION, DATE_CREATED_ATTRIBUTE_REPLACEMENT)
-					.replaceFirst(CASE_NAME_ATTRIBUTE_REGULAR_EXPRESSION, CASE_NAME_ATTRIBUTE_REPLACEMENT);
+			lines[n] = HISTORY_ATTRIBUTE_PATTERN.matcher(lines[n]).replaceFirst(HISTORY_ATTRIBUTE_REPLACEMENT);
+			lines[n] = DATE_CREATED_ATTRIBUTE_PATTERN.matcher(lines[n]).replaceFirst(DATE_CREATED_ATTRIBUTE_REPLACEMENT);
+			lines[n] = CASE_NAME_ATTRIBUTE_PATTERN.matcher(lines[n]).replaceFirst(CASE_NAME_ATTRIBUTE_REPLACEMENT);
 		}
 
 		return StringUtilities.joinStringArrayUsingSeparator(lines, "\n");
