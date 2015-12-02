@@ -18,15 +18,9 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openda.utils;
-import nu.xom.Builder;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Elements;
-import nu.xom.ParsingException;
+import nu.xom.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -50,6 +44,11 @@ public class ConfigTree {
 	private Element tree=null;
 	private boolean validate=true; //default for validation
 	private File workingDir=null;
+
+	private class ResultOfFindTreeNode {
+		public Element curElement;
+		public String attributeName;
+	}
 
 	/**
 	 * 
@@ -286,26 +285,9 @@ public class ConfigTree {
 	public String getContentString(String path){
 		String result=null;
 		if(!(this.doc==null)){
-			Element curElement = this.tree;
-			String[] pathList = path.split("@");
-			String attributeName = "";
-			int n=pathList.length;
-			if(n>2){
-				throw new RuntimeException("Only one attribute sign @ allowed in a path specification");
-			}else if(n==2){
-				attributeName = pathList[1];
-			}
-			pathList = pathList[0].split("/");
-			// navigate to right element
-			for (String aPathList : pathList) {
-				if (aPathList.length() == 0) {
-					continue;
-				}
-				curElement = myGetFirstChildElement(curElement, aPathList);
-				if (curElement == null) {
-					break;
-				}
-			}
+			ResultOfFindTreeNode resultOfFindTreeNode = findElementOrAttribute(path);
+			String attributeName = resultOfFindTreeNode.attributeName;
+			Element curElement = resultOfFindTreeNode.curElement;
 			//attribute or element content request?
 			if(attributeName.length()>0){
 				if(curElement!=null){
@@ -318,6 +300,31 @@ public class ConfigTree {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Set element content at a given path
+	 * @param path eg "/config/maxIter" of attribute "/config@maxIter"
+	 * @param value value to be set
+	 */
+	public void setContentString(String path, String value){
+		if(!(this.doc==null)){
+			ResultOfFindTreeNode resultOfFindTreeNode = findElementOrAttribute(path);
+			String attributeName = resultOfFindTreeNode.attributeName;
+			Element curElement = resultOfFindTreeNode.curElement;
+			//attribute or element content?
+			if(attributeName.length()>0){
+				if(curElement!=null){
+					Attribute attribute = curElement.getAttribute(attributeName);
+					attribute.setValue(value);
+				}
+			}else{ //element content
+				if(curElement!=null){
+					curElement.removeChildren();
+					curElement.appendChild(value);
+				}
+			}
+		}
 	}
 
 	/**
@@ -402,9 +409,11 @@ public class ConfigTree {
 	public void toFile(File workingDir, String filename){
 		try {
 			File file = new File(workingDir,filename);
-			FileWriter out = new FileWriter(file);
-			String line=this.doc.toXML();
-			out.write(line); 
+			OutputStream out = new FileOutputStream(file);
+			Serializer serializer = new Serializer(out, "UTF-8");
+			serializer.setIndent(2);
+			serializer.write(this.doc);
+			serializer.flush();
 			out.close();
 		} catch (IOException e) {
 			Results.putMessage("Exception: " + e.getMessage());
@@ -631,6 +640,29 @@ public class ConfigTree {
 		return result;
 	}
 
-
+	private ResultOfFindTreeNode findElementOrAttribute(String path) {
+		ResultOfFindTreeNode resultOfFindTreeNode = new ResultOfFindTreeNode();
+		resultOfFindTreeNode.curElement = this.tree;
+		String[] pathList = path.split("@");
+		resultOfFindTreeNode.attributeName = "";
+		int n=pathList.length;
+		if(n>2){
+			throw new RuntimeException("Only one attribute sign @ allowed in a path specification");
+		}else if(n==2){
+			resultOfFindTreeNode.attributeName = pathList[1];
+		}
+		pathList = pathList[0].split("/");
+		// navigate to right element
+		for (String aPathList : pathList) {
+			if (aPathList.length() == 0) {
+				continue;
+			}
+			resultOfFindTreeNode.curElement = myGetFirstChildElement(resultOfFindTreeNode.curElement, aPathList);
+			if (resultOfFindTreeNode.curElement == null) {
+				break;
+			}
+		}
+		return resultOfFindTreeNode;
+	}
 }
 
