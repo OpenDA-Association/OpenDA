@@ -49,7 +49,7 @@ public class BcFile implements IDataObject
 			double[] valuesAsDoubles = new double[values.size()];
 			for(int i = 0; i < values.size(); i++) valuesAsDoubles[i] = values.get(i);
 
-			List<Double> times = BcUtils.ConvertDateTimesToModifiedJulianDayValues(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
+			List<Double> times = MjdUtils.ConvertDateTimesWithUnitToModifiedJulianDays(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
 			double[] timesAsDoubles = new double[times.size()];
 			for(int i = 0; i < times.size(); i++) timesAsDoubles[i] = times.get(i);
 
@@ -60,7 +60,6 @@ public class BcFile implements IDataObject
 	@Override
 	public String[] getExchangeItemIDs()
 	{
-		Set<String> keys = exchangeItems.keySet();
 		return exchangeItems.keySet().toArray(new String[exchangeItems.keySet().size()]);
 	}
 
@@ -69,9 +68,7 @@ public class BcFile implements IDataObject
 	{
 		List<String> matchingExchangeItemIds = new ArrayList<>();
 		for(IExchangeItem exchangeItem : exchangeItems.values())
-		{
 			if(exchangeItem.getRole() == role) matchingExchangeItemIds.add(exchangeItem.getId());
-		}
 
 		return matchingExchangeItemIds.toArray(new String[matchingExchangeItemIds.size()]);
 	}
@@ -102,7 +99,7 @@ public class BcFile implements IDataObject
 
 			List<Double> timeSeriesData = new ArrayList<>();
 			for (double time : exchangeItem.getTimes()) timeSeriesData.add(time);
-			timeSeriesQuantity.setColumnData(BcUtils.ConvertDateTimesFromModifiedJulianDayValues(timeSeriesQuantity.getUnit().getValue(), timeSeriesData));
+			timeSeriesQuantity.setColumnData(MjdUtils.ConvertModifiedJulianDaysToDateTimesWithUnit(timeSeriesQuantity.getUnit().getValue(), timeSeriesData));
 		}
 
 		//Step 2: Write updated BcCategories to (Output) BcFile
