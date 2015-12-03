@@ -31,12 +31,23 @@ public class Md1dFileTest extends TestCase
 		{
 			for(IExchangeItem exchangeItem : exchangeItems.values())
 			{
-				double[] values = exchangeItem.getValuesAsDoubles();
-				for(int i = 0; i < values.length; i++)
+				if(!exchangeItem.getId().equals(Md1dTimeInfoExchangeItem.PropertyId.TimeStep.name()))
 				{
-					values[i] = values[i] * factor;
+					double[] values = exchangeItem.getValuesAsDoubles();
+					values[0] = values[0] * factor;
+					exchangeItem.setValuesAsDoubles(values);
 				}
-				exchangeItem.setValuesAsDoubles(values);
+			}
+		}
+
+		public void alterTimeStep()
+		{
+			for(IExchangeItem exchangeItem : exchangeItems.values())
+			{
+				if(exchangeItem.getId().equals(Md1dTimeInfoExchangeItem.PropertyId.TimeStep.name()))
+				{
+					exchangeItem.setValuesAsDoubles(new double[]{0.0});
+				}
 			}
 		}
 	}
@@ -56,7 +67,25 @@ public class Md1dFileTest extends TestCase
 		// Step 4: Compare written file to expected results
 		Assert.isTrue(FileComparer.Compare(new File(testMd1dFileDir, md1dFileNameGenerated),
 				new File(testMd1dFileDir, "Model_TimeValuesHalved.md1d")));
+	}
 
+	public void testMd1dFileThrowsIfUpdatingTimeStep()
+	{
+		// Step 1: Read original test file
+		MockMd1dFile md1dFile = new MockMd1dFile();
+		md1dFile.initialize(testMd1dFileDir, new String[]{md1dFileNameOriginal, md1dFileNameGenerated});
+
+		// Step 2: Alter ExchangeItem Values
+		Exception expectedException = null;
+		try
+		{
+			md1dFile.alterTimeStep();
+		}
+		catch(Exception ex)
+		{
+			expectedException = ex;
+		}
+		Assert.notNull(expectedException);
 	}
 
 	public void testMd1dFileGeneratesExpectedFile()

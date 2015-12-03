@@ -67,7 +67,7 @@ public class Md1dFile implements IDataObject
 			startTime.setTime(DATE_FORMAT.parse(startTimeString));
 			mjdStartTime = MjdUtils.ConvertDateTimeToModifiedJulianDay(startTime);
 		}
-		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing DateTime value: %s", ex.getMessage(), startTimeString)); }
+		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STARTTIME, startTimeString)); }
 
 		double mjdStopTime;
 		try
@@ -76,21 +76,21 @@ public class Md1dFile implements IDataObject
 			stopTime.setTime(DATE_FORMAT.parse(stopTimeString));
 			mjdStopTime = MjdUtils.ConvertDateTimeToModifiedJulianDay(stopTime);
 		}
-		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STARTTIME, stopTimeString)); }
+		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STOPTIME, stopTimeString)); }
 
 		double timeStep;
 		try { timeStep = Double.valueOf(timeStepString); }
-		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STOPTIME, timeStepString)); }
+		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_TIMESTEP, timeStepString)); }
 
 		double outputTimeStep;
 		try { outputTimeStep = Double.valueOf(outputTimeStepString); }
-		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_TIMESTEP, outputTimeStepString)); }
+		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_OUTPUT_TIMESTEP, outputTimeStepString)); }
 
 		exchangeItems = new HashMap<>();
-		exchangeItems.put(PROPERTY_STARTTIME, new Md1dTimeInfoExchangeItem(PROPERTY_STARTTIME, mjdStartTime));
-		exchangeItems.put(PROPERTY_STOPTIME, new Md1dTimeInfoExchangeItem(PROPERTY_STOPTIME, mjdStopTime));
-		exchangeItems.put(PROPERTY_TIMESTEP, new Md1dTimeInfoExchangeItem(PROPERTY_TIMESTEP, timeStep));
-		exchangeItems.put(PROPERTY_OUTPUT_TIMESTEP, new Md1dTimeInfoExchangeItem(PROPERTY_OUTPUT_TIMESTEP, outputTimeStep));
+		exchangeItems.put(PROPERTY_STARTTIME, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.StartTime, mjdStartTime));
+		exchangeItems.put(PROPERTY_STOPTIME, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.StopTime, mjdStopTime));
+		exchangeItems.put(PROPERTY_TIMESTEP, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.TimeStep, timeStep));
+		exchangeItems.put(PROPERTY_OUTPUT_TIMESTEP, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.OutputTimeStep, outputTimeStep));
 	}
 
 	@Override

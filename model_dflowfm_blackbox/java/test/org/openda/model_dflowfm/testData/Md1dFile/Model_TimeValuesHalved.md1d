@@ -1,4 +1,4 @@
-# Generated on 11/27/2015 16:06:44
+# Example file with Time Values Halved (except TimeStep which should not be edited)
 
 [General]
     majorVersion          = 1                   # Major file version. Do not edit this.
@@ -24,6 +24,6 @@
 [Time]
     StartTime             = 1937-05-25 18:00:00 # yyyy-MM-dd HH:mm:ss
     StopTime              = 1937-05-26 06:00:00 # yyyy-MM-dd HH:mm:ss
-    TimeStep              = 1800.0              # in seconds
+    TimeStep              = 3600.0              # in seconds
     OutTimeStepGridPoints = 1800.0              # in seconds
     OutTimeStepStructures = 3600.0              # in seconds

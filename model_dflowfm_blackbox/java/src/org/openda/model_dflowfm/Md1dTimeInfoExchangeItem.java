@@ -7,10 +7,18 @@ import org.openda.interfaces.*;
  */
 public class Md1dTimeInfoExchangeItem implements IExchangeItem
 {
-	private String id;
+	public enum PropertyId
+	{
+		StartTime,
+		StopTime,
+		TimeStep,
+		OutputTimeStep
+	}
+
+	private PropertyId id;
 	private double value;
 
-	public Md1dTimeInfoExchangeItem(String id, double value)
+	public Md1dTimeInfoExchangeItem(PropertyId id, double value)
 	{
 		this.id = id;
 		this.value = value;
@@ -23,11 +31,12 @@ public class Md1dTimeInfoExchangeItem implements IExchangeItem
 
 	@Override
 	public String getId() {
-		return id;
+
+		return id.name();
 	}
 
 	@Override
-	public String getDescription() { return id; }
+	public String getDescription() { return id.name(); }
 
 	@Override
 	public Class getValueType() { return double.class; }
@@ -62,12 +71,16 @@ public class Md1dTimeInfoExchangeItem implements IExchangeItem
 	@Override
 	public void setValues(Object values)
 	{
-		if (values instanceof Double) value = (Double)values;
-		else throw new RuntimeException("Values must be of type double");
+		if (values instanceof Double) setValuesAsDoubles(new double[]{(Double)values});
+		else throw new RuntimeException(String.format("Values must be of type %s", ValueType.doubleType.name()));
 	}
 
 	@Override
-	public void setValuesAsDoubles(double[] values) { value = values[0]; }
+	public void setValuesAsDoubles(double[] values)
+	{
+		if (id == PropertyId.TimeStep) throw new RuntimeException(String.format("Setting of property %s is not allowed", id.name())); // TimeStep may be retrieved but not set
+		value = values[0];
+	}
 
 	@Override
 	public double[] getTimes() { throw new UnsupportedOperationException("org.openda.model_DFlowFM.Md1dTimeInfoExchangeItem.getTimes(): Not implemented yet."); }
