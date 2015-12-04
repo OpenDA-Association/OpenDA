@@ -87,10 +87,10 @@ public class Md1dFile implements IDataObject
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_OUTPUT_TIMESTEP, outputTimeStepString)); }
 
 		exchangeItems = new HashMap<>();
-		exchangeItems.put(PROPERTY_STARTTIME, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.StartTime, mjdStartTime));
-		exchangeItems.put(PROPERTY_STOPTIME, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.StopTime, mjdStopTime));
-		exchangeItems.put(PROPERTY_TIMESTEP, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.TimeStep, timeStep));
-		exchangeItems.put(PROPERTY_OUTPUT_TIMESTEP, new Md1dTimeInfoExchangeItem(Md1dTimeInfoExchangeItem.PropertyId.OutputTimeStep, outputTimeStep));
+		exchangeItems.put(PROPERTY_STARTTIME, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.StartTime, mjdStartTime));
+		exchangeItems.put(PROPERTY_STOPTIME, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.StopTime, mjdStopTime));
+		exchangeItems.put(PROPERTY_TIMESTEP, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.TimeStep, timeStep));
+		exchangeItems.put(PROPERTY_OUTPUT_TIMESTEP, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.OutputTimeStep, outputTimeStep));
 	}
 
 	@Override

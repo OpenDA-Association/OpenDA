@@ -32,7 +32,7 @@
   <control>
     <parallel>
       <startGroup>
-        <time>555 3600 86777</time>
+        <time>0.5 3600 86400.5</time>
         <coupler name="flow1d2rtc" />
         <start name="real-time control" />
         <coupler name="rtc2flow1d" />

@@ -5,7 +5,7 @@ import org.openda.interfaces.*;
 /**
  * Created by prevel on 30-Nov-15.
  */
-public class Md1dTimeInfoExchangeItem implements IExchangeItem
+public class Flow1DTimeInfoExchangeItem implements IExchangeItem
 {
 	public enum PropertyId
 	{
@@ -18,7 +18,7 @@ public class Md1dTimeInfoExchangeItem implements IExchangeItem
 	private PropertyId id;
 	private double value;
 
-	public Md1dTimeInfoExchangeItem(PropertyId id, double value)
+	public Flow1DTimeInfoExchangeItem(PropertyId id, double value)
 	{
 		this.id = id;
 		this.value = value;

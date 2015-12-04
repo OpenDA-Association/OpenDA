@@ -25,33 +25,31 @@ public class BcFileTest extends TestCase
 
 	protected void tearDown(){}
 
-	private class MockBcFile extends BcFile
-	{
-		public void alterExchangeItems(double factor)
-		{
-			for(IExchangeItem exchangeItem : exchangeItems.values())
-			{
-				double[] values = exchangeItem.getValuesAsDoubles();
-				for(int i = 0; i < values.length; i++) values[i] = values[i] * factor;
-			}
-		}
-	}
-
 	public void testBcFileUpdatesCategoriesCorrectly()
 	{
 		// Step 1: Read original test file
-		MockBcFile bcFile = new MockBcFile();
+		BcFile bcFile = new BcFile();
 		bcFile.initialize(testBcFileDir, new String[]{bcFileNameOriginal, bcFileNameGenerated});
 
 		// Step 2: Alter ExchangeItem Values
-		bcFile.alterExchangeItems(0.5);
+		String[] exchangeItemIDs = bcFile.getExchangeItemIDs();
+		for(String id : exchangeItemIDs)
+		{
+			IExchangeItem exchangeItem = bcFile.getDataObjectExchangeItem(id);
+			double[] values = exchangeItem.getValuesAsDoubles();
+			for(int i = 0; i < values.length; i++)
+			{
+				values[i] = values[i] * 0.5;
+			}
+			exchangeItem.setValuesAsDoubles(values);
+		}
 
 		//Step 3: Write test file
 		bcFile.finish();
 
 		// Step 4: Compare written file to expected results
-		Assert.isTrue(FileComparer.Compare(new File(testBcFileDir, bcFileNameGenerated),
-				new File(testBcFileDir, "BoundaryConditions_TimeSeriesValuesHalved.bc")));
+		Assert.isTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, "BoundaryConditions_TimeSeriesValuesHalved.bc"),
+				new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
 	public void testBcFileReaderWriterGeneratesExpectedFile()
@@ -64,7 +62,7 @@ public class BcFileTest extends TestCase
 		bcFile.finish();
 
 		// Step 3: Compare written file to original
-		Assert.isTrue(FileComparer.Compare(new File(testBcFileDir, bcFileNameOriginal), new File(testBcFileDir, bcFileNameGenerated)));
+		Assert.isTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal), new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
 	public void testBcFileInitialiseThrowsExceptionForInvalidFile_MissingData()
