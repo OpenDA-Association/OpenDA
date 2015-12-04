@@ -48,6 +48,7 @@ import java.util.*;
 public class NemoRestartFileWrapper implements IoObjectInterface{
 
 	boolean debug=false;
+	boolean debug_writer = false;
 
     private class NemoMetaExchangeItem{
 		public IExchangeItem exchangeItem;
@@ -200,7 +201,7 @@ public class NemoRestartFileWrapper implements IoObjectInterface{
 						double[] vals = exchangeItem.getValuesAsDoubles();
 						//Check Dimensions
 						//TODO !!!!
-						if (debug) System.out.println("Writing array "+this.items.get(key).shortName+" length="+vals.length);
+						if (debug_writer) System.out.println("Writing array "+this.items.get(key).shortName+" length="+vals.length);
 						for (int i=0; i<vals.length; i++){
 							array.setFloat(i, (float) vals[i]);
 						}
@@ -211,7 +212,7 @@ public class NemoRestartFileWrapper implements IoObjectInterface{
 						}
 					}
 					else {
-						if (debug) System.out.println("WARNING: SKIPPING VARIABLE: "+key);
+						if (debug_writer) System.out.println("WARNING: SKIPPING VARIABLE: "+key);
 					}
 
 				}

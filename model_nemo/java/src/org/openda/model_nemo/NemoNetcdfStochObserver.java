@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by nils on 12/05/14.
  */
-public class NemoNetcdfStochObserver extends Instance implements IStochObserver, IObservationDescriptions {
+public class NemoNetcdfStochObserver extends Instance implements IStochObserver, IStochObserverExtra, IObservationDescriptions {
 
 	// Variables from NETCDF files:
 	public float[] sshb, tb, Hi, Hj, Hs;
@@ -35,6 +35,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 
     double [] xcoords;
 	double [] ycoords;
+	double [] zcoords;
 
 
 
@@ -50,7 +51,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 
 	int offset_sshb = 656668-1;
 	int offset_tb   = 225424-1;
-	int nz=11, ny=121, nx=81;
+	int nz=11, ny=81, nx=121;
 
 
 	public NemoNetcdfStochObserver(){
@@ -74,22 +75,13 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		for (int i=0; i<tbOK.length; i++){tbOK[i]=false;}
 		for (int i=0; i<sshbOK.length; i++){sshbOK[i]=false;}
 
-		// Find observations have a dummy value
-		for (int i=0; i<this.tb.length; i++){
-			if (this.tb[i]>-9999.0){ tbOK[i]=true;}
-		}
-		for (int i=0; i<this.sshb.length; i++){
-			if (this.sshb[i]>-9999.0){ sshbOK[i]=true;}
-		}
-
-		// Find whether model can come up with a corresponding value
 		for (int iNnz=0; iNnz<Hi.length; iNnz++){
 			int i=(int) Hi[iNnz]-1;   //Note move to 0-indexing
 			if (i<this.sshb.length) {
-				sshbOK[i]=true;
+				if (this.sshb[i]>-9999.0){ sshbOK[i]=true;}
 			}
 			else {
-				tbOK[i-this.sshb.length]=true;
+				if (this.tb[i-this.sshb.length]>-9999.0){ tbOK[i-this.sshb.length]=true;}
 			}
 		}
 
@@ -121,14 +113,11 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	}
 
     void setCoordinates(){
-		this.xcoords=new double[sshbOkIndex.length];
-		this.ycoords=new double[sshbOkIndex.length];
-        for (int i=0;i<this.xcoords.length; i++){this.xcoords[i]=0.0;}
-		for (int i=0;i<this.ycoords.length; i++){this.ycoords[i]=0.0;}
 
 		int nObsAll=this.sshb.length+this.tb.length;
 		double[] xAll=new double[nObsAll];
 		double[] yAll=new double[nObsAll];
+		double[] zAll=new double[nObsAll];
 		double[] sumAlpha=new double[nObsAll];
 		int[]    maxIndex=new int[nObsAll];
 		int[]    minIndex=new int[nObsAll];
@@ -142,50 +131,124 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 
 		for (int iNnz=0; iNnz<Hi.length; iNnz++){
 			int i=(int) Hi[iNnz]-1;   //Note move to 0-indexing
-			int j=(int) Hj[iNnz]-1;   //Note move to 0-indexing
+			int j=(int) Hj[iNnz]-1;
 			double alpha= (double) Hs[iNnz];
 			double x;
-			int ix,iy,jCorr;
+			int ix,iy,jCorr,iz;
 			if (i<this.sshb.length) {
 				jCorr=j-offset_sshb;
 			}
 			else {
 				jCorr=j - offset_tb;
 			}
-			iy=jCorr%ny;
-			ix=jCorr/ny;
+			//array(nx,ny,nz)
+			ix=jCorr%(nx);
+			iy=(jCorr/nx)%ny;
+			iz=((jCorr/nx)/ny)%nz;
+
 			xAll[i]+=alpha*(double) ix;
 			yAll[i]+=alpha*(double) iy;
+			zAll[i]+=alpha*(double) iz;
 			sumAlpha[i]+=alpha;
 			if (alpha>0) minIndex[i]=java.lang.Math.min(minIndex[i], jCorr);
 			if (alpha>0) maxIndex[i]=java.lang.Math.max(maxIndex[i] ,jCorr);
 		}
 
-		int nSshOK=this.sshbOkIndex.length;
-		int [] minOK = new int[this.xcoords.length];
-		int [] maxOK = new int[this.xcoords.length];
-		for (int i=0;i<nSshOK;i++){
-			this.xcoords[i]=xAll[sshbOkIndex[i]];
-			this.ycoords[i]=yAll[sshbOkIndex[i]];
-			minOK[i] = minIndex[sshbOkIndex[i]];
-			maxOK[i] = maxIndex[sshbOkIndex[i]];
+		// Do not use observations at the border (assimilating boundary condition might be problematic) 	// Does not really help!
+//		boolean [] obsOkSelect= new boolean[nObsSshbOk+nObsTbOk];
+
+//		for (int i=0; i<obsOkSelect.length; i++){obsOkSelect[i]=true;}
+
+//		for (int i=0; i<nObsAll; i++){			// one of the conditions is enough to dismiss an observation
+//			if (Math.abs(xAll[i]) < 0.5){		// left border, use rather big distance to be sure
+//				obsOK[i] = false;
+//			} else if (Math.abs(xAll[i] - (nx-1)) < 0.5){	// right border
+//				obsOK[i] = false;
+//			} else if (Math.abs(yAll[i]) < 0.5){		// bottom border
+//				obsOK[i] = false;
+//			} else if (Math.abs(yAll[i] - (ny-1)) < 0.5){	// top border
+//				obsOK[i] = false;
+//			} else if (Math.abs(zAll[i] - (nz-1)) < 0.5) {        // deep see (should not be reached)
+//				obsOK[i] = false;
+//			}
+//		}
+
+		this.nObsTbOk=0;
+		this.nObsSshbOk=0;
+		for (int i=0; i<obsOK.length; i++){
+			if (i<this.sshb.length) {
+				if (obsOK[i]){this.nObsSshbOk++;}
+			} else {
+				if (obsOK[i]){this.nObsTbOk++;}
+			}
 		}
-        if (!this.only_ssh){
-			for (int i=0;i<this.tbOkIndex.length;i++) {
-				this.xcoords[nSshOK + i] = xAll[tbOkIndex[i]];
-				this.ycoords[nSshOK + i] = yAll[tbOkIndex[i]];
-				minOK[nSshOK + i] = minIndex[tbOkIndex[i]];
-				maxOK[nSshOK + i] = maxIndex[tbOkIndex[i]];
+
+		int nSshbOK=0;
+		int nTbOK=0;
+		this.tbOkIndex=new int[this.nObsTbOk];
+		this.sshbOkIndex=new int[this.nObsSshbOk];
+		for (int i=0; i<obsOK.length; i++){
+			if (i<this.sshb.length){
+				if (obsOK[i]){
+					this.sshbOkIndex[nSshbOK]=i;
+					nSshbOK++;
+				}
+			} else {
+				if (obsOK[i]) {
+					this.tbOkIndex[nTbOK] = i - this.sshb.length;		// index in tb not in obs=[sshb tb]'
+					nTbOK++;
+				}
+			}
+		}
+
+		int [] minOK;
+		int [] maxOK;
+
+		int nObsUsed = nSshbOK + nTbOK;
+		if(this.only_ssh) { nObsUsed = nSshbOK; }
+
+			this.xcoords = new double[nObsUsed];
+			this.ycoords = new double[nObsUsed];
+			this.zcoords = new double[nObsUsed];
+			for (int i = 0; i < this.xcoords.length; i++) {
+				this.xcoords[i] = 0.0;
+			}
+			for (int i = 0; i < this.ycoords.length; i++) {
+				this.ycoords[i] = 0.0;
+			}
+			for (int i = 0; i < this.zcoords.length; i++) {
+				this.zcoords[i] = 0.0;
+			}
+
+
+			minOK = new int[this.xcoords.length];
+			maxOK = new int[this.xcoords.length];
+
+			for (int i = 0; i < nSshbOK; i++) {
+				this.xcoords[i] = xAll[sshbOkIndex[i]];
+				this.ycoords[i] = yAll[sshbOkIndex[i]];
+				this.zcoords[i] = zAll[sshbOkIndex[i]];
+				minOK[i] = minIndex[sshbOkIndex[i]];
+				maxOK[i] = maxIndex[sshbOkIndex[i]];
+			}
+
+		if(!only_ssh) {
+			for (int i = 0; i < nTbOK; i++) {
+				this.xcoords[nSshbOK + i] = xAll[tbOkIndex[i]+this.sshb.length];	// .All vector are of dimension nSsh+nT from the start, while tbOk the indeces in tb only counts
+				this.ycoords[nSshbOK + i] = yAll[tbOkIndex[i]+this.sshb.length];
+				this.zcoords[nSshbOK + i] = zAll[tbOkIndex[i]+this.sshb.length];
+				minOK[nSshbOK + i] = minIndex[tbOkIndex[i]+this.sshb.length];
+				maxOK[nSshbOK + i] = maxIndex[tbOkIndex[i]+this.sshb.length];
 			}
 		}
 
 		//write locations
 		if (false) {
 			try {
-				String fileName = "xyobs_" + this.iStartDate + ".txt";
+				String fileName = "xyzobs_" + this.iStartDate + ".txt";
 				PrintWriter fo = new PrintWriter(new FileOutputStream(new File(fileName)));
 				for (int i = 0; i < this.xcoords.length; i++) {
-					fo.println(this.xcoords[i] + " " + this.ycoords[i] + " " + minOK[i] + " " + maxOK[i]);
+					fo.println(this.xcoords[i] + " " + this.ycoords[i] + " " + this.zcoords[i] + " " + minOK[i] + " " + maxOK[i]);
 				}
 				fo.close();
 			} catch (Exception e) {
@@ -193,16 +256,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 			}
 
 		}
-
-
-
-
-
 	}
-
-
-
-
 
 	void initValues(){
 
@@ -264,11 +318,6 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		countValid();
 		setCoordinates();
 
-
-	//	nObsSshbOk=0;
-	//	nObsTbOk=0;
-	//	for (int i=0;i<sshb.length; i++){if (sshb[i]>-9999.0) nObsSshbOk++;}
-	//	for (int i=0;i<tb.length; i++){if (tb[i]>-9999.0) nObsTbOk++;}
 	}
 
 
@@ -293,6 +342,9 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		}
 		else if (Key.equals("y")){
 			return new Vector(this.ycoords);
+		}
+		else if (Key.equals("z")){
+			return new Vector(this.zcoords);
 		}
 		else{
 				throw new RuntimeException("Not implemented for Key="+Key);
@@ -336,7 +388,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 		this.initValues();
 		if (this.only_ssh){
 			System.out.println("Calling getObservationCount: return" + nObsSshbOk);
-			return nObsSshbOk + nObsTbOk;
+			return nObsSshbOk; // + nObsTbOk;
 		}
 		else {
 			System.out.println("Calling getObservationCount: return" + nObsSshbOk + nObsTbOk);
@@ -491,7 +543,9 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	 * @return The covariance matrix.
 	 */
 	public ISqrtCovariance getSqrtCovariance() {
-		throw new RuntimeException("not yet implemented");
+		IStochVector obs = new StochVector(this.getExpectations(),this.getStandardDeviations());
+		return obs.getSqrtCovariance();
+		//throw new RuntimeException("not yet implemented");
 	}
 
 	/**
@@ -600,7 +654,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 			}
 		}
 		this.iEndDate=this.nDates-1;
-		System.out.println("Debug: NemoNetcdfStochObserver nDates="+this.nDates);
+		//System.out.println("Debug: NemoNetcdfStochObserver nDates="+this.nDates);
 	}
 
 	/**
@@ -609,4 +663,58 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	public IInstance getParent() {
 		return null;
 	}
+
+	//Compute H*rho
+	public IVector[] getObservedLocalizationAtLocalizationLocations(IObservationDescriptions ObsAssim,  double distance){
+
+		IVector xAssimVector = ObsAssim.getValueProperties("x");	// Position of the current observation to be assimilated, at this point only ONE observation at a time
+		IVector yAssimVector = ObsAssim.getValueProperties("y");
+		//IVector zAssimVector = ObsAssim.getValueProperties("z");
+
+		int nObsUsed = nObsSshbOk + nObsTbOk;
+		if(only_ssh) { nObsUsed = nObsSshbOk; }
+
+		IVector[] retVec = new IVector[xAssimVector.getSize()];
+		double[] mask = new double [nObsUsed];
+		// Loop through the Hx
+
+		for (int iObs = 0; iObs < xAssimVector.getSize(); iObs++) {
+			IVector subtree;
+
+			double xAssim = xAssimVector.getValue(iObs);
+			double yAssim = yAssimVector.getValue(iObs);
+			//double zAssim = zAssimVector.getValue(iObs);
+
+			for (int ix = 0; ix < this.xcoords.length; ix++) {
+				// Apply horizontal localisation in all vertical layers
+
+					double xHx = xcoords[ix];
+					double yHx = ycoords[ix];
+					//double zHx = zcoords[ix];
+					double dist = Math.sqrt((yAssim - yHx) * (yAssim - yHx) + (xAssim - xHx) * (xAssim - xHx));
+
+					// Determine weights (Gaspari-Cohn formula)
+					double a = Math.sqrt(10 / 3) * distance;        // characteristic length scale for model
+
+					if (0.0 <= dist && dist <= a) {
+						mask[ix] = -0.25 * Math.pow((dist / a), 5) + 0.5 * Math.pow((dist / a), 4) + 5.0 / 8.0 * Math.pow((dist / a), 3) - 5.0 / 3.0 * Math.pow((dist / a), 2) + 1.0;
+					} else if (a < dist && dist <= 2.0 * a) {
+						mask[ix] = 1 / 12.0 * Math.pow((dist / a), 5) - 0.5 * Math.pow((dist / a), 4) + 5.0 / 8.0 * Math.pow((dist / a), 3) + 5.0 / 3.0 * Math.pow((dist / a), 2) - 5.0 * (dist / a) + 4.0 - 2.0 / 3.0 * (a / dist);
+					} else if (2.0 * a < dist) {
+						mask[ix] = 0.0;
+					} else {
+						throw new RuntimeException("There is a problem in the determination of the localisation weights.");
+					}
+			}
+
+			subtree = new Vector(mask);
+			retVec[iObs] = subtree;
+		}
+
+		// Vertical Localisation apart from the horizontal (optional), in fact apply extra rho on top for vertical localisation (next step to do!)
+		// Vector with correction values rho for each Hx, dimensions: nObs x nObsCurrent (correction of each observation position against the current one)
+		return retVec;
+	}
+
+
 }

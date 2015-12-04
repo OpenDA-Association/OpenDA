@@ -3,6 +3,8 @@ package org.openda.model_nemo;
 import org.openda.blackbox.config.BBModelConfig;
 import org.openda.blackbox.wrapper.BBModelInstance;
 import org.openda.interfaces.*;
+import org.openda.utils.TreeVector;
+import org.openda.utils.Vector;
 
 /**
  * Created by nils on 16/05/14.
@@ -12,9 +14,7 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 	private boolean debug=false;
 	int offset_sshb = 656668-1;
 	int offset_tb   = 225424-1;
-	int nz=11, ny=121, nx=81;
-
-
+	int nz=11, ny=81, nx=121;
 
 	boolean only_ssh=true;
 
@@ -40,49 +40,102 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 	 * @return weight vector for each observation location.
 	 */
 	public IVector[] getObservedLocalization(String exchangeItemID, IObservationDescriptions observationDescriptions, double distance) {
-		System.out.println("Debug:Welcome to getObservedLocalization of the NEMO model");
+		//	System.out.println("Debug:Welcome to getObservedLocalization of the NEMO model");
 
-		if (!exchangeItemID.equals("sshb") && !exchangeItemID.equals("sshn")) {
-			throw new RuntimeException("No, we only support ssh in state!! not"+exchangeItemID);
+		int nzUsed = 11;
+		if (exchangeItemID.equals("sshb") || exchangeItemID.equals("sshn") ||
+			exchangeItemID.equals("utau_b") || exchangeItemID.equals("vtau_b") ||
+			exchangeItemID.equals("qns_b") || exchangeItemID.equals("emp_b") ||
+			exchangeItemID.equals("emps_b") || exchangeItemID.equals("sbc_hc_b") ||
+			exchangeItemID.equals("sbc_sc_b") || exchangeItemID.equals("gcx") ||
+			exchangeItemID.equals("gcxb")) {
+
+			//2-D grid
+			nzUsed = 1;
+		} else if (exchangeItemID.equals("tb") || exchangeItemID.equals("tn") ||
+				   exchangeItemID.equals("qsr_hc_b") || exchangeItemID.equals("tn") ||
+				   exchangeItemID.equals("ub") || exchangeItemID.equals("vb") ||
+				   exchangeItemID.equals("un") || exchangeItemID.equals("vn") ||
+				   exchangeItemID.equals("sb") || exchangeItemID.equals("sn") ||
+				   exchangeItemID.equals("rot_b") || exchangeItemID.equals("hdivb") ||
+				   exchangeItemID.equals("rot_n") || exchangeItemID.equals("hdivn") ||
+				   exchangeItemID.equals("rhop")){
+
+			//3-D grid
+			nzUsed = 11;
+	//  } else if (exchangeItemID.equals("avmb") || exchangeItemID.equals("avtb")) { //special case later if needed
+	//  } else if (exchangeItemID.equals("avmb") || exchangeItemID.equals("avtb")) {
+	//		//averages over on z-layer --> 1-D grid (no localisation)
+	//		nzUsed = 0;
 		}
-
+        else {
+			throw new RuntimeException("No number of z-layers used was assigned!");
+		}
 
 		IVector xVector = observationDescriptions.getValueProperties("x");
 		IVector yVector = observationDescriptions.getValueProperties("y");
+		//IVector zVector = observationDescriptions.getValueProperties("z");
 
-        if (xVector.getSize()!=1) {
-			throw new RuntimeException("No, we do not support this for more than one observation!!");
+		int nPos = 0;		// no mask calc if not initialised
+
+
+
+		if (xVector.getSize() == yVector.getSize()){
+			nPos = xVector.getSize();
+		} else {
+			throw new RuntimeException("x and y observations are not uniform!");
 		}
-		double yPos=yVector.getValue(0);
-		double xPos=xVector.getValue(0);
 
-		double[] mask = new double [ny*nx];
+		IVector[] retVec = new IVector[nPos];
 
-		int idx=0;
-		for (int ix=0;ix<this.nx;ix++){
-			for (int iy=0;iy<this.ny;iy++){
-				double dist=Math.sqrt((yPos - iy)*(yPos-iy)+(xPos-ix)*(xPos-ix));
+		double[] mask = new double [ny*nx*nzUsed];
 
-				// Determine weights (Gaspari-Cohn formula)
-				double a = Math.sqrt(10/3) * distance;        // characteristic length scale for model
+		for (int iPos=0; iPos < nPos; iPos++) {                //loop through all the observations
+			int idx=0;
+			double xPos = xVector.getValue(iPos);
+			double yPos = yVector.getValue(iPos);
+			//double zPos = zVector.getValue(iPos);
 
-				if (0.0 <= dist && dist <= a){
-					mask[idx] = -0.25 * Math.pow((dist/a),5) + 0.5 * Math.pow((dist/a),4) + 5.0/8.0 * Math.pow((dist/a),3) - 5.0/3.0 * Math.pow((dist/a),2) + 1.0;
-				} else if (a < dist && dist <= 2.0 * a) {
-					mask[idx] = 1/12.0 * Math.pow((dist/a),5) - 0.5 * Math.pow((dist/a),4) + 5.0/8.0 * Math.pow((dist/a),3) + 5.0/3.0 * Math.pow((dist/a),2) - 5.0 * (dist/a) + 4.0 - 2.0/3.0 * (a/dist);
-				} else if (2.0 * a < dist) {
-					mask[idx] = 0.0;
-				} else {
-					throw new RuntimeException("There is a problem in the determination of the localisation weights.");
+			IVector subtree;
+
+			for (int iy = 0; iy < this.ny; iy++) {
+				for (int ix = 0; ix < this.nx; ix++) {
+
+					double dist = Math.sqrt((yPos - iy) * (yPos - iy) + (xPos - ix) * (xPos - ix));
+
+					// Determine weights (Gaspari-Cohn formula)
+					double a = Math.sqrt(10 / 3) * distance;        // characteristic length scale for model
+
+					if (0.0 <= dist && dist <= a) {
+						mask[idx] = -0.25 * Math.pow((dist / a), 5) + 0.5 * Math.pow((dist / a), 4) + 5.0 / 8.0 * Math.pow((dist / a), 3) - 5.0 / 3.0 * Math.pow((dist / a), 2) + 1.0;
+					} else if (a < dist && dist <= 2.0 * a) {
+						mask[idx] = 1 / 12.0 * Math.pow((dist / a), 5) - 0.5 * Math.pow((dist / a), 4) + 5.0 / 8.0 * Math.pow((dist / a), 3) + 5.0 / 3.0 * Math.pow((dist / a), 2) - 5.0 * (dist / a) + 4.0 - 2.0 / 3.0 * (a / dist);
+					} else if (2.0 * a < dist) {
+						mask[idx] = 0.0;
+					} else {
+						throw new RuntimeException("There is a problem in the determination of the localisation weights.");
+					}
+					idx++;
 				}
-				idx++;
+
 			}
 
+
+			int idx2 = ny * nx;
+			for (int iz = 1; iz < nzUsed; iz++) {
+				int idx1 = 0;
+				for (int iy = 0; iy < this.ny; iy++) {
+					for (int ix = 0; ix < this.nx; ix++) {
+						mask[idx2] = mask[idx1];
+						idx1++;
+						idx2++;
+					}
+				}
+			}
+			subtree = new Vector(mask);
+			retVec[iPos] = subtree;
 		}
 
-
-		IVector [] retVec = new IVector[1];
-		retVec[0] = new org.openda.utils.Vector(mask);
 		return retVec;
 
 	}
@@ -94,7 +147,7 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 	 * @return Model prediction interpolated to each observation (location).
 	 */
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-		System.out.println("Debug:Welcome to getObservedVales of the NEMO model");
+		// System.out.println("Debug:Welcome to getObservedVales of the NEMO model");
 		if (!(observationDescriptions instanceof NemoNetcdfStochObserver)){
 			throw new RuntimeException("The NEMO model using the extended interface only supports the NemoNetcdfStochObserver");
 		}
@@ -108,8 +161,6 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 		float[] Hi=obsdescr.Hi;
 		float[] Hj=obsdescr.Hj;
 		float[] Hs=obsdescr.Hs;
-		//float[] sshb=obsdescr.sshb;
-		//float[] tb=obsdescr.tb;
 
 		// In the first step (Analysis001), there are 150+4270=4420 observations,
 		// so H.i is included in [1 4420] (if -1 is present, it means this obs is
@@ -133,8 +184,6 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 		for (int iObs=0; iObs<nObsAll; iObs++){ HxAll[iObs]=0.0;}
 
 		//double[] observed=obsdescr.getValues().getValues();
-
-
 		for (int iNnz=0; iNnz<Hi.length; iNnz++){
 			int i=(int) Hi[iNnz]-1;   //Note move to 0-indexing
 			int j=(int) Hj[iNnz]-1;   //Note move to 0-indexing
@@ -149,7 +198,8 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 			}
 			else {
 				if (debug) System.out.println("tb observation");
-				x = tb[j - offset_tb];
+				int jCorr=j-offset_tb;
+				x = tb[jCorr];
 			}
 			HxAll[i]+=alpha*x;
 		}
@@ -181,4 +231,9 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 		IVector retVec=new org.openda.utils.Vector(Hx);
 		return retVec;
 	}
+
+	/*public IVector H_interp() {
+
+		return new Vector(0);
+	}*/
 }
