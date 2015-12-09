@@ -2,6 +2,7 @@ package org.openda.model_dflowfm;
 
 import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
+import org.openda.utils.Vector;
 
 /**
  * Created by prevel on 20-Nov-15.
@@ -67,15 +68,17 @@ public class BcExchangeItem implements IExchangeItem
 	@Override
 	public void axpyOnValues(double alpha, double[] axpyValues)
 	{
-		// do we need to implement this?
-		throw new UnsupportedOperationException("org.openda.model_DFlowFM.BcExchangeItem.axpyOnValues(): Not implemented yet.");
+		Vector valuesVector = new Vector(valueData);
+		valuesVector.axpy(alpha, new Vector(axpyValues));
+		valueData = valuesVector.getValues();
 	}
 
 	@Override
 	public void multiplyValues(double[] multiplicationFactors)
 	{
-		// do we need to implement this?
-		throw new UnsupportedOperationException("org.openda.model_DFlowFM.BcExchangeItem.multiplyValues(): Not implemented yet.");
+		Vector valuesVector = new Vector(valueData);
+		valuesVector.pointwiseMultiply(new Vector(multiplicationFactors));
+		valueData = valuesVector.getValues();
 	}
 
 	@Override
