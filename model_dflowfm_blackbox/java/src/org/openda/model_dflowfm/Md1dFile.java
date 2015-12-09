@@ -79,11 +79,11 @@ public class Md1dFile implements IDataObject
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STOPTIME, stopTimeString)); }
 
 		double timeStep;
-		try { timeStep = Double.valueOf(timeStepString); }
+		try	{ timeStep = convertSecondsToDays(Double.valueOf(timeStepString)); }
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_TIMESTEP, timeStepString)); }
 
 		double outputTimeStep;
-		try { outputTimeStep = Double.valueOf(outputTimeStepString); }
+		try { outputTimeStep = convertSecondsToDays(Double.valueOf(outputTimeStepString)); }
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_OUTPUT_TIMESTEP, outputTimeStepString)); }
 
 		exchangeItems = new HashMap<>();
@@ -131,13 +131,13 @@ public class Md1dFile implements IDataObject
 
 		IExchangeItem timeStepExchangeItem = exchangeItems.get(PROPERTY_TIMESTEP);
 		if(timeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_TIMESTEP));
-		double timeStep = timeStepExchangeItem.getValuesAsDoubles()[0];
+		double timeStep = convertDaysToSeconds(timeStepExchangeItem.getValuesAsDoubles()[0]);
 		comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_TIMESTEP));
 		ini.put(CATEGORY_TIME, PROPERTY_TIMESTEP, String.format("%s %s", timeStep, (comment == null ? "" : comment)));
 
 		IExchangeItem outTimeStepExchangeItem = exchangeItems.get(PROPERTY_OUTPUT_TIMESTEP);
 		if(outTimeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_OUTPUT_TIMESTEP));
-		double outputTimeStep = outTimeStepExchangeItem.getValuesAsDoubles()[0];
+		double outputTimeStep = convertDaysToSeconds(outTimeStepExchangeItem.getValuesAsDoubles()[0]);
 		comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_OUTPUT_TIMESTEP));
 		ini.put(CATEGORY_TIME, PROPERTY_OUTPUT_TIMESTEP, String.format("%s %s", outputTimeStep, (comment == null ? "" : comment)));
 
@@ -159,4 +159,7 @@ public class Md1dFile implements IDataObject
 			return originalString.substring(originalString.indexOf("#"), originalString.length()).trim();
 		return "";
 	}
+
+	private double convertSecondsToDays(double seconds)	{ return seconds / 60 / 60 / 24; }
+	private double convertDaysToSeconds(double days) { return days * 24 * 60 * 60; }
 }
