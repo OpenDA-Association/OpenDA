@@ -78,9 +78,9 @@ public class OutputGui extends JPanel implements IResultWriter {
     public void fillTableFromFile() {
         String[] instances = InstanceStore.getInstances();
         for (String line: instances) {
-            String[] piece = line.split("[ :;]");
+            String[] piece = line.split("[ :;]+");
 
-            int numberParameters = (piece.length - 5) / 3;
+            int numberParameters = (piece.length - 4) / 2;
             int iteration;
             double cost;
             String[] name = new String[numberParameters];
@@ -88,14 +88,14 @@ public class OutputGui extends JPanel implements IResultWriter {
 
             iteration = Integer.valueOf(piece[1]);
             try {
-                cost = Double.valueOf(piece[4]);
+                cost = Double.valueOf(piece[3]);
             } catch (NumberFormatException ne) {
                 cost = Double.NaN;
             }
             int k = 0;
-            for (int i = 5; i < piece.length; i += 3) {
-                name[k] = piece[i+1];
-                value[k] = Double.valueOf(piece[i+2]);
+            for (int i = 4; i < piece.length; i += 2) {
+                name[k] = piece[i];
+                value[k] = Double.valueOf(piece[i+1]);
                 k ++;
             }
             TreeVector vector = new TreeVector("Parameters", name, value);

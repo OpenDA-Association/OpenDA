@@ -109,7 +109,7 @@ public class InstanceStore implements IResultWriter {
         try {
             FileWriter writer = new FileWriter(registerFile, true);
             writer.write("Iteration " + Integer.toString(index) +
-                    ": cost " + PrintNumber.printNumberExtended(cost) + printParameters(parameters) + "\n");
+                    ": cost " + PrintNumber.printNumberExtended(cost) + ";" + printParameters(parameters) + "\n");
             writer.close();
         } catch (IOException e) {
             Results.putMessage("Error: " + e.getMessage());
