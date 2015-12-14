@@ -205,7 +205,7 @@ public class SCE extends Instance implements IAlgorithm {
     	while(this.hasNext()){
     		this.next();
     	}
-    }
+	}
 
 	/**
 	 * Are there any more steps for this algorithm
@@ -221,6 +221,13 @@ public class SCE extends Instance implements IAlgorithm {
 	public void next(){
 		this.sceOptimizer.next();
         this.bestEstimate = this.J.getBestModel();
+		try {
+			if (!this.hasNext() && this.bestEstimate != null && this.bestEstimate.getModelRunDir() != null) {
+				Results.putMessage("Optimal results are in model run dir "+ this.bestEstimate.getModelRunDir().getAbsolutePath());
+			}
+		} catch (Exception e) {
+			// no model run dir, no logging
+		}
 	}
 
     public IModelState saveInternalState() {

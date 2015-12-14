@@ -171,6 +171,13 @@ public class GLUE extends Instance implements IAlgorithm {
 	public void next(){
 		this.glueOptimizer.next();
         this.bestEstimate = this.J.getBestModel();
+		try {
+			if (!this.hasNext() && this.bestEstimate != null && this.bestEstimate.getModelRunDir() != null) {
+				Results.putMessage("Optimal results are in model run dir "+ this.bestEstimate.getModelRunDir().getAbsolutePath());
+			}
+		} catch (Exception e) {
+			// no model run dir, no logging
+		}
 	}
 
     public IModelState saveInternalState() {
