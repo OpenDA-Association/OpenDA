@@ -181,19 +181,16 @@ public class SCE extends Instance implements IAlgorithm {
         IVector rangeParam = this.sceOptimizer.UB.clone();
         rangeParam.axpy(-1.0,this.sceOptimizer.LB); // rangeParam = UB - LB
         IVector[] InitialPopulation = new IVector[nPoints]; // Array of parameter-vectors, representing s.
-        InitialPopulation[0] = initialParameters.clone(); // centralValues // s[0] = parameter values as supplied by user
+        InitialPopulation[0] = initialParameters.clone();
         for(int i=1;i<nPoints;i++){
-            IVector addedToParam = rangeParam.clone();    // addedToParam = UB - LB
+            IVector p = initialParameters.clone();    // content of no use, take care that the InitialPopulation vectors
+                                                      // are treevectors if the parameters vector is a tree vector
             for (int j=0;j<rangeParam.getSize();j++){
                 double r = randomGenerator.nextDouble(); // uniform (0,1)
-                double thisAddedToParam = addedToParam.getValue(j);
-                double thisLB = this.sceOptimizer.LB.getValue(j);
-                thisAddedToParam = r * thisAddedToParam;      // addedToParam = r * (UB - LB)
-                thisAddedToParam =  thisLB + thisAddedToParam; // addedToParam = LB + r * (UB - LB)
-                addedToParam.setValue(j,thisAddedToParam);
+                double thisP = r * rangeParam.getValue(j) + this.sceOptimizer.LB.getValue(j);      // addedToParam = r * (UB - LB)
+                p.setValue(j,thisP);
             }
-            InitialPopulation[i] = initialParameters.clone(); // centralValues
-            InitialPopulation[i].axpy(1.0, addedToParam);
+            InitialPopulation[i] = p.clone(); // centralValues
         }
 
         // Initialize core optimizer

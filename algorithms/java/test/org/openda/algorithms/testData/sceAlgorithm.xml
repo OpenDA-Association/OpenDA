@@ -3,5 +3,5 @@
     <costFunction class="org.openda.algorithms.SimulationKwadraticCostFunction" maxEvaluation="300"/>
     <outerLoop nComplex="5" maxIterations="20" absTolerance="0.001" relTolerance="0.001" />
     <innerLoop numIteration = "10"/>
-    <parameterRange min="[0.4,0.1]" max="[0.6,0.3]"/>
+    <parameterRange min="[8.4,1.68]" max="[8.6,1.88]"/>
 </SCEConfig>

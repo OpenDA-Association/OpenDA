@@ -419,15 +419,15 @@ public class SCECoreOptimizer {
         double costTry;
         for (int i=0; i<paramTry.getSize(); i++){
             // check lower bounds
-            if (paramTry.getValue(i) < this.pInit.getValue(i)+LB.getValue(i)){
-                costTry = 1E12 + (LB.getValue(i)-paramTry.getValue(i)) * 1E6;
-                return costTry;
-            }
-            // check upper bounds
-            if (paramTry.getValue(i) > this.pInit.getValue(i)+UB.getValue(i)){
-                costTry = 1E12 + (paramTry.getValue(i)-UB.getValue(i)) * 1E6;
-                return costTry;
-            }
+			if (paramTry.getValue(i) < LB.getValue(i)){
+				costTry = 1E12 + (LB.getValue(i)-paramTry.getValue(i)) * 1E6;
+				return costTry;
+			}
+			// check upper bounds
+			if (paramTry.getValue(i) > UB.getValue(i)){
+				costTry = 1E12 + (paramTry.getValue(i)-UB.getValue(i)) * 1E6;
+				return costTry;
+			}
         }
         nCostEvaluation++;
         costTry = costFunction.evaluate(paramTry,"any");
