@@ -125,6 +125,7 @@ public class PerviousLandSegmentsInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = UciUtils.readParameterIds(columns);
+				UciUtils.validateParameterIds(parameterIds, PERLND_MODULE_NAME, tableType);
 				continue;
 			}
 

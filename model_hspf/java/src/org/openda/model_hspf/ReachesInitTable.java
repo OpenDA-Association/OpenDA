@@ -114,6 +114,7 @@ public class ReachesInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = readParameterIds(tableType, columns);
+				UciUtils.validateParameterIds(parameterIds, RCHRES_MODULE_NAME, tableType);
 				continue;
 			}
 

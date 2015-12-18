@@ -117,6 +117,16 @@ public class UciUtils {
 		return parameterIds;
 	}
 
+	public static void validateParameterIds(List<String> parameterIds, String moduleName, String tableType) {
+		for (String parameterId : parameterIds) {
+			//if parameterId contains spaces, slashes or parentheses, then it is invalid, probably due to a units row that is positioned incorrectly in the uci file.
+			if (parameterId.isEmpty() || parameterId.contains(" ") || parameterId.contains("/") || parameterId.contains("\\") || parameterId.contains("(") || parameterId.contains(")")) {
+				throw new IllegalArgumentException("Invalid parameterId '" + parameterId + "' found in " + moduleName + " init table '" + tableType
+						+ "' in uci state file. Please correct the format and position of the parameter and unit rows in the " + moduleName + " init table '" + tableType + "' in the uci state file.");
+			}
+		}
+	}
+
 	public static List<Double> readValues(String moduleName, String tableType, String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;

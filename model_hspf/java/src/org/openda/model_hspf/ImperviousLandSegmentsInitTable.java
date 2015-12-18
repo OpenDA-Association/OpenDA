@@ -93,6 +93,7 @@ public class ImperviousLandSegmentsInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = UciUtils.readParameterIds(columns);
+				UciUtils.validateParameterIds(parameterIds, IMPLND_MODULE_NAME, tableType);
 				continue;
 			}
 
