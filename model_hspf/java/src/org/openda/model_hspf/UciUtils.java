@@ -213,13 +213,15 @@ public class UciUtils {
 	}
 
 	public static String writeValuesRow(String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
-		StringBuilder valuesRow = new StringBuilder();
+		//use Locale.US so that always uses points as decimal symbols.
+		Formatter valuesRow = new Formatter(Locale.US);
 
 		//write first column.
 		//format locationNumber:
-		//d means integer.
+		//1$ means first argument.
 		//5 means minimum width of 5 characters (left-padded with spaces).
-		valuesRow.append(String.format("%1$5d", locationNumber)).append("     ");
+		//d means integer.
+		valuesRow.format("%1$5d     ", locationNumber);
 
 		//write other columns.
 		String locationId = locationIdPrefix + String.valueOf(locationNumber);
@@ -229,11 +231,12 @@ public class UciUtils {
 			if (item == null) throw new IllegalStateException("Exchange item with id '" + id + "' not initialized during reading of uci state file.");
 
 			double value = (double) item.getValues();
-			//format value.
-			//G means floating point or scientific notation if it would not fit otherwise.
+			//format value:
+			//1$ means first argument.
 			//10 means minimum width of 10 characters (left-padded with spaces).
 			//.4 means 4 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 10 characters.
-			valuesRow.append(String.format("%1$10.4G", value));
+			//G means floating point, or scientific notation if it would not fit otherwise.
+			valuesRow.format("%1$10.4G", value);
 		}
 
 		return valuesRow.toString();
