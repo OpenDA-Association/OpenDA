@@ -134,6 +134,9 @@ public class WdmDll {
         nativeDLL.wdm_close_(new IntByReference(fileNumber));
     }
 
+    /**
+     * Note: this method throws an exception if there is no data available for the given dataSetNumber. So it is needed to check if there is data before calling this method.
+     */
     public int[] getStartDate(int wdmFileNumber, int dataSetNumber) {
         int[] startDate = new int[6];
         int[] endDate = new int[6];
@@ -150,6 +153,9 @@ public class WdmDll {
         return startDate;
     }
 
+    /**
+     * Note: this method throws an exception if there is no data available for the given dataSetNumber. So it is needed to check if there is data before calling this method.
+     */
     public int[] getEndDate(int wdmFileNumber, int dataSetNumber) {
         int[] startDate = new int[6];
         int[] endDate = new int[6];
@@ -166,6 +172,9 @@ public class WdmDll {
         return endDate;
     }
 
+    /**
+     * Note: this method throws an exception if there is no data available for the given dataSetNumber. So it is needed to check if there is data before calling this method.
+     */
     public int getTimeStep(int wdmFileNumber, int dataSetNumber) {
         IntByReference timeStep = new IntByReference();
         IntByReference returnCode = new IntByReference(-1);
@@ -177,6 +186,9 @@ public class WdmDll {
         return timeStep.getValue();
     }
 
+    /**
+     * Note: this method throws an exception if there is no data available for the given dataSetNumber. So it is needed to check if there is data before calling this method.
+     */
     public int getTimeUnit(int wdmFileNumber, int dataSetNumber) {
         IntByReference timeUnit = new IntByReference();
         IntByReference returnCode = new IntByReference(-1);
