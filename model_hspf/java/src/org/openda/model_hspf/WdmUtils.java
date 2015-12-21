@@ -142,6 +142,7 @@ public class WdmUtils {
      * @param wdmTimeSeriesExchangeItem
      * @param timeZone
      */
+    /*
     public static void readTimesAndValues(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
             WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem, TimeZone timeZone) {
 
@@ -165,6 +166,7 @@ public class WdmUtils {
         double[] values = readValues(wdmDll, wdmFileNumber, dataSetNumber, startDateArray, endDateArray);
         wdmTimeSeriesExchangeItem.setData(times, values);
     }
+    */
 
     /**
      * Reads all available times and values between the given requestedStartTime and requestedEndTime
@@ -225,6 +227,7 @@ public class WdmUtils {
     private static int[] getAvailableDataStartDateArray(WdmDll wdmDll, int wdmFileNumber, int dataSetNumber) {
         int[] availableDataStartDateArray;
         try {
+            //this call throws an exception if there is no data available for the given dataSetNumber, however this is the only way to check if there is data for the given dataSetNumber.
             availableDataStartDateArray = wdmDll.getStartDate(wdmFileNumber, dataSetNumber);
         } catch (Exception e) {
             //an Exception is thrown if startDate or endDate cannot be determined,
@@ -238,6 +241,7 @@ public class WdmUtils {
     private static int[] getAvailableDataEndDateArray(WdmDll wdmDll, int wdmFileNumber, int dataSetNumber) {
         int[] availableDataEndDateArray;
         try {
+            //this call throws an exception if there is no data available for the given dataSetNumber, however this is the only way to check if there is data for the given dataSetNumber.
             availableDataEndDateArray = wdmDll.getEndDate(wdmFileNumber, dataSetNumber);
         } catch (Exception e) {
             //an Exception is thrown if startDate or endDate cannot be determined,
@@ -315,6 +319,7 @@ public class WdmUtils {
      * @param wdmTimeSeriesExchangeItem
      * @param timeZone
      */
+    /*
     public static void writeTimesAndValues(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
             WdmTimeSeriesExchangeItem wdmTimeSeriesExchangeItem, TimeZone timeZone) {
 
@@ -334,6 +339,7 @@ public class WdmUtils {
                     1, 0, timeUnit, values);
         }
     }
+    */
 
     /**
      * Writes all values for the given wdmTimeSeriesExchangeItem
@@ -368,42 +374,67 @@ public class WdmUtils {
         //get dataSetNumber that corresponds to the time series for the given wdmTimeSeriesExchangeItem.
         int dataSetNumber = getDataSetNumber(wdmDll, wdmFileNumber, wdmFilePath, wdmTimeSeriesExchangeItem);
 
-        //initialize daysPerTimeUnit.
-        //get timeStep/Unit from dataSet, since the timeStep/Unit of a given dataSet can never change.
-        double daysPerTimeUnit = 1;
-        int timeUnit = wdmDll.getTimeUnit(wdmFileNumber, dataSetNumber);
-        int timeStep = wdmDll.getTimeStep(wdmFileNumber, dataSetNumber);
-        switch(timeUnit) {
-            case 1:
-                //second.
-                daysPerTimeUnit = (double) 1/(24.0 * 3600.0);
-                break;
-            case 2:
-                //minute
-                daysPerTimeUnit = (double) 1/(24.0 * 60.0);
-                break;
-            case 3:
-                //hour.
-                daysPerTimeUnit = (double) 1/24.0;
-                break;
-            case 4:
-                //day.
-                daysPerTimeUnit = 1;
-                break;
-            default:
-                throw new RuntimeException("WdmUtils.writeTimesAndValues: TimeUnit " + timeUnit + " currently not supported.");
-        }
-        daysPerTimeUnit *= timeStep;
-
-        //get times and values.
+        //get times and values to write.
         double[] times = wdmTimeSeriesExchangeItem.getTimesRef();
         double[] values = wdmTimeSeriesExchangeItem.getValuesRef();
+
+        //get timeStep.
+        double timeStepInDays;
+        int timeUnit;
+        int timeStepInUnits;
+        int[] availableDataStartDateArray = getAvailableDataStartDateArray(wdmDll, wdmFileNumber, dataSetNumber);
+        int[] availableDataEndDateArray = getAvailableDataEndDateArray(wdmDll, wdmFileNumber, dataSetNumber);
+        if (availableDataStartDateArray == null || availableDataEndDateArray == null) {//if no data available.
+            //determine timeStep and timeUnit from the data to write.
+            if (times == null || times.length < 2) {
+                Results.putMessage(WdmUtils.class.getSimpleName() + ": cannot write data for location "
+                        + wdmTimeSeriesExchangeItem.getLocation() + " and quantity "
+                        + wdmTimeSeriesExchangeItem.getQuantityId() + " in wdm file " + wdmFilePath
+                        + " Reason: cannot determine timeStep, since there is no data in the wdm file and there are less than two values to write. This time series will be skipped.");
+                return;
+            }
+            //this code assumes that the timeStep is the same for all times.
+            timeStepInDays = times[1] - times[0];
+            //timeStepInUnits and timeUnit are both integers, so timeStep must always be an integer number of years, months, days, hours, minutes OR seconds.
+            //Here always use timeUnit second so that it works for most timeSteps.
+            timeUnit = 1;//second.
+            timeStepInUnits = (int) Math.round(timeStepInDays * 24 * 3600);
+
+        } else {
+            //get timeStep/Unit from dataSet (this only works if there is data), since the timeStep/Unit of a given dataSet can never change.
+            timeUnit = wdmDll.getTimeUnit(wdmFileNumber, dataSetNumber);
+            timeStepInUnits = wdmDll.getTimeStep(wdmFileNumber, dataSetNumber);
+            double timeUnitInDays;
+            switch(timeUnit) {
+                case 1:
+                    //second.
+                    timeUnitInDays = (double) 1/(24.0 * 3600.0);
+                    break;
+                case 2:
+                    //minute
+                    timeUnitInDays = (double) 1/(24.0 * 60.0);
+                    break;
+                case 3:
+                    //hour.
+                    timeUnitInDays = (double) 1/24.0;
+                    break;
+                case 4:
+                    //day.
+                    timeUnitInDays = 1;
+                    break;
+                default:
+                    throw new RuntimeException("WdmUtils.writeTimesAndValues: TimeUnit " + timeUnit + " currently not supported.");
+            }
+            timeStepInDays = timeStepInUnits * timeUnitInDays;
+        }
+
         //startTime and endTime are both inclusive, so the number of times (and values) is one more than the number of timeSteps between the times.
-        int numberOfRequiredTimes = 1 + (int) Math.ceil((endTime - startTime) / daysPerTimeUnit);
+        //subtract tolerance of about 1 second to avoid rounding errors.
+        int numberOfRequiredTimes = 1 + (int) Math.ceil((endTime - startTime - 1e-5) / timeStepInDays);
         double[] newValues = new double[numberOfRequiredTimes];
         int previousIndex = -1;
         for (int n = 0; n < newValues.length; n++) {
-            double searchedTime = startTime + n*daysPerTimeUnit;
+            double searchedTime = startTime + n*timeStepInDays;
 
             double newValue = Double.NaN;
             if (times != null && values != null) {
@@ -444,7 +475,7 @@ public class WdmUtils {
         if (newValues != null && newValues.length > 0) {
             int[] startDate = convertMjdToDateArray(startTime, timeZone);
             //write reliable values, i.e. qualityCode 0.
-            wdmDll.putValues(wdmFileNumber, dataSetNumber, timeStep, startDate,
+            wdmDll.putValues(wdmFileNumber, dataSetNumber, timeStepInUnits, startDate,
                     1, 0, timeUnit, newValues);
         }
     }
