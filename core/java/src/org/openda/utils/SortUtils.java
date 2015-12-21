@@ -249,6 +249,14 @@ public class SortUtils {
 	 * @return Index of matching value or -1 if not found
 	 */
 	public static int findMatchingIndex(double[] values, double toFind, double tolerance){
+		if (values == null) throw new IllegalArgumentException("values == null");
+		if (Double.isInfinite(toFind)) throw new IllegalArgumentException("Double.isInfinite(toFind)");
+		if (Double.isNaN(toFind)) throw new IllegalArgumentException("Double.isNaN(toFind)");
+
+		if (values.length == 0) {//if no values, then nothing to find.
+			return -1;
+		}
+
 		int result=-1;
 		int n=values.length;
 		int searchIndex=binarySearchIndex(values, toFind);
