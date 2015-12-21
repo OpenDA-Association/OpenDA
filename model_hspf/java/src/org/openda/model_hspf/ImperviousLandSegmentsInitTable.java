@@ -33,6 +33,7 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class ImperviousLandSegmentsInitTable {
+	//TODO move to UciUtils. AK
 	public static final String IMPLND_MODULE_NAME = "IMPLND";
 	private static final String IMPLND_LOCATION_ID_PREFIX = "ILS";
 
@@ -52,6 +53,8 @@ public class ImperviousLandSegmentsInitTable {
 	 * For IMPLND the following tables and parameters with initial conditions in the UCI file are supported:
 	 *
 	 * <table type>:  <parameters>
+	 * SNOW-INIT1:    Pack-snow, Pack-ice, Pack-watr, RDENPF, DULL, PAKTMP
+	 * SNOW-INIT2:    COVINX, XLNMLT, SKYCLR
 	 * IWAT-STATE1:   RETS, SURS
 	 * SLD-STOR:      SLDS
 	 *
@@ -59,7 +62,9 @@ public class ImperviousLandSegmentsInitTable {
 	 * IWT-INIT is currently not supported, because it has a different format for column headers.
 	 */
 	public static boolean isImperviousLandSegmentsInitTable(String tableType) {
-		return tableType.equals("IWAT-STATE1")
+		return tableType.equals("SNOW-INIT1")
+				|| tableType.equals("SNOW-INIT2")
+				|| tableType.equals("IWAT-STATE1")
 				|| tableType.equals("SLD-STOR");
 	}
 

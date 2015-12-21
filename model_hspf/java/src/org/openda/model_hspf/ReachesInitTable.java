@@ -33,6 +33,7 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class ReachesInitTable {
+	//TODO move to UciUtils. AK
 	public static final String RCHRES_MODULE_NAME = "RCHRES";
 	private static final String RCHRES_LOCATION_ID_PREFIX = "RCH";
 

@@ -3918,10 +3918,9 @@ PERLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
-*** <PLS >  qty/ac qty/ton qty/ton    qty/  qty/ac   in/hr qty/ft3 qty/ft3
-*** x -  x                          ac.day
+*** <PLS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
+***         qty/ac qty/ton qty/tonqty/ac.d  qty/ac   in/hr qty/ft3 qty/ft3
    11        0.365      0.      0.   0.034   0.102     0.5      0.      0.
    12        0.033      0.      0.   0.026   0.078     0.5      0.      0.
    13         0.03      0.      0.   0.013    0.04     0.5      0.      0.
@@ -4531,10 +4530,9 @@ PERLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
-*** <PLS >  qty/ac qty/ton qty/ton    qty/  qty/ac   in/hr qty/ft3 qty/ft3
-*** x -  x                          ac.day
+*** <PLS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
+***         qty/ac qty/ton qty/tonqty/ac.d  qty/ac   in/hr qty/ft3 qty/ft3
    11         0.45      0.      0.   0.169   0.508     0.5      0.      0.
    12         0.25      0.      0.   0.104   0.312     0.5      0.      0.
    13          1.4      0.      0.   0.053    0.16     0.5      0.      0.
@@ -5173,10 +5171,9 @@ PERLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
-*** <PLS >  qty/ac qty/ton qty/ton    qty/  qty/ac   in/hr qty/ft3 qty/ft3
-*** x -  x                          ac.day
+*** <PLS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
+***         qty/ac qty/ton qty/tonqty/ac.d  qty/ac   in/hr qty/ft3 qty/ft3
    11         0.04      0.      0.   0.005   0.015     0.5      0.      0.
    12        0.017      0.      0.   0.005   0.015     0.5      0.      0.
    13         0.38      0.      0.    0.01    0.03     0.5      0.      0.
@@ -5795,10 +5792,9 @@ PERLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
-*** <PLS >  qty/ac qty/ton qty/ton    qty/  qty/ac   in/hr qty/ft3 qty/ft3
-*** x -  x                          ac.day
+*** <PLS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   POTFS   ACQOP  SQOLIM   WSQOP    IOQC    AOQC
+***         qty/ac qty/ton qty/tonqty/ac.d  qty/ac   in/hr qty/ft3 qty/ft3
    11           3.      0.      0.    0.17     1.7     0.5      0.      0.
    12           1.      0.      0.   0.055    0.55     0.5      0.      0.
    13           5.      0.      0.    0.06     0.6     0.5      0.      0.
@@ -7235,10 +7231,9 @@ IMPLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   ACQOP  SQOLIM   WSQOP
-*** <ILS >  qty/ac qty/ton    qty/  qty/ac   in/hr
-*** x -  x                  ac.day
+*** <ILS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   ACQOP  SQOLIM   WSQOP
+***         qty/ac qty/tonqty/ac.d  qty/ac   in/hr
    11  291  0.0297      0.  0.0038  0.0756     0.5
   END QUAL-INPUT
 
@@ -7249,10 +7244,9 @@ IMPLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   ACQOP  SQOLIM   WSQOP
-*** <ILS >  qty/ac qty/ton    qty/  qty/ac   in/hr
-*** x -  x                  ac.day
+*** <ILS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   ACQOP  SQOLIM   WSQOP
+***         qty/ac qty/tonqty/ac.d  qty/ac   in/hr
    11  291     0.4      0.  0.0415  0.2668     0.5
   END QUAL-INPUT
 
@@ -7263,10 +7257,9 @@ IMPLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   ACQOP  SQOLIM   WSQOP
-*** <ILS >  qty/ac qty/ton    qty/  qty/ac   in/hr
-*** x -  x                  ac.day
+*** <ILS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   ACQOP  SQOLIM   WSQOP
+***         qty/ac qty/tonqty/ac.d  qty/ac   in/hr
    11  291    0.05      0.  0.0034  0.0163     0.5
   END QUAL-INPUT
 
@@ -7277,10 +7270,9 @@ IMPLND
   END QUAL-PROPS
 
   QUAL-INPUT
-***         Storage on surface and nonseasonal parameters
-***            SQO   POTFW   ACQOP  SQOLIM   WSQOP
-*** <ILS >  qty/ac qty/ton    qty/  qty/ac   in/hr
-*** x -  x                  ac.day
+*** <ILS >  Storage on surface and nonseasonal parameters
+*** # -  #     SQO   POTFW   ACQOP  SQOLIM   WSQOP
+***         qty/ac qty/tonqty/ac.d  qty/ac   in/hr
    11  291    0.81      0.  0.1611    2.13     0.5
   END QUAL-INPUT
 

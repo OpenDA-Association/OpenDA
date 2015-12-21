@@ -33,6 +33,7 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class PerviousLandSegmentsInitTable {
+	//TODO move to UciUtils. AK
 	public static final String PERLND_MODULE_NAME = "PERLND";
 	private static final String PERLND_LOCATION_ID_PREFIX = "PLS";
 
