@@ -144,7 +144,7 @@ public class SCE extends Instance implements IAlgorithm {
         this.sceOptimizer.relTolSCE = sceConf.getAsDouble("outerLoop@relTolerance",this.sceOptimizer.relTolSCE);
         Results.putMessage("outerLoop@relTolerance="+this.sceOptimizer.relTolSCE);
         this.sceOptimizer.numInnerLoop = sceConf.getAsInt("innerLoop@numIteration",this.sceOptimizer.numInnerLoop);
-        Results.putMessage("innerLoop@numIteration="+this.sceOptimizer.relTolSCE);
+        Results.putMessage("innerLoop@numIteration="+this.sceOptimizer.numInnerLoop);
         // additional stopCriteria
         ConfigTree parts[] = sceConf.getSubTrees("stopCriteria/stopCriterion");
         if (parts != null) {
