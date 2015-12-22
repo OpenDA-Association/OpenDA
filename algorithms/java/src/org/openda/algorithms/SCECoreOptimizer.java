@@ -417,6 +417,7 @@ public class SCECoreOptimizer {
      */
     private double calculatecost(ICostFunction costFunction, IVector paramTry, IVector LB, IVector UB) {
         double costTry;
+		nCostEvaluation++;
         for (int i=0; i<paramTry.getSize(); i++){
             // check lower bounds
 			if (paramTry.getValue(i) < LB.getValue(i)){
@@ -429,7 +430,6 @@ public class SCECoreOptimizer {
 				return costTry;
 			}
         }
-        nCostEvaluation++;
         costTry = costFunction.evaluate(paramTry,"any");
         return costTry;
     }
