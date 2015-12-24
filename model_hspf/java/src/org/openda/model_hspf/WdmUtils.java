@@ -259,8 +259,8 @@ public class WdmUtils {
      * @param wdmDll
      * @param wdmFileNumber watershed data management file unit number.
      * @param dataSetNumber
-     * @param startDate inclusive.
-     * @param endDate inclusive.
+     * @param startDate
+     * @param endDate
      * @param timeZone
      * @return times.
      */
@@ -271,8 +271,7 @@ public class WdmUtils {
         int timeUnit = wdmDll.getTimeUnit(wdmFileNumber, dataSetNumber);
         int timeStep = wdmDll.getTimeStep(wdmFileNumber, dataSetNumber);
         int numberOfTimeSteps = wdmDll.getNumberOfTimeSteps(startDate, endDate, timeUnit, timeStep);
-        //startDate and endDate are both inclusive, so the number of times is one more than the number of timeSteps between the times.
-        double[] retrievedTimes = new double[numberOfTimeSteps + 1];
+        double[] retrievedTimes = new double[numberOfTimeSteps];
         int[] currentDate = startDate;
         retrievedTimes[0] = convertDateArrayToMjd(currentDate, timeZone);
         for (int n = 1; n < retrievedTimes.length; n++) {
@@ -290,8 +289,8 @@ public class WdmUtils {
      * @param wdmDll
      * @param wdmFileNumber watershed data management file unit number.
      * @param dataSetNumber
-     * @param startDate inclusive.
-     * @param endDate inclusive.
+     * @param startDate
+     * @param endDate
      * @return retrievedValues.
      */
     private static double[] readValues(WdmDll wdmDll, int wdmFileNumber, int dataSetNumber,
@@ -300,12 +299,10 @@ public class WdmUtils {
         //read values.
         int timeUnit = wdmDll.getTimeUnit(wdmFileNumber, dataSetNumber);
         int timeStep = wdmDll.getTimeStep(wdmFileNumber, dataSetNumber);
-        int numberOfTimeSteps = wdmDll.getNumberOfTimeSteps(startDate, endDate, timeUnit, timeStep);
-        //startDate and endDate are both inclusive, so the number of times (and values) is one more than the number of timeSteps between the times.
-        int numberOfValues = numberOfTimeSteps + 1;
+        int numberOftimeSteps = wdmDll.getNumberOfTimeSteps(startDate, endDate, timeUnit, timeStep);
         //use maximum allowedQualityCode (31) so that all values are read.
         return wdmDll.getValues(wdmFileNumber, dataSetNumber, timeStep, startDate,
-                numberOfValues, 0, 31, timeUnit);
+                numberOftimeSteps, 0, 31, timeUnit);
     }
 
     /**
@@ -363,8 +360,8 @@ public class WdmUtils {
      * @param wdmFileNumber watershed data management file unit number.
      * @param wdmFilePath
      * @param wdmTimeSeriesExchangeItem
-     * @param startTime inclusive.
-     * @param endTime inclusive.
+     * @param startTime
+     * @param endTime
      * @param timeZone
      */
     public static void writeTimesAndValues(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
@@ -428,7 +425,6 @@ public class WdmUtils {
             timeStepInDays = timeStepInUnits * timeUnitInDays;
         }
 
-        //startTime and endTime are both inclusive, so the number of times (and values) is one more than the number of timeSteps between the times.
         //subtract tolerance of about 1 second to avoid rounding errors.
         int numberOfRequiredTimes = 1 + (int) Math.ceil((endTime - startTime - 1e-5) / timeStepInDays);
         double[] newValues = new double[numberOfRequiredTimes];
