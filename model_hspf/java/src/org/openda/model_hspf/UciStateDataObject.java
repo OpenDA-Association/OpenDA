@@ -73,6 +73,9 @@ public class UciStateDataObject implements IDataObject {
 					+ "'. The second argument should be the timestamp of the state in the .uci file.", e);
 		}
 
+		//TODO only works for model timeStep of 1 hour
+		//shift time of exchangeItems by one hour, because the data for the last timeStep of the model is written at (endTime - 1 hour) in the model output wdm files.
+		stateTime = stateTime - 1/24.0;
 		readUciFile(stateTime);
 	}
 

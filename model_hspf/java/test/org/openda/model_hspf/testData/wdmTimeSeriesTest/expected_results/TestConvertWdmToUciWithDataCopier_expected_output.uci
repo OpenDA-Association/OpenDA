@@ -9659,19 +9659,19 @@ RCHRES
    47          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   48          6.350     34.00
+   48          7.745     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   49          4.848     34.00
+   49          5.526     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    50          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   51          6.324     34.00
+   51          6.322     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   52          5.072     34.00
+   52          6.505     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    53          40.00     34.00
@@ -9683,10 +9683,10 @@ RCHRES
    55          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   56          5.186     34.00
+   56          7.212     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   57          5.717     34.00
+   57          5.713     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    58          40.00     34.00
@@ -9698,13 +9698,13 @@ RCHRES
    60          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   61          5.430     34.00
+   61          5.413     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   62          5.710     34.00
+   62          7.004     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   63          5.771     34.00
+   63          7.291     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    64          40.00     34.00
@@ -9722,7 +9722,7 @@ RCHRES
    68          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   69          6.308     34.00
+   69          7.823     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    70          40.00     34.00
@@ -9737,7 +9737,7 @@ RCHRES
    73          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   74          5.503     34.00
+   74          5.992     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    75          40.00     34.00
@@ -9782,10 +9782,10 @@ RCHRES
    88          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   89          3.721     34.00
+   89          3.668     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-   90          7.501     34.00
+   90          8.835     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
    91          40.00     34.00
@@ -9830,7 +9830,7 @@ RCHRES
   104          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  105          5.333     34.00
+  105          7.446     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   106          40.00     34.00
@@ -9905,10 +9905,10 @@ RCHRES
   129          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  130          5.257     34.00
+  130          6.668     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  131          5.232     34.00
+  131          5.346     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   132          9.094     34.00
@@ -9920,7 +9920,7 @@ RCHRES
   134          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  135          6.340     34.00
+  135          6.534     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   136          40.00     34.00
@@ -9947,7 +9947,7 @@ RCHRES
   143          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  144          5.667     34.00
+  144          5.645     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   145          10.49     34.00
@@ -9989,7 +9989,7 @@ RCHRES
   157          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  158          8.510     34.00
+  158          9.894     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   159          40.00     34.00
@@ -9998,7 +9998,7 @@ RCHRES
   160          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  161          8.318     34.00
+  161          8.438     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   162          40.00     34.00
@@ -10019,10 +10019,10 @@ RCHRES
   167          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  168          7.908     34.00
+  168          9.586     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  169          7.783     34.00
+  169          9.371     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   170          40.00     34.00
@@ -10064,40 +10064,40 @@ RCHRES
   182          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  183          7.747     34.00
+  183          9.361     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  184          5.966     34.00
+  184          6.208     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  185          5.652     34.00
+  185          5.482     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  186          6.811     34.00
+  186          6.817     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   187          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  188          6.896     34.00
+  188          8.703     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  189          8.151     34.00
+  189          8.414     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   190          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  191          7.198     34.00
+  191          9.040     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   192          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  193          5.597     34.00
+  193          5.521     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  194          5.330     34.00
+  194          7.255     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   195          40.00     34.00
@@ -10112,13 +10112,13 @@ RCHRES
   198          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  199          7.168     34.00
+  199          8.516     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   200          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  201          6.177     34.00
+  201          8.165     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   202          40.00     34.00
@@ -10142,10 +10142,10 @@ RCHRES
   208          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  209          6.039     34.00
+  209          5.987     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  210          8.779     34.00
+  210          10.09     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   211          40.00     34.00
@@ -10181,7 +10181,7 @@ RCHRES
   221          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  222          5.894     34.00
+  222          5.881     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
   223          40.00     34.00
@@ -10202,16 +10202,16 @@ RCHRES
   228          40.00     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  229          4.092     34.00
+  229          4.082     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  230          5.683     34.00
+  230          5.676     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  231          7.489     34.00
+  231          7.487     34.00
 *** RCHRES        TW    AIRTMP
 *** x -  x   (deg F)   (deg F)
-  232          9.005     34.00
+  232          9.004     34.00
   END HEAT-INIT
 
   BENTH-FLAG
@@ -10817,7 +10817,7 @@ RCHRES
    50          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   51          12.80    0.9976     13.50
+   51          12.80    0.9977     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
    52          12.80     1.106     13.50
@@ -10832,7 +10832,7 @@ RCHRES
    55          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   56          12.80    0.6989     13.50
+   56          12.80    0.6986     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
    57          12.80     1.781     13.50
@@ -10853,7 +10853,7 @@ RCHRES
    62          12.80     1.044     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   63          12.80     1.317     13.50
+   63          12.80     1.316     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
    64          12.80     3.500     13.50
@@ -10871,7 +10871,7 @@ RCHRES
    68          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   69          12.80     1.855     13.50
+   69          12.80     1.852     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
    70          12.80     3.500     13.50
@@ -10886,7 +10886,7 @@ RCHRES
    73          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   74          12.80    0.6179     13.50
+   74          12.80    0.6180     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
    75          12.80     3.500     13.50
@@ -10931,10 +10931,10 @@ RCHRES
    88          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   89          12.80    0.9834     13.50
+   89          12.80    0.9837     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-   90          12.80     1.698     13.50
+   90          12.80     1.697     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
    91          12.80     3.500     13.50
@@ -10979,7 +10979,7 @@ RCHRES
   104          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  105          12.80    0.4864     13.50
+  105          12.80    0.4861     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   106          12.80     3.500     13.50
@@ -11060,7 +11060,7 @@ RCHRES
   131          12.80     1.314     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  132          12.80     2.160     13.50
+  132          12.80     2.106     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   133          12.80     3.500     13.50
@@ -11069,7 +11069,7 @@ RCHRES
   134          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  135          12.80     3.056     13.50
+  135          12.80     3.055     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   136          12.80     3.500     13.50
@@ -11096,10 +11096,10 @@ RCHRES
   143          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  144          12.80     1.996     13.50
+  144          12.80     1.997     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  145          12.80     1.365     13.50
+  145          12.80     1.366     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   146          12.80     3.500     13.50
@@ -11138,7 +11138,7 @@ RCHRES
   157          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  158          12.80    0.9443     13.50
+  158          12.80    0.9429     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   159          12.80     3.500     13.50
@@ -11147,7 +11147,7 @@ RCHRES
   160          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  161          12.80     1.042     13.50
+  161          12.80     1.044     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   162          12.80     3.500     13.50
@@ -11168,10 +11168,10 @@ RCHRES
   167          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  168          12.80    0.9366     13.50
+  168          12.80    0.9370     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  169          12.80     2.287     13.50
+  169          12.80     2.288     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   170          12.80     3.500     13.50
@@ -11213,46 +11213,46 @@ RCHRES
   182          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  183          12.80     1.919     13.50
+  183          12.80     1.918     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  184          12.80     2.314     13.50
+  184          12.80     2.317     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   185          12.80     1.831     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  186          12.80     4.238     13.50
+  186          12.80     4.274     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   187          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  188          12.80     2.555     13.50
+  188          12.80     2.556     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  189          12.80     1.981     13.50
+  189          12.80     1.979     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   190          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  191          12.80     1.690     13.50
+  191          12.80     1.691     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   192          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  193          12.80     2.424     13.50
+  193          12.80     2.430     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  194          12.80     3.206     13.50
+  194          12.80     3.165     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   195          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  196          12.80    0.9383     13.50
+  196          12.80    0.9323     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   197          12.80     3.500     13.50
@@ -11261,13 +11261,13 @@ RCHRES
   198          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  199          12.80     3.664     13.50
+  199          12.80     3.661     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   200          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  201          12.80     5.849     13.50
+  201          12.80     5.846     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   202          12.80     3.500     13.50
@@ -11291,10 +11291,10 @@ RCHRES
   208          12.80     3.500     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  209          12.80     3.269     13.50
+  209          12.80     3.271     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
-  210          12.80     3.841     13.50
+  210          12.80     3.838     13.50
 *** RCHRES       DOX       BOD     SATDO
 *** x -  x      mg/l      mg/l      mg/l
   211          12.80     3.500     13.50
@@ -11552,19 +11552,19 @@ RCHRES
    47          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   48          1.175    0.1000     0.000  0.007242     7.000
+   48          1.175    0.1000     0.000  0.007274     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   49          3.597    0.1000     0.000   0.07968     7.000
+   49          3.595    0.1000     0.000   0.07967     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    50          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   51          2.339    0.1000     0.000   0.01098     7.000
+   51          2.339    0.1000     0.000   0.01100     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   52          1.722    0.1000     0.000  0.007445     7.000
+   52          1.722    0.1000     0.000  0.007459     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    53          4.000    0.1000     0.000   0.05000     7.000
@@ -11576,10 +11576,10 @@ RCHRES
    55          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   56          2.175    0.1000     0.000  0.001754     7.000
+   56          2.174    0.1000     0.000  0.001772     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   57          1.338    0.1000     0.000  0.008115     7.000
+   57          1.337    0.1000     0.000  0.008122     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    58          4.000    0.1000     0.000   0.05000     7.000
@@ -11591,13 +11591,13 @@ RCHRES
    60          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   61          2.411    0.1000     0.000   0.01721     7.000
+   61          2.411    0.1000     0.000   0.01743     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   62         0.7179    0.1000     0.000  0.004926     7.000
+   62         0.7177    0.1000     0.000  0.004949     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   63          1.453    0.1000     0.000   0.03100     7.000
+   63          1.453    0.1000     0.000   0.03112     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    64          4.000    0.1000     0.000   0.05000     7.000
@@ -11615,7 +11615,7 @@ RCHRES
    68          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   69          3.596    0.1000     0.000    0.1445     7.000
+   69          3.591    0.1000     0.000    0.1443     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    70          4.000    0.1000     0.000   0.05000     7.000
@@ -11630,7 +11630,7 @@ RCHRES
    73          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   74          1.617    0.1000     0.000   0.03512     7.000
+   74          1.616    0.1000     0.000   0.03511     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    75          4.000    0.1000     0.000   0.05000     7.000
@@ -11675,10 +11675,10 @@ RCHRES
    88          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   89          2.414    0.1000     0.000   0.02353     7.000
+   89          2.415    0.1000     0.000   0.02381     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-   90          3.029    0.1000     0.000    0.1236     7.000
+   90          3.025    0.1000     0.000    0.1238     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
    91          4.000    0.1000     0.000   0.05000     7.000
@@ -11723,7 +11723,7 @@ RCHRES
   104          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  105          1.909    0.1000     0.000    0.3454     7.000
+  105          1.908    0.1000     0.000    0.3453     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   106          4.000    0.1000     0.000   0.05000     7.000
@@ -11798,13 +11798,13 @@ RCHRES
   129          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  130          2.209    0.1000     0.000   0.05107     7.000
+  130          2.208    0.1000     0.000   0.05107     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  131          2.969    0.1000     0.000    0.1554     7.000
+  131          2.971    0.1000     0.000    0.1563     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  132         0.6233    0.1000     0.000   0.02261     7.000
+  132         0.6114    0.1000     0.000   0.02219     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   133          4.000    0.1000     0.000   0.05000     7.000
@@ -11813,7 +11813,7 @@ RCHRES
   134          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  135          8.919    0.1000     0.000    0.9079     7.000
+  135          8.913    0.1000     0.000    0.9089     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   136          4.000    0.1000     0.000   0.05000     7.000
@@ -11840,10 +11840,10 @@ RCHRES
   143          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  144          4.981    0.1000     0.000    0.3800     7.000
+  144          4.985    0.1000     0.000    0.3815     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  145         0.8724    0.1000     0.000  0.005724     7.000
+  145         0.8725    0.1000     0.000  0.005725     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   146          4.000    0.1000     0.000   0.05000     7.000
@@ -11882,7 +11882,7 @@ RCHRES
   157          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  158          2.011    0.1000     0.000   0.05686     7.000
+  158          2.008    0.1000     0.000   0.05692     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   159          4.000    0.1000     0.000   0.05000     7.000
@@ -11891,7 +11891,7 @@ RCHRES
   160          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  161          2.002    0.1000     0.000   0.01046     7.000
+  161          2.002    0.1000     0.000   0.01053     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   162          4.000    0.1000     0.000   0.05000     7.000
@@ -11912,10 +11912,10 @@ RCHRES
   167          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  168          2.018    0.1000     0.000   0.01029     7.000
+  168          2.018    0.1000     0.000   0.01056     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  169         0.5579    0.1000     0.000   0.09834     7.000
+  169         0.5591    0.1000     0.000   0.09863     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   170          4.000    0.1000     0.000   0.05000     7.000
@@ -11957,46 +11957,46 @@ RCHRES
   182          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  183          4.300    0.1000     0.000    0.4849     7.000
+  183          4.287    0.1000     0.000    0.4848     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  184          3.812    0.1000     0.000    0.2035     7.000
+  184          3.828    0.1000     0.000    0.2070     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  185          4.039    0.1000     0.000    0.2346     7.000
+  185          4.047    0.1000     0.000    0.2370     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  186          1.802    0.1000     0.000   0.01158     7.000
+  186          1.845    0.1000     0.000   0.01754     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   187          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  188          2.106    0.1000     0.000   0.08287     7.000
+  188          2.107    0.1000     0.000   0.08359     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  189          2.431    0.1000     0.000    0.1118     7.000
+  189          2.443    0.1000     0.000    0.1155     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   190          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  191          3.063    0.1000     0.000   0.01153     7.000
+  191          3.063    0.1000     0.000   0.01194     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   192          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  193          3.771    0.1000     0.000    0.1905     7.000
+  193          3.784    0.1000     0.000    0.1937     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  194          3.746    0.1000     0.000    0.4418     7.000
+  194          3.752    0.1000     0.000    0.4436     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   195          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  196         0.4294    0.1000     0.000  0.003118     7.000
+  196         0.4270    0.1000     0.000  0.003099     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   197          4.000    0.1000     0.000   0.05000     7.000
@@ -12005,13 +12005,13 @@ RCHRES
   198          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  199          2.650    0.1000     0.000   0.06805     7.000
+  199          2.652    0.1000     0.000   0.06981     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   200          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  201          2.018    0.1000     0.000    0.1200     7.000
+  201          2.020    0.1000     0.000    0.1208     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   202          4.000    0.1000     0.000   0.05000     7.000
@@ -12035,10 +12035,10 @@ RCHRES
   208          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  209          3.809    0.1000     0.000    0.1422     7.000
+  209          3.839    0.1000     0.000    0.1463     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  210          4.636    0.1000     0.000    0.4650     7.000
+  210          4.643    0.1000     0.000    0.4682     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   211          4.000    0.1000     0.000   0.05000     7.000
@@ -12074,7 +12074,7 @@ RCHRES
   221          4.000    0.1000     0.000   0.05000     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  222         0.6685    0.1000     0.000  0.001284     7.000
+  222         0.6684    0.1000     0.000  0.001298     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
   223          4.000    0.1000     0.000   0.05000     7.000
@@ -12098,13 +12098,13 @@ RCHRES
   229          1.095    0.1000     0.000   0.01803     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  230          1.770    0.1000     0.000   0.01016     7.000
+  230          1.770    0.1000     0.000   0.01020     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  231          1.907    0.1000     0.000   0.01738     7.000
+  231          1.907    0.1000     0.000   0.01740     7.000
 *** RCHRES       NO3       TAM       NO2       PO4     PHVAL
 *** x -  x      mg/l      mg/l      mg/l      mg/l  ph units
-  232          2.006    0.1000     0.000  0.009586     7.000
+  232          2.006    0.1000     0.000  0.009629     7.000
   END NUT-DINIT
 
   PLNK-FLAGS
@@ -12779,16 +12779,16 @@ RCHRES
    48         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   49         0.2346   0.03000      2500    0.5000    0.1000    0.5000
+   49         0.2306   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    50         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   51         0.5161   0.03000      2500    0.5000    0.1000    0.5000
+   51         0.5145   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   52         0.3328   0.03000      2500    0.5000    0.1000    0.5000
+   52         0.3313   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    53         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -12800,7 +12800,7 @@ RCHRES
    55         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   56         0.2160   0.03000      2500    0.5000    0.1000    0.5000
+   56         0.2144   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    57         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -12821,7 +12821,7 @@ RCHRES
    62         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   63         0.5124   0.03000      2500    0.5000    0.1000    0.5000
+   63         0.4986   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    64         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -12839,7 +12839,7 @@ RCHRES
    68         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   69         0.9763   0.03000      2500    0.5000    0.1000    0.5000
+   69         0.9422   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    70         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -12854,7 +12854,7 @@ RCHRES
    73         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   74         0.2818   0.03000      2500    0.5000    0.1000    0.5000
+   74         0.2795   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    75         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -12902,7 +12902,7 @@ RCHRES
    89         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-   90         0.6912   0.03000      2500    0.5000    0.1000    0.5000
+   90         0.6740   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
    91         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13022,7 +13022,7 @@ RCHRES
   129         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  130         0.5357   0.03000      2500    0.5000    0.1000    0.5000
+  130         0.5298   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   131         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13037,7 +13037,7 @@ RCHRES
   134         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  135          2.949   0.03000      2500    0.5000    0.1000    0.5000
+  135          2.829   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   136         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13106,7 +13106,7 @@ RCHRES
   157         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  158         0.5845   0.03000      2500    0.5000    0.1000    0.5000
+  158         0.5650   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   159         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13115,7 +13115,7 @@ RCHRES
   160         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  161         0.7370   0.03000      2500    0.5000    0.1000    0.5000
+  161         0.7290   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   162         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13136,10 +13136,10 @@ RCHRES
   167         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  168         0.6527   0.03000      2500    0.5000    0.1000    0.5000
+  168         0.6276   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  169          1.685   0.03000      2500    0.5000    0.1000    0.5000
+  169          1.646   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   170         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13190,22 +13190,22 @@ RCHRES
   185         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  186          17.42   0.03000      2500    0.5000    0.1000    0.5000
+  186          16.93   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   187         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  188          2.093   0.03000      2500    0.5000    0.1000    0.5000
+  188          2.019   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  189          6.567   0.03000      2500    0.5000    0.1000    0.5000
+  189          6.245   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   190         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  191          1.177   0.03000      2500    0.5000    0.1000    0.5000
+  191          1.140   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   192         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13229,7 +13229,7 @@ RCHRES
   198         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  199          2.886   0.03000      2500    0.5000    0.1000    0.5000
+  199          2.733   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   200         0.5000   0.03000      2500    0.5000    0.1000    0.5000
@@ -13262,7 +13262,7 @@ RCHRES
   209         0.5000   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
-  210          5.739   0.03000      2500    0.5000    0.1000    0.5000
+  210          5.458   0.03000      2500    0.5000    0.1000    0.5000
 *** RCHRES     PHYTO       ZOO     BENAL       ORN       ORP       ORC
 *** x -  x      mg/l     org/l     mg/m2      mg/l      mg/l      mg/l
   211         0.5000   0.03000      2500    0.5000    0.1000    0.5000
