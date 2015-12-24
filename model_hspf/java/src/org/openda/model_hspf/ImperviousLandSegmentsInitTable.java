@@ -35,7 +35,7 @@ import java.util.*;
 public class ImperviousLandSegmentsInitTable {
 	//TODO move to UciUtils. AK
 	public static final String IMPLND_MODULE_NAME = "IMPLND";
-	private static final String IMPLND_LOCATION_ID_PREFIX = "ILS";
+	private static final String IMPLND_LOCATION_ID_PREFIX = "IMP";
 
 	private final String tableType;
 	/**

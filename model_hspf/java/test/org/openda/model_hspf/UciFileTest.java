@@ -196,29 +196,29 @@ public class UciFileTest extends TestCase {
         assertEquals(100d, item.getValues());
 
         //PERLND PWT-GASES
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS11.SODOX");
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.SODOX");
         assertNotNull(item);
         assertEquals(14.5d, item.getValues());
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS42.IODOX");
+        item = uciStateDataObject.getDataObjectExchangeItem("P42.IODOX");
         assertNotNull(item);
         assertEquals(12.7d, item.getValues());
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS295.AOCO2");
+        item = uciStateDataObject.getDataObjectExchangeItem("P295.AOCO2");
         assertNotNull(item);
         assertEquals(0d, item.getValues());
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS296.AOCO2");
+        item = uciStateDataObject.getDataObjectExchangeItem("P296.AOCO2");
         assertNull(item);
 
         //IMPLND IWAT-STATE1
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS11.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP11.SURS");
         assertNotNull(item);
         assertEquals(0.01d, item.getValues());
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS42.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP42.SURS");
         assertNotNull(item);
         assertEquals(0.01d, item.getValues());
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS291.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SURS");
         assertNotNull(item);
         assertEquals(0.01d, item.getValues());
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS292.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP292.SURS");
         assertNull(item);
     }
 
@@ -252,24 +252,24 @@ public class UciFileTest extends TestCase {
         item.setValues(0.58d);
 
         //PERLND PWT-GASES
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS11.SODOX");
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.SODOX");
         assertNotNull(item);
         item.setValues(0.11d);
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS12.IODOX");
+        item = uciStateDataObject.getDataObjectExchangeItem("P12.IODOX");
         assertNotNull(item);
         item.setValues(0.12d);
-        item = uciStateDataObject.getDataObjectExchangeItem("PLS295.AOCO2");
+        item = uciStateDataObject.getDataObjectExchangeItem("P295.AOCO2");
         assertNotNull(item);
         item.setValues(2.95d);
 
         //IMPLND IWAT-STATE1
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS11.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP11.SURS");
         assertNotNull(item);
         item.setValues(0.11d);
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS42.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP42.SURS");
         assertNotNull(item);
         item.setValues(0.42d);
-        item = uciStateDataObject.getDataObjectExchangeItem("ILS291.SURS");
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SURS");
         assertNotNull(item);
         item.setValues(2.91d);
 
