@@ -485,7 +485,9 @@ public abstract class BaseDudCoreOptimizer {
 		// equality constraints: C_equal * x = b_equal
 		Matrix C_equal = new Matrix(n_equal,npars);	
 		Vector b_equal = new Vector(n_equal);
-		
+		Vector flag_equal = new Vector(n_equal);
+		Vector flag_param_equal = new Vector(n_equal);
+
 		/*pars[new] = pars[0] + P_matrix * pStep >= b_lower , so
 		P_matrix * pStep >= b_lower - pars[0]:= b_lower*/
 		
@@ -604,6 +606,15 @@ public abstract class BaseDudCoreOptimizer {
 					b_not_working_set = Vector.concatenate(b_not_working_set,b_working_set.get_selection(index,index));
 					b_working_set = b_working_set.remove_entry(index);
 
+					//MVL
+					//flag_inequal = flag_inequal.remove_entry(index);
+					flag_inequal = Vector.concatenate(flag_inequal,flag_equal.get_selection(index,index));
+					flag_equal = flag_equal.remove_entry(index);
+
+					//flag_param_inequal = flag_param_inequal.remove_entry(index);
+					flag_param_inequal = Vector.concatenate(flag_param_inequal,flag_param_equal.get_selection(index,index));
+					flag_param_equal = flag_param_equal.remove_entry(index);
+
 					n_working_set = n_working_set -1;
 					n_not_working_set = n_not_working_set + 1;
 					
@@ -682,7 +693,10 @@ public abstract class BaseDudCoreOptimizer {
 					C_not_working_set = C_not_working_set.remove_row(index);
 					b_not_working_set = b_not_working_set.remove_entry(index);
 
+					flag_equal = Vector.concatenate(flag_equal,flag_inequal.get_selection(index,index));
 					flag_inequal = flag_inequal.remove_entry(index);
+
+					flag_param_equal = Vector.concatenate(flag_param_equal,flag_param_inequal.get_selection(index,index));
 					flag_param_inequal = flag_param_inequal.remove_entry(index);
 
 					n_working_set = n_working_set + 1;
