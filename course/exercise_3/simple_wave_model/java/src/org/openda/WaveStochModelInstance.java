@@ -55,7 +55,7 @@ public class WaveStochModelInstance extends org.openda.models.simpleModel.Simple
    int VEL =1+nGrid+1;
    int iCall=0;
 
-   double Pi = 3.14159265358979;
+   double Pi = Math.PI;
 
 
    double dBegin = 1.0;
@@ -74,7 +74,7 @@ public class WaveStochModelInstance extends org.openda.models.simpleModel.Simple
 
       // parameters of the model (deterministic part)
       pars.put("T",  0.8);   // default for time correlation for noise on boundary
-      pars.put("cf", 0.9);  // default friction coefficient
+      pars.put("cf", 0.9);   // default friction coefficient
       pars.put("g",  9.81);  // gravitation constant
 
       // Depth (constant)
