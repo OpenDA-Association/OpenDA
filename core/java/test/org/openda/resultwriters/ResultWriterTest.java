@@ -195,6 +195,18 @@ public class ResultWriterTest extends TestCase {
         Results.reset();
     }
 
+    public void testMatlabResultsCalibrationWithWildCard() {
+
+        //setTestDir();
+        IResultWriter matlabWriter = new MatlabResultWriter(testRunDataDir, "matlab-calibration-wildcard-out.m");
+        ResultSelectionConfig selectionConfig = parseSelectionConfig(new File(testRunDataDir, "result_wildcard.xml"));
+
+        Results.addResultWriter(matlabWriter, selectionConfig);
+        Results.setAlgorithmType(IAlgorithm.Type.Calibration);
+        doAlgorithmSteps();
+        Results.reset();
+    }
+
     public void testCalibrationCostFunctionOutput() {
 
         //setTestDir();

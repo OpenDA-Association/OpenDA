@@ -135,7 +135,7 @@ public class ResultSelectionConfig {
 		for (int i=0; i<keySet.length; i++){
 			String[] itemAttributes = keySet[i].split(",");
 			if (itemAttributes.length>1){
-                boolean idMatched = itemAttributes[indexId].equalsIgnoreCase(IResultWriter.defaultId) || itemAttributes[indexId].equalsIgnoreCase(id);
+                boolean idMatched = itemAttributes[indexId].equalsIgnoreCase(IResultWriter.defaultId) || itemAttributes[indexId].equalsIgnoreCase(id) || match(id, itemAttributes[indexId]);
 
                 int specifiedMinSize = Integer.parseInt(itemAttributes[indexMinSize]);
                 int specifiedMaxSize = Integer.parseInt(itemAttributes[indexMaxSize]);
@@ -232,7 +232,17 @@ public class ResultSelectionConfig {
         return id + "-" + messageType.toString();
     }
 
-	private class NonConfiguredCounter {
+    /**
+     * @param text Text to test
+     * @param pattern (Wildcard) pattern to test
+     * @return True if the text matches the wildcard pattern
+     */
+    private static boolean match(String text, String pattern)
+    {
+        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+    }
+
+    private class NonConfiguredCounter {
         int count = 0;
 
         private int nextCount() {
