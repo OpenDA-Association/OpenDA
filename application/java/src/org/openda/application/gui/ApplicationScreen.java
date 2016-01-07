@@ -46,6 +46,8 @@ import org.openda.utils.Results;
 public class ApplicationScreen extends JFrame implements ActionListener {
    private final String                    pauseText    = "Pause";
    private final String                    resumeText   = "Resume";
+   private ImageIcon                       pauseIcon    = null;
+   private ImageIcon                       startIcon    = null;
 
    JMenuBar                                menubar      = null;
    JMenu                                   file         = null;
@@ -102,11 +104,12 @@ public class ApplicationScreen extends JFrame implements ActionListener {
 
       this.fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
       this.fileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+      this.fileSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 
       this.file.add(this.fileOpen);
       this.file.add(this.fileSave);
+      this.file.add(this.fileSaveAs);
       this.file.setMnemonic(KeyEvent.VK_F);
-      // file.add(fileSaveAs);
       this.file.add(this.fileExit);
       this.menubar.add(this.file);
       this.control = new JMenu("Control");
@@ -131,12 +134,12 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       this.openButton = new JButton("Open", openIcon);
       ImageIcon saveIcon = new ImageIcon(this.getClass().getResource("Save24.gif"));
       this.saveButton = new JButton("Save", saveIcon);
-      ImageIcon startIcon = new ImageIcon(this.getClass().getResource("Play24.gif"));
-      this.startButton = new JButton("Start", startIcon);
+      this.startIcon = new ImageIcon(this.getClass().getResource("Play24.gif"));
+      this.startButton = new JButton("Start", this.startIcon);
       ImageIcon stopIcon = new ImageIcon(this.getClass().getResource("Stop24.gif"));
       this.stopButton = new JButton("Stop", stopIcon);
-      ImageIcon pauseIcon = new ImageIcon(this.getClass().getResource("Pause24.gif"));
-      this.pauseButton = new JButton("Pause", pauseIcon);
+      this.pauseIcon = new ImageIcon(this.getClass().getResource("Pause24.gif"));
+      this.pauseButton = new JButton("Pause", this.pauseIcon);
       this.bar.add(this.openButton);
       this.bar.add(this.saveButton);
       this.bar.add(this.startButton);
@@ -152,6 +155,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
 
       this.fileOpen.addActionListener(this);
       this.fileSave.addActionListener(this);
+      this.fileSaveAs.addActionListener(this);
       this.fileExit.addActionListener(this);
 
       this.controlStart.addActionListener(this);
@@ -265,7 +269,35 @@ public class ApplicationScreen extends JFrame implements ActionListener {
          }
          else if ((source == this.fileSave) || (source == this.saveButton)) {
             ((InputGui) this.inputTab).saveInput();
+            this.refreshGUI();
             Results.putMessage("Files saved");
+         }
+         else if (source == this.fileSaveAs) {
+            File workingDir = this.openDaUserSettings.getLastUsedDir();
+            if (workingDir == null) {
+               workingDir = new File(".");
+            }
+            File newFile = FileDialog.saveInput(workingDir);
+            // notify inputPanel TODO
+            if (newFile != null) {
+               String parent = newFile.getParent();
+               String name = newFile.getName();
+
+               // Do the actual save, where the new file is created as well
+               ((InputGui) this.inputTab).saveInput(parent, name);
+			   this.input = newFile;
+
+				// update GUI settings with new input file
+               this.openDaUserSettings.setLastUsedDir(newFile.getParentFile());
+               Results.putMessage("Files saved");
+
+               this.tabs.setSelectedIndex(0); // activate input tab
+               setTitle(name + " - OpenDaApplication");
+               SelectCases.newInputFile(this.input);
+               InstanceStore.setInputFile(this.input);
+			   this.refreshGUI();
+
+			}
          }
          else if (source == this.fileExit) {
             this.exitHandler.tryConfirmedExit();
@@ -348,7 +380,20 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       this.controlPause.setText(text);
       this.pauseButton.setEnabled(enabled);
       this.pauseButton.setText(text);
+	   if (text == this.pauseText) {
+		   this.pauseButton.setIcon(this.pauseIcon);
+	   } else{
+		   this.pauseButton.setIcon(this.startIcon);
+	   }
    }
+
+	/**
+	 * Parses the root file and updates the tree.
+	 */
+	private void refreshGUI(){
+		// set main file again as root file. the new parse, will create a new inputtree.
+		((InputGui) this.inputTab).setRootFile(this.input.getParent(), this.input.getName());
+	}
 
    @SuppressWarnings("unused")
    public static void main(String[] arguments) {

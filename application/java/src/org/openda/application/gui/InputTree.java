@@ -141,6 +141,21 @@ public class InputTree extends DefaultMutableTreeNode{
 		return info.initialHash;
 	}
 
+	public void setFileName(String fileName){
+		inputInfo info = (inputInfo) this.getUserObject();
+		info.fileName = fileName;
+	}
+
+	public void setWorkingDir(String workingDir){
+		inputInfo info = (inputInfo) this.getUserObject();
+		info.workingDir = workingDir;
+	}
+
+	public void setParentDir(String parentDir){
+		inputInfo info = (inputInfo) this.getUserObject();
+		info.parentDir = parentDir;
+	}
+
 	public void setCurrentBuffer(String buffer){
 		inputInfo info = (inputInfo) this.getUserObject();
 		info.currentBuffer = buffer;

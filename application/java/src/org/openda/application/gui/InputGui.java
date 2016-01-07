@@ -117,6 +117,7 @@ public class InputGui extends JPanel
         //Add the split pane to this panel.
         displayComponent(this.currentNode);
         add(splitPane);
+        revalidate();
     }
 
     /** Required by TreeSelectionListener interface. */
@@ -175,7 +176,7 @@ public class InputGui extends JPanel
         // always show full tree
         int rowCount = this.tree.getRowCount();
         for(int row=rowCount-1;row>=0;row--){
-        	this.tree.expandRow(row);
+            this.tree.expandRow(row);
         }
 
         // refresh TODO ?
@@ -243,6 +244,16 @@ public class InputGui extends JPanel
     	//this.currentNode.setCurrentBuffer(this.inputComponentPane.getText());
         saveBuffer();
     	this.root.saveTree(true);
+    }
+
+    public void saveInput(String workingDir, String fileName){
+        // set the new filename and save the input afterwards
+        this.root.setWorkingDir(workingDir);
+        this.root.setFileName(fileName);
+
+        // Since this is saved as a new file, the hash should be zero, so that it will be saved
+        this.root.setHash(0);
+        this.saveInput();
     }
 
     public boolean needsSave(){

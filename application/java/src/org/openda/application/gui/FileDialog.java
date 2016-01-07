@@ -58,7 +58,7 @@ public class FileDialog extends JFrame{
 	}
 
 	public static File saveInput(File start){
-		FileDialog dia = new FileDialog("Save file",start,FileDialog.SAVE);
+		FileDialog dia = new FileDialog("Save file as",start,FileDialog.SAVE);
 		return dia.file;
 	}
 }

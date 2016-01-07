@@ -239,7 +239,7 @@ public class ControlGui extends JPanel implements ActionListener {
          IModelState state = algorithm.saveInternalState();
          File workingDir = this.openDaUserSettings.getLastUsedDir();
          File savedStateFile = new File(workingDir, "savedState.xml");
-         savedStateFile = FileDialog.openInput(savedStateFile);
+         savedStateFile = FileDialog.saveInput(savedStateFile);
          state.savePersistentState(savedStateFile);
          algorithm.releaseInternalState(state);
          Results.putProgression("Saved state to " + savedStateFile.toString());
