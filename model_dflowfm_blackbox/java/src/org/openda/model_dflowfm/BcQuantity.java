@@ -20,7 +20,7 @@ public class BcQuantity
 
 	public BcQuantity(BcProperty quantity, BcProperty unit)
 	{
-		new BcQuantity(quantity);
+		this(quantity);
 		this.unit = unit;
 	}
 

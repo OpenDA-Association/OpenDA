@@ -12,7 +12,7 @@ public class BcProperty
 
 	public BcProperty(int lineNumber, String name, String value)
 	{
-		new BcProperty(lineNumber, name, value, "");
+		this(lineNumber, name, value, "");
 	}
 
 	public BcProperty(int lineNumber, String name, String value, String comment)
