@@ -1,4 +1,4 @@
-/* V2.2.2
+/* MOD_V2.0
  * Copyright (c) 2012 OpenDA Association
  * All rights reserved.
  *
@@ -24,6 +24,7 @@ package org.openda.blackbox.wrapper;
 import org.openda.blackbox.config.*;
 import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.uncertainties.UncertaintyEngine;
@@ -299,7 +300,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD). This is consistent with the one used in getObservedValues.
             boolean firstStep = true;
 
-			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex);
+			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
             propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime);
 			while (model.getCurrentTime().getMJD()+tolerance < targetTime.getMJD()) {
 				ITime loopTimeStep = new Time(model.getCurrentTime().getMJD() + modelDeltaT);
@@ -326,7 +327,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 		} else
 		{
-			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex);
+			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
 			propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime);
 			model.compute(targetTime);
 		}
@@ -1497,8 +1498,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
-			int timeIndex, double[] noise,
-			BBUncertOrArmaNoiseConfig.Operation operation) {
+			int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation) {
 		double[] times = exchangeItem.getTimes();
 		if (times == null || times.length == 0) {
 			throw new RuntimeException("ExchangeItem " + exchangeItem.getId() + " has no time stamps");
@@ -1506,7 +1506,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
-			numValuesInExchangeItem = exchangeItem.getValuesAsDoubles().length;
+			if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+				numValuesInExchangeItem = ((NetcdfGridTimeSeriesExchangeItem)exchangeItem).getValuesAsDoublesForSingleTimeIndex(0).length;
+			} else{
+				numValuesInExchangeItem = exchangeItem.getValuesAsDoubles().length;
+			}
 		} catch (Exception e) {
 			// input exchangItem is not able to tell it's #values. assume 1
 			// note: this should be handled more intelligent when the
@@ -1517,6 +1521,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		if (noise.length == numValuesInExchangeItem) {
 			if (times.length == 1) {
 				// Noise is meant for all values
+				addFullArray = true;
+			}
+			if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 				addFullArray = true;
 			}
 		} else {
@@ -1531,14 +1538,22 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		if (addFullArray) {
 			switch (operation) {
 			case Add:
-				exchangeItem.axpyOnValues(1.0d, noise);
+				if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+					((NetcdfGridTimeSeriesExchangeItem)exchangeItem).axpyOnValuesForSingleTimeIndex(timeIndex, 1.0d, noise);
+				} else {
+					exchangeItem.axpyOnValues(1.0d, noise);
+				}
 				break;
 			case Multiply:
 				double[] factors = new double[noise.length];
 				for (int i = 0; i < noise.length; i++) {
 					factors[i] = 1d + noise[i];
 				}
-				exchangeItem.multiplyValues(factors);
+				if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+					((NetcdfGridTimeSeriesExchangeItem)exchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
+				} else {
+					exchangeItem.multiplyValues(factors);
+				}
 				break;
 			case Set:
 				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + exchangeItem.getId() +

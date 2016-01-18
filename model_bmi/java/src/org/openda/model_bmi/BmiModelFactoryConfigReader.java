@@ -20,11 +20,11 @@
 
 package org.openda.model_bmi;
 
-import org.openda.model_bmi.io.castorgenerated.BmiModelFactoryConfigXML;
-import org.openda.model_bmi.io.castorgenerated.BmiPythonModelXML;
+import org.openda.model_bmi.io.castorgenerated.*;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Configuration reader for BmiModelFactoryConfig for a BMI model.
@@ -35,11 +35,13 @@ public class BmiModelFactoryConfigReader {
 	private final File pythonModelPythonPath;
 	private final String pythonModelModuleName;
 	private final String pythonModelClassName;
+	private String pythonExecutablePath;
 	private final File modelTemplateDirectory;
 	/**
 	 * The path and name of the model configuration file (relative to the model template directory).
 	 */
 	private final String relativeModelConfigFilePath;
+	private ArrayList<BmiModelForcingConfig> bmiModelForcingConfigs;
 	private final String[] hosts;
 
 	public BmiModelFactoryConfigReader(File configFile) {
@@ -70,6 +72,16 @@ public class BmiModelFactoryConfigReader {
 						+ ": Configured pythonModel className must not be an empty string in config file "
 						+ configFile.getAbsolutePath());
 			}
+
+			this.pythonExecutablePath = pythonModel.getPythonExecutable();
+			if (this.pythonExecutablePath == null || this.pythonExecutablePath.isEmpty()) {
+				this.pythonExecutablePath = "python";
+			} else {
+				File pythonExe = new File(this.pythonExecutablePath);
+				if (!pythonExe.isFile()) {
+					throw new RuntimeException(getClass().getSimpleName() + ": Configured pythonExecutablePath is invalid " + configFile.getAbsolutePath());
+				}
+			}
 		} else {
 			throw new IllegalArgumentException("Unknown model type configured in bmiModelFactoryConfigFile "
 					+ configFile.getAbsolutePath());
@@ -89,6 +101,21 @@ public class BmiModelFactoryConfigReader {
 					+ modelConfigFile.getAbsolutePath() + " configured in " + configFile.getAbsolutePath());
 		}
 
+		bmiModelForcingConfigs = new ArrayList<BmiModelForcingConfig>();
+		BmiModelForcingsConfigXML[] bmiModelForcingsConfigXMLs = castor.getBmiModelForcingsConfig();
+		if (bmiModelForcingsConfigXMLs.length > 0){
+			for (BmiModelForcingsConfigXML forcingsConfig : bmiModelForcingsConfigXMLs) {
+				ForcingDataObjectXML dataObjectXML = forcingsConfig.getDataObject();
+
+				String dataObjectClassName = dataObjectXML.getClassName();
+				String fileName = dataObjectXML.getFile();
+				String[] dataObjectArguments = dataObjectXML.getArg();
+
+				BmiModelForcingConfig bmiModelForcingConfig = new BmiModelForcingConfig(dataObjectClassName, configFile.getParentFile(), fileName, dataObjectArguments);
+				bmiModelForcingConfigs.add(bmiModelForcingConfig);
+			}
+		}
+
 		String hosts = castor.getHosts();
 		if (hosts == null || hosts.trim().isEmpty()) {//if hosts not configured.
 			this.hosts = null;
@@ -96,6 +123,8 @@ public class BmiModelFactoryConfigReader {
 			this.hosts = hosts.split(",");
 		}
 	}
+
+	public String getPythonExecutablePath() {return this.pythonExecutablePath;}
 
 	public File getPythonModelPythonPath() {
 		return this.pythonModelPythonPath;
@@ -116,6 +145,8 @@ public class BmiModelFactoryConfigReader {
 	public String getRelativeModelConfigFilePath() {
 		return this.relativeModelConfigFilePath;
 	}
+
+	public ArrayList<BmiModelForcingConfig> getBmiModelForcingConfigs() { return this.bmiModelForcingConfigs; }
 
 	public String[] getHosts() {
 		return hosts;

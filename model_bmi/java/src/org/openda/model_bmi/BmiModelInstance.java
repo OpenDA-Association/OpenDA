@@ -27,6 +27,8 @@ import bmi.BMI;
 import bmi.EBMI;
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
+import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
@@ -38,6 +40,8 @@ import org.openda.utils.io.AnalysisDataWriter;
 import org.openda.utils.io.FileBasedModelState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.activation.UnsupportedDataTypeException;
 
 /**
  * Interface to a BMI Model. Passes calls to the BMI interface.
@@ -52,6 +56,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private final File modelRunDir;
 
 	private final Map<String, IExchangeItem> exchangeItems;
+	private Map<String, IExchangeItem> bufferedExchangeItems;
+	private Map<String, IExchangeItem> forcingExchangeItems;
 
 	/**
 	 * Directory where the model reads the input state file(s) from. This is only used if an input state is used.
@@ -61,7 +67,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * Directory where the model writes the output state file(s) to. This is only used if an output state is used.
 	 */
 	private final File outputStateDir;
-
+	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 	private final AnalysisDataWriter analysisDataWriter;
 	private boolean firstTime = true;
 
@@ -72,11 +78,12 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @param overrulingTimeHorizon optional, can be null.
 	 * @throws BMIModelException
 	 */
-	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon) throws BMIModelException {
+	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon, ArrayList<BmiModelForcingConfig> forcingConfig) throws BMIModelException {
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
 
+		this.forcingConfiguration = forcingConfig;
 		this.model = model;
 		this.modelRunDir = modelRunDir;
 		this.outputStateDir = new File(modelRunDir, "output_state");
@@ -108,6 +115,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
 		exchangeItems = createExchangeItems(model);
+
+		// Harcoded choice to create a buffer, optionally create configuration in XSD schema.
+		bufferedExchangeItems = createBufferedExchangeItems(model);
+
+		forcingExchangeItems = createForcingExchangeItems();
 
 		this.analysisDataWriter = new AnalysisDataWriter(exchangeItems.values(), modelRunDir);
 	}
@@ -155,6 +167,60 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		return result;
 	}
 
+	// Buffer for OUTPUT ExchangeItems, in order to facilitate asynchronous filtering.
+	private Map<String, IExchangeItem> createBufferedExchangeItems(BMI model) throws BMIModelException {
+		Set<String> inputVars = new HashSet<String>();
+		Set<String> outputVars = new HashSet<String>();
+		Set<String> inoutVars = new HashSet<String>();
+
+		// first fill sets with input and output variables
+		Collections.addAll(inputVars, model.getInputVarNames());
+		Collections.addAll(outputVars, model.getOutputVarNames());
+
+		// then put duplicates in inout variables.
+		// Note: Loop over copy of set to prevent iterator exception
+		for (String var : inputVars.toArray(new String[inputVars.size()])) {
+			if (outputVars.contains(var)) {
+				outputVars.remove(var);
+				inoutVars.add(var);
+			}
+		}
+
+		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
+
+		// Hardcoded DataObject, optionally create configuration in XSD schema.
+		IDataObject dataObject = BBUtils.createDataObject(this.modelRunDir, "org.openda.exchange.dataobjects.NetcdfDataObject", "stateBuffer.nc", new String[] {"true", "false"});
+
+		for (String variable : outputVars) {
+			IExchangeItem anItem = dataObject.getDataObjectExchangeItem(variable);
+			if (anItem != null) {
+				result.put(variable, anItem);
+			}
+		}
+
+		for (String variable : inoutVars) {
+			IExchangeItem anItem = dataObject.getDataObjectExchangeItem(variable);
+			if (anItem != null) {
+				result.put(variable, anItem);
+			}
+		}
+
+		return result;
+	}
+
+	private Map<String, IExchangeItem> createForcingExchangeItems() {
+		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
+
+		for (BmiModelForcingConfig forcingConfig : this.forcingConfiguration) {
+			IDataObject dataObject = BBUtils.createDataObject(this.modelRunDir, forcingConfig.getClassName(), forcingConfig.getDataObjectFileName(), forcingConfig.getArguments());
+			for (String ExchangeItemId : dataObject.getExchangeItemIDs()) {
+				result.put(ExchangeItemId, dataObject.getDataObjectExchangeItem(ExchangeItemId));
+			}
+		}
+
+		return result;
+	}
+
 	public String[] getExchangeItemIDs() {
 		Set<String> ids = exchangeItems.keySet();
 		return ids.toArray(new String[ids.size()]);
@@ -185,10 +251,15 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @return IExchangeItem.
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
-		IExchangeItem exchangeItem = this.exchangeItems.get(exchangeItemId);
+		IExchangeItem exchangeItem = this.forcingExchangeItems.get(exchangeItemId);
 		if (exchangeItem == null) {
-			throw new RuntimeException("Exchange item with id '" + exchangeItemId + "' not found in "
-					+ getClass().getSimpleName());
+			exchangeItem = this.bufferedExchangeItems.get(exchangeItemId);
+		}
+		if (exchangeItem == null) {
+			exchangeItem = this.exchangeItems.get(exchangeItemId);
+		}
+		if (exchangeItem == null) {
+			throw new RuntimeException("Exchange item with id '" + exchangeItemId + "' not found in " + getClass().getSimpleName());
 		}
 		return exchangeItem;
 	}
@@ -226,20 +297,64 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	public void compute(ITime targetTime) {
 		if (firstTime) {
 			firstTime = false;
-		} else {//if !firstTime.
+		} else {
 			//write model state data after analysis (state update).
 			analysisDataWriter.writeDataAfterAnalysis();
 		}
 
 		//time update.
 		try {
-			model.updateUntil(TimeUtils.mjdToUdUnitsTime(targetTime.getEndTime().getMJD(), model.getTimeUnits()));
+			double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
+			double modelTimeStep = getTimeHorizon().getStepMJD();
+			while (getCurrentTime().getMJD() + tolerance < targetTime.getMJD()) {
+				// Set forcingEI data of this timestep on modelEI.
+				setModelEIsfromForcingEIs(getCurrentTime().getMJD());
+				// Compute a model step.
+				model.updateUntil(TimeUtils.mjdToUdUnitsTime(getCurrentTime().getMJD() + modelTimeStep, model.getTimeUnits()));
+				// Get bufferEI data of this timestep from modelEI.
+				setBufferEIsfromModelEIs(getCurrentTime().getMJD());
+			}
 		} catch (BMIModelException e) {
 			throw new RuntimeException(e);
 		}
 
 		//write model state data before analysis (state update).
 		analysisDataWriter.writeDataBeforeAnalysis();
+	}
+
+	private void setBufferEIsfromModelEIs(double currentTimeMJD) {
+		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
+		for (Map.Entry<String, IExchangeItem> entry : bufferedExchangeItems.entrySet()) {
+			IExchangeItem bufferEI = entry.getValue();
+			if (bufferEI instanceof NetcdfGridTimeSeriesExchangeItem) {
+				double[] times = bufferEI.getTimes();
+				for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
+					if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
+						((NetcdfGridTimeSeriesExchangeItem) bufferEI).setValuesAsDoublesForSingleTimeIndex(aTimeIndex, exchangeItems.get(entry.getKey()).getValuesAsDoubles());
+					}
+				}
+			} else {
+				throw new RuntimeException("NetCDF file stateBuffer.nc containing BMI state variable buffers must contain only grid forcings.");
+			}
+		}
+	}
+
+	private void setModelEIsfromForcingEIs(double currentTimeMJD) {
+		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
+		for (Map.Entry<String, IExchangeItem> entry : forcingExchangeItems.entrySet()) {
+			IExchangeItem forcingEI = entry.getValue();
+			if (forcingEI instanceof NetcdfGridTimeSeriesExchangeItem) {
+				double[] times = forcingEI.getTimes();
+				for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
+					if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
+						// Forcing of next timeStamp is valid from current timestep to next, so aTimeIndex+1
+						exchangeItems.get(entry.getKey()).setValuesAsDoubles(((NetcdfGridTimeSeriesExchangeItem) forcingEI).getValuesAsDoublesForSingleTimeIndex(aTimeIndex+1)); // TODO
+					}
+				}
+			} else {
+				throw new RuntimeException("NetCDF file containing BMI model variable forcings must contain only grid forcings.");
+			}
+		}
 	}
 
 	/**

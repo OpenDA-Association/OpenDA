@@ -1,4 +1,4 @@
-/* MOD_V1.0
+/* MOD_V2.0
 * Copyright (c) 2010 OpenDA Association
 * All rights reserved.
 *

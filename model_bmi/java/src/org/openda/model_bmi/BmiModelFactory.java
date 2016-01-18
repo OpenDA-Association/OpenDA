@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -58,9 +59,11 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private static final long CONNECT_TIMEOUT = 100; // ms
 	
 	// python specific variables.
+	private String modelPythonExecutablePath;
 	private File modelPythonPath;
 	private String modelPythonModuleName;
 	private String modelPythonClassName;
+	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 
 	// model variables.
 	private File modelTemplateDirectory = null;
@@ -118,9 +121,12 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.modelPythonPath = configReader.getPythonModelPythonPath();
 		this.modelPythonModuleName = configReader.getPythonModelModuleName();
 		this.modelPythonClassName = configReader.getPythonModelClassName();
+		this.modelPythonExecutablePath = configReader.getPythonExecutablePath();
 		this.modelTemplateDirectory = configReader.getModelTemplateDirectory();
 		this.instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
 		this.relativeModelConfigFilePath = configReader.getRelativeModelConfigFilePath();
+		this.forcingConfiguration = configReader.getBmiModelForcingConfigs();
+
 		this.hosts = configReader.getHosts();
 
 		// remove work directories from previous runs.
@@ -145,9 +151,6 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			File instanceDirectory = new File(this.instanceDirectoryWithoutPostfix.getAbsolutePath() + instanceID);
 			BBUtils.makeDirectoryClone(this.modelTemplateDirectory, instanceDirectory);
 
-			// this code assumes that the python executable is on the PATH
-			// environment variable.
-			String pythonExecutable = "python";
 			//this code assumes that the current working directory is the OpenDA bin folder.
 			//This is reasonable, since OpenDA should always be started from the OpenDA bin folder.
 			File opendaPythonPath = new File("python");
@@ -158,18 +161,18 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 
 			EBMI model;
 			if (this.hosts == null) {
-				model = createModelBridge(null, pythonExecutable, opendaPythonPath, modelPythonPath,
+				model = createModelBridge(null, this.modelPythonExecutablePath, opendaPythonPath, modelPythonPath,
 						modelPythonModuleName, modelPythonClassName, instanceDirectory);
 			} else {
 				// we allocate instances to hosts round-robin
 				String host = hosts[instanceID % hosts.length];
-				model = createModelBridge(host, pythonExecutable, opendaPythonPath, modelPythonPath,
+				model = createModelBridge(host, this.modelPythonExecutablePath, opendaPythonPath, modelPythonPath,
 						modelPythonModuleName, modelPythonClassName, instanceDirectory);
 			}
 
 			// modelConfigFile must be a relative path.
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
-			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile, timeHorizonFromOutside);
+			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile, timeHorizonFromOutside, this.forcingConfiguration);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
