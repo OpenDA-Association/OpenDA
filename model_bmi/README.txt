@@ -6,5 +6,7 @@ To build this code, first run the public build.xml ANT script. Then run the mode
 
 This module includes code from the CSDMS BMI project. See https://github.com/csdms/bmi
 
+This package appears to require vcredist_x64.exe
+
 Thrift:
 This module includes software developed at The Apache Software Foundation (http://www.apache.org/).
