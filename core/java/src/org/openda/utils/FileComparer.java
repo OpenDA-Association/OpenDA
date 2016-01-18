@@ -1,4 +1,4 @@
-package org.openda.model_dflowfm;
+package org.openda.utils;
 
 import java.io.BufferedReader;
 import java.io.File;

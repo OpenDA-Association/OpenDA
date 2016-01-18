@@ -3,6 +3,7 @@ package org.openda.model_dflowfm;
 import junit.framework.TestCase;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
 import org.springframework.util.Assert;
 
