@@ -117,17 +117,17 @@ public class UciUtils {
 		return parameterIds;
 	}
 
-	public static void validateParameterIds(List<String> parameterIds, String moduleName, String tableType) {
+	public static void validateParameterIds(List<String> parameterIds, String moduleName, String tableName) {
 		for (String parameterId : parameterIds) {
 			//if parameterId contains spaces, slashes or parentheses, then it is invalid, probably due to a units row that is positioned incorrectly in the uci file.
 			if (parameterId.isEmpty() || parameterId.contains(" ") || parameterId.contains("/") || parameterId.contains("\\") || parameterId.contains("(") || parameterId.contains(")")) {
-				throw new IllegalArgumentException("Invalid parameterId '" + parameterId + "' found in " + moduleName + " init table '" + tableType
-						+ "' in uci state file. Please correct the format and position of the parameter and unit rows in the " + moduleName + " init table '" + tableType + "' in the uci state file.");
+				throw new IllegalArgumentException("Invalid parameterId '" + parameterId + "' found in " + moduleName + " init table '" + tableName
+						+ "' in uci state file. Please correct the format and position of the parameter and unit rows in the " + moduleName + " init table '" + tableName + "' in the uci state file.");
 			}
 		}
 	}
 
-	public static List<Double> readValues(String moduleName, String tableType, String[] columns) {
+	public static List<Double> readValues(String moduleName, String tableName, String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;
 		int lastValueColumnIndex = columns.length - 1;
@@ -138,22 +138,22 @@ public class UciUtils {
 			try {
 				values.add(Double.parseDouble(valueString));
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + moduleName + " init table '" + tableType + "' in uci state file.", e);
+				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + moduleName + " init table '" + tableName + "' in uci state file.", e);
 			}
 		}
 		return values;
 	}
 
-	public static int readFirstLocationNumber(String moduleName, String tableType, String firstColumn) {
+	public static int readFirstLocationNumber(String moduleName, String tableName, String firstColumn) {
 		String part1 = firstColumn.substring(0, 5).trim();
 		try {
 			return Integer.parseInt(part1);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Cannot parse integer '" + part1 + "' in " + moduleName + " init table '" + tableType + "' in uci state file.", e);
+			throw new IllegalArgumentException("Cannot parse integer '" + part1 + "' in " + moduleName + " init table '" + tableName + "' in uci state file.", e);
 		}
 	}
 
-	public static int readLastLocationNumber(String moduleName, String tableType, String firstColumn, int firstLocationNumber) {
+	public static int readLastLocationNumber(String moduleName, String tableName, String firstColumn, int firstLocationNumber) {
 		String part2 = firstColumn.substring(5, 10).trim();
 		if (part2.isEmpty()) {
 			return firstLocationNumber;
@@ -161,14 +161,14 @@ public class UciUtils {
 			try {
 				return Integer.parseInt(part2);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse integer '" + part2 + "' in " + moduleName + " init table '" + tableType + "' in uci state file.", e);
+				throw new IllegalArgumentException("Cannot parse integer '" + part2 + "' in " + moduleName + " init table '" + tableName + "' in uci state file.", e);
 			}
 		}
 	}
 
 	/**
 	 * @param moduleName
-	 * @param tableType
+	 * @param tableName
 	 * @param locationIdPrefix
 	 * @param firstLocationNumber inclusive.
 	 * @param lastLocationNumber inclusive.
@@ -178,12 +178,12 @@ public class UciUtils {
 	 * @param uniqueLocationNumbers
 	 * @param exchangeItems
 	 */
-	public static void createExchangeItems(String moduleName, String tableType, String locationIdPrefix, int firstLocationNumber, int lastLocationNumber,
+	public static void createExchangeItems(String moduleName, String tableName, String locationIdPrefix, int firstLocationNumber, int lastLocationNumber,
 			List<String> parameterIds, List<Double> values, double stateTime, Set<Integer> uniqueLocationNumbers, Map<String, IExchangeItem> exchangeItems) {
 
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + moduleName + " init table '" + tableType + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + moduleName + " init table '" + tableName + "' in uci state file.");
 		if (values.size() != parameterIds.size()) {
-			throw new IllegalArgumentException("Number of values (" + values.size() + ") not equal to number of parameters (" + parameterIds.size() + ") in " + moduleName + " init table '" + tableType + "' in uci state file.");
+			throw new IllegalArgumentException("Number of values (" + values.size() + ") not equal to number of parameters (" + parameterIds.size() + ") in " + moduleName + " init table '" + tableName + "' in uci state file.");
 		}
 
 		for (int locationNumber = firstLocationNumber; locationNumber <= lastLocationNumber; locationNumber++) {

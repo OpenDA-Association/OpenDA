@@ -37,7 +37,7 @@ public class ReachesInitTable {
 	public static final String RCHRES_MODULE_NAME = "RCHRES";
 	private static final String RCHRES_LOCATION_ID_PREFIX = "RCH";
 
-	private final String tableType;
+	private final String tableName;
 	/**
 	 * Store the first parameterIds row and units row. These are re-used during writing.
 	 */
@@ -73,25 +73,25 @@ public class ReachesInitTable {
 	 * SSED-INIT is currently not supported, because otherwise parameters SAND, SILT and CLAY would not be unique (these could be
 	 * either initial bed sediment composition fractions from BED-INIT or initial suspended sediment concentrations from SSED-INIT).
 	 */
-	public static boolean isReachesInitTable(String tableType) {
-		return tableType.equals("BED-INIT")
-				|| tableType.equals("BENAL-INIT")
-				|| tableType.equals("HEAT-INIT")
-				|| tableType.equals("HYDR-INIT")
-				|| tableType.equals("IWT-INIT")
-				|| tableType.equals("OX-INIT")
-				|| tableType.equals("PH-INIT")
-				|| tableType.equals("PLNK-INIT")
-				|| tableType.equals("NUT-DINIT");
+	public static boolean isReachesInitTable(String tableName) {
+		return tableName.equals("BED-INIT")
+				|| tableName.equals("BENAL-INIT")
+				|| tableName.equals("HEAT-INIT")
+				|| tableName.equals("HYDR-INIT")
+				|| tableName.equals("IWT-INIT")
+				|| tableName.equals("OX-INIT")
+				|| tableName.equals("PH-INIT")
+				|| tableName.equals("PLNK-INIT")
+				|| tableName.equals("NUT-DINIT");
 	}
 
 	/**
 	 * Read one RCHRES init table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
 	 */
-	public ReachesInitTable(String tableType, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
-		if (tableType == null) throw new IllegalArgumentException("tableType == null");
-		this.tableType = tableType;
+	public ReachesInitTable(String tableName, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
+		if (tableName == null) throw new IllegalArgumentException("tableName == null");
+		this.tableName = tableName;
 
 		//read uci file.
 		String parameterIdsRow = null;
@@ -114,8 +114,8 @@ public class ReachesInitTable {
 			if (firstColumn.toUpperCase().contains("RCHRES") || firstColumn.toUpperCase().contains("RC HRES")) {//if parameterIds row.
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
-				parameterIds = readParameterIds(tableType, columns);
-				UciUtils.validateParameterIds(parameterIds, RCHRES_MODULE_NAME, tableType);
+				parameterIds = readParameterIds(tableName, columns);
+				UciUtils.validateParameterIds(parameterIds, RCHRES_MODULE_NAME, tableName);
 				continue;
 			}
 
@@ -127,14 +127,14 @@ public class ReachesInitTable {
 
 			//if contains at least one digit.
 			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstReachNumber = UciUtils.readFirstLocationNumber(RCHRES_MODULE_NAME, tableType, firstColumn);
-				int lastReachNumber = UciUtils.readLastLocationNumber(RCHRES_MODULE_NAME, tableType, firstColumn, firstReachNumber);
-				List<Double> values = readValues(tableType, columns);
-				UciUtils.createExchangeItems(RCHRES_MODULE_NAME, tableType, RCHRES_LOCATION_ID_PREFIX, firstReachNumber, lastReachNumber, parameterIds, values, stateTime, uniqueReachNumbers, exchangeItems);
+				int firstReachNumber = UciUtils.readFirstLocationNumber(RCHRES_MODULE_NAME, tableName, firstColumn);
+				int lastReachNumber = UciUtils.readLastLocationNumber(RCHRES_MODULE_NAME, tableName, firstColumn, firstReachNumber);
+				List<Double> values = readValues(tableName, columns);
+				UciUtils.createExchangeItems(RCHRES_MODULE_NAME, tableName, RCHRES_LOCATION_ID_PREFIX, firstReachNumber, lastReachNumber, parameterIds, values, stateTime, uniqueReachNumbers, exchangeItems);
 
 				//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be stored, because these are needed during writing.
 				//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be stored, because these are needed during writing.
-				if (tableType.equals("HYDR-INIT") || tableType.equals("BED-INIT")) {
+				if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
 					String additionalColumns = inputLine.substring(20);
 					for (int reachNumber = firstReachNumber; reachNumber <= lastReachNumber; reachNumber++) {
 						reachNumberAdditionalInfoMap.put(reachNumber, additionalColumns);
@@ -146,10 +146,10 @@ public class ReachesInitTable {
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + RCHRES_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + RCHRES_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + RCHRES_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
-		if (uniqueReachNumbers.isEmpty()) throw new RuntimeException("No valid reach numbers found in " + RCHRES_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
+		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (uniqueReachNumbers.isEmpty()) throw new RuntimeException("No valid reach numbers found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
 
 		this.parameterIdsRow = parameterIdsRow;
 		this.unitsRow = unitsRow;
@@ -159,7 +159,7 @@ public class ReachesInitTable {
 	}
 
 	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		outputLines.add("  " + tableType);
+		outputLines.add("  " + tableName);
 
 		//for each reach write one block consisting of a parameterIds row, a units row and a values row.
 		for (int reachNumber : reachNumbers) {
@@ -169,7 +169,7 @@ public class ReachesInitTable {
 			String valuesRow = UciUtils.writeValuesRow(RCHRES_LOCATION_ID_PREFIX, reachNumber, parameterIds, exchangeItems);
 			//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
 			//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be written.
-			if (tableType.equals("HYDR-INIT") || tableType.equals("BED-INIT")) {
+			if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
 				String additionalColumns = reachNumberAdditionalInfoMap.get(reachNumber);
 				if (additionalColumns == null) throw new IllegalStateException("additionalColumns for reach number " + reachNumber + " not initialized during reading of uci state file.");
 				valuesRow += additionalColumns;
@@ -177,17 +177,17 @@ public class ReachesInitTable {
 			outputLines.add(valuesRow);
 		}
 
-		outputLines.add("  END " + tableType);
+		outputLines.add("  END " + tableName);
 	}
 
-	private static List<String> readParameterIds(String tableType, String[] columns) {
+	private static List<String> readParameterIds(String tableName, String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;
 
 		//for HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
 		//for BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
 		int lastValueColumnIndex;
-		if (tableType.equals("HYDR-INIT") || tableType.equals("BED-INIT")) {
+		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
 			lastValueColumnIndex = 1;
 		} else {
 			lastValueColumnIndex = columns.length - 1;
@@ -201,14 +201,14 @@ public class ReachesInitTable {
 		return parameterIds;
 	}
 
-	private static List<Double> readValues(String tableType, String[] columns) {
+	private static List<Double> readValues(String tableName, String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;
 
 		//for HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
 		//for BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
 		int lastValueColumnIndex;
-		if (tableType.equals("HYDR-INIT") || tableType.equals("BED-INIT")) {
+		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
 			lastValueColumnIndex = 1;
 		} else {
 			lastValueColumnIndex = columns.length - 1;
@@ -220,7 +220,7 @@ public class ReachesInitTable {
 			try {
 				values.add(Double.parseDouble(valueString));
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + RCHRES_MODULE_NAME + " init table '" + tableType + "' in uci state file.", e);
+				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.", e);
 			}
 		}
 		return values;

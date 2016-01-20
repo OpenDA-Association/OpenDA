@@ -37,7 +37,7 @@ public class PerviousLandSegmentsInitTable {
 	public static final String PERLND_MODULE_NAME = "PERLND";
 	private static final String PERLND_LOCATION_ID_PREFIX = "P";
 
-	private final String tableType;
+	private final String tableName;
 	/**
 	 * Store the first parameterIds row and units row. These are re-used during writing.
 	 */
@@ -76,33 +76,33 @@ public class PerviousLandSegmentsInitTable {
 	 * PEST-STOR2 is currently not supported, because it is not clear from the HSPF manual which parameters should be used for the exchange items.
 	 * UZSN-LZSN is currently not supported, because it has a different format for column headers and a different column width.
 	 */
-	public static boolean isPerviousLandSegmentsInitTable(String tableType) {
-		return tableType.equals("SNOW-INIT1")
-				|| tableType.equals("SNOW-INIT2")
-				|| tableType.equals("PWAT-STATE1")
-				|| tableType.equals("SED-STOR")
-				|| tableType.equals("PSTEMP-TEMPS")
-				|| tableType.equals("PWT-TEMPS")
-				|| tableType.equals("PWT-GASES")
-				|| tableType.equals("MST-TOPSTOR")
-				|| tableType.equals("MST-TOPFLX")
-				|| tableType.equals("MST-SUBSTOR")
-				|| tableType.equals("MST-SUBFLX")
-				|| tableType.equals("NIT-STOR1")
-				|| tableType.equals("NIT-STOR2")
-				|| tableType.equals("PHOS-STOR1")
-				|| tableType.equals("PHOS-STOR2")
-				|| tableType.equals("TRAC-TOPSTOR")
-				|| tableType.equals("TRAC-SUBSTOR");
+	public static boolean isPerviousLandSegmentsInitTable(String tableName) {
+		return tableName.equals("SNOW-INIT1")
+				|| tableName.equals("SNOW-INIT2")
+				|| tableName.equals("PWAT-STATE1")
+				|| tableName.equals("SED-STOR")
+				|| tableName.equals("PSTEMP-TEMPS")
+				|| tableName.equals("PWT-TEMPS")
+				|| tableName.equals("PWT-GASES")
+				|| tableName.equals("MST-TOPSTOR")
+				|| tableName.equals("MST-TOPFLX")
+				|| tableName.equals("MST-SUBSTOR")
+				|| tableName.equals("MST-SUBFLX")
+				|| tableName.equals("NIT-STOR1")
+				|| tableName.equals("NIT-STOR2")
+				|| tableName.equals("PHOS-STOR1")
+				|| tableName.equals("PHOS-STOR2")
+				|| tableName.equals("TRAC-TOPSTOR")
+				|| tableName.equals("TRAC-SUBSTOR");
 	}
 
 	/**
 	 * Read one PERLND init table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
 	 */
-	public PerviousLandSegmentsInitTable(String tableType, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
-		if (tableType == null) throw new IllegalArgumentException("tableType == null");
-		this.tableType = tableType;
+	public PerviousLandSegmentsInitTable(String tableName, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
+		if (tableName == null) throw new IllegalArgumentException("tableName == null");
+		this.tableName = tableName;
 
 		//read uci file.
 		String parameterIdsRow = null;
@@ -126,7 +126,7 @@ public class PerviousLandSegmentsInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = UciUtils.readParameterIds(columns);
-				UciUtils.validateParameterIds(parameterIds, PERLND_MODULE_NAME, tableType);
+				UciUtils.validateParameterIds(parameterIds, PERLND_MODULE_NAME, tableName);
 				continue;
 			}
 
@@ -137,20 +137,20 @@ public class PerviousLandSegmentsInitTable {
 
 			//if contains at least one digit.
 			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstSegmentNumber = UciUtils.readFirstLocationNumber(PERLND_MODULE_NAME, tableType, firstColumn);
-				int lastSegmentNumber = UciUtils.readLastLocationNumber(PERLND_MODULE_NAME, tableType, firstColumn, firstSegmentNumber);
-				List<Double> values = UciUtils.readValues(PERLND_MODULE_NAME, tableType, columns);
-				UciUtils.createExchangeItems(PERLND_MODULE_NAME, tableType, PERLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
+				int firstSegmentNumber = UciUtils.readFirstLocationNumber(PERLND_MODULE_NAME, tableName, firstColumn);
+				int lastSegmentNumber = UciUtils.readLastLocationNumber(PERLND_MODULE_NAME, tableName, firstColumn, firstSegmentNumber);
+				List<Double> values = UciUtils.readValues(PERLND_MODULE_NAME, tableName, columns);
+				UciUtils.createExchangeItems(PERLND_MODULE_NAME, tableName, PERLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
 				continue;
 			}
 
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + PERLND_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + PERLND_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + PERLND_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
-		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + PERLND_MODULE_NAME + " init table '" + tableType + "' in uci state file.");
+		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
 
 		this.parameterIdsRow = parameterIdsRow;
 		this.unitsRow = unitsRow;
@@ -160,7 +160,7 @@ public class PerviousLandSegmentsInitTable {
 	}
 
 	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		outputLines.add("  " + tableType);
+		outputLines.add("  " + tableName);
 
 		//for each segment write one block consisting of a units row, a parameterIds row and a values row.
 		for (int segmentNumber : segmentNumbers) {
@@ -169,6 +169,6 @@ public class PerviousLandSegmentsInitTable {
 			outputLines.add(UciUtils.writeValuesRow(PERLND_LOCATION_ID_PREFIX, segmentNumber, parameterIds, exchangeItems));
 		}
 
-		outputLines.add("  END " + tableType);
+		outputLines.add("  END " + tableName);
 	}
 }
