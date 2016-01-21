@@ -104,6 +104,19 @@ public class UciUtils {
 		return parts.toArray(new String[parts.size()]);
 	}
 
+	/**
+	 * Splits the given string into three parts. The first two parts are respectively 10 and 12 characters long.
+	 */
+	public static String[] splitAfter10And22Characters(String string) {
+		if (string == null || string.isEmpty() || string.length() < 22) return null;
+
+		String part1 = string.substring(0, 10);
+		String part2 = string.substring(10, 22);
+		String part3 = string.substring(22);
+
+		return new String[]{part1, part2, part3};
+	}
+
 	public static List<String> readParameterIds(String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;

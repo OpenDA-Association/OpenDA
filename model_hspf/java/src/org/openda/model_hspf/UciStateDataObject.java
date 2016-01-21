@@ -46,6 +46,7 @@ public class UciStateDataObject implements IDataObject {
 	private Map<String, ReachesInitTable> reachesInitTables = new HashMap<>();
 	private Map<String, PerviousLandSegmentsInitTable> perviousLandSegmentsInitTables = new HashMap<>();
 	private Map<String, ImperviousLandSegmentsInitTable> imperviousLandSegmentsInitTables = new HashMap<>();
+	private String lastKnownQualId = null;
 
 	/**
 	 * @param workingDir the working directory.
@@ -167,6 +168,18 @@ public class UciStateDataObject implements IDataObject {
 				if (previous != null) throw new IllegalArgumentException("Multiple " + PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
 				continue;
 			}
+
+			if (QualPropsTable.isQualPropsTable(tableName)) {
+				//replace last known qualId with the one read from current QUAL-PROPS table.
+				lastKnownQualId = QualPropsTable.readQualId(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME, inputIterator, null);
+				continue;
+			}
+
+			//TODO
+//			if (QualInputTable.isQualInputTable(tableName)) {
+//				readQualInputTable(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME, inputIterator, stateTime);
+//				continue;
+//			}
 		}
 	}
 
@@ -184,6 +197,18 @@ public class UciStateDataObject implements IDataObject {
 				ImperviousLandSegmentsInitTable previous = imperviousLandSegmentsInitTables.put(tableName, initTable);
 				if (previous != null) throw new IllegalArgumentException("Multiple " + ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
 			}
+
+			if (QualPropsTable.isQualPropsTable(tableName)) {
+				//replace last known qualId with the one read from current QUAL-PROPS table.
+				lastKnownQualId = QualPropsTable.readQualId(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME, inputIterator, null);
+				continue;
+			}
+
+			//TODO
+//			if (QualInputTable.isQualInputTable(tableName)) {
+//				readQualInputTable(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME, inputIterator, stateTime);
+//				continue;
+//			}
 		}
 	}
 
@@ -273,9 +298,8 @@ public class UciStateDataObject implements IDataObject {
 				break;
 			}
 
-			if (PerviousLandSegmentsInitTable.isPerviousLandSegmentsInitTable(trimmedUppercaseLine)) {
-				String tableName = trimmedUppercaseLine;
-
+			String tableName = trimmedUppercaseLine;
+			if (PerviousLandSegmentsInitTable.isPerviousLandSegmentsInitTable(tableName)) {
 				//skip reading to end of table.
 				UciUtils.skipToEnd(inputIterator);
 
@@ -283,6 +307,14 @@ public class UciStateDataObject implements IDataObject {
 				PerviousLandSegmentsInitTable initTable = perviousLandSegmentsInitTables.get(tableName);
 				if (initTable == null) throw new IllegalStateException(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
 				initTable.write(exchangeItems, outputLines);
+				continue;
+			}
+
+			if (QualPropsTable.isQualPropsTable(tableName)) {
+				//copy inputLine to output unchanged.
+				outputLines.add(inputLine);
+				//replace last known qualId with the one read from current QUAL-PROPS table and copy table.
+				lastKnownQualId = QualPropsTable.readQualId(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME, inputIterator, outputLines);
 				continue;
 			}
 
@@ -302,9 +334,8 @@ public class UciStateDataObject implements IDataObject {
 				break;
 			}
 
-			if (ImperviousLandSegmentsInitTable.isImperviousLandSegmentsInitTable(trimmedUppercaseLine)) {
-				String tableName = trimmedUppercaseLine;
-
+			String tableName = trimmedUppercaseLine;
+			if (ImperviousLandSegmentsInitTable.isImperviousLandSegmentsInitTable(tableName)) {
 				//skip reading to end of table.
 				UciUtils.skipToEnd(inputIterator);
 
@@ -312,6 +343,14 @@ public class UciStateDataObject implements IDataObject {
 				ImperviousLandSegmentsInitTable initTable = imperviousLandSegmentsInitTables.get(tableName);
 				if (initTable == null) throw new IllegalStateException(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
 				initTable.write(exchangeItems, outputLines);
+				continue;
+			}
+
+			if (QualPropsTable.isQualPropsTable(tableName)) {
+				//copy inputLine to output unchanged.
+				outputLines.add(inputLine);
+				//replace last known qualId with the one read from current QUAL-PROPS table and copy table.
+				lastKnownQualId = QualPropsTable.readQualId(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME, inputIterator, outputLines);
 				continue;
 			}
 
