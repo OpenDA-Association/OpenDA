@@ -54,7 +54,8 @@ public class UciStateDataObject implements IDataObject {
 	/**
 	 * This is the state time shift in seconds (can be negative). The timestamp for the state in the .uci file will be equal to (absolute state time) + (state time shift).
 	 * This can be used e.g. when the absolute state time is the end time of the model run, but the output state of the model is only available for the last output time step before the end time of the model run.
-	 * For HSPF model this is needed, because the data for the last timeStep of the model is written at (endTime - 1 timeStep) in the model output wdm files.
+	 * For HSPF model this is needed, because the data for the last timeStep of the model is written at (endTime - 1 timeStep) in the model output wdm files. In this case it is not possible
+	 * to just change the absolute state time argument to one hour earlier, because it uses an alias that is replaced dynamically with the end time of the model run by OpenDA in an operational system.
 	 *
 	 * This is 0 by default.
 	 */
