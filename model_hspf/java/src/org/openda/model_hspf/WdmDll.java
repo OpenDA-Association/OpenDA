@@ -215,29 +215,42 @@ public class WdmDll {
     }
 
     /**
-     * Returns the attribute value for the given attributeIndex, dataSetNumber and wdmFile.
+     * Returns the attribute value for the given attributeIndex, length, dataSetNumber and wdmFile.
+     * Returns null if attribute not defined.
+     *
+     * Important note:
+     * See https://github.com/djlampert/PyHSPF/blob/master/src/pyhspf/core/wdmutil.py (get_attribute method) and model_hspf/doc/WDM_attributes.xlsx for
+     * information about the location (indices and lengths) of the different attributes in the WDM file attribute memory. This can be used to read specific attributes directly.
      *
      * @param wdmFileNumber
      * @param dataSetNumber
      * @param attributeIndex
+     * @param length
      * @return String attributeValue.
      */
-    public String getAttributeValue(int wdmFileNumber, int dataSetNumber, int attributeIndex) {
-        byte[] attributeValue = new byte[104];
-        //clear attributeValue bytes.
+    public String getAttributeValue(int wdmFileNumber, int dataSetNumber, int attributeIndex, int length) {
+        byte[] result = new byte[length];
+        //clear result bytes.
         final byte clearByte = 0;
-        Arrays.fill(attributeValue, clearByte);
+        Arrays.fill(result, clearByte);
 
         IntByReference returnCode = new IntByReference(-1);
         nativeDLL.wdbsgc_(new IntByReference(wdmFileNumber), new IntByReference(dataSetNumber),
-                new IntByReference(attributeIndex), new IntByReference(attributeValue.length),
-                attributeValue, returnCode, 1);
-        if (returnCode.getValue() != 0) {
-            throw new RuntimeException("WdmDll: Invalid result from call to subroutine dll.wdbsgc_ , returnCode = " + returnCode.getValue());
+                new IntByReference(attributeIndex), new IntByReference(length),
+                result, returnCode, 1);
+        if (returnCode.getValue() == 0) {
+            //convert result bytes to String.
+            return new String(result);
+        }
+        if (returnCode.getValue() == -107) {//if attribute not defined.
+            //throw new RuntimeException("WdmDll: Invalid result from call to subroutine dll.wdbsgc_ , returnCode = -107 (attribute with index " + attributeIndex + " not present on data set with number " + dataSetNumber + ").");
+            return null;
+        }
+        if (returnCode.getValue() == -81) {
+            throw new IllegalStateException("WdmDll: Invalid result from call to subroutine dll.wdbsgc_ , returnCode = -81 (data set with number " + dataSetNumber + " does not exist).");
         }
 
-        //convert attributeValue bytes to String.
-        return new String(attributeValue);
+        throw new RuntimeException("WdmDll: Invalid result from call to subroutine dll.wdbsgc_ , returnCode = " + returnCode.getValue());
     }
 
     public double[] getValues(int wdmFileNumber, int dataSetNumber, int timeStep, int[] startDate,

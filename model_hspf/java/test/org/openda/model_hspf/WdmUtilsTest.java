@@ -79,20 +79,14 @@ public class WdmUtilsTest extends TestCase {
         File wdmMessageFile = new File(testRunDataDir, relativeWdmMessageFilePath);
         WdmUtils.openWdmFile(wdmDll, wdmFileNumber, inputFile.getAbsolutePath(), wdmMessageFile.getAbsolutePath());
 
-        System.out.println("DSN Location Constituent StationName");
+        System.out.println("DSN Constituent Location StationName");
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.
-            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-
-            String constituent = WdmUtils.getConstituentFromAttributeValue(string);
-            String location = WdmUtils.getLocationFromAttributeValue(string);
-            String stationName = WdmUtils.getStationNameFromAttributeValue(string);
-            if (constituent != null && location != null && stationName != null) {
-                System.out.println(dataSetNumber + " " + location + " " + constituent + " " + stationName);
-            } else {//if cannot get location and parameter from attribute.
-                //ignore this dataSet (do nothing).
-            }
+            String constituent = WdmUtils.getConstituentAttribute(wdmDll, wdmFileNumber, dataSetNumber);
+            String location = WdmUtils.getLocationAttribute(wdmDll, wdmFileNumber, dataSetNumber);
+            String stationName = WdmUtils.getStationNameAttribute(wdmDll, wdmFileNumber, dataSetNumber);
+            System.out.println(dataSetNumber + " constituent=" + constituent + " location=" + location + " stationName=" + stationName);
 
             //get next existing dataSet and put its number in the variable dataSetNumber.
             dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, dataSetNumber + 1);

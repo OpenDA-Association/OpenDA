@@ -514,11 +514,10 @@ public class WdmUtils {
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.
-            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-            String constituent = getConstituentFromAttributeValue(string);
-            String stationName = getStationNameFromAttributeValue(string);
+            String constituent = WdmUtils.getConstituentAttribute(wdmDll, wdmFileNumber, dataSetNumber);
+            String stationName = WdmUtils.getStationNameAttribute(wdmDll, wdmFileNumber, dataSetNumber);
             //if stationName is empty, use location.
-            if (stationName == null || stationName.isEmpty()) stationName = getLocationFromAttributeValue(string);
+            if (stationName == null) stationName = WdmUtils.getLocationAttribute(wdmDll, wdmFileNumber, dataSetNumber);
 
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
@@ -551,11 +550,10 @@ public class WdmUtils {
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.
-            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-            String constituent = getConstituentFromAttributeValue(string);
-            String stationName = getStationNameFromAttributeValue(string);
+            String constituent = WdmUtils.getConstituentAttribute(wdmDll, wdmFileNumber, dataSetNumber);
+            String stationName = WdmUtils.getStationNameAttribute(wdmDll, wdmFileNumber, dataSetNumber);
             //if stationName is empty, use location.
-            if (stationName == null || stationName.isEmpty()) stationName = getLocationFromAttributeValue(string);
+            if (stationName == null) stationName = WdmUtils.getLocationAttribute(wdmDll, wdmFileNumber, dataSetNumber);
 
             if (constituent != null && stationName != null) {
                 String id = stationName + '.' + constituent;
@@ -617,11 +615,10 @@ public class WdmUtils {
         int dataSetNumber = wdmDll.getNextDataSetNumber(wdmFileNumber, 1);
         while (dataSetNumber != -1) {
             //get the first attributeValue.
-            String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, 1);
-            String currentConstituent = getConstituentFromAttributeValue(string);
-            String currentStationName = getStationNameFromAttributeValue(string);
+            String currentConstituent = WdmUtils.getConstituentAttribute(wdmDll, wdmFileNumber, dataSetNumber);
+            String currentStationName = WdmUtils.getStationNameAttribute(wdmDll, wdmFileNumber, dataSetNumber);
             //if stationName is empty, use location.
-            if (currentStationName == null || currentStationName.isEmpty()) currentStationName = getLocationFromAttributeValue(string);
+            if (currentStationName == null) currentStationName = WdmUtils.getLocationAttribute(wdmDll, wdmFileNumber, dataSetNumber);
 
             if (currentConstituent != null && currentStationName != null) {
                 if (location.equalsIgnoreCase(currentStationName) && parameter.equalsIgnoreCase(currentConstituent)) {
@@ -639,69 +636,68 @@ public class WdmUtils {
         return -1;
     }
 
-    //parameter is called constituent in WDMUtil.
-    public static String getConstituentFromAttributeValue(String string) {
-        //assumed here that the attribute string always contains
-        //the scenario in characters with index 32 to 39 (both inclusive),
-        //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
-        //the location in characters with index 48 to 55 (both inclusive),
-        //the description (stationName) in characters with index 56 to 103 (both inclusive).
-        //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
-        //setting "Language for non-Unicode programs":
-        //with English (United States):
-        //length = 104
-        //with Korean (Korea):
-        //length = 103
-        //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
-        //so then can find parameter starting from the end of the string.
-        if (string == null || string.length() < 64) {
-            return null;
-        }
-        int stringLength = string.length();
-        return string.substring(stringLength - 64, stringLength - 56).trim();
+    /**
+     * Returns the trimmed constituent attribute for the given dataSet from the given wdmFile.
+     * Returns null if attribute is empty.
+     */
+    public static String getConstituentAttribute(WdmDll wdmDll, int wdmFileNumber, int dataSetNumber) {
+        //info from attributes list for attribute IDCONS:
+        //desc: Constituent id
+        //type: CHARACTER
+        //default: None
+        //index: 289
+        //length: 8
+        int index = 289;
+        int length = 8;
+        String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, index, length);
+
+        if (string == null) return null;
+        string = string.trim();
+        if (string.isEmpty()) return null;
+        return string;
     }
 
-    public static String getLocationFromAttributeValue(String string) {
-        //assumed here that the attribute string always contains
-        //the scenario in characters with index 32 to 39 (both inclusive),
-        //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
-        //the location in characters with index 48 to 55 (both inclusive),
-        //the description (stationName) in characters with index 56 to 103 (both inclusive).
-        //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
-        //setting "Language for non-Unicode programs":
-        //with English (United States):
-        //length = 104
-        //with Korean (Korea):
-        //length = 103
-        //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
-        //so then can find location starting from the end of the string.
-        if (string == null || string.length() < 64) {
-            return null;
-        }
-        int stringLength = string.length();
-        return string.substring(stringLength - 56, stringLength - 48).trim();
+    /**
+     * Returns the trimmed location attribute for the given dataSet from the given wdmFile.
+     * Returns null if attribute is empty.
+     */
+    public static String getLocationAttribute(WdmDll wdmDll, int wdmFileNumber, int dataSetNumber) {
+        //info from attributes list for attribute IDLOCN:
+        //desc: Location id
+        //type: CHARACTER
+        //default: None
+        //index: 290
+        //length: 8
+        int index = 290;
+        int length = 8;
+        String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, index, length);
+
+        if (string == null) return null;
+        string = string.trim();
+        if (string.isEmpty()) return null;
+        return string;
     }
 
-    //description is called stationName in WDMUtil.
-    public static String getStationNameFromAttributeValue(String string) {
-        //assumed here that the attribute string always contains
-        //the scenario in characters with index 32 to 39 (both inclusive),
-        //the parameter (constituent) in characters with index 40 to 47 (both inclusive),
-        //the location in characters with index 48 to 55 (both inclusive),
-        //the description (stationName) in characters with index 56 to 103 (both inclusive).
-        //See ODA-326: these positions and the length of the string can vary in length depending on the Windows 7
-        //setting "Language for non-Unicode programs":
-        //with English (United States):
-        //length = 104
-        //with Korean (Korea):
-        //length = 103
-        //-> assumed here that only the first part of the string can differ in length, not the part after scenario,
-        //so then can find description starting from the end of the string.
-        if (string == null || string.length() < 64) {
-            return null;
-        }
-        int stringLength = string.length();
-        return string.substring(stringLength - 48, stringLength).trim();
+    /**
+     * Returns the trimmed station name attribute for the given dataSet from the given wdmFile.
+     * Returns null if attribute is empty.
+     */
+    public static String getStationNameAttribute(WdmDll wdmDll, int wdmFileNumber, int dataSetNumber) {
+        //info from attributes list for attribute STANAM:
+        //desc: Station name (48 characters).
+        //help: Short name or description of the data set.
+        //type: CHARACTER
+        //default: None
+        //index: 45
+        //length: 48
+        int index = 45;
+        int length = 48;
+        String string = wdmDll.getAttributeValue(wdmFileNumber, dataSetNumber, index, length);
+
+        if (string == null) return null;
+        string = string.trim();
+        if (string.isEmpty()) return null;
+        return string;
     }
 
     private static double convertDateArrayToMjd(int[] date, TimeZone timeZone) {
