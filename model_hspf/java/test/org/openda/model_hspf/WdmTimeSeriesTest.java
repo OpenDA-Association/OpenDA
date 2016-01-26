@@ -568,7 +568,7 @@ public class WdmTimeSeriesTest extends TestCase {
                 + TimeUtils.mjdToString(startDate) + " " + TimeUtils.mjdToString(endDate);
 
         String outputClassName = UciStateDataObject.class.getName();
-        String outputArgumentsAsOne = TimeUtils.mjdToString(endDate);
+        String outputArgumentsAsOne = TimeUtils.mjdToString(endDate) + " -3600";
 
         DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFile.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
 

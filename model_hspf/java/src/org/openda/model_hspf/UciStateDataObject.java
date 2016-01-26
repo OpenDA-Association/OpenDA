@@ -25,10 +25,13 @@ import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
+import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.*;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -49,11 +52,21 @@ public class UciStateDataObject implements IDataObject {
 	private String lastKnownQualId = null;
 
 	/**
+	 * This is the state time shift in seconds (can be negative). The timestamp for the state in the .uci file will be equal to (absolute state time) + (state time shift).
+	 * This can be used e.g. when the absolute state time is the end time of the model run, but the output state of the model is only available for the last output time step before the end time of the model run.
+	 * For HSPF model this is needed, because the data for the last timeStep of the model is written at (endTime - 1 timeStep) in the model output wdm files.
+	 *
+	 * This is 0 by default.
+	 */
+	private double stateTimeShiftInSeconds = 0;
+
+	/**
 	 * @param workingDir the working directory.
 	 * @param arguments File pathname:
 	 *                  The pathname of the .uci state file containing the data for this DataObject (relative to the working directory).
 	 *                  Other arguments:
-	 *                  The first argument should be the timestamp of the state in the .uci file.
+	 *                  The second argument should be the absolute state time (can be negative).
+	 *                  The (optional) third argument should be the state time shift in seconds. The timestamp for the state in the .uci file will be equal to (absolute state time) + (state time shift).
 	 */
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments == null || arguments.length < 1) {
@@ -62,21 +75,33 @@ public class UciStateDataObject implements IDataObject {
 		}
 		uciFile = new File(workingDir, arguments[0]);
 
-		//get state time.
+		//get absolute state time.
 		if (arguments.length < 2) {
-			throw new IllegalArgumentException("No stateTime argument specified for " + getClass().getSimpleName() + ". The second argument should be the timestamp of the state in the .uci file.");
+			throw new IllegalArgumentException("No absolute state time argument specified for " + getClass().getSimpleName() + ". The second argument should be the absolute state time.");
 		}
-		double stateTime;
+		double absoluteStateTime;
 		try {
-			stateTime = TimeUtils.date2Mjd(arguments[1]);
+			absoluteStateTime = TimeUtils.date2Mjd(arguments[1]);
 		} catch (ParseException e) {
-			throw new IllegalArgumentException("Invalid stateTime argument specified for " + getClass().getSimpleName() + ". Cannot parse second argument '" + arguments[1]
-					+ "'. The second argument should be the timestamp of the state in the .uci file.", e);
+			throw new IllegalArgumentException("Invalid absolute state time argument specified for " + getClass().getSimpleName() + ". Cannot parse second argument '" + arguments[1]
+					+ "'. The second argument should be the absolute state time.", e);
 		}
 
-		//_TODO_ only works for model timeStep of 1 hour
-		//shift time of exchangeItems by one hour, because the data for the last timeStep of the model is written at (endTime - 1 hour) in the model output wdm files.
-		stateTime = stateTime - 1/24.0;
+		//get optional state time shift.
+		if (arguments.length > 2) {
+			try {
+				stateTimeShiftInSeconds = Double.parseDouble(arguments[2]);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse third argument '" + arguments[2] + "' for " + getClass().getSimpleName()
+						+ ". The (optional) third argument should be the state time shift in seconds.", e);
+			}
+		}
+
+		double stateTime = absoluteStateTime + stateTimeShiftInSeconds / 86400.0;
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		Results.putMessage(getClass().getSimpleName() + ": using state time of " + dateFormat.format(Time.mjdToMillies(stateTime)));
 		readUciFile(stateTime);
 	}
 
