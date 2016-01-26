@@ -80,7 +80,7 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 	public void initialize(File workingDir, String[] arguments) {
 		//initialize role.
 		if (arguments == null || arguments.length < 1) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": File pathname for the name of the wdm file not specified.");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": File pathname of the wdm file (relative to the working directory) not specified.");
 		}
 
 		String wdmTimeSeriesFileName = arguments[0];

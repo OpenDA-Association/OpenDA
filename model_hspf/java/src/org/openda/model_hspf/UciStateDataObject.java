@@ -66,26 +66,26 @@ public class UciStateDataObject implements IDataObject {
 	 * @param arguments File pathname:
 	 *                  The pathname of the .uci state file containing the data for this DataObject (relative to the working directory).
 	 *                  Other arguments:
-	 *                  The second argument should be the absolute state time (can be negative).
-	 *                  The (optional) third argument should be the state time shift in seconds. The timestamp for the state in the .uci file will be equal to (absolute state time) + (state time shift).
+	 *                  The first argument should be the absolute state time.
+	 *                  The (optional) second argument should be the state time shift in seconds (can be negative). The timestamp for the state in the .uci file
+	 *                  will be equal to (absolute state time) + (state time shift).
 	 */
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments == null || arguments.length < 1) {
-			throw new IllegalArgumentException("No fileName argument specified for " + getClass().getSimpleName()
-					+ ". The first argument should be the name of the .uci file containing the data for this DataObject (relative to the working directory).");
+			throw new IllegalArgumentException(getClass().getSimpleName() + ": File pathname of the uci state file (relative to the working directory) not specified.");
 		}
 		uciFile = new File(workingDir, arguments[0]);
 
 		//get absolute state time.
 		if (arguments.length < 2) {
-			throw new IllegalArgumentException("No absolute state time argument specified for " + getClass().getSimpleName() + ". The second argument should be the absolute state time.");
+			throw new IllegalArgumentException("No absolute state time argument specified for " + getClass().getSimpleName() + ". The first argument should be the absolute state time.");
 		}
 		double absoluteStateTime;
 		try {
 			absoluteStateTime = TimeUtils.date2Mjd(arguments[1]);
 		} catch (ParseException e) {
-			throw new IllegalArgumentException("Invalid absolute state time argument specified for " + getClass().getSimpleName() + ". Cannot parse second argument '" + arguments[1]
-					+ "'. The second argument should be the absolute state time.", e);
+			throw new IllegalArgumentException("Invalid absolute state time argument specified for " + getClass().getSimpleName() + ". Cannot parse first argument '" + arguments[1]
+					+ "'. The first argument should be the absolute state time.", e);
 		}
 
 		//get optional state time shift.
@@ -93,8 +93,8 @@ public class UciStateDataObject implements IDataObject {
 			try {
 				stateTimeShiftInSeconds = Double.parseDouble(arguments[2]);
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse third argument '" + arguments[2] + "' for " + getClass().getSimpleName()
-						+ ". The (optional) third argument should be the state time shift in seconds.", e);
+				throw new IllegalArgumentException("Cannot parse second argument '" + arguments[2] + "' for " + getClass().getSimpleName()
+						+ ". The (optional) second argument should be the state time shift in seconds (can be negative).", e);
 			}
 		}
 
