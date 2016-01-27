@@ -228,11 +228,12 @@ contains
 
     end do
     
-    if (NQCTL.GE.1 .AND. NQCTYP1.GE.3) exchangeItemsControl(1)%active = 1 
-    write(general_log_handle,'(A,A,A,I4,A,I1)' ) "exchangeItem: " ,exchangeItemsControl(1)%name , &
-                                              " id: ", exchangeItemsControl(1)%id, &
-                                              " active: ", exchangeItemsControl(1)%active
-  
+    do i = 1,nrExchangeItemsTOX
+      if (NQCTL.GE.1 .AND. NQCTYP1.GE.3) exchangeItemsControl(i)%active = 1 
+      write(general_log_handle,'(A,A,A,I4,A,I1)' ) "exchangeItem: " ,exchangeItemsControl(i)%name , &
+                                              " id: ", exchangeItemsControl(i)%id, &
+                                              " active: ", exchangeItemsControl(i)%active
+    end do
   
   end function model_exchange_items_setup
 

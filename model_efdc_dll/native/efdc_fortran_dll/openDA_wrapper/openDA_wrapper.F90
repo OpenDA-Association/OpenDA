@@ -129,7 +129,7 @@ contains
     end if
 
     ! Pause or sleep for attaching debugger
-    !pause
+    pause
     !print*, "Sleeping for 20 seconds, please attach debugger"
     !call sleep(20)
     
