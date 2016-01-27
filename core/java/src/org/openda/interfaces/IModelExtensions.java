@@ -45,6 +45,16 @@ public interface IModelExtensions {
 	public IVector[] getObservedLocalization(String stateExchangeItemID, IObservationDescriptions observationDescriptions, double distance);
 
 	/**
+	 * Tell model that it can expect to be asked for model values corresponding to the observations
+	 * described. The model can make arrangement to save these values. The method compute run over a long
+	 * interval at once, not stopping at each time with observations. This is meant to increase the performance
+	 * especially of calibration algorithms.
+	 *
+	 * @param observationDescriptions An ObservationDescriptions object with meta data for the observations
+	 */
+	void announceObservedValues(IObservationDescriptions observationDescriptions);
+
+	/**
 	 * Get the observed values of the Model.
 	 * This returns what the observations would look like, if reality would be equal to the current model state.
 	 *

@@ -120,7 +120,12 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 			return javaVectors;
 		}
 
-        public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		public void announceObservedValues(IObservationDescriptions observationDescriptions) {
+			// no action needed (yet), currently wrapped .net models store all their output in files
+			// and therefore can always provide requested computed values at observation locations.
+		}
+
+		public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
 
 			// Check whether we are dealing with a C# implemention. No concersion is needed in that case
 			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;

@@ -537,6 +537,10 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 				stateGeometryInfo, distance);
 	}
 
+	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
+		// TODO: use anouncement to prepare netcdf buffer file
+	}
+
 	public void finish() {
 		//write model state data after analysis (state update).
 		analysisDataWriter.writeDataAfterAnalysis();
