@@ -141,6 +141,19 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 	}
 
 	/**
+	 * Tell model that it can expect to be asked for model values corresponding to the observations
+	 * described. The model can make arrangement to save these values. The method compute run over a long
+	 * interval at once, not stopping at each time with observations. This is meant to increase the performance
+	 * especially of calibration algorithms.
+	 *
+	 * @param observationDescriptions An ObservationDescriptions object with meta data for the observations
+	 */
+	@Override
+	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
+		throw new RuntimeException("Not yet implemented");
+	}
+
+	/**
 	 * Get the observed values of the Model.
 	 *
 	 * @param observationDescriptions observation description

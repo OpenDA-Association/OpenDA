@@ -50,6 +50,19 @@ public class BBModelExtension extends BBModelInstance implements IModelExtension
 		//return new IVector[0];
 	}
 
+	/**
+	 * Tell model that it can expect to be asked for model values corresponding to the observations
+	 * described. The model can make arrangement to save these values. The method compute run over a long
+	 * interval at once, not stopping at each time with observations. This is meant to increase the performance
+	 * especially of calibration algorithms.
+	 *
+	 * @param observationDescriptions An ObservationDescriptions object with meta data for the observations
+	 */
+	@Override
+	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
+		throw new RuntimeException("Not yet implemented");
+	}
+
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 		throw new RuntimeException("This method is not yet implemented");
 		//return null;
