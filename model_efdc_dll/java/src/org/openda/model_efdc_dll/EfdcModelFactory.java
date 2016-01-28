@@ -187,8 +187,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		BBUtils.makeDirectoryClone(this.templateDirectory, instanceDirectory);
 
 		//create new instance.
-		return new EfdcModelInstance(instanceDirectory, this.relativeInputFilePaths,
-				this.relativeModelOutputFilePath, this.relativeAnalysisOutputFilePath, modelInstanceNumber, this);
+		return new EfdcModelInstance(instanceDirectory, relativeInputFilePaths, relativeModelOutputFilePath, relativeAnalysisOutputFilePath, modelInstanceNumber, useGateWaterLevel, this);
 	}
 
 	public void finish() {
@@ -197,9 +196,5 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 
 	public int getCurrentModelInstanceNumber() {
 		return this.currentModelInstanceNumber.val();
-	}
-
-	public boolean getUseGateWaterLevel(){
-		return this.useGateWaterLevel;
 	}
 }

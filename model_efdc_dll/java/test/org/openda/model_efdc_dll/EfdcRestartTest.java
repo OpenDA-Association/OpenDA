@@ -77,7 +77,7 @@ public class EfdcRestartTest extends TestCase {
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelParentDir, "work" + i);
     		BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
-            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, null);
+            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, true, null);
         }
 
         // test save and compute

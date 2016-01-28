@@ -26,7 +26,6 @@ import java.util.*;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
-import org.openda.exchange.iotools.DataCopier;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IModelInstance;
@@ -55,6 +54,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private static final String[] OUTPUT_STATE_FILE_NAMES = {"RESTART.OUT", "TEMP.RSTO", "RSTWD.OUT", "WQWCRST.OUT"};
 
 	private final int modelInstanceNumber;
+	private final boolean useGateWaterLevel;
 	private final EfdcModelFactory parentFactory;
 
 	private final File instanceDir;
@@ -81,8 +81,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @param modelOutputFilePath relative to the given instanceDir
 	 * @param analysisOutputFilePath relative to the given instanceDir
 	 */
-	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, EfdcModelFactory parentFactory) {
+	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, boolean useGateWaterLevel, EfdcModelFactory parentFactory) {
 		this.modelInstanceNumber = modelInstanceNumber;
+		this.useGateWaterLevel = useGateWaterLevel;
 		this.parentFactory = parentFactory;
 
 		//initialize model.
@@ -128,15 +129,13 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			String parameterId = exchangeItemType.getParameterId();
 
 			//check if useGateWaterLevel is specified. Gate related ExchangeItem is skipped when not specified.
-			if (this.parentFactory != null) { // Handle null from EfdcGridExchangeItemTest.
-				if (parameterNumber == 701 && !this.parentFactory.getUseGateWaterLevel()) {
-					continue;
-				}
+			if (parameterNumber == 701 && !useGateWaterLevel) {
+				continue;
 			}
 
 			//check if exchangeItem is supported by current EFDC configuration
 			if ( ! this.modelDll.supportsExchangeItem(parameterNumber) ) {
-				continue;				
+				continue;
 			}
 			
 			EfdcExchangeItemRole role = exchangeItemType.getRole();
