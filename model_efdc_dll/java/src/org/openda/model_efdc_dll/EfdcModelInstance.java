@@ -514,7 +514,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			if (inputExchangeItem == null) {//if item not found.
 				String locationId = BBUtils.getLocationFromId(id);
 				if (!locationId.contains("_layer")) {
-					throw new RuntimeException("Exchange item with id '" + id + "' not found in given inputDataObjects.");
+					//throw new RuntimeException("Exchange item with id '" + id + "' not found in given inputDataObjects.");
+					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
+					continue;
 				}
 
 				//if boundaryExchangeItem has layers.
@@ -529,7 +531,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 					}
 				}
 				if (inputExchangeItem == null) {//if item not found.
-					throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
+					//throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
+					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
+					continue;
 				}
 			}
 
