@@ -21,7 +21,7 @@ public class DHydroConfigFileTest extends TestCase
 		testRunDataDir = new File(testData.getTestRunDataDir(), "DHydroFile");
 	}
 
-	public void testMd1dFileUpdatesCategoriesCorrectly()
+	public void testDHydroConfigFileUpdatesCategoriesCorrectly()
 	{
 		// Step 1: Read original test file
 		IDataObject dHydroConfigFile = new DHydroConfigFile();
@@ -44,7 +44,7 @@ public class DHydroConfigFileTest extends TestCase
 				new File(testRunDataDir, dHydroConfigFileNameGenerated)));
 	}
 
-	public void testMd1dFileGeneratesExpectedFile()
+	public void testDHydroConfigFileGeneratesExpectedFile()
 	{
 		// Step 1: Read original test file
 		IDataObject dHydroConfigFile = new DHydroConfigFile();
