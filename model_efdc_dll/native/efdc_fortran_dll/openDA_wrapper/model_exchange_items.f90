@@ -228,7 +228,7 @@ contains
 
     end do
     
-    do i = 1,nrExchangeItemsTOX
+    do i = 1,nrExchangeItemsControl
       if (NQCTL.GE.1 .AND. NQCTYP1.GE.3) exchangeItemsControl(i)%active = 1 
       write(general_log_handle,'(A,A,A,I4,A,I1)' ) "exchangeItem: " ,exchangeItemsControl(i)%name , &
                                               " id: ", exchangeItemsControl(i)%id, &
