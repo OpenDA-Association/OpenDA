@@ -72,6 +72,7 @@ SRC_OPENDA_FOR = \
 #	$(SRC_OPENDA_FOR:.for=.o) \
 
 OBJS_LIB = \
+	chdir_mod.o \
 	model_exchange_items.o \
 	model_extra_global.o model_state.o \
 	model_aser_time_series.o model_end.o model_init.o \
