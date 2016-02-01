@@ -33,13 +33,15 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class ReachesInitTable {
+	private final String moduleName = UciUtils.RCHRES_MODULE_NAME;
+	private final String locationIdPrefix = UciUtils.RCHRES_LOCATION_ID_PREFIX;
 
 	private final String tableName;
 	/**
-	 * Store the first parameterIds row and units row. These are re-used during writing.
+	 * Store the first two header rows. These are re-used during writing.
 	 */
-	private final String parameterIdsRow;
-	private final String unitsRow;
+	private final String firstHeaderRow;
+	private final String secondHeaderRow;
 	/**
 	 * Parameters and reaches used in this table.
 	 */
@@ -80,6 +82,11 @@ public class ReachesInitTable {
 				|| tableName.equals("PH-INIT");
 	}
 
+	private static boolean isFirstHeaderRow(String firstColumn) {
+		//in example .uci files "RCHRES" is sometimes incorrectly written as "RC HRES".
+		return firstColumn.toUpperCase().contains("RCHRES") || firstColumn.toUpperCase().contains("RC HRES");
+	}
+
 	/**
 	 * Read one RCHRES init table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
@@ -89,8 +96,8 @@ public class ReachesInitTable {
 		this.tableName = tableName;
 
 		//read uci file.
-		String parameterIdsRow = null;
-		String unitsRow = null;
+		String firstHeaderRow = null;
+		String secondHeaderRow = null;
 		List<String> parameterIds = null;
 		Set<Integer> uniqueReachNumbers = new HashSet<>();
 		while (inputLines.hasNext()) {
@@ -105,119 +112,45 @@ public class ReachesInitTable {
 			}
 			String firstColumn = columns[0];
 
-			//in example .uci files "RCHRES" is sometimes incorrectly written as "RC HRES".
-			if (firstColumn.toUpperCase().contains("RCHRES") || firstColumn.toUpperCase().contains("RC HRES")) {//if parameterIds row.
-				if (parameterIdsRow == null) parameterIdsRow = inputLine;
-				//update parameterIds for reading the next value row.
-				parameterIds = readParameterIds(tableName, columns);
-				UciUtils.validateParameterIds(parameterIds, UciUtils.RCHRES_MODULE_NAME, tableName);
-				continue;
-			}
-
-			//in example .uci files "# -  #" is incorrectly written as "x -  x" or "x  - x".
-			if (firstColumn.contains("#") || firstColumn.toUpperCase().contains("X")) {//if units row.
-				if (unitsRow == null) unitsRow = inputLine;
-				continue;
-			}
-
-			//if contains at least one digit.
-			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstReachNumber = UciUtils.readFirstLocationNumber(UciUtils.RCHRES_MODULE_NAME, tableName, firstColumn);
-				int lastReachNumber = UciUtils.readLastLocationNumber(UciUtils.RCHRES_MODULE_NAME, tableName, firstColumn, firstReachNumber);
-				List<Double> values = readValues(tableName, columns);
-				UciUtils.createExchangeItems(UciUtils.RCHRES_MODULE_NAME, tableName, UciUtils.RCHRES_LOCATION_ID_PREFIX, firstReachNumber, lastReachNumber, parameterIds, values, stateTime, uniqueReachNumbers, exchangeItems);
-
-				//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be stored, because these are needed during writing.
-				//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be stored, because these are needed during writing.
-				if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
-					String additionalColumns = inputLine.substring(20);
-					for (int reachNumber = firstReachNumber; reachNumber <= lastReachNumber; reachNumber++) {
-						reachNumberAdditionalInfoMap.put(reachNumber, additionalColumns);
-					}
+			if (isFirstHeaderRow(firstColumn)) {
+				if (firstHeaderRow == null) firstHeaderRow = inputLine;
+				if (UciUtils.firstHeaderRowContainsParameterIds(tableName)) {
+					//update parameterIds for reading the next value row.
+					parameterIds = UciUtils.readParameterIds(moduleName, tableName, columns);
 				}
+				continue;
+			}
+
+			if (UciUtils.isSecondHeaderRow(firstColumn)) {
+				if (secondHeaderRow == null) secondHeaderRow = inputLine;
+				if (UciUtils.secondHeaderRowContainsParameterIds(tableName)) {
+					//update parameterIds for reading the next value row.
+					parameterIds = UciUtils.readParameterIds(moduleName, tableName, columns);
+				}
+				continue;
+			}
+
+			if (UciUtils.isValuesRow(firstColumn)) {
+				UciUtils.readValuesRow(moduleName, tableName, columns, inputLine, locationIdPrefix, parameterIds, stateTime, uniqueReachNumbers, exchangeItems, reachNumberAdditionalInfoMap);
 				continue;
 			}
 
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (uniqueReachNumbers.isEmpty()) throw new RuntimeException("No valid reach numbers found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (firstHeaderRow == null) throw new RuntimeException("No valid first header row found in " + moduleName + " init table '" + tableName + "' in uci state file.");
+		if (secondHeaderRow == null) throw new RuntimeException("No valid second header row found in " + moduleName + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + moduleName + " init table '" + tableName + "' in uci state file.");
+		if (uniqueReachNumbers.isEmpty()) throw new RuntimeException("No valid reach numbers found in " + moduleName + " init table '" + tableName + "' in uci state file.");
 
-		this.parameterIdsRow = parameterIdsRow;
-		this.unitsRow = unitsRow;
+		this.firstHeaderRow = firstHeaderRow;
+		this.secondHeaderRow = secondHeaderRow;
 		this.parameterIds = parameterIds;
 		this.reachNumbers = new ArrayList<>(uniqueReachNumbers);
 		Collections.sort(this.reachNumbers);
 	}
 
 	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		outputLines.add("  " + tableName);
-
-		//for each reach write one block consisting of a parameterIds row, a units row and a values row.
-		for (int reachNumber : reachNumbers) {
-			outputLines.add(parameterIdsRow);
-			outputLines.add(unitsRow);
-
-			String valuesRow = UciUtils.writeValuesRow(UciUtils.RCHRES_LOCATION_ID_PREFIX, reachNumber, parameterIds, exchangeItems);
-			//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
-			//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be written.
-			if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
-				String additionalColumns = reachNumberAdditionalInfoMap.get(reachNumber);
-				if (additionalColumns == null) throw new IllegalStateException("additionalColumns for reach number " + reachNumber + " not initialized during reading of uci state file.");
-				valuesRow += additionalColumns;
-			}
-			outputLines.add(valuesRow);
-		}
-
-		outputLines.add("  END " + tableName);
-	}
-
-	private static List<String> readParameterIds(String tableName, String[] columns) {
-		//skip first column.
-		int firstValueColumnIndex = 1;
-
-		//for HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
-		//for BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
-		int lastValueColumnIndex;
-		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
-			lastValueColumnIndex = 1;
-		} else {
-			lastValueColumnIndex = columns.length - 1;
-		}
-
-		List<String> parameterIds = new ArrayList<>();
-		for (int k = firstValueColumnIndex; k <= lastValueColumnIndex; k++) {
-			String parameterId = columns[k].trim();
-			parameterIds.add(parameterId);
-		}
-		return parameterIds;
-	}
-
-	private static List<Double> readValues(String tableName, String[] columns) {
-		//skip first column.
-		int firstValueColumnIndex = 1;
-
-		//for HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
-		//for BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
-		int lastValueColumnIndex;
-		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
-			lastValueColumnIndex = 1;
-		} else {
-			lastValueColumnIndex = columns.length - 1;
-		}
-
-		List<Double> values = new ArrayList<>();
-		for (int k = firstValueColumnIndex; k <= lastValueColumnIndex; k++) {
-			String valueString = columns[k].trim();
-			try {
-				values.add(Double.parseDouble(valueString));
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.", e);
-			}
-		}
-		return values;
+		UciUtils.writeTable(exchangeItems, outputLines, tableName, firstHeaderRow, secondHeaderRow, locationIdPrefix, reachNumbers, parameterIds, reachNumberAdditionalInfoMap);
 	}
 }

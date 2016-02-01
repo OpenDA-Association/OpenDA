@@ -33,13 +33,15 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class PerviousLandSegmentsInitTable {
+	private final String moduleName = UciUtils.PERLND_MODULE_NAME;
+	private final String locationIdPrefix = UciUtils.PERLND_LOCATION_ID_PREFIX;
 
 	private final String tableName;
 	/**
-	 * Store the first parameterIds row and units row. These are re-used during writing.
+	 * Store the first two header rows. These are re-used during writing.
 	 */
-	private final String parameterIdsRow;
-	private final String unitsRow;
+	private final String firstHeaderRow;
+	private final String secondHeaderRow;
 	/**
 	 * Parameters and segments used in this table.
 	 */
@@ -95,6 +97,10 @@ public class PerviousLandSegmentsInitTable {
 				|| tableName.equals("TRAC-SUBSTOR");
 	}
 
+	private static boolean isFirstHeaderRow(String firstColumn) {
+		return firstColumn.toUpperCase().contains("PLS");
+	}
+
 	/**
 	 * Read one PERLND init table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
@@ -104,8 +110,8 @@ public class PerviousLandSegmentsInitTable {
 		this.tableName = tableName;
 
 		//read uci file.
-		String parameterIdsRow = null;
-		String unitsRow = null;
+		String firstHeaderRow = null;
+		String secondHeaderRow = null;
 		List<String> parameterIds = null;
 		Set<Integer> uniqueSegmentNumbers = new HashSet<>();
 		while (inputLines.hasNext()) {
@@ -120,54 +126,45 @@ public class PerviousLandSegmentsInitTable {
 			}
 			String firstColumn = columns[0];
 
-			//in example .uci files "# -  #" is incorrectly written as "x -  x" or "x  - x".
-			if (firstColumn.contains("#") || firstColumn.toUpperCase().contains("X")) {//if parameterIds row.
-				if (parameterIdsRow == null) parameterIdsRow = inputLine;
-				//update parameterIds for reading the next value row.
-				parameterIds = UciUtils.readParameterIds(columns);
-				UciUtils.validateParameterIds(parameterIds, UciUtils.PERLND_MODULE_NAME, tableName);
+			if (isFirstHeaderRow(firstColumn)) {
+				if (firstHeaderRow == null) firstHeaderRow = inputLine;
+				if (UciUtils.firstHeaderRowContainsParameterIds(tableName)) {
+					//update parameterIds for reading the next value row.
+					parameterIds = UciUtils.readParameterIds(moduleName, tableName, columns);
+				}
 				continue;
 			}
 
-			if (firstColumn.toUpperCase().contains("PLS")) {//if units row.
-				if (unitsRow == null) unitsRow = inputLine;
+			if (UciUtils.isSecondHeaderRow(firstColumn)) {
+				if (secondHeaderRow == null) secondHeaderRow = inputLine;
+				if (UciUtils.secondHeaderRowContainsParameterIds(tableName)) {
+					//update parameterIds for reading the next value row.
+					parameterIds = UciUtils.readParameterIds(moduleName, tableName, columns);
+				}
 				continue;
 			}
 
-			//if contains at least one digit.
-			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstSegmentNumber = UciUtils.readFirstLocationNumber(UciUtils.PERLND_MODULE_NAME, tableName, firstColumn);
-				int lastSegmentNumber = UciUtils.readLastLocationNumber(UciUtils.PERLND_MODULE_NAME, tableName, firstColumn, firstSegmentNumber);
-				List<Double> values = UciUtils.readValues(UciUtils.PERLND_MODULE_NAME, tableName, columns);
-				UciUtils.createExchangeItems(UciUtils.PERLND_MODULE_NAME, tableName, UciUtils.PERLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
+			if (UciUtils.isValuesRow(firstColumn)) {
+				UciUtils.readValuesRow(moduleName, tableName, columns, inputLine, locationIdPrefix, parameterIds, stateTime, uniqueSegmentNumbers, exchangeItems, null);
 				continue;
 			}
 
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (firstHeaderRow == null) throw new RuntimeException("No valid first header row found in " + moduleName + " init table '" + tableName + "' in uci state file.");
+		if (secondHeaderRow == null) throw new RuntimeException("No valid second header row found in " + moduleName + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + moduleName + " init table '" + tableName + "' in uci state file.");
+		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + moduleName + " init table '" + tableName + "' in uci state file.");
 
-		this.parameterIdsRow = parameterIdsRow;
-		this.unitsRow = unitsRow;
+		this.firstHeaderRow = firstHeaderRow;
+		this.secondHeaderRow = secondHeaderRow;
 		this.parameterIds = parameterIds;
 		this.segmentNumbers = new ArrayList<>(uniqueSegmentNumbers);
 		Collections.sort(this.segmentNumbers);
 	}
 
 	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		outputLines.add("  " + tableName);
-
-		//for each segment write one block consisting of a units row, a parameterIds row and a values row.
-		for (int segmentNumber : segmentNumbers) {
-			outputLines.add(unitsRow);
-			outputLines.add(parameterIdsRow);
-			outputLines.add(UciUtils.writeValuesRow(UciUtils.PERLND_LOCATION_ID_PREFIX, segmentNumber, parameterIds, exchangeItems));
-		}
-
-		outputLines.add("  END " + tableName);
+		UciUtils.writeTable(exchangeItems, outputLines, tableName, firstHeaderRow, secondHeaderRow, locationIdPrefix, segmentNumbers, parameterIds, null);
 	}
 }

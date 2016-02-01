@@ -43,6 +43,47 @@ public class UciUtils {
 	public static final String IMPLND_LOCATION_ID_PREFIX = "IMP";
 
 
+	public static boolean firstHeaderRowContainsParameterIds(String tableName) {
+		//init tables from RCHRES.
+		return tableName.equals("HYDR-INIT")
+				|| tableName.equals("HEAT-INIT")
+				|| tableName.equals("BED-INIT")
+				|| tableName.equals("OX-INIT")
+				|| tableName.equals("NUT-DINIT")
+				|| tableName.equals("PLNK-INIT")
+				|| tableName.equals("BENAL-INIT")
+				|| tableName.equals("PH-INIT");
+	}
+
+	public static boolean secondHeaderRowContainsParameterIds(String tableName) {
+		//init tables from both PERLND and IMPLND.
+		return tableName.equals("SNOW-INIT1")
+				|| tableName.equals("SNOW-INIT2")
+
+				//init tables from PERLND.
+				|| tableName.equals("PWAT-STATE1")
+				|| tableName.equals("SED-STOR")
+				|| tableName.equals("PSTEMP-TEMPS")
+				|| tableName.equals("PWT-TEMPS")
+				|| tableName.equals("PWT-GASES")
+				|| tableName.equals("MST-TOPSTOR")
+				|| tableName.equals("MST-TOPFLX")
+				|| tableName.equals("MST-SUBSTOR")
+				|| tableName.equals("MST-SUBFLX")
+				|| tableName.equals("PEST-STOR1")
+				|| tableName.equals("PEST-STOR2")
+				|| tableName.equals("NIT-STOR1")
+				|| tableName.equals("NIT-STOR2")
+				|| tableName.equals("PHOS-STOR1")
+				|| tableName.equals("PHOS-STOR2")
+				|| tableName.equals("TRAC-TOPSTOR")
+				|| tableName.equals("TRAC-SUBSTOR")
+
+				//init tables from IMPLND.
+				|| tableName.equals("IWAT-STATE1")
+				|| tableName.equals("SLD-STOR");
+	}
+
 	/**
 	 * The dateFormat for dates in the UCI file is yyyy/MM/dd HH:mm, e.g.:
 	 * "  START       2004/01/01 00:00  END    2004/01/10 00:00"
@@ -125,20 +166,40 @@ public class UciUtils {
 		return new String[]{part1, part2, part3};
 	}
 
-	public static List<String> readParameterIds(String[] columns) {
+	public static boolean isSecondHeaderRow(String firstColumn) {
+		//in example .uci files "# -  #" is incorrectly written as "x -  x" or "x  - x".
+		return firstColumn.contains("#") || firstColumn.toUpperCase().contains("X");
+	}
+
+	public static boolean isValuesRow(String firstColumn) {
+		//if contains at least one digit.
+		return firstColumn.matches(".*\\d.*");
+	}
+
+	public static List<String> readParameterIds(String moduleName, String tableName, String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;
-		int lastValueColumnIndex = columns.length - 1;
+
+		//for RCHRES HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
+		//for RCHRES BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
+		int lastValueColumnIndex;
+		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
+			lastValueColumnIndex = 1;
+		} else {
+			lastValueColumnIndex = columns.length - 1;
+		}
 
 		List<String> parameterIds = new ArrayList<>();
 		for (int k = firstValueColumnIndex; k <= lastValueColumnIndex; k++) {
 			String parameterId = columns[k].trim();
 			parameterIds.add(parameterId);
 		}
+
+		UciUtils.validateParameterIds(moduleName, tableName, parameterIds);
 		return parameterIds;
 	}
 
-	public static void validateParameterIds(List<String> parameterIds, String moduleName, String tableName) {
+	private static void validateParameterIds(String moduleName, String tableName, List<String> parameterIds) {
 		for (String parameterId : parameterIds) {
 			//if parameterId contains spaces, slashes or parentheses, then it is invalid, probably due to a units row that is positioned incorrectly in the uci file.
 			if (parameterId.isEmpty() || parameterId.contains(" ") || parameterId.contains("/") || parameterId.contains("\\") || parameterId.contains("(") || parameterId.contains(")")) {
@@ -148,10 +209,41 @@ public class UciUtils {
 		}
 	}
 
-	public static List<Double> readValues(String moduleName, String tableName, String[] columns) {
+	/**
+	 * @param locationNumberAdditionalInfoMap can be null.
+	 */
+	public static void readValuesRow(String moduleName, String tableName, String[] columns, String inputLine, String locationIdPrefix, List<String> parameterIds, double stateTime,
+			Set<Integer> uniqueLocationNumbers, Map<String, IExchangeItem> exchangeItems, Map<Integer, String> locationNumberAdditionalInfoMap) {
+
+		int firstLocationNumber = readFirstLocationNumber(moduleName, tableName, columns[0]);
+		int lastLocationNumber = readLastLocationNumber(moduleName, tableName, columns[0], firstLocationNumber);
+		List<Double> values = readValues(moduleName, tableName, columns);
+		createExchangeItems(moduleName, tableName, locationIdPrefix, firstLocationNumber, lastLocationNumber, parameterIds, values, stateTime, uniqueLocationNumbers, exchangeItems);
+
+		if (locationNumberAdditionalInfoMap != null) {
+			//for RCHRES HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be stored, because these are needed during writing.
+			//for RCHRES BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be stored, because these are needed during writing.
+			if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
+				String additionalColumns = inputLine.substring(20);
+				for (int locationNumber = firstLocationNumber; locationNumber <= lastLocationNumber; locationNumber++) {
+					locationNumberAdditionalInfoMap.put(locationNumber, additionalColumns);
+				}
+			}
+		}
+	}
+
+	private static List<Double> readValues(String moduleName, String tableName, String[] columns) {
 		//skip first column.
 		int firstValueColumnIndex = 1;
-		int lastValueColumnIndex = columns.length - 1;
+
+		//for RCHRES HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
+		//for RCHRES BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
+		int lastValueColumnIndex;
+		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
+			lastValueColumnIndex = 1;
+		} else {
+			lastValueColumnIndex = columns.length - 1;
+		}
 
 		List<Double> values = new ArrayList<>();
 		for (int k = firstValueColumnIndex; k <= lastValueColumnIndex; k++) {
@@ -188,18 +280,10 @@ public class UciUtils {
 	}
 
 	/**
-	 * @param moduleName
-	 * @param tableName
-	 * @param locationIdPrefix
-	 * @param firstLocationNumber inclusive.
-	 * @param lastLocationNumber inclusive.
-	 * @param parameterIds
-	 * @param values
-	 * @param stateTime
-	 * @param uniqueLocationNumbers
-	 * @param exchangeItems
+	 * @param firstLocationNumber is inclusive.
+	 * @param lastLocationNumber is inclusive.
 	 */
-	public static void createExchangeItems(String moduleName, String tableName, String locationIdPrefix, int firstLocationNumber, int lastLocationNumber,
+	private static void createExchangeItems(String moduleName, String tableName, String locationIdPrefix, int firstLocationNumber, int lastLocationNumber,
 			List<String> parameterIds, List<Double> values, double stateTime, Set<Integer> uniqueLocationNumbers, Map<String, IExchangeItem> exchangeItems) {
 
 		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + moduleName + " init table '" + tableName + "' in uci state file.");
@@ -233,7 +317,35 @@ public class UciUtils {
 		}
 	}
 
-	public static String writeValuesRow(String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
+	/**
+	 * @param locationNumberAdditionalInfoMap can be null.
+	 */
+	public static void writeTable(Map<String, IExchangeItem> exchangeItems, List<String> outputLines, String tableName, String firstHeaderRow, String secondHeaderRow,
+			String locationIdPrefix, List<Integer> locationNumbers, List<String> parameterIds, Map<Integer, String> locationNumberAdditionalInfoMap) {
+		outputLines.add("  " + tableName);
+
+		//for each location write one block consisting of the two header rows and a values row.
+		for (int locationNumber : locationNumbers) {
+			outputLines.add(firstHeaderRow);
+			outputLines.add(secondHeaderRow);
+
+			String valuesRow = writeValuesRow(locationIdPrefix, locationNumber, parameterIds, exchangeItems);
+			if (locationNumberAdditionalInfoMap != null) {
+				//for RCHRES HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
+				//for RCHRES BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be written.
+				if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
+					String additionalColumns = locationNumberAdditionalInfoMap.get(locationNumber);
+					if (additionalColumns == null) throw new IllegalStateException("additionalColumns for location number " + locationNumber + " not initialized during reading of uci state file.");
+					valuesRow += additionalColumns;
+				}
+			}
+			outputLines.add(valuesRow);
+		}
+
+		outputLines.add("  END " + tableName);
+	}
+
+	private static String writeValuesRow(String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
 		//use Locale.US so that always uses points as decimal symbols.
 		Formatter valuesRow = new Formatter(Locale.US);
 
