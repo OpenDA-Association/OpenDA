@@ -237,6 +237,11 @@ contains
        call move_alloc( to=csert(id)%TCSER, from=csert_new%TCSER )
        call move_alloc( to=csert(id)%CSER, from=csert_new%CSER )
        
+       csert(id)%NDCSER = size_n
+       csert(id)%NCSERM = size_m
+       csert(id)%KCM = size_k
+       csert(id)%NSTVM = NSTVM
+       
        !csert_orig%MCSER = csert(id)%MCSER  
        !csert_orig%TCSER = csert(id)%TCSER  
        !csert_orig%CSER  = csert(id)%CSER
