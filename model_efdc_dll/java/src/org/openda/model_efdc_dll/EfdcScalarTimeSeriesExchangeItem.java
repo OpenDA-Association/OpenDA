@@ -24,6 +24,9 @@ import org.openda.interfaces.*;
 import org.openda.utils.Time;
 import org.openda.utils.Vector;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 /**
  * Exchange item representing values for a time series for a single location, a single parameter and a single layer
  * that are stored in the dll version of the EFDC model.
@@ -181,10 +184,25 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	 * Sets all values for this scalar time series.
 	 */
 	public void setValuesAsDoubles(double[] values) {
+		//Note: if source item is a NetcdfScalarTimeSeriesExchangeItem, then missing values have been filtered out already at this point.
+		//In that case can only check that number of values equals number of times and that there is at least one non-missing value present, i.e. check fails only if all values are missing.
+		if (values == null || values.length <= 0) {
+			throw new RuntimeException(getClass().getSimpleName() + ": no input values supplied (only missing values found) for time series with id '" + getId() + "'.");
+		}
 		double[] times = getTimeInfo().getTimes();
 		if (values.length != times.length ) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + ": number of values (" + values.length
-					+ ") should be equal to number of times (" + times.length + ").");
+			throw new RuntimeException(getClass().getSimpleName() + ": number of input values (" + values.length
+					+ ") should be equal to number of times (" + times.length + ") for time series with id '" + getId() + "'.");
+		}
+		for (int n = 0; n < values.length; n++) {
+			if (Double.isNaN(values[n])) {
+				//throw an exception if boundary or forcing values are missing values.
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+				calendar.setTimeInMillis(Time.mjdToMillies(times[n]));
+				throw new RuntimeException(getClass().getSimpleName() + ": Missing input value at " + calendar.getTime().toString() + " for time series with id '" + getId()
+						+ "' as input for the model. The EFDC model cannot handle missing values within the model run period. Please check if the input data is correct.");
+			}
 		}
 
 		ITime firstTime = new Time(times[0]);
