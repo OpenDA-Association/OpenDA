@@ -33,9 +33,6 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class ReachesInitTable {
-	//TODO move to UciUtils. AK
-	public static final String RCHRES_MODULE_NAME = "RCHRES";
-	private static final String RCHRES_LOCATION_ID_PREFIX = "RCH";
 
 	private final String tableName;
 	/**
@@ -115,7 +112,7 @@ public class ReachesInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = readParameterIds(tableName, columns);
-				UciUtils.validateParameterIds(parameterIds, RCHRES_MODULE_NAME, tableName);
+				UciUtils.validateParameterIds(parameterIds, UciUtils.RCHRES_MODULE_NAME, tableName);
 				continue;
 			}
 
@@ -127,10 +124,10 @@ public class ReachesInitTable {
 
 			//if contains at least one digit.
 			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstReachNumber = UciUtils.readFirstLocationNumber(RCHRES_MODULE_NAME, tableName, firstColumn);
-				int lastReachNumber = UciUtils.readLastLocationNumber(RCHRES_MODULE_NAME, tableName, firstColumn, firstReachNumber);
+				int firstReachNumber = UciUtils.readFirstLocationNumber(UciUtils.RCHRES_MODULE_NAME, tableName, firstColumn);
+				int lastReachNumber = UciUtils.readLastLocationNumber(UciUtils.RCHRES_MODULE_NAME, tableName, firstColumn, firstReachNumber);
 				List<Double> values = readValues(tableName, columns);
-				UciUtils.createExchangeItems(RCHRES_MODULE_NAME, tableName, RCHRES_LOCATION_ID_PREFIX, firstReachNumber, lastReachNumber, parameterIds, values, stateTime, uniqueReachNumbers, exchangeItems);
+				UciUtils.createExchangeItems(UciUtils.RCHRES_MODULE_NAME, tableName, UciUtils.RCHRES_LOCATION_ID_PREFIX, firstReachNumber, lastReachNumber, parameterIds, values, stateTime, uniqueReachNumbers, exchangeItems);
 
 				//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be stored, because these are needed during writing.
 				//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be stored, because these are needed during writing.
@@ -146,10 +143,10 @@ public class ReachesInitTable {
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (uniqueReachNumbers.isEmpty()) throw new RuntimeException("No valid reach numbers found in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (uniqueReachNumbers.isEmpty()) throw new RuntimeException("No valid reach numbers found in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
 
 		this.parameterIdsRow = parameterIdsRow;
 		this.unitsRow = unitsRow;
@@ -166,7 +163,7 @@ public class ReachesInitTable {
 			outputLines.add(parameterIdsRow);
 			outputLines.add(unitsRow);
 
-			String valuesRow = UciUtils.writeValuesRow(RCHRES_LOCATION_ID_PREFIX, reachNumber, parameterIds, exchangeItems);
+			String valuesRow = UciUtils.writeValuesRow(UciUtils.RCHRES_LOCATION_ID_PREFIX, reachNumber, parameterIds, exchangeItems);
 			//for HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
 			//for BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be written.
 			if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
@@ -220,7 +217,7 @@ public class ReachesInitTable {
 			try {
 				values.add(Double.parseDouble(valueString));
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.", e);
+				throw new IllegalArgumentException("Cannot parse double '" + valueString + "' in " + UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' in uci state file.", e);
 			}
 		}
 		return values;

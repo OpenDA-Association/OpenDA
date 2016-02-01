@@ -34,6 +34,14 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class UciUtils {
+	public static final String RCHRES_MODULE_NAME = "RCHRES";
+	public static final String PERLND_MODULE_NAME = "PERLND";
+	public static final String IMPLND_MODULE_NAME = "IMPLND";
+
+	public static final String RCHRES_LOCATION_ID_PREFIX = "RCH";
+	public static final String PERLND_LOCATION_ID_PREFIX = "P";
+	public static final String IMPLND_LOCATION_ID_PREFIX = "IMP";
+
 
 	/**
 	 * The dateFormat for dates in the UCI file is yyyy/MM/dd HH:mm, e.g.:

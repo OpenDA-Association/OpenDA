@@ -145,17 +145,17 @@ public class UciStateDataObject implements IDataObject {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
 
-			if (trimmedUppercaseLine.equals(ReachesInitTable.RCHRES_MODULE_NAME)) {
+			if (trimmedUppercaseLine.equals(UciUtils.RCHRES_MODULE_NAME)) {
 				readReachesSection(inputIterator, stateTime);
 				continue;
 			}
 
-			if (trimmedUppercaseLine.equals(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME)) {
+			if (trimmedUppercaseLine.equals(UciUtils.PERLND_MODULE_NAME)) {
 				readPerviousLandSection(inputIterator, stateTime);
 				continue;
 			}
 
-			if (trimmedUppercaseLine.equals(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME)) {
+			if (trimmedUppercaseLine.equals(UciUtils.IMPLND_MODULE_NAME)) {
 				readImperviousLandSection(inputIterator, stateTime);
 				continue;
 			}
@@ -163,41 +163,41 @@ public class UciStateDataObject implements IDataObject {
 	}
 
 	private void readReachesSection(Iterator<String> inputIterator, double stateTime) {
-		Results.putMessage(getClass().getSimpleName() + ": reading " + ReachesInitTable.RCHRES_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": reading " + UciUtils.RCHRES_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
 
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
-			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(ReachesInitTable.RCHRES_MODULE_NAME)) break;
+			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(UciUtils.RCHRES_MODULE_NAME)) break;
 
 			if (ReachesInitTable.isReachesInitTable(trimmedUppercaseLine)) {
 				String tableName = trimmedUppercaseLine;
 				ReachesInitTable initTable = new ReachesInitTable(tableName, inputIterator, stateTime, exchangeItems);
 				ReachesInitTable previous = reachesInitTables.put(tableName, initTable);
-				if (previous != null) throw new IllegalArgumentException("Multiple " + ReachesInitTable.RCHRES_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
+				if (previous != null) throw new IllegalArgumentException("Multiple " + UciUtils.RCHRES_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
 			}
 		}
 	}
 
 	private void readPerviousLandSection(Iterator<String> inputIterator, double stateTime) {
-		Results.putMessage(getClass().getSimpleName() + ": reading " + PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": reading " + UciUtils.PERLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
 
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
-			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME)) break;
+			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(UciUtils.PERLND_MODULE_NAME)) break;
 
 			String tableName = trimmedUppercaseLine;
 			if (PerviousLandSegmentsInitTable.isPerviousLandSegmentsInitTable(tableName)) {
 				PerviousLandSegmentsInitTable initTable = new PerviousLandSegmentsInitTable(tableName, inputIterator, stateTime, exchangeItems);
 				PerviousLandSegmentsInitTable previous = perviousLandSegmentsInitTables.put(tableName, initTable);
-				if (previous != null) throw new IllegalArgumentException("Multiple " + PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
+				if (previous != null) throw new IllegalArgumentException("Multiple " + UciUtils.PERLND_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
 				continue;
 			}
 
 			if (QualPropsTable.isQualPropsTable(tableName)) {
 				//replace last known qualId with the one read from current QUAL-PROPS table.
-				lastKnownQualId = QualPropsTable.readQualId(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME, inputIterator, null);
+				lastKnownQualId = QualPropsTable.readQualId(UciUtils.PERLND_MODULE_NAME, inputIterator, null);
 				continue;
 			}
 
@@ -210,23 +210,23 @@ public class UciStateDataObject implements IDataObject {
 	}
 
 	private void readImperviousLandSection(Iterator<String> inputIterator, double stateTime) {
-		Results.putMessage(getClass().getSimpleName() + ": reading " + ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": reading " + UciUtils.IMPLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
 
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
-			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME)) break;
+			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(UciUtils.IMPLND_MODULE_NAME)) break;
 
 			String tableName = trimmedUppercaseLine;
 			if (ImperviousLandSegmentsInitTable.isImperviousLandSegmentsInitTable(tableName)) {
 				ImperviousLandSegmentsInitTable initTable = new ImperviousLandSegmentsInitTable(tableName, inputIterator, stateTime, exchangeItems);
 				ImperviousLandSegmentsInitTable previous = imperviousLandSegmentsInitTables.put(tableName, initTable);
-				if (previous != null) throw new IllegalArgumentException("Multiple " + ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
+				if (previous != null) throw new IllegalArgumentException("Multiple " + UciUtils.IMPLND_MODULE_NAME + " init tables '" + tableName + "' found in uci state file.");
 			}
 
 			if (QualPropsTable.isQualPropsTable(tableName)) {
 				//replace last known qualId with the one read from current QUAL-PROPS table.
-				lastKnownQualId = QualPropsTable.readQualId(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME, inputIterator, null);
+				lastKnownQualId = QualPropsTable.readQualId(UciUtils.IMPLND_MODULE_NAME, inputIterator, null);
 				continue;
 			}
 
@@ -258,19 +258,19 @@ public class UciStateDataObject implements IDataObject {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
 
-			if (trimmedUppercaseLine.equals(ReachesInitTable.RCHRES_MODULE_NAME)) {
+			if (trimmedUppercaseLine.equals(UciUtils.RCHRES_MODULE_NAME)) {
 				outputLines.add(inputLine);
 				writeReachesSection(inputIterator, outputLines);
 				continue;
 			}
 
-			if (trimmedUppercaseLine.equals(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME)) {
+			if (trimmedUppercaseLine.equals(UciUtils.PERLND_MODULE_NAME)) {
 				outputLines.add(inputLine);
 				writePerviousLandSection(inputIterator, outputLines);
 				continue;
 			}
 
-			if (trimmedUppercaseLine.equals(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME)) {
+			if (trimmedUppercaseLine.equals(UciUtils.IMPLND_MODULE_NAME)) {
 				outputLines.add(inputLine);
 				writeImperviousLandSection(inputIterator, outputLines);
 				continue;
@@ -285,12 +285,12 @@ public class UciStateDataObject implements IDataObject {
 	}
 
 	private void writeReachesSection(Iterator<String> inputIterator, List<String> outputLines) {
-		Results.putMessage(getClass().getSimpleName() + ": replacing values in " + ReachesInitTable.RCHRES_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": replacing values in " + UciUtils.RCHRES_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
 
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
-			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(ReachesInitTable.RCHRES_MODULE_NAME)) {
+			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(UciUtils.RCHRES_MODULE_NAME)) {
 				outputLines.add(inputLine);
 				break;
 			}
@@ -303,7 +303,7 @@ public class UciStateDataObject implements IDataObject {
 
 				//write new table.
 				ReachesInitTable initTable = reachesInitTables.get(tableName);
-				if (initTable == null) throw new IllegalStateException(ReachesInitTable.RCHRES_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
+				if (initTable == null) throw new IllegalStateException(UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
 				initTable.write(exchangeItems, outputLines);
 				continue;
 			}
@@ -314,12 +314,12 @@ public class UciStateDataObject implements IDataObject {
 	}
 
 	private void writePerviousLandSection(Iterator<String> inputIterator, List<String> outputLines) {
-		Results.putMessage(getClass().getSimpleName() + ": replacing values in " + PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": replacing values in " + UciUtils.PERLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
 
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
-			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME)) {
+			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(UciUtils.PERLND_MODULE_NAME)) {
 				outputLines.add(inputLine);
 				break;
 			}
@@ -331,7 +331,7 @@ public class UciStateDataObject implements IDataObject {
 
 				//write new table.
 				PerviousLandSegmentsInitTable initTable = perviousLandSegmentsInitTables.get(tableName);
-				if (initTable == null) throw new IllegalStateException(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
+				if (initTable == null) throw new IllegalStateException(UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
 				initTable.write(exchangeItems, outputLines);
 				continue;
 			}
@@ -340,7 +340,7 @@ public class UciStateDataObject implements IDataObject {
 				//copy inputLine to output unchanged.
 				outputLines.add(inputLine);
 				//replace last known qualId with the one read from current QUAL-PROPS table and copy table.
-				lastKnownQualId = QualPropsTable.readQualId(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME, inputIterator, outputLines);
+				lastKnownQualId = QualPropsTable.readQualId(UciUtils.PERLND_MODULE_NAME, inputIterator, outputLines);
 				continue;
 			}
 
@@ -350,12 +350,12 @@ public class UciStateDataObject implements IDataObject {
 	}
 
 	private void writeImperviousLandSection(Iterator<String> inputIterator, List<String> outputLines) {
-		Results.putMessage(getClass().getSimpleName() + ": replacing values in " + ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
+		Results.putMessage(getClass().getSimpleName() + ": replacing values in " + UciUtils.IMPLND_MODULE_NAME + " section in uci state file " + uciFile.getAbsolutePath());
 
 		while (inputIterator.hasNext()) {
 			String inputLine = inputIterator.next();
 			String trimmedUppercaseLine = inputLine.trim().toUpperCase();
-			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME)) {
+			if (trimmedUppercaseLine.startsWith("END") && trimmedUppercaseLine.endsWith(UciUtils.IMPLND_MODULE_NAME)) {
 				outputLines.add(inputLine);
 				break;
 			}
@@ -367,7 +367,7 @@ public class UciStateDataObject implements IDataObject {
 
 				//write new table.
 				ImperviousLandSegmentsInitTable initTable = imperviousLandSegmentsInitTables.get(tableName);
-				if (initTable == null) throw new IllegalStateException(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
+				if (initTable == null) throw new IllegalStateException(UciUtils.IMPLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
 				initTable.write(exchangeItems, outputLines);
 				continue;
 			}
@@ -376,7 +376,7 @@ public class UciStateDataObject implements IDataObject {
 				//copy inputLine to output unchanged.
 				outputLines.add(inputLine);
 				//replace last known qualId with the one read from current QUAL-PROPS table and copy table.
-				lastKnownQualId = QualPropsTable.readQualId(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME, inputIterator, outputLines);
+				lastKnownQualId = QualPropsTable.readQualId(UciUtils.IMPLND_MODULE_NAME, inputIterator, outputLines);
 				continue;
 			}
 

@@ -33,9 +33,6 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class PerviousLandSegmentsInitTable {
-	//TODO move to UciUtils. AK
-	public static final String PERLND_MODULE_NAME = "PERLND";
-	private static final String PERLND_LOCATION_ID_PREFIX = "P";
 
 	private final String tableName;
 	/**
@@ -126,7 +123,7 @@ public class PerviousLandSegmentsInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = UciUtils.readParameterIds(columns);
-				UciUtils.validateParameterIds(parameterIds, PERLND_MODULE_NAME, tableName);
+				UciUtils.validateParameterIds(parameterIds, UciUtils.PERLND_MODULE_NAME, tableName);
 				continue;
 			}
 
@@ -137,20 +134,20 @@ public class PerviousLandSegmentsInitTable {
 
 			//if contains at least one digit.
 			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstSegmentNumber = UciUtils.readFirstLocationNumber(PERLND_MODULE_NAME, tableName, firstColumn);
-				int lastSegmentNumber = UciUtils.readLastLocationNumber(PERLND_MODULE_NAME, tableName, firstColumn, firstSegmentNumber);
-				List<Double> values = UciUtils.readValues(PERLND_MODULE_NAME, tableName, columns);
-				UciUtils.createExchangeItems(PERLND_MODULE_NAME, tableName, PERLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
+				int firstSegmentNumber = UciUtils.readFirstLocationNumber(UciUtils.PERLND_MODULE_NAME, tableName, firstColumn);
+				int lastSegmentNumber = UciUtils.readLastLocationNumber(UciUtils.PERLND_MODULE_NAME, tableName, firstColumn, firstSegmentNumber);
+				List<Double> values = UciUtils.readValues(UciUtils.PERLND_MODULE_NAME, tableName, columns);
+				UciUtils.createExchangeItems(UciUtils.PERLND_MODULE_NAME, tableName, UciUtils.PERLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
 				continue;
 			}
 
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
 
 		this.parameterIdsRow = parameterIdsRow;
 		this.unitsRow = unitsRow;
@@ -166,7 +163,7 @@ public class PerviousLandSegmentsInitTable {
 		for (int segmentNumber : segmentNumbers) {
 			outputLines.add(unitsRow);
 			outputLines.add(parameterIdsRow);
-			outputLines.add(UciUtils.writeValuesRow(PERLND_LOCATION_ID_PREFIX, segmentNumber, parameterIds, exchangeItems));
+			outputLines.add(UciUtils.writeValuesRow(UciUtils.PERLND_LOCATION_ID_PREFIX, segmentNumber, parameterIds, exchangeItems));
 		}
 
 		outputLines.add("  END " + tableName);

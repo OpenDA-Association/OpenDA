@@ -33,9 +33,6 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class ImperviousLandSegmentsInitTable {
-	//TODO move to UciUtils. AK
-	public static final String IMPLND_MODULE_NAME = "IMPLND";
-	private static final String IMPLND_LOCATION_ID_PREFIX = "IMP";
 
 	private final String tableName;
 	/**
@@ -98,7 +95,7 @@ public class ImperviousLandSegmentsInitTable {
 				if (parameterIdsRow == null) parameterIdsRow = inputLine;
 				//update parameterIds for reading the next value row.
 				parameterIds = UciUtils.readParameterIds(columns);
-				UciUtils.validateParameterIds(parameterIds, IMPLND_MODULE_NAME, tableName);
+				UciUtils.validateParameterIds(parameterIds, UciUtils.IMPLND_MODULE_NAME, tableName);
 				continue;
 			}
 
@@ -109,20 +106,20 @@ public class ImperviousLandSegmentsInitTable {
 
 			//if contains at least one digit.
 			if (firstColumn.matches(".*\\d.*")) {//if values row.
-				int firstSegmentNumber = UciUtils.readFirstLocationNumber(IMPLND_MODULE_NAME, tableName, firstColumn);
-				int lastSegmentNumber = UciUtils.readLastLocationNumber(IMPLND_MODULE_NAME, tableName, firstColumn, firstSegmentNumber);
-				List<Double> values = UciUtils.readValues(IMPLND_MODULE_NAME, tableName, columns);
-				UciUtils.createExchangeItems(IMPLND_MODULE_NAME, tableName, IMPLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
+				int firstSegmentNumber = UciUtils.readFirstLocationNumber(UciUtils.IMPLND_MODULE_NAME, tableName, firstColumn);
+				int lastSegmentNumber = UciUtils.readLastLocationNumber(UciUtils.IMPLND_MODULE_NAME, tableName, firstColumn, firstSegmentNumber);
+				List<Double> values = UciUtils.readValues(UciUtils.IMPLND_MODULE_NAME, tableName, columns);
+				UciUtils.createExchangeItems(UciUtils.IMPLND_MODULE_NAME, tableName, UciUtils.IMPLND_LOCATION_ID_PREFIX, firstSegmentNumber, lastSegmentNumber, parameterIds, values, stateTime, uniqueSegmentNumbers, exchangeItems);
 				continue;
 			}
 
 			//do nothing, skip row.
 		}
 
-		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
-		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIdsRow == null) throw new RuntimeException("No valid parameter ids row found in " + UciUtils.IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (unitsRow == null) throw new RuntimeException("No valid units row found in " + UciUtils.IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (parameterIds == null) throw new RuntimeException("No valid parameter ids found in " + UciUtils.IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
+		if (uniqueSegmentNumbers.isEmpty()) throw new RuntimeException("No valid segment numbers found in " + UciUtils.IMPLND_MODULE_NAME + " init table '" + tableName + "' in uci state file.");
 
 		this.parameterIdsRow = parameterIdsRow;
 		this.unitsRow = unitsRow;
@@ -138,7 +135,7 @@ public class ImperviousLandSegmentsInitTable {
 		for (int segmentNumber : segmentNumbers) {
 			outputLines.add(unitsRow);
 			outputLines.add(parameterIdsRow);
-			outputLines.add(UciUtils.writeValuesRow(IMPLND_LOCATION_ID_PREFIX, segmentNumber, parameterIds, exchangeItems));
+			outputLines.add(UciUtils.writeValuesRow(UciUtils.IMPLND_LOCATION_ID_PREFIX, segmentNumber, parameterIds, exchangeItems));
 		}
 
 		outputLines.add("  END " + tableName);
