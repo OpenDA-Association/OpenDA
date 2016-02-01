@@ -56,15 +56,14 @@ public class ImperviousLandSegmentsInitTable {
 	 * SNOW-INIT2:    COVINX, XLNMLT, SKYCLR
 	 * IWAT-STATE1:   RETS, SURS
 	 * SLD-STOR:      SLDS
-	 *
-	 * For IMPLND the following tables are not supported:
-	 * IWT-INIT is currently not supported, because it has a different format for column headers.
+	 * IWT-INIT:      SOTMP, SODOX, SOCO2
 	 */
 	public static boolean isImperviousLandSegmentsInitTable(String tableName) {
 		return tableName.equals("SNOW-INIT1")
 				|| tableName.equals("SNOW-INIT2")
 				|| tableName.equals("IWAT-STATE1")
-				|| tableName.equals("SLD-STOR");
+				|| tableName.equals("SLD-STOR")
+				|| tableName.equals("IWT-INIT");
 	}
 
 	private static boolean isFirstHeaderRow(String firstColumn) {

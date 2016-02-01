@@ -73,7 +73,7 @@ public class PerviousLandSegmentsInitTable {
 	 * TRAC-SUBSTOR:  LTRSU, ATRSU
 	 *
 	 * For PERLND the following tables are not supported:
-	 * UZSN-LZSN is currently not supported, because it has a different format for column headers and a different column width.
+	 * UZSN-LZSN is currently not supported, because it has a different column width.
 	 */
 	public static boolean isPerviousLandSegmentsInitTable(String tableName) {
 		return tableName.equals("SNOW-INIT1")

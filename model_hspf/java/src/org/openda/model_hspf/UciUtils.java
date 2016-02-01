@@ -52,7 +52,10 @@ public class UciUtils {
 				|| tableName.equals("NUT-DINIT")
 				|| tableName.equals("PLNK-INIT")
 				|| tableName.equals("BENAL-INIT")
-				|| tableName.equals("PH-INIT");
+				|| tableName.equals("PH-INIT")
+
+				//init tables from IMPLND.
+				|| tableName.equals("IWT-INIT");
 	}
 
 	public static boolean secondHeaderRowContainsParameterIds(String tableName) {
@@ -81,7 +84,11 @@ public class UciUtils {
 
 				//init tables from IMPLND.
 				|| tableName.equals("IWAT-STATE1")
-				|| tableName.equals("SLD-STOR");
+				|| tableName.equals("SLD-STOR")
+
+				//init tables from RCHRES.
+				|| tableName.equals("SSED-INIT")
+				|| tableName.equals("NUT-ADSINIT");
 	}
 
 	/**
@@ -181,7 +188,8 @@ public class UciUtils {
 		int firstValueColumnIndex = 1;
 
 		//for RCHRES HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
-		//for RCHRES BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
+		//for RCHRES BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (these could be either
+		//initial bed sediment composition fractions from BED-INIT or initial suspended sediment concentrations from SSED-INIT).
 		int lastValueColumnIndex;
 		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
 			lastValueColumnIndex = 1;
@@ -237,7 +245,8 @@ public class UciUtils {
 		int firstValueColumnIndex = 1;
 
 		//for RCHRES HYDR-INIT only read second column (VOL), because for the other columns it is not clear which parameters should be used for the exchange items.
-		//for RCHRES BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (could be initial bed sediment composition fractions or initial suspended sediment concentrations).
+		//for RCHRES BED-INIT only read second column (BEDDEP), because otherwise parameters SAND, SILT and CLAY would not be unique (these could be either
+		//initial bed sediment composition fractions from BED-INIT or initial suspended sediment concentrations from SSED-INIT).
 		int lastValueColumnIndex;
 		if (tableName.equals("HYDR-INIT") || tableName.equals("BED-INIT")) {
 			lastValueColumnIndex = 1;
