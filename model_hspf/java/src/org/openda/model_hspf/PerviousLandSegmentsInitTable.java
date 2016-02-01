@@ -61,16 +61,16 @@ public class PerviousLandSegmentsInitTable {
 	 * MST-TOPFLX:    FSO, FSP, FII, FUP, FIO
 	 * MST-SUBSTOR:   LMSTM, AMSTM
 	 * MST-SUBFLX:    FLP, FLDP, FAO
-	 * NIT-STOR1:     LORGN, AMAD, AMSU, NO3, PLTN, RORGN
+	 * PEST-STOR1:    PSCY, PSAD, PSSU (only for one layer)
+	 * PEST-STOR2:    IPS
+	 * NIT-STOR1:     LORGN, AMAD, AMSU, NO3, PLTN, RORGN (only for one layer)
 	 * NIT-STOR2:     IAMSU, INO3, ISLON, ISRON, AGPLTN, LITTRN
-	 * PHOS-STOR1:    ORGP, P4AD, P4SU, PLTP
+	 * PHOS-STOR1:    ORGP, P4AD, P4SU, PLTP (only for one layer)
 	 * PHOS-STOR2:    IP4SU
 	 * TRAC-TOPSTOR:  STRSU, UTRSU, ITRSU
 	 * TRAC-SUBSTOR:  LTRSU, ATRSU
 	 *
 	 * For PERLND the following tables are not supported:
-	 * PEST-STOR1 is currently not supported, because it is not clear from the HSPF manual which parameters should be used for the exchange items.
-	 * PEST-STOR2 is currently not supported, because it is not clear from the HSPF manual which parameters should be used for the exchange items.
 	 * UZSN-LZSN is currently not supported, because it has a different format for column headers and a different column width.
 	 */
 	public static boolean isPerviousLandSegmentsInitTable(String tableName) {
@@ -85,6 +85,8 @@ public class PerviousLandSegmentsInitTable {
 				|| tableName.equals("MST-TOPFLX")
 				|| tableName.equals("MST-SUBSTOR")
 				|| tableName.equals("MST-SUBFLX")
+				|| tableName.equals("PEST-STOR1")
+				|| tableName.equals("PEST-STOR2")
 				|| tableName.equals("NIT-STOR1")
 				|| tableName.equals("NIT-STOR2")
 				|| tableName.equals("PHOS-STOR1")

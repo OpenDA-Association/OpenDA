@@ -54,32 +54,30 @@ public class ReachesInitTable {
 	 * For RCHRES the following tables and parameters with initial conditions in the UCI file are supported:
 	 *
 	 * <table type>:  <parameters>
-	 * BED-INIT:      BEDDEP
-	 * BENAL-INIT:    BENAL1, BENAL2, BENAL3, BENAL4
-	 * HEAT-INIT:     TW, AIRTMP
 	 * HYDR-INIT:     VOL
-	 * IWT-INIT:      SOTMP, SODOX, SOCO2
+	 * HEAT-INIT:     TW, AIRTMP
+	 * BED-INIT:      BEDDEP
 	 * OX-INIT:       DOX, BOD, SATDO
-	 * PH-INIT:       TIC, CO2, PH
-	 * PLNK-INIT:     PHYTO, ZOO, BENAL, ORN, ORP, ORC
 	 * NUT-DINIT:     NO3, TAM, NO2, PO4, PHVAL
+	 * PLNK-INIT:     PHYTO, ZOO, BENAL, ORN, ORP, ORC
+	 * BENAL-INIT:    BENAL1, BENAL2, BENAL3, BENAL4
+	 * PH-INIT:       TIC, CO2, PH
 	 *
 	 * For RCHRES the following tables are not supported:
-	 * HYDR-CINIT is currently not supported, because it is not clear from the HSPF manual which parameters should be used for the exchange items.
-	 * NUT-ADSINIT is currently not supported, because it is not clear from the HSPF manual which parameters should be used for the exchange items.
+	 * HYDR-CINIT is currently not supported, because it has a completely different table format.
+	 * NUT-ADSINIT is currently not supported, because it is has a different format for column headers.
 	 * SSED-INIT is currently not supported, because otherwise parameters SAND, SILT and CLAY would not be unique (these could be
 	 * either initial bed sediment composition fractions from BED-INIT or initial suspended sediment concentrations from SSED-INIT).
 	 */
 	public static boolean isReachesInitTable(String tableName) {
-		return tableName.equals("BED-INIT")
-				|| tableName.equals("BENAL-INIT")
+		return tableName.equals("HYDR-INIT")
 				|| tableName.equals("HEAT-INIT")
-				|| tableName.equals("HYDR-INIT")
-				|| tableName.equals("IWT-INIT")
+				|| tableName.equals("BED-INIT")
 				|| tableName.equals("OX-INIT")
-				|| tableName.equals("PH-INIT")
+				|| tableName.equals("NUT-DINIT")
 				|| tableName.equals("PLNK-INIT")
-				|| tableName.equals("NUT-DINIT");
+				|| tableName.equals("BENAL-INIT")
+				|| tableName.equals("PH-INIT");
 	}
 
 	/**
