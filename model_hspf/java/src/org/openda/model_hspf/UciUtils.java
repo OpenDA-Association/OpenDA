@@ -333,11 +333,12 @@ public class UciUtils {
 			String locationIdPrefix, List<Integer> locationNumbers, List<String> parameterIds, Map<Integer, String> locationNumberAdditionalInfoMap) {
 		outputLines.add("  " + tableName);
 
-		//for each location write one block consisting of the two header rows and a values row.
-		for (int locationNumber : locationNumbers) {
-			outputLines.add(firstHeaderRow);
-			outputLines.add(secondHeaderRow);
+		//write header rows.
+		outputLines.add(firstHeaderRow);
+		outputLines.add(secondHeaderRow);
 
+		//for each location write a values row.
+		for (int locationNumber : locationNumbers) {
 			String valuesRow = writeValuesRow(locationIdPrefix, locationNumber, parameterIds, exchangeItems);
 			if (locationNumberAdditionalInfoMap != null) {
 				//for RCHRES HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
