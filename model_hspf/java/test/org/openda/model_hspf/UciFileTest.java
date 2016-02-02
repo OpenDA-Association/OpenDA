@@ -222,9 +222,12 @@ public class UciFileTest extends TestCase {
         assertNull(item);
 
         //PERLND QUAL-INPUT
-        item = uciStateDataObject.getDataObjectExchangeItem("P11.ACQOP-NH3+NH4");
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.ACQOP-TAM");
         assertNotNull(item);
         assertEquals(0.034d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.AOQC-PO4");
+        assertNotNull(item);
+        assertEquals(0.0d, item.getValues());
 
         //IMPLND QUAL-INPUT
         item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SQO-BOD");
@@ -284,9 +287,12 @@ public class UciFileTest extends TestCase {
         item.setValues(2.91d);
 
         //PERLND QUAL-INPUT
-        item = uciStateDataObject.getDataObjectExchangeItem("P11.ACQOP-NH3+NH4");
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.ACQOP-TAM");
         assertNotNull(item);
         assertEquals(0.034d, item.getValues());
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.AOQC-PO4");
+        assertNotNull(item);
+        assertEquals(0.0d, item.getValues());
 
         //IMPLND QUAL-INPUT
         item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SQO-BOD");

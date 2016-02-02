@@ -59,6 +59,7 @@ public class PerviousLandSegmentsInitTable {
 	 * PSTEMP-TEMPS:  AIRTC, SLTMP, ULTMP, LGTMP
 	 * PWT-TEMPS:     SOTMP, IOTMP, AOTMP
 	 * PWT-GASES:     SODOX, SOCO2, IODOX, IOCO2, AODOX, AOCO2
+	 * QUAL-INPUT:    SQO, POTFW, POTFS, ACQOP, SQOLIM, WSQOP, IOQC, AOQC
 	 * MST-TOPSTOR:   SMSTM, UMSTM, IMSTM
 	 * MST-TOPFLX:    FSO, FSP, FII, FUP, FIO
 	 * MST-SUBSTOR:   LMSTM, AMSTM
@@ -76,6 +77,7 @@ public class PerviousLandSegmentsInitTable {
 	 * UZSN-LZSN is currently not supported, because otherwise parameter SURS would not be unique (this could be either
 	 * initial surface (overland flow) storage from PWAT-STATE1 or initial surface detention storage from UZSN-LZSN).
 	 */
+	//for QUAL-INPUT table see class QualInputTable.
 	public static boolean isPerviousLandSegmentsInitTable(String tableName) {
 		return tableName.equals("SNOW-INIT1")
 				|| tableName.equals("SNOW-INIT2")

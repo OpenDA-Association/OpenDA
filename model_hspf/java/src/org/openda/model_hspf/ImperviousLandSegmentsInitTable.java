@@ -57,7 +57,9 @@ public class ImperviousLandSegmentsInitTable {
 	 * IWAT-STATE1:   RETS, SURS
 	 * SLD-STOR:      SLDS
 	 * IWT-INIT:      SOTMP, SODOX, SOCO2
+	 * QUAL-INPUT:    SQO, POTFW, ACQOP, SQOLIM, WSQOP
 	 */
+	//for QUAL-INPUT table see class QualInputTable.
 	public static boolean isImperviousLandSegmentsInitTable(String tableName) {
 		return tableName.equals("SNOW-INIT1")
 				|| tableName.equals("SNOW-INIT2")

@@ -66,6 +66,8 @@ public class QualPropsTable {
 				int lastSegmentNumber = UciUtils.readLastLocationNumber(moduleName, TABLE_NAME, firstColumn, firstSegmentNumber);
 
 				String qualId = secondColumn.trim();
+				if (qualId.isEmpty()) throw new IllegalArgumentException("Empty qualId found in " + moduleName + " table '" + TABLE_NAME + "' in uci state file.");
+				qualId = mapQualId(qualId);
 				for (int segmentNumber = firstSegmentNumber; segmentNumber <= lastSegmentNumber; segmentNumber++) {
 					qualIds.put(segmentNumber, qualId);
 				}
@@ -85,5 +87,16 @@ public class QualPropsTable {
 		}
 		assert uniqueQualIds.size() == 1;
 		return uniqueQualIds.iterator().next();
+	}
+
+	private static String mapQualId(String qualId) {
+		//TAM = Total AMmonia nitrogen = NH3 + NH4 (use TAM instead of TAN for consistency with a.o. TAM in NUT-DINIT table).
+		if ("NH3+NH4".equals(qualId)) return "TAM";
+
+		//PO4 is the same as ortho-phosphorous.
+		if ("ORTHO P".equals(qualId)) return "PO4";
+
+		//return unmapped qualId.
+		return qualId;
 	}
 }
