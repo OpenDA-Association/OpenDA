@@ -148,13 +148,19 @@ public class DataCopier implements IConfigurable {
 		if (outputExchangeItem != null) return;
 
 		//output exchangeItem with the same id does not exist yet.
-		System.out.println("Exchange item with id '" + id + "' not found in output data object.");
+		String message = "Exchange item with id '" + id + "' not found in output data object.";
+		System.out.println(message);
+		Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		if (outputDataObject instanceof IComposableDataObject) {
 			//add exchangeItem.
-			System.out.println("Adding new exchange item with id '" + id + "' to output data object.");
+			message = "Adding new exchange item with id '" + id + "' to output data object.";
+			System.out.println(message);
+			Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 			((IComposableDataObject) outputDataObject).addExchangeItem(inputExchangeItem);
 		} else {
-			System.out.println("WARNING: Input data for exchange item with id '" + id + "' will not be copied to output data object.");
+			message = "WARNING: Input data for exchange item with id '" + id + "' will not be copied to output data object.";
+			System.out.println(message);
+			Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		}
 	}
 
@@ -168,13 +174,19 @@ public class DataCopier implements IConfigurable {
 		if (outputExchangeItem != null) return;
 
 		//output exchangeItem with the same id and index does not exist yet.
-		System.out.println("Ensemble exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " not found in output data object.");
+		String message = "Ensemble exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " not found in output data object.";
+		System.out.println(message);
+		Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		if (outputDataObject instanceof IComposableEnsembleDataObject) {
 			//add exchangeItem.
-			System.out.println("Adding new ensemble exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " to output data object.");
+			message = "Adding new ensemble exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " to output data object.";
+			System.out.println(message);
+			Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 			((IComposableEnsembleDataObject) outputDataObject).addExchangeItem(inputExchangeItem, ensembleMemberIndex);
 		} else {
-			System.out.println("WARNING: Input data for ensemble exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " will not be copied to output data object.");
+			message = "WARNING: Input data for ensemble exchange item with id '" + id + "' and ensemble member index " + ensembleMemberIndex + " will not be copied to output data object.";
+			System.out.println(message);
+			Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		}
 	}
 
@@ -188,7 +200,9 @@ public class DataCopier implements IConfigurable {
 			return;
 		}
 
-		System.out.println("Copying " + id);
+		String message = "Copying " + id;
+		System.out.println(message);
+		Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		outputExchangeItem.copyValuesFromItem(inputExchangeItem);
 	}
 
@@ -202,7 +216,9 @@ public class DataCopier implements IConfigurable {
 			return;
 		}
 
-		System.out.println("Copying " + id + " for ensemble member index " + ensembleMemberIndex);
+		String message = "Copying " + id + " for ensemble member index " + ensembleMemberIndex;
+		System.out.println(message);
+		Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		outputExchangeItem.copyValuesFromItem(inputExchangeItem);
 	}
 
