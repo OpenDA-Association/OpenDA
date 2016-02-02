@@ -169,7 +169,7 @@ public class UciFileTest extends TestCase {
         uciStateDataObject.initialize(testRunDataDir, arguments);
 
         String[] exchangeItemIds = uciStateDataObject.getExchangeItemIDs();
-        assertEquals(9351, exchangeItemIds.length);
+        assertEquals(19611, exchangeItemIds.length);
 
         //RCHRES HEAT-INIT
         IExchangeItem item = uciStateDataObject.getDataObjectExchangeItem("RCH1.AIRTMP");
@@ -220,6 +220,16 @@ public class UciFileTest extends TestCase {
         assertEquals(0.01d, item.getValues());
         item = uciStateDataObject.getDataObjectExchangeItem("IMP292.SURS");
         assertNull(item);
+
+        //PERLND QUAL-INPUT
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.ACQOP-NH3+NH4");
+        assertNotNull(item);
+        assertEquals(0.034d, item.getValues());
+
+        //IMPLND QUAL-INPUT
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SQO-BOD");
+        assertNotNull(item);
+        assertEquals(0.81d, item.getValues());
     }
 
     public void testWriteUciStateFile() {
@@ -272,6 +282,16 @@ public class UciFileTest extends TestCase {
         item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SURS");
         assertNotNull(item);
         item.setValues(2.91d);
+
+        //PERLND QUAL-INPUT
+        item = uciStateDataObject.getDataObjectExchangeItem("P11.ACQOP-NH3+NH4");
+        assertNotNull(item);
+        assertEquals(0.034d, item.getValues());
+
+        //IMPLND QUAL-INPUT
+        item = uciStateDataObject.getDataObjectExchangeItem("IMP291.SQO-BOD");
+        assertNotNull(item);
+        assertEquals(0.81d, item.getValues());
 
         //the call to method finish actually writes the data in the exchangeItems to the uci file.
         uciStateDataObject.finish();

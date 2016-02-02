@@ -87,8 +87,8 @@ public class ImperviousLandSegmentsInitTable {
 			String inputLine = inputLines.next();
 			if (inputLine.trim().toUpperCase().startsWith("END")) break;
 
-			//this code assumes that all relevant columns are exactly 10 characters wide in the .uci file, as defined in the HSPF Manual.
-			String[] columns = UciUtils.splitEvery10Characters(inputLine);
+			//this code assumes that all columns are exactly 10 characters wide in the table, as defined in the HSPF Manual.
+			String[] columns = UciUtils.splitAfter10ThenEveryNCharacters(inputLine, 10);
 			if (columns == null || columns.length < 2) {//if empty row.
 				//skip row.
 				continue;

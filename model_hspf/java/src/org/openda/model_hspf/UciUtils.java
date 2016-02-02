@@ -43,6 +43,14 @@ public class UciUtils {
 	public static final String IMPLND_LOCATION_ID_PREFIX = "IMP";
 
 
+	public static String getLocationIdPrefix(String moduleName) {
+		if (RCHRES_MODULE_NAME.equals(moduleName)) return RCHRES_LOCATION_ID_PREFIX;
+		if (PERLND_MODULE_NAME.equals(moduleName)) return PERLND_LOCATION_ID_PREFIX;
+		if (IMPLND_MODULE_NAME.equals(moduleName)) return IMPLND_LOCATION_ID_PREFIX;
+
+		throw new IllegalArgumentException("Unknown moduleName " + moduleName);
+	}
+
 	public static boolean firstHeaderRowContainsParameterIds(String tableName) {
 		//init tables from RCHRES.
 		return tableName.equals("HYDR-INIT")
@@ -60,7 +68,8 @@ public class UciUtils {
 
 	public static boolean secondHeaderRowContainsParameterIds(String tableName) {
 		//init tables from both PERLND and IMPLND.
-		return tableName.equals("SNOW-INIT1")
+		return tableName.equals("QUAL-INPUT")
+				|| tableName.equals("SNOW-INIT1")
 				|| tableName.equals("SNOW-INIT2")
 
 				//init tables from PERLND.
@@ -144,17 +153,23 @@ public class UciUtils {
 	}
 
 	/**
-	 * Splits the given string into parts that are 10 characters long.
-	 * If the last part is shorter than 10 characters, then the last part will be ignored.
+	 * Splits the given string into parts.
+	 * The first part will be 10 characters. The other parts will have the given lengthInCharacters.
+	 * If the last part is shorter than lengthInCharacters, then the last part will be thrown away.
 	 */
-	public static String[] splitEvery10Characters(String string) {
-		if (string == null || string.isEmpty()) return null;
+	public static String[] splitAfter10ThenEveryNCharacters(String string, int lengthInCharacters) {
+		if (string == null || string.isEmpty() || string.length() < 10) return null;
 
 		List<String> parts = new ArrayList<>();
-		while (string.length() >= 10) {
-			String part = string.substring(0, 10);
+
+		String part = string.substring(0, 10);
+		parts.add(part);
+		string = string.substring(10);
+
+		while (string.length() >= lengthInCharacters) {
+			part = string.substring(0, lengthInCharacters);
 			parts.add(part);
-			string = string.substring(10);
+			string = string.substring(lengthInCharacters);
 		}
 
 		return parts.toArray(new String[parts.size()]);
@@ -339,7 +354,7 @@ public class UciUtils {
 
 		//for each location write a values row.
 		for (int locationNumber : locationNumbers) {
-			String valuesRow = writeValuesRow(locationIdPrefix, locationNumber, parameterIds, exchangeItems);
+			String valuesRow = writeValuesRow(tableName, locationIdPrefix, locationNumber, parameterIds, exchangeItems);
 			if (locationNumberAdditionalInfoMap != null) {
 				//for RCHRES HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
 				//for RCHRES BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be written.
@@ -355,7 +370,24 @@ public class UciUtils {
 		outputLines.add("  END " + tableName);
 	}
 
-	private static String writeValuesRow(String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
+	private static String writeValuesRow(String tableName, String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
+		String valueFormat;
+		if (QualInputTable.isQualInputTable(tableName)) {
+			//format value:
+			//1$ means first argument.
+			//8 means minimum width of 8 characters (left-padded with spaces).
+			//.2 means 2 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 8 characters.
+			//G means floating point, or scientific notation if it would not fit otherwise.
+			valueFormat = "%1$8.2G";
+		} else {
+			//format value:
+			//1$ means first argument.
+			//10 means minimum width of 10 characters (left-padded with spaces).
+			//.4 means 4 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 10 characters.
+			//G means floating point, or scientific notation if it would not fit otherwise.
+			valueFormat = "%1$10.4G";
+		}
+
 		//use Locale.US so that always uses points as decimal symbols.
 		Formatter valuesRow = new Formatter(Locale.US);
 
@@ -374,12 +406,7 @@ public class UciUtils {
 			if (item == null) throw new IllegalStateException("Exchange item with id '" + id + "' not initialized during reading of uci state file.");
 
 			double value = (double) item.getValues();
-			//format value:
-			//1$ means first argument.
-			//10 means minimum width of 10 characters (left-padded with spaces).
-			//.4 means 4 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 10 characters.
-			//G means floating point, or scientific notation if it would not fit otherwise.
-			valuesRow.format("%1$10.4G", value);
+			valuesRow.format(valueFormat, value);
 		}
 
 		return valuesRow.toString();

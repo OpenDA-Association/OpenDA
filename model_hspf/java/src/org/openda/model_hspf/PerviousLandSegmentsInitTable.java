@@ -73,7 +73,8 @@ public class PerviousLandSegmentsInitTable {
 	 * TRAC-SUBSTOR:  LTRSU, ATRSU
 	 *
 	 * For PERLND the following tables are not supported:
-	 * UZSN-LZSN is currently not supported, because it has a different column width.
+	 * UZSN-LZSN is currently not supported, because otherwise parameter SURS would not be unique (this could be either
+	 * initial surface (overland flow) storage from PWAT-STATE1 or initial surface detention storage from UZSN-LZSN).
 	 */
 	public static boolean isPerviousLandSegmentsInitTable(String tableName) {
 		return tableName.equals("SNOW-INIT1")
@@ -118,8 +119,8 @@ public class PerviousLandSegmentsInitTable {
 			String inputLine = inputLines.next();
 			if (inputLine.trim().toUpperCase().startsWith("END")) break;
 
-			//this code assumes that all relevant columns are exactly 10 characters wide in the .uci file, as defined in the HSPF Manual.
-			String[] columns = UciUtils.splitEvery10Characters(inputLine);
+			//this code assumes that all columns are exactly 10 characters wide in the table, as defined in the HSPF Manual.
+			String[] columns = UciUtils.splitAfter10ThenEveryNCharacters(inputLine, 10);
 			if (columns == null || columns.length < 2) {//if empty row.
 				//skip row.
 				continue;

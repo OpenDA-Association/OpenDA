@@ -48,7 +48,9 @@ public class UciStateDataObject implements IDataObject {
 	private Map<String, IExchangeItem> exchangeItems = new HashMap<>();
 	private Map<String, ReachesInitTable> reachesInitTables = new HashMap<>();
 	private Map<String, PerviousLandSegmentsInitTable> perviousLandSegmentsInitTables = new HashMap<>();
+	private Map<String, QualInputTable> perviousLandSegmentsQualInputTables = new HashMap<>();
 	private Map<String, ImperviousLandSegmentsInitTable> imperviousLandSegmentsInitTables = new HashMap<>();
+	private Map<String, QualInputTable> imperviousLandSegmentsQualInputTables = new HashMap<>();
 	private String lastKnownQualId = null;
 
 	/**
@@ -201,11 +203,12 @@ public class UciStateDataObject implements IDataObject {
 				continue;
 			}
 
-			//TODO
-//			if (QualInputTable.isQualInputTable(tableName)) {
-//				readQualInputTable(PerviousLandSegmentsInitTable.PERLND_MODULE_NAME, inputIterator, stateTime);
-//				continue;
-//			}
+			if (QualInputTable.isQualInputTable(tableName)) {
+				QualInputTable qualInputTable = new QualInputTable(UciUtils.PERLND_MODULE_NAME, lastKnownQualId, inputIterator, stateTime, exchangeItems);
+				QualInputTable previous = perviousLandSegmentsQualInputTables.put(QualInputTable.TABLE_NAME + '_' + lastKnownQualId, qualInputTable);
+				if (previous != null) throw new IllegalArgumentException("Multiple " + UciUtils.PERLND_MODULE_NAME + " " + QualInputTable.TABLE_NAME + " tables for '" + lastKnownQualId + "' found in uci state file.");
+				continue;
+			}
 		}
 	}
 
@@ -230,11 +233,12 @@ public class UciStateDataObject implements IDataObject {
 				continue;
 			}
 
-			//TODO
-//			if (QualInputTable.isQualInputTable(tableName)) {
-//				readQualInputTable(ImperviousLandSegmentsInitTable.IMPLND_MODULE_NAME, inputIterator, stateTime);
-//				continue;
-//			}
+			if (QualInputTable.isQualInputTable(tableName)) {
+				QualInputTable qualInputTable = new QualInputTable(UciUtils.IMPLND_MODULE_NAME, lastKnownQualId, inputIterator, stateTime, exchangeItems);
+				QualInputTable previous = imperviousLandSegmentsQualInputTables.put(QualInputTable.TABLE_NAME + '_' + lastKnownQualId, qualInputTable);
+				if (previous != null) throw new IllegalArgumentException("Multiple " + UciUtils.IMPLND_MODULE_NAME + " " + QualInputTable.TABLE_NAME + " tables for qualId '" + lastKnownQualId + "' found in uci state file.");
+				continue;
+			}
 		}
 	}
 
@@ -344,6 +348,17 @@ public class UciStateDataObject implements IDataObject {
 				continue;
 			}
 
+			if (QualInputTable.isQualInputTable(tableName)) {
+				//skip reading to end of table.
+				UciUtils.skipToEnd(inputIterator);
+
+				//write new table.
+				QualInputTable qualInputTable = perviousLandSegmentsQualInputTables.get(QualInputTable.TABLE_NAME + '_' + lastKnownQualId);
+				if (qualInputTable == null) throw new IllegalStateException(UciUtils.PERLND_MODULE_NAME + " " + QualInputTable.TABLE_NAME + " table for '" + lastKnownQualId + "' not initialized during reading of uci state file.");
+				qualInputTable.write(exchangeItems, outputLines);
+				continue;
+			}
+
 			//copy inputLine to output unchanged.
 			outputLines.add(inputLine);
 		}
@@ -377,6 +392,17 @@ public class UciStateDataObject implements IDataObject {
 				outputLines.add(inputLine);
 				//replace last known qualId with the one read from current QUAL-PROPS table and copy table.
 				lastKnownQualId = QualPropsTable.readQualId(UciUtils.IMPLND_MODULE_NAME, inputIterator, outputLines);
+				continue;
+			}
+
+			if (QualInputTable.isQualInputTable(tableName)) {
+				//skip reading to end of table.
+				UciUtils.skipToEnd(inputIterator);
+
+				//write new table.
+				QualInputTable qualInputTable = imperviousLandSegmentsQualInputTables.get(QualInputTable.TABLE_NAME + '_' + lastKnownQualId);
+				if (qualInputTable == null) throw new IllegalStateException(UciUtils.IMPLND_MODULE_NAME + " " + QualInputTable.TABLE_NAME + " table for '" + lastKnownQualId + "' not initialized during reading of uci state file.");
+				qualInputTable.write(exchangeItems, outputLines);
 				continue;
 			}
 
