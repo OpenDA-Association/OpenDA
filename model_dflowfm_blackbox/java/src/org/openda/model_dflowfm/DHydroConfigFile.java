@@ -21,18 +21,20 @@ public class DHydroConfigFile implements IDataObject {
 	private static final String CONFIG_TREE_ELEMENT_INPUTFILE  = "inputFile";
 
 	private String flowDllArgPrefix = "flowDllName:";
-	String usageString = "DHydroConfigFile DataObject must be initialised with 2 or 3 arguments: " +
+	String usageString = "DHydroConfigFile DataObject must be initialised with 1, 2 or 3 arguments: " +
 			"InputFilePath [OutputFilePath] [" + flowDllArgPrefix + "dll-name]";
 
 	private static final String FLOW1D_DLL_NAME = "cf_dll";
 
 	private String flowLibraryName = FLOW1D_DLL_NAME;
+	private String rtcLibraryName = "RTCTools_BMI";
 
 	private File workingDirectory;
 	private String outputFileName = null;
 	ConfigTree configTree = null;
 
 	IDataObject flowMdFile;
+	IDataObject rtcToolsRuntimeConfigFile;
 
 	public String[] getExchangeItemIDs()
 	{
@@ -50,7 +52,7 @@ public class DHydroConfigFile implements IDataObject {
 
 	public void initialize(File workingDirectory, String[] arguments)
 	{
-		if(arguments.length != 2 && arguments.length != 3 ) {
+		if(arguments.length < 1 || arguments.length > 3 ) {
 			throw new RuntimeException(usageString);
 		}
 		String inputFileName = arguments[0];
@@ -76,38 +78,29 @@ public class DHydroConfigFile implements IDataObject {
 		this.workingDirectory = workingDirectory;
 		configTree = new ConfigTree(workingDirectory, inputFileName);
 
-		String md1dFileName= null;
-		String flowWorkingDir= null;
-		ConfigTree[] componentConfigs = configTree.getSubTrees(CONFIG_TREE_ELEMENT_COMPONENT);
-		for (ConfigTree componentConfig : componentConfigs) {
-			String libraryName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_LIBRARY, "");
-			if (libraryName.equalsIgnoreCase(flowLibraryName)) {
-				md1dFileName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_INPUTFILE, "");
-				flowWorkingDir = componentConfig.getAsString(CONFIG_TREE_ELEMENT_WORKDIR, "");
-			}
-		}
-		if (md1dFileName == null || md1dFileName.isEmpty()) {
-			throw new RuntimeException("Could not find Flow's input file in config file " + new File(workingDirectory, inputFileName).getAbsolutePath());
-		}
-		if (flowWorkingDir == null || flowWorkingDir.isEmpty()) {
-			throw new RuntimeException("Could not find Flow's working dir in config file " + new File(workingDirectory, inputFileName).getAbsolutePath());
-		}
-		File md1dFile = new File(workingDirectory, md1dFileName);
-		if (md1dFile.exists()) {
-			throw new RuntimeException("Flow1D's md1d file " + md1dFile.getAbsolutePath());
-		}
+		String inputFilePath = new File(workingDirectory, inputFileName).getAbsolutePath();
+		File md1dFile = getSubComponentConfigFile(inputFilePath, flowLibraryName);
+		File runtimeConfigFile = getSubComponentConfigFile(inputFilePath, rtcLibraryName);
+
 		flowMdFile = new Md1dFile();
-		flowMdFile.initialize(new File(workingDirectory, flowWorkingDir), new String[] {md1dFileName});
+		flowMdFile.initialize(md1dFile.getParentFile(), new String[] {md1dFile.getName()});
+
+		rtcToolsRuntimeConfigFile = new RtcToolsRuntimeConfigFile();
+		rtcToolsRuntimeConfigFile.initialize(runtimeConfigFile.getParentFile(), new String[] {runtimeConfigFile.getName()});
 	}
 
 	public void finish()
 	{
 		IExchangeItem startTimeExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STARTTIME);
 		if(startTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_STARTTIME));
+		IExchangeItem rtcStartTimeExchangeItem = rtcToolsRuntimeConfigFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STARTTIME);
+		rtcStartTimeExchangeItem.setValues(startTimeExchangeItem.getValues());
 		double startTimeAsMJD = startTimeExchangeItem.getValuesAsDoubles()[0];
 
 		IExchangeItem stopTimeExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STOPTIME);
 		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_STOPTIME));
+		IExchangeItem rtcEndTimeExchangeItem = rtcToolsRuntimeConfigFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STOPTIME);
+		rtcEndTimeExchangeItem.setValues(stopTimeExchangeItem.getValues());
 		double stopTimeAsMJD = stopTimeExchangeItem.getValuesAsDoubles()[0];
 
 		IExchangeItem timeStepExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_TIMESTEP);
@@ -124,6 +117,7 @@ public class DHydroConfigFile implements IDataObject {
 		configTree.toFile(workingDirectory, outputFileName);
 
 		flowMdFile.finish();
+		rtcToolsRuntimeConfigFile.finish();
 	}
 
 	private String getDLLNameFromArgument(String dllString) {
@@ -131,5 +125,29 @@ public class DHydroConfigFile implements IDataObject {
 			return dllString.substring(flowDllArgPrefix.length());
 		}
 		return null;
+	}
+
+	private File getSubComponentConfigFile(String inputFilePath, String subComponentLibraryName) {
+		String inputFile= null;
+		String workingDir= null;
+		ConfigTree[] componentConfigs = configTree.getSubTrees(CONFIG_TREE_ELEMENT_COMPONENT);
+		for (ConfigTree componentConfig : componentConfigs) {
+			String libraryName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_LIBRARY, "");
+			if (libraryName.equalsIgnoreCase(subComponentLibraryName)) {
+				inputFile = componentConfig.getAsString(CONFIG_TREE_ELEMENT_INPUTFILE, "");
+				workingDir = componentConfig.getAsString(CONFIG_TREE_ELEMENT_WORKDIR, "");
+			}
+		}
+		if (inputFile == null || inputFile.isEmpty()) {
+			throw new RuntimeException("Could not find input file for " + subComponentLibraryName + " in config file " + inputFilePath);
+		}
+		if (workingDir == null || workingDir.isEmpty()) {
+			throw new RuntimeException("Could not find working dir  for " + subComponentLibraryName + " in config file " + inputFilePath);
+		}
+		File md1dFile = new File(workingDirectory, inputFile);
+		if (md1dFile.exists()) {
+			throw new RuntimeException("Flow1D's md1d file " + md1dFile.getAbsolutePath());
+		}
+		return md1dFile;
 	}
 }

@@ -12,14 +12,11 @@ import java.io.File;
 public class DHydroConfigFileTest extends TestCase
 {
 	private File testRunDataDir;
-	private OpenDaTestSupport testData;
 	private String dHydroConfigFileNameOriginal = "d_hydro_config.xml";
 	private String dHydroConfigFileNameGenerated = "d_hydro_config_generated.xml";
-	private String FlowMd1dFileNameGenerated = "dflow1d/flow-model-1d.md1d";
-	private String FlowMd1dFileNameExpected = "dflow1d/flow-model-1d_expected.md1d";
 
 	protected void setUp() {
-		testData = new OpenDaTestSupport(DHydroConfigFileTest.class, "public", "model_dflowfm_blackbox");
+		OpenDaTestSupport testData = new OpenDaTestSupport(DHydroConfigFileTest.class, "public", "model_dflowfm_blackbox");
 		testRunDataDir = new File(testData.getTestRunDataDir(), "DHydroFile");
 	}
 
@@ -42,10 +39,17 @@ public class DHydroConfigFileTest extends TestCase
 		dHydroConfigFile.finish();
 
 		// Step 4: Compare written file to expected results
+		String flowMd1dFileNameGenerated = "dflow1d/flow-model-1d.md1d";
+		String flowMd1dFileNameExpected = "dflow1d/flow-model-1d_expected.md1d";
+		String rtcRuntimeConfigNameGenerated = "rtc/rtcRuntimeConfig.xml";
+		String rtcRuntimeConfigNameExpected = "rtc/rtcRuntimeConfig_expected.xml";
+
 		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, "d_hydro_config_expected.xml"),
 				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare dhydro-config file");
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testRunDataDir, FlowMd1dFileNameExpected),
-				new File(testRunDataDir, FlowMd1dFileNameGenerated)), "Compare flow1d md1d file");
+		Assert.isTrue(FileComparer.CompareIniFiles(new File(testRunDataDir, flowMd1dFileNameExpected),
+				new File(testRunDataDir, flowMd1dFileNameGenerated)), "Compare flow1d md1d file");
+		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, rtcRuntimeConfigNameExpected),
+				new File(testRunDataDir, rtcRuntimeConfigNameGenerated)), "Compare rtc run time config file");
 	}
 
 	public void testDHydroConfigFileGeneratesExpectedFile()
