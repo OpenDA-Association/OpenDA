@@ -60,7 +60,7 @@ public class QualInputTable {
 	 * Read one QUAL-INPUT table from uci state file and create state exchangeItems for all state variables in that table.
 	 * Also read and store the values of these state variables into memory.
 	 */
-	public QualInputTable(String moduleName, String qualId, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
+	public QualInputTable(String moduleName, int qualInputTableNumber, Iterator<String> inputLines, double stateTime, Map<String, IExchangeItem> exchangeItems) {
 		if (moduleName == null) throw new IllegalArgumentException("moduleName == null");
 		this.moduleName = moduleName;
 		this.locationIdPrefix = UciUtils.getLocationIdPrefix(moduleName);
@@ -86,7 +86,7 @@ public class QualInputTable {
 				if (firstHeaderRow == null) firstHeaderRow = inputLine;
 				if (UciUtils.firstHeaderRowContainsParameterIds(TABLE_NAME)) {
 					//update parameterIds for reading the next value row.
-					augmentedParameterIds = augmentParameterIds(UciUtils.readParameterIds(moduleName, TABLE_NAME, columns), qualId);
+					augmentedParameterIds = augmentParameterIds(UciUtils.readParameterIds(moduleName, TABLE_NAME, columns), qualInputTableNumber);
 				}
 				continue;
 			}
@@ -95,7 +95,7 @@ public class QualInputTable {
 				if (secondHeaderRow == null) secondHeaderRow = inputLine;
 				if (UciUtils.secondHeaderRowContainsParameterIds(TABLE_NAME)) {
 					//update parameterIds for reading the next value row.
-					augmentedParameterIds = augmentParameterIds(UciUtils.readParameterIds(moduleName, TABLE_NAME, columns), qualId);
+					augmentedParameterIds = augmentParameterIds(UciUtils.readParameterIds(moduleName, TABLE_NAME, columns), qualInputTableNumber);
 				}
 				continue;
 			}
@@ -120,10 +120,10 @@ public class QualInputTable {
 		Collections.sort(this.segmentNumbers);
 	}
 
-	private static List<String> augmentParameterIds(List<String> parameterIds, String qualId) {
+	private static List<String> augmentParameterIds(List<String> parameterIds, int qualInputTableNumber) {
 		List<String> augmentedParameterIds = new ArrayList<>();
 		for (String parameterId : parameterIds) {
-			String augmentedParameterId = parameterId + '-' + qualId;
+			String augmentedParameterId = parameterId + qualInputTableNumber;
 			augmentedParameterIds.add(augmentedParameterId);
 		}
 		return augmentedParameterIds;
