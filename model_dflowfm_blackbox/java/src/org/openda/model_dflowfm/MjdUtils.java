@@ -1,10 +1,11 @@
 package org.openda.model_dflowfm;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by prevel on 24-Nov-15.
+ * Utilities for handling modified julia days
  */
 public class MjdUtils
 {
@@ -35,6 +36,13 @@ public class MjdUtils
 		Calendar dateTime = new GregorianCalendar();
 		dateTime.setTimeInMillis((long)((mdjValue * ONE_DAY_IN_MILLISECONDS) + MJD_ZERO.getTimeInMillis())); // possible loss of precision?
 		return dateTime;
+	}
+
+	public static double parseMjdFromTimeString(String timeString) throws ParseException {
+		double mjdStartTime;Calendar startTime = new GregorianCalendar();
+		startTime.setTime(DATE_FORMAT.parse(timeString));
+		mjdStartTime = MjdUtils.ConvertDateTimeToModifiedJulianDay(startTime);
+		return mjdStartTime;
 	}
 
 	public static List<Double> ConvertDateTimesWithUnitToModifiedJulianDays(String unitString, List<Double> values)

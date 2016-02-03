@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <deltaresHydro xmlns="http://schemas.deltares.nl/deltaresHydro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.deltares.nl/deltaresHydro http://content.oss.deltares.nl/schemas/d_hydro-1.00.xsd">
   <documentation>
     <fileVersion>1.00</fileVersion>
@@ -47,10 +47,10 @@
     <inputFile>.</inputFile>
   </component>
   <component name="flow model 1d">
-    <library>dflow1d</library>
+    <library>cf_dll</library>
     <process>0</process>
     <workingDir>dflow1d</workingDir>
-    <inputFile>flow model 1d</inputFile>
+    <inputFile>flow-model-1d.md1d</inputFile>
   </component>
   <coupler name="rtc2flow1d">
     <sourceComponent>real-time control</sourceComponent>

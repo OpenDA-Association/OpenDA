@@ -9,33 +9,39 @@ import org.openda.interfaces.IPrevExchangeItem;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 /**
- * Created by prevel on 30-Nov-15.
+ * Data object implementation for FLOW 1D's md1d-file (needed to get and adjust time frame)
  */
 public class Md1dFile implements IDataObject
 {
+	static final String PROPERTY_STARTTIME = "StartTime";
+	static final String PROPERTY_STOPTIME = "StopTime";
+	static final String PROPERTY_TIMESTEP = "TimeStep";
+
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final String CATEGORY_TIME = "Time";
-	private static final String PROPERTY_STARTTIME = "StartTime";
-	private static final String PROPERTY_STOPTIME = "StopTime";
-	private static final String PROPERTY_TIMESTEP = "TimeStep";
 	private static final String PROPERTY_OUTPUT_TIMESTEP = "OutTimeStepGridPoints";
 
 	private File workingDirectory;
-	private String inputFileName = null;
 	private String outputFileName = null;
 	private Ini ini = new Ini();
 
 	protected HashMap<String, IExchangeItem> exchangeItems;
 
-	@Override
 	public void initialize(File workingDirectory, String[] arguments)
 	{
-		if(arguments.length < 2) throw new RuntimeException("Md1dFile DataObject must be initialised with 2 arguments: InputFilePath and OutputFilePath");
-		this.inputFileName = arguments[0];
-		this.outputFileName = arguments[1];
+		if(arguments.length !=1 && arguments.length !=2) throw new RuntimeException("Md1dFile DataObject must be initialised with 1 or 2 arguments: InputFilePath [OutputFilePath]");
+		String inputFileName = arguments[0];
+		this.outputFileName = inputFileName;
+		if (arguments.length == 2) {
+			this.outputFileName = arguments[1];
+		}
+
 		this.workingDirectory = workingDirectory;
 
 		File inputFile = new File(workingDirectory, inputFileName);
@@ -63,18 +69,14 @@ public class Md1dFile implements IDataObject
 		double mjdStartTime;
 		try
 		{
-			Calendar startTime = new GregorianCalendar();
-			startTime.setTime(DATE_FORMAT.parse(startTimeString));
-			mjdStartTime = MjdUtils.ConvertDateTimeToModifiedJulianDay(startTime);
+			mjdStartTime = MjdUtils.parseMjdFromTimeString(startTimeString);
 		}
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STARTTIME, startTimeString)); }
 
 		double mjdStopTime;
 		try
 		{
-			Calendar stopTime = new GregorianCalendar();
-			stopTime.setTime(DATE_FORMAT.parse(stopTimeString));
-			mjdStopTime = MjdUtils.ConvertDateTimeToModifiedJulianDay(stopTime);
+			mjdStopTime = MjdUtils.parseMjdFromTimeString(stopTimeString);
 		}
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STOPTIME, stopTimeString)); }
 
@@ -93,13 +95,11 @@ public class Md1dFile implements IDataObject
 		exchangeItems.put(PROPERTY_OUTPUT_TIMESTEP, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.OutputTimeStep, outputTimeStep));
 	}
 
-	@Override
 	public String[] getExchangeItemIDs()
 	{
 		return exchangeItems.keySet().toArray(new String[exchangeItems.keySet().size()]);
 	}
 
-	@Override
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role)
 	{
 		List<String> matchingExchangeItemIds = new ArrayList<>();
@@ -109,10 +109,8 @@ public class Md1dFile implements IDataObject
 		return matchingExchangeItemIds.toArray(new String[matchingExchangeItemIds.size()]);
 	}
 
-	@Override
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) { return exchangeItems.get(exchangeItemID); }
 
-	@Override
 	public void finish()
 	{
 		IExchangeItem startTimeExchangeItem = exchangeItems.get(PROPERTY_STARTTIME);
@@ -120,30 +118,34 @@ public class Md1dFile implements IDataObject
 		double mjdStartTime = startTimeExchangeItem.getValuesAsDoubles()[0];
 		Calendar startTime = MjdUtils.ConvertModifiedJulianDayToDateTime(mjdStartTime);
 		String comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_STARTTIME));
-		ini.put(CATEGORY_TIME, PROPERTY_STARTTIME, String.format("%s %s", DATE_FORMAT.format(startTime.getTime()), (comment == null ? "" : comment)));
+		ini.put(CATEGORY_TIME, PROPERTY_STARTTIME, String.format("%s %s", DATE_FORMAT.format(startTime.getTime()), comment));
 
 		IExchangeItem stopTimeExchangeItem = exchangeItems.get(PROPERTY_STOPTIME);
 		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STOPTIME));
 		double mjdStopTime = stopTimeExchangeItem.getValuesAsDoubles()[0];
 		Calendar stopTime = MjdUtils.ConvertModifiedJulianDayToDateTime(mjdStopTime);
 		comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_STOPTIME));
-		ini.put(CATEGORY_TIME, PROPERTY_STOPTIME, String.format("%s %s", DATE_FORMAT.format(stopTime.getTime()), (comment == null ? "" : comment)));
+		ini.put(CATEGORY_TIME, PROPERTY_STOPTIME, String.format("%s %s", DATE_FORMAT.format(stopTime.getTime()), comment));
 
 		IExchangeItem timeStepExchangeItem = exchangeItems.get(PROPERTY_TIMESTEP);
 		if(timeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_TIMESTEP));
 		double timeStep = convertDaysToSeconds(timeStepExchangeItem.getValuesAsDoubles()[0]);
 		comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_TIMESTEP));
-		ini.put(CATEGORY_TIME, PROPERTY_TIMESTEP, String.format("%s %s", timeStep, (comment == null ? "" : comment)));
+		ini.put(CATEGORY_TIME, PROPERTY_TIMESTEP, String.format("%s %s", timeStep, comment));
 
 		IExchangeItem outTimeStepExchangeItem = exchangeItems.get(PROPERTY_OUTPUT_TIMESTEP);
 		if(outTimeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_OUTPUT_TIMESTEP));
 		double outputTimeStep = convertDaysToSeconds(outTimeStepExchangeItem.getValuesAsDoubles()[0]);
 		comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_OUTPUT_TIMESTEP));
-		ini.put(CATEGORY_TIME, PROPERTY_OUTPUT_TIMESTEP, String.format("%s %s", outputTimeStep, (comment == null ? "" : comment)));
+		ini.put(CATEGORY_TIME, PROPERTY_OUTPUT_TIMESTEP, String.format("%s %s", outputTimeStep, comment));
 
 		File outputFile = new File(workingDirectory, outputFileName);
 		try { ini.store(outputFile); }
 		catch (IOException ex) { throw new RuntimeException(String.format("%s, Error writing to file: %s", ex.getMessage(), outputFile.getPath())); }
+	}
+
+	HashMap<String, IExchangeItem> getExchangeItems() {
+		return exchangeItems;
 	}
 
 	private String removeTrailingComment(String originalString)

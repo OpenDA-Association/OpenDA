@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rtcRuntimeConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rtc="http://www.wldelft.nl/fews" xmlns="http://www.wldelft.nl/fews" xsi:schemaLocation="http://www.wldelft.nl/fews C:\src\DeltaShell-trunk\Products\NGHS\bin\Debug\plugins\DeltaShell.Plugins.DelftModels.RealTimeControl\xsd\rtcRuntimeConfig.xsd">
+  <period>
+    <userDefined>
+      <startDate date="2015-12-01" time="12:00:00" />
+      <endDate date="2015-12-02" time="12:00:00" />
+      <timeStep unit="minute" multiplier="60" divider="1" />
+    </userDefined>
+  </period>
+  <mode>
+    <simulation>
+      <limitedMemory>true</limitedMemory>
+    </simulation>
+  </mode>
+</rtcRuntimeConfig>

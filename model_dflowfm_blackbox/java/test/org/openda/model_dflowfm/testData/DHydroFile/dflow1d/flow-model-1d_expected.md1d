@@ -1,0 +1,30 @@
+# Generated on 11/27/2015 16:06:44
+
+[General]
+majorVersion = 1                   # Major file version. Do not edit this.
+minorVersion = 0                   # Minor file version. Do not edit this.
+fileType = modelDef            # File type. Do not edit this.
+
+[Files]
+networkFile = NetworkDefinition.ini# Name and location of the network file
+crossLocFile = CrossSectionLocations.ini# Name and location of the file containing the locations of the cross sections
+crossDefFile = CrossSectionDefinitions.ini# Name and location of the file containing the definitions of the cross sections
+structureFile = Structures.ini      # Name and location of the structure file
+obsPointsFile = ObservationPoints.ini# Name and location of the observation points file
+initialWaterLevelFile = InitialWaterLevel.ini# Name and location of the file containing the spatial definition of the initial water level
+initialWaterDepthFile = InitialWaterDepth.ini# Name and location of the file containing the spatial definition of the initial water depth
+initialDischargeFile = InitialDischarge.ini# Name and location of the file containing the spatial definition of the initial discharge
+initialSalinityFile = InitialSalinity.ini # Name and location of the file containing the spatial definition of the initial salinity
+dispersionFile = Dispersion.ini      # Name and location of the file containing the spatial definition of the dispersion
+roughnessFile = roughness-Main.ini;roughness-FloodPlain1.ini;roughness-FloodPlain2.ini;roughness-ForkLeft-Leftbank.ini;roughness-ForkLeft-Rightbank.ini;roughness-Main (Reversed).ini;roughness-FloodPlain1 (Reversed).ini;roughness-FloodPlain2 (Reversed).ini;roughness-ForkLeft-Leftbank (Reversed).ini;roughness-ForkLeft-Rightbank (Reversed).ini# Name and location of the file containing the roughness data
+boundLocFile = BoundaryLocations.ini# Name and location of the file containing the boundary locations
+latDischargeLocFile = LateralDischargeLocations.ini# Name and location of the file containing the lateral discharge locations
+boundCondFile = BoundaryConditions.bc# Name and location of the file containing the boundary conditions and lateral discharges
+
+[Time]
+StartTime = 2015-12-02 00:00:00 # yyyy-MM-dd HH:mm:ss
+StopTime = 2015-12-03 00:00:00 # yyyy-MM-dd HH:mm:ss
+TimeStep = 3600.0 # in seconds
+OutTimeStepGridPoints = 3600.0 # in seconds
+OutTimeStepStructures = 3600.0              # in seconds
+

@@ -15,6 +15,8 @@ public class DHydroConfigFileTest extends TestCase
 	private OpenDaTestSupport testData;
 	private String dHydroConfigFileNameOriginal = "d_hydro_config.xml";
 	private String dHydroConfigFileNameGenerated = "d_hydro_config_generated.xml";
+	private String FlowMd1dFileNameGenerated = "dflow1d/flow-model-1d.md1d";
+	private String FlowMd1dFileNameExpected = "dflow1d/flow-model-1d_expected.md1d";
 
 	protected void setUp() {
 		testData = new OpenDaTestSupport(DHydroConfigFileTest.class, "public", "model_dflowfm_blackbox");
@@ -41,7 +43,9 @@ public class DHydroConfigFileTest extends TestCase
 
 		// Step 4: Compare written file to expected results
 		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, "d_hydro_config_expected.xml"),
-				new File(testRunDataDir, dHydroConfigFileNameGenerated)));
+				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare dhydro-config file");
+		Assert.isTrue(FileComparer.CompareIniFiles(new File(testRunDataDir, FlowMd1dFileNameExpected),
+				new File(testRunDataDir, FlowMd1dFileNameGenerated)), "Compare flow1d md1d file");
 	}
 
 	public void testDHydroConfigFileGeneratesExpectedFile()
@@ -55,6 +59,6 @@ public class DHydroConfigFileTest extends TestCase
 
 		// Step 3: Compare written file to expected results
 		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, dHydroConfigFileNameOriginal),
-				new File(testRunDataDir, dHydroConfigFileNameGenerated)));
+				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare resulting dhydro-config file");
 	}
 }

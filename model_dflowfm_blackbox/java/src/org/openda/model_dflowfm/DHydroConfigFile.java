@@ -6,7 +6,6 @@ import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.ConfigTree;
 
 import java.io.File;
-import java.util.*;
 
 /**
  * IDataObject for configuration file for d_hydro.exe.
@@ -14,79 +13,123 @@ import java.util.*;
  */
 public class DHydroConfigFile implements IDataObject {
 
-	private static final String CONFIG_TREE_CATEGORY_TIME = "control/parallel/startGroup/time";
-	private static final String PROPERTY_STARTTIME = "StartTime";
-	private static final String PROPERTY_STOPTIME = "StopTime";
-	private static final String PROPERTY_TIMESTEP = "TimeStep";
+	private static final String CONFIG_TREE_ELEMENT_TIME = "control/parallel/startGroup/time";
+
+	private static final String CONFIG_TREE_ELEMENT_COMPONENT  = "component";
+	private static final String CONFIG_TREE_ELEMENT_WORKDIR    = "workingDir";
+	private static final String CONFIG_TREE_ELEMENT_LIBRARY    = "library";
+	private static final String CONFIG_TREE_ELEMENT_INPUTFILE  = "inputFile";
+
+	private String flowDllArgPrefix = "flowDllName:";
+	String usageString = "DHydroConfigFile DataObject must be initialised with 2 or 3 arguments: " +
+			"InputFilePath [OutputFilePath] [" + flowDllArgPrefix + "dll-name]";
+
+	private static final String FLOW1D_DLL_NAME = "cf_dll";
+
+	private String flowLibraryName = FLOW1D_DLL_NAME;
 
 	private File workingDirectory;
-	private String inputFileName = null;
 	private String outputFileName = null;
 	ConfigTree configTree = null;
 
-	protected HashMap<String, IExchangeItem> exchangeItems;
+	IDataObject flowMdFile;
 
 	public String[] getExchangeItemIDs()
 	{
-		return exchangeItems.keySet().toArray(new String[exchangeItems.keySet().size()]);
+		return flowMdFile.getExchangeItemIDs();
 	}
 
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role)
 	{
-		List<String> matchingExchangeItemIds = new ArrayList<>();
-		for(IExchangeItem exchangeItem : exchangeItems.values())
-			if(exchangeItem.getRole() == role) matchingExchangeItemIds.add(exchangeItem.getId());
-
-		return matchingExchangeItemIds.toArray(new String[matchingExchangeItemIds.size()]);
+		return flowMdFile.getExchangeItemIDs(role);
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		if (!exchangeItems.containsKey(exchangeItemID)) throw new RuntimeException("Invalid exchange item id: " + exchangeItemID);
-		return exchangeItems.get(exchangeItemID);
+		return flowMdFile.getDataObjectExchangeItem(exchangeItemID);
 	}
 
 	public void initialize(File workingDirectory, String[] arguments)
 	{
-		if(arguments.length < 2) throw new RuntimeException("DHydroConfigFile DataObject must be initialised with 2 arguments: InputFilePath and OutputFilePath");
-		this.inputFileName = arguments[0];
-		this.outputFileName = arguments[1];
+		if(arguments.length != 2 && arguments.length != 3 ) {
+			throw new RuntimeException(usageString);
+		}
+		String inputFileName = arguments[0];
+		this.outputFileName = inputFileName;
+
+		if (arguments.length > 1) {
+			String dllName = getDLLNameFromArgument(arguments[1]);
+			if (dllName != null ) {
+				flowLibraryName = dllName;
+			} else {
+				this.outputFileName = arguments[1];
+				if (arguments.length > 2) {
+					dllName = getDLLNameFromArgument(arguments[1]);
+					if (dllName != null ) {
+						flowLibraryName = dllName;
+					} else {
+						throw new RuntimeException(usageString);
+					}
+				}
+			}
+		}
+
 		this.workingDirectory = workingDirectory;
 		configTree = new ConfigTree(workingDirectory, inputFileName);
 
-		String timeField = configTree.getAsString(CONFIG_TREE_CATEGORY_TIME, "");
-		String[] lineParts = timeField.trim().split("\\s", 3);
-		double startTimeValue = Double.parseDouble(lineParts[0]);
-		double timeStepValue = Double.parseDouble(lineParts[1]);
-		double stopTimeValue = Double.parseDouble(lineParts[2]);
-
-		exchangeItems = new HashMap<>();
-		exchangeItems.put(PROPERTY_STARTTIME, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.StartTime, startTimeValue));
-		exchangeItems.put(PROPERTY_STOPTIME, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.StopTime, stopTimeValue));
-		exchangeItems.put(PROPERTY_TIMESTEP, new Flow1DTimeInfoExchangeItem(Flow1DTimeInfoExchangeItem.PropertyId.TimeStep, timeStepValue));
+		String md1dFileName= null;
+		String flowWorkingDir= null;
+		ConfigTree[] componentConfigs = configTree.getSubTrees(CONFIG_TREE_ELEMENT_COMPONENT);
+		for (ConfigTree componentConfig : componentConfigs) {
+			String libraryName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_LIBRARY, "");
+			if (libraryName.equalsIgnoreCase(flowLibraryName)) {
+				md1dFileName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_INPUTFILE, "");
+				flowWorkingDir = componentConfig.getAsString(CONFIG_TREE_ELEMENT_WORKDIR, "");
+			}
+		}
+		if (md1dFileName == null || md1dFileName.isEmpty()) {
+			throw new RuntimeException("Could not find Flow's input file in config file " + new File(workingDirectory, inputFileName).getAbsolutePath());
+		}
+		if (flowWorkingDir == null || flowWorkingDir.isEmpty()) {
+			throw new RuntimeException("Could not find Flow's working dir in config file " + new File(workingDirectory, inputFileName).getAbsolutePath());
+		}
+		File md1dFile = new File(workingDirectory, md1dFileName);
+		if (md1dFile.exists()) {
+			throw new RuntimeException("Flow1D's md1d file " + md1dFile.getAbsolutePath());
+		}
+		flowMdFile = new Md1dFile();
+		flowMdFile.initialize(new File(workingDirectory, flowWorkingDir), new String[] {md1dFileName});
 	}
 
 	public void finish()
 	{
-		IExchangeItem startTimeExchangeItem = exchangeItems.get(PROPERTY_STARTTIME);
-		if(startTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STARTTIME));
-		double startTimeValue = startTimeExchangeItem.getValuesAsDoubles()[0];
+		IExchangeItem startTimeExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STARTTIME);
+		if(startTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_STARTTIME));
+		double startTimeAsMJD = startTimeExchangeItem.getValuesAsDoubles()[0];
 
-		IExchangeItem stopTimeExchangeItem = exchangeItems.get(PROPERTY_STOPTIME);
-		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STOPTIME));
-		double stopTimeValue = stopTimeExchangeItem.getValuesAsDoubles()[0];
+		IExchangeItem stopTimeExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STOPTIME);
+		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_STOPTIME));
+		double stopTimeAsMJD = stopTimeExchangeItem.getValuesAsDoubles()[0];
 
-		IExchangeItem timeStepExchangeItem = exchangeItems.get(PROPERTY_TIMESTEP);
-		if(timeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_TIMESTEP));
-		double timeStepValue = timeStepExchangeItem.getValuesAsDoubles()[0];
+		IExchangeItem timeStepExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_TIMESTEP);
+		if(timeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_TIMESTEP));
 
-		String content = String.format("%s %s %s",formatNumberString(startTimeValue), formatNumberString(timeStepValue), formatNumberString(stopTimeValue));
-		configTree.setContentString(CONFIG_TREE_CATEGORY_TIME, content);
+		double timeStepAsMJD = timeStepExchangeItem.getValuesAsDoubles()[0];
+		long timeStepInSeconds = Math.round(timeStepAsMJD*86400d);
+
+		double periodAsMJD = stopTimeAsMJD - startTimeAsMJD;
+		long periodInSeconds = Math.round(periodAsMJD*86400d);
+
+		String content = String.format("0 %s %s", timeStepInSeconds, periodInSeconds);
+		configTree.setContentString(CONFIG_TREE_ELEMENT_TIME, content);
 		configTree.toFile(workingDirectory, outputFileName);
+
+		flowMdFile.finish();
 	}
 
-	private String formatNumberString(double value)
-	{
-		// remove trailing zeros from double
-		return value == (long)value ? String.valueOf((long)value) : String.valueOf(value);
+	private String getDLLNameFromArgument(String dllString) {
+		if (dllString.toLowerCase().startsWith(flowDllArgPrefix)) {
+			return dllString.substring(flowDllArgPrefix.length());
+		}
+		return null;
 	}
 }

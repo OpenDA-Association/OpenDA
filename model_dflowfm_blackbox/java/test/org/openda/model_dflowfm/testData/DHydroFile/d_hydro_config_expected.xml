@@ -32,7 +32,7 @@
   <control>
     <parallel>
       <startGroup>
-        <time>0.5 3600 86400.5</time>
+        <time>0 3600 86400</time>
         <coupler name="flow1d2rtc" />
         <start name="real-time control" />
         <coupler name="rtc2flow1d" />
@@ -47,10 +47,10 @@
     <inputFile>.</inputFile>
   </component>
   <component name="flow model 1d">
-    <library>dflow1d</library>
+    <library>cf_dll</library>
     <process>0</process>
     <workingDir>dflow1d</workingDir>
-    <inputFile>flow model 1d</inputFile>
+    <inputFile>flow-model-1d.md1d</inputFile>
   </component>
   <coupler name="rtc2flow1d">
     <sourceComponent>real-time control</sourceComponent>
