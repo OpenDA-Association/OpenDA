@@ -876,8 +876,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			    modelExchangeItem = getExchangeItem(vectorConfig.getSourceId());
             }
 			if (modelExchangeItem == null) {
-				errorMessage += "\n\tExchange item not found: "
-						+ vectorConfig.getSourceId();
+				errorMessage += "\n\tExchange item not found: " + vectorConfig.getSourceId();
 				continue;
 			}
 
@@ -1098,6 +1097,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             this.observationDescriptions = observationDescriptions;
         }
 		// else, No action
+		if (this.model instanceof IModelExtensions) {
+			((IModelExtensions) this.model).announceObservedValues(observationDescriptions);
+		}
 	}
 
 	public IVector getStateScaling() {

@@ -26,15 +26,18 @@ import bmi.BMIModelException;
 import bmi.BMI;
 import bmi.EBMI;
 
+import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
+import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.utils.Instance;
-import org.openda.utils.Results;
-import org.openda.utils.Time;
+import org.openda.utils.*;
+import org.openda.utils.Vector;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.AnalysisDataWriter;
 import org.openda.utils.io.FileBasedModelState;
@@ -116,9 +119,6 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 		exchangeItems = createExchangeItems(model);
 
-		// Harcoded choice to create a buffer, optionally create configuration in XSD schema.
-		bufferedExchangeItems = createBufferedExchangeItems(model);
-
 		forcingExchangeItems = createForcingExchangeItems();
 
 		this.analysisDataWriter = new AnalysisDataWriter(exchangeItems.values(), modelRunDir);
@@ -168,7 +168,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	}
 
 	// Buffer for OUTPUT ExchangeItems, in order to facilitate asynchronous filtering.
-	private Map<String, IExchangeItem> createBufferedExchangeItems(BMI model) throws BMIModelException {
+	private Map<String, IExchangeItem> createBufferedExchangeItems(BMI model, ITime[] bufferTimes) throws BMIModelException {
 		Set<String> inputVars = new HashSet<String>();
 		Set<String> outputVars = new HashSet<String>();
 		Set<String> inoutVars = new HashSet<String>();
@@ -188,21 +188,26 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
 
-		// Hardcoded DataObject, optionally create configuration in XSD schema.
-		IDataObject dataObject = BBUtils.createDataObject(this.modelRunDir, "org.openda.exchange.dataobjects.NetcdfDataObject", "stateBuffer.nc", new String[] {"true", "false"});
+		// ITime has no double[] getTimes?
+		double[] selectedTimes = new double[bufferTimes.length];
+		for (int i = 0; i < bufferTimes.length; i++) {
+			selectedTimes[i] = bufferTimes[i].getMJD();
+		}
 
 		for (String variable : outputVars) {
-			IExchangeItem anItem = dataObject.getDataObjectExchangeItem(variable);
-			if (anItem != null) {
-				result.put(variable, anItem);
-			}
+			BmiStateExchangeItem bmiExchangeItem = (BmiStateExchangeItem)this.exchangeItems.get(variable);
+			int numberOfValues = ((ArrayGeometryInfo)bmiExchangeItem.getGeometryInfo()).getCellCount() * bufferTimes.length;
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(variable, Role.Output, new double[numberOfValues]);
+			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
+			result.put(variable, bufferExchangeItem);
 		}
 
 		for (String variable : inoutVars) {
-			IExchangeItem anItem = dataObject.getDataObjectExchangeItem(variable);
-			if (anItem != null) {
-				result.put(variable, anItem);
-			}
+			BmiStateExchangeItem bmiExchangeItem = (BmiStateExchangeItem)this.exchangeItems.get(variable);
+			int numberOfValues = ((ArrayGeometryInfo)bmiExchangeItem.getGeometryInfo()).getCellCount() * bufferTimes.length;
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(variable, Role.InOut, new double[numberOfValues]);
+			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
+			result.put(variable, bufferExchangeItem);
 		}
 
 		return result;
@@ -251,11 +256,14 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @return IExchangeItem.
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
-		IExchangeItem exchangeItem = this.forcingExchangeItems.get(exchangeItemId);
-		if (exchangeItem == null) {
+		IExchangeItem exchangeItem = null;
+		if (this.forcingExchangeItems != null){
+			exchangeItem = this.forcingExchangeItems.get(exchangeItemId);
+		}
+		if (exchangeItem == null && this.bufferedExchangeItems != null) {
 			exchangeItem = this.bufferedExchangeItems.get(exchangeItemId);
 		}
-		if (exchangeItem == null) {
+		if (exchangeItem == null && this.exchangeItems != null) {
 			exchangeItem = this.exchangeItems.get(exchangeItemId);
 		}
 		if (exchangeItem == null) {
@@ -326,15 +334,18 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
 		for (Map.Entry<String, IExchangeItem> entry : bufferedExchangeItems.entrySet()) {
 			IExchangeItem bufferEI = entry.getValue();
-			if (bufferEI instanceof NetcdfGridTimeSeriesExchangeItem) {
-				double[] times = bufferEI.getTimes();
-				for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
-					if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
-						((NetcdfGridTimeSeriesExchangeItem) bufferEI).setValuesAsDoublesForSingleTimeIndex(aTimeIndex, exchangeItems.get(entry.getKey()).getValuesAsDoubles());
+			double[] times = bufferEI.getTimes();
+			double[] newValues = exchangeItems.get(entry.getKey()).getValuesAsDoubles();
+			for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
+				if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
+					double[] allValues = bufferEI.getValuesAsDoubles();
+					int valuesPerTime = allValues.length / times.length;
+					// Java has no slice or range assignment?
+					int offset = aTimeIndex * valuesPerTime;
+					for (int i = 0; i < valuesPerTime; i++) {
+						allValues[i + offset] = newValues[i];
 					}
 				}
-			} else {
-				throw new RuntimeException("NetCDF file stateBuffer.nc containing BMI state variable buffers must contain only grid forcings.");
 			}
 		}
 	}
@@ -501,7 +512,18 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @return Model prediction interpolated to each observation (location).
 	 */
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-		//see method BBStochModelInstance: if this method returns null, then method BBStochModelInstance.getObservedValuesBB is used instead.
+//		TreeVector treeVector = new TreeVector("predictions");
+//
+//		for (IPrevExchangeItem observationExchangeItem : observationDescriptions.getExchangeItems()) {
+//			IExchangeItem bufferedExchangeItem = this.bufferedExchangeItems.get(observationExchangeItem.getId());
+//			if (bufferedExchangeItem != null) {
+//				double[] computedValues = bufferedExchangeItem.getValuesAsDoubles();
+//				ITreeVector treeVectorLeaf = new TreeVector(bufferedExchangeItem.getId(), new Vector(computedValues));
+//				treeVector.addChild(treeVectorLeaf);
+//			}
+//		}
+//
+//		return treeVector;
 		return null;
 	}
 
@@ -538,7 +560,13 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	}
 
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-		// TODO: use anouncement to prepare netcdf buffer file
+		ITime[] selectedTimes = observationDescriptions.getTimes();
+		try {
+			if (bufferedExchangeItems != null) { bufferedExchangeItems.clear(); }
+			bufferedExchangeItems = createBufferedExchangeItems(model, selectedTimes);
+		} catch (BMIModelException e) {
+			throw new RuntimeException(getClass().getSimpleName() + ": Cannot retrieve selected times from announced observations.");
+		}
 	}
 
 	public void finish() {
