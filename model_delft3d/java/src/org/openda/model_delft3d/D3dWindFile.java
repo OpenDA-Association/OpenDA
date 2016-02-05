@@ -1,9 +1,27 @@
+/* MOD_V2.0
+ * Copyright (c) 2016 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openda.model_delft3d;
 
-import nu.xom.jaxen.function.FalseFunction;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IPrevExchangeItem;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +168,6 @@ public class D3dWindFile implements IoObjectInterface {
 					}
 				}
 
-
 				D3dField2D d3dField2D = new D3dField2D(mGrid, nGrid, timeValues);
 				Fvalues.add(d3dField2D)   ;
 
@@ -158,7 +175,6 @@ public class D3dWindFile implements IoObjectInterface {
 			line = inputFileBufferedReader.readLine();
 			if (endOfHeader == 0) {content.add(line);}
 		}
-
 
 		return new D3dWindExchangeItem(exchangeItemId, Fvalues,content, endOfHeader);
 	}

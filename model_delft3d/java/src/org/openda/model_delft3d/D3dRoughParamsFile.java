@@ -1,5 +1,5 @@
 /* MOD_V2.0
- * Copyright (c) 2010 OpenDA Association
+ * Copyright (c) 2016 OpenDA Association
  * All rights reserved.
  *
  * This file is part of OpenDA.
@@ -17,10 +17,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.openda.model_delft3d;
+
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IPrevExchangeItem;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -29,13 +30,12 @@ import java.util.ArrayList;
  * User: nils
  * Date: May 8, 2009
  * Time: 2:49:06 PM
- * To change this template use File | Settings | File Templates.
  */
 public class D3dRoughParamsFile implements IoObjectInterface {
+
 	private File workingDir = null;
 	private String configString = null;
 	private IPrevExchangeItem[] exchangeItems =null;
-
 
 	public void initialize(File workingDir, String configString, String[] arguments) {
 		/* Just save the initialization input */

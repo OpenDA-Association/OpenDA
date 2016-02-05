@@ -1,23 +1,25 @@
 /* MOD_V2.0
-* Copyright (c) 2010 OpenDA Association
-* All rights reserved.
-*
-* This file is part of OpenDA.
-*
-* OpenDA is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation, either version 3 of
-* the License, or (at your option) any later version.
-*
-* OpenDA is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (c) 2016 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openda.model_delft3d;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,7 +34,7 @@ import java.io.*;
  */
 public class D3dRoughParamsUtils {
 
-       // Manipulate the line from roughness file by putting it in uppercase,
+    // Manipulate the line from roughness file by putting it in uppercase,
     // removing spaces, tabs, etc
     public static String prepareRoughLine(String line){
         // replace tabs by spaces
@@ -70,8 +72,6 @@ public class D3dRoughParamsUtils {
 
     // Write the whole roughness file as stored is given string array
     public static void writeWholeFile(File roughFile, String[] sContent) {
-
-
         try {
             BufferedWriter output =  new BufferedWriter(new FileWriter(roughFile));
             for (int i=0; i<sContent.length ; i++ ){
@@ -89,10 +89,8 @@ public class D3dRoughParamsUtils {
         }
     }
 
-
     // Write the value to the roughness file
     public static void writeValueToFile(File roughFile, int lineNum, String code, double value){
-
         // Read content of whole file
         String[] sContent= readWholeFile(roughFile);
 
@@ -130,7 +128,6 @@ public class D3dRoughParamsUtils {
         // write content of whole file
         writeWholeFile(roughFile, sContent);
     }
-
 
     // Read the value from the roughness file
    public static double readValueFromFile(File roughFile, int lineNum, String code){

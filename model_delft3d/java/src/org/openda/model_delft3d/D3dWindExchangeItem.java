@@ -1,8 +1,26 @@
+/* MOD_V2.0
+ * Copyright (c) 2016 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openda.model_delft3d;
 
 import org.openda.interfaces.IPrevExchangeItem;
-
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -61,13 +79,10 @@ public class D3dWindExchangeItem implements IPrevExchangeItem {
 			double[] timeValues = onefield2D.getValues();
 			for (int i = 0; i < timeValues.length; i++) {
 				allValues[i+index] = timeValues[i];
-
 			}
 			index = index + timeValues.length; // which should be nmax*mmax!
 		}
 		return allValues;
-
-
     }
 
     public void axpyOnValues(double alpha, double[] axpyValues) {
@@ -94,7 +109,6 @@ public class D3dWindExchangeItem implements IPrevExchangeItem {
 			D3dField2D onefield2D = field2Ds.get(i);
 			onefield2D = (D3dField2D) ((List) values).get(i);
 		}
-
         dataChanged = true;
     }
 

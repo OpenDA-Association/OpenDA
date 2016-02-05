@@ -1,3 +1,23 @@
+/* MOD_V2.0
+ * Copyright (c) 2016 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openda.model_delft3d;
 
 import org.openda.interfaces.IPrevExchangeItem;
@@ -5,7 +25,7 @@ import org.openda.interfaces.IPrevExchangeItem;
 /**
  * Exchange Item representing a D3D astro component or correction
  */
-public class D3dAstroExchangeItem implements IPrevExchangeItem{
+public class D3dAstroExchangeItem implements IPrevExchangeItem {
 
     private String id;
     private D3dAstroComponent astroComponent;
@@ -13,7 +33,6 @@ public class D3dAstroExchangeItem implements IPrevExchangeItem{
     public final static String amplitudeString = "Amplitude";
     boolean isAmplitude;
     private D3dAstroStation astroStation;
-
 
     public D3dAstroExchangeItem(String stationId, String varString, D3dAstroComponent astroComponent) {
         isAmplitude = varString.equals(amplitudeString);

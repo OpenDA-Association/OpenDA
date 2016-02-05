@@ -1,23 +1,25 @@
 /* MOD_V2.0
-* Copyright (c) 2010 OpenDA Association
-* All rights reserved.
-*
-* This file is part of OpenDA.
-*
-* OpenDA is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation, either version 3 of
-* the License, or (at your option) any later version.
-*
-* OpenDA is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (c) 2016 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.openda.model_delft3d;
+
 import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
@@ -27,7 +29,6 @@ import java.io.File;
  * User: nils
  * Date: May 8, 2009
  * Time: 3:40:50 PM
- * To change this template use File | Settings | File Templates.
  *
  * Implementations of of the exangeItems of a SIMONA roughness include file
  *
@@ -49,6 +50,7 @@ import java.io.File;
  *
  */
 public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
+
     private String id;                    // Unique ID of the parameter
     private String quantityId ="-";       // The code A,B,C,D
     private String unitId     ="-";       // Not sure whether these parameters have a unit
@@ -58,7 +60,6 @@ public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
     File roughFile;                       // File handle to roughness include file
     int lineNum;                          // Line number that corresponds to the parameter
     private String description;
-
 
     public D3dRoughParamsFileExchangeItem(String id, File roughFile, int lineNum, String code){
 
@@ -155,6 +156,5 @@ public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
     public void setTimes(double[] times) {
         throw new RuntimeException(this.getClass().getName() + " does not have timeStamps");
     }
-
 }
 
