@@ -21,7 +21,8 @@
 package org.openda.model_delft3d;
 
 import com.sun.deploy.util.StringUtils;
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.interfaces.IDataObject;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import java.io.*;
 import java.util.ArrayList;
@@ -35,26 +36,28 @@ import java.util.Locale;
  * Supported capabilities:
  *    Space varying wind on a separate curvilinear grid. (*.amu + *.amv + *.grd)
  */
-public class D3dWindFile implements IoObjectInterface {
+public class D3dWindFile implements IDataObject {
 
 	private static List<String> supportedFieldTypes = Arrays.asList(ModelDefinitionFile.WINDGU, ModelDefinitionFile.WINDGV); // TODO: windu, windv
 	private ModelDefinitionFile modelDefinitionFile = null;
-	private D3dWindExchangeItem[] exchangeItems = null;
 	private String fieldType = null;
 	private String gridFileName = null;
 	private File gridFile = null;
 	private int mGrid;
 	private int nGrid;
 	private int endOfHeader;
+	private D3dWindExchangeItem windExchangeItem = null;
 
-	public void initialize(File workingDirectory, String mdfFileName, String[] arguments) {
+	public void initialize(File workingDirectory, String[] arguments) {
 
-		if (arguments.length != 1) {
+		if (arguments.length != 2) {
 			// Change to String.join upon migrating to Java 1.8.
-			throw new RuntimeException("No wind field type specified as argument, choose from: " + StringUtils.join(supportedFieldTypes, ", "));
+			throw new RuntimeException("Please specify a mdf-filename and a wind field type as arguments. Supported types are: " + StringUtils.join(supportedFieldTypes, ", "));
 		}
 
-		fieldType = arguments[0];
+		String mdfFileName = arguments[0];
+
+		fieldType = arguments[1];
 		if (!(supportedFieldTypes.contains(fieldType))) {
 			// Change to String.join upon migrating to Java 1.8.
 			throw new RuntimeException("Unrecognised wind field type specified as argument, choose from: " + StringUtils.join(supportedFieldTypes, ", "));
@@ -69,11 +72,9 @@ public class D3dWindFile implements IoObjectInterface {
 			BufferedReader inputFileBufferedReader = new BufferedReader(fileReader);
 
 			if (fieldType.equals(ModelDefinitionFile.WINDGU)) {
-				exchangeItems = new D3dWindExchangeItem[1];
-				exchangeItems[0] = readExchangeItem2D(inputFileBufferedReader, "windgu");
+				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgu");
 			} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
-				exchangeItems = new D3dWindExchangeItem[1];
-				exchangeItems[0] = readExchangeItem2D(inputFileBufferedReader, "windgv");
+				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgv");
 			}
 			inputFileBufferedReader.close();
 			fileReader.close();
@@ -83,25 +84,33 @@ public class D3dWindFile implements IoObjectInterface {
 		}
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
-		return exchangeItems;
+	public String[] getExchangeItemIDs() {
+		return new String[] {windExchangeItem.getId()};
+	}
+
+	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+		if (windExchangeItem.getRole().equals(role)) {
+			return new String[] {windExchangeItem.getId()};
+		}
+		return new String[0];
+	}
+
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		if (exchangeItemID.equals(windExchangeItem.getId())) {
+			return (IExchangeItem)windExchangeItem;
+		}
+		return null;
 	}
 
 	public void finish() {
-
-		boolean dataChanged = false;
-		for (int i = 0; !dataChanged && i < exchangeItems.length; i++) {
-			dataChanged = exchangeItems[i].getDataChanged();
-		}
-
-		if (dataChanged) {
+		if (windExchangeItem.getDataChanged()) {
 			try {
 				FileWriter fileWriter = new FileWriter(this.modelDefinitionFile.getFieldFile(fieldType, true));
 				BufferedWriter outputFileBufferedWriter = new BufferedWriter(fileWriter);
 				if (fieldType.equals(ModelDefinitionFile.WINDGU)) {
-					writeExchangeItem2D(outputFileBufferedWriter, exchangeItems[0]);
+					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
 				} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
-					writeExchangeItem2D(outputFileBufferedWriter, exchangeItems[0]);
+					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
 				}
 				outputFileBufferedWriter.close();
 				fileWriter.close();
@@ -109,9 +118,6 @@ public class D3dWindFile implements IoObjectInterface {
 				throw new RuntimeException("Error writing file " + modelDefinitionFile.getFieldFile(fieldType, false));
 			}
 		}
-		modelDefinitionFile = null;
-		exchangeItems = null;
-		fieldType = null;
 	}
 
 	private D3dWindExchangeItem readExchangeItem2D(BufferedReader inputFileBufferedReader, String exchangeItemId) throws IOException {

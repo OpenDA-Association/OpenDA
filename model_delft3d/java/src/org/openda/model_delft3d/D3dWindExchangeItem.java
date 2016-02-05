@@ -20,13 +20,17 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
+
 import java.util.List;
 
 /**
  * Exchange Item representing a 2D-field in a D3D file
  */
-public class D3dWindExchangeItem implements IPrevExchangeItem {
+public class D3dWindExchangeItem implements IExchangeItem {
 
     private String id;
     private List<D3dField2D> field2Ds;
@@ -51,7 +55,27 @@ public class D3dWindExchangeItem implements IPrevExchangeItem {
     }
 
     public String getDescription() {
-        return null;  // no description
+        return null;
+    }
+
+    public void copyValuesFromItem(IExchangeItem sourceItem) {
+
+    }
+
+    public ITimeInfo getTimeInfo() {
+        return null;
+    }
+
+    public IQuantityInfo getQuantityInfo() {
+        return null;
+    }
+
+    public IGeometryInfo getGeometryInfo() {
+        return null;
+    }
+
+    public ValueType getValuesType() {
+        return null;
     }
 
     public Class getValueType() {

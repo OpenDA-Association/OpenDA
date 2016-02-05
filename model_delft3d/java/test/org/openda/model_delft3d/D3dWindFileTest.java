@@ -31,11 +31,11 @@ public class D3dWindFileTest extends TestCase {
 
         // Read wind file, check content
         D3dWindFile winduFile = new D3dWindFile();
-        winduFile.initialize(testDir, "test.mdf", new String[] {"gu"});
-        IPrevExchangeItem[] windExchItems = winduFile.getExchangeItems();
-        assertEquals("windExchItems.length", 1, windExchItems.length);
-        assertEquals("exchItemwinduFile[0].id", "windgu", windExchItems[0].getId());
-        double[] windValues = windExchItems[0].getValuesAsDoubles();
+        winduFile.initialize(testDir, new String[]{"test.mdf", "gu"});
+		String theOneAndOnlyId = winduFile.getExchangeItemIDs()[0];
+        IPrevExchangeItem windExchItem = winduFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        assertEquals("exchItemwinduFile[0].id", "windgu", windExchItem.getId());
+        double[] windValues = windExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[25]", 6.0, windValues[25]);
         assertEquals("exchItemWindFile[0].values[26]", 7.0, windValues[26]);
 
@@ -45,13 +45,15 @@ public class D3dWindFileTest extends TestCase {
         for (int i = 0; i < windValues.length; i++) {
             windValues[i] += 0.01;
         }
-        windExchItems[0].setValuesAsDoubles(windValues);
+        windExchItem.setValuesAsDoubles(windValues);
         winduFile.finish();
 
         // Re-read roughness file, check changed vValues
         D3dWindFile adjustedWindFile = new D3dWindFile();
-        adjustedWindFile.initialize(testDir, "test.mdf", new String[] {"gu"});
-        double[] adjustedVValues = adjustedWindFile.getExchangeItems()[0].getValuesAsDoubles();
+        adjustedWindFile.initialize(testDir, new String[] {"test.mdf", "gu"});
+		theOneAndOnlyId = adjustedWindFile.getExchangeItemIDs()[0];
+		IPrevExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        double[] adjustedVValues = adjustedWindExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[6]", 7.01, adjustedVValues[6]);
         assertEquals("exchItemWindFile[0].values[7]", 8.01, adjustedVValues[7]);
     }
