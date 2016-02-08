@@ -149,6 +149,10 @@ public class BBExchangeItem implements IExchangeItem {
                     selectionIndices[j] = new DimensionIndex(selectionIndices[j].getStart()+valuesPerTime, selectionIndices[j].getEnd()+valuesPerTime);
                 }
             }
+			// Restore slectionIndices.
+			for (int j=0; j<selectionIndices.length; j++) {
+				selectionIndices[j] = new DimensionIndex(selectionIndices[j].getStart()-numberOfTimes*valuesPerTime, selectionIndices[j].getEnd()-numberOfTimes*valuesPerTime);
+			}
 
             IVector subVector = new Vector(allSubValues);
             if (selectionIndices.length == 1) {
