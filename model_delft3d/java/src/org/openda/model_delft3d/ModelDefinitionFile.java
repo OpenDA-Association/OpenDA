@@ -20,7 +20,7 @@
 
 package org.openda.model_delft3d;
 
-import com.sun.deploy.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
