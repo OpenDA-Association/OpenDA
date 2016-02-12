@@ -45,4 +45,17 @@ public class NetcdfDataObjectTest extends TestCase {
 		double[] itemValues = item.getValuesAsDoublesForSingleTimeIndex(0);
 		assertEquals(2500, itemValues.length);
 	}
+
+	public void testReadTimeSeriesDelft3d() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		dataObject.initialize(this.testRunDataDir, new String[]{"trih-estuary.nc", "true"});
+		String[] itemIds = dataObject.getEnsembleExchangeItemIds();
+		assertEquals(3, itemIds.length);
+		System.out.println("ids : ");
+		for(String id : itemIds){
+			System.out.print(" "+id+" ");
+		}
+		System.out.println("");
+	}
+
 }
