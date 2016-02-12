@@ -21,6 +21,7 @@
 package org.openda.resultwriters;
 
 import org.openda.interfaces.IInstance;
+import org.openda.interfaces.IMatrix;
 import org.openda.interfaces.IResultWriter;
 import org.openda.interfaces.ITreeVector;
 import org.openda.interfaces.IVector;
@@ -98,7 +99,7 @@ public class PythonResultWriter implements IResultWriter {
         //MVL outputStream.print(id + (iteration>-1 ? "{"+(iteration+1)+"}" : "") + "=");
         outputStream.print(id + ".append(");
         if (result instanceof Matrix) {
-            ((Matrix)result).serialize(outputStream);
+            this.serializeMatrix(outputStream, ((Matrix)result));
         } else if (result instanceof Vector) {
             ((Vector)result).serialize(outputStream);
         } else if (result instanceof TreeVector) {
@@ -128,6 +129,20 @@ public class PythonResultWriter implements IResultWriter {
     	}
 		outputStream.println("");
     };
+
+    public void serializeMatrix(PrintStream outputStream, IMatrix matrix) {
+        outputStream.print("[[");
+        for(int i=0;i< Math.min(matrix.getNumberOfRows(),40);i++){
+           if(i>0) outputStream.print("],[");
+           for(int j=0;j<Math.min(matrix.getNumberOfColumns(),40);j++){
+              if(j>0) {
+                  outputStream.print(",");
+              }
+              outputStream.print(matrix.getValue(i, j));
+           }
+        }
+        outputStream.print("]]");
+    }
 
 }
 
