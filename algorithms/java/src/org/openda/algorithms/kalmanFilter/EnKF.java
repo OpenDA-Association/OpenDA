@@ -207,7 +207,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			for(int j=0;j<Kvecs.length;j++){
 				delta.axpy(innovation.getValue(j), Kvecs[j]);
 			}
-			Results.putValue("delta", delta, delta.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
+			Results.putValue("delta_"+i, delta, delta.getSize(), "analysis step", IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.Step);
 			//K_k*(D - H*A^f_k)) = delta
 			//A^a_k = A^f_k + delta
 			//for each element in state vector add corresponding element of delta.
