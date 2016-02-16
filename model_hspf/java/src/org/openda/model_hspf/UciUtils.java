@@ -26,6 +26,7 @@ import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Time;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -371,25 +372,14 @@ public class UciUtils {
 	}
 
 	private static String writeValuesRow(String tableName, String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
-		String valueFormat;
-		if (QualInputTable.isQualInputTable(tableName)) {
-			//format value:
-			//1$ means first argument.
-			//8 means minimum width of 8 characters (left-padded with spaces).
-			//.2 means 2 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 8 characters.
-			//G means floating point, or scientific notation if it would not fit otherwise.
-			valueFormat = "%1$8.2G";
-		} else {
-			//format value:
-			//1$ means first argument.
-			//10 means minimum width of 10 characters (left-padded with spaces).
-			//.4 means 4 significant digits. This cannot be larger, since otherwise the scientific notation would not fit within the column width of 10 characters.
-			//G means floating point, or scientific notation if it would not fit otherwise.
-			valueFormat = "%1$10.4G";
-		}
+		String result = "";
 
 		//use Locale.US so that always uses points as decimal symbols.
 		Formatter valuesRow = new Formatter(Locale.US);
+		DecimalFormat decimalFormatter8 = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+		decimalFormatter8.applyPattern("0.00E0");
+		DecimalFormat decimalFormatter10 = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+		decimalFormatter10.applyPattern("0.0000E0");
 
 		//write first column.
 		//format locationNumber:
@@ -397,6 +387,8 @@ public class UciUtils {
 		//5 means minimum width of 5 characters (left-padded with spaces).
 		//d means integer.
 		valuesRow.format("%1$5d     ", locationNumber);
+
+		result += valuesRow.toString();
 
 		//write other columns.
 		String locationId = locationIdPrefix + String.valueOf(locationNumber);
@@ -406,9 +398,81 @@ public class UciUtils {
 			if (item == null) throw new IllegalStateException("Exchange item with id '" + id + "' not initialized during reading of uci state file.");
 
 			double value = (double) item.getValues();
-			valuesRow.format(valueFormat, value);
+			if (QualInputTable.isQualInputTable(tableName)) {
+				// Make optimal use of 8 characters, with one reserved for a sign.
+
+				// Store absolute value and the sign.
+				double absValue = Math.abs(value);
+				String sign = " ";
+				if (value < 0.0) sign = "-";
+
+				// Limit the domain of value.
+				if (value >= 9999999.5) {
+					value = 9999999.0;
+				}
+				if (value <= -9999999.5) {
+					value = -9999999.0;
+				}
+
+				// Integer part
+				long iPart = (long)absValue;
+				// Length of the integer part.
+				long iPartLength = String.valueOf(iPart).length();
+
+				// Print values with an integer part longer then 5 characters as an int.
+				if (iPartLength > 5) {
+					result += sign + String.valueOf(iPart);
+					continue;
+				}
+				// Print absolute values between 100000.0 and 0.005 explicitly.
+				if (100000.0 > absValue && absValue >= 0.005) {
+					double frac = (absValue - iPart) * Math.pow(10,6-iPartLength);
+					int iFrac = (int)frac;
+					result += sign + String.valueOf(iPart) + "." + String.valueOf(iFrac);
+				}
+
+				// Print absolute values smaller then 0.005 using scientific notation.
+				//  note that the exponent will be negative, consuming 1 character
+				result += sign + decimalFormatter8.format(absValue).toString();
+			} else {
+				// Make optimal use of 10 characters, with one reserved for a sign.
+
+				// Store absolute value and the sign.
+				double absValue = Math.abs(value);
+				String sign = " ";
+				if (value < 0.0) sign = "-";
+
+				// Limit the domain of value.
+				if (value >= 999999999.5) {
+					value = 999999999.0;
+				}
+				if (value <= -999999999.5) {
+					value = -999999999.0;
+				}
+
+				// Integer part
+				long iPart = (long)absValue;
+				// Length of the integer part.
+				long iPartLength = String.valueOf(iPart).length();
+
+				// Print values with an integer part longer then 7 characters as an int.
+				if (iPartLength > 7) {
+					result += sign + String.valueOf(iPart);
+					continue;
+				}
+				// Print absolute values between 10000000.0 and 0.005 explicitly.
+				if (10000000.0 > absValue && absValue >= 0.005) {
+					double frac = (absValue - iPart) * Math.pow(10,8-iPartLength);
+					int iFrac = (int)frac;
+					result += sign + String.valueOf(iPart) + "." + String.valueOf(iFrac);
+				}
+
+				// Print absolute values smaller then 0.005 using scientific notation.
+				//  note that the exponent will be negative, consuming 1 character
+				result += sign + decimalFormatter10.format(absValue).toString();
+			}
 		}
 
-		return valuesRow.toString();
+		return result;
 	}
 }
