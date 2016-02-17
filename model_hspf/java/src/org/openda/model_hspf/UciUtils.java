@@ -424,11 +424,12 @@ public class UciUtils {
 					result += sign + String.valueOf(iPart);
 					continue;
 				}
-				// Print absolute values between 100000.0 and 0.005 explicitly.
-				if (100000.0 > absValue && absValue >= 0.005) {
+				// Print absolute values between 100000.0 and 0.005 as well as zero explicitly.
+				if ((100000.0 > absValue && absValue >= 0.005) || absValue == 0.0) {
 					double frac = (absValue - iPart) * Math.pow(10,6-iPartLength);
 					int iFrac = (int)frac;
-					result += sign + String.valueOf(iPart) + "." + String.valueOf(iFrac);
+					result += sign + String.valueOf(iPart) + "." + String.format("%0" + String.valueOf(6 - iPartLength) + "d", iFrac);
+					continue;
 				}
 
 				// Print absolute values smaller then 0.005 using scientific notation.
@@ -460,11 +461,12 @@ public class UciUtils {
 					result += sign + String.valueOf(iPart);
 					continue;
 				}
-				// Print absolute values between 10000000.0 and 0.005 explicitly.
-				if (10000000.0 > absValue && absValue >= 0.005) {
+				// Print absolute values between 10000000.0 and 0.005 as well as zero explicitly.
+				if ((10000000.0 > absValue && absValue >= 0.005) || absValue == 0.0) {
 					double frac = (absValue - iPart) * Math.pow(10,8-iPartLength);
 					int iFrac = (int)frac;
-					result += sign + String.valueOf(iPart) + "." + String.valueOf(iFrac);
+					result += sign + String.valueOf(iPart) + "." + String.format("%0"+String.valueOf(8-iPartLength)+"d", iFrac);
+					continue;
 				}
 
 				// Print absolute values smaller then 0.005 using scientific notation.
