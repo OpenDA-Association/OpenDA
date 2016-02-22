@@ -21,7 +21,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/jna/jna-3.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../core/java/resources/jna/jna-4.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -29,4 +29,3 @@
     </orderEntry>
   </component>
 </module>
-
