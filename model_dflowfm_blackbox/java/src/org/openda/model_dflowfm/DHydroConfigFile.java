@@ -28,6 +28,7 @@ public class DHydroConfigFile implements IDataObject {
 
 	private String flowLibraryName = FLOW1D_DLL_NAME;
 	private String rtcLibraryName = "RTCTools_BMI";
+	private String rtcRuntimeConfigFileName = "rtcRuntimeConfig.xml";
 
 	private File workingDirectory;
 	private String outputFileName = null;
@@ -80,13 +81,13 @@ public class DHydroConfigFile implements IDataObject {
 
 		String inputFilePath = new File(workingDirectory, inputFileName).getAbsolutePath();
 		File md1dFile = getSubComponentConfigFile(inputFilePath, flowLibraryName);
-		File runtimeConfigFile = getSubComponentConfigFile(inputFilePath, rtcLibraryName);
+		File rtcRunDir = getSubComponentConfigFile(inputFilePath, rtcLibraryName);
 
 		flowMdFile = new Md1dFile();
 		flowMdFile.initialize(md1dFile.getParentFile(), new String[] {md1dFile.getName()});
 
 		rtcToolsRuntimeConfigFile = new RtcToolsRuntimeConfigFile();
-		rtcToolsRuntimeConfigFile.initialize(runtimeConfigFile.getParentFile(), new String[] {runtimeConfigFile.getName()});
+		rtcToolsRuntimeConfigFile.initialize(rtcRunDir, new String[] {rtcRuntimeConfigFileName});
 	}
 
 	public void finish()
@@ -128,25 +129,25 @@ public class DHydroConfigFile implements IDataObject {
 	}
 
 	private File getSubComponentConfigFile(String inputFilePath, String subComponentLibraryName) {
-		String inputFile= null;
-		String workingDir= null;
+		String subCompInputFile= null;
+		String subCompWorkDir= null;
 		ConfigTree[] componentConfigs = configTree.getSubTrees(CONFIG_TREE_ELEMENT_COMPONENT);
 		for (ConfigTree componentConfig : componentConfigs) {
 			String libraryName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_LIBRARY, "");
 			if (libraryName.equalsIgnoreCase(subComponentLibraryName)) {
-				inputFile = componentConfig.getAsString(CONFIG_TREE_ELEMENT_INPUTFILE, "");
-				workingDir = componentConfig.getAsString(CONFIG_TREE_ELEMENT_WORKDIR, "");
+				subCompInputFile = componentConfig.getAsString(CONFIG_TREE_ELEMENT_INPUTFILE, "");
+				subCompWorkDir = componentConfig.getAsString(CONFIG_TREE_ELEMENT_WORKDIR, "");
 			}
 		}
-		if (inputFile == null || inputFile.isEmpty()) {
+		if (subCompInputFile == null || subCompInputFile.isEmpty()) {
 			throw new RuntimeException("Could not find input file for " + subComponentLibraryName + " in config file " + inputFilePath);
 		}
-		if (workingDir == null || workingDir.isEmpty()) {
+		if (subCompWorkDir == null || subCompWorkDir.isEmpty()) {
 			throw new RuntimeException("Could not find working dir  for " + subComponentLibraryName + " in config file " + inputFilePath);
 		}
-		File md1dFile = new File(workingDirectory, inputFile);
-		if (md1dFile.exists()) {
-			throw new RuntimeException("Flow1D's md1d file " + md1dFile.getAbsolutePath());
+		File md1dFile = new File(new File(workingDirectory, subCompWorkDir), subCompInputFile);
+		if (!md1dFile.exists()) {
+			throw new RuntimeException("Flow1D's md1d file does not exist: " + md1dFile.getAbsolutePath());
 		}
 		return md1dFile;
 	}
