@@ -60,7 +60,7 @@ public class RtcToolsRuntimeConfigFileTest extends TestCase
 		RtcToolsRuntimeConfigFile.finish();
 
 		// Step 3: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileName),
+		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileName),
 				new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileNameGenerated)));
 
 	}
