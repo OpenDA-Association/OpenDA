@@ -3,7 +3,7 @@ package org.openda.model_dflowfm;
 import org.openda.interfaces.*;
 
 /**
- * Created by prevel on 30-Nov-15.
+ * Exchange item for time time items in FLOW 1D's md1d-file
  */
 public class Flow1DTimeInfoExchangeItem implements IExchangeItem
 {

@@ -1,20 +1,33 @@
 package org.openda.model_dflowfm;
 
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.utils.Time;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 
 /**
- * Created by prevel on 20-Nov-15.
+ * IDataObject for Flow-1D's Boundary Condition file
  */
 public class BcFile implements IDataObject
 {
 	private static final String EXCHANGE_ITEM_NAME_SEPARATOR = ".";
 	private File workingDirectory;
-	private String inputFileName = null;
+
+	private static final String TIME_UNIT_SECONDS = "seconds since";
+	private static final String TIME_UNIT_MINUTES = "minutes since";
+	private static final String TIME_UNIT_HOURS = "hours since";
+
+	private static final long ONE_DAY_IN_MILLISECONDS = 86400000;
+	private static final long ONE_HOUR_IN_MILLISECONDS = 3600000;
+	private static final long ONE_MINUTE_IN_MILLISECONDS = 60000;
+	private static final long ONE_SECOND_IN_MILLISECONDS = 1000;
+
+
 	private String outputFileName = null;
 	private List<BcCategory> categories;
 
@@ -24,7 +37,7 @@ public class BcFile implements IDataObject
 	public void initialize(File workingDirectory, String[] arguments)
 	{
 		if(arguments.length < 2) throw new RuntimeException("BcFile DataObject must be initialised with 2 arguments: InputBcFilePath and OutputBcFilePath");
-		this.inputFileName = arguments[0];
+		String inputFileName = arguments[0];
 		this.outputFileName = arguments[1];
 		this.workingDirectory = workingDirectory;
 
@@ -49,9 +62,7 @@ public class BcFile implements IDataObject
 			double[] valuesAsDoubles = new double[values.size()];
 			for(int i = 0; i < values.size(); i++) valuesAsDoubles[i] = values.get(i);
 
-			List<Double> times = MjdUtils.ConvertDateTimesWithUnitToModifiedJulianDays(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
-			double[] timesAsDoubles = new double[times.size()];
-			for(int i = 0; i < times.size(); i++) timesAsDoubles[i] = times.get(i);
+			double[] timesAsDoubles = ConvertBcTimesToModifiedJulianDays(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
 
 			exchangeItems.put(exchangeItemId, new BcExchangeItem(exchangeItemId, timesAsDoubles, valuesAsDoubles));
 		}
@@ -97,9 +108,8 @@ public class BcFile implements IDataObject
 			for (double value : exchangeItem.getValuesAsDoubles()) valueData.add(value);
 			valueQuantity.setColumnData(valueData);
 
-			List<Double> timeSeriesData = new ArrayList<>();
-			for (double time : exchangeItem.getTimes()) timeSeriesData.add(time);
-			timeSeriesQuantity.setColumnData(MjdUtils.ConvertModifiedJulianDaysToDateTimesWithUnit(timeSeriesQuantity.getUnit().getValue(), timeSeriesData));
+			List<Double> bcTimes = ConvertModifiedJulianDaysToBcTimes(timeSeriesQuantity.getUnit().getValue(), exchangeItem.getTimes());
+			timeSeriesQuantity.setColumnData(bcTimes);
 		}
 
 		//Step 2: Write updated BcCategories to (Output) BcFile
@@ -126,5 +136,61 @@ public class BcFile implements IDataObject
 		for (BcProperty property : category.getProperties())
 			if (property.getName().equals("name")) return property.getValue();
 		return "";
+	}
+
+	private static double[] ConvertBcTimesToModifiedJulianDays(String timeUnitString, List<Double> bcTimes)
+	{
+		double mjdReference = referenceDateTimeToMJD(timeUnitString);
+		double multFactToMillies = getUnitMultiplicationFactor(timeUnitString);
+
+		double[] modifiedJulianDayValues = new double[bcTimes.size()];
+		for (int i = 0; i < bcTimes.size(); i++) {
+			double milliesSinceReference = bcTimes.get(i) * multFactToMillies;
+			double mjdValue = (milliesSinceReference / (double) ONE_DAY_IN_MILLISECONDS) + mjdReference;
+			modifiedJulianDayValues[i]= mjdValue;
+		}
+		return modifiedJulianDayValues;
+	}
+
+	private static List<Double> ConvertModifiedJulianDaysToBcTimes(String timeUnitString, double[] modifiedJulianDayValues)
+	{
+		double mjdReference = referenceDateTimeToMJD(timeUnitString);
+		double multFactFromMillies = getUnitMultiplicationFactor(timeUnitString);
+
+		List<Double> values = new ArrayList<>();
+		for(double mjdValue : modifiedJulianDayValues)
+		{
+			double bcTimeAsMjd = mjdValue - mjdReference;
+			Double bcTime = Math.round(bcTimeAsMjd * (double) ONE_DAY_IN_MILLISECONDS / multFactFromMillies * 100d) / 100d;
+			values.add(bcTime);
+		}
+		return values;
+	}
+
+	private static double getUnitMultiplicationFactor(String timeUnitString)
+	{
+		double multiplicationFactor;
+		if(timeUnitString.contains(TIME_UNIT_SECONDS)) multiplicationFactor = ONE_SECOND_IN_MILLISECONDS;
+		else if(timeUnitString.contains(TIME_UNIT_MINUTES)) multiplicationFactor = ONE_MINUTE_IN_MILLISECONDS;
+		else if(timeUnitString.contains(TIME_UNIT_HOURS)) multiplicationFactor = ONE_HOUR_IN_MILLISECONDS;
+		else throw new RuntimeException(String.format("Error reference time string unit: %s", timeUnitString));
+		return multiplicationFactor;
+	}
+
+	private static double referenceDateTimeToMJD(String timeUnitString)
+	{
+		String referenceDateString;
+		if(timeUnitString.contains(TIME_UNIT_SECONDS)) referenceDateString = timeUnitString.replace(TIME_UNIT_SECONDS, "").trim();
+		else if(timeUnitString.contains(TIME_UNIT_MINUTES)) referenceDateString = timeUnitString.replace(TIME_UNIT_MINUTES, "").trim();
+		else if(timeUnitString.contains(TIME_UNIT_HOURS)) referenceDateString = timeUnitString.replace(TIME_UNIT_HOURS, "").trim();
+		else throw new RuntimeException(String.format("Error parsing Date unit: %s", timeUnitString));
+
+		double referenceDateAsMJD;
+		try {
+			referenceDateAsMJD = TimeUtils.date2Mjd(referenceDateString, "yyyy-MM-dd HH:mm:ss");
+		} catch (ParseException e) {
+			throw new RuntimeException(String.format("Error parsing time unit string: %s", referenceDateString));
+		}
+		return referenceDateAsMJD;
 	}
 }

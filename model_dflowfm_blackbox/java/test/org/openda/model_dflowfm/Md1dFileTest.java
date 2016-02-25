@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 import java.io.File;
 
 /**
- * Created by prevel on 30-Nov-15.
+ * Tests for Data object implementation for FLOW 1D's md1d-file
  */
 public class Md1dFileTest extends TestCase
 {

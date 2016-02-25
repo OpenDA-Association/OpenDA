@@ -2,15 +2,14 @@ package org.openda.model_dflowfm;
 
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +22,6 @@ public class Md1dFile implements IDataObject
 	static final String PROPERTY_STOPTIME = "StopTime";
 	static final String PROPERTY_TIMESTEP = "TimeStep";
 
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final String CATEGORY_TIME = "Time";
 	private static final String PROPERTY_OUTPUT_TIMESTEP = "OutTimeStepGridPoints";
 
@@ -69,14 +67,14 @@ public class Md1dFile implements IDataObject
 		double mjdStartTime;
 		try
 		{
-			mjdStartTime = MjdUtils.parseMjdFromTimeString(startTimeString);
+			mjdStartTime = TimeUtils.date2Mjd(startTimeString);
 		}
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STARTTIME, startTimeString)); }
 
 		double mjdStopTime;
 		try
 		{
-			mjdStopTime = MjdUtils.parseMjdFromTimeString(stopTimeString);
+			mjdStopTime = TimeUtils.date2Mjd(stopTimeString);
 		}
 		catch(Exception ex) { throw new RuntimeException(String.format("%s, Error parsing %s value: %s", ex.getMessage(), PROPERTY_STOPTIME, stopTimeString)); }
 
@@ -116,16 +114,14 @@ public class Md1dFile implements IDataObject
 		IExchangeItem startTimeExchangeItem = exchangeItems.get(PROPERTY_STARTTIME);
 		if(startTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STARTTIME));
 		double mjdStartTime = startTimeExchangeItem.getValuesAsDoubles()[0];
-		Calendar startTime = MjdUtils.ConvertModifiedJulianDayToDateTime(mjdStartTime);
 		String comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_STARTTIME));
-		ini.put(CATEGORY_TIME, PROPERTY_STARTTIME, String.format("%s %s", DATE_FORMAT.format(startTime.getTime()), comment));
+		ini.put(CATEGORY_TIME, PROPERTY_STARTTIME, String.format("%s %s", TimeUtils.mjdToString(mjdStartTime, "yyyy-MM-dd HH:mm:ss"), comment));
 
 		IExchangeItem stopTimeExchangeItem = exchangeItems.get(PROPERTY_STOPTIME);
 		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STOPTIME));
 		double mjdStopTime = stopTimeExchangeItem.getValuesAsDoubles()[0];
-		Calendar stopTime = MjdUtils.ConvertModifiedJulianDayToDateTime(mjdStopTime);
 		comment = retrieveTrailingComment(ini.get(CATEGORY_TIME, PROPERTY_STOPTIME));
-		ini.put(CATEGORY_TIME, PROPERTY_STOPTIME, String.format("%s %s", DATE_FORMAT.format(stopTime.getTime()), comment));
+		ini.put(CATEGORY_TIME, PROPERTY_STOPTIME, String.format("%s %s", TimeUtils.mjdToString(mjdStopTime, "yyyy-MM-dd HH:mm:ss"), comment));
 
 		IExchangeItem timeStepExchangeItem = exchangeItems.get(PROPERTY_TIMESTEP);
 		if(timeStepExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_TIMESTEP));

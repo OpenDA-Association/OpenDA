@@ -1,5 +1,6 @@
 package org.openda.model_dflowfm;
 
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -7,23 +8,18 @@ import org.openda.utils.ConfigTree;
 
 import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * IDataObject for configuration file for d_hydro.exe.
+ * IDataObject for configuration file for RTC Tools runt time config.
  * Data object is used to modify start/end time
  */
 public class RtcToolsRuntimeConfigFile implements IDataObject {
 
 	static final String PROPERTY_STARTTIME = "StartTime";
 	static final String PROPERTY_STOPTIME = "StopTime";
-
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
 	private static final String CONFIG_TREE_ELEMENT_STARTDATE  = "period/userDefined/startDate@date";
 	private static final String CONFIG_TREE_ELEMENT_STARTTIME  = "period/userDefined/startDate@time";
@@ -62,8 +58,8 @@ public class RtcToolsRuntimeConfigFile implements IDataObject {
 		double mjdStartTime;
 		double mjdEndTime;
 		try {
-			mjdStartTime = MjdUtils.parseMjdFromTimeString(startString);
-			mjdEndTime = MjdUtils.parseMjdFromTimeString(endString);
+			mjdStartTime = TimeUtils.date2Mjd(startString);
+			mjdEndTime = TimeUtils.date2Mjd(endString);
 		} catch (ParseException e) {
 			throw new RuntimeException("Could not parse start/end date time in file " + new File(workingDirectory, inputFileName));
 		}
@@ -93,16 +89,14 @@ public class RtcToolsRuntimeConfigFile implements IDataObject {
 		IExchangeItem startTimeExchangeItem = exchangeItems.get(PROPERTY_STARTTIME);
 		if(startTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STARTTIME));
 		double mjdStartTime = startTimeExchangeItem.getValuesAsDoubles()[0];
-		Calendar startTime = MjdUtils.ConvertModifiedJulianDayToDateTime(mjdStartTime);
-		configTree.setContentString(CONFIG_TREE_ELEMENT_STARTDATE, DATE_FORMAT.format(startTime.getTime()));
-		configTree.setContentString(CONFIG_TREE_ELEMENT_STARTTIME, TIME_FORMAT.format(startTime.getTime()));
+		configTree.setContentString(CONFIG_TREE_ELEMENT_STARTDATE, TimeUtils.mjdToString(mjdStartTime, "yyyy-MM-dd"));
+		configTree.setContentString(CONFIG_TREE_ELEMENT_STARTTIME, TimeUtils.mjdToString(mjdStartTime, "HH:mm:ss"));
 
 		IExchangeItem stopTimeExchangeItem = exchangeItems.get(PROPERTY_STOPTIME);
 		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", PROPERTY_STOPTIME));
 		double mjdEndTime = stopTimeExchangeItem.getValuesAsDoubles()[0];
-		Calendar endTime = MjdUtils.ConvertModifiedJulianDayToDateTime(mjdEndTime);
-		configTree.setContentString(CONFIG_TREE_ELEMENT_ENDDATE, DATE_FORMAT.format(endTime.getTime()));
-		configTree.setContentString(CONFIG_TREE_ELEMENT_ENDTIME, TIME_FORMAT.format(endTime.getTime()));
+		configTree.setContentString(CONFIG_TREE_ELEMENT_ENDDATE, TimeUtils.mjdToString(mjdEndTime, "yyyy-MM-dd"));
+		configTree.setContentString(CONFIG_TREE_ELEMENT_ENDTIME, TimeUtils.mjdToString(mjdEndTime, "HH:mm:ss"));
 
 		configTree.toFile(workingDirectory, outputFileName);
 	}

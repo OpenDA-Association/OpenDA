@@ -8,10 +8,10 @@ import org.openda.utils.ConfigTree;
 import java.io.File;
 
 /**
- * IDataObject for configuration file for d_hydro.exe.
+ * IDataObject for configuration file for dimr.exe.
  * Data object is used to modify start/end time
  */
-public class DHydroConfigFile implements IDataObject {
+public class DimrConfigFile implements IDataObject {
 
 	private static final String CONFIG_TREE_ELEMENT_TIME = "control/parallel/startGroup/time";
 
@@ -21,7 +21,7 @@ public class DHydroConfigFile implements IDataObject {
 	private static final String CONFIG_TREE_ELEMENT_INPUTFILE  = "inputFile";
 
 	private String flowDllArgPrefix = "flowDllName:";
-	String usageString = "DHydroConfigFile DataObject must be initialised with 1, 2 or 3 arguments: " +
+	String usageString = "DimrConfigFile DataObject must be initialised with 1, 2 or 3 arguments: " +
 			"InputFilePath [OutputFilePath] [" + flowDllArgPrefix + "dll-name]";
 
 	private static final String FLOW1D_DLL_NAME = "cf_dll";

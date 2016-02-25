@@ -9,21 +9,21 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 
-public class DHydroConfigFileTest extends TestCase
+public class DimrConfigFileTest extends TestCase
 {
 	private File testRunDataDir;
 	private String dHydroConfigFileNameOriginal = "d_hydro_config.xml";
 	private String dHydroConfigFileNameGenerated = "d_hydro_config_generated.xml";
 
 	protected void setUp() {
-		OpenDaTestSupport testData = new OpenDaTestSupport(DHydroConfigFileTest.class, "public", "model_dflowfm_blackbox");
+		OpenDaTestSupport testData = new OpenDaTestSupport(DimrConfigFileTest.class, "public", "model_dflowfm_blackbox");
 		testRunDataDir = new File(testData.getTestRunDataDir(), "DHydroFile");
 	}
 
 	public void testDHydroConfigFileUpdatesCategoriesCorrectly()
 	{
 		// Step 1: Read original test file
-		IDataObject dHydroConfigFile = new DHydroConfigFile();
+		IDataObject dHydroConfigFile = new DimrConfigFile();
 		dHydroConfigFile.initialize(testRunDataDir, new String[]{dHydroConfigFileNameOriginal, dHydroConfigFileNameGenerated});
 
 		// Step 2: Alter ExchangeItem Values
@@ -45,7 +45,7 @@ public class DHydroConfigFileTest extends TestCase
 		String rtcRuntimeConfigNameExpected = "rtc/rtcRuntimeConfig_expected.xml";
 
 		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, "d_hydro_config_expected.xml"),
-				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare dhydro-config file");
+				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare dimr config file");
 		Assert.isTrue(FileComparer.CompareIniFiles(new File(testRunDataDir, flowMd1dFileNameExpected),
 				new File(testRunDataDir, flowMd1dFileNameGenerated)), "Compare flow1d md1d file");
 		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, rtcRuntimeConfigNameExpected),
@@ -55,7 +55,7 @@ public class DHydroConfigFileTest extends TestCase
 	public void testDHydroConfigFileGeneratesExpectedFile()
 	{
 		// Step 1: Read original test file
-		IDataObject dHydroConfigFile = new DHydroConfigFile();
+		IDataObject dHydroConfigFile = new DimrConfigFile();
 		dHydroConfigFile.initialize(testRunDataDir, new String[]{dHydroConfigFileNameOriginal, dHydroConfigFileNameGenerated});
 
 		//Step 2: Write test file
@@ -63,6 +63,6 @@ public class DHydroConfigFileTest extends TestCase
 
 		// Step 3: Compare written file to expected results
 		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, dHydroConfigFileNameOriginal),
-				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare resulting dhydro-config file");
+				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare resulting dimr config file");
 	}
 }

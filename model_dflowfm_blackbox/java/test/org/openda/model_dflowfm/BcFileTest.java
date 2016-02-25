@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 import java.io.File;
 
 /**
- * Created by prevel on 20-Nov-15.
+ * Tests for IDataObject for Flow-1D's boundary condition file
  */
 public class BcFileTest extends TestCase
 {
