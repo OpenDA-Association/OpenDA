@@ -21,15 +21,13 @@ package org.openda.exchange.timeseries;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.openda.utils.SortUtils;
 import org.openda.utils.Time;
 import ucar.nc2.units.DateUnit;
+
+import static java.lang.Double.*;
 
 /**
  * This class provides some static functions to convert between time formats. For now this is between Modified Julian Date and a
@@ -61,11 +59,11 @@ public class TimeUtils {
     * @return date as string yyyyMMddHHmm e.g. 200912292359 for Dec 29 2009 23:59 UTC
     */
    public static String mjdToString(double mjd) {
-	   if(mjd==Double.NEGATIVE_INFINITY){
+	   if(mjd== NEGATIVE_INFINITY){
 		   return "-Infinity";
-	   }else if(mjd==Double.POSITIVE_INFINITY){
+	   }else if(mjd== POSITIVE_INFINITY){
 		   return "Infinity";
-	   }else if(!Double.isInfinite(mjd)){
+	   }else if(!isInfinite(mjd)){
 		   return mjdToString(mjd, "yyyyMMddHHmm");
 	   }else{
 		   throw new RuntimeException("Can not convert Modified Julian Day time to string, mjd="+mjd);
@@ -87,8 +85,7 @@ public class TimeUtils {
       final Date t = new java.util.Date(timeInMillis);
       final SimpleDateFormat formatter = new SimpleDateFormat(format);
       formatter.setTimeZone(tz);
-      final String result = formatter.format(t);
-      return result;
+	   return formatter.format(t);
    }
 
    /**
@@ -181,12 +178,16 @@ public class TimeUtils {
          formatter.setTimeZone(tz);
          t = formatter.parse(date);
       }
+	  else if (date.length() == 19) {
+		  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
+		  formatter.setTimeZone(tz);
+		  t = formatter.parse(date);
+	  }
       else {
          throw new ParseException("DateTime string did not match length of formats yyyyMMddHHmm or yyyyMMddHHmmss;"
                   + " arg was " + date, 0);
       }
-      double result = (t.getTime()) * millisToDays + mjdAtJanFirst1970;
-      return result; // convert from millis to days and add offset for mjd
+	   return (t.getTime()) * millisToDays + mjdAtJanFirst1970; // convert from millis to days and add offset for mjd
    }
 
    /**
@@ -286,13 +287,13 @@ public class TimeUtils {
     * @return Mjd's as doubles
     */
    public static double[] dateTimeSequenceString2Mjd(String input) {
-      double result[] = null;
+      double result[];
       String[] dateTimes = input.split(",");
       int n = dateTimes.length;
       if ((n == 4) && (dateTimes[2].equals("..."))) {
-         double tfirst = Double.NaN;
-         double tsecond = Double.NaN;
-         double tlast = Double.NaN;
+         double tfirst;
+         double tsecond;
+         double tlast;
 
          // regular sequence
          try {
@@ -328,7 +329,7 @@ public class TimeUtils {
       else {
          // irregular sequence
          result = new double[n];
-         double previous = Double.NEGATIVE_INFINITY;
+         double previous = NEGATIVE_INFINITY;
          for (int i = 0; i < n; i++) {
             try {
                result[i] = TimeUtils.date2Mjd(dateTimes[i]);
@@ -355,31 +356,31 @@ public class TimeUtils {
     * @return Mjd's as doubles
     */
    public static double[] MjdSequenceString2Mjd(String input) {
-      double result[] = null;
+      double result[];
       String[] dateTimes = input.split(",");
       int n = dateTimes.length;
       if ((n == 4) && (dateTimes[2].equals("..."))) {
-         double tfirst = Double.NaN;
-         double tsecond = Double.NaN;
-         double tlast = Double.NaN;
+         double tfirst;
+         double tsecond;
+         double tlast;
 
          // regular sequence
          try {
-            tfirst = Double.parseDouble(dateTimes[0]);
+            tfirst = parseDouble(dateTimes[0]);
          }
          catch (NumberFormatException e) {
             throw new RuntimeException("Problem parsing MjdSequence at first element ="
                      + " value=" + dateTimes[0]);
          }
          try {
-            tsecond = Double.parseDouble(dateTimes[1]);
+            tsecond = parseDouble(dateTimes[1]);
          }
          catch (NumberFormatException e) {
             throw new RuntimeException("Problem parsing MjdSequence at second element ="
                      + " value=" + dateTimes[1]);
          }
          try {
-            tlast = Double.parseDouble(dateTimes[3]);
+            tlast = parseDouble(dateTimes[3]);
          }
          catch (NumberFormatException e) {
             throw new RuntimeException("Problem parsing MjdSequence at last element ="
@@ -397,10 +398,10 @@ public class TimeUtils {
       else {
          // irregular sequence
          result = new double[n];
-         double previous = Double.NEGATIVE_INFINITY;
+         double previous = NEGATIVE_INFINITY;
          for (int i = 0; i < n; i++) {
             try {
-               result[i] = Double.parseDouble(dateTimes[i]);
+               result[i] = parseDouble(dateTimes[i]);
             }
             catch (NumberFormatException e) {
                throw new RuntimeException("Problem parsing MjdSequence at element with index =" + i
@@ -485,8 +486,8 @@ public class TimeUtils {
 	 * after the endTime of the timeHorizon if the timeHorizon period is not
 	 * an integer multiple of the timeStep length.
 	 *
-	 * @param timeHorizon
-	 * @return times
+	 * @param timeHorizon the time horizon
+	 * @return times times in the time horizon
 	 */
     @Deprecated
 	public static double[] getOutputTimes(Time timeHorizon) {
