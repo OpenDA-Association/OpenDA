@@ -20,6 +20,7 @@
 
 package org.openda.utils.io;
 
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.geometry.GeometryUtils;
 
@@ -79,7 +80,8 @@ public class AnalysisDataWriter {
 
 	private ScalarExchangeItemNetcdfWriter createScalarWriter(List<IExchangeItem> scalarItems, File outputFolder, String outputFileName) {
 		File outputFile = new File(outputFolder, outputFileName);
-		return new ScalarExchangeItemNetcdfWriter(scalarItems.toArray(new IExchangeItem[scalarItems.size()]), outputFile);
+		return new ScalarExchangeItemNetcdfWriter(scalarItems.toArray(new IExchangeItem[scalarItems.size()]), outputFile,
+				NetcdfUtils.STATION_ID_VARIABLE_NAME, NetcdfUtils.STATION_DIMENSION_VARIABLE_NAME);
 	}
 
 	private GridExchangeItemNetcdfWriter createGridWriter(List<IExchangeItem> gridItems, File outputFolder, String outputFileName) {

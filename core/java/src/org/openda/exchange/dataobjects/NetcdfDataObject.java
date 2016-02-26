@@ -47,6 +47,9 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
+	protected String stationIdVarName = NetcdfUtils.STATION_ID_VARIABLE_NAME; // can be overruled by subclasses
+	protected String stationDimensionVarName = NetcdfUtils.STATION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
+
 	private File file = null;
 	private NetcdfFileWriteable netcdfFile = null;
 	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
@@ -166,8 +169,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		this.exchangeItems.clear();
 
 		//get locationIds.
-		Map<Integer, String> stationIndexIdMap = new LinkedHashMap<Integer, String>();
-		NetcdfUtils.readAndStoreStationIdsMap(this.netcdfFile, stationIndexIdMap);
+		Map<Integer, String> stationIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(this.netcdfFile, stationIdVarName);
 		if (!stationIndexIdMap.isEmpty()) {//if stations found.
 			Results.putMessage(this.getClass().getSimpleName() + ": station_id variable found in netcdf file " + this.file.getAbsolutePath());
 		}
@@ -211,7 +213,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				continue;
 			}
 
-			int stationDimensionIndex = variable.findDimensionIndex(NetcdfUtils.STATION_DIMENSION_NAME);
+			int stationDimensionIndex = variable.findDimensionIndex(stationDimensionVarName);
 			if (dimensionCount == 2 && stationDimensionIndex != -1) {
 				//if variable has data for scalar time series for a list of separate stations.
 				int stationCount = variable.getDimension(stationDimensionIndex).getLength();
@@ -536,7 +538,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				uniqueEnsembleMemberIndices = Arrays.asList(BBUtils.box(getEnsembleMemberIndices()));
 				//set station indices and realization indices in exchangeItems as soon as they are known.
 				setStationAndRealizationIndicesForWriting(exchangeItems, ensembleExchangeItems);
-				NetcdfUtils.createMetadataAndDataVariablesForScalars(netcdfFile, exchangeItems, ensembleExchangeItems, timeInfoTimeDimensionMap, uniqueStationIds.size(), uniqueEnsembleMemberIndices.size());
+				NetcdfUtils.createMetadataAndDataVariablesForScalars(netcdfFile, exchangeItems, ensembleExchangeItems, timeInfoTimeDimensionMap, stationIdVarName,
+						stationDimensionVarName, uniqueStationIds.size(), uniqueEnsembleMemberIndices.size());
 			} else {//if grids.
 				NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
 			}
@@ -551,7 +554,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		//write metadata variable values for all exchange items, i.e. times and spatial coordinates.
 		//This is only needed if a new file has been created. If an existing file has been opened, then the file should already contain these values.
 		try {
-			NetcdfUtils.writeMetadata(netcdfFile, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueStationIds, uniqueEnsembleMemberIndices);
+			NetcdfUtils.writeMetadata(netcdfFile, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, stationIdVarName, uniqueStationIds, uniqueEnsembleMemberIndices);
 		} catch (Exception e) {
 			throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 		}

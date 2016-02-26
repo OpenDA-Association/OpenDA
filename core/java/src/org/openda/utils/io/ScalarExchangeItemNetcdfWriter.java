@@ -49,7 +49,7 @@ public class ScalarExchangeItemNetcdfWriter {
 	private int currentTimeIndex = -1;
 	private final List<Double> timesWrittenSoFar = new ArrayList<Double>();
 
-	public ScalarExchangeItemNetcdfWriter(IExchangeItem[] exchangeItems, File outputFile) {
+	public ScalarExchangeItemNetcdfWriter(IExchangeItem[] exchangeItems, File outputFile, String stationIdVarName, String stationDimensionVarName) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
 		if (exchangeItems.length < 1) throw new IllegalArgumentException("exchangeItems.length < 1");
 		if (outputFile == null) throw new IllegalArgumentException("outputFile == null");
@@ -76,7 +76,7 @@ public class ScalarExchangeItemNetcdfWriter {
 		//because the coordinates are usually not available in exchangeItems that come from models.
 		//gather locationIds.
 		stationIds = NetcdfUtils.getStationIds(Arrays.asList(exchangeItems), null);
-		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIds.size());
+		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIdVarName, stationDimensionVarName, stationIds.size());
 
 		//create data variables.
 		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, null, stationDimension, null);
@@ -93,7 +93,7 @@ public class ScalarExchangeItemNetcdfWriter {
 
 		//write station variable values.
 		try {
-			NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIds);
+			NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIdVarName, stationIds);
 		} catch (Exception e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing station variable values to netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
 		}

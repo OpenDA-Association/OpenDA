@@ -3,15 +3,17 @@ package org.openda.exchange.dataobject;
 import junit.framework.TestCase;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
+import org.openda.exchange.dataobjects.NetcdfDataObjectDelft3DTrih;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 
 /**
- * Created by bos_en on 7-9-2015.
+ * Tests for NetcdfDataObject
  */
 public class NetcdfDataObjectTest extends TestCase {
+
 	private File testRunDataDir;
 	private OpenDaTestSupport testData;
 
@@ -47,15 +49,16 @@ public class NetcdfDataObjectTest extends TestCase {
 	}
 
 	public void testReadTimeSeriesDelft3d() {
-		NetcdfDataObject dataObject = new NetcdfDataObject();
+		NetcdfDataObject dataObject = new NetcdfDataObjectDelft3DTrih();
 		dataObject.initialize(this.testRunDataDir, new String[]{"trih-estuary.nc", "true"});
-		String[] itemIds = dataObject.getEnsembleExchangeItemIds();
-		assertEquals(3, itemIds.length);
-		System.out.println("ids : ");
-		for(String id : itemIds){
-			System.out.print(" "+id+" ");
-		}
-		System.out.println("");
+		String[] itemIds = dataObject.getExchangeItemIDs();
+		assertEquals(21, itemIds.length);
+		assertEquals("station03.ZWL", itemIds[5]);
+		assertEquals("station03.DPS", itemIds[20]);
+		IExchangeItem stat3_zwl = dataObject.getDataObjectExchangeItem("station03.ZWL");
+		double[] stat3_zwl_values = stat3_zwl.getValuesAsDoubles();
+		assertEquals(193, stat3_zwl_values.length);
+		assertEquals(0.963498d, stat3_zwl_values[33], 1e-7);
+		assertEquals(-0.10826d, stat3_zwl_values[192], 1e-7);
 	}
-
 }

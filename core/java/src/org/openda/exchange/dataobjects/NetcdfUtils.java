@@ -1,19 +1,19 @@
 /* MOD_V2.0
 * Copyright (c) 2012 OpenDA Association
 * All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
+*
+* This file is part of OpenDA.
+*
+* OpenDA is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* OpenDA is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -96,11 +96,12 @@ public class NetcdfUtils {
 	public static final String Z_VARIABLE_NAME = "z";
 	public static final String Y_VARIABLE_NAME = "y";
 	public static final String X_VARIABLE_NAME = "x";
+
 	public static final String STATION_ID_VARIABLE_NAME = "station_id";
 	public static final String REALIZATION_VARIABLE_NAME = "realization";
 
 	//dimension names.
-	public static final String STATION_DIMENSION_NAME = "stations";
+	public static final String STATION_DIMENSION_VARIABLE_NAME = "stations";
 	private static final String CHAR_LEN_ID = "char_leng_id";
 	private static final String FACE_DIMENSION_NAME = "n_face";
 
@@ -111,7 +112,7 @@ public class NetcdfUtils {
 	 * Converts the data in the given netcdf file to text format and returns this as a String.
 	 * This can be used e.g. in unit tests to compare the data in human readable text format instead of in binary format.
 	 *
-	 * @param netcdfFile
+	 * @param netcdfFile netcdf file
 	 * @param variableNames semicolon delimited list of variables of which the data should be printed.
 	 *                      If this is null or empty, then all variables are printed.
 	 * @return String with cdl representation of the data.
@@ -769,28 +770,35 @@ public class NetcdfUtils {
 	/**
 	 * Read the data for (optional) variable "station_id" from the netcdf file and store in the stationIdsMap.
 	 *
-	 * For each external location this method stores the external id (station id) and the index
+	 * For each external location this method stores the external station name and the index
 	 * that is used for the location in the netcdf file in stationIdsMap.
 	 *
 	 * Code copied and adapted from class nl.wldelft.fews.system.plugin.dataImport.NetcdfTimeSeriesTSParser
 	 *
 	 * @throws IOException
 	 */
-	public static void readAndStoreStationIdsMap(NetcdfFile netcdfDataset, Map<Integer, String> stationIdsMap) throws IOException {
-		Variable stationIdsVar = netcdfDataset.findVariable(STATION_ID_VARIABLE_NAME);
-		if (stationIdsVar == null) return;
-		int numberOfDimensions = stationIdsVar.getDimensions().size();
-		switch (numberOfDimensions) {
-			case 0:
-				readAndStoreStationIdVariable(stationIdsVar, stationIdsMap);
-				break;
-			case 1:
-				readAndStoreOneDimensionalStationIdsVariable(netcdfDataset, stationIdsMap);
-				break;
-			case 2: default:
-				readAndStoreTwoDimensionalStationIdsVariable(stationIdsVar, netcdfDataset, stationIdsMap);
-				break;
+	public static Map<Integer, String> readAndStoreStationIdsMap(NetcdfFile netcdfDataset, String stationNameVarName) throws IOException {
+
+		// if no stations found, return empty hash map
+		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
+
+		Variable stationIdsVar = netcdfDataset.findVariable(stationNameVarName);
+		if (stationIdsVar != null) {
+			// stations found, create hash map
+			int numberOfDimensions = stationIdsVar.getDimensions().size();
+			switch (numberOfDimensions) {
+				case 0:
+					stationIdsMap = readAndStoreStationIdVariable(stationIdsVar);
+					break;
+				case 1:
+					stationIdsMap = readAndStoreOneDimensionalStationIdsVariable(netcdfDataset, stationNameVarName);
+					break;
+				case 2: default:
+					stationIdsMap = readAndStoreTwoDimensionalStationIdsVariable(stationIdsVar, netcdfDataset, stationNameVarName);
+					break;
+			}
 		}
+		return stationIdsMap;
 	}
 
 	/**
@@ -801,11 +809,13 @@ public class NetcdfUtils {
 	 * @param variable
 	 * @throws IOException
 	 */
-	private static void readAndStoreStationIdVariable(Variable variable, Map<Integer, String> stationIdsMap) throws IOException {
+	private static Map<Integer, String>  readAndStoreStationIdVariable(Variable variable) throws IOException {
+		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
 		String stationId = variable.readScalarString();
-		if (stationId == null) return;
-		stationIdsMap.put(0, stationId.trim());
-		return;
+		if (stationId != null) {
+			stationIdsMap.put(0, stationId.trim());
+		}
+		return stationIdsMap;
 	}
 
 	/**
@@ -816,23 +826,25 @@ public class NetcdfUtils {
 	 *
 	 * @throws IOException
 	 */
-	private static void readAndStoreOneDimensionalStationIdsVariable(NetcdfFile netcdfDataset,
-			Map<Integer, String> stationIdsMap) throws IOException {
+	private static Map<Integer, String> readAndStoreOneDimensionalStationIdsVariable(NetcdfFile netcdfDataset,
+																	 String stationNameVarName) throws IOException {
+		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
 		float[] stationIdFloats;
 		try {
-			stationIdFloats = (float[]) netcdfDataset.readSection(STATION_ID_VARIABLE_NAME).copyTo1DJavaArray();
+			stationIdFloats = (float[]) netcdfDataset.readSection(stationNameVarName).copyTo1DJavaArray();
 		} catch (IOException e) {
-			throw new IOException("Error while reading data for variable " + STATION_ID_VARIABLE_NAME + " from netcdf file: " + e.getMessage());
+			throw new IOException("Error while reading data for variable " + stationNameVarName + " from netcdf file: " + e.getMessage());
 		} catch (InvalidRangeException e) {
-			throw new IOException("Error while reading data for variable " + STATION_ID_VARIABLE_NAME + " from netcdf file: " + e.getMessage());
+			throw new IOException("Error while reading data for variable " + stationNameVarName + " from netcdf file: " + e.getMessage());
 		}
 		if (stationIdFloats == null || stationIdFloats.length < 1) {
-			throw new IOException("No stationIds found in variable " + STATION_ID_VARIABLE_NAME + " in netcdf file.");
+			throw new IOException("No stationIds found in variable " + stationNameVarName + " in netcdf file.");
 		}
 
 		for (int index = 0; index < stationIdFloats.length; index++) {
 			stationIdsMap.put(index, String.valueOf(stationIdFloats[index]));
 		}
+		return stationIdsMap;
 	}
 
 	/**
@@ -845,15 +857,17 @@ public class NetcdfUtils {
 	 * @param stationIdsVar
 	 * @throws IOException
 	 */
-	private static void readAndStoreTwoDimensionalStationIdsVariable(Variable stationIdsVar, NetcdfFile netcdfDataset,
-			Map<Integer, String> stationIdsMap) throws IOException {
+	private static Map<Integer, String> readAndStoreTwoDimensionalStationIdsVariable(Variable stationIdsVar,
+																					 NetcdfFile netcdfDataset,
+																					 String stationNameVarName) throws IOException {
+		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
 		char[] stationIdsCh;
 		try {
-			stationIdsCh = (char[]) netcdfDataset.readSection(STATION_ID_VARIABLE_NAME).copyTo1DJavaArray();
+			stationIdsCh = (char[]) netcdfDataset.readSection(stationNameVarName).copyTo1DJavaArray();
 		} catch (IOException e) {
-			throw new IOException("Error while reading data for variable" + STATION_ID_VARIABLE_NAME + " from netcdf file:" + e.getMessage());
+			throw new IOException("Error while reading data for variable" + stationNameVarName + " from netcdf file:" + e.getMessage());
 		} catch (InvalidRangeException e) {
-			throw new IOException("Error while reading data for variable" + STATION_ID_VARIABLE_NAME + " from netcdf file:" + e.getMessage());
+			throw new IOException("Error while reading data for variable" + stationNameVarName + " from netcdf file:" + e.getMessage());
 		}
 		int stations = stationIdsVar.getDimension(0).getLength();
 		int nchar = stationIdsVar.getDimension(1).getLength();
@@ -867,6 +881,7 @@ public class NetcdfUtils {
 			stationIdsMap.put(stationNr, sb.toString().trim());
 			stationNr++;
 		}
+		return stationIdsMap;
 	}
 
 	public static Variable getVariableForExchangeItem(NetcdfFile netcdfFile, IExchangeItem item) {
@@ -903,11 +918,13 @@ public class NetcdfUtils {
 	 * Each exchangeItem stores a scalar timeseries for a single location (and a single ensemble member).
 	 * All exchangeItems must use the same ensemble member indices.
 	 */
-	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
-			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, int stationCount, int ensembleMemberCount) {
+	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriteable netcdfFile,
+																List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, String stationNameVarName,
+																String stationDimensionVarName,
+																int stationCount, int ensembleMemberCount) {
 
 		//create stations variable.
-		Dimension stationDimension = createStationsVariable(netcdfFile, stationCount);
+		Dimension stationDimension = createStationsVariable(netcdfFile, stationNameVarName, stationDimensionVarName, stationCount);
 
 		//create realization variable.
 		Dimension realizationDimension = null;
@@ -1032,11 +1049,11 @@ public class NetcdfUtils {
 
 			if (geometryInfo instanceof IrregularGridGeometryInfo) {
 				String faceDimensionName = FACE_DIMENSION_NAME + postfix;
-				
+
 				//create face dimension.
 				int gridCellCount = ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
 				Dimension faceDimension = netcdfFile.addDimension(faceDimensionName, gridCellCount);
-				
+
 				//put faceDimension in map so that it can be re-used later by other variables in the same file.
 				gridVariableProperties = new GridVariableProperties();
 				gridVariableProperties.setDimensions(Arrays.asList(faceDimension));
@@ -1265,8 +1282,10 @@ public class NetcdfUtils {
 	/**
 	 * Writes all metadata variables for the given maps to the given netcdfFile, i.e. times and spatial coordinates.
 	 */
-	public static void writeMetadata(NetcdfFileWriteable netcdfFile, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, 
-			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, List<String> stationIdList, List<Integer> ensembleMemberIndexList) throws Exception {
+	public static void writeMetadata(NetcdfFileWriteable netcdfFile, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
+									 Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap,
+									 String stationNameVarName,
+									 List<String> stationIdList, List<Integer> ensembleMemberIndexList) throws Exception {
 
 		//write time variable values.
 		NetcdfUtils.writeTimeVariablesValues(netcdfFile, timeInfoTimeDimensionMap);
@@ -1275,20 +1294,22 @@ public class NetcdfUtils {
 		NetcdfUtils.writeGridVariablesValues(netcdfFile, geometryInfoGridVariablePropertiesMap);
 
 		//write station_id if available.
-		NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIdList);
+		NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationNameVarName, stationIdList);
 
 		//write realization variable values.
 		NetcdfUtils.writeRealizationVariableValues(netcdfFile, ensembleMemberIndexList);
 	}
 
-	public static void writeStationIdVariableValues(NetcdfFileWriteable dataFile, List<String> stationIdList) throws Exception {
+	public static void writeStationIdVariableValues(NetcdfFileWriteable dataFile,
+													String stationNameVarName,
+													List<String> stationIdList) throws Exception {
 		if (stationIdList == null || stationIdList.isEmpty()) return;
 
 		ArrayObject.D1 statidsArray = new ArrayObject.D1(String.class, stationIdList.size());
 		for (int i=0; i<stationIdList.size(); i++){
 			statidsArray.set(i,stationIdList.get(i));
 		}
-		dataFile.writeStringData(STATION_ID_VARIABLE_NAME, statidsArray);
+		dataFile.writeStringData(stationNameVarName, statidsArray);
 	}
 
 	/**
@@ -1581,17 +1602,16 @@ public class NetcdfUtils {
 	/**
 	 * Add variable for station_id.
 	 */
-	public static Dimension createStationsVariable(NetcdfFileWriteable netcdfFile, int stationCount) {
-		Dimension stationDimension = netcdfFile.addDimension(STATION_DIMENSION_NAME, stationCount);
+	public static Dimension createStationsVariable(NetcdfFileWriteable netcdfFile, String stationNameVarName, String stationDimensionVarName, int stationCount) {
+		Dimension stationDimension = netcdfFile.addDimension(stationDimensionVarName, stationCount);
 		Dimension charDimension = netcdfFile.addDimension(CHAR_LEN_ID, CHARLENGTH_ID);
 		ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
 		dimensions.add(stationDimension);
 		dimensions.add(charDimension);
 
-		String stationIdVariableName = STATION_ID_VARIABLE_NAME;
-		netcdfFile.addVariable(stationIdVariableName, DataType.CHAR, dimensions);
-		netcdfFile.addVariableAttribute(stationIdVariableName, LONG_NAME_ATTRIBUTE_NAME, "station identification code");
-		netcdfFile.addVariableAttribute(stationIdVariableName, CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE);
+		netcdfFile.addVariable(stationNameVarName, DataType.CHAR, dimensions);
+		netcdfFile.addVariableAttribute(stationNameVarName, LONG_NAME_ATTRIBUTE_NAME, "station identification code");
+		netcdfFile.addVariableAttribute(stationNameVarName, CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE);
 
 		return stationDimension;
 	}
