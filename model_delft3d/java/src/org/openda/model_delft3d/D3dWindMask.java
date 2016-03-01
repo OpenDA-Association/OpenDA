@@ -125,7 +125,7 @@ public class D3dWindMask implements SelectorInterface {
 		int nLevels = d3dField2Ds.size();
 
 			// if the mns coordinates should be flipped, do it now, once!
-		    // this routine will always be called if an mns-selectino is needed.
+		    // this routine will always be called if an mns-selection is needed.
 		if (FlipMaskinXaxis) {
 		    performMirroring(d3dField2Ds.get(0).getNmax());
 			FlipMaskinXaxis = false;
