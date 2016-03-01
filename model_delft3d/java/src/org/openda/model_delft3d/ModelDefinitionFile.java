@@ -20,10 +20,12 @@
 
 package org.openda.model_delft3d;
 
+import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.util.Arrays;
 
 /**
  * Mdf File reader (and future writer?), stores the relevant information of the D3D-flow mdf-file
@@ -149,7 +151,7 @@ public class ModelDefinitionFile {
     }
 
     public static String getKnownFileTypesString(String[] fileTypes) {
-		return fileTypes.toString();
+		return StringUtils.join(Arrays.asList(fileTypes), ", ");
     }
 
     public File getMdFile() {

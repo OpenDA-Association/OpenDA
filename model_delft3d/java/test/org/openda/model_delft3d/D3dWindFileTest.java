@@ -48,7 +48,7 @@ public class D3dWindFileTest extends TestCase {
         windExchItem.setValuesAsDoubles(windValues);
         winduFile.finish();
 
-        // Re-read roughness file, check changed vValues
+        // Re-read roughness file, check changed values
         D3dWindFile adjustedWindFile = new D3dWindFile();
         adjustedWindFile.initialize(testDir, new String[] {"test.mdf", "gu"});
 		theOneAndOnlyId = adjustedWindFile.getExchangeItemIDs()[0];

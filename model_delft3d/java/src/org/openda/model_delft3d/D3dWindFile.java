@@ -20,15 +20,15 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.exchange.ArrayExchangeItem;
-import org.openda.exchange.TimeInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.wrapper_utils.io.SpaceVaryingWindAndPressureFile;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Delft3D 2d-field wind files reader/writer.
@@ -41,41 +41,47 @@ public class D3dWindFile implements IDataObject {
 	private static List<String> supportedFieldTypes = Arrays.asList(ModelDefinitionFile.WINDGU, ModelDefinitionFile.WINDGV); // TODO: windu, windv
 	private ModelDefinitionFile modelDefinitionFile = null;
 	private String fieldType = null;
-	private ArrayExchangeItem windExchangeItem = null;
-	SpaceVaryingWindAndPressureFile svwpFile = null;
+	private String gridFileName = null;
+	private File gridFile = null;
+	private int mGrid;
+	private int nGrid;
+	private int endOfHeader;
+	private D3dWindExchangeItem windExchangeItem = null;
 
 	public void initialize(File workingDirectory, String[] arguments) {
 
 		if (arguments.length != 2) {
-			throw new RuntimeException("Please specify a mdf-filename and a wind field type as arguments. Supported types are: " + supportedFieldTypes);
+			// Change to String.join upon migrating to Java 1.8.
+			throw new RuntimeException("Please specify a mdf-filename and a wind field type as arguments. Supported types are: " + StringUtils.join(supportedFieldTypes, ", "));
 		}
 
 		String mdfFileName = arguments[0];
 
 		fieldType = arguments[1];
 		if (!(supportedFieldTypes.contains(fieldType))) {
-			throw new RuntimeException("Unrecognised wind field type specified as argument, choose from: " + supportedFieldTypes);
+			// Change to String.join upon migrating to Java 1.8.
+			throw new RuntimeException("Unrecognised wind field type specified as argument, choose from: " + StringUtils.join(supportedFieldTypes, ", "));
 		}
 
 		modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDirectory, mdfFileName);
 
 		File windFile = modelDefinitionFile.getFieldFile(fieldType, true);
 
-		svwpFile = new SpaceVaryingWindAndPressureFile(windFile);
+		try {
+			FileReader fileReader = new FileReader(windFile);
+			BufferedReader inputFileBufferedReader = new BufferedReader(fileReader);
 
-		if (svwpFile.getNQuantity() != 1) {
-			throw new RuntimeException("Space varying wind and pressure " + windFile.getAbsolutePath() + "file should contain one quantity, found: " + svwpFile.getNQuantity());
-		}
+			if (fieldType.equals(ModelDefinitionFile.WINDGU)) {
+				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgu");
+			} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
+				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgv");
+			}
+			inputFileBufferedReader.close();
+			fileReader.close();
 
-		String itemName = "";
-		if (fieldType.equals(ModelDefinitionFile.WINDGU)) {
-			itemName = "windgu";
-		} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
-			itemName = "windgv";
+		} catch (IOException e) {
+			throw new RuntimeException("Could not read from " + windFile.getAbsolutePath() + "\n" + e.getMessage());
 		}
-		windExchangeItem = new ArrayExchangeItem(itemName, IPrevExchangeItem.Role.InOut);
-		windExchangeItem.setTimeInfo(new TimeInfo(svwpFile.getTimes()));
-		windExchangeItem.setValuesAsDoubles(svwpFile.getValues());
 	}
 
 	public String[] getExchangeItemIDs() {
@@ -91,12 +97,128 @@ public class D3dWindFile implements IDataObject {
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		if (exchangeItemID.equals(windExchangeItem.getId())) {
-			return windExchangeItem;
+			return (IExchangeItem)windExchangeItem;
 		}
 		return null;
 	}
 
 	public void finish() {
-		svwpFile.writeFile(windExchangeItem.getValuesAsDoubles());
+		if (windExchangeItem.getDataChanged()) {
+			try {
+				FileWriter fileWriter = new FileWriter(this.modelDefinitionFile.getFieldFile(fieldType, true));
+				BufferedWriter outputFileBufferedWriter = new BufferedWriter(fileWriter);
+				if (fieldType.equals(ModelDefinitionFile.WINDGU)) {
+					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
+				} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
+					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
+				}
+				outputFileBufferedWriter.close();
+				fileWriter.close();
+			} catch (IOException e) {
+				throw new RuntimeException("Error writing file " + modelDefinitionFile.getFieldFile(fieldType, false));
+			}
+		}
+	}
+
+	private D3dWindExchangeItem readExchangeItem2D(BufferedReader inputFileBufferedReader, String exchangeItemId) throws IOException {
+        ArrayList<String> content = new ArrayList();
+		endOfHeader = 0;
+		// First: read the header. We need to know the grid file to obtain the field size.
+		String line = inputFileBufferedReader.readLine();
+        content.add(line);
+		while (line != null && gridFileName == null) {
+			String[] fields = line.split("[\t ]+");
+			if (fields[0].equalsIgnoreCase("grid_file")) {
+				gridFileName = fields[2].trim();
+				gridFile = new File(modelDefinitionFile.getMdFile().getParentFile(), gridFileName);
+			}
+			line = inputFileBufferedReader.readLine();
+			content.add(line);
+		}
+
+		// intermezzo: open the grid file to read the dimensions!
+		FileReader fileReader = new FileReader(gridFile);
+		BufferedReader gridFileBufferedReader = new BufferedReader(fileReader);
+		String gridFileLine = gridFileBufferedReader.readLine();
+		boolean gridSizeFound = false;
+		while (gridFileLine != null && !gridSizeFound) {
+			String[] fields = gridFileLine.split("[\t ]+");
+			if (fields[0].equalsIgnoreCase("Coordinate")) {
+				String sizeLine = gridFileBufferedReader.readLine();
+				String[] mnValues = sizeLine.trim().split("[\t ]+");
+				if (mnValues.length != 2) {
+					throw new RuntimeException("Invalid MN line\n\t" + sizeLine + "\nin gridfile" + gridFile.getAbsolutePath());
+				}
+				mGrid = Integer.parseInt(mnValues[0]);
+				nGrid = Integer.parseInt(mnValues[1]);
+				gridSizeFound = true;
+			}
+	        gridFileLine = gridFileBufferedReader.readLine();
+		}
+
+		// continue with wind file, until first/next timestep
+		List<D3dField2D> Fvalues = new ArrayList<D3dField2D>();
+
+		while (line != null) {
+			String[] fields = line.split("[\t ]+");
+			if (fields[0].equalsIgnoreCase("TIME")) {
+
+				if (endOfHeader == 0) {endOfHeader = content.size()-1;}
+				else {
+			    	content.add(line);
+				}
+				double[] timeValues = new double[nGrid * mGrid];
+				int index = 0;
+				line = inputFileBufferedReader.readLine();
+				while (line != null && index < nGrid * mGrid) {
+					fields = line.trim().split("[\t ]+");
+					for (String field : fields) {
+						if (field.length() > 0) {
+							timeValues[index++] = Double.parseDouble(field);
+						}
+					}
+					if (index < nGrid * mGrid) {
+						line = inputFileBufferedReader.readLine();
+					}
+				}
+
+				D3dField2D d3dField2D = new D3dField2D(mGrid, nGrid, timeValues);
+				Fvalues.add(d3dField2D)   ;
+
+			}
+			line = inputFileBufferedReader.readLine();
+			if (endOfHeader == 0) {content.add(line);}
+		}
+
+		return new D3dWindExchangeItem(exchangeItemId, Fvalues,content, endOfHeader);
+	}
+
+	private void writeExchangeItem2D(BufferedWriter outputFileBufferedWriter, D3dWindExchangeItem EI) throws IOException {
+
+		Locale locale = new Locale("EN");
+		String floatValueFormat = "%10.2e";
+
+		// first write the header:
+		int eoh = EI.getEndOfHeader();
+		List<String> content = EI.getTextContent();
+		for (int i=0; i < eoh; i++){
+			outputFileBufferedWriter.write(content.get(i));
+			outputFileBufferedWriter.newLine();
+		}
+		int times = EI.getDims()[0];
+		double[] values = EI.getValuesAsDoubles();
+		// now write for each time level the timestring and the values.
+
+		int index = 0;
+        for (int timeIndex=0; timeIndex < times; timeIndex ++){
+			outputFileBufferedWriter.write(content.get(eoh+timeIndex));
+			outputFileBufferedWriter.newLine();
+			for (int n = 0; n < EI.getDims()[2]; n++) {
+				for (int m = 0; m < EI.getDims()[1]; m++) {
+					outputFileBufferedWriter.write(String.format(locale, floatValueFormat, values[index++]));
+				}
+				outputFileBufferedWriter.newLine();
+			}
+		}
 	}
 }
