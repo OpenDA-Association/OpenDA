@@ -460,8 +460,8 @@ public class WdmUtils {
                         + calendar.getTime().toString() + " for time series with id '"
                         + wdmTimeSeriesExchangeItem.getId() + "' as input for the model."
                         + " The HSPF model cannot handle missing values within the model run period."
-                        + " Please check if the input data is correct and if id " + wdmTimeSeriesExchangeItem.getId()
-                        + " is not duplicated in the model adapter config xml files.");
+                        + " Please check if the input data is correct and if id '" + wdmTimeSeriesExchangeItem.getId()
+                        + "' is not duplicated in the model adapter config xml files.");
             }
 
             newValues[n] = newValue;
@@ -471,8 +471,12 @@ public class WdmUtils {
         if (newValues != null && newValues.length > 0) {
             int[] startDate = convertMjdToDateArray(startTime, timeZone);
             //write reliable values, i.e. qualityCode 0.
-            wdmDll.putValues(wdmFileNumber, dataSetNumber, timeStepInUnits, startDate,
-                    1, 0, timeUnit, newValues);
+            try {
+                wdmDll.putValues(wdmFileNumber, dataSetNumber, timeStepInUnits, startDate, 1, 0, timeUnit, newValues);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("Error while writing times and values for time series with id '" + wdmTimeSeriesExchangeItem.getId() + "' as input for the model."
+                        + " Please check if the input data is correct and if id '" + wdmTimeSeriesExchangeItem.getId() + "' is not duplicated in the model input files.", e);
+            }
         }
     }
 
