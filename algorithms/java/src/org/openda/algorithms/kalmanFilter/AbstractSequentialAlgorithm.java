@@ -431,9 +431,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 				Results.putProgression("========================================================================\n");
 
 				//		    System.out.println(" Computing main model");
-				if(!this.stepsFromObserver){
-					this.mainModel.announceObservedValues(selection.getObservationDescriptions());
-				}
+				this.mainModel.announceObservedValues(selection.getObservationDescriptions());
 				if(time.isSpan()){
 					time = new Time(time.getMJD());
 				}
