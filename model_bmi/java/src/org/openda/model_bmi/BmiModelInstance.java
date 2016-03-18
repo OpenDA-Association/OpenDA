@@ -332,6 +332,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 	private void setBufferEIsfromModelEIs(double currentTimeMJD) {
 		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
+		if (bufferedExchangeItems == null) return;
 		for (Map.Entry<String, IExchangeItem> entry : bufferedExchangeItems.entrySet()) {
 			IExchangeItem bufferEI = entry.getValue();
 			double[] times = bufferEI.getTimes();
@@ -345,6 +346,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 					for (int i = 0; i < valuesPerTime; i++) {
 						allValues[i + offset] = newValues[i];
 					}
+					bufferEI.setValuesAsDoubles(allValues);
 				}
 			}
 		}
@@ -359,7 +361,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 				for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
 					if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
 						// Forcing of next timeStamp is valid from current timestep to next, so aTimeIndex+1
-						exchangeItems.get(entry.getKey()).setValuesAsDoubles(((NetcdfGridTimeSeriesExchangeItem) forcingEI).getValuesAsDoublesForSingleTimeIndex(aTimeIndex+1)); // TODO
+						IExchangeItem modelExchangeItem = exchangeItems.get(entry.getKey());
+						if (modelExchangeItem == null) {
+							throw new RuntimeException("Cannot find a model ExchangeItem for forcing ExchangeItem " + entry.getKey());
+						}
+						modelExchangeItem.setValuesAsDoubles(((NetcdfGridTimeSeriesExchangeItem) forcingEI).getValuesAsDoublesForSingleTimeIndex(aTimeIndex+1)); // TODO
 					}
 				}
 			} else {
