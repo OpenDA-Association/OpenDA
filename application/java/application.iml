@@ -31,5 +31,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="model_dflowfm_blackbox" />
+    <orderEntry type="module" module-name="DeltaresModels" />
   </component>
 </module>

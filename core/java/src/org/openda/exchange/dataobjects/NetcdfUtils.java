@@ -175,6 +175,7 @@ public class NetcdfUtils {
 	 * @return geometryInfo or null.
 	 */
 	public static IArrayGeometryInfo createGeometryInfo(Variable variable, NetcdfFile netcdfFile) {
+
 		Variable latitudeVariable = findLatitudeVariableForVariable(variable, netcdfFile);
 		Variable longitudeVariable = findLongitudeVariableForVariable(variable, netcdfFile);
 		//currently only 2D grids are supported.
@@ -413,6 +414,11 @@ public class NetcdfUtils {
 	private static boolean isLatitudeVariable(Variable variable) {
 		//check if axis is "Y".
 		if ("Y".equalsIgnoreCase(getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME))) {
+			return true;
+		}
+
+		//check if axis is "N".
+		if ("N".equalsIgnoreCase(getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME))) {
 			return true;
 		}
 
