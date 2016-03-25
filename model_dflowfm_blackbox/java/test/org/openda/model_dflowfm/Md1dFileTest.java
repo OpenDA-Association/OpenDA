@@ -20,7 +20,7 @@ public class Md1dFileTest extends TestCase
 
 	protected void setUp()
 	{
-		testData = new OpenDaTestSupport(BcFileTest.class, "model_dflowfm_blackbox");
+		testData = new OpenDaTestSupport(Md1dFileTest.class, "model_dflowfm_blackbox");
 		testMd1dFileDir = new File(testData.getTestRunDataDir(), "Md1dFile");
 	}
 
