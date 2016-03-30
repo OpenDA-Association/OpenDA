@@ -77,7 +77,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @param overrulingTimeHorizon optional, can be null.
 	 * @throws BMIModelException
 	 */
-	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon, ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds) throws BMIModelException {
+	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
+							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
+							String stateInputDir, String stateOutputDir) throws BMIModelException {
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
@@ -85,8 +87,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		this.forcingConfiguration = forcingConfig;
 		this.model = model;
 		this.modelRunDir = modelRunDir;
-		this.outputStateDir = new File(modelRunDir, "output_state");
-		this.inputStateDir = new File(modelRunDir, "input_state");
+		this.inputStateDir = new File(modelRunDir, stateInputDir);
+		this.outputStateDir = new File(modelRunDir, stateOutputDir);
 		if (!inputStateDir.exists()) {
 			if (!inputStateDir.mkdirs()) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Cannot create input state directory " + inputStateDir.getAbsolutePath());

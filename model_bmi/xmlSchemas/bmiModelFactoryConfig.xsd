@@ -20,6 +20,16 @@
 					<xs:documentation>The path and name of the model configuration file (relative to the model template directory).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="inputStateDirectory" type="xs:string" default="input_state" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The directory in the model instance that contains the input state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outputStateDirectory" type="xs:string" default="output_state" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The directory in the model instance that contains the input state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="hosts" type="xs:string" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>DEPRECATED: This element will probably be removed in future.</xs:documentation>

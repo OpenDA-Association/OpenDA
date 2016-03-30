@@ -44,6 +44,8 @@ public class BmiModelFactoryConfigReader {
 	private final String relativeModelConfigFilePath;
 	private ArrayList<BmiModelForcingConfig> bmiModelForcingConfigs;
 	private final String[] hosts;
+	private String inputStateDir;
+	private String outputStateDir;
 
 	public BmiModelFactoryConfigReader(File configFile) {
 		BmiModelFactoryConfigXML castor = (BmiModelFactoryConfigXML) CastorUtils.parse(configFile,
@@ -123,6 +125,9 @@ public class BmiModelFactoryConfigReader {
 			stateVectorIds.add(item.getExchangeItemId());
 		}
 
+		this.inputStateDir = castor.getInputStateDirectory();
+		this.outputStateDir = castor.getOutputStateDirectory();
+
 		String hosts = castor.getHosts();
 		if (hosts == null || hosts.trim().isEmpty()) {//if hosts not configured.
 			this.hosts = null;
@@ -160,4 +165,12 @@ public class BmiModelFactoryConfigReader {
 	}
 
 	public String[] getModelStateExchangeItemIds() {return stateVectorIds.toArray(new String[0]);}
+
+	public String getInputStateDir() {
+		return inputStateDir;
+	}
+
+	public String getOutputStateDir() {
+		return outputStateDir;
+	}
 }
