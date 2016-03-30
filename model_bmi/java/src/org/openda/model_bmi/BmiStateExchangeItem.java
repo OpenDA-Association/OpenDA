@@ -15,13 +15,15 @@ public class BmiStateExchangeItem implements IExchangeItem {
 
 	private final String[] ids;
 	private final EBMI model;
+	private double modelMissingValue;
 	private Map<String, Integer> stateComponentLengths;
 	private int totalNumberOfStateValues;
 	private double[] values;
 
-	public BmiStateExchangeItem(String[] ids, EBMI model) {
+	public BmiStateExchangeItem(String[] ids, EBMI model, double modelMissingValue) {
 		this.ids = ids;
 		this.model = model;
+		this.modelMissingValue = modelMissingValue;
 
 		totalNumberOfStateValues = 0;
 		stateComponentLengths = new HashMap<String, Integer>();
@@ -80,6 +82,7 @@ public class BmiStateExchangeItem implements IExchangeItem {
 	public double[] getValuesAsDoubles() {
 		int offset = 0;
 
+		double[] allModelValues = new double[values.length];
 		for (String id: this.ids) {
 
 			double[] modelValues;
@@ -96,20 +99,29 @@ public class BmiStateExchangeItem implements IExchangeItem {
 			}
 
 			int numberOfValues = modelValues.length;
-			System.arraycopy(modelValues, 0, values, offset, numberOfValues);
+			System.arraycopy(modelValues, 0, allModelValues, offset, numberOfValues);
 
 			offset += numberOfValues;
 		}
+		for (int i = 0; i < allModelValues.length; i++) {
+			values[i] = Double.compare(allModelValues[i], modelMissingValue) == 0 ? Double.NaN : allModelValues[i];
+		}
+
 		return values;
 	}
 
 	private void updateModel() {
 		int offset = 0;
 
+		double[] checkedValues = new double[values.length];
+		for (int i = 0; i < values.length; i++) {
+			checkedValues[i] = Double.isNaN(values[i]) ? modelMissingValue: values[i];
+		}
+
 		for (String id: this.ids) {
 			int sliceLength = stateComponentLengths.get(id);
 			double[] slice = new double[sliceLength];
-			System.arraycopy(values, offset, slice, 0, sliceLength);
+			System.arraycopy(checkedValues, offset, slice, 0, sliceLength);
 
 			try {
 				if ("float32".equals(model.getVarType(id))) {

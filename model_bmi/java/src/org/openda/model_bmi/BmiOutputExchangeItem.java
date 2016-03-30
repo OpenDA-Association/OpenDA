@@ -57,6 +57,7 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 	private final BMI model;
 	private final IQuantityInfo quantityInfo;
 	private final IGeometryInfo geometryInfo;
+	private double modelMissingValue;
 
 	/**
 	 * @param variableName
@@ -65,7 +66,8 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 	 * @param model
 	 * @throws BMIModelException
 	 */
-	public BmiOutputExchangeItem(String variableName, IPrevExchangeItem.Role role, BMI model) throws BMIModelException {
+	public BmiOutputExchangeItem(String variableName, IPrevExchangeItem.Role role, BMI model, double modelMissingValue) throws BMIModelException {
+		this.modelMissingValue = modelMissingValue;
 		if (variableName == null) throw new IllegalArgumentException("variableName == null");
 		if (role == null) throw new IllegalArgumentException("role == null");
 		if (model == null) throw new IllegalArgumentException("model == null");
@@ -173,17 +175,23 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 	 * values in memory.
 	 */
 	public double[] getValuesAsDoubles() {
+		double[] allModelValues;
 		try {
 			if ("float32".equals(type)) {
-				return BBUtils.toDoubleArray(model.getFloat(variableName));
+				allModelValues = BBUtils.toDoubleArray(model.getFloat(variableName));
 			} else if ("float64".equals(type)) {
-				return model.getDouble(variableName);
+				allModelValues = model.getDouble(variableName);
 			} else {
 				throw new BMIModelException("unsupported variable data type: " + type + " currently only float and double types supported");
 			}
 		} catch (BMIModelException e) {
 			throw new RuntimeException(e);
 		}
+		double[] checkedValues = new double[allModelValues.length];
+		for (int i = 0; i < allModelValues.length; i++) {
+			checkedValues[i] = Double.compare(allModelValues[i], modelMissingValue) == 0 ? Double.NaN : allModelValues[i];
+		}
+		return checkedValues;
 	}
 
 	/**
@@ -230,12 +238,15 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 	 */
 	public void setValuesAsDoubles(double[] values) {
 		LOGGER.info("Setting " + values.length + " values in variable " + variableName);
-
+		double[] checkedValues = new double[values.length];
+		for (int i = 0; i < values.length; i++) {
+			checkedValues[i] = Double.isNaN(values[i]) ? modelMissingValue: values[i];
+		}
 		try {
 			if ("float32".equals(type)) {
-				model.setFloat(variableName, BBUtils.toFloatArray(values));
+				model.setFloat(variableName, BBUtils.toFloatArray(checkedValues));
 			} else if ("float64".equals(type)) {
-				model.setDouble(variableName, values);
+				model.setDouble(variableName, checkedValues);
 			} else {
 				throw new BMIModelException("unsupported variable data type: " + type + " currently only float and double types supported");
 			}

@@ -85,6 +85,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private DistributedCounter currentModelInstanceNumber = new DistributedCounter(-1);
 	private String inputStateDir = null;
 	private String outputStateDir = null;
+	private double modelMissingValue = Double.NaN;
 
 	// called by OpenDA
 	public BmiModelFactory() {
@@ -132,6 +133,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.modelStateExchangeItemIds = configReader.getModelStateExchangeItemIds();
 		this.inputStateDir = configReader.getInputStateDir();
 		this.outputStateDir = configReader.getOutputStateDir();
+		this.modelMissingValue = configReader.getModelMissingValue();
 
 		this.hosts = configReader.getHosts();
 
@@ -179,7 +181,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			// modelConfigFile must be a relative path.
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
 			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,
-					this.forcingConfiguration, this.modelStateExchangeItemIds, inputStateDir, outputStateDir);
+					this.forcingConfiguration, this.modelStateExchangeItemIds, inputStateDir, outputStateDir, modelMissingValue);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);

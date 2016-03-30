@@ -69,6 +69,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 	private final AnalysisDataWriter analysisDataWriter;
 	private boolean firstTime = true;
+	private double modelMissingValue;
 
 	/**
 	 * @param model
@@ -79,7 +80,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 */
 	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
 							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
-							String stateInputDir, String stateOutputDir) throws BMIModelException {
+							String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
+		this.modelMissingValue = modelMissingValue;
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
@@ -115,9 +117,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		model.initializeModel();
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
-		exchangeItems = createExchangeItems(model);
+		exchangeItems = createExchangeItems(model, this.modelMissingValue);
 
-		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds, this.model);
+		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds, this.model, this.modelMissingValue);
 
 		forcingExchangeItems = createForcingExchangeItems();
 
@@ -129,7 +131,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		//also this method is never called.
 	}
 
-	private static Map<String, IExchangeItem> createExchangeItems(BMI model) throws BMIModelException {
+	private static Map<String, IExchangeItem> createExchangeItems(BMI model, double modelMissingValue) throws BMIModelException {
 		Set<String> inputVars = new HashSet<String>();
 		Set<String> outputVars = new HashSet<String>();
 		Set<String> inoutVars = new HashSet<String>();
@@ -151,17 +153,17 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
 
 		for (String variable : inputVars) {
-			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Input, model);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Input, model, modelMissingValue);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
-			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Output, model);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Output, model, modelMissingValue);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
-			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.InOut, model);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.InOut, model, modelMissingValue);
 			result.put(variable, item);
 		}
 		return result;
@@ -335,7 +337,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 						if (modelExchangeItem == null) {
 							throw new RuntimeException("Cannot find a model ExchangeItem for forcing ExchangeItem " + entry.getKey());
 						}
-						modelExchangeItem.setValuesAsDoubles(((NetcdfGridTimeSeriesExchangeItem) forcingEI).getValuesAsDoublesForSingleTimeIndex(aTimeIndex+1)); // TODO
+						modelExchangeItem.setValuesAsDoubles(((NetcdfGridTimeSeriesExchangeItem) forcingEI).getValuesAsDoublesForSingleTimeIndex(aTimeIndex + 1));
 					}
 				}
 			} else {
