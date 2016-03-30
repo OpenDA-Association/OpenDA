@@ -26,25 +26,20 @@ import bmi.BMIModelException;
 import bmi.BMI;
 import bmi.EBMI;
 
-import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.TimeInfo;
-import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.*;
-import org.openda.utils.Vector;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.AnalysisDataWriter;
 import org.openda.utils.io.FileBasedModelState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.activation.UnsupportedDataTypeException;
 
 /**
  * Interface to a BMI Model. Passes calls to the BMI interface.
@@ -59,8 +54,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private final File modelRunDir;
 
 	private final Map<String, IExchangeItem> exchangeItems;
-	private Map<String, IExchangeItem> bufferedExchangeItems;
+	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private Map<String, IExchangeItem> forcingExchangeItems;
+	private IExchangeItem modelStateExchangeItem;
 
 	/**
 	 * Directory where the model reads the input state file(s) from. This is only used if an input state is used.
@@ -81,7 +77,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @param overrulingTimeHorizon optional, can be null.
 	 * @throws BMIModelException
 	 */
-	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon, ArrayList<BmiModelForcingConfig> forcingConfig) throws BMIModelException {
+	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon, ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds) throws BMIModelException {
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
@@ -119,6 +115,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 		exchangeItems = createExchangeItems(model);
 
+		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds, this.model);
+
 		forcingExchangeItems = createForcingExchangeItems();
 
 		this.analysisDataWriter = new AnalysisDataWriter(exchangeItems.values(), modelRunDir);
@@ -151,42 +149,25 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
 
 		for (String variable : inputVars) {
-			BmiStateExchangeItem item = new BmiStateExchangeItem(variable, IPrevExchangeItem.Role.Input, model);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Input, model);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
-			BmiStateExchangeItem item = new BmiStateExchangeItem(variable, IPrevExchangeItem.Role.Output, model);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Output, model);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
-			BmiStateExchangeItem item = new BmiStateExchangeItem(variable, IPrevExchangeItem.Role.InOut, model);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.InOut, model);
 			result.put(variable, item);
 		}
 		return result;
 	}
 
-	// Buffer for OUTPUT ExchangeItems, in order to facilitate asynchronous filtering.
-	private Map<String, IExchangeItem> createBufferedExchangeItems(BMI model, ITime[] bufferTimes) throws BMIModelException {
-		Set<String> inputVars = new HashSet<String>();
-		Set<String> outputVars = new HashSet<String>();
-		Set<String> inoutVars = new HashSet<String>();
-
-		// first fill sets with input and output variables
-		Collections.addAll(inputVars, model.getInputVarNames());
-		Collections.addAll(outputVars, model.getOutputVarNames());
-
-		// then put duplicates in inout variables.
-		// Note: Loop over copy of set to prevent iterator exception
-		for (String var : inputVars.toArray(new String[inputVars.size()])) {
-			if (outputVars.contains(var)) {
-				outputVars.remove(var);
-				inoutVars.add(var);
-			}
-		}
-
-		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
+	// Buffer for output ExchangeItems in order to facilitate asynchronous filtering.
+	private Map<String, DoublesExchangeItem> createBufferedExchangeItems(ITime[] bufferTimes) throws BMIModelException {
+		Map<String, DoublesExchangeItem> result = new HashMap<String, DoublesExchangeItem>();
 
 		// ITime has no double[] getTimes?
 		double[] selectedTimes = new double[bufferTimes.length];
@@ -194,20 +175,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 			selectedTimes[i] = bufferTimes[i].getMJD();
 		}
 
-		for (String variable : outputVars) {
-			BmiStateExchangeItem bmiExchangeItem = (BmiStateExchangeItem)this.exchangeItems.get(variable);
-			int numberOfValues = ((ArrayGeometryInfo)bmiExchangeItem.getGeometryInfo()).getCellCount() * bufferTimes.length;
-			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(variable, Role.Output, new double[numberOfValues]);
+		for (Map.Entry<String, IExchangeItem> entry: this.exchangeItems.entrySet()) {
+			int numberOfValues = ((ArrayGeometryInfo)entry.getValue().getGeometryInfo()).getCellCount() * bufferTimes.length;
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), Role.Output, new double[numberOfValues]);
 			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
-			result.put(variable, bufferExchangeItem);
-		}
-
-		for (String variable : inoutVars) {
-			BmiStateExchangeItem bmiExchangeItem = (BmiStateExchangeItem)this.exchangeItems.get(variable);
-			int numberOfValues = ((ArrayGeometryInfo)bmiExchangeItem.getGeometryInfo()).getCellCount() * bufferTimes.length;
-			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(variable, Role.InOut, new double[numberOfValues]);
-			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
-			result.put(variable, bufferExchangeItem);
+			result.put(entry.getKey(), bufferExchangeItem);
 		}
 
 		return result;
@@ -257,12 +229,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
 		IExchangeItem exchangeItem = null;
-		if (this.forcingExchangeItems != null){
-			exchangeItem = this.forcingExchangeItems.get(exchangeItemId);
+		if (exchangeItemId.equalsIgnoreCase("state")) {
+			exchangeItem = this.modelStateExchangeItem;
 		}
-		if (exchangeItem == null && this.bufferedExchangeItems != null) {
-			exchangeItem = this.bufferedExchangeItems.get(exchangeItemId);
-		}
+		if (exchangeItem == null && this.forcingExchangeItems != null){
+			exchangeItem = this.forcingExchangeItems.get(exchangeItemId);}
 		if (exchangeItem == null && this.exchangeItems != null) {
 			exchangeItem = this.exchangeItems.get(exchangeItemId);
 		}
@@ -333,7 +304,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private void setBufferEIsfromModelEIs(double currentTimeMJD) {
 		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
 		if (bufferedExchangeItems == null) return;
-		for (Map.Entry<String, IExchangeItem> entry : bufferedExchangeItems.entrySet()) {
+		for (Map.Entry<String, DoublesExchangeItem> entry : bufferedExchangeItems.entrySet()) {
 			IExchangeItem bufferEI = entry.getValue();
 			double[] times = bufferEI.getTimes();
 			double[] newValues = exchangeItems.get(entry.getKey()).getValuesAsDoubles();
@@ -341,11 +312,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 				if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
 					double[] allValues = bufferEI.getValuesAsDoubles();
 					int valuesPerTime = allValues.length / times.length;
-					// Java has no slice or range assignment?
 					int offset = aTimeIndex * valuesPerTime;
-					for (int i = 0; i < valuesPerTime; i++) {
-						allValues[i + offset] = newValues[i];
-					}
+					System.arraycopy(newValues, 0, allValues, offset, valuesPerTime);
 					bufferEI.setValuesAsDoubles(allValues);
 				}
 			}
@@ -569,7 +537,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		ITime[] selectedTimes = observationDescriptions.getTimes();
 		try {
 			if (bufferedExchangeItems != null) { bufferedExchangeItems.clear(); }
-			bufferedExchangeItems = createBufferedExchangeItems(model, selectedTimes);
+			bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);
 		} catch (BMIModelException e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Cannot retrieve selected times from announced observations.");
 		}

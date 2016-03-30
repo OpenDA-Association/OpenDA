@@ -64,6 +64,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private String modelPythonModuleName;
 	private String modelPythonClassName;
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
+	private String[] modelStateExchangeItemIds;
 
 	// model variables.
 	private File modelTemplateDirectory = null;
@@ -126,6 +127,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
 		this.relativeModelConfigFilePath = configReader.getRelativeModelConfigFilePath();
 		this.forcingConfiguration = configReader.getBmiModelForcingConfigs();
+		this.modelStateExchangeItemIds = configReader.getModelStateExchangeItemIds();
 
 		this.hosts = configReader.getHosts();
 
@@ -172,7 +174,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 
 			// modelConfigFile must be a relative path.
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
-			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile, timeHorizonFromOutside, this.forcingConfiguration);
+			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile, timeHorizonFromOutside, this.forcingConfiguration, this.modelStateExchangeItemIds);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);

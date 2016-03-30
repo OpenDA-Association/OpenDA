@@ -37,6 +37,7 @@ public class BmiModelFactoryConfigReader {
 	private final String pythonModelClassName;
 	private String pythonExecutablePath;
 	private final File modelTemplateDirectory;
+	private ArrayList<String> stateVectorIds;
 	/**
 	 * The path and name of the model configuration file (relative to the model template directory).
 	 */
@@ -116,6 +117,12 @@ public class BmiModelFactoryConfigReader {
 			}
 		}
 
+		stateVectorIds = new ArrayList<String>();
+		BmiModelStateExchangeItemXML bmiModelStateExchangeItems = castor.getBmiModelStateExchangeItems();
+		for(BmiModelStateExchangeItemXMLItem item: bmiModelStateExchangeItems.getBmiModelStateExchangeItemXMLItem()) {
+			stateVectorIds.add(item.getExchangeItemId());
+		}
+
 		String hosts = castor.getHosts();
 		if (hosts == null || hosts.trim().isEmpty()) {//if hosts not configured.
 			this.hosts = null;
@@ -151,4 +158,6 @@ public class BmiModelFactoryConfigReader {
 	public String[] getHosts() {
 		return hosts;
 	}
+
+	public String[] getModelStateExchangeItemIds() {return stateVectorIds.toArray(new String[0]);}
 }

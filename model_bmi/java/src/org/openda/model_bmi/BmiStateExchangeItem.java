@@ -1,260 +1,171 @@
-/* MOD_V2.0
- * Copyright (c) 2012 OpenDA Association
- * All rights reserved.
- *
- * This file is part of OpenDA.
- *
- * OpenDA is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * OpenDA is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package org.openda.model_bmi;
 
 import bmi.BMIModelException;
-import bmi.BMI;
-
+import bmi.EBMI;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.ArrayGeometryInfo;
-import org.openda.exchange.QuantityInfo;
-import org.openda.exchange.TimeInfo;
-import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IArray;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.ITimeInfo;
-import org.openda.interfaces.IVector;
-import org.openda.utils.Array;
-import org.openda.utils.Vector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openda.interfaces.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Exchange item representing a 2D map with values for BMI models
- *
- * @author Arno Kockx
- * @author Niels Drost
+ * Created by bos_en on 3/25/2016.
  */
 public class BmiStateExchangeItem implements IExchangeItem {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(BmiStateExchangeItem.class);
+	private final String[] ids;
+	private final EBMI model;
+	private Map<String, Integer> stateComponentLengths;
+	private int totalNumberOfStateValues;
+	private double[] values;
 
-	private static final long serialVersionUID = 1L;
-	private final String variableName;
-	private final IPrevExchangeItem.Role role;
-	private final String type;
-	private final BMI model;
-	private final IQuantityInfo quantityInfo;
-	private final IGeometryInfo geometryInfo;
-
-	/**
-	 * @param variableName
-	 *            the name of the variable as used by a BMI model
-	 * @param role
-	 * @param model
-	 * @throws BMIModelException
-	 */
-	public BmiStateExchangeItem(String variableName, IPrevExchangeItem.Role role, BMI model) throws BMIModelException {
-		if (variableName == null) throw new IllegalArgumentException("variableName == null");
-		if (role == null) throw new IllegalArgumentException("role == null");
-		if (model == null) throw new IllegalArgumentException("model == null");
-
-		this.variableName = variableName;
-		this.role = role;
+	public BmiStateExchangeItem(String[] ids, EBMI model) {
+		this.ids = ids;
 		this.model = model;
 
-		this.quantityInfo = new QuantityInfo(variableName, model.getVarUnits(variableName));
-
-		this.geometryInfo = createGeometryInfo();
-
-		//currently only "float32" and "float64" are supported
-		this.type  = model.getVarType(variableName);
-	}
-
-	private IGeometryInfo createGeometryInfo() {
-		// lower-left corner
-		try {
-			double[] origin = this.model.getGridOrigin(variableName);
-			double[] spacing = this.model.getGridSpacing(variableName);
-			int[] shape = this.model.getGridShape(variableName);
-
-			// data in grid lower-to-higher latitudes (south to north)
-			double[] latitudes = new double[shape[0]];
-			for (int n = 0; n < latitudes.length; n++) {
-				// calculate latitude at center of each cell
-				latitudes[n] = origin[0] + (spacing[0] / 2) + (n * spacing[0]);
+		totalNumberOfStateValues = 0;
+		stateComponentLengths = new HashMap<String, Integer>();
+		for (String id: this.ids) {
+			try {
+				int length = this.model.getVarSize(id);
+				stateComponentLengths.put(id, length);
+				totalNumberOfStateValues += length;
+			} catch (BMIModelException e) {
+				throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.BmiStateExchangeItem() Bmi model does not know variable: " + id);
 			}
-			IArray latitudeArray = new Array(latitudes);
-
-			double[] longitudes = new double[shape[1]];
-			for (int n = 0; n < longitudes.length; n++) {
-				longitudes[n] = origin[1] + (spacing[1] / 2) + (n * spacing[1]);
-			}
-			IArray longitudeArray = new Array(longitudes);
-
-			// latitudeValueIndex(es) = dimensionIndex(es) of latitudeArray
-			// dimension(s) in the grid data array.
-			int[] latitudeValueIndices = new int[] { 0 };
-			// longitudeValueIndex(es) = dimensionIndex(es) of longitudeArray
-			// dimension(s) in the grid data array.
-			int[] longitudeValueIndices = new int[] { 1 };
-
-			IQuantityInfo latitudeQuantityInfo = new QuantityInfo("y coordinate according to model coordinate system",
-					"meter");
-			IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system",
-					"meter");
-			//here create a rectangular grid geometryInfo, otherwise GeometryUtils.getObservedValuesBilinearInterpolation does not work and GeometryUtils.getLocalizationWeights works slow.
-			return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray,
-					longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
-		} catch (BMIModelException e) {
-			throw new RuntimeException(e);
 		}
-
-	}
-
-	public String getId() {
-		return this.variableName;
-	}
-
-	public String getDescription() {
-		return null;
+		values = new double[totalNumberOfStateValues];
 	}
 
 	public Role getRole() {
-		return this.role;
+		return Role.InOut;
 	}
 
-	public ITimeInfo getTimeInfo() {
-		return new TimeInfo(getTimes());
+	public String getId() {
+		return "state";
 	}
 
-	public double[] getTimes() {
-		// return current time, since BMI models only store the current values
-		// in memory.
-		try {
-			return new double[] { TimeUtils.udUnitsTimeToMjd(model.getCurrentTime(), model.getTimeUnits()) };
-		} catch (BMIModelException e) {
-			throw new RuntimeException(e);
-		}
+	public String getDescription() {
+		return "Bmi state exchangeItem.";
 	}
 
-	public void setTimes(double[] times) {
-		throw new RuntimeException(this.getClass().getName() + ": setting time stamps not supported for BMI model.");
-	}
-
-	public ValueType getValuesType() {
-		return ValueType.IVectorType;
-	}
-
-	public Class<?> getValueType() {
-		return IVector.class;
-	}
-
-	public Object getValues() {
-		// TODO to use native code (to improve performance) for vector and
-		// matrix calculations in algorithm, for that need to return a CtaVector
-		// here. AK
-		return new Vector(getValuesAsDoubles());
-	}
-
-	/**
-	 * Returns only the current values, since the model only stores the current
-	 * values in memory.
-	 */
-	public double[] getValuesAsDoubles() {
-		try {
-			if ("float32".equals(type)) {
-				return BBUtils.toDoubleArray(model.getFloat(variableName));
-			} else if ("float64".equals(type)) {
-				return model.getDouble(variableName);
-			} else {
-				throw new BMIModelException("unsupported variable data type: " + type + " currently only float and double types supported");
-			}
-		} catch (BMIModelException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * Only changes the current values, since the model only stores the current
-	 * values in memory. Only changes the values of the active grid cells.
-	 */
-	public void axpyOnValues(double alpha, double[] axpyValues) {
-		double[] allValues = getValuesAsDoubles();
-
-		for (int n = 0; n < allValues.length; n++) {
-			// for all NaNs results in NaN
-			allValues[n] += alpha * axpyValues[n];
-		}
-		setValuesAsDoubles(allValues);
-	}
-
-	/**
-	 * Only changes the current values, since the model only stores the current
-	 * values in memory. Only changes the values of the active grid cells.
-	 */
-	public void multiplyValues(double[] multiplicationFactors) {
-
-		double[] allValues = getValuesAsDoubles();
-		for (int n = 0; n < allValues.length; n++) {
-			allValues[n] *= multiplicationFactors[n];
-		}
-		setValuesAsDoubles(allValues);
-	}
-
-	public void setValues(Object vector) {
-		if (!(vector instanceof IVector)) {
-			throw new IllegalArgumentException(this.getClass().getName() + ": supply values as an IVector not as "
-					+ vector.getClass().getName());
-		}
-
-		setValuesAsDoubles(((IVector) vector).getValues());
-	}
-
-	/**
-	 * Sets only the current values, since BMI models only store the current
-	 * values in memory. Sets the values of all grid cells, also of the
-	 * inactive/dry/dead grid cells. This is not a problem, since BMI models
-	 * should ignore the values of the inactive grid cells anyway.
-	 */
-	public void setValuesAsDoubles(double[] values) {
-		LOGGER.info("Setting " + values.length + " values in variable " + variableName);
-
-		try {
-			if ("float32".equals(type)) {
-				model.setFloat(variableName, BBUtils.toFloatArray(values));
-			} else if ("float64".equals(type)) {
-				model.setDouble(variableName, values);
-			} else {
-				throw new BMIModelException("unsupported variable data type: " + type + " currently only float and double types supported");
-			}
-			
-			
-		} catch (BMIModelException e) {
-			throw new RuntimeException(e);
-		}
+	public Class getValueType() {
+		return double[].class;
 	}
 
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
-		throw new UnsupportedOperationException(getClass().getName() + ".copyValuesFromItem() not implemented");
+		throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.copyValuesFromItem() not implemented yet");
+	}
+
+	public ITimeInfo getTimeInfo() {
+		return null;
 	}
 
 	public IQuantityInfo getQuantityInfo() {
-		return this.quantityInfo;
+		throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.getQuantityInfo() not implemented yet");
 	}
 
 	public IGeometryInfo getGeometryInfo() {
-		return this.geometryInfo;
+		throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.getGeometryInfo() not implemented yet");
+	}
+
+	public ValueType getValuesType() {
+		return ValueType.doublesType;
+	}
+
+	public Object getValues() {
+		return getValuesAsDoubles();
+	}
+
+	public double[] getValuesAsDoubles() {
+		int offset = 0;
+
+		for (String id: this.ids) {
+
+			double[] modelValues;
+			try {
+				if ("float32".equals(model.getVarType(id))) {
+					modelValues = BBUtils.toDoubleArray(model.getFloat(id));
+				} else if ("float64".equals(model.getVarType(id))) {
+					modelValues = model.getDouble(id);
+				} else {
+					throw new BMIModelException("unsupported variable data type: " + model.getVarType(id) + " currently only float and double types supported");
+				}
+			} catch (BMIModelException e) {
+				throw new RuntimeException(e);
+			}
+
+			int numberOfValues = modelValues.length;
+			System.arraycopy(modelValues, 0, values, offset, numberOfValues);
+
+			offset += numberOfValues;
+		}
+		return values;
+	}
+
+	private void updateModel() {
+		int offset = 0;
+
+		for (String id: this.ids) {
+			int sliceLength = stateComponentLengths.get(id);
+			double[] slice = new double[sliceLength];
+			System.arraycopy(values, offset, slice, 0, sliceLength);
+
+			try {
+				if ("float32".equals(model.getVarType(id))) {
+					model.setFloat(id, BBUtils.toFloatArray(slice));
+				} else if ("float64".equals(model.getVarType(id))) {
+					model.setDouble(id, slice);
+				} else {
+					throw new BMIModelException("unsupported variable data type: " + model.getVarType(id) + " currently only float and double types supported");
+				}
+			} catch (BMIModelException e) {
+				throw new RuntimeException(e);
+			}
+			offset += sliceLength;
+		}
+	}
+
+	public void axpyOnValues(double alpha, double[] axpyValues) {
+		if (axpyValues.length != totalNumberOfStateValues) {
+			throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.axpyOnValues() incoming array is of wrong size");
+		}
+
+		for (int n = 0; n < values.length; n++) {
+			values[n] += alpha * axpyValues[n];
+		}
+
+		updateModel();
+	}
+
+	public void multiplyValues(double[] multiplicationFactors) {
+		if (multiplicationFactors.length != totalNumberOfStateValues) {
+			throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.multiplyValues() incoming array is of wrong size");
+		}
+
+		for (int n = 0; n < values.length; n++) {
+			values[n] *= multiplicationFactors[n];
+		}
+
+		updateModel();
+	}
+
+	public void setValues(Object values) {
+		if (!(values instanceof double[])){
+			throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.setValues() wrong type");
+		}
+		setValuesAsDoubles((double[])values);
+	}
+
+	public void setValuesAsDoubles(double[] values) {
+		throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.setValuesAsDoubles() not implemented yet");
+	}
+
+	public double[] getTimes() {
+		return null;
+	}
+
+	public void setTimes(double[] times) {
+		throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.setTimes() not implemented yet");
 	}
 }

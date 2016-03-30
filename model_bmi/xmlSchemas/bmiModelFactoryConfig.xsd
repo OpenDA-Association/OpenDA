@@ -26,6 +26,7 @@
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="bmiModelForcingsConfig" type="openda:BmiModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="bmiModelStateExchangeItems" type="openda:BmiModelStateExchangeItemXML"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="BmiPythonModelXML">
@@ -64,6 +65,11 @@
 					<xs:documentation>The data object containing the forcing data.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BmiModelStateExchangeItemXML">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="exchangeItemId" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ForcingDataObjectXML">
