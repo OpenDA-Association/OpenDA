@@ -106,7 +106,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 		int ensembleMemberCount = ensembleMemberIndex;
 		if (ensembleMemberCount == 0) {
 			throw new IllegalArgumentException(this.getClass().getSimpleName() + ": No wdm time series files found with prefix '" + wdmTimeSeriesFilePrefix
-					+ "' and postfix <ensembleMemberNumber>.wdm in directory " + workingDir.getAbsolutePath());
+					+ "' and postfix <ensembleMemberNumber>.wdm in working directory " + workingDir != null ? workingDir.getAbsolutePath() : "");
 		}
 		Results.putMessage(getClass().getSimpleName() + ": Found wdm time series files for " + ensembleMemberCount + " ensemble members.");
 	}
