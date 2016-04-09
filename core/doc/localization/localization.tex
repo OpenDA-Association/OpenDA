@@ -1,0 +1,38 @@
+\svnidlong
+{$HeadURL: $}
+{$LastChangedDate: 2014-07-08 18:10:04 +0200 (Tue, 08 Jul 2014) $}
+{$LastChangedRevision: 4511 $}
+{$LastChangedBy: vrielin $}
+
+\odachapter{\oda Localization}
+
+\begin{tabular}{p{4cm}l}
+\textbf{Contributed by:} & Nils van Velzen, \vortech\\
+\textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
+\end{tabular}
+
+\section{Theory}
+TO DO. A starting point is the paper: OpenDA-NEMO framework for ocean data assimilation, Ocean Dynamics (DOI 10.1007/s10236-016-0945-z).
+
+
+\section{Configuration}
+When model support distance based localization you can use it by adding the folowing option to your ENKF configuration file.
+\begin{verbatim}
+   <localization>hamill</localization>
+   <distance>100</distance>
+\end{verbatim}
+The unit of the localization distance is not defined. The value is passed to the model and is model specific.
+
+Automatic localization algorithm as poposed by  Yanfen Zhang and Dean S. Oliver. Evaluation and error analysis: Kalman gain regularisation versus covariance regularisation, Comput. Geosci (2011) 15:489-508, DOI 10.1007/s10596-010-9218-y
+can be selected by setting
+
+\begin{verbatim}
+   <localization>zhang</localization>
+\end{verbatim}
+
+The bootstrap size is currently hard coded and connot be set in the configuration. The corresponing value can be found and set in the file AutoLocalizationZhang2011.java.
+
+
+
+
+

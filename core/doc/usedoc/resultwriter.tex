@@ -43,7 +43,7 @@ oda-file:
     </selection>
   </resultWriter>
 
-  <resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+  <resultWriter className="org.openda.resultwriters.NetcdfResultWriterNative">
     <workingDirectory>.</workingDirectory>
     <configFile>results_yourlabel_.nc</configFile>
     <selection>
@@ -105,7 +105,7 @@ format the output exactly to your needs. Some existing writers are:
 matlab ascii format (.m file). These files can be loaded into Matlab or Octave
 for further analysis or plotting. Since the ascii format is very slow for large
 data items, the default maximimum size is maxSize=1000.
-\item {\tt org.openda.resultwriters.NetcdfResultWriter}: Writes to netcdf.
+\item {\tt org.openda.resultwriters.NetcdfResultWriterNative}: Writes to netcdf.
 Very useful for larger data items, that do not fit well in the Matlab ascii
 files.
 \item {\tt org.openda.resultwriters.TextTableWriter}: Simple
