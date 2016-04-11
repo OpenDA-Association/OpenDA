@@ -89,9 +89,11 @@ public class NetcdfUtils {
 	public static final String TIME_VARIABLE_NAME = "time";
 	public static final String LATITUDE_VARIABLE_NAME = "lat";
 	public static final String LATITUDE_STANDARD_NAME = "latitude";
+	public static final String LATITUDE_STANDARD_NAME_2 = "projection_y_coordinate";
 	public static final String LATITUDE_LONG_NAME = "latitude";
 	public static final String LONGITUDE_VARIABLE_NAME = "lon";
 	public static final String LONGITUDE_STANDARD_NAME = "longitude";
+	public static final String LONGITUDE_STANDARD_NAME_2 = "projection_x_coordinate";
 	public static final String LONGITUDE_LONG_NAME = "longitude";
 	public static final String Z_VARIABLE_NAME = "z";
 	public static final String Y_VARIABLE_NAME = "y";
@@ -413,17 +415,24 @@ public class NetcdfUtils {
 	 */
 	private static boolean isLatitudeVariable(Variable variable) {
 		//check if axis is "Y".
-		if ("Y".equalsIgnoreCase(getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME))) {
+		String axisAttributeStringValue = getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME);
+		if ("Y".equalsIgnoreCase(axisAttributeStringValue)) {
 			return true;
 		}
 
 		//check if axis is "N".
-		if ("N".equalsIgnoreCase(getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME))) {
+		if ("N".equalsIgnoreCase(axisAttributeStringValue)) {
 			return true;
 		}
 
 		//check if standard name is "latitude".
-		if (LATITUDE_STANDARD_NAME.equalsIgnoreCase(getAttributeStringValue(variable, STANDARD_NAME_ATTRIBUTE_NAME))) {
+		String standardNameAttributeStringValue = getAttributeStringValue(variable, STANDARD_NAME_ATTRIBUTE_NAME);
+		if (LATITUDE_STANDARD_NAME.equalsIgnoreCase(standardNameAttributeStringValue)) {
+			return true;
+		}
+
+		//check if standard name is "projection_y_coordinate".
+		if (LATITUDE_STANDARD_NAME_2.equalsIgnoreCase(standardNameAttributeStringValue)) {
 			return true;
 		}
 
@@ -454,8 +463,18 @@ public class NetcdfUtils {
 			return true;
 		}
 
+		//check if axis is "N".
+		if ("N".equalsIgnoreCase(getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME))) {
+			return true;
+		}
+
 		//check if standard name is "longitude".
 		if (LONGITUDE_STANDARD_NAME.equalsIgnoreCase(getAttributeStringValue(variable, STANDARD_NAME_ATTRIBUTE_NAME))) {
+			return true;
+		}
+
+		//check if standard name is "projection_x_coordinate".
+		if (LONGITUDE_STANDARD_NAME_2.equalsIgnoreCase(getAttributeStringValue(variable, STANDARD_NAME_ATTRIBUTE_NAME))) {
 			return true;
 		}
 

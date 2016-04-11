@@ -34,7 +34,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + file.getAbsolutePath());
 		}
 
-		// int mmax = netcdfFile.findDimension("MMAX").getLength();
+		readNetCdfVariables();
 	}
 
 	public void finish() {
@@ -100,21 +100,21 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 			// get the number of spatial dimensions
 			int nonTimeDimensions = variable.getDimensions().size();
+			int timeDimensionIndex = -1;
 			if (timeVariable != null) {
 				// one of the dimensions was for time
 				nonTimeDimensions--;
-			}
-
-			int timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
-			if (timeDimensionIndex < 0) {
-				throw new RuntimeException("NetcdfD3dMapDataObject: time dimension variable " + timeVariable.getName() +
-						"not present netcdf file " + netcdfFile.getLocation());
+				timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
+				if (timeDimensionIndex < 0) {
+					throw new RuntimeException("NetcdfD3dMapDataObject: time dimension variable " + timeVariable.getName() +
+							"not present netcdf file " + netcdfFile.getLocation());
+				}
 			}
 
 			IGeometryInfo geometryInfo = NetcdfUtils.createGeometryInfo(variable, netcdfFile);
 			ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
 
-			if (nonTimeDimensions == 3 && geometryInfo != null) {
+			if (nonTimeDimensions == 2 && geometryInfo != null) {
 				//if variable has data for a 2D grid time series.
 				String parameterId = variable.getName();
 
@@ -129,5 +129,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				continue;
 			}
 		}
+	}
+
+	public NetcdfFile getNetcdfFile() {
+		return netcdfFile;
 	}
 }

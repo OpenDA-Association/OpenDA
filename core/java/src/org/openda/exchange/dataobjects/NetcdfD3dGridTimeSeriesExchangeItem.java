@@ -22,6 +22,7 @@ package org.openda.exchange.dataobjects;
 
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
+import ucar.nc2.Variable;
 
 /**
  * Exchange item representing values for a grid time series
@@ -105,12 +106,16 @@ public class NetcdfD3dGridTimeSeriesExchangeItem implements IGridTimeSeriesExcha
 		return this.geometryInfo;
 	}
 
-	@Override
 	public double[] getValuesAsDoublesForSingleTimeIndex(int timeIndex) {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dGridTimeSeriesExchangeItem.getValuesAsDoublesForSingleTimeIndex() not implemented yet");
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfD3dMapDataObject.getNetcdfFile(), this);
+		int[] origin = NetcdfUtils.createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+		//select only the given time.
+		origin[timeDimensionIndex] = timeIndex;
+		sizeArray[timeDimensionIndex] = 1;
+		return NetcdfUtils.readSelectedData(variable, origin, sizeArray, -1);
 	}
 
-	@Override
 	public void setValuesAsDoublesForSingleTimeIndex(int timeIndex, double[] values) {
 		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dGridTimeSeriesExchangeItem.setValuesAsDoublesForSingleTimeIndex() not implemented yet");
 	}
