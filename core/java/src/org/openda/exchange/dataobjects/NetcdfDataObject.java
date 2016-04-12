@@ -52,7 +52,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 	private File file = null;
 	private NetcdfFileWriteable netcdfFile = null;
-	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
+	protected List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
 	/**
 	 * For each exchangeItemId contains a map with one exchangeItem per ensembleMemberIndex.
 	 */
