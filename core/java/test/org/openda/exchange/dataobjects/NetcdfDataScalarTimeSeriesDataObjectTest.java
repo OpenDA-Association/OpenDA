@@ -1,4 +1,4 @@
-package org.openda.exchange.dataobject;
+package org.openda.exchange.dataobjects;
 
 import junit.framework.TestCase;
 import org.openda.interfaces.IDataObject;
