@@ -1,5 +1,6 @@
-package org.openda.exchange.dataobjects;
+package org.openda.model_delft3d;
 
+import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.IExchangeItem;
 
 import java.io.File;
@@ -7,9 +8,9 @@ import java.io.File;
 /**
  * Netcdf Data object for reading time series from Delft3D trih-* files
  */
-public class NetcdfDataObjectDelft3DTrih extends NetcdfDataObject {
+public class D3dNetcdfHisDataObject extends NetcdfDataObject {
 
-	public NetcdfDataObjectDelft3DTrih() {
+	public D3dNetcdfHisDataObject() {
 		stationIdVarName = "NAMST";
 		stationDimensionVarName = "NOSTAT";
 	}
