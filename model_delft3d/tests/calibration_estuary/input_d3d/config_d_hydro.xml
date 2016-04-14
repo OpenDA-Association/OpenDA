@@ -38,7 +38,7 @@
         -->
     </flow2D3D>
     <delftOnline>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <urlFile>zzz.url</urlFile>
         <waitOnStart>false</waitOnStart>
         <clientControl>true</clientControl>    <!-- client allowed to start, step, stop, terminate -->
