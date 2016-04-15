@@ -100,10 +100,9 @@ public class D3dMdFileDataObject implements IDataObject {
 		String[] exchangeItemIDs = getExchangeItemIDs();
 
 		try {
-			FileWriter outputFile = new FileWriter(new File(workingDir, outputFileName));
-
 			BufferedReader inputFileBufferedReader = new BufferedReader(new FileReader(mdFile));
 			String line = inputFileBufferedReader.readLine();
+			List<String> lines = new ArrayList<String>();
 			while (line != null) {
 				String[] fields = line.split("= *");
 					for (int i = 0; i < exchangeItemIDs.length; i++) {
@@ -118,11 +117,16 @@ public class D3dMdFileDataObject implements IDataObject {
 						}
 					}
 
-				outputFile.write(line + "\n");
+				lines.add(line);
 				line = inputFileBufferedReader.readLine();
 			}
 
 			inputFileBufferedReader.close();
+
+			FileWriter outputFile = new FileWriter(new File(workingDir, outputFileName));
+			for (String outputLine :lines) {
+				outputFile.write(outputLine + "\n");
+			}
 			outputFile.close();
 
 		}	catch (FileNotFoundException e1) {
