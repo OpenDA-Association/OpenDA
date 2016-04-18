@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+
+	<probabilityDistributionFunction id="station1.GRO.lay-20" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+	<probabilityDistributionFunction id="station2.GRO.lay-20" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="false"/>	
+	</probabilityDistributionFunction>	
+	
+	<probabilityDistributionFunction id="station3.GRO.lay-20" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>	
+	
+	<probabilityDistributionFunction id="station4.GRO.lay-20" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="false"/>
+	</probabilityDistributionFunction>
+
+
+</uncertainties>

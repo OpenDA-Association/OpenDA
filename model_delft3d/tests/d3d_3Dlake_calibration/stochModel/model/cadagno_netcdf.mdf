@@ -1,0 +1,174 @@
+Ident  = #Delft3D-FLOW 3.56.29165#
+Commnt =                  
+Runtxt = #Lake Cadagno#
+         #Updated Grid#
+         #Version 0#
+         #1D Meteo#
+         #25 z-layers#
+         #Model for DA#
+         #netcdf output#
+         #Author: Theo#
+Filcco = #Cadagno_Theo_small.grd#
+Anglat =  4.6000000e+001
+Grdang =  0.0000000e+000
+Filgrd = #Cadagno_Theo_small.enc#
+MNKmax = 33 18 25
+Thick  =  5.0800000e+000
+          6.7600000e+000
+          6.5400000e+000
+          6.1800000e+000
+          5.9400000e+000
+          5.7000000e+000
+          5.4600000e+000
+          5.2200000e+000
+          4.9600000e+000
+          4.7200000e+000
+          4.7000000e+000
+          4.4600000e+000
+          4.2200000e+000
+          3.9800000e+000
+          3.6400000e+000
+          3.4000000e+000
+          3.1600000e+000
+          2.9000000e+000
+          2.6600000e+000
+          2.4200000e+000
+          2.0600000e+000
+          1.8200000e+000
+          1.3400000e+000
+          1.3400000e+000
+          1.3400000e+000
+Commnt =                  
+Fildep = #Cadagno_Theo.dep#
+Commnt =                  
+Commnt =                 no. dry points: 0
+Commnt =                 no. thin dams: 0
+Commnt =                  
+Itdate = #2008-03-01#
+Tunit  = #M#
+Tstart =  3.8131200e+006
+Tstop  =  3.8160000e+006
+Dt     = 1
+Tzone  = 0
+Commnt =                  
+Sub1   = # TW #
+Sub2   = #   #
+Commnt =                  
+Wnsvwp = #N#
+Filwnd = #WindModel_1D.wnd#
+Wndint = #Y#
+Commnt =                  
+Zeta0  =  0.0000000e+000
+T0     =  7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+          7.0000000e+000
+Commnt =                  
+Commnt =                 no. open boundaries: 0
+Commnt =                  
+Ag     =  9.8100000e+000
+Rhow   =  1.0000000e+003
+Tempw  =  1.5000000e+001
+Salw   =  3.1000000e+001
+Wstres =  1.6000000e-002  5.0000000e-001  1.8000000e-003  4.0000000e+000  9.0000000e-003  1.0000000e+002
+Rhoa   =  1.2300000e+000
+Betac  =  5.0000000e-001
+Equili = #N#
+Tkemod = #K-epsilon   #
+Ktemp  = 5
+Fclou  =  0.0000000e+000
+Sarea  =  0.0000000e+000
+Secchi =  2.0000000e+000
+Stantn =  5.0000000e-002
+Dalton =  1.3000000e-003
+Filtmp = #HeatFluxModel_1D.tem#
+Solrad = #Y#
+Temint = #Y#
+Commnt =                  
+Roumet = #C#
+Ccofu  =  6.5000000e+001
+Ccofv  =  6.5000000e+001
+Xlo    =  0.0000000e+000
+Vicouv =  1.0000000e-001
+Dicouv =  1.0000000e-001
+Htur2d = #Y#
+Htural =  1.6666660e+000
+Hturnd = 2
+Hturst =  7.0000000e-001
+Hturlp =  3.3333330e-001
+Hturrt = -1.0000000e+000
+Hturdm =  0.0000000e+000
+Hturel = #Y#
+Vicoww =  0.0000000e+000
+Dicoww =  5.0000000e-007
+Irov   = 0
+Commnt =                  
+Iter   =      2
+Dryflp = #YES#
+Dpsopt = #MAX#
+Dpuopt = #MIN#
+Dryflc =  1.0000000e-001
+Dco    = -9.9900000e+002
+Tlfsmo =  6.0000000e+001
+ThetQH =  0.0000000e+000
+Forfuv = #Y#
+Forfww = #Y#
+Sigcor = #N#
+Trasol = #Cyclic-method#
+Momsol = #Cyclic#
+Commnt =                  
+Commnt =                 no. discharges: 0
+Commnt =                 no. observation points: 4
+Filsta = #stations.obs#
+Commnt =                 no. drogues: 0
+Commnt =                  
+Commnt =                  
+Commnt =                 no. cross sections: 0
+Commnt =                  
+SMhydr = #YYYYY#     
+SMderv = #YYYYYY#    
+SMproc = #YYYYYYYYYY#
+PMhydr = #NNNNNN#    
+PMderv = #NNN#       
+PMproc = #NNNNNNNNNN#
+SHhydr = #YYYY#      
+SHderv = #YYYYY#     
+SHproc = #YYYYYYYYYY#
+SHflux = #YYYY#      
+PHhydr = #NNNNNN#    
+PHderv = #NNN#       
+PHproc = #NNNNNNNNNN#
+PHflux = #NNNN#      
+Flmap  =  3.8131200e+006 60  3.8160000e+006
+Flhis  =  3.8131200e+006 30  3.8160000e+006
+Flpp   =  3.8131200e+006 60  3.8160000e+006
+Flrst  = 0
+Commnt =                  
+Online = #N#
+Zmodel = #Y#
+Zbot   = -22
+Ztop   = +1
+Ztbml  = #Y#
+FlNcdf = #map his#
+Commnt =                  

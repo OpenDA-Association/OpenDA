@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+<!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+   <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
+      <alias key="D3D_HOME" />
+      <alias key="OPENDADIR"/>
+      <alias key="instanceDir"/>
+      <alias key="templateDir" />
+      <alias key="runid"/>
+      <!--
+      <alias key="roughness"/>
+      -->
+      <alias key="exedir"/>
+      <alias key="linexedir"/>
+    </aliasDefinitions>
+
+   <run>
+      <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+      <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+      <!-- computation actions -->
+      <!-- define actions relative to working dir. -->
+      <computeActions>
+	 <!-- old v4 input
+         <action workingDirectory="%instanceDir%" exe="%exedir%\deltares_hydro.exe">
+            <arg>config_flow2d3d.ini</arg>
+	 </action> -->
+         <!-- new delft3d v6 input -->
+	 <action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%linexedir%/d_hydro.exe">
+            <arg>config_flow2d3d.xml</arg>
+         </action>
+      </computeActions>
+
+      <finalizeActions/>
+   </run>
+
+   <inputOutput>
+
+      <!-- Stanton -->
+      <ioObject className="org.openda.model_delft3d.D3dMdFileDataObject">
+         <file>%runid%.mdf</file>
+         <id>mdFile</id>
+      </ioObject>
+
+      <!-- time series results -->
+      <ioObject className="org.openda.exchange.dataobjects.NetcdfD3dHisDataObject">
+         <file>trih-%runid%.nc</file>
+         <id>trih-file</id>
+      </ioObject>
+
+	  </inputOutput>
+
+</blackBoxWrapperConfig>
