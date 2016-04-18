@@ -65,6 +65,8 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private String modelPythonClassName;
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 	private String[] modelStateExchangeItemIds;
+	private Double[] modelStateExchangeItemLowerLimits;
+	private Double[] modelStateExchangeItemUpperLimits;
 
 	// model variables.
 	private File modelTemplateDirectory = null;
@@ -131,6 +133,8 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.relativeModelConfigFilePath = configReader.getRelativeModelConfigFilePath();
 		this.forcingConfiguration = configReader.getBmiModelForcingConfigs();
 		this.modelStateExchangeItemIds = configReader.getModelStateExchangeItemIds();
+		this.modelStateExchangeItemLowerLimits = configReader.getModelStateExchangeItemLowerLimits();
+		this.modelStateExchangeItemUpperLimits = configReader.getModelStateExchangeItemUpperLimits();
 		this.inputStateDir = configReader.getInputStateDir();
 		this.outputStateDir = configReader.getOutputStateDir();
 		this.modelMissingValue = configReader.getModelMissingValue();
@@ -181,7 +185,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			// modelConfigFile must be a relative path.
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
 			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,
-					this.forcingConfiguration, this.modelStateExchangeItemIds, inputStateDir, outputStateDir, modelMissingValue);
+					this.forcingConfiguration, this.modelStateExchangeItemIds, this.modelStateExchangeItemLowerLimits, this.modelStateExchangeItemUpperLimits, inputStateDir, outputStateDir, modelMissingValue);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);

@@ -38,6 +38,8 @@ public class BmiModelFactoryConfigReader {
 	private String pythonExecutablePath;
 	private final File modelTemplateDirectory;
 	private ArrayList<String> stateVectorIds;
+	private ArrayList<Double> lowerLimits;
+	private ArrayList<Double> upperLimits;
 	/**
 	 * The path and name of the model configuration file (relative to the model template directory).
 	 */
@@ -121,9 +123,22 @@ public class BmiModelFactoryConfigReader {
 		}
 
 		stateVectorIds = new ArrayList<String>();
+		lowerLimits = new ArrayList<Double>();
+		upperLimits = new ArrayList<Double>();
 		BmiModelStateExchangeItemXML bmiModelStateExchangeItems = castor.getBmiModelStateExchangeItems();
 		for(BmiModelStateExchangeItemXMLItem item: bmiModelStateExchangeItems.getBmiModelStateExchangeItemXMLItem()) {
-			stateVectorIds.add(item.getExchangeItemId());
+			LimitedExchangeItem limitedItem = item.getLimitedExchangeItem();
+			stateVectorIds.add(limitedItem.getExchangeItemId());
+			if (limitedItem.hasLowerLimit()){
+				lowerLimits.add(limitedItem.getLowerLimit());
+			} else {
+				lowerLimits.add(Double.NaN);
+			}
+			if (limitedItem.hasUpperLimit()){
+				upperLimits.add(limitedItem.getUpperLimit());
+			} else {
+				upperLimits.add(Double.NaN);
+			}
 		}
 
 		this.inputStateDir = castor.getInputStateDirectory();
@@ -175,6 +190,10 @@ public class BmiModelFactoryConfigReader {
 	}
 
 	public String[] getModelStateExchangeItemIds() {return stateVectorIds.toArray(new String[0]);}
+
+	public Double[] getModelStateExchangeItemLowerLimits() {return lowerLimits.toArray(new Double[0]);}
+
+	public Double[] getModelStateExchangeItemUpperLimits() {return upperLimits.toArray(new Double[0]);}
 
 	public String getInputStateDir() {
 		return inputStateDir;

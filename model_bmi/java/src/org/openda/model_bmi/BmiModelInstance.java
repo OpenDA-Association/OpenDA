@@ -76,11 +76,12 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @param modelRunDir
 	 * @param initFile
 	 * @param overrulingTimeHorizon optional, can be null.
-	 * @throws BMIModelException
+	 * @param modelStateExchangeItemLowerLimits
+	 *@param modelStateExchangeItemUpperLimits @throws BMIModelException
 	 */
 	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
 							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
-							String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
+							Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits, String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
 		this.modelMissingValue = modelMissingValue;
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
@@ -119,7 +120,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 		exchangeItems = createExchangeItems(model, this.modelMissingValue);
 
-		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds, this.model, this.modelMissingValue);
+		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds, modelStateExchangeItemLowerLimits, modelStateExchangeItemUpperLimits, this.model, this.modelMissingValue);
 
 		forcingExchangeItems = createForcingExchangeItems();
 

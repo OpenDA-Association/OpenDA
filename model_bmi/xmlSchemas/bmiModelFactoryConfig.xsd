@@ -84,7 +84,27 @@
 	</xs:complexType>
 	<xs:complexType name="BmiModelStateExchangeItemXML">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="exchangeItemId" type="xs:string"/>
+			<xs:element name="limitedExchangeItem">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="exchangeItemId" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>Name of a State ExchangeItem.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="lowerLimit" type="xs:double" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Optional. If the value of a model exchange item is below the lower limit, then the value is changed to the lower limit.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="upperLimit" type="xs:double" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Optional. If the value of a model exchange item is above the upper limit, then the value is changed to the upper limit. </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ForcingDataObjectXML">

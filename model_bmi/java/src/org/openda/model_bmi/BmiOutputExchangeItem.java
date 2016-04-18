@@ -240,7 +240,12 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 		LOGGER.info("Setting " + values.length + " values in variable " + variableName);
 		double[] checkedValues = new double[values.length];
 		for (int i = 0; i < values.length; i++) {
-			checkedValues[i] = Double.isNaN(values[i]) ? modelMissingValue: values[i];
+			if (Double.isNaN(values[i]))
+			{
+				checkedValues[i] = modelMissingValue;
+			}
+			else
+				checkedValues[i] = values[i];
 		}
 		try {
 			if ("float32".equals(type)) {

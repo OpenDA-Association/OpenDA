@@ -1188,6 +1188,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						"No prediction subvector found for obs id \"" +
 						obsId + "\"\n" +
 						"Available subvectors are:\n" +
+
 						allVectors + "\n");
 	}
 

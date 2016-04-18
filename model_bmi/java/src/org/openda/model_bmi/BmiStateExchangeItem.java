@@ -4,7 +4,9 @@ import bmi.BMIModelException;
 import bmi.EBMI;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.*;
+import org.openda.utils.Array;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,20 +20,27 @@ public class BmiStateExchangeItem implements IExchangeItem {
 	private double modelMissingValue;
 	private Map<String, Integer> stateComponentLengths;
 	private int totalNumberOfStateValues;
+	private ArrayList<Integer> stateValuesRanges;
+	private Double[] lowerLimits;
+	private Double[] upperLimits;
 	private double[] values;
 
-	public BmiStateExchangeItem(String[] ids, EBMI model, double modelMissingValue) {
+	public BmiStateExchangeItem(String[] ids, Double[] lowerLimits, Double[] upperLimits, EBMI model, double modelMissingValue) {
 		this.ids = ids;
+		this.lowerLimits = lowerLimits;
+		this.upperLimits = upperLimits;
 		this.model = model;
 		this.modelMissingValue = modelMissingValue;
 
 		totalNumberOfStateValues = 0;
 		stateComponentLengths = new HashMap<String, Integer>();
+		stateValuesRanges = new ArrayList<Integer>();
 		for (String id: this.ids) {
 			try {
 				int length = this.model.getVarSize(id);
 				stateComponentLengths.put(id, length);
 				totalNumberOfStateValues += length;
+				stateValuesRanges.add(totalNumberOfStateValues);
 			} catch (BMIModelException e) {
 				throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.BmiStateExchangeItem() Bmi model does not know variable: " + id);
 			}
@@ -111,13 +120,41 @@ public class BmiStateExchangeItem implements IExchangeItem {
 	}
 
 	private void updateModel() {
-		int offset = 0;
 
+		// Replace occurences of OpenDA's missing value by the Bmi model's missing value.
 		double[] checkedValues = new double[values.length];
 		for (int i = 0; i < values.length; i++) {
 			checkedValues[i] = Double.isNaN(values[i]) ? modelMissingValue: values[i];
 		}
 
+		// Apply lower and upper limits to the values which OpenDA will send to the Bmi model.
+		int idx1 = 0;  // slice start index
+		int idx2;      // slice stop index
+		Double lowerLimit;
+		Double upperLimit;
+		for (int i=0; i<stateValuesRanges.size(); i++) {
+			idx2 = stateValuesRanges.get(i);
+			lowerLimit = lowerLimits[i];
+			if (!lowerLimit.isNaN()) {
+				for (int j=idx1; j<idx2; j++) {
+					if (checkedValues[j] != modelMissingValue && checkedValues[j] != Double.NaN) {
+						checkedValues[j] = Math.max(checkedValues[j], lowerLimit);
+					}
+				}
+			}
+			upperLimit = upperLimits[i];
+			if (!upperLimit.isNaN()) {
+				for (int j=idx1; j<idx2; j++) {
+					if (checkedValues[j] != modelMissingValue && checkedValues[j] != Double.NaN) {
+						checkedValues[j] = Math.min(checkedValues[j], upperLimit);
+					}
+				}
+			}
+			idx1 = idx2;
+		}
+
+		// Each State variable has its values stored in a slice of OpenDA's total values array. Feed the Bmi model slices.
+		int offset = 0;
 		for (String id: this.ids) {
 			int sliceLength = stateComponentLengths.get(id);
 			double[] slice = new double[sliceLength];
