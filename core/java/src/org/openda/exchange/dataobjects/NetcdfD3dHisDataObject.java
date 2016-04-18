@@ -99,6 +99,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 				}
 				timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
 				timeDependentVars.put(variable.getName(), variable);
+				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
 
 				// if this is the first time dependent variable: read the times
 				if (timesInNetcdfFile == null) {
@@ -163,7 +164,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 						// Building station names (strings) from list of chars
 						String statName = String.valueOf(java.util.Arrays.copyOfRange(nameCharArray,(stat*stringLength),((stat+1)*stringLength-1))).replaceAll("\\s","");
 						IExchangeItem exchangeItem = new NetcdfD3dHisExchangeItem(
-								variable.getName(), statName, stat, layer, this);
+								variable.getName(), statName, stat, layer, this, timeInfo);
 						this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 					}
 				}
