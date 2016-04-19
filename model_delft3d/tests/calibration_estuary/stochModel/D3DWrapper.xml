@@ -5,7 +5,7 @@
 
 <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
-      <alias key="D3D_HOME" />
+      <alias key="DELFT3DBINDIR" />
       <alias key="OPENDADIR"/>
       <alias key="instanceDir"/>
       <alias key="templateDir" />
@@ -29,7 +29,7 @@
             <arg>config_flow2d3d.ini</arg>
 	 </action> -->
          <!-- new delft3d v6 input -->
-	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="run_model.sh">
+	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
             <arg>config_d_hydro.xml</arg>
          </action>
       </computeActions>
@@ -60,7 +60,7 @@
       </ioObject>
 
       <!-- time series results -->
-      <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObjectDelft3DTrih">
+      <ioObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
          <file>trih-%runid%.nc</file>
          <id>trih-file</id>
          <arg>true</arg>

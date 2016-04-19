@@ -18,7 +18,9 @@
       <alias key="exedir" value="P:\1204257-dcsmzuno\modellen\DCSVv5_test_d3d\d3d\"/>
       -->
       <alias key="exedir" value="C:\Delft3D\w32\flow\bin"/>
-      <alias key="linexedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin"/>
+      <!--
+      linexedir removed. Use DELFT3DBINDIR in settings_local_<yourhostname>.sh instead
+      -->
 </aliasValues>
 
 <!--  --><!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!--><!--
@@ -38,9 +40,9 @@
         
 <!--        <vector id="roughness-v" ioObjectId="roughness" elementId="roughness-v"></vector>
 -->
-      <vector id="station01.waterlevel" ioObjectId="trih-file1" elementId="station01.water level"/>
-      <vector id="station02.waterlevel" ioObjectId="trih-file2" elementId="station02.water level"/>
-      <vector id="station03.waterlevel" ioObjectId="trih-file2" elementId="station03.water level"/>
+      <vector id="station01.waterlevel" ioObjectId="trih-file1" elementId="station01.ZWL"/>
+      <vector id="station02.waterlevel" ioObjectId="trih-file2" elementId="station02.ZWL"/>
+      <vector id="station03.waterlevel" ioObjectId="trih-file2" elementId="station03.ZWL"/>
 
     </exchangeItems>
 

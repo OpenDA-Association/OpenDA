@@ -19,9 +19,8 @@
       -->
       <alias key="exedir" value="C:\Delft3D\w32\flow\bin"/>
       <!--
-      <alias key="linexedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin"/>
+      linexedir removed. Use DELFT3DBINDIR in settings_local_<yourhostname>.sh instead
       -->
-      <alias key="linexedir" value="/opt64/delft3d_trunk/bin"/>
 </aliasValues>
 
 <!--  --><!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!--><!--

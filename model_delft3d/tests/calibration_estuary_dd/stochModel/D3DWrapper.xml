@@ -5,7 +5,7 @@
 
 <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
-      <alias key="D3D_HOME" />
+      <alias key="DELFT3DBINDIR" />
       <alias key="OPENDADIR"/>
       <alias key="instanceDir"/>
       <alias key="templateDir" />
@@ -24,11 +24,12 @@
       <!-- computation actions -->
       <!-- define actions relative to working dir. -->
       <computeActions>
-	 <!--
+	 <!-- old v4 input
          <action workingDirectory="%instanceDir%" exe="%exedir%\deltares_hydro.exe">
             <arg>config_flow2d3d.ini</arg>
 	 </action> -->
-	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="%linexedir%/d_hydro.exe">
+         <!-- new delft3d v6 input -->
+	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
             <arg>config_d_hydro_dd.xml</arg>
          </action>
       </computeActions>
@@ -69,17 +70,15 @@
       </ioObject>
 
       <!-- time series results -->
-      <ioObject className="org.openda.model_delft3d.D3dResults">
-         <file>trih-%runid%1.dat</file>
+      <ioObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
+         <file>trih-%runid%1.nc</file>
          <id>trih-file1</id>
-	 <!-- <arg>%OPENDADIR%</arg> for windows -->
-	 <arg>%OPENDADIR%/linux64_gnu/lib/libODS.so.0</arg>
+         <arg>true</arg>
       </ioObject>
-      <ioObject className="org.openda.model_delft3d.D3dResults">
-         <file>trih-%runid%2.dat</file>
+      <ioObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
+         <file>trih-%runid%2.nc</file>
          <id>trih-file2</id>
-	 <!-- <arg>%OPENDADIR%</arg> for windows -->
-	 <arg>%OPENDADIR%/linux64_gnu/lib/libODS.so.0</arg>
+         <arg>true</arg>
       </ioObject>
    </inputOutput>
 
