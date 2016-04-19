@@ -12,7 +12,6 @@
 		<alias key="instanceDir" value="../../work"/>
                 <alias key="runid" value="river1D"/>
 		<!-- <alias key="exedir" value="C:\Delft3D\w32\flow\bin"/> -->
-		<alias key="linuxExedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin/"/>
 		<alias key="roughParamsFile" value="ruw.karak"/>
 	</aliasValues>
 
@@ -24,11 +23,11 @@
 		<vector id="A-414"      ioObjectId="roughParams"    elementId="RoughNr_414_FormulaNr101_A"/>
 		<vector id="A-415"      ioObjectId="roughParams"    elementId="RoughNr_415_FormulaNr101_A"/>
         
-		<vector id="M20.waterlevel" ioObjectId="trih-file" elementId="M20.water level"/>
-		<vector id="M60.waterlevel" ioObjectId="trih-file" elementId="M60.water level"/>
-		<vector id="M100.waterlevel" ioObjectId="trih-file" elementId="M100.water level"/>
-		<vector id="M140.waterlevel" ioObjectId="trih-file" elementId="M140.water level"/>
-		<vector id="M180.waterlevel" ioObjectId="trih-file" elementId="M180.water level"/>
+		<vector id="M20.waterlevel" ioObjectId="trih-file" elementId="M20.ZWL"/>
+		<vector id="M60.waterlevel" ioObjectId="trih-file" elementId="M60.ZWL"/>
+		<vector id="M100.waterlevel" ioObjectId="trih-file" elementId="M100.ZWL"/>
+		<vector id="M140.waterlevel" ioObjectId="trih-file" elementId="M140.ZWL"/>
+		<vector id="M180.waterlevel" ioObjectId="trih-file" elementId="M180.ZWL"/>
        
 	</exchangeItems>
 

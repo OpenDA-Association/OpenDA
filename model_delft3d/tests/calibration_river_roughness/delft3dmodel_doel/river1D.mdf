@@ -94,6 +94,7 @@ Flmap  =  0.0000000e+000 3600  7.2000000e+003
 Flhis  =  0.0000000e+000 10  7.2000000e+003
 Flpp   =  5.0688000e+005 0  5.0688000e+005
 Flrst  = 7200
+FlNcdf = #map his dro fou#
 Commnt =                  
 Trtrou = #Y#
 Trtdef = #ruw.karak#
