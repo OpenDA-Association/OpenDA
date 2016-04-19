@@ -17,7 +17,7 @@ mkdir test_results
 
 echo.
 
-set CURDIR=d3d_04_15_wind_calibration
+set CURDIR=calibration_wind
 mkdir test_results\%CURDIR%
 call :run_single_test kalib04-15 results_dud.m results_dud.csv
 

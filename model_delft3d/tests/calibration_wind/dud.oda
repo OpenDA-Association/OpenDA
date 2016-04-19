@@ -4,9 +4,9 @@
 			xsi:schemaLocation="http://www.openda.org
 			http://schemas.openda.org/openDaApplication.xsd">
 
-    <stochObserver className="org.openda.observers.IoObjectStochObserver">
+    <stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
     		<workingDirectory>./stochobserver</workingDirectory>
-    		<configFile>stochObsConfig.xml</configFile>
+    		<configFile>noosObservations.xml</configFile>
     </stochObserver>
 
     <algorithm className="org.openda.algorithms.Dud">

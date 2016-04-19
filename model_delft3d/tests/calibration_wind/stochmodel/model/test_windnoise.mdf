@@ -105,6 +105,7 @@ Flmap =  0.0000000e+000 5.0  6.0000000e+001
 Flhis =  0.0000000e+000 5.0  6.0000000e+001
 Flpp  =  2.3846400e+006 0.0  2.3846400e+006
 Flrst = 0.0
+FlNcdf = #map his dro fou#
 Commnt=                              
 Fwndgu= #wind_with_noise.amu#
 Fwndgv= #wind_with_noise.amv#
