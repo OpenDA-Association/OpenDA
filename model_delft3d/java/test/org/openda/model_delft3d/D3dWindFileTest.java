@@ -56,5 +56,18 @@ public class D3dWindFileTest extends TestCase {
         double[] adjustedVValues = adjustedWindExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[6]", 7.01, adjustedVValues[6]);
         assertEquals("exchItemWindFile[0].values[7]", 8.01, adjustedVValues[7]);
+
+        // New test for equidistant grid
+        D3dWindFile winduFileEqui = new D3dWindFile();
+        winduFileEqui.initialize(testDir, new String[]{"test_equidistant.mdf", "wu"});
+        String theNewOneAndOnlyId = winduFileEqui.getExchangeItemIDs()[0];
+        IPrevExchangeItem windExchItemEqui = winduFileEqui.getDataObjectExchangeItem(theNewOneAndOnlyId);
+        assertEquals("exchItemwinduFile[0].id", "windu", windExchItemEqui.getId());
+
+        // New test for curvi grid with multiples "lines" (commented as tested only for reading the grid, a corresponding .amu file is needed).
+//        D3dWindFile winduFileMulti = new D3dWindFile();
+//        winduFileMulti.initialize(testDir, new String[]{"test_curvi_multi.mdf", "gu"});
+//        String theMultiOneAndOnlyId = winduFileMulti.getExchangeItemIDs()[0];
+//        IPrevExchangeItem windExchItemMulti = winduFileMulti.getDataObjectExchangeItem(theMultiOneAndOnlyId);
     }
 }

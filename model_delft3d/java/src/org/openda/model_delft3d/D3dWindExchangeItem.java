@@ -33,21 +33,23 @@ import java.util.List;
 public class D3dWindExchangeItem implements IExchangeItem {
 
     private String id;
-    private List<D3dField2D> field2Ds;
+	private D3dGrid2D grid;
+    private List<D3dValuesOnGrid2D> valuesOnGrid2D;
 	private List<String> textContent;
 	private int endOfHeader;
     private boolean dataChanged;
 	private int[] dims= {0,0,0};
 
-    public D3dWindExchangeItem(String id, List<D3dField2D> field2Ds, List<String> content, int endOfHeader) {
+    public D3dWindExchangeItem(String id, List<D3dValuesOnGrid2D> valuesOnGrid2D, List<String> content, int endOfHeader) {
         this.id = id;
-        this.field2Ds = field2Ds;
+        this.valuesOnGrid2D = valuesOnGrid2D;
         this.dataChanged = false;
 		this.textContent = content;
 		this.endOfHeader = endOfHeader;
-		this.dims[0] = field2Ds.size();
-		this.dims[1] = field2Ds.get(0).getMmax();
-		this.dims[2] = field2Ds.get(0).getNmax();
+		this.dims[0] = valuesOnGrid2D.size();
+		this.grid = valuesOnGrid2D.get(0).getGrid();
+		this.dims[1] = grid.getMmax();
+		this.dims[2] = grid.getNmax();
     }
 
     public String getId() {
@@ -87,7 +89,7 @@ public class D3dWindExchangeItem implements IExchangeItem {
     }
 
     public Object getValues() {
-        return field2Ds;
+        return valuesOnGrid2D;
     }
 
 	public int[] getDims() {
@@ -96,11 +98,11 @@ public class D3dWindExchangeItem implements IExchangeItem {
 
     public double[] getValuesAsDoubles() {
 		// first get size:
-		int nLevels = field2Ds.size();
-		double[] allValues = new double[field2Ds.get(0).getMmax() * field2Ds.get(0).getNmax() * nLevels];
+		int nLevels = valuesOnGrid2D.size();
+		double[] allValues = new double[grid.getMmax() * grid.getNmax() * nLevels];
         int index = 0;
-		for (D3dField2D onefield2D : field2Ds) {
-			double[] timeValues = onefield2D.getValues();
+		for (D3dValuesOnGrid2D valuesForOneTimeStep : valuesOnGrid2D) {
+			double[] timeValues = valuesForOneTimeStep.getValues();
 			for (int i = 0; i < timeValues.length; i++) {
 				allValues[i+index] = timeValues[i];
 			}
@@ -129,9 +131,14 @@ public class D3dWindExchangeItem implements IExchangeItem {
         if (!(values instanceof List)) {
             throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + values.getClass().getName());
         }
-		for (int i = 0, field2DsSize = field2Ds.size(); i < field2DsSize; i++) {
-			D3dField2D onefield2D = field2Ds.get(i);
-			onefield2D = (D3dField2D) ((List) values).get(i);
+		List incomingValues = (List) values;
+		valuesOnGrid2D.clear();
+		for (int i = 0, timeStepCount = incomingValues.size(); i < timeStepCount; i++) {
+			Object valuesForOneTimeStep = incomingValues.get(i);
+			if (!(valuesForOneTimeStep instanceof D3dValuesOnGrid2D)) {
+				throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + valuesForOneTimeStep.getClass().getName());
+			}
+			valuesOnGrid2D.add((D3dValuesOnGrid2D)valuesForOneTimeStep);
 		}
         dataChanged = true;
     }
@@ -139,12 +146,12 @@ public class D3dWindExchangeItem implements IExchangeItem {
     public void setValuesAsDoubles(double[] values) {
 		int index = 0;
 	    int nmsize = this.dims[1]*this.dims[2];
-        for (D3dField2D onefield2D : field2Ds) {
+		for (D3dValuesOnGrid2D valuesForOneTimeStep : valuesOnGrid2D) {
 			double[] timeValues = new double[nmsize];
 			for (int i = 0; i < nmsize; i++) {
 				timeValues[i] = values[i + index];
 			}
-			onefield2D.setValues(timeValues);
+			valuesForOneTimeStep.setValues(timeValues);
 			index = index + nmsize;
 		}
         dataChanged = true;

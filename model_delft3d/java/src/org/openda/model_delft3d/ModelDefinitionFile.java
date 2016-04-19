@@ -44,7 +44,7 @@ public class ModelDefinitionFile {
 	public static final String WINDGU = "gu";     // wind file with separate curvilinear grid file (keyword fwndgu)
 	public static final String WINDGV = "gv";     // wind file with separate curvilinear grid file (keyword fwndgv)
 
-    public static final String[] fileKeys = {DEPTH, ROUGHNESS, BOUNDARY, BC_ASTRONOMIC, BC_ASTRO_CORR, WINDGU, WINDGV};
+    public static final String[] fileKeys = {DEPTH, ROUGHNESS, BOUNDARY, BC_ASTRONOMIC, BC_ASTRO_CORR, WINDGU, WINDGV, WINDU, WINDV};
 
     private String[] fileNames = null;
     private String[] formats = null;

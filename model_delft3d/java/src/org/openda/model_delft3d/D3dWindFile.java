@@ -38,7 +38,7 @@ import java.util.Locale;
  */
 public class D3dWindFile implements IDataObject {
 
-	private static List<String> supportedFieldTypes = Arrays.asList(ModelDefinitionFile.WINDGU, ModelDefinitionFile.WINDGV); // TODO: windu, windv
+	private static List<String> supportedFieldTypes = Arrays.asList(ModelDefinitionFile.WINDGU, ModelDefinitionFile.WINDGV, ModelDefinitionFile.WINDU, ModelDefinitionFile.WINDV); // TODO: windu, windv
 	private ModelDefinitionFile modelDefinitionFile = null;
 	private String fieldType = null;
 	private String gridFileName = null;
@@ -75,6 +75,10 @@ public class D3dWindFile implements IDataObject {
 				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgu");
 			} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
 				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgv");
+			}else if (fieldType.equals(ModelDefinitionFile.WINDU)) {
+				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windu");
+			}else if (fieldType.equals(ModelDefinitionFile.WINDV)) {
+				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windv");
 			}
 			inputFileBufferedReader.close();
 			fileReader.close();
@@ -111,6 +115,10 @@ public class D3dWindFile implements IDataObject {
 					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
 				} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
 					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
+				}else if (fieldType.equals(ModelDefinitionFile.WINDU)) {
+					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
+				}else if (fieldType.equals(ModelDefinitionFile.WINDV)) {
+					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
 				}
 				outputFileBufferedWriter.close();
 				fileWriter.close();
@@ -123,45 +131,146 @@ public class D3dWindFile implements IDataObject {
 	private D3dWindExchangeItem readExchangeItem2D(BufferedReader inputFileBufferedReader, String exchangeItemId) throws IOException {
         ArrayList<String> content = new ArrayList();
 		endOfHeader = 0;
-		// First: read the header. We need to know the grid file to obtain the field size.
+
+		// First: read the header. We need to know the grid type.
+		boolean isCurvilinear = false;
+		boolean isEquidistant = false;
+		boolean gridTypeFound = false;
+
 		String line = inputFileBufferedReader.readLine();
         content.add(line);
-		while (line != null && gridFileName == null) {
-			String[] fields = line.split("[\t ]+");
-			if (fields[0].equalsIgnoreCase("grid_file")) {
-				gridFileName = fields[2].trim();
-				gridFile = new File(modelDefinitionFile.getMdFile().getParentFile(), gridFileName);
+		while (line != null && !gridTypeFound) {
+			String[] fields = line.split("=");
+			if (fields.length == 2) {
+				if (fields[0].trim().equalsIgnoreCase("filetype")) {
+					if (fields[1].contains("meteo_on_curvilinear_grid")) {
+						isCurvilinear = true;
+						gridTypeFound = true;
+					}else if (fields[1].contains("meteo_on_equidistant_grid")){
+						isEquidistant = true;
+						gridTypeFound = true;
+					}
+				}
 			}
 			line = inputFileBufferedReader.readLine();
 			content.add(line);
 		}
 
-		// intermezzo: open the grid file to read the dimensions!
-		FileReader fileReader = new FileReader(gridFile);
-		BufferedReader gridFileBufferedReader = new BufferedReader(fileReader);
-		String gridFileLine = gridFileBufferedReader.readLine();
-		boolean gridSizeFound = false;
-		while (gridFileLine != null && !gridSizeFound) {
-			String[] fields = gridFileLine.split("[\t ]+");
-			if (fields[0].equalsIgnoreCase("Coordinate")) {
-				String sizeLine = gridFileBufferedReader.readLine();
-				String[] mnValues = sizeLine.trim().split("[\t ]+");
-				if (mnValues.length != 2) {
-					throw new RuntimeException("Invalid MN line\n\t" + sizeLine + "\nin gridfile" + gridFile.getAbsolutePath());
+		if (!gridTypeFound) {
+			throw new RuntimeException("Could not determine grid type (curvilinear or equidistant).");
+		}
+
+		D3dGrid2D grid2D;
+		grid2D = new D3dGrid2D();
+
+		if (isCurvilinear) {
+
+			// Getting grid filename from header
+			while (line != null && gridFileName == null) {
+				String[] fields = line.split("[\t ]+");
+				if (fields[0].equalsIgnoreCase("grid_file")) {
+					gridFileName = fields[2].trim();
+					gridFile = new File(modelDefinitionFile.getMdFile().getParentFile(), gridFileName);
 				}
-				mGrid = Integer.parseInt(mnValues[0]);
-				nGrid = Integer.parseInt(mnValues[1]);
-				gridSizeFound = true;
+				line = inputFileBufferedReader.readLine();
+				content.add(line);
 			}
-	        gridFileLine = gridFileBufferedReader.readLine();
+			// intermezzo: open the grid file to read the dimensions
+			FileReader fileReader = new FileReader(gridFile);
+			BufferedReader gridFileBufferedReader = new BufferedReader(fileReader);
+			String gridFileLine = gridFileBufferedReader.readLine();
+			ArrayList < Double > fieldsAsDouble = new ArrayList < Double >();
+			double[][] fullCoordinateArray;
+			while (gridFileLine != null) {
+				String[] fields = gridFileLine.split("= *");
+				if (fields[0].contains("Coordinate")) {
+					String sizeLine = gridFileBufferedReader.readLine();
+					String[] mnValues = sizeLine.trim().split("[\t ]+");
+					if (mnValues.length != 2) {
+						throw new RuntimeException("Invalid MN line\n\t" + sizeLine + "\nin gridfile" + gridFile.getAbsolutePath());
+					}
+					mGrid = Integer.parseInt(mnValues[0]);
+					nGrid = Integer.parseInt(mnValues[1]);
+					grid2D.setMmax(mGrid);
+					grid2D.setNmax(nGrid);
+				}else if (fields[0].contains("ETA")){
+					String[] fieldsString =  fields[1].split(" +");
+					for (int i=0; i<(fieldsString.length-1); i++){
+						fieldsAsDouble.add(Double.parseDouble(fieldsString[1+i]));
+					}
+					// This is in case the grid line is split into several lines in the grid file
+					int counter = fieldsString.length-1;
+					while (counter != mGrid){
+						gridFileLine = gridFileBufferedReader.readLine();
+						fieldsString =  gridFileLine.split(" +");
+						for (int i=1; i<(fieldsString.length); i++){
+							fieldsAsDouble.add(Double.parseDouble(fieldsString[i]));
+						}
+						counter += (fieldsString.length-1);
+					}
+				}
+				gridFileLine = gridFileBufferedReader.readLine();
+			}
+			double[][] coordinateXArray = new double[nGrid][mGrid];
+			double[][] coordinateYArray = new double[nGrid][mGrid];
+
+			for (int i=0; i<nGrid; i++){
+				for (int j=0; j<mGrid; j++){
+					coordinateXArray[i][j] = fieldsAsDouble.get(i*mGrid + j);
+					coordinateYArray[(nGrid-1)-i][j] = fieldsAsDouble.get(i*mGrid + j + mGrid*nGrid);
+				}
+			}
+//			grid2D = new D3dGrid2D(mGrid, nGrid);
+			grid2D.setCoordinateArrays(coordinateXArray,coordinateYArray);
+		}
+
+		// Retrieving information in the header (now only grid dimensions)
+		else if (isEquidistant){
+			grid2D = new D3dGrid2D();
+			double dx = Double.NaN;
+			double dy = Double.NaN;
+			double xll = Double.NaN;
+			double yll = Double.NaN;
+			while (line != null && !line.toLowerCase().contains("TIME".toLowerCase())) {
+				String[] fields = line.split("= *");
+				if (fields[0].contains("n_rows")) {
+					nGrid = Integer.parseInt(fields[1]);
+					grid2D.setNmax(nGrid);
+				}else if (fields[0].contains("n_cols")){
+					mGrid = Integer.parseInt(fields[1]);
+					grid2D.setMmax(mGrid);
+				}else if (fields[0].contains("x_llcenter")){
+					xll = Double.parseDouble(fields[1]);
+				}else if (fields[0].contains("y_llcenter")){
+					yll = Double.parseDouble(fields[1]);
+				}else if (fields[0].contains("dx")){
+					dx = Double.parseDouble(fields[1]);
+				}else if (fields[0].contains("dy")){
+					dy = Double.parseDouble(fields[1]);
+				}
+				line = inputFileBufferedReader.readLine();
+				content.add(line);
+			}
+			if (Double.isNaN(dx) | Double.isNaN(dy) | Double.isNaN(xll) | Double.isNaN(yll)) {
+				throw new RuntimeException("Could not retrieve necessary equidistant grid info from header.");
+			}
+			double[][] coordinateXArray = new double[nGrid][mGrid];
+			double[][] coordinateYArray = new double[nGrid][mGrid];
+			for (int i=0; i<nGrid; i++){
+				for (int j=0; j<mGrid; j++){
+					coordinateXArray[i][j] = xll+j*dx;
+					coordinateYArray[(nGrid-1)-i][j] = yll+i*dy;
+				}
+			}
+			grid2D.setCoordinateArrays(coordinateXArray,coordinateYArray);
 		}
 
 		// continue with wind file, until first/next timestep
-		List<D3dField2D> Fvalues = new ArrayList<D3dField2D>();
+		List<D3dValuesOnGrid2D> Fvalues = new ArrayList<D3dValuesOnGrid2D>();
 
 		while (line != null) {
-			String[] fields = line.split("[\t ]+");
-			if (fields[0].equalsIgnoreCase("TIME")) {
+			String[] fields = line.split("= *");
+			if (fields[0].contains("TIME")) {
 
 				if (endOfHeader == 0) {endOfHeader = content.size()-1;}
 				else {
@@ -182,8 +291,8 @@ public class D3dWindFile implements IDataObject {
 					}
 				}
 
-				D3dField2D d3dField2D = new D3dField2D(mGrid, nGrid, timeValues);
-				Fvalues.add(d3dField2D)   ;
+				D3dValuesOnGrid2D valuesOnGrid2D = new D3dValuesOnGrid2D(grid2D, timeValues);
+				Fvalues.add(valuesOnGrid2D);
 
 			}
 			line = inputFileBufferedReader.readLine();
