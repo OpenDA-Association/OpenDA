@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+   <modelConfig>
+      <file>./D3DModel.xml</file>
+   </modelConfig>
+
+   <vectorSpecification>
+
+		<state>
+            <noiseModel id="windNoiseModel" className="org.openda.noiseModels.MapsNoiseModelFactory" workingDirectory=".">
+                <configFile>noiseModelConfig.xml</configFile>
+                
+				<exchangeItems>
+					<exchangeItem id="windu_noise">
+						<modelExchangeItem id="windu"/>
+					</exchangeItem>
+                    <exchangeItem id="windv_noise">
+						<modelExchangeItem id="windv"/>
+                    </exchangeItem>
+                </exchangeItems>
+				
+            </noiseModel>
+            <vector id="locA.Par1"/>
+        </state>
+
+        <predictor>
+            <vector id="station1.temperature"/>
+            <vector id="station2.temperature"/>
+            <vector id="station3.temperature"/>
+            <vector id="station4.temperature"/>
+		</predictor> 
+
+    </vectorSpecification>
+
+</blackBoxStochModel>
