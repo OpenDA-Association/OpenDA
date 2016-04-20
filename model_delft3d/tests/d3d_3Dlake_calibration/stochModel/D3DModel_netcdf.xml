@@ -11,11 +11,10 @@
    <!-- Specify wrapper configuration for which this model is defined -->
    <aliasValues>
       <alias key="templateDir" value="./model"/>
-      <alias key="instanceDir" value="./work"/>
+      <alias key="instanceDir" value="../work/work"/>
       <alias key="runid" value="cadagno_netcdf"/>
       <alias key="exedir" value="C:\Program Files (x86)\Deltares\delft3d_ohmw_4.01.01.rc.03\delft3d\win32\flow2d3d\bin"/>
-      <alias key="linexedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin"/>
-	</aliasValues>
+   </aliasValues>
 
 <!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!-->
  <!--   <timeInfo start="2015-06-01T00:00:00" end="2015-06-03T00:00:00" /> -->

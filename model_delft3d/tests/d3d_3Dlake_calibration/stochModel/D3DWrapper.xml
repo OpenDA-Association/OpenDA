@@ -5,7 +5,7 @@
 
 <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
-      <alias key="D3D_HOME" />
+      <alias key="DELFT3DBINDIR" />
       <alias key="OPENDADIR"/>
       <alias key="instanceDir"/>
       <alias key="templateDir" />
@@ -14,7 +14,6 @@
       <alias key="roughness"/>
       -->
       <alias key="exedir"/>
-      <alias key="linexedir"/>
     </aliasDefinitions>
 
    <run>
@@ -29,7 +28,7 @@
             <arg>config_flow2d3d.ini</arg>
 	 </action> -->
          <!-- new delft3d v6 input -->
-	 <action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%linexedir%/d_hydro.exe">
+	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
             <arg>config_flow2d3d.xml</arg>
          </action>
       </computeActions>
