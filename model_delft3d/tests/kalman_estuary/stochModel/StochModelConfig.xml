@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+   <modelConfig>
+      <file>./D3DModel.xml</file>
+   </modelConfig>
+
+    <vectorSpecification>
+        <state>
+<!-- TODO WE NEED A STATE AND BOUNDARY NOISE HERE
+            <noiseModel>
+                <vector id="West Boundary"/>
+                <armaModel operation="add">
+                    <stdDev value="0.032428488"/>
+                    <armaConstant>0.94595947</armaConstant>
+                </armaModel>
+            </noiseModel>
+            <vector id="state"/>
+-->
+        </state>
+        <predictor>
+            <vector id="S1.water level" sourceVectorId="S1.waterlevel"/>
+            <!--
+            <vector id="S2.water level" sourceVectorId="S1.waterlevel"/>
+            <vector id="S3.water level" sourceVectorId="S1.waterlevel"/>
+            <vector id="S4.water level" sourceVectorId="S1.waterlevel"/>
+            -->
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

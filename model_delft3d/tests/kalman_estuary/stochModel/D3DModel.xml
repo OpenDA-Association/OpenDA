@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <blackBoxModelConfig xmlns="http://www.openda.org"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+
+   <!-- Specify wrapper configuration for which this model is defined -->
+   <wrapperConfig>
+      <file>D3DWrapper.xml</file>
+   </wrapperConfig>
+
+   <!-- Specify wrapper configuration for which this model is defined -->
+   <aliasValues>
+      <alias key="templateDir" value="./model"/>
+      <alias key="instanceDir" value="../work/work"/>
+      <alias key="runid" value="Est1D"/>
+      <!--
+      <alias key="exedir" value="P:\1204257-dcsmzuno\modellen\DCSVv5_test_d3d\d3d\"/>
+      -->
+      <alias key="exedir" value="C:\Delft3D\w32\flow\bin"/>
+      <!--
+      linexedir removed. Use DELFT3DBINDIR in settings_local_<yourhostname>.sh instead
+      -->
+</aliasValues>
+
+<!--  --><!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!--><!--
+    <timeInfo start="2004-01-01T00:00:00" end="2004-01-01T12:00:00" />
+-->
+   <exchangeItems>
+
+     <vector id="depth" ioObjectId="depth"></vector>
+     <vector id="roughness-u" ioObjectId="roughness" elementId="roughness-u"></vector>
+     <vector id="M2.Amplitude" ioObjectId="astro-components" elementId="downstream.M2.Amplitude" />
+     <vector id="M2.Phase" ioObjectId="astro-components" elementId="downstream.M2.Phase" />
+     <vector id="S2.Amplitude" ioObjectId="astro-components" elementId="downstream.S2.Amplitude" />
+     <vector id="S2.Phase" ioObjectId="astro-components" elementId="downstream.S2.Phase" />
+ 
+        
+<!--        <vector id="roughness-v" ioObjectId="roughness" elementId="roughness-v"></vector>
+-->
+      <vector id="S1.water level" ioObjectId="trih-file" elementId="S1.ZWL"/>
+      <!--
+      <vector id="S2.water level" ioObjectId="trih-file" elementId="S2.ZWL"/>
+      <vector id="S3.water level" ioObjectId="trih-file" elementId="S3.ZWL"/>
+      <vector id="S4.water level" ioObjectId="trih-file" elementId="S4.ZWL"/>
+      -->
+
+    </exchangeItems>
+
+   <doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

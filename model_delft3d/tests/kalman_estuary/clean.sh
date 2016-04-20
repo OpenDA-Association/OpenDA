@@ -14,4 +14,4 @@ rm -f       stochModel/model/TMP_Est1D.grd
 rm -f       stochModel/model/RSTstate_*.nc
 rm -f       stochModel/model/tri-rst.Est1D.*
 rm -rf      HamillkgStorage_*
-
+rm -rf      work/*

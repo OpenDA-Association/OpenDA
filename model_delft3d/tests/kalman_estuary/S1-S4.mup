@@ -2,28 +2,28 @@
  
 Dataset   "water level - S1 - Truth" 
    FileType    "Delft3D" 
-   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\observations\trih-Est1D-truth-noNoise.dat" 
    Parameter   "water level" 
    Station     "S1" 
 EndDataset 
  
 Dataset   "water level - S2 - Truth" 
    FileType    "Delft3D" 
-   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\observations\trih-Est1D-truth-noNoise.dat" 
    Parameter   "water level" 
    Station     "S2" 
 EndDataset 
  
 Dataset   "water level - S3 - Truth" 
    FileType    "Delft3D" 
-   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\observations\trih-Est1D-truth-noNoise.dat" 
    Parameter   "water level" 
    Station     "S3" 
 EndDataset 
  
 Dataset   "water level - S4 - Truth" 
    FileType    "Delft3D" 
-   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\truth-noNoise\trih-Est1D-truth-noNoise.dat" 
+   File        "D:\src\openda_1\deltares\models\java\tests\d3d_estuary_1d\observations\trih-Est1D-truth-noNoise.dat" 
    Parameter   "water level" 
    Station     "S4" 
 EndDataset 
