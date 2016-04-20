@@ -542,4 +542,70 @@ public class TimeUtils {
 			throw new RuntimeException("Cannot create DateUnit from UDUNITS time units '" + udUnitsTimeUnitsString + "'. Message was: " + e.getMessage(), e);
 		}
 	}
+
+	private static final String TIME_UNIT_SECONDS = "seconds since";
+	private static final String TIME_UNIT_MINUTES = "minutes since";
+	private static final String TIME_UNIT_HOURS = "hours since";
+
+	private static final long ONE_DAY_IN_MILLISECONDS = 86400000;
+	private static final long ONE_HOUR_IN_MILLISECONDS = 3600000;
+	private static final long ONE_MINUTE_IN_MILLISECONDS = 60000;
+	private static final long ONE_SECOND_IN_MILLISECONDS = 1000;
+
+
+	public static double[] ConvertBcTimesToModifiedJulianDays(String timeUnitString, List<Double> timeOffsets)
+	{
+		double mjdReference = referenceDateTimeToMJD(timeUnitString);
+		double multFactToMillies = getUnitMultiplicationFactor(timeUnitString);
+
+		double[] modifiedJulianDayValues = new double[timeOffsets.size()];
+		for (int i = 0; i < timeOffsets.size(); i++) {
+			double milliesSinceReference = timeOffsets.get(i) * multFactToMillies;
+			double mjdValue = (milliesSinceReference / (double) ONE_DAY_IN_MILLISECONDS) + mjdReference;
+			modifiedJulianDayValues[i]= mjdValue;
+		}
+		return modifiedJulianDayValues;
+	}
+
+	public static List<Double> ConvertModifiedJulianDaysToBcTimes(String timeUnitString, double[] modifiedJulianDayValues)
+	{
+		double mjdReference = referenceDateTimeToMJD(timeUnitString);
+		double multFactFromMillies = getUnitMultiplicationFactor(timeUnitString);
+
+		List<Double> timeOffsets = new ArrayList<>();
+		for(double mjdValue : modifiedJulianDayValues)
+		{
+			double bcTimeAsMjd = mjdValue - mjdReference;
+			Double bcTime = Math.round(bcTimeAsMjd * (double) ONE_DAY_IN_MILLISECONDS / multFactFromMillies * 100d) / 100d;
+			timeOffsets.add(bcTime);
+		}
+		return timeOffsets;
+	}
+
+	private static double getUnitMultiplicationFactor(String timeUnitString)
+	{
+		double multiplicationFactor;
+		if(timeUnitString.contains(TIME_UNIT_SECONDS)) multiplicationFactor = ONE_SECOND_IN_MILLISECONDS;
+		else if(timeUnitString.contains(TIME_UNIT_MINUTES)) multiplicationFactor = ONE_MINUTE_IN_MILLISECONDS;
+		else if(timeUnitString.contains(TIME_UNIT_HOURS)) multiplicationFactor = ONE_HOUR_IN_MILLISECONDS;
+		else throw new RuntimeException(String.format("Error reference time string unit: %s", timeUnitString));
+		return multiplicationFactor;
+	}
+
+	private static double referenceDateTimeToMJD(String timeUnitString)
+	{
+		String referenceDateString;
+		if(timeUnitString.contains(TIME_UNIT_SECONDS)) referenceDateString = timeUnitString.replace(TIME_UNIT_SECONDS, "").trim();
+		else if(timeUnitString.contains(TIME_UNIT_MINUTES)) referenceDateString = timeUnitString.replace(TIME_UNIT_MINUTES, "").trim();
+		else if(timeUnitString.contains(TIME_UNIT_HOURS)) referenceDateString = timeUnitString.replace(TIME_UNIT_HOURS, "").trim();
+		else throw new RuntimeException(String.format("Error parsing Date unit: %s", timeUnitString));
+
+		double referenceDateAsMJD;
+		try {
+			referenceDateAsMJD = TimeUtils.date2Mjd(referenceDateString, "yyyy-MM-dd HH:mm:ss");
+		} catch (ParseException e) {
+			throw new RuntimeException(String.format("Error parsing time unit string: %s", referenceDateString));
+		}
+		return referenceDateAsMJD;
+	}
 }

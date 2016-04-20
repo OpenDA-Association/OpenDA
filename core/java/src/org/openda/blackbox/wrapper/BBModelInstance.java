@@ -479,7 +479,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
-		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBModelInstance..getObservedLocalization(): Not implemented yet.");
+		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 
     public File getModelRunDir() {

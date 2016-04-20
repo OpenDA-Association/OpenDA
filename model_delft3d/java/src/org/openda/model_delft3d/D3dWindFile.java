@@ -21,6 +21,7 @@
 package org.openda.model_delft3d;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -38,7 +39,7 @@ import java.util.Locale;
  */
 public class D3dWindFile implements IDataObject {
 
-	private static List<String> supportedFieldTypes = Arrays.asList(ModelDefinitionFile.WINDGU, ModelDefinitionFile.WINDGV, ModelDefinitionFile.WINDU, ModelDefinitionFile.WINDV); // TODO: windu, windv
+	private static List<String> supportedFieldTypes = Arrays.asList(ModelDefinitionFile.WINDGU, ModelDefinitionFile.WINDGV, ModelDefinitionFile.WINDWU, ModelDefinitionFile.WINDWV);
 	private ModelDefinitionFile modelDefinitionFile = null;
 	private String fieldType = null;
 	private String gridFileName = null;
@@ -75,9 +76,9 @@ public class D3dWindFile implements IDataObject {
 				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgu");
 			} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
 				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windgv");
-			}else if (fieldType.equals(ModelDefinitionFile.WINDU)) {
+			}else if (fieldType.equals(ModelDefinitionFile.WINDWU)) {
 				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windu");
-			}else if (fieldType.equals(ModelDefinitionFile.WINDV)) {
+			}else if (fieldType.equals(ModelDefinitionFile.WINDWV)) {
 				windExchangeItem = readExchangeItem2D(inputFileBufferedReader, "windv");
 			}
 			inputFileBufferedReader.close();
@@ -115,9 +116,9 @@ public class D3dWindFile implements IDataObject {
 					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
 				} else if (fieldType.equals(ModelDefinitionFile.WINDGV)) {
 					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
-				}else if (fieldType.equals(ModelDefinitionFile.WINDU)) {
+				}else if (fieldType.equals(ModelDefinitionFile.WINDWU)) {
 					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
-				}else if (fieldType.equals(ModelDefinitionFile.WINDV)) {
+				}else if (fieldType.equals(ModelDefinitionFile.WINDWV)) {
 					writeExchangeItem2D(outputFileBufferedWriter, windExchangeItem);
 				}
 				outputFileBufferedWriter.close();
@@ -267,10 +268,17 @@ public class D3dWindFile implements IDataObject {
 
 		// continue with wind file, until first/next timestep
 		List<D3dValuesOnGrid2D> Fvalues = new ArrayList<D3dValuesOnGrid2D>();
+		List<Double> timeOffsets = new ArrayList<Double>();
+		String lineTime = null;
 
 		while (line != null) {
 			String[] fields = line.split("= *");
 			if (fields[0].contains("TIME")) {
+
+				String[] tempTime = fields[1].split(" +");
+				double timeOffset = Double.parseDouble(tempTime[0]);
+				timeOffsets.add(timeOffset);
+				lineTime = fields[1].replace(tempTime[0],""); // One of those lines needs to be stored to get reference date
 
 				if (endOfHeader == 0) {endOfHeader = content.size()-1;}
 				else {
@@ -293,13 +301,19 @@ public class D3dWindFile implements IDataObject {
 
 				D3dValuesOnGrid2D valuesOnGrid2D = new D3dValuesOnGrid2D(grid2D, timeValues);
 				Fvalues.add(valuesOnGrid2D);
-
 			}
 			line = inputFileBufferedReader.readLine();
 			if (endOfHeader == 0) {content.add(line);}
 		}
 
-		return new D3dWindExchangeItem(exchangeItemId, Fvalues,content, endOfHeader);
+		double[] timesAsMJD = TimeUtils.ConvertBcTimesToModifiedJulianDays(lineTime,timeOffsets);
+//		List<Double> timesAsMJD = TimeUtils.ConvertBcTimesToModifiedJulianDays(line,timeOffsets);
+//		double[] times = new double[timesAsMJD.size()];
+//		for (int i=0;i<timesAsMJD.size();i++){
+//			times[i] = timesAsMJD.get(i);
+//		}
+//		return new D3dWindExchangeItem(exchangeItemId, Fvalues,content, endOfHeader, times);
+		return new D3dWindExchangeItem(exchangeItemId, Fvalues,content, endOfHeader, timesAsMJD);
 	}
 
 	private void writeExchangeItem2D(BufferedWriter outputFileBufferedWriter, D3dWindExchangeItem EI) throws IOException {

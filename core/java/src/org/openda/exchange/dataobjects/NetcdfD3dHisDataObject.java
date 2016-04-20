@@ -45,7 +45,11 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	}
 
 	public void finish() {
-		// no action needed
+		try {
+			netcdfFile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String[] getExchangeItemIDs() {

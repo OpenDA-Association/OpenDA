@@ -39,12 +39,12 @@ public class ModelDefinitionFile {
     public static final String BOUNDARY = "bnd";
     public static final String BC_ASTRONOMIC = "ana";
     public static final String BC_ASTRO_CORR = "cor";
-	public static final String WINDU = "wu";     // wind file on equidistant grid (keyword filwu) //TODO
-	public static final String WINDV = "wv";     // wind file on equidistant grid (keyword filwv) //TODO
+	public static final String WINDWU = "wu";     // wind file on equidistant grid (keyword filwu)
+	public static final String WINDWV = "wv";     // wind file on equidistant grid (keyword filwv)
 	public static final String WINDGU = "gu";     // wind file with separate curvilinear grid file (keyword fwndgu)
 	public static final String WINDGV = "gv";     // wind file with separate curvilinear grid file (keyword fwndgv)
 
-    public static final String[] fileKeys = {DEPTH, ROUGHNESS, BOUNDARY, BC_ASTRONOMIC, BC_ASTRO_CORR, WINDGU, WINDGV, WINDU, WINDV};
+    public static final String[] fileKeys = {DEPTH, ROUGHNESS, BOUNDARY, BC_ASTRONOMIC, BC_ASTRO_CORR, WINDGU, WINDGV, WINDWU, WINDWV};
 
     private String[] fileNames = null;
     private String[] formats = null;

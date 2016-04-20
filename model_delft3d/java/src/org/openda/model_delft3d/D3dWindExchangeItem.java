@@ -20,6 +20,7 @@
 
 package org.openda.model_delft3d;
 
+import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
@@ -35,15 +36,19 @@ public class D3dWindExchangeItem implements IExchangeItem {
     private String id;
 	private D3dGrid2D grid;
     private List<D3dValuesOnGrid2D> valuesOnGrid2D;
+	private double[] times;
+	private TimeInfo timeInfo;
 	private List<String> textContent;
 	private int endOfHeader;
     private boolean dataChanged;
 	private int[] dims= {0,0,0};
 
-    public D3dWindExchangeItem(String id, List<D3dValuesOnGrid2D> valuesOnGrid2D, List<String> content, int endOfHeader) {
+    public D3dWindExchangeItem(String id, List<D3dValuesOnGrid2D> valuesOnGrid2D, List<String> content, int endOfHeader, double[] times) {
         this.id = id;
         this.valuesOnGrid2D = valuesOnGrid2D;
-        this.dataChanged = false;
+		this.times = times;
+		this.timeInfo = new TimeInfo(times);
+		this.dataChanged = false;
 		this.textContent = content;
 		this.endOfHeader = endOfHeader;
 		this.dims[0] = valuesOnGrid2D.size();
@@ -65,7 +70,7 @@ public class D3dWindExchangeItem implements IExchangeItem {
     }
 
     public ITimeInfo getTimeInfo() {
-        return null;
+		return timeInfo;
     }
 
     public IQuantityInfo getQuantityInfo() {
@@ -158,7 +163,7 @@ public class D3dWindExchangeItem implements IExchangeItem {
     }
 
     public double[] getTimes() {
-        return null;
+        return times;
     }
 
 	public List<String> getTextContent() {
