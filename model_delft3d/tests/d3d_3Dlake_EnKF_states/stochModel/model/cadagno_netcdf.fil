@@ -1,0 +1,48 @@
+Domain, Checked : No        
+     Grid                  : Cadagno_Theo_small.grd
+     Grid enclosure        : Cadagno_Theo_small.enc
+     Bathymetry            : Cadagno_Theo.dep
+     Dry points            : none
+     Thin dams             : none
+
+Time frame, Checked : No        
+
+Processes, Checked : No        
+
+Initial conditions, Checked : No        
+     Initial conditions    : tri-rst.restart-in.000000
+
+Boundaries, Checked : No        
+     Boundary definitions  : none
+     Astronomical flow conditions : none
+     Astronomical corrections : none
+     Harmonic flow conditions : none
+     QH-relation flow conditions : none
+     Time series flow conditions : none
+     Transport conditions  : none
+
+Physical parameters, Checked : No        
+     Roughness coefficients : none
+     Hor. viscosity/diffusivity : none
+     Heat flux model data  : HeatFluxModel_1D.tem
+     Sediment data         : none
+     Morphology data       : none
+     Uniform wind data     : none
+     Space varying wind data : none
+
+Numerical parameters, Checked : No        
+
+Operations, Checked : No        
+     Discharge definitions : none
+     Discharge data        : none
+     Dredging and dumping data : none
+
+Monitoring, Checked : No        
+     Observation points    : stations.obs
+     Drogues               : none
+     Cross-sections        : none
+
+Additional parameters, Checked : No        
+
+Output, Checked : No        
+     Fourier analysis data : none

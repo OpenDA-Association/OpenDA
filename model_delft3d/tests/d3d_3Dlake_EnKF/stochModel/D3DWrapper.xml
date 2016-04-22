@@ -32,7 +32,7 @@
       <ioObject className="org.openda.model_delft3d.D3dMdFileDataObject">
          <file>%runid%.mdf</file>
          <id>mdFile</id>
-		 <arg>%currentTime%</arg>
+		 <!-- <arg>%currentTime%</arg> -->
       </ioObject>
 
       <!-- time series results -->

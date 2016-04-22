@@ -129,3 +129,52 @@
 % saveGain/times@type=none
 % Creating mainModel
 % Create new BBModelInstance with number: 0
+% Instance initialization done
+% configstring = noiseModelConfig.xml
+% opening :C:\Users\Theo\Documents\OpenDA\public\model_delft3d\tests\d3d_3Dlake_EnKF\.\stochModel\.\noiseModelConfig.xml
+% analysisTimes=201506010000,201506010100,...,201506030000
+%    Do not add noise to forcing
+% model time 57174.0 57176.0
+% analysisTimes acquired from OBSERVER:57174.125 -- 57175.875
+% Creating ensemble model 0
+% Create new BBModelInstance with number: 1
+% Instance initialization done
+% configstring = noiseModelConfig.xml
+% opening :C:\Users\Theo\Documents\OpenDA\public\model_delft3d\tests\d3d_3Dlake_EnKF\.\stochModel\.\noiseModelConfig.xml
+% analysisTimes=201506010000,201506010100,...,201506030000
+%    Add noise to initial state
+%    Add noise to forcing
+% Creating ensemble model 1
+% Create new BBModelInstance with number: 2
+% Instance initialization done
+% configstring = noiseModelConfig.xml
+% opening :C:\Users\Theo\Documents\OpenDA\public\model_delft3d\tests\d3d_3Dlake_EnKF\.\stochModel\.\noiseModelConfig.xml
+% analysisTimes=201506010000,201506010100,...,201506030000
+%    Add noise to initial state
+%    Add noise to forcing
+% Creating ensemble model 2
+% Create new BBModelInstance with number: 3
+% Instance initialization done
+% configstring = noiseModelConfig.xml
+% opening :C:\Users\Theo\Documents\OpenDA\public\model_delft3d\tests\d3d_3Dlake_EnKF\.\stochModel\.\noiseModelConfig.xml
+% analysisTimes=201506010000,201506010100,...,201506030000
+%    Add noise to initial state
+%    Add noise to forcing
+% Creating ensemble model 3
+% Create new BBModelInstance with number: 4
+% Instance initialization done
+% configstring = noiseModelConfig.xml
+% opening :C:\Users\Theo\Documents\OpenDA\public\model_delft3d\tests\d3d_3Dlake_EnKF\.\stochModel\.\noiseModelConfig.xml
+% analysisTimes=201506010000,201506010100,...,201506030000
+%    Add noise to initial state
+%    Add noise to forcing
+% Application initializing finished
+% Initializing Algorithm
+% Algorithm initialized
+% Algorithm starting next step
+% ========================================================================
+%
+%  Forecast from 201506010000UTC  to 201506010300UTC  (57174.0-->57174.125) 
+%
+% ========================================================================
+%
