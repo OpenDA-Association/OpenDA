@@ -65,11 +65,21 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			this.restartFilePath = restartFilePath;
 
 			if (restartFilePath.exists()) {
+
+				File restartFileIn = new File(this.workingDir, "tri-rst." + this.arguments[1] + ".000000");
+				// Place copy of file
+				try {
+					BBUtils.copyFile(this.restartFilePath, restartFileIn);
+				} catch (IOException e) {
+					throw new RuntimeException("NetcdfD3dMapDataObject could not copy " +
+							restartFilePath.getAbsolutePath() + " to " + restartFileIn);
+				}
+
 				int mMax = netcdfFile.findDimension("M").getLength();
 				int nMax = netcdfFile.findDimension("N").getLength();
 				int nLay = netcdfFile.findDimension("K_LYR").getLength();
 				int nSubstances = netcdfFile.findDimension("LSTSCI").getLength();
-				binRestartFile = new D3DBinRestartFile(restartFilePath, mMax, nMax, nLay, nSubstances);
+				binRestartFile = new D3DBinRestartFile(restartFileIn, mMax, nMax, nLay, nSubstances);
 				binRestartFile.open();
 			}
 		}
@@ -80,10 +90,6 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			netcdfFile.close();
 			if (binRestartFile != null) {
 				binRestartFile.close();
-
-				File restartFileIn = new File(this.workingDir, "tri-rst." + this.arguments[1] + ".000000");
-				// Place copy of file
-				BBUtils.copyFile(this.restartFilePath, restartFileIn);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -213,7 +219,10 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 	public void setExchangeItemValues(String varName, double[] values) {
 		if (binRestartFile != null) {
-//			binRestartFile.write(varName, values);
+			if (varName.equals("S1")) {
+				binRestartFile.write(varName, values);
+			}
+			return;
 		}
 
 		// find variable

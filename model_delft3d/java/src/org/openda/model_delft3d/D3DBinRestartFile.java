@@ -39,6 +39,23 @@ public class D3DBinRestartFile {
 
 	public void write(String varName, double[] values){
 
+		double[] valuesInRestartBinOrder = new double[values.length];
+		int actualNLay = varName.equals("S1") ? 1 : nLay;
+		for (int lay=0; lay < actualNLay; lay++) {
+			for (int n=0; n < nMax; n++) {
+				for (int m=0; m < mMax; m++) {
+					int ncIndex = n + nMax * m + mMax * nMax * lay;
+					int binIndex = m + mMax * n + mMax * nMax * lay;
+					if (!Double.isNaN(values[ncIndex])) {
+						valuesInRestartBinOrder[binIndex] = values[ncIndex];
+ 					}
+					else {
+						valuesInRestartBinOrder[binIndex] = 0d;
+					}
+				}
+			}
+		}
+
 		long [] positionAndSize; // positionAndSize[0]: positionAndSize[1]: size
 		int valueSize = 4;
 		positionAndSize = getPositionAndSize(varName, valueSize);
@@ -46,8 +63,8 @@ public class D3DBinRestartFile {
 		try {
 			byte[] allBytes = new byte[(int) positionAndSize[1]];
 			int index = 0;
-			for (int j = 0; j < values.length; j++){
-				float value = (float) values[j];
+			for (int j = 0; j < valuesInRestartBinOrder.length; j++){
+				float value = (float) valuesInRestartBinOrder[j];
 				byte[] floatAsBytes = float2ByteArray(value);
 				for (int i = 0; i < valueSize; i++) {
 					allBytes[index] = floatAsBytes[i];
@@ -107,7 +124,7 @@ public class D3DBinRestartFile {
 		long[] positionAndSize = new long[2];
 
 		int recLenIndicatorSize = 4;
-		int recordDividerSize = 0;
+		int recordDividerSize = 4;
 
 		if (varName.equals("S1")){
 			positionAndSize[0] = recLenIndicatorSize; // after first rec length
