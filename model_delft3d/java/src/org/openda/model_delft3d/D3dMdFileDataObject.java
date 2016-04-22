@@ -152,7 +152,7 @@ public class D3dMdFileDataObject implements IDataObject {
 							}
 
 							String valueAsString = String.format("%.7e",valueAsdouble);
-							line = exchangeItemIDs[i] + " =  " + valueAsString;
+							line = exchangeItemIDs[i] + " = " + valueAsString;
 						}
 					}
 
@@ -202,14 +202,14 @@ public class D3dMdFileDataObject implements IDataObject {
 	public double getMjdFromDiff(double TimeDiff) {
 		double TimeMjd;
 		TimeMjd = TimeDiff * this.mjdFactor;
-		TimeMjd = TimeMjd +  this.mjdRefDate;
+		TimeMjd = TimeMjd + this.mjdRefDate;
 		return TimeMjd;
 	}
 
 	public double getDiffFromMjd(double TimeMjd) {
 		double TimeDiff;
-		TimeDiff = TimeMjd -  this.mjdRefDate;
-		TimeDiff = TimeDiff /  this.mjdFactor;
+		TimeDiff = TimeMjd - this.mjdRefDate;
+		TimeDiff = TimeDiff / this.mjdFactor;
 		return TimeDiff;
 	}
 //	public double getTStartSimulationInMjd() {

@@ -35,39 +35,44 @@ public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeI
 		return double[].class;
 	}
 
-//	@Override
-//	public Object getValues() {
-//		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem.getValues() not implemented yet");
-//	}
-
 	@Override
-	public Object getValues() {
-		return netcdfD3dMapDataObject.getExchangeItemValues(varName);
+	public Object getValues() {throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem.getValues() not implemented yet");
+//		return netcdfD3dMapDataObject.getExchangeItemValues(varName);
 	}
 
 	@Override
 	public double[] getValuesAsDoubles() {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem cannot return double[], only Arrays. Use getValues() instead");
+		return netcdfD3dMapDataObject.getExchangeItemValues(varName);
 	}
 
 	@Override
 	public void axpyOnValues(double alpha, double[] axpyValues) {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItem.axpyOnValues() not implemented yet");
+		double[] values = getValuesAsDoubles();
+		for (int i = 0; i < values.length; i++) {
+			if (Double.isNaN(values[i])) {
+				System.out.println("OrgVal Nan at " + i);
+			}
+			values[i] += alpha * axpyValues[i];
+			if (Double.isNaN(values[i])) {
+				System.out.println("ModVal Nan at " + i);
+			}
+		}
+		setValuesAsDoubles(values);
 	}
 
 	@Override
 	public void multiplyValues(double[] multiplicationFactors) {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItem.multiplyValues() not implemented yet");
+		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem.multiplyValues() not implemented yet");
 	}
 
 	@Override
 	public void setValues(Object values) {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItem.setValues() not implemented yet");
+		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem.setValues() not implemented yet");
 	}
 
 	@Override
 	public void setValuesAsDoubles(double[] values) {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItem.setValuesAsDoubles() not implemented yet");
+		netcdfD3dMapDataObject.setExchangeItemValues(varName, values);
 	}
 
 	public ITimeInfo getTimeInfo() {

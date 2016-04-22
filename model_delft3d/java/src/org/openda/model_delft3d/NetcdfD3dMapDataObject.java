@@ -1,5 +1,6 @@
 package org.openda.model_delft3d;
 
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IArrayTimeInfo;
 import org.openda.interfaces.IDataObject;
@@ -9,8 +10,8 @@ import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
-import ucar.util.prefs.ui.Field;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.*;
 public class NetcdfD3dMapDataObject implements IDataObject {
 
 	NetcdfFile netcdfFile = null;
+	D3DBinRestartFile binRestartFile = null;
 
 	private LinkedHashMap<String, IExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private LinkedHashMap<String, Variable> timeDependentVars = new LinkedHashMap<>();
@@ -34,24 +36,55 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	int timeDimensionIndex = -1;
 	int lstsciDimensionIndex = -1;
 	int kmaxOutRestrDimensionIndex = -1;
+	private File netcdfFilePath;
+	private File workingDir;
+	private String[] arguments;
+	private File restartFilePath;
 
 	public void initialize(File workingDir, String[] arguments) {
-		if (arguments.length != 1) {
-			throw new RuntimeException("NetcdfD3dHisDataObject expects one argument: netcdfFileName (relative to working dir)");
+		if (arguments.length != 1 && arguments.length != 3) {
+			throw new RuntimeException("NetcdfD3dHisDataObject expects one or three argument: netcdfFileName [bin-restart-file + targetTime] (relative to working dir)");
 		}
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
+		this.netcdfFilePath = netcdfFilePath;
+		this.workingDir = workingDir;
+		this.arguments = arguments;
 		try {
 			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
+//			netcdfFileWrite = new NetcdfFileWriteable();
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
 		readNetCdfVariables();
+
+		if (arguments.length == 3) {
+//			File restartFilePath = new File(workingDir, arguments[1]); // compuse name for prefix + target
+			File restartFilePath = new File(this.workingDir, "tri-rst." + this.arguments[0].substring(5,this.arguments[0].length()-3) + "." +
+					this.arguments[2].substring(0,8) + "." + this.arguments[2].substring(8,12) + "00");
+			this.restartFilePath = restartFilePath;
+
+			if (restartFilePath.exists()) {
+				int mMax = netcdfFile.findDimension("M").getLength();
+				int nMax = netcdfFile.findDimension("N").getLength();
+				int nLay = netcdfFile.findDimension("K_LYR").getLength();
+				int nSubstances = netcdfFile.findDimension("LSTSCI").getLength();
+				binRestartFile = new D3DBinRestartFile(restartFilePath, mMax, nMax, nLay, nSubstances);
+				binRestartFile.open();
+			}
+		}
 	}
 
 	public void finish() {
 		try {
 			netcdfFile.close();
+			if (binRestartFile != null) {
+				binRestartFile.close();
+
+				File restartFileIn = new File(this.workingDir, "tri-rst." + this.arguments[1] + ".000000");
+				// Place copy of file
+				BBUtils.copyFile(this.restartFilePath, restartFileIn);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -137,7 +170,6 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 ) {
 					throw new RuntimeException("NetcdfD3dHisDataObject: dims not available, file: "
 							+ netcdfFile.getLocation());
-
 				}
 
 				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo);
@@ -147,9 +179,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		}
 	}
 
-	public Array getExchangeItemValues(String varName) {
+	public double[] getExchangeItemValues(String varName) {
 
-		// find variable. gevalues for sle
+		// find variable
 		Variable variable = this.netcdfFile.findVariable(varName);
 
 		int[] origin = createOrigin(variable);
@@ -169,7 +201,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			origin[kmaxOutRestrDimensionIndex] = 0;
 //			sizeArray[kmaxOutRestrDimensionIndex] = 1;
 		}
-		return readDataForSelectedDomain(variable, origin, sizeArray);
+		return NetcdfUtils.readSelectedData(variable, origin, sizeArray,-1);
 	}
 
 	public static int[] createOrigin(Variable var) {
@@ -179,20 +211,42 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		return origin;
 	}
 
-	public static Array readDataForSelectedDomain(Variable variable, int[] origin, int[] sizeArray) {
-		Array array;
+	public void setExchangeItemValues(String varName, double[] values) {
+		if (binRestartFile != null) {
+//			binRestartFile.write(varName, values);
+		}
+
+		// find variable
+		Variable variable = this.netcdfFile.findVariable(varName);
+
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+
+		//select whole 2D or 3D for last time step. Due to huge sizes if we read all time steps I decided for now to keep only the necessary
+		ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
+		int LastTimeIndex = timeInfo.getTimes().length;
+		origin[timeDimensionIndex] = LastTimeIndex-1;
+		sizeArray[timeDimensionIndex] = 1;
+
+//		origin[timeDimensionIndex] = 0;
+		if (variable.getName().equalsIgnoreCase("R1")) {
+			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
+		}
+		if (!variable.getName().equalsIgnoreCase("S1")) {
+			origin[kmaxOutRestrDimensionIndex] = 0;
+//			sizeArray[kmaxOutRestrDimensionIndex] = 1;
+		}
+		NetcdfFileWriteable netcdfWriteFile = null;
 		try {
-			array = variable.read(origin, sizeArray);
+			netcdfWriteFile = NetcdfFileWriteable.openExisting(netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
-			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getName()
-					+ "'. Message was: " + e.getMessage(), e);
-		} catch (InvalidRangeException e) {
-			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getName()
-					+ "'. Message was: " + e.getMessage(), e);
+			e.printStackTrace();
 		}
-		if (array == null || array.getSize() == 0) {
-			return null;
+		NetcdfUtils.writeSelectedData(netcdfWriteFile,variable, origin, sizeArray, values);
+		try {
+			netcdfWriteFile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return array;
 	}
 }
