@@ -4,10 +4,8 @@ import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
-import ucar.ma2.Array;
 
 import java.io.*;
-import java.nio.file.Files;
 
 /**
  * Created by Theo on 21.04.2016.
@@ -94,7 +92,47 @@ public class D3DBinRestartFileTest extends TestCase {
 		int nLay = 25;
 		int nSubstances = 1;
 		D3DBinRestartFile d3DBinRestartFile = new D3DBinRestartFile(binFilePath, mMax, nMax, nLay, nSubstances);
+		d3DBinRestartFile.open();
 
-		double[] s1FromBin = d3DBinRestartFile.read("S1");
+		float[] s1FromBin = d3DBinRestartFile.read("S1");
+
+		// printNcField("S1 from MAP", mMax, nMax, 1, s1FromMap);
+		printBinField("S1 from BIN", mMax, nMax, 1, s1FromBin);
+
+//		for (int i=0; i < s1FromBin.length; i++) {
+//			if (s1FromBin[i] != s1FromMap[i]) {
+//				throw new RuntimeException("Bin and map file differ: " + s1FromBin[i] + " != " + s1FromMap[i] + ", index: "+ i);
+//			}
+//		}
+	}
+
+	private void printNcField(String varName, int mMax, int nMax, int nLay, double[] doubles) {
+		System.out.println("Var: " + varName);
+		for (int lay=0; lay < nLay; lay++) {
+			System.out.println("LAYER: " + lay);
+			for (int n=0; n < nMax; n++) {
+				System.out.print(n);
+				for (int m=0; m < mMax; m++) {
+					int index = n + nMax * m + mMax * nMax * lay;
+					System.out.print(String.format(",%f", Double.isNaN(doubles[index]) ? 0 : doubles[index] ));
+				}
+				System.out.println("");
+			}
+		}
+	}
+
+	private void printBinField(String varName, int mMax, int nMax, int nLay, float[] floats) {
+		System.out.println("Var: " + varName);
+		for (int lay=0; lay < nLay; lay++) {
+			System.out.println("LAYER: " + lay);
+			for (int n=0; n < nMax; n++) {
+				System.out.print(n);
+				for (int m=0; m < mMax; m++) {
+					int index = m + mMax * n + mMax * nMax * lay;
+					System.out.print(String.format(",%f", Float.isNaN(floats[index]) ? 0 : floats[index]));
+				}
+				System.out.println("");
+			}
+		}
 	}
 }
