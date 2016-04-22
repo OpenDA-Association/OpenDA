@@ -57,3 +57,5 @@ fi
 export eclipse_exe="$ECLIPSEDIR/eclipse"
 alias eclipse="$eclipse_exe"
 
+#DELFT3D
+export DELFT3DBINDIR=/opt64/delft3d_trunk/bin
