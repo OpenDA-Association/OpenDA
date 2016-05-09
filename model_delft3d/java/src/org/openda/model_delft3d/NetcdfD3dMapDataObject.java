@@ -219,9 +219,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 	public void setExchangeItemValues(String varName, double[] values) {
 		if (binRestartFile != null) {
-			if (varName.equals("S1")) {
+//			if (varName.equals("R1")) {
 				binRestartFile.write(varName, values);
-			}
+//			}
 			return;
 		}
 

@@ -20,6 +20,9 @@ public class D3DBinRestartFile {
 	private final int nSubstances;
 	private File binRestartFilePath;
 	private RandomAccessFile randomAccessFile;
+	private int valueSize = 4; // Values in binary files are floats (4 bytes/number)
+	private int recLenIndicatorSize = 4;
+	private int recordDividerSize = 4;
 
 	D3DBinRestartFile(File binRestartFilePath, int mMax, int nMax, int nLay, int nSubstances) {
 		this.binRestartFilePath = binRestartFilePath;
@@ -39,6 +42,10 @@ public class D3DBinRestartFile {
 
 	public void write(String varName, double[] values){
 
+		if (nSubstances != 1){
+			throw new RuntimeException("Only one substance (temp or salinity) supported for writing into binary file. Current number of substances= " + nSubstances);
+		}
+
 		double[] valuesInRestartBinOrder = new double[values.length];
 		int actualNLay = varName.equals("S1") ? 1 : nLay;
 		for (int lay=0; lay < actualNLay; lay++) {
@@ -57,50 +64,59 @@ public class D3DBinRestartFile {
 		}
 
 		long [] positionAndSize; // positionAndSize[0]: positionAndSize[1]: size
-		int valueSize = 4;
+		int valueSize = this.valueSize;
 		positionAndSize = getPositionAndSize(varName, valueSize);
 
 		try {
 			byte[] allBytes = new byte[(int) positionAndSize[1]];
-			int index = 0;
-			for (int j = 0; j < valuesInRestartBinOrder.length; j++){
-				float value = (float) valuesInRestartBinOrder[j];
-				byte[] floatAsBytes = float2ByteArray(value);
-				for (int i = 0; i < valueSize; i++) {
-					allBytes[index] = floatAsBytes[i];
-					index++;
+
+			for (int lay = 0; lay < actualNLay; lay++) {
+				int index = 0;
+				for (int j = 0; j < valuesInRestartBinOrder.length/actualNLay; j++) {
+					float value = (float) valuesInRestartBinOrder[j+lay*mMax*nMax];
+					byte[] floatAsBytes = float2ByteArray(value);
+					for (int i = 0; i < valueSize; i++) {
+						allBytes[index] = floatAsBytes[i];
+						index++;
+					}
 				}
+				randomAccessFile.seek(positionAndSize[0] + lay*(positionAndSize[1] + this.recLenIndicatorSize + this.recordDividerSize));
+				randomAccessFile.write(allBytes);
 			}
-            randomAccessFile.seek(positionAndSize[0]); // I assumed that the position is in bytes
-			randomAccessFile.write(allBytes);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not jump through binary restart file " + binRestartFilePath.getAbsolutePath());
 		}
 	}
 
+
 	public float[] read(String varName) {
 
 		long [] positionAndSize; // positionAndSize[0]: positionAndSize[1]: size
-		int valueSize = 4;
+		int valueSize = this.valueSize;
 		positionAndSize = getPositionAndSize(varName, valueSize);
 
+		int varLay = varName.equals("S1") ? 1 : nLay;
 
-		float[] values = new float[(int)(positionAndSize[1]/valueSize)];
+		float[] values = new float[(int)(positionAndSize[1]*varLay/valueSize)];
+
 		try {
-			// randomAccessFile.seek(0); // I assumed that the position is in bytes
-			long recLen = randomAccessFile.readShort();
 			byte[] allBytes = new byte[(int) positionAndSize[1]];
-			randomAccessFile.seek(positionAndSize[0]); // I assumed that the position is in bytes
-			randomAccessFile.read(allBytes);
-			int byteIndex = 0;
-			for (int j = 0; j < values.length; j++){
-				byte[] floatAsBytes = new byte[valueSize];
-				for (int i = 0; i < valueSize; i++) {
-					floatAsBytes[i] = allBytes[byteIndex];
-					byteIndex++;
+			int k = 0;
+			for (int lay = 0; lay < varLay; lay++) {
+				randomAccessFile.seek(positionAndSize[0] + lay*(positionAndSize[1] + this.recLenIndicatorSize + this.recordDividerSize));
+				randomAccessFile.read(allBytes);
+				int byteIndex = 0;
+				for (int j = 0; j < values.length/varLay; j++) {
+					byte[] floatAsBytes = new byte[valueSize];
+					for (int i = 0; i < valueSize; i++) {
+						floatAsBytes[i] = allBytes[byteIndex];
+						byteIndex++;
+					}
+					values[k] = toFloat(floatAsBytes);
+					k++;
 				}
-				values[j] = toFloat(floatAsBytes);
 			}
+
 		} catch (IOException e) {
 			throw new RuntimeException("Could not jump through binary restart file " + binRestartFilePath.getAbsolutePath());
 		}
@@ -116,28 +132,30 @@ public class D3DBinRestartFile {
 	}
 
 	private long[] getPositionAndSize(String varName, int valueSize) {
-		// S1: 0
-		// U1: mMax*nMax (size of S1) [+ record divider]
-		// V1: mMax*nMax + mMax*nMax*nLay (size of S1 plus size of U1) [+ 2 * record divider]
-		// R1: mMax*nMax + 2*mMax*nMax*nLay (size of S1 plus twice size of U1/V1) [+ 3 * record divider]
 
 		long[] positionAndSize = new long[2];
 
-		int recLenIndicatorSize = 4;
-		int recordDividerSize = 4;
+		int recLenIndicatorSize = this.recLenIndicatorSize;
+		int recordDividerSize = this.recordDividerSize;
+
+		// I decided to work per layers, hence positionAndSize[1] will be the bytes per layer, same for all variables
+		positionAndSize[1] = mMax*nMax*valueSize;
 
 		if (varName.equals("S1")){
 			positionAndSize[0] = recLenIndicatorSize; // after first rec length
-			positionAndSize[1] = mMax*nMax*valueSize;
+//			positionAndSize[1] = mMax*nMax*valueSize;
 		}else if (varName.equals("U1")){
-			positionAndSize[0] = 2 * recLenIndicatorSize + recordDividerSize + mMax*nMax*valueSize;
-			positionAndSize[1] = mMax*nMax*nLay*valueSize;
+			positionAndSize[0] = 2 * recLenIndicatorSize + mMax*nMax*valueSize + recordDividerSize;
+//			positionAndSize[0] = 2 * recLenIndicatorSize + recordDividerSize + mMax*nMax*valueSize;
+//			positionAndSize[1] = mMax*nMax*nLay*valueSize;
 		}else if (varName.equals("V1")){
-			positionAndSize[0] = 3 * recLenIndicatorSize + 2 * recordDividerSize + mMax*nMax*nLay*valueSize;
-			positionAndSize[1] = mMax*nMax*nLay*valueSize;
+//			positionAndSize[0] = 3 * recLenIndicatorSize + 2 * recordDividerSize + mMax*nMax*nLay*valueSize;
+//			positionAndSize[1] = mMax*nMax*nLay*valueSize;
+			positionAndSize[0] = (2+nLay) * recLenIndicatorSize + (1+nLay)*recordDividerSize + mMax*nMax*valueSize + mMax*nMax*nLay*valueSize;
 		}else if (varName.equals("R1")){
-			positionAndSize[0] = 4 * recLenIndicatorSize + 3 * recordDividerSize + 2*mMax*nMax*nLay*valueSize;
-			positionAndSize[1] = mMax*nMax*nLay*nSubstances*valueSize;
+//			positionAndSize[0] = 4 * recLenIndicatorSize + 3 * recordDividerSize + 2*mMax*nMax*nLay*valueSize;
+//			positionAndSize[1] = mMax*nMax*nLay*nSubstances*valueSize;
+			positionAndSize[0] = (2+2*nLay) * recLenIndicatorSize + (1+2*nLay)*recordDividerSize + mMax*nMax*valueSize + 2*mMax*nMax*nLay*valueSize;
 		}else{
 			throw new RuntimeException("Only S1, U1 V1 and R1 are supported for writing into the binary restart file");
 		}

@@ -104,6 +104,12 @@ public class D3DBinRestartFileTest extends TestCase {
 //				throw new RuntimeException("Bin and map file differ: " + s1FromBin[i] + " != " + s1FromMap[i] + ", index: "+ i);
 //			}
 //		}
+
+		float[] u1FromBin = d3DBinRestartFile.read("R1");
+
+		// printNcField("U1 from MAP", mMax, nMax, 1, s1FromMap);
+		printBinField("U1 from BIN", mMax, nMax, 20, u1FromBin);
+
 	}
 
 	private void printNcField(String varName, int mMax, int nMax, int nLay, double[] doubles) {
