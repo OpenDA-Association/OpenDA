@@ -135,7 +135,7 @@ public class ImperviousLandSegmentsInitTable {
 		Collections.sort(this.segmentNumbers);
 	}
 
-	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		UciUtils.writeTable(exchangeItems, outputLines, tableName, firstHeaderRow, secondHeaderRow, locationIdPrefix, segmentNumbers, parameterIds, null);
+	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines, Map<String, IExchangeItem> exchangeItemsDefaultInit) {
+		UciUtils.writeTable(exchangeItems, outputLines, tableName, firstHeaderRow, secondHeaderRow, locationIdPrefix, segmentNumbers, parameterIds, null, exchangeItemsDefaultInit);
 	}
 }

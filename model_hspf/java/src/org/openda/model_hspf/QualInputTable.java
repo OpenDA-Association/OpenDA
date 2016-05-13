@@ -129,7 +129,7 @@ public class QualInputTable {
 		return augmentedParameterIds;
 	}
 
-	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		UciUtils.writeTable(exchangeItems, outputLines, TABLE_NAME, firstHeaderRow, secondHeaderRow, locationIdPrefix, segmentNumbers, augmentedParameterIds, null);
+	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines, Map<String, IExchangeItem> exchangeItemsDefaultInit) {
+		UciUtils.writeTable(exchangeItems, outputLines, TABLE_NAME, firstHeaderRow, secondHeaderRow, locationIdPrefix, segmentNumbers, augmentedParameterIds, null, exchangeItemsDefaultInit);
 	}
 }

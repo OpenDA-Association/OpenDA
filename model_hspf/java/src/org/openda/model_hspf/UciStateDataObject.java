@@ -51,6 +51,7 @@ public class UciStateDataObject implements IDataObject {
 	private Map<String, QualInputTable> perviousLandSegmentsQualInputTables = new HashMap<>();
 	private Map<String, ImperviousLandSegmentsInitTable> imperviousLandSegmentsInitTables = new HashMap<>();
 	private Map<String, QualInputTable> imperviousLandSegmentsQualInputTables = new HashMap<>();
+	private Map<String, IExchangeItem> exchangeItemsDefaultInit = new HashMap<>();
 //	private String lastKnownQualId = null;
 
 	/**
@@ -100,12 +101,30 @@ public class UciStateDataObject implements IDataObject {
 			}
 		}
 
+		//get optional default-initial uci file.
+		if (arguments.length > 3) {
+			try {
+				File uciDefaultInitFile = new File(workingDir, arguments[3]); // for trapping error, i.e. when file is not found
+				String[] newarguments = new String[]{arguments[3],arguments[1],arguments[2]};
+				UciStateDataObject defaultUciDataObject = new UciStateDataObject();
+				defaultUciDataObject.initialize(workingDir, newarguments);
+				exchangeItemsDefaultInit = defaultUciDataObject.exchangeItems;
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Cannot parse second argument '" + arguments[3] + "' for " + getClass().getSimpleName()
+						+ ". The (optional) third argument should be the default initial uci file).", e);
+			}
+		}
+
 		double stateTime = absoluteStateTime + stateTimeShiftInSeconds / 86400.0;
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Results.putMessage(getClass().getSimpleName() + ": using state time of " + dateFormat.format(Time.mjdToMillies(stateTime)));
 		readUciFile(stateTime);
+
+//		UciStateDataObject defaultUciDataObject = new UciStateDataObject();
+//		defaultUciDataObject.readUciFile(stateTime);
+//		defaultUciDataObject.getDataObjectExchangeItem("hrhrh");
 	}
 
 	public String[] getExchangeItemIDs() {
@@ -312,7 +331,7 @@ public class UciStateDataObject implements IDataObject {
 				//write new table.
 				ReachesInitTable initTable = reachesInitTables.get(tableName);
 				if (initTable == null) throw new IllegalStateException(UciUtils.RCHRES_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
-				initTable.write(exchangeItems, outputLines);
+				initTable.write(exchangeItems, outputLines, exchangeItemsDefaultInit);
 				continue;
 			}
 
@@ -341,7 +360,7 @@ public class UciStateDataObject implements IDataObject {
 				//write new table.
 				PerviousLandSegmentsInitTable initTable = perviousLandSegmentsInitTables.get(tableName);
 				if (initTable == null) throw new IllegalStateException(UciUtils.PERLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
-				initTable.write(exchangeItems, outputLines);
+				initTable.write(exchangeItems, outputLines, exchangeItemsDefaultInit);
 				continue;
 			}
 
@@ -362,7 +381,7 @@ public class UciStateDataObject implements IDataObject {
 				//write new table.
 				QualInputTable qualInputTable = perviousLandSegmentsQualInputTables.get(QualInputTable.TABLE_NAME + '_' + qualInputTableCounter);
 				if (qualInputTable == null) throw new IllegalStateException(UciUtils.PERLND_MODULE_NAME + " " + QualInputTable.TABLE_NAME + " table with number " + qualInputTableCounter + " not initialized during reading of uci state file.");
-				qualInputTable.write(exchangeItems, outputLines);
+				qualInputTable.write(exchangeItems, outputLines, exchangeItemsDefaultInit);
 				continue;
 			}
 
@@ -391,7 +410,7 @@ public class UciStateDataObject implements IDataObject {
 				//write new table.
 				ImperviousLandSegmentsInitTable initTable = imperviousLandSegmentsInitTables.get(tableName);
 				if (initTable == null) throw new IllegalStateException(UciUtils.IMPLND_MODULE_NAME + " init table '" + tableName + "' not initialized during reading of uci state file.");
-				initTable.write(exchangeItems, outputLines);
+				initTable.write(exchangeItems, outputLines, exchangeItemsDefaultInit);
 				continue;
 			}
 
@@ -412,7 +431,7 @@ public class UciStateDataObject implements IDataObject {
 				//write new table.
 				QualInputTable qualInputTable = imperviousLandSegmentsQualInputTables.get(QualInputTable.TABLE_NAME + '_' + qualInputTableCounter);
 				if (qualInputTable == null) throw new IllegalStateException(UciUtils.IMPLND_MODULE_NAME + " " + QualInputTable.TABLE_NAME + " table with number " + qualInputTableCounter + " not initialized during reading of uci state file.");
-				qualInputTable.write(exchangeItems, outputLines);
+				qualInputTable.write(exchangeItems, outputLines, exchangeItemsDefaultInit);
 				continue;
 			}
 

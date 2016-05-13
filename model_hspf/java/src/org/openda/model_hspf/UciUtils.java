@@ -27,6 +27,7 @@ import org.openda.utils.Time;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -346,7 +347,7 @@ public class UciUtils {
 	 * @param locationNumberAdditionalInfoMap can be null.
 	 */
 	public static void writeTable(Map<String, IExchangeItem> exchangeItems, List<String> outputLines, String tableName, String firstHeaderRow, String secondHeaderRow,
-			String locationIdPrefix, List<Integer> locationNumbers, List<String> parameterIds, Map<Integer, String> locationNumberAdditionalInfoMap) {
+			String locationIdPrefix, List<Integer> locationNumbers, List<String> parameterIds, Map<Integer, String> locationNumberAdditionalInfoMap, Map<String, IExchangeItem> exchangeItemsDefaultInit) {
 		outputLines.add("  " + tableName);
 
 		//write header rows.
@@ -355,7 +356,7 @@ public class UciUtils {
 
 		//for each location write a values row.
 		for (int locationNumber : locationNumbers) {
-			String valuesRow = writeValuesRow(tableName, locationIdPrefix, locationNumber, parameterIds, exchangeItems);
+			String valuesRow = writeValuesRow(tableName, locationIdPrefix, locationNumber, parameterIds, exchangeItems, exchangeItemsDefaultInit);
 			if (locationNumberAdditionalInfoMap != null) {
 				//for RCHRES HYDR-INIT only the second column (VOL) is used, but the additional columns also need to be written.
 				//for RCHRES BED-INIT only the second column (BEDDEP) is used, but the additional columns also need to be written.
@@ -371,7 +372,7 @@ public class UciUtils {
 		outputLines.add("  END " + tableName);
 	}
 
-	private static String writeValuesRow(String tableName, String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems) {
+	private static String writeValuesRow(String tableName, String locationIdPrefix, int locationNumber, List<String> parameterIds, Map<String, IExchangeItem> exchangeItems, Map<String, IExchangeItem> exchangeItemsDefaultInit) {
 		String result = "";
 
 		//use Locale.US so that always uses points as decimal symbols.
@@ -455,6 +456,37 @@ public class UciUtils {
 				long iPart = (long)absValue;
 				// Length of the integer part.
 				long iPartLength = String.valueOf(iPart).length();
+
+				// When the value is of the order of E19 or larger, the iPartLength stays equal to 20. In this case, print value as it is
+				if (iPartLength >= 19) {
+//					NumberFormat numberFormatter = new DecimalFormat("0.00###E0");
+//					String resultString = numberFormatter.format(absValue);
+//					result += sign + resultString + "  ";
+
+					IExchangeItem itemDefaultInit = exchangeItemsDefaultInit.get(id);
+					if (itemDefaultInit==null){
+						throw new RuntimeException("The value of NaN (-1.00E+30) is found in the updated state. Please specify an UCI file containing default initial values.");
+					}
+					double defaultValue = (double) itemDefaultInit.getValues();
+
+					absValue = Math.abs(defaultValue);
+					sign = " ";
+					if (defaultValue < 0.0) sign = "-";
+
+					// Limit the domain of value.
+					if (value >= 999999999.5) {
+						value = 999999999.0;
+					}
+					if (value <= -999999999.5) {
+						value = -999999999.0;
+					}
+
+					// Integer part
+					iPart = (long)absValue;
+					// Length of the integer part.
+					iPartLength = String.valueOf(iPart).length();
+//					continue;
+				}
 
 				// Print values with an integer part longer then 7 characters as an int.
 				if (iPartLength > 7) {

@@ -151,7 +151,7 @@ public class ReachesInitTable {
 		Collections.sort(this.reachNumbers);
 	}
 
-	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines) {
-		UciUtils.writeTable(exchangeItems, outputLines, tableName, firstHeaderRow, secondHeaderRow, locationIdPrefix, reachNumbers, parameterIds, reachNumberAdditionalInfoMap);
+	public void write(Map<String, IExchangeItem> exchangeItems, List<String> outputLines, Map<String, IExchangeItem> exchangeItemsDefaultInit) {
+		UciUtils.writeTable(exchangeItems, outputLines, tableName, firstHeaderRow, secondHeaderRow, locationIdPrefix, reachNumbers, parameterIds, reachNumberAdditionalInfoMap, exchangeItemsDefaultInit);
 	}
 }
