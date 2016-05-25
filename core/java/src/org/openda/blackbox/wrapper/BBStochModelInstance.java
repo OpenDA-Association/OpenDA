@@ -1267,19 +1267,27 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				for (String modelExchangeItemId : exchangeItemConfig.getModelExchangeItemIds()) {
 					IPrevExchangeItem modelExchangeItem = getExchangeItem(modelExchangeItemId);
 					double modelTimes[] = modelExchangeItem.getTimes();
+					List<Double> modelTimesInCurrentPeriod;
 					if (modelTimes == null) {
-						throw new RuntimeException("No times available for model exchange item " +
-								modelExchangeItem.getId());
+						if (!modelExchangeItem.getId().toLowerCase().contains("state")) {
+							throw new RuntimeException("No times available for model exchange item " +
+									modelExchangeItem.getId());
+						}
+						double currentModelTime = getCurrentTime().getMJD();
+						modelTimes = new double[] {currentModelTime};
+						modelTimesInCurrentPeriod = new ArrayList<Double>();
+						modelTimesInCurrentPeriod.add(currentModelTime);
+					} else {
+						modelTimesInCurrentPeriod = determineTimeStampsInInterval(
+								modelTimes, currentTime, targetTime);
 					}
-					List<Double> modelEiTimes = determineTimeStampsInInterval(
-							modelTimes, currentTime, targetTime);
 					// The model exchange item has more then one time stamp. Find matching times in
 					// both lists.
                     //Note: this loops over the model exchangeItem times. For each model time the same time
                     //must be present in the noise model exchangeItem. For each model time the noise of the
                     //noise model for that time is added to the model values for that time.
-					for (int t = 0; t < modelEiTimes.size(); t++) { 
-						double time = modelEiTimes.get(t);
+					for (int t = 0; t < modelTimesInCurrentPeriod.size(); t++) {
+						double time = modelTimesInCurrentPeriod.get(t);
 						if(!this.lastNoiseTimes.containsKey(modelExchangeItemId)){
 							this.lastNoiseTimes.put(modelExchangeItemId, Double.NEGATIVE_INFINITY);
 						}
@@ -1502,10 +1510,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
 			int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation) {
-		double[] times = exchangeItem.getTimes();
-		if (times == null || times.length == 0) {
-			throw new RuntimeException("ExchangeItem " + exchangeItem.getId() + " has no time stamps");
-		}
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
@@ -1520,9 +1524,19 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			// IExchangeItem interface is fully elaborated
 			numValuesInExchangeItem = 1;
 		}
+		int numTimeStepsInExchangeItem = -1;
+		double[] times = exchangeItem.getTimes();
+		if (times == null || times.length == 0) {
+			// model EI has no time stamp (is most probable the current state)
+			if (noise.length == numValuesInExchangeItem) {
+				numTimeStepsInExchangeItem = 1;
+			} else {
+				throw new RuntimeException("ExchangeItem " + exchangeItem.getId() + " has no time stamps whereas value size is not equal to noise-size");
+			}
+		}
 		boolean addFullArray = false;
 		if (noise.length == numValuesInExchangeItem) {
-			if (times.length == 1) {
+			if (numTimeStepsInExchangeItem == 1) {
 				// Noise is meant for all values
 				addFullArray = true;
 			}
@@ -1530,7 +1544,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				addFullArray = true;
 			}
 		} else {
-			if (times.length == numValuesInExchangeItem) {
+			if (numTimeStepsInExchangeItem == numValuesInExchangeItem) {
 				if (noise.length > 1) {
 					// Noise value for all time stamps
 					addFullArray = true;
