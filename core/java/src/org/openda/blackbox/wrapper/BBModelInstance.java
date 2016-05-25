@@ -424,7 +424,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		File savedStateDir = checkRestartDir(getCurrentTime(), false);
 		for (String restartFileName : bbModelConfig.getRestartFileNames()) {
 			File modelStateFile = new File(getModelRunDir(), restartFileName);
-			File copyOfModelStateFile = new File(savedStateDir, restartFileName);
+			File copyOfModelStateFile = new File(savedStateDir, new File(restartFileName).getName());
 			try {
 				BBUtils.copyFile(modelStateFile, copyOfModelStateFile);
 			} catch (IOException e) {
@@ -452,7 +452,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		modelState.setDirContainingModelstateFiles(savedStateDir);
 		modelState.restoreState();
 		for (String restartFileName : bbModelConfig.getRestartFileNames()) {
-			File modelStateFileInModelState = new File(savedStateDir, restartFileName);
+			File modelStateFileInModelState = new File(savedStateDir, new File(restartFileName).getName());
 			File modelStateFile = new File(getModelRunDir(), restartFileName);
 			try {
 				BBUtils.copyFile(modelStateFileInModelState, modelStateFile);
