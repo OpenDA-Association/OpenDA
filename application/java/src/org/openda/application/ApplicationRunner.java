@@ -572,7 +572,7 @@ public class ApplicationRunner implements Runnable{
     
     protected void writeRestart(){
 		ITime time = algorithm.getCurrentTime();
-		boolean writeAtThisTime=true;
+		boolean writeAtThisTime=(time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
 		if ((this.restartTimes.length>0) & (time!=null)){
 			writeAtThisTime=false;
 			for(int i=0;i<this.restartTimes.length;i++){
