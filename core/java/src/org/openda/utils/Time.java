@@ -25,6 +25,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static org.openda.utils.performance.OdaGlobSettings.getTimePrecision;
+
 
 public class Time implements ITime {
 
@@ -33,8 +35,6 @@ public class Time implements ITime {
 	private double endTimeAsMJD = Double.POSITIVE_INFINITY;
 	private boolean isSpan = false;
 	private double stepAsMJD = Double.NaN;
-	public static final double eps = 1.e-6;
-
 
 	/**
 	 * Create a time stamp object
@@ -211,7 +211,7 @@ public class Time implements ITime {
 	  * {@inheritDoc}
 	  */
 	 public long getStepCount() {
-		 double stepCount = Math.ceil((this.endTimeAsMJD - this.startTimeAsMJD) / this.stepAsMJD);
+		 double stepCount = Math.ceil((this.endTimeAsMJD-getTimePrecision() - this.startTimeAsMJD) / this.stepAsMJD);
 		 return (long) stepCount;
 	 }
 
@@ -227,7 +227,7 @@ public class Time implements ITime {
 	  * {@inheritDoc}
 	  */
 	 public long getTimeStep(ITime toReach) {
-		 double stepCount = Math.ceil((toReach.getMJD() - this.startTimeAsMJD) / this.stepAsMJD);
+		 double stepCount = Math.ceil((toReach.getMJD()-getTimePrecision() - this.startTimeAsMJD) / this.stepAsMJD);
 		 return (long) stepCount;
 	 }
 
@@ -285,7 +285,7 @@ public class Time implements ITime {
 		if (time.isStamp()) {
 			result = timeStampToDate(time.getMJD()).toString();
 		} else {
-			if ((time.getEndTime().getMJD() - time.getBeginTime().getMJD()) < eps) {
+			if ((time.getEndTime().getMJD() - time.getBeginTime().getMJD()) < getTimePrecision()) {
 				result = timeStampToDate(0.5 * (time.getBeginTime().getMJD()
 						+ time.getEndTime().getMJD())).toString();
 			} else {
@@ -309,7 +309,7 @@ public class Time implements ITime {
 		 if (this.isStamp()) {
 			 result = "" + this.startTimeAsMJD;
 		 } else {
-			 if ((this.endTimeAsMJD - this.startTimeAsMJD) < eps) {
+			 if ((this.endTimeAsMJD - this.startTimeAsMJD) < getTimePrecision()) {
 				 result = "" + 0.5 * (this.startTimeAsMJD + this.endTimeAsMJD);
 			 } else {
 				 result = "" + this.startTimeAsMJD + ":" + this.stepAsMJD + ":" + this.endTimeAsMJD;

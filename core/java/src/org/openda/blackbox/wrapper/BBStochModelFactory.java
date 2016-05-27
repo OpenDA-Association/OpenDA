@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-
+import static org.openda.utils.performance.OdaGlobSettings.getTimePrecision;
 /**
  * Factory for creating instances of the type BBModelInstance.
  */
@@ -211,7 +211,7 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 		double startAsMJD = timeHorizon.getBeginTime().getMJD();
 		double endAsMJD = timeHorizon.getEndTime().getMJD();
 		double timeSpan = endAsMJD - startAsMJD;
-		if ( Math.abs( timeSpan - timeHorizon.getStepMJD()) < Time.eps ) {
+		if ( Math.abs( timeSpan - timeHorizon.getStepMJD()) < getTimePrecision() ) {
 			// make it clear that the timestep was not set and let the noisemodel decide what to do
 			result.setStep(Double.NaN);
 		}
