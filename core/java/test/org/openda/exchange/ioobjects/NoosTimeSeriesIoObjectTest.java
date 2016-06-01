@@ -20,6 +20,7 @@
 package org.openda.exchange.ioobjects;
 
 import junit.framework.TestCase;
+import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
@@ -220,4 +221,66 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 		assertTrue(ts1.equals(ts1a) || ts1.equals(ts0a));
 	}
 
+	@SuppressWarnings("boxing")
+	public void testReadTimeZoneCET() {
+
+		// read noos file and create object
+		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
+
+		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestCETData.txt");
+
+		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
+		assertEquals(1, noosEx.length);
+		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
+
+		TimeSeries ts = (TimeSeries) (noosEx[0]);
+		assertEquals("hoekvanholland.waterlevel", ts.getId());
+		assertEquals("hoekvanholland", ts.getLocation());
+		assertEquals("hmcn_csm8", ts.getSource());
+		assertEquals("m", ts.getUnitId());
+		assertEquals("waterlevel", ts.getQuantityId());
+		assertEquals(4.120131, ts.getPosition()[0]);
+		assertEquals(51.978539, ts.getPosition()[1]);
+
+		assertEquals(55390.916666666664, ts.getStartTime());
+		assertEquals(55391.916666666664, ts.getStopTime());
+		assertTrue(ts.intersectsWithTimeInterval(55389.0, 55391.0));
+		assertTrue(ts.intersectsWithTimeInterval(55391.0, 55392.0));
+		assertTrue(ts.intersectsWithTimeInterval(55389.0, 55394.0));
+		assertTrue(ts.intersectsWithTimeInterval(55391.916666666664, 55394.0));
+		assertFalse(ts.intersectsWithTimeInterval(55389.0, 55390.9));
+		assertFalse(ts.intersectsWithTimeInterval(55392.1, 55394.0));
+
+		assertEquals(145, ts.getTimes().length);
+		assertEquals(55390.916666666664, ts.getTimes()[0]);
+		assertEquals(55391.916666666664, ts.getTimes()[144]);
+
+		assertEquals(145, ts.getValuesAsDoubles().length);
+		assertEquals(-0.54, ts.getValuesAsDoubles()[0]);
+		assertEquals(-0.77, ts.getValuesAsDoubles()[144]);
+
+		assertEquals(0, ts.getExtraValuesKeySet().size());
+		assertEquals("CET", ts.getProperty(NoosTimeSeriesFormatter.PROPERTY_TIMEZONE));
+	}
+
+	public void testWriteTimeZoneCET() {
+
+		// read noos file and create object
+		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
+
+		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestCETData.txt");
+		assertEquals(1, noosIO.getExchangeItems().length);
+		assertEquals(1, noosIO.getTimeSeriesSet().size());
+
+		// then write it again under another name
+		File noosFile = new File(this.testRunDataDir, "copy_of_NoosTimeSeriesIoObjectTestCETData.txt");
+		NoosTimeSeriesIoObject.writeNoosTimeSeries((TimeSeries) noosIO.getExchangeItems()[0], noosFile);
+
+		// finally, test it
+		TimeSeries series1 = (TimeSeries) noosIO.getExchangeItems()[0];
+		NoosTimeSeriesIoObject noosIO2 = new NoosTimeSeriesIoObject();
+		noosIO2.initialize(this.testRunDataDir, "copy_of_NoosTimeSeriesIoObjectTestCETData.txt");
+		TimeSeries series2 = (TimeSeries) noosIO2.getExchangeItems()[0];
+		assertTrue(series1.equals(series2));
+	}
 }

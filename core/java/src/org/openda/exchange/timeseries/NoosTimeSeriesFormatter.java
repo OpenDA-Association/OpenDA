@@ -23,6 +23,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.Vector;
 
 /**
@@ -73,7 +74,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       String source = ""; // Source : observed
       String quantity = ""; // Unit : waterlevel_astro !!! Note different label
       String analTime = ""; // Analyse time: most recent
-      String timeZone = ""; // Timezone : GMT
+      TimeZone timeZone = TimeZone.getTimeZone("GMT"); // Timezone : GMT
       double times[] = null;
       double values[] = null;
       double analTimes[] = null;
@@ -149,7 +150,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
                      analTime = value;
                   }
                   if (property.equalsIgnoreCase("TimeZone")) {
-                     timeZone = value;
+                     timeZone = TimeZone.getTimeZone(value);
                   }
                }
                else {
@@ -169,7 +170,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
                   String columns[] = line.split("(\\s)+");
                   double time;
                   try {
-                     time = TimeUtils.date2Mjd(columns[0]);
+                     time = TimeUtils.date2Mjd(columns[0], timeZone);
                   }
                   catch (Exception e) {
                      throw new RuntimeException("Trouble parsing time :" + columns[0]);
@@ -232,7 +233,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       result.setQuantity(quantity);
       result.setSource(source);
       result.setProperty(PROPERTY_ANALTIME, analTime);
-      result.setProperty(PROPERTY_TIMEZONE, timeZone);
+      result.setProperty(PROPERTY_TIMEZONE, timeZone.getID());
       result.setDescription(description);
       return result;
    }
@@ -269,7 +270,8 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       // # Analyse time: most recent
       printer.println("# Analyse time: " + series.getProperty(PROPERTY_ANALTIME));
       // # Timezone : GMT
-      printer.println("# Timezone : " + series.getProperty(PROPERTY_TIMEZONE));
+      String timeZoneId = series.getProperty(PROPERTY_TIMEZONE);
+      printer.println("# Timezone : " + timeZoneId);
       printer.println("#------------------------------------------------------");
 
       // now the data
@@ -279,8 +281,9 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       final double times[] = series.getTimesRef();
       final double values[] = series.getValuesRef();
       final boolean hasAnalTimes = series.hasExtraValues("analTimes");
+      TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
       for (int i = 0; i < times.length; i++) {
-         String line = TimeUtils.mjdToString(times[i]) + "   " + four0.format(values[i]);
+         String line = TimeUtils.mjdToString(times[i], "yyyyMMddHHmm", timeZone) + "   " + four0.format(values[i]);
          if (hasAnalTimes) line += "   " + TimeUtils.mjdToString(series.getExtraValuesRef("analTimes")[i]);
          printer.println(line);
       }

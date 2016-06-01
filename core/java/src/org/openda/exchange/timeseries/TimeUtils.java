@@ -19,13 +19,13 @@
  */
 package org.openda.exchange.timeseries;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import org.openda.utils.SortUtils;
 import org.openda.utils.Time;
 import ucar.nc2.units.DateUnit;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static java.lang.Double.*;
 
@@ -59,15 +59,24 @@ public class TimeUtils {
     * @return date as string yyyyMMddHHmm e.g. 200912292359 for Dec 29 2009 23:59 UTC
     */
    public static String mjdToString(double mjd) {
-	   if(mjd== NEGATIVE_INFINITY){
-		   return "-Infinity";
-	   }else if(mjd== POSITIVE_INFINITY){
-		   return "Infinity";
-	   }else if(!isInfinite(mjd)){
-		   return mjdToString(mjd, "yyyyMMddHHmm");
-	   }else{
-		   throw new RuntimeException("Can not convert Modified Julian Day time to string, mjd="+mjd);
-	   }
+	   return mjdToString(mjd, "yyyyMMddHHmm", TimeZone.getTimeZone("UTC"));
+   }
+
+   /**
+    * Convert Modified Julian Date (days since 00:00 November 17, 1858 UTC) to lexical string
+    *
+    * @param mjd
+    *           Modified Julian Date
+    * @param format
+    *           The format string to use
+    * @return date as string
+    */
+   public static String mjdToString(double mjd, String format, TimeZone tz) {
+      final long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
+      final Date t = new java.util.Date(timeInMillis);
+      final SimpleDateFormat formatter = new SimpleDateFormat(format);
+      formatter.setTimeZone(tz);
+	   return formatter.format(t);
    }
 
    /**
@@ -166,7 +175,19 @@ public class TimeUtils {
     *            Exception thrown when the parsing failed.
     */
    public static double date2Mjd(String date) throws ParseException {
-      TimeZone tz = TimeZone.getTimeZone("UTC");
+	   return date2Mjd(date, TimeZone.getTimeZone("UTC"));
+   }
+
+   /**
+    * Convert date-time as string to Modified Julian Date (days since 00:00 November 17, 1858 UTC)
+    *
+    * @param date
+    *           as string yyyyMMddHHmm e.g. 200912292359 for Dec 29 2009 23:59 UTC
+    * @return mjd Modified Julian Date
+    * @throws ParseException
+    *            Exception thrown when the parsing failed.
+    */
+   public static double date2Mjd(String date, TimeZone tz) throws ParseException {
       Date t;
       if (date.length() == 12) {
          SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm", Locale.UK);
