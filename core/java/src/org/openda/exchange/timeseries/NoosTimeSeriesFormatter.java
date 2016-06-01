@@ -281,7 +281,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       final double times[] = series.getTimesRef();
       final double values[] = series.getValuesRef();
       final boolean hasAnalTimes = series.hasExtraValues("analTimes");
-      TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
+      TimeZone timeZone = timeZoneId != null ? TimeZone.getTimeZone(timeZoneId) : TimeZone.getTimeZone("GMT");
       for (int i = 0; i < times.length; i++) {
          String line = TimeUtils.mjdToString(times[i], "yyyyMMddHHmm", timeZone) + "   " + four0.format(values[i]);
          if (hasAnalTimes) line += "   " + TimeUtils.mjdToString(series.getExtraValuesRef("analTimes")[i]);
