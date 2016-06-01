@@ -46,7 +46,7 @@ public class TimeSeriesStochObserver extends Instance implements IStochObserver 
 	java.util.Vector<String> propertyLabels = new java.util.Vector<String>();
 	private List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
     private HashMap<String,Integer> allObsIds = new HashMap<String,Integer>();
-
+	protected File file = null;
 
 	/**
 	 * Generic constructor
@@ -83,12 +83,20 @@ public class TimeSeriesStochObserver extends Instance implements IStochObserver 
 			this.propertyLabels.add("yposition");
 			this.propertyLabels.add("id");
 			// look for others
+			String timeZoneId = null;
+			String timeZoneProperty = "timeZone";
 			for (TimeSeries serie : series) {
 				String[] propNames = serie.getPropertyNames();
 				for (String propName : propNames) {
 					if (!this.propertyLabels.contains(propName.toLowerCase())) {
 						this.propertyLabels.add(propName.toLowerCase());
 					}
+				}
+				String timeZoneFromProperty = serie.getProperty(timeZoneProperty);
+				if (timeZoneId == null) {
+					timeZoneId = timeZoneFromProperty;
+				} else if (!timeZoneId.equals(timeZoneFromProperty)) {
+					throw new RuntimeException("Inconsistent time series. All time series should have the same time zone." + (file != null ? file.getAbsolutePath() : ""));
 				}
 			}
 			exchangeItems.addAll(Arrays.asList(series));

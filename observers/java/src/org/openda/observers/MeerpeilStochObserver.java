@@ -58,7 +58,7 @@ public class MeerpeilStochObserver extends TimeSeriesStochObserver {
 	 */
 	public void initialize(File workingDir, String[] arguments){
 		String fileName = arguments[0];
-		File file = new File(workingDir,fileName);
+		file = new File(workingDir,fileName);
 		TimeSeries[] Meerpeil = null;
 		TimeSeries Tempseries = null;
 		if (!file.exists()) {

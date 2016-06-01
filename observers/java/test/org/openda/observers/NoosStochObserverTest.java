@@ -87,7 +87,7 @@ public class NoosStochObserverTest extends TestCase {
 				"   Source   = observed2\n" +
 				"   Id       = aberdeen2.waterlevel2\n" +
 				"   relativestandarddeviation  = 0.0\n" +
-				"   timezone  = GMT2\n" +
+				"   timezone  = GMT\n" +
 				"   analtime  = most recent\n" +
 				"   standarddeviation  = 0.052\n" +
 				"   status  = validation\n" +
@@ -214,7 +214,7 @@ public class NoosStochObserverTest extends TestCase {
 		m = timezones.length-1;
 		System.out.println("descr2.getStringProperties(\"timezone\")[end]="+timezones[m]);
 		System.out.println("Should be descr2.getStringProperties(\"timezone\")[end]=GMT2");
-		assertEquals("descr2.getStringProperties(\"timezone\")[end]","GMT2",timezones[m]);
+		assertEquals("descr2.getStringProperties(\"timezone\")[end]","GMT",timezones[m]);
 		//   - height
 		IVector heights = descr2.getValueProperties("height");
 		System.out.println("descr2.getStringProperties(\"height\")[end]="+heights.getValue(m));
@@ -554,7 +554,15 @@ public class NoosStochObserverTest extends TestCase {
 
 	}
 
-
+	public void testStochObserverTimeZoneCheck() {
+		IStochObserver obs1 = new NoosTimeSeriesStochObserver();
+		try {
+			obs1.initialize(testRunDataDir, new String[]{"noosObservationsTZcheck.xml"});
+			assert false;
+		} catch(RuntimeException e) {
+			assertTrue(e.getMessage().startsWith("Inconsistent time series. All time series should have the same time zone."));
+		}
+	}
 }//end test-class
 
 

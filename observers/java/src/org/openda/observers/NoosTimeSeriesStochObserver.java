@@ -93,7 +93,7 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 	 */
 	public void initialize(File workingDir, String[] arguments){
 		String fileName = arguments[0];
-		File file = new File(workingDir,fileName);
+		file = new File(workingDir,fileName);
 		TimeSeries seriesArray[] = null;
 		// read config file
 		if(file.exists()){
