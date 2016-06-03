@@ -951,7 +951,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 		if (errorMessage.length() > 0) {
-			throw new RuntimeException("Error(s) in getting observed values from black box model" + errorMessage);
+			throw new RuntimeException("Error(s) in getting observed values from black box model " + model.getModelRunDir() + ": " + errorMessage);
 		}
 		timerGetObs.stop();
 		return treeVector;
