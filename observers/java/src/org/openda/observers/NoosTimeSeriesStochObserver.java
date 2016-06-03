@@ -99,6 +99,9 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 		if(file.exists()){
 			ConfigTree config = new ConfigTree(workingDir,fileName);
 			ConfigTree seriesTrees[] = config.getSubTrees("timeSeries");
+			if (seriesTrees.length == 0) {
+				Results.putMessage("WARNING : Noos stoch. observ. configuration does not contain time series: " + file.getAbsolutePath());
+			}
 			TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
 			seriesArray = new TimeSeries[seriesTrees.length];
 			for(int i=0;i<seriesTrees.length;i++){
