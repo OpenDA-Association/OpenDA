@@ -1,6 +1,7 @@
 package org.openda.model_delft3d;
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IArrayTimeInfo;
 import org.openda.interfaces.IDataObject;
@@ -126,7 +127,6 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				}
 				timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
 				timeDependentVars.put(variable.getName(), variable);
-				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
 
 				// if this is the first time dependent variable: read the times
 				if (timesInNetcdfFile == null) {
@@ -174,10 +174,15 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				}
 
 				if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 ) {
-					throw new RuntimeException("NetcdfD3dHisDataObject: dims not available, file: "
+					throw new RuntimeException("NetcdfD3dMapDataObject: dims not available, file: "
 							+ netcdfFile.getLocation());
 				}
 
+				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
+				// for memory reasons, for the time being we only keep the last time step in the exchange time
+				// so adjust the time info
+				double[] times = timeInfo.getTimes();
+				timeInfo = new TimeInfo(new double[]{times[times.length-1]});
 				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo);
 				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 
