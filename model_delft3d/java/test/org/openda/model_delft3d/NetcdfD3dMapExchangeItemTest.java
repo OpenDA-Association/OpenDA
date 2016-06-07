@@ -25,8 +25,12 @@ public class NetcdfD3dMapExchangeItemTest extends TestCase {
 		assertEquals("#exchange items", 4, exchangeItemIDs.length);
 
 		IExchangeItem exchangeItem = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[3]);
-		Object dataMapSeries = exchangeItem.getValues();
-
+		double[] times = exchangeItem.getTimes();
+		// for memory reasons, on the last time step is stored in the exchange item
+		assertEquals("#times", 1, times.length);
+		double[] vEchangeItem = exchangeItem.getValuesAsDoubles();
+		// V1, check for KMAXOUT_RESTR * M * NC values
+		assertEquals("#values", 14850, vEchangeItem.length);
 	}
 
 }
