@@ -229,6 +229,9 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 
 	public void axpyOnState(double alpha, IVector vector) {
 		this.state.axpy(alpha, vector); // nothing special for this model
+		if(this.storeObs){ //store all states if this is requested
+			this.xStore.get(this.xStore.size()-1).setValues(state.getValues());
+		}
 	}
 
 	public IVector getParameters() {
