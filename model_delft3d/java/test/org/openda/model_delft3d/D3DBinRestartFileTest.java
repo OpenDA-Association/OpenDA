@@ -23,7 +23,7 @@ public class D3DBinRestartFileTest extends TestCase {
 		int mMax = 33;
 		int nMax = 18;
 		int nLay = 25;
-		int nSubstances = 5;
+		int nSubstances = 1;
 
 		File binFilePath = new File(testData.getTestRunDataDir(), "tri-rst.cadagno_netcdf.20150603.000000");
 
