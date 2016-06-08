@@ -197,7 +197,8 @@ public class BBWrapperConfigReader {
         }
         String className = actionXML.getClassName();
         if ((exeName == null && className == null) || (exeName != null && className != null)) {
-            throw new RuntimeException("Either an executable name or a class name must be specified");
+            throw new RuntimeException("Either an executable name (exe= or linuxExe/macExe/windowsExe=) " +
+                    "or a class name (className=) must be specified in the <action/>, file: " + configFile.getAbsolutePath());
         }
         String actualWorkingDirectory = actionXML.getActualWorkingDirectory();
         return new BBAction(
