@@ -30,7 +30,7 @@ public class NetcdfD3dHisExchangeItemTest extends TestCase {
 
 		double[] dataTimeSeries = exchangeItem.getValuesAsDoubles();
 
-		assertEquals("#time steps", 737, dataTimeSeries.length);
+		assertEquals("#time steps", 17, dataTimeSeries.length);
 
 	}
 
