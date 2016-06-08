@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+        <alias key="dimr_config"/>
+        <alias key="instanceDir"/>
+        <alias key="templateDir"/>
+    </aliasDefinitions>
+
+    <run>
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%" templateDir="%templateDir%"/>
+
+        <computeActions/>
+
+        <finalizeActions/>
+    </run>
+
+    <inputOutput>
+
+        <!-- Reading the model states -->
+        <ioObject className="org.openda.blackbox.wrapper.DummyState">
+            <file>dflow1d/wlevStateFileIn.xyz</file>
+            <id>state</id>
+        </ioObject>
+
+
+    </inputOutput>
+
+</blackBoxWrapperConfig>

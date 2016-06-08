@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.openda.org
+			http://schemas.openda.org/blackBoxModelConfig.xsd">
+
+    <wrapperConfig>
+        <file>bbWrapperConfig.xml</file>
+    </wrapperConfig>
+
+    <!-- Specify wrapper configuration for which this model is defined -->
+    <aliasValues>
+        <alias key="templateDir" value="./model"/>
+        <alias key="instanceDir" value="./work"/>
+    </aliasValues>
+
+    <exchangeItems>
+        <vector id="allElementsFromIoObject" ioObjectId="state"/>
+    </exchangeItems>
+
+    <doCleanUp>false</doCleanUp>
+
+    <restartInfo>
+        <!-- files relative to instance dir -->
+        <modelStateFile>dflow1d/wlevStateFileIn.xyz</modelStateFile>
+        <modelStateFile>dflow1d/sobek.rda</modelStateFile>
+        <modelStateFile>dflow1d/sobek.rdf</modelStateFile>
+        <modelStateFile>dflow1d/extra/extra.txt</modelStateFile>
+        <modelStateFile>rtc/state_export.xml</modelStateFile>
+    </restartInfo>
+
+</blackBoxModelConfig>

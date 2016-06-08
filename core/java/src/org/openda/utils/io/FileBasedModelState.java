@@ -74,8 +74,16 @@ public class FileBasedModelState implements IModelState{
 	 */
 	public FileBasedModelState(File stateFilesDirectory) {
 		setDirContainingModelstateFiles(stateFilesDirectory);
+		addFilesInDirectory(stateFilesDirectory);
+	}
+
+	private void addFilesInDirectory(File stateFilesDirectory) {
 		for (File fileInDirectory : stateFilesDirectory.listFiles()) {
-			addFile(fileInDirectory);
+			if (fileInDirectory.isDirectory()) {
+				addFilesInDirectory(fileInDirectory);
+			} else {
+				addFile(fileInDirectory);
+			}
 		}
 	}
 
