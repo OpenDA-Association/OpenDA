@@ -96,7 +96,6 @@
       <docmodule module="models" />
       <docmodule module="algorithms" />
       <docmodule module="model_bmi"/>
-	<!--
       <docmodule module="model_efdc"/>
       <docmodule module="model_efdc_dll"/>
       <docmodule module="model_example_blackbox" />
@@ -104,9 +103,8 @@
       <docmodule module="model_hspf"/>
       <docmodule module="model_swan" />
       <docmodule module="model_wflow"/>
-      <docmodule module="model_nemo"/>
-      -->
       <docmodule module="model_delft3d"/>
+      <docmodule module="model_nemo"/>
       <docmodule module="model_dflowfm_blackbox"/>
       <copy todir="${projectdoc}/javadoc" >
          <fileset dir="core/doc/javadoc_menu" />
