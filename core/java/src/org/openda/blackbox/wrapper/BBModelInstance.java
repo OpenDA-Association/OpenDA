@@ -424,7 +424,9 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		File savedStateDir = checkRestartDir(getCurrentTime(), false);
 		for (String restartFileName : bbModelConfig.getRestartFileNames()) {
 			File modelStateFile = new File(getModelRunDir(), restartFileName);
-			File copyOfModelStateFile = new File(savedStateDir, new File(restartFileName).getName());
+			File file = new File(restartFileName);
+			createParentDir(savedStateDir, file);
+			File copyOfModelStateFile = new File(savedStateDir, restartFileName);
 			try {
 				BBUtils.copyFile(modelStateFile, copyOfModelStateFile);
 			} catch (IOException e) {
@@ -435,7 +437,18 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		return new FileBasedModelState(savedStateDir);
 	}
 
-    public void restoreInternalState(IModelState savedInternalState) {
+	private File createParentDir(File savedStateDir, File file) {
+		File parentFile = file.getParentFile();
+		if (parentFile != null) {
+			File parentDir = createParentDir(savedStateDir, parentFile);
+			File savedParentFile = new File(parentDir == null ? savedStateDir : parentDir, parentFile.getName());
+			savedParentFile.mkdir();
+			return savedParentFile;
+		}
+		return parentFile;
+	}
+
+	public void restoreInternalState(IModelState savedInternalState) {
 		if (!(savedInternalState instanceof FileBasedModelState)) {
 			throw new IllegalArgumentException("Unknown state type (" + savedInternalState.getClass().getName() +
 					" for " + this.getClass().getName() + ".restoreInternalState");
@@ -452,8 +465,11 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		modelState.setDirContainingModelstateFiles(savedStateDir);
 		modelState.restoreState();
 		for (String restartFileName : bbModelConfig.getRestartFileNames()) {
-			File modelStateFileInModelState = new File(savedStateDir, new File(restartFileName).getName());
-			File modelStateFile = new File(getModelRunDir(), restartFileName);
+			File modelStateFileInModelState = new File(savedStateDir, restartFileName);
+			File file = new File(restartFileName);
+			File modelRunDir = getModelRunDir();
+			createParentDir(modelRunDir, file);
+			File modelStateFile = new File(modelRunDir, restartFileName);
 			try {
 				BBUtils.copyFile(modelStateFileInModelState, modelStateFile);
 			} catch (IOException e) {
