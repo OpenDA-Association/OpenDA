@@ -28,7 +28,7 @@
             <arg>config_flow2d3d.ini</arg>
 	 </action> -->
          <!-- new delft3d v6 input -->
-	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
+	 <action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
             <arg>config_flow2d3d.xml</arg>
          </action>
       </computeActions>
