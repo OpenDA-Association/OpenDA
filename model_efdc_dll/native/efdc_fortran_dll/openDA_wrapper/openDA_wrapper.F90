@@ -91,10 +91,12 @@ contains
   ! Initialize EFDC model
   ! Set active exchange items for CSER time series 
   ! --------------------------------------------------------------------------
-  function init(parent_directory_c, template_directory_c) result(ret_val) bind(C,name='m_openda_wrapper_init_')
+  function  m_openda_wrapper_init_(parent_directory_c, template_directory_c)&
+    result(ret_val)&
+    bind(C,name='m_openda_wrapper_init_')
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_init_' :: init
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_init_
 #endif
 
     use omp_lib
@@ -197,17 +199,18 @@ contains
 
     call flush(dm_general_log_handle)
     
-  end function init
+  end function  m_openda_wrapper_init_
 
   ! --------------------------------------------------------------------------
   ! If all instances are finished this subroutine is called to  
   ! deallocate pointers to storage of model instances 
   ! and reset some module variables.
   ! --------------------------------------------------------------------------=
-  subroutine destroy() bind(C,name="m_openda_wrapper_destroy_")
+  subroutine m_openda_wrapper_destroy_()&
+    bind(C,name="m_openda_wrapper_destroy_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_destroy_' :: destroy
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_destroy_
 #endif
     integer :: i_number
     logical :: i_open
@@ -234,7 +237,7 @@ contains
     close(dm_general_log_handle)
     close(message_file_handle)
     
-  end subroutine destroy
+  end subroutine m_openda_wrapper_destroy_
 
   ! --------------------------------------------------------------------------
   ! Create storage for a new model instance
@@ -243,10 +246,12 @@ contains
   ! the state that is specified by EFDC setting files in the model directory.
   ! Return identifier for new model instance  
   ! --------------------------------------------------------------------------
-  function get_model_instance(instance_dir_c) result(ret_val) bind(C,name="m_openda_wrapper_get_model_instance_")
+  function m_openda_wrapper_get_model_instance_(instance_dir_c)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_model_instance_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_model_instance_' :: get_model_instance
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_model_instance_
 #endif
 
     use global, only: NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM, KCM, NDCSER, NCSERM,&
@@ -330,15 +335,17 @@ contains
          ' ret_val: ', ret_val
     call flush(dm_outfile_handle(instance))
 
-  end function get_model_instance
+  end function m_openda_wrapper_get_model_instance_
 
   ! --------------------------------------------------------------------------
   ! Subroutine for saving the state that is currently in EFDC memory
   ! --------------------------------------------------------------------------
-  function save_instance(instance) result(ret_val) bind(C,name="m_openda_wrapper_save_instance_")
+  function m_openda_wrapper_save_instance_(instance)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_save_instance_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_save_instance_' :: save_instance
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_save_instance_
 #endif
 
     ! return value
@@ -370,17 +377,19 @@ contains
          instance, '), retval: ', ret_val
     call flush(dm_outfile_handle(instance))
 
-  end function save_instance
+  end function m_openda_wrapper_save_instance_
 
 
   ! --------------------------------------------------------------------------
   ! Subroutine for restoring the state and time series from model instance
   ! memory to EFDC memory.
   ! --------------------------------------------------------------------------
-  function restore_instance(instance) result(ret_val) bind(C,name="m_openda_wrapper_restore_instance_")
+  function m_openda_wrapper_restore_instance_(instance)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_restore_instance_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_restore_instance_' :: restore_instance
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_restore_instance_
 #endif
 
     ! return value
@@ -412,17 +421,18 @@ contains
     write(dm_outfile_handle(instance), '(A,I2,A,I2)') 'restore_instance( instance: ', instance, '), retval: ', ret_val
     call flush(dm_outfile_handle(instance))
 
-  end function restore_instance
+  end function m_openda_wrapper_restore_instance_
 
   ! --------------------------------------------------------------------------
   ! Write the restart files for the currently active instance to the instance
   ! directory. 
   ! --------------------------------------------------------------------------
-  function store_current_instance_restart_files() &
-       result (ret_val) bind(C, name="m_openda_wrapper_store_current_instance_restart_files_")
+  function m_openda_wrapper_store_current_instance_restart_files_() &
+    result (ret_val)&
+    bind(C, name="m_openda_wrapper_store_current_instance_restart_files_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_store_current_instance_restart_files_' :: store_current_instance_restart_files
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_store_current_instance_restart_files_
 #endif
 
     use global, only : ISTRAN, IWQRST, IWQBEN, ISMRST
@@ -459,17 +469,18 @@ contains
     write(dm_outfile_handle(instance), '(A,A)') 'instance dir: ', trim(model_instance_dirs(instance))
     call flush(dm_outfile_handle(instance))
 
-  end function store_current_instance_restart_files
+  end function m_openda_wrapper_store_current_instance_restart_files_
 
   ! --------------------------------------------------------------------------
   ! Read the restart files from the model instance directory for the currently
   ! active instance to EFDC memory and save a copy in model instance memory.
   ! --------------------------------------------------------------------------
-  function select_instance_from_restart_files(instance) &
-       result (ret_val) bind(C, name="m_openda_wrapper_select_instance_from_restart_files_")
+  function m_openda_wrapper_select_instance_from_restart_files_(instance) &
+    result (ret_val)&
+    bind(C, name="m_openda_wrapper_select_instance_from_restart_files_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_select_instance_from_restart_files_' :: select_instance_from_restart_files
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_select_instance_from_restart_files_
 #endif
 
     use global, only : ISTRAN, IWQRST, IWQBEN, ISMRST, ISRESTI, TIMESEC, TIMEDAY, TBEGIN, IWQAGR, HP
@@ -536,16 +547,18 @@ contains
       "changing directory to", trim(model_instance_dirs(instance))
     call flush(dm_outfile_handle(instance))
 
-  end function select_instance_from_restart_files
+  end function m_openda_wrapper_select_instance_from_restart_files_
 
   ! --------------------------------------------------------------------------
   ! Get the reference year as specified in EVENT_TOX2.INP in the model 
   ! instance directory
   ! --------------------------------------------------------------------------
-  function get_reference_year(instance) result(ret_val) bind(C,name="m_openda_wrapper_get_reference_year_")
+  function m_openda_wrapper_get_reference_year_(instance)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_reference_year_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_reference_year_' :: get_reference_year
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_reference_year_
 #endif
 
     ! return value
@@ -585,15 +598,17 @@ contains
       'get_reference_year( instance: ', instance, '): ', ret_val, 'ret_val: ', status
     call flush(dm_outfile_handle(instance))
     
-  end function get_reference_year
+  end function m_openda_wrapper_get_reference_year_
 
   ! --------------------------------------------------------------------------
   ! Get the layer depths
   ! --------------------------------------------------------------------------
-  function get_layer_depths(instance, depths) result(ret_val) bind(C, name="m_openda_wrapper_get_layer_depths_")
+  function m_openda_wrapper_get_layer_depths_(instance, depths)&
+    result(ret_val)&
+    bind(C, name="m_openda_wrapper_get_layer_depths_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_depths_' :: get_layer_depths
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_layer_depths_
 #endif
     
     use global, only : DZC, KC
@@ -630,7 +645,7 @@ contains
     write(dm_outfile_handle(instance), *)  depths
     call flush(dm_outfile_handle(instance))
     
-  end function get_layer_depths
+  end function m_openda_wrapper_get_layer_depths_
   
   ! --------------------------------------------------------------------------
   ! Get the model instance start time. The start time is saved per model 
@@ -638,10 +653,12 @@ contains
   ! The model start time is from EVENT_TOX2.INP in the instance directory.
   ! Time is in days since the first day at 00:00 of the reference year 
   ! --------------------------------------------------------------------------
-  function get_start_time(instance, start_time) result(ret_val) bind(C,name="m_openda_wrapper_get_start_time_")
+  function m_openda_wrapper_get_start_time_(instance, start_time)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_start_time_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_start_time_' :: get_start_time
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_start_time_
 #endif
 
     use global, only : tbegin, tcon
@@ -662,7 +679,7 @@ contains
       'get_start_time( instance: ', instance, ', start_time: ', start_time, ')'
     call flush(dm_outfile_handle(instance))
 
-  end function get_start_time
+  end function m_openda_wrapper_get_start_time_
 
   ! --------------------------------------------------------------------------
   ! Get the model instance end time. The start time is saved per model 
@@ -670,12 +687,14 @@ contains
   ! The model end time is from EVENT_TOX2.INP in the instance directory.
   ! Time is in days since the first day at 00:00 of the reference year  
   ! --------------------------------------------------------------------------
-  function get_end_time(instance, end_time) result(ret_val) bind(C,name="m_openda_wrapper_get_end_time_")
+  function m_openda_wrapper_get_end_time_(instance, end_time)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_end_time_")
 
     use global, only : nts, ntc, ntc1, tbegin, tcon, tidalp
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_end_time_' :: get_end_time
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_end_time_
 #endif
 
     ! return value
@@ -693,17 +712,19 @@ contains
       'get_end_time( instance: ', instance , ', end_time: ', end_time, ')'
     call flush(dm_outfile_handle(instance))
 
-  end function get_end_time
+  end function m_openda_wrapper_get_end_time_
 
   ! --------------------------------------------------------------------------
   ! Get the model instance time step in days 
   ! --------------------------------------------------------------------------
-  function get_delta_t(delta_t) result(ret_val) bind(C,name="m_openda_wrapper_get_delta_t_")
+  function m_openda_wrapper_get_delta_t_(delta_t)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_delta_t_")
 
     use global, only: dt
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_delta_t_' :: get_delta_t
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_delta_t_
 #endif
 
     ! return value
@@ -719,18 +740,20 @@ contains
     write(dm_general_log_handle, '(A,ES12.4E2,A)') 'get_delta_t( delta_t: ', delta_t, ')'
     call flush(dm_general_log_handle)
 
-  end function get_delta_t
+  end function m_openda_wrapper_get_delta_t_
 
   ! --------------------------------------------------------------------------
   ! Get the model reference period.
   ! The reference period is used in OpenDA as the output period
   ! --------------------------------------------------------------------------
-  function get_reference_period(reference_period) result(ret_val) bind(C,name="m_openda_wrapper_get_reference_period_")
+  function m_openda_wrapper_get_reference_period_(reference_period)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_reference_period_")
 
     use global, only: tidalp
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_reference_period_' :: get_reference_period
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_reference_period_
 #endif
 
     ! return value
@@ -747,18 +770,20 @@ contains
     write(dm_general_log_handle, '(A,ES12.4E2,A)') 'get_reference_period( reference_period: ', reference_period, ')'
     call flush(dm_general_log_handle)
 
-  end function get_reference_period
+  end function m_openda_wrapper_get_reference_period_
 
   ! --------------------------------------------------------------------------
   ! Get the current time for given model instance 
   ! Time is in days since the first day at 00:00 of the reference year  
   ! --------------------------------------------------------------------------
-  function get_current_time(instance, current_time) result(ret_val) bind(C,name="m_openda_wrapper_get_current_time_")
+  function m_openda_wrapper_get_current_time_(instance, current_time)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_current_time_")
 
     use global, only : timesec, dt
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_current_time_' :: get_current_time
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_current_time_
 #endif
 
     ! return value
@@ -777,17 +802,19 @@ contains
       'get_current_time( instance: ', instance, ', current_time: ' , current_time, ')'
     call flush(dm_outfile_handle(instance))
 
-  end function get_current_time
+  end function m_openda_wrapper_get_current_time_
 
   ! --------------------------------------------------------------------------
   ! Integrate the EFDC model for the instance that is currently in memory
   ! for the given time window.
   ! Times are in days since the first day at 00:00 of the reference year    
   ! --------------------------------------------------------------------------
-  function compute(instance, from_time_stamp, to_time_stamp) result(ret_val) bind(C,name="m_openda_wrapper_compute_")
+  function m_openda_wrapper_compute_(instance, from_time_stamp, to_time_stamp)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_compute_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_compute_' :: compute
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_compute_
 #endif
 
 
@@ -840,17 +867,19 @@ contains
       'compute( from_time_stamp: ', from_time_stamp, ', to_time_stamp: ', to_time_stamp, '): ', ret_val
     call flush(dm_outfile_handle(instance))
 
-  end function compute
+  end function m_openda_wrapper_compute_
 
 
   ! --------------------------------------------------------------------------
   ! If OpenDA is finished with an instance this function is called.
   ! Model instance storage for the given instance is deallocated.
   ! --------------------------------------------------------------------------
-  function finish(instance) result(ret_val) bind(C,name="m_openda_wrapper_finish_")
+  function m_openda_wrapper_finish_(instance)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_finish_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_finish_' :: finish
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_finish_
 #endif
 
 
@@ -872,7 +901,7 @@ contains
     close(dm_outfile_handle(instance))
     ret_val = 0
 
-  end function finish
+  end function m_openda_wrapper_finish_
 
 ! ----------------------------------------------------------------------------
 ! Exchange item functions
@@ -881,10 +910,12 @@ contains
   ! --------------------------------------------------------------------------
   ! Check if exchange item is supported by current EFDC configuration
   ! --------------------------------------------------------------------------
-  function supports_exchange_item(instance, exchange_item_id) result (ret_val) bind(C,name="m_openda_wrapper_supports_exchange_item_")
+  function m_openda_wrapper_supports_exchange_item_(instance, exchange_item_id)&
+    result (ret_val) &
+    bind(C,name="m_openda_wrapper_supports_exchange_item_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_supports_exchange_item_' :: supports_exchange_item
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_supports_exchange_item_
 #endif
 
     ! return value
@@ -938,20 +969,21 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function supports_exchange_item
+  end function m_openda_wrapper_supports_exchange_item_
 
 
   ! --------------------------------------------------------------------------
   ! Pass a reference to a double precission array with time values 
   ! for given exchange item and given location number 
   ! --------------------------------------------------------------------------
-  function get_times_for_ei(instance, exchange_item_id, bc_index, values_count, times) result (ret_val) &
+  function m_openda_wrapper_get_times_for_ei_(instance, exchange_item_id, bc_index, values_count, times) & 
+    result (ret_val) &
     bind(C, name="m_openda_wrapper_get_times_for_ei_")
 
     use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_times_for_ei_' :: get_times_for_ei
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_times_for_ei_
 #endif
 
     ! return value
@@ -1021,18 +1053,19 @@ contains
     endif
     call flush(dm_outfile_handle(instance))   
 
-  end function get_times_for_ei
+  end function m_openda_wrapper_get_times_for_ei_
 
   ! --------------------------------------------------------------------------
   ! Set the time values for given exchange item and given location number 
   ! times are passed as a refrence to a double precission array.
   ! --------------------------------------------------------------------------
-  function set_times_for_ei(instance, exchange_item_id, bc_index, values_count, times) result (ret_val) &
+  function m_openda_wrapper_set_times_for_ei_(instance, exchange_item_id, bc_index, values_count, times) &
+    result (ret_val) &
     bind(C, name="m_openda_wrapper_set_times_for_ei_")
 
   use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_times_for_ei_' :: set_times_for_ei
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_times_for_ei_
 #endif
 
     ! return value
@@ -1175,17 +1208,19 @@ contains
     endif
     call flush(dm_outfile_handle(instance)) 
 
-  end function set_times_for_ei
+  end function m_openda_wrapper_set_times_for_ei_
 
   ! --------------------------------------------------------------------------
   ! Function returns the number of grid points for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_cell_count(instance, exchange_item_id) result(ret_val) bind(C,name="m_openda_wrapper_get_cell_count_")
+  function m_openda_wrapper_get_cell_count_(instance, exchange_item_id)&
+    result(ret_val) &
+    bind(C,name="m_openda_wrapper_get_cell_count_")
 
     use global, only: LA, NWQV, NTOX
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_cell_count_' :: get_cell_count
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_cell_count_
 #endif
 
     ! return value
@@ -1231,15 +1266,16 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_cell_count
-
+  end function m_openda_wrapper_get_cell_count_
   
   ! --------------------------------------------------------------------------
   ! Function returns the number of grid points for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_values_count(instance, exchange_item_id) result(ret_val) bind(C, name="m_openda_wrapper_get_values_count_")
+  function m_openda_wrapper_get_values_count_(instance, exchange_item_id)&
+    result(ret_val) &
+    bind(C, name="m_openda_wrapper_get_values_count_")
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_' :: get_values_count
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_values_count_
 #endif
 
     ! return value
@@ -1249,19 +1285,22 @@ contains
     integer(kind=c_int), intent(in) :: instance          ! model instance identifier
     integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
     
-    ret_val = get_cell_count(instance, exchange_item_id) * get_layer_count(instance, exchange_item_id)
+    ret_val = m_openda_wrapper_get_cell_count_(instance, exchange_item_id) &
+            * m_openda_wrapper_get_layer_count_(instance, exchange_item_id)
     
-  end function get_values_count
+  end function m_openda_wrapper_get_values_count_
 
     ! --------------------------------------------------------------------------
   ! Function returns the number of layers for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_layer_count(instance, exchange_item_id) result(ret_val) bind(C,name="m_openda_wrapper_get_layer_count_")
+  function m_openda_wrapper_get_layer_count_(instance, exchange_item_id)&
+    result(ret_val) &
+    bind(C,name="m_openda_wrapper_get_layer_count_")
 
     use global, only: LA, NWQV, NTOX, KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_count_' :: get_layer_count
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_layer_count_
 #endif
 
     ! return value
@@ -1329,19 +1368,21 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_layer_count
+  end function m_openda_wrapper_get_layer_count_
 
   ! --------------------------------------------------------------------------
   ! Function returns the number of layers for given exchange item 
   ! --------------------------------------------------------------------------
   
   
-  function get_layer_count_for_model(instance) result(ret_val) bind(C,name="m_openda_wrapper_get_layer_count_for_model_")
+  function m_openda_wrapper_get_layer_count_for_model_(instance)&
+    result(ret_val) &
+    bind(C,name="m_openda_wrapper_get_layer_count_for_model_")
   
     use global, only: KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_count_for_model_' :: get_layer_count_for_model
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_layer_count_for_model_
 #endif
 
     ! return value
@@ -1364,7 +1405,7 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_layer_count_for_model
+  end function m_openda_wrapper_get_layer_count_for_model_
   
   
 
@@ -1372,13 +1413,14 @@ contains
   ! Pass a reference to the array with values for the given exchange item
   ! A subset of the array can be specified by the start and end index 
   ! --------------------------------------------------------------------------
-  function get_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val) & 
+  function m_openda_wrapper_get_values_(instance, exchange_item_id, start_index, end_index, values)&
+    result(ret_val) & 
     bind(C, name="m_openda_wrapper_get_values_")
 
     use global, only : LA, NTOX, NWQV, KC
     
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_' :: get_values
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_values_
 #endif
 
     ! return value
@@ -1400,7 +1442,7 @@ contains
 
     ret_val = -1
     values_count = end_index - start_index + 1
-    layer_count = get_layer_count(instance, exchange_item_id);
+    layer_count = m_openda_wrapper_get_layer_count_(instance, exchange_item_id);
     ! shift to EFDC grid indices EFDC (2:LA), OpenDA java (0:LA-2)
     index1 = start_index + 2;
     index2 = start_index + (end_index - start_index + 1)/layer_count + 1;
@@ -1461,19 +1503,20 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_values
+  end function m_openda_wrapper_get_values_
 
   ! --------------------------------------------------------------------------
   ! Set the values for the given exchange item in model instance memory
   ! A subset of the array can be specified by the start and end index 
   ! --------------------------------------------------------------------------
-  function set_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val) &
+  function m_openda_wrapper_set_values_(instance, exchange_item_id, start_index, end_index, values) &
+    result(ret_val) &
     bind(C, name="m_openda_wrapper_set_values_")
 
     use global, only : NTOX, NWQV, KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_values_' :: set_values
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_values_
 #endif
 
     ! return value
@@ -1496,7 +1539,7 @@ contains
     
     ! shift to EFDC grid indices EFDC (2:LA), OpenDA java (0:LA-2)
 
-    layer_count = get_layer_count(instance, exchange_item_id);
+    layer_count = m_openda_wrapper_get_layer_count_(instance, exchange_item_id);
     cell_count = (end_index - start_index + 1)/layer_count
 
     index1 = start_index + 2;
@@ -1557,18 +1600,19 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function set_values
+  end function m_openda_wrapper_set_values_
 
   ! --------------------------------------------------------------------------
   ! Get the number of values for given exchange item and location
   ! --------------------------------------------------------------------------
-  function get_times_count_for_location(instance, exchange_item_id, bc_index) result(ret_val) &
+  function m_openda_wrapper_get_times_count_for_location_(instance, exchange_item_id, bc_index)&
+    result(ret_val) &
     bind(C, name="m_openda_wrapper_get_times_count_for_location_")
 
     !use global, only: MASER, MPSER, MQSER
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_times_count_for_location_' :: get_times_count_for_location
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_times_count_for_location_
 #endif
 
     ! return value
@@ -1617,16 +1661,14 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_times_count_for_location
+  end function m_openda_wrapper_get_times_count_for_location_
 
   ! --------------------------------------------------------------------------
   ! Get the number of values for given exchange item and location
   ! --------------------------------------------------------------------------
-  function get_values_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
+  function get_values_count_for_location(instance, exchange_item_id, bc_index)&
+    result(ret_val)
 
-#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_for_location_' :: get_values_count_for_location
-#endif
 
     ! return value
     integer :: ret_val    ! number of values for a certain exchange item
@@ -1636,7 +1678,7 @@ contains
     integer, intent(in) :: exchange_item_id  ! exchange item identifier
     integer, intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
 
-    ret_val = get_times_count_for_location(instance, exchange_item_id, bc_index)
+    ret_val = m_openda_wrapper_get_times_count_for_location_(instance, exchange_item_id, bc_index)
 
   end function get_values_count_for_location
 
@@ -1644,13 +1686,14 @@ contains
   ! --------------------------------------------------------------------------
   ! Get the number of values for given exchange item and location
   ! --------------------------------------------------------------------------
-  function get_layer_count_for_location(instance, exchange_item_id, bc_index) result(ret_val) &
+  function m_openda_wrapper_get_layer_count_for_location_(instance, exchange_item_id, bc_index) &
+    result(ret_val) &
     bind(C, name="m_openda_wrapper_get_layer_count_for_location_")
 
     use global, only: KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_count_for_location_' :: get_layer_count_for_location
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_layer_count_for_location_
 #endif
 
     ! return value
@@ -1706,15 +1749,17 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_layer_count_for_location
+  end function m_openda_wrapper_get_layer_count_for_location_
 
   ! --------------------------------------------------------------------------
   ! Get the number of locations for given exchange item
   ! --------------------------------------------------------------------------
-  function get_time_series_count(instance, exchange_item_id) result(ret_val) bind(C,name="m_openda_wrapper_get_time_series_count_")
+  function m_openda_wrapper_get_time_series_count_(instance, exchange_item_id)&
+    result(ret_val)&
+    bind(C,name="m_openda_wrapper_get_time_series_count_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_time_series_count_' :: get_time_series_count
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_time_series_count_
 #endif
 
     use global, only: NCSER, NWQV, NTOX, NQCTLM
@@ -1778,19 +1823,20 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_time_series_count
+  end function m_openda_wrapper_get_time_series_count_
 
 
   ! --------------------------------------------------------------------------
   ! Get the number of values for exchange item and location within given time
   ! span.
   ! --------------------------------------------------------------------------
-  function get_times_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
-    result(ret_val) bind(C, name="m_openda_wrapper_get_times_count_for_time_span_")
+  function m_openda_wrapper_get_times_count_for_time_span_(instance, exchange_item_id, bc_index, start_time, end_time) &
+    result(ret_val) &
+    bind(C, name="m_openda_wrapper_get_times_count_for_time_span_")
 
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_times_count_for_time_span_' :: get_times_count_for_time_span
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_times_count_for_time_span_
 #endif
 
     ! return value
@@ -1847,19 +1893,20 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
     
-  end function get_times_count_for_time_span
+  end function m_openda_wrapper_get_times_count_for_time_span_
     
 
   ! --------------------------------------------------------------------------
   ! Get the number of values for exchange item and location within given time
   ! span.
   ! --------------------------------------------------------------------------
-  function get_values_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
-    result(ret_val) bind(C, name="m_openda_wrapper_get_values_count_for_time_span_")
+  function m_openda_wrapper_get_values_count_for_time_span_(instance, exchange_item_id, bc_index, start_time, end_time) &
+    result(ret_val)&
+    bind(C, name="m_openda_wrapper_get_values_count_for_time_span_")
 
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_for_time_span_' :: get_values_count_for_time_span
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_values_count_for_time_span_
 #endif
 
     ! return value
@@ -1872,8 +1919,8 @@ contains
     real(kind=c_double), intent(in)  :: start_time       ! start time of bc values
     real(kind=c_double), intent(in)  :: end_time         ! end time of bc values
 
-    ret_val = get_times_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time)
-  end function get_values_count_for_time_span
+    ret_val = m_openda_wrapper_get_times_count_for_time_span_(instance, exchange_item_id, bc_index, start_time, end_time)
+  end function m_openda_wrapper_get_values_count_for_time_span_
 
 
   ! --------------------------------------------------------------------------
@@ -1881,13 +1928,14 @@ contains
   ! exchange item and location within given time span.
   ! --------------------------------------------------------------------------
 
-  function get_values_for_time_span(instance, exchange_item_id, bc_index, layer_index, start_time, end_time, values_count, values) &
-    result(ret_val) bind(C, name="m_openda_wrapper_get_values_for_time_span_")
+  function m_openda_wrapper_get_values_for_time_span_(instance, exchange_item_id, bc_index, layer_index, start_time, end_time, values_count, values) &
+    result(ret_val)&
+    bind(C, name="m_openda_wrapper_get_values_for_time_span_")
 
     use global, only: RAINCVT, NTOX, NWQV, KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_for_time_span_' :: get_values_for_time_span
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_values_for_time_span_
 #endif
 
     ! return value
@@ -2018,17 +2066,18 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function get_values_for_time_span
+  end function m_openda_wrapper_get_values_for_time_span_
 
   ! --------------------------------------------------------------------------
   ! Set the values in instance memory for given 
   ! exchange item and location within given time span.
   ! --------------------------------------------------------------------------
-  function set_values_for_time_span(instance, exchange_item_id, bc_index, layer_index, start_time, end_time, values_count, values) &
-    result(ret_val) bind(C, name="m_openda_wrapper_set_values_for_time_span_")
+  function m_openda_wrapper_set_values_for_time_span_(instance, exchange_item_id, bc_index, layer_index, start_time, end_time, values_count, values) &
+    result(ret_val)&
+    bind(C, name="m_openda_wrapper_set_values_for_time_span_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
-    !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_values_for_time_span_' :: set_values_for_time_span
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_values_for_time_span_
 #endif
 
     use global, only: RAINCVT, NTOX, NWQV, KC
@@ -2175,7 +2224,7 @@ contains
     endif
     call flush(dm_outfile_handle(instance))
 
-  end function set_values_for_time_span
+  end function m_openda_wrapper_set_values_for_time_span_
 
 
 !-----------------------------------------------------------------------------
