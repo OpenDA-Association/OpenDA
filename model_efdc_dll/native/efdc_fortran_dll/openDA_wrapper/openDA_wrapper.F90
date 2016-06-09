@@ -41,6 +41,7 @@
 ! ----------------------------------------------------------------------------
 module m_openda_wrapper
  
+  use, intrinsic ::iso_c_binding
   use model_exchange_items
   use model_state
   use model_aser_time_series
@@ -90,7 +91,7 @@ contains
   ! Initialize EFDC model
   ! Set active exchange items for CSER time series 
   ! --------------------------------------------------------------------------
-  function init(parent_directory, template_directory) result(ret_val)
+  function init(parent_directory_c, template_directory_c) result(ret_val) bind(C,name='m_openda_wrapper_init_')
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_init_' :: init
@@ -102,28 +103,32 @@ contains
          NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM
 
     ! arguments
-    character(len=*), intent(in)  :: parent_directory ! parent directory for model instances (full path)
-    character(len=*), intent(in)  :: template_directory ! directory name (under model_parent_dir) containing the model that will be cloned for each instance
+    character(kind=c_char), intent(in)  :: parent_directory_c(*) ! parent directory for model instances (full path)
+    character(kind=c_char), intent(in)  :: template_directory_c(*) ! directory name (under model_parent_dir) containing the model that will be cloned for each instance
 
     ! return value
-    integer                       :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
+    integer(kind=c_int) :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
         
     !locals
-    character(len=LEN_TRIM(parent_directory) + 20)         :: output_file_name, message_file_name
+    character(len=max_path_length) :: output_file_name, message_file_name
     character(len=max_path_length) :: cwd
+    character(len=max_path_length) :: parent_directory
+    character(len=max_path_length) :: template_directory
     character(len=max_message_length) :: message
     integer :: i_number
+    integer :: i
     logical :: i_open
     
     ! body
     ret_val = -1
 
-
-    if (LEN_TRIM(parent_directory) > max_path_length) then
+    ret_val = c_to_f_string(parent_directory_c, parent_directory)
+    if (ret_val /= 0) then 
         print*, "ERROR: maximum path length exceeded for ", parent_directory
         return
     end if
-    if (LEN_TRIM(template_directory) > max_path_length) then
+    ret_val = c_to_f_string(template_directory_c, template_directory)
+    if (ret_val /= 0) then 
         print*, "ERROR: maximum path length exceeded for ", template_directory
         return
     end if
@@ -199,7 +204,7 @@ contains
   ! deallocate pointers to storage of model instances 
   ! and reset some module variables.
   ! --------------------------------------------------------------------------=
-  subroutine destroy()
+  subroutine destroy() bind(C,name="m_openda_wrapper_destroy_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_destroy_' :: destroy
@@ -238,7 +243,7 @@ contains
   ! the state that is specified by EFDC setting files in the model directory.
   ! Return identifier for new model instance  
   ! --------------------------------------------------------------------------
-  function get_model_instance(instance_dir) result(ret_val)
+  function get_model_instance(instance_dir_c) result(ret_val) bind(C,name="m_openda_wrapper_get_model_instance_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_model_instance_' :: get_model_instance
@@ -248,13 +253,14 @@ contains
         TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM
     
     ! arguments
-    character(len=*), intent(in)  :: instance_dir ! model instance directory
+    character(kind=c_char), intent(in)  :: instance_dir_c(*) ! model instance directory
     
     ! return value
-    integer                       :: ret_val            ! >0 : instanceID ; <0 : Error
+    integer(kind=c_int)                      :: ret_val            ! >0 : instanceID ; <0 : Error
 
     ! locals
-    character(len=LEN_TRIM(dm_model_parent_dir) + 20)            :: output_file_name
+    character(len=max_path_length) :: output_file_name
+    character(len=max_path_length) :: instance_dir
     character(len=3) :: cnumber
     integer :: instance
     integer :: i_number
@@ -262,7 +268,8 @@ contains
 
     ! body: create new model
     ret_val = -1
-    if (LEN_TRIM(instance_dir) > max_path_length) then
+    ret_val = c_to_f_string(instance_dir_c, instance_dir)
+    if (ret_val /= 0) then
         write(dm_general_log_handle,*) "ERROR: maximum path length exceeded for ", instance_dir
         return
     end if
@@ -328,17 +335,16 @@ contains
   ! --------------------------------------------------------------------------
   ! Subroutine for saving the state that is currently in EFDC memory
   ! --------------------------------------------------------------------------
-  function save_instance(instance) result(ret_val)
+  function save_instance(instance) result(ret_val) bind(C,name="m_openda_wrapper_save_instance_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_save_instance_' :: save_instance
 #endif
 
-
     ! return value
-    integer                       :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
+    integer(kind=c_int)              :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
     ! arguments
-    integer         , intent(in)  :: instance    ! model instance identifier
+    integer(kind=c_int), intent(in)  :: instance    ! model instance identifier
 
     !local
     character(len=max_path_length) :: cwd
@@ -371,16 +377,16 @@ contains
   ! Subroutine for restoring the state and time series from model instance
   ! memory to EFDC memory.
   ! --------------------------------------------------------------------------
-  function restore_instance(instance) result(ret_val)
+  function restore_instance(instance) result(ret_val) bind(C,name="m_openda_wrapper_restore_instance_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_restore_instance_' :: restore_instance
 #endif
 
     ! return value
-    integer                       :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
+    integer(kind=c_int)               :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
     ! arguments
-    integer         , intent(in)  :: instance    ! model instance identifier
+    integer(kind=c_int) , intent(in)  :: instance    ! model instance identifier
 
     !local
     character(len=max_path_length) :: cwd
@@ -413,7 +419,7 @@ contains
   ! directory. 
   ! --------------------------------------------------------------------------
   function store_current_instance_restart_files() &
-       result (ret_val)
+       result (ret_val) bind(C, name="m_openda_wrapper_store_current_instance_restart_files_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_store_current_instance_restart_files_' :: store_current_instance_restart_files
@@ -422,7 +428,7 @@ contains
     use global, only : ISTRAN, IWQRST, IWQBEN, ISMRST
 
     ! return value
-    integer                              :: ret_val ! ret_val < 0: Error; ret_val == 0 success
+    integer(kind=c_int) :: ret_val ! ret_val < 0: Error; ret_val == 0 success
     !locals
     character(len=max_path_length) :: cwd
     integer :: instance
@@ -460,7 +466,7 @@ contains
   ! active instance to EFDC memory and save a copy in model instance memory.
   ! --------------------------------------------------------------------------
   function select_instance_from_restart_files(instance) &
-       result (ret_val)
+       result (ret_val) bind(C, name="m_openda_wrapper_select_instance_from_restart_files_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_select_instance_from_restart_files_' :: select_instance_from_restart_files
@@ -470,10 +476,10 @@ contains
 
     
     ! return value
-    integer :: ret_val              ! ret_val < 0: Error; ret_val == 0 success
+    integer(kind=c_int) :: ret_val              ! ret_val < 0: Error; ret_val == 0 success
 
     ! argument
-    integer, intent(in) :: instance ! model instance identifier
+    integer(kind=c_int), intent(in) :: instance ! model instance identifier
 
     !locals
     character(len=max_path_length) :: cwd
@@ -536,17 +542,17 @@ contains
   ! Get the reference year as specified in EVENT_TOX2.INP in the model 
   ! instance directory
   ! --------------------------------------------------------------------------
-  function get_reference_year(instance) result(ret_val)
+  function get_reference_year(instance) result(ret_val) bind(C,name="m_openda_wrapper_get_reference_year_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_reference_year_' :: get_reference_year
 #endif
 
     ! return value
-    integer :: ret_val  ! reference_year on succes, -1 = error
+    integer(kind=c_int) :: ret_val  ! reference_year on succes, -1 = error
 
     ! argument
-    integer, intent(in) :: instance ! model instance directory
+    integer(kind=c_int), intent(in) :: instance ! model instance directory
 
     integer :: YEAR, MONTH, DAY, HR, MN, status
     character(len=max_path_length) :: cwd
@@ -584,7 +590,7 @@ contains
   ! --------------------------------------------------------------------------
   ! Get the layer depths
   ! --------------------------------------------------------------------------
-  function get_layer_depths(instance, depths) result(ret_val)
+  function get_layer_depths(instance, depths) result(ret_val) bind(C, name="m_openda_wrapper_get_layer_depths_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_layer_depths_' :: get_layer_depths
@@ -593,11 +599,11 @@ contains
     use global, only : DZC, KC
 
     ! return value
-    integer :: ret_val  ! 0 = succes, -1 = error
+    integer(kind=c_int) :: ret_val  ! 0 = succes, -1 = error
 
     ! argument
-    integer, intent(in) :: instance ! model instance directory
-    real(kind=dp), intent(out), dimension(KC) :: depths ! on exit layer depths
+    integer(kind=c_int), intent(in) :: instance ! model instance directory
+    real(kind=c_double), intent(out), dimension(KC) :: depths ! on exit layer depths
 
     !local
     character(len=max_message_length) :: message
@@ -632,7 +638,7 @@ contains
   ! The model start time is from EVENT_TOX2.INP in the instance directory.
   ! Time is in days since the first day at 00:00 of the reference year 
   ! --------------------------------------------------------------------------
-  function get_start_time(instance, start_time) result(ret_val)
+  function get_start_time(instance, start_time) result(ret_val) bind(C,name="m_openda_wrapper_get_start_time_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_start_time_' :: get_start_time
@@ -641,11 +647,11 @@ contains
     use global, only : tbegin, tcon
 
     ! return value
-    integer :: ret_val   ! if succes ret_val=0 
+    integer(kind=c_int) :: ret_val   ! if succes ret_val=0 
 
     ! arguments
-    integer, intent(in) :: instance             ! model instance identifier
-    real(kind=dp), intent(out) :: start_time ! start time of computation in days
+    integer(kind=c_int), intent(in) :: instance             ! model instance identifier
+    real(kind=c_double), intent(out) :: start_time ! start time of computation in days
     
     ! body
     ret_val = -1
@@ -664,7 +670,7 @@ contains
   ! The model end time is from EVENT_TOX2.INP in the instance directory.
   ! Time is in days since the first day at 00:00 of the reference year  
   ! --------------------------------------------------------------------------
-  function get_end_time(instance, end_time) result(ret_val)
+  function get_end_time(instance, end_time) result(ret_val) bind(C,name="m_openda_wrapper_get_end_time_")
 
     use global, only : nts, ntc, ntc1, tbegin, tcon, tidalp
 
@@ -673,11 +679,11 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val ! if succes ret_val=0
+    integer(kind=c_int) :: ret_val ! if succes ret_val=0
 
     ! arguments
-    integer :: instance
-    real(kind=dp), intent(out)   :: end_time  ! end time of computation in days
+    integer(kind=c_int) :: instance
+    real(kind=c_double), intent(out)   :: end_time  ! end time of computation in days
 
     ! body
     end_time = dble(state(instance)%end_time)
@@ -692,7 +698,7 @@ contains
   ! --------------------------------------------------------------------------
   ! Get the model instance time step in days 
   ! --------------------------------------------------------------------------
-  function get_delta_t(delta_t) result(ret_val)
+  function get_delta_t(delta_t) result(ret_val) bind(C,name="m_openda_wrapper_get_delta_t_")
 
     use global, only: dt
 
@@ -701,10 +707,10 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val ! if succes ret_val=0
+    integer(kind=c_int) :: ret_val ! if succes ret_val=0
 
     ! arguments
-    real(kind=dp), intent(out)   :: delta_t  ! #delta t for computation, in MJD (i.e. in days)
+    real(kind=c_double), intent(out)   :: delta_t  ! #delta t for computation, in MJD (i.e. in days)
 
     ! body
     delta_t =  dble(dt) / 86400.0d0 ! converted to days
@@ -719,7 +725,7 @@ contains
   ! Get the model reference period.
   ! The reference period is used in OpenDA as the output period
   ! --------------------------------------------------------------------------
-  function get_reference_period(reference_period) result(ret_val)
+  function get_reference_period(reference_period) result(ret_val) bind(C,name="m_openda_wrapper_get_reference_period_")
 
     use global, only: tidalp
 
@@ -728,10 +734,10 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val ! if succes ret_val=0
+    integer(kind=c_int) :: ret_val ! if succes ret_val=0
 
     ! arguments
-    real(kind = 8), intent(out)   :: reference_period  ! reference period in days
+    real(kind = c_double), intent(out)   :: reference_period  ! reference period in days
 
     ! body
     ret_val = -1
@@ -747,7 +753,7 @@ contains
   ! Get the current time for given model instance 
   ! Time is in days since the first day at 00:00 of the reference year  
   ! --------------------------------------------------------------------------
-  function get_current_time(instance, current_time) result(ret_val)
+  function get_current_time(instance, current_time) result(ret_val) bind(C,name="m_openda_wrapper_get_current_time_")
 
     use global, only : timesec, dt
 
@@ -756,15 +762,15 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val ! if succes ret_val=0
+    integer(kind=c_int) :: ret_val ! if succes ret_val=0
 
     ! arguments
-    integer         , intent(in)    :: instance      ! model instance
-    real(kind=dp), intent(out)   :: current_time  ! current time in days 
+    integer(kind=c_int)        , intent(in)    :: instance      ! model instance
+    real(kind=c_double), intent(out)   :: current_time  ! current time in days 
 
     ! body
     !current_time = dble(state(instance)%timesec) / 86400.0d0
-    current_time = dble( dt * nint( state(instance)%timesec/ dt   )) / 86400.0d0
+    current_time = dble( dt * nint( state(instance)%timesec/ dt)) / 86400.0d0
     ret_val = 0
 
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
@@ -778,7 +784,7 @@ contains
   ! for the given time window.
   ! Times are in days since the first day at 00:00 of the reference year    
   ! --------------------------------------------------------------------------
-  function compute(instance, from_time_stamp, to_time_stamp) result(ret_val)
+  function compute(instance, from_time_stamp, to_time_stamp) result(ret_val) bind(C,name="m_openda_wrapper_compute_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_compute_' :: compute
@@ -788,12 +794,12 @@ contains
     use global, only:timesec, tbegin, tcon, dt, timeday
 
     ! return value
-    integer :: ret_val
+    integer(kind=c_int) :: ret_val
 
     ! arguments
-    integer         , intent(in) :: instance        ! model instance identifier
-    real(kind=dp), intent(in) :: from_time_stamp ! time stamp to compute from
-    real(kind=dp), intent(in) :: to_time_stamp   ! time stamp to compute to ( > from_time_stamp )
+    integer(kind=c_int), intent(in) :: instance        ! model instance identifier
+    real(kind=c_double), intent(in) :: from_time_stamp ! time stamp to compute from
+    real(kind=c_double), intent(in) :: to_time_stamp   ! time stamp to compute to ( > from_time_stamp )
 
     ! locals
     real(kind=8) :: time_period
@@ -841,7 +847,7 @@ contains
   ! If OpenDA is finished with an instance this function is called.
   ! Model instance storage for the given instance is deallocated.
   ! --------------------------------------------------------------------------
-  function finish(instance) result(ret_val)
+  function finish(instance) result(ret_val) bind(C,name="m_openda_wrapper_finish_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_finish_' :: finish
@@ -849,10 +855,10 @@ contains
 
 
     ! return value
-    integer :: ret_val              ! >=0 : Success; <0 : Error
+    integer(kind=c_int) :: ret_val              ! >=0 : Success; <0 : Error
 
     !arguments
-    integer, intent(in) :: instance ! model instance identifier 
+    integer(kind=c_int), intent(in) :: instance ! model instance identifier 
 
     ret_val = -1
     call model_state_deallocate(instance)
@@ -875,18 +881,18 @@ contains
   ! --------------------------------------------------------------------------
   ! Check if exchange item is supported by current EFDC configuration
   ! --------------------------------------------------------------------------
-  function supports_exchange_item(instance, exchange_item_id) result (ret_val)
+  function supports_exchange_item(instance, exchange_item_id) result (ret_val) bind(C,name="m_openda_wrapper_supports_exchange_item_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_supports_exchange_item_' :: supports_exchange_item
 #endif
 
     ! return value
-    integer :: ret_val     ! =0 : No; =1 : Yes ; <0 : Error
+    integer(kind=c_int) :: ret_val     ! =0 : No; =1 : Yes ; <0 : Error
 
     !arguments
-    integer, intent(in) :: instance            ! model instance
-    integer, intent(in) :: exchange_item_id    ! exchange item identifier
+    integer(kind=c_int), intent(in) :: instance            ! model instance
+    integer(kind=c_int), intent(in) :: exchange_item_id    ! exchange item identifier
 
     !local
     character(len=max_message_length) :: message
@@ -939,7 +945,8 @@ contains
   ! Pass a reference to a double precission array with time values 
   ! for given exchange item and given location number 
   ! --------------------------------------------------------------------------
-  function get_times_for_ei(instance, exchange_item_id, bc_index, values_count, times) result (ret_val)
+  function get_times_for_ei(instance, exchange_item_id, bc_index, values_count, times) result (ret_val) &
+    bind(C, name="m_openda_wrapper_get_times_for_ei_")
 
     use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER
 
@@ -948,14 +955,14 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val     ! >=0 : Success; <0 : Error
+    integer(kind=c_int) :: ret_val     ! >=0 : Success; <0 : Error
 
     !arguments
-    integer, intent(in) :: instance            ! model instance
-    integer, intent(in) :: exchange_item_id    ! exchange item identifier
-    integer, intent(in) :: bc_index            ! location number of the times series (from EFDC.INP or WQ3D.INP) 
-    integer, intent(in) :: values_count        ! length of time array
-    real(kind=dp), dimension(values_count), &
+    integer(kind=c_int), intent(in) :: instance            ! model instance
+    integer(kind=c_int), intent(in) :: exchange_item_id    ! exchange item identifier
+    integer(kind=c_int), intent(in) :: bc_index            ! location number of the times series (from EFDC.INP or WQ3D.INP) 
+    integer(kind=c_int), intent(in) :: values_count        ! length of time array
+    real(kind=c_double), dimension(values_count), &
          intent(out) :: times                  ! refernce to times array
 
     !local
@@ -1020,7 +1027,8 @@ contains
   ! Set the time values for given exchange item and given location number 
   ! times are passed as a refrence to a double precission array.
   ! --------------------------------------------------------------------------
-  function set_times_for_ei(instance, exchange_item_id, bc_index, values_count, times) result (ret_val)
+  function set_times_for_ei(instance, exchange_item_id, bc_index, values_count, times) result (ret_val) &
+    bind(C, name="m_openda_wrapper_set_times_for_ei_")
 
   use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
@@ -1028,14 +1036,14 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val
+    integer(kind=c_int) :: ret_val
 
     !arguments
-    integer, intent(in) :: instance            ! model instance identifier
-    integer, intent(in) :: exchange_item_id    ! exchange item identifier
-    integer, intent(in) :: bc_index            ! location number of the times series (from EFDC.INP or WQ3D.INP) 
-    integer, intent(in) :: values_count        ! count of the number of time points
-    real(kind=dp), dimension(values_count), &
+    integer(kind=c_int), intent(in) :: instance            ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id    ! exchange item identifier
+    integer(kind=c_int), intent(in) :: bc_index            ! location number of the times series (from EFDC.INP or WQ3D.INP) 
+    integer(kind=c_int), intent(in) :: values_count        ! count of the number of time points
+    real(kind=c_double), dimension(values_count), &
          intent(in) :: times                   ! reference to times array
 
     ! locals
@@ -1172,7 +1180,7 @@ contains
   ! --------------------------------------------------------------------------
   ! Function returns the number of grid points for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_cell_count(instance, exchange_item_id) result(ret_val)
+  function get_cell_count(instance, exchange_item_id) result(ret_val) bind(C,name="m_openda_wrapper_get_cell_count_")
 
     use global, only: LA, NWQV, NTOX
 
@@ -1181,11 +1189,11 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val    ! number of values for a certain exchange item
+    integer(kind=c_int) :: ret_val    ! number of values for a certain exchange item
 
     ! arguments
-    integer, intent(in) :: instance          ! model instance identifier
-    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    integer(kind=c_int), intent(in) :: instance          ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
    
     !local
     integer :: id, warn
@@ -1229,17 +1237,17 @@ contains
   ! --------------------------------------------------------------------------
   ! Function returns the number of grid points for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_values_count(instance, exchange_item_id) result(ret_val)
+  function get_values_count(instance, exchange_item_id) result(ret_val) bind(C, name="m_openda_wrapper_get_values_count_")
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_values_count_' :: get_values_count
 #endif
 
     ! return value
-    integer :: ret_val    ! number of values for a certain exchange item
+    integer(kind=c_int) :: ret_val    ! number of values for a certain exchange item
 
     ! arguments
-    integer, intent(in) :: instance          ! model instance identifier
-    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    integer(kind=c_int), intent(in) :: instance          ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
     
     ret_val = get_cell_count(instance, exchange_item_id) * get_layer_count(instance, exchange_item_id)
     
@@ -1248,7 +1256,7 @@ contains
     ! --------------------------------------------------------------------------
   ! Function returns the number of layers for given exchange item 
   ! --------------------------------------------------------------------------
-  function get_layer_count(instance, exchange_item_id) result(ret_val)
+  function get_layer_count(instance, exchange_item_id) result(ret_val) bind(C,name="m_openda_wrapper_get_layer_count_")
 
     use global, only: LA, NWQV, NTOX, KC
 
@@ -1257,11 +1265,11 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val    ! number of values for a certain exchange item
+    integer(kind=c_int) :: ret_val    ! number of values for a certain exchange item
 
     ! arguments
-    integer, intent(in) :: instance          ! model instance identifier
-    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    integer(kind=c_int), intent(in) :: instance          ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
    
     !local
     integer :: id, warn
@@ -1328,7 +1336,7 @@ contains
   ! --------------------------------------------------------------------------
   
   
-  function get_layer_count_for_model(instance) result(ret_val)
+  function get_layer_count_for_model(instance) result(ret_val) bind(C,name="m_openda_wrapper_get_layer_count_for_model_")
   
     use global, only: KC
 
@@ -1337,10 +1345,10 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val    ! number of layer used by model
+    integer(kind=c_int) :: ret_val    ! number of layer used by model
 
     ! arguments
-    integer, intent(in) :: instance ! model instance identifier
+    integer(kind=c_int), intent(in) :: instance ! model instance identifier
    
     !local
     integer :: id, warn
@@ -1364,7 +1372,8 @@ contains
   ! Pass a reference to the array with values for the given exchange item
   ! A subset of the array can be specified by the start and end index 
   ! --------------------------------------------------------------------------
-  function get_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val)
+  function get_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val) & 
+    bind(C, name="m_openda_wrapper_get_values_")
 
     use global, only : LA, NTOX, NWQV, KC
     
@@ -1373,13 +1382,13 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val ! =0 ok; =-1 indices not ok;
+    integer(kind=c_int) :: ret_val ! =0 ok; =-1 indices not ok;
 
     ! arguments
-    integer         , intent(in) :: instance         ! model instance identifier
-    integer         , intent(in) :: exchange_item_id ! exchange item identifier
-    integer         , intent(in) :: start_index, end_index ! number of values
-    real(kind=dp), &
+    integer(kind=c_int) , intent(in) :: instance         ! model instance identifier
+    integer(kind=c_int) , intent(in) :: exchange_item_id ! exchange item identifier
+    integer(kind=c_int) , intent(in) :: start_index, end_index ! number of values
+    real(kind=c_double), &
          dimension(end_index - start_index + 1), &
          intent(out)  :: values           ! returned values
     ! locals
@@ -1458,7 +1467,8 @@ contains
   ! Set the values for the given exchange item in model instance memory
   ! A subset of the array can be specified by the start and end index 
   ! --------------------------------------------------------------------------
-  function set_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val)
+  function set_values(instance, exchange_item_id, start_index, end_index, values) result(ret_val) &
+    bind(C, name="m_openda_wrapper_set_values_")
 
     use global, only : NTOX, NWQV, KC
 
@@ -1466,15 +1476,14 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_values_' :: set_values
 #endif
 
-
     ! return value
-    integer :: ret_val ! =0 ok; =-1 indices not ok;
+    integer(kind=c_int) :: ret_val ! =0 ok; =-1 indices not ok;
 
     ! arguments
-    integer         , intent(in) :: instance         ! model instance identifier
-    integer         , intent(in) :: exchange_item_id ! exchange item identifier
-    integer         , intent(in) :: start_index, end_index     ! number of values
-    real(kind=dp), &
+    integer(kind=c_int) , intent(in) :: instance         ! model instance identifier
+    integer(kind=c_int) , intent(in) :: exchange_item_id ! exchange item identifier
+    integer(kind=c_int) , intent(in) :: start_index, end_index     ! number of values
+    real(kind=c_double), &
          dimension(end_index - start_index + 1), &
          intent(in)  :: values           ! returned values
     ! locals
@@ -1553,7 +1562,8 @@ contains
   ! --------------------------------------------------------------------------
   ! Get the number of values for given exchange item and location
   ! --------------------------------------------------------------------------
-  function get_times_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
+  function get_times_count_for_location(instance, exchange_item_id, bc_index) result(ret_val) &
+    bind(C, name="m_openda_wrapper_get_times_count_for_location_")
 
     !use global, only: MASER, MPSER, MQSER
 
@@ -1562,12 +1572,12 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val    ! number of values for a certain exchange item
+    integer(kind=c_int) :: ret_val    ! number of values for a certain exchange item
 
     ! arguments
-    integer, intent(in) :: instance ! model instance identifier
-    integer, intent(in) :: exchange_item_id  ! exchange item identifier
-    integer, intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
+    integer(kind=c_int), intent(in) :: instance ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
+    integer(kind=c_int), intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
 
     ! local
     integer :: NC  ! index of exchange item variable in CSER time series
@@ -1634,7 +1644,8 @@ contains
   ! --------------------------------------------------------------------------
   ! Get the number of values for given exchange item and location
   ! --------------------------------------------------------------------------
-  function get_layer_count_for_location(instance, exchange_item_id, bc_index) result(ret_val)
+  function get_layer_count_for_location(instance, exchange_item_id, bc_index) result(ret_val) &
+    bind(C, name="m_openda_wrapper_get_layer_count_for_location_")
 
     use global, only: KC
 
@@ -1643,12 +1654,12 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val    ! number of values for a certain exchange item
+    integer(kind=c_int) :: ret_val    ! number of values for a certain exchange item
 
     ! arguments
-    integer, intent(in) :: instance ! model instance identifier
-    integer, intent(in) :: exchange_item_id  ! exchange item identifier
-    integer, intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
+    integer(kind=c_int), intent(in) :: instance ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
+    integer(kind=c_int), intent(in) :: bc_index  ! location index (as in EFDC.INP or WQ3D.INP)
 
     ! local
     integer :: NC  ! index of exchange item variable in CSER time series
@@ -1700,7 +1711,7 @@ contains
   ! --------------------------------------------------------------------------
   ! Get the number of locations for given exchange item
   ! --------------------------------------------------------------------------
-  function get_time_series_count(instance, exchange_item_id) result(ret_val) 
+  function get_time_series_count(instance, exchange_item_id) result(ret_val) bind(C,name="m_openda_wrapper_get_time_series_count_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_get_time_series_count_' :: get_time_series_count
@@ -1709,11 +1720,11 @@ contains
     use global, only: NCSER, NWQV, NTOX, NQCTLM
 
     ! return value
-    integer(kind=8) :: ret_val    ! number of locations for given exchange item
+    integer(kind=c_int) :: ret_val    ! number of locations for given exchange item
 
     ! arguments
-    integer, intent(in) :: instance          ! model instance identifier
-    integer, intent(in) :: exchange_item_id  ! exchange item identifier
+    integer(kind=c_int), intent(in) :: instance          ! model instance identifier
+    integer(kind=c_int), intent(in) :: exchange_item_id  ! exchange item identifier
  
     ! local
     integer :: NC, id   ! index of exchange item variable in CSER time series
@@ -1775,7 +1786,7 @@ contains
   ! span.
   ! --------------------------------------------------------------------------
   function get_times_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
-    result(ret_val)
+    result(ret_val) bind(C, name="m_openda_wrapper_get_times_count_for_time_span_")
 
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
@@ -1783,14 +1794,14 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val
+    integer(kind=c_int) :: ret_val
 
     ! arguments
-    integer         , intent(in) :: instance         ! model instance
-    integer         , intent(in) :: exchange_item_id ! type of time dependent boundary
-    integer         , intent(in) :: bc_index         ! index of location
-    real(kind=dp), intent(in) :: start_time       ! start time of bc values
-    real(kind=dp), intent(in) :: end_time         ! end time of bc values
+    integer(kind=c_int) , intent(in) :: instance         ! model instance
+    integer(kind=c_int) , intent(in) :: exchange_item_id ! type of time dependent boundary
+    integer(kind=c_int) , intent(in) :: bc_index         ! index of location
+    real(kind=c_double), intent(in) :: start_time       ! start time of bc values
+    real(kind=c_double), intent(in) :: end_time         ! end time of bc values
 
     ! locals
     integer :: start_index   ! index in bc's time series values for start_time
@@ -1844,7 +1855,7 @@ contains
   ! span.
   ! --------------------------------------------------------------------------
   function get_values_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time) &
-    result(ret_val)
+    result(ret_val) bind(C, name="m_openda_wrapper_get_values_count_for_time_span_")
 
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
@@ -1852,14 +1863,14 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val
+    integer(kind=c_int) :: ret_val
 
     ! arguments
-    integer         , intent(in) :: instance         ! model instance
-    integer         , intent(in) :: exchange_item_id ! type of time dependent boundary
-    integer         , intent(in) :: bc_index         ! index of location
-    real(kind=dp), intent(in) :: start_time       ! start time of bc values
-    real(kind=dp), intent(in) :: end_time         ! end time of bc values
+    integer(kind=c_int) , intent(in) :: instance         ! model instance
+    integer(kind=c_int) , intent(in) :: exchange_item_id ! type of time dependent boundary
+    integer(kind=c_int) , intent(in) :: bc_index         ! index of location
+    real(kind=c_double), intent(in)  :: start_time       ! start time of bc values
+    real(kind=c_double), intent(in)  :: end_time         ! end time of bc values
 
     ret_val = get_times_count_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time)
   end function get_values_count_for_time_span
@@ -1871,7 +1882,7 @@ contains
   ! --------------------------------------------------------------------------
 
   function get_values_for_time_span(instance, exchange_item_id, bc_index, layer_index, start_time, end_time, values_count, values) &
-    result(ret_val)
+    result(ret_val) bind(C, name="m_openda_wrapper_get_values_for_time_span_")
 
     use global, only: RAINCVT, NTOX, NWQV, KC
 
@@ -1880,17 +1891,17 @@ contains
 #endif
 
     ! return value
-    integer :: ret_val ! =0 ok; =-1 indices not ok; =-2 invalid exchange item id 
+    integer(c_int) :: ret_val ! =0 ok; =-1 indices not ok; =-2 invalid exchange item id 
 
     ! arguments
-    integer         , intent(in) :: instance         ! model instance
-    integer         , intent(in) :: exchange_item_id ! type of time dependent boundary (e.g. discharge_on_laterals)
-    integer         , intent(in) :: bc_index         ! index of boundary condition (e.g. discharge nr. 4)
-    integer         , intent(in) :: layer_index      ! index of boundary condition (e.g. discharge nr. 4)
-    real(kind=dp),    intent(in) :: start_time          ! start time of bc values
-    real(kind=dp),    intent(in) :: end_time            ! end time of bc values
-    integer         , intent(in) :: values_count     ! #values
-    real(kind=dp), &
+    integer(c_int) , intent(in) :: instance         ! model instance
+    integer(c_int) , intent(in) :: exchange_item_id ! type of time dependent boundary (e.g. discharge_on_laterals)
+    integer(c_int) , intent(in) :: bc_index         ! index of boundary condition (e.g. discharge nr. 4)
+    integer(c_int) , intent(in) :: layer_index      ! index of boundary condition (e.g. discharge nr. 4)
+    real(kind=c_double),    intent(in) :: start_time          ! start time of bc values
+    real(kind=c_double),    intent(in) :: end_time            ! end time of bc values
+    integer(c_int) , intent(in) :: values_count     ! #values
+    real(kind=c_double), &
          dimension(values_count), &
          intent(out)  :: values           ! returned values
     
@@ -2014,7 +2025,7 @@ contains
   ! exchange item and location within given time span.
   ! --------------------------------------------------------------------------
   function set_values_for_time_span(instance, exchange_item_id, bc_index, layer_index, start_time, end_time, values_count, values) &
-    result(ret_val)
+    result(ret_val) bind(C, name="m_openda_wrapper_set_values_for_time_span_")
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT, ALIAS : 'm_openda_wrapper_set_values_for_time_span_' :: set_values_for_time_span
@@ -2023,17 +2034,17 @@ contains
     use global, only: RAINCVT, NTOX, NWQV, KC
 
     ! return value
-    integer :: ret_val
+    integer(kind=c_int) :: ret_val
 
     ! arguments
-    integer         , intent(in) :: instance         ! model instance
-    integer         , intent(in) :: exchange_item_id ! type of time dependent boundary (e.g. discharge_on_laterals)
-    integer         , intent(in) :: bc_index         ! index of boundary condition (e.g. discharge nr. 4)
-    integer         , intent(in) :: layer_index         ! index of layer 
-    real(kind=dp), intent(in) :: start_time       ! start time of bc values
-    real(kind=dp), intent(in) :: end_time         ! end time of bc values
-    integer         , intent(in) :: values_count     ! number of values
-    real(kind=dp), &
+    integer(kind=c_int) , intent(in) :: instance         ! model instance
+    integer(kind=c_int) , intent(in) :: exchange_item_id ! type of time dependent boundary (e.g. discharge_on_laterals)
+    integer(kind=c_int) , intent(in) :: bc_index         ! index of boundary condition (e.g. discharge nr. 4)
+    integer(kind=c_int) , intent(in) :: layer_index         ! index of layer 
+    real(kind=c_double), intent(in) :: start_time       ! start time of bc values
+    real(kind=c_double), intent(in) :: end_time         ! end time of bc values
+    integer(kind=c_int), intent(in) :: values_count     ! number of values
+    real(kind=c_double), &
          dimension(values_count), &
          intent(in) :: values           ! incoming values
 
@@ -2464,7 +2475,7 @@ contains
   ! --------------------------------------------------------------------------
   ! Change directory give error on failare and return -1
   ! --------------------------------------------------------------------------
-  function change_directory(path ) result(ret_val)
+  function change_directory(path) result(ret_val)
 
     ! return value
     integer :: ret_val     ! 0 is ok. 
@@ -2496,5 +2507,35 @@ contains
     
   end function change_directory
   
+
+  function c_to_f_string(string_c, string) result(ret_val)
+    
+
+    ! return value
+    integer :: ret_val 
+
+    ! arguments
+    character(kind=c_char), intent(in) :: string_c(*) ! null_terminated C string
+    character(kind=c_char,len=max_path_length), intent(out)  :: string ! fortran character string
+
+    !local
+    integer :: i
+
+    string = ' '
+    i = 1
+    do while(i<max_path_length .and. string_c(i)/=C_NULL_CHAR)
+        string(i:i) = string_c(i)
+        i =i +1
+    end do
+    if (i>=max_path_length) then
+      ret_val = -1
+      return
+    end if
+    ret_val = 0
+
+  end function c_to_f_string
+
+
+
   
 end module m_openDA_wrapper
