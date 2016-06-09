@@ -20,11 +20,7 @@
 package org.openda.algorithms;
 
 import org.openda.interfaces.*;
-import org.openda.utils.Matrix;
-import org.openda.utils.Results;
-import org.openda.utils.Vector;
-import org.openda.utils.TreeVector;
-import org.openda.utils.SortUtils;
+import org.openda.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,6 +192,15 @@ public abstract class BaseDudCoreOptimizer {
 						b_lower.setValue(i,value);
 					}
 				}
+
+				// check if pInit satisfies constraints; otherwise, set it equal to constraint
+				for (int i=0; i<npars; i++){
+					if (pInit.getValue(i)<b_lower.getValue(i)){
+						Results.putProgression("WARN: Initial parameter ["+i+"]="+pInit.getValue(i)+" is smaller than lowerbound["+i+"]="+b_lower.getValue(i)+". Parameter is set equal to lowerbound.");
+						pInit.setValue(i, b_lower.getValue(i));
+					}
+				}
+
 			}
 
 			if(upper == null){
@@ -215,6 +220,13 @@ public abstract class BaseDudCoreOptimizer {
 					b_upper = new Vector(npars);
 					for(int i = 0; i < npars; i++){
 						b_upper.setValue(i,value);
+					}
+				}
+				// check if pInit satisfies constraints; otherwise, set it equal to constraint
+				for (int i=0; i<npars; i++){
+					if (pInit.getValue(i)>b_upper.getValue(i)){
+						Results.putProgression("WARN: Initial parameter ["+i+"]="+pInit.getValue(i)+" is bigger than upperbound["+i+"]="+b_upper.getValue(i)+". Parameter is set equal to upperbound.");
+						pInit.setValue(i, b_upper.getValue(i));
 					}
 				}
 			}
@@ -476,7 +488,7 @@ public abstract class BaseDudCoreOptimizer {
 		scale = scale_tool.getSize()/scale;
 		c.scale(-scale);
 		G.scale(scale);
-		
+
 		IVector x = new Vector(npars);		// most optimal set of parameters for linearized problem, a.k.a. pStep
 		
 		int n_equal = 1; 					// Number of equality constraints
@@ -551,7 +563,7 @@ public abstract class BaseDudCoreOptimizer {
 		Vector v;									    // [x_step ; Lagrange]
 
 		while (true){
-			
+
 			IVector Gx_c = c.clone(); 		//G*x +c
 			G.rightMultiply(1,x,1,Gx_c);
 
@@ -829,6 +841,14 @@ public abstract class BaseDudCoreOptimizer {
 			A.rightSolve(rhs, pStep);
 		}
 		else{
+			// If gradient is zero, stop the algorithm
+			double eps_zero = 0.00001d;
+			if (Math.abs(A.norm())<eps_zero){
+				Results.putMessage("% WARNING: gradient is approximately zero. Iteration is stopped. ");
+				this.moreToDo = false;
+				return;
+			}
+
 			// G is A'*A
 			Matrix G = A.simpletranspose().mult(A);
 			
