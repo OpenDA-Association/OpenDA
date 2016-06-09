@@ -1,12 +1,23 @@
-package org.openda.model_delft3d.dll;
-
-/**
-* Created by IntelliJ IDEA.
-* User: Stef Hummel
-* Date: Aug 6, 2010
-* Time: 2:24:01 PM
-* To change this template use File | Settings | File Templates.
+/* MOD_V2.0 
+* Copyright (c) 2012 OpenDA Association 
+* All rights reserved.
+* 
+* This file is part of OpenDA. 
+* 
+* OpenDA is free software: you can redistribute it and/or modify 
+* it under the terms of the GNU Lesser General Public License as 
+* published by the Free Software Foundation, either version 3 of 
+* the License, or (at your option) any later version. 
+* 
+* OpenDA is distributed in the hope that it will be useful, 
+* but WITHOUT ANY WARRANTY; without even the implied warranty of 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* GNU Lesser General Public License for more details. 
+* 
+* You should have received a copy of the GNU Lesser General Public License
+* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
+package org.openda.model_delft3d.dll;
 public class D3dFlowExchangeItemConfig {
 
     // Note: the values of the final int's must be equal to the related values in the f90 module m_openda_quantities
