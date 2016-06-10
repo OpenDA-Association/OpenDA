@@ -10,8 +10,6 @@ import org.openda.interfaces.IPrevExchangeItem;
 import java.io.*;
 import java.util.*;
 
-import static org.openda.model_delft3d.ModelDefinitionFile.fileKeys;
-
 /**
  * Created by Theo on 12.04.2016.
  */
@@ -151,7 +149,7 @@ public class D3dMdFileDataObject implements IDataObject {
 								valueAsdouble = getDiffFromMjd(valueAsdouble);
 							}
 
-							String valueAsString = String.format("%.7e",valueAsdouble);
+							String valueAsString = String.format(Locale.US, "%.7e",valueAsdouble);
 							line = exchangeItemIDs[i] + " = " + valueAsString;
 						}
 					}
