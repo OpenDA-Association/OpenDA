@@ -352,7 +352,7 @@ public class SimultaneousGroupStochModelTest extends TestCase {
         System.out.println("Should be instance1.getObservedValues()=TreeVector oscillator1 [0.8,0.790232176428735,0.7614885160245464]\n"
 	        +"TreeVector oscillator2 [0.8,0.8073421142783438,0.787582691868013]");
         assertTrue( predictions.toString().contains("[0.8,0.790232176428735,0.7614885160245464]"));
-        assertTrue( predictions.toString().contains("[0.8,0.8073421142783438,0.787582691868013]"));
+        assertTrue( predictions.toString().contains("[0.8,0.809903114715868,0.7998663546957673]"));
     }
 
 

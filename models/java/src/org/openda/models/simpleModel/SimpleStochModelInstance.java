@@ -104,7 +104,7 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		// configuration
 		this.workingDir = workingDir;
 		this.configString = configString;
- 
+
 		/*
 		 * now parse configuration
 		 */
@@ -229,8 +229,8 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 
 	public void axpyOnState(double alpha, IVector vector) {
 		this.state.axpy(alpha, vector); // nothing special for this model
-		if(this.storeObs){ //store all states if this is requested
-			this.xStore.get(this.xStore.size()-1).setValues(state.getValues());
+		if(this.storeObs){ // if states are stored, adjust last stored state
+			this.xStore.get(this.xStore.size() - 1).setValues(state.getValues());
 		}
 	}
 
@@ -403,6 +403,13 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		this.state = saveState.state.clone();
 		this.timeStep = saveState.timestep;
 		this.t = saveState.time;
+		if(storeObs) {
+			// removed old stored states
+			this.tStore.clear();  //Get rid of old storage
+			this.xStore.clear();
+			this.iStore.clear();
+			this.storeObs=false;
+		}
 	}
 
 	public void releaseInternalState(IModelState savedInternalState) {
@@ -612,7 +619,7 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 	}
 
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID){
-		throw new UnsupportedOperationException("org.openda.models.simpleModel.SimpleOscillatorStochModelInstance.getExchangeItem(): Not implemented yet.");		
+		throw new UnsupportedOperationException("org.openda.models.simpleModel.SimpleOscillatorStochModelInstance.getExchangeItem(): Not implemented yet.");
 	}
 
 	/**

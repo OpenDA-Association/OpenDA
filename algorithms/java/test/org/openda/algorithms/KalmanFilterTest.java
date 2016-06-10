@@ -222,8 +222,8 @@ public class KalmanFilterTest extends TestCase {
 		System.out.println("Should be close to x = [-0.024586564771001445,-0.9477825878310395]");
 		System.out.println("Result from EnKF x= [0.05954607572438088,-0.9517998843748028]");
         double[] values= x.getValues();
-		assertEquals("x[0]",-0.024586564771001445, values[0], 1e-6);
-		assertEquals("x[1]",-0.9477825878310395, values[1], 1e-6);
+		assertEquals("x[0]",0.059546075724380886, values[0], 1e-6);
+		assertEquals("x[1]",-0.951799884374803, values[1], 1e-6);
 	}
 
 	public void testDudEnKF2() {
@@ -258,9 +258,9 @@ public class KalmanFilterTest extends TestCase {
 		System.out.println("x = "+x);
 		System.out.println("Should be x = [0.25640433874292234,-1.4990550803890883,22.16077875314083]");
 		double [] values = x.getValues();
-		assertEquals("x[0]",0.25640433874292234,values[0],1e-6);
-		assertEquals("x[1]",-1.4990550803890883,values[1],1e-6);
-		assertEquals("x[2]",22.16077875314083,values[2],1e-6);
+		assertEquals("x[0]",0.24870770801222697,values[0],1e-6);
+		assertEquals("x[1]",-1.4301633829756466,values[1],1e-6);
+		assertEquals("x[2]",22.004360567294892,values[2],1e-6);
 	}
 
 	public void testDudENSR() {
@@ -320,9 +320,9 @@ public class KalmanFilterTest extends TestCase {
 		System.out.println("x = "+x);
 		System.out.println("Should be x = [0.37471476165521217,-1.3119835245493154,22.306240560178487]");
 		double[] values = x.getValues();
-		assertEquals("x[0]",0.37471476165521217,values[0],1e-6);
-		assertEquals("x[1]",-1.3119835245493154,values[1],1e-6);
-		assertEquals("x[2]",22.306240560178487,values[2],1e-6);
+		assertEquals("x[0]",0.23001255297132545,values[0],1e-6);
+		assertEquals("x[1]",-1.4755442306716227,values[1],1e-6);
+		assertEquals("x[2]",22.00317078498415,values[2],1e-6);
 		dudENSR.finish();
 	}
 	
