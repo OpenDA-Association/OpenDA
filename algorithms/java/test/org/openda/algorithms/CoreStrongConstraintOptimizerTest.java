@@ -343,7 +343,8 @@ public class CoreStrongConstraintOptimizerTest extends TestCase {
 //						+" <lowerbounds bounds=\"[9.0, 9.0]\"/>"
 //						+" <upperbounds bounds=\"[10.0, 10.0]\"/>"
 //						// With the bounds below and initial parameter: <parameters names="t_damp,omega">[9.9,7.5]</parameters>:
-//						// SparseDud will collapse because gradient becomes zero,
+//						// SparseDud will collapse because gradient becomes zero. It is also interesting that although the initial
+//						// parameters are above the upper bounds, they end up equal to the lower bounds. Something to check later.
 //						+" <lowerbounds bounds=\"[2.2, .1]\"/>"
 //						+" <upperbounds bounds=\"[9.0, 9.0]\"/>"
 						+" </constraints>"
