@@ -108,14 +108,10 @@ public class EfdcDLL {
                 nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
             } else if (System.getProperty("os.name").toUpperCase().startsWith("AIX")) {
                 // IBM XL-Fortran is the default compiler for IBM AIX
-                XlfortranFunctionMapper fortranMapper = new XlfortranFunctionMapper();
-                HashMap<String, String> fortranMap = fortranMapper.getMap();
-                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class,fortranMap);
+                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
             }else{
                 // For now assumes that gfortran is used for linux and ifort for windows
-                GfortranFunctionMapper fortranMapper = new GfortranFunctionMapper();
-                HashMap<String, String> fortranMap = fortranMapper.getMap();
-                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class,fortranMap);
+                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
             }
 
             //nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
