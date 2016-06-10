@@ -20,6 +20,17 @@
 
 package org.openda.exchange.dataobjects;
 
+import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.*;
+import org.openda.exchange.dataobjects.NetcdfDataObject.GridStartCorner;
+import org.openda.interfaces.*;
+import org.openda.utils.Array;
+import org.openda.utils.Time;
+import org.openda.utils.geometry.GeometryUtils;
+import ucar.ma2.*;
+import ucar.nc2.*;
+import ucar.nc2.units.DateUnit;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -27,23 +38,6 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.*;
-import org.openda.exchange.dataobjects.NetcdfDataObject.GridStartCorner;
-import org.openda.interfaces.*;
-import org.openda.utils.Array;
-import org.openda.utils.Time;
-
-import org.openda.utils.geometry.GeometryUtils;
-import ucar.ma2.*;
-import ucar.nc2.Attribute;
-import ucar.nc2.Dimension;
-import ucar.nc2.NCdumpW;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriteable;
-import ucar.nc2.Variable;
-import ucar.nc2.units.DateUnit;
 
 /**
  * This class contains utility methods for reading/writing data from/to netcdf files.
@@ -364,7 +358,7 @@ public class NetcdfUtils {
 	 * @param variable
 	 * @return whether the given variable is a valid time (coordinate) variable.
 	 */
-	private static boolean isTimeVariable(Variable variable) {
+	public static boolean isTimeVariable(Variable variable) {
 		//check if axis is "T".
 		if ("T".equalsIgnoreCase(getAttributeStringValue(variable, AXIS_ATTRIBUTE_NAME))) {
 			return true;
