@@ -19,6 +19,7 @@
 */
 package org.openda.utils;
 import junit.framework.TestCase;
+import org.openda.blackbox.config.BBUtils;
 
 import java.util.Set;
 
@@ -87,7 +88,10 @@ public class ReflectionTest extends TestCase {
 		System.out.println("==============================================================================");
 		System.out.println(" Produce info with main method");
 		System.out.println("==============================================================================");
-		Reflection.main(new String[0]);
+		if (BBUtils.RUNNING_ON_LINUX) {
+			// native dll for reflection (sangoma) is not avaiable on Windows
+			Reflection.main(new String[0]);
+		}
 	}
 
 }
