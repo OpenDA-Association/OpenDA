@@ -44,7 +44,7 @@ public class BBModelRestartTest extends TestCase {
 
 	public void testReadAndWriteFromBlackBox() {
 		BBModelFactory factory = new BBModelFactory();
-		factory.initialize(new File(testRunDataDir, "restart"), new String[]{"BBModelConfig.xml"});
+		factory.initialize(new File(testRunDataDir, "restart"), new String[]{"bbModelConfig.xml"});
 		BBModelInstance instance = factory.getInstance(new String[0], IStochModelFactory.OutputLevel.ModelDefault);
 		Time targetTime = new Time(57542.375);
 		instance.compute(targetTime);
