@@ -23,6 +23,7 @@ package org.openda.model_swan;
 import junit.framework.TestCase;
 import org.openda.application.ApplicationRunner;
 import org.openda.application.OpenDaApplication;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.wrapper.ArmaNoiseModel;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
@@ -41,13 +42,19 @@ public class SwanEnKFTest extends TestCase {
     }
 
     public void testSimulationSwan() throws IOException {
-    	StochVector.setSeed(1234); //fix random numbers for repeatable results
+		if (!BBUtils.RUNNING_ON_WINDOWS) {
+			return; // see ODA-467
+		}
+		StochVector.setSeed(1234); //fix random numbers for repeatable results
         File applicationConfigFile = new File(testData.getTestRunDataDir(), "SwanSimpleBBEnKF/SwanSimulation.oda");
         ApplicationRunner.setRunningInTest(true);
         OpenDaApplication.main(new String[]{applicationConfigFile.getAbsolutePath()});
     }
 
     public void testEnKFSwan() throws IOException {
+		if (!BBUtils.RUNNING_ON_WINDOWS) {
+			return; // see ODA-467
+		}
     	ArmaNoiseModel.resetInstanceCounter();
     	StochVector.setSeed(1234); //fix random numbers for repeatable results
         File applicationConfigFile = new File(testData.getTestRunDataDir(), "SwanSimpleBBEnKF/SwanEnKF.oda");

@@ -23,6 +23,7 @@ package org.openda.model_swan;
 import junit.framework.TestCase;
 import org.openda.application.ApplicationRunner;
 import org.openda.application.OpenDaApplication;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -41,6 +42,11 @@ public class SwanApplicationTest extends TestCase {
     }
 
     public void testSwanTriad() {
+
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return; // see ODA-467
+        }
+
         //File applicationConfigDir = new File(testData.getTestRunDataDir(), "bb_test_1");
         //File applicationConfigDir = new File("d:\\sumihar\\Project\\OpenDA\\openda_1\\public\\tests\\swan_l21triad");
         File applicationConfigFile = new File(testRunDataDir, "l21triad"+File.separator+"swanDud.oda");

@@ -23,6 +23,7 @@ package org.openda.model_swan;
 import junit.framework.TestCase;
 import org.openda.application.ApplicationRunner;
 import org.openda.application.OpenDaApplication;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.*;
 import org.openda.observers.IoObjectStochObserver;
 import org.openda.utils.OpenDaTestSupport;
@@ -42,6 +43,10 @@ public class SwanCalibWrapperTest extends TestCase {
     }
 
     public void testSwan_1() {
+
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return; // see ODA-467
+        }
 
         // Create stoch observer instance
         File stochObserverConfigDir = new File(testData.getTestRunDataDir(), "l21triad/stochobserver");
@@ -84,18 +89,27 @@ public class SwanCalibWrapperTest extends TestCase {
     }
 
     public void testDudSwan() throws IOException {
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return; // see ODA-467
+        }
         File applicationConfigFile = new File(testData.getTestRunDataDir(), "l21triadInOpenDa/swanDud.oda");
         ApplicationRunner.setRunningInTest(true);
         OpenDaApplication.main(new String[]{applicationConfigFile.getAbsolutePath()});
     }
 
     public void testDudSwanLogNormal() throws IOException {
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return; // see ODA-467
+        }
         File applicationConfigFile = new File(testData.getTestRunDataDir(), "l21triadInOpenDa/swanDudLn.oda");
         ApplicationRunner.setRunningInTest(true);
         OpenDaApplication.main(new String[]{applicationConfigFile.getAbsolutePath()});
     }
 
     public void testDudSwanWithSwivtVis() throws IOException {
+        if (!BBUtils.RUNNING_ON_WINDOWS) {
+            return; // see ODA-467
+        }
         File applicationConfigFile = new File(testData.getTestRunDataDir(), "l21triadInOpenDa/swanDud.oda");
         ApplicationRunner.setRunningInTest(true);
         OpenDaApplication.main(new String[]{applicationConfigFile.getAbsolutePath()});
