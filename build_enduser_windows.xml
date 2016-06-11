@@ -272,7 +272,7 @@
    -->
     <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
     <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
-    <target name="zip-win32" depends="svn-revision,build-win32,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-win32" depends="svn-revision,build-win32,zip-src,zip-bin,zip-schemas,zip-jre" />
 
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
@@ -314,7 +314,6 @@
     <target name="zip-bin">
         <zip destfile="${projectname}_${version}_r${svn.revision}_bin.zip">
             <zipfileset dir="bin" prefix="openda_${version}/bin"/>
-            <zipfileset dir="doc" prefix="openda_${version}/doc"/>
             <zipfileset dir="examples" prefix="openda_${version}/examples" excludes="*.svn" />
             <zipfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
             <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
