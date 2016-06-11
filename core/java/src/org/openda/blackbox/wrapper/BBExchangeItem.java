@@ -110,14 +110,17 @@ public class BBExchangeItem implements IExchangeItem {
 			selectors.put(id, selector);
 			Object selectorResult = selector.select(valuesObject);
 			if (!(selectorResult instanceof IVector)) {
-				throw new RuntimeException("Unknown return type from selector " + vectorConfig.getSelectorConfig().getClassName());
+				throw new RuntimeException("Unknown return type from selector " +
+                        vectorConfig.getSelectorConfig().getClassName());
 			}
 			return selectorResult;
 		} else if (vectorConfig.getSelectionIndices() != null) {
-			if ( valueType != IVector.class && valueType != ITreeVector.class && valueType != double[].class && valueType != IArray.class) {
-				throw new RuntimeException("Index selection can not be applied on values of type " + valueType);
+			if ( valueType != IVector.class &&
+                    valueType != ITreeVector.class &&
+                      valueType != double[].class) {
+				throw new RuntimeException("Index selection can not be applied on values of type " +
+						valueType);
 			}
-            int numberOfTimes = ioObjectExchangeItem.getTimes().length;
 			IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
             int[] dimSizes;
             double[] orgValues;
@@ -125,36 +128,17 @@ public class BBExchangeItem implements IExchangeItem {
                 dimSizes = new int[1];
                 orgValues = (double[])valuesObject;
                 dimSizes[0] = orgValues.length;
-            } else if (valueType == IArray.class) {
-                dimSizes = new int[1];
-                orgValues = (((IArray)valuesObject).getValuesAsDoubles());
-                dimSizes[0] = orgValues.length;
             } else {
                 dimSizes = getDimensionSizes((IVector)valuesObject);
                 orgValues = ((IVector) valuesObject).getValues();
             }
-            int valuesPerTime = orgValues.length / numberOfTimes;
             if (selectionIndices.length != dimSizes.length) {
-                throw new RuntimeException("BBModelInstance.getValues(" + id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
+                throw new RuntimeException("BBModelInstance.getValues(" + id +
+                        "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
             }
             String treeVectorId = valuesObject instanceof ITreeVector ? ((ITreeVector)valuesObject).getId() + "(...)" : null;
-
-            double[] allSubValues = new double[selectionIndices.length * numberOfTimes]; // Assuming the Size (aka range) of each DimensionIndex is 1.
-            for (int i=0; i<numberOfTimes; i++) {
-                double[] subValues = DimensionIndex.accessSubArray(id, orgValues, null, selectionIndices, dimSizes);
-                for (int j=0; j<selectionIndices.length; j++) {
-                    allSubValues[i*selectionIndices.length+j] = subValues[j];
-                }
-                for (int j=0; j<selectionIndices.length; j++) {
-                    selectionIndices[j] = new DimensionIndex(selectionIndices[j].getStart()+valuesPerTime, selectionIndices[j].getEnd()+valuesPerTime);
-                }
-            }
-			// Restore slectionIndices.
-			for (int j=0; j<selectionIndices.length; j++) {
-				selectionIndices[j] = new DimensionIndex(selectionIndices[j].getStart()-numberOfTimes*valuesPerTime, selectionIndices[j].getEnd()-numberOfTimes*valuesPerTime);
-			}
-
-            IVector subVector = new Vector(allSubValues);
+            double[] subValues = DimensionIndex.accessSubArray(id, orgValues, null, selectionIndices, dimSizes);
+            IVector subVector = new Vector(subValues);
             if (selectionIndices.length == 1) {
                 if (treeVectorId != null) {
                     return new TreeVector(treeVectorId, subVector);
@@ -171,7 +155,8 @@ public class BBExchangeItem implements IExchangeItem {
                         selectionIndices[1].getEnd()-selectionIndices[1].getStart(),
                         selectionIndices[2].getEnd()-selectionIndices[2].getStart());
             } else {
-                throw new RuntimeException("BBExchangeItem.getValues(" + id + "): " + "more then 3 dimensions");
+                throw new RuntimeException("BBExchangeItem.getValues(" + id + "): " +
+                        "more then 3 dimensions");
             }
         } else {
             return valuesObject;
