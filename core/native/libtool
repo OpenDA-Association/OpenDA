@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (costa) 0.1.0
-# Libtool was configured on host vortech74.vortech.nl:
+# Libtool was configured on host vortech73-2.local:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -66,16 +66,16 @@ PATH_SEPARATOR=":"
 
 # The host system.
 host_alias=
-host=i386-apple-darwin15.0.0
-host_os=darwin15.0.0
+host=i386-apple-darwin15.5.0
+host_os=darwin15.5.0
 
 # The build system.
 build_alias=
-build=i386-apple-darwin15.0.0
-build_os=darwin15.0.0
+build=i386-apple-darwin15.5.0
+build_os=darwin15.5.0
 
 # A sed program that does not truncate output.
-SED="/usr/bin/sed"
+SED="/opt/local/bin/gsed"
 
 # Sed that helps us avoid accidentally triggering echo(1) options like -n.
 Xsed="$SED -e 1s/^X//"
@@ -90,7 +90,7 @@ EGREP="/usr/bin/grep -E"
 FGREP="/usr/bin/grep -F"
 
 # A BSD- or MS-compatible name lister.
-NM="/opt/local/bin/nm"
+NM="/usr/bin/nm -B"
 
 # Whether we need soft or hard links.
 LN_S="ln -s"
@@ -161,7 +161,7 @@ old_postuninstall_cmds=""
 lock_old_archive_extraction=yes
 
 # A C compiler.
-LTCC="mpicc-openmpi-devel-gcc5"
+LTCC="mpicc-openmpi-gcc5"
 
 # LTCC compiler flags.
 LTCFLAGS="-g -O2"
@@ -272,7 +272,7 @@ finish_eval=""
 hardcode_into_libs=no
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/opt/local/lib/gcc5/gcc/x86_64-apple-darwin15/5.2.0 /opt/local/lib/gcc5 /usr/lib  /usr/local/lib"
+sys_lib_search_path_spec="/opt/local/lib/gcc5/gcc/x86_64-apple-darwin15/5.3.0 /opt/local/lib/gcc5 /usr/lib  /usr/local/lib"
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/usr/local/lib /lib /usr/lib"
@@ -302,7 +302,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpicc-openmpi-devel-gcc5"
+CC="mpicc-openmpi-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -10106,7 +10106,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpicxx-openmpi-devel-gcc5"
+CC="mpicxx-openmpi-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -10255,7 +10255,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpif90-openmpi-devel-gcc5"
+CC="mpif90-openmpi-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -10404,7 +10404,7 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mpif90-openmpi-devel-gcc5"
+CC="mpif90-openmpi-gcc5"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
