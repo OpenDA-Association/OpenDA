@@ -9,5 +9,13 @@ For installation instructions and the user manual, visit www.openda.org or view 
 New Features:
 
  - Distributed Evaluation of Local Sensitivity Analysis (DELSA) algorithm
+ 
+ - Delft3D Black Box wrapper
+ 
+ - Sobek3 Black Box support
 
  - strict boundaries for the sparseDud algorithm
+
+Known issues:
+ 
+ - BMI models will not function properly with this release
