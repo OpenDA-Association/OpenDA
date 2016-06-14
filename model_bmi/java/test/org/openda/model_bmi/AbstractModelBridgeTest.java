@@ -1,4 +1,4 @@
-/* MOD_V2.0
+/* OpenDA v2.3
  * Copyright (c) 2015 Netherlands eScience Center
  * All rights reserved.
  *

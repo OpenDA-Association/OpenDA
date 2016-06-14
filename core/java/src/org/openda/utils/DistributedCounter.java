@@ -1,6 +1,6 @@
 package org.openda.utils;
-/* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
+/* OpenDA v2.3
+* Copyright (c) 2016 OpenDA Association
 * All rights reserved.
 *
 * This file is part of OpenDA.

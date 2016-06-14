@@ -1,7 +1,7 @@
 package org.openda.model_nemo;
 
 
-/* MOD_V2.0
+/* OpenDA v2.3
  * Copyright (c) 2010 OpenDA Association
  * All rights reserved.
  *
