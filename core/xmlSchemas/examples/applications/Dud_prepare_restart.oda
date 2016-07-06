@@ -5,6 +5,8 @@
 		<configFile>noosObservations.xml</configFile>
 	</stochObserver>
 	<restartOutFilePrefix>restart_</restartOutFilePrefix>
+	<!-- Do you want the iteration number added to the restart filename? -->
+	<!-- <restartOutFileTimeTag>no</restartOutFileTimeTag> -->
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
 		<configFile>polluteStochModel.xml</configFile>

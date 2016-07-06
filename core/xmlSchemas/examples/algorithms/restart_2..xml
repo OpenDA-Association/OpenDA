@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<calibrationRestart
-    xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/calibrationRestart.xsd"
+<calibrationRestart xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaCalibrationRestart.xsd"
     xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <methodName>dud</methodName>
     <comment>saved state for dud algorithm</comment>

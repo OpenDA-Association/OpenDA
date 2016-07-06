@@ -109,6 +109,7 @@
       <copy todir="${projectdoc}/javadoc" >
          <fileset dir="core/doc/javadoc_menu" />
       </copy>
+      <copyXMLexamples module="core" />
    </target>
 
     <macrodef name="docmodule">
@@ -128,6 +129,16 @@
 		    </copy>
 	    </sequential>
     </macrodef>
+
+	<macrodef name="copyXMLexamples">
+		<attribute name="module" default="NOT SET"/>
+		<sequential>
+			<echo>${xmlschemadir}</echo>
+			<copy todir="${projectdoc}/xmlSchemasHTML/xmlexample" >
+				<fileset dir="@{module}/xmlSchemas/examples" includes="**/*.*"/>
+			</copy>
+		</sequential>
+	</macrodef>
 
    <target name="tests" depends="init">
       <moduletests module="core" />

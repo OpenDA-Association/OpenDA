@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<BFGSConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/bfgsConfig.xsd">
-	<costFunction class="org.openda.algorithms.SimulationKwadraticCostFunction" weakParameterConstraint="false" withPreconditioning="true" factor="1.0"/>
-	<outerLoop limitedMemory="true" numOfVectors="3" maxIterations="20" absTolGrad="0.01" relTolGrad="0.01" absTolStep="0.01" relTolStep="0.01"/>
-	<lineSearch type="brent" maxIterations="200" absTolBrent="0.01" relTolBrent="0.01">
-		<brent startBracketValue="1.0" maxItBracket="20.0" maxExtension="100.0"/>
-	</lineSearch>
-</BFGSConfig>
