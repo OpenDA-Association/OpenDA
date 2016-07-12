@@ -36,6 +36,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static org.apache.commons.lang3.math.NumberUtils.max;
+import static org.apache.commons.lang3.math.NumberUtils.min;
+
 /**
  * Data object voor D3D map file
  */
@@ -51,24 +54,23 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	double[] timesInNetcdfFile = null;
 
 	private String[] keyVariables = {"S1","R1","V1","U1"};
+	private String[] fictiveVariables = {"R1","V1","U1"};
 
 	int timeDimensionIndex = -1;
 	int lstsciDimensionIndex = -1;
 	int kmaxOutRestrDimensionIndex = -1;
 	private File netcdfFilePath;
-	private File workingDir;
-	private String[] arguments;
-	private File restartFilePath;
+	private int mMax;
+	private int nMax;
+	private int nLay;
 
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments.length != 1 && arguments.length != 3) {
-			throw new RuntimeException("NetcdfD3dHisDataObject expects one or three argument: netcdfFileName [bin-restart-file + targetTime] (relative to working dir)");
+			throw new RuntimeException("NetcdfD3dMapDataObject expects one or three argument: netcdfFileName [bin-restart-file + targetTime] (relative to working dir)");
 		}
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		this.netcdfFilePath = netcdfFilePath;
-		this.workingDir = workingDir;
-		this.arguments = arguments;
 		try {
 			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
 //			netcdfFileWrite = new NetcdfFileWriteable();
@@ -79,24 +81,23 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		if (arguments.length == 3) {
 //			File restartFilePath = new File(workingDir, arguments[1]); // compuse name for prefix + target
-			File restartFilePath = new File(this.workingDir, "tri-rst." + this.arguments[0].substring(5,this.arguments[0].length()-3) + "." +
-					this.arguments[2].substring(0,8) + "." + this.arguments[2].substring(8,12) + "00");
-			this.restartFilePath = restartFilePath;
+			File restartFilePath = new File(workingDir, "tri-rst." + arguments[0].substring(5,arguments[0].length()-3) + "." +
+					arguments[2].substring(0,8) + "." + arguments[2].substring(8,12) + "00");
 
 			if (restartFilePath.exists()) {
 
-				File restartFileIn = new File(this.workingDir, "tri-rst." + this.arguments[1] + ".000000");
+				File restartFileIn = new File(workingDir, "tri-rst." + arguments[1] + ".000000");
 				// Place copy of file
 				try {
-					BBUtils.copyFile(this.restartFilePath, restartFileIn);
+					BBUtils.copyFile(restartFilePath, restartFileIn);
 				} catch (IOException e) {
 					throw new RuntimeException("NetcdfD3dMapDataObject could not copy " +
 							restartFilePath.getAbsolutePath() + " to " + restartFileIn);
 				}
 
-				int mMax = netcdfFile.findDimension("M").getLength();
-				int nMax = netcdfFile.findDimension("N").getLength();
-				int nLay = netcdfFile.findDimension("K_LYR").getLength();
+				this.mMax = netcdfFile.findDimension("M").getLength();
+				this.nMax = netcdfFile.findDimension("N").getLength();
+				this.nLay = netcdfFile.findDimension("K_LYR").getLength();
 				int nSubstances = netcdfFile.findDimension("LSTSCI").getLength();
 				binRestartFile = new D3DBinRestartFile(restartFileIn, mMax, nMax, nLay, nSubstances);
 				binRestartFile.open();
@@ -105,13 +106,19 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	}
 
 	public void finish() {
-		try {
-			netcdfFile.close();
-			if (binRestartFile != null) {
-				binRestartFile.close();
+
+		// Here the intelligence to go back to the right waterlevel (from the fictive one) is needed, before writing the states
+		for (Variable variable : this.netcdfFile.getVariables()){
+			String varName = variable.getName();
+			if (Arrays.asList(fictiveVariables).contains(varName)) {
+				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, this.timeInfoCache);
+				int LastTimeIndex = timeInfo.getTimes().length;
+				double[] values = getExchangeItemValues(varName);
+				// This is the critical method applying the intelligence:
+				values = back2RealDomain(values,LastTimeIndex);
+				// Might not be the most efficient as we write a second time into the files:
+				writeExchangeItemValues(varName, values);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -124,7 +131,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			// all items
 			return getExchangeItemIDs();
 		} else {
-			// todo: filter onvariables that can be written
+			// todo: filter on variables that can be written
 			return getExchangeItemIDs();
 		}
 	}
@@ -141,9 +148,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 				Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, this.netcdfFile);
 				if (timeVariable == null) {
-					throw new RuntimeException("NetcdfD3dHisDataObject: no time axis for " + variable.getName() + ", file: " + netcdfFile.getLocation());
+					throw new RuntimeException("NetcdfD3dMapDataObject: no time axis for " + variable.getName() + ", file: " + netcdfFile.getLocation());
 				}
-				timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
+				this.timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
 				timeDependentVars.put(variable.getName(), variable);
 
 				// if this is the first time dependent variable: read the times
@@ -163,7 +170,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				List<Dimension> dimensions = variable.getDimensions();
 				int nonTimeDimensions = dimensions.size() - 1;
 				if (nonTimeDimensions != 4 && variable.getName().equalsIgnoreCase("R1")) {
-					throw new RuntimeException("NetcdfD3dHisDataObject: #dims for R1 should be four, file: " + netcdfFile.getLocation());
+					throw new RuntimeException("NetcdfD3dMapDataObject: #dims for R1 should be four, file: " + netcdfFile.getLocation());
 				}
 
 				int layerCount = 0;
@@ -173,7 +180,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 						if (dimension.getName().equalsIgnoreCase("LSTSCI")) {
 							lstsciDimensionIndex = i;
 							if (dimension.getLength() != 1) {
-								throw new RuntimeException("NetcdfD3dHisDataObject: #R1 != 1 is not supported (temp. or salt), file: "
+								throw new RuntimeException("NetcdfD3dMapDataObject: #R1 != 1 is not supported (temp. or salinity), file: "
 										+ netcdfFile.getLocation());
 							}
 						}
@@ -182,7 +189,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 						if (dimension.getName().equalsIgnoreCase("KMAXOUT_RESTR")) {
 							kmaxOutRestrDimensionIndex = i;
 							if (dimension.getLength() < 0) {
-								throw new RuntimeException("NetcdfD3dHisDataObject: could not read number of layers, file: "
+								throw new RuntimeException("NetcdfD3dMapDataObject: could not read number of layers, file: "
 										+ netcdfFile.getLocation());
 							}
 							layerCount = dimension.getLength();
@@ -230,27 +237,92 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			origin[kmaxOutRestrDimensionIndex] = 0;
 //			sizeArray[kmaxOutRestrDimensionIndex] = 1;
 		}
-		return NetcdfUtils.readSelectedData(variable, origin, sizeArray,-1);
+
+		double[] domainData =  NetcdfUtils.readSelectedData(variable, origin, sizeArray,-1);
+
+		//This calls the intelligence to expand the real to a fictive (full) domain
+		if (Arrays.asList(fictiveVariables).contains(variable.getName())){
+			domainData = expandDomain(domainData,LastTimeIndex);
+		}
+		return domainData;
 	}
 
-	public static int[] createOrigin(Variable var) {
-		int dimensionCount = var.getDimensions().size();
-		int[] origin = new int[dimensionCount];
-		Arrays.fill(origin, 0);
-		return origin;
+	public double[] expandDomain(double[] initialDomain,int LastTimeIndex){
+		//This method implements the intelligence to expand the temperature and velocities variables of the real
+		//domain to a fictive one, which fill the empty upper cells of the computational grid
+
+		Variable KFU = this.netcdfFile.findVariable("KFU");
+		Variable KFV = this.netcdfFile.findVariable("KFV");
+
+		double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
+		double[] KFV1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFV,timeDimensionIndex,LastTimeIndex-1,-1);
+
+		// Here I convert the 1D array into a 3D one, which helps in the thinking for expanding the upper cells
+		double[][][] Domain3D = from1dTo3dArray(initialDomain);
+
+		//For debug
+		//printNcField(variable.getName(), mMax, nMax, 20, Domain3D);
+
+		// Filling the empty upper layers by the first filled one
+		int k = 0;
+		for (int m = 0; m < mMax; m++) {
+			for (int n = 0; n < nMax; n++) {
+
+				if (KFU1Darray[k] == 1 && KFV1Darray[k] == 1) {
+
+					// Down loop to reach the first filled cell
+					int layCount = nLay-1;
+					while (Domain3D[m][n][layCount] == -999) {
+						layCount--;
+					}
+
+					// Up loop to fill back the empty domain
+					int UpLayCount = layCount;
+					while (UpLayCount != nLay) {
+						Domain3D[m][n][UpLayCount] = Domain3D[m][n][layCount];
+						UpLayCount++;
+					}
+
+				}
+				k++;
+			}
+		}
+
+		//For debug
+		//printNcField(variable.getName(), mMax, nMax, 25, Domain3D);
+
+		// Back to a 1D array
+		double[] expandedDomain = from3dTo1dArray(Domain3D,initialDomain.length);
+
+		return expandedDomain;
 	}
+
+	// For debug
+//	private void printNcField(String varName, int mMax, int nMax, int nLay, double[][][] doubles) {
+//		System.out.println("Var: " + varName);
+//		for (int lay=0; lay < nLay; lay++) {
+//			System.out.println("LAYER: " + lay);
+//			for (int n=0; n < nMax; n++) {
+//				System.out.print(n);
+//				for (int m=0; m < mMax; m++) {
+//					int index = n + nMax * m + mMax * nMax * lay;
+//					System.out.print(String.format(",%f", Double.isNaN(doubles[m][n][lay]) ? 0 : doubles[m][n][lay] ));
+//				}
+//				System.out.println("");
+//			}
+//		}
+//	}
 
 	public void setExchangeItemValues(String varName, double[] values) {
-		if (binRestartFile != null) {
-//			if (varName.equals("R1")) {
-				binRestartFile.write(varName, values);
-//			}
-			return;
-		}
+
+		writeExchangeItemValues(varName, values);
+
+	}
+
+	public void writeExchangeItemValues(String varName, double[] values) {
 
 		// find variable
 		Variable variable = this.netcdfFile.findVariable(varName);
-
 		int[] origin = createOrigin(variable);
 		int[] sizeArray = variable.getShape();
 
@@ -260,25 +332,123 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		origin[timeDimensionIndex] = LastTimeIndex-1;
 		sizeArray[timeDimensionIndex] = 1;
 
-//		origin[timeDimensionIndex] = 0;
+		// Writing to the binary restart file, after the algorithm operations
+		if (binRestartFile != null) {
+			binRestartFile.write(varName, values);
+			return;
+		}
+
 		if (variable.getName().equalsIgnoreCase("R1")) {
 			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
 		}
 		if (!variable.getName().equalsIgnoreCase("S1")) {
 			origin[kmaxOutRestrDimensionIndex] = 0;
-//			sizeArray[kmaxOutRestrDimensionIndex] = 1;
 		}
+
 		NetcdfFileWriteable netcdfWriteFile = null;
+
 		try {
-			netcdfWriteFile = NetcdfFileWriteable.openExisting(netcdfFilePath.getAbsolutePath());
+			netcdfWriteFile = NetcdfFileWriteable.openExisting(this.netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		NetcdfUtils.writeSelectedData(netcdfWriteFile,variable, origin, sizeArray, values);
+
 		try {
 			netcdfWriteFile.close();
+			if (binRestartFile != null) {
+				binRestartFile.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
+
+	public double[] back2RealDomain(double[] expandedDomain, int LastTimeIndex){
+		//This method implements the intelligence to set temperature and flow velocities domain values back to the right (new) waterlevel,
+		//which has been computed, from the fictive (full) domain
+
+		Variable KFU = this.netcdfFile.findVariable("KFU");
+		Variable KFV = this.netcdfFile.findVariable("KFV");
+		Variable ZK = this.netcdfFile.findVariable("ZK");
+		Variable S1 = this.netcdfFile.findVariable("S1");
+
+		double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
+		double[] KFV1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFV,timeDimensionIndex,LastTimeIndex-1,-1);
+		double[] ZK1Darray =  NetcdfUtils.readSelectedData(ZK,createOrigin(ZK),ZK.getShape(),-1);
+		double[] S11Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(S1,timeDimensionIndex,LastTimeIndex-1,-1);
+
+		// Here I convert the 1D array into a 3D one, which helps in the thinking for expanding the upper cells
+		double[][][] Domain3D = from1dTo3dArray(expandedDomain);
+
+		// Emptying the upper cells that are above the computed waterlevel
+		int k = 0;
+		for (int m = 0; m < mMax; m++) {
+			for (int n = 0; n < nMax; n++) {
+
+				if (KFU1Darray[k] == 1 && KFV1Darray[k] == 1) {
+
+					// Down loop to empty the upper cells
+					int layCount = nLay-1;
+					while (S11Darray[k] > (ZK1Darray[layCount])) {
+						Domain3D[m][n][layCount] = -999;
+						layCount--;
+					}
+
+				}
+				k++;
+			}
+		}
+
+		// Back to a 1D array
+		double[] realDomain = from3dTo1dArray(Domain3D,expandedDomain.length);
+
+		return realDomain;
+	}
+
+	private double[][][] from1dTo3dArray(double[] oneDArray){
+
+		double Domain3D[][][] = new double[mMax][nMax][nLay];
+
+		int k=0;
+		for (int lay = 0; lay < nLay; lay++) {
+			for (int m = 0; m < mMax; m++) {
+				for (int n = 0; n < nMax; n++) {
+
+					Domain3D[m][n][lay] = oneDArray[k];
+					k++;
+
+				}
+			}
+		}
+		return Domain3D;
+	}
+
+	private double[] from3dTo1dArray(double[][][] Domain3D,int domainLength){
+
+		double[] Domain1D = new double[domainLength];
+
+		int k=0;
+		for (int lay = 0; lay < nLay; lay++) {
+			for (int m = 0; m < mMax; m++) {
+				for (int n = 0; n < nMax; n++) {
+
+					Domain1D[k] = Domain3D[m][n][lay];
+					k++;
+
+				}
+			}
+		}
+		return Domain1D;
+	}
+
+	public static int[] createOrigin(Variable var) {
+		int dimensionCount = var.getDimensions().size();
+		int[] origin = new int[dimensionCount];
+		Arrays.fill(origin, 0);
+		return origin;
+	}
+
 }
