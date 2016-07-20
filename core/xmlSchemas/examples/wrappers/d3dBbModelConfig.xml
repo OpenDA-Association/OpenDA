@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxModelConfig.xsd">
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.schemas.openda.org/blackBoxModelConfig.xsd">
 
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<wrapperConfig>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://datools.wldelft.nl/schemas/v1.3/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
+<uncertainties xmlns="http://www.wldelft.nl " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wldelft.nl http://schemas.openda.org/uncertainty/uncertainties.xsd" version="1.0">
 	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
-
 	<probabilityDistributionFunction id="WCAP.delta" isActive="false">
 		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
 	</probabilityDistributionFunction>
@@ -27,5 +25,4 @@
 	<probabilityDistributionFunction id="TRIAD.cutfr" isActive="true">
 		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
 	</probabilityDistributionFunction>
-
 </uncertainties>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GLUEConfig>
-   <likelihoodFunction class="org.openda.algorithms.RMSECostFunction" />
-   <ensembleSize>500</ensembleSize>
-</GLUEConfig>

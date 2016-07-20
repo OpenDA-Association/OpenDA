@@ -28,6 +28,7 @@ import org.openda.interfaces.*;
 import org.openda.utils.*;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -121,24 +122,62 @@ public class BBExchangeItem implements IExchangeItem {
 				throw new RuntimeException("Index selection can not be applied on values of type " +
 						valueType);
 			}
+
 			IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
+			double[] orgValues = ioObjectExchangeItem.getValuesAsDoubles();
             int[] dimSizes;
-            double[] orgValues;
             if (valueType == double[].class) {
-                dimSizes = new int[1];
-                orgValues = (double[])valuesObject;
+				dimSizes = new int[1];
                 dimSizes[0] = orgValues.length;
-            } else {
-                dimSizes = getDimensionSizes((IVector)valuesObject);
-                orgValues = ((IVector) valuesObject).getValues();
+			} else if (valueType == IArray.class) {
+				dimSizes = ((IArray) valuesObject).getDimensions();
+            } else if (valueType == IVector.class) {
+				dimSizes = getDimensionSizes((IVector) valuesObject);
+			} else {
+				throw new RuntimeException("BBModelInstance.getValues: method not implemented for type " + valuesObject.getClass().getName());
             }
-            if (selectionIndices.length != dimSizes.length) {
-                throw new RuntimeException("BBModelInstance.getValues(" + id +
-                        "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
+
+			// if ioObjectExchangeItem has timeInfo the first dimension is supposed to be the time dimension.
+			// selectionIndices are applied only in space.
+			int numberOfTimes;
+			if (ioObjectExchangeItem.getTimes() != null) {
+				numberOfTimes = ioObjectExchangeItem.getTimes().length;
+				// first dimension is assumed to be the time dimension, method returns all values of time, selection in space
+				if (dimSizes[0] != numberOfTimes) {
+					throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): first dimension does not equal the dimension of time.");
+				}
+				if (selectionIndices.length != dimSizes.length - 1) {
+					throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
+				}
+				// remove the time dimension from dimSizes
+				dimSizes = Arrays.copyOfRange(dimSizes, 1, dimSizes.length);
+			} else {
+				numberOfTimes = 1;
+				if (selectionIndices.length != dimSizes.length) {
+					throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
+				}
+			}
+
+			int valuesPerTime = orgValues.length / numberOfTimes;
+			String treeVectorId = valuesObject instanceof ITreeVector ? ((ITreeVector)valuesObject).getId() + "(...)" : null;
+
+			int subsize = 1;
+			for (IDimensionIndex selectionIndex : selectionIndices) {
+				subsize = subsize * selectionIndex.getSize();
+			}
+
+            double[] allSubValues = new double[subsize * numberOfTimes];
+            for (int i=0; i<numberOfTimes; i++) {
+				int [] start = new int[]{i*valuesPerTime};
+				int [] eind = new int[]{valuesPerTime - 1 + i*valuesPerTime};
+				double[] orgValuesPerTimeStep = DimensionIndex.getSubArray(orgValues, new int[]{1}, start, eind);
+	            double[] subValuesPerTimeStep = DimensionIndex.accessSubArray(id, orgValuesPerTimeStep, null, selectionIndices, dimSizes);
+				for (int j=0; j<subsize; j++) {
+                    allSubValues[i*subsize+j] = subValuesPerTimeStep[j];
+                }
             }
-            String treeVectorId = valuesObject instanceof ITreeVector ? ((ITreeVector)valuesObject).getId() + "(...)" : null;
-            double[] subValues = DimensionIndex.accessSubArray(id, orgValues, null, selectionIndices, dimSizes);
-            IVector subVector = new Vector(subValues);
+
+            IVector subVector = new Vector(allSubValues);
             if (selectionIndices.length == 1) {
                 if (treeVectorId != null) {
                     return new TreeVector(treeVectorId, subVector);
