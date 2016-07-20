@@ -108,7 +108,7 @@ public class DimensionIndex implements IDimensionIndex, Serializable {
             if (index == Integer.MAX_VALUE) index = sizes[dim];
             if (index > sizes[dim]) {
                 throw new IllegalArgumentException(
-                        "(start or end) Index/Indices out of bound for \"" + exchangeItemID + "\" (dimension " + (dim + 1));
+                        "(start or end) Index/Indices out of bound for \"" + exchangeItemID + "\" (dimension " + (dim + 1)+")");
             }
         }
     }
@@ -207,7 +207,7 @@ public class DimensionIndex implements IDimensionIndex, Serializable {
             }
 
         } else {
-            throw new UnsupportedOperationException("org.openda.blackbox.config.DimensionIndex.getSubArray(): more then 3 dimensions.");
+            throw new UnsupportedOperationException("org.openda.blackbox.config.DimensionIndex.getSubArray(): more than 3 dimensions.");
         }
 
         return subValues;
