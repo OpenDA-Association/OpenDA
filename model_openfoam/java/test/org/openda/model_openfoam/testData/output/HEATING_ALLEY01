@@ -1,0 +1,466 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      heating;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+HeatAG04
+{
+    type            scalarSemiImplicitSource;
+    active          true;
+    scalarSemiImplicitSourceCoeffs
+    {
+        selectionMode   cellZone;
+        cellZone        AG04;
+        volumeMode  absolute;
+        injectionRateSuSp // P/(rho*cp) = (1518) / (1.1839 * 1007)
+        {
+               T       (0.0 0.0);//#oda:HeatAG04
+//#oda:generatedNoise  T       (0.0 0.0)
+        }
+    }
+}
+
+HeatAH04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AH04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.392 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAJ04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AJ04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (3.067 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAK04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AK04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0.849 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAL04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AL04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (3.685 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAN04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AN04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.219 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAO04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AO04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (4.495 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAP04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AP04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (4.630 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAR04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AR04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.932 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAS04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AS04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (1.929 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAT04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AT04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.257 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAV04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AV04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.759 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAW04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AW04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.971 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAX04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AX04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAZ04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {   
+        cellZone        AZ04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatBA04
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        BA04;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAG07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AG07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (1.254 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }
+}
+HeatAH07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AH07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAJ07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AJ07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.276 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAK07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AK07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.064 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAL07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AL07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAN07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AN07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAO07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AO07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.932 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAP07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AP07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0.926 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAR07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AR07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.199 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAS07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AS07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.141 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAT07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AT07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (0 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAV07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AV07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (1.061 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAW07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AW07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (6.058 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAX07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AX07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (2.412 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatAZ07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        AZ07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (4.611 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
+
+HeatBA07
+{
+    $HeatAG04;
+    scalarSemiImplicitSourceCoeffs
+    {
+        cellZone        BA07;
+        volumeMode  absolute;
+        injectionRateSuSp
+        {
+               T       (3.646 0);// P/(rho*cp) = (1518) / (1.1839 * 1007)
+        }
+    }  
+}
