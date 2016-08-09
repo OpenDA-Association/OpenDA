@@ -1,22 +1,22 @@
 /* OpenDA v2.4.3 
-* Copyright (c) 2017 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (c) 2017 OpenDA Association 
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.exchange.timeseries;
 
 import org.openda.utils.SortUtils;
@@ -230,6 +230,30 @@ public class TimeUtils {
       t = formatter.parse(date);
       return (t.getTime()) * millisToDays + mjdAtJanFirst1970; // convert from millis to days and add offset for mjd
    }
+
+    /**
+     * Convert Date object to mjd Modified Julian Date (days since 00:00 November 17, 1858 UTC)
+     *
+     * @param date
+     *           java.util.Date object
+     * @return mjd Modified Julian Date
+     */
+    public static double date2Mjd(Date date) {
+
+        return (date.getTime()) * millisToDays + mjdAtJanFirst1970; // convert from millis to days and add offset for mjd
+    }
+
+    /**
+     * Convert Modified Julian Date (days since 00:00 November 17, 1858 UTC) to Date object
+     *
+     * @param mjd
+     *            Modified Julian Date
+     * @return date java.util.Date object
+     */
+    public static Date mjdToDate(double mjd) {
+        long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
+        return new java.util.Date(timeInMillis);
+    }
 
    /**
     * Convert Modified Julian Date (days since 00:00 November 17, 1858 UTC) to lexical string

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -279,8 +280,13 @@ public class MeshDataObject implements IDataObject {
     public void finish() {
         BufferedWriter writer;
         try {
-            GZIPOutputStream gzip = new GZIPOutputStream(new FileOutputStream(this.file));
-            writer = new BufferedWriter(new OutputStreamWriter(gzip, "UTF-8"));
+            FileOutputStream outfile = new FileOutputStream((this.file));
+            if (this.file.getName().endsWith(".gz")) {
+                GZIPOutputStream gzip = new GZIPOutputStream((outfile));
+                writer = new BufferedWriter(new OutputStreamWriter(gzip, "UTF-8"));
+            } else {
+                writer = new BufferedWriter((new OutputStreamWriter(outfile, "UTF-8")));
+            }
             writer.write(header);
             writer.write(String.format(foamFile,this.headerFields.get("class"),this.headerFields.get("object") ));
             writer.write(this.dimensionsToString());

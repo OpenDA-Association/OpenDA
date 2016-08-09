@@ -19,6 +19,7 @@
  */
 package org.openda.model_openfoam;
 
+import org.openda.application.OpenDaApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,20 +154,24 @@ public class DictionaryNoisyDataObject implements IDataObject{
 				if (locationIndex > 0) {
 					logger.debug("Line: "+ line);
 					String valueString="";
-                    if ( scanner.hasNext("//#oda:generatedNoise") ) {
-                        String lineWithNoise = scanner.nextLine();
-                        //fileContent.add(lineWithNoise);
+					String lineWithNoise = "";
+                    if ( scanner.hasNext("//noise") ) {
+                        lineWithNoise = scanner.nextLine();
                         logger.debug("Next line contains noise item: " + lineWithNoise);
                     }
-					String key = line.substring(locationIndex + keyWordPrefix.length() );
-                    logger.debug("Key " + key);
+
+					String key="";
+					String noisekey="";
+					key = line.substring(locationIndex + keyWordPrefix.length() );
+					logger.debug("Key " + key);
+
+					Vector<Double> values = new Vector<>();
+					Vector<Integer> column = new Vector<>();
 					line = line.substring(0,locationIndex);
 
 					String[] parts = line.split(String.format(WITH_DELIMITER, "\\(|\\)|\\s"));
-					Vector<Double> values = new Vector<>();
-					Vector<Integer> column = new Vector<>();
 					for ( int index=0; index < parts.length ;index++) {
-					//for ( String part : parts) {
+						//for ( String part : parts) {
 						if (!parts[index].isEmpty()) {
 							try {
 								Double value = Double.parseDouble(parts[index]);
@@ -174,10 +179,42 @@ public class DictionaryNoisyDataObject implements IDataObject{
 								column.add(index);
 								logger.debug("Found part " + parts[index]);
 							} catch (NumberFormatException e) {
-                                logger.trace("Skipping " + parts[index]);
+								logger.trace("Skipping " + parts[index]);
 							}
 						}
 					}
+
+					if (lineWithNoise!="") {
+						line = lineWithNoise;
+						lineWithNoise = "";
+						fileContent.add(line);
+						locationIndex = line.indexOf(keyWordPrefix);
+						noisekey = line.substring(locationIndex + keyWordPrefix.length() );
+						logger.debug("Noisekey " + noisekey);
+						Vector<Double> noisevalues = new Vector();
+						parts = line.split(String.format(WITH_DELIMITER, "\\(|\\)|\\s"));
+						int idx = 0;
+						for ( int index=0; index < parts.length ;index++) {
+							//for ( String part : parts) {
+							if (!parts[index].isEmpty()) {
+								try {
+									Double value = Double.parseDouble(parts[index]);
+									logger.debug("Original parameter value: " + values.get(idx));
+									values.set(idx,values.get(idx) - value);
+									noisevalues.add(value);
+									logger.debug("Subtracted noise part " + value);
+									logger.debug("Resulting value: " + values.get(idx));
+									idx ++;
+									String id = noisekey + multiplexId  + idx;
+									multiplexColumn.put(id,index);
+
+								} catch (NumberFormatException e) {
+									logger.trace("Skipping " + parts[index]);
+								}
+							}
+						}
+					}
+
 					if ( values.size() == 1 ) {
 						double value =  values.firstElement();
 						if (timeExchangeItemIds.contains(key) && convertTime) {
@@ -270,12 +307,14 @@ public class DictionaryNoisyDataObject implements IDataObject{
 			BufferedWriter out = new BufferedWriter(writer);
             for (String line: fileContent){
 				int locationIndex = line.indexOf(keyWordPrefix);
-				//Scanner lineScanner = new Scanner(line);
 				if (locationIndex > 0) {
 					logger.debug("Line: " + line);
+
 					//String valueString = "";
                     String key = line.substring(locationIndex + keyWordPrefix.length());
+					String noisekey = key;
 					logger.debug("Key " + key);
+					key = key.replaceFirst("generatedNoise:","");
 					line = line.substring(0, locationIndex);
 					String[] parts = line.split(String.format(WITH_DELIMITER, "\\(|\\)|\\s"));
                     String[] noiseParts = parts.clone();
@@ -300,29 +339,40 @@ public class DictionaryNoisyDataObject implements IDataObject{
                         Double paramValue = (Double) items.get(id).getValues();
 //                        BigDecimal parameter = new BigDecimal(paramValue + noise);
 //                        parts[index] = parameter.setScale(3, BigDecimal.ROUND_HALF_EVEN).toString();
-                        parts[index] = Double.toString(paramValue + noise);
-                        noiseParts[index] = Double.toString(noise);
+						if (noisekey.equalsIgnoreCase(key)) {
+							parts[index] = Double.toString(paramValue + noise);
+							noiseParts[index] = Double.toString(noise);
+						} else {
+							id = noisekey + multiplexId + nr;
+							index = multiplexColumn.get(id);
+							parts[index] = Double.toString(noise);
+							noiseParts[index] = Double.toString(0.0);
+						}
                         nr++;
 					}
-
 
                     // write value +
                     StringBuilder builder = new StringBuilder();
 					for(String part : parts) {
 						builder.append(part);
 					}
-					String outputLine = builder.toString() + keyWordPrefix + key + "\n";
+					String outputLine;
+					if (noisekey.equalsIgnoreCase(key)) {
+						outputLine = builder.toString() + keyWordPrefix + key + "\n";
+					} else {
+						outputLine = builder.toString() + keyWordPrefix + noisekey + "\n";
+					}
 					logger.debug("Write line: " + outputLine);
 					out.write(outputLine);
 
                     // write noise component as comment
-//                    StringBuilder builder2 = new StringBuilder();
-//                    for(String part : noiseParts) {
-//                        builder2.append(part);
-//                    }
-//                    String noiseString = noiseLineKeyword + builder2.toString() + "\n";
-//                    logger.debug("Write noise line: " + noiseString);
-//                    out.write(noiseString);
+                    //StringBuilder builder2 = new StringBuilder();
+                    //for(String part : noiseParts) {
+                    //    builder2.append(part);
+                    //}
+                    //String noiseString = noiseLineKeyword + builder2.toString() + "\n";
+                    //logger.debug("Write noise line: " + noiseString);
+                    //out.write(noiseString);
 				}
                 else {
                     //Write Line
