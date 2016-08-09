@@ -58,4 +58,12 @@ public class StringUtilities {
 		builder.append(lineParts[lineParts.length-1]);
 		return builder.toString();
 	}
+
+	public static String[] getKeyValuePair(String argument) {
+		int index = argument.indexOf('=');
+		if (index == -1 || index == argument.length() - 1) throw new IllegalArgumentException("Not a key value pair: " + argument);
+		String[] split = argument.split("=");
+		if (split.length > 2) throw new IllegalArgumentException("Not a key value pair: " + argument);
+		return split;
+	}
 }
