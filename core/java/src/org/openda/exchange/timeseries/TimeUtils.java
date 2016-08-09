@@ -231,6 +231,30 @@ public class TimeUtils {
       return (t.getTime()) * millisToDays + mjdAtJanFirst1970; // convert from millis to days and add offset for mjd
    }
 
+    /**
+     * Convert Date object to mjd Modified Julian Date (days since 00:00 November 17, 1858 UTC)
+     *
+     * @param date
+     *           java.util.Date object
+     * @return mjd Modified Julian Date
+     */
+    public static double date2Mjd(Date date) {
+
+        return (date.getTime()) * millisToDays + mjdAtJanFirst1970; // convert from millis to days and add offset for mjd
+    }
+
+    /**
+     * Convert Modified Julian Date (days since 00:00 November 17, 1858 UTC) to Date object
+     *
+     * @param mjd
+     *            Modified Julian Date
+     * @return date java.util.Date object
+     */
+    public static Date mjdToDate(double mjd) {
+        long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
+        return new java.util.Date(timeInMillis);
+    }
+
    /**
     * Convert Modified Julian Date (days since 00:00 November 17, 1858 UTC) to lexical string
     *

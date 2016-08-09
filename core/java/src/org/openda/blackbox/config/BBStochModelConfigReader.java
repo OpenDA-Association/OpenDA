@@ -524,6 +524,9 @@ public class BBStochModelConfigReader {
 		} else if (operationXML.getType() ==
 				NoiseOperationTypesXML.MULTIPLY_TYPE) {
 			operation = BBUncertOrArmaNoiseConfig.Operation.Multiply;
+		} else if (operationXML.getType() ==
+				NoiseOperationTypesXML.SET_TYPE) {
+			operation = BBUncertOrArmaNoiseConfig.Operation.Set;
 		}
 		return operation;
 	}

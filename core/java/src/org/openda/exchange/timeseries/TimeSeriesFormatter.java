@@ -19,13 +19,7 @@
  */
 package org.openda.exchange.timeseries;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * This interface describes methods for reading and writing TimeSeries. This allows one to specify the formats for the
@@ -102,6 +96,38 @@ public abstract class TimeSeriesFormatter {
       }
    }
 
+	/**
+	 * Write TimeSeries to a file. This may be more convenient than constructing the OutputStream yourself
+	 *
+	 * @param file
+	 *           where to write
+	 * @param series
+	 *           TimeSeries with the data
+	 * @param overwriteExistingFiles
+	 *           true if an existing file with the same name should be deleted before writing.
+	 */
+	public void writeFile(File file, TimeSeries series, boolean overwriteExistingFiles) {
+		if (file.exists()) {
+			if (overwriteExistingFiles) {
+				file.delete();
+			}
+			else {
+				file = null; // disable writing to this file
+			}
+		}
+		if (file != null) {
+			try {
+				FileOutputStream out = new FileOutputStream(file);
+				write(out, series);
+				out.close();
+			}
+			catch (Exception e) {
+				throw new RuntimeException("Problem writing to file " + file + " : " + e.getMessage());
+			}
+		}
+	}
+
+
    /**
     * Write TimeSeries to standard output. This may be more convenient than constructing the OutputStream yourself
     *
@@ -109,13 +135,8 @@ public abstract class TimeSeriesFormatter {
     *           TimeSeries with the data
     */
    public void writeToStandardOut(TimeSeries series) {
-      try {
-         OutputStream out = System.out;
-         write(out, series);
-      }
-      catch (Exception e) {
-         throw new RuntimeException("Problem writing to standard output : " + e.getMessage());
-      }
+	   OutputStream out = System.out;
+	   write(out, series);
    }
 
    /**
@@ -123,8 +144,6 @@ public abstract class TimeSeriesFormatter {
     *
     * @param series
     *           TimeSeries with the data
-    * @param initialSize
-    *           size of the buffer. Will be extended if needed.
     *
     * @return The output stream.
     */
@@ -141,7 +160,7 @@ public abstract class TimeSeriesFormatter {
     *           where to read from
     * @return TimeSeries with data from file. Returns null in case of trouble.
     */
-   public TimeSeries readFile(String filename) {
+   public TimeSeries readFile(String filename)  {
       TimeSeries result = null;
       File inFile = new File(filename);
       if (inFile.exists()) {
@@ -150,12 +169,32 @@ public abstract class TimeSeriesFormatter {
             result = read(in);
             in.close();
          }
-         catch (Exception e) {
+         catch (IOException e) {
             throw new RuntimeException("Problem reading from file " + filename + " : " + e.getMessage());
          }
       }
       return result;
    }
+
+	/**
+	 * Read timeseries from file. This may be more convenient than doing this all yourself.
+	 *
+	 * @param file File object where to read from
+	 * @return TimeSeries with data from file. Returns null in case of trouble.
+	 */
+	public TimeSeries readFile(File file)  {
+		TimeSeries result = null;
+		try {
+			FileInputStream in = new FileInputStream(file);
+			result = read(in);
+			in.close();
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Problem reading from file " + file + " : " + e.getMessage());
+		}
+		return result;
+	}
+
 
    /**
     * Read timeseries from a string. This may be more convenient than doing this all yourself.
