@@ -105,7 +105,11 @@ public class EfdcDLL {
             System.out.println("Operating System:" +  System.getProperty("os.name"));
             System.out.println("Architecture:" +  System.getProperty("os.arch"));
             if(EfdcDLL.RUNNING_ON_WINDOWS){ //TODO create a better test here
-                nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
+                if (System.getProperty("sun.arch.data.model").compareTo("32")==0) {
+                    nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
+                } else {
+                    throw new RuntimeException("Error loading the 32-bit EFDC library with a 64-bit JDK.");
+                }
             } else if (System.getProperty("os.name").toUpperCase().startsWith("AIX")) {
                 // IBM XL-Fortran is the default compiler for IBM AIX
                 nativeDLL = (IEfdcFortranNativeDLL) Native.loadLibrary(nativeDllPath, IEfdcFortranNativeDLL.class);
