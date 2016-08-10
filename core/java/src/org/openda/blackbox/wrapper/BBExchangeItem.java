@@ -118,9 +118,9 @@ public class BBExchangeItem implements IExchangeItem {
 		} else if (vectorConfig.getSelectionIndices() != null) {
 			if ( valueType != IVector.class &&
                     valueType != ITreeVector.class &&
-                      valueType != double[].class) {
-				throw new RuntimeException("Index selection can not be applied on values of type " +
-						valueType);
+                    valueType != double[].class && 
+                    valueType != IArray.class) {
+				throw new RuntimeException("Index selection can not be applied on values of type " + valueType);
 			}
 
 			IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
