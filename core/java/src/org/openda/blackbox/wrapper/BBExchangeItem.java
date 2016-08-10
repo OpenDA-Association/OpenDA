@@ -142,20 +142,19 @@ public class BBExchangeItem implements IExchangeItem {
 			int numberOfTimes;
 			if (ioObjectExchangeItem.getTimes() != null) {
 				numberOfTimes = ioObjectExchangeItem.getTimes().length;
-				// first dimension is assumed to be the time dimension, method returns all values of time, selection in space
-				if (dimSizes[0] != numberOfTimes) {
-					throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): first dimension does not equal the dimension of time.");
+				if (numberOfTimes > 1) {
+					// first dimension is assumed to be the time dimension, method returns all values of time, selection in space
+					if (dimSizes[0] != numberOfTimes) {
+						throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): first dimension does not equal the dimension of time.");
+					}
+					// remove the time dimension from dimSizes
+					dimSizes = Arrays.copyOfRange(dimSizes, 1, dimSizes.length);
 				}
-				if (selectionIndices.length != dimSizes.length - 1) {
-					throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
-				}
-				// remove the time dimension from dimSizes
-				dimSizes = Arrays.copyOfRange(dimSizes, 1, dimSizes.length);
 			} else {
 				numberOfTimes = 1;
-				if (selectionIndices.length != dimSizes.length) {
-					throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
-				}
+			}
+			if (selectionIndices.length != dimSizes.length) {
+				throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
 			}
 
 			int valuesPerTime = orgValues.length / numberOfTimes;
