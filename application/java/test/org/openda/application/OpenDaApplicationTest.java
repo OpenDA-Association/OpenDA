@@ -22,11 +22,13 @@ package org.openda.application;
 
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Tests for configured OpenDa applications
@@ -58,7 +60,24 @@ public class OpenDaApplicationTest extends TestCase {
 		BBUtils.copyFile(resultFile, resultFile_1);
 		OpenDaApplication.main(new String[] {
 				(new File(testRunDataDir,"oscillatorEnkfOpenDaConfig.xml") ).getAbsolutePath()} );
-		assertTrue(testData.FilesAreIdentical(resultFile_1, resultFile));
+		if(!testData.FilesAreIdentical(resultFile_1, resultFile)) {
+			// files differ for unclear reasons. compare line by line
+			List<String> linesInFile1 = FileComparer.ReadLines(resultFile_1);
+			List<String> linesInFile2 = FileComparer.ReadLines(resultFile);
+			int numLinesInFile1 = linesInFile1.size();
+			int numLinesInFile2 = linesInFile2.size();
+			System.out.println("numLinesInFile1="+numLinesInFile1+", numLinesInFile2" + numLinesInFile2);
+			for (int i = 0; i < Math.min(numLinesInFile1, numLinesInFile2); i++) {
+				String lineInFile1 = linesInFile1.get(i);
+				String lineInFile2 = linesInFile2.get(i);
+				if(!lineInFile1.equals(lineInFile2)) {
+					System.out.println("Difference on line " + i + ":");
+					System.out.println("1: " + lineInFile1);
+					System.out.println("2: " + lineInFile2);
+				}
+			}
+			throw new RuntimeException("Files differ!");
+		}
 		OpenDaApplication.main(new String[] {
 				(new File(testRunDataDir,"oscillatorEnkfOpenDaConfigRandomNoise.xml") ).getAbsolutePath()} );
 		assertTrue(!testData.FilesAreIdentical(resultFile_1, resultFile_random));
