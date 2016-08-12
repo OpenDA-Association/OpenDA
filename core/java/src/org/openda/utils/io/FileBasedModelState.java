@@ -224,7 +224,20 @@ public class FileBasedModelState implements IModelState{
 			}
 			fileToBeDeleted.delete();
 		}
+		deleteAllEmptySubdirsRecursively(directoryContainingModelStateFiles);
 		directoryContainingModelStateFiles.delete();
+	}
+
+	private static void deleteAllEmptySubdirsRecursively(File directoryContainingModelStateFiles) {
+		File[] files = directoryContainingModelStateFiles.listFiles();
+		if (files == null) return;
+		for (File file : files) {
+			if (file.isDirectory()) {
+				File[] filesInSubdir = file.listFiles();
+				if (filesInSubdir != null && filesInSubdir.length > 0) deleteAllEmptySubdirsRecursively(file);
+				file.delete();
+			}
+		}
 	}
 
 	private void zipFiles() {
