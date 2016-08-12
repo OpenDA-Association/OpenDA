@@ -62,7 +62,7 @@ public class FileComparer
 		return (unmatchingLines.size() == 0);
 	}
 
-	private static List<String> ReadLines(File target)
+	public static List<String> ReadLines(File target)
 	{
 		List<String> lines = new ArrayList<>();
 		try
