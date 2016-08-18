@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<EnkfConfig>
+<EnkfConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
     <ensembleSize>8</ensembleSize>
     <!--
     <localization>Hamill</localization>
-    -->
     <distance>5000.0</distance>
+    -->
+
     <saveGain>
 	    <times type="fixed" >201006240000,201006240050,201006240100</times>
-	    <file dirPrefix="kalman_gain_" fileName="kalmanGainStorage.xml" fileType="netcdf" xmlTypeMaxSize="40" />
+	    <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="netcdf" xmlTypeMaxSize="40" />
 	 </saveGain>
 </EnkfConfig>

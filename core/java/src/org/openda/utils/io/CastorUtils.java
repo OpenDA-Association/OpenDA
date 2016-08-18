@@ -95,7 +95,7 @@ public class CastorUtils {
             } else if (noNameSpaceLocation != null) {
                 marshaller.setNoNamespaceSchemaLocation(schemaLocation);
             } else {
-                marshaller.setSchemaLocation("http://www.openda.org http://www.openda.org/schemas/" + rootElement + ".xsd");
+                marshaller.setSchemaLocation("http://www.openda.org http://schemas.openda.org/" + rootElement + ".xsd");
             }
 
             marshaller.marshal(object);

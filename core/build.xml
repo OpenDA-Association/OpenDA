@@ -14,6 +14,7 @@
             ant build-test               --> compile test classes
             ant clean                    --> remove output
             ant javadoc                  --> build javadoc
+			ant validate-xml             --> validate xml-schemes
         </echo>
 	</target>
 
@@ -162,6 +163,16 @@
 		<chmod dir="${modulebindir}" perm="ugo+rx" includes="**/*.pl"/>
 	</target>
 
+	<target name="validate-xml" >
+		<schemavalidate failonerror="false">
+			<fileset dir="java/test">
+				<patternset id="validate-xml-tests">
+					<include name="**/*.xml"/>
+					<include name="**/*.oda"/>
+				</patternset>
+			</fileset>
+		</schemavalidate>
+	</target>
 
 </project>
 

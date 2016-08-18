@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<swanVisualization xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/swanVisualization.xsd">
+<swanVisualization xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/swanVisualization.xsd">
 	<swivt>
 <!--		<executable>D:/temp/swivt_mcode_v12_030709_calinstr/swivt_ci_postprocessing.exe</executable> -->
 		<executable>D:/temp/swivt_mcode_v121_221009_calinstr/swivt_ci_postprocessing.exe</executable>

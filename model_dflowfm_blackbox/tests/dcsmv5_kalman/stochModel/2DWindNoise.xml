@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mapsNoiseModelConfig>
+<mapsNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/mapsNoiseModel.xsd">
     <simulationTimespan timeFormat="dateTimeString" >200701010000,200701010200,...,200701080000</simulationTimespan>
     <noiseItem    id="2DNoise" 
                         quantity="wind-x" 

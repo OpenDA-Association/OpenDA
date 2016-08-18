@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<noosObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd"
+	>
 	<!-- 2nd series sets or overrules header lines
 	Location    : aberdeen
 	Position    : (-2.045543,57.361939)

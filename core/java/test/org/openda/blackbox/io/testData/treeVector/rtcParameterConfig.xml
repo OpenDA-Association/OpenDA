@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <treeVectorFile
-    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/treeVectorFile.xsd"
+    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/treeVector.xsd"
     xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <treeVector id="TV">
         <treeVectorLeaf id="B01.01">

@@ -14,6 +14,7 @@
             ant build-test               --> compile test classes
             ant clean                    --> remove output
             ant javadoc                  --> build javadoc
+			ant validate-xml             --> validate xml-schemes
         </echo>
     </target>
 
@@ -156,6 +157,16 @@
 		includes="**/*.sh"/>
     </target>
 
+	<target name="validate-xml" >
+		<schemavalidate failonerror="false">
+			<fileset dir="tests">
+				<patternset id="validate-xml-tests">
+					<include name="**/*.xml"/>
+					<include name="**/*.oda"/>
+				</patternset>
+			</fileset>
+		</schemavalidate>
+	</target>
 
 </project>
 

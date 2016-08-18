@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequentialAlgorithm>
+<SequentialSimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/sequentialSimulation.xsd">
     <analysisTimes type="fromObservationTimes" skipAtInitialTime="true" skipAtFinalTime="false" ></analysisTimes>
     <mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
-</sequentialAlgorithm>
+</SequentialSimulationConfig>
 

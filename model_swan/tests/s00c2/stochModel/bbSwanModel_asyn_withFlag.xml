@@ -17,8 +17,8 @@
         <alias key="outFile" value="timeseries.out"/>
 	</aliasValues>
 
-    <timeInfoExchangeItems start="start_time" end="end_time" timeStep="time_step"/>
-
+    <timeInfoExchangeItems start="start_time" end="end_time"/>
+    
 	<exchangeItems>
                 <vector id="start_time" ioObjectId="timeInfo" elementId="start_time"/>
                 <vector id="end_time" ioObjectId="timeInfo" elementId="end_time"/>

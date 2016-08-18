@@ -1,5 +1,7 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<treeVectorFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openda.org" xsi:schemaLocation="http://www.openda.org ../../../xsd/treeVector.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<treeVectorFile
+    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/treeVector.xsd"
+    xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <treeVector>
     <treeVectorLeaf id="Main_P[0]">
       <vector>0</vector>

@@ -25,7 +25,7 @@
     
     <exchangeItems>
         <!-- forcing -->
-        <vector id="precipitation" ioObjectId="forcingPrecip" elementID="precipitation"/>
+        <vector id="precipitation" ioObjectId="forcingPrecip" elementId="precipitation"/>
         <vector id="potET" ioObjectId="forcingPotET" elementId="potET"/>
         
         <!-- parameter -->

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SimulationConfig>
+<SimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/simulationConfig.xsd">
     <!--
     <analysisTimes type="fixed" timeFormat="dateTimeString" >200101010000,200101020000,...,200201020000</analysisTimes>
     -->
