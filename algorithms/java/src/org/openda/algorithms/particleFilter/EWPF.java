@@ -67,7 +67,12 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 
 
 	static {
-		nativeDLL=(ISangomaEWPFNativeDLL) Native.loadLibrary("sangoma",ISangomaEWPFNativeDLL.class);
+		if (RUNNING_ON_WINDOWS) {
+			// TODO: sources are available, windows build environment to be added.
+			throw new RuntimeException("Native Windows DLL does not exist (yet): sangoma.dll");
+		} else {
+			nativeDLL = (ISangomaEWPFNativeDLL) Native.loadLibrary("sangoma", ISangomaEWPFNativeDLL.class);
+		}
 	}
 
 

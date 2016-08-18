@@ -19,6 +19,7 @@
 */
 package org.openda.utils;
 import junit.framework.TestCase;
+import org.openda.blackbox.config.BBUtils;
 
 import java.util.Set;
 
@@ -87,7 +88,11 @@ public class ReflectionTest extends TestCase {
 		System.out.println("==============================================================================");
 		System.out.println(" Produce info with main method");
 		System.out.println("==============================================================================");
-		Reflection.main(new String[0]);
+		if (BBUtils.RUNNING_ON_WINDOWS) {
+			// native dll for reflection (sangoma) is not avaiable on Windows
+			System.out.println(" Test disabled on Windows because it fails on missing sangoma.dll.");
+		} else {
+			Reflection.main(new String[0]);
+		}
 	}
-
 }
