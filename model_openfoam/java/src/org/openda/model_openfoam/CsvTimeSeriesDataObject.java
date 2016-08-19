@@ -41,7 +41,6 @@ public final class CsvTimeSeriesDataObject implements IDataObject {
 
     private static final Logger logger = LoggerFactory.getLogger(CsvTimeSeriesDataObject.class);
 
-
     public static final String PROPERTY_PATHNAME = "pathName";
 	private TimeSeriesSet timeSeriesSet = null;
 	String fileName = null;
