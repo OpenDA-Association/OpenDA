@@ -61,9 +61,7 @@
 ===========================================================================
 -->
    <target name="build" depends="init, tests">
-      <buildcastor module="core" />
       <buildmodule module="core" />
-      <buildcastor module="observers" />
       <buildmodule module="observers" />
       <buildmodule module="models" />
       <buildmodule module="algorithms" />
@@ -171,14 +169,6 @@
 		    <copy todir="${projectlib}" >
 			    <fileset dir="@{module}/bin" />
 		    </copy>
-	    </sequential>
-    </macrodef>
-
-    <macrodef name="buildcastor">
-	    <attribute name="module" default="NOT SET"/>
-	    <sequential>
-		    <echo>build castor for module @{module}</echo>
-		    <ant antfile="build_castor.xml" dir="@{module}" target="build" inheritAll="false" />
 	    </sequential>
     </macrodef>
 
