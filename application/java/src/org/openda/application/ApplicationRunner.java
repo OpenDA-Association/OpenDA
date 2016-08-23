@@ -50,7 +50,6 @@ import java.util.List;
 public class ApplicationRunner implements Runnable{
 
     private static boolean runningInTest = true;
-	private static List<String> versionMessages = new ArrayList<String>();
 
 	private int currentAlgorithmStep = 0;
 
@@ -96,10 +95,6 @@ public class ApplicationRunner implements Runnable{
     public static void setRunningInTest(boolean runningInTest) {
         ApplicationRunner.runningInTest = runningInTest;
         ApplicationRunner.runningInTest = true;
-	}
-
-	public static void addVersionMessage(String versionMessage) {
-		versionMessages.add(versionMessage);
 	}
 
 	public static boolean getRunningInTest() {
@@ -328,7 +323,6 @@ public class ApplicationRunner implements Runnable{
 			if (stochObserver != null) {
 				stochObserver.free();
 			}
-			versionMessages.clear();
 		} catch (Exception e) {
 			//catch and log any exceptions during finish application, otherwise these might "overshadow" any exceptions thrown during the run.
 			Results.putMessage("Exception during call to finish application, message was: " + e.getMessage());
@@ -459,9 +453,10 @@ public class ApplicationRunner implements Runnable{
             IResultWriter asciiResultWriter = new AsciiResultWriter(resultsFile.getParentFile(), resultsFile.getName());
             Results.addResultWriter(asciiResultWriter);
         }
-		for (String versionMessage : versionMessages) {
-			Results.putMessage(versionMessage);
-		}
+
+		String versionString = "OpenDA version " + VersionUtils.getVersionFromManifest(OpenDaApplication.class);
+		Results.putProgression(versionString);
+
         return configuration;
     }
 
