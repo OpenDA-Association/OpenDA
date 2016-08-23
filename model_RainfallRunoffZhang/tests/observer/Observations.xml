@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ASCIIObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<noosObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd">
 	<!-- 1st series uses header lines for meta data
 	contents of this file look like:
 	# Location    : aberdeen
@@ -21,4 +21,4 @@
 		totalRunoff_alpha10p8_alpha20p2_Smax10_d0p2NewTimes.txt
 	</timeSeries>
 
-</ASCIIObserver>
+</noosObserver>

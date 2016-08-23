@@ -21,7 +21,7 @@
 		</parameters>
 -->
 		<state> 
-  			<vector id="concentration.grid_init" /> 
+  			<vector id="concentration.grid_init" />  
 			<noiseModel id="boundaryNoiseModel1" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
                			<configFile>BoundaryNoise1.xml</configFile>
                			<exchangeItems>

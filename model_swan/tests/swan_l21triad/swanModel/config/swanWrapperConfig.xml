@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<swanCalibWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/swanCalibWrapperConfig.xsd">
+<swanCalibWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/swanCalibWrapperConfig.xsd">
 	<swanAction linuxExe="../bin/linux/swan_4072ABCDE_del_l32_i11_ser.exe" windowsExe="..\bin\win32\swan4051A.exe" macExe="../bin/darwin/swan_4072ABCDE_del_l32_i11_ser.exe"/>
 	<swivtParameters>../work/l021triad001.xml</swivtParameters>
 	<swanInputTemplate>../work/l021triad001.swn</swanInputTemplate>

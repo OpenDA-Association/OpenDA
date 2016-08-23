@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SteadyStateFilterConfig>
+<SteadyStateFilterConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/steadyStateFilter.xsd">
 	<!-- default <analysisTimes type="fromObservationTimes" ></analysisTimes> 
 		<analysisTimes type="fixed" timeFormat="dateTimeString" >201008241130,201008241140,...,201008242350</analysisTimes> 
 		<analysisTimes type="fixed" >201008240000,201008240300,201008240600</analysisTimes> 
@@ -9,9 +9,8 @@
 	twin-experpiment -->
 	<mainModel stochParameter="false" stochForcing="false" stochInit="false" />
 	<readGain>
-		<dirPrefix>../gain_</dirPrefix>
-		<time timeFormat="dateTimeString" readGainTime="20100925000">201008240000</time>
-        <time timeFormat="dateTimeString" readGainTime="20100928000">201008300000</time>
+		<dirPrefix>../gain_</dirPrefix>		
+		<time timeFormat="dateTimeString" >201008240000</time>
 		<!-- or <time timeFormat="mjd">10.0</time> -->
 		<file>enkf_oscillator_gain.xml</file>
 	</readGain>

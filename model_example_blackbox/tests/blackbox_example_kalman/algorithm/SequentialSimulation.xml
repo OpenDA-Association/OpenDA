@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequentialAlgorithm>
+<SequentialSimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/sequentialSimulation.xsd">
 	<analysisTimes type="fromObservationTimes" ></analysisTimes> 
 	<!-- default <analysisTimes type="fromObservationTimes" ></analysisTimes> 
 		<analysisTimes type="fixed" timeFormat="dateTimeString" >201008241130,201008241140,...,201008242350</analysisTimes> 
@@ -8,4 +8,4 @@
 	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a 
 	twin-experpiment -->
 	<mainModel stochParameter="false" stochForcing="false" stochInit="false" />
-</sequentialAlgorithm>
+</SequentialSimulationConfig>

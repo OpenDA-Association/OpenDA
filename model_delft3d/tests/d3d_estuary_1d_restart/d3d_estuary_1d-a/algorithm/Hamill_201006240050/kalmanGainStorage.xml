@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <opendaKalmanGainStorage
-    xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/opendaKalmanGainStorage.xsd"
+    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/opendaKalmanGainStorage.xsd"
     xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <comment>algorithm = EnKF
 model = BBStochModelInstance

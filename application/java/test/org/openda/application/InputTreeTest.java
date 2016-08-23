@@ -95,8 +95,8 @@ public class InputTreeTest extends TestCase {
 		buffer = dummy.readFile(outDir.getAbsolutePath(),"dudAlgorithm.xml");
 		int foundChange = buffer.indexOf("<outerLoop maxIterations=\"30\"");
 		System.out.println("file changed at pos ="+foundChange);
-		System.out.println("Should be file changed at pos =181");
-		assertEquals("dudAlgorithm.xml change",foundChange,181);
+		System.out.println("Should be file changed at pos = "+startKey);
+		assertEquals("dudAlgorithm.xml change",foundChange,startKey);
 
 		// now there are no further changes
 		boolean changed = appConf.treeHasChanged();

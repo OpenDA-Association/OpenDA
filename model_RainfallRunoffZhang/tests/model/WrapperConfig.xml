@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/blackBoxWrapperConfig.xsd">
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
     
     <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
     <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
@@ -26,8 +26,8 @@
             	<!--<arg>"/Users/beamarti/Documents/openDAdev/public/model_RainfallRunoffZhang/tests/model/bin/"</arg> -->
             	<arg>"same_as_script"</arg>
                 <arg>"rainfallRunoffModel"</arg>
-                <checkReturnStatus expect="0"/>
-            	<checkOutput file="%outputFile%"/>
+            	<checkOutput file="%outputFile%"/>                
+                <checkReturnStatus expect="0"/>                
             </action>
             
         </computeActions>

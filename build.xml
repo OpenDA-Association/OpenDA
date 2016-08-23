@@ -30,6 +30,7 @@
             ant tgz                      --> creates tgz files with sources, binaries,
                                              documentation and xml schemas
             ant tgz-tests                --> zip public test cases
+            ant validate-xml             --> validate xml-schemes
         </echo>
     </target>
 
@@ -643,7 +644,25 @@
    </target>
 
    <target name="validate-xml">
+       <validatexmlmodule module="algorithms" />
+       <validatexmlmodule module="application" />
+       <validatexmlmodule module="core" />
+       <validatexmlmodule module="observers"/>
+       <validatexmlmodule module="models" />
+       <validatexmlmodule module="model_bmi"/>
+       <validatexmlmodule module="model_damflow"/>
+       <validatexmlmodule module="model_delft3d"/>
+       <validatexmlmodule module="model_delwaq"/>
        <validatexmlmodule module="model_dflowfm_blackbox"/>
+       <validatexmlmodule module="model_efdc_dll"/>
+       <validatexmlmodule module="model_example_blackbox"/>
+       <validatexmlmodule module="model_glm" />
+       <validatexmlmodule module="model_gotm" />
+       <validatexmlmodule module="model_nemo"/>
+       <validatexmlmodule module="model_RainfallRunoffZhang"/>
+       <validatexmlmodule module="model_reactive_advection"/>
+	   <validatexmlmodule module="model_swan"/>
+       <validatexmlmodule module="model_wflow"/>
    </target>
 
     <macrodef name="validatexmlmodule">

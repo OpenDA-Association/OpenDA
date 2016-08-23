@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bmiModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org bmiModelFactoryConfig.xsd">
+<bmiModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org d:/work/openda_trunk/public/model_bmi/xmlSchemas/bmiModelFactoryConfig.xsd">
 	<pythonModel>
 		<pythonPath>../../../wflow_bin</pythonPath>
 		<moduleName>wflow.wflow_bmi</moduleName>

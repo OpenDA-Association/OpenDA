@@ -15,9 +15,10 @@
             ant javadoc                  --> build javadoc 
             ant test                     --> execute unit tests (excluding broken tests)
             ant make-standalone          --> collect external libs etc into local directories
-	                                 This makes development and runnning possible with only
-	                                 this module. This preparation must be executed in a full
-	                                 openda public project, whch has been built.
+                                     This makes development and runnning possible with only
+                                     this module. This preparation must be executed in a full
+                                     openda public project, whch has been built.
+			ant validate-xml             --> validate xml-schemes
         </echo>
     </target>
 

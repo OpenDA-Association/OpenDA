@@ -81,9 +81,8 @@
             <vector id="totalRunoff"/>
         </predictor>
     </vectorSpecification>
-    
+   
     <!-- specify here if wish to modify the names of the restart directories from the default names. -->
-    <restartInfo dirPrefix="./restart_" noiseModelPrefix="./reNoiseModel_" modelStateFile="reModelStateFiles.zip">
-    </restartInfo>
+    <restartInfo dirPrefix="./restart_" noiseModelPrefix="./reNoiseModel_" modelStateFile="reModelStateFiles.zip"></restartInfo> 
      
 </blackBoxStochModel>

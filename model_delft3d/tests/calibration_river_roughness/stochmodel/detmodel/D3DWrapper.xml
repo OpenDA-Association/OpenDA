@@ -24,7 +24,7 @@
       <!-- computation actions -->
       <!-- define actions relative to working dir. -->
       <computeActions>
-  	 <action workingDirectory="%instanceDir%" winExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
+  	 <action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
             <arg>config_d_hydro.xml</arg>
          </action>
       </computeActions>

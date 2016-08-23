@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mapsNoiseModelConfig>
+<timeSeriesNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/timeSeriesNoiseModel.xsd">
 	<simulationTimespan timeFormat="dateTimeString">199208311200,199209010000,...,199212090000</simulationTimespan>
-	<timeSeries id="salinitynoise" location="eastboundary" quantity="salinity" standardDeviation="1.0" timeCorrelationScale="24.0" timeCorrelationScaleUnit="hours" />"
-</mapsNoiseModelConfig>
+	<timeSeries id="salinitynoise" location="eastboundary" quantity="salinity" standardDeviation="1.0" timeCorrelationScale="24.0" timeCorrelationScaleUnit="hours" />
+</timeSeriesNoiseModelConfig>

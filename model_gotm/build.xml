@@ -18,6 +18,7 @@
 	                                 This makes development and runnning possible with only
 	                                 this module. This preparation must be executed in a full
 	                                 openda public project, whch has been built.
+			ant validate-xml             --> validate xml-schemes
         </echo>
     </target>
 
@@ -153,6 +154,17 @@
             </fileset>
         </copy>
     </target>
- 
+
+	<target name="validate-xml" >
+		<schemavalidate failonerror="false">
+			<fileset dir="tests">
+				<patternset id="validate-xml-tests">
+					<include name="**/*.xml"/>
+					<include name="**/*.oda"/>
+				</patternset>
+			</fileset>
+		</schemavalidate>
+	</target>
+
 </project>
 
