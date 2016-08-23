@@ -32,21 +32,25 @@ public class NoiseModelExchangeItemConfig {
 	private List<String> modelExchangeItemIds;
 	private BBUncertOrArmaNoiseConfig.Operation operation;
 	private int transformation;
+	private boolean skipFirstTimeStep;
+	private boolean addOnlyNoiseDifference;
 
-	
+
 	public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-			BBUncertOrArmaNoiseConfig.Operation operation, int transformation) {
+										Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		this.id = id;		
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.operation = operation;
 		this.transformation = transformation;
+		this.skipFirstTimeStep = skipFirstTimeStep;
+		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
 	}
 	
 	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId,
-										BBUncertOrArmaNoiseConfig.Operation operation, int transformation) {	
+										Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), operation, transformation);
+		this(id, new ArrayList<String>(), operation, transformation, skipFirstTimeStep, addOnlyNoiseDifference);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
@@ -56,30 +60,6 @@ public class NoiseModelExchangeItemConfig {
 		}
 	}
 	
-	/**
-	 *@deprecated Please use NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-			BBUncertOrArmaNoiseConfig.Operation operation, int transformation)
-	 *@see NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-			BBUncertOrArmaNoiseConfig.Operation operation, int transformation)
-	 */
-	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, List<String> modelExchangeItemIds,
-			BBUncertOrArmaNoiseConfig.Operation operation, int transformation) {
-		
-		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), operation, transformation);
-		// implement deprecated constructors behavior
-		// if modelExchangeItemId is defined use this,
-		// otherwise use the list modelExchangeItemIds
-		if (modelExchangeItemId != null) {
-			this.modelExchangeItemIds.add(modelExchangeItemId);
-
-		} else {
-			this.modelExchangeItemIds = modelExchangeItemIds;
-		}
-	}
-
-
-
 	public String getId() {
 		return id;
 	}
@@ -94,5 +74,13 @@ public class NoiseModelExchangeItemConfig {
 
 	public int getTransformation() {
 		return transformation;
+	}
+
+	public boolean doSkipFirstTimeStep() {
+		return skipFirstTimeStep;
+	}
+
+	public boolean doAddOnlyNoiseDifference() {
+		return addOnlyNoiseDifference;
 	}
 }

@@ -54,6 +54,16 @@
 				<xs:documentation>Transformation of noise variable. 'identity' means that the value will be added directly  without any transformation to the adjusted parameter. 'ln' means that the value is transformed logarithmically before it is added to the parameter; this gives a correction, which is a fraction of the parameter value.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="skipFirstTimeStep" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>When adding noise to a time dependent exchange item for the next (e.g. EnKF) time slice, skip the first time step (because is was already modified in the previous time slice)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="addOnlyNoiseDifference" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>When adding noise to a state exchange time, add the difference between the current noise and the previous noise, instead of adding the full noise.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="UncertaintyOrNoiseExchangeItemsXML">
 		<xs:sequence>

@@ -480,6 +480,8 @@ public class BBStochModelConfigReader {
 			for (UncertaintyOrNoiseExchangeItemXML exchangeItemXML : exchangeItemsXML.getExchangeItem()) {
 				UncertaintyOrNoiseModelExchangeItemXML[] modelExchangeItemXMLs = exchangeItemXML.getModelExchangeItem();
 				List<String> modelExchangeItemIds = new ArrayList<String>();
+				boolean skipFirstTimeStep = exchangeItemXML.getSkipFirstTimeStep();
+				boolean addOnlyNoiseDifference = exchangeItemXML.getAddOnlyNoiseDifference();
 				if (modelExchangeItemXMLs.length > 0 && exchangeItemXML.getModelExchangeItemId() != null) {
 					throw new RuntimeException(
 							"The attribute \"modelExchangeItemId\"and " +
@@ -490,7 +492,7 @@ public class BBStochModelConfigReader {
 							exchangeItemXML.getId(),
 							exchangeItemXML.getModelExchangeItemId(),
 							determineOperationType(exchangeItemXML.getOperation()),
-							determineTransformationType(exchangeItemXML.getTransformation() ))
+							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference)
 					);
 				} else {
 					for (UncertaintyOrNoiseModelExchangeItemXML modelExchangeItemXML : modelExchangeItemXMLs) {
@@ -500,7 +502,7 @@ public class BBStochModelConfigReader {
 							exchangeItemXML.getId(),
 							modelExchangeItemIds,
 							determineOperationType(exchangeItemXML.getOperation()),
-							determineTransformationType(exchangeItemXML.getTransformation() ))
+							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference)
 					);
 				}
 			}
