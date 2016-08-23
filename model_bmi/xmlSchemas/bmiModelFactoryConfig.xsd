@@ -63,7 +63,7 @@
 			</xs:element>
 			<xs:element name="pythonExecutable" type="xs:string" minOccurs="0">
 				<xs:annotation>
-					<xs:documentation>The full path to the Python executable.</xs:documentation>
+					<xs:documentation>The full path to the Python executable. TODO this should be a choice between pythonExecutable and the other three elements.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
