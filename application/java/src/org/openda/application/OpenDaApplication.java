@@ -91,8 +91,6 @@ public class OpenDaApplication {
          }
       }
 
-	   String versionString = "OpenDA version " + VersionUtils.getVersionFromManifest(OpenDaApplication.class);
-	   ApplicationRunner.addVersionMessage(versionString);
       /*
        * Start gui or batch
        */
