@@ -72,6 +72,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private HashMap<String,Double> lastNoiseTimes;//avoid adding noise more than once
 	private LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings;
 	private int ensembleMemberIndex;
+	private HashMap<String,double[]> prevNoiseModelEIValuesForTimeStep = new HashMap<String, double[]>();
 
 	/**
 	 * For each constraintExchangeItemId for which there is a range validation constraint this map contains
@@ -87,7 +88,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private Map<String, IPrevExchangeItem> constraintExchangeItems = new LinkedHashMap<String, IPrevExchangeItem>();
     private IObservationDescriptions observationDescriptions;
 
-    public BBStochModelInstance(File configRootDir, IModelInstance model,
+	public BBStochModelInstance(File configRootDir, IModelInstance model,
 			UncertaintyEngine uncertaintyEngine,
 			IStochVector parameterUncertainty,
 			ITreeVector paramsTreeVector,
@@ -764,8 +765,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		   return null;
 		}
 
-		int fullStateSize = stateNoiseModelsEndIndices[stateNoiseModelsEndIndices.length - 1] +
-				stateVectorsEndIndices[stateVectorsEndIndices.length - 1];
+		int fullStateSize = 0;
+		if (stateNoiseModelsEndIndices.length > 0) {
+			fullStateSize += stateNoiseModelsEndIndices[stateNoiseModelsEndIndices.length - 1];
+		}
+		if (stateVectorsEndIndices.length > 0) {
+			fullStateSize += stateVectorsEndIndices[stateVectorsEndIndices.length - 1];
+		}
 
 		Collection<BBUncertOrArmaNoiseConfig> stateNoiseModelCollection =
 				this.bbStochModelVectorsConfig.getStateConfig().getUncertaintyOrArmaNoiseConfigs();
@@ -1279,7 +1285,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						modelTimesInCurrentPeriod.add(currentModelTime);
 					} else {
 						modelTimesInCurrentPeriod = determineTimeStampsInInterval(
-								modelTimes, currentTime, targetTime);
+								modelTimes, currentTime, targetTime, exchangeItemConfig.doSkipFirstTimeStep());
 					}
 					// The model exchange item has more then one time stamp. Find matching times in
 					// both lists.
@@ -1310,6 +1316,22 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							}
 							double[] noiseModelEIValuesForTimeStep =
 									getNoiseModelValuesForTimeStep(noiseModelExchangeItem, ti);
+							if (exchangeItemConfig.doAddOnlyNoiseDifference()) {
+								int noiseLength = noiseModelEIValuesForTimeStep.length;
+								double[] previousValues = prevNoiseModelEIValuesForTimeStep.get(exchangeItemConfig.getId());
+								if (previousValues == null) {
+									prevNoiseModelEIValuesForTimeStep.put(exchangeItemConfig.getId(), noiseModelEIValuesForTimeStep);
+									// only add new noise, no difference needed
+								}
+								else {
+									// substract previous noise from new noise. store resulting noise for next time step
+									for (int i = 0; i < noiseLength; i++) {
+										double currentNoiseValue = noiseModelEIValuesForTimeStep[i];
+										noiseModelEIValuesForTimeStep[i] = noiseModelEIValuesForTimeStep[i] - previousValues[i];
+										previousValues[i] = currentNoiseValue;
+									}
+								}
+							}
 							int modelTimeIndex= TimeUtils.findMatchingTimeIndex(modelTimes, time, timePrecision);
 							addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, modelTimeIndex,
 									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation());
@@ -1484,11 +1506,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return numBcTimeStepsInPeriod;
 	}
 
-	private List<Double> determineTimeStampsInInterval(double[] exchangeItemTimes, ITime currentTime, ITime targetTime) {
+	private List<Double> determineTimeStampsInInterval(double[] exchangeItemTimes, ITime currentTime, ITime targetTime, boolean skipFirstNoiseTimeStep) {
 		List<Double> timeStampsInInterval = new ArrayList<Double>();
 		for (Double exchangeItemTime : exchangeItemTimes) {
 			if (isTimeIncludedInInterval(currentTime.getMJD(), targetTime.getMJD(), exchangeItemTime)) {
-				timeStampsInInterval.add(exchangeItemTime);
+				if (!(skipFirstNoiseTimeStep && exchangeItemTime < currentTime.getMJD()+ 1.e-6)) {
+					timeStampsInInterval.add(exchangeItemTime);
+				}
 			}
 		}
 		return timeStampsInInterval;
