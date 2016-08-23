@@ -144,13 +144,10 @@ public class BmiModelFactoryConfigReader {
 		this.inputStateDir = castor.getInputStateDirectory();
 		this.outputStateDir = castor.getOutputStateDirectory();
 
+		//default is NaN.
 		this.modelMissingValue = Double.NaN;
-		if (castor.getMissingValue() != null && !castor.getMissingValue().equalsIgnoreCase("nan")) {
-			try {
-				this.modelMissingValue = Double.parseDouble(castor.getMissingValue());
-			} catch (NumberFormatException e) {
-				throw new RuntimeException("Could not parse missingValue from config file " + configFile.getAbsolutePath());
-			}
+		if (castor.hasMissingValue()) {
+			this.modelMissingValue = castor.getMissingValue();
 		}
 
 		String hosts = castor.getHosts();

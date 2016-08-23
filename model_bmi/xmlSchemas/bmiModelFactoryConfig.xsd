@@ -37,7 +37,7 @@
 			</xs:element>
 			<xs:element name="bmiModelForcingsConfig" type="openda:BmiModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="bmiModelStateExchangeItems" type="openda:BmiModelStateExchangeItemXML"/>
-			<xs:element name="missingValue" type="xs:string" minOccurs="0">
+			<xs:element name="missingValue" type="xs:double" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>NaN or a valid double value, indicating a missing value in the model data. Default: NaN</xs:documentation>
 				</xs:annotation>
