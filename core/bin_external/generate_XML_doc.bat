@@ -1,4 +1,11 @@
 @echo off
+rem === script to generate html documentation from xsd-schemes ===
+rem Running this script has proven to be error prone. 
+rem In case of errors: check compatibility of JDK, AltovaAutomation.jar, 
+rem AltovaAutomation.dll and XMLSpyAPI.jar
+rem 
+rem https://issuetracker.deltares.nl/browse/ODA-245
+rem
 rem The setlocal statement must be on top!
 setlocal enabledelayedexpansion
 
