@@ -17,9 +17,8 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.openda.exchange.dataobjects;
+package org.openda.model_delft3d;
 import junit.framework.TestCase;
-import org.openda.exchange.ExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -33,7 +32,7 @@ public class NetcdfD3dHisExchangeItemTest extends TestCase {
 	OpenDaTestSupport testData = null;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(NetcdfD3dHisExchangeItemTest.class,"public","core");
+		testData = new OpenDaTestSupport(NetcdfD3dHisExchangeItemTest.class,"public","model_delft3d");
 	}
 
 	public void testGetValuesAsDoubles() throws Exception {

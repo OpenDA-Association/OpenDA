@@ -45,7 +45,7 @@
       </ioObject>
 
       <!-- time series results -->
-      <ioObject className="org.openda.exchange.dataobjects.NetcdfD3dHisDataObject">
+      <ioObject className="org.openda.model_delft3d.NetcdfD3dHisDataObject">
          <file>trih-%runid%.nc</file>
          <id>trih-file</id>
       </ioObject>

@@ -1,15 +1,11 @@
 package org.openda.model_delft3d;
 
 import junit.framework.TestCase;
-//import org.openda.exchange.dataobjects.NetcdfD3dGridTimeSeriesExchangeItem;
-//import org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItemTest;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
-import ucar.ma2.Array;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**

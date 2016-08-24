@@ -17,9 +17,8 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.openda.exchange.dataobjects;
+package org.openda.model_delft3d;
 import org.openda.exchange.ExchangeItem;
-import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.interfaces.*;
 
 /**
