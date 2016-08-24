@@ -20,6 +20,7 @@
 package org.openda.tools;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import com.altova.automation.XMLSpy.Application;
 import com.altova.automation.XMLSpy.Dialogs;
@@ -28,6 +29,7 @@ import com.altova.automation.XMLSpy.Enums.SPYSchemaDocumentationFormat;
 import com.altova.automation.XMLSpy.SchemaDocumentationDlg;
 import com.altova.automation.libs.AutomationException;
 
+import org.openda.utils.io.FileSupport;
 /**
  * A simple example that starts XMLSpy COM server and performs a few operations on it.
  * Feel free to extend.
@@ -110,37 +112,14 @@ public class GenerateXmlDoc
 			 * Get list of XML schema files in source dir
 			 */
 
-			// Get number of .xsd files in source dir
-			String files[] = sourceDir.list();
-			int numXsdFiles = 0;
-			for (int i = 0; i < files.length; i++) {
-				int dotindex = files[i].lastIndexOf('.');
-				if(dotindex>0) {
-					String extension = files[i].substring(dotindex);
-					if (extension.equalsIgnoreCase(".xsd")) {
-						numXsdFiles++;
-					}
-				}
-			}
+			ArrayList xsdFiles = new ArrayList();
+			FileSupport.recursive_list(sourceDir.getAbsolutePath(), xsdFiles);
 
+			int numXsdFiles = xsdFiles.size();
 			System.out.println("Number of XSD files: " + numXsdFiles + "\n");
 
 			if (numXsdFiles>0) {
-				// Get file list
-				File xsdFiles[] = new File[numXsdFiles];
-				int xsdFileIndex = 0;
-				for (int i = 0; i < files.length; i++) {
-					int dotindex = files[i].lastIndexOf('.');
-					if(dotindex>0) {
-						String extension = files[i].substring(dotindex);
-						if (extension.equalsIgnoreCase(".xsd")) {
-							xsdFiles[xsdFileIndex] = sourceDir.listFiles()[i];
-							xsdFileIndex++;					
-						}
-					}
-				}
-
-				/*
+  				/*
 				 * Setup XMLSpy
 				 */
 
@@ -176,7 +155,9 @@ public class GenerateXmlDoc
 				 * Loop through all files and generate html
 				 */
 
-				for (File thisXsdFile : xsdFiles) {
+				for (int i = 0; i < numXsdFiles; i++) {
+					File thisXsdFile = (File)xsdFiles.get(i);
+
 					xmlSpy.getDocuments().openFile(thisXsdFile.getAbsolutePath(), false);
 
 					Document CurrentDocument = xmlSpy.getActiveDocument();

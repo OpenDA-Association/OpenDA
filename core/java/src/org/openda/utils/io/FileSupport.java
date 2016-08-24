@@ -135,5 +135,20 @@ public class FileSupport {
         }
     }
 
+    public static void recursive_list(String directoryName, ArrayList<File> files) {
+        File directory = new File(directoryName);
+
+        // get all the files from a directory
+        File[] fList = directory.listFiles();
+        if (fList !=null) {
+            for (File file : fList) {
+                if (file.isFile()) {
+                    files.add(file);
+                } else if (file.isDirectory()) {
+                    recursive_list(file.getAbsolutePath(), files);
+                }
+            }
+        }
+    }
 
 }
