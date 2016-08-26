@@ -4,7 +4,7 @@
 		<arg>stochObsUncertainties.xml</arg>
 	</uncertaintyModule>
 	<!-- <ioObject workingDirectory="." className="org.openda.model_delft3d.D3dResults"> --> 
-	<ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfD3dHisDataObject">
+	<ioObject workingDirectory="." className="org.openda.model_delft3d.NetcdfD3dHisDataObject">
 		<fileName>trih-cadagno_netcdf.nc</fileName>
      <!--   <arg>../../../../bin</arg> -->
 	</ioObject>
