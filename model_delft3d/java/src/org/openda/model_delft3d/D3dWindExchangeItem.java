@@ -26,6 +26,7 @@ import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -137,14 +138,16 @@ public class D3dWindExchangeItem implements IExchangeItem {
             throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + values.getClass().getName());
         }
 		List incomingValues = (List) values;
-		valuesOnGrid2D.clear();
+		// create new list of 2d fields (incoming values may refer to same object as valuesOnGrid2D)
+		List<D3dValuesOnGrid2D> newValuesOnGrid2D = new ArrayList<D3dValuesOnGrid2D>();
 		for (int i = 0, timeStepCount = incomingValues.size(); i < timeStepCount; i++) {
 			Object valuesForOneTimeStep = incomingValues.get(i);
 			if (!(valuesForOneTimeStep instanceof D3dValuesOnGrid2D)) {
 				throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + valuesForOneTimeStep.getClass().getName());
 			}
-			valuesOnGrid2D.add((D3dValuesOnGrid2D)valuesForOneTimeStep);
+			newValuesOnGrid2D.add((D3dValuesOnGrid2D)valuesForOneTimeStep);
 		}
+		valuesOnGrid2D = newValuesOnGrid2D;
         dataChanged = true;
     }
 

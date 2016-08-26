@@ -36,7 +36,7 @@ import java.util.List;
 public class D3dWindMask implements SelectorInterface {
 
     ArrayList<MnPoint> mnPoints = null;
-    private List<D3dField2D> d3dField2Ds = null;
+    private List<D3dValuesOnGrid2D> d3dField2Ds = null;
 	private boolean FlipMaskinXaxis = false;
 
 	/**
@@ -121,18 +121,18 @@ public class D3dWindMask implements SelectorInterface {
 		if (!(inputObject instanceof List)) {
 			throw new RuntimeException("D3dWindMask.select: unexpected object type: " + inputObject.getClass().getName());
 		}
-		d3dField2Ds = (List<D3dField2D>) inputObject;
+		d3dField2Ds = (List<D3dValuesOnGrid2D>) inputObject;
 		int nLevels = d3dField2Ds.size();
 
 			// if the mns coordinates should be flipped, do it now, once!
 		    // this routine will always be called if an mns-selection is needed.
 		if (FlipMaskinXaxis) {
-		    performMirroring(d3dField2Ds.get(0).getNmax());
+		    performMirroring(d3dField2Ds.get(0).getGrid().getNmax());
 			FlipMaskinXaxis = false;
 		}
 		double[] selectedValues = new double[mnPoints.size() * nLevels];
 		int index = 0;
-		for (D3dField2D onefield2D : d3dField2Ds) {
+		for (D3dValuesOnGrid2D onefield2D : d3dField2Ds) {
 			double[] timeValues = onefield2D.getValues(mnPoints);
 			for (int i = 0; i < timeValues.length; i++) {
 				selectedValues[i+index] = timeValues[i];
@@ -164,7 +164,7 @@ public class D3dWindMask implements SelectorInterface {
             throw new RuntimeException("D3dField2DMask.deselect: unexpected object type: " + selection.getClass().getName());
         }
 		int index = 0;
-		for (D3dField2D onefield2D : d3dField2Ds) {
+		for (D3dValuesOnGrid2D onefield2D : d3dField2Ds) {
 			double[] selectionTimeValues = new double[mnPoints.size()];
 			for (int i = 0; i < selectionTimeValues.length; i++) {
 				selectionTimeValues[i] = selectionValues[i+index];

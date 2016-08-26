@@ -20,6 +20,8 @@
 
 package org.openda.model_delft3d;
 
+import java.util.ArrayList;
+
 /**
  * Simple class containing all information on a 2D Field
  */
@@ -53,5 +55,49 @@ public class D3dValuesOnGrid2D {
 
     public D3dGrid2D getGrid() {
         return grid2D;
+    }
+
+    public void setValues(ArrayList<MnPoint> mnPoints, double[] values) {
+        if (!(values.length == mnPoints.size())) {
+            throw new IllegalArgumentException("D3dField2D.setValues: #values (" + values.length +
+                    ") != #M,N-points (" + mnPoints.size() + ")");
+        }
+        for (int i = 0; i < mnPoints.size(); i++) {
+            setValue(mnPoints.get(i), values[i]);
+        }
+    }
+
+    public void setValue(MnPoint mnPoint, double value) {
+        setValue(mnPoint.getM(), mnPoint.getN(), value);
+    }
+
+    public void setValue(int m, int n, double value) {
+        int mmax = grid2D.getMmax();
+        int nmax = grid2D.getNmax();
+        if (m<1 || n<1 || m>mmax || n>nmax) {
+            throw new IllegalArgumentException("D3dField2D.setValue(" + m + "," + n + ",...): " +
+                    "expected 0<m<=" + mmax + "0<n<=" + nmax);
+        }
+        int index = (n - 1) * mmax + m - 1;
+        if (Double.compare(values[index], missingValue) != 0) {
+            values[index] = value;
+        }
+    }
+
+    public double[] getValues(ArrayList<MnPoint> mnPoints) {
+        double[] values = new double[mnPoints.size()];
+        for (int i = 0; i < mnPoints.size(); i++) {
+            values[i] = getValue(mnPoints.get(i));
+        }
+        return values;
+    }
+
+    public double getValue(MnPoint mnPoint) {
+        return getValue(mnPoint.getM(), mnPoint.getN());
+    }
+
+    private double getValue(int m, int n) {
+        int mmax = grid2D.getMmax();
+        return values[(n-1)*mmax + m-1];
     }
 }
