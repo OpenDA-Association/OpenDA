@@ -1,5 +1,5 @@
-/* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
+/* OpenDA v2.3.1
+* Copyright (c) 2016 OpenDA Association
 * All rights reserved.
 *
 * This file is part of OpenDA.
@@ -19,7 +19,7 @@
 */
 public class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
 
-	
+
 	public TimeSeries read(InputStream in) {
 		TimeSeries result = null;
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
@@ -142,7 +142,7 @@ public class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
 		return result;
 	}
 
-	
+
 	public void write(OutputStream out, TimeSeries series) {
 		PrintWriter printer = new PrintWriter(out);
 		printer.println("# ----------------------------------------------------");
