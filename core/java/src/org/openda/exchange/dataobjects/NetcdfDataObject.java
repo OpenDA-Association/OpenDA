@@ -25,6 +25,7 @@ import org.openda.exchange.*;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
+import org.openda.utils.generalJavaUtils.StringUtilities;
 import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
@@ -44,6 +45,8 @@ import java.util.*;
  * @author Arno Kockx
  */
 public class NetcdfDataObject implements IComposableDataObject, IComposableEnsembleDataObject {
+
+	public static final String ALLOW_TIME_INDEPENDENT_ITEMS = "allowTimeIndependentItems";
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
@@ -82,6 +85,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 */
 	private boolean lazyWriting = true;
 
+	private Boolean allowTimeIndependentItems = false;
+
 	public NetcdfDataObject() {
 	}
 
@@ -94,17 +99,25 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 * @param arguments required argument 1: the pathname of the data file relative to the given workingDir.
 	 * @param arguments optional argument 2: lazyReading true/false.
 	 * @param arguments optional argument 3: lazyWriting true/false.
+	 * @param arguments optional argument >=2: allowTimeIndependentItems=true/false.
 	 */
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		this.file = new File(workingDir, fileName);
 
-		//TODO combine these two arguments into one argument "directAccess" true/false. AK
-		if (arguments.length > 1) {
-			this.lazyReading = Boolean.valueOf(arguments[1]);
-		}
-		if (arguments.length > 2) {
-			this.lazyWriting = Boolean.valueOf(arguments[2]);
+		for (int i = 1; i < arguments.length; i++) {
+			String argument = arguments[i];
+			if (checkLazyReadingOrLazyWritingArguments(i, argument)) continue;
+			String[] keyValue = StringUtilities.getKeyValuePair(argument);
+			String key = keyValue[0];
+			String value = keyValue[1];
+			switch (key) {
+				case ALLOW_TIME_INDEPENDENT_ITEMS:
+					this.allowTimeIndependentItems = Boolean.valueOf(value);
+					continue;
+				default:
+					throw new RuntimeException("Unknown key " + key + ". Please specify only " + ALLOW_TIME_INDEPENDENT_ITEMS + " as key=value pair");
+			}
 		}
 
 		if (this.file.exists()) {
@@ -151,6 +164,22 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			this.netcdfFile.setLargeFile(true);
 			NetcdfUtils.addGlobalAttributes(this.netcdfFile);
 		}
+	}
+
+	private boolean checkLazyReadingOrLazyWritingArguments(int i, String argument) {
+		int index = argument.indexOf('=');
+		if (index == -1) {
+			if (i == 1) {
+				this.lazyReading = Boolean.valueOf(argument);
+				return true;
+			}
+			if (i == 2) {
+				this.lazyWriting = Boolean.valueOf(argument);
+				return true;
+			}
+			throw new IllegalArgumentException("Not a key value pair: " + argument);
+		}
+		return false;
 	}
 
 	/**
@@ -306,7 +335,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				arrayBasedExchangeItem.setQuantityInfo(new QuantityInfo(exchangeItemId, variable.getUnitsString()));
 				IArrayTimeInfo newTimeInfo = NetcdfUtils.createTimeInfo(variable, netcdfFile, timeInfoCache);
 				//skip variables that do not depend on time.
-				if (newTimeInfo == null) continue;
+				if (newTimeInfo == null && !allowTimeIndependentItems) continue;
 
 				arrayBasedExchangeItem.setTimeInfo(newTimeInfo);
 				//TODO cache variables with spatial coordinates. AK
