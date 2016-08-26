@@ -7,6 +7,15 @@ August 2016
 This release contains fixes for various know open issues when releasing 2.3
 For an overview of the changes in version 2.3, see Change-log-2.31.txt.
 
+Functional changes:
+ - The NetcdfD3dHisDataObject for Delft3D history netcdf files has been moved
+   from the org.openda.exchange.dataobjects name space
+   to the org.openda.model_delft3d name space
+ - When using the NetcdfDataObject for adjusting the SWAN model state,
+   an additional argument
+   allowTimeIndependentItems=true
+   must be provided to that data object.
+
 For installation instructions and the user documentation, visit www.openda.org or view the 'doc' folder.
 
 
