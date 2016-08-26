@@ -1,3 +1,68 @@
+Changes log (summery of commits) from 2.3 to 2.3.1
+==================================================
+
+ODA-465
+Fix SwanStateNetcdfFileTest.testSwanNetcdfStateFile_1
+
+Issue ODA-458
+D3dValuesOnGrid2D class not also supports set/get values for list of M,N-points. Failing wind-mask tests fixed.
+
+ODA-455
+Move NetcdfD3dHisDataObject & NetcdfD3dHisExchangeItem to model_delft3d name space
+
+Issue: ODA-245
+Documentation: updated indexcontent.html; added examples
+
+Issue: ODA-486
+Fixed test by overruling the value for the standard deviation.
+See remark in ODA-486 on checking whether additional action has to be taken.
+
+Issue: ODA-245
+Documentation: added html-documentation generated from xsd-schemes
+
+Issue: ODA-476
+Target ant validate-xml added, eliminated loads of warnings in *.oda and  *.xml.
+
+Issue: ODA-445
+Added flag to skip first time step when adding noise to boundary condtions, and flag to add only the noise difference to a state exchange item, additional commit.
+
+Issue: ODA-445
+Added flag to skip first time step when adding noise to boundary condtions, and flag to add only the noise difference to a state exchange item.
+
+Issue: ODA-440
+castor-generated xml-parsers are checked in and are no longer build automatically (additional commit to commit 505)
+
+Issue: ODA-475
+Added xml schema definition for 2d spatial noise model ('maps' noise model)
+
+Issue: ODA-475
+Added xml schema definition for time series noise model
+
+ODA-447
+BlackBox save/restore state for working dirs with subdirs: delete subdirs on release
+
+Issue: ODA-428
+Prevent loading the EfdcDLL with a 64bit JDK (this results in a JAVA runtime error with a very unhelpful error message)
+
+Issue: ODA-469
+Bugfix to repair EFDC unit tests; exchangeitem is a vector with time info containing only 1 time instance.
+
+Issue: ODA-469
+Bugfix for tests testSelectFrom2DArrayExchangeItem and testSelectFrom3DArrayExchangeItem. 
+
+Issue: ODA-476
+Documentation: updated example schemes, all validated against schemas.openda.org/
+
+Issue: ODA-476
+Documentation: reorganised directory structure for example xml-files. Corrected location of xsd-schemes in ./core and ./course.
+
+Issue: ODA-469
+Bugfix for selecting indices in BBExchangeItem. Unit tests for 2D and 3D (time-varying 2D field) added.
+
+
+Changes log (summery of commits) from 2.2 to 2.3
+================================================
+
 Issue: ODA-447
 BlackBox save/restore state for working dirs with subdirs
 

@@ -1,10 +1,23 @@
+
+OpenDA 2.3.1 Release Notes.
+===========================
+
+August 2016
+
+This release contains fixes for various know open issues when releasing 2.3
+For an overview of the changes in version 2.3, see Change-log-2.31.txt.
+
+For installation instructions and the user documentation, visit www.openda.org or view the 'doc' folder.
+
+
 OpenDA 2.3 Release Notes.
+=========================
 
 June 2016
 
 This is a release containing bug fixes, enhancements and new functionality. For an overview of the changes in version 2.3, see Change-log-2.3.txt.
 
-For installation instructions and the user manual, visit www.openda.org or view the 'doc' folder.
+For installation instructions and the user documentation, visit www.openda.org or view the 'doc' folder.
 
 New Features:
 
