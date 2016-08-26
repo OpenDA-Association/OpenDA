@@ -1,5 +1,5 @@
-/* OpenDA v2.3
-* Copyright (c) 2016 OpenDA Association
+/* OpenDA v2.3.1 
+* Copyright (c) 2016 OpenDA Association 
 * All rights reserved.
 * 
 * This file is part of OpenDA. 
@@ -30,7 +30,7 @@ public class HeaderModifier {
 
 	String suffix = "java";
 	
-	String license= "/* OpenDA v2.3 \n"+
+	String license= "/* OpenDA v2.3.1 \n"+
 	"* Copyright (c) 2016 OpenDA Association \n"+
 	"* All rights reserved.\n"+
 	"* \n"+
@@ -94,7 +94,7 @@ public class HeaderModifier {
 			boolean containsHeader=false;
 			if(line!=null){
 				needsModification=true;
-				if(line.indexOf("/* OpenDA v2.3")>=0){
+				if(line.indexOf("/* OpenDA v2.3.1")>=0){
 					needsModification=false;
 					containsHeader=true;
 				}else if(line.indexOf("/*")>=0){

@@ -1,5 +1,4 @@
-package org.openda.exchange.ioobjects;
-/* OpenDA v2.3
+/* OpenDA v2.3.1
 * Copyright (c) 2016 OpenDA Association
 * All rights reserved.
 *
@@ -18,6 +17,7 @@ package org.openda.exchange.ioobjects;
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
+package org.openda.exchange.ioobjects;
 
 
 import junit.framework.TestCase;
