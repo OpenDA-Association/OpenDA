@@ -116,14 +116,14 @@
 		</classpath>
 	</taskdef>
 
-    <target name="svn-revision" >
+    <target name="svn-revision">
 		<svn>
-			<status path="." revisionProperty="svn.revision" />
+			<status path="." revisionProperty="svn.revision"/>
 		</svn>
 		<echo>Subversion Revision: ${svn.revision}</echo>
 	</target>
 
-    <target name="manifest" depends="svn-revision">
+    <target name="manifest"> <!-- depends="svn-revision"> -->
         <tstamp/>
         <manifest file="MANIFEST.MF">
 	    <attribute name="Title" value="${projectname}"/>

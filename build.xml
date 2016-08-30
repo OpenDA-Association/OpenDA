@@ -299,7 +299,6 @@
 	        <zipfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
 	        <zipfileset dir="model_delft3d" prefix="openda_${version}/public/model_delft3d" excludes="*.svn"/>
 	        <zipfileset dir="model_dflowfm_blackbox" prefix="openda_${version}/public/model_dflowfm_blackbox" excludes="*.svn"/>
-	        <zipfileset dir="thirdparty" prefix="openda_${version}/public/thirdparty" excludes="*.svn" />
 	        <zipfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
 	        <zipfileset dir="." includes="project.properties" prefix="openda_${version}/public" />
 	        <zipfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
