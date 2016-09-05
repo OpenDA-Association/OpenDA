@@ -213,6 +213,16 @@ public class GeometryUtils {
 		int northEastCellIndex = getCellIndex(rowIndexNorthOfY, columnIndexEastOfX, rowMajor, rowCount, columnCount);
 		double northEastValue = sourceValues[northEastCellIndex];
 
+		if (Double.isNaN(northWestValue) || Double.isNaN(southWestValue) || Double.isNaN(southEastValue) || Double.isNaN(northEastValue)) {
+			//if one of the surrounding values is missing, then cannot interpolate.
+			//Return the value of the grid cell that contains the destination location.
+			//This code assumes that the edges of the grid cells are exactly in the middle between two adjacent grid cell centers for each grid cell.
+			int containingCellRowIndex = destinationY - southWestY < northWestY - destinationY ? rowIndexAtOrSouthOfY : rowIndexNorthOfY;
+			int containingCellColumnIndex = destinationX - northWestX < northEastX - destinationX ? columnIndexAtOrWestOfX : columnIndexEastOfX;
+			int containingCellIndex = getCellIndex(containingCellRowIndex, containingCellColumnIndex, rowMajor, rowCount, columnCount);
+			return sourceValues[containingCellIndex];
+		}
+
 		//interpolate.
 		double df = (northEastValue - northWestValue);
 		double dx = (northEastX - northWestX);
