@@ -51,11 +51,13 @@ public class AutoLocalizationZhang2011 {
 	private static DistributedCounter SeedWithOffset = new DistributedCounter(20100816);
 	private static Random generator = new Random(SeedWithOffset.val());
 
-	public IVector[] computeObservedLocalization(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors ){
+	public IVector[] computeObservedLocalization(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, boolean write_output){
 
+		if (write_output) {
 		System.out.println("Debug: We doen lokalizatie volgens Zhang +nbootstrap="+this.nBootstrap);
+		}
 		//Create an ensemble of gain matrices
-		IVector [][] gainMatrices = createBootstrapGainsMatrices(algorithmEnkF, obs, ensemblePredictions, ensembleVectors);
+		IVector [][] gainMatrices = createBootstrapGainsMatrices(algorithmEnkF, obs, ensemblePredictions, ensembleVectors, write_output);
 		//for (int i=0; i<gainMatrices.length; i++){
 		//System.out.println("gain("+i+")="+gainMatrices[i][0]);
 		//}
@@ -205,7 +207,7 @@ public class AutoLocalizationZhang2011 {
 
 
 
-	private IVector[][] createBootstrapGainsMatrices(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors){
+	private IVector[][] createBootstrapGainsMatrices(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, boolean write_output){
 
 		//Create an ensemble of gain matrices
 		IVector [][] gainMatrices = new IVector[this.nBootstrap][];
@@ -220,7 +222,9 @@ public class AutoLocalizationZhang2011 {
 		//}
 
 		for (int iBootstrap=0; iBootstrap<this.nBootstrap; iBootstrap++){
+			if (write_output) {
 			System.out.println("Bootstrap "+iBootstrap+" of "+ this.nBootstrap);
+			}
 			for (int i=0; i<n; i++){
 				int iRand = generator.nextInt(n);
 				bootstrapEnsembleVectors[i]=ensembleVectors.ensemble[iRand].clone();
@@ -233,7 +237,7 @@ public class AutoLocalizationZhang2011 {
 			EnsembleVectors bootstrapPredictions = new EnsembleVectors(bootstrapEnsemblePredictions);
 
 			// Greate gain matrix
-			gainMatrices[iBootstrap] = algorithmEnkF.computeGainMatrix(obs, bootstrapPredictions, bootstrapEnsemble, false, true);
+			gainMatrices[iBootstrap] = algorithmEnkF.computeGainMatrix(obs, bootstrapPredictions, bootstrapEnsemble, false, write_output);
 		}
 		return gainMatrices;
 	}

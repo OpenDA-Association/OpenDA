@@ -232,44 +232,52 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 	}
 
 	protected  void localizationHamill(IStochObserver obs, IVector[] Kvecs){
-		localizationHamill(obs, Kvecs, null, null);
+		localizationHamill(obs, Kvecs, null, null, true);
 	}
 
-	protected void localizationHamill(IStochObserver obs, IVector[] Kvecs, int[] colIndexOutput, String resultWriterSubTreevectorID){
+	protected void localizationHamill(IStochObserver obs, IVector[] Kvecs, int[] colIndexOutput, String resultWriterSubTreevectorID, boolean write_output){
 		// Apply localization Method similar to
 		// Hamill, T., J. S. Whitaker, and C. Snyder, 2001:
 		// Distance-dependent filtering of back- ground error covariance estimates
 
 
+		if (write_output) {
 		System.out.print("Applying localization method according to Hamill\n");
+		}
 		// Get the localization correlation matrix for the ensemble
 		IVector[] rho = this.ensemble[0].getObservedLocalization(obs.getObservationDescriptions(), this.distance);
 		for(int i=0; i<rho.length; i++){
 			int indexOutput=i;
 			if (colIndexOutput!=null){indexOutput=colIndexOutput[i];}
-			resutlWriteSubTree("KpreLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
-			resutlWriteSubTree("rho_" + indexOutput, rho[i], resultWriterSubTreevectorID);
+			if (write_output) {
+				resultWriteSubTree("KpreLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+				resultWriteSubTree("rho_" + indexOutput, rho[i], resultWriterSubTreevectorID);
+			}
 			Kvecs[i].pointwiseMultiply(rho[i]);
 			rho[i].free();
-			resutlWriteSubTree("KLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+			if (write_output) {
+				resultWriteSubTree("KLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+			}
 		}
 	}
 
 	protected void localizationZhang(IStochObserver obs, IVector[] Kvecs, EnsembleVectors ensemblePredictionsForecast, EnsembleVectors ensembleVectorsForecast) {
-		localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast, null, null);
+		localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast, null, null, true);
 	}
 
-	protected void localizationZhang(IStochObserver obs, IVector[] Kvecs, EnsembleVectors ensemblePredictionsForecast, EnsembleVectors ensembleVectorsForecast, int colIndexOutput[], String resultWriterSubTreevectorID){
+	protected void localizationZhang(IStochObserver obs, IVector[] Kvecs, EnsembleVectors ensemblePredictionsForecast, EnsembleVectors ensembleVectorsForecast, int colIndexOutput[], String resultWriterSubTreevectorID, boolean write_output){
 		// Automatic localization algorithm as described in
 		// Yanfen Zhang and Dean S. Oliver
 		// Evaluation and error analysis: Kalman gain regularisation versus covariance
 		// regularisation
 		// Comput. Geosci (2011) 15:489-508
 		//  DOI 10.1007/s10596-010-9218-y
+		if (write_output) {
 		System.out.print("Applying localization method according to Zhang\n");
+		}
 		// Get the localization correlation matrix for the ensemble
 		AutoLocalizationZhang2011 localMethod = new AutoLocalizationZhang2011();
-		IVector[] rho = localMethod.computeObservedLocalization(this, obs, ensemblePredictionsForecast, ensembleVectorsForecast);
+		IVector[] rho = localMethod.computeObservedLocalization(this, obs, ensemblePredictionsForecast, ensembleVectorsForecast, write_output);
         if (colIndexOutput!=null){
 			if (rho.length!=colIndexOutput.length) {
 				throw new RuntimeException("The length of the array with indices for output ("+colIndexOutput.length+
@@ -281,20 +289,24 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			int indexOutput=i;
 			if (colIndexOutput!=null){indexOutput=colIndexOutput[i];}
 
-			resutlWriteSubTree("KpreLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
-			resutlWriteSubTree("rho_" + indexOutput, rho[i], resultWriterSubTreevectorID);
+			if (write_output) {
+				resultWriteSubTree("KpreLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+				resultWriteSubTree("rho_" + indexOutput, rho[i], resultWriterSubTreevectorID);
+			}
 
             //Shur-product between localization mask and column of gain matrix
 			Kvecs[i].pointwiseMultiply(rho[i]);
 
-			resutlWriteSubTree("KLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+			if (write_output) {
+				resultWriteSubTree("KLoc_" + indexOutput, Kvecs[i], resultWriterSubTreevectorID);
+			}
 
 			rho[i].free();
 		}
 	}
 
 	// write a vector to resultwriter. When requested we only write a sub-tree (e.g. when used with augmented states)
-	private void resutlWriteSubTree(String name, IVector vector, String resultWriterSubTreevectorID){
+	private void resultWriteSubTree(String name, IVector vector, String resultWriterSubTreevectorID){
 		if (resultWriterSubTreevectorID!=null && vector instanceof ITreeVector) {
 			ITreeVector treeVec = ((ITreeVector) vector).getSubTreeVector(resultWriterSubTreevectorID);
 			Results.putValue(name, treeVec, treeVec.getSize(), "analysis step", IResultWriter.OutputLevel.All, IResultWriter.MessageType.Step);
@@ -309,15 +321,10 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 
 
 	protected IVector[] computeGainMatrix(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors){
-		return computeGainMatrix(obs, ensemblePredictions, ensembleVectors, true);
+		return computeGainMatrix(obs, ensemblePredictions, ensembleVectors, true, true);
 	}
 
-	protected IVector[] computeGainMatrix(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, boolean compute_pred_a_linear){
-		return computeGainMatrix(obs, ensemblePredictions, ensembleVectors, compute_pred_a_linear, false);
-	}
-
-
-	protected IVector[] computeGainMatrix(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, boolean compute_pred_a_linear, boolean no_output){
+	protected IVector[] computeGainMatrix(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, boolean compute_pred_a_linear, boolean write_output){
 		int m = obs.getCount(); // number of observations
 		int n = ensembleVectors.mean.getSize(); // length of the state vector
 		int q = this.ensembleSize; // number of ensemble members
@@ -338,7 +345,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		D.multiply(1.0, sqrtR, sqrtR, 1.0, false, true);
 		timerLinalg.stop();
 		timerResults.start();
-		if (!no_output){
+		if (write_output){
 			Results.putValue("sqrt_r", sqrtR, sqrtR.getNumberOfColumns() * sqrtR.getNumberOfRows() , "analysis step", IResultWriter.OutputLevel.All, IResultWriter.MessageType.Step);
         	Results.putValue("hpht_plus_r", D, D.getNumberOfColumns() * D.getNumberOfRows() , "analysis step", IResultWriter.OutputLevel.All, IResultWriter.MessageType.Step);
 			Results.putProgression("length of state vector: " + n + ".");
@@ -370,7 +377,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			}
 			timerLinalg.stop();
 			timerResults.start();
-			if (! no_output){
+			if (write_output){
             	Results.putValue("k_"+i, Kvecs[i], Kvecs[i].getSize() , "analysis step", IResultWriter.OutputLevel.All, IResultWriter.MessageType.Step);
 			}
 			timerResults.stop();
@@ -395,7 +402,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		innovAvg.free();
 		timerLinalg.stop();
 		timerResults.start();
-		if (!no_output){
+		if (write_output){
         	Results.putValue("pred_a_linear", pred_a_linear, pred_a_linear.getSize() , "analysis step", IResultWriter.OutputLevel.Normal, IResultWriter.MessageType.Step);
 		}
 		timerResults.stop();

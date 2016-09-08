@@ -282,8 +282,9 @@ public class EnKFSeq extends EnKF {
 			IVector xVector = obs.getObservationDescriptions().getValueProperties("x");
 			IVector yVector = obs.getObservationDescriptions().getValueProperties("y");
 
+			logLocalizationType();
+			Results.putProgression("Assimilating " + obs.getCount() + " observations.");
 			for (int iObs=0; iObs<obs.getCount(); iObs++){
-				Results.putProgression("Assimlating observation " +(iObs+1)+" of "+ obs.getCount());
 				// Create observer for single observation
 				double x = (xVector != null && xVector.getSize() > iObs) ? xVector.getValue(iObs) : Double.NaN;
 				double y = (yVector != null && yVector.getSize() > iObs) ? yVector.getValue(iObs) : Double.NaN;
@@ -293,7 +294,7 @@ public class EnKFSeq extends EnKF {
 				EnsembleVectors singleEnsemblePredictionForecast = extractRow(ensemblePredictionsForecast, iObs);
 
 				// Compute Kalman gain
-				IVector Kvecs[] = (IVector []) computeGainMatrix(obs1,singleEnsemblePredictionForecast,ensembleVectorsForecastAugmented, false);
+				IVector Kvecs[] = (IVector []) computeGainMatrix(obs1,singleEnsemblePredictionForecast,ensembleVectorsForecastAugmented, false, false);
 
 				// Apply localization to the gain matrix (shur-product) only on model state
 				applyLocalizationToGain(obs1, Kvecs, singleEnsemblePredictionForecast, ensembleVectorsForecastAugmented, iObs);
@@ -333,28 +334,32 @@ public class EnKFSeq extends EnKF {
 	}
 
 	protected void applyLocalizationToGain(IStochObserver obs, IVector[] Kvecs, EnsembleVectors ensemblePredictionsForecast, EnsembleVectors ensembleVectorsForecast, int iObs){
-
 		timerLocalization.start();
 		int indexObs[]=new int[1];
 		indexObs[0]=iObs;
 
 		if (this.localizationMethod==LocalizationMethodType.hamill){
-			System.out.println("EnKFSeq Note: apply localization according to Hamill to state not augmented Hx!");
 			// We can only get localization for the model state
 			ITreeVector Kvecs_model[] = new ITreeVector[1];
 			Kvecs_model[0] = ((ITreeVector) Kvecs[0]).getSubTreeVector("model");
 			indexObs[0]=iObs;
-			localizationHamill(obs, Kvecs_model, indexObs, null);
+			localizationHamill(obs, Kvecs_model, indexObs, null, false);
 		}
 		else if (this.localizationMethod==LocalizationMethodType.autoZhang){
-
-			localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast, indexObs, "model");
-		}
-		else {
-			System.out.println("EnKFSeq Note: no localization");
+			localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast, indexObs, "model", false);
 		}
 		timerLocalization.stop();
 	}
 
+	private void logLocalizationType(){
+		if (this.localizationMethod == LocalizationMethodType.hamill) {
+			Results.putMessage(this.getClass().getSimpleName() + ": apply localization according to Hamill to state not augmented Hx!");
 
+		} else if (this.localizationMethod == LocalizationMethodType.autoZhang) {
+			Results.putMessage(this.getClass().getSimpleName() + ": apply localization according to Zhang.");
+
+		} else {
+			Results.putMessage(this.getClass().getSimpleName() + ": no localization.");
+		}
+	}
 }
