@@ -27,7 +27,7 @@ else
         echo "32 bit version"
 	export OPENDA_NATIVE=linux32_gnu
 fi
-export OPENDALIB=$OPENDADIR/$OPENDA_NATIVE/lib
+export OPENDALIB=$OPENDADIR/$OPENDA_NATIVE
 export LD_LIBRARY_PATH=$OPENDALIB/lib:$LD_LIBRARY_PATH
 # There should be no intel fortran active
 

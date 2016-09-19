@@ -21,6 +21,7 @@
 package org.openda.model_openfoam;
 
 
+import org.openda.interfaces.IComposableDataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +38,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public final class CsvTimeSeriesDataObject implements IDataObject {
+public final class CsvTimeSeriesDataObject implements IComposableDataObject {
 
     private static final Logger logger = LoggerFactory.getLogger(CsvTimeSeriesDataObject.class);
 
-    public static final String PROPERTY_PATHNAME = "pathName";
+    private static final String PROPERTY_PATHNAME = "pathName";
 	private TimeSeriesSet timeSeriesSet = null;
 	String fileName = null;
 	File workingDir = null;
@@ -56,21 +57,39 @@ public final class CsvTimeSeriesDataObject implements IDataObject {
 	 *           Additional arguments (may be null zero-length)
 	 */
 	public void initialize(File workingDir, String[] arguments) {
-		if (arguments != null) {
-			this.fileName = arguments[0];
-			if (arguments.length > 1) {
-				throw new RuntimeException("DflowFMRestartFile: " + this.fileName + " has too many arguments");
-			}
-		}
-		this.timeSeriesSet = new TimeSeriesSet();
-		this.workingDir=workingDir;
+        if (arguments != null) {
+            this.fileName = arguments[0];
+            if (arguments.length > 1) {
+                throw new RuntimeException("Too many arguments: " + arguments);
+            }
+        }
+        this.timeSeriesSet = new TimeSeriesSet();
+        this.workingDir = workingDir;
 
-		TimeSeriesFormatter csvFormatter = new CsvTimeSeriesFormatter(";");
-		File file = new File(this.workingDir, this.fileName);
-		logger.debug("Reading file: " + file.getAbsolutePath());
-		TimeSeries series = csvFormatter.readFile(file);
-		series.setProperty(PROPERTY_PATHNAME, file.getAbsolutePath());
-		timeSeriesSet.add(series);
+        File file = new File(this.workingDir, this.fileName);
+        TimeSeriesFormatter csvFormatter = new CsvTimeSeriesFormatter(";");
+
+        if (file.exists() && file.isFile()) {
+            logger.debug("Reading file: " + file.getAbsolutePath());
+            TimeSeries series = csvFormatter.readFile(file);
+            series.setProperty(PROPERTY_PATHNAME, file.getAbsolutePath());
+            timeSeriesSet.add(series);
+        } else if (file.exists() && file.isDirectory()) {
+            logger.debug("Finding files in directory: " + file.getAbsolutePath());
+            for (File myFile : file.listFiles() ) {
+                if (myFile.isFile()) {
+                    TimeSeries series = csvFormatter.readFile(myFile);
+                    series.setProperty(PROPERTY_PATHNAME, myFile.getAbsolutePath());
+                    timeSeriesSet.add(series);
+                }
+            }
+        } else {
+            logger.debug("No file present. Initializing empty dataobject");
+            if ( ! file.mkdirs() ) {
+                logger.warn("Cannot create directory " + file.getAbsolutePath());
+            }
+        }
+
 	}
 
 
@@ -110,26 +129,37 @@ public final class CsvTimeSeriesDataObject implements IDataObject {
 					.getOnLocation(location);
 		Iterator<TimeSeries> iterator = myTimeSeriesSet.iterator();
 			if (!iterator.hasNext()) {
-			    throw new RuntimeException("No time series found for " + exchangeItemID);
+                logger.debug("No time series found for " + exchangeItemID);
+                return null;
 			}
 			TimeSeries timeSeries = iterator.next();
 			if (iterator.hasNext()) {
 			    throw new RuntimeException("Time series is not uniquely defined for  " + exchangeItemID);
 			}
 			return timeSeries;
-
-
 	}
-	
-	
-	/**
+
+    public void addExchangeItem(IExchangeItem item) {
+
+        if (item instanceof org.openda.exchange.timeseries.TimeSeries) {
+            TimeSeries timeSeries = (TimeSeries) item;
+            File dir = new File(this.workingDir, this.fileName);
+            File file = new File(dir, timeSeries.getLocation() + "_" + timeSeries.getQuantityId() + ".csv");
+            timeSeries.setProperty(PROPERTY_PATHNAME,file.getAbsolutePath());
+            timeSeriesSet.add((TimeSeries) item);
+        } else {
+            logger.warn("This dataobject cannot add exchange item of type " + item.getClass() + "." );
+        }
+
+    }
+
+    /**
 	 * Write all time series in this DataObject that were read from file (with property DflowfmTimTimeSeriesIoObject.PROPERTY_PATHNAME
 	 * set). Ignores all other time series, including those obtained from an URL.
 	 */
 	public void finish() {
 		if (this.timeSeriesSet == null) return;
-		for (TimeSeries series : this.timeSeriesSet)
-			writeTimeSeries(series);
+		for (TimeSeries series : this.timeSeriesSet) writeTimeSeries(series);
 	}
 
 	/**
@@ -141,7 +171,9 @@ public final class CsvTimeSeriesDataObject implements IDataObject {
 	public static void writeTimeSeries(TimeSeries series) {
 		CsvTimeSeriesFormatter csvFormatter = new CsvTimeSeriesFormatter(";");
 		File file = new File(series.getProperty(PROPERTY_PATHNAME));
-		csvFormatter.writeFile(file, series, false);
+        logger.debug("Writing to file " + file.getName() );
+        csvFormatter.writeFile(file, series, false);
+
 	}
 
 	/**

@@ -57,8 +57,8 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class DictionaryDataObject implements IDataObject{
 
-    ResourceBundle messages =
-        ResourceBundle.getBundle("LogMessageBundle");
+//    ResourceBundle messages =
+//        ResourceBundle.getBundle("LogMessageBundle");
 
     private static final Logger logger = LoggerFactory.getLogger(DictionaryDataObject.class);
     MessageFormat logFormatter = new MessageFormat("");
@@ -180,7 +180,7 @@ public class DictionaryDataObject implements IDataObject{
 		} catch (Exception e) {
 			throw new RuntimeException("Problem reading from file " + fileName+" : "+e.getClass());
 		}
-        logger.info(logFormatter.format(messages.getString("org.openda.exchange.dataobjects.initialized"), Arrays.toString( this.getExchangeItemIDs())  ) );
+        //logger.info(logFormatter.format(messages.getString("org.openda.exchange.dataobjects.initialized"), Arrays.toString( this.getExchangeItemIDs())  ) );
 
     }
 
@@ -279,7 +279,7 @@ public class DictionaryDataObject implements IDataObject{
 		} catch (Exception e) {
 			throw new RuntimeException("DictionaryDataObject: Problem writing to file " + this.fileName+" :\n" + e.getMessage());
 		}
-        logger.info(logFormatter.format(messages.getString("org.openda.exchange.dataobjects.finished"), this.fileName ) );
+//        logger.info(logFormatter.format(messages.getString("org.openda.exchange.dataobjects.finished"), this.fileName ) );
 
 
 //        logger.info("Dataobject '" +  "' is finished. Exchange items are written to file: " + this.fileName);
