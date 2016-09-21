@@ -43,7 +43,7 @@
     </target>
 
 	<target name="build-test" depends="init">
-        <javac srcdir="${testdir}" destdir="${buildtestdir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
+        <javac includeantruntime="false" srcdir="${testdir}" destdir="${buildtestdir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
             <classpath>
                 <fileset dir="${projectdir}">
                     <include name="${projectlib}/*.jar"/>
@@ -62,7 +62,7 @@
     </target>
 
     <target name="moduleclasses" depends="init,copy-module-resources">
-	    <javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
+	    <javac includeantruntime="false" srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
 		<classpath>
 			<fileset dir=".">
 				<include name="${modulelibdir}/*.jar"/>
@@ -180,7 +180,7 @@
 	     <!-- compile test classes -->
 	    <target name="testclasses" depends="init">
 	        <mkdir dir="${testbuilddir}"/>
-                <javac srcdir="${testdir}" destdir="${testbuilddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
+                <javac includeantruntime="false" srcdir="${testdir}" destdir="${testbuilddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
                     <classpath>
                         <fileset dir="${projectdir}">
                             <include name="${projectlib}/*.jar"/>

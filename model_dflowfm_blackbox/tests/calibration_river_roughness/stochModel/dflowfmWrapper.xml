@@ -60,7 +60,7 @@
             <id>boundaries</id>
         </ioObject>
         <!-- river rougness -->
-        <ioObject className="org.openda.model_delft3d.D3dRoughParamsFile">
+        <ioObject className="org.openda.model_dflowfm.DFlowFMTrachytopeFile">
            <file>%trachytopeFile%</file>
            <id>ttdFile</id>
         </ioObject>
