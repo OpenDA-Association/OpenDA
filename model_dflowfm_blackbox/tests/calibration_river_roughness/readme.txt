@@ -1,4 +1,5 @@
-See also ../../doc/openda_dflowfm.tex.
+See also http://content.oss.deltares.nl/delft3d/manuals/D-Flow_FM_User_Manual.pdf#subsection.B.6.1 for trachytopes and chapter 19 about OpenDA
+
 
 The m-files can be used to plot results after running the corresponding
 simulations. The results are not very good yet, settings of the noise model
