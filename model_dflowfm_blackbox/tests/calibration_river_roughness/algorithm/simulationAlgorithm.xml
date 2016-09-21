@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/simulationConfig.xsd" >
+    <instance repeat="1" stochParameter="false" stochForcing="false" />
+    <writeObservations filename="../generated_observations.csv" addNoise="false" format="csv" />
+</SimulationConfig>
+
