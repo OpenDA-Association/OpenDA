@@ -553,10 +553,10 @@ public class WdmTimeSeriesTest extends TestCase {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeUtils.createTimeZoneFromDouble(9));
-        calendar.set(2005, 0, 1, 0, 0, 0);
+        calendar.set(2011, 7, 9, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
-        calendar.set(2007, 0, 1, 0, 0, 0);
+        calendar.set(2011, 7, 10, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
