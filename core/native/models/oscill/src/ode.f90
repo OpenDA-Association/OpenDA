@@ -79,7 +79,6 @@ subroutine runge_kutta4(tstart,tstop,dt,x_in,func_dx, func_noise, addnoise, &
          tnow=t+dt;
          
          if (addnoise) then
-            print *,"FOUT"
             call func_noise(t,dt,x,noise,dw);
             x=x+dw
          endif
