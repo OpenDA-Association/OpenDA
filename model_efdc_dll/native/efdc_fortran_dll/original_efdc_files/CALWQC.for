@@ -35,9 +35,18 @@ C **  CALLS TO SOURCE-SINK CALCULATIONS
 C **  BYPASS OR INITIALIZE VERTICAL DIFFUSION CALCULATION  
 C  
       IF(KC.EQ.1) GOTO 2000  
-      DO L=2,LA  
+!
+!$OMP PARALLEL DO PRIVATE(LF,LL)
+                do ithds=0,nthds-1
+                  LF=jse(1,ithds)
+                  LL=jse(2,ithds)
+!
+      DO L=LF,LL
         HWQI(L)=1./HWQ(L)  
       ENDDO  
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
       TTMP=SECNDS(0.0)  
 C  
 C **  VERTICAL DIFFUSION CALCULATION LEVEL 1  
@@ -309,10 +318,15 @@ C
 C **  VERTICAL DIFFUSION CALCULATION LEVEL 3  
 C  
       ELSEIF(ISWQLVL.EQ.3)THEN  
-        RCDZKK=-DELT*CDZKK(1)  
-        DO ND=1,NDM  
-          LF=2+(ND-1)*LDM  
-          LL=LF+LDM-1  
+!
+!$OMP PARALLEL DO PRIVATE(LF,LL,
+!$OMP& RCDZKK,CCUBTMP,CCMBTMP,EEB,
+!$OMP& RCDZKMK,CCLBTMP)
+                do ithds=0,nthds-1
+                  LF=jse(1,ithds)
+                  LL=jse(2,ithds)
+!
+        RCDZKK=-DELT*CDZKK(1)   
           DO L=LF,LL  
             CCUBTMP=RCDZKK*HWQI(L)*AB(L,1)  
             CCMBTMP=1.-CCUBTMP  
@@ -340,10 +354,6 @@ C
             WQV(L,1,20)=WQV(L,1,20)*EEB  
             WQV(L,1,21)=WQV(L,1,21)*EEB  
           ENDDO  
-        ENDDO  
-        DO ND=1,NDM  
-          LF=2+(ND-1)*LDM  
-          LL=LF+LDM-1  
           DO K=2,KS  
             RCDZKMK=-DELT*CDZKMK(K)  
             RCDZKK=-DELT*CDZKK(K)  
@@ -376,12 +386,8 @@ C
               WQV(L,K,21)=(WQV(L,K,21)-CCLBTMP*WQV(L,K-1,21))*EEB  
             ENDDO  
           ENDDO  
-        ENDDO  
         K=KC  
         RCDZKMK=-DELT*CDZKMK(K)  
-        DO ND=1,NDM  
-          LF=2+(ND-1)*LDM  
-          LL=LF+LDM-1  
           DO L=LF,LL  
             CCLBTMP=RCDZKMK*HWQI(L)*AB(L,K-1)  
             CCMBTMP=1.-CCLBTMP  
@@ -407,11 +413,7 @@ C
             WQV(L,K,19)=(WQV(L,K,19)-CCLBTMP*WQV(L,K-1,19))*EEB  
             WQV(L,K,20)=(WQV(L,K,20)-CCLBTMP*WQV(L,K-1,20))*EEB  
             WQV(L,K,21)=(WQV(L,K,21)-CCLBTMP*WQV(L,K-1,21))*EEB  
-          ENDDO  
-        ENDDO  
-        DO ND=1,NDM  
-          LF=2+(ND-1)*LDM  
-          LL=LF+LDM-1  
+          ENDDO   
           DO K=KC-1,1,-1  
             DO L=LF,LL  
               WQV(L,K, 1)=WQV(L,K, 1)-CU1(L,K)*WQV(L,K+1, 1)  
@@ -437,7 +439,9 @@ C
               WQV(L,K,21)=WQV(L,K,21)-CU1(L,K)*WQV(L,K+1,21)  
             ENDDO  
           ENDDO  
-        ENDDO  
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
       ENDIF  
       TWQDIF=TWQDIF+SECNDS(TTMP)  
  2000 CONTINUE  
