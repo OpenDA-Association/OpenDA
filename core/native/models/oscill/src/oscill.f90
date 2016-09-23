@@ -203,6 +203,9 @@ real(kind=8), dimension(2) ::p0    !:      model parameters
    pars%std_pos    = 0.2d0 !????
    pars%noise_dt   = 1.0d0 !????
 
+
+   call cta_tree_print(hinput,ierr)
+
   ! Get the initial model-parameters from the input
    call cta_tree_getvaluestr(hinput,'parameters/avg_t_damp',p0(1),CTA_DOUBLE,ierr)
    call cta_tree_getvaluestr(hinput,'parameters/avg_omega',p0(2),CTA_DOUBLE,ierr)
@@ -210,6 +213,7 @@ real(kind=8), dimension(2) ::p0    !:      model parameters
       print *,'Error in oscill_create. Initial parameters not specified in input'
       return
    endif
+   print *,'parameters zijn: ',p0
 
    inputTimeHorizon=CTA_NULL
    call cta_tree_gethandlestr(hinput,'timehorizon',inputTimeHorizon,ierr)
@@ -415,6 +419,8 @@ real(kind=8), dimension(2) ::param !:      model parameters
    if (ierr/=CTA_OK) return
    call cta_treevector_getvals(state,x_in,2,CTA_DOUBLE,ierr)
    if (ierr/=CTA_OK) return
+   print *,'x_in is ',x_in
+
 
    ! Get 'sparam' and set the value of the local variable 'param'
    call cta_treevector_getvals(sparam,param,2,CTA_DOUBLE,ierr)
@@ -427,6 +433,10 @@ real(kind=8), dimension(2) ::param !:      model parameters
    call runge_kutta4(t1,t2,pars%dt,x_in,dx_oscill, noise_oscill, (baddnoise==CTA_TRUE), &
                      noise,x_out, t_out,param)
    if (ierr/=CTA_OK) return
+
+   print *,'x_in is ',x_in, param
+   print *,'x_out is ',x_out
+
 
    call cta_matrix_setvals(husrdata,noise,3,2,CTA_DOUBLE,ierr)
    if (ierr/=CTA_OK) return

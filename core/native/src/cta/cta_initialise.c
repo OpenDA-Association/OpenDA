@@ -20,6 +20,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <locale.h>
 #include "f_cta_utils.h"
 #include "cta.h"
 #include "cta_obsdescr_table.h"
@@ -37,6 +38,10 @@ int is_initialised=0;
 
 int CTA_Core_Initialise()
 {
+
+   //Fixes a very very nasty bug that results in non working atof (string -> double) conversions
+   setlocale(LC_ALL, "C");
+
    CTA_INITIAL_RANDOM_SEED=16111970; //Bas ;-)
 //   CTA_INITIAL_RANDOM_SEED=2101975;  //Nils ;-)
 
