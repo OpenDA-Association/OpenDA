@@ -106,7 +106,7 @@ public class OpenDaTestSupport {
     static private String testRunDirPrefix     = "opendaTestRuns";
     static private String javaTestDirPrefix    = "java"+File.separator+"test";
     static private String publicProjectDirName = "openda_public";
-	static private String publicProjectDirNameDepricated = "public";
+	static private String publicProjectDirNameDepricated = "OpenDA";
 
 	//global attribute names.
 	private static final String HISTORY_ATTRIBUTE = "history";
