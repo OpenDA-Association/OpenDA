@@ -32,6 +32,10 @@ public enum EfdcExchangeItemType {
 	RELATIVE_HUMIDITY		(106, "RelativeHumidity", EfdcExchangeItemRole.FORCING),
 	POTENTIAL_EVAPORATION	(107, "PotentialEvaporation", EfdcExchangeItemRole.FORCING),
 
+	//wind forcing variables (input).
+	WIND_SPEED		(151, "WindSpeed", EfdcExchangeItemRole.FORCING),
+	WIND_DIRECTION	(152, "WindDirection", EfdcExchangeItemRole.FORCING),
+
 	//boundary condition variables (input).
 	WATER_LEVEL					(201, "WaterLevel", EfdcExchangeItemRole.BOUNDARY),
 	DISCHARGE					(301, "Discharge", EfdcExchangeItemRole.BOUNDARY),

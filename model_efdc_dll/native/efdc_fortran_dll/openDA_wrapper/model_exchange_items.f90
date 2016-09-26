@@ -30,6 +30,12 @@ module model_exchange_items
   integer, parameter :: AtmosphericPressure     = 105
   integer, parameter :: RelativeHumidity        = 106
   integer, parameter :: PotentialEvaporation    = 107
+  
+  ! wind forcing
+  integer, parameter :: nrExchangeItemsWind     = 2
+  integer, parameter :: indexWind               = 150  ! timeseries (151:152)
+  integer, parameter :: WindSpeed               = 151
+  integer, parameter :: WindDirection           = 152
 
   ! water level
   integer, parameter :: WaterLevel      = 201
@@ -69,6 +75,7 @@ module model_exchange_items
   end type
 
   ! exchange items for time series
+  type(exchangeItem), dimension(nrExchangeItemsWind), private, save :: exchangeItemsWind
   type(exchangeItem), dimension(nrExchangeItemsWQ),  private, save :: exchangeItemsWQ
   type(exchangeItem), dimension(nrExchangeItemsTOX), private, save :: exchangeItemsTOX
   type(exchangeItem), dimension(nrExchangeItemsControl), private, save :: exchangeItemsControl
@@ -85,7 +92,7 @@ contains
   ! Create a list of exchange items and check if they are active 
   ! --------------------------------------------------------------------------
 
-    use global, only: NTOX, NWQV, WQTSNAME, TXID0, NQCTL, NQCTYP1
+    use global, only: NWSER, NTOX, NWQV, WQTSNAME, TXID0, NQCTL, NQCTYP1
 
     implicit none
 
@@ -102,6 +109,8 @@ contains
 !    real    :: r
     ret_val = 0
 
+    exchangeItemsWind(1)  = exchangeItem( id = 151, name = "WindSpeed", efdc_name = "WINDS")
+    exchangeItemsWind(2)  = exchangeItem( id = 152, name = "WindDirection", efdc_name = "WINDD")
     ! water quality
     exchangeItemsWQ(1)  = exchangeItem( id = 501, name = 'AlgalCyanobacteria')
     exchangeItemsWQ(2)  = exchangeItem( id = 502, name = 'AlgalDiatom')
@@ -175,6 +184,13 @@ contains
     exchangeItemsControl(1)  = exchangeItem( id = 701, name = "ControlsGateWaterLevel", efdc_name = "SEL1")
     exchangeItemsControl(2)  = exchangeItem( id = 702, name = "ControlsGateOpeningHeight", efdc_name = "GUPH")
     
+    
+    do i = 1,nrExchangeItemsWind
+      if (NWSER.GE.1) exchangeItemsWind(i)%active = 1 
+      write(general_log_handle,'(A,A,A,I4,A,I1)' ) "exchangeItem: " ,exchangeItemsWind(i)%name , &
+                                              " id: ", exchangeItemsWind(i)%id, &
+                                              " active: ", exchangeItemsWind(i)%active
+    end do
     
     write(general_log_handle,*) "number of water quality specified in EFDC: ", NWQV
     do i = 1, nrExchangeItemsWQ
@@ -253,6 +269,9 @@ contains
 
     ret_val = -1
     select case(exchange_item_id)
+    case (indexWind+1:indexWind+nrExchangeItemsWind)
+      id = exchange_item_id - indexWind
+      ret_val = exchangeItemsWind(id)%active
     case (indexWQ+1:indexWQ+nrExchangeItemsWQ)
       id = exchange_item_id - indexWQ
       ret_val = exchangeItemsWQ(id)%active

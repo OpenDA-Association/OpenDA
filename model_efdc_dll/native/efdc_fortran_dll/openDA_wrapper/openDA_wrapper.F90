@@ -45,6 +45,7 @@ module m_openda_wrapper
   use model_exchange_items
   use model_state
   use model_aser_time_series
+  use model_wser_time_series
   use model_pser_time_series
   use model_qser_time_series
   use model_cser_time_series
@@ -102,7 +103,8 @@ contains
     use omp_lib
     USE GLOBAL, only: TBEGIN, TCON, TIDALP, NTC, TIMEDAY, & 
          NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM,NDCSER, NCSERM, &
-         NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM
+         NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM, &
+         NDWSER, NWSERM
 
     ! arguments
     character(kind=c_char), intent(in)  :: parent_directory_c(*) ! parent directory for model instances (full path)
@@ -183,6 +185,8 @@ contains
         ! store sizes of time series (the global ones are redetermined each time we do a restart)
         ndaser_max = NDASER
         naser_max = NASERM
+        ndwser_max = NDWSER
+        nwser_max = NWSERM
         ndpser_max = NDPSER
         npser_max = NPSERM
         ndqser_max = NDQSER
@@ -254,8 +258,8 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_model_instance_
 #endif
 
-    use global, only: NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM, KCM, NDCSER, NCSERM,&
-        TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM
+    use global, only: NDASER, NASERM, NDWSER, NWSERM, NDPSER, NPSERM, NDQSER, NQSERM, &
+        KCM, NDCSER, NCSERM, TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM
     
     ! arguments
     character(kind=c_char), intent(in)  :: instance_dir_c(*) ! model instance directory
@@ -297,6 +301,7 @@ contains
     ! add wrapper storage for instance
     call model_state_allocate(instance)
     call model_aser_allocate(instance, NDASER, NASERM) 
+    call model_wser_allocate(instance, NDWSER, NWSERM)
     call model_pser_allocate(instance, NDPSER, NPSERM)
     call model_qser_allocate(instance, NDQSER, KCM, NQSERM)
     call model_cser_allocate(instance, NDCSER, KCM, NCSERM)        
@@ -310,6 +315,7 @@ contains
     if (debug) write(dm_outfile_handle(instance),'(A)') 'got model state'
     if (ret_val == 0) ret_val = model_get_aser(instance)
     if (ret_val == 0) ret_val = model_get_daily_solar_intensity(instance, .true.)
+    if (ret_val == 0) ret_val = model_get_wser(instance)
     if (ret_val == 0) ret_val = model_get_pser(instance)
     if (ret_val == 0) ret_val = model_get_qser(instance)
     if (ret_val == 0) ret_val = model_get_cser(instance)
@@ -933,6 +939,8 @@ contains
     
     case (Precipitation:PotentialEvaporation) ! atmospheric always supported
       ret_val = 1
+    case (WindSpeed:WindDirection) ! wind is not always supported
+      ret_val = model_exchange_items_supports(exchange_item_id)
     case (WaterLevel) !always supported
       ret_val = 1
     case (Discharge) !always supported
@@ -980,7 +988,7 @@ contains
     result (ret_val) &
     bind(C, name="m_openda_wrapper_get_times_for_ei_")
 
-    use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER
+    use global, only: TCASER, TCWSER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_times_for_ei_
@@ -1004,6 +1012,9 @@ contains
     select case(exchange_item_id)
     case (Precipitation:PotentialEvaporation) ! atmospheric 
        times = dble(aser(instance)%TASER(1:values_count,bc_index))/86400.0d0 * dble(TCASER(bc_index))
+       ret_val = 0
+    case (WindSpeed:WindDirection) ! wind
+       times = dble(wsert(instance)%TWSER(1:values_count,bc_index))/86400.0d0 * dble(TCWSER(bc_index))
        ret_val = 0
     case (WaterLevel) ! waterlevel
        times = dble(psert(instance)%TPSER(1:values_count,bc_index))/86400.0d0 * dble(TCPSER(bc_index))
@@ -1063,7 +1074,7 @@ contains
     result (ret_val) &
     bind(C, name="m_openda_wrapper_set_times_for_ei_")
 
-  use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN
+  use global, only: TCASER, TCWSER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_times_for_ei_
 #endif
@@ -1085,7 +1096,7 @@ contains
     real :: period
     character(len=max_message_length) :: message ! error message
     
-    ret_val = 0 
+    ret_val = 0
     select case(exchange_item_id)
     case (101:109) ! atmospheric 
        if (values_count > aser(instance)%NDASER) then
@@ -1110,6 +1121,16 @@ contains
           aser(instance)%TASER(:,bc_index) = 1.0e38
           aser(instance)%TASER(1:values_count,bc_index) = real( times * factor )
           aser(instance)%MASER(bc_index) = values_count
+       end if
+    case (WindSpeed:WindDirection)
+       if (values_count > wsert(instance)%NDWSER) then
+          ret_val = enlarge_wser_time_series(instance, values_count, wsert(instance)%NWSER)
+       end if
+       if (ret_val==0) then
+          factor =  86400.d0/dble(TCWSER(bc_index))
+          wsert(instance)%TWSER(:,bc_index) =  1.0e38
+          wsert(instance)%TWSER(1:values_count,bc_index) = real(times * factor)
+          wsert(instance)%MWSER(bc_index) = values_count
        end if
     case (WaterLevel)
        if (values_count > psert(instance)%NDPSER) then
@@ -1340,6 +1361,8 @@ contains
     case (RelativeHumidity)
         ret_val = 1
     case (PotentialEvaporation)
+        ret_val = 1
+    case (WindSpeed : WindDirection)
         ret_val = 1
     case (WaterLevel)
         ret_val = 1 
@@ -1630,6 +1653,8 @@ contains
     select case(exchange_item_id)
     case (Precipitation:PotentialEvaporation) ! atmospheric 
        ret_val = aser(instance)%MASER(bc_index)
+    case (WindSpeed:WindDirection)
+       ret_val = wsert(instance)%MWSER(bc_index)
     case (WaterLevel)
        ret_val = psert(instance)%MPSER(bc_index)
     case (Discharge)
@@ -1779,6 +1804,8 @@ contains
     select case(exchange_item_id)
     case (Precipitation:PotentialEvaporation) ! atmospheric
        ret_val = aser(instance)%NASER
+    case (WindSpeed:WindDirection)
+       ret_val = wsert(instance)%NWSER
     case (WaterLevel)
        ret_val = psert(instance)%NPSER
     case (Discharge)
@@ -1858,7 +1885,7 @@ contains
     ret_val = -1 ! indices not ok
 
     select case(exchange_item_id)
-    case (Precipitation:PotentialEvaporation, WaterLevel, Discharge, WaterTemperature)
+    case (Precipitation:PotentialEvaporation, WindSpeed:WindDirection, WaterLevel, Discharge, WaterTemperature)
       ret_val = 0
     case (indexWQ+1 : indexWQ+nrExchangeItemsWQ)
       ret_val = 0 
@@ -1994,6 +2021,12 @@ contains
           case (PotentialEvaporation)
              factor = 1.0d0/dble(RAINCVT)
              values = dble(aser(instance)%EVAP(start_index:end_index, bc_index))
+             ret_val = 0
+          case (WindSpeed)
+             values = dble(wsert(instance)%WINDS(start_index:end_index, bc_index))
+             ret_val = 0
+          case (WindDirection)
+             values = dble(wsert(instance)%WINDD(start_index:end_index, bc_index))
              ret_val = 0
           case (WaterLevel)
              gravity = 9.81d0
@@ -2155,6 +2188,12 @@ contains
              !RAINCVT = 1.0e-3/3600.0
              aser(instance)%EVAP(start_index:end_index, bc_index) = real(values)
              ret_val = 0
+          case (WindSpeed)
+             wsert(instance)%WINDS(start_index:end_index, bc_index) = real(values)
+             ret_val = 0
+          case (WindDirection)
+             wsert(instance)%WINDD(start_index:end_index, bc_index) = real(values)
+             ret_val = 0
           case (WaterLevel)
              gravity = 9.81d0
              psert(instance)%PSER(start_index:end_index, bc_index) = real(values * gravity) 
@@ -2238,8 +2277,9 @@ contains
   function check_bc_indices(instance, exchange_item_id, bc_index, start_time, end_time, start_index, end_index) & 
     result(success)
     
-    use global, only: NDASER ,NASERM, TASER, NDPSER, NPSERM, TPSER, NDQSER, NQSERM, TQSER, NCSER, &
-        TCASER, TCPSER, TCCSER, TCQSER, NWQV, NTOX, GCCSER ! time conversion to seconds
+    use global, only: NDASER ,NASERM, TASER, NDWSER, NWSERM, TWSER, NDPSER, NPSERM, TPSER, NDQSER, NQSERM, & 
+        TQSER, NCSER, &
+        TCASER, TCWSER, TCPSER, TCCSER, TCQSER, NWQV, NTOX, GCCSER ! time conversion to seconds
     
 
     ! return value
@@ -2275,6 +2315,14 @@ contains
           bc_end_time = aser(instance)%TASER(aser(instance)%MASER(bc_index), bc_index) * dble(TCASER(bc_index)) & 
                       / 86400.0d0
           bc_time_interval = (bc_end_time - bc_start_time) / dble(aser(instance)%MASER(bc_index)-1 )
+       end if
+    case (WindSpeed:WindDirection)
+       success = bc_index >= 1 .and. bc_index <= wsert(instance)%NWSER
+       if (success) then  
+          bc_start_time = wsert(instance)%TWSER(1, bc_index) * dble(TCWSER(bc_index)) / 86400.0d0
+          bc_end_time = wsert(instance)%TWSER(wsert(instance)%MWSER(bc_index), bc_index) * dble(TCWSER(bc_index)) & 
+                      / 86400.0d0
+          bc_time_interval = (bc_end_time - bc_start_time) / dble(wsert(instance)%MWSER(bc_index)-1 )
        end if
     case (WaterLevel) 
        success  =  bc_index >= 1 .and. bc_index <= psert(instance)%NPSER
@@ -2390,6 +2438,7 @@ contains
     integer, dimension(:), pointer :: org_dm_outfile_handle
     type(state_vector), dimension(:), pointer :: org_model_instance_state => NULL()
     type(aser_time_series), dimension(:), pointer :: org_model_instance_aser => NULL()
+    type(wser_time_series), dimension(:), pointer :: org_model_instance_wser => NULL()
     type(pser_time_series), dimension(:), pointer :: org_model_instance_pser => NULL()
     type(qser_time_series), dimension(:), pointer :: org_model_instance_qser => NULL()
     type(cser_time_series),  dimension(:), pointer :: org_model_instance_cser => NULL()
@@ -2429,6 +2478,14 @@ contains
        if (associated(org_model_instance_aser)) then
           aser(1:dm_max_dm_model_instance_count) = org_model_instance_aser
           deallocate(org_model_instance_aser)
+       end if
+       
+       !realloc pointers to wser time series
+       org_model_instance_wser => wsert
+       allocate(wsert(dm_max_dm_model_instance_count + instances_realloc_size))
+       if (associated(org_model_instance_wser)) then
+          wsert(1:dm_max_dm_model_instance_count) = org_model_instance_wser
+          deallocate(org_model_instance_wser)
        end if
 
        !realloc pointers to pser time series
