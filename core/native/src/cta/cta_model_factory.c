@@ -936,6 +936,16 @@ CTA_ModelClass CTAI_XML_CreateModelClass(xmlNode *cur_node) {
                  h_func[CTA_MODEL_SAVE_PERSISTENTSTATE]=hfunc;
                } else if (0 == strcmp("CTA_MODEL_LOADPERSISTENTSTATE", name)){
                  h_func[CTA_MODEL_LOAD_PERSISTENTSTATE]=hfunc;
+               } else if (0 == strcmp("CTA_MODEL_GET_NUMDOMAINS", name)){
+                 h_func[CTA_MODEL_GET_NUMDOMAINS]=hfunc;
+               } else if (0 == strcmp("CTA_MODEL_GET_OBSSELECTOR", name)){
+                 h_func[CTA_MODEL_GET_OBSSELECTOR]=hfunc;
+               } else if (0 == strcmp("CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN", name)){
+                 h_func[CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN]=hfunc;
+               } else if (0 == strcmp("CTA_MODEL_GET_STATEDOMAIN", name)){
+                 h_func[CTA_MODEL_GET_STATEDOMAIN]=hfunc;
+               } else if (0 == strcmp("CTA_MODEL_AXPY_STATEDOMAIN", name)){
+                 h_func[CTA_MODEL_AXPY_STATEDOMAIN]=hfunc;
                } else {
                   printf("CTAI_XML_CreateModelClass :Warning found unknown node %s\n", name);
                }

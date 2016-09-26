@@ -310,6 +310,11 @@ public class CsvStochObserver extends Instance implements IStochObserver {
   	return result;
    }
 
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".createSelection() not implemented");
+	}
+
 	public IStochObserver createSelection(Type observationType) {
 		if (observationType == Type.Assimilation) {
 			return this;

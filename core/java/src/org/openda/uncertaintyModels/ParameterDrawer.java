@@ -20,6 +20,8 @@
 package org.openda.uncertaintyModels;
 
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.utils.TreeVector;
 import org.openda.utils.io.CsvReader;
@@ -30,11 +32,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ParameterDrawer implements IStochModelInstance {
+public class ParameterDrawer implements IStochModelInstance, IStochModelInstanceDeprecated {
 
     GlueStochVector glueStochVector;
 
-    
+
+    public IVector getState(int iDomain) {
+        throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.getState(): Not implemented yet.");
+    }
+
+
     public IVector getState() {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.getState(): Not implemented yet.");
     }
@@ -44,7 +51,10 @@ public class ParameterDrawer implements IStochModelInstance {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.axpyOnState(): Not implemented yet.");
     }
 
-    
+    public void axpyOnState(double alpha, IVector vector, int iDomain) {
+        throw new UnsupportedOperationException("org.costa.uncertaintyModels.ParameterDrawer.axpyOnState(double alpha, IVector vector, int iDomain): Not implemented yet.");
+    }
+
     public IVector getParameters() {
         return glueStochVector.getExpectations();
     }
@@ -104,7 +114,17 @@ public class ParameterDrawer implements IStochModelInstance {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.setAutomaticNoiseGeneration(): Not implemented yet.");
     }
 
-    
+    /**
+     * Get the operator that can calculate model values corresponding to a number of observations
+     * This returns the operator that calculates what the observations would look like,
+     * if reality would be equal to the current stoch model state.
+     *
+     * @return Observation operator
+     */
+    public IObservationOperator getObservationOperator(){
+        return new ObservationOperatorDeprecatedModel(this);
+    }
+
     public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.getObservedValues(): Not implemented yet.");
     }
@@ -144,8 +164,18 @@ public class ParameterDrawer implements IStochModelInstance {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.compute(): Not implemented yet.");
     }
 
-    
+
+    public ILocalizationDomains getLocalizationDomains(){
+        return new LocalizationDomainsSimpleModel();
+    }
+
+
     public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+        throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.getObservedLocalization(): Not implemented yet.");
+    }
+
+
+    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.getObservedLocalization(): Not implemented yet.");
     }
 

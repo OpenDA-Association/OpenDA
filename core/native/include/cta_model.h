@@ -84,7 +84,16 @@ typedef CTA_Handle CTA_ModelClass;
 #define CTA_MODEL_SAVE_PERSISTENTSTATE       (33)
 #define CTA_MODEL_LOAD_PERSISTENTSTATE       (29)
 
-#define CTA_MODEL_NUMFUNC                   (34)
+/* Domain and local analysis support */
+#define CTA_MODEL_GET_NUMDOMAINS              (30)
+#define CTA_MODEL_GET_OBSSELECTOR             (31)
+#define CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN   (32)
+#define CTA_MODEL_GET_STATEDOMAIN             (33)
+#define CTA_MODEL_AXPY_STATEDOMAIN            (34)
+
+
+
+#define CTA_MODEL_NUMFUNC                   (35)
 
 #ifdef __cplusplus
 extern "C" {
@@ -497,6 +506,79 @@ int CTAI_Model_PerformTimesteps(
    CTA_Time htime,           /* timespan to compute */
    int mindBarrier           /* Flag to activate barrier check fixed timestepping */
 );
+
+
+
+/** \brief Get the number of domains for local analysis
+ *  
+ * \param hmodel   I  handle of model instance
+ * \param distance I  characteristic distance
+ * \param ndomains O  number of domains
+ *
+ * \return error status: CTA_OK if successful
+ */
+CTAEXPORT int CTA_Model_GetNumDomains(CTA_Model hmodel, double distance, int *ndomains);
+
+
+/** \brief Get selection of observations that are relevnet for assimilation in the given domain
+ *  
+ * \param hmodel    I  handle of model instance
+ * \param hdescr    I  observation description of all observations
+ * \param distance  I  characteristic distance
+ * \param idomain   I  domain number
+ * \param selection O  costa vector with the indices of the relevant observations (0 based)
+ *
+ * \return error status: CTA_OK if successful
+ */
+CTAEXPORT int CTA_Model_GetObsSelector( CTA_Model hmodel, 
+                   CTA_ObsDescr hdescr, double distance, int idomain, CTA_Vector *selection);
+
+
+
+
+
+/** \brief Get for each observation a localization scaling vector for single domain
+ *  
+ * \param hmodel   I  handle of model instance
+ * \param hdescr   I  observation description for which we want localization scaling vectors
+ * \param distance I  characteristic distance
+ * \param idomain  I  domain number
+ * \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+ *                    are created when the indices are CTA_NULL on entry
+ *
+ * \return error status: CTA_OK if successful
+ */
+CTAEXPORT int CTA_Model_GetObsLocalizationDomain( CTA_Model hmodel, 
+                   CTA_ObsDescr hdescr, double distance, int idomain, CTA_Vector locVecs);
+
+
+/** \brief Get a copy of the internal state.
+ *
+ * \note Optionally a tree-vector is created. In that case the caller of this
+ * method is responsible for freeing that tree-vector. The input state must be compatible
+ * (same size and or composition) as the models internal state.
+ * \note If *hstate == CTA_NULL a new object is created, user is responsible for freeing this object.
+ *
+ * \param hmodel   I  handle of model instance
+ * \param idomain  I  domain number
+ * \param hstate   IO receives state of the model, *hstate can be CTA_NULL on calling (see note)
+ * \return error status: CTA_OK if successful
+ */
+CTAEXPORT int CTA_Model_GetStateDomain(CTA_Model hmodel, int idomain, CTA_TreeVector *hstate);
+
+/** \brief Perform axpy operation on the internal state for a single domain 
+ *
+ * \note AXPY: y=alpha*x+y. y corresponds to the models
+ *       internal state and x can be a state vector or a model
+ 
+ * \param hmodel   IO handle of model instance (y)
+ * \param alpha    I  alpha
+ * \param idomain  I  domain number
+ * \param hx       I  handle of x (state or model)
+ * \return error status: CTA_OK if successful
+ */
+CTAEXPORT int CTA_Model_AxpyStateDomain(CTA_Model hmodel, double alpha, int idomain, CTA_Handle hx);
+
 #ifdef __cplusplus
 }
 #endif

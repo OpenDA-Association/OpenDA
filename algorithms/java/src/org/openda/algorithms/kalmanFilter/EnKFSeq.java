@@ -70,9 +70,15 @@ public class EnKFSeq extends EnKF {
 			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}
 
+		public IStochObserver createSelection(int[] selector){
+			throw new UnsupportedOperationException(this.getClass().getName()
+					+ ".createSelection() not implemented");
+		}
+
 		public IStochObserver createSelection(Type observationType) {
 			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}
+		
 		public ISelector createSelector(Type observationType) {
 			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}

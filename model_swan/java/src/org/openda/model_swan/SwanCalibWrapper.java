@@ -20,6 +20,8 @@
 
 package org.openda.model_swan;
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.blackbox.config.BBAction;
 import org.openda.interfaces.*;
 import org.openda.model_swan.SwanParameters;
@@ -36,7 +38,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 
-public class SwanCalibWrapper extends Instance implements IStochModelInstance{
+public class SwanCalibWrapper extends Instance implements IStochModelInstance, IStochModelInstanceDeprecated{
 	private static final String WIND_DIRECTION_PARAMETER_ID = "winddir";
     private static final String WIND_VELOCITY_PARAMETER_ID = "windvel";
     private static final String WAVE_DIRECTION_PARAMETER_ID = "wavedir";
@@ -345,6 +347,10 @@ public class SwanCalibWrapper extends Instance implements IStochModelInstance{
         }
     }
 
+    public IObservationOperator getObservationOperator(){
+        return new ObservationOperatorDeprecatedModel(this);
+    }
+
     //SwanOpenDAModel
     public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
         if (swanResults == null) {
@@ -355,7 +361,15 @@ public class SwanCalibWrapper extends Instance implements IStochModelInstance{
         return new Vector(observedValues);
     }
 
-	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+    public ILocalizationDomains getLocalizationDomains(){
+        return new LocalizationDomainsSimpleModel();
+    }
+
+    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+        throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper.getObservedLocalization(): Not implemented yet.");
+    }
+
+    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper.getObservedLocalization(): Not implemented yet.");
 	}
 
@@ -400,7 +414,15 @@ public class SwanCalibWrapper extends Instance implements IStochModelInstance{
         throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper: Method not implemented yet.");
     }
 
+    public void axpyOnState(double alpha, IVector vector, int iDomain) {
+        throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper: Method not implemented yet.");
+    }
+
     // OpenDA
+    public IVector getState(int iDomain) {
+        return this.getState();
+    }
+
     public IVector getState() {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper: Method not implemented yet.");
     }

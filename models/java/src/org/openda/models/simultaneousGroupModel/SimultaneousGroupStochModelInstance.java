@@ -27,6 +27,8 @@ package org.openda.models.simultaneousGroupModel;
 * d(u)/d(t) = - omega^2 * x - (2/t_damp) u
 */
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.observers.GroupObservationDesrciptions;
@@ -44,7 +46,7 @@ import java.util.List;
 /**
  * Realisation of a Stochastic model.
  */
-public class SimultaneousGroupStochModelInstance extends Instance implements IStochModelInstance {
+public class SimultaneousGroupStochModelInstance extends Instance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
     // Counter for keeping track of instances
     private static int NextinstanceNumber = 1;
@@ -161,13 +163,20 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		}
 	}
 
-	
+	public void axpyOnState(double alpha, IVector change, int iDomain) {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void axpyOnWhiteNoise(double alpha, IVector[] vector) {
 		// TODO Auto-generated method stub
 
 	}
 
-	
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
+
 	public IVector getObservedValues(
 			IObservationDescriptions observationDescriptions) {
 		TreeVector result = new TreeVector("combined");
@@ -179,19 +188,29 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		for(int i=0;i<nPart;i++){
 			String id = this.childIds.get(i);
 			IObservationDescriptions obsPart = ((GroupObservationDesrciptions)observationDescriptions).getChild(id);
-			IVector prdPart = this.children.get(i).getObservedValues(obsPart);
+			IVector prdPart = this.children.get(i).getObservationOperator().getObservedValues(obsPart);
 			ITreeVector prdTreePart = new TreeVector(id,prdPart);
 			result.addChild(prdTreePart);
 		}
 		return result;
 	}
 
-	
+
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
+
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
 		throw new UnsupportedOperationException("org.openda.models.simpleModel.simultaneousGroupStochModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 
-	
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int idomain){
+		throw new UnsupportedOperationException("org.openda.models.simpleModel.simultaneousGroupStochModelInstance.getObservedLocalization(): Not implemented yet.");
+	}
+
+
 	public IStochVector getParameterUncertainty() {
 		IStochVector result = null;
 		IStochVector stochParts[] = new IStochVector[this.childIds.size()];
@@ -222,7 +241,11 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 		return result;
 	}
 
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		IVector result = null;
 		IVector parts[] = new IVector[this.childIds.size()];

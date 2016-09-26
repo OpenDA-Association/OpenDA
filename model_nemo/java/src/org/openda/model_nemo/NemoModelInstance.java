@@ -59,7 +59,6 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 	 */
 	public IVector[] getObservedLocalization(String exchangeItemID, IObservationDescriptions observationDescriptions, double distance) {
 		//	System.out.println("Debug:Welcome to getObservedLocalization of the NEMO model");
-
 		int nzUsed = 11;
 		if (exchangeItemID.equals("sshb") || exchangeItemID.equals("sshn") ||
 			exchangeItemID.equals("utau_b") || exchangeItemID.equals("vtau_b") ||

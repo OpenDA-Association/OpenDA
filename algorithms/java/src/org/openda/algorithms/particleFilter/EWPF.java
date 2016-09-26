@@ -206,7 +206,7 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 		IObservationDescriptions observationDescriptions=obs.getObservationDescriptions();
 
 		IVector x_f= this.ensemble[0].getState();
-		IVector pred_f = this.ensemble[0].getObservedValues(observationDescriptions);
+		IVector pred_f = this.ensemble[0].getObservationOperator().getObservedValues(observationDescriptions);
 
 		int nX = x_f.getSize();
 		int nY = pred_f.getSize();
@@ -216,7 +216,7 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 			IVector state = this.ensemble[iEns].getState();
 			double[] x = state.getValues();
 
-			IVector HxVec = this.ensemble[iEns].getObservedValues(observationDescriptions);
+			IVector HxVec = this.ensemble[iEns].getObservationOperator().getObservedValues(observationDescriptions);
 			double[] Hx =HxVec.getValues();
 
 			//Note for iEns=0 values are already set

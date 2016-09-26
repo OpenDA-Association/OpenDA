@@ -504,6 +504,115 @@ module cta_f90_model
     end subroutine CTA_Model_Import
   end interface
 
+  !  \brief Get the number of domains for local analysis
+  ! 
+  !  \param hmodel   I  handle of model instance
+  !  \param distance I  characteristic distance
+  !  \param ndomains O  number of domains
+  !  \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+  !                     are created when the indices are CTA_NULL on entry
+  ! 
+  !  \param status O error status: CTA_OK if successful
+  !
+  interface CTA_F90_Model_GetNumDomains
+    subroutine CTA_Model_GetNumDomains( hmodel, distance, ndomains, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hmodel
+      real(8)                       , intent(in   )     ::  distance
+      integer                       , intent(out  )     ::  ndomains
+      integer                       , intent(out  )     ::  status
+    end subroutine CTA_Model_GetNumDomains
+  end interface
+
+  !  \brief Get selection of observations that are relevnet for assimilation in the given domain
+  ! 
+  !  \param hmodel    I  handle of model instance
+  !  \param hdescr    I  observation description of all observations
+  !  \param distance  I  characteristic distance
+  !  \param idomain   I  domain number
+  !  \param selection O  costa vector with the indices of the relevant observations (0 based)
+  ! 
+  !  \param status O error status: CTA_OK if successful
+  !
+  interface CTA_F90_Model_GetObsSelector
+    subroutine CTA_Model_GetObsSelector( hmodel, hdescr, distance, idomain, selection, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hmodel
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hdescr
+      real(8)                       , intent(in   )     ::  distance
+      integer                       , intent(in   )     ::  idomain
+      integer(CTA_HANDLE_IKIND)     , intent(out  )     ::  selection
+      integer                       , intent(out  )     ::  status
+    end subroutine CTA_Model_GetObsSelector
+  end interface
+
+  !  \brief Get for each observation a localization scaling vector for single domain
+  ! 
+  !  \param hmodel   I  handle of model instance
+  !  \param hdescr   I  observation description for which we want localization scaling vectors
+  !  \param distance I  characteristic distance
+  !  \param idomain  I  domain number
+  !  \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+  !                     are created when the indices are CTA_NULL on entry
+  ! 
+  !  \param status O error status: CTA_OK if successful
+  !
+  interface CTA_F90_Model_GetObsLocalizationDomain
+    subroutine CTA_Model_GetObsLocalizationDomain( hmodel, hdescr, distance, idomain, locVecs, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hmodel
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hdescr
+      real(8)                       , intent(in   )     ::  distance
+      integer                       , intent(in   )     ::  idomain
+      integer(CTA_HANDLE_IKIND)     , intent(out  )     ::  locVecs
+      integer                       , intent(out  )     ::  status
+    end subroutine CTA_Model_GetObsLocalizationDomain
+  end interface
+
+  !  \brief Get a copy of the internal state.
+  ! 
+  !  \note Optionally a tree-vector is created. In that case the caller of this
+  !  method is responsible for freeing that tree-vector. The input state must be compatible
+  !  (same size and or composition) as the models internal state.
+  !  \note If *hstate == CTA_NULL a new object is created, user is responsible for freeing this object.
+  ! 
+  !  \param hmodel   I  handle of model instance
+  !  \param idomain  I  domain number
+  !  \param hstate   IO receives state of the model, *hstate can be CTA_NULL on calling (see note)
+  !  \param status O error status: CTA_OK if successful
+  !
+  interface CTA_F90_Model_GetStateDomain
+    subroutine CTA_Model_GetStateDomain( hmodel, idomain, hstate, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hmodel
+      integer                       , intent(in   )     ::  idomain
+      integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hstate
+      integer                       , intent(out  )     ::  status
+    end subroutine CTA_Model_GetStateDomain
+  end interface
+
+  !  \brief Perform axpy operation on the internal state for a single domain
+  ! 
+  !  \note AXPY: y=alpha*x+y. y corresponds to the models
+  !        internal state and x can be a state vector or a model
+  ! 
+  !  \param hmodel   IO handle of model instance (y)
+  !  \param alpha    I  alpha
+  !  \param hx       I  handle of x (state or model)
+  !  \param idomain  I  domain number
+  !  \param status O error status: CTA_OK if successful
+  !
+  interface CTA_F90_Model_AxpyStateDomain
+    subroutine CTA_Model_AxpyStateDomain( hmodel, alpha, idomain, hx, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hmodel
+      real(8)                       , intent(in   )     ::  alpha
+      integer                       , intent(in   )     ::  idomain
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hx
+      integer                       , intent(out  )     ::  status
+    end subroutine CTA_Model_AxpyStateDomain
+  end interface
+
 
 end module cta_f90_model
 

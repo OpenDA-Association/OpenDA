@@ -45,7 +45,7 @@ public class LorenzStochModelFactory extends SimpleStochModelFactory {
     public IStochModelInstance getInstance(OutputLevel outputLevel) {
     	LorenzStochModelInstance result = new LorenzStochModelInstance(this.workingDir, this.arguments[0]);
     	result.outputLevel = outputLevel;
-        return new LorenzStochModelInstance(this.workingDir, this.arguments[0]);
+        return result;
     }
 
     public IStochModelPostProcessor getPostprocessorInstance(File instanceDir) {

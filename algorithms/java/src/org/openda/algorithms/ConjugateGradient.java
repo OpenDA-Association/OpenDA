@@ -249,7 +249,11 @@ public class ConjugateGradient extends Instance implements IAlgorithm {
 		// each created model instance has been finished individually
 		// (in prepare() and in the cost function)
 	}
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		// TODO Auto-generated method stub
 		return null;

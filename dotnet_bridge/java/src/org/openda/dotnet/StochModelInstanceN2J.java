@@ -18,6 +18,8 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.dotnet;
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
@@ -25,13 +27,17 @@ import org.openda.utils.Vector;
 /**
  * Java wrapper around .net class for a Stoch Model Instance
  */
-public class StochModelInstanceN2J extends ModelInstanceN2J implements IStochModelInstance {
+public class StochModelInstanceN2J extends ModelInstanceN2J implements IStochModelInstance, IStochModelInstanceDeprecated {
 
 	public StochModelInstanceN2J(cli.OpenDA.DotNet.Interfaces.IStochModelInstance dotNetStochModelInstance) {
 		_dotNetModelInstance = dotNetStochModelInstance;
 	}
 
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		cli.OpenDA.DotNet.Interfaces.IVector dotNetState =
 				((cli.OpenDA.DotNet.Interfaces.IStochModelInstance) _dotNetModelInstance).get_State();
@@ -44,7 +50,12 @@ public class StochModelInstanceN2J extends ModelInstanceN2J implements IStochMod
 		((cli.OpenDA.DotNet.Interfaces.IStochModelInstance) _dotNetModelInstance).AxpyOnState(alpha, dotNetVector);
 	}
 
-	
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+
+		throw new UnsupportedOperationException("org.openda.dotnet.StochModelInstanceN2J.axpyOnState(double alpha, IVector vector, int iDomain): Not implemented yet.");
+
+	}
+
 	public IVector getParameters() {
 		cli.OpenDA.DotNet.Interfaces.IVector dotNetParameters =
 				((cli.OpenDA.DotNet.Interfaces.IStochModelInstance) _dotNetModelInstance).get_Parameters();
@@ -112,7 +123,25 @@ public class StochModelInstanceN2J extends ModelInstanceN2J implements IStochMod
 		((cli.OpenDA.DotNet.Interfaces.IStochModelInstance) _dotNetModelInstance).SetAutomaticNoiseGeneration(value);
 	}
 
-	
+
+	public ILocalizationDomains getLocalizationDomains(){
+		throw new UnsupportedOperationException(getClass().getName() + ": getLocalizationDomains not implemented.");
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int[] selector) {
+		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
+	}
+
+
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
+
+
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 		if (!(observationDescriptions instanceof ObservationDescriptionsN2J)) {
 			throw new RuntimeException("Unknown observationDescriptions type: " +

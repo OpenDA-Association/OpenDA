@@ -150,6 +150,11 @@ public class ASCII_TimeSeriesStochObserver extends Instance implements IStochObs
 		return new ASCII_TimeSeriesStochObserver(selectedSeriesCleaned);
 	}
 
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".createSelection() not implemented");
+	}
+
 	public IStochObserver createSelection(Type observationType) {
 		// if observer is already empty, return an empty observer
 		if (series == null){

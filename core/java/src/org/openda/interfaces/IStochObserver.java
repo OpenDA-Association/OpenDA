@@ -54,6 +54,16 @@ public interface IStochObserver extends IConfigurable, IInstance, Serializable {
    public IStochObserver createSelection(ITime selectionTimes);
 
 	/**
+	 *
+	 * Create an new Stochastic Observer, containing a selection of the present stochastic observer.<br>
+	 * The selection criteria is a timeSpan. The start time of the interval is not included, the end time is
+	 * included, i.e. t_start<t<=t_end
+	 * @param selector          selection of indices (based on the localization domain).
+	 * @return                  Stochastic Observer containing the required selection.
+	 */
+	public IStochObserver createSelection(int[] selector);
+
+	/**
 	 * Create an new Stochastic Observer, containing a selection of the present stochastic observer.<br>
 	 * The selection criteria is the type of observations: assimilation or validation
 	 *

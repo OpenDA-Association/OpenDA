@@ -181,7 +181,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		IObservationDescriptions descr = this.observations.getObservationDescriptions();
 
 		// J = J + factor (y - pred)^2/sigma^2
-		IVector prd = this.model.getObservedValues(descr);
+		IVector prd = this.model.getObservationOperator().getObservedValues(descr);
 		this.lastPredicted = prd;
 		IVector residuals = this.obsValues.clone();
 		residuals.axpy(-1.0, prd);
@@ -243,7 +243,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 		IObservationDescriptions descr = this.observations.getObservationDescriptions();
 
 		// grad J = grad J + 2 * factor * L' * H' * (y - pred)/(sigma^2)
-		IVector prd = this.model.getObservedValues(descr);
+		IVector prd = this.model.getObservationOperator().getObservedValues(descr);
 		IVector residuals = this.obsValues.clone();
 		residuals.axpy(-1.0, prd);
 		

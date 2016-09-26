@@ -184,7 +184,7 @@ public class OscillatorModelTest extends TestCase {
         mod5.compute(new Time(0.5));
         System.out.println("mod5.compute(0.5)");
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector prd5 = mod5.getObservedValues(descr5);
+        IVector prd5 = mod5.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5.getObservedValues()=" + prd5.toString());
         // x(0) is taken at t=0.5 for all 3 obs because model did not save previous values
         System.out.println("Should be mod5.getObservedValues()=[0.5750505908505237,0.5750505908505237,0.5750505908505237]");
@@ -193,7 +193,7 @@ public class OscillatorModelTest extends TestCase {
         mod5b.announceObservedValues(descr5);
         mod5b.compute(new Time(0.5));
         System.out.println("mod5b.compute()");
-        IVector prd5b = mod5b.getObservedValues(descr5);
+        IVector prd5b = mod5b.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5b.announceObservedValues(descr5)");
         System.out.println("mod5b.getObservedValues()=" + prd5b.toString());
         System.out.println("Should be mod5b.getObservedValues()=[0.8,0.790232176428735,0.7614885160245464]");

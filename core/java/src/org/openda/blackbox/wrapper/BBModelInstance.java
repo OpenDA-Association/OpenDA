@@ -25,6 +25,7 @@ import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
@@ -48,6 +49,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private HashMap<String, IDataObject> dataObjects;
     protected HashMap<String, BBExchangeItem> bbExchangeItems = new HashMap<String, BBExchangeItem>();
     protected HashMap<String, SelectorInterface> selectors;
+	private ILocalizationDomains localizationDomains;
     private boolean doAdditionalComputeActions = false;
     private ITime currentTime = null;
     private ITime timeHorizon = null;
@@ -126,7 +128,10 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		this.aliasDefinitions.setAliasValue("endTime", TimeUtils.mjdToString(this.timeHorizon.getEndTime().getMJD()));
 		// Feed the time horizon to the model.
 		feedComputationSpanToModel(this.timeHorizon.getBeginTime(), this.timeHorizon.getEndTime());
-		
+
+
+		localizationDomains = new  LocalizationDomainsSimpleModel();
+
 		Results.putMessage("Instance initialization done");
 	}
 
@@ -494,7 +499,17 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		return FileBasedModelState.loadPersistenState(persistentStateFile, dirForRestartFiles);
 	}
 
-   public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
+
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
+		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBModelInstance.getObservedLocalization(): Not implemented yet.");
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 

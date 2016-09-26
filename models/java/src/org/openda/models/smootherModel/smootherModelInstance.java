@@ -18,6 +18,9 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.models.smootherModel;
+
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.utils.TreeVector;
 
@@ -30,13 +33,23 @@ import java.io.File;
  * Time: 12:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class smootherModelInstance implements IStochModelInstance {
+public class smootherModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
 	IStochModelInstance childModel=null;
 
 
 	public smootherModelInstance(IStochModelInstance child){
 		childModel=child;
+	}
+
+	public IVector getState(int iDomain) {
+		TreeVector x0 =new TreeVector("state","state",childModel.getState(iDomain));
+		TreeVector x1 =new TreeVector("param","param",childModel.getParameters());
+
+		TreeVector x =new TreeVector("smoothState","smoothState");
+		x.addChild(x0);
+		x.addChild(x1);
+		return x;
 	}
 
 	public IVector getState() {
@@ -59,7 +72,11 @@ public class smootherModelInstance implements IStochModelInstance {
 		childModel.axpyOnParameters(alpha, x.getSubTreeVector("param"));
 	}
 
-	
+	public void axpyOnState(double alpha, IVector change, int iDomain) {
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".axpyOnState(double alpha, IVector change, int iDomain) not implemented");
+	}
+
 	public IVector getParameters() {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
@@ -121,9 +138,14 @@ public class smootherModelInstance implements IStochModelInstance {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	
+
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
+
+
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-        return childModel.getObservedValues(observationDescriptions);
+        return childModel.getObservationOperator().getObservedValues(observationDescriptions);
 	}
 
 	
@@ -166,8 +188,17 @@ public class smootherModelInstance implements IStochModelInstance {
 		childModel.compute(targetTime);
 	}
 
-	
+
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		return new IVector[0];  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
 		return new IVector[0];  //To change body of implemented methods use File | Settings | File Templates.
 	}
 

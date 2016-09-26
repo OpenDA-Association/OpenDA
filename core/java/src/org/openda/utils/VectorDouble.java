@@ -230,7 +230,18 @@ public class VectorDouble implements IVector, Externalizable{
         return out;
     }
 
-    /**
+	/**
+	 * {@inheritDoc}
+	 */
+	public double[] getValues(int[] selector) {
+		double out[] = new double[selector.length];
+		//copy values
+		for(int i =0;i < selector.length;i++)
+			out[i] = this.content[selector[i]];
+		return out;
+	}
+
+	/**
      * {@inheritDoc}
      */
     public void setValue(int index, double value) {

@@ -303,7 +303,7 @@ public class RMSECostFunction implements ICostFunction{
         if(this.useAnnounceObs){ // evaluate cost with one model-run
             // get results as Vectors
             IObservationDescriptions descr = this.prepareDescr;
-            IVector prd      = mod.getObservedValues(descr);
+            IVector prd      = mod.getObservationOperator().getObservedValues(descr);
             this.lastPredicted=prd;
             // observation filtering
             if (this.obsSpaceFilters.size()>0 & obsFilterHasNotBeenRun){
@@ -435,7 +435,7 @@ public class RMSECostFunction implements ICostFunction{
 	    if(this.useAnnounceObs){ // evaluate cost with one model-run
 	    	// get results as Vectors
 	    	IObservationDescriptions descr = this.prepareDescr;
-	    	IVector prd      = mod.getObservedValues(descr);
+	    	IVector prd      = mod.getObservationOperator().getObservedValues(descr);
 	    	this.lastPredicted=prd;
             // observation filtering
             if (this.obsSpaceFilters.size()>0 & obsFilterHasNotBeenRun){

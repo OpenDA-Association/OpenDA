@@ -192,9 +192,15 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 
 	
 	public void prepare() {
+		IObservationDescriptions observationDescriptions = this.stochObserver.getObservationDescriptions();
+		ILocalizationDomains domains = this.getMainModel().getLocalizationDomains();
+		if (domains != null) {
+			for (int i = 0; i < domains.getStateDomainCount(); i++) {
+				domains.setStateDomainObservations(i, observationDescriptions);
+			}
+		}
 	}
 
-	
 	public void forecast(IStochObserver observations, ITime targetTime) {
            System.gc();
 		if (timerForecast == null) {

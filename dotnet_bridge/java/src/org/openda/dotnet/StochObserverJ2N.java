@@ -48,7 +48,12 @@ public class StochObserverJ2N implements IStochObserver {
 		return new StochObserverJ2N(_javaStochObserver.createSelection(selectionTimes));
 	}
 
-	
+
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".createSelection() not implemented");
+	}
+
 	public IStochObserver createSelection(Type observationType) {
 		throw new UnsupportedOperationException("org.openda.dotnet.StochObserverJ2N.createSelection(): Not implemented yet.");
 	}

@@ -24,6 +24,7 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Array;
 import org.openda.utils.Time;
 import org.openda.utils.Vector;
@@ -112,7 +113,15 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		}
 	}
 
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyModelForTestingNoise.getObservedLocalization(): Not implemented yet.");
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyModelForTestingNoise.getObservedLocalization(): Not implemented yet.");
 	}
 

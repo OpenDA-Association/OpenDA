@@ -51,7 +51,7 @@ public class DudEnKF extends AbstractSequentialEnsembleAlgorithm {
 			states[i] = this.ensemble[i].getState();
 			relStates[i] = states[i].clone();
 			// collect predictions
-			predictions[i] = this.ensemble[i].getObservedValues(obs
+			predictions[i] = this.ensemble[i].getObservationOperator().getObservedValues(obs
 					.getObservationDescriptions());
 			// generate perturbed observations
 			perturbedObservations[i] = obs.getRealizations(); // here noise is
@@ -152,7 +152,7 @@ public class DudEnKF extends AbstractSequentialEnsembleAlgorithm {
 		for (int i = 0; i < q; i++) {
 			updatedStates[i] = this.ensemble[i].getState();
 			// collect predictions
-			updatedPredictions[i] = this.ensemble[i].getObservedValues(obs
+			updatedPredictions[i] = this.ensemble[i].getObservationOperator().getObservedValues(obs
 					.getObservationDescriptions());
 		}
 		xiAvg = ensembleAverage(updatedStates, q);

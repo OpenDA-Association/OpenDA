@@ -318,6 +318,10 @@ public abstract class BaseDud extends Instance implements IAlgorithm {
 		// each created model instance has been finished individually
 	}
 
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		// TODO Auto-generated method stub
 		return null;

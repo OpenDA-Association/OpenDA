@@ -18,6 +18,8 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeUtils;
@@ -67,7 +69,7 @@ import java.util.HashMap;
  *
  * @author verlaanm
  */
-public class TimeSeriesNoiseModelInstance extends Instance implements IStochModelInstance {
+public class TimeSeriesNoiseModelInstance extends Instance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
 	protected java.util.Hashtable<String,Double> pars=new java.util.Hashtable<String,Double>();
 
@@ -88,6 +90,7 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 	protected StochVector initialStateUncertainty=null;
 	protected IVector timeCorrelationPerTimeStep = null;
 	protected IVector standardDeviation = null;
+	private ILocalizationDomains localizationDomains = null;
 
 	// Counter for keeping track of instances
 	protected static int NextinstanceNumber = 1;
@@ -321,6 +324,7 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 			this.ids.add(id);
 		} // loop over series i
 
+		this.localizationDomains = new LocalizationDomainsSimpleModel();
 		this.sysNoiseIntensity = new StochVector(new Vector(seriesTrees.length) , this.standardDeviation);
 	}
 
@@ -338,6 +342,10 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 		return new Time(this.t);
 	}
 
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		return this.state.clone();
 	}
@@ -345,6 +353,11 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 	public void axpyOnState(double alpha, IVector vector) {
 		this.state.axpy(alpha, vector); // nothing special for this model
 	}
+
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+		throw new UnsupportedOperationException("org.costa.noiseModels.MapNoisModel.TimeSeriesNoisModel(double alpha, IVector vector, int iDomain): Not implemented yet.");
+	}
+
 
 	public void compute(ITime targetTime) {
 		double t_step = this.pars.get("t_step");
@@ -398,8 +411,17 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 
 	}
 
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
 	public IVector[] getObservedLocalization(
 			IObservationDescriptions observationDescriptions, double distance) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -607,6 +629,10 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 
 	public void setAutomaticNoiseGeneration(boolean value) {
 		this.autoNoise = value;
+	}
+
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
 	}
 
 	public IVector getObservedValues(

@@ -199,7 +199,7 @@ public class SequentialAlgorithmRestartTest extends TestCase {
 		IObservationDescriptions descr = obs.getObservationDescriptions();
 		model.announceObservedValues(descr);
 		model.compute(model.getTimeHorizon().getEndTime());
-		IVector prd = model.getObservedValues(descr);
+		IVector prd = model.getObservationOperator().getObservedValues(descr);
 		// create new observer with these generated values
 		columns[2] = prd;
 		CsvStochObserver obsGenerated = new CsvStochObserver(columns,keys);

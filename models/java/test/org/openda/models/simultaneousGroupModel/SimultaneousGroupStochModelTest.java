@@ -346,7 +346,7 @@ public class SimultaneousGroupStochModelTest extends TestCase {
         instance1.announceObservedValues(obsDescriptions);
         instance1.compute(new Time(2.5));
         System.out.println("mod5b.compute(2.5)");
-        IVector predictions = instance1.getObservedValues(obsDescriptions);
+        IVector predictions = instance1.getObservationOperator().getObservedValues(obsDescriptions);
         System.out.println("instance1(obsDescriptions)");
         System.out.println("instance1()=" + predictions.toString());
         System.out.println("Should be instance1.getObservedValues()=TreeVector oscillator1 [0.8,0.790232176428735,0.7614885160245464]\n"

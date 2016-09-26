@@ -46,6 +46,7 @@ public class D3dFlowModelInstance extends Instance implements IModelInstance {
 	private double lastTimeStepMJD = 0.0;
 	private ITime timeHorizon = null;
 	private File modelDir;
+	protected ILocalizationDomains localizationDomains;
 
 	public D3dFlowModelInstance(File modelDir, D3dFlowModelConfig d3dFlowModelConfig, IStochModelFactory.OutputLevel outputLevel) {
 		this.modelDir = modelDir;
@@ -121,8 +122,22 @@ public class D3dFlowModelInstance extends Instance implements IModelInstance {
 		}
 	}
 
-    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
-        D3dFlowDll.selectInstance(modelDir, this.modelInstanceId);
+	public ILocalizationDomains getLocalizationDomains(){
+		return this.localizationDomains;
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		return getObservedLocalization(observationDescriptions, distance, -1);
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
+		if (iDomain>=0) {
+			throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented for domains.");
+		}
+
+
+
+		D3dFlowDll.selectInstance(modelDir, this.modelInstanceId);
         List<IPrevExchangeItem> observationExchangeItems = observationDescriptions.getExchangeItems();
         IVector[] observedLocalization = new IVector[observationExchangeItems.size()];
         for (int i = 0, observationExchangeItemsSize = observationExchangeItems.size(); i < observationExchangeItemsSize; i++) {

@@ -77,7 +77,7 @@ public class SwanCalibWrapperTest extends TestCase {
             // compute and get values at observation points
             instance.announceObservedValues(observationDescriptions);
             instance.compute(instance.getCurrentTime());
-            IVector observedValues = instance.getObservedValues(observationDescriptions);
+            IVector observedValues = instance.getObservationOperator().getObservedValues(observationDescriptions);
             assertEquals("#observedValues", observedValues.getSize(), observationDescriptions.getObservationCount());
 
         }

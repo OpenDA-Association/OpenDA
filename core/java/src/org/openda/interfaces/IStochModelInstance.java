@@ -38,11 +38,28 @@ public interface IStochModelInstance extends IModelInstance {
     IVector getState();
 
     /**
+     * Get the full set of state variables of a single domain from a model.
+     *
+     * @param iDomain The index of the localication domain
+     * @return A Vector containing the values of all state variables in the model.
+     */
+    IVector getState(int iDomain);
+
+    /**
      * Peform a <c>state variable += alpha * vector</c> operation on each state variable in the model.
      * @param alpha The <c>alpha</c> in <c>state variable += alpha * vector</c>.
      * @param vector A Vector containing the values for the axpy-operation on all state variables in the model.
      */
     void axpyOnState(double alpha, IVector vector);
+
+
+    /**
+     * Peform a <c>state variable += alpha * vector</c> operation on each state variable in the model.
+     * @param alpha The <c>alpha</c> in <c>state variable += alpha * vector</c>.
+     * @param vector A Vector containing the values for the axpy-operation on all state variables in the model.
+     * @param iDomain An integer denoting the domain on which the axpy-operation should be performed.
+     */
+    void axpyOnState(double alpha, IVector vector, int iDomain);
 
 
     /* Parameters*/
@@ -149,13 +166,11 @@ public interface IStochModelInstance extends IModelInstance {
      **************************************/
 
     /**
-     * Get model values corresponding to a number of observations
+     * Get operator H to get model values corresponding to a number of observations
      *
-     * @param observationDescriptions An ObservationDescriptions object with meta data for the observations
      * @return vector with the model values corresponding to each observation given in the descriptions
      */
-
-    IVector getObservedValues(IObservationDescriptions observationDescriptions);
+    IObservationOperator getObservationOperator();
 
     /**
      * Tell model that it can expect to be asked for model values corresponding to the observations

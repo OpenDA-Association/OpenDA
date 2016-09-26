@@ -234,8 +234,6 @@ JNIEXPORT void JNICALL Java_org_openda_costa_CtaTime_setSpanMJD
 {
    cta_jni_setJavaEnv(env);
 
-   printf("Java_org_openda_costa_CtaTime_setSpanMJD: tstart=%g, tend=%g\n",tstart,tend);
-
    CTA_Handle ctaHandle = cta_jni_getCtaHandle(env, obj_this);
    int retVal=CTA_Time_SetSpan(ctaHandle, tstart, tend);
    if ( retVal != CTA_OK ) {

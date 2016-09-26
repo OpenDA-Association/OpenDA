@@ -31,7 +31,7 @@ import java.util.Vector;
  * @author Nils van Velzen (VORtech)
  *
  */
-public class ThreadStochModelInstance implements IStochModelInstance{
+public class ThreadStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated{
 
     /* In a single configuration it possible that various models make use
        of various instances of this class for different model(factories).
@@ -58,8 +58,6 @@ public class ThreadStochModelInstance implements IStochModelInstance{
 	boolean cashState=false;
 	boolean nonBlockingAxpy =false;
 	long sleepTime;
-
-
 
     public ThreadStochModelInstance(IStochModelInstance model, int factoryID, int maxThreads,
 									boolean cashState, boolean nonBlockingAxpy, long sleepTime){
@@ -95,7 +93,11 @@ public class ThreadStochModelInstance implements IStochModelInstance{
 
     }
 
-    public IVector getState() {
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
+	public IVector getState() {
 		IVector retVec=null;
         block();
 		if (this.cashedState!=null){
@@ -119,8 +121,13 @@ public class ThreadStochModelInstance implements IStochModelInstance{
 		}
     }
 
-    
-    public IVector getParameters() {
+	public void axpyOnState(double alpha, IVector change, int iDomain) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	public IVector getParameters() {
         block();
         return threadModel.getParameters();
     }
@@ -191,10 +198,15 @@ public class ThreadStochModelInstance implements IStochModelInstance{
         threadModel.setAutomaticNoiseGeneration(value);
     }
 
-    
-    public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
+
+	public IObservationOperator getObservationOperator(){
+		block();
+		return threadModel.getObservationOperator();
+	}
+
+	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
         block();
-        return threadModel.getObservedValues(observationDescriptions);
+        return threadModel.getObservationOperator().getObservedValues(observationDescriptions);
     }
 
     
@@ -248,10 +260,22 @@ public class ThreadStochModelInstance implements IStochModelInstance{
 		}
     }
 
-    
-    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
-        block();
-        return threadModel.getObservedLocalization(observationDescriptions, distance);
+
+	public ILocalizationDomains getLocalizationDomains(){
+		block();
+		return threadModel.getLocalizationDomains();
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		block();
+		return threadModel.getObservedLocalization(observationDescriptions, distance);
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
+		block();
+        return threadModel.getObservedLocalization(observationDescriptions, distance, iDomain);
     }
 
     

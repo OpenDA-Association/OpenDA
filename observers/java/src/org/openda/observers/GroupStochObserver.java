@@ -195,6 +195,11 @@ public class GroupStochObserver extends Instance implements IStochObserver {
 		return result;
 	}
 
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".getObservationSelector() not implemented");
+	}
+
 	public IStochObserver createSelection(Type observationType) {
 		if (observationType == Type.Assimilation) {
 			return this;

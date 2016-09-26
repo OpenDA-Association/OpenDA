@@ -1,4 +1,4 @@
-/* MOD_V2.0
+/* MOD_V1.0
 * Copyright (c) 2010 OpenDA Association
 * All rights reserved.
 *
@@ -63,6 +63,7 @@ public interface IRmiIStochModel extends Remote {
     ITime getCurrentTime() throws RemoteException;
     void compute(ITime targetTime) throws RemoteException;
     IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) throws RemoteException;
+    IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) throws RemoteException;
     IModelState saveInternalState() throws RemoteException;
     void restoreInternalState(IModelState savedInternalState) throws RemoteException;
     void releaseInternalState(IModelState savedInternalState) throws RemoteException;

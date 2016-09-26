@@ -124,10 +124,13 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 			// no action needed (yet), currently wrapped .net models store all their output in files
 			// and therefore can always provide requested computed values at observation locations.
 		}
-
+		
+		public ILocalizationDomains getLocalizationDomains(){
+			throw new UnsupportedOperationException(getClass().getName() + ": getLocalizationDomains not implemented.");
+		}
+		
 		public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
-
-			// Check whether we are dealing with a C# implemention. No concersion is needed in that case
+		// Check whether we are dealing with a C# implemention. No concersion is needed in that case
 			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;
 			if (observationDescriptions instanceof ObservationDescriptionsJ2N){
 				dotNetObservationDescriptions=  ((ObservationDescriptionsJ2N) observationDescriptions)._dotNetObsDescr;
@@ -163,6 +166,12 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 				javaVectors[i] = new Vector(dotNetVectors[i].get_Values());
 			}
 			return javaVectors;
+		}
+
+
+		public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
+
+			throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization for domain not implemented.");
         }
 
 

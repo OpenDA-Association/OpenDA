@@ -76,7 +76,7 @@ public class ParticleFilter extends AbstractSequentialEnsembleAlgorithm {
 			// save state
 			savedState[i] = this.ensemble[i].saveInternalState();
 			// collect predictions
-			pred[i] = this.ensemble[i].getObservedValues(stochObserver.getObservationDescriptions());
+			pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(stochObserver.getObservationDescriptions());
 		}
 
 		// compute output statistics
@@ -122,7 +122,7 @@ public class ParticleFilter extends AbstractSequentialEnsembleAlgorithm {
 			// get state
 			xi[i] = this.ensemble[i].getState();
 			// collect predictions
-			pred[i] = this.ensemble[i].getObservedValues(stochObserver.getObservationDescriptions());
+			pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(stochObserver.getObservationDescriptions());
 		}
 		xiAvg = ensembleAverage(xi);
 		// adjust mainModel (adjust mainModel to mean analyzed state)

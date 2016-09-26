@@ -277,7 +277,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
         // get model values corresponding to observations
         IObservationDescriptions descr = this.observations.getObservationDescriptions();
         // get results as Vectors
-        IVector prd      = this.model.getObservedValues(descr);
+        IVector prd      = this.model.getObservationOperator().getObservedValues(descr);
         this.lastPredicted=prd;
         IVector obsMean  = this.obsValues;
         IVector obsStd   = this.observationUncertainty.getStandardDeviations();

@@ -118,7 +118,11 @@ public class EnSSKF extends Instance implements IAlgorithm {
 		throw new UnsupportedOperationException("EnSSKF has been removed. Please use EnKF instead.");
 	}
 
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		throw new UnsupportedOperationException("EnSSKF has been removed. Please use EnKF instead.");
 	}

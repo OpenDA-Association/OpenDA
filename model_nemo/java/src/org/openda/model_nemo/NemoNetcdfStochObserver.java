@@ -18,6 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_nemo;
+
 import org.openda.interfaces.*;
 import org.openda.utils.Instance;
 import org.openda.utils.StochVector;
@@ -451,6 +452,11 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 			for (iEndDate=this.iEndDate;iEndDate>0 && this.allDatesMJD[iEndDate]>endMJD;iEndDate--);
 			return new NemoNetcdfStochObserver(this.allDatesMJD, this.allDirectories, iStartDate, iEndDate);
 		}
+	}
+
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".createSelection() not implemented");
 	}
 
 

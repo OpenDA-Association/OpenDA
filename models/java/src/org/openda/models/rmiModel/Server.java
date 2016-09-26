@@ -115,7 +115,11 @@ public class Server implements IRmiIStochModel{
 		OdaGlobSettings.setProductionRun(productionRun);
 	}
 
-    public IVector getState() {
+	public IVector getState(int iDomain) {
+		return stochModel.getState(iDomain);
+	}
+
+	public IVector getState() {
 //		IVector stateModel=stochModel.getState();
 //        return new Vector(stateModel.getValues());
        return stochModel.getState();
@@ -174,7 +178,7 @@ public class Server implements IRmiIStochModel{
     }
 
     public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-        return stochModel.getObservedValues(observationDescriptions);
+        return stochModel.getObservationOperator().getObservedValues(observationDescriptions);
     }
 
     public void announceObservedValues(IObservationDescriptions observationDescriptions) {
@@ -207,6 +211,10 @@ public class Server implements IRmiIStochModel{
 
     public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
         return stochModel.getObservedLocalization(observationDescriptions, distance);
+    }
+
+    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
+        return stochModel.getObservedLocalization(observationDescriptions, distance, iDomain);
     }
 
     public IModelState saveInternalState() {

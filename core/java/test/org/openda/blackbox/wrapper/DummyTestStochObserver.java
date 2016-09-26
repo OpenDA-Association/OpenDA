@@ -50,7 +50,12 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
         return this;
     }
 
-	public IStochObserver createSelection(Type observationType) {
+    public IStochObserver createSelection(int[] selector){
+        throw new UnsupportedOperationException(this.getClass().getName()
+                + ".createSelection() not implemented");
+    }
+
+    public IStochObserver createSelection(Type observationType) {
 		if (observationType == Type.Assimilation) {
 			return this;
 		}

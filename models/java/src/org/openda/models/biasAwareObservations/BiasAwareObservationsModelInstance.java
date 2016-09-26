@@ -1,4 +1,4 @@
-/* MOD_V2.0
+/* MOD_V1.0
 * Copyright (c) 2013 OpenDA Association
 * All rights reserved.
 *
@@ -25,21 +25,20 @@ package org.openda.models.biasAwareObservations;
  *
  */
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.observers.ObserverUtils;
 import org.openda.utils.StochVector;
-import org.openda.utils.Time;
 import org.openda.utils.TreeVector;
 import org.openda.utils.Vector;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 
-public class BiasAwareObservationsModelInstance implements IStochModelInstance {
+public class BiasAwareObservationsModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
 	IStochModelInstance childModel=null;  		//Handle to underlying child model
 	Vector bias=null;                     		//Vector modelling the bias in the observations
 	IStochVector biasNoise=null;          		//Stochastic vector for generating noise
@@ -49,6 +48,8 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
 	boolean localization=true;                  //Use pure localization on biases
 	boolean explicitDeclaration=false;          //Explicit declaration of observations to consider
 	                                            //Not handling/skipping observations is allowed
+
+	ILocalizationDomains localizationDomains = null;
 
 	private int getObservationIndex(String observationID){
 		if (obsIDIndex==null){
@@ -121,6 +122,18 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
 		}
 		// Create stochastic vector for adding noise
 		biasNoise=new StochVector(this.bias.clone(),stdVec);
+
+		this.localizationDomains = new LocalizationDomainsSimpleModel();
+	}
+
+	public IVector getState(int iDomain) {
+		TreeVector x0 =new TreeVector("state","state",childModel.getState(iDomain));
+		TreeVector x1 =new TreeVector("observationsBias","observationsBias",bias.clone());
+
+		TreeVector x =new TreeVector("BiasAwareObservationsModel","BiasAwareObservationsModel");
+		x.addChild(x0);
+		x.addChild(x1);
+		return x;
 	}
 
 	public IVector getState() {
@@ -141,6 +154,12 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
 		childModel.axpyOnState(alpha, (IVector) x.getSubTreeVector("state"));
 		bias.axpy(alpha, x.getSubTreeVector("observationsBias"));
 	}
+
+	public void axpyOnState(double alpha, IVector change, int iDomain) {
+		// TODO Auto-generated method stub
+
+	}
+
 
 	public IVector getParameters() {
 		return childModel.getParameters();
@@ -191,10 +210,14 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
         this.automaticNoiseGeneration=value;
 	}
 
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
+
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 
 		// Get the predictions from the child model
-		IVector HxMinBias = childModel.getObservedValues(observationDescriptions);
+		IVector HxMinBias = childModel.getObservationOperator().getObservedValues(observationDescriptions);
 
 		//We need to find out which obs corresponds to each index:
 		if (checkObservationID){
@@ -258,9 +281,25 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance {
 		}
 	}
 
-	
+
+	public ILocalizationDomains getLocalizationDomains(){
+		return this.localizationDomains;
+	}
+
+
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
-		IVector[] modelLocalization = childModel.getObservedLocalization(observationDescriptions, distance);
+		return getObservedLocalization(observationDescriptions, distance, -1);
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
+		IVector[] modelLocalization;
+		if (iDomain<0) {
+			modelLocalization = childModel.getObservedLocalization(observationDescriptions, distance);
+		}
+		else {
+			modelLocalization = childModel.getObservedLocalization(observationDescriptions, distance, iDomain);
+		}
 		TreeVector [] x = new TreeVector[modelLocalization.length];
         int[] indices=null;
 		if (this.checkObservationID){

@@ -159,7 +159,7 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 					if(tempSeries.getDoubleProperty("relativeStandardDeviation",-1.0)>0.0){
 						doubleValue=0.0; //set absolute errors to 0 when relative errors are given
 					}
-					doubleValue=tempSeries.getDoubleProperty(keyword,doubleValue);
+					doubleValue = tempSeries.getDoubleProperty(keyword,doubleValue);
 					doubleValue = seriesTrees[i].getAsDouble("@"+keyword, doubleValue);
 					//System.out.println(""+keyword+"="+doubleValue);
 					tempSeries.setProperty(keyword,""+doubleValue);

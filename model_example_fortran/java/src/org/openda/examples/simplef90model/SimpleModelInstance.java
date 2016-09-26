@@ -20,6 +20,7 @@
 package org.openda.examples.simplef90model;
 
 import org.openda.interfaces.*;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Time;
 
 import java.io.File;
@@ -92,7 +93,15 @@ public class SimpleModelInstance implements IModelInstance, IModelAdjoint {
         }
     }
 
+    public ILocalizationDomains getLocalizationDomains(){
+        return new LocalizationDomainsSimpleModel();
+    }
+
     public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+        return new IVector[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
         return new IVector[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 

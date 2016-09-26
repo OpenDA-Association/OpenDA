@@ -69,6 +69,13 @@ public interface IModelInstance extends IDataObject, IInstance {
     void compute(ITime targetTime);
 
     /**
+	 * Returns the localization domain based on the observation locations.
+	 *
+	 * @return Localization domain.
+	 */
+    ILocalizationDomains getLocalizationDomains();
+
+	/**
 	 * Returns the localization weights for each observation location.
 	 * This method assumes that there is only one state vector.
 	 *
@@ -77,10 +84,23 @@ public interface IModelInstance extends IDataObject, IInstance {
 	 * @return weight vector for each observation location.
 	 *         The size of the returned array must equal the number of observation locations in the given observationDescriptions.
 	 *         The size of each vector in the returned array must equal the size of the state vector of the implementing modelInstance.
-     */
-    IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance);
+	 */
+	IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance);
 
-    /**************************************
+	/**
+	 * Returns the localization weights for each observation location.
+	 * This method assumes that there is only one state vector.
+	 *
+	 * @param observationDescriptions observation description
+	 * @param distance characteristic distance for Cohn's formula
+	 * @param iDomain Selection of sub-domain
+	 * @return weight vector for each observation location.
+	 *         The size of the returned array must equal the number of observation locations in the given observationDescriptions.
+	 *         The size of each vector in the returned array must equal the size of the state vector of the implementing modelInstance.
+	 */
+	IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain);
+
+	/**************************************
      *** Save/restore full internal state
      **************************************/
 

@@ -20,18 +20,20 @@
 
 package org.openda.costa;
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.utils.DistributedCounter;
 import org.openda.utils.StochVector;
-import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaTiming;
 
 import java.io.File;
 
-public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
+public class CtaOpenDaModel extends CtaObject implements IStochModelInstance, IStochModelInstanceDeprecated {
 
     // In case of parallel runs we use the Distributed counter to generate unique IDs
 	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
+	private ILocalizationDomains localizationDomains;
 	int InstanceNr;
 	String ModelID;
 	OdaTiming timerCreate     = null;
@@ -68,10 +70,10 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 
         this.ctaHandle=ctaCreate(ModelCls, Filename);
 
-        timerCreate.stop();
-	}
+		localizationDomains = new LocalizationDomainsSimpleModel();
 
-	private native int ctaCreate(String ModelCls, String filename);
+		timerCreate.stop();
+	}
 
 	public void announceObservedValues(
 			IObservationDescriptions observationDescriptions) {
@@ -93,8 +95,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		timerAnnounce.stop();
 	}
 
-	private native void ctaAnnounceObservedValues(
-			IObservationDescriptions observationDescriptions);
 
 	public void axpyOnParameters(double alpha, IVector vector) {
 	   if ( timerAxpyParam == null){
@@ -113,25 +113,29 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		timerAxpyParam.stop();
 	}
 
-	private native void ctaAxpyOnParameters(double alpha, IVector vector);
 
 	public void axpyOnState(double alpha, IVector vector) {
+		ctaAxpyOnStateDomain(alpha, vector, -1);
+	}
+
+
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
 		if ( timerAxpyState == null){
 			timerAxpyState = new OdaTiming(ModelID);
-		 }
-		 timerAxpyState.start();
+		}
+		timerAxpyState.start();
 
 		// TODO Auto-generated method stub
 		if (vector instanceof CtaTreeVector ){
-			ctaAxpyOnState(alpha, vector);
+			ctaAxpyOnStateDomain(alpha, vector, iDomain);
 		}
 		else {
 			throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.axpyOnState not implemented yet for other types");
 		}
-        timerAxpyState.stop();
+		timerAxpyState.stop();
 	}
 
-	private native void ctaAxpyOnState(double alpha, IVector vector);
+
 
 	public void axpyOnWhiteNoise(double alpha, IVector[] vector) {
 		if ( timerAxpyNoise == null){
@@ -157,9 +161,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		timerCompute.stop();
     }
 
-	private native void ctaCompute(ITime targetTime);
-
-	public native ITime getCurrentTime();
 
 	public String[] getExchangeItemIDs() {
 		throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.getExchangeItemIDs(): Not implemented yet.");
@@ -180,7 +181,18 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
         throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.getExchangeItem(): Not implemented yet.");
     }
 
-    public IVector getObservedValues(
+	/**
+	 * Get the operator that can calculate model values corresponding to a number of observations
+	 * This returns the operator that calculates what the observations would look like,
+	 * if reality would be equal to the current stoch model state.
+	 *
+	 * @return Observation operator
+	 */
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
+
+	public IVector getObservedValues(
 			IObservationDescriptions observationDescriptions) {
 
 		if ( timerGetObs == null){
@@ -207,9 +219,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		timerGetObs.stop();
         return values;
     }
-
-	private native void ctaGetObservedValues(
-			IObservationDescriptions observationDescriptions, CtaVector values);
 
 
 	public IStochVector getParameterUncertainty() {
@@ -240,16 +249,26 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		return retVec;
 	}
 
-	public IVector getState(){
+	public IVector getState(int iDomain){
 		IVector retVec;
 		if ( timerGetState == null){
 			timerGetState = new OdaTiming(ModelID);
 		}
 		timerGetState.start();
-		retVec=ctaGetState();
+		if (iDomain>=0) {
+			retVec = ctaGetStateDomain(iDomain);
+		}
+		else {
+			retVec = ctaGetState();
+		}
 		timerGetState.stop();
 		return retVec;
 	}
+
+	public IVector getState(){
+		return getState(-1);
+	}
+
 
 	public IVector getStateScaling(){
 		IVector retVec;
@@ -262,50 +281,66 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		return retVec;
 	}
 
-    private native IVector ctaGetParameters();
 
-	private native IVector ctaGetState();
+	public ILocalizationDomains getLocalizationDomains(){
+		return this.localizationDomains;
+	}
 
-	private native IVector ctaGetStateScaling();
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+
+		return getObservedLocalization(observationDescriptions, distance, -1);
+	}
 
 
 
-
-	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
-	    if ( timerGetObsLoc == null){
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
+		if ( timerGetObsLoc == null){
 			timerGetObsLoc = new OdaTiming(ModelID);
 		}
 		timerGetObsLoc.start();
 
-	    boolean javaObsDescr= !(observationDescriptions instanceof CtaObservationDescriptions);
-	    CtaObservationDescriptions ObsDescr=null;
+		boolean javaObsDescr= !(observationDescriptions instanceof CtaObservationDescriptions);
+		CtaObservationDescriptions ObsDescr=null;
 		int[] ctaHandles;
 
-	    IVector rho[]= null;
+		IVector rho[]= null;
 		if (observationDescriptions.getObservationCount()>0){
-		   System.out.print("DEBUG in getObservedLocalization het aantal obs is:"+observationDescriptions.getObservationCount()+"\n");
+			System.out.print("DEBUG in getObservedLocalization het aantal obs is:"+observationDescriptions.getObservationCount()+"\n");
 
-           if (javaObsDescr){
-		      // First create a native wrapper for a generic observationdescription and then call the native
-              // implementation
-		      ObsDescr= new CtaObservationDescriptions(observationDescriptions);
-		      ctaHandles=ctaGetObservedLocalization(ObsDescr, distance);
-              // delete wrapper
-              ObsDescr.ctaFree();
-		   }
-	       else {
-		      ctaHandles=ctaGetObservedLocalization(observationDescriptions,distance);
-		   }
-		   if (ctaHandles == null){
-		     System.out.print("DEBUG in getObservedLocalization NULL array terug gekregen!\n");
-		   }
-		   rho	= new IVector[ctaHandles.length];
-		   for (int iObs=0; iObs<ctaHandles.length; iObs++){
-		      rho[iObs]=new CtaTreeVector(ctaHandles[iObs]);
-		   }
-	   }
-	   timerGetObsLoc.stop();
-	   return rho;
+			if (javaObsDescr){
+				// First create a native wrapper for a generic observationdescription and then call the native
+				// implementation
+				ObsDescr= new CtaObservationDescriptions(observationDescriptions);
+				if (iDomain>=0){
+					ctaHandles = ctaGetObservedLocalizationDomain(ObsDescr, distance, iDomain);
+				} else {
+					ctaHandles = ctaGetObservedLocalization(ObsDescr, distance);
+				}
+				// delete wrapper
+				ObsDescr.ctaFree();
+			}
+			else {
+				if (iDomain>=0){
+					ctaHandles = ctaGetObservedLocalizationDomain(observationDescriptions, distance, iDomain);
+				} else {
+					ctaHandles = ctaGetObservedLocalization(observationDescriptions, distance);
+				}
+			}
+			if (ctaHandles == null){
+				System.out.print("DEBUG in getObservedLocalization NULL array terug gekregen!\n");
+			}
+			rho	= new IVector[ctaHandles.length];
+			for (int iObs=0; iObs<ctaHandles.length; iObs++){
+				rho[iObs]=new CtaTreeVector(ctaHandles[iObs]);
+			}
+		}
+		timerGetObsLoc.stop();
+		return rho;
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int[] selector){
+		return getObservedLocalization(observationDescriptions,distance,-1);
 	}
 
 	public IVector[] getStateScaling(
@@ -318,8 +353,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		// Return null (uncertainty specified)
         return null;
     }
-
-	public native ITime getTimeHorizon();
 
 
 	public IVector[] getWhiteNoise(ITime timeSpan) {
@@ -348,20 +381,17 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		}
 	}
 
-	private native void ctaReleaseInternalState(String IDstate);
 
 	public IModelState loadPersistentState(File persistentStateFile) {
 		String FileName = persistentStateFile.getAbsolutePath();
 	    return ctaLoadPersistentState(FileName);
 	}
 
-	private native IModelState ctaLoadPersistentState(String persistentStateFile);
-
     public IModelState saveInternalState(){
 		return ctaSaveInternalState();
 	}
 
-	private native IModelState ctaSaveInternalState();
+
 
 	public void restoreInternalState(IModelState savedInternalState){
 		if (savedInternalState instanceof CtaModelState){
@@ -373,9 +403,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		}
 	}
 
-	private native void ctaRestoreInternalState(String IDstate);
-
-	public native void setAutomaticNoiseGeneration(boolean value);
 
 	public void setParameters(IVector parameters) {
 		if (parameters instanceof CtaTreeVector ){
@@ -386,9 +413,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
 		}
 	}
 
-	private native int[] ctaGetObservedLocalization(IObservationDescriptions observationDescriptions, double distance);
-
-	private native void ctaSetParameters(IVector parameters);
 
 	public void setWhiteNoise(IVector[] whiteNoise) {
 		throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.setWhiteNoise(): Not implemented yet.");
@@ -407,4 +431,40 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance {
     public void initialize(File workingDir, String[] arguments) {
         // no action needed (handled by model factory)
     }
+
+
+	public int getNumDomains(double distance){
+		return ctaGetNumDomains(distance);
+	}
+
+    public int[] getObservationSelector(IObservationDescriptions observationDescriptions, double distance, int iDomain){
+		return ctaGetObservationSelector(observationDescriptions, distance, iDomain);
+	}
+
+
+    // Native implementations
+	public native ITime getCurrentTime();
+	public native ITime getTimeHorizon();
+	public native void setAutomaticNoiseGeneration(boolean value);
+
+	private native int ctaCreate(String ModelCls, String filename);
+	private native void ctaAnnounceObservedValues(IObservationDescriptions observationDescriptions);
+	private native void ctaAxpyOnParameters(double alpha, IVector vector);
+	private native void ctaAxpyOnStateDomain(double alpha, IVector vector, int iDomain);
+	private native void ctaCompute(ITime targetTime);
+	private native void ctaGetObservedValues(IObservationDescriptions observationDescriptions, CtaVector values);
+	private native IVector ctaGetState();
+	private native IVector ctaGetStateDomain(int iDomain);
+	private native IVector ctaGetParameters();
+	private native IVector ctaGetStateScaling();
+    private native void ctaReleaseInternalState(String IDstate);
+    private native IModelState ctaLoadPersistentState(String persistentStateFile);
+	private native IModelState ctaSaveInternalState();
+	private native void ctaRestoreInternalState(String IDstate);
+	private native int[] ctaGetObservedLocalization(IObservationDescriptions observationDescriptions, double distance);
+	private native int[] ctaGetObservedLocalizationDomain(IObservationDescriptions observationDescriptions, double distance, int iDomain);
+	private native void ctaSetParameters(IVector parameters);
+	private native int ctaGetNumDomains(double distance);
+	private native int[] ctaGetObservationSelector(IObservationDescriptions observationDescriptions, double distance, int iDomain);
+
 }

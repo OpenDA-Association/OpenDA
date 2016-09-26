@@ -50,7 +50,7 @@ public class DudENSR extends AbstractSequentialEnsembleAlgorithm {
 			states[i] = this.ensemble[i].getState();
 			relStates[i] = states[i].clone();
 			// collect predictions
-			predictions[i] = this.ensemble[i].getObservedValues(stochObs.getObservationDescriptions());
+			predictions[i] = this.ensemble[i].getObservationOperator().getObservedValues(stochObs.getObservationDescriptions());
 		}
 
 		// compute ensemble average and subtract it from ensemble
@@ -131,7 +131,7 @@ public class DudENSR extends AbstractSequentialEnsembleAlgorithm {
 		for (int i = 0; i < q; i++) {
 			updatedStates[i] = this.ensemble[i].getState();
 			// collect predictions
-			updatedPredictions[i] = this.ensemble[i].getObservedValues(
+			updatedPredictions[i] = this.ensemble[i].getObservationOperator().getObservedValues(
 					stochObs.getObservationDescriptions());
 		}
 		xiAvg = ensembleAverage(updatedStates,q);

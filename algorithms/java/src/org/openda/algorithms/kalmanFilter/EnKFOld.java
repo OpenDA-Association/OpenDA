@@ -104,7 +104,7 @@ public class EnKFOld extends AbstractSequentialEnsembleAlgorithm {
 			timerGetObs.start();
 			for (int i = 0; i < this.ensembleSize; i++) {
 				// collect predictions
-				pred[i] = this.ensemble[i].getObservedValues(obs.getObservationDescriptions());
+				pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(obs.getObservationDescriptions());
                 Results.putValue("pred_f_"+i, pred[i], pred[i].getSize() , "analysis step", IResultWriter.OutputLevel.Normal, IResultWriter.MessageType.Step);
 			}
 			timerGetObs.stop();
@@ -301,7 +301,7 @@ public class EnKFOld extends AbstractSequentialEnsembleAlgorithm {
 			timerGetObs.start();
 			for (int i = 0; i < this.ensembleSize; i++) {
 				// collect predictions
-				pred[i] = this.ensemble[i].getObservedValues(obs
+				pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(obs
 						.getObservationDescriptions());
                 Results.putValue("pred_a_"+i, pred[i], pred[i].getSize() , "analysis step", IResultWriter.OutputLevel.Normal, IResultWriter.MessageType.Step);
 			}

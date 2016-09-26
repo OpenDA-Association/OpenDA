@@ -230,7 +230,18 @@ public class VectorFloat implements IVector, Externalizable {
 		return floatToDouble(this.content);
     }
 
-    /**
+	/**
+	 * {@inheritDoc}
+	 */
+	public double[] getValues(int[] selector) {
+		double out[] = new double[selector.length];
+		//copy values
+		for(int i =0;i < selector.length;i++)
+			out[i] = (double) this.content[selector[i]];
+		return out;
+	}
+
+	/**
      * {@inheritDoc}
      */
     public void setValue(int index, double value) {

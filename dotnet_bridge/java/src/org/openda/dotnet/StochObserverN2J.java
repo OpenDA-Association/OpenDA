@@ -67,6 +67,12 @@ public class StochObserverN2J implements IStochObserver {
 	}
 
 
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".createSelection() not implemented");
+	}
+
+
 	public IStochObserver createSelection(Type observationType) {
 		throw new UnsupportedOperationException("Not implemented yet.");
 	}

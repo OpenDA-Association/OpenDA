@@ -150,7 +150,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		timerGetObs.start();
 		for (int i = 0; i < this.ensembleSize; i++) {
 			// collect ensemble
-			ensVectors.ensemble[i] = this.ensemble[i].getObservedValues(observationDescriptions);
+			ensVectors.ensemble[i] = this.ensemble[i].getObservationOperator().getObservedValues(observationDescriptions);
 		}
 		timerGetObs.stop();
 
@@ -193,7 +193,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 	}
 
 
-	private void updateModelWithGain(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, IVector[] Kvecs){
+	protected void updateModelWithGain(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, IVector[] Kvecs){
 		timerGainMult.start();
 		// correct each member
 		for (int i = 0; i < this.ensembleSize; i++) {
@@ -231,7 +231,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		timerLocalization.stop();
 	}
 
-	protected  void localizationHamill(IStochObserver obs, IVector[] Kvecs){
+	protected void localizationHamill(IStochObserver obs, IVector[] Kvecs){
 		localizationHamill(obs, Kvecs, null, null, true);
 	}
 

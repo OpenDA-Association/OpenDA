@@ -83,6 +83,11 @@ public class CtaStochObserver extends CtaObject implements IStochObserver {
     	return new CtaStochObserver(handle);
     }
 
+	public IStochObserver createSelection(int[] selector){
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".createSelection() not implemented");
+	}
+
 	public IStochObserver createSelection(Type observationType) {
 		if (observationType == Type.Assimilation) {
 			return this;
@@ -90,7 +95,7 @@ public class CtaStochObserver extends CtaObject implements IStochObserver {
 		throw new UnsupportedOperationException("org.openda.costa.CtaStochObserver.createSelection(): Not implemented yet.");
 	}
 
-    public ISelector createSelector(Type observationType) {
+	public ISelector createSelector(Type observationType) {
         return new IdentitySelector();        
     }
 

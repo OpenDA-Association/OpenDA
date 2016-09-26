@@ -19,6 +19,8 @@
 */
 package org.openda.algorithms;
 import junit.framework.TestCase;
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.models.oscillator.OscillatorStochModelFactory;
 import org.openda.observers.NoosTimeSeriesStochObserver;
@@ -50,7 +52,7 @@ public class DudWithObservationFilterTest extends TestCase {
         IStochModelFactory stochModelFactory = new DummyStochModelFactory();
         stochModelFactory.initialize(null, null);
         IStochModelInstance stochModelInstance = stochModelFactory.getInstance(IStochModelFactory.OutputLevel.ModelDefault);
-        IVector modelPrd = stochModelInstance.getObservedValues(stochObserver.getObservationDescriptions());
+        IVector modelPrd = stochModelInstance.getObservationOperator().getObservedValues(stochObserver.getObservationDescriptions());
         System.out.println(modelPrd.toString());
 
         DummyDud dummyDud = new DummyDud();
@@ -109,7 +111,11 @@ public class DudWithObservationFilterTest extends TestCase {
 		}
 	}
 
-    private class DummyModelInstance implements IStochModelInstance {
+    private class DummyModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
+
+        public IObservationOperator getObservationOperator() {
+            return new ObservationOperatorDeprecatedModel(this);
+        }
 
         public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 
@@ -129,8 +135,20 @@ public class DudWithObservationFilterTest extends TestCase {
             // no action needed (handled by constructors)
         }
 
+        public ILocalizationDomains getLocalizationDomains(){
+            return new LocalizationDomainsSimpleModel();
+        }
+
         public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getObservedLocalization(): Not implemented yet.");
+        }
+
+        public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
+            throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getObservedLocalization(): Not implemented yet.");
+        }
+
+        public IVector getState(int iDomain) {
+            return this.getState();
         }
 
         public IVector getState() {
@@ -138,6 +156,10 @@ public class DudWithObservationFilterTest extends TestCase {
         }
 
         public void axpyOnState(double alpha, IVector vector) {
+            throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.axpyOnState(): Not implemented yet.");
+        }
+
+        public void axpyOnState(double alpha, IVector vector, int iDomain) {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.axpyOnState(): Not implemented yet.");
         }
 

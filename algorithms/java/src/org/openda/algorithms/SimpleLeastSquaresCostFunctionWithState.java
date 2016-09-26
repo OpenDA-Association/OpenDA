@@ -308,7 +308,11 @@ public class SimpleLeastSquaresCostFunctionWithState extends SimulationKwadratic
 		// do nothing, never parallel.
 	}
 
-	
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
+
 	public IVector getState(){
 		return this.pred.clone();
 	}

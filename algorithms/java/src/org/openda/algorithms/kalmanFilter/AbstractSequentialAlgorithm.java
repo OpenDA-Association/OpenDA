@@ -473,7 +473,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 				IObservationDescriptions descriptions = selection.getObservationDescriptions();
 				timerNext_getObsDescr.stop();
 				timerNext_getObsVal.start();
-				IVector pred_f = this.mainModel.getObservedValues(descriptions);
+				IVector pred_f = this.mainModel.getObservationOperator().getObservedValues(descriptions);
                 timerNext_getObsVal.stop();
                 Results.putValue("pred_f_central", pred_f, pred_f.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
 				IVector obsValues = selection.getExpectations();
@@ -499,7 +499,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 				descriptions = selection.getObservationDescriptions();
 				timerNext_getObsDescr.stop();
 				timerNext_getObsVal.start();
-				IVector pred_a = this.mainModel.getObservedValues(descriptions);
+				IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(descriptions);
 				timerNext_getObsVal.stop();
                 Results.putValue("pred_a_central", pred_a, pred_a.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
 				// x_a(0.0) = [0.7934845787950873,-0.2203770147469745]
@@ -533,6 +533,10 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 		this.thisStep++;
 		System.gc();
 		timerNext.stop();
+	}
+
+	public IVector getState(int iDomain) {
+		return this.mainModel.getState(iDomain);
 	}
 
 	public IVector getState(){

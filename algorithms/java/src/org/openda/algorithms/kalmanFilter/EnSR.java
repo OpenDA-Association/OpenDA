@@ -57,7 +57,7 @@ public class EnSR extends AbstractSequentialEnsembleAlgorithm {
 			// collect ensemble
 			xi[i] = this.ensemble[i].getState();
 			// collect predictions
-			pred[i] = this.ensemble[i].getObservedValues(obs
+			pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(obs
 					.getObservationDescriptions());
 		}
 		int m = obs.getCount(); // number of observations
@@ -171,7 +171,7 @@ public class EnSR extends AbstractSequentialEnsembleAlgorithm {
 		for (int i = 0; i < this.ensembleSize; i++) {
 			xi[i] = this.ensemble[i].getState();
 			// collect predictions
-			pred[i] = this.ensemble[i].getObservedValues(obs
+			pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(obs
 					.getObservationDescriptions());
 		}
 		xiAvg = ensembleAverage(xi);

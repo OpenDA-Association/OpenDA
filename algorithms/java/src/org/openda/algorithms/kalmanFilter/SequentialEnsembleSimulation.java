@@ -43,7 +43,7 @@ public class SequentialEnsembleSimulation extends AbstractSequentialEnsembleAlgo
 			// collect ensemble
 			xi[i] = this.ensemble[i].getState();
 			// collect predictions
-			pred[i] = this.ensemble[i].getObservedValues(observations.getObservationDescriptions());
+			pred[i] = this.ensemble[i].getObservationOperator().getObservedValues(observations.getObservationDescriptions());
             Results.putValue("pred_f_"+i, pred[i], pred[i].getSize() , "analysis step", IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.Step);
 		}
 		int m = observations.getCount(); // number of observations

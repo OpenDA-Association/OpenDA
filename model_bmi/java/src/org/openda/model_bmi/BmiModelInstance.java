@@ -34,6 +34,9 @@ import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.utils.Instance;
+import org.openda.utils.Results;
 import org.openda.utils.*;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.AnalysisDataWriter;
@@ -351,7 +354,20 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 			}
 		}
 	}
-
+	
+	/**
+	 * Returns the localization domains of the model
+	 *
+	 * @param observationDescriptions
+	 *            observation description
+	 * @return the localization domains.
+	 */
+	// this method is never called if this modelInstance implements the
+	// IModelExtensions interface.
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+	
 	/**
 	 * Returns the localization weights for each observation location. This
 	 * method assumes that there is only one state vector.
@@ -369,6 +385,30 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	// this method is never called if this modelInstance implements the
 	// IModelExtensions interface.
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		throw new UnsupportedOperationException(this.getClass().getName()
+				+ ".getObservedLocalization() not implemented");
+	}
+
+
+	/**
+	 * Returns the localization weights for each observation location. This
+	 * method assumes that there is only one state vector.
+	 *
+	 * @param observationDescriptions
+	 *            observation description
+	 * @param distance
+	 *            characteristic distance for Cohn's formula
+	 * @param iDomain
+	 *            number of domain
+	 * @return weight vector for each observation location. The size of the
+	 *         returned array must equal the number of observation locations in
+	 *         the given observationDescriptions. The size of each vector in the
+	 *         returned array must equal the size of the state vector of the
+	 *         implementing modelInstance.
+	 */
+	// this method is never called if this modelInstance implements the
+	// IModelExtensions interface.
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
 		throw new UnsupportedOperationException(this.getClass().getName()
 				+ ".getObservedLocalization() not implemented");
 	}

@@ -267,6 +267,10 @@ public class SCE extends Instance implements IAlgorithm {
         return bestEstimate;
     }
 
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		// TODO Auto-generated method stub
 		return null;

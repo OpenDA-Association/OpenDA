@@ -73,7 +73,7 @@ public class CalibrationTest extends TestCase {
 		IObservationDescriptions descr1 = obs1.getObservationDescriptions();
 		mod1.announceObservedValues(descr1);
 		mod1.compute(mod1.getTimeHorizon().getEndTime());
-		IVector prd = mod1.getObservedValues(descr1);
+		IVector prd = mod1.getObservationOperator().getObservedValues(descr1);
 		// create new observer with these generated values
 		columns[2] = prd;
 		CsvStochObserver obsGenerated = new CsvStochObserver(columns,keys);

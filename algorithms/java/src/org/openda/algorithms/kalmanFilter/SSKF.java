@@ -100,6 +100,10 @@ public class SSKF extends Instance implements IAlgorithm {
 		throw new UnsupportedOperationException("SSKF has been removed. Please use SteadyStateFilter instead.");
 	}
 
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		throw new UnsupportedOperationException("SSKF has been removed. Please use SteadyStateFilter instead.");
 	}

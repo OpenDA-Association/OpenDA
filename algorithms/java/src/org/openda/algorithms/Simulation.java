@@ -135,7 +135,7 @@ public class Simulation extends Instance implements IAlgorithm {
   
         model.compute(targetTime);
     	// get results as Vectors
-    	IVector prd      = model.getObservedValues(descr);
+    	IVector prd      = model.getObservationOperator().getObservedValues(descr);
     	IVector obs      = obsSelection.getValues();
     	IVector obsStd   = obsSelection.getStandardDeviations();
     	// residuals obs-prd
@@ -217,7 +217,11 @@ public class Simulation extends Instance implements IAlgorithm {
 	    	return this.bestEstimate;
 	}
 
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		if(this.bestEstimate!=null){
 		return this.bestEstimate.getState();

@@ -171,7 +171,11 @@ public class Delsa extends Instance implements IAlgorithm {
 		// in the cost function)
 	}
 
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		throw new UnsupportedOperationException("method getState not implemented."+this.getClass().getName());
 	}

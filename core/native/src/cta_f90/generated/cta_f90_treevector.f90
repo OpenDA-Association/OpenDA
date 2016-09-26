@@ -671,6 +671,7 @@ contains
     subroutine CTA_TreeVector_SetConstant_integer( treevec, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_INTEGER
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  treevec
       integer                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status
@@ -680,6 +681,7 @@ contains
     subroutine CTA_TreeVector_SetConstant_real4( treevec, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_REAL
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  treevec
       real(4)                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status
@@ -689,6 +691,7 @@ contains
     subroutine CTA_TreeVector_SetConstant_real8( treevec, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_DOUBLE
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  treevec
       real(8)                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status
@@ -1076,6 +1079,7 @@ contains
     subroutine CTA_TreeVector_SetVal_integer( treevec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_INTEGER
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  treevec
       integer                       , intent(in   )     ::  i
       integer                       , intent(in   )     ::  val
@@ -1086,6 +1090,7 @@ contains
     subroutine CTA_TreeVector_SetVal_real4( treevec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_REAL
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  treevec
       integer                       , intent(in   )     ::  i
       real(4)                       , intent(in   )     ::  val
@@ -1096,6 +1101,7 @@ contains
     subroutine CTA_TreeVector_SetVal_real8( treevec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_DOUBLE
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  treevec
       integer                       , intent(in   )     ::  i
       real(8)                       , intent(in   )     ::  val
@@ -1106,6 +1112,7 @@ contains
     subroutine CTA_TreeVector_GetVal_integer( treevec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_INTEGER
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  treevec
       integer                       , intent(in   )     ::  i
       integer                       , intent(out  )     ::  val
@@ -1116,6 +1123,7 @@ contains
     subroutine CTA_TreeVector_GetVal_real4( treevec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_REAL
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  treevec
       integer                       , intent(in   )     ::  i
       real(4)                       , intent(out  )     ::  val
@@ -1126,6 +1134,7 @@ contains
     subroutine CTA_TreeVector_GetVal_real8( treevec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_DOUBLE
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  treevec
       integer                       , intent(in   )     ::  i
       real(8)                       , intent(out  )     ::  val

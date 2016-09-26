@@ -138,6 +138,7 @@ module cta_f90_vector
     module procedure CTA_Vector_SetVal_integer
     module procedure CTA_Vector_SetVal_real4
     module procedure CTA_Vector_SetVal_real8
+    module procedure CTA_Vector_SetVal_char
   end interface
 
   !  \brief Set all elementes in the vector.
@@ -454,6 +455,7 @@ contains
     subroutine CTA_Vector_GetVal_integer( hvec, i, vals, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_INTEGER
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hvec
       integer                       , intent(in   )     ::  i
       integer                       , intent(out  )     ::  vals
@@ -464,6 +466,7 @@ contains
     subroutine CTA_Vector_GetVal_real4( hvec, i, vals, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_REAL
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hvec
       integer                       , intent(in   )     ::  i
       real(4)                       , intent(out  )     ::  vals
@@ -474,12 +477,24 @@ contains
     subroutine CTA_Vector_GetVal_real8( hvec, i, vals, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_DOUBLE
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hvec
       integer                       , intent(in   )     ::  i
       real(8)                       , intent(out  )     ::  vals
       integer                       , intent(out  )     ::  status
       call CTA_Vector_GetVal( hvec, i, vals, CTA_DOUBLE, status )
     end subroutine CTA_Vector_GetVal_real8
+
+    subroutine CTA_F90_Vector_GetHandle( hvec, i, vals, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      use CTA_F90_Parameters, only : CTA_HANDLE
+      use CTA_F90_Parameters, only : CTA_OK
+      integer(CTA_HANDLE_IKIND)     , intent(in   )     ::  hvec
+      integer                       , intent(in   )     ::  i
+      integer                       , intent(out  )     ::  vals
+      integer                       , intent(out  )     ::  status
+      call CTA_Vector_GetVal( hvec, i, vals, CTA_HANDLE, status )
+    end subroutine CTA_F90_Vector_GetHandle
 
     subroutine CTA_Vector_GetVals_integer_1d( hvec, vals, n, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
@@ -694,6 +709,7 @@ contains
     subroutine CTA_Vector_SetVal_integer( hvec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_INTEGER
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
       integer                       , intent(in   )     ::  i
       integer                       , intent(in   )     ::  val
@@ -704,6 +720,7 @@ contains
     subroutine CTA_Vector_SetVal_real4( hvec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_REAL
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
       integer                       , intent(in   )     ::  i
       real(4)                       , intent(in   )     ::  val
@@ -714,12 +731,43 @@ contains
     subroutine CTA_Vector_SetVal_real8( hvec, i, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_DOUBLE
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
       integer                       , intent(in   )     ::  i
       real(8)                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status
       call CTA_Vector_SetVal( hvec, i, val, CTA_DOUBLE, status )
     end subroutine CTA_Vector_SetVal_real8
+
+    subroutine CTA_Vector_SetVal_char( hvec, i, val, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      use CTA_F90_Parameters, only : CTA_STRING
+      use CTA_F90_Parameters, only : CTA_OK
+      integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
+      integer                       , intent(in   )     ::  i
+      character(len=*)              , intent(in   )     ::  val
+      integer                       , intent(out  )     ::  status
+      integer(CTA_HANDLE_IKIND)  ::  sval
+      call CTA_String_Create( sval, status )
+      if (status/=CTA_OK) return
+      call CTA_String_Set( sval, val, status )
+      if (status/=CTA_OK) return
+      call CTA_Vector_SetVal( hvec, i, sval, CTA_STRING, status )
+      if (status/=CTA_OK) return
+      call CTA_String_Free( sval, status )
+      if (status/=CTA_OK) return
+    end subroutine CTA_Vector_SetVal_char
+
+    subroutine CTA_F90_Vector_SetHandle( hvec, i, val, status )
+      use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
+      use CTA_F90_Parameters, only : CTA_HANDLE
+      use CTA_F90_Parameters, only : CTA_OK
+      integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
+      integer                       , intent(in   )     ::  i
+      integer                       , intent(in   )     ::  val
+      integer                       , intent(out  )     ::  status
+      call CTA_Vector_SetVal( hvec, i, val, CTA_HANDLE, status )
+    end subroutine CTA_F90_Vector_SetHandle
 
     subroutine CTA_Vector_SetVals_integer_1d( hvec, vals, n, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
@@ -934,6 +982,7 @@ contains
     subroutine CTA_Vector_SetConstant_integer( hvec, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_INTEGER
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
       integer                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status
@@ -943,6 +992,7 @@ contains
     subroutine CTA_Vector_SetConstant_real4( hvec, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_REAL
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
       real(4)                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status
@@ -952,6 +1002,7 @@ contains
     subroutine CTA_Vector_SetConstant_real8( hvec, val, status )
       use CTA_F90_Parameters, only : CTA_HANDLE_IKIND
       use CTA_F90_Parameters, only : CTA_DOUBLE
+      use CTA_F90_Parameters, only : CTA_OK
       integer(CTA_HANDLE_IKIND)     , intent(inout)     ::  hvec
       real(8)                       , intent(in   )     ::  val
       integer                       , intent(out  )     ::  status

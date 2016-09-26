@@ -183,7 +183,11 @@ public class GriddedFullSearch extends Instance implements IAlgorithm {
 		// in the cost function)
 	}
 
-	
+
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
 	public IVector getState() {
 		// TODO Auto-generated method stub
 		return null;

@@ -216,7 +216,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		}
 		this.mainModel.axpyOnState(1.0, delta);
 		
-		IVector pred_a = this.mainModel.getObservedValues(observations.getObservationDescriptions());
+		IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(observations.getObservationDescriptions());
         Results.putValue("pred_a", pred_a, pred_a.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
 
 	}

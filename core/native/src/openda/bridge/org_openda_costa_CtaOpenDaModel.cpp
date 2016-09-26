@@ -38,6 +38,61 @@ static CTA_ModelClass *CTAI_Created_Classes  = NULL;
 static char           **CTAI_ClassFile       = NULL;
 static char           **CTAI_ClassConfigFile = NULL;
 
+
+/*Private functions */
+
+jintArray Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalization
+  (JNIEnv *env, jobject jModel, jobject jObsDescr, jdouble distance, jint iDomain){
+
+   int nObs;
+   int retVal;
+   CTA_Vector locVecs;
+
+   cta_jni_setJavaEnv(env);
+   CTA_Model ctaModel       = cta_jni_getCtaHandle(env, jModel);
+   CTA_ObsDescr ctaObsDescr = cta_jni_getCtaHandle(env, jObsDescr);
+
+   /* Get number of observations */
+   CTA_ObsDescr_Observation_Count(ctaObsDescr, &nObs);
+
+   /* Create array */
+   jintArray jValues = env->NewIntArray(nObs);
+
+   /* Create COSTA vector */
+   retVal = CTA_Vector_Create(CTA_DEFAULT_VECTOR, nObs, CTA_HANDLE, CTA_NULL, &locVecs);
+
+   /* Set all indices NULL */
+   CTA_Handle nullHandle=CTA_NULL;
+   retVal = CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
+
+   if (iDomain >=0){
+      /* Get localization from model */
+      retVal = CTA_Model_GetObsLocalizationDomain(ctaModel, ctaObsDescr, distance, iDomain, locVecs);
+   }
+   else {
+      retVal = CTA_Model_GetObsLocalization(ctaModel, ctaObsDescr, distance, locVecs);
+   }
+
+   /* Copy costa handles into Java integer array */
+   int *cValues = new int[nObs];
+   retVal = CTA_Vector_GetVals(locVecs, (void *) cValues, nObs, CTA_HANDLE);
+   env->SetIntArrayRegion(jValues, 0, nObs, (jint *) cValues);
+
+   /* Set all handles to CTA_NULL in order to avoid deallocation */
+   retVal = CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
+
+   /* Free work variables */
+   delete [] cValues;
+   retVal=CTA_Vector_Free(&locVecs);
+
+   return jValues;
+}
+
+
+
+
+
+
 /*
  * Class:     org_costa_CtaOpenDaModel
  * Method:    CtaOpenDaModelCreate
@@ -163,24 +218,6 @@ JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaAxpyOnParameters
    }
 }
 
-/*
- * Class:     org_costa_CtaOpenDaModel
- * Method:    CtaModelAxpyOnState
- * Signature: (DLorg/openda/interfaces/IVector;)V
- */
-JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaAxpyOnState
-(JNIEnv *env, jobject jModel, jdouble alpha, jobject jX){
-
-   cta_jni_setJavaEnv(env);
-   CTA_Model ctaModel  = cta_jni_getCtaHandle(env, jModel);
-   CTA_TreeVector ctaX = cta_jni_getCtaHandle(env, jX);
-
-   int retVal=CTA_Model_AxpyState(ctaModel, alpha, ctaX);
-   if ( retVal != CTA_OK ) {
-     cta_jni_exception(env, "CtaOpenDaModel", "Could perform CTA_Model_AxpyState", retVal);
-     return;
-   }
-}
 
 /*
  * Class:     org_costa_CtaOpenDaModel
@@ -348,43 +385,8 @@ JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetStateScalin
 JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalization
   (JNIEnv *env, jobject jModel, jobject jObsDescr, jdouble distance){
 
-   int nObs;
-   int retVal;
-   CTA_Vector locVecs;
-
-   cta_jni_setJavaEnv(env);
-   CTA_Model ctaModel       = cta_jni_getCtaHandle(env, jModel);
-   CTA_ObsDescr ctaObsDescr = cta_jni_getCtaHandle(env, jObsDescr);
-
-   /* Get number of observations */
-   CTA_ObsDescr_Observation_Count(ctaObsDescr, &nObs);
-
-   /* Create array */
-   jintArray jValues = env->NewIntArray(nObs);
-
-   /* Create COSTA vector */
-   retVal = CTA_Vector_Create(CTA_DEFAULT_VECTOR, nObs, CTA_HANDLE, CTA_NULL, &locVecs);
-
-   /* Set all indices NULL */
-   CTA_Handle nullHandle=CTA_NULL;
-   retVal = CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
-
-   /* Get localization from model */
-   retVal = CTA_Model_GetObsLocalization(ctaModel, ctaObsDescr, distance, locVecs);
-
-   /* Copy costa handles into Java integer array */
-   int *cValues = new int[nObs];
-   retVal = CTA_Vector_GetVals(locVecs, (void *) cValues, nObs, CTA_HANDLE);
-   env->SetIntArrayRegion(jValues, 0, nObs, (jint *) cValues);
-
-   /* Set all handles to CTA_NULL in order to avoid deallocation */
-   retVal = CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
-
-   /* Free work variables */
-   delete [] cValues;
-   retVal=CTA_Vector_Free(&locVecs);
-
-   return jValues;
+   return Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalization
+      (env, jModel, jObsDescr, distance, -1);
 }
 
 /*
@@ -648,3 +650,146 @@ JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_getCurrentTime
 
    return jTime;
 }
+
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaAxpyOnStateDomain
+ * Signature: (DLorg/openda/interfaces/IVector;I)V
+ */
+JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaAxpyOnStateDomain
+  (JNIEnv *env, jobject jModel, jdouble alpha, jobject jX, jint iDomain){
+
+   cta_jni_setJavaEnv(env);
+   CTA_Model ctaModel  = cta_jni_getCtaHandle(env, jModel);
+   CTA_TreeVector ctaX = cta_jni_getCtaHandle(env, jX);
+
+   int retVal=CTA_OK;
+   if (iDomain<0){
+      retVal=CTA_Model_AxpyState(ctaModel, alpha, ctaX);
+   }
+   else {
+      retVal=CTA_Model_AxpyStateDomain(ctaModel, alpha, iDomain, ctaX);
+   }
+   if ( retVal != CTA_OK ) {
+     cta_jni_exception(env, "CtaOpenDaModel", "Could perform CTA_Model_AxpyState", retVal);
+     return;
+   }
+}
+
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetStateDomain
+ * Signature: (I)Lorg/openda/interfaces/IVector;
+ */
+JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetStateDomain
+  (JNIEnv *env, jobject jModel, jint iDomain){
+   cta_jni_setJavaEnv(env);
+   CTA_Model ctaModel       = cta_jni_getCtaHandle(env, jModel);
+   CTA_TreeVector ctaState =CTA_NULL;
+   int retVal=CTA_Model_GetStateDomain(ctaModel, iDomain, &ctaState);
+   if ( retVal != CTA_OK ) {
+     cta_jni_exception(env, "CtaOpenDaModel", "Could perform CTA_Model_GetState", retVal);
+     return NULL;
+   }
+
+   /* Create a Java CtaTreeVector */
+   jclass clsTreeVector = env->FindClass("org/openda/costa/CtaTreeVector");
+   jmethodID constructorID = env->GetMethodID (clsTreeVector, "<init>", "()V");
+   jobject jState = env->NewObject(clsTreeVector, constructorID);
+
+   cta_jni_setCtaHandle(env, jState, ctaState);
+
+   return jState;
+}
+
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetObservedLocalizationDomain
+ * Signature: (Lorg/openda/interfaces/IObservationDescriptions;DI)[I
+ */
+JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalizationDomain
+  (JNIEnv *env, jobject jModel, jobject jObsDescr, jdouble distance, jint iDomain){
+
+   return Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalization
+      (env, jModel, jObsDescr, distance, iDomain);
+}
+
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetNumDomains
+ * Signature: (D)I
+ */
+JNIEXPORT jint JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetNumDomains
+  (JNIEnv *env, jobject jModel, jdouble distance){
+
+   cta_jni_setJavaEnv(env);
+   CTA_Model ctaModel  = cta_jni_getCtaHandle(env, jModel);
+
+   int nDomains;
+   int retVal=CTA_Model_GetNumDomains(ctaModel, distance, &nDomains);
+   if ( retVal != CTA_OK ) {
+     cta_jni_exception(env, "CtaOpenDaModel", "Could perform CTA_Model_AxpyState", retVal);
+     return 0;
+   }
+   return nDomains;
+}
+
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetObservationSelector
+ * Signature: (Lorg/openda/interfaces/IObservationDescriptions;DI)[I
+ */
+JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservationSelector
+  (JNIEnv *env, jobject jModel, jobject jObsDescr, jdouble distance, jint iDomain){
+
+   cta_jni_setJavaEnv(env);
+   CTA_Model ctaModel       = cta_jni_getCtaHandle(env, jModel);
+   CTA_ObsDescr ctaObsDescr = cta_jni_getCtaHandle(env, jObsDescr);
+   CTA_Time time;
+
+
+   CTA_Vector ctaSelVec = CTA_NULL;
+   int retVal=CTA_Model_GetObsSelector (ctaModel, ctaObsDescr, distance, iDomain, &ctaSelVec);
+   if ( retVal != CTA_OK ) {
+      cta_jni_exception(env, "CtaModel", "ObservationSelector returned an error ", retVal);
+      return NULL;           
+   }
+   int nSel;
+   retVal=CTA_Vector_GetSize(ctaSelVec, &nSel);
+   if ( retVal != CTA_OK ) {
+      cta_jni_exception(env, "CtaModel", "ObservationSelector cannot get length of returned selction. Error ", retVal);
+      return NULL;           
+   }
+   int *iVals = new int[nSel];
+   retVal = CTA_Vector_GetVals(ctaSelVec,iVals,nSel,CTA_INTEGER);
+   if ( retVal != CTA_OK ) {
+      cta_jni_exception(env, "CtaModel", "ObservationSelector cannot get values from selection vector. Error ", retVal);
+      delete [] iVals;
+      return NULL;           
+   }
+   retVal= CTA_Vector_Free(&ctaSelVec);
+   if ( retVal != CTA_OK ) {
+      cta_jni_exception(env, "CtaModel", "ObservationSelector cannot get values from selection vector. Error ", retVal);
+      delete [] iVals;
+      return NULL;           
+   }
+
+   /* Copy values to java integer array */
+   jintArray jValues = env->NewIntArray(nSel);
+   env->SetIntArrayRegion(jValues, 0, nSel, iVals);
+   delete [] iVals;
+   return jValues;
+}
+
+
+
+
+
+
+
+

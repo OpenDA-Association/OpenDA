@@ -160,6 +160,16 @@
       integer, parameter ::FCTA_MODEL_ADJ_PREPARE        =28
       integer, parameter ::FCTA_MODEL_NUMFUNC            =28
 
+      integer, parameter ::FCTA_MODEL_GETNUMDOMAINS      =30
+      integer, parameter ::FCTA_MODEL_GETOBSSELECTOR     =31
+      integer, parameter ::FCTA_MODEL_GETOBSLOCALIZATIONDOMAIN =32
+      integer, parameter ::FCTA_MODEL_GETSTATEDOMAIN     =33
+      integer, parameter ::FCTA_MODEL_AXPYSTATEDOMAIN    =34
+
+
+
+
+
 !     Observation description parameters
       integer, parameter ::FCTA_OBSDESCR_CREATE_SIZE        =  1+1
       integer, parameter ::FCTA_OBSDESCR_CREATE_INIT        =  2+1

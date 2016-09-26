@@ -41,6 +41,7 @@ import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IVector;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 
 import java.io.File;
 
@@ -104,6 +105,12 @@ public class LorenzStochModelInstance extends org.openda.models.simpleModel.Simp
 
 		// Internal state of the model
 		state = new Vector("[1.508870, -1.531271, 25.46091]");
+
+		// Create a localization here
+		int[][] statedomains = {{0}, {1,2}};
+
+		localizationDomains = new LocalizationDomainsSimpleModel(statedomains);
+
 
 		// Parameter used for calibration
 		this.stochParNames.add("sigma");

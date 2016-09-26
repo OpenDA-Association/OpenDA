@@ -9,6 +9,30 @@ extern "C" {
 #endif
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    getCurrentTime
+ * Signature: ()Lorg/openda/interfaces/ITime;
+ */
+JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_getCurrentTime
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    getTimeHorizon
+ * Signature: ()Lorg/openda/interfaces/ITime;
+ */
+JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_getTimeHorizon
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    setAutomaticNoiseGeneration
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_setAutomaticNoiseGeneration
+  (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
  * Method:    ctaCreate
  * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
@@ -33,11 +57,11 @@ JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaAxpyOnParameters
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
- * Method:    ctaAxpyOnState
- * Signature: (DLorg/openda/interfaces/IVector;)V
+ * Method:    ctaAxpyOnStateDomain
+ * Signature: (DLorg/openda/interfaces/IVector;I)V
  */
-JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaAxpyOnState
-  (JNIEnv *, jobject, jdouble, jobject);
+JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaAxpyOnStateDomain
+  (JNIEnv *, jobject, jdouble, jobject, jint);
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
@@ -49,27 +73,11 @@ JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaCompute
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
- * Method:    getCurrentTime
- * Signature: ()Lorg/openda/interfaces/ITime;
- */
-JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_getCurrentTime
-  (JNIEnv *, jobject);
-
-/*
- * Class:     org_openda_costa_CtaOpenDaModel
  * Method:    ctaGetObservedValues
  * Signature: (Lorg/openda/interfaces/IObservationDescriptions;Lorg/openda/costa/CtaVector;)V
  */
 JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedValues
   (JNIEnv *, jobject, jobject, jobject);
-
-/*
- * Class:     org_openda_costa_CtaOpenDaModel
- * Method:    ctaGetParameters
- * Signature: ()Lorg/openda/interfaces/IVector;
- */
-JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetParameters
-  (JNIEnv *, jobject);
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
@@ -81,18 +89,26 @@ JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetState
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
- * Method:    ctaGetStateScaling
+ * Method:    ctaGetStateDomain
+ * Signature: (I)Lorg/openda/interfaces/IVector;
+ */
+JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetStateDomain
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetParameters
  * Signature: ()Lorg/openda/interfaces/IVector;
  */
-JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetStateScaling
+JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetParameters
   (JNIEnv *, jobject);
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
- * Method:    getTimeHorizon
- * Signature: ()Lorg/openda/interfaces/ITime;
+ * Method:    ctaGetStateScaling
+ * Signature: ()Lorg/openda/interfaces/IVector;
  */
-JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_getTimeHorizon
+JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetStateScaling
   (JNIEnv *, jobject);
 
 /*
@@ -129,14 +145,6 @@ JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaRestoreInternalSt
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
- * Method:    setAutomaticNoiseGeneration
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_setAutomaticNoiseGeneration
-  (JNIEnv *, jobject, jboolean);
-
-/*
- * Class:     org_openda_costa_CtaOpenDaModel
  * Method:    ctaGetObservedLocalization
  * Signature: (Lorg/openda/interfaces/IObservationDescriptions;D)[I
  */
@@ -145,11 +153,35 @@ JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedL
 
 /*
  * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetObservedLocalizationDomain
+ * Signature: (Lorg/openda/interfaces/IObservationDescriptions;DI)[I
+ */
+JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalizationDomain
+  (JNIEnv *, jobject, jobject, jdouble, jint);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
  * Method:    ctaSetParameters
  * Signature: (Lorg/openda/interfaces/IVector;)V
  */
 JNIEXPORT void JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaSetParameters
   (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetNumDomains
+ * Signature: (D)I
+ */
+JNIEXPORT jint JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetNumDomains
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     org_openda_costa_CtaOpenDaModel
+ * Method:    ctaGetObservationSelector
+ * Signature: (Lorg/openda/interfaces/IObservationDescriptions;DI)[I
+ */
+JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservationSelector
+  (JNIEnv *, jobject, jobject, jdouble, jint);
 
 #ifdef __cplusplus
 }

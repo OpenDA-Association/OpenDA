@@ -87,6 +87,7 @@ public class CtaVector extends CtaObject implements IVector {
 
 	public native void setValues(double[] values);
     public native double[] getValues();
+    public native double[] getValues(int[] selector);
 
     public native void setValue(int index, double value);
     public native double getValue(int index);

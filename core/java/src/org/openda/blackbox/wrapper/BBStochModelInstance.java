@@ -27,6 +27,8 @@ import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.uncertainties.UncertaintyEngine;
 import org.openda.utils.*;
 import org.openda.utils.Vector;
@@ -43,7 +45,7 @@ import java.util.*;
 /**
  * Black box module's implementation of a stochastic model instance
  */
-public class BBStochModelInstance extends Instance implements IStochModelInstance {
+public class BBStochModelInstance extends Instance implements IStochModelInstance, IStochModelInstanceDeprecated {
 	private static Logger LOGGER = LoggerFactory.getLogger(BBStochModelInstance.class);
 
 	// In case of parallel runs we use the Distributed counter to generate unique IDs
@@ -76,6 +78,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings;
 	private int ensembleMemberIndex;
 	private HashMap<String,double[]> prevNoiseModelEIValuesForTimeStep = new HashMap<String, double[]>();
+
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
 
 	/**
 	 * For each constraintExchangeItemId for which there is a range validation constraint this map contains
@@ -412,6 +418,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return exchangeItem;
 	}
 
+	public ITreeVector getState(int iDomain){
+		return this.getState();
+	}
+
+
+
 	public ITreeVector getState() {
 
 		if ( timerGetState == null){
@@ -485,6 +497,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 		timerGetState.stop();
 		return stateTreeVector;
+	}
+
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+		throw new UnsupportedOperationException("org.costa.noiseModels.MapNoisModel.axpyOnState(double alpha, IVector vector, int iDomain): Not implemented yet.");
 	}
 
 	public void axpyOnState(double alpha, IVector vector) {
@@ -1146,7 +1162,17 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				return localizationVectors;
 		}
 
-		public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
+	public IVector[] getObservedLocalization(
+			IObservationDescriptions observationDescriptions, double distance, int iDomain) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.getObservedLocalization(): Not implemented yet.");
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
 			if (model instanceof IModelExtensions){
 				//System.out.println("I implement the extend interface!");
 	            return getObservedLocalizationExtended(observationDescriptions, distance);

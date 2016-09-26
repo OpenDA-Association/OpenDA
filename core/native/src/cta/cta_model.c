@@ -165,7 +165,8 @@ int CTAI_Model_GetSet(
    CTA_Model hmodel,     /* handle of model                 */
    CTA_Time  tspan,
    CTA_Handle *hthing,   /* set or returned item            */
-   int Func_ID           /* ID (parameter) of user function */
+   int Func_ID,          /* ID (parameter) of user function */
+   int idomain
 ){
 
    /* Local variables */
@@ -188,7 +189,7 @@ int CTAI_Model_GetSet(
    hmodcl = data->hmodcl;
    isBlocked = CTAI_ModelFac_GetBlock(hmodcl, hmodel);
    if (isBlocked==CTA_TRUE) {
-      if (Func_ID==I_CTA_MODEL_GET_STATE){
+      if (Func_ID==I_CTA_MODEL_GET_STATE || Func_ID==CTA_MODEL_GET_STATEDOMAIN ){
          CTA_WRITE_WARNING("CTA_MODEL_GETSTATE: model is currently blocked.\n");
       }
       else {
@@ -210,8 +211,10 @@ int CTAI_Model_GetSet(
       if (data->functions[Func_ID]==CTA_NULL){
          /* create a state-vector when necessary by calling getstate */
          if (*hthing==CTA_NULL) {
-            retval=CTAI_Model_GetSet(hmodel, CTA_NULL, hthing,
-                                    I_CTA_MODEL_GET_STATE);
+            if (Func_ID==CTA_MODEL_GET_STATESCALING){
+                retval=CTAI_Model_GetSet(hmodel, CTA_NULL, hthing,
+                                    I_CTA_MODEL_GET_STATE, idomain);
+            }
             if (retval!=CTA_OK) return retval;
          }
          /* set identity */
@@ -228,6 +231,9 @@ int CTAI_Model_GetSet(
    /* Call function */
    if (Func_ID== CTA_MODEL_SET_FORC || Func_ID== CTA_MODEL_GET_FORC ){
      function(data->data, &tspan, hthing,&retval);
+   }
+   else if (Func_ID == CTA_MODEL_GET_STATEDOMAIN){
+     function(data->data, &idomain, hthing, &retval);
    } else {
      function(data->data, hthing,&retval);
    }
@@ -299,7 +305,7 @@ int CTAI_Model_Axpy(
 
       /* get y-vector from model */
       y=CTA_NULL;
-      retval=CTAI_Model_GetSet(hmodel,tspan, &y,get_id);
+      retval=CTAI_Model_GetSet(hmodel,tspan, &y,get_id, -1);
       if (retval!=CTA_OK) return retval;
 
       /* do a state axpy */
@@ -307,7 +313,7 @@ int CTAI_Model_Axpy(
       if (retval!=CTA_OK) return retval;
 
       /* set new y-vector in model */
-      retval=CTAI_Model_GetSet(hmodel,tspan, &y,set_id);
+      retval=CTAI_Model_GetSet(hmodel,tspan, &y,set_id, -1);
       if (retval!=CTA_OK) return retval;
 
       /* free work variable */
@@ -856,7 +862,7 @@ int CTA_Model_SetState(
    CTA_TreeVector hstate    /* model state that must be set */
 ){
 
-   return CTAI_Model_GetSet(hmodel, CTA_NULL, &hstate,I_CTA_MODEL_SET_STATE);
+   return CTAI_Model_GetSet(hmodel, CTA_NULL, &hstate,I_CTA_MODEL_SET_STATE, -1);
 }
 
 int CTA_Model_GetStateScaling(
@@ -864,14 +870,15 @@ int CTA_Model_GetStateScaling(
    CTA_TreeVector *hstate    /* returned scaling vector for model state  */
 ){
    return CTAI_Model_GetSet(hmodel, CTA_NULL, hstate,
-                            CTA_MODEL_GET_STATESCALING);
+                            CTA_MODEL_GET_STATESCALING, -1);
 }
 
 
-int CTA_Model_GetObsLocalization(
+int CTAI_Model_GetObsLocalization(
    CTA_Model hmodel,       /* handle of model       */
    CTA_ObsDescr hdescr,    /* observation description */
    double distance,        /* characteristic distance */
+   int iDomain,            /* sub domain number (<0 whole model) */
    CTA_Vector locVecs
 ){
 
@@ -883,7 +890,18 @@ int CTA_Model_GetObsLocalization(
    double one=1.0;
    CTA_TreeVector hState;
 
-   retval=CTAI_Model_GetDataAndFunc(hmodel, I_CTA_MODEL_GETOBSLOCALIZATION, &data, &function);
+   int domain_version;
+
+
+   domain_version=iDomain>=0;
+
+   if (domain_version){
+        retval=CTAI_Model_GetDataAndFunc(hmodel, CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN, &data, &function);
+   }
+   else {
+        retval=CTAI_Model_GetDataAndFunc(hmodel, I_CTA_MODEL_GETOBSLOCALIZATION, &data, &function);
+   }
+
    if (retval == CTA_NOT_IMPLEMENTED){
       printf("Debug: CTA_Model_GetObsLocalization: No localization function is implemented for this model\n");
       printf("Debug: Consider running method without localization (if possible), this will improve performance \n");
@@ -893,12 +911,13 @@ int CTA_Model_GetObsLocalization(
       printf("Lengte van de obs-vector is %d\n",nObs);
 
       for (iObs=1; iObs<=nObs; iObs++){
-         printf("CTA_Model_GetObsLocalization set for obs %d\n",iObs);
          CTA_Vector_GetVal(locVecs, iObs, &hState, CTA_HANDLE);
-         printf("voor: hState=%d\n",hState);
-
-         CTA_Model_GetState(hmodel,&hState);
-         printf("na: hState=%d\n",hState);
+         if (domain_version){
+            CTA_Model_GetStateDomain(hmodel,iDomain, &hState);
+         }
+         else {
+            CTA_Model_GetState(hmodel,&hState);
+         }
          CTA_TreeVector_SetConstant(hState, &one, CTA_DOUBLE );
          CTA_Vector_SetVal(locVecs, iObs, &hState, CTA_HANDLE);
       }
@@ -907,7 +926,12 @@ int CTA_Model_GetObsLocalization(
    else if (retval == CTA_OK) {
       /* Call user supplied implementation */
       if (IDEBUG) printf("CTA_MODEL DEBUG: Calling Localization function \n");
-      function(data->data, &hdescr, &distance, &locVecs, &retval);
+      if (domain_version){
+         function(data->data, &hdescr, &distance, &locVecs, &retval);
+      }
+      else {
+         function(data->data, &hdescr, &distance, iDomain, &locVecs, &retval);
+      }
       if (IDEBUG) printf("CTA_MODEL DEBUG: Return code Localization function %d \n",
          retval);
       return retval;
@@ -919,12 +943,28 @@ int CTA_Model_GetObsLocalization(
    }
 }
 
+
+int CTA_Model_GetObsLocalization(
+   CTA_Model hmodel,       /* handle of model       */
+   CTA_ObsDescr hdescr,    /* observation description */
+   double distance,        /* characteristic distance */
+   CTA_Vector locVecs
+){
+ 
+   return CTAI_Model_GetObsLocalization(hmodel,hdescr, distance, -1, locVecs);
+
+}
+
+
+
+
+
 int CTA_Model_GetState(
    CTA_Model hmodel,   /* handle of model       */
    CTA_TreeVector *hstate    /* returned model state  */
 ){
   //  printf("cta_model_getstate : model %d state %d\n  ",hmodel,*hstate);
-   return CTAI_Model_GetSet(hmodel, CTA_NULL, hstate, I_CTA_MODEL_GET_STATE);
+   return CTAI_Model_GetSet(hmodel, CTA_NULL, hstate, I_CTA_MODEL_GET_STATE, -1);
 }
 
 int CTA_Model_SetForc(
@@ -932,7 +972,7 @@ int CTA_Model_SetForc(
    CTA_Time tspan,
    CTA_TreeVector hforc    /* model forcings values that must be set */
 ){
-   return CTAI_Model_GetSet(hmodel,tspan, &hforc,CTA_MODEL_SET_FORC);
+   return CTAI_Model_GetSet(hmodel,tspan, &hforc,CTA_MODEL_SET_FORC, -1);
 }
 
 int CTA_Model_GetForc(
@@ -940,7 +980,7 @@ int CTA_Model_GetForc(
    CTA_Time tspan,
    CTA_TreeVector *hforc    /* returned model forcings values  */
 ){
-   return CTAI_Model_GetSet(hmodel,tspan, hforc,CTA_MODEL_GET_FORC);
+   return CTAI_Model_GetSet(hmodel,tspan, hforc,CTA_MODEL_GET_FORC, -1);
 
 }
 
@@ -958,14 +998,14 @@ int CTA_Model_SetParam(
    CTA_Model hmodel,  /* handle of model                   */
    CTA_TreeVector hparam   /* model parameters that must be set */
 ){
-   return CTAI_Model_GetSet(hmodel,CTA_NULL, &hparam,CTA_MODEL_SET_PARAM);
+   return CTAI_Model_GetSet(hmodel,CTA_NULL, &hparam,CTA_MODEL_SET_PARAM, -1);
 }
 
 int CTA_Model_GetParam(
    CTA_Model hmodel,   /* handle of model             */
    CTA_TreeVector *hparam   /* returned model parameters  */
 ){
-   return CTAI_Model_GetSet(hmodel,CTA_NULL, hparam,CTA_MODEL_GET_PARAM);
+   return CTAI_Model_GetSet(hmodel,CTA_NULL, hparam,CTA_MODEL_GET_PARAM, -1);
 }
 
 int CTA_Model_AxpyParam(
@@ -1137,6 +1177,9 @@ int CTA_Model_AxpyState(
    }
    return CTA_OK;
 }
+
+
+
 
 #undef METHOD
 #define METHOD "GetNoiseCovar" 
@@ -1809,6 +1852,149 @@ int CTA_Model_SavePersistentState(CTA_Model hmodel, CTA_String filename, CTA_Str
    function(data->data, &filename, &instanceID, &retval);
    return retval;
 }
+
+/** \brief Get the number of domains for local analysis
+ *  
+ * \param hmodel   I  handle of model instance
+ * \param distance I  characteristic distance
+ * \param ndomain  O  number of domains
+ * \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+ *                    are created when the indices are CTA_NULL on entry
+ *
+ * \return error status: CTA_OK if successful
+ */
+#undef METHOD
+#define METHOD "GetNumDomains"
+int CTA_Model_GetNumDomains(CTA_Model hmodel, double distance, int *nDomains){
+
+   /* Local variables */
+   int retval;               /* Return value of COSTA call   */
+   CTA_Function *function;   /* Function that must be called */
+   CTAI_Model *data;         /* Data associated to model     */
+
+   retval=CTAI_Model_GetDataAndFunc(hmodel, CTA_MODEL_GET_NUMDOMAINS, &data, &function);
+   if (retval!=CTA_OK) {
+      CTA_WRITE_ERROR("Error in retreving function pointer of CTA_MODEL_GET_NUMDOMAINS");
+      return retval;
+   }
+
+   if (IDEBUG) printf("CTA_MODEL DEBUG: Callling CTA_MODEL_GET_NUMDOMAINS function \n");
+   function(data->data, &distance, nDomains, &retval);
+   if (IDEBUG) printf("CTA_MODEL DEBUG: Return code CTA_MODEL_GET_NUMDOMAINS function %d\n",
+      retval);
+   return retval;
+}
+
+
+/** \brief Get selection of observations that are relevnet for assimilation in the given domain
+ *  
+ * \param hmodel   I  handle of model instance
+ * \param hdescr   I  observation description of all observations
+ * \param distance I  characteristic distance
+ * \param idomain  I  domain number
+ * \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+ *                    are created when the indices are CTA_NULL on entry
+ *
+ * \return error status: CTA_OK if successful
+ */
+#undef METHOD
+#define METHOD "GetObsSelector"
+int CTA_Model_GetObsSelector( CTA_Model hmodel, 
+                   CTA_ObsDescr hdescr, double distance, int iDomain, CTA_Vector *selection){
+
+   /* Local variables */
+   int retval;               /* Return value of COSTA call   */
+   CTA_Function *function;   /* Function that must be called */
+   CTAI_Model *data;         /* Data associated to model     */
+
+   retval=CTAI_Model_GetDataAndFunc(hmodel, CTA_MODEL_GET_OBSSELECTOR, &data, &function);
+   if (retval!=CTA_OK) {
+      CTA_WRITE_ERROR("Error in retreving function pointer of CTA_MODEL_GET_OBSSELECTOR");
+      return retval;
+   }
+
+   if (IDEBUG) printf("CTA_MODEL DEBUG: Callling CTA_MODEL_GET_OBSSELECTOR function \n");
+   function(data->data, hdescr, &distance, &iDomain, selection, &retval);
+   if (IDEBUG) printf("CTA_MODEL DEBUG: Return code CTA_MODEL_GET_OBSSELECTOR function %d\n",
+      retval);
+   return retval;
+}
+
+
+
+/** \brief Get for each observation a localization scaling vector for single domain
+ *  
+ * \param hmodel   I  handle of model instance
+ * \param hdescr   I  observation description for which we want localization scaling vectors
+ * \param distance I  characteristic distance
+ * \param idomain  I  domain number
+ * \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+ *                    are created when the indices are CTA_NULL on entry
+ *
+ * \return error status: CTA_OK if successful
+ */
+#undef METHOD
+#define METHOD "GetObsLocalizationDomain"
+int CTA_Model_GetObsLocalizationDomain( CTA_Model hmodel, 
+                   CTA_ObsDescr hdescr, double distance, int iDomain, CTA_Vector locVecs){
+
+   return CTAI_Model_GetObsLocalization(hmodel, hdescr, distance, iDomain, locVecs);
+
+}
+
+
+/** \brief Get a copy of the internal state.
+ *
+ * \note Optionally a tree-vector is created. In that case the caller of this
+ * method is responsible for freeing that tree-vector. The input state must be compatible
+ * (same size and or composition) as the models internal state.
+ * \note If *hstate == CTA_NULL a new object is created, user is responsible for freeing this object.
+ *
+ * \param hmodel   I  handle of model instance
+ * \param iDomain  I  domain number
+ * \param hstate   IO receives state of the model, *hstate can be CTA_NULL on calling (see note)
+ * \return error status: CTA_OK if successful
+ */
+#undef METHOD
+#define METHOD "GetStateDomain"
+int CTA_Model_GetStateDomain(CTA_Model hmodel, int iDomain, CTA_TreeVector *hstate){
+   return CTAI_Model_GetSet(hmodel, CTA_NULL, hstate, I_CTA_MODEL_GET_STATE, iDomain); 
+}
+
+/** \brief Perform axpy operation on the internal state for a single domain 
+ *
+ * \note AXPY: y=alpha*x+y. y corresponds to the models
+ *       internal state and x can be a state vector or a model
+ 
+ * \param hmodel   IO handle of model instance (y)
+ * \param alpha    I  alpha
+ * \param hx       I  handle of x (state vector )
+ * \param iDomain  I  domain number
+ * \return error status: CTA_OK if successful
+ */
+#undef METHOD
+#define METHOD "AxpyStateDomain"
+int CTA_Model_AxpyStateDomain(CTA_Model hmodel, double alpha, int iDomain, CTA_Handle hx){
+
+   /* Local variables */
+   int retval;               /* Return value of COSTA call   */
+   CTA_Function *function;   /* Function that must be called */
+   CTAI_Model *data;         /* Data associated to model     */
+
+
+   retval=CTAI_Model_GetDataAndFunc(hmodel, CTA_MODEL_AXPY_STATEDOMAIN, &data, &function);
+   if (retval!=CTA_OK) {
+      CTA_WRITE_ERROR("Error in retreving function pointer of CTA_MODEL_GET_OBSSELECTOR");
+      return retval;
+   }
+   function(data->data, &alpha, &hx, &iDomain, &retval);
+   if (retval!=CTA_OK)  {
+      CTA_WRITE_ERROR("Error in function CTA_MODEL_AXPY_STATEDOMAIN");
+      return retval;
+    }
+    return CTA_OK;
+}
+
 
 CTAEXPORT void CTA_MODEL_CREATE_F77(int *hmodcl, int *userdata, int *hmodel, int *ierr){
    *ierr=CTA_Model_Create((CTA_ModelClass) *hmodcl, (CTA_Handle) *userdata, (CTA_Model*) hmodel);

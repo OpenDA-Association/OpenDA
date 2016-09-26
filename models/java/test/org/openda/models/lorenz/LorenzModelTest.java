@@ -162,7 +162,7 @@ public class LorenzModelTest extends TestCase {
         mod5.compute(new Time(0.5));
         System.out.println("mod5.compute(0.5)");
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector prd5 = mod5.getObservedValues(descr5);
+        IVector prd5 = mod5.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5.getObservedValues()=" + prd5.toString());
         // x(0) is taken at t=0.5 for all 3 obs because model did not save previous values
         System.out.println("Should be mod5.getObservedValues()=[1.50887,-0.2646532956909706,-1.0433774293961933]");
@@ -171,7 +171,7 @@ public class LorenzModelTest extends TestCase {
         mod5b.announceObservedValues(descr5);
         mod5b.compute(new Time(0.5));
         System.out.println("mod5b.compute()");
-        IVector prd5b = mod5b.getObservedValues(descr5);
+        IVector prd5b = mod5b.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5b.announceObservedValues(descr5)");
         System.out.println("mod5b.getObservedValues()=" + prd5b.toString());
         System.out.println("Should be mod5b.getObservedValues()=[1.50887,-0.2646532956909706,-1.0433774293961933]");
@@ -261,6 +261,51 @@ public class LorenzModelTest extends TestCase {
         System.out.println("Should be mod10.compute(1.0).get_state() = [2.6963608035999203,4.382852897036759,16.69715845293723]");
         assertEquals("mod10.compute(1.0", x10.toString(), "[2.6963608035999203,4.382852897036759,16.69715845293723]");
         System.out.println("mod10=" + mod10);
+    }
+
+    public static void testLorenzModel_11() {
+		System.out.println("=========================================================");
+		System.out.println("Model state");
+		System.out.println("=========================================================");
+		IStochModelFactory fact11 = new LorenzStochModelFactory();
+		fact11.initialize(null, new String[]{""});
+		IStochModelInstance mod11 = fact11.getInstance(IStochModelFactory.OutputLevel.Suppress); // get a model
+		//   public Vector getState() {
+
+        ILocalizationDomains ld = mod11.getLocalizationDomains();
+		int nDomains = ld.getStateDomainCount();
+        IVector[] x11 = new IVector[nDomains];
+
+        for(int iDomain = 0; iDomain < nDomains; iDomain++){
+			x11[iDomain] = mod11.getState(iDomain);
+		}
+
+        System.out.println("mod11[0].getState()=" + x11[0].toString());
+        System.out.println("mod11[1].getState()=" + x11[1].toString());
+        System.out.println("Should be mod11[0].getState() =[1.50887]");
+        System.out.println("Should be mod11[1].getState() =[-1.531271,25.46091]");
+        assertEquals("mod11.getState()", x11[0].toString(), "[1.50887]");
+        assertEquals("mod11.getState()", x11[1].toString(), "[-1.531271,25.46091]");
+
+
+        //   public void axpyOnState(double alpha, Vector vector)
+		IVector[] x11_delta = new Vector[2];
+		x11_delta[0] = new Vector("[0.0]");
+		x11_delta[1] = new Vector("[0.001,0.0]");
+
+        for(int iDomain = 0; iDomain < nDomains; iDomain++){
+			mod11.axpyOnState(1.0, x11_delta[iDomain], iDomain);
+        }
+
+		IVector x11b = mod11.getState();
+		System.out.println("mod11.getState()=" + x11b.toString());
+		System.out.println("Should be mod11.getState() =[1.508870,-1.532271,25.46091]");
+		assertEquals("mod33getState()", x11b.toString(), "[1.50887,-1.5302710000000002,25.46091]");
+		//   public StochVector getStateUncertainty() {
+		IStochVector x3Stoch = mod11.getStateUncertainty();
+		System.out.println("mod11.getStateUncertainty()=" + x3Stoch.toString());
+		System.out.println("Should be mod11.getStateUncertainty() ={[0.0,0.0,0.0],[0.5,0.5,0.5]}");
+		assertEquals("mod11.getState()", x3Stoch.toString(), "{[0.0,0.0,0.0],[0.5,0.5,0.5]}");
     }
 
 }//end class

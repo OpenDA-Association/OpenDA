@@ -27,6 +27,8 @@ package org.openda.models.rmiModel;
  *
  */
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.observers.SerializableObservationDescriptions;
 import org.openda.utils.DistributedCounter;
@@ -36,7 +38,7 @@ import org.openda.utils.performance.OdaTiming;
 import java.io.File;
 import java.io.Serializable;
 
-public class RmiClientStochModelInstance implements IStochModelInstance{
+public class RmiClientStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated{
 
 	// Timing of methods in this class
 	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
@@ -63,6 +65,7 @@ public class RmiClientStochModelInstance implements IStochModelInstance{
 	OdaTiming timerGetScaling = null;
 	OdaTiming timerTest       = null;
 
+	private LocalizationDomainsSimpleModel localizationDomains;
 
     /* Host that holds the real instance */
     String host=null;
@@ -79,6 +82,7 @@ public class RmiClientStochModelInstance implements IStochModelInstance{
 		this.cashedModelState=null;
 		this.cashedStateIsUpdated=false;
 		this.stateNotUpdated=false;
+		this.localizationDomains= new LocalizationDomainsSimpleModel();
 		/* Handle global settings */
 		try {
 			this.rmiModel.setGlobalSettingsOnServer(OdaGlobSettings.getTimePrecision(),
@@ -93,7 +97,11 @@ public class RmiClientStochModelInstance implements IStochModelInstance{
 	}
 
 
-    public IVector getState() {
+	public IVector getState(int iDomain) {
+		return this.getState();
+	}
+
+	public IVector getState() {
 		if ( timerGetState == null){ timerGetState = new OdaTiming(ModelID);}
 		timerGetState.start();
 
@@ -136,8 +144,12 @@ public class RmiClientStochModelInstance implements IStochModelInstance{
 		timerAxpyState.stop();
     }
 
+	public void axpyOnState(double alpha, IVector change, int iDomain) {
+		// TODO Auto-generated method stub
 
-    public IVector getParameters() {
+	}
+
+	public IVector getParameters() {
 		if ( timerGetParam == null){ timerGetParam = new OdaTiming(ModelID);}
 		timerGetParam.start();
 
@@ -299,7 +311,11 @@ public class RmiClientStochModelInstance implements IStochModelInstance{
             throw new RuntimeException("Error calling remote method");
         }    }
 
-    public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
+
+	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 		if ( timerGetObs == null){ timerGetObs = new OdaTiming(ModelID);}
 		timerGetObs.start();
 
@@ -429,12 +445,26 @@ public class RmiClientStochModelInstance implements IStochModelInstance{
         timerCompute.stop();
     }
 
-    public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+	public ILocalizationDomains getLocalizationDomains(){
+		return this.localizationDomains;
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		int[] selector = this.localizationDomains.getFullStateDomainSelector(this.getState().getSize(), observationDescriptions.getObservationCount());
+		return getObservedLocalization(observationDescriptions, distance, -1);
+	}
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
         IVector retVal[]=null;
 		IObservationDescriptions serObservationDescriptions =
 			makeSerializableObservationDescriptions(observationDescriptions);
         try {
-            retVal=rmiModel.getObservedLocalization(serObservationDescriptions, distance);
+            if (iDomain<0) {
+                retVal = rmiModel.getObservedLocalization(serObservationDescriptions, distance);
+            }
+            else {
+                retVal = rmiModel.getObservedLocalization(serObservationDescriptions, distance, iDomain);
+            }
          }
          catch (Exception e) {
             System.err.println("Client exception: " + e.toString());

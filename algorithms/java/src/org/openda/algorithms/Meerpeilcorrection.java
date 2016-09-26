@@ -206,6 +206,14 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 		}
 	}
 
+	public IVector getState(int iDomain) {
+		if(this.mainModel!=null){
+			return this.mainModel.getState(iDomain);
+		}else{
+			return null;
+		}
+	}
+
 	/**
 	 * Get the full set of state variables from a model.
 	 *

@@ -66,6 +66,17 @@ public interface IVector extends Cloneable, Serializable {
     double[] getValues();
 
     /**
+     * Get all values of the vector.
+     * <p/>
+     * Note:  This method can only be used if all elements of the vector
+     * are of the same data type.
+     * @param selector The indices of the values that will be returned
+     *
+     * @return vector with values
+     */
+    double[] getValues(int[] selector);
+
+    /**
      * Set single value of the vector.
      *
      * @param index index in vector

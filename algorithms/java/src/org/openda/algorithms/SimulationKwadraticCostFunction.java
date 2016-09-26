@@ -168,6 +168,10 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 	    this.prepared=true;
 	}
 
+	public IVector getState(int iDomain) {
+		return this.prepareMod.getState(iDomain);
+	}
+
 	public IVector getState(){
 		return this.prepareMod.getState();
 	}
@@ -333,7 +337,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 	    if(this.useAnnounceObs){ // evaluate cost with one model-run
 	    	// get results as Vectors
 	    	IObservationDescriptions descr = this.prepareDescr;
-	    	IVector prd      = mod.getObservedValues(descr);
+	    	IVector prd      = mod.getObservationOperator().getObservedValues(descr);
 	    	this.lastPredicted=prd;
             // observation filtering
             if (this.obsSpaceFilters.size()>0 & obsFilterHasNotBeenRun){
@@ -606,7 +610,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 	    if(this.useAnnounceObs){ // evaluate cost with one model-run
 	    	// get results as Vectors
 	    	IObservationDescriptions descr = this.prepareDescr;
-	    	this.lastPredicted=mod.getObservedValues(descr);
+	    	this.lastPredicted=mod.getObservationOperator().getObservedValues(descr);
             // observation filtering
             if (this.obsSpaceFilters.size()>0 & obsFilterHasNotBeenRun){
                 ObservationSpace thisObsAndPred = new ObservationSpace();

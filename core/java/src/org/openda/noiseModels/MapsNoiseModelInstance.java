@@ -18,6 +18,8 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayGeometryInfo;
@@ -60,7 +62,7 @@ import java.util.HashMap;
  *
  * @author verlaanm
  */
-public class MapsNoiseModelInstance extends Instance implements IStochModelInstance {
+public class MapsNoiseModelInstance extends Instance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
 	protected java.util.Hashtable<String,Double> pars=new java.util.Hashtable<String,Double>();
 
@@ -393,12 +395,20 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 		return new Time(this.t);
 	}
 
+	public IVector getState(int iDomain){
+		return this.getState();
+	}
+
 	public IVector getState() {
 		return this.state.clone();
 	}
 
 	public void axpyOnState(double alpha, IVector vector) {
 		this.state.axpy(alpha, vector); // nothing special for this model
+	}
+
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+		throw new UnsupportedOperationException("org.costa.noiseModels.MapNoisModel.axpyOnState(double alpha, IVector vector, int iDomain): Not implemented yet.");
 	}
 
 	public void compute(ITime targetTime) {
@@ -470,10 +480,20 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 
 	}
 
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
 	public IVector[] getObservedLocalization(
 			IObservationDescriptions observationDescriptions, double distance) {
 		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("org.openda.noiseModels.MapsNoisModelInstance.getObservedLocalization(): Not implemented yet.");
+	}
+
+	public IVector[] getObservedLocalization(
+			IObservationDescriptions observationDescriptions, double distance, int iDomain) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("org.openda.noiseModels.MapsNoisModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 
 	public class savedState implements IModelState {
@@ -681,6 +701,17 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 
 	public void setAutomaticNoiseGeneration(boolean value) {
 		this.autoNoise = value;
+	}
+
+	/**
+	 * Get the operator that can calculate model values corresponding to a number of observations
+	 * This returns the operator that calculates what the observations would look like,
+	 * if reality would be equal to the current stoch model state.
+	 *
+	 * @return Observation operator
+	 */
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
 	}
 
 	public IVector getObservedValues(

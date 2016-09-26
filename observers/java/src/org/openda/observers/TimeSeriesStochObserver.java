@@ -142,6 +142,22 @@ public class TimeSeriesStochObserver extends Instance implements IStochObserver 
 		return new TimeSeriesStochObserver(selectedSeriesCleaned);
 	}
 
+	public IStochObserver createSelection(int[] selector){
+		// if observer is already empty, return an empty observer
+		if (series == null){
+			return new TimeSeriesStochObserver();
+		}
+//		List<TimeSeries> selectedSeries = new ArrayList<TimeSeries>();
+//		for (TimeSeries serie : series) {
+//			selectedSeries.add(serie);
+//		}
+//
+//		TimeSeries arrSelectedSeries[] = selectedSeries.toArray(new TimeSeries[selectedSeries.size()]);
+//		return new TimeSeriesStochObserver(arrSelectedSeries);
+
+		throw new RuntimeException("createSelection(int[] selector) not implemented yet");
+	}
+
 	public IStochObserver createSelection(Type observationType) {
 		// if observer is already empty, return an empty observer
 		if (series == null){

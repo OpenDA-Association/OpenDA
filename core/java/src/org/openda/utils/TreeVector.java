@@ -229,6 +229,47 @@ public class TreeVector implements ITreeVector {
         }
     }
 
+	public double[] getValues(int[] selector)
+	{
+		if (vector != null) {
+			return vector.getValues(selector);
+		} else {
+			double[] values = new double[selector.length];
+			int startOfSubArray = 0;
+			int startOfSelector = 0;
+			int endOfSubArray;
+			int endOfSelector;
+			for (ITreeVector subTreeVector : subTreeVectors) {
+				endOfSubArray = startOfSubArray + subTreeVector.getSize() - 1;
+				endOfSelector = getEndOfSelector(selector, startOfSubArray, endOfSubArray);
+
+				if (endOfSelector >= startOfSelector) {
+					int[] subselector = new int[endOfSelector - startOfSelector];
+					System.arraycopy(selector, startOfSelector, subselector, 0, subselector.length);
+					startOfSelector += subselector.length;
+
+					double[] subArrayValues = subTreeVector.getValues(subselector);
+					System.arraycopy(subArrayValues, 0, values, startOfSubArray, subArrayValues.length);
+					startOfSubArray += subArrayValues.length;
+				}
+			}
+			return values;
+		}
+	}
+
+	public int getEndOfSelector(int[] selector, int startOfSelector, int endOfSubArray)
+	{
+		int returnvalue = -1;
+		for (int i = startOfSelector; i < selector.length; i++) {
+			if (selector[i] <= endOfSubArray) {
+				returnvalue = i;
+			} else if (selector[i] > endOfSubArray) {
+				return returnvalue;
+			}
+		}
+		return selector.length - 1;
+	}
+
     public void setValue(int index, double value){
         if (vector != null) {
             vector.setValue(index, value);

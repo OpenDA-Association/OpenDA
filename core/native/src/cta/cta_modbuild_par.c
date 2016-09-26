@@ -1514,108 +1514,9 @@ void modbuild_par_getobsvalues(CTAI_Modbuild_par *data, CTA_Time *ttime,
 
 void modbuild_par_getobslocalization(CTAI_Modbuild_par *data, CTA_ObsDescr *hdescr, 
                    double *distance, CTA_Vector *locVecs, int* ierr) {
-   //NB  locvecs (size: nobs) is vector containing handles
+   int minone=-1;
+   modbuild_par_getobslocalizationdomain(data, hdescr, distance, &minone, locVecs, ierr);
 
-   int tag;
-   int lenpack;
-   int irank, jrank, lentask;
-   CTA_Pack hpack;
-   CTA_Time ttime;
-   char *pack;
-   CTA_ObsDescr *subObsDescr;
-   int nobs, iobs; 
-   CTA_TreeVector *locstate;
-   int locIDEBUG = 0;
-
-      if (locIDEBUG>0) { printf("modbuild_par_getobslocalization START\n");}
-
-      tag = 1234;
-
-      CTA_ObsDescr_Observation_Count (*hdescr,&nobs);
-
-      if (nobs>0){
-         /* Create stochastic observers for different process */
-         subObsDescr=CTA_Malloc(sizeof(CTA_ObsDescr)*(data->nworker+1));
-
-         if (data->nworker==1){
-            subObsDescr[1]=*hdescr;
-         } else {
-                for (irank=1;irank<=data->nworker;irank++){
-                  subObsDescr[irank]=*hdescr;
-                }
-         }
-
-         /* Pack the vector containing handles*/
-         lenpack=nobs*sizeof(int)+100;
-         CTA_Pack_Create(lenpack,&hpack);
-         CTA_Vector_Export(*locVecs, hpack);
-
-         /* Send vector to workers */
-         lentask= CTA_Pack_GetLen(hpack);
-         pack   = CTA_Pack_GetPtr(hpack);
-
-         /* Send observation descriptions of the various sub processes */
-         for (irank=1;irank<=data->nworker;irank++){
-
-            jrank=irank;
-            if (data && data->is_intercomm) jrank--;
-
-            if (locIDEBUG>0) printf("#%d Prepare to send Obsdescr to worker %d\n",CTA_PAR_MY_RANK, irank);
-
-            /* Send Task and model handle */
-            modbuild_par_sendtaskandhandle("cta_model_getobslocalization", irank, data, tag);
-            if (locIDEBUG>0) printf("#%d done sending task and handle \n",CTA_PAR_MY_RANK);
-
-            /* Send time and obsdescr */
-            /* note: time is not needed but we want to use the  sendobsdescr function */
-            CTA_Time_Create(&ttime);
-            CTA_Time_SetSpan(ttime, 0.0,0.0);
-           
-            if (locIDEBUG>0) printf("#%d Sending observation description to worker %d\n",CTA_PAR_MY_RANK, irank);
-            modbuild_par_sendobsdescr(data, irank, ttime, subObsDescr[irank], tag, ierr);
-            if (*ierr!=CTA_OK) return;
-
-            CTA_Time_Free(&ttime);
-
-            /* send characteristic distance */  
-            MPI_Send(distance, 1, MPI_DOUBLE, jrank, tag,
-                      data->comm);
-
-            /* Send length of packed vector */
-            if (locIDEBUG>0) printf("#%d Send vector to worker (lentask)\n", irank);
-            MPI_Send(&lentask, 1, MPI_INT, jrank, tag,
-                      data->comm);
-
-            /* Send packed vector */
-            MPI_Send(pack, lentask, MPI_CHAR, jrank, tag,
-                      data->comm);
-            if (locIDEBUG>0) printf("#%d Done sending vector\n",CTA_PAR_MY_RANK);
-
-
-         }     
-
-         locstate=CTA_Malloc(sizeof(CTA_TreeVector) *nobs);
-    
-         /* receive for each observation the localization state from all workers */        
-         for ( iobs = 0; iobs < nobs; iobs++) {
-            if (locIDEBUG>0) printf("modbuild_par_getobslocalization: receiving state of observation %d \n",iobs);
-            locstate[iobs] = CTA_NULL; 
-            modbuild_par_recvstate(&(locstate[iobs]), data, 1234);
-
-            /* put the handles in the cta-vector */
-            CTA_Vector_SetVal(*locVecs,iobs+1,&(locstate[iobs]),CTA_HANDLE);  
-         }
-
-           
-         if (locIDEBUG>0) {printf("modbuild_par_getobslocalization: returning vector of handles:  \n");
-                      CTA_Vector_Export(*locVecs, CTA_FILE_STDOUT);
-                     }      
-
-         /* Free work variables/objects */
-         CTA_Pack_Free(&hpack);
-         free(subObsDescr);
-         free(locstate);
-   }
 }
 
 
@@ -1986,6 +1887,198 @@ void modbuild_par_releaseinternalstate(CTAI_Modbuild_par *data, CTA_String *inst
 
   *ierr=CTA_OK;
 }
+
+/** \brief Get the number of domains for local analysis
+ *  
+ * \param data     IO instance data block 
+ * \param distance I  characteristic distance
+ * \param ndomains O  number of domains
+ * \param ierr     O  error status: CTA_OK if successful
+ */
+void modbuild_par_getnumdomains(CTAI_Modbuild_par *data, double *distance, int *ndomains, int *ierr){
+}
+
+
+/** \brief Get selection of observations that are relevnet for assimilation in the given domain
+ *  
+ * \param data      IO instance data block 
+ * \param hdescr    I  observation description of all observations
+ * \param distance  I  characteristic distance
+ * \param idomain   I  domain number
+ * \param selection O  costa vector with the indices of the relevant observations (0 based)
+ * \param ierr     O  error status: CTA_OK if successful
+ */
+void modbuild_par_getobsselector(CTAI_Modbuild_par *data, 
+                   CTA_ObsDescr *hdescr, double *distance, int *idomain, CTA_Vector *selection, int *ierr){
+}
+
+
+
+
+
+/** \brief Get for each observation a localization scaling vector for single domain
+ *  
+ * \param data     IO instance data block 
+ * \param hdescr   I  observation description for which we want localization scaling vectors
+ * \param distance I  characteristic distance
+ * \param idomain  I  domain number
+ * \param locVecs  O  costa vector of handles to treevectors (scaling vectors). The treevectors
+ *                    are created when the indices are CTA_NULL on entry
+ * \param ierr     O  error status: CTA_OK if successful
+ */
+void modbuild_par_getobslocalizationdomain(CTAI_Modbuild_par *data,
+                   CTA_ObsDescr *hdescr, double *distance, int *idomain, CTA_Vector *locVecs, int *ierr){
+
+   //NB  locvecs (size: nobs) is vector containing handles
+
+   int tag;
+   int lenpack;
+   int irank, jrank, lentask;
+   CTA_Pack hpack;
+   CTA_Time ttime;
+   char *pack;
+   CTA_ObsDescr *subObsDescr;
+   int nobs, iobs; 
+   CTA_TreeVector *locstate;
+   int locIDEBUG = 0;
+
+      if (locIDEBUG>0) { printf("modbuild_par_getobslocalization START\n");}
+
+      tag = 1234;
+
+      CTA_ObsDescr_Observation_Count (*hdescr,&nobs);
+
+      if (nobs>0){
+         /* Create stochastic observers for different process */
+         subObsDescr=CTA_Malloc(sizeof(CTA_ObsDescr)*(data->nworker+1));
+
+         if (data->nworker==1){
+            subObsDescr[1]=*hdescr;
+         } else {
+                for (irank=1;irank<=data->nworker;irank++){
+                  subObsDescr[irank]=*hdescr;
+                }
+         }
+
+         /* Pack the vector containing handles*/
+         lenpack=nobs*sizeof(int)+100;
+         CTA_Pack_Create(lenpack,&hpack);
+         CTA_Vector_Export(*locVecs, hpack);
+
+         /* Send vector to workers */
+         lentask= CTA_Pack_GetLen(hpack);
+         pack   = CTA_Pack_GetPtr(hpack);
+
+         /* Send observation descriptions of the various sub processes */
+         for (irank=1;irank<=data->nworker;irank++){
+
+            jrank=irank;
+            if (data && data->is_intercomm) jrank--;
+
+            if (locIDEBUG>0) printf("#%d Prepare to send Obsdescr to worker %d\n",CTA_PAR_MY_RANK, irank);
+
+            /* Send Task and model handle */
+            modbuild_par_sendtaskandhandle("cta_model_getobslocalization", irank, data, tag);
+            if (locIDEBUG>0) printf("#%d done sending task and handle \n",CTA_PAR_MY_RANK);
+
+            /* Send time and obsdescr */
+            /* note: time is not needed but we want to use the  sendobsdescr function */
+            CTA_Time_Create(&ttime);
+            CTA_Time_SetSpan(ttime, 0.0,0.0);
+           
+            if (locIDEBUG>0) printf("#%d Sending observation description to worker %d\n",CTA_PAR_MY_RANK, irank);
+            modbuild_par_sendobsdescr(data, irank, ttime, subObsDescr[irank], tag, ierr);
+            if (*ierr!=CTA_OK) return;
+
+            CTA_Time_Free(&ttime);
+
+            /* send characteristic distance */  
+            MPI_Send(distance, 1, MPI_DOUBLE, jrank, tag,
+                      data->comm);
+
+            /* send domain number */
+            MPI_Send(distance, 1, MPI_INT, jrank, tag,
+                      data->comm);
+
+            /* Send length of packed vector */
+            if (locIDEBUG>0) printf("#%d Send vector to worker (lentask)\n", irank);
+            MPI_Send(&lentask, 1, MPI_INT, jrank, tag,
+                      data->comm);
+
+            /* Send packed vector */
+            MPI_Send(pack, lentask, MPI_CHAR, jrank, tag,
+                      data->comm);
+            if (locIDEBUG>0) printf("#%d Done sending vector\n",CTA_PAR_MY_RANK);
+
+         }     
+
+         locstate=CTA_Malloc(sizeof(CTA_TreeVector) *nobs);
+    
+         /* receive for each observation the localization state from all workers */        
+         for ( iobs = 0; iobs < nobs; iobs++) {
+            if (locIDEBUG>0) printf("modbuild_par_getobslocalization: receiving state of observation %d \n",iobs);
+            locstate[iobs] = CTA_NULL; 
+            modbuild_par_recvstate(&(locstate[iobs]), data, 1234);
+
+            /* put the handles in the cta-vector */
+            CTA_Vector_SetVal(*locVecs,iobs+1,&(locstate[iobs]),CTA_HANDLE);  
+         }
+
+           
+         if (locIDEBUG>0) {printf("modbuild_par_getobslocalization: returning vector of handles:  \n");
+                      CTA_Vector_Export(*locVecs, CTA_FILE_STDOUT);
+                     }      
+
+         /* Free work variables/objects */
+         CTA_Pack_Free(&hpack);
+         free(subObsDescr);
+         free(locstate);
+   }
+
+
+
+
+
+}
+
+
+/** \brief Get a copy of the internal state.
+ *
+ * \note Optionally a tree-vector is created. In that case the caller of this
+ * method is responsible for freeing that tree-vector. The input state must be compatible
+ * (same size and or composition) as the models internal state.
+ * \note If *hstate == CTA_NULL a new object is created, user is responsible for freeing this object.
+ *
+ * \param data     IO instance data block 
+ * \param idomain  I  domain number
+ * \param hstate   IO receives state of the model, *hstate can be CTA_NULL on calling (see note)
+ * \param ierr     O  error status: CTA_OK if successful
+ */
+void modbuild_par_getstatedomain(CTAI_Modbuild_par *data, int *idomain, CTA_TreeVector *hstate, int *ierr){
+}
+
+/** \brief Perform axpy operation on the internal state for a single domain 
+ *
+ * \note AXPY: y=alpha*x+y. y corresponds to the models
+ *       internal state and x can be a state vector or a model
+ 
+ * \param data     IO instance data block 
+ * \param alpha    I  alpha
+ * \param idomain  I  domain number
+ * \param hx       I  handle of x (state or model)
+ * \param ierr     O  error status: CTA_OK if successful
+ */
+void modbuild_par_model_axpystatedomain(CTAI_Modbuild_par *data, double *alpha, int *idomain, CTA_Handle *hx, int *ierr){
+}
+
+
+
+
+
+
+
+
+
 
 void CTA_Modbuild_par_worker_create(){
    MPI_Status status;
@@ -3150,6 +3243,16 @@ void CTA_Modbuild_par_CreateClass(CTA_ModelClass *modelcls){
    aierr[CTA_MODEL_RESTORE_INTERNALSTATE] =CTA_Func_Create("modbuild_par_restoreinternalstate", &modbuild_par_restoreinternalstate, intf, &hfunc[CTA_MODEL_RESTORE_INTERNALSTATE ]);
    aierr[CTA_MODEL_RELEASE_INTERNALSTATE] =CTA_Func_Create("modbuild_par_releaseinternalstate", &modbuild_par_releaseinternalstate, intf, &hfunc[CTA_MODEL_RELEASE_INTERNALSTATE ]);
    aierr[CTA_MODEL_ANNOUNCE_OBSVALUES]    =CTA_Func_Create("modbuild_par_announceobsvalues", &modbuild_par_announceobsvalues, intf, &hfunc[CTA_MODEL_ANNOUNCE_OBSVALUES]);
+
+   aierr[CTA_MODEL_GET_NUMDOMAINS]            =CTA_Func_Create("modbuild_par_getnumdomains",  &modbuild_par_getnumdomains, intf, &hfunc[CTA_MODEL_GET_NUMDOMAINS]);
+   aierr[CTA_MODEL_GET_OBSSELECTOR]           =CTA_Func_Create("modbuild_par_getobsselector", &modbuild_par_getobsselector, intf, &hfunc[CTA_MODEL_GET_OBSSELECTOR]);
+   aierr[CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN] =CTA_Func_Create("modbuild_par_getobslocalizationdomain", &modbuild_par_getobslocalizationdomain, intf, &hfunc[CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN]);
+   aierr[CTA_MODEL_GET_STATEDOMAIN]           =CTA_Func_Create("modbuild_par_getstatedomain", &modbuild_par_getstatedomain, intf, &hfunc[CTA_MODEL_GET_STATEDOMAIN]);
+   aierr[CTA_MODEL_AXPY_STATEDOMAIN]          =CTA_Func_Create("modbuild_par_model_axpystatedomain", &modbuild_par_model_axpystatedomain, intf, &hfunc[CTA_MODEL_AXPY_STATEDOMAIN]);
+
+
+
+
 
    // If something went wrong we are really fatal!
    for (i=0; i<CTA_MODEL_NUMFUNC ;i++){

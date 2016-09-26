@@ -251,6 +251,11 @@ public class FileBasedModelStateTest extends TestCase {
 			// no action needed for this test
 		}
 
+		public IVector getState(int iDomain) {
+			return this.getState();
+		}
+
+
 		public IVector getState() {
 			// nothing needed for this test
 			return null;

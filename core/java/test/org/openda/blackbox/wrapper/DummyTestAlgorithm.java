@@ -69,7 +69,7 @@ public class DummyTestAlgorithm extends Instance implements IAlgorithm {
         stochModelInstance.setParameters(newParameters);
         stochModelInstance.compute(stochModelInstance.getTimeHorizon().getEndTime());
         IVector observedValues =
-                stochModelInstance.getObservedValues(stochObserver.getObservationDescriptions());
+                stochModelInstance.getObservationOperator().getObservedValues(stochObserver.getObservationDescriptions());
 		stochModelInstance.finish();
     }
 
@@ -91,6 +91,10 @@ public class DummyTestAlgorithm extends Instance implements IAlgorithm {
 
 	public void finish() {
 		// no action needed
+	}
+
+	public IVector getState(int iDomain) {
+		return this.getState();
 	}
 
 	public IVector getState() {

@@ -20,6 +20,8 @@
 package org.openda.models.simpleModel;
 
 
+import org.openda.localization.LocalizationDomainsSimpleModel;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
 import org.openda.observers.TimeSeriesObservationDescriptions;
@@ -51,7 +53,7 @@ import java.util.Arrays;
  *    <initialStateUncertainty>[0.8,0.8]</initialStateUncertainty>
  * </oscillatorConfig>
  */
-public abstract class SimpleStochModelInstance extends Instance implements IStochModelInstance, IModelAdjoint{
+public abstract class SimpleStochModelInstance extends Instance implements IStochModelInstance, IStochModelInstanceDeprecated, IModelAdjoint{
 
 	//
 	// parameters of the model
@@ -92,6 +94,8 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 	protected ConfigTree conf = null;
 	protected boolean saveStateToFile=false;
 
+	protected LocalizationDomainsSimpleModel localizationDomains;
+
 	public void Initialize(File workingDir, String configString){
 		//
 		//  GENERIC PART
@@ -104,6 +108,10 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		// configuration
 		this.workingDir = workingDir;
 		this.configString = configString;
+		if (this.localizationDomains == null)
+		{
+			this.localizationDomains= new LocalizationDomainsSimpleModel();
+		}
 
 		/*
 		 * now parse configuration
@@ -223,6 +231,12 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		return new Time(this.t);
 	}
 
+	public IVector getState(int iDomain) {
+		int[] domainSelector = this.localizationDomains.getLocalizationStateDomainSelector(iDomain);
+		double[] returnstate = this.state.getValues(domainSelector);
+		return new Vector(returnstate);
+	}
+
 	public IVector getState() {
 		return this.state.clone();
 	}
@@ -231,6 +245,15 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		this.state.axpy(alpha, vector); // nothing special for this model
 		if(this.storeObs){ // if states are stored, adjust last stored state
 			this.xStore.get(this.xStore.size() - 1).setValues(state.getValues());
+		}
+	}
+
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+		int[] domainSelector = this.localizationDomains.getLocalizationStateDomainSelector(iDomain);
+
+		for (int i = 0; i < domainSelector.length; i++) {
+			double currentValue = this.state.getValue(domainSelector[i]);
+			this.state.setValue(domainSelector[i], currentValue + alpha * vector.getValue(i));
 		}
 	}
 
@@ -473,6 +496,9 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		System.out.println("--------------");
 	}
 
+	public IObservationOperator getObservationOperator(){
+		return new ObservationOperatorDeprecatedModel(this);
+	}
 
 	public IVector getObservedValues(IObservationDescriptions descr) {
 		IVector result = new Vector(descr.getObservationCount());
@@ -543,11 +569,29 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		return result;
 	}
 
-	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
+
+	public ILocalizationDomains getLocalizationDomains(){
+		return this.localizationDomains;
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		return getObservedLocalization(observationDescriptions, distance, -1);
+	}
+
+
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
 		/* Return identity localization */
 		// System.out.println("Return identity localization");
 		int nObs = observationDescriptions.getObservationCount();
-		IVector locvec = new Vector(this.getState().getSize());
+		IVector locvec;
+		if (iDomain<0) {
+			locvec = new Vector(this.getState(iDomain).getSize());
+		}
+		else {
+			locvec = new Vector(this.getState().getSize());
+		}
+
 		IVector[] result = new Vector[nObs];
 
 		for (int iObs=0; iObs<nObs; iObs++){

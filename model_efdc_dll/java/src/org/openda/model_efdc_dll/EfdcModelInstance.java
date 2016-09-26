@@ -26,15 +26,9 @@ import java.util.*;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
-import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IModelInstance;
-import org.openda.interfaces.IModelState;
-import org.openda.interfaces.IObservationDescriptions;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.interfaces.ITime;
-import org.openda.interfaces.IVector;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.model_efdc_dll.EfdcExchangeItemType.EfdcExchangeItemRole;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
@@ -272,6 +266,16 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	}
 
 	/**
+	 * Get the localization domain.
+	 *
+	 * @param observationDescriptions
+	 * @return Localization domain to setup localization for the model.
+	 */
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();
+	}
+
+	/**
 	 * Get the localization vector.
 	 *
 	 * @param observationDescriptions
@@ -279,6 +283,18 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @return weight vector for each observation location.
 	 */
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
+	}
+
+	/**
+	 * Get the localization vector within the domain
+	 *
+	 * @param observationDescriptions
+	 * @param distance characteristic distance for Cohn's formula.
+	 * @param iDomain domain number
+	 * @return weight vector for each observation location.
+	 */
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
 		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
 	}
 

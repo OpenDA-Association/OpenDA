@@ -31,6 +31,7 @@ import org.openda.exchange.iotools.DataCopier;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Array;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
@@ -446,6 +447,15 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 		}
 	}
 
+
+	/**
+	 * Get the localization domain.
+	 *
+	 * @return Localization domain to setup localization for the model.
+	 */
+	public ILocalizationDomains getLocalizationDomains(){
+		return new LocalizationDomainsSimpleModel();	}
+
 	/**
 	 * Get the localization vector.
 	 *
@@ -454,6 +464,18 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * @return weight vector for each observation location.
 	 */
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
+	}
+
+	/**
+	 * Get the localization vector within the domain
+	 *
+	 * @param observationDescriptions
+	 * @param distance characteristic distance for Cohn's formula.
+	 * @param selector selector to specify the domain.
+	 * @return weight vector for each observation location.
+	 */
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
 		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
 	}
 

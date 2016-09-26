@@ -35,7 +35,7 @@ import org.openda.utils.Results;
 	public class DEnKF extends EnKF {
 
 
-	private void updateModelWithGain(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, IVector[] Kvecs){
+	protected void updateModelWithGain(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, IVector[] Kvecs){
 		System.out.println("Update DEnKF");
 		timerGainMult.start();
 

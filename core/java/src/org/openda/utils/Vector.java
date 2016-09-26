@@ -233,7 +233,20 @@ public class Vector implements IVector, Externalizable {
 		}
     }
 
-    /**
+	/**
+	 * {@inheritDoc}
+	 */
+	public double[] getValues(int[] selector) {
+		if (doublePrecision){
+			return dVec.getValues(selector);
+		}
+		else {
+			return fVec.getValues(selector);
+		}
+	}
+
+
+	/**
      * {@inheritDoc}
      */
     public void setValue(int index, double value) {
@@ -511,5 +524,4 @@ public class Vector implements IVector, Externalizable {
 		}
 		return temp;
 	}
-
 }

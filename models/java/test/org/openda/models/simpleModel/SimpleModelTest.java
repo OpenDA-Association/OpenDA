@@ -186,7 +186,7 @@ public class SimpleModelTest extends TestCase {
         mod5.compute(new Time(0.5));
         System.out.println("mod5.compute(0.5)");
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector prd5 = mod5.getObservedValues(descr5);
+        IVector prd5 = mod5.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5.getObservedValues()=" + prd5.toString());
         // x(0) is taken at t=0.5 for all 3 obs because model did not save previous values
         System.out.println("Should be mod5.getObservedValues()=[0.5750505908505237,0.5750505908505237,0.5750505908505237]");
@@ -195,7 +195,7 @@ public class SimpleModelTest extends TestCase {
         mod5b.announceObservedValues(descr5);
         mod5b.compute(new Time(0.5));
         System.out.println("mod5b.compute()");
-        IVector prd5b = mod5b.getObservedValues(descr5);
+        IVector prd5b = mod5b.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5b.announceObservedValues(descr5)");
         System.out.println("mod5b.getObservedValues()=" + prd5b.toString());
         System.out.println("Should be mod5b.getObservedValues()=[0.8,0.790232176428735,0.7614885160245464]");
@@ -325,7 +325,7 @@ public class SimpleModelTest extends TestCase {
         mod11.compute(new Time(0.10));
         System.out.println("mod11.compute(0.1)");
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector prd11 = mod11.getObservedValues(descr11);
+        IVector prd11 = mod11.getObservationOperator().getObservedValues(descr11);
         System.out.println("mod11.getObservedValues()=" + prd11.toString());
         // x(0) is taken at t=0.11 for all 3 obs because model did not save previous values
         // NOTE : time is ignored
@@ -335,7 +335,7 @@ public class SimpleModelTest extends TestCase {
         mod11b.announceObservedValues(descr11);
         mod11b.compute(new Time(0.5));
         System.out.println("mod11b.compute()");
-        IVector prd11b = mod11b.getObservedValues(descr11);
+        IVector prd11b = mod11b.getObservationOperator().getObservedValues(descr11);
         System.out.println("mod11b.announceObservedValues(descr11)");
         System.out.println("mod11b.getObservedValues()=" + prd11b.toString());
         System.out.println("Should be mod11b.getObservedValues()=[0.6400000000000001,0.6321124632393615,0.6090929071807221]");
@@ -397,7 +397,7 @@ public class SimpleModelTest extends TestCase {
         System.out.println("mod.compute(0.1)");
         System.out.println("mod.getSate()="+mod.getState());
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector predictions = mod.getObservedValues(descr);
+        IVector predictions = mod.getObservationOperator().getObservedValues(descr);
         System.out.println("mod.getObservedValues()=" + predictions.toString());
         // x is taken at t=0.11 for all 3 obs because model did not save previous values
         // NOTE : time is ignored
