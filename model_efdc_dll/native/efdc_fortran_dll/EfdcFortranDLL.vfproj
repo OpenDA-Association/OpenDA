@@ -11,7 +11,7 @@
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) D:\krame_wr\Projects\K02f\Models\OpenDaInFews\bin_dll\win32_ifort"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Release|Win32" ConfigurationType="typeDynamicLibrary">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" RuntimeLibrary="rtMultiThreadedDLL"/>
@@ -21,7 +21,7 @@
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) D:\krame_wr\Projects\K02f\Models\OpenDaInFews\bin_dll\win32_ifort"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Debug 64|Win32" ConfigurationType="typeDynamicLibrary">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
@@ -76,6 +76,7 @@
 				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
 		<File RelativePath=".\openDA_wrapper\model_restart_init.for"/>
 		<File RelativePath=".\openDA_wrapper\model_state.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_wser_time_series.f90"/>
 		<File RelativePath=".\openDA_wrapper\openDA_wrapper.F90"/></Filter>
 		<Filter Name="Original EFDC files">
 		<File RelativePath=".\original_efdc_files\ACON.for"/>
