@@ -58,6 +58,7 @@ SRC_OPENDA_F90 = \
 	model_aser_time_series.f90 model_end.f90 model_init.f90 \
 	model_pser_time_series.f90 \
 	model_cser_time_series.f90 \
+	model_wser_time_series.f90 \
 	model_gateser_time_series.f90 \
 	model_make_step.f90 model_qser_time_series.f90 openDA_wrapper.F90 
 
