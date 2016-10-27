@@ -1555,7 +1555,7 @@ SUBROUTINE VARZEROReal
       ZZP=0.0
 
       ! Begin SEDZLJ variables
-      LAYER=0.0         !(KB,LCM) !note KB=KBM
+      LAYER=0.0       !(KB,LCM) !note KB=KBM
       BMINDIF=0.0
       BED_SED_FLX=0.0 !(LCM,NSCM)
       BED_TOX_FLX=0.0 !(LCM,NTXM)
