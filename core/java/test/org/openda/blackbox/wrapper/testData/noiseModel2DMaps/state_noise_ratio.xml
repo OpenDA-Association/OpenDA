@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+	<simulationTimespan timeFormat="dateTimeString">201506010000,201506010100,...,201506030000</simulationTimespan>
+
+	<noiseItem id="main-river.h-noise" quantity="water_level" unit="m"
+	 standardDeviation="0.02" timeCorrelationScale="8.0" timeCorrelationScaleUnit="hours"
+	 initialValue="0.0" horizontalCorrelationScale="30000." horizontalCorrelationScaleUnit="m" >
+	 	<grid type="cartesian" coordinates="xy" separable="true">
+      <x>0,5000,...,530000</x>
+	 		<y>0</y>
+	 	</grid>
+	</noiseItem>
+
+</mapsNoiseModelConfig>

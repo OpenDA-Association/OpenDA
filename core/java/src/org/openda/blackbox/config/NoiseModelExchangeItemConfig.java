@@ -18,10 +18,10 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.blackbox.config;
+import org.openda.blackbox.config.BBUncertOrArmaNoiseConfig.Operation;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.openda.blackbox.config.BBUncertOrArmaNoiseConfig.Operation;
 
 /**
  * Config. info for an exchange item in a noise model or an uncertainty module
@@ -34,23 +34,25 @@ public class NoiseModelExchangeItemConfig {
 	private int transformation;
 	private boolean skipFirstTimeStep;
 	private boolean addOnlyNoiseDifference;
+    private int stateSizeNoiseSizeRatio;
 
 
-	public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-										Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
+    public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
+                                        Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio) {
 		this.id = id;		
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.operation = operation;
 		this.transformation = transformation;
 		this.skipFirstTimeStep = skipFirstTimeStep;
 		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
-	}
+        this.stateSizeNoiseSizeRatio = stateSizeNoiseSizeRatio;
+    }
 	
 	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId,
 										Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), operation, transformation, skipFirstTimeStep, addOnlyNoiseDifference);
+		this(id, new ArrayList<String>(), operation, transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
@@ -83,4 +85,8 @@ public class NoiseModelExchangeItemConfig {
 	public boolean doAddOnlyNoiseDifference() {
 		return addOnlyNoiseDifference;
 	}
+
+    public int getStateSizeNoiseSizeRatio() {
+        return stateSizeNoiseSizeRatio;
+    }
 }

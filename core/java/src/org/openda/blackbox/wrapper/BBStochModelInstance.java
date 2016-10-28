@@ -1429,7 +1429,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							}
 							int modelTimeIndex= TimeUtils.findMatchingTimeIndex(modelTimes, time, timePrecision);
 							addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, modelTimeIndex,
-									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation());
+									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
 							this.lastNoiseTimes.put(modelExchangeItemId,time);
 						}
 					}
@@ -1574,7 +1574,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 			for (int t = tStart; t < tStart + numBcTimeStepsInPeriod; t++) {
 				addNoiseToExchangeItemForOneTimeStep(exchangeItem, t,
-						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation());
+						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation(), 1);
 			}
 		}
 	}
@@ -1628,7 +1628,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
-			int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation) {
+                                                      int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
@@ -1648,7 +1648,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		double[] times = exchangeItem.getTimes();
 		if (times == null || times.length == 0) {
 			// model EI has no time stamp (is most probable the current state)
-			if (noise.length == numValuesInExchangeItem) {
+			if (noise.length == numValuesInExchangeItem || stateSizeNoiseSizeRatio != 1) {
 				numTimeStepsInExchangeItem = 1;
 			} else {
 				throw new RuntimeException("ExchangeItem " + exchangeItem.getId() + " has no time stamps whereas value size is not equal to noise-size");
@@ -1672,6 +1672,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				}
 			}
 		}
+
+        if (stateSizeNoiseSizeRatio > 1) {
+            noise = getSpatialNoise(exchangeItem, noise, operation, stateSizeNoiseSizeRatio);
+        }
 
 		if (addFullArray) {
 			switch (operation) {
@@ -1740,7 +1744,46 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-	private File checkRestartDir(ITime time, boolean mustExist) {
+    private double[] getSpatialNoise(IPrevExchangeItem exchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
+        double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+
+        if (valuesAsDoubles.length > stateSizeNoiseSizeRatio * noise.length) {
+            throw new RuntimeException("Number of points in state should not be more than stateSizeNoiseSizeRatio * noise.length");
+        }
+        if (valuesAsDoubles.length < stateSizeNoiseSizeRatio * (noise.length - 2) + 1) {
+            throw new RuntimeException("Number of points in state should not be less than (stateSizeNoiseSizeRatio * noise.length - 2) + 1");
+        }
+
+        int stateSizeMin1 = valuesAsDoubles.length - 1;
+        if ((stateSizeMin1 % stateSizeNoiseSizeRatio) != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatio * (noise.length - 1) + 1) {
+            LOGGER.warn("(Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last points.");
+        }
+        double[] spatialNoise = new double[valuesAsDoubles.length];
+        for (int i = 0, k = 0; i < valuesAsDoubles.length; i += stateSizeNoiseSizeRatio, k++) {
+            double noiseValue = noise[k];
+
+            int nextNoiseValueIndex = k + 1;
+            double nextNoiseValue;
+            int steps;
+            double stepNoiseValue;
+            if (nextNoiseValueIndex >= noise.length) {
+                nextNoiseValue = noise[noise.length - 1];
+                double previousNoiseValue = noise[noise.length - 2];
+                steps = valuesAsDoubles.length % stateSizeNoiseSizeRatio;
+                stepNoiseValue = (nextNoiseValue -previousNoiseValue) / steps;
+            } else {
+                nextNoiseValue = noise[k + 1];
+                steps = stateSizeNoiseSizeRatio;
+                stepNoiseValue = (nextNoiseValue - noiseValue) / steps;
+            }
+            for (int j = 0; j < steps && i + j < spatialNoise.length; j++) {
+                spatialNoise[i + j] = noiseValue + j * stepNoiseValue;
+            }
+        }
+        return spatialNoise;
+    }
+
+    private File checkRestartDir(ITime time, boolean mustExist) {
 		if (this.savedStatesDirPrefix == null) {
 			throw new RuntimeException("Dir for restart files not specified in black box stoch model config file on dir. " +
 					configRootDir.getAbsolutePath());
