@@ -54,4 +54,4 @@ for file in $OPENDADIR/*.jar ; do
 done
 
 # start java with initial class
-java $ODA_JAVAOPTS org.openda.exchange.iotools.DataObjectDiffer "$@"
+java $ODA_JAVAOPTS org.openda.exchange.iotools.DataObjectDiff "$@"

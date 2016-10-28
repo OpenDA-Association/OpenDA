@@ -46,11 +46,11 @@ public class DataObjectDiff implements IConfigurable {
     private IDataObject testDataObject = null;
 
     private static String DIFF_OUTPUT_HEADER =
-        " Difference found for file : %1$s\n" +
+        " Difference for file : %1$s\n" +
         "      exchange item          time          rms         max99        max     \n";
     private static String HLINE = "------------------------ ------------ ------------ ------------ ------------\n";
     private static String DIFF_OUTPUT_LINE = "%1$-24s %2$12s %3$12f %4$12f %5$12f";
-    public static double EPSILON = 0.000001;
+    public static double EPSILON = 1e-5;
 
     /**
      * Creates a DataCopier for the given input IDataObject and output IDataObject.
@@ -179,44 +179,32 @@ public class DataObjectDiff implements IConfigurable {
         for (double value : testValues)
             d2.add(value);
 
+        double norm  = Collections.max(d1) - Collections.min(d1);
 
-
-        if (times != null) {
+        if (times != null && times.length !=0) {
             int n = d1.size() / times.length;
             for (int t = 0; t < times.length; t++) {
                 int i1 = t * n;
                 int i2 = (t + 1) * n - 1;
                 List<Double> slice1 = d1.subList(i1, i2);
                 List<Double> slice2 = d2.subList(i1, i2);
-                double rms = rmsDifference(slice1, slice2);
-                if (rms > EPSILON) {
-                    if (!this.foundDifference) {
-                        System.out.print(String.format(DIFF_OUTPUT_HEADER, this.testFileName));
-                        System.out.print(String.format(HLINE));
-
-                        foundDifference = true;
-                    }
-
-                    System.out.println(String.format(Locale.UK, DIFF_OUTPUT_LINE, id, TimeUtils.mjdToString(times[t]), rms, p99Difference(slice1, slice2), maxDifference(slice1, slice2)));
+                double max = maxDifference(slice1, slice2);
+                if (max / norm > EPSILON) {
+                    System.out.println(String.format(Locale.UK, DIFF_OUTPUT_LINE, id, TimeUtils.mjdToString(times[t]), rmsDifference(slice1, slice2), p99Difference(slice1, slice2), max));
                     result = false;
                 }
             }
         } else {
-            double rms = rmsDifference(d1, d2);
-            if (rms > EPSILON) {
-                if (!this.foundDifference) {
-                    System.out.print(String.format(DIFF_OUTPUT_HEADER, this.testFileName));
-                    System.out.print(String.format(HLINE));
-                    foundDifference = true;
-                }
-                System.out.println(String.format(Locale.UK, DIFF_OUTPUT_LINE, id, "NA", rms, p99Difference(d1, d2), maxDifference(d1, d2)));
+            double max = maxDifference(d1, d2);
+            if (max / norm > EPSILON) {
+                System.out.println(String.format(Locale.UK, DIFF_OUTPUT_LINE, id, "NA", rmsDifference(d1, d2), p99Difference(d1, d2), max));
                 result = false;
             }
         }
-        if (!result) {
-            System.out.print(String.format(HLINE));
+        if (result) {
+            System.out.println(String.format(Locale.UK, DIFF_OUTPUT_LINE, id, "", null, null, null));
         }
-
+        System.out.print(String.format(HLINE));
         return result;
     }
 
@@ -237,7 +225,7 @@ public class DataObjectDiff implements IConfigurable {
 
         int argIndex=0;
         String nextArg=(arguments[argIndex]).trim();
-        // 1) SRC OPTIONS
+        // 1) REFERENCE OPTIONS
         referenceClassName=null;
         referenceArgs=new String[0];
         while(nextArg.startsWith("-")){
@@ -260,7 +248,7 @@ public class DataObjectDiff implements IConfigurable {
                 throw new RuntimeException("Was expecting more arguments.");
             }
         }
-        // 2) SRC file
+        // 2) REFERENCE FILE
         referenceFileName=nextArg;
         argIndex++;
         if(argIndex<arguments.length){
@@ -268,7 +256,7 @@ public class DataObjectDiff implements IConfigurable {
         }else{
             throw new RuntimeException("Was expecting more arguments.");
         }
-        // 3) DEST OPTIONS
+        // 3) TEST OPTIONS
         testClassName=null;
         testArgs=new String[0];
         while(nextArg.startsWith("-")){
@@ -291,7 +279,7 @@ public class DataObjectDiff implements IConfigurable {
                 throw new RuntimeException("Was expecting more arguments.");
             }
         }
-        // 4) DEST
+        // 4) TEST  FILE
         testFileName=nextArg;
         argIndex++;
         // 5) ITEM OPTIONS
@@ -305,7 +293,7 @@ public class DataObjectDiff implements IConfigurable {
         if(referenceClassName==null){
             referenceClassName=IoUtils.getDefaultClass(referenceFileName);
             if(referenceClassName==null){
-                throw new RuntimeException("Could not find IDataObject class to read reference file.");
+                throw new RuntimeException("Could not find IDataObject class to read reference file." + referenceFileName);
             }
         }
         String message = "reference\n";
@@ -344,6 +332,10 @@ public class DataObjectDiff implements IConfigurable {
 
         String[] exchangeItemIds = referenceDataObject.getExchangeItemIDs();
         boolean result= true;
+        System.out.print(String.format(DIFF_OUTPUT_HEADER, this.testFileName));
+        System.out.print(String.format(HLINE));
+        foundDifference = true;
+
         for (String id : exchangeItemIds) {
             if ( ! validateExchangeItem(referenceDataObject.getDataObjectExchangeItem(id), testDataObject) ) {
                 result = false;
