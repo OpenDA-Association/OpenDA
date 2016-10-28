@@ -248,7 +248,7 @@ public class CostaTest extends TestCase {
 				.getObservationDescriptions();
         int nobs=stochObservert10.getCount();
         assertEquals("Number of Observations ", 1, nobs);
-		Vector pred10 = oscill.getObservedValues(Obsdesrc10);
+		Vector pred10 = oscill.getObservationOperator().getObservedValues(Obsdesrc10);
 		assertEquals("Number of observations at t=0.01 ", 1, pred10.getSize());
 		assertEquals("predicted value t=0.01 (x(1))", 0.26637594284096, pred10
 				.getValue(0), 1.e-10);

@@ -50,7 +50,7 @@ public class AdvectionModelTest extends TestCase {
         model.compute(new Time(1.0));
         System.out.println("model.compute(0.3)");
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector prd = model.getObservedValues(obsDescriptions);
+        IVector prd = model.getObservationOperator().getObservedValues(obsDescriptions);
         System.out.println("model.getObservedValues()=" + prd.toString());
         // x(0) is taken at t=0.5 for all 3 obs because model did not save previous values
         System.out.println("Should be model.getObservedValues()=[0.0,0.451798531137781,1.3094893124320952,1.102222423765312]");

@@ -59,11 +59,11 @@ public class WaveModelTest extends TestCase {
         model.compute(new Time(1.0));
         System.out.println("model.compute(1.0)");
         //   public Vector getObservedValues(ObservationDescriptions observationDescriptions) {
-        IVector predictions = model.getObservedValues(obsDescriptions);
-        System.out.println("model.getObservedValues()=" + predictions.toString());
+        IVector predictions = model.getObservationOperator().getObservedValues(obsDescriptions);
+        System.out.println("model.getObservationOperator().getObservedValues()=" + predictions.toString());
         // x(0) is taken at t=0.5 for all 3 obs because model did not save previous values
-        System.out.println("Should be model.getObservedValues()=[0.0,0.09998797888368932,0.18174892847314097,0.19412691322953382,0.1323756648952993,0.020078649042881577,-0.09985050759709486,-0.1526996587110074,-0.17570283804550416,-0.13140230434484873,-0.03703081673406845]");
-        assertEquals("model.getObservedValues()", predictions.toString(), "[0.0,0.09998797888368932,0.18174892847314097,0.19412691322953382,0.1323756648952993,0.020078649042881577,-0.09985050759709486,-0.1526996587110074,-0.17570283804550416,-0.13140230434484873,-0.03703081673406845]");
+        System.out.println("Should be model.getObservationOperator().getObservedValues()=[0.0,0.09998797888368932,0.18174892847314097,0.19412691322953382,0.1323756648952993,0.020078649042881577,-0.09985050759709486,-0.1526996587110074,-0.17570283804550416,-0.13140230434484873,-0.03703081673406845]");
+        assertEquals("model.getObservationOperator().getObservedValues()", predictions.toString(), "[0.0,0.09998797888368932,0.18174892847314097,0.19412691322953382,0.1323756648952993,0.020078649042881577,-0.09985050759709486,-0.1526996587110074,-0.17570283804550416,-0.13140230434484873,-0.03703081673406845]");
         //   public void announceObservedValues(ObservationDescriptions observationDescriptions) {
     }
 
