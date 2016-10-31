@@ -1,5 +1,5 @@
-/* OpenDA v2.3.1 
-* Copyright (c) 2016 OpenDA Association 
+/* MOD_V2.0
+* Copyright (c) 2012 OpenDA Association
 * All rights reserved.
 * 
 * This file is part of OpenDA. 
@@ -502,7 +502,7 @@ public class BBStochModelConfigReader {
 							exchangeItemXML.getId(),
 							modelExchangeItemIds,
 							determineOperationType(exchangeItemXML.getOperation()),
-							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio())
+							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute())
 					);
 				}
 			}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+  <modelConfig>
+    <file>bbModelConfig_noiseAfterCompute.xml</file>
+  </modelConfig>
+
+  <vectorSpecification>
+
+    <state>
+
+      <noiseModel id="stateNoiseModel"
+                  className="org.openda.noiseModels.MapsNoiseModelFactory"
+                  workingDirectory=".">
+        <configFile>state_noise_after_compute.xml</configFile>
+        <exchangeItems>
+          <exchangeItem id="main-river.h-noise" operation="add" stateSizeNoiseSizeRatio="10" addStateNoiseAfterCompute="true">
+            <modelExchangeItem id="state"/>
+          </exchangeItem>
+        </exchangeItems>
+      </noiseModel>
+
+      <vector id="state"/>
+
+    </state>
+
+    <predictor>
+
+      <vector id="Speyer.water_level" sourceVectorId="Speyer.Water Level"/>
+
+    </predictor>
+
+  </vectorSpecification>
+
+</blackBoxStochModel>
