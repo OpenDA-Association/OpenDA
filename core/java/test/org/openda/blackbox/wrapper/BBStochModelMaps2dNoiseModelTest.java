@@ -115,7 +115,7 @@ public class BBStochModelMaps2dNoiseModelTest extends TestCase
 
         IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
         stochModelInstance.setAutomaticNoiseGeneration(true);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             stochModelInstance.compute(new Time(i + 1));
         }
     }
@@ -128,7 +128,7 @@ public class BBStochModelMaps2dNoiseModelTest extends TestCase
 
         IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
         stochModelInstance.setAutomaticNoiseGeneration(true);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             stochModelInstance.compute(new Time(i + 1));
         }
     }
@@ -141,7 +141,7 @@ public class BBStochModelMaps2dNoiseModelTest extends TestCase
 
         IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
         stochModelInstance.setAutomaticNoiseGeneration(true);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             stochModelInstance.compute(new Time(i + 1));
         }
     }
@@ -154,7 +154,7 @@ public class BBStochModelMaps2dNoiseModelTest extends TestCase
 
         IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
         stochModelInstance.setAutomaticNoiseGeneration(true);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             stochModelInstance.compute(new Time(i + 1));
         }
     }
