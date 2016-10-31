@@ -76,6 +76,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings;
 	private int ensembleMemberIndex;
 	private HashMap<String,double[]> prevNoiseModelEIValuesForTimeStep = new HashMap<String, double[]>();
+	private boolean warningLogged = false;
 
 	/**
 	 * For each constraintExchangeItemId for which there is a range validation constraint this map contains
@@ -1542,8 +1543,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return ((exchangeItemTime + 1.e-6) >= currentTime) && ((exchangeItemTime - 1.e-6) < targetTime);
 	}
 
-	private static void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
-															 int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
+	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
+													  int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
@@ -1655,19 +1656,20 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-	private static double[] getSpatialNoise(IPrevExchangeItem exchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
+	private double[] getSpatialNoise(IPrevExchangeItem exchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
 		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
 
 		if (valuesAsDoubles.length > stateSizeNoiseSizeRatio * noise.length) {
-			throw new RuntimeException("Number of points in state should not be more than stateSizeNoiseSizeRatio * noise.length");
+			throw new RuntimeException("Number of points in state (" + valuesAsDoubles.length + ") should not be more than stateSizeNoiseSizeRatio * noise.length, currently: " + stateSizeNoiseSizeRatio + " * " + noise.length);
 		}
 		if (valuesAsDoubles.length < stateSizeNoiseSizeRatio * (noise.length - 2) + 1) {
-			throw new RuntimeException("Number of points in state should not be less than (stateSizeNoiseSizeRatio * noise.length - 2) + 1");
+			throw new RuntimeException("Number of points in state (" + valuesAsDoubles.length + ") should not be less than stateSizeNoiseSizeRatio * (noise.length - 2) + 1, currently: " + stateSizeNoiseSizeRatio + " * (" + noise.length + " - 2) + 1");
 		}
 
 		int stateSizeMin1 = valuesAsDoubles.length - 1;
-		if (stateSizeMin1 % stateSizeNoiseSizeRatio != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatio * (noise.length - 1) + 1) {
-			LOGGER.warn("(Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last points.");
+		if (!warningLogged && stateSizeMin1 % stateSizeNoiseSizeRatio != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatio * (noise.length - 1) + 1) {
+			LOGGER.warn(stateSizeMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noise.length + " to " + (noise.length + 1) + " will result in interpolation for last state points as well.");
+			warningLogged = true;
 		}
 		double[] spatialNoise = new double[valuesAsDoubles.length];
 		for (int i = 0, k = 0; i < valuesAsDoubles.length; i += stateSizeNoiseSizeRatio, k++) {
