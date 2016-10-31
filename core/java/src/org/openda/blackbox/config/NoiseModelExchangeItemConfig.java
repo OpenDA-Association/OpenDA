@@ -35,10 +35,11 @@ public class NoiseModelExchangeItemConfig {
 	private boolean skipFirstTimeStep;
 	private boolean addOnlyNoiseDifference;
     private int stateSizeNoiseSizeRatio;
+    private boolean addStateNoiseAfterCompute;
 
 
     public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-                                        Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio) {
+                                        Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute) {
 		this.id = id;		
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.operation = operation;
@@ -46,13 +47,14 @@ public class NoiseModelExchangeItemConfig {
 		this.skipFirstTimeStep = skipFirstTimeStep;
 		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
         this.stateSizeNoiseSizeRatio = stateSizeNoiseSizeRatio;
+        this.addStateNoiseAfterCompute = addStateNoiseAfterCompute;
     }
 	
 	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId,
 										Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), operation, transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1);
+		this(id, new ArrayList<String>(), operation, transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
@@ -88,5 +90,9 @@ public class NoiseModelExchangeItemConfig {
 
     public int getStateSizeNoiseSizeRatio() {
         return stateSizeNoiseSizeRatio;
+    }
+
+    public boolean isAddStateNoiseAfterCompute() {
+        return addStateNoiseAfterCompute;
     }
 }

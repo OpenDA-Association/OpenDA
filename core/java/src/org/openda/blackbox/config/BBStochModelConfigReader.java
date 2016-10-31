@@ -502,7 +502,7 @@ public class BBStochModelConfigReader {
 							exchangeItemXML.getId(),
 							modelExchangeItemIds,
 							determineOperationType(exchangeItemXML.getOperation()),
-							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio())
+							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute())
 					);
 				}
 			}

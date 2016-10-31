@@ -311,8 +311,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             boolean firstStep = true;
 
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-            propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime);
-			while (model.getCurrentTime().getMJD()+tolerance < targetTime.getMJD()) {
+            boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);//Also after?
+            while (model.getCurrentTime().getMJD()+tolerance < targetTime.getMJD()) {
 				ITime loopTimeStep = new Time(model.getCurrentTime().getMJD() + modelDeltaT);
 				model.compute(loopTimeStep);
                 if (firstStep && observationDescriptions!=null) {
@@ -334,12 +334,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                     double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 					wrappedBbExchangeItem.UpdateTimeStepValue(loopTimeStep,computedValues[0]);
 				}
+                if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 			}
 		} else
 		{
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-			propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime);
-			model.compute(targetTime);
+            boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
+            model.compute(targetTime);
+            if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 		}
 
 		timerCompute.stop();
@@ -1341,8 +1343,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				parameterId + " in incoming parameters");
 	}
 
-	private void propagateNoiseModelsAndAddNoiseToExchangeItems(ITime currentTime, ITime targetTime) {
+	private boolean propagateNoiseModelsAndAddNoiseToExchangeItems(ITime currentTime, ITime targetTime, boolean afterCompute) {
 
+        boolean addNoiseAfterComputeForAnyExchangeItem = false;
 		// propagate the stochastic noise models
 		for (Map.Entry<BBNoiseModelConfig, IStochModelInstance> noiseModelEntry : noiseModels.entrySet()) {
 
@@ -1428,7 +1431,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 								}
 							}
 							int modelTimeIndex= TimeUtils.findMatchingTimeIndex(modelTimes, time, timePrecision);
-							addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, modelTimeIndex,
+                            boolean addNoiseBefore = !afterCompute && !exchangeItemConfig.isAddStateNoiseAfterCompute();
+                            boolean addNoiseAfter = afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute();
+                            addNoiseAfterComputeForAnyExchangeItem |= (!afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute());
+                            if (addNoiseAfter || addNoiseBefore) addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, modelTimeIndex,
 									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
 							this.lastNoiseTimes.put(modelExchangeItemId,time);
 						}
@@ -1491,7 +1497,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			addNoiseToExchangeItem(stateNoiseModelConfig, targetTime.getMJD(),
 					numBcTimeStepsInPeriod, noiseForExchangItem);
 		}
-	}
+        return addNoiseAfterComputeForAnyExchangeItem;
+    }
 
 	/**
 	 * Get values for this time index timeStep=-1 for last timeStep available, ie count negative values from end
@@ -1573,6 +1580,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				tStart = Math.max(doubleArraySearch.search(startTime), 0);
 			}
 			for (int t = tStart; t < tStart + numBcTimeStepsInPeriod; t++) {
+                //Add noise after compute?
 				addNoiseToExchangeItemForOneTimeStep(exchangeItem, t,
 						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation(), 1);
 			}
