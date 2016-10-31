@@ -64,6 +64,12 @@
 				<xs:documentation>When adding noise to a state exchange time, add the difference between the current noise and the previous noise, instead of adding the full noise.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="stateSizeNoiseSizeRatio" type="xs:integer" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>Integer ratio between the size of the model state and the noise model state (1 noise model value will be applied to "stateSizeNoiseSizeRatio" model values)
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="UncertaintyOrNoiseExchangeItemsXML">
 		<xs:sequence>

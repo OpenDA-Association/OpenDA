@@ -107,4 +107,88 @@ public class BBStochModelMaps2dNoiseModelTest extends TestCase
 		}
 	}
 
+	public void testStateSizeNoiseSizeRatio() {
+		DummyStateDataObject.setStateSize(1061);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		for (int i = 0; i < 3; i++) {
+			stochModelInstance.compute(new Time(i + 1));
+		}
+	}
+
+	public void testStateSizeNoiseSizeRatioExact() {
+		DummyStateDataObject.setStateSize(1061);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		for (int i = 0; i < 3; i++) {
+			stochModelInstance.compute(new Time(i + 1));
+		}
+	}
+
+	public void testStateSizeNoiseSizeRatioBigger() {
+		DummyStateDataObject.setStateSize(1065);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		for (int i = 0; i < 3; i++) {
+			stochModelInstance.compute(new Time(i + 1));
+		}
+	}
+
+	public void testStateSizeNoiseSizeRatioSmaller() {
+		DummyStateDataObject.setStateSize(1055);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		for (int i = 0; i < 3; i++) {
+			stochModelInstance.compute(new Time(i + 1));
+		}
+	}
+
+	public void testStateSizeNoiseSizeRatioTooSmall() {
+		DummyStateDataObject.setStateSize(1050);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		try {
+			stochModelInstance.compute(new Time(1));
+		} catch (RuntimeException e) {
+			return;
+		}
+		assert false;
+	}
+
+	public void testStateSizeNoiseSizeRatioTooBig() {
+		DummyStateDataObject.setStateSize(1071);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		try {
+			stochModelInstance.compute(new Time(1));
+		} catch (RuntimeException e) {
+			return;
+		}
+		assert false;
+	}
+
 }

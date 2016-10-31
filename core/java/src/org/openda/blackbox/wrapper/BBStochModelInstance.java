@@ -1,19 +1,19 @@
-/* OpenDA v2.3.1 
-* Copyright (c) 2016 OpenDA Association 
+/* OpenDA v2.3.1
+* Copyright (c) 2016 OpenDA Association
 * All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
+*
+* This file is part of OpenDA.
+*
+* OpenDA is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* OpenDA is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -34,6 +34,8 @@ import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -42,6 +44,7 @@ import java.util.*;
  * Black box module's implementation of a stochastic model instance
  */
 public class BBStochModelInstance extends Instance implements IStochModelInstance {
+	private static Logger LOGGER = LoggerFactory.getLogger(BBStochModelInstance.class);
 
 	// In case of parallel runs we use the Distributed counter to generate unique IDs
 	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
@@ -1334,7 +1337,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							}
 							int modelTimeIndex= TimeUtils.findMatchingTimeIndex(modelTimes, time, timePrecision);
 							addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, modelTimeIndex,
-									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation());
+									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
 							this.lastNoiseTimes.put(modelExchangeItemId,time);
 						}
 					}
@@ -1479,7 +1482,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 			for (int t = tStart; t < tStart + numBcTimeStepsInPeriod; t++) {
 				addNoiseToExchangeItemForOneTimeStep(exchangeItem, t,
-						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation());
+						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation(), 1);
 			}
 		}
 	}
@@ -1532,8 +1535,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return ((exchangeItemTime + 1.e-6) >= currentTime) && ((exchangeItemTime - 1.e-6) < targetTime);
 	}
 
-	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
-			int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation) {
+	private static void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
+															 int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
@@ -1552,7 +1555,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		double[] times = exchangeItem.getTimes();
 		if (times == null || times.length == 0) {
 			// model EI has no time stamp (is most probable the current state)
-			if (noise.length == numValuesInExchangeItem) {
+			if (noise.length == numValuesInExchangeItem || stateSizeNoiseSizeRatio != 1) {
 				numTimeStepsInExchangeItem = 1;
 			} else {
 				throw new RuntimeException("ExchangeItem " + exchangeItem.getId() + " has no time stamps whereas value size is not equal to noise-size");
@@ -1574,6 +1577,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					addFullArray = true;
 				}
 			}
+		}
+
+		if (stateSizeNoiseSizeRatio > 1) {
+			noise = getSpatialNoise(exchangeItem, noise, operation, stateSizeNoiseSizeRatio);
 		}
 
 		if (addFullArray) {
@@ -1639,6 +1646,45 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						": invalid call for setting values");
 			}
 		}
+	}
+
+	private static double[] getSpatialNoise(IPrevExchangeItem exchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
+		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+
+		if (valuesAsDoubles.length > stateSizeNoiseSizeRatio * noise.length) {
+			throw new RuntimeException("Number of points in state should not be more than stateSizeNoiseSizeRatio * noise.length");
+		}
+		if (valuesAsDoubles.length < stateSizeNoiseSizeRatio * (noise.length - 2) + 1) {
+			throw new RuntimeException("Number of points in state should not be less than (stateSizeNoiseSizeRatio * noise.length - 2) + 1");
+		}
+
+		int stateSizeMin1 = valuesAsDoubles.length - 1;
+		if (stateSizeMin1 % stateSizeNoiseSizeRatio != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatio * (noise.length - 1) + 1) {
+			LOGGER.warn("(Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last points.");
+		}
+		double[] spatialNoise = new double[valuesAsDoubles.length];
+		for (int i = 0, k = 0; i < valuesAsDoubles.length; i += stateSizeNoiseSizeRatio, k++) {
+			double noiseValue = noise[k];
+
+			int nextNoiseValueIndex = k + 1;
+			double nextNoiseValue;
+			int steps;
+			double stepNoiseValue;
+			if (nextNoiseValueIndex >= noise.length) {
+				nextNoiseValue = noise[noise.length - 1];
+				double previousNoiseValue = noise[noise.length - 2];
+				steps = valuesAsDoubles.length % stateSizeNoiseSizeRatio;
+				stepNoiseValue = (nextNoiseValue - previousNoiseValue) / steps;
+			} else {
+				nextNoiseValue = noise[k + 1];
+				steps = stateSizeNoiseSizeRatio;
+				stepNoiseValue = (nextNoiseValue - noiseValue) / steps;
+			}
+			for (int j = 0; j < steps && i + j < spatialNoise.length; j++) {
+				spatialNoise[i + j] = noiseValue + j * stepNoiseValue;
+			}
+		}
+		return spatialNoise;
 	}
 
 	private File checkRestartDir(ITime time, boolean mustExist) {
