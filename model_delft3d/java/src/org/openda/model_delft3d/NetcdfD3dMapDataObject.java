@@ -21,10 +21,7 @@ package org.openda.model_delft3d;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfUtils;
-import org.openda.interfaces.IArrayTimeInfo;
-import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.ITimeInfo;
+import org.openda.interfaces.*;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
@@ -33,6 +30,9 @@ import ucar.nc2.Variable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static java.lang.Math.abs;
+import static jdk.nashorn.internal.objects.NativeMath.min;
 
 /**
  * Data object voor D3D map file
@@ -58,6 +58,8 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	private int mMax;
 	private int nMax;
 	private int nLay;
+	private File workingDir;
+	private String runID;
 
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments.length != 1 && arguments.length != 3) {
@@ -66,23 +68,31 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		this.netcdfFilePath = netcdfFilePath;
+		this.workingDir = workingDir;
+		this.runID = arguments[0].substring(5,arguments[0].length()-3);
 
 		try {
 			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
-//			netcdfFileWrite = new NetcdfFileWriteable();
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
+
+		this.mMax = netcdfFile.findDimension("M").getLength();
+		this.nMax = netcdfFile.findDimension("N").getLength();
+		this.nLay = netcdfFile.findDimension("K_LYR").getLength();
+		int nSubstances = netcdfFile.findDimension("LSTSCI").getLength();
+
 		readNetCdfVariables();
 
 		if (arguments.length == 3) {
-//			File restartFilePath = new File(workingDir, arguments[1]); // compuse name for prefix + target
 			File restartFilePath = new File(workingDir, "tri-rst." + arguments[0].substring(5,arguments[0].length()-3) + "." +
 					arguments[2].substring(0,8) + "." + arguments[2].substring(8,12) + "00");
 
 			if (restartFilePath.exists()) {
 
-				File restartFileIn = new File(workingDir, "tri-rst." + arguments[1] + ".000000");
+				// TODO: instead of copying an existing restart file and modifying it, better to create one fully from the MapFile.
+				// Avoids having to create a restart file at small time step even if not needed.
+				File restartFileIn = new File(workingDir, "tri-rst." + arguments[1]);
 				// Place copy of file
 				try {
 					BBUtils.copyFile(restartFilePath, restartFileIn);
@@ -91,10 +101,6 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 							restartFilePath.getAbsolutePath() + " to " + restartFileIn);
 				}
 
-				this.mMax = netcdfFile.findDimension("M").getLength();
-				this.nMax = netcdfFile.findDimension("N").getLength();
-				this.nLay = netcdfFile.findDimension("K_LYR").getLength();
-				int nSubstances = netcdfFile.findDimension("LSTSCI").getLength();
 				binRestartFile = new D3DBinRestartFile(restartFileIn, mMax, nMax, nLay, nSubstances);
 				binRestartFile.open();
 			}
@@ -213,7 +219,23 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				// so adjust the time info
 				double[] times = timeInfo.getTimes();
 				timeInfo = new TimeInfo(new double[]{times[times.length-1]});
-				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo);
+
+				// Extracting geometry information
+				Variable variableX = this.netcdfFile.findVariable("XZ");
+				Variable variableY = this.netcdfFile.findVariable("YZ");
+				Variable variableZ = this.netcdfFile.findVariable("ZK_LYR");
+
+				int[] originXY = createOrigin(variableX);
+				int[] sizeArrayXY = variableX.getShape();
+				int[] originZ = createOrigin(variableZ);
+				int[] sizeArrayZ = variableZ.getShape();
+
+				double[] xCoords =  NetcdfUtils.readSelectedData(variableX, originXY, sizeArrayXY,-1);
+				double[] yCoords =  NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY,-1);
+				double[] zCoords =  NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ,-1);
+
+				IGeometryInfo geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(xCoords,yCoords,zCoords);
+				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo, geometryInfo);
 				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 
 			}
@@ -277,7 +299,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 					// Down loop to reach the first filled cell
 					int layCount = nLay-1;
-					while (Domain3D[m][n][layCount] == -999) {
+					while (Domain3D[m][n][layCount] == -999.0) {
 						layCount--;
 					}
 
@@ -329,7 +351,6 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		// Writing to the binary restart file, after the algorithm operations
 		if (binRestartFile != null) {
 			binRestartFile.write(varName, values);
-			return;
 		}
 
 		// find variable
@@ -362,12 +383,15 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		try {
 			netcdfWriteFile.close();
-			if (binRestartFile != null) {
-				binRestartFile.close();
-			}
+			//if (binRestartFile != null) {
+				//binRestartFile.close();
+			//}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		// Writing the history file with the new values contained in the map file
+		NetcdfD3dHisDataObject.hisFileWriter(varName,values,workingDir,runID,mMax,nMax,nLay);
 
 	}
 
@@ -377,7 +401,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		Variable KFU = this.netcdfFile.findVariable("KFU");
 		Variable KFV = this.netcdfFile.findVariable("KFV");
-		Variable ZK = this.netcdfFile.findVariable("ZK");
+		Variable ZK = this.netcdfFile.findVariable("ZK_LYR");
 		Variable S1 = this.netcdfFile.findVariable("S1");
 
 		double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
@@ -395,12 +419,33 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 				if (KFU1Darray[k] == 1 && KFV1Darray[k] == 1) {
 
-					// Down loop to empty the upper cells
-					int layCount = nLay-1;
-					while (S11Darray[k] > (ZK1Darray[layCount])) {
-						Domain3D[m][n][layCount] = -999;
-						layCount--;
+					double[] distance =  new double[ZK1Darray.length];
+					for (int i = 0; i < ZK1Darray.length; i++) {
+						distance[i] = abs(S11Darray[k] - ZK1Darray[i]); //TODO: I have one concern here, check if the netCDF file we read has to have the new waterlevels! (TB)
 					}
+
+					// TB: This could probably be simplified with a function giving the mean
+					// and then a binarySearch over the array to find the index of the min value
+					// E.g.: on matlab I would write: layIndex = find(distance==minDistance)
+					int layIndex = 0;
+					for (int i = 0; i < distance.length; i++){
+						layIndex = (distance[i] < distance[layIndex]) ? i : layIndex;
+					}
+					//double minDistance = min(distance);
+					//int layIndex = Arrays.binarySearch(distance,min(distance));
+
+
+					for (int i = layIndex+1; i < nLay; i++){
+						Domain3D[m][n][i] = -999.0;
+					}
+
+					//TB: Old implementation: wrong
+					// Down loop to empty the upper cells
+					//int layCount = nLay-1;
+					//while (S11Darray[k] > (ZK1Darray[layCount])) {
+					//	Domain3D[m][n][layCount] = -999;
+					//	layCount--;
+					//}
 
 				}
 				k++;

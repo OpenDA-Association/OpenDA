@@ -24,6 +24,7 @@ import org.openda.interfaces.*;
 import ucar.ma2.Array;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 		try {
 			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
-			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
+			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
 
 		readNetCdfVariables();
@@ -130,7 +131,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 					try {
 						timesArray = timeVariable.read();
 					} catch (IOException e) {
-						throw new RuntimeException("NetcdfD3dMapDataObject could not read time variable " + timeVariable.getName() +
+						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getName() +
 								"from netcdf file " + netcdfFile.getLocation());
 					}
 					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
@@ -217,11 +218,161 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 	}
 
+	//TB: this static method is to be called everytime the Map file is written, so that the History file is also updated accordingly
+	public static void hisFileWriter(String varName, double[] values,File workingDir,String runID,int mMax,int nMax,int nLay) {
+
+		//Names in the history files don't match the ones in the map file
+		if (varName.equalsIgnoreCase("R1")) {
+			varName = "GRO";
+		}else if (varName.equalsIgnoreCase("U1")){
+			varName = "ZCURU";
+		}else if (varName.equalsIgnoreCase("V1")){
+			varName = "ZCURV";
+		}else if (varName.equalsIgnoreCase("S1")){
+			varName = "ZWL";
+			nLay = 1;
+		}
+
+		File netcdfFilePath = new File(workingDir, "trih-" + runID + ".nc");
+
+		NetcdfFile netcdfHisFile;
+		try {
+			netcdfHisFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
+		} catch (IOException e) {
+			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
+		}
+
+		Variable stationIndices = netcdfHisFile.findVariable("MNSTAT");
+
+		Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(stationIndices, netcdfHisFile);
+		int timeDimensionIndex = stationIndices.findDimensionIndex(timeVariable.getName());
+
+		//int LastTimeIndex = timeInfo.getTimes().length;
+		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
+		ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(stationIndices, netcdfHisFile,timeInfoCache);
+		int LastTimeIndex = timeInfo.getTimes().length;
+
+		double[] stationsMN = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(stationIndices,timeDimensionIndex,LastTimeIndex-1,-1);
+		int nStation = stationsMN.length/2;
+
+		double[][][] Domain3D = from1dTo3dArray(values,mMax,nMax,nLay);
+
+		// Extracting the stations from the 3D domain
+		double[] stationValues = new double[nStation*nLay];
+		for (int nstat = 0; nstat < nStation; nstat++){
+
+			int mStat = (int) stationsMN[nstat*2];
+			int nStat = (int) stationsMN[nstat*2+1];
+
+			double[] stationArray = getStationArray(Domain3D,mStat,nStat,nLay);
+
+			int k=0;
+			for (int i = 0;i < stationArray.length;i++){
+				stationValues[k*nStation+nstat] = stationArray[i];
+				k++;
+			}
+
+		}
+
+		// Writing StationValues into the netcdf his file:
+		Variable variable = netcdfHisFile.findVariable(varName);
+		int[] sizeArray = variable.getShape();
+		int[] origin = createOrigin(variable);
+
+		origin[timeDimensionIndex] = LastTimeIndex-1;
+		sizeArray[timeDimensionIndex] = 1;
+
+		int kmaxOutRestrDimensionIndex = -1;
+		int lstsciDimensionIndex = -1;
+
+		List<Dimension> dimensions = variable.getDimensions();
+		for (int i = 0; i < dimensions.size(); i++) {
+			Dimension dimension = dimensions.get(i);
+			if (varName.equalsIgnoreCase("GRO")){
+				if (dimension.getName().equalsIgnoreCase("LSTSCI")) {
+					lstsciDimensionIndex = i;
+					if (dimension.getLength() != 1) {
+						throw new RuntimeException("NetcdfD3dHisDataObject: #R1 != 1 is not supported (temp. or salinity), file: "
+								+ netcdfHisFile.getLocation());
+					}
+					origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
+				}
+			}
+			if (!varName.equalsIgnoreCase("ZWL")) {
+				if (dimension.getName().equalsIgnoreCase("KMAXOUT_RESTR")) {
+					kmaxOutRestrDimensionIndex = i;
+					if (dimension.getLength() < 0) {
+						throw new RuntimeException("NetcdfD3dHisDataObject: could not read number of layers, file: "
+								+ netcdfHisFile.getLocation());
+					}
+					origin[kmaxOutRestrDimensionIndex] = 0;
+				}
+			}
+
+		}
+
+		if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 ) {
+			throw new RuntimeException("NetcdfD3dHisDataObject: dims not available, file: "
+					+ netcdfHisFile.getLocation());
+		}
+
+
+		NetcdfFileWriteable netcdfWriteFile = null;
+		try {
+			netcdfWriteFile = NetcdfFileWriteable.openExisting(netcdfFilePath.getAbsolutePath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		NetcdfUtils.writeSelectedData(netcdfWriteFile,variable, origin, sizeArray, stationValues);
+
+		try {
+			netcdfWriteFile.close();
+			netcdfHisFile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
 	public static int[] createOrigin(Variable var) {
 		int dimensionCount = var.getDimensions().size();
 		int[] origin = new int[dimensionCount];
 		Arrays.fill(origin, 0);
 		return origin;
+	}
+
+	private static double[][][] from1dTo3dArray(double[] oneDArray, int mMax, int nMax, int nLay){
+
+		double Domain3D[][][] = new double[mMax][nMax][nLay];
+
+		int k=0;
+		for (int lay = 0; lay < nLay; lay++) {
+			for (int m = 0; m < mMax; m++) {
+				for (int n = 0; n < nMax; n++) {
+
+					Domain3D[m][n][lay] = oneDArray[k];
+					k++;
+
+				}
+			}
+		}
+		return Domain3D;
+	}
+
+	private static double[] getStationArray(double[][][] Domain3D,int mStat,int nStat,int nLay){
+
+		double[] StationArray = new double[nLay];
+
+		int k=0;
+		for (int layer = 0; layer < nLay; layer++){
+
+			StationArray[k] = Domain3D[mStat-1][nStat-1][layer];
+			k++;
+		}
+
+		return StationArray;
 	}
 
 }
