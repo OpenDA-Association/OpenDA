@@ -77,6 +77,10 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
 
+		if (netcdfFile.findDimension("SIG_LYR") != null) {
+			throw new RuntimeException("NetcdfD3dMapDataObject: Sigma layers detected, only z-layers currently supported for Delft3D-FLOW!");
+		}
+
 		this.mMax = netcdfFile.findDimension("M").getLength();
 		this.nMax = netcdfFile.findDimension("N").getLength();
 		this.nLay = netcdfFile.findDimension("K_LYR").getLength();
