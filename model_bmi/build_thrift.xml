@@ -15,7 +15,8 @@
         </echo>
     </target>
 
-    <property file="module.properties"/>
+  <property file="module.properties"/>
+  <property file="../version.properties"/>
 
     <!-- thrift properties (output) -->
     <property name="openda_thrift_jar" value="${resourcesdir}/openda/${module}_thrift.jar"/>
@@ -66,7 +67,7 @@
 
     <target name="thrift-classes" depends="thrift-src">
         <!-- run javac on the thrift generated files -->
-        <javac srcdir="${thrift_temp_srcdir}" destdir="${thrift_temp_builddir}" debug="${debug}" source="1.7" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M" memoryMaximumSize="256M">
+        <javac srcdir="${thrift_temp_srcdir}" destdir="${thrift_temp_builddir}" debug="${debug}" source="1.8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M" memoryMaximumSize="256M">
             <classpath>
                 <fileset dir="${resourcesdir}">
                     <include name="thrift/*.jar"/>

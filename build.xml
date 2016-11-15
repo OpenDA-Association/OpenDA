@@ -37,7 +37,8 @@
         </echo>
     </target>
 
-<property file="project.properties"/>
+  <property file="project.properties"/>
+  <property file="version.properties"/>
 
     <macrodef name="testing">
 	    <attribute name="v" default="NOT SET"/>

@@ -18,7 +18,8 @@
         </echo>
     </target>
 
-	<property file="module.properties"/>
+  <property file="module.properties"/>
+  <property file="../version.properties"/>
 
 	<!-- castor properties (output) -->
 	<property name="openda_castor_jar" value="${resourcesdir}/openDA/${module}_castor.jar"/>
@@ -79,7 +80,7 @@
  -->
     <target name="castor-classes">
         <!-- run javac on the castor generated files -->
-        <javac srcdir="${castor_temp_srcdir}" destdir="${castor_temp_builddir}" debug="${debug}" source="1.7" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M" memoryMaximumSize="256M">
+        <javac srcdir="${castor_temp_srcdir}" destdir="${castor_temp_builddir}" debug="${debug}" source="1.8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M" memoryMaximumSize="256M">
             <classpath>
                 <fileset dir="${core_resourcesdir}">
                     <include name="castor/*.jar"/>
