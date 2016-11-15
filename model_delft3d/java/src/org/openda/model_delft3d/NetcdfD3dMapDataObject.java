@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static java.lang.Math.abs;
-import static jdk.nashorn.internal.objects.NativeMath.min;
 
 /**
  * Data object voor D3D map file
@@ -238,8 +237,8 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				double[] yCoords =  NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY,-1);
 				double[] zCoords =  NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ,-1);
 
-				IGeometryInfo geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(xCoords,yCoords,zCoords);
-				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo, geometryInfo);
+				//IGeometryInfo geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(xCoords,yCoords,zCoords);
+				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo);//, geometryInfo);
 				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 
 			}
