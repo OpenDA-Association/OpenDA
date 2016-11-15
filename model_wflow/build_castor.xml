@@ -46,7 +46,7 @@
 	Compilation
 ===========================================================================
 -->
-    <target name="build" depends="castor-jar">
+    <target name="build" depends="castor-src,castor-jar">
     </target>
 
     <target name="castor-jar" depends="castor-classes, manifest">
