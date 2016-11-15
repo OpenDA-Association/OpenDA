@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
-import org.springframework.util.Assert;
 
 import java.io.File;
 
@@ -64,7 +63,7 @@ public class RtcToolsRuntimeConfigFileTest extends TestCase
 		RtcToolsRuntimeConfigFile.finish();
 
 		// Step 4: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileName),
+		assertTrue(FileComparer.CompareXmlFiles(new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileName),
 				new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileNameExpected)));
 	}
 
@@ -78,7 +77,7 @@ public class RtcToolsRuntimeConfigFileTest extends TestCase
 		RtcToolsRuntimeConfigFile.finish();
 
 		// Step 3: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileName),
+		assertTrue(FileComparer.CompareXmlFiles(new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileName),
 				new File(testRtcToolsRuntimeConfigFileDir, RtcToolsRuntimeConfigFileNameGenerated)));
 
 	}

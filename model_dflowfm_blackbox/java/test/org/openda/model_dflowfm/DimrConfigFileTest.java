@@ -23,7 +23,6 @@ import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
-import org.springframework.util.Assert;
 
 import java.io.File;
 
@@ -62,12 +61,12 @@ public class DimrConfigFileTest extends TestCase
 		String rtcRuntimeConfigNameGenerated = "rtc/rtcRuntimeConfig.xml";
 		String rtcRuntimeConfigNameExpected = "rtc/rtcRuntimeConfig_expected.xml";
 
-		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, "d_hydro_config_expected.xml"),
-				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare dimr config file");
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testRunDataDir, flowMd1dFileNameExpected),
-				new File(testRunDataDir, flowMd1dFileNameGenerated)), "Compare flow1d md1d file");
-		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, rtcRuntimeConfigNameExpected),
-				new File(testRunDataDir, rtcRuntimeConfigNameGenerated)), "Compare rtc run time config file");
+		assertTrue("Compare dimr config file", FileComparer.CompareXmlFiles(new File(testRunDataDir, "d_hydro_config_expected.xml"),
+				new File(testRunDataDir, dHydroConfigFileNameGenerated)));
+        assertTrue("Compare flow1d md1d file", FileComparer.CompareIniFiles(new File(testRunDataDir, flowMd1dFileNameExpected),
+				new File(testRunDataDir, flowMd1dFileNameGenerated)));
+        assertTrue("Compare rtc run time config file", FileComparer.CompareXmlFiles(new File(testRunDataDir, rtcRuntimeConfigNameExpected),
+				new File(testRunDataDir, rtcRuntimeConfigNameGenerated)));
 	}
 
 	public void testDHydroConfigFileGeneratesExpectedFile()
@@ -80,7 +79,7 @@ public class DimrConfigFileTest extends TestCase
 		dHydroConfigFile.finish();
 
 		// Step 3: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareXmlFiles(new File(testRunDataDir, dHydroConfigFileNameOriginal),
-				new File(testRunDataDir, dHydroConfigFileNameGenerated)), "Compare resulting dimr config file");
+		assertTrue("Compare resulting dimr config file", FileComparer.CompareXmlFiles(new File(testRunDataDir, dHydroConfigFileNameOriginal),
+				new File(testRunDataDir, dHydroConfigFileNameGenerated)));
 	}
 }

@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
-import org.springframework.util.Assert;
 
 import java.io.File;
 
@@ -65,7 +64,7 @@ public class BcFileTest extends TestCase
 		bcFile.finish();
 
 		// Step 4: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameTimeSeriesValuesHalved),
+        assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameTimeSeriesValuesHalved),
 				new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
@@ -89,7 +88,7 @@ public class BcFileTest extends TestCase
 		bcFile.finish();
 
 		// Step 4: Compare written file to expected results
-		Assert.isTrue(!FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal),
+        assertTrue(!FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal),
 				new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
@@ -116,7 +115,7 @@ public class BcFileTest extends TestCase
 		bcFile.finish();
 
 		// Step 4: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameTimeSeriesValuesHalved),
+        assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameTimeSeriesValuesHalved),
 				new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
@@ -130,7 +129,7 @@ public class BcFileTest extends TestCase
 		bcFile.finish();
 
 		// Step 3: Compare written file to original
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal), new File(testBcFileDir, bcFileNameGenerated)));
+        assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal), new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
 	public void testBcFileInitialiseThrowsExceptionForInvalidFile_MissingData()
@@ -145,7 +144,7 @@ public class BcFileTest extends TestCase
 		{
 			expectedException = ex;
 		}
-		Assert.notNull(expectedException);
+        assertNotNull(expectedException);
 	}
 
 	public void testBcFileInitialiseThrowsExceptionForInvalidFile_NonDoubleData()
@@ -160,6 +159,6 @@ public class BcFileTest extends TestCase
 		{
 			expectedException = ex;
 		}
-		Assert.notNull(expectedException);
+		assertNotNull(expectedException);
 	}
 }

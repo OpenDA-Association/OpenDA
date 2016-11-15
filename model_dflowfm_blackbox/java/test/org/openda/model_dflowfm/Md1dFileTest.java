@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
-import org.springframework.util.Assert;
 
 import java.io.File;
 
@@ -67,7 +66,7 @@ public class Md1dFileTest extends TestCase
 		md1dFile.finish();
 
 		// Step 4: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testMd1dFileDir, "Model_TimeValuesHalved.md1d"),
+		assertTrue(FileComparer.CompareIniFiles(new File(testMd1dFileDir, "Model_TimeValuesHalved.md1d"),
 				new File(testMd1dFileDir, md1dFileNameGenerated)));
 	}
 
@@ -89,7 +88,7 @@ public class Md1dFileTest extends TestCase
 		{
 			expectedException = ex;
 		}
-		Assert.notNull(expectedException);
+		assertNotNull(expectedException);
 	}
 
 	public void testMd1dFileGeneratesExpectedFile()
@@ -102,7 +101,7 @@ public class Md1dFileTest extends TestCase
 		md1dFile.finish();
 
 		// Step 3: Compare written file to expected results
-		Assert.isTrue(FileComparer.CompareIniFiles(new File(testMd1dFileDir, md1dFileNameOriginal),
+		assertTrue(FileComparer.CompareIniFiles(new File(testMd1dFileDir, md1dFileNameOriginal),
 				new File(testMd1dFileDir, md1dFileNameGenerated)));
 
 	}
@@ -119,7 +118,7 @@ public class Md1dFileTest extends TestCase
 		{
 			expectedException = ex;
 		}
-		Assert.notNull(expectedException);
+		assertNotNull(expectedException);
 	}
 
 	public void testMd1dFileInitialiseThrowsExceptionForInvalidFile_NonDoubleData()
@@ -134,6 +133,6 @@ public class Md1dFileTest extends TestCase
 		{
 			expectedException = ex;
 		}
-		Assert.notNull(expectedException);
+		assertNotNull(expectedException);
 	}
 }
