@@ -36,7 +36,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/toolsUI-4.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf/netcdfAll-4.6.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
