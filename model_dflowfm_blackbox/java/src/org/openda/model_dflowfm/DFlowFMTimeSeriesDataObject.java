@@ -36,8 +36,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import jj2000.j2k.NotImplementedError;
-
 public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	public static final String PROPERTY_PATHNAME = "pathName";
 	private TimeSeriesSet timeSeriesSet = null;
