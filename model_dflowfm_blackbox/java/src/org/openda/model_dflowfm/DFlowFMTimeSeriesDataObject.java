@@ -159,7 +159,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 								this.cmpNameFromId.put(phaseId,cmpFilePath);
 								this.phases.put(phaseId, phase);								
 							} else {
-								throw new NotImplementedError("DFLOW-FM tidal components of fourier type with user specified frequency not implemented in OpenDA yet.");
+								throw new RuntimeException("DFLOW-FM tidal components of fourier type with user specified frequency not implemented in OpenDA yet.");
 							}
 						}
 					}
