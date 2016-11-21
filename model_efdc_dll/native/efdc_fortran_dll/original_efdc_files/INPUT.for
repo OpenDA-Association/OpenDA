@@ -4088,9 +4088,6 @@ C
               DO M=1,MCSER(NS,NC)  
                 READ(1,*,IOSTAT=ISO)TCSER(M,NS,NC),(CSER(M,K,NS,NC),
      &              K=1,KC)  
-!{GeoSR, 2014.09.14 YSSONG, TOXIC TIME
-                TCSER(M,NS,NC)=TCSER(M,NS,NC)/86400. 
-!}  
                 IF(ISO.GT.0) GOTO 904  
                 TCSER(M,NS,NC)=TCSER(M,NS,NC)+TACSER(NS,NC)  
                 DO K=1,KC  
