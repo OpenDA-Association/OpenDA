@@ -106,7 +106,8 @@ Controls:
 ControlsGateWaterLevel    701
 ControlsGateOpeningHeight 702
 
-
+X-species:
+XSpeciesnn              8nn               18nn
 
 
 Adding exchange items

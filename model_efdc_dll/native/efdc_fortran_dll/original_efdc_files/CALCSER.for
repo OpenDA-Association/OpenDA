@@ -219,7 +219,46 @@ C
               CSERT(K,NS,NC)=WTM1*CSER(M1,K,NS,NC)+WTM2*CSER(M2,K,NS,NC)  
             ENDDO  
           ENDDO  
-        ENDDO  
+        ENDDO
+
+        ! Process multi-species
+        DO NQ=1,NXSP  
+          NC=4+NTOX+NSED+NSND+NWQV+NQ  
+          DO NS=1,NCSER(NC)  
+            IF(ISTL_.EQ.2)THEN  
+              IF(ISDYNSTP.EQ.0)THEN 
+                TIME=DT*(FLOAT(N)-0.5)/TCCSER(NS,NC)  
+     &              +TBEGIN*(TCON/TCCSER(NS,NC))  
+              ELSE  
+                ! *** VARIABLE TIME STEPPING CURRENTLY NOT OPERATIONAL FOR WQ 
+                TIME=TIMESEC/TCCSER(NS,NC)  
+              ENDIF  
+            ELSE  
+              IF(ISDYNSTP.EQ.0)THEN  
+                TIME=DT*(FLOAT(N-1))/TCCSER(NS,NC)  
+     &              +TBEGIN*(TCON/TCCSER(NS,NC))  
+              ELSE  
+                TIME=TIMESEC/TCCSER(NS,NC)  
+              ENDIF  
+            ENDIF  
+            M1=MCTLAST(NS,NC)  
+  105       CONTINUE  
+            M2=M1+1
+            IF(TIME-EPS.GT.TCSER(M2,NS,NC))THEN  
+              M1=M2  
+              GOTO 105  
+            ELSE  
+              MCTLAST(NS,NC)=M1  
+            ENDIF  
+            TDIFF=TCSER(M2,NS,NC)-TCSER(M1,NS,NC)  
+            WTM1=(TCSER(M2,NS,NC)-TIME)/TDIFF  
+            WTM2=(TIME-TCSER(M1,NS,NC))/TDIFF  
+            DO K=1,KC  
+              CSERT(K,NS,NC)=WTM1*CSER(M1,K,NS,NC)+WTM2*CSER(M2,K,NS,NC)  
+            ENDDO  
+          ENDDO  
+        ENDDO
+
       ENDIF  
 C  
 C **  WRITE DIAGNOSTIC FILE FOR CSER INTERPOLTATION  

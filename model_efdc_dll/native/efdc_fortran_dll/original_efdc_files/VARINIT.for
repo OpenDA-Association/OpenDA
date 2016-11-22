@@ -78,7 +78,7 @@ C
       JGM=JCM+1  
       MGM=2*MTM  
       NSTM=MAX(3,NSCM+NSNM+NTXM)  
-      NSTVM=MAX(7,4+NSCM+NSNM+NTXM+NQWR+NWQV)   !Added NQWR for withdrawal return
+      NSTVM=MAX(7,4+NSCM+NSNM+NTXM+NQWR+NWQV+NXSP)   !Added NQWR for withdrawal return
 
 !{GEOSR, OIL, CWCHO, 101122
       IF(ISPD.GT.0.AND.IDTOX.LT.4440)THEN

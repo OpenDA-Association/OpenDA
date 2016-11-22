@@ -140,12 +140,10 @@ contains
     NDPSER = ndpser_max
     NPSERM = npser_max
 
-    if (ret_val == 0) then
-       MPSER(1:psert(id)%NPSER) = psert(id)%MPSER(1:psert(id)%NPSER)
-       TPSER(1:psert(id)%NDPSER,1:psert(id)%NPSER) = psert(id)%TPSER(1:psert(id)%NDPSER,1:psert(id)%NPSER)
-       PSER(1:psert(id)%NDPSER,1:psert(id)%NPSER) = psert(id)%PSER(1:psert(id)%NDPSER,1:psert(id)%NPSER)
-       ret_val = 0
-    end if
+    MPSER(1:psert(id)%NPSER) = psert(id)%MPSER(1:psert(id)%NPSER)
+    TPSER(1:psert(id)%NDPSER,1:psert(id)%NPSER) = psert(id)%TPSER(1:psert(id)%NDPSER,1:psert(id)%NPSER)
+    PSER(1:psert(id)%NDPSER,1:psert(id)%NPSER) = psert(id)%PSER(1:psert(id)%NDPSER,1:psert(id)%NPSER)
+
 
   end function model_set_pser
 

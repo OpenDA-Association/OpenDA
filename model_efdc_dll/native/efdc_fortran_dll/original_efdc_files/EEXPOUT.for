@@ -126,6 +126,20 @@ C **  INITIAL CALL
           WRITE(95)(IWQ(NW),NW=1,NWQV)
           CLOSE(95,STATUS='KEEP')
 
+!{ GEOSR X-species : jgcho 2015.10.14
+                 if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+          OPEN(95,FILE='EE_WQX.OUT',STATUS='UNKNOWN',
+     &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
+          CLOSE(95,STATUS='DELETE')
+          OPEN(95,FILE='EE_WQX.OUT',STATUS='UNKNOWN',
+     &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
+          VER=100
+          WRITE(95)VER
+          WRITE(95)NXSP,LA,KC
+          CLOSE(95,STATUS='KEEP')
+                 endif ! if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+!} GEOSR X-species : jgcho 2015.10.14
+          
           ! *** SAVE SEDIMENT DIAGENESIS RESULTS
           IF(ISSDBIN.LT.0)THEN
             OPEN(95,FILE='EE_SD.OUT',STATUS='UNKNOWN',
@@ -552,6 +566,23 @@ C *** WATER QUALITY
         CALL FLUSH(95)
         CLOSE(95,STATUS='KEEP')
 
+!{ GEOSR X-species : jgcho 2015.10.14
+                 if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+      OPEN(95,FILE='EE_WQX.OUT',STATUS='UNKNOWN',POSITION='APPEND',
+     &          FORM='UNFORMATTED')
+        WRITE(95)EETIME,N
+        do nsp=1,NXSP
+          do K=1,KC
+            do L=2,LA
+              WQ=WQVX(L,K,nsp)
+              WRITE(95)WQ
+            ENDDO
+          ENDDO
+        ENDDO
+        CALL FLUSH(95)
+        CLOSE(95,STATUS='KEEP')
+                 endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+!} GEOSR X-species : jgcho 2015.09.18
         ! *** SAVE SEDIMENT DIAGENESIS RESULTS
         IF(IWQBEN.GT.0.AND.ISSDBIN.LT.0)THEN
           ! *** IF JSEXPLORER=1 THEN WRITE THE ARRAYS (I.E. IC'S)

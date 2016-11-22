@@ -43,6 +43,13 @@ C
           XDOTRN(LL,K) = 0.0  
           XDOALL(LL,K) = 0.0  
           XDODZ(LL,K)  = 0.0  
+          ! X-species
+          do i=1,NXSP
+            XLIMIX(LL,K,i) = 0.0  
+            XLIMNX(LL,K,i) = 0.0  
+            XLIMPX(LL,K,i) = 0.0  
+            XLIMTX(LL,K,i) = 0.0  
+          enddo
         ENDDO  
       ENDDO  
       TIMESUM3 = 0.0  

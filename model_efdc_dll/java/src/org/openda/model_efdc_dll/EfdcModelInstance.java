@@ -63,6 +63,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
 	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
 	private boolean firstTime = true;
+    private static String XSPECIES = "xspecies%1$d";
+    private static int XSPECIES_GRID_OFFSET = 1800;
+    private static int XSPECIES_OFFSET = 800;
+
 
 	/**
 	 * State stored on disk. The efdc model can only store one state at a time.
@@ -160,10 +164,41 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 					break;
 
 				default:
-					throw new RuntimeException("Unknown EfdcExchangeItemRole type " + role);
+					throw new RuntimeException("Unknown EfdcExchangeItemRole type " + role + " for " + parameterNumber);
 			}
 		}
-	}
+        //create exchange items for xspecies at all locations and layers
+        //check if exchangeItem is supported by current EFDC configuration
+        int nXspecies = this.modelDll.getXspeciesCount();
+
+        for (int iXspecies = 1; iXspecies <= nXspecies; ++iXspecies) {
+            int parameterGridNumber = XSPECIES_GRID_OFFSET + iXspecies;
+            if ( !this.modelDll.supportsExchangeItem(parameterGridNumber) ) {
+                continue;
+            }
+            String parameterId = String.format(XSPECIES,iXspecies);
+            EfdcGridExchangeItem gridExchangeItem = new EfdcGridExchangeItem(parameterGridNumber, parameterId, Role.InOut, this.modelDll);
+            this.stateExchangeItems.put(gridExchangeItem.getId(), gridExchangeItem);
+            int parameterNumber = XSPECIES_OFFSET + iXspecies;
+            int locationCount = this.modelDll.getTimeSeriesCount(parameterNumber);
+            int layerCount    = this.modelDll.getLayerCount(parameterNumber);
+            for (int locationNumber = 1; locationNumber <= locationCount; locationNumber++) {
+                if (layerCount <= 1) {
+                    EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+                        new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, null, parameterId, IExchangeItem.Role.Input, this.modelDll);
+                    this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+                } else {//if multiple layers.
+                    for (int layerNumber = 1; layerNumber <= layerCount; layerNumber++) {
+                        EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+                            new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId, IExchangeItem.Role.Input, this.modelDll);
+                        this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+                    }
+                }
+            }
+
+        }
+
+    }
 
 	private void createDataObjects(String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath) {
 		//check if input files exist.
@@ -268,7 +303,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Get the localization domain.
 	 *
-	 * @param observationDescriptions
 	 * @return Localization domain to setup localization for the model.
 	 */
 	public ILocalizationDomains getLocalizationDomains(){

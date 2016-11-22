@@ -94,6 +94,7 @@ module model_state
 
      !water quality
      real,allocatable,dimension(:,:,:) :: WQV !(LCMWQ,KCM,0:NWQVM)
+     real,allocatable,dimension(:,:,:) :: WQVX !(LCMWQ,KCM,0:NXSP)
 
   end type state_vector
 
@@ -110,7 +111,7 @@ contains
 
 
     use global, only : DT, NTS, LCM, KCM, NTXM, NSCM, NSNM, KBM, NCHANM, &
-        LCMWQ, NSTVM, NWQVM, &
+        LCMWQ, NSTVM, NWQVM, NXSP, &
         NBBSM, NBBWM, NBBEM, NBBNM
 
     implicit none
@@ -202,6 +203,7 @@ contains
     ALLOCATE(STATE(ID)%SVB(0:LCM))
     ALLOCATE(STATE(ID)%SVBO(0:LCM))
     ALLOCATE(STATE(ID)%WQV(LCMWQ,KCM,0:NWQVM))
+    IF (NXSP>0) ALLOCATE(STATE(ID)%WQVX(LCMWQ,KCM,0:NXSP))
 
     state(id)%HP  = 0.0
     state(id)%H1P = 0.0
@@ -284,6 +286,7 @@ contains
     STATE(ID)%SVB= 0.0
     STATE(ID)%SVBO = 0.0
     STATE(ID)%WQV  = 0.0
+    if (NXSP>0) STATE(ID)%WQVX  = 0.0
 
   end subroutine model_state_allocate
 
@@ -291,7 +294,7 @@ contains
   ! deallocate arrays for model instance
   ! --------------------------------------------------------------------------
   subroutine model_state_deallocate(id)
-
+    use GLOBAL, only: NXSP
     implicit none
 
     integer, intent(in) :: id ! instance identifier
@@ -380,6 +383,7 @@ contains
     deALLOCATE(STATE(ID)%SVB)
     deALLOCATE(STATE(ID)%SVBO)
     deALLOCATE(STATE(ID)%WQV)
+    if (NXSP>0) deALLOCATE(STATE(ID)%WQVX)
 
   end subroutine model_state_deallocate
 
@@ -403,7 +407,7 @@ contains
          QSUME, QSUM, QCHANU, QCHANV, &
          AGWELV, AGWELV1, TEMB, ISCDRY, IMASKDRY, NATDRY, &
          SUB, SUBO, SVB, SVBO, &
-         WQV
+         WQV, WQVX, NXSP
 
     implicit none
 
@@ -501,6 +505,8 @@ contains
     STATE(ID)%SVB = SVB
     STATE(ID)%SVBO = SVBO
     STATE(ID)%WQV = WQV
+    if (NXSP>0) STATE(ID)%WQVX = WQVX
+	 
     ret_val = 0
 
   end function model_get_state
@@ -525,8 +531,8 @@ contains
          QSUME, QSUM, QCHANU, QCHANV, &
          AGWELV, AGWELV1, TEMB, ISCDRY, IMASKDRY, NATDRY, &
          SUB, SUBO, SVB, SVBO, &
-         WQV, &
-         ISRESTI, TIMEDAY
+         WQV, WQVX,&
+         ISRESTI, TIMEDAY, NXSP
     use model_extra_global
 
     implicit none
@@ -646,6 +652,7 @@ contains
     call model_init_3
 
     WQV = STATE(ID)%WQV
+    if (NXSP > 0) WQVX = STATE(ID)%WQVX
     ret_val = 0
 
   end function model_set_state

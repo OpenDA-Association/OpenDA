@@ -347,6 +347,14 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @return <0: error, >=0: the number of time series for the exchange item.
      */
     int m_openda_wrapper_get_time_series_count_(IntByReference modelInstanceId, IntByReference exchangeItemId);
+
+    /**
+     * Get the number of time series for a forcing or boundary exchange item.
+     *
+     * @param modelInstanceId (In:)  The model instance identifier
+     * @return <0: error, >=0: The number of x-species.
+     */
+    int m_openda_wrapper_get_xspecies_count_(IntByReference modelInstanceId);
     
 
     /**
@@ -429,13 +437,13 @@ public interface IEfdcFortranNativeDLL extends Library {
      * @return The size of the model state
      */
     int m_openda_wrapper_get_state_size_();
-    
+
     /**
      * Finalize a model static data
      *
      * @return 0: success, <0: error
      */
     int m_openda_wrapper_destroy_();
-    
+
 }
 

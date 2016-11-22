@@ -19,7 +19,7 @@
 !!                             www.vortech.nl
 
 module model_exchange_items
-
+  
   implicit none
 
   ! atmospheric forcing exchange items
@@ -59,13 +59,19 @@ module model_exchange_items
   integer, parameter :: nrExchangeItemsTOX = 16
   integer, parameter :: indexTOX           = 600  ! timeseries (601:616)
   integer, parameter :: gridindexTOX       = 1600 ! grid       (1601:1616)
-  integer :: NC_tox_start  ! index in WQV array   
+  integer :: NC_tox_start  ! index in WQV array
 
   !controls
   integer, parameter :: nrExchangeItemsControl    = 2
   integer, parameter :: indexControl              = 700  ! timeseries (701:702)
   integer, parameter :: ControlsGateWaterLevel    = 701
   integer, parameter :: ControlsGateOpeningHeight = 702
+  
+  ! x-species
+  integer, parameter :: nrMaxXspecies     =   99
+  integer, parameter :: indexXspecies     =  800
+  integer, parameter :: gridIndexXspecies = 1800
+  integer :: NC_xspecies_start   ! index in WQV array
   
   type exchangeItem
       integer :: active = 0
@@ -79,11 +85,13 @@ module model_exchange_items
   type(exchangeItem), dimension(nrExchangeItemsWQ),  private, save :: exchangeItemsWQ
   type(exchangeItem), dimension(nrExchangeItemsTOX), private, save :: exchangeItemsTOX
   type(exchangeItem), dimension(nrExchangeItemsControl), private, save :: exchangeItemsControl
+  type(exchangeItem), allocatable, private, save :: exchangeItemsXspecies(:)
 
   
   !exchangeItems for grid
   type(exchangeItem), dimension(nrExchangeItemsWQ),  private, save :: gridExchangeItemsWQ
   type(exchangeItem), dimension(nrExchangeItemsTOX), private, save :: gridExchangeItemsTOX
+  type(exchangeItem), allocatable, private, save :: gridExchangeItemsXspecies(:)
 
 contains
 
@@ -92,7 +100,7 @@ contains
   ! Create a list of exchange items and check if they are active 
   ! --------------------------------------------------------------------------
 
-    use global, only: NWSER, NTOX, NWQV, WQTSNAME, TXID0, NQCTL, NQCTYP1
+    use global, only: NWSER, NTOX, NWQV, WQTSNAME, TXID0, NQCTL, NQCTYP1, NXSP
 
     implicit none
 
@@ -104,6 +112,8 @@ contains
 
     ! local
     integer :: i
+    character(len=10) ::xSpeciesName
+    character(len=15) ::xSpeciesGridName
 !    character(len=20) :: txname
 !    character(len=11) :: txid
 !    real    :: r
@@ -184,6 +194,22 @@ contains
     exchangeItemsControl(1)  = exchangeItem( id = 701, name = "ControlsGateWaterLevel", efdc_name = "SEL1")
     exchangeItemsControl(2)  = exchangeItem( id = 702, name = "ControlsGateOpeningHeight", efdc_name = "GUPH")
     
+    allocate(exchangeItemsXspecies(NXSP))
+    allocate(gridExchangeItemsXspecies(NXSP))
+    do i = 1,NXSP
+      write(xSpeciesName,'(A,I)') "xSpecies",i
+      write(xSpeciesGridName,'(A,I)') "GRID.xSpecies",i
+      exchangeItemsXspecies(i) = exchangeItem( id = 800+i, name = xSpeciesName)
+      gridExchangeItemsXspecies(i) = exchangeItem( id = 1800+i, name = xSpeciesGridName)
+      exchangeItemsXspecies(i)%active = 1 
+      write(general_log_handle,'(A,A,A,I4,A,I1)' ) "exchangeItem: " ,exchangeItemsXspecies(i)%name , &
+                                              " id: ", exchangeItemsXspecies(i)%id, &
+                                              " active: ", exchangeItemsXspecies(i)%active
+      gridExchangeItemsXspecies(i)%active = 1
+      write(general_log_handle,'(A,A,A,I4,A,I1)' ) "exchangeItem: " ,gridExchangeItemsXspecies(i)%name , &
+                                              " id: ", gridExchangeItemsXspecies(i)%id, &
+                                              " active: ", gridExchangeItemsXspecies(i)%active
+    end do
     
     do i = 1,nrExchangeItemsWind
       if (NWSER.GE.1) exchangeItemsWind(i)%active = 1 
@@ -252,10 +278,20 @@ contains
     end do
   
   end function model_exchange_items_setup
-
+  
+  function model_exchange_items_destroy() result(ret_val)
+    implicit none
+    ! return value
+    integer :: ret_val
+    
+    ret_val = -1
+    if (allocated(exchangeItemsXspecies)) deallocate(exchangeItemsXspecies)
+    if (allocated(gridExchangeItemsXspecies)) deallocate(gridExchangeItemsXspecies)
+    ret_val = 0
+  end function model_exchange_items_destroy
 
   function model_exchange_items_supports( exchange_item_id ) result(ret_val)
-
+    use global, only: NXSP
     implicit none
 
     ! return value
@@ -281,12 +317,26 @@ contains
     case (indexControl+1:indexControl+nrExchangeItemsControl)
       id = exchange_item_id - indexControl
       ret_val = exchangeItemsControl(id)%active
+    case (indexXspecies+1:indexXspecies+nrMaxXspecies)
+      if (exchange_item_id <= indexXspecies+NXSP) then
+        id = exchange_item_id - indexXspecies
+        ret_val = exchangeItemsXspecies(id)%active
+      else
+        ret_val = -2
+      end if
     case (gridIndexWQ+1:gridIndexWQ+nrExchangeItemsWQ)
       id = exchange_item_id - gridIndexWQ
       ret_val = gridExchangeItemsWQ(id)%active
     case (gridindexTOX+1:gridindexTOX+nrExchangeItemsTOX)
       id = exchange_item_id - gridindexTOX
       ret_val = gridExchangeItemsTOX(id)%active
+    case (gridIndexXspecies+1:gridIndexXspecies+nrMaxXspecies)
+      if (exchange_item_id <= gridIndexXspecies+NXSP) then
+        id = exchange_item_id - gridIndexXspecies
+        ret_val = gridExchangeItemsXspecies(id)%active
+      else
+        ret_val = -2
+      end if
     case default
       ret_val = -2
     end select
