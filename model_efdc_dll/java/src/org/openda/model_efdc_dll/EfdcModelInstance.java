@@ -63,7 +63,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
 	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
 	private boolean firstTime = true;
-    private static String XSPECIES = "xspecies%1$d";
+    private static String XSPECIES = "Xspecies%1$d";
     private static int XSPECIES_GRID_OFFSET = 1800;
     private static int XSPECIES_OFFSET = 800;
 
@@ -127,7 +127,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			String parameterId = exchangeItemType.getParameterId();
 
 			//check if useGateWaterLevel is specified. Gate related ExchangeItem is skipped when not specified.
-			if (parameterNumber == 701 && !useGateWaterLevel) {
+			if (( parameterNumber == 701 || parameterNumber == 702 )  && !useGateWaterLevel) {
 				continue;
 			}
 

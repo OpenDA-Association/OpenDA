@@ -112,8 +112,8 @@ contains
 
     ! local
     integer :: i
-    character(len=10) ::xSpeciesName
-    character(len=15) ::xSpeciesGridName
+    character(len=32) ::xSpeciesName
+    character(len=32) ::xSpeciesGridName
 !    character(len=20) :: txname
 !    character(len=11) :: txid
 !    real    :: r

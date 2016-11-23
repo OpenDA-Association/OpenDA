@@ -87,7 +87,7 @@ C
         IF (MOD(N,IATS(LG)).eq.0) THEN
           HUPG(LG)=(AHUP(LG) + HUP0)/float(IATS(LG))
           AHUP(LG)=0.
-        ELSE IF (N.EQ.1) THEN
+        ELSE IF (N.EQ.1.and.(.not.HUPG_HDWG_INITIALIZED)) THEN
           HUPG(LG)=HUP0
           AHUP(LG)=HUP0
         ELSE
@@ -97,7 +97,8 @@ C
 !        DEPUPG(LG)=DEPUP0/FLOAT(NICMP(LG))   ! UPSTREAM TOTAL DEPTH
         DEPUPG(LG)=HUPG(LG) - SILL(LG)       ! UPSTREAM TOTAL DEPTH (ELEV. - SILL HEIGHT)
       ENDDO                        ! DO LG=1,NGTYPES
-c
+      HUPG_HDWG_INITIALIZED =.true.
+      
       DO LG=1,NQCTL             ! GATE TYPE
         DEPDW0=0.                 ! INIT. DOWNSTREAM TOTAL DEPTH
         HDW0=0.                   ! INIT. DOWNSTREAM ELEV.
@@ -135,7 +136,7 @@ c
         IF (MOD(N,IATS(LG)).eq.0) THEN
           HDWG(LG)=(AHDW(LG) + HDW0)/float(IATS(LG))
           AHDW(LG)=0.
-        ELSE IF (N.EQ.1) THEN
+        ELSE IF ((N.EQ.1).and.(.not.HUPG_HDWG_INITIALIZED)) THEN
           HDWG(LG)=HDW0
           AHDW(LG)=HDW0
         ELSE

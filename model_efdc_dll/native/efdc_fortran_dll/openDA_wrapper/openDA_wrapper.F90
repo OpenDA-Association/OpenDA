@@ -82,7 +82,7 @@ module m_openda_wrapper
   integer :: dm_model_instance_count = 0  ! actual #instance
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
-  logical, parameter :: debug = .true.
+  logical, parameter :: debug = .false.
 
 contains
 
@@ -138,7 +138,7 @@ contains
     end if
 
     ! Pause or sleep for attaching debugger
-    ! pause
+    !pause
     !print*, "Sleeping for 20 seconds, please attach debugger"
     !call sleep(20)
     
@@ -265,7 +265,8 @@ contains
 #endif
 
     use global, only: NDASER, NASERM, NDWSER, NWSERM, NDPSER, NPSERM, NDQSER, NQSERM, &
-        KCM, NDCSER, NCSERM, TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM
+        KCM, NDCSER, NCSERM, TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM, &
+        HUPG_HDWG_INITIALIZED
     
     ! arguments
     character(kind=c_char), intent(in)  :: instance_dir_c(*) ! model instance directory
@@ -333,6 +334,10 @@ contains
     state(instance)%start_time = dble(nint(TBEGIN*TCON/60))/1440.d0
     state(instance)%end_time  = dble(nint((TBEGIN*TCON + TIDALP*NTC)/60))/1440.d0
 
+    ! Reset gate control
+    HUPG_HDWG_INITIALIZED = .true.
+
+    
     ! save the initial instance
     !ret_val = save_instance(dm_model_instance_count)
     if (ret_val == 0) dm_model_instance_in_memory = instance
@@ -380,6 +385,7 @@ contains
            ! copy model instance data from data currently in memory
            ret_val = model_get_state(instance)
            if (ret_val == 0) ret_val = model_get_daily_solar_intensity(instance, .false.)
+           if (ret_val == 0) ret_val = model_get_gateser(instance)
            IF(DEBUG)CALL DEPPLT
            if (ret_val == 0) ret_val = change_directory(cwd)
        end if
@@ -724,8 +730,7 @@ contains
       'get_end_time( instance: ', instance , ', end_time: ', end_time, ')'
     call flush(dm_outfile_handle(instance))
 
-  end function m_openda_wrapper_get_end_time_
-
+    end function m_openda_wrapper_get_end_time_
   ! --------------------------------------------------------------------------
   ! Get the model instance time step in days 
   ! --------------------------------------------------------------------------
@@ -1312,9 +1317,9 @@ contains
     case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! x-species grid items
        id = exchange_item_id - gridIndexXspecies
        if (id > NXSP) then
-          ret_val = LA-1
-       else
           ret_val = -2
+       else
+          ret_val = LA-1
        end if
     case default
        ret_val = -2
@@ -1394,9 +1399,9 @@ contains
        ret_val = KC
     case ( gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies )  ! x-species grid items
        if (exchange_item_id > gridIndexXspecies + NXSP) then
-          ret_val = KC
-       else
           ret_val = -2
+       else
+          ret_val = KC
        end if
     case (Precipitation)
         ret_val = 1 
@@ -1428,9 +1433,9 @@ contains
         ret_val = 1
     case ( indexXspecies+1: indexXspecies+nrMaxXspecies )  ! x-species items
        if (exchange_item_id > indexXspecies + NXSP) then
-          ret_val = KC
-       else
           ret_val = -2
+       else
+          ret_val = KC
        end if
     case default
        ret_val = -2
@@ -1537,7 +1542,7 @@ contains
           case (Grid_WaterTemperature) ! Only one layer for now
              values = dble(reshape(state(instance)%TEM(index1:index2,1:KC), (/values_count/))) 
              ret_val = 0
-          case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality fields,  Only one layer for now
+          case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality fields
              NCi = exchange_item_id - gridIndexWQ
              if ( NCi .gt. NWQV ) then
                 values = missing_value
@@ -1546,7 +1551,7 @@ contains
                 values = dble(reshape(state(instance)%WQV(index1:index2,1:KC, NCi), (/values_count/)))
                 ret_val = 0
              end if
-          case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Water Quality fields,  Only one layer for now
+          case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Toxixs
              !NCi = exchange_item_id - gridIndexTOX
              NCi = 1
              if (NTOX .eq. 0) then
@@ -1556,7 +1561,7 @@ contains
                 values = dble(reshape(state(instance)%TOX(index1:index2,1:KC, NCi), (/values_count/)))
                 ret_val = 0
              end if
-			 case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! Water Quality fields,  Only one layer for now
+          case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! Xspecies
              NCi = exchange_item_id - gridIndexXspecies
              if ( NCi .gt. NXSP ) then
                 values = missing_value
@@ -1743,6 +1748,10 @@ contains
        NC = NC_tox_start + 1 ! only one toxic active
        if (debug) print*, "get_times_count_for_location", exchange_item_id, bc_index, NC
        ret_val = csert(instance)%MCSER(bc_index,NC)
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Xspecies
+       NC = NC_xspecies_start + exchange_item_id - indexXspecies
+       if (debug) print*, "get_times_count_for_location", exchange_item_id, bc_index, NC
+       ret_val = csert(instance)%MCSER(bc_index,NC)
     case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
        ret_val = gateser(instance)%MQCTL(bc_index)   
     case default
@@ -1833,6 +1842,8 @@ contains
         ret_val = KC
     case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
         ret_val = 1 
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Toxics
+        ret_val = KC
     case default
        ret_val = -1
     end select
@@ -1905,12 +1916,12 @@ contains
           if (debug) print*, "number of locations: ", NC, NCSER(NC)
           ret_val = NCSER(NC)
        end if
-    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Toxics 
+    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control 
        id = exchange_item_id - indexControl
        if (debug) print*, "number of locations: ", NQCTLM
        ret_val = gateser(instance)%NQCTLM   
-    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Water Quality
-       id = exchange_item_id - indexWQ
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! X species
+       id = exchange_item_id - indexXspecies
        if (id .gt. NXSP) then
           ret_val = -1
        else
@@ -2513,7 +2524,7 @@ contains
                       / 86400.0d0
           bc_time_interval =  (bc_end_time - bc_start_time) / dble(gateser(instance)%MQCTL(bc_index)-1)
        end if
-	    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Water Quality 
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Water Quality 
        id = exchange_item_id - indexXspecies;
        NC = NC_xspecies_start + id
        success  =  bc_index >= 1 .and. bc_index <= NCSER(NC) .and. id <= NXSP
@@ -2562,6 +2573,8 @@ contains
     case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ)
        success =  (start_index >= 2) .and. (start_index <= end_index) .and. (end_index <= LA )
     case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX)
+       success =  (start_index >= 2) .and. (start_index <= end_index) .and. (end_index <= LA )
+    case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies)
        success =  (start_index >= 2) .and. (start_index <= end_index) .and. (end_index <= LA )
     case default 
        success = .false.
