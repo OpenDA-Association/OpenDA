@@ -55,6 +55,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private String relativeModelOutputFilePath = null;
 	private String relativeAnalysisOutputFilePath = null;
 	private boolean useGateWaterLevel = false;
+	private boolean useGateOpeningHeight = false;
 	/**
 	 * The timeZone that is used by the model.
 	 * This is required to convert the times of the data values
@@ -101,6 +102,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.relativeAnalysisOutputFilePath = modelConfigReader.getRelativeAnalysisOutputFilePath();
 		this.modelTimeZone = modelConfigReader.getModelTimeZone();
 		this.useGateWaterLevel = modelConfigReader.getUseGateWaterLevel();
+		this.useGateOpeningHeight = modelConfigReader.getUseGateOpeningHeight();
 
 		//remove work directories from previous runs.
 		Results.putMessage(this.getClass().getSimpleName() + ": removing work directories from previous run.");
@@ -181,7 +183,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		BBUtils.makeDirectoryClone(this.templateDirectory, instanceDirectory);
 
 		//create new instance.
-		return new EfdcModelInstance(instanceDirectory, relativeInputFilePaths, relativeModelOutputFilePath, relativeAnalysisOutputFilePath, modelInstanceNumber, useGateWaterLevel, this);
+		return new EfdcModelInstance(instanceDirectory, relativeInputFilePaths, relativeModelOutputFilePath, relativeAnalysisOutputFilePath, modelInstanceNumber, useGateWaterLevel, useGateOpeningHeight, this);
 	}
 
 	public void finish() {

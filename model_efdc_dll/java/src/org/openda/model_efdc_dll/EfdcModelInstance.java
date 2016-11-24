@@ -49,6 +49,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 
 	private final int modelInstanceNumber;
 	private final boolean useGateWaterLevel;
+	private final boolean useGateOpeningHeight;
 	private final EfdcModelFactory parentFactory;
 
 	private final File instanceDir;
@@ -63,9 +64,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
 	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
 	private boolean firstTime = true;
-    private static String XSPECIES = "Xspecies%1$d";
-    private static int XSPECIES_GRID_OFFSET = 1800;
-    private static int XSPECIES_OFFSET = 800;
+	private static String XSPECIES = "Xspecies%1$d";
+	private static int XSPECIES_GRID_OFFSET = 1800;
+	private static int XSPECIES_OFFSET = 800;
 
 
 	/**
@@ -79,9 +80,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @param modelOutputFilePath relative to the given instanceDir
 	 * @param analysisOutputFilePath relative to the given instanceDir
 	 */
-	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, boolean useGateWaterLevel, EfdcModelFactory parentFactory) {
+	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, boolean useGateWaterLevel, boolean useGateOpeningHeight,  EfdcModelFactory parentFactory) {
 		this.modelInstanceNumber = modelInstanceNumber;
 		this.useGateWaterLevel = useGateWaterLevel;
+		this.useGateOpeningHeight = useGateOpeningHeight;
 		this.parentFactory = parentFactory;
 
 		//initialize model.
@@ -127,7 +129,12 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			String parameterId = exchangeItemType.getParameterId();
 
 			//check if useGateWaterLevel is specified. Gate related ExchangeItem is skipped when not specified.
-			if (( parameterNumber == 701 || parameterNumber == 702 )  && !useGateWaterLevel) {
+			if (( parameterNumber == 701 )  && !useGateWaterLevel) {
+				continue;
+			}
+
+			//check if useGateOpeningHeight is specified. Gate related ExchangeItem is skipped when not specified.
+			if (( parameterNumber == 702 )  && !useGateOpeningHeight) {
 				continue;
 			}
 
@@ -167,38 +174,38 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 					throw new RuntimeException("Unknown EfdcExchangeItemRole type " + role + " for " + parameterNumber);
 			}
 		}
-        //create exchange items for xspecies at all locations and layers
-        //check if exchangeItem is supported by current EFDC configuration
-        int nXspecies = this.modelDll.getXspeciesCount();
+		//create exchange items for xspecies at all locations and layers
+		//check if exchangeItem is supported by current EFDC configuration
+		int nXspecies = this.modelDll.getXspeciesCount();
 
-        for (int iXspecies = 1; iXspecies <= nXspecies; ++iXspecies) {
-            int parameterGridNumber = XSPECIES_GRID_OFFSET + iXspecies;
-            if ( !this.modelDll.supportsExchangeItem(parameterGridNumber) ) {
-                continue;
-            }
-            String parameterId = String.format(XSPECIES,iXspecies);
-            EfdcGridExchangeItem gridExchangeItem = new EfdcGridExchangeItem(parameterGridNumber, parameterId, Role.InOut, this.modelDll);
-            this.stateExchangeItems.put(gridExchangeItem.getId(), gridExchangeItem);
-            int parameterNumber = XSPECIES_OFFSET + iXspecies;
-            int locationCount = this.modelDll.getTimeSeriesCount(parameterNumber);
-            int layerCount    = this.modelDll.getLayerCount(parameterNumber);
-            for (int locationNumber = 1; locationNumber <= locationCount; locationNumber++) {
-                if (layerCount <= 1) {
-                    EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
-                        new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, null, parameterId, IExchangeItem.Role.Input, this.modelDll);
-                    this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
-                } else {//if multiple layers.
-                    for (int layerNumber = 1; layerNumber <= layerCount; layerNumber++) {
-                        EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
-                            new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId, IExchangeItem.Role.Input, this.modelDll);
-                        this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
-                    }
-                }
-            }
+		for (int iXspecies = 1; iXspecies <= nXspecies; ++iXspecies) {
+			int parameterGridNumber = XSPECIES_GRID_OFFSET + iXspecies;
+			if ( !this.modelDll.supportsExchangeItem(parameterGridNumber) ) {
+				continue;
+			}
+			String parameterId = String.format(XSPECIES,iXspecies);
+			EfdcGridExchangeItem gridExchangeItem = new EfdcGridExchangeItem(parameterGridNumber, parameterId, Role.InOut, this.modelDll);
+			this.stateExchangeItems.put(gridExchangeItem.getId(), gridExchangeItem);
+			int parameterNumber = XSPECIES_OFFSET + iXspecies;
+			int locationCount = this.modelDll.getTimeSeriesCount(parameterNumber);
+			int layerCount    = this.modelDll.getLayerCount(parameterNumber);
+			for (int locationNumber = 1; locationNumber <= locationCount; locationNumber++) {
+				if (layerCount <= 1) {
+					EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+						new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, null, parameterId, IExchangeItem.Role.Input, this.modelDll);
+					this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+				} else {//if multiple layers.
+					for (int layerNumber = 1; layerNumber <= layerCount; layerNumber++) {
+						EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+							new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId, IExchangeItem.Role.Input, this.modelDll);
+						this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+					}
+				}
+			}
 
-        }
+		}
 
-    }
+	}
 
 	private void createDataObjects(String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath) {
 		//check if input files exist.
