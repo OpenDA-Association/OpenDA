@@ -781,7 +781,11 @@ JNIEXPORT jintArray JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaGetObservati
 
    /* Copy values to java integer array */
    jintArray jValues = env->NewIntArray(nSel);
-   env->SetIntArrayRegion(jValues, 0, nSel, iVals);
+   jint *jIVals= new jint[nSel];
+   for (int i=0;i<nSel;i++){jIVals[i]=iVals[i];}
+
+   env->SetIntArrayRegion(jValues, 0, nSel, jIVals);
+   delete [] jIVals;
    delete [] iVals;
    return jValues;
 }

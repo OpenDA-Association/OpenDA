@@ -65,6 +65,10 @@ CTA_ObsDescr last_hdescr_tab=CTA_NULL;
 CTA_Model *createdModels   =NULL;
 int        numCreatedModels=0;
 
+void modbuild_par_getobslocalizationdomain(CTAI_Modbuild_par *data,
+                   CTA_ObsDescr *hdescr, double *distance, int *idomain, CTA_Vector *locVecs, int *ierr);
+
+
 void modbuild_models_add(CTA_Model hmodel){
    int iModel;
    CTA_Model *newList;
@@ -1230,7 +1234,6 @@ void modbuild_par_announceobsvalues(CTAI_Modbuild_par *data, CTA_ObsDescr *hdesc
    int retval;
    int tag;
    int irank, jrank;
-   MPI_Status status;
    CTA_ObsDescr *subObsDescr;
    CTA_RelTable *reltab;
    int nobs, nobs_sub;
