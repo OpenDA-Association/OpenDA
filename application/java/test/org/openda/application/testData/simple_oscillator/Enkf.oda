@@ -27,7 +27,7 @@
 			<workingDirectory>.</workingDirectory>
 			<configFile>results_enkf.m</configFile>
 		</resultWriter>
-		<resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+		<resultWriter className="org.openda.resultwriters.NetcdfResultWriterNative">
 			<workingDirectory>.</workingDirectory>
 			<configFile>results_enkf_.nc</configFile>
 		</resultWriter>

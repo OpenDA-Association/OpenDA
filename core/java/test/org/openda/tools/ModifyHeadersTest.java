@@ -56,13 +56,6 @@ public class ModifyHeadersTest extends TestCase {
 		filesEqual = testData.FilesAreIdentical(source1_mod, source1_ref);
 		assertTrue("modified IoObjectInterface.jav equals reference", filesEqual);
 
-		source1 = new File(testRunDataDir,"NetcdfResultWriter.jav");
-		source1_mod = new File(testRunDataDir,"NetcdfResultWriter.jav_new");
-		source1_ref = new File(testRunDataDir,"NetcdfResultWriter.jav_ref");
-		mod.modifyOneHeader(source1,source1_mod);
-		filesEqual = testData.FilesAreIdentical(source1_mod, source1_ref);
-		assertTrue("modified NetcdfResultWriter.jav equals reference", filesEqual);
-
 		source1 = new File(testRunDataDir,"NoosTimeSeriesFormatter.jav");
 		source1_mod = new File(testRunDataDir,"NoosTimeSeriesFormatter.jav_new");
 		source1_ref = new File(testRunDataDir,"NoosTimeSeriesFormatter.jav_ref");

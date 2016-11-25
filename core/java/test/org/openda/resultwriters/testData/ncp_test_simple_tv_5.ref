@@ -1,0 +1,13 @@
+netcdf /Users/nils/Develop/openda/public/core/java/../../../public/opendaTestRuns/core/org/openda/resultwriters/ncp_test_simple_tv_5.nc {
+  dimensions:
+    n = 6;
+    time = UNLIMITED;   // (1 currently)
+  variables:
+    double simple_tv_5(time=1, n=6);
+
+ data:
+simple_tv_5 =
+  {
+    {1.0, 2.0, 3.0, 4.0, 5.0, 6.0}
+  }
+}

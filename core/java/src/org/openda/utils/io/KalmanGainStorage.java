@@ -26,7 +26,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IResultWriter;
 import org.openda.interfaces.ITreeVector;
 import org.openda.interfaces.IVector;
-import org.openda.resultwriters.NetcdfResultWriter;
+import org.openda.resultwriters.NetcdfResultWriterNative;
 import org.openda.utils.Matrix;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
@@ -320,7 +320,7 @@ public class KalmanGainStorage {
 	}
 
 	private void writeKalmanGainColumnToNetCdfFile(String netcdfFileName, IVector kalmanGainColumn) {
-		NetcdfResultWriter.writeToNetCdf(netcdfFileName, kalmanGainColumn);
+		NetcdfResultWriterNative.writeToNetCdf(netcdfFileName, kalmanGainColumn);
 	}
 
     private IVector readKalmanGainColumnFromNetCdfFile(String netcdfFileName, int columnSize, IVector templateTreeVector) {
@@ -508,7 +508,7 @@ public class KalmanGainStorage {
 				}
 			} else if (storageType == storeNetcdf) {
 				String ncfilename = new StringBuilder().append("kg").append(observationIds[aStationList]).append(".nc").toString();
-				IResultWriter netcdfWriter = new NetcdfResultWriter(timeStepDir, ncfilename);
+				IResultWriter netcdfWriter = new NetcdfResultWriterNative(timeStepDir, ncfilename);
 				Results.reset();
 				Results.addResultWriter(netcdfWriter);
 				IVector vecKG = new CtaVector(stateSize);
