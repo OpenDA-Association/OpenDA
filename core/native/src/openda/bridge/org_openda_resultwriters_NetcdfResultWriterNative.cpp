@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "cta_resultwriter.h"
 
 
-CTA_String copyJavaStringToNormalString(JNIEnv *env, jstring javaString){
+CTA_String copyJavaStringToCostaString(JNIEnv *env, jstring javaString){
 
    int ierr;
    CTA_String hString=CTA_NULL;
@@ -42,11 +42,11 @@ CTA_String copyJavaStringToNormalString(JNIEnv *env, jstring javaString){
    
    ierr=CTA_String_Create(&hString);
    if (ierr!=CTA_OK){
-      cta_jni_exception(env, "copyJavaStringToNormalString", "Cannot create COSTA string.", ierr);
+      cta_jni_exception(env, "copyJavaStringToCostaString", "Cannot create COSTA string.", ierr);
    }
    ierr=CTA_String_Set(hString, sString);
    if (ierr!=CTA_OK){
-      cta_jni_exception(env, "copyJavaStringToNormalString", "Cannot set value of COSTA string.", ierr);
+      cta_jni_exception(env, "copyJavaStringToCostaString", "Cannot set value of COSTA string.", ierr);
    }
    
    free(sString);
@@ -66,8 +66,8 @@ JNIEXPORT jint JNICALL Java_org_openda_resultwriters_NetcdfResultWriterNative_ct
    cta_jni_setJavaEnv(env);
 
    int ierr;
-   CTA_String hFilename    = copyJavaStringToNormalString(env, netcdfname);
-   CTA_String hAction      = copyJavaStringToNormalString(env, action);
+   CTA_String hFilename    = copyJavaStringToCostaString(env, netcdfname);
+   CTA_String hAction      = copyJavaStringToCostaString(env, action);
    CTA_File hFile;
 
    ierr=CTA_File_Create(&hFile);
