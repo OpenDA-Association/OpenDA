@@ -65,7 +65,7 @@ READ
 static char *CTAI_XML_GetContent(xmlNode *cur_node) {
    char       *outtxt;
    const xmlChar *intxt;
-   size_t         pos;
+   int         pos;
 
    intxt = cur_node->content;
    /* Find position of the last non-special character */
