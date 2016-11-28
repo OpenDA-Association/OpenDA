@@ -24,7 +24,8 @@ C
       DO L=2,LA  
         WQI0BOT(L)=WQI0  
       ENDDO  
-  
+      WQKESS=0.0
+      WQKESS1=0.0
       ! Stokes
       CYANOMASS=0.0      
       ! Deal with benthic flux for anoxic env

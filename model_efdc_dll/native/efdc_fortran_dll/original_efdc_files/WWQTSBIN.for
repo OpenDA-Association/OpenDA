@@ -132,6 +132,7 @@ C CHLM = MACROALGAE BIOMASS IN UG/L:
             IF(XMRM .GT. CHLMMAX(LL,K)) CHLMMAX(LL,K) = XMRM
             IF(XMRM .LT. CHLMMIN(LL,K)) CHLMMIN(LL,K) = XMRM
           ENDIF
+          PO4DWQ_ = 0.0
           IF(IWQSRP.EQ.1)THEN
             O2WQ_ = MAX(WQVO(LL,K,19), 0.0)
             TAMDWQ = MIN( WQTAMDMX*EXP(-WQKDOTAM*O2WQ_), WQVO(LL,K,20) )
