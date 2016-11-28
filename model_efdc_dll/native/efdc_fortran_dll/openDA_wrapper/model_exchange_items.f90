@@ -85,13 +85,13 @@ module model_exchange_items
   type(exchangeItem), dimension(nrExchangeItemsWQ),  private, save :: exchangeItemsWQ
   type(exchangeItem), dimension(nrExchangeItemsTOX), private, save :: exchangeItemsTOX
   type(exchangeItem), dimension(nrExchangeItemsControl), private, save :: exchangeItemsControl
-  type(exchangeItem), allocatable, private, save :: exchangeItemsXspecies(:)
+  type(exchangeItem), allocatable, private :: exchangeItemsXspecies(:)
 
   
   !exchangeItems for grid
   type(exchangeItem), dimension(nrExchangeItemsWQ),  private, save :: gridExchangeItemsWQ
   type(exchangeItem), dimension(nrExchangeItemsTOX), private, save :: gridExchangeItemsTOX
-  type(exchangeItem), allocatable, private, save :: gridExchangeItemsXspecies(:)
+  type(exchangeItem), allocatable, private :: gridExchangeItemsXspecies(:)
 
 contains
 
@@ -197,8 +197,8 @@ contains
     allocate(exchangeItemsXspecies(NXSP))
     allocate(gridExchangeItemsXspecies(NXSP))
     do i = 1,NXSP
-      write(xSpeciesName,'(A,I)') "xSpecies",i
-      write(xSpeciesGridName,'(A,I)') "GRID.xSpecies",i
+      write(xSpeciesName,'(A,I0)') "xSpecies",i
+      write(xSpeciesGridName,'(A,I0)') "GRID.xSpecies",i
       exchangeItemsXspecies(i) = exchangeItem( id = 800+i, name = xSpeciesName)
       gridExchangeItemsXspecies(i) = exchangeItem( id = 1800+i, name = xSpeciesGridName)
       exchangeItemsXspecies(i)%active = 1 

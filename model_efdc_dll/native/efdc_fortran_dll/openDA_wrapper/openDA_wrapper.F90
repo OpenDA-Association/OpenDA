@@ -83,7 +83,8 @@ module m_openda_wrapper
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
   logical, parameter :: debug = .false.
-
+  logical :: ATM_WARNING_GIVEN = .false.
+  
 contains
 
 
@@ -299,8 +300,8 @@ contains
     dm_outfile_handle(instance) = 100 + instance
 
     write(cnumber,'(I0.3)') instance
-    output_file_name = trim(dm_model_parent_dir) // '/instance' // cnumber //'.log'
-    write(dm_general_log_handle,'(A,A,A,I2)') "opening logfile ", output_file_name , " for instance ", instance 
+    output_file_name = trim(dm_model_parent_dir) // '\instance' // cnumber //'.log'
+    write(dm_general_log_handle,'(A,A,A,I2)') "opening logfile ", trim(output_file_name) , " for instance ", instance 
     inquire(file = output_file_name, opened=i_open, number=i_number)
     if (i_open) close(i_number)
     open(dm_outfile_handle(instance), file=output_file_name, status = 'replace') 
@@ -723,7 +724,7 @@ contains
     real(kind=c_double), intent(out)   :: end_time  ! end time of computation in days
 
     ! body
-    end_time = dble(state(instance)%end_time)
+    end_time = real(state(instance)%end_time,c_double)
     ret_val = 0
 
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
@@ -751,7 +752,7 @@ contains
     real(kind=c_double), intent(out)   :: delta_t  ! #delta t for computation, in MJD (i.e. in days)
 
     ! body
-    delta_t =  dble(dt) / 86400.0d0 ! converted to days
+    delta_t =  real(dt,c_double) / 86400.0d0 ! converted to days
     ret_val = 0
 
     write(dm_general_log_handle, '(A,ES12.4E2,A)') 'get_delta_t( delta_t: ', delta_t, ')'
@@ -781,7 +782,7 @@ contains
 
     ! body
     ret_val = -1
-    reference_period =  dble(tidalp) / 86400.0d0 ! converted to days
+    reference_period =  real(tidalp,c_double) / 86400.0d0 ! converted to days
     ret_val = 0
     
     write(dm_general_log_handle, '(A,ES12.4E2,A)') 'get_reference_period( reference_period: ', reference_period, ')'
@@ -812,7 +813,7 @@ contains
 
     ! body
     !current_time = dble(state(instance)%timesec) / 86400.0d0
-    current_time = dble( dt * nint( state(instance)%timesec/ dt)) / 86400.0d0
+    current_time = real( dt * nint( state(instance)%timesec/ dt), c_double) / 86400.0d0
     ret_val = 0
 
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
@@ -935,12 +936,14 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_supports_exchange_item_
 #endif
 
+    implicit none
+
     ! return value
     integer(kind=c_int) :: ret_val     ! =0 : No; =1 : Yes ; <0 : Error
 
     !arguments
-    integer(kind=c_int), intent(in) :: instance            ! model instance
-    integer(kind=c_int), intent(in) :: exchange_item_id    ! exchange item identifier
+    integer(kind=c_int), intent(inout) :: instance            ! model instance
+    integer(kind=c_int), intent(inout) :: exchange_item_id    ! exchange item identifier
 
     !local
     character(len=max_message_length) :: message
@@ -982,7 +985,6 @@ contains
       ret_val = -2
     end select
 
-    
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4,A,I4)') 'Error in supports_exchange_item: ', ret_val, ' for ', exchange_item_id
        write(message,'(A,I2,A,I4,A,I4)') 'Error in supports_exchange_item: ', ret_val, ' for ', exchange_item_id
@@ -1132,14 +1134,15 @@ contains
           factor =  86400.d0/dble(TCASER(bc_index))
           IF(ITNWQ.EQ.0.AND.IWQSUN.GT.1.AND.NASER.GT.0)THEN
               period = times(values_count) - times(1) * factor
-              if ( period < 2.0e0 ) then
-                write(message, '(A, F8.4, A, I4, A )') & 
+              if ( period < 2.0e0.and. .not. ATM_WARNING_GIVEN ) then
+                  ATM_WARNING_GIVEN = .true.
+                  write(message, '(A, F8.4, A, I4, A )') & 
                 "Atmospheric time series (length = ", &
                 period, &
                 " days ) for ExchangeItemID=",&
                 exchange_item_id,&
                 " should contain at least two days for starting the water quality calculations"
-                call write_message(message,M_ERROR)
+                call write_message(message,M_WARNING)
 !                ret_val = -2
 !                return
               end if
@@ -1534,13 +1537,13 @@ contains
        if ( check_grid_indices(instance, exchange_item_id, index1, index2) ) then
           select case(exchange_item_id)
           case (Grid_WaterLevel) !
-             values = dble(state(instance)%HP(index1:index2)  +  state(instance)%BELV(index1:index2))
+             values = real(state(instance)%HP(index1:index2)  +  state(instance)%BELV(index1:index2), c_double)
              ret_val = 0
           case (Grid_Discharge) ! Only one layer for now
-             values = dble(reshape(state(instance)%QSUM(index1:index2,1:KC), (/values_count/))) 
+             values = real(reshape(state(instance)%QSUM(index1:index2,1:KC), (/values_count/)), c_double) 
              ret_val = 0
           case (Grid_WaterTemperature) ! Only one layer for now
-             values = dble(reshape(state(instance)%TEM(index1:index2,1:KC), (/values_count/))) 
+             values = real(reshape(state(instance)%TEM(index1:index2,1:KC), (/values_count/)), c_double) 
              ret_val = 0
           case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality fields
              NCi = exchange_item_id - gridIndexWQ
@@ -1548,7 +1551,7 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(reshape(state(instance)%WQV(index1:index2,1:KC, NCi), (/values_count/)))
+                values = real(reshape(state(instance)%WQV(index1:index2,1:KC, NCi), (/values_count/)),c_double)
                 ret_val = 0
              end if
           case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Toxixs
@@ -1558,7 +1561,7 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(reshape(state(instance)%TOX(index1:index2,1:KC, NCi), (/values_count/)))
+                values = real(reshape(state(instance)%TOX(index1:index2,1:KC, NCi), (/values_count/)),c_double)
                 ret_val = 0
              end if
           case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! Xspecies
@@ -1567,7 +1570,7 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(reshape(state(instance)%WQVX(index1:index2,1:KC, NCi), (/values_count/)))
+                values = real(reshape(state(instance)%WQVX(index1:index2,1:KC, NCi), (/values_count/)),c_double)
                 ret_val = 0
              end if
           case default
@@ -2094,43 +2097,43 @@ contains
           ! atmospheric
           case (Precipitation)
              factor = 1.0d0/dble(RAINCVT)
-             values = dble(aser(instance)%RAIN(start_index:end_index, bc_index)) 
+             values = real(aser(instance)%RAIN(start_index:end_index, bc_index),c_double) 
              ret_val = 0 
           case (AirTemperature)
-             values = dble(aser(instance)%TDRY(start_index:end_index, bc_index))
+             values = real(aser(instance)%TDRY(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (CloudCover)
-             values = dble(aser(instance)%CLOUD(start_index:end_index, bc_index))
+             values = real(aser(instance)%CLOUD(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (GlobalRadiation)
-             values = dble(aser(instance)%SOLSWR(start_index:end_index, bc_index))
+             values = real(aser(instance)%SOLSWR(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (AtmosphericPressure)
-             values = dble(aser(instance)%PATM(start_index:end_index, bc_index))
+             values = real(aser(instance)%PATM(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (RelativeHumidity)
-             values = dble(aser(instance)%TWET(start_index:end_index, bc_index))
+             values = real(aser(instance)%TWET(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (PotentialEvaporation)
              factor = 1.0d0/dble(RAINCVT)
-             values = dble(aser(instance)%EVAP(start_index:end_index, bc_index))
+             values = real(aser(instance)%EVAP(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (WindSpeed)
-             values = dble(wsert(instance)%WINDS(start_index:end_index, bc_index))
+             values = real(wsert(instance)%WINDS(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (WindDirection)
-             values = dble(wsert(instance)%WINDD(start_index:end_index, bc_index))
+             values = real(wsert(instance)%WINDD(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (WaterLevel)
              gravity = 9.81d0
-             values = dble(psert(instance)%PSER(start_index:end_index, bc_index))/gravity
+             values = real(psert(instance)%PSER(start_index:end_index, bc_index),c_double)/gravity
              ret_val = 0 
           case (Discharge) ! Only one layer for now
-             values = dble(qsert(instance)%QSER(start_index:end_index,layer_index,bc_index))
+             values = real(qsert(instance)%QSER(start_index:end_index,layer_index,bc_index), c_double)
              ret_val = 0 
           case (WaterTemperature) ! Only one layer for now
              NC = 2
-             values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC)) 
+             values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC),c_double) 
              ret_val = 0
           case (indexWQ+1 : indexWQ+nrExchangeItemsWQ) ! Water Quality,  Only one layer for now
              id = exchange_item_id - indexWQ;
@@ -2139,7 +2142,7 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC))
+                values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC), c_double)
                 ret_val = 0
              end if
           case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) ! Toxics,  Only one layer for now
@@ -2150,7 +2153,7 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC))
+                values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC),c_double)
                 ret_val = 0
              end if
 			 case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! x-species,  Only one layer for now
@@ -2160,16 +2163,16 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC))
+                values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC),c_double)
                 ret_val = 0
              end if
           case (ControlsGateWaterLevel) ! Control
              id = exchange_item_id - indexControl
-             values = dble(gateser(instance)%SEL1(start_index:end_index,bc_index))
+             values = real(gateser(instance)%SEL1(start_index:end_index,bc_index),c_double)
              ret_val = 0
           case (ControlsGateOpeningHeight) ! Control
              id = exchange_item_id - indexControl
-             values = dble(gateser(instance)%GUPH(start_index:end_index,bc_index))
+             values = real(gateser(instance)%GUPH(start_index:end_index,bc_index),c_double)
              ret_val = 0   
           case default
              ret_val = -2 ! unhandled item
@@ -2609,7 +2612,8 @@ contains
           model_instance_dirs(1:dm_max_dm_model_instance_count) = org_model_instance_dirs
           deallocate(org_model_instance_dirs)
        endif
-       model_instance_dirs(dm_max_dm_model_instance_count+1) = ' '
+       model_instance_dirs(dm_max_dm_model_instance_count+1:  &
+         dm_max_dm_model_instance_count+ instances_realloc_size) = ' '
 
        org_dm_outfile_handle => dm_outfile_handle
        allocate(dm_outfile_handle(dm_max_dm_model_instance_count + instances_realloc_size))
@@ -2617,7 +2621,8 @@ contains
           dm_outfile_handle(1:dm_max_dm_model_instance_count) = org_dm_outfile_handle
           deallocate(org_dm_outfile_handle)
        endif
-       dm_outfile_handle(dm_max_dm_model_instance_count+1) = 0
+       dm_outfile_handle(dm_max_dm_model_instance_count+1: &
+          dm_max_dm_model_instance_count+ instances_realloc_size) = 0
 
        !realloc pointers to state vectors
        org_model_instance_state => state
