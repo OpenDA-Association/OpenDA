@@ -99,13 +99,13 @@ JNIEXPORT jint JNICALL Java_org_openda_resultwriters_NetcdfResultWriterNative_ct
    cta_jni_setJavaEnv(env);
 
    int ierr;
-   ierr=CTA_File_Free(&hFile);
+   int iHFile = hFile;
+   ierr=CTA_File_Free(&iHFile);
    if (ierr!=CTA_OK){
       cta_jni_exception(env, "Java_org_openda_resultwriters_NetcdfResultWriterNative_ctaNetcdfInit",
                              "Cannot close Netcdf file.", ierr);
    }
-
-
+   return ierr;
 }
 
 

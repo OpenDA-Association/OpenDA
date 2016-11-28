@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaInitialize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_resultwriters_NetcdfResultWriterNative.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\openda\bridge\jni_cta_CtaObsdescr_NativeToJava.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\openda\bridge\jni_datatypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_resultwriters_NetcdfResultWriterNative.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,6 +24,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdio.h>
 #include "cta.h"
 
+
+void CTA_ObsDescr_user_initialize(CTA_ObsDescrClass *hobsdescrcl);
+
 void CTA_SObs_user_initialize(CTA_SObsClass *hsobscl)
 {
    CTA_Func h_func[CTA_SOBS_NUMFUNC];

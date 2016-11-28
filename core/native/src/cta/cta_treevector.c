@@ -1834,7 +1834,7 @@ int CTA_TreeVector_GetSize(CTA_TreeVector treevec, int *n){
 // a NETCDF file
 
 char *CTAI_AddNameToPath(const char *path,const char *name, const char *sep){
-     int len1, len2, len3;
+     size_t len1, len2, len3;
      char *retStr;
 
      len1=strlen(path);

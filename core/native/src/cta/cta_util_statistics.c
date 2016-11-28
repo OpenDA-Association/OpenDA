@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include <math.h>
+#include <stdio.h>
 #include "f_cta_utils.h"
 #include "cta_datatypes.h"
 #include "cta_errors.h"
@@ -73,11 +74,11 @@ float ran2(long *idum)
 	iy=iv[j]-idum2;
 	iv[j] = *idum;
 	if (iy < 1) iy += IMM1;
-	if ((temp=AM*iy) > RNMX){
-           return RNMX;
+	if ((temp= (float) AM*iy) > RNMX){
+           return (float) RNMX;
         }
 	else {
-           return temp;
+           return (float) temp;
         }
 }
 

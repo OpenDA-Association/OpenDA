@@ -180,6 +180,7 @@
     <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaTime.cpp" />
     <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaTreeVector.cpp" />
     <ClCompile Include="..\..\src\openda\bridge\org_openda_costa_CtaVector.cpp" />
+    <ClCompile Include="..\..\src\openda\bridge\org_openda_resultwriters_NetcdfResultWriterNative.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\openda\bridge\jni_cta_CtaObsdescr_NativeToJava.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaUtils.h" />
     <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_costa_CtaVector.h" />
     <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_resultwriters_NativeResultWriter.h" />
+    <ClInclude Include="..\..\src\openda\bridge\openda_include\org_openda_resultwriters_NetcdfResultWriterNative.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
