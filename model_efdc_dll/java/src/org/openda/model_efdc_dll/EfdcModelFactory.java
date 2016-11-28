@@ -44,7 +44,9 @@ import org.openda.utils.Results;
  */
 public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private static final String EFDC_INP_FILE_NAME = "EFDC.INP";
+	private static final String EFDC_INP_TEMPLATE_FILE_NAME = "EFDC_TEMPLATE.INP";
 	private static final String EVENT_TOX2_INP_FILE_NAME = "EVENT_TOX2.INP";
+	private static final String EVENT_TOX2_INP_TEMPLATE_FILE_NAME = "EVENT_TOX2_TEMPLATE.INP";
 	private static final String TSTART = "TSTART";
 	private static final String TSTOP = "TSTOP";
 
@@ -122,6 +124,8 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			double startTime, double endTime, double timeZoneOffsetInHours) {
 
 		//use EfdcInpIoObject to write timeHorizon in EFDC.INP file.
+		BBUtils.makeFileClone(new File(templateDir, EFDC_INP_TEMPLATE_FILE_NAME),
+				new File(templateDir, EFDC_INP_FILE_NAME));
 		EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
 		efdcInpIoObject.initialize(templateDir, EFDC_INP_FILE_NAME,
 				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
@@ -135,6 +139,8 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		efdcInpIoObject.finish();
 
 		//use EfdcEventTox2InpIoObject to write timeHorizon in EVENT_TOX2.INP file.
+		BBUtils.makeFileClone(new File(templateDir, EVENT_TOX2_INP_TEMPLATE_FILE_NAME),
+				new File(templateDir, EVENT_TOX2_INP_FILE_NAME));
 		EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
 		efdcEventTox2InpIoObject.initialize(templateDir, EVENT_TOX2_INP_FILE_NAME,
 				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
