@@ -29,6 +29,23 @@ C
         ENDDO  
       ENDDO  
       CLOSE(1)  
+!
+! { GEOSR X-species RESTART FILE EVERY REFERENCE TIME : JGCHO 2016.1.26
+      if (NXSP.ge.1) then
+        OPEN(1,FILE='WQWCRSTX.OUT',STATUS='UNKNOWN')  
+        CLOSE(1,STATUS='DELETE')  
+        OPEN(1,FILE='WQWCRSTX.OUT',STATUS='UNKNOWN')  
+        WRITE(1,101) N,TIME  
+        WRITE(1,103) 
+        DO L=2,LA  
+          DO K=1,KC  
+            WRITE(1,90) L,K,(WQVX(L,K,nsp),nsp=1,NXSP)  
+          ENDDO  
+        ENDDO  
+        CLOSE(1)  
+      endif !if (NXSP.ge.1) then
+! } GEOSR X-species RESTART FILE EVERY REFERENCE TIME : JGCHO 2016.1.26
+!
 ! { GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.5.23
                ELSE  ! IF (ISRST.EQ.0) THEN
       IF(ISDYNSTP.EQ.0)THEN  
@@ -50,6 +67,22 @@ C
         ENDDO  
       ENDDO  
       CLOSE(1)  
+!
+! { GEOSR X-species RESTART FILE EVERY REFERENCE TIME : JGCHO 2016.1.26
+      if (NXSP.ge.1) then
+        WRITE(RESTFN,'(A,I3.3,A)') 'WQWCRSTX',NINT(TIME),'.OUT'
+        OPEN(1,FILE=TRIM(RESTFN),STATUS='UNKNOWN')  
+        WRITE(1,101) N,TIME  
+        WRITE(1,103) 
+        DO L=2,LA  
+          DO K=1,KC  
+            WRITE(1,90) L,K,(WQVX(L,K,nsp),nsp=1,NXSP)  
+          ENDDO  
+        ENDDO  
+        CLOSE(1)  
+      endif !if (NXSP.ge.1) then
+! } GEOSR X-species RESTART FILE EVERY REFERENCE TIME : JGCHO 2016.1.26
+!
                ENDIF ! IF (ISRST.EQ.0) THEN
 ! } GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.5.23
 C  
@@ -63,6 +96,7 @@ C
      &    'RPON        LPON        DON         AMN         ',  
      &    'NIT         SU          SA          COD         ',  
      &    'DO          TAM         FCB        MALG')  
+  103 FORMAT('C   L    K  Xn (NXSP)')
       RETURN  
       END  
 
