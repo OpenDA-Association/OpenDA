@@ -44,8 +44,10 @@ import org.openda.utils.io.GridExchangeItemNetcdfWriter;
  * @author Arno Kockx
  */
 public class EfdcModelInstance extends Instance implements IModelInstance {
-	private static final String[] INPUT_STATE_FILE_NAMES = {"RESTART.INP", "TEMP.RST", "RSTWD.INP", "WQWCRST.INP"};
+	private static final String[] INPUT_STATE_FILE_NAMES = {"RESTART.INP", "TEMP.RST", "RSTWD.INP", "WQWCRST.INP" };
 	private static final String[] OUTPUT_STATE_FILE_NAMES = {"RESTART.OUT", "TEMP.RSTO", "RSTWD.OUT", "WQWCRST.OUT"};
+	private static final String[] OPTIONAL_INPUT_STATE_FILE_NAMES = {"WQWCRSTX.INP"};
+	private static final String[] OPTIONAL_OUTPUT_STATE_FILE_NAMES = {"WQWCRSTX.OUT"};
 
 	private final int modelInstanceNumber;
 	private final boolean useGateWaterLevel;
@@ -75,10 +77,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private FileBasedModelState stateStoredOnDisk = null;
 
 	/**
-	 * @param instanceDir
-	 * @param inputFilePaths relative to the given instanceDir
-	 * @param modelOutputFilePath relative to the given instanceDir
-	 * @param analysisOutputFilePath relative to the given instanceDir
+	 * @param instanceDir path to instance directory
+	 * @param inputFilePaths input files path relative to instanceDir
+	 * @param modelOutputFilePath path for output file with model results relative to instanceDir
+	 * @param analysisOutputFilePath path for output file with analysis relative to instanceDir
 	 */
 	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, boolean useGateWaterLevel, boolean useGateOpeningHeight,  EfdcModelFactory parentFactory) {
 		this.modelInstanceNumber = modelInstanceNumber;
@@ -209,8 +211,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 
 	private void createDataObjects(String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath) {
 		//check if input files exist.
-		for (int n = 0; n < inputFilePaths.length; n++) {
-			File inputFile = new File(instanceDir, inputFilePaths[n]);
+		for (String inputFilePath : inputFilePaths ) {
+			File inputFile = new File(instanceDir, inputFilePath);
 			if (!inputFile.exists()) {
 				throw new RuntimeException("Cannot find configured input file " + inputFile.getAbsolutePath());
 			}
@@ -253,9 +255,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		return new GridExchangeItemNetcdfWriter(items.toArray(new IExchangeItem[items.size()]), outputFile);
 	}
 
-	/*************************************
+	/*
 	 * Time information / Computing
-	 *************************************/
+	 */
 
 	/**
 	 * Get the computational time horizon of the model (begin and end time).
@@ -319,7 +321,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Get the localization vector.
 	 *
-	 * @param observationDescriptions
+	 * @param observationDescriptions observation descriptions
 	 * @param distance characteristic distance for Cohn's formula.
 	 * @return weight vector for each observation location.
 	 */
@@ -330,7 +332,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Get the localization vector within the domain
 	 *
-	 * @param observationDescriptions
+	 * @param observationDescriptions observation descriptions
 	 * @param distance characteristic distance for Cohn's formula.
 	 * @param iDomain domain number
 	 * @return weight vector for each observation location.
@@ -339,9 +341,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
 	}
 
-	/*************************************
+	/*
 	 * Save/restore full internal state
-	 *************************************/
+	 */
 
 	/**
 	 * Load an internal model state from file.
@@ -415,11 +417,28 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		for (int n = 0; n < OUTPUT_STATE_FILE_NAMES.length; n++) {
 			File sourceFile = new File(this.instanceDir, OUTPUT_STATE_FILE_NAMES[n]);
 			File targetFile = new File(this.outputStateFilesDirectory, INPUT_STATE_FILE_NAMES[n]);
-			try {
-				BBUtils.copyFile(sourceFile, targetFile);
-			} catch (IOException e) {
-				throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
+			if (sourceFile.exists()) {
+				try {
+					BBUtils.copyFile(sourceFile, targetFile);
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
 						+ " to " + targetFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
+				}
+			} else {
+				throw new RuntimeException("Missing output state file " + sourceFile.getAbsolutePath());
+			}
+		}
+
+		for (int n = 0; n < OPTIONAL_OUTPUT_STATE_FILE_NAMES.length; n++) {
+			File sourceFile = new File(this.instanceDir, OPTIONAL_OUTPUT_STATE_FILE_NAMES[n]);
+			File targetFile = new File(this.outputStateFilesDirectory, OPTIONAL_INPUT_STATE_FILE_NAMES[n]);
+			if ( sourceFile.exists() ) {
+				try {
+					BBUtils.copyFile(sourceFile, targetFile);
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
+						+ " to " + targetFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
+				}
 			}
 		}
 
@@ -519,7 +538,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Returns the exchange item with the given exchangeItemId, if it exists.
 	 *
-	 * @param exchangeItemId
+	 * @param exchangeItemId Identifier of exchange item
 	 * @return IExchangeItem.
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
@@ -537,8 +556,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Returns the exchange item with the given exchangeItemId, if it exists.
 	 *
-	 * @param exchangeItemId
-	 * @return IPrevExchangeItem.
+	 * @param exchangeItemId Identifier of exchange item
+	 * @return IPrevExchangeItem
 	 */
 	//TODO this method is only present for backwards compatibility. This method should be removed
 	//once all ioObjects and exchange items have been migrated to the new IDataObject/IExchangeItem approach. AK
