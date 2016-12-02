@@ -1,0 +1,25 @@
+--- model_efdc_dll/native/efdc_fortran_dll/original_efdc_files/RWQC1.for    (revision 682)
++++ model_efdc_dll/native/efdc_fortran_dll/original_efdc_files/RWQC1.for    (working copy)
+@@ -2205,16 +2205,16 @@
+               write(1,'(a,a)') 'VERTICAL VELOCITY, ALGAL-DENSITY,'
+      &             ,' SOLAR RADIATION, chl-a PRINT AT EACH LAYER'
+               write(1,'(a,i4,a,i4)') 'I=',iww(i),'   J=',jww(i)
+-              write(1,7111) '          tm'
+-     & ,((('vel_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
+-     & ,((('den_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
+-     & ,((('sol_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
+-     & ,(('chl_',k),k=KC,1,-1)
++c              write(1,7111) '          tm'
++c     & ,((('vel_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
++c     & ,((('den_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
++c     & ,((('sol_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
++c     & ,(('chl_',k),k=KC,1,-1)
+               CLOSE(1)
+           enddo
+         ENDIF
+       ENDIF
+- 7111 format(a, 3(<kc>(<NXSP>(3x,a,i2.2,a,i2.2))),<kc>(6x,a,i2.2) )
++c 7111 format(a, 3(<kc>(<NXSP>(3x,a,i2.2,a,i2.2))),<kc>(6x,a,i2.2) )
+       DO I=1,IWQZ  
+         IWQKA(I)=IWQKA(1)  
+         WQKRO(I)=WQKRO(1)  
