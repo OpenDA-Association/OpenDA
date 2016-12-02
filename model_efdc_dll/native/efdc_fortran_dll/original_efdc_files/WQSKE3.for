@@ -2402,7 +2402,7 @@ C
           enddo
         ENDIF 
       endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
- 1114 FORMAT(F12.6,<NXSP*KC*4>(E12.4))  
+ 1114 FORMAT(F12.6,(E12.4))  
  1111 FORMAT(I12,F10.4)  
  1112 FORMAT(2I5,12F7.2)  
  1113 FORMAT(2I5,12E12.4)  

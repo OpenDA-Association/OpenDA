@@ -137,11 +137,6 @@ contains
         print*, "ERROR: maximum path length exceeded for ", template_directory
         return
     end if
-
-    ! Pause or sleep for attaching debugger
-    !pause
-    !print*, "Sleeping for 20 seconds, please attach debugger"
-    !call sleep(20)
     
     dm_model_parent_dir    = trim(parent_directory)
     dm_template_model_dir  = trim(template_directory)
@@ -163,7 +158,15 @@ contains
     
     message = "Starting EFDC run"
     call write_message(message, M_INFO)
-    
+
+    ! Pause or sleep for attaching debugger
+    !pause
+    !message = "Starting paused"
+    !call write_message(message, M_DEBUG) 
+    !message = "Sleeping for 20 seconds, please attach debugger"
+    !call sleep(20)
+    !call write_message(message, M_DEBUG)
+
     write(dm_general_log_handle,*) "parent directory: ", trim(dm_model_parent_dir)
     write(dm_general_log_handle,*) "model template directory: ", trim(dm_template_model_dir) 
     call getcwd(cwd)
@@ -300,7 +303,7 @@ contains
     dm_outfile_handle(instance) = 100 + instance
 
     write(cnumber,'(I0.3)') instance
-    output_file_name = trim(dm_model_parent_dir) // '\instance' // cnumber //'.log'
+    output_file_name = trim(dm_model_parent_dir) // '/instance' // cnumber //'.log'
     write(dm_general_log_handle,'(A,A,A,I2)') "opening logfile ", trim(output_file_name) , " for instance ", instance 
     inquire(file = output_file_name, opened=i_open, number=i_number)
     if (i_open) close(i_number)
@@ -656,7 +659,7 @@ contains
         call exit(-1)    
     end if
     
-    depths = real(DZC,dp)
+    depths = real(DZC(1:KC),c_double)
     ret_val = 0
     
     write(dm_outfile_handle(instance), '(A,I4,A,I4, A)') & 

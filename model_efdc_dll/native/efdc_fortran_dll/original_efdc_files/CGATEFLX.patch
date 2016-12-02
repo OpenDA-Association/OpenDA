@@ -1,8 +1,6 @@
-Index: CGATEFLX.for
-===================================================================
---- CGATEFLX.for	(revision 3544)
-+++ CGATEFLX.for	(working copy)
-@@ -38,17 +38,17 @@
+--- model_efdc_dll/native/efdc_fortran_dll/original_efdc_files/CGATEFLX.for (revision 682)
++++ model_efdc_dll/native/efdc_fortran_dll/original_efdc_files/CGATEFLX.for (working copy)
+@@ -46,25 +46,25 @@
          OPEN(711,FILE=TRIM(FSINK),STATUS='UNKNOWN')  ! OPEN OLD FILE
          CLOSE(711,STATUS='DELETE')             ! DELETE OLD FILE
          OPEN(711,FILE=FSINK,STATUS='UNKNOWN')  ! OPEN NEW FILE
@@ -10,10 +8,10 @@ Index: CGATEFLX.for
 - 7101   FORMAT('       N      TIME  '
 -     &        ,<NQCTL>('ID     HUP     HDW     DIF    Q',<8*(KC-1)+5>X
 -     &                ,20X))
++c        WRITE(711,7101) 
 +c 7101   FORMAT('       N      TIME  '
 +c     &        ,<NQCTL>('ID     HUP     HDW     DIF    Q',<8*(KC-1)+5>X
 +c     &                ,20X))
-+C       WRITE(711,7101)
          CLOSE(711)
  
          OPEN(712,FILE='SINKT.OUT',STATUS='UNKNOWN')  ! OPEN OLD FILE
@@ -23,10 +21,21 @@ Index: CGATEFLX.for
 - 7102   FORMAT(A,<NQCTL>I8)
 +c        WRITE(712,7102) '       N      TIME',(NS,NS=1,NQCTL)
 +c 7102   FORMAT(A,<NQCTL>I8)
+  
+         ! GEOSR GATE: SINK2
+         OPEN(713,FILE='SINK2.OUT',STATUS='UNKNOWN')  ! OPEN OLD FILE
+         CLOSE(713,STATUS='DELETE')             ! DELETE OLD FILE
+         OPEN(713,FILE='SINK2.OUT',STATUS='UNKNOWN')  ! OPEN NEW FILE
+-        write(713,7103) '       N      TIME',
+-     &                  ((NS,'_K',k,k=1,KC),NS,'_O',00,NS=1,NQCTL)
+- 7103   FORMAT(A,<1000>(3x,i2.2,a,i2.2))
++c        write(713,7103) '       N      TIME',
++c     &                  ((NS,'_K',k,k=1,KC),NS,'_O',00,NS=1,NQCTL)
++c 7103   FORMAT(A,<1000>(3x,i2.2,a,i2.2))
  
  
- 
-@@ -1011,10 +1011,10 @@
+         ISINK=2            ! READY TO WRITE SINK##.OUT 
+@@ -1432,10 +1432,10 @@
  C
            FSINK='SINK.OUT'
            OPEN(711,FILE=TRIM(FSINK),POSITION='APPEND')  
@@ -41,7 +50,7 @@ Index: CGATEFLX.for
            CLOSE(711)
  C
            OPEN(712,FILE='SINKT.OUT',POSITION='APPEND')  ! OPEN NEW FILE
-@@ -1023,8 +1023,8 @@
+@@ -1444,15 +1444,15 @@
                GQT(NS)=GQT(NS)+QCTLT(K,NS)
              ENDDO
            ENDDO
@@ -50,6 +59,16 @@ Index: CGATEFLX.for
 +c          WRITE(712,7120) N,TIMEDAY,(GQT(NS),NS=1,NQCTL)
 +c 7120 FORMAT(I8,F10.4,<NQCTL>F8.2)
  
+ ! GEOSR GATE: write sink2.out
+           OPEN(713,FILE='SINK2.OUT',POSITION='APPEND')  
+-          WRITE(713,7130) N,TIMEDAY,((QCTLT(K,NS),K=1,KC-1)
+-     &                   ,QCTLT(KC,NS)-DUMPG2(NS),DUMPG2(NS)
+-     &                   ,NS=1,NQCTL)
+- 7130 FORMAT(I8,F10.5,<NQCTL>(<KC+1>F9.2))
++c          WRITE(713,7130) N,TIMEDAY,((QCTLT(K,NS),K=1,KC-1)
++c     &                   ,QCTLT(KC,NS)-DUMPG2(NS),DUMPG2(NS)
++c     &                   ,NS=1,NQCTL)
++c 7130 FORMAT(I8,F10.5,<NQCTL>(<KC+1>F9.2))
+           CLOSE(713)
+ 
          ENDIF  ! IF (MOD(FLOAT(N),SNKW).EQ.0.) THEN
-       ENDIF    ! IF (ISINK.EQ.2) THEN
-

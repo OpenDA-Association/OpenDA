@@ -16,6 +16,7 @@ C     implicit variables from RESTIN1.for
       REAL :: HDRY2, DHPDT
       REAL :: SUBW, SUBE, SVBS, SVBN
 
+      ISBELVC =0
 C     INSERTED FROM RESTIN1.for [lines: 213-402] 
       DO K=1,KC  
         SAL(1,K)=0.  
