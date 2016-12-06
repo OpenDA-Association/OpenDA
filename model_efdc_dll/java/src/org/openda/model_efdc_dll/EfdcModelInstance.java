@@ -50,8 +50,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private static final String[] OPTIONAL_OUTPUT_STATE_FILE_NAMES = {"WQWCRSTX.OUT"};
 
 	private final int modelInstanceNumber;
-	private final boolean useGateWaterLevel;
-	private final boolean useGateOpeningHeight;
 	private final EfdcModelFactory parentFactory;
 
 	private final File instanceDir;
@@ -82,10 +80,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @param modelOutputFilePath path for output file with model results relative to instanceDir
 	 * @param analysisOutputFilePath path for output file with analysis relative to instanceDir
 	 */
-	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, boolean useGateWaterLevel, boolean useGateOpeningHeight,  EfdcModelFactory parentFactory) {
+	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber,  EfdcModelFactory parentFactory) {
 		this.modelInstanceNumber = modelInstanceNumber;
-		this.useGateWaterLevel = useGateWaterLevel;
-		this.useGateOpeningHeight = useGateOpeningHeight;
 		this.parentFactory = parentFactory;
 
 		//initialize model.
@@ -129,16 +125,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		for (EfdcExchangeItemType exchangeItemType : EfdcExchangeItemType.values()) {
 			int parameterNumber = exchangeItemType.getParameterNumber();
 			String parameterId = exchangeItemType.getParameterId();
-
-			//check if useGateWaterLevel is specified. Gate related ExchangeItem is skipped when not specified.
-			if (( parameterNumber == 701 )  && !useGateWaterLevel) {
-				continue;
-			}
-
-			//check if useGateOpeningHeight is specified. Gate related ExchangeItem is skipped when not specified.
-			if (( parameterNumber == 702 )  && !useGateOpeningHeight) {
-				continue;
-			}
 
 			//check if exchangeItem is supported by current EFDC configuration
 			if ( ! this.modelDll.supportsExchangeItem(parameterNumber) ) {
@@ -455,7 +441,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		 * @param stateFilesDirectory the directory that contains the model state files
 		 */
 		public EfdcModelState(File stateFilesDirectory) {
-			super(stateFilesDirectory, INPUT_STATE_FILE_NAMES);
+			super(stateFilesDirectory );
 			this.stateFilesDirectory = stateFilesDirectory;
 		}
 
@@ -606,10 +592,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 						break;
 					}
 				}
-				if (inputExchangeItem == null) {//if item not found.
-					//throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
-					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
-					continue;
+				if ((inputExchangeItem == null) && !EfdcExchangeItemType.findByKey(parameterId).isOptional()) {//if item not found.
+					throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
 				}
 			}
 

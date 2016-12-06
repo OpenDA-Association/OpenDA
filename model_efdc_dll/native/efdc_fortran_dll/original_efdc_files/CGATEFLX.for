@@ -7,6 +7,22 @@ C ** SUBROUTINE CGATEFLX
 C    GATE CONTROL FLUX
 C  
       USE GLOBAL  
+      implicit none
+      integer:: I,K, LG, NCMP, NCTL, NS
+      integer :: id, iu, jd, ju, ld, ldu, lu
+      integer :: m1, m2
+      integer :: IAGT, NGATET 
+      REAL:: SEL1T, SEL2T
+      REAL :: TIDCHK1, DELCH, DEPDW0, DEPUP0,DUMPTMP
+      REAL:: H11, H22, HDW0, HUP0
+      REAL :: GHILEV, GLOLEV,GQ1, GQPHI,GKFIX,GQPLO
+      REAL :: GQSUMT, GUPHT, GAAA, GBBB
+      REAL :: RMAXQ
+      REAL :: TDIFF, TCDIFF
+      REAL :: TMPSILL, TIDETMP
+      REAL :: WTM1, WTM2, WCTM1, WCTM2
+      
+      
       INTEGER IGCHECK(NQCTLM)
       REAL GKMULT(KCM) ! GEOSR JGCHO 2011.10.27       ALLOCATE(GKMUL(NDQCLT,KCM,NQCTLM)) ! GEOSR JGCHO 2011.10.27
       REAL GQT(NQCTLM),LUA(NQCTLM),LDA(NQCTLM)
@@ -19,10 +35,12 @@ C
 
       IGCHECK=0              ! GATE FORMULA ID
       GQT=0.
+      LUA=0
+      LDU=0
       DUMPG(:)=0.0d0
       DUMPG2(:)=0.0d0 ! GEOSR jgcho 2016.07.14
       CQ(:)=0.0d0					! GEOSR UNG 2014.11.12 Warning message writing
-			CV(:)=0.0d0					! GEOSR UNG 2014.11.12 Warning message writing
+      CV(:)=0.0d0					! GEOSR UNG 2014.11.12 Warning message writing
       
       DO K=1,KC
         DO NCTL=1,NQCTL
@@ -274,7 +292,7 @@ C
                   GRAMPUP(LG)=1.
                 ENDIF
 C
-                IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+                GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 C
 C                SILLHHO(LG)=SILLHH(LG)*GRAMPUP(LG)                    ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
 C
@@ -492,6 +510,7 @@ C
                   QCTLT(K,NCTL)=QCTLT(K,NCTL) + DUMPG2(LG)*GKFIX
                 ENDDO  
 
+
 C
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! MASK START (EBB)
                 CALL EBBMASK
@@ -542,7 +561,7 @@ C
                     GRAMPUP(LG)=1.
                   ENDIF
 C
-                  IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+                  GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 
 C++++++++++++++ BEGIN NORMAL FORMULA
                   IF (DEPUPG(LG).LE.GUPHT) THEN                    ! OVERFLOW OR WEIR
@@ -656,8 +675,7 @@ C###########################################################
                   GRAMPUP(LG)=1.
                 ENDIF
 
-                IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
-
+                GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 c                SILLHHO(LG)=GUPHT*GRAMPUP(LG)                    ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
 
 C++++++++++++++ BEGIN NORMAL FORMULA
@@ -751,8 +769,7 @@ C
                   ELSE
                     GRAMPUP(LG)=1.
                   ENDIF
-
-                  IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+                  GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 
 c                SILLHHO(LG)=GUPHT*GRAMPUP(LG)                    ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
 
@@ -871,7 +888,7 @@ C
                   GRAMPUP(LG)=1.
                 ENDIF
 C
-                IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+                GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 C
 C                SILLHHO(LG)=GUPHT*GRAMPUP(LG)                    ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
 C
@@ -979,8 +996,8 @@ C
             ELSE
               GRAMPUP(LG)=1.
             ENDIF
-C
-            IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+C 
+            GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)                   ! ADJUST GATE RAMPUP VALUE
 
 C++++++++++++++ BEGIN NORMAL FORMULA
             IF (HDWG(LG) .LT. SILL(LG) ) THEN   ! (1) IF (DEPDWG(LG) .LT. SILL(LG))
@@ -1097,7 +1114,7 @@ C
               GRAMPUP(LG)=1.
             ENDIF
 C
-            IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+            GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 
 C++++++++++++++ BEGIN NORMAL FORMULA
             IGCHECK(LG)=8
@@ -1161,7 +1178,7 @@ C
               GRAMPUP(LG)=1.
             ENDIF
 C
-            IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+            GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 
 C++++++++++++++ BEGIN NORMAL FORMULA
             IGCHECK(LG)=9
@@ -1214,7 +1231,7 @@ C
               GRAMPUP(LG)=1.
             ENDIF
 C
-            IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.                ! ADJUST GATE RAMPUP VALUE
+            GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 ! { GEOSR 2015.01.09 UNG !fixed interpolation
 C++++++++++++++ BEGIN NORMAL FORMULA
             EP=0;EPG=0
@@ -1319,10 +1336,10 @@ C++++++++++++++++ END NORMAL FORMULA
             ! QCTLT(1:KC-1,NCTL) = 0.
             ! QCTLT(KC,NCTL) = DUMPG(LG)
             DO K=1,KC  
-              if (K.eq.KC) then
-                GKFIX=1.
-              else
-                GKFIX=0.
+               if (K.eq.KC) then
+                 GKFIX=1.
+               else
+                 GKFIX=0.
               endif
               QCTLT(K,NCTL)=DUMPG(LG)*GKFIX ! GKMULT(K) !*DZC(K)       ! SAVE GATE FLUX
             ENDDO
@@ -1352,7 +1369,7 @@ C++++++++++++++++ END NORMAL FORMULA
           ELSE
             GRAMPUP(LG)=1.
           ENDIF
-          IF (GRAMPUP(LG).GE.1.0) GRAMPUP(LG)=1.        ! ADJUST GATE RAMPUP VALUE
+          GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 
           DUMPG(LG)=DUMPGVAL(LG) - (DUMPGVAL(LG)*GRAMPUP(LG))  ! GATE FLUX AFTER CLOSE
           DUMPGPREV(LG)=DUMPG(LG)                              ! SAVE NOW GATE FLUX FOR NEXT TIME
@@ -1410,7 +1427,7 @@ C
 !            WRITE(*,*)LU,NCTL
 !            PAUSE
 !      IF (NCTL.EQ.4) WRITE(*,*) N,(QSUM(LU,K),K=1,KC)
-          ENDDO                           ! DO NCTL=1,NQCTL
+      ENDDO                           ! DO NCTL=1,NQCTL
 
 			DO NCTL=1,NQCTL																					! GEOSR UNG 2014.11.12 Warning message writing
 !				WRITE(*,*)CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))

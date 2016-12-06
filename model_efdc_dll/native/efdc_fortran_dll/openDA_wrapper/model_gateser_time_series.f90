@@ -45,6 +45,7 @@ module model_gateser_time_series
      real, allocatable, dimension(:,:)    :: SEL1, SEL2, GUPH, GQSUM ! (NDQCLT,NQCTLT)
      real, allocatable, dimension(:,:,:)    :: GKMUL !(NDQCLT,KCM,NQCTLT)
      real, allocatable, dimension(:) :: HUPG, HDWG !(NGTYPEM)
+     integer, allocatable, dimension(:) :: NGCOUNT,NGCHECK, NGCCHECK ! NGTYPEM
      
   end type gateser_time_series
 
@@ -84,7 +85,9 @@ contains
     allocate(gateser(id)%GKMUL(n,KCM,m))
     allocate(gateser(id)%HUPG(NGTYPEM))
     allocate(gateser(id)%HDWG(NGTYPEM))
-
+    allocate(gateser(id)%NGCHECK(NGTYPEM))
+    allocate(gateser(id)%NGCCHECK(NGTYPEM))
+    allocate(gateser(id)%NGCOUNT(NGTYPEM))
     
     if (debug) print*, "model_gateser_allocate", allocated(gateser(id)%MQCTL)
 
@@ -100,6 +103,10 @@ contains
     gateser(id)%GKMUL = 0.0
     gateser(id)%HUPG = 0.0
     gateser(id)%HDWG = 0.0
+    gateser(id)%NGCOUNT = 0
+    gateser(id)%NGCHECK = 0
+    gateser(id)%NGCCHECK = 0
+
     
   end subroutine model_gateser_allocate
 
@@ -129,6 +136,10 @@ contains
     deallocate(gateser(id)%GKMUL)
     deallocate(gateser(id)%HUPG)
     deallocate(gateser(id)%HDWG)
+    deallocate(gateser(id)%NGCHECK)
+    deallocate(gateser(id)%NGCCHECK)
+    deallocate(gateser(id)%NGCOUNT)
+    
     
     gateser(id)%NDQCLT=0
     gateser(id)%NQCTLM=0
@@ -142,7 +153,7 @@ contains
   function model_get_gateser(id) result (ret_val)
     
     use global, only: GCSER, IAG, NGATE, SEL1, SEL2, GUPH, GQSUM, GKMUL, MQCTL, KCM, &
-                      HUPG, HDWG
+                      HUPG, HDWG, NGCCHECK, NGCOUNT, NGCHECK
     
     
     implicit none
@@ -175,6 +186,10 @@ contains
     gateser(id)%GKMUL(1:n,1:KCM,1:m) = GKMUL(1:n,1:KCM,1:m)
     gateser(id)%HUPG(:) = HUPG(:)
     gateser(id)%HDWG(:) = HDWG(:)
+    gateser(id)%NGCHECK(:) = NGCHECK(:)
+    gateser(id)%NGCCHECK(:) = NGCCHECK(:)
+    gateser(id)%NGCOUNT(:) = NGCOUNT(:)  
+    
     
     ret_val = 0
 
@@ -187,7 +202,7 @@ contains
     
     use global, only: GCSER, IAG, NGATE, SEL1, SEL2, GUPH, GQSUM, GKMUL, &
          NDQCLT, NQCTLM, MQCTL, KCM, &
-         HUPG, HDWG
+         HUPG, HDWG, NGCCHECK, NGCOUNT, NGCHECK
     
     implicit none
 
@@ -217,9 +232,14 @@ contains
     GUPH(1:n,1:m)  = gateser(id)%GUPH(1:n,1:m)
     GQSUM(1:n,1:m) = gateser(id)%GQSUM(1:n,1:m)
     GKMUL(1:n,1:KCM,1:m) = gateser(id)%GKMUL(1:n,1:KCM,1:m)
-    ! restore time averaged elevation leves
+    ! restore time averaged elevation levels
     HUPG(:) = gateser(id)%HUPG(:)
     HDWG(:) = gateser(id)%HDWG(:)
+    ! restore gate control checks
+    NGCHECK(:) = gateser(id)%NGCHECK(:)
+    NGCCHECK(:) = gateser(id)%NGCCHECK(:)
+    NGCOUNT(:) = gateser(id)%NGCOUNT(:)
+    
     ret_val = 0
     
   end function model_set_gateser

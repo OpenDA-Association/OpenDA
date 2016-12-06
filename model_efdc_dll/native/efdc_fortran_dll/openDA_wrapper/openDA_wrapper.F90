@@ -160,9 +160,9 @@ contains
     call write_message(message, M_INFO)
 
     ! Pause or sleep for attaching debugger
-    !pause
     !message = "Starting paused"
     !call write_message(message, M_DEBUG) 
+    !pause
     !message = "Sleeping for 20 seconds, please attach debugger"
     !call sleep(20)
     !call write_message(message, M_DEBUG)
@@ -1091,7 +1091,13 @@ contains
     else
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'get_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
-       write(dm_outfile_handle(instance),*) times(1:values_count)
+       write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
+       if ( values_count .ge. 13 ) then
+           write(dm_outfile_handle(instance),*) '...'
+           write(dm_outfile_handle(instance),*) times(values_count - 2:values_count)
+       elseif (  values_count .ge. 10) then
+           write(dm_outfile_handle(instance),*) times(10:values_count)
+       end if
     endif
     call flush(dm_outfile_handle(instance))   
 
@@ -1273,7 +1279,13 @@ contains
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'set_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),'(A,F8.4)') 'conversion_factor: ', factor
-       write(dm_outfile_handle(instance),*) times(1:values_count)
+       write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
+       if ( values_count .ge. 13 ) then
+           write(dm_outfile_handle(instance),*) '...'
+           write(dm_outfile_handle(instance),*) times(values_count - 2:values_count)
+       elseif (  values_count .ge. 10) then
+           write(dm_outfile_handle(instance),*) times(10:values_count)
+       end if
     endif
     call flush(dm_outfile_handle(instance)) 
 

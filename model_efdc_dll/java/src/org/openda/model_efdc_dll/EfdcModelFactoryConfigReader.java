@@ -39,8 +39,6 @@ public class EfdcModelFactoryConfigReader {
 	private final String relativeModelOutputFilePath;
 	private final String relativeAnalysisOutputFilePath;
 	private final TimeZone modelTimeZone;
-	private final boolean useGateWaterLevel;
-	private final boolean getUseGateOpeningHeight;
 
 	public EfdcModelFactoryConfigReader(File configFile) {
 		EfdcModelFactoryConfigXML efdcModelFactoryConfigXML =
@@ -61,8 +59,6 @@ public class EfdcModelFactoryConfigReader {
 		this.inputFilePaths = efdcModelFactoryConfigXML.getInputFile();
 		this.relativeModelOutputFilePath = efdcModelFactoryConfigXML.getModelOutputFile();
 		this.relativeAnalysisOutputFilePath = efdcModelFactoryConfigXML.getAnalysisOutputFile();
-		this.useGateWaterLevel = efdcModelFactoryConfigXML.getUseGateWaterLevel();
-		this.getUseGateOpeningHeight = efdcModelFactoryConfigXML.getUseGateOpeningHeight();
 		this.modelTimeZone = TimeUtils.createTimeZoneFromDouble(efdcModelFactoryConfigXML.getTimeZoneOffset());
 	}
 
@@ -93,9 +89,5 @@ public class EfdcModelFactoryConfigReader {
 	public TimeZone getModelTimeZone() {
 		return this.modelTimeZone;
 	}
-
-	public boolean getUseGateWaterLevel(){ return this.useGateWaterLevel; }
-
-	public boolean getUseGateOpeningHeight(){ return this.getUseGateOpeningHeight; }
 
 }

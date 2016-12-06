@@ -192,7 +192,7 @@ contains
     gridExchangeItemsTOX(16) = exchangeItem( id = 1616, name = "GRID.UserDefined",     efdc_name = "4444")
 
     exchangeItemsControl(1)  = exchangeItem( id = 701, name = "ControlsGateWaterLevel", efdc_name = "SEL1")
-    exchangeItemsControl(2)  = exchangeItem( id = 702, name = "ControlsGateOpeningHeight", efdc_name = "GUPH")
+    exchangeItemsControl(2)  = exchangeItem( id = 702, name = "ControlsGateOpenHeight", efdc_name = "GUPH")
     
     allocate(exchangeItemsXspecies(NXSP))
     allocate(gridExchangeItemsXspecies(NXSP))

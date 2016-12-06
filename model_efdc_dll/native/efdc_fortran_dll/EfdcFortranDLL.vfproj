@@ -4,17 +4,17 @@
 		<Platform Name="Win32"/></Platforms>
 	<Configurations>
 		<Configuration Name="Debug|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointStackCheck="true" Traceback="true" NullPointerCheck="true" BoundsCheck="true" UninitializedVariablesCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" FloatingPointStackCheck="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
 				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) D:\krame_wr\Projects\K02f\Models2\OpenDaInFews\bin_dll\win32_ifort"/>
+				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Release|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
 				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -34,8 +34,8 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Release OpenMP|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
