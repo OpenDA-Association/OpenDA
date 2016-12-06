@@ -313,8 +313,10 @@ public class FileBasedModelState implements IModelState{
 				File file = new File(dirContainingModelstateFiles, fileName);
 				filesInModelState.add(file);
 				if (!file.getParentFile().exists()) {
-					throw new RuntimeException(this.getClass().getName() +
-							": Directory to load state to does not exist: " + file.getParentFile().getAbsolutePath());
+					if (!file.getParentFile().mkdirs()) {
+						throw new RuntimeException(this.getClass().getName() +
+								": Directory to load state to could not be created: " + file.getParentFile().getAbsolutePath());
+					}
 				}
 				OutputStream fileStream = new FileOutputStream(file);
 				try {
