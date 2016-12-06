@@ -53,7 +53,7 @@ public class BBModelRestartTest extends TestCase {
 		IModelState modelState = instance.saveInternalState();
 		File modelRunDir = instance.getModelRunDir();
 		File savedStateDir = new File(modelRunDir, "savedState");
-		assert savedStateDir.mkdir();
+		savedStateDir.mkdir();
 		File savedStateZip = new File(savedStateDir, "savedState.zip");
 		modelState.savePersistentState(savedStateZip);
 		assertTrue(savedStateZip.exists());
@@ -98,7 +98,7 @@ public class BBModelRestartTest extends TestCase {
 		IModelState modelState = instance.saveInternalState();
 		File modelRunDir = instance.getModelRunDir();
 		File savedStateDir = new File(modelRunDir, "savedState");
-		assert savedStateDir.mkdir();
+		savedStateDir.mkdir();
 		File savedStateZip = new File(savedStateDir, "savedState.zip");
 		modelState.savePersistentState(savedStateZip);
 		assertTrue(savedStateZip.exists());
