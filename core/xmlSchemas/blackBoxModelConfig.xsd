@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
 <xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="blackBoxWrapperConfig.xsd"/>
 	<xs:include schemaLocation="blackBoxSharedTypes.xsd"/>
@@ -67,6 +66,14 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:simpleType name="InstanceNumberFormatXML">
+		<xs:annotation>
+			<xs:documentation>Specify the format for the numbering of the instance directories. Default is 0: number according the number of digits needed per instance (work0, work112, etc). 00: work02, work07, etcetera, 000: work003, work017, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0]+"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:complexType name="TimeInfoXML">
 		<xs:attribute name="start" type="xs:dateTime" use="optional">
 			<xs:annotation>
@@ -209,6 +216,7 @@
 					<xs:documentation>Specify the actual values referred to by the alias keys defined in the black box wrapper configuration</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="instanceNumberFormat" type="openda:InstanceNumberFormatXML" minOccurs="0" default="0"/>
 			<xs:choice minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Select one of the options</xs:documentation>
