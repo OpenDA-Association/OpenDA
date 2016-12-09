@@ -24,7 +24,6 @@ import ucar.nc2.*;
 
 import java.io.IOException;
 import java.io.File;
-import ucar.*;
 
 /**
  * Created by nils van Velzen on 25/09/15.
@@ -35,7 +34,7 @@ import ucar.*;
 
 public class NetCDFFile {
 	private File fileName;
-	private NetcdfFileWriteable netcdfFile;
+	private NetcdfFileWriter netcdfFileWriter;
 	private boolean fileIsNotCreated=true;
     private Dimension nDim;
 	private Dimension timeDim;
@@ -53,25 +52,26 @@ public class NetCDFFile {
         //Check wether we have to define de header and create the file on first write
 
         int n=vals.length;
-		NetcdfFileWriteable netcdfFile;
+		NetcdfFileWriter netcdfFileWriter;
 
 
-
+		Variable myVar;
     	if (this.fileIsNotCreated){
 			// Create a new file
-			netcdfFile = NetcdfFileWriteable.createNew(fileName.getAbsolutePath());
+			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, fileName.getAbsolutePath());
 
 			// Setup Header
-			this.nDim  = netcdfFile.addDimension("n", n);
-			this.timeDim = netcdfFile.addUnlimitedDimension("time");
-			Variable val = netcdfFile.addVariable(null, shortName, DataType.DOUBLE, "time n");
+			this.nDim  = netcdfFileWriter.addDimension(null,"n", n);
+			this.timeDim = netcdfFileWriter.addUnlimitedDimension("time");
+			myVar = netcdfFileWriter.addVariable(null, shortName, DataType.DOUBLE, "time n");
 
 			// create the file
-			netcdfFile.create();
+			netcdfFileWriter.create();
 			this.fileIsNotCreated=false;
 		}
 		else {
-			netcdfFile = NetcdfFileWriteable.openExisting(this.fileName.getAbsolutePath(), false);
+			netcdfFileWriter = NetcdfFileWriter.openExisting(this.fileName.getAbsolutePath());
+			myVar = netcdfFileWriter.findVariable(shortName);
 		}
 
 		ArrayDouble.D2 values = new ArrayDouble.D2(1, nDim.getLength());
@@ -82,10 +82,10 @@ public class NetCDFFile {
 
 		int[] origin = new int[]{iTime, 0};
 
-		netcdfFile.write(shortName, origin, values);
+		netcdfFileWriter.write(myVar, origin, values);
 
         //Always close
-		netcdfFile.close();
+		netcdfFileWriter.close();
 	}
 }
 

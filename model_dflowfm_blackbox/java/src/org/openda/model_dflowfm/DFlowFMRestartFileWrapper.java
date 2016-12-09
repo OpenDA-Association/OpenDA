@@ -28,7 +28,7 @@ import org.openda.utils.Vector;
 
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriteable;
+import ucar.nc2.NetcdfFileWriter;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Array;
@@ -108,8 +108,8 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		Collections.copy(exchangeVariables,allVariables);
 		for (Variable var : allVariables) {
 			for (String str : excludePattern) {
-				if (var.getName().startsWith(str)) {
-//					System.out.println("Excluded: "+ var.getName());
+				if (var.getShortName().startsWith(str)) {
+//					System.out.println("Excluded: "+ var.getShortName());
 					exchangeVariables.remove(var);
 				}
 			}
@@ -118,9 +118,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		// read time information
 		double[] times = null;
 		for (Variable var : allVariables) {
-			if (var.getName().contentEquals("time")) {
+			if (var.getShortName().contentEquals("time")) {
 				try {
-					Array timevals = inputFile.readSection(var.getName());
+					Array timevals = inputFile.readSection(var.getShortName());
 					if (timevals.getElementType()==double.class){
 						times = (double []) timevals.copyTo1DJavaArray();
 					} else if (timevals.getElementType()==float.class){
@@ -154,14 +154,14 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		Array thisValue = null;
 		for (Variable var : exchangeVariables) {
     		try {
-	    		Array full = inputFile.readSection(var.getName());
+	    		Array full = inputFile.readSection(var.getShortName());
 			    thisValue = full.slice(0,time_index);
 		    } catch (IOException e) {
 			   	e.printStackTrace();
 		    } catch (InvalidRangeException e) {
 			  	 e.printStackTrace();
 			} catch (ArrayIndexOutOfBoundsException e) {
-				System.out.println("Error processing "+var.getName());
+				System.out.println("Error processing "+var.getShortName());
 				continue;
 				//e.printStackTrace();
 			}
@@ -188,7 +188,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				String unitID = null;
 				List<Attribute> atts = var.getAttributes();
 				for (Attribute temp : atts) {
-					if (temp.getName().contains("units")) {
+					if (temp.getShortName().contains("units")) {
 						unitID = temp.getStringValue();
 					}
 				}
@@ -202,9 +202,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					if (att != null) {
 						exchange.setQuantityId(att.getStringValue());
 					}
-					this.ExchangeItems.put(var.getName(), new DFlowFMMetaExchangeItem(exchange, true, fullName));
+					this.ExchangeItems.put(var.getShortName(), new DFlowFMMetaExchangeItem(exchange, true, fullName));
 				} else {
-					throw new RuntimeException("Error: no unit specified for variable "  + var.getName() + " in netcdf file " + netcdffileName);
+					throw new RuntimeException("Error: no unit specified for variable "  + var.getShortName() + " in netcdf file " + netcdffileName);
 				}
 			}
 			inputFile.finish();
@@ -239,7 +239,8 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	// Write the NetCDF restart file
 	public void finish() {
 		try {
-			NetcdfFileWriteable inoutFile= NetcdfFileWriteable.openExisting(netcdffileName,true);
+			NetcdfFileWriter netcdfFileWriter= NetcdfFileWriter.openExisting(netcdffileName);
+			netcdfFileWriter.setFill(true);
 
 			//Loop over all exchangeItems
 			Set<String> keys = this.ExchangeItems.keySet();
@@ -260,8 +261,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						for (int i=0; i<vals.length; i++){
 							array.setFloat(i+offset, (float) vals[i]);
 						}
+						Variable myVar =  netcdfFileWriter.findVariable(this.ExchangeItems.get(key).shortName);
 						try {
-							inoutFile.write(this.ExchangeItems.get(key).shortName,array);
+							netcdfFileWriter.write(myVar,array);
 						} catch (InvalidRangeException e) {
 							e.printStackTrace();
 						}
@@ -273,8 +275,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 
 			}
-            inoutFile.finish();
-			inoutFile.close();
+			netcdfFileWriter.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();

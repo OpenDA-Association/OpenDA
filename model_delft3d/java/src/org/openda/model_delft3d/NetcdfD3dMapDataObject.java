@@ -24,7 +24,7 @@ import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.*;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriteable;
+import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -71,7 +71,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		this.runID = arguments[0].substring(5,arguments[0].length()-3);
 
 		try {
-			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
+			netcdfFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -114,7 +114,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		// Here the intelligence to go back to the right waterlevel (from the fictive one) is needed, before writing the states
 		for (Variable variable : this.netcdfFile.getVariables()){
-			String varName = variable.getName();
+			String varName = variable.getShortName();
 			if (Arrays.asList(fictiveVariables).contains(varName)) {
 				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, this.timeInfoCache);
 				int LastTimeIndex = timeInfo.getTimes().length;
@@ -158,14 +158,14 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		for (Variable variable : this.netcdfFile.getVariables()) {
 
-			if (Arrays.asList(keyVariables).contains(variable.getName())) {
+			if (Arrays.asList(keyVariables).contains(variable.getShortName())) {
 
 				Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, this.netcdfFile);
 				if (timeVariable == null) {
-					throw new RuntimeException("NetcdfD3dMapDataObject: no time axis for " + variable.getName() + ", file: " + netcdfFile.getLocation());
+					throw new RuntimeException("NetcdfD3dMapDataObject: no time axis for " + variable.getShortName() + ", file: " + netcdfFile.getLocation());
 				}
-				this.timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
-				timeDependentVars.put(variable.getName(), variable);
+				this.timeDimensionIndex = variable.findDimensionIndex(timeVariable.getShortName());
+				timeDependentVars.put(variable.getShortName(), variable);
 
 				// if this is the first time dependent variable: read the times
 				if (timesInNetcdfFile == null) {
@@ -173,7 +173,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 					try {
 						timesArray = timeVariable.read();
 					} catch (IOException e) {
-						throw new RuntimeException("NetcdfD3dMapDataObject could not read time variable " + timeVariable.getName() +
+						throw new RuntimeException("NetcdfD3dMapDataObject could not read time variable " + timeVariable.getShortName() +
 								"from netcdf file " + netcdfFile.getLocation());
 					}
 					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
@@ -183,15 +183,15 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				// one of the dimensions was for time
 				List<Dimension> dimensions = variable.getDimensions();
 				int nonTimeDimensions = dimensions.size() - 1;
-				if (nonTimeDimensions != 4 && variable.getName().equalsIgnoreCase("R1")) {
+				if (nonTimeDimensions != 4 && variable.getShortName().equalsIgnoreCase("R1")) {
 					throw new RuntimeException("NetcdfD3dMapDataObject: #dims for R1 should be four, file: " + netcdfFile.getLocation());
 				}
 
 				int layerCount = 0;
 				for (int i = 0; i < dimensions.size(); i++) {
 					Dimension dimension = dimensions.get(i);
-					if (variable.getName().equalsIgnoreCase("R1")){
-						if (dimension.getName().equalsIgnoreCase("LSTSCI")) {
+					if (variable.getShortName().equalsIgnoreCase("R1")){
+						if (dimension.getShortName().equalsIgnoreCase("LSTSCI")) {
 							lstsciDimensionIndex = i;
 							if (dimension.getLength() != 1) {
 								throw new RuntimeException("NetcdfD3dMapDataObject: #R1 != 1 is not supported (temp. or salinity), file: "
@@ -199,8 +199,8 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 							}
 						}
 					}
-					if (!variable.getName().equalsIgnoreCase("S1")) {
-						if (dimension.getName().equalsIgnoreCase("KMAXOUT_RESTR")) {
+					if (!variable.getShortName().equalsIgnoreCase("S1")) {
+						if (dimension.getShortName().equalsIgnoreCase("KMAXOUT_RESTR")) {
 							kmaxOutRestrDimensionIndex = i;
 							if (dimension.getLength() < 0) {
 								throw new RuntimeException("NetcdfD3dMapDataObject: could not read number of layers, file: "
@@ -238,7 +238,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				double[] zCoords =  NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ,-1);
 
 				//IGeometryInfo geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(xCoords,yCoords,zCoords);
-				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo);//, geometryInfo);
+				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getShortName(), this, timeInfo);//, geometryInfo);
 				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 
 			}
@@ -260,10 +260,10 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		sizeArray[timeDimensionIndex] = 1;
 
 //		origin[timeDimensionIndex] = 0;
-		if (variable.getName().equalsIgnoreCase("R1")) {
+		if (variable.getShortName().equalsIgnoreCase("R1")) {
 			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
 		}
-		if (!variable.getName().equalsIgnoreCase("S1")) {
+		if (!variable.getShortName().equalsIgnoreCase("S1")) {
 			origin[kmaxOutRestrDimensionIndex] = 0;
 //			sizeArray[kmaxOutRestrDimensionIndex] = 1;
 		}
@@ -271,7 +271,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		double[] domainData =  NetcdfUtils.readSelectedData(variable, origin, sizeArray,-1);
 
 		//This calls the intelligence to expand the real to a fictive (full) domain
-		if (Arrays.asList(fictiveVariables).contains(variable.getName())){
+		if (Arrays.asList(fictiveVariables).contains(variable.getShortName())){
 			domainData = expandDomain(domainData,LastTimeIndex);
 		}
 		return domainData;
@@ -291,7 +291,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		double[][][] Domain3D = from1dTo3dArray(initialDomain);
 
 		//For debug
-		//printNcField(variable.getName(), mMax, nMax, 20, Domain3D);
+		//printNcField(variable.getShortName(), mMax, nMax, 20, Domain3D);
 
 		// Filling the empty upper layers by the first filled one
 		int k = 0;
@@ -319,7 +319,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		}
 
 		//For debug
-		//printNcField(variable.getName(), mMax, nMax, 25, Domain3D);
+		//printNcField(variable.getShortName(), mMax, nMax, 25, Domain3D);
 
 		// Back to a 1D array
 		double[] expandedDomain = from3dTo1dArray(Domain3D,initialDomain.length);
@@ -367,25 +367,25 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		origin[timeDimensionIndex] = LastTimeIndex-1;
 		sizeArray[timeDimensionIndex] = 1;
 
-		if (variable.getName().equalsIgnoreCase("R1")) {
+		if (variable.getShortName().equalsIgnoreCase("R1")) {
 			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
 		}
-		if (!variable.getName().equalsIgnoreCase("S1")) {
+		if (!variable.getShortName().equalsIgnoreCase("S1")) {
 			origin[kmaxOutRestrDimensionIndex] = 0;
 		}
 
-		NetcdfFileWriteable netcdfWriteFile = null;
+		NetcdfFileWriter netcdfFileWriter= null;
 
 		try {
-			netcdfWriteFile = NetcdfFileWriteable.openExisting(this.netcdfFilePath.getAbsolutePath());
+			netcdfFileWriter = NetcdfFileWriter.openExisting(this.netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		NetcdfUtils.writeSelectedData(netcdfWriteFile,variable, origin, sizeArray, values);
+		NetcdfUtils.writeSelectedData(netcdfFileWriter,variable, origin, sizeArray, values);
 
 		try {
-			netcdfWriteFile.close();
+			netcdfFileWriter.close();
 			//if (binRestartFile != null) {
 				//binRestartFile.close();
 			//}

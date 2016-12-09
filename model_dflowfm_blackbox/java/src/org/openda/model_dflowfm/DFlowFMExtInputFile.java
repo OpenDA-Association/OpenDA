@@ -100,7 +100,7 @@ public class DFlowFMExtInputFile {
 		this(new File(workingDir, fileName));
 	}
 
-	public void ParseInputFile() {
+	private void ParseInputFile() {
 
 		/*  Parse .ext input file as an ini file without sections
 		 *  Remove all keys originating from comment lines 

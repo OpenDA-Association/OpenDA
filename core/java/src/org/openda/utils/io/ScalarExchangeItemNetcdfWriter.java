@@ -26,8 +26,9 @@ import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.Time;
 import ucar.nc2.Dimension;
-import ucar.nc2.NetcdfFileWriteable;
+import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
+import ucar.nc2.Attribute;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,7 @@ import java.util.*;
  */
 public class ScalarExchangeItemNetcdfWriter {
 	private final IExchangeItem[] exchangeItems;
-	private final NetcdfFileWriteable netcdfFile;
+	private final NetcdfFileWriter netcdfFileWriter;
 	private final List<String> stationIds;
 
 	private final Variable timeVariable;
@@ -62,40 +63,41 @@ public class ScalarExchangeItemNetcdfWriter {
 		//create netcdf file.
 		try {
 			//set fill to true, otherwise missing values will not be written for variables that do not have data for all stations.
-			netcdfFile = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath(), true);
+			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, outputFile.getAbsolutePath());
+			netcdfFileWriter.setFill(true);
 		} catch (IOException e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while opening netcdf file " + outputFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
 		}
 
 		//create time dimension and variable.
-		Dimension timeDimension = NetcdfUtils.createTimeVariable(netcdfFile, NetcdfUtils.TIME_VARIABLE_NAME, -1, NetcdfUtils.createTimeUnitString());
-		timeVariable = netcdfFile.findVariable(NetcdfUtils.TIME_VARIABLE_NAME);
+		Dimension timeDimension = NetcdfUtils.createTimeVariable(netcdfFileWriter, NetcdfUtils.TIME_VARIABLE_NAME, -1, NetcdfUtils.createTimeUnitString());
+		timeVariable = netcdfFileWriter.findVariable(NetcdfUtils.TIME_VARIABLE_NAME);
 
 		//create station dimension and variable.
 		//this only adds a station id variable, this does not add spatial variables with coordinates,
 		//because the coordinates are usually not available in exchangeItems that come from models.
 		//gather locationIds.
 		stationIds = NetcdfUtils.getStationIds(Arrays.asList(exchangeItems), null);
-		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFile, stationIdVarName, stationDimensionVarName, stationIds.size());
+		Dimension stationDimension = NetcdfUtils.createStationsVariable(netcdfFileWriter, stationIdVarName, stationDimensionVarName, stationIds.size());
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFile, Arrays.asList(exchangeItems), timeDimension, null, stationDimension, null);
+		NetcdfUtils.createDataVariables(netcdfFileWriter, Arrays.asList(exchangeItems), timeDimension, null, stationDimension, null);
 
 		//add global metadata.
-		NetcdfUtils.addGlobalAttributes(netcdfFile);
-		netcdfFile.addGlobalAttribute(NetcdfUtils.FEATURE_TYPE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_FEATURE_TYPE);
+		NetcdfUtils.addGlobalAttributes(netcdfFileWriter);
+		netcdfFileWriter.addGroupAttribute(null, new Attribute(NetcdfUtils.FEATURE_TYPE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_FEATURE_TYPE));
 
 		try {
-			netcdfFile.create();
+			netcdfFileWriter.create();
 		} catch (Exception e) {
-			throw new RuntimeException(getClass().getSimpleName() + ": Error while creating netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
+			throw new RuntimeException(getClass().getSimpleName() + ": Error while creating netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation() + " Message was: " + e.getMessage(), e);
 		}
 
 		//write station variable values.
 		try {
-			NetcdfUtils.writeStationIdVariableValues(netcdfFile, stationIdVarName, stationIds);
+			NetcdfUtils.writeStationIdVariableValues(netcdfFileWriter, stationIdVarName, stationIds);
 		} catch (Exception e) {
-			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing station variable values to netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
+			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing station variable values to netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation() + " Message was: " + e.getMessage(), e);
 		}
 	}
 
@@ -136,21 +138,21 @@ public class ScalarExchangeItemNetcdfWriter {
 			} else {
 				if (time != currentTime) {
 					throw new RuntimeException(getClass().getSimpleName() + ": Cannot write data. Exchange items have different times for time index " + currentTimeIndex
-							+ " in netcdf file " + netcdfFile.getLocation());
+							+ " in netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation());
 				}
 			}
 		}
 
 		//write current time.
 		if (timesWrittenSoFar.contains(currentTime)) {
-			throw new RuntimeException(getClass().getSimpleName() + ": Cannot write data. Output netcdf file " + netcdfFile.getLocation()
+			throw new RuntimeException(getClass().getSimpleName() + ": Cannot write data. Output netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation()
 					+ " already contains data for current time " + new Date(Time.mjdToMillies(currentTime)));
 		}
 		try {
-			NetcdfUtils.writeTimeVariableSingleValue(netcdfFile, timeVariable, currentTimeIndex, currentTime);
+			NetcdfUtils.writeTimeVariableSingleValue(netcdfFileWriter, timeVariable, currentTimeIndex, currentTime);
 		} catch (Exception e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while writing time value for current time " + new Date(Time.mjdToMillies(currentTime))
-					+ " to netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
+					+ " to netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation() + " Message was: " + e.getMessage(), e);
 		}
 		timesWrittenSoFar.add(currentTime);
 	}
@@ -182,16 +184,16 @@ public class ScalarExchangeItemNetcdfWriter {
 			origin[1] = stationIndex;
 
 			//write values for current time.
-			Variable dataVariable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
-			NetcdfUtils.writeSelectedData(netcdfFile, dataVariable, origin, dimensions, values);
+			Variable dataVariable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
+			NetcdfUtils.writeSelectedData(netcdfFileWriter, dataVariable, origin, dimensions, values);
 		}
 	}
 
 	public void close() {
 		try {
-			netcdfFile.close();
+			netcdfFileWriter.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Error while closing netcdf file " + netcdfFile.getLocation() + " Message was: " + e.getMessage(), e);
+			throw new RuntimeException("Error while closing netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation() + " Message was: " + e.getMessage(), e);
 		}
 	}
 }
