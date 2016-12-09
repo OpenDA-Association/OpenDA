@@ -1,0 +1,110 @@
+******************************************************************************
+*                                                                            *
+*  GATE CONTROL FILE                                                         *
+*  EDITED BY GEOSR (JGCHO 2010.5.6)                                          *
+*                                                                            *
+******************************************************************************
+GC1 NUMBER OF GATE TYPE
+*   NGTYPES: NUMBER OF GATE TYPE
+*   GARTM: GARBAGE TIME [min.]
+*
+GC1 NGTYPES  GARTM  IWSYS
+          3     0.      0
+------------------------------------------------------------------------------
+GC2 GATE INFORMATION 1            LINE=NQCTL
+*   NGATE:  NUMBER OF GATE
+*   NGATEC: NUMBER OF GATE CELL
+*   NGTYP: ID OF GATE TYPE
+*
+GC2 NGATE  NGATEC  NGTYP
+        1       1      1 ' ***  GATESER_1  세종_고정보 
+        1       1      2 ' ***  GATESER_2  공주_고정보 
+        1       1      3 ' ***  GATESER_3  백제_고정보 
+------------------------------------------------------------------------------
+GC3 GATE INFORMATION 2
+*   SILL: SILL LEVEL [m]
+*   SILLHH : HEIGHT OF NOT OPERATE WEIR
+*   GATEHI: GATE HEIGHT OF INSIDE (UPSTREAM) [m]
+*   GATEHO: GATE HEIGHT OF OUTSIDE (DOWNSTREAM) [m]
+*   GATEWI: GATE WIDTH OF INSIDE (UPSTREAM) [m]
+*   GATEWO: GATE WIDTH OF OUTSIDE (DOWNSTREAM) [m]
+*   MAXQ: MAXIMUM GATE FLUX [m^3/S] (NEGATIVE VALUE MEANS UNLIMITED MAX.)
+*   GOTIME: GATE COMPLETELY OPEN TIME INTERVAL (GOTIME > 0.) [min.]
+*   GCTIME: GATE COMPLETELY CLOSE TIME INTERVAL (GOTIME > 0.) [min.]
+*
+GC3 SILL  SILLHH  GATEHI  GATEHO  GATEWI  GATEWO  MAXQ   GOTIME  GCTIME       IATS(평균지정timestep, default 1, ex. 5min*60/dt(3s)=100)  
+   11.80   11.80    999.    999.   125.0   125.0   -1.       0.      0.       100 ' *** GATESER_1  세종_고정보                      
+    8.75    8.75    999.    999.    32.0    32.0   -1.       0.      0.       100 ' *** GATESER_2  공주_고정보                      
+    4.20    4.20    999.    999.   191.0   191.0   -1.       0.      0.       100 ' *** GATESER_3  백제_고정보                                                                           
+------------------------------------------------------------------------------
+GC4 FLOW CONSTANT & FOMULAR CHOICE
+*   CG1 : DISCHARGE COEFFICIENT : COMPLETE OVERFLOW
+*   CG2 : DISCHARGE COEFFICIENT : SUBMERGED WEIR
+*   CG3 : DISCHARGE COEFFICIENT : COMPLETE ORIFICE 1
+*   CG4 : DISCHARGE COEFFICIENT : COMPLETE ORIFICE 2
+*   CG5 : DISCHARGE COEFFICIENT : SUBMERGED ORIFICE
+*   NCG3FOM : CHOICE SUBMERGED INCOMPLETE ORIFICE FOMULAR
+*             1 = KOREA RURAL COMMUNITY CORPORATION, 2004.12, MIN,BM. & WJ.KIM, 2009.
+*             2 = TEXT BOOK
+*
+GC4   CGH1  CGH2  CG1    CG2    CG3    CG4    CG5    CG6    CG7    CG8
+    	0.00  99.0  0.371  0.371  0.371  0.371  0.371  0.371  0.371  0.371   1  'GATESER_1  세종_고정보
+    	0.00  99.0  1.000  1.000  0.380  0.219  0.380  0.219  0.380  0.219   1  'GATESER_2  공주_고정보
+    	0.10  0.37  0.825  0.429  0.825  0.429  0.825  0.429  0.825  0.429   1  'GATESER_3  백제_고정보
+------------------------------------------------------------------------------
+GC5 GATE CONTROL
+*   DELHINOUT: GATE OPEN CONTIDION1 - DIFFERENCE OF INSIDE LEVEL - OUTSIDE LEVEL [m]
+*   DELHSEL1:  GATE OPEN CONDITION2 - DIFFERENCE OF INSIDE LEVEL - TARGET LEVEL [m]
+*   SEL1:      TARGET LOW LEVEL OF GATE INSIDE [m]
+*   SEL2:      TARGET HIGH LEVEL OF GATE INSIDE [m]
+*   TIDCHK:    TIDE CHECK TIME INTERVAL [min.]
+*
+GC5 DELHINOUT  DELHSEL1  SEL1  SEL2  TIDCHK
+         0.05      0.05   0.0   0.0    -1. ' ***  GATESER_1  세종_고정보
+         0.05      0.05   0.0   0.0    -1. ' ***  GATESER_2  공주_고정보
+         0.05      0.05   0.0   0.0    -1. ' ***  GATESER_3  백제_고정보
+------------------------------------------------------------------------------
+GC6 NUMBER OF SURFACE LEVEL COMPARE CELL
+*   NICMP:  NUMBER OF COMPARE CELL OF IN-SIDE (UPSTREAM)
+*   NOCMP:  NUMBER OF COMPARE CELL OF OUT-SIDE (DOWNSTREAM)
+*
+GC6 NICMP  NOCMP
+        1      1 ' *** GATESER_1  세종_고정보   
+        1      1 ' *** GATESER_2  공주_고정보   
+        1      1 ' *** GATESER_3  백제_고정보     
+------------------------------------------------------------------------------
+GC7 CELL INDEX OF UPSTREAM
+*   ICMPI:  COMPARE CELL I INDEX (UPSTREAM)
+*   JCMPI:  COMPARE CELL J INDEX (UPSTREAM)
+*
+GC7 ICMPI  JCMPI
+      642      6 '  GATESER_1  세종_고정보    
+      502      6 '  GATESER_2  공주_고정보    
+      333      6 '  GATESER_3  백제_고정보    
+------------------------------------------------------------------------------
+GC8 CELL INDEX OF DOWNSTREAM
+*   ICMPO:  COMPARE CELL I INDEX (DOWNSTREAM)
+*   JCMPO:  COMPARE CELL J INDEX (DOWNSTREAM)
+*
+GC8 ICMPO  JCMPO
+      624      6 ' ***   GATESER_1  세종_고정보
+      484      6 ' ***   GATESER_2  공주_고정보
+      315      5 ' ***   GATESER_3  백제_고정보
+------------------------------------------------------------------------------
+GC9 CONSIDER ESTUARY DIKE OUTER TIDE START TIME (FOR NQCTYP=6) LINE=NGTYPES
+*    IGYY:  YEAR  (-1 : NOT USE)
+*    IGMM:  MONTH (-1 : NOT USE)
+*    IGDD:  DAY   (-1 : NOT USE)
+*    
+*
+GC9 IGYY IGMM IGDD CLOC
+     -1   -1   -1   'NONE'  ' *** GATESER_1  세종_고정보
+     -1   -1   -1   'NONE'  ' *** GATESER_2  공주_고정보
+     -1   -1   -1   'NONE'  ' *** GATESER_3  백제_고정보               
+------------------------------------------------------------------------------
+GC10 GATE FLUX MONITORING
+*    ISINK: 0= NOT MONITORING, 1= WRITE SINK##.OUT
+*    DTSNK: WRITE INTERVAL [min.]
+*
+GC10 ISINK  DTSNK
+         1   60.     !0.25
