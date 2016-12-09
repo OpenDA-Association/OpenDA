@@ -21,7 +21,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf/netcdfAll-4.6.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf/netcdf-4.3.23.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
