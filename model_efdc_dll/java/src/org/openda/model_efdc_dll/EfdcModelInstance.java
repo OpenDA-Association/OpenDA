@@ -575,7 +575,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			}
 			if (inputExchangeItem == null) {//if item not found.
 				String locationId = BBUtils.getLocationFromId(id);
-				if (!locationId.contains("_layer")) {
+				String parameterId = BBUtils.getParameterFromId(id);
+				if (!locationId.contains("_layer")  && !EfdcExchangeItemType.findByKey(parameterId).isOptional() ) {
 					//throw new RuntimeException("Exchange item with id '" + id + "' not found in given inputDataObjects.");
 					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
 					continue;
@@ -584,7 +585,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 				//if boundaryExchangeItem has layers.
 				//try to find inputExchangeItem with same location and parameter but without layer.
 				String newLocationId = locationId.substring(0, locationId.lastIndexOf('_'));
-				String parameterId = BBUtils.getParameterFromId(id);
 				String newId = newLocationId + "." + parameterId;
 				for (IDataObject inputDataObject : inputDataObjects) {
 					inputExchangeItem = inputDataObject.getDataObjectExchangeItem(newId);
@@ -598,8 +598,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			}
 
 			//ask the boundaryExchangeItem to copy all value(s) that it currently needs from the inputExchangeItem.
-			Results.putMessage(getClass().getSimpleName() + ": copying data from inputExchangeItem '" + id + "' of type " + inputExchangeItem.getClass().getSimpleName()
-					+ " to boundaryExchangeItem '" + id + "' of type " + boundaryExchangeItem.getClass().getSimpleName());
+			// TODO: [LOGGING] Move to debug when available as logging option.
+			//Results.putMessage(getClass().getSimpleName() + ": copying data from inputExchangeItem '" + id + "' of type " + inputExchangeItem.getClass().getSimpleName()
+			//		+ " to boundaryExchangeItem '" + id + "' of type " + boundaryExchangeItem.getClass().getSimpleName());
 			boundaryExchangeItem.copyValuesFromItem(inputExchangeItem);
 		}
 	}

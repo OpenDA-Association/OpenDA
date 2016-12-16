@@ -83,7 +83,7 @@ module m_openda_wrapper
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
   logical, parameter :: debug = .false.
-  logical :: ATM_WARNING_GIVEN = .false.
+  logical :: ATM_WARNING_REQUIRED = .true.
   
 contains
 
@@ -1111,7 +1111,8 @@ contains
     result (ret_val) &
     bind(C, name="m_openda_wrapper_set_times_for_ei_")
 
-  use global, only: TCASER, TCWSER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN, NXSP
+  use global, only: TCASER, TCWSER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN, NXSP, &
+                    WQCIB, WQCIC
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_times_for_ei_
 #endif
@@ -1143,8 +1144,9 @@ contains
           factor =  86400.d0/dble(TCASER(bc_index))
           IF(ITNWQ.EQ.0.AND.IWQSUN.GT.1.AND.NASER.GT.0)THEN
               period = times(values_count) - times(1) * factor
-              if ( period < 2.0e0.and. .not. ATM_WARNING_GIVEN ) then
-                  ATM_WARNING_GIVEN = .true.
+              if (ATM_WARNING_REQUIRED) ATM_WARNING_REQUIRED=(WQCIB.ne.0.0).or.(WQCIC.ne.0.0) ! when weights are 0 for tomorrow and day after tomorrow are zero
+              if ( period < 2.0e0.and. ATM_WARNING_REQUIRED ) then
+                  ATM_WARNING_REQUIRED = .false.
                   write(message, '(A, F8.4, A, I4, A )') & 
                 "Atmospheric time series (length = ", &
                 period, &
