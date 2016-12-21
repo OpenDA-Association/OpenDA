@@ -1,6 +1,6 @@
 See also http://content.oss.deltares.nl/delft3d/manuals/D-Flow_FM_User_Manual.pdf#subsection.B.6.1 for trachytopes and chapter 19 about OpenDA
 
-NOTE: To run this experiment make sure that dflow can be found on the PATH.
+NOTE: To run these experiments make sure that run_dflowfm.sh can be found on the path!
 
 The m-files can be used to plot results after running the corresponding
 simulations. The results are not very good yet, settings of the noise model

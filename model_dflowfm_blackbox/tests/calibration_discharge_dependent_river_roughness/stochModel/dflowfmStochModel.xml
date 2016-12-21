@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./dflowfmModel.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        
+        <parameters>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_411_DISCHARGE1000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_411_DISCHARGE2000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_412_DISCHARGE1000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_412_DISCHARGE2000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_413_DISCHARGE1000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_413_DISCHARGE2000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_414_DISCHARGE1000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_414_DISCHARGE2000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_415_DISCHARGE1000_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_415_DISCHARGE2000_FormulaNr101_A"/>
+            </regularisationConstant>
+
+<!--
+-->
+        </parameters>
+
+        <predictor>
+            <vector id="M20.waterlevel"/>
+            <vector id="M60.waterlevel"/>
+            <vector id="M100.waterlevel"/>
+            <vector id="M140.waterlevel"/>
+            <vector id="M180.waterlevel"/>
+        </predictor>
+
+    </vectorSpecification>
+
+</blackBoxStochModel>
