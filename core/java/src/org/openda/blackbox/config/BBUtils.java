@@ -178,9 +178,7 @@ public class BBUtils {
             for(String arg : commandArgList){
             	message+=arg+" ";
             }
-            System.out.println(message);
-
-			System.out.println("command="+commandArgs);
+			System.out.println("command="+message);
 			System.out.println("workingDir="+workingDir);
             process = Runtime.getRuntime().exec(commandArgs, null, workingDir);
 
@@ -194,7 +192,7 @@ public class BBUtils {
                 System.out.println(line);
             System.out.println("</OUTPUT>");
 
-            //wait untill executable is finished
+            //wait until executable is finished
             exitValue = process.waitFor();
 
             System.out.println("\nExit value: " + exitValue);
