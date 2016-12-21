@@ -21,6 +21,7 @@
 package org.openda.model_dflowfm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.io.*;
@@ -30,16 +31,6 @@ import java.io.*;
  * To change this template use File | Settings | File Templates.
  */
 public class DFlowFMRoughnessUtils {
-
-    // Manipulate the line from roughness file by putting it in uppercase,
-    // removing spaces, tabs, etc
-    public static String prepareRoughLine(String line){
-        // replace tabs by spaces
-        line=line.replaceAll("\t"," ");
-        // replace double spaces by single spaces
-        line=line.replaceAll("  *"," ");
-       return line;
-    }
 
     // Read content of the whole roughness file and store it in a string array
     public static String[] readWholeFile(File roughFile) {
@@ -87,77 +78,25 @@ public class DFlowFMRoughnessUtils {
         }
     }
 
-    // Write the value to the roughness file
-    public static void writeValueToFile(File roughFile, int lineNum, String code, double value){
-        // Read content of whole file
-        String[] sContent= readWholeFile(roughFile);
-
-        // Prepare the line for easy handling
-        String line=prepareRoughLine(sContent[lineNum]);
-
-        // Chop line in parts
-        String [] lineParts=line.split(" ");
-
-        // Find the sub-string that holds the parameter value [A,B,C,D,E]
-        HashMap<String, Integer> fieldNumber = new LinkedHashMap<String, Integer>();
-        fieldNumber.put("A", 2);
-        fieldNumber.put("B", 3);
-        fieldNumber.put("C", 4);
-        fieldNumber.put("D", 5);
-        fieldNumber.put("E", 6);
-
-        if(!fieldNumber.containsKey(code)){
-        	throw new RuntimeException("D3dRoughParamsFile: Do not recognize parameter code: "+code);
-        }
-        int iField=fieldNumber.get(code);
-        if(iField>=lineParts.length){
-        	throw new RuntimeException("D3dRoughParamsFile: Line in roughness file does not contain enough columns.\n"+
-        			"Looking for col="+iField+" in line:\n"+line);
-        }
-
-        lineParts[iField] = Double.toString(value);
-
-        // Glue line back together
-        sContent[lineNum]="";
-        for (int i=0; i<lineParts.length; i++){
-            sContent[lineNum]=sContent[lineNum]+lineParts[i]+" ";
-        }
-
-        // write content of whole file
-        writeWholeFile(roughFile, sContent);
+    public static void updateContent(String[] sContent, DFlowFMRougnessFileExchangeItem[] exchangeItems){
+    	for(DFlowFMRougnessFileExchangeItem item: exchangeItems){
+    		int iColumn=item.columnNum;
+    		int iLine=item.lineNum;
+    		String line=sContent[iLine];
+			String [] lineParts=line.split("\\s+");
+			lineParts[iColumn]=Double.toString(item.getValue());
+			line=stringJoin(lineParts);
+			//put modified line back
+			sContent[iLine]=line;
+    	}
     }
-
-    // Read the value from the roughness file
-   public static double readValueFromFile(File roughFile, int lineNum, String code){
-        Double value=0.0; //Return value
-
-        // Read content of whole file
-        String[] sContent= readWholeFile(roughFile);
-
-        // Prepare the line for easy handling
-        String line=prepareRoughLine(sContent[lineNum]);
-
-        // Chop line in parts
-        String [] lineParts=line.split(" ");
-
-        // Find the sub-string that holds the parameter value [A,B,C,D,E]
-        HashMap<String, Integer> fieldNumber = new LinkedHashMap<String, Integer>();
-        fieldNumber.put("A", 2);
-        fieldNumber.put("B", 3);
-        fieldNumber.put("C", 4);
-        fieldNumber.put("D", 5);
-        fieldNumber.put("E", 6);
-
-        if(!fieldNumber.containsKey(code)){
-        	throw new RuntimeException("D3dRoughParamsFile: Do not recognize parameter code: "+code);
-        }
-        int i=fieldNumber.get(code);
-        if(i>=lineParts.length){
-        	throw new RuntimeException("D3dRoughParamsFile: Line in roughness file does not contain enough columns.\n"+
-        			"Looking for col="+i+" in line:\n"+line);
-        }
-        value=Double.parseDouble(lineParts[i]);
-
-        return value;
+    
+    /**
+     * Joins some strings. Can be replaced with String.join() when we move to java 1.8
+     * @param parts
+     * @return parts[0] <space> part[1] ... etc
+     */
+    private static String stringJoin(String[] parts){
+    	return Arrays.toString(parts).replace(", ", " ").replaceAll("[\\[\\]]", "");
     }
 }
