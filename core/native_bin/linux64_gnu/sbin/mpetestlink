@@ -3,7 +3,7 @@
 # The script is designed to be invoked from a "Makefile",
 # notice the command "$MAKE $pgm" below.
 
-MAKE="make"
+MAKE="make --no-print-directory"
 ECHO_N="-n"
 ECHO_C=""
 ECHO_T=""
