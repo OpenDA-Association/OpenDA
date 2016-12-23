@@ -294,39 +294,39 @@ C
 C
                 GRAMPUP(LG) = MIN(GRAMPUP(LG), 1.0)  ! ADJUST GATE RAMPUP VALUE
 C
-C                SILLHHO(LG)=SILLHH(LG)*GRAMPUP(LG)                    ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
+C                SILLHHO(LG)=SILLHH(LG)*GRAMPUP(LG)                     ! GATE HEIGHT AFTER GATE OPEN (NOT USE)
 C
 C++++++++++++++ BEGIN NORMAL FORMULA
                 !!20141024-UNG
-                IF (NQCTYP(NCTL).EQ.31) THEN																			! Elevator type rise and fall system
+                IF (NQCTYP(NCTL).EQ.31) THEN                            ! Elevator type rise and fall system
                   IF (HUPG(LG).LE.GUPHT+SILL(LG)) THEN  ! 2014.11.08 jgcho  DEPUPG(LG) -> HUPG(LG)   +SILL(LG)
-                   	IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW(WEIR)
-                    	   IGCHECK(LG)=313
-                    	   DUMPG(LG)=1.704*CG3(LG)*GATEWI(LG)            
-     &                       *(DEPUPG(LG)**(3./2.))                
-                     ELSEIF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN            ! SUBMERGED WEIR
-                  		IGCHECK(LG)=314
-                        DUMPG(LG)=CG4(LG)*(DEPUPG(LG)-DELHG(LG))
-     &                       *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
-                  	ENDIF   ! IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN
-                	ELSE
-                   IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN                 				! COMPLETE ORIFICE
+                    IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW(WEIR)
+                      IGCHECK(LG)=313
+                      DUMPG(LG)=1.704*CG3(LG)*GATEWI(LG)            
+     &                         *(DEPUPG(LG)**(3./2.))                
+                    ELSEIF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN            ! SUBMERGED WEIR
+                      IGCHECK(LG)=314
+                      DUMPG(LG)=CG4(LG)*(DEPUPG(LG)-DELHG(LG))
+     &                         *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
+                    ENDIF   ! IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN
+                  ELSE
+                   IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN               ! COMPLETE ORIFICE
                     IF (SILL(LG).LT.HDWG(LG))	THEN
                      DELCH=DEPUPG(LG)-GUPHT
-                   		IGCHECK(LG)=311
+                     IGCHECK(LG)=311
                      IF (NCG3FOM(LG).EQ.1) THEN
-                      	GQ1=CG5(LG)*(GUPHT+SILL(LG)-HDWG(LG))
+                       GQ1=CG5(LG)*(GUPHT+SILL(LG)-HDWG(LG))
      &                    *GATEWI(LG)*SQRT(2.*9.806*(DELHG(LG)-DELCH))
                      ELSEIF (NCG3FOM(LG).EQ.2) THEN
-                     		GQ1=2./3.*CG5(LG)*GATEWI(LG)*SQRT((2.
+                       GQ1=2./3.*CG5(LG)*GATEWI(LG)*SQRT((2.
      &                      *9.806)*(DELHG(LG)**(3./2.)-DELCH**(3./2.)))
-                    	ENDIF
-                    	DUMPG(LG)=GQ1+CG5(LG)*(DEPUPG(LG)-DELHG(LG))
+                     ENDIF
+                     DUMPG(LG)=GQ1+CG5(LG)*(DEPUPG(LG)-DELHG(LG))
      &                        *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
-     					  ELSE
-     									IGCHECK(LG)=315
-     									DUMPG(LG)=CG7(LG)*GUPHT*GATEWI(LG)
-     &                			*SQRT(2.*9.806*(DEPUPG(LG)-GUPHT/2.))
+                    ELSE
+                     IGCHECK(LG)=315
+                     DUMPG(LG)=CG7(LG)*GUPHT*GATEWI(LG)
+     &                        *SQRT(2.*9.806*(DEPUPG(LG)-GUPHT/2.))
                     ENDIF
                    ELSE                                              		! SUBMERGED ORIFICE
                     IGCHECK(LG)=312
@@ -339,7 +339,7 @@ C++++++++++++++ BEGIN NORMAL FORMULA
 !                                even if you apply a flexible security operations in the flow
                   if (HUPG(LG).gt.SILLHH(LG)+GUPHT) then 
                   ! Rough translation: If the upstream water level is higher 
-                  !                    than the compensation oepration only
+                  !                    than the compensation operation only
                     tmpsill=SILLHH(LG)+GUPHT
                     tcdiff=CGH2(LG)-CGH1(LG)
                     h11=HUPG(LG)-tmpsill
@@ -357,7 +357,7 @@ C++++++++++++++ BEGIN NORMAL FORMULA
      &                 *SQRT(2.*9.806*(HUPG(LG)-tmpsill))
                     else
                       DUMPG2(LG)=CG10*2.6*GATEWI(LG)*(HDWG(LG)
-     &           				-tmpsill)*SQRT(2.*9.806
+     &                          -tmpsill)*SQRT(2.*9.806
      &                  *((HUPG(LG)-tmpsill)-(HDWG(LG)-tmpsill)))
                     endif
                   endif !if (HUPG(LG).gt.SILLHH(LG)+GUPHT) then
@@ -365,117 +365,116 @@ C++++++++++++++ BEGIN NORMAL FORMULA
                 ENDIF  ! IF (NQCTYP(NCTL).EQ.31) THEN
                 IF (NQCTYP(NCTL).EQ.32) THEN																			! Turning type floodgate
 
-                	IF (HUPG(LG).GT.(SILLHH(LG)-GUPHT)) THEN ! JGCHO 2014.11.11 ADD SILL(LG)+
+                  IF (HUPG(LG).GT.(SILLHH(LG)-GUPHT)) THEN ! JGCHO 2014.11.11 ADD SILL(LG)+
 !                     
-                		IF (HDWG(LG).LT.SILLHH(LG)-GUPHT) THEN !DELCH) THEN  JGCHO 2014.11.11
-                	       IGCHECK(LG)=321
-                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
-                              DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
-     &        				 *SQRT(2.*9.806*h11)
-                      ELSE
-                	       IGCHECK(LG)=322
-                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
-                               h22=HDWG(LG)-(SILLHH(LG)-GUPHT)
-                              DUMPG(LG)=2.6*CG8(LG)
-     &                            *GATEWI(LG)*h22
-     &        					*SQRT(2.*9.806*(h11-h22))
-     								ENDIF
-                	ENDIF
+                    IF (HDWG(LG).LT.SILLHH(LG)-GUPHT) THEN !DELCH) THEN  JGCHO 2014.11.11
+                      IGCHECK(LG)=321
+                      h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                      DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
+     &                         *SQRT(2.*9.806*h11)
+                    ELSE
+                      IGCHECK(LG)=322
+                      h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                      h22=HDWG(LG)-(SILLHH(LG)-GUPHT)
+                      DUMPG(LG)=2.6*CG8(LG)
+     &                         *GATEWI(LG)*h22
+     &                         *SQRT(2.*9.806*(h11-h22))
+                    ENDIF
+                 ENDIF
 !                	write(*,*)DUMPG(LG)				testwriting-ung 1105
 !                	write(*,*)CG8(LG),NGTYP(LG),DEPUPG(LG),DELCH
 !                	write(*,*)GATEWI(LG)
 !                	write(*,*)GATEHI(LG),GUPHT,SILL(LG)
 !                	PAUSE
                 ENDIF  ! IF (NQCTYP(NCTL).EQ.32) THEN
-                IF (NQCTYP(NCTL).EQ.33) THEN																			! Roller floodgate
-									IF (GUPHT.GE.0) THEN																		! OVERFLOW
-										IF (HUPG(LG).GT.(SILLHH(LG)-GUPHT)) THEN ! JGCHO 2014.11.08 ADD SILL(LG)+
-
-                			IF (HDWG(LG).LT.SILLHH(LG)-GUPHT) THEN
-										IGCHECK(LG)=336
-                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
-                      DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
-     &        				 *SQRT(2.*9.806*h11)
-                          ELSE
-										IGCHECK(LG)=337
-                               h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
-                               h22=HDWG(LG)-(SILLHH(LG)-GUPHT)
-                      DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
-     &        				 *SQRT(2.*9.806*h11)
+                IF (NQCTYP(NCTL).EQ.33) THEN                 ! Roller floodgate
+                  IF (GUPHT.GE.0) THEN                       ! OVERFLOW
+                    IF (HUPG(LG).GT.(SILLHH(LG)-GUPHT)) THEN ! JGCHO 2014.11.08 ADD SILL(LG)+
+                      IF (HDWG(LG).LT.SILLHH(LG)-GUPHT) THEN
+                        IGCHECK(LG)=336
+                        h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                        DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
+     &                           *SQRT(2.*9.806*h11)
+                      ELSE
+                        IGCHECK(LG)=337
+                        h11=HUPG(LG)-(SILLHH(LG)-GUPHT)
+                        h22=HDWG(LG)-(SILLHH(LG)-GUPHT)
+                        DUMPG(LG)=CG8(LG)*GATEWI(LG)*h11
+     &                           *SQRT(2.*9.806*h11)
 !                              DUMPG(LG)=2.6*CG8(LG)
 !     &                            *GATEWI(LG)*h22
-!     &        					*SQRT(2.*9.806*(h11-h22))
-     									ENDIF		!  IF (HDWG(LG).LT.DELCH) THEN
-                		ENDIF		!  IF (HUPG(LG).GT.(GATEHI(LG)-GUPHT)) THEN
-									ELSE		!  IF (GUPHT.GE.0) THEN
-										IF (DEPUPG(LG).LE.GUPHT*(-1.)) THEN
-                   		IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW(WEIR)
-                    		IGCHECK(LG)=333
-                    		DUMPG(LG)=1.704*CG3(LG)*GATEWI(LG)            
+!     &                         *SQRT(2.*9.806*(h11-h22))
+                      ENDIF  !  IF (HDWG(LG).LT.DELCH) THEN
+                    ENDIF    !  IF (HUPG(LG).GT.(GATEHI(LG)-GUPHT)) THEN
+                  ELSE       !  IF (GUPHT.GE.0) THEN
+                    IF (DEPUPG(LG).LE.GUPHT*(-1.)) THEN
+                      IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN                ! COMPLETE OVERFLOW(WEIR)
+                        IGCHECK(LG)=333
+                        DUMPG(LG)=1.704*CG3(LG)*GATEWI(LG)            
      &                       *(DEPUPG(LG)**(3./2.))                
-                  		ELSEIF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN            ! SUBMERGED WEIR
-                  			IGCHECK(LG)=334
-                    		DUMPG(LG)=CG4(LG)*(DEPUPG(LG)-DELHG(LG))
+                      ELSEIF (DELHG(LG).LT.DEPUPG(LG)/3.) THEN            ! SUBMERGED WEIR
+                        IGCHECK(LG)=334
+                        DUMPG(LG)=CG4(LG)*(DEPUPG(LG)-DELHG(LG))
      &                       *GATEWI(LG)*SQRT(2.*9.806*DELHG(LG))
-                  		ENDIF   ! IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN
-                		ELSE		!  IF (DEPUPG(LG).LE.GUPHT*(-1.)) THEN
-                   		IF ((GUPHT*(-1.)+SILL(LG)).GT.HDWG(LG)) THEN                 				! COMPLETE ORIFICE
-                    		IF (SILL(LG).LT.HDWG(LG))	THEN
-                    			DELCH=DEPUPG(LG)-GUPHT*(-1.)
-                   				IGCHECK(LG)=331
-                    			IF (NCG3FOM(LG).EQ.1) THEN
-                      			GQ1=CG5(LG)*(GUPHT*(-1.)+SILL(LG)
-     &                    		-HDWG(LG))*GATEWI(LG)
-     &                    		*SQRT(2.*9.806*(DELHG(LG)-DELCH))
-                    			ELSEIF (NCG3FOM(LG).EQ.2) THEN
-                     				GQ1=2./3.*CG5(LG)*GATEWI(LG)*SQRT
+                      ENDIF   ! IF (DELHG(LG).GE.DEPUPG(LG)/3.) THEN
+                    ELSE		!  IF (DEPUPG(LG).LE.GUPHT*(-1.)) THEN
+                      IF ((GUPHT*(-1.)+SILL(LG)).GT.HDWG(LG)) THEN                 				! COMPLETE ORIFICE
+                        IF (SILL(LG).LT.HDWG(LG))	THEN
+                          DELCH=DEPUPG(LG)-GUPHT*(-1.)
+                          IGCHECK(LG)=331
+                          IF (NCG3FOM(LG).EQ.1) THEN
+                            GQ1=CG5(LG)*(GUPHT*(-1.)+SILL(LG)
+     &                         -HDWG(LG))*GATEWI(LG)
+     &                         *SQRT(2.*9.806*(DELHG(LG)-DELCH))
+                          ELSEIF (NCG3FOM(LG).EQ.2) THEN
+                            GQ1=2./3.*CG5(LG)*GATEWI(LG)*SQRT
      &                       (2.*9.806)*(DELHG(LG)**(3./2.)
      &                       -DELCH**(3./2.))
-                    			ENDIF
-                    			DUMPG(LG)=GQ1+CG5(LG)*(DEPUPG(LG)
+                          ENDIF
+                          DUMPG(LG)=GQ1+CG5(LG)*(DEPUPG(LG)
      &                        -DELHG(LG))*GATEWI(LG)
      &                        *SQRT(2.*9.806*DELHG(LG))
-     										ELSE																								! DIFF SILL
-     											IGCHECK(LG)=335
-     											DUMPG(LG)=CG7(LG)*GUPHT*(-1.)*GATEWI(LG)
-     &                			*SQRT(2.*9.806*(DEPUPG(LG)-GUPHT*(-1.)/2.))
-     										ENDIF		!  IF (SILL(LG).LT.HDWG(LG))	THEN
-                  ELSE                                                ! SUBMERGED ORIFICE
-                    		IGCHECK(LG)=332
-                    		DUMPG(LG)=CG6(LG)*GUPHT*(-1.)*GATEWI(LG)
+                        ELSE                                             ! DIFF SILL
+                          IGCHECK(LG)=335
+                          DUMPG(LG)=CG7(LG)*GUPHT*(-1.)*GATEWI(LG)
+     &                      *SQRT(2.*9.806*(DEPUPG(LG)-GUPHT*(-1.)/2.))
+                        ENDIF                                         !  IF (SILL(LG).LT.HDWG(LG))	THEN
+                      ELSE                                                ! SUBMERGED ORIFICE
+                        IGCHECK(LG)=332
+                        DUMPG(LG)=CG6(LG)*GUPHT*(-1.)*GATEWI(LG)
      &                       *SQRT(2.*9.806*DELHG(LG))
-                  ENDIF  ! IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN
+                      ENDIF  ! IF ((GUPHT+SILL(LG)).GT.HDWG(LG)) THEN
 !
 ! GEOSR GATE : Rough translation: Apply Mon-flow even when the upstream water level higher
 !                                 than the upper movable beam during rotary operation
 !                                 security operations
-                        if (HUPG(LG).gt.SILLHH(LG)+GUPHT*(-1.)) then
+                      if (HUPG(LG).gt.SILLHH(LG)+GUPHT*(-1.)) then
                         ! Rough translation: If the upstream water level is higher 
                         !                    than the compensation oepration only
-                          tmpsill=SILLHH(LG)+GUPHT*(-1.)
-                          tcdiff=CGH2(LG)-CGH1(LG)
-                          h11=HUPG(LG)-tmpsill
-                          wctm1=(CGH2(LG)-h11)/tcdiff
-                          wctm2=(h11-CGH1(LG))/tcdiff
-                          CG10=wctm1*CG1(LG) + wctm2*CG2(LG)
-                          IF((HUPG(LG)-tmpsill).LT.CGH1(LG)) THEN
-                            CG10=CG1(LG)
-                          ELSEIF((HUPG(LG)-tmpsill).GT.CGH2(LG)) THEN
-                            CG10=CG2(LG)
-                          ENDIF
+                        tmpsill=SILLHH(LG)+GUPHT*(-1.)
+                        tcdiff=CGH2(LG)-CGH1(LG)
+                        h11=HUPG(LG)-tmpsill
+                        wctm1=(CGH2(LG)-h11)/tcdiff
+                        wctm2=(h11-CGH1(LG))/tcdiff
+                        CG10=wctm1*CG1(LG) + wctm2*CG2(LG)
+                        IF((HUPG(LG)-tmpsill).LT.CGH1(LG)) THEN
+                          CG10=CG1(LG)
+                        ELSEIF((HUPG(LG)-tmpsill).GT.CGH2(LG)) THEN
+                          CG10=CG2(LG)
+                        ENDIF
                           
-                          IF (HDWG(LG) .LT. tmpsill ) THEN
-                           DUMPG2(LG)=CG10*GATEWI(LG)*(HUPG(LG)-tmpsill)
+                        IF (HDWG(LG) .LT. tmpsill ) THEN
+                          DUMPG2(LG)=CG10*GATEWI(LG)*(HUPG(LG)-tmpsill)
      &                       *SQRT(2.*9.806*(HUPG(LG)-tmpsill))
-                          else
-                            DUMPG2(LG)=CG10*2.6*GATEWI(LG)*(HDWG(LG)
-     &           		      		-tmpsill)*SQRT(2.*9.806
+                        else
+                           DUMPG2(LG)=CG10*2.6*GATEWI(LG)*(HDWG(LG)
+     &                        -tmpsill)*SQRT(2.*9.806
      &                        *((HUPG(LG)-tmpsill)-(HDWG(LG)-tmpsill)))
-                          endif
-                        endif !if (HUPG(LG).gt.SILLHH(LG)+GUPHT) then
+                        endif
+                      endif !if (HUPG(LG).gt.SILLHH(LG)+GUPHT) then
 !
-                  	ENDIF   ! IF (DEPUPG(LG).LE.GUPHT) THEN
-									ENDIF		!  IF (GUPHT.GE.0) THEN
+                    ENDIF   ! IF (DEPUPG(LG).LE.GUPHT) THEN
+                  ENDIF     !  IF (GUPHT.GE.0) THEN
                 ENDIF  ! IF (NQCTYP(NCTL).EQ.33) THEN
                 !!20141024-UNG
                 
@@ -1241,9 +1240,9 @@ C++++++++++++++ BEGIN NORMAL FORMULA
               ENDIF
             ENDDO
             DO I=1,NOGELE(NGTYP(LG))
-            	IF(GUPHT.GE.GELE(NGTYP(LG),I)) THEN
-            		EPG=I
-            	ENDIF
+              IF(GUPHT.GE.GELE(NGTYP(LG),I)) THEN
+                EPG=I
+              ENDIF
             ENDDO
             IF(EPG.EQ.0) THEN
               DUMPG(LG)=0.
@@ -1259,10 +1258,10 @@ C++++++++++++++ BEGIN NORMAL FORMULA
      &         ((QT(NGTYP(LG),EP+1,EPG)+(QT(NGTYP(LG),EP+1,EPG+1)
      &        -QT(NGTYP(LG),EP+1,EPG))*(GUPHT-GELE(NGTYP(LG),EPG))
      &        /(GELE(NGTYP(LG),EPG+1)-GELE(NGTYP(LG),EPG)))-
-     &				 (QT(NGTYP(LG),EP,EPG)+(QT(NGTYP(LG),EP,EPG+1)
+     &         (QT(NGTYP(LG),EP,EPG)+(QT(NGTYP(LG),EP,EPG+1)
      &        -QT(NGTYP(LG),EP,EPG))*(GUPHT-GELE(NGTYP(LG),EPG))
      &        /(GELE(NGTYP(LG),EPG+1)-GELE(NGTYP(LG),EPG))))*
-     &					(HUPG(LG)-ELET(NGTYP(LG),EP))
+     &         (HUPG(LG)-ELET(NGTYP(LG),EP))
      &               /(ELET(NGTYP(LG),EP+1)-ELET(NGTYP(LG),EP))
              ENDIF
             ENDIF
@@ -1305,11 +1304,11 @@ C++++++++++++++ BEGIN NORMAL FORMULA         ! Below SILLHH(LG) edited by jgcho 
               IGCHECK(LG)=73
               CG10=((HUPG(LG)-SILLHH(LG))/(CGH2(LG)-CGH1(LG))		! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
      &             *(CG2(LG)-CG1(LG))+CG1(LG))							! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
-     					IF((HUPG(LG)-SILLHH(LG)).LT.CGH1(LG)) THEN       
-     						CG10=CG1(LG)
-     					ELSEIF((HUPG(LG)-SILLHH(LG)).GT.CGH2(LG)) THEN
-     						CG10=CG2(LG)
-     					ENDIF              
+              IF((HUPG(LG)-SILLHH(LG)).LT.CGH1(LG)) THEN       
+                CG10=CG1(LG)
+              ELSEIF((HUPG(LG)-SILLHH(LG)).GT.CGH2(LG)) THEN
+                CG10=CG2(LG)
+              ENDIF              
               DUMPG(LG)=CG10*GATEWI(LG)
      &               *(HUPG(LG)-SILLHH(LG))
      &               *SQRT(2.*9.806*(HUPG(LG)-SILLHH(LG)))
@@ -1317,11 +1316,11 @@ C++++++++++++++ BEGIN NORMAL FORMULA         ! Below SILLHH(LG) edited by jgcho 
               IGCHECK(LG)=74
               CG10=((HUPG(LG)-SILLHH(LG))/(CGH2(LG)-CGH1(LG))		! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
      &             *(CG2(LG)-CG1(LG))+CG1(LG))							! 2014.11.03 ung CG1(LG) -> CG1(LG),CG2(LG),CGH1(LG),CGH2(LG)
-     					IF((HUPG(LG)-SILLHH(LG)).LT.CGH1(LG)) THEN
-     						CG10=CG1(LG)
-     					ELSEIF((HUPG(LG)-SILLHH(LG)).GT.CGH2(LG)) THEN
-     						CG10=CG2(LG)
-     					ENDIF
+              IF((HUPG(LG)-SILLHH(LG)).LT.CGH1(LG)) THEN
+                CG10=CG1(LG)
+              ELSEIF((HUPG(LG)-SILLHH(LG)).GT.CGH2(LG)) THEN
+                CG10=CG2(LG)
+              ENDIF
               DUMPG(LG)=2.6*CG10*GATEWI(LG)*(HDWG(LG)-SILLHH(LG))
      &               *SQRT(2.*9.806
      &               *((HUPG(LG)-SILLHH(LG))-(HDWG(LG)-SILLHH(LG))))
@@ -1421,28 +1420,28 @@ C
                 ENDIF
               ENDIF
             ENDDO
-          	CQ(LU)=CQ(LU)+ABS(SUM(QSUM(LU,:)))								! GEOSR UNG 2014.11.12 Warning message writing
-            CV(LU)=DXP(LU)*DYP(LU)*HMP(LU)										! GEOSR UNG 2014.11.12 Warning message writing
+          	CQ(LU)=CQ(LU)+ABS(SUM(QSUM(LU,:)))           ! GEOSR UNG 2014.11.12 Warning message writing
+            CV(LU)=DXP(LU)*DYP(LU)*HMP(LU)                 ! GEOSR UNG 2014.11.12 Warning message writing
 !            WRITE(*,*)DXP(LU),DYP(LU),HMP(LU)
 !            WRITE(*,*)LU,NCTL
 !            PAUSE
 !      IF (NCTL.EQ.4) WRITE(*,*) N,(QSUM(LU,K),K=1,KC)
       ENDDO                           ! DO NCTL=1,NQCTL
 
-			DO NCTL=1,NQCTL																					! GEOSR UNG 2014.11.12 Warning message writing
-!				WRITE(*,*)CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
-!				WRITE(*,*)CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
-!				PAUSE
-				IF((CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))).GE.
-     &  									CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))))
-     &		 .AND. (CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))).LT.0.0)) THEN	! GEOSR UNG 2014.11.12 Warning message writing
-					WRITE(713,*) "QSUM is greater than UPSTREAM CELL WATER VOLUME"	! GEOSR UNG 2014.11.12 Warning message writing
-					WRITE(713,*) N,TIMEDAY,NCTL,IQCTLU(NCTL),JQCTLU(NCTL),
-     &              "QSUM=",CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))		! GEOSR UNG 2014.11.12 Warning message writing
-     &              ,",       CellVOL.="
-     &							,CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
-     		ENDIF																									! GEOSR UNG 2014.11.12 Warning message writing
-			ENDDO																										! GEOSR UNG 2014.11.12 Warning message writing
+      DO NCTL=1,NQCTL                                      ! GEOSR UNG 2014.11.12 Warning message writing
+!       WRITE(*,*)CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
+!       WRITE(*,*)CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
+!       PAUSE
+        IF((CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))).GE.
+     &    CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))))
+     &      .AND. (CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL))).LT.0.0)) THEN	   ! GEOSR UNG 2014.11.12 Warning message writing
+          WRITE(713,*) "QSUM is greater than UPSTREAM CELL WATER VOLUME" ! GEOSR UNG 2014.11.12 Warning message writing
+          WRITE(713,*) N,TIMEDAY,NCTL,IQCTLU(NCTL),JQCTLU(NCTL),
+     &      "QSUM=",CQ(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))                   ! GEOSR UNG 2014.11.12 Warning message writing
+     &       ,",       CellVOL.="
+     &       ,CV(LIJ(IQCTLU(NCTL),JQCTLU(NCTL)))
+        ENDIF                                                            ! GEOSR UNG 2014.11.12 Warning message writing
+      ENDDO                                                              ! GEOSR UNG 2014.11.12 Warning message writing
 !     START: WRITE SINK#.OUT
       IF (ISINK.EQ.2) THEN
         IF (MOD(FLOAT(N),SNKW).EQ.0. .OR. DTSNK.EQ.-1.) THEN
@@ -1456,7 +1455,7 @@ C
           CLOSE(711)
 C
           OPEN(712,FILE='SINKT.OUT',POSITION='APPEND')  ! OPEN NEW FILE
-		DO NS=1,NQCTL
+          DO NS=1,NQCTL
             DO K=1,KC
               GQT(NS)=GQT(NS)+QCTLT(K,NS)
             ENDDO
@@ -1512,27 +1511,27 @@ C
       SUBROUTINE FLDMASK
       USE GLOBAL  
 
-			  IF (NGTMSKF.GE.1 .AND. MSKFFLG.EQ.0) THEN
-                  DO LMSK=1,NGTMSKF
-                    IF(MGTMSKTYPF(LMSK).EQ.7)THEN  
-                      IF (MSKFFLG.EQ.0) THEN
-                        TMPSUB(LGTMSKF(LMSK))=SUB(LGTMSKF(LMSK))
-                        TMPSUBO(LGTMSKF(LMSK))=SUBO(LGTMSKF(LMSK))
-                      ENDIF
-                      SUB(LGTMSKF(LMSK))=0.  
-                      SUBO(LGTMSKF(LMSK))=0.  
-                    ENDIF  
-                    IF(MGTMSKTYPF(LMSK).EQ.8)THEN  
-                      IF (MSKFFLG.EQ.0) THEN
-                        TMPSVB(LGTMSKF(LMSK))=SVB(LGTMSKF(LMSK))
-                        TMPSVBO(LGTMSKF(LMSK))=SVBO(LGTMSKF(LMSK))
-                      ENDIF
-                      SVB(LGTMSKF(LMSK))=0.  
-                      SVBO(LGTMSKF(LMSK))=0.  
-                    ENDIF  
-                  ENDDO
-                  MSKFFLG=1
-                ENDIF !IF (NGTMSKF.GE.1 .AND. MSKFFLG.EQ.0)
+        IF (NGTMSKF.GE.1 .AND. MSKFFLG.EQ.0) THEN
+            DO LMSK=1,NGTMSKF
+            IF(MGTMSKTYPF(LMSK).EQ.7)THEN  
+                IF (MSKFFLG.EQ.0) THEN
+                TMPSUB(LGTMSKF(LMSK))=SUB(LGTMSKF(LMSK))
+                TMPSUBO(LGTMSKF(LMSK))=SUBO(LGTMSKF(LMSK))
+                ENDIF
+                SUB(LGTMSKF(LMSK))=0.  
+                SUBO(LGTMSKF(LMSK))=0.  
+            ENDIF  
+            IF(MGTMSKTYPF(LMSK).EQ.8)THEN  
+                IF (MSKFFLG.EQ.0) THEN
+                TMPSVB(LGTMSKF(LMSK))=SVB(LGTMSKF(LMSK))
+                TMPSVBO(LGTMSKF(LMSK))=SVBO(LGTMSKF(LMSK))
+                ENDIF
+                SVB(LGTMSKF(LMSK))=0.  
+                SVBO(LGTMSKF(LMSK))=0.  
+            ENDIF  
+            ENDDO
+            MSKFFLG=1
+        ENDIF !IF (NGTMSKF.GE.1 .AND. MSKFFLG.EQ.0)
 
       RETURN
       END
@@ -1540,19 +1539,19 @@ C
       SUBROUTINE EBBMASKRE
       USE GLOBAL  
 
-			  IF (NGTMSKE.GE.1 .AND. MSKEFLG.EQ.1) THEN
-                  DO LMSK=1,NGTMSKE
-                    IF(MGTMSKTYPE(LMSK).EQ.5)THEN  
-                      SUB(LGTMSKE(LMSK))=TMPSUB(LGTMSKE(LMSK))
-                      SUBO(LGTMSKE(LMSK))=TMPSUBO(LGTMSKE(LMSK))
-                    ENDIF  
-                    IF(MGTMSKTYPE(LMSK).EQ.6)THEN  
-                      SVB(LGTMSKE(LMSK))=TMPSVB(LGTMSKE(LMSK))
-                      SVBO(LGTMSKE(LMSK))=TMPSVBO(LGTMSKE(LMSK))
-                    ENDIF
-                  ENDDO
-                  MSKEFLG=0
-                ENDIF ! IF (MSKFFLG.EQ.1) THEN
+        IF (NGTMSKE.GE.1 .AND. MSKEFLG.EQ.1) THEN
+            DO LMSK=1,NGTMSKE
+            IF(MGTMSKTYPE(LMSK).EQ.5)THEN  
+                SUB(LGTMSKE(LMSK))=TMPSUB(LGTMSKE(LMSK))
+                SUBO(LGTMSKE(LMSK))=TMPSUBO(LGTMSKE(LMSK))
+            ENDIF  
+            IF(MGTMSKTYPE(LMSK).EQ.6)THEN  
+                SVB(LGTMSKE(LMSK))=TMPSVB(LGTMSKE(LMSK))
+                SVBO(LGTMSKE(LMSK))=TMPSVBO(LGTMSKE(LMSK))
+            ENDIF
+            ENDDO
+            MSKEFLG=0
+        ENDIF ! IF (MSKFFLG.EQ.1) THEN
 
       RETURN
       END
@@ -1560,19 +1559,19 @@ C
       SUBROUTINE FLDMASKRE
       USE GLOBAL  
 
-			  IF (NGTMSKF.GE.1 .AND. MSKFFLG.EQ.1) THEN
-                  DO LMSK=1,NGTMSKF
-                    IF(MGTMSKTYPF(LMSK).EQ.7)THEN  
-                      SUB(LGTMSKF(LMSK))=TMPSUB(LGTMSKF(LMSK))
-                      SUBO(LGTMSKF(LMSK))=TMPSUBO(LGTMSKF(LMSK))
-                    ENDIF  
-                    IF(MGTMSKTYPF(LMSK).EQ.8)THEN  
-                      SVB(LGTMSKF(LMSK))=TMPSVB(LGTMSKF(LMSK))
-                      SVBO(LGTMSKF(LMSK))=TMPSVBO(LGTMSKF(LMSK))
-                    ENDIF
-                  ENDDO
-                  MSKFFLG=0
-                ENDIF ! IF (MSKFFLG.EQ.1) THEN
+      IF (NGTMSKF.GE.1 .AND. MSKFFLG.EQ.1) THEN
+        DO LMSK=1,NGTMSKF
+          IF(MGTMSKTYPF(LMSK).EQ.7)THEN  
+            SUB(LGTMSKF(LMSK))=TMPSUB(LGTMSKF(LMSK))
+            SUBO(LGTMSKF(LMSK))=TMPSUBO(LGTMSKF(LMSK))
+          ENDIF  
+          IF(MGTMSKTYPF(LMSK).EQ.8)THEN  
+            SVB(LGTMSKF(LMSK))=TMPSVB(LGTMSKF(LMSK))
+            SVBO(LGTMSKF(LMSK))=TMPSVBO(LGTMSKF(LMSK))
+          ENDIF
+        ENDDO
+        MSKFFLG=0
+      ENDIF ! IF (MSKFFLG.EQ.1) THEN
 
       RETURN
       END
