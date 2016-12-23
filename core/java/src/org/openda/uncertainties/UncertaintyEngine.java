@@ -312,6 +312,10 @@ public class UncertaintyEngine implements Serializable{
 			int exchangeItemSelectedValueCount = (selectedObservationValueCounts == null || selectedObservationValueCounts.isEmpty()) ? 1 : selectedObservationValueCounts.get(uncertaintyId);
 			for (int n = 0; n < exchangeItemSelectedValueCount; n++) {
 				stdDevs[index] = stdDevIsFactor ? Math.abs(stdDev*selectedObservationValues[index]) : stdDev;
+                // when stdDevIsFactor and obs=0, set std to the specified one
+                if (stdDevIsFactor && stdDevs[index]==0){
+                    stdDevs[index] = stdDev;
+                }
 				index++;
 			}
         }
