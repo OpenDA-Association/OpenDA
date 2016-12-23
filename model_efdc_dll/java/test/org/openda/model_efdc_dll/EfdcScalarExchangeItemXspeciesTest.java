@@ -65,8 +65,8 @@ public class EfdcScalarExchangeItemXspeciesTest extends TestCase {
         String[] exchangeItemIDs = new String[4];
         
         exchangeItemIDs[0] = "1.Precipitation";
-        exchangeItemIDs[1] = "1_layer1.Xspecies1";
-        exchangeItemIDs[2] = "1_layer7.Xspecies3";
+        exchangeItemIDs[1] = "1_layer1.XSpecies01";
+        exchangeItemIDs[2] = "1_layer7.XSpecies03";
         exchangeItemIDs[3] = "1_layer3.Discharge";
 
         // create instance directories and intialize the model instances

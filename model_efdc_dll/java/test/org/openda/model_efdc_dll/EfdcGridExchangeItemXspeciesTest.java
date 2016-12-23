@@ -86,7 +86,7 @@ public class EfdcGridExchangeItemXspeciesTest extends TestCase {
             //}
 
             EfdcGridExchangeItem exchangeItem =
-                    (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.Xspecies1");
+                    (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.XSpecies01");
             double[] testValues = exchangeItem.getValuesAsDoubles();
             ITreeVector testVector = (ITreeVector) exchangeItem.getValues();
             assertEquals(7, testVector.getDimensionIndices()[0].getSize());
@@ -96,7 +96,7 @@ public class EfdcGridExchangeItemXspeciesTest extends TestCase {
             exchangeItem.setValuesAsDoubles(testValues);
 
             exchangeItem =
-                    (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.Xspecies2");
+                    (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.XSpecies02");
             testValues = exchangeItem.getValuesAsDoubles();
             exchangeItem.setValuesAsDoubles(testValues);
 

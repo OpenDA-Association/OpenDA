@@ -64,7 +64,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
 	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
 	private boolean firstTime = true;
-	private static String XSPECIES = "Xspecies%1$d";
+	private static String XSPECIES = "XSpecies%1$02d";
 	private static int XSPECIES_GRID_OFFSET = 1800;
 	private static int XSPECIES_OFFSET = 800;
 
@@ -564,7 +564,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		String[] boundaryExchangeItemIds = boundaryExchangeItems.keySet().toArray(new String[boundaryExchangeItems.size()]);
 		for (String id : boundaryExchangeItemIds) {
 			IExchangeItem boundaryExchangeItem = getDataObjectExchangeItem(id);
-
 			//find corresponding inputExchangeItem.
 			IExchangeItem inputExchangeItem = null;
 			for (IDataObject inputDataObject : inputDataObjects) {
@@ -576,9 +575,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			if (inputExchangeItem == null) {//if item not found.
 				String locationId = BBUtils.getLocationFromId(id);
 				String parameterId = BBUtils.getParameterFromId(id);
-				if (!locationId.contains("_layer")  && !EfdcExchangeItemType.findByKey(parameterId).isOptional() ) {
-					//throw new RuntimeException("Exchange item with id '" + id + "' not found in given inputDataObjects.");
-					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
+				if (!locationId.contains("_layer") ) {
+					if (!EfdcExchangeItemType.findByKey(parameterId).isOptional()) {
+						Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
+					}
 					continue;
 				}
 
@@ -592,7 +592,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 						break;
 					}
 				}
-				if ((inputExchangeItem == null) && !EfdcExchangeItemType.findByKey(parameterId).isOptional()) {//if item not found.
+				if ((inputExchangeItem == null) && EfdcExchangeItemType.findByKey(parameterId).isOptional()) {
+					continue;
+				}
+				else if (inputExchangeItem == null) {//if item not found.
 					throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
 				}
 			}

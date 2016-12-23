@@ -170,6 +170,7 @@ public enum EfdcExchangeItemType {
     static {
         map = new HashMap<String,EfdcExchangeItemType>();
         for (EfdcExchangeItemType v : EfdcExchangeItemType.values()) {
+            if (v.getRole().equals(EfdcExchangeItemRole.FORCING)||v.getRole().equals(EfdcExchangeItemRole.BOUNDARY))
             map.put(v.parameterId, v);
         }
     }
