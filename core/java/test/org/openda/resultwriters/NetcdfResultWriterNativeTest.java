@@ -176,7 +176,7 @@ public class NetcdfResultWriterNativeTest extends TestCase {
 		compareNetcdfFiles("de_ref_ctatv_A_3","de_test_ctatv_A_3");
 		compareNetcdfFiles("de_ref_ctatv_B_4","de_test_ctatv_B_4");
 		compareNetcdfFiles("de_ref_ctatv_from_model_1","de_test_ctatv_from_model_1");
-		compareNetcdfFiles("de_ref_ctatvector_2","de_test_ctatvector_2");
+		compareNetcdfFiles("de_ref_ctavector_2","de_test_ctavector_2");
 		compareNetcdfFiles("de_ref_simple_tv_5","de_test_simple_tv_5");
 		compareNetcdfFiles("de_ref_simplematrix_7","de_test_simplematrix_7");
 		compareNetcdfFiles("de_ref_simplevec_6","de_test_simplevec_6");
