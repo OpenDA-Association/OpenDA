@@ -142,43 +142,24 @@ public class NetcdfResultWriterPureJavaTest extends TestCase {
 
 		Results.reset();
 
-		File ncFile1 = new File(testRunDataDir, "ncp_test_ctatv_A_3.nc");
-		assertTrue("Output file should exist",ncFile1.exists());
-		File ncFile1Dump = new File(testRunDataDir, "ncp_test_ctatv_A_3.txt");
-		File ncFile1Ref = new File(testRunDataDir, "ncp_test_ctatv_A_3.ref");
-		generateAsciiDump(ncFile1.getAbsolutePath(),ncFile1Dump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(ncFile1Dump,ncFile1Ref,1));
-		
-		File ncFile2 = new File(testRunDataDir, "ncp_test_ctatv_B_4.nc");
-		assertTrue("Output file should exist",ncFile2.exists());
-		File ncFile2Dump = new File(testRunDataDir, "ncp_test_ctatv_B_4.txt");
-		File ncFile2Ref = new File(testRunDataDir, "ncp_test_ctatv_B_4.ref");
-		generateAsciiDump(ncFile2.getAbsolutePath(),ncFile2Dump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(ncFile2Dump,ncFile2Ref,1));
-
-
-		File ncFile4 = new File(testRunDataDir, "ncp_test_ctavector_2.nc");
-		assertTrue("Output file should exist",ncFile4.exists());
-		File ncFile4Dump = new File(testRunDataDir, "ncp_test_ctavector_2.txt");
-		File ncFile4Ref = new File(testRunDataDir, "ncp_test_ctavector_2.ref");
-		generateAsciiDump(ncFile4.getAbsolutePath(),ncFile4Dump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(ncFile4Dump,ncFile4Ref,1));
-
-		File ncFile5 = new File(testRunDataDir, "ncp_test_simple_tv_5.nc");
-		assertTrue("Output file should exist",ncFile5.exists());
-		File ncFile5Dump = new File(testRunDataDir, "ncp_test_simple_tv_5.txt");
-		File ncFile5Ref = new File(testRunDataDir, "ncp_test_simple_tv_5.ref");
-		generateAsciiDump(ncFile5.getAbsolutePath(),ncFile5Dump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(ncFile5Dump,ncFile5Ref,1));
-
-		File ncFile7 = new File(testRunDataDir, "ncp_test_simplevec_6.nc");
-		assertTrue("Output file should exist",ncFile7.exists());
-		File ncFile7Dump = new File(testRunDataDir, "ncp_test_simplevec_6.txt");
-		File ncFile7Ref = new File(testRunDataDir, "ncp_test_simplevec_6.ref");
-		generateAsciiDump(ncFile7.getAbsolutePath(),ncFile7Dump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(ncFile7Dump,ncFile7Ref,1));
-
+		compareNetcdfFiles("ncp_ref_ctatv_A_3","ncp_test_ctatv_A_3");
+		compareNetcdfFiles("ncp_ref_ctatv_B_4","ncp_test_ctatv_B_4");
+		compareNetcdfFiles("ncp_ref_ctavector_2","ncp_test_ctavector_2");
+		compareNetcdfFiles("ncp_ref_simple_tv_5","ncp_test_simple_tv_5");
+		compareNetcdfFiles("ncp_ref_simplevec_6","ncp_test_simplevec_6");
 	}
+
+	private void compareNetcdfFiles(String expectedBaseName, String actualBaseName ) {
+		File actualFile = new File(testRunDataDir, actualBaseName + ".nc");
+		assertTrue("Output file should exist " + actualFile.getAbsolutePath(),actualFile.exists());
+		File actualFileDump = new File(testRunDataDir, actualBaseName + ".txt");
+		File expectedFile = new File(testRunDataDir, expectedBaseName + ".nc");
+		File expectedFileDump = new File(testRunDataDir, expectedBaseName + ".txt");
+		generateAsciiDump(actualFile.getAbsolutePath(),actualFileDump.getAbsolutePath());
+		generateAsciiDump(expectedFile.getAbsolutePath(),expectedFileDump.getAbsolutePath());
+		assertTrue(testData.FilesAreIdentical(expectedFileDump,actualFileDump,1));
+	}
+
 
 	private void generateAsciiDump(String nameNcFile, String nameTextFile){
 		//NCdump filename [-ncml] [-c | -vall] [-v varName;...]
