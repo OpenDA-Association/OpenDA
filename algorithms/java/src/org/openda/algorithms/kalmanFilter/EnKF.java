@@ -25,6 +25,8 @@ import org.openda.utils.Results;
 import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.performance.OdaTiming;
 
+import java.util.HashMap;
+
 /**
  * @author Nils van Velzen based in the initial OpenDA implementation by Martin Verlaan
  *         Traditional Ensemble Kalman filter as introduced by
@@ -51,47 +53,65 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 
 
     protected class SmoothedGainMatrix{
-		private IVector[] lastGainMatrix;
-		private double previousAnalisysTime;
+		private HashMap<String, IVector> lastGainMatrixHashMap = new HashMap<String, IVector>();
+		private double previousAnalysisTime;
 		private double timeRegularisationPerDay;
 
 		public SmoothedGainMatrix(double timeRegularisationPerDay){
-		    this.previousAnalisysTime= Double.NaN;
-			this.lastGainMatrix=null;
+		    this.previousAnalysisTime = Double.NaN;
 			this.timeRegularisationPerDay=timeRegularisationPerDay;
 		}
 
-		public void SmoothGain(IVector[] K, double timeRegularisationPerDay, ITime analysisTime){
+		public SmoothedGainMatrix(HashMap<String, IVector> initialSmoothedGain, double timeRegularisationPerDay, double initialAnalysisTime) {
+			this.lastGainMatrixHashMap = initialSmoothedGain;
+			this.timeRegularisationPerDay = timeRegularisationPerDay;
+			this.previousAnalysisTime = initialAnalysisTime;
+		}
+
+		public void SmoothGain(IStochObserver obs, IVector[] K, double timeRegularisationPerDay, ITime analysisTime){
 			int nCols=K.length;
-			if (lastGainMatrix==null) {
+			ObserverUtils obsUtils = new ObserverUtils(obs);
+			String[] obsIds = obsUtils.getObsIds();
+			double[] obsTimeOffsets = obsUtils.getObsTimeOffsets(analysisTime.getMJD());
 
-				lastGainMatrix= new IVector[nCols];
-				for (int iCol=0; iCol<nCols; iCol++ ){
-					lastGainMatrix[iCol]=K[iCol].clone();
-				}
-
+			if (this.lastGainMatrixHashMap.size()==0){
+					for(int i=0;i<obs.getCount();i++){
+						String gainVectorId = obsIds[i]+":"+Math.round(obsTimeOffsets[i]*24.0*3600.0); //days to seconds
+						this.lastGainMatrixHashMap.put(gainVectorId,K[i].clone());
+					}
 			}
 			else {
-				double dTime=analysisTime.getMJD()-this.previousAnalisysTime;
+				// TODO:
+				// Somewhere here check if the observations set of the new gain is consistent with the lastGainMatrix
+				// Possible actions when inconsistent set is found:
+				// - generate error and stop the program
+				// - skip smoothing, give the new gain as output, leave the lastGainMatrix+previousAnalysisTime as it is, log
+				//   --> this option is suitable for systems with stable observing network, i.e. the observing network works
+				//       most of the time; when one station is down, it will be back in operation quickly.
+				// - skip smoothing, set the lastGainMatrix and previousAnalysisTime equal to those of the new gain
+				//   --> this is suitable for systems where observing station can stay down for a longer period
+				// - smooth only existing K columns?
+
+				double dTime=analysisTime.getMJD()-this.previousAnalysisTime;
 				double exponent=dTime/timeRegularisationPerDay;
 				double alpha=Math.pow(timeRegularisationPerDay,exponent);
 				System.out.println("Gain smoothing alpha="+alpha);
+				IVector lastGainMatrix = null;
 				for (int iCol=0; iCol<nCols; iCol++){
-					lastGainMatrix[iCol].scale(alpha);
-					lastGainMatrix[iCol].axpy((1.0-alpha),K[iCol]);
+					String gainVectorId = obsIds[iCol]+":"+Math.round(obsTimeOffsets[iCol]*24.0*3600.0); //days to seconds
+					lastGainMatrix = this.lastGainMatrixHashMap.get(gainVectorId);
+					lastGainMatrix.scale(alpha);
+					lastGainMatrix.axpy((1.0-alpha),K[iCol]);
 					K[iCol].setConstant(0.0);
-					K[iCol].axpy(1.0,lastGainMatrix[iCol]);
+					K[iCol].axpy(1.0,lastGainMatrix);
+					this.lastGainMatrixHashMap.put(obsIds[iCol],lastGainMatrix);
 				}
+				lastGainMatrix.free();
 			}
-			this.previousAnalisysTime=analysisTime.getMJD();
+			this.previousAnalysisTime =analysisTime.getMJD();
 		}
 		protected void free(){
-			if (this.lastGainMatrix!=null){
-				for (int iCol=0; iCol<this.lastGainMatrix.length ; iCol++){
-					this.lastGainMatrix[iCol].free();
-				}
-				this.lastGainMatrix=null;
-			}
+			this.lastGainMatrixHashMap.clear();
 		}
 	}
 
@@ -539,8 +559,14 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 
 			// Apply smoothing on the gain matrix
 			if (this.timeRegularisationPerDay>0.0){
-				if (this.smoothedGainMatrix==null){this.smoothedGainMatrix=new SmoothedGainMatrix(this.timeRegularisationPerDay);}
-				this.smoothedGainMatrix.SmoothGain(Kvecs, this.timeRegularisationPerDay, analysisTime);
+				if (this.smoothedGainMatrix==null){
+					if (this.initialSmoothedGainVectors.size()==0){
+						this.smoothedGainMatrix=new SmoothedGainMatrix(this.timeRegularisationPerDay);
+					} else {
+						this.smoothedGainMatrix=new SmoothedGainMatrix(this.initialSmoothedGainVectors,this.timeRegularisationPerDay, this.initialAnalysisTime);
+					}
+				}
+				this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 			}
 
 			// Store kalman gain for future use in this object

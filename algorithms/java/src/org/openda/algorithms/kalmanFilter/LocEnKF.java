@@ -170,7 +170,7 @@ public class LocEnKF extends EnKF {
 				// Apply smoothing on the gain matrix
 				if (this.timeRegularisationPerDay>0.0){
 					if (this.smoothedGainMatrix==null){this.smoothedGainMatrix=new SmoothedGainMatrix(this.timeRegularisationPerDay);}
-					this.smoothedGainMatrix.SmoothGain(Kvecs, this.timeRegularisationPerDay, analysisTime);
+					this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 				}
 
 				// Store kalman gain for future use in this object
