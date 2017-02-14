@@ -68,6 +68,7 @@ public class BBModelFactory implements IModelFactory, ITimeHorizonConsumer {
         this();
         this.bbModelConfig = bbModelConfig;
         this.bbModelConfig.getWrapperConfig().validate();
+        cleanUpModelEnsembleDirectories();
     }
 
     public BBModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
@@ -97,7 +98,8 @@ public class BBModelFactory implements IModelFactory, ITimeHorizonConsumer {
         File configRootDir = bbModelConfig.getConfigRootDir();
 
         // Update alias with instance number
-        bbModelConfig.getWrapperConfig().getAliasDefinitions().setAliasValue("instanceNumber", String.valueOf(instanceNumber));
+        String instanceNumberString = BBModelInstance.getInstanceNumberString(bbModelConfig, instanceNumber);
+        bbModelConfig.getWrapperConfig().getAliasDefinitions().setAliasValue("instanceNumber", instanceNumberString);
 
         BBWrapperConfig bbWrapperConfig = bbModelConfig.getWrapperConfig();
         if (bbWrapperConfig.getCloneType() != BBWrapperConfig.CloneType.None) {

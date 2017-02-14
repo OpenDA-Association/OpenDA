@@ -42,9 +42,10 @@ import java.util.*;
 public class BBModelInstance extends Instance implements IModelInstance {
     private final String ALL_ELEMENTS_FROM_IO_OBJECT = "allElementsFromIoObject";
 
-    protected BBModelConfig bbModelConfig;
+	protected BBModelConfig bbModelConfig;
 
     private File instanceFileOrDir;
+	private String instanceNumberString;
     private HashMap<String, IoObjectInterface> ioObjects;
     private HashMap<String, IDataObject> dataObjects;
     protected HashMap<String, BBExchangeItem> bbExchangeItems = new HashMap<String, BBExchangeItem>();
@@ -72,9 +73,9 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		File configRootDir = bbModelConfig.getConfigRootDir();
 
 		// Update alias with instance number
-		this.instanceNumber=instanceNumber;
 		this.aliasDefinitions=bbModelConfig.getWrapperConfig().getAliasDefinitions().clone();
-		this.aliasDefinitions.setAliasValue("instanceNumber", String.valueOf(instanceNumber));
+		instanceNumberString = getInstanceNumberString(bbModelConfig, instanceNumber);
+		this.aliasDefinitions.setAliasValue("instanceNumber", instanceNumberString);
 		
 		// Create clone of template directory
         BBWrapperConfig bbWrapperConfig = bbModelConfig.getWrapperConfig();
@@ -135,7 +136,20 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		Results.putMessage("Instance initialization done");
 	}
 
-    private void determineTimeHorizon() {
+	static String getInstanceNumberString(BBModelConfig bbModelConfig, int instanceNumber) {
+		// TODO: use dynamic string formatter
+		String s = String.valueOf(instanceNumber);
+		if (bbModelConfig.getInstanceNumberFormat().equals("00")) {
+			s = String.format("%02d", instanceNumber);
+		} else if (bbModelConfig.getInstanceNumberFormat().equals("000")) {
+			s= String.format("%03d", instanceNumber);
+		} else if (bbModelConfig.getInstanceNumberFormat().equals("0000")) {
+			s= String.format("%04d", instanceNumber);
+		}
+		return s;
+	}
+
+	private void determineTimeHorizon() {
         ITime startTime = bbModelConfig.getStartTime();
         if (startTime == null) {
                 // start time not in model config get it from exchange item
@@ -203,9 +217,8 @@ public class BBModelInstance extends Instance implements IModelInstance {
     public void compute(ITime targetTime) {
 
         // update instanceNumber in shared config
-        this.aliasDefinitions.setAliasValue("instanceNumber", String.valueOf(instanceNumber));
+        this.aliasDefinitions.setAliasValue("instanceNumber", instanceNumberString);
 
-        
         checkForPendingComputeActions();
 
         // update times

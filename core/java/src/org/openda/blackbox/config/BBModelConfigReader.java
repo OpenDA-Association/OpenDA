@@ -74,6 +74,8 @@ public class BBModelConfigReader {
 			}
         }
 
+		String instanceNumberFormat = bbModelConfigXML.getInstanceNumberFormat();
+
         // parse io selections
         ArrayList<BBModelVectorConfig> vectorConfigs = new ArrayList<BBModelVectorConfig>();
 
@@ -159,7 +161,8 @@ public class BBModelConfigReader {
 			restartFileNames = bbModelConfigXML.getRestartInfo().getModelStateFile();
 		}
 		return new BBModelConfig(modelConfigFile.getParentFile(), bbWrapperConfig,
-                startTime, endTime,
+				instanceNumberFormat,
+				startTime, endTime,
                 timeStepMJD, startTimeExchangeItemIds, endTimeExchangeItemIds,
                 timeStepExchangeItemIds, vectorConfigs,
 				skipModelActionsIfInstanceDirExists, doCleanUp, restartFileNames, savedStatesDirPrefix);

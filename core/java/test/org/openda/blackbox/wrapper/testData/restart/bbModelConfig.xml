@@ -18,6 +18,8 @@
         <vector id="allElementsFromIoObject" ioObjectId="state"/>
     </exchangeItems>
 
+	<instanceNumberFormat>000</instanceNumberFormat>
+
     <doCleanUp>false</doCleanUp>
 
     <restartInfo>

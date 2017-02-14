@@ -35,6 +35,7 @@ public class BBModelConfig {
 	private boolean skipModelActionsIfInstanceDirExists;
 	private boolean doCleanUp;
     private File configRootDir;
+    private String instanceNumberFormat;
     private ITime startTime;
     private ITime endTime;
     private String[] startTimeExchangeItemIds;
@@ -45,7 +46,7 @@ public class BBModelConfig {
     private String[] timeStepExchangeItemIds;
 
     public BBModelConfig(File configRootDir, BBWrapperConfig wrapperConfig,
-                         ITime startTime, ITime endTime,
+                         String instanceNumberFormat, ITime startTime, ITime endTime,
                          double timeStepMJD, String[] startTimeExchangeItemIds, String[] endTimeExchangeItemIds,
                          String[] timeStepExchangeItemIds, Collection<BBModelVectorConfig> vectorConfigs,
                          boolean skipModelActionsIfInstanceDirExists,
@@ -53,6 +54,7 @@ public class BBModelConfig {
                          String[] restartFileNames, String savedStatesDirPrefix) {
         this.configRootDir = configRootDir;
         this.wrapperConfig = wrapperConfig;
+        this.instanceNumberFormat = instanceNumberFormat;
         this.startTime = startTime;
         this.endTime = endTime;
         this.timeStepMJD = timeStepMJD;
@@ -86,7 +88,11 @@ public class BBModelConfig {
         return configRootDir;
     }
 
-    public ITime getStartTime() {
+	public String getInstanceNumberFormat() {
+		return instanceNumberFormat;
+	}
+
+	public ITime getStartTime() {
         return startTime;
     }
 
