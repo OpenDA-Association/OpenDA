@@ -184,7 +184,8 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 
 			// modelConfigFile must be a relative path.
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
-			return new BmiModelInstance(model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,
+
+			return new BmiModelInstance(this.currentModelInstanceNumber.val(), model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,
 					this.forcingConfiguration, this.modelStateExchangeItemIds, this.modelStateExchangeItemLowerLimits, this.modelStateExchangeItemUpperLimits, inputStateDir, outputStateDir, modelMissingValue);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);

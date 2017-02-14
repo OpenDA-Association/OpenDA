@@ -41,8 +41,6 @@ import org.openda.utils.*;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.AnalysisDataWriter;
 import org.openda.utils.io.FileBasedModelState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Interface to a BMI Model. Passes calls to the BMI interface.
@@ -51,12 +49,12 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BmiModelInstance extends Instance implements IModelInstance, IModelExtensions {
-	private static final Logger LOGGER = LoggerFactory.getLogger(BmiModelInstance.class);
 
 	private final EBMI model;
 	private final File modelRunDir;
 
 	private final Map<String, IExchangeItem> exchangeItems;
+	private final int modelInstanceNumber;
 	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private Map<String, IExchangeItem> forcingExchangeItems;
 	private IExchangeItem modelStateExchangeItem;
@@ -72,24 +70,15 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 	private final AnalysisDataWriter analysisDataWriter;
 	private boolean firstTime = true;
-	private double modelMissingValue;
 
-	/**
-	 * @param model
-	 * @param modelRunDir
-	 * @param initFile
-	 * @param overrulingTimeHorizon optional, can be null.
-	 * @param modelStateExchangeItemLowerLimits
-	 *@param modelStateExchangeItemUpperLimits @throws BMIModelException
-	 */
-	public BmiModelInstance(EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
+	public BmiModelInstance(int modelInstanceNumber, EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
 							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
 							Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits, String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
-		this.modelMissingValue = modelMissingValue;
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
 
+		this.modelInstanceNumber = modelInstanceNumber;
 		this.forcingConfiguration = forcingConfig;
 		this.model = model;
 		this.modelRunDir = modelRunDir;
@@ -121,9 +110,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		model.initializeModel();
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
-		exchangeItems = createExchangeItems(model, this.modelMissingValue);
+		exchangeItems = createExchangeItems(model, modelMissingValue);
 
-		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds, modelStateExchangeItemLowerLimits, modelStateExchangeItemUpperLimits, this.model, this.modelMissingValue);
+		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds,
+				modelStateExchangeItemLowerLimits, modelStateExchangeItemUpperLimits,
+				this.model, modelMissingValue);
 
 		forcingExchangeItems = createForcingExchangeItems();
 
@@ -205,6 +196,14 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 			IDataObject dataObject = BBUtils.createDataObject(this.modelRunDir, forcingConfig.getClassName(), forcingConfig.getDataObjectFileName(), forcingConfig.getArguments());
 			for (String ExchangeItemId : dataObject.getExchangeItemIDs()) {
 				result.put(ExchangeItemId, dataObject.getDataObjectExchangeItem(ExchangeItemId));
+			}
+			if (dataObject instanceof IEnsembleDataObject) {
+				IEnsembleDataObject ensembleDataObject = (IEnsembleDataObject) dataObject;
+				String[] ensembleExchangeItemIds = ensembleDataObject.getEnsembleExchangeItemIds();
+				for (String exchangeItemId : ensembleExchangeItemIds) {
+					IExchangeItem ensembleExchangeItem = ensembleDataObject.getDataObjectExchangeItem(exchangeItemId, this.modelInstanceNumber);
+					result.put(ensembleExchangeItem.getId(), ensembleExchangeItem);
+				}
 			}
 		}
 
