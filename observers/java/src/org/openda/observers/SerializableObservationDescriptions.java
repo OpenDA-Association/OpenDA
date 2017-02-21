@@ -32,7 +32,7 @@ import java.util.List;
  * This implementation is used to contain and serialize the content of not serializable
  * implementations of IObservationDescriptions is not serializable.
  *
- * The constructor will simply copies all content of the non serializable into the
+ * The constructor will simply copy all content of the non serializable into the
  * SerializableObservationDescriptions
  *
  * Note the exchange items of the original IObservationDescriptions are assumed to be serializable!
