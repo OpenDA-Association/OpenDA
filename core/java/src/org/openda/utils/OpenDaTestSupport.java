@@ -708,7 +708,11 @@ public class OpenDaTestSupport {
 	 * @param variableNames semicolon delimited list of variables of which the data should be used in the comparison.
 	 *                      If this is null or empty, then all variables are used.
 	 * @throws IOException
+	 *
+	 * @deprecated The ascii output from NetcdfUtils.netcdfFileToString changes with new version of the netCDF library.
+	 *             Use compareNetcdfFilesInTextFormat instead of this method and provide a netcdf file as reference.
 	 */
+	@Deprecated
 	public static void compareNetcdfFileInTextFormat(File textFileWithExpectedOutput, File netcdfFileWithActualOutput, String variableNames) throws IOException {
 		String expectedOutputString = replaceNetcdfAttributeLinesWithTimeStamps(AsciiFileUtils.readText(textFileWithExpectedOutput));
 		//convert netcdf data to text for text comparison.
@@ -716,4 +720,27 @@ public class OpenDaTestSupport {
 		Assert.assertEquals("Actual output file '" + netcdfFileWithActualOutput + "' does not equal expected output file '" + textFileWithExpectedOutput + "'.",
 				expectedOutputString, actualOutputString);
 	}
+
+	/**
+	 * This can be used e.g. in unit tests to compare netcdf data in human readable text format instead of in binary format.
+	 *
+	 * @param netcdfFileWithExpectedOutput
+	 * @param netcdfFileWithActualOutput
+	 * @param variableNames semicolon delimited list of variables of which the data should be used in the comparison.
+	 *                      If this is null or empty, then all variables are used.
+	 * @throws IOException
+	 */
+
+	public static void compareNetcdfFilesInTextFormat(File netcdfFileWithExpectedOutput, File netcdfFileWithActualOutput, String variableNames) throws IOException {
+		//convert netcdf data to text for text comparison.
+		String expectedOutputString = replaceNetcdfAttributeLinesWithTimeStamps(NetcdfUtils.netcdfFileToString(netcdfFileWithExpectedOutput, variableNames));
+		String actualOutputString = replaceNetcdfAttributeLinesWithTimeStamps(NetcdfUtils.netcdfFileToString(netcdfFileWithActualOutput, variableNames));
+		//remove first line as it contains the full file path
+		expectedOutputString = expectedOutputString.substring(expectedOutputString.indexOf('\n')+1);
+		actualOutputString = actualOutputString.substring(actualOutputString.indexOf('\n')+1);
+		Assert.assertEquals("Actual output file '" + netcdfFileWithActualOutput + "' does not equal expected output file '" + netcdfFileWithExpectedOutput + "'.",
+			expectedOutputString, actualOutputString);
+	}
+
+
 }
