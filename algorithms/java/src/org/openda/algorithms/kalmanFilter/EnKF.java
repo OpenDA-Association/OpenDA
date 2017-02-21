@@ -18,13 +18,17 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openda.algorithms.kalmanFilter;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.*;
 import org.openda.observers.ObserverUtils;
 import org.openda.utils.Matrix;
 import org.openda.utils.Results;
+import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.performance.OdaTiming;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.HashMap;
 
 /**
@@ -54,6 +58,8 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 
     protected class SmoothedGainMatrix{
 		private HashMap<String, IVector> lastGainMatrixHashMap = new HashMap<String, IVector>();
+		private HashMap<String, String> obsIds = new HashMap<String, String>();
+		private HashMap<String, Double> lastObsTimeOffsets = new HashMap<String, Double>();
 		private double previousAnalysisTime;
 		private double timeRegularisationPerDay;
 
@@ -62,10 +68,13 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			this.timeRegularisationPerDay=timeRegularisationPerDay;
 		}
 
-		public SmoothedGainMatrix(HashMap<String, IVector> initialSmoothedGain, double timeRegularisationPerDay, double initialAnalysisTime) {
-			this.lastGainMatrixHashMap = initialSmoothedGain;
+		public SmoothedGainMatrix(HashMap<String, IVector> initialSmoothedGainVectors, HashMap<String, String> initialObsId, HashMap<String, Double> initialObsTimeOffset, double timeRegularisationPerDay, double initialAnalysisTime) {
+			this.lastGainMatrixHashMap = initialSmoothedGainVectors;
+			this.obsIds = initialObsId;
+			this.lastObsTimeOffsets = initialObsTimeOffset;
 			this.timeRegularisationPerDay = timeRegularisationPerDay;
 			this.previousAnalysisTime = initialAnalysisTime;
+
 		}
 
 		public void SmoothGain(IStochObserver obs, IVector[] K, double timeRegularisationPerDay, ITime analysisTime){
@@ -78,6 +87,8 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 					for(int i=0;i<obs.getCount();i++){
 						String gainVectorId = obsIds[i]+":"+Math.round(obsTimeOffsets[i]*24.0*3600.0); //days to seconds
 						this.lastGainMatrixHashMap.put(gainVectorId,K[i].clone());
+						this.obsIds.put(gainVectorId,obsIds[i]);
+						this.lastObsTimeOffsets.put(gainVectorId,obsTimeOffsets[i]);
 					}
 			}
 			else {
@@ -104,7 +115,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 					lastGainMatrix.axpy((1.0-alpha),K[iCol]);
 					K[iCol].setConstant(0.0);
 					K[iCol].axpy(1.0,lastGainMatrix);
-					this.lastGainMatrixHashMap.put(obsIds[iCol],lastGainMatrix);
+					this.lastGainMatrixHashMap.put(gainVectorId,lastGainMatrix.clone());
 				}
 				lastGainMatrix.free();
 			}
@@ -560,11 +571,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			// Apply smoothing on the gain matrix
 			if (this.timeRegularisationPerDay>0.0){
 				if (this.smoothedGainMatrix==null){
-					if (this.initialSmoothedGainVectors.size()==0){
-						this.smoothedGainMatrix=new SmoothedGainMatrix(this.timeRegularisationPerDay);
-					} else {
-						this.smoothedGainMatrix=new SmoothedGainMatrix(this.initialSmoothedGainVectors,this.timeRegularisationPerDay, this.initialAnalysisTime);
-					}
+					this.smoothedGainMatrix=new SmoothedGainMatrix(this.timeRegularisationPerDay);
 				}
 				this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 			}
@@ -596,5 +603,67 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		}
 	   // CtaUtils.print_native_memory("Enkf end",1);
         System.gc();
+	}
+
+	@Override
+	protected void restoreGain(File[] tempFiles, File restartTempDir) {
+		// restore the last Kalman gain, in case of EnKF-GS
+		if (timeRegularisationPerDay>0.0){
+			FileFilter kalmanGainRestartFileFilter = new PrefixFileFilter(new String ("kgStorage"));
+			tempFiles = restartTempDir.listFiles(kalmanGainRestartFileFilter);
+			if(tempFiles.length==1){
+
+				// Get K.zip from state.zip and unpack it to directory kgStorage
+				File kgStorage = new File(this.workingDir,"kgStorage_tempdir_restore");
+				FileBasedModelState smoothedGain = new FileBasedModelState(this.workingDir,tempFiles[0].getName());
+				smoothedGain.setDirContainingModelstateFiles(kgStorage);
+				smoothedGain.setZippedStateFile(new File(restartTempDir.getAbsoluteFile(),tempFiles[0].getName()));
+				smoothedGain.restoreState();
+
+				// Read and load K into memory
+				KalmanGainStorage gainStorage = new KalmanGainStorage(kgStorage);
+				gainStorage.setKalmanGainStorageXmlFileName("kalmanGainStorage.xml");
+				gainStorage.readKalmanGain(this.getCurrentState());
+				String[] obsIds = gainStorage.getObservationIds();
+				double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();
+				IVector[] KVecs = gainStorage.getKalmanGainColumns();
+				this.initialAnalysisTime = gainStorage.getTimeStampAsMjd();
+				for (int iObs = 0; iObs < obsIds.length; iObs++) {
+					String gainVectorId = obsIds[iObs] + ":" + Math.round(obsTimeOffsets[iObs] * 24.0 * 3600.0); //conversion to seconds
+					this.initialSmoothedGainVectors.put(gainVectorId, KVecs[iObs]);
+					this.initialObsId.put(gainVectorId, obsIds[iObs]);
+					this.initialObsTimeOffset.put(gainVectorId, obsTimeOffsets[iObs]);
+				}
+				this.smoothedGainMatrix=new SmoothedGainMatrix(this.initialSmoothedGainVectors,this.initialObsId, this.initialObsTimeOffset,this.timeRegularisationPerDay, this.initialAnalysisTime);
+
+				// Remove K restore directory
+				BBUtils.deleteDirectory(smoothedGain.getDirContainingModelStateFiles());
+			}
+		}
+	}
+
+	@Override
+	protected void saveGain(FileBasedModelState algorithmState) {
+		if (smoothedGainMatrix!=null) {
+			// write gain into files in a temp dir
+			File kgStorage = new File(algorithmState.getDirContainingModelStateFiles(), "kgStorage_restart_tempdir");
+			double lastAnalysisTime = this.smoothedGainMatrix.previousAnalysisTime;
+			KalmanGainStorage gainStorage = new KalmanGainStorage(kgStorage, lastAnalysisTime, false); // here we should provide lastAnalysisTimeMJD
+			gainStorage.writeKalmanGain(this.smoothedGainMatrix.lastGainMatrixHashMap, this.smoothedGainMatrix.obsIds, this.smoothedGainMatrix.lastObsTimeOffsets);
+
+			FileBasedModelState gainState = new FileBasedModelState();
+			gainState.setDirContainingModelstateFiles(kgStorage.getAbsoluteFile());
+			File[] filelist = kgStorage.listFiles();
+			for (File file : filelist) {
+				gainState.addFile(file.getAbsoluteFile());
+			}
+			// zip files
+			File kgStorageZip = new File(algorithmState.getDirContainingModelStateFiles(), "kgStorage.zip");
+			gainState.savePersistentState(kgStorageZip);
+			// add it to algorithmState
+			algorithmState.addFile(kgStorageZip);
+			// remove temp dir
+			gainState.releaseState(kgStorage);
+		}
 	}
 }

@@ -580,7 +580,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 		if(!restartTempDir.mkdirs()){
 			throw new RuntimeException("Could not create temporary directory for restart files: "+restartTempDirName);
 		}
-		// combine instance files into one algorithm state 
+		// combine instance files into one algorithm state
 		FileBasedModelState algorithmState = new FileBasedModelState();
 		algorithmState.setDirContainingModelstateFiles(restartTempDir.getAbsoluteFile());
 		//mainModel
@@ -603,9 +603,17 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			instance.releaseInternalState(instanceState);
 			algorithmState.addFile(instanceRestartFile.getAbsoluteFile());
 		}
+		// for EnKF-GS, save also the last Kalman gain in the algorithm state:
+		saveGain(algorithmState);
 		return algorithmState;
 	}
-	
+
+	protected void saveGain(FileBasedModelState algorithmState) {
+		// no action needed. deriving class AbstractSequentialEnsembleAlgorithm will
+		// implement the method. TODO: reorganize code in a
+		// AbstractSequentialAlgorithm and a AbstractSequentialEnsembleAlgorithm part
+	}
+
 	public void restoreInternalState(IModelState savedInternalState) {
 		// first unzip the algorithm state file
 		if (!(savedInternalState instanceof FileBasedModelState)) {
@@ -716,14 +724,19 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 		   }
 		}
 
+		restoreGain(tempFiles, restartTempDir);
+
 		//remove temporary directory
 		if(restartTempDir.exists()){
 			Results.putProgression("Remove temporary directory for restart files after reading: "+restartTempDir.getAbsolutePath());
-			for(File file:restartTempDir.listFiles()){
-				file.delete();
-			}
-			restartTempDir.delete();
+			BBUtils.deleteDirectory(restartTempDir);
 		}
+	}
+
+	protected void restoreGain(File[] tempFiles, File restartTempDir) {
+		// no action needed. deriving class AbstractSequentialEnsembleAlgorithm will
+		// implement the method. TODO: reorganize code in a
+		// AbstractSequentialAlgorithm and a AbstractSequentialEnsembleAlgorithm part
 	}
 
 	public void releaseInternalState(IModelState savedInternalState) {

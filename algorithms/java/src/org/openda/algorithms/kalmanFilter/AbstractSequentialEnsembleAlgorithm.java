@@ -19,17 +19,20 @@
  */
 package org.openda.algorithms.kalmanFilter;
 
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.ConfigTree;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.io.KalmanGainStorage.StorageType;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.text.ParseException;
 import java.util.HashMap;
 
@@ -67,9 +70,7 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 
 	//Smoothed gain matrix
 	double timeRegularisationPerDay = 0.0;
-//	IVector[] initialSmoothedGain = null;
 	double initialAnalysisTime;
-//	String[] initialObsIds;
 	protected HashMap<String, IVector> initialSmoothedGainVectors = new HashMap<String, IVector>();
 	protected HashMap<String, String> initialObsId = new HashMap<String, String>();
 	protected HashMap<String, Double> initialObsTimeOffset = new HashMap<String, Double>();
@@ -96,86 +97,7 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 		else {
 			throw new RuntimeException("Configured localization type '" + localization +  "' is not supported");
 		}
-
-
 		this.timeRegularisationPerDay= this.configurationAsTree.getAsDouble("gainMatrixSmoother@timeRegularisationPerDay",0.0);
-		if (this.timeRegularisationPerDay>0.0) {
-			/*
-			 * Input syntax
-			 * 	<readGain>
-			 *		<dirPrefix>../gain_</dirPrefix>
-			 *		<time timeFormat="dateTimeString" readGainTime="201008240000">201008240000</time>
-			 *		<!-- or <time timeFormat="mjd" readGainTime="5.0">10.0</time>
-			 *		<file>enkf_oscillator_gain.xml</file>
-			 *	</readGain>
-			 */
-			String gainDirPrefix = this.configurationAsTree.getContentString("readGain/dirPrefix");
-			Results.putMessage("readGain/dirPrefix=" + gainDirPrefix);
-			double[] gainTimeMjd = new double[0];
-			String gainFileName = null;
-			if (gainDirPrefix != null) {
-				ConfigTree partsSteadyState[] = this.configurationAsTree.getSubTrees("readGain/time");
-				int nGain = partsSteadyState.length;
-				gainTimeMjd = new double[nGain];
-
-				int i = 0;
-				for (ConfigTree part : partsSteadyState) {
-					String timeFormat = part.getAsString("@timeFormat", "dateTimeString");
-					Results.putMessage("readGain/time@timeFormat=" + timeFormat);
-					String timeSteadyStateSimulation = part.getAsString("@readGainTime", null);
-					Results.putMessage("readGain/time@readGainTime=" + timeSteadyStateSimulation);
-					String timeString = part.getContentString("");
-					Results.putMessage("readGain/time=" + timeString);
-					if (timeFormat.equals("dateTimeString")) {
-						try {
-							gainTimeMjd[i] = TimeUtils.date2Mjd(timeString);
-						} catch (ParseException e) {
-							throw new RuntimeException("readGain/time expected a formatted time YYYYMMDDhhmm, but a parse error occurred :"
-								+ timeString + "\n");
-						}
-					} else { //use Mjd
-						try {
-							gainTimeMjd[i] = Double.parseDouble(timeString);
-						} catch (NumberFormatException e) {
-							throw new RuntimeException("readGain/time expected a double for the Mjd, but a parse error occurred :"
-								+ timeString + "\n");
-						}
-					}
-
-					String timeStampString = TimeUtils.mjdToString(gainTimeMjd[i]);
-					//MVL replaced: new SimpleDateFormat("yyyyMMdd_HHmmss").format(Time.timeStampToDate(gainTimeMjd));
-					File gainDir = new File(this.workingDir, gainDirPrefix + timeStampString);
-					if (!gainDir.isDirectory()) {
-						throw new RuntimeException("Directory for storage of Kalman gain does not exist :"
-							+ gainDir.getAbsolutePath() + "\n");
-					}
-					gainFileName = this.configurationAsTree.getContentString("readGain/file");
-					Results.putMessage("readGain/configFile=" + gainFileName);
-					File gainFile = new File(gainDir, gainFileName);
-					if (!gainFile.exists()) {
-						throw new RuntimeException("File for Kalman gain storage was not found :" + gainFile.getAbsolutePath() + "\n");
-					}
-					i++;
-				}
-
-				//now read the gain file into memory
-				KalmanGainStorage gainStorage = new KalmanGainStorage(this.workingDir, gainTimeMjd[0]);
-				gainStorage.setStorageDirPrefix(gainDirPrefix);
-				gainStorage.setKalmanGainStorageXmlFileName(gainFileName);
-				gainStorage.readKalmanGain(this.getCurrentState());
-				String[] obsIds = gainStorage.getObservationIds();
-				double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();
-				IVector[] KVecs = gainStorage.getKalmanGainColumns();
-				this.initialAnalysisTime = gainTimeMjd[0];
-				for (int iObs = 0; iObs < obsIds.length; iObs++) {
-					String gainVectorId = obsIds[iObs] + ":" + Math.round(obsTimeOffsets[iObs] * 24.0 * 3600.0); //conversion to seconds
-					this.initialSmoothedGainVectors.put(gainVectorId, KVecs[iObs]);
-					this.initialObsId.put(gainVectorId, obsIds[iObs]);
-					this.initialObsTimeOffset.put(gainVectorId, 0.0);
-				}
-			}
-		}
-
 		Results.putMessage("this.ensembleSize="+this.ensembleSize);
         if (this.ensembleSize < 2) throw new RuntimeException("Found ensemble size " + this.ensembleSize + ". This value must be at least 2.");
 
@@ -487,6 +409,16 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 			}
 		}
 		return result;
+	}
+
+	@Override
+	protected void restoreGain(File[] tempFiles, File restartTempDir) {
+		// no action needed. deriving class EnKF will implement the method.
+	}
+
+	@Override
+	protected void saveGain(FileBasedModelState algorithmState) {
+		// no action needed. deriving class EnKF will implement the method.
 	}
 
 }
