@@ -45,13 +45,15 @@ public class KalmanGainStorage {
 
 	// set in constructor
 	private File workingDir;
-	double timeStampAsMJD;
+	double timeStampAsMJD = Double.MIN_VALUE;;
 
 	// properties that be can be overridden before writing
 	private String storageDirPrefix = "kgStorage_";
 	private String columnFilePrefix = "obsColumn_";
 	private String kalmanGainStorageXmlFileName = "kalmanGainStorage.xml";
 	private int maxKeepVectorInXMLSize = DefaultMaxKeepVectorInXMLSize;
+	private boolean useTimeStampInDirectoryName = true;
+
 	public enum StorageType {
 		xml, netcdf, automatic
 	}
@@ -80,7 +82,34 @@ public class KalmanGainStorage {
 		this.workingDir = workingDir;
 		this.timeStampAsMJD = timeStampAsMJD;
 	}
-	
+
+	/**
+	 * Constructor for creating and writing kalman gain storage object, used to read or to write the kalman gain.
+	 * The kalman gain is stored in a separate directory, with a separate file for each kalman gain column
+	 * in the kalman gain matrix.
+	 *
+	 * @param workingDir			   The directory under which the directory for the kalman gain for the
+	 *                                 specified time stamp must be created
+	 * @param timeStampAsMJD		   The time stamp for which the kalman gain is valid
+	 */
+	public KalmanGainStorage(File workingDir, double timeStampAsMJD, boolean useTimeStampInDirectoryName) {
+		this.workingDir = workingDir;
+		this.timeStampAsMJD = timeStampAsMJD;
+		this.useTimeStampInDirectoryName = false;
+	}
+
+	/**
+	 * Constructor for reading kalman gain storage object, used to read the kalman gain.
+	 * The kalman gain is stored with a separate file for each kalman gain column
+	 * in the kalman gain matrix.
+	 *
+	 * @param workingDir			   The directory of the kalman gain
+	 */
+	public KalmanGainStorage(File workingDir) {
+		this.workingDir = workingDir;
+		this.useTimeStampInDirectoryName = false;
+	}
+
 	/**
 	 * Set the file prefix to be used for storing the kalman gain column files.  
 	 * @param storageDirPrefix The file prefix for.
@@ -281,7 +310,6 @@ public class KalmanGainStorage {
 		}
 
 		KalmanGainStorageXML kgStorageXML = (KalmanGainStorageXML) CastorUtils.parse(kgStorageXmlFile, KalmanGainStorageXML.class);
-
 		comment = kgStorageXML.getComment();
 		timeStampAsMJD = kgStorageXML.getTimeStampAsMJD();
 		if (kgStorageXML.hasStateSize()) {
@@ -338,8 +366,14 @@ public class KalmanGainStorage {
     }
 
 	private File determineStorageDirectory(boolean neededForReading) {
-		String timeStampString = TimeUtils.mjdToString(this.timeStampAsMJD);
-		File storageDirectory = new File(workingDir, storageDirPrefix + timeStampString);
+		String timeStampString;
+		File storageDirectory;
+		if (this.useTimeStampInDirectoryName) {
+			timeStampString = TimeUtils.mjdToString(this.timeStampAsMJD);
+			storageDirectory = new File(workingDir, storageDirPrefix + timeStampString);
+		} else {
+			storageDirectory = workingDir;
+		}
 		if (neededForReading) {
 			if (!storageDirectory.exists()) {
 				throw new RuntimeException("Kalman Gain Storage directory not found: "
@@ -520,31 +554,8 @@ public class KalmanGainStorage {
 			}
 		}
 	}
+
+	public double getTimeStampAsMjd(){
+		return timeStampAsMJD;
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
