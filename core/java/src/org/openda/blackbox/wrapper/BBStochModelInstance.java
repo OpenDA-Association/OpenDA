@@ -306,7 +306,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             boolean firstStep = true;
 
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-			boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
+			boolean addNoiseToExchangeItemsAfterCompute = false;
+			if(this.doAutomaticNoiseGeneration) {
+				addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
+			}
 			while (model.getCurrentTime().getMJD()+tolerance < targetTime.getMJD()) {
 				ITime loopTimeStep = new Time(model.getCurrentTime().getMJD() + modelDeltaT);
 				model.compute(loopTimeStep);
@@ -329,14 +332,21 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                     double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 					wrappedBbExchangeItem.UpdateTimeStepValue(loopTimeStep,computedValues[0]);
 				}
+			}
+			if (this.doAutomaticNoiseGeneration) {
 				if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 			}
 		} else
 		{
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-			boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
+			boolean addNoiseToExchangeItemsAfterCompute = false;
+			if(this.doAutomaticNoiseGeneration) {
+				addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
+			}
 			model.compute(targetTime);
-			if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
+			if(this.doAutomaticNoiseGeneration) {
+				if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
+			}
 		}
 
 		timerCompute.stop();
