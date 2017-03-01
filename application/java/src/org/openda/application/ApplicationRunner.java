@@ -282,14 +282,7 @@ public class ApplicationRunner implements Runnable{
 					this.writeRestart();
 				}
             } catch (Exception e) {
-				finishApplication();
-                Results.putProgression("Error running algorithm step.");
-                Results.putProgression("Error message: "+e.getMessage());
-                Results.putProgression("Error type :"+e.getClass().getSimpleName());
-                StringWriter stringWriter = new StringWriter();
-                PrintWriter stackTrace = new PrintWriter(stringWriter);
-                e.printStackTrace(stackTrace);
-                Results.putProgression("Stacktrace :"+stringWriter.toString());
+				logAlgorithmStepErrorAndFinish(e);
                 synchronized (this) {
                     changeStatus(Status.ERROR);
                 }
@@ -310,6 +303,17 @@ public class ApplicationRunner implements Runnable{
 		finishApplication();
 		Results.putProgression((this.status == Status.STOPPED) ? "Application Stopped" : "Application Done");
 		Results.reset();
+	}
+
+	protected void logAlgorithmStepErrorAndFinish(Exception e) {
+		Results.putProgression("Error running algorithm step.");
+		Results.putProgression("Error message: "+e.getMessage());
+		Results.putProgression("Error type :"+e.getClass().getSimpleName());
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter stackTrace = new PrintWriter(stringWriter);
+		e.printStackTrace(stackTrace);
+		Results.putProgression("Stacktrace :"+stringWriter.toString());
+		finishApplication();
 	}
 
 	protected void finishApplication() {

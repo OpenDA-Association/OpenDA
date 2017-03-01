@@ -56,13 +56,15 @@ public class BBCheckOutput {
 
     private boolean performCheckOnFile(File file) {
         boolean result = file.exists();
-        if (!result) throw new IllegalStateException("OutputCheck failed file does not exist: " + file.getAbsolutePath());
+        if (!result) {
+            throw new RuntimeException("OutputCheck failed file does not exist: " + file.getAbsolutePath());
+        }
         if (expect != null) {
             String expect = this.expect;
             String findString = aliasDefinitions.apply(expect, aliasesUsedInExpect);
             boolean succes = FileSupport.FileContains(file,findString);
             if (!succes) {
-                throw new IllegalStateException("OutputCheck failed: could not find '" + findString + "' in file " + file.getAbsolutePath());
+                throw new RuntimeException("OutputCheck failed: could not find '" + findString + "' in file " + file.getAbsolutePath());
             }
         }
         return result;

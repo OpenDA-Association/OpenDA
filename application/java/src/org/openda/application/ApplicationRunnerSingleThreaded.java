@@ -91,6 +91,9 @@ public class ApplicationRunnerSingleThreaded extends ApplicationRunner {
 			timerRun.stop();
 			timerRunFinish.start();
 			Results.putProgression("Algorithm Done");
+		}
+		catch (Exception e){
+			logAlgorithmStepErrorAndFinish(e);
 		} finally {
 			finishApplication();
 		}
