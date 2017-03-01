@@ -68,7 +68,7 @@ public class BBModelFactory implements IModelFactory, ITimeHorizonConsumer {
         this();
         this.bbModelConfig = bbModelConfig;
         this.bbModelConfig.getWrapperConfig().validate();
-        cleanUpModelEnsembleDirectories();
+        if (!bbModelConfig.skipModelActionsIfInstanceDirExists()) cleanUpModelEnsembleDirectories();
     }
 
     public BBModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
