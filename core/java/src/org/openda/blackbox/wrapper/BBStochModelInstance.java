@@ -306,10 +306,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             boolean firstStep = true;
 
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-			boolean addNoiseToExchangeItemsAfterCompute = false;
-			if(this.doAutomaticNoiseGeneration) {
-				addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
-			}
+			boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
 			while (model.getCurrentTime().getMJD()+tolerance < targetTime.getMJD()) {
 				ITime loopTimeStep = new Time(model.getCurrentTime().getMJD() + modelDeltaT);
 				model.compute(loopTimeStep);
@@ -332,21 +329,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                     double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 					wrappedBbExchangeItem.UpdateTimeStepValue(loopTimeStep,computedValues[0]);
 				}
-			}
-			if (this.doAutomaticNoiseGeneration) {
 				if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 			}
 		} else
 		{
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-			boolean addNoiseToExchangeItemsAfterCompute = false;
-			if(this.doAutomaticNoiseGeneration) {
-				addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
-			}
+			boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
 			model.compute(targetTime);
-			if(this.doAutomaticNoiseGeneration) {
-				if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
-			}
+			if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 		}
 
 		timerCompute.stop();
@@ -1274,6 +1264,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			System.out.println("noisemodel.compute until "+targetTime);
 			//TODO add check on time-span of noise model.
 			noiseModel.compute(targetTime);
+			if(!this.doAutomaticNoiseGeneration){
+				continue;
+			}
 			for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseModelConfig.getExchangeItemConfigs()) {
 				double[] noiseModelEITimes;
 				IPrevExchangeItem noiseModelExchangeItem = noiseModel.getExchangeItem(exchangeItemConfig.getId());
