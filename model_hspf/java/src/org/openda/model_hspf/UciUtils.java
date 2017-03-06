@@ -402,6 +402,15 @@ public class UciUtils {
 			if (QualInputTable.isQualInputTable(tableName)) {
 				// Make optimal use of 8 characters, with one reserved for a sign.
 
+				// Check if value is unrealistically small and set it to default when necessary (see email Changmin, 27-02-2017, ODA-542)
+				if (value < 1E-10){
+					IExchangeItem itemDefaultInit = exchangeItemsDefaultInit.get(id);
+					if (itemDefaultInit==null){
+						throw new RuntimeException("A value of "+ id +" that is less than 1E-10 is found in the updated state and should be set to a default value. Please specify an UCI file containing default initial values.");
+					}
+					value = (double) itemDefaultInit.getValues();
+				}
+
 				// Store absolute value and the sign.
 				double absValue = Math.abs(value);
 				String sign = " ";
