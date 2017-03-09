@@ -65,8 +65,13 @@ public class SparseDud extends BaseDud {
 			}
 		}
 
+		ConfigTree[] subTrees = configtree.getSubTrees("dependencies/obs");
+		List<IPrevExchangeItem> exchangeItems = stochObserver.getObservationDescriptions().getExchangeItems();
+		checkDependenciesForAllExchangeItems(subTrees, exchangeItems);
+
+		boolean[] allParsFound = new boolean[npar];
 		// FOR (all observations for which dependencies are given) DO
-		for(ConfigTree dependency : configtree.getSubTrees("dependencies/obs")) {
+		for(ConfigTree dependency : subTrees) {
 			String obsnam = dependency.getAsString("@id", "unknown prediction");
 			
 			// FOR (all dependencies given)
@@ -77,6 +82,7 @@ public class SparseDud extends BaseDud {
 				int parFound = 0;
 				for (int jpar=0; jpar<npar; jpar++) {
 					if (parameterNames.get(jpar).equals(parnam)) {
+						allParsFound[jpar] = true;
 						parFound = 1;
 						int predFound =  0;
 						// Find (non-unique) observation indices
@@ -90,7 +96,6 @@ public class SparseDud extends BaseDud {
 
 						if ( predFound==0) {
 							String allObservations="";
-							List<IPrevExchangeItem> exchangeItems = stochObserver.getObservationDescriptions().getExchangeItems();
 							if (exchangeItems != null) {
 								for (IPrevExchangeItem exchangeItem : exchangeItems) {
 									allObservations +=  "\t'" + exchangeItem.getId() + "'\n";
@@ -119,6 +124,8 @@ public class SparseDud extends BaseDud {
 			}
 		}
 
+		checkDependenciesForAllParameters(parameterNames, allParsFound);
+
 		// print the nonZeros
 		if (verbose) {
 			for (int ipred=0; ipred<npred; ipred++) {
@@ -130,6 +137,35 @@ public class SparseDud extends BaseDud {
 			}
 		}
 		return nonZeros;
+	}
+
+	private void checkDependenciesForAllParameters(ArrayList<String> parameterNames, boolean[] allParsFound) {
+		int parsNotFound = 0;
+		for (int i = 0; i < allParsFound.length; i++) {
+			if (allParsFound[i]) continue;
+			Results.putMessage("No dependency found for parameter " + parameterNames.get(i));
+			parsNotFound++;
+		}
+		if (parsNotFound > 0)
+			throw new RuntimeException(parsNotFound + " parameter(s) found without any dependency");
+	}
+
+	private void checkDependenciesForAllExchangeItems(ConfigTree[] subTrees, List<IPrevExchangeItem> exchangeItems) {
+		boolean anyExchangeItemNotFound = false;
+		for (IPrevExchangeItem exchangeItem : exchangeItems) {
+			String exchangeItemId = exchangeItem.getId();
+			boolean exchangeItemFound = false;
+			for (ConfigTree subTree : subTrees) {
+				String dependencyId = subTree.getAsString("@id", "unknown prediction");
+				if (exchangeItemId.equals(dependencyId)) exchangeItemFound = true;
+			}
+			if (!exchangeItemFound) {
+				Results.putMessage("No dependency found for exchange item " + exchangeItemId);
+				anyExchangeItemNotFound = true;
+			}
+		}
+		if (anyExchangeItemNotFound)
+			throw new RuntimeException("Exchange items found without any dependency");
 	}
 
 }
