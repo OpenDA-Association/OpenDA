@@ -72,10 +72,15 @@
 	</target>
 
 	<target name="javadoc" depends="init">
-    <echo>
-      classpath for java doc: ${projectfiles}
-    </echo>
-		<javadoc destdir="${javadocdir}/${module}" classpath="${projectfiles}" verbose="yes" windowtitle="openDA.Module: ${module} Version: ${version}" source="${source}">
+		<javadoc destdir="${javadocdir}/${module}" verbose="yes" windowtitle="openDA.Module: ${module} Version: ${version}" source="${source}">
+      <classpath>
+        <fileset dir=".">
+          <include name="${modulelibdir}/*.jar"/>
+        </fileset>
+        <fileset dir="${projectdir}">
+          <include name="${projectlib}/*.jar"/>
+        </fileset>
+      </classpath>
 			<fileset dir="${srcdir}">
 				<include name="**/*.java"/>
 			</fileset>
