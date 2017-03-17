@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+	<ensembleSize>5</ensembleSize>
+	<nBootstrap>100</nBootstrap>
+	<sigmaAlpha2>0.09</sigmaAlpha2>	
+	<localization>autozhang</localization>
+        <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="false" />
+</EnkfConfig>
