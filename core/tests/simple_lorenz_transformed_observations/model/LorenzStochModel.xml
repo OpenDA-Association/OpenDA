@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<lorenzConfig>
+<LorenzConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/toymodels/LorenzConfig.xsd">
      <!-- <simulationTimespan>[0.0,0.05,30.0]</simulationTimespan> -->
      <simulationTimespan>[0.0,0.05,10.0]</simulationTimespan>
      <!-- parameters for the model -->
@@ -12,4 +13,4 @@
      <initialState>[1.508870, -1.531271, 25.46091]</initialState>
      <!-- std of uncertainty of state vector at initial time -->
      <initialStateUncertainty>[0.5,0.5,0.5]</initialStateUncertainty>
-</lorenzConfig> 
+</LorenzConfig> 

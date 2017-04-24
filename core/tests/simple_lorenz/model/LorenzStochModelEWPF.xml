@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LorenzConfig>
+<LorenzConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/toymodels/LorenzConfig.xsd">
     <simulationTimespan>[0.0,0.001,30.0]</simulationTimespan>
 </LorenzConfig>
