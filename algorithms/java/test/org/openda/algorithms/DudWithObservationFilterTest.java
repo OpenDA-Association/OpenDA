@@ -235,7 +235,7 @@ public class DudWithObservationFilterTest extends TestCase {
         }
 
         public void compute(ITime targetTime) {
-            throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.compute(): Not implemented yet.");
+			//Do nothing
         }
 
         public String[] getExchangeItemIDs() {
