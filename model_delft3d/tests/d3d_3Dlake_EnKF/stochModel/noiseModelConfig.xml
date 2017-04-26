@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mapsNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/mapsNoiseModel.xsd">
+<mapsNoiseModelConfig>
 	<simulationTimespan timeFormat="dateTimeString">201506010000,201506010100,...,201506030000</simulationTimespan>
 	
 	<noiseItem id="windu_noise" quantity="wind-u" unit="m/s" height="10.0"
-	 standardDeviation="1.0" timeCorrelationScale="6.0" timeCorrelationScaleUnit="hours" 
+	 standardDeviation="5" timeCorrelationScale="6.0" timeCorrelationScaleUnit="hours" 
 	 initialValue="0.0" horizontalCorrelationScale="100." horizontalCorrelationScaleUnit="m" >
 	 	<grid type="cartesian" coordinates="xy">
 	 		<x>694980.,695230.,...,700230.</x>
@@ -12,7 +12,7 @@
 	</noiseItem>
 	
 	<noiseItem id="windv_noise" quantity="wind-v" unit="m/s" height="10.0"
-	 standardDeviation="1.0" timeCorrelationScale="6.0" timeCorrelationScaleUnit="hours" 
+	 standardDeviation="5" timeCorrelationScale="6.0" timeCorrelationScaleUnit="hours" 
 	 initialValue="0.0" horizontalCorrelationScale="100." horizontalCorrelationScaleUnit="m">
 	 	<grid type="cartesian" coordinates="xy">
 	 		<x>694980.,695230.,...,700230.</x>

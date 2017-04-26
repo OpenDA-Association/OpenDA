@@ -9,20 +9,33 @@
    <vectorSpecification>
 
         <parameters>
-
+		  
       <regularisationConstant>
-          <stdDev value=".0005" transformation="set" initial="0.02"/>
+              <stdDev value="-2" transformation="ln"/>
           <vector id="Stantn"/>
       </regularisationConstant>
-
+          <regularisationConstant>
+			  <stdDev value="-1" transformation="ln"/>
+			  <vector id="Dalton"/>
+		  </regularisationConstant>
+		  <regularisationConstant>
+			  <stdDev value="-1" transformation="ln"/>
+			  <vector id="Dicouv"/>
+		  </regularisationConstant>
+		  <regularisationConstant>
+			  <stdDev value="1" transformation="ln"/>
+			  <vector id="Dicoww"/> 
+   		  </regularisationConstant>
+	
         </parameters>
+   
 
         <predictor>
             <vector id="station1.temperature"/>
             <vector id="station2.temperature"/>
             <vector id="station3.temperature"/>
             <vector id="station4.temperature"/>
-      </predictor>
+		</predictor> 
 
     </vectorSpecification>
 

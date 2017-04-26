@@ -11,9 +11,9 @@
    <!-- Specify wrapper configuration for which this model is defined -->
    <aliasValues>
       <alias key="templateDir" value="./model"/>
-      <alias key="instanceDir" value="./work"/>
+      <alias key="instanceDir" value="../work/work"/>
       <alias key="runid" value="cadagno_netcdf"/>
-      <alias key="exedir" value="C:\Program Files (x86)\Deltares\delft3d_ohmw_4.01.01.rc.03\delft3d\win32\flow2d3d\bin"/>
+      <alias key="exedir" value="C:\Program Files (x86)\Deltares\Delft3D\win32\flow2d3d\bin"/>
       <alias key="linexedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin"/>
 	</aliasValues>
 
@@ -26,12 +26,24 @@
 		<!--Wind Component-->
 		<vector id="windu" ioObjectId="windwuFile"></vector>
 		<vector id="windv" ioObjectId="windwvFile"></vector>
+        
+        <!--Parameters-->
+		<vector id="Stantn" ioObjectId="mdFile"></vector>
+        <vector id="Datlon" ioObjectId="mdFile"></vector>
+        <vector id="Dicouv" ioObjectId="mdFile"></vector>
+        <vector id="Dicouw" ioObjectId="mdFile"></vector>
+        
+        <!--State variables-->
+		<vector id="S1" ioObjectId="states" elementId="S1"/>
+		<vector id="U1" ioObjectId="states" elementId="U1"/>
+		<vector id="V1" ioObjectId="states" elementId="V1"/>
+		<vector id="R1" ioObjectId="states" elementId="R1"/>
 
-		<vector id="locA.Par1" ioObjectId="dummyObject" elementId="locA.Par1"/>
-				
+        <!--Time Info-->
 		<vector id="Tstart" ioObjectId="mdFile"></vector>
 		<vector id="Tstop" ioObjectId="mdFile"></vector>
 
+        <!--Observations-->
 		<vector id="station1.temperature" ioObjectId="trih-file" elementId="station1.GRO.lay-20"/>
 		<vector id="station2.temperature" ioObjectId="trih-file" elementId="station2.GRO.lay-20"/>
 		<vector id="station3.temperature" ioObjectId="trih-file" elementId="station3.GRO.lay-20"/>

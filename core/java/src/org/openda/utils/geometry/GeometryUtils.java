@@ -562,7 +562,7 @@ public class GeometryUtils {
 	 * @param cohnDistance characteristic distance for Cohn's formula in meters
 	 * @return weight
 	 */
-	static double calculateCohnWeight(double r, double cohnDistance) {
+	public static double calculateCohnWeight(double r, double cohnDistance) {
 		if (r < 0) {
 			throw new IllegalArgumentException("r < 0");
 		}

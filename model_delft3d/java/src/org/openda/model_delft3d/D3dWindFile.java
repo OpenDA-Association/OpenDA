@@ -221,7 +221,6 @@ public class D3dWindFile implements IDataObject {
 					coordinateYArray[(nGrid-1)-i][j] = fieldsAsDouble.get(i*mGrid + j + mGrid*nGrid);
 				}
 			}
-//			grid2D = new D3dGrid2D(mGrid, nGrid);
 			grid2D.setCoordinateArrays(coordinateXArray,coordinateYArray);
 		}
 
@@ -319,7 +318,7 @@ public class D3dWindFile implements IDataObject {
 	private void writeExchangeItem2D(BufferedWriter outputFileBufferedWriter, D3dWindExchangeItem EI) throws IOException {
 
 		Locale locale = new Locale("EN");
-		String floatValueFormat = "%10.2e";
+		String floatValueFormat = "%10.3f";
 
 		// first write the header:
 		int eoh = EI.getEndOfHeader();

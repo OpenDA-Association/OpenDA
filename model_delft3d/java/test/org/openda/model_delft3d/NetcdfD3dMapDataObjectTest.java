@@ -1,8 +1,10 @@
 package org.openda.model_delft3d;
 
 import junit.framework.TestCase;
+import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -48,14 +50,22 @@ public class NetcdfD3dMapDataObjectTest extends TestCase {
 		// To do so, need to uncomment the debug lines in the class
 		//System.out.println(Arrays.toString(exchangeItemValues));
 
-		//2. Test if we can go back to the right waterlevel
+		//2. Test if we can go back to the right waterlevel (this also tests the writing of history files)
 		netcdfFile.finish();
 
-		IExchangeItem exchangeItemNewTemp = netcdfFile.getDataObjectExchangeItem("R1");
+		IDataObject netcdfMapFile = new NetcdfD3dMapDataObject();
+		netcdfMapFile.initialize(this.testRunDataDir, new String[]{"trim-cadagno_netcdf.nc"});
+		IExchangeItem exchangeItemNewTemp = netcdfMapFile.getDataObjectExchangeItem("R1");
 		double[] tempValuesCorr = exchangeItemNewTemp.getValuesAsDoubles();
 
 		assertEquals(exchangeItemValues.length,tempValuesCorr.length);
 		assertEquals(Arrays.toString(exchangeItemValues),Arrays.toString(tempValuesCorr));
+		netcdfMapFile.finish();
+
+		//3. Testing the geometry info
+		IGeometryInfo geoData = exchangeItemNewTemp.getGeometryInfo();
+		IArray distances = geoData.distanceToPoint(697291.9,156036.4,-10.6);
+		System.out.println(distances);
 
 	}
 

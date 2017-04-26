@@ -21,9 +21,18 @@
 			<action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%linexedir%/d_hydro.exe">
 				<arg>config_flow2d3d.xml</arg>
 			 </action>
+            <action workingDirectory=".\" exe=".\scripts\copyResults.bat">
+                <arg>work1</arg>
+                <arg>..\resultsTemp</arg>
+            </action>
 		  </computeActions>
-
-      <finalizeActions/>
+	  
+          <finalizeActions>
+            <action workingDirectory=".\" exe=".\scripts\concatenateResults.bat">
+                <arg>..\resultsTemp</arg>
+                <arg>..\..\results</arg>
+            </action>
+          </finalizeActions>
    </run>
 
    <inputOutput>
@@ -32,7 +41,6 @@
       <ioObject className="org.openda.model_delft3d.D3dMdFileDataObject">
          <file>%runid%.mdf</file>
          <id>mdFile</id>
-		 <!-- <arg>%currentTime%</arg> -->
       </ioObject>
 
       <!-- time series results -->
@@ -56,13 +64,13 @@
 			<arg>wv</arg>
 		</ioObject>
 
-		<!-- Dummy object for simulating a state -->
-		<ioObject className="org.openda.blackbox.wrapper.DummyParametersIoObject2">
-			<file>none</file>
-			<id>dummyObject</id>
-			<arg>locA.Par1</arg>
+		<!-- Reading the model states -->
+		<ioObject className="org.openda.model_delft3d.NetcdfD3dMapDataObject">
+			<file>trim-%runid%.nc</file>
+			<id>states</id>
+		    <arg>tri-rst.restart-in</arg>
+		    <arg>%targetTime%</arg>
 		</ioObject>
-
 
 	</inputOutput>
 

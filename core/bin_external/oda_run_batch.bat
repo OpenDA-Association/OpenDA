@@ -30,7 +30,7 @@ if exist "%OPENDA_JRE%\bin\java.exe" goto JAVA_OK
 
 rem no openda jre is available, check if there is a default one
 if "%JAVA_HOME%" == "" goto Error0
-set OPENDA_JRE="%JAVA_HOME%"
+set OPENDA_JRE=%JAVA_HOME%
 
 :JAVA_OK
 rem ==== check availability and arguments ===

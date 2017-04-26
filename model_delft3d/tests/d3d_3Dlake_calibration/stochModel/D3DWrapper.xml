@@ -5,40 +5,40 @@
 
 <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%" >
-      <alias key="DELFT3DBINDIR" />
+      <alias key="D3D_HOME" />
       <alias key="OPENDADIR"/>
       <alias key="instanceDir"/>
       <alias key="templateDir" />
       <alias key="runid"/>
-      <!--
-      <alias key="roughness"/>
-      -->
       <alias key="exedir"/>
+      <alias key="linexedir"/>
     </aliasDefinitions>
 
    <run>
-      <!-- for each model instance, the template directory will be cloned to create the instance directory -->
       <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
-      <!-- computation actions -->
-      <!-- define actions relative to working dir. -->
       <computeActions>
-	 <!-- old v4 input
-         <action workingDirectory="%instanceDir%" exe="%exedir%\deltares_hydro.exe">
-            <arg>config_flow2d3d.ini</arg>
-	 </action> -->
-         <!-- new delft3d v6 input -->
-	 <action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%DELFT3DBINDIR%/d_hydro.sh">
+			<action workingDirectory="%instanceDir%" windowsExe="%exedir%\d_hydro.exe" linuxExe="%linexedir%/d_hydro.exe">
             <arg>config_flow2d3d.xml</arg>
          </action>
+            <!--<action workingDirectory=".\" exe=".\scripts\copyResults.bat">
+                <arg>"work0;work1;work2"</arg>
+                <arg>..\resultsTemp</arg>
+            </action>-->
       </computeActions>
-
-      <finalizeActions/>
+	  
+          <finalizeActions>
+           <!--<action workingDirectory=".\" exe=".\scripts\concatenateResults.bat">
+                <arg>..\resultsTemp</arg>
+                <arg>..\..\results</arg>
+                <arg>"work0;work1;work2"</arg>
+           </action>-->
+          </finalizeActions>
    </run>
 
    <inputOutput>
 
-      <!-- Stanton -->
+      <!-- Model Input File -->
       <ioObject className="org.openda.model_delft3d.D3dMdFileDataObject">
          <file>%runid%.mdf</file>
          <id>mdFile</id>

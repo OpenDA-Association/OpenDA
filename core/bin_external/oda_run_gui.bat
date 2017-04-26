@@ -51,7 +51,7 @@ if exist "%OPENDA_JRE%\bin\java.exe" goto JAVA_OK
 rem no openda jre is available, check if there is a default one
 echo JAVA_HOME %JAVA_HOME%
 if "%JAVA_HOME%" == "" goto Error0
-set OPENDA_JRE="%JAVA_HOME%"
+set OPENDA_JRE=%JAVA_HOME%
 
 :JAVA_OK
 rem ==== check availability and arguments ===
@@ -59,7 +59,7 @@ if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
 rem ==== run ===
 echo %odafile%
-"%OPENDA_JRE%\bin\java" -Xms128m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication -gui %odafile%
+"%OPENDA_JRE%\bin\java" -Xms512m -Xmx8g -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication -gui %odafile%
 if errorlevel 1 goto Error2
 endlocal
 goto End

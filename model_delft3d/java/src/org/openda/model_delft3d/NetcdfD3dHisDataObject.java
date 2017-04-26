@@ -93,8 +93,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	private void readNetCdfVariables() {
 
 		//in most netcdfFiles the time and spatial coordinate variables are shared between multiple data variables.
-		//Therefore cache timeInfo objects so that time coordinate variables
-		//are never read more than once.
+		//Therefore cache timeInfo objects so that time coordinate variables are never read more than once.
 		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
 
 		// Loading of variable containing stations names
@@ -197,8 +196,6 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	}
 
 	public double[] getExchangeItemValues(String varName, int stationIndex, int layerIndex) {
-
-		// find variable. gevalues for sle
 
 		Variable variable = this.netcdfFile.findVariable(varName);
 

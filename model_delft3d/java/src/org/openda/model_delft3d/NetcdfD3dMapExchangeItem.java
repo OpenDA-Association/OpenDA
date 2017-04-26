@@ -20,6 +20,7 @@
 package org.openda.model_delft3d;
 import org.openda.exchange.ExchangeItem;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.ITimeInfo;
 
 /**
@@ -28,12 +29,13 @@ import org.openda.interfaces.ITimeInfo;
 public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeItem {
 
 	private final ITimeInfo timeInfo;
+	private final IGeometryInfo geometryInfo;
 	private String varName;
 //	private int stationIndex;
 //	private int layerIndex;
 	private NetcdfD3dMapDataObject netcdfD3dMapDataObject;
 
-	public NetcdfD3dMapExchangeItem(String varName, NetcdfD3dMapDataObject netcdfD3dMapDataObject, ITimeInfo timeInfo) {
+	public NetcdfD3dMapExchangeItem(String varName, NetcdfD3dMapDataObject netcdfD3dMapDataObject, ITimeInfo timeInfo, IGeometryInfo geometryInfo) {
 		super(varName);
 //		super(stationName + "." + varName + ".lay-" + layerIndex);
 		this.varName = varName;
@@ -41,6 +43,7 @@ public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeI
 //		this.layerIndex = layerIndex;
 		this.netcdfD3dMapDataObject = netcdfD3dMapDataObject;
 		this.timeInfo = timeInfo;
+		this.geometryInfo = geometryInfo;
 	}
 
 	@Override
@@ -111,4 +114,11 @@ public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeI
 	public void setTimes(double[] times) {
 		throw new UnsupportedOperationException(getClass().getSimpleName() + ": setTimes not implemented.");
 	}
+
+	@Override
+	public IGeometryInfo getGeometryInfo() {
+		return this.geometryInfo;
+	}
+
 }
+

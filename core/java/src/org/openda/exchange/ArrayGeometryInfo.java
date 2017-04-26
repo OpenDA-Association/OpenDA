@@ -18,14 +18,14 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.exchange;
-import java.util.Arrays;
-
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IArrayGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.IVector;
 import org.openda.utils.Array;
 import org.openda.utils.Vector;
+
+import java.util.Arrays;
 
 /**
  * Geometry info for spatial gridded data, that is for values stored in an IArray.
@@ -40,6 +40,15 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 	private IArray latitudeCoordinateValues=null;
 	private IArray longitudeCoordinateValues=null;
 	private IArray heightCoordinateValues=null;
+
+// TODO: Add support for cartesian coordinates.
+//	private IArray xCoordinateValues=null;
+//	private IArray yCoordinateValues=null;
+//	private int[] xCoordValueIndices=null;
+//	private int[] yCoordValueIndices=null;
+//	private IQuantityInfo xCoordQuantityInfo=null;
+//	private IQuantityInfo yCoordQuantityInfo=null;
+	boolean is3D;
 
     /**
      * latitudeValueIndices contains for each dimension in the latitudeCoordinateValues array
@@ -67,38 +76,62 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 	public ArrayGeometryInfo(IArray latitudeArray, int[] latitudeValueIndices, IQuantityInfo latitudeQuantityInfo,
 			IArray longitudeArray, int[] longitudeValueIndices, IQuantityInfo longitudeQuantityInfo,
 			IArray heightArray, int[] heightValueIndices, IQuantityInfo heightQuantityInfo) {
+
 		this(latitudeArray, latitudeValueIndices, latitudeQuantityInfo,
 				longitudeArray, longitudeValueIndices, longitudeQuantityInfo,
 				heightArray, heightValueIndices, heightQuantityInfo, null);
+
+		is3D = (heightArray != null);
+		if (!is3D) {
+			this.heightCoordinateValues = new Array(1);
+	}
+
 	}
 
 	public ArrayGeometryInfo(IArray latitudeArray, int[] latitudeValueIndices, IQuantityInfo latitudeQuantityInfo,
 			IArray longitudeArray, int[] longitudeValueIndices, IQuantityInfo longitudeQuantityInfo,
 			IArray heightArray, int[] heightValueIndices, IQuantityInfo heightQuantityInfo, int[] activeCellMask) {
-		this.latitudeCoordinateValues = latitudeArray;
-		this.longitudeCoordinateValues = longitudeArray;
+
 		this.heightCoordinateValues = heightArray;
-		this.latitudeValueIndices = latitudeValueIndices;
-		this.longitudeValueIndices = longitudeValueIndices;
 		this.heightValueIndices = heightValueIndices;
-		this.latitudeQuantityInfo = latitudeQuantityInfo;
-		this.longitudeQuantityInfo = longitudeQuantityInfo;
 		this.heightQuantityInfo = heightQuantityInfo;
 		this.activeCellMask = activeCellMask;
+
+		this.latitudeQuantityInfo = latitudeQuantityInfo;
+		this.longitudeQuantityInfo = longitudeQuantityInfo;
+		this.latitudeValueIndices = latitudeValueIndices;
+		this.longitudeValueIndices = longitudeValueIndices;
+		this.latitudeCoordinateValues = latitudeArray;
+		this.longitudeCoordinateValues = longitudeArray;
+
+		is3D = (heightArray != null);
+		if (!is3D) {
+			this.heightCoordinateValues = new Array(1);
+	}
+
 	}
 
 	public void setInfo(IArray latitudeArray, int[] latitudeValueIndices, IQuantityInfo latitudeQuantityInfo,
 			IArray longitudeArray, int[] longitudeValueIndices, IQuantityInfo longitudeQuantityInfo,
 			IArray heightArray, int[] heightValueIndices, IQuantityInfo heightQuantityInfo) {
+
+		this.heightCoordinateValues = heightArray;
+		this.heightValueIndices = heightValueIndices;
+		this.heightQuantityInfo = heightQuantityInfo;
+
+
 		this.latitudeCoordinateValues = latitudeArray;
 		this.longitudeCoordinateValues = longitudeArray;
-		this.heightCoordinateValues = heightArray;
 		this.latitudeValueIndices = latitudeValueIndices;
 		this.longitudeValueIndices = longitudeValueIndices;
-		this.heightValueIndices = heightValueIndices;
 		this.latitudeQuantityInfo = latitudeQuantityInfo;
 		this.longitudeQuantityInfo = longitudeQuantityInfo;
-		this.heightQuantityInfo = heightQuantityInfo;
+
+		is3D = (heightArray != null);
+		if (!is3D) {
+			this.heightCoordinateValues = new Array(1);
+	}
+
 	}
 
 	/**
@@ -389,5 +422,31 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		h = 31 * h + (this.heightQuantityInfo == null ? 0 : this.heightQuantityInfo.hashCode());
 		h = 31 * h + Arrays.hashCode(this.activeCellMask);
 		return h;
+	}
+
+	@Override
+	public IArray distanceToPoint(double x, double y, double z) {
+
+		// !!! Warning: temporary solution, this is valid only when coordinates are cartesian !!!
+		double[] xCoords = longitudeCoordinateValues.getValuesAsDoubles();
+		double[] yCoords = latitudeCoordinateValues.getValuesAsDoubles();
+		double[] zCoords = heightCoordinateValues.getValuesAsDoubles();
+
+		Array arrayDistances = new Array(xCoords.length*yCoords.length*zCoords.length);
+
+		int k=0;
+		for (int lay=0; lay < zCoords.length;lay++){
+			for (int yInd = 0; yInd < yCoords.length; yInd++) {
+				for (int xInd = 0; xInd <xCoords.length; xInd++){
+					if (xCoords[xInd] == 0.0 | yCoords[yInd] == 0.0) {
+						arrayDistances.setValueAsDouble(k,Double.NaN);
+					}else{
+						arrayDistances.setValueAsDouble(k,Math.sqrt((x - xCoords[xInd])*(x - xCoords[xInd]) + (y - yCoords[yInd])*(y - yCoords[yInd]) + (z - zCoords[lay])*(z - zCoords[lay])));
+					}
+					k++;
+				}
+			}
+		}
+		return arrayDistances;
 	}
 }

@@ -18,6 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_delft3d;
+
 public class D3dGrid2D {
 
 	private int mmax;
@@ -53,4 +54,5 @@ public class D3dGrid2D {
 		this.coordinateXArray = coordinateXArray;
 		this.coordinateYArray = coordinateYArray;
 	}
+
 }

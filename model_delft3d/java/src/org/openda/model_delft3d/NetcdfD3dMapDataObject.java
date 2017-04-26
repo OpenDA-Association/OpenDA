@@ -60,6 +60,10 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	private File workingDir;
 	private String runID;
 
+	private double[] xCoords = null;
+	private double[] yCoords = null;
+	private double[] zCoords = null;
+
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments.length != 1 && arguments.length != 3) {
 			throw new RuntimeException("NetcdfD3dMapDataObject expects one or three argument: netcdfFileName [bin-restart-file + targetTime] (relative to working dir)");
@@ -94,8 +98,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 			if (restartFilePath.exists()) {
 
 				// TODO: instead of copying an existing restart file and modifying it, better to create one fully from the MapFile.
-				// Avoids having to create a restart file at small time step even if not needed.
-				File restartFileIn = new File(workingDir, "tri-rst." + arguments[1]);
+				// Avoids having to create a restart file at small time step even if not needed, also less dependent from user input.
+				//File restartFileIn = new File(workingDir, "tri-rst." + arguments[1]);
+				File restartFileIn = new File(workingDir, arguments[1]);
 				// Place copy of file
 				try {
 					BBUtils.copyFile(restartFilePath, restartFileIn);
@@ -223,22 +228,29 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				double[] times = timeInfo.getTimes();
 				timeInfo = new TimeInfo(new double[]{times[times.length-1]});
 
-				// Extracting geometry information
-				Variable variableX = this.netcdfFile.findVariable("XZ");
-				Variable variableY = this.netcdfFile.findVariable("YZ");
-				Variable variableZ = this.netcdfFile.findVariable("ZK_LYR");
+				// Extracting geometry information only once
+				if (this.xCoords == null | this.yCoords == null | this.zCoords == null) {
+					Variable variableX = this.netcdfFile.findVariable("XZ");
+					Variable variableY = this.netcdfFile.findVariable("YZ");
+					Variable variableZ = this.netcdfFile.findVariable("ZK_LYR");
 
-				int[] originXY = createOrigin(variableX);
-				int[] sizeArrayXY = variableX.getShape();
-				int[] originZ = createOrigin(variableZ);
-				int[] sizeArrayZ = variableZ.getShape();
+					int[] originXY = createOrigin(variableX);
+					int[] sizeArrayXY = variableX.getShape();
+					int[] originZ = createOrigin(variableZ);
+					int[] sizeArrayZ = variableZ.getShape();
 
-				double[] xCoords =  NetcdfUtils.readSelectedData(variableX, originXY, sizeArrayXY,-1);
-				double[] yCoords =  NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY,-1);
-				double[] zCoords =  NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ,-1);
+					this.xCoords = NetcdfUtils.readSelectedData(variableX, originXY, sizeArrayXY, -1);
+					this.yCoords = NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY, -1);
+					this.zCoords = NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ, -1);
+				}
 
-				//IGeometryInfo geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(xCoords,yCoords,zCoords);
-				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getShortName(), this, timeInfo);//, geometryInfo);
+				IGeometryInfo geometryInfo;
+				if (variable.getName().equalsIgnoreCase("S1")) {
+					geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(this.xCoords, this.yCoords, null);
+				} else {
+					geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(this.xCoords, this.yCoords, this.zCoords);
+				}
+				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo, geometryInfo);
 				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 
 			}
@@ -281,28 +293,32 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		//This method implements the intelligence to expand the temperature and velocities variables of the real
 		//domain to a fictive one, which fill the empty upper cells of the computational grid
 
-		Variable KFU = this.netcdfFile.findVariable("KFU");
-		Variable KFV = this.netcdfFile.findVariable("KFV");
+		//Variable KFU = this.netcdfFile.findVariable("KFU");
+		//Variable KFV = this.netcdfFile.findVariable("KFV");
+		Variable KCS = this.netcdfFile.findVariable("KCS");
 
-		double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
-		double[] KFV1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFV,timeDimensionIndex,LastTimeIndex-1,-1);
+		//double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
+		//double[] KFV1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFV,timeDimensionIndex,LastTimeIndex-1,-1);
+		//double[] KCS1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KCS,timeDimensionIndex,LastTimeIndex-1,-1);
+		double[] KCS1Darray = NetcdfUtils.readSelectedData(KCS, createOrigin(KCS), KCS.getShape(), -1);
 
 		// Here I convert the 1D array into a 3D one, which helps in the thinking for expanding the upper cells
 		double[][][] Domain3D = from1dTo3dArray(initialDomain);
 
 		//For debug
-		//printNcField(variable.getShortName(), mMax, nMax, 20, Domain3D);
+		//printNcField(variable.getName(), mMax, nMax, 20, Domain3D);
 
 		// Filling the empty upper layers by the first filled one
 		int k = 0;
 		for (int m = 0; m < mMax; m++) {
 			for (int n = 0; n < nMax; n++) {
 
-				if (KFU1Darray[k] == 1 && KFV1Darray[k] == 1) {
+				//		if (KFU1Darray[k] == 1 | KFV1Darray[k] == 1) {
+				if (KCS1Darray[k] == 1) {
 
 					// Down loop to reach the first filled cell
-					int layCount = nLay-1;
-					while (Domain3D[m][n][layCount] == -999.0) {
+					int layCount = nLay - 1;
+					while (Domain3D[m][n][layCount] == -999.0 & layCount > 0) {
 						layCount--;
 					}
 
@@ -398,19 +414,22 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 	}
 
-	public double[] back2RealDomain(double[] expandedDomain, int LastTimeIndex){
+	public double[] back2RealDomain(double[] expandedDomain, int LastTimeIndex) {
 		//This method implements the intelligence to set temperature and flow velocities domain values back to the right (new) waterlevel,
 		//which has been computed, from the fictive (full) domain
 
-		Variable KFU = this.netcdfFile.findVariable("KFU");
-		Variable KFV = this.netcdfFile.findVariable("KFV");
+		//Variable KFU = this.netcdfFile.findVariable("KFU");
+		//Variable KFV = this.netcdfFile.findVariable("KFV");
+		Variable KCS = this.netcdfFile.findVariable("KCS");
 		Variable ZK = this.netcdfFile.findVariable("ZK_LYR");
 		Variable S1 = this.netcdfFile.findVariable("S1");
 
-		double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
-		double[] KFV1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFV,timeDimensionIndex,LastTimeIndex-1,-1);
-		double[] ZK1Darray =  NetcdfUtils.readSelectedData(ZK,createOrigin(ZK),ZK.getShape(),-1);
-		double[] S11Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(S1,timeDimensionIndex,LastTimeIndex-1,-1);
+		//double[] KFU1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFU,timeDimensionIndex,LastTimeIndex-1,-1);
+		//double[] KFV1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KFV,timeDimensionIndex,LastTimeIndex-1,-1);
+		double[] KCS1Darray = NetcdfUtils.readSelectedData(KCS, createOrigin(KCS), KCS.getShape(), -1);
+		//double[] KCS1Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(KCS,timeDimensionIndex,LastTimeIndex-1,-1);
+		double[] ZK1Darray = NetcdfUtils.readSelectedData(ZK, createOrigin(ZK), ZK.getShape(), -1);
+		double[] S11Darray = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(S1, timeDimensionIndex, LastTimeIndex - 1, -1);
 
 		// Here I convert the 1D array into a 3D one, which helps in the thinking for expanding the upper cells
 		double[][][] Domain3D = from1dTo3dArray(expandedDomain);
@@ -420,9 +439,10 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		for (int m = 0; m < mMax; m++) {
 			for (int n = 0; n < nMax; n++) {
 
-				if (KFU1Darray[k] == 1 && KFV1Darray[k] == 1) {
+				//if (KFU1Darray[k] == 1 | KFV1Darray[k] == 1) {
+				if (KCS1Darray[k] == 1) {
 
-					double[] distance =  new double[ZK1Darray.length];
+					double[] distance = new double[ZK1Darray.length];
 					for (int i = 0; i < ZK1Darray.length; i++) {
 						distance[i] = abs(S11Darray[k] - ZK1Darray[i]); //TODO: I have one concern here, check if the netCDF file we read has to have the new waterlevels! (TB)
 					}
@@ -431,24 +451,13 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 					// and then a binarySearch over the array to find the index of the min value
 					// E.g.: on matlab I would write: layIndex = find(distance==minDistance)
 					int layIndex = 0;
-					for (int i = 0; i < distance.length; i++){
+					for (int i = 0; i < distance.length; i++) {
 						layIndex = (distance[i] < distance[layIndex]) ? i : layIndex;
 					}
-					//double minDistance = min(distance);
-					//int layIndex = Arrays.binarySearch(distance,min(distance));
 
-
-					for (int i = layIndex+1; i < nLay; i++){
+					for (int i = layIndex + 1; i < nLay; i++) {
 						Domain3D[m][n][i] = -999.0;
 					}
-
-					//TB: Old implementation: wrong
-					// Down loop to empty the upper cells
-					//int layCount = nLay-1;
-					//while (S11Darray[k] > (ZK1Darray[layCount])) {
-					//	Domain3D[m][n][layCount] = -999;
-					//	layCount--;
-					//}
 
 				}
 				k++;
@@ -456,7 +465,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		}
 
 		// Back to a 1D array
-		double[] realDomain = from3dTo1dArray(Domain3D,expandedDomain.length);
+		double[] realDomain = from3dTo1dArray(Domain3D, expandedDomain.length);
 
 		return realDomain;
 	}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<noosObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd">
+<noosObserver xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<!-- 1st series uses header lines for meta data
 	contents of this file look like:
 	#======================================================
@@ -19,23 +19,23 @@
         ...
 	-->
 
-	<timeSeries status="use" standardDeviation="0.1"
-	     minDateTime="201506010300" maxDateTime="201506022100">
+	<timeSeries status="use" standardDeviation="0.5"
+	     minDateTime="201506022100" maxDateTime="201506022100">
 		 station1.GRO.lay-20.noo
 	</timeSeries>
 	
-	<timeSeries status="use" standardDeviation="0.1"
-	     minDateTime="201506010300" maxDateTime="201506022100">
+	<timeSeries status="use" standardDeviation="0.5"
+	     minDateTime="201506022100" maxDateTime="201506022100">
 		station2.GRO.lay-20.noo
 	</timeSeries>
 	
-	<timeSeries status="use" standardDeviation="0.1"
-	     minDateTime="201506010300" maxDateTime="201506022100">
+	<timeSeries status="use" standardDeviation="0.5"
+	     minDateTime="201506022100" maxDateTime="201506022100">
 		station3.GRO.lay-20.noo
 	</timeSeries>
 	
-	<timeSeries status="use" standardDeviation="0.1"
-	     minDateTime="201506010300" maxDateTime="201506022100">
+	<timeSeries status="use" standardDeviation="0.5"
+	     minDateTime="201506022100" maxDateTime="201506022100">
 		station4.GRO.lay-20.noo
 	</timeSeries>
 	

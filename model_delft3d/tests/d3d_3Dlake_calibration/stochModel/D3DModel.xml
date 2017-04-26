@@ -13,16 +13,20 @@
       <alias key="templateDir" value="./model"/>
       <alias key="instanceDir" value="../work/work"/>
       <alias key="runid" value="cadagno_netcdf"/>
-      <alias key="exedir" value="C:\Program Files (x86)\Deltares\delft3d_ohmw_4.01.01.rc.03\delft3d\win32\flow2d3d\bin"/>
+      <alias key="exedir" value="C:\Program Files (x86)\Deltares\Delft3D\win32\flow2d3d\bin"/>
+      <alias key="linexedir" value="/opt/delft3d_v6/lnx64/flow2d3d/bin"/>
    </aliasValues>
 
-<!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!-->
- <!--   <timeInfo start="2015-06-01T00:00:00" end="2015-06-03T00:00:00" /> -->
-
+    
    <exchangeItems>
-
+        
+        <!--Parameters-->
       <vector id="Stantn" ioObjectId="mdFile"></vector>
-
+        <vector id="Dalton" ioObjectId="mdFile"></vector>
+        <vector id="Dicouv" ioObjectId="mdFile"></vector>
+        <vector id="Dicoww" ioObjectId="mdFile"></vector>
+        
+        <!--Observations-->
       <vector id="station1.temperature" ioObjectId="trih-file" elementId="station1.GRO.lay-20"/>
       <vector id="station2.temperature" ioObjectId="trih-file" elementId="station2.GRO.lay-20"/>
       <vector id="station3.temperature" ioObjectId="trih-file" elementId="station3.GRO.lay-20"/>

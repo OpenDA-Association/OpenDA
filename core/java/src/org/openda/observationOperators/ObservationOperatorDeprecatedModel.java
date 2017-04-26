@@ -65,7 +65,10 @@ public class ObservationOperatorDeprecatedModel implements IObservationOperator 
 	 * @return Model prediction interpolated to each observation (location) as provided by the StochModel.
 	 */
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions, int iDomain)	{
-		throw new UnsupportedOperationException("Method getObservedValues(IObservationDescriptions observationDescriptions, int iDomain) not implemented."+this.getClass().getName());
+		//throw new UnsupportedOperationException("Method getObservedValues(IObservationDescriptions observationDescriptions, int iDomain) not implemented."+this.getClass().getName());
+
+        // Theo:  Temporary solution, for each iDomain we transmit all the observations
+        return ModelInstance.getObservedValues(observationDescriptions);
 	}
 
 }

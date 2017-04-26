@@ -34,7 +34,10 @@ import org.openda.utils.io.FileBasedModelState;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Black box module's implementation of a model instance
@@ -520,11 +523,15 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain){
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBModelInstance.getObservedLocalization(): Not implemented yet.");
+
 	}
 
-	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance){
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distanceCohnMeters){
+		// For each observation descriptions, return a vector with the size of the state, containing the weight factors
+		// Distance is delegated to the ExchangeItem and then apply the Gaspari-Cohn function.
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
+
 
     public File getModelRunDir() {
         return instanceFileOrDir;

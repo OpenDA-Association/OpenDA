@@ -80,6 +80,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private HashMap<String,double[]> prevNoiseModelEIValuesForTimeStep = new HashMap<String, double[]>();
     private boolean warningLogged = false;
 
+	// files for local analysis
+	private boolean useLocalAnalysis = true; // TODO: SH: add it to BB Stoch Model config
+	private List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
+	private List<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>(); // TODO: check if all models that support local analysis have no longer IPrevExchangeItems
+
     public IObservationOperator getObservationOperator(){
 		return new ObservationOperatorDeprecatedModel(this);
 	}
@@ -422,7 +427,17 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public ITreeVector getState(int iDomain){
-		return this.getState();
+		if (useLocalAnalysis) {
+			//throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.getState(int iDomain): Not implemented yet.");
+			ArrayList<String> StatesIds = this.getState().getSubTreeVectorIds();
+			return this.getState().getSubTreeVector(StatesIds.get(iDomain));
+			//bbStochModelVectorsConfig.getStateConfig().
+			//IVector state = noiseModelsInState.get(iDomain).getState();
+			//ITreeVector ValuesAsVector = (ITreeVector) new Vector(modelExchangeItemsInState.get(iDomain).getValuesAsDoubles());
+			//return noiseModelsInState.get(iDomain).getState();
+		} else {
+			return this.getState();
+		}
 	}
 
 
@@ -503,7 +518,19 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public void axpyOnState(double alpha, IVector vector, int iDomain) {
-		throw new UnsupportedOperationException("org.costa.noiseModels.MapNoisModel.axpyOnState(double alpha, IVector vector, int iDomain): Not implemented yet.");
+		if (!useLocalAnalysis) {
+			throw new UnsupportedOperationException("BBStochModelInstance.axpyOnState(double alpha, IVector vector, int iDomain) can not be called if useLocalAnalysis is not specified");
+		}
+
+		int numNoise = noiseModelsInState.size();
+
+		//call axpyOnState for iDomain-th element:
+		if (iDomain < numNoise) {
+			noiseModelsInState.get(iDomain).axpyOnState(alpha, vector);
+		} else {
+			modelExchangeItemsInState.get(iDomain - numNoise).axpyOnValues(alpha, vector.getValues());
+		}
+
 	}
 
 	public void axpyOnState(double alpha, IVector vector) {
@@ -1166,7 +1193,45 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 	public ILocalizationDomains getLocalizationDomains(){
-		return new LocalizationDomainsSimpleModel();
+
+		List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
+		List<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>();
+
+		if (useLocalAnalysis) {
+
+			//Else some are added at every analysis
+			//noiseModelsInState = null;
+			//modelExchangeItemsInState = null;
+
+			//get # noise model from config
+			Collection<BBNoiseModelConfig> noiseModelConfigs =
+				this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+
+			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
+				IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
+				noiseModelsInState.add(noiseModel);
+			}
+
+			//get # model exchange items in the state vector
+			Collection<BBStochModelVectorConfig> vectorCollection =
+				this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+
+			for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
+				IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
+				IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
+				modelExchangeItemsInState.add(exchangeItem);
+			}
+
+
+		}
+
+		int numberOfDomains = noiseModelsInState.size() + modelExchangeItemsInState.size();
+		int[][] domains = new int[numberOfDomains][];
+		for (int i = 0; i < numberOfDomains; i++) {
+			domains[i] = new int[1];
+			domains[i][0] = 0;
+		}
+		return new LocalizationDomainsSimpleModel(domains);
 	}
 
 	public IVector[] getObservedLocalization(
@@ -1176,25 +1241,83 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
-			if (model instanceof IModelExtensions){
-				//System.out.println("I implement the extend interface!");
-	            return getObservedLocalizationExtended(observationDescriptions, distance);
+
+		if (model instanceof IModelExtensions) {
+			//System.out.println("I implement the extend interface!");
+			return getObservedLocalizationExtended(observationDescriptions, distance);
+		}
+
+		List<IVector[]> noiseModelWeights = new ArrayList<>();
+
+		Collection<BBNoiseModelConfig> noiseModelConfigs =
+			this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+		int noiseModelCount = noiseModelConfigs.size();
+
+		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
+			IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
+			IVector[] noiseModelObservedLocalization = noiseModel.getObservedLocalization(observationDescriptions, distance);
+			noiseModelWeights.add(noiseModelObservedLocalization);
+		}
+
+		// For each observation description, return a vector with the size of the state, containing the weight factors
+		// Distance is delegated to the ExchangeItem and then apply the Gaspari-Cohn function.
+		//IVector[] modelObservedLocalization = model.getObservedLocalization(observationDescriptions, distance);
+		IVector xObs = observationDescriptions.getValueProperties("xposition");
+		IVector yObs = observationDescriptions.getValueProperties("yposition");
+		IVector zObs = observationDescriptions.getValueProperties("height");
+		String obsId[] = observationDescriptions.getStringProperties("id");
+		int obsCount = observationDescriptions.getObservationCount();
+
+		IVector[] obsVectorArray = new IVector[obsCount];
+		for (int i = 0; i < obsCount; i++) {
+			TreeVector noiseModelWeightsTreeVector = new TreeVector("weights-for-noiseModels");
+			for (int n = 0; n < noiseModelCount; n++) {
+				noiseModelWeightsTreeVector.addChild("Noise-Model" + n, noiseModelWeights.get(n)[i].getValues());
 			}
-			int startOfModelState = stateNoiseModelsEndIndices[stateNoiseModelsEndIndices.length - 1];
-			IVector[] modelObservedLocalization = model.getObservedLocalization(observationDescriptions, distance);
-			int modelStateSize = modelObservedLocalization[0].getSize();
-			IVector[] stochModelobservedLocalization = new IVector[modelObservedLocalization.length];
-			for (int i = 0; i < stochModelobservedLocalization.length; i++) {
-				double[] obsLocalizationValues = new double[startOfModelState + modelStateSize];
-				for (int j=0; j<startOfModelState; j++){obsLocalizationValues[j]=1.0;}
-				for (int j = 0; j < modelStateSize; j++) {
-					obsLocalizationValues[j + startOfModelState] =
-							modelObservedLocalization[i].getValue(j);
-				}
-				stochModelobservedLocalization[i] = new Vector(obsLocalizationValues);
-			}
-			return stochModelobservedLocalization;
+
+			ITreeVector modelWeightsTreeVector = getLocalizedCohnWeights(obsId[i], distance,
+				xObs.getValue(i), yObs.getValue(i), zObs.getValue(i));
+
+			// TreeVector to vector
+//			IVector statesWeightsArray = new Vector(modelWeightsTreeVector.getValues());
+//			obsVectorArray[i] = statesWeightsArray;
+			TreeVector weightsForFullState = new TreeVector("State-Weight");
+			weightsForFullState.addChild(noiseModelWeightsTreeVector);
+			weightsForFullState.addChild(modelWeightsTreeVector);
+			obsVectorArray[i] = weightsForFullState;
+		}
+		return obsVectorArray;
 	}
+
+	//private IVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
+	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
+
+		//IVector iWeightsVector = new IVector;
+		TreeVector treeVector = new TreeVector("weights-for " + obsId);
+		Collection<BBStochModelVectorConfig> vectorCollection =
+			this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+
+		//int k=0;
+		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
+			IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
+			if (prevExchangeItem instanceof IExchangeItem) {
+				IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
+
+				double[] distancesForExchangeItem = exchangeItem.getGeometryInfo().distanceToPoint(xObs, yObs, zObs).getValuesAsDoubles();
+				double[] weightsForExchangeItem = new double[distancesForExchangeItem.length];
+
+				for (int xy = 0; xy < distancesForExchangeItem.length; xy++) {
+					weightsForExchangeItem[xy] = GeometryUtils.calculateCohnWeight(distancesForExchangeItem[xy], distanceCohnMeters);
+					//k++;
+				}
+				treeVector.addChild(exchangeItem.getId(), weightsForExchangeItem);
+				//iWeightsVector[k] = weightsForExchangeItem;
+			}
+		}
+		return treeVector;
+		//return iWeightsVector;
+	}
+
 
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
         if (this.bbStochModelVectorsConfig.isCollectPredictorTimeSeries()) {

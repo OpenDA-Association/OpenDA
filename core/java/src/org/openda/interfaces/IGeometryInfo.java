@@ -25,4 +25,13 @@ package org.openda.interfaces;
 //TODO this empty interface is not useful, so add some methods, e.g. getCellCount(), getXCoordinate(int index), getYCoordinate(int index), getGeometryType(), etc.
 public interface IGeometryInfo {
 
+	/**
+	 * Return distance to the point given for each element in the ExchangeItem.
+	 * Typically the point originates from the position of an observation.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return distance (by preference in meters, but at least consistently for all exchangeitems in an experiment)
+	 */
+	IArray distanceToPoint(double x, double y, double z);
 }

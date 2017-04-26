@@ -20,6 +20,7 @@
 
 package org.openda.exchange;
 
+import org.openda.interfaces.IArray;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IVector;
 import org.openda.utils.Vector;
@@ -88,5 +89,10 @@ public class IrregularGridGeometryInfo implements IGeometryInfo {
 		h = 31 * h + Arrays.hashCode(this.yCoordinates);
 
 		return h;
+	}
+
+	@Override
+	public IArray distanceToPoint(double x, double y, double z) {
+		throw new RuntimeException("org.openda.exchange.IrregularGridGeometryInfo.distanceToPoint() not implemented yet");
 	}
 }

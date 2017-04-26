@@ -18,8 +18,6 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
-import org.openda.localization.LocalizationDomainsSimpleModel;
-import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayGeometryInfo;
@@ -29,8 +27,11 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
+import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.noiseModels.SpatialCorrelationStochVector.CoordinatesType;
+import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.utils.*;
+import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 
 import java.io.*;
@@ -484,10 +485,48 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 		return new LocalizationDomainsSimpleModel();
 	}
 
-	public IVector[] getObservedLocalization(
-			IObservationDescriptions observationDescriptions, double distance) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("org.openda.noiseModels.MapsNoisModelInstance.getObservedLocalization(): Not implemented yet.");
+	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
+
+		IVector xObs = observationDescriptions.getValueProperties("xposition");
+		IVector yObs = observationDescriptions.getValueProperties("yposition");
+		IVector zObs = observationDescriptions.getValueProperties("height");
+		String obsId[] = observationDescriptions.getStringProperties("id");
+		int obsCount = observationDescriptions.getObservationCount();
+
+		IVector[] obsVectorArray = new IVector[obsCount];
+		for (int i = 0; i < obsCount; i++) {
+
+			ITreeVector modelWeightsTreeVector = getLocalizedCohnWeights(obsId[i], distance,
+				xObs.getValue(i), yObs.getValue(i), zObs.getValue(i));
+
+			TreeVector weightsForFullNoise = new TreeVector("Noise-Weight");
+			weightsForFullNoise.addChild(modelWeightsTreeVector);
+			obsVectorArray[i] = weightsForFullNoise;
+		}
+		return obsVectorArray;
+
+	}
+
+	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs) {
+
+		TreeVector treeVector = new TreeVector("weights-for " + obsId);
+		int nNoiseModels = this.outputSeries.size();
+
+		for (int n = 0; n < nNoiseModels; n++) {
+
+			IExchangeItem echangeItem = this.outputSeries.get(this.ids.get(n));
+
+			double[] distancesForExchangeItem = echangeItem.getGeometryInfo().distanceToPoint(xObs, yObs, zObs).getValuesAsDoubles();
+			double[] weightsForExchangeItem = new double[distancesForExchangeItem.length];
+
+			for (int xy = 0; xy < distancesForExchangeItem.length; xy++) {
+				weightsForExchangeItem[xy] = GeometryUtils.calculateCohnWeight(distancesForExchangeItem[xy], distanceCohnMeters);
+			}
+
+			treeVector.addChild(this.ids.get(n), weightsForExchangeItem);
+
+		}
+		return treeVector;
 	}
 
 	public IVector[] getObservedLocalization(
