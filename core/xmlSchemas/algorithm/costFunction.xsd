@@ -2,7 +2,7 @@
 <!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
 <xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:complexType name="CostFunctionXML">
-		<xs:attribute name="class" use="required">
+		<xs:attribute name="class" use="optional">
 			<xs:annotation>
 				<xs:documentation>Set openda:class name of the cost function.</xs:documentation>
 			</xs:annotation>
@@ -32,5 +32,10 @@
 				<xs:documentation>Specify the multiplication factor to use in the cost function.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+    <xs:attribute name="stdRemoval" type="xs:boolean" use="optional">
+      <xs:annotation>
+        <xs:documentation>stdRemoval, used in DudConfig.xsd, default false</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 	</xs:complexType>
 </xs:schema>
