@@ -62,7 +62,49 @@
 					</xs:attribute>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="outerLoop" type="openda:OuterLoopXML">
+			<xs:element name="algorithm" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>algorithm</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="type" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>type of algorithm, default = BFGS, other option = ConjugateGradient</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="method" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>method for conjugategradient algorithm</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="maxIterations" type="xs:integer" use="optional">
+						<xs:annotation>
+							<xs:documentation>maxIterations, default 25</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="absTolGrad" type="xs:double" use="optional">
+						<xs:annotation>
+							<xs:documentation>absTolGrad, defalut 0.01</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="relTolGrad" type="xs:double" use="optional">
+						<xs:annotation>
+							<xs:documentation>relTolGrad, defalut 0.01</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="absTolStep" type="xs:double" use="optional">
+						<xs:annotation>
+							<xs:documentation>absTolStep, defalut 0.001</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="relTolStep" type="xs:double" use="optional">
+						<xs:annotation>
+							<xs:documentation>relTolStep, defalut 0.01</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="outerLoop" type="openda:OuterLoopXML" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
 				</xs:annotation>

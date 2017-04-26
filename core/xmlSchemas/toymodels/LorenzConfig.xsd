@@ -50,10 +50,21 @@
 					<xs:documentation>State vector at initial time: [Var1,Var2,...]</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="initialStateUncertainty" type="xs:string" minOccurs="0">
+			<xs:element name="initialStateUncertainty" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Std of state vector uncertainty at initial time: [StdVar1,StdVar2,...].</xs:documentation>
 				</xs:annotation>
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="correlationLength" type="xs:double" use="optional">
+                <xs:annotation>
+                  <xs:documentation>Correlation length, default 10.0</xs:documentation>
+                </xs:annotation>
+              </xs:attribute>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
