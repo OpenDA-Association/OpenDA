@@ -151,8 +151,8 @@ endlocal
 
 echo Running test: %CURDIR%\%1.oda
 set odafile=%CD%\%CURDIR%\%1.oda
-java -Xms128m -Xmx1024m -classpath %CLASSPATH% org.openda.application.OpenDaApplication %odafile% 1>test_results\%CURDIR%\%1.out 2>test_results\%CURDIR%\%1.err
-echo "error level: " %errorlevel%
+"%JAVA_HOME%\bin\java" -Xms128m -Xmx1024m -classpath %CLASSPATH% org.openda.application.OpenDaApplication %odafile% 1>test_results\%CURDIR%\%1.out 2>test_results\%CURDIR%\%1.err
+echo "Error level: " %errorlevel%
 if %errorlevel% gtr 0 goto Error1
 if not (%2)==() copy %CURDIR%\%2 test_results\%CURDIR%\%1_%2 >nul
 if not (%3)==() copy %CURDIR%\%3 test_results\%CURDIR%\%1_%3 >nul
