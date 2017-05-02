@@ -22,5 +22,10 @@
 				<xs:documentation>Specify the multiplication factor to use in the cost function.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="maxEvaluation" type="xs:integer" use="optional">
+			<xs:annotation>
+				<xs:documentation>maxEvaluation, default 1000</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
