@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SequentialSimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.openda.org c:\OpenDA\public\xmlSchemas\algorithm\sequentialSimulation.xsd">
+<SequentialEnsembleSimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org c:\OpenDA\public\xmlSchemas\algorithm\sequentialEnsembleSimulation.xsd">
 	<!-- default <analysisTimes type="fromObservationTimes" ></analysisTimes> 
 		<analysisTimes type="fixed" timeFormat="dateTimeString" >201008241130,201008241140,...,201008242350</analysisTimes> 
 		<analysisTimes type="fixed" >201008240000,201008240300,201008240600</analysisTimes> 
@@ -14,4 +14,4 @@ xsi:schemaLocation="http://www.openda.org c:\OpenDA\public\xmlSchemas\algorithm\
 	This should probably be true unless your model has difficulty with the changes of parameters, initial state
 	or the forcing -->
 	<ensembleModel stochParameter="false" stochForcing="true" stochInit="true" />
-</SequentialSimulationConfig>
+</SequentialEnsembleSimulationConfig>
