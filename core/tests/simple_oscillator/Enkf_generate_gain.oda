@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openda_1.0/openDaApplication.xsd">
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
 	<stochObserver className="org.openda.utils.CsvStochObserver">
 		<workingDirectory>./stochobserver</workingDirectory>
 		<!-- <configFile>OscillatorSimpleStochObsConfig.xml</configFile> -->
