@@ -1,4 +1,6 @@
-<GriddedFullSearchConfig>
+<?xml version="1.0" encoding="UTF-8"?>
+<GriddedFullSearchConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/griddedFullSearchConfig.xsd">
    <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
    <gridRange min="[7.0,1.5]" max="[9.0,1.8]" step="[0.2,0.05]" />
    <stopCriteria>
