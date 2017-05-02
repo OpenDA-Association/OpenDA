@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<stochObserver>	   
+<groupStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/groupStochObserver.xsd">	   
    <stochObserver id="oscillator1" className="org.openda.utils.CsvStochObserver">
       <workingDirectory>stochobserver1</workingDirectory>
       <configFile>observations_oscillator_generated_for_calibration.csv</configFile>
@@ -8,5 +9,5 @@
       <workingDirectory>stochobserver2</workingDirectory>
       <configFile>observations_oscillator_generated_for_calibration.csv</configFile>
    </stochObserver>
-</stochObserver>
+</groupStochObserver>
 	
