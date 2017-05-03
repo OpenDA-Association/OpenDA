@@ -23,7 +23,7 @@
 		<xs:annotation>
 			<xs:documentation>Splitting each complex into simplexes and propagating each simplex to obtain better parameter estimates.</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="numIterations" type="xs:integer" use="optional" default="30">
+		<xs:attribute name="numIteration" type="xs:integer" use="optional" default="30">
 			<xs:annotation>
 				<xs:documentation>Number of steps in the simplex propagation.</xs:documentation>
 			</xs:annotation>
