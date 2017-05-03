@@ -9,6 +9,9 @@ cd ..\bin
 set OPENDA_BINDIR=%CD%
 set Path=%CD%;%Path%
 
+rem no openda jre is available, check if there is a default one
+if "%JAVA_HOME%" == "" goto exitwitherror0
+
 set CLASSPATH=%OPENDA_BINDIR%\*
 
 cd ..\tests
@@ -135,15 +138,15 @@ if defined TestDisabled (
 ) else (
    echo All tests were performed and finished without error
 )
-goto :eof
+exit 0
 
 :exitwitherror0
-echo No JAVA runtime found - please check this
-goto :eof
+echo No JAVA_HOME found - please check this
+exit 1
 
 :exitwitherror1
 echo One or more tests finished with an error!
-goto :eof
+exit 1
 
 endlocal
 
@@ -152,7 +155,6 @@ endlocal
 echo Running test: %CURDIR%\%1.oda
 set odafile=%CD%\%CURDIR%\%1.oda
 "%JAVA_HOME%\bin\java" -Xms128m -Xmx1024m -classpath %CLASSPATH% org.openda.application.OpenDaApplication %odafile% 1>test_results\%CURDIR%\%1.out 2>test_results\%CURDIR%\%1.err
-echo "Error level: " %errorlevel%
 if %errorlevel% gtr 0 goto Error1
 if not (%2)==() copy %CURDIR%\%2 test_results\%CURDIR%\%1_%2 >nul
 if not (%3)==() copy %CURDIR%\%3 test_results\%CURDIR%\%1_%3 >nul
