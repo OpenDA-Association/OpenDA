@@ -87,7 +87,7 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance, IS
 			ctaAnnounceObservedValues(observationDescriptions);
 		}
 		else {
-			if(observationDescriptions.getTimes().length>1){
+			if(observationDescriptions.getTimes()!= null && observationDescriptions.getTimes().length>1){
 				timerAnnounce.stop();
 				throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.announceObservedValues not implemented yet for other types");
 			}
