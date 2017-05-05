@@ -46,6 +46,8 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 
 	private String dummy;
 
+	private String id_drymask;
+
 	public Meerpeilcorrection() {
 		this.workingDir = null;
 		this.currentStep = 0;
@@ -70,6 +72,9 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 		}
 		// if specified, set dummy value, otherwise use default for netcdf
 		dummy = configurationAsTree.getAsString("dumval","no dumval");
+
+		// if specified, set drymask value
+		id_drymask = configurationAsTree.getAsString("id_drymask", "no id_drymask");
 	}
 
 	/**
@@ -131,18 +136,33 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 		BBStochModelInstance mainModel = (BBStochModelInstance) this.mainModel;
 		ITreeVector state_treevector = mainModel.getState();
 		ArrayList<String> state_ids = state_treevector.getSubTreeVectorIds();
+         // Check if state_ids consist of only 1 ExchangeItem
+        if (state_ids.size() != 1) {throw new RuntimeException("Algorithm Meerpeilcorrection allows exactly one state vector in StochModel");}
+
 		String Exch_ids[] = this.mainModel.getExchangeItemIDs();
+
+		// Read mask file if it exists
+		IVector mask = new Vector();
+		if (id_drymask != "no id_drymask") {
+			IExchangeItem drymask = this.mainModel.getDataObjectExchangeItem(id_drymask);
+			// Define vector mask containing the drymask values
+			double[] val = ((Array) drymask.getValues()).getValuesAsDoubles();
+			mask = new Vector(val);
+		}
+
 		for (String id1 : state_ids) {
 			for (String id2 : Exch_ids) {
 				if (id2.equalsIgnoreCase(id1)) {
 					IVector state = this.mainModel.getState();
+					int n = state.getSize();
+
+					// Check if size drymask equals size state vector.
+					if (id_drymask != "no id_drymask" && mask.getSize()!=n) {throw new RuntimeException("Drymask and state vector are different in size");}
 
 					// first (and only) observation is the correction factor
 					IVector obs = this.stochObserver.getValues();
 					double alpha = obs.getValue(0);
 
-					// create a vector with correction values to add to the state
-					int n = state.getSize();
 					Vector corr = new Vector(n);
 					if (dummy.contentEquals("no dumval")) {
 						// add meerpeilcorrection to all positions
@@ -159,16 +179,25 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 						}
 					}
 
+					if (id_drymask != "no id_drymask") {
+						// apply meerpeil correction only in cells where mask == 1, and not when mask == 0
+						corr.pointwiseMultiply(mask);
+					}
+
 					// add: state = state + corr
 					state.axpy(1.0,corr);
 
 					// Reset values of ExchangeItem containing the state
 					this.mainModel.getDataObjectExchangeItem(id2).setValues(state);
-					Results.putProgression("========================================");
-					Results.putProgression(" Meerpeilcorrection " +alpha + " applied");
-					Results.putProgression("========================================\n");
+					Results.putProgression("==================================================");
+					if (id_drymask != "no id_drymask") {
+						Results.putProgression(" Meerpeilcorrection " + alpha + " applied with mask option.");
+					} else {
+						Results.putProgression(" Meerpeilcorrection " + alpha + " applied");
 				}
+					Results.putProgression("==================================================\n");
 			}
+		}
 		}
 	} else {
 		throw new RuntimeException("Algorithm meerpeilcorrection not yet tested for non BB-configurations");
