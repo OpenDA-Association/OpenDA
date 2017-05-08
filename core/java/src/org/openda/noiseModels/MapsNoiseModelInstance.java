@@ -18,6 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
+
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayGeometryInfo;
@@ -37,6 +38,7 @@ import org.openda.utils.io.FileBasedModelState;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Module for generating noise for timeseries of 2D maps with Gaussian distribution and
@@ -102,6 +104,7 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 
 	public OutputLevel outputLevel=OutputLevel.Suppress;
 	protected Time timeHorizon = null;
+	private Map<String, SpatialCorrelationCovariance> eiCovarianceMap;
 
 
 
@@ -363,16 +366,7 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 			double x2[]=new double[x.length*y.length];
 			double y2[]=new double[x.length*y.length];
 			expandGrid(x,y,x2,y2);
-			IStochVector systemNoisePart=null;
-			if(separable==true){
-				systemNoisePart = 
-						new Spatial2DCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x, y);
-				systemNoise.addChild(systemNoisePart);
-			}else{
-				systemNoisePart = 
-						new SpatialCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x2, y2);
-				systemNoise.addChild(systemNoisePart);
-			}
+			addSystemNoiseChild(systemNoise, id, coordsType, separable, x, y, horizontalCorrelationScale, stdWhiteNoise, x2, y2);
 			// 
 			// output storage
 			//
@@ -380,6 +374,22 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 			tempItem=null;
 			this.ids.add(id);
 		} // loop over series i
+	}
+
+	private void addSystemNoiseChild(StochTreeVector systemNoise, String id, CoordinatesType coordsType, boolean separable, double[] x, double[] y, double horizontalCorrelationScale, double stdWhiteNoise, double[] x2, double[] y2) {
+		if (separable) {
+			Spatial2DCorrelationStochVector systemNoisePart = new Spatial2DCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x, y);
+			systemNoise.addChild(systemNoisePart);
+			return;
+		}
+		SpatialCorrelationCovariance preCalculatedCovarianceMatrix = eiCovarianceMap != null ? eiCovarianceMap.get(id) : null;
+		SpatialCorrelationStochVector spatialCorrelationStochVector = new SpatialCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x2, y2, preCalculatedCovarianceMatrix);
+		if (eiCovarianceMap != null && preCalculatedCovarianceMatrix == null) {
+			SpatialCorrelationCovariance covariance = spatialCorrelationStochVector.getSpatialCorrelationCovariance();
+			SpatialCorrelationCovariance put = eiCovarianceMap.put(id, covariance);
+			assert put == null;
+		}
+		systemNoise.addChild(spatialCorrelationStochVector);
 	}
 
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
@@ -833,5 +843,9 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 				index++;
 			}
 		}
+	}
+
+	public void setEiCovarianceMap(Map<String, SpatialCorrelationCovariance> eiCovarianceMap) {
+		this.eiCovarianceMap = eiCovarianceMap;
 	}
 }

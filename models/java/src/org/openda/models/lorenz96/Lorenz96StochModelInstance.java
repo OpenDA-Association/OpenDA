@@ -154,7 +154,7 @@ public class Lorenz96StochModelInstance extends org.openda.models.simpleModel.Si
 		double standardDeviation = this.initialStateUncertainty.getStandardDeviations().getValue(0);
 		this.initialStateUncertainty = new SpatialCorrelationStochVector(
 				SpatialCorrelationStochVector.CoordinatesType.XY,
-				standardDeviation, this.stateCorrelationLength, xGrid, yGrid);
+				standardDeviation, this.stateCorrelationLength, xGrid, yGrid, null);
 	}
 
 

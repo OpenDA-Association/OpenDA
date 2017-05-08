@@ -83,12 +83,12 @@ public class Spatial2DCorrelationStochVector implements IStochVector {
 		// init for x-direction
 		double[] midYCopies=new double[xn];
 		for(int ix=0;ix<xn;ix++){midYCopies[ix]=midY;}
-		this.xStochVector=new SpatialCorrelationStochVector(coordsType, 1.0, lengthscale, x, midYCopies);
+		this.xStochVector=new SpatialCorrelationStochVector(coordsType, 1.0, lengthscale, x, midYCopies, null);
 		this.xSqrtCov=xStochVector.getSqrtCovariance().asMatrix();
 		// init for y-direction
 		double[] midXCopies=new double[yn];
 		for(int iy=0;iy<yn;iy++){midXCopies[iy]=midX;}
-		this.yStochVector=new SpatialCorrelationStochVector(coordsType, 1.0, lengthscale, midXCopies, y);
+		this.yStochVector=new SpatialCorrelationStochVector(coordsType, 1.0, lengthscale, midXCopies, y, null);
 		this.ySqrtCov=yStochVector.getSqrtCovariance().asMatrix();
 
 		this.whiteNoise=new StochVector(xn*yn, 0., 1.);

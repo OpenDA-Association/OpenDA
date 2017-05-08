@@ -19,21 +19,19 @@
 */
 package org.openda.noiseModels;
 
-import java.io.File;
-import java.io.IOException;
-
+import junit.framework.TestCase;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IArray;
-import org.openda.interfaces.IModelState;
-import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.IStochModelFactory;
-import org.openda.interfaces.IStochModelInstance;
+import org.openda.interfaces.*;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
-import org.openda.utils.*;
+import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.StochVector;
+import org.openda.utils.Time;
+import org.openda.utils.Vector;
 
-import junit.framework.TestCase;
+import java.io.File;
+import java.io.IOException;
 
 public class Maps2dNoiseModelTest extends TestCase {
 
@@ -164,6 +162,104 @@ public class Maps2dNoiseModelTest extends TestCase {
 		model.restoreInternalState(stateFromFile);
 		model.compute(new Time(targetTime+1));
 		
+	}
+
+	public void testMaps2dNoiseRecompute(){
+		IStochModelFactory factory = new MapsNoiseModelFactory();
+		String configString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+				+"<mapsNoiseModelConfig>"
+				+"	<simulationTimespan timeFormat=\"dateTimeString\">201008241200,201008241210,...,201008241220</simulationTimespan>"
+				+"	<noiseItem id=\"windU\" quantity=\"wind-u\" unit=\"m/s\" height=\"10.0\" "
+				+"	 standardDeviation=\"1.0\" timeCorrelationScale=\"12.0\" timeCorrelationScaleUnit=\"hours\" "
+				+"	 initialValue=\"0.0\" horizontalCorrelationScale=\"500\" horizontalCorrelationScaleUnit=\"km\" >"
+				+"	 	<grid type=\"cartesian\" coordinates=\"wgs84\" separable=\"false\">"
+				+"	 		<x>-5,-2.5,...,5</x>"
+				+"	 		<y>50,55,...,60</y>"
+				+"	 	</grid>"
+				+"	</noiseItem>"
+				+"	<noiseItem id=\"windV\" quantity=\"wind-v\" unit=\"m/s\" height=\"10.0\" "
+				+"	 standardDeviation=\"1.0\" timeCorrelationScale=\"12.0\" timeCorrelationScaleUnit=\"hours\" "
+				+"	 initialValue=\"0.0\" horizontalCorrelationScale=\"500\" horizontalCorrelationScaleUnit=\"km\" >"
+				+"	 	<grid type=\"cartesian\" coordinates=\"wgs84\" separable=\"false\">"
+				+"	 		<x>-5,-2.5,...,5</x>"
+				+"	 		<y>50,55,...,60</y>"
+				+"	 	</grid>"
+				+"	</noiseItem>"
+				+"</mapsNoiseModelConfig>";
+		factory.initialize(testRunDataDir, new String[]{configString});
+
+		StochVector.setSeed(10111213);
+
+		IStochModelInstance[] models = new IStochModelInstance[]{factory.getInstance(OutputLevel.Debug), factory.getInstance(OutputLevel.Debug), factory.getInstance(OutputLevel.Debug), factory.getInstance(OutputLevel.Debug)};
+		double targetTime;
+		try {
+			targetTime=TimeUtils.date2Mjd("201008241220");
+		} catch (Exception e) {
+			throw new RuntimeException("invalid dateformat for targetTime");
+		}
+		for (IStochModelInstance model : models) {
+			model.setAutomaticNoiseGeneration(true);
+			model.compute(new Time(targetTime));
+		}
+
+		String[] ids=models[0].getExchangeItemIDs();
+		assertEquals(2, ids.length);
+		ArrayExchangeItem item0 = (ArrayExchangeItem)models[0].getExchangeItem(ids[0]);
+		// values
+		IArray valuesArray = item0.getValues();
+		double values[] = valuesArray.getValuesAsDoubles();
+		assertEquals(3*5*3,values.length);
+		double delta=1.0E-8;
+		assertEquals(-8.657673091235027E-4, values[15], delta);
+		assertEquals(-0.10794060690367921, values[15+29], delta);
+
+		ArrayExchangeItem item11 = (ArrayExchangeItem)models[1].getExchangeItem(ids[1]);
+		//Values
+		double values11[] = item11.getValues().getValuesAsDoubles();
+		assertEquals(3*5*3,values11.length);
+		assertEquals(-0.1938966950067343, values11[15], delta);
+		assertEquals(0.11502807799798048, values11[44], delta);
+
+
+		try {
+			targetTime = TimeUtils.date2Mjd("201008241230");
+		} catch (Exception e) {
+			throw new RuntimeException("invalid dateformat for targetTime");
+		}
+		for (IStochModelInstance model : models) {
+			model.compute(new Time(targetTime));
+		}
+
+		ArrayExchangeItem item02 = (ArrayExchangeItem) models[2].getExchangeItem(ids[0]);
+		double values02[] = item02.getValues().getValuesAsDoubles();
+		assertEquals(3 * 5 * 2, values02.length);
+		assertEquals(-0.09892819740275002, values02[5], delta);
+		assertEquals(0.06776375651132155, values02[20], delta);
+
+		ArrayExchangeItem item13 = (ArrayExchangeItem) models[3].getExchangeItem(ids[0]);
+		double values13[] = item13.getValues().getValuesAsDoubles();
+		assertEquals(3 * 5 * 2, values13.length);
+		assertEquals(0.2633708108815276, values13[6], delta);
+		assertEquals(0.17063458293582934, values13[21], delta);
+
+		try {
+			targetTime = TimeUtils.date2Mjd("201008241240");
+		} catch (Exception e) {
+			throw new RuntimeException("invalid dateformat for targetTime");
+		}
+		for (IStochModelInstance model : models) {
+			model.compute(new Time(targetTime));
+		}
+
+		double valuesc[] = item02.getValues().getValuesAsDoubles();
+		assertEquals(3 * 5 * 2, valuesc.length);
+		assertEquals(-0.0605033630221406, valuesc[14], delta);
+		assertEquals(-0.06965218966444367, valuesc[28], delta);
+
+		double values1c[] = item11.getValues().getValuesAsDoubles();
+		assertEquals(3 * 5 * 2, values1c.length);
+		assertEquals(-0.029133622729570444, values1c[13], delta);
+		assertEquals(-0.3693470288643908, values1c[27], delta);
 	}
 	
 

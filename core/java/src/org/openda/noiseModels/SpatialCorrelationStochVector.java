@@ -28,6 +28,8 @@ import org.openda.utils.Vector;
 
 public class SpatialCorrelationStochVector implements IStochVector {
 
+	private SpatialCorrelationCovariance sharableCovariance;
+
 	// distances are different on a globe
 	public enum CoordinatesType {
 	    WGS84, XY 
@@ -49,8 +51,8 @@ public class SpatialCorrelationStochVector implements IStochVector {
 	private final double radiusEarth=6372800.0; //average radius in leastsquares sense in meters
 	private final double degreesToRadians=Math.PI/180.0;
 	
-	public SpatialCorrelationStochVector(CoordinatesType coordsType, double standardDeviation, 
-			double lengthscale, double[] x, double[] y) {
+	public SpatialCorrelationStochVector(CoordinatesType coordsType, double standardDeviation,
+										 double lengthscale, double[] x, double[] y, SpatialCorrelationCovariance preCalculatedCovariance) {
 		this.x = new double[x.length];
 		System.arraycopy(x, 0, this.x, 0, x.length);
 		this.y = new double[y.length];
@@ -67,13 +69,19 @@ public class SpatialCorrelationStochVector implements IStochVector {
 		this.mean = new Vector(n);
 		this.standardDeviations = new Vector(n);
 		this.standardDeviations.setConstant(this.standardDeviation);
-		this.covariance = new Matrix(n,n);
-		computeCovariance();
-		
-		this.determinantCov = this.covariance.determinant(); //
-		
-		factorizeCorrelation();
-		
+
+		if (preCalculatedCovariance == null) {
+			this.covariance = new Matrix(n, n);
+			computeCovariance();
+			this.determinantCov = this.covariance.determinant();
+			this.sqrtCovariance= this.covariance.sqrt();
+			this.sharableCovariance = new SpatialCorrelationCovariance(covariance, sqrtCovariance, determinantCov);
+		} else {
+			this.covariance = preCalculatedCovariance.getCovariance();
+			this.determinantCov = preCalculatedCovariance.getDeterminantCov();
+			this.sqrtCovariance = preCalculatedCovariance.getSqrtCovariance();
+		}
+
 		IVector zeroMean = new Vector(n);
 		IVector stdOne   = new Vector(n); stdOne.setConstant(1.0);
 		this.whiteNoise=new StochVector(zeroMean, stdOne);
@@ -142,7 +150,10 @@ public class SpatialCorrelationStochVector implements IStochVector {
 		return new SqrtCovariance(this.sqrtCovariance);
 	}
 
-	
+	public SpatialCorrelationCovariance getSpatialCorrelationCovariance() {
+		return sharableCovariance;
+	}
+
 	public boolean hasCorrelatedElements() {
 		return true;
 	}
