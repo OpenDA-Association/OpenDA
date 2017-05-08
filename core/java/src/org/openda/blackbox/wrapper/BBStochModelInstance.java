@@ -34,8 +34,6 @@ import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -44,7 +42,6 @@ import java.util.*;
  * Black box module's implementation of a stochastic model instance
  */
 public class BBStochModelInstance extends Instance implements IStochModelInstance {
-	private static Logger LOGGER = LoggerFactory.getLogger(BBStochModelInstance.class);
 
 	// In case of parallel runs we use the Distributed counter to generate unique IDs
 	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
@@ -1671,7 +1668,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		int stateSizeMin1 = valuesAsDoubles.length - 1;
 		if (!warningLogged && stateSizeMin1 % stateSizeNoiseSizeRatio != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatio * (noise.length - 1) + 1) {
-			LOGGER.warn(stateSizeMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noise.length + " to " + (noise.length + 1) + " will result in interpolation for last state points as well.");
+			System.out.println("Warning: " + stateSizeMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noise.length + " to " + (noise.length + 1) + " will result in interpolation for last state points as well.");
 			warningLogged = true;
 		}
 		double[] spatialNoise = new double[valuesAsDoubles.length];
