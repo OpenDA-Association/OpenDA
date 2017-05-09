@@ -573,6 +573,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
 		ITime[] selectedTimes = observationDescriptions.getTimes();
+		if (selectedTimes == null || selectedTimes.length == 0) {
+			return;
+		}
 		try {
 			if (bufferedExchangeItems != null) { bufferedExchangeItems.clear(); }
 			bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);
