@@ -104,7 +104,7 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 
 	public OutputLevel outputLevel=OutputLevel.Suppress;
 	protected Time timeHorizon = null;
-	private Map<String, SpatialCorrelationCovariance> eiCovarianceMap;
+	private Map<String, SpatialCorrelationCovariance[]> eiCovarianceMap;
 
 
 
@@ -378,15 +378,21 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 
 	private void addSystemNoiseChild(StochTreeVector systemNoise, String id, CoordinatesType coordsType, boolean separable, double[] x, double[] y, double horizontalCorrelationScale, double stdWhiteNoise, double[] x2, double[] y2) {
 		if (separable) {
-			Spatial2DCorrelationStochVector systemNoisePart = new Spatial2DCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x, y);
-			systemNoise.addChild(systemNoisePart);
+			SpatialCorrelationCovariance[] preCalculatedCovarianceMatrix = eiCovarianceMap != null ? eiCovarianceMap.get(id) : null;
+			Spatial2DCorrelationStochVector spatial2DCorrelationStochVector = new Spatial2DCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x, y, preCalculatedCovarianceMatrix);
+			if (eiCovarianceMap != null && preCalculatedCovarianceMatrix == null) {
+				SpatialCorrelationCovariance[] covariance = spatial2DCorrelationStochVector.getSharableCovariance();
+				SpatialCorrelationCovariance[] put = eiCovarianceMap.put(id, covariance);
+				assert put == null;
+			}
+			systemNoise.addChild(spatial2DCorrelationStochVector);
 			return;
 		}
-		SpatialCorrelationCovariance preCalculatedCovarianceMatrix = eiCovarianceMap != null ? eiCovarianceMap.get(id) : null;
+		SpatialCorrelationCovariance[] preCalculatedCovarianceMatrix = eiCovarianceMap != null ? eiCovarianceMap.get(id) : null;
 		SpatialCorrelationStochVector spatialCorrelationStochVector = new SpatialCorrelationStochVector(coordsType, stdWhiteNoise, horizontalCorrelationScale, x2, y2, preCalculatedCovarianceMatrix);
 		if (eiCovarianceMap != null && preCalculatedCovarianceMatrix == null) {
-			SpatialCorrelationCovariance covariance = spatialCorrelationStochVector.getSpatialCorrelationCovariance();
-			SpatialCorrelationCovariance put = eiCovarianceMap.put(id, covariance);
+			SpatialCorrelationCovariance[] covariance = spatialCorrelationStochVector.getSharableCovariance();
+			SpatialCorrelationCovariance[] put = eiCovarianceMap.put(id, covariance);
 			assert put == null;
 		}
 		systemNoise.addChild(spatialCorrelationStochVector);
@@ -845,7 +851,7 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 		}
 	}
 
-	public void setEiCovarianceMap(Map<String, SpatialCorrelationCovariance> eiCovarianceMap) {
+	public void setEiCovarianceMap(Map<String, SpatialCorrelationCovariance[]> eiCovarianceMap) {
 		this.eiCovarianceMap = eiCovarianceMap;
 	}
 }

@@ -121,7 +121,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,1.0,2.0}; //counterclock square 
 		double[] y= new double[]{0.0,0.5,1.0,1.5,2.0};
     	Spatial2DCorrelationStochVector sv = new Spatial2DCorrelationStochVector(CoordinatesType.XY
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	System.out.println("sv="+sv.toString());
     	
     	IVector mean = sv.getExpectations();
@@ -159,7 +159,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,0.5,1.0}; //counterclock square 
 		double[] y= new double[]{50.0,50.5,51.0,51.5,52.0};
     	Spatial2DCorrelationStochVector sv = new Spatial2DCorrelationStochVector(CoordinatesType.WGS84
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	System.out.println("mean="+mean);
     	System.out.println("Should be mean=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]");
@@ -199,7 +199,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,0.5,1.0}; //2 separate axis 
 		double[] y= new double[]{50.0,51.0};
     	Spatial2DCorrelationStochVector sv = new Spatial2DCorrelationStochVector(CoordinatesType.WGS84
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	
     	IVector std = sv.getStandardDeviations();

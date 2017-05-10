@@ -40,7 +40,7 @@ public class MapsNoiseModelFactory implements IStochModelFactory, ITimeHorizonCo
 	protected File workingDir=null;
 	protected String[] arguments=null;
 	protected ITime timeHorizon = null;
-	private Map<String, SpatialCorrelationCovariance> eiCovarianceMap;
+	private Map<String, SpatialCorrelationCovariance[]> eiCovarianceMap;
 
 	
 	public void initialize(File workingDir, String[] arguments) {
