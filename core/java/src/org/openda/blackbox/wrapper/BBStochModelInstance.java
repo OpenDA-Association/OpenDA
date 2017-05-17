@@ -350,6 +350,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
             if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 		}
 
+		//ODA-558 Clear exchange items otherwise exchange items from previous compute will be used without newly added noise
+		this.constraintExchangeItems.clear();
 		timerCompute.stop();
 	}
 
