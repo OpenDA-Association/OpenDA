@@ -334,16 +334,12 @@ public class SCECoreOptimizer {
                             Results.putMessage("ONE DIMENSIONAL CONTRACTION");
                         } else {
                             // can't seem to get rid of the worst vertex, try contraction around the best vertices
-                            IVector pHelp;
-                            for (int i=1; i<pSimplex.length-1; i++){
-                                pHelp = pSimplex[0].clone();
-                                pHelp.setConstant(1.0);
-                                pHelp.setValue(i - 1, pSimplex[0].getValue(i - 1));
-                                pSimplex[i].axpy(1.0, pHelp);
-                                pSimplex[i].scale(0.5);
-                                fSimplex[i] = calculatecost(this.f, pSimplex[i],UB,LB);
-                            }
-                            Results.putMessage("MULTIPLE CONTRACTION");
+							for (int i = 1; i < pSimplex.length - 1; i++) {
+								pSimplex[i].axpy(1.0, pSimplex[0]);
+								pSimplex[i].scale(0.5);
+								fSimplex[i] = calculatecost(this.f, pSimplex[i], UB, LB);
+							}
+							Results.putMessage("MULTIPLE CONTRACTION");
                         }
                     } else {
                         // if the cost is smaller than the 2nd worst vertex, use this to replace the worst vertex
