@@ -25,8 +25,6 @@ import org.openda.interfaces.IArrayTimeInfo;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.ITimeInfo;
-import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
@@ -35,9 +33,6 @@ import ucar.nc2.Variable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static org.apache.commons.lang3.math.NumberUtils.max;
-import static org.apache.commons.lang3.math.NumberUtils.min;
 
 /**
  * Data object voor D3D map file
@@ -71,6 +66,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		this.netcdfFilePath = netcdfFilePath;
+
 		try {
 			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
 //			netcdfFileWrite = new NetcdfFileWriteable();
@@ -120,6 +116,15 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				writeExchangeItemValues(varName, values);
 			}
 		}
+		try {
+			netcdfFile.close();
+			if (binRestartFile != null) {
+				binRestartFile.close();
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+
 	}
 
 	public String[] getExchangeItemIDs() {
@@ -321,6 +326,12 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 	public void writeExchangeItemValues(String varName, double[] values) {
 
+		// Writing to the binary restart file, after the algorithm operations
+		if (binRestartFile != null) {
+			binRestartFile.write(varName, values);
+			return;
+		}
+
 		// find variable
 		Variable variable = this.netcdfFile.findVariable(varName);
 		int[] origin = createOrigin(variable);
@@ -331,12 +342,6 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		int LastTimeIndex = timeInfo.getTimes().length;
 		origin[timeDimensionIndex] = LastTimeIndex-1;
 		sizeArray[timeDimensionIndex] = 1;
-
-		// Writing to the binary restart file, after the algorithm operations
-		if (binRestartFile != null) {
-			binRestartFile.write(varName, values);
-			return;
-		}
 
 		if (variable.getName().equalsIgnoreCase("R1")) {
 			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
