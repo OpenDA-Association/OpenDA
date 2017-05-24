@@ -161,18 +161,11 @@ public class D3DBinRestartFile {
 
 		if (varName.equals("S1")){
 			positionAndSize[0] = recLenIndicatorSize; // after first rec length
-//			positionAndSize[1] = mMax*nMax*valueSize;
 		}else if (varName.equals("U1")){
 			positionAndSize[0] = 2 * recLenIndicatorSize + mMax*nMax*valueSize + recordDividerSize;
-//			positionAndSize[0] = 2 * recLenIndicatorSize + recordDividerSize + mMax*nMax*valueSize;
-//			positionAndSize[1] = mMax*nMax*nLay*valueSize;
 		}else if (varName.equals("V1")){
-//			positionAndSize[0] = 3 * recLenIndicatorSize + 2 * recordDividerSize + mMax*nMax*nLay*valueSize;
-//			positionAndSize[1] = mMax*nMax*nLay*valueSize;
 			positionAndSize[0] = (2+nLay) * recLenIndicatorSize + (1+nLay)*recordDividerSize + mMax*nMax*valueSize + mMax*nMax*nLay*valueSize;
 		}else if (varName.equals("R1")){
-//			positionAndSize[0] = 4 * recLenIndicatorSize + 3 * recordDividerSize + 2*mMax*nMax*nLay*valueSize;
-//			positionAndSize[1] = mMax*nMax*nLay*nSubstances*valueSize;
 			positionAndSize[0] = (2+2*nLay) * recLenIndicatorSize + (1+2*nLay)*recordDividerSize + mMax*nMax*valueSize + 2*mMax*nMax*nLay*valueSize;
 		}else{
 			throw new RuntimeException("Only S1, U1 V1 and R1 are supported for writing into the binary restart file");
@@ -181,9 +174,6 @@ public class D3DBinRestartFile {
 	}
 
 	private static byte[] float2ByteArray(float value) {
-//		byte[] bytes = new byte[4];
-//		ByteBuffer.wrap(bytes).putFloat(value);
-//		return bytes;
 		byte[] bytes = ByteBuffer.allocate(4).putFloat(value).array();
 		return swapBytes(bytes);
 	}
