@@ -26,6 +26,7 @@ import java.io.File;
 /**
  * Netcdf Data object for reading time series from Delft3D trih-* files
  */
+//TODO Stef: use composition, not inheritance! AK
 public class D3dNetcdfHisDataObject extends NetcdfDataObject {
 
 	public D3dNetcdfHisDataObject() {
