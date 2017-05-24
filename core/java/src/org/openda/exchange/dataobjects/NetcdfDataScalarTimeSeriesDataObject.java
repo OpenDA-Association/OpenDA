@@ -23,7 +23,6 @@ import java.io.File;
 /**
  * Netcdf Data object for reading time series from e.g. Sobek3 time series file
  */
-//TODO Stef: use composition, not inheritance! AK
 public class NetcdfDataScalarTimeSeriesDataObject extends NetcdfDataObject {
 
 	public NetcdfDataScalarTimeSeriesDataObject() {
