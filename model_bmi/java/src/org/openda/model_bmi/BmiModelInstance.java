@@ -185,6 +185,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
 
 		for (BmiModelForcingConfig forcingConfig : this.forcingConfiguration) {
+			File forcingFile = new File(this.modelRunDir, forcingConfig.getDataObjectFileName());
+			if (!forcingFile.exists()) {
+				throw new RuntimeException(getClass().getSimpleName() + ": Cannot find forcing file " + forcingFile.getAbsolutePath() + " configured in bmiModelFactory config xml file.");
+			}
+
 			IDataObject dataObject = BBUtils.createDataObject(this.modelRunDir, forcingConfig.getClassName(), forcingConfig.getDataObjectFileName(), forcingConfig.getArguments());
 			for (String ExchangeItemId : dataObject.getExchangeItemIDs()) {
 				result.put(ExchangeItemId, dataObject.getDataObjectExchangeItem(ExchangeItemId));
@@ -490,18 +495,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @return Model prediction interpolated to each observation (location).
 	 */
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-//		TreeVector treeVector = new TreeVector("predictions");
-//
-//		for (IPrevExchangeItem observationExchangeItem : observationDescriptions.getExchangeItems()) {
-//			IExchangeItem bufferedExchangeItem = this.bufferedExchangeItems.get(observationExchangeItem.getId());
-//			if (bufferedExchangeItem != null) {
-//				double[] computedValues = bufferedExchangeItem.getValuesAsDoubles();
-//				ITreeVector treeVectorLeaf = new TreeVector(bufferedExchangeItem.getId(), new Vector(computedValues));
-//				treeVector.addChild(treeVectorLeaf);
-//			}
-//		}
-//
-//		return treeVector;
+		//see method BBStochModelInstance: if this method returns null, then method BBStochModelInstance.getObservedValuesBB is used instead.
 		return null;
 	}
 
