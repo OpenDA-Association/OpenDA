@@ -893,6 +893,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				errorMessage += "\n\tExchange item not found: " + vectorConfig.getSourceId();
 				continue;
 			}
+			String modelExchangeItemId = modelExchangeItem.getId();//only used for log messages.
 
 			//Note: mappedExchangeItem can be a subVector with only a selection of the modelExchangeItem. Therefore below only use mappedExchangeItem.
 			IExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig, modelExchangeItem, selectors, configRootDir);
@@ -908,11 +909,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				//this code only works for grid modelExchangeItems.
 				if (GeometryUtils.isScalar(mappedExchangeItem.getGeometryInfo())) {
 					throw new IllegalArgumentException(getClass().getSimpleName() + ": Observation exchange item with id '" + observationExchangeItem.getId()
-							+ "' is a grid, therefore the corresponding model exchange item must also be a grid. Model exchange item with id '" + mappedExchangeItem.getId() + "' is scalar.");
+							+ "' is a grid, therefore the corresponding model exchange item must also be a grid. Model exchange item with id '" + modelExchangeItemId + "' is scalar.");
 				}
 				//grid exchangeItems are always IExchangeItems.
 				IVector observedModelValues = getObservedModelValuesForGrid(((IExchangeItem) observationExchangeItem).getGeometryInfo(), mappedExchangeItem.getGeometryInfo(), computedValues,
-						observationExchangeItem.getId(), mappedExchangeItem.getId());
+						observationExchangeItem.getId(), modelExchangeItemId);
 				ITreeVector treeVectorLeaf = new TreeVector(mappedExchangeItem.getId(), observedModelValues);
 				treeVector.addChild(treeVectorLeaf);
 				continue;
@@ -1010,21 +1011,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		logCoordinates(observationXCoordinates, observationYCoordinates, modelGeometryInfo, observationExchangeItemId, modelExchangeItemId);
 
 		//get the model values at the observed coordinates.
-		String logMessage = "Using bilinear interpolation to get model values at observed coordinates.";
+		String logMessage = "Using bilinear interpolation to get model values from model exchangeItem '" + modelExchangeItemId
+				+ "' at observed coordinates from observation exchangeItem '" + observationExchangeItemId + "'.";
 		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
 		Results.putMessage(logMessage);
 		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationXCoordinates, observationYCoordinates, modelGeometryInfo, modelValues);
-		int errorCount = 0;
-		for (int i = 0; i < observedModelValues.getSize(); i++) {
-			double value = observedModelValues.getValue(i);
-			if (Double.isNaN(value)) {
-				errorCount += 1;
-			}
-		}
-		if (errorCount > 0) {
-			throw new RuntimeException(BBStochModelInstance.class.getSimpleName() + ".getObservedModelValuesForGrid: Bilinear interpolation returned missing values for " + errorCount + " observed locations." +
-					" Please make sure that all observations with non-missing values are located inside the model domain and coincide with active grid cells in the model.");
-		}
+		validateObservedModelValues(observationXCoordinates, observationYCoordinates, observedModelValues, observationExchangeItemId, modelExchangeItemId);
 
 		return observedModelValues;
 	}
@@ -1067,6 +1059,28 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
 		Results.putMessage(logMessage);
+	}
+
+	private static void validateObservedModelValues(IVector observedXCoordinates, IVector observedYCoordinates, IVector observedModelValues, String observationExchangeItemId, String modelExchangeItemId) {
+		List<Double> xCoordinatesOfMissingValues = new ArrayList<>();
+		List<Double> yCoordinatesOfMissingValues = new ArrayList<>();
+		for (int i = 0; i < observedModelValues.getSize(); i++) {
+			if (Double.isNaN(observedModelValues.getValue(i))) {
+				xCoordinatesOfMissingValues.add(observedXCoordinates.getValue(i));
+				yCoordinatesOfMissingValues.add(observedYCoordinates.getValue(i));
+			}
+		}
+
+		int errorCount = xCoordinatesOfMissingValues.size();
+		if (errorCount > 0) {
+			String message = BBStochModelInstance.class.getSimpleName() + ".getObservedModelValuesForGrid: Bilinear interpolation returned missing values for " + errorCount + " observed locations."
+					+ " Please make sure that all observations with non-missing values from observation exchangeItem '" + observationExchangeItemId
+					+ "' are located inside the model domain and coincide with active grid cells in the model for model exchangeItem '" + modelExchangeItemId + "'.\n"
+					+ "Observed coordinates for which the model returned missing values:\n"
+					+ "x coordinates: " + new VectorDouble(BBUtils.unbox(xCoordinatesOfMissingValues.toArray(new Double[xCoordinatesOfMissingValues.size()]))).printString("") + "\n"
+					+ "y coordinates: " + new VectorDouble(BBUtils.unbox(yCoordinatesOfMissingValues.toArray(new Double[yCoordinatesOfMissingValues.size()]))).printString("");
+			throw new RuntimeException(message);
+		}
 	}
 
 	private IVector[] getObservedLocalizationExtended(IObservationDescriptions observationDescriptions, double distance){
