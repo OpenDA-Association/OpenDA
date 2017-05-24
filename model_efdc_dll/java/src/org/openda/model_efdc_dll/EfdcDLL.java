@@ -94,7 +94,12 @@ public class EfdcDLL {
                 throw new RuntimeException("Could not create canonical path for " + modelTemplateDir.getAbsolutePath());
             }
 
-            String nativeDllPath = modelDll.getAbsolutePath();
+            String nativeDllPath = null;
+            try {
+                nativeDllPath = modelDll.getCanonicalFile().getAbsolutePath();
+            } catch (IOException e) {
+                throw new RuntimeException("Could not create canonical path for " + modelDll.getAbsolutePath());
+            }
             File nativeDllFile = new File(nativeDllPath);
             if (!nativeDllFile.exists()) {
                 throw new RuntimeException("Native DLL/SO does not exist: " + modelDll.getAbsolutePath());
