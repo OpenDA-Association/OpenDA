@@ -185,11 +185,12 @@ public class GeometryUtils {
 		int columnCount = columnCenterXCoordinates.length;
 
 		//this code assumes that coordinates are sorted ascending.
-		int rowIndexAtOrSouthOfY = getRowIndexAtOrSouthOfY(rowCenterYCoordinates, destinationY);
-		int columnIndexAtOrWestOfX = getColumnIndexAtOrWestOfX(columnCenterXCoordinates, destinationX);
+		int rowIndexAtOrSouthOfY = getRowIndexOfCellCenterAtOrSouthOfY(rowCenterYCoordinates, destinationY);
+		int columnIndexAtOrWestOfX = getColumnIndexOfCellCenterAtOrWestOfX(columnCenterXCoordinates, destinationX);
 		int rowIndexNorthOfY = rowIndexAtOrSouthOfY + 1;
 		int columnIndexEastOfX = columnIndexAtOrWestOfX + 1;
 		//note: this code currently cannot handle destination x,y coordinates that are exactly on the north or east edge of the grid.
+		//note: this code currently cannot handle destination x,y coordinates that are in the outer edge of the grid between the edge of the grid and the outermost cell centers.
 		if (rowIndexAtOrSouthOfY < 0 || columnIndexAtOrWestOfX < 0 || rowIndexNorthOfY >= rowCount || columnIndexEastOfX >= columnCount) {//if outside grid.
 			return Double.NaN;
 		}
@@ -212,6 +213,11 @@ public class GeometryUtils {
 		double northEastX = columnCenterXCoordinates[columnIndexEastOfX];
 		int northEastCellIndex = getCellIndex(rowIndexNorthOfY, columnIndexEastOfX, rowMajor, rowCount, columnCount);
 		double northEastValue = sourceValues[northEastCellIndex];
+
+		if (Double.isNaN(northWestValue) || Double.isNaN(southWestValue) || Double.isNaN(southEastValue) || Double.isNaN(northEastValue)) {
+			//if one of the surrounding values is missing, then cannot interpolate. Return the value of the grid cell that contains the destination location.
+			return snapToContainingGridCell(northWestX, northEastX, southWestY, northWestY, northWestValue, southWestValue, southEastValue, northEastValue, destinationX, destinationY);
+		}
 
 		//interpolate.
 		double df = (northEastValue - northWestValue);
@@ -238,15 +244,18 @@ public class GeometryUtils {
 		}
 	}
 
-	private static int getRowIndexAtOrSouthOfY(double[] rowCenterYCoordinates, double y) {
-		return getClosestIndexEqualToOrSmallerThanGivenCoordinate(rowCenterYCoordinates, y);
+	private static int getRowIndexOfCellCenterAtOrSouthOfY(double[] rowCenterYCoordinates, double y) {
+		return getIndexOfClosestCoordinateEqualToOrSmallerThanGivenCoordinate(rowCenterYCoordinates, y);
 	}
 
-	private static int getColumnIndexAtOrWestOfX(double[] columnCenterXCoordinates, double x) {
-		return getClosestIndexEqualToOrSmallerThanGivenCoordinate(columnCenterXCoordinates, x);
+	private static int getColumnIndexOfCellCenterAtOrWestOfX(double[] columnCenterXCoordinates, double x) {
+		return getIndexOfClosestCoordinateEqualToOrSmallerThanGivenCoordinate(columnCenterXCoordinates, x);
 	}
 
-	private static int getClosestIndexEqualToOrSmallerThanGivenCoordinate(double[] coordinates, double coordinate) {
+	/**
+	 * The given coordinate is "floored" to the nearest smaller coordinate value, then the index of the floored coordinate value is returned.
+	 */
+	private static int getIndexOfClosestCoordinateEqualToOrSmallerThanGivenCoordinate(double[] coordinates, double coordinate) {
 		int i = Arrays.binarySearch(coordinates, coordinate);
 		if (i >= 0) return i;
 		int insertionIndex = -i - 1;
@@ -293,6 +302,45 @@ public class GeometryUtils {
 					" This is needed to determine whether the coordinates in sourceGeometryInfo are stored in rowMajor or columnMajor order.");
 		}
 		return latitudeValueIndices[0] < longitudeValueIndices[0];
+	}
+
+	private static double snapToContainingGridCell(double northWestX, double northEastX, double southWestY, double northWestY,
+			double northWestValue, double southWestValue, double southEastValue, double northEastValue, double destinationX, double destinationY) {
+
+		//this code assumes that the edges of the grid cells are exactly in the middle between two adjacent grid cell centers for each grid cell.
+		double cellBoundaryX = (northWestX + northEastX) / 2;
+		double cellBoundaryY = (southWestY + northWestY) / 2;
+
+		//find out in which quadrant the destination location lies, with some tolerance to account for rounding errors in the coordinates.
+		//tolerance of 0.0001 degrees = 11 meters.
+		final double tolerance = 1e-4;
+		boolean westHalf = destinationX < cellBoundaryX - tolerance;
+		boolean eastHalf = destinationX > cellBoundaryX + tolerance;
+		boolean southHalf = destinationY < cellBoundaryY - tolerance;
+		boolean northHalf = destinationY > cellBoundaryY + tolerance;
+
+		//if quadrant is certain, return its value.
+		if (northHalf && westHalf) return northWestValue;
+		if (southHalf && westHalf) return southWestValue;
+		if (southHalf && eastHalf) return southEastValue;
+		if (northHalf && eastHalf) return northEastValue;
+
+		//if quadrant is uncertain (due to the tolerance), but half is certain.
+		//within the half choose a quadrant that has a non-missing value.
+		if (westHalf) return Double.isNaN(southWestValue) ? northWestValue : southWestValue;
+		if (eastHalf) return Double.isNaN(southEastValue) ? northEastValue : southEastValue;
+		if (southHalf) return Double.isNaN(southWestValue) ? southEastValue : southWestValue;
+		if (northHalf) return Double.isNaN(northWestValue) ? northEastValue : northWestValue;
+
+		//if quadrant is uncertain and half is uncertain (due to the tolerance).
+		//choose a quadrant that has a non-missing value.
+		if (!Double.isNaN(northWestValue)) return northWestValue;
+		if (!Double.isNaN(southWestValue)) return southWestValue;
+		if (!Double.isNaN(southEastValue)) return southEastValue;
+		if (!Double.isNaN(northEastValue)) return northEastValue;
+
+		//if all surrounding values are missing.
+		return Double.NaN;
 	}
 
 	/**
@@ -373,7 +421,7 @@ public class GeometryUtils {
 			return weights;
 		}
 		if (minRow < 0) minRow = 0;
-		int maxRow = getClosestIndexEqualToOrSmallerThanGivenCoordinate(stateRowYCoordinates.getValues(), maxLat);
+		int maxRow = getIndexOfClosestCoordinateEqualToOrSmallerThanGivenCoordinate(stateRowYCoordinates.getValues(), maxLat);
 		if (maxRow < 0) {//if region of influence completely outside grid.
 			//return all 0 weights.
 			return weights;
