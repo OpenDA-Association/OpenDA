@@ -38,18 +38,26 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * DataObject for data that is stored in a netcdf file.
+ * DataObject for data that is stored in a NetCDF file in a format that adheres to the NetCDF CF conventions (see http://cfconventions.org/ ).
  *
- * Note: writing to netcdf file is not yet implemented.
+ * If this NecdfDataObject is insufficient for reading/writing a particular new NetCDF file, then there are two possibilities:
+ * 1. If the file is in a format that is compliant with the NetCDF CF conventions (see http://cfconventions.org/ ),
+ *    then this class can be changed to include code for reading/writing the new CF compliant format.
+ * 2. If the file is in a format that is not compliant with the NetCDF CF conventions,
+ *    then kindly ask the data provider to update their NetCDF files, so that their format adheres to the NetCDF CF conventions.
+ *    If the data provider cannot update their format, then create some entirely separate code for reading/writing those files.
+ *    This class is only meant for CF compliant NetCDF formats. DO NOT EXTEND THIS CLASS, since that would make the code unnecessarily complicated.
  *
  * @author Arno Kockx
  */
+//DO NOT EXTEND THIS CLASS, read the comments above.
 public class NetcdfDataObject implements IComposableDataObject, IComposableEnsembleDataObject {
 
 	public static final String ALLOW_TIME_INDEPENDENT_ITEMS = "allowTimeIndependentItems";
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
+	//TODO Stef: remove this code. Variable names should not be hardcoded. AK
 	protected String stationIdVarName = NetcdfUtils.STATION_ID_VARIABLE_NAME; // can be overruled by subclasses
 	protected String stationDimensionVarName = NetcdfUtils.STATION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
 
@@ -192,8 +200,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 *
 	 * @throws IOException
 	 */
-	//TODO move this method to a new class that has as its only purpose to read scalar time series in a specific format,
-	//then here loop over different classes for different formats. AK
+	//TODO move this method to a new util class that has as its only purpose to read scalar time series in a specific format,
+	//then here loop over different util classes for different formats. AK
 	private void createExchangeItems() throws IOException {
 		this.exchangeItems.clear();
 
