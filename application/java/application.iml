@@ -30,7 +30,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="model_dflowfm_blackbox" />
     <orderEntry type="module" module-name="DeltaresModels" />
+    <orderEntry type="module" module-name="fews_openda" />
+    <orderEntry type="module" module-name="model_dflowfm_blackbox" />
   </component>
 </module>
