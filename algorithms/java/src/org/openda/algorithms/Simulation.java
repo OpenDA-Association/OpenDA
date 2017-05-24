@@ -72,7 +72,7 @@ public class Simulation extends Instance implements IAlgorithm {
         this.obsFileFormat = SimulationConf.getAsString("writeObservations@format",this.obsFileFormat);
         Results.putMessage("writeObservations@format="+this.obsFileFormat);
         if(this.obsFileFormat.compareToIgnoreCase("csv")!=0){
-        	throw new RuntimeException("Can only write comma-separated-value format at this time.");
+        	throw new RuntimeException("The given option observation generation: (writeObservations@format="+this.obsFileFormat+" is not support. At this time we only support csv. Can only write comma-separated-value format at this time.");
         }
         this.addNoiseToObs = SimulationConf.getAsBoolean("writeObservations@addNoise",this.addNoiseToObs);
         Results.putMessage("writeObservations@addNoise="+this.addNoiseToObs);
