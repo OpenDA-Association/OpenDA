@@ -159,6 +159,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
                 stochModelInstance.compute(targetTime);
             } catch (RuntimeException e) {
                 handleRuntimeException(e);
+                throw e;
             }
             this.prepareMod = stochModelInstance;
 	    }else{ //without stochModelInstance.announceObs, by splitting run in parts
