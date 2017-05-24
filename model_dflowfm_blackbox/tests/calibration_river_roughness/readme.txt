@@ -11,16 +11,14 @@ In this example noise is added to a waterlevel boundary specified as astronomica
 
 Model description
 
-The model is a very simple representation of a prototype estuary with a western boudary (left)
+The model is a very simple representation of a prototype river with a western boundary (1)
 that connets to the open sea and a river flowing into the model at the eastern end. The main 
 characteristics of the initial model BEFORE calibration are:
 - domain x=0 to 99km with 500m grid-cells
-- sloping bathymetry from -8m to -5 m
-- 2 tidal constituents at western boundary
- M2 0.6m 0.0degr
- S2 0.1m 0.0degr
-- constant river influx of 500m^3/s at eastern boundary
-- uniform bed friction of 0.02 Manning
+- sloping bathymetry from -5m to -5 m
+- constant sealevel of at western boundary of -2.5m
+- constant river influx of 251m^3/s at eastern boundary
+- trachytope bedfriction in ruw.ttd
 - 10 minute timestep
-- observation points at 30, 60 and 90 km from the western boundary
-
+- observation points at 10, 30, 50, 70 and 90 km from the western boundary called M20, M60, M100, M140 and M180 (cell count from left bound)
+- the simulation is starting 2012 Jan 1st for 5 days

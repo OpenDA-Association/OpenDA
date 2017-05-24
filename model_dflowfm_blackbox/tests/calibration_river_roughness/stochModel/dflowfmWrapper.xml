@@ -13,6 +13,7 @@
         <alias key="frictionMultiplierTemplateFile"/>
         <alias key="depthMultiplierFile"/>
         <alias key="depthMultiplierTemplateFile"/>
+        <alias key="trachytopeFile"/>
         <alias key="inputFile"/>
         <alias key="netcdfoutput"/>
     </aliasDefinitions>
@@ -58,6 +59,12 @@
             <file>%inputFile%</file>
             <id>boundaries</id>
         </ioObject>
+        <!-- river rougness -->
+        <ioObject className="org.openda.model_dflowfm.DFlowFMTrachytopeFile">
+           <file>%trachytopeFile%</file>
+           <id>ttdFile</id>
+        </ioObject>
+
     </inputOutput>
 
 </blackBoxWrapperConfig>

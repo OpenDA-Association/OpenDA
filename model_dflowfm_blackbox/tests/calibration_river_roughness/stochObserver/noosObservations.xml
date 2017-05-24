@@ -23,15 +23,23 @@
 	-->
 
 	<timeSeries status="use" standardDeviation="0.05"
-	     minDateTime="199101010000" maxDateTime="199101050000">
-		waterlevel_station1.noos
+	     minDateTime="201201040000" maxDateTime="201201060000">
+		m20_waterlevel.noos
 	</timeSeries>
 	<timeSeries status="use" standardDeviation="0.05"
-	     minDateTime="199101010000" maxDateTime="199101050000">
-		waterlevel_station2.noos
+	     minDateTime="201201040000" maxDateTime="201201060000">
+		m60_waterlevel.noos
 	</timeSeries>
 	<timeSeries status="use" standardDeviation="0.05"
-	     minDateTime="199101010000" maxDateTime="199101050000">
-		waterlevel_station3.noos
+	     minDateTime="201201040000" maxDateTime="201201060000">
+		m100_waterlevel.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.05"
+	     minDateTime="201201040000" maxDateTime="201201060000">
+		m140_waterlevel.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.05"
+	     minDateTime="201201040000" maxDateTime="201201060000">
+		m180_waterlevel.noos
 	</timeSeries>
 </noosObserver>

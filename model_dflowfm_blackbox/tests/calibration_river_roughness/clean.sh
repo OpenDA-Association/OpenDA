@@ -4,7 +4,7 @@
 #
 
 echo "Removing working directories"
-rm -rf stochModel/work[0-9]*
+rm -rf work/work[0-9]*
 rm -f results_*.m
 rm -f results_*.csv
 rm -f openda_logfile.txt

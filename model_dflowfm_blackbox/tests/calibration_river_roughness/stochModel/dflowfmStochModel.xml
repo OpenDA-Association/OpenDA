@@ -10,6 +10,28 @@
         
         <parameters>
             <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_411_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_412_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_413_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_414_FormulaNr101_A"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".1" transformation="ln"/>
+                <vector id="RoughNr_415_FormulaNr101_A"/>
+            </regularisationConstant>
+
+<!--
+            <regularisationConstant>
                 <stdDev value=".05" transformation="identity"/>
                 <vector id="M2_amplitude"/>
             </regularisationConstant>
@@ -17,7 +39,6 @@
                 <stdDev value="5.0" transformation="identity"/>
                 <vector id="M2_phase"/>
             </regularisationConstant>
-<!--
             <regularisationConstant>
                 <stdDev value=".05" transformation="identity"/>
                 <vector id="depth_1"/>
@@ -54,9 +75,11 @@
         </parameters>
 
         <predictor>
-            <vector id="station01.waterlevel"/>
-            <vector id="station02.waterlevel"/>
-            <vector id="station03.waterlevel"/>
+            <vector id="M20.waterlevel"/>
+            <vector id="M60.waterlevel"/>
+            <vector id="M100.waterlevel"/>
+            <vector id="M140.waterlevel"/>
+            <vector id="M180.waterlevel"/>
         </predictor>
 
     </vectorSpecification>

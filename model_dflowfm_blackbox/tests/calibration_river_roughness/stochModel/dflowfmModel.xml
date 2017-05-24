@@ -10,29 +10,37 @@
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<aliasValues>
 		<alias key="exedir" value="./bin"/> 
-		<alias key="instanceDir" value="./work"/>
+		<alias key="instanceDir" value="../work/work"/>
 		<alias key="templateDir" value="./input_dflowfm"/>
-		<alias key="runid" value="estuary"/>
-		<alias key="frictionMultiplierFile" value="estuary_friction_factor.xyz"/>
-		<alias key="frictionMultiplierTemplateFile" value="estuary_friction_factor_template.xyz"/>
-		<alias key="depthMultiplierFile" value="estuary_friction_factor.xyz"/>
-		<alias key="depthMultiplierTemplateFile" value="estuary_friction_factor_template.xyz"/>
-		<alias key="inputFile" value="estuary.mdu"/>
-		<alias key="netcdfoutput" value="DFM_OUTPUT_estuary/estuary_his.nc"/>
+		<alias key="runid" value="river1D"/>
+		<alias key="frictionMultiplierFile" value="river1D_friction_factor.xyz"/>
+		<alias key="frictionMultiplierTemplateFile" value="river1D_friction_factor_template.xyz"/>
+		<alias key="trachytopeFile" value="ruw.ttd"/>
+		<alias key="depthMultiplierFile" value="river1D_friction_factor.xyz"/>
+		<alias key="depthMultiplierTemplateFile" value="river1D_friction_factor_template.xyz"/>
+		<alias key="inputFile" value="river1D.mdu"/>
+		<alias key="netcdfoutput" value="DFM_OUTPUT_river1D/river1D_his.nc"/>
 	</aliasValues>
 
-	<timeInfo start="1991-01-01T00:00:00" end="1991-01-30T00:00:00"/>
+	<timeInfo start="2012-01-01T00:00:00" end="2012-01-06T00:00:00"/>
 
 	<exchangeItems>
+		<vector id="allElementsFromIoObject" ioObjectId="ttdFile"/>
+                <!--
 		<vector id="allElementsFromIoObject" ioObjectId="frictionCoefFile"/>
 		<vector id="allElementsFromIoObject" ioObjectId="depthCoefFile"/>
-		<vector id="station01.waterlevel" ioObjectId="%netcdfoutput%" elementId="station01.waterlevel"/>
-		<vector id="station02.waterlevel" ioObjectId="%netcdfoutput%" elementId="station02.waterlevel"/>
-		<vector id="station03.waterlevel" ioObjectId="%netcdfoutput%" elementId="station03.waterlevel"/>
+                -->
+		<vector id="M20.waterlevel" ioObjectId="%netcdfoutput%" elementId="M20.waterlevel"/>
+		<vector id="M60.waterlevel" ioObjectId="%netcdfoutput%" elementId="M60.waterlevel"/>
+		<vector id="M100.waterlevel" ioObjectId="%netcdfoutput%" elementId="M100.waterlevel"/>
+		<vector id="M140.waterlevel" ioObjectId="%netcdfoutput%" elementId="M140.waterlevel"/>
+		<vector id="M180.waterlevel" ioObjectId="%netcdfoutput%" elementId="M180.waterlevel"/>
+                <!--
 		<vector id="M2_amplitude" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.M2_amplitude"/>
 		<vector id="M2_phase" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.M2_phase"/>
 		<vector id="S2_amplitude" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.S2_amplitude"/>
 		<vector id="S2_phase" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.S2_phase"/>
+                -->
 	</exchangeItems>
 
 <doCleanUp>false</doCleanUp>
