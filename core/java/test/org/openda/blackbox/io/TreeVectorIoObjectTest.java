@@ -74,4 +74,18 @@ public class TreeVectorIoObjectTest extends TestCase {
 		testData.FilesAreIdentical(new File(treeVectorDataDir, "rtcParameterConfig.xml"),
 				new File(treeVectorDataDir, "rtcParameterConfig_ref_2.xml"));
 	}
+
+	public void testReadRtcStateImport() {
+		try {
+			IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
+					treeVectorDataDir, TreeVectorIoObject.class.getName(),
+					"state_import.xml", new String[]{});
+			IPrevExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
+			assertTrue("Main_P[0]", exchangeItems[0].getId().equals("Main_P[0]"));
+		} catch (Exception e) {
+			if (!e.getMessage().contains("Parsing Error : Content is not allowed in prolog")) {
+				throw e;
+			}
+		}
+	}
 }
