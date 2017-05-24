@@ -34,6 +34,8 @@ import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -42,6 +44,7 @@ import java.util.*;
  * Black box module's implementation of a stochastic model instance
  */
 public class BBStochModelInstance extends Instance implements IStochModelInstance {
+	private static Logger LOGGER = LoggerFactory.getLogger(BBStochModelInstance.class);
 
 	// In case of parallel runs we use the Distributed counter to generate unique IDs
 	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
@@ -898,19 +901,27 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 			//get the model values at the observed coordinates.
 			if (!GeometryUtils.isScalar(observationExchangeItem)) {//if grid observationExchangeItem.
+				String logMessage = "Getting model values at observed coordinates for grid observation exchangeItem with id '" + observationExchangeItem.getId() + "'.";
+				if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+				Results.putMessage(logMessage);
+
 				//this code only works for grid modelExchangeItems.
 				if (GeometryUtils.isScalar(mappedExchangeItem.getGeometryInfo())) {
 					throw new IllegalArgumentException(getClass().getSimpleName() + ": Observation exchange item with id '" + observationExchangeItem.getId()
-							+ "' is a grid, therefore the corresponding model exchange item must also be a grid. Found scalar model exchange item.");
+							+ "' is a grid, therefore the corresponding model exchange item must also be a grid. Model exchange item with id '" + mappedExchangeItem.getId() + "' is scalar.");
 				}
 				//grid exchangeItems are always IExchangeItems.
-				IVector observedModelValues = getObservedModelValuesForGrid(((IExchangeItem) observationExchangeItem).getGeometryInfo(), mappedExchangeItem.getGeometryInfo(), computedValues);
+				IVector observedModelValues = getObservedModelValuesForGrid(((IExchangeItem) observationExchangeItem).getGeometryInfo(), mappedExchangeItem.getGeometryInfo(), computedValues,
+						observationExchangeItem.getId(), mappedExchangeItem.getId());
 				ITreeVector treeVectorLeaf = new TreeVector(mappedExchangeItem.getId(), observedModelValues);
 				treeVector.addChild(treeVectorLeaf);
 				continue;
 			}
 
 			//if scalar observationExchangeItem.
+			String logMessage = "Getting model values at observed coordinates for scalar observation exchangeItem with id '" + observationExchangeItem.getId() + "'.";
+			if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+			Results.putMessage(logMessage);
 			//this code assumes that the observationExchangeItem and the mappedExchangeItem have the same coordinates (i.e. their coordinates are not used).
 			//If the modelExchangeItem is a grid, then the mappedExchangeItem must be a subVector of the modelExchangeItem with only one selected grid cell.
 			ITreeVector treeVectorLeaf;
@@ -962,7 +973,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 		if (errorMessage.length() > 0) {
-			throw new RuntimeException("Error(s) in getting observed values from black box model " + model.getModelRunDir() + ": " + errorMessage);
+			throw new RuntimeException("Error(s) in getting model values at observed locations from black box model " + model.getModelRunDir() + ": " + errorMessage);
 		}
 		timerGetObs.stop();
 		return treeVector;
@@ -986,32 +997,76 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * @param observationGeometryInfo
 	 * @param modelGeometryInfo
 	 * @param modelValues
+	 * @param observationExchangeItemId only used for log messages.
+	 * @param modelExchangeItemId only used for log messages.
 	 * @return model prediction interpolated to each observation (location).
 	 */
-	private static IVector getObservedModelValuesForGrid(IGeometryInfo observationGeometryInfo, IGeometryInfo modelGeometryInfo, double[] modelValues) {
+	private static IVector getObservedModelValuesForGrid(IGeometryInfo observationGeometryInfo, IGeometryInfo modelGeometryInfo, double[] modelValues, String observationExchangeItemId, String modelExchangeItemId) {
 		//get the coordinates for the observations.
 		//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
 		//need one coordinate for each grid cell.
-		IVector observationYCoordinates = GeometryUtils.getYCoordinates(observationGeometryInfo);
 		IVector observationXCoordinates = GeometryUtils.getXCoordinates(observationGeometryInfo);
+		IVector observationYCoordinates = GeometryUtils.getYCoordinates(observationGeometryInfo);
+		logCoordinates(observationXCoordinates, observationYCoordinates, modelGeometryInfo, observationExchangeItemId, modelExchangeItemId);
 
 		//get the model values at the observed coordinates.
+		String logMessage = "Using bilinear interpolation to get model values at observed coordinates.";
+		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+		Results.putMessage(logMessage);
 		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationXCoordinates, observationYCoordinates, modelGeometryInfo, modelValues);
-
 		int errorCount = 0;
 		for (int i = 0; i < observedModelValues.getSize(); i++) {
 			double value = observedModelValues.getValue(i);
-
 			if (Double.isNaN(value)) {
 				errorCount += 1;
 			}
 		}
-
 		if (errorCount > 0) {
-			throw new RuntimeException("The model returned missing values for " + errorCount + " observation locations.");
+			throw new RuntimeException(BBStochModelInstance.class.getSimpleName() + ".getObservedModelValuesForGrid: Bilinear interpolation returned missing values for " + errorCount + " observed locations." +
+					" Please make sure that all observations with non-missing values are located inside the model domain and coincide with active grid cells in the model.");
 		}
 
 		return observedModelValues;
+	}
+
+	private static void logCoordinates(IVector observationXCoordinates, IVector observationYCoordinates, IGeometryInfo modelGeometryInfo, String observationExchangeItemId, String modelExchangeItemId) {
+		IVector modelXCoordinates = GeometryUtils.getXCoordinates(modelGeometryInfo);
+		IVector modelYCoordinates = GeometryUtils.getYCoordinates(modelGeometryInfo);
+
+		double xMin = Double.POSITIVE_INFINITY;
+		double xMax = Double.NEGATIVE_INFINITY;
+		for (double x : modelXCoordinates.getValues()) {
+			if (x < xMin) xMin = x;
+			if (x > xMax) xMax = x;
+		}
+		double yMin = Double.POSITIVE_INFINITY;
+		double yMax = Double.NEGATIVE_INFINITY;
+		for (double y : modelYCoordinates.getValues()) {
+			if (y < yMin) yMin = y;
+			if (y > yMax) yMax = y;
+		}
+		String logMessage = "Model exchangeItem with id '" + modelExchangeItemId + "' contains " + GeometryUtils.getGridCellCount(modelGeometryInfo) + " grid cells.\n"
+				+ "Range spanned by model grid: x = [" + xMin + ", " + xMax + "], y = [" + yMin + ", " + yMax + "]\n";
+
+		xMin = Double.POSITIVE_INFINITY;
+		xMax = Double.NEGATIVE_INFINITY;
+		for (double x : observationXCoordinates.getValues()) {
+			if (x < xMin) xMin = x;
+			if (x > xMax) xMax = x;
+		}
+		yMin = Double.POSITIVE_INFINITY;
+		yMax = Double.NEGATIVE_INFINITY;
+		for (double y : observationYCoordinates.getValues()) {
+			if (y < yMin) yMin = y;
+			if (y > yMax) yMax = y;
+		}
+		logMessage += "Observation exchangeItem with id '" + observationExchangeItemId + "' contains " + observationYCoordinates.getSize() + " observed locations with coordinates:\n"
+				+ "x coordinates: " + observationXCoordinates.printString("") + "\n"
+				+ "y coordinates: " + observationYCoordinates.printString("") + "\n"
+				+ "Range spanned by observations: x = [" + xMin + ", " + xMax + "], y = [" + yMin + ", " + yMax + "]";
+
+		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+		Results.putMessage(logMessage);
 	}
 
 	private IVector[] getObservedLocalizationExtended(IObservationDescriptions observationDescriptions, double distance){
@@ -1550,6 +1605,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
+			//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 			if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 				numValuesInExchangeItem = ((NetcdfGridTimeSeriesExchangeItem)exchangeItem).getValuesAsDoublesForSingleTimeIndex(0).length;
 			} else{
@@ -1577,6 +1633,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				// Noise is meant for all values
 				addFullArray = true;
 			}
+			//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 			if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 				addFullArray = true;
 			}
@@ -1596,6 +1653,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		if (addFullArray) {
 			switch (operation) {
 			case Add:
+				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 				if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 					((NetcdfGridTimeSeriesExchangeItem)exchangeItem).axpyOnValuesForSingleTimeIndex(timeIndex, 1.0d, noise);
 				} else {
@@ -1607,6 +1665,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				for (int i = 0; i < noise.length; i++) {
 					factors[i] = 1d + noise[i];
 				}
+				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 				if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 					((NetcdfGridTimeSeriesExchangeItem)exchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
 				} else {

@@ -83,7 +83,7 @@ public class GeometryUtils {
 	}
 
 	//TODO add getCellCount to IGeometryInfo interface. AK
-	private static int getGridCellCount(IGeometryInfo geometryInfo) {
+	public static int getGridCellCount(IGeometryInfo geometryInfo) {
 		if (isScalar(geometryInfo)) return 1;
 
 		//if grid.

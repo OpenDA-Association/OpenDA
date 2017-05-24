@@ -167,8 +167,8 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			//This is reasonable, since OpenDA should always be started from the OpenDA bin folder.
 			File opendaPythonPath = new File("python");
 			if (!opendaPythonPath.exists() || !opendaPythonPath.isDirectory()) {
-				throw new RuntimeException(getClass().getSimpleName()
-						+ ": Cannot find directory 'python' within current working directory. Please make sure that OpenDA is started from the OpenDA bin directory.");
+				throw new RuntimeException(getClass().getSimpleName() + ": Cannot find directory 'python' within current working directory " + new File("").getAbsoluteFile()
+						+ ". Please make sure that OpenDA is started from the OpenDA bin directory.");
 			}
 
 			EBMI model;
