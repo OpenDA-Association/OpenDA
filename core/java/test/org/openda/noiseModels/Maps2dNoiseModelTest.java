@@ -263,7 +263,6 @@ public class Maps2dNoiseModelTest extends TestCase {
 	}
 	
 
-	//TODO EP optimize?
 	public void testMaps2dNoise_separable(){
 		IStochModelFactory factory = new MapsNoiseModelFactory();
 		String configString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
