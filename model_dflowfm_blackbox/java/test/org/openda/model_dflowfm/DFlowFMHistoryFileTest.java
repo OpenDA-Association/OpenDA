@@ -42,7 +42,7 @@ public class DFlowFMHistoryFileTest extends TestCase {
     	testData = new OpenDaTestSupport(DFlowFMRestartTest.class,"model_dflowfm_blackbox");
 	}
 
-    public void testObservations_1() throws Exception {
+    public void testWaterlevelHistories() throws Exception {
 //		System.out.println("==============================================================================");
 //		System.out.println(" Test for reading timeseries from *_his.nc and export to *.noos.");
 //		System.out.println("==============================================================================");
@@ -122,6 +122,47 @@ public class DFlowFMHistoryFileTest extends TestCase {
 		assertEquals(2881, values3.length);
 		assertEquals(0.0,values3[0],0.001);
 		assertEquals(0.999,values3[2880],0.001);
+    }
+    
+    public void testDischargeHistories() throws Exception {
+//		System.out.println("==============================================================================");
+//		System.out.println(" Test for reading discharge timeseries from *_his.nc.");
+//		System.out.println("==============================================================================");
 
+        File inputDir = new File(testData.getTestRunDataDir(), "Historyfile");
+        String fileName="river1D_his.nc";
+		IDataObject hisfile = new NetcdfDataObject();
+		hisfile.initialize(inputDir, new String[]{fileName,"true","false"}); //The first option 'true' is crucial to get timeseries!
+
+		String[] exchangeItemIDs = hisfile.getExchangeItemIDs();
+		for(int i=0;i<exchangeItemIDs.length;i++){
+			System.out.println("id = "+exchangeItemIDs[i]);
+		}
+        // check a waterlevel series
+		IExchangeItem obs1 = hisfile.getDataObjectExchangeItem("M20.waterlevel");
+		System.out.println("obs1="+obs1.toString());
+		String id1=obs1.getId();
+		assertEquals("M20.waterlevel", id1);
+		double[] times1=obs1.getTimes();
+		assertEquals(721, times1.length);
+		assertEquals(55927.0,times1[0],0.001);
+		assertEquals(55932.0,times1[720],0.001);
+		double[] values1=obs1.getValuesAsDoubles();
+		assertEquals(721, values1.length);
+		assertEquals(10.0,values1[0],0.001);
+		assertEquals(-2.3180,values1[720],0.001);
+        // check a discharge series
+		IExchangeItem obs2 = hisfile.getDataObjectExchangeItem("Q-M60.cross_section_discharge");
+		System.out.println("obs2="+obs2.toString());
+		String id2=obs2.getId();
+		assertEquals("M20.waterlevel", id1);
+		double[] times2=obs2.getTimes();
+		assertEquals(721, times2.length);
+		assertEquals(55927.0,times2[0],0.001);
+		assertEquals(55932.0,times2[720],0.001);
+		double[] values2=obs2.getValuesAsDoubles();
+		assertEquals(721, values2.length);
+		assertEquals(0.0,values2[0],0.001);
+		assertEquals(-251.018,values2[720],0.001);
     }
 }

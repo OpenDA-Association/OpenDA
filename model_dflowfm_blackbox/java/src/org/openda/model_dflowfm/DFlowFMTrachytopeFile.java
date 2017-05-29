@@ -21,125 +21,177 @@
 package org.openda.model_dflowfm;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IDataObject;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IPrevExchangeItem.Role;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Started with a copy from model_delft3d
+ * Adjusted to syntax differences for delft3d-FM alias DFLOW or D-Hydro
  */
-public class DFlowFMTrachytopeFile implements IoObjectInterface {
+public class DFlowFMTrachytopeFile implements IDataObject {
 
 	private File workingDir = null;
 	private String configString = null;
-	private IPrevExchangeItem[] exchangeItems =null;
+	private DFlowFMRougnessFileExchangeItem[] exchangeItems =null;
+	private HashMap<String,Integer> index = new HashMap<String,Integer>(); 
+	private String[] sContent=null;
+	private File roughFile=null;
 
-	public void initialize(File workingDir, String configString, String[] arguments) {
+	public void initialize(File workingDir, String[] arguments) {
 		/* Just save the initialization input */
 		this.workingDir    = workingDir;
-		this.configString = configString;
-
-		/*Not sure what will be the content of  fileName
-         This can be a whole XML-file specifying what parameters we will use but for now
-         we assume it is only a filename later we can make it more luxurious
-		 */
+		this.configString = arguments[0];
 
 		// Create an arraylist for storing all exchange items that are found in the input file
-		ArrayList<IPrevExchangeItem> listOfExchangeItems= new ArrayList<IPrevExchangeItem>();
+		ArrayList<DFlowFMRougnessFileExchangeItem> listOfExchangeItems= new ArrayList<DFlowFMRougnessFileExchangeItem>();
 
 		/* read the parameters file */
-		File roughFile  =new File(this.workingDir, this.configString);
-		String[] sContent = DFlowFMRoughnessUtils.readWholeFile(roughFile);
+		roughFile=new File(this.workingDir, this.configString);
+		this.sContent = DFlowFMRoughnessUtils.readWholeFile(roughFile);
+		String[] labels = {"A","B","C","D","E"};
 
-		/* Iterate over all lines in the intput file */
+		/* Iterate over all lines in the intput file 
+		 * and parse the input
+		 */
+		int lastCode=-1;
+		String lastType=""; // "" or "DISCHARGE" or "WATERLEVEL" where "" means no dependency
 		for (int iLine=0; iLine < sContent.length; iLine++){
-
-			// Prepare the line for processing
-			String line=DFlowFMRoughnessUtils.prepareRoughLine(sContent[iLine]);
-
-			if(!line.trim().startsWith("#")){
-				// Chop line in parts
-				// format=
-				// 411 101 0.1000 2.5
-				// R_CODE PARAM A B
-				String [] lineParts=line.split(" ");
-
-				// Check whether the line starts with R_CODE
-				if (lineParts.length>2){
-					boolean hasA=false;
-					boolean hasB=false;
-					boolean hasC=false;
-					boolean hasD=false;
-					boolean hasE=false;
-
-					String sCode=lineParts[0];
-					String sFormulaNumber=lineParts[1];
-
-					if(lineParts.length>=3){ // first parameter exists
-						hasA=true;
-
+			String line=sContent[iLine];
+			if(line.contains("#")){
+				int hashIndex=line.indexOf("#");
+				if(hashIndex>0){
+					line=line.substring(0, hashIndex-1);
+				}else if(hashIndex==0){
+					line="";
+				}
+			}
+			if(line.trim().length()==0){
+				continue; //empty line
+			} 
+			int thisCode=-1;
+			String [] lineParts=line.split("\\s+");
+			try{thisCode=Integer.parseInt(lineParts[0]);}catch(NumberFormatException e){
+				throw new RuntimeException("Expecting first columns to contain the parameter code for line:"+line);
+			}
+			if(lineParts[1].equalsIgnoreCase("WATERLEVEL")){
+				// 674 WATERLEVEL H-PannkopNijmegen <==HERE
+				// 674 8.50 101 0.0759 2.5
+				// 674 10.00 101 0.0806 2.5
+				// 674 12.50 101 0.0971 2.5
+				lastType="WATERLEVEL";
+				lastCode=thisCode;
+			}else if(lineParts[1].equalsIgnoreCase("DISCHARGE")){
+				// 673 DISCHARGE Q-PannkopNijmegen <==HERE
+				// 673 2000 101 0.0759 2.5
+				// 673 5000 101 0.0806 2.5
+				// 673 8000 101 0.0971 2.5
+				lastType="DISCHARGE";
+				lastCode=thisCode;
+			}else if(thisCode==lastCode){
+				// 673 DISCHARGE Q-PannkopNijmegen 
+				// 673 2000 101 0.0759 2.5
+				// 673 5000 101 0.0806 2.5 <==HERE
+				// 673 8000 101 0.0971 2.5
+				double depValue=Double.NaN;
+				try{depValue=Double.parseDouble(lineParts[1]);}catch(NumberFormatException e){
+					throw new RuntimeException("Expecting second column to contain the discharge value for line:"+line);
+				}
+				int FormulaNumber=-1;
+				try{FormulaNumber=Integer.parseInt(lineParts[2]);}catch(NumberFormatException e){
+					throw new RuntimeException("Expecting third column to contain the formula number for line:"+line);
+				}
+				int firstValueColumn=3; //java-counting style
+				String id="RoughNr_"+thisCode+"_"+lastType+lineParts[1]+"_FormulaNr"+FormulaNumber+"_"; //still to add A,B,C or D
+				for(int iColumn=firstValueColumn;iColumn<lineParts.length;iColumn++){
+					double value=Double.NaN;
+					try{value=Double.parseDouble(lineParts[iColumn]);}catch(NumberFormatException e){
+						throw new RuntimeException("Expecting column "+(iColumn+1)+" to contain a parameter value for line:"+line);
 					}
-					if(lineParts.length>=4){ // second parameter exists
-						hasB=true;
-
+					DFlowFMRougnessFileExchangeItem tempItem=new DFlowFMRougnessFileExchangeItem(id+labels[iColumn-firstValueColumn],iLine,iColumn,value);
+					listOfExchangeItems.add(tempItem);
+				}
+			}else{
+				lastCode=thisCode;
+				lastType="";
+				//#nieuwe ruwheidscode voor de vaste laag bij St. Andries
+				//1001  52 35.0 <==HERE
+				//#410 is missing; using the same values as 411
+				//410   101  0.0800   2.5 <==OR HERE
+				int FormulaNumber=-1;
+				try{FormulaNumber=Integer.parseInt(lineParts[1]);}catch(NumberFormatException e){
+					throw new RuntimeException("Expecting second column to contain the formula number for line:"+line);
+				}
+				int firstValueColumn=2; //java-counting style
+				String id="RoughNr_"+thisCode+"_FormulaNr"+FormulaNumber+"_"; //still to add A,B,C or D
+				for(int iColumn=firstValueColumn;iColumn<lineParts.length;iColumn++){
+					double value=Double.NaN;
+					try{value=Double.parseDouble(lineParts[iColumn]);}catch(NumberFormatException e){
+						throw new RuntimeException("Expecting column "+(iColumn+1)+" to contain a parameter value for line:"+line);
 					}
-					if(lineParts.length>=5){ // third parameter exists
-						hasC=true;
-
-					}
-					if(lineParts.length>=6){ // fourth parameter exists
-						hasD=true;
-
-					}
-					if(lineParts.length>=7){ // fifth parameter exists
-						hasE=true;
-
-					}
-
-					// Construct the ID
-					String id="RoughNr_"+sCode;
-					if (!sFormulaNumber.equals("")){
-						id=id+"_FormulaNr"+sFormulaNumber;
-					}
-
-					// Add exchange items for all parameters (if they exist)
-					if (hasA){
-						String idA=id+"_A";
-						IPrevExchangeItem newExchangeItem=new DFlowFMRougnessFileExchangeItem(idA, roughFile, iLine, "A");
-						listOfExchangeItems.add(newExchangeItem);
-					}
-					if (hasB){
-						String idB=id+"_B";
-						IPrevExchangeItem newExchangeItem=new DFlowFMRougnessFileExchangeItem(idB, roughFile, iLine, "B");
-						listOfExchangeItems.add(newExchangeItem);
-					}
-					if (hasC){
-						String idC=id+"_C";
-						IPrevExchangeItem newExchangeItem=new DFlowFMRougnessFileExchangeItem(idC, roughFile, iLine, "C");
-						listOfExchangeItems.add(newExchangeItem);
-					}
-					if (hasD){
-						String idD=id+"_D";
-						IPrevExchangeItem newExchangeItem=new DFlowFMRougnessFileExchangeItem(idD, roughFile, iLine, "D");
-						listOfExchangeItems.add(newExchangeItem);
-					}
-					if (hasE){
-						String idD=id+"_E";
-						IPrevExchangeItem newExchangeItem=new DFlowFMRougnessFileExchangeItem(idD, roughFile, iLine, "E");
-						listOfExchangeItems.add(newExchangeItem);
-					}
+					DFlowFMRougnessFileExchangeItem tempItem=new DFlowFMRougnessFileExchangeItem(id+labels[iColumn-firstValueColumn],iLine,iColumn,value);
+					listOfExchangeItems.add(tempItem);
 				}
 			}
 		}
-		this.exchangeItems = new IPrevExchangeItem[listOfExchangeItems.size()];
-		listOfExchangeItems.toArray(this.exchangeItems);
-	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
-		return this.exchangeItems;
+		this.exchangeItems = new DFlowFMRougnessFileExchangeItem[listOfExchangeItems.size()];
+		listOfExchangeItems.toArray(this.exchangeItems);
+		createIndex(this.exchangeItems,this.index);
 	}
 
 	public void finish() {
-		// no action needed
+		DFlowFMRoughnessUtils.updateContent(this.sContent, this.exchangeItems);
+		DFlowFMRoughnessUtils.writeWholeFile(this.roughFile, this.sContent);
+	}
+
+	public String toString(){
+		String result="DFlowFM Roughness parameters dataObject (org.openda.model_dflowfm.DFlowFMTrachytopeFile)\n";
+		for(DFlowFMRougnessFileExchangeItem item: this.exchangeItems){
+			result+=item.toString()+"\n";
+		}
+		return result;
+	}
+
+	@Override
+	public String[] getExchangeItemIDs() {
+		int n=this.exchangeItems.length;
+		String[] result=new String[n];
+		for(int i=0;i<n;i++){
+			result[i]=this.exchangeItems[i].getId();
+		}
+		return result;
+	}
+
+	@Override
+	public String[] getExchangeItemIDs(Role role) {
+		if(role==Role.InOut){
+			return getExchangeItemIDs();
+		}else{
+			return new String[0];
+		}
+	}
+
+	@Override
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		if(this.index.containsKey(exchangeItemID)){
+			int i=this.index.get(exchangeItemID);
+			return this.exchangeItems[i];
+		}else{
+			return null;
+		}
+	}
+
+	private void createIndex(DFlowFMRougnessFileExchangeItem[] items, HashMap<String,Integer> index){
+		int i=0;
+		for(DFlowFMRougnessFileExchangeItem item: items){
+			String id=item.getId();
+			this.index.put(id, i);
+			i++;
+		}
 	}
 }
