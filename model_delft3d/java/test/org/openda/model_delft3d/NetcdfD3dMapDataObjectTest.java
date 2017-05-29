@@ -1,16 +1,15 @@
 package org.openda.model_delft3d;
 
 import junit.framework.TestCase;
-//import org.openda.exchange.dataobjects.NetcdfD3dGridTimeSeriesExchangeItem;
-//import org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItemTest;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
-import ucar.ma2.Array;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
+
+//import org.openda.exchange.dataobjects.NetcdfD3dGridTimeSeriesExchangeItem;
+//import org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItemTest;
 
 /**
  * Created by Theo on 06.07.2016.
@@ -53,10 +52,10 @@ public class NetcdfD3dMapDataObjectTest extends TestCase {
 		//System.out.println(Arrays.toString(exchangeItemValues));
 
 		//2. Test if we can go back to the right waterlevel
-		netcdfFile.finish();
-
 		IExchangeItem exchangeItemNewTemp = netcdfFile.getDataObjectExchangeItem("R1");
 		double[] tempValuesCorr = exchangeItemNewTemp.getValuesAsDoubles();
+
+		netcdfFile.finish();
 
 		assertEquals(exchangeItemValues.length,tempValuesCorr.length);
 		assertEquals(Arrays.toString(exchangeItemValues),Arrays.toString(tempValuesCorr));
