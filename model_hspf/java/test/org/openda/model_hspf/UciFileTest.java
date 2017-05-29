@@ -21,6 +21,7 @@
 package org.openda.model_hspf;
 
 import junit.framework.TestCase;
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -235,10 +236,14 @@ public class UciFileTest extends TestCase {
         assertEquals(0.81d, item.getValues());
     }
 
-    public void testWriteUciStateFile() {
+    public void testWriteUciStateFile() throws IOException {
         UciStateDataObject uciStateDataObject = new UciStateDataObject();
         String uciFilename = "uciFileTest/input/ndriver_state_file.uci";
-        String[] arguments = new String[]{uciFilename, "200612311500"};
+        String defaultUciFilename = "uciFileTest/input/ndriver_state_file_default.uci";
+        File uciFile = new File(testRunDataDir, uciFilename);
+        File defaultUciFile = new File(testRunDataDir, defaultUciFilename);
+        BBUtils.copyFile(uciFile, defaultUciFile);
+        String[] arguments = new String[]{uciFilename, "200612311500", "0", defaultUciFilename};
         uciStateDataObject.initialize(testRunDataDir, arguments);
 
         //set values in exchangeItems.
