@@ -18,10 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
-import java.io.File;
-import java.io.IOException;
-
-import org.openda.interfaces.IMatrix;
+import junit.framework.TestCase;
 import org.openda.interfaces.ISqrtCovariance;
 import org.openda.interfaces.IVector;
 import org.openda.noiseModels.SpatialCorrelationStochVector.CoordinatesType;
@@ -29,7 +26,9 @@ import org.openda.utils.Matrix;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
-import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.IOException;
 
 public class SpatialCorrelationTest extends TestCase {
 
@@ -47,7 +46,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,1.0,1.0,0.0,0.0}; //counterclock square 
 		double[] y= new double[]{0.0,0.0,1.0,1.0,0.0};
     	SpatialCorrelationStochVector sv = new SpatialCorrelationStochVector(CoordinatesType.XY
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	System.out.println("mean="+mean);
     	System.out.println("Should be mean=[0.0,0.0,0.0,0.0,0.0]");
@@ -83,7 +82,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,1.0,1.0,0.0}; //counterclock square 
 		double[] y= new double[]{0.0,0.0,1.0,1.0};
     	SpatialCorrelationStochVector sv = new SpatialCorrelationStochVector(CoordinatesType.WGS84
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	System.out.println("mean="+mean);
     	System.out.println("Should be mean=[0.0,0.0,0.0,0.0]");
@@ -122,7 +121,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,1.0,2.0}; //counterclock square 
 		double[] y= new double[]{0.0,0.5,1.0,1.5,2.0};
     	Spatial2DCorrelationStochVector sv = new Spatial2DCorrelationStochVector(CoordinatesType.XY
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	System.out.println("sv="+sv.toString());
     	
     	IVector mean = sv.getExpectations();
@@ -160,7 +159,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,0.5,1.0}; //counterclock square 
 		double[] y= new double[]{50.0,50.5,51.0,51.5,52.0};
     	Spatial2DCorrelationStochVector sv = new Spatial2DCorrelationStochVector(CoordinatesType.WGS84
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	System.out.println("mean="+mean);
     	System.out.println("Should be mean=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]");
@@ -200,7 +199,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,0.5,1.0}; //2 separate axis 
 		double[] y= new double[]{50.0,51.0};
     	Spatial2DCorrelationStochVector sv = new Spatial2DCorrelationStochVector(CoordinatesType.WGS84
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	
     	IVector std = sv.getStandardDeviations();
@@ -234,7 +233,7 @@ public class SpatialCorrelationTest extends TestCase {
 		double[] x= new double[]{0.0,0.5,1.0,0.0,0.5,1.0}; // pairs
 		double[] y= new double[]{50.0,50.0,50.0,51.0,51.0,51.0};
     	SpatialCorrelationStochVector sv = new SpatialCorrelationStochVector(CoordinatesType.WGS84
-    			, standardDeviation, lengthscale, x, y);
+    			, standardDeviation, lengthscale, x, y, null);
     	IVector mean = sv.getExpectations();
     	
     	IVector std = sv.getStandardDeviations();

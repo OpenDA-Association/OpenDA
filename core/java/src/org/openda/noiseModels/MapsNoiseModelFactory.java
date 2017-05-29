@@ -25,6 +25,8 @@ import org.openda.interfaces.IStochModelPostProcessor;
 import org.openda.interfaces.ITime;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Module for modeling spatially and temporally correlated noise in 2d.
@@ -38,11 +40,13 @@ public class MapsNoiseModelFactory implements IStochModelFactory, ITimeHorizonCo
 	protected File workingDir=null;
 	protected String[] arguments=null;
 	protected ITime timeHorizon = null;
+	private Map<String, SpatialCorrelationCovariance[]> eiCovarianceMap;
 
 	
 	public void initialize(File workingDir, String[] arguments) {
 		this.workingDir = workingDir;
 		this.arguments = arguments;
+		this.eiCovarianceMap = new HashMap<>();
 	}
 
 	public void setTimeHorizon(ITime timeHorizon) {
@@ -53,6 +57,7 @@ public class MapsNoiseModelFactory implements IStochModelFactory, ITimeHorizonCo
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
 		MapsNoiseModelInstance result = new MapsNoiseModelInstance(this.timeHorizon);
 		result.outputLevel = outputLevel;
+		result.setEiCovarianceMap(eiCovarianceMap);
 		result.initialize(this.workingDir, this.arguments);
 		return result;
 	}
