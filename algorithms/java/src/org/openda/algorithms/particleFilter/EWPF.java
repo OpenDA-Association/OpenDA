@@ -22,15 +22,12 @@ package org.openda.algorithms.particleFilter;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import org.openda.algorithms.kalmanFilter.AbstractSequentialEnsembleAlgorithm;
-import org.openda.algorithms.kalmanFilter.EnsembleVectors;
-import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Results;
 import org.openda.utils.Vector;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * @author Nils van Velzen
@@ -67,7 +64,12 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 
 
 	static {
-		nativeDLL=(ISangomaEWPFNativeDLL) Native.loadLibrary("sangoma",ISangomaEWPFNativeDLL.class);
+		if (RUNNING_ON_WINDOWS) {
+			// TODO: sources are available, windows build environment to be added.
+			throw new RuntimeException("Native Windows DLL does not exist (yet): sangoma.dll");
+		} else {
+			nativeDLL = (ISangomaEWPFNativeDLL) Native.loadLibrary("sangoma", ISangomaEWPFNativeDLL.class);
+		}
 	}
 
 

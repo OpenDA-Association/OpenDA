@@ -88,8 +88,10 @@ public class ReflectionTest extends TestCase {
 		System.out.println("==============================================================================");
 		System.out.println(" Produce info with main method");
 		System.out.println("==============================================================================");
-		if (BBUtils.RUNNING_ON_LINUX) {
+		if (BBUtils.RUNNING_ON_WINDOWS) {
 			// native dll for reflection (sangoma) is not avaiable on Windows
+			System.out.println(" Test disabled on Windows because it fails on missing sangoma.dll.");
+		} else {
 			Reflection.main(new String[0]);
 		}
 	}
