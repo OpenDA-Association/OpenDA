@@ -282,14 +282,7 @@ public class ApplicationRunner implements Runnable{
 					this.writeRestart();
 				}
             } catch (Exception e) {
-				finishApplication();
-                Results.putProgression("Error running algorithm step.");
-                Results.putProgression("Error message: "+e.getMessage());
-                Results.putProgression("Error type :"+e.getClass().getSimpleName());
-                StringWriter stringWriter = new StringWriter();
-                PrintWriter stackTrace = new PrintWriter(stringWriter);
-                e.printStackTrace(stackTrace);
-                Results.putProgression("Stacktrace :"+stringWriter.toString());
+				logAlgorithmStepErrorAndFinish(e);
                 synchronized (this) {
                     changeStatus(Status.ERROR);
                 }
@@ -312,6 +305,17 @@ public class ApplicationRunner implements Runnable{
 		Results.reset();
 	}
 
+	protected void logAlgorithmStepErrorAndFinish(Exception e) {
+		Results.putProgression("Error running algorithm step.");
+		Results.putProgression("Error message: "+e.getMessage());
+		Results.putProgression("Error type :"+e.getClass().getSimpleName());
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter stackTrace = new PrintWriter(stringWriter);
+		e.printStackTrace(stackTrace);
+		Results.putProgression("Stacktrace :"+stringWriter.toString());
+		finishApplication();
+	}
+
 	protected void finishApplication() {
 		try {
 			if (algorithm != null) {
@@ -330,9 +334,9 @@ public class ApplicationRunner implements Runnable{
 	}
 
 	/* ===========================================================================================
-	 * 
+	 *
 	 *  routines to set up the algorithm for an OpenDaApplication
-	 * 
+	 *
 	 */
 	protected IAlgorithm startApplication(File workingDir, String fileName) {
 		algorithm = startApplication(workingDir, fileName, null);
@@ -350,7 +354,7 @@ public class ApplicationRunner implements Runnable{
 		} catch (Exception e) {
 			finishApplication();
             if (runningInTest) {
-                throw new RuntimeException(e);  
+                throw new RuntimeException(e);
             }
 			System.err.println(e.getMessage());
 			e.printStackTrace();
@@ -564,7 +568,7 @@ public class ApplicationRunner implements Runnable{
 
         return (IStochModelFactory) factoryInstance;
     }
-    
+
     protected void writeRestart(){
 		ITime time = algorithm.getCurrentTime();
 		boolean writeAtThisTime=(time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
@@ -595,7 +599,7 @@ public class ApplicationRunner implements Runnable{
 					timeString= TimeUtils.mjdToString(currentTime);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-						timeString+ "." + restartOutFileExtension);							
+						timeString+ "." + restartOutFileExtension);
 			}
 			savedInternalState.savePersistentState(stateFile);
 			this.algorithm.releaseInternalState(savedInternalState);
