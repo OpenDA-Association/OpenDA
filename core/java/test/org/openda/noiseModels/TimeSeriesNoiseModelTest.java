@@ -139,7 +139,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
 			average /= numValues;
 			noiseFileWriter.write("AVERAGE," + average);
 			System.out.println("AVERAGE: " + average + " (#values: " + numValues + ")");
-			assertEquals("Expected average", 15.01687011, average, 1.0e-6);
+			assertEquals("Expected average", 15.0127328, average, 1.0e-6);
 
 		} catch (IOException e) {
 			throw new RuntimeException("Could not open log file for writing: " + file.getAbsolutePath() +
