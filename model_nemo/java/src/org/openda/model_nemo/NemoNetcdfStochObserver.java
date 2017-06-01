@@ -319,7 +319,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 			/* get values (Note reading done a bit difficult be we encountered problems cased by the "." in the variable name*/
 			for (int i=0; i<vars.size();i++){
 				Variable var = vars.get(i);
-				String name  = var.getName();
+				String name  = var.getShortName();
 				Array arr    = allArrays.get(i);
 				if (name.equalsIgnoreCase("H.i")){this.Hi = (float []) arr.copyTo1DJavaArray();}
 				if (name.equalsIgnoreCase("H.j")){this.Hj = (float []) arr.copyTo1DJavaArray();}

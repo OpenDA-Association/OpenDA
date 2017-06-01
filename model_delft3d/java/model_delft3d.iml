@@ -58,26 +58,12 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/toolsUI-4.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/ncSrc-4.1.zip!/ui/src/main/java" />
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/ncSrc-4.1.zip!/unidataCommon/src/main/java" />
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/ncSrc-4.1.zip!/common/src/java" />
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/ncSrc-4.1.zip!/cdm/src/main/java" />
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf_toolsui/ncSrc-4.1.zip!/Java-OPeNDAP/src" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../dotnet_bridge/java/resources/mscorlib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="netcdf" level="project" />
   </component>
 </module>

@@ -30,7 +30,8 @@ import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
-import ucar.nc2.NetcdfFileWriteable;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	protected String stationDimensionVarName = NetcdfUtils.STATION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
 
 	private File file = null;
-	private NetcdfFileWriteable netcdfFile = null;
+	private NetcdfFileWriter netcdfFileWriter = null;
 	protected List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
 	/**
 	 * For each exchangeItemId contains a map with one exchangeItem per ensembleMemberIndex.
@@ -103,7 +104,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	}
 
 	/**
-	 * @param workingDir
+	 * @param workingDir path to work directory
 	 * @param arguments required argument 1: the pathname of the data file relative to the given workingDir.
 	 * @param arguments optional argument 2: lazyReading true/false.
 	 * @param arguments optional argument 3: lazyWriting true/false.
@@ -131,8 +132,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		if (this.file.exists()) {
 			//open existing netcdf file. Always use NetcdfFileWriteable in case data needs to be written later.
 			try {
-				//this.netcdfFile = NetcdfFileWriteable.openExisting(this.file.getAbsolutePath(), true); for speeding up based on mail Arno changed to
-				this.netcdfFile = NetcdfFileWriteable.openExisting(this.file.getAbsolutePath(), false);
+				this.netcdfFileWriter = NetcdfFileWriter.openExisting(this.file.getAbsolutePath());
 			} catch (IOException e) {
 				throw new RuntimeException("Error while opening existing netcdf file '" + this.file.getAbsolutePath()
 						+ "'. Message was: " + e.getMessage(), e);
@@ -163,14 +163,15 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			//create new netcdf file.
 			try {
 				//set fill to true, otherwise missing values will not be written for scalar time series variables that do not have data for all stations.
-				this.netcdfFile = NetcdfFileWriteable.createNew(this.file.getAbsolutePath(), true);
+				this.netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, this.file.getAbsolutePath());
+				this.netcdfFileWriter.setFill(true);
 			} catch (IOException e) {
 				throw new RuntimeException("Error while creating handle for new netcdf file '" + this.file.getAbsolutePath()
 						+ "'. Message was: " + e.getMessage(), e);
 			}
 			//always create large file, in case much data needs to be written.
-			this.netcdfFile.setLargeFile(true);
-			NetcdfUtils.addGlobalAttributes(this.netcdfFile);
+			this.netcdfFileWriter.setLargeFile(true);
+			NetcdfUtils.addGlobalAttributes(this.netcdfFileWriter);
 		}
 	}
 
@@ -206,7 +207,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		this.exchangeItems.clear();
 
 		//get locationIds.
-		Map<Integer, String> stationIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(this.netcdfFile, stationIdVarName);
+		NetcdfFile netcdfFile = this.netcdfFileWriter.getNetcdfFile();
+		Map<Integer, String> stationIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(netcdfFile, stationIdVarName);
 		if (!stationIndexIdMap.isEmpty()) {//if stations found.
 			Results.putMessage(this.getClass().getSimpleName() + ": station_id variable found in netcdf file " + this.file.getAbsolutePath());
 		}
@@ -215,7 +217,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		//Therefore cache timeInfo objects so that time coordinate variables
 		//are never read more than once.
 		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
-		for (Variable variable : this.netcdfFile.getVariables()) {
+		for (Variable variable : netcdfFile.getVariables()) {
 			//skip coordinate variables.
 			//a time variable is also a coordinate variable (i.e. has only itself as dimension).
 			//do not create exchangeItems for coordinate variables.
@@ -229,11 +231,11 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			}
 
 			//skip variables that do not depend on time.
-			Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, this.netcdfFile);
+			Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, netcdfFile);
 			if (timeVariable == null) {
 				continue;
 			}
-			ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
+			ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, netcdfFile, timeInfoCache);
 
 
 			//skip variables that are not two or three dimensional.
@@ -254,12 +256,11 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			if (dimensionCount == 2 && stationDimensionIndex != -1) {
 				//if variable has data for scalar time series for a list of separate stations.
 				int stationCount = variable.getDimension(stationDimensionIndex).getLength();
-				String parameterId = variable.getName();
+				String parameterId = variable.getShortName();
 
 				//create an exchangeItem that can read/write lazily, for each location in this variable.
-				for (int n = 0; n < stationCount; n++) {
-					int stationIndex = n;
-					String stationId = stationIndexIdMap.get(n);
+				for (int stationIndex = 0; stationIndex < stationCount; stationIndex++) {
+					String stationId = stationIndexIdMap.get(stationIndex);
 					if (realizationDimensionIndex == -1) {
 						IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
 								stationId, parameterId, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
@@ -277,15 +278,15 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				continue;
 			}
 
-			int timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
+			int timeDimensionIndex = variable.findDimensionIndex(timeVariable.getShortName());
 			IGeometryInfo geometryInfo = NetcdfUtils.createGeometryInfo(variable, netcdfFile);
 			if (dimensionCount == 3 && geometryInfo != null) {
 				//if variable has data for a 2D grid time series.
-				String parameterId = variable.getName();
+				String parameterId = variable.getShortName();
 
 				//create an exchangeItem that can read/write lazily.
 				IQuantityInfo quantityInfo = new QuantityInfo(parameterId, variable.getUnitsString());
-				int dimensionIndexToFlipForReadData = NetcdfUtils.getDimensionIndexToFlipFor2DGrid(variable, this.netcdfFile,
+				int dimensionIndexToFlipForReadData = NetcdfUtils.getDimensionIndexToFlipFor2DGrid(variable, netcdfFile,
 						this.internalGridStartCorner);
 				if (realizationDimensionIndex == -1) {
 					IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, Role.InOut,
@@ -313,6 +314,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	//TODO remove, always read data lazily. AK
 	private void readNetcdfFile() throws IOException  {
 		this.exchangeItems.clear();
+		NetcdfFile netcdfFile = this.netcdfFileWriter.getNetcdfFile();
 
 		Results.putMessage(this.getClass().getSimpleName() + ": reading data from file " + this.file.getAbsolutePath());
 
@@ -334,7 +336,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			//create exchangeItem.
 			IExchangeItem exchangeItem;
 			//Note: never use standard name or long name as exchangeItemId, since these are not always unique within a netcdf file.
-			String exchangeItemId = variable.getName();
+			String exchangeItemId = variable.getShortName();
 			if (variable.getDimensions().isEmpty()) {//if scalar.
 				exchangeItem = new DoubleExchangeItem(exchangeItemId, Role.InOut, variable.readScalarDouble());
 
@@ -469,7 +471,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 * @param item  exchangeItem to be duplicated
 	 */
 	public void addExchangeItem(IExchangeItem item) {
-        if (!this.netcdfFile.isDefineMode()) {
+        if (!this.netcdfFileWriter.isDefineMode()) {
             throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
         }
 		if (!GeometryUtils.isScalar(item.getGeometryInfo())) {
@@ -497,7 +499,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 * @param ensembleMemberIndex ensemble member index of the exchangeItem.
 	 */
 	public void addExchangeItem(IExchangeItem item, int ensembleMemberIndex) {
-		if (!this.netcdfFile.isDefineMode()) {
+		if (!this.netcdfFileWriter.isDefineMode()) {
 			throw new RuntimeException(getClass().getSimpleName() + ": cannot add new exchangeItems to an existing netcdf file.");
 		}
 		if (!GeometryUtils.isScalar(item.getGeometryInfo())) {
@@ -534,14 +536,14 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		if (this.lazyWriting) {
 			//write data to netcdf file.
 			Results.putMessage(this.getClass().getSimpleName() + ": writing data to file " + this.file.getAbsolutePath());
-			writeData(this.netcdfFile, this.exchangeItems);
+			writeData(this.netcdfFileWriter, this.exchangeItems);
 		} else {//if lazyWriting is false, then the variable data has already been written to netcdf file in exchangeItem.setValues methods,
 			//and the metadata variable values have already been written to netcdf file in method createFile.
 			//do nothing.
 		}
 
 		try {
-			this.netcdfFile.close();
+			this.netcdfFileWriter.close();
 		} catch (IOException e) {
 			throw new RuntimeException("Error while closing netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 		}
@@ -551,7 +553,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 * If the netcdf file has not yet been created, then creates it. Otherwise does nothing.
 	 */
 	public void makeSureFileHasBeenCreated() {
-		if (this.netcdfFile.isDefineMode()) {
+		if (this.netcdfFileWriter.isDefineMode()) {
 			createFile();
 		}
 	}
@@ -575,23 +577,23 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				uniqueEnsembleMemberIndices = Arrays.asList(BBUtils.box(getEnsembleMemberIndices()));
 				//set station indices and realization indices in exchangeItems as soon as they are known.
 				setStationAndRealizationIndicesForWriting(exchangeItems, ensembleExchangeItems);
-				NetcdfUtils.createMetadataAndDataVariablesForScalars(netcdfFile, exchangeItems, ensembleExchangeItems, timeInfoTimeDimensionMap, stationIdVarName,
+				NetcdfUtils.createMetadataAndDataVariablesForScalars(netcdfFileWriter, exchangeItems, ensembleExchangeItems, timeInfoTimeDimensionMap, stationIdVarName,
 						stationDimensionVarName, uniqueStationIds.size(), uniqueEnsembleMemberIndices.size());
 			} else {//if grids.
-				NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFile, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
+				NetcdfUtils.createMetadataAndDataVariablesForGrids(this.netcdfFileWriter, this.exchangeItems, this.timeInfoTimeDimensionMap, this.geometryInfoGridVariablePropertiesMap);
 			}
 		}
 
 		try {
-			this.netcdfFile.create();
+			this.netcdfFileWriter.create();
 		} catch (IOException e) {
-			throw new RuntimeException("Error while creating new netcdf file '" + this.netcdfFile.getLocation() + "'. Message was: " + e.getMessage(), e);
+			throw new RuntimeException("Error while creating new netcdf file '" + this.netcdfFileWriter.getNetcdfFile().getLocation() + "'. Message was: " + e.getMessage(), e);
 		}
 
 		//write metadata variable values for all exchange items, i.e. times and spatial coordinates.
 		//This is only needed if a new file has been created. If an existing file has been opened, then the file should already contain these values.
 		try {
-			NetcdfUtils.writeMetadata(netcdfFile, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, stationIdVarName, uniqueStationIds, uniqueEnsembleMemberIndices);
+			NetcdfUtils.writeMetadata(netcdfFileWriter, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, stationIdVarName, uniqueStationIds, uniqueEnsembleMemberIndices);
 		} catch (Exception e) {
 			throw new RuntimeException("Error while writing metadata values to netcdf file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
 		}
@@ -600,6 +602,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	/**
 	 * Validates that either all exchange items are scalars or all exchange items are grids, depending on the value of the given boolean.
 	 *
+	 * @param scalar
 	 * @param exchangeItems
 	 */
 	private void validateExchangeItems(boolean scalar, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems) {
@@ -642,11 +645,11 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 * Writes all data for the given exchangeItems to the given netcdfFile.
 	 * Only executed when this.lazyWriting = true
      *
-	 * @param netcdfFile
+	 * @param netcdfFileWriter
 	 * @param exchangeItems to write.
 	 */
 	//TODO remove. This is only used for SWAN state files (see SwanStateNetcdfFileTest.testSwanNetcdfStateFile_1). AK
-	private void writeData(NetcdfFileWriteable netcdfFile, List<IExchangeItem> exchangeItems) {
+	private void writeData(NetcdfFileWriter netcdfFileWriter, List<IExchangeItem> exchangeItems) {
 		for (IExchangeItem exchangeItem : exchangeItems){
 			if (exchangeItem.getGeometryInfo() == null){
 				//TODO Julius: please remove this hack for SWAN state files. AK
@@ -663,17 +666,17 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					// get dimensions:
 					// TODO: in the future, dimensions should be available in the exchangeItem as part of meta data
 					// This will avoid having to read the netcdf file for obtaining the dimensions.
-					List<Dimension> dimensions = netcdfFile.getDimensions();
+					List<Dimension> dimensions = netcdfFileWriter.getNetcdfFile().getDimensions();
 					int nDim = dimensions.size();
 					for (int iDim=0; iDim<nDim; iDim++){
 						Dimension dimension = dimensions.get(iDim);
-						if (dimension.getName().equalsIgnoreCase("my")){
+						if (dimension.getShortName().equalsIgnoreCase("my")){
 							my = dimension.getLength();
-						} else if (dimension.getName().equalsIgnoreCase("mx")){
+						} else if (dimension.getShortName().equalsIgnoreCase("mx")){
 							mx = dimension.getLength();
-						} else if (dimension.getName().equalsIgnoreCase("wave_frequency")){
+						} else if (dimension.getShortName().equalsIgnoreCase("wave_frequency")){
 							wave_frequency = dimension.getLength();
-						} else if (dimension.getName().equalsIgnoreCase("wave_direction")){
+						} else if (dimension.getShortName().equalsIgnoreCase("wave_direction")){
 							wave_direction = dimension.getLength();
 						} else {
 							continue;
@@ -692,8 +695,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 						}
 					}
 					try {
-						String varName = "wave_spectrum";
-						netcdfFile.write(varName,values);
+						Variable myVar = netcdfFileWriter.findVariable("wave_spectrum");
+						netcdfFileWriter.write(myVar,values);
 					} catch (IOException e) {
 						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 					} catch (InvalidRangeException e) {
@@ -705,42 +708,42 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	}
 
 	public double[] readDataForExchangeItemForSingleLocation(IExchangeItem item, int stationDimensionIndex, int stationIndex) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
 		return NetcdfUtils.readDataForVariableForSingleLocation(variable, stationDimensionIndex, stationIndex);
 	}
 
 	public double[] readDataForExchangeItemForSingleLocationSingleRealization(IExchangeItem item, int stationDimensionIndex, int stationIndex, int realizationDimensionIndex, int realizationIndex) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
 		return NetcdfUtils.readDataForVariableForSingleLocationAndRealization(variable, stationDimensionIndex, stationIndex, realizationDimensionIndex, realizationIndex);
 	}
 
 	public double[] readDataForExchangeItemFor2DGridForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex,
 			int dimensionIndexToFlip) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
 		return NetcdfUtils.readDataForVariableFor2DGridForSingleTime(variable, timeDimensionIndex, timeIndex,
 				dimensionIndexToFlip);
 	}
 
 	public double[] readDataForExchangeItemFor2DGridForSingleTimeAndRealization(
 			IExchangeItem item, int realizationDimensionIndex, int realizationIndex, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
 		return NetcdfUtils.readDataForVariableFor2DGridForSingleTimeAndRealization(variable, realizationDimensionIndex, realizationIndex, timeDimensionIndex, timeIndex,
 				dimensionIndexToFlip);
 	}
 
     public void writeDataForExchangeItemForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex, double[] values) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
-        NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFile, variable, timeDimensionIndex, timeIndex, values);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
+        NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFileWriter, variable, timeDimensionIndex, timeIndex, values);
     }
 
     public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationDimensionIndex, int stationIndex, double[] values) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
-        NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFile, variable, timeIndex, stationDimensionIndex, stationIndex, values);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
+        NetcdfUtils.writeDataForVariableForSingleTimeSingleLocation(this.netcdfFileWriter, variable, timeIndex, stationDimensionIndex, stationIndex, values);
     }
 
 	public void writeDataForExchangeItemForSingleTimeSingleLocationSingleRealization(IExchangeItem item, int timeIndex, int realizationDimensionIndex, int realizationIndex,
 			int stationDimensionIndex, int stationIndex, double[] values) {
-		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFile, item);
-		NetcdfUtils.writeDataForVariableForSingleTimeSingleLocationSingleRealization(this.netcdfFile, variable, timeIndex, realizationDimensionIndex, realizationIndex, stationDimensionIndex, stationIndex, values);
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
+		NetcdfUtils.writeDataForVariableForSingleTimeSingleLocationSingleRealization(this.netcdfFileWriter, variable, timeIndex, realizationDimensionIndex, realizationIndex, stationDimensionIndex, stationIndex, values);
 	}
 }

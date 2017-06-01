@@ -28,7 +28,7 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriteable;
+import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -182,12 +182,13 @@ public class NemoRestartFileWrapper implements IoObjectInterface{
 
 		//Write the NETCDF restart file
 		try {
-			NetcdfFileWriteable inoutFile= NetcdfFileWriteable.openExisting(netcdfFile,true);
+			NetcdfFileWriter netcdfFileWriter= NetcdfFileWriter.openExisting(netcdfFile);
+			netcdfFileWriter.setFill(true);
 
 			//Loop over all exchangeItems
 			int n = this.items.size();
 			Set<String> keys = this.items.keySet();
-			IExchangeItem[] result=new IExchangeItem[n];
+			//IExchangeItem[] result=new IExchangeItem[n];
 			for(String key : keys){
 				// Only consider those exchangeItems that are related to the restart file
 				if (this.items.get(key).fromRestartFile){
@@ -204,7 +205,8 @@ public class NemoRestartFileWrapper implements IoObjectInterface{
 							array.setFloat(i, (float) vals[i]);
 						}
 						try {
-							inoutFile.write(this.items.get(key).shortName,array);
+							Variable myVar = netcdfFileWriter.findVariable(this.items.get(key).shortName);
+							netcdfFileWriter.write(myVar,array);
 						} catch (InvalidRangeException e) {
 							e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 						}
@@ -216,13 +218,8 @@ public class NemoRestartFileWrapper implements IoObjectInterface{
 				}
 
 			}
-            inoutFile.finish();
-			inoutFile.close();
+			netcdfFileWriter.close();
 			if (debug) System.out.println("Klaar met schrijven");
-
-
-			inoutFile.close();
-
 
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -246,7 +243,7 @@ public class NemoRestartFileWrapper implements IoObjectInterface{
 			nDims = new int[aDim.length];
 			for (int i=0; i<aDim.length; i++){
 				String[] str=aDim[i].split("=");
-				nDims[i]= (int) Integer.parseInt(str[1]);
+				nDims[i]= Integer.parseInt(str[1]);
 			}
 		}
 		if (debug){

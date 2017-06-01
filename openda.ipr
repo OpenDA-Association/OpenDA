@@ -10,9 +10,6 @@
     <buildFile url="file://$PROJECT_DIR$/observers/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_efdc_dll/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_wflow/build_castor.xml" />
-    <buildFile url="file://$PROJECT_DIR$/build_enduser_windows.xml">
-      <maximumHeapSize value="512" />
-    </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -83,7 +80,6 @@
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -100,11 +96,6 @@
       <entry name="?*.tld" />
       <entry name="?*.zip" />
     </wildcardResourcePatterns>
-    <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
-    </annotationProcessing>
   </component>
   <component name="CopyrightManager" default="" />
   <component name="DependenciesAnalyzeManager">
@@ -125,9 +116,6 @@
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
-  <component name="EntryPointsManager">
-    <entry_points version="2.0" />
-  </component>
   <component name="ErrorOptionsConfigurable.UI">
     <option name="proportions">
       <SplitterProportionsDataImpl />
@@ -135,6 +123,12 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration" detection-enabled="false" />
   <component name="IdProvider" IDEtalkID="C2C79F4DC58D73085D0C2DB2B53DDD2C" />
+  <component name="InspectionProjectProfileManager">
+    <profile version="1.0">
+      <option name="myName" value="Project Default" />
+    </profile>
+    <version value="1.0" />
+  </component>
   <component name="IssueNavigationConfiguration">
     <option name="links">
       <list>
@@ -362,7 +356,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ResourceManagerContainer">
@@ -453,6 +447,15 @@
         <root url="jar://$PROJECT_DIR$/core/java/resources/castor/castor-0.9.5.jar!/" />
         <root url="jar://$PROJECT_DIR$/core/java/resources/xom/xom-1.2.6.jar!/" />
         <root url="jar://$PROJECT_DIR$/core/java/resources/junit/junit-3.8.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="netcdf">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/core/java/resources/netcdf/netcdf-4.3.23.jar!/" />
+        <root url="jar://$PROJECT_DIR$/core/java/resources/jodatime/joda-time-2.9.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/core/java/resources/udunits/udunits-4.6.6.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

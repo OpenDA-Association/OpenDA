@@ -110,21 +110,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/resources/netcdf_toolsui/toolsUI-4.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/resources/netcdf_toolsui/ncSrc-4.1.zip!/ui/src/main/java" />
-          <root url="jar://$MODULE_DIR$/resources/netcdf_toolsui/ncSrc-4.1.zip!/unidataCommon/src/main/java" />
-          <root url="jar://$MODULE_DIR$/resources/netcdf_toolsui/ncSrc-4.1.zip!/common/src/java" />
-          <root url="jar://$MODULE_DIR$/resources/netcdf_toolsui/ncSrc-4.1.zip!/cdm/src/main/java" />
-          <root url="jar://$MODULE_DIR$/resources/netcdf_toolsui/ncSrc-4.1.zip!/Java-OPeNDAP/src" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/resources/xom/xom-1.2.6.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -168,5 +153,17 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="netcdf" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/resources/slf4j/slf4j-api-1.7.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="netcdf" level="project" />
+    <orderEntry type="library" name="netcdf" level="project" />
   </component>
 </module>
