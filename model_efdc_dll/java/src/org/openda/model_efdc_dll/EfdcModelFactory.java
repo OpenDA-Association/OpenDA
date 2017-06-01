@@ -56,7 +56,6 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private String[] relativeInputFilePaths = null;
 	private String relativeModelOutputFilePath = null;
 	private String relativeAnalysisOutputFilePath = null;
-	private boolean useGateWaterLevel = false;
 	/**
 	 * The timeZone that is used by the model.
 	 * This is required to convert the times of the data values
@@ -65,7 +64,9 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	 */
 	private TimeZone modelTimeZone = TimeZone.getTimeZone("GMT");
 	private ITime timeHorizonFromOutside = null;
+	private boolean templateFileDone = false;
 	private boolean efdcDllInitialized = false;
+
 
 	/**
 	 * Counter to keep track of generated modelInstanceNumbers that have already been used.
@@ -102,7 +103,6 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.relativeModelOutputFilePath = modelConfigReader.getRelativeModelOutputFilePath();
 		this.relativeAnalysisOutputFilePath = modelConfigReader.getRelativeAnalysisOutputFilePath();
 		this.modelTimeZone = modelConfigReader.getModelTimeZone();
-		this.useGateWaterLevel = modelConfigReader.getUseGateWaterLevel();
 
 		//remove work directories from previous runs.
 		Results.putMessage(this.getClass().getSimpleName() + ": removing work directories from previous run.");
@@ -160,7 +160,8 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	 * @return The Model instance
 	 */
 	public IModelInstance getInstance(String[] arguments, OutputLevel outputLevel) {
-		if (!efdcDllInitialized) {
+
+		if (!templateFileDone) {
 			//timeHorizon set from 'outside' overrules timeHorizon in efdc model config files.
 			if (this.timeHorizonFromOutside != null) {
 				Results.putMessage(getClass().getSimpleName() + ": using timeHorizon set from outside: "
@@ -174,10 +175,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 				//if timeHorizon has not been set from outside, then assume that timeHorizon has been set in the efdc model config files manually.
 				Results.putMessage(getClass().getSimpleName() + ": using timeHorizon from efdc model config files.");
 			}
-
-			//init efdc dll.
-			EfdcDLL.initialize(this.efdcDllFile, this.instanceDirectoryWithoutPostfix.getParentFile(), this.templateDirectory, this.modelTimeZone);
-			efdcDllInitialized = true;
+			templateFileDone = true;
 		}
 
 		//create new instance folder.
@@ -186,8 +184,14 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		File instanceDirectory = new File(this.instanceDirectoryWithoutPostfix.getAbsolutePath() + modelInstanceNumber);
 		BBUtils.makeDirectoryClone(this.templateDirectory, instanceDirectory);
 
+		if (!efdcDllInitialized) {
+			//init efdc dll.
+			EfdcDLL.initialize(this.efdcDllFile, this.instanceDirectoryWithoutPostfix.getParentFile(), instanceDirectory, this.modelTimeZone);
+			efdcDllInitialized = true;
+		}
+
 		//create new instance.
-		return new EfdcModelInstance(instanceDirectory, relativeInputFilePaths, relativeModelOutputFilePath, relativeAnalysisOutputFilePath, modelInstanceNumber, useGateWaterLevel, this);
+		return new EfdcModelInstance(instanceDirectory, relativeInputFilePaths, relativeModelOutputFilePath, relativeAnalysisOutputFilePath, modelInstanceNumber, this);
 	}
 
 	public void finish() {

@@ -50,11 +50,12 @@ import org.openda.utils.io.GridExchangeItemNetcdfWriter;
  * @author Arno Kockx
  */
 public class EfdcModelInstance extends Instance implements IModelInstance {
-	private static final String[] INPUT_STATE_FILE_NAMES = {"RESTART.INP", "TEMP.RST", "RSTWD.INP", "WQWCRST.INP"};
+	private static final String[] INPUT_STATE_FILE_NAMES = {"RESTART.INP", "TEMP.RST", "RSTWD.INP", "WQWCRST.INP" };
 	private static final String[] OUTPUT_STATE_FILE_NAMES = {"RESTART.OUT", "TEMP.RSTO", "RSTWD.OUT", "WQWCRST.OUT"};
+	private static final String[] OPTIONAL_INPUT_STATE_FILE_NAMES = {"WQWCRSTX.INP"};
+	private static final String[] OPTIONAL_OUTPUT_STATE_FILE_NAMES = {"WQWCRSTX.OUT"};
 
 	private final int modelInstanceNumber;
-	private final boolean useGateWaterLevel;
 	private final EfdcModelFactory parentFactory;
 
 	private final File instanceDir;
@@ -69,6 +70,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private GridExchangeItemNetcdfWriter gridModelOutputWriter;
 	private GridExchangeItemNetcdfWriter gridAnalysisOutputWriter;
 	private boolean firstTime = true;
+	private static String XSPECIES = "XSpecies%1$02d";
+    private static int XSPECIES_GRID_OFFSET = 1800;
+    private static int XSPECIES_OFFSET = 800;
+
 
 	/**
 	 * State stored on disk. The efdc model can only store one state at a time.
@@ -76,14 +81,13 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	private FileBasedModelState stateStoredOnDisk = null;
 
 	/**
-	 * @param instanceDir
-	 * @param inputFilePaths relative to the given instanceDir
-	 * @param modelOutputFilePath relative to the given instanceDir
-	 * @param analysisOutputFilePath relative to the given instanceDir
+	 * @param instanceDir path to instance directory
+	 * @param inputFilePaths input files path relative to instanceDir
+	 * @param modelOutputFilePath path for output file with model results relative to instanceDir
+	 * @param analysisOutputFilePath path for output file with analysis relative to instanceDir
 	 */
-	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber, boolean useGateWaterLevel, EfdcModelFactory parentFactory) {
+	public EfdcModelInstance(File instanceDir, String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath, int modelInstanceNumber,  EfdcModelFactory parentFactory) {
 		this.modelInstanceNumber = modelInstanceNumber;
-		this.useGateWaterLevel = useGateWaterLevel;
 		this.parentFactory = parentFactory;
 
 		//initialize model.
@@ -128,11 +132,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			int parameterNumber = exchangeItemType.getParameterNumber();
 			String parameterId = exchangeItemType.getParameterId();
 
-			//check if useGateWaterLevel is specified. Gate related ExchangeItem is skipped when not specified.
-			if (parameterNumber == 701 && !useGateWaterLevel) {
-				continue;
-			}
-
 			//check if exchangeItem is supported by current EFDC configuration
 			if ( ! this.modelDll.supportsExchangeItem(parameterNumber) ) {
 				continue;
@@ -166,15 +165,46 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 					break;
 
 				default:
-					throw new RuntimeException("Unknown EfdcExchangeItemRole type " + role);
+					throw new RuntimeException("Unknown EfdcExchangeItemRole type " + role + " for " + parameterNumber);
 			}
 		}
-	}
+        //create exchange items for xspecies at all locations and layers
+        //check if exchangeItem is supported by current EFDC configuration
+        int nXspecies = this.modelDll.getXspeciesCount();
+
+        for (int iXspecies = 1; iXspecies <= nXspecies; ++iXspecies) {
+            int parameterGridNumber = XSPECIES_GRID_OFFSET + iXspecies;
+            if ( !this.modelDll.supportsExchangeItem(parameterGridNumber) ) {
+                continue;
+            }
+            String parameterId = String.format(XSPECIES,iXspecies);
+            EfdcGridExchangeItem gridExchangeItem = new EfdcGridExchangeItem(parameterGridNumber, parameterId, Role.InOut, this.modelDll);
+            this.stateExchangeItems.put(gridExchangeItem.getId(), gridExchangeItem);
+            int parameterNumber = XSPECIES_OFFSET + iXspecies;
+            int locationCount = this.modelDll.getTimeSeriesCount(parameterNumber);
+            int layerCount    = this.modelDll.getLayerCount(parameterNumber);
+            for (int locationNumber = 1; locationNumber <= locationCount; locationNumber++) {
+                if (layerCount <= 1) {
+                    EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+                        new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, null, parameterId, IExchangeItem.Role.Input, this.modelDll);
+                    this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+                } else {//if multiple layers.
+                    for (int layerNumber = 1; layerNumber <= layerCount; layerNumber++) {
+                        EfdcScalarTimeSeriesExchangeItem scalarTimeSeriesExchangeItem =
+                            new EfdcScalarTimeSeriesExchangeItem(locationNumber, parameterNumber, layerNumber, parameterId, IExchangeItem.Role.Input, this.modelDll);
+                        this.boundaryExchangeItems.put(scalarTimeSeriesExchangeItem.getId(), scalarTimeSeriesExchangeItem);
+                    }
+                }
+            }
+
+        }
+
+    }
 
 	private void createDataObjects(String[] inputFilePaths, String modelOutputFilePath, String analysisOutputFilePath) {
 		//check if input files exist.
-		for (int n = 0; n < inputFilePaths.length; n++) {
-			File inputFile = new File(instanceDir, inputFilePaths[n]);
+		for (String inputFilePath : inputFilePaths ) {
+			File inputFile = new File(instanceDir, inputFilePath);
 			if (!inputFile.exists()) {
 				throw new RuntimeException("Cannot find configured input file " + inputFile.getAbsolutePath());
 			}
@@ -217,9 +247,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		return new GridExchangeItemNetcdfWriter(items.toArray(new IExchangeItem[items.size()]), outputFile);
 	}
 
-	/*************************************
+	/*
 	 * Time information / Computing
-	 *************************************/
+	 */
 
 	/**
 	 * Get the computational time horizon of the model (begin and end time).
@@ -272,9 +302,10 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	}
 
 	/**
+
 	 * Get the localization vector.
 	 *
-	 * @param observationDescriptions
+	 * @param observationDescriptions observation descriptions
 	 * @param distance characteristic distance for Cohn's formula.
 	 * @return weight vector for each observation location.
 	 */
@@ -282,9 +313,9 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		throw new UnsupportedOperationException(getClass().getName() + ": getObservedLocalization not implemented.");
 	}
 
-	/*************************************
+	/*
 	 * Save/restore full internal state
-	 *************************************/
+	 */
 
 	/**
 	 * Load an internal model state from file.
@@ -358,11 +389,28 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		for (int n = 0; n < OUTPUT_STATE_FILE_NAMES.length; n++) {
 			File sourceFile = new File(this.instanceDir, OUTPUT_STATE_FILE_NAMES[n]);
 			File targetFile = new File(this.outputStateFilesDirectory, INPUT_STATE_FILE_NAMES[n]);
-			try {
-				BBUtils.copyFile(sourceFile, targetFile);
-			} catch (IOException e) {
-				throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
+			if (sourceFile.exists()) {
+				try {
+					BBUtils.copyFile(sourceFile, targetFile);
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
 						+ " to " + targetFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
+				}
+			} else {
+				throw new RuntimeException("Missing output state file " + sourceFile.getAbsolutePath());
+			}
+		}
+
+		for (int n = 0; n < OPTIONAL_OUTPUT_STATE_FILE_NAMES.length; n++) {
+			File sourceFile = new File(this.instanceDir, OPTIONAL_OUTPUT_STATE_FILE_NAMES[n]);
+			File targetFile = new File(this.outputStateFilesDirectory, OPTIONAL_INPUT_STATE_FILE_NAMES[n]);
+			if ( sourceFile.exists() ) {
+				try {
+					BBUtils.copyFile(sourceFile, targetFile);
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot copy and rename output state file " + sourceFile.getAbsolutePath()
+						+ " to " + targetFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
+				}
 			}
 		}
 
@@ -379,7 +427,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		 * @param stateFilesDirectory the directory that contains the model state files
 		 */
 		public EfdcModelState(File stateFilesDirectory) {
-			super(stateFilesDirectory, INPUT_STATE_FILE_NAMES);
+			super(stateFilesDirectory );
 			this.stateFilesDirectory = stateFilesDirectory;
 		}
 
@@ -462,7 +510,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Returns the exchange item with the given exchangeItemId, if it exists.
 	 *
-	 * @param exchangeItemId
+	 * @param exchangeItemId Identifier of exchange item
 	 * @return IExchangeItem.
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
@@ -480,8 +528,8 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Returns the exchange item with the given exchangeItemId, if it exists.
 	 *
-	 * @param exchangeItemId
-	 * @return IPrevExchangeItem.
+	 * @param exchangeItemId Identifier of exchange item
+	 * @return IPrevExchangeItem
 	 */
 	//TODO this method is only present for backwards compatibility. This method should be removed
 	//once all ioObjects and exchange items have been migrated to the new IDataObject/IExchangeItem approach. AK
@@ -502,7 +550,6 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 		String[] boundaryExchangeItemIds = boundaryExchangeItems.keySet().toArray(new String[boundaryExchangeItems.size()]);
 		for (String id : boundaryExchangeItemIds) {
 			IExchangeItem boundaryExchangeItem = getDataObjectExchangeItem(id);
-
 			//find corresponding inputExchangeItem.
 			IExchangeItem inputExchangeItem = null;
 			for (IDataObject inputDataObject : inputDataObjects) {
@@ -513,16 +560,17 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 			}
 			if (inputExchangeItem == null) {//if item not found.
 				String locationId = BBUtils.getLocationFromId(id);
-				if (!locationId.contains("_layer")) {
-					//throw new RuntimeException("Exchange item with id '" + id + "' not found in given inputDataObjects.");
+				String parameterId = BBUtils.getParameterFromId(id);
+				if (!locationId.contains("_layer") ) {
+					if (!EfdcExchangeItemType.findByKey(parameterId).isOptional()) {
 					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
+					}
 					continue;
 				}
 
 				//if boundaryExchangeItem has layers.
 				//try to find inputExchangeItem with same location and parameter but without layer.
 				String newLocationId = locationId.substring(0, locationId.lastIndexOf('_'));
-				String parameterId = BBUtils.getParameterFromId(id);
 				String newId = newLocationId + "." + parameterId;
 				for (IDataObject inputDataObject : inputDataObjects) {
 					inputExchangeItem = inputDataObject.getDataObjectExchangeItem(newId);
@@ -530,16 +578,18 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 						break;
 					}
 				}
-				if (inputExchangeItem == null) {//if item not found.
-					//throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
-					Results.putMessage(getClass().getSimpleName() + ": Exchange item with id '" + id + "' not found in given inputDataObjects. Make sure that the inputData for this ExchangeItem is either supplied by the boundaryProvider or configured in the EFDCModelFactory config file.");
+				if ((inputExchangeItem == null) && EfdcExchangeItemType.findByKey(parameterId).isOptional()) {
 					continue;
+				}
+				else if (inputExchangeItem == null) {//if item not found.
+					throw new RuntimeException("Exchange item with id '" + id + "' or id '" + newId + "' not found in given inputDataObjects.");
 				}
 			}
 
 			//ask the boundaryExchangeItem to copy all value(s) that it currently needs from the inputExchangeItem.
-			Results.putMessage(getClass().getSimpleName() + ": copying data from inputExchangeItem '" + id + "' of type " + inputExchangeItem.getClass().getSimpleName()
-					+ " to boundaryExchangeItem '" + id + "' of type " + boundaryExchangeItem.getClass().getSimpleName());
+			// TODO: [LOGGING] Move to debug when available as logging option.
+			//Results.putMessage(getClass().getSimpleName() + ": copying data from inputExchangeItem '" + id + "' of type " + inputExchangeItem.getClass().getSimpleName()
+			//		+ " to boundaryExchangeItem '" + id + "' of type " + boundaryExchangeItem.getClass().getSimpleName());
 			boundaryExchangeItem.copyValuesFromItem(inputExchangeItem);
 		}
 	}

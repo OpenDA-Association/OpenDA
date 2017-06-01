@@ -60,6 +60,9 @@ C
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::TOCWQMIN
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::TOCWQSUM
 C
+      ! GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10    
+      CHARACTER*11 FLN
+      CHARACTER*12 FLNX
       IF(.NOT.ALLOCATED(TNWQMAX))THEN
         ALLOCATE(TNWQMAX(LCMWQ,KCM))  
         ALLOCATE(TNWQMIN(LCMWQ,KCM))  
@@ -129,6 +132,7 @@ C CHLM = MACROALGAE BIOMASS IN UG/L:
             IF(XMRM .GT. CHLMMAX(LL,K)) CHLMMAX(LL,K) = XMRM
             IF(XMRM .LT. CHLMMIN(LL,K)) CHLMMIN(LL,K) = XMRM
           ENDIF
+          PO4DWQ_ = 0.0
           IF(IWQSRP.EQ.1)THEN
             O2WQ_ = MAX(WQVO(LL,K,19), 0.0)
             TAMDWQ = MIN( WQTAMDMX*EXP(-WQKDOTAM*O2WQ_), WQVO(LL,K,20) )
@@ -584,22 +588,7 @@ C     +       TPWQMAX(LL,K),WQVMAX(LL,K,9),POPMAX(LL,K),WQVMAX(LL,K,10),
 C
 C OPEN DO COMPONENT ANALYSIS BINARY FILE:
 C
-!{GeoSR, YSSONG, GROWTH LIMIT PRINT, 111031
-        IF(ISCOMP .GT. 0)THEN
-          OPEN(3,FILE='WQDOCOMP.BIN',FORM='UNFORMATTED',
-     &          POSITION='APPEND',STATUS='UNKNOWN')  
-C          NREC3 = NREC3 + 1
-          TIMTMP = TIMESUM3 / NWQCNT
-          WRITE(3) N,TIMTMP
-C          OPEN(UNIT=2, FILE='WQDOCOMP.BIN', ACCESS='DIRECT',
-C     +     FORM='UNFORMATTED', STATUS='UNKNOWN', RECL=MAXRECL3)
-C
-C          READ(2, REC=1) NDUM, XDUM, XDUM,
-C     +      XDT, IXDT, NPARM, NCELLS, NLAYERS
-C          WRITE(2, REC=1) NREC3, TBEGAN, TIMTMP,
-C     +      XDT, IXDT, NPARM, NCELLS, NLAYERS
-C
-C          WRITE(2, REC=NR5) TIMTMP
+        IF(ISCOMP .NE. 2)THEN
           DO LL=2,LA
             DO K=1,KC
               XLIMNC(LL,K) = XLIMNC(LL,K) / NLIM
@@ -621,7 +610,58 @@ C          WRITE(2, REC=NR5) TIMTMP
               XLIMTG(LL,K) = XLIMTG(LL,K) / NLIM
               XLIMTM(LL,K) = XLIMTM(LL,K) / NLIM
               XDODZ(LL,K) = XDODZ(LL,K) / NLIM
-
+              do nsp=1,NXSP
+                XLIMIX(LL,K,nsp) = XLIMIX(LL,K,nsp) / NLIM
+                XLIMNX(LL,K,nsp) = XLIMNX(LL,K,nsp) / NLIM
+                XLIMPX(LL,K,nsp) = XLIMPX(LL,K,nsp) / NLIM
+                XLIMTX(LL,K,nsp) = XLIMTX(LL,K,nsp) / NLIM
+              enddo
+            enddo
+          enddo
+        endif
+        !{GeoSR, YSSONG, GROWTH LIMIT PRINT, 111031
+        IF(ISCOMP .EQ. 1 .OR. ISCOMP .EQ. 4)THEN
+          OPEN(3,FILE='WQDOCOMP.BIN',FORM='UNFORMATTED',
+     &          POSITION='APPEND',STATUS='UNKNOWN')  
+C          NREC3 = NREC3 + 1
+          TIMTMP = TIMESUM3 / NWQCNT
+          WRITE(3) N,TIMTMP
+          ! X-species
+          IF(NXSP.GT.0) THEN
+            OPEN(333,FILE='WQDOCOMPX.BIN',FORM='UNFORMATTED',
+     &            POSITION='APPEND',STATUS='UNKNOWN')  
+            WRITE(333) N,TIMTMP
+          ENDIF
+C          OPEN(UNIT=2, FILE='WQDOCOMP.BIN', ACCESS='DIRECT',
+C     +     FORM='UNFORMATTED', STATUS='UNKNOWN', RECL=MAXRECL3)
+C
+C          READ(2, REC=1) NDUM, XDUM, XDUM,
+C     +      XDT, IXDT, NPARM, NCELLS, NLAYERS
+C          WRITE(2, REC=1) NREC3, TBEGAN, TIMTMP,
+C     +      XDT, IXDT, NPARM, NCELLS, NLAYERS
+C
+C          WRITE(2, REC=NR5) TIMTMP
+          DO LL=2,LA
+            DO K=1,KC
+C              XLIMNC(LL,K) = XLIMNC(LL,K) / NLIM
+C              XLIMND(LL,K) = XLIMND(LL,K) / NLIM
+C              XLIMNG(LL,K) = XLIMNG(LL,K) / NLIM
+C              XLIMNM(LL,K) = XLIMNM(LL,K) / NLIM
+C              XLIMPC(LL,K) = XLIMPC(LL,K) / NLIM
+C              XLIMPD(LL,K) = XLIMPD(LL,K) / NLIM
+C              XLIMPG(LL,K) = XLIMPG(LL,K) / NLIM
+C              XLIMPM(LL,K) = XLIMPM(LL,K) / NLIM
+C              XLIMIC(LL,K) = XLIMIC(LL,K) / NLIM
+C              XLIMID(LL,K) = XLIMID(LL,K) / NLIM
+C              XLIMIG(LL,K) = XLIMIG(LL,K) / NLIM
+C              XLIMIM(LL,K) = XLIMIM(LL,K) / NLIM
+C              XLIMVM(LL,K) = XLIMVM(LL,K) / NLIM
+C              XLIMDM(LL,K) = XLIMDM(LL,K) / NLIM
+C              XLIMTC(LL,K) = XLIMTC(LL,K) / NLIM
+C              XLIMTD(LL,K) = XLIMTD(LL,K) / NLIM
+C              XLIMTG(LL,K) = XLIMTG(LL,K) / NLIM
+C              XLIMTM(LL,K) = XLIMTM(LL,K) / NLIM
+C              XDODZ(LL,K) = XDODZ(LL,K) / NLIM
 c              XMRM = 1.0 / XDODZ(LL,K)
 C              XDOSAT(LL,K) = XDOSAT(LL,K) *XMRM
 C              XDODEF(LL,K) = XDODEF(LL,K) *XMRM
@@ -656,29 +696,79 @@ C     +        XDOSAT(LL,K), XDOPSL(LL,K), XDOSOD(LL,K),
 C     +        XDOKAR(LL,K), XDODOC(LL,K), XDONIT(LL,K), XDOCOD(LL,K),
 C     +        XDOPPB(LL,K), XDORRB(LL,K), XDOPPM(LL,K), XDORRM(LL,K),
 C     +        XDODEF(LL,K), XDOTRN(LL,K), XDOALL(LL,K), XDODZ(LL,K)
-            WRITE(3) XLIMNC(LL,K), XLIMND(LL,K), XLIMNG(LL,K),
-     +       XLIMNM(LL,K), XLIMPC(LL,K), XLIMPD(LL,K), XLIMPG(LL,K),
-     +       XLIMPM(LL,K), XLIMIC(LL,K), XLIMID(LL,K), XLIMIG(LL,K),
-     +       XLIMIM(LL,K), XLIMTC(LL,K), XLIMTD(LL,K), XLIMTG(LL,K),
-     +       XLIMTM(LL,K), XLIMVM(LL,K), XLIMDM(LL,K)
+              WRITE(3) XLIMNC(LL,K), XLIMND(LL,K), XLIMNG(LL,K),
+     +         XLIMNM(LL,K), XLIMPC(LL,K), XLIMPD(LL,K), XLIMPG(LL,K),
+     +         XLIMPM(LL,K), XLIMIC(LL,K), XLIMID(LL,K), XLIMIG(LL,K),
+     +         XLIMIM(LL,K), XLIMTC(LL,K), XLIMTD(LL,K), XLIMTG(LL,K),
+     +         XLIMTM(LL,K), XLIMVM(LL,K), XLIMDM(LL,K)
+              ! X-species GROWTH LIMIT PRINT
+              IF(NXSP.GT.0) THEN
+                WRITE(333) (XLIMNX(LL,K,nsp),nsp=1,NXSP),
+     +                     (XLIMPX(LL,K,nsp),nsp=1,NXSP),
+     +                     (XLIMIX(LL,K,nsp),nsp=1,NXSP),
+     +                     (XLIMTX(LL,K,nsp),nsp=1,NXSP)
+              ENDIF
             ENDDO
           ENDDO
 C
+!{GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10  
           CLOSE(3)
+          ! X-species file
+          IF(NXSP.GT.0) CLOSE(333)
+        ENDIF
+        
+        IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
+          IF(IWQTS.GE.1)THEN
+            TIME=DT*FLOAT(N)+TCON*TBEGIN  
+            TIME=TIME/TCON 
+            DO K=1,KC
+              WRITE(FLN,"('WQLIM',I2.2,'.DAT')") K
+              OPEN(3,FILE=FLN,POSITION='APPEND')
+              DO M=1,IWQTS
+                LL=LWQTS(M)
+                WRITE(3,8999) TIME,
+     +          XLIMNC(LL,K), XLIMND(LL,K), XLIMNG(LL,K),
+     +          XLIMNM(LL,K), XLIMPC(LL,K), XLIMPD(LL,K), XLIMPG(LL,K),
+     +          XLIMPM(LL,K), XLIMIC(LL,K), XLIMID(LL,K), XLIMIG(LL,K),
+     +          XLIMIM(LL,K), XLIMTC(LL,K), XLIMTD(LL,K), XLIMTG(LL,K),
+     +          XLIMTM(LL,K), XLIMVM(LL,K), XLIMDM(LL,K)
+              ENDDO
+              ! X-species
+              IF(NXSP.GT.0) THEN
+                WRITE(FLNX,"('WQLIMX',I2.2,'.DAT')") K
+                OPEN(333,FILE=FLNX,POSITION='APPEND')
+                DO M=1,IWQTS
+                  LL=LWQTS(M)
+                  WRITE(333,8998) TIME, (XLIMNX(LL,K,nsp),nsp=1,NXSP),
+     +                       (XLIMPX(LL,K,nsp),nsp=1,NXSP),
+     +                       (XLIMIX(LL,K,nsp),nsp=1,NXSP),
+     +                       (XLIMTX(LL,K,nsp),nsp=1,NXSP)
+                ENDDO
+              ENDIF
+            ENDDO
+            CLOSE(3)
+            ! X-species file
+            IF(NXSP.GT.0) CLOSE(333)
+          ENDIF            
+        ENDIF        
+!}GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, JHLEE, 2016.01.21  
+        CALL WQZERO3
+!}        
+        IF(ISCOMP .EQ. 2. OR. ISCOMP .EQ. 4)THEN
+
 C          INQUIRE(UNIT=2, NEXTREC=NR5)
 C          CLOSE(2)
-          CALL WQZERO3
-
-        OPEN(3,FILE='WQRATE.BIN',FORM='UNFORMATTED',
+C          CALL WQZERO3
+          OPEN(3,FILE='WQRATE.BIN',FORM='UNFORMATTED',
      &        POSITION='APPEND',STATUS='UNKNOWN')  
 C        TIMTMP = TIMESUM3 / NWQCNT2
-        WRITE(3) N,TIMTMP
-        IF(K.EQ.KC) THEN   ! SURFACE LAYER
+          WRITE(3) N,TIMTMP
+          IF(K.EQ.KC) THEN   ! SURFACE LAYER
           DO L=2,LA
-           WRITE(3) WQPC(L),WQBMC(L),WQPRC(L),WQBCSET(L,1), 
-     &              WQPD(L),WQBMD(L),WQPRD(L),WQBDSET(L,1), 
-     &              WQPG(L),WQBMG(L),WQPRG(L),WQBGSET(L,1), 
-     &              WQKHR(L),WQNIT(L),WQDENIT(L)
+            WRITE(3) WQPC(L),WQBMC(L),WQPRC(L),WQBCSET(L,1), 
+     &               WQPD(L),WQBMD(L),WQPRD(L),WQBDSET(L,1), 
+     &               WQPG(L),WQBMG(L),WQPRG(L),WQBGSET(L,1), 
+     &               WQKHR(L),WQNIT(L),WQDENIT(L)
           ENDDO
         ELSE
           DO L=2,LA
@@ -765,5 +855,7 @@ C
 C
       ENDIF
 C
+ 8999 FORMAT(F10.5,18E12.4)        
+ 8998 FORMAT(F10.5,(E12.4))
       RETURN
       END

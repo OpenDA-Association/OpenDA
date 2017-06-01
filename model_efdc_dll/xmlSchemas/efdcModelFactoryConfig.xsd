@@ -34,7 +34,6 @@
 					<xs:documentation>The path and name of one or more input netcdf files (relative to the instance directory). Together these input files must contain all (boundary) input data that is needed for the model to run. If the (boundary) input data should be different for different model instances, then use the option boundaryProvider in the blackBoxStochModel config instead.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="useGateWaterLevel" type="xs:boolean" default="false" minOccurs="0"/>
 			<xs:element name="modelOutputFile" type="xs:string">
 				<xs:annotation>
 					<xs:documentation>The path and name of the model output netcdf file (relative to the instance directory). This file will be created during the model run. After each model timestep the model output data will be written to this file.</xs:documentation>

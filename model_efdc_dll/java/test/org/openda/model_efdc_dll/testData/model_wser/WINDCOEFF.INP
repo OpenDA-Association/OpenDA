@@ -1,0 +1,17 @@
+*******************************************************************************
+*                                                                             *
+*  THIS IS THE INPUT FILE WINDCOEFF.INP                                       *
+*    FOR WIND DRAG COEFFICIENT MODIFIED BY GEOSR                              *
+*    WHEN ISWIND GREATER THEN 1.                                              *
+*    ADDED BY YSSONG                                                          *
+*                                                                             *
+*******************************************************************************
+-------------------------------------------------------------------------------
+CWD-01 WIND DRAG COEFFICIENT CONTANT
+      ISCD    : 0=General formula(WNDCM=0.8, WNDB=0.065), 1=Dean(1997), 2=Foreman(2012)
+      CDCON   : WIND DRAG COEFF. by Dean(1997)
+      WNDCM   : WIND COEFF. CM by Foreman(2012), WIND COEFF. a for General formula
+      WNDB    : WIND COEFF. B (<0) by Foreman(2012), WIND COEFF. b for General formula
+      WNDCR   : Lower wind velocity(m/s)
+CWD-01 ISCD   WNDCM   WNDB   WNDCR   CDCON  
+         2    0.055  -0.1762  4.0    1.E-2  

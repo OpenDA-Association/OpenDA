@@ -1312,6 +1312,12 @@ SUBROUTINE VARZEROReal
       WQBFO2=0.0
       WQBFPO4D=0.0
       WQBFSAD=0.0
+      WQBFOXCOD=0.0
+      WQBFOXNH4=0.0
+      WQBFOXNO3=0.0
+      WQBFOXO2=0.0
+      WQBFOXPO4D=0.0
+      WQBFOXSAD=0.0
       WQBGSET=0.0
       WQBMC=0.0
       WQBMD=0.0
@@ -1555,7 +1561,7 @@ SUBROUTINE VARZEROReal
       ZZP=0.0
 
       ! Begin SEDZLJ variables
-      LAYER=0.0         !(KB,LCM) !note KB=KBM
+      LAYER=0.0       !(KB,LCM) !note KB=KBM
       BMINDIF=0.0
       BED_SED_FLX=0.0 !(LCM,NSCM)
       BED_TOX_FLX=0.0 !(LCM,NTXM)
@@ -1723,6 +1729,24 @@ SUBROUTINE VARZEROReal
       WNDCM=0.8
       WNDB=0.065
 !} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
+! X-species
+      XLIMNX=0.
+      XLIMPX=0.
+      XLIMIX=0.
+      XLIMTX=0.
+      WQPX=0.0
+      WQRRX=0.
+      CYA_ADD= 0.
+      CYA_TIME= 0.
+      GER_DAY=0.
+      CUM_GER=0.
+      GER=0.
+      TEMAVG=0.
+      TEMAVG1=0.
+      TEMAVG0=0.
+      LightAVG=0.
+      LightAVG1=0.
+      LightAVG0=0.
 
 
 END SUBROUTINE VARZEROReal

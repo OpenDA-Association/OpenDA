@@ -16,20 +16,18 @@ FCFLAGS2 = -qarch=pwr7 -qtune=pwr7 -qsource -qlist -qattr=full
 FCFLAGS3 = -bdatapsize:64k -bstackpsize:64k -btextpsize:64k -lmass
 FCFLAGS4 = -qfixed=132 -qsuffix=f=for 
 FCFLAGS5 = -qnodirective -qnoescape -qfloat=nomaf:nofold 
-#MAKE_FOPTIBUG1= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) $(FCFLAGS4)
-MAKE_FOPTIBUG1= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) 
-#MAKE_FOPTIBUG1= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) $(FCFLAGS5)
+#MAKE_FDEBUG= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) $(FCFLAGS4)
+MAKE_FDEBUG= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) 
+#MAKE_FDEBUG= $(FCFLAGS1) $(FCFLAGS2) $(FCFLAGS3) $(FCFLAGS5)
 
 
-#MAKE_FOPTIBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow	# debug
-MAKE_FOPTIBUG = -O   	# optimize
+MAKE_FOPTIMIZE = -O   	# optimize
 #MAKE_FFLAGS_SPECIFIC = -fPIC -ffree-line-length-none -x f95-cpp-input #gfortran
 #MAKE_FFLAGS_SPECIFIC = -x f95-cpp-input
 MAKE_FFLAGS_SPECIFIC = 
 
 MAKE_FFLAGS = \
 	$(MAKE_FFLAGS_SPECIFIC) \
-	$(MAKE_FOPTIBUG1) \
 
 # additional libs (if required)
 MAKE_INC = -I../original_efdc_files 
@@ -58,6 +56,7 @@ SRC_OPENDA_F90 = \
 	model_aser_time_series.f90 model_end.f90 model_init.f90 \
 	model_pser_time_series.f90 \
 	model_cser_time_series.f90 \
+	model_wser_time_series.f90 \
 	model_gateser_time_series.f90 \
 	model_make_step.f90 model_qser_time_series.f90 openDA_wrapper.F90 
 
@@ -94,7 +93,11 @@ TEST_DATA_BIN_DIR = ../../../java/test/org/openda/model_efdc_dll/testData/bin
 
 #-----	Targets  ---------------------------------------------------------------
 
+all: MAKE_FFLAGS += $(MAKE_FOPTIMIZE)
 all: $(SO)
+
+debug: MAKE_FFLAGS += $(MAKE_FDEBUG)
+debug: $(SO)
 
 # EFDC wrapper library
 #$(SO): $(OBJS_LIB)

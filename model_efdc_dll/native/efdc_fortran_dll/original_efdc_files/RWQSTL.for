@@ -1,4 +1,5 @@
-      SUBROUTINE RWQSTL(IWQTSTL)  
+
+      SUBROUTINE RWQSTL(TIMTMP)  ! Read in days instead of index
 C  
 C CHANGE RECORD  
 C READ IN SPATIALLY AND/OR TEMPORALLY VARYING PARAMETERS FOR SETTLING  
@@ -19,36 +20,46 @@ C
 C
       CHARACTER TITLE(3)*79, STLCONT*3  
 C
-      OPEN(1,FILE=STLFN,STATUS='UNKNOWN')  
+      OPEN(7892,FILE=STLFN,STATUS='UNKNOWN')  
       OPEN(2,FILE='WQ3D.OUT',STATUS='UNKNOWN',POSITION='APPEND')  
-      IF(IWQTSTL.EQ.0)THEN  
-        READ(1,50) (TITLE(M),M=1,3)  
+      IF(STLDAY.EQ.0) THEN
+        READ(7892,50) (TITLE(M),M=1,3)  
         WRITE(2,999)  
         WRITE(2,50) (TITLE(M),M=1,3)  
       ENDIF  
-      WRITE(2,60)'* SETTLING VELOCITY AT  ', IWQTSTL,  
+      WRITE(2,60)'* SETTLING VELOCITY AT  ', TIMTMP,  
      &    ' TH DAY FROM MODEL START'  
-      READ(1,999)  
-      READ(1,50) TITLE(1)  
+      READ(7892,999)  
+      READ(7892,50) TITLE(1)  
       WRITE(2,50) TITLE(1)  
-      DO I=1,IWQZ  
-        READ(1,*) MM,WQWSC(I),WQWSD(I),WQWSG(I),WQWSRP(I),  
-     &      WQWSLP(I),WQWSS(I), WQWSM  
-        WRITE(2,51) MM,WQWSC(I),WQWSD(I),WQWSG(I),WQWSRP(I),WQWSLP(I),  
-     &      WQWSS(I), WQWSM  
-      ENDDO  
-      READ(1,52) IWQTSTL, STLCONT  
-      WRITE(2,52) IWQTSTL, STLCONT  
+      IF(NXSP.EQ.0)THEN
+        DO I=1,IWQZ  
+          READ(7892,*) MM,WQWSC(I),WQWSD(I),WQWSG(I),WQWSRP(I),  
+     &        WQWSLP(I),WQWSS(I), WQWSM  
+          WRITE(2,51) MM,WQWSC(I),WQWSD(I),WQWSG(I),WQWSRP(I),WQWSLP(I),  
+     &        WQWSS(I), WQWSM  
+        ENDDO  
+      ELSE
+        ! x-species require more variables to be exchanged
+        DO I=1,IWQZ  
+          READ(7892,*) MM,WQWSC(I),WQWSD(I),WQWSG(I),WQWSRP(I),  
+     &        WQWSLP(I),WQWSS(I), WQWSM,(WQWSX(I,NSP),NSP=1,NXSP)  
+          WRITE(2,51) MM,WQWSC(I),WQWSD(I),WQWSG(I),WQWSRP(I),WQWSLP(I),  
+     &        WQWSS(I), WQWSM,(WQWSX(I,NSP),NSP=1,NXSP)   
+        ENDDO            
+      ENDIF  
+      READ(7892,*) STLDAY, STLCONT  
+      WRITE(2,*) STLDAY, STLCONT  
       IF(STLCONT.EQ.'END')THEN  
-        CLOSE(1)  
+        CLOSE(7892)  
         IWQSTL = 0  
       ENDIF  
       CLOSE(2)  
   999 FORMAT(1X)  
    50 FORMAT(A79)  
-   51 FORMAT(I3, 10F8.3)  
+   51 FORMAT(I3, 50F8.3)  
    52 FORMAT(I7, 1X, A3)  
-   60 FORMAT(/, A24, I5, A24)  
+   60 FORMAT(/, A24, F5.1, A24)  
       RETURN  
       END  
 

@@ -17,15 +17,13 @@ C
         DELTI=1./DELT  
       END IF  
       S2TL=0.0  
-      BSMALL=1.E-12  
-      DO K=1,KS  
-        DO L=2,LA  
-          QQ2(L,K)=QQ(L,K)+QQ(L,K)  
-          QQL2(L,K)=QQL(L,K)+QQL(L,K)  
-        ENDDO  
-      ENDDO  
-C
-      DO L=1,LC  
+      BSMALL=1.E-12 
+!
+!$OMP PARALLEL DO PRIVATE(LF,LL)
+                do ithds=0,nthds-1
+                  LF=jse_LC(1,ithds)
+                  LL=jse_LC(2,ithds)
+      DO L=LF,LL
         UUU(L,KC)=0.  
         VVV(L,KC)=0.  
         FUHU(L,KC)=0.  
@@ -33,7 +31,23 @@ C
         FVHU(L,KC)=0.  
         FUHV(L,KC)=0.  
       ENDDO
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
 C  
+!$OMP PARALLEL DO PRIVATE(LF,LL,
+!$OMP& WB,LS,UHUW,VHVW)
+                do ithds=0,nthds-1
+                  LF=jse(1,ithds)
+                  LL=jse(2,ithds)
+!
+      DO K=1,KS  
+        DO L=LF,LL
+          QQ2(L,K)=QQ(L,K)+QQ(L,K)  
+          QQL2(L,K)=QQL(L,K)+QQL(L,K)  
+        ENDDO  
+      ENDDO
+C
 C **  CALCULATE ADVECTIVE FLUXES BY UPWIND DIFFERENCE WITH TRANSPORT  
 C **  AVERAGED BETWEEN (N) AND (N+1) AND TRANSPORTED FIELD AT (N) OR  
 C **  TRANSPORT BETWEEN (N-1) AND (N+1) AND TRANSPORTED FIELD AT (N-1)  
@@ -42,7 +56,7 @@ C **  FUHQQ=FUHU, FVHQQ=FVHU, FUHQQL=FUHV, FVHQQL=FVHV
 C  
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KC  
-          DO L=2,LA  
+          DO L=LF,LL
             WB=0.5*DXYP(L)*(W2(L,K-1)+W2(L,K))  
             FWQQ(L,K)=MAX(WB,0.)*QQ(L,K-1)  
      &          +MIN(WB,0.)*QQ(L,K)  
@@ -52,7 +66,7 @@ C
         ENDDO  
       ELSE  
         DO K=1,KC  
-          DO L=2,LA  
+          DO L=LF,LL
             IF(LMASKDRY(L))THEN  
               WB=0.5*DXYP(L)*(W2(L,K-1)+W2(L,K))  
               FWQQ(L,K)=MAX(WB,0.)*QQ(L,K-1)  
@@ -69,7 +83,7 @@ C
 C  
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KS  
-          DO L=2,LA  
+          DO L=LF,LL
             LS=LSC(L)  
             UHUW=0.5*(UHDY2(L,K)+UHDY2(L,K+1))  
             VHVW=0.5*(VHDX2(L,K)+VHDX2(L,K+1))  
@@ -85,7 +99,7 @@ C
         ENDDO  
       ELSE  
         DO K=1,KS  
-          DO L=2,LA  
+          DO L=LF,LL
             IF(LMASKDRY(L))THEN  
               LS=LSC(L)  
               UHUW=0.5*(UHDY2(L,K)+UHDY2(L,K+1))  
@@ -107,6 +121,9 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
 C  
 C **  CALCULATE PRODUCTION, LOAD BOUNDARY CONDITIONS AND SOLVE  
 C **  TRANSPORT EQUATIONS  
@@ -144,10 +161,16 @@ C
           ENDIF  
         ENDDO  
       ENDDO  
+!$OMP PARALLEL DO PRIVATE(LF,LL,
+!$OMP& LN,LS,PQQB,PQQU,PQQ,TMPVAL,WVFACT,PQQV,PQQW,FFTMP,PQQL)
+                do ithds=0,nthds-1
+                  LF=jse(1,ithds)
+                  LL=jse(2,ithds)
+!
       IF(ISWAVE.LE.1.OR.ISWAVE.EQ.3)THEN  
         IF(IDRYTBP.EQ.0)THEN  
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               LN=LNC(L)  
               UUU(L,K)=QQ(L,K)*H1P(L)  
      &            +DELT*(FUHU(L,K)-FUHU(L+1,K)+FVHU(L,K)-FVHU(LN,K)  
@@ -155,17 +178,8 @@ C
               VVV(L,K)=QQL(L,K)*H1P(L)*H1P(L)  
      &            +DELT*(FUHV(L,K)-FUHV(L+1,K)+FVHV(L,K)-FVHV(LN,K)  
      &            +(FWQQL(L,K)-FWQQL(L,K+1))*DZIG(K))*DXYIP(L)  
-            ENDDO  
-          ENDDO  
-          DO K=1,KS  
-            DO L=2,LA  
               UUU(L,K)=MAX(UUU(L,K),0.)  
-              VVV(L,K)=MAX(VVV(L,K),0.)  
-            ENDDO  
-          ENDDO  
-          DO K=1,KS  
-            DO L=2,LA  
-              LN=LNC(L)  
+              VVV(L,K)=MAX(VVV(L,K),0.) 
               LS=LSC(L)  
               PQQB=AB(L,K)*GP*HP(L)*DZIG(K)*(B(L,K+1)-B(L,K))  
               PQQU=AV(L,K)*DZIGSD4(K)*(U(L+1,K+1)-U(L+1,K)+U(L,K+1)-  
@@ -174,12 +188,12 @@ C
               PQQ=DELT*(PQQB+PQQU)  
               UUU(L,K)=UUU(L,K)+2.*PQQ  
               PQQL=DELT*H1P(L)*(CTE3*PQQB+CTE1*PQQU)  
-              VVV(L,K)=VVV(L,K)+DML(L,K)*PQQL  
-            ENDDO  
-          ENDDO  
+              VVV(L,K)=VVV(L,K)+DML(L,K)*PQQL
+            ENDDO !DO L=LF,LL 
+          ENDDO  ! DO K=1,KS  
         ELSE  
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               IF(LMASKDRY(L))THEN  
                 LN=LNC(L)  
                 UUU(L,K)=QQ(L,K)*H1P(L)  
@@ -199,7 +213,7 @@ C
           ENDDO  
 
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               IF(LMASKDRY(L))THEN  
                 LN=LNC(L)  
                 LS=LSC(L)  
@@ -227,12 +241,12 @@ C
           WVFACT=1.0  
         ENDIF  
         DO K=1,KS  
-          DO L=2,LA  
+          DO L=LF,LL
             TVAR1W(L,K)=WVDTKEM(K)*WVDISP(L,K)+WVDTKEP(K)*WVDISP(L,K+1)  
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=2,LA  
+          DO L=LF,LL
             IF(LMASKDRY(L))THEN
               LN=LNC(L)  
               LS=LSC(L)  
@@ -255,12 +269,22 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
 C  
 C *** DSLLC END BLOCK  
 C  
+!
+!$OMP PARALLEL DO PRIVATE(LF,LL,
+!$OMP& CLQTMP,CUQTMP,CMQTMP,CMQLTMP,EQ,EQL,
+!$OMP& QQHDH,DMLTMP,DELB,DMLMAX)
+                do ithds=0,nthds-1
+                  LF=jse(1,ithds)
+                  LL=jse(2,ithds)
       IF(KC.LE.2)THEN  
         IF(IDRYTBP.EQ.0)THEN  
-          DO L=2,LA  
+          DO L=LF,LL
             CLQTMP=-DELT*CDZKK(1)*AQ(L,1)*HPI(L)  
             CUQTMP=-DELT*CDZKKP(1)*AQ(L,2)*HPI(L)  
             CMQTMP=1.-CLQTMP-CUQTMP  
@@ -277,7 +301,7 @@ C
             VVV(L,1)=VVV(L,1)*EQL  
           ENDDO  
         ELSE  
-          DO L=2,LA  
+          DO L=LF,LL
             IF(LMASKDRY(L))THEN  
               CLQTMP=-DELT*CDZKK(1)*AQ(L,1)*HPI(L)  
               CUQTMP=-DELT*CDZKKP(1)*AQ(L,2)*HPI(L)  
@@ -299,7 +323,7 @@ C
       ENDIF  
       IF(KC.GT.2)THEN  
         IF(IDRYTBP.EQ.0)THEN  
-          DO L=2,LA  
+          DO L=LF,LL
             CLQTMP=-DELT*CDZKK(1)*AQ(L,1)*HPI(L)  
             CUQTMP=-DELT*CDZKKP(1)*AQ(L,2)*HPI(L)  
             CMQTMP=1.-CLQTMP-CUQTMP  
@@ -317,7 +341,7 @@ C
             UUU(L,KS)=UUU(L,KS)-CUQTMP*HP(L)*QQ(L,KC)  
           ENDDO  
           DO K=2,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               CLQTMP=-DELT*CDZKK(K)*AQ(L,K)*HPI(L)  
               CUQTMP=-DELT*CDZKKP(K)*AQ(L,K+1)*HPI(L)  
               CMQTMP=1.-CLQTMP-CUQTMP  
@@ -334,13 +358,13 @@ C
             ENDDO  
           ENDDO  
           DO K=KS-1,1,-1  
-            DO L=2,LA  
+            DO L=LF,LL
               UUU(L,K)=UUU(L,K)-CU1(L,K)*UUU(L,K+1)  
               VVV(L,K)=VVV(L,K)-CU2(L,K)*VVV(L,K+1)  
             ENDDO  
           ENDDO  
         ELSE  
-          DO L=2,LA  
+          DO L=LF,LL
             IF(LMASKDRY(L))THEN  
               CLQTMP=-DELT*CDZKK(1)*AQ(L,1)*HPI(L)  
               CUQTMP=-DELT*CDZKKP(1)*AQ(L,2)*HPI(L)  
@@ -360,7 +384,7 @@ C
             ENDIF  
           ENDDO  
           DO K=2,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               IF(LMASKDRY(L))THEN  
                 CLQTMP=-DELT*CDZKK(K)*AQ(L,K)*HPI(L)  
                 CUQTMP=-DELT*CDZKKP(K)*AQ(L,K+1)*HPI(L)  
@@ -379,7 +403,7 @@ C
             ENDDO  
           ENDDO  
           DO K=KS-1,1,-1  
-            DO L=2,LA  
+            DO L=LF,LL
               IF(LMASKDRY(L))THEN  
                 UUU(L,K)=UUU(L,K)-CU1(L,K)*UUU(L,K+1)  
                 VVV(L,K)=VVV(L,K)-CU2(L,K)*VVV(L,K+1)  
@@ -390,7 +414,7 @@ C
       ENDIF  
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KS  
-          DO L=2,LA  
+          DO L=LF,LL
             QQ1(L,K)=QQ(L,K)  
             QQHDH=UUU(L,K)*HPI(L)  
             QQ(L,K)=MAX(QQHDH,QQMIN)  
@@ -401,7 +425,7 @@ C **  ORIGINAL FORM MODIFED FOR DIMENSIONAL LENGHT SCALE TRANSPORT
 C  
         IF(ISTOPT(0).EQ.1)THEN  
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               QQL1(L,K)=QQL(L,K)  
               QQHDH=VVV(L,K)*HPI(L)*HPI(L)  
               QQL(L,K)=MAX(QQHDH,QQLMIN)  
@@ -422,7 +446,7 @@ C **  BUCHARD'S MODIFED CLOSURE FOR DIMENSIONAL LENGHT SCALE TRANSPORT
 C  
         IF(ISTOPT(0).EQ.2)THEN  
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               QQL1(L,K)=QQL(L,K)  
               QQHDH=VVV(L,K)*HPI(L)*HPI(L)  
               QQL(L,K)=MAX(QQHDH,QQLMIN)  
@@ -433,7 +457,7 @@ C
         ENDIF  
       ELSE  
         DO K=1,KS  
-          DO L=2,LA  
+          DO L=LF,LL
             IF(LMASKDRY(L))THEN  
               QQ1(L,K)=QQ(L,K)  
               QQHDH=UUU(L,K)*HPI(L)  
@@ -446,7 +470,7 @@ C **  ORIGINAL FORM MODIFED FOR DIMENSIONAL LENGHT SCALE TRANSPORT
 C  
         IF(ISTOPT(0).EQ.1)THEN  
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               IF(LMASKDRY(L))THEN  
                 QQL1(L,K)=QQL(L,K)  
                 QQHDH=VVV(L,K)*HPI(L)*HPI(L)  
@@ -469,7 +493,7 @@ C **  BUCHARD'S MODIFED CLOSURE FOR DIMENSIONAL LENGHT SCALE TRANSPORT
 C  
         IF(ISTOPT(0).EQ.2)THEN  
           DO K=1,KS  
-            DO L=2,LA  
+            DO L=LF,LL
               IF(LMASKDRY(L))THEN  
                 QQL1(L,K)=QQL(L,K)  
                 QQHDH=VVV(L,K)*HPI(L)*HPI(L)  
@@ -481,6 +505,9 @@ C
           ENDDO  
         ENDIF  
       ENDIF  
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
 C  
 C      QQMXSV=-1.E+12  
 C      QQMNSV=1.E+12  
@@ -522,11 +549,19 @@ C
         ENDDO  
       ENDDO  
 C *** DSLLC BEGIN BLOCK
+!
+!$OMP PARALLEL DO PRIVATE(LF,LL)
+                do ithds=0,nthds-1
+                  LF=jse_LC(1,ithds)
+                  LL=jse_LC(2,ithds)
       DO K=1,KS  
-        DO L=1,LC
+        DO L=LF,LL
           QQSQR(L,K)=SQRT(QQ(L,K))  ! *** DSLLC
         ENDDO  
       ENDDO  
+!
+                enddo !do ithds=0,nthds-1
+!$OMP END PARALLEL DO
 C *** DSLLC END BLOCK
   110 FORMAT('    I    J   QQ BOT        QQ MID        QQ SURF',  
      &    '       PROD+ADV      1./DIAGON')  

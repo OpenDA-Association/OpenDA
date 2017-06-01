@@ -19,6 +19,9 @@
 */
 package org.openda.model_efdc_dll;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Exchange item types.
  */
@@ -32,14 +35,18 @@ public enum EfdcExchangeItemType {
 	RELATIVE_HUMIDITY		(106, "RelativeHumidity", EfdcExchangeItemRole.FORCING),
 	POTENTIAL_EVAPORATION	(107, "PotentialEvaporation", EfdcExchangeItemRole.FORCING),
 
+	//wind forcing variables (input).
+	WIND_SPEED		(151, "WindSpeed", EfdcExchangeItemRole.FORCING,true),
+	WIND_DIRECTION	(152, "WindDirection", EfdcExchangeItemRole.FORCING,true),
+
 	//boundary condition variables (input).
 	WATER_LEVEL					(201, "WaterLevel", EfdcExchangeItemRole.BOUNDARY),
 	DISCHARGE					(301, "Discharge", EfdcExchangeItemRole.BOUNDARY),
 	WATER_TEMPERATURE			(401, "WaterTemperature", EfdcExchangeItemRole.BOUNDARY),
 
-	ALGAL_CYANOBACTERIA			(501, "AlgalCyanobacteria", EfdcExchangeItemRole.BOUNDARY),
-	ALGAL_DIATOM				(502, "AlgalDiatom", EfdcExchangeItemRole.BOUNDARY),
-	ALGAL_GREEN_ALGAE			(503, "AlgalGreenAlgae", EfdcExchangeItemRole.BOUNDARY),
+	ALGAL_CYANOBACTERIA			(501, "AlgalCyanobacteria", EfdcExchangeItemRole.BOUNDARY,true),
+	ALGAL_DIATOM				(502, "AlgalDiatom", EfdcExchangeItemRole.BOUNDARY, true),
+	ALGAL_GREEN_ALGAE			(503, "AlgalGreenAlgae", EfdcExchangeItemRole.BOUNDARY,true),
 	REFRACTORY_PO_CARBON		(504, "RefractoryPOCarbon", EfdcExchangeItemRole.BOUNDARY),
 	LABILE_PO_CARBON			(505, "LabilePOCarbon", EfdcExchangeItemRole.BOUNDARY),
 	DISSOLVED_O_CARBON			(506, "DissolvedOCarbon", EfdcExchangeItemRole.BOUNDARY),
@@ -71,8 +78,9 @@ public enum EfdcExchangeItemType {
 	TOXICS_BUNKER_C		   		(615, "BunkerC", EfdcExchangeItemRole.BOUNDARY),
 	TOXICS_USER_DEFINED			(616, "UserDefined", EfdcExchangeItemRole.BOUNDARY),
 	
-	CONTROLS_GATE_WATERLEVEL	(701, "ControlsGateWaterLevel", EfdcExchangeItemRole.FORCING),
-	CONTROLS_GATE_OPENINGHEIGHT	(702, "ControlsGateOpeningHeight", EfdcExchangeItemRole.FORCING),
+    //gate control
+	CONTROLS_GATE_WATERLEVEL	(701, "ControlsGateWaterLevel", EfdcExchangeItemRole.FORCING,true),
+	CONTROLS_GATE_OPENHEIGHT	(702, "ControlsGateOpenHeight", EfdcExchangeItemRole.FORCING,true),
 	
 	//state variables (output).
 	GRID_WATER_LEVEL				(1201, "WaterLevel", EfdcExchangeItemRole.STATE),
@@ -118,17 +126,29 @@ public enum EfdcExchangeItemType {
 	private final int parameterNumber;
 	private final String parameterId;
 	private final EfdcExchangeItemRole role;
+    private final boolean optional;
+
 
 	/**
 	 * @param parameterNumber integer identifier of a variable as defined in the efdc model
 	 * @param parameterId name of a quantity
-	 * @param role
+	 * @param role            role of exchange item, one of FORCING, BOUNDARY, STATE
+     * @param optional        exchange item is optional
 	 */
-	private EfdcExchangeItemType(int parameterNumber, String parameterId, EfdcExchangeItemRole role) {
+	EfdcExchangeItemType(int parameterNumber, String parameterId, EfdcExchangeItemRole role, boolean optional) {
 		this.parameterNumber = parameterNumber;
 		this.parameterId = parameterId;
 		this.role = role;
+        this.optional = optional;
 	}
+    /**
+     * @param parameterNumber integer identifier of a variable as defined in the efdc model
+     * @param parameterId     name of a quantity
+     * @param role            role of exchange item, one of FORCING, BOUNDARY, STATE
+     */
+    EfdcExchangeItemType(int parameterNumber, String parameterId, EfdcExchangeItemRole role) {
+        this(parameterNumber, parameterId, role, false);
+    }
 
 	public int getParameterNumber() {
 		return this.parameterNumber;
@@ -141,4 +161,23 @@ public enum EfdcExchangeItemType {
 	public EfdcExchangeItemRole getRole() {
 		return this.role;
 	}
+
+    public boolean isOptional() {
+        return this.optional;
+}
+
+    private static final Map<String,EfdcExchangeItemType> map;
+    static {
+        map = new HashMap<String,EfdcExchangeItemType>();
+        for (EfdcExchangeItemType v : EfdcExchangeItemType.values()) {
+            if (v.getRole().equals(EfdcExchangeItemRole.FORCING)||v.getRole().equals(EfdcExchangeItemRole.BOUNDARY))
+            map.put(v.parameterId, v);
+        }
+    }
+
+    public static EfdcExchangeItemType findByKey(String parameterId) {
+        return map.get(parameterId);
+    }
+
+
 }

@@ -8,8 +8,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="observers" scope="TEST" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -19,6 +17,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="observers" scope="TEST" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -38,5 +38,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="model_efdc" />
+    <orderEntry type="module" module-name="application" />
   </component>
 </module>

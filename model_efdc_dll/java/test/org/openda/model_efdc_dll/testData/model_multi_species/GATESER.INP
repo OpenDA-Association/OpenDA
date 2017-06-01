@@ -1,0 +1,31 @@
+C	**	GATESER.INP	file,	in free	format across	line,
+C	**	repeats	NQCTLT in	EFDC.INP
+C	**	
+C	**	ISTYP	MGSER(NS)	GCCSER(NS)														
+C	**	ISTYP=0	(Fixed value)																	
+C	**	MQCTL=TIMESERIES LINES NUMBER													
+C	**	GCCSER=Reference time	(86400sec)											
+C	**																												
+C	**	GCSER(M,NS)		 IAG(M,NS)	 NGATE(M,NS)	 SEL1(M,NS)	 GUPH(M,NS)		GQSUM(M,NS), GQPOWER(M,NS),	GKMUL(M,K,NS),K=1,KC (SUM.=1)
+C	**	GCSER=Time(day)																				
+C	**	IAG=0: CLOSE,	1: AUTO, 2:	User defined operation						
+C	**	NGATE: No. of	open gate
+C	**	SEL1:	MANAGEMENT WATER LEVEL OF	GATE INSIDE	[m],		 IF	POWER	== DIF_LO_LEVEL	(M)
+C	**	GUPH=GATE	OPEN HEIGHT(m)														 IF	POWER	== DIF_HI_LEVEL	(M)
+C	**	GQSUM=-1:	Not	defined	Total	Q, 0.<:	Defined	total	Q, IF	FISH WAY ==	Q(CMS),	IF POWER ==	Q_LO_LEVEL (CMS)
+C	**	GQPOWER=																																								Q_HI_LEVEL (CMS)
+C	**	GKMUL=1: ON, 0:OFF 1(BOTTOM)~KC(SURFACE)																		
+C	**	 
+C
+C	ISTYP		MQCTL	 GCCSER
+C	GCSER		IAG		 NGATE	 SEL1	 SEL2	 GUPH	 GQSUM	GKMUL
+C
+         0        2     86400   *** GATESER_01
+     0.000        1         1     11.80      0.0      0.0     -1.0      0.000     0.000     0.000     0.000     0.000     0.000     1.000
+   366.000        1         1     11.80      0.0      0.0     -1.0      0.000     0.000     0.000     0.000     0.000     0.000     1.000
+         0        2     86400   *** GATESER_02
+     0.000        1         1      8.75      0.0      0.0     -1.0      0.000     0.000     0.000     0.000     0.000     0.000     1.000
+   366.000        1         1      8.75      0.0      0.0     -1.0      0.000     0.000     0.000     0.000     0.000     0.000     1.000
+         0        2     86400   *** GATESER_03
+     0.000        1         1      4.20      0.0      0.0     -1.0      0.000     0.000     0.000     0.000     0.000     0.000     1.000
+   366.000        1         1      4.20      0.0      0.0     -1.0      0.000     0.000     0.000     0.000     0.000     0.000     1.000

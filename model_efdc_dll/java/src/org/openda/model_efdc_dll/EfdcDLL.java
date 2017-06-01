@@ -296,6 +296,15 @@ public class EfdcDLL {
         return timeSeriesCount;
     }
 
+    public int getXspeciesCount() {
+        int nxSpecies = nativeDLL.m_openda_wrapper_get_xspecies_count_(new IntByReference(myModelInstanceId));
+        if (nxSpecies < 0) {
+            nativeDLL.m_openda_wrapper_finish_(new IntByReference(currentModelInstance));
+            throw new RuntimeException("Invalid result from dll.M_OPENDA_WRAPPER_GET_XSPECIES_COUNT call, nxSpecies= " + nxSpecies);
+        }
+        return nxSpecies;
+    }
+
     /**
      * Returns total valuesCount for grid parameter.
      *

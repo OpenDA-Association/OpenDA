@@ -3,7 +3,7 @@ Exchange Items
 
 OpenDA exchanges data with the EFDC model through exhcange items. Exchang items are defined in model_exchange_items.f90. Exchange items exist for grid data and time series. For time series OpenDA communicates with the time series that are stored in the model instance memory (see model_*ser_time_series.f90). For grid data, exchange items access the model state for a given instancen (model_state.f90). 
 
-All comunication between OpenDA and the EFDC dll is handled by openDA_wrapper.f90. Of importance are the following subroutines. 
+All comunication between OpenDA and the EFDC dll is handled by openDA_wrapper.f90. Of importance are the following subroutines and functions.
     
 checking if exchange_item is active in the EFDC configuration:
     function supports_exchange_item(instance, exchange_item_id) result (ret_val)
@@ -24,6 +24,27 @@ setting/getting data:
     function get_values_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time, values_count, values) result(ret_val)
     function set_values_for_time_span(instance, exchange_item_id, bc_index, start_time, end_time, values_count, values) result(ret_val)
 
+Furthermore, the following subroutines are also of importance when adding an exchange item:
+getting/changing/initializing the data-structure for exchange items:
+    function m_openda_wrapper_init_(parent_directory_c, template_directory_c) result (ret_val)
+    function m_openda_wrapper_model_instance_(instance_dir_c) result(ret_val)
+    subroutine add_instance_storage()
+    
+checking various properties of the exchange-item data-structure
+    function check_bc_indices(instance, exchange_item_id, bc_index, start_time, end_time, start_index, end_index) result(success)
+    function check_grid_indices(instance, exchange_item_id, start_index, end_index) result(success) NOTE: only when adding a grid belonging to the exchange item.
+    
+obtaining dimensions of exchange item:
+    function m_openda_wrapper_get_layer_count_(instance, exchange_item_id) result(retval)
+    function m_openda_wrapper_get_times_count_for_location_(instance, exchange_item_id, bc_index)
+    function m_openda_wrapper_get_time_series_count_(instance, exchange_item_id) result(ret_val)
+    function m_openda_wrapper_get_times_count_for_time_span_(instance, exchange_item_id, bc_index, start_time, end_time) result(ret_val)
+    
+setting/getting data:
+    function m_openda_wrapper_get_values_for_time_span_(instance, exchange_item_id, bc_index, start_time, end_time, values_count, values) result(ret_val)
+    function m_openda_wrapper_set_values_for_time_span_(instance, exchange_item_id, bc_index, start_time, end_time, values_count, values) result(ret_val)
+    
+
 Currently supported exchange items
 ----------------------------------
 
@@ -40,6 +61,10 @@ AtmosphericPressure     105
 RelativeHumidity        106
 PotentialEvaporation    107
 
+Wind forcings:
+WindSpeed               151
+WindDirection           152
+                                                
 Hydrodynamics:
 WaterLevel              201               1201
 Discharge               301               1301
@@ -81,11 +106,17 @@ Controls:
 ControlsGateWaterLevel    701
 ControlsGateOpeningHeight 702
 
+X-species:
+XSpeciesnn              8nn               18nn
+
+
 Adding exchange items
 ---------------------
 Support for the exchange item should be added to the EFDC dll and at the OpenDA site in /public/model_efdc_dll/java/src/org/openda/model_efdc_dll/EfdcExchangeItemType.java. When a new exchange item needs to be added, first define an exchange item ID in model_exchange_items.f90 and EfdcExchangeItemType.java.
 
 The exchange item ID is passed when OpenDA calls one of the exchange item subroutines (see above). Support for the new exchange item has to be added to these subroutine using the case statement. When the exchange item can differ between model instances, it is important data is stored in model instance memory. Grid data is probably already stored in the state vector of each instance (see model_state.f90). For time series have one of the existing model_*ser_time_series.f90 can be used as an example. Most time series in EFDC have parameter defined in the related file *SER.INP. If an exchange item is used to for setting the time series, a template *SER.INP file needs to exist in the work directory. This template file needs to consist of the required number of locations (as defined in EFDC.INP) and have the correct parameters. For example see the PSER.INP for NPSER=2 locations:
+In the openDA_wrapper do not forget to add use model_*ser_time_series
+
 
 C ** pser.inp file, in free format across line, repeat NPSER times
 C **

@@ -58,7 +58,7 @@ public class EfdcModelInstanceTest extends TestCase {
         runModelInstancesTest(fortranDll, modelInstancesParentDir, instanceCount);
     }
 
-    static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
+    private static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
 
         IModelInstance[] modelInstances = new EfdcModelInstance[instanceCount];
 
@@ -70,7 +70,7 @@ public class EfdcModelInstanceTest extends TestCase {
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelParentDir, "work" + i);
     		BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
-            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, true, null);
+            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, null);
         }
 
         // test getting and setting values
@@ -99,9 +99,8 @@ public class EfdcModelInstanceTest extends TestCase {
             
             // Insert shorter time series
             double[] myTime1 = new double[10];
-            for (int j = 0; j < myTime1.length; j++) {
-                myTime1[j] = times[j];  
-            }
+            System.arraycopy(times,0,myTime1,0,myTime1.length);
+
             exchangeItem.setTimesForUnitTest(myTime1);
             double[] myTime2 = exchangeItem.getTimeInfo().getTimes();
             assertEquals("times.length", myTime1.length, myTime2.length);

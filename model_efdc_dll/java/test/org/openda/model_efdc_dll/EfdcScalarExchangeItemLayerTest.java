@@ -42,7 +42,7 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
         final int instanceCount = 2;
         File modelInstancesParentDir = testData.getTestRunDataDir();
         File moduleRootDir = testData.getModuleRootDir();
-        File fortranDll = null;
+        File fortranDll;
         String operatingSystemName = System.getProperty("os.name");
         System.out.println(operatingSystemName);
         if ( operatingSystemName.startsWith("Windows")) {
@@ -58,7 +58,7 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
         runModelInstancesTest(fortranDll, modelInstancesParentDir, instanceCount);
     }
 
-    static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
+    private static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
 
         IModelInstance[] modelInstances = new EfdcModelInstance[instanceCount];
 
@@ -77,19 +77,17 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelParentDir, "work" + i);
     		BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
-            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, true, null);
+            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i,  null);
         }
         
         
         // test getting and setting values
-        for (int i = 0; i < modelInstances.length; i++) {
+        for ( IModelInstance modelInstance : modelInstances) {
 
-            IModelInstance modelInstance = modelInstances[i];
+            for (String exchangeItemId :  exchangeItemIDs ) {
 
-            for (int id = 0; id < exchangeItemIDs.length; id++ ) {
-            	
                 // Replace current values for boundary exchange item
-                EfdcScalarTimeSeriesExchangeItem exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem(exchangeItemIDs[id]);
+                EfdcScalarTimeSeriesExchangeItem exchangeItem = (EfdcScalarTimeSeriesExchangeItem) modelInstance.getDataObjectExchangeItem(exchangeItemId);
                 double[] times = exchangeItem.getTimeInfo().getTimes();
                 double[] newTimes = new double[times.length +1];
                 System.arraycopy( times, 0, newTimes, 0, times.length );
@@ -106,8 +104,8 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
      
                 // Get them back
                 double[] testValues = exchangeItem.getValuesAsDoubles();
-                assertEquals( exchangeItemIDs[id] + ".length", testValues.length, values.length);
-                assertEquals( exchangeItemIDs[id] + "[2]", 2 , testValues[2], 1e-5);
+                assertEquals( exchangeItemId + ".length", testValues.length, values.length);
+                assertEquals( exchangeItemId + "[2]", 2 , testValues[2], 1e-5);
             	
             }
                 

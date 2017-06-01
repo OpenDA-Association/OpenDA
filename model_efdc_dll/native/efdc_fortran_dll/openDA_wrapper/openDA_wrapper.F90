@@ -45,6 +45,7 @@ module m_openda_wrapper
   use model_exchange_items
   use model_state
   use model_aser_time_series
+  use model_wser_time_series
   use model_pser_time_series
   use model_qser_time_series
   use model_cser_time_series
@@ -81,8 +82,9 @@ module m_openda_wrapper
   integer :: dm_model_instance_count = 0  ! actual #instance
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
-  logical, parameter :: debug = .true.
-
+  logical, parameter :: debug = .false.
+  logical :: ATM_WARNING_REQUIRED = .true.
+  
 contains
 
 
@@ -102,7 +104,8 @@ contains
     use omp_lib
     USE GLOBAL, only: TBEGIN, TCON, TIDALP, NTC, TIMEDAY, & 
          NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM,NDCSER, NCSERM, &
-         NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM
+         NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM, &
+         NDWSER, NWSERM
 
     ! arguments
     character(kind=c_char), intent(in)  :: parent_directory_c(*) ! parent directory for model instances (full path)
@@ -134,11 +137,6 @@ contains
         print*, "ERROR: maximum path length exceeded for ", template_directory
         return
     end if
-
-    ! Pause or sleep for attaching debugger
-    ! pause
-    !print*, "Sleeping for 20 seconds, please attach debugger"
-    !call sleep(20)
     
     dm_model_parent_dir    = trim(parent_directory)
     dm_template_model_dir  = trim(template_directory)
@@ -160,7 +158,15 @@ contains
     
     message = "Starting EFDC run"
     call write_message(message, M_INFO)
-    
+
+    ! Pause or sleep for attaching debugger
+    !message = "Starting paused"
+    !call write_message(message, M_DEBUG) 
+    !pause
+    !message = "Sleeping for 20 seconds, please attach debugger"
+    !call sleep(20)
+    !call write_message(message, M_DEBUG)
+
     write(dm_general_log_handle,*) "parent directory: ", trim(dm_model_parent_dir)
     write(dm_general_log_handle,*) "model template directory: ", trim(dm_template_model_dir) 
     call getcwd(cwd)
@@ -183,6 +189,8 @@ contains
         ! store sizes of time series (the global ones are redetermined each time we do a restart)
         ndaser_max = NDASER
         naser_max = NASERM
+        ndwser_max = NDWSER
+        nwser_max = NWSERM
         ndpser_max = NDPSER
         npser_max = NPSERM
         ndqser_max = NDQSER
@@ -192,8 +200,10 @@ contains
         NDQCLT_max = NDQCLT
         NQCTLM_max = NQCTLM
     
-        NC_wq_start = 4+NTOX+NSED+NSND
         NC_tox_start = 4
+        NC_wq_start = NC_tox_start+NTOX+NSED+NSND
+        NC_xspecies_start = NC_wq_start+NWQV
+        
     end if
     if (ret_val == 0 ) ret_val = model_exchange_items_setup(dm_general_log_handle)
 
@@ -213,8 +223,12 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_destroy_
 #endif
     integer :: i_number
+    integer :: ret_val
     logical :: i_open
 
+    ret_val = model_exchange_items_destroy()
+    if (ret_val /= 0) write(dm_general_log_handle,'(A, I2)') "Error deallocating exchange items, ret_val: ", ret_val
+    
     deallocate(model_instance_dirs)
     deallocate(dm_outfile_handle)
     deallocate(state)
@@ -254,8 +268,9 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_model_instance_
 #endif
 
-    use global, only: NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM, KCM, NDCSER, NCSERM,&
-        TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM
+    use global, only: NDASER, NASERM, NDWSER, NWSERM, NDPSER, NPSERM, NDQSER, NQSERM, &
+        KCM, NDCSER, NCSERM, TBEGIN, TCON, NTC, TIDALP,  NDQCLT, NQCTTM, &
+        HUPG_HDWG_INITIALIZED
     
     ! arguments
     character(kind=c_char), intent(in)  :: instance_dir_c(*) ! model instance directory
@@ -289,7 +304,7 @@ contains
 
     write(cnumber,'(I0.3)') instance
     output_file_name = trim(dm_model_parent_dir) // '/instance' // cnumber //'.log'
-    write(dm_general_log_handle,'(A,A,A,I2)') "opening logfile ", output_file_name , " for instance ", instance 
+    write(dm_general_log_handle,'(A,A,A,I2)') "opening logfile ", trim(output_file_name) , " for instance ", instance 
     inquire(file = output_file_name, opened=i_open, number=i_number)
     if (i_open) close(i_number)
     open(dm_outfile_handle(instance), file=output_file_name, status = 'replace') 
@@ -297,6 +312,7 @@ contains
     ! add wrapper storage for instance
     call model_state_allocate(instance)
     call model_aser_allocate(instance, NDASER, NASERM) 
+    call model_wser_allocate(instance, NDWSER, NWSERM)
     call model_pser_allocate(instance, NDPSER, NPSERM)
     call model_qser_allocate(instance, NDQSER, KCM, NQSERM)
     call model_cser_allocate(instance, NDCSER, KCM, NCSERM)        
@@ -310,6 +326,7 @@ contains
     if (debug) write(dm_outfile_handle(instance),'(A)') 'got model state'
     if (ret_val == 0) ret_val = model_get_aser(instance)
     if (ret_val == 0) ret_val = model_get_daily_solar_intensity(instance, .true.)
+    if (ret_val == 0) ret_val = model_get_wser(instance)
     if (ret_val == 0) ret_val = model_get_pser(instance)
     if (ret_val == 0) ret_val = model_get_qser(instance)
     if (ret_val == 0) ret_val = model_get_cser(instance)
@@ -321,6 +338,10 @@ contains
     state(instance)%start_time = dble(nint(TBEGIN*TCON/60))/1440.d0
     state(instance)%end_time  = dble(nint((TBEGIN*TCON + TIDALP*NTC)/60))/1440.d0
 
+    ! Reset gate control
+    HUPG_HDWG_INITIALIZED = .true.
+
+    
     ! save the initial instance
     !ret_val = save_instance(dm_model_instance_count)
     if (ret_val == 0) dm_model_instance_in_memory = instance
@@ -368,6 +389,7 @@ contains
            ! copy model instance data from data currently in memory
            ret_val = model_get_state(instance)
            if (ret_val == 0) ret_val = model_get_daily_solar_intensity(instance, .false.)
+           if (ret_val == 0) ret_val = model_get_gateser(instance)
            IF(DEBUG)CALL DEPPLT
            if (ret_val == 0) ret_val = change_directory(cwd)
        end if
@@ -637,7 +659,7 @@ contains
         call exit(-1)    
     end if
     
-    depths = real(DZC,dp)
+    depths = real(DZC(1:KC),c_double)
     ret_val = 0
     
     write(dm_outfile_handle(instance), '(A,I4,A,I4, A)') & 
@@ -705,15 +727,14 @@ contains
     real(kind=c_double), intent(out)   :: end_time  ! end time of computation in days
 
     ! body
-    end_time = dble(state(instance)%end_time)
+    end_time = real(state(instance)%end_time,c_double)
     ret_val = 0
 
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
       'get_end_time( instance: ', instance , ', end_time: ', end_time, ')'
     call flush(dm_outfile_handle(instance))
 
-  end function m_openda_wrapper_get_end_time_
-
+    end function m_openda_wrapper_get_end_time_
   ! --------------------------------------------------------------------------
   ! Get the model instance time step in days 
   ! --------------------------------------------------------------------------
@@ -734,7 +755,7 @@ contains
     real(kind=c_double), intent(out)   :: delta_t  ! #delta t for computation, in MJD (i.e. in days)
 
     ! body
-    delta_t =  dble(dt) / 86400.0d0 ! converted to days
+    delta_t =  real(dt,c_double) / 86400.0d0 ! converted to days
     ret_val = 0
 
     write(dm_general_log_handle, '(A,ES12.4E2,A)') 'get_delta_t( delta_t: ', delta_t, ')'
@@ -764,7 +785,7 @@ contains
 
     ! body
     ret_val = -1
-    reference_period =  dble(tidalp) / 86400.0d0 ! converted to days
+    reference_period =  real(tidalp,c_double) / 86400.0d0 ! converted to days
     ret_val = 0
     
     write(dm_general_log_handle, '(A,ES12.4E2,A)') 'get_reference_period( reference_period: ', reference_period, ')'
@@ -795,7 +816,7 @@ contains
 
     ! body
     !current_time = dble(state(instance)%timesec) / 86400.0d0
-    current_time = dble( dt * nint( state(instance)%timesec/ dt)) / 86400.0d0
+    current_time = real( dt * nint( state(instance)%timesec/ dt), c_double) / 86400.0d0
     ret_val = 0
 
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
@@ -918,12 +939,14 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_supports_exchange_item_
 #endif
 
+    implicit none
+
     ! return value
     integer(kind=c_int) :: ret_val     ! =0 : No; =1 : Yes ; <0 : Error
 
     !arguments
-    integer(kind=c_int), intent(in) :: instance            ! model instance
-    integer(kind=c_int), intent(in) :: exchange_item_id    ! exchange item identifier
+    integer(kind=c_int), intent(inout) :: instance            ! model instance
+    integer(kind=c_int), intent(inout) :: exchange_item_id    ! exchange item identifier
 
     !local
     character(len=max_message_length) :: message
@@ -933,6 +956,8 @@ contains
     
     case (Precipitation:PotentialEvaporation) ! atmospheric always supported
       ret_val = 1
+    case (WindSpeed:WindDirection) ! wind is not always supported
+      ret_val = model_exchange_items_supports(exchange_item_id)
     case (WaterLevel) !always supported
       ret_val = 1
     case (Discharge) !always supported
@@ -945,6 +970,8 @@ contains
       ret_val =  model_exchange_items_supports(exchange_item_id)
     case (indexControl+1:indexControl + nrExchangeItemsControl) ! control
       ret_val =  model_exchange_items_supports(exchange_item_id)
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! x-species
+      ret_val = model_exchange_items_supports(exchange_item_id)
     case(Grid_WaterLevel)
       ret_val = 1
     case(Grid_Discharge)
@@ -955,6 +982,8 @@ contains
       ret_val =  model_exchange_items_supports(exchange_item_id)
     case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! toxics
       ret_val =  model_exchange_items_supports(exchange_item_id)
+    case (gridIndexXspecies+1 : gridIndexXspecies+nrMaxXspecies) ! x-species
+      ret_val = model_exchange_items_supports(exchange_item_id)  
     case default
       ret_val = -2
     end select
@@ -980,7 +1009,7 @@ contains
     result (ret_val) &
     bind(C, name="m_openda_wrapper_get_times_for_ei_")
 
-    use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER
+    use global, only: TCASER, TCWSER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NXSP
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_times_for_ei_
@@ -1004,6 +1033,9 @@ contains
     select case(exchange_item_id)
     case (Precipitation:PotentialEvaporation) ! atmospheric 
        times = dble(aser(instance)%TASER(1:values_count,bc_index))/86400.0d0 * dble(TCASER(bc_index))
+       ret_val = 0
+    case (WindSpeed:WindDirection) ! wind
+       times = dble(wsert(instance)%TWSER(1:values_count,bc_index))/86400.0d0 * dble(TCWSER(bc_index))
        ret_val = 0
     case (WaterLevel) ! waterlevel
        times = dble(psert(instance)%TPSER(1:values_count,bc_index))/86400.0d0 * dble(TCPSER(bc_index))
@@ -1040,6 +1072,16 @@ contains
        id = exchange_item_id - indexControl
        times = dble( gateser(instance)%GCSER(1:values_count,bc_index) )/86400.0d0 * dble(GCCSER(bc_index))
        ret_val = 0 
+    case ( indexXspecies+1 : indexXspecies+nrMaxXspecies ) ! water quality
+       id = exchange_item_id - indexXspecies
+       NC = NC_xspecies_start + id 
+       if ( id .gt. NXSP ) then
+          times = 0.0d0
+          ret_val = -2
+       else  
+          times = dble(csert(instance)%TCSER(1:values_count,bc_index,NC))/86400.0d0 * dble(TCCSER(bc_index, NC))
+          ret_val = 0
+       end if
     case default
        ret_val = -2
     end select
@@ -1049,7 +1091,13 @@ contains
     else
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'get_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
-       write(dm_outfile_handle(instance),*) times(1:values_count)
+       write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
+       if ( values_count .ge. 13 ) then
+           write(dm_outfile_handle(instance),*) '...'
+           write(dm_outfile_handle(instance),*) times(values_count - 2:values_count)
+       elseif (  values_count .ge. 10) then
+           write(dm_outfile_handle(instance),*) times(10:values_count)
+       end if
     endif
     call flush(dm_outfile_handle(instance))   
 
@@ -1063,7 +1111,8 @@ contains
     result (ret_val) &
     bind(C, name="m_openda_wrapper_set_times_for_ei_")
 
-  use global, only: TCASER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN
+  use global, only: TCASER, TCWSER, TCPSER, TCQSER, TCCSER, NTOX, NWQV, GCCSER, NASER, ITNWQ, IWQSUN, NXSP, &
+                    WQCIB, WQCIC
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_times_for_ei_
 #endif
@@ -1085,7 +1134,7 @@ contains
     real :: period
     character(len=max_message_length) :: message ! error message
     
-    ret_val = 0 
+    ret_val = 0
     select case(exchange_item_id)
     case (101:109) ! atmospheric 
        if (values_count > aser(instance)%NDASER) then
@@ -1095,14 +1144,16 @@ contains
           factor =  86400.d0/dble(TCASER(bc_index))
           IF(ITNWQ.EQ.0.AND.IWQSUN.GT.1.AND.NASER.GT.0)THEN
               period = times(values_count) - times(1) * factor
-              if ( period < 2.0e0 ) then
-                write(message, '(A, F8.4, A, I4, A )') & 
+              if (ATM_WARNING_REQUIRED) ATM_WARNING_REQUIRED=(WQCIB.ne.0.0).or.(WQCIC.ne.0.0) ! when weights are 0 for tomorrow and day after tomorrow are zero
+              if ( period < 2.0e0.and. ATM_WARNING_REQUIRED ) then
+                  ATM_WARNING_REQUIRED = .false.
+                  write(message, '(A, F8.4, A, I4, A )') & 
                 "Atmospheric time series (length = ", &
                 period, &
                 " days ) for ExchangeItemID=",&
                 exchange_item_id,&
                 " should contain at least two days for starting the water quality calculations"
-                call write_message(message,M_ERROR)
+                call write_message(message,M_WARNING)
 !                ret_val = -2
 !                return
               end if
@@ -1110,6 +1161,16 @@ contains
           aser(instance)%TASER(:,bc_index) = 1.0e38
           aser(instance)%TASER(1:values_count,bc_index) = real( times * factor )
           aser(instance)%MASER(bc_index) = values_count
+       end if
+    case (WindSpeed:WindDirection)
+       if (values_count > wsert(instance)%NDWSER) then
+          ret_val = enlarge_wser_time_series(instance, values_count, wsert(instance)%NWSER)
+       end if
+       if (ret_val==0) then
+          factor =  86400.d0/dble(TCWSER(bc_index))
+          wsert(instance)%TWSER(:,bc_index) =  1.0e38
+          wsert(instance)%TWSER(1:values_count,bc_index) = real(times * factor)
+          wsert(instance)%MWSER(bc_index) = values_count
        end if
     case (WaterLevel)
        if (values_count > psert(instance)%NDPSER) then
@@ -1193,7 +1254,23 @@ contains
           gateser(instance)%GCSER(:,bc_index) =  1.0e38
           gateser(instance)%GCSER(1:values_count,bc_index) = real(times * factor)
           gateser(instance)%MQCTL(bc_index) = values_count
-       end if   
+       end if
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! X-species
+       id = exchange_item_id - indexXspecies
+       if (id > NXSP) then
+          ret_val = -1 ! x-species above nxsp do not exist and therefore should not have a timeseries
+       else if (values_count > csert(instance)%NDCSER) then
+          ret_val = enlarge_cser_time_series(instance, values_count, &
+                                             csert(instance)%KCM, csert(instance)%NCSERM)
+       end if
+       if (ret_val==0) then
+          NC = NC_xspecies_start + id;
+          if (debug) print*, "setting times", allocated(csert(instance)%tcser)
+          factor =  86400.d0/dble(TCCSER(bc_index, NC))
+          csert(instance)%TCSER(:,bc_index,NC) =  1.0e38
+          csert(instance)%TCSER(1:values_count,bc_index,NC) = real(times * factor)
+          csert(instance)%MCSER(bc_index,NC) = values_count
+       end if
     case default
        ret_val = -1
     end select
@@ -1204,7 +1281,13 @@ contains
        write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'set_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),'(A,F8.4)') 'conversion_factor: ', factor
-       write(dm_outfile_handle(instance),*) times(1:values_count)
+       write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
+       if ( values_count .ge. 13 ) then
+           write(dm_outfile_handle(instance),*) '...'
+           write(dm_outfile_handle(instance),*) times(values_count - 2:values_count)
+       elseif (  values_count .ge. 10) then
+           write(dm_outfile_handle(instance),*) times(10:values_count)
+       end if
     endif
     call flush(dm_outfile_handle(instance)) 
 
@@ -1217,7 +1300,7 @@ contains
     result(ret_val) &
     bind(C,name="m_openda_wrapper_get_cell_count_")
 
-    use global, only: LA, NWQV, NTOX
+    use global, only: LA, NWQV, NTOX, NXSP
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_cell_count_
@@ -1251,6 +1334,13 @@ contains
        id = exchange_item_id - gridIndexTOX
        if (NTOX .eq. 0) warn = 1
        ret_val = LA-1
+    case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! x-species grid items
+       id = exchange_item_id - gridIndexXspecies
+       if (id > NXSP) then
+          ret_val = -2
+       else
+          ret_val = LA-1
+       end if
     case default
        ret_val = -2
     end select
@@ -1297,7 +1387,7 @@ contains
     result(ret_val) &
     bind(C,name="m_openda_wrapper_get_layer_count_")
 
-    use global, only: LA, NWQV, NTOX, KC
+    use global, only: NXSP, KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_layer_count_
@@ -1327,6 +1417,12 @@ contains
        ret_val = KC
     case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX)  ! water quality grid items
        ret_val = KC
+    case ( gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies )  ! x-species grid items
+       if (exchange_item_id > gridIndexXspecies + NXSP) then
+          ret_val = -2
+       else
+          ret_val = KC
+       end if
     case (Precipitation)
         ret_val = 1 
     case (AirTemperature)
@@ -1341,6 +1437,8 @@ contains
         ret_val = 1
     case (PotentialEvaporation)
         ret_val = 1
+    case (WindSpeed : WindDirection)
+        ret_val = 1
     case (WaterLevel)
         ret_val = 1 
     case (Discharge) 
@@ -1353,6 +1451,12 @@ contains
         ret_val = KC
     case (indexControl+1 : indexControl+nrExchangeItemsControl) 
         ret_val = 1
+    case ( indexXspecies+1: indexXspecies+nrMaxXspecies )  ! x-species items
+       if (exchange_item_id > indexXspecies + NXSP) then
+          ret_val = -2
+       else
+          ret_val = KC
+       end if
     case default
        ret_val = -2
     end select
@@ -1417,7 +1521,7 @@ contains
     result(ret_val) & 
     bind(C, name="m_openda_wrapper_get_values_")
 
-    use global, only : LA, NTOX, NWQV, KC
+    use global, only : NTOX, NWQV, NXSP, KC
     
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_values_
@@ -1450,31 +1554,40 @@ contains
        if ( check_grid_indices(instance, exchange_item_id, index1, index2) ) then
           select case(exchange_item_id)
           case (Grid_WaterLevel) !
-             values = dble(state(instance)%HP(index1:index2)  +  state(instance)%BELV(index1:index2))
+             values = real(state(instance)%HP(index1:index2)  +  state(instance)%BELV(index1:index2), c_double)
              ret_val = 0
           case (Grid_Discharge) ! Only one layer for now
-             values = dble(reshape(state(instance)%QSUM(index1:index2,1:KC), (/values_count/))) 
+             values = real(reshape(state(instance)%QSUM(index1:index2,1:KC), (/values_count/)), c_double) 
              ret_val = 0
           case (Grid_WaterTemperature) ! Only one layer for now
-             values = dble(reshape(state(instance)%TEM(index1:index2,1:KC), (/values_count/))) 
+             values = real(reshape(state(instance)%TEM(index1:index2,1:KC), (/values_count/)), c_double) 
              ret_val = 0
-          case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality fields,  Only one layer for now
+          case (gridIndexWQ+1: gridIndexWQ+nrExchangeItemsWQ) ! Water Quality fields
              NCi = exchange_item_id - gridIndexWQ
              if ( NCi .gt. NWQV ) then
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(reshape(state(instance)%WQV(index1:index2,1:KC, NCi), (/values_count/)))
+                values = real(reshape(state(instance)%WQV(index1:index2,1:KC, NCi), (/values_count/)),c_double)
                 ret_val = 0
              end if
-          case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Water Quality fields,  Only one layer for now
+          case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX) ! Toxixs
              !NCi = exchange_item_id - gridIndexTOX
              NCi = 1
              if (NTOX .eq. 0) then
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(reshape(state(instance)%TOX(index1:index2,1:KC, NCi), (/values_count/)))
+                values = real(reshape(state(instance)%TOX(index1:index2,1:KC, NCi), (/values_count/)),c_double)
+                ret_val = 0
+             end if
+          case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! Xspecies
+             NCi = exchange_item_id - gridIndexXspecies
+             if ( NCi .gt. NXSP ) then
+                values = missing_value
+                ret_val = 1
+             else
+                values = real(reshape(state(instance)%WQVX(index1:index2,1:KC, NCi), (/values_count/)),c_double)
                 ret_val = 0
              end if
           case default
@@ -1513,7 +1626,7 @@ contains
     result(ret_val) &
     bind(C, name="m_openda_wrapper_set_values_")
 
-    use global, only : NTOX, NWQV, KC
+    use global, only : NTOX, NWQV, NXSP, KC
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_values_
@@ -1574,6 +1687,14 @@ contains
                 state(instance)%TOX(index1:index2,1:KC, NCi) = real(reshape(values, (/cell_count, KC/)))
                 ret_val = 0
              end if 
+          case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies) ! X-species
+             NCi = exchange_item_id - gridIndexXspecies
+             if (NCi .gt. NXSP) then
+                ret_val = 1
+             else 
+                state(instance)%WQVX(index1:index2,1:KC, NCi) = real(reshape(values, (/cell_count, KC/)))
+                ret_val = 0
+             end if
           case default
              ret_val = -2 ! unhandled item
           end select
@@ -1630,6 +1751,8 @@ contains
     select case(exchange_item_id)
     case (Precipitation:PotentialEvaporation) ! atmospheric 
        ret_val = aser(instance)%MASER(bc_index)
+    case (WindSpeed:WindDirection)
+       ret_val = wsert(instance)%MWSER(bc_index)
     case (WaterLevel)
        ret_val = psert(instance)%MPSER(bc_index)
     case (Discharge)
@@ -1643,6 +1766,10 @@ contains
     case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) ! Toxics
        !NC = NC_tox_start + exchange_item_id - indexTOX
        NC = NC_tox_start + 1 ! only one toxic active
+       if (debug) print*, "get_times_count_for_location", exchange_item_id, bc_index, NC
+       ret_val = csert(instance)%MCSER(bc_index,NC)
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Xspecies
+       NC = NC_xspecies_start + exchange_item_id - indexXspecies
        if (debug) print*, "get_times_count_for_location", exchange_item_id, bc_index, NC
        ret_val = csert(instance)%MCSER(bc_index,NC)
     case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
@@ -1735,6 +1862,8 @@ contains
         ret_val = KC
     case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control
         ret_val = 1 
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Toxics
+        ret_val = KC
     case default
        ret_val = -1
     end select
@@ -1762,7 +1891,7 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_time_series_count_
 #endif
 
-    use global, only: NCSER, NWQV, NTOX, NQCTLM
+    use global, only: NCSER, NWQV, NTOX, NQCTLM, NXSP
 
     ! return value
     integer(kind=c_int) :: ret_val    ! number of locations for given exchange item
@@ -1779,6 +1908,8 @@ contains
     select case(exchange_item_id)
     case (Precipitation:PotentialEvaporation) ! atmospheric
        ret_val = aser(instance)%NASER
+    case (WindSpeed:WindDirection)
+       ret_val = wsert(instance)%NWSER
     case (WaterLevel)
        ret_val = psert(instance)%NPSER
     case (Discharge)
@@ -1805,10 +1936,19 @@ contains
           if (debug) print*, "number of locations: ", NC, NCSER(NC)
           ret_val = NCSER(NC)
        end if
-    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Toxics 
+    case (indexControl+1 : indexControl+nrExchangeItemsControl) ! Control 
        id = exchange_item_id - indexControl
        if (debug) print*, "number of locations: ", NQCTLM
-       ret_val = gateser(instance)%NQCTLM       
+       ret_val = gateser(instance)%NQCTLM   
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! X species
+       id = exchange_item_id - indexXspecies
+       if (id .gt. NXSP) then
+          ret_val = -1
+       else
+          NC = NC_xspecies_start + id
+          if (debug) print*, "number of locations: ", NC, NCSER(NC)
+          ret_val = NCSER(NC)
+       end if
     case default
        ret_val = -1
     end select
@@ -1858,7 +1998,7 @@ contains
     ret_val = -1 ! indices not ok
 
     select case(exchange_item_id)
-    case (Precipitation:PotentialEvaporation, WaterLevel, Discharge, WaterTemperature)
+    case (Precipitation:PotentialEvaporation, WindSpeed:WindDirection, WaterLevel, Discharge, WaterTemperature)
       ret_val = 0
     case (indexWQ+1 : indexWQ+nrExchangeItemsWQ)
       ret_val = 0 
@@ -1932,7 +2072,7 @@ contains
     result(ret_val)&
     bind(C, name="m_openda_wrapper_get_values_for_time_span_")
 
-    use global, only: RAINCVT, NTOX, NWQV, KC
+    use global, only: RAINCVT, NTOX, NWQV, NXSP
 
 #if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_values_for_time_span_
@@ -1974,37 +2114,43 @@ contains
           ! atmospheric
           case (Precipitation)
              factor = 1.0d0/dble(RAINCVT)
-             values = dble(aser(instance)%RAIN(start_index:end_index, bc_index)) 
+             values = real(aser(instance)%RAIN(start_index:end_index, bc_index),c_double) 
              ret_val = 0 
           case (AirTemperature)
-             values = dble(aser(instance)%TDRY(start_index:end_index, bc_index))
+             values = real(aser(instance)%TDRY(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (CloudCover)
-             values = dble(aser(instance)%CLOUD(start_index:end_index, bc_index))
+             values = real(aser(instance)%CLOUD(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (GlobalRadiation)
-             values = dble(aser(instance)%SOLSWR(start_index:end_index, bc_index))
+             values = real(aser(instance)%SOLSWR(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (AtmosphericPressure)
-             values = dble(aser(instance)%PATM(start_index:end_index, bc_index))
+             values = real(aser(instance)%PATM(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (RelativeHumidity)
-             values = dble(aser(instance)%TWET(start_index:end_index, bc_index))
+             values = real(aser(instance)%TWET(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (PotentialEvaporation)
              factor = 1.0d0/dble(RAINCVT)
-             values = dble(aser(instance)%EVAP(start_index:end_index, bc_index))
+             values = real(aser(instance)%EVAP(start_index:end_index, bc_index),c_double)
+             ret_val = 0
+          case (WindSpeed)
+             values = real(wsert(instance)%WINDS(start_index:end_index, bc_index),c_double)
+             ret_val = 0
+          case (WindDirection)
+             values = real(wsert(instance)%WINDD(start_index:end_index, bc_index),c_double)
              ret_val = 0
           case (WaterLevel)
              gravity = 9.81d0
-             values = dble(psert(instance)%PSER(start_index:end_index, bc_index))/gravity
+             values = real(psert(instance)%PSER(start_index:end_index, bc_index),c_double)/gravity
              ret_val = 0 
           case (Discharge) ! Only one layer for now
-             values = dble(qsert(instance)%QSER(start_index:end_index,layer_index,bc_index))
+             values = real(qsert(instance)%QSER(start_index:end_index,layer_index,bc_index), c_double)
              ret_val = 0 
           case (WaterTemperature) ! Only one layer for now
              NC = 2
-             values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC)) 
+             values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC),c_double) 
              ret_val = 0
           case (indexWQ+1 : indexWQ+nrExchangeItemsWQ) ! Water Quality,  Only one layer for now
              id = exchange_item_id - indexWQ;
@@ -2013,7 +2159,7 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC))
+                values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC), c_double)
                 ret_val = 0
              end if
           case (indexTOX+1 : indexTOX+nrExchangeItemsTOX) ! Toxics,  Only one layer for now
@@ -2024,16 +2170,26 @@ contains
                 values = missing_value
                 ret_val = 1
              else
-                values = dble(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC))
+                values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC),c_double)
+                ret_val = 0
+             end if
+			 case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! x-species,  Only one layer for now
+             id = exchange_item_id - indexXspecies;
+             NC = NC_xspecies_start + id
+             if (id .gt. NXSP ) then
+                values = missing_value
+                ret_val = 1
+             else
+                values = real(csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC),c_double)
                 ret_val = 0
              end if
           case (ControlsGateWaterLevel) ! Control
              id = exchange_item_id - indexControl
-             values = dble(gateser(instance)%SEL1(start_index:end_index,bc_index))
+             values = real(gateser(instance)%SEL1(start_index:end_index,bc_index),c_double)
              ret_val = 0
           case (ControlsGateOpeningHeight) ! Control
              id = exchange_item_id - indexControl
-             values = dble(gateser(instance)%GUPH(start_index:end_index,bc_index))
+             values = real(gateser(instance)%GUPH(start_index:end_index,bc_index),c_double)
              ret_val = 0   
           case default
              ret_val = -2 ! unhandled item
@@ -2080,7 +2236,7 @@ contains
     !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_set_values_for_time_span_
 #endif
 
-    use global, only: RAINCVT, NTOX, NWQV, KC
+    use global, only: RAINCVT, NTOX, NWQV, NXSP
 
     ! return value
     integer(kind=c_int) :: ret_val
@@ -2155,6 +2311,12 @@ contains
              !RAINCVT = 1.0e-3/3600.0
              aser(instance)%EVAP(start_index:end_index, bc_index) = real(values)
              ret_val = 0
+          case (WindSpeed)
+             wsert(instance)%WINDS(start_index:end_index, bc_index) = real(values)
+             ret_val = 0
+          case (WindDirection)
+             wsert(instance)%WINDD(start_index:end_index, bc_index) = real(values)
+             ret_val = 0
           case (WaterLevel)
              gravity = 9.81d0
              psert(instance)%PSER(start_index:end_index, bc_index) = real(values * gravity) 
@@ -2181,6 +2343,15 @@ contains
              !NC = NC_tox_start + id
              NC = NC_tox_start + 1 ! only one toxic is active
              if (NTOX .eq. 0) then
+                ret_val = 1
+             else
+                csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC) = real(values)
+                ret_val = 0
+             end if
+			 case (indexXspecies+1 : indexXspecies+nrMaxXspecies) !Water Quality, only one layer for now
+             id = exchange_item_id - indexXspecies
+             NC = NC_xspecies_start + id
+             if (id .gt. NXSP) then
                 ret_val = 1
              else
                 csert(instance)%CSER(start_index:end_index,layer_index,bc_index, NC) = real(values)
@@ -2225,7 +2396,37 @@ contains
     call flush(dm_outfile_handle(instance))
 
   end function m_openda_wrapper_set_values_for_time_span_
+    ! --------------------------------------------------------------------------
+  ! Function returns the number of grid points for given exchange item 
+  ! --------------------------------------------------------------------------
+  function m_openda_wrapper_get_xspecies_count_(instance)&
+    result(ret_val) &
+    bind(C, name="m_openda_wrapper_get_xspecies_count_")
 
+#if ( defined(_WIN32) && defined(__INTEL_COMPILER) )
+    !DEC$ ATTRIBUTES DLLEXPORT :: m_openda_wrapper_get_xspecies_count_
+#endif
+    
+    use global, only: NXSP
+    
+    implicit none
+    ! return value
+    integer(kind=c_int) :: ret_val
+    ! input/output variables
+    integer(kind=c_int) , intent(in) :: instance         ! model instance
+    
+    ret_val = NXSP
+    if (ret_val < 0) then
+       write(dm_outfile_handle(instance),'(A,I2)') & 
+         'Error in get_xspecies_count: ', ret_val
+    else
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I8)') & 
+        'get_xspecies_count( instance: ', instance, &
+        '): ', ret_val
+    endif
+    call flush(dm_outfile_handle(instance))
+    return
+  end function m_openda_wrapper_get_xspecies_count_
 
 !-----------------------------------------------------------------------------
 ! private methods
@@ -2238,8 +2439,9 @@ contains
   function check_bc_indices(instance, exchange_item_id, bc_index, start_time, end_time, start_index, end_index) & 
     result(success)
     
-    use global, only: NDASER ,NASERM, TASER, NDPSER, NPSERM, TPSER, NDQSER, NQSERM, TQSER, NCSER, &
-        TCASER, TCPSER, TCCSER, TCQSER, NWQV, NTOX, GCCSER ! time conversion to seconds
+    use global, only: NDASER ,NASERM, TASER, NDWSER, NWSERM, TWSER, NDPSER, NPSERM, TPSER, NDQSER, NQSERM, & 
+        TQSER, NCSER, &
+        TCASER, TCWSER, TCPSER, TCCSER, TCQSER, NWQV, NXSP, NTOX, GCCSER ! time conversion to seconds
     
 
     ! return value
@@ -2275,6 +2477,14 @@ contains
           bc_end_time = aser(instance)%TASER(aser(instance)%MASER(bc_index), bc_index) * dble(TCASER(bc_index)) & 
                       / 86400.0d0
           bc_time_interval = (bc_end_time - bc_start_time) / dble(aser(instance)%MASER(bc_index)-1 )
+       end if
+    case (WindSpeed:WindDirection)
+       success = bc_index >= 1 .and. bc_index <= wsert(instance)%NWSER
+       if (success) then  
+          bc_start_time = wsert(instance)%TWSER(1, bc_index) * dble(TCWSER(bc_index)) / 86400.0d0
+          bc_end_time = wsert(instance)%TWSER(wsert(instance)%MWSER(bc_index), bc_index) * dble(TCWSER(bc_index)) & 
+                      / 86400.0d0
+          bc_time_interval = (bc_end_time - bc_start_time) / dble(wsert(instance)%MWSER(bc_index)-1 )
        end if
     case (WaterLevel) 
        success  =  bc_index >= 1 .and. bc_index <= psert(instance)%NPSER
@@ -2334,6 +2544,17 @@ contains
                       / 86400.0d0
           bc_time_interval =  (bc_end_time - bc_start_time) / dble(gateser(instance)%MQCTL(bc_index)-1)
        end if
+    case (indexXspecies+1 : indexXspecies+nrMaxXspecies) ! Water Quality 
+       id = exchange_item_id - indexXspecies;
+       NC = NC_xspecies_start + id
+       success  =  bc_index >= 1 .and. bc_index <= NCSER(NC) .and. id <= NXSP
+       if (success) then  
+          bc_start_time = csert(instance)%TCSER(1, bc_index, NC)
+          bc_end_time = csert(instance)%TCSER(csert(instance)%MCSER(bc_index,NC), bc_index, NC) &
+                      * dble(TCCSER(bc_index,NC)) / 86400.0d0
+          bc_time_interval =  (bc_end_time - bc_start_time) / dble(csert(instance)%MCSER(bc_index, NC)-1) &
+                           * dble(TCCSER(bc_index,NC)) / 86400.0d0
+       end if
     case default
        success = .false.
     end select
@@ -2373,6 +2594,8 @@ contains
        success =  (start_index >= 2) .and. (start_index <= end_index) .and. (end_index <= LA )
     case (gridIndexTOX+1: gridIndexTOX+nrExchangeItemsTOX)
        success =  (start_index >= 2) .and. (start_index <= end_index) .and. (end_index <= LA )
+    case (gridIndexXspecies+1: gridIndexXspecies+nrMaxXspecies)
+       success =  (start_index >= 2) .and. (start_index <= end_index) .and. (end_index <= LA )
     case default 
        success = .false.
     end select
@@ -2390,6 +2613,7 @@ contains
     integer, dimension(:), pointer :: org_dm_outfile_handle
     type(state_vector), dimension(:), pointer :: org_model_instance_state => NULL()
     type(aser_time_series), dimension(:), pointer :: org_model_instance_aser => NULL()
+    type(wser_time_series), dimension(:), pointer :: org_model_instance_wser => NULL()
     type(pser_time_series), dimension(:), pointer :: org_model_instance_pser => NULL()
     type(qser_time_series), dimension(:), pointer :: org_model_instance_qser => NULL()
     type(cser_time_series),  dimension(:), pointer :: org_model_instance_cser => NULL()
@@ -2405,7 +2629,8 @@ contains
           model_instance_dirs(1:dm_max_dm_model_instance_count) = org_model_instance_dirs
           deallocate(org_model_instance_dirs)
        endif
-       model_instance_dirs(dm_max_dm_model_instance_count+1) = ' '
+       model_instance_dirs(dm_max_dm_model_instance_count+1:  &
+         dm_max_dm_model_instance_count+ instances_realloc_size) = ' '
 
        org_dm_outfile_handle => dm_outfile_handle
        allocate(dm_outfile_handle(dm_max_dm_model_instance_count + instances_realloc_size))
@@ -2413,7 +2638,8 @@ contains
           dm_outfile_handle(1:dm_max_dm_model_instance_count) = org_dm_outfile_handle
           deallocate(org_dm_outfile_handle)
        endif
-       dm_outfile_handle(dm_max_dm_model_instance_count+1) = 0
+       dm_outfile_handle(dm_max_dm_model_instance_count+1: &
+          dm_max_dm_model_instance_count+ instances_realloc_size) = 0
 
        !realloc pointers to state vectors
        org_model_instance_state => state
@@ -2429,6 +2655,14 @@ contains
        if (associated(org_model_instance_aser)) then
           aser(1:dm_max_dm_model_instance_count) = org_model_instance_aser
           deallocate(org_model_instance_aser)
+       end if
+       
+       !realloc pointers to wser time series
+       org_model_instance_wser => wsert
+       allocate(wsert(dm_max_dm_model_instance_count + instances_realloc_size))
+       if (associated(org_model_instance_wser)) then
+          wsert(1:dm_max_dm_model_instance_count) = org_model_instance_wser
+          deallocate(org_model_instance_wser)
        end if
 
        !realloc pointers to pser time series

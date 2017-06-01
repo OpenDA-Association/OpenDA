@@ -11,10 +11,10 @@ MAKE_FF=gfortran
 # we want to use linux32 command to simulate 32bit on a 64bit machine
 MACH = $(shell arch)
 ARCH = 32
-MFLAG= -m32
+MFLAG_ARCH= -m32
 ifeq ($(MACH), x86_64)
   ARCH = 64
-  MFLAG = -m64
+  MFLAG_ARCH = -m64
 endif
 ifeq ($(MAKE_FF), ifort)
 	F_OPENMP = -openmp
@@ -24,19 +24,19 @@ ifeq ($(MAKE_FF), gfortran)
 endif
 
 
-#MAKE_FOPTIBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow		# debug
-MAKE_FOPTIBUG = -O   	# optimize
+# MAKE_FDEBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow		# debug
+MAKE_FDEBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow		# debug
+MAKE_FOPTIMIZE = -O   	# optimize
 
 MAKE_FFLAGS_SPECIFIC = -fPIC -ffixed-line-length-none -ffree-line-length-none # gfortran
 
 MAKE_FFLAGS = \
-    $(MAKE_FFLAGS_SPECIFIC) $(MFLAG) \
-    $(MAKE_FOPTIBUG) \
+    $(MAKE_FFLAGS_SPECIFIC) $(MFLAG_ARCH)
 
 
 #FFLAGS = -ffixed-line-length-none -ffree-line-length-none -fPIC
 
-POBJECTS = CGATEFLX.po
+POBJECTS = CGATEFLX.po RWQC1.po
 
 OBJECTS =  \
 ACON.o       CALEXP.o      CALTSXY.o     READWIMS1.o  WQSKE4.o     GATECTLREAD.o  SCANEFDC.o \
@@ -63,7 +63,7 @@ CALAVB2.o    INPUT.o       RVELPLTV.o    SEEK.o       WASP4.o      initbin.o \
 CALAVBOLD.o  CALQQ1.o      JPEFDC.o      RWQAGR.o     SETBCS.o     WASP5.o        initbin0.o \
 CALBAL1.o    CALQQ1OLD.o   CONGRAD.o     LSQHARM.o    RWQATM.o     SETFPOCB.o     WASP6.o           initbin2.o \
 CALBAL2.o    CALQQ2.o      CONGRADC.o    LUBKSB.o     RWQBEN2.o    SETOBC2T.o     WASP7.o           s_bedload.o \
-CALBAL3.o    CALQQ2T.o     COSTRAN.o     LUDCMP.o     RWQC1.o      SETOPENBC.o    WASP7EPA.o        s_main.o \
+CALBAL3.o    CALQQ2T.o     COSTRAN.o     LUDCMP.o          SETOPENBC.o    WASP7EPA.o        s_main.o \
 CALBAL4.o    CALQQ2TOLD.o  COSTRANW.o    NEGDEP.o     RWQCSR.o     SETOPENBC2.o   WAVEBL.o          s_morph.o \
 CALBAL5.o    CALQVS.o      CSEDRESB.o    OILCHEM.o    RWQICI.o     SETSHLD.o      WAVESXY.o         s_sedic.o \
 CALBED.o     CALSED.o      CSEDRESS.o    OUT3D.o      RWQPSL.o     SETSTVEL.o     WELCOME.o         \
@@ -76,7 +76,7 @@ CALDIFF.o    CALTOX.o      CSNDSET.o     RCAHQ.o      SALTSMTH.o   SOLVSMBE.o   
 CALDISP2.o   CALTOXB.o     CSNDZEQ.o     SCANASER.o   SCANGTAB.o   SSEDTOX.o    WQSKE1.o \
 CALDISP3.o   CALTRAN.o     DEPPLT.o      SCANDSER.o   SUBCHAN.o    WQSKE2.o \
 VARALLOC1.o  VARALLOC2.o   VARALLOC3.o   VARALLOC4.o   VARALLOC5.o VARALLOC6.o    VARALLOC7.o  VARALLOC8.o\
-CALEBI.o     CALTRANQ.o    READTOX.o     WQSKE3.o     pbm_cut.o
+CALEBI.o     CALTRANQ.o    READTOX.o     WQSKE3.o     pbm_cut.o    Sub_spore.o   WQSTOKES01.o
 
 COMPAT_OBJS = \
 drand.o 
@@ -84,7 +84,11 @@ drand.o
 .SUFFIXES:	.for .po
 .SUFFIXES:	.f90 .po
 
+all: MAKE_FFLAGS += $(MAKE_FOPTIMIZE)
 all:	libEfdcOrig.a
+
+debug: MAKE_FFLAGS += $(MAKE_FDEBUG) 
+debug:	libEfdcOrig.a
 
 openmp: MAKE_FFLAGS += $(F_OPENMP)
 openmp: MAKE_SO += $(F_OPENMP)

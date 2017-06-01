@@ -42,7 +42,7 @@ public class EfdcGridExchangeItemTest extends TestCase {
         final int instanceCount = 2;
         File modelInstancesParentDir = testData.getTestRunDataDir();
         File moduleRootDir = testData.getModuleRootDir();
-        File fortranDll = null;
+        File fortranDll;
         String operatingSystemName = System.getProperty("os.name");
         System.out.println(operatingSystemName);
         if ( EfdcDLL.RUNNING_ON_WINDOWS) {
@@ -60,7 +60,7 @@ public class EfdcGridExchangeItemTest extends TestCase {
         runModelInstancesTest(fortranDll, modelInstancesParentDir, instanceCount);
     }
 
-    static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
+    private static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
 
         IModelInstance[] modelInstances = new EfdcModelInstance[instanceCount];
 
@@ -72,19 +72,17 @@ public class EfdcGridExchangeItemTest extends TestCase {
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelParentDir, "work" + i);
             BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
-            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, true, null);
+            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, null);
         }
 
         // test getting and setting values
-        for (int i = 0; i < modelInstances.length; i++) {
-
-            IModelInstance modelInstance = modelInstances[i];
+        for (IModelInstance modelInstance : modelInstances ) {
 
             // Replace current values for boundary exchange item
-            String[] exchangeItemIDs = modelInstance.getExchangeItemIDs();
-            for (int j = 0; j < exchangeItemIDs.length; j++) {
+            //String[] exchangeItemIDs = modelInstance.getExchangeItemIDs();
+            //for (int j = 0; j < exchangeItemIDs.length; j++) {
                 //    System.out.println(exchangeItemIDs[j]);
-            }
+            //}
 
             EfdcGridExchangeItem exchangeItem =
                     (EfdcGridExchangeItem) modelInstance.getDataObjectExchangeItem("Grid.WaterLevel");

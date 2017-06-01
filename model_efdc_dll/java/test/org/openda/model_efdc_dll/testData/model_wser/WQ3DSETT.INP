@@ -1,0 +1,40 @@
+C Settling velocities
+C
+C
+C
+C     NO    WSc     WSd     WSg    WSrp   WSlp     WSs     WSm   
+       1   0.000   0.000   0.000   0.050  0.050   0.500   0.000  
+       2   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+       3   0.100   0.100   0.100   0.050  0.050   0.500   0.000  
+       4   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+ 241920 CON                                                      
+C 
+C     NO    WSc     WSd     WSg    WSrp   WSlp     WSs     WSm   
+       1   0.000   0.000   0.000   0.050  0.050   0.500   0.000  
+       2   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+       3   0.100   0.100   0.100   0.050  0.050   0.500   0.000  
+       4   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+1261440 CON                                                      
+C 
+C     NO    WSc     WSd     WSg    WSrp   WSlp     WSs     WSm   
+       1   0.000   0.000   0.000   0.050  0.050   0.500   0.000  
+       2   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+       3   0.100   0.100   0.100   0.050  0.050   0.500   0.000  
+       4   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+2315520 CON                                                      
+C 
+C     NO    WSc     WSd     WSg    WSrp   WSlp     WSs     WSm   
+       1   0.000   0.000   0.000   0.050  0.050   0.500   0.000  
+       2   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+       3   0.100   0.100   0.100   0.050  0.050   0.500   0.000  
+       4   0.050   0.050   0.050   0.050  0.050   0.500   0.000  
+6307200 END
+
+
+C    WSc = settling velocity for cyanobacteria (m/day)
+C    WSd = settling velocity for algae diatoms (m/day)
+C    WSg = settling velocity for algae greens  (m/day)
+C   WSrp = settling velocity for refractory POM (m/day)
+C   WSlp = settling velocity for labile POM (m/day)
+C    WSs = settling velocity for particles sorbed to TAM (m/day)
+C    WSM = settling velocity for macroalgae (m/day = 0.0)

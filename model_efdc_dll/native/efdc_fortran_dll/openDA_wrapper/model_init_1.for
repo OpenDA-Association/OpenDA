@@ -24,7 +24,7 @@ C
       CLOSE(8,STATUS='DELETE')  
       CLOSE(9,STATUS='DELETE')  
       OPEN(7,FILE='EFDC.OUT',STATUS='UNKNOWN')  
-      write(7,*) 'Modified by GEOSR (NH007_20120418_fixedweir)' !GEOSR 2012. 4.18
+      !write(7,*) 'Modified by GEOSR (NH014_161006_alg_stl_day)'
       OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')  
       OPEN(9,FILE='TIME.LOG',STATUS='UNKNOWN')  
 

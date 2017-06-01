@@ -10,13 +10,82 @@ C
 C LAST MODIFIED BY YSSONG ON 24 NOVEMBER 2011
 
       USE GLOBAL  
-C  
+C
+      CHARACTER*11 FLN ! character array to print growth limit and algal rate
+      INTEGER   IZA ! Integer for benthic flux for anoxic env
+      ! Arrays to facilitate x-species
+      REAL WQGNX(NXSP),WQGPX(NXSP),WQF1NX(NXSP)
+      REAL WQISX(NXSP),WQFDX(NXSP),WQF2IX(NXSP)
+      REAL WQTTX(NXSP)
+      REAL WQACX(NXSP),WQKKX(LCMWQ,NXSP)
+      REAL WQA2X(NXSP),WQA3X(NXSP)
       CNS1=2.718  
       NS=1  
       DO L=2,LA  
         WQI0BOT(L)=WQI0  
       ENDDO  
-  
+      WQKESS=0.0
+      WQKESS1=0.0
+      ! Stokes
+      CYANOMASS=0.0      
+      ! Deal with benthic flux for anoxic env
+      IF(IWQBEN .EQ. 0 .AND. IWQBENOX .EQ. 0)THEN
+        DO L=2,LA  
+          WQBFCOD(L)=WQBFOXCOD(1,1)
+          WQBFNH4(L)=WQBFOXNH4(1,1)   
+          WQBFNO3(L)=WQBFOXNO3(1,1)   
+          WQBFO2(L)= WQBFOXO2(1,1)  
+          WQBFPO4D(L)=WQBFOXPO4D(1,1)
+          WQBFSAD(L)=WQBFOXSAD(1,1)
+        ENDDO 
+      ELSEIF(IWQBEN .EQ. 0 .AND. IWQBENOX .NE. 0)THEN 
+        DO L=2,LA  
+          IF(WQVO(L,1,19).GT.DOXCRT)THEN
+            WQBFCOD(L)=WQBFOXCOD(1,1)
+            WQBFNH4(L)=WQBFOXNH4(1,1)   
+            WQBFNO3(L)=WQBFOXNO3(1,1)   
+            WQBFO2(L)= WQBFOXO2(1,1)  
+            WQBFPO4D(L)=WQBFOXPO4D(1,1)
+            WQBFSAD(L)=WQBFOXSAD(1,1)
+          ELSE
+            WQBFCOD(L)=WQBFOXCOD(1,2)
+            WQBFNH4(L)=WQBFOXNH4(1,2)   
+            WQBFNO3(L)=WQBFOXNO3(1,2)   
+            WQBFO2(L)= WQBFOXO2(1,2)  
+            WQBFPO4D(L)=WQBFOXPO4D(1,2)
+            WQBFSAD(L)=WQBFOXSAD(1,2)
+          ENDIF 
+        ENDDO  
+      ENDIF    
+      
+      IF(IWQBEN .EQ. 2 .AND. IWQBENOX .EQ.0)THEN
+        DO L=2,LA  
+          WQBFCOD(L)=WQBFOXCOD(L,1)
+          WQBFNH4(L)=WQBFOXNH4(L,1)   
+          WQBFNO3(L)=WQBFOXNO3(L,1)   
+          WQBFO2(L)= WQBFOXO2(L,1)  
+          WQBFPO4D(L)=WQBFOXPO4D(L,1)
+          WQBFSAD(L)=WQBFOXSAD(L,1)   
+        ENDDO            
+      ELSEIF(IWQBEN .EQ. 2 .AND. IWQBENOX .NE. 0)THEN          
+        DO L=2,LA  
+          IF(WQVO(L,1,19).GT.DOXCRT)THEN
+            WQBFCOD(L)=WQBFOXCOD(L,1)
+            WQBFNH4(L)=WQBFOXNH4(L,1)   
+            WQBFNO3(L)=WQBFOXNO3(L,1)   
+            WQBFO2(L)= WQBFOXO2(L,1)  
+            WQBFPO4D(L)=WQBFOXPO4D(L,1)
+            WQBFSAD(L)=WQBFOXSAD(L,1)   
+          ELSE
+            WQBFCOD(L)=WQBFOXCOD(L,2)
+            WQBFNH4(L)=WQBFOXNH4(L,2)   
+            WQBFNO3(L)=WQBFOXNO3(L,2)   
+            WQBFO2(L)= WQBFOXO2(L,2)  
+            WQBFPO4D(L)=WQBFOXPO4D(L,2)
+            WQBFSAD(L)=WQBFOXSAD(L,2)  
+          ENDIF 
+        ENDDO  
+      ENDIF
       DO K=KC,1,-1  
 C  
 C DZWQ=1/H, VOLWQ=1/VOL  
@@ -34,6 +103,10 @@ C
           WQBGSET(L,1) = WQWSG(IMWQZT(L))*DZWQ(L)  
           WQRPSET(L,1) = WQWSRP(IMWQZT(L))*DZWQ(L)  
           WQLPSET(L,1) = WQWSLP(IMWQZT(L))*DZWQ(L)  
+          ! Also treat x-species
+          DO nsp=1,NXSP
+            WQBXSET(L,1,nsp) = WQWSX(IMWQZT(L),nsp)*DZWQ(L)  
+          ENDDO
         ENDDO  
         IF(IWQSRP.EQ.1)THEN  
           DO L=2,LA  
@@ -50,6 +123,10 @@ C
             WQBGSET(L,2) = WQWSG(IMWQZT1(L))*DZWQ(L)  
             WQRPSET(L,2) = WQWSRP(IMWQZT1(L))*DZWQ(L)  
             WQLPSET(L,2) = WQWSLP(IMWQZT1(L))*DZWQ(L)  
+            ! Also treat x-species
+            DO nsp=1,NXSP
+              WQBXSET(L,2,nsp) = WQWSX(IMWQZT1(L),nsp)*DZWQ(L)  
+            ENDDO
           ENDDO  
           IF(IWQSRP.EQ.1)THEN  
             DO L=2,LA  
@@ -129,6 +206,24 @@ C
           IF(IDNOTRVA.GT.0)THEN  
             PO4DWQ(L) = MAX (WQPO4D(L,K), 0.0)  
           ENDIF  
+          ! Also treat x-species
+          do nsp=1,NXSP
+            WQGNX(nsp)=RNH4NO3(L) / (WQKHNX(nsp)+RNH4NO3(L)+ 1.E-18) 
+            WQGPX(nsp)=PO4DWQ(L) / (WQKHPX(nsp)+PO4DWQ(L)+ 1.E-18)
+            XLIMNX(L,K,nsp) = XLIMNX(L,K,nsp) + WQGNX(nsp)
+            XLIMPX(L,K,nsp) = XLIMPX(L,K,nsp) + WQGPX(nsp)
+            if (IWQX(nsp).eq.1) then  ! cyano
+              WQF1NX(nsp) = MIN(WQGNX(nsp), WQGPX(nsp))
+            endif
+            WQF1NX(nsp) = MIN(WQGNC, WQGPC)
+            if (IWQSI.EQ.1 .and. IWQX(nsp).eq.2) then  ! diatom
+              SADWQ = MAX (WQSAD(L,K), 0.0)  
+              WQGSD = SADWQ / (WQKHSX(nsp)+SADWQ+ 1.E-18)
+              WQF1NX(nsp) = MIN(WQGNX(nsp), WQGPX(nsp),WQGSD)
+            else
+              WQF1NX(nsp) = MIN(WQGNX(nsp), WQGPX(nsp))
+            endif
+          enddo
 C  
 C IN C&C, F2IC=F2IC/FCYAN, FACTOR TO ALLOW CYANOBACTERIA MAT FORMATION  
 C  
@@ -180,11 +275,33 @@ C
             XLIMIC(L,K) = XLIMIC(L,K) + WQF2IC  
             XLIMID(L,K) = XLIMID(L,K) + WQF2ID  
             XLIMIG(L,K) = XLIMIG(L,K) + WQF2IG  
+            ! Also treat x-species
+            do nsp=1,NXSP
+              WQISX(nsp) = MAX( WQAVGIO*EXP(-WQKESS1*WQDOPX(nsp))
+     &                        , WQISMIN )  
+              WQFDX(nsp) = WQFDI0 / (WQISX(nsp) + 1.E-18)
+              WQF2IX(nsp) = WQTT1 * (EXP(WQFDX(nsp)*WQTTB)
+     &                             - EXP(WQFDX(nsp)*WQTTT))  
+              XLIMIX(L,K,nsp) = XLIMIX(L,K,nsp) + WQF2IX(nsp)
+            enddo
           ELSE
             WQF2IC=0.0
             WQF2ID=0.0
             WQF2IG=0.0
+            ! Also treat x-species
+            do nsp=1,NXSP
+              WQF2IX(nsp) = 0.
+            enddo
           ENDIF
+          ! Treate stokes for x-species
+          do nsp=1,NXSP
+            IF(ISSTOKEX(nsp).GE.1)THEN  
+              CALL WQSTOKES01(WQKESS1,L,K,nsp)
+            ELSE  
+              WQALSETX(L,KC,nsp) = WQBXSET(L,1,nsp)
+              IF(K.NE.KC) WQALSETX(L,K,nsp) = WQBXSET(L,2,nsp) 
+            ENDIF    
+          enddo
 C  
 C UPDATE SOLAR RADIATION AT BOTTOM OF THIS LAYER  
 C  
@@ -250,6 +367,10 @@ C
           XLIMTC(L,K) = XLIMTC(L,K) + WQTDGC(IWQT(L))  
           XLIMTD(L,K) = XLIMTD(L,K) + WQTDGD(IWQT(L))  
           XLIMTG(L,K) = XLIMTG(L,K) + WQTDGG(IWQT(L))  
+          ! X-species
+          do nsp=1,NXSP
+            XLIMTX(L,K,nsp) = XLIMTX(L,K,nsp) + WQTDGX(IWQT(L),nsp)  
+          enddo
 C  
 C: WQSTOX=WQSTOX**2  
 C  
@@ -262,6 +383,17 @@ C
           ENDIF  
           WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))  
           WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))  
+          ! X-species
+          do nsp=1,NXSP
+            IF(IWQSTOX.EQ.1 .and. IWQX(nsp).eq.1)THEN  
+              WQF4SC = WQSTOXX(nsp) / (WQSTOXX(nsp)
+     &              + SWQ(L)*SWQ(L)+1.E-12)  
+              WQPX(L,nsp)=WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
+     &            *WQTDGX(IWQT(L),nsp)*WQF4SC  
+            ENDIF  
+            WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
+     &                   *WQTDGX(IWQT(L),nsp)  
+          enddo
 C  
 C      AT NIGHT, I.E., WHEN SOLAR RADIATION IS LESS THAN 0.001 (05/11/99  
 C  
@@ -270,6 +402,10 @@ C
               WQPC(L) = 0.0  
               WQPD(L) = 0.0  
               WQPG(L) = 0.0  
+              ! X-species
+              do nsp=1,NXSP
+                WQPX(L,nsp) = 0.0
+              enddo  
               WQPM(L) = 0.0  
             ENDIF  
           ENDIF  
@@ -291,6 +427,13 @@ C
             WQBMM(L) = WQBMRM(IMWQZT(L)) * WQTDRM(IWQT(L))  
             WQPRM(L) = WQPRRM(IMWQZT(L)) * WQTDRM(IWQT(L))  
           ENDIF  
+          ! X-species
+          do nsp=1,NXSP
+            WQBMX(L,nsp) = WQBMRX(IMWQZT(L),nsp)*WQTDRX(IWQT(L),nsp)
+     &              *WQTDGPX(IWQT(L),nsp)  
+            WQPRX(L,nsp) = WQPRRX(IMWQZT(L),nsp)*WQTDRX(IWQT(L),nsp)
+     &              *WQTDGPX(IWQT(L),nsp)  
+          enddo
         ENDDO  
 C  
 C END HORIZONTAL LOOP FOR ALGAE PARMETERS  
@@ -298,6 +441,10 @@ C
         DO L=2,LA  
           IZ=IWQZMAP(L,K)  
           WQOBTOT(L) = WQVO(L,K,1)+WQVO(L,K,2)+WQVO(L,K,3)  
+         ! X-species
+          do nsp=1,NXSP
+            WQOBTOT(L) = WQOBTOT(L) + WQVOX(L,K,nsp)
+          enddo
           WQKRPC(L) = (WQKRC + WQKRCALG*WQOBTOT(L)) * WQTDHDR(IWQT(L))  
           WQKLPC(L) = (WQKLC + WQKLCALG*WQOBTOT(L)) * WQTDHDR(IWQT(L))  
           XMRM = 0.0  
@@ -318,10 +465,14 @@ C
 C  
 C 7-10 PHOSPHORUS  
 C  
+        WQKHP = 0.
+        do nsp=1,NXSP
+          WQKHP = WQKHP + WQKHPX(nsp)
+        enddo
+        WQKHP = (WQKHP+WQKHPC+WQKHPD+WQKHPG)/float(NXSP+3)
         DO L=2,LA  
           IZ=IWQZMAP(L,K)  
           WQAPC(L)=1.0/(WQCP1PRM+WQCP2PRM*EXP(-WQCP3PRM*PO4DWQ(L)))  
-          WQKHP = (WQKHPC+WQKHPD+WQKHPG) / 3.0  
           WQTT1 = WQKHP / (WQKHP+PO4DWQ(L)+ 1.E-18) * WQOBTOT(L)  
           WQKRPP(L) = (WQKRP + WQKRPALG*WQTT1) * WQTDHDR(IWQT(L))  
           WQKLPP(L) = (WQKLP + WQKLPALG*WQTT1) * WQTDHDR(IWQT(L))  
@@ -351,9 +502,13 @@ C
 C  
 C 11-15 NITROGEN  
 C  
+        WQKHN = 0.
+        do nsp=1,NXSP
+          WQKHN = WQKHN + WQKHNX(nsp)
+        enddo
+        WQKHN = (WQKHN+WQKHNC+WQKHND+WQKHNG)/float(NXSP+3)
         DO L=2,LA  
           IZ=IWQZMAP(L,K)  
-          WQKHN = (WQKHNC+WQKHND+WQKHNG) / 3.0  
           WQTT1 = WQKHN / (WQKHN+RNH4NO3(L)+ 1.E-18) * WQOBTOT(L)  
           WQKRPN(L) = (WQKRN + WQKRNALG*WQTT1) * WQTDHDR(IWQT(L))  
           WQKLPN(L) = (WQKLN + WQKLNALG*WQTT1) * WQTDHDR(IWQT(L))  
@@ -366,6 +521,10 @@ C
             WQPND(L)=0.0  
             WQPNG(L)=0.0  
             WQPNM(L)=0.0  
+            ! X-species
+            do nsp=1,NXSP
+              WQPNX(L,nsp)=0.0
+            enddo
           ELSE  
             WQTTC = RNH4WQ(L)/(WQKHNC+RNO3WQ(L)+ 1.E-18)  
             WQTTD = RNH4WQ(L)/(WQKHND+RNO3WQ(L)+ 1.E-18)  
@@ -379,6 +538,12 @@ C
      &          + WQKHNG/(RNH4NO3(L)+ 1.E-18)) * WQTTG  
             WQPNM(L) = (RNO3WQ(L)/(WQKHNM+RNH4WQ(L)+ 1.E-18)  
      &          + WQKHNM/(RNH4NO3(L)+ 1.E-18)) * WQTTM  
+            ! X-species
+            do nsp=1,NXSP
+              WQTTX(nsp) = RNH4WQ(L)/(WQKHNX(nsp)+RNO3WQ(L)+ 1.E-18)
+              WQPNX(L,nsp) = (RNO3WQ(L)/(WQKHNX(nsp)+RNH4WQ(L)+ 1.E-18)
+     &          + WQKHNX(nsp)/(RNH4NO3(L)+ 1.E-18)) * WQTTX(nsp)
+            enddo
           ENDIF  
           WQNIT(L) = O2WQ(L) * WQTDNIT(IWQT(L)) /  
      &        ( (WQKHNDO+O2WQ(L)) * (WQKHNN+RNH4WQ(L)) + 1.E-18)  
@@ -537,6 +702,10 @@ C
         ENDIF  
 C ****  PARAM 01  
         IF(ISTRWQ(1).EQ.1)THEN  
+          ! Bentic-cyano
+          IF(ISCYANO .EQ. 1 .AND. K .EQ. 1) THEN
+            CALL Sub_SPORE(TIMTMP)
+          ENDIF 
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -545,23 +714,72 @@ C ****  PARAM 01
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
 C  
-            WQA1C=(WQPC(L)-WQBMC(L)-WQPRC(L)-WQBCSET(L,1))*DTWQO2  
-            WQKK(L) = 1.0 / (1.0 - WQA1C)  
+              IF(WQBCSET(L,1).GE.0.0)THEN
+                WQA1C=(WQPC(L)-WQBMC(L)-WQPRC(L)-WQBCSET(L,1))*DTWQO2  
+              ELSE
+                IF(K.NE.KC)THEN
+                  WQA1C=(WQPC(L)-WQBMC(L)-WQPRC(L)+WQBCSET(L,1))*DTWQO2
+                ENDIF
+              ENDIF
+              WQKK(L) = 1.0 / (1.0 - WQA1C)  
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.1) then ! cyano
+                  WQACX(nsp)=(WQPX(L,nsp)-WQBMX(L,nsp)-WQPRX(L,nsp))
+     &                       *DTWQO2                                 ! GEOSR X-species : jgcho 2015.10.08
+                  IF(WQALSETX(L,K,nsp).GT.0.0)THEN                   !{ GEOSR STOKES : YSSONG 2015.08.18  !!!! SINK WQALSET(L,K,1) ! GEOSR X-species : jgcho 2015.10.08
+                    WQACX(nsp)=WQACX(nsp)-WQALSETX(L,K,nsp)*DTWQO2   ! GEOSR X-species : jgcho 2015.10.08
+                  ENDIF                                              !{ GEOSR STOKES : YSSONG 2015.08.18  !!!! SINK
+                  IF(WQALSETX(L,K,nsp).LT.0.0)THEN                   ! GEOSR X-species : jgcho 2015.10.08
+                    IF(K.NE.KC)THEN
+                      WQACX(nsp)=WQACX(nsp)+WQALSETX(L,K,nsp)*DTWQO2 ! GEOSR X-species : jgcho 2015.10.08
+                    ENDIF
+                  ENDIF
+                  WQKKX(L,nsp) = 1.0 / (1.0 - WQACX(nsp))
+                endif
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR1C = (WQWDSL(L,K,1) + WQWPSL(L,K,1)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR1C = (WQWDSL(L,K,1) + WQWPSL(L,K,1)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR1C = WQR1C + WQATML(L,KC,1) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,1) + DTWQ*WQR1C + WQA1C*WQVO(L,K,1)  
+                WQR1C = WQR1C + WQATML(L,KC,1) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,1) + DTWQ*WQR1C + WQA1C*WQVO(L,K,1)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQBCSET(L,2)*WQVO(L,K+1,1)  
-            ENDIF  
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.1) then ! cyano
+                 WQRRX(L,nsp)=WQVOX(L,K,nsp) + WQACX(nsp)*WQVOX(L,K,nsp)
+                  IF(ISCYANO.EQ.1.AND.K.EQ.1)THEN  
+                    WQRRX(L,nsp) = WQRRX(L,nsp) + 
+     &                             CYA_ADD(L)*DZWQ(L)*DTWQ
+                  ENDIF
+                endif
+              enddo
+              IF(K .NE. KC)THEN  
+                IF(WQBCSET(L,1) .GT. 0.0)THEN
+                  WQRR(L) = WQRR(L) + DTWQO2*WQBCSET(L,1)*WQVOCB(L,K+1) ! ORG
+                endif
+                do nsp=1,NXSP
+                  IF(WQALSETX(L,K+1,nsp) .GT. 0.0)THEN  !!! SOURCE from UPPER LAYER
+                    WQRRX(L,nsp) = WQRRX(L,nsp)
+     &                   + DTWQO2*WQALSETX(L,K+1,nsp)*WQVOXB(L,K+1,nsp)
+                  ENDIF
+                enddo
+              ENDIF  
+              IF(K .NE. 1)THEN  
+                IF(WQBCSET(L,1) .LT. 0.0)THEN
+                  WQRR(L) = WQRR(L) - DTWQO2*WQBCSET(L,1)*WQVOCB(L,K-1) ! ORG
+                endif
+                do nsp=1,NXSP
+                  IF(WQALSETX(L,K-1,nsp) .LT. 0.0)THEN  !!! SOURCE from LOWER LAYER
+                    WQRRX(L,nsp) = WQRRX(L,nsp)
+     &                   - DTWQO2*WQALSETX(L,K-1,nsp)*WQVOXB(L,K-1,nsp)
+                  ENDIF  
+                enddo
+              ENDIF
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -575,10 +793,23 @@ C          DO L=2,LA
 !}
             WQV(L,K,1)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,1)  
             WQVO(L,K,1) = WQVO(L,K,1)+WQV(L,K,1)  
+            do nsp=1,NXSP
+               if (IWQX(nsp).eq.1) then
+                 WQVX(L,K,nsp)=SCB(L)*(WQRRX(L,nsp)*WQKKX(L,nsp))
+     &                        +(1.-SCB(L))*WQVOX(L,K,nsp)  
+                 WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)  
+               endif
+             enddo
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
              WQV(L,K,1)=WQVO(L,K,1)  
              WQVO(L,K,1) = WQVO(L,K,1)+WQV(L,K,1)  
+             do nsp=1,NXSP
+               if (IWQX(nsp).eq.1) then
+                 WQVX(L,K,nsp)=WQVOX(L,K,nsp)  
+                 WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)  
+               endif
+             enddo
             ENDIF
           ENDDO  
 !}
@@ -586,8 +817,19 @@ C          DO L=2,LA
           DO L=2,LA  
             WQV(L,K,1)=WQVO(L,K,1)  
             WQVO(L,K,1) = WQVO(L,K,1)+WQV(L,K,1)  
+            do nsp=1,NXSP
+               if (IWQX(nsp).eq.1) then
+                 WQVX(L,K,nsp)=WQVOX(L,K,nsp)  
+                 WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)  
+               endif
+            enddo
           ENDDO  
         ENDIF  
+        IF(NXSP .EQ. 1)THEN  ! FOR MASS CONSERVE TEST
+          DO L=2,LA  
+            CYANOMASS=CYANOMASS+WQVOX(L,K,1)*DZC(K)*HP(L)*DXYP(L)
+          ENDDO
+        ENDIF
 C ****  PARAM 02  
         IF(ISTRWQ(2).EQ.1)THEN  
           DO L=2,LA  
@@ -598,23 +840,45 @@ C ****  PARAM 02
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
 C  
-            WQA2D=(WQPD(L)-WQBMD(L)-WQPRD(L)-WQBDSET(L,1))*DTWQO2  
-            WQKK(L) = 1.0 / (1.0 - WQA2D)  
+              WQA2D=(WQPD(L)-WQBMD(L)-WQPRD(L)-WQBDSET(L,1))*DTWQO2  
+              WQKK(L) = 1.0 / (1.0 - WQA2D)  
+              ! X-species
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.2) then                  
+                  WQA2X(nsp)=(WQPX(L,nsp)-WQBMX(L,nsp)
+     &                      -WQPRX(L,nsp)-WQBXSET(L,1,nsp))*DTWQO2  
+                  WQKKX(L,nsp) = 1.0 / (1.0 - WQA2X(nsp))
+                endif
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR2D = (WQWDSL(L,K,2) + WQWPSL(L,K,2)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR2D = (WQWDSL(L,K,2) + WQWPSL(L,K,2)) * VOLWQ(L)  
+              IF(K .EQ. KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR2D = WQR2D + WQATML(L,KC,2) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,2) + DTWQ*WQR2D + WQA2D*WQVO(L,K,2)  
+                WQR2D = WQR2D + WQATML(L,KC,2) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,2) + DTWQ*WQR2D + WQA2D*WQVO(L,K,2)  
+              ! X-species
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.2) then
+                  WQRRX(L,nsp)=WQVOX(L,K,nsp) + WQA2X(nsp)
+     &                  *WQVOX(L,K,nsp)
+                endif
+              enddo
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQBDSET(L,2)*WQVO(L,K+1,2)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                WQRR(L) = WQRR(L) + DTWQO2*WQBDSET(L,2)*WQVO(L,K+1,2)  
+                ! X-species
+                do nsp=1,NXSP
+                  if (IWQX(nsp).eq.2) then
+                    WQRRX(L,nsp)=WQRRX(L,nsp) + DTWQO2*WQBXSET(L,2,nsp)
+     &                   *WQVOX(L,K+1,nsp)
+                  endif
+                enddo
+              ENDIF  
 C          ENDDO  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          IF(K.NE.KC)THEN  
@@ -624,12 +888,28 @@ C            ENDDO
 C          ENDIF  
 C          DO L=2,LA  
 !}
-            WQV(L,K,2)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,2)  
-            WQVO(L,K,2) = WQVO(L,K,2)+WQV(L,K,2)  
+              WQV(L,K,2)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &                  *WQVO(L,K,2)  
+              WQVO(L,K,2) = WQVO(L,K,2)+WQV(L,K,2)  
+!{ GEOSR X-species : jgcho 2015.10.10
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.2) then
+                  WQVX(L,K,nsp)=SCB(L)*(WQRRX(L,nsp)*WQKKX(L,nsp))
+     &                         +(1.-SCB(L))*WQVOX(L,K,nsp)  
+                  WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)  
+                endif
+              enddo
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-            WQV(L,K,2)=WQVO(L,K,2)  
-            WQVO(L,K,2) = WQVO(L,K,2)+WQV(L,K,2)  
+              WQV(L,K,2)=WQVO(L,K,2)  
+              WQVO(L,K,2) = WQVO(L,K,2)+WQV(L,K,2)  
+!{ GEOSR X-species : jgcho 2015.10.10
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.2) then
+                  WQVX(L,K,nsp)=WQVOX(L,K,nsp)
+                  WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)
+                endif
+              enddo
             ENDIF
           ENDDO  
 !}
@@ -637,6 +917,13 @@ C          DO L=2,LA
           DO L=2,LA  
             WQV(L,K,2)=WQVO(L,K,2)  
             WQVO(L,K,2) = WQVO(L,K,2)+WQV(L,K,2)  
+            ! X-species
+            do nsp=1,NXSP
+              if (IWQX(nsp).eq.2) then
+                WQVX(L,K,nsp)=WQVOX(L,K,nsp)
+                WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)
+              endif
+            enddo
           ENDDO  
         ENDIF  
 C ****  PARAM 03  
@@ -649,23 +936,45 @@ C ****  PARAM 03
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
 C  
-            WQA3G=(WQPG(L)-WQBMG(L)-WQPRG(L)-WQBGSET(L,1))*DTWQO2  
-            WQKK(L) = 1.0 / (1.0 - WQA3G)  
+              WQA3G=(WQPG(L)-WQBMG(L)-WQPRG(L)-WQBGSET(L,1))*DTWQO2  
+              WQKK(L) = 1.0 / (1.0 - WQA3G)  
+              ! X-species
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.3) then                  
+                  WQA3X(nsp)=(WQPX(L,nsp)-WQBMX(L,nsp)
+     &                      -WQPRX(L,nsp)-WQBXSET(L,1,nsp))*DTWQO2  
+                  WQKKX(L,nsp) = 1.0 / (1.0 - WQA3X(nsp))
+                endif
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR3G = (WQWDSL(L,K,3) + WQWPSL(L,K,3)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR3G = (WQWDSL(L,K,3) + WQWPSL(L,K,3)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR3G = WQR3G + WQATML(L,KC,3) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,3) + DTWQ*WQR3G + WQA3G*WQVO(L,K,3)  
+                WQR3G = WQR3G + WQATML(L,KC,3) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,3) + DTWQ*WQR3G + WQA3G*WQVO(L,K,3)  
+              ! X-species
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.3) then
+                  WQRRX(L,nsp)=WQVOX(L,K,nsp) + WQA3X(nsp)
+     &                  *WQVOX(L,K,nsp)
+                endif
+              enddo
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQBGSET(L,2)*WQVO(L,K+1,3)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                WQRR(L) = WQRR(L) + DTWQO2*WQBGSET(L,2)*WQVO(L,K+1,3)  
+                ! X-species
+                do nsp=1,NXSP
+                  if (IWQX(nsp).eq.3) then
+                   WQRRX(L,nsp)=WQRRX(L,nsp) + DTWQO2*WQBXSET(L,2,nsp)
+     &                   *WQVOX(L,K+1,nsp)
+                  endif
+                enddo
+              ENDIF  
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -677,12 +986,28 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-            WQV(L,K,3)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,3)  
-            WQVO(L,K,3) = WQVO(L,K,3)+WQV(L,K,3)  
+              WQV(L,K,3)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &                  *WQVO(L,K,3)  
+              WQVO(L,K,3) = WQVO(L,K,3)+WQV(L,K,3)  
+              ! X-species
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.3) then
+                  WQVX(L,K,nsp)=SCB(L)*(WQRRX(L,nsp)*WQKKX(L,nsp))
+     &                         +(1.-SCB(L))*WQVOX(L,K,nsp)  
+                  WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)  
+                endif
+              enddo
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,3)=WQVO(L,K,3)  
-             WQVO(L,K,3) = WQVO(L,K,3)+WQV(L,K,3)  
+              WQV(L,K,3)=WQVO(L,K,3)  
+              WQVO(L,K,3) = WQVO(L,K,3)+WQV(L,K,3)  
+              ! X-species
+              do nsp=1,NXSP
+                if (IWQX(nsp).eq.3) then
+                  WQVX(L,K,nsp)=WQVOX(L,K,nsp)
+                  WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)
+                endif
+              enddo
             ENDIF
           ENDDO  
 !}
@@ -690,6 +1015,13 @@ C          DO L=2,LA
           DO L=2,LA  
             WQV(L,K,3)=WQVO(L,K,3)  
             WQVO(L,K,3) = WQVO(L,K,3)+WQV(L,K,3)  
+            ! X-species
+            do nsp=1,NXSP
+              if (IWQX(nsp).eq.3) then
+                WQVX(L,K,nsp)=WQVOX(L,K,nsp)
+                WQVOX(L,K,nsp) = WQVOX(L,K,nsp)+WQVX(L,K,nsp)
+              endif
+            enddo
           ENDDO  
         ENDIF  
 C ****  PARAM 04  
@@ -702,32 +1034,36 @@ C ****  PARAM 04
 C  
 C DEFINITIONS    HYDROLYSIS  SETTLING  
 C  
-            WQB4 = - (WQKRPC(L)+WQRPSET(L,1))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQB4)  
+              WQB4 = - (WQKRPC(L)+WQRPSET(L,1))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQB4)  
 C  
 C DEFINITIONS    ALGAE PREDATION SOURCE OF RPOC  
 C  
-            WQA4 = WQFCRP * (WQPRC(L)*WQVO(L,K,1)  
-     &          + WQPRD(L)*WQVO(L,K,2) + WQPRG(L)*WQVO(L,K,3))  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA4 = WQA4+WQFCRPM*WQPRM(L)*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQA4 = WQFCRP * (WQPRC(L)*WQVO(L,K,1)  
+     &            + WQPRD(L)*WQVO(L,K,2) + WQPRG(L)*WQVO(L,K,3))  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA4 = WQA4+WQFCRPM*WQPRM(L)*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA4 = WQA4 + WQFCRP*(WQPRX(L,nsp)*WQVOX(L,K,nsp))
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR4 = (WQWDSL(L,K,4) + WQWPSL(L,K,4)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR4 = (WQWDSL(L,K,4) + WQWPSL(L,K,4)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR4 = WQR4 + WQATML(L,KC,4) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,4) + DTWQ*WQR4 + DTWQO2*( WQA4  
-     &          + WQB4*WQVO(L,K,4) )  
+                WQR4 = WQR4 + WQATML(L,KC,4) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,4) + DTWQ*WQR4 + DTWQO2*( WQA4  
+     &            + WQB4*WQVO(L,K,4) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQRPSET(L,2)*WQVO(L,K+1,4)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                WQRR(L) = WQRR(L) + DTWQO2*WQRPSET(L,2)*WQVO(L,K+1,4)  
+              ENDIF  
 C          ENDDO 
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915 
@@ -739,12 +1075,13 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-            WQV(L,K,4)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,4)  
-            WQVO(L,K,4) = WQVO(L,K,4)+WQV(L,K,4)  
+              WQV(L,K,4)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,4)  
+              WQVO(L,K,4) = WQVO(L,K,4)+WQV(L,K,4)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,4)=WQVO(L,K,4)  
-             WQVO(L,K,4) = WQVO(L,K,4)+WQV(L,K,4)  
+              WQV(L,K,4)=WQVO(L,K,4)  
+              WQVO(L,K,4) = WQVO(L,K,4)+WQV(L,K,4)  
             ENDIF
           ENDDO  
 !}
@@ -761,29 +1098,33 @@ C ****  PARAM 05
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQC5 = - (WQKLPC(L)+WQLPSET(L,1))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQC5)  
-            WQA5 = WQFCLP * (WQPRC(L)*WQVO(L,K,1)  
-     &          + WQPRD(L)*WQVO(L,K,2) + WQPRG(L)*WQVO(L,K,3))  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA5 =WQA5 + WQFCLPM * WQPRM(L)*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQC5 = - (WQKLPC(L)+WQLPSET(L,1))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQC5)  
+              WQA5 = WQFCLP * (WQPRC(L)*WQVO(L,K,1)  
+     &            + WQPRD(L)*WQVO(L,K,2) + WQPRG(L)*WQVO(L,K,3))  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA5 =WQA5 + WQFCLPM * WQPRM(L)*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+             ! X-species
+              do nsp=1,NXSP
+                WQA5 = WQA5 + WQFCLP*(WQPRX(L,nsp)*WQVOX(L,K,nsp))
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR5 = (WQWDSL(L,K,5) + WQWPSL(L,K,5)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR5 = (WQWDSL(L,K,5) + WQWPSL(L,K,5)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR5 = WQR5 + WQATML(L,KC,5) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,5) + DTWQ*WQR5 + DTWQO2*( WQA5  
-     &          + WQC5*WQVO(L,K,5) )  
+                WQR5 = WQR5 + WQATML(L,KC,5) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,5) + DTWQ*WQR5 + DTWQO2*( WQA5  
+     &            + WQC5*WQVO(L,K,5) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQLPSET(L,2)*WQVO(L,K+1,5)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQLPSET(L,2)*WQVO(L,K+1,5)  
+              ENDIF  
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -795,12 +1136,13 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-            WQV(L,K,5)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,5)  
-            WQVO(L,K,5) = WQVO(L,K,5)+WQV(L,K,5)  
+              WQV(L,K,5)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &                   *WQVO(L,K,5)  
+              WQVO(L,K,5) = WQVO(L,K,5)+WQV(L,K,5)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,5)=WQVO(L,K,5)  
-             WQVO(L,K,5) = WQVO(L,K,5)+WQV(L,K,5)  
+              WQV(L,K,5)=WQVO(L,K,5)  
+              WQVO(L,K,5) = WQVO(L,K,5)+WQV(L,K,5)  
             ENDIF
           ENDDO  
 !}
@@ -817,38 +1159,49 @@ C ****  PARAM 06
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQD6 = - (WQKHR(L)+WQDENIT(L))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQD6)  
-            O2WQ(L) = MAX(WQVO(L,K,19), 0.0)  
-          WQA6C=(WQFCDC+CFCDCWQ*WQKHRC/(WQKHRC+O2WQ(L)+1.E-18))*WQBMC(L)  
-          WQA6D=(WQFCDD+CFCDDWQ*WQKHRD/(WQKHRD+O2WQ(L)+1.E-18))*WQBMD(L)  
-          WQA6G=(WQFCDG+CFCDGWQ*WQKHRG/(WQKHRG+O2WQ(L)+1.E-18))*WQBMG(L)  
-            WQA6 = ( WQA6C + WQFCDP*WQPRC(L) )*WQVO(L,K,1)  
-     &          + ( WQA6D + WQFCDP*WQPRD(L) )*WQVO(L,K,2)  
-     &          + ( WQA6G + WQFCDP*WQPRG(L) )*WQVO(L,K,3)  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA6M=(WQFCDM+(1-WQFCDM)*WQKHRM(IZ) /  
-     &            (WQKHRM(IZ) + O2WQ(L) + 1.E-18))*WQBMM(L)  
-              WQA6 =WQA6+ (WQA6M+ WQFCDPM*WQPRM(L))*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQD6 = - (WQKHR(L)+WQDENIT(L))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQD6)  
+              O2WQ(L) = MAX(WQVO(L,K,19), 0.0)  
+              WQA6C=(WQFCDC+CFCDCWQ*WQKHRC/(WQKHRC+O2WQ(L)+1.E-18))
+     &              *WQBMC(L)
+              WQA6D=(WQFCDD+CFCDDWQ*WQKHRD/(WQKHRD+O2WQ(L)+1.E-18))
+     &              *WQBMD(L)
+              WQA6G=(WQFCDG+CFCDGWQ*WQKHRG/(WQKHRG+O2WQ(L)+1.E-18))
+     &              *WQBMG(L)
+              WQA6 = ( WQA6C + WQFCDP*WQPRC(L) )*WQVO(L,K,1)  
+     &            + ( WQA6D + WQFCDP*WQPRD(L) )*WQVO(L,K,2)  
+     &            + ( WQA6G + WQFCDP*WQPRG(L) )*WQVO(L,K,3)  
+              IF(IDNOTRVA .GT. 0 .AND. K .EQ. 1)THEN  
+                WQA6M=(WQFCDM+(1-WQFCDM)*WQKHRM(IZ) /  
+     &              (WQKHRM(IZ) + O2WQ(L) + 1.E-18))*WQBMM(L)  
+                WQA6 =WQA6+ (WQA6M+ WQFCDPM*WQPRM(L))*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA6X=(WQFCDX(nsp)+CFCDWQX(nsp)*WQKHRX(nsp)
+     &                /(WQKHRX(nsp)+O2WQ(L)+1.E-18))*WQBMX(L,nsp)
+                WQA6 = WQA6
+     &                + (WQA6X + WQFCDP*WQPRX(L,nsp))*WQVOX(L,K,nsp)
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR6 = (WQWDSL(L,K,6) + WQWPSL(L,K,6)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR6 = (WQWDSL(L,K,6) + WQWPSL(L,K,6)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR6 = WQR6 + WQATML(L,KC,6) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L)=WQVO(L,K,6)+DTWQ*WQR6+DTWQO2*(WQA6+WQKRPC(L)*  
+                WQR6 = WQR6 + WQATML(L,KC,6) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L)=WQVO(L,K,6)+DTWQ*WQR6+DTWQO2*(WQA6+WQKRPC(L)*  
      &          WQVO(L,K,4) + WQKLPC(L)*WQVO(L,K,5) + WQD6*WQVO(L,K,6) )  
-            WQV(L,K,6)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,6)  
-            WQVO(L,K,6) = WQVO(L,K,6)+WQV(L,K,6)  
+              WQV(L,K,6)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,6)  
+              WQVO(L,K,6) = WQVO(L,K,6)+WQV(L,K,6)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,6)=WQVO(L,K,6)  
-             WQVO(L,K,6) = WQVO(L,K,6)+WQV(L,K,6)  
+              WQV(L,K,6)=WQVO(L,K,6)  
+              WQVO(L,K,6) = WQVO(L,K,6)+WQV(L,K,6)  
             ENDIF
           ENDDO  
 !}
@@ -865,32 +1218,38 @@ C ****  PARAM 07
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQE7 = - (WQKRPP(L)+WQRPSET(L,1))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQE7)  
-            WQA7C = (WQFPRC*WQBMC(L) + WQFPRP*WQPRC(L)) * WQVO(L,K,1)  
-            WQA7D = (WQFPRD*WQBMD(L) + WQFPRP*WQPRD(L)) * WQVO(L,K,2)  
-            WQA7G = (WQFPRG*WQBMG(L) + WQFPRP*WQPRG(L)) * WQVO(L,K,3)  
-            WQA7 = (WQA7C+WQA7D+WQA7G) * WQAPC(L)  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA7 = WQA7 + (WQFPRM*WQBMM(L) + WQFPRPM*WQPRM(L))  
-     &            * WQVO(L,K,IDNOTRVA)* WQAPC(L)*WQAPCM  
-            ENDIF  
+              WQE7 = - (WQKRPP(L)+WQRPSET(L,1))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQE7)  
+              WQA7C = (WQFPRC*WQBMC(L) + WQFPRP*WQPRC(L)) * WQVO(L,K,1)  
+              WQA7D = (WQFPRD*WQBMD(L) + WQFPRP*WQPRD(L)) * WQVO(L,K,2)  
+              WQA7G = (WQFPRG*WQBMG(L) + WQFPRP*WQPRG(L)) * WQVO(L,K,3)  
+              WQA7 = (WQA7C+WQA7D+WQA7G) * WQAPC(L)  
+              IF(IDNOTRVA .GT. 0 .AND. K .EQ. 1)THEN  
+                WQA7 = WQA7 + (WQFPRM*WQBMM(L) + WQFPRPM*WQPRM(L))  
+     &              * WQVO(L,K,IDNOTRVA)* WQAPC(L)*WQAPCM  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA7X = (WQFPRX(nsp)*WQBMX(L,nsp) + WQFPRP*WQPRX(L,nsp))
+     &                  * WQVOX(L,K,nsp)  
+                WQA7 = WQA7 + WQA7X*WQAPC(L)
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR7 = (WQWDSL(L,K,7) + WQWPSL(L,K,7)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR7 = (WQWDSL(L,K,7) + WQWPSL(L,K,7)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR7 = WQR7 + WQATML(L,KC,7) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,7) + DTWQ*WQR7 + DTWQO2*( WQA7  
-     &          + WQE7*WQVO(L,K,7) )  
+                WQR7 = WQR7 + WQATML(L,KC,7) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,7) + DTWQ*WQR7 + DTWQO2*( WQA7  
+     &            + WQE7*WQVO(L,K,7) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQRPSET(L,2)*WQVO(L,K+1,7)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQRPSET(L,2)*WQVO(L,K+1,7)  
+              ENDIF  
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -902,13 +1261,14 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-            WQV(L,K,7)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,7)  
-            WQVO(L,K,7) = WQVO(L,K,7)+WQV(L,K,7)  
+              WQV(L,K,7)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &                   *WQVO(L,K,7)  
+              WQVO(L,K,7) = WQVO(L,K,7)+WQV(L,K,7)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-           ELSE
-             WQV(L,K,7)=WQVO(L,K,7)  
-             WQVO(L,K,7) = WQVO(L,K,7)+WQV(L,K,7)  
-           ENDIF
+            ELSE
+              WQV(L,K,7)=WQVO(L,K,7)  
+              WQVO(L,K,7) = WQVO(L,K,7)+WQV(L,K,7)  
+            ENDIF
           ENDDO  
 !}
         ELSE  
@@ -924,32 +1284,38 @@ C ****  PARAM 08
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQF8 = - (WQKLPP(L)+WQLPSET(L,1))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQF8)  
-            WQA8C = (WQFPLC*WQBMC(L) + WQFPLP*WQPRC(L)) * WQVO(L,K,1)  
-            WQA8D = (WQFPLD*WQBMD(L) + WQFPLP*WQPRD(L)) * WQVO(L,K,2)  
-            WQA8G = (WQFPLG*WQBMG(L) + WQFPLP*WQPRG(L)) * WQVO(L,K,3)  
-            WQA8 = (WQA8C+WQA8D+WQA8G) * WQAPC(L)  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA8 = WQA8 +     (WQFPLM*WQBMM(L) + WQFPLPM*WQPRM(L))  
-     &            * WQVO(L,K,IDNOTRVA)* WQAPC(L)*WQAPCM  
-            ENDIF  
+              WQF8 = - (WQKLPP(L)+WQLPSET(L,1))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQF8)  
+              WQA8C = (WQFPLC*WQBMC(L) + WQFPLP*WQPRC(L)) * WQVO(L,K,1)  
+              WQA8D = (WQFPLD*WQBMD(L) + WQFPLP*WQPRD(L)) * WQVO(L,K,2)  
+              WQA8G = (WQFPLG*WQBMG(L) + WQFPLP*WQPRG(L)) * WQVO(L,K,3)  
+              WQA8 = (WQA8C+WQA8D+WQA8G) * WQAPC(L)  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA8 = WQA8 +     (WQFPLM*WQBMM(L) + WQFPLPM*WQPRM(L))  
+     &              * WQVO(L,K,IDNOTRVA)* WQAPC(L)*WQAPCM  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA8X = (WQFPLX(nsp)*WQBMX(L,nsp) + WQFPLP*WQPRX(L,nsp))
+     &                  * WQVOX(L,K,nsp)  
+                WQA8 = WQA8 + WQA8X*WQAPC(L)
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR8 = (WQWDSL(L,K,8) + WQWPSL(L,K,8)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR8 = (WQWDSL(L,K,8) + WQWPSL(L,K,8)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR8 = WQR8 + WQATML(L,KC,8) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,8) + DTWQ*WQR8 + DTWQO2*( WQA8  
-     &          + WQF8*WQVO(L,K,8) )  
+                WQR8 = WQR8 + WQATML(L,KC,8) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,8) + DTWQ*WQR8 + DTWQO2*( WQA8  
+     &            + WQF8*WQVO(L,K,8) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQLPSET(L,2)*WQVO(L,K+1,8)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQLPSET(L,2)*WQVO(L,K+1,8)  
+              ENDIF  
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -961,7 +1327,8 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-            WQV(L,K,8)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,8)  
+            WQV(L,K,8)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,8)  
             WQVO(L,K,8) = WQVO(L,K,8)+WQV(L,K,8)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
@@ -983,33 +1350,40 @@ C ****  PARAM 09
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDOP(L))  
-            WQA9C = (WQFPDC*WQBMC(L) + WQFPDP*WQPRC(L)) * WQVO(L,K,1)  
-            WQA9D = (WQFPDD*WQBMD(L) + WQFPDP*WQPRD(L)) * WQVO(L,K,2)  
-            WQA9G = (WQFPDG*WQBMG(L) + WQFPDP*WQPRG(L)) * WQVO(L,K,3)  
-            WQA9 = (WQA9C+WQA9D+WQA9G) * WQAPC(L)  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA9 = WQA9 + (WQFPDM*WQBMM(L) + WQFPDPM*WQPRM(L))  
-     &            * WQVO(L,K,IDNOTRVA) * WQAPC(L)*WQAPCM  
-            ENDIF  
+              WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDOP(L))  
+              WQA9C = (WQFPDC*WQBMC(L) + WQFPDP*WQPRC(L)) * WQVO(L,K,1)  
+              WQA9D = (WQFPDD*WQBMD(L) + WQFPDP*WQPRD(L)) * WQVO(L,K,2)  
+              WQA9G = (WQFPDG*WQBMG(L) + WQFPDP*WQPRG(L)) * WQVO(L,K,3)  
+              WQA9 = (WQA9C+WQA9D+WQA9G) * WQAPC(L)  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA9 = WQA9 + (WQFPDM*WQBMM(L) + WQFPDPM*WQPRM(L))  
+     &              * WQVO(L,K,IDNOTRVA) * WQAPC(L)*WQAPCM  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA9X = (WQFPDX(nsp)*WQBMX(L,nsp) + WQFPDP*WQPRX(L,nsp))
+     &                  * WQVOX(L,K,nsp)  
+                WQA9 = WQA9 + WQA9X*WQAPC(L)
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR9 = (WQWDSL(L,K,9) + WQWPSL(L,K,9)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR9 = (WQWDSL(L,K,9) + WQWPSL(L,K,9)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR9 = WQR9 + WQATML(L,KC,9) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L)=WQVO(L,K,9)+DTWQ*WQR9+DTWQO2*(WQA9+WQKRPP(L)*  
+                WQR9 = WQR9 + WQATML(L,KC,9) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L)=WQVO(L,K,9)+DTWQ*WQR9+DTWQO2*(WQA9+WQKRPP(L)*  
      &          WQVO(L,K,7)+WQKLPP(L)*WQVO(L,K,8)-WQKDOP(L)*WQVO(L,K,9))  
-            WQV(L,K,9)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,9)  
-            WQVO(L,K,9) = WQVO(L,K,9)+WQV(L,K,9)  
+              WQV(L,K,9)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &                     *WQVO(L,K,9)
+              WQVO(L,K,9) = WQVO(L,K,9)+WQV(L,K,9)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,9)=WQVO(L,K,9)  
-             WQVO(L,K,9) = WQVO(L,K,9)+WQV(L,K,9)  
+              WQV(L,K,9)=WQVO(L,K,9)  
+              WQVO(L,K,9) = WQVO(L,K,9)+WQV(L,K,9)  
             ENDIF
           ENDDO  
 !}
@@ -1026,41 +1400,51 @@ C ****  PARAM 10
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQA10C=(WQFPIC*WQBMC(L)+WQFPIP*WQPRC(L)-WQPC(L))*WQVO(L,K,1)  
-            WQA10D=(WQFPID*WQBMD(L)+WQFPIP*WQPRD(L)-WQPD(L))*WQVO(L,K,2)  
-            WQA10G=(WQFPIG*WQBMG(L)+WQFPIP*WQPRG(L)-WQPG(L))*WQVO(L,K,3)  
-            WQKK(L) = (WQA10C+WQA10D+WQA10G) * WQAPC(L)  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQKK(L) =WQKK(L)+(WQFPIM*WQBMM(L)+WQFPIP*WQPRM(L)-WQPM(L))  
-     &            *WQVO(L,K,IDNOTRVA) * WQAPC(L)*WQAPCM  
-            ENDIF  
+              WQA10C=(WQFPIC*WQBMC(L)+WQFPIP*WQPRC(L)-WQPC(L))
+     &              *WQVO(L,K,1)  
+              WQA10D=(WQFPID*WQBMD(L)+WQFPIP*WQPRD(L)-WQPD(L))
+     &        *WQVO(L,K,2)  
+              WQA10G=(WQFPIG*WQBMG(L)+WQFPIP*WQPRG(L)-WQPG(L))
+     &        *WQVO(L,K,3)  
+              WQKK(L) = (WQA10C+WQA10D+WQA10G) * WQAPC(L)  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQKK(L) =WQKK(L)
+     &              +(WQFPIM*WQBMM(L)+WQFPIP*WQPRM(L)-WQPM(L))  
+     &              *WQVO(L,K,IDNOTRVA) * WQAPC(L)*WQAPCM  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA10X=(WQFPIX(nsp)*WQBMX(L,nsp)+WQFPIP*WQPRX(L,nsp)
+     &              -WQPX(L,nsp))*WQVOX(L,K,nsp)
+                WQKK(L) = WQKK(L) + WQA10X*WQAPC(L)
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQRR(L) = (WQWDSL(L,K,10)+WQWPSL(L,K,10)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQRR(L) = (WQWDSL(L,K,10)+WQWPSL(L,K,10)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQRR(L) = WQRR(L) + WQATML(L,KC,10) * VOLWQ(L)  
-            ENDIF  
+                WQRR(L) = WQRR(L) + WQATML(L,KC,10) * VOLWQ(L)  
+              ENDIF  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          ENDDO  
 !}
-          IF(K.EQ.1)THEN  
+              IF(K.EQ.1)THEN  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C            DO L=2,LA  
-              WQRR(L) = WQRR(L) + WQBFPO4D(L)*DZWQ(L)  
+                WQRR(L) = WQRR(L) + WQBFPO4D(L)*DZWQ(L)  
 C            ENDDO  
-          ENDIF  
+              ENDIF  
 C          DO L=2,LA  
 !}
-            WQRR(L) = WQVO(L,K,10) + DTWQ*WQRR(L) + DTWQO2*( WQKK(L)  
+              WQRR(L) = WQVO(L,K,10) + DTWQ*WQRR(L) + DTWQO2*( WQKK(L)  
      &          + WQKDOP(L)*WQVO(L,K,9) + WQH10(L)*WQVO(L,K,10) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQT10(L)*WQVO(L,K+1,10)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQT10(L)*WQVO(L,K+1,10)  
+              ENDIF  
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -1072,13 +1456,14 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQH10(L))  
-           WQV(L,K,10)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,10)  
-            WQVO(L,K,10) = WQVO(L,K,10)+WQV(L,K,10)  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQH10(L))  
+              WQV(L,K,10)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,10)  
+              WQVO(L,K,10) = WQVO(L,K,10)+WQV(L,K,10)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,10)=WQVO(L,K,10)  
-             WQVO(L,K,10) = WQVO(L,K,10)+WQV(L,K,10)  
+              WQV(L,K,10)=WQVO(L,K,10)  
+              WQVO(L,K,10) = WQVO(L,K,10)+WQV(L,K,10)  
             ENDIF
           ENDDO  
 !}
@@ -1095,32 +1480,41 @@ C ****  PARAM 11
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQI11 = - (WQKRPN(L)+WQRPSET(L,1))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQI11)  
-            WQA11C=(WQFNRC*WQBMC(L)+WQFNRP*WQPRC(L))*WQANCC*WQVO(L,K,1)  
-            WQA11D=(WQFNRD*WQBMD(L)+WQFNRP*WQPRD(L))*WQANCD*WQVO(L,K,2)  
-            WQA11G=(WQFNRG*WQBMG(L)+WQFNRP*WQPRG(L))*WQANCG*WQVO(L,K,3)  
-            WQA11 = WQA11C+WQA11D+WQA11G  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA11 =WQA11 +     (WQFNRM*WQBMM(L)+WQFNRPM*WQPRM(L))  
-     &            *WQANCM*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQI11 = - (WQKRPN(L)+WQRPSET(L,1))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQI11)  
+              WQA11C=(WQFNRC*WQBMC(L)+WQFNRP*WQPRC(L))
+     &              *WQANCC*WQVO(L,K,1)  
+              WQA11D=(WQFNRD*WQBMD(L)+WQFNRP*WQPRD(L))
+     &              *WQANCD*WQVO(L,K,2)  
+              WQA11G=(WQFNRG*WQBMG(L)+WQFNRP*WQPRG(L))
+     &              *WQANCG*WQVO(L,K,3)  
+              WQA11 = WQA11C+WQA11D+WQA11G  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA11 =WQA11 +     (WQFNRM*WQBMM(L)+WQFNRPM*WQPRM(L))  
+     &              *WQANCM*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA11X=(WQFNRX(nsp)*WQBMX(L,nsp)+WQFNRP*WQPRX(L,nsp))
+     &                *WQANCX(nsp)*WQVOX(L,K,nsp)  
+                WQA11 = WQA11+WQA11X
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR11 = (WQWDSL(L,K,11)+WQWPSL(L,K,11)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR11 = (WQWDSL(L,K,11)+WQWPSL(L,K,11)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR11 = WQR11 + WQATML(L,KC,11) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,11) + DTWQ*WQR11 + DTWQO2*( WQA11  
-     &          + WQI11*WQVO(L,K,11) )  
+                WQR11 = WQR11 + WQATML(L,KC,11) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,11) + DTWQ*WQR11 + DTWQO2*( WQA11  
+     &            + WQI11*WQVO(L,K,11) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQRPSET(L,2)*WQVO(L,K+1,11)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQRPSET(L,2)*WQVO(L,K+1,11)  
+              ENDIF  
 C          ENDDO 
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -1132,12 +1526,13 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-           WQV(L,K,11)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,11)  
-            WQVO(L,K,11) = WQVO(L,K,11)+WQV(L,K,11)  
+              WQV(L,K,11)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &             *WQVO(L,K,11)  
+              WQVO(L,K,11) = WQVO(L,K,11)+WQV(L,K,11)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,11)=WQVO(L,K,11)  
-             WQVO(L,K,11) = WQVO(L,K,11)+WQV(L,K,11)  
+              WQV(L,K,11)=WQVO(L,K,11)  
+              WQVO(L,K,11) = WQVO(L,K,11)+WQV(L,K,11)  
             ENDIF
           ENDDO  
 !} 
@@ -1154,32 +1549,41 @@ C ****  PARAM 12
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQJ12 = - (WQKLPN(L)+WQLPSET(L,1))  
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQJ12)  
-            WQA12C=(WQFNLC*WQBMC(L)+WQFNLP*WQPRC(L))*WQANCC*WQVO(L,K,1)  
-            WQA12D=(WQFNLD*WQBMD(L)+WQFNLP*WQPRD(L))*WQANCD*WQVO(L,K,2)  
-            WQA12G=(WQFNLG*WQBMG(L)+WQFNLP*WQPRG(L))*WQANCG*WQVO(L,K,3)  
-            WQA12 = WQA12C+WQA12D+WQA12G  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA12 =WQA12 +(WQFNLM*WQBMM(L)+WQFNLPM*WQPRM(L))  
-     &            *WQANCM*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQJ12 = - (WQKLPN(L)+WQLPSET(L,1))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQJ12)  
+              WQA12C=(WQFNLC*WQBMC(L)+WQFNLP*WQPRC(L))*WQANCC
+     &                *WQVO(L,K,1)  
+              WQA12D=(WQFNLD*WQBMD(L)+WQFNLP*WQPRD(L))*WQANCD
+     &                *WQVO(L,K,2)  
+              WQA12G=(WQFNLG*WQBMG(L)+WQFNLP*WQPRG(L))*WQANCG
+     &                *WQVO(L,K,3)  
+              WQA12 = WQA12C+WQA12D+WQA12G  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA12 =WQA12 +(WQFNLM*WQBMM(L)+WQFNLPM*WQPRM(L))  
+     &              *WQANCM*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA12X=(WQFNLX(nsp)*WQBMX(L,nsp)+WQFNLP*WQPRX(L,nsp))
+     &                *WQANCX(nsp)*WQVOX(L,K,nsp)  
+                WQA12 = WQA12+WQA12X
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR12 = (WQWDSL(L,K,12)+WQWPSL(L,K,12)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR12 = (WQWDSL(L,K,12)+WQWPSL(L,K,12)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR12 = WQR12 + WQATML(L,KC,12) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,12) + DTWQ*WQR12 + DTWQO2*( WQA12  
-     &          + WQJ12*WQVO(L,K,12) )  
+                WQR12 = WQR12 + WQATML(L,KC,12) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,12) + DTWQ*WQR12 + DTWQO2*( WQA12  
+     &            + WQJ12*WQVO(L,K,12) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-          IF(K.NE.KC)THEN  
-              WQRR(L) = WQRR(L) + DTWQO2*WQLPSET(L,2)*WQVO(L,K+1,12)  
-          ENDIF  
+              IF(K.NE.KC)THEN  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQLPSET(L,2)*WQVO(L,K+1,12)  
+              ENDIF  
 C          ENDDO  
 !}
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
@@ -1191,12 +1595,13 @@ C          ENDIF
 
 C          DO L=2,LA  
 !}
-           WQV(L,K,12)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,12)  
-            WQVO(L,K,12) = WQVO(L,K,12)+WQV(L,K,12)  
+              WQV(L,K,12)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &          *WQVO(L,K,12)  
+              WQVO(L,K,12) = WQVO(L,K,12)+WQV(L,K,12)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,12)=WQVO(L,K,12)  
-             WQVO(L,K,12) = WQVO(L,K,12)+WQV(L,K,12)  
+              WQV(L,K,12)=WQVO(L,K,12)  
+              WQVO(L,K,12) = WQVO(L,K,12)+WQV(L,K,12)  
             ENDIF
           ENDDO  
 !}
@@ -1213,34 +1618,44 @@ C ****  PARAM 13
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDON(L))  
-            WQA13C=(WQFNDC*WQBMC(L)+WQFNDP*WQPRC(L))*WQANCC*WQVO(L,K,1)  
-            WQA13D=(WQFNDD*WQBMD(L)+WQFNDP*WQPRD(L))*WQANCD*WQVO(L,K,2)  
-            WQA13G=(WQFNDG*WQBMG(L)+WQFNDP*WQPRG(L))*WQANCG*WQVO(L,K,3)  
-            WQA13 = WQA13C+WQA13D+WQA13G  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA13 =WQA13 + (WQFNDM*WQBMM(L)+WQFNDPM*WQPRM(L))  
-     &            *WQANCM*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDON(L))  
+              WQA13C=(WQFNDC*WQBMC(L)+WQFNDP*WQPRC(L))*WQANCC
+     &                *WQVO(L,K,1)  
+              WQA13D=(WQFNDD*WQBMD(L)+WQFNDP*WQPRD(L))*WQANCD
+     &                *WQVO(L,K,2)  
+              WQA13G=(WQFNDG*WQBMG(L)+WQFNDP*WQPRG(L))*WQANCG
+     &                *WQVO(L,K,3)  
+              WQA13 = WQA13C+WQA13D+WQA13G  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA13 =WQA13 + (WQFNDM*WQBMM(L)+WQFNDPM*WQPRM(L))  
+     &              *WQANCM*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA13X=(WQFNDX(nsp)*WQBMX(L,nsp)+WQFNDP*WQPRX(L,nsp))
+     &                *WQANCX(nsp)*WQVOX(L,K,nsp)  
+                WQA13 = WQA13+WQA13X
+              enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQR13 = (WQWDSL(L,K,13) + WQWPSL(L,K,13)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQR13 = (WQWDSL(L,K,13) + WQWPSL(L,K,13)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQR13 = WQR13 + WQATML(L,KC,13) * VOLWQ(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,13) + DTWQ*WQR13 + DTWQO2*( WQA13  
-     &          + WQKRPN(L)*WQVO(L,K,11) + WQKLPN(L)*WQVO(L,K,12)  
-     &          - WQKDON(L)*WQVO(L,K,13) )  
-           WQV(L,K,13)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,13)  
-            WQVO(L,K,13) = WQVO(L,K,13)+WQV(L,K,13)  
+                WQR13 = WQR13 + WQATML(L,KC,13) * VOLWQ(L)  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,13) + DTWQ*WQR13 + DTWQO2*( WQA13  
+     &            + WQKRPN(L)*WQVO(L,K,11) + WQKLPN(L)*WQVO(L,K,12)  
+     &            - WQKDON(L)*WQVO(L,K,13) )  
+              WQV(L,K,13)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &                *WQVO(L,K,13)  
+              WQVO(L,K,13) = WQVO(L,K,13)+WQV(L,K,13)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,13)=WQVO(L,K,13)  
-             WQVO(L,K,13) = WQVO(L,K,13)+WQV(L,K,13)  
+              WQV(L,K,13)=WQVO(L,K,13)  
+              WQVO(L,K,13) = WQVO(L,K,13)+WQV(L,K,13)  
             ENDIF
           ENDDO  
 !}
@@ -1260,43 +1675,50 @@ C ****  PARAM 14
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQRR(L) = (WQWDSL(L,K,14)+WQWPSL(L,K,14)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQRR(L) = (WQWDSL(L,K,14)+WQWPSL(L,K,14)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQRR(L) = WQRR(L) + WQATML(L,KC,14) * VOLWQ(L)  
-            ENDIF  
+                WQRR(L) = WQRR(L) + WQATML(L,KC,14) * VOLWQ(L)  
+              ENDIF  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          ENDDO  
 !}
-          IF(K.EQ.1)THEN  
+              IF(K.EQ.1)THEN  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C            DO L=2,LA  
-              WQRR(L) = WQRR(L) + WQBFNH4(L)*DZWQ(L)  
+                WQRR(L) = WQRR(L) + WQBFNH4(L)*DZWQ(L)  
 C            ENDDO  
 !}
-          ENDIF  
+              ENDIF  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          DO L=2,LA  
-            WQKK(L) = 1.0 / (1.0 + DTWQO2*WQNIT(L))  
-            WQA14C=WQFNIC*WQBMC(L)+WQFNIP*WQPRC(L)-WQPNC(L)*WQPC(L)  
-            WQA14D=WQFNID*WQBMD(L)+WQFNIP*WQPRD(L)-WQPND(L)*WQPD(L)  
-            WQA14G=WQFNIG*WQBMG(L)+WQFNIP*WQPRG(L)-WQPNG(L)*WQPG(L)  
-            WQA14 = WQA14C*WQANCC*WQVO(L,K,1)  
+              WQKK(L) = 1.0 / (1.0 + DTWQO2*WQNIT(L))  
+              WQA14C=WQFNIC*WQBMC(L)+WQFNIP*WQPRC(L)-WQPNC(L)*WQPC(L)  
+              WQA14D=WQFNID*WQBMD(L)+WQFNIP*WQPRD(L)-WQPND(L)*WQPD(L)  
+              WQA14G=WQFNIG*WQBMG(L)+WQFNIP*WQPRG(L)-WQPNG(L)*WQPG(L)  
+              WQA14 = WQA14C*WQANCC*WQVO(L,K,1)  
      &          + WQA14D*WQANCD*WQVO(L,K,2) + WQA14G*WQANCG*WQVO(L,K,3)  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA14 = WQA14 + (WQFNIM*WQBMM(L)+WQFNIPM*WQPRM(L)  
-     &            - WQPNM(L)*WQPM(L))*WQANCM*WQVO(L,K,IDNOTRVA)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,14) + DTWQ*WQRR(L) + DTWQO2*( WQA14  
-     &          + WQKDON(L)*WQVO(L,K,13) - WQNIT(L)*WQVO(L,K,14) )  
-           WQV(L,K,14)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,14)  
-            WQVO(L,K,14) = WQVO(L,K,14)+WQV(L,K,14)  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA14 = WQA14 + (WQFNIM*WQBMM(L)+WQFNIPM*WQPRM(L)  
+     &              - WQPNM(L)*WQPM(L))*WQANCM*WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species
+              do nsp=1,NXSP
+                WQA14X=WQFNIX(nsp)*WQBMX(L,nsp)+WQFNIP*WQPRX(L,nsp)
+     &                -WQPNX(L,nsp)*WQPX(L,nsp)  
+                WQA14 = WQA14 + WQA14X*WQANCX(nsp)*WQVOX(L,K,nsp)
+              enddo
+              WQRR(L) = WQVO(L,K,14) + DTWQ*WQRR(L) + DTWQO2*( WQA14  
+     &            + WQKDON(L)*WQVO(L,K,13) - WQNIT(L)*WQVO(L,K,14) )  
+              WQV(L,K,14)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,14)  
+              WQVO(L,K,14) = WQVO(L,K,14)+WQV(L,K,14)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,14)=WQVO(L,K,14)  
-             WQVO(L,K,14) = WQVO(L,K,14)+WQV(L,K,14)  
+              WQV(L,K,14)=WQVO(L,K,14)  
+              WQVO(L,K,14) = WQVO(L,K,14)+WQV(L,K,14)  
             ENDIF
           ENDDO  
 !}
@@ -1316,30 +1738,36 @@ C ****  PARAM 15
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQRR(L) = (WQWDSL(L,K,15)+WQWPSL(L,K,15)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQRR(L) = (WQWDSL(L,K,15)+WQWPSL(L,K,15)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQRR(L) = WQRR(L) + WQATML(L,KC,15) * VOLWQ(L)  
-            ENDIF  
+                WQRR(L) = WQRR(L) + WQATML(L,KC,15) * VOLWQ(L)  
+              ENDIF  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          ENDDO  
-          IF(K.EQ.1)THEN  
+              IF(K.EQ.1)THEN  
 C            DO L=2,LA  
-              WQRR(L) = WQRR(L) + WQBFNO3(L)*DZWQ(L)  
+                WQRR(L) = WQRR(L) + WQBFNO3(L)*DZWQ(L)  
 C            ENDDO  
-          ENDIF  
+              ENDIF  
 C          DO L=2,LA  
 !}
-            WQA15C = (WQPNC(L)-1.0)*WQPC(L) * WQANCC * WQVO(L,K,1)  
-            WQA15D = (WQPND(L)-1.0)*WQPD(L) * WQANCD * WQVO(L,K,2)  
-            WQA15G = (WQPNG(L)-1.0)*WQPG(L) * WQANCG * WQVO(L,K,3)  
-            WQA15 = WQA15C+WQA15D+WQA15G  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQA15 =WQA15 + (WQPNM(L)-1.0)*WQPM(L)*WQANCM  
-     &            *WQVO(L,K,IDNOTRVA)  
-            ENDIF  
+              WQA15C = (WQPNC(L)-1.0)*WQPC(L) * WQANCC * WQVO(L,K,1)  
+              WQA15D = (WQPND(L)-1.0)*WQPD(L) * WQANCD * WQVO(L,K,2)  
+              WQA15G = (WQPNG(L)-1.0)*WQPG(L) * WQANCG * WQVO(L,K,3)  
+              WQA15 = WQA15C+WQA15D+WQA15G  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQA15 =WQA15 + (WQPNM(L)-1.0)*WQPM(L)*WQANCM  
+     &              *WQVO(L,K,IDNOTRVA)  
+              ENDIF  
+              ! X-species 
+              do nsp=1,NXSP
+                WQA15X=(WQPNX(L,nsp)-1.0)*WQPX(L,nsp) * WQANCX(nsp)
+     &                * WQVO(L,K,nsp)  
+                WQA15 = WQA15 + WQA15X
+              enddo
             WQV(L,K,15)=SCB(L)*( WQVO(L,K,15) + DTWQ*WQRR(L)  
      &          + DTWQO2*( WQA15  
      &          -WQANDC*WQDENIT(L)*WQVO(L,K,6)+WQNIT(L)*WQVO(L,K,14)))  
@@ -1363,42 +1791,50 @@ C ****  PARAM 16
           IF(IWQSI.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-              WQM16 = - (WQKSUA(IWQT(L)) + WQBDSET(L,1))  
-              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQM16)  
-              WQA16D = (WQFSPD*WQBMD(L) + WQFSPP*WQPRD(L)) * WQASCD  
-     &            * WQVO(L,K,2)  
+                WQM16 = - (WQKSUA(IWQT(L)) + WQBDSET(L,1))  
+                WQKK(L) = 1.0 / (1.0 - DTWQO2*WQM16)  
+                WQA16D = (WQFSPD*WQBMD(L) + WQFSPP*WQPRD(L)) * WQASCD  
+     &              * WQVO(L,K,2)  
+!{ GEOSR X-species : jgcho 2015.10.12
+                do nsp=1,NXSP
+                  if (IWQX(nsp).eq.2) then
+                    WQA16D = WQA16D + (WQFSPDX(nsp)*WQBMX(L,nsp)
+     &                    + WQFSPPX(nsp)*WQPRX(L,nsp)) * WQASCDX(nsp)
+     &               * WQVOX(L,K,nsp)  
+                  endif
+                enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-              WQR16 = (WQWDSL(L,K,16)+WQWPSL(L,K,16)) * VOLWQ(L)  
-              IF(K.EQ.KC)THEN  
+                WQR16 = (WQWDSL(L,K,16)+WQWPSL(L,K,16)) * VOLWQ(L)  
+                IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-                WQR16 = WQR16 + WQATML(L,KC,16) * VOLWQ(L)  
-              ENDIF  
-              WQRR(L) = WQVO(L,K,16) + DTWQ*WQR16 + DTWQO2*( WQA16D  
-     &            + WQM16*WQVO(L,K,16) )  
+                  WQR16 = WQR16 + WQATML(L,KC,16) * VOLWQ(L)  
+                ENDIF  
+                WQRR(L) = WQVO(L,K,16) + DTWQ*WQR16 + DTWQO2*( WQA16D  
+     &              + WQM16*WQVO(L,K,16) )  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C            ENDDO  
-            IF(K.NE.KC)THEN  
+                IF(K.NE.KC)THEN  
 C              DO L=2,LA  
-                WQRR(L) = WQRR(L) + DTWQO2*WQBDSET(L,2)*WQVO(L,K+1,16)  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQBDSET(L,2)*WQVO(L,K+1,16)  
 C              ENDDO  
-            ENDIF  
+                ENDIF  
 C            DO L=2,LA  
 !}
-              WQV(L,K,16)=SCB(L)*( WQRR(L)*WQKK(L) )  
-     &            +(1.-SCB(L))*WQVO(L,K,16)  
-              WQVO(L,K,16) = WQVO(L,K,16)+WQV(L,K,16)  
+                WQV(L,K,16)=SCB(L)*( WQRR(L)*WQKK(L) )  
+     &              +(1.-SCB(L))*WQVO(L,K,16)  
+                WQVO(L,K,16) = WQVO(L,K,16)+WQV(L,K,16)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            ELSE
-             WQV(L,K,16)=WQVO(L,K,16)  
-             WQVO(L,K,16) = WQVO(L,K,1)+WQV(L,K,16)  
-            ENDIF
-           ENDDO  
+              ELSE
+                WQV(L,K,16)=WQVO(L,K,16)  
+                WQVO(L,K,16) = WQVO(L,K,1)+WQV(L,K,16)  
+              ENDIF
+            ENDDO  
 !}
           ENDIF  
         ELSE  
@@ -1412,47 +1848,56 @@ C ****  PARAM 17
           IF(IWQSI.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-              WQKK(L) = (WQFSID*WQBMD(L) + WQFSIP*WQPRD(L) - WQPD(L))  
-     &            * WQASCD * WQVO(L,K,2)  
+                WQKK(L) = (WQFSID*WQBMD(L) + WQFSIP*WQPRD(L) - WQPD(L))  
+     &              * WQASCD * WQVO(L,K,2)  
+                ! X-species
+                do nsp=1,NXSP
+                  if (IWQX(nsp).eq.2) then
+                    WQKK(L) = WQKK(L) + (WQFSIDX(nsp)*WQBMX(L,nsp)
+     &               + WQFSIPX(nsp)*WQPRX(L,nsp) - WQPX(L,nsp))  
+     &               * WQASCDX(nsp) * WQVOX(L,K,nsp)  
+                  endif
+                enddo
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-              WQRR(L) = (WQWDSL(L,K,17)+WQWPSL(L,K,17)) * VOLWQ(L)  
-              IF(K.EQ.KC)THEN  
+                WQRR(L) = (WQWDSL(L,K,17)+WQWPSL(L,K,17)) * VOLWQ(L)  
+                IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-                WQRR(L) = WQRR(L) + WQATML(L,KC,17) * VOLWQ(L)  
-              ENDIF  
+                  WQRR(L) = WQRR(L) + WQATML(L,KC,17) * VOLWQ(L)  
+                ENDIF  
 C            ENDDO  
-            IF(K.EQ.1)THEN  
+                IF(K.EQ.1)THEN  
 C              DO L=2,LA  
-                WQRR(L) = WQRR(L) + WQBFSAD(L)*DZWQ(L)  
+                  WQRR(L) = WQRR(L) + WQBFSAD(L)*DZWQ(L)  
 C              ENDDO  
-            ENDIF  
+                ENDIF  
 C            DO L=2,LA  
-              WQRR(L) = WQVO(L,K,17) + DTWQ*WQRR(L) + DTWQO2*( WQKK(L)  
-     &            +WQKSUA(IWQT(L))*WQVO(L,K,16)+WQN17(L)*WQVO(L,K,17))  
+                WQRR(L) = WQVO(L,K,17) + DTWQ*WQRR(L) + DTWQO2
+     &            *(WQKK(L)+WQKSUA(IWQT(L))*WQVO(L,K,16)
+     &            +WQN17(L)*WQVO(L,K,17))  
 C            ENDDO  
-            IF(K.NE.KC)THEN  
+                IF(K.NE.KC)THEN  
 C              DO L=2,LA  
-                WQRR(L) = WQRR(L) + DTWQO2*WQT17(L)*WQVO(L,K+1,17)  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQT17(L)*WQVO(L,K+1,17)  
 C              ENDDO  
-            ENDIF  
+                ENDIF  
 C            DO L=2,LA  
 !}
-              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQN17(L))  
-              WQV(L,K,17)=SCB(L)*( WQRR(L)*WQKK(L) )  
-     &            +(1.-SCB(L))*WQVO(L,K,17)  
-              WQVO(L,K,17) = WQVO(L,K,17)+WQV(L,K,17)  
+                WQKK(L) = 1.0 / (1.0 - DTWQO2*WQN17(L))  
+                WQV(L,K,17)=SCB(L)*( WQRR(L)*WQKK(L) )  
+     &              +(1.-SCB(L))*WQVO(L,K,17)  
+                WQVO(L,K,17) = WQVO(L,K,17)+WQV(L,K,17)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            ELSE
-             WQV(L,K,17)=WQVO(L,K,17)  
-             WQVO(L,K,17) = WQVO(L,K,17)+WQV(L,K,17)  
-            ENDIF
-          ENDDO  
+              ELSE
+                WQV(L,K,17)=WQVO(L,K,17)  
+                WQVO(L,K,17) = WQVO(L,K,17)+WQV(L,K,17)  
+              ENDIF
+            ENDDO  
 !}
           ENDIF  
         ELSE  
@@ -1467,33 +1912,34 @@ C ****  PARAM 18
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQKK(L) = 1.0 / (1.0 - WQO18(L))  
+              WQKK(L) = 1.0 / (1.0 - WQO18(L))  
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQRR(L) = (WQWDSL(L,K,18)+WQWPSL(L,K,18)) * VOLWQ(L)  
-            IF(K.EQ.KC)THEN  
+              WQRR(L) = (WQWDSL(L,K,18)+WQWPSL(L,K,18)) * VOLWQ(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQRR(L) = WQRR(L) + WQATML(L,KC,18) * VOLWQ(L)  
-            ENDIF  
+                WQRR(L) = WQRR(L) + WQATML(L,KC,18) * VOLWQ(L)  
+              ENDIF  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          ENDDO  
-          IF(K.EQ.1)THEN  
+              IF(K.EQ.1)THEN  
 C            DO L=2,LA  
-              WQRR(L) = WQRR(L) + WQBFCOD(L)*DZWQ(L)  
+                WQRR(L) = WQRR(L) + WQBFCOD(L)*DZWQ(L)  
 C            ENDDO  
-          ENDIF  
+              ENDIF  
 C          DO L=2,LA  
 !}
-            WQRR(L)=WQVO(L,K,18)+DTWQ*WQRR(L)+WQO18(L)*WQVO(L,K,18)  
-           WQV(L,K,18)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,18)  
-            WQVO(L,K,18) = WQVO(L,K,18)+WQV(L,K,18)  
+              WQRR(L)=WQVO(L,K,18)+DTWQ*WQRR(L)+WQO18(L)*WQVO(L,K,18)  
+              WQV(L,K,18)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,18)  
+              WQVO(L,K,18) = WQVO(L,K,18)+WQV(L,K,18)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,18)=WQVO(L,K,18)  
-             WQVO(L,K,18) = WQVO(L,K,18)+WQV(L,K,18)  
+              WQV(L,K,18)=WQVO(L,K,18)  
+              WQVO(L,K,18) = WQVO(L,K,18)+WQV(L,K,18)  
             ENDIF
           ENDDO  
 !} 
@@ -1509,120 +1955,140 @@ C ****  PARAM 19
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-            WQKK(L) = 1.0 / (1.0 - DTWQO2*WQP19(L))  
+              WQKK(L) = 1.0 / (1.0 - DTWQO2*WQP19(L))  
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-            WQRR(L) = (WQWDSL(L,K,19)+WQWPSL(L,K,19)) * VOLWQ(L)  
-            XDOPSL(L,K) = XDOPSL(L,K) + WQRR(L)*DTWQ*DZC(K)*HP(L)  
-            XDOALL(L,K) = XDOALL(L,K) + WQRR(L)*DTWQ*DZC(K)*HP(L)  
-            IF(K.EQ.KC)THEN  
+              WQRR(L) = (WQWDSL(L,K,19)+WQWPSL(L,K,19)) * VOLWQ(L)  
+              XDOPSL(L,K) = XDOPSL(L,K) + WQRR(L)*DTWQ*DZC(K)*HP(L)  
+              XDOALL(L,K) = XDOALL(L,K) + WQRR(L)*DTWQ*DZC(K)*HP(L)  
+              IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-              WQRR(L) = WQRR(L) + WQATML(L,KC,19) * VOLWQ(L)  
-            ENDIF  
+                WQRR(L) = WQRR(L) + WQATML(L,KC,19) * VOLWQ(L)  
+              ENDIF  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
 C          ENDDO  
-          IF(K.EQ.KC)THEN  
+              IF(K.EQ.KC)THEN  
 C            DO L=2,LA  
-              WQRR(L) = WQRR(L) + WQKRDOS(L)  
+                WQRR(L) = WQRR(L) + WQKRDOS(L)  
 C            ENDDO  
-          ENDIF  
-          IF(K.EQ.1)THEN  
+              ENDIF  
+              IF(K.EQ.1)THEN  
 C            DO L=2,LA  
-              WQRR(L) = WQRR(L) + WQBFO2(L)*DZWQ(L)  
-              XDOSOD(L,K) = XDOSOD(L,K) + WQBFO2(L)*DTWQ  
-              XDOALL(L,K) = XDOALL(L,K) + WQBFO2(L)*DTWQ  
+                WQRR(L) = WQRR(L) + WQBFO2(L)*DZWQ(L)  
+                XDOSOD(L,K) = XDOSOD(L,K) + WQBFO2(L)*DTWQ  
+                XDOALL(L,K) = XDOALL(L,K) + WQBFO2(L)*DTWQ  
 C            ENDDO  
-          ENDIF  
+              ENDIF  
 C          DO L=2,LA  
 !}
-            IZ=IWQZMAP(L,K)  
-            O2WQ(L) = MAX(WQVO(L,K,19), 0.0)  
-            WQTTC = (1.3 - 0.3*WQPNC(L)) * WQPC(L)  
-            WQTTD = (1.3 - 0.3*WQPND(L)) * WQPD(L)  
-            WQTTG = (1.3 - 0.3*WQPNG(L)) * WQPG(L)  
-            XDOPPB(L,K) = XDOPPB(L,K) + ( WQTTC*WQVO(L,K,1)  
-     &          +WQTTD*WQVO(L,K,2)+WQTTG*WQVO(L,K,3))*WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XDOALL(L,K) = XDOALL(L,K) + ( WQTTC*WQVO(L,K,1)  
-     &          +WQTTD*WQVO(L,K,2)+WQTTG*WQVO(L,K,3))*WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XMRM = CFCDCWQ*O2WQ(L)*WQBMC(L)/(WQKHRC+O2WQ(L)+ 1.E-18)  
-            WQA19C = WQTTC - XMRM  
-            XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVO(L,K,1) * WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVO(L,K,1) * WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XMRM = CFCDDWQ*O2WQ(L)*WQBMD(L)/(WQKHRD+O2WQ(L)+ 1.E-18)  
-            WQA19D = WQTTD - XMRM  
-            XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVO(L,K,2) * WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVO(L,K,2) * WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XMRM = CFCDGWQ*O2WQ(L)*WQBMG(L)/(WQKHRG+O2WQ(L)+ 1.E-18)  
-            WQA19G = WQTTG - XMRM  
-            XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVO(L,K,3) * WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVO(L,K,3) * WQAOCR*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            WQA19 = ( WQA19C*WQVO(L,K,1) + WQA19D*WQVO(L,K,2)  
+              IZ=IWQZMAP(L,K)  
+              O2WQ(L) = MAX(WQVO(L,K,19), 0.0)  
+              WQTTC = (1.3 - 0.3*WQPNC(L)) * WQPC(L)  
+              WQTTD = (1.3 - 0.3*WQPND(L)) * WQPD(L)  
+              WQTTG = (1.3 - 0.3*WQPNG(L)) * WQPG(L)  
+              XDOPPB(L,K) = XDOPPB(L,K) + ( WQTTC*WQVO(L,K,1)  
+     &            +WQTTD*WQVO(L,K,2)+WQTTG*WQVO(L,K,3))*WQAOCR*DTWQO2  
+     &            *DZC(K)*HP(L)  
+              XDOALL(L,K) = XDOALL(L,K) + ( WQTTC*WQVO(L,K,1)  
+     &            +WQTTD*WQVO(L,K,2)+WQTTG*WQVO(L,K,3))*WQAOCR*DTWQO2  
+     &            *DZC(K)*HP(L)  
+              ! X-species
+              do nsp=1,NXSP
+                WQTTX(nsp)=(1.3 - 0.3*WQPNX(L,nsp)) * WQPX(L,nsp)  
+                XDOPPB(L,K) = XDOPPB(L,K) + ( WQTTX(nsp)*WQVOX(L,K,nsp))
+     &           *WQAOCR*DTWQO2*DZC(K)*HP(L)
+                XDOALL(L,K) = XDOALL(L,K) + ( WQTTX(nsp)*WQVOX(L,K,nsp))
+     &           *WQAOCR*DTWQO2*DZC(K)*HP(L)
+              enddo
+              XMRM = CFCDCWQ*O2WQ(L)*WQBMC(L)/(WQKHRC+O2WQ(L)+ 1.E-18)  
+              WQA19C = WQTTC - XMRM  
+              XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVO(L,K,1)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+              XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVO(L,K,1)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+              XMRM = CFCDDWQ*O2WQ(L)*WQBMD(L)/(WQKHRD+O2WQ(L)+ 1.E-18)  
+              WQA19D = WQTTD - XMRM  
+              XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVO(L,K,2)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+              XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVO(L,K,2)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+              XMRM = CFCDGWQ*O2WQ(L)*WQBMG(L)/(WQKHRG+O2WQ(L)+ 1.E-18)  
+              WQA19G = WQTTG - XMRM  
+              XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVO(L,K,3)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+              XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVO(L,K,3)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+              WQA19 = ( WQA19C*WQVO(L,K,1) + WQA19D*WQVO(L,K,2)  
      &          + WQA19G*WQVO(L,K,3) ) * WQAOCR  
+              ! X-species
+              do nsp=1,NXSP
+                XMRM = CFCDWQX(nsp)*O2WQ(L)*WQBMX(L,nsp)/(WQKHRX(nsp)
+     &                +O2WQ(L)+ 1.E-18)
+                WQA19X = WQTTX(nsp) - XMRM  
+                XDORRB(L,K) = XDORRB(L,K) - XMRM*WQVOX(L,K,nsp)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+                XDOALL(L,K) = XDOALL(L,K) - XMRM*WQVOX(L,K,nsp)
+     &           * WQAOCR*DTWQO2*DZC(K)*HP(L)  
+                WQA19 = WQA19 + (WQA19X*WQVOX(L,K,nsp)) * WQAOCR  
+              enddo
 C  
 C MODIFIED BY MRM 05/23/99 TO ALLOW DIFFERENT AOCR CONSTANTS TO BE APPLI  
 C   TO PHOTOSYNTHESIS AND RESPIRATION TERMS FOR MACROALGAE:  
 C  
-            IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
-              WQTTM = (1.3 - 0.3*WQPNM(L)) * WQPM(L)  
-              XMRM=(1.0-WQFCDM)*O2WQ(L)*WQBMM(L)/(WQKHRM(IZ)+O2WQ(L)  
-     &            +1.E-18)  
-              WQA19A = WQTTM * WQVO(L,K,IDNOTRVA) * WQAOCRPM -  
+              IF(IDNOTRVA.GT.0.AND.K.EQ.1)THEN  
+                WQTTM = (1.3 - 0.3*WQPNM(L)) * WQPM(L)  
+                XMRM=(1.0-WQFCDM)*O2WQ(L)*WQBMM(L)/(WQKHRM(IZ)+O2WQ(L)  
+     &              +1.E-18)  
+                WQA19A = WQTTM * WQVO(L,K,IDNOTRVA) * WQAOCRPM -  
      &            XMRM *  WQVO(L,K,IDNOTRVA) * WQAOCRRM  
-              WQA19 = WQA19 + WQA19A  
-              XDOPPM(L,K) = XDOPPM(L,K) +  
+                WQA19 = WQA19 + WQA19A  
+                XDOPPM(L,K) = XDOPPM(L,K) +  
      &            WQTTM*WQVO(L,K,IDNOTRVA)*WQAOCRPM*DTWQO2*DZC(K)*HP(L)  
-              XDOALL(L,K) = XDOALL(L,K) +  
+                XDOALL(L,K) = XDOALL(L,K) +  
      &            WQTTM*WQVO(L,K,IDNOTRVA)*WQAOCRPM*DTWQO2*DZC(K)*HP(L)  
-              XDORRM(L,K) = XDORRM(L,K) -  
+                XDORRM(L,K) = XDORRM(L,K) -  
      &            XMRM*WQVO(L,K,IDNOTRVA)*WQAOCRRM*DTWQO2*DZC(K)*HP(L)  
-              XDOALL(L,K) = XDOALL(L,K) -  
+                XDOALL(L,K) = XDOALL(L,K) -  
      &            XMRM*WQVO(L,K,IDNOTRVA)*WQAOCRRM*DTWQO2*DZC(K)*HP(L)  
-            ENDIF  
-            WQRR(L) = WQVO(L,K,19) + DTWQ*WQRR(L) + DTWQO2*( WQA19  
+              ENDIF  
+              WQRR(L) = WQVO(L,K,19) + DTWQ*WQRR(L) + DTWQO2*( WQA19  
      &         -WQAOCR*WQKHR(L)*WQVO(L,K,6)-WQAONT*WQNIT(L)*WQVO(L,K,14)  
      &          + WQP19(L)*WQVO(L,K,19) ) + WQO18(L)*WQVO(L,K,18)  
-           WQV(L,K,19)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))*WQVO(L,K,19)  
-            WQV(L,K,19) = MAX (WQV(L,K,19), 0.0)  
-            WQVO(L,K,19) = WQVO(L,K,19)+WQV(L,K,19)  
+              WQV(L,K,19)=SCB(L)*(WQRR(L)*WQKK(L))+(1.-SCB(L))
+     &              *WQVO(L,K,19)  
+              WQV(L,K,19) = MAX (WQV(L,K,19), 0.0)  
+              WQVO(L,K,19) = WQVO(L,K,19)+WQV(L,K,19)  
 C  
 C COMPUTE AND SAVE D.O. DEFICIT:  
 C  
-            XMRM = WQDOS(L) - WQV(L,K,19)  
-            XDODEF(L,K) = XDODEF(L,K) + XMRM*DTWQ*DZC(K)*HP(L)  
-            IF(K.EQ.KC)THEN  
-              XDOKAR(L,K) = XDOKAR(L,K) + WQKRDOS(L)*DTWQ*DZC(K)*HP(L) +  
-     &            WQP19(L)*WQVO(L,K,19)*DTWQO2*DZC(K)*HP(L)  
-              XDOALL(L,K) = XDOALL(L,K) + WQKRDOS(L)*DTWQ*DZC(K)*HP(L) +  
-     &            WQP19(L)*WQVO(L,K,19)*DTWQO2*DZC(K)*HP(L)  
+              XMRM = WQDOS(L) - WQV(L,K,19)  
+              XDODEF(L,K) = XDODEF(L,K) + XMRM*DTWQ*DZC(K)*HP(L)  
+              IF(K.EQ.KC)THEN  
+                XDOKAR(L,K) = XDOKAR(L,K) + WQKRDOS(L)*DTWQ*DZC(K)*HP(L)
+     &            + WQP19(L)*WQVO(L,K,19)*DTWQO2*DZC(K)*HP(L)  
+                XDOALL(L,K) = XDOALL(L,K) + WQKRDOS(L)*DTWQ*DZC(K)*HP(L)
+     &            + WQP19(L)*WQVO(L,K,19)*DTWQO2*DZC(K)*HP(L)  
             ENDIF  
-            XDODOC(L,K)=XDODOC(L,K) - WQAOCR*WQKHR(L)*WQVO(L,K,6)*DTWQO2  
+              XDODOC(L,K)=XDODOC(L,K) - WQAOCR*WQKHR(L)*WQVO(L,K,6)
+     &          *DTWQO2*DZC(K)*HP(L)  
+              XDOALL(L,K)=XDOALL(L,K) - WQAOCR*WQKHR(L)*WQVO(L,K,6)  
+     &          *DTWQO2*DZC(K)*HP(L)  
+              XDONIT(L,K)=XDONIT(L,K)-WQAONT*WQNIT(L)*WQVO(L,K,14)  
+     &          *DTWQO2*DZC(K)*HP(L)  
+              XDOALL(L,K)=XDOALL(L,K)-WQAONT*WQNIT(L)*WQVO(L,K,14)  
+     &          *DTWQO2*DZC(K)*HP(L)  
+              XDOCOD(L,K)=XDOCOD(L,K) - WQO18(L)*WQVO(L,K,18)  
      &          *DZC(K)*HP(L)  
-            XDOALL(L,K)=XDOALL(L,K) - WQAOCR*WQKHR(L)*WQVO(L,K,6)*DTWQO2  
+              XDOALL(L,K)=XDOALL(L,K) - WQO18(L)*WQVO(L,K,18)  
      &          *DZC(K)*HP(L)  
-            XDONIT(L,K)=XDONIT(L,K)-WQAONT*WQNIT(L)*WQVO(L,K,14)*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XDOALL(L,K)=XDOALL(L,K)-WQAONT*WQNIT(L)*WQVO(L,K,14)*DTWQO2  
-     &          *DZC(K)*HP(L)  
-            XDOCOD(L,K)=XDOCOD(L,K) - WQO18(L)*WQVO(L,K,18)  
-     &          *DZC(K)*HP(L)  
-            XDOALL(L,K)=XDOALL(L,K) - WQO18(L)*WQVO(L,K,18)  
-     &          *DZC(K)*HP(L)  
-            XDODZ(L,K) = XDODZ(L,K) + DZC(K)*HP(L)  
+              XDODZ(L,K) = XDODZ(L,K) + DZC(K)*HP(L)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
             ELSE
-             WQV(L,K,19)=WQVO(L,K,19)  
-             WQVO(L,K,19) = WQVO(L,K,19)+WQV(L,K,19)  
+              WQV(L,K,19)=WQVO(L,K,19)  
+              WQVO(L,K,19) = WQVO(L,K,19)+WQV(L,K,19)  
             ENDIF
           ENDDO  
 !} 
@@ -1637,27 +2103,27 @@ C ****  PARAM 20
           IF(IWQSRP.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-              WQT20 = - DTWQO2*WQWSSET(L,1)  
-              WQKK(L) = 1.0 / (1.0 - WQT20)  
-              WQRR(L)=WQVO(L,K,20)+DTWQ*WQR20(L)+WQT20*WQVO(L,K,20)  
+                WQT20 = - DTWQO2*WQWSSET(L,1)  
+                WQKK(L) = 1.0 / (1.0 - WQT20)  
+                WQRR(L)=WQVO(L,K,20)+DTWQ*WQR20(L)+WQT20*WQVO(L,K,20)  
 C            ENDDO  
-            IF(K.NE.KC)THEN  
+                IF(K.NE.KC)THEN  
 C              DO L=2,LA  
-                WQRR(L) = WQRR(L) + DTWQO2*WQWSSET(L,2)*WQVO(L,K+1,20)  
+                  WQRR(L) = WQRR(L) + DTWQO2*WQWSSET(L,2)*WQVO(L,K+1,20)  
 C              ENDDO  
-            ENDIF  
+                ENDIF  
 C            DO L=2,LA  
-              WQV(L,K,20)=SCB(L)*( WQRR(L)*WQKK(L) )  
-     &            +(1.-SCB(L))*WQVO(L,K,20)  
-              WQVO(L,K,20) = WQVO(L,K,20)+WQV(L,K,20)  
+                WQV(L,K,20)=SCB(L)*( WQRR(L)*WQKK(L) )  
+     &              +(1.-SCB(L))*WQVO(L,K,20)  
+                WQVO(L,K,20) = WQVO(L,K,20)+WQV(L,K,20)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            ELSE
-             WQV(L,K,20)=WQVO(L,K,20)  
-             WQVO(L,K,20) = WQVO(L,K,20)+WQV(L,K,20)  
-            ENDIF
-          ENDDO  
+              ELSE
+                WQV(L,K,20)=WQVO(L,K,20)  
+                WQVO(L,K,20) = WQVO(L,K,20)+WQV(L,K,20)  
+              ENDIF
+            ENDDO  
 !}
           ENDIF  
         ELSE  
@@ -1674,29 +2140,29 @@ C ****  PARAM 21
           IF(IWQFCB.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
 !}
-              WQKK(L) = WQTD2FCB(IWQT(L))  
+                WQKK(L) = WQTD2FCB(IWQT(L))  
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
 C  
-              WQR21= (WQWDSL(L,K,NWQV)+WQWPSL(L,K,NWQV))*VOLWQ(L)  
-              IF(K.EQ.KC)THEN  
+                WQR21= (WQWDSL(L,K,NWQV)+WQWPSL(L,K,NWQV))*VOLWQ(L)  
+                IF(K.EQ.KC)THEN  
 C  
 C DEFINITIONS              ATM WET DEP      VOLUMN  
 C  
-                WQR21 = WQR21 + WQATML(L,KC,21) * VOLWQ(L)  
-              ENDIF  
-              WQRR(L) = WQVO(L,K,NWQV)*WQTD1FCB(IWQT(L)) + DTWQ*WQR21  
-              WQV(L,K,21)=SCB(L)*( WQRR(L)*WQKK(L) )  
-     &            +(1.-SCB(L))*WQVO(L,K,21)  
-              WQVO(L,K,21) = WQVO(L,K,21)+WQV(L,K,21)  
+                  WQR21 = WQR21 + WQATML(L,KC,21) * VOLWQ(L)  
+                ENDIF  
+                WQRR(L) = WQVO(L,K,NWQV)*WQTD1FCB(IWQT(L)) + DTWQ*WQR21  
+                WQV(L,K,21)=SCB(L)*( WQRR(L)*WQKK(L) )  
+     &              +(1.-SCB(L))*WQVO(L,K,21)  
+                WQVO(L,K,21) = WQVO(L,K,21)+WQV(L,K,21)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            ELSE
-             WQV(L,K,21)=WQVO(L,K,21)  
-             WQVO(L,K,21) = WQVO(L,K,21)+WQV(L,K,21)  
-            ENDIF
-          ENDDO  
+              ELSE
+                WQV(L,K,21)=WQVO(L,K,21)  
+                WQVO(L,K,21) = WQVO(L,K,21)+WQV(L,K,21)  
+              ENDIF
+            ENDDO  
 !}
           ENDIF  
         ELSE  
@@ -1705,7 +2171,21 @@ C
             WQVO(L,K,21) = WQVO(L,K,21)+WQV(L,K,21)  
           ENDDO  
         ENDIF  
-
+!{GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10   
+        IF(IWQTS.GE.1)THEN
+          IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
+            TIME=DT*FLOAT(N)+TCON*TBEGIN  
+            TIME=TIME/TCON 
+            WRITE(FLN,"('WQRTS',I2.2,'.DAT')") K
+            OPEN(3,FILE=FLN,POSITION='APPEND')
+            DO M=1,IWQTS
+              LL=LWQTS(M)
+              WRITE(3,8999) TIME,WQPC(LL),WQBMC(LL),WQPRC(LL),WQPD(LL),
+     &             WQBMD(LL),WQPRD(LL),WQPG(LL),WQBMG(LL),WQPRG(LL)
+            ENDDO
+            CLOSE(3)
+          ENDIF            
+        ENDIF
       ENDDO  
 C ----------------------------------------------------------------  
 C  
@@ -1726,6 +2206,10 @@ C
         DO L=2,LA  
           WQCHL(L,K) = WQV(L,K,1)*WQCHLC + WQV(L,K,2)*WQCHLD  
      &        + WQV(L,K,3)*WQCHLG  
+          ! X-species
+          do nsp=1,NXSP
+            WQCHL(L,K) = WQCHL(L,K) + WQVX(L,K,nsp)*WQCHLX(nsp)
+          enddo
         ENDDO  
       ENDDO  
       IF(IWQSRP.EQ.1)THEN  
@@ -1765,6 +2249,21 @@ C
           WQDFBD(L) = SCB(L)*WQWSD(IMWQZ)*WQV(L,1,2)  
           WQDFBG(L) = SCB(L)*WQWSG(IMWQZ)*WQV(L,1,3)  
      &        +WQWSM*DZWQ(L)*WQV(L,1,IDNOTRVA)  
+          ! X-species
+          do nsp=1,NXSP
+            if (IWQX(nsp).eq.1) then
+              WQDFBC(L) = WQDFBC(L)
+     &              + SCB(L)*WQWSX(IMWQZ,nsp)*WQVX(L,1,nsp)
+            endif
+            if (IWQX(nsp).eq.2) then
+              WQDFBD(L) = WQDFBD(L)
+     &              + SCB(L)*WQWSX(IMWQZ,nsp)*WQVX(L,1,nsp)
+            endif
+            if (IWQX(nsp).eq.3) then
+              WQDFBG(L) = WQDFBG(L)
+     &              + SCB(L)*WQWSX(IMWQZ,nsp)*WQVX(L,1,nsp)
+            endif
+          enddo
           WQDFRC(L) = SCB(L)*WQWSRP(IMWQZ)*WQV(L,1,4)  
           WQDFLC(L) = SCB(L)*WQWSLP(IMWQZ)*WQV(L,1,5)  
           WQDFRP(L) = SCB(L)*WQWSRP(IMWQZ)*WQV(L,1,7)  
@@ -1874,8 +2373,39 @@ C
         ENDIF  
         CLOSE(1)  
       ENDIF  
+!{ GEOSR STOKES : YSSONG 2015.08.18      
+      do nsp=1,NXSP
+        DO K=1,KC  
+          DO L=2,LA  
+            WQVOXB(L,K,nsp) = WQVOX(L,K,nsp) 
+          ENDDO 
+        ENDDO         
+      enddo
+
+      DO K=1,KC  
+        DO L=2,LA  
+          WQVOCB(L,K) = WQVO(L,K,1) 
+        ENDDO 
+      ENDDO               
+      
+      if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+        IF(ISSTOKEX(1).EQ.1)THEN
+          do i=1,IWQTS
+            WRITE(FLN,"('STOKE',I2.2,'.OUT')") i
+            OPEN(1,FILE=trim(FLN),POSITION='APPEND')      ! VERTICAL VELOCITY, ALGAL-DENSITY, SOLAR RADIATION, chl-a PRINT AT EACH LAYER
+            write(1,1114) TIMTMP
+     & ,((WQALSETX(LWQTS(i),k,nsp),nsp=1,NXSP),k=kc,1,-1)
+     & ,((WQRHOX(LWQTS(i),k,nsp),nsp=1,NXSP),k=kc,1,-1)
+     & ,((WQSOLDAX(LWQTS(i),k,nsp),nsp=1,NXSP),k=kc,1,-1)
+     & ,(WQCHL(LWQTS(i),k),k=kc,1,-1)
+            close(1)
+          enddo
+        ENDIF 
+      endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+ 1114 FORMAT(F12.6,(E12.4))  
  1111 FORMAT(I12,F10.4)  
  1112 FORMAT(2I5,12F7.2)  
  1113 FORMAT(2I5,12E12.4)  
+ 8999 FORMAT(F10.5,9E12.4)   
       RETURN  
       END  

@@ -42,10 +42,6 @@ public class EfdcRestartTest extends TestCase {
     	testData = new OpenDaTestSupport(EfdcRestartTest.class,"model_efdc_dll");
     }
 
-    public void tstDUmmy(){
-    	//nothing here on purpose
-    }
-    
     public void testRestartDllBasedModel() {
 
         final int instanceCount = 2;
@@ -65,7 +61,7 @@ public class EfdcRestartTest extends TestCase {
         runModelInstancesTest(fortranDll, modelInstancesParentDir, instanceCount);
     }
 
-    static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
+    private  static void runModelInstancesTest(File simpleFortranDll, File modelParentDir, int instanceCount) {
 
         IModelInstance[] modelInstances = new EfdcModelInstance[instanceCount];
 
@@ -77,7 +73,7 @@ public class EfdcRestartTest extends TestCase {
         for (int i = 0; i < instanceCount; i++) {
             File instanceDir = new File(modelParentDir, "work" + i);
     		BBUtils.makeDirectoryClone(modelTemplateDir, instanceDir);
-            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, true, null);
+            modelInstances[i] = new EfdcModelInstance(instanceDir, new String[]{}, "model_output.nc", "analysis_output.nc", i, null);
         }
 
         // test save and compute

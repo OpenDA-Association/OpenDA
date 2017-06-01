@@ -4,8 +4,18 @@
 		<Platform Name="Win32"/></Platforms>
 	<Configurations>
 		<Configuration Name="Debug|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" InitLocalVarToNAN="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" Traceback="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
@@ -13,18 +23,8 @@
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Debug 64|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
 				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -34,7 +34,27 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Release OpenMP|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release Double Precission|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release OpenMP Double Precission|Win32" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
 				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -51,6 +71,8 @@
 		<File RelativePath=".\openDA_wrapper\chdir_mod.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_aser_time_series.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_cser_time_series.f90">
+			<FileConfiguration Name="Release Double Precission|Win32">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
 				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|Win32">
@@ -65,17 +87,22 @@
 		<File RelativePath=".\openDA_wrapper\model_init_3.for"/>
 		<File RelativePath=".\openDA_wrapper\model_make_step.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_pser_time_series.f90">
+			<FileConfiguration Name="Release Double Precission|Win32">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
 				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|Win32">
 				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
 		<File RelativePath=".\openDA_wrapper\model_qser_time_series.f90">
+			<FileConfiguration Name="Release Double Precission|Win32">
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
 				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|Win32">
 				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
 		<File RelativePath=".\openDA_wrapper\model_restart_init.for"/>
 		<File RelativePath=".\openDA_wrapper\model_state.f90"/>
+		<File RelativePath=".\openDA_wrapper\model_wser_time_series.f90"/>
 		<File RelativePath=".\openDA_wrapper\openDA_wrapper.F90"/></Filter>
 		<Filter Name="Original EFDC files">
 		<File RelativePath=".\original_efdc_files\ACON.for"/>
@@ -283,6 +310,7 @@
 		<File RelativePath=".\original_efdc_files\SMRIN1.for"/>
 		<File RelativePath=".\original_efdc_files\SOLVSMBE.for"/>
 		<File RelativePath=".\original_efdc_files\SSEDTOX.for"/>
+		<File RelativePath=".\original_efdc_files\Sub_spore.for"/>
 		<File RelativePath=".\original_efdc_files\SUBCHAN.for"/>
 		<File RelativePath=".\original_efdc_files\SURFPLT.for"/>
 		<File RelativePath=".\original_efdc_files\SVBKSB.for"/>
@@ -324,6 +352,7 @@
 		<File RelativePath=".\original_efdc_files\WQSKE2.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE3.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE4.for"/>
+		<File RelativePath=".\original_efdc_files\WQSTOKES01.for"/>
 		<File RelativePath=".\original_efdc_files\WQZERO.for"/>
 		<File RelativePath=".\original_efdc_files\WQZERO2.for"/>
 		<File RelativePath=".\original_efdc_files\WQZERO3.for"/>

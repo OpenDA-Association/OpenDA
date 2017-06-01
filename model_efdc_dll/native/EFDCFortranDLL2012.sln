@@ -6,12 +6,18 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Release Double Precission|Win32 = Release Double Precission|Win32
+		Release OpenMP Double Precission|Win32 = Release OpenMP Double Precission|Win32
 		Release OpenMP|Win32 = Release OpenMP|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|Win32.ActiveCfg = Debug|Win32
 		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|Win32.Build.0 = Debug|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release Double Precission|Win32.ActiveCfg = Release Double Precission|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release Double Precission|Win32.Build.0 = Release Double Precission|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release OpenMP Double Precission|Win32.ActiveCfg = Release OpenMP Double Precission|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release OpenMP Double Precission|Win32.Build.0 = Release OpenMP Double Precission|Win32
 		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release OpenMP|Win32.ActiveCfg = Release OpenMP|Win32
 		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release OpenMP|Win32.Build.0 = Release OpenMP|Win32
 		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|Win32.ActiveCfg = Release|Win32

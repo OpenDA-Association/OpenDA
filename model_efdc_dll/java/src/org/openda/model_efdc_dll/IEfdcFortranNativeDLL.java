@@ -348,6 +348,14 @@ public interface IEfdcFortranNativeDLL extends Library {
      */
     int m_openda_wrapper_get_time_series_count_(IntByReference modelInstanceId, IntByReference exchangeItemId);
     
+    /**
+     * Get the number of time series for a forcing or boundary exchange item.
+     *
+     * @param modelInstanceId (In:)  The model instance identifier
+     * @return <0: error, >=0: The number of x-species.
+     */
+    int m_openda_wrapper_get_xspecies_count_(IntByReference modelInstanceId);
+
 
     /**
      * Get the values for an exchange item that is defined on a spatial 'domain'

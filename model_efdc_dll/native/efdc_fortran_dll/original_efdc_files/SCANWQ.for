@@ -11,6 +11,7 @@
       LOGICAL*4     BFLAG
       INTEGER*4     I,J,K,ITMP,NW
       REAL*4        XPSQ
+      LOGICAL       fileExists
       
       WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC.INP'
       INFILE='WQ3DWC.INP'
@@ -131,7 +132,23 @@ C
       ENDDO
 
       IPMC=0
+      ! For x-species WQ3DWC2 needs to be checked
+      INQUIRE(FILE='WQ3DWC2.INP',EXIST=fileExists)
+      if (fileExists) then
+        WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC2.INP'
+        OPEN(1,FILE='WQ3DWC2.INP',STATUS='UNKNOWN')  
 
+        CALL SEEK('C01')  
+        READ(1,*) NXSP
+      else
+        NXSP = 0
+      endif
+      if (NXSP.GE.1) then
+        CALL SEEK('C19')  
+        READ(1,*) ISCYANO,NSZONE,CONCYA,TGERMI,KCG,DGTIME,
+     &           CYA_TEM,CYA_P4D,CYA_NO3,CYA_Light,Light_Factor2,NNAT
+      endif
+      CLOSE(1)
    50 RETURN
    
     1 FORMAT(1X)

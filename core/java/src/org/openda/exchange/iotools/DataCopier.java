@@ -202,7 +202,8 @@ public class DataCopier implements IConfigurable {
 
 		String message = "Copying " + id;
 		System.out.println(message);
-		Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
+		//TODO: [LOGGING] move to debug when new logging is avalablle
+		//Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		outputExchangeItem.copyValuesFromItem(inputExchangeItem);
 	}
 

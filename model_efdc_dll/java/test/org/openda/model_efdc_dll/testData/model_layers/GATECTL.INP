@@ -37,17 +37,18 @@ GC3 GATE INFORMATION 2
 *   MAXQ: MAXIMUM GATE FLUX [m^3/S] (NEGATIVE VALUE MEANS UNLIMITED MAX.)
 *   GOTIME: GATE COMPLETELY OPEN TIME INTERVAL (GOTIME > 0.) [min.]
 *   GCTIME: GATE COMPLETELY CLOSE TIME INTERVAL (GOTIME > 0.) [min.]
+*   IATS: SPECIFY NTIMESTEPS FOR AVERAGING, DEFAULT 1, EXAMPLE. 5min*60/dt(3s)=100)
 *
-GC3 SILL  SILLHH  GATEHI  GATEHO  GATEWI  GATEWO  MAXQ   GOTIME  GCTIME
-     2.50   0.      5.05    5.05    40.0    40.0  1139.     20.     20. ' *** GATESER_1-1 SC������
-     7.40   0.      100.    100.    332.    332.   -1       20.     20. ' *** GATESER_1-2 SC������
-     2.50   0.      100.    100.    100.    100.   -1       20.     20. ' *** GATESER_1-3 sc�Ҽ��¹���
-     7.10   0.      100.    100.    12.0    12.0   -1       20.     20. ' *** GATESER_1-4 sc�
-    -3.63   0.      7.13    7.13    36.5    36.5  524.      20.     20. ' *** GATESER_1-5 js������
-    -3.63   0.      7.13    7.13    36.5    36.5  524.      20.     20. ' *** GATESER_1-6 js������
-     3.50   0.      100.    100.    184     184    -1       20.     20. ' *** GATESER_1-7 js������
-    -3.63   0.      100.    100.    100.    100.   -1       20.     20. ' *** GATESER_1-8 js�Ҽ��¹���
-     2.60   0.      100.    100.    5.0     5.0    -1       20.     20. ' *** GATESER_1-9 js�
+GC3 SILL  SILLHH  GATEHI  GATEHO  GATEWI  GATEWO  MAXQ   GOTIME  GCTIME  IATS
+     2.50   0.      5.05    5.05    40.0    40.0  1139.     20.     20.       1     ' *** GATESER_1-1 SC������
+     7.40   0.      100.    100.    332.    332.   -1       20.     20.       1     ' *** GATESER_1-2 SC������
+     2.50   0.      100.    100.    100.    100.   -1       20.     20.       1     ' *** GATESER_1-3 sc�Ҽ��¹���
+     7.10   0.      100.    100.    12.0    12.0   -1       20.     20.       1     ' *** GATESER_1-4 sc�
+    -3.63   0.      7.13    7.13    36.5    36.5  524.      20.     20.       1     ' *** GATESER_1-5 js������
+    -3.63   0.      7.13    7.13    36.5    36.5  524.      20.     20.       1     ' *** GATESER_1-6 js������
+     3.50   0.      100.    100.    184     184    -1       20.     20.       1     ' *** GATESER_1-7 js������
+    -3.63   0.      100.    100.    100.    100.   -1       20.     20.       1     ' *** GATESER_1-8 js�Ҽ��¹���
+     2.60   0.      100.    100.    5.0     5.0    -1       20.     20.       1     ' *** GATESER_1-9 js�
 ------------------------------------------------------------------------------
 GC4 FLOW CONSTANT & FOMULAR CHOICE
 *   CG1 : DISCHARGE COEFFICIENT : COMPLETE OVERFLOW

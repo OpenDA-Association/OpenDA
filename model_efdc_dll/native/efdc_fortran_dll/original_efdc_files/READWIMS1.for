@@ -95,22 +95,11 @@ C
         CLOSE(21,STATUS='DELETE')
         OPEN(21,FILE='TXSER.INP',STATUS='UNKNOWN')  
 
-        IF(KC.GT.1)THEN
-          TXMASS_3D(1)=TXLDC
-        ELSE
-          TXMASS_3D(KC)=TXLDC
-! {GEOSR 2014.09.14 YSSONG
-C          TXMASS0(KC)=0.0
-          TXMASS0(KC)=TXLDC
-          DO K=1,KC-1
-C            TXMASS_3D(K)=0.0
-C            TXMASS0(K)=0.0
+        DO K=1,KC
             TXMASS_3D(K)=TXLDC
-            TXMASS0(K)=TXLDC
-!}
-          ENDDO
-        ENDIF
-
+            TXMASS0(K)=0.0
+        ENDDO
+        
         DO NDUM=1,15
          WRITE(21,8899) 
         ENDDO

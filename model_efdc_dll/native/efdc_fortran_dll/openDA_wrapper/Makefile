@@ -13,13 +13,9 @@ MAKE_FF =gfortran
 #MAKE_FF =ifort
 
 
-#MAKE_FOPTIBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow	# debug
-MAKE_FOPTIBUG = -O   	# optimize
-MAKE_FFLAGS_SPECIFIC = -fPIC -ffree-line-length-none -x f95-cpp-input# gfortran
-
-MAKE_FFLAGS = \
-    $(MAKE_FFLAGS_SPECIFIC) \
-    $(MAKE_FOPTIBUG) \
+MAKE_FDEBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow	# debug
+MAKE_FOPTIMIZE = -O # optimize
+MAKE_FFLAGS = -fPIC -ffree-line-length-none -x f95-cpp-input# gfortran
 
 # additional libs (if required)
 MAKE_INC = -I../original_efdc_files 
@@ -86,6 +82,7 @@ SRC_OPENDA_F90 = \
 	model_aser_time_series.f90 model_end.f90 model_init.f90 \
 	model_pser_time_series.f90 \
 	model_cser_time_series.f90 \
+	model_wser_time_series.f90 \
 	model_gateser_time_series.f90 \
 	model_make_step.f90 model_qser_time_series.f90 openDA_wrapper.f90 \
 
@@ -106,7 +103,11 @@ TEST_DATA_BIN_DIR = ../../../java/test/org/openda/model_efdc_dll/testData/bin
 
 #-----	Targets  ---------------------------------------------------------------
 
+all: MAKE_FFLAGS += $(MAKE_FOPTIMIZE)
 all: $(SO)
+
+debug: MAKE_FFLAGS += $(MAKE_FDEBUG)
+debug: $(SO)
 
 openmp: MAKE_FFLAGS += $(F_OPENMP)
 openmp: MAKE_SO += $(F_OPENMP)

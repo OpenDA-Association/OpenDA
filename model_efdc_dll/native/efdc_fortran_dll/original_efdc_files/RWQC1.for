@@ -30,19 +30,30 @@ C      PARAMETER (CONV1=1.0E3,CONV2=8.64E4)  PMC Single Line
       REAL      XMRM1, XMRM2, XMRM3,XMRM4,XMRMA,XMRMB,XMRMC,XMRMD,  ! MACROALGAE
      &          XMRME  
       REAL      XPSQ,XDSQ,XMUD
-      INTEGER   M,N1,II,JJ,KK,M1,NT,ISSKIP,NW,ND,LF,LL,L
+      INTEGER   M,N1,II,JJ,KK,M1,NT,ISSKIP,NW,ND,LF,LL,L,nsp
       INTEGER   IWQDT,IWQKIN,ITMP,IZ,IN,IJKC,IWQZX,IZMUD,IZSAND
+      INTEGER   IZANOX,MDUM    ! Variables for benthic flux for anoxic env
       INTEGER   I,J,K
+      ! Variables for x-species
+      REAL      WQTMX1(NXSP),WQTMX2(NXSP),WQTMPX1(NXSP) ! C04 in WQ3DWC2.INP
+     &         ,WQTMPX2(NXSP)
+      REAL      WQKGX1(NXSP),WQKGX2(NXSP),WQKGPX1(NXSP) ! C05 in WQ3DWC2.INP
+     &         ,WQKGPX2(NXSP)
+      REAL      WQTRX(NXSP),WQKTBX(NXSP)                ! C06 in WQ3DWC2.INP
+      REAL      XWQVX(NXSP)
+      CHARACTER*80 FLN
+      integer iww(100),jww(100)
 C
       PARAMETER (CONV1=1.0,CONV2=8.64E4)  
 C
       IF(.NOT.ALLOCATED(XDSL))THEN
-		ALLOCATE(XDSL(NWQVM))
-		ALLOCATE(XPSL(NWQVM))
-	    XDSL=0.0 
-	    XPSL=0.0 
+		  ALLOCATE(XDSL(NWQVM))
+		  ALLOCATE(XPSL(NWQVM))
+	     XDSL=0.0 
+	     XPSL=0.0 
       ENDIF
-C  
+
+      
       OPEN(2,FILE='WQ3D.OUT',STATUS='UNKNOWN',POSITION='APPEND')  
       PRINT *,'WQ: READING WQ3DWC.INP - MAIN WATER QUALITY CONTROL FILE'
       OPEN(1,FILE='WQ3DWC.INP',STATUS='UNKNOWN')  
@@ -128,107 +139,108 @@ C      DTWQ = DTD*REAL(IWQDT)*REAL(NWQKDPT)  PMC
       !STOP '** ERROR!!! INVALID IWQM VALUE **'  
       !ENDIF  
       IF(IWQBEN.EQ.1)THEN  
-      WRITE(2,80)'* SEDIMENT PROCESS MODEL IS ACTIVATED             '  
+        WRITE(2,80)'* SEDIMENT PROCESS MODEL IS ACTIVATED             '  
       ELSE IF(IWQBEN.EQ.0)THEN  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT BF IS SPECIFIED   '  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT BF IS SPECIFIED   '  
       ELSE IF(IWQBEN.EQ.2)THEN  
-      WRITE(2,80)'* SPATIALLY AND/OR TEMPORALLY-VARYING BF SPECIFIED'  
+        WRITE(2,80)'* SPATIALLY AND/OR TEMPORALLY-VARYING BF SPECIFIED'  
       ELSE  
-      STOP '** ERROR!!! INVALID IWQBEN VALUE **'  
+        STOP '** ERROR!!! INVALID IWQBEN VALUE **'  
       ENDIF  
       IF(IWQSI.EQ.1)THEN  
-      WRITE(2,80)'* SILICA STATE VARIABLES (SU & SA) ARE MODELED    '  
+        WRITE(2,80)'* SILICA STATE VARIABLES (SU & SA) ARE MODELED    '  
       ELSE  
-      WRITE(2,80)'* NO SILICA (SU & SU) LIMITATION                  '  
+        WRITE(2,80)'* NO SILICA (SU & SU) LIMITATION                  '  
       ENDIF  
       IF(IWQFCB.EQ.1)THEN  
-      WRITE(2,80)'* FCB (FECAL COLIFORM BACTERIA) IS MODELED        '  
+        WRITE(2,80)'* FCB (FECAL COLIFORM BACTERIA) IS MODELED        '  
       ELSE  
-      WRITE(2,80)'* FCB (FECAL COLIFORM BACTERIA) IS NOT MODELED    '  
+        WRITE(2,80)'* FCB (FECAL COLIFORM BACTERIA) IS NOT MODELED    '  
       ENDIF  
       IF(IWQSRP.EQ.1)THEN  
-      WRITE(2,80)'* TAM IS USED FOR SORPTION OF PO4T/SA: MODEL TAM  '  
+        WRITE(2,80)'* TAM IS USED FOR SORPTION OF PO4T/SA: MODEL TAM  '  
       ELSE IF(IWQSRP.EQ.2)THEN  
-      WRITE(2,80)'* TSS IS USED FOR SORPTION OF PO4T/SA: MODEL TSS  '  
-      IF(ISTRAN(6).NE.1) STOP 'ERROR! INCOMPATIBLE ISTRAN(6)/IWQSRP'  
+        WRITE(2,80)'* TSS IS USED FOR SORPTION OF PO4T/SA: MODEL TSS  '  
+        IF(ISTRAN(6).NE.1) STOP 'ERROR! INCOMPATIBLE ISTRAN(6)/IWQSRP'  
       ELSE  
-      WRITE(2,80)'* NO SORPTION OF PO4T/SA: MAY MODEL TSS & NO TAM  '  
+        WRITE(2,80)'* NO SORPTION OF PO4T/SA: MAY MODEL TSS & NO TAM  '  
       ENDIF  
       IF(IWQSTOX.EQ.1)THEN  
-      WRITE(2,80)'* SALINITY TOXICITY IS APPLIED TO CYANOBACTERIA   '  
+        WRITE(2,80)'* SALINITY TOXICITY IS APPLIED TO CYANOBACTERIA   '  
       ELSE  
-      WRITE(2,80)'* NO SALINITY TOXICITY: SALTWATER CYANOBACTERIA   '  
+        WRITE(2,80)'* NO SALINITY TOXICITY: SALTWATER CYANOBACTERIA   '  
       ENDIF  
       IF(IWQKA(1).EQ.0)THEN  
-      WRITE(2,80)'* USER-SPECIFIED CONSTANT REAERATION SET TO WQKRO '  
-      WRITE(2,80)'*   REAERATION DUE TO WIND SET TO ZERO            '  
+        WRITE(2,80)'* USER-SPECIFIED CONSTANT REAERATION SET TO WQKRO '  
+        WRITE(2,80)'*   REAERATION DUE TO WIND SET TO ZERO            '  
       ENDIF  
       IF(IWQKA(1).EQ.1)THEN  
-      WRITE(2,80)'* USER-SPECIFIED CONSTANT REAERATION SET TO WQKRO '  
-      WRITE(2,80)'*   REAERATION DUE TO WIND ADDED TO WQKRO         '  
+        WRITE(2,80)'* USER-SPECIFIED CONSTANT REAERATION SET TO WQKRO '  
+        WRITE(2,80)'*   REAERATION DUE TO WIND ADDED TO WQKRO         '  
       ENDIF  
       IF(IWQKA(1).EQ.2)THEN  
-      WRITE(2,80)'* OCONNOR-DOBBINS REAERATION FORMULA IS USED      '  
+        WRITE(2,80)'* OCONNOR-DOBBINS REAERATION FORMULA IS USED      '  
       ENDIF  
       IF(IWQKA(1).EQ.3)THEN  
-      WRITE(2,80)'* OWENS & GIBBS (1964) REAERATION FORMULA IS USED '  
+        WRITE(2,80)'* OWENS & GIBBS (1964) REAERATION FORMULA IS USED '  
       ENDIF  
       IF(IWQKA(1).EQ.4)THEN  
-      WRITE(2,80)'* MODIFIED OWENS & GIBBS REAERATION IS USED       '  
+        WRITE(2,80)'* MODIFIED OWENS & GIBBS REAERATION IS USED       '  
       ENDIF  
       IF(IWQVLIM.EQ.0)THEN  
-      WRITE(2,80)'* MACROALGAE GROWTH IS NOT LIMITED BY VELOCITY    '  
+        WRITE(2,80)'* MACROALGAE GROWTH IS NOT LIMITED BY VELOCITY    '  
       ENDIF  
       IF(IWQVLIM.EQ.1)THEN  
-      WRITE(2,80)'* MACROALGAE VELOCITY LIMIT, MICHAELIS-MENTON EQU.'  
+        WRITE(2,80)'* MACROALGAE VELOCITY LIMIT, MICHAELIS-MENTON EQU.'  
       ENDIF  
       IF(IWQVLIM.EQ.2)THEN  
-      WRITE(2,80)'*MACROALGAE VEL. LIMIT, 5-PARAM LOGISTIC FUNCTION'  
+        WRITE(2,80)'*MACROALGAE VEL. LIMIT, 5-PARAM LOGISTIC FUNCTION'  
       ENDIF  
-      WRITE(2,83)'* # OF ZONES FOR SPATIALLY VARYING PARAMETERS =',IWQZ  
+        WRITE(2,83)'* # OF ZONES FOR SPATIALLY VARYING PARAMETERS =',
+     &    IWQZ  
       IF(IWQZ.GT.NWQZ) STOP 'ERROR!! IWQZ SHOULD BE <= NWQZ'  
       IF(IWQNC.EQ.1)THEN  
-      WRITE(2,80)'* WRITE NEGATIVE CONC. INFORMATION TO NEG-CONC.LOG'  
+        WRITE(2,80)'* WRITE NEGATIVE CONC. INFORMATION TO NEG-CONC.LOG'  
       ELSE  
-      WRITE(2,80)'* NO WRTING OF NEGATIVE CONCENTRATION INFORMATION '  
+        WRITE(2,80)'* NO WRTING OF NEGATIVE CONCENTRATION INFORMATION '  
       ENDIF  
       IF(IWQRST.EQ.1)THEN  
-      WRITE(2,80)'* WRITE SPATIAL DISTRIBUTIONS TO IWQORST          '  
+        WRITE(2,80)'* WRITE SPATIAL DISTRIBUTIONS TO IWQORST          '  
       ELSE  
-      WRITE(2,80)'* NO WRITING TO IWQORST                           '  
+        WRITE(2,80)'* NO WRITING TO IWQORST                           '  
       ENDIF  
       WRITE(2,999)  
       IF(IWQICI.EQ.1)THEN  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY-VARYING ICS FROM INWQICI   '  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY-VARYING ICS FROM INWQICI   '  
       ELSE IF(IWQICI.EQ.2)THEN  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY-VARYING ICS FROM INWQRST   '  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY-VARYING ICS FROM INWQRST   '  
       ELSE  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT INITIAL CONDITIONS'  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT INITIAL CONDITIONS'  
       ENDIF  
       IF(IWQAGR.EQ.1)THEN  
-      WRITE(2,80)'* SPATIALLY A/O TEMPORALLY-VARYING ALGAL KINETICS '  
+        WRITE(2,80)'* SPATIALLY A/O TEMPORALLY-VARYING ALGAL KINETICS '  
       ELSE  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT ALGAL KINETICS    '  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT ALGAL KINETICS    '  
       ENDIF  
       IF(IWQSTL.EQ.1)THEN  
-      WRITE(2,80)'* SPATIALLY AND/OR TEMPORALLY-VARYING SETTLING VEL'  
+        WRITE(2,80)'* SPATIALLY AND/OR TEMPORALLY-VARYING SETTLING VEL'  
       ELSE  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT SETTLING VELOCITY '  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT SETTLING VELOCITY '  
       ENDIF  
       IF(IWQSUN.GE.1)THEN  
-      WRITE(2,80)'* TEMPORALLY-VARYING IO & FD                      '  
+        WRITE(2,80)'* TEMPORALLY-VARYING IO & FD                      '  
       ELSE  
-      WRITE(2,80)'* TEMPORALLY CONSTANT IO & FD                     '  
+        WRITE(2,80)'* TEMPORALLY CONSTANT IO & FD                     '  
       ENDIF  
       IF(IWQNPL.EQ.1)THEN  
-      WRITE(2,80)'* SPATIALLY AND/OR TEMPORALLY-VARYING NPS INPUT   '  
+        WRITE(2,80)'* SPATIALLY AND/OR TEMPORALLY-VARYING NPS INPUT   '  
       ELSE  
-      WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT NPS INPUT         '  
+        WRITE(2,80)'* SPATIALLY/TEMPORALLY CONSTANT NPS INPUT         '  
       ENDIF  
       IF(IWQKIN.EQ.1)THEN  
-      WRITE(2,80)'* SPATIALLY VARYING KINETICS FROM KINETICS.INP    '  
+        WRITE(2,80)'* SPATIALLY VARYING KINETICS FROM KINETICS.INP    '  
       ELSE  
-      WRITE(2,80)'* FILE KINETICS.INP NOT USED                      '  
+        WRITE(2,80)'* FILE KINETICS.INP NOT USED                      '  
       ENDIF  
       WRITE(2,999)  
 C *** C06  
@@ -253,8 +265,8 @@ C        CALL INITBIN3
 !}
       ENDIF  
       IF(IWQTS.GT.NWQTS)THEN  
-      WRITE(2,80)'** IWQTS SHOULD BE <= NWQTS **                    '  
-        IWQTS=NWQTS  
+        WRITE(2,80)'** IWQTS SHOULD BE <= NWQTS **                    '  
+          IWQTS=NWQTS  
       ENDIF  
       WRITE(2,84)  
      &    '* TIME-SERIES OUTPUT FROM ', TWQTSB, ' DAY ',  
@@ -273,8 +285,8 @@ C *** C07
         READ(1,90) TITLE(M)  
       ENDDO  
       IF(IWQTS.GE.1)THEN  
-      WRITE(2,80)': ICWQTS(I)=1, TIME-SERIES OUTPUT FOR VARIABLE I  '  
-      WRITE(2,80)': ICWQTS(I)\=1, NO TIME-SERIES OUTPUT FOR VAR. I  '  
+        WRITE(2,80)': ICWQTS(I)=1, TIME-SERIES OUTPUT FOR VARIABLE I  '  
+        WRITE(2,80)': ICWQTS(I)\=1, NO TIME-SERIES OUTPUT FOR VAR. I  '  
         WRITE(2,999)  
         DO M=1,2  
           WRITE(2,90) TITLE(M)  
@@ -291,6 +303,8 @@ C *** C07
           ENDIF  
           LWQTS(M)=LIJ(II,JJ)  
           WRITE(2,94) II,JJ,(ICWQTS(NW,M),NW=1,NTSWQV+1)  
+          iww(M)=II
+          jww(M)=JJ
         ENDDO  
       ENDIF  
       IWQTSB = NINT(TWQTSB/DTD)  
@@ -359,8 +373,8 @@ C
       WRITE(2,81)' : KETSS (/M PER G/M^3)  = ', WQKETSS  
       WRITE(2,81)' : KECHL (/M PER MG/M^3) = ', WQKECHL  
       IF(WQKECHL .LT. 0.0)THEN  
-      WRITE(2,80) '* USE RILEY (1956) EQUATION FOR WQKECHL          '  
-      WRITE(2,80) ' : KECHL = 0.054*CHL**0.667 + 0.0088*CHL         '  
+        WRITE(2,80) '* USE RILEY (1956) EQUATION FOR WQKECHL          '  
+        WRITE(2,80) ' : KECHL = 0.054*CHL**0.667 + 0.0088*CHL         '  
       ENDIF  
       WRITE(2,81)' : KEPOM (/M PER G/M^3)  = ', WQKEPOM  
       ! *** END DSLLC BLOCK 
@@ -510,7 +524,7 @@ C
       XP = ABS(1.0 - (WQFPRP+WQFPLP+WQFPDP+WQFPIP))  
       IF(XP .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FPRP+FPLP+FPDP+FPIP NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FPRP+FPLP+FPDP+FPIP NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
 C *** C19
@@ -531,7 +545,7 @@ C *** C20
      &    WQFPIM,WQKPO4P  
       IF(IWQSRP.NE.1 .AND. IWQSRP.NE.2)THEN  
         WQKPO4P = 0.0  
-      WRITE(2,80)': NO SORPTION OF PO4T/SA, SO KPO4P IS FORCED TO 0 '  
+        WRITE(2,80)': NO SORPTION OF PO4T/SA, SO KPO4P IS FORCED TO 0 '  
       ENDIF  
       WRITE(2,80)'* PHOSPHORUS DIST COEF OF DOP FOR ALGAL METABOLISM'  
       WRITE(2,81)' : (FPDC, FPDD, FPDG)    = ', WQFPDC,WQFPDD,WQFPDG  
@@ -542,19 +556,19 @@ C *** C20
       XPC = ABS(1.0 - (WQFPRC+WQFPLC+WQFPDC+WQFPIC))  
       IF(XPC .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FPRC+FPLC+FPDC+FPIC NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FPRC+FPLC+FPDC+FPIC NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
       XPD = ABS(1.0 - (WQFPRD+WQFPLD+WQFPDD+WQFPID))  
       IF(XPD .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FPRD+FPLD+FPDD+FPID NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FPRD+FPLD+FPDD+FPID NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
       XPG = ABS(1.0 - (WQFPRG+WQFPLG+WQFPDG+WQFPIG))  
       IF(XPG .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FPRG+FPLG+FPDG+FPIG NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FPRG+FPLG+FPDG+FPIG NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
 C *** C21
@@ -595,7 +609,7 @@ C
       XN = ABS(1.0 - (WQFNRP+WQFNLP+WQFNDP+WQFNIP))  
       IF(XN .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FNRP+FNLP+FNDP+FNIP NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FNRP+FNLP+FNDP+FNIP NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
       WRITE(2,999)  
@@ -623,19 +637,19 @@ C *** C24
       XNC = ABS(1.0 - (WQFNRC+WQFNLC+WQFNDC+WQFNIC))  
       IF(XNC .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FNRC+FNLC+FNDC+FNIC NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FNRC+FNLC+FNDC+FNIC NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
       XND = ABS(1.0 - (WQFNRD+WQFNLD+WQFNDD+WQFNID))  
       IF(XND .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FNRD+FNLD+FNDD+FNID NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FNRD+FNLD+FNDD+FNID NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
       XNG = ABS(1.0 - (WQFNRG+WQFNLG+WQFNDG+WQFNIG))  
       IF(XNG .GT. 0.0001)THEN  
         WRITE(2,*)  
-      WRITE(2,*) ' WARNING!  FNRG+FNLG+FNDG+FNIG NOT EQUAL TO 1.0'  
+        WRITE(2,*) ' WARNING!  FNRG+FNLG+FNDG+FNIG NOT EQUAL TO 1.0'  
         WRITE(2,*)  
       ENDIF  
 C *** C25
@@ -675,7 +689,7 @@ C
      &    WQTRSUA,WQKTSUA  
       IF(IWQSRP.NE.1 .AND. IWQSRP.NE.2)THEN  
         WQKSAP = 0.0  
-      WRITE(2,80)': NO SORPTION OF PO4T/SA, SO KSAP IS FORCED TO 0  '  
+        WRITE(2,80)': NO SORPTION OF PO4T/SA, SO KSAP IS FORCED TO 0  '  
       ENDIF  
       WRITE(2,80)'* SILICA DISTRIBUTION COEFF FOR DIATOM PREDATION  '  
       WRITE(2,81)' : (FSPP, FSIP)          = ', WQFSPP,WQFSIP  
@@ -1328,14 +1342,14 @@ C
       IF(IWQAGR.NE.1)THEN  
         WRITE(2,999)  
         WRITE(2,90) TITLE(1)  
-      WRITE(2,80)'* ALGAL GROWTH RATE (/DAY)                        '  
-      WRITE(2,21)' : (PMC, PMD, PMG)       = ', WQPMC(1),WQPMD(1),  
+        WRITE(2,80)'* ALGAL GROWTH RATE (/DAY)                        '  
+        WRITE(2,21)' : (PMC, PMD, PMG)       = ', WQPMC(1),WQPMD(1),  
      &    WQPMG(1)  
-      WRITE(2,80)'* ALGAL BASAL METABOLISM RATE (/DAY)              '  
-      WRITE(2,21)' : (BMRC, BMRD, BMRG)    = ', WQBMRC(1),WQBMRD(1),  
+        WRITE(2,80)'* ALGAL BASAL METABOLISM RATE (/DAY)              '  
+        WRITE(2,21)' : (BMRC, BMRD, BMRG)    = ', WQBMRC(1),WQBMRD(1),  
      &    WQBMRG(1)  
-      WRITE(2,80)'* ALGAL PREDATION RATE (/DAY)                     '  
-      WRITE(2,21)' : (PRRC, PRRD, PRRG)    = ', WQPRRC(1),WQPRRD(1),  
+        WRITE(2,80)'* ALGAL PREDATION RATE (/DAY)                     '  
+        WRITE(2,21)' : (PRRC, PRRD, PRRG)    = ', WQPRRC(1),WQPRRD(1),  
      &    WQPRRG(1)  
         WRITE(2,82)  
      &      '* BASE LIGHT EXTINCTION COEFFICIENT (/M)   = ',WQKEB(1)  
@@ -1370,13 +1384,13 @@ C
       IF(IWQSTL.NE.1)THEN  
         WRITE(2,999)  
         WRITE(2,90) TITLE(1)  
-      WRITE(2,80)'* ALGAL SETTLING RATE (M/DAY)                     '  
-      WRITE(2,21)' : (WSC, WSD, WSG)       = ', WQWSC(1),WQWSD(1),  
+        WRITE(2,80)'* ALGAL SETTLING RATE (M/DAY)                     '  
+        WRITE(2,21)' : (WSC, WSD, WSG)       = ', WQWSC(1),WQWSD(1),  
      &    WQWSG(1)  
-      WRITE(2,80)'* POM SETTLING RATE (M/DAY)                       '  
-      WRITE(2,21)' : (WSRP, WSLP)          = ', WQWSRP(1),WQWSLP(1)  
-      WRITE(2,80)'* SETTLING RATE OF PARTICULATE METAL (M/DAY)      '  
-      WRITE(2,21)' : (WSS)                 = ', WQWSS(1)  
+        WRITE(2,80)'* POM SETTLING RATE (M/DAY)                       '  
+        WRITE(2,21)' : (WSRP, WSLP)          = ', WQWSRP(1),WQWSLP(1)  
+        WRITE(2,80)'* SETTLING RATE OF PARTICULATE METAL (M/DAY)      '  
+        WRITE(2,21)' : (WSS)                 = ', WQWSS(1)  
         DO I=2,IWQZ  
           WQWSC(I)=WQWSC(1)  
           WQWSD(I)=WQWSD(1)  
@@ -1395,24 +1409,36 @@ C
       READ(1,90) TITLE(1)  
       IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
       IF(ISSKIP .EQ. 0) READ(1,999)  
-      READ(1,*) WQBFPO4D(1),WQBFNH4(1),WQBFNO3(1),WQBFSAD(1),  
-     &    WQBFCOD(1),WQBFO2(1)  
-      WRITE(2,*) WQBFPO4D(1),WQBFNH4(1),WQBFNO3(1),WQBFSAD(1),  
-     &    WQBFCOD(1),WQBFO2(1)  
+!     If bentic flux for anoxic env some arrays have two dimensions 
+      IF(IWQBEN .EQ. 0 .AND. IWQBENOX .NE. 0)THEN
+          MDUM=2
+      ELSE
+          MDUM=1          
+      ENDIF    
+      READ(1,*) (WQBFOXPO4D(1,M),WQBFOXNH4(1,M),WQBFOXNO3(1,M),  
+     &    WQBFOXSAD(1,M),WQBFOXCOD(1,M),WQBFOXO2(1,M),M=1,MDUM)  
+      WRITE(2,*) (WQBFOXPO4D(1,M),WQBFOXNH4(1,M),WQBFOXNO3(1,M),  
+     &    WQBFOXSAD(1,M),WQBFOXCOD(1,M),WQBFOXO2(1,M),M=1,MDUM)  
       IF(IWQBEN.EQ.0)THEN  
         WRITE(2,999)  
-        WRITE(2,90) TITLE(1)  
-      WRITE(2,21)' : (PO4D, NH4, NO3)     = ',WQBFPO4D(1),WQBFNH4(1),  
-     &    WQBFNO3(1)  
-      WRITE(2,21)' : (SAD, COD, DO)       = ',WQBFSAD(1),WQBFCOD(1),  
-     &    WQBFO2(1)  
+        WRITE(2,90) TITLE(1) 
+      WRITE(2,21)' : (PO4D, NH4, NO3) =',WQBFOXPO4D(1,1),WQBFOXNH4(1,1),
+     &    WQBFOXNO3(1,1)  
+      WRITE(2,21)' : (SAD, COD, DO)   =',WQBFOXSAD(1,1),WQBFOXCOD(1,1),
+     &    WQBFOXO2(1,1)  
+      IF(MDUM.EQ.2)THEN
+        WRITE(2,21)' : (PO4D, NH4, NO3) =',WQBFOXPO4D(1,2),
+     &      WQBFOXNH4(1,2),WQBFOXNO3(1,2)  
+        WRITE(2,21)' : (SAD, COD, DO)   =',WQBFOXSAD(1,2),
+     &      WQBFOXCOD(1,2),WQBFOXO2(1,2)  
+      ENDIF
         DO L=2,LA  
-          WQBFPO4D(L)=WQBFPO4D(1)  
-          WQBFNH4(L)=WQBFNH4(1)  
-          WQBFNO3(L)=WQBFNO3(1)  
-          WQBFSAD(L)=WQBFSAD(1)  
-          WQBFCOD(L)=WQBFCOD(1)  
-          WQBFO2(L)=WQBFO2(1)  
+          WQBFPO4D(L)=WQBFOXPO4D(1,1)  
+          WQBFNH4(L)=WQBFOXNH4(1,1)  
+          WQBFNO3(L)=WQBFOXNO3(1,1)  
+          WQBFSAD(L)=WQBFOXSAD(1,1)  
+          WQBFCOD(L)=WQBFOXCOD(1,1)  
+          WQBFO2(L)=WQBFOXO2(1,1)  
         ENDDO  
       ENDIF  
 C  
@@ -1609,7 +1635,9 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       READ(1,295) ICIFN  
       WRITE(2,85)'* FILE FOR INITIAL CONDITIONS             = ', ICIFN  
       IF(IWQICI.EQ.1)THEN  
+        continue
       ELSE IF(IWQICI.EQ.2)THEN  
+        continue
       ELSE  
         IF(ICIFN(1:4).NE.'NONE'.AND.ICIFN(1:4).NE.'none')
      &     STOP 'ERROR!! INVALID IWQICI/ICIFN'  
@@ -1618,6 +1646,7 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       READ(1,295) AGRFN  
       WRITE(2,85)'* FILE FOR ALGAL GROWTH, RESP., PREDATAT. = ', AGRFN  
       IF(IWQAGR.EQ.1)THEN  
+        continue
       ELSE  
         IF(AGRFN(1:4).NE.'NONE'.AND.AGRFN(1:4).NE.'none')
      &     STOP 'ERROR!! INVALID IWQAGR/AGRFN'  
@@ -1626,6 +1655,7 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       READ(1,295) STLFN  
       WRITE(2,85)'* FILE FOR SETTLING RATES OF ALGAE, PART. = ', STLFN  
       IF(IWQSTL.EQ.1)THEN  
+        continue
       ELSE  
         IF(STLFN(1:4).NE.'NONE'.AND.STLFN(1:4).NE.'none')
      &     STOP 'ERROR!! INVALID IWQSTL/STLFN'  
@@ -1634,6 +1664,7 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       READ(1,295) SUNFN  
       WRITE(2,85)'* FILE FOR IO, FD, TE, KT                 = ', SUNFN  
       IF(IWQSUN.EQ.1)THEN  
+        continue
       ELSE  
       !   IF(SUNFN(1:4).NE.'NONE'.AND.SUNFN(1:4).NE.'none')
       !&     STOP 'ERROR!! INVALID IWQSUN/SUNFN'  
@@ -1642,6 +1673,7 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       READ(1,295) BENFN  
       WRITE(2,85)'* FILE FOR BENTHIC FLUX                   = ', BENFN  
       IF(IWQBEN.EQ.2)THEN  
+        continue
       ELSE  
         IF(BENFN(1:4).NE.'NONE'.AND.BENFN(1:4).NE.'none')
      &     STOP 'ERROR!! INVALID IWQBEN/BENFN'  
@@ -1653,6 +1685,7 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       READ(1,295) NPLFN  
       WRITE(2,85)'* FILE FOR NPS INPUT INCLUDING ATM. INPUT = ', NPLFN  
       IF(IWQNPL.EQ.1)THEN  
+        continue
       ELSE  
         IF(NPLFN(1:4).NE.'NONE'.AND.NPLFN(1:4).NE.'none')
      &     STOP 'ERROR!! INVALID IWQNPL/NPLFN'  
@@ -1666,7 +1699,7 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
         OPEN(1,FILE=NCOFN,STATUS='UNKNOWN')  
         CLOSE(1,STATUS='DELETE')  
         OPEN(1,FILE=NCOFN,STATUS='UNKNOWN')  
-      WRITE(1,284)'* NEGATIVE CONCENTRATION OCCURS:'  
+        WRITE(1,284)'* NEGATIVE CONCENTRATION OCCURS:'  
         CLOSE(1)  
       ELSE  
         IF(NCOFN(1:4).NE.'NONE'.AND.NCOFN(1:4).NE.'none')
@@ -1685,6 +1718,503 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
    23 FORMAT(A46, I5)  
    85 FORMAT(A44, A50)  
   284 FORMAT(A32, /, 'NAME    ITNWQ    L    I    J    K       CONC')  
+
+      if (NXSP.gt.0) then ! Treatment of X-species
+!
+!
+!
+        PRINT *,'WQ: READING WQ3DWC2.INP - WATER QUALITY CONTROL FILE 2'
+        write(2,*)
+        write(2,*)
+        write(2,*)
+        write(2,'(a)') '===============Check WQ3DWC2.INP=============='
+!
+!
+        OPEN(1,FILE='WQ3DWC2.INP',STATUS='UNKNOWN')  
+!
+! *** C01 WQ3DWC2.INP
+        ISSKIP = 0  
+        READ(1,'(A1)') CCMRM  
+        BACKSPACE(1)  
+        IF(CCMRM .EQ. '#') ISSKIP = 1  
+        CCMRM = '#'  
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        READ(1,*) NXSP
+        WRITE(2,*) NXSP
+!
+! *** C02 WQ3DWC2.INP
+!
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) IWQX(i)
+          WRITE(2,*) i,IWQX(i)
+        enddo
+!
+! *** C03 WQ3DWC2.INP
+!
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) WQKHNX(i),WQKHPX(i),WQKHSX(i),WQSTOXX(i)
+          WRITE(2,*) i,WQKHNX(i),WQKHPX(i),WQKHSX(i),WQSTOXX(i)
+          WRITE(2,80)'* HALF-SAT. CONSTANT (G/M^3) FOR NUTRIENT UPTAKE' 
+          WRITE(2,81)' : (KHNX, KHPX)          = ', WQKHNX(i),WQKHPX(i)
+          WRITE(2,81)' : (KHS)     = ', WQKHSX(i)
+          WRITE(2,82)'* SAL. WHERE MICROSYSTIS GROWTH IS HALVED  = ',  
+     &      WQSTOXX(i)
+          WQSTOXX(i) = WQSTOXX(i)*WQSTOXX(i)
+        enddo
+!
+! *** C04 WQ3DWC2.INP
+!
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) WQCHLX(i),WQDOPX(i)
+          WRITE(2,*) i,WQCHLX(i),WQDOPX(i)
+          WRITE(2,80)'* CARBON-TO-CHL RATIO (G C PER MG CHL)           '  
+          WRITE(2,81)' : (CCHLX) = ', WQCHLX(i)
+          WRITE(2,80)'* DEPTH (M) OF MAXIMUM ALGAL GROWTH              '  
+          WRITE(2,81)' : (DOPTX) = ', WQDOPX(i)
+          WQCHLX(i)=1.0/(WQCHLX(i)+ 1.E-12)  
+        enddo
+!
+! *** C05 WQ3DWC2.INP
+!
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQTMX1(i),WQTMX2(i),WQTMPX1(i),WQTMPX2(i)
+          write(2,*)i,WQTMX1(i),WQTMX2(i),WQTMPX1(i),WQTMPX2(i)
+          WRITE(2,80)'* LOWER OPTIMUM TEMP FOR ALGAL GROWTH (DEGC)     '  
+          WRITE(2,81)' : (TMX1   ) = ', WQTMX1(i)
+          WRITE(2,80)'* UPPER OPTIMUM TEMP FOR ALGAL GROWTH (DEGC)     '  
+          WRITE(2,81)' : (TMX2   ) = ', WQTMX2(i)
+        enddo
+!
+! *** C06 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQKGX1(i),WQKGX2(i),WQKGPX1(i),WQKGPX2(i)
+          write(2,*)i,WQKGX1(i),WQKGX2(i),WQKGPX1(i),WQKGPX2(i)
+        enddo
+!
+! *** C07 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQTRX(i),WQKTBX(i)
+          write(2,*)i,WQTRX(i),WQKTBX(i)
+          WRITE(2,80)'* REFERENCE TEMPERATURE FOR ALGAL METABOLISM (OC)'  
+          WRITE(2,81)' : (TRX)       = ', WQTRX(i)
+          WRITE(2,80)'* TEMPERATURE EFFECT FOR ALGAL METABOLISM        '  
+          WRITE(2,81)' : (KTBX)    = ', WQKTBX(i)
+        enddo
+        WQTDMIN=-10 !  changed from -10,BRW changed from -22
+        WQTDMAX=50 !  changed from 50, BRW changed from 38
+        WTEMP=WQTDMIN
+        WQTDINC=(WQTDMAX-WQTDMIN)/NWQTD
+        DO M=1,NWQTD
+          WQTDTEMP(M)=WTEMP
+          do i=1,NXSP
+            WQTDGX(M,i)=1.
+            IF(WTEMP.LT.WQTMX1(i))THEN
+              WQTDGX(M,i) = EXP(-WQKGX1(i)*(WTEMP-WQTMX1(i))
+     &                         *(WTEMP-WQTMX1(i)) )
+            ENDIF
+            IF(WTEMP.GT.WQTMX2(i))THEN  
+              WQTDGX(M,i) = EXP(-WQKGX2(i)*(WTEMP-WQTMX2(i))
+     &                         *(WTEMP-WQTMX2(i)) )
+            ENDIF
+            !{ GEOSR X-species : jgcho 2015.11.27
+            WQTDGPX(M,i)=1.
+            if (IWQX(i).eq.2) then
+              IF(WTEMP.LT.WQTMPX1(i))THEN
+                WQTDGPX(M,i) = EXP(-WQKGPX1(i)*(WTEMP-WQTMPX1(i))
+     &                         *(WTEMP-WQTMPX1(i)) )
+              ENDIF
+              IF(WTEMP.GT.WQTMPX2(i))THEN  
+                WQTDGPX(M,i) = EXP(-WQKGPX2(i)*(WTEMP-WQTMPX2(i))
+     &                         *(WTEMP-WQTMPX2(i)) )
+              ENDIF
+            endif
+            !} GEOSR X-species : jgcho 2015.11.27
+            WQTDRX(M,i) = EXP( WQKTBX(i)*(WTEMP-WQTRX(i)) )  
+          enddo
+          WTEMP=WTEMP + WQTDINC
+        ENDDO
+!
+! *** C08 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQFCDX(i),WQKHRX(i)
+          write(2,*)i,WQFCDX(i),WQKHRX(i)
+          WRITE(2,80)'* CARBON DISTRIBUTION COEFF FOR ALGAL METABOLISM '  
+          WRITE(2,81)' : (FCDX)    = ', WQFCDX(i)
+          WRITE(2,80)
+     &      '* HALF-SAT. CONSTANT (GO/M*3) FOR ALGAL DOC EXCRET'  
+          WRITE(2,81)' : (KHRX)    = ', WQKHRX(i)
+          CFCDWQX(i) = 1.0 - WQFCDX(i)
+        enddo
+!
+! *** C09 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQFPRX(i),WQFPLX(i)
+          write(2,*)i,WQFPRX(i),WQFPLX(i)
+          WRITE(2,80)
+     &      '* PHOSPHORUS DIST COEF OF RPOP FOR ALGAL METABOLIS'  
+          WRITE(2,81)' : (FPRX)    = ', WQFPRX(i)
+          WRITE(2,80)
+     &      '* PHOSPHORUS DIST COEF OF LPOP FOR ALGAL METABOLIS'  
+          WRITE(2,81)' : (FPLX)    = ', WQFPLX(i)
+        enddo
+!
+! *** C10 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQFPDX(i),WQFPIX(i)
+          write(2,*)i,WQFPDX(i),WQFPIX(i)
+          WRITE(2,80)
+     &      '* PHOSPHORUS DIST COEF OF DOP FOR ALGAL METABOLISM'  
+          WRITE(2,81)' : (FPDX)    = ', WQFPDX(i)
+          WRITE(2,80)
+     &      '* PHOSPHORUS DIST COEF OF NH4 FOR ALGAL METABOLISM'  
+          WRITE(2,81)' : (FPIX)    = ', WQFPIX(i)
+          XPC = ABS(1.0 - (WQFPRX(i)+WQFPLX(i)+WQFPDX(i)+WQFPIX(i)))  
+          IF(XPC .GT. 0.0001)THEN  
+            WRITE(2,*)
+     &        '==================================================' 
+            WRITE(2,*) i,
+     &        ' WARNING!  FPRX+FPLX+FPDX+FPIX NOT EQUAL TO 1.0'  
+            WRITE(2,*)
+     &        '==================================================' 
+          ENDIF  
+        enddo
+!
+! *** C11 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQFNRX(i),WQFNLX(i)
+          write(2,*)i,WQFNRX(i),WQFNLX(i)
+          WRITE(2,80)'* NITROGEN DIST COEF OF RPON FOR ALGAL METABOLISM'  
+          WRITE(2,81)' : (FNRX)    = ', WQFNRX(i)
+          WRITE(2,80)'* NITROGEN DIST COEF OF LPON FOR ALGAL METABOLISM'  
+          WRITE(2,81)' : (FNLX)    = ', WQFNLX(i)
+        enddo
+!
+! *** C12 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*)WQFNDX(i),WQFNIX(i),WQANCX(i)
+          write(2,*)i,WQFNDX(i),WQFNIX(i),WQANCX(i)
+          WRITE(2,80)'* NITROGEN DIST COEF OF DON FOR ALGAL METABOLISM '
+          WRITE(2,81)' : (FNDX)    = ', WQFNDX(i)
+          WRITE(2,80)'* NITROGEN DIST COEF OF NH4 FOR ALGAL METABOLISM '
+          WRITE(2,81)' : (FNIX)    = ', WQFNIX(i)
+          WRITE(2,80)'* NITROGEN-TO-CARBON RATIO IN ALGAE              '
+          WRITE(2,81)' : (ANCX)    = ', WQANCX(i)
+          XNC = ABS(1.0 - (WQFNRX(i)+WQFNLX(i)+WQFNDX(i)+WQFNIX(i)))  
+          IF(XNC .GT. 0.0001)THEN  
+            WRITE(2,*)
+     &        '=================================================='
+            WRITE(2,*) i,
+     &        ' WARNING!  FNRX+FNLX+FNDX+FNIX NOT EQUAL TO 1.0'
+            WRITE(2,*)
+     &        '=================================================='
+          ENDIF  
+        enddo
+!
+! *** C13 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) WQFSPPX(i),WQFSIPX(i),WQFSPDX(i),WQFSIDX(i)
+     &             ,WQASCDX(i)
+          write(2,*)i,WQFSPPX(i),WQFSIPX(i),WQFSPDX(i),WQFSIDX(i)
+     &               ,WQASCDX(i)
+          WRITE(2,80)
+     &      '* SILICA DISTRIBUTION COEFF FOR DIATOM PREDATION  '
+          WRITE(2,81)' : (FSPPX, FSIPX)        = ', WQFSPPX(i),
+     &      WQFSIPX(i)
+          WRITE(2,80)
+     &      '* SILICA DISTRIBUTION COEFF FOR DIATOM METABOLISM '
+          WRITE(2,81)' : (FSPDX, FSIDX)        = ', WQFSPDX(i),
+     &      WQFSIDX(i)
+          WRITE(2,82)'*SILICA-TO-CARBON RATIO IN DIATOMS    = ',
+     &      WQASCDX(i)
+        enddo
+!
+! *** C14 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) WQPMX(1,i),WQBMRX(1,i),WQPRRX(1,i)
+          write(2,*) i,WQPMX(1,i),WQBMRX(1,i),WQPRRX(1,i)
+            WRITE(2,80)'* ALGAL GROWTH RATE (/DAY)                     '  
+            WRITE(2,21)' : (PMX)       = ', WQPMX(1,i)
+            WRITE(2,80)'* ALGAL BASAL METABOLISM RATE (/DAY)           '  
+            WRITE(2,21)' : (BMRX)    = ', WQBMRX(1,i)
+            WRITE(2,80)'* ALGAL PREDATION RATE (/DAY)                  '  
+            WRITE(2,21)' : (PRRX)    = ', WQPRRX(1,i)
+            
+            do ii=2,IWQZ
+              WQPMX(ii,i)=WQPMX(1,i)  
+              WQBMRX(ii,i)=WQBMRX(1,i)  
+              WQPRRX(ii,i)=WQPRRX(1,i)  
+            enddo
+        enddo
+!
+! *** C15 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) WQWSX(1,i)
+          WRITE(2,*)i,WQWSX(1,i)
+          IF(IWQSTL.NE.1)THEN  
+            WRITE(2,80)'* ALGAL SETTLING RATE (M/DAY)                  '  
+            WRITE(2,21)' : (WSX)       = ', WQWSX(1,i)
+            DO ii=2,IWQZ  
+              WQWSX(ii,i)=WQWSX(1,i)  
+            ENDDO  
+          ENDIF
+        enddo
+!
+! *** C16 WQ3DWC2.INP
+!     
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        read(1,*) m
+        write(2,*) 'IWQICIX=',m
+        do i=1,NXSP
+          READ(1,*) WQVX(1,1,i)
+          WRITE(2,*) i,WQVX(1,1,i)
+        enddo
+        if (m.ne.1) then
+          DO K=1,KC
+            DO L=2,LA
+              XWQCHL=0.
+              do i=1,NXSP
+                TVARWQ=WQVX(1,1,i)
+                WQVX(L,K,i) = TVARWQ
+                WQVOX(L,K,i) = TVARWQ
+                XWQCHL = XWQCHL + WQVX(L,K,i)*WQCHLX(i)
+              enddo
+              WQCHL(L,K) = WQCHL(L,K) + XWQCHL
+            ENDDO
+          ENDDO
+        else
+          OPEN(714,FILE='WQWCRSTX.INP',STATUS='UNKNOWN')  
+          WRITE(*,*)
+     &      '* READING INITIAL CONDITIONS for Xspec. WQWCRSTX.INP'
+          read(714,*)
+          read(714,*)
+          DO M=1,(LA-1)*KC
+            READ(714,* ) L,K,(WQVX(L,K,nsp),nsp=1,NXSP)  
+          ENDDO
+          CLOSE(714)
+          
+          DO L=2,LA  
+            DO K=1,KC  
+              do nsp=1,NXSP
+                WQCHL(L,K) = WQCHL(L,K) + WQVX(L,K,nsp)*WQCHLX(nsp)
+              enddo
+            ENDDO  
+          ENDDO  
+        endif
+! *** C17-1 WQ3DWC2.INP
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        
+        do i=1,NXSP
+          READ(1,*) ISSTOKEX(i),WQROH0X(i),WQRHOMNX(i),WQRHOMXX(i)
+     &              ,WQIRHALFX(i),WQCOEF1X(i),WQCOEF2X(i),WQCOEF3X(i)
+          WRITE(2,*) i,ISSTOKEX(i),WQROH0X(i),WQRHOMNX(i),WQRHOMXX(i)
+     &              ,WQIRHALFX(i),WQCOEF1X(i),WQCOEF2X(i),WQCOEF3X(i)
+          WQCOEF1X(i)=WQCOEF1X(i)*(60.*24.)
+          WQCOEF2X(i)=WQCOEF2X(i)*(60.*24.)
+          WQCOEF3X(i)=WQCOEF3X(i)*(60.*24.)      
+        enddo
+! *** C17-2 WQ3DWC2.INP
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+          READ(1,*) Light_Factor1, F_PAR
+          WRITE(2,*) Light_Factor1, F_PAR
+! *** C18 WQ3DWC2.INP
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        do i=1,NXSP
+          READ(1,*) WQRX(i),WQAX(i),WQRESISX(i)
+          write(2,*) i,WQRX(i),WQAX(i),WQRESISX(i)
+        enddo
+! *** C19 WQ3DWC2.INP
+       IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+       IF(ISSKIP .EQ. 0) READ(1,*)  
+
+       READ(1,*) ISCYANO,NSZONE,CONCYA,TGERMI,KCG,DGTIME,
+     &           CYA_TEM,CYA_P4D,CYA_NO3,CYA_Light,Light_Factor2,NNAT
+       write(2,*) ISCYANO,NSZONE,CONCYA,TGERMI,KCG,DGTIME,
+     &            CYA_TEM,CYA_P4D,CYA_NO3,CYA_Light,Light_Factor2,NNAT
+! *** C20 WQ3DWC2.INP
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)
+        IF(ISCYANO.EQ.1) THEN
+          DO I=1,NSZONE
+            READ(1,*) NUM_ZONE(I), NUM_CELL(I)
+            write(2,*) NUM_ZONE(I), NUM_CELL(I)
+          ENDDO          
+        ENDIF
+! *** C21 WQ3DWC2.INP
+        CALL SEEK('C21')  
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        write(2,*) 'C21'
+        DO nsp=1,NXSP
+          READ(1,*) NWQCSRX(nsp)
+          write(2,*) NWQCSRX(nsp)
+          NT=4+NTOX+NSED+NSND+NWQV+nsp
+          NCSER(NT)=NWQCSRX(nsp)
+        ENDDO
+        read(1,*)
+        write(2,*)
+        DO M=1,IWQPS  
+          READ(1,*) I,J,K,ITMP
+          WRITE(2,*) I,J,K,ITMP
+          DO nsp=1,NXSP
+              N1=4+NTOX+NSED+NSND+NWQV+nsp
+              NCSERQ(M,N1)=ITMP
+          ENDDO
+        enddo
+        ! X-species: specify boundary series
+        ! South boudary *** CONCENTRATION ASSIGNMENTS
+        IF(NWQOBS.GT.0)THEN  
+          DO M=1,NWQOBS  
+
+            DO nsp=1,NXSP
+              NT=4+NTOX+NSED+NSND+NWQV+nsp
+              if (IWQX(nsp).eq.1) then
+                NCSERS(M,NT)=IWQOBS(M,1)
+              elseif (IWQX(nsp).eq.2) then
+                NCSERS(M,NT)=IWQOBS(M,2)
+              elseif (IWQX(nsp).eq.3) then
+                NCSERS(M,NT)=IWQOBS(M,3)
+              endif
+            ENDDO
+          ENDDO  
+        ENDIF  
+        ! West boudary *** CONCENTRATION ASSIGNMENTS
+        IF(NWQOBW.GT.0)THEN  
+          DO M=1,NWQOBW
+            DO nsp=1,NXSP
+              NT=4+NTOX+NSED+NSND+NWQV+nsp
+              if (IWQX(nsp).eq.1) then
+                NCSERW(M,NT)=IWQOBW(M,1)
+              elseif (IWQX(nsp).eq.2) then
+                NCSERW(M,NT)=IWQOBW(M,2)
+              elseif (IWQX(nsp).eq.3) then
+                NCSERW(M,NT)=IWQOBW(M,3)
+              endif
+            ENDDO
+          ENDDO  
+        ENDIF  
+        ! East boudary *** CONCENTRATION ASSIGNMENTS
+        IF(NWQOBE.GT.0)THEN  
+          DO M=1,NWQOBE
+            DO nsp=1,NXSP
+              NT=4+NTOX+NSED+NSND+NWQV+nsp
+              if (IWQX(nsp).eq.1) then
+                NCSERE(M,NT)=IWQOBE(M,1)
+              elseif (IWQX(nsp).eq.2) then
+                NCSERE(M,NT)=IWQOBE(M,2)
+              elseif (IWQX(nsp).eq.3) then
+                NCSERE(M,NT)=IWQOBE(M,3)
+              endif
+            ENDDO
+          ENDDO  
+        ENDIF  
+        ! North boudary *** CONCENTRATION ASSIGNMENTS
+        IF(NWQOBN.GT.0)THEN  
+          DO M=1,NWQOBN
+            DO nsp=1,NXSP
+              NT=4+NTOX+NSED+NSND+NWQV+nsp
+              if (IWQX(nsp).eq.1) then
+                NCSERN(M,NT)=IWQOBN(M,1)
+              elseif (IWQX(nsp).eq.2) then
+                NCSERN(M,NT)=IWQOBN(M,2)
+              elseif (IWQX(nsp).eq.3) then
+                NCSERN(M,NT)=IWQOBN(M,3)
+              endif
+            ENDDO
+          ENDDO  
+        ENDIF 
+        
+        
+
+    ! X-species CWQSRX##.INP read
+! *** C100 WQ3DWC2.INP
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        IF(ISSKIP .EQ. 0) READ(1,*)  
+        READ(1,*) IWQBENOX,DOXCRT
+        write(2,*) IWQBENOX,DOXCRT
+        write(2,*)      
+        close(1)
+!
+!
+      endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
+C  
+C INITIALIZE
+      do i=1,NXSP
+        DO K=1,KC
+          DO L=1,LC    
+            WQRHOX(L,K,i)=WQROH0X(i)
+            WQSOLSUMX(L,K,i)=0.0
+            WQSOLDAX(L,K,i)=0.0
+            NSOLDAX(L,K,i)=0
+            IDLIGHTX(L,K,i)=0
+          ENDDO
+        ENDDO
+      enddo
+      CLOSE(1)  
+     
+
+      IF(NXSP.ge.1)THEN
+        IF(ISSTOKEX(1).EQ.1)THEN
+          do i=1,IWQTS
+              WRITE(FLN,"('STOKE',I2.2,'.OUT')") i
+              OPEN(1,FILE=trim(FLN))      ! VERTICAL VELOCITY, ALGAL-DENSITY, SOLAR RADIATION, chl-a PRINT AT EACH LAYER
+              CLOSE(1,STATUS='DELETE')
+              OPEN(1,FILE=trim(FLN))  
+              LL=LWQTS(M)
+              write(1,'(a,a)') 'VERTICAL VELOCITY, ALGAL-DENSITY,'
+     &             ,' SOLAR RADIATION, chl-a PRINT AT EACH LAYER'
+              write(1,'(a,i4,a,i4)') 'I=',iww(i),'   J=',jww(i)
+              write(1,7111) '          tm'
+     & ,((('vel_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
+     & ,((('den_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
+     & ,((('sol_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
+     & ,(('chl_',k),k=KC,1,-1)
+              CLOSE(1)
+          enddo
+        ENDIF
+      ENDIF
+ 7111 format(a, 3(<kc>(<NXSP>(3x,a,i2.2,a,i2.2))),<kc>(6x,a,i2.2) )
       DO I=1,IWQZ  
         IWQKA(I)=IWQKA(1)  
         WQKRO(I)=WQKRO(1)  
@@ -1768,8 +2298,8 @@ C
  1111   CONTINUE  
         IF(IN.NE.(LA-1)*KC)THEN  
           PRINT*, 'ALL ACTIVE WATER CELLS SHOULD BE MAPPED FOR WQ PAR.'  
-      STOP 'ERROR!! NUMBER OF LINES IN FILE WQWCMAP.INP =\ (LA-1)'  
-      ENDIF  
+          STOP 'ERROR!! NUMBER OF LINES IN FILE WQWCMAP.INP =\ (LA-1)'  
+        ENDIF  
         CLOSE(1)  
       ENDIF  
 C  
@@ -1806,7 +2336,11 @@ C
         IN=0  
         IJKC=IC*JC  
         DO M=1,IJKC  
-          READ(1,*,END=1112) I, J, XMUD, IZMUD, IZSAND  
+          IF(IWQBENOX.EQ.0)THEN
+              READ(1,*,END=1112) I, J, XMUD, IZMUD, IZSAND
+          ELSE ! Benthic flux for anoxic env has one variable extra
+              READ(1,*,END=1112) I, J, XMUD, IZMUD, IZSAND, IZANOX
+          ENDIF
           IN=IN+1  
           IF(IJCT(I,J).LT.1 .OR. IJCT(I,J).GT.8)THEN  
             PRINT*, 'I, J, K, IJCT(I,J) = ', I,J,IJCT(I,J)  
@@ -1815,6 +2349,7 @@ C
           L = LIJ(I,J)  
           IBENMAP(L,1) = IZMUD  
           IBENMAP(L,2) = IZSAND  
+          IF(IWQBENOX.NE.0) IBENMAP(L,3) = IZANOX
           XBENMUD(L) = XMUD / 100.0  
           WRITE(2,34) L, I, J, XBENMUD(L), IBENMAP(L,1), IBENMAP(L,2)  
         ENDDO  
@@ -1822,6 +2357,49 @@ C
         IF(IN .NE. (LA-1))THEN  
           PRINT*, 'ALL ACTIVE WATER CELLS SHOULD BE MAPPED FOR WQ PAR.'  
           STOP 'ERROR!! NUMBER OF LINES IN FILE WQBENMAP.INP <> (LA-1)'  
+        ENDIF  
+        CLOSE(1)  
+      ENDIF  
+      IF(ISCYANO .EQ. 1)THEN  
+        ! Deal with Bentic-cyano
+        DO K=1,2  
+          DO L=2,LA  
+            ICYAMAP(L)=1  
+            XCYAMUD(L) = 0.50  
+          ENDDO  
+        ENDDO  
+        OPEN(1,FILE='CYANOMAP.INP',STATUS='UNKNOWN')  
+        WRITE(2,999)  
+        DO M=1,4  
+          READ(1,30) TITLE(M)  
+          WRITE(2,30) TITLE(M)  
+        ENDDO  
+C  
+C SKIP ALL COMMENT CARDS AT BEGINNING OF FILE:  
+C  
+        REWIND(1)  
+        CCMRM = '#'  
+        CALL SKIPCOMM(1, CCMRM)  
+C  
+        WRITE(2,999)  
+        WRITE(2,33)  
+        IN=0  
+        IJKC=IC*JC  
+        DO M=1,IJKC  
+          READ(1,*,END=1113) I, J, ICYAMUD
+          IN=IN+1  
+          IF(IJCT(I,J).LT.1 .OR. IJCT(I,J).GT.8)THEN  
+            PRINT*, 'I, J, K, IJCT(I,J) = ', I,J,IJCT(I,J)  
+            STOP 'ERROR!! INVALID (I,J) IN FILE WQBENMAP.INP'  
+          ENDIF  
+          L = LIJ(I,J)  
+          ICYAMAP(L) = ICYAMUD  
+          WRITE(2,34) L, I, J, ICYAMAP(L)
+        ENDDO  
+ 1113   CONTINUE  
+        IF(IN .NE. (LA-1))THEN  
+          PRINT*, 'ALL ACTIVE WATER CELLS SHOULD BE MAPPED FOR WQ PAR.'  
+          STOP 'ERROR2!! NUMBER OF LINES IN FILE WQBENMAP.INP <> (LA-1)'  
         ENDIF  
         CLOSE(1)  
       ENDIF  

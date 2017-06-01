@@ -7,6 +7,10 @@ all:
 	(cd original_efdc_files ; make)
 	(cd openDA_wrapper ; make)
 
+debug:
+	(cd original_efdc_files ; make debug)
+	(cd openDA_wrapper ; make debug)
+
 openmp:
 	(cd original_efdc_files ; make openmp)
 	(cd openDA_wrapper ; make openmp)
