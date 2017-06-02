@@ -79,7 +79,7 @@ results.
        plot3(xyz(1,:),xyz(2,:),xyz(3,:));
        grid on;
       \end{lstlisting}
-      Or with python. We are using the packages numpy and matplotlib. Depending
+      Or with python. To run the examples you need python 2.7 with the packages numpy and matplotlib installed. Depending
       on your environment you may need to import these packages.
       \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
       import numpy as np
@@ -104,6 +104,7 @@ results.
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       plt.figure()
       plt.plot(sim.model_time,sim.x[:,0],'b')
+      plt.show()
       \end{lstlisting}
 %
 
@@ -182,6 +183,10 @@ results.
       </sequentialAlgorithm>
       \end{lstlisting}
       \end{itemize}
+      Hint: do not forget to reference {\tt algorithm/EnsSimulation.xml} in \\ {\tt simulation\_Ens.oda}.
+
+
+
       
 \item Run this ensemble simulation and read the results in Octave or
       Matlab using {\tt load\_ensemble.m} and slightly different for python
@@ -189,7 +194,7 @@ results.
       \item make a plot of the first variable of the five ensemble
             members in a single plot
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
-      [t,ens]=load_ensemble('simulation_Ens_results');
+      [t,ens]=load_ensemble('simulation_ensemble_results');
       ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
       plot(t,ens1)
       \end{lstlisting}
@@ -346,7 +351,7 @@ assuming that all the input and output files of the model can indeed be
 accessed by OpenDA. The exercise focusses on the configuration of the black box
 wrapper in OpenDA.\\
 
-In the directory {\tt exercise\_4/} you will find a model written in python \\
+In the directory {\tt exercise\_4/stochModel/bin/} you will find a model written in python \\
 {\tt reactive\_pollution\_model.py} and a compiled version of this code for
 windows. There is also an input file ({\tt reactive\_pollution\_model.input})
 and the output file you should get when you run the model. The model describes
@@ -363,10 +368,11 @@ implements the following equations:
 \end{eqnarray}
 
 \begin{itemize}
-\item Run the model from the command line, not using OpenDA. The model
-  generates the output files: {\tt reactive\_pollution\_model.output} ,
-  {\tt reactive\_pollution\_model\_output.m} and
-  \\ {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
+\item Run the model from the command line (passing input file as argument),
+not using OpenDA.\\
+The model
+  generates the output files: {\tt reactive\_pollution\_model.output} and
+  {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
   of the output in order to study the behavior of the model. In order to check
   the model (plotted) results you can look at the input file as well.
 \end{itemize}
@@ -377,8 +383,8 @@ this in Java. It is also possible to write your own conversion program (in any
 programming language) to convert the input and output files of your model to a
 format that OpenDA is able to handle.
 
-In case you want to see how the code looks like you can find it in the directory
-{\tt \$OPENDA/model\_reactive\_advection}. 
+When you are interested in the actual java code that parses the input and output files of this black box model. You can find it at \\
+{\tt \$OPENDA/model\_reactive\_advection} in a source distribution of OpenDA.
 
 A black box wrapper configuration usually consists of three xml files. For our
 pollution model these files are:
@@ -492,17 +498,17 @@ black box wrapper configuration, usually consisting of three xml files, can
 also be found in exercise~4.
 
 \begin{itemize}
-\item Run the model from the command line, not using OpenDA. The model
+\item Run the model from the command line, not using OpenDA, like in Exercise 4. The model
   generates the output files: {\tt reactive\_pollution\_model.output} and
   \\ {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
   of the output in order to study the behavior of the model. In order to check
   the model (plotted) results you can look at the input file as well.
 \end{itemize}
 
-The Java-routines needed to access the model input and output files are the
-same as in exercise~4. Make sure that the jar-file is added to OpenDA, either
-by using the CLASSPATH environment variable or by copying the jar-file into the
-bin directory of your OpenDA version.
+%The Java-routines needed to access the model input and output files are the
+%same as in exercise~4. Make sure that the jar-file is added to OpenDA, either
+%by using the CLASSPATH environment variable or by copying the jar-file into the
+%bin directory of your OpenDA version.
 
 %TODO: add this lines once the oda_dump tool is working correctly....
 %The utility oda\_dumpio assists in working with a black box wrapper in OpenDA.
@@ -515,8 +521,8 @@ box wrapper configuration the model results appear:
 \begin{itemize}
 
  \item Have a look at the files {\tt polluteWrapper.xml}, {\tt
-   polluteModel.xml} and {\tt polluteStochModel.xml}, and recognize the various
-   items mentioned above (in exercise\_5). Run the model within OpenDA by using
+   polluteModel.xml} and {\tt polluteStochModel.xml}, and look for differences compared to exercise\_4.
+   Run the model within OpenDA by using
    the \\{\tt SequentialSimulation.oda} configuration. Use the script {\tt
    plot\_movie.m} (or {\tt plot\_movie.py} for python) to visualize the model 
    results. Compare the results with
