@@ -42,7 +42,7 @@ public class ConfigTree {
 	 */
 	private Document doc=null;
 	private Element tree=null;
-	private boolean validate=true; //default for validation
+	private boolean validate=false; //default for validation
 	private File workingDir=null;
 
 	private class ResultOfFindTreeNode {
