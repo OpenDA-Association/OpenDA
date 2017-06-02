@@ -15,7 +15,8 @@ org_openda_costa_CtaArray.cpp \
 org_openda_costa_CtaUtils.cpp \
 jni_cta_CtaObsdescr_NativeToJava.c \
 org_openda_costa_CtaInitialize.cpp \
-org_openda_resultwriters_NativeResultWriter.cpp
+org_openda_resultwriters_NativeResultWriter.cpp \
+org_openda_resultwriters_NetcdfResultWriterNative.cpp
 
 libopendabridge_la_LIBADD = @LTLIBOBJS@
 libopendabridge_la_LDFLAGS = -no-undefined -version-info 0:0:0  -lcta ${LAPACK_LIBS} ${BLAS_LIBS} ${NETCDF_LIBS}

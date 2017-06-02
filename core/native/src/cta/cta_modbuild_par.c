@@ -71,7 +71,7 @@ void modbuild_models_add(CTA_Model hmodel){
 
    printf("Adding model %d\n",hmodel);
    numCreatedModels++;
-   newList=CTA_Malloc(numCreatedModels*sizeof(CTA_Model));
+   newList= (CTA_Model*) CTA_Malloc(numCreatedModels*sizeof(CTA_Model));
    for (iModel=0; iModel<numCreatedModels-1; iModel++){
       newList[iModel]=createdModels[iModel];
    }
@@ -90,7 +90,7 @@ void modbuild_models_delete(CTA_Model hmodel){
    if (iPlek>=0){
       numCreatedModels--;
       if (numCreatedModels>0){
-        CTA_Model *newList=CTA_Malloc(numCreatedModels*sizeof(CTA_Model));
+        CTA_Model *newList= (CTA_Model*) CTA_Malloc(numCreatedModels*sizeof(CTA_Model));
         for (iModel=0;iModel<iPlek; iModel++){newList[iModel]=createdModels[iModel];}
         for (iModel=iPlek; iModel<numCreatedModels; iModel++){newList[iModel]=createdModels[iModel+1];}
         free(createdModels);
@@ -230,7 +230,7 @@ void modbuild_par_recvstate(CTA_TreeVector *state, CTAI_Modbuild_par *data, int 
 
       /* Create sub-states as well when we have multiple workers */
       if (nworker>1) {
-         state_subs=CTA_Malloc(sizeof(CTA_TreeVector)*nworker);
+         state_subs=(CTA_Vector*) CTA_Malloc(sizeof(CTA_TreeVector)*nworker);
  
     
          for (irank=1;irank<=nworker;irank++){
@@ -564,7 +564,7 @@ int receive_pack_object( int rank, int tag, BOOL add_length, CTA_Pack hpack, MPI
 
    if (IDEBUG>0) printf("receive_pack_object: lenpack %d\n", lenpack);
 
-   buffer= CTA_Malloc(lenpack*sizeof(char));
+   buffer= (char*) CTA_Malloc(lenpack*sizeof(char));
    retval=MPI_Recv(buffer,lenpack,MPI_CHAR,rank,tag,comm,&status);
 
    /* Additional add length in pack object */
@@ -1249,7 +1249,7 @@ void modbuild_par_announceobsvalues(CTAI_Modbuild_par *data, CTA_ObsDescr *hdesc
       //
          if (IDEBUG>0) printf("#%d modbuild_par_getobsvalues: asking for getobsselect to processes \n",CTA_PAR_MY_RANK);
          if (data->nworker>1 && !data->SelectObs){
-           data->SelectObs=CTA_Malloc((data->nworker+1)*sizeof(CTA_ObsDescr));
+           data->SelectObs= (CTA_ObsDescr*) CTA_Malloc((data->nworker+1)*sizeof(CTA_ObsDescr));
            for (irank=1;irank<=data->nworker;irank++){
              CTA_String_Create(&(data->SelectObs[irank]));
         //      printf("calling  modbuild_par_getobsselect_communicate... \n");
@@ -1258,7 +1258,7 @@ void modbuild_par_announceobsvalues(CTAI_Modbuild_par *data, CTA_ObsDescr *hdesc
          }
       }
       /* Create stochastic observers for different process */
-      subObsDescr=CTA_Malloc(sizeof(CTA_ObsDescr)*(data->nworker+1));
+      subObsDescr= (CTA_ObsDescr*) CTA_Malloc(sizeof(CTA_ObsDescr)*(data->nworker+1));
 
       if (data->nworker==1){
          subObsDescr[1]=*hdescr;

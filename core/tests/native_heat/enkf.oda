@@ -21,7 +21,7 @@
 		        <resultItem outputLevel="All" />
 	        </selection>
 	</resultWriter>
-        <resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+        <resultWriter className="org.openda.resultwriters.NetcdfResultWriterNative">
 		<workingDirectory>enkf_nc</workingDirectory>
 		<configFile>enkf_.nc</configFile>
 	        <selection>

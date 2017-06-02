@@ -22,7 +22,7 @@ package org.openda.costa;
 
 import junit.framework.TestCase;
 import org.openda.interfaces.*;
-import org.openda.resultwriters.NetcdfResultWriter;
+import org.openda.resultwriters.NetcdfResultWriterNative;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
@@ -215,7 +215,7 @@ public class CostaTest extends TestCase {
 
 		// now we test the export and import by netcdf. Note that the export is implemented
 		// using the resultwriter; see the corresponding test for more examples!
-	    IResultWriter netcdfWriter = new NetcdfResultWriter(testRunDataDir, "ctatvtest.nc");
+	    IResultWriter netcdfWriter = new NetcdfResultWriterNative(testRunDataDir, "ctatvtest.nc");
         Results.addResultWriter(netcdfWriter);
         Results.putValue("concat", v2cta_tot, v2cta_tot.getSize(), "any", IResultWriter.OutputLevel.Essential , IResultWriter.MessageType.Instance);
         netcdfWriter.free();

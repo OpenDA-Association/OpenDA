@@ -143,7 +143,8 @@ am_libopendabridge_la_OBJECTS = jni_cta_utils.lo \
 	org_openda_costa_CtaUtils.lo \
 	jni_cta_CtaObsdescr_NativeToJava.lo \
 	org_openda_costa_CtaInitialize.lo \
-	org_openda_resultwriters_NativeResultWriter.lo
+	org_openda_resultwriters_NativeResultWriter.lo \
+	org_openda_resultwriters_NetcdfResultWriterNative.lo
 libopendabridge_la_OBJECTS = $(am_libopendabridge_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -381,7 +382,6 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
-runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -408,7 +408,8 @@ org_openda_costa_CtaArray.cpp \
 org_openda_costa_CtaUtils.cpp \
 jni_cta_CtaObsdescr_NativeToJava.c \
 org_openda_costa_CtaInitialize.cpp \
-org_openda_resultwriters_NativeResultWriter.cpp
+org_openda_resultwriters_NativeResultWriter.cpp \
+org_openda_resultwriters_NetcdfResultWriterNative.cpp
 
 libopendabridge_la_LIBADD = @LTLIBOBJS@
 libopendabridge_la_LDFLAGS = -no-undefined -version-info 0:0:0  -lcta ${LAPACK_LIBS} ${BLAS_LIBS} ${NETCDF_LIBS}
@@ -507,6 +508,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/org_openda_costa_CtaUtils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/org_openda_costa_CtaVector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/org_openda_resultwriters_NativeResultWriter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/org_openda_resultwriters_NetcdfResultWriterNative.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

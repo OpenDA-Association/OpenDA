@@ -30,7 +30,7 @@
 			</selection> -->
 		</resultWriter>
 
-	    <!--<resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+	    <!--<resultWriter className="org.openda.resultwriters.NetcdfResultWriterNative">
 			<workingDirectory>.</workingDirectory>
 			<configFile>results_.nc</configFile>
 		</resultWriter> -->

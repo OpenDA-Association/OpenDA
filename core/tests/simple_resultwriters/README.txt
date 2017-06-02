@@ -19,7 +19,7 @@ eg.
 			<configFile>results_dud.csv</configFile>
 		</resultWriter>
 		<!-- dump everything as netcdf -->
-		<resultWriter className="org.openda.resultwriters.NetcdfResultWriter">
+		<resultWriter className="org.openda.resultwriters.NetcdfResultWriterNative">
 			<workingDirectory>.</workingDirectory>
 			<configFile>results_dud_.nc</configFile>
 		</resultWriter>

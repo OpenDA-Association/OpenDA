@@ -78,7 +78,7 @@ public class Reflection {
 		for(String className : this.classCache){
 			Class aClass;
 			try {
-				if(!className.contains("Cta") && !className.contains("NetcdfResultWriter")){
+				if(!className.contains("Cta") && !className.contains("NetcdfResultWriterNative")){
 					aClass = Class.forName(className);
 					boolean test = iface.isAssignableFrom(aClass); //MVL
 					if(test){
