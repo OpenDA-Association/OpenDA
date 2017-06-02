@@ -1,7 +1,7 @@
 netcdf /Users/nils/Develop/openda/public/core/java/../../../public/opendaTestRuns/core/org/openda/resultwriters/ncp_test_ctatv_B_4.nc {
   dimensions:
     n = 6;
-    time = UNLIMITED;   // (3 currently)
+    time = UNLIMITED;   // (3 currently
   variables:
     double ctatv_B_4(time=3, n=6);
 

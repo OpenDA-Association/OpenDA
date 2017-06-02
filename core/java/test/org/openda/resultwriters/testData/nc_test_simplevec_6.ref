@@ -1,7 +1,7 @@
 netcdf nc_test_simplevec_6 {
 dimensions:
 	n = 3 ;
-	time = UNLIMITED ; // (1 currently)
+	time = UNLIMITED ; // (1 currently
 variables:
 	double simplevec_6(time, n) ;
 data:
