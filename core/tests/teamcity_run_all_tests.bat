@@ -3,6 +3,8 @@ setlocal enabledelayedexpansion
 
 REM Runs all tests in the tests directories one by one, and puts the output and 
 REM results in a single directory test_results
+REM Note: this test assumes that on teamcity the required binaries and jar files have been build
+REM           and that these binaries and jars have been copied to core\bin
 
 REM set OPENDA_BINDIR, PATH and CLASSPATH
 cd ..\bin
@@ -23,8 +25,8 @@ echo.
 set CURDIR=native_oscillator
 mkdir test_results\%CURDIR%
 call :run_single_test enkf_javaobs       enkf_results.m
-call :run_single_test enkf_sqlobs	 enkf_sqlobs_restults.m
-call :run_single_test simplex		 simplex_results.m
+call :run_single_test enkf_sqlobs    enkf_sqlobs_restults.m
+call :run_single_test simplex       simplex_results.m
 
 REM Only deactivate this part if the correct version of MPICH2 is installed. 
 REM ----
@@ -55,7 +57,7 @@ REM ----
 
 set CURDIR=simple_lorenz
 mkdir test_results\%CURDIR%
-call :run_single_test lorenzEnkf               enkf_results.m
+call :run_single_test lorenzEnkf               enkf_results.m 
 call :run_single_test lorenzEnkf_write_restart enkf_results_write_restart.m
 call :run_single_test lorenzEnsr               ensr_results.m
 call :run_single_test lorenzRRF                particle_filter_results.m
@@ -151,10 +153,10 @@ exit 1
 endlocal
 
 :run_single_test
-
 echo Running test: %CURDIR%\%1.oda
 set odafile=%CD%\%CURDIR%\%1.oda
 "%JAVA_HOME%\bin\java" -Xms128m -Xmx1024m -classpath %CLASSPATH% org.openda.application.OpenDaApplication %odafile% 1>test_results\%CURDIR%\%1.out 2>test_results\%CURDIR%\%1.err
+
 if %errorlevel% gtr 0 goto Error1
 if not (%2)==() copy %CURDIR%\%2 test_results\%CURDIR%\%1_%2 >nul
 if not (%3)==() copy %CURDIR%\%3 test_results\%CURDIR%\%1_%3 >nul
