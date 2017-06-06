@@ -109,9 +109,14 @@ public class OpenDaTestSupport {
 	static private String publicProjectDirNameDepricated = "public";
 
 	//global attribute names.
+	private static final String FILE_LOCATION = "netcdf";
 	private static final String HISTORY_ATTRIBUTE = "history";
 	private static final String DATE_CREATED_ATTRIBUTE = "date_created";
 	private static final String CASE_NAME_ATTRIBUTE = "caseName";
+
+	private static final String FILE_LOCATION_REGULAR_EXPRESSION = FILE_LOCATION + ".*$";
+	private static final String FILE_LOCATION_REPLACEMENT = FILE_LOCATION + " replaced by dummy text in unit test";
+	private static final Pattern FILE_LOCATION_PATTERN = Pattern.compile(FILE_LOCATION_REGULAR_EXPRESSION);
 
 	private static final String HISTORY_ATTRIBUTE_REGULAR_EXPRESSION = HISTORY_ATTRIBUTE + " = \".*\"";
 	private static final String HISTORY_ATTRIBUTE_REPLACEMENT = HISTORY_ATTRIBUTE + " = \"actual " + HISTORY_ATTRIBUTE + " attribute text replaced by dummy text in unit test\"";
@@ -692,6 +697,7 @@ public class OpenDaTestSupport {
 
 		//replace per line to avoid out of memory errors for large files.
 		for (int n = 0; n < lines.length; n++) {
+			lines[n] = FILE_LOCATION_PATTERN.matcher(lines[n]).replaceFirst(FILE_LOCATION_REPLACEMENT);
 			lines[n] = HISTORY_ATTRIBUTE_PATTERN.matcher(lines[n]).replaceFirst(HISTORY_ATTRIBUTE_REPLACEMENT);
 			lines[n] = DATE_CREATED_ATTRIBUTE_PATTERN.matcher(lines[n]).replaceFirst(DATE_CREATED_ATTRIBUTE_REPLACEMENT);
 			lines[n] = CASE_NAME_ATTRIBUTE_PATTERN.matcher(lines[n]).replaceFirst(CASE_NAME_ATTRIBUTE_REPLACEMENT);
@@ -716,4 +722,25 @@ public class OpenDaTestSupport {
 		Assert.assertEquals("Actual output file '" + netcdfFileWithActualOutput + "' does not equal expected output file '" + textFileWithExpectedOutput + "'.",
 				expectedOutputString, actualOutputString);
 	}
+
+	/**
+	 * This can be used e.g. in unit tests to compare netcdf data in human readable text format instead of in binary format.
+	 *
+	 * @param expectedFile
+	 * @param actualFile
+	 * @param variableNames semicolon delimited list of variables of which the data should be used in the comparison.
+	 *                      If this is null or empty, then all variables are used.
+	 * @throws IOException
+	 */
+	public static void compareNetcdfFiles(File expectedFile, File actualFile, String variableNames) throws IOException {
+
+		String expectedOutputString = replaceNetcdfAttributeLinesWithTimeStamps(NetcdfUtils.netcdfFileToString(expectedFile, variableNames));
+		//convert netcdf data to text for text comparison.
+		String actualOutputString = replaceNetcdfAttributeLinesWithTimeStamps(NetcdfUtils.netcdfFileToString(actualFile, variableNames));
+		Assert.assertEquals("Actual output file '" + actualFile + "' does not equal expected output file '" + expectedFile
+				+ "'.",
+			expectedOutputString, actualOutputString);
+	}
+
+
 }
