@@ -102,6 +102,7 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 	public OutputLevel outputLevel=OutputLevel.Suppress;
 
 	private Time timeHorizon = null;
+	private double[] initialValues = null;
 
 	public TimeSeriesNoiseModelInstance(ITime timeHorizon) {
 		this.timeHorizon = new Time(timeHorizon);
@@ -199,6 +200,8 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 		this.timeCorrelationPerTimeStep = new Vector(seriesTrees.length);
 		this.standardDeviation = new Vector(seriesTrees.length);
 
+		this.initialValues = new double[seriesTrees.length];
+
 		for(int i=0;i<seriesTrees.length;i++){
 			// create empty series
 			TimeSeries tempSeries= new TimeSeries();
@@ -275,6 +278,7 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 			initialValue = seriesTrees[i].getAsDouble("@"+keyword, initialValue);
 			tempSeries.setProperty(keyword, ""+initialValue );
 			this.state.setValue(i, initialValue);
+			this.initialValues[i] = initialValue;
 			// standardDeviation
 			keyword = "standardDeviation";
 			double std = 0.05;
@@ -646,6 +650,15 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 	protected void addRealization(IVector x){
 		IVector w = this.sysNoiseIntensity.createRealization();
 		//Results.putProgression("> w="+w+" sqrt(t_step)="+Math.sqrt(t_step));
+		//ODA-561 Add the part of initialValue that got lost by multiplying with timeCorrelationPerTimeStep
+		assert w.getSize() == initialValues.length && initialValues.length == this.timeCorrelationPerTimeStep.getSize();
+		for (int i = 0; i < initialValues.length; i++) {
+			double initialValue = initialValues[i];
+			if (initialValue == 0.0) continue;
+			double value = w.getValue(i);
+			double corr = this.timeCorrelationPerTimeStep.getValue(i);
+			w.setValue(i, value + initialValue * (1 - corr));
+		}
 		x.axpy(1.0, w);
 	}
 	

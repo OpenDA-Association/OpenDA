@@ -18,6 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.noiseModels;
+
 import junit.framework.TestCase;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.*;
@@ -27,7 +28,9 @@ import org.openda.utils.StochVector;
 import org.openda.utils.Time;
 import org.openda.utils.Vector;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class TimeSeriesNoiseModelTest extends TestCase {
@@ -98,6 +101,61 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	valueVector3.maxFullExpandLength=1000;
     	System.out.println("values3="+valueVector3.toString());
 }
+
+	public void testNoiseForTimeSeries_initialValue() {
+		IStochModelFactory factory = new TimeSeriesNoiseModelFactory();
+		int endTimeInDays = 1000;
+		String configString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "
+			+ "<timeSeriesNoiseModelConfig>"
+			+ "	<simulationTimespan timeFormat=\"mjd\">0.0,0.05,...," + endTimeInDays + "</simulationTimespan>"
+			+ "	<timeSeries location=\"location1\" quantity=\"quantity1\" standardDeviation=\"0.5\""
+			+ "		timeCorrelationScale=\"6.0\" initialValue=\"15\" timeCorrelationScaleUnit=\"hours\" />"
+			+ "</timeSeriesNoiseModelConfig>";
+		factory.initialize(testRunDataDir, new String[]{configString});
+		IStochModelInstance model = factory.getInstance(OutputLevel.Debug);
+
+		StochVector.setSeed(19920411);
+		model.setAutomaticNoiseGeneration(true);
+		model.compute(new Time((double) endTimeInDays));
+
+		String noiseModelExchItemId = model.getExchangeItemIDs()[0];
+		IPrevExchangeItem series1 = model.getExchangeItem(noiseModelExchItemId);
+		double[] times = series1.getTimes();
+		double[] values = series1.getValuesAsDoubles();
+		File file = new File(testRunDataDir, "noise_with_initial_values.csv");
+		BufferedWriter noiseFileWriter = null;
+		try {
+			noiseFileWriter = new BufferedWriter(new FileWriter(file));
+			noiseFileWriter.write("mjd,value-" + noiseModelExchItemId);
+			noiseFileWriter.newLine();
+
+			double average = 0.0;
+			int numValues = 0;
+			for (int i = 0; i < values.length; i++) {
+				noiseFileWriter.write(times[i] + "," + values[i]);
+				noiseFileWriter.newLine();
+				average += values[i];
+				numValues++;
+			}
+			average /= numValues;
+			noiseFileWriter.write("AVERAGE," + average);
+			System.out.println("AVERAGE: " + average + " (#values: " + numValues + ")");
+			assertEquals("Expected average", 15.0127328, average, 1.0e-6);
+
+		} catch (IOException e) {
+			throw new RuntimeException("Could not open log file for writing: " + file.getAbsolutePath() +
+				"(" + e.getMessage() + ")");
+		} finally {
+			if (noiseFileWriter != null) {
+				try {
+					noiseFileWriter.close();
+				} catch (IOException e) {
+					// no action needed
+				}
+			}
+		}
+
+	}
 
     public void testNoiseForTimeSeries_config(){
     	IStochModelFactory factory = new TimeSeriesNoiseModelFactory();
