@@ -101,10 +101,12 @@ public class NetcdfUtils {
 	public static final String X_VARIABLE_NAME = "x";
 
 	public static final String STATION_ID_VARIABLE_NAME = "station_id";
+	public static final String CROSS_SECTION_ID_VARIABLE_NAME = "cross_section_name";	
 	public static final String REALIZATION_VARIABLE_NAME = "realization";
 
 	//dimension names.
 	public static final String STATION_DIMENSION_VARIABLE_NAME = "stations";
+	public static final String CROSS_SECTION_DIMENSION_VARIABLE_NAME = "cross_section";
 	private static final String CHAR_LEN_ID = "char_leng_id";
 	private static final String FACE_DIMENSION_NAME = "n_face";
 

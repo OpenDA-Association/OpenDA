@@ -191,7 +191,7 @@ public class ConfigTreeTest extends TestCase{
 		System.out.println("==============================================================================");
 		System.out.println("Aplication config with schema error");
 		System.out.println("==============================================================================");
-		ConfigTree appConf = new ConfigTree(testRunDataDir,"applicationConfig_with_error.oda" ); 
+		ConfigTree appConf = new ConfigTree(testRunDataDir,"applicationConfig_with_error.oda",true ); 
 		String xmlString = appConf.toString();
 		System.out.println("config="+xmlString);
 		String[][] parts = appConf.getParts();
@@ -215,7 +215,7 @@ public class ConfigTreeTest extends TestCase{
 		System.out.println("==============================================================================");
 		System.out.println("Parse file with schema : First ignore schema, but read correctly");
 		System.out.println("==============================================================================");
-        ConfigTree appConf = new ConfigTree(testRunDataDir,"oscillatorEnkfOpenDaConfig.xml" );
+        ConfigTree appConf = new ConfigTree(testRunDataDir,"oscillatorEnkfOpenDaConfig.xml",true );
 		// first serialize to string
 		String xmlString = appConf.toString();
 		System.out.println("appConf.toString()="+xmlString.substring(0,20));

@@ -60,7 +60,11 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 	//TODO Stef: remove this code. Variable names should not be hardcoded. AK
 	protected String stationIdVarName = NetcdfUtils.STATION_ID_VARIABLE_NAME; // can be overruled by subclasses
+	protected String CrossSectionIdVarName = NetcdfUtils.CROSS_SECTION_ID_VARIABLE_NAME; // can be overruled by subclasses
+	
 	protected String stationDimensionVarName = NetcdfUtils.STATION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
+	protected String CrossSectionDimensionVarName = NetcdfUtils.CROSS_SECTION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
+	
 
 	private File file = null;
 	private NetcdfFileWriter netcdfFileWriter = null;
@@ -206,12 +210,18 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	private void createExchangeItems() throws IOException {
 		this.exchangeItems.clear();
 
-		//get locationIds.
+		//get locationIds. 
+		//TODO MVL
 		NetcdfFile netcdfFile = this.netcdfFileWriter.getNetcdfFile();
 		Map<Integer, String> stationIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(netcdfFile, stationIdVarName);
 		if (!stationIndexIdMap.isEmpty()) {//if stations found.
 			Results.putMessage(this.getClass().getSimpleName() + ": station_id variable found in netcdf file " + this.file.getAbsolutePath());
 		}
+		Map<Integer, String> crossSectionIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(netcdfFile, CrossSectionIdVarName);
+		if (!crossSectionIndexIdMap.isEmpty()) {//if stations found.
+			Results.putMessage(this.getClass().getSimpleName() + ": cross_section_name variable found in netcdf file " + this.file.getAbsolutePath());
+		}
+
 
 		//in most netcdfFiles the time and spatial coordinate variables are shared between multiple data variables.
 		//Therefore cache timeInfo objects so that time coordinate variables
@@ -251,8 +261,14 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			if (dimensionCount != 2 && dimensionCount != 3) {
 				continue;
 			}
-
+			//TODO MVL
+			//Look for index with dimension that matches names/ids
 			int stationDimensionIndex = variable.findDimensionIndex(stationDimensionVarName);
+			String nameSource="stationDimensionVarName";
+			if(stationDimensionIndex<0){
+				stationDimensionIndex = variable.findDimensionIndex(CrossSectionDimensionVarName);
+				nameSource="CrossSectionDimensionVarName";
+			}
 			if (dimensionCount == 2 && stationDimensionIndex != -1) {
 				//if variable has data for scalar time series for a list of separate stations.
 				int stationCount = variable.getDimension(stationDimensionIndex).getLength();
@@ -260,7 +276,12 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 				//create an exchangeItem that can read/write lazily, for each location in this variable.
 				for (int stationIndex = 0; stationIndex < stationCount; stationIndex++) {
-					String stationId = stationIndexIdMap.get(stationIndex);
+					String stationId = "";
+					if(nameSource.equals("stationDimensionVarName")){
+						stationId=stationIndexIdMap.get(stationIndex);
+					}else{
+						stationId=crossSectionIndexIdMap.get(stationIndex);
+					}
 					if (realizationDimensionIndex == -1) {
 						IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
 								stationId, parameterId, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
@@ -482,7 +503,6 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		//This internal exchangeItem can then be used later to copy data from the matching external exchangeItem.
 		//here assume that stationDimensionIndex is 1.
 		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), -1, -1, Role.Output, item.getTimeInfo(), this);
-
 		//store new item.
         this.exchangeItems.add(newItem);
     }
