@@ -58,22 +58,26 @@ public class GUIResultWriter implements IResultWriter {
 
     }
 
-    
-    public void putMessage(Source source, String message) {
-        progressDisplayer.append(message+"\n");
-        setCursorToEnd(this.progressDisplayer);
 
+    public void putMessage(Source source, String message) {
+        synchronized (this) {
+            progressDisplayer.append(message+"\n");
+            setCursorToEnd(this.progressDisplayer);
+        }
     }
 
     
     public void putMessage(IInstance source, String message) {
-        progressDisplayer.append(message + "\n");
-        setCursorToEnd(this.progressDisplayer);
-
+        synchronized (this) {
+            progressDisplayer.append(message + "\n");
+            setCursorToEnd(this.progressDisplayer);
+        }
     }
 
     public void putStatus(IInstance source, String message) {
-        statusDisplayer.setText(message);
+        synchronized (this) {
+            statusDisplayer.setText(message);
+        }
     }
 
 
@@ -114,15 +118,17 @@ public class GUIResultWriter implements IResultWriter {
 
 	
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
+
         if (!writeResults) {
             return;
         }
-
-        String display = id + " (iteration=" + iteration + "):\n";
-        display += id + "= " + printObject(result) + "\n";
-        //resultDisplayer.setText(display);
-        resultDisplayer.append(display);
-        setCursorToEnd(this.resultDisplayer);
+        synchronized (this) {
+            String display = id + " (iteration=" + iteration + "):\n";
+            display += id + "= " + printObject(result) + "\n";
+            //resultDisplayer.setText(display);
+            resultDisplayer.append(display);
+            setCursorToEnd(this.resultDisplayer);
+        }
 	}
 
 //	
