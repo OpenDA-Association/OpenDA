@@ -1,5 +1,5 @@
-/* OpenDA v2.3.1
-* Copyright (c) 2016 OpenDA Association
+/* OpenDA v2.4
+* Copyright (c) 2017 OpenDA Association
 * All rights reserved.
 *
 * This file is part of OpenDA.
@@ -53,3 +53,4 @@ public class WaveStochModelFactory extends SimpleStochModelFactory {
        // no action needed (yet)
     }
 }
+

@@ -1,5 +1,5 @@
-/* OpenDA v2.3.1
-* Copyright (c) 2016 OpenDA Association
+/* OpenDA v2.4
+* Copyright (c) 2017 OpenDA Association
 * All rights reserved.
 *
 * This file is part of OpenDA.
@@ -66,9 +66,5 @@ public class WaveModelTest extends TestCase {
         assertEquals("model.getObservedValues()", predictions.toString(), "[0.0,0.09998797888368932,0.18174892847314097,0.19412691322953382,0.1323756648952993,0.020078649042881577,-0.09985050759709486,-0.1526996587110074,-0.17570283804550416,-0.13140230434484873,-0.03703081673406845]");
         //   public void announceObservedValues(ObservationDescriptions observationDescriptions) {
     }
-
 }
-
-
-
 

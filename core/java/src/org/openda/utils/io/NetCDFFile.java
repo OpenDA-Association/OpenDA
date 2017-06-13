@@ -1,5 +1,5 @@
-/* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
+/* OpenDA v2.4
+* Copyright (c) 2017 OpenDA Association
 * All rights reserved.
 *
 * This file is part of OpenDA.
@@ -88,6 +88,4 @@ public class NetCDFFile {
 		netcdfFile.close();
 	}
 }
-
-
 
