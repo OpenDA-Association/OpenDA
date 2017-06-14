@@ -55,8 +55,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #else
 
 	#define CTAEXPORT
-	#define F77_CALL(X,Y) F77_FUNC(X,Y)
-	#define CF77_CALL(X,Y) F77_FUNC(X,Y)
+	#ifdef FTN_CAPITAL
+                #define F77_FUNC(X,Y) Y ## _
+	        #define F77_CALL(X,Y) Y ## _
+        	#define CF77_CALL(X,Y) Y ## _
+        #else
+                #define F77_FUNC(X,Y) X ## _
+        	#define F77_CALL(X,Y) X ## _
+	        #define CF77_CALL(X,Y) X ## _
+        #endif
 
 #endif
 

@@ -6,7 +6,7 @@
 #
 # $Id: nc-config.in,v 1.17 2010/03/24 15:20:37 dmh Exp $
 
-prefix=/u/verlaan/openda_trunk/public/core/native/external/netcdf/linux64_gnu
+prefix=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/netcdf/linux64_gnu
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

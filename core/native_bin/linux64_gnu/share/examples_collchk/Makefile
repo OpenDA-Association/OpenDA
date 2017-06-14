@@ -1,14 +1,14 @@
 
 ##### User configurable options #####
 
-MAKE                 = make
+MAKE                 = make --no-print-directory
 
-MPI_CC               = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/bin/mpicc
-MPI_F77              = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/bin/mpif77
+MPI_CC               = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpicc
+MPI_F77              = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpif77
 MPI_CLINKER          = $(MPI_CC)
 MPI_FLINKER          = $(MPI_F77)
-MPE_CLINKER          = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/bin/mpicc -mpe=
-MPE_FLINKER          = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/bin/mpif77 -mpe=
+MPE_CLINKER          = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpicc -mpe=
+MPE_FLINKER          = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpif77 -mpe=
 
 DEBUG_LIBS           = 
 MPI_CFLAGS           = 
@@ -16,9 +16,9 @@ MPI_FFLAGS           =
 MPI_LIBS             = 
 CFLAGS               = -fPIC -m64 -O2
 FFLAGS               = -fPIC -m64 -O2
-MPE_INCDIR           = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/include
-MPE_LIBDIR           = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
-MPE_SBINDIR          = /u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/sbin
+MPE_INCDIR           = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/include
+MPE_LIBDIR           = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib
+MPE_SBINDIR          = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/sbin
 F2CMPI_LIBS          = -lmpe_f2cmpi
 COLLCHK_LIBS         = -L$(MPE_LIBDIR) -lmpe_collchk -lmpe $(MPI_LIBS)
 COLLCHK_FLIBS        = -L$(MPE_LIBDIR) \
@@ -37,7 +37,7 @@ RM            = rm
 
 VPATH=.:$(srcdir)
 
-srcdir        = /u/verlaan/openda_trunk/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2/src/collchk/test
+srcdir        = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2/src/collchk/test
 
 CC_FLAGS      = $(C_INCS) $(CFLAGS) $(MPE_COPTS)
 FC_FLAGS      = $(F_INCS) $(FFLAGS) $(MPE_FOPTS)

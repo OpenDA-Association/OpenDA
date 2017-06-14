@@ -17,7 +17,7 @@ old_library='libadvec1d.a'
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' /u/verlaan/openda_trunk/public/core/native/linux64_gnu/lib/libcta.la -L/u/verlaan/openda_trunk/public/core/native/openda_linux64_gnu_temp/src/cta -L/u/verlaan/openda_trunk/public/core/native/external/netcdf/linux64_gnu/lib /u/verlaan/openda_trunk/public/core/native/linux64_gnu/lib/libsqlite3.la /u/verlaan/openda_trunk/public/core/native/linux64_gnu/lib/libblas.la /u/verlaan/openda_trunk/public/core/native/linux64_gnu/lib/liblapack.la /u/verlaan/openda_trunk/public/core/native/external/netcdf/linux64_gnu/lib/libnetcdf.la -lxml2 -lz -lm -ldl'
+dependency_libs=' /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/linux64_gnu/lib/libcta.la -L/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/openda_linux64_gnu_temp/src/cta -L/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/netcdf/linux64_gnu/lib /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/linux64_gnu/lib/libsqlite3.la /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/linux64_gnu/lib/libblas.la /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/linux64_gnu/lib/liblapack.la /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/netcdf/linux64_gnu/lib/libnetcdf.la -lxml2 -lz -lm -ldl'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/u/verlaan/openda_trunk/public/core/native/linux64_gnu/lib'
+libdir='/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/linux64_gnu/lib'

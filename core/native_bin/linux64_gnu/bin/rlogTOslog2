@@ -4,10 +4,10 @@ JVM=/opt/java/jdk_1.7_x64/bin/java
 JVMFLAGS=
 
 # Set PATH to the shared library of the TRACE-API implementation
-TRACE_LIBDIR=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib/trace_rlog
+TRACE_LIBDIR=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib/trace_rlog
 
 # Set PATH to the jar needed by the program
-GUI_LIBDIR=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
+GUI_LIBDIR=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib
 GUI_HOME=${GUI_LIBDIR}/..
 MAIN_LIB=${GUI_LIBDIR}/traceTOslog2.jar
 

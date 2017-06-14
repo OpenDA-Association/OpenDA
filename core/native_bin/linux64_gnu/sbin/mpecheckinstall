@@ -14,17 +14,17 @@
 # or different from the source directory
 #
 
-MAKE="make"
+MAKE="make --no-print-directory"
 
 # Location of sources
-# top_srcdir=/u/verlaan/openda_trunk/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2
-top_srcdir=/u/verlaan/openda_trunk/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2       # in absolute path
+# top_srcdir=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2
+top_srcdir=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2       # in absolute path
 
 # Installation directories: Default paths (set at configure time)
-prefix=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu
+prefix=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu
 exec_prefix=${prefix}
 includedir=${prefix}/include
-libdir=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
+libdir=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib
 bindir=${exec_prefix}/bin
 sbindir=${exec_prefix}/sbin
 datadir=${prefix}/share
@@ -47,7 +47,7 @@ for arg in "$@" ; do
     case "$arg" in
         -prefix=*)
             prefix=`echo $arg | sed -e 's/-prefix=//g'`
-            if [ "$prefix" != "/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu" ] ; then
+            if [ "$prefix" != "/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu" ] ; then
                 prefix_override=1
             fi
             ;;
@@ -106,7 +106,7 @@ fi
 if [ "$prefix_override" = 1 ] ; then
     exec_prefix=${prefix}
     includedir=${prefix}/include
-    libdir=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
+    libdir=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib
     bindir=${exec_prefix}/bin
     sbindir=${exec_prefix}/sbin
     datadir=${prefix}/share

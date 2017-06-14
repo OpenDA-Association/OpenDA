@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/u/verlaan/openda_trunk/public/core/native/external/netcdf/linux64_gnu/lib'
+libdir='/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/netcdf/linux64_gnu/lib'

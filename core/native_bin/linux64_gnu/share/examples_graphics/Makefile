@@ -3,12 +3,12 @@
 
 MAKE                 = make --no-print-directory
 
-MPI_CC               = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/bin/mpicc
-MPI_F77              = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/bin/mpif77
+MPI_CC               = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpicc
+MPI_F77              = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpif77
 MPI_CLINKER          = $(MPI_CC)
 MPI_FLINKER          = $(MPI_F77)
-MPE_CLINKER          = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/bin/mpicc -mpe=
-MPE_FLINKER          = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/bin/mpif77 -mpe=
+MPE_CLINKER          = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpicc -mpe=
+MPE_FLINKER          = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin/mpif77 -mpe=
 #
 DEBUG_LIBS           = 
 MPI_CFLAGS           = 
@@ -16,9 +16,9 @@ MPI_FFLAGS           =
 MPI_LIBS             = 
 CFLAGS               = -fPIC -m64 -O2
 FFLAGS               = -fPIC -m64 -O2
-MPE_INCDIR           = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/include
-MPE_LIBDIR           = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/lib
-MPE_SBINDIR          = /u/verlaan/openda_v2.2/public/core/native/external/mpi/linux64_gnu/sbin
+MPE_INCDIR           = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/include
+MPE_LIBDIR           = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib
+MPE_SBINDIR          = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/sbin
 ANIM_LIBS            = -L$(MPE_LIBDIR) -lampe -lmpe -lX11 $(MPI_LIBS)
 C_XGRAPH_LIBS        = -L$(MPE_LIBDIR) -lmpe -lX11 $(MPI_LIBS)
 F_XGRAPH_LIBS        = -L$(MPE_LIBDIR) -lmpe -lX11 $(MPI_LIBS)
@@ -35,7 +35,7 @@ RM            = rm
 
 VPATH=.:$(srcdir)
 
-srcdir        = /u/verlaan/openda_v2.2/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2/src/graphics/contrib/test
+srcdir        = /opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/mpich2-1.4.1/src/mpe2/src/graphics/contrib/test
 
 # MPE include path, x_INCS, goes in front of MPI include path, MPI_xFLAGS,
 # in case MPI include path is in MPI_xFLAGS containing old MPE include path.

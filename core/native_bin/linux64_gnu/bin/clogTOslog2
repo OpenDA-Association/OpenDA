@@ -48,7 +48,7 @@ JVMFLAGS=${JVMFLAGS:-${JVMOPTS}}
 
 # Set PATH to the jar needed by the convertor program
 # The default path libbuild_dir will be modified by sed -e "^GUI_LIBDIR=..."
-GUI_LIBDIR=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/lib
+GUI_LIBDIR=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/lib
 GUI_HOME="${GUI_LIBDIR}/.."
 if [ -n "${SLOG2_HOME}" -a -d "${SLOG2_HOME}/lib" ] ; then
     GUI_LIBDIR="${SLOG2_HOME}/lib"

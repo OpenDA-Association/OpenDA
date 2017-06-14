@@ -3,14 +3,14 @@
 # The script is designed to be invoked from a "Makefile",
 # notice the command "$MAKE $pgm" below.
 
-MAKE="make"
+MAKE="make --no-print-directory"
 ECHO_N="-n"
 ECHO_C=""
 ECHO_T=""
 RM="rm"
 MV="mv"
 
-MPE_BINDIR=/u/verlaan/openda_trunk/public/core/native/external/mpi/linux64_gnu/bin
+MPE_BINDIR=/opt/teamcity/work/openda_linux_buildnative_branch_24/openda/public/core/native/external/mpi/linux64_gnu/bin
 
 execbasename=`basename $0`
 MPE_OUTFILE="mpe2_$execbasename.txt"
