@@ -393,8 +393,8 @@
             <tarfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
             <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
             <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
-	        <tarfileset dir="." includes="release-notes-2.3.txt" fullpath="openda_${version}/release-notes-2.3.txt"/>
-	        <tarfileset dir="." includes="Change-log-2.3.txt" fullpath="openda_${version}/Change-log-2.3.txt"/>
+	        <tarfileset dir="." includes="release-notes-2.4.txt" fullpath="openda_${version}/release-notes-2.4.txt"/>
+	        <tarfileset dir="." includes="Change-log-2.4.txt" fullpath="openda_${version}/Change-log-2.4.txt"/>
             <tarfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}" />
         </tar>
     </target>
@@ -431,8 +431,8 @@
 	  <tarfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
 	  <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_r${svn.revision}.txt"/>
 	  <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/public/license.txt"/>
-	  <tarfileset dir="." includes="release-notes-2.3.txt" fullpath="openda_${version}/public/release-notes-2.3.txt"/>
-	  <tarfileset dir="." includes="Change-log-2.3.txt" fullpath="openda_${version}/public/Change-log-2.3.txt"/>
+	  <tarfileset dir="." includes="release-notes-2.4.txt" fullpath="openda_${version}/public/release-notes-2.4.txt"/>
+	  <tarfileset dir="." includes="Change-log-2.4.txt" fullpath="openda_${version}/public/Change-log-2.4.txt"/>
 	  <tarfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}/public" />
 	  <tarfileset dir="." includes=".project" fullpath="openda_${version}/public/.project"/>
 	  <tarfileset dir="." includes=".classpath" fullpath="openda_${version}/public/.classpath"/>
@@ -444,8 +444,8 @@
             <tarfileset dir="doc" prefix="openda_${version}/doc" />
             <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
             <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
-	        <tarfileset dir="." includes="release-notes-2.3.txt" fullpath="openda_${version}/release-notes-2.3.txt"/>
-	        <tarfileset dir="." includes="Change-log-2.3.txt" fullpath="openda_${version}/Change-log-2.3.txt"/>
+	        <tarfileset dir="." includes="release-notes-2.4.txt" fullpath="openda_${version}/release-notes-2.4.txt"/>
+	        <tarfileset dir="." includes="Change-log-2.4.txt" fullpath="openda_${version}/Change-log-2.4.txt"/>
         </tar>
     </target>
 
@@ -454,8 +454,8 @@
          <tarfileset dir="xmlSchemas" prefix="openda_${version}" excludes="*.svn" />
          <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
          <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
-	     <tarfileset dir="." includes="release-notes-2.3.txt" fullpath="openda_${version}/release-notes-2.3.txt"/>
-	     <tarfileset dir="." includes="Change-log-2.3.txt" fullpath="openda_${version}/Change-log-2.3.txt"/>
+	     <tarfileset dir="." includes="release-notes-2.4.txt" fullpath="openda_${version}/release-notes-2.4.txt"/>
+	     <tarfileset dir="." includes="Change-log-2.4.txt" fullpath="openda_${version}/Change-log-2.4.txt"/>
       </tar>
     </target>
 
@@ -473,7 +473,7 @@
     <target name="tgz-tests" depends="svn-revision,tests" > <!-- depends="svn-revision"> -->
         <tgztest testname="core" />
         <tgztest testname="model_example_blackbox" />
-    	<tgztest testname="model_swan" />
+        <tgztest testname="model_swan" />
         <tgztest testname="model_delft3d" />
         <tgztest testname="model_dflowfm_blackbox" />
     </target>
