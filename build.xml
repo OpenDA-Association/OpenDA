@@ -304,8 +304,8 @@
 	        <zipfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
 	        <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_r${svn.revision}.txt"/>
 	        <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/public/license.txt"/>
-	        <zipfileset dir="." includes="release-notes-2.3.1.txt" fullpath="openda_${version}/public/release-notes-2.3.1.txt"/>
-	        <zipfileset dir="." includes="Change-log-2.3.1.txt" fullpath="openda_${version}/public/Change-log-2.3.1.txt"/>
+	        <zipfileset dir="." includes="release-notes-2.4.txt" fullpath="openda_${version}/public/release-notes-2.4.txt"/>
+	        <zipfileset dir="." includes="Change-log-2.4.txt" fullpath="openda_${version}/public/Change-log-2.4.txt"/>
 	        <zipfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}/public" />
 	        <zipfileset dir="." includes=".project" fullpath="openda_${version}/public/.project"/>
 	        <zipfileset dir="." includes=".classpath" fullpath="openda_${version}/public/.classpath"/>
@@ -321,8 +321,8 @@
             <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
             <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
             <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
-	        <zipfileset dir="." includes="release-notes-2.3.1.txt" fullpath="openda_${version}/release-notes-2.3.1.txt"/>
-	        <zipfileset dir="." includes="Change-log-2.3.1.txt" fullpath="openda_${version}/Change-log-2.3.1.txt"/>
+	        <zipfileset dir="." includes="release-notes-2.4.txt" fullpath="openda_${version}/release-notes-2.4.txt"/>
+	        <zipfileset dir="." includes="Change-log-2.4.txt" fullpath="openda_${version}/Change-log-2.4.txt"/>
             <zipfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}" />
         </zip>
     </target>
