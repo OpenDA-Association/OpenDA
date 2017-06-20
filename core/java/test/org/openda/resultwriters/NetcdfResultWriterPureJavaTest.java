@@ -126,7 +126,7 @@ public class NetcdfResultWriterPureJavaTest extends TestCase {
 
 	}
 
-	public void testAllOutput() {  // first implementation
+	public void testAllOutput() throws IOException {  // first implementation
 
 		//setTestDir();
 		Results.reset();
@@ -142,34 +142,22 @@ public class NetcdfResultWriterPureJavaTest extends TestCase {
 
 		Results.reset();
 
-		compareNetcdfFiles("ncp_ref_ctatv_A_3","ncp_test_ctatv_A_3");
-		compareNetcdfFiles("ncp_ref_ctatv_B_4","ncp_test_ctatv_B_4");
-		compareNetcdfFiles("ncp_ref_ctavector_2","ncp_test_ctavector_2");
-		compareNetcdfFiles("ncp_ref_simple_tv_5","ncp_test_simple_tv_5");
-		compareNetcdfFiles("ncp_ref_simplevec_6","ncp_test_simplevec_6");
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"ncp_ref_ctatv_A_3.nc"),
+			new File(testRunDataDir,"ncp_test_ctatv_A_3.nc") );
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"ncp_ref_ctatv_B_4.nc"),
+			new File(testRunDataDir,"ncp_test_ctatv_B_4.nc") );
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"ncp_ref_ctavector_2.nc"),
+			new File(testRunDataDir,"ncp_test_ctavector_2.nc") );
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"ncp_ref_simple_tv_5.nc"),
+			new File(testRunDataDir,"ncp_test_simple_tv_5.nc") );
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"ncp_ref_simplevec_6.nc"),
+			new File(testRunDataDir,"ncp_ref_simplevec_6.nc") );
+
 	}
 
-	private void compareNetcdfFiles(String expectedBaseName, String actualBaseName ) {
-		File actualFile = new File(testRunDataDir, actualBaseName + ".nc");
-		assertTrue("Output file should exist " + actualFile.getAbsolutePath(),actualFile.exists());
-		File actualFileDump = new File(testRunDataDir, actualBaseName + ".txt");
-		File expectedFile = new File(testRunDataDir, expectedBaseName + ".nc");
-		File expectedFileDump = new File(testRunDataDir, expectedBaseName + ".txt");
-		generateAsciiDump(actualFile.getAbsolutePath(),actualFileDump.getAbsolutePath());
-		generateAsciiDump(expectedFile.getAbsolutePath(),expectedFileDump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(expectedFileDump,actualFileDump,1));
-	}
-
-
-	private void generateAsciiDump(String nameNcFile, String nameTextFile){
-		//NCdump filename [-ncml] [-c | -vall] [-v varName;...]
-		//String command=nameNcFile+" -vall";
-		String command=nameNcFile+" -vall";
-		try{
-			FileWriter out = new FileWriter(nameTextFile);
-			ucar.nc2.NCdumpW.print(command,out);
-		}catch (Exception e) {
-			throw new RuntimeException("NetcdfResultWriterNative junit test. Problem with ascii dump of netcdf.");
-		}
-	}
 }

@@ -155,7 +155,7 @@ public class NetcdfResultWriterNativeTest extends TestCase {
 
 	}
 
-	public void testAllOutput() {  // first implementation
+	public void testAllOutput() throws IOException {  // first implementation
 
 		//setTestDir();
 		Results.reset();
@@ -173,36 +173,26 @@ public class NetcdfResultWriterNativeTest extends TestCase {
 
 		Results.reset();
 
-		compareNetcdfFiles("de_ref_ctatv_A_3","de_test_ctatv_A_3");
-		compareNetcdfFiles("de_ref_ctatv_B_4","de_test_ctatv_B_4");
-		compareNetcdfFiles("de_ref_ctatv_from_model_1","de_test_ctatv_from_model_1");
-		compareNetcdfFiles("de_ref_ctavector_2","de_test_ctavector_2");
-		compareNetcdfFiles("de_ref_simple_tv_5","de_test_simple_tv_5");
-		compareNetcdfFiles("de_ref_simplematrix_7","de_test_simplematrix_7");
-		compareNetcdfFiles("de_ref_simplevec_6","de_test_simplevec_6");
-
-	}
-
-	private void compareNetcdfFiles(String expectedBaseName, String actualBaseName ) {
-		File actualFile = new File(testRunDataDir, actualBaseName + ".nc");
-		assertTrue("Output file should exist " + actualFile.getAbsolutePath(),actualFile.exists());
-		File actualFileDump = new File(testRunDataDir, actualBaseName + ".txt");
-		File expectedFile = new File(testRunDataDir, expectedBaseName + ".nc");
-		File expectedFileDump = new File(testRunDataDir, expectedBaseName + ".txt");
-		generateAsciiDump(actualFile.getAbsolutePath(),actualFileDump.getAbsolutePath());
-		generateAsciiDump(expectedFile.getAbsolutePath(),expectedFileDump.getAbsolutePath());
-		assertTrue(testData.FilesAreIdentical(expectedFileDump,actualFileDump,1));
-	}
-
-
-	private void generateAsciiDump(String nameNcFile, String nameTextFile){
-		//NCdump filename [-ncml] [-c | -vall] [-v varName;...]
-		String command=nameNcFile+" -vall";
-		try{
-			FileWriter out = new FileWriter(nameTextFile);
-			ucar.nc2.NCdumpW.print(command,out);
-		}catch (Exception e) {
-			throw new RuntimeException("NetcdfResultWriterNative junit test. Problem with ascii dump of netcdf.");
-		}
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_ctatv_A_3.nc"),
+			new File(testRunDataDir,"de_test_ctatv_A_3.nc"));
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_ctatv_B_4"),
+			new File(testRunDataDir,"de_test_ctatv_B_4.nc"));
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_ctatv_from_model_1.nc"),
+			new File(testRunDataDir,"de_test_ctatv_from_model_1.nc"));
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_ctavector_2.nc"),
+			new File(testRunDataDir,"de_test_ctavector_2.nc"));
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_simple_tv_5.nc"),
+			new File(testRunDataDir,"de_test_simple_tv_5.nc"));
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_simplematrix_7.nc"),
+			new File(testRunDataDir,"de_test_simplematrix_7.nc"));
+		OpenDaTestSupport.compareNetcdfFiles(
+			new File(testRunDataDir,"de_ref_simplevec_6.nc"),
+			new File(testRunDataDir,"de_test_simplevec_6.nc"));
 	}
 }

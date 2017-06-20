@@ -456,7 +456,7 @@ public class WdmTimeSeriesTest extends TestCase {
         //convert netcdf data to text for human readable text comparison.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
         File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertWdmToNetcdfWithDataCopier_expected_output.nc");
-        OpenDaTestSupport.compareNetcdfFilesInTextFormat(expectedOutputFile, outputFile, null);
+        OpenDaTestSupport.compareNetcdfFiles(expectedOutputFile, outputFile);
     }
 
     public void testConvertEnsembleWdmToEnsembleNetcdfWithDataCopier() throws Exception {
@@ -518,7 +518,7 @@ public class WdmTimeSeriesTest extends TestCase {
         //convert netcdf data to text for human readable text comparison.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
         File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertEnsembleWdmToEnsembleNetcdfWithDataCopier_expected_output.nc");
-        OpenDaTestSupport.compareNetcdfFilesInTextFormat(expectedOutputFile, outputFile, null);
+        OpenDaTestSupport.compareNetcdfFiles(expectedOutputFile, outputFile, null);
     }
 
     public void testConvertWdmToUciWithDataCopier() throws Exception {
