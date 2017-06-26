@@ -1,0 +1,94 @@
+
+{\bf Before you start:}\\
+In order to be able to compile your model you need to have a (current) version
+installed on your computer of:
+\begin{itemize}
+\item The Java Development Kit (JDK). You can download this from\\
+      {\tt www.oracle.com}\footnote{Java Runtime Environment (JRE), which is
+      installed on most computers is not sufficient since this will allow you
+      to run java programs but it does not include the java compiler {\tt javac} that is
+      needed to create you own (parts of) programs}
+\item Apache Ant, this is a command line tool we use for building your java
+      code. You can download Ant from {\tt ant.apache.org}.
+\end{itemize}
+
+In this exercise you will learn how to code your own model and use it in
+OpenDA. The directory {\tt exercise\_6} contains a template of the code for the
+1-D advection model we will create in this exercise. The content of this
+directory is similar to the OpenDA directories you have seen in the previous
+exercises. The difference is that we will not use a model that is already part
+of the OpenDA distribution but instead our own model. The model code can be
+found in the directory {\tt simple\_advection\_model}.
+
+The model you will create is build as an extension of the OpenDA \\{\tt
+  simpleStochModelInstance}. This will simplify and reduce the amount of
+programming because a significant part of the implementation is already
+available. For more complex models you might need to implement all methods of
+the\ {\tt IStochModelInstance} class.
+
+In the directory\\ {\tt
+  exercise\_6/simple\_advection\_model/java/src/org/openda} you will find the
+two java source files {\tt AdvectionStochModelFactory.java} and\\ {\tt
+  AdvectionStochModelInstance.java}. The first file implements the ModelFactory
+class. The model factory is a class in OpenDA that is responsible for creating
+model instances (e.g. the members of an ensemble Kalman filter). The second
+file implements the model. This is the file you have to edit in this exercise.
+
+\begin{itemize}
+\item Consider the 1-dimensional advection model:
+   \begin{eqnarray}
+      \frac{\partial c}{\partial t}=v \frac{\partial c}{\partial x}
+   \end{eqnarray}
+   where $c$ typically describes the density of the particle being studied and
+   $u$ is the velocity. On the left boundary $c$ is specified as
+   $c_b(t)=1+\frac{1}{2}sin(5 \pi t)$. Discretize this model on the interval
+   $x=[0..1]$ with velocity $v=1$ using a 1st order upwind scheme on a grid of
+   51 points. The time step is chosen such that the courant number $\frac{v
+     \Delta t}{\Delta x}$ is approximately 1.
+\item The deterministic model is extended into a stochastic model by adding a
+  noise parameter $\omega$ on the left boundary. We use an AR(1) model to
+  describe the noise.
+\item Code your model in {\tt AdvectionStochModelInstance.java}. For
+  inspiration, you will find in the same directory an implementation of the
+  Lorenz model.
+\item You can compile your model by typing "ant build" in the directory \\ {\tt
+  exercise\_6/simple\_advection\_model}. This will create the file \\ {\tt
+  bin/simple\_advection\_model.jar}.
+\item Run the model. You can use file {\tt advectionSimulation.oda}. In order
+  to be able to run your model, java must be able to find the file {\tt
+    simple\_advection\_model.jar}. To accomplish this, you can copy your
+  advection model jar-file to the bin-directory of your OpenDA installation or
+  add the full path of your jar-file ({\tt simple\_advection\_model.jar}) to
+  the java class path variable {\tt CLASSPATH}.\\ By default, the Windows
+  scripts {\tt oda\_run\_gui.bat} and {\tt oda\_run\_batch.bat} use the JRE
+  environment that is provided with OpenDA. If this JRE is incompatible with
+  your JDK installation (Error: Unsupported major.minor version 51.0), use {\tt
+    oda\_run\_batch.bat <inputfile> -jre "location of your JDK"} to overrule
+  the default JRE.
+\item Use the script {\tt plot\_movie.m} to visualize the model results. You
+  will see that the model suffers from numerical diffusion. You can solve this
+  by using a second order upwind method but this is not necessary for this
+  exercise.
+\item Create an ensemble of model simulations and study the model uncertainty
+  in space and time.
+\item The provided observation file {\tt observations.cvs} does not contain
+  observations that correspond to the advection model. Create your own
+  observation file for the locations $x=0.2$, $x=0.5$ and $x=0.7$. Use the
+  model to create the values. Run the model with noise on the left boundary.
+  Optionally generate some additional noise and add it to the generated
+  observations. You can use the script {\tt generate\_obs} to simplify the
+  creation of the observations file.
+\item Using your generated observations, setup an ensemble Kalman filter run.
+  Experiment with various numbers of ensembles, different settings of the AR(1)
+  model.
+\item Experiment with different intervals between the available observations.
+  What do you observe. Is this behavior different from the Lorenz model?
+  Evaluate the uncertainty of the estimates.
+\item Experiment with only assimilating the data from one of the three
+  locations and use the other locations as validation. What do you observe. Do
+  all the locations have the same impact? Explain the behavior you observe.
+\item Use the same data as generated before and use the Kalman filter now with
+  different values of the system noise covariance and measurement noise
+  covariance. Explain the behaviour that you observe.
+\end{itemize}
+

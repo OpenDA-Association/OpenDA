@@ -1,0 +1,47 @@
+\section{Exercise 2: Some basic properties of the EnKF}
+
+In this exercise you will learn how to set up and run the EnKF method in OpenDA.
+
+\begin{itemize}
+  \item Prepare the input files for a run with the EnKF method. Use the input
+        files from exercise 1 as template. Hint: the Ensemble Kalman filter
+        is called org.openda.algorithms.kalmanFilter.EnKF. The algorithm
+        configuration file has the following content
+      \begin{lstlisting}[language=XML,frame=single,caption={XML-input for EnKF algorithm}]
+      <?xml version="1.0" encoding="UTF-8"?>
+      <EnkfConfig>
+         <ensembleSize>10</ensembleSize>
+         <ensembleModel stochParameter="false"
+                        stochForcing="false"
+                        stochInit="true" />
+      </EnkfConfig>
+      \end{lstlisting}
+
+  \item Plot the ensemble mean of the first model variable and the observations.
+        With some luck the solution should track the observations.\\
+        Tip: use the scripts {\tt load\_obs.m} and {\tt load\_ensemble.m} for reading the
+        data into matlab (cf. Exercise1), or {\tt load\_ensemble.py} for python.
+  %oda_run EnKf.oda
+  %plot1.m
+ \item Look at the observation input file of the StochObserver. The
+       StochObserver does not only describe the observations but the accuracy
+       as well. Can you make a new observation input file with similar
+       observed values but with a 10 times larger standard deviation for the
+       observation error.
+       Tip: you can edit the file in OpenOffice or MS Excel or use the find
+       and replace function of an advanced text editor.
+ \item Repeat the run with EnKF but now for the new observations and plot
+       the first variable of the ensemble means and the observations. What do
+       you see and what is the reason for this behavior of the algorithm?
+ %oda_run EnKf10.oda
+ %plot1.m
+ \item The number of ensemble members controls the accuracy of the ensemble
+       approximation. What happens if you increase the number to e.g. 100, or
+       decrease it to 5? Use (initially) observations with a standard deviation
+       of 5.0. Experiment as well with various standard
+       deviations of the observations.
+\end{itemize}
+
+%extra: Belang van initial seed (een enkele run is ook maar een enkele realisatie) en gebruik van "ensembles van ensembles"
+%laat ze ook spelen met initiele seed van de randomgenerator (kan dat in OpenDA??) Zodat ze dan zien dat voor grote ensembles minder impact (zou moeten) hebben dan voor kleine aantallen ensembles.
+

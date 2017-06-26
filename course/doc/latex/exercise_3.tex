@@ -1,0 +1,64 @@
+
+  In this section you will learn how to create and use a steady-state Kalman
+  filter with OpenDA. The example model we use in this section is a
+  1-dimensional wave model:
+  \begin{eqnarray}
+  \frac{\partial h}{\partial t} + D \frac{\partial v}{\partial x} = 0 \\
+  \frac{\partial v}{\partial t} + g \frac{\partial h}{\partial x} + c_f v = 0 \\
+  \end{eqnarray}
+  With $h(x,t)$ the (water) level above the reference plane, $v(x,t)$ the
+  velocity, $D(x)$ the depth under the reference plane, $g$ the gravitational
+  acceleration $c_f$ the friction coefficient and $x\in [0,L]$ the location.
+  For our model we have selected the boundary values $v(x=L,t)=0$ and
+  $h(x=0,t)=\frac{1}{5} sin(2 \pi t)$. An AR(1) model is defined on the left
+  water level boundary.
+
+\begin{itemize}
+\item Look at the implementation of the model in {\tt
+  WaveStochModelInstance.java}, in the directory {\tt
+  simple\_wave\_model/java/src/org/openda/}. See how the state is defined and how
+  the model is discretized. If you want you can compile the model using {\tt ant
+  build} as we will explain in excercise 6. However to make it easy for you, you
+  will find the compiled version of this model,{\tt simple\_wave\_model.jar} in
+  the directory {\tt simple\_wave\_model/bin}.
+\item The model represents a "user" model that is not part of the OpenDA distribution. Therefore you have to copy the
+ model jar-file to the bin directory of your OpenDA installation. In this way OpenDA can find this model.
+\item Run the model ({\tt waveSimulation.oda}) and visualize the model results
+  ({\tt plot\_movie.m} or {\tt plot\_movie.py}). Do not forget to add the jar-file of the model to the
+  {\tt CLASSPATH} variable, or to copy the jar-file into the bin directory of
+  your OpenDA version
+\item Adjust the input files in order to run the model with stochastic
+  forcings.
+\item Generate water level observations from this stochastic run. We need
+  observations at (approximately) $x=\frac{1}{4} L$, $x=\frac{1}{2} L$ and
+  $x=\frac{3}{4} L$. You can use the script {\tt generate\_obs.m} for this
+  task. We want to have observations at $t=0.1, 0.2,...,10.0$, (initially)
+  select a standard deviation of 0.05.
+\item Run the Ensemble Kalman filter ({\tt waveEnkf.oda}). This run will
+  generate and write gain matrices at specified times. Find where and how this
+  is specified in the input.
+\item Plot the columns of the gain matrices. (The script {\tt plot\_gains.m}
+  or {\tt plot\_gains.py}
+  plots the water level part of the gain matrices). What do these columns mean?
+\item (Re)generate the gain matrices using different numbers of ensembles. When
+  you compare the gain matrices, what do you notice. Note: The algorithm will
+  generate an enormous amount of output when you run the EnKF with a very large
+  number of ensembles (e.g. 500). You can suppress the output by commenting out
+  (or remove) the {\tt resultWriter}-part of the oda-input file.
+\item Use the generated steady state gain matrices for a steady state Kalman
+  run ({\tt waveSteadystate.oda}). Compare the performance of:
+  \begin{itemize}
+  \item a (non-stochastic) run without filtering,
+  \item an EnkF run with various numbers of ensembles (do not forget to
+    reinstate the resultWriter if you have switched it off),
+  \item the various steady state gains.
+  \end{itemize}
+ you can use the scripts {\tt plot\_obs\_sim.m}, {\tt plot\_obs\_ens.m}
+ and\\ {\tt plot\_obs\_steady.m} and similar routines for python.
+
+\item Generate (observations) gain matrices but now for only a single
+  observation. Make sure that the observed values are exactly the same as in
+  the 3 observation observer. Compare the columns of the 3-observation gain
+  matrices to the single observation matrices. What is the main difference and
+  why?
+\end{itemize}

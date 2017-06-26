@@ -1,0 +1,147 @@
+
+A simple way to connect a model to OpenDA is by letting OpenDA access the input
+and output files of the model. OpenDA cannot directly understand the input and
+output files of an arbitrary model. Some code has to be written such that the
+black box model implementation of OpenDA can read and write these files. In
+this exercise you will learn how to connect an existing model to OpenDA
+assuming that all the input and output files of the model can indeed be
+accessed by OpenDA. The exercise focusses on the configuration of the black box
+wrapper in OpenDA.\\
+
+In the directory {\tt exercise\_4/stochModel/bin/} you will find a model written in python \\
+{\tt reactive\_pollution\_model.py} and a compiled version of this code for
+windows. There is also an input file ({\tt reactive\_pollution\_model.input})
+and the output file you should get when you run the model. The model describes
+the advection of two chemical substances. The first substance $c_1$ is emitted
+as a pollutant by a number sources. However, in this case this substance reacts
+with the oxygen in the air to form a more toxic substance $c_2$. The model
+implements the following equations:
+
+\begin{eqnarray}
+    \frac{\partial c_1}{\partial t} + u\frac{\partial c_1}{\partial x} & = & -
+    1/T c_1 \\
+    \frac{\partial c_2}{\partial t} + u\frac{\partial c_2}{\partial x} & = &
+    1/T c_1
+\end{eqnarray}
+
+\begin{itemize}
+\item Run the model from the command line (passing input file as argument),
+not using OpenDA.\\
+The model
+  generates the output files: {\tt reactive\_pollution\_model.output} and
+  {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
+  of the output in order to study the behavior of the model. In order to check
+  the model (plotted) results you can look at the input file as well.
+\end{itemize}
+
+For this exercise, the Java-routines for reading and writing the input and
+output files are already programmed. However, it is not necessary to program
+this in Java. It is also possible to write your own conversion program (in any
+programming language) to convert the input and output files of your model to a
+format that OpenDA is able to handle.
+
+When you are interested in the actual java code that parses the input and output files of this black box model. You can find it at \\
+{\tt \$OPENDA/model\_reactive\_advection} in a source distribution of OpenDA.
+
+A black box wrapper configuration usually consists of three xml files. For our
+pollution model these files are:
+\begin{enumerate}
+   \item {\tt polluteWrapper.xml}: This file specifies the actions to performed
+     when the model has to be run, and the files and related reader and writers
+     that can be used to let OpenDA interact with the model.\\ This file
+     consists of the parts:
+     \begin{itemize}
+        \item {\tt aliasDefinitions:} This is a list of strings that can be
+          aliased in the other xml files. This helps to make the
+          wrapperxml-file more generic. E.g. the alias definition
+          \%outputFile\% can be used to refer to the output file of the model,
+          without having to know the actual name of that output file.\\ Note
+          the special alias definition \%instanceNumber\%. This will be
+          replaced internally at runtime with the member number of each created
+          model instance.
+        \item {\tt run:} the specification of what commands need to be executed
+          when the model is run.
+        \item {\tt inputOutput:} the list of 'input/output objects', usually
+          files, that are used to access the model, i.e. to adjust the model's
+          input, and to retrieve the model's results. For each 'ioObject' one
+          must specify:
+        \begin{itemize}
+           \item the java class that handles the reading from and/or writing to
+             the file
+           \item the identifier of the ioObject, so that the model
+             configuration file can refer to it when specifying the model
+             variables that can be accessed by OpenDA, the so called 'exchange
+             items' (see below)
+           \item optionally, the arguments that are needed to initialize the
+             ioObject, i.e. to open the file.
+        \end{itemize}
+     \end{itemize}
+   \item {\tt polluteModel.xml}: This is the main specification of the
+     (deterministic) model. It contains the following elements:
+     \begin{itemize}
+        \item {\tt wrapperConfig}: A reference to the wrapper config file
+          mentioned above.
+        \item {\tt aliasValues}: The actual values to be used for the aliases
+          defined in the wrapper config file. For instance the \%outputFile\%
+          alias is set to the value "reactive\_pollution\_model.output".
+        \item {\tt timeInfoExchangeItems}: The name of the model variables (the
+          'exchange items') that can be accessed to modify the start and end
+          time of the period to that the model should compute to propagate
+          itself to the next analysis time.
+        \item {\tt exchangeItems}: The model variables that are allowed to be
+          accessed by OpenDA, for instance parameters, boundary conditions, and
+          computed values at certain locations. Each variable exchange item
+          consists of its id, the ioObject that contains the item, and the
+          'element name', the name of the exchange item in the ioObject.
+     \end{itemize}
+   \item {\tt polluteStochModel.xml}: This is the specification of the
+     stochastic model. It contains of two parts:
+     \begin{itemize}
+        \item {\tt modelConfig}: A reference to the deterministic model
+          configuration file mentioned above {\tt polluteModel.xml}.
+        \item {\tt vectorSpecification}: The specification of the vectors that
+          will be accessed by the OpenDA algorithm. These vectors are grouped
+          in two parts:
+          \begin{itemize}
+             \item The state that is manipulated by an OpenDA filtering
+               algorithm, i.e. the state of the model combined with the noise
+               model(s).
+             \item The so called predictions, i.e. the values on observation
+               locations as computed by the model.
+          \end{itemize}
+     \end{itemize}
+\end{enumerate}
+
+Start with a single OpenDA-run to understand where the model results appear
+for this configuration:
+\begin{itemize}
+ \item Have a look at the files {\tt polluteWrapper.xml}, {\tt
+   polluteModel.xml} and {\tt polluteStochModel.xml}, and recognize the various
+   items mentioned above. Start the OpenDA GUI from the {\tt public/bin}
+   directory and run the model by using the {\tt Simulation.oda} configuration.
+   Note that the actual model results are available in the directory where the
+   black box wrapper has let the model perform its computation: {\tt
+     stochModel/output/work0}.
+\end{itemize}
+
+In this exercise, we will calibrate the value of the reaction-rate constant.
+The algorithm used in this example is the Dud (which stands for Doesn't Use
+Derivative).
+
+\begin{itemize}
+\item Have a look at the {\tt Dud.oda} and the configuration files it refers
+  to. Run it from the OpenDA GUI and have a look at the results. What could you
+  do to improve the results?
+
+\item Figure out where to change the control parameters for the calibration
+  procedure and play around with the settings to improve your results.
+
+\end{itemize}
+
+Calibration runs normally take longer than a few minutes. In that case, it
+becomes convenient to be able to restart from a previous run.
+
+\begin{itemize}
+\item Adapt the configuration in such a way that you are able to restart the
+  Dud.oda from the result of a previous run.
+\end{itemize}
