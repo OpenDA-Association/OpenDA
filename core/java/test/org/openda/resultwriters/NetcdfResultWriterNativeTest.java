@@ -177,7 +177,7 @@ public class NetcdfResultWriterNativeTest extends TestCase {
 			new File(testRunDataDir,"de_ref_ctatv_A_3.nc"),
 			new File(testRunDataDir,"de_test_ctatv_A_3.nc"));
 		OpenDaTestSupport.compareNetcdfFiles(
-			new File(testRunDataDir,"de_ref_ctatv_B_4"),
+			new File(testRunDataDir,"de_ref_ctatv_B_4.nc"),
 			new File(testRunDataDir,"de_test_ctatv_B_4.nc"));
 		OpenDaTestSupport.compareNetcdfFiles(
 			new File(testRunDataDir,"de_ref_ctatv_from_model_1.nc"),
