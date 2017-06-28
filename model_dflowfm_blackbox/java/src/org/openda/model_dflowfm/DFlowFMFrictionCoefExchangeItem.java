@@ -1,19 +1,19 @@
-/* OpenDA v2.4 
-* Copyright (c) 2017 OpenDA Association 
+/* OpenDA v2.4
+* Copyright (c) 2017 OpenDA Association
 * All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
+*
+* This file is part of OpenDA.
+*
+* OpenDA is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* OpenDA is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -97,7 +97,7 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 		return this.value;
 	}
 
-	
+
 	public void setValues(Object values) {
 		if(values instanceof Double){
 			this.value = (Double) values;
@@ -130,34 +130,34 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 	}
 
 	/*
-     * =======================================================================
-	 *  The following methods are due to the old interface and will be removed
-	 * later.
+	 * =======================================================================
+	 * The getTimes/setTimes methods are part of the old IPrevExchangeItem
+	 * interface and will be removed later.
 	 * =======================================================================
 	 */
 
-	
+
 	@Deprecated public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("setTimes method make no sense for a DoubleExchangeItem");
 	}
 
 	@SuppressWarnings("rawtypes")
-	
-	@Deprecated public Class getValueType() {
+
+	public Class getValueType() {
 		return double.class;
 	}
 
-	
+
 	@Deprecated public double[] getTimes() {
 		return null;
 	}
-	
-	@Deprecated public double[] getValuesAsDoubles() {
+
+	public double[] getValuesAsDoubles() {
 		return new double[]{this.value};
 	}
 
-	
-	@Deprecated public void axpyOnValues(double alpha, double[] axpyValues) {
+
+	public void axpyOnValues(double alpha, double[] axpyValues) {
 		if(axpyValues.length==1){
 			this.value += alpha*axpyValues[0];
 		}else{
@@ -165,8 +165,8 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 		}
 	}
 
-	
-	@Deprecated public void multiplyValues(double[] multiplicationFactors) {
+
+	public void multiplyValues(double[] multiplicationFactors) {
 		if(multiplicationFactors.length==1){
 			this.value *= multiplicationFactors[0];
 		}else{
@@ -174,8 +174,8 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 		}
 	}
 
-	
-	@Deprecated public void setValuesAsDoubles(double[] values) {
+
+	public void setValuesAsDoubles(double[] values) {
 		if (values.length !=1){
 			throw new UnsupportedOperationException("Length of value array must be 1");
 		}

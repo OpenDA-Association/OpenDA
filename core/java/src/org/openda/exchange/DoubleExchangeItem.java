@@ -1,19 +1,19 @@
-/* OpenDA v2.4 
-* Copyright (c) 2017 OpenDA Association 
+/* OpenDA v2.4
+* Copyright (c) 2017 OpenDA Association
 * All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
+*
+* This file is part of OpenDA.
+*
+* OpenDA is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* OpenDA is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -29,7 +29,7 @@ import org.openda.utils.MyObservable;
 /**
  * Simple exchangeItem for String data. You can add a listener in eg the IDataObject
  * to take action on changes.
- * 
+ *
  * @author verlaanm
  *
  */
@@ -41,15 +41,15 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 	private Role role=Role.InOut;
 	private IQuantityInfo quantityInfo=null;
 	private PointGeometryInfo geometryInfo=null;
-	
-	
+
+
 	public DoubleExchangeItem(String id, Role role, double value){
 		this.value = value;
 		this.role = role;
 		this.id = id;
 		this.geometryInfo = new PointGeometryInfo(0.,0., 0.); //fill with defaults
 	}
-	
+
 	public DoubleExchangeItem(String id, double value){
 		this(id,Role.InOut,value);
 	}
@@ -57,27 +57,27 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 	public DoubleExchangeItem(String id, Role role){
 		this(id, role, 0);
 	}
-	
-	
+
+
 	public Role getRole() {
 		return this.role;
 	}
 
-	
+
 	public String getId() {
 		return this.id;
 	}
 
-	
+
 	public String getDescription() {
 		return this.description;
 	}
-	
+
 	public void setDescription(String description){
 		this.description=description;
 	}
 
-	
+
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		ValueType sourceType=sourceItem.getValuesType();
 		if(sourceType==ValueType.doubleType){
@@ -111,33 +111,33 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		return new TimeInfo(new double[]{this.time});
 	}
 
-	
+
 	public IQuantityInfo getQuantityInfo() {
 		return this.quantityInfo;
 	}
-	
+
 	public void setQuantityInfo(IQuantityInfo quantityInfo){
 		this.quantityInfo=quantityInfo;
 		this.notifyObservers();
 	}
 
-	
+
 	public IGeometryInfo getGeometryInfo() {
 		return this.geometryInfo;
 	}
-	
+
     public String getLocation(){
     	return this.geometryInfo.getLocation();
     }
-    
+
     public void setLocation(String location){
     	this.geometryInfo.setLocation(location);
     }
-    
+
     public double[] getPosition(){
-    	return new double[]{ this.geometryInfo.getLongitude() , this.geometryInfo.getLatitude() }; 
+    	return new double[]{ this.geometryInfo.getLongitude() , this.geometryInfo.getLatitude() };
     }
-    
+
     public void setLatitude(double latitude){
     	String location = this.geometryInfo.getLocation();
     	this.geometryInfo = new PointGeometryInfo(this.geometryInfo.getLongitude(), latitude, this.geometryInfo.getHeight());
@@ -160,7 +160,7 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		return ValueType.doubleType;
 	}
 
-	
+
 	public Object getValues() {
 		return this.value;
 	}
@@ -169,46 +169,46 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		this.value=value;
 		this.notifyObservers();
 	}
-	
+
 	public double getValue(){
 		return this.value;
 	}
-	
+
 	public double getTime(){
 		return this.time;
 	}
-	
+
 	public void setTime(double time){
 		this.time=time;
 		this.notifyObservers();
 	}
-	
+
 	/*
 	 * =======================================================================
-	 * The following methods are due to the old interface and will be removed
-	 * later.
+	 * The getTimes/setTimes methods are part of the old IPrevExchangeItem
+	 * interface and will be removed later.
 	 * =======================================================================
 	 */
-	
-	
+
+
 	@SuppressWarnings("rawtypes")
-	
-	@Deprecated public Class getValueType() {
+
+	public Class getValueType() {
 		return double.class;
 	}
 
-	
+
 	@Deprecated public double[] getTimes() {
 		return null;
 	}
 
-	
+
 	@Deprecated public void setTimes(double[] times) {
-		throw new UnsupportedOperationException("setTimes method make no sense for a DoubleExchangeItem");		
+		throw new UnsupportedOperationException("setTimes method make no sense for a DoubleExchangeItem");
 	}
 
-	
-	@Deprecated public void setValuesAsDoubles(double[] values) {
+
+	public void setValuesAsDoubles(double[] values) {
 		if(values.length==1){
 			this.value = values[0];
 			this.notifyObservers();
@@ -217,13 +217,13 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	
-	@Deprecated public double[] getValuesAsDoubles() {
+
+	public double[] getValuesAsDoubles() {
 		return new double[]{this.value};
 	}
 
-	
-	@Deprecated public void axpyOnValues(double alpha, double[] axpyValues) {
+
+	public void axpyOnValues(double alpha, double[] axpyValues) {
 		if(axpyValues.length==1){
 			this.value += alpha*axpyValues[0];
 			this.notifyObservers();
@@ -232,8 +232,8 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	
-	@Deprecated public void multiplyValues(double[] multiplicationFactors) {
+
+	public void multiplyValues(double[] multiplicationFactors) {
 		if(multiplicationFactors.length==1){
 			this.value *= multiplicationFactors[0];
 			this.notifyObservers();
@@ -242,8 +242,8 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		}
 	}
 
-	
-	@Deprecated public void setValues(Object values) {
+
+	public void setValues(Object values) {
 		if(values instanceof Double){
 			this.value = (Double) values;
 			this.notifyObservers();
@@ -251,7 +251,7 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 			throw new UnsupportedOperationException("Can only set values for a Double object");
 		}
 	}
-	
+
 	public String toString(){
 		return "{"+this.id+"="+this.value+"}";
 	}
