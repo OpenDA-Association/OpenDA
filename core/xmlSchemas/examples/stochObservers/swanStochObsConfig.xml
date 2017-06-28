@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ioObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
+<ioObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/openDaStochObserver.xsd">
 	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
 		<arg>stochObsUncertainties.xml</arg>
 	</uncertaintyModule>

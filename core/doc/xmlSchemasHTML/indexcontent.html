@@ -35,11 +35,18 @@
 		<li><a href="startXmlSchemas.html" target="contentframe" ><b>Stochastic Observers</b></a></li>
 		<ul>
 			<li><a href="openDaStochObserver.html" target="contentframe">openDaStochObserver.xsd</a> </li>
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/stochObservers/swanStochObsConfig.xml" target="contentframe">swanObservations.xml </a></li>
+			</ul>
 			<li><a href="noosObservations.html" target="contentframe">noosObservations.xsd</a> </li>
 			<ul style="list-style-type: circle;margin-bottom:0px;">
 				<li><a href="xmlexample/stochObservers/noosSmallObs.xml" target="contentframe">noosObservations.xml</a></li>
 			</ul>
-			<li><a href="CostaStochObserver.html" target="contentframe">costaStochObserver.xsd</a> </li>			
+			<li><a href="CostaStochObserver.html" target="contentframe">costaStochObserver.xsd</a> </li>
+			<li><a href="groupStochObserver.html" target="contentframe">groupStochObserver.xsd</a> </li>
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/stochObservers/groupStochObserver.xml" target="contentframe">groupStochObserver.xml</a></li>
+			</ul>
 		</ul>
 
 		<li><a href="startXmlSchemas.html"  target="contentframe" ><b>Stochastic model factories - Black box models</b></a></li>
@@ -78,6 +85,14 @@
 
 		<li><a href="startXmlSchemas.html"  target="contentframe" ><b>Stochastic model factories</b></a></li>
 		<ul>
+			<li><a href="bmiModelFactoryConfig.html" target="contentframe">bmiModelFactoryConfig.xsd</a></li>
+			<li><a href="costaModelFactory.html" target="contentframe">costaModelFactory.xsd</a></li>
+			<li><a href="d3dModelFactoryConfig.html" target="contentframe">d3dModelFactoryConfig.xsd</a></li>
+			<li><a href="efdcModelFactoryConfig.html" target="contentframe">efdcModelFactoryConfig.xsd</a></li>
+			<li><a href="groupStochModelFactory.html" target="contentframe">groupStochModelFactory.xsd</a></li>            
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/stochModel/groupStochModel.xml" target="contentframe">groupStochModel.xml</a></li>
+			</ul>            
 			<li><a href="LorenzConfig.html" target="contentframe">LorenzConfig.xsd</a></li>
 			<ul style="list-style-type: circle;margin-bottom:0px;">
 				<li><a href="xmlexample/toymodels/LorenzStochModel.xml" target="contentframe">LorenzStochModel.xml</a></li>
@@ -89,12 +104,12 @@
 			<li><a href="OscillatorConfig.html" target="contentframe">OscillatorConfig.xsd</a></li>
 			<ul style="list-style-type: circle;margin-bottom:0px;">
 				<li><a href="xmlexample/toymodels/OscillatorStochModel.xml" target="contentframe">OscillatorStochModel.xml</a></li>
-			</ul>
-			<li><a href="bmiModelFactoryConfig.html" target="contentframe">bmiModelFactoryConfig.xsd</a></li>
-			<li><a href="costaModelFactory.html" target="contentframe">costaModelFactory.xsd</a></li>
-			<li><a href="d3dModelFactoryConfig.html" target="contentframe">d3dModelFactoryConfig.xsd</a></li>
-			<li><a href="efdcModelFactoryConfig.html" target="contentframe">efdcModelFactoryConfig.xsd</a></li>
+			</ul>            
 			<li><a href="swanCalibStochModelConfig.html" target="contentframe">swanCalibStochModelConfig.xsd</a></li>
+			<li><a href="threadConfig.html" target="contentframe">threadConfig.xsd</a></li>
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/stochModel/threadStochModel.xml" target="contentframe">threadStochModel.xml</a></li>
+			</ul>                        
 			<li><a href="wflowModelFactoryConfig.html" target="contentframe">wflowModelFactoryConfig.xsd</a></li>
 		</ul>
 
@@ -204,6 +219,11 @@
 			<ul style="list-style-type: circle;margin-bottom:0px;">
 				<li><a href="xmlexample/algorithms/org.openda.algorithms.kalmanFilter.EnKF.xml" target="contentframe">EnkfAlgorithm.xml</a></li>
 			</ul>
+			<li><a href="enkf.html" target="contentframe">dudEnkf.xsd</a></li>
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/algorithms/org.openda.algorithms.kalmanFilter.DudEnkf.xml" target="contentframe">DudEnkfAlgorithm.xml</a></li>
+			</ul>
+
 		</ul>
 
 		<li><a href="aboutAlgorithm/aboutEnSR.html" target="contentframe" >Ensemble Square-root Kalman filter</a></li>
@@ -211,6 +231,10 @@
 			<li><a href="ensr.html" target="contentframe">ensr.xsd</a></li>
 			<ul style="list-style-type: circle;margin-bottom:0px;">
 				<li><a href="xmlexample/algorithms/org.openda.algorithms.kalmanFilter.EnSR.xml" target="contentframe">EnsrAlgorithm.xml</a></li>
+			</ul>
+			<li><a href="ensr.html" target="contentframe">dudEnsr.xsd</a></li>
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/algorithms/org.openda.algorithms.kalmanFilter.DudEnsr.xml" target="contentframe">DudEnsrAlgorithm.xml</a></li>
 			</ul>
 		</ul>
 		
@@ -228,11 +252,15 @@
 			<ul style="list-style-type: circle;margin-bottom:0px;">
 				<li><a href="xmlexample/algorithms/org.openda.algorithms.kalmanFilter.ParticleFilter.xml" target="contentframe">ParticleFilterAlgorithm.xml</a></li>
 			</ul>
+			<li><a href="ewpf.html" target="contentframe">ewpf.xsd</a></li>
+			<ul style="list-style-type: circle;margin-bottom:0px;">
+				<li><a href="xmlexample/algorithms/org.openda.algorithms.particleFilter.EWPF.xml" target="contentframe">EWPFAlgorithm.xml</a></li>
+			</ul>
 		</ul>
 
 		<li><a href="startXmlSchemas.html" target="contentframe" ><b>Test</b></a></li>
 		<li><a href="aboutAlgorithm/aboutSimulationEnsembleruns.html" target="contentframe" >Simulation and ensemble runs</a></li>
-        <ul>
+		<ul>
             <li><a href="simulationConfig.html" target="contentframe">simulationConfig.xsd</a></li>
             <ul style="list-style-type: circle;margin-bottom:0px;">
                 <li><a href="xmlexample/algorithms/org.openda.algorithms.Simulation.xml" target="contentframe">simulationAlgorithm.xml</a></li>
