@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ConjugateGradientConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.openda.org c:\OpenDA\public\core\xmlSchemas\algorithm\cgConfig.xsd">
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/cgConfig.xsd">
 	<!-- class="org.openda.algorithms.SimulationKwadraticCostFunction" -->
 	<costFunction weakParameterConstraint="false" withPreconditioning="true" factor="1.0"/>
 	<outerLoop method="1" maxIterations="20" absTolGrad="0.01" relTolGrad="0.01" absTolStep="0.01" relTolStep="0.01"/>
