@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+	<analysisTimes type="fromObservationTimes"/>
+	<ensembleSize>10</ensembleSize>
+        <localization>Hamill</localization>
+        <distance>80.0</distance>
+        <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="false" />
+</EnkfConfig>
