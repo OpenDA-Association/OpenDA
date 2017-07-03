@@ -1,0 +1,35 @@
+In this exercise you will learn about localization techniques and how to use them in OpenDA. This exercise is inspired on the example model and experiments from "Impacts of localisation in the EnKF and EnOI: experiments with a small model", Peter R. Oke, Pavel Sakov and Stuart P. Corney, Ocean Dynamics (2007) 57: 32-45.
+
+The model we use is a simple circular advection model 
+\begin{equation}
+\frac{da}{dt}+u\frac{da}{dx}=0
+\end{equation}
+where u=1 is the speed of advection, a is a model variable , t is time and x is a space ranging grom 1 to 1000 with grid spacings of 1. The computational domain is periodic in x.
+
+In this model there are two related variables a and b where b is initialised as
+\begin{equation}\label{eg:b_relation}
+b= 0.5 + 10 \frac{da}{dx}
+\end{equation}
+
+The relation ship between a and b represent the relationship between pressure and velocity in oceanographic and atmospheric applications. In this experiment we will only observe and assimilate $a$ and investigate how both $a$ as $b$. The ensemble is carefully constructed in order to have the right statistics. The initial ensembles are generated off line and they will be read when the model is initialised in OpenDA. 
+
+\begin{itemize}
+\item Investigate the sript {\tt generate_ensemble.py} and figure out how the ensembles are generated
+\item Run python script {\tt generate_ensemble.py} to generate ensembles, observations and true state for a 25, 50 and 100 ensemble experiment.  
+\item Run the experiment for 50 ensemble members ({\tt enkf_50.oda})
+\item The variables $a$, $b$ can be compared to the true state using the python script {\tt plot_results.py}
+\item Run the experiment for 25 ensembles, adjust the {\tt plot_results.py} in order to read the results from enkf25_results.py (change 2nd line of the {\tt plot_results.py} script. You will see that the 25 ensemble run is not able to improve the model.
+\item Create input to run a 100 ensemble experiment. Note: do not forget to change the name of the output file (section {\tt resultWriter}) to avoid that your previous generated results are overwritten. 
+\item Run an experiment with 25 ensembles with localization ({\tt enkf_25_loc.oda}) and generate the plots.
+\item The results (for 25 ensembles) with localization should look better than the the experiment without localization.
+\item Investigate whether the relation between $a$ and $b$ is violated. You can yse the script {\tt check_balance.py}
+\item Try changing the lolcalization radius (initial value is 50) and see how the performance of the algorithms changes (both for results as balance between $a$ and $b$)
+
+
+
+
+
+
+
+
+

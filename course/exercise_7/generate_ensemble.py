@@ -44,6 +44,16 @@ def generate_a(NComb, N):
     return a
 
 def compute_b(a):
+    n=len(a)
+    b= np.zeros(n)
+    for i in range(1,n-1):
+        b[i]=5.0*(a[i+1]-a[i-1])
+    b[n-1] = 5.0*(a[0]-a[n-2])
+    b[0] = 5.0*(a[1]-a[n-1])
+
+    return b
+
+def compute_b2(a):
     b= np.zeros(len(a))
     for i in range(len(a)-1):
         b[i]=5.0*(a[i+1]-a[i-1])
@@ -66,7 +76,7 @@ def compute_ensemble_mean(ensemble):
         mean_ensemble += ensemble[iEns]
 
     # Compute mean of ensemble
-    mean_ensemble /= len(ensemble)
+    mean_ensemble /= float(len(ensemble))
 
     return mean_ensemble
 
@@ -82,7 +92,7 @@ def main():
 
     NComb = 25+1
     N     = 1000
-    Nens  = 25
+    Nens = int(input("Enter the number of ensembles: "))
 
     # Generate first sample
     a_ref = generate_a(NComb, N)
@@ -121,11 +131,11 @@ def main():
     # Generate observations
     Locations = [125-1, 375-1, 625-1, 875-1]
     dt = 5
-    obs_times = range(0, 300, dt)
+    obs_times = range(0, 305, dt)
     observations = [[] for i in range(len(Locations))]
 
     for iLoc in range(len(Locations)):
-        for t in range(0, 300, dt):
+        for t in range(0, 305, dt):
             ix=Locations[iLoc] -t + len(a_true)
             ix=ix%len(a_true)
             obs=a_true[ix]+0.01*np.random.normal()
@@ -151,6 +161,8 @@ def main():
 
     mean_a = compute_ensemble_mean(ensemble_a)
     mean_b = compute_ensemble_mean(ensemble_b)
+    mean_b_check=compute_b(mean_a)
+
     plt.figure()
     plt.plot(mean_b)
     plt.show()
@@ -163,13 +175,13 @@ def main():
         line = str(mean_a[i])+","
         for iEns in range(Nens-1):
             line+=str(ensemble_a[iEns][i])+","
-        line+=str(ensemble_a[iEns][N-1])+"\n"
+        line+=str(ensemble_a[Nens-1][i])+"\n"
         fens.write(line)
     for i in range(N):
         line =str(mean_b[i])+","
         for iEns in range(Nens-1):
             line+=str(ensemble_b[iEns][i])+","
-        line+=str(ensemble_b[iEns][N-1])+"\n"
+        line+=str(ensemble_b[Nens-1][i])+"\n"
         fens.write(line)
 
     #Write true_state
@@ -179,11 +191,17 @@ def main():
     b_true=b_true.tolist()
 
     a_true_0=a_true
-    a_true_150=a_true[999-150+1:999]+a_true[0:999-150]
-    a_true_300=a_true[999-300+1:999]+a_true[0:999-300]
+    t_shift=149
+    a_true_150=a_true[1000-t_shift:1000]+a_true[0:1000-t_shift]
+    t_shift=299
+    a_true_300=a_true[1000-t_shift:1000]+a_true[0:1000-t_shift]
+
+
     b_true_0=b_true
-    b_true_150=b_true[999-150+1:999]+b_true[0:999-150]
-    b_true_300=b_true[999-300+1:999]+b_true[0:999-300]
+    t_shift=149
+    b_true_150=b_true[1000-t_shift:1000]+b_true[0:1000-t_shift]
+    t_shift=299
+    b_true_300=b_true[1000-t_shift:1000]+b_true[0:1000-t_shift]
     ftrue = open("true_state.py","w")
     ftrue.write("a_true_0="+str(a_true_0)+"\n")
     ftrue.write("a_true_150="+str(a_true_150)+"\n")

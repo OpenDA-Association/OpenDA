@@ -1,32 +1,27 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import enkf25_loc_results as enkf
 import true_state
 
 
 def main():
     print (len(true_state.b_true_150));
-    plt.figure()
+    fig=plt.figure()
 
+    fig.suptitle("a and b (columns) at t=0,150,300 (rows)")
 
-    a=enkf.x_f[0][0:999]
-    b=enkf.x_f[0][1000:1999]
-    rho_a = enkf.rho_3[0][0:999]
-    rho_b = enkf.rho_3[0][1000:1999]
-
+    a=enkf.x_f[0][0:1000]
+    b=enkf.x_f[0][1000:2000]
 
     plt.subplot(3,2,1)
     plt.plot(a)
     plt.plot(true_state.a_true_0,'r')
-    plt.plot(rho_a,'b')
 
     plt.subplot(3,2,2)
     plt.plot(b)
     plt.plot(true_state.b_true_0,'r')
-    plt.plot(rho_b,'b')
 
-    a=enkf.x_f[29][0:999]
-    b=enkf.x_f[29][1000:1999]
+    a=enkf.x_f[30][0:1000]
+    b=enkf.x_f[30][1000:2000]
     plt.subplot(3,2,3)
     plt.plot(a)
     plt.plot(true_state.a_true_150,'r')
@@ -35,8 +30,8 @@ def main():
     plt.plot(b)
     plt.plot(true_state.b_true_150,'r')
 
-    a=enkf.x_f[59][0:999]
-    b=enkf.x_f[59][1000:1999]
+    a=enkf.x_f[60][0:1000]
+    b=enkf.x_f[60][1000:2000]
     plt.subplot(3,2,5)
     plt.plot(a)
     plt.plot(true_state.a_true_300,'r')
@@ -44,12 +39,7 @@ def main():
     plt.plot(b)
     plt.plot(true_state.b_true_300,'r')
 
-
     plt.show()
-
-
-
-
 
 
 
