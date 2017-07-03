@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import enkf50_results as enkf
+import enkf25_loc_results as enkf
 import true_state
 
 
@@ -11,14 +11,19 @@ def main():
 
     a=enkf.x_f[0][0:999]
     b=enkf.x_f[0][1000:1999]
+    rho_a = enkf.rho_3[0][0:999]
+    rho_b = enkf.rho_3[0][1000:1999]
+
+
     plt.subplot(3,2,1)
     plt.plot(a)
     plt.plot(true_state.a_true_0,'r')
+    plt.plot(rho_a,'b')
 
     plt.subplot(3,2,2)
     plt.plot(b)
     plt.plot(true_state.b_true_0,'r')
-
+    plt.plot(rho_b,'b')
 
     a=enkf.x_f[29][0:999]
     b=enkf.x_f[29][1000:1999]

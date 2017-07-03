@@ -100,7 +100,7 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 	IVector refFieldB;
 
 	boolean autoNoise = false;
-	boolean periodic = false;        // Use adapted localisation matrix for periodic relations
+	boolean periodic = true;        // Use adapted localisation matrix for periodic relations
 
 	private static Random generator;
 

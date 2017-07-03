@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+	<ensembleSize>25</ensembleSize>
+        <localization>Hamill</localization>
+        <distance>50.0</distance>
+        <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="false" />
+</EnkfConfig>

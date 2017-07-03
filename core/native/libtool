@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (costa) 0.1.0
-# Libtool was configured on host wlan-145-94-206-109.wlan.tudelft.nl:
+# Libtool was configured on host vortech73-2.local:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -66,13 +66,13 @@ PATH_SEPARATOR=":"
 
 # The host system.
 host_alias=
-host=i386-apple-darwin15.6.0
-host_os=darwin15.6.0
+host=i386-apple-darwin16.6.0
+host_os=darwin16.6.0
 
 # The build system.
 build_alias=
-build=i386-apple-darwin15.6.0
-build_os=darwin15.6.0
+build=i386-apple-darwin16.6.0
+build_os=darwin16.6.0
 
 # A sed program that does not truncate output.
 SED="/usr/bin/sed"
@@ -90,7 +90,7 @@ EGREP="/usr/bin/grep -E"
 FGREP="/usr/bin/grep -F"
 
 # A BSD- or MS-compatible name lister.
-NM="/usr/bin/nm -B"
+NM="/opt/local/bin/nm -B"
 
 # Whether we need soft or hard links.
 LN_S="ln -s"
@@ -120,7 +120,7 @@ to_host_file_cmd=func_convert_file_noop
 to_tool_file_cmd=func_convert_file_noop
 
 # An object symbol dumper.
-OBJDUMP="false"
+OBJDUMP="objdump"
 
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
@@ -272,7 +272,7 @@ finish_eval=""
 hardcode_into_libs=no
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/opt/local/lib/gcc5/gcc/x86_64-apple-darwin15/5.4.0 /opt/local/lib/gcc5 /usr/lib  /usr/local/lib"
+sys_lib_search_path_spec="/opt/local/lib/gcc5/gcc/x86_64-apple-darwin16/5.4.0 /opt/local/lib/gcc5 /usr/lib  /usr/local/lib"
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/usr/local/lib /lib /usr/lib"
