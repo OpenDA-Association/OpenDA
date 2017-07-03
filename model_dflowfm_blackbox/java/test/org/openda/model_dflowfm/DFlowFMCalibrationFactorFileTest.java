@@ -23,15 +23,19 @@ public class DFlowFMCalibrationFactorFileTest extends TestCase {
 		DFlowFMCalibrationFactorFile calibrationFactorFile = new DFlowFMCalibrationFactorFile();
 		calibrationFactorFile.initialize(testRunDataDir, new String[]{"CalibrationFactor/calib-factors.cld", "CalibrationFactor/calib-factors-changed.cld"});
 		String[] exchangeItemIDs = calibrationFactorFile.getExchangeItemIDs();
-		double[] multiplicationFactors = {1.5};
-		for (String exchangeItemID : exchangeItemIDs) {
+		String[] expectedIds = {"CalFactor-34", "CalFactor-28-q100.20", "CalFactor-28-q150", "CalFactor-28-q205.30", "CalFactor-61-q650", "CalFactor-61-q960", "CalFactor-61-q1120.75", "CalFactor-61-q1405.11", "CalFactor-17-h10.53", "CalFactor-17-h15.546", "CalFactor-17-h18.30", "CalFactor-3-h8.15", "CalFactor-3-h9", "CalFactor-3-h10.01", "CalFactor-3-h13"};
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			String exchangeItemID = exchangeItemIDs[i];
+			assert exchangeItemID.equals(expectedIds[i]);
 			IExchangeItem item = calibrationFactorFile.getDataObjectExchangeItem(exchangeItemID);
 			double[] doubles = item.getValuesAsDoubles();
 			assert doubles != null;
 			assert doubles.length == 1;
 			assert doubles[0] == 1.0;
+			double factor = 1 + 0.1 * i;
+			double[] multiplicationFactors = {factor};
 			item.multiplyValues(multiplicationFactors);
-			assert doubles[0] == 1.5;
+			assert item.getValuesAsDoubles()[0] == factor;
 		}
 		calibrationFactorFile.finish();
 		File fileChanged = new File(testRunDataDir, "CalibrationFactor/calib-factors-changed.cld");
@@ -43,15 +47,19 @@ public class DFlowFMCalibrationFactorFileTest extends TestCase {
 		DFlowFMCalibrationFactorFile calibrationFactorFile = new DFlowFMCalibrationFactorFile();
 		calibrationFactorFile.initialize(testRunDataDir, new String[]{"CalibrationFactor/calib-factors.cld"});
 		String[] exchangeItemIDs = calibrationFactorFile.getExchangeItemIDs();
-		double[] multiplicationFactors = {1.5};
-		for (String exchangeItemID : exchangeItemIDs) {
+		String[] expectedIds = {"CalFactor-34","CalFactor-28-q100.20","CalFactor-28-q150","CalFactor-28-q205.30","CalFactor-61-q650","CalFactor-61-q960","CalFactor-61-q1120.75","CalFactor-61-q1405.11","CalFactor-17-h10.53", "CalFactor-17-h15.546","CalFactor-17-h18.30","CalFactor-3-h8.15","CalFactor-3-h9","CalFactor-3-h10.01","CalFactor-3-h13"};
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			String exchangeItemID = exchangeItemIDs[i];
+			assert exchangeItemID.equals(expectedIds[i]);
 			IExchangeItem item = calibrationFactorFile.getDataObjectExchangeItem(exchangeItemID);
 			double[] doubles = item.getValuesAsDoubles();
 			assert doubles != null;
 			assert doubles.length == 1;
 			assert doubles[0] == 1.0;
+			double factor = 1 + 0.1 * i;
+			double[] multiplicationFactors = {factor};
 			item.multiplyValues(multiplicationFactors);
-			assert doubles[0] == 1.5;
+			assert item.getValuesAsDoubles()[0] == factor;
 		}
 		calibrationFactorFile.finish();
 		File fileChanged = new File(testRunDataDir, "CalibrationFactor/calib-factors.cld");
