@@ -4,7 +4,7 @@ The model we use is a simple circular advection model
 \begin{equation}
 \frac{\partial a}{\partial t}+u\frac{\partial a}{\partial x}=0
 \end{equation}
-where u=1 is the speed of advection, a is a model variable , t is time and x is a space ranging grom 1 to 1000 with grid spacings of 1. The computational domain is periodic in x.
+where u=1 is the speed of advection, a is a model variable , t is time and x is a space ranging from 1 to 1000 with grid spacings of 1. The computational domain is periodic in x.
 
 In this model there are two related variables a and b where b is initialised with a balance relationship:
 \begin{equation}\label{eg:b_relation}
@@ -17,22 +17,22 @@ and propagated with an advection model similar to the one for a, i.e.:
 Since $a$ and $b$ are propagated with the same flow, the balance relationship will remain valid also for $t>0$.
 The relation ship between a and b is motivated by the geostrophic balance relationship between pressure (a) and velocity (b) in oceanographic and atmospheric applications. 
 
-In this experiment we will only observe and assimilate $a$ and investigate how both $a$ as $b$. 
+In this experiment we will only observe and assimilate $a$ and investigate how both $a$ as $b$ are updated. 
 The ensemble is carefully constructed in order to have the right statistics. The initial ensembles are generated off line and they will be read when the model is initialised in OpenDA. 
 
 \begin{itemize}
-\item Investigate the sript {\tt generate\_ensemble.py} and figure out how the ensembles are generated
+\item Investigate the sript {\tt generate\_ensemble.py} and figure out how the ensembles are generated.
 \item Run python script {\tt generate\_ensemble.py} to generate ensembles, observations and true state for a 25, 50 and 100 ensemble experiment.  
-\item Run the experiment for 50 ensemble members ({\tt enkf\_50.oda})
-\item The variables $a$, $b$ can be compared to the true state using the python script {\tt plot\_results.py}
-\item Run the experiment for 25 ensembles, adjust the {\tt plot\_results.py} in order to read the results from enkf25\_results.py 
+\item Run the experiment for 50 ensemble members ({\tt enkf\_50.oda}).
+\item The variables $a$, $b$ can be compared to the true state using the python script {\tt plot\_results.py}.
+\item Run the experiment for 25 ensembles, copy the script {\tt plot\_results.py} to e.g. {\tt plot\_results\_25.py} and adjust it in order to read the results from {\tt enkf25\_results.py}.
 (change 2nd line of the {\tt plot\_results.py} script. You will see that the 25 ensemble run is not able to improve the model.
 \item Create input to run a 100 ensemble experiment. Note: do not forget to change the name of the output file (section {\tt resultWriter}) 
 to avoid that your previous generated results are overwritten. 
 \item Run an experiment with 25 ensembles with localization ({\tt enkf\_25\_loc.oda}) and generate the plots.
 \item The results (for 25 ensembles) with localization should look better than the the experiment without localization.
-\item Investigate whether the relation between $a$ and $b$ is violated. You can yse the script {\tt check\_balance.py}
-\item Try changing the localization radius (initial value is 50) and see how the performance of the algorithms changes (both for results as balance between $a$ and $b$)
+\item Investigate whether the relation between $a$ and $b$ is violated by the various experiments. You can use the script {\tt check\_balance.py}.
+\item Try changing the localization radius (initial value is 50) and see how the performance of the algorithms changes (both for results as balance between $a$ and $b$). You can plot the localization weight functions for each observation location ({\tt rho\_0}, {\tt rho\_1}, {\tt rho\_2} and {\tt rho\_3}) as well.
 \end{itemize}
 
 
