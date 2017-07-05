@@ -40,7 +40,7 @@ results.
       \texttt{ oda\_run\_gui.bat} from the \texttt{ \$OPENDA/bin} directory. The main 
       application allows you to view and edit the OpenDA configuration files, run your
       simulations and visualize the results.
-\item Try to run a simulation with the Lorenz model. You can use the
+\item Try to run a simulation with the double pendulum model. You can use the
       configuration file \texttt{ simulation\_unperturbed.oda}. 
       
       For postprocessing in Matlab the results are written to \\ \texttt{ simulation\_unperturbed\_results.m}.
@@ -53,27 +53,25 @@ results.
       \end{lstlisting}
       
       For postprocessing in Python the results are written to \\ \texttt{ simulation\_unperturbed\_results.py}.
+      These results can be loaded with:
       \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
-      import numpy as np
-      import matplotlib.pyplot as plt
+      import simulation_unperturbed_results as unperturbed
+      # use reload(unperturbed) if unperturbed was loaded before
       \end{lstlisting}
-      Next load the results. We have added a routine \texttt{ plot\_movie} to create an intuitive
-      representation of the data. Please type (or copy-paste):
+      We have added a routine \texttt{ plot\_movie} to create an intuitive
+      representation of the data. 
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
-      #load data
-      import simulation_unperturbed_results as sim
-      # make 3d line plot
-      from mpl_toolkits.mplot3d import Axes3D
-      fig1 = plt.figure()
+      import pendulum as p #needed only once
+      p.plot_movie(unperturbed.model_time,unperturbed.x)
       \end{lstlisting}
       
       To create a time-series plot in Matlab type:
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
        subplot(2,1,1);
-       plot(t,states(1,:),'b-');
+       plot(t,unperturbed(1,:),'b-');
        ylabel('\theta_1');
        subplot(2,1,2);
-       plot(t,states(2,:),'b-');
+       plot(t,unperturbed(2,:),'b-');
        ylabel('\theta_2');
        xlabel('time');
       \end{lstlisting}
@@ -81,79 +79,72 @@ results.
       To create a time-series plot in Python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       plt.subplot(2,1,1)
-      plt.plot(sim.model_time,sim.x[:,0],'b') #python counts starting at 0
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
       plt.ylabel(r'$\theta_1$') # use raw string and latex for label
       plt.subplot(2,1,2)
-      plt.plot(sim.model_time,sim.x[:,1],'b')
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
       plt.ylabel(r'$\theta_2$')
       plt.show() #only needed if interactive plotting is off. Set with plt.ioff(), plt.ion()
       \end{lstlisting}
 %
 
-\item Observations of the first variable are available as well. Make a plot of
-      the observations together with the simulation results.
-      \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
-      [t,xyz,tobs,obs]=load_results('simulation_unperturbed_results');
-       plot(t,xyz(1,:),'b')
-       hold on
-       plot(tobs,obs,'r*');
-       hold off
-      \end{lstlisting}
-      \begin{lstlisting}[language=Python,frame=single,caption={Python}]
-      import simulation_unperturbed_results as sim
-      plt.plot(sim.model_time,sim.x[:,0])
-      plt.plot(sim.analysis_time,sim.obs,'r*')
-      \end{lstlisting}
 
-\item Then you can start an alternative simulation with the lorenz model that
+\item Then you can start an alternative simulation with the double-pendulum model that
        starts with a slightly different initial condition using the
-       configuration file \texttt{ simulation\_perturbed.oda} that starts with
-       slightly different initial conditions.
+       configuration file \texttt{ simulation\_perturbed.oda}. The different initial conditions
+       can be found in \texttt{model\/DoublePendulumStochModel.xml} and \\
+       \texttt{model\/DoublePendulumStochModel\_perturbed.xml}
 
 \item  Visualize the unperturbed and perturbed results in a single plot. Make
-       a 3d trajectory plot and a 2d plot in time of first variable. Do you see
+       a movie and a time-series plot of $\theta_1$ and $\theta_2$ variables. Do you see
        the solutions diverging like the theory predicts?
+       
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
-       [t1,xyz1,tobs1,obs1]=load_results('simulation_unperturbed_results');
-       [t2,xyz2,tobs2,obs2]=load_results('simulation_perturbed_results');
-       figure(1)
-       plot3(xyz1(1,:),xyz1(2,:),xyz1(3,:),'b');
-       hold on
-       plot3(xyz2(1,:),xyz2(2,:),xyz2(3,:),'r');
-       hold off
+       [tu,unperturbed,tobs1,obs1]=load_results('simulation_unperturbed_results');
+       [tp,perturbed,tobs2,obs2]=load_results('simulation_perturbed_results');
+       figure(1);clf;subplot(2,1,1);
+       plot(tu,unperturbed(1,:),'b');
+       hold on;
+       plot(tp,perturbed(1,:),'g');
+       hold off;
        legend('unperturbed','perturbed')
-
-       figure(2)
-       plot(t1,xyz1(1,:),'b')
-       hold on
-       plot(t2,xyz2(1,:),'r')
-       hold off
-       legend('unperturbed','perturbed')
+       subplot(2,1,2);
+       plot(tu,unperturbed(2,:),'b');
+       hold on;
+       plot(tp,perturbed(2,:),'g');
+       hold off;
       \end{lstlisting}
+      
+      To create a movie with both results in python type:
+      \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
+      import simulation_unperturbed_results as unperturbed
+      import simulation_perturbed_results as perturbed
+      p.plot_movie(unperturbed.model_time,unperturbed.x,perturbed.x)
+      \end{lstlisting}
+
+      To create a time-series plot with both results in Python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
-      #load unperturbed and perturbed results
-      import simulation_unperturbed_results as sim
-      import simulation_perturbed_results as simp
-      fig3 = plt.figure()
-      ax = fig3.add_subplot(111, projection='3d')
-      Axes3D.plot(ax,sim.x[:,0],sim.x[:,1],sim.x[:,2],'b')
-      Axes3D.plot(ax,simp.x[:,0],simp.x[:,1],simp.x[:,2],'r')
-
-      fig4 = plt.figure()
-      plt.plot(sim.model_time,sim.x[:,0],'b')
-      plt.plot(simp.model_time,simp.x[:,0],'r')
+      plt.subplot(2,1,1)
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
+      plt.plot(perturbed.model_time,perturbed.x[:,0],'g') #python counts starting at 0
+      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.subplot(2,1,2)
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
+      plt.plot(perturbed.model_time,perturbed.x[:,1],'g')
+      plt.ylabel(r'$\theta_2$')
+      plt.show() 
       \end{lstlisting}
-
-\item Create a modified example that uses an ensemble forecast with perturbed
-      initial conditions. You can do this in a number of steps:
+      
+\item Next we want to create an ensemble of model runs all with slightly different initial conditions. 
+      You can do this in a number of steps:
       \begin{itemize}
-      \item Create the input file \texttt{ simulation\_Ens.oda} based on\\
+      \item First create the input file \texttt{ simulation\_ensemble.oda} based on\\
             \texttt{ simulation\_unperturbed.oda}. Change the algorithm and the
             configuration of the algorithm.\\
             hint: the algorithm is called \\
             org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation.
-      \item Write the configuration file of the Ensemble algorithm (e.g. named
-            \texttt{ algorithm/EnsSimulation.xml}) with the following content:
+      \item Create a configuration file for the Ensemble algorithm (e.g. named
+            \texttt{ algorithm/SequentialEnsembleSimulation.xml}) with the following content:
       \begin{lstlisting}[language=XML,frame=single,caption={XML-input for sequentialAlgorithm}]
       <?xml version="1.0" encoding="UTF-8"?>
       <sequentialAlgorithm>
@@ -164,47 +155,74 @@ results.
                         stochInit="true" />
       </sequentialAlgorithm>
       \end{lstlisting}
-      \end{itemize}
-      Hint: do not forget to reference \texttt{ algorithm/EnsSimulation.xml} in \\ \texttt{ simulation\_Ens.oda}.
+      Hint: do not forget to reference \texttt{ algorithm/SequentialEnsembleSimulation.xml} in \\ \texttt{ simulation\_ensemble.oda}
+      and do not forget to give a diferent name to the output files.
+      \item Run the new configuration with OpenDA.
 
-
-
-      
-\item Run this ensemble simulation and read the results in Octave or
-      Matlab using \texttt{ load\_ensemble.m} and slightly different for python
-      \begin{itemize}
-      \item make a plot of the first variable of the five ensemble
-            members in a single plot
+      \item make a plot of the first and second variable of the five ensemble
+      members in a single time-series plot
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
       [t,ens]=load_ensemble('simulation_ensemble_results');
-      ens1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
-      plot(t,ens1)
+      ens_th1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
+      ens_th2=reshape(ens(2,:,:),size(ens,2),size(ens,3));
+      clf; subplot(2,1,1);
+      plot(t(2:end),ens_th1);
+      ylabel('\theta_1');
+      subplot(2,1,2);
+      plot(t(2:end),ens_th2);
+      ylabel('\theta_2');
+      xlabel('time');
       \end{lstlisting}
+      
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       import ensemble
       import simulation_ensemble_results as res
       (t,ens)=ensemble.reshape_ensemble(res)
       ens1=ens[:,0,:] #note we start counting at 0
-      fig5 = plt.figure()
-      plt.plot(t,ens1)
+      ens2=ens[:,1,:]
+      plt.subplot(2,1,1)
+      plt.plot(t[1:],ens1,'b')
+      plt.ylabel(r'$\theta_1$')
+      plt.subplot(2,1,2)
+      plt.plot(t[1:],ens2,'b')
+      plt.ylabel(r'$\theta_2$')
+      plt.show()
       \end{lstlisting}
-      \item make a plot of the mean of the first variable
+      
+      \item Observations of $\theta_1$ and $\theta_2$ are available as well. Make a plot of
+      the observations together with the simulation results.
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
-      plot(t,mean(ens1,2))
+	[t,unperturbed,tobs,obs]= ...
+	load_results('simulation_unperturbed_results');
+       subplot(2,1,1);
+       plot(t,unperturbed(1,:),'b-');
+       hold on
+       plot(tobs,obs(1,:),'k+');
+       hold off
+       ylabel('\theta_1');
+       subplot(2,1,2);
+       plot(t,unperturbed(2,:),'b-');
+       hold on
+       plot(tobs,obs(2,:),'k+');
+       hold off
+       ylabel('\theta_2');
+       xlabel('time');
       \end{lstlisting}
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
-      fig6 = plt.figure()
-      plt.plot(t,np.mean(ens1,1))
+      import simulation_unperturbed_results as unperturbed
+      plt.subplot(2,1,1)
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
+      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,0],'k+') #python counts starting at 0
+      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.subplot(2,1,2)
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
+      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,1],'k+')
+      plt.ylabel(r'$\theta_2$')
+      plt.show()
       \end{lstlisting}
-      \item run the same simulation again\footnote{For large models or
-            ensemble sizes a huge amount of output is generated. Your
-            run will be much faster when you disable the messages in
-            the gui, by pressing the 'Disable Logging' button.
-            You can also run without the gui, by using the command
-            \texttt{ oda\_run.sh <inputfile>} (Linux/Mac OS X) or
-            \texttt{ oda\_run\_batch.bat <inputfile>} (Windows)}
-            but now with an ensemble size of 10, 50, 100 and 200 and
-            plot the mean of the first variable. What do you see, and
-            what does this mean?
+      
+      We can see that although our simulation starts on the right track, it quickly diverges from the observations.
+      The aim of the Ensemble Kalman filter or data-assimilation in general, is to keep the model on track. 
       \end{itemize}
+
 \end{itemize}
