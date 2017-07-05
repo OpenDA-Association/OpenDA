@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.utils.CsvStochObserver">
+		<workingDirectory>./observations</workingDirectory>
+		<configFile>observations_double_pendulum_generated_th1th2.csv</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.doublePendulum.DoublePendulumStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>DoublePendulumStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>SequentialSimulation.xml</configString>
+	</algorithm>
+	<resultWriters>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_unperturbed_results.m</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="model_time" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+		</selection>
+	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_unperturbed_results.py</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="model_time" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+		</selection>
+	</resultWriter>
+	</resultWriters>
+</openDaApplication>
