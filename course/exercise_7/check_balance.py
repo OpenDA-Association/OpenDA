@@ -33,6 +33,7 @@ def main():
     plt.plot(b-b_check,'r')
     plt.plot(b_loc-b_loc_check,'b')
 
+    plt.legend(["25 EnKF", "25 EnKF, localization"])
     #plt.plot(b_loc_check-b_loc,'b')
     plt.show()
 

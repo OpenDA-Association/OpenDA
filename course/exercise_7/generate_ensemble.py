@@ -163,9 +163,9 @@ def main():
     mean_b = compute_ensemble_mean(ensemble_b)
     mean_b_check=compute_b(mean_a)
 
-    plt.figure()
-    plt.plot(mean_b)
-    plt.show()
+    #plt.figure()
+    #plt.plot(mean_b)
+    #plt.show()
 
 
     #Write ensembles (write mean in first column)
@@ -212,25 +212,40 @@ def main():
     ftrue.close()
 
 
+    # Make plot of true initial state and stars at the observation locations
+    if False:
+        plt.figure()
+        plt.subplot(2,1,1)
+        plt.plot(a_true,'b')
+        plt.plot(Locations, list(a_true[i] for i in Locations),'m*')
+        plt.title("Variable a")
 
-    plt.figure()
-    plt.subplot(2,1,1)
-    plt.plot(a_true,'r*')
-    plt.plot(ensemble_a[0],'b')
-    plt.plot(ensemble_a[1],'b')
-    plt.plot(ensemble_a[2],'b')
-    plt.plot(ensemble_a[3],'b')
-    plt.title("Variable a")
+        plt.subplot(2,1,2)
+        plt.plot(b_true,'r')
+        plt.plot(Locations, list(b_true[i] for i in Locations),'m*')
+        plt.title("Variable b = 0.5 + 10 da/dx")
+        plt.show()
 
 
-    plt.subplot(2,1,2)
-    plt.plot(b_true,'r*')
-    plt.plot(ensemble_b[0],'b')
-    plt.plot(ensemble_b[1],'b')
-    plt.plot(ensemble_b[2],'b')
-    plt.plot(ensemble_b[3],'b')
-    plt.title("Variable b")
-    plt.show()
+    if True:
+        plt.figure()
+        plt.subplot(2,1,1)
+        plt.plot(a_true,'r*')
+        plt.plot(ensemble_a[0],'b')
+        plt.plot(ensemble_a[1],'b')
+        plt.plot(ensemble_a[2],'b')
+        plt.plot(ensemble_a[3],'b')
+        plt.title("Variable a")
+
+
+        plt.subplot(2,1,2)
+        plt.plot(b_true,'r*')
+        plt.plot(ensemble_b[0],'b')
+        plt.plot(ensemble_b[1],'b')
+        plt.plot(ensemble_b[2],'b')
+        plt.plot(ensemble_b[3],'b')
+        plt.title("Variable b")
+        plt.show()
 
 
 

@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import enkf25_loc_results as enkf
+import enkf50_results as enkf
 import true_state
 
 
