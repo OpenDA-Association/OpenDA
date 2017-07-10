@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.utils.CsvStochObserver">
+		<workingDirectory>./observations</workingDirectory>
+		<configFile>observations_double_pendulum_generated_th1th2.csv</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.doublePendulum.DoublePendulumStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>DoublePendulumStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>EnKF.xml</configString>
+	</algorithm>
+	<resultWriters>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_enkf_results.m</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="pred_f_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="pred_a_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x_f_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_4" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_5" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_6" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_7" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_8" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_9" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_10" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_11" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_12" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_13" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_14" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_15" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_16" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_17" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_18" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_19" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_20" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_21" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_22" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_23" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_24" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_25" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_26" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_27" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_28" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_29" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_30" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_31" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_32" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_33" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_34" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_35" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_36" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_37" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_38" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_39" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_40" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_41" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_42" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_43" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_44" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_45" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_46" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_47" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_48" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_49" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_50" outputLevel="All"  maxSize="100000"   />
+		</selection>
+	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_enkf_results.py</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="pred_f_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="pred_a_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x_f_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_4" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_5" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_6" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_7" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_8" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_9" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_10" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_11" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_12" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_13" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_14" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_15" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_16" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_17" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_18" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_19" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_20" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_21" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_22" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_23" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_24" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_25" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_26" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_27" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_28" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_29" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_30" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_31" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_32" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_33" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_34" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_35" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_36" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_37" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_38" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_39" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_40" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_41" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_42" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_43" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_44" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_45" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_46" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_47" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_48" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_49" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_50" outputLevel="All"  maxSize="100000"   />
+		</selection>
+	</resultWriter>
+	</resultWriters>
+	<initialSeed type="specify" seedValue="21" />
+</openDaApplication>

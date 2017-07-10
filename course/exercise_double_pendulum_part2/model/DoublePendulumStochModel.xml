@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LorenzConfig>
+	<simulationTimespan>[0.0,0.01,10.0]</simulationTimespan>
+        <parameters names="l,g,m">[0.3,9.81,1.0]</parameters>
+        <parameterUncertainty names="l,g,m">[0.0,0.0,0.0]</parameterUncertainty>
+        <systemNoise>{[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0]}</systemNoise>
+        <initialState>[3.1415, 1.5707, 0.0, 0.0]</initialState> <!-- start from zero -->
+        <initialStateUncertainty>[0.01,0.01,0.01,0.01]</initialStateUncertainty>
+</LorenzConfig>

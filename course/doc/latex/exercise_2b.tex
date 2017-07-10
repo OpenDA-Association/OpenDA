@@ -15,13 +15,58 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
                         stochInit="true" />
       </EnkfConfig>
       \end{lstlisting}
+      Note that we are considering only uncertainty of the initial conditions here. In general, also uncertainty of the 
+      parameters or the model forcing, such as boundary conditions can be considered.
 
   \item Plot the ensemble mean of the first model variable and the observations.
-        With some luck the solution should track the observations.\\
-        Tip: use the scripts {\tt load\_obs.m} and {\tt load\_ensemble.m} for reading the
-        data into matlab (cf. Exercise1), or {\tt load\_ensemble.py} for python.
-  %oda_run EnKf.oda
-  %plot1.m
+        With some luck the solution should track the observations. \\
+        For comparison we have also added the configurations for the 'truth' and a oda\_run
+        without data-assimilation called 'initial'.
+        
+        \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
+        [tt,truth,tobs1,obs1]=load_results('simulation_truth_results');
+        [ti,initial,tobs2,obs2]=load_results('simulation_initial_results');
+        [te,enkf,tobs2,obs2]=load_results('simulation_enkf_results');
+        figure(1);clf;subplot(2,1,1);
+        plot(tt,truth(1,:),'k');
+        hold on;
+        plot(ti,initial(1,:),'g');
+        plot(te,enkf(1,1:2:end),'b');
+        hold off;
+        legend('truth','initial','enkf')
+        subplot(2,1,2);
+        plot(tt,truth(2,:),'k');
+        hold on;
+        plot(ti,initial(2,:),'g');
+        plot(te,enkf(2,1:2:end),'b');
+        hold off;
+        \end{lstlisting}
+
+        \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
+        import simulation_truth_results as truth
+        import simulation_initial_results as initial
+        import simulation_enkf_results as enkf
+        plt.subplot(2,1,1)
+        plt.plot(initial.model_time,initial.x[:,0],'g')
+        plt.plot(truth.model_time,truth.x[:,0],'k')
+        plt.plot(enkf.analysis_time,enkf.x_f_central[::2,0],'b');
+        plt.legend(('initial','truth','EnKF'))
+        plt.ylabel(r'$\theta_1$')
+        plt.subplot(2,1,2)
+        plt.plot(initial.model_time,initial.x[:,1],'g')
+        plt.plot(truth.model_time,truth.x[:,1],'k')
+        plt.plot(enkf.analysis_time,enkf.x_f_central[::2,1],'b');
+        plt.ylabel(r'$\theta_2$')
+        plt.xlabel(r'$t$')
+        plt.show() 
+        \end{lstlisting}
+
+ \item The Ensemble Kalman filter is uses a random number generator. In OpenDA we can control 
+       the initial value of the generator by adding a line like:
+       \verb|<initialSeed type="specify" seedValue="21" />| near the end of the main configuration file.
+       Do you get the same results if you rerun with the same value of the initial seed? And what if 
+       you use a different value?
+        
  \item Look at the observation input file of the StochObserver. The
        StochObserver does not only describe the observations but the accuracy
        as well. Can you make a new observation input file with similar
@@ -29,16 +74,14 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
        observation error.
        Tip: you can edit the file in OpenOffice or MS Excel or use the find
        and replace function of an advanced text editor.
- \item Repeat the run with EnKF but now for the new observations and plot
+       Repeat the run with EnKF but now for the new observations and plot
        the first variable of the ensemble means and the observations. What do
        you see and what is the reason for this behavior of the algorithm?
  %oda_run EnKf10.oda
  %plot1.m
  \item The number of ensemble members controls the accuracy of the ensemble
-       approximation. What happens if you increase the number to e.g. 100, or
-       decrease it to 5? Use (initially) observations with a standard deviation
-       of 5.0. Experiment as well with various standard
-       deviations of the observations.
+       approximation. What happens if you decrease it to 10 or 6? 
+       
 \end{itemize}
 
 %extra: Belang van initial seed (een enkele run is ook maar een enkele realisatie) en gebruik van "ensembles van ensembles"
