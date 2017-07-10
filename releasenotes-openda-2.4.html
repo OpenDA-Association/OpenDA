@@ -9,54 +9,48 @@ Release Notes - OpenDA - Version 2.4
 <h2>        New Features
 </h2>
 <ul>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-492'>ODA-492</a>] -         Add trachytopes (.ttd file) to dflow wrapper including test-case
+<li>Issue 492: Added data object to D-Flow FM wrapper (model_dflowm_blackbox) for trachytopes file (.ttd file)
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-497'>ODA-497</a>] -         Add exchange items for wind speed and wind direction for EFDC model
+<li>Issue 497: Added exchange items for wind speed and wind direction to EFDC model wrapper
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-499'>ODA-499</a>] -         Support multiple algae species in EFDC
+<li>Issue 499: Added support if multiple algae species to EFDC model wrapper
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-517'>ODA-517</a>] -         EFDC: No longer use *TEMPLATE.INP files.
+<li>Issue 517: EFDC model wrapper no longer uses the *TEMPLATE.INP files.
 </li>
 </ul>
 
 <h2>        Bug Fixes / Improvements
 </h2>
 <ul>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-417'>ODA-417</a>] -         New NETCDF result writer that does not use native libraries
+<li>Issue 417: Added a new NETCDF result writer that does not use a native netcdf library
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-464'>ODA-464</a>] -         Sangoma DLL for reflection is not built on Windows
+<li>Issue 493: Added OpenMP build for EFDC library on Windows
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-474'>ODA-474</a>] -         XML-file readers should be able to skip first three BOM bytes
+<li>Issue 494: Fixed native tests that were failing due to Locale problem
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-486'>ODA-486</a>] -         Check default value setting of NoosTimeSeriesStochObserver
+<li>Issue 496: No default validation when ConfigTree is reading xml file (to much delay)
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-493'>ODA-493</a>] -         OpenMP build for EFDC library on Windows
+<li>Issue 512: Removed fat toolsUI.jar (netCDF) and replaced it by leaner netcdf jar
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-494'>ODA-494</a>] -         Some native tests failing (Locale problem)
+<li>Issue 518: Fixed modelling spill events in the EFDC dll
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-496'>ODA-496</a>] -         Validation in ConfigTree makes runs hang
+<li>Issue 546: Made xml's in test cases referring correct xsd's
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-512'>ODA-512</a>] -         Remove toolsUI.jar (netCDF) as it is a fat jar containing a slf4j backend
+<li>Issue 513: Replaced incorrect NotImplementedError by RunTimeException in DFlowFMTimeSeriesDataObject
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-518'>ODA-518</a>] -         Spill events are not modeled correctly by EFDC dll
+<li>Issue 514: Removed dependency on Spring framework from unit tests for D-Flow FM wrapper (model_dflowm_blackbox)
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-546'>ODA-546</a>] -         Test case is referring to non-existing xsd
+<li>Issue 520: Fixed producing a RunTimeException we in black box compute action in case of missing executable
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-513'>ODA-513</a>] -         Remove NotImplementedError from DFlowFMTimeSeriesDataObject
+<li>Issue 522: Improved OpenDA user course, based on user feedback
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-514'>ODA-514</a>] -         Remove dependency on springframework in model_dflowm_blackbox unit tests
+<li>Issue 526: Removed obsolete example from tests for NEMO model wrapper
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-520'>ODA-520</a>] -         No error in compute action when executable is missing
+<li>Issue 542: Fixed the handling of invalid values in HSPF models's UCI file (added defaults)
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-522'>ODA-522</a>] -         Improve course, based on user feedback
+<li>Issue 543: Improved error messages in SparseDud algorithm
 </li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-526'>ODA-526</a>] -         Remove obsolete example from NEMO tests
-</li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-542'>ODA-542</a>] -         HSPF: strange value in UCI file
-</li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-543'>ODA-543</a>] -         Stacktrace in SparseDud
-</li>
-<li>[<a href='https://issuetracker.deltares.nl/browse/ODA-545'>ODA-545</a>] -         Improve error message for observation file generation
+<li>Issue 545: Improved error message when reading generated observation files
 </li>
 </ul>
 
