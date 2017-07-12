@@ -68,6 +68,15 @@ public class DFlowFMCalibrationFactorFile implements IDataObject {
 			if (trimmedLine.isEmpty()) continue;
 			if (trimmedLine.startsWith("#")) continue;
 			String[] split = StringUtilities.split(trimmedLine, ' ', '"');
+			if (split.length == 1) continue;
+			if (split[1].equals(DISCHARGE)) {
+				dependecy = 1;
+				continue;
+			}
+			if (split[1].equals(WATERLEVEL)) {
+				dependecy = 2;
+				continue;
+			}
 			if (split.length == 2) {
 				String id = CAL_FACTOR + '-' + split[0];
 				exchangeItems.put(id, new DFlowFMCalibrationFactorExchangeItem(id, Double.valueOf(split[1]), i));
@@ -77,16 +86,6 @@ public class DFlowFMCalibrationFactorFile implements IDataObject {
 				String id = CAL_FACTOR + '-' + split[0] + '-' + PREFIXES[dependecy] + split[1];
 				exchangeItems.put(id, new DFlowFMCalibrationFactorExchangeItem(id, Double.valueOf(split[2]), i));
 				continue;
-			}
-			if (split.length >= 4) {
-				if (split[1].equals(DISCHARGE)) {
-					dependecy = 1;
-					continue;
-				}
-				if (split[1].equals(WATERLEVEL)) {
-					dependecy = 2;
-					continue;
-				}
 			}
 		}
 	}
