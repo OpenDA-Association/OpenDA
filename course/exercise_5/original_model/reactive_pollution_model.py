@@ -87,9 +87,9 @@ def computeNextTimeStep(tIndex, c1, c2, input):
             c1Next[iRight] += c1[i]*weightRight
             c2Next[iRight] += c2[i]*weightRight
 	# reaction
-	rate = time[1]/reaction_time[0];
-	c1Next[i] += - c1Next[i] * rate
-	c2Next[i] +=   c1Next[i] * rate
+        rate = time[1]/reaction_time[0]
+        c1Next[i] += - c1Next[i] * rate
+        c2Next[i] +=   c1Next[i] * rate
     #print 'c1='+str(c1Next)
     #print 'c2='+str(c2Next)
     #print 'add sources'
