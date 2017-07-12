@@ -44,12 +44,18 @@ public class DFlowFMCalibrationFactorFile implements IDataObject {
 	public void finish() {
 		for (DFlowFMCalibrationFactorExchangeItem exchangeItem : exchangeItems.values()) {
 			int lineNumber = exchangeItem.getLineNumber();
-			String line = linesArray[lineNumber];
+			String line = getLine(linesArray[lineNumber]);
 			String[] split = line.split(" ");
 			split[split.length - 1] = String.valueOf(exchangeItem.getValuesAsDoubles()[0]);
 			linesArray[lineNumber] = StringUtilities.joinStringArrayUsingSeparator(split, " ");
 		}
 		AsciiFileUtils.writeLines(targetFile, Arrays.asList(linesArray));
+	}
+
+	private String getLine(String line) {
+		if (!line.contains("#")) return line;
+		int index = line.indexOf('#');
+		return line.substring(0, index).trim();
 	}
 
 	@Override
@@ -82,10 +88,9 @@ public class DFlowFMCalibrationFactorFile implements IDataObject {
 				exchangeItems.put(id, new DFlowFMCalibrationFactorExchangeItem(id, Double.valueOf(split[1]), i));
 				continue;
 			}
-			if (split.length == 3) {
+			if (split.length >= 3) {
 				String id = CAL_FACTOR + '-' + split[0] + '-' + PREFIXES[dependecy] + split[1];
 				exchangeItems.put(id, new DFlowFMCalibrationFactorExchangeItem(id, Double.valueOf(split[2]), i));
-				continue;
 			}
 		}
 	}

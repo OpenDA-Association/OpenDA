@@ -45,9 +45,9 @@ public class DFlowFMCalibrationFactorFileTest extends TestCase {
 
 	public void testReadAndWriteOverwriteSource() {
 		DFlowFMCalibrationFactorFile calibrationFactorFile = new DFlowFMCalibrationFactorFile();
-		calibrationFactorFile.initialize(testRunDataDir, new String[]{"CalibrationFactor/calib-factors.cld"});
+		calibrationFactorFile.initialize(testRunDataDir, new String[]{"CalibrationFactor/tt2.cld"});
 		String[] exchangeItemIDs = calibrationFactorFile.getExchangeItemIDs();
-		String[] expectedIds = {"CalFactor-34","CalFactor-28-q100.20","CalFactor-28-q150","CalFactor-28-q205.30","CalFactor-61-q650","CalFactor-61-q960","CalFactor-61-q1120.75","CalFactor-61-q1405.11","CalFactor-17-h10.53", "CalFactor-17-h15.546","CalFactor-17-h18.30","CalFactor-3-h8.15","CalFactor-3-h9","CalFactor-3-h10.01","CalFactor-3-h13"};
+		String[] expectedIds = {"CalFactor-34","CalFactor-28-q100.20","CalFactor-28-q400","CalFactor-28-q600.30","CalFactor-12-q400.2","CalFactor-12-q600","CalFactor-3-h0.45", "CalFactor-3-h0.9","CalFactor-3-h1","CalFactor-3-h1.001"};
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
 			String exchangeItemID = exchangeItemIDs[i];
 			assert exchangeItemID.equals(expectedIds[i]);
@@ -55,15 +55,14 @@ public class DFlowFMCalibrationFactorFileTest extends TestCase {
 			double[] doubles = item.getValuesAsDoubles();
 			assert doubles != null;
 			assert doubles.length == 1;
-			assert doubles[0] == 1.0;
 			double factor = 1 + 0.1 * i;
 			double[] multiplicationFactors = {factor};
 			item.multiplyValues(multiplicationFactors);
-			assert item.getValuesAsDoubles()[0] == factor;
+			assert item.getValuesAsDoubles()[0] == factor * doubles[0];
 		}
 		calibrationFactorFile.finish();
-		File fileChanged = new File(testRunDataDir, "CalibrationFactor/calib-factors.cld");
-		File fileExpected = new File(testRunDataDir, "CalibrationFactor/calib-factors-expected.cld");
+		File fileChanged = new File(testRunDataDir, "CalibrationFactor/tt2.cld");
+		File fileExpected = new File(testRunDataDir, "CalibrationFactor/tt2-expected.cld");
 		assertEquals(AsciiFileUtils.readText(fileExpected), AsciiFileUtils.readText(fileChanged));
 	}
 

@@ -1,0 +1,52 @@
+# [FileInformation]
+#   FileType     = CalibrationFactorsDefinitionFile
+#   FileVersion  = 1.0
+# [CalibrationFactors]
+
+# Non-Q-or-h-dependent
+#
+# calibration-class-nr   calibration-factor
+#
+34 0.9
+#
+# (will lead to exchange item CalFactor-34)
+
+# Q-dependent calibration factors
+#
+# calibration-class-nr DISCHARGE "Cross-section name"
+# calibration-class-nr Q1 ConstantValueAtQ1
+# calibration-class-nr Q2 ConstantValueAtQ2
+# calibration-class-nr Q3 ConstantValueAtQ3
+# calibration-class-nr Q4 ConstantValueAtQ4
+#
+28 DISCHARGE 1.0 "m=1"
+28 100.20 1.1
+28 400    0.36
+28 600.30 0.13
+
+# (will lead to exchange items:
+#  CalFactor-28-q100.20, CalFactor-28-q400, CalFactor-28-q600.30)
+
+# Second discharge dependent definition
+12    DISCHARGE   m=1
+12    400.2   1.4
+12    600     0.30000000000000004
+
+# (will lead to exchange items:
+#  CalFactor-12-q400.20, CalFactor-12-q600)
+
+# Waterlevel dependent calibration factor
+# calibration-class-nr WATERLEVEL "Observation station name"
+# calibration-class-nr H1 ConstantValueAtH1
+# calibration-class-nr H2 ConstantValueAtH2
+# calibration-class-nr H3 ConstantValueAtH3
+# calibration-class-nr H4 ConstantValueAtH4
+# 
+3 WATERLEVEL 1.0 "m 5"
+3 0.45   1.6
+3 0.9    1.7000000000000002
+3 1      1.8
+3 1.001  1.9
+
+# (will lead to exchange items:
+#  CalFactor-3-h0.45, CalFactor-3-h0.9, CalFactor-3-h1, CalFactor-3-h1.001)
