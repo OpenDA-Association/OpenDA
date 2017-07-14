@@ -50,7 +50,6 @@ import org.openda.interfaces.*;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.observers.TimeSeriesObservationDescriptions;
 import org.openda.utils.*;
-import sun.reflect.generics.tree.Tree;
 
 import java.io.*;
 import java.text.NumberFormat;
