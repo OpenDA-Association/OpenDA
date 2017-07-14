@@ -14,8 +14,8 @@ from time import sleep
 #load data
 import reactive_pollution_model_truth as truth
 import sequentialSimulation_results as sim
-#import sequentialEnsembleSimulation_results as ens
-import enkf_results as enkf
+import sequentialEnsembleSimulation_results as enkf
+#import enkf_results as enkf
 #import enkf_results2 as enkf
 
 # create initial plot
@@ -56,7 +56,7 @@ for i in range(len(enkf.analysis_time)):
    ax[1].plot(oloc2,0*oloc2+1,'*')
    ax[1].plot(sloc2,0*sloc2+1,'d')
    ax[1].set_ylabel("c_2")
-   plt.legend(("Truth","First guess","EnKF"))
+   plt.legend(("Truth","First guess","EnsSim"))
    plt.draw()
    plt.pause(0.1)
    

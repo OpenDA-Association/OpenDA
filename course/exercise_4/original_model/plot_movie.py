@@ -18,7 +18,6 @@ import reactive_pollution_model_output as sim
 
 plt.close("all")
 f,ax = plt.subplots(2,1)
-plt.ion()
 
 # split sources and outputs based on substance
 stypeisone=np.array(sim.source_substance)==1 
@@ -42,4 +41,5 @@ for i in sim.c1_map.keys():
    ax[1].plot(sloc2,0*sloc2+1,'d')
    ax[1].set_ylabel("c_1")
    plt.draw()
-   sleep(0.1)
+   plt.pause(0.1)
+

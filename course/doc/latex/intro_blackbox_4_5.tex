@@ -1,4 +1,5 @@
 
+
 A simple way to connect a model to OpenDA is by letting OpenDA access the input
 and output files of the model. OpenDA cannot directly understand the input and
 output files of an arbitrary model. Some code has to be written such that the
@@ -8,7 +9,7 @@ assuming that all the input and output files of the model can indeed be
 accessed by OpenDA. The exercise focusses on the configuration of the black box
 wrapper in OpenDA.\\
 
-In the directory {\tt exercise\_4/stochModel/bin/} you will find a model written in python \\
+In the directory {\tt { \opgave}/original\_model/} you will find a model written in python \\
 {\tt reactive\_pollution\_model.py} and a compiled version of this code for
 windows. There is also an input file ({\tt reactive\_pollution\_model.input})
 and the output file you should get when you run the model. The model describes
@@ -29,9 +30,8 @@ implements the following equations:
 not using OpenDA.\\
 The model
   generates the output files: {\tt reactive\_pollution\_model.output} and
-  {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
-  of the output in order to study the behavior of the model. In order to check
-  the model (plotted) results you can look at the input file as well.
+  {\tt reactive\_pollution\_model\_output.m}. You can create a movie of the model 
+  results using the {\tt plot\_movie.py} script from the {\tt original\_model} directory. This allows you  to study the behaviour of the model. 
 \end{itemize}
 
 For this exercise, the Java-routines for reading and writing the input and

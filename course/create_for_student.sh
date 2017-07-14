@@ -55,6 +55,9 @@ mv $STUDENT/exercise_6/simple_advection_model/java/src/org/openda/AdvectionStoch
    $STUDENT/exercise_6/simple_advection_model/java/src/org/openda/AdvectionStochModelInstance.java
 rm -rf $STUDENT/exercise_6/reference_plots
 
+# Exercise 7
+cp -r exercise_7 $STUDENT/exercise_7
+
 
 # Remove svn stuff
 cd $STUDENT

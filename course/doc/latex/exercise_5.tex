@@ -1,42 +1,11 @@
-
-This exercise uses the same model as exercise~4: a model written in python that
-describes the advection of two chemical species. Please read the start of
-exercise~4 if you are not familiar with this model yet. A description of the
-black box wrapper configuration, usually consisting of three xml files, can
-also be found in exercise~4.
-
-\begin{itemize}
-\item Run the model from the command line, not using OpenDA, like in Exercise 4. The model
-  generates the output files: {\tt reactive\_pollution\_model.output} and
-  \\ {\tt reactive\_pollution\_model\_output.m}. Use the m-file to make plots
-  of the output in order to study the behavior of the model. In order to check
-  the model (plotted) results you can look at the input file as well.
-\end{itemize}
-
-%The Java-routines needed to access the model input and output files are the
-%same as in exercise~4. Make sure that the jar-file is added to OpenDA, either
-%by using the CLASSPATH environment variable or by copying the jar-file into the
-%bin directory of your OpenDA version.
-
-%TODO: add this lines once the oda_dump tool is working correctly....
-%The utility oda\_dumpio assists in working with a black box wrapper in OpenDA.
-%If you run {\tt oda\_dumpio.sh \textless jar-file\textgreater} it will list the
-%available classes for reading and writing. In this case you should look for
-%org.openda.mywrapper.myWrapper.\\
-
 We start with some single and ensemble runs to understand where for our black
 box wrapper configuration the model results appear:
 \begin{itemize}
 
- \item Have a look at the files {\tt polluteWrapper.xml}, {\tt
-   polluteModel.xml} and {\tt polluteStochModel.xml}, and look for differences compared to exercise\_4.
-   Run the model within OpenDA by using
-   the \\{\tt SequentialSimulation.oda} configuration. Use the script {\tt
-   plot\_movie.m} (or {\tt plot\_movie.py} for python) to visualize the model 
+ \item Run the model within OpenDA by using
+   the \\{\tt SequentialSimulation.oda} configuration. Use the script  {\tt plot\_movie\_seq.py} to visualize the model 
    results. Compare the results with
-   those from the run you executed without using OpenDA. Note that the actual
-   model results are available in the directory where the black box wrapper has
-   let the model perform its computation: {\tt stochModel/output/work0}.
+   those from the run you executed without using OpenDA. 
  \item Run an ensemble forecast model by using the \\{\tt
    SequentialEnsembleSimulation.oda} configuration. On which variable does the
    algorithm impose stochastic forcing?\\ Have a look at the {\tt
@@ -44,14 +13,12 @@ box wrapper configuration the model results appear:
    the required ensemble members by repeatedly copying the template directory
    {\tt stochModel/input} to\\ {\tt stochModel/output/work\textless
      N\textgreater}.
- \item A special model instance is {\tt stochModel/output/work0}. It is the so
-   called 'main' model, and is computed with the average of the perturbations
-   of the ensemble members. Compare the results of {\tt
-     stochModel/output/work0} with the results of {\tt
+ \item Compare the result between the mean of the ensemble and the results from {\tt
      SequentialSimulation.oda}. Note the relatively large differences. Check if
    these differences are reduced by increasing the ensemble size for the
    sequential ensemble simulation to 20 and rerunning {\tt
      SequentialEnsembleSimulation..oda} (this run may take a few minutes).
+     You can use the script {\tt plot\_movie\_enssim.py}.
 \end{itemize}
 
 Now let us have a look at the configuration for performing OpenDA's Ensemble
@@ -80,10 +47,11 @@ observations downstream of factory 2 to optimize the forecast.
  \item Execute the Ensemble Kalman Filtering run by using the {\tt EnKF.oda}
    configuration.\\ Check how good the run is performing, by analyzing to what
    extent the filter has adjusted the predictions towards the
-   observation.\\ Note that the Matlab result file in {\tt
+   observation.\\ Note that the model output files in {\tt
      stochModel/output/work0} only contains a few time steps. Can you explain
    why?\\ So to compare the observations with the predictions you have to use
-   the result file produced by the EnKF algorithm.
+   the result file produced by the EnKF algorithm which can be visualised using
+   {\tt plot\_movie.py}.
 \end{itemize}
 
 Now let us extend the filtering process by incorporating also the concentration
