@@ -520,7 +520,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 				this.setCurrentState(this.mainModel.getState());
 				timerNext_getState.stop();
 				timerNext_resultWriter.start();
-                Results.putValue("x_f_central", this.currentState, this.currentState.getSize(), "analysis step", IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.Step);
+                Results.putValue("x_a_central", this.currentState, this.currentState.getSize(), "analysis step", IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.Step);
 				timerNext_resultWriter.stop();
 				Results.putIterationReport(this, this.iteration, this.cost, this.currentState);
 
