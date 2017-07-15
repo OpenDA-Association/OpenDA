@@ -49,13 +49,13 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
         plt.subplot(2,1,1)
         plt.plot(initial.model_time,initial.x[:,0],'g')
         plt.plot(truth.model_time,truth.x[:,0],'k')
-        plt.plot(enkf.analysis_time,enkf.x_f_central[::2,0],'b');
+        plt.plot(enkf.analysis_time,enkf.x_f_central[:,0],'b');
         plt.legend(('initial','truth','EnKF'))
         plt.ylabel(r'$\theta_1$')
         plt.subplot(2,1,2)
         plt.plot(initial.model_time,initial.x[:,1],'g')
         plt.plot(truth.model_time,truth.x[:,1],'k')
-        plt.plot(enkf.analysis_time,enkf.x_f_central[::2,1],'b');
+        plt.plot(enkf.analysis_time,enkf.x_f_central[:,1],'b');
         plt.ylabel(r'$\theta_2$')
         plt.xlabel(r'$t$')
         plt.show() 
