@@ -57,6 +57,9 @@ rm -rf $STUDENT/exercise_6/reference_plots
 
 # Exercise 7
 cp -r exercise_7 $STUDENT/exercise_7
+rm $STUDENT/exercise_7/enkf_100.oda
+rm $STUDENT/exercise_7/algorithms/EnKF100.xml
+
 
 
 # Remove svn stuff

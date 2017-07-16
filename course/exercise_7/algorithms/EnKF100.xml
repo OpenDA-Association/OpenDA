@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig>
+	<ensembleSize>100</ensembleSize>
+	<localization>none</localization>
+        <ensembleModel stochParameter="false"
+                  stochForcing="false"
+                  stochInit="false" />
+</EnkfConfig>
