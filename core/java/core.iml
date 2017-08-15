@@ -163,7 +163,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="netcdf" level="project" />
-    <orderEntry type="library" name="netcdf" level="project" />
   </component>
 </module>
