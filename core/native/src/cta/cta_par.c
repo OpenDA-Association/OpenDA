@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define CTA_PAR_CREATEGROUPS_F77  F77_CALL(cta_par_creategroups,CTA_PAR_CREATEGROUPS)
 #define CTA_PAR_GETGROUPINFO_F77  F77_CALL(cta_par_getgroupinfo,CTA_PAR_GETGROUPINFO)
 
-#define IDEBUG (10)
+#define IDEBUG (0)
 enum CTAI_ParType  {WorkerWorker,MasterWorker};
 enum CTA_ParProcType CTA_MY_PROC_TYPE=CTA_ParMaster;
 int  CTA_IS_PARALLEL=CTA_FALSE;
@@ -433,13 +433,14 @@ void CTAI_Par_CreateMPIGroups(CTAI_Group *allGroups, int nGroups){
 #define METHOD "CTAI_Par_SetGroupInfo"
 int CTAI_Par_SetGroupInfo(CTA_Handle parConfig, CTAI_Group *group){
 
-   CTA_String sName, sUseFor, sParType, sSpawn_workers;
+   CTA_String sName, sUseFor, sParType, sSpawn_workers, sDumProcs;
    int ierr;
    int myRank;
    int len;
    int datatype;
    char *implements, *parallel_type, *nproc, *ntimes, *dumProcs, *spawn_workers;
-   int dumProc;
+   int i;
+   char *txtpart, *txtstr, *s;
 
    /* Get rank for output */
    ierr=MPI_Comm_rank(CTA_COMM_WORLD, &myRank);
@@ -543,14 +544,22 @@ int CTAI_Par_SetGroupInfo(CTA_Handle parConfig, CTAI_Group *group){
          // Set message writer in quiet mode since it is ok if this info
          // does not exist
          CTA_Message_Quiet(CTA_TRUE);
-
-         ierr=CTA_Tree_GetValueStr(parConfig,"group/dumproc", &dumProc, CTA_INTEGER);
+         ierr=CTA_Tree_GetHandleStr(parConfig,"group/dumproc", &sDumProcs);
          CTA_Message_Quiet(CTA_FALSE);
          if (ierr==CTA_OK){
-            group->nDumProcs=1;
-            group->dumProcs=CTA_Malloc(sizeof(int)*group->nDumProcs);
-            group->dumProcs[0]=dumProc;
-            if (IDEBUG) printf("#%d Dummy process is selected in Worker-Worker concept\n", myRank);
+             txtstr=CTAI_String_GetPtr(sDumProcs);
+             s = txtstr;
+             for (i=0; s[i]; s[i]==',' ? i++ : *s++);
+             group->nDumProcs = strlen(txtstr) == 0 ? 0 :  i+1;
+             if (group->nDumProcs > 0) {
+                group->dumProcs  = CTA_Malloc(sizeof(int)*group->nDumProcs);
+                for (i=0; ; i++,txtstr=NULL) {
+                   txtpart = strtok(txtstr,",");
+                   if (txtpart == NULL) break;
+                   group->dumProcs[i]=atoi(txtpart);
+                }
+             }
+             if (IDEBUG) printf("#%d Dummy process is selected in Worker-Worker concept\n", myRank);
          }
       }
    }
@@ -700,7 +709,6 @@ int CTA_Par_CreateGroups(int parConfig, int StartPar){
       }
    }
    /* Create process groups and communicators */
-   printf("PINDAKAAS!!!!!!!!!!!!!!\n");
    CTAI_Par_CreateMPIGroups(CTAI_AllGroups, CTAI_nGroups);
 
    /* Start parallel model builder for workers */
