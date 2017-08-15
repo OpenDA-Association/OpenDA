@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AntConfiguration">
+    <buildFile url="file://$PROJECT_DIR$/build.xml">
+      <maximumHeapSize value="256" />
+      <maximumStackSize value="32" />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/build_incl_dotnet_bridge.xml" />
     <buildFile url="file://$PROJECT_DIR$/core/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/observers/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_efdc_dll/build_castor.xml" />
@@ -292,9 +297,6 @@
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
-        <editorconfig>
-          <option name="ENABLED" value="false" />
-        </editorconfig>
         <ADDITIONAL_INDENT_OPTIONS fileType="gsp">
           <option name="INDENT_SIZE" value="2" />
         </ADDITIONAL_INDENT_OPTIONS>
@@ -356,7 +358,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ResourceManagerContainer">
@@ -447,6 +449,15 @@
         <root url="jar://$PROJECT_DIR$/core/java/resources/castor/castor-0.9.5.jar!/" />
         <root url="jar://$PROJECT_DIR$/core/java/resources/xom/xom-1.2.6.jar!/" />
         <root url="jar://$PROJECT_DIR$/core/java/resources/junit/junit-3.8.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="netcdf">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/core/java/resources/netcdf/netcdf-4.3.23.jar!/" />
+        <root url="jar://$PROJECT_DIR$/core/java/resources/jodatime/joda-time-2.9.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/core/java/resources/udunits/udunits-4.6.6.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

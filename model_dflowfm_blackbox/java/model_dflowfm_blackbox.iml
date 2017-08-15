@@ -37,14 +37,6 @@
     <orderEntry type="module" module-name="application" />
     <orderEntry type="module" module-name="models" />
     <orderEntry type="module" module-name="observers" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/netcdf/netcdf-4.3.23.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="netcdf" level="project" />
   </component>
 </module>
