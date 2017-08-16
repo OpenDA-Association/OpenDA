@@ -13,10 +13,9 @@
             This build script assumes that the OpenDA code is located in a folder called "public".
             ======================================================================================
             ant help                     --> print this help
-            ant build                    --> compile, make jar and copy resources for all
-        	                                 platforms
-            ant build-win32              --> compile, make jar, copy resources for win32
-        	                                 remove resources for other platforms
+            ant build                    --> compile, make jar and copy resources for all platforms
+            ant build-windown            --> compile, make jar, copy resources for windows
+          	                                 remove resources for other platforms
             ant clean                    --> remove output
             ant doc                      --> collect documentation
             ant test                     --> execute unit tests (excluding broken tests)
@@ -24,8 +23,8 @@
             ant test-broken              --> execute broken unit tests
             ant zip                      --> creates zip files with sources, binaries,
                                              documentation and xml schemas
-            ant zip-win32                --> creates zip files with sources, binaries,
-                                             documentation and xml schemas for win32
+            ant zip-windows              --> creates zip files with sources, binaries,
+                                             documentation and xml schemas for windows
             ant zip-tests                --> zip public test cases
             ant tgz                      --> creates tgz files with sources, binaries,
                                              documentation and xml schemas
@@ -88,7 +87,7 @@
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
    </target>
 
-   <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
+   <target name="build-windows" depends="build, copy-win64-executables, copy-jre-win32" />
 
    <target name="doc" depends="init">
       <docmodule module="core" />
@@ -173,17 +172,16 @@
 	    </sequential>
     </macrodef>
 
-    <target name="copy-win32-executables">
+    <target name="copy-win64-executables">
 
-        <copy  toDir="${modulebindir}" flatten="yes">
-	   		<fileset dir = "${modulebindir}/win32_ifort"/>
-            <fileset dir = "${modulebindir}/win32_gfortran"/>
-        </copy>
+      <copy  toDir="${modulebindir}" flatten="yes">
+	 		    <fileset dir = "${modulebindir}/win64_ifort"/>
+      </copy>
 
-        <delete dir="${modulebindir}/win32_ifort"/>
-        <delete dir="${modulebindir}/win32_gfortran"/>
-        <delete dir="${modulebindir}/darwin"/>
-        <delete dir="${modulebindir}/linux64_gnu"/>
+      <delete dir="${modulebindir}/win32_gfortran"/>
+      <delete dir="${modulebindir}/win32_ifort"/>
+      <delete dir="${modulebindir}/darwin"/>
+      <delete dir="${modulebindir}/linux64_gnu"/>
 
     	<delete>
             <fileset dir="${modulebindir}">
@@ -275,7 +273,7 @@
    -->
     <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
     <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
-    <target name="zip-win32" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-windows" depends="svn-revision,build-windows,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
 
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
@@ -353,7 +351,7 @@
 
     <target name="zip-native" depends="svn-revision">
        <zip destfile="${projectname}_${version}_r${svn.revision}_native.zip">
-	       <zipfileset dir="core/native_bin/win32_ifort" prefix="win32_ifort"/>
+	       <zipfileset dir="core/native_bin/win64_ifort" prefix="win64_ifort"/>
        </zip>
     </target>
 
