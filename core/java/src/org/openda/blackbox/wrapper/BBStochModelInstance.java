@@ -903,7 +903,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			//get the model values at the observed coordinates.
 			if (!GeometryUtils.isScalar(observationExchangeItem)) {//if grid observationExchangeItem.
 				String logMessage = "Getting model values at observed coordinates for grid observation exchangeItem with id '" + observationExchangeItem.getId() + "'.";
-				if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+				if (LOGGER.isDebugEnabled()) LOGGER.info(logMessage);
 				Results.putMessage(logMessage);
 
 				//this code only works for grid modelExchangeItems.
@@ -921,7 +921,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 			//if scalar observationExchangeItem.
 			String logMessage = "Getting model values at observed coordinates for scalar observation exchangeItem with id '" + observationExchangeItem.getId() + "'.";
-			if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+			if (LOGGER.isDebugEnabled()) LOGGER.info(logMessage);
 			Results.putMessage(logMessage);
 			//this code assumes that the observationExchangeItem and the mappedExchangeItem have the same coordinates (i.e. their coordinates are not used).
 			//If the modelExchangeItem is a grid, then the mappedExchangeItem must be a subVector of the modelExchangeItem with only one selected grid cell.
@@ -1013,7 +1013,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		//get the model values at the observed coordinates.
 		String logMessage = "Using bilinear interpolation to get model values from model exchangeItem '" + modelExchangeItemId
 				+ "' at observed coordinates from observation exchangeItem '" + observationExchangeItemId + "'.";
-		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+		if (LOGGER.isDebugEnabled()) LOGGER.info(logMessage);
 		Results.putMessage(logMessage);
 		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationXCoordinates, observationYCoordinates, modelGeometryInfo, modelValues);
 		validateObservedModelValues(observationXCoordinates, observationYCoordinates, observedModelValues, observationExchangeItemId, modelExchangeItemId);
@@ -1057,7 +1057,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				+ "y coordinates: " + observationYCoordinates.printString("") + "\n"
 				+ "Range spanned by observations: x = [" + xMin + ", " + xMax + "], y = [" + yMin + ", " + yMax + "]";
 
-		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
+		if (LOGGER.isDebugEnabled()) LOGGER.info(logMessage);
 		Results.putMessage(logMessage);
 	}
 
