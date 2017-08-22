@@ -32,6 +32,8 @@ import org.openda.utils.Vector;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -40,22 +42,33 @@ import java.util.HashMap;
 public class MatlabResultWriter implements IResultWriter {
 
     private static final String commentPrefix = "% ";
+    private boolean addTimeStamp = false;
+    private String addTimeStampSuffix = "(ts)";
+    SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
     private PrintStream outputStream = null;
     private HashMap<String, Integer> iter = new HashMap<String, Integer>();
     private int defaultMaxSize = 1000;
 
     public MatlabResultWriter(File workingDir, String configString) {
         if ( configString.startsWith("<xml") ) {  // TODO: right prefix
-            // TODO: read from config file
+            // TODO: read from config string
         } else {
-            if ( configString.toLowerCase().endsWith(".m") ) {
+            if ( configString.toLowerCase().endsWith(".m") || configString.toLowerCase().endsWith(".m(ts)") ) {
                 // configString directly indicates the matlab output file
+                if (configString.toLowerCase().endsWith(".m" + addTimeStampSuffix)) {
+                    // add messages
+                    addTimeStamp = true;
+                    configString = configString.substring(0, configString.length()-addTimeStampSuffix.length());
+                }
                 try {
                     outputStream = new PrintStream(new File(workingDir, configString));
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException("MatlabResultWriter: could not open " +
                             " for writing (" + e.getMessage() + ")");
                 }
+            }
+            else {
+                throw new RuntimeException("MatlabResultWriter: file name with unknown extension: " + configString);
             }
         }
     }
@@ -64,17 +77,16 @@ public class MatlabResultWriter implements IResultWriter {
 
     public void putMessage(Source source, String comment) {
         comment = comment.replaceAll("\n", "\n%");
-        outputStream.println(commentPrefix + comment);
+        printMessage(comment);
     }
 
     public void putMessage(IInstance source, String comment) {
         comment = comment.replaceAll("\n", "\n%");
-        outputStream.println(commentPrefix + " " + Instance.identifySource(source) + " " +  comment);
+        printMessage(" " + Instance.identifySource(source) + " " +  comment);
     }
 
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
-		outputStream.println(commentPrefix + " resultItem id: "+ id +", outputLevel: "+ outputLevel.toString() +", context: "+ context);
-        String prefix = commentPrefix;
+		printMessage(" resultItem id: "+ id +", outputLevel: "+ outputLevel.toString() +", context: "+ context);
     	// TODO create a counter for time being; one counter per id
     	Integer currentIter =0;
     	if(this.iter.containsKey(id)){
@@ -82,7 +94,7 @@ public class MatlabResultWriter implements IResultWriter {
     	}
     	this.iter.put(id, currentIter+1);
         if (result instanceof ITreeVector) {
-            outputStream.print(prefix + " " + ((ITreeVector)result).getId() + ": ");
+            printMessage(" " + ((ITreeVector)result).getId() + ": ");
             boolean printComma = false;
             for (String subTreeVectorId : ((ITreeVector)result).getSubTreeVectorIds()) {
                 if (printComma) {
@@ -114,5 +126,14 @@ public class MatlabResultWriter implements IResultWriter {
     
     public int getDefaultMaxSize() {
         return defaultMaxSize;
+    }
+
+    private void printMessage(String message) {
+        String outputMessage = commentPrefix + message;
+        if (addTimeStamp) {
+            String timeString = timeStampFormat.format(Calendar.getInstance().getTime());
+            outputMessage = commentPrefix + timeString + message;
+        }
+        outputStream.println(outputMessage);
     }
 }
