@@ -1,4 +1,4 @@
-/* OpenDA v2.4
+/* OpenDA v2.4.1
 * Copyright (c) 2017 OpenDA Association
 * All rights reserved.
 *

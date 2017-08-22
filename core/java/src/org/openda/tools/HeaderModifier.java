@@ -1,4 +1,4 @@
-/* OpenDA v2.4 
+/* OpenDA v2.4.1 
 * Copyright (c) 2017 OpenDA Association 
 * All rights reserved.
 * 
@@ -30,7 +30,7 @@ public class HeaderModifier {
 
 	String suffix = "java";
 	
-	String license= "/* OpenDA v2.4 \n"+
+	String license= "/* OpenDA v2.4.1 \n"+
 	"* Copyright (c) 2017 OpenDA Association \n"+
 	"* All rights reserved.\n"+
 	"* \n"+
@@ -94,7 +94,7 @@ public class HeaderModifier {
 			boolean containsHeader=false;
 			if(line!=null){
 				needsModification=true;
-				if(line.indexOf("/* OpenDA v2.4")>=0){
+				if(line.indexOf("/* OpenDA v2.4.1")>=0){
 					needsModification=false;
 					containsHeader=true;
 				}else if(line.indexOf("/*")>=0){
