@@ -53,7 +53,7 @@ public class DimrConfigFile implements IDataObject {
 	ConfigTree configTree = null;
 
 	IDataObject flowMdFile;
-	IDataObject rtcToolsRuntimeConfigFile;
+	IDataObject rtcToolsRuntimeConfigFile=null;
 
 	public String[] getExchangeItemIDs()
 	{
@@ -98,28 +98,34 @@ public class DimrConfigFile implements IDataObject {
 		configTree = new ConfigTree(workingDirectory, inputFileName);
 
 		String inputFilePath = new File(workingDirectory, inputFileName).getAbsolutePath();
-		File md1dFile = getSubComponentConfigFile(inputFilePath, flowLibraryName);
-		File rtcRunDir = getSubComponentConfigFile(inputFilePath, rtcLibraryName);
+		File md1dFile = getSubComponentConfigFile(inputFilePath, flowLibraryName, true);
+		File rtcRunDir = getSubComponentConfigFile(inputFilePath, rtcLibraryName, false);
 
 		flowMdFile = new Md1dFile();
 		flowMdFile.initialize(md1dFile.getParentFile(), new String[] {md1dFile.getName()});
 
-		rtcToolsRuntimeConfigFile = new RtcToolsRuntimeConfigFile();
-		rtcToolsRuntimeConfigFile.initialize(rtcRunDir, new String[] {rtcRuntimeConfigFileName});
+		if (rtcRunDir != null) {
+			rtcToolsRuntimeConfigFile = new RtcToolsRuntimeConfigFile();
+			rtcToolsRuntimeConfigFile.initialize(rtcRunDir, new String[] {rtcRuntimeConfigFileName});
+		}
 	}
 
 	public void finish()
 	{
 		IExchangeItem startTimeExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STARTTIME);
 		if(startTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_STARTTIME));
-		IExchangeItem rtcStartTimeExchangeItem = rtcToolsRuntimeConfigFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STARTTIME);
-		rtcStartTimeExchangeItem.setValues(startTimeExchangeItem.getValues());
+		if (rtcToolsRuntimeConfigFile!=null) {
+			IExchangeItem rtcStartTimeExchangeItem = rtcToolsRuntimeConfigFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STARTTIME);
+			rtcStartTimeExchangeItem.setValues(startTimeExchangeItem.getValues());
+		}
 		double startTimeAsMJD = startTimeExchangeItem.getValuesAsDoubles()[0];
 
 		IExchangeItem stopTimeExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STOPTIME);
 		if(stopTimeExchangeItem == null) throw new RuntimeException(String.format("Exchange item %s does not exist", Md1dFile.PROPERTY_STOPTIME));
-		IExchangeItem rtcEndTimeExchangeItem = rtcToolsRuntimeConfigFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STOPTIME);
-		rtcEndTimeExchangeItem.setValues(stopTimeExchangeItem.getValues());
+		if (rtcToolsRuntimeConfigFile!=null) {
+			IExchangeItem rtcEndTimeExchangeItem = rtcToolsRuntimeConfigFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_STOPTIME);
+			rtcEndTimeExchangeItem.setValues(stopTimeExchangeItem.getValues());
+		}
 		double stopTimeAsMJD = stopTimeExchangeItem.getValuesAsDoubles()[0];
 
 		IExchangeItem timeStepExchangeItem = flowMdFile.getDataObjectExchangeItem(Md1dFile.PROPERTY_TIMESTEP);
@@ -136,7 +142,9 @@ public class DimrConfigFile implements IDataObject {
 		configTree.toFile(workingDirectory, outputFileName);
 
 		flowMdFile.finish();
-		rtcToolsRuntimeConfigFile.finish();
+		if (rtcToolsRuntimeConfigFile != null) {
+			rtcToolsRuntimeConfigFile.finish();
+		}
 	}
 
 	private String getDLLNameFromArgument(String dllString) {
@@ -146,7 +154,7 @@ public class DimrConfigFile implements IDataObject {
 		return null;
 	}
 
-	private File getSubComponentConfigFile(String inputFilePath, String subComponentLibraryName) {
+	private File getSubComponentConfigFile(String inputFilePath, String subComponentLibraryName, boolean shouldExist) {
 		String subCompInputFile= null;
 		String subCompWorkDir= null;
 		ConfigTree[] componentConfigs = configTree.getSubTrees(CONFIG_TREE_ELEMENT_COMPONENT);
@@ -157,16 +165,21 @@ public class DimrConfigFile implements IDataObject {
 				subCompWorkDir = componentConfig.getAsString(CONFIG_TREE_ELEMENT_WORKDIR, "");
 			}
 		}
-		if (subCompInputFile == null || subCompInputFile.isEmpty()) {
-			throw new RuntimeException("Could not find input file for " + subComponentLibraryName + " in config file " + inputFilePath);
+
+		File configFile = null;
+
+		if (shouldExist) {
+			if (subCompInputFile == null || subCompInputFile.isEmpty()) {
+				throw new RuntimeException("Could not find input file for " + subComponentLibraryName + " in config file " + inputFilePath);
+			}
+			if (subCompWorkDir == null || subCompWorkDir.isEmpty()) {
+				throw new RuntimeException("Could not find working dir  for " + subComponentLibraryName + " in config file " + inputFilePath);
+			}
+			configFile = new File(new File(workingDirectory, subCompWorkDir), subCompInputFile);
+			if (!configFile.exists()) {
+				throw new RuntimeException("Model's config file does not exist: " + configFile.getAbsolutePath());
+			}
 		}
-		if (subCompWorkDir == null || subCompWorkDir.isEmpty()) {
-			throw new RuntimeException("Could not find working dir  for " + subComponentLibraryName + " in config file " + inputFilePath);
-		}
-		File md1dFile = new File(new File(workingDirectory, subCompWorkDir), subCompInputFile);
-		if (!md1dFile.exists()) {
-			throw new RuntimeException("Flow1D's md1d file does not exist: " + md1dFile.getAbsolutePath());
-		}
-		return md1dFile;
+		return configFile;
 	}
 }
