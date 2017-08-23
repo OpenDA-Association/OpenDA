@@ -193,7 +193,7 @@
 
 	<target name="copy-jre-win32">
 		<copy  toDir="${projectjre}">
-		    <fileset dir = "thirdparty/jre/jre1.7.0_71_win32"/>
+		    <fileset dir = "thirdparty/jre/jre1.8.0_144_win32"/>
 		</copy>
 	</target>
 
