@@ -343,7 +343,7 @@
         </zip>
     </target>
 
-    <target name="zip-jre">
+    <target name="zip-jre" depends="svn-revision">
         <zip destfile="${projectname}_${version}_r${svn.revision}_jre.zip">
             <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
         </zip>
