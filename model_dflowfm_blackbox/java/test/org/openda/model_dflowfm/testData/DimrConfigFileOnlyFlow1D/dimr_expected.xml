@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<dimrConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.deltares.nl/dimr http://content.oss.deltares.nl/schemas/dimr-1.0.xsd" xmlns="http://schemas.deltares.nl/dimr">
+  <documentation>
+    <fileVersion>1</fileVersion>
+    <createdBy>Deltares, Coupling Team</createdBy>
+  </documentation>
+  <control>
+    <start name="Flow1D" />
+  </control>
+  <component name="Flow1D">
+    <library>cf_dll</library>
+    <workingDir>dflow1d</workingDir>
+    <inputFile>Flow1D.md1d</inputFile>
+  </component>
+</dimrConfig>

@@ -1,19 +1,19 @@
-/* MOD_V2.0 
-* Copyright (c) 2012 OpenDA Association 
+/* MOD_V2.0
+* Copyright (c) 2013 OpenDA Association
 * All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
+*
+* This file is part of OpenDA.
+*
+* OpenDA is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* OpenDA is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -155,8 +155,8 @@ public class DimrConfigFile implements IDataObject {
 	}
 
 	private File getSubComponentConfigFile(String inputFilePath, String subComponentLibraryName, boolean shouldExist) {
-		String subCompInputFile= null;
-		String subCompWorkDir= null;
+		String subCompInputFile = null;
+		String subCompWorkDir = null;
 		ConfigTree[] componentConfigs = configTree.getSubTrees(CONFIG_TREE_ELEMENT_COMPONENT);
 		for (ConfigTree componentConfig : componentConfigs) {
 			String libraryName = componentConfig.getAsString(CONFIG_TREE_ELEMENT_LIBRARY, "");
@@ -167,14 +167,11 @@ public class DimrConfigFile implements IDataObject {
 		}
 
 		File configFile = null;
-
-		if (shouldExist) {
-			if (subCompInputFile == null || subCompInputFile.isEmpty()) {
-				throw new RuntimeException("Could not find input file for " + subComponentLibraryName + " in config file " + inputFilePath);
+		if (subCompInputFile == null || subCompInputFile.isEmpty() || subCompWorkDir == null || subCompWorkDir.isEmpty()) {
+			if (shouldExist) {
+				throw new RuntimeException("Could not find working dir and/or input file for " + subComponentLibraryName + " in config file " + inputFilePath);
 			}
-			if (subCompWorkDir == null || subCompWorkDir.isEmpty()) {
-				throw new RuntimeException("Could not find working dir  for " + subComponentLibraryName + " in config file " + inputFilePath);
-			}
+		} else {
 			configFile = new File(new File(workingDirectory, subCompWorkDir), subCompInputFile);
 			if (!configFile.exists()) {
 				throw new RuntimeException("Model's config file does not exist: " + configFile.getAbsolutePath());
