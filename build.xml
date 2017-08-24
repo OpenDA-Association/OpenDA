@@ -14,7 +14,7 @@
             ======================================================================================
             ant help                     --> print this help
             ant build                    --> compile, make jar and copy resources for all platforms
-            ant build-windown            --> compile, make jar, copy resources for windows
+            ant build-win32              --> compile, make jar, copy resources for windows
           	                                 remove resources for other platforms
             ant clean                    --> remove output
             ant doc                      --> collect documentation
@@ -87,7 +87,7 @@
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
    </target>
 
-   <target name="build-windows" depends="build, copy-win64-executables, copy-jre-win32" />
+   <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
 
    <target name="doc" depends="init">
       <docmodule module="core" />
@@ -172,14 +172,14 @@
 	    </sequential>
     </macrodef>
 
-    <target name="copy-win64-executables">
+    <target name="copy-win32-executables">
 
       <copy  toDir="${modulebindir}" flatten="yes">
-	 		    <fileset dir = "${modulebindir}/win64_ifort"/>
+	 		    <fileset dir = "${modulebindir}/win32_ifort"/>
       </copy>
 
       <delete dir="${modulebindir}/win32_gfortran"/>
-      <delete dir="${modulebindir}/win32_ifort"/>
+      <delete dir="${modulebindir}/win64_ifort"/>
       <delete dir="${modulebindir}/darwin"/>
       <delete dir="${modulebindir}/linux64_gnu"/>
 
@@ -194,7 +194,7 @@
 
 	<target name="copy-jre-win32">
 		<copy  toDir="${projectjre}">
-		    <fileset dir = "thirdparty/jre/jre1.7.0_71_win32"/>
+		    <fileset dir = "thirdparty/jre/jre1.8.0_144_win32"/>
 		</copy>
 	</target>
 
@@ -266,14 +266,14 @@
 		<echo>Subversion Revision: ${svn.revision}</echo>
 	</target>
 
-   <!--
-   ============================================================================================================
-   build archives
-   ============================================================================================================
-   -->
+  <!--
+  ============================================================================================================
+  build archives
+  ============================================================================================================
+  -->
     <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
     <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
-    <target name="zip-windows" depends="svn-revision,build-windows,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-windows" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
 
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
@@ -343,7 +343,7 @@
         </zip>
     </target>
 
-    <target name="zip-jre">
+    <target name="zip-jre" depends="svn-revision">
         <zip destfile="${projectname}_${version}_r${svn.revision}_jre.zip">
             <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
         </zip>

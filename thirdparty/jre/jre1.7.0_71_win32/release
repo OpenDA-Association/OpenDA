@@ -1,6 +1,0 @@
-JAVA_VERSION="1.7.0"
-OS_NAME="Windows"
-OS_VERSION="5.1"
-OS_ARCH="i586"
-SOURCE=" .:ade1a91dba73 corba:701e1d5cea2e deploy:a13b2407128d hotspot:ad909197a1ce hotspot/make/closed:0a3490fe2f28 hotspot/src/closed:13a18b11804f hotspot/test/closed:a335562bbb1e install:2e6adc1565e7 jaxp:018049539cc2 jaxws:a580f2c49eac jdk:78a7e3c7165d jdk/make/closed:9324d424618a jdk/src/closed:c306417c4d58 jdk/test/closed:9b4b9bca42a4 langtools:6fe93bd5d4ac pubs:d90ca5aec646 sponsors:ce16b1317704"
-BUILD_TYPE=commercial
