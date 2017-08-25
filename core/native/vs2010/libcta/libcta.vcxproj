@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C56A4B5C-5817-4190-BBF0-46AEFC935692}</ProjectGuid>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>libcta</RootNamespace>
   </PropertyGroup>
@@ -30,24 +30,28 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -91,7 +95,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
     </Link>
@@ -106,7 +110,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
     </Link>
@@ -120,7 +124,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
     </Link>
@@ -134,7 +138,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
     </Link>
