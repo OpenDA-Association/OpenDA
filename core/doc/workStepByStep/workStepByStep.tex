@@ -1,34 +1,20 @@
-\documentclass[a4paper,10pt]{article}
-%\usepackage[utf8x]{inputenc}
-\usepackage{listings}
-\usepackage{color}
+\svnidlong
+{$HeadURL: $}
+{$LastChangedDate: 2017-08-28 18:10:04 +0200 (Tue, 08 Jul 2014) $}
+{$LastChangedRevision: $}
+{$LastChangedBy:$}
 
 %opening
-\title{OpenDA: How to setup and test your application step by step}
+\odachapter{OpenDA: How to setup and test your application step by step}
 
-\author{Nils van Velzen}
 
-\begin{document}
-\lstset{ %
- basicstyle=\ttfamily,            % the size of the fonts that are used for the code
- breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
- breaklines=true,                 % sets automatic line breaking
- captionpos=b,                    % sets the caption-position to bottom
- columns=flexible, 		    				% Prevent additional spaces to be entered by the listing, when keepspaces = true --> enable copy - paste
- escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
- extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
- frame=single,	                  % adds a frame around the code
- keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
- numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
- numbersep=5pt,                   % how far the line-numbers are from the code
- numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
- showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
- showstringspaces=false,          % underline spaces within strings only
- showtabs=false,                  % show tabs within strings adding particular underscores
- tabsize=2,	                      % sets default tabsize to 2 spaces
-}
+\begin{tabular}{p{4cm}l}
+\textbf{Contributed by:} & Nils van Velzen, \vortech, Martin Verlaan, Deltares \\
+\textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
+\end{tabular}
 
-\maketitle
+
+
 \section{Introduction}
 Setting up a data assimilation framework for a model is a difficult task. Several things contribute to the complexity. The dynamical models are often complex software packages with many options. In addition, we add (real) observed data and blow up the amount of computations and data by an order of 100. 
 Another problem is related to our way of using the models in a data assimilation framework. For sequential data assimilation algorithms, such as the Ensemble Kalman Filter or 3D-VAR, We often perform (short) model runs and update the parameters or state of the model between these short runs. This is a way of using the simulation models, for which they are often not developed.
@@ -110,4 +96,4 @@ The title suggest to use EnKF  \footnote{class name org.openda.algorithms.kalman
 \subsection{Localization, Kalman smoothing, parallel computing, steady state Kalman etc}
 To improve performance you can add additional techniques like localization to cope with spurious correlations and steady state filtering or parallel computing filtering to computational performance. OpenDA can output many of the variables involved, such as the Kalman gain. Please, consult the section on ResultWriters for more info.
 
-\end{document}
+
