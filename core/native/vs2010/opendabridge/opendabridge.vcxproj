@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{26BF455E-DD7C-48A3-B13F-48F427AC216F}</ProjectGuid>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>opendabridge</RootNamespace>
     <ProjectName>opendabridge</ProjectName>
@@ -31,24 +31,28 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -93,12 +97,12 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\libcta.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist $(SolutionDir)..\..\native_bin\win32_ifort (
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win32_ifort\
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win32_ifort\
+   copy $(Outdir)\*.dll $(SolutionDir)..\..\native_bin\win32_ifort\
+   copy $(Outdir)\libcta.lib $(SolutionDir)..\..\native_bin\win32_ifort\
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -113,12 +117,12 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\libcta.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist $(SolutionDir)..\..\native_bin\win64_ifort (
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win64_ifort\
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win64_ifort\
+   copy $(Outdir)\*.dll $(SolutionDir)..\..\native_bin\win64_ifort\
+   copy $(Outdir)\libcta.lib $(SolutionDir)..\..\native_bin\win64_ifort\
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -132,12 +136,12 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\libcta.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist $(SolutionDir)..\..\native_bin\win32_ifort (
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win32_ifort\
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win32_ifort\
+   copy $(Outdir)\*.dll $(SolutionDir)..\..\native_bin\win32_ifort\
+   copy $(Outdir)\libcta.lib $(SolutionDir)..\..\native_bin\win32_ifort\
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -151,12 +155,12 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\libcta.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist $(SolutionDir)..\..\native_bin\win64_ifort (
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\*.dll $(SolutionDir)..\..\native_bin\win64_ifort\
-   copy $(SolutionDir)$(PlatformName)\$(ConfigurationName)\libcta.lib $(SolutionDir)..\..\native_bin\win64_ifort\
+   copy $(Outdir)\*.dll $(SolutionDir)..\..\native_bin\win64_ifort\
+   copy $(Outdir)\libcta.lib $(SolutionDir)..\..\native_bin\win64_ifort\
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
