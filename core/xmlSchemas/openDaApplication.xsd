@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by J Huijssen (VORtech) -->
+<!-- edited with XMLSpy v2014 rel. 2 sp1 (http://www.altova.com) by Afdeling ICT (Stichting Deltares) -->
 <xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<!-- -->
 	<!-- -->
@@ -174,7 +174,7 @@
 				<!-- configFile (can be used by unknown stoch model factory type, specified by className attribute) -->
 				<xs:element name="configFile" type="xs:string">
 					<xs:annotation>
-						<xs:documentation>Specify the results filename</xs:documentation>
+						<xs:documentation>Specify the results filename. (For the MatlabResultWriter the filename has to end with .m or with .m(ts). In the latter case a .m file is written with a time stamp on each % line.)</xs:documentation>
 					</xs:annotation>
 				</xs:element>
 				<!-- -->
