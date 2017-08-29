@@ -23,7 +23,7 @@
             ant test-broken              --> execute broken unit tests
             ant zip                      --> creates zip files with sources, binaries,
                                              documentation and xml schemas
-            ant zip-windows              --> creates zip files with sources, binaries,
+            ant zip-win32                --> creates zip files with sources, binaries,
                                              documentation and xml schemas for windows
             ant zip-tests                --> zip public test cases
             ant tgz                      --> creates tgz files with sources, binaries,
@@ -272,7 +272,7 @@
   -->
     <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
     <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
-    <target name="zip-windows" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-win32" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
 
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
