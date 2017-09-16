@@ -14,4 +14,4 @@ oda_run.sh EnKF.oda
 oda_run.sh EnKF2.oda
 
 #ipython --matplotlib=gtk plot_movie.py
-ipython --matplotlib=gtk all_runs.py
+#ipython --matplotlib=gtk all_runs.py

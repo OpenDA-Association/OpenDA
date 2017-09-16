@@ -4,6 +4,8 @@ STUDENT=openda_student
 rm -rf $STUDENT
 mkdir $STUDENT
 cp ./doc/latex/openda_course.pdf $STUDENT
+cp ./doc/latex/openda_course_summerschool2017.pdf $STUDENT
+
 
 # Exercise 1
 cp -r exercise_1 $STUDENT/exercise_1
@@ -59,6 +61,11 @@ rm -rf $STUDENT/exercise_6/reference_plots
 cp -r exercise_7 $STUDENT/exercise_7
 rm $STUDENT/exercise_7/enkf_100.oda
 rm $STUDENT/exercise_7/algorithms/EnKF100.xml
+
+
+# Exercise exercise_double_pendulum
+cp -r exercise_double_pendulum_part1 $STUDENT/exercise_double_pendulum_part1
+cp -r exercise_double_pendulum_part2 $STUDENT/exercise_double_pendulum_part2
 
 
 
