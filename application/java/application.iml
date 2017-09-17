@@ -33,5 +33,14 @@
     <orderEntry type="module" module-name="DeltaresModels" />
     <orderEntry type="module" module-name="fews_openda" />
     <orderEntry type="module" module-name="model_dflowfm_blackbox" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../core/java/resources/py4j/py4j0.10.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
