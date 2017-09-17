@@ -1,7 +1,17 @@
+# Example script performing a calibration using the scipy minumize function
+# Author Nils van Velzen (VORtech)
+#
+# Note first start the server : oda_py4j.sh
+
+import os
 from py4j.java_gateway import JavaGateway
 from scipy.optimize import minimize
 
+
 gateway = JavaGateway()   # connect to the JVM
+
+scriptdir = os.getcwd()
+
 
 model_params = None   # Model paremeter vector. Only used for fast cloning
 cost_funtion = None   # OpenDA cost function
@@ -67,7 +77,8 @@ def setup():
     global model_params
 
     #Initialize the model factory
-    model_input_dir = "/Users/nils/Develop/py4j/swanModel/config"
+    #model_input_dir = "/Users/nils/Develop/py4j/swanModel/config"
+    model_input_dir = os.path.join(scriptdir, 'swanModel', 'config')
     model_config_xml = "swanStochModelConfig.xml"
 
 
@@ -75,7 +86,8 @@ def setup():
     initialize_openda_configurable(model_factory, model_input_dir, model_config_xml)
 
     #Initialize stoch observer
-    observer_input_dir = "/Users/nils/Develop/py4j/stochObserver"
+    #observer_input_dir = "/Users/nils/Develop/py4j/stochObserver"
+    observer_input_dir = model_input_dir = os.path.join(scriptdir, 'stochObserver')
     observer_config_xml = "swanStochObsConfig.xml"
 
     observer = gateway.jvm.org.openda.observers.IoObjectStochObserver()
