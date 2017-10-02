@@ -17,6 +17,9 @@ model_params = None   # Model paremeter vector. Only used for fast cloning
 cost_funtion = None   # OpenDA cost function
 
 
+
+
+
 def py_list_to_j_array(py_x):
     """
     Create a java double array from python list
@@ -121,7 +124,7 @@ def object_function(p):
     val = cost_funtion.evaluate(p_new, "-")
 
     # Debug: Some relevant output
-    print ("Val="+str(val)+" p=["+str(p)+"]")
+    print ("Val="+str(val)+" p="+str(p))
 
     return val
 
@@ -134,8 +137,9 @@ def main():
     j_p0 = model_params.clone().getValues()
     py_p0 = j_array_to_py_list(j_p0)
 
-    results = minimize(object_function, py_p0, method='nelder-mead', options={'xtol': 1e-5, 'disp': True})
-    # results = minimize(object_function, py_p0, method='powell', options={'xtol': 1e-5, 'disp': True, 'direc': [0.1, 1.0]})
+    #results = minimize(object_function, py_p0, method='nelder-mead', options={'xtol': 1e-5, 'disp': True})
+    #results = minimize(object_function, py_p0, method='powell', options={'xtol': 1e-5, 'disp': True, 'direc': [0.1, 1.0]})
+    results = minimize(object_function, py_p0, method='powell', options={'xtol': 1e-5, 'disp': True})
 
 
     print("Optimal value ="+str(results.x))
