@@ -5,7 +5,7 @@ before_install:
 
 
 install: ./travis_run.sh
-language: java
+#language: java
 script:
   - ant test-travis
 
