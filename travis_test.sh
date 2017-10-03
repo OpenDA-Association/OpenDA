@@ -6,11 +6,11 @@ ls -tralala
 echo debug1
 ls -tralal bin
 echo debug2
-source bin/settings_local.sh linux
+. bin/settings_local.sh linux
 echo debug3
 
 
-source $OPENDADIR/settings_local.sh linux
+. $OPENDADIR/settings_local.sh linux
 echo debug4
 env
 
