@@ -1,6 +1,3 @@
 #!/bin/sh
-#echo "Start of script travis_test.sh"
-export OPENDADIR=$PWD/bin
-. bin/settings_local.sh linux
-
+echo "Start of script travis_test.sh"
 ant test-travis
