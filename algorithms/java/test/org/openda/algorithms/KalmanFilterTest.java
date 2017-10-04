@@ -386,7 +386,7 @@ public class KalmanFilterTest extends TestCase {
 		assertTrue(testData.FilesAreIdentical(gainFile1, refFile1, 0, 1e-6));
 		File gainFile2 = new File(testRunDataDir,"kgStorage_185811270000/kalmanGainStorage.xml");
 		File refFile2 = new File(testRunDataDir,"kalman_10_ref.xml");
-		assertTrue(testData.FilesAreIdentical(gainFile2, refFile2));
+		assertTrue(testData.FilesAreIdentical(gainFile2, refFile2, 0, 1e-6));
 
 		System.out.println(" 2nd part of test with steady state filter");
 		//IStochModelFactory factory2 = new OscillatorStochModelFactory();
@@ -596,7 +596,7 @@ public class KalmanFilterTest extends TestCase {
 		assertTrue(testData.FilesAreIdentical(gainFile1, refFile1, 0, 1e-6));
 		File gainFile2 = new File(testRunDataDir,"kgStorage_185811270000/kalmanGainStorage.xml");
 		File refFile2 = new File(testRunDataDir,"kalman_10_ref.xml");
-		assertTrue(testData.FilesAreIdentical(gainFile2, refFile2));
+		assertTrue(testData.FilesAreIdentical(gainFile2, refFile2, 0, 1e-6));
 
 		System.out.println(" 2nd part of test with steady state filter");
 		//IStochModelFactory factory2 = new OscillatorStochModelFactory();
