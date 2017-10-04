@@ -7,4 +7,4 @@ ls -tralal $OPENDADIR/linux64_gnu/lib
 
 
 echo "Start of script travis_test.sh"
-ant test
+ant test-travis
