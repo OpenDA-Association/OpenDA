@@ -169,8 +169,9 @@ public class KalmanFilterTest extends TestCase {
 		IVector x = ((ParticleFilter) sir).getCurrentState();
 		System.out.println("x = "+x);
 		System.out.println("Should be close to x = [-0.2201282418216555,-0.016207562672629516]");
-		assertEquals("x",x.toString(),"[-0.2201282418216555,-0.016207562672629516]");
-
+		double[] values = x.getValues();
+		assertEquals("x[0]",-0.2201282418216555, values[0], 1e-6);
+		assertEquals("x[1]",-0.016207562672629516, values[1], 1e-6);
 	}
 
 	public void testEnSR() {
