@@ -82,10 +82,10 @@ public class Delsa extends Instance implements IAlgorithm {
         // parse and use grid settings
 		boolean isSobolUsed = false;
         String minRangeString = delsaConf.getAsString("regularGrid@min", "not specified");
-		if (!minRangeString.toString().contains("not specified")){
+		if (!minRangeString.contains("not specified")){
 			minRange = new Vector(minRangeString);
 			String maxRangeString = delsaConf.getAsString("regularGrid@max", "not specified");
-			if (maxRangeString.toString().contains("not specified")){
+			if (maxRangeString.contains("not specified")){
 				throw new RuntimeException("regularGrid: parameter max should be specified.");
 			}
 			maxRange = new Vector(maxRangeString);

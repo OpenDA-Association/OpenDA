@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (costa) 0.1.0
-# Libtool was configured on host vortech73-2.local:
+# Libtool was configured on host vortech74.local:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -66,16 +66,16 @@ PATH_SEPARATOR=":"
 
 # The host system.
 host_alias=
-host=i386-apple-darwin16.6.0
-host_os=darwin16.6.0
+host=i386-apple-darwin16.7.0
+host_os=darwin16.7.0
 
 # The build system.
 build_alias=
-build=i386-apple-darwin16.6.0
-build_os=darwin16.6.0
+build=i386-apple-darwin16.7.0
+build_os=darwin16.7.0
 
 # A sed program that does not truncate output.
-SED="/usr/bin/sed"
+SED="/opt/local/bin/gsed"
 
 # Sed that helps us avoid accidentally triggering echo(1) options like -n.
 Xsed="$SED -e 1s/^X//"

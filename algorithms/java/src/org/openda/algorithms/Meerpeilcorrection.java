@@ -143,7 +143,7 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 
 		// Read mask file if it exists
 		IVector mask = new Vector();
-		if (id_drymask != "no id_drymask") {
+		if (! id_drymask.equals("no id_drymask")) {
 			IExchangeItem drymask = this.mainModel.getDataObjectExchangeItem(id_drymask);
 			// Define vector mask containing the drymask values
 			double[] val = ((Array) drymask.getValues()).getValuesAsDoubles();
@@ -157,7 +157,7 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 					int n = state.getSize();
 
 					// Check if size drymask equals size state vector.
-					if (id_drymask != "no id_drymask" && mask.getSize()!=n) {throw new RuntimeException("Drymask and state vector are different in size");}
+					if (! id_drymask.equals("no id_drymask") && mask.getSize()!=n) {throw new RuntimeException("Drymask and state vector are different in size");}
 
 					// first (and only) observation is the correction factor
 					IVector obs = this.stochObserver.getValues();
