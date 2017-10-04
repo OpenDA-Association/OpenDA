@@ -14,5 +14,5 @@ echo debug3
 echo debug4
 env
 
-ant test-travis
+ant test
 
