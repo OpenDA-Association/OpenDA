@@ -14,5 +14,5 @@ make install  >/dev/null
 cd $HIER
 
 ant build >/dev/null
-export OPENDADIR=$PWD/bin
-export LD_LYBRARY_PATH=$LD_LIBRARY_PATH:$OPENDADIR/bin/linux64_gnu/lib
+#export OPENDADIR=$PWD/bin
+#export LD_LYBRARY_PATH=$LD_LIBRARY_PATH:$OPENDADIR/bin/linux64_gnu/lib
