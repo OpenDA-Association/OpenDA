@@ -5,8 +5,9 @@ cd bin
   ls -tralal
 
 
-. settings_local.sh linux
+. ./settings_local.sh linux
 cd ..
+echo OPENDADIR=$OPENDADIR
 echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 
 echo "Start of script travis_test.sh"
