@@ -7,9 +7,9 @@ cd core/native
 ./autoreconf_fix.sh
 ./configure
 make install
+ant build
 cd $HIER
 export OPENDADIR=$PWD/bin
 export LD_LYBRARY_PATH=$LD_LIBRARY_PATH:$OPENDADIR/bin/linux64_gnu/lib
 ln -s $PWD ../public
-#ant build
 #ant test-travis
