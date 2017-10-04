@@ -1,5 +1,10 @@
 #!/bin/sh
+echo Current location is $PWD
 cd bin
+  echo bindir sould be $PWD
+  ls -tralal
+
+
 . settings_local.sh linux
 cd ..
 echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
