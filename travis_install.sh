@@ -1,5 +1,5 @@
 sudo apt-get install gfortran
-sudo apt-get install mpi-devel
+sudo apt-get install mpi-default-dev
 sudo apt-get install libnetcdf-dev
 sudo apt-get install liblapack-dev
 HIER=$PWD
