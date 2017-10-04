@@ -11,3 +11,4 @@ cd $HIER
 export OPENDADIR=$PWD/bin
 export LD_LYBRARY_PATH=$LD_LIBRARY_PATH:$OPENDADIR/bin/linux64_gnu/lib
 ant build
+ant test-travis

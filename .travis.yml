@@ -6,8 +6,8 @@ before_install:
 
 install: ./travis_install.sh
 language: java
-script: ./travis_test.sh 
+#script: ./travis_test.sh 
 
-after_script:
-  - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
+#after_script:
+#  - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
 
