@@ -8,11 +8,11 @@ cd public
 
 HIER=$PWD
 cd core/native
-./autoreconf_fix.sh
-./configure
-make install
+./autoreconf_fix.sh >/dev/null
+./configure   >/dev/null
+make install  >/dev/null
 cd $HIER
 
-ant build 
+ant build >/dev/null
 export OPENDADIR=$PWD/bin
 export LD_LYBRARY_PATH=$LD_LIBRARY_PATH:$OPENDADIR/bin/linux64_gnu/lib
