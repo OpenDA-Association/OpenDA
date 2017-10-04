@@ -12,7 +12,7 @@ cp configure configure_org
 
 # Change the processing of the link flags, we just remove "-l " if it appears. 
 # This is probably not a very generic fix but it works for OpenDA.
-cat configure_org | sed 's/output_verbose_link_cmd='\''$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP "\\-L"'\''/output_verbose_link_cmd='\''$CC -shared $CFLAGS -v conftest.$objext 2>\&1 | $GREP -v "^Configured with:" | $GREP "\\-L" |  $SED -e "s\/-l \/\/g"'\''/' > configure
+ <configure_org sed 's/output_verbose_link_cmd='\''$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP "\\-L"'\''/output_verbose_link_cmd='\''$CC -shared $CFLAGS -v conftest.$objext 2>\&1 | $GREP -v "^Configured with:" | $GREP "\\-L" |  $SED -e "s\/-l \/\/g"'\''/' > configure
 
 # Make it executable
 chmod +x configure
