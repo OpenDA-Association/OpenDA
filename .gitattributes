@@ -1,2 +1,3 @@
 thirdparty/* linguist-vendored
 resources/ linguist-vendored
+algorithms/java/resources/*
