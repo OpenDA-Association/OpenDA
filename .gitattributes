@@ -4,4 +4,4 @@ algorithms/java/resources/* linguist-vendored
 testData/ linguist-vendored
 external/ linguist-vendored
 refout/* linguist-vendored
-*_results.m
+*_results.m linguist-vendored
