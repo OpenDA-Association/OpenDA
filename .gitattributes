@@ -10,3 +10,4 @@ refout/* linguist-vendored
 *.so linguist-vendored
 *.lib linguist-vendored
 *.la linguist-vendored
+*/native_bin/* linguist-vendored
