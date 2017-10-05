@@ -5,3 +5,8 @@ testData/ linguist-vendored
 external/ linguist-vendored
 refout/* linguist-vendored
 *_results.m linguist-vendored
+*.m linguist-vendored
+*.html linguist-vendored
+*.so linguist-vendored
+*.lib linguist-vendored
+*.la linguist-vendored
