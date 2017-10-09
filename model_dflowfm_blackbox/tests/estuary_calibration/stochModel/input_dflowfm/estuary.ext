@@ -68,13 +68,13 @@ FILETYPE=7
 METHOD=5
 OPERAND=*
  
-QUANTITY=bathymetry
+QUANTITY=bedlevel
 FILENAME=estuary_depth.xyz
 FILETYPE=7
 METHOD=5
 OPERAND=O
 
-QUANTITY=bathymetry
+QUANTITY=bedlevel
 FILENAME=estuary_depth_correction.xyz
 FILETYPE=7
 METHOD=5
