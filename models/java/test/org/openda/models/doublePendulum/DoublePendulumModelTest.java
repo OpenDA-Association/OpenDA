@@ -108,6 +108,7 @@ public class DoublePendulumModelTest extends TestCase {
         IStochVector x3Stoch = mod3.getStateUncertainty();
         System.out.println("mod3.getStateUncertainty()=" + x3Stoch.toString());
         System.out.println("Should be mod3.getStateUncertainty() ={[0.0,0.0,0.0,0.0],[0.01,0.0,0.0,0.0]}");
+
         assertEquals("mod3.getState()", x3Stoch.toString(), "{[0.0,0.0,0.0,0.0],[0.01,0.0,0.0,0.0]}");
     }
 
@@ -132,8 +133,11 @@ public class DoublePendulumModelTest extends TestCase {
         IVector prd5 = mod5.getObservationOperator().getObservedValues(descr5);
         System.out.println("mod5.getObservedValues()=" + prd5.toString());
         // x(0) is taken at t=0.5 for all 3 obs because model did not save previous values
-        System.out.println("Should be mod5.getObservedValues()=[3.1415,1.1953257830118194,0.623536080378373]");
-        assertEquals("mod5.getObservedValues()", prd5.toString(), "[3.1415,1.1953257830118194,0.623536080378373]");
+        System.out.println("Should be mod5.getObservedValues()=[3.1415,1.953257830118194,0.623536080378373]");
+		assertEquals(3.1415,                prd5.getValues()[0], 1.0e-7);
+		assertEquals(1.1953257830118194, prd5.getValues()[1], 1.0e-7);
+		assertEquals(0.623536080378373,  prd5.getValues()[2], 1.0e-7);
+//        assertEquals("mod5.getObservedValues()", prd5.toString(), "[3.1415,1.1953257830118194,0.623536080378373]");
         //   public void announceObservedValues(ObservationDescriptions observationDescriptions) {
         mod5b.announceObservedValues(descr5);
         mod5b.compute(new Time(0.5));
@@ -142,7 +146,11 @@ public class DoublePendulumModelTest extends TestCase {
         System.out.println("mod5b.announceObservedValues(descr5)");
         System.out.println("mod5b.getObservedValues()=" + prd5b.toString());
         System.out.println("Should be mod5b.getObservedValues()=[3.1415,1.1953257830118194,0.623536080378373]");
-        assertEquals("mod5b.getObservedValues()", prd5b.toString(), "[3.1415,1.1953257830118194,0.623536080378373]");
+        assertEquals(3.1415,                prd5b.getValues()[0], 1.0e-7);
+		assertEquals(	1.1953257830118194, prd5b.getValues()[1], 1.0e-7);
+		assertEquals(	0.623536080378373,  prd5b.getValues()[2], 1.0e-7);
+
+        //assertEquals("mod5b.getObservedValues()", prd5b.toString(), "[3.1415,1.1953257830118194,0.623536080378373]");
     }
 
 
@@ -156,9 +164,15 @@ public class DoublePendulumModelTest extends TestCase {
         IStochModelInstance mod10 = fact10.getInstance(IStochModelFactory.OutputLevel.Suppress); // get a model
         mod10.compute(new Time(1.0));
         IVector x10 = mod10.getState();
+
         System.out.println("mod10.compute(1.0).get_state() = " + x10);
         System.out.println("Should be mod10.compute(1.0).get_state() = [-2.9343286328421736,-6.161418280539435,-0.5991711878725424,0.2611134102627959]");
-        assertEquals("mod10.compute(1.0", x10.toString(), "[-2.9343286328421736,-6.161418280539435,-0.5991711878725424,0.2611134102627959]");
+        assertEquals(-2.9343286328421736,x10.getValues()[0],1.0e-7);
+		assertEquals(-6.161418280539435, x10.getValues()[1],1.0e-7);
+		assertEquals(-0.5991711878725424,x10.getValues()[2],1.0e-7);
+		assertEquals(0.2611134102627959, x10.getValues()[3],1.0e-7);
+
+//        assertEquals("mod10.compute(1.0", x10.toString(), "[-2.9343286328421736,-6.161418280539435,-0.5991711878725424,0.2611134102627959]");
         System.out.println("mod10=" + mod10);
     }
 
