@@ -558,7 +558,7 @@
                    <exclude name="**/PlotTest.class"/>
 
                    <!-- Only broken in travis -->
-                   <exclude name="**/KalmanFilterTest.class"/>
+                   <!-- <exclude name="**/KalmanFilterTest.class"/>
                    <exclude name="**/BBStochModelMaps2dNoiseModelTest.class"/>
                    <exclude name="**/BBStochModelParamDrawerTest.class"/>
                    <exclude name="**/BBStochModelParametersTest.class"/>
@@ -567,7 +567,7 @@
                    <exclude name="**/swan.SwanEnKFTest.class"/>
                    <exclude name="**/DoublePendulumModelTest.class"/>
                    <exclude name="**/LorenzModelTest.class"/>
-                   <exclude name="**/OscillatorModelTest.class"/>
+                   <exclude name="**/OscillatorModelTest.class"/> -->
 
                    
 
