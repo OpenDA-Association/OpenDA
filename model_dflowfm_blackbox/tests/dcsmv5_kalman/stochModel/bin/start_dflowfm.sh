@@ -1,6 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
-echo "script : start_dflowfm.sh"
-echo "pwd : $PWD"
-echo "args : $1"
+module load dflowfm
 run_dflowfm.sh --autostartstop $1

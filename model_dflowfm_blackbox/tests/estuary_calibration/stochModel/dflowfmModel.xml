@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" 
+					 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+					 xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>dflowfmWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="exedir" value="./bin"/> 
+		<alias key="instanceDir" value="./work"/>
+		<alias key="templateDir" value="./input_dflowfm"/>
+		<alias key="runid" value="estuary"/>
+		<alias key="frictionMultiplierFile" value="estuary_friction_factor.xyz"/>
+		<alias key="frictionMultiplierTemplateFile" value="estuary_friction_factor_template.xyz"/>
+		<alias key="depthMultiplierFile" value="estuary_depth_correction.xyz"/>
+		<alias key="depthMultiplierTemplateFile" value="estuary_depth_correction_template.xyz"/>
+		<alias key="inputFile" value="estuary.mdu"/>
+		<alias key="netcdfoutput" value="DFM_OUTPUT_estuary/estuary_his.nc"/>
+	</aliasValues>
+
+	<timeInfo start="1991-01-01T00:00:00" end="1991-01-30T00:00:00"/>
+
+	<exchangeItems>
+		<vector id="allElementsFromIoObject" ioObjectId="frictionCoefFile"/>
+		<vector id="allElementsFromIoObject" ioObjectId="depthCoefFile"/>
+		<vector id="station01.waterlevel" ioObjectId="%netcdfoutput%" elementId="station01.waterlevel"/>
+		<vector id="station02.waterlevel" ioObjectId="%netcdfoutput%" elementId="station02.waterlevel"/>
+		<vector id="station03.waterlevel" ioObjectId="%netcdfoutput%" elementId="station03.waterlevel"/>
+		<vector id="M2_amplitude" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.M2_amplitude"/>
+		<vector id="M2_phase" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.M2_phase"/>
+		<vector id="S2_amplitude" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.S2_amplitude"/>
+		<vector id="S2_phase" ioObjectId="boundaries" elementId="westboundary_tide.1:waterlevelbnd.S2_phase"/>
+	</exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+				
+</blackBoxModelConfig>

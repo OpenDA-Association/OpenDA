@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./dflowfmModel.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+        
+        <parameters>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="M2_amplitude"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value="5.0" transformation="identity"/>
+                <vector id="M2_phase"/>
+            </regularisationConstant>
+<!--
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="depth_1"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="S2_amplitude"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value="5.0" transformation="identity"/>
+                <vector id="S2_phase"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="depth_2"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="depth_3"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="friction_1"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="friction_2"/>
+            </regularisationConstant>
+            <regularisationConstant>
+                <stdDev value=".05" transformation="identity"/>
+                <vector id="friction_3"/>
+            </regularisationConstant>
+-->
+        </parameters>
+
+        <predictor>
+            <vector id="station01.waterlevel"/>
+            <vector id="station02.waterlevel"/>
+            <vector id="station03.waterlevel"/>
+        </predictor>
+
+    </vectorSpecification>
+
+</blackBoxStochModel>

@@ -1,0 +1,26 @@
+See also ../../doc/openda_dflowfm.tex.
+
+The m-files can be used to plot results after running the corresponding
+simulations. The results are not very good yet, settings of the noise model
+and the number of ensembles are to be tuned after the restart functionality of
+DFlow FM is improved.
+
+In this example noise is added to a waterlevel boundary specified as astronomical components.
+
+
+
+Model description
+
+The model is a very simple representation of a prototype estuary with a western boudary (left)
+that connets to the open sea and a river flowing into the model at the eastern end. The main 
+characteristics of the initial model BEFORE calibration are:
+- domain x=0 to 99km with 500m grid-cells
+- sloping bathymetry from -8m to -5 m
+- 2 tidal constituents at western boundary
+ M2 0.6m 0.0degr
+ S2 0.1m 0.0degr
+- constant river influx of 500m^3/s at eastern boundary
+- uniform bed friction of 0.02 Manning
+- 10 minute timestep
+- observation points at 30, 60 and 90 km from the western boundary
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DudConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/dudConfig.xsd">
+   <costFunction weakParameterConstraint="false" class="org.openda.algorithms.SimulationKwadraticCostFunction" />
+   <outerLoop maxIterations="10" absTolerance="0.001" relTolerance="0.001" relToleranceLinearCost="0.0001" />
+   <lineSearch maxIterations="5" maxRelStepSize="10.0" >
+      <backTracking shorteningFactor="0.5" startIterationNegativeLook="3" />
+   </lineSearch>
+</DudConfig>
