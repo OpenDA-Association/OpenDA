@@ -571,7 +571,14 @@ public class ApplicationRunner implements Runnable{
 
     protected void writeRestart(){
 		ITime time = algorithm.getCurrentTime();
-		boolean writeAtThisTime=(time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
+
+		// We do not want to write at the start time. But this can only be checked for algorithms that know about time.
+		// In case an algorithm is clueless it will return null, in that case the behaviour is to write the restart.
+		// Note: typically calibration algorithms do not know about time
+		boolean writeAtThisTime = true;
+		if (time != null){
+			writeAtThisTime = (time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
+		}
 		if ((this.restartTimes.length>0) & (time!=null)){
 			writeAtThisTime=false;
 			for(int i=0;i<this.restartTimes.length;i++){
