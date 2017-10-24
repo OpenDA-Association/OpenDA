@@ -25,7 +25,6 @@ import org.openda.uncertainties.autocorrelationfunctions.AutoCorrelationFunction
 import org.openda.uncertainties.pdfs.*;
 import org.openda.uncertainties.variationfunctions.Variation;
 import org.openda.utils.TreeVector;
-import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.UncertaintyReader;
 
 import java.io.File;
@@ -297,6 +296,7 @@ public class UncertaintyEngine implements Serializable{
         int index=0;
         for (String uncertaintyId : uncertaintyIds) {
             PDF pdf = uncertainties.getPdf(determineActualUncertaintyId(uncertaintyId));
+			if (pdf == null) throw new RuntimeException("Uncertainty distribution for " + uncertaintyId + " not found.");
             if (!(pdf instanceof NormalDistribution)) {
                 throw new RuntimeException(this.getClass() +  "getStandardDeviations(): Uncertainty " +
                         uncertaintyId + " is not an Normal Distribution");
