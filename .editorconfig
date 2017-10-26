@@ -24,3 +24,7 @@ indent_size  = 2
 ; tab indentation
 [Makefile]
 indent_style = tab
+
+; windows line endings
+[*.bat]
+end_of_line = crlf
