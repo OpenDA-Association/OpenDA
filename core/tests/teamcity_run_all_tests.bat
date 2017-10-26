@@ -140,15 +140,15 @@ if defined TestDisabled (
 ) else (
    echo All tests were performed and finished without error
 )
-rem exit 0
+exit 0
 
 :exitwitherror0
 echo No JAVA_HOME found - please check this
-rem exit 1
+exit 1
 
 :exitwitherror1
 echo One or more tests finished with an error!
-rem exit 1
+exit 1
 
 endlocal
 
