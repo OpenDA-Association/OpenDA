@@ -140,15 +140,15 @@ if defined TestDisabled (
 ) else (
    echo All tests were performed and finished without error
 )
-exit 0
+rem exit 0
 
 :exitwitherror0
 echo No JAVA_HOME found - please check this
-exit 1
+rem exit 1
 
 :exitwitherror1
 echo One or more tests finished with an error!
-exit 1
+rem exit 1
 
 endlocal
 
@@ -167,6 +167,7 @@ goto :eof
 
 :Error1
 echo ***Error occurred in test %CURDIR%\%1
+type test_results\%CURDIR%\%1.err
 set ErrorOccurred=1
 goto :eof
 
