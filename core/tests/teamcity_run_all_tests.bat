@@ -7,6 +7,7 @@ REM Note: this test assumes that on teamcity the required binaries and jar files
 REM           and that these binaries and jars have been copied to core\bin
 
 REM set OPENDA_BINDIR, PATH and CLASSPATH
+echo Starting dir: %CD%
 cd ..\bin
 set OPENDA_BINDIR=%CD%
 set Path=%CD%;%Path%
