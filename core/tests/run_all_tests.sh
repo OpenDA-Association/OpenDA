@@ -1,4 +1,5 @@
 #! /bin/sh
+set -x 
 
 ./clean.sh
 rm -f *.log
