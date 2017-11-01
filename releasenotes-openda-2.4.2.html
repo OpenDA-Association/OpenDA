@@ -1,0 +1,98 @@
+<head>
+<title>OpenDA 2.4.1 Release Notes</title>
+</head>
+
+<h1>
+Release Notes
+</h1>
+
+<h2>
+OpenDA - Version 2.4.2
+</h2>
+
+<h3>        New Features
+</h3>
+<ul>
+<li> Issue 600: Compatibility with java 8
+</li>
+</ul>
+
+<h2>
+OpenDA - Version 2.4.1
+</h2>
+
+<h3>        New Features
+</h3>
+<ul>
+<li>Issue 569: Added DataObject for D-Flow FM roughness calibration based on spatially varying calibration factors
+</li>
+</ul>
+
+<h3>        Bug Fixes / Improvements
+</h3>
+<ul>
+<li>Issue 581: Optionally time stamps can be added to messages in the MatlabResultWriter *.m file
+</li>
+<li>Issue 585: 'dumproc' setting in parallel config did not work for multiple dummy processes
+</li>
+<li>Issue 586: Visual Studio files for native build on windows has been upgraded to VS2012
+</li>
+<li>Issue 587: Reduce the amount of detaile info messages
+</li>
+<li>Issue 588: DimrConfigFile can not handle models that do not contain RTC
+</li>
+</ul>
+
+<h2>
+OpenDA - Version 2.4
+</h2>
+
+<h3>        New Features
+</h3>
+<ul>
+<li>Issue 492: Added data object to D-Flow FM wrapper (model_dflowm_blackbox) for trachytopes file (.ttd file)
+</li>
+<li>Issue 497: Added exchange items for wind speed and wind direction to EFDC model wrapper
+</li>
+<li>Issue 499: Added support if multiple algae species to EFDC model wrapper
+</li>
+<li>Issue 517: EFDC model wrapper no longer uses the *TEMPLATE.INP files.
+</li>
+</ul>
+
+<h3>        Bug Fixes / Improvements
+</h3>
+<ul>
+<li>Issue 417: Added a new NETCDF result writer that does not use a native netcdf library
+</li>
+<li>Issue 493: Added OpenMP build for EFDC library on Windows
+</li>
+<li>Issue 494: Fixed native tests that were failing due to Locale problem
+</li>
+<li>Issue 496: No default validation when ConfigTree is reading xml file (to much delay)
+</li>
+<li>Issue 512: Removed fat toolsUI.jar (netCDF) and replaced it by leaner netcdf jar
+</li>
+<li>Issue 518: Fixed modelling spill events in the EFDC dll
+</li>
+<li>Issue 546: Made xml's in test cases referring correct xsd's
+</li>
+<li>Issue 513: Replaced incorrect NotImplementedError by RunTimeException in DFlowFMTimeSeriesDataObject
+</li>
+<li>Issue 514: Removed dependency on Spring framework from unit tests for D-Flow FM wrapper (model_dflowm_blackbox)
+</li>
+<li>Issue 520: Fixed producing a RunTimeException we in black box compute action in case of missing executable
+</li>
+<li>Issue 522: Improved OpenDA user course, based on user feedback
+</li>
+<li>Issue 526: Removed obsolete example from tests for NEMO model wrapper
+</li>
+<li>Issue 542: Fixed the handling of invalid values in HSPF models's UCI file (added defaults)
+</li>
+<li>Issue 543: Improved error messages in SparseDud algorithm
+</li>
+<li>Issue 545: Improved error message when reading generated observation files
+</li>
+</ul>
+
+</html>
