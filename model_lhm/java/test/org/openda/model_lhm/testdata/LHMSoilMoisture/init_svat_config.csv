@@ -1,0 +1,7 @@
+PARAM,START,END,UNIT,DESC
+GL_MS,11,25,m+MSL,Groundwater level according to MetaSwap
+GL_MF,1136,1150,m+MSL,Groundwater level according to ModFlow
+RZ_D,161,175,m,Rootzone depth
+SM_1,41,55,_,Soil moisture content box 1
+SD_1,521,535,m,Saturation deficit box 1
+PH_1,221,235,m,Pressure head box 1
