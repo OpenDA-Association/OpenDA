@@ -598,7 +598,17 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 
 	public void restoreInternalState(IModelState savedInternalState) {
 		savedState saveState = (savedState) savedInternalState;
-		this.state.setValues(saveState.state.getValues());
+		// ODA-615 Give error message on ArrayIndexOutOfBoundsException when restoring internal state in OpenDA in FEWS
+		try {
+			this.state.setValues(saveState.state.getValues());
+		} catch (ArrayIndexOutOfBoundsException e) {
+			if (state.getValues().length != saveState.state.getValues().length) {
+				String message = "State '" + state.getId() + "' does not have the same size " + state.getValues().length + " as saved state size " + saveState.state.getValues().length;
+				Results.putProgression(message);
+				throw new RuntimeException(message, e);
+			}
+			throw new RuntimeException("Array out of bounds exception when restoring internal state", e);
+		}
 		if (saveState.coldStart) {
 			//if cold state start, then always start at the startTime of the timeHorizon. 
 			this.timeStep = 0;
