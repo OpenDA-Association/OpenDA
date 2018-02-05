@@ -1,7 +1,6 @@
 package org.openda.exchange.dataobjects;
 
 import junit.framework.TestCase;
-import org.openda.exchange.RegularGridGeometryInfo;
 import org.openda.interfaces.*;
 import org.openda.utils.OpenDaTestSupport;
 
