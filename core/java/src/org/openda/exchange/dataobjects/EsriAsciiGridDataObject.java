@@ -3,6 +3,7 @@ package org.openda.exchange.dataobjects;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.QuantityInfo;
+import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Array;
@@ -89,6 +90,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 				outputFile = new File(workingDir, outputFileName + "_" + timeStampString + ".asc");
 			}
 		}
+		if (!inputFile.exists()) throw new RuntimeException("Input file does not exist: " + inputFile);
 
 		try {
 			csvReader = new CsvReader(inputFile);
@@ -101,7 +103,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 			int underscorePos = baseName.indexOf('_');
 			if (underscorePos > 1) {
 				exchangeItemId = baseName.substring(0, underscorePos);
-				checkTimeStampStringInFileName(baseName.substring(underscorePos + 1));
+				checkTimeStampStringInFileName(baseName.substring(underscorePos + 1), inputFile);
 			}
 
 			String[] rowItems = readHeader();
@@ -297,7 +299,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 			} catch (ParseException e) {
 				throw new RuntimeException("Unrecognized date/time string");
 			}
-			exchangeItem.setTimes(new double[] {timeAsMJD});
+			exchangeItem.setTimeInfo(new TimeInfo(new double[] {timeAsMJD}));
 		}
 	}
 
@@ -370,11 +372,13 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		return baseName;
 	}
 
-	private void checkTimeStampStringInFileName(String fileNameSuffix) {
-		if (fileNameSuffix.length() == 12) {
+	private void checkTimeStampStringInFileName(String fileNameSuffix, File file) {
+		if (fileNameSuffix.length() == 14) {
 			timeStampString =  fileNameSuffix;
-		} else if (fileNameSuffix.length() == 6){
+		} else if (fileNameSuffix.length() == 8){
 			timeStampString =  fileNameSuffix + "000000";
+		} else {
+			throw new RuntimeException("Could not extract time from file " + file);
 		}
 	}
 }
