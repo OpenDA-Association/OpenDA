@@ -28,10 +28,13 @@ public class EsriAsciiGridDataObjectTest extends TestCase {
 	}
 
 	public void testDepthFileWithTimeInfo() {
-		String[] arguments = {"depth.asc", ""};
+		String[] arguments = {"depth.asc", "timeStamp=20180206"};
 		IExchangeItem exchangeItem = createAndTestDepthDataObject(arguments);
 		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
-		assertEquals(null, timeInfo);
+		assertNotNull(timeInfo);
+		double[] times = timeInfo.getTimes();
+		assertEquals(1, times.length);
+		assertEquals(58155d, times[0]);
 	}
 
 	private IExchangeItem createAndTestDepthDataObject(String[] arguments) {
@@ -53,21 +56,30 @@ public class EsriAsciiGridDataObjectTest extends TestCase {
 	}
 
 	public void testParamAFile() {
-		String[] arguments = {"depth.asc"};
+		String[] arguments = {"paramA_20020101.asc"};
 		EsriAsciiGridDataObject dataObject = new EsriAsciiGridDataObject();
 		dataObject.initialize(testRunDataDir, arguments);
+		IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem("paramA");
+		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
+		assertNotNull(timeInfo);
+		double[] times = timeInfo.getTimes();
+		assertEquals(1, times.length);
+		assertEquals(52275d, times[0]);
 	}
 
-	public void testGetExchangeItemIDs() {
+	public void testParamA_Adjustment() {
+		String[] arguments = {"paramA_20020101.asc"};
+		EsriAsciiGridDataObject dataObject = new EsriAsciiGridDataObject();
+		dataObject.initialize(testRunDataDir, arguments);
+		IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem("paramA");
+		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+		for (int i = 0; i < valuesAsDoubles.length; i++) {
+			valuesAsDoubles[i] += (i+1) * 3.3;
+		}
+		exchangeItem.setValuesAsDoubles(valuesAsDoubles);
+		dataObject.finish();
+		File adjustedFile = new File(testRunDataDir,"paramA_20020101.asc");
+		File expectedFile = new File(testRunDataDir,"paramA_20020101_expected.asc");
+		assertTrue(testData.FilesAreIdentical(adjustedFile, expectedFile, 0, 1e-6));
 	}
-
-	public void testGetExchangeItemIDs1() {
-	}
-
-	public void testGetDataObjectExchangeItem() {
-	}
-
-	public void testFinish1() {
-	}
-
 }

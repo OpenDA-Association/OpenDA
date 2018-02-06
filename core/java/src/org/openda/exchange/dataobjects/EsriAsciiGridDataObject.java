@@ -46,7 +46,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 			" Files relative to working dir. If outputFile is ommitted, writing will be done to inputFile." +
 			" If timeStampFormat is not specified, timeStamp contains the time stamp for which the " +
 			" exchange item in the data object is valid." +
-			" If timeStampFormat is specified, al file <inputFile>_<timeStamp>.asc is selected" +
+			" If timeStampFormat is specified, a file <inputFile>_<timeStamp>.asc is selected" +
 			" (and <outputFile>_<timeStamp>.asc for output), with timestamp specified in" +
 			" yyyyMMddHHmmss or yyyyMMdd format.";
 
@@ -67,7 +67,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 					timeStampFormat = value;
 					continue;
 				case "timeStamp":
-					timeStampString = value;
+					timeStampString = checkValidTimeString(value, null);
 					continue;
 				default:
 					throw new RuntimeException(usageMessage);
@@ -103,7 +103,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 			int underscorePos = baseName.indexOf('_');
 			if (underscorePos > 1) {
 				exchangeItemId = baseName.substring(0, underscorePos);
-				checkTimeStampStringInFileName(baseName.substring(underscorePos + 1), inputFile);
+				timeStampString = checkValidTimeString(baseName.substring(underscorePos + 1), inputFile);
 			}
 
 			String[] rowItems = readHeader();
@@ -130,6 +130,9 @@ public class EsriAsciiGridDataObject implements IDataObject{
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		if (!exchangeItemID.equals(exchangeItem.getId())) {
+			throw new RuntimeException("Unknown exchange item ID \"" + exchangeItemID + "\", expected " + exchangeItem.getId());
+		}
 		return exchangeItem;
 	}
 
@@ -354,10 +357,11 @@ public class EsriAsciiGridDataObject implements IDataObject{
 						valueText = valueText.substring(0, valueTextLength + maxNumberOfDecimals - numberOfDecimals);
 					}
 				}
-				System.arraycopy(valueText, 0,lineChars, k, valueTextLength);
+				System.arraycopy(valueText.toCharArray(), 0,lineChars, k, valueTextLength);
 				k += valueTextLength;
 			}
 			writer.write(lineChars, 0, k);
+			writer.write('\n');
 		}
 		writer.close();
 	}
@@ -372,13 +376,13 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		return baseName;
 	}
 
-	private void checkTimeStampStringInFileName(String fileNameSuffix, File file) {
-		if (fileNameSuffix.length() == 14) {
-			timeStampString =  fileNameSuffix;
-		} else if (fileNameSuffix.length() == 8){
-			timeStampString =  fileNameSuffix + "000000";
+	private String checkValidTimeString(String timeString, File file) {
+		if (timeString.length() == 14) {
+			return timeString;
+		} else if (timeString.length() == 8){
+			return timeString + "000000";
 		} else {
-			throw new RuntimeException("Could not extract time from file " + file);
+			throw new RuntimeException("Invalid time string" + timeString + " in " + (file!=null ? " file " + file : " initialization arugment"));
 		}
 	}
 }
