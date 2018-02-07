@@ -1925,8 +1925,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		IGeometryInfo noiseGeometryInfo = noiseExchangeItem.getGeometryInfo();
 		IGeometryInfo modelGeometryInfo = modelExchangeItem.getGeometryInfo();
 
-		int stateSizeNoiseSizeRatioY = stateSizeNoiseSizeRatioX;
-
 		IArray modelLatitudeArray = ((IArrayGeometryInfo) modelGeometryInfo).getLatitudeArray();
 		IArray modelLongitudeArray = ((IArrayGeometryInfo) modelGeometryInfo).getLongitudeArray();
 		int modelLatitudeLength = modelLatitudeArray.length();
@@ -1937,6 +1935,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		int noiseLatitudeLength = noiseLatitudeArray.length();
 		int noiseLongitudeLength = noiseLongitudeArray.length();
 
+		// ODA-612 Start with same ratio for X and Y, this can be expanded later when different ratio's are desired
+		int stateSizeNoiseSizeRatioY = stateSizeNoiseSizeRatioX;
+		
 		checkStateSizeNoiseSizeRatio(stateSizeNoiseSizeRatioX, modelLongitudeLength, noiseLongitudeLength);
 		checkStateSizeNoiseSizeRatio(stateSizeNoiseSizeRatioY, modelLatitudeLength, noiseLatitudeLength);
 		int modelLongitudeLengthMin1 = modelLongitudeLength - 1;
@@ -1944,6 +1945,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			LOGGER.warn(modelLongitudeLengthMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatioX + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noiseLongitudeLength + " to " + (noiseLongitudeLength + 1) + " will result in interpolation for last state points as well.");
 			warningLogged = true;
 		}
+		return interpolateNoise(noise, stateSizeNoiseSizeRatioX, valuesAsDoubles, modelLatitudeLength, modelLongitudeLength, noiseLatitudeLength, noiseLongitudeLength, stateSizeNoiseSizeRatioY);
+	}
+
+	private static double[] interpolateNoise(double[] noise, int stateSizeNoiseSizeRatioX, double[] valuesAsDoubles, int modelLatitudeLength, int modelLongitudeLength, int noiseLatitudeLength, int noiseLongitudeLength, int stateSizeNoiseSizeRatioY) {
 		double[] spatialNoise = new double[valuesAsDoubles.length];
 		for (int latitudeI = 0, latitudeK = 0; latitudeI < modelLatitudeLength; latitudeI += stateSizeNoiseSizeRatioY, latitudeK++) {
 			for (int longitudeI = 0, longitudeK = 0; longitudeI < modelLongitudeLength; longitudeI += stateSizeNoiseSizeRatioX, longitudeK++) {
@@ -1997,7 +2002,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return spatialNoise;
 	}
 
-	private boolean is2DNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem) {
+	private static boolean is2DNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem) {
 		if (!(noiseModelExchangeItem != null && noiseModelExchangeItem instanceof IExchangeItem && modelExchangeItem instanceof IExchangeItem)) return false;
 
 		IGeometryInfo noiseModelGeometryInfo = ((IExchangeItem) noiseModelExchangeItem).getGeometryInfo();
@@ -2005,7 +2010,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return modelGeometryInfo instanceof IArrayGeometryInfo && noiseModelGeometryInfo instanceof IArrayGeometryInfo;
 	}
 
-	private void checkStateSizeNoiseSizeRatio(int stateSizeNoiseSizeRatio, int modelLength, int noiseLength) {
+	private static void checkStateSizeNoiseSizeRatio(int stateSizeNoiseSizeRatio, int modelLength, int noiseLength) {
 		if (modelLength > stateSizeNoiseSizeRatio * noiseLength) {
 			throw new RuntimeException("Number of points in state (" + modelLength + ") should not be more than stateSizeNoiseSizeRatio * noise.length, currently: " + stateSizeNoiseSizeRatio + " * " + noiseLength);
 		}
