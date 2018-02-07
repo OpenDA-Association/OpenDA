@@ -341,6 +341,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" filepath="$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" filepath="$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_hspf/java/model_hspf.iml" filepath="$PROJECT_DIR$/model_hspf/java/model_hspf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" filepath="$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_nemo/java/model_nemo.iml" filepath="$PROJECT_DIR$/model_nemo/java/model_nemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" filepath="$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_swan/java/model_swan.iml" filepath="$PROJECT_DIR$/model_swan/java/model_swan.iml" />
