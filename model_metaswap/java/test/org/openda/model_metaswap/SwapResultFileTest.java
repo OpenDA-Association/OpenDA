@@ -19,7 +19,7 @@ public class SwapResultFileTest extends TestCase {
 		// No action. Test only exists to avoid warnings on empty test class
 	}
 
-	public void tstRead() {
+	public void testRead() {
 		SwapResultFile swapResultFile = new SwapResultFile();
 		swapResultFile.initialize(testRunDataDir, new String[]{"svat_dtgw_0000207106.csv"});
 		String[] exchangeItemIDs = swapResultFile.getExchangeItemIDs();
@@ -34,7 +34,7 @@ public class SwapResultFileTest extends TestCase {
 		double[] times = exchangeItem.getTimes();
 		assertEquals(125, values.length);
 		assertEquals(125, times.length);
-		assertEquals(124.0,times[times.length - 1] - times[0]);
+		assertEquals(124.0,times[times.length - 1] - times[0], 0.00001);
 
 		assertEquals(329.8, values[0], 0.00001);
 		assertEquals(57143.0, times[0], 0.00001);
