@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>bbModelConfig_noiseRatio2DMappingSmaller.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+
+        <state>
+
+            <noiseModel id="stateNoiseModel"
+                        className="org.openda.noiseModels.MapsNoiseModelFactory"
+                        workingDirectory=".">
+                <configFile>bc_noise_ratio_2D_mapping_smaller.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="param2D_noise" operation="add" stateSizeNoiseSizeRatio="2">
+                        <modelExchangeItem id="param2D"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+
+        </state>
+
+    </vectorSpecification>
+
+</blackBoxStochModel>
