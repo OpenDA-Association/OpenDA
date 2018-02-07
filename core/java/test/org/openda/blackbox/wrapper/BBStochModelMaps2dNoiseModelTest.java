@@ -191,6 +191,16 @@ public class BBStochModelMaps2dNoiseModelTest extends TestCase
         assert false;
     }
 
+	public void testStateSizeNoiseSizeRatio2D() {
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModel2DMaps/noiseRatio2DMapping");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfig_noiseRatio2DMapping.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+		stochModelInstance.compute(new Time(stochModelInstance.getCurrentTime().getMJD()+1.0));
+	}
+
     public void testAddNoiseAfterCompute() {
         DummyStateDataObject.setStateSize(1061);
         BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();

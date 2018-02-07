@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig>
+  <simulationTimespan timeFormat="dateTimeString">200201010000,200201020000,...,200201050000</simulationTimespan>
+
+  <noiseItem id="param2D_noise" quantity="water_level" unit="m"
+             standardDeviation="0.02" timeCorrelationScale="8.0" timeCorrelationScaleUnit="hours"
+             initialValue="0.0" horizontalCorrelationScale="30000." horizontalCorrelationScaleUnit="m">
+    <grid type="cartesian" coordinates="xy" separable="true">
+      <x>0,2,...,9</x>
+      <y>0,2,...,9</y>
+    </grid>
+  </noiseItem>
+
+</mapsNoiseModelConfig>
