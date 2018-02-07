@@ -15,10 +15,6 @@ public class SwapResultFileTest extends TestCase {
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
-	public static void testDummy() {
-		// No action. Test only exists to avoid warnings on empty test class
-	}
-
 	public void testRead() {
 		SwapResultFile swapResultFile = new SwapResultFile();
 		swapResultFile.initialize(testRunDataDir, new String[]{"svat_dtgw_0000207106.csv"});
