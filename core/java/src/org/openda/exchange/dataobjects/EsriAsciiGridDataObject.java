@@ -95,6 +95,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		try {
 			csvReader = new CsvReader(inputFile);
 			csvReader.setColumnSeparatorChar(' ');
+			csvReader.setDoTrimLine(true);
 
 			// use file name's prefix as exchange_item name
 			String fileName=arguments[0];
@@ -103,7 +104,9 @@ public class EsriAsciiGridDataObject implements IDataObject{
 			int underscorePos = baseName.indexOf('_');
 			if (underscorePos > 1) {
 				exchangeItemId = baseName.substring(0, underscorePos);
-				timeStampString = checkValidTimeString(baseName.substring(underscorePos + 1), inputFile);
+				if (timeStampString == null) {
+					timeStampString = checkValidTimeString(baseName.substring(underscorePos + 1), inputFile);
+				}
 			}
 
 			String[] rowItems = readHeader();

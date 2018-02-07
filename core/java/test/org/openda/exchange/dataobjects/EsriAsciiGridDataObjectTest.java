@@ -67,6 +67,42 @@ public class EsriAsciiGridDataObjectTest extends TestCase {
 		assertEquals(52275d, times[0]);
 	}
 
+	public void testVAR1_File() {
+		String[] arguments = {"VAR1_20020101120000.asc"};
+		EsriAsciiGridDataObject dataObject = new EsriAsciiGridDataObject();
+		dataObject.initialize(testRunDataDir, arguments);
+		IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem("VAR1");
+		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
+		assertNotNull(timeInfo);
+		double[] times = timeInfo.getTimes();
+		assertEquals(1, times.length);
+		assertEquals(52275.5d, times[0]);
+	}
+
+	public void testVAR1_File_OverruleTime() {
+		String[] arguments = {"VAR1_20020101120000.asc", "timeStamp=20020103180000"};
+		EsriAsciiGridDataObject dataObject = new EsriAsciiGridDataObject();
+		dataObject.initialize(testRunDataDir, arguments);
+		IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem("VAR1");
+		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
+		assertNotNull(timeInfo);
+		double[] times = timeInfo.getTimes();
+		assertEquals(1, times.length);
+		assertEquals(52277.75d, times[0]);
+	}
+
+	public void testVAR1_FileNameFromTimeStamp() {
+		String[] arguments = {"VAR1", "timeStampFormat=yyyyMMddhhmmss", "timeStamp=20020101120000"};
+		EsriAsciiGridDataObject dataObject = new EsriAsciiGridDataObject();
+		dataObject.initialize(testRunDataDir, arguments);
+		IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem("VAR1");
+		ITimeInfo timeInfo = exchangeItem.getTimeInfo();
+		assertNotNull(timeInfo);
+		double[] times = timeInfo.getTimes();
+		assertEquals(1, times.length);
+		assertEquals(52275.5d, times[0]);
+	}
+
 	public void testParamA_Adjustment() {
 		String[] arguments = {"paramA_20020101.asc"};
 		EsriAsciiGridDataObject dataObject = new EsriAsciiGridDataObject();
