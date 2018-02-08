@@ -83,6 +83,7 @@
       <buildmodule module="model_wflow"/>
       <buildmodule module="model_dflowfm_blackbox"/>
       <buildmodule module="model_RainfallRunoffZhang"/>
+      <buildmodule module="model_openfoam"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.sh"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
    </target>
@@ -105,6 +106,7 @@
       <docmodule module="model_delft3d"/>
       <docmodule module="model_nemo"/>
       <docmodule module="model_dflowfm_blackbox"/>
+      <docmodule module="model_openfoam"/>
       <copy todir="${projectdoc}/javadoc" >
          <fileset dir="core/doc/javadoc_menu" />
       </copy>
@@ -148,6 +150,7 @@
       <moduletests module="model_delft3d"/>
       <moduletests module="model_reactive_advection"/>
       <moduletests module="model_dflowfm_blackbox"/>
+      <moduletests module="model_openfoam"/>      
    </target>
 
     <macrodef name="moduletests">
@@ -240,6 +243,7 @@
         <cleanmodule module="model_swan" />
         <cleanmodule module="model_wflow" />
         <cleanmodule module="model_dflowfm_blackbox"/>
+        <cleanmodule module="model_openfoam"/>
     </target>
 
     <macrodef name="cleanmodule">
@@ -502,6 +506,7 @@
         <buildmoduletests module="model_wflow"/>
         <buildmoduletests module="model_delft3d"/>
         <buildmoduletests module="model_dflowfm_blackbox"/>
+        <buildmoduletests module="model_openfoam"/>        
     </target>
 
     <target name="testclassesPPC">
@@ -520,6 +525,7 @@
         <!--<buildmoduletests module="model_swan"/>-->
         <buildmoduletests module="model_wflow"/>
         <buildmoduletests module="model_delft3d"/>
+        <buildmoduletests module="model_openfoam"/>                
     </target>
 
 
@@ -737,6 +743,7 @@
        <validatexmlmodule module="model_reactive_advection"/>
 	   <validatexmlmodule module="model_swan"/>
        <validatexmlmodule module="model_wflow"/>
+     <validatexmlmodule module="model_openfoam"/>
    </target>
 
     <macrodef name="validatexmlmodule">
