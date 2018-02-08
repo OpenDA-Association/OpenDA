@@ -22,7 +22,6 @@ package org.openda.model_openfoam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
-import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.exchange.timeseries.TimeUtils;

@@ -102,4 +102,8 @@ public class UnstructuredMeshGeometryInfo implements IGeometryInfo {
 		this.points = points;
 	}
 
+	public IArray distanceToPoint(double x, double y, double z) {
+		return null;
+	}
+
 }
