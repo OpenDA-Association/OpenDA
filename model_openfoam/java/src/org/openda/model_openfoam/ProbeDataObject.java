@@ -23,8 +23,7 @@ package org.openda.model_openfoam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
-import org.omg.SendingContext.RunTime;
-import org.openda.exchange.ArrayExchangeItem;
+
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.exchange.timeseries.TimeUtils;
@@ -32,7 +31,6 @@ import org.openda.interfaces.IComposableDataObject;
 
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.utils.Array;
 
 import java.io.*;
 import java.util.*;
@@ -83,7 +81,7 @@ public class ProbeDataObject implements IComposableDataObject {
 
     private static final String PROPERTY_PATHNAME = "pathName";
 
-    private File workingDir;
+	private File workingDir;
     private File file;
     //private InputStream inputStream;
     //private OutputStream outputStream;
@@ -251,7 +249,7 @@ public class ProbeDataObject implements IComposableDataObject {
 				int component = v%nrComponents;
 				int probeNr   = v/nrComponents;
 				String myQuantity = (nrComponents == 1) ? quantity : quantity + ( component+1);
-				TimeSeries timeSeries = new TimeSeries(times, values, x, y, source, myQuantity, unit, location + this.locationSeparator + probeNr, role);
+				TimeSeries timeSeries = new TimeSeries(times, values, x, y, source, myQuantity, unit, location + locationSeparator + probeNr, role);
 					//timeSeries.setProperty(PROPERTY_ANALTIME, analTime);
 					//timeSeries.setProperty(PROPERTY_TIMEZONE, timeZone);
 					//timeSeries.setDescription(description);
@@ -274,7 +272,7 @@ public class ProbeDataObject implements IComposableDataObject {
 		for (String quantity: quantities) {
 			Set<String> locations = this.timeSeriesSet.getOnQuantity(quantity).getLocations();
 			for (String location: locations) {
-				String id = location + this.idSeparator + quantity;
+				String id = location + idSeparator + quantity;
 				result[idx]= id;
 				idx++;
 			}
