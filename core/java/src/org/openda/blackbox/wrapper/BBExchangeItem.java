@@ -149,6 +149,9 @@ public class BBExchangeItem implements IExchangeItem {
 			} else {
 				numberOfTimes = 1;
 			}
+			if (selectionIndices.length == 1 && dimSizes.length == 2 && dimSizes[0] == 1) {
+				dimSizes = new int[]{dimSizes[1]};
+			}
 			if (selectionIndices.length != dimSizes.length) {
 				throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());
 			}

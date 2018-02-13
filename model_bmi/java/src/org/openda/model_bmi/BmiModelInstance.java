@@ -48,7 +48,7 @@ import org.openda.utils.io.FileBasedModelState;
  * @author Niels Drost
  * 
  */
-public class BmiModelInstance extends Instance implements IModelInstance, IModelExtensions {
+public class BmiModelInstance extends Instance implements IModelInstance, IModelExtensions, IOutputModeSetter {
 
 	private final EBMI model;
 	private final File modelRunDir;
@@ -70,6 +70,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 	private final AnalysisDataWriter analysisDataWriter;
 	private boolean firstTime = true;
+
+	private boolean inOutputMode = false;
+	public void setInOutputMode(boolean inOutputMode) {
+		this.inOutputMode = inOutputMode;
+	}
 
 	public BmiModelInstance(int modelInstanceNumber, EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
 							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
@@ -174,9 +179,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 			selectedTimes[i] = bufferTimes[i].getMJD();
 		}
 
-		for (Map.Entry<String, IExchangeItem> entry: this.exchangeItems.entrySet()) {
-			int numberOfValues = ((ArrayGeometryInfo)entry.getValue().getGeometryInfo()).getCellCount() * bufferTimes.length;
-			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), Role.Output, new double[numberOfValues]);
+		for (Map.Entry<String, IExchangeItem> entry : this.exchangeItems.entrySet()) {
+			int cellCount = ((ArrayGeometryInfo) entry.getValue().getGeometryInfo()).getCellCount();
+			int[] dimensions = new int[]{bufferTimes.length, cellCount};
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), Role.Output,
+				new double[cellCount * bufferTimes.length], dimensions);
 			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
 			result.put(entry.getKey(), bufferExchangeItem);
 		}
@@ -256,6 +263,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	}
 
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemID)) {
+			return bufferedExchangeItems.get(exchangeItemID);
+		}
 		return getDataObjectExchangeItem(exchangeItemID);
 	}
 

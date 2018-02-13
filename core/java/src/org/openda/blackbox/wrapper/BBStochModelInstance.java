@@ -891,20 +891,27 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 */
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 
-			if (model instanceof IModelExtensions){
-				IModelExtensions modelExtended = (IModelExtensions) model;
-				IVector retvals=modelExtended.getObservedValues(observationDescriptions);
-				if (retvals!=null){
-		           return retvals;
-				}
-				else {
-					return getObservedValuesBB(observationDescriptions);
-				}
+		if (model instanceof IModelExtensions){
+			IModelExtensions modelExtended = (IModelExtensions) model;
+			IVector retvals=modelExtended.getObservedValues(observationDescriptions);
+			if (retvals!=null){
+			   return retvals;
 			}
 			else {
-				return getObservedValuesBB(observationDescriptions);
+				if (model instanceof IOutputModeSetter) {
+					((IOutputModeSetter)model).setInOutputMode(true);
+				}
+				IVector observedValuesBB = getObservedValuesBB(observationDescriptions);
+				if (model instanceof IOutputModeSetter) {
+					((IOutputModeSetter)model).setInOutputMode(false);
+				}
+				return observedValuesBB;
 			}
 		}
+		else {
+			return getObservedValuesBB(observationDescriptions);
+		}
+	}
 
 	/**
 	 * Returns the values that would be observed, if reality would be equal to the current model state.
