@@ -1,22 +1,22 @@
-/* OpenDA v2.4.1 
-* Copyright (c) 2017 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/* MOD_V2.0
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 
 package org.openda.blackbox.wrapper;
@@ -76,7 +76,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings;
 	private int ensembleMemberIndex;
 	private HashMap<String,double[]> prevNoiseModelEIValuesForTimeStep = new HashMap<String, double[]>();
-	private boolean warningLogged = false;
+    private boolean warningLogged = false;
 
 	/**
 	 * For each constraintExchangeItemId for which there is a range validation constraint this map contains
@@ -329,14 +329,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                     double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 					wrappedBbExchangeItem.UpdateTimeStepValue(loopTimeStep,computedValues[0]);
 				}
-				if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
+                if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 			}
 		} else
 		{
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex); // TODO Not necessary for scalar time series.
-			boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
-			model.compute(targetTime);
-			if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
+            boolean addNoiseToExchangeItemsAfterCompute = propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, false);
+            model.compute(targetTime);
+            if (addNoiseToExchangeItemsAfterCompute) propagateNoiseModelsAndAddNoiseToExchangeItems(model.getCurrentTime(), targetTime, true);
 		}
 
 		//ODA-558 Clear exchange items otherwise exchange items from previous compute will be used without newly added noise
@@ -903,7 +903,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			//get the model values at the observed coordinates.
 			if (!GeometryUtils.isScalar(observationExchangeItem)) {//if grid observationExchangeItem.
 				String logMessage = "Getting model values at observed coordinates for grid observation exchangeItem with id '" + observationExchangeItem.getId() + "'.";
-				if (LOGGER.isDebugEnabled()) LOGGER.info(logMessage);
+				if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
 				Results.putMessage(logMessage);
 
 				//this code only works for grid modelExchangeItems.
@@ -1013,7 +1013,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		//get the model values at the observed coordinates.
 		String logMessage = "Using bilinear interpolation to get model values from model exchangeItem '" + modelExchangeItemId
 				+ "' at observed coordinates from observation exchangeItem '" + observationExchangeItemId + "'.";
-		if (LOGGER.isDebugEnabled()) LOGGER.info(logMessage);
+		if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
 		Results.putMessage(logMessage);
 		IVector observedModelValues = GeometryUtils.getObservedValuesBilinearInterpolation(observationXCoordinates, observationYCoordinates, modelGeometryInfo, modelValues);
 		validateObservedModelValues(observationXCoordinates, observationYCoordinates, observedModelValues, observationExchangeItemId, modelExchangeItemId);
@@ -1414,7 +1414,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							boolean addNoiseBefore = !afterCompute && !exchangeItemConfig.isAddStateNoiseAfterCompute();
 							boolean addNoiseAfter = afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute();
 							addNoiseAfterComputeForAnyExchangeItem |= !afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute();
-							if (addNoiseAfter || addNoiseBefore) addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, modelTimeIndex,
+							if (addNoiseAfter || addNoiseBefore) addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, noiseModelExchangeItem, modelTimeIndex,
 									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
 							this.lastNoiseTimes.put(modelExchangeItemId,time);
 						}
@@ -1477,8 +1477,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			addNoiseToExchangeItem(stateNoiseModelConfig, targetTime.getMJD(),
 					numBcTimeStepsInPeriod, noiseForExchangItem);
 		}
-		return addNoiseAfterComputeForAnyExchangeItem;
-	}
+        return addNoiseAfterComputeForAnyExchangeItem;
+    }
 
 	/**
 	 * Get values for this time index timeStep=-1 for last timeStep available, ie count negative values from end
@@ -1560,7 +1560,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				tStart = Math.max(doubleArraySearch.search(startTime), 0);
 			}
 			for (int t = tStart; t < tStart + numBcTimeStepsInPeriod; t++) {
-				addNoiseToExchangeItemForOneTimeStep(exchangeItem, t,
+				addNoiseToExchangeItemForOneTimeStep(exchangeItem, null, t,
 						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation(), 1);
 			}
 		}
@@ -1614,16 +1614,16 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return ((exchangeItemTime + 1.e-6) >= currentTime) && ((exchangeItemTime - 1.e-6) < targetTime);
 	}
 
-	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem exchangeItem,
-													  int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
+	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem modelExchangeItem,
+													  IPrevExchangeItem noiseModelExchangeItem, int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
 			//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
-			if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
-				numValuesInExchangeItem = ((NetcdfGridTimeSeriesExchangeItem)exchangeItem).getValuesAsDoublesForSingleTimeIndex(0).length;
+			if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+				numValuesInExchangeItem = ((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).getValuesAsDoublesForSingleTimeIndex(0).length;
 			} else{
-				numValuesInExchangeItem = exchangeItem.getValuesAsDoubles().length;
+				numValuesInExchangeItem = modelExchangeItem.getValuesAsDoubles().length;
 			}
 		} catch (Exception e) {
 			// input exchangItem is not able to tell it's #values. assume 1
@@ -1632,13 +1632,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			numValuesInExchangeItem = 1;
 		}
 		int numTimeStepsInExchangeItem = -1;
-		double[] times = exchangeItem.getTimes();
+		double[] times = modelExchangeItem.getTimes();
 		if (times == null || times.length == 0) {
 			// model EI has no time stamp (is most probable the current state)
 			if (noise.length == numValuesInExchangeItem || stateSizeNoiseSizeRatio != 1) {
 				numTimeStepsInExchangeItem = 1;
 			} else {
-				throw new RuntimeException("ExchangeItem " + exchangeItem.getId() + " has no time stamps whereas value size is not equal to noise-size");
+				throw new RuntimeException("ExchangeItem " + modelExchangeItem.getId() + " has no time stamps whereas value size is not equal to noise-size");
 			}
 		}
 		boolean addFullArray = false;
@@ -1648,7 +1648,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				addFullArray = true;
 			}
 			//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
-			if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+			if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 				addFullArray = true;
 			}
 		} else {
@@ -1660,18 +1660,18 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 		}
 
-		if (stateSizeNoiseSizeRatio > 1) {
-			noise = getSpatialNoise(exchangeItem, noise, operation, stateSizeNoiseSizeRatio);
-		}
+        if (stateSizeNoiseSizeRatio > 1) {
+            noise = getSpatialNoise(modelExchangeItem, noiseModelExchangeItem, noise, operation, stateSizeNoiseSizeRatio);
+        }
 
 		if (addFullArray) {
 			switch (operation) {
 			case Add:
 				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
-				if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
-					((NetcdfGridTimeSeriesExchangeItem)exchangeItem).axpyOnValuesForSingleTimeIndex(timeIndex, 1.0d, noise);
+				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+					((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).axpyOnValuesForSingleTimeIndex(timeIndex, 1.0d, noise);
 				} else {
-					exchangeItem.axpyOnValues(1.0d, noise);
+					modelExchangeItem.axpyOnValues(1.0d, noise);
 				}
 				break;
 			case Multiply:
@@ -1680,14 +1680,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					factors[i] = 1d + noise[i];
 				}
 				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
-				if (exchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
-					((NetcdfGridTimeSeriesExchangeItem)exchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
+				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+					((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
 				} else {
-					exchangeItem.multiplyValues(factors);
+					modelExchangeItem.multiplyValues(factors);
 				}
 				break;
 			case Set:
-				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + exchangeItem.getId() +
+				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
 						": invalid call for setting values");
 			}
 		} else {
@@ -1695,12 +1695,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			if (numValuesInExchangeItem%numValuesToBeSet != 0) {
 				String message="The number of values in the exchangeItem is not a multiple of the number of times.\n ";
 				message+="noise has length="+noise.length+"\n";
-				message+="item with id="+exchangeItem.getId()+" has length="+numValuesInExchangeItem+"\n";
+				message+="item with id="+modelExchangeItem.getId()+" has length="+numValuesInExchangeItem+"\n";
 				message+="processing time index="+timeIndex+" for times:"+(new Vector(times)).toString()+"\n";
 				throw new RuntimeException(message);
 			}
 			if(timeIndex>numValuesInExchangeItem/numValuesToBeSet){
-				String message="time index out of bounds for "+exchangeItem.getId()+"\n";
+				String message="time index out of bounds for "+modelExchangeItem.getId()+"\n";
 				message+="processing time index="+timeIndex+" for times:"+(new Vector(times)).toString()+"\n";
 				throw new RuntimeException(message);
 			}
@@ -1711,7 +1711,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			case Add:
 				double[] values = new double[numValuesInExchangeItem];
 				System.arraycopy(noise, 0, values, startOfNoise, endOfNoise - startOfNoise);
-				exchangeItem.axpyOnValues(1.0, values);
+				modelExchangeItem.axpyOnValues(1.0, values);
 				break;
 			case Multiply:
 				double[] factors = new double[numValuesInExchangeItem];
@@ -1722,32 +1722,35 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				for (int i = 0; i < numValuesToBeSet; i++) {
 					factors[startOfNoise+i] += noise[i];
 				}
-				exchangeItem.multiplyValues(factors);
+				modelExchangeItem.multiplyValues(factors);
 				break;
 			case Set:
-				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + exchangeItem.getId() +
+				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
 						": invalid call for setting values");
 			}
 		}
 	}
 
-	private double[] getSpatialNoise(IPrevExchangeItem exchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
-		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+    private double[] getSpatialNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatioX) {
+        double[] valuesAsDoubles = modelExchangeItem.getValuesAsDoubles();
 
-		if (valuesAsDoubles.length > stateSizeNoiseSizeRatio * noise.length) {
-			throw new RuntimeException("Number of points in state (" + valuesAsDoubles.length + ") should not be more than stateSizeNoiseSizeRatio * noise.length, currently: " + stateSizeNoiseSizeRatio + " * " + noise.length);
+        if (is2DNoise(modelExchangeItem, noiseModelExchangeItem)) {
+			return get2DInterpolatedNoise((IExchangeItem) modelExchangeItem, (IExchangeItem) noiseModelExchangeItem, noise, stateSizeNoiseSizeRatioX, valuesAsDoubles);
 		}
-		if (valuesAsDoubles.length < stateSizeNoiseSizeRatio * (noise.length - 2) + 1) {
-			throw new RuntimeException("Number of points in state (" + valuesAsDoubles.length + ") should not be less than stateSizeNoiseSizeRatio * (noise.length - 2) + 1, currently: " + stateSizeNoiseSizeRatio + " * (" + noise.length + " - 2) + 1");
-		}
+
+		return get1DInterpolatedNoise(noise, stateSizeNoiseSizeRatioX, valuesAsDoubles);
+    }
+
+	private double[] get1DInterpolatedNoise(double[] noise, int stateSizeNoiseSizeRatioX, double[] valuesAsDoubles) {
+		checkStateSizeNoiseSizeRatio(stateSizeNoiseSizeRatioX, valuesAsDoubles.length, noise.length);
 
 		int stateSizeMin1 = valuesAsDoubles.length - 1;
-		if (!warningLogged && stateSizeMin1 % stateSizeNoiseSizeRatio != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatio * (noise.length - 1) + 1) {
-			System.out.println("Warning: " + stateSizeMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatio + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noise.length + " to " + (noise.length + 1) + " will result in interpolation for last state points as well.");
+		if (!warningLogged && stateSizeMin1 % stateSizeNoiseSizeRatioX != 0 && valuesAsDoubles.length > stateSizeNoiseSizeRatioX * (noise.length - 1) + 1) {
+			LOGGER.warn(stateSizeMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatioX + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noise.length + " to " + (noise.length + 1) + " will result in interpolation for last state points as well.");
 			warningLogged = true;
 		}
 		double[] spatialNoise = new double[valuesAsDoubles.length];
-		for (int i = 0, k = 0; i < valuesAsDoubles.length; i += stateSizeNoiseSizeRatio, k++) {
+		for (int i = 0, k = 0; i < valuesAsDoubles.length; i += stateSizeNoiseSizeRatioX, k++) {
 			double noiseValue = noise[k];
 
 			int nextNoiseValueIndex = k + 1;
@@ -1757,11 +1760,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			if (nextNoiseValueIndex >= noise.length) {
 				nextNoiseValue = noise[noise.length - 1];
 				double previousNoiseValue = noise[noise.length - 2];
-				steps = valuesAsDoubles.length % stateSizeNoiseSizeRatio;
-				stepNoiseValue = (nextNoiseValue - previousNoiseValue) / steps;
+				steps = valuesAsDoubles.length % stateSizeNoiseSizeRatioX;
+				stepNoiseValue = (nextNoiseValue -previousNoiseValue) / steps;
 			} else {
 				nextNoiseValue = noise[k + 1];
-				steps = stateSizeNoiseSizeRatio;
+				steps = stateSizeNoiseSizeRatioX;
 				stepNoiseValue = (nextNoiseValue - noiseValue) / steps;
 			}
 			for (int j = 0; j < steps && i + j < spatialNoise.length; j++) {
@@ -1769,6 +1772,101 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 		}
 		return spatialNoise;
+	}
+
+	private double[] get2DInterpolatedNoise(IExchangeItem modelExchangeItem, IExchangeItem noiseModelExchangeItem, double[] noise, int stateSizeNoiseSizeRatioX, double[] valuesAsDoubles) {
+		IGeometryInfo noiseModelGeometryInfo = noiseModelExchangeItem.getGeometryInfo();
+		IGeometryInfo modelGeometryInfo = modelExchangeItem.getGeometryInfo();
+
+		int stateSizeNoiseSizeRatioY = stateSizeNoiseSizeRatioX;
+
+		IArray modelLatitudeArray = ((IArrayGeometryInfo) modelGeometryInfo).getLatitudeArray();
+		IArray modelLongitudeArray = ((IArrayGeometryInfo) modelGeometryInfo).getLongitudeArray();
+		int modelLatitudeLength = modelLatitudeArray.length();
+		int modelLongitudeLength = modelLongitudeArray.length();
+
+		IArray noiseModelLatitudeArray = ((IArrayGeometryInfo) noiseModelGeometryInfo).getLatitudeArray();
+		IArray noiseModelLongitudeArray = ((IArrayGeometryInfo) noiseModelGeometryInfo).getLongitudeArray();
+		int noiseModelLatitudeLength = noiseModelLatitudeArray.length();
+		int noiseModelLongitudeLength = noiseModelLongitudeArray.length();
+
+		checkStateSizeNoiseSizeRatio(stateSizeNoiseSizeRatioX, modelLongitudeLength, noiseModelLongitudeLength);
+		checkStateSizeNoiseSizeRatio(stateSizeNoiseSizeRatioY, modelLatitudeLength, noiseModelLatitudeLength);
+		int modelLongitudeLengthMin1 = modelLongitudeLength - 1;
+		if (!warningLogged && modelLongitudeLengthMin1 % stateSizeNoiseSizeRatioX != 0 && modelLongitudeLength > stateSizeNoiseSizeRatioX * (noiseModelLongitudeLength - 1) + 1) {
+			LOGGER.warn(modelLongitudeLengthMin1 + " (Number of points in state - 1) not dividable by noise ratio " + stateSizeNoiseSizeRatioX + ", so extrapolation will be used for adding noise to the last state points. Increasing noise points from " + noiseModelLongitudeLength + " to " + (noiseModelLongitudeLength + 1) + " will result in interpolation for last state points as well.");
+			warningLogged = true;
+		}
+		double[] spatialNoise = new double[valuesAsDoubles.length];
+		for (int latitudeI = 0, latitudeK = 0; latitudeI < modelLatitudeLength; latitudeI += stateSizeNoiseSizeRatioY, latitudeK++) {
+			for (int longitudeI = 0, longitudeK = 0; longitudeI < modelLongitudeLength; longitudeI += stateSizeNoiseSizeRatioX, longitudeK++) {
+				int noiseValueIndex = longitudeK + noiseModelLongitudeLength * latitudeK;
+				double noiseValue = noise[noiseValueIndex];
+
+				int spatialNoiseValueIndex = longitudeI + modelLongitudeLength * latitudeI;
+				spatialNoise[spatialNoiseValueIndex] = noiseValue;
+
+				int nextNoiseValueXIndex = noiseValueIndex + 1;
+				double nextNoiseValueX;
+				int stepsX;
+				double stepNoiseValueX;
+				if (nextNoiseValueXIndex >= noise.length) {//TODO EP: Fix because incorrect when 2D
+					nextNoiseValueX = noise[noise.length - 1];
+					double previousNoiseValue = noise[noise.length - 2];
+					stepsX = valuesAsDoubles.length % stateSizeNoiseSizeRatioX;
+					stepNoiseValueX = (nextNoiseValueX - previousNoiseValue) / stepsX;
+				} else {
+					nextNoiseValueX = noise[nextNoiseValueXIndex];
+					stepsX = stateSizeNoiseSizeRatioX;
+					stepNoiseValueX = (nextNoiseValueX - noiseValue) / stepsX;
+				}
+				for (int j = 0; j < stepsX && longitudeI + j < modelLongitudeLength; j++) {
+					spatialNoise[spatialNoiseValueIndex + j] = noiseValue + j * stepNoiseValueX;
+				}
+
+				int nextNoiseValueYIndex = noiseValueIndex + noiseModelLongitudeLength;
+				double nextNoiseValueY;
+				int stepsY;
+				double stepNoiseValueY;
+				if (nextNoiseValueYIndex >= noise.length) {//TODO EP: Fix because incorrect when 2D
+					nextNoiseValueY = noise[noise.length - 1];
+					double previousNoiseValue = noise[noise.length - 2];
+					stepsY = valuesAsDoubles.length % stateSizeNoiseSizeRatioY;
+					stepNoiseValueY = (nextNoiseValueY - previousNoiseValue) / stepsY;
+				} else {
+					nextNoiseValueY = noise[nextNoiseValueYIndex];
+					stepsY = stateSizeNoiseSizeRatioY;
+					stepNoiseValueY = (nextNoiseValueY - noiseValue) / stepsY;
+				}
+
+				for (int k = 1; k < stepsY && latitudeI + k < modelLatitudeLength; k++) {
+					int spatialNoiseIndex = spatialNoiseValueIndex + k * modelLongitudeLength;
+					double interpolatedNoiseValue = noiseValue + k * stepNoiseValueY;
+					spatialNoise[spatialNoiseIndex] = interpolatedNoiseValue;//TODO: add in between noise
+					for (int j = 0; j < stepsX && longitudeI + j < modelLongitudeLength; j++) {
+						spatialNoise[spatialNoiseValueIndex + j + k * modelLongitudeLength] = noiseValue + j * stepNoiseValueX + k * stepNoiseValueY;
+					}
+				}
+			}
+		}
+		return spatialNoise;
+	}
+
+	private boolean is2DNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem) {
+		if (!(noiseModelExchangeItem != null && noiseModelExchangeItem instanceof IExchangeItem && modelExchangeItem instanceof IExchangeItem)) return false;
+
+		IGeometryInfo noiseModelGeometryInfo = ((IExchangeItem) noiseModelExchangeItem).getGeometryInfo();
+		IGeometryInfo modelGeometryInfo = ((IExchangeItem) modelExchangeItem).getGeometryInfo();
+		return modelGeometryInfo instanceof IArrayGeometryInfo && noiseModelGeometryInfo instanceof IArrayGeometryInfo;
+	}
+
+	private void checkStateSizeNoiseSizeRatio(int stateSizeNoiseSizeRatioX, int modelLongitudeLength, int noiseModelLongitudeLength) {
+		if (modelLongitudeLength > stateSizeNoiseSizeRatioX * noiseModelLongitudeLength) {
+			throw new RuntimeException("Number of points in state (" + modelLongitudeLength + ") should not be more than stateSizeNoiseSizeRatio * noise.length, currently: " + stateSizeNoiseSizeRatioX + " * " + noiseModelLongitudeLength);
+		}
+		if (modelLongitudeLength < stateSizeNoiseSizeRatioX * (noiseModelLongitudeLength - 2) + 1) {
+			throw new RuntimeException("Number of points in state (" + modelLongitudeLength + ") should not be less than stateSizeNoiseSizeRatio * (noise.length - 2) + 1, currently: " + stateSizeNoiseSizeRatioX + " * (" + noiseModelLongitudeLength + " - 2) + 1");
+		}
 	}
 
 	private File checkRestartDir(ITime time, boolean mustExist) {

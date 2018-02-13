@@ -1,5 +1,5 @@
-/* OpenDA v2.4.1 
-* Copyright (c) 2017 OpenDA Association 
+/* OpenDA v2.4.1
+* Copyright (c) 2017 OpenDA Association
 * All rights reserved.
 * 
 * This file is part of OpenDA. 
@@ -39,9 +39,9 @@ public class CsvReader extends BufferedReader {
      */
     private int lineNumber = 0;
     private File file = null;
+	private boolean doTrimLine = false;
 
-
-    public CsvReader(String aPath) throws FileNotFoundException {
+	public CsvReader(String aPath) throws FileNotFoundException {
         this(new File(aPath));
     }
 
@@ -76,7 +76,11 @@ public class CsvReader extends BufferedReader {
         this.skipEmptyLines = skipEmptyLines;
     }
 
-    public String getCommentLinePrefix() {
+	public void setDoTrimLine(boolean doTrimLine) {
+		this.doTrimLine = doTrimLine;
+	}
+
+	public String getCommentLinePrefix() {
         return commentLinePrefix;
     }
 
@@ -95,6 +99,7 @@ public class CsvReader extends BufferedReader {
         for (; ;) {
             res = super.readLine();
             if (res == null) return null;
+            if (doTrimLine) res = res.trim();
             lineNumber++;
             if (skipEmptyLines && res.length() == 0) continue;
             if (commentLinePrefix != null && res.trim().startsWith(commentLinePrefix)) continue;
