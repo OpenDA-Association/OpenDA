@@ -90,7 +90,9 @@ public class EsriAsciiGridDataObject implements IDataObject{
 				outputFile = new File(workingDir, outputFileName + "_" + timeStampString + ".asc");
 			}
 		}
-		if (!inputFile.exists()) throw new RuntimeException("Input file does not exist: " + inputFile);
+		if (!inputFile.exists()){
+			throw new RuntimeException("Input file does not exist: " + inputFile);
+		}
 
 		try {
 			csvReader = new CsvReader(inputFile);
@@ -379,13 +381,15 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		return baseName;
 	}
 
-	private String checkValidTimeString(String timeString, File file) {
+	public static String checkValidTimeString(String timeString, File file) {
 		if (timeString.length() == 14) {
 			return timeString;
+		} else if (timeString.length() == 12){
+			return timeString + "00";
 		} else if (timeString.length() == 8){
 			return timeString + "000000";
 		} else {
-			throw new RuntimeException("Invalid time string" + timeString + " in " + (file!=null ? " file " + file : " initialization arugment"));
+			throw new RuntimeException("Invalid time string " + timeString + " in " + (file!=null ? " file " + file : " initialization arugment"));
 		}
 	}
 }
