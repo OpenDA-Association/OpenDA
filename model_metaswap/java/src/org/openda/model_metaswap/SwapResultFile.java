@@ -34,7 +34,7 @@ public class SwapResultFile implements IDataObject {
 
 	@Override
 	public void finish() {
-		throw new RuntimeException("Finish (write) method not implemented because data object is read only");
+		// No action needed, data object is read only
 	}
 
 	@Override
