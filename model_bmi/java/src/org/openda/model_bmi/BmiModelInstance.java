@@ -19,13 +19,9 @@
 */
 package org.openda.model_bmi;
 
-import java.io.File;
-import java.util.*;
-
-import bmi.BMIModelException;
 import bmi.BMI;
+import bmi.BMIModelException;
 import bmi.EBMI;
-
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.DoublesExchangeItem;
@@ -34,10 +30,15 @@ import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.utils.*;
+import org.openda.utils.Instance;
+import org.openda.utils.Results;
+import org.openda.utils.Time;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.AnalysisDataWriter;
 import org.openda.utils.io.FileBasedModelState;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Interface to a BMI Model. Passes calls to the BMI interface.
@@ -45,7 +46,7 @@ import org.openda.utils.io.FileBasedModelState;
  * @author Niels Drost
  * 
  */
-public class BmiModelInstance extends Instance implements IModelInstance, IModelExtensions {
+public class BmiModelInstance extends Instance implements IModelInstance, IModelExtensions, IOutputModeSetter {
 
 	private final EBMI model;
 	private final File modelRunDir;
@@ -67,6 +68,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
 	private final AnalysisDataWriter analysisDataWriter;
 	private boolean firstTime = true;
+
+	private boolean inOutputMode = false;
+	public void setInOutputMode(boolean inOutputMode) {
+		this.inOutputMode = inOutputMode;
+	}
 
 	public BmiModelInstance(int modelInstanceNumber, EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
 							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
@@ -171,9 +177,11 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 			selectedTimes[i] = bufferTimes[i].getMJD();
 		}
 
-		for (Map.Entry<String, IExchangeItem> entry: this.exchangeItems.entrySet()) {
-			int numberOfValues = ((ArrayGeometryInfo)entry.getValue().getGeometryInfo()).getCellCount() * bufferTimes.length;
-			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), Role.Output, new double[numberOfValues]);
+		for (Map.Entry<String, IExchangeItem> entry : this.exchangeItems.entrySet()) {
+			int cellCount = ((ArrayGeometryInfo) entry.getValue().getGeometryInfo()).getCellCount();
+			int[] dimensions = new int[]{bufferTimes.length, cellCount};
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), Role.Output,
+				new double[cellCount * bufferTimes.length], dimensions);
 			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
 			result.put(entry.getKey(), bufferExchangeItem);
 		}
@@ -253,6 +261,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	}
 
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemID)) {
+			return bufferedExchangeItems.get(exchangeItemID);
+		}
 		return getDataObjectExchangeItem(exchangeItemID);
 	}
 

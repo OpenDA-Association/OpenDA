@@ -25,7 +25,10 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
-import org.openda.utils.*;
+import org.openda.utils.DimensionIndex;
+import org.openda.utils.ObjectSupport;
+import org.openda.utils.TreeVector;
+import org.openda.utils.Vector;
 
 import java.io.File;
 import java.util.Arrays;
@@ -152,6 +155,9 @@ public class BBExchangeItem implements IExchangeItem {
 				}
 			} else {
 				numberOfTimes = 1;
+			}
+			if (selectionIndices.length == 1 && dimSizes.length == 2 && dimSizes[0] == 1) {
+				dimSizes = new int[]{dimSizes[1]};
 			}
 			if (selectionIndices.length != dimSizes.length) {
 				throw new RuntimeException("BBModelInstance.getValues(" + this.id + "): unexpected #dimensions in IoElement " + vectorConfig.getSourceId());

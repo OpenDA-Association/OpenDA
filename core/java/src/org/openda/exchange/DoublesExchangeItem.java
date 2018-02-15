@@ -30,6 +30,18 @@ public class DoublesExchangeItem extends ArrayExchangeItem{
 	 * @param id The exchange item's id
 	 * @param role Input, Output or both
 	 * @param values The exchange item's values
+	 * @param dimensions The dimensions of the values
+	 */
+	public DoublesExchangeItem(String id, Role role, double[] values, int[] dimensions) {
+		super(id,role);
+		this.array = new Array(values, dimensions, true);
+	}
+
+	/**
+	 * Constructor starting from an array of doubles.
+	 * @param id The exchange item's id
+	 * @param role Input, Output or both
+	 * @param values The exchange item's values
 	 */
 	public DoublesExchangeItem(String id, Role role, double[] values) {
 		super(id,role);

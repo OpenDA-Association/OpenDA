@@ -848,20 +848,25 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 */
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 
-			if (model instanceof IModelExtensions){
-				IModelExtensions modelExtended = (IModelExtensions) model;
-				IVector retvals=modelExtended.getObservedValues(observationDescriptions);
-				if (retvals!=null){
-		           return retvals;
+		if (model instanceof IModelExtensions) {
+			IModelExtensions modelExtended = (IModelExtensions) model;
+			IVector retvals = modelExtended.getObservedValues(observationDescriptions);
+			if (retvals != null) {
+				return retvals;
+			} else {
+				if (model instanceof IOutputModeSetter) {
+					((IOutputModeSetter) model).setInOutputMode(true);
 				}
-				else {
-					return getObservedValuesBB(observationDescriptions);
+				IVector observedValuesBB = getObservedValuesBB(observationDescriptions);
+				if (model instanceof IOutputModeSetter) {
+					((IOutputModeSetter) model).setInOutputMode(false);
 				}
+				return observedValuesBB;
 			}
-			else {
-				return getObservedValuesBB(observationDescriptions);
-			}
+		} else {
+			return getObservedValuesBB(observationDescriptions);
 		}
+	}
 
 	/**
 	 * Returns the values that would be observed, if reality would be equal to the current model state.
@@ -1621,7 +1626,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			// check the number of input values
 			//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 			if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
-				numValuesInExchangeItem = ((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).getValuesAsDoublesForSingleTimeIndex(0).length;
+				numValuesInExchangeItem = ((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).getValuesAsDoublesForSingleTimeIndex(timeIndex).length;
 			} else{
 				numValuesInExchangeItem = modelExchangeItem.getValuesAsDoubles().length;
 			}
@@ -1661,7 +1666,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
         if (stateSizeNoiseSizeRatio > 1) {
-            noise = getSpatialNoise(modelExchangeItem, noiseModelExchangeItem, noise, operation, stateSizeNoiseSizeRatio);
+            noise = getSpatialNoise(modelExchangeItem, noiseModelExchangeItem, noise, operation, stateSizeNoiseSizeRatio, timeIndex);
         }
 
 		if (addFullArray) {
@@ -1699,7 +1704,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				message+="processing time index="+timeIndex+" for times:"+(new Vector(times)).toString()+"\n";
 				throw new RuntimeException(message);
 			}
-			if(timeIndex>numValuesInExchangeItem/numValuesToBeSet){
+			// ODA-617 turn of check for NetcdfGridTimeSeriesExchangeItem
+			if (timeIndex > numValuesInExchangeItem / numValuesToBeSet && !(modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem)) {
 				String message="time index out of bounds for "+modelExchangeItem.getId()+"\n";
 				message+="processing time index="+timeIndex+" for times:"+(new Vector(times)).toString()+"\n";
 				throw new RuntimeException(message);
@@ -1719,10 +1725,18 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                 for (int i = 0; i < numValuesInExchangeItem ; i++){
                     factors[i] = 1d;
                 }
-				for (int i = 0; i < numValuesToBeSet; i++) {
-					factors[startOfNoise+i] += noise[i];
+				// ODA-617
+				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+					for (int i = 0; i < numValuesToBeSet; i++) {
+						factors[i] += noise[i];
+					}
+					((NetcdfGridTimeSeriesExchangeItem) modelExchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
+				} else {
+					for (int i = 0; i < numValuesToBeSet; i++) {
+						factors[startOfNoise+i] += noise[i];
+					}
+					modelExchangeItem.multiplyValues(factors);
 				}
-				modelExchangeItem.multiplyValues(factors);
 				break;
 			case Set:
 				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
@@ -1731,8 +1745,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-    private double[] getSpatialNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatioX) {
-        double[] valuesAsDoubles = modelExchangeItem.getValuesAsDoubles();
+    private double[] getSpatialNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatioX, int timeIndex) {
+		// ODA-617
+		double[] valuesAsDoubles;
+		if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+			valuesAsDoubles = ((NetcdfGridTimeSeriesExchangeItem) modelExchangeItem).getValuesAsDoublesForSingleTimeIndex(timeIndex);
+		} else {
+			valuesAsDoubles = modelExchangeItem.getValuesAsDoubles();
+		}
 
         if (is2DNoise(modelExchangeItem, noiseModelExchangeItem)) {
 			return get2DInterpolatedNoise((IExchangeItem) modelExchangeItem, (IExchangeItem) noiseModelExchangeItem, noise, stateSizeNoiseSizeRatioX, valuesAsDoubles);
