@@ -390,7 +390,8 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		}
 
 		// System.out.println("PHT="+K);
-		Matrix inverseD = D.inverse();
+		boolean containsNonNan = containsNonNan(D);
+		Matrix inverseD = containsNonNan ? D.inverse() : new Matrix(D);
 		// System.out.println("inverseD="+inverseD);
 
 		// version without large matrices
@@ -442,6 +443,16 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		}
 
 		return Kvecs;
+	}
+
+	private boolean containsNonNan(Matrix d) {
+		double[][] doubles = d.asArray();
+		for (double[] doubles1D : doubles) {
+			for (double value : doubles1D) {
+				if (!Double.isNaN(value)) return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -665,5 +676,12 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			// remove temp dir
 			gainState.releaseState(kgStorage);
 		}
+	}
+
+	public static void main(String[] args) {
+		Matrix d = new Matrix(3, 3, Double.NaN);
+		d.asArray();
+		d.inverse();
+		System.out.println("toch wel");
 	}
 }
