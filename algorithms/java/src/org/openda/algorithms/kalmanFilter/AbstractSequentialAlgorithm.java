@@ -158,7 +158,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 
 		String analysisTimesType = this.configurationAsTree.getAsString("analysisTimes@type", "fromObservationTimes");
 		Results.putMessage("analysisTimes@type="+analysisTimesType);
-		this.stepsFromObserver = analysisTimesType.equals("fromObservationTimes");
+		this.stepsFromObserver = "fromObservationTimes".equals(analysisTimesType);
 		skipAtInitialTime = this.configurationAsTree.getAsBoolean("analysisTimes@skipAtInitialTime",false);
 	    skipAtFinalTime   = this.configurationAsTree.getAsBoolean("analysisTimes@skipAtFinalTime",false);
 		continueWithoutObservation   = this.configurationAsTree.getAsBoolean("analysisTimes@continueWithoutObservation",false);

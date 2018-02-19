@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # create a folder with the input data and the output nc for one gotm run
-timestamp=`date +%Y%m%d_%H%M%S`
+timestamp=$(date +%Y%m%d_%H%M%S)
 namedir="Output_"$timestamp 
 directory=$namedir
 i=1

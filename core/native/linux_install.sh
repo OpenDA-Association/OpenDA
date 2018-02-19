@@ -93,7 +93,7 @@ do
 done
 #recheck compilers
 if [ "$FORT" == "ifort" ];then
-	export IFORTPATH=`which ifort 2>/dev/null`
+	export IFORTPATH=$(which ifort 2>/dev/null)
 	if [ ! -z "$IFORTPATH" ]; then
 		export MYFORT="$IFORTPATH"
 	else

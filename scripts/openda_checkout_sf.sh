@@ -13,7 +13,7 @@ echo Checking out the repository, using user-ID \"$SVNUSER\"
 
 okay=1
 for program in svn javac gcc gfortran g++ xml2-config ant; do
-   if [ "`which $program 2>/dev/null`" == "" ]; then
+   if [ "$(which $program 2>/dev/null)" == "" ]; then
       echo Please install: $program
       okay=0
    fi

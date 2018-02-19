@@ -225,22 +225,22 @@ namespace OpenDA.DotNet.Models
 			{
 				// --> Runge-Kutta
 				// System.out.print("step :"+i+" ");
-				// dx0 = dx(x,t);
+				//- dx0 = dx(x,t);
 				IVector dxdt0 = Dx(x, t);
-				// dx1 = dx(x+0.5*dx0,t+0.5*dt);
+				//- dx1 = dx(x+0.5*dx0,t+0.5*dt);
 				xn = x.Clone();
 				xn.Axpy(0.5*tStep, dxdt0);
 				IVector dxdt1 = Dx(xn, t + 0.5*tStep);
-				// dx2 = dx(t+0.5*dt,x+0.5*dx1);
+				//- dx2 = dx(t+0.5*dt,x+0.5*dx1);
 				xn = x.Clone();
 				xn.Axpy(0.5*tStep, dxdt1);
 				IVector dxdt2 = Dx(xn, t + 0.5*tStep);
-				// dx3 = dx(t+1.0*dt,x+1.0*dx2);
+				//- dx3 = dx(t+1.0*dt,x+1.0*dx2);
 				xn = x.Clone();
 				xn.Axpy(1.0*tStep, dxdt2);
 				IVector dxdt3 = Dx(xn, t + 0.5*tStep);
 
-				// x = x + 1/6*dt*(dx0+2*dx1+2*dx2+dx3);
+				//- x = x + 1/6*dt*(dx0+2*dx1+2*dx2+dx3);
 				x.Axpy(1.0/6.0*tStep, dxdt0);
 				x.Axpy(2.0/6.0*tStep, dxdt1);
 				x.Axpy(2.0/6.0*tStep, dxdt2);
@@ -248,7 +248,6 @@ namespace OpenDA.DotNet.Models
 
 				t += tStep;
 				timeStep++;
-				// Console.Out.WriteLine(">>>>>>> t="+t+" x="+x);
 				if (storeObs)
 				{
 					// store all states if this is requested

@@ -111,7 +111,7 @@ JNIEXPORT jint JNICALL Java_org_openda_costa_CtaTreeVector_ctaSetRegGrid
   CTA_TreeVector ctaTreeVec = cta_jni_getCtaHandle(env, obj_this);
   char cGrid[]="grid";
   
-  retval = CTA_Metainfo_Create(&minfo); 
+  CTA_Metainfo_Create(&minfo); 
 
   retval = CTA_Metainfo_setRegGrid(minfo,cGrid,nx,ny,nz,x0,y0,z0,dx,dy,dz);
   if (retval) return retval;
@@ -217,22 +217,17 @@ JNIEXPORT jint JNICALL Java_org_openda_costa_CtaTreeVector_ctaNetcdfInit
    env->ReleaseStringUTFChars(path, spath);
    env->ReleaseStringUTFChars(action, saction);
 
-   ierr = CTA_String_Create(&haction);
-   ierr = CTA_String_Set(haction, saction);
+   CTA_String_Create(&haction);
+   CTA_String_Set(haction, saction);
    ierr = CTA_File_Open(foutput,soutfile,haction);
    if ( ierr != CTA_OK ) {
      cta_jni_exception(env, "CtaTreeVector_netcdfinit", "Could not open file", ierr);
      return -1;
    }
 
-
-
-   ierr = CTA_String_Free(&haction);
-   ierr = CTA_String_Free(&soutfile);
-   if ( ierr != CTA_OK ) {
-     cta_jni_exception(env, "CtaTreeVector_netcdfinit", "Could not free cta_string", ierr);
-     return -1;
-   }
+   CTA_String_Free(&haction);
+   CTA_String_Free(&soutfile);
+   
    return foutput;  //this is the cta filehandle!
 
 }

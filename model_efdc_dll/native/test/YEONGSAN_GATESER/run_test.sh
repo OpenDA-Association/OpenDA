@@ -12,7 +12,7 @@ echo -e "\n----------------------\nSetting up directories\n---------------------
 echo "Model directory: $MODEL_DIR"
 
 echo "Creating $NR_INSTANCES work directories:"
-for (( i = 0 ; i <  $NR_INSTANCES; i++ ))
+for (( i = 0 ; i <  NR_INSTANCES; i++ ))
 do
     INSTANCE_DIR="$PARENT_DIR/work$i"
     if [ -f="$INSTANCE_DIR" ]
@@ -29,7 +29,7 @@ echo -e "\n-------------------\nRunning executable: $EXEC\n-------------------\n
 $EXEC $PARENT_DIR $MODEL_DIR $NR_INSTANCES |  grep HDMT
 
 echo -e "\n-----------------\nComparing results\n-----------------\n"
-for (( i = 1 ; i <  $NR_INSTANCES; i++ ))
+for (( i = 1 ; i <  NR_INSTANCES; i++ ))
 do 
     echo "Comparing directory work$i to work0"
     if [[ -n $(diff "work0" "work$i") ]]; then
