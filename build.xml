@@ -77,6 +77,7 @@
       <buildmodule module="model_glm" />
       <buildmodule module="model_gotm" />
       <buildmodule module="model_hspf" />
+      <buildmodule module="model_metaswap"/>
       <buildmodule module="model_nemo"/>
       <buildmodule module="model_reactive_advection"/>
       <buildmodule module="model_swan"/>
@@ -238,6 +239,7 @@
         <cleanmodule module="model_glm" />
         <cleanmodule module="model_gotm" />
         <cleanmodule module="model_hspf" />
+        <cleanmodule module="model_metaswap" />
         <cleanmodule module="model_nemo" />
         <cleanmodule module="model_reactive_advection" />
         <cleanmodule module="model_swan" />
@@ -296,6 +298,7 @@
 	        <zipfileset dir="model_glm" prefix="openda_${version}/public/model_glm" excludes="*.svn"/>
 	        <zipfileset dir="model_gotm" prefix="openda_${version}/public/model_gotm" excludes="*.svn"/>
         	<zipfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
+	        <zipfileset dir="model_metaswap" prefix="openda_${version}/public/model_metaswap" excludes="*.svn"/>
 	        <zipfileset dir="model_nemo" prefix="openda_${version}/public/model_nemo" excludes="*.svn"/>
 	        <zipfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
 	        <zipfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
@@ -418,6 +421,7 @@
 	  <tarfileset dir="model_glm" prefix="openda_${version}/public/model_glm" excludes="*.svn"/>
   	  <tarfileset dir="model_gotm" prefix="openda_${version}/public/model_gotm" excludes="*.svn"/>
       <tarfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
+	  <tarfileset dir="model_metaswap" prefix="openda_${version}/public/model_metaswap" excludes="*.svn"/>
 	  <tarfileset dir="model_nemo" prefix="openda_${version}/public/model_nemo" excludes="*.svn"/>
 	  <tarfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
 	  <tarfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
