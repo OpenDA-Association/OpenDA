@@ -1,3 +1,4 @@
+#!/bin/sh
 #set -o xtrace
 #set -o verbose
 # add the COSTAWB program to the path

@@ -1,3 +1,4 @@
+#!/bin/sh
 sudo apt-get install gfortran
 sudo apt-get install mpi-default-dev
 sudo apt-get install libnetcdf-dev

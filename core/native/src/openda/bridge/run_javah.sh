@@ -1,3 +1,4 @@
+#!/bin/sh
 #javah -classpath ../src -d src/openda_include org.costa.CtaObject
 #javah -classpath ../src -d src/openda_include org.costa.CtaTime
 #javah -classpath ../src -d src/openda_include org.costa.CtaVector

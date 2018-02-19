@@ -1,3 +1,4 @@
+#!/bin/sh
 # Setup bin. dir for openda.
 # Script has to be run from the dir. containing the script.
 export OPENDA_BINDIR=`pwd`
