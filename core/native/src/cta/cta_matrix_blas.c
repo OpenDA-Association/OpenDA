@@ -708,6 +708,7 @@ void CTAI_Matrix_Inv(
    float  *sdum;
    int    info;
 
+   info = 0;
    if (A->inverse)   {
       /* OK we are now going to really going to invert the matrix */
       CTAI_Matrix_construct_inverse(A);

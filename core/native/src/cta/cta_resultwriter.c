@@ -72,7 +72,7 @@ static CTAI_ResultWriterAdmin resultWriterAdmin[MaxNativeResultWriters];
 #undef METHOD
 #define METHOD "CTAI_Resultwriter_handleID"
 int CTAI_Resultwriter_handleID(int iDWriter, char *config, char *workingDir){
-  char msg[128];
+  char msg[256];
   char filename[265];
   int iID, retval;
   CTA_String hfname;

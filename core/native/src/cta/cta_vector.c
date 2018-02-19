@@ -1340,7 +1340,7 @@ void CTAI_XML_WriteVector(CTA_Vector hvec, const char *id, const char *caption, 
    int          dimension;
    int          i;
    char unitname[CTA_STRLEN_TAG];
-   int misval;
+   int misval=0;
    CTAI_Gridm thisgrid;
    char misvaltxt[20];
    char valtotxt[10];
