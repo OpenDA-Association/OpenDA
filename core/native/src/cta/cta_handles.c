@@ -142,7 +142,17 @@ int CTA_Handle_Create(const char *name, const CTA_Datatype datatype,
       int oldlen=CTAI_Handles_size;
       //int newlen=oldlen*2;
       int newlen=oldlen*2;
-      CTAI_Handles=realloc(CTAI_Handles,newlen*sizeof(CTA_Handle*));
+
+
+      CTA_Handle **Handles_new=realloc(CTAI_Handles,newlen*sizeof(CTA_Handle*));
+      if (Handles_new==NULL){
+	CTA_WRITE_ERROR("FATAL Cannot allocate new memory to store handels");
+        exit(-1);
+      }
+      else {
+         Handles_new = Handles_new;
+      }
+      
       // Initialise reallocated part
       for (i=oldlen;i<newlen;i++){
          CTAI_Handles[i]=NULL;
