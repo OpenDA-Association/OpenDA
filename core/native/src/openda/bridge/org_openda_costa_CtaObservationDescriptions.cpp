@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "cta.h"
 #include "jni_cta_utils.h"
 #include "jni_datatypes.h"
-
+#define IDEBUG (0)
 
 /*
  * Class:     org_openda_costa_CtaObservationDescriptions
@@ -230,10 +230,9 @@ JNIEXPORT jobjectArray JNICALL Java_org_openda_costa_CtaObservationDescriptions_
 JNIEXPORT jint JNICALL Java_org_openda_costa_CtaObservationDescriptions_ctaCreateNativeToJavaObserver
 (JNIEnv *env, jobject jObsDescr, jobject jJavaObsDescr){
 
-   int idebug = 0; 
    cta_jni_setJavaEnv(env);
 
-   if (idebug>0) {printf("Debug: Creating observation descriptions \n");}
+   if (IDEBUG>0) {printf("Debug: Creating observation descriptions \n");}
    // Get the class of the Java implementation
    jclass cls = env->GetObjectClass(jJavaObsDescr);
 
@@ -258,7 +257,7 @@ JNIEXPORT jint JNICALL Java_org_openda_costa_CtaObservationDescriptions_ctaCreat
    CTA_Handle_Create("Java class", CTA_DATABLOCK,&jniClass, &hJniClass);
 
    CTA_ObsDescr_Create( hobsdescrcl, hJniClass, &hobsdscr);
-   if (idebug>0) {printf("Debug: Handle of created observation descriptions is %d\n",hobsdscr);}
+   if (IDEBUG>0) {printf("Debug: Handle of created observation descriptions is %d\n",hobsdscr);}
 
 
 

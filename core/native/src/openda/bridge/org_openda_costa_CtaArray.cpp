@@ -205,7 +205,6 @@ JNIEXPORT jdouble JNICALL Java_org_openda_costa_CtaArray_getValueAsDouble__I
    jdouble cValue=-99.0;
 
    int ierr = CTA_Array_getValueAsDoubles_index(h, index, &cValue);
-   ierr = CTA_Array_getValueAsDoubles_index(h, index, &cValue);
    if (ierr!=CTA_OK){
       cta_jni_exception(env, "CtaArray", "could not call getValuesAsDoubles_indexrange", ierr);
    }

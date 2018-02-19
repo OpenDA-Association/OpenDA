@@ -45,7 +45,6 @@ jintArray Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalization
   (JNIEnv *env, jobject jModel, jobject jObsDescr, jdouble distance, jint iDomain){
 
    int nObs;
-   int retVal;
    CTA_Vector locVecs;
 
    cta_jni_setJavaEnv(env);
@@ -59,31 +58,31 @@ jintArray Java_org_openda_costa_CtaOpenDaModel_ctaGetObservedLocalization
    jintArray jValues = env->NewIntArray(nObs);
 
    /* Create COSTA vector */
-   retVal = CTA_Vector_Create(CTA_DEFAULT_VECTOR, nObs, CTA_HANDLE, CTA_NULL, &locVecs);
+   CTA_Vector_Create(CTA_DEFAULT_VECTOR, nObs, CTA_HANDLE, CTA_NULL, &locVecs);
 
    /* Set all indices NULL */
    CTA_Handle nullHandle=CTA_NULL;
-   retVal = CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
+   CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
 
    if (iDomain >=0){
       /* Get localization from model */
-      retVal = CTA_Model_GetObsLocalizationDomain(ctaModel, ctaObsDescr, distance, iDomain, locVecs);
+      CTA_Model_GetObsLocalizationDomain(ctaModel, ctaObsDescr, distance, iDomain, locVecs);
    }
    else {
-      retVal = CTA_Model_GetObsLocalization(ctaModel, ctaObsDescr, distance, locVecs);
+      CTA_Model_GetObsLocalization(ctaModel, ctaObsDescr, distance, locVecs);
    }
 
    /* Copy costa handles into Java integer array */
    int *cValues = new int[nObs];
-   retVal = CTA_Vector_GetVals(locVecs, (void *) cValues, nObs, CTA_HANDLE);
+   CTA_Vector_GetVals(locVecs, (void *) cValues, nObs, CTA_HANDLE);
    env->SetIntArrayRegion(jValues, 0, nObs, (jint *) cValues);
 
    /* Set all handles to CTA_NULL in order to avoid deallocation */
-   retVal = CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
+   CTA_Vector_SetConstant(locVecs, &nullHandle, CTA_HANDLE);
 
    /* Free work variables */
    delete [] cValues;
-   retVal=CTA_Vector_Free(&locVecs);
+   CTA_Vector_Free(&locVecs);
 
    return jValues;
 }
