@@ -150,7 +150,7 @@ void cta_jni_ExternalMessageWriterSetID(JNIEnv *env, jclass classID, jmethodID m
 int cta_jni_JavaStringVecToNativeVec(JNIEnv *env,  jobjectArray jArray, CTA_Vector cVec){
    CTA_String aString;
    jint lenArray;
-   int nVec, retval, ival;
+   int nVec, ival;
    jstring j_str;
    jboolean isCopy;
    CTA_Datatype datatype;
@@ -168,7 +168,7 @@ int cta_jni_JavaStringVecToNativeVec(JNIEnv *env,  jobjectArray jArray, CTA_Vect
          CTA_Vector_GetDatatype(cVec, &datatype);
 
          // Unpack the java vector
-         retval=CTA_OK;
+         int retval=CTA_OK;
          for (int i=0; i<lenArray && retval==CTA_OK; i++){
             const char *c_str;
             // Put Java string into COSTA string
