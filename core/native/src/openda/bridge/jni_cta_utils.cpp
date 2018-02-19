@@ -115,15 +115,9 @@ void cta_jni_ExternalMessageWriter(char *className, char *method, char *message,
    sType[1]=0;
 
    // Create 4 Java strings
-   if (className){
-      jClassName =(javaEnv)->NewStringUTF(className);
-   }
-   if (method) {
-      jMethod    =(javaEnv)->NewStringUTF(method);
-   }
-   if (message){
-      jMessage   =(javaEnv)->NewStringUTF(message);
-   }
+   jClassName =(javaEnv)->NewStringUTF(className);
+   jMethod    =(javaEnv)->NewStringUTF(method);
+   jMessage   =(javaEnv)->NewStringUTF(message);
    jType      =(javaEnv)->NewStringUTF(sType);
    
    
@@ -156,11 +150,9 @@ void cta_jni_ExternalMessageWriterSetID(JNIEnv *env, jclass classID, jmethodID m
 int cta_jni_JavaStringVecToNativeVec(JNIEnv *env,  jobjectArray jArray, CTA_Vector cVec){
    CTA_String aString;
    jint lenArray;
-   int i, nVec, retval, ival;
+   int nVec, retval, ival;
    jstring j_str;
-   const char *c_str;
    jboolean isCopy;
-   char message[256];
    CTA_Datatype datatype;
    double val;
 
@@ -177,7 +169,8 @@ int cta_jni_JavaStringVecToNativeVec(JNIEnv *env,  jobjectArray jArray, CTA_Vect
 
          // Unpack the java vector
          retval=CTA_OK;
-         for (i=0; i<lenArray && retval==CTA_OK; i++){
+         for (int i=0; i<lenArray && retval==CTA_OK; i++){
+            const char *c_str;
             // Put Java string into COSTA string
             j_str = (jstring) env->GetObjectArrayElement(jArray, i);
             c_str = env->GetStringUTFChars(j_str,&isCopy);
@@ -214,6 +207,7 @@ int cta_jni_JavaStringVecToNativeVec(JNIEnv *env,  jobjectArray jArray, CTA_Vect
          return retval;
       }
       else {
+         char message[256];
          sprintf(message,"Dimension error: the size of the native array is %d and the java array has size %d",nVec,lenArray);
          CTA_WRITE_ERROR(message);
          return CTA_DIMENSION_ERROR;
