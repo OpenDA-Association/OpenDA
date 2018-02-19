@@ -695,7 +695,6 @@ int CTA_Handle_GetValue(const CTA_Handle handle, void *value, CTA_Datatype datat
    }
 
    /* Otherwise, return CTA_INCOMPATIBLE_HANDLE */
-   value = CTA_NULL;
    return CTA_INCOMPATIBLE_HANDLE;
 }
 

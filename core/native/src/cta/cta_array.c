@@ -764,7 +764,7 @@ int CTA_Array_getSlice(CTA_Array h, int dimension, int index, CTA_Array *h_out){
       int nDimsLeft=dimension;
       int dimsLeft[MaxDimensions];
       int dims[MaxDimensions];
-	  int rankRight;
+      int rankRight;
       int dimsRight[MaxDimensions];
 	  int nDims;
 	  int i;
@@ -1108,7 +1108,6 @@ int CTA_Array_setSliceAsArray_range(CTA_Array h, CTA_Array slice_h, int dimensio
 #define METHOD "CTA_Array_setSliceAsDoubles_range"
 int CTA_Array_setSliceAsDoubles_range(CTA_Array h, double *slice, int dimension, int minIndex, int maxIndex){
    CTAI_Array *cthis=NULL;
-   int rankRight;
    int dimsRight[MaxDimensions];
 
 
@@ -1129,7 +1128,7 @@ int CTA_Array_setSliceAsDoubles_range(CTA_Array h, double *slice, int dimension,
       int srcPos;
 
       for (i=0; i<dimension; i++){dimsLeft[i]=cthis->dimensions[i];}
-      rankRight=cthis->nDimensions-1;
+      int rankRight=cthis->nDimensions-1;
       for (i=0; i<rankRight; i++){dimsRight[i]=cthis->dimensions[dimension+1+i];}
       for (i=0; i<cthis->nDimensions; i++){dims[i]=cthis->dimensions[i];}
       dims[dimension]=maxIndex-minIndex+1;

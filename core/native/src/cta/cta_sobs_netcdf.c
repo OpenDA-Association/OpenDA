@@ -108,8 +108,8 @@ void CTAI_SObs_netcdf_Create_Init(
 
    } else { //it is a vector: deconstruct it into the database string and the timeoffset
    
-     ierr=CTA_Vector_GetVal(userdata,1,&userdata1,CTA_HANDLE);
-     ierr=CTA_Vector_GetVal(userdata,2,&userdata2,CTA_HANDLE);
+     CTA_Vector_GetVal(userdata,1,&userdata1,CTA_HANDLE);
+     CTA_Vector_GetVal(userdata,2,&userdata2,CTA_HANDLE);
      ierr=CTA_Vector_GetVal(userdata2,1,&timeoffset,CTA_DOUBLE);
      if (ierr!=CTA_OK) {
        printf("CTAI_SObs_netcdf :: Create: userdata2 is not a vector of doubles! \n");
@@ -162,8 +162,8 @@ void CTAI_SObs_netcdf_Create_Init(
   
 
   // initialise the time
-   ierr=CTA_Time_Create(&tspan0);
-   ierr=CTA_Time_SetSpan(tspan0, 0.0, 24.0);
+   CTA_Time_Create(&tspan0);
+   CTA_Time_SetSpan(tspan0, 0.0, 24.0);
 
    // initialise the spatial window. Maybe it should be read from netcdf-file (global attribute)
    lon1 = -90.0; // far west
@@ -313,14 +313,14 @@ void CTAI_SObs_netcdf_CreateSelString(
       nc_values2 = CTA_Malloc(obsin->nmeasr_orig * sizeof(float));
       nc_sel_values1 = CTA_Malloc(obsin->nmeasr * sizeof(float));
       nc_sel_values2 = CTA_Malloc(obsin->nmeasr * sizeof(float));
-      ierr = nc_inq_varid(obsin->database->ncid, "longitude", &varid);
-      ierr = nc_get_var_float(obsin->database->ncid, varid, &nc_values1[0]);
-      ierr = nc_inq_varid(obsin->database->ncid, "latitude", &varid);
-      ierr = nc_get_var_float(obsin->database->ncid, varid, &nc_values2[0]);
-      ierr = CTA_RelTable_ApplyVal(obsin->selectionReltab, nc_values1, obsin->nmeasr_orig, 
-                                   nc_sel_values1,obsin->nmeasr, CTA_REAL);
-      ierr = CTA_RelTable_ApplyVal(obsin->selectionReltab, nc_values2, obsin->nmeasr_orig, 
-                                   nc_sel_values2,obsin->nmeasr, CTA_REAL);
+      nc_inq_varid(obsin->database->ncid, "longitude", &varid);
+      nc_get_var_float(obsin->database->ncid, varid, &nc_values1[0]);
+      nc_inq_varid(obsin->database->ncid, "latitude", &varid);
+      nc_get_var_float(obsin->database->ncid, varid, &nc_values2[0]);
+      CTA_RelTable_ApplyVal(obsin->selectionReltab, nc_values1, obsin->nmeasr_orig, 
+                                nc_sel_values1,obsin->nmeasr, CTA_REAL);
+      CTA_RelTable_ApplyVal(obsin->selectionReltab, nc_values2, obsin->nmeasr_orig, 
+                                nc_sel_values2,obsin->nmeasr, CTA_REAL);
 
       if (IDEBUG>10){
         printf("latitudes of obsin: \n");
@@ -450,9 +450,9 @@ void CTAI_SObs_netcdf_CreateSelRelTab(CTAI_SObs_netcdf *obsin, CTA_RelTable relt
    obsout->nstations = obsout->nmeasr;
 
 
-   ierr =  CTA_Time_GetSpan(obsin->tspan, &t1_in, &t2_in);
-   ierr = CTA_Time_Create(&(obsout->tspan));
-   ierr =  CTA_Time_SetSpan(obsout->tspan, t1_in, t2_in);
+   CTA_Time_GetSpan(obsin->tspan, &t1_in, &t2_in);
+   CTA_Time_Create(&(obsout->tspan));
+   CTA_Time_SetSpan(obsout->tspan, t1_in, t2_in);
 
 
 
@@ -575,7 +575,7 @@ void CTAI_SObs_netcdf_GetVals(
 
 
 
-   ierr = CTA_Vector_Free(&hvcd);
+   CTA_Vector_Free(&hvcd);
    free(nc_vcd_values);
    if (*retval!=CTA_OK) return;
 
@@ -702,8 +702,8 @@ void CTAI_SObs_netcdf_GetVariances(
    ncid = x->database->ncid;
    // read the vcd vector. We know the size: nmeasr_orig. OMI-vcd vector contains one float per entry.
    ierr = nc_inq_varid(ncid, "sigma_vcd_trop", &varid);
-   ierr = nc_get_var_float(ncid, varid, &nc_values[0]);
-   if (ierr != CTA_OK)
+   if (ierr != 0) ierr = nc_get_var_float(ncid, varid, &nc_values[0]);
+   if (ierr != 0)
      {printf("Error: could not read sigma_vcd_trop \n");
        *retval = -1; return;}
 
@@ -911,13 +911,13 @@ void CTAI_SObs_netcdf_export(
 
       for (i=1; i <= x->nmeasr; i++) {
 
-        ierr=CTA_Vector_GetVal(hvec_time, i, &dval1, CTA_DOUBLE);
-        ierr=CTA_Vector_GetVal(hvec_vals, i, &dval2, CTA_DOUBLE);
+        CTA_Vector_GetVal(hvec_time, i, &dval1, CTA_DOUBLE);
+        CTA_Vector_GetVal(hvec_vals, i, &dval2, CTA_DOUBLE);
 
         fprintf(file," nr:%d  time: %f  value: %f \n",i,dval1, dval2);        
       }
-      ierr = CTA_Vector_Free(&hvec_time);
-      ierr = CTA_Vector_Free(&hvec_vals);
+      CTA_Vector_Free(&hvec_time);
+      CTA_Vector_Free(&hvec_vals);
 
       }
    };

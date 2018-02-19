@@ -505,9 +505,9 @@ int CTAI_Par_SetGroupInfo(CTA_Handle parConfig, CTAI_Group *group){
       //FORMODEL
       ierr=CTA_Tree_GetHandleStr(parConfig,"group/use_for_model", &sUseFor);
       CTAI_Par_FatalError(ierr, "cannot find  group/use_for_model in input");
-      ierr=CTA_String_GetLength(sUseFor, &len);
+      CTA_String_GetLength(sUseFor, &len);
       group->forModel=CTA_Malloc((len+1)*sizeof(char));
-      ierr=CTA_String_Get(sUseFor, group->forModel);
+      CTA_String_Get(sUseFor, group->forModel);
 
       // PARALLEL_TYPE
       ierr=CTA_Tree_GetHandleStr(parConfig,"group/parallel_type", &sParType);

@@ -102,10 +102,10 @@ void CTAI_ObsDescr_combine_Create_Init(
        if (IDEBUG > 0) 
          printf("sobs_obsdescr_combine_create_init: TEST if subsobs %d is real (sub-)sobs : retval %d \n",idescr,ierr);
        /* Each subsobs already  has its own  description created. */ 
-       ierr = CTA_SObs_GetDescription(subsob,&hsubdescr);
+       CTA_SObs_GetDescription(subsob,&hsubdescr);
 
      /* put handle in cta-vector of handles */    
-       ierr=CTA_Vector_SetVal(hvec1,idescr,&hsubdescr,CTA_HANDLE);
+       CTA_Vector_SetVal(hvec1,idescr,&hsubdescr,CTA_HANDLE);
 
    }
 
@@ -136,11 +136,11 @@ void CTAI_ObsDescr_combine_CreateSel(CTAI_ObsDescr_combine *descr,
   for (idescr=1; idescr<=nofsubdescr; idescr++) {
        ierr=CTA_Vector_GetVal(descr->subdescr,idescr,&subdescr_in,CTA_HANDLE);
        /* call the createsel function for each individual sub-sobdescr */
-       ierr = CTA_ObsDescr_CreateSel(subdescr_in, *selection,   
+       if (ierr == CTA_OK) ierr = CTA_ObsDescr_CreateSel(subdescr_in, *selection,   
                             *reltab, &subdescr_out);
 
        /* put the selected subdescr in the vector descrout->subdescr */
-       ierr=CTA_Vector_SetVal(hvec1,idescr,&subdescr_out,CTA_HANDLE);    
+       if (ierr == CTA_OK) ierr=CTA_Vector_SetVal(hvec1,idescr,&subdescr_out,CTA_HANDLE);    
        if (ierr != CTA_OK) {
          printf("ctai_obsdescr_createsel: ERROR %d \n",ierr);}
 
@@ -183,8 +183,8 @@ void CTAI_ObsDescr_combine_Get_Keys(
        /* add the new keys to the existing keys */
        ierr =  CTA_String_Create(&hstr1);
        for (j=1; j<= nsubkeys; j++){
-         ierr = CTA_Vector_GetVal(hsubvec,j, &hstr1,CTA_STRING);
-         ierr = CTA_Vector_SetVal(*Keys,offset+j, &hstr1,CTA_STRING);
+         CTA_Vector_GetVal(hsubvec,j, &hstr1,CTA_STRING);
+         CTA_Vector_SetVal(*Keys,offset+j, &hstr1,CTA_STRING);
        }
        offset = offset + nsubkeys;
        ierr = CTA_Vector_Free(&hsubvec);
@@ -350,9 +350,10 @@ void CTAI_ObsDescr_combine_Free(
   CTA_Handle subdescr;
 
   nofsubdescr = descr->nofsubdescr; 
+  ierr = CTA_OK;
   for (idescr=1; idescr<=nofsubdescr; idescr++) {
-       ierr=CTA_Vector_GetVal(descr->subdescr,idescr,&subdescr,CTA_HANDLE);
-       ierr = CTA_ObsDescr_Free(&subdescr);
+       if (ierr == CTA_OK) ierr=CTA_Vector_GetVal(descr->subdescr,idescr,&subdescr,CTA_HANDLE);
+       if (ierr == CTA_OK) ierr = CTA_ObsDescr_Free(&subdescr);
   } 
   *retval = ierr;
 
