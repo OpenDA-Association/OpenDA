@@ -1,3 +1,4 @@
+#!/bin/sh
 # Example configuration setting for compiling native code on 32 bit Ubuntu using OpenJDK 7.
 #
 # all packages are installed using the ubuntu relases.

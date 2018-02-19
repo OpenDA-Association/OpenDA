@@ -1,3 +1,4 @@
+#!/bin/sh
 # There is an issue with gfortran 4.6. The flag of the dependent libraries is not correctly handled by automake/autoconf
 # This results in (-l <libnane> and not -l<libname>). After all processing the compiler tries to link with -l wich causes errors.
 # This fix is inspired by a post of Roger Ferrer Ibáñez (http://lists.gnu.org/archive/html/bug-libtool/2012-03/msg00004.html).

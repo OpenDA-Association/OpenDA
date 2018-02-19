@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Setup for building simple_fortran_dll and simple_fortran_dll_test
 #

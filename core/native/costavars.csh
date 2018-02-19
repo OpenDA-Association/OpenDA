@@ -1,3 +1,4 @@
+#!/bin/sh
 # add the COSTAWB program to the path
 setenv PATH "`pwd`/src/costawb:${PATH}"
 

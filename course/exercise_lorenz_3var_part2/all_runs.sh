@@ -1,3 +1,4 @@
+#!/bin/sh
 # Srcipt to do all runs to prepare output for plotting
 oda_run.sh EnkF_std1_ens10.oda
 tail  openda_logfile.txt

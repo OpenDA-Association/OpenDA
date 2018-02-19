@@ -1,3 +1,4 @@
+#!/bin/sh
 # Example configuration setting for compiling native code on Mac OSX.
 # Change this script to your own needs!
 

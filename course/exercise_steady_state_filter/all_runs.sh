@@ -1,3 +1,4 @@
+#!/bin/sh
 # Srcipt to do all runs to prepare output for plotting
 
 # add jar for model to openda
