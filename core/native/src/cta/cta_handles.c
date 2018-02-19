@@ -150,7 +150,7 @@ int CTA_Handle_Create(const char *name, const CTA_Datatype datatype,
         exit(-1);
       }
       else {
-         Handles_new = Handles_new;
+         CTAI_Handles = Handles_new;
       }
       
       // Initialise reallocated part
