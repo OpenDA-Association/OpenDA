@@ -150,7 +150,7 @@ public class EsriAsciiGridSeriesDataObject implements IDataObject {
 
 	public void finish() {
 		double allValues[] = exchangeItem.getValuesAsDoubles();
-		int index = 0;
+		int timeStartIndex = 0;
 		for (int i = 0; i < filesCount; i++) {
 			IDataObject timeStepDataObject = new EsriAsciiGridDataObject();
 			timeStepDataObject.initialize(workingDir, new String[] {
@@ -159,8 +159,17 @@ public class EsriAsciiGridSeriesDataObject implements IDataObject {
 			IExchangeItem exchangeItem = timeStepDataObject.getDataObjectExchangeItem(exchangeItemIDs[0]);
 			double[] exchangeItemValues = exchangeItem.getValuesAsDoubles();
 			int numEIvalues = exchangeItemValues.length;
-			System.arraycopy(exchangeItemValues, 0 , allValues, index, numEIvalues);
-			index += numEIvalues;
+			for (int j = 0; j < numEIvalues; j++) {
+				if (exchangeItemValues[j] > 0) {
+					exchangeItemValues[j] = allValues[timeStartIndex + j];
+					if (exchangeItemValues[j] < 0) {
+						exchangeItemValues[j] = 0d;
+					}
+				}
+			}
+			// System.arraycopy(exchangeItemValues, 0 , allValues, timeStartIndex, numEIvalues);
+			exchangeItem.setValuesAsDoubles(exchangeItemValues);
+			timeStartIndex += numEIvalues;
 			timeStepDataObject.finish();
 		}
 	}
