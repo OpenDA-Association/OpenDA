@@ -109,7 +109,7 @@ void usr_obssel(CTA_TreeVector *state, CTA_Time *ttime, CTA_ObsDescr *hdescr,
 void usr_SP_Model_CreateFunc(){
 CTA_Intf hintf;
 CTA_Func func;
-
+   hintf = CTA_NULL;
    CTA_Func_Create("usr_create",  usr_create,  hintf, &func);
    CTA_Func_Create("usr_compute", usr_compute, hintf, &func);
    CTA_Func_Create("usr_covar",   usr_covar,   hintf, &func);

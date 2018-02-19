@@ -449,7 +449,7 @@ JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaSaveInternalSt
    char *ID = CTAI_String_GetPtr(cID);
    jstring jID =(env)->NewStringUTF(ID);
    if (IDEBUG>0) {
-      printf("# %returned instanceID bridge = '%s'\n",ID);
+      printf("# returned instanceID bridge = '%s'\n",ID);
    }
 
    /* create the ctaModelState object */
