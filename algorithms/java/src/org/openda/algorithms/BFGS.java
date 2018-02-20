@@ -41,7 +41,7 @@ public class BFGS extends Instance implements IAlgorithm {
     public boolean withPreconditioning = true;
 	
 	private IStochObserver stochObserver;
-	IStochModelFactory stochModelFactory;
+	private IStochModelFactory stochModelFactory;
     ConfigTree bfgsConf;
 
     private IStochModelInstance bestEstimate = null;

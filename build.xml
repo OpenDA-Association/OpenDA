@@ -552,7 +552,7 @@
         <echo>Java library path = ${java.library.path}</echo>
 
     	<!-- <junit printsummary="withOutAndErr" dir="${projectdir}" fork="yes" timeout="1200000" maxmemory="${maxmemory}"> -->
-        <junit printsummary="withOutAndErr" haltonfailure="yes" fork="yes" timeout="1200000" maxmemory="${maxmemory}">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes" timeout="1200000" maxmemory="${maxmemory}">
             <jvmarg value="-ea"/>
             <jvmarg value="-esa"/>
             <batchtest todir="${testreportdir}">

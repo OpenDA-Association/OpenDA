@@ -69,8 +69,10 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 	 * @param arguments
 	 *           Additional arguments (may be null zero-length) These arguments are ignored.
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	public void initialize(File workingDirIn, String fileName, String[] arguments) {
 		this.timeSeriesSet = new LinkedHashMap<String, TimeSeries>();
+		File workingDir=workingDirIn;
+
 		if(workingDir==null){
 			workingDir=new File(".");
 		}

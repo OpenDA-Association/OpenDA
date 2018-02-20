@@ -37,7 +37,6 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
     private IStochModelInstance mainModel = null;
     //config
     private IStochObserver stochObserver;
-	private IStochModelFactory stochModelFactory;
 
 	private int maxSteps;
     private int currentStep;
@@ -85,7 +84,6 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 	 */
     public void setStochComponents(IStochObserver stochObserver, IStochModelFactory stochModelFactory) {
         this.stochObserver = stochObserver;
-		this.stochModelFactory = stochModelFactory;
 
 		// Create MainModel
 		Results.putProgression("Create model");
@@ -157,7 +155,7 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 					int n = state.getSize();
 
 					// Check if size drymask equals size state vector.
-					if (! id_drymask.equals("no id_drymask") && mask.getSize()!=n) {throw new RuntimeException("Drymask and state vector are different in size");}
+					if (! "no id_drymask".equals(id_drymask) && mask.getSize()!=n) {throw new RuntimeException("Drymask and state vector are different in size");}
 
 					// first (and only) observation is the correction factor
 					IVector obs = this.stochObserver.getValues();
@@ -179,7 +177,7 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 						}
 					}
 
-					if (id_drymask != "no id_drymask") {
+					if (! "no id_drymask".equals(id_drymask)) {
 						// apply meerpeil correction only in cells where mask == 1, and not when mask == 0
 						corr.pointwiseMultiply(mask);
 					}
@@ -190,7 +188,7 @@ public class Meerpeilcorrection extends Instance implements IAlgorithm {
 					// Reset values of ExchangeItem containing the state
 					this.mainModel.getDataObjectExchangeItem(id2).setValues(state);
 					Results.putProgression("==================================================");
-					if (id_drymask != "no id_drymask") {
+					if (! "no id_drymask".equals(id_drymask)) {
 						Results.putProgression(" Meerpeilcorrection " + alpha + " applied with mask option.");
 					} else {
 						Results.putProgression(" Meerpeilcorrection " + alpha + " applied");

@@ -31,24 +31,24 @@ import java.util.List;
 public class PowellCoreOptimizer{
 
 	// fields of this class
-	IVector pMin = null;     // best sofar
-	double fMin = Double.MAX_VALUE;
-	IVector pCurrent = null; //value under consideration
-	double fCurrent;
-	IVector xiCurrent[] = null; // current search directions
+	private IVector pMin = null;     // best sofar
+	private double fMin = Double.MAX_VALUE;
+	private IVector pCurrent = null; //value under consideration
+	private double fCurrent;
+	private IVector xiCurrent[] = null; // current search directions
 
 	ICostFunction f = null;
 	// settings for algorithm
-	int maxitPowell = 200;    // maximum number of outer iterations for Powell
-	int maxitBrent = 200;     // maximum number of iterations for Brent linesearch
-	int maxitBracket = 20;     // maximum number of iterations for Bracketing
-	double relTolPowell = 0.01; // relative convergence-check for Powell
-	double absTolPowell = 0.01; // absolute convergence-check for Powell
-	double relTolBrent = 0.01;   // relative convergence-check with respect to decrease in Brent-linesearch
-	double absTolBrent = 0.001; // dito for absolute tolerance
-	double bracketFirstTry=1.0; // first value evaluated for bracketing during linesearch
-	double limit = 100.0;     // max. extension for bracketing
-	double tiny = 1.0e-15;    // value to avoid division by zero in bracketing
+	public int maxitPowell = 200;    // maximum number of outer iterations for Powell
+	public int maxitBrent = 200;     // maximum number of iterations for Brent linesearch
+	public int maxitBracket = 20;     // maximum number of iterations for Bracketing
+	public double relTolPowell = 0.01; // relative convergence-check for Powell
+	public double absTolPowell = 0.01; // absolute convergence-check for Powell
+	public double relTolBrent = 0.01;   // relative convergence-check with respect to decrease in Brent-linesearch
+	public double absTolBrent = 0.001; // dito for absolute tolerance
+	public double bracketFirstTry=1.0; // first value evaluated for bracketing during linesearch
+	public double limit = 100.0;     // max. extension for bracketing
+	public double tiny = 1.0e-15;    // value to avoid division by zero in bracketing
 
     // required for the additional stopping criteria:
     public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
@@ -57,8 +57,8 @@ public class PowellCoreOptimizer{
     public IObservationDescriptions obsDescr=null;
 
 	//stopping
-	boolean moreToDo = true;         // is this optimization finished
-	int imain=0;                     // main iterations done
+	private boolean moreToDo = true;         // is this optimization finished
+	private int imain=0;                     // main iterations done
 
 
     /**
