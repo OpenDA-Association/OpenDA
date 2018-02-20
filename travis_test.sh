@@ -1,5 +1,7 @@
 #!/bin/sh
 #Note set TZ to force correct date output (otherwise some comparisons will fail!)
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 export TZ='Europe/Amsterdam'  
 
 
