@@ -368,7 +368,6 @@ int CTA_Model_Create(CTA_ModelClass hmodcl, CTA_Handle userdata, CTA_Model *hmod
    int retval;
    CTAI_ModelClass *clsdata;
    CTA_Function *function;
-   int i;
    CTA_Tree tConfig;
 
    if (IDEBUG>0) {
@@ -383,13 +382,13 @@ int CTA_Model_Create(CTA_ModelClass hmodcl, CTA_Handle userdata, CTA_Model *hmod
       /* We are not creating an instance of the parallel model builder */
       /* We are running parallel and this is the master process        */
       /* We create the model on one of the worker processes            */
-      retval=CTA_Tree_Create(&tConfig);
+      CTA_Tree_Create(&tConfig);
       CTA_Tree_AddHandle(tConfig, "model", userdata);
       CTA_Tree_AddHandle(tConfig, "modelclass", hmodcl);
       /* Create model (using parallel modelbuild model */
       //printf("CREATE A MODEL USING PARALLE MODEL BUILDER\n");
       retval=CTA_Model_Create(CTA_MODBUILD_PAR, tConfig, hmodel);
-	  if (retval!=CTA_OK){
+      if (retval!=CTA_OK){
 		  char message[1024];
 		  sprintf(message,"#%d Error in model create %d\n",CTA_PAR_MY_RANK, retval);
 	  }
@@ -452,7 +451,7 @@ int CTA_Model_Create(CTA_ModelClass hmodcl, CTA_Handle userdata, CTA_Model *hmod
       model->data=CTA_Malloc(memsize);
 
       /* copy function pointers */
-      for (i=0;i<CTA_MODEL_NUMFUNC;i++){
+      for (int i=0;i<CTA_MODEL_NUMFUNC;i++){
          model->functions[i]=clsdata->functions[i];
       }
       /* set other general information */
@@ -558,7 +557,6 @@ int CTAI_Model_PerformTimesteps(
    double tstep;             /* Maximum number of steps that model can proceed */
    int isspan;               /* flag indicating whether input is timespan */
    int isBlocked;            /* flag indicating that maximum number of model steps is exceeded */
-   int nstep;                /* number of model steps in htime */
 
    if (IDEBUG>0) {
      printf("CTA_MODEL DEBUG: Calling performTimeStep function \n");
@@ -586,7 +584,7 @@ int CTAI_Model_PerformTimesteps(
      /* Is there a possible barrier? */
      if (data->barrier.flag==CTA_TRUE) {
        tstep = data->barrier.t_step;
-       nstep = (int) ((tstop-tstart)/tstep+0.5);
+       int nstep = (int) ((tstop-tstart)/tstep+0.5);
        if (IDEBUG>0) {
           printf("CTA_performTimesteps: Time information: \n");
           printf("Tstart= %f, Tstep=%f, Tstop=%f, nStep=%d\n ", tstart, tstep, tstop, nstep);
@@ -644,7 +642,6 @@ int CTA_Model_Compute(
    int ntimes;               /* number of times where observations are
                               * available */
    int ntimes_loop;          /* number time intervals for compute */
-   int itime;                /* loop counter of ntimes       */
    CTA_ObsDescr obsdescr_sub;/* Observation description of subset of
                                 observations */
    int nobs;                 /* number of observations in obsdescr_sub */
@@ -701,7 +698,7 @@ int CTA_Model_Compute(
       /* Do we need to interrupt the computations? */
 
       if (IDEBUG>0) {
-         for (itime=0;itime<ntimes;itime++){
+         for (int itime=0;itime<ntimes;itime++){
             printf("%f ",data->announced.times[itime]);
          }
          printf("First announced time %f\n",data->announced.times[0]);
@@ -740,7 +737,7 @@ int CTA_Model_Compute(
       CTA_Time_Create(&hstep);
       CTA_Time_SetSpan(hstep,tstart,data->announced.times[0]);
 
-      for (itime=0;itime<ntimes_loop;itime++){
+      for (int itime=0;itime<ntimes_loop;itime++){
          if (IDEBUG>0){
             CTA_Time_GetSpan(hstep,&t1,&t2);
             printf("running from %f to %f \n",t1,t2);
@@ -1320,7 +1317,6 @@ int CTA_Model_AnnounceObsValues_Set(
 ){
    /* Local variables */
    int nobs;                 /* Number of observations       */
-   int retval;               /* Return value of COSTA call   */
    double *allTimes;         /* Array with all available times */
    CTA_Vector vtimes;        /* Vector with all available times */
    int info;
@@ -1333,6 +1329,7 @@ int CTA_Model_AnnounceObsValues_Set(
    CTAI_Clear_Announced(announced, FALSE);
 
    if (hdescr!=CTA_NULL) {
+      int retval;               /* Return value of COSTA call   */
 
       /* If there are any observations in the description */
       retval=CTA_ObsDescr_Observation_Count(hdescr, &nobs);

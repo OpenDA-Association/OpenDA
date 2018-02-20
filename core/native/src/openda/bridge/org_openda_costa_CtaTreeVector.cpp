@@ -274,8 +274,8 @@ JNIEXPORT jint JNICALL Java_org_openda_resultwriters_NetcdfResultWriter_ctaNetcd
    // Note: if file is already open, export should occur as 'append'
    // in netcdf case
    ierr = CTA_String_Create(&haction);
-   ierr = CTA_String_Set(haction, saction);
-   ierr = CTA_File_Open(foutput,soutfile,haction);
+   if (ierr == CTA_OK) ierr = CTA_String_Set(haction, saction);
+   if (ierr == CTA_OK) ierr = CTA_File_Open(foutput,soutfile,haction);
    if ( ierr != CTA_OK ) {
      cta_jni_exception(env, "CtaTreeVector_netcdfinit", "Could not open file", ierr);
      return -1;
@@ -283,7 +283,7 @@ JNIEXPORT jint JNICALL Java_org_openda_resultwriters_NetcdfResultWriter_ctaNetcd
    env->ReleaseStringUTFChars(path, spath);
    env->ReleaseStringUTFChars(action, saction);
    ierr = CTA_String_Free(&haction);
-   ierr = CTA_String_Free(&soutfile);
+   if (ierr == CTA_OK) ierr = CTA_String_Free(&soutfile);
    if ( ierr != CTA_OK ) {
      cta_jni_exception(env, "CtaTreeVector_netcdfinit", "Could not free cta_string", ierr);
      return -1;

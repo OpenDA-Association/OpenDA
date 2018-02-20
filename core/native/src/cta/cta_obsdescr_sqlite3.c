@@ -69,10 +69,10 @@ int CTAI_ObsDescr_CreateRelTable(CTA_ObsDescr hobsdescr1, CTA_ObsDescr hobsdescr
    CTA_Vector_Create(CTA_DEFAULT_VECTOR, nobs2, CTA_INTEGER, CTA_NULL, &vselect);
 
    /* Get Time and ID from both */
-   retval=CTA_ObsDescr_Get_ValueProperties(hobsdescr1, "TIME", vtime1, CTA_DOUBLE);
-   retval=CTA_ObsDescr_Get_ValueProperties(hobsdescr2, "TIME", vtime2, CTA_DOUBLE);
-   retval=CTA_ObsDescr_Get_ValueProperties(hobsdescr1, "STATION_ID",vid1,CTA_INTEGER);
-   retval=CTA_ObsDescr_Get_ValueProperties(hobsdescr2, "STATION_ID",vid2,CTA_INTEGER);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr1, "TIME", vtime1, CTA_DOUBLE);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr2, "TIME", vtime2, CTA_DOUBLE);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr1, "STATION_ID",vid1,CTA_INTEGER);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr2, "STATION_ID",vid2,CTA_INTEGER);
 
    /* now we have to figure out which elements from hobsdescr1 are also
     * present in hobsdescr2                                           */

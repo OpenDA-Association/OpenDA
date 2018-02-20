@@ -101,7 +101,6 @@ void CTAI_Matrix_construct_inverse(CTAI_Matrix_blas *A)
 {
    void *lu;
    double *dA;
-   float  *sA;
    int i, length, info;
    int one=1;
    char notrans='N';
@@ -111,6 +110,7 @@ void CTAI_Matrix_construct_inverse(CTAI_Matrix_blas *A)
       lu=CTA_Malloc(sizeof(float)*length);
       SCOPY_F77(&length,A->values,&one,(float *) lu,&one);
       // Create identity matrix
+      float  *sA;
       sA=A->values;
       for (i=0;i<length; i++){ sA[i]=0.0;}
       for (i=0;i<length; i=i+A->n+1){ sA[i]=1.0;}
@@ -458,7 +458,6 @@ void CTAI_Matrix_Export(
 {
    // The user-data must be 1 item: the output file. Look it up.
    FILE *file;
-   int i0;
 
    if (x->inverse){
       /* OK we are now going to really going to invert the matrix */
@@ -470,7 +469,7 @@ void CTAI_Matrix_Export(
 
       if (CTA_FLUSH_ALWAYS) CTA_Flush();
 
-      for (i0=0; i0<x->n; i0+=5)
+      for (int i0=0; i0<x->n; i0+=5)
       {
          int j;
          fprintf(file,"matrix(:,%d:%d)=[",i0+1,MIN(x->n,i0+5));

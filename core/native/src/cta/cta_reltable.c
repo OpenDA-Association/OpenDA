@@ -441,7 +441,6 @@ BOOL found;
 int nsel1_rel1, nsel2_rel1, nsel1_rel2, nsel2_rel2;
 int *sel1_rel1, *sel2_rel1, *sel1_rel2, *sel2_rel2;
 int nelm1, nelm2, *from1, *to1, *from2, *to2;
-int info;
 int *from;
 
 CTAI_RelTable *reltable, *reltable1, *reltable2;
@@ -505,7 +504,7 @@ CTAI_RelTable *reltable, *reltable1, *reltable2;
    /* permutate towards origin of second relation table */
    CTA_Util_IQSort2(to2, from2, nelm2);
 
-   if (IDEBUG > 0) {printf("reltable_combine2-2 %d; nelm1,2:%d %d   \n",info, nelm1, from2[0]);}
+   if (IDEBUG > 0) {printf("reltable_combine2-2; nelm1,2:%d %d   \n", nelm1, from2[0]);}
 
    /* find all target elements of first relation table  that corresponds
       that are an origin element of second relation table. */

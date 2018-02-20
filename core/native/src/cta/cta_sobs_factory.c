@@ -65,7 +65,6 @@ int CTAI_SObs_DuplicateClass(CTA_SObsClass hsobscl,
    CTA_String sname;
    int retval;
    int i;
-   char msg[256];
 
    /* Get class data containing all function pointers */
    retval=CTA_Handle_Check((CTA_Handle) hsobscl,CTA_SOBSCLASS);
@@ -94,6 +93,7 @@ int CTAI_SObs_DuplicateClass(CTA_SObsClass hsobscl,
    retval=CTA_Handle_Create(CTAI_String_GetPtr(sname), CTA_SOBSCLASS,
                             clsdata_dup, hsobscl_dup);
    if (retval!=CTA_OK) {
+      char msg[256];
       sprintf(msg,"Cannot create a handle of type CTA_SOBSCLASS with name '%s'",CTAI_String_GetPtr(sname));
       CTA_WRITE_ERROR(msg);
    }

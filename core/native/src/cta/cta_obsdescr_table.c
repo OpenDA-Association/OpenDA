@@ -73,9 +73,8 @@ void CTAI_ObsDescr_table_Create_Init(
    CTA_String sKey;
    CTA_String sCol;
    const char *key;
-   int locIDEBUG=0;
 
-   if (locIDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: Start handle=%d\n",*usrdat);
+   if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: Start handle=%d\n",*usrdat);
    /* Check input we only support a pack array input and an observation
     * description component */
    *retval=CTA_Handle_GetDatatype(*usrdat, &datatype);
@@ -92,10 +91,10 @@ void CTAI_ObsDescr_table_Create_Init(
       if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: datatype==CTA_OBSDESCR\n");
       /* Get number of keys and number of measurements */
       *retval=CTA_ObsDescr_Property_Count(*usrdat, &nkeys);
-      if (locIDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: nkeys=%d ierr=%d\n",nkeys, *retval);
+      if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: nkeys=%d ierr=%d\n",nkeys, *retval);
       if (*retval!=CTA_OK) return;
       *retval=CTA_ObsDescr_Observation_Count(*usrdat, &nmeasr);
-      if (locIDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: nmeasr=%d ierr=%d\n",nmeasr, *retval);
+      if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: nmeasr=%d ierr=%d\n",nmeasr, *retval);
       if (*retval!=CTA_OK) return;
    } else {
       *retval=CTA_NOT_IMPLEMENTED;
@@ -119,7 +118,7 @@ void CTAI_ObsDescr_table_Create_Init(
    descr->nkeys=nkeys;
    descr->nmeasr=nmeasr;
  
-   if (locIDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: datatype=%d \n",datatype);
+   if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: datatype=%d \n",datatype);
  
   
    if (datatype==CTA_PACK) {
@@ -133,7 +132,7 @@ void CTAI_ObsDescr_table_Create_Init(
          descr->Keys[ikey]=CTA_Malloc(len*sizeof(char));
          *retval=CTA_Pack_Get(*usrdat,descr->Keys[ikey],len*sizeof(char));
          if (*retval!=CTA_OK) return;
-         if (locIDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: Key[%d]=%s\n",
+         if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: Key[%d]=%s\n",
                               ikey, descr->Keys[ikey]);
       }
 
@@ -161,7 +160,7 @@ void CTAI_ObsDescr_table_Create_Init(
    } else if (datatype==CTA_OBSDESCR) {
       
 
-      if (locIDEBUG>0) {printf("CTAI_ObsDescr_table_Create_Init: start \n");}
+      if (IDEBUG>0) {printf("CTAI_ObsDescr_table_Create_Init: start \n");}
 
       /* Allocate vectors for getting out the information */
 
@@ -192,7 +191,7 @@ void CTAI_ObsDescr_table_Create_Init(
        
           /* Get the properties of this key */
           key=CTAI_String_GetPtr(sKey);
-          if (locIDEBUG>0) {printf("CTAI_ObsDescr_table_Create_Init: get data for key '%s'\n",key);}
+          if (IDEBUG>0) {printf("CTAI_ObsDescr_table_Create_Init: get data for key '%s'\n",key);}
           // NOTE this is were performance goes lost!
           *retval=CTA_ObsDescr_Get_ValueProperties(*usrdat, key, vCol, CTA_STRING);
           if (*retval!=CTA_OK) return;
@@ -206,7 +205,7 @@ void CTAI_ObsDescr_table_Create_Init(
              if (*retval!=CTA_OK) return;
                  descr->Columns[ikey][imeasr]=CTA_Malloc((lencol+1)*sizeof(char));
                  *retval=CTA_String_Get(sCol,descr->Columns[ikey][imeasr]);
-                if (locIDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: Val[%d][%d]=%s\n",
+                if (IDEBUG>0) printf("CTAI_ObsDescr_table_Create_Init: Val[%d][%d]=%s\n",
                                  ikey,imeasr,descr->Columns[ikey][imeasr]);  
              if (*retval!=CTA_OK) return;
           }
@@ -331,7 +330,7 @@ void CTAI_ObsDescr_table_Get_Properties(
           // Read the value
           double NaN;
 
-          NaN = 0; NaN = 1.0/NaN; NaN=NaN/NaN;
+          NaN = 0; NaN = 1.0/NaN; NaN=(1.0+NaN)/NaN;
           dvals[imeasr]=NaN;
 
           if (descr->Columns[ikey][imeasr] != NULL) {

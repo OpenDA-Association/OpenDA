@@ -487,7 +487,7 @@ JNIEXPORT jobject JNICALL Java_org_openda_costa_CtaOpenDaModel_ctaLoadPersistent
    env->ReleaseStringUTFChars(jFileName, fileName);
 
    /* load the state from file, get ID of loaded state back*/
-   int retVal = CTA_Model_LoadPersistentState(ctaModel, cFileName, &cID);
+   CTA_Model_LoadPersistentState(ctaModel, cFileName, &cID);
 
    /* put the returned costa string into a java string */
    char *ID = CTAI_String_GetPtr(cID);

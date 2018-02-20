@@ -35,15 +35,14 @@ void Oscill_Model_CreateFunc(){
 }
 
 int Oscill_Model_setgrid(CTA_TreeVector state){
-   int retval;         //Return value of a call
    CTA_Metainfo minfo;
    CTAI_Gridm thisgrid;
 
     printf("entering oscill_model_setgrid \n");
 
 
-   retval = CTA_Metainfo_Create(&minfo); 
-   retval=CTA_Metainfo_SetTag(minfo,"ar1-noise");
+   CTA_Metainfo_Create(&minfo); 
+   CTA_Metainfo_SetTag(minfo,"ar1-noise");
    // fill grid
 
    strcpy(thisgrid.name,"oscill grid");
@@ -60,9 +59,8 @@ int Oscill_Model_setgrid(CTA_TreeVector state){
    thisgrid.dz = .1;
    thisgrid.nsize = thisgrid.nx*thisgrid.ny*thisgrid.nz;
 
-   retval = CTA_Metainfo_SetGrid(minfo,&thisgrid);
-   //   printf("!!! Oscill-model: %d  %d\n",retval, minfo);
-   retval = CTA_TreeVector_SetMetainfo(state, minfo);
+   CTA_Metainfo_SetGrid(minfo,&thisgrid);
+   CTA_TreeVector_SetMetainfo(state, minfo);
 
  
 
