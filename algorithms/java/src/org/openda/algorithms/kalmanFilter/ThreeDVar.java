@@ -48,25 +48,25 @@ import java.io.File;
 
 public class ThreeDVar extends AbstractSequentialAlgorithm{
 	// configuration data for reading
-    int ThreeDVarTimeCounter = 0;
+    private int ThreeDVarTimeCounter = 0;
 
-    ConfigTree ThreeDVarConf;
-    double factor = 0.5;
-    int algorithm = 2; // BFGS = 1 , CG = 2
-    boolean BFGSlimitedMemory = true;
-    int BFGSnStore = 3;
-    int CGmethod = 1;
-    int maxitAlgorithm = 25;
-    int maxitBrent = 200;
-	int maxitBracket = 20; 
-	double relTolGrad = 0.01;
-	double absTolGrad = 0.01;
-	double relTolStep = 0.001;
-	double absTolStep = 0.001;
-	double relTolBrent = 0.01;
-	double absTolBrent = 0.01;
-	double bracketFirstTry = 1.0;
-	double limit = 100.0;
+	private ConfigTree ThreeDVarConf;
+	private double factor = 0.5;
+	private int algorithm = 2; // BFGS = 1 , CG = 2
+	private boolean BFGSlimitedMemory = true;
+	private int BFGSnStore = 3;
+	private int CGmethod = 1;
+	private int maxitAlgorithm = 25;
+	private int maxitBrent = 200;
+	private int maxitBracket = 20;
+	private double relTolGrad = 0.01;
+	private double absTolGrad = 0.01;
+	private double relTolStep = 0.001;
+	private double absTolStep = 0.001;
+	private double relTolBrent = 0.01;
+	private double absTolBrent = 0.01;
+	private double bracketFirstTry = 1.0;
+	private double limit = 100.0;
     
     
 	public void initialize(File workingDir, String[] arguments) {

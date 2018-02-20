@@ -50,7 +50,7 @@ public class GriddedFullSearchCoreOptimizer{
 	//current state
 	private boolean moreToDo = true;         // is this optimization finished
 	private int currentParIndex[] =null;
-	private int imain=0; //number of evaluation
+	public int imain=0; //number of evaluation
     private IVector pInit = null;
 
 

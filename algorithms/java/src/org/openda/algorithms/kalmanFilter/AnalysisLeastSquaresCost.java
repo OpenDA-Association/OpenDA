@@ -60,22 +60,22 @@ import org.openda.utils.Vector;
  */
 public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 	// data for constructing the costfunction
-	boolean backGroundOn       = true; // use term for background errorcovariance
-	IStochModelInstance model   = null;
-    IVector meanState           = null; // mean of the ensemble
-	IVector deltaStates[]       = null; // ensemble members minus meanState sqrt(n-1)*L
-	IVector predictions[]       = null;
-    IStochObserver observations = null;
-    IVector obsValues           = null;
-    IStochVector parameterUncertainty = null; // uses transformed space xt
-    IStochVector observationUncertainty = null;
-    IModelState savedState      = null;
-    double factor               = 0.5; //use default factor of 0.5 for cost values
+	public boolean backGroundOn       = true; // use term for background errorcovariance
+	public IStochModelInstance model   = null;
+	public IVector meanState           = null; // mean of the ensemble
+	public IVector deltaStates[]       = null; // ensemble members minus meanState sqrt(n-1)*L
+	public IVector predictions[]       = null;
+	public IStochObserver observations = null;
+	public IVector obsValues           = null;
+	public IStochVector parameterUncertainty = null; // uses transformed space xt
+	public IStochVector observationUncertainty = null;
+	public IModelState savedState      = null;
+	public double factor               = 0.5; //use default factor of 0.5 for cost values
     // collecting results
-	int numberEvaluations = 0;
-	IVector pMin = null;     // best parameters sofar
-	IVector predMin = null;  // best predictions
-	double fMin = Double.MAX_VALUE;
+	public int numberEvaluations = 0;
+	public IVector pMin = null;     // best parameters sofar
+	public IVector predMin = null;  // best predictions
+	public double fMin = Double.MAX_VALUE;
 	private java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	private java.util.Vector<IVector> allPreds = new java.util.Vector<IVector>();
 	private java.util.Vector<Double> allCosts = new java.util.Vector<Double>();
@@ -83,7 +83,7 @@ public class AnalysisLeastSquaresCost implements LeastSquaresCostFunction {
 	private IVector bestState=null;
 
 	// printing to stdout
-	int maxPrintSize = 100;
+	public int maxPrintSize = 100;
 
 	/**
 	 * Constructor for Analysis cost-function

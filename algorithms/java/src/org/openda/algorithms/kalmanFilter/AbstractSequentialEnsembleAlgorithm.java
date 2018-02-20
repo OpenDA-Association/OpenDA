@@ -44,11 +44,11 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 
 	// class data
 	String TimerID="Ens Forecast";
-	OdaTiming timerForecast;
-	OdaTiming timerForecast_s1, timerForecast_s2, timerForecast_s3, timerForecast_s4;
+	protected OdaTiming timerForecast;
+	protected OdaTiming timerForecast_s1, timerForecast_s2, timerForecast_s3, timerForecast_s4;
 
 
-	int ensembleSize = 100;
+	protected int ensembleSize = 100;
 	protected IStochModelInstance ensemble[] = null;
 
 	public boolean ensembleStochParameter=false;
@@ -64,13 +64,13 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 	protected int gainStorageMaxXmlStore = 40;
 
 	// Localization
-	enum LocalizationMethodType{none,hamill,autoZhang}
-	LocalizationMethodType localizationMethod=LocalizationMethodType.none;
-    double distance;
+	protected enum LocalizationMethodType{none,hamill,autoZhang}
+	protected LocalizationMethodType localizationMethod=LocalizationMethodType.none;
+	protected double distance;
 
 	//Smoothed gain matrix
-	double timeRegularisationPerDay = 0.0;
-	double initialAnalysisTime;
+	protected double timeRegularisationPerDay = 0.0;
+	protected double initialAnalysisTime;
 	protected HashMap<String, IVector> initialSmoothedGainVectors = new HashMap<String, IVector>();
 	protected HashMap<String, String> initialObsId = new HashMap<String, String>();
 	protected HashMap<String, Double> initialObsTimeOffset = new HashMap<String, Double>();

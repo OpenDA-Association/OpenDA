@@ -30,16 +30,16 @@ import java.awt.*;
 
 public class PlotResultWriter implements IResultWriter {
 
-	Container displayPane;
-	JPanel frame;
-	String title = "";
-	String xlabel = "";
-	String ylabel = "";
-	String xunit ="";
-	String yunit ="";
-	String id;
-	Figure fig=null;
-	java.util.Vector<Double> stored = new java.util.Vector<Double>();
+	private Container displayPane;
+	private JPanel frame;
+	private String title = "";
+	private String xlabel = "";
+	private String ylabel = "";
+	private String xunit ="";
+	private String yunit ="";
+	private String id;
+	private Figure fig=null;
+	private java.util.Vector<Double> stored = new java.util.Vector<Double>();
     private int defaultMaxSize = Integer.MAX_VALUE;
 
     public PlotResultWriter(JPanel figure, String id, String title, String xlabel, String xunit, String ylabel,String yunit) {

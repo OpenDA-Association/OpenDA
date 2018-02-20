@@ -104,14 +104,20 @@ public class OutputGui extends JPanel implements IResultWriter {
     }
 
     
-    public void putMessage(Source source, String message) {}
+    public void putMessage(Source source, String message) {
+		//nothing to do
+	}
 
     
-    public void putMessage(IInstance source, String message) {}
+    public void putMessage(IInstance source, String message) {
+		//nothing to do
+	}
 
 
 	
-	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {}
+	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
+		//nothing to do
+	}
 
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {
         appendData(iteration, cost, parameters);
