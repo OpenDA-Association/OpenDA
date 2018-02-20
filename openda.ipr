@@ -96,6 +96,11 @@
       <entry name="?*.tld" />
       <entry name="?*.zip" />
     </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+    </annotationProcessing>
   </component>
   <component name="CopyrightManager" default="" />
   <component name="DependenciesAnalyzeManager">
@@ -118,6 +123,9 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="PROJECT" charset="UTF-8" />
   </component>
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
   <component name="ErrorOptionsConfigurable.UI">
     <option name="proportions">
       <SplitterProportionsDataImpl />
@@ -125,12 +133,6 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration" detection-enabled="false" />
   <component name="IdProvider" IDEtalkID="C2C79F4DC58D73085D0C2DB2B53DDD2C" />
-  <component name="InspectionProjectProfileManager">
-    <profile version="1.0">
-      <option name="myName" value="Project Default" />
-    </profile>
-    <version value="1.0" />
-  </component>
   <component name="IssueNavigationConfiguration">
     <option name="links">
       <list>
@@ -360,7 +362,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ResourceManagerContainer">

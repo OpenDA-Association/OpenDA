@@ -465,11 +465,12 @@ void CTAI_Matrix_Export(
    }
 
    if (CTA_Handle_Check(userdata,CTA_FILE)==CTA_OK) {
+      int i0;
       *retval = CTA_File_Get(userdata,&file);
 
       if (CTA_FLUSH_ALWAYS) CTA_Flush();
 
-      for (int i0=0; i0<x->n; i0+=5)
+      for (i0=0; i0<x->n; i0+=5)
       {
          int j;
          fprintf(file,"matrix(:,%d:%d)=[",i0+1,MIN(x->n,i0+5));
