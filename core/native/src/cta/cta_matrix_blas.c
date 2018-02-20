@@ -107,10 +107,10 @@ void CTAI_Matrix_construct_inverse(CTAI_Matrix_blas *A)
 
    length=A->n*A->m;
    if (A->datatype==CTA_REAL){
+      float  *sA;
       lu=CTA_Malloc(sizeof(float)*length);
       SCOPY_F77(&length,A->values,&one,(float *) lu,&one);
       // Create identity matrix
-      float  *sA;
       sA=A->values;
       for (i=0;i<length; i++){ sA[i]=0.0;}
       for (i=0;i<length; i=i+A->n+1){ sA[i]=1.0;}

@@ -1126,9 +1126,9 @@ int CTA_Array_setSliceAsDoubles_range(CTA_Array h, double *slice, int dimension,
       int count;
 	  int destPos; 
       int srcPos;
+      int rankRight=cthis->nDimensions-1;
 
       for (i=0; i<dimension; i++){dimsLeft[i]=cthis->dimensions[i];}
-      int rankRight=cthis->nDimensions-1;
       for (i=0; i<rankRight; i++){dimsRight[i]=cthis->dimensions[dimension+1+i];}
       for (i=0; i<cthis->nDimensions; i++){dims[i]=cthis->dimensions[i];}
       dims[dimension]=maxIndex-minIndex+1;

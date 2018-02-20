@@ -583,8 +583,9 @@ int CTAI_Model_PerformTimesteps(
      retval=CTA_Time_IsSpan(htime, &isspan);
      /* Is there a possible barrier? */
      if (data->barrier.flag==CTA_TRUE) {
+       int nstep;
        tstep = data->barrier.t_step;
-       int nstep = (int) ((tstop-tstart)/tstep+0.5);
+       nstep = (int) ((tstop-tstart)/tstep+0.5);
        if (IDEBUG>0) {
           printf("CTA_performTimesteps: Time information: \n");
           printf("Tstart= %f, Tstep=%f, Tstop=%f, nStep=%d\n ", tstart, tstep, tstop, nstep);
