@@ -399,6 +399,7 @@ int CTA_Model_Create(CTA_ModelClass hmodcl, CTA_Handle userdata, CTA_Model *hmod
 
       //printf("WE ZIJN NA DE PARALLEL MODEL CREATE!!!\n");
    } else {
+      int i;
       //printf("CREATING A MODEL LOCALLY\n");
 
       /* We are running sequential or we are a worker process */
@@ -451,7 +452,7 @@ int CTA_Model_Create(CTA_ModelClass hmodcl, CTA_Handle userdata, CTA_Model *hmod
       model->data=CTA_Malloc(memsize);
 
       /* copy function pointers */
-      for (int i=0;i<CTA_MODEL_NUMFUNC;i++){
+      for (i=0;i<CTA_MODEL_NUMFUNC;i++){
          model->functions[i]=clsdata->functions[i];
       }
       /* set other general information */
@@ -696,10 +697,11 @@ int CTA_Model_Compute(
    ntimes=data->announced.ntimes;
    if (IDEBUG) printf("We have %d times with announced observations\n",ntimes);
    if (ntimes>0){
+      int itime;
       /* Do we need to interrupt the computations? */
 
       if (IDEBUG>0) {
-         for (int itime=0;itime<ntimes;itime++){
+         for (itime=0;itime<ntimes;itime++){
             printf("%f ",data->announced.times[itime]);
          }
          printf("First announced time %f\n",data->announced.times[0]);
@@ -738,7 +740,7 @@ int CTA_Model_Compute(
       CTA_Time_Create(&hstep);
       CTA_Time_SetSpan(hstep,tstart,data->announced.times[0]);
 
-      for (int itime=0;itime<ntimes_loop;itime++){
+      for (itime=0;itime<ntimes_loop;itime++){
          if (IDEBUG>0){
             CTA_Time_GetSpan(hstep,&t1,&t2);
             printf("running from %f to %f \n",t1,t2);
