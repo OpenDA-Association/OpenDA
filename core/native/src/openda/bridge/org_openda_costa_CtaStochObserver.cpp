@@ -74,7 +74,7 @@ JNIEXPORT jint JNICALL Java_org_openda_costa_CtaStochObserver_ctaCreateNative
          cta_jni_exception(env, "CtaStochObserver", message, retVal);
          hstochobs = CTA_NULL;
       } else {
-         retVal=CTA_Tree_GetHandleStr(htree, "COSTA/sobsclass", &hsobsclass);
+         retVal=CTA_Tree_GetHandleStr(htree, (char *) "COSTA/sobsclass", &hsobsclass);
          if (retVal != CTA_OK) {
             sprintf(message, "Error get class from tree (created from xml-file %s. Error code %d\n" ,typeObserver, retVal);
             cta_jni_exception(env, "CtaStochObserver", message, retVal);
