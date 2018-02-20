@@ -30,10 +30,10 @@ import java.util.List;
 public class GriddedFullSearchCoreOptimizer{
 
 	// fields of this class
-	IVector pCurrent = null; //values under consideration
-	double fCurrent = 0.0;
-	int nparam=0;
-	ICostFunction f = null;
+	private IVector pCurrent = null; //values under consideration
+	private double fCurrent = 0.0;
+	private int nparam=0;
+	private ICostFunction f = null;
 
     // required for the additional stopping criteria:
     public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
@@ -42,15 +42,15 @@ public class GriddedFullSearchCoreOptimizer{
     public IObservationDescriptions obsDescr=null;
 
 	// grid settings
-	double minRangePar[]   = null;
-	double maxRangePar[]   = null;
-	double stepRangePar[]  = null;
-	int numberOfStepsPar[] = null;
+	private double minRangePar[]   = null;
+	private double maxRangePar[]   = null;
+	private double stepRangePar[]  = null;
+	private int numberOfStepsPar[] = null;
 
 	//current state
-	boolean moreToDo = true;         // is this optimization finished
-    int currentParIndex[] =null;
-    int imain=0; //number of evaluation
+	private boolean moreToDo = true;         // is this optimization finished
+	private int currentParIndex[] =null;
+	private int imain=0; //number of evaluation
     private IVector pInit = null;
 
 

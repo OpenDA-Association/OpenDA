@@ -37,7 +37,6 @@ import java.io.File;
  */
 public class Powell extends Instance implements IAlgorithm {
 
-	private IStochObserver stochObserver;
     IStochModelFactory stochModelFactory;
     ConfigTree powellConf;
 
@@ -56,7 +55,6 @@ public class Powell extends Instance implements IAlgorithm {
 
     public void setStochComponents(IStochObserver stochObserver, IStochModelFactory stochModelFactory) {
         this.stochModelFactory = stochModelFactory;
-		this.stochObserver = stochObserver;
 
         Results.putMessage("configstring = "+ configString);
         powellConf = new ConfigTree(workingDir, configString);

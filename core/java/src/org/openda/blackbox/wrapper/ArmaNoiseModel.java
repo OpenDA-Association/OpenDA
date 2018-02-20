@@ -52,6 +52,22 @@ public class ArmaNoiseModel {
     File logFile = null;
     BufferedWriter logFileWriter = null;
 
+	// Strings Noise Model State File
+
+	private final String fileVersionText = "Version ";
+	private final String fileVersion = "1.1";
+	private final String saveVersionString =
+		"nl.wldelft.da.tools.stochmodel.NoiseModel Saved State File, "
+			+ fileVersionText + fileVersion;
+	private final String dateTimeText = "TimeStamp: ";
+	private final String saveHistoryCountString = "History Count: ";
+	private final String saveStateVectorSizeString = "Values per time step Count: ";
+	private final String saveArmaConstString = "ArmaConstant: ";
+	private final String saveCurrentValuesString = "Current Values: ";
+	private final String savePreviousValuesString = "Values for previous step: ";
+
+
+
 	public ArmaNoiseModel(File workingDir,
                           int stateVectorSize,
                           double[] armaConstants,
@@ -219,19 +235,6 @@ public class ArmaNoiseModel {
     // Functions to store and retrieve Noise Model State File
     //
 
-    // Strings Noise Model State File
-
-    private final String fileVersionText = "Version ";
-    private final String fileVersion = "1.1";
-    private final String saveVersionString =
-            "nl.wldelft.da.tools.stochmodel.NoiseModel Saved State File, "
-                    + fileVersionText + fileVersion;
-    private final String dateTimeText = "TimeStamp: ";
-    private final String saveHistoryCountString = "History Count: ";
-    private final String saveStateVectorSizeString = "Values per time step Count: ";
-    private final String saveArmaConstString = "ArmaConstant: ";
-    private final String saveCurrentValuesString = "Current Values: ";
-    private final String savePreviousValuesString = "Values for previous step: ";
 
     /**
      * Save the current state of the Noise Model to file.
