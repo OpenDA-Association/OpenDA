@@ -34,7 +34,7 @@ def read_profiles(inputfile, outputfile, params, dimension, reverse=False, forma
             np.savetxt( outputfile, table[::-1], delimiter=" ", fmt=format , header=header, comments='')
         else:
             np.savetxt( outputfile, table, delimiter=" ", fmt=format , header=header, comments='')
-    except OSError as e: 
+    except OSError as e:
         print("Cannot write to file '{0}': {1}".format(outputfile, e.strerror))
     except IOError as e:
         print("I/O error({0}): {1}".format(e.errno, e.strerror))

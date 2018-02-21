@@ -32,15 +32,15 @@ def read_profiles(inputfile, outputfile, params, dimension,depth1,depth2, revers
            except KeyError:
               print("Variable '{0}' does not exist".format(param))
               sys.exit(64)
-      
-      
+
+
        invert = 2 if reverse else 1
        #print("reverse " )
        #print(reverse)
        header = ' '.join( ( str(num2date(rootgrp.variables['time'][timestep],rootgrp.variables['time'].units)) , str(1) , str(invert) ) )
-    
+
        # calculate the mean
-    
+
        try:
            if reverse:
                temp1 = next(zvec for zvec in zvec if abs(zvec) >= depth1);
@@ -62,7 +62,7 @@ def read_profiles(inputfile, outputfile, params, dimension,depth1,depth2, revers
                else:
                   temp1 =next(zvec for zvec in zvec if abs(zvec) <= depth1);
                   temp2 = np.where(zvec==temp1)
-                  endmean = temp2[0] 
+                  endmean = temp2[0]
                temp1 = next(zvec for zvec in zvec if abs(zvec) <= depth2);
                temp2 = np.where(zvec==temp1)
                startmean = temp2[0]
@@ -72,19 +72,19 @@ def read_profiles(inputfile, outputfile, params, dimension,depth1,depth2, revers
                #print(startmean)
                #print("endmean ")
                #print(endmean)
-           
+
            meanval[0,0]=depth2-depth1
            index = 1
            for param in params:
                meanval[0,index] = sum(table[startmean:endmean,index-1])/len(table[startmean:endmean,index-1])
                index+=1
-    
+
        except ValueError as e:
            print("Error in calculation of mean: {0}".format(e))
-           
+
        try:
            np.savetxt(f, meanval, delimiter=" ", fmt=format , header=header, comments='')
-       except OSError as e: 
+       except OSError as e:
            print("Cannot write to file '{0}': {1}".format(outputfile, e.strerror))
        except IOError as e:
            print("I/O error({0}): {1}".format(e.errno, e.strerror))

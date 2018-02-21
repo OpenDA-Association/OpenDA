@@ -32,17 +32,17 @@ def read_profiles(inputfile, outputfile, params, dimension, reverse=False, forma
           except KeyError:
               print("Variable '{0}' does not exist".format(param))
               sys.exit(64)
-      
-      
+
+
           invert = 2 if reverse else 1
           header = ' '.join( ( str(num2date(rootgrp.variables['time'][timestep],rootgrp.variables['time'].units)) , str(nz) , str(invert) ) )
-        
+
        try:
           if reverse:
               np.savetxt(f, table[::-1], delimiter=" ", fmt=format , header=header, comments='')
           else:
               np.savetxt(f, table, delimiter=" ", fmt=format , header=header, comments='')
-       except OSError as e: 
+       except OSError as e:
           print("Cannot write to file '{0}': {1}".format(outputfile, e.strerror))
        except IOError as e:
           print("I/O error({0}): {1}".format(e.errno, e.strerror))
