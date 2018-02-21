@@ -21,6 +21,7 @@ package org.openda.application.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -44,39 +45,37 @@ import org.openda.utils.Results;
 
 @SuppressWarnings("serial")
 public class ApplicationScreen extends JFrame implements ActionListener {
-   private final String                    pauseText    = "Pause";
-   private final String                    resumeText   = "Resume";
+   private static final String             pauseText    = "Pause";
+   private static final String             resumeText   = "Resume";
    private ImageIcon                       pauseIcon    = null;
    private ImageIcon                       startIcon    = null;
 
-   JMenuBar                                menubar      = null;
-   JMenu                                   file         = null;
-   JMenuItem                               fileOpen     = null;
-   JMenuItem                               fileSave     = null;
-   JMenuItem                               fileSaveAs   = null;
-   JMenuItem                               fileExit     = null;
-   WindowExitHandler                       exitHandler  = null;
-   JMenu                                   control      = null;
-   JMenuItem                               controlStart = null;
-   JMenuItem                               controlPause = null;
-   JMenuItem                               controlStop  = null;
+
+   private JMenuItem                       fileOpen     = null;
+   private JMenuItem                       fileSave     = null;
+   private JMenuItem                       fileSaveAs   = null;
+   private JMenuItem                       fileExit     = null;
+   private WindowExitHandler               exitHandler  = null;
+//   private JMenu                                   control      = null;
+   private JMenuItem                               controlStart = null;
+   private JMenuItem                               controlPause = null;
+   private JMenuItem                               controlStop  = null;
    // Toolbar
-   JToolBar                                bar          = null;
-   JButton                                 openButton   = null;
-   JButton                                 saveButton   = null;
-   JButton                                 startButton  = null;
-   JButton                                 stopButton   = null;
-   JButton                                 pauseButton  = null;
+//   private JToolBar                                bar          = null;
+   private JButton                                 openButton   = null;
+   private JButton                                 saveButton   = null;
+   private JButton                                 startButton  = null;
+   private JButton                                 stopButton   = null;
+   private JButton                                 pauseButton  = null;
 
    // Tabs
-   JTabbedPane                             tabs         = null;
-   JPanel                                  inputTab     = null;
-   JPanel                                  controlTab   = null;
-   OutputGui                               outputTab    = null;
-   JPanel                                  plotTab      = null;
+   private JTabbedPane                     tabs         = null;
+   private JPanel                          inputTab     = null;
+   private JPanel                          controlTab   = null;
+   private OutputGui                       outputTab    = null;
 
    // Input file
-   File                                    input        = null;
+   private File                                    input        = null;
 
    private static ApplicationScreen        myScreen     = null;
 
@@ -85,7 +84,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
 
    public ApplicationScreen(File startUpDir, String fileName) {
 
-      super((!fileName.equals("") ? fileName + " - " : "") + "OpenDaApplication");
+      super((!"".equals(fileName) ? fileName + " - " : "") + "OpenDaApplication");
       setSize(1000, 700);
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       this.exitHandler = new WindowExitHandler(this);
@@ -95,41 +94,41 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       Results.setRunningInGui(true);
 
       // add menu
-      this.menubar = new JMenuBar();
-      this.file = new JMenu("File");
+      JMenuBar menubar = new JMenuBar();
+      JMenu file = new JMenu("File");
       this.fileOpen = new JMenuItem("Open", KeyEvent.VK_O);
       this.fileSave = new JMenuItem("Save", KeyEvent.VK_S);
       this.fileSaveAs = new JMenuItem("Save as", KeyEvent.VK_A);
       this.fileExit = new JMenuItem("Exit", KeyEvent.VK_X);
 
-      this.fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-      this.fileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-      this.fileSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
+      this.fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+      this.fileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+      this.fileSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 
-      this.file.add(this.fileOpen);
-      this.file.add(this.fileSave);
-      this.file.add(this.fileSaveAs);
-      this.file.setMnemonic(KeyEvent.VK_F);
-      this.file.add(this.fileExit);
-      this.menubar.add(this.file);
-      this.control = new JMenu("Control");
+      file.add(this.fileOpen);
+      file.add(this.fileSave);
+      file.add(this.fileSaveAs);
+      file.setMnemonic(KeyEvent.VK_F);
+      file.add(this.fileExit);
+      menubar.add(file);
+      JMenu control = new JMenu("Control");
       this.controlStart = new JMenuItem("Start"); // , KeyEvent.VK_F5);
-      this.controlPause = new JMenuItem(this.pauseText, KeyEvent.VK_P);
+      this.controlPause = new JMenuItem(pauseText, KeyEvent.VK_P);
       this.controlStop = new JMenuItem("Stop", KeyEvent.VK_T);
 
       this.controlStart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-      this.controlPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-      this.controlStop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, ActionEvent.SHIFT_MASK));
+      this.controlPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
+      this.controlStop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, InputEvent.SHIFT_MASK));
 
-      this.control.add(this.controlStart);
-      this.control.add(this.controlPause);
-      this.control.add(this.controlStop);
-      this.control.setMnemonic(KeyEvent.VK_C);
-      this.menubar.add(this.control);
-      this.setJMenuBar(this.menubar);
+      control.add(this.controlStart);
+      control.add(this.controlPause);
+      control.add(this.controlStop);
+      control.setMnemonic(KeyEvent.VK_C);
+      menubar.add(control);
+      this.setJMenuBar(menubar);
 
       // Toolbar
-      this.bar = new JToolBar();
+      JToolBar bar = new JToolBar();
       ImageIcon openIcon = new ImageIcon(this.getClass().getResource("Open24.gif"));
       this.openButton = new JButton("Open", openIcon);
       ImageIcon saveIcon = new ImageIcon(this.getClass().getResource("Save24.gif"));
@@ -140,12 +139,12 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       this.stopButton = new JButton("Stop", stopIcon);
       this.pauseIcon = new ImageIcon(this.getClass().getResource("Pause24.gif"));
       this.pauseButton = new JButton("Pause", this.pauseIcon);
-      this.bar.add(this.openButton);
-      this.bar.add(this.saveButton);
-      this.bar.add(this.startButton);
-      this.bar.add(this.stopButton);
-      this.bar.add(this.pauseButton);
-      this.add(this.bar, BorderLayout.NORTH);
+      bar.add(this.openButton);
+      bar.add(this.saveButton);
+      bar.add(this.startButton);
+      bar.add(this.stopButton);
+      bar.add(this.pauseButton);
+      this.add(bar, BorderLayout.NORTH);
 
       this.openButton.addActionListener(this);
       this.saveButton.addActionListener(this);
@@ -194,14 +193,14 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       // now this happens in ControlGui(), better bring the code over here
 
       this.outputTab = new OutputGui();
-      this.plotTab = new JPanel();
-      this.controlTab = new ControlGui(this.openDaUserSettings, this.outputTab, this.plotTab);
+      JPanel plotTab = new JPanel();
+      this.controlTab = new ControlGui(this.openDaUserSettings, this.outputTab, plotTab);
       this.tabs.add("Control", this.controlTab);
       // add tab 3 : output
       this.tabs.add("Output", this.outputTab);
 
       // add tab 4 : plot
-      this.tabs.add("Cost function", this.plotTab);
+      this.tabs.add("Cost function", plotTab);
       this.add(this.tabs, BorderLayout.CENTER);
 
       // UIModel uiModel = new UIModel();
@@ -223,7 +222,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       statusChangedHandler(ApplicationRunner.Status.FINISHED);
       ControlGui.statusChangedHandler(ApplicationRunner.Status.FINISHED);
 
-      if (!fileName.equals("")) {
+      if (!"".equals(fileName)) {
          File inputFile = new File(startUpDir, fileName);
          SelectCases.newInputFile(inputFile);
          InstanceStore.setInputFile(inputFile);
@@ -338,7 +337,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       lastStatus = status;
    }
 
-   public void updateStatusDependentButtons(ApplicationRunner.Status status) {
+   private void updateStatusDependentButtons(ApplicationRunner.Status status) {
 
       switch (status) {
 
@@ -346,7 +345,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       case STOPPED:
       case ERROR:
          updateStartStopButtons(false);
-         updatePauzedButtonStatus(false, this.pauseText);
+         updatePauzedButtonStatus(false, pauseText);
          break;
 
       case RUNNING:
@@ -357,13 +356,13 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       case INITIALIZING:
       case INITIALIZED:
          updateStartStopButtons(true);
-         updatePauzedButtonStatus(true, this.pauseText);
+         updatePauzedButtonStatus(true, pauseText);
          break;
 
       case PAUSED:
          Results.putProgression("Application paused");
          updateStartStopButtons(true);
-         updatePauzedButtonStatus(true, this.resumeText);
+         updatePauzedButtonStatus(true, resumeText);
          break;
       }
    }
@@ -380,7 +379,7 @@ public class ApplicationScreen extends JFrame implements ActionListener {
       this.controlPause.setText(text);
       this.pauseButton.setEnabled(enabled);
       this.pauseButton.setText(text);
-	   if (text == this.pauseText) {
+	   if (pauseText.equals(text)) {
 		   this.pauseButton.setIcon(this.pauseIcon);
 	   } else{
 		   this.pauseButton.setIcon(this.startIcon);
