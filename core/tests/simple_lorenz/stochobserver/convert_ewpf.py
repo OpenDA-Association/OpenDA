@@ -9,7 +9,7 @@ for line in fin:
    line.rstrip();
    if first:
       first=False
-      fout.write(line) 
+      fout.write(line)
    else:
       if (skip_first):
          skip_first = False
@@ -21,7 +21,7 @@ for line in fin:
              time = t_now + istep * dt
              data[0] = str(time)
              new_line = ",".join(data)
-             fout.write(new_line) 
+             fout.write(new_line)
           t_now=t_obs
 fin.close()
 fout.close()
