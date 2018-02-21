@@ -22,9 +22,9 @@ class BMILorenz (BMI):
         self._x = None
         self._y = None
         self._z = None
-        
+
         self._value = {}
-        
+
         self._shape = (0, 0)
         self._spacing = (0., 0.)
         self._origin = (0., 0.)
@@ -36,7 +36,7 @@ class BMILorenz (BMI):
         self._t = 0.
         self._startTime = 0.
         self._endTime = 20.
-        
+
         self._sigma = 10.
         self._rho = 28.
         self._beta = 8.0/3.
@@ -55,18 +55,18 @@ class BMILorenz (BMI):
         self._spacing = (1., 1.)
         self._origin = (0., 0.)
 
-        
+
 
     def update (self):
         if self._t >= self._endTime:
 		    raise "endTime already reached, model not updated"
-        
+
         self._x = self._x + self._dt * (self._sigma * (self._y - self._x))
         self._y = self._y + self._dt * (self._x * (self._rho - self._z) - self._y)
         self._z = self._z + self._dt * (self._x * self._y - self._beta * self._z)
-        
+
         self._t += self._dt
-        
+
     def update_until (self, t):
         if (t<self._t) or t>self._endTime:
             raise "wrong time input: smaller than model time or larger than endTime"
@@ -95,7 +95,7 @@ class BMILorenz (BMI):
     def set_value (self, long_var_name, src):
         val = self.get_value (long_var_name)
         val[:] = src
-		
+
     def set_value_at_indices (self, long_var_name, indices, src):
         val = self.get_value (long_var_name)
         val[indices] = src

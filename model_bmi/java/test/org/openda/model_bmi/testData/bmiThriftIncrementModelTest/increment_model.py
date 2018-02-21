@@ -22,7 +22,7 @@ class IncrementModel (EBmi):
         self._endTime = 0.
 
         self._state = None
-        
+
         self._value = {}
 
     #ebmi function
@@ -36,18 +36,18 @@ class IncrementModel (EBmi):
 
         self._spacing = (1., 1.)
         self._origin = (0., 0.)
-    
+
     #ebmi function
     def initialize_model(self):
         self._state = np.zeros (self._shape) + self._startTime
-        
+
         self._value['var1'] = "_state"
 
     def initialize (self, config_file):
         self.initialize_config(config_file)
         self.initialize_model()
-       
-	#this is a warning to allow testing of the logging system 
+
+	#this is a warning to allow testing of the logging system
         logging.warn('initialized model')
 
     def update (self):
@@ -64,7 +64,7 @@ class IncrementModel (EBmi):
 
     def update_frac(self, time_frac):
         raise Exception("unsupported operation")
-    
+
     def finalize (self):
         self._dt = 0
         self._t = 0
@@ -80,17 +80,17 @@ class IncrementModel (EBmi):
 
     def get_value (self, long_var_name):
         return getattr(self,self._value[long_var_name])
-    
+
     def get_value_at_indices (self, long_var_name, indices):
         return self.get_value(long_var_name)[indices]
-    
+
     def set_value (self, long_var_name, src):
         val = self.get_value (long_var_name)
         val[:] = src
-        
+
     def set_value_at_indices (self, long_var_name, indices, src):
         val = self.get_value (long_var_name)
-        
+
         sys.stderr.write(str(indices))
         sys.stderr.write("\n")
         sys.stderr.write(str(src))
@@ -104,7 +104,7 @@ class IncrementModel (EBmi):
         sys.stderr.write("\n")
 
         val.flat[indices] = src
-        
+
         sys.stderr.write(str(val))
         sys.stderr.write("\n")
 
@@ -140,7 +140,7 @@ class IncrementModel (EBmi):
 
     def get_var_nbytes(self, long_var_name):
         return self._state.nbytes
-    
+
     def get_var_size(self, long_var_name):
         return self._state.size
 
@@ -165,31 +165,31 @@ class IncrementModel (EBmi):
     def get_grid_offset(self, long_var_name):
         raise Exception("unsupported operation")
 
-    
+
     # extended BMI functions
 
     def save_state(self, destination_directory):
         raise Exception("unsupported operation")
-    
+
     def load_state(self, destination_directory):
         raise Exception("unsupported operation")
 
-    
+
     def set_start_time(self, start_time):
         self._startTime = start_time
-    
+
     def set_end_time(self, end_time):
         self._endTime = end_time
-    
+
     def get_attribute_names(self):
         return ['author']
-    
+
     def get_attribute_value(self, attribute_name):
         if attribute_name == 'author':
             return self._author
-        
+
         raise Exception('unknown attribute: ' + attribute_name)
-    
+
     def set_attribute_value(self, attribute_name, attribute_value):
         if attribute_name == 'author':
            self._author = attribute_value

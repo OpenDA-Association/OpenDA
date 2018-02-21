@@ -42,40 +42,40 @@ def fastRunoff_no_reservoir(self, k):
 
 def fastRunoff_lag2(self, k):
     """
-    - Lag is applied before inflow into the fast reservoir 
+    - Lag is applied before inflow into the fast reservoir
     - Lag formula is derived from Fenicia (2011)
-    - Outgoing fluxes are determined based on (value in previous timestep + inflow) 
+    - Outgoing fluxes are determined based on (value in previous timestep + inflow)
     and if this leads to negative storage, the outgoing fluxes are corrected to rato
     - not a semi analytical solution for Sf anymore
     - Code for ini-file: 2
     """
 
     if self.FR_L:
-        self.Qu = areatotal(self.Qu_[k] * self.percentArea ,nominal(self.TopoId)) 
+        self.Qu = areatotal(self.Qu_[k] * self.percentArea ,nominal(self.TopoId))
     else:
         self.Qu = self.Qu_[k]
-    
+
     self.Qfin = (1 - self.D[k]) * self.Qu
-      
-    if self.D[k] < 1.00: 
+
+    if self.D[k] < 1.00:
         if self.convQu[k]:
             self.QfinLag = self.convQu[k][-1]
-            self.Qf = self.Sf[k] * self.Kf[k]                
+            self.Qf = self.Sf[k] * self.Kf[k]
             self.Sf[k] = self.Sf[k] + self.QfinLag - self.Qf
-                
+
             self.convQu[k].insert(0, 0 * scalar(self.TopoId))            #convolution Qu for following time steps
             self.Tfmap = self.Tf[k] * scalar(self.TopoId)
             del self.convQu[k][-1]
             temp = [self.convQu[k][i] + (2/self.Tfmap-2/(self.Tfmap*(self.Tfmap+1))*(self.Tfmap-i))*self.Qfin for i in range(len(self.convQu[k]))]
             self.convQu[k] = temp
-            
+
 #            self.Qfin_[k] = self.Qfin
 #            self.Qfinput_[k] = self.QfinLag
-                
+
         else:
-            self.Qf = self.Sf[k] * self.Kf[k]                
+            self.Qf = self.Sf[k] * self.Kf[k]
             self.Sf[k] = self.Sf[k] + self.Qfin - self.Qf
-            
+
 #            self.Qfin_[k] = self.Qfin
 #            self.Qfinput_[k] = self.Qfin
     else:
@@ -83,15 +83,15 @@ def fastRunoff_lag2(self, k):
         self.Qfinput_[k] = self.ZeroMap
         self.Qfin_[k] = self.ZeroMap
 
-    self.wbSf_[k] = self.Qfin - self.Qf - self.Sf[k] + self.Sf_t[k] - sum(self.convQu[k]) + sum(self.convQu_t[k])    
-    
+    self.wbSf_[k] = self.Qfin - self.Qf - self.Sf[k] + self.Sf_t[k] - sum(self.convQu[k]) + sum(self.convQu_t[k])
+
     self.Qf_[k] = self.Qf
 #    self.QuA_[k] = self.Qu
 
-    
-def routingQf_combined(self):       
+
+def routingQf_combined(self):
     """
-    - Routing of fluxes from fast reservoir 
+    - Routing of fluxes from fast reservoir
     - Qf is devided over the reservoir numbers for the timesteps matching with the average
     travel time for a calcultation cell
     """
@@ -103,11 +103,11 @@ def routingQf_combined(self):
                                             (self.Transit - i*scalar(self.TopoId)) * self.Qftotal / 1000 * self.surfaceArea,
                                             ifthenelse(roundup(self.Transit) == i*scalar(self.TopoId),
                                                        (i*scalar(self.TopoId) - self.Transit) * self.Qftotal / 1000 * self.surfaceArea, 0)) for i in range(len(self.trackQ))]
-        self.trackQ = temp    
-    
+        self.trackQ = temp
+
     else:
         self.Qflag = self.Qftotal
-    
+
     self.wbSfrout = self.Qftotal - self.Qflag - sum(self.trackQ) + sum (self.trackQ_t)
-    
+
     self.Qflag_ = self.Qflag

@@ -22,11 +22,11 @@ Port to Python/PCRaster: Deltares
 Usage:
 wflow_W3RA  -C case -R Runid -c inifile
     -C: set the name  of the case (directory) to run
-    
+
     -R: set the name runId within the current case
-    
+
     -c name of the config file (in the case directory)
-    
+
 $Author: schelle $
 $Id: wflow_sceleton.py 898 2014-01-09 14:47:06Z schelle $
 $Rev: 898 $
@@ -40,9 +40,9 @@ import getopt
 
 from wflow.wf_DynamicFramework import *
 from wflow.wflow_adapt import *
- 
+
 #TODO: Make the script HRU independent (loop over the nr of HRU's)
-#TODO: 
+#TODO:
 
 def usage(*args):
     sys.stdout = sys.stderr
@@ -50,36 +50,36 @@ def usage(*args):
     print __doc__
     sys.exit(0)
 
-class WflowModel(DynamicModel):  
+class WflowModel(DynamicModel):
   """
   The user defined model class. T
   """
-  
+
   def __init__(self, cloneMap,Dir,RunDir,configfile):
       """
       *Required*
-      
+
       The init function **must** contain what is shown below. Other functionality
       may be added by you if needed.
-      
+
       """
-      DynamicModel.__init__(self)   
+      DynamicModel.__init__(self)
       setclone(Dir + "/staticmaps/" + cloneMap)
-      self.runId=RunDir      
+      self.runId=RunDir
       self.caseName=Dir
       self.Dir = Dir
       self.configfile = configfile
       self.SaveDir = self.Dir + "/" + self.runId + "/"
-     
+
 
 
   def stateVariables(self):
-      """ 
+      """
       *Required*
-      
-      Returns a list of state variables that are essential to the model. 
+
+      Returns a list of state variables that are essential to the model.
       This list is essential for the resume and suspend functions to work.
-      
+
       This function is specific for each model and **must** be present. This is
       where you specify the state variables of you model. If your model is stateless
       this function must return and empty array (states = [])
@@ -87,43 +87,43 @@ class WflowModel(DynamicModel):
 
       states = ['S01','Ss1','Sd1','Mleaf1','FreeWater1','DrySnow1','LAI1','EVI1',
                 'Sg','Sr','S02','Ss2','Sd2','Mleaf2','FreeWater2','DrySnow2','LAI2','EVI2']
-      
+
       return states
-      
+
 
   def suspend(self):
     """
       *Required*
-      
+
       Suspends the model to disk. All variables needed to restart the model
       are saved to disk as pcraster maps. Use resume() to re-read them
-      
-      This function is required. 
-      
+
+      This function is required.
+
     """
-        
+
     self.logger.info("Saving initial conditions...")
-    #: It is advised to use the wf_suspend() function 
-    #: here which will suspend the variables that are given by stateVariables 
+    #: It is advised to use the wf_suspend() function
+    #: here which will suspend the variables that are given by stateVariables
     #: function.
     self.wf_suspend(self.SaveDir + "/outstate/")
 
     if self.fewsrun:
         self.logger.info("Saving initial conditions for FEWS...")
         self.wf_suspend(self.Dir + "/outstate/")
-      
+
   def initial(self):
-      
+
     """
     *Required*
-    
+
     Initial part of the model, executed only once. It reads all static model
     information (parameters) and sets-up the variables used in modelling.
-    
+
     This function is required. The contents is free. However, in order to
     easily connect to other models it is advised to adhere to the directory
     structure used in the other models.
-    
+
     """
     #: pcraster option to calculate with units or cells. Not really an issue
     #: in this model but always good to keep in mind.
@@ -151,8 +151,8 @@ class WflowModel(DynamicModel):
 
     self.TMAX_mapstack=self.Dir + configget(self.config,"inputmapstacks","TMAX","/inmaps/TMAX")
     self.TMIN_mapstack=self.Dir + configget(self.config,"inputmapstacks","TMIN","/inmaps/TMIN")
-    self.TDAY_mapstack=self.Dir + configget(self.config,"inputmapstacks","TDAY","/inmaps/TDAY")         
-    self.EPOT_mapstack=self.Dir + configget(self.config,"inputmapstacks","EPOT","/inmaps/EPOT")        
+    self.TDAY_mapstack=self.Dir + configget(self.config,"inputmapstacks","TDAY","/inmaps/TDAY")
+    self.EPOT_mapstack=self.Dir + configget(self.config,"inputmapstacks","EPOT","/inmaps/EPOT")
     self.PRECIP_mapstack=self.Dir + configget(self.config,"inputmapstacks","PRECIP","/inmaps/PRECIP")
     self.RAD_mapstack=self.Dir + configget(self.config,"inputmapstacks","RAD","/inmaps/RAD")
     self.WINDSPEED_mapstack=self.Dir + configget(self.config,"inputmapstacks","WINDSPEED","/inmaps/ClimatologyMapFiles/WINDS/WNDSPEED")
@@ -243,21 +243,21 @@ class WflowModel(DynamicModel):
     self.fh2 = ln(813./self.hveg2-5.45)
     self.ku2_1 = 0.305/(self.fh1*(self.fh1+2.3))
     self.ku2_2 = 0.305/(self.fh2*(self.fh2+2.3))
- 
+
 
     self.logger.info("Starting Dynamic run...")
 
 
   def resume(self):
-    """ 
+    """
     *Required*
-    This function is required. Read initial state maps (they are output of a 
+    This function is required. Read initial state maps (they are output of a
     previous call to suspend()). The implementation shown here is the most basic
     setup needed.
-    
+
     """
     self.logger.info("Reading initial conditions...")
-    #: It is advised to use the wf_resume() function 
+    #: It is advised to use the wf_resume() function
     #: here which pick up the variable save by a call to wf_suspend()
     try:
         self.wf_resume(self.Dir + "/instate/")
@@ -286,13 +286,13 @@ class WflowModel(DynamicModel):
         self.logger.debug("Running for: " + str(self.currentdatetime))
         self.PRECIP=cover(self.wf_readmap(self.PRECIP_mapstack, 0.0), scalar(0.0)) # mm
         self.ALBEDO=cover(self.wf_readmapClimatology(self.ALBEDO_mapstack, default=0.1), scalar(0.1))
-        
+
         if self.UseETPdata == 1:
-            self.TDAY=cover(self.wf_readmap(self.TDAY_mapstack, 10.0), scalar(10.0)) # T in degC     
-            self.EPOT=cover(self.wf_readmap(self.EPOT_mapstack, 0.0), scalar(0.0)) # mm             
+            self.TDAY=cover(self.wf_readmap(self.TDAY_mapstack, 10.0), scalar(10.0)) # T in degC
+            self.EPOT=cover(self.wf_readmap(self.EPOT_mapstack, 0.0), scalar(0.0)) # mm
             self.WINDSPEED=cover(self.wf_readmapClimatology(self.WINDSPEED_mapstack, default=1.0), scalar(1.0))
             self.AIRPRESS=cover(self.wf_readmapClimatology(self.AIRPRESS_mapstack, default=980.0), scalar(980.0))
-            # print "Using climatology for wind, air pressure and albedo." 
+            # print "Using climatology for wind, air pressure and albedo."
         elif self.UseETPdata == 0:
             self.TMIN=cover(self.wf_readmap(self.TMIN_mapstack, 10.0), scalar(10.0)) # T in degC
             self.TMAX=cover(self.wf_readmap(self.TMAX_mapstack, 10.0), scalar(10.0)) # T in degC
@@ -308,12 +308,12 @@ class WflowModel(DynamicModel):
         setglobaloption("radians")
         m = scalar(1)-tan((self.latitude*scalar(pi)/scalar(180)))*tan(((scalar(23.439)*scalar(pi)/scalar(180))*cos(scalar(2)*scalar(pi)*(doy+scalar(9))/scalar(365.25))))
         self.fday = min(max(scalar(0.02),scalar(acos(scalar(1)-min(max(scalar(0),m),scalar(2))))/scalar(pi)),scalar(1)) #fraction daylength
-        
+
 
         # Assign forcing and estimate effective meteorological variables
 
-        Pg = self.PRECIP # mm 
-        
+        Pg = self.PRECIP # mm
+
         if self.UseETPdata == 1:
             Ta = self.TDAY  # T in degC
             T24 = self.TDAY  # T in degC
@@ -321,7 +321,7 @@ class WflowModel(DynamicModel):
             Rg = max(self.RAD,scalar(0.0001)) # already in W m-2 s-1; set minimum of 0.01 to avoid numerical problems
             Ta = self.TMIN+scalar(0.75)*(self.TMAX-self.TMIN)  # T in degC
             T24 = self.TMIN+scalar(0.5)*(self.TMAX-self.TMIN)  # T in degC
-            pex = min(scalar(17.27)*(self.TMIN)/(scalar(237.3)+self.TMIN),scalar(10))  # T in degC             
+            pex = min(scalar(17.27)*(self.TMIN)/(scalar(237.3)+self.TMIN),scalar(10))  # T in degC
             pe = min(scalar(610.8)*(exp(pex)),scalar(10000.0))  # Mean actual vapour pressure, from dewpoint temperature
         # rescale factor because windspeed climatology is at 2m
         WindFactor = 1.0
@@ -368,19 +368,19 @@ class WflowModel(DynamicModel):
         # Conversions and coefficients (3.1)
         pesx = min((scalar(17.27)*Ta/(scalar(237.3)+Ta)),scalar(10))
         pes = min(scalar((scalar(610.8))*exp(pesx)),scalar(10000))  # saturated vapour pressure
-        # fRH = pe/pes  # relative air humidity                                  -------------- check 
+        # fRH = pe/pes  # relative air humidity                                  -------------- check
         cRE = 0.03449+4.27e-5*Ta
-        # Caero = self.fday*0.176*(1+Ta/209.1)*(pair-0.417*pe)*(1-fRH)         -------------- check 
+        # Caero = self.fday*0.176*(1+Ta/209.1)*(pair-0.417*pe)*(1-fRH)         -------------- check
         # keps = 1.4e-3*((Ta/187)**2+Ta/107+1)*(6.36*pair+pe)/pes
         # Aerodynamic conductance (3.7)
         ga1 = self.ku2_1*u2
         ga2 = self.ku2_2*u2
-        
+
         if self.UseETPdata == 1:
-            self.E01 = max(self.EPOT,0)  							
-            self.E02 = max(self.EPOT,0)  
+            self.E01 = max(self.EPOT,0)
+            self.E02 = max(self.EPOT,0)
             keps = 0.655E-3 * pair / pes   # See Appendix A3 (http://www.clw.csiro.au/publications/waterforahealthycountry/2010/wfhc-aus-water-resources-assessment-system.pdf) --------------------------------   check!
-        
+
         elif self.UseETPdata == 0:
             Rgeff = Rg/self.fday
             # shortwave radiation balance (3.2)
@@ -403,16 +403,16 @@ class WflowModel(DynamicModel):
             self.RLin = (0.65*(pe/Tkelv)**0.14)*StefBolz*Tkelv**4     # (3.3)
             RLout = StefBolz*Tkelv**4.0      # (3.4)
             self.RLn = self.RLin-RLout
-    
+
             self.fGR1 = self.Gfrac_max1*(1-exp(-fsoil1/self.fvegref_G1))
             self.fGR2 = self.Gfrac_max2*(1-exp(-fsoil2/self.fvegref_G2))     # (3.5)
             self.Rneff1 = (RSn1+self.RLn)*(1-self.fGR1)
             self.Rneff2 = (RSn2+self.RLn)*(1-self.fGR2)
-            
+
             fRH = pe/pes  # relative air humidity
-            Caero = self.fday*0.176*(1+Ta/209.1)*(pair-0.417*pe)*(1-fRH)        # -------------- check  
+            Caero = self.fday*0.176*(1+Ta/209.1)*(pair-0.417*pe)*(1-fRH)        # -------------- check
             keps = 1.4e-3*((Ta/187)**2+Ta/107+1)*(6.36*pair+pe)/pes
-            
+
             #  Potential evaporation
             kalpha1 = 1+Caero*ga1/self.Rneff1
             kalpha2 = 1+Caero*ga2/self.Rneff2
@@ -420,7 +420,7 @@ class WflowModel(DynamicModel):
             self.E02 = cRE*(1/(1+keps))*kalpha2*self.Rneff2*self.fday
             self.E01 = max(self.E01,0)
             self.E02 = max(self.E02,0)
- 
+
         # CALCULATION OF ET FLUXES AND ROOT WATER UPTAKE
         # Root water uptake constraint (4.4)
         Usmax1 = max(0, self.Us01*min(1,ws1/self.wslimU1))       ##0-waarden omdat ws1 bevat 0-waarden (zie regel 116)
@@ -446,7 +446,7 @@ class WflowModel(DynamicModel):
         # Actual transpiration (4.1)
         Et1 = min(Utot1, Etmax1)
         Et2 = min(Utot2, Etmax2)
-        
+
         # # Root water uptake distribution (2.3)
         U01 = max(min((U0max1/(U0max1 + Usmax1 + Udmax1))*Et1,self. S01-1e-2),0)
         Us1 = max(min((Usmax1/(U0max1 + Usmax1 + Udmax1))*Et1, self.Ss1-1e-2),0)
@@ -664,25 +664,25 @@ class WflowModel(DynamicModel):
         ws2 = self.Ss2/self.SsFC2
         wd1 = self.Sd1/self.SdFC1     # (2.1)
         wd2 = self.Sd2/self.SdFC2
-    
+
 
 # The main function is used to run the program from the command line
 
-def main(argv=None):  
+def main(argv=None):
     """
     *Optional*
-    
+
     Perform command line execution of the model. This example uses the getopt
     module to parse the command line options.
-    
+
     The user can set the caseName, the runDir, the timestep and the configfile.
-    """      
+    """
     global multpars
     caseName = "../openstreams_w3ra" # "D:/trambaue/_Projects/GLOFFIS/201501/GLOFFIS_SA/Modules/openstreams_w3ra/"
     runId = "run_default"
     configfile="wflow_W3RA.ini"
-    _lastTimeStep = 15 
-    _firstTimeStep = 0  
+    _lastTimeStep = 15
+    _firstTimeStep = 0
     timestepsecs=86400
     fewsrun = False
     wflow_cloneMap = 'wflow_subcatch.map'
@@ -691,18 +691,18 @@ def main(argv=None):
     loglevel = logging.DEBUG
     LogFileName = "wflow.log"
 
-    
-    # This allows us to use the model both on the command line and to call 
+
+    # This allows us to use the model both on the command line and to call
     # the model usinge main function from another python script.
-    
+
     if argv is None:
         argv = sys.argv[1:]
         if len(argv) == 0:
             usage()
-            return     
+            return
 
     opts, args = getopt.getopt(argv, 'C:S:T:c:s:R:F:')
-    
+
     for o, a in opts:
         if o == '-F':
             runinfoFile = a
@@ -713,7 +713,7 @@ def main(argv=None):
         if o == '-s': timestepsecs = int(a)
         if o == '-T': _lastTimeStep=int(a)
         if o == '-S': _firstTimeStep=int(a)
-        
+
     if (len(opts) <=1):
         usage()
 
@@ -759,7 +759,7 @@ def main(argv=None):
     dynModelFw._runDynamic(_firstTimeStep,_lastTimeStep)
     dynModelFw._runSuspend()
     dynModelFw._wf_shutdown()
-    
+
 
 if __name__ == "__main__":
     main()

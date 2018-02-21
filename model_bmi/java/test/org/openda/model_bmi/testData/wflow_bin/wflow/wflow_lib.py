@@ -59,15 +59,15 @@ def lddcreate_save(lddname, dem, force, corevolume=1E35, catchmentprecipitation=
     """
     Creates an ldd if a file does not exists or if the force flag is used
 
-    input: 
+    input:
         - lddname (name of the ldd to create)
         - dem (actual dem)
         - force (boolean to force recreation of the ldd)
         - outflowdepth (set to 10.0E35 normally but smaller if needed)
-        
+
     Output:
         - the LDD
-        
+
     """
     if os.path.exists(lddname) and not force:
         if Verbose:
@@ -80,24 +80,24 @@ def lddcreate_save(lddname, dem, force, corevolume=1E35, catchmentprecipitation=
             report(LDD, lddname)
             return LDD
 
-        
+
 def configget(config,section,var,default):
     """
-    
+
     Gets a string from a config file (.ini) and returns a default value if
-    the key is not found. If the key is not found it also sets the value 
+    the key is not found. If the key is not found it also sets the value
     with the default in the config-file
-    
+
     Input:
         - config - python ConfigParser object
         - section - section in the file
         - var - variable (key) to get
         - default - default string
-        
+
     Returns:
         - string - either the value from the config file or the default value
-        
-        
+
+
     """
     Def = False
     try:
@@ -106,47 +106,47 @@ def configget(config,section,var,default):
         Def = True
         ret = default
         configset(config,section,var,default, overwrite=False)
-    
+
     default = Def
-    return ret       
+    return ret
 
 
 def configset(config,section,var,value, overwrite=False):
-    """   
+    """
     Sets a string in the in memory representation of the config object
     Deos NOT overwrite existing values if overwrite is set to False (default)
-    
+
     Input:
         - config - python ConfigParser object
         - section - section in the file
         - var - variable (key) to set
         - value - the value to set
         - overwrite (optional, default is False)
-   
+
     Returns:
         - nothing
-        
+
     """
-    
+
     if not config.has_section(section):
         config.add_section(section)
         config.set(section,var,value)
-    else:     
+    else:
         if not config.has_option(section,var):
             config.set(section,var,value)
         else:
             if overwrite:
                 config.set(section,var,value)
-                
+
 
 def configsection(config,section):
     """
-    gets the list of lesy in a section 
-    
+    gets the list of lesy in a section
+
     Input:
         - config
         - section
-        
+
     Output:
         - list of keys in the section
     """
@@ -154,44 +154,44 @@ def configsection(config,section):
         ret = config.options(section)
     except:
         ret = []
-        
+
     return ret
 
 
 def getrows():
     """
     returns the number of rows in the current map
-    
+
     Input:
         - -
-        
+
     Output:
         - nr of rows in the current clonemap as a scalar
     """
     a = pcr2numpy(celllength(),numpy.nan).shape[0]
-    
+
     return a
 
 def getcols():
     """
     returns the number of columns in the current map
-    
+
     Input:
         - -
-        
+
     Output:
         - nr of columns in the current clonemap as a scalar
     """
     a = pcr2numpy(celllength(),numpy.nan).shape[1]
-    
-    return a   
+
+    return a
 
 def getgridparams():
     """ return grid parameters in a python friendly way
-    
-    Output:    
+
+    Output:
         [ Xul, Yul, xsize, ysize, rows, cols]
-    
+
         - xul - x upper left centre
         - yul - y upper left centre
         - xsize - size of a cell in x direction
@@ -201,28 +201,28 @@ def getgridparams():
         - xlr
         - ylr
     """
-    
+
     # x and Y are the same for now
     xy = pcr2numpy(celllength(),numpy.nan)[0,0]
     xu = pcr2numpy(xcoordinate(1),numpy.nan)[0,0]
     yu = pcr2numpy(ycoordinate(1),numpy.nan)[0,0]
     ylr = pcr2numpy(ycoordinate(1),numpy.nan)[getrows()-1,getcols()-1]
     xlr = pcr2numpy(xcoordinate(1),numpy.nan)[getrows()-1,getcols()-1]
-    
+
     return [xu, yu, xy, xy, getrows(), getcols(),xlr,ylr]
-        
+
 
 def snaptomap(points,mmap):
     """
     Snap the points in _points_ to nearest non missing
     values in _mmap_. Can be used to move gauge locations
     to the nearest rivers.
-    
-    Input: 
+
+    Input:
         - points - map with points to move
         - mmap - map with points to move to
 
-    Return: 
+    Return:
         - map with shifted points
     """
     points = cover(points,0)
@@ -240,65 +240,65 @@ def snaptomap(points,mmap):
     ptcover = spreadzone(cover(points,0),0,1)
     # Now get the org point value in the pt map
     nptorg = ifthen(npt > 0, ptcover)
-    
-    
+
+
     return nptorg
 
 def riverlength(ldd,order):
     """
-    Determines the length of a river using the ldd. 
+    Determines the length of a river using the ldd.
     only determined for order and higher.
 
-    Input: 
+    Input:
         - ldd, order (streamorder)
-        
-    Returns: 
+
+    Returns:
         - totallength,lengthpercell, streamorder
-    """    
+    """
     strorder=streamorder(ldd)
     strorder=ifthen(strorder >= ordinal(order),strorder)
     dist=max(celllength(),ifthen(boolean(strorder),downstreamdist(ldd)))
-    
+
     return catchmenttotal(cover(dist,0),ldd), dist, strorder
-    
+
 
 def upscale_riverlength(ldd,order, factor):
     """
     Upscales the riverlength using 'factor'
     The resulting maps can be resampled (e.g. using resample.exe) by factor and should
-    include the accurate length as determined with the original higher 
-    resolution maps.  This function is **depricated**,  
+    include the accurate length as determined with the original higher
+    resolution maps.  This function is **depricated**,
     use are_riverlength instead as this version
     is very slow for large maps
-    
-    Input: 
-        - ldd 
+
+    Input:
+        - ldd
         - minimum streamorder to include
-        
-    Output: 
-        - distance per factor cells 
+
+    Output:
+        - distance per factor cells
     """
-    
+
     strorder=streamorder(ldd)
     strorder=ifthen(strorder >= order,strorder)
-    dist=cover(max(celllength(),ifthen(boolean(strorder),downstreamdist(ldd))),0)   
+    dist=cover(max(celllength(),ifthen(boolean(strorder),downstreamdist(ldd))),0)
     totdist=max(ifthen(boolean(strorder),windowtotal(ifthen(boolean(strorder),dist),celllength() * factor)),dist)
-    
+
     return totdist
 
 def area_riverlength_factor(ldd, Area, Clength):
     """
-    ceates correction factors for riverlength for 
+    ceates correction factors for riverlength for
     the largest streamorder in each area
-    
-    Input: 
+
+    Input:
         - ldd
         - Area
         - Clength (1d length of a cell (sqrt(Area))
-        
+
     Output:
         - distance per area
-    
+
     """
     strorder=streamorder(ldd)
     strordermax=areamaximum(strorder,Area)
@@ -308,101 +308,101 @@ def area_riverlength_factor(ldd, Area, Clength):
     #N = sqrt(areatotal(scalar(boolean(Area)),Area))
     N = Clength
     factor = nr/N
-    
-    
+
+
     return factor
 
 def area_river_burnin(ldd, dem, order,Area):
   """
-  Calculates the lowest values in as DEM for each erea in an area map for 
+  Calculates the lowest values in as DEM for each erea in an area map for
   river of order *order*
-  
-  Input: 
+
+  Input:
       - ldd
       - dem
       - order
       - Area map
-      
+
   Output:
-      - dem 
+      - dem
   """
   strorder = streamorder(ldd)
   strordermax=areamaximum(strorder,Area)
   maxordcell = ifthen(strordermax > order, strordermax)
   riverdem = areaminimum(dem,Area)
-  
+
   return ifthen(boolean(maxordcell),riverdem)
-  
+
 
 def area_percentile(inmap,area,n,order,percentile):
   """
   calculates percentile of inmap per area
-  n is the number of points in each area, 
+  n is the number of points in each area,
   order, the sorter order of inmap per area (output of
   areaorder(inmap,area))
   n is the output of areatotal(spatial(scalar(1.0)),area)
-  
+
   Input:
       - inmap
       - area map
       - n
       - order (riverorder)
-      - percentile 
-      
+      - percentile
+
   Output:
       - percentile map
-      
+
   """
   i = rounddown((n * percentile)/100.0 + 0.5) # index in order map
   perc = ifthen(i == order, inmap)
-  
+
   return areaaverage(perc,area)
 
-    
+
 def find_outlet(ldd):
     """
     Tries to find the outlet of the largest catchment in the Ldd
-    
-    Input: 
+
+    Input:
         - Ldd
-        
-    Output: 
+
+    Output:
         - outlet map (single point in the map)
     """
     largest = mapmaximum(catchmenttotal(spatial(scalar(1.0)),ldd))
     outlet = ifthen(catchmenttotal(1.0,ldd) == largest,spatial(scalar(1.0)))
-    
+
     return outlet
-    
+
 
 def subcatch(ldd,outlet):
     """
     Determines a subcatchment map using LDD and outlet(s). In the resulting
     subcatchment map the i's of the catchment are determiend by the id's of
     the outlets.
-    
+
     Input:
         - ldd
-        - Outlet - maps with points for each outlet. 
-        
+        - Outlet - maps with points for each outlet.
+
     Output:
         - map of subcatchments
     """
     subcatch=subcatchment(ldd, ordinal(outlet))
-    
+
     return subcatch
-    
+
 def areastat(Var,Area):
     """
     Calculate several statistics of *Var* for each unique id in *Area*
-    
-    Input: 
+
+    Input:
         - Var
         - Area
-        
-    Output: 
+
+    Output:
         - Standard_Deviation,Average,Max,Min
-    
+
     """
     Avg = areaaverage(Var,Area)
     Sq = (Var - Avg)**2
@@ -410,24 +410,24 @@ def areastat(Var,Area):
     Sd = (areatotal(Sq,Area)/N)**0.5
     Max = areamaximum(Var,Area)
     Min = areaminimum(Var,Area)
-    
+
     return Sd,Avg,Max,Min
-    
+
 
 
 def checkerboard(mapin,fcc):
     """
-    checkerboard create a checkerboard map with unique id's in a 
+    checkerboard create a checkerboard map with unique id's in a
     fcc*fcc cells area. The resulting map can be used
     to derive statistics for (later) upscaling of maps (using the fcc factor)
-    
+
     .. warning: use with unitcell to get most reliable results!
-    
-    Input: 
+
+    Input:
         - map (used to determine coordinates)
         - fcc (size of the areas in cells)
-        
-    Output: 
+
+    Output:
         - checkerboard type map
     """
     msker = defined(mapin)
@@ -439,30 +439,30 @@ def checkerboard(mapin,fcc):
     xc = (xcoordinate((msker)) - xmin)/celllength()
     xc = rounddown(xc/fcc)
     #xc = xc/fcc
-    
+
     yc = yc * (mapmaximum(xc) + 1.0)
-    
+
     xy = ordinal(xc + yc)
-    
+
     return xy
-   
+
 
 def subcatch_order_a(ldd,oorder):
     """
     Determines subcatchments using the catchment order
-    
+
     This version uses the last cell BELOW order to derive the
     catchments. In general you want the \_b version
-    
+
     Input:
         - ldd
         - order - order to use
-    
+
     Output:
         - map with catchment for the given streamorder
     """
     outl = find_outlet(ldd)
-    large = subcatchment(ldd,boolean(outl))   
+    large = subcatchment(ldd,boolean(outl))
     stt = streamorder(ldd)
     sttd = downstream(ldd,stt)
     pts = ifthen((scalar(sttd) - scalar(stt)) > 0.0,sttd)
@@ -470,7 +470,7 @@ def subcatch_order_a(ldd,oorder):
     dif = cover(scalar(outl),dif) # Add catchment outlet
     dif = ordinal(uniqueid(boolean(dif)))
     sc = subcatchment(ldd,dif)
-    
+
     return sc, dif, stt
 
 def subcatch_order_b(ldd,oorder,Largest=False,sizelimit=0):
@@ -480,18 +480,18 @@ def subcatch_order_b(ldd,oorder,Largest=False,sizelimit=0):
     This version uses the bottommost cell of order
     If Largest is true the analysis is only done for the largest basin
     found in the ldd
-    
+
     Input:
         - ldd
         - oorder - order to use
         - largest - toggle, default = False
         - sizelimit - smallest catchments to include, default is all (sizelimit=0) in number of cells
-    
+
     Output:
         - map with catchment for the given streamorsder
     """
     outl = find_outlet(ldd)
-    large = subcatchment(ldd,boolean(outl))   
+    large = subcatchment(ldd,boolean(outl))
     stt = streamorder(ldd)
     sttd = downstream(ldd,stt)
     pts = ifthen((scalar(sttd) - scalar(stt)) > 0.0,sttd)
@@ -499,11 +499,11 @@ def subcatch_order_b(ldd,oorder,Largest=False,sizelimit=0):
         dif = ifthen(large,uniqueid(boolean(ifthen(stt == ordinal(oorder), pts))))
     else:
         dif = uniqueid(cover(boolean(pit(ldd)),boolean(ifthen(stt == ordinal(oorder), pts))))
-    
+
     scsize = catchmenttotal(1,ldd)
     dif = ordinal(uniqueid(boolean(ifthen(scsize >= sizelimit,dif))))
     sc = subcatchment(ldd,dif)
-    
+
     return sc, dif, stt
 
 
@@ -511,12 +511,12 @@ def getRowColPoint(in_map,xcor,ycor):
     """
     returns the row and col in a map at the point given.
     Works but is rather slow.
-    
+
     Input:
         - in_map - map to determine coordinates from
         - xcor - x coordinate
         - ycor - y coordinate
-        
+
     Output:
         - row, column
     """
@@ -530,20 +530,20 @@ def getRowColPoint(in_map,xcor,ycor):
     col_ =  numpy.absolute(diffx) <= (XX[0,0] * tolerance)  # cellsize
     row_ =  numpy.absolute(diffy) <= (XX[0,0] * tolerance)# cellsize
     point = (col_ * row_)
-    
-    
+
+
     return point.argmax(0).max(), point.argmax(1).max()
 
 def getValAtPoint(in_map,xcor,ycor):
     """
     returns the value in a map at the point given.
     works but is rather slow.
-    
+
     Input:
         - in_map - map to determine coordinates from
         - xcor - x coordinate
         - ycor - y coordinate
-        
+
     Output:
         - value
     """
@@ -559,35 +559,35 @@ def getValAtPoint(in_map,xcor,ycor):
     row_ =  numpy.absolute(diffy) <= (XX[0,0] * tolerance)# cellsize
     point = (col_ * row_)
     pt = point.argmax()
-    
+
     return themap.ravel()[pt]
-   
+
 
 def points_to_map(in_map,xcor,ycor,tolerance):
     """
     Returns a map with non zero values at the points defined
-    in X, Y pairs. It's goal is to replace the pcraster col2map program. 
-    
+    in X, Y pairs. It's goal is to replace the pcraster col2map program.
+
     tolerance should be 0.5 to select single points
     Performance is not very good and scales linear with the number of points
-    
-    
+
+
     Input:
         - in_map - map to determine coordinates from
         - xcor - x coordinate (array or single value)
         - ycor - y coordinate (array or single value)
         - tolerance - tolerance in cell units. 0.5 selects a single cell\
         10 would select a 10x10 block of cells
-        
+
     Output:
         - Map with values burned in. 1 for first point, 2 for second and so on
     """
     point = in_map * 0.0
-    
+
     x = pcr2numpy(xcoordinate(defined(in_map)),numpy.nan)
     y = pcr2numpy(ycoordinate(defined(in_map)),numpy.nan)
     XX = pcr2numpy(celllength(),0.0)
-    
+
     # simple check to use both floats and numpy arrays
     try:
         c = xcor.ndim
@@ -600,27 +600,27 @@ def points_to_map(in_map,xcor,ycor,tolerance):
         if Verbose:
             print(n)
         diffx = x - xcor[n]
-        diffy = y - ycor[n]        
+        diffy = y - ycor[n]
         col_ =  numpy.absolute(diffx) <= (XX[0,0] * tolerance)  # cellsize
         row_ =  numpy.absolute(diffy) <= (XX[0,0] * tolerance)# cellsize
         point =  point + numpy2pcr(Scalar,((col_ * row_) * (n+1)),numpy.nan)
-    
+
     return ordinal(point)
 
 
 def detdrainlength(ldd,xl,yl):
     """
     Determines the drainaige length (DCL) for a non square grid
-    
+
     Input:
         - ldd - drainage network
         - xl - length of cells in x direction
         - yl - length of cells in y direction
-        
+
     Output:
         - DCL
     """
-    # take into account non-square cells    
+    # take into account non-square cells
     # if ldd is 8 or 2 use Ylength
     # if ldd is 4 or 6 use Xlength
     draindir = scalar(ldd)
@@ -630,22 +630,22 @@ def detdrainlength(ldd,xl,yl):
                                         ifthenelse(draindir == 4, xl,
                                                    ifthenelse(draindir == 6,xl,slantlength))))
 
-                                                           
-    return drainlength   
+
+    return drainlength
 
 def detdrainwidth(ldd,xl,yl):
     """
     Determines width of drainage over DEM for a non square grid
-    
+
     Input:
         - ldd - drainage network
         - xl - length of cells in x direction
         - yl - length of cells in y direction
-        
+
     Output:
         - DCL
     """
-    # take into account non-square cells    
+    # take into account non-square cells
     # if ldd is 8 or 2 use Xlength
     # if ldd is 4 or 6 use Ylength
     draindir = scalar(ldd)
@@ -695,18 +695,18 @@ def hand(dem,ldd,threshold=50.0,stream=None):
     return hand, stream
 
 
-    
+
 def sCurve(X,a=0.0,b=1.0,c=1.0):
     """
     sCurve function:
-        
+
     Input:
         - X input map
-        - C determines the steepness or "stepwiseness" of the curve. 
+        - C determines the steepness or "stepwiseness" of the curve.
           The higher C the sharper the function. A negative C reverses the function.
         - b determines the amplitude of the curve
         - a determines the centre level (default = 0)
-    
+
     Output:
         - result
     """
@@ -716,19 +716,19 @@ def sCurve(X,a=0.0,b=1.0,c=1.0):
 def sCurveSlope(X,a=0.0,b=1.0,c=1.0):
     """
     First derivative of the sCurve defined by a,b,c at point X
-    
+
     Input:
         - X - value to calculate for
-        - a 
+        - a
         - b
         - c
-    
+
     Output:
         - first derivative (slope) of the curve at point X
     """
     sc = sCurve(X,a=a,b=b,c=c)
     slope = sc * (1 - sc)
-    return slope    
+    return slope
 
 
 def Gzip(fileName, storePath=False, chunkSize=1024*1024):

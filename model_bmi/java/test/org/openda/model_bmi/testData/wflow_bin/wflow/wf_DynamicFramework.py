@@ -12,7 +12,7 @@ the stateVariables() method which lists the state variables. Other items to be
 exchanged most be listed in the API section of the .ini file
 
 In addition, the following methods must also be called at  startup:
-    
+
     - createRunId()
 
 $Author: schelle $
@@ -87,8 +87,8 @@ class wf_exchnageVariables():
         returns 2 if this is a input variable to be set from api otherwise 1
         ( in the ini 0 is for in memory variables)
         A bit confusing!!!
-        
-        
+
+
         """
         for xx in self.vars:
             if xx.__contains__(name):

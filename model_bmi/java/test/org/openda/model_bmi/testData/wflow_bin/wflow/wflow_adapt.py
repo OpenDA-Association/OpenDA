@@ -1,7 +1,7 @@
 # Test version of wflow Delft-FEWS adapter
 #
 # Wflow is Free software, see below:
-# 
+#
 # Copyright (c) J. Schellekens 2005-2011
 #
 # This program is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ functionality for converting PI-XML files to .tss and back.
 **wflow_adapt** -M Pre -t InputTimeseriesXml -I inifile -T timestepInSeconds
 
 *Usage postadapter:*
-    
-**wflow_adapt**-M Post -t InputTimeseriesXml -s inputStateFile -I inifile 
+
+**wflow_adapt**-M Post -t InputTimeseriesXml -s inputStateFile -I inifile
               -o outputStateFile -r runinfofile -w workdir -C case -T timestepInSeconds [-R runId]
 
 Issues:
-    
+
 - Delft-Fews exports data from 0 to timestep. PCraster starts to count at 1.
-  Renaming the files is not desireable. The solution is the add a delay of 1 
+  Renaming the files is not desireable. The solution is the add a delay of 1
   timestep in the GA run that exports the mapstacks to wflow.
 - Not tested very well.
 - There is a considerable amount of duplication (e.g. info in the runinfo.xml and
@@ -46,7 +46,7 @@ Issues:
 $Author: schelle $
 $Id: wflow_adapt.py 915 2014-02-10 07:33:56Z schelle $
 $Rev: 915 $
-     
+
 """
 
 import getopt, sys, os
@@ -67,8 +67,8 @@ import ConfigParser
 import  wflow.wflow_lib as wflow_lib
 import wflow.pcrut as pcrut
 
- 
- 
+
+
 outMaps = ["run.xml","lev.xml"]
 iniFile = "wflow_sbm.ini"
 case = "not_set"
@@ -76,7 +76,7 @@ runId="run_default"
 
 logfile = "wflow_adapt.log"
 
-def make_uniek(seq, idfun=None): 
+def make_uniek(seq, idfun=None):
     # Order preserving
     return list(_f10(seq, idfun))
 
@@ -95,8 +95,8 @@ def _f10(seq, idfun=None):
                 continue
             seen.add(x)
             yield x
-            
-            
+
+
 fewsNamespace="http://www.wldelft.nl/fews/PI"
 
 def setlogger(logfilename,loggername,thelevel=logging.INFO):
@@ -104,7 +104,7 @@ def setlogger(logfilename,loggername,thelevel=logging.INFO):
     Set-up the logging system and return a logger object. Exit if this fails
     """
 
-    try:    
+    try:
         #create logger
         logger = logging.getLogger(loggername)
         if not isinstance(thelevel, int):
@@ -155,15 +155,15 @@ def pixml_state_updateTime(inxml,outxml,DT):
     """
     Reads the pi-state xml file inxml and updates the data/time of
     the state using datetime. Writes updated file to outxml
-    
-    - Can be use in scripts to set the date.time of the 
+
+    - Can be use in scripts to set the date.time of the
       output state.xml that Delft-FEWS writes.
 
     .. warning::
 
 	    This function does not fully parse the xml file and will only work properly
         if the xml files date the dateTime element written on one line.
-      
+
     """
 
     if os.path.exists(inxml):
@@ -172,7 +172,7 @@ def pixml_state_updateTime(inxml,outxml,DT):
         ofile = open(outxml,'w')
         datestr = DT.strftime('%Y-%m-%d')
         timestr = DT.strftime('%H:%M:%S')
-        
+
         for aline in all:
             pos = aline.find('dateTime')
             if pos >= 0:
@@ -184,11 +184,11 @@ def pixml_state_updateTime(inxml,outxml,DT):
         ofile.close()
     else:
         print inxml + " does not exists."
-        
 
-        
+
+
 def pixml_totss_dates (nname,outputdir):
-    """ 
+    """
     Gets Date/time info from XML file and creates .tss files with:
 
         - Day of year
@@ -196,14 +196,14 @@ def pixml_totss_dates (nname,outputdir):
         - Others may follow
 
     """
-    
+
     if os.path.exists(nname):
         file = open(nname, "r")
         tree = parse(file)
         PItimeSeries = tree.getroot()
         series = PItimeSeries.findall('.//{' + fewsNamespace + '}series')
-        
-        events = series[0].findall('.//{' + fewsNamespace + '}event') 
+
+        events = series[0].findall('.//{' + fewsNamespace + '}event')
         f = open(outputdir + '/YearDay.tss','w')
         ff = open(outputdir + '/Hour.tss','w')
         # write the header
@@ -214,29 +214,29 @@ def pixml_totss_dates (nname,outputdir):
         for i in range(1,3):
             f.write('Data column ' + str(i) + '\n')
             ff.write('Data column ' + str(i) + '\n')
-        i=1        
-        for ev in events:        
+        i=1
+        for ev in events:
             dt = datetime.strptime(ev.attrib['date'] + ev.attrib['time'],'%Y-%m-%d%H:%M:%S')
             f.write(str(i) +'\t' + dt.strftime('%j\n'))
             ff.write(str(i) +'\t' + dt.strftime('%H\n'))
-            i = i+1    
+            i = i+1
     else:
         print nname + " does not exists."
-    
+
 
 def pixml_totss(nname,outputdir):
     """
     Converts and PI xml timeseries file to a number of tss files.
-   
+
     The tss files are created using the following rules:
- 
+
         - tss filename determined by the content of the parameter element with a ".tss" postfix
         - files are created in "outputdir"
         - multiple locations will be multiple columns in the tss file written in order
           of appearance in the XML file
-     
+
     """
-    
+
     if os.path.exists(nname):
         file = open(nname, "r")
         tree = parse(file)
@@ -245,43 +245,43 @@ def pixml_totss(nname,outputdir):
         LocList=[]
         for station in seriesStationList:
             LocList.append(station.text)
-        
+
         Parameters=PItimeSeries.findall('.//{' + fewsNamespace + '}parameterId')
         ParList=[]
         for par in Parameters:
             ParList.append(par.text)
 
         uniqueParList=make_uniek(ParList)
-       
+
         colsinfile=len(ParList)
-        
+
         series = PItimeSeries.findall('.//{' + fewsNamespace + '}series')
-        
+
         # put whole lot in a dictionary
         val = {}
         parlocs = {}
         i = 0
         for par in uniqueParList:
             parlocs[par] = 1
-            
-        
+
+
         for thisS in series:
             par = thisS.find('.//{' + fewsNamespace + '}parameterId').text
-            events = thisS.findall('.//{' + fewsNamespace + '}event') 
+            events = thisS.findall('.//{' + fewsNamespace + '}event')
             locs = thisS.findall('.//{' + fewsNamespace + '}locationId')
-            
+
             i=0;
             for ev in events:
                 parlocs[par] = 1
                 if val.has_key((i,par)):
                     theval = val[i,par] + '\t' + ev.attrib['value']
                     val[i,par] = theval
-                    parlocs[par] = parlocs[par] + 1            
-                else:        
+                    parlocs[par] = parlocs[par] + 1
+                else:
                     val[i,par] = ev.attrib['value']
                 i = i+1
         nrevents = i
-        
+
 
         for par in uniqueParList:
             f = open(outputdir + '/' + par + '.tss','w')
@@ -293,7 +293,7 @@ def pixml_totss(nname,outputdir):
                 f.write('Data column ' + str(i) + '\n')
             for i in range(0,nrevents):
                 f.write(str(i+1) + '\t' + val[i,par] + '\n')
-                        
+
     else:
         print nname + " does not exists."
 
@@ -314,7 +314,7 @@ def tss_topixml(tssfile,xmlfile,locationname,parametername,Sdate,timestep):
     #except:
     #    logger.error("Tss file not found or corrupt: ", tssfile)
     #    return
-    
+
     # Add dummpy first timesteps
     if len(tss.shape) > 1:
         dumm = tss[0,:].copy()
@@ -324,7 +324,7 @@ def tss_topixml(tssfile,xmlfile,locationname,parametername,Sdate,timestep):
         dumm = tss.copy()
         dumm[:] = -999.0
         tss =  pcrut.numpy.vstack((dumm,tss))
-  
+
     # replace NaN with missing values
     tss[pcrut.numpy.isnan(tss)] = missval
 
@@ -333,7 +333,7 @@ def tss_topixml(tssfile,xmlfile,locationname,parametername,Sdate,timestep):
     extraday = timedelta(seconds=timestep)
     #extraday = timedelta(seconds=0)
     #Sdate = Sdate + extraday
-    #Edate = Sdate + trange - extraday    
+    #Edate = Sdate + trange - extraday
     Sdate = Sdate + extraday
     Edate = Sdate + trange - extraday - extraday
 
@@ -372,12 +372,12 @@ def tss_topixml(tssfile,xmlfile,locationname,parametername,Sdate,timestep):
                 xdate = xdate + timedelta(seconds=timestep)
             xcount = xcount + 1
         ofile.write("</series>\n")
-        
+
     ofile.write("</TimeSeries>\n")
     ofile.close()
-                
+
     return tss
-    
+
 def mapstackxml(mapstackxml,mapstackname,locationname,parametername,Sdate,Edate,timestepsecs):
     """
         writes a mapstack xml file
@@ -433,7 +433,7 @@ def getTimeStepsfromRuninfo(xmlfile,timestepsecs):
 
 
 def getEndTimefromRuninfo(xmlfile):
-    """ 
+    """
     Gets the endtime of the run from the FEWS runinfo file
     """
     if os.path.exists(xmlfile):
@@ -445,11 +445,11 @@ def getEndTimefromRuninfo(xmlfile):
     else:
         print xmlfile + " does not exists."
         ed = None
-        
+
     return ed
 
 def getStartTimefromRuninfo(xmlfile):
-    """ 
+    """
     Gets the starttime from the FEWS runinfo file
     """
 
@@ -466,14 +466,14 @@ def getStartTimefromRuninfo(xmlfile):
         # ed = pa
     else:
         return None
-        
+
     return ed
 
 def getMapStacksFromRuninfo(xmlfile):
     """
     Gets the list of mapstacks fews expect from the runinfo file and create those
     """
-    
+
     if os.path.exists(xmlfile):
         file = open(xmlfile, "r")
         tree = parse(file)
@@ -482,7 +482,7 @@ def getMapStacksFromRuninfo(xmlfile):
         ed = datetime.strptime(edate.attrib['date'] + edate.attrib['time'],'%Y-%m-%d%H:%M:%S')
     else:
         print xmlfile + " does not exists."
-        
+
     return ed
 
 def pre_adapter(INxmlTimeSeries,logger):
@@ -492,10 +492,10 @@ def pre_adapter(INxmlTimeSeries,logger):
         pixml_totss(xmlTimeSeries,case + '/intss/')
         pixml_totss_dates(xmlTimeSeries,case + '/intss/')
         #writeNrTimesteps()
-    
+
 def usage():
-    print "wflow_adapter -M Pre -t InputTimeseriesXml -I inifile" 
-    print "wflow_adapter -M run -I inifile -r runinfofile" 
+    print "wflow_adapter -M Pre -t InputTimeseriesXml -I inifile"
+    print "wflow_adapter -M run -I inifile -r runinfofile"
     print "wflow_adapter -M Post -t InputTimeseriesXml -s inputStateFile -I inifile"
     print "              -o outputStateFile -r runinfofile -w workdir -C case"
     print " Options:     -T timestepInSeconds"
@@ -516,13 +516,13 @@ def main():
         opts, args = getopt.getopt(sys.argv[1:], "-T:-M:-t:-s:-o:-r:-w:-C:-I:R:")
     except getopt.GetoptError, err:
         # print help information and exit:
-        print str(err) 
+        print str(err)
         usage()
         sys.exit(2)
-        
+
     xmlTimeSeries = ""
     stateFile = ""
-    
+
     mode = "Pre"
     for o, a in opts:
         if o == "-v":
@@ -532,60 +532,60 @@ def main():
         elif o in ("-T"):
             timestepsecs = int(a)
         elif o in ("-R"):
-            runId = a            
+            runId = a
         elif o in ("-o"):
             stateFile = a
         elif o in ("-s"):
-            inputStateFile = a            
+            inputStateFile = a
         elif o in ("-r"):
-            runinfofile = a    
+            runinfofile = a
         elif o in ("-w"):
-            workdir = a    
+            workdir = a
         elif o in ("-C"):
-            case = a 
+            case = a
         elif o in ("-I"):
-            iniFile = a      
+            iniFile = a
         elif o in ("-M"):
-            mode = a    
+            mode = a
         else:
             assert False, "unhandled option"
-         
-         
+
+
     # Try and read config file and set default options
     config = ConfigParser.SafeConfigParser()
     config.optionxform = str
     config.read(case + "/" + iniFile)
-    
+
     # get timestep from wflow ini use comand-line as default
     timestepsecs = int(wflow_lib.configget(config,"model","timestepsecs",str(timestepsecs)))
-    
 
-    logger = setlogger(logfile,"wflow_adapt")    
-    
+
+    logger = setlogger(logfile,"wflow_adapt")
+
     if mode =="Pre":
         logger.info("Starting preadapter")
         pre_adapter(xmlTimeSeries,logger)
         logger.info("Ending preadapter")
         sys.exit(0)
     elif mode == "Run":
-        logger.info("Run adapter not implemented...")    # Not implmented -> se pcraster adapter        
+        logger.info("Run adapter not implemented...")    # Not implmented -> se pcraster adapter
         sys.exit(1)
     elif mode == "Post":
-        
+
         logger.info("Starting postadapter")
         pixml_state_updateTime(inputStateFile,stateFile,getEndTimefromRuninfo(runinfofile))
-        
-        
+
+
         # Get outpumapstacks from wflow ini
         mstacks  = config.options('outputmaps')
-        
-        
+
+
         for a in mstacks:
-           var = config.get("outputmaps",a)           
+           var = config.get("outputmaps",a)
            logger.debug("Creating mapstack xml: " + workdir + "/" + case +"/" +runId + "/" + var + ".xml" )
            mapstackxml(workdir + "/" + case +"/" + runId + "/outmaps/" + var +".xml",var + "?????.???",var,var,getStartTimefromRuninfo(runinfofile),getEndTimefromRuninfo(runinfofile),timestepsecs)
-           
-        
+
+
         # Back hack to work around the 0 based FEWS problem and create a double timestep zo that we have connection between subsequent runs in FEWS
         #TODO: do the copy for all variable that wflow saves.This hack only works for variable that are saved as states
         try:
@@ -593,7 +593,7 @@ def main():
             shutil.copy(workdir + "/" + case +"/instate/WaterLevel.map",workdir +  "/" + case +"/" +runId + "/outmaps/lev00000.000")
         except:
             logger.warn("Cannot copy Surfacerunoff and/or level")
-            	    
+
         # now check for tss files and convert to XML
         stop = 0
         secnr =0
@@ -605,7 +605,7 @@ def main():
                 tssfiles  = config.options(thissection)
                 secnr = secnr + 1
                 sDate = getStartTimefromRuninfo(runinfofile)
-    
+
                 for aa in tssfiles:
                     if aa not in "samplemap":
                         tssFile = case + "/" + runId + "/" + config.get(thissection,aa)
@@ -623,7 +623,7 @@ def main():
         log2xml(logfile,adaptxmldiagfname)
     else:
         sys.exit(2)
-    
+
     # ...
 if __name__ == "__main__":
     main()

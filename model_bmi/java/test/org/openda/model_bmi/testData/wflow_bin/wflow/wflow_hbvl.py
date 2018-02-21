@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Wflow is Free software, see below:
-# 
+#
 # Copyright (c) Hylke Beck (JRC) J. Schellekens  2005-2013
 #
 # This program is free software: you can redistribute it and/or modify
@@ -21,18 +21,18 @@
 """
 Run the wflow_hbvl (hbv light) hydrological model..
 
-usage: 
+usage:
 wflow_hbv::
-    
+
       [-h][-v level][-F runinfofile][-L logfile][-C casename][-R runId]
       [-c configfile][-T timesteps][-s seconds][-W][-E][-N][-U discharge]
       [-P parameter multiplication][-X][-l loglevel]
-      
+
 -F: if set wflow is expected to be run by FEWS. It will determine
     the timesteps from the runinfo.xml file and save the output initial
     conditions to an alternate location. Also set fewsrun=1 in the .ini file!
-    
--f: Force overwrite of existing results    
+
+-f: Force overwrite of existing results
 
 -T: Set the number of timesteps to run
 
@@ -52,21 +52,21 @@ wflow_hbv::
 
 -L: set the logfile
 
--c: name of wflow the configuration file (default: Casename/wflow_hbv.ini). 
+-c: name of wflow the configuration file (default: Casename/wflow_hbv.ini).
 
 -h: print usage information
 
 -U: The argument to this option should be a .tss file with measured discharge in
     [m^3/s] which the program will use to update the internal state to match
-    the measured flow. The number of columns in this file should match the 
+    the measured flow. The number of columns in this file should match the
     number of gauges in the wflow\_gauges.map file.
-    
+
 -u: list of gauges/columns to use in update. Format:
     -u [1 , 4 ,13]
     The above example uses column 1, 4 and 13
-    
+
 -P: set parameter change string (e.g: -P 'self.FC = self.FC * 1.6') for non-dynamic variables
-    
+
 -p: set parameter change string (e.g: -P 'self.Precipitation = self.Precipitation * 1.11') for
     dynamic variables
 
@@ -86,8 +86,8 @@ import getopt
 from wflow.wf_DynamicFramework import *
 from wflow.wf_DynamicFramework import *
 from wflow.wflow_adapt import *
-from wflow_adapt import *    
-        
+from wflow_adapt import *
+
 #import scipy
 #import pcrut
 
@@ -104,7 +104,7 @@ updateCols = [] #: columns used in updating
 def usage(*args):
     """
     Print usage information
-    
+
     -  *args: command line arguments given
     """
     sys.stdout = sys.stderr
@@ -118,7 +118,7 @@ class WflowModel(DynamicModel):
   The user defined model class.
 
   """
-  
+
 
   def __init__(self, cloneMap,Dir,RunDir,configfile):
       DynamicModel.__init__(self)
@@ -132,10 +132,10 @@ class WflowModel(DynamicModel):
 
 
   def stateVariables(self):
-      """ 
-      returns a list of state variables that are essential to the model. 
+      """
+      returns a list of state variables that are essential to the model.
       This list is essential for the resume and suspend functions to work.
-      
+
       This function is specific for each model and **must** be present.
 
      :var self.DrySnow: Snow pack [mm]
@@ -149,20 +149,20 @@ class WflowModel(DynamicModel):
                  'UpperZoneStorage',
                  'LowerZoneStorage',
                  'DrySnow']
-      
+
       return states
-      
-      
+
+
     # The following are made to better connect to deltashell/openmi
   def supplyCurrentTime(self):
       """
       gets the current time in seconds after the start of the run
-      
+
       Ouput:
           - time in seconds since the start of the model run
       """
       return self.currentTimeStep() * int(configget(self.config,'model','timestepsecs','86400'))
-  
+
   def parameters(self):
     """
     Define all model parameters here that the framework should handle for the model
@@ -192,12 +192,12 @@ class WflowModel(DynamicModel):
       Suspends the model to disk. All variables needed to restart the model
       are saved to disk as pcraster maps. Use resume() to re-read them
     """
-    
-    
+
+
     self.logger.info("Saving initial conditions...")
     self.wf_suspend(os.path.join(self.SaveDir,"outstate"))
-   
-    if self.OverWriteInit:            
+
+    if self.OverWriteInit:
         self.logger.info("Saving initial conditions over start conditions...")
         self.wf_suspend(os.path.join(self.SaveDir,"instate"))
 
@@ -205,64 +205,64 @@ class WflowModel(DynamicModel):
     if self.fewsrun:
         self.logger.info("Saving initial conditions for FEWS...")
         self.wf_suspend(os.path.join(self.Dir, "outstate"))
-        
+
 
   def initial(self):
-      
+
     """
     Initial part of the model, executed only once. Reads all static model
     information (parameters) and sets-up the variables used in modelling.
-    
+
     *HBV Soil*
-    
-    :var FC.tbl: Field Capacity (260.0) [mm]  
+
+    :var FC.tbl: Field Capacity (260.0) [mm]
     :var BETA.tbl: exponent in soil runoff generation equation (1.8)  [-]
     :var LP.tbl: fraction of Fieldcapacity below which actual evaporation=potential evaporation (0.53000)
     :var K2.tbl: Recession constant baseflow (0.02307)
-  
+
     *If SetKquickFlow is set to 1*
- 
+
     :var K1.tbl: (0.09880)
-    :var SUZ.tbl: Level over wich K0 is used (100.0) 
+    :var SUZ.tbl: Level over wich K0 is used (100.0)
     :var K0.tbl: (0.3)
-    
+
 
     :var PERC.tbl: Percolation from Upper to Lowerzone (0.4000)  [mm/day]
     :var CFR.tbl: Refreezing efficiency constant in refreezing of freewater in snow (0.05000)
     :var PCORR.tbl: Correction factor for precipitation (1.0)
-    :var RFCF.tbl: Correction factor for rainfall (1.0)      
-    :var SFCF.tbl: Correction factor for snowfall(1.0)     
+    :var RFCF.tbl: Correction factor for rainfall (1.0)
+    :var SFCF.tbl: Correction factor for snowfall(1.0)
     :var CEVPF.tbl: Correction factor for potential evaporation (1.0)
     :var EPF.tbl: Exponent of correction factor for evaporation on days with precipitation(0.0)
     :var ECORR.tbl: Evap correction (1.0)
-   
-    
+
+
     *Snow modelling parameters*
-    
+
     :var TTI.tbl: critical temperature for snowmelt and refreezing  (1.000) [oC]
     :var TT.tbl: defines interval in which precipitation falls as rainfall and snowfall (-1.41934) [oC]
     :var CFMAX.tbl: meltconstant in temperature-index ( 3.75653) [-]
     :var WHC.tbl: fraction of Snowvolume that can store water (0.1) [-]
- 
-    
+
+
     """
     global statistics
     global multpars
-    global updateCols    
-    
+    global updateCols
+
     setglobaloption("unittrue")
-    
-    
+
+
     self.thestep = scalar(0)
 
     #: files to be used in case of timesries (scalar) input to the model
-    
+
     #: name of the tss file with precipitation data ("../intss/P.tss")
 
 
-    self.logger.info("running for " + str(self.nrTimeSteps()) + " timesteps") 
+    self.logger.info("running for " + str(self.nrTimeSteps()) + " timesteps")
 
-    
+
         # Set and get defaults from ConfigFile here ###################################
 
     self.interpolMethod = configget(self.config,"model","InterpolationMethod","inv")
@@ -285,7 +285,7 @@ class WflowModel(DynamicModel):
     wflow_soil  = configget(self.config,"model","wflow_soil","staticmaps/wflow_soil.map")
     wflow_gauges  = configget(self.config,"model","wflow_gauges","staticmaps/wflow_gauges.map")
 
-    # 2: Input base maps ########################################################  
+    # 2: Input base maps ########################################################
     subcatch = ordinal(self.wf_readmap(os.path.join(self.Dir,wflow_subcatch),0.0,fail=True))  # Determines the area of calculations (all cells > 0)
     subcatch = ifthen(subcatch > 0, subcatch)
 
@@ -300,13 +300,13 @@ class WflowModel(DynamicModel):
     self.Soil=cover(self.Soil,nominal(ordinal(subcatch) > 0))
     self.OutputLoc=self.wf_readmap(os.path.join(self.Dir , wflow_gauges),0.0,fail=True)  #: Map with locations of output gauge(s)
 
-    
+
      # Temperature correction per cell to add
     self.TempCor=self.wf_readmap(os.path.join(self.Dir , configget(self.config,"model","TemperatureCorrectionMap","staticmap/swflow_tempcor.map")),0.0)
     self.OutputId=self.wf_readmap(os.path.join(self.Dir , wflow_subcatch),0.0,fail=True)       # location of subcatchment
-  
+
     self.ZeroMap=0.0*scalar(defined(self.Altitude))                    #map with only zero's
-  
+
     # 3: Input time series ###################################################
     self.P_mapstack=self.Dir + configget(self.config,"inputmapstacks","Precipitation","/inmaps/P") # timeseries for rainfall
     self.PET_mapstack=self.Dir + configget(self.config,"inputmapstacks","EvapoTranspiration","/inmaps/PET") # timeseries for rainfall"/inmaps/PET"          # potential evapotranspiration
@@ -319,7 +319,7 @@ class WflowModel(DynamicModel):
 
     self.Latitude  =  ycoordinate(boolean(self.Altitude))
     self.Longitude =  xcoordinate(boolean(self.Altitude))
-  
+
     self.logger.info("Linking parameters to landuse, catchment and soil...")
 
     # TODO: Set default properly
@@ -398,7 +398,7 @@ class WflowModel(DynamicModel):
 
   def resume(self):
     """ read initial state maps (they are output of a previous call to suspend()) """
-    
+
     if self.reinit == 1:
         self.logger.info("Setting initial conditions to default (zero!)")
         self.FreeWater =  cover(0.0) #: Water on surface (state variable [mm])
@@ -411,16 +411,16 @@ class WflowModel(DynamicModel):
 
     self.initstorage=self.FreeWater + self.DrySnow + self.SoilMoisture + self.UpperZoneStorage + self.LowerZoneStorage
 
-    
-    
+
+
   def dynamic(self):
-    
-    """    
-    Below a list of variables that can be save to disk as maps or as 
+
+    """
+    Below a list of variables that can be save to disk as maps or as
     timeseries (see ini file for syntax):
-        
+
     *Dynamic variables*
-    
+
     :var self.Snow: Snow depth [mm]
     :var self.SnowWater: water content of the snow [mm]
     :var self.LowerZoneStorage: water content of the lower zone [mm]
@@ -431,9 +431,9 @@ class WflowModel(DynamicModel):
     :var self.Q1: specific runoff (quickflow part) [mm]
     :var self.Q0: specific runoff (quickflow), If K upper zone is precalculated [mm]
 
-    
+
     *Static variables*
-        
+
     :var self.Altitude: The altitude of each cell [m]
     :var self.ToCubic: Mutiplier to convert mm to m^3/s for fluxes
     """
@@ -509,23 +509,23 @@ class WflowModel(DynamicModel):
     self.Inwater=self.InwaterMM * self.ToCubic
     self.QuickFlowCubic = (self.Q0 + self.Q1) * self.ToCubic
     self.BaseFlowCubic = self.Q2 * self.ToCubic
-    
+
 
 
 
 
 # The main function is used to run the program from the command line
 
-def main(argv=None):  
+def main(argv=None):
     """
     Perform command line execution of the model.
-    """      
+    """
     global multpars
     global updateCols
     caseName = "default_hbv"
     runId = "run_default"
     configfile="wflow_hbvl.ini"
-    LogFileName="wflow.log"    
+    LogFileName="wflow.log"
     _lastTimeStep = 0
     _firstTimeStep = 1
     fewsrun=False
@@ -534,54 +534,54 @@ def main(argv=None):
     wflow_cloneMap = 'wflow_subcatch.map'
     NoOverWrite=1
     loglevel = logging.DEBUG
-    
+
     if argv is None:
         argv = sys.argv[1:]
         if len(argv) == 0:
             usage()
-            return     
-    
+            return
+
     ## Main model starts here
     ########################################################################
     try:
         opts, args = getopt.getopt(argv, 'c:QXS:F:hC:Ii:T:R:u:s:P:p:Xx:U:fl:L:')
     except getopt.error, msg:
         pcrut.usage(msg)
-    
+
     for o, a in opts:
-        if o == '-F': 
+        if o == '-F':
             runinfoFile = a
             fewsrun = True
 
         if o == '-C': caseName = a
         if o == '-R': runId = a
-        if o == '-L': LogFileName = a 
-        if o == '-l': exec "loglevel = logging." + a           
+        if o == '-L': LogFileName = a
+        if o == '-l': exec "loglevel = logging." + a
         if o == '-c': configfile = a
         if o == '-s': timestepsecs = int(a)
         if o == '-T': _lastTimeStep=int(a)
         if o == '-S': _firstTimeStep=int(a)
         if o == '-h': usage()
         if o == '-f': NoOverWrite = 0
-        
 
-     
-    if fewsrun: 
+
+
+    if fewsrun:
         ts = getTimeStepsfromRuninfo(runinfoFile,timestepsecs)
         starttime = getStartTimefromRuninfo(runinfoFile)
         if (ts):
             _lastTimeStep =  ts# * 86400/timestepsecs
-            _firstTimeStep = 1 
+            _firstTimeStep = 1
         else:
             print "Failed to get timesteps from runinfo file: " + runinfoFile
             exit(2)
     else:
         starttime = dt.datetime(1990,01,01)
-       
+
     if _lastTimeStep < _firstTimeStep:
         print "The starttimestep (" + str(_firstTimeStep) +") is smaller than the last timestep (" + str(_lastTimeStep) + ")"
         usage()
- 
+
     myModel = WflowModel(wflow_cloneMap, caseName,runId,configfile)
     dynModelFw = wf_DynamicFramework(myModel, _lastTimeStep,firstTimestep=_firstTimeStep,datetimestart=starttime)
     dynModelFw.createRunId(NoOverWrite=NoOverWrite,logfname=LogFileName,level=loglevel,doSetupFramework=False)
@@ -616,9 +616,9 @@ def main(argv=None):
     dynModelFw._runDynamic(_firstTimeStep,_lastTimeStep)
     dynModelFw._runSuspend()
     dynModelFw._wf_shutdown()
-    
-    
-    
+
+
+
     os.chdir("../../")
 
 

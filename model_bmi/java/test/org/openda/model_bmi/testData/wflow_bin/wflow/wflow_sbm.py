@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Wflow is Free software, see below:
-# 
+#
 # Copyright (c) J. Schellekens/Deltares 2005-2014
 #
 # This program is free software: you can redistribute it and/or modify
@@ -24,59 +24,59 @@ Run the wflow_sbm hydrological model..
 usage
 
 ::
-    
+
     wflow_sbm [-h][-v level][-F runinfofile][-L logfile][-C casename][-R runId]
           [-c configfile][-T last_step][-S first_step][-s seconds][-W][-E][-N][-U discharge]
           [-P parameter multiplication][-X][-f][-I][-i tbl_dir][-x subcatchId][-u updatecols]
           [-p inputparameter multiplication][-l loglevel]
-          
+
     -F: if set wflow is expected to be run by FEWS. It will determine
         the timesteps from the runinfo.xml file and save the output initial
         conditions to an alternate location. Also set fewsrun=1 in the .ini file!
-        
-    -X: save state at the end of the run over the initial conditions at the start        
-    
-    -f: Force overwrite of existing results    
-    
+
+    -X: save state at the end of the run over the initial conditions at the start
+
+    -f: Force overwrite of existing results
+
     -T: Set last timestep
-    
+
     -S: Set the start timestep (default = 1)
-    
+
     -s: Set the model timesteps in seconds
-    
+
     -I: re-initialize the initial model conditions with default
-    
+
     -i: Set input table directory (default is intbl)
-    
+
     -x: Apply multipliers (-P/-p ) for subcatchment only (e.g. -x 1)
-    
+
     -C: set the name  of the case (directory) to run
-    
+
     -R: set the name runId within the current case
-    
+
     -L: set the logfile
-    
+
     -E: Switch on reinfiltration of overland flow
-    
-    -c: name of wflow the configuration file (default: Casename/wflow_sbm.ini). 
-    
+
+    -c: name of wflow the configuration file (default: Casename/wflow_sbm.ini).
+
     -h: print usage information
-    
+
     -W: If set, this flag indicates that an ldd is created for the water level
-        for each timestep. If not the water is assumed to flow according to the 
+        for each timestep. If not the water is assumed to flow according to the
         DEM. Wflow will run a lot slower with this option. Most of the time
-        (shallow soil, steep topography) you do not need this option. Also, if you 
+        (shallow soil, steep topography) you do not need this option. Also, if you
         need it you migth actually need another model.
-        
+
     -U: The argument to this option should be a .tss file with measured discharge in
-        [m^3/s] which the progam will use to update the internal state to match 
-        the measured flow. The number of columns in this file should match the 
+        [m^3/s] which the progam will use to update the internal state to match
+        the measured flow. The number of columns in this file should match the
         number of gauges in the wflow\_gauges.map file.
-    
+
     -u: list of gauges/columns to use in update. Format:
         -u [1 , 4 ,13]
         The above example uses column 1, 4 and 13
-        
+
     -P: set parameter multiply dictionary (e.g: -P {'self.SatWaterDepth' : 1.2}
         to increase self.SatWaterDepth by 20%, multiply with 1.2)
 
@@ -131,11 +131,11 @@ def actEvap_SBM(RootingDepth, WTable, UStoreDepth, FirstZoneDepth, PotTrans, smo
       representing a root-depth distribution
 
     Input:
-    
+
         - RootingDepth,WTable, UStoreDepth,FirstZoneDepth, PotTrans, smoothpar
-        
-    Output: 
-    
+
+    Output:
+
         - ActEvap,  FirstZoneDepth,  UStoreDepth ActEvapUStore
     """
 
@@ -143,8 +143,8 @@ def actEvap_SBM(RootingDepth, WTable, UStoreDepth, FirstZoneDepth, PotTrans, smo
     # Step 1 from saturated zone, use rootingDepth as a limiting factor
     #rootsinWater = WTable < RootingDepth
     #ActEvapSat = ifthenelse(rootsinWater,min(PotTrans,FirstZoneDepth),0.0)
-    # new method:   
-    # use sCurve to determine if the roots are wet.At the moment this ise set 
+    # new method:
+    # use sCurve to determine if the roots are wet.At the moment this ise set
     # to be a 0-1 curve
     wetroots = sCurve(WTable, a=RootingDepth, c=smoothpar)
     #wetroots = ifthenelse(WTable <= RootingDepth, scalar(1.0), scalar(0.0))
@@ -153,10 +153,10 @@ def actEvap_SBM(RootingDepth, WTable, UStoreDepth, FirstZoneDepth, PotTrans, smo
     FirstZoneDepth = FirstZoneDepth - ActEvapSat
     RestPotEvap = PotTrans - ActEvapSat
 
-    # now try unsat store  
+    # now try unsat store
     AvailCap = min(1.0, max(0.0, (WTable - RootingDepth) / (RootingDepth + 1.0)))
 
-    #AvailCap = max(0.0,ifthenelse(WTable < RootingDepth,  WTable/RootingDepth,  RootingDepth/WTable)) 
+    #AvailCap = max(0.0,ifthenelse(WTable < RootingDepth,  WTable/RootingDepth,  RootingDepth/WTable))
     MaxExtr = AvailCap * UStoreDepth
     ActEvapUStore = min(MaxExtr, RestPotEvap, UStoreDepth)
     UStoreDepth = UStoreDepth - ActEvapUStore
@@ -170,13 +170,13 @@ def SnowPackHBV(Snow, SnowWater, Precipitation, Temperature, TTI, TT, Cfmax, WHC
     """
     HBV Type snowpack modelling using a Temperature degree factor. All correction
     factors (RFCF and SFCF) are set to 1. The refreezing efficiency factor is set to 0.05.
-    
+
     :ivar Snow:
     :ivar SnowWater:
     :ivar Precipitation:
     :ivar Temperature:
 
-    :returns: Snow,SnowMelt,Precipitation   
+    :returns: Snow,SnowMelt,Precipitation
     """
 
     RFCF = 1.0  # correction factor for rainfall
@@ -353,25 +353,25 @@ class WflowModel(DynamicModel):
     :var MaxLeakage.tbl: Maximum leakage out of the soil profile [mm/d]
     :var CapScale.tbl: Scaling factor in the Capilary rise calculations (100) [mm/d]
     :var RunoffGeneratingGWPerc: Fraction of the soil depth that contributes to subcell runoff (0.1) [-]
-    :var rootdistpar.tbl: Determine how roots are linked to water table. The number 
-        should be negative. A more negative  number means that all roots are wet if the water 
-        table is above the lowest part of the roots. 
+    :var rootdistpar.tbl: Determine how roots are linked to water table. The number
+        should be negative. A more negative  number means that all roots are wet if the water
+        table is above the lowest part of the roots.
         A less negative number smooths this. [mm] (default = -80000)
 
-    
+
 
     *Canopy*
-    
+
     :var CanopyGapFraction.tbl: Fraction of precipitation that does not hit the canopy directly [-]
     :var MaxCanopyStorage.tbl: Canopy interception storage capacity [mm]
     :var EoverR.tbl: Ratio of average wet canopy evaporation rate over rainfall rate [-]
-    
+
     *Surface water*
-    
+
     :var N.tbl: Manning's N parameter
     :var N_river.tbl: Manning's N parameter for cells marked as river
-    
-    
+
+
     *Snow and frozen soil modelling parameters*
 
     :var cf_soil.tbl: Soil infiltration reduction factor when soil is frozen [-] (< 1.0)
@@ -380,7 +380,7 @@ class WflowModel(DynamicModel):
     :var Cfmax.tbl: meltconstant in temperature-index ( 3.75653) [-]
     :var WHC.tbl: fraction of Snowvolume that can store water (0.1) [-]
     :var w_soil.tbl: Soil temperature smooth factor. Given for daily timesteps. (0.1125) [-] Wigmosta, M. S., L. J. Lane, J. D. Tagestad, and A. M. Coleman (2009).
- 
+
     """
         global statistics
         global multpars
@@ -1359,7 +1359,7 @@ def main(argv=None):
             exit(2)
     else:
         starttime = dt.datetime(1990,01,01)
-        
+
     if _lastTimeStep < _firstTimeStep:
         print "The starttimestep (" + str(_firstTimeStep) + ") is smaller than the last timestep (" + str(
             _lastTimeStep) + ")"

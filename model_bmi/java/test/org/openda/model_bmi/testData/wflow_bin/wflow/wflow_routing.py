@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Wflow is Free software, see below:
-# 
+#
 # Copyright (c) J. Schellekens/Deltares 2005-2014
 #
 # This program is free software: you can redistribute it and/or modify
@@ -24,32 +24,32 @@ Run the wflow_routing model..
 usage
 
 ::
-    
+
     wflow_routing [-h][-v level][-F runinfofile][-L logfile][-C casename][-R runId]
           [-c configfile][-T last_step][-S first_step][-s seconds][-l loglevel]
-          
+
     -F: if set wflow is expected to be run by FEWS. It will determine
         the timesteps from the runinfo.xml file and save the output initial
         conditions to an alternate location. Also set fewsrun=1 in the .ini file!
-        
-    -X: save state at the end of the run over the initial conditions at the start        
+
+    -X: save state at the end of the run over the initial conditions at the start
 
     -T: Set last timestep
-    
+
     -S: Set the start timestep (default = 1)
-    
+
     -s: Set the model timesteps in seconds
-    
+
     -I: re-initialize the initial model conditions with default
 
     -C: set the name  of the case (directory) to run
-    
+
     -R: set the name runId within the current case
-    
+
     -L: set the logfile
-    
+
     -c: name of wflow the configuration file (default: Casename/wflow_routing.ini).
-    
+
     -h: print usage information
 
     -P: set parameter change string (e.g: -P 'self.FC = self.FC * 1.6') for non-dynamic variables
@@ -218,7 +218,7 @@ class WflowModel(DynamicModel):
 
 
     *Surface water*
-    
+
     :var N.tbl: Manning's N parameter
     :var N_river.tbl: Manning's N parameter fro cells marked as river
 
@@ -642,7 +642,7 @@ def main(argv=None):
             exit(2)
     else:
         starttime = dt.datetime(1990,01,01)
-        
+
     if _lastTimeStep < _firstTimeStep:
         print "The starttimestep (" + str(_firstTimeStep) + ") is smaller than the last timestep (" + str(
             _lastTimeStep) + ")"

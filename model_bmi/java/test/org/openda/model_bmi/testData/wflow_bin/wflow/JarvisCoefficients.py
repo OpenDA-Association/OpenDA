@@ -6,9 +6,9 @@ Created on Wed Oct 01 14:15:26 2014
 
 TO DO:
 compile new input time series
-calculate Jarvis equations based on daily data 
+calculate Jarvis equations based on daily data
 calculate Jarvis coefficient for soil moisture based on hourly data
-calculate daily reference open water 
+calculate daily reference open water
 calculate daily potential evaporation
 donwscale dialy potential evaporation to hourly values
 use hourly evaporation as model input
@@ -34,7 +34,7 @@ def calcEp(self,k):
 #    resistenceAeroD(self)
 #    potential_evaporation(self,k)
     downscale_evaporation(self,k)
-    
+
 def calcEu_laiFixed(self,k):
     """
     REQUIRED INPUT:
@@ -50,7 +50,7 @@ def calcEu_laiFixed(self,k):
     downscale_evaporation(self,k)
     self.EupHour = self.EpHour - self.Ei_[k]
     self.Eu = self.EupHour * self.k
-    
+
 def calcEu(self,k,n):
     """
     REQUIRED INPUT:
@@ -77,7 +77,7 @@ def JC_temperature(self,k):
     PARAMETERS:
         - Topt (optimum temperature for transpiration, based on elevation and latitude (Cui et al, 2012))
     """
-    self.JC_ToptC = self.JC_Topt - 273.15   # changed on 9/4/2015, before Topt in K 
+    self.JC_ToptC = self.JC_Topt - 273.15   # changed on 9/4/2015, before Topt in K
     JC_temp1 = ifthenelse(self.Tmean < 273.15, 0, ifthenelse(pcrand(self.Tmean >= self.JC_Topt - 1, self.Tmean <= self.JC_Topt + 1), 1, 1 - self.JC_Topt ** -2 * (self.Tmean - self.JC_Topt) ** 2))
     self.JC_temp = ifthenelse(JC_temp1 < 0, 0, JC_temp1)
     self.JC_temp_[k] = self.JC_temp
@@ -91,36 +91,36 @@ def JC_vapourDeficit(self,k):
         - Cd1 (first vapour pressure parameter, fixed at 3 (Matsumoto et al. 2008))
         - Cd2 (second vapour pressure parameter, fixed at 0.1 (Matsumoto et al. 2008))
         """
-    
+
     denom = 1 + (self.vpd / self.JC_D05[k]) ** self.JC_cd1[k]
-    JC_vpd1 = (1 / denom) * (1 - self.JC_cd2[k]) + self.JC_cd2[k]    
-    self.JC_vpd = ifthenelse(JC_vpd1 < 0, 0, JC_vpd1)   
+    JC_vpd1 = (1 / denom) * (1 - self.JC_cd2[k]) + self.JC_cd2[k]
+    self.JC_vpd = ifthenelse(JC_vpd1 < 0, 0, JC_vpd1)
     self.JC_vpd_[k] = self.JC_vpd
-   
+
 def JC_LAIeffective(self,k):
     """
     REQUIRED INPUT:
         - LAI (-)
     PARAMETERS:
-        - none (Allen et al., 2006 & Zhou et al., 2006)   
+        - none (Allen et al., 2006 & Zhou et al., 2006)
     """
-    
-    self.JC_laiEff = self.LAI / (0.2 * self.LAI + 1)        
 
-    
+    self.JC_laiEff = self.LAI / (0.2 * self.LAI + 1)
+
+
 def JC_solarRadiation(self,k):
     """
     REQUIRED INPUT:
         - incoming short wave radiation (W/m2)
     PARAMETERS:
         - Cr (radiation stress parameter, fixed at 100 (Zhou et al. 2006))
-    """    
-    
+    """
+
     rad_si_Wm2 = self.rad_si / 86400
     JC_rad1 = rad_si_Wm2 * (1 + self.JC_cr[k]/1000) * (1 / (self.JC_cr[k] + rad_si_Wm2))
-    self.JC_rad = ifthenelse(JC_rad1 < 0, 0, JC_rad1) 
+    self.JC_rad = ifthenelse(JC_rad1 < 0, 0, JC_rad1)
     self.JC_rad_[k] = self.JC_rad
-    
+
 def JC_soilMoisture(self,k):
     """
     REQUIRED INPUT:
@@ -130,7 +130,7 @@ def JC_soilMoisture(self,k):
         - SuFC (level of saturation in soil at field capacity)
         - SuWP (level of saturation in soil at wilting point)
     """
-    SuN = self.Su[k] / self.sumax[k]   
+    SuN = self.Su[k] / self.sumax[k]
     JC_sm1 = ifthenelse(SuN < self.SuWP[k], 0, ifthenelse(SuN > self.SuFC[k], 1,\
         (SuN - self.SuWP[k]) * (self.SuFC[k] - self.SuWP[k] + self.JC_cuz[k]) / ((self.SuFC[k] - self.SuWP[k]) * (SuN - self.SuWP[k] + self.JC_cuz[k]))))
     self.JC_sm = ifthenelse(JC_sm1 < 0, 0, JC_sm1)
@@ -162,10 +162,10 @@ def resistenceTotal(self,k):
     stomRes1 = ifthenelse(JC_all == 0, 50000, self.JC_rstmin[k] / JC_all)
     stomRes2 = ifthenelse(stomRes1 > 50000, 50000, stomRes1)
     self.stomRes = stomRes2 / (3600*24)
-    
-    self.k = 1 / (1 + self.stomRes * self.gamma / (self.aeroRes * (self.sgamma + self.gamma)))    
-    self.JC_k_[k] = self.k 
-    
+
+    self.k = 1 / (1 + self.stomRes * self.gamma / (self.aeroRes * (self.sgamma + self.gamma)))
+    self.JC_k_[k] = self.k
+
 def resistenceTotal_laiHRU(self,k):
     """
     REQUIRED INPUT:
@@ -180,9 +180,9 @@ def resistenceTotal_laiHRU(self,k):
     stomRes1 = ifthenelse(JC_all == 0, 50000, self.rst_lai[k] / JC_all)
     stomRes2 = ifthenelse(stomRes1 > 50000, 50000, stomRes1)
     self.stomRes = stomRes2 / (3600*24)
-    
-    self.k = 1 / (1 + self.stomRes * self.gamma / (self.aeroRes * (self.sgamma + self.gamma)))    
-    self.JC_k_[k] = self.k 
+
+    self.k = 1 / (1 + self.stomRes * self.gamma / (self.aeroRes * (self.sgamma + self.gamma)))
+    self.JC_k_[k] = self.k
 
 def potential_evaporation(self,k):
     """
@@ -198,11 +198,11 @@ def potential_evaporation(self,k):
         - rhoW (density of water)
         - lamda (latent heat of vaporisation)
     """
-    nom = self.sgamma * self.Rn + self.rhoA * self.Cp * self.vpd / self.aeroRes 
+    nom = self.sgamma * self.Rn + self.rhoA * self.Cp * self.vpd / self.aeroRes
     denom = self.rhoW * self.lamda * (self.sgamma + self.gamma)
     self.EpDay = (nom / denom) * 1000
     self.EpD_[k] = self.EpDay
-    
+
 
 def downscale_evaporation(self,k):
     """
@@ -212,7 +212,7 @@ def downscale_evaporation(self,k):
         - start of the day (derived from global radiation)
         - end of the day (derived from global radiation)
     PARAMETERS:
-    - 
+    -
     """
 
     x = self.teller - floor(self.teller/24) * 24 * scalar(self.TopoId)
@@ -222,11 +222,11 @@ def downscale_evaporation(self,k):
     aN = -1 * self.EpDay * P                       # nominator of the amplitude
     aDN = sin((P * (self.DE + SH)) * 180 / pi) - sin((P * (self.DS + SH)) * 180 / pi)     # denominator of the amplitude
     ampl = aN / aDN                                     # amplitude of new signal
-    
+
     self.EpHour = ifthenelse(pcrand(x >= self.DS, x <= self.DE), -1 * ampl * cos((P * (x + SH)) * 180 / pi), 0)
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+

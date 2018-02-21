@@ -50,7 +50,7 @@ print "updating until timestep t=5"
 toy.update_until(5)
 print "Value of 'x'"
 print toy.get_value ('x')
-print "setting value of 'x' to 2" 
+print "setting value of 'x' to 2"
 toy.set_value('x',2)
 print "Value of 'x'"
 print toy.get_value ('x')

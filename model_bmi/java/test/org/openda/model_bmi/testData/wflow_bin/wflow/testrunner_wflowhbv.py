@@ -10,10 +10,10 @@ to get results and display them on screen.
 
 Each wflow\_\* model should provide a def supplyVariableNamesAndRoles function
 that returns a list of variables and their roles. This function can than
-be used by the controlling program to interrogate the model. 
+be used by the controlling program to interrogate the model.
 
 Some important things to consider:
-    
+
 + when initialzing the framework you must do so for the maximum number of \
 timesteps you want to run the model for. This is needed for the pcraster\
 timeseries output functions.
@@ -27,7 +27,7 @@ to the controlling application.
 
 + Inputs (forcing variables) must be set at the start of a timesteps, results\
  should be read after each timestep.
- 
+
 """
 
 
@@ -36,25 +36,25 @@ from wflow_hbv import *
 npmap0 = []
 ltt = []
 
-def main(): 
-    
+def main():
+
     global npmap0
     global ltt
      # define start and stop time of the run
     startTime = 1
     stopTime = 5
     currentTime = 1
-     
+
       # set runid, cl;onemap and casename. Also define the ini file
     runId = "memtest"
     configfile="wflow_hbv_mem.ini"
-    wflow_cloneMap = 'wflow_subcatch.map' 
+    wflow_cloneMap = 'wflow_subcatch.map'
     caseName="../../../examples/wflow_rhine_hbv"
-    # Mske a usermodel object     
+    # Mske a usermodel object
     myModel = WflowModel(wflow_cloneMap, caseName,runId,configfile)
      # initialise the framework
     dynModelFw = wf_DynamicFramework(myModel, stopTime,startTime)
- 
+
       # Load model config from files and check directory structure
     dynModelFw.createRunId(NoOverWrite=False)
     # Run the initial part of the model (reads parameters and sets initial values)
@@ -72,12 +72,12 @@ def main():
 
 
     for ts in range(startTime,stopTime):
-        
+
         # Get value at pit
 
         inflowQ = dynModelFw.wf_supplyScalar("SurfaceRunoff",6.46823,51.6821)
         outflowQ = dynModelFw.wf_supplyScalar("SurfaceRunoff",6.43643,51.7226)
-        
+
         # Ass inflow to outflow
         #dynModelFw.wf_setValue("ForecQ_qmec", -1.0 * inflowQ  ,6.46823,51.6821)
         Resoutflow = inflowQ
@@ -94,7 +94,7 @@ def main():
         dynModelFw.wf_setValuesAsNumpy("xx",npmap1)
         npmap2 = dynModelFw.wf_supplyMapAsNumpy("DezeBestaatNiet")
         #myModel.updateRunOff()
-        
+
 
 
 

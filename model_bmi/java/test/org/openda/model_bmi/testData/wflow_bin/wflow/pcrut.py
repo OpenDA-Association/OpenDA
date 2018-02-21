@@ -17,8 +17,8 @@ import logging
 import logging.handlers
 
 
-  
-    
+
+
 
 def lattometres(lat):
     """"
@@ -30,8 +30,8 @@ def lattometres(lat):
     #radlat = spatial(lat * ((2.0 * math.pi)/360.0))
     #radlat = lat * (2.0 * math.pi)/360.0
     radlat = spatial(lat) # pcraster cos/sin work in degrees!
-    
-    
+
+
     m1 = 111132.92        # latitude calculation term 1
     m2 = -559.82        # latitude calculation term 2
     m3 = 1.175            # latitude calculation term 3
@@ -40,18 +40,18 @@ def lattometres(lat):
     p2 = -93.5            # longitude calculation term 2
     p3 = 0.118            # longitude calculation term 3
     # # Calculate the length of a degree of latitude and longitude in meters
-    
+
     latlen = m1 + (m2 * cos(2.0 * radlat)) + (m3 * cos(4.0 * radlat)) + (m4 * cos(6.0 * radlat))
     longlen = (p1 * cos(radlat)) + (p2 * cos(3.0 * radlat)) + (p3 * cos(5.0 * radlat))
-        
-    return latlen, longlen  
-    
+
+    return latlen, longlen
+
 def detRealCellLength(ZeroMap,sizeinmetres):
     """
     Determine cellength. Always returns the length
     in meters.
     """
-    
+
     if sizeinmetres:
             reallength = celllength()
             xl = celllength()
@@ -59,13 +59,13 @@ def detRealCellLength(ZeroMap,sizeinmetres):
     else:
         aa = ycoordinate(boolean(cover(ZeroMap + 1,1)))
         yl, xl = lattometres(aa)
-           
+
         xl = xl * celllength()
         yl = yl * celllength()
-        # Average length for surface area calculations. 
-        
+        # Average length for surface area calculations.
+
         reallength = (xl + yl) * 0.5
-        
+
     return xl,yl,reallength
 
 
@@ -83,7 +83,7 @@ def setlogger(logfilename,loggername, thelevel=logging.INFO):
     Set-up the logging system and return a logger object. Exit if this fails
     """
 
-    try:    
+    try:
         #create logger
         logger = logging.getLogger(loggername)
         if not isinstance(thelevel, int):
@@ -107,7 +107,7 @@ def setlogger(logfilename,loggername, thelevel=logging.INFO):
     except IOError:
         print "ERROR: Failed to initialize logger with logfile: " + logfilename
         sys.exit(2)
-    
+
 def readmapSave(pathtomap, default):
     """
     Adpatation of readmap that returns a default map if the map cannot be found
@@ -116,16 +116,16 @@ def readmapSave(pathtomap, default):
         return readmap(pathtomap)
     else:
         return scalar(default)
-        
+
 def readtss(nname):
-    """Reads a RCraster .tss file into a numpy array. 
+    """Reads a RCraster .tss file into a numpy array.
     Error handling is minimal. The first column that
     contains the timestep is not returned.
     returns:
         matrix with data
         header
     """
-    
+
     head = []
     if os.path.exists(nname):
         # determine the number of header lines to skip from
@@ -139,14 +139,14 @@ def readtss(nname):
         for i in range(toskip - 3):
             line = ifile.readline()
             head.append(line.strip())
-            
+
         ifile.close()
-        
-        
+
+
         mat = numpy.loadtxt(nname,skiprows=toskip)
         mis = mat == 1e+31
         mat[mis] = numpy.nan
-        
+
         if len(mat.shape) > 1:
             return mat[:,1:], head
             #dumm = mat[:,1:].copy()
@@ -158,7 +158,7 @@ def readtss(nname):
             #return numpy.vstack((dumm,mat[1:])), head
     else:
         print nname + " does not exists."
-    
+
     return
 
 def interpolategauges(inputmap,method):
@@ -168,22 +168,22 @@ def interpolategauges(inputmap,method):
     method: string indicating the method
         inv
         pol
-        
+
     input: inputmap, method
     returns: interpolated map
-    """   
-     
+    """
+
     if method == "inv":
         result = inversedistance(1,inputmap,3,0,0)
     elif method == "pol":
         Unq = uniqueid(boolean(inputmap+1))
         result = spreadzone(ordinal(cover(Unq,0)),0,1)
-        result = areaaverage(inputmap,result); 
+        result = areaaverage(inputmap,result);
     else:
         Unq = uniqueid(boolean(inputmap+1))
         result = spreadzone(ordinal(cover(Unq,0)),0,1)
         result = areaaverage(inputmap,result);
-    
+
     return result
 
 
@@ -196,7 +196,7 @@ def tableToMapSparse (step, table, map):
     """Reads a pcraster.tbl file for step and assigns using the map in map.
     The behaviour of is a bit similar to the timeinputSparse
     command but in this case for both the tbl file and the map file.
-   
+
     Input: step (int), table (string, path, without the .tbl extension), map
           (ordinal map, without the .map extension)
 
@@ -217,8 +217,8 @@ def tableToMapSparse (step, table, map):
     - LAI10.map will be used between 10 and 119
     etc....
     The same holds for the tables.
-    
-    
+
+
     """
     global debug
 

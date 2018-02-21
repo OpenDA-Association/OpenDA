@@ -12,13 +12,13 @@ import logging.handlers
 def setuplog (logfilename,loggername):
     """
     Set-up the logging system and return a logger object. Exit if this fails
-    
+
     Input:
-        
+
         - logfilename - filename to log to (console is also used)
         - loggername - name of this logger
     """
-    try:    
+    try:
         #create logger
         logger = logging.getLogger(loggername)
         logger.setLevel(logging.DEBUG)
@@ -39,6 +39,5 @@ def setuplog (logfilename,loggername):
     except IOError:
         print "ERROR: Failed to initialize logger with logfile: " + logfilename
         return None
-            
-        
-     
+
+

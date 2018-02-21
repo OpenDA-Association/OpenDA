@@ -27,7 +27,7 @@ def selectSiR(i):
     if i == 2:
         name = 'interception_overflow2'
     if i == 3:
-        name = 'interception_overflow_Ep'        
+        name = 'interception_overflow_Ep'
     return name
 
 def interception_no_reservoir(self, k):
@@ -47,18 +47,18 @@ def interception_overflow2(self, k):
     - Outgoing fluxes are determined separately
     - Code for ini-file: 2
     """
-    
+
     self.Pe = max(self.Precipitation - (self.imax[k] - self.Si_t[k]),0)
     self.Si[k] = self.Si_t[k] + (self.Precipitation - self.Pe)
     self.Ei = min(self.PotEvaporation, self.Si[k])
-    self.Si[k] = self.Si[k] - self.Ei    
-    
+    self.Si[k] = self.Si[k] - self.Ei
+
     self.Ei_[k]=self.Ei
     self.Pe_[k]=self.Pe
     self.PotEvaporation_ = self.PotEvaporation
-    
-    self.wbSi_[k] = self.Precipitation - self.Ei - self.Pe - self.Si[k] + self.Si_t[k]    
-    
+
+    self.wbSi_[k] = self.Precipitation - self.Ei - self.Pe - self.Si[k] + self.Si_t[k]
+
     if self.URFR_L:
          self.Ei = areatotal(self.Ei * self.percentArea, nominal(self.TopoId))
          self.Pe = areatotal(self.Pe * self.percentArea, nominal(self.TopoId))
@@ -75,18 +75,18 @@ def interception_overflow_Ep(self,k):
     """
 
     JarvisCoefficients.calcEp(self,k)
-    
+
     self.Pe = max(self.Precipitation - (self.imax[k] - self.Si_t[k]),0)
     self.Si[k] = self.Si_t[k] + (self.Precipitation - self.Pe)
     self.Ei = min(self.EpHour, self.Si[k])
-    self.Si[k] = self.Si[k] - self.Ei    
-    
+    self.Si[k] = self.Si[k] - self.Ei
+
     self.Ei_[k]=self.Ei
     self.Pe_[k]=self.Pe
     self.Ep_[k]=self.EpHour
-   
-    self.wbSi_[k] = self.Precipitation - self.Ei - self.Pe - self.Si[k] + self.Si_t[k]    
-    
+
+    self.wbSi_[k] = self.Precipitation - self.Ei - self.Pe - self.Si[k] + self.Si_t[k]
+
     if self.URFR_L:
          self.Ei = areatotal(self.Ei * self.percentArea, nominal(self.TopoId))
          self.Pe = areatotal(self.Pe * self.percentArea, nominal(self.TopoId))

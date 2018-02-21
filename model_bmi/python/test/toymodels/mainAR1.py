@@ -54,7 +54,7 @@ print "updating until timestep 6"
 toy.update_until(6)
 print "Value of 'state'"
 print toy.get_value ('state')
-print "setting value of 'state' to 2" 
+print "setting value of 'state' to 2"
 toy.set_value('state',np.zeros([3,1])+2)
 print "Value of 'state'"
 print toy.get_value ('state')

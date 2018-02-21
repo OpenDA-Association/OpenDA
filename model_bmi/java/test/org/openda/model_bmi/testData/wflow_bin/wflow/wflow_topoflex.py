@@ -11,11 +11,11 @@ Usage:
 wflow_sceleton  -C case -R Runid -c inifile
 
     -C: set the name  of the case (directory) to run
-    
+
     -R: set the name runId within the current case
-    
+
     -c name of the config file (in the case directory)
-    
+
 $Author: schelle $
 $Id: wflow_sceleton.py 898 2014-01-09 14:47:06Z schelle $
 $Rev: 898 $
@@ -67,10 +67,10 @@ class WflowModel(DynamicModel):
     def __init__(self, cloneMap, Dir, RunDir, configfile):
         """
       *Required*
-      
+
       The init function **must** contain what is shown below. Other functionality
       may be added by you if needed.
-      
+
       """
         DynamicModel.__init__(self)
         setclone(os.path.join(Dir, 'staticmaps', cloneMap))
@@ -121,17 +121,17 @@ class WflowModel(DynamicModel):
     def stateVariables(self):
         """
       *Required*
-      
-      Returns a list of state variables that are essential to the model. 
+
+      Returns a list of state variables that are essential to the model.
       This list is essential for the resume and suspend functions to work.
-      
+
       This function is specific for each model and **must** be present. This is
       where you specify the state variables of you model. If your model is stateless
       this function must return and empty array (states = [])
-      
-      In the simple example here the TSoil variable is a state 
+
+      In the simple example here the TSoil variable is a state
       for the model.
-      
+
       :var TSoil: Temperature of the soil [oC]
       """
         states = ['Si', 'Su', 'Sus', 'Sf', 'Ss', 'Qstate']
@@ -141,15 +141,15 @@ class WflowModel(DynamicModel):
     def supplyCurrentTime(self):
         """
       *Optional*
-      
+
       Supplies the current time in seconds after the start of the run
       This function is optional. If it is not set the framework assumes
       the model runs with daily timesteps.
-      
+
       Output:
-      
+
           - time in seconds since the start of the model run
-          
+
       """
 
         return self.currentTimeStep() * int(configget(self.config, 'model', 'timestepsecs', '86400'))
@@ -157,12 +157,12 @@ class WflowModel(DynamicModel):
     def suspend(self):
         """
       *Required*
-      
+
       Suspends the model to disk. All variables needed to restart the model
       are saved to disk as pcraster maps. Use resume() to re-read them
-      
-      This function is required. 
-      
+
+      This function is required.
+
     """
 
         self.logger.info("Saving initial conditions...")
@@ -193,14 +193,14 @@ class WflowModel(DynamicModel):
 
         """
     *Required*
-    
+
     Initial part of the model, executed only once. It reads all static model
     information (parameters) and sets-up the variables used in modelling.
-    
+
     This function is required. The contents is free. However, in order to
     easily connect to other models it is advised to adhere to the directory
     structure used in the other models.
-    
+
     """
         #: pcraster option to calculate with units or cells. Not really an issue
         #: in this model but always good to keep in mind.
@@ -429,10 +429,10 @@ class WflowModel(DynamicModel):
         """
     *Required*
 
-    This function is required. Read initial state maps (they are output of a 
+    This function is required. Read initial state maps (they are output of a
     previous call to suspend()). The implementation shown here is the most basic
     setup needed.
-    
+
     """
         if self.reinit == 1:
             # self.logger.info("Setting initial conditions to default (zero!)")
@@ -501,7 +501,7 @@ class WflowModel(DynamicModel):
     def dynamic(self):
         """
         *Required*
-        
+
         This is where all the time dependent functions are executed. Time dependent
         output should also be saved here.
         :type self: object
@@ -693,10 +693,10 @@ class WflowModel(DynamicModel):
 def main(argv=None):
     """
     *Optional but needed it you want to run the model from the command line*
-    
+
     Perform command line execution of the model. This example uses the getopt
     module to parse the command line options.
-    
+
     The user can set the caseName, the runDir, the timestep and the configfile.
     """
     global multpars
@@ -708,7 +708,7 @@ def main(argv=None):
     timestepsecs = 86400
     wflow_cloneMap = 'wflow_subcatch.map'
 
-    # This allows us to use the model both on the command line and to call 
+    # This allows us to use the model both on the command line and to call
     # the model usinge main function from another python script.
 
     if argv is None:
