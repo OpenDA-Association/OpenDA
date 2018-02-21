@@ -61,7 +61,7 @@ class wf_TimeoutputTimeseries(object):
 
       # cell indices of the sample locations
       self._sampleAddresses = []
-      for cellId in range(1, self._maxId + 1):	
+      for cellId in range(1, self._maxId + 1):
       	thecellId = self._getIndex(cellId)
       	if thecellId != 0:
         	self._sampleAddresses.append(thecellId)

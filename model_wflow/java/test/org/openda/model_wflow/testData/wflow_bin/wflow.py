@@ -1,17 +1,17 @@
 from wflow_hbv import *
 
 class wflow_model():
-    
+
     def initialize(self, timeStepsToRun, timeStepInSeconds, dataDirectory):
         self.currentTime = 1
         runId = "run_default"
         configfile="wflow_hbv.ini"
-        wflow_cloneMap = 'wflow_subcatch.map' 
-        # Initializes the model class     
+        wflow_cloneMap = 'wflow_subcatch.map'
+        # Initializes the model class
         myModel = WflowModel(wflow_cloneMap, dataDirectory, runId,configfile)
         myModel.timestepsecs = timeStepInSeconds
         self.dynModelFw = wf_DynamicFramework(myModel, timeStepsToRun, firstTimestep = 1)
-        self.dynModelFw.createRunId(NoOverWrite=0) 
+        self.dynModelFw.createRunId(NoOverWrite=0)
         self.dynModelFw._runInitial()
         self.dynModelFw._runResume()
 
@@ -23,12 +23,12 @@ class wflow_model():
         self.currentTime = self.currentTime - 1
         self.dynModelFw._runDynamic(self.currentTime, self.currentTime)
         self.currentTime = self.currentTime + 1
-        
+
 
     def get_grid_parameters(self):
         """
         return the dimension of the current model grid as list
-      
+
         [Xul, Yul, xsize, ysize, rows, cols]
         """
         return self.dynModelFw.wf_supplyGridDim()
@@ -42,8 +42,8 @@ class wflow_model():
     def run_time_step(self):
         self.dynModelFw._runDynamic(self.currentTime, self.currentTime)
         self.currentTime = self.currentTime + 1
-        
+
     def finalize(self):
         self.dynModelFw._runSuspend()
-    
+
 

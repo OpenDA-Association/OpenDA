@@ -35,4 +35,3 @@ for zz in pars:
     os.system("gdal_translate -of GTiff nilmap.map " + pars[zz] + ".tif")
     os.system("gdal_rasterize -a " + zz + " -l " +  nname +  " "  + shpfile + " "  + pars[zz] + ".tif")
     os.system("gdal_translate -of PCRaster " + pars[zz] + ".tif " + pars[zz] + ".map")
-    

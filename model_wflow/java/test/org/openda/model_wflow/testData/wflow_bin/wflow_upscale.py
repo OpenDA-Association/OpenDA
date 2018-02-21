@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Wflow is Free software, see below:
-# 
+#
 # Copyright (c) J. Schellekens 2005-2011
 #
 # This program is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ Usage::
 	-I skip input mapstacks if specified
 
 The script uses the pcraster resample program to reduce the maps. The original
-river network is used to force the river network in the reduced version of the 
+river network is used to force the river network in the reduced version of the
 model. Nevertheless it may be needed to manually adjust the locations of
 the gauges in the gauges.col file.
 
@@ -48,11 +48,11 @@ def usage(*args):
     for msg in args: print msg
     print __doc__
     sys.exit(0)
-    
+
 
 
 def main():
-    
+
 	try:
 	    opts, args = getopt.getopt(sys.argv[1:], 'fhC:N:Ir:')
 	except getopt.error, msg:
@@ -72,7 +72,7 @@ def main():
 	    if o == '-I': inmaps = False
 	    if o == '-h': usage(msg)
 	    if o == '-f': force = True
-		
+
 
 	dirs = ['/intbl/', '/inmaps/', '/staticmaps/', '/intss/', '/instate/', '/outstate/']
 	if os.path.isdir(caseNameNew) and not force:
@@ -85,7 +85,7 @@ def main():
 		os.makedirs(caseNameNew + ddir)
 	    for inifile in glob.glob(caseName + "/*.ini"):
 		shutil.copy(inifile, inifile.replace(caseName,caseNameNew))
-	    
+
 	for ddir in dirs:
 	    for mfile in glob.glob(caseName + ddir + '/*.map'):
 		mstr = "resample -r " + str(factor) + ' ' + mfile + " " + mfile.replace(caseName,caseNameNew)
@@ -102,10 +102,10 @@ def main():
 	    for mfile in glob.glob(caseName + ddir + '*.tbl'):
 		shutil.copy(mfile, mfile.replace(caseName,caseNameNew))
 	    for mfile in glob.glob(caseName + ddir + '*.col'):
-		shutil.copy(mfile, mfile.replace(caseName,caseNameNew))        
+		shutil.copy(mfile, mfile.replace(caseName,caseNameNew))
 	    for mfile in glob.glob(caseName + ddir + '*.tss'):
-		shutil.copy(mfile, mfile.replace(caseName,caseNameNew))        
-		
+		shutil.copy(mfile, mfile.replace(caseName,caseNameNew))
+
 	print "recreating static maps ..."
 	# Create new ldd using old river network
 	dem = readmap(caseNameNew + "/staticmaps/wflow_dem.map")

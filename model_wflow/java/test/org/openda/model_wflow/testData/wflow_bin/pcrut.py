@@ -24,25 +24,25 @@ def GRD4J_RR(P,E,x1,x2,x3,x4,Sprev,Rprev):
     P_E = ifthen(PE > 0.0, PE, E - P)
     St_x1 = Sprev/ x1
     #Sprev = Sprev * x1
-    
-    
+
+
     WS = P_E/x1
     thWS = tanh(WS/x1)
     PS = x1 * ( 1- St_x1^2.0) * thWS/( 1.0 + St_x1 * thWS)
     ES = Sprev * (2 - St_x1) * tsWS /(1 + ( 1 - St_x1) * thWS)
-    
+
     ES = ifthen(PE > 0.0, 0.0, ES)
     PS = ifthen(PE > 0.0, PS, 0.0)
-    
+
     S = Sprev + PS -ES
-    
+
     perc = S * ( 1 - ( 1 + ((4.0/9.0) * St_x1)^4.0)^(-0.25))
     S = S - perc
     V = perc + PS - max(PE,0.0)
     return V
     # Percolation
-    # NOT YET FINISHED!!!!    
-    
+    # NOT YET FINISHED!!!!
+
 
 def lattometres(lat):
     """"
@@ -54,8 +54,8 @@ def lattometres(lat):
     #radlat = spatial(lat * ((2.0 * math.pi)/360.0))
     #radlat = lat * (2.0 * math.pi)/360.0
     radlat = spatial(lat) # pcraster cos/sin work in degrees!
-    
-    
+
+
     m1 = 111132.92        # latitude calculation term 1
     m2 = -559.82        # latitude calculation term 2
     m3 = 1.175            # latitude calculation term 3
@@ -64,18 +64,18 @@ def lattometres(lat):
     p2 = -93.5            # longitude calculation term 2
     p3 = 0.118            # longitude calculation term 3
     # # Calculate the length of a degree of latitude and longitude in meters
-    
+
     latlen = m1 + (m2 * cos(2.0 * radlat)) + (m3 * cos(4.0 * radlat)) + (m4 * cos(6.0 * radlat))
     longlen = (p1 * cos(radlat)) + (p2 * cos(3.0 * radlat)) + (p3 * cos(5.0 * radlat))
-        
-    return latlen, longlen  
-    
+
+    return latlen, longlen
+
 def detRealCellLength(ZeroMap,sizeinmetres):
     """
     Determine cellength. Always returns the length
     in meters.
     """
-    
+
     if sizeinmetres:
             reallength = celllength()
             xl = celllength()
@@ -83,13 +83,13 @@ def detRealCellLength(ZeroMap,sizeinmetres):
     else:
         aa = ycoordinate(boolean(cover(ZeroMap + 1,1)))
         yl, xl = lattometres(aa)
-           
+
         xl = xl * celllength()
         yl = yl * celllength()
-        # Average length for surface area calculations. 
-        
+        # Average length for surface area calculations.
+
         reallength = (xl + yl) * 0.5
-        
+
     return xl,yl,reallength
 
 
@@ -104,7 +104,7 @@ def setlogger(logfilename,loggername):
     """
     Set-up the logging system and return a logger object. Exit if this fails
     """
-    try:    
+    try:
         #create logger
         logger = logging.getLogger(loggername)
         logger.setLevel(logging.DEBUG)
@@ -125,7 +125,7 @@ def setlogger(logfilename,loggername):
     except IOError:
         print "ERROR: Failed to initialize logger with logfile: " + logfilename
         sys.exit(2)
-    
+
 def readmapSave(pathtomap, default):
     """
     Adpatation of readmap that returns a default map if the map cannot be found
@@ -134,16 +134,16 @@ def readmapSave(pathtomap, default):
         return readmap(pathtomap)
     else:
         return scalar(default)
-        
+
 def readtss(nname):
-    """Reads a RCraster .tss file into a numpy array. 
+    """Reads a RCraster .tss file into a numpy array.
     Error handling is minimal. The first column that
     contains the timestep is not returned.
     returns:
         matrix with data
         header
     """
-    
+
     head = []
     if os.path.exists(nname):
         # determine the number of header lines to skip from
@@ -157,17 +157,17 @@ def readtss(nname):
         for i in range(toskip - 3):
             line = ifile.readline()
             head.append(line.strip())
-            
+
         ifile.close()
-        
-        
+
+
         mat = numpy.loadtxt(nname,skiprows=toskip)
         mis = mat == 1e+31
         mat[mis] = numpy.nan
         return mat[:,1:], head
     else:
         print nname + " does not exists."
-    
+
     return
 
 def interpolategauges(inputmap,method):
@@ -177,23 +177,23 @@ def interpolategauges(inputmap,method):
     method: string indicating the method
         inv
         pol
-        
+
     input: inputmap, method
     returns: interpolated map
-    """   
-     
+    """
+
     if method == "inv":
         result = inversedistance(1,inputmap,3,0,0)
     elif method == "pol":
         Unq = uniqueid(boolean(inputmap+1))
         result = spreadzone(ordinal(cover(Unq,0)),0,1)
-        result = areaaverage(inputmap,result); 
+        result = areaaverage(inputmap,result);
     else:
         Unq = uniqueid(boolean(inputmap+1))
         result = spreadzone(ordinal(cover(Unq,0)),0,1)
         result = areaaverage(inputmap,result);
-    
-    return result 
+
+    return result
 
 
 
@@ -206,7 +206,7 @@ def tableToMapSparse (step, table, map):
     """Reads a pcraster.tbl file for step and assigns using the map in map.
     The behaviour of is a bit similar to the timeinputSparse
     command but in this case for both the tbl file and the map file.
-   
+
     Input: step (int), table (string, path, without the .tbl extension), map
           (ordinal map, without the .map extension)
 
@@ -227,22 +227,22 @@ def tableToMapSparse (step, table, map):
     - LAI10.map will be used between 10 and 119
     etc....
     The same holds for the tables.
-    
-    
+
+
     """
     global _tableToMap_LastTbl
     global _tableToMap_LastMap
     global debug
-    
+
     # construct filenames
     fname_map = map + str(step) + ".map"
     fname_tbl = table + str(step) + ".tbl"
 
-    
+
     if os.path.exists(fname_map):
 	    print "found: " + fname_map
 	    _tableToMap_LastMap[map] = step
-  	    
+
     if os.path.exists(fname_tbl):
 	    print "found: " + fname_tbl
 	    _tableToMap_LastTbl[table] = step
@@ -256,8 +256,8 @@ def tableToMapSparse (step, table, map):
 	    fname_map = map + ".map"
     else:
 	    fname_map = map + str(_tableToMap_LastMap[map]) + ".map"
-        
-    
+
+
     rmat = lookupscalar(str(fname_tbl),str(fname_map))
 
     return rmat
@@ -266,11 +266,11 @@ def tableToMapSparse (step, table, map):
 
 def correctrad(Day,Hour,Lat,Lon,Slope,Aspect,Altitude):
     """ Determines radiation over a DEM assuming clear sky"""
-    
+
     Sc  = 1367.0          # Solar constant (Gates, 1980) [W/m2]
-    Trans   = 0.6             # Transmissivity tau (Gates, 1980)	
+    Trans   = 0.6             # Transmissivity tau (Gates, 1980)
     pi = 3.1416
-    AtmPcor = pow(((288.0-0.0065*Altitude)/288.0),5.256) 
+    AtmPcor = pow(((288.0-0.0065*Altitude)/288.0),5.256)
     Lat = Lat * pi/180
     ##########################################################################
     # Calculate Solar Angle and correct radiation ############################
@@ -281,20 +281,20 @@ def correctrad(Day,Hour,Lat,Lon,Slope,Aspect,Altitude):
     # HourAng :hour angle [-] of sun during day
     # SolAlt  :solar altitude [deg], height of sun above horizon
     # SolDec  = -23.4*cos(360*(Day+10)/365);
-    # Now added a new function that should work on all latitudes! 
+    # Now added a new function that should work on all latitudes!
     theta    =(Day-1)*2 * pi/365  # day expressed in radians
-     
+
     SolDec =0.006918-0.399912 * cos(theta)+0.070257 * sin(theta) -   0.006758 * cos(2*theta)+0.000907 * sin(2*theta) -  0.002697 * cos(3*theta)+0.001480 * sin(3*theta)
 
     HourAng = 180/pi * 15*(Hour-12.01)
     SolAlt  = scalar(asin(scalar(sin(Lat)*sin(SolDec)+cos(Lat)*cos(SolDec)*cos(HourAng))))
-    
-    # Solar azimuth                    
+
+    # Solar azimuth
     # ----------------------------
     # SolAzi  :angle solar beams to N-S axes earth [deg]
     SolAzi = scalar(acos((sin(SolDec)*cos(Lat)-cos(SolDec)* sin(Lat)*cos(HourAng))/cos(SolAlt)))
     SolAzi = ifthenelse(Hour <= 12, SolAzi, 360 - SolAzi)
-     
+
     # Surface azimuth
     # ----------------------------
     # cosIncident :cosine of angle of incident; angle solar beams to angle surface
@@ -303,7 +303,7 @@ def correctrad(Day,Hour,Lat,Lon,Slope,Aspect,Altitude):
 
     # Critical angle sun
     # ----------------------------
-    # HoriAng  :tan maximum angle over DEM in direction sun, 0 if neg 
+    # HoriAng  :tan maximum angle over DEM in direction sun, 0 if neg
     # CritSun  :tan of maximum angle in direction solar beams
     # Shade    :cell in sun 1, in shade 0
     # NOTE: for a changing DEM in time use following 3 statements and put a #
@@ -316,7 +316,7 @@ def correctrad(Day,Hour,Lat,Lon,Slope,Aspect,Altitude):
 
     # Radiation outer atmosphere
     # ----------------------------
-    OpCorr = Trans**((sqrt(1229+(614*sin(SolAlt))**2) -614*sin(SolAlt))*AtmPcor)    # correction for air masses [-] 
+    OpCorr = Trans**((sqrt(1229+(614*sin(SolAlt))**2) -614*sin(SolAlt))*AtmPcor)    # correction for air masses [-]
     Sout   = Sc*(1+0.034*cos(360*Day/365)) # radiation outer atmosphere [W/m2]
     Snor   = Sout*OpCorr                   # rad on surface normal to the beam [W/m2]
 
@@ -330,13 +330,13 @@ def correctrad(Day,Hour,Lat,Lon,Slope,Aspect,Altitude):
     SdirCor   = ifthenelse(Snor*cosIncident*scalar(Shade)<0,0.0,Snor*cosIncident*scalar(Shade))
     Sdir   = ifthenelse(Snor*cosIncident<0,0.0,Snor*cosIncident)
     Sdiff  = ifthenelse(Sout*(0.271-0.294*OpCorr)*sin(SolAlt)<0, 0.0, Sout*(0.271-0.294*OpCorr)*sin(SolAlt))
-    AtmosDiffFrac = ifthenelse(Sdir > 0, Sdiff/Sdir, 1)          
+    AtmosDiffFrac = ifthenelse(Sdir > 0, Sdiff/Sdir, 1)
 
     # Stot   = cover(Sdir+Sdiff,windowaverage(Sdir+Sdiff,3));     # Rad [W/m2]
     Stot   = Sdir + Sdiff                                     	    # Rad [W/m2]
     StotCor   = SdirCor + Sdiff                                   # Rad [W/m2]
-    
-     
+
+
     return scalar(SolAlt)
 
 
@@ -345,7 +345,7 @@ def GenRadMaps(SaveDir,SaveName,Lat,Lon,Slope,Aspect,Altitude,debug):
     It does so by running correctrad for a whole year with hourly
     steps and averaging this per day."""
 
-    
+
     for Day in range(1,366):
     	avgrad = 0.0 * Altitude
     	for Hour in range(6,19):
@@ -355,6 +355,6 @@ def GenRadMaps(SaveDir,SaveName,Lat,Lon,Slope,Aspect,Altitude,debug):
     			nr = "%0.3d" % Hour
     			report(crad,SaveDir + "/" + str(Day) + "/" + SaveName + "00000." + nr)
     		avgrad=avgrad + crad
-    	
+
     	nr = "%0.3d" % Day
     	report(avgrad/13.0,SaveDir + "/" + SaveName + "00000." + nr)
