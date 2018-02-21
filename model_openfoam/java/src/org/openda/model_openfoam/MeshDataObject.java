@@ -71,7 +71,7 @@ public class MeshDataObject implements IDataObject {
     private static String[] units = { "kg", "m", "s", "K", "mol", "A", "cd"};
     private Map<String,Integer> unitsMap = new LinkedHashMap<>();
 	private static final String OPENFOAM_TIME_DIR = "OPENFOAM_TIME_DIR";
-    private int writePrecision = 6;
+    //private int writePrecision = 6;
 
     // The geometric locations where the observations are made (x,y,z)
     //private UnstructuredMeshGeometryInfo geometryInfo;
@@ -156,23 +156,23 @@ public class MeshDataObject implements IDataObject {
                     String key = scanner.next();
                     if (key.isEmpty()) {
                         continue;
-                    } else if (key.equals("{")) {
+                    } else if ("}".equals(key)) {
                         continue;
-                    } else if (key.equals("}")) {
+                    } else if ("}".equals(key)) {
                         break;
-                    } else if (key.equals("version")) {
+                    } else if ("version".equals(key)) {
                         Double value = scanner.nextDouble();
                         this.headerFields.put(key, value);
-                    } else if (key.equals("format")) {
+                    } else if ("format".equals(key)) {
                         String value = scanner.next();
                         this.headerFields.put(key, value);
-                    } else if (key.equals("class")) {
+                    } else if ("class".equals(key)) {
                         String value = scanner.next();
                         this.headerFields.put(key, value);
-                    } else if (key.equals("location")) {
+                    } else if ("locations".equals(key)) {
                         String value = scanner.next();
                         this.headerFields.put(key, value);
-                    } else if (key.equals("object")) {
+                    } else if ("object".equals(key)) {
                         String value = scanner.next();
                         this.headerFields.put(key, value);
                     } else {
@@ -292,7 +292,7 @@ public class MeshDataObject implements IDataObject {
             Integer nrItems =this.exchangeItems.size();
             // output exchange item
             if ( nrItems == 1 ) {
-                writer.write(String.format("internalField nonuniform List<scalar>\n"));
+                writer.write("internalField nonuniform List<scalar>\n");
                 String id = (String) this.headerFields.get("object");
                 IArray array = this.exchangeItems.get(id).getArray();
                 double[] data = array.getValuesAsDoubles();
@@ -302,7 +302,7 @@ public class MeshDataObject implements IDataObject {
                 }
                 writer.write(")\n");
             } else if (nrItems == 3) {
-                writer.write(String.format("internalField   nonuniform List<vector>\n"));
+                writer.write("internalField   nonuniform List<vector>\n");
                 String id = (String) this.headerFields.get("object");
                 double[][] data = new double[3][];
                 for (int i = 0 ; i < 3 ; i++) {

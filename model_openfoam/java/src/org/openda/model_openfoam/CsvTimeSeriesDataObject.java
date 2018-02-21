@@ -44,9 +44,9 @@ public final class CsvTimeSeriesDataObject implements IComposableDataObject {
 
     private static final String PROPERTY_PATHNAME = "pathName";
 	private TimeSeriesSet timeSeriesSet = null;
-	String fileName = null;
-	File workingDir = null;
-	String idSeparator = ".";
+	private String fileName = null;
+	private File workingDir = null;
+	private String idSeparator = ".";
 
 	/**
 	 * Initialize the IDataObject

@@ -85,12 +85,12 @@ public class ProbeDataObject implements IComposableDataObject {
     private File file;
     //private InputStream inputStream;
     //private OutputStream outputStream;
-    private boolean create = false;
+    //private boolean create = false;
 	private static final String idSeparator= ".";
 	private static final String locationSeparator= "#";
-	private Map headerFields = new HashMap();
-    private Map<String,Integer> unitsMap = new LinkedHashMap<>();
-    private int writePrecision = 6;
+	//private Map headerFields = new HashMap();
+    //private Map<String,Integer> unitsMap = new LinkedHashMap<>();
+    //private int writePrecision = 6;
 	private TimeSeriesSet timeSeriesSet = new TimeSeriesSet();
 	private double referenceMjd;
 	private static final double SECONDS_TO_DAYS = 1.0 / 24.0 / 60.0 / 60.0;
@@ -333,7 +333,6 @@ public class ProbeDataObject implements IComposableDataObject {
     }
 
     public void finish() {
-        BufferedWriter writer = null;
     }
 
 }

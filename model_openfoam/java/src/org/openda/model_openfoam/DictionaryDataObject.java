@@ -168,7 +168,7 @@ public class DictionaryDataObject implements IDataObject{
 							throw new RuntimeException("A line designated by keyword '" + key + "' cannot contain multiple values: " + line);
 						}
 						for (int index=0 ; index < values.size() ; index++  ) {
-							String id = key + this.multiplexId + (index+1);
+							String id = key + multiplexId + (index+1);
 							IExchangeItem exchangeItem = new DoubleExchangeItem(id, values.elementAt(index));
 							items.put(id, exchangeItem);
 							multiplexColumn.put(id,column.elementAt(index));

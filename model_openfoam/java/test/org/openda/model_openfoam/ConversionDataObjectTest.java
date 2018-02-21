@@ -16,10 +16,9 @@ import java.util.Arrays;
 public class ConversionDataObjectTest extends TestCase {
 
     private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-        testData = new OpenDaTestSupport(ConversionDataObjectTest.class,"model_openfoam");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ConversionDataObjectTest.class,"model_openfoam");
         testRunDataDir = testData.getTestRunDataDir();
     }
 
