@@ -22,8 +22,6 @@ import org.openda.algorithms.DudCoreOptimizer;
 import org.openda.interfaces.*;
 import org.openda.utils.*;
 
-import java.io.File;
-
 /**
  *
  * @author Martin Verlaan 

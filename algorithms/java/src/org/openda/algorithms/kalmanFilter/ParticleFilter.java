@@ -34,9 +34,9 @@ import java.util.Random;
  */
 public class ParticleFilter extends AbstractSequentialEnsembleAlgorithm {
 
-	boolean useRandomSeed = false;
-	long fixedSeed = 1234567890;
-	Random randomGenerator = null;
+	private boolean useRandomSeed = false;
+	private long fixedSeed = 1234567890;
+	private Random randomGenerator = null;
 
 	
 	public void initialize(File workingDir, String[] arguments) {
@@ -130,7 +130,6 @@ public class ParticleFilter extends AbstractSequentialEnsembleAlgorithm {
 		deltaMain.axpy(-1.0,mainModel.getState());
 		mainModel.axpyOnState(1.0, deltaMain);
 		
-		xiStd = ensembleStd(xi);
 		this.setCurrentState(xiAvg.clone());
 		xiStd = ensembleStd(xi);
         Results.putValue("stdx_a", xiStd, xiStd.getSize() , "analysis step", IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.Step);

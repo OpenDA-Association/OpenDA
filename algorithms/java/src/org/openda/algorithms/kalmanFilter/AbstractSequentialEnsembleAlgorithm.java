@@ -19,21 +19,16 @@
  */
 package org.openda.algorithms.kalmanFilter;
 
-import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.utils.ConfigTree;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.FileBasedModelState;
-import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.io.KalmanGainStorage.StorageType;
 import org.openda.utils.performance.OdaGlobSettings;
 import org.openda.utils.performance.OdaTiming;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.text.ParseException;
 import java.util.HashMap;
 
 /**

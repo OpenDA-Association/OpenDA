@@ -21,8 +21,6 @@ package org.openda.algorithms.kalmanFilter;
 import org.openda.interfaces.*;
 import org.openda.utils.*;
 
-import java.io.File;
-
 /**
  * This filter implements an ensemble square-root filter EnSR as discussed by several authors 
  * (e.g. Evensen, Whitaker, Livings, Sakov) An important issue in the implementation is the 
