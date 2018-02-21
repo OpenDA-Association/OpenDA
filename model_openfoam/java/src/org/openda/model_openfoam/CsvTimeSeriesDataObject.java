@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem.Role;
 

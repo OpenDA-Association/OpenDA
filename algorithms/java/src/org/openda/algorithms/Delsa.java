@@ -95,11 +95,11 @@ public class Delsa extends Instance implements IAlgorithm {
 			}
 		} else {
 			minRangeString = delsaConf.getAsString("sobolSequence@min", "not specified");
-			if (!minRangeString.toString().contains("not specified")){
+			if (!minRangeString.contains("not specified")){
 				isSobolUsed = true;
 				minRange = new Vector(minRangeString);
 				String maxRangeString = delsaConf.getAsString("sobolSequence@max", "not specified");
-				if (maxRangeString.toString().contains("not specified")){
+				if (maxRangeString.contains("not specified")){
 					throw new RuntimeException("sobolSequence:parameter max should be specified.");
 				}
 				maxRange = new Vector(maxRangeString);

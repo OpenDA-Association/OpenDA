@@ -20,7 +20,6 @@
 package org.openda.model_openfoam;
 
 import junit.framework.TestCase;
-import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;

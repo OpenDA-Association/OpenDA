@@ -214,7 +214,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		if (ncols == -1 || nrows == -1 || xllcorner == Double.NEGATIVE_INFINITY || yllcorner == Double.NEGATIVE_INFINITY ||
 			cellsize == -1 || noDataText == null)                       {
 
-			String message = new String ("Missing header items in ASCII grid:");
+			String message = "Missing header items in ASCII grid:";
 			if (ncols==-1) message += " ncols";
 			if (nrows==-1) message += " nrows";
 			if (xllcorner==Double.NEGATIVE_INFINITY) message += " xllcorner/xllcenter";
