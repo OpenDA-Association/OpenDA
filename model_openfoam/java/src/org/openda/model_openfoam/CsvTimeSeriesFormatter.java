@@ -54,7 +54,7 @@ public class CsvTimeSeriesFormatter extends TimeSeriesFormatter {
         "#= Unit     = %6$s\n" +
         "#= Status   = %7$s\n" +
         "# -----------------------------------------------------\n";
-    private int writePrecision = 4;
+    //private int writePrecision = 4;
     private String delimiter;
     private String datePattern;
 
@@ -96,13 +96,7 @@ public class CsvTimeSeriesFormatter extends TimeSeriesFormatter {
         printer.flush();
     }
 
-		String description = "";
-		double x = 0.0; // Position : (4.745356,52.966001)
-		double y = 0.0;
-		double height = Double.NaN;
-		String analTime = ""; // Analyse time: most recent
-		String timeZone = ""; // Timezone : GMT
-		Role role     = Role.InOut;
+
 
     public TimeSeries read(InputStream in) {
 
