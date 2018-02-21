@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-use as: 
+use as:
 from pendulum import *
 import simulation_unperturbed_results as sim
 plot_movie(sim.model_time,sim,x)

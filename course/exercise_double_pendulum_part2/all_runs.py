@@ -30,7 +30,7 @@ plt.plot(enkf.analysis_time,enkf.x_f_central[:,1],'b');
 plt.ylabel(r'$\theta_2$')
 plt.xlabel(r'$t$')
 plt.savefig('fig_series_enkf.png')
-plt.show() 
+plt.show()
 
 
 import simulation_enkf_results_seed31415 as enkf2
@@ -52,7 +52,7 @@ plt.plot(enkf2.analysis_time,enkf2.x_f_central[:,1],'r');
 plt.ylabel(r'$\theta_2$')
 plt.xlabel(r'$t$')
 plt.savefig('fig_series_enkf_seed31415.png')
-plt.show() 
+plt.show()
 
 
 import simulation_enkf_results_stdobs2 as enkf2
@@ -74,7 +74,7 @@ plt.plot(enkf2.analysis_time,enkf2.x_f_central[:,1],'r');
 plt.ylabel(r'$\theta_2$')
 plt.xlabel(r'$t$')
 plt.savefig('fig_series_enkf_std2.png')
-plt.show() 
+plt.show()
 
 
 import simulation_enkf_results_ens6 as enkf3
@@ -99,5 +99,5 @@ plt.plot(enkf4.analysis_time,enkf4.x_f_central[:,1],'m');
 plt.ylabel(r'$\theta_2$')
 plt.xlabel(r'$t$')
 plt.savefig('fig_series_enkf_ens_size.png')
-plt.show() 
+plt.show()
 

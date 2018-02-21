@@ -18,7 +18,7 @@ def read(dirname):
     for f in os.listdir(dirname):
        if os.path.isfile(os.path.join(dirname,f)):
            if(fnmatch.fnmatch(f,xmlpattern)):
-               filename=os.path.join(dirname,f)    
+               filename=os.path.join(dirname,f)
     xmldoc = minidom.parse(filename)
     vectorlist = xmldoc.getElementsByTagName('vector')
     #print(len(vectorlist))
@@ -28,10 +28,10 @@ def read(dirname):
         k_parts.append(eval("["+v.firstChild.data+"]"))
     k=np.vstack(k_parts)
     return(k)
-    
+
 # If this is run as the main program then run the tests
 if __name__ == '__main__':
     dirname="enkf_wave_185811270000"
     k=read(dirname)
     print("k="+str(k))
-    
+

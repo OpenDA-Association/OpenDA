@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Plot movie of output of Ensemble Kalman filter. 
+Plot movie of output of Ensemble Kalman filter.
 Uses the output from OpenDA contrary to exercise 4
 
 @author: verlaanm

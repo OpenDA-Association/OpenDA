@@ -42,7 +42,7 @@ for iobs in range(nobs):
 #
 # EnKF
 #
-    
+
 import enkf_results as enkf
 diff_enkf = enkf.obs -enkf.pred_a_central
 
@@ -99,7 +99,7 @@ print("===================================================")
 for iobs in range(nobs):
     rms_steady.append(  np.sqrt(np.sum(np.square(diff_steady[:,iobs])))  )
     print("  "+str(iobs)+" : "+str(rms_steady[iobs]))
-    
+
 #
 # plot Kalman gains
 #

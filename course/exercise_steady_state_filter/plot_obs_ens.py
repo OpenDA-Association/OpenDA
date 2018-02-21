@@ -37,4 +37,4 @@ print("===================================================")
 for iobs in range(nobs):
     rms_enkf.append(  np.sqrt(np.sum(np.square(diff[:,iobs])))  )
     print("  "+str(iobs)+" : "+str(rms_enkf[iobs]))
-    
+

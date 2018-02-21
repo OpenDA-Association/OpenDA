@@ -9,7 +9,7 @@ import math
 def defaultInput():
     input={}
     # grid
-    input['x']= [0.0, 1.0, 4.0] 
+    input['x']= [0.0, 1.0, 4.0]
     # stationary flow
     input['u'] = [1.0, 1.0, 1.0, 1.0, 1.0]
     # cross sectional area
@@ -169,7 +169,7 @@ def readInputFile(fileName):
     input['c1']= c1
     input['c2']= c2
     input['refdate']= refdate
-    input['unit']= unit 
+    input['unit']= unit
     input['time']= time
     input['reaction_time']= reaction_time
     input['source_locations']= source_locations
@@ -187,7 +187,7 @@ def readInputFile(fileName):
     input['bound_substance']= bound_substance
     input['bound_values']= bound_values
     return input
-    
+
 def collectOutput(c1, c2, output):
     for i in range(len(output['output_locations'])):
         iOutput =output['output_locations'][i]
@@ -233,7 +233,7 @@ def writeOutput(outFile, c1, c2):
     outFile.write("c2=["+','.join(map(str, c2))+"]\n")
     outFile.write("refdate='%s'\n"%output['refdate'])
     outFile.write("unit='%s'\n" % output['unit'])
-    outFile.write("time=[%f,%f,%f] \n" %(output['time'][0],output['time'][1],output['time'][2])) 
+    outFile.write("time=[%f,%f,%f] \n" %(output['time'][0],output['time'][1],output['time'][2]))
 
 def writeMatlabOutput(matlabOutFile, c1, c2):
     matlabOutFile.write("output_labels=["+','.join([ "'"+label+"'" for label in output['output_labels']])+"];\n")
@@ -263,7 +263,7 @@ def writeMatlabOutput(matlabOutFile, c1, c2):
     matlabOutFile.write("c2=["+','.join(map(str, c2))+"];\n")
     matlabOutFile.write("refdate='%s';\n"%output['refdate'])
     matlabOutFile.write("unit='%s';\n" % output['unit'])
-    matlabOutFile.write("time=[%f,%f,%f]; \n" %(output['time'][0],output['time'][1],output['time'][2])) 
+    matlabOutFile.write("time=[%f,%f,%f]; \n" %(output['time'][0],output['time'][1],output['time'][2]))
 
 def writeMatlabMapOutput(matlabOutFile, c1, c2, timeIndex):
     matlabOutFile.write("c1_map{"+str(timeIndex)+"}=["+','.join(map(str, c1))+"];\n")
@@ -292,7 +292,7 @@ def frange(start, end=None, inc=None):
             break
         elif inc < 0 and next <= end:
             break
-        L.append(next)        
+        L.append(next)
     return L
 
 

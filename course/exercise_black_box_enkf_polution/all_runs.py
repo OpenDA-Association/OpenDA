@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Plot movie of output of Ensemble Kalman filter. 
+Plot movie of output of Ensemble Kalman filter.
 Uses the output from OpenDA contrary to exercise 4
 
 @author: verlaanm
@@ -27,11 +27,11 @@ ngrid=len(truth.c1)
 no_sources=len(truth.source_locations)
 
 # split sources and outputs based on substance
-stypeisone=np.array(truth.source_substance)==1 
+stypeisone=np.array(truth.source_substance)==1
 stypeistwo=np.array(truth.source_substance)==2
 sloc1=np.array(truth.source_locations)[stypeisone]
 sloc2=np.array(truth.source_locations)[stypeistwo]
-otypeisone=np.array(truth.output_substance)==1 
+otypeisone=np.array(truth.output_substance)==1
 otypeistwo=np.array(truth.output_substance)==2
 oloc1=np.array(truth.output_locations)[otypeisone]
 oloc2=np.array(truth.output_locations)[otypeistwo]

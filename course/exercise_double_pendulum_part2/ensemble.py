@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-use as: 
+use as:
 load ensemble
 load simulation_ensemble_results as res ###adapt to your output filename
 (t,ens)=ensemble.reshape_ensemble(res)
@@ -29,9 +29,9 @@ def reshape_ensemble(ens):
     else:
         raise Exception("No ensembles found in result file.")
     return (t,result)
-    
-    
-    
+
+
+
 if __name__ == '__main__':
     #only used for testing
     import simulation_ensemble_results as res

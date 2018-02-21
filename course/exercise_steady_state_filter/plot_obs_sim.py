@@ -37,4 +37,4 @@ print("===================================================")
 for iobs in range(nobs):
     rms.append(  np.sqrt(np.sum(np.square(diff[:,iobs])))  )
     print("  "+str(iobs)+" : "+str(rms[iobs]))
-    
+

@@ -6,7 +6,7 @@ Created on Fri Jul  3 16:38:17 2015
 @author: verlaanm
 """
 
-# ex2 
+# ex2
 
 #load numpy and matplotlib if needed
 import numpy as np

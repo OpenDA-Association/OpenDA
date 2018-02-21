@@ -11,8 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import ensemble
 
-# laod data fomr enkf_results_estd1_ens10, collect ensemble in one 3d-array 
-# and compute ensemble mean of first [0] element in statevector (state=[x,y,z]) 
+# laod data fomr enkf_results_estd1_ens10, collect ensemble in one 3d-array
+# and compute ensemble mean of first [0] element in statevector (state=[x,y,z])
 import enkf_results_std1_ens10 as std1
 (t,enkf)=ensemble.reshape_ensemble(std1)
 enkf1=enkf[:,0,:] #note we start counting at 0

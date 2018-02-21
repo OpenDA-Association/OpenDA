@@ -6,7 +6,7 @@ Plot cost evolution
 @author: verlaanm
 """
 
-# ex1 
+# ex1
 
 #load numpy and matplotlib if needed
 import matplotlib.pyplot as plt

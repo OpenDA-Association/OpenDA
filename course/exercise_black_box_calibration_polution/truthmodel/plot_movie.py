@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Plot movie of model simulation output. 
+Plot movie of model simulation output.
 Uses directly the output of the model, not the output from OpenDA
 
 @author: verlaanm
@@ -21,11 +21,11 @@ f,ax = plt.subplots(2,1)
 plt.ion()
 
 # split sources and outputs based on substance
-stypeisone=np.array(sim.source_substance)==1 
+stypeisone=np.array(sim.source_substance)==1
 stypeistwo=np.array(sim.source_substance)==2
 sloc1=np.array(sim.source_locations)[stypeisone]
 sloc2=np.array(sim.source_locations)[stypeistwo]
-otypeisone=np.array(sim.output_substance)==1 
+otypeisone=np.array(sim.output_substance)==1
 otypeistwo=np.array(sim.output_substance)==2
 oloc1=np.array(sim.output_locations)[otypeisone]
 oloc2=np.array(sim.output_locations)[otypeistwo]

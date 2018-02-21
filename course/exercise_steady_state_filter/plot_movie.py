@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Plot movie of model simulation output. 
+Plot movie of model simulation output.
 Uses directly the output of the model, not the output from OpenDA
 
 @author: verlaanm
@@ -46,5 +46,4 @@ for i in range(nTimes):
    plt.title("time="+str(sim.analysis_time[i]))
    plt.draw()
    sleep(0.1)
-   
-   
+
