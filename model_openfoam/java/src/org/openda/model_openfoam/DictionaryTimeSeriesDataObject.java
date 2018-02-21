@@ -74,7 +74,7 @@ public class DictionaryTimeSeriesDataObject implements IDataObject{
 	static private final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
 
     private TimeSeriesSet timeSeriesSet = null;
-    String idSeparator = ".";
+    private String idSeparator = ".";
 
     //private String arrayBrackets = "\\(\\)";
 	//private String arrayDelimiter = " ";

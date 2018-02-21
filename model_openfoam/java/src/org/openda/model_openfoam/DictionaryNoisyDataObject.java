@@ -35,7 +35,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-//import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -61,6 +60,18 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class DictionaryNoisyDataObject implements IDataObject{
 
+	private static final Logger logger = LoggerFactory.getLogger(DictionaryNoisyDataObject.class);
+	private static final String keyWordPrefix =";//#";
+	private static final String multiplexId ="@";
+	private static final String noiseId =".noise";
+	private static final String noiseLineKeyword ="//#oda:generatedNoise";
+	private static final double SECONDS_TO_DAYS = 1.0 / 24.0 / 60.0 / 60.0;
+	private static final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
+	private static final List<String> timeExchangeItemIds =  Arrays.asList("oda:startTime","oda:endTime");
+
+	private String fileName = null;
+	private HashMap<String,IExchangeItem> items = new LinkedHashMap<>();
+	private HashMap<String,Double> parameterValues = new LinkedHashMap<>();
 
     private class ParameterObserver implements IMyObserver {
         public void update(IMyObservable object, Object arg){
@@ -72,19 +83,7 @@ public class DictionaryNoisyDataObject implements IDataObject{
         }
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(DictionaryNoisyDataObject.class);
-    private String fileName = null;
 
-	private static final String keyWordPrefix =";//#";
-	private static final String multiplexId ="@";
-    private static final String noiseId =".noise";
-    private static final String noiseLineKeyword ="//#oda:generatedNoise";
-    private static final double SECONDS_TO_DAYS = 1.0 / 24.0 / 60.0 / 60.0;
-    private static final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
-    private static final List<String> timeExchangeItemIds =  Arrays.asList("oda:startTime","oda:endTime");
-
-    private HashMap<String,IExchangeItem> items = new LinkedHashMap<>();
-    private HashMap<String,Double> parameterValues = new LinkedHashMap<>();
 
 
 //    private HashMap<String,IExchangeItem> noise = new LinkedHashMap<>();
