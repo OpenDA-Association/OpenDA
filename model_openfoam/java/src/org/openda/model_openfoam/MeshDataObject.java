@@ -156,7 +156,7 @@ public class MeshDataObject implements IDataObject {
                     String key = scanner.next();
                     if (key.isEmpty()) {
                         continue;
-                    } else if ("}".equals(key)) {
+                    } else if ("{".equals(key)) {
                         continue;
                     } else if ("}".equals(key)) {
                         break;
@@ -169,7 +169,7 @@ public class MeshDataObject implements IDataObject {
                     } else if ("class".equals(key)) {
                         String value = scanner.next();
                         this.headerFields.put(key, value);
-                    } else if ("locations".equals(key)) {
+                    } else if ("location".equals(key)) {
                         String value = scanner.next();
                         this.headerFields.put(key, value);
                     } else if ("object".equals(key)) {
