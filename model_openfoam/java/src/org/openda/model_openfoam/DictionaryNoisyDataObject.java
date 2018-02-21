@@ -182,7 +182,7 @@ public class DictionaryNoisyDataObject implements IDataObject{
 						}
 					}
 
-					if (lineWithNoise!="") {
+					if (!"".equals(lineWithNoise)) {
 						line = lineWithNoise;
 						lineWithNoise = "";
 						fileContent.add(line);
