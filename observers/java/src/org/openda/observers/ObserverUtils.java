@@ -72,8 +72,8 @@ public class ObserverUtils {
 				String[] ids = null;
 				boolean notDone = true;
 				for (int i = 0; i < keys.length && notDone; i++) {
-					if (keys[i].toLowerCase().equals("id") ||
-							keys[i].toLowerCase().equals("name")) {
+					if ("id".equalsIgnoreCase(keys[i])  ||
+							"name".equalsIgnoreCase(keys[i]) ) {
 						notDone = false;
 						ids = observationDescriptions.getStringProperties(keys[i]);
 					}

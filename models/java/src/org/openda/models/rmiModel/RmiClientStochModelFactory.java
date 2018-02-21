@@ -105,7 +105,7 @@ public class RmiClientStochModelFactory implements IStochModelFactory {
 		// Check whether the number of hosts corresponds to the number of servers
 		// Note a single host and multiple servers is allowed (for easy configuration)
 		hosts=new String[numServers];
-		if (hostsCSV==""){
+		if ("".equals(hostsCSV)){
 			numHosts=1;
 			// Set all hosts to null (this mean local host in the getRegistry method)
 			for (int iHost=0; iHost<numServers; iHost++){hosts[iHost]=null;}

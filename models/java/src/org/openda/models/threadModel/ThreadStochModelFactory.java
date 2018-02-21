@@ -76,7 +76,7 @@ public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizon
 
         // Get the name of the model factory from the configuration tree
         className = conf.getAsString("stochModelFactory@className","");
-        if (className==""){
+        if ("".equals(className)){
            throw new RuntimeException("The className is empty. Please specify it correctly in:"+arguments[0]);
         }
         // Get the name of the model configuration file from th configuration tree

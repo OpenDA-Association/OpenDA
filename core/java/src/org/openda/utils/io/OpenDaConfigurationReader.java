@@ -199,16 +199,16 @@ public class OpenDaConfigurationReader {
 			String unit= applicationXML.getTimeSettings().getUnit();
 
 			double factor=1.0;
-			if (unit.toLowerCase().equals("hour")){
+			if ("hour".equalsIgnoreCase(unit)){
 				factor=1.0/24.0;
 			}
-			else if (unit.toLowerCase().equals("min")){
+			else if ("min".equalsIgnoreCase(unit)){
 				factor=1.0/24.0/60.0;
 			}
-			else if (unit.toLowerCase().equals("sec")){
+			else if ("sec".equalsIgnoreCase(unit)){
 				factor=1.0/24.0/60.0/60.0;
 			}
-			else if (unit.toLowerCase().equals("day") || unit.toLowerCase().equals("")){
+			else if ("day".equalsIgnoreCase(unit) || "".equalsIgnoreCase(unit)){
 				factor=1.0;
 			}
 			else {
