@@ -70,8 +70,8 @@ public class ApplicationScreen extends JFrame implements ActionListener {
 
    // Tabs
    private JTabbedPane                     tabs         = null;
-   private JPanel                          inputTab     = null;
-   private JPanel                          controlTab   = null;
+   public JPanel                          inputTab     = null;
+   public JPanel                          controlTab   = null;
    private OutputGui                       outputTab    = null;
 
    // Input file
