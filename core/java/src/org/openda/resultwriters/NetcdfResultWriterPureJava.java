@@ -9,7 +9,6 @@ import ucar.ma2.InvalidRangeException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -140,7 +139,7 @@ public class NetcdfResultWriterPureJava implements IResultWriter {
 			// Object type is not support. Only warn once
 			if (! notSupportedObjects.containsKey(id)){
 				System.out.println("Warning: Cannot output "+id+" The type of object is not supported (yet) by this resultWriter. ("+result.getClass().getCanonicalName()+")");
-				notSupportedObjects.put(id,new Integer(1));
+				notSupportedObjects.put(id,1);
 			}
 		}
 	}

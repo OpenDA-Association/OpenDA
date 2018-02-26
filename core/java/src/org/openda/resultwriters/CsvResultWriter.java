@@ -101,9 +101,9 @@ public class CsvResultWriter implements IResultWriter {
                 }
                 outputStream.print(subTreeVectorId);
                 double[] values=((ITreeVector)result).getSubTreeVector(subTreeVectorId).getValues();
-                for (int i=0; i<values.length; i++){
-                    outputStream.print(","+values[i]);
-                }
+				for (double value : values) {
+					outputStream.print("," + value);
+				}
                 outputStream.println();
             }
         } else {

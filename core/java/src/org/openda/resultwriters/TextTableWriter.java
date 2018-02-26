@@ -52,7 +52,7 @@ public class TextTableWriter implements IResultWriter {
     }
 
 
-    public void free(){};
+    public void free(){}
 
     public void putMessage(Source source, String message) {
 		// Nothing to do
@@ -88,8 +88,8 @@ public class TextTableWriter implements IResultWriter {
 
 		outputStream.print(iteration + " \t" + cost);
 
-		for (int i = 0; i < parameterValues.length; i++) {
-			outputStream.print(" \t" + parameterValues[i]);
+		for (double parameterValue: parameterValues) {
+			outputStream.print(" \t" + parameterValue);
 		}
 		outputStream.print('\n');
     }

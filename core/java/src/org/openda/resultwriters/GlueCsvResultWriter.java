@@ -99,7 +99,6 @@ public class GlueCsvResultWriter extends CsvResultWriter implements IResultWrite
                 this.paramAsTreeVector = (ITreeVector) result;
 
             } else if (resultAsTreeVector.getId().equalsIgnoreCase("predictions")){
-                int nObs = resultAsTreeVector.getSize();
                 for (String predictionId : resultAsTreeVector.getSubTreeVectorIds()){
                     outputStream.print(currentIter);
                     outputStream.print(",");

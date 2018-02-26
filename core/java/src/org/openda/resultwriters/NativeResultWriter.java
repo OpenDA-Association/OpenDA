@@ -86,7 +86,6 @@ static {
 	 * @param iteration   current iteration
 	 */
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
-        int handle=0;
 		//Translate the output level to a string
 		int outLevel=0;
 		if (outputLevel == OutputLevel.All){
@@ -100,8 +99,8 @@ static {
 		}else if (outputLevel == OutputLevel.None){
 			outLevel=0;
 		}
-        if (result instanceof CtaObject){
-		    handle= ((CtaObject) result).getOpenDANativeHandle();
+		if (result instanceof CtaObject){
+		    int handle= ((CtaObject) result).getOpenDANativeHandle();
 			this.putValue(this.myID, this.configString, this.workingDir, id, handle, outLevel, context, iteration);
 		}
 	}

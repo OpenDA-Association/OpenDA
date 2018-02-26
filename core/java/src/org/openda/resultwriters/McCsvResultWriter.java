@@ -86,7 +86,7 @@ public class McCsvResultWriter extends CsvResultWriter implements IResultWriter 
                 if (filesYetToBeOpened) {
                     filesYetToBeOpened = false;
                     for (String childId : resultAsTreeVector.getSubTreeVectorIds()) {
-                        FileWriter fileWriter = null;
+                        FileWriter fileWriter;
                         try {
                             String fileName = childId + ".csv";
                             File file = new File(this.workingDir,fileName);

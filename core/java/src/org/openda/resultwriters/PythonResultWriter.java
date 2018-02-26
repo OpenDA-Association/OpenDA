@@ -74,7 +74,6 @@ public class PythonResultWriter implements IResultWriter {
 
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
 		outputStream.println(commentPrefix + " resultItem id: "+ id +", outputLevel: "+ outputLevel.toString() +", context: "+ context);
-        String prefix = commentPrefix;
     	// TODO create a counter for time being; one counter per id
     	Integer currentIter =0;
     	if(this.iter.containsKey(id)){
@@ -84,7 +83,7 @@ public class PythonResultWriter implements IResultWriter {
     	}
     	this.iter.put(id, currentIter+1);
         if (result instanceof ITreeVector) {
-            outputStream.print(prefix + " " + ((ITreeVector)result).getId() + ": ");
+            outputStream.print(commentPrefix + " " + ((ITreeVector)result).getId() + ": ");
             boolean printComma = false;
             for (String subTreeVectorId : ((ITreeVector)result).getSubTreeVectorIds()) {
                 if (printComma) {
@@ -128,9 +127,9 @@ public class PythonResultWriter implements IResultWriter {
     		outputStream.println("   print(\"Could not merge list into array for "+key+"\")");
     	}
 		outputStream.println("");
-    };
+    }
 
-    public void serializeMatrix(PrintStream outputStream, IMatrix matrix) {
+    private void serializeMatrix(PrintStream outputStream, IMatrix matrix) {
         outputStream.print("[[");
         for(int i=0;i< Math.min(matrix.getNumberOfRows(),40);i++){
            if(i>0) outputStream.print("],[");
