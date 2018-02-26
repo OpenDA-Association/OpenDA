@@ -22,15 +22,9 @@ package org.openda.application;
 
 import org.openda.application.gui.ApplicationScreen;
 import org.openda.utils.Results;
-import org.openda.utils.VersionUtils;
-import org.openda.utils.performance.OdaTiming;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 import static org.openda.costa.CtaParallel.finalizeParallelEnvironment;
 import static org.openda.costa.CtaParallel.initParallelEnvironment;

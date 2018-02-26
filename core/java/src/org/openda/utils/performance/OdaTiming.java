@@ -40,6 +40,25 @@ public class OdaTiming {
 
 	private static boolean doTiming = false;
 
+
+
+    /* We want to keep track of all times ever created. This will allow us to make nice prints */
+	private static ArrayList<OdaTiming> allTimers = new ArrayList<OdaTiming>();
+
+	private String className;
+	private String methodName;
+	private String nameOfTimer;
+	private long wallStart;
+	private long wallStop;
+	private long cpuStart;
+	private long cpuStop;
+	private long cpuTotal;
+	private boolean timerIsRunning;
+	private boolean isSubTimer;
+	private long wallTotal;
+	private int nTimings;
+	private ArrayList<OdaTiming> subTimers;
+
 	/**
 	 * Activate
 	 * @param doTiming do timing indeed
@@ -47,23 +66,6 @@ public class OdaTiming {
 	public static void setDoTiming(boolean doTiming) {
 		OdaTiming.doTiming = doTiming;
 	}
-
-    /* We want to keep track of all times ever created. This will allow us to make nice prints */
-	static ArrayList<OdaTiming> allTimers = new ArrayList<OdaTiming>();
-
-	String className;
-	String methodName;
-	String nameOfTimer;
-	long wallStart;
-	long wallStop;
-	long cpuStart;
-	long cpuStop;
-	long cpuTotal;
-	boolean timerIsRunning;
-	boolean isSubTimer;
-	long wallTotal;
-	int nTimings;
-	ArrayList<OdaTiming> subTimers;
 
 	public OdaTiming(String nameOfTimer){
 
@@ -92,7 +94,7 @@ public class OdaTiming {
 		}
 	}
 
-	public void AddSubTimer(OdaTiming subTimer){
+	public void addSubTimer(OdaTiming subTimer){
 
 		if (!doTiming) { return; }
 
@@ -170,8 +172,8 @@ public class OdaTiming {
 		outStream.write(message);
 
         // Print all subtimers as well
-        for (int iSub=0; iSub<this.subTimers.size(); iSub++){
-			this.subTimers.get(iSub).print(outStream, level+1);
+		for (OdaTiming subTimer : this.subTimers) {
+			subTimer.print(outStream, level + 1);
 		}
 	}
 
@@ -188,12 +190,11 @@ public class OdaTiming {
              FileWriter fstream = new FileWriter(timingsFile);
              BufferedWriter outStream = new BufferedWriter(fstream);
 
-		   	for (int iTimer=0; iTimer<allTimers.size(); iTimer++){
-				OdaTiming aTimer = allTimers.get(iTimer);
-				if (! aTimer.isSubTimer){
-				      allTimers.get(iTimer).print(outStream,0);
+			for (OdaTiming aTimer : allTimers) {
+				if (!aTimer.isSubTimer) {
+					aTimer.print(outStream, 0);
 				}
-	   		}
+			}
 
 			//Close the output stream
             outStream.close();
@@ -207,7 +208,7 @@ public class OdaTiming {
 /** Get CPU time in nanoseconds. */
 
 private long getCpuTime( ) {
-	ThreadMXBean bean = null;
+	ThreadMXBean bean;
 	try {
 		bean = ManagementFactory.getThreadMXBean( );
 	} catch (Error e) {
@@ -218,7 +219,7 @@ private long getCpuTime( ) {
         bean.getCurrentThreadCpuTime( ) : 0L;
 }
 
-/** Get user time in nanoseconds. */
+/* Get user time in nanoseconds. */
 /*
 public long getUserTime( ) {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
@@ -226,7 +227,7 @@ public long getUserTime( ) {
         bean.getCurrentThreadUserTime( ) : 0L;
 }
 */
-/** Get system time in nanoseconds. */
+/* Get system time in nanoseconds. */
 /*
 public long getSystemTime( ) {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );

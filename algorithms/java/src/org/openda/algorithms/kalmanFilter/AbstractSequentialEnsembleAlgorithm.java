@@ -211,10 +211,10 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 			timerForecast_s2 = new OdaTiming(TimerID+" Compute");
 			timerForecast_s3 = new OdaTiming(TimerID+" GetState");
 			timerForecast_s4 = new OdaTiming(TimerID+" Result writing");
-            timerForecast.AddSubTimer(timerForecast_s1);
-			timerForecast.AddSubTimer(timerForecast_s2);
-			timerForecast.AddSubTimer(timerForecast_s3);
-			timerForecast.AddSubTimer(timerForecast_s4);
+            timerForecast.addSubTimer(timerForecast_s1);
+			timerForecast.addSubTimer(timerForecast_s2);
+			timerForecast.addSubTimer(timerForecast_s3);
+			timerForecast.addSubTimer(timerForecast_s4);
 		}
 
 

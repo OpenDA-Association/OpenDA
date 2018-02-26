@@ -368,14 +368,14 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			timerNext_resultWriter = new OdaTiming("resultWriter");
 			timerNext_analysis     = new OdaTiming("analysis");
 
-			timerNext.AddSubTimer(timerNext_ObsSel);
-			timerNext.AddSubTimer(timerNext_Compute);
-			timerNext.AddSubTimer(timerNext_forecast);
-            timerNext.AddSubTimer(timerNext_getState);
-			timerNext.AddSubTimer(timerNext_getObsDescr);
-			timerNext.AddSubTimer(timerNext_getObsVal);
-			timerNext.AddSubTimer(timerNext_resultWriter);
-			timerNext.AddSubTimer(timerNext_analysis);
+			timerNext.addSubTimer(timerNext_ObsSel);
+			timerNext.addSubTimer(timerNext_Compute);
+			timerNext.addSubTimer(timerNext_forecast);
+            timerNext.addSubTimer(timerNext_getState);
+			timerNext.addSubTimer(timerNext_getObsDescr);
+			timerNext.addSubTimer(timerNext_getObsVal);
+			timerNext.addSubTimer(timerNext_resultWriter);
+			timerNext.addSubTimer(timerNext_analysis);
 		}
 
 		timerNext.start();

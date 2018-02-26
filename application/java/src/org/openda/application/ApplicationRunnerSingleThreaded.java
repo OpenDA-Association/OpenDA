@@ -61,9 +61,9 @@ public class ApplicationRunnerSingleThreaded extends ApplicationRunner {
 		OdaTiming timerRunInit   = new OdaTiming("Init");
 		OdaTiming timerRun       = new OdaTiming("TimeSteps");
 		OdaTiming timerRunFinish = new OdaTiming("Finish");
-		timerRunTotal.AddSubTimer(timerRunInit);
-		timerRunTotal.AddSubTimer(timerRun);
-		timerRunTotal.AddSubTimer(timerRunFinish);
+		timerRunTotal.addSubTimer(timerRunInit);
+		timerRunTotal.addSubTimer(timerRun);
+		timerRunTotal.addSubTimer(timerRunFinish);
 
 		timerRunTotal.start();
 		timerRunInit.start();

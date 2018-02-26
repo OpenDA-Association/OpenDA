@@ -69,17 +69,17 @@ public class EnKFOld extends AbstractSequentialEnsembleAlgorithm {
 				timerGainMult     = new OdaTiming("multiply with gain");
 				timerAdjustMean   = new OdaTiming("adjustMean");
 
-				timerTotal.AddSubTimer(timerSynchronize);
-				timerTotal.AddSubTimer(timerGetObs);
-				timerTotal.AddSubTimer(timerGetStates);
-				timerTotal.AddSubTimer(timerAverage);
-				timerTotal.AddSubTimer(timerStd);
-				timerTotal.AddSubTimer(timerResults);
-				timerTotal.AddSubTimer(timerLinalg);
-				timerTotal.AddSubTimer(timerLocalization);
-				timerTotal.AddSubTimer(timerStoreGain);
-				timerTotal.AddSubTimer(timerGainMult);
-				timerTotal.AddSubTimer(timerAdjustMean);
+				timerTotal.addSubTimer(timerSynchronize);
+				timerTotal.addSubTimer(timerGetObs);
+				timerTotal.addSubTimer(timerGetStates);
+				timerTotal.addSubTimer(timerAverage);
+				timerTotal.addSubTimer(timerStd);
+				timerTotal.addSubTimer(timerResults);
+				timerTotal.addSubTimer(timerLinalg);
+				timerTotal.addSubTimer(timerLocalization);
+				timerTotal.addSubTimer(timerStoreGain);
+				timerTotal.addSubTimer(timerGainMult);
+				timerTotal.addSubTimer(timerAdjustMean);
 			}
 
 
