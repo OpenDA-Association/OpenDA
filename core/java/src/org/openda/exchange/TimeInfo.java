@@ -103,41 +103,41 @@ public class TimeInfo implements IArrayTimeInfo, Serializable {
 	}
 	
 	public String toString(){
-		String result="{TimeInfo ";
+		StringBuilder result= new StringBuilder("{TimeInfo ");
 		if(this.times.length()<8){
-			result+=this.times.toString();
-			result+=" {";
+			result.append(this.times.toString());
+			result.append(" {");
 			for(int i=0;i<times.length();i++){
-				if(i>0) result+=",";
-				result+=TimeUtils.mjdToString(times.getValueAsDouble(i));
+				if(i>0) result.append(",");
+				result.append(TimeUtils.mjdToString(times.getValueAsDouble(i)));
 			}
-			result+="}";
+			result.append("}");
 		}else{
-			result+=" {";
+			result.append(" {");
 			for(int i=0;i<3;i++){
-				if(i>0) result+=",";
-				result+=times.getValueAsDouble(i);
+				if(i>0) result.append(",");
+				result.append(times.getValueAsDouble(i));
 			}
-			result+=",...";
+			result.append(",...");
 			for(int i=times.length()-3;i<times.length();i++){
-				if(i>0) result+=",";
-				result+=times.getValueAsDouble(i);
+				if(i>0) result.append(",");
+				result.append(times.getValueAsDouble(i));
 			}
-			result+="}";
-			result+=" {";
+			result.append("}");
+			result.append(" {");
 			for(int i=0;i<3;i++){
-				if(i>0) result+=",";
-				result+=TimeUtils.mjdToString(times.getValueAsDouble(i));
+				if(i>0) result.append(",");
+				result.append(TimeUtils.mjdToString(times.getValueAsDouble(i)));
 			}
-			result+=",...";
+			result.append(",...");
 			for(int i=times.length()-3;i<times.length();i++){
-				if(i>0) result+=",";
-				result+=TimeUtils.mjdToString(times.getValueAsDouble(i));
+				if(i>0) result.append(",");
+				result.append(TimeUtils.mjdToString(times.getValueAsDouble(i)));
 			}
-			result+="}";
+			result.append("}");
 		}
-		result+="}}";
-		return result;
+		result.append("}}");
+		return result.toString();
 	}
 
 	
