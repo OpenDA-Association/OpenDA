@@ -22,19 +22,19 @@ public class EsriAsciiGridDataObject implements IDataObject{
 	private int nrows=-1;
 	private double xllcorner=Double.NEGATIVE_INFINITY;
 	private double yllcorner=Double.NEGATIVE_INFINITY;
-	private double cellsize=-1;
-	boolean isCenter=false;
+	private double cellSize=-1;
+	private boolean isCenter=false;
 
 	private CsvReader csvReader;
 	private String noDataText = "-999999";
 	private boolean useScientificNotation = false;
 	private int maxNumberOfDecimals = 6;
 
-	String exchangeItemId = "AsciiGrid-item";
-	String timeStampString = null;
-	String timeStampFormat = null;
-	private String outputFileName = null;
-	private ArrayExchangeItem exchangeItem = null;
+	private String exchangeItemId = "AsciiGrid-item";
+	private String timeStampString;
+	private String timeStampFormat;
+	private String outputFileName;
+	private ArrayExchangeItem exchangeItem;
 	private File inputFile;
 	private File outputFile;
 
@@ -164,7 +164,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 	 * Reads header from ascii file
 	 * @throws IOException
 	 */
-	public String[] readHeader() throws IOException {
+	private String[] readHeader() throws IOException {
 
 		String[] rowItems;
 
@@ -194,7 +194,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 				} else if (key.equals("yllcorner")){
 					yllcorner = Double.parseDouble(value);
 				} else if (key.equals("cellsize")){
-					cellsize = Double.parseDouble(value);
+					cellSize = Double.parseDouble(value);
 				} else if (key.equals("nodata_value")){
 					noDataText = value.trim();
 				} else {
@@ -212,14 +212,14 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		}
 
 		if (ncols == -1 || nrows == -1 || xllcorner == Double.NEGATIVE_INFINITY || yllcorner == Double.NEGATIVE_INFINITY ||
-			cellsize == -1 || noDataText == null)                       {
+			cellSize == -1 || noDataText == null)                       {
 
 			String message = "Missing header items in ASCII grid:";
 			if (ncols==-1) message += " ncols";
 			if (nrows==-1) message += " nrows";
 			if (xllcorner==Double.NEGATIVE_INFINITY) message += " xllcorner/xllcenter";
 			if (yllcorner == Double.NEGATIVE_INFINITY) message += " yllcorner/yllcenter";
-			if (cellsize == -1) message += " cellsize";
+			if (cellSize == -1) message += " cellsize";
 			if (noDataText == null) message += " nodata_value";
 			throw new IOException(message);
 
@@ -247,7 +247,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 			}
 			// end: if the first column is 'space'
 
-			for (int i = 0+iStart; i < rowItems.length; i++) {
+			for (int i = iStart; i < rowItems.length; i++) {
 
 				if (cellindex>=values.length)
 					throw new IOException("Grid size does not match size of grid geometry:" + values.length);
@@ -280,7 +280,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		int[] xCoordValueIndices = new int[] {1};
 		double[] xCoords = new double[ncols];
 		for (int n = 0; n < ncols; n++) {
-			xCoords[n] = xllcorner + n*cellsize;
+			xCoords[n] = xllcorner + n*cellSize;
 		}
 		IArray xCoordArray = new Array(xCoords);
 
@@ -320,7 +320,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		writer.write("xll" + llText + "     " + xllcorner + "\n");
 		writer.write("yll" + llText + "     " + yllcorner + "\n");
 
-		writer.write("cellsize      " + cellsize + "\n");
+		writer.write("cellsize      " + cellSize + "\n");
 		writer.write("NODATA_value  " + noDataText  + "\n");
 	}
 

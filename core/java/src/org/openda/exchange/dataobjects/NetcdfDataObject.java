@@ -276,7 +276,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 				//create an exchangeItem that can read/write lazily, for each location in this variable.
 				for (int stationIndex = 0; stationIndex < stationCount; stationIndex++) {
-					String stationId = "";
+					String stationId;
 					if(nameSource.equals("stationDimensionVarName")){
 						stationId=stationIndexIdMap.get(stationIndex);
 					}else{
@@ -321,8 +321,6 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 						addEnsembleExchangeItem(exchangeItem, realizationIndex);
 					}
 				}
-
-				continue;
 			}
 		}
 	}
@@ -622,8 +620,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	/**
 	 * Validates that either all exchange items are scalars or all exchange items are grids, depending on the value of the given boolean.
 	 *
-	 * @param scalar
-	 * @param exchangeItems
+	 * @param scalar all exchange items are scalar
+	 * @param exchangeItems list of exchange items
 	 */
 	private void validateExchangeItems(boolean scalar, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems) {
 		if (exchangeItems == null) throw new IllegalArgumentException("exchangeItems == null");
@@ -688,15 +686,14 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					// This will avoid having to read the netcdf file for obtaining the dimensions.
 					List<Dimension> dimensions = netcdfFileWriter.getNetcdfFile().getDimensions();
 					int nDim = dimensions.size();
-					for (int iDim=0; iDim<nDim; iDim++){
-						Dimension dimension = dimensions.get(iDim);
-						if (dimension.getShortName().equalsIgnoreCase("my")){
+					for (Dimension dimension : dimensions) {
+						if ("my".equalsIgnoreCase(dimension.getShortName())) {
 							my = dimension.getLength();
-						} else if (dimension.getShortName().equalsIgnoreCase("mx")){
+						} else if ("mx".equalsIgnoreCase(dimension.getShortName())) {
 							mx = dimension.getLength();
-						} else if (dimension.getShortName().equalsIgnoreCase("wave_frequency")){
+						} else if ("wave_frequency".equalsIgnoreCase(dimension.getShortName())) {
 							wave_frequency = dimension.getLength();
-						} else if (dimension.getShortName().equalsIgnoreCase("wave_direction")){
+						} else if ("wave_direction".equalsIgnoreCase(dimension.getShortName())) {
 							wave_direction = dimension.getLength();
 						} else {
 							continue;
@@ -717,9 +714,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					try {
 						Variable myVar = netcdfFileWriter.findVariable("wave_spectrum");
 						netcdfFileWriter.write(myVar,values);
-					} catch (IOException e) {
-						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-					} catch (InvalidRangeException e) {
+					} catch (IOException | InvalidRangeException e) {
 						e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 					}
 				}

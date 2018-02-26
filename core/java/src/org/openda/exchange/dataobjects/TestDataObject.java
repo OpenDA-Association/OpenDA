@@ -72,8 +72,7 @@ public class TestDataObject implements IComposableDataObject {
 	public String[] getExchangeItemIDs(Role role) {
 		ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 
-		for (int n = 0; n < this.exchangeItems.size(); n++) {
-			IExchangeItem exchangeItem = this.exchangeItems.get(n);
+		for (IExchangeItem exchangeItem : this.exchangeItems) {
 			if (exchangeItem.getRole().equals(role)) {
 				exchangeItemIDs.add(exchangeItem.getId());
 			}
@@ -84,8 +83,7 @@ public class TestDataObject implements IComposableDataObject {
 
 	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		for (int n = 0; n < this.exchangeItems.size(); n++) {
-			IExchangeItem exchangeItem = this.exchangeItems.get(n);
+		for (IExchangeItem exchangeItem : this.exchangeItems) {
 			if (exchangeItem.getId().equals(exchangeItemID)) {
 				return exchangeItem;
 			}
@@ -97,7 +95,7 @@ public class TestDataObject implements IComposableDataObject {
 	public void addExchangeItem(IExchangeItem item) {
 		//copy exchange item.
 		ArrayExchangeItem itemCopy = new ArrayExchangeItem(item.getId(), item.getRole());
-		itemCopy.copyValuesFromItem((IExchangeItem) item);
+		itemCopy.copyValuesFromItem(item);
 
 		//add copy of exchange item.
 		this.exchangeItems.add(itemCopy);
