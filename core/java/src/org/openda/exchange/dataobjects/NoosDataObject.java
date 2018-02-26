@@ -52,9 +52,7 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName=arguments[0];
 		String newArguments[] = new String[arguments.length-1];
-		for(int i=0;i<arguments.length-1;i++){
-			newArguments[i]=arguments[i+1];
-		}
+		System.arraycopy(arguments, 1, newArguments, 0, arguments.length - 1);
 		this.initialize(workingDir, fileName, newArguments);
 	}
 
@@ -69,14 +67,14 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 	 * @param arguments
 	 *           Additional arguments (may be null zero-length) These arguments are ignored.
 	 */
-	public void initialize(File workingDirIn, String fileName, String[] arguments) {
+	public void initialize(File workingDir, String fileName, String[] arguments) {
 		this.timeSeriesSet = new LinkedHashMap<String, TimeSeries>();
-		File workingDir=workingDirIn;
 
 		if(workingDir==null){
-			workingDir=new File(".");
+			this.workingDir=new File(".");
+		} else {
+			this.workingDir=workingDir;
 		}
-		this.workingDir=workingDir;
 
 		// Check whether the fileName is null or contains * or ?
 		// If so, use the multi-file version
@@ -104,7 +102,7 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 				readNoosTimeSeries(workingDir, name);
 			}
 		}
-		else if(fileName.length()>0){
+		else {
 			// Read the file indicated by fileName directly
 			readNoosTimeSeries(workingDir, fileName);
 		}
@@ -236,7 +234,6 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 			loc=loc.replaceAll(",", "_");
 			loc=loc.replaceAll(" ", "-");
 			String fileName=s.getQuantityId()+"_"+loc+".noos";
-			fileName.replaceAll(" ", "-");
 			File file = new File(this.workingDir,fileName);
 			s.setProperty(PROPERTY_PATHNAME, file.getAbsolutePath());
 		}
@@ -244,11 +241,11 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 	}
 	
 	public String toString(){
-		String result="noosDataObject{\n";
+		StringBuilder result= new StringBuilder("noosDataObject{\n");
 		for(TimeSeries series: this.timeSeriesSet.values()){
-			result+=series.toString();
+			result.append(series.toString());
 		}
-		result+="}\n";
-		return result;
+		result.append("}\n");
+		return result.toString();
 	}
 }
