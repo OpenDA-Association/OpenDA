@@ -22,15 +22,12 @@ package org.openda.algorithms.particleFilter;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import org.openda.algorithms.kalmanFilter.AbstractSequentialEnsembleAlgorithm;
-import org.openda.algorithms.kalmanFilter.EnsembleVectors;
-import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Results;
 import org.openda.utils.Vector;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * @author Nils van Velzen
@@ -57,13 +54,13 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 
 
 
-	int timeStepNumber =0;
-	int interval       =10;
-	int nextWeightStep = timeStepNumber+interval;
-	int nE;
-    boolean doMoreInit =true;
+	private int timeStepNumber =0;
+	private int interval       =10;
+	private int nextWeightStep = timeStepNumber+interval;
+	private int nE;
+    private  boolean doMoreInit =true;
 
-	double[] weight;
+	private double[] weight;
 
 
 	static {
@@ -201,7 +198,6 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 		IntByReference p_nE = new IntByReference(this.ensemble.length);
 
 		//Note: we augment the state with Hx (predictions)
-		int nXAug = 0;
 
 		IObservationDescriptions observationDescriptions=obs.getObservationDescriptions();
 
@@ -210,6 +206,7 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 
 		int nX = x_f.getSize();
 		int nY = pred_f.getSize();
+		int nXAug = nX+ nY;
 
 		// Copy augmented ensemble to DLL [x Hx] and Hx (needed for computation of HQH^T)
 		for (int iEns = 0; iEns < this.ensemble.length; iEns++) {
@@ -228,15 +225,9 @@ public class EWPF extends AbstractSequentialEnsembleAlgorithm {
 			Results.putValue("xi_f_" +iEns, state, state.getSize() , "analysis step", IResultWriter.OutputLevel.All, IResultWriter.MessageType.Step);
 			Results.putValue("pred_f_" + iEns, HxVec, HxVec.getSize(), "analysis step", IResultWriter.OutputLevel.All, IResultWriter.MessageType.Step);
 
-			nXAug = nX+nY;
-
 			double [] xAug=new double[nX+nY];
-			for (int i=0;i<nX;i++){
-				xAug[i]=x[i];
-			}
-			for (int i=0;i<nY;i++){
-				xAug[nX+i]=Hx[i];
-			}
+			System.arraycopy(x, 0, xAug, 0, nX);
+			System.arraycopy(Hx, 0, xAug, nX, nY);
 
 			IntByReference p_nXAug = new IntByReference(nXAug);
 			IntByReference p_nY = new IntByReference(nY);

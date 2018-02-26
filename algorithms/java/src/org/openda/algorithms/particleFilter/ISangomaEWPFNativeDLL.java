@@ -18,12 +18,11 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.algorithms.particleFilter;
-/**
- * Created by nils on 30/01/15.
+/*
+ * @author by nils on 30/01/15.
  */
 
 import com.sun.jna.Library;
-import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 
 public interface ISangomaEWPFNativeDLL extends Library {
