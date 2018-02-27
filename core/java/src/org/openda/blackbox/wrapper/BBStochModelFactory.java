@@ -49,8 +49,8 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 	private List<IStochVector> paramsUncertaintyModelStochVectors = new ArrayList<IStochVector>();
 	private IStochVector parameterUncertaintyTotalStochVector = null;
 
-	LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings = new LinkedHashMap<>();
-	LinkedHashMap<BBNoiseModelConfig, IStochModelFactory> noiseModelFactories = new LinkedHashMap<BBNoiseModelConfig, IStochModelFactory>();
+	private LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> dataObjectBoundaryMappings = new LinkedHashMap<>();
+	private LinkedHashMap<BBNoiseModelConfig, IStochModelFactory> noiseModelFactories = new LinkedHashMap<BBNoiseModelConfig, IStochModelFactory>();
 
     /* Note this model can be use in a parallel environment therefore we use the distributed counter. */
 	private DistributedCounter instanceCounter = new DistributedCounter(0);

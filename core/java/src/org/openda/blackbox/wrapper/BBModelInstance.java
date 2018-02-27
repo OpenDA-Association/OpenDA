@@ -59,7 +59,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private ITime timeHorizon = null;
     boolean newInstanceDir = true;
     int instanceNumber = -1; //default invalid
-    AliasDefinitions aliasDefinitions=null;
+    private AliasDefinitions aliasDefinitions=null;
 
     /**
      * Create new blackbox model instance. You should not need to call this routine manually, but use the

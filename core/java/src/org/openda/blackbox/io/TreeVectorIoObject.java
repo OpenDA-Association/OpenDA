@@ -37,7 +37,7 @@ public class TreeVectorIoObject implements IoObjectInterface {
     private ITreeVector treeVector = null;
     private boolean exportAsOneExchangeItem = false;
     private final String exportAsOneExchangeItemString = "OneExchangeItem";
-	IPrevExchangeItem[] exchangeItems = null;
+	private IPrevExchangeItem[] exchangeItems = null;
 
     public void initialize(File workingDir, String fileName, String[] arguments) {
         treeVectorFile = new File(workingDir, fileName);

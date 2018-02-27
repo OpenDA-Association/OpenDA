@@ -39,7 +39,7 @@ public class ArmaNoiseModel {
     private double[] armaConstants = null;
     private boolean useRandomSeed = false;
 
-    NormalDistribution normalDistribution = null;
+    private NormalDistribution normalDistribution = null;
 
     private int instanceNumber = Integer.MIN_VALUE;
     private int realizationCounter = 0;
@@ -49,8 +49,8 @@ public class ArmaNoiseModel {
     private double[][] noiseStateVector = null;
 
     private ITime currentTime = null;
-    File logFile = null;
-    BufferedWriter logFileWriter = null;
+    private File logFile = null;
+    private BufferedWriter logFileWriter = null;
 
 	// Strings Noise Model State File
 

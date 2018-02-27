@@ -49,15 +49,15 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private static Logger LOGGER = LoggerFactory.getLogger(BBStochModelInstance.class);
 
 	// In case of parallel runs we use the Distributed counter to generate unique IDs
-	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
-	int InstanceNr;
-	String ModelID;
-	OdaTiming timerAxpyState  = null;
-	OdaTiming timerCompute    = null;
-	OdaTiming timerGetObs     = null;
-	OdaTiming timerGetState   = null;
+	private static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
+	private int InstanceNr;
+	private String ModelID;
+	private OdaTiming timerAxpyState  = null;
+	private OdaTiming timerCompute    = null;
+	private OdaTiming timerGetObs     = null;
+	private OdaTiming timerGetState   = null;
 
-	List<BBCollectTimeSeriesExchangeItem> collectTimeSeriesBbExchangeItems = new ArrayList<BBCollectTimeSeriesExchangeItem>();
+	private List<BBCollectTimeSeriesExchangeItem> collectTimeSeriesBbExchangeItems = new ArrayList<BBCollectTimeSeriesExchangeItem>();
 
 	private File configRootDir;
 	protected IModelInstance model;
