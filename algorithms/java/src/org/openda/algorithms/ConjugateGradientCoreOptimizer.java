@@ -406,7 +406,12 @@ public class ConjugateGradientCoreOptimizer{
 	    
 	    double fLast = fx+1.0; //last evaluated value, initially larger to avoid early stops
 	    double fPrevious = fx;
-	    double r,p,q,u,fu,etemp;
+	    double r;
+		double p;
+		double q;
+		double u;
+		double fu;
+		double etemp;
 	    
 	    for (int iter =1;iter<=this.maxitBrent;++iter){
 			double xm = (a + b) * 0.5;

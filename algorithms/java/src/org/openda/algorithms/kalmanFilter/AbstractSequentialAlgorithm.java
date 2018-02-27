@@ -552,11 +552,9 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			   return true;
 		   }
 		}
-		if (skipAtFinalTime){
-		   if (this.thisStep==this.nSteps-1){
-			   Results.putProgression("Skip Analysis at final time\n");
-			   return true;
-		   }
+		if (skipAtFinalTime && this.thisStep==this.nSteps-1){
+		   Results.putProgression("Skip Analysis at final time\n");
+		   return true;
 		}
 		return false;
 	}

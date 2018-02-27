@@ -44,7 +44,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 
 
 	// for saving results
-	static int nextEvaluation=1;
+	private static int nextEvaluation=1;
 	private int numberEvaluation = 0; //make numbers unique over instances
 	private IVector pMin = null;     // best parameters sofar
 	private IVector predMin = null;  // best predictions

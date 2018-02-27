@@ -227,7 +227,7 @@ public class InputGui extends JPanel
             this.splitPane.setBottomComponent(inputView);
         } else {
             String buffer = node.getCurrentBuffer();
-            if (buffer.equals("")) {
+            if ("".equals(buffer)) {
                 loadUncertaintySpecification(file);
             } else {
                 loadUncertaintySpecification(node.getCurrentBuffer());
