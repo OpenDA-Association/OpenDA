@@ -23,7 +23,6 @@ package org.openda.models.circularAdvection1000;
 import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.IStochModelInstance;
 import org.openda.interfaces.IStochModelPostProcessor;
-import org.openda.models.circularAdvection1000.CircularAdvection1000Instance;
 
 import java.io.File;
 
@@ -32,9 +31,9 @@ import java.io.File;
  */
 public class CircularAdvection1000Factory implements IStochModelFactory {
 
-    int instanceCounter;
-	File workingDir;
-	String referenceFileName;
+    private int instanceCounter;
+	private File workingDir;
+	private String referenceFileName;
 
 	@Override
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {

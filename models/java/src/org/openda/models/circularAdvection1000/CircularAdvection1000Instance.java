@@ -20,91 +20,61 @@
 
 package org.openda.models.circularAdvection1000;
 
-/**
- *  A 1D linear advection model of two coupled variables as discribed in
- *  Oke et al(2007) "Impacts of localisation in the EnKF and EnOI: experiments with a small model";
- *
- *  The model simulates a simple advection following
- *
- *  da/dt + u da/dx = 0
- *
- *  with 	a ... model variable
- * 			u ... advection speed (default u=1)
- * 			t ... time
- * 			x ... space	(in a grid of 1<=x<=1000)
- *
- * 	The evolution of a second variable b is coupled to the change in a:
- *
- * 	b = 0.5 + 10 * da/dx
- *
- * 	The model is motivated by the general relations between variables (e.g. velocity and pressure) in oceanographic and
- * 	implementations. Oke et al. used the model to depict the effects of localisation in assimilation of variable a and the
- * 	influence on the evolution in b.
- *
- *
- * @Author: C.Strube
- **/
+/*
+   A 1D linear advection model of two coupled variables as discribed in
+   Oke et al(2007) "Impacts of localisation in the EnKF and EnOI: experiments with a small model";
+
+   The model simulates a simple advection following
+
+   da/dt + u da/dx = 0
+
+   with 	a ... model variable
+  			u ... advection speed (default u=1)
+  			t ... time
+  			x ... space	(in a grid of 1<=x<=1000)
+
+  	The evolution of a second variable b is coupled to the change in a:
+
+  	b = 0.5 + 10 * da/dx
+
+  	The model is motivated by the general relations between variables (e.g. velocity and pressure) in oceanographic and
+  	implementations. Oke et al. used the model to depict the effects of localisation in assimilation of variable a and the
+  	influence on the evolution in b.
+
+
+  @Author: C.Strube
+ */
 
 
 import org.openda.interfaces.*;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
-import org.openda.observers.TimeSeriesObservationDescriptions;
 import org.openda.utils.*;
 
 import java.io.*;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-
-import static java.lang.Math.abs;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
 /**
  * Created by strube on 8-6-15.
  */
 public class CircularAdvection1000Instance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
-	static int nEnsembleFromFile=0;
-	static double [][] initialEnsembleValues;
+	private int nEnsembleFromFile=0;
+	private double [][] initialEnsembleValues;
 
-
-	static int nEns = 0;
-	static TreeVector[] stateNoFix = new TreeVector[1000];
-	boolean notInit = true;
-	int ikBenMember = -999;
-	int mynum;
 
 	// Time parameters
-	double timeNow;
-	double endTime;
-	double startTime;
-	double timeStep;
-	//int timeStepCounter;
+	private double timeNow;
+	private double endTime;
+	private double startTime;
+	private double timeStep;
 
 	// State parameter
-	TreeVector state;
-	int varSize = 0;
+	private TreeVector state;
+	private int varSize = 0;
 
-	//initial state parameters
-	double[] amplitude;
-	double[] phase;
-	int N;            // number of joint sines
+	private boolean periodic = true;        // Use adapted localisation matrix for periodic relations
+	private boolean autoNoise = false;
 
-	// reference field
-	IVector refFieldA;            // truth field for setup of ensemble (only variable a given)
-	IVector refFieldB;
-
-	boolean autoNoise = false;
-	boolean periodic = true;        // Use adapted localisation matrix for periodic relations
-
-	private static Random generator;
-
-
-	public void readEnsemble(File workingDir, String filename) {
+	private void readEnsemble(File workingDir, String filename) {
 
 		try {
 
@@ -247,7 +217,7 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 	 * @return vector with the model values corresponding to each observation given in the descriptions
 	 */
 	public IObservationOperator getObservationOperator() {
-		return new ObservationOperatorDeprecatedModel((IStochModelInstanceDeprecated) this);
+		return new ObservationOperatorDeprecatedModel(this);
 	}
 
 	/**
@@ -276,20 +246,15 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 		 *							"type"	=	input whether obs is 'a' or 'b' variable
 		 */
 
-		int thisLoc = 0;
-		double thisValue = 0.0;
-
 		// Only the current state is available
 		for (int i = 0; i < nObs; i++) {
 			if (obsType.getValue(i) < 1.5) {    // Type a (in csv file referred to as 1.0)
-				thisLoc = (int) obsLoc.getValue(i);
-
-				thisValue = this.state.getValue(thisLoc - 1);    // Vector indices from 0 to (varSize-1)
+				int thisLoc = (int) obsLoc.getValue(i);
+				double thisValue = this.state.getValue(thisLoc - 1);    // Vector indices from 0 to (varSize-1)
 				observedValues.setValue(i, thisValue);
 			} else if (obsType.getValue(i) > 1.5) {        // Type b=0.5 + 10*da/dx (in csv file referred to as 2.0)
-				thisLoc = (int) obsLoc.getValue(i);
-
-				thisValue = this.state.getValue(varSize + thisLoc - 1);
+				int thisLoc = (int) obsLoc.getValue(i);
+				double thisValue = this.state.getValue(varSize + thisLoc - 1);
 				observedValues.setValue(i, thisValue);
 			}
 
@@ -505,7 +470,7 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 		}
 
 		// Which ensemble member? (Make sure to use a different set of random numbers for each member, but the same random set for one member in each run)
-		this.mynum = Integer.parseInt(arguments[0]);
+		int mynum = Integer.parseInt(arguments[0]);
 		this.startTime = 0.0;
 		this.endTime = 300.0;
 		this.timeStep = 1.0;
@@ -519,8 +484,8 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 		double[] valuesB = new double[this.varSize];
 
 		for (int i=0; i<this.varSize; i++){
-			valuesA[i]=initialEnsembleValues[this.mynum][i];
-			valuesB[i]=initialEnsembleValues[this.mynum][i+this.varSize];
+			valuesA[i]=initialEnsembleValues[mynum][i];
+			valuesB[i]=initialEnsembleValues[mynum][i+this.varSize];
 		}
 		state.addChild("a", valuesA);
 		state.addChild("b", valuesB);
