@@ -34,7 +34,6 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance, IS
     // In case of parallel runs we use the Distributed counter to generate unique IDs
 	private static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
 	private ILocalizationDomains localizationDomains;
-	private int InstanceNr;
 	private String ModelID;
 	private OdaTiming timerCreate     = null;
 	private OdaTiming timerAnnounce   = null;
@@ -54,7 +53,7 @@ public class CtaOpenDaModel extends CtaObject implements IStochModelInstance, IS
 		/* Set modelID and instance Nr */
 		synchronized(lastGlobInstanceNr){
 		  lastGlobInstanceNr.inc();
-		  InstanceNr = lastGlobInstanceNr.val();
+		  int InstanceNr = lastGlobInstanceNr.val();
 		  ModelID="Native Model:"+InstanceNr;
 		}
 		if ( timerCreate == null){

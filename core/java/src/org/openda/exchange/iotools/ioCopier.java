@@ -32,10 +32,10 @@ import org.openda.utils.Reflection;
  *
  */
 public class ioCopier {
-	IoObjectInterface inputIoObject=null;
-	String inputClassName = "";
-	IoObjectInterface outputIoObject=null;
-	String outputClassName = "";
+	private IoObjectInterface inputIoObject=null;
+	private String inputClassName = "";
+	private IoObjectInterface outputIoObject=null;
+	private String outputClassName = "";
 	
 	/**
 	 * Add the dumper to an existing ioObject
