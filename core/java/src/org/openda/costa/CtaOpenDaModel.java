@@ -32,22 +32,22 @@ import java.io.File;
 public class CtaOpenDaModel extends CtaObject implements IStochModelInstance, IStochModelInstanceDeprecated {
 
     // In case of parallel runs we use the Distributed counter to generate unique IDs
-	static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
+	private static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
 	private ILocalizationDomains localizationDomains;
-	int InstanceNr;
-	String ModelID;
-	OdaTiming timerCreate     = null;
-	OdaTiming timerAnnounce   = null;
-	OdaTiming timerAxpyParam  = null;
-	OdaTiming timerAxpyState  = null;
-	OdaTiming timerAxpyNoise  = null;
-	OdaTiming timerCompute    = null;
-	OdaTiming timerGetObs     = null;
-	OdaTiming timerGetParUnc  = null;
-	OdaTiming timerGetObsLoc  = null;
-	OdaTiming timerGetState   = null;
-	OdaTiming timerGetParam   = null;
-	OdaTiming timerGetScaling = null;
+	private int InstanceNr;
+	private String ModelID;
+	private OdaTiming timerCreate     = null;
+	private OdaTiming timerAnnounce   = null;
+	private OdaTiming timerAxpyParam  = null;
+	private OdaTiming timerAxpyState  = null;
+	private OdaTiming timerAxpyNoise  = null;
+	private OdaTiming timerCompute    = null;
+	private OdaTiming timerGetObs     = null;
+	private OdaTiming timerGetParUnc  = null;
+	private OdaTiming timerGetObsLoc  = null;
+	private OdaTiming timerGetState   = null;
+	private OdaTiming timerGetParam   = null;
+	private OdaTiming timerGetScaling = null;
 
 	public CtaOpenDaModel(String ModelCls, String Filename){
 

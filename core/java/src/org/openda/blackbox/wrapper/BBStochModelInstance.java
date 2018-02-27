@@ -50,7 +50,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	// In case of parallel runs we use the Distributed counter to generate unique IDs
 	private static DistributedCounter lastGlobInstanceNr = new DistributedCounter();
-	private int InstanceNr;
+
 	private String ModelID;
 	private OdaTiming timerAxpyState  = null;
 	private OdaTiming timerCompute    = null;
@@ -118,7 +118,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		/* Set modelID and instance Nr */
 		synchronized(lastGlobInstanceNr){
 			lastGlobInstanceNr.inc();
-			InstanceNr = lastGlobInstanceNr.val();
+			int InstanceNr = lastGlobInstanceNr.val();
 			ModelID="BB Model:"+InstanceNr;
 		}
 

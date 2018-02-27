@@ -26,8 +26,8 @@ import java.io.File;
 import java.net.FileNameMap;
 
 public class CtaModelState implements IModelState {
-	String ID;
-	int modelHandle;
+	private String ID;
+	private int modelHandle;
 
 	public  CtaModelState(String ID, int modelHandle){
 		this.ID=ID;
