@@ -39,17 +39,17 @@ import java.util.Iterator;
 
 
 public class BiasAwareObservationsModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
-	IStochModelInstance childModel=null;  		//Handle to underlying child model
-	Vector bias=null;                     		//Vector modelling the bias in the observations
-	IStochVector biasNoise=null;          		//Stochastic vector for generating noise
-	boolean automaticNoiseGeneration=false;		//Flag indicating whether to generate noise or not
-	boolean checkObservationID=false;           //Match observations using their ID or just assume it matched
-	HashMap<String, Integer> obsIDIndex; 		//Index of each observation in bias vector;
-	boolean localization=true;                  //Use pure localization on biases
-	boolean explicitDeclaration=false;          //Explicit declaration of observations to consider
+	private IStochModelInstance childModel=null;  		//Handle to underlying child model
+	private Vector bias=null;                     		//Vector modelling the bias in the observations
+	private IStochVector biasNoise=null;          		//Stochastic vector for generating noise
+	private boolean automaticNoiseGeneration=false;		//Flag indicating whether to generate noise or not
+	private boolean checkObservationID=false;           //Match observations using their ID or just assume it matched
+	private HashMap<String, Integer> obsIDIndex; 		//Index of each observation in bias vector;
+	private boolean localization=true;                  //Use pure localization on biases
+	private boolean explicitDeclaration=false;          //Explicit declaration of observations to consider
 	                                            //Not handling/skipping observations is allowed
 
-	ILocalizationDomains localizationDomains = null;
+	private ILocalizationDomains localizationDomains = null;
 
 	private int getObservationIndex(String observationID){
 		if (obsIDIndex==null){
@@ -151,7 +151,7 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance, 
 
 		ITreeVector x= (ITreeVector) vector;
 
-		childModel.axpyOnState(alpha, (IVector) x.getSubTreeVector("state"));
+		childModel.axpyOnState(alpha, x.getSubTreeVector("state"));
 		bias.axpy(alpha, x.getSubTreeVector("observationsBias"));
 	}
 

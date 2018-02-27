@@ -39,12 +39,12 @@ import java.util.HashMap;
 
 public class BiasAwareObservationsModelFactory implements IStochModelFactory {
 
-	IStochModelFactory stochModelFactory = null;
-	double std;
-	HashMap<String, Double> obsIDstd= new HashMap<String, Double>();
-	int maxBias;
-	boolean checkObservationID;
-	boolean localization;
+	private IStochModelFactory stochModelFactory = null;
+	private double std;
+	private HashMap<String, Double> obsIDstd= new HashMap<String, Double>();
+	private int maxBias;
+	private boolean checkObservationID;
+	private boolean localization;
 
 
 	
