@@ -42,7 +42,7 @@ public class RMSECostFunction implements ICostFunction{
 	private static int nextEvaluation=1;
 	private int numberEvaluation = 0; //make numbers unique over instances
 	private IVector pMin = null;     // best parameters sofar
-	private IVector predMin = null;  // best predictions
+	protected IVector predMin = null;  // best predictions
 	private double fMin = Double.MAX_VALUE;
 	private java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	private java.util.Vector<Double> allCosts = new java.util.Vector<Double>();

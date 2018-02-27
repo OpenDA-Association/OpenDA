@@ -29,9 +29,9 @@ import java.util.List;
  * The algorithm will stop if the absolute average residual at all locations is smaller than a user defined threshold.
  */
 public class AbsoluteAveragePerLocationStopCriterion implements IStopCriterion {
-    private IVector parameters;
-	private IVector residuals;
-	private double cost;
+    protected IVector parameters;
+	protected IVector residuals;
+	protected double cost;
 	private int nLoc;
 	private boolean[] isSatisfied;
 	private String[] Ids;

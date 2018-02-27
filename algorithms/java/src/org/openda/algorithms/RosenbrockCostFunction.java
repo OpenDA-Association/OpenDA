@@ -36,9 +36,7 @@ public class RosenbrockCostFunction implements ICostFunctionWithGradient{
 	private double fMin = Double.MAX_VALUE;
 	protected java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	protected java.util.Vector<Double> allCosts = new java.util.Vector<Double>();
-	
-	// printing to stdout
-	private int maxPrintSize = 100;
+
 	
 //	public double evaluate(IVector pVector){
 //		++this.numberEvaluations;

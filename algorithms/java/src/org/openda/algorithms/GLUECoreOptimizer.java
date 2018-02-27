@@ -35,7 +35,6 @@ public class GLUECoreOptimizer {
 	private double fCurrent = 0.0;
 	private int nparam=0;
 	private RMSECostFunction f = null;
-	private int[] typeParameterUncertainty;
 
     // required for the additional stopping criteria:
     public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
@@ -44,17 +43,15 @@ public class GLUECoreOptimizer {
     public IObservationDescriptions obsDescr=null;
 
 	// grid settings
-	private double minRangePar[]   = null;
 	private double maxRangePar[]   = null;
 	private double stepRangePar[]  = null;
-	private int numberOfStepsPar[] = null;
 
 	//current state
 	private boolean moreToDo = true;         // is this optimization finished
 	private int currentParIndex[] =null;
 	private int imain=0; //number of evaluation
 	private IStochVector parameterUncertainty;
-//    UncertaintyStochVector parameterUncertainty;
+
     private int nRuns;
 
     /**

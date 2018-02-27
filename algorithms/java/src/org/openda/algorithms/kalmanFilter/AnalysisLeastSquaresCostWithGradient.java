@@ -56,7 +56,7 @@ public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFun
 	private IStochObserver observations = null;
 	private IVector obsValues = null;
 	private ISqrtCovariance L = null;
-	private IStochVector stateUncertainty = null;
+	protected IStochVector stateUncertainty = null;
 	private IStochVector observationUncertainty = null;
 
 	private IModelState savedState = null;
