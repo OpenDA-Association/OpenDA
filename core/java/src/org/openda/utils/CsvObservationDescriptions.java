@@ -37,7 +37,7 @@ import java.util.List;
 public class CsvObservationDescriptions implements IObservationDescriptions {
 
 	//Class fields
-	CsvStochObserver obs = null;
+	private CsvStochObserver obs = null;
 
 	public CsvObservationDescriptions(){
 		//TODO empty ObservationDescriptions

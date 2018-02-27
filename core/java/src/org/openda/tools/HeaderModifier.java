@@ -28,9 +28,9 @@ import java.io.PrintWriter;
 
 public class HeaderModifier {
 
-	String suffix = "java";
+	private String suffix = "java";
 	
-	String license= "/* MOD_V2.0 \n"+
+	private String license= "/* MOD_V2.0 \n"+
 	"* Copyright (c) 2012 OpenDA Association \n"+
 	"* All rights reserved.\n"+
 	"* \n"+

@@ -35,7 +35,7 @@ import org.openda.utils.Vector;
  */
 public class ioDumper {
 	private IoObjectInterface ioObject=null;
-	private String className = "";
+	public String className = "";
 	
 	/**
 	 * Add the dumper to an existing ioObject

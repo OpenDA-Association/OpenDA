@@ -32,8 +32,8 @@ import java.util.Set;
  */
 public class Vector implements IVector, Externalizable {
 
-    IVector dVec=null;
-	VectorFloat fVec=null;
+	private IVector dVec=null;
+	private VectorFloat fVec=null;
 	public int maxFullExpandLength = 20;
 	private boolean doublePrecision=true;
     private boolean nativeVector=false;

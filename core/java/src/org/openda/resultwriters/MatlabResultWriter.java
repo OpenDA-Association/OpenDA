@@ -44,7 +44,7 @@ public class MatlabResultWriter implements IResultWriter {
     private static final String commentPrefix = "% ";
     private boolean addTimeStamp = false;
     private String addTimeStampSuffix = "(ts)";
-    SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+    private SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
     private PrintStream outputStream = null;
     private HashMap<String, Integer> iter = new HashMap<String, Integer>();
     private int defaultMaxSize = 1000;

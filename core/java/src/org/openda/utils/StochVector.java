@@ -33,11 +33,11 @@ import java.util.Random;
  */
 public class StochVector implements IStochVector {
 
-	IVector mean = null;  //assumes Gaussian distribution
-	IVector std = null;
-	Matrix covariance = null;
-	Matrix sqrtCovariance = null;
-	boolean correlated = false; // assumes independent elements
+	private IVector mean = null;  //assumes Gaussian distribution
+	private IVector std = null;
+	private Matrix covariance = null;
+	private Matrix sqrtCovariance = null;
+	private boolean correlated = false; // assumes independent elements
 
 	private static Random generator;
 

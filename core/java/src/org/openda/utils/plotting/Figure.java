@@ -49,13 +49,13 @@ public class Figure{
 	private Vector<Integer>     plotType = new Vector<Integer>();
 	private static int pcolorType  = 1;
 	private static int contourType = 2;
-	Color defaultColors[] = null;
-	
-	String xLabel = "";
-	String yLabel = "";
-	String xUnit = "";
-	String yUnit = "";
-	String axisTitle = "";
+	private Color defaultColors[] = null;
+
+	private String xLabel = "";
+	private String yLabel = "";
+	private String xUnit = "";
+	private String yUnit = "";
+	private String axisTitle = "";
     public boolean fixYmin = true;
 	
     /**

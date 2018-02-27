@@ -30,7 +30,7 @@ public class SimpleBooleanExpressionEvaluator {
     private SimpleBooleanExpressionEvaluator[] orChildren = null;
     private SimpleBooleanExpressionEvaluator[] andChildren = null;
     private PrimitiveBoolExpression primitive = null;
-    String[] involvedParameters = null;
+    private String[] involvedParameters = null;
 
     /**
      * Constructor for the evaluator.

@@ -45,7 +45,7 @@ public class KalmanGainStorage {
 
 	// set in constructor
 	private File workingDir;
-	double timeStampAsMJD = Double.MIN_VALUE;;
+	private double timeStampAsMJD = Double.MIN_VALUE;;
 
 	// properties that be can be overridden before writing
 	private String storageDirPrefix = "kgStorage_";

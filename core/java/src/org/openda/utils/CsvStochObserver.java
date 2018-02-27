@@ -40,17 +40,17 @@ import java.util.TreeSet;
  */
 public class CsvStochObserver extends Instance implements IStochObserver {
 
-    IVector values[] = null;
+    public IVector values[] = null;
     /**
      * Internal data for this class
      */
-    String keys[] = null;
-    int noValues = 0;
-	int noKeys = 0;
-	int timeInd  = -1; //Column used for time
-    int locInd  = -1; //Column used for location, if present
-	int valueInd = -1; //Values
-	int stdInd   = -1; //Standard deviations - ONLY INDEPENDENT OBS!
+	private String keys[] = null;
+	private int noValues = 0;
+	private int noKeys = 0;
+	public  int timeInd  = -1; //Column used for time
+	public  int locInd  = -1; //Column used for location, if present
+	public  int valueInd = -1; //Values
+	private int stdInd   = -1; //Standard deviations - ONLY INDEPENDENT OBS!
 	public double tolerance = 1e-8; //times with a difference less than this are considered equal
 
     /**

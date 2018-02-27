@@ -32,10 +32,10 @@ import java.util.ArrayList;
  */
 public class StochTreeVector implements IStochVector {
 
-	ArrayList<IStochVector> children = new ArrayList<IStochVector>();
+	private ArrayList<IStochVector> children = new ArrayList<IStochVector>();
 
-	boolean correlated = false; // assumes independent elements
-	String id = "anonymousStochTreeVector";
+	private boolean correlated = false; // assumes independent elements
+	private String id = "anonymousStochTreeVector";
 	
 	/**
 	 * Create a stochvector

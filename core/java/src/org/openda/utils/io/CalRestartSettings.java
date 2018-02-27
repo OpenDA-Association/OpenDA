@@ -35,8 +35,8 @@ import java.io.File;
  */
 public class CalRestartSettings implements IModelState {
 
-    CalibrationRestartXML calibrationRestartXML;
-    MethodNameXML methodNameXML;
+    private CalibrationRestartXML calibrationRestartXML;
+	private MethodNameXML methodNameXML;
 
     public CalRestartSettings(String methodName) {
         calibrationRestartXML = new CalibrationRestartXML();

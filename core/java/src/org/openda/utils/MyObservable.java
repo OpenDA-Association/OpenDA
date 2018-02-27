@@ -35,7 +35,7 @@ import java.util.ArrayList;
  *
  */
 public class MyObservable implements IMyObservable{
-	ArrayList<IMyObserver> observers = new ArrayList<IMyObserver>();
+	private ArrayList<IMyObserver> observers = new ArrayList<IMyObserver>();
 	
 	
 	public void addObserver(IMyObserver observer) {

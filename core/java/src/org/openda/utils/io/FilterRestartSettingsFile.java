@@ -32,7 +32,7 @@ import java.io.File;
  */
 public class FilterRestartSettingsFile {
 
-    FilterRestartXML filterRestartXML;
+    private FilterRestartXML filterRestartXML;
 
     public FilterRestartSettingsFile(String filterName) {
         filterRestartXML = new FilterRestartXML();

@@ -34,7 +34,7 @@ import java.util.Random;
 
 public class ParameterDrawer implements IStochModelInstance, IStochModelInstanceDeprecated {
 
-    GlueStochVector glueStochVector;
+    private GlueStochVector glueStochVector;
 
 
     public IVector getState(int iDomain) {

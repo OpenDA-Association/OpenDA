@@ -40,12 +40,12 @@ public class NormalDistribution extends PDF implements Serializable{
      * while the parameters of the distribution remain unchanged (i.e. benefit from
      * the two samples produced with the Polar Method in getRandom()).
      */
-    boolean cacheRandomExists = false;
+    private boolean cacheRandomExists = false;
 
     /**
      * Cached realisation from the polar method.
      */
-    double cacheRandom;
+    private double cacheRandom;
 
 	//distribution name.
 	private static final String DISTRIBUTION_NAME = "Normal";

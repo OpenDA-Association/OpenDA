@@ -30,9 +30,9 @@ import org.openda.interfaces.*;
  * operators provided here instead.
  */
 public class SqrtCovariance implements ISqrtCovariance {
-    boolean isDiagonal = true;
-    IVector std        = null; //used if isDiagonal=true
-    IMatrix L          = null; //used if isDiagonal=false
+    private boolean isDiagonal = true;
+	private IVector std        = null; //used if isDiagonal=true
+	private IMatrix L          = null; //used if isDiagonal=false
 
     /**
      * Create a SqrtCovariance from a vector with standard-deviations

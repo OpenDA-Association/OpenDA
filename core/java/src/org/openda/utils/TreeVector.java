@@ -32,12 +32,12 @@ import java.util.ArrayList;
  */
 public class TreeVector implements ITreeVector {
 
-    boolean warnInefficient=false;
+	private boolean warnInefficient=false;
     private String id;
     private String caption;
 
-    ArrayList<ITreeVector> subTreeVectors = new ArrayList<ITreeVector>();
-    IVector vector = null;
+	private ArrayList<ITreeVector> subTreeVectors = new ArrayList<ITreeVector>();
+	private IVector vector = null;
     private IDimensionIndex[] dimensions = null;
     private int totalSize = 0;
     private boolean excludeFromVector = false;

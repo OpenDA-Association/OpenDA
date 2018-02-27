@@ -31,8 +31,8 @@ import java.util.Set;
 public class Statistics {
 
     // max, min, number of data
-	IVector values=null;
-	IObservationDescriptions descriptions=null;
+	private IVector values=null;
+	private IObservationDescriptions descriptions=null;
     private HashMap<String, Double> numberOfData = new HashMap<String, Double>();
     private HashMap<String, Double> max = new HashMap<String, Double>();
     private HashMap<String, Double> min = new HashMap<String, Double>();

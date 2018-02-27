@@ -34,9 +34,9 @@ import java.text.DecimalFormat;
  */
 public class Matrix implements IMatrix {
     /* data for full matrix implementation */
-   double values[][]=null;
-   int m=0;
-   int n=0;
+   	private double values[][]=null;
+	private int m=0;
+	private int n=0;
 
     /**
      * Create a Matrix with specified number of rows and columns
