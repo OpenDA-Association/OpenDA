@@ -36,9 +36,9 @@ public class BBStochModelConfig {
 	private ArrayList<BBBoundaryProviderConfig> boundaryProviderConfigs;
 	private BBStochModelVectorsConfig bbStochModelVectorsConfig;
     private File uncertaintyWorkingDir;
-	String restartStatesDirPrefix;
-	String restartStatesNoiseModelPrefix;
-	String modelRestartStateFile;
+	private String restartStatesDirPrefix;
+	private String restartStatesNoiseModelPrefix;
+	private String modelRestartStateFile;
     boolean useUncertaintyEngine;
 
     public BBStochModelConfig(BBModelConfig bbModelConfig,

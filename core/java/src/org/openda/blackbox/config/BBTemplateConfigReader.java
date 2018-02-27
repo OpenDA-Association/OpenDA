@@ -33,7 +33,7 @@ import java.util.Collection;
  */
 public class BBTemplateConfigReader {
 
-    BBTemplateConfig bbTemplateConfig;
+    private BBTemplateConfig bbTemplateConfig;
 
     public BBTemplateConfigReader(File templateConfigFile) {
         BlackBoxTemplateConfigXML bbTemplateConfigXML = (BlackBoxTemplateConfigXML) CastorUtils.parse(templateConfigFile, BlackBoxTemplateConfigXML.class);

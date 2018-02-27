@@ -38,8 +38,8 @@ public class BBWrapperConfig {
 
     private String templateName;
     private String instanceName;
-    Collection<String> aliasesUsedInTemplateName;
-    Collection<String> aliasesUsedInInstanceName;
+    private Collection<String> aliasesUsedInTemplateName;
+    private Collection<String> aliasesUsedInInstanceName;
 
     private Collection<BBAction> initializeActions;
     private Collection<BBAction> computeActions;

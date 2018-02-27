@@ -48,9 +48,9 @@ import java.io.File;
 
 public class ThreeDVar extends AbstractSequentialAlgorithm{
 	// configuration data for reading
-    private int ThreeDVarTimeCounter = 0;
+    public int ThreeDVarTimeCounter = 0;
 
-	private ConfigTree ThreeDVarConf;
+
 	private double factor = 0.5;
 	private int algorithm = 2; // BFGS = 1 , CG = 2
 	private boolean BFGSlimitedMemory = true;
@@ -86,7 +86,7 @@ public class ThreeDVar extends AbstractSequentialAlgorithm{
 
 		// Extend with tolerances and options for line search?
 		
-		ThreeDVarConf = new ConfigTree(workingDir, configString);
+		ConfigTree ThreeDVarConf = new ConfigTree(workingDir, configString);
 		
 		this.factor = ThreeDVarConf.getAsDouble("costFunction@factor", this.factor);
 		//Results.putMessage("costFunction@factor="+this.factor);

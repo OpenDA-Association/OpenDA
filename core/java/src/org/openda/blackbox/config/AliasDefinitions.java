@@ -30,7 +30,7 @@ import java.util.HashMap;
  */
 public class AliasDefinitions {
 
-    HashMap<String, AliasDefinition> aliasDefinitions;
+    private HashMap<String, AliasDefinition> aliasDefinitions;
 
     public AliasDefinitions() {
         this.aliasDefinitions = new HashMap<String, AliasDefinition>();

@@ -33,7 +33,7 @@ import java.util.HashMap;
  */
 public class BBWrapperConfigReader {
 
-    BBWrapperConfig bbWrapperConfig;
+    private BBWrapperConfig bbWrapperConfig;
 
     public BBWrapperConfigReader(File wrapperConfigFile) {
 
