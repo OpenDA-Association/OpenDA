@@ -37,8 +37,8 @@ import java.io.File;
  */
 public class GriddedFullSearch extends Instance implements IAlgorithm {
 
-    IStochModelFactory stochModelFactory;
-    ConfigTree gfsConf;
+	private IStochModelFactory stochModelFactory;
+    protected ConfigTree gfsConf;
 
     private IStochModelInstance bestEstimate = null;
     private IStochObserver stochObserver = null;

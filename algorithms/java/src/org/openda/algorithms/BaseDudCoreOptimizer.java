@@ -63,8 +63,8 @@ public abstract class BaseDudCoreOptimizer {
 	protected IVector b_upper = null;
 
 	// stopping
-	boolean moreToDo = true; // is this optimization finished
-	int imain = 0;           // main iterations done
+	private boolean moreToDo = true; // is this optimization finished
+	private int imain = 0;           // main iterations done
 
 	protected IMatrix sqrtCovEst = null;   // estimate of square root of error covariance
 	public double relTolLinCost = 0.01;  // compares linearity error to improvement

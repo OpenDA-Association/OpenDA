@@ -34,14 +34,14 @@ import java.util.List;
 public class SimplexCoreOptimizer{
 
 	// fields of this class
-	IVector pCurrent[] = null; //values under consideration
-	double fCurrent[] = null;
-	IVector predCurrent[] = null; //predictions for each estimate (in case of LeastSquaresCostFunction)
-	int nparam=0;
-	ICostFunction f = null;
-	int maxitSimplex = 100;
-	double absTolSimplex=0.01;
-	double relTolSimplex=0.01;
+	private IVector pCurrent[] = null; //values under consideration
+	private double fCurrent[] = null;
+	private IVector predCurrent[] = null; //predictions for each estimate (in case of LeastSquaresCostFunction)
+	private int nparam=0;
+	private ICostFunction f = null;
+	protected int maxitSimplex = 100;
+	protected double absTolSimplex=0.01;
+	protected double relTolSimplex=0.01;
 
     // required for the additional stopping criteria:
     public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
@@ -50,14 +50,14 @@ public class SimplexCoreOptimizer{
     public IObservationDescriptions obsDescr=null;
 	
     // constants
-	double rconst = -1;       // constant for reflection
-	double econst =  2.0;     // constant for exspansion
-	double cconst = .5;       // constant for contractions
-	double sconst = .5;       // constant for scaling
+	private double rconst = -1;       // constant for reflection
+	private double econst =  2.0;     // constant for exspansion
+	private double cconst = .5;       // constant for contractions
+	private double sconst = .5;       // constant for scaling
 	
 	//stopping
-	boolean moreToDo = true;         // is this optimization finished
-	int imain=0;                     // main iterations done
+	private boolean moreToDo = true;         // is this optimization finished
+	private int imain=0;                     // main iterations done
 
 
     /**

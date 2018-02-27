@@ -40,20 +40,20 @@ import java.util.HashMap;
  */
 public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 
-	OdaTiming timerTotal        = null;
-	OdaTiming timerGetObs       = null;
-	OdaTiming timerGetStates    = null;
-	OdaTiming timerAverage      = null;
-	OdaTiming timerStd          = null;
-	OdaTiming timerResults      = null;
-	OdaTiming timerLinalg       = null;
-	OdaTiming timerLocalization = null;
-	OdaTiming timerStoreGain    = null;
-	OdaTiming timerGainMult     = null;
-	OdaTiming timerSynchronize  = null;
-	OdaTiming timerAdjustMean   = null;
+	protected OdaTiming timerTotal        = null;
+	protected OdaTiming timerGetObs       = null;
+	protected OdaTiming timerGetStates    = null;
+	protected OdaTiming timerAverage      = null;
+	protected OdaTiming timerStd          = null;
+	protected OdaTiming timerResults      = null;
+	protected OdaTiming timerLinalg       = null;
+	protected OdaTiming timerLocalization = null;
+	protected OdaTiming timerStoreGain    = null;
+	protected OdaTiming timerGainMult     = null;
+	protected OdaTiming timerSynchronize  = null;
+	protected OdaTiming timerAdjustMean   = null;
 
-	SmoothedGainMatrix  smoothedGainMatrix = null;
+	protected SmoothedGainMatrix  smoothedGainMatrix = null;
 
 
     protected class SmoothedGainMatrix{

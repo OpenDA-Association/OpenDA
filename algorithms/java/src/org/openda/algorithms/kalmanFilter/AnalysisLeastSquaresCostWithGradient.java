@@ -51,25 +51,25 @@ import org.openda.utils.Vector;
 public class AnalysisLeastSquaresCostWithGradient implements LeastSquaresCostFunction,ICostFunctionWithGradient{
 
 	// data for constructing the cost function
-	boolean backGroundOn = true;
-	IStochModelInstance model = null;
-	IStochObserver observations = null;
-	IVector obsValues = null;
-	ISqrtCovariance L = null;
-	IStochVector stateUncertainty = null;
-	IStochVector observationUncertainty = null;
+	private boolean backGroundOn = true;
+	private IStochModelInstance model = null;
+	private IStochObserver observations = null;
+	private IVector obsValues = null;
+	private ISqrtCovariance L = null;
+	private IStochVector stateUncertainty = null;
+	private IStochVector observationUncertainty = null;
 
-	IModelState savedState = null;
-	IVector initialState=null;
-	double factor = 0.5; //default 0.5
+	private IModelState savedState = null;
+	private IVector initialState=null;
+	public double factor = 0.5; //default 0.5
 
 	// results
-	int numberOfEvaluations = 0;
-	int numberOfGradEval = 0;
-	IVector pMin = null;     // best parameters so far
-	IVector predMin = null;  // best predictions
+	private int numberOfEvaluations = 0;
+	private int numberOfGradEval = 0;
+	private IVector pMin = null;     // best parameters so far
+	private IVector predMin = null;  // best predictions
 
-	double fMin = Double.MAX_VALUE;
+	private double fMin = Double.MAX_VALUE;
 	private java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	private java.util.Vector<IVector> allPreds = new java.util.Vector<IVector>();
 	private java.util.Vector<Double> allCosts = new java.util.Vector<Double>();

@@ -35,8 +35,8 @@ import java.io.File;
  */
 public class Simplex extends Instance implements IAlgorithm {
 
-    IStochModelFactory stochModelFactory;
-    ConfigTree simplexConf;
+	private IStochModelFactory stochModelFactory;
+    protected ConfigTree simplexConf;
 
     private IStochModelInstance bestEstimate = null;
     //config

@@ -48,11 +48,11 @@ import java.text.ParseException;
  */
 public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	// config data for reading
-	String gainDirPrefix = null;
-	String gainFileName = null;
-    double[] gainTimeMjd;
-    double[] readGainTime;
-    int steadyStateTimeCounter = 0;
+	private String gainDirPrefix = null;
+	private String gainFileName = null;
+	private double[] gainTimeMjd;
+	private double[] readGainTime;
+	private int steadyStateTimeCounter = 0;
 
 	public void initialize(File workingDir, String[] arguments) {
 		super.initialize(workingDir, arguments);

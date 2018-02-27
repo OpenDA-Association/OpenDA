@@ -16,7 +16,7 @@
 	</algorithm>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>enkf_results_local.m</configFile>
+		<configFile>enkf_results.m</configFile>
 		<selection>
 			<resultItem outputLevel="Normal" />
 			<resultItem id="x_f_central" outputLevel="Verbose" />

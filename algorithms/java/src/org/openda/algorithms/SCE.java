@@ -41,8 +41,8 @@ import java.util.Random;
  */
 public class SCE extends Instance implements IAlgorithm {
 
-    IStochModelFactory stochModelFactory;
-    ConfigTree sceConf;
+	private IStochModelFactory stochModelFactory;
+    protected ConfigTree sceConf;
 
     private IStochModelInstance bestEstimate = null;
     //config

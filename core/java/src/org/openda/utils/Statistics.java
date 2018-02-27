@@ -32,7 +32,7 @@ public class Statistics {
 
     // max, min, number of data
 	private IVector values=null;
-	private IObservationDescriptions descriptions=null;
+	protected IObservationDescriptions descriptions=null;
     private HashMap<String, Double> numberOfData = new HashMap<String, Double>();
     private HashMap<String, Double> max = new HashMap<String, Double>();
     private HashMap<String, Double> min = new HashMap<String, Double>();

@@ -41,8 +41,8 @@ public class ConjugateGradient extends Instance implements IAlgorithm {
     public boolean withPreconditioning = true;
 
 	private IStochObserver stochObserver;
-    IStochModelFactory stochModelFactory;
-    ConfigTree conjugateGradientConf;
+    private IStochModelFactory stochModelFactory;
+	protected ConfigTree conjugateGradientConf;
 
     private IStochModelInstance bestEstimate = null;
     

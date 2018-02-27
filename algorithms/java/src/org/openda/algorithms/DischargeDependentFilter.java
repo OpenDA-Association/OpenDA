@@ -37,11 +37,11 @@ import java.util.*;
  * Selecting observed waterlevel data based on a user defined discharge range.
  */
 public class DischargeDependentFilter implements IObservationSpaceFilter {
-    HashMap<String,String> dischargeAndWaterLevelId = new HashMap<String,String>();
-    HashMap<String,Double> dischargeAndMinVal = new HashMap<String,Double>();
-    HashMap<String,Double> dischargeAndMaxVal = new HashMap<String,Double>();
-    DischargeDependentSelector dischSelector = null;
-    File workingDir = null;
+	private HashMap<String,String> dischargeAndWaterLevelId = new HashMap<String,String>();
+	private HashMap<String,Double> dischargeAndMinVal = new HashMap<String,Double>();
+	private HashMap<String,Double> dischargeAndMaxVal = new HashMap<String,Double>();
+	private DischargeDependentSelector dischSelector = null;
+	private File workingDir = null;
 	private BufferedWriter debugFileWriter = null;
 
 	public ObservationSpace applyFilter(ObservationSpace input) {

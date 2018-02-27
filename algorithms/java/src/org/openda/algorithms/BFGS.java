@@ -42,7 +42,7 @@ public class BFGS extends Instance implements IAlgorithm {
 	
 	private IStochObserver stochObserver;
 	private IStochModelFactory stochModelFactory;
-    ConfigTree bfgsConf;
+    protected ConfigTree bfgsConf;
 
     private IStochModelInstance bestEstimate = null;
 

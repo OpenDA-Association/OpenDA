@@ -28,7 +28,7 @@ public class SparseDudCoreOptimizer extends BaseDudCoreOptimizer {
 
 
 	// SparseDud Only stuff (i.e. not DuD):
-	SparsenessPattern sparsenessPattern;
+	private SparsenessPattern sparsenessPattern;
 	private int rand_counter;
 	public int idebug = 1; 
 

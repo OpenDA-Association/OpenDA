@@ -34,19 +34,19 @@ import org.openda.utils.performance.OdaTiming;
 @Deprecated
 public class EnKFOld extends AbstractSequentialEnsembleAlgorithm {
 
-	boolean synchronizeForTiming = false;
-	OdaTiming timerTotal        = null;
-	OdaTiming timerGetObs       = null;
-	OdaTiming timerGetStates    = null;
-	OdaTiming timerAverage      = null;
-	OdaTiming timerStd          = null;
-	OdaTiming timerResults      = null;
-	OdaTiming timerLinalg       = null;
-	OdaTiming timerLocalization = null;
-	OdaTiming timerStoreGain    = null;
-	OdaTiming timerGainMult     = null;
-	OdaTiming timerSynchronize  = null;
-	OdaTiming timerAdjustMean   = null;
+	private boolean synchronizeForTiming = false;
+	private OdaTiming timerTotal        = null;
+	private OdaTiming timerGetObs       = null;
+	private OdaTiming timerGetStates    = null;
+	private OdaTiming timerAverage      = null;
+	private OdaTiming timerStd          = null;
+	private OdaTiming timerResults      = null;
+	private OdaTiming timerLinalg       = null;
+	private OdaTiming timerLocalization = null;
+	private OdaTiming timerStoreGain    = null;
+	private OdaTiming timerGainMult     = null;
+	private OdaTiming timerSynchronize  = null;
+	private OdaTiming timerAdjustMean   = null;
 
 
 		

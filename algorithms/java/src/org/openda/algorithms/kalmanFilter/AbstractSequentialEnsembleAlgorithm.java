@@ -38,7 +38,7 @@ import java.util.HashMap;
 public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequentialAlgorithm {
 
 	// class data
-	String TimerID="Ens Forecast";
+	private String TimerID="Ens Forecast";
 	protected OdaTiming timerForecast;
 	protected OdaTiming timerForecast_s1, timerForecast_s2, timerForecast_s3, timerForecast_s4;
 

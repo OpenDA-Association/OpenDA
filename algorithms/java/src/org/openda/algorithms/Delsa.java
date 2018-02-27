@@ -38,8 +38,8 @@ import java.io.File;
  */
 public class Delsa extends Instance implements IAlgorithm {
 
-    IStochModelFactory stochModelFactory;
-    ConfigTree delsaConf;
+    private IStochModelFactory stochModelFactory;
+    protected ConfigTree delsaConf;
 
     private IStochModelInstance bestEstimate = null;
     private IStochObserver stochObserver = null;

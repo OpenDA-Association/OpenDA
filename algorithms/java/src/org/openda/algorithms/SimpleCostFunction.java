@@ -26,18 +26,18 @@ import org.openda.utils.Vector;
 
 public class SimpleCostFunction implements ICostFunctionWithGradient{
 	//fields for this class
-	double means[] = {1.0,1.0};
-	double width[] = {1.0,2.0};
+	private double means[] = {1.0,1.0};
+	private double width[] = {1.0,2.0};
 	
 	// for saving results
-	int numberEvaluations = 0;
-	int numberGradientEvaluations = 0;
-	IVector pMin = null;     // best sofar
-	double fMin = Double.MAX_VALUE;
+	private int numberEvaluations = 0;
+	private int numberGradientEvaluations = 0;
+	private IVector pMin = null;     // best sofar
+	private double fMin = Double.MAX_VALUE;
 	private java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	private java.util.Vector<Double> allCosts = new java.util.Vector<Double>();
 	// printing to stdout
-	int maxPrintSize = 100;
+	private int maxPrintSize = 100;
 	
 	public SimpleCostFunction(){
 		numberEvaluations = 0;

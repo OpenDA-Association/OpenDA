@@ -26,19 +26,19 @@ import org.openda.utils.Results;
 import org.openda.utils.Vector;
 
 public class RosenbrockCostFunction implements ICostFunctionWithGradient{
-	
-	int factor = 100; // 'narrowness'-factor of the curved valley (default = 100)
+
+	private int factor = 100; // 'narrowness'-factor of the curved valley (default = 100)
 
 	// for saving results
-	int numberEvaluations = 0;
-	int numberGradientEvaluations = 0;
-	IVector pMin = null;     // best sofar
-	double fMin = Double.MAX_VALUE;
+	private int numberEvaluations = 0;
+	private int numberGradientEvaluations = 0;
+	private IVector pMin = null;     // best sofar
+	private double fMin = Double.MAX_VALUE;
 	protected java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	protected java.util.Vector<Double> allCosts = new java.util.Vector<Double>();
 	
 	// printing to stdout
-	int maxPrintSize = 100;
+	private int maxPrintSize = 100;
 	
 //	public double evaluate(IVector pVector){
 //		++this.numberEvaluations;

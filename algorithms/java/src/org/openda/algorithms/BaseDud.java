@@ -40,7 +40,7 @@ public abstract class BaseDud extends Instance implements IAlgorithm {
 	protected String configString=null;
 	protected IStochModelFactory stochModelFactory;
 	
-	ConfigTree configtree = null;
+	protected ConfigTree configtree = null;
 	protected SimulationKwadraticCostFunction J=null;
 	protected BaseDudCoreOptimizer optimizer = null;
 	protected IVector pInit=null;

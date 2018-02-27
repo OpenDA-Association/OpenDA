@@ -34,18 +34,18 @@ import java.util.Random;
 public class SCECoreOptimizer {
 
 	// fields of this class
-	IVector pCurrent[] = null; //values under consideration
-	double fCurrent[] = null;
-	IVector predCurrent[] = null; //predictions for each estimate (in case of LeastSquaresCostFunction)
-	int nparam=0;
-	ICostFunction f = null;
-	int maxitSCE = 100; // Maximum number of outer loop iterations.
-    int numInnerLoop = 30; // beta: Number of evolution steps taken by each complex. Suggested optimum: beta=2n+1
-	double absTolSCE =0.01;
-	double relTolSCE =0.01;
-    IVector LB = null; // vector of parameter range lower bounds
-    IVector UB = null; // vector of parameter range upper bounds
-    int nComplexes = 5; // p: Number of complexes. Suggested optima: n=2,4:p=1; n=6,8:p=2; n=10,12:p=4
+	private IVector pCurrent[] = null; //values under consideration
+	private double fCurrent[] = null;
+	private IVector predCurrent[] = null; //predictions for each estimate (in case of LeastSquaresCostFunction)
+	protected int nparam=0;
+	private ICostFunction f = null;
+	protected int maxitSCE = 100; // Maximum number of outer loop iterations.
+	protected int numInnerLoop = 30; // beta: Number of evolution steps taken by each complex. Suggested optimum: beta=2n+1
+	protected double absTolSCE =0.01;
+	protected double relTolSCE =0.01;
+	protected IVector LB = null; // vector of parameter range lower bounds
+	protected IVector UB = null; // vector of parameter range upper bounds
+	protected int nComplexes = 5; // p: Number of complexes. Suggested optima: n=2,4:p=1; n=6,8:p=2; n=10,12:p=4
     public int nPointsComplex; // m: Number of points in a complex. Suggested optimum: 2n+1
     public int nPointsSimplex; // q: Number of points in a subcomplex. Suggested optimum: q=n+1
     public IVector pInit;
@@ -53,8 +53,8 @@ public class SCECoreOptimizer {
     private Random randomGenerator = new Random();
 
     //stopping
-    boolean moreToDo = true;         // is this optimization finished
-    int imain=0;                     // main iterations done
+	private boolean moreToDo = true;         // is this optimization finished
+    private int imain=0;                     // main iterations done
     private int nCostEvaluation = 0; // number of cost evaluation so far
 
     // required for the additional stopping criteria:

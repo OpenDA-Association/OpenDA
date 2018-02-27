@@ -30,12 +30,12 @@ import java.util.List;
 public class GLUECoreOptimizer {
 
 	// fields of this class
-	IVector pCurrent = null; //values under consideration
-    IVector pInit = null;
-	double fCurrent = 0.0;
-	int nparam=0;
-	RMSECostFunction f = null;
-    int[] typeParameterUncertainty;
+	private IVector pCurrent = null; //values under consideration
+	private IVector pInit = null;
+	private double fCurrent = 0.0;
+	private int nparam=0;
+	private RMSECostFunction f = null;
+	private int[] typeParameterUncertainty;
 
     // required for the additional stopping criteria:
     public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
@@ -44,16 +44,16 @@ public class GLUECoreOptimizer {
     public IObservationDescriptions obsDescr=null;
 
 	// grid settings
-	double minRangePar[]   = null;
-	double maxRangePar[]   = null;
-	double stepRangePar[]  = null;
-	int numberOfStepsPar[] = null;
+	private double minRangePar[]   = null;
+	private double maxRangePar[]   = null;
+	private double stepRangePar[]  = null;
+	private int numberOfStepsPar[] = null;
 
 	//current state
-	boolean moreToDo = true;         // is this optimization finished
-    int currentParIndex[] =null;
-    int imain=0; //number of evaluation
-    IStochVector parameterUncertainty;
+	private boolean moreToDo = true;         // is this optimization finished
+	private int currentParIndex[] =null;
+	private int imain=0; //number of evaluation
+	private IStochVector parameterUncertainty;
 //    UncertaintyStochVector parameterUncertainty;
     private int nRuns;
 

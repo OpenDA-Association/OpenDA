@@ -29,9 +29,9 @@ import org.openda.interfaces.IVector;
  */
 	public class PreconditionedCostFunctionWithGradient extends SimulationKwadraticCostFunctionWithGradient {
 
-	SimulationKwadraticCostFunctionWithGradient f = null;
-    IVector initialVector = null;
-    IVector scalingVector = null;
+	private SimulationKwadraticCostFunctionWithGradient f = null;
+	private IVector initialVector = null;
+	private IVector scalingVector = null;
 
     public PreconditionedCostFunctionWithGradient(SimulationKwadraticCostFunctionWithGradient f, IStochModelFactory modFac, IStochObserver obs, IVector initialVector, IVector scalingVector){
     	super(modFac, obs);

@@ -29,12 +29,12 @@ import java.util.List;
 public class ConjugateGradientCoreOptimizer{
 
 	// fields of this class
-	IVector pCurrent = null;			// value under consideration
-	double fCurrent;					// f(parameters)
-	IVector gradCurrent = null;			// grad(parameters)
-	IVector searchCurrent = null; 		// current search direction
+	private IVector pCurrent = null;			// value under consideration
+	private double fCurrent;					// f(parameters)
+	private IVector gradCurrent = null;			// grad(parameters)
+	private IVector searchCurrent = null; 		// current search direction
 	
-	ICostFunctionWithGradient f = null;	// cost function f, with gradient
+	private ICostFunctionWithGradient f = null;	// cost function f, with gradient
 	      
     // settings for algorithm
 	public int method = 2;					// (1)FletcherReeves(2)PolakRibiere(else)SteepestDescent
@@ -58,8 +58,8 @@ public class ConjugateGradientCoreOptimizer{
     public IObservationDescriptions obsDescr=null;
     
 	//stopping
-	boolean moreToDo = true;         	// is this optimization finished
-	int imain=0;                     	// main iterations done
+	private boolean moreToDo = true;         	// is this optimization finished
+	private int imain=0;                     	// main iterations done
 	
     /**
      * Constructor for Conjugate Gradient minimization

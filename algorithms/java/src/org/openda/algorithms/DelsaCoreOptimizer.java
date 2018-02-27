@@ -43,11 +43,11 @@ public class DelsaCoreOptimizer{
 
 	private SobolSequenceGenerator sobolSequence;
 	// fields of this class
-	IVector pCurrent = null; //values under consideration
-	double fCurrent = 0.0;
-	int nparam=0;
-	ICostFunction f = null;
-	IVector[] SL1 = null;
+	private IVector pCurrent = null; //values under consideration
+	private double fCurrent = 0.0;
+	private int nparam=0;
+	private ICostFunction f = null;
+	private IVector[] SL1 = null;
 
     // required for the additional stopping criteria:
     public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
@@ -56,16 +56,16 @@ public class DelsaCoreOptimizer{
     public IObservationDescriptions obsDescr=null;
 
 	// grid settings
-	double minRangePar[]   = null;
-	double maxRangePar[]   = null;
-	double stepRangePar[]  = null;
-	int numberOfStepsPar[] = null;
-	IVector paramVariance;
+	private double minRangePar[]   = null;
+	private double maxRangePar[]   = null;
+	private double stepRangePar[]  = null;
+	private int numberOfStepsPar[] = null;
+	private IVector paramVariance;
 
 	//current state
-	boolean moreToDo = true;         // is this optimization finished
-    int currentParIndex[] =null;
-    int imain=0; //number of evaluation
+	private boolean moreToDo = true;         // is this optimization finished
+	private int currentParIndex[] =null;
+	private int imain=0; //number of evaluation
     private IVector pInit = null;
 	private boolean isSobol = false;
 

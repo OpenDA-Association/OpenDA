@@ -36,8 +36,8 @@ import java.io.File;
  */
 public class GLUE extends Instance implements IAlgorithm {
 
-    IStochModelFactory stochModelFactory;
-    ConfigTree glueConf;
+	private IStochModelFactory stochModelFactory;
+    protected ConfigTree glueConf;
 
     private IStochModelInstance bestEstimate = null;
     private IStochObserver stochObserver = null;

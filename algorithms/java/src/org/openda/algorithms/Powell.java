@@ -37,8 +37,8 @@ import java.io.File;
  */
 public class Powell extends Instance implements IAlgorithm {
 
-    IStochModelFactory stochModelFactory;
-    ConfigTree powellConf;
+	private IStochModelFactory stochModelFactory;
+    protected ConfigTree powellConf;
 
     private IStochModelInstance bestEstimate = null;
 

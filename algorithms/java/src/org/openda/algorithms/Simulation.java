@@ -37,13 +37,13 @@ public class Simulation extends Instance implements IAlgorithm {
     private IStochObserver stochObserver;
     private IStochModelFactory stochModelFactory;
     //config
-    int repeat=1;
+	private int repeat=1;
     private int current=0;
-    boolean stochParameter=false;
-    boolean stochForcing=false;
-    String observationFile="";
-    String obsFileFormat="csv";
-    boolean addNoiseToObs=false;
+	private boolean stochParameter=false;
+	private boolean stochForcing=false;
+	private String observationFile="";
+	private String obsFileFormat="csv";
+	private boolean addNoiseToObs=false;
 
     private File workingDir;
     private String configString;

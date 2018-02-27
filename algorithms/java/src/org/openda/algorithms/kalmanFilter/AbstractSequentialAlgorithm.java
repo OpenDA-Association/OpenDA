@@ -43,8 +43,8 @@ import static org.openda.utils.performance.OdaGlobSettings.getTimePrecision;
  */
 public abstract class AbstractSequentialAlgorithm extends Instance implements IAlgorithm {
 
-	OdaTiming timerNext, timerNext_ObsSel, timerNext_Compute, timerNext_forecast, timerNext_getState;
-	OdaTiming timerNext_resultWriter, timerNext_getObsDescr, timerNext_getObsVal, timerNext_analysis;
+	private OdaTiming timerNext, timerNext_ObsSel, timerNext_Compute, timerNext_forecast, timerNext_getState;
+	private OdaTiming timerNext_resultWriter, timerNext_getObsDescr, timerNext_getObsVal, timerNext_analysis;
 
 	protected static final String ALGORITHM_RESTART_TEMP_DIR_PREFIX = "algorithm_restart_tempdir_";
 	protected static final String ENSEMBLE_MEMBER_RESTART_FILE_PREFIX = "ensemble_";

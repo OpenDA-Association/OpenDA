@@ -27,29 +27,29 @@ import java.util.List;
 public class RMSECostFunction implements ICostFunction{
 
 	//fields for this class
-	IStochModelFactory modFac;
+	private IStochModelFactory modFac;
     private List<IObservationSpaceFilter> obsSpaceFilters = new ArrayList<IObservationSpaceFilter>();
-    IStochObserver obs;
-	IStochObserver obsSelection = null;
-	double factor=1.0; //scale costfunction with this factor
-	boolean addBackgroundTerm=false; // add term Jb(p) = (p-p0)'*inv(B)*(p-p0)
-	boolean useAnnounceObs=true;     // make one single run for collecting obs
+	private IStochObserver obs;
+	private IStochObserver obsSelection = null;
+	private double factor=1.0; //scale costfunction with this factor
+	private boolean addBackgroundTerm=false; // add term Jb(p) = (p-p0)'*inv(B)*(p-p0)
+	private boolean useAnnounceObs=true;     // make one single run for collecting obs
 	public boolean tryParallel=false;      // try to run multiple models in parallel
     public boolean biasRemoval=false;
 
 
 	// for saving results
-	static int nextEvaluation=1;
-	int numberEvaluation = 0; //make numbers unique over instances
-	IVector pMin = null;     // best parameters sofar
-	IVector predMin = null;  // best predictions
-	double fMin = Double.MAX_VALUE;
+	private static int nextEvaluation=1;
+	private int numberEvaluation = 0; //make numbers unique over instances
+	private IVector pMin = null;     // best parameters sofar
+	private IVector predMin = null;  // best predictions
+	private double fMin = Double.MAX_VALUE;
 	private java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	private java.util.Vector<Double> allCosts = new java.util.Vector<Double>();
 	private IVector lastPredicted=null;
 	private IStochModelInstance bestModel=null;
-	IStochVector parameterUncertainty=null;
-	IStochVector observationUncertainty=null;
+	private IStochVector parameterUncertainty=null;
+	private IStochVector observationUncertainty=null;
 
 	// for saving data between prepare and evaluate calls
 	private boolean prepared = false;

@@ -54,23 +54,23 @@ import java.text.DecimalFormatSymbols;
 public class SimpleLeastSquaresCostFunction implements LeastSquaresCostFunction{
 
 	//fields for this class
-	IStochVector obs = new StochVector("[1.0,1.0]","[1.0,2.0]");
-	IStochVector par = new StochVector("[0.0,0.0]","[1.0,2.0]");
+	private IStochVector obs = new StochVector("[1.0,1.0]","[1.0,2.0]");
+	private IStochVector par = new StochVector("[0.0,0.0]","[1.0,2.0]");
 
 	//last predictions computed by J.evaluate(p)
-	IVector pred = null;
-	boolean backgroundOn = false;
+	private IVector pred = null;
+	private boolean backgroundOn = false;
 
 	// for saving results
-	int numberEvaluations = 0;
-	IVector pMin = null;     // best sofar
-	IVector predMin = null;
-	double fMin = Double.MAX_VALUE;
+	private int numberEvaluations = 0;
+	private IVector pMin = null;     // best sofar
+	private IVector predMin = null;
+	private double fMin = Double.MAX_VALUE;
 	private java.util.Vector<IVector> allPars = new java.util.Vector<IVector>();
 	private java.util.Vector<Double> allCosts = new java.util.Vector<Double>();
 	private java.util.Vector<IVector> allPredictions = new java.util.Vector<IVector>();
 	// printing to stdout
-	int maxPrintSize = 10; // maximum number of elements to print
+	private int maxPrintSize = 10; // maximum number of elements to print
 
 	public SimpleLeastSquaresCostFunction(){
 		numberEvaluations = 0;

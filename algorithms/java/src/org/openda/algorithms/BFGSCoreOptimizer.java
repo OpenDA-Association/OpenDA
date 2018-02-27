@@ -29,18 +29,18 @@ import java.util.List;
 public class BFGSCoreOptimizer{
 
 	// fields of this class
-	int iStore;						// current number of stored vectors
-	IVector pCurrent = null;		// parameters under consideration
-	double fCurrent;				// function value at current param
-	IVector gradCurrent = null;		// gradient value at current param
+	private int iStore;						// current number of stored vectors
+	private IVector pCurrent = null;		// parameters under consideration
+	private double fCurrent;				// function value at current param
+	private IVector gradCurrent = null;		// gradient value at current param
 	// for L-BFGS (list of vectors)
-	IVector ss[] = null;			// vectors s_i = x_{i+1} - x_i
-	IVector sy[] = null;			// vectors y_i = g_{i+1} - g_i
+	private IVector ss[] = null;			// vectors s_i = x_{i+1} - x_i
+	private IVector sy[] = null;			// vectors y_i = g_{i+1} - g_i
 	// for BFGS (matrix)
-	Matrix Hi = null;				// initial approximate matrix of Hessian^{-1}
-	Matrix Ei = null;				// update matrix
-	
-	ICostFunctionWithGradient f = null;	// cost function f, with gradient
+	private Matrix Hi = null;				// initial approximate matrix of Hessian^{-1}
+	private Matrix Ei = null;				// update matrix
+
+	private ICostFunctionWithGradient f = null;	// cost function f, with gradient
 	
     // settings for algorithm
 	public boolean limitedMemory = true;	// use either L-BFGS or BFGS
@@ -65,8 +65,8 @@ public class BFGSCoreOptimizer{
     public IObservationDescriptions obsDescr=null;
     
 	//stopping
-	boolean moreToDo = true;        // is this optimization finished
-	int imain=0;                    // main iterations done
+	private boolean moreToDo = true;        // is this optimization finished
+	private int imain=0;                    // main iterations done
 	
     /**
      * Constructor for (L)BFGS minimization
