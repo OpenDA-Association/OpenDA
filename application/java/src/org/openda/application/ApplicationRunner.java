@@ -571,13 +571,19 @@ public class ApplicationRunner implements Runnable{
     
     protected void writeRestart(){
 		ITime time = algorithm.getCurrentTime();
-		boolean writeAtThisTime=(time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
-		if ((this.restartTimes.length>0) & (time!=null)){
-			writeAtThisTime=false;
-			for(int i=0;i<this.restartTimes.length;i++){
-				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
-				if(Math.abs(currentTime-this.restartTimes[i].getMJD())<OdaGlobSettings.getTimePrecision()){
-					writeAtThisTime=true;
+		boolean writeAtThisTime;
+		if (time == null) {
+			writeAtThisTime = true;
+		}
+		else {
+			writeAtThisTime = (time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
+			if ((this.restartTimes.length>0) & (time!=null)){
+				writeAtThisTime=false;
+				for(int i=0;i<this.restartTimes.length;i++){
+					double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
+					if(Math.abs(currentTime-this.restartTimes[i].getMJD())<OdaGlobSettings.getTimePrecision()){
+						writeAtThisTime=true;
+					}
 				}
 			}
 		}
@@ -590,7 +596,7 @@ public class ApplicationRunner implements Runnable{
 					timeString= String.valueOf(++currentAlgorithmStep);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-						timeString+ "." + restartOutFileExtension);
+						timeString+ restartOutFileExtension);
 			}else{
 				this.restartOutFileExtension="zip"; //zip extension for kalmanfilters
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
@@ -599,7 +605,7 @@ public class ApplicationRunner implements Runnable{
 					timeString= TimeUtils.mjdToString(currentTime);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-						timeString+ "." + restartOutFileExtension);							
+						timeString+ restartOutFileExtension);
 			}
 			savedInternalState.savePersistentState(stateFile);
 			this.algorithm.releaseInternalState(savedInternalState);
