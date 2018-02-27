@@ -48,16 +48,10 @@ package org.openda.models.circularAdvection;
 
 import org.openda.interfaces.*;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
-import org.openda.observers.TimeSeriesObservationDescriptions;
 import org.openda.utils.*;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-
-import static java.lang.Math.abs;
-import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 /**
@@ -66,35 +60,29 @@ import static java.lang.Math.sqrt;
 public class CircularAdvectionInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
 
-	static int nEns = 0;
-	static TreeVector[] stateNoFix = new TreeVector[1000];
-	boolean notInit = true;
-	int ikBenMember = -999;
-	int mynum;
+	private static int nEns = 0;
+	private static TreeVector[] stateNoFix = new TreeVector[1000];
+	private boolean notInit = true;
+	private int ikBenMember = -999;
+	private int mynum;
 
 	// Time parameters
-	double timeNow;
-	double endTime;
-	double startTime;
-	double timeStep;
-	//int timeStepCounter;
+	private double timeNow;
+	private double endTime;
+	private double startTime;
+	private double timeStep;
 
 	// State parameter
-	TreeVector state;
-	int varSize = 0;
-
-	//initial state parameters
-	double[] amplitude;
-	double[] phase;
-	int N;            // number of joint sines
+	private TreeVector state;
+	private int varSize = 0;
 
 	// reference field
-	IVector refFieldA;            // truth field for setup of ensemble (only variable a given)
-	IVector refFieldB;
+	private IVector refFieldA;            // truth field for setup of ensemble (only variable a given)
+	private IVector refFieldB;
 
-	boolean autoNoise = false;
-	boolean twoVars = true;
-	boolean periodic = false;        // Use adapted localisation matrix for periodic relations
+	private boolean autoNoise = false;
+	private boolean twoVars = true;
+	private boolean periodic = false;        // Use adapted localisation matrix for periodic relations
 
 	private static Random generator;
 
@@ -208,7 +196,7 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 	 * @return vector with the model values corresponding to each observation given in the descriptions
 	 */
 	public IObservationOperator getObservationOperator() {
-		return new ObservationOperatorDeprecatedModel((IStochModelInstanceDeprecated) this);
+		return new ObservationOperatorDeprecatedModel(this);
 	}
 
 	/**
@@ -238,20 +226,15 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 		 */
 		initializeMe();
 
-		int thisLoc = 0;
-		double thisValue = 0.0;
-
 		// Only the current state is available
 		for (int i = 0; i < nObs; i++) {
 			if (obsType.getValue(i) < 1.5) {    // Type a (in csv file referred to as 1.0)
-				thisLoc = (int) obsLoc.getValue(i);
-
-				thisValue = this.state.getValue(thisLoc - 1);    // Vector indices from 0 to (varSize-1)
+				int thisLoc = (int) obsLoc.getValue(i);
+				double thisValue = this.state.getValue(thisLoc - 1);    // Vector indices from 0 to (varSize-1)
 				observedValues.setValue(i, thisValue);
 			} else if (obsType.getValue(i) > 1.5) {        // Type b=0.5 + 10*da/dx (in csv file referred to as 2.0)
-				thisLoc = (int) obsLoc.getValue(i);
-
-				thisValue = this.state.getValue(varSize + thisLoc - 1);
+				int thisLoc = (int) obsLoc.getValue(i);
+				double thisValue = this.state.getValue(varSize + thisLoc - 1);
 				observedValues.setValue(i, thisValue);
 			}
 
@@ -501,14 +484,6 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 			// Split first line
 			String[] labelStrings = line.split(",");
 			int noKeys = labelStrings.length;
-			String[] keys = labelStrings;
-
-			// extract labels
-			java.util.Vector<String> labelVector = new java.util.Vector<String>();
-			for (int i = 0; i < noKeys; i++) {
-				labelStrings[i] = labelStrings[i].trim();
-				labelVector.add(labelStrings[i]);
-			}
 
 			//
 			// read content
@@ -569,10 +544,10 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 		this.varSize = 100;
 		this.state = new TreeVector("state");
 
-		this.N = 6;    // sines k=0,1,...5
+		int N = 6;    // sines k=0,1,...5
 
-		this.amplitude = new double[this.N];        // sine amplitudes as in paper
-		this.phase = new double[this.N];            // sine phases as in paper
+		double[] amplitude = new double[N];        // sine amplitudes as in paper
+		double[] phase = new double[N];            // sine phases as in paper
 
 		double[] valuesA = new double[this.varSize];    // two variables of each 100(0) grid values (first a, then b)
 		double[] valuesB = new double[this.varSize];
@@ -580,9 +555,9 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 		// parameters for variable a
 		for (int k = 0; k < N; k++) {
 			double ampl = generator.nextDouble();                // 0 <= A_k < 1
-			this.amplitude[k] = ampl;
+			amplitude[k] = ampl;
 			double ph = generator.nextDouble();    // 0 <= p_k < 2*pi
-			this.phase[k] = 2 * Math.PI * ph;
+			phase[k] = 2 * Math.PI * ph;
 		}
 
 		// initialisation for variable a (as superposition of sines with reference field as background)
@@ -590,7 +565,7 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 		for (int i = 0; i < this.varSize; i++) {
 			double help = 0.0;
 			for (int k = 0; k < N; k++) {
-				help += this.amplitude[k] * Math.sin((2 * Math.PI * k * i / this.varSize) + this.phase[k]);
+				help += amplitude[k] * Math.sin((2 * Math.PI * k * i / this.varSize) + phase[k]);
 			}
 			valuesA[i] = help;
 			sumA += valuesA[i];
