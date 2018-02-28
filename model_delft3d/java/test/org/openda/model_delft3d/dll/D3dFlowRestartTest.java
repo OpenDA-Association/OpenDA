@@ -50,7 +50,7 @@ public class D3dFlowRestartTest extends TestCase {
 		//nothing here on purposes
 	}
 
-	public void testRestart() { //TODO MVL Some problem with removing existing files.
+	public void tstRestart() { //TODO MVL Some problem with removing existing files.
 	                        	//This fails when running multiple tests
 
 		if (!BBUtils.RUNNING_ON_WINDOWS) {
