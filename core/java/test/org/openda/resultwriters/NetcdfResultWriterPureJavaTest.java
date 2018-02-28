@@ -1,4 +1,4 @@
-/* OpenDA v2.4.1
+/* OpenDA v2.4.3
 * Copyright (c) 2017 OpenDA Association
 * All rights reserved.
 *
@@ -173,3 +173,4 @@ public class NetcdfResultWriterPureJavaTest extends TestCase {
 		}
 	}
 }
+
