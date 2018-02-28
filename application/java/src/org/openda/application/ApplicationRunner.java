@@ -577,7 +577,7 @@ public class ApplicationRunner implements Runnable{
 		}
 		else {
 			writeAtThisTime = (time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
-			if ((this.restartTimes.length>0) & (time!=null)){
+			if (this.restartTimes.length>0){
 				writeAtThisTime=false;
 				for(int i=0;i<this.restartTimes.length;i++){
 					double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
@@ -598,7 +598,7 @@ public class ApplicationRunner implements Runnable{
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
 						timeString+ restartOutFileExtension);
 			}else{
-				this.restartOutFileExtension="zip"; //zip extension for kalmanfilters
+				this.restartOutFileExtension=".zip"; //zip extension for kalmanfilters
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
 				String timeString="";
 				if(addRestartTimeTag){
