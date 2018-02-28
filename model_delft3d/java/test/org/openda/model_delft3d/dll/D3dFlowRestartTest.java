@@ -46,7 +46,7 @@ public class D3dFlowRestartTest extends TestCase {
 		testData = new OpenDaTestSupport(D3dFlowRestartTest.class, "public", "model_delft3d");
 	}
 
-	public void tstDummy(){
+	public void testDummy(){
 		//nothing here on purposes
 	}
 
