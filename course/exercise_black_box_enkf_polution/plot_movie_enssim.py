@@ -9,7 +9,6 @@ Uses the output from OpenDA contrary to exercise 4
 
 import numpy as np
 import matplotlib.pyplot as plt
-from time import sleep
 
 #load data
 import reactive_pollution_model_truth as truth

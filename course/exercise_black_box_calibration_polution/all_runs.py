@@ -24,9 +24,7 @@ ax[1].set_ylabel('change of reaction\_time [seconds]');
 plt.savefig("figure_1.png")
 
 #plot_movie
-import shutil
 import numpy as np
-import matplotlib.pyplot as plt
 from time import sleep
 
 #load data
