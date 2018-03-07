@@ -598,7 +598,7 @@ public class ApplicationRunner implements Runnable{
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
 						timeString+ "." + restartOutFileExtension);
 			}else{
-				this.restartOutFileExtension=".zip"; //zip extension for kalmanfilters
+				this.restartOutFileExtension="zip"; //zip extension for kalmanfilters
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
 				String timeString="";
 				if(addRestartTimeTag){
