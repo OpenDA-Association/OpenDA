@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class SwapStateFile implements IDataObject {
 	public static final String PRESSURE_HEAD_ROOT_ZONE = "pressureHeadRootZone";
@@ -43,22 +44,39 @@ public class SwapStateFile implements IDataObject {
 
 	@Override
 	public void finish() {
+		//long start = System.currentTimeMillis();
 		SwapStateExchangeItem swapStateExchangeItem = exchangeItems.get(PRESSURE_HEAD_ROOT_ZONE);
-		double[] doubles = swapStateExchangeItem.getValuesAsDoubles();
+		byte[][] bytesArray = convertDoublesToStringBytes(swapStateExchangeItem);
+		/*long convertEnd = System.currentTimeMillis();
+		System.out.println("Millis passed during convert: " + (convertEnd - start));*/
+		editFile(bytesArray);
+		/*long writeEnd = System.currentTimeMillis();
+		System.out.println("Millis passed during write: " + (writeEnd - convertEnd));*/
+	}
+
+	private void editFile(byte[][] bytesArray) {
 		try (RandomAccessFile raf = new RandomAccessFile(sourceFile, "rw")) {
 			int pos = headerBytesLength + START_LENGTH + LINE_BREAK_LENGTH;
 			raf.seek(pos);
-			for (int i = 0; i < doubles.length; i++) {
-				String replace = formatDouble.format(doubles[i]);
-				if (replace.length() < 14) replace += ' ';
-				raf.write(replace.getBytes());
+			for (int i = 0; i < bytesArray.length; i++) {
+				raf.write(bytesArray[i]);
 				pos += lineBytesLength + LINE_BREAK_LENGTH;
 				raf.seek(pos);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
+	}
 
+	private byte[][] convertDoublesToStringBytes(SwapStateExchangeItem swapStateExchangeItem) {
+		double[] doubles = swapStateExchangeItem.getValuesAsDoubles();
+		byte[][] bytesArray = new byte[doubles.length][];
+		for (int i = 0; i < doubles.length; i++) {
+			String replace = formatDouble.format(doubles[i]);
+			if (replace.length() < 14) replace += ' ';
+			bytesArray[i] = replace.getBytes();
+		}
+		return bytesArray;
 	}
 
 	@Override
@@ -66,60 +84,43 @@ public class SwapStateFile implements IDataObject {
 		String argument = arguments[0];
 		sourceFile = new File(workingDir, argument);
 		if (!sourceFile.exists()) throw new RuntimeException("Swap state file " + sourceFile + " not found.");
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
+		List<String> strings = getStringsFrom16thColumn();
+		/*long readEnd = System.currentTimeMillis();
+		System.out.println("Millis passed during read: " + (readEnd - start));*/
+		int size = strings.size();
+		double[] doubles = convertStringsToDoubles(strings, size);
+
+		/*long convertEnd = System.currentTimeMillis();
+		System.out.println("Millis passed during convert: " + (convertEnd - readEnd));*/
+
+		SwapStateExchangeItem pressureHeadRootZone = new SwapStateExchangeItem(PRESSURE_HEAD_ROOT_ZONE, doubles);
+		exchangeItems.put(PRESSURE_HEAD_ROOT_ZONE, pressureHeadRootZone);
+	}
+
+	private double[] convertStringsToDoubles(List<String> strings, int size) {
+		double[] doubles = new double[size];
+		for (int i = 0; i < size; i++) {
+			String s = strings.get(i);
+			doubles[i] = Double.valueOf(s);
+		}
+		return doubles;
+	}
+
+	private ArrayList<String> getStringsFrom16thColumn() {
 		ArrayList<String> strings = new ArrayList<>();
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(sourceFile))) {
 			headerBytesLength = bufferedReader.readLine().getBytes().length;
 			String line = bufferedReader.readLine();
 			lineBytesLength = line.getBytes().length;
 			while (line != null) {
-				String substring = line.substring(221, 235);
-				strings.add(substring);
+				strings.add(line.substring(221, 235));
 				line = bufferedReader.readLine();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		int size = strings.size();
-		double[] doubles = new double[size];
-		for (int i = 0; i < size; i++) {
-			String s = strings.get(i);
-			doubles[i] = Double.valueOf(s);
-		}
-		long readEnd = System.currentTimeMillis();
-		System.out.println("Millis passed during read: " + (readEnd - start));
-
-		SwapStateExchangeItem pressureHeadRootZone = new SwapStateExchangeItem(PRESSURE_HEAD_ROOT_ZONE, doubles);
-		exchangeItems.put(PRESSURE_HEAD_ROOT_ZONE, pressureHeadRootZone);
+		return strings;
 	}
 
-	private void streamReadReplaceWrite(File sourceFile, FileWriter fileWriter, double[] doubles, DecimalFormat formatDouble) {
-		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(sourceFile));
-			 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-			String headerLine = bufferedReader.readLine();
-			bufferedWriter.write(headerLine);
-			String line = bufferedReader.readLine();
-			for (int i = 0; i < doubles.length; i++) {
-				//String[] split = line.split("\\s+");
-				//bufferedWriter.write(String.join(" ", split));
-				String startString = line.substring(0, 221);
-				StringBuilder builder = new StringBuilder(startString);
-				String replaceString = formatDouble.format(doubles[i]);
-				String padded = String.format("%1$14s", replaceString);
-				builder.append(padded);
-				/*builder.append(replaceString);*/
-				String endString = line.substring(235);
-				builder.append(endString);
-				String edit = builder.toString();
-				/*if (edit.length() != line.length()) {
-					System.out.println("Here");
-				}*/
-				bufferedWriter.write(edit);
-				bufferedWriter.newLine();
-				line = bufferedReader.readLine();
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
 }
