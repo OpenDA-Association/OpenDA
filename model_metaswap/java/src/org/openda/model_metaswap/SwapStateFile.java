@@ -12,16 +12,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class SwapStateFile implements IDataObject {
-	public static final String PRESSURE_HEAD_ROOT_ZONE = "pressureHeadRootZone";
+	static final String PRESSURE_HEAD_ROOT_ZONE = "pressureHeadRootZone";
 	private LinkedHashMap<String, SwapStateExchangeItem> exchangeItems = new LinkedHashMap<>();
-	private int headerBytesLength;
-	private int lineBytesLength;
+	private int headerBytesLength = 0;
+	private int lineBytesLength = 0;
 	private static final int START_LENGTH = 221;
 	private static final int LINE_BREAK_LENGTH = 2;
 	private final DecimalFormat formatDouble;
-	private File sourceFile;
+	private File sourceFile = null;
 
-	public SwapStateFile() {
+	SwapStateFile() {
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator('.');
 		formatDouble = new DecimalFormat(" 0.0000000E00;-0.0000000E00", symbols);
@@ -44,14 +44,9 @@ public class SwapStateFile implements IDataObject {
 
 	@Override
 	public void finish() {
-		//long start = System.currentTimeMillis();
 		SwapStateExchangeItem swapStateExchangeItem = exchangeItems.get(PRESSURE_HEAD_ROOT_ZONE);
 		byte[][] bytesArray = convertDoublesToStringBytes(swapStateExchangeItem);
-		/*long convertEnd = System.currentTimeMillis();
-		System.out.println("Millis passed during convert: " + (convertEnd - start));*/
 		editFile(bytesArray);
-		/*long writeEnd = System.currentTimeMillis();
-		System.out.println("Millis passed during write: " + (writeEnd - convertEnd));*/
 	}
 
 	private void editFile(byte[][] bytesArray) {
@@ -84,21 +79,16 @@ public class SwapStateFile implements IDataObject {
 		String argument = arguments[0];
 		sourceFile = new File(workingDir, argument);
 		if (!sourceFile.exists()) throw new RuntimeException("Swap state file " + sourceFile + " not found.");
-		//long start = System.currentTimeMillis();
+
 		List<String> strings = getStringsFrom16thColumn();
-		/*long readEnd = System.currentTimeMillis();
-		System.out.println("Millis passed during read: " + (readEnd - start));*/
 		int size = strings.size();
 		double[] doubles = convertStringsToDoubles(strings, size);
-
-		/*long convertEnd = System.currentTimeMillis();
-		System.out.println("Millis passed during convert: " + (convertEnd - readEnd));*/
 
 		SwapStateExchangeItem pressureHeadRootZone = new SwapStateExchangeItem(PRESSURE_HEAD_ROOT_ZONE, doubles);
 		exchangeItems.put(PRESSURE_HEAD_ROOT_ZONE, pressureHeadRootZone);
 	}
 
-	private double[] convertStringsToDoubles(List<String> strings, int size) {
+	private static double[] convertStringsToDoubles(List<String> strings, int size) {
 		double[] doubles = new double[size];
 		for (int i = 0; i < size; i++) {
 			String s = strings.get(i);
