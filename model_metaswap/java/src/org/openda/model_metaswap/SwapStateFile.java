@@ -44,8 +44,8 @@ public class SwapStateFile implements IDataObject {
 
 	@Override
 	public void finish() {
-		if (exchangeItems.isEmpty()) return;
 		SwapStateExchangeItem swapStateExchangeItem = exchangeItems.get(PRESSURE_HEAD_ROOT_ZONE);
+		if (swapStateExchangeItem.getValuesAsDoubles().length == 0) return;
 		byte[][] bytesArray = convertDoublesToStringBytes(swapStateExchangeItem);
 		editFile(bytesArray);
 	}
@@ -82,7 +82,11 @@ public class SwapStateFile implements IDataObject {
 		if (!sourceFile.exists()) throw new RuntimeException("Swap state file " + sourceFile + " not found.");
 
 		List<String> strings = getStringsFrom16thColumn();
-		if (strings == null) return;
+		if (strings == null) {
+			SwapStateExchangeItem pressureHeadRootZone = new SwapStateExchangeItem(PRESSURE_HEAD_ROOT_ZONE, new double[0]);
+			exchangeItems.put(PRESSURE_HEAD_ROOT_ZONE, pressureHeadRootZone);
+			return;
+		}
 		int size = strings.size();
 		double[] doubles = convertStringsToDoubles(strings, size);
 
