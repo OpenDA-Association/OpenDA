@@ -21,7 +21,7 @@ public class SwapStateFile implements IDataObject {
 	private final DecimalFormat formatDouble;
 	private File sourceFile = null;
 
-	SwapStateFile() {
+	public SwapStateFile() {
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator('.');
 		formatDouble = new DecimalFormat(" 0.0000000E00;-0.0000000E00", symbols);
