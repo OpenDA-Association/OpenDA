@@ -95,7 +95,7 @@
 
    <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
    <target name="build-x64" depends="build, copy-x64-executables, copy-jre" />
-   <target name="build-windows" depends="build-x64" />
+   <target name="build-windows" depends="build-win32" />
 
    <target name="doc" depends="init">
       <docmodule module="core" />
