@@ -14,8 +14,12 @@
             ======================================================================================
             ant help                     --> print this help
             ant build                    --> compile, make jar and copy resources for all platforms
-            ant build-win32              --> compile, make jar, copy resources for windows
-          	                                 remove resources for other platforms
+            ant build-win32              --> compile, make jar, copy resources for win32
+                                             remove resources for other platforms
+            ant build-x64                --> compile, make jar, copy resources for x64
+                                             remove resources for other platforms
+            ant build-windows            --> compile, make jar, copy resources for windows
+                                             remove resources for other platforms
             ant clean                    --> remove output
             ant doc                      --> collect documentation
             ant test                     --> execute unit tests (excluding broken tests)
@@ -90,6 +94,8 @@
    </target>
 
    <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
+   <target name="build-x64" depends="build, copy-x64-executables, copy-jre" />
+   <target name="build-windows" depends="build-x64" />
 
    <target name="doc" depends="init">
       <docmodule module="core" />
@@ -196,17 +202,44 @@
 
     </target>
 
+	<target name="copy-x64-executables">
+
+		<copy  toDir="${modulebindir}" flatten="yes">
+			<fileset dir = "${modulebindir}/win64_ifort"/>
+		</copy>
+
+		<delete dir="${modulebindir}/win32_gfortran"/>
+		<delete dir="${modulebindir}/win32_ifort"/>
+		<delete dir="${modulebindir}/darwin"/>
+		<delete dir="${modulebindir}/linux32_gnu"/>
+		<delete dir="${modulebindir}/linux64_gnu"/>
+
+		<delete>
+			<fileset dir="${modulebindir}">
+				<include name="**.sh"/>
+				<include name="**.csh"/>
+			</fileset>
+		</delete>
+
+	</target>
+
 	<target name="copy-jre-win32">
 		<copy  toDir="${projectjre}">
 		    <fileset dir = "thirdparty/jre/jre1.8.0_144_win32"/>
 		</copy>
 	</target>
 
-<!--
-===========================================================================
-	Tools: init, clean, etc.
-===========================================================================
--->
+	<target name="copy-jre">
+		<copy  toDir="${projectjre}">
+			<fileset dir = "thirdparty/jre/jre1.8.0_144_win32"/>
+		</copy>
+	</target>
+
+	<!--
+	===========================================================================
+		Tools: init, clean, etc.
+	===========================================================================
+	-->
     <target name="init">
         <tstamp/>
 	    <mkdir dir="${projectbin}"/>
@@ -279,7 +312,9 @@
   -->
     <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
     <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
-    <target name="zip-windows" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-win32" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+	<target name="zip-x64" depends="svn-revision,build-x64,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+	<target name="zip-windows" depends="zip-x64" />
 
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
