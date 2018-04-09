@@ -392,7 +392,6 @@
     <target name="zip-win32" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
     <target name="zip-x64" depends="svn-revision,build-x64,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
     <target name="zip-windows" depends="zip-x64" />
-
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
 	        <zipfileset dir="core" prefix="openda_${version}/public/core" excludes="*.svn" />
