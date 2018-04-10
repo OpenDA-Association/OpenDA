@@ -29,7 +29,6 @@ import org.openda.utils.Results;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 /**
@@ -58,7 +57,7 @@ public class EfdcDLL {
     private static int currentModelInstance = -1;
 
     //store the model instance identifier for this instance.
-    private int myModelInstanceId = -1;
+    private int myModelInstanceId;
 
     /**
      * Initialize the dummy library
@@ -94,7 +93,7 @@ public class EfdcDLL {
                 throw new RuntimeException("Could not create canonical path for " + modelTemplateDir.getAbsolutePath());
             }
 
-            String nativeDllPath = null;
+            String nativeDllPath;
             try {
                 nativeDllPath = modelDll.getCanonicalFile().getAbsolutePath();
             } catch (IOException e) {
@@ -128,7 +127,6 @@ public class EfdcDLL {
     }
 
     public static void free() {
-        // TODO: check how DLL can be unloaded
         nativeDLL.m_openda_wrapper_destroy_();
     }
 
@@ -272,7 +270,7 @@ public class EfdcDLL {
     /**
      * Returns timeseriesCount for a scalar time series parameter.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      * @return timeseriesCount
      */
     public int getTimeSeriesCount(int parameterNumber) {
@@ -296,7 +294,7 @@ public class EfdcDLL {
     /**
      * Returns total valuesCount for grid parameter.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      * @return valuesCount
      */
     public int getValuesCount(int parameterNumber) {
@@ -312,7 +310,7 @@ public class EfdcDLL {
     /**
      * Returns cellCount for grid parameter.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      * @return cellCount
      */
     public int getCellCount(int parameterNumber) {
@@ -329,7 +327,7 @@ public class EfdcDLL {
     /**
      * Returns layer count for grid parameter.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      * @return layerCount
      */
     public int getLayerCount(int parameterNumber) {
@@ -383,8 +381,8 @@ public class EfdcDLL {
     /**
      * Returns timeCount for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
      * @return timeCount
      */
     private int getValuesCount(int parameterNumber, int locationNumber) {
@@ -402,8 +400,8 @@ public class EfdcDLL {
     /**
      * Returns timeCount for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
      * @return timeCount
      */
     private int getTimesCount(int parameterNumber, int locationNumber) {
@@ -421,8 +419,8 @@ public class EfdcDLL {
     /**
      * Returns layer count for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
      * @return layerCount
      */
     /**
@@ -443,10 +441,10 @@ public class EfdcDLL {
      * This should return te product of timesCount and layerCount
      *
      *
-     * @param parameterNumber
-     * @param locationNumber
-     * @param startTime
-     * @param endTime
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
+     * @param startTime       start time (inclusive)
+     * @param endTime         end time (inclusive)
      * @return valuesCount
      */
     private int getValuesCount(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
@@ -467,10 +465,10 @@ public class EfdcDLL {
      * Returns the number of time series (number of locations)
      * for the given subPeriod of a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
-     * @param startTime
-     * @param endTime
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
+     * @param startTime       start time (inclusive)
+     * @param endTime         end time (inclusive)
      * @return timesCount
      */
     private int getTimesCount(int parameterNumber, int locationNumber, ITime startTime, ITime endTime) {
@@ -490,8 +488,8 @@ public class EfdcDLL {
     /**
      * Returns layer Count for the given subPeriod of a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
      * @param startTime
      * @param endTime
      * @return layerCount
@@ -515,8 +513,8 @@ public class EfdcDLL {
     /**
      * Returns all times for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
      * @return times
      */
     public double[] getTimesForExchangeItem(int parameterNumber, int locationNumber) {
@@ -544,9 +542,9 @@ public class EfdcDLL {
     /**
      * Sets all times for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
-     * @param times
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
+     * @param times            times
      */
     public void setTimesForExchangeItem(int parameterNumber, int locationNumber, double[] times) {
         int timesCount = times.length;
@@ -572,7 +570,7 @@ public class EfdcDLL {
     /**
      * Returns all values for the current time for a grid parameter.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      * @return values
      */
     public double[] getValues(int parameterNumber) {
@@ -582,7 +580,7 @@ public class EfdcDLL {
     /**
      * Returns selected values for the current time for a grid parameter.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      * @param startIndex inclusive
      * @param endIndex inclusive
      * @return values
@@ -606,11 +604,11 @@ public class EfdcDLL {
     /**
      * Returns selected values for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param locationNumber
-     * @param layerNumber
-     * @param startTime
-     * @param endTime
+     * @param parameterNumber identifier for parameter
+     * @param locationNumber  array index of location
+     * @param layerNumber     array index of layer
+     * @param startTime       start time (inclusive)
+     * @param endTime         end time (inclusive)
      * @return values
      */
     public double[] getValues(int parameterNumber, int locationNumber, int layerNumber, ITime startTime, ITime endTime) {
@@ -632,8 +630,8 @@ public class EfdcDLL {
     /**
      * Sets all values for a grid parameter.
      *
-     * @param parameterNumber
-     * @param values
+     * @param parameterNumber identifier for parameter
+     * @param values          array with new values
      */
     public void setValues(int parameterNumber, double[] values) {
         setValues(parameterNumber, values, 0, getValuesCount(parameterNumber) - 1);
@@ -642,10 +640,10 @@ public class EfdcDLL {
     /**
      * Sets selected values for a grid parameter.
      *
-     * @param parameterNumber
-     * @param values
-     * @param startIndex inclusive
-     * @param endIndex inclusive
+     * @param parameterNumber identifier for parameter
+     * @param values          array with niew values
+     * @param startIndex      start index of target array (inclusive)
+     * @param endIndex        last index of target array  (inclusive)
      */
     public void setValues(int parameterNumber, double[] values, int startIndex, int endIndex) {
         int valuesCount = endIndex-startIndex+1;
@@ -670,12 +668,12 @@ public class EfdcDLL {
     /**
      * Sets selected values for a scalar time series parameter.
      *
-     * @param parameterNumber
-     * @param values
-     * @param locationNumber
-     * @param layerNumber
-     * @param startTime
-     * @param endTime
+     * @param parameterNumber identifier for parameter
+     * @param values          new values
+     * @param locationNumber  array index of location
+     * @param layerNumber     array index of layer
+     * @param startTime       start time (inclusive)
+     * @param endTime         end time (inclusive)
      */
     public void setValues(int parameterNumber, double[] values, int locationNumber, int layerNumber, ITime startTime, ITime endTime) {
         int valuesCount = getValuesCount(parameterNumber, locationNumber, startTime, endTime);
@@ -699,7 +697,7 @@ public class EfdcDLL {
     /**
      * Checks if exchangeItem is supported by current EFDC configuration.
      *
-     * @param parameterNumber
+     * @param parameterNumber identifier for parameter
      */
     public boolean supportsExchangeItem(int parameterNumber) {
         int retVal = nativeDLL.m_openda_wrapper_supports_exchange_item_(
@@ -720,8 +718,8 @@ public class EfdcDLL {
      * Each referenceTimePeriod is in turn divided in a number of timeSteps.
      * This method can only be called for a time period that is equal to an integer number of referenceTimePeriods.
      *
-     * @param fromTime
-     * @param toTime
+     * @param fromTime start time for compute action
+     * @param toTime   end time for compute action
      */
     public void compute(ITime fromTime, ITime toTime) {
         startModelInstanceAccess();

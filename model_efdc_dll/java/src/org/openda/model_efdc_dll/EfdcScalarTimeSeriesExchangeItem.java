@@ -53,12 +53,12 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 	private final EfdcDLL modelDll;
 
 	/**
-	 * @param locationNumber
-	 * @param parameterNumber
+	 * @param locationNumber   array index of location
+	 * @param parameterNumber  identifier of parameter
 	 * @param layerNumber can be null if no layers.
-	 * @param parameterId
-	 * @param role
-	 * @param modelDll
+	 * @param parameterId      name of parameter
+	 * @param role             exchange item role
+	 * @param modelDll         object for access to EFDC dll
 	 */
 	public EfdcScalarTimeSeriesExchangeItem(int locationNumber, int parameterNumber, Integer layerNumber, String parameterId, Role role, EfdcDLL modelDll) {
 		//id = "locationNumber_layerNumber.parameterId"
