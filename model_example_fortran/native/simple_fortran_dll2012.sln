@@ -1,0 +1,48 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "simpleFortranDLL", "simple_fortran_dll\simpleFortranDLL.vfproj", "{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}"
+EndProject
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "simpleFortranDLLTest", "simple_fortran_dll_test\simpleFortranDLLTest.vfproj", "{53092D83-F093-4E98-901B-443085395123}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78} = {9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release(64bit)|Win32 = Release(64bit)|Win32
+		Release(64bit)|x64 = Release(64bit)|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|Win32.Build.0 = Debug|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|x64.ActiveCfg = Debug|x64
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Debug|x64.Build.0 = Debug|x64
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release(64bit)|Win32.ActiveCfg = Release(64bit)|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release(64bit)|Win32.Build.0 = Release(64bit)|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release(64bit)|x64.ActiveCfg = Release(64bit)|x64
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release(64bit)|x64.Build.0 = Release(64bit)|x64
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|Win32.ActiveCfg = Release|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|Win32.Build.0 = Release|Win32
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|x64.ActiveCfg = Release|x64
+		{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}.Release|x64.Build.0 = Release|x64
+		{53092D83-F093-4E98-901B-443085395123}.Debug|Win32.ActiveCfg = Debug|Win32
+		{53092D83-F093-4E98-901B-443085395123}.Debug|Win32.Build.0 = Debug|Win32
+		{53092D83-F093-4E98-901B-443085395123}.Debug|x64.ActiveCfg = Debug|x64
+		{53092D83-F093-4E98-901B-443085395123}.Debug|x64.Build.0 = Debug|x64
+		{53092D83-F093-4E98-901B-443085395123}.Release(64bit)|Win32.ActiveCfg = Release(64bit)|Win32
+		{53092D83-F093-4E98-901B-443085395123}.Release(64bit)|Win32.Build.0 = Release(64bit)|Win32
+		{53092D83-F093-4E98-901B-443085395123}.Release(64bit)|x64.ActiveCfg = Release(64bit)|x64
+		{53092D83-F093-4E98-901B-443085395123}.Release(64bit)|x64.Build.0 = Release(64bit)|x64
+		{53092D83-F093-4E98-901B-443085395123}.Release|Win32.ActiveCfg = Release|Win32
+		{53092D83-F093-4E98-901B-443085395123}.Release|Win32.Build.0 = Release|Win32
+		{53092D83-F093-4E98-901B-443085395123}.Release|x64.ActiveCfg = Release|x64
+		{53092D83-F093-4E98-901B-443085395123}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
