@@ -53,7 +53,7 @@ public class SimpleModelInstanceTest extends TestCase {
         File moduleRootDir = testData.getModuleRootDir();
         File simpleFortranDll;
         if (SimpleModelDLL.RUNNING_ON_WINDOWS) {
-        	simpleFortranDll = new File(moduleRootDir, "native_bin/win32_ifort/simplefortrandll.dll");
+        	simpleFortranDll = new File(moduleRootDir, "native_bin/win" + System.getProperty("sun.arch.data.model") + "_ifort/simplefortrandll.dll");
         } else {
         	simpleFortranDll = new File(moduleRootDir, "native_bin/linux32_gnu/libsimplefortran.so");
         }
