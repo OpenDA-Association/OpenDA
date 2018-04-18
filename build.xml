@@ -298,26 +298,41 @@
 		</classpath>
 	</taskdef>
 
-    <target name="svn-revision" >
-		<svn>
-			<status path="." revisionProperty="svn.revision" />
-		</svn>
-		<echo>Subversion Revision: ${svn.revision}</echo>
-	</target>
+    <available file=".git" type="dir" property="do.git" />
+    <available file=".svn" type="dir" property="do.svn" />
+    <target name="vc-revision" depends="git-revision,svn-revision" >
+        <echo>Suversion Revision or Git commit hash: ${vc.revision}</echo>
+    </target>
+
+    <target name="svn-revision" if="do.svn">
+	<svn>
+            <status path="." revisionProperty="svn.revision" />
+	</svn>
+	<echo>Subversion Revision: ${svn.revision}</echo>
+        <property name="vc.revision" value="r${svn.revision}" />
+    </target>
+
+    <target name="git-revision" if="do.git">
+    <exec executable="git" outputproperty="git.revision">
+      <arg value="rev-parse"/>
+      <arg value="HEAD"/>
+    </exec>
+    <property name="vc.revision" value="${git.revision}" />
+    </target> 
 
   <!--
   ============================================================================================================
   build archives
   ============================================================================================================
   -->
-    <target name="zip" depends="svn-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
-    <target name="tgz" depends="svn-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
-    <target name="zip-win32" depends="svn-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
-	<target name="zip-x64" depends="svn-revision,build-x64,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
-	<target name="zip-windows" depends="zip-win32" />
+    <target name="zip" depends="vc-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
+    <target name="tgz" depends="vc-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
+    <target name="zip-win32" depends="vc-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-x64" depends="vc-revision,build-x64,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
+    <target name="zip-windows" depends="zip-win32" />
 
     <target name="zip-src">
-        <zip destfile="${projectname}_${version}_r${svn.revision}_src.zip">
+        <zip destfile="${projectname}_${version}_${vc.revision}_src.zip">
 	        <zipfileset dir="core" prefix="openda_${version}/public/core" excludes="*.svn" />
 	        <zipfileset dir="models" prefix="openda_${version}/public/models" excludes="*.svn" />
 	        <zipfileset dir="observers" prefix="openda_${version}/public/observers" excludes="*.svn" />
@@ -344,7 +359,7 @@
 	        <zipfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
 	        <zipfileset dir="." includes="project.properties" prefix="openda_${version}/public" />
 	        <zipfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
-	        <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_r${svn.revision}.txt"/>
+	        <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_${vc.revision}.txt"/>
 	        <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/public/license.txt"/>
 	        <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/public/release-notes-2.0.pdf"/>-->
 	        <zipfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}/public" />
@@ -354,13 +369,13 @@
     </target>
 
     <target name="zip-bin">
-        <zip destfile="${projectname}_${version}_r${svn.revision}_bin.zip">
+        <zip destfile="${projectname}_${version}_${vc.revision}_bin.zip">
             <zipfileset dir="bin" prefix="openda_${version}/bin"/>
             <zipfileset dir="doc" prefix="openda_${version}/doc"/>
             <zipfileset dir="examples" prefix="openda_${version}/examples" excludes="*.svn" />
             <zipfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
             <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
-            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.revision}.txt"/>
             <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
             <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
             <zipfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}" />
@@ -368,31 +383,31 @@
     </target>
 
     <target name="zip-doc">
-        <zip destfile="${projectname}_${version}_r${svn.revision}_doc.zip">
+        <zip destfile="${projectname}_${version}_${vc.revision}_doc.zip">
             <zipfileset dir="doc" prefix="openda_${version}/doc"/>
-            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.revision}.txt"/>
             <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
             <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
         </zip>
     </target>
 
     <target name="zip-schemas">
-        <zip destfile="${projectname}_${version}_r${svn.revision}_schemas.zip">
+        <zip destfile="${projectname}_${version}_${vc.revision}_schemas.zip">
             <zipfileset dir="xmlSchemas" prefix="openda_${version}" excludes="*.svn" />
-            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.revision}.txt"/>
             <zipfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
             <!--<zipfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
         </zip>
     </target>
 
-    <target name="zip-jre" depends="svn-revision">
-        <zip destfile="${projectname}_${version}_r${svn.revision}_jre.zip">
+    <target name="zip-jre" depends="vc-revision">
+        <zip destfile="${projectname}_${version}_${vc.revision}_jre.zip">
             <zipfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
         </zip>
     </target>
 
-    <target name="zip-native" depends="svn-revision">
-       <zip destfile="${projectname}_${version}_r${svn.revision}_native.zip">
+    <target name="zip-native" depends="vc-revision">
+       <zip destfile="${projectname}_${version}_${vc.revision}_native.zip">
 	       <zipfileset dir="core/native_bin/win64_ifort" prefix="win64_ifort"/>
        </zip>
     </target>
@@ -401,14 +416,14 @@
         <attribute name="testname" default="NOT SET"/>
         <sequential>
             <echo>zip example @{testname}</echo>
-            <zip destfile="${projectname}_${version}_r${svn.revision}_examples_@{testname}.zip">
+            <zip destfile="${projectname}_${version}_${vc.revision}_examples_@{testname}.zip">
                 <zipfileset dir="examples/@{testname}"  prefix="openda_${version}/examples/@{testname}"/>
-                <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+                <zipfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${rvc.evision}.txt"/>
             </zip>
         </sequential>
     </macrodef>
 
-    <target name="zip-tests" depends="svn-revision,tests" > <!-- depends="svn-revision"> -->
+    <target name="zip-tests" depends="vc-revision,tests" > <!-- depends="vc-revision"> -->
         <ziptest testname="core" />
         <ziptest testname="model_example_blackbox" />
     	<ziptest testname="model_swan" />
@@ -423,13 +438,13 @@
 
     <!-- tgz archives: mainly for non-windows platforms as they preserve file-permissions -->
     <target name="tgz-bin">
-        <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_bin.tgz">
+        <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_bin.tgz">
 	        <tarfileset dir="bin" prefix="openda_${version}/bin" excludes="*.sh" />
 	        <tarfileset dir="bin" includes="*.sh" filemode="755" prefix="openda_${version}/bin" />
             <tarfileset dir="doc" prefix="openda_${version}/doc"/>
             <tarfileset dir="examples" prefix="openda_${version}/examples" excludes="*.svn" />
             <tarfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
-            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.evision}.txt"/>
             <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
             <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
             <tarfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}" />
@@ -437,7 +452,7 @@
     </target>
 
     <target name="tgz-src">
-      <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_src.tgz">
+      <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_src.tgz">
 	    <tarfileset dir="core" prefix="openda_${version}/public/core" excludes="*.svn" >
 	    <exclude name="bin_external/*.sh" />
 	  </tarfileset>
@@ -467,7 +482,7 @@
 	  <tarfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
 	  <tarfileset dir="." includes="project.properties" prefix="openda_${version}/public" />
 	  <tarfileset dir="." includes="unit_test_info.txt"  prefix="openda_${version}/public" />
-	  <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_r${svn.revision}.txt"/>
+	  <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/public/README_${vc.revision}.txt"/>
 	  <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/public/license.txt"/>
 	  <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/public/release-notes-2.0.pdf"/>-->
 	  <tarfileset dir="." includes="select_this_version.sh"  prefix="openda_${version}/public" />
@@ -477,18 +492,18 @@
     </target>
 
     <target name="tgz-doc">
-        <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_doc.tgz">
+        <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_doc.tgz">
             <tarfileset dir="doc" prefix="openda_${version}/doc" />
-            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.revision}.txt"/>
             <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
             <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
         </tar>
     </target>
 
-    <target name="tgz-schemas">
-      <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_schemas.tgz">
+    <target name="tgz-schemas" depends="vc-revision" >
+      <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_schemas.tgz">
          <tarfileset dir="xmlSchemas" prefix="openda_${version}" excludes="*.svn" />
-         <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+         <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.revision}.txt"/>
          <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
          <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
       </tar>
@@ -498,23 +513,22 @@
        <attribute name="testname" default="NOT SET"/>
        <sequential>
          <echo>zip example @{testname}</echo>
-         <tar destfile="${projectname}_${version}_r${svn.revision}_examples_@{testname}.tgz">
+         <tar destfile="${projectname}_${version}_${vc.revision}_examples_@{testname}.tgz">
             <tarfileset dir="examples/@{testname}"  prefix="openda_${version}/examples/@{testname}"/>
-            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_r${svn.revision}.txt"/>
+            <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.revision}.txt"/>
          </tar>
        </sequential>
     </macrodef>
 
-    <target name="tgz-tests" depends="svn-revision,tests" > <!-- depends="svn-revision"> -->
+    <target name="tgz-tests" depends="vc-revision,tests" > <!-- depends="vc-revision"> -->
         <tgztest testname="core" />
         <tgztest testname="model_example_blackbox" />
     	<tgztest testname="model_swan" />
         <tgztest testname="model_delft3d" />
         <tgztest testname="model_dflowfm_blackbox" />
     </target>
-
-    <target name="tgz-native" depends="svn-revision,chmod-linux-native" >
-       <tar compression="gzip" destfile="${projectname}_${version}_r${svn.revision}_native.tgz">
+    <target name="tgz-native" depends="vc-revision,chmod-linux-native" >
+       <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_native.tgz">
 	       <tarfileset dir="core/native_bin/linux64_gnu" prefix="linux64_gnu" excludes="*.svn"/>
 	       <tarfileset dir="core/native_bin/darwin" prefix="darwin" excludes="*.svn"/>
        </tar>
