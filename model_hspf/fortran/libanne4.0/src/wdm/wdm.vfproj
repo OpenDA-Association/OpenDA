@@ -58,9 +58,7 @@
 		<File RelativePath=".\tsbufr.for"/>
 		<File RelativePath=".\wdatm2.for"/>
 		<File RelativePath=".\wdatrb.for"/>
-		<File RelativePath=".\wdatru.for"/>
 		<File RelativePath=".\wdbtch.for"/>
-		<File RelativePath=".\wddlg.for"/>
 		<File RelativePath=".\wdexpt.for"/>
 		<File RelativePath=".\wdimpt.for"/>
 		<File RelativePath=".\wdmid.for"/>

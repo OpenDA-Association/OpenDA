@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectType="typeStaticLibrary" ProjectCreator="Intel Fortran" Keyword="Static Library" Version="11.0" ProjectIdGuid="{26B645AA-E006-43C7-B183-C824CB495898}">
+	<Platforms>
+		<Platform Name="Win32"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/></Configuration>
+		<Configuration Name="Release|Win32" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLibrarianTool"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd">
+		<File RelativePath=".\cclbak.inc"/>
+		<File RelativePath=".\cdrloc.inc"/>
+		<File RelativePath=".\cfbuff.inc"/>
+		<File RelativePath=".\color.inc"/>
+		<File RelativePath=".\cqrsp.inc"/>
+		<File RelativePath=".\cscren.inc"/>
+		<File RelativePath=".\czglvl.inc"/>
+		<File RelativePath=".\czhide.inc"/>
+		<File RelativePath=".\czoptn.inc"/>
+		<File RelativePath=".\fmsgwd.inc"/>
+		<File RelativePath=".\fversn.inc"/>
+		<File RelativePath=".\pmxfld.inc"/>
+		<File RelativePath=".\pmxrsl.inc"/>
+		<File RelativePath=".\zcntrl.inc"/></Filter>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<File RelativePath=".\adutil.for"/>
+		<File RelativePath=".\msexpt.for"/>
+		<File RelativePath=".\msimpt.for"/>
+		<File RelativePath=".\msopen.for"/>
+		<File RelativePath=".\prtfil.for"/>
+		<File RelativePath=".\utwdmd.for"/>
+		<File RelativePath=".\utwdmf.for"/>
+		<File RelativePath=".\utwdt1.for"/>
+		<File RelativePath=".\wdatm1.for"/>
+		<File RelativePath=".\wdmchk.for"/>
+		<File RelativePath=".\wdmess.for"/>
+		<File RelativePath=".\wdoppc.for"/>
+		<File RelativePath=".\ztwdmf.for"/></Filter></Files>
+	<Globals/></VisualStudioProject>
