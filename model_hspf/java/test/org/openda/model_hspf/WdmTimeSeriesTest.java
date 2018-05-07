@@ -532,6 +532,9 @@ public class WdmTimeSeriesTest extends TestCase {
         File templateInputFile = new File(testRunDataDir, "wdmTimeSeriesTest/template/nd-out.wdm");
         //copy output uci file that should be modified from template to work directory to start with a fresh file before running the test.
         File templateOutputFile = new File(testRunDataDir, "wdmTimeSeriesTest/template/ndriver_state_file.uci");
+		String defaultUciFilename = "ndriver_state_file_default.uci";
+		File defaultUciFile = new File(testRunDataDir + "/wdmTimeSeriesTest/work/", defaultUciFilename);
+		BBUtils.copyFile(templateOutputFile, defaultUciFile);
 
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
         String inputFileName = "wdmTimeSeriesTest/work/nd-out.wdm";
@@ -568,7 +571,7 @@ public class WdmTimeSeriesTest extends TestCase {
                 + TimeUtils.mjdToString(startDate) + " " + TimeUtils.mjdToString(endDate);
 
         String outputClassName = UciStateDataObject.class.getName();
-        String outputArgumentsAsOne = TimeUtils.mjdToString(endDate) + " -3600";
+        String outputArgumentsAsOne = TimeUtils.mjdToString(endDate) + " -3600 " + defaultUciFilename;
 
         DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFile.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
 
