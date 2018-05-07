@@ -155,7 +155,7 @@ C     + + + END SPECIFICATIONS + + +
 C
       IF (INIT .EQ. 0) THEN
 C       initialize output screen
-        OPEN(UNIT=6,FILE='CON',ACCESS='TRANSPARENT',BLOCKSIZE=4096)
+        OPEN(UNIT=6,FILE='CON',ACCESS='STREAM',BLOCKSIZE=4096)
         INIT= 1
         CFORE= FORE
         CBACK= BACK
@@ -218,7 +218,7 @@ C     + + + END SPECIFICATIONS + + +
 C
       IF (INIT .EQ. 0) THEN
 C       initialize keyboard
-        OPEN(UNIT=5,FILE='CON',ACCESS='TRANSPARENT',BLOCKSIZE=256)
+        OPEN(UNIT=5,FILE='CON',ACCESS='STREAM',BLOCKSIZE=256)
 C       allow control-break
 C       CALL BREAK ()
         INIT= 1
@@ -280,7 +280,7 @@ C     + + + LOCAL VARIABLES + + +
 C
 C     + + + INTRINSICS + + +
 C     SYSTEM is a Lahey extension
-      INTRINSIC   LEN_TRIM, SYSTEM
+      ! INTRINSIC   LEN_TRIM, SYSTEM
 C
 C     + + + INPUT FORMATS + + +
  1000 FORMAT(A12)
