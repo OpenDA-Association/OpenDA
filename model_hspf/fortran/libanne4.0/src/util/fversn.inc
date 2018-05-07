@@ -1,0 +1,11 @@
+C     version information: VERSN = char*64
+      VERSN = '@(#) libanne4.0 - util: Feb 25, 2002'
+      VERSN = '@(#)     lib - Version 2.0, 1994/05/27 (HASS tape 2)'
+      VERSN = '@(#)     lib - Version 2.1, update 1994/08/11'
+      VERSN = '@(#)     lib - Version 3.0, 1996/03/01 (HASS tape 3)'
+      VERSN = '@(#)     lib - Version 3.1, update 1996/12/11'
+      VERSN = '@(#)     lib - Version 3.2, update 1998/03/06'
+      VERSN = '@(#) libanne - Version 4.0, Feb 25, 2002'
+      VERSN = '@(#) Reports:  WRIR draft, Kittle, Flynn, Hummel, Lumb'
+      VERSN = '@(#)           EPA/600/3-89/034, Kittle, Hummel, Imhoff'
+      VERSN = '@(#) Contact:  h2osoft@usgs.gov'

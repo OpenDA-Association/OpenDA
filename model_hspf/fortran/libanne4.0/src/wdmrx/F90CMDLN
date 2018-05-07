@@ -1,0 +1,1 @@
+wdmrx.obj patch1.obj -EXE ..\..\bin\wdmrxl.exe -bind -nwin -vm -LIB ..\..\lib\wdm.lib ..\..\lib\adwdm.lib ..\..\lib\util.lib 

@@ -1,0 +1,311 @@
+Lahey MAKE, Version 5.2L
+(C) Copyright OPUS Software 1987-91.  All rights reserved.
+
+lf90 utchar.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utchar.for.
+Compiling program unit CARVAR at line 5.
+Compiling program unit CHDECE at line 54.
+Compiling program unit CHINTE at line 108.
+Compiling program unit CHKSTR at line 176.
+Compiling program unit CHRCHR at line 218.
+Compiling program unit CHRDEC at line 248.
+Compiling program unit CHRDPR at line 426.
+Compiling program unit CHRDEL at line 597.
+Compiling program unit CHRDIG at line 636.
+Compiling program unit CHRINS at line 669.
+Compiling program unit CHRINT at line 714.
+Compiling program unit CKNBLK at line 750.
+Compiling program unit CRINTE at line 782.
+Compiling program unit CRINTX at line 867.
+Compiling program unit CTRSTR at line 904.
+Compiling program unit CVARAR at line 964.
+Compiling program unit DATCHR at line 1013.
+Compiling program unit DATLST at line 1071.
+Compiling program unit DECCHR at line 1209.
+Compiling program unit DPRCHR at line 1681.
+Compiling program unit RWDIGS at line 2154.
+Compiling program unit DWDIGS at line 2186.
+Compiling program unit DECCHX at line 2218.
+Compiling program unit DIGCHR at line 2402.
+Compiling program unit INTCHR at line 2435.
+Compiling program unit LENSTR at line 2560.
+Compiling program unit LFTSTR at line 2596.
+Compiling program unit PRTLIN at line 2648.
+Compiling program unit PRTLNO at line 2729.
+Compiling program unit STRFND at line 2805.
+Compiling program unit STRLNX at line 2849.
+Compiling program unit ZLJUST at line 2898.
+Compiling program unit PRTSTR at line 2941.
+Compiling program unit ZLNTXT at line 2984.
+Compiling program unit ZTRIM at line 3030.
+Compiling program unit QUPCAS at line 3071.
+Compiling program unit CKNBLV at line 3108.
+Compiling program unit RHTSTR at line 3143.
+Compiling program unit ADCOMA at line 3194.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file utchar.for.
+
+lf90 utdate.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utdate.for.
+Compiling program unit CKDATE at line 5.
+Compiling program unit CMPTIM at line 62.
+Compiling program unit CMPTM2 at line 179.
+Compiling program unit DATCHK at line 265.
+Compiling program unit DATNXT at line 349.
+Compiling program unit DAYMON at line 468.
+Compiling program unit DLIMIT at line 533.
+Compiling program unit JDMODY at line 592.
+Compiling program unit NUMPTS at line 640.
+Compiling program unit TIMADD at line 732.
+Compiling program unit TIMBAK at line 904.
+Compiling program unit TIMCHK at line 1029.
+Compiling program unit TIMCNV at line 1121.
+Compiling program unit TIMCVT at line 1164.
+Compiling program unit TIMDIF at line 1212.
+Compiling program unit TIMDFX at line 1340.
+Compiling program unit DTMCMN at line 1406.
+Compiling program unit DATCMN at line 1508.
+Compiling program unit GTMONC at line 1576.
+Compiling program unit DHLEAP at line 1670.
+Line 1729, file utdate.for
+          LPYRS = DHLPYR ( DATBGN(1)+1, 4 )
+                  |
+WARNING -- FUNCTION (DHLPYR) is referenced with a different number of
+arguments than a previous reference.
+
+Compiling program unit DHBEGN at line 1746.
+Compiling program unit DHINCR at line 1853.
+Compiling program unit DBNDRY at line 1910.
+Compiling program unit DCALCT at line 1960.
+Compiling program unit DHLPYR at line 2003.
+Performing interprocedural optimizations...
+Encountered 0 errors, 1 warning in file utdate.for.
+
+lf90 utgnrl.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utgnrl.for.
+Compiling program unit CNVTDG at line 4.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file utgnrl.for.
+
+lf90 utnumb.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utnumb.for.
+Compiling program unit CHKINT at line 5.
+Compiling program unit CHKREA at line 41.
+Compiling program unit CHKDPR at line 116.
+Compiling program unit NUMINI at line 191.
+Line 262, file utnumb.for
+          R4 = RNOP(R3)
+          |
+WARNING -- REAL scalar (R4) is set but never used.
+
+Line 267, file utnumb.for
+          IF (R1 .NE. R3) THEN
+              |
+WARNING -- Floating-point comparisons for equality may produce inconsistent
+results.
+
+Line 296, file utnumb.for
+          IF (D1 .NE. D3) THEN
+              |
+WARNING -- Floating-point comparisons for equality may produce inconsistent
+results.
+
+Compiling program unit DECPRC at line 376.
+Compiling program unit SHIFTD at line 420.
+Compiling program unit SHIFTI at line 486.
+Compiling program unit SHIFTR at line 550.
+Compiling program unit UTVRSN at line 616.
+Line 2, file fversn.inc
+      VERSN = '@(#) lib3.2 -  util:  revised, March 6, 1998'
+      |
+WARNING -- CHARACTER scalar (VERSN) is set but never used.
+
+Performing interprocedural optimizations...
+Encountered 0 errors, 4 warnings in file utnumb.for.
+
+lf90 utsort.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utsort.for.
+Compiling program unit ASRTC at line 5.
+Compiling program unit ASRTI at line 88.
+Compiling program unit ASRTIP at line 156.
+Compiling program unit ASRTR at line 193.
+Compiling program unit ASRTRP at line 262.
+Compiling program unit ASRTD at line 300.
+Compiling program unit ASRTDP at line 416.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file utsort.for.
+
+lf90 utscxx.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utscxx.for.
+Compiling program unit QCHR at line 4.
+Compiling program unit SCCUHM at line 41.
+Compiling program unit SCPRST at line 69.
+Compiling program unit SCPRBF at line 100.
+Compiling program unit COLSET at line 189.
+Compiling program unit COLGET at line 230.
+Compiling program unit ZBEEP at line 253.
+Compiling program unit ZFMTWR at line 277.
+Compiling program unit ZWRSCR at line 315.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file utscxx.for.
+
+lf90 utcp90.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utcp90.for.
+Compiling program unit COPYC at line 4.
+Compiling program unit COPYD at line 30.
+Compiling program unit COPYI at line 56.
+Compiling program unit COPYR at line 82.
+Compiling program unit ZIPC at line 108.
+Compiling program unit ZIPD at line 133.
+Compiling program unit ZIPI at line 159.
+Compiling program unit ZIPR at line 185.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file utcp90.for.
+
+lf90 dttm90.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file dttm90.for.
+Compiling program unit WDSYSD at line 4.
+Line 34, file dttm90.for
+      CALL DATE_AND_TIME (DATE,TIME,ZONE,VALUES)
+                                    |    |
+WARNING -- CHARACTER scalar (ZONE) is set but never used.
+WARNING -- INTEGER array (VALUES) is set but never used.
+
+Compiling program unit SYDATM at line 43.
+Line 72, file dttm90.for
+      CALL DATE_AND_TIME (DATE,TIME,ZONE,VALUES)
+                          |    |    |
+WARNING -- CHARACTER scalar (DATE) is set but never used.
+WARNING -- CHARACTER scalar (TIME) is set but never used.
+WARNING -- CHARACTER scalar (ZONE) is set but never used.
+
+Compiling program unit SYDATE at line 86.
+Line 112, file dttm90.for
+      CALL DATE_AND_TIME (DATE,TIME,ZONE,VALUES)
+                          |    |    |
+WARNING -- CHARACTER scalar (DATE) is set but never used.
+WARNING -- CHARACTER scalar (TIME) is set but never used.
+WARNING -- CHARACTER scalar (ZONE) is set but never used.
+
+Compiling program unit SYTIME at line 123.
+Line 147, file dttm90.for
+      CALL DATE_AND_TIME (DATE,TIME,ZONE,VALUES)
+                          |    |    |
+WARNING -- CHARACTER scalar (DATE) is set but never used.
+WARNING -- CHARACTER scalar (TIME) is set but never used.
+WARNING -- CHARACTER scalar (ZONE) is set but never used.
+
+Performing interprocedural optimizations...
+Encountered 0 errors, 11 warnings in file dttm90.for.
+
+lf90 ckfspc.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file ckfspc.for.
+Compiling program unit CKFSPC at line 4.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file ckfspc.for.
+
+lf90 uscnlf90.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file uscnlf90.for.
+Compiling program unit SCCLAL at line 4.
+Compiling program unit SCCLR at line 44.
+Compiling program unit SCCUMV at line 79.
+Compiling program unit SCCURM at line 137.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file uscnlf90.for.
+
+lf90 utsclf90.for -c -chk -o3 -tp
+Lahey Fortran 90 Compiler Release 4.50i  S/N: F9368907  
+Copyright (C) 1994-1999 Lahey Computer Systems.  All rights reserved.
+Copyright (C) 1985-1999 Intel Corp.  All rights reserved.
+Registered to:	DIS                                    
+		US Geological Survey                   
+Compiling file utsclf90.for.
+Compiling program unit GETKEY at line 4.
+Compiling program unit SCPRBN at line 115.
+Compiling program unit C1IN at line 204.
+Compiling program unit C1INT at line 253.
+Compiling program unit OSDIRL at line 276.
+Performing interprocedural optimizations...
+Encountered 0 errors, 0 warnings in file utsclf90.for.
+
+
+making ..\..\lib\util.lib
+386lib ..\..\lib\util.lib -replace utchar.obj utdate.obj utgnrl.obj utnumb.obj utsort.obj utscxx.obj utcp90.obj dttm90.obj ckfspc.obj uscnlf90.obj utsclf90.obj
+386|LIB: 8.02 -- Copyright (C) 1986-93 Phar Lap Software, Inc.
+Warning LIB.4070: Library file "..\..\lib\util.lib" does not exist, so it will
+                  be created.
+Warning LIB.4100: Module "utchar" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utdate" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utgnrl" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utnumb" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utsort" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utscxx" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utcp90" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "dttm90" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "ckfspc" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "uscnlf90" not found -- module was added, not
+                  replaced.
+Warning LIB.4100: Module "utsclf90" not found -- module was added, not
+                  replaced.
+
+Done making all for util, files are now up-to-date.
+

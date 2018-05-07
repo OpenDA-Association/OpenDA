@@ -1,0 +1,43 @@
+146c146,147
+< C     EXTERNAL    FLUSH
+---
+> C     FLUSH is a Lahey extension
+>       EXTERNAL    FLUSH
+271c272,273
+< C     dummy for link
+---
+> C     Gets listing of file names matching pattern.  Returns file names
+> C     in UMFNMS array.
+278c280
+<       INTEGER       I
+---
+>       INTEGER       I, J
+281a284,290
+> C     + + + INTRINSICS + + +
+>       INTRINSIC   LEN_TRIM
+> C
+> C     + + + EXTERNALS + + +
+> C     SYSTEM is a Lahey extension
+>       EXTERNAL   SYSTEM
+> C
+290c299
+<       SYSCMD= 'DIR'
+---
+>       SYSCMD= 'DIR '
+293,295c302
+<       IF (I .GT. 0) THEN
+<         SYSCMD= SYSCMD(1:4) // ' ' // WRKDIR(1:I)
+<       END IF
+---
+>       J= LEN_TRIM(IFNAME)
+297d303
+<       I= LEN_TRIM(IFNAME)
+299c305,310
+<         SYSCMD= SYSCMD(1:LEN_TRIM(SYSCMD)) // ' ' // IFNAME(1:I)
+---
+>         SYSCMD= SYSCMD(1:4) // WRKDIR(1:I)
+>         IF (J .GT. 0) THEN
+>           SYSCMD= SYSCMD(1:LEN_TRIM(SYSCMD)) // IFNAME(1:J)
+>         END IF
+>       ELSE IF (J .GT. 0) THEN
+>         SYSCMD= SYSCMD(1:4) // IFNAME(1:J)

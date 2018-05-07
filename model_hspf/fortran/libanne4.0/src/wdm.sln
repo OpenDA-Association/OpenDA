@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "wdm", "wdm\wdm.vfproj", "{51E3450B-8F69-4C1E-A8BB-C683301E1848}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B64EA552-26F0-4A32-B37F-077CD57CEDBD} = {B64EA552-26F0-4A32-B37F-077CD57CEDBD}
+	EndProjectSection
+EndProject
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "util", "util\util.vfproj", "{B64EA552-26F0-4A32-B37F-077CD57CEDBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51E3450B-8F69-4C1E-A8BB-C683301E1848}.Debug|x64.ActiveCfg = Debug|x64
+		{51E3450B-8F69-4C1E-A8BB-C683301E1848}.Debug|x64.Build.0 = Debug|x64
+		{51E3450B-8F69-4C1E-A8BB-C683301E1848}.Release|x64.ActiveCfg = Release|x64
+		{51E3450B-8F69-4C1E-A8BB-C683301E1848}.Release|x64.Build.0 = Release|x64
+		{B64EA552-26F0-4A32-B37F-077CD57CEDBD}.Debug|x64.ActiveCfg = Debug|x64
+		{B64EA552-26F0-4A32-B37F-077CD57CEDBD}.Debug|x64.Build.0 = Debug|x64
+		{B64EA552-26F0-4A32-B37F-077CD57CEDBD}.Release|x64.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

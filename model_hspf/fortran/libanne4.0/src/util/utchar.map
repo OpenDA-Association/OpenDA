@@ -1,0 +1,884 @@
+386|LINK: 9.1fix1 -- Copyright (C) 1986-98 Phar Lap Software, Inc.
+
+
+Linking for 32-bit protected mode
+
+
+Command line switches:
+
+-libpath t:\lf9045\lib
+@C:\WINNT\TEMP\LFT5.
+"t:\lf9045\bin\lfinitw.obj"
+"t:\lf9045\bin\ptest.obj"
+"utchar.obj"
+-lib import1.lib import2.lib import3.lib
+-lib lf90w.lib
+-lib lf90wio.lib
+-stack 20000h
+"t:\lf9045\bin\lfsold.obj"
+-cvsym
+-nocvpack
+-publist byvalue
+-exeformat portexe
+-subsystem console
+-start mainCRTStartup
+-exeformat portexe
+-stub lfdummy.exe
+-offset 10000h
+-order class CODE
+-order class DATA
+-order class CONST
+-order class BSS
+-order class STACK
+-order class RSRC
+-empty class BSS
+-exe "utchar.exe"
+-twocase
+
+Error LINK.3230: Undefined symbol "NUMINI" in module "utchar.for" at location
+                 00011244.
+Error LINK.3230: Undefined symbol "NUMINI" in module "utchar.for" at location
+                 0001160B.
+Error LINK.3230: Undefined symbol "NUMINI" in module "utchar.for" at location
+                 00011ADB.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 000129B7.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 00012B9F.
+Error LINK.3230: Undefined symbol "DAYMON" in module "utchar.for" at location
+                 00012BF7.
+Error LINK.3230: Undefined symbol "NUMINI" in module "utchar.for" at location
+                 000130AE.
+Error LINK.3230: Undefined symbol "NUMINI" in module "utchar.for" at location
+                 00014B9E.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 00017F38.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 000180E0.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 0001833C.
+Error LINK.3230: Undefined symbol "COPYC" in module "utchar.for" at location
+                 0001838C.
+Error LINK.3230: Undefined symbol "COPYC" in module "utchar.for" at location
+                 000183C2.
+Error LINK.3230: Undefined symbol "COPYC" in module "utchar.for" at location
+                 000183F3.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 000189AE.
+Error LINK.3230: Undefined symbol "ZIPC" in module "utchar.for" at location
+                 00019757.
+Error LINK.3230: Undefined symbol "COPYC" in module "utchar.for" at location
+                 00019971.
+Error LINK.3230: Undefined symbol "NUMINI" in module "utchar.for" at location
+                 0001A3FB.
+Error LINK.3230: Undefined symbol "_lc__FLG2RT" in module "LFINITWC.C" at
+                 location 0001AFC6.
+Error LINK.3230: Undefined symbol "_lf_main" in module "LFINITWC.C" at
+                 location 0001B09C.
+
+Input module(s):
+
+Stub "lfdummy" from file "t:\lf9045\bin\lfdummy.exe"  [Fri Apr 28 10:31:17 2000].
+"lfinitw" from file "t:\lf9045\bin\lfinitw.obj"  [Fri Nov 19 21:30:34 1999].
+"pentest" from file "t:\lf9045\bin\ptest.obj"  [Fri Nov 19 21:30:34 1999].
+"utchar" from file "utchar.obj"  [Fri Mar 29 10:34:08 2002].
+"lfsold" from file "t:\lf9045\bin\lfsold.obj"  [Fri Nov 19 21:30:34 1999].
+"ExitProcess" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"flog10" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"flog10f" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_dd_v" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_di_v" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_ii_v" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_ri_v" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_rr_v" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"INDEX" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"LFINITWC" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"BC_DEFS" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"log10" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"log10f" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"powf" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"ERRNO" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"CSTRING" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"winstack" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_tbl1" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"pow_tbl2" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"exp" from file "t:\lf9045\lib\lf90w.lib"  [Wed Nov 25 13:31:58 1998].
+"EREPORT" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FCHEQS" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FCHCMP" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FMTCK" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FMTIN" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"fmtin2" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FMTOT" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"fmtot2" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"IOMISC" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"MINIMUM" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"chkstack" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"LF_LOW" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"LFCTYPE" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FHEAP" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"initfpu" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"LFINITWD" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"errpub" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FLG2RT" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"AFMTIO" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FCB" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FMTIO" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"location" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"PAUSE" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"MEMORY" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"COREIO" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"LFGETENV" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"mw_asm0" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"LFEXIT" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"ADIRECT" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"FMTNOMOD" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"OPEN" from file "t:\lf9045\lib\lf90wio.lib"  [Wed May 12 10:14:26 1999].
+"GetStockObject" from file "t:\lf9045\lib\import1.lib"  [Fri Nov 19 21:30:34 1999].
+"DefWindowProcA" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"DestroyWindow" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"LoadCursorA" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"LoadIconA" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"MessageBoxA" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"PostQuitMessage" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"RegisterClassA" from file "t:\lf9045\lib\import2.lib"  [Fri Nov 19 21:30:34 1999].
+"AllocConsole" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"CloseHandle" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"CreateFileA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"DeleteFileA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"FreeConsole" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetCommandLineA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetCurrentDirectoryA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetEnvironmentVariableA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetFileSize" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetFileType" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetLastError" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetModuleFileNameA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetModuleHandleA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetProcessHeap" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetStartupInfoA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetStdHandle" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetSystemTime" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"GetVersion" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"HeapAlloc" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"ReadConsoleA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"ReadFile" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"SetEndOfFile" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"SetFilePointer" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"WriteFile" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+"lstrlenA" from file "t:\lf9045\lib\import3.lib"  [Fri Nov 19 21:30:34 1999].
+
+
+Segment map
+
+     Name         Group         Class     Type   Offset     Size
+------------  ------------  ------------  ----  --------  --------
+REAL STUB                                       00010000  0000036C
+PE HEADER                                       0001036C  000000F8
+OBJECT TABLE                                    00010464  00000118
+_TEXT         CGROUP        CODE          PUB   00011000  00016628
+.jdata                      CODE          PUB   00027630  000000CC
+_DATA         DGROUP        DATA          PUB   000276FC  00001A7C
+CONST2        DGROUP        DATA          PUB   00029178  00000000
+_data                       DATA          PUB   00029180  00000C20
+CONST         DGROUP        CONST         PUB   00029DA0  00000424
+_BSS          DGROUP        BSS           PUB   0002A1C4  00003068
+c_common      DGROUP        BSS           PUB   0002D230  00000040
+??stack                     STACK         STK   0002D270  00004000
+.idata                      IMPORTS       PUB   00032000  000003C8
+.edata                      EXPORTS       PUB   00033000  00000C00
+.reloc                      RELOCS        PUB   00034000  00002800
+
+
+Portable .EXE (PE) Sections
+
+  Name    Address     Size    File Off  File Sz    Flags
+--------  --------  --------  --------  --------  --------
+CODE      00011000  000191C4  00000600  00019200  E0000020  
+.bss      0002B000  00006270  00000000  00006400  C0000080  
+.idata    00032000  000003C8  00019800  00000400  C0000040  
+.edata    00033000  00000C00  00019C00  00000C00  C0000040  
+.reloc    00034000  00002800  0001A800  00002800  42000040  
+$$DOSX    00037000  00000200  0001D000  00000200  42000040  
+.debug    00038000  0000001C  0001D200  00000200  40000040  
+
+
+Public symbols
+
+  Value      Name
+--------  ------------
+00000001     $$lfdummy
+
+00011000  Segment _TEXT of module lfinitw.asm (t:\lf9045\bin\lfinitw.obj)
+00011000     mainCRTStartup
+00011000     _lf_bottom_label
+0001104A     WinMainCRTStartup
+00011064     _atexit
+
+00011068  Segment _TEXT of module pentest.c (t:\lf9045\bin\ptest.obj)
+00011068     _lf_penttest
+0001108C     do_test
+
+000110C0  Segment _TEXT of module utchar.for (utchar.obj)
+000110C0     CARVAR
+00011220     CHDECE
+000112A0     CHINTE
+00011480     CHKSTR
+00011570     CHRCHR
+000115F0     CHRDEC
+00011AC0     CHRDPR
+00011FD0     CHRDEL
+000120B0     CHRDIG
+00012130     CHRINS
+00012270     CHRINT
+000122C0     CKNBLK
+00012350     CRINTE
+00012590     CRINTX
+000125E0     CTRSTR
+00012810     CVARAR
+00012960     DATCHR
+00012B50     DATLST
+00013090     DECCHR
+00014B80     DPRCHR
+000172D0     RWDIGS
+00017390     DWDIGS
+00017470     DECCHX
+00017E10     DIGCHR
+00017ED0     INTCHR
+00018400     LENSTR
+00018490     LFTSTR
+00018690     PRTLIN
+00018970     PRTLNO
+00018BF0     STRFND
+00018D70     STRLNX
+00018E60     ZLJUST
+00018FC0     PRTSTR
+00019110     ZLNTXT
+00019230     ZTRIM
+00019320     QUPCAS
+000193D0     CKNBLV
+00019470     RHTSTR
+000195E0     ADCOMA
+000199C0     DECCHX___1
+0001A360     CHRCHR___1
+0001A3E0     CHRDEC___1
+0001A8B0     CHRDIG___1
+0001A930     LENSTR___1
+0001A9C0     LFTSTR___1
+0001ABC0     RHTSTR___1
+
+0001AD30  Segment _TEXT of module lfsold.asm (t:\lf9045\bin\lfsold.obj)
+0001AD30     _lf_sold_early_exit
+0001AD3D     _lf_main_error
+0001AD3E     _lf_sold_NDP_error
+0001AD3F     _lf_null_proc
+
+0001AD40  Segment _TEXT of module flog10.c (t:\lf9045\lib\lf90w.lib)
+0001AD40     _lflog10
+
+0001AD74  Segment _TEXT of module flog10f.c (t:\lf9045\lib\lf90w.lib)
+0001AD74     _lflog10f
+
+0001ADA8  Segment _TEXT of module pow_dd_v.c (t:\lf9045\lib\lf90w.lib)
+0001ADA8     _lfpow_dd_val
+
+0001ADC0  Segment _TEXT of module pow_di_v.c (t:\lf9045\lib\lf90w.lib)
+0001ADC0     _lfpow_di_val
+
+0001AE30  Segment _TEXT of module pow_ii_v.c (t:\lf9045\lib\lf90w.lib)
+0001AE30     _lfpow_ii_val
+
+0001AE94  Segment _TEXT of module pow_ri_v.c (t:\lf9045\lib\lf90w.lib)
+0001AE94     _lfpow_ri_val
+
+0001AF04  Segment _TEXT of module pow_rr_v.c (t:\lf9045\lib\lf90w.lib)
+0001AF04     _lfpow_rr_val
+
+0001AF14  Segment _TEXT of module INDEX.C (t:\lf9045\lib\lf90w.lib)
+0001AF14     _lf_index
+
+0001AFB4  Segment _TEXT of module LFINITWC.C (t:\lf9045\lib\lf90w.lib)
+0001B0A4     _lf_initialize
+
+0001B0C0  Segment _TEXT of module pow.asm (t:\lf9045\lib\lf90w.lib)
+0001B0C0     _lf_pow
+
+0001B680  Segment _TEXT of module log10.asm (t:\lf9045\lib\lf90w.lib)
+0001B680     _lf_log10
+
+0001B750  Segment _TEXT of module log10f.asm (t:\lf9045\lib\lf90w.lib)
+0001B750     _lf_log10f
+
+0001B7FC  Segment _TEXT of module powf.c (t:\lf9045\lib\lf90w.lib)
+0001B7FC     _lf_powf
+
+0001B81C  Segment _TEXT of module CSTRING.C (t:\lf9045\lib\lf90w.lib)
+0001B81C     _lf_strcpy
+0001B838     _lf_strncpy
+0001B86B     _lf_strchr
+0001B886     _lf_memcmp
+0001B8BA     _lf_memicmp
+0001B938     _lf_memchr
+0001B956     _lf_memmem
+0001B9E4     _lf_strstr
+0001BA27     _lf_strpbrk
+0001BA53     memcpy
+0001BA76     memset
+
+0001BAA0  Segment _TEXT of module exp.asm (t:\lf9045\lib\lf90w.lib)
+0001BAA0     _lf_exp
+
+0001BC00  Segment _TEXT of module EREPORT.C (t:\lf9045\lib\lf90wio.lib)
+0001BE68     _lf_emit_error
+0001C428     _lf_iostat_msg_subroutine
+0001C4EF     _lf_io_emit_err
+0001C51F     _lf_absolute_error
+0001C52D     _lf_exception
+0001C54B     _lf_rt_io_error
+0001C569     _lfacos_error
+0001C572     _lfasin_error
+0001C57B     _lfcosh_error
+0001C584     _lfexp_error
+0001C58D     _lfno_exp_error
+0001C58E     _lflog10_error
+0001C597     _lflog_error
+0001C5A0     _lfsinh_error
+0001C5A9     _lfsqrt_error
+0001C5B2     _lfcabs_error
+0001C5BB     _lfccos_error
+0001C5C4     _lfcexp_error
+0001C5CD     _lfclog_error
+0001C5D6     _lfcsin_error
+0001C5DF     _lfcsqrt_error
+0001C5E8     _lfpower_error
+0001C5F1     _lfc_div_c_error
+0001C5FA     _lfz_div_z_error
+0001C603     _lfrc_div_error
+0001C60C     _lfdz_div_error
+0001C615     _lf_fmalloc_error
+0001C61E     _lf_stack_error
+0001C63B     _lf_vect_len_error
+0001C65F     _lf_intrin_error
+0001C9F2     _lf_trace_back
+0001CE8A     _lf_newmodule
+
+0001CF04  Segment _TEXT of module FCHEQS.C (t:\lf9045\lib\lf90wio.lib)
+0001CF04     _lf_fcheqs
+
+0001CF8C  Segment _TEXT of module FCHCMP.C (t:\lf9045\lib\lf90wio.lib)
+0001CF8C     _lf_fchcmp
+
+0001D00C  Segment _TEXT of module FMTCK.C (t:\lf9045\lib\lf90wio.lib)
+0001D00C     _lf_fmtck
+
+0001E080  Segment _TEXT of module FMTIN.C (t:\lf9045\lib\lf90wio.lib)
+0001E080     _lf_intzf
+0001E209     _lf_intzfa
+0001E29F     _lf_indnf
+0001E330     _lf_indnfa
+0001E379     _lf_q_fmt_input
+0001E477     _lf_recover_error
+0001E512     _lf_init_dec_scan
+0001E527     _lf_scan_digits
+0001E5FE     _lf_skip_spaces
+0001E635     _lf_EOL_FF
+0001E657     _lf_ascii_to_long
+0001E6A1     _lf_dcode
+0001E70B     _lf_char_free_fmt_input
+0001E894     _lf_isdigit
+0001E8A6     _lf_toupper
+
+0001E8C8  Segment _TEXT of module fmtin2.c (t:\lf9045\lib\lf90wio.lib)
+0001E8C8     _lf_incmx8
+0001E8F0     _lf_incmx16
+0001EF08     _lf_ascii_to_float
+0001FA24     _lf_inrel4
+0001FA48     _lf_inint4
+0001FA6C     _lf_inint8
+0001FA90     _lf_inint1
+0001FAB4     _lf_inint2
+0001FAD8     _lf_inlog4
+0001FAFC     _lf_inlog1
+0001FBB8     _lf_inchr
+0001FE3C     _lf_delimitr
+0001FE9C     _lf_inrel8
+
+0001FEC0  Segment _TEXT of module FMTOT.C (t:\lf9045\lib\lf90wio.lib)
+0001FEC0     _lf_ontzf
+0002007A     _lf_ontzfa
+000200D9     _lf_ncode
+00020146     _lf_otdnf
+000201D8     _lf_margin_check
+00020275     _lf_a_fmt_output
+
+00020350  Segment _TEXT of module fmtot2.c (t:\lf9045\lib\lf90wio.lib)
+00020380     _lf_otrel4
+000203DC     _lf_otrel8
+00020438     _lf_otint1
+00020484     _lf_otint2
+000204D0     _lf_otint4
+0002051C     _lf_otint8
+00020608     _lf_otcmx8
+00020668     _lf_otcmx16
+000207F0     _lf_otlog1
+00020814     _lf_otlog4
+000208E8     _lf_otchr
+00021ABC     _lf_output_fill
+00021F60     _lf_dpowuw
+
+00021FA4  Segment _TEXT of module IOMISC.C (t:\lf9045\lib\lf90wio.lib)
+00021FA4     _lf_set_read_mode
+00022005     _lf_set_write_mode
+0002209C     _lf_truncate
+00022127     _lf_unit_check
+0002214E     _lf_cmp_name
+0002218E     _lf_strcat
+000221C4     _lf_strcmpr
+0002227B     _lf_memcmpr
+000222A7     _lf_strcopy
+000222E5     _lf_memcopy
+00022305     _lf__gpvc
+00022397     _lf__back1_sequential
+00022432     _lf_set_record
+0002248A     _lf__drst
+00022765     _lf_read_buffer
+000228A0     _lf_ensure_tty
+000229E2     _lf_flush_unit
+00022A2E     _lf_set_iostat
+00022A52     _lf_set_io_callback
+
+00022AA4  Segment _TEXT of module MINIMUM.C (t:\lf9045\lib\lf90wio.lib)
+00022AA4     _lf_fndunit
+00022AE0     _lf_delfcb
+00022B1D     _lf_tag_fcb
+00022B45     _lf_conflsh
+00022BAA     _lf_stop
+00022BBA     _lf_stop1
+00022CA6     _lf_7_close
+00022D92     _lf_write_buffer
+00022E55     _lf_alloc_buffer
+00022E90     _lf_set_name
+00022F3F     _lf_get_byte
+00022FAA     _lf_next_buffer
+00022FD6     _lf_put_byte
+0002306F     _lf_next_wr_buffer
+
+000230D0  Segment _TEXT of module chkstack.asm (t:\lf9045\lib\lf90wio.lib)
+000230D0     _lf_check_stack
+
+0002312C  Segment _TEXT of module LF_LOW.C (t:\lf9045\lib\lf90wio.lib)
+0002312C     _lf_emit_message_string_c
+0002317B     _lf_emit_message_string_f
+000231C3     _lf_finish_message
+0002321A     _lf_MessageBox
+00023259     _lf_exitdos
+000232B3     _lf_atexit_f_shutdown
+000232DC     _lf_lsl_ds
+000232DF     windows_instance
+000232E5     _lf_display_error
+000232EA     _lf_set_stackmargin
+000232F7     _amsg_exit
+000232FC     _DLLEntryPoint
+
+00023374  Segment _TEXT of module FHEAP.C (t:\lf9045\lib\lf90wio.lib)
+00023374     _lf_fmalloc
+0002339B     _lf_ffree
+000233BC     _lf_frealloc
+0002340F     _lf_fcalloc
+
+00023420  Segment _TEXT of module initfpu.asm (t:\lf9045\lib\lf90wio.lib)
+00023420     _lf_init_fpu
+00023444     _ftol
+00023476     log10
+
+00023488  Segment _TEXT of module LFINITWD.C (t:\lf9045\lib\lf90wio.lib)
+00023488     _lf_WinMain
+000234A3     main
+0002357E     LF90WndProc
+000235D6     _lf_init_win
+00023662     _lf_init_command_line
+
+000236E0  Segment _TEXT of module errpub.asm (t:\lf9045\lib\lf90wio.lib)
+000236E0     _lf_ioerr
+00023701     _lf_intrin_stat
+00023728     _lf_clear_intrin_stat
+00023741     _lf_refbnda
+0002376F     _lf_altreta
+0002379D     _lf_subbnda
+000237CB     _lf_doinc0a
+000237F9     _lf_negdima
+00023827     _lf_shape_error
+00023858     _lf_assign_goto_error
+00023889     _lf_ptr_asgn_len_error
+000238BA     _lf_error_intrin
+
+000238D0  Segment _TEXT of module FLG2RT.C (t:\lf9045\lib\lf90wio.lib)
+000238D0     _lf_setup_flg2rt
+
+00023974  Segment _TEXT of module AFMTIO.C (t:\lf9045\lib\lf90wio.lib)
+00023974     _lf_get_n_fmt_bytes
+00023B37     _lf_put_n_fmt_bytes
+
+00023BF8  Segment _TEXT of module FCB.C (t:\lf9045\lib\lf90wio.lib)
+00023BF8     _lf_fndname
+00023C37     _lf_alocfcb
+00023CDB     _lf_reallocate_fcb
+00023D45     _lf_get_current_fcb
+00023D4B     _lf_release_fcb
+00023D99     _lf_check_for_io
+
+00023DB4  Segment _TEXT of module FMTIO.C (t:\lf9045\lib\lf90wio.lib)
+00023DB4     _lf_init_internal
+00023E99     _lf_determine_advance_type
+00023EEF     _lf_fmt_initialize
+00023F5A     _lf_fmt_list_process
+000248FA     _lf_check_position
+0002494B     _lf_end_input_record
+00024AA4     _lf_end_output_record
+00024C77     _lf_put_fmt_byte
+00024ECE     _lf_get_fmt_byte
+00024FBA     _lf_clenflag
+00024FE0     _lf_ntznumf
+00024FEB     _lf_itemsize
+
+00025050  Segment _TEXT of module location.asm (t:\lf9045\lib\lf90wio.lib)
+00025050     _lf_set_location
+
+00025060  Segment _TEXT of module PAUSE.C (t:\lf9045\lib\lf90wio.lib)
+00025060     _lf_pause1
+00025125     _lf_display
+00025164     _lf_show_prompt
+
+0002518C  Segment _TEXT of module MEMORY.C (t:\lf9045\lib\lf90wio.lib)
+0002518C     _lf_malloc
+000251A5     _lf_calloc
+00025201     _lf_realloc
+000252EC     _lf_free
+00025731     _lf_initialize_heap_manager
+
+0002573C  Segment _TEXT of module COREIO.C (t:\lf9045\lib\lf90wio.lib)
+0002573C     _lfsure_the_file
+00025950     _lf_7_open
+000259AB     _lf___close
+000259C6     _lf__lseek
+00025A00     _lf__lsize
+00025A17     _lf_7_read
+00025AB5     _lf_7_write
+00025AF4     _lf__unlink
+00025B0F     _lf_chopfil
+00025B48     _lf_create_scratch_file
+00025BC1     _lf_ensure_console_open
+00025BFF     _lf_findtemppath
+00025C3C     _lf_maketempfile
+00025D9A     _lf_set_device
+00025DDF     _lf_set_unbuffered
+
+00025E24  Segment _TEXT of module LFGETENV.C (t:\lf9045\lib\lf90wio.lib)
+00025E24     _lf_getenv
+00025E4B     _lf_get_env
+00025E9A     _lf_get_env_size
+
+00025F30  Segment _TEXT of module mw_asm0.asm (t:\lf9045\lib\lf90wio.lib)
+00025F30     _lftrunc_
+00025F30     _lftruncu_
+
+00025F90  Segment _TEXT of module LFEXIT.C (t:\lf9045\lib\lf90wio.lib)
+00025F90     _lf_exit
+
+00025FB8  Segment _TEXT of module ADIRECT.C (t:\lf9045\lib\lf90wio.lib)
+00025FB8     _lf_get_n_d
+000260B4     _lf_put_n_d
+
+000261EC  Segment _TEXT of module FMTNOMOD.C (t:\lf9045\lib\lf90wio.lib)
+000261EC     _lf_fmtmod
+
+000261F4  Segment _TEXT of module OPEN.C (t:\lf9045\lib\lf90wio.lib)
+000261F4     _lf_open
+00027376     _lfcheck_device_names
+000274CC     _lf_spindrift_open
+000275DE     _lf_spindrift_close
+00027610     _lf_spindrift_unit
+
+00027630  Segment .jdata
+00027630     GetStockObject
+00027636     AllocConsole
+0002763C     CloseHandle
+00027642     CreateFileA
+00027648     DeleteFileA
+0002764E     ExitProcess
+00027654     FreeConsole
+0002765A     GetCommandLineA
+00027660     GetCurrentDirectoryA
+00027666     GetEnvironmentVariableA
+0002766C     GetFileSize
+00027672     GetFileType
+00027678     GetLastError
+0002767E     GetModuleFileNameA
+00027684     GetModuleHandleA
+0002768A     GetProcessHeap
+00027690     GetStartupInfoA
+00027696     GetStdHandle
+0002769C     GetSystemTime
+000276A2     GetVersion
+000276A8     HeapAlloc
+000276AE     ReadConsoleA
+000276B4     ReadFile
+000276BA     SetEndOfFile
+000276C0     SetFilePointer
+000276C6     WriteFile
+000276CC     lstrlenA
+000276D2     DefWindowProcA
+000276D8     DestroyWindow
+000276DE     LoadCursorA
+000276E4     LoadIconA
+000276EA     MessageBoxA
+000276F0     PostQuitMessage
+000276F6     RegisterClassA
+
+00027730  Segment _DATA of module utchar.for (utchar.obj)
+00027DDC     _ip_CHRDEC_CHKORD_48_5_VARPACKET
+00027E6C     _ip_CHRDIG_TDIG_73_8_VARPACKET
+00027E78     _ip_DECCHX_L1_236_23_VARPACKET
+00027E7C     _ip_DECCHX_C1_234_23_VARPACKET
+00027E80     _ip_DECCHX_L20_233_23_VARPACKET
+00027E84     _ip_LFTSTR_BLNK_272_27_VARPACKET
+00027E88     _ip_RHTSTR_BLNK_356_38_VARPACKET
+
+00027E8C  Segment _DATA of module LFINITWC.C (t:\lf9045\lib\lf90w.lib)
+00027EC0     _lf_hInstance
+00027EC4     _lf_hPrevInstance
+00027EC8     _lf_lpCmdLine
+00027ECC     _lf_nCmdShow
+00027ED0     _environ
+00027ED4     __initenv
+00027ED8     _pgmptr
+00027EDC     _aenvptr
+00027EE0     _lf_bad_pentium_chip_message
+00027EE4     _lf_contact_intel_message
+00027EE8     _lf_intel_numbers_message
+
+00028050  Segment _DATA of module ERRNO.C (t:\lf9045\lib\lf90w.lib)
+00028050     _lf_errno
+
+000280A0  Segment _DATA of module EREPORT.C (t:\lf9045\lib\lf90wio.lib)
+000280E4     _lf_error_ebp
+000280E8     _lf_error_esp
+000280EC     _lf_error_eip
+000280F0     _lf_message_width
+000280F4     _lf_line_of_error
+000280F8     _lf_file_of_error
+
+00028428  Segment _DATA of module FMTIN.C (t:\lf9045\lib\lf90wio.lib)
+00028488     _lf_repeat_pointer
+
+000284B8  Segment _DATA of module fmtin2.c (t:\lf9045\lib\lf90wio.lib)
+00028518     _lf_input_fmt
+00028522     _lf_input_repeat_type
+0002852C     _lfrep_char_alloc
+00028534     _lf_repeat_length
+
+000285A8  Segment _DATA of module fmtot2.c (t:\lf9045\lib\lf90wio.lib)
+00028608     _lf_output_fmt
+00028620     _lf_max_print
+00028624     _lf_pfill
+
+0002867C  Segment _DATA of module IOMISC.C (t:\lf9045\lib\lf90wio.lib)
+000286F3     _lf__prompt
+
+0002870C  Segment _DATA of module MINIMUM.C (t:\lf9045\lib\lf90wio.lib)
+0002876C     _lf_iostat
+00028770     _lf_eip_of_error
+00028774     _lf_ebp_of_error
+00028778     _lf_err_position
+0002877C     _lf_err_fcb
+00028780     _lf_fcb_list
+00028784     _lf_curfcb
+
+0002879C  Segment _DATA of module LF_LOW.C (t:\lf9045\lib\lf90wio.lib)
+000287CE     _lf_rtp_flags
+000287D8     _lf_fpu_control_word
+000287DA     _lf_status
+000287DC     _lf_win32s_flag
+000287DD     _lf_console_open_flag
+000287DE     _lf_console_app_flag
+000287E0     _lf_trap_mask
+000287E4     _lf_stackmargin
+000287E8     _lf_env_pointer
+000287EC     _lf_command_tail_length
+000287F0     _lf_exit_func_addr
+000287F4     _lf_linked_with_c
+
+00028810  Segment _DATA of module LFCTYPE.C (t:\lf9045\lib\lf90wio.lib)
+0002886F     _lf_ctype_
+
+000289A4  Segment _DATA of module LFINITWD.C (t:\lf9045\lib\lf90wio.lib)
+000289D8     _osver
+000289DC     _winminor
+000289E0     _winmajor
+000289E4     _winver
+000289E8     _lf_codestart
+000289EC     _lf_codeend
+
+00028B1C  Segment _DATA of module FMTIO.C (t:\lf9045\lib\lf90wio.lib)
+00028B7C     _lf_output_append_reset_by_input
+00028B80     _lf_fmtflag
+00028B92     _lf_nl_flag
+00028B93     _lf_crrnt_char
+
+00029180  Segment _data of module pow_tbl1.asm (t:\lf9045\lib\lf90w.lib)
+00029180     inv_b_hi
+
+00029590  Segment _data of module pow_tbl2.asm (t:\lf9045\lib\lf90w.lib)
+00029590     t_hi
+00029998     t_lo
+
+0002B000  Segment _BSS of module utchar.for (utchar.obj)
+0002B554     _ip_RHTSTR_TLEN_353_38_VARPACKET
+0002B558     _ip_RHTSTR_I_354_38_VARPACKET
+0002B55C     _ip_RHTSTR_IS_357_38_VARPACKET
+0002B560     _ip_RHTSTR_I1_358_38_VARPACKET
+0002B564     _ip_RHTSTR_I2_359_38_VARPACKET
+0002B568     _ip_LFTSTR_TLEN_269_27_VARPACKET
+0002B56C     _ip_LFTSTR_I_270_27_VARPACKET
+0002B570     _ip_LFTSTR_IS_273_27_VARPACKET
+0002B574     _ip_LFTSTR_L_274_27_VARPACKET
+0002B578     _ip_LFTSTR_BUFF_275_27_VARPACKET
+0002B5FC     _ip_LFTSTR_K_276_27_VARPACKET
+0002B600     _ip_LENSTR_DONE_265_25_VARPACKET
+0002B604     _ip_LENSTR_LENT_266_25_VARPACKET
+0002B608     _ip_DECCHX_TSDIG_217_23_VARPACKET
+0002B60C     _ip_DECCHX_FORCE_219_23_VARPACKET
+0002B610     _ip_DECCHX_LDECPL_220_23_VARPACKET
+0002B614     _ip_DECCHX_JUST_221_23_VARPACKET
+0002B618     _ip_DECCHX_EQUIV_4EQUIVPACKET
+0002B624     _ip_DECCHX_I_222_23_VARPACKET
+0002B628     _ip_DECCHX_J_223_23_VARPACKET
+0002B62C     _ip_DECCHX_EQUIV_5EQUIVPACKET
+0002B640     _ip_DECCHX_EXPFLG_225_23_VARPACKET
+0002B644     _ip_DECCHX_RWRIT_226_23_VARPACKET
+0002B648     _ip_DECCHX_DPTFG_227_23_VARPACKET
+0002B64C     _ip_DECCHX_LDZRO_228_23_VARPACKET
+0002B650     _ip_DECCHX_FRSTD_229_23_VARPACKET
+0002B654     _ip_DECCHX_ITMP_230_23_VARPACKET
+0002B658     _ip_DECCHX_K_231_23_VARPACKET
+0002B65C     _ip_DECCHX_L_232_23_VARPACKET
+0002B660     _ip_DECCHX_MCRY_235_23_VARPACKET
+0002B664     _ip_CHRDIG_I_71_8_VARPACKET
+0002B668     _ip_CHRDEC_ERRREA_32_5_VARPACKET
+0002B66C     _ip_CHRDEC_ERFLG_33_5_VARPACKET
+0002B670     _ip_CHRDEC_EXPFLG_34_5_VARPACKET
+0002B674     _ip_CHRDEC_FRCFLG_35_5_VARPACKET
+0002B678     _ip_CHRDEC_OKIND_36_5_VARPACKET
+0002B67C     _ip_CHRDEC_POS_37_5_VARPACKET
+0002B680     _ip_CHRDEC_EXPSGN_38_5_VARPACKET
+0002B684     _ip_CHRDEC_DECSGN_39_5_VARPACKET
+0002B688     _ip_CHRDEC_TEN_40_5_VARPACKET
+0002B68C     _ip_CHRDEC_FRC_41_5_VARPACKET
+0002B690     _ip_CHRDEC_SUM_42_5_VARPACKET
+0002B694     _ip_CHRDEC_EXPON_43_5_VARPACKET
+0002B698     _ip_CHRDEC_DIG_45_5_VARPACKET
+0002B69C     _ip_CHRDEC_KIND_46_5_VARPACKET
+0002B6A0     _ip_CHRDEC_TVAL_47_5_VARPACKET
+0002B6A4     _ip_CHRCHR_I_28_5_VARPACKET
+
+0002B6A8  Segment _BSS of module LFINITWC.C (t:\lf9045\lib\lf90w.lib)
+0002B6A8     _lf_argc
+0002B6AC     _lf_argv
+
+0002B6B0  Segment _BSS of module BC_DEFS.C (t:\lf9045\lib\lf90w.lib)
+0002B6B0     _mwINIT
+0002B6B1     _lffltused
+
+0002C018  Segment _BSS of module FMTIN.C (t:\lf9045\lib\lf90wio.lib)
+0002C018     _lf_rep_cnt
+
+0002C024  Segment _BSS of module LF_LOW.C (t:\lf9045\lib\lf90wio.lib)
+0002C024     _lf_default_fcb_buffer_size
+0002C028     _lf_buffer_size_default
+0002C02C     _lf_trap_i
+0002C030     _lf_trap_d
+0002C034     _lf_trap_o
+0002C038     _lf_trap_u
+0002C03C     _lf_trap_p
+0002C040     _lf_trace
+0002C044     _lf_pause_at_end
+0002C048     _lf_unused12
+0002C04C     _lf_unused13
+0002C050     _lf_unused14
+0002C054     _lf_unused15
+0002C058     _lf_unused16
+0002C05C     _lf_no_head_flag
+0002C060     _lf_link_threads_flag
+0002C064     _lf_f90_conforming_flag
+0002C16C     _lf_winver
+0002C170     _lf_instance
+0002C174     _lf_heap_handle
+0002C178     _lf_stdin_handle
+0002C17C     _lf_stdout_handle
+0002C180     _lf_stderr_handle
+0002C184     _lf_main_window
+0002C188     _lf_app_name
+0002C1A6     _lf_class_name
+0002C1C4     _lf_command_tail
+
+0002C5C4  Segment _BSS of module LFINITWD.C (t:\lf9045\lib\lf90wio.lib)
+0002C5C4     _acmdln
+0002C5C8     _lf_stacktop
+0002C5CC     _lf_stackbottom
+
+0002D230  Segment c_common
+0002D230     _lc_DCONST
+0002D250     _lc_ICONST
+0002D260     _lc_RCONST
+
+0002D270  Segment ??stack of module winstack.asm (t:\lf9045\lib\lf90w.lib)
+0002D270     _lf_stack_top
+
+
+Public symbols imported from DLLs
+
+   AllocConsole=kernel32.dll.AllocConsole
+   CloseHandle=kernel32.dll.CloseHandle
+   CreateFileA=kernel32.dll.CreateFileA
+   DefWindowProcA=user32.dll.DefWindowProcA
+   DeleteFileA=kernel32.dll.DeleteFileA
+   DestroyWindow=user32.dll.DestroyWindow
+   ExitProcess=kernel32.dll.ExitProcess
+   FreeConsole=kernel32.dll.FreeConsole
+   GetCommandLineA=kernel32.dll.GetCommandLineA
+   GetCurrentDirectoryA=kernel32.dll.GetCurrentDirectoryA
+   GetEnvironmentVariableA=kernel32.dll.GetEnvironmentVariableA
+   GetFileSize=kernel32.dll.GetFileSize
+   GetFileType=kernel32.dll.GetFileType
+   GetLastError=kernel32.dll.GetLastError
+   GetModuleFileNameA=kernel32.dll.GetModuleFileNameA
+   GetModuleHandleA=kernel32.dll.GetModuleHandleA
+   GetProcessHeap=kernel32.dll.GetProcessHeap
+   GetStartupInfoA=kernel32.dll.GetStartupInfoA
+   GetStdHandle=kernel32.dll.GetStdHandle
+   GetStockObject=gdi32.dll.GetStockObject
+   GetSystemTime=kernel32.dll.GetSystemTime
+   GetVersion=kernel32.dll.GetVersion
+   HeapAlloc=kernel32.dll.HeapAlloc
+   LoadCursorA=user32.dll.LoadCursorA
+   LoadIconA=user32.dll.LoadIconA
+   MessageBoxA=user32.dll.MessageBoxA
+   PostQuitMessage=user32.dll.PostQuitMessage
+   ReadConsoleA=kernel32.dll.ReadConsoleA
+   ReadFile=kernel32.dll.ReadFile
+   RegisterClassA=user32.dll.RegisterClassA
+   SetEndOfFile=kernel32.dll.SetEndOfFile
+   SetFilePointer=kernel32.dll.SetFilePointer
+   WriteFile=kernel32.dll.WriteFile
+   lstrlenA=kernel32.dll.lstrlenA
+
+
+Unresolved external reference(s):
+
+     COPYC
+     DAYMON
+     NUMINI
+     ZIPC
+     _lc__FLG2RT
+     _lf_main
