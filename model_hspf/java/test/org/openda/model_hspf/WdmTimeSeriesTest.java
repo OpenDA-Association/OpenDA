@@ -48,6 +48,7 @@ import org.openda.utils.io.AsciiFileUtils;
 public class WdmTimeSeriesTest extends TestCase {
 
     private File testRunDataDir;
+    private boolean RUNNING_ON_64bit = System.getProperty("sun.arch.data.model").equals("64");
 
     protected void setUp() throws IOException {
         OpenDaTestSupport testData = new OpenDaTestSupport(WdmTimeSeriesTest.class, "model_hspf");
@@ -55,8 +56,9 @@ public class WdmTimeSeriesTest extends TestCase {
     }
 
     public void testReadTimeSeries() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testReadTimeSeries: wdm.dll only available for win32.");
             return;
         }
 
@@ -142,8 +144,9 @@ public class WdmTimeSeriesTest extends TestCase {
      * Copied and adapted code from method testReadTimeSeries.
      */
     public void testReadEnsembleTimeSeries() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testReadEnsembleTimeSeries: wdm.dll only available for win32.");
             return;
         }
 
@@ -262,8 +265,9 @@ public class WdmTimeSeriesTest extends TestCase {
      * @throws Exception
      */
     public void testWriteTimeSeries() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testWriteTimeSeries: wdm.dll only available for win32.");
             return;
         }
 
@@ -397,8 +401,9 @@ public class WdmTimeSeriesTest extends TestCase {
      * @throws Exception
      */
     public void testReadAndWriteTimeSeriesMultipleTimes() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testReadAndWriteTimeSeriesMultipleTimes: wdm.dll only available for win32.");
             return;
         }
 
@@ -410,8 +415,9 @@ public class WdmTimeSeriesTest extends TestCase {
     }
 
     public void testConvertWdmToNetcdfWithDataCopier() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testConvertWdmToNetcdfWithDataCopier: wdm.dll only available for win32.");
             return;
         }
 
@@ -460,8 +466,9 @@ public class WdmTimeSeriesTest extends TestCase {
     }
 
     public void testConvertEnsembleWdmToEnsembleNetcdfWithDataCopier() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testConvertEnsembleWdmToEnsembleNetcdfWithDataCopier: wdm.dll only available for win32.");
             return;
         }
 
@@ -522,8 +529,9 @@ public class WdmTimeSeriesTest extends TestCase {
     }
 
     public void testConvertWdmToUciWithDataCopier() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this test on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testConvertWdmToUciWithDataCopier: wdm.dll only available for win32.");
             return;
         }
 
@@ -532,6 +540,9 @@ public class WdmTimeSeriesTest extends TestCase {
         File templateInputFile = new File(testRunDataDir, "wdmTimeSeriesTest/template/nd-out.wdm");
         //copy output uci file that should be modified from template to work directory to start with a fresh file before running the test.
         File templateOutputFile = new File(testRunDataDir, "wdmTimeSeriesTest/template/ndriver_state_file.uci");
+        String defaultUciFilename = "ndriver_state_file_default.uci";
+        File defaultUciFile = new File(testRunDataDir + "/wdmTimeSeriesTest/work/", defaultUciFilename);
+        BBUtils.copyFile(templateOutputFile, defaultUciFile);
 
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
         String inputFileName = "wdmTimeSeriesTest/work/nd-out.wdm";
@@ -568,24 +579,14 @@ public class WdmTimeSeriesTest extends TestCase {
                 + TimeUtils.mjdToString(startDate) + " " + TimeUtils.mjdToString(endDate);
 
         String outputClassName = UciStateDataObject.class.getName();
-        String outputArgumentsAsOne = TimeUtils.mjdToString(endDate) + " -3600";
+        String outputArgumentsAsOne = TimeUtils.mjdToString(endDate) + " -3600 " + defaultUciFilename;
 
-        try {
-            // The test data is invalid, because P11.POTFW1 is 0.
-            // After commit 747 in the trunk (797 in the 2.4 branch).
-            // Fix the test data (taking care that tests with the same input files are not influenced).
-            // See ODA-542 for the original problem.
-            DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFile.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
+        DataCopier.main(new String[]{"-c", inputClassName, "-a", inputArgumentsAsOne, inputFile.getAbsolutePath(), "-c", outputClassName, "-a", outputArgumentsAsOne, outputFile.getAbsolutePath()});
 
-            //compare actual output file with expected output file.
-            //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
-            File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertWdmToUciWithDataCopier_expected_output.uci");
-            assertEquals("Actual output file '" + outputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
-					AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(outputFile));
-        } catch (Exception e) {
-            if (!e.getMessage().contains("A value of P11.POTFW1 that is less than 1E-10 is found")) {
-                throw e;
-            }
-        }
+        //compare actual output file with expected output file.
+        //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_hspf/org/openda/model_hspf
+        File expectedOutputFile = new File(this.testRunDataDir, "wdmTimeSeriesTest/expected_results/TestConvertWdmToUciWithDataCopier_expected_output.uci");
+        assertEquals("Actual output file '" + outputFile + "' does not equal expected output file '" + expectedOutputFile + "'.",
+                AsciiFileUtils.readText(expectedOutputFile), AsciiFileUtils.readText(outputFile));
     }
 }
