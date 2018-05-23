@@ -55,7 +55,11 @@ public class NetcdfD3dHisExchangeItem extends ExchangeItem implements IExchangeI
 
 	@Override
 	public Object getValues() {
-		throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dHisExchangeItem.getValues() not implemented yet");
+		int stationValues[] = new int[2];
+		stationValues[0] = this.stationIndex;
+		stationValues[1] = this.layerIndex;
+
+		return stationValues;
 	}
 
 	@Override

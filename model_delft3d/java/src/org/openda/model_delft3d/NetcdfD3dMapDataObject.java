@@ -53,6 +53,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	int timeDimensionIndex = -1;
 	int lstsciDimensionIndex = -1;
 	int kmaxOutRestrDimensionIndex = -1;
+	// Different indices are needed for the variables of interest since they have different sizes
+	int kmaxOutRestrDimensionIndexVelocity = -1;
+
 	private File netcdfFilePath;
 	private int mMax;
 	private int nMax;
@@ -200,16 +203,20 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 							lstsciDimensionIndex = i;
 							if (dimension.getLength() != 1) {
 								throw new RuntimeException("NetcdfD3dMapDataObject: #R1 != 1 is not supported (temp. or salinity), file: "
-										+ netcdfFile.getLocation());
+									+ netcdfFile.getLocation());
 							}
 						}
 					}
 					if (!variable.getShortName().equalsIgnoreCase("S1")) {
 						if (dimension.getShortName().equalsIgnoreCase("KMAXOUT_RESTR")) {
-							kmaxOutRestrDimensionIndex = i;
+							if (variable.getShortName().equalsIgnoreCase("R1")) {
+								kmaxOutRestrDimensionIndex = i;
+							} else if (variable.getShortName().equalsIgnoreCase("U1") || variable.getShortName().equalsIgnoreCase("V1")) {
+								kmaxOutRestrDimensionIndexVelocity = i;
+							}
 							if (dimension.getLength() < 0) {
 								throw new RuntimeException("NetcdfD3dMapDataObject: could not read number of layers, file: "
-										+ netcdfFile.getLocation());
+									+ netcdfFile.getLocation());
 							}
 							layerCount = dimension.getLength();
 						}
@@ -217,9 +224,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 				}
 
-				if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 ) {
+				if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 || kmaxOutRestrDimensionIndexVelocity == 0) {
 					throw new RuntimeException("NetcdfD3dMapDataObject: dims not available, file: "
-							+ netcdfFile.getLocation());
+						+ netcdfFile.getLocation());
 				}
 
 				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
@@ -245,12 +252,12 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				}
 
 				IGeometryInfo geometryInfo;
-				if (variable.getName().equalsIgnoreCase("S1")) {
+				if (variable.getShortName().equalsIgnoreCase("S1")) {
 					geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(this.xCoords, this.yCoords, null);
 				} else {
 					geometryInfo = new NetcdfD3dMapExchangeItemGeometryInfo(this.xCoords, this.yCoords, this.zCoords);
 				}
-				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getName(), this, timeInfo, geometryInfo);
+				IExchangeItem exchangeItem = new NetcdfD3dMapExchangeItem(variable.getShortName(), this, timeInfo, geometryInfo);
 				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 
 			}
@@ -271,14 +278,15 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		origin[timeDimensionIndex] = LastTimeIndex-1;
 		sizeArray[timeDimensionIndex] = 1;
 
-//		origin[timeDimensionIndex] = 0;
 		if (variable.getShortName().equalsIgnoreCase("R1")) {
 			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
-		}
-		if (!variable.getShortName().equalsIgnoreCase("S1")) {
 			origin[kmaxOutRestrDimensionIndex] = 0;
-//			sizeArray[kmaxOutRestrDimensionIndex] = 1;
+		}else if (variable.getShortName().equalsIgnoreCase("U1") || variable.getShortName().equalsIgnoreCase("V1")) {
+			origin[kmaxOutRestrDimensionIndexVelocity] = 0;
 		}
+		//if (!variable.getName().equalsIgnoreCase("S1")) {
+		//	origin[kmaxOutRestrDimensionIndex] = 0;
+		//}
 
 		double[] domainData =  NetcdfUtils.readSelectedData(variable, origin, sizeArray,-1);
 
@@ -385,10 +393,13 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		if (variable.getShortName().equalsIgnoreCase("R1")) {
 			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
-		}
-		if (!variable.getShortName().equalsIgnoreCase("S1")) {
 			origin[kmaxOutRestrDimensionIndex] = 0;
+		}else if (variable.getShortName().equalsIgnoreCase("U1") || variable.getShortName().equalsIgnoreCase("V1")) {
+			origin[kmaxOutRestrDimensionIndexVelocity] = 0;
 		}
+		//if (!variable.getName().equalsIgnoreCase("S1")) {
+		//	origin[kmaxOutRestrDimensionIndex] = 0;
+		//}
 
 		NetcdfFileWriter netcdfFileWriter= null;
 

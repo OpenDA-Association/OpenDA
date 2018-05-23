@@ -1,22 +1,22 @@
-/* MOD_V2.0 
-* Copyright (c) 2012 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/* MOD_V2.0
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.model_delft3d;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openda.exchange.DoubleExchangeItem;
@@ -39,13 +39,27 @@ public class D3dMdFileDataObject implements IDataObject {
 	public static final String Dalton = "Dalton";
 	public static final String D_H = "Dicouv";
 	public static final String D_Z = "Dicoww";
+	public static final String V_H = "Vicouv";
+	public static final String V_Z = "Vicoww";
+	public static final String SD = "Secchi";
+	public static final String Wstres_D1 = "Wstres_D1";
+	public static final String Wstres_D2 = "Wstres_D2";
+	public static final String Wstres_D3 = "Wstres_D3";
+	public static final String Ccofu = "Ccofu";
+	public static final String Ccofv = "Ccofv";
+	public static final String Ccofuv = "Ccofuv";
+	public static final String DVicouv = "DVicouv";
+
+	// Temporary variables so assess the need to update the mdf
+	private double CcofuvInit;
+	private double DVicouvInit;
 
 	static final String PROPERTY_STARTTIME = "Tstart";
 	static final String PROPERTY_STOPTIME = "Tstop";
 	static final String PROPERTY_INITDATE = "Itdate";
 	static final String PROPERTY_TUNIT = "Tunit";
 
-	public static final String[] fileKeys = {Stanton, Dalton, D_H, D_Z};
+	public static final String[] fileKeys = {Stanton, Dalton, D_H, D_Z, V_H, V_Z, SD, Wstres_D1, Wstres_D2, Wstres_D3, Ccofu, Ccofv, Ccofuv, DVicouv};
 	public static final String[] timeKeys = {PROPERTY_STARTTIME, PROPERTY_STOPTIME, PROPERTY_INITDATE, PROPERTY_TUNIT};
 	String[] allKeys = (String[]) ArrayUtils.addAll(fileKeys, timeKeys);
 
@@ -112,28 +126,58 @@ public class D3dMdFileDataObject implements IDataObject {
 				if (fields.length == 2) {
 					String key = fields[0].trim();
 					String value = fields[1].trim();
-//					for (int i = 0; i < allKeys.length; i++) {
-						if (Arrays.asList(fileKeys).contains(key)) {
 
-							double valueAsDouble = Double.parseDouble(value);
-							exchangeItems.put(key, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble));
+					if (key.equalsIgnoreCase("Wstres")){
+						String key1 = Wstres_D1;
+						String key2 = Wstres_D2;
+						String key3 = Wstres_D3;
 
-						}else if (Arrays.asList(timeKeys).contains(key)) {
+						String[] values_D = value.split(" ");
 
-							if (key.equalsIgnoreCase(PROPERTY_INITDATE)) {
-								this.mjdRefDate = getReferenceDateInMjd(value);
-							}else if(key.equalsIgnoreCase(PROPERTY_TUNIT)){
-								this.mjdFactor = getTimeToMjdFactor(value);
-							}else if(key.equalsIgnoreCase(PROPERTY_STARTTIME)){
-								StartTime = getMjdFromDiff(Double.parseDouble(value));
-								exchangeItems.put(PROPERTY_STARTTIME, new DoubleExchangeItem(PROPERTY_STARTTIME, IPrevExchangeItem.Role.InOut, StartTime));
-							}else if(key.equalsIgnoreCase(PROPERTY_STOPTIME)){
-								StopTime = getMjdFromDiff(Double.parseDouble(value));
-								exchangeItems.put(PROPERTY_STOPTIME, new DoubleExchangeItem(PROPERTY_STOPTIME, IPrevExchangeItem.Role.InOut, StopTime));
-							}
+						double valueAsDouble_D1 = Double.parseDouble(values_D[0].trim());
+						double valueAsDouble_D2 = Double.parseDouble(values_D[4].trim());
+						double valueAsDouble_D3 = Double.parseDouble(values_D[8].trim());
 
+						exchangeItems.put(key1, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D1));
+						exchangeItems.put(key2, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D2));
+						exchangeItems.put(key3, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D3));
+
+					}
+//             for (int i = 0; i < allKeys.length; i++) {
+					if (Arrays.asList(fileKeys).contains(key)) {
+
+						double valueAsDouble = Double.parseDouble(value);
+						exchangeItems.put(key, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble));
+
+					}else if (Arrays.asList(timeKeys).contains(key)) {
+
+						if (key.equalsIgnoreCase(PROPERTY_INITDATE)) {
+							this.mjdRefDate = getReferenceDateInMjd(value);
+						}else if(key.equalsIgnoreCase(PROPERTY_TUNIT)){
+							this.mjdFactor = getTimeToMjdFactor(value);
+						}else if(key.equalsIgnoreCase(PROPERTY_STARTTIME)){
+							StartTime = getMjdFromDiff(Double.parseDouble(value));
+							exchangeItems.put(PROPERTY_STARTTIME, new DoubleExchangeItem(PROPERTY_STARTTIME, IPrevExchangeItem.Role.InOut, StartTime));
+						}else if(key.equalsIgnoreCase(PROPERTY_STOPTIME)){
+							StopTime = getMjdFromDiff(Double.parseDouble(value));
+							exchangeItems.put(PROPERTY_STOPTIME, new DoubleExchangeItem(PROPERTY_STOPTIME, IPrevExchangeItem.Role.InOut, StopTime));
 						}
-//					}
+
+					}
+					// Special case for exchange items that have to remain the same
+					if (Arrays.asList(fileKeys).contains(Ccofuv) && key.equalsIgnoreCase(Ccofu)){
+						double valueAsDouble = Double.parseDouble(value);
+						CcofuvInit = valueAsDouble;
+						exchangeItems.put(Ccofuv, new DoubleExchangeItem(Ccofuv, IPrevExchangeItem.Role.InOut, valueAsDouble));
+
+					}else if (Arrays.asList(fileKeys).contains(DVicouv) && key.equalsIgnoreCase(D_H)){
+						double valueAsDouble = Double.parseDouble(value);
+						DVicouvInit = valueAsDouble;
+						exchangeItems.put(DVicouv, new DoubleExchangeItem(DVicouv, IPrevExchangeItem.Role.InOut, valueAsDouble));
+
+					}
+
+//             }
 				}
 				line = inputFileBufferedReader.readLine();
 			}
@@ -155,22 +199,60 @@ public class D3dMdFileDataObject implements IDataObject {
 			List<String> lines = new ArrayList<String>();
 			while (line != null) {
 				String[] fields = line.split("= *");
-					for (int i = 0; i < exchangeItemIDs.length; i++) {
-						String key = fields[0].trim();
-						if (key.equalsIgnoreCase(exchangeItemIDs[i])) {
+				String key = fields[0].trim();
+				for (int i = 0; i < exchangeItemIDs.length; i++) {
 
-							IExchangeItem exchangeItem = getDataObjectExchangeItem(exchangeItemIDs[i]);
-							double valueAsdouble = exchangeItem.getValuesAsDoubles()[0];
+					String exchangeItemID = exchangeItemIDs[i];
 
-							// If exchangeItem is TStart or TStop (in mjd), convert back to difference since reference
-							if (exchangeItemIDs[i]==PROPERTY_STARTTIME | exchangeItemIDs[i]==PROPERTY_STOPTIME){
-								valueAsdouble = getDiffFromMjd(valueAsdouble);
-							}
+					if (key.equalsIgnoreCase(exchangeItemID)) {
 
-							String valueAsString = String.format(Locale.US, "%.7e",valueAsdouble);
-							line = exchangeItemIDs[i] + " = " + valueAsString;
+						IExchangeItem exchangeItem = getDataObjectExchangeItem(exchangeItemID);
+						double valueAsdouble = exchangeItem.getValuesAsDoubles()[0];
+
+						// If exchangeItem is TStart or TStop (in mjd), convert back to difference since reference
+						if (exchangeItemIDs[i]==PROPERTY_STARTTIME | exchangeItemIDs[i]==PROPERTY_STOPTIME){
+							valueAsdouble = getDiffFromMjd(valueAsdouble);
 						}
+						// If exchangeItem affects two parameters
+						if ((key.equalsIgnoreCase(Ccofu) || key.equalsIgnoreCase(Ccofv))){
+							IExchangeItem exchangeItemCcofuv = getDataObjectExchangeItem(Ccofuv);
+							double CcofuvValue = exchangeItemCcofuv.getValuesAsDoubles()[0];
+
+							if (CcofuvValue != CcofuvInit){
+								valueAsdouble = CcofuvValue;
+								exchangeItemID = key;
+							}
+						} else if ((key.equalsIgnoreCase(D_H) || key.equalsIgnoreCase(V_H))){
+							IExchangeItem exchangeItemDVicouv = getDataObjectExchangeItem(DVicouv);
+							double DVicouvValue = exchangeItemDVicouv.getValuesAsDoubles()[0];
+
+							if (DVicouvValue != DVicouvInit){
+								valueAsdouble = DVicouvValue;
+								exchangeItemID = key;
+							}
+						}
+
+						String valueAsString = String.format(Locale.US, "%.7e",valueAsdouble);
+						line = exchangeItemID + " = " + valueAsString;
 					}
+
+				}
+				if (key.equalsIgnoreCase("Wstres")){
+
+					String value = fields[1].trim();
+					String[] values_D = value.split(" ");
+
+					IExchangeItem exchangeItemD1 = getDataObjectExchangeItem(Wstres_D1);
+					IExchangeItem exchangeItemD2 = getDataObjectExchangeItem(Wstres_D2);
+					IExchangeItem exchangeItemD3 = getDataObjectExchangeItem(Wstres_D3);
+
+					String valueAsStringD1 = String.format(Locale.US, "%.7e",exchangeItemD1.getValuesAsDoubles()[0]);
+					String valueAsStringD2 = String.format(Locale.US, "%.7e",exchangeItemD2.getValuesAsDoubles()[0]);
+					String valueAsStringD3 = String.format(Locale.US, "%.7e",exchangeItemD3.getValuesAsDoubles()[0]);
+
+					line = "Wstres =  " + valueAsStringD1 + " " + values_D[2].trim() + " " + valueAsStringD2 + " " + values_D[6].trim() + " " + valueAsStringD3 + " " + values_D[10].trim();
+
+				}
 
 				lines.add(line);
 				line = inputFileBufferedReader.readLine();
@@ -184,7 +266,7 @@ public class D3dMdFileDataObject implements IDataObject {
 			}
 			outputFile.close();
 
-		}	catch (FileNotFoundException e1) {
+		}  catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -228,25 +310,25 @@ public class D3dMdFileDataObject implements IDataObject {
 		TimeDiff = TimeDiff / this.mjdFactor;
 		return TimeDiff;
 	}
-//	public double getTStartSimulationInMjd() {
-//		double TStartMjd;
-//		TStartMjd = this.StartTime * this.mjdFactor;
-//		TStartMjd = TStartMjd +  this.mjdRefDate;
-//		return TStartMjd;
-//	}
+// public double getTStartSimulationInMjd() {
+//    double TStartMjd;
+//    TStartMjd = this.StartTime * this.mjdFactor;
+//    TStartMjd = TStartMjd +  this.mjdRefDate;
+//    return TStartMjd;
+// }
 //
-//	public double getTStopSimulationInMjd() {
-//		double TStopMjd;
-//		TStopMjd = this.StopTime * this.mjdFactor;
-//		TStopMjd = TStopMjd +  this.mjdRefDate;
-//		return TStopMjd;
-//	}
+// public double getTStopSimulationInMjd() {
+//    double TStopMjd;
+//    TStopMjd = this.StopTime * this.mjdFactor;
+//    TStopMjd = TStopMjd +  this.mjdRefDate;
+//    return TStopMjd;
+// }
 //
-//	public double getTStopSimulationInit(double StopMjd) {
-//		double TStopInit;
-//		TStopInit = StopMjd - this.mjdRefDate;
-//		TStopInit = TStopInit /  this.mjdFactor;
-//		return TStopInit;
-//	}
+// public double getTStopSimulationInit(double StopMjd) {
+//    double TStopInit;
+//    TStopInit = StopMjd - this.mjdRefDate;
+//    TStopInit = TStopInit /  this.mjdFactor;
+//    return TStopInit;
+// }
 //
 }

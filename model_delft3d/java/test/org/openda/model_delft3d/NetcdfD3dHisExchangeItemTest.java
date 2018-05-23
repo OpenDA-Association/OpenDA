@@ -41,13 +41,20 @@ public class NetcdfD3dHisExchangeItemTest extends TestCase {
 		netcdfFile.initialize(testData.getTestRunDataDir(), new String[] {"trih-cadagno_netcdf.nc"});
 		String[] exchangeItemIDs =  netcdfFile.getExchangeItemIDs();
 
-		assertEquals("#exchange items", 100, exchangeItemIDs.length);
+		assertEquals("#exchange items", 500, exchangeItemIDs.length);
 
-		IExchangeItem exchangeItem = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[27]);
+		IExchangeItem exchangeItemGRO = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[350]);
+		IExchangeItem exchangeItemVel1 = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[15]);
+		IExchangeItem exchangeItemVel2 = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[115]);
+		IExchangeItem exchangeItemEN = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[415]);
 
-		double[] dataTimeSeries = exchangeItem.getValuesAsDoubles();
+		double[] dataTimeSeriesGRO = exchangeItemGRO.getValuesAsDoubles();
+		double[] dataTimeSeriesVel1 = exchangeItemVel1.getValuesAsDoubles();
+		double[] dataTimeSeriesVel2 = exchangeItemVel2.getValuesAsDoubles();
+		double[] dataTimeSeriesEN = exchangeItemEN.getValuesAsDoubles();
 
-		assertEquals("#time steps", 17, dataTimeSeries.length);
+		assertEquals("#time steps", 13, dataTimeSeriesGRO.length);
+		assertEquals("#squared velocities vs energy", 1000*0.5*(dataTimeSeriesVel1[2]*dataTimeSeriesVel1[2] + dataTimeSeriesVel2[2]*dataTimeSeriesVel2[2]), dataTimeSeriesEN[2]);
 
 	}
 
