@@ -67,6 +67,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		readNetCdfVariables();
 		createEnergyExchangeItem();
+		createVelocityMagnitudeExchangeItem();
 
 	}
 
@@ -297,10 +298,36 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 		}
 	}
 
+	public void createVelocityMagnitudeExchangeItem(){
+		// Read the ZCURU exchangeItems and for each of those create an absolute velocity exchangeItem
+		String[] exchangeItemsIDs = this.getExchangeItemIDs();
+
+		for (int i = 0; i < exchangeItemsIDs.length; i++){
+			if (exchangeItemsIDs[i].toLowerCase().contains(("ZCURU").toLowerCase())){
+				IExchangeItem exchangeItemTemp = getDataObjectExchangeItem(exchangeItemsIDs[i]);
+				ITimeInfo timeInfo = exchangeItemTemp.getTimeInfo();
+
+				String[] keySplit = exchangeItemTemp.getId().split("\\.");
+				String statName = keySplit[0];
+
+				int[] stationValues = (int[]) exchangeItemTemp.getValues();
+				int stat = stationValues[0];
+				int layer = stationValues[1];
+
+				//int stat = Integer.parseInt(statName.replaceAll("[^0-9]", "")) - 1;
+				//int layer = Integer.parseInt(keySplit[2].replaceAll("[^0-9]", ""));
+
+				IExchangeItem exchangeItem = new NetcdfD3dHisExchangeItem(
+					"vMAG", statName, stat, layer, this, timeInfo);
+				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
+			}
+		}
+	}
+
 	public double[] getExchangeItemValues(String varName, int stationIndex, int layerIndex) {
 
 		Variable variable;
-		if (varName.equalsIgnoreCase("kEN")) {
+		if (varName.equalsIgnoreCase("kEN") || varName.equalsIgnoreCase("vMAG")) {
 			variable = this.netcdfFile.findVariable("ZCURU");
 		} else {
 			variable = this.netcdfFile.findVariable(varName);
@@ -333,6 +360,8 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		if (varName.equalsIgnoreCase("kEN")) {
 			return getKineticEnergyValues(origin, sizeArray);
+		}else if (varName.equalsIgnoreCase("vMAG")){
+			return getVelocityMagnitudeValues(origin, sizeArray);
 		} else{
 			return NetcdfUtils.readSelectedData(variable, origin, sizeArray, -1);
 		}
@@ -354,6 +383,22 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 		}
 
 		return kEN;
+	}
+
+	public double[] getVelocityMagnitudeValues(int[] origin, int[] sizeArray){
+		double[] velocityU1values = NetcdfUtils.readSelectedData(this.netcdfFile.findVariable("ZCURU"), origin, sizeArray, -1);
+		double[] velocityV1values = NetcdfUtils.readSelectedData(this.netcdfFile.findVariable("ZCURV"), origin, sizeArray, -1);
+		double[] absVelocity = new double[velocityV1values.length];
+
+		for (int i = 0; i < velocityV1values.length; i++){
+			if (velocityU1values[i] == -999 || velocityV1values[i] == -999){
+				absVelocity[i] = -999;
+			}else {
+				absVelocity[i] = Math.sqrt(velocityU1values[i] * velocityU1values[i] + velocityV1values[i] * velocityV1values[i]);
+			}
+		}
+
+		return absVelocity;
 	}
 
 	//TB: this static method is to be called everytime the Map file is written, so that the History file is also updated accordingly
