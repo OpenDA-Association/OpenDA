@@ -18,8 +18,6 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.blackbox.config;
-import org.openda.blackbox.config.BBUncertOrArmaNoiseConfig.Operation;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,6 @@ public class NoiseModelExchangeItemConfig {
 
 	private String id;
 	private List<String> modelExchangeItemIds;
-	private BBUncertOrArmaNoiseConfig.Operation operation;
 	private int transformation;
 	private boolean skipFirstTimeStep;
 	private boolean addOnlyNoiseDifference;
@@ -39,10 +36,9 @@ public class NoiseModelExchangeItemConfig {
 
 
     public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-                                        Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute) {
+										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute) {
 		this.id = id;		
 		this.modelExchangeItemIds = modelExchangeItemIds;
-		this.operation = operation;
 		this.transformation = transformation;
 		this.skipFirstTimeStep = skipFirstTimeStep;
 		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
@@ -50,11 +46,10 @@ public class NoiseModelExchangeItemConfig {
         this.addStateNoiseAfterCompute = addStateNoiseAfterCompute;
     }
 	
-	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId,
-										Operation operation, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
+	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), operation, transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false);
+		this(id, new ArrayList<String>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
@@ -70,10 +65,6 @@ public class NoiseModelExchangeItemConfig {
 
 	public List<String> getModelExchangeItemIds() {
 		return modelExchangeItemIds;
-	}
-
-	public BBUncertOrArmaNoiseConfig.Operation getOperation() {
-		return operation;
 	}
 
 	public int getTransformation() {

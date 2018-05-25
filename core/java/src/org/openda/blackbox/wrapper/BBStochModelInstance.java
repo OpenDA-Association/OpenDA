@@ -213,14 +213,21 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++){
 				double[] boundaryExchangeItemValues = ((IGridTimeSeriesExchangeItem)boundaryExchangeItem).getValuesAsDoublesForSingleTimeIndex(aTimeIndex);
 				switch (operationType) {
-					case BBRegularisationConstantConfig.OPERATION_ADD:
+					case BBRegularisationConstantConfig.TRANSFORMATION_ADD:
 						((IGridTimeSeriesExchangeItem)modelExchangeItem).axpyOnValuesForSingleTimeIndex(aTimeIndex, 1.0d, boundaryExchangeItemValues);
 						break;
-					case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
+					case BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY:
 						((IGridTimeSeriesExchangeItem)modelExchangeItem).multiplyValuesForSingleTimeIndex(aTimeIndex, boundaryExchangeItemValues);
 						break;
-					case BBRegularisationConstantConfig.OPERATION_SET:
+					case BBRegularisationConstantConfig.TRANSFORMATION_SET:
 						((IGridTimeSeriesExchangeItem)modelExchangeItem).setValuesAsDoublesForSingleTimeIndex(aTimeIndex, boundaryExchangeItemValues);
+						break;
+					case BBRegularisationConstantConfig.TRANSFORMATION_LN:
+						double[] lnBoundaryEIValues = new double[boundaryExchangeItemValues.length];
+						for (int i = 0; i < boundaryExchangeItemValues.length; i++) {
+							lnBoundaryEIValues[i] = Math.exp(boundaryExchangeItemValues[i]);
+						}
+						((IGridTimeSeriesExchangeItem)modelExchangeItem).multiplyValuesForSingleTimeIndex(aTimeIndex, lnBoundaryEIValues);
 						break;
 				}
 			}
@@ -231,17 +238,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			for (int aTimeIndex=0; aTimeIndex<times.length; aTimeIndex++) {
 				if (currentTime == times[aTimeIndex]) {
 					double[] boundaryExchangeItemValues = ((IGridTimeSeriesExchangeItem)boundaryExchangeItem).getValuesAsDoublesForSingleTimeIndex(aTimeIndex);
-					switch (operationType) {
-						case BBRegularisationConstantConfig.OPERATION_ADD:
-							modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
-							break;
-						case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
-							modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
-							break;
-						case BBRegularisationConstantConfig.OPERATION_SET:
-							modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
-							break;
-					}
+					applyValuesToExchangeItem(operationType, modelExchangeItem, boundaryExchangeItemValues);
 				}
 			}
 		}
@@ -250,20 +247,31 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			if (modelExchangeItem.getTimes().length != boundaryExchangeItemValues.length) {
 				throw new RuntimeException("Unequal number of values in model and boundary exchange items.");
 			}
-			switch (operationType) {
-				case BBRegularisationConstantConfig.OPERATION_ADD:
-					modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
-					break;
-				case BBRegularisationConstantConfig.OPERATION_MULTIPLY:
-					modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
-					break;
-				case BBRegularisationConstantConfig.OPERATION_SET:
-					modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
-					break;
-			}
+			applyValuesToExchangeItem(operationType, modelExchangeItem, boundaryExchangeItemValues);
 		}
 		else {
 			throw new UnsupportedOperationException(getClass().getSimpleName() + "Model and Boundary ExchangeItems do not match in shape.");
+		}
+	}
+
+	private void applyValuesToExchangeItem(int operationType, IPrevExchangeItem modelExchangeItem, double[] boundaryExchangeItemValues) {
+		switch (operationType) {
+			case BBRegularisationConstantConfig.TRANSFORMATION_ADD:
+				modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
+				break;
+			case BBRegularisationConstantConfig.TRANSFORMATION_SET:
+			modelExchangeItem.setValuesAsDoubles(boundaryExchangeItemValues);
+			break;
+			case BBRegularisationConstantConfig.TRANSFORMATION_LN:
+				double[] lnBoundaryEIValues = new double[boundaryExchangeItemValues.length];
+				for (int i = 0; i < boundaryExchangeItemValues.length; i++) {
+					lnBoundaryEIValues[i] = Math.exp(boundaryExchangeItemValues[i]);
+				}
+				modelExchangeItem.multiplyValues(lnBoundaryEIValues);
+				break;
+			case BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY:
+				modelExchangeItem.multiplyValues(boundaryExchangeItemValues);
+				break;
 		}
 	}
 
@@ -1430,7 +1438,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	private void addParameterDeltaToExchangeItem(double parameterDelta, IPrevExchangeItem exchangeItem, int transformation) {
 		double[] values = exchangeItem.getValuesAsDoubles();
-		if (transformation == BBRegularisationConstantConfig.TRANSFORMATION_IDENTITY) {
+		if (transformation == BBRegularisationConstantConfig.TRANSFORMATION_ADD) {
 			for (int i = 0; i < values.length; i++) {
 				values[i] += parameterDelta;
 			}
@@ -1442,6 +1450,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			for (int i = 0; i < values.length; i++) {
 				values[i] = parameterDelta;
 			}
+			// TODO EP add multiply
 		} else {
 			throw new RuntimeException("BBStochModelInstance.setParameters(): unexpected transformation typ " +
 					exchangeItem.getId());
@@ -1564,7 +1573,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                             boolean addNoiseAfter = afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute();
                             addNoiseAfterComputeForAnyExchangeItem |= (!afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute());
                             if (addNoiseAfter || addNoiseBefore) addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, noiseModelExchangeItem, modelTimeIndex,
-									noiseModelEIValuesForTimeStep, exchangeItemConfig.getOperation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
+									noiseModelEIValuesForTimeStep, exchangeItemConfig.getTransformation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
 							this.lastNoiseTimes.put(modelExchangeItemId,time);
 						}
 					}
@@ -1711,7 +1720,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			for (int t = tStart; t < tStart + numBcTimeStepsInPeriod; t++) {
                 //Add noise after compute?
 				addNoiseToExchangeItemForOneTimeStep(exchangeItem, null, t,
-						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getOperation(), 1);
+						new double[]{noiseForExchangItem[t-tStart]}, stateNoiseModelConfig.getTransformationType(), 1);
 			}
 		}
 	}
@@ -1765,7 +1774,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem modelExchangeItem,
-													  IPrevExchangeItem noiseModelExchangeItem, int timeIndex, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatio) {
+													  IPrevExchangeItem noiseModelExchangeItem, int timeIndex, double[] noise, int transformationFromOperation, int stateSizeNoiseSizeRatio) {
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
@@ -1811,12 +1820,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
         if (stateSizeNoiseSizeRatio > 1) {
-            noise = getSpatialNoise(modelExchangeItem, noiseModelExchangeItem, noise, operation, stateSizeNoiseSizeRatio, timeIndex);
+            noise = getSpatialNoise(modelExchangeItem, noiseModelExchangeItem, noise, stateSizeNoiseSizeRatio, timeIndex);
         }
 
 		if (addFullArray) {
-			switch (operation) {
-			case Add:
+			switch (transformationFromOperation) {
+			case BBRegularisationConstantConfig.TRANSFORMATION_ADD:
 				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
 					((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).axpyOnValuesForSingleTimeIndex(timeIndex, 1.0d, noise);
@@ -1824,10 +1833,22 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					modelExchangeItem.axpyOnValues(1.0d, noise);
 				}
 				break;
-			case Multiply:
+			case BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY:
+				double[] multiplicationFactors = new double[noise.length];
+				for (int i = 0; i < noise.length; i++) {
+					multiplicationFactors[i] = 1d + noise[i];
+				}
+				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
+				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+					((NetcdfGridTimeSeriesExchangeItem)modelExchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, multiplicationFactors);
+				} else {
+					modelExchangeItem.multiplyValues(multiplicationFactors);
+				}
+				break;
+			case BBRegularisationConstantConfig.TRANSFORMATION_LN:
 				double[] factors = new double[noise.length];
 				for (int i = 0; i < noise.length; i++) {
-					factors[i] = 1d + noise[i];
+					factors[i] = Math.exp(noise[i]);
 				}
 				//TODO Edwin: use GeometryUtils.isScalar(exchangeItem.getGeometryInfo()) to check if exchangeItem is scalar or grid, do not use instanceof. AK
 				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
@@ -1836,7 +1857,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					modelExchangeItem.multiplyValues(factors);
 				}
 				break;
-			case Set:
+			case BBRegularisationConstantConfig.TRANSFORMATION_SET:
 				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
 						": invalid call for setting values");
 			}
@@ -1858,39 +1879,58 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			// add noise 'slice'
 			int startOfNoise = timeIndex * numValuesToBeSet;
 			int endOfNoise = (timeIndex + 1) * numValuesToBeSet;
-			switch (operation) {
-			case Add:
-				double[] values = new double[numValuesInExchangeItem];
-				System.arraycopy(noise, 0, values, startOfNoise, endOfNoise - startOfNoise);
-				modelExchangeItem.axpyOnValues(1.0, values);
-				break;
-			case Multiply:
-				double[] factors = new double[numValuesInExchangeItem];
-                // initialize factors with ones:
-                for (int i = 0; i < numValuesInExchangeItem ; i++){
-                    factors[i] = 1d;
-                }
-				// ODA-617
-				if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
-					for (int i = 0; i < numValuesToBeSet; i++) {
-						factors[i] += noise[i];
+			switch (transformationFromOperation) {
+				case BBRegularisationConstantConfig.TRANSFORMATION_ADD:
+					double[] values = new double[numValuesInExchangeItem];
+					System.arraycopy(noise, 0, values, startOfNoise, endOfNoise - startOfNoise);
+					modelExchangeItem.axpyOnValues(1.0, values);
+					break;
+				case BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY:
+					double[] multiplicationFactors = new double[numValuesInExchangeItem];
+					// initialize factors with ones:
+					for (int i = 0; i < numValuesInExchangeItem; i++) {
+						multiplicationFactors[i] = 1d;
 					}
-					((NetcdfGridTimeSeriesExchangeItem) modelExchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
-				} else {
-					for (int i = 0; i < numValuesToBeSet; i++) {
-						factors[startOfNoise+i] += noise[i];
+					// ODA-617
+					if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+						for (int i = 0; i < numValuesToBeSet; i++) {
+							multiplicationFactors[i] += noise[i];
+						}
+						((NetcdfGridTimeSeriesExchangeItem) modelExchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, multiplicationFactors);
+					} else {
+						for (int i = 0; i < numValuesToBeSet; i++) {
+							multiplicationFactors[startOfNoise + i] += noise[i];
+						}
+						modelExchangeItem.multiplyValues(multiplicationFactors);
 					}
-					modelExchangeItem.multiplyValues(factors);
-				}
-				break;
-			case Set:
-				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
+					break;
+				case BBRegularisationConstantConfig.TRANSFORMATION_LN:
+					double[] factors = new double[numValuesInExchangeItem];
+					// initialize factors with ones:
+					for (int i = 0; i < numValuesInExchangeItem; i++) {
+						factors[i] = 1d;
+					}
+					// ODA-617
+					if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
+						for (int i = 0; i < numValuesToBeSet; i++) {
+							factors[i] = Math.exp(noise[i]);
+						}
+						((NetcdfGridTimeSeriesExchangeItem) modelExchangeItem).multiplyValuesForSingleTimeIndex(timeIndex, factors);
+					} else {
+						for (int i = 0; i < numValuesToBeSet; i++) {
+							factors[startOfNoise + i] = Math.exp(noise[i]);
+						}
+						modelExchangeItem.multiplyValues(factors);
+					}
+					break;
+				case BBRegularisationConstantConfig.TRANSFORMATION_SET:
+					throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
 						": invalid call for setting values");
 			}
 		}
 	}
 
-    private double[] getSpatialNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem, double[] noise, BBUncertOrArmaNoiseConfig.Operation operation, int stateSizeNoiseSizeRatioX, int timeIndex) {
+    private double[] getSpatialNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem, double[] noise, int stateSizeNoiseSizeRatioX, int timeIndex) {
 		// ODA-617
 		double[] valuesAsDoubles;
 		if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {

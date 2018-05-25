@@ -51,7 +51,7 @@ public class DummyModelForTestingNoise implements IModelInstance {
 									 double[] xAxisSteps, double[] yAxisSteps,
 									 ArrayList<String> exchangeItemsIdsTS,
 									 ArrayList<String> exchangeItemsIds2D,
-									 Time simulationTime) {
+									 Time simulationTime, Double initialValue) {
 		this.instanceNumber=instanceNumber;
 		this.simulationTime = simulationTime;
 		this.currentTime = new Time(simulationTime.getBeginTime());
@@ -65,9 +65,9 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		}
 		
 		for (String exchangeItemId : exchangeItemsIdsTS) {
-			exchangeItems.put(exchangeItemId,
-					new DummmyExchangeItemTS(exchangeItemId, instanceNumber,
-							this.currentTime));
+			DummmyExchangeItemTS dummmyExchangeItemTS = new DummmyExchangeItemTS(exchangeItemId, instanceNumber,
+				this.currentTime, initialValue == null ? 0 : initialValue);
+			exchangeItems.put(exchangeItemId, dummmyExchangeItemTS);
 		}
 
 		for (String exchangeItem2dId : exchangeItemsIds2D) {
@@ -194,8 +194,8 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		private Time currentTime;
 
 		public DummmyExchangeItemTS(String exchangeItem2dId, int modelInstanceNumber,
-									Time currentTime) {
-			super(exchangeItem2dId, 0);
+									Time currentTime, double value) {
+			super(exchangeItem2dId, value);
 			this.modelInstanceNumber = modelInstanceNumber;
 			this.currentTime = currentTime;
 		}

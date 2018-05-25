@@ -29,20 +29,16 @@ import java.util.List;
 public class BBRegularisationConstantConfig {
 
     // possible status values
-    public static final int OPERATION_ADD = 0;
-    public static final int OPERATION_SET = 1;
-	public static final int OPERATION_MULTIPLY = 2;
-
-	public static final int TRANSFORMATION_IDENTITY = 0;
+	public static final int TRANSFORMATION_ADD = 0;
 	public static final int TRANSFORMATION_LN = 1;
 	public static final int TRANSFORMATION_SET =2;
+	public static final int TRANSFORMATION_MULTIPLY = 3;
 
 	private double scale;
     private double stdDev;
 	private double mean;
 	private String uncertainItemId;
 
-	private int operationType;
 	private int transformationType;
 
 	private List<BBStochModelVectorConfig> vectorConfigs;
@@ -61,7 +57,6 @@ public class BBRegularisationConstantConfig {
 		this.stdDev = stdDev;
 		this.mean = mean;
 		this.uncertainItemId = uncertainItemId;
-		this.operationType = operationType;
 		this.transformationType = transformationType;
 		this.vectorConfigs = vectorConfigs;
 	}

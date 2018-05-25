@@ -39,6 +39,7 @@ public class DummyModelFactoryForTestingNoise implements IModelFactory {
 	private ArrayList<String> exchangeItemIdsTS = new ArrayList<String>();
 	private ArrayList<String> exchangeItemIds2D = new ArrayList<String>();
     private Time simulationTime = null;
+	private Double initialValue;
 
 	public void initialize(File workingDir, String[] args) {
 
@@ -51,6 +52,8 @@ public class DummyModelFactoryForTestingNoise implements IModelFactory {
 				yAxisSteps = MapsNoiseModelInstance.parseGridOneDim(argParts[1]);
 			} else if (argParts[0].trim().equals("tsEI")) {
 				exchangeItemIdsTS.add(argParts[1]);
+			} else if (argParts[0].trim().equals("initialValue")) {
+				initialValue = Double.valueOf(argParts[1]);
 			} else if (argParts[0].trim().equals("2dEI")) {
 				exchangeItemIds2D.add(argParts[1]);
 			} else if (argParts[0].trim().equals("timeHorizon")) {
@@ -76,7 +79,7 @@ public class DummyModelFactoryForTestingNoise implements IModelFactory {
 				xAxisSteps, yAxisSteps,
 				exchangeItemIdsTS,
 				exchangeItemIds2D,
-				simulationTime);
+				simulationTime, initialValue);
 	}
 
 	public void finish() {

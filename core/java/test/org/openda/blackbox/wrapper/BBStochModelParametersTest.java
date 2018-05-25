@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.openda.interfaces.*;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
+import org.openda.utils.Time;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,6 +117,30 @@ public class BBStochModelParametersTest extends TestCase {
 		stochModelFactory.initialize(workingDir, new String[]{"StochModelConfig_3.xml"});
 
 		checkRealizations_2_and_3(stochModelFactory);
+	}
+
+	public void testMultiply() {
+		// TODO ErikP make sure values from exchangeItems are modified trough compute
+		StochVector.setSeed(1234); //fix seed to get same results every time
+
+		BBStochModelFactory stochModelFactory = new BBStochModelFactory();
+		File workingDir = new File(testRunDataDir, "parameterUncertainty");
+		Time horizon = new Time(0, 1, 1);
+		stochModelFactory.initialize(workingDir, new String[]{"StochModelConfig_transformationMultiply.xml"});
+		stochModelFactory.setTimeHorizon(horizon);
+
+		IStochModelInstance instance = stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+
+		instance.setAutomaticNoiseGeneration(true);
+		ITime timeHorizon = instance.getTimeHorizon();
+		ITime startTime = timeHorizon.getBeginTime();
+		instance.compute(startTime);
+
+		String[] exchangeItemIDs = instance.getExchangeItemIDs();
+		IPrevExchangeItem exchangeItem = instance.getExchangeItem(exchangeItemIDs[0]);
+		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+		assertEquals(101.0, valuesAsDoubles[0]);
+
 	}
 
 	private void checkRealizations_2_and_3(IStochModelFactory stochModelFactory) {

@@ -128,13 +128,13 @@ public class BBStochModelConfigReader {
 					int operationType;
 					switch (boundaryMappingXML.getOperation().getType()) {
 						case NoiseOperationTypesXML.ADD_TYPE:
-							operationType = BBRegularisationConstantConfig.OPERATION_ADD;
+							operationType = BBRegularisationConstantConfig.TRANSFORMATION_ADD;
 							break;
 						case NoiseOperationTypesXML.MULTIPLY_TYPE:
-							operationType = BBRegularisationConstantConfig.OPERATION_MULTIPLY;
+							operationType = BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY;
 							break;
 						case NoiseOperationTypesXML.SET_TYPE:
-							operationType = BBRegularisationConstantConfig.OPERATION_SET;
+							operationType = BBRegularisationConstantConfig.TRANSFORMATION_SET;
 							break;
 						default:
 							throw new RuntimeException("Unexpected operation type " +
@@ -193,8 +193,8 @@ public class BBStochModelConfigReader {
 						double stdDevValue = Double.NaN;
 						double initialValue = 0.0;
 						String uncertainItemId = null;
-						int transformationType = BBRegularisationConstantConfig.TRANSFORMATION_IDENTITY;
-						int operationType = BBRegularisationConstantConfig.OPERATION_ADD;
+						int transformationType = BBRegularisationConstantConfig.TRANSFORMATION_ADD;
+						int operationType = BBRegularisationConstantConfig.TRANSFORMATION_ADD;
 						RegularisationConstantXMLChoice stdDevOrUncItemXMLChoice =
 								regularisationConstantXML.getRegularisationConstantXMLChoice();
 						NoiseOperationTypesXML operationTypesXML = null;
@@ -221,13 +221,13 @@ public class BBStochModelConfigReader {
 						if (operationTypesXML != null) {
 							switch (operationTypesXML.getType()) {
 								case NoiseOperationTypesXML.ADD_TYPE:
-									operationType = BBRegularisationConstantConfig.OPERATION_ADD;
+									operationType = BBRegularisationConstantConfig.TRANSFORMATION_ADD;
 									break;
 								case NoiseOperationTypesXML.MULTIPLY_TYPE:
-									operationType = BBRegularisationConstantConfig.OPERATION_MULTIPLY;
+									operationType = BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY;
 									break;
 								case NoiseOperationTypesXML.SET_TYPE:
-									operationType = BBRegularisationConstantConfig.OPERATION_SET;
+									operationType = BBRegularisationConstantConfig.TRANSFORMATION_SET;
 									break;
 							}
 						}
@@ -361,24 +361,25 @@ public class BBStochModelConfigReader {
 							String uncertainItemId = null;
 							double[] armaConstants = null;
 							double stdDev = Double.NaN;
-							BBUncertOrArmaNoiseConfig.Operation operation;
+							int transformation;
+
 							if (uncertainItemXML != null) {
 								noiseModelType = BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem;
 								uncertainItemId = uncertainItemXML.getUncertainItemId();
-								operation = determineOperationType(uncertainItemXML.getOperation());
+								transformation = getTransformationForOperation(uncertainItemXML.getOperation());
 							} else if (itemWithArmaConstantsXML != null) {
 								noiseModelType = BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItemWithArmaConstants;
 								uncertainItemId = itemWithArmaConstantsXML.getUncertainItemId();
-								operation = determineOperationType(itemWithArmaConstantsXML.getOperation());
+								transformation = getTransformationForOperation(itemWithArmaConstantsXML.getOperation());
 								armaConstants = itemWithArmaConstantsXML.getArmaConstant();
 							} else if (armaModelXML != null) {
 								noiseModelType = BBUncertOrArmaNoiseConfig.NoiseModelType.ArmaModel;
-								operation = determineOperationType(armaModelXML.getOperation());
+								transformation = getTransformationForOperation(armaModelXML.getOperation());
 								armaConstants = armaModelXML.getArmaConstant();
 								stdDev = armaModelXML.getStdDev().getValue();
 							} else {
 								noiseModelType = BBUncertOrArmaNoiseConfig.NoiseModelType.Ar1Model;
-								operation = determineOperationType(ar1ModelXML.getOperation());
+								transformation = getTransformationForOperation(ar1ModelXML.getOperation());
 								double stdDevColouredNoised = ar1ModelXML.getStdDevColouredNoised().getValue();
 								Duration decorrelationTimeScale = ar1ModelXML.getDecorrelationTimeScale();
 								Duration noiseModelTimeStep = ar1ModelXML.getNoiseModelPeriod();
@@ -392,7 +393,7 @@ public class BBStochModelConfigReader {
 							BBUncertOrArmaNoiseConfig stateNoiseModelConfig =
 									new BBUncertOrArmaNoiseConfig(noiseModelXML.getId(),
 											noiseModelType, vectorConfigs, uncertainItemId,
-											stdDev, armaConstants, operation);
+											stdDev, armaConstants, transformation);
 							uncertOrArmaBasedStateNoiseConfigs.add(stateNoiseModelConfig);
 						}
 
@@ -451,6 +452,18 @@ public class BBStochModelConfigReader {
 				modelRestartStateFile,useUncertaintyEngine);
     }
 
+	private static int getTransformationForOperation(NoiseOperationTypesXML operation) {
+		switch (operation.getType()) {
+			case NoiseOperationTypesXML.ADD_TYPE:
+				return BBRegularisationConstantConfig.TRANSFORMATION_ADD;
+			case NoiseOperationTypesXML.MULTIPLY_TYPE:
+				return BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY;
+			case NoiseOperationTypesXML.SET_TYPE:
+				return BBRegularisationConstantConfig.TRANSFORMATION_SET;
+		}
+		throw new RuntimeException("Unknown operation type " + operation.toString());
+	}
+
 	public BBStochModelConfig getBBStochModelConfig() {
 		return bbStochModelConfig;
 	}
@@ -487,23 +500,24 @@ public class BBStochModelConfigReader {
 							"The attribute \"modelExchangeItemId\"and " +
 									"the elements <modelExchangeItem> can not be mixed, file: " +
 									stochModelConfigFile.getAbsolutePath());
-				} else if (modelExchangeItemXMLs.length == 0 && exchangeItemXML.getModelExchangeItemId() != null ) {
-					exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
-							exchangeItemXML.getId(),
-							exchangeItemXML.getModelExchangeItemId(),
-							determineOperationType(exchangeItemXML.getOperation()),
-							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference)
-					);
 				} else {
-					for (UncertaintyOrNoiseModelExchangeItemXML modelExchangeItemXML : modelExchangeItemXMLs) {
-						modelExchangeItemIds.add(modelExchangeItemXML.getId());
+					int transformationType = determineTransformationType(exchangeItemXML.getTransformation());
+					if (modelExchangeItemXMLs.length == 0 && exchangeItemXML.getModelExchangeItemId() != null ) {//HERE
+						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
+								exchangeItemXML.getId(),
+								exchangeItemXML.getModelExchangeItemId(),
+							transformationType, skipFirstTimeStep, addOnlyNoiseDifference)
+						);
+					} else {
+						for (UncertaintyOrNoiseModelExchangeItemXML modelExchangeItemXML : modelExchangeItemXMLs) {
+							modelExchangeItemIds.add(modelExchangeItemXML.getId());
+						}
+						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
+								exchangeItemXML.getId(),
+								modelExchangeItemIds,
+							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute())
+						);
 					}
-					exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
-							exchangeItemXML.getId(),
-							modelExchangeItemIds,
-							determineOperationType(exchangeItemXML.getOperation()),
-							determineTransformationType(exchangeItemXML.getTransformation() ), skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute())
-					);
 				}
 			}
 		}
@@ -518,32 +532,20 @@ public class BBStochModelConfigReader {
 		);
 	}
 
-	private static BBUncertOrArmaNoiseConfig.Operation determineOperationType(NoiseOperationTypesXML operationXML) {
-		BBUncertOrArmaNoiseConfig.Operation operation = BBUncertOrArmaNoiseConfig.Operation.Add;
-		if (operationXML.getType() ==
-				NoiseOperationTypesXML.ADD_TYPE) {
-			operation = BBUncertOrArmaNoiseConfig.Operation.Add;
-		} else if (operationXML.getType() ==
-				NoiseOperationTypesXML.MULTIPLY_TYPE) {
-			operation = BBUncertOrArmaNoiseConfig.Operation.Multiply;
-		} else if (operationXML.getType() ==
-				NoiseOperationTypesXML.SET_TYPE) {
-			operation = BBUncertOrArmaNoiseConfig.Operation.Set;
-		}
-		return operation;
-	}
-
 	private static int determineTransformationType(org.openda.core.io.castorgenerated.types.ParameterTransformationTypesXML transformationTypesXML) {
 		int transformationType;
 		switch (transformationTypesXML.getType()) {
 			case ParameterTransformationTypesXML.IDENTITY_TYPE:
-				transformationType = BBRegularisationConstantConfig.TRANSFORMATION_IDENTITY;
+				transformationType = BBRegularisationConstantConfig.TRANSFORMATION_ADD;
 				break;
 			case ParameterTransformationTypesXML.LN_TYPE:
 				transformationType = BBRegularisationConstantConfig.TRANSFORMATION_LN;
 				break;
 			case ParameterTransformationTypesXML.SET_TYPE:
 				transformationType = BBRegularisationConstantConfig.TRANSFORMATION_SET;
+				break;
+			case ParameterTransformationTypesXML.MULTIPLY_TYPE:
+				transformationType = BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY;
 				break;
 			default:
 				throw new RuntimeException("Invalid Transformation Type");

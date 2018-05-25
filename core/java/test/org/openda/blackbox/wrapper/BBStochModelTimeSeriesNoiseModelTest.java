@@ -106,4 +106,37 @@ public class BBStochModelTimeSeriesNoiseModelTest extends TestCase
 		stochModelInstance.axpyOnState(0.5, state); //add 50%
 	}
 
+	public void testBoundaryNoiseModelLN() {
+
+		StochVector.setSeed(1234);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModelBoundaryLN");
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfigBoundaryLN.xml"});
+
+		int instanceCount = 4;
+		IStochModelInstance[] stochModelInstances = new IStochModelInstance[instanceCount];
+		for (int i = 0; i < instanceCount; i++) {
+			stochModelInstances[i] = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+			stochModelInstances[i].setAutomaticNoiseGeneration(true);
+		}
+
+		int timeStepCount = 5;
+		ITime timeHorizon = stochModelInstances[0].getTimeHorizon();
+		ITime startTime = timeHorizon.getBeginTime();
+		double deltaTasMJD = 1d / 24d / 60d * 30d; // 30 minutes (3 bc.-timeseries steps)
+		for (int t = 1; t <= timeStepCount; t++) {
+			ITime targetTime = new Time(startTime.getMJD() + t * deltaTasMJD);
+			for (int i = 0; i < instanceCount; i++) {
+				stochModelInstances[i].compute(targetTime);
+			}
+			if (t == 3) {
+				double[] values = stochModelInstances[2].getExchangeItem("model-item-A-1-b").getValuesAsDoubles();
+				assertEquals("instance 2, model-item-A-1-b", Math.exp(-6.849643d), values[0], 1e-6d);
+			}
+			if (t == 4) {
+				double[] values = stochModelInstances[0].getExchangeItem("model-item-A-2").getValuesAsDoubles();
+				assertEquals("instance 0 model-item-A-2", Math.exp(-2.261432d), values[0], 1e-6d);
+			}
+		}
+	}
 }

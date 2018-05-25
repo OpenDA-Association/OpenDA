@@ -666,6 +666,7 @@
 			<xs:enumeration value="identity"/>
 			<xs:enumeration value="ln"/>
 			<xs:enumeration value="set"/>
+			<xs:enumeration value="multiply"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:element name="blackBoxStochModel" type="openda:BlackBoxStochModelConfigXML">

@@ -45,21 +45,21 @@ public class BBUncertOrArmaNoiseConfig {
     private String uncertainItemId;
     private double stdDev;
     private double[] armaConstants;
-	private Operation operation;
+	private int transformationType;
 
     public BBUncertOrArmaNoiseConfig(String noiseModelId,
-										NoiseModelType noiseModelType,
-										BBStochModelVectorConfig[] vectorConfigs,
-										String uncertainItemId,
-										double stdDev,
-										double[] armaConstants, Operation operation) {
+									 NoiseModelType noiseModelType,
+									 BBStochModelVectorConfig[] vectorConfigs,
+									 String uncertainItemId,
+									 double stdDev,
+									 double[] armaConstants, int transformationType) {
 		this.id = (noiseModelId != null) ? noiseModelId : "noise-on-" + composeNoiseModelId(vectorConfigs);
         this.noiseModelType = noiseModelType;
         this.vectorConfigs = vectorConfigs;
         this.uncertainItemId = uncertainItemId;
         this.stdDev = stdDev;
         this.armaConstants = armaConstants;
-		this.operation = operation;
+		this.transformationType = transformationType;
     }
 
 	private String composeNoiseModelId(BBStochModelVectorConfig[] vectorConfigs) {
@@ -94,7 +94,7 @@ public class BBUncertOrArmaNoiseConfig {
         return armaConstants;
     }
 
-	public Operation getOperation() {
-		return operation;
+	public int getTransformationType() {
+		return transformationType;
 	}
 }
