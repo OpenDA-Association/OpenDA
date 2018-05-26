@@ -14,6 +14,13 @@ cd core/native
 make install
 cd $HIER
 
+#build all castor stuff
+for DIRBUILD in model_delft3d core model_wflow model_efdc_dll model_bmi observers
+do
+   cd $DIRBUILD
+   ant -f build_castor.xml build
+   cd $HIER
+done
 ant build 
 
 echo DONE INSTALLING
