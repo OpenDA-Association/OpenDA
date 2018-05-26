@@ -439,6 +439,7 @@ public class OpenDaTestSupport {
 	
 	private static String removeIntsAndFloats(String line){
 		line=line.replaceAll("[0-9]*\\.?[0-9]+", "");
+		line=line.replaceAll(" ", "");
 		return line;
 	}
 	

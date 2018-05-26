@@ -66,6 +66,6 @@ public class D3dMdFileDataObjectTest extends TestCase {
 
 		File mdFileOrg = new File(testData.getTestRunDataDir(), "simple-mdfile-out.mdf");
 		File mdFileExpected = new File(testData.getTestRunDataDir(), "simple-mdfile-expected.mdf");
-		assertTrue("Ajdusted file OK", testData.FilesAreIdentical(mdFileOrg, mdFileExpected));
+		assertTrue("Ajdusted file OK", testData.FilesAreIdentical(mdFileOrg, mdFileExpected, 0, 1.0e-8));
 	}
 }
