@@ -45,8 +45,8 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 	protected IStochModelInstance ensemble[] = null;
 
 	public boolean ensembleStochParameter=false;
-	public boolean ensembleStochForcing=true;
-	public boolean ensembleStochInit=true;
+	public boolean ensembleStochForcing=false; //true;
+	public boolean ensembleStochInit=false; //true;
 
 	// some facilities for Kalman filtering
 	// - the actual analysis is performed by the filter
@@ -57,38 +57,45 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 	protected int gainStorageMaxXmlStore = 40;
 
 	// Localization
-	enum LocalizationMethodType{none,hamill,autoZhang}
+	enum LocalizationMethodType{none,hamill,autoZhang,hybrid}
 	LocalizationMethodType localizationMethod=LocalizationMethodType.none;
     double distance;
+	double inflationFactor;
+	boolean inflation = true;
+	int nBootstrap;				// number of bootstrapped gains for Autolocalization (details in class implementation)
+	double sigmaAlpha2;
 
 	//Smoothed gain matrix
 	double timeRegularisationPerDay = 0.0;
 
 
-	
+	@Override
 	public void initialize(File workingDir, String[] arguments) {
 
-		super.initialize(workingDir,arguments);
+		super.initialize(workingDir, arguments);
 
 		this.ensembleSize = this.configurationAsTree.getAsInt("ensembleSize",this.ensembleSize);
 	    String localization = this.configurationAsTree.getAsString("localization","none");
 		System.out.println("Selected localization method:"+localization);
-		if ( localization.toLowerCase().equals("none") ) {
-			this.localizationMethod = LocalizationMethodType.none;
-		}
-		else if (localization.toLowerCase().equals("hamill")){
+		this.inflationFactor = this.configurationAsTree.getAsDouble("inflation",1.0);
+		if(this.inflationFactor==1.0) {	this.inflation = false;	}
+		if (localization.toLowerCase().equals("hamill")){
 		   this.localizationMethod = LocalizationMethodType.hamill;
            this.distance = this.configurationAsTree.getAsDouble("distance",0.0);
-           if (this.distance <= 0.0) throw new RuntimeException("Found Localization method 'Hamill' but no 'distance' (> 0) specified.");
+           if (this.distance == 0.0) throw new RuntimeException("Found Localization method 'Hamill' but no 'distance' (> 0) specified.");
 		}
 		else if (localization.toLowerCase().equals("autozhang")){
 			this.localizationMethod = LocalizationMethodType.autoZhang;
+			this.nBootstrap = this.configurationAsTree.getAsInt("nBootstrap",100);
+			this.sigmaAlpha2 = this.configurationAsTree.getAsDouble("sigmaAlpha2",0.36);	//optimal value according to Zhang and Oliver (Ref. in class)
 		}
-		else {
-			throw new RuntimeException("Configured localization type '" + localization +  "' is not supported");
+		else if (localization.toLowerCase().equals("hybrid")){
+			this.localizationMethod = LocalizationMethodType.hybrid;
+			this.distance = this.configurationAsTree.getAsDouble("distance",0.0);
+			if (this.distance == 0.0) throw new RuntimeException("Found Localization method 'hybrid' but no 'distance' (> 0) specified.");
+			this.nBootstrap = this.configurationAsTree.getAsInt("nBootstrap",100);
+			this.sigmaAlpha2 = this.configurationAsTree.getAsDouble("sigmaAlpha2",0.36);	//optimal value according to Zhang and Oliver (Ref. in class)
 		}
-
-
 		this.timeRegularisationPerDay= this.configurationAsTree.getAsDouble("gainMatrixSmoother@timeRegularisationPerDay",0.0);
 
 		Results.putMessage("this.ensembleSize="+this.ensembleSize);
@@ -190,11 +197,11 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 		}
 	}
 
-	
+	@Override
 	public void prepare() {
 	}
 
-	
+	@Override
 	public void forecast(IStochObserver observations, ITime targetTime) {
            System.gc();
 		if (timerForecast == null) {

@@ -22,9 +22,11 @@
 
 package org.openda.algorithms.kalmanFilter;
 
+import org.openda.interfaces.IResultWriter;
 import org.openda.interfaces.IStochObserver;
 import org.openda.interfaces.IVector;
 import org.openda.utils.DistributedCounter;
+import org.openda.utils.Results;
 
 import java.util.Random;
 
@@ -43,17 +45,25 @@ import java.util.Random;
  *               gain matrices.
  */
 public class AutoLocalizationZhang2011 {
-	private double sigmaAlpha2=0.36;  //Optimal value (see paper)
-	private int nBootstrap=50;
+	private double sigmaAlpha2;  //Optimal value (see paper)
+	private int nBootstrap;
+	boolean debug = false;
 
 	//Use the DistributedCounter to make sure we have different seeds in a parallel run
 	//(probably not needed but is does not hurt ;-))
 	private static DistributedCounter SeedWithOffset = new DistributedCounter(20100816);
 	private static Random generator = new Random(SeedWithOffset.val());
 
+	public AutoLocalizationZhang2011(int nBootstrapEnkF, double sigmaAlpha2EnkF){
+
+		this.nBootstrap = nBootstrapEnkF;
+		this.sigmaAlpha2 = sigmaAlpha2EnkF;
+
+	}
+
 	public IVector[] computeObservedLocalization(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors ){
 
-		System.out.println("Debug: We doen lokalizatie volgens Zhang +nbootstrap="+this.nBootstrap);
+		System.out.println("Debug: We doen lokalizatie volgens Zhang");
 		//Create an ensemble of gain matrices
 		IVector [][] gainMatrices = createBootstrapGainsMatrices(algorithmEnkF, obs, ensemblePredictions, ensembleVectors);
 		//for (int i=0; i<gainMatrices.length; i++){
@@ -105,7 +115,7 @@ public class AutoLocalizationZhang2011 {
 	private IVector[] computeSigma2(IVector[][] gainMatricesMinMeanSquared, IVector[] work){
 		double alpha=1.0/(double) nBootstrap;
 		int nObs= work.length;
-		for (int iBootstrap=0; iBootstrap<this.nBootstrap; iBootstrap++){
+		for (int iBootstrap=0; iBootstrap<nBootstrap; iBootstrap++){
 			for (int iObs=0; iObs<nObs; iObs++){
 				work[iObs].axpy(alpha,gainMatricesMinMeanSquared[iBootstrap][iObs]);
 			}
@@ -117,7 +127,7 @@ public class AutoLocalizationZhang2011 {
 		int nObs= C2.length;
 		IVector ones = C2[0].clone();
 		ones.setConstant(1.0);
-		double beta=1.0+1.0/sigmaAlpha2;
+		double beta=1.0+(1.0/sigmaAlpha2);
 		for (int iObs=0; iObs<nObs; iObs++){
 			C2[iObs].scale(beta);
 			C2[iObs].axpy(1.0,ones);
@@ -169,7 +179,7 @@ public class AutoLocalizationZhang2011 {
 	private IVector[][] removeMeanAndSquare(IVector[][] gainMatrices, IVector[] gainMean){
 		// Remove mean and square
 		int nObs= gainMean.length;
-		for (int iBootstrap=0; iBootstrap<this.nBootstrap; iBootstrap++){
+		for (int iBootstrap=0; iBootstrap<nBootstrap; iBootstrap++){
 			for (int iObs=0; iObs<nObs; iObs++){
 				gainMatrices[iBootstrap][iObs].axpy(-1.0, gainMean[iObs]);
 				gainMatrices[iBootstrap][iObs].pointwiseMultiply(gainMatrices[iBootstrap][iObs]);
@@ -195,7 +205,7 @@ public class AutoLocalizationZhang2011 {
 	private IVector[] computeGainMean(IVector[][]gainMatrices, IVector[] wrkReturn){
 		double alpha=1.0/(double) nBootstrap;
 		int nObs= gainMatrices[0].length;
-		for (int iBootstrap=0; iBootstrap<this.nBootstrap; iBootstrap++){
+		for (int iBootstrap=0; iBootstrap<nBootstrap; iBootstrap++){
 			for (int iObs=0; iObs<nObs; iObs++){
 				wrkReturn[iObs].axpy(alpha,gainMatrices[iBootstrap][iObs]);
 			}
@@ -208,7 +218,7 @@ public class AutoLocalizationZhang2011 {
 	private IVector[][] createBootstrapGainsMatrices(EnKF algorithmEnkF, IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors){
 
 		//Create an ensemble of gain matrices
-		IVector [][] gainMatrices = new IVector[this.nBootstrap][];
+		IVector [][] gainMatrices = new IVector[nBootstrap][];
 		int n=ensembleVectors.getEnsembleSize();
 		IVector [] bootstrapEnsembleVectors = new IVector[n];
 		IVector [] bootstrapEnsemblePredictions = new IVector[n];
@@ -219,10 +229,12 @@ public class AutoLocalizationZhang2011 {
 		//	bootstrapEnsemblePredictions[i].axpy(1.0, ensemblePredictions.mean);
 		//}
 
-		for (int iBootstrap=0; iBootstrap<this.nBootstrap; iBootstrap++){
-			System.out.println("Bootstrap "+iBootstrap+" of "+ this.nBootstrap);
+		System.out.println("nBootstrap: "+nBootstrap);
+		for (int iBootstrap=0; iBootstrap<nBootstrap; iBootstrap++){
+			if(debug) {System.out.println("Bootstrap "+iBootstrap+" of "+ nBootstrap);}
 			for (int i=0; i<n; i++){
 				int iRand = generator.nextInt(n);
+				if(debug){System.out.println("iRand: "+iRand);}
 				bootstrapEnsembleVectors[i]=ensembleVectors.ensemble[iRand].clone();
 				bootstrapEnsemblePredictions[i]=ensemblePredictions.ensemble[iRand].clone();
 				bootstrapEnsembleVectors[i].axpy(1.0,ensembleVectors.ensemble[iRand]);
@@ -232,17 +244,10 @@ public class AutoLocalizationZhang2011 {
 			EnsembleVectors bootstrapEnsemble = new EnsembleVectors(bootstrapEnsembleVectors);
 			EnsembleVectors bootstrapPredictions = new EnsembleVectors(bootstrapEnsemblePredictions);
 
-			// Greate gain matrix
+			// Create gain matrix
 			gainMatrices[iBootstrap] = algorithmEnkF.computeGainMatrix(obs, bootstrapPredictions, bootstrapEnsemble, false, true);
 		}
 		return gainMatrices;
 	}
-
-
-
-
-
-
-
 
 }

@@ -22,6 +22,7 @@ import org.openda.interfaces.*;
 import org.openda.observers.ObserverUtils;
 import org.openda.utils.Matrix;
 import org.openda.utils.Results;
+import org.openda.utils.Vector;
 import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.performance.OdaTiming;
 
@@ -228,6 +229,10 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		else if (this.localizationMethod==LocalizationMethodType.autoZhang){
 			localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast);
 		}
+		else if (this.localizationMethod==LocalizationMethodType.hybrid){
+			localizationHamill(obs, Kvecs);
+			localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast);
+		}
 		timerLocalization.stop();
 	}
 
@@ -255,6 +260,54 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		}
 	}
 
+
+	//HMMM WE MUST!!! MAKE THIS NICE
+	protected void localizationHamillHx(IStochObserver obs, IVector[] Hrho, IVector[] Kvecs, EnsembleVectors ensVec){
+		System.out.print("Applying localization method to the predictions according to Hamill\n");
+
+		IVector output_Kvec = new Vector(5000);		// since length of Kvecs and Hrho is different for each assim_time (random bigger than all vector, rest in the back set to 0, just for output)
+		IVector output_rho = new Vector(5000);
+
+		for(int i=0; i<output_Kvec.getSize();i++){
+			if (i<Kvecs[0].getSize()) {
+				output_Kvec.setValue(i, Kvecs[0].getValue(i));
+				output_rho.setValue(i, Hrho[0].getValue(i));
+			} else {
+				output_Kvec.setValue(i, 0.0);
+				output_rho.setValue(i, 0.0);
+			}
+
+		}
+
+		for(int i=0; i<Hrho.length; i++) {
+
+			int indexOutput = (int) obs.getObservationDescriptions().getValueProperties("idx").getValue(0);
+
+			resutlWriteSubTree("KpreHloc_" + indexOutput, output_Kvec, null);
+
+			resutlWriteSubTree("rhoHh_" + indexOutput, output_rho, null);
+
+			Kvecs[i].pointwiseMultiply(Hrho[i]);
+
+			for(int j=0; j<output_Kvec.getSize();j++){
+				if (j<Kvecs[0].getSize()) {
+					output_Kvec.setValue(j, Kvecs[0].getValue(j));
+					output_rho.setValue(j, Hrho[0].getValue(j));
+				} else {
+					output_Kvec.setValue(j, 0.0);
+					output_rho.setValue(j, 0.0);
+				}
+
+			}
+
+			resutlWriteSubTree("KHloc_" + indexOutput, output_Kvec, null);
+
+			Hrho[i].free();
+		}
+
+
+	}
+
 	protected void localizationZhang(IStochObserver obs, IVector[] Kvecs, EnsembleVectors ensemblePredictionsForecast, EnsembleVectors ensembleVectorsForecast) {
 		localizationZhang(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast, null, null);
 	}
@@ -268,7 +321,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		//  DOI 10.1007/s10596-010-9218-y
 		System.out.print("Applying localization method according to Zhang\n");
 		// Get the localization correlation matrix for the ensemble
-		AutoLocalizationZhang2011 localMethod = new AutoLocalizationZhang2011();
+		AutoLocalizationZhang2011 localMethod = new AutoLocalizationZhang2011(this.nBootstrap, this.sigmaAlpha2);
 		IVector[] rho = localMethod.computeObservedLocalization(this, obs, ensemblePredictionsForecast, ensembleVectorsForecast);
         if (colIndexOutput!=null){
 			if (rho.length!=colIndexOutput.length) {
