@@ -121,7 +121,7 @@ public class EsriAsciiGridSeriesDataObject implements IDataObject {
 				exchangeItemId = exchangeItem.getId();
 				geometryInfo = (IArrayGeometryInfo) exchangeItem.getGeometryInfo();
 			}
-			System.arraycopy(exchangeItemValues, 0 , allValues, i*filesCount, exchangeItemValues.length);
+			System.arraycopy(exchangeItemValues, 0 , allValues, i*exchangeItemValues.length, exchangeItemValues.length);
 		}
 		exchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.InOut);
 		exchangeItem.setGeometryInfo(geometryInfo);
