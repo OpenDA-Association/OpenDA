@@ -917,7 +917,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 		}
 		else {
-			return getObservedValuesBB(observationDescriptions);
+			if (model instanceof IOutputModeSetter) {
+				((IOutputModeSetter)model).setInOutputMode(true);
+			}
+			IVector observedValuesBB = getObservedValuesBB(observationDescriptions);
+			if (model instanceof IOutputModeSetter) {
+				((IOutputModeSetter)model).setInOutputMode(false);
+			}
+			return observedValuesBB;
 		}
 	}
 

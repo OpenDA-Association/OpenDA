@@ -675,7 +675,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
         }
     }
 
-    private void flushAndClearDataObjects(boolean flushDataObjects) {
+    protected void flushAndClearDataObjects(boolean flushDataObjects) {
         if (flushDataObjects) {
             //flush all IoObjects.
             for (IoObjectInterface ioObjectInterface : ioObjects.values()) {
