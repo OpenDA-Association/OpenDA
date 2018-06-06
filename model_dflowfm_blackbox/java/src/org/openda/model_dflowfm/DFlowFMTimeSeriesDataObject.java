@@ -38,12 +38,14 @@ import java.util.Set;
 
 public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	public static final String PROPERTY_PATHNAME = "pathName";
+
 	private TimeSeriesSet timeSeriesSet = null;
 	private LinkedHashMap<String, DoubleExchangeItem> amplitudes=null; 
 	private LinkedHashMap<String, DoubleExchangeItem> phases=null; 
 	private ArrayList<String> cmpFileNames =null;
 	private LinkedHashMap<String, String> cmpNameFromId;
 	private static final String idSeparator= ":";
+	private static final String fileIdSeparator= "-";
 	private File dflowFMmodelDir;
 
 	/**
@@ -94,7 +96,6 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 			String childFileName = extForcings.get("FILENAME", i);
 			String baseFileName = childFileName.substring(0,childFileName.indexOf("."));
 			String fileExtension = childFileName.substring(childFileName.indexOf("."));
-//			System.out.println(baseFileName +  " ; " + fileExtension);
 			/* PLI files*/
 			if (fileExtension.equalsIgnoreCase(".pli")) {
 				DFlowFMPliInputFile pliFile = new DFlowFMPliInputFile(dflowFMmodelDir, childFileName);
@@ -116,7 +117,8 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 						String location = String.format("%s.%d" , locationId ,fileNr+1);
 						series.setLocation(location);
 						series.setQuantity(quantity);
-						String identifier = location + idSeparator + quantity ;
+						String baseName =  timFile.getName().replaceFirst("[.][^.]+$", "");
+						String identifier = location + idSeparator + quantity + fileIdSeparator + baseName;
 //						Results.putMessage("Creating exchange item with id: " + identifier );
 						series.setId(identifier);
 						series.setProperty(PROPERTY_PATHNAME, timFile.getAbsolutePath() );
@@ -172,18 +174,14 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	
  	public String [] getExchangeItemIDs() {
 		String [] result = new String[this.timeSeriesSet.size()+2*this.amplitudes.size()];
-		Set<String> quantities = this.timeSeriesSet.getQuantities();
 		int idx=0;
-		for (String quantity: quantities) {
-//			System.out.println(quantity);
-			Set<String> locations = this.timeSeriesSet.getOnQuantity(quantity).getLocations();
-			for (String location: locations) {
-				String id = location + idSeparator + quantity;
-//				System.out.println("getExhangeItemIDs: " + id);
-				result[idx]= id;
-				idx++;	
-			}
+		Iterator<TimeSeries> it = this.timeSeriesSet.iterator();
+		while (it.hasNext()) {
+			TimeSeries t = it.next();
+			result[idx]= t.getId();
+			idx++;
 		}
+
 		for( String id : this.amplitudes.keySet()){
 			result[idx]=id;
 			idx++;
@@ -195,41 +193,13 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 		return result;
 	}
 
-// 	public String [] getExchangeItemIDs() {
-//		String [] result = new String[this.ExchangeItems.size()];
-//		Set<String> keys = this.ExchangeItems.keySet();
-//		int idx=0;
-//		for (String key: keys) {
-//			result[idx]=key;
-//			idx++;
-//		}
-//		return result;
-//	}
 
 	public String [] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 
-//	public IExchangeItem getDataObjectExchangeItem(String ExchangeItemID) {
-//		Set<String> keys = this.ExchangeItems.keySet();
-//		for (String key: keys) {
-//			if (ExchangeItemID.equals(key)){
-//				return this.ExchangeItems.get(key);
-//			}
-//		}
-//		return null;
-//	}
-//	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		
-		String[] parts = exchangeItemID.split(idSeparator);
-		if (parts.length != 2) {
-			throw new RuntimeException("Invalid exchangeItemID " + exchangeItemID );
-		}
-		String location = parts[0];	
-		String quantity = parts[1];
-//		System.out.println(location + ", " + quantity );
-		
+
 		if(exchangeItemID.endsWith("_amplitude")){
 			if(this.amplitudes.containsKey(exchangeItemID)){
 				DoubleExchangeItem amplitude = this.amplitudes.get(exchangeItemID);
@@ -243,22 +213,17 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 				return phase;
 			}else{
 				throw new RuntimeException("No tidal phase found for " + exchangeItemID);
-			}			
+			}
 		}else{
-			// Get the single time series based on location and quantity
-			TimeSeriesSet myTimeSeriesSet = this.timeSeriesSet.getOnQuantity(quantity)
-					.getOnLocation(location);
-			Iterator<TimeSeries> iterator = myTimeSeriesSet.iterator();
-			if (!iterator.hasNext()) {
-			    throw new RuntimeException("No time series found for " + exchangeItemID);
+			Iterator<TimeSeries> iterator = this.timeSeriesSet.iterator();
+			while (iterator.hasNext()) {
+				TimeSeries ts = iterator.next();
+				if (exchangeItemID.equals(ts.getId()) ) {
+					return ts;
+				};
 			}
-			TimeSeries timeSeries = iterator.next();
-			if (iterator.hasNext()) {
-			    throw new RuntimeException("Time series is not uniquely defined for  " + exchangeItemID);
-			}
-			return timeSeries;
 		}
-
+		return null;
 	}
 	
 	
