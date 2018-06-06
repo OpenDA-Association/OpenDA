@@ -40,7 +40,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 	private IExchangeItem[] exchangeItems;
 
 	private DFlowFMMduInputFile mduOptions;
-	private String mdufile;
+	private File mduFile;
 	private String TStart = null;
 	private String TStop = null;
 	private String[] DFlowFMTimeInfoId = new String[]{"start_time","end_time"};
@@ -60,8 +60,8 @@ public class DFlowFMTimeInfo implements IDataObject {
 
 	private void initialize(File workingDir, String fileName, String[] arguments) {
 		if (arguments.length > 0) Results.putMessage("Initialize DFlowTimeInfo: additional arguments not used");
-		this.mdufile = fileName;
-	    mduOptions = new DFlowFMMduInputFile(workingDir, this.mdufile);
+		this.mduFile = new File(workingDir, fileName);
+	    mduOptions = new DFlowFMMduInputFile(workingDir, fileName);
 		exchangeItems = new DFlowFMTimeInfoExchangeItem[NTimeInfoIds];
 		for (int n = 0 ; n < NTimeInfoIds ; n++) {
 			exchangeItems[n] = new DFlowFMTimeInfoExchangeItem(DFlowFMTimeInfoId[n], this);
@@ -105,7 +105,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 		return exchangeItems;
 	}
 
-	public double getDblTStartSimulation() {
+	double getDblTStartSimulation() {
 		if (TStart==null) {
 			readTimeInfo();
 		}
@@ -115,7 +115,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 	    return dblTStart;
 	}
 
-	public void setDblTStartSimulation(double dblTStart){
+	void setDblTStartSimulation(double dblTStart){
 		// Determine TStart since RefDate, RefDate should not be changed.
 		double dblTref = mduOptions.getReferenceDateInMjd();
 		Double tStartInMduUnit = (dblTStart-dblTref)/ mduOptions.getTimeToMjdFactor();
@@ -131,7 +131,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 		mduOptions.put("time", "TStart", TStart);
 	}
 
-	public double getDblTStopSimulation() {
+	double getDblTStopSimulation() {
 		if (TStop==null) {
 			readTimeInfo();
 		}
@@ -141,7 +141,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 	    return dblTStop;
 	}
 
-	public void setDblTStopSimulation(double dblTStop){
+	void setDblTStopSimulation(double dblTStop){
 		// Determine TStop since RefDate, RefDate should not be changed.
 		double dblTref = mduOptions.getReferenceDateInMjd();
 		Double tStopInMduUnit = (dblTStop-dblTref)/ mduOptions.getTimeToMjdFactor();
@@ -152,14 +152,15 @@ public class DFlowFMTimeInfo implements IDataObject {
 		mduOptions.put("time","TStop",TStop);
 	}
 
-	public void setRestartOptions(double dblTime) {
+	private void setRestartOptions(double dblTime) {
 		String RestartDateTime = TimeUtils.mjdToString(dblTime);
-		String mapfile = mdufile.replace(".mdu","_map.nc");
+		String mapfile = mduFile.getName().replace(".mdu","_map.nc");
+
 		mduOptions.put("restart","RestartFile",mapfile);
 		mduOptions.put("restart","RestartDateTime",RestartDateTime+"00");
 	}
 
-	public void readTimeInfo() throws RuntimeException {
+	private void readTimeInfo() throws RuntimeException {
 		TStart = mduOptions.get("time","TStart");
 		TStop  = mduOptions.get("time","TStop");
 	}
