@@ -68,6 +68,20 @@ public class BcFileTest extends TestCase
 				new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
+	public void testBcFileWaterLevel() {
+		// Step 1: Read original test file
+		BcFile bcFile = new BcFile();
+		String rewritten = "WaterLevel_rewritten.bc";
+		String[] arguments = {"Waterlevel.bc", rewritten};
+		bcFile.initialize(testBcFileDir, arguments);
+
+		//Step 3: Write test file
+		bcFile.finish();
+
+		// Step 4: Compare written file to expected results
+        assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, "WaterLevel_expected.bc"), new File(testBcFileDir, rewritten)));
+	}
+
 	public void testBcFileUpdatesCategoriesCorrectly_AxpyOnValues()
 	{
 		// Step 1: Read original test file
