@@ -58,11 +58,11 @@ public class DFlowFMTimeSeriesDataObjectTest extends TestCase {
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 		assertEquals(2, exchangeItemIDs.length);
 		
-		IExchangeItem timEx = dataObject.getDataObjectExchangeItem("estuary_02.1:dischargebnd");
+		IExchangeItem timEx = dataObject.getDataObjectExchangeItem("estuary_02.1:dischargebnd-estuary_02_0001");
 		assertEquals("TimeSeries", timEx.getClass().getSimpleName());
 
 		TimeSeries ts = (TimeSeries) (timEx);
-		assertEquals("estuary_02.1:dischargebnd", ts.getId());
+		assertEquals("estuary_02.1:dischargebnd-estuary_02_0001", ts.getId());
 		assertEquals("estuary_02.1", ts.getLocation());
 		assertEquals("", ts.getSource());
 		assertEquals("", ts.getUnitId());
@@ -120,11 +120,11 @@ public class DFlowFMTimeSeriesDataObjectTest extends TestCase {
 		DFlowFMTimeSeriesDataObject.writeTimTimeSeries((TimeSeries) dataObject.getDataObjectExchangeItem(exchangeIDs[1]), timFile);
 		
 		// finally, test it
-		TimeSeries series1 = (TimeSeries) dataObject.getDataObjectExchangeItem("estuary_02.2:dischargebnd");
+		TimeSeries series1 = (TimeSeries) dataObject.getDataObjectExchangeItem("estuary_02.2:dischargebnd-estuary_02_0002");
 		DFlowFMTimeSeriesDataObject dataObject2 = new DFlowFMTimeSeriesDataObject();
 		args[0] = "estuary_test.mdu"; 
 		dataObject2.initialize(this.testRunDataDir, args);
-		TimeSeries series2 = (TimeSeries) dataObject2.getDataObjectExchangeItem("estuary_02.2:dischargebnd");
+		TimeSeries series2 = (TimeSeries) dataObject2.getDataObjectExchangeItem("estuary_02.2:dischargebnd-estuary_test_02_0002");
 		//System.out.println( series2.getProperty("pathName") );
 		assertEquals(timFile.getAbsolutePath(),series2.getProperty("pathName"));
 		assertTrue(series1.equals(series2));
