@@ -34,7 +34,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="algorithms" />
-    <orderEntry type="module" module-name="application" />
     <orderEntry type="module" module-name="models" />
     <orderEntry type="module" module-name="observers" />
     <orderEntry type="library" name="netcdf" level="project" />
