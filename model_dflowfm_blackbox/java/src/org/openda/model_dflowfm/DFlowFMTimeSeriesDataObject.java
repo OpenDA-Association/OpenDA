@@ -44,8 +44,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	private ArrayList<String> cmpFileNames =null;
 	private LinkedHashMap<String, String> cmpNameFromId;
 	private static final String idSeparator= ":";
-	String fileName = null;
-	File workingDir = null;
+	private File dflowFMmodelDir;
 
 	/**
 	 * Initialize the IDataObject
@@ -56,10 +55,11 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	 *           Additional arguments (may be null zero-length)
 	 */
 	public void initialize(File workingDir, String[] arguments) {
-		if (arguments != null) {
-			this.fileName = arguments[0];
+		File mduFile = null;
+		if (arguments != null && arguments.length > 0) {
+			mduFile = new File(workingDir, arguments[0]);
 			if (arguments.length > 1) {
-				Results.putMessage("DflowFMRestartFile: " + fileName + ", extra arguments ignored");
+				Results.putMessage("DflowFMRestartFile: " + mduFile.getAbsolutePath() + ", extra arguments ignored");
 			}
 		}
 		this.timeSeriesSet = new TimeSeriesSet();
@@ -67,23 +67,20 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 		this.phases = new LinkedHashMap<String, DoubleExchangeItem>();
 		this.cmpFileNames = new ArrayList<String>();
 		this.cmpNameFromId = new LinkedHashMap<String, String>();
-		this.workingDir=workingDir;
-		parseConfigurationFiles(workingDir, fileName);
+		parseConfigurationFiles(mduFile);
 	}
 
 	/**
 	 * Parse through the Dflowfm configuration files and add all defined timeseries 
 	 *
-	 * @param workingDir
-	 *           Working directory
-	 * @param fileName
-	 *           The name of the file containing the data (relative to the working dir) This fileName may NOT contain wildcard
-	 *           characters.
+	 * @param mduFile
+	 *           The file containing the data.
 	 */
-	public void parseConfigurationFiles(File workingDir, String fileName) {
+	public void parseConfigurationFiles(File mduFile) {
 
 		// get forcing file name and time properties from mdu file
-		DFlowFMMduInputFile mduOptions = new DFlowFMMduInputFile(workingDir, fileName);
+		dflowFMmodelDir = mduFile.getParentFile();
+		DFlowFMMduInputFile mduOptions = new DFlowFMMduInputFile(dflowFMmodelDir, mduFile.getName());
 		String forcingFileName = mduOptions.get("external forcing","ExtForceFile");
 		Double referenceDate = mduOptions.getReferenceDateInMjd();
 		Double timeFactor = mduOptions.getTimeToMjdFactor();
@@ -91,7 +88,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 //		System.out.println("time unit conversion factor = " + timeFactor );
 		
 		// parse external forcing file
-		DFlowFMExtInputFile extForcings = new DFlowFMExtInputFile(workingDir, forcingFileName);
+		DFlowFMExtInputFile extForcings = new DFlowFMExtInputFile(dflowFMmodelDir, forcingFileName);
 		for (int i=0; i < extForcings.count() ; i++) {
 			String quantity = extForcings.get("QUANTITY", i);
 			String childFileName = extForcings.get("FILENAME", i);
@@ -100,13 +97,13 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 //			System.out.println(baseFileName +  " ; " + fileExtension);
 			/* PLI files*/
 			if (fileExtension.equalsIgnoreCase(".pli")) {
-				DFlowFMPliInputFile pliFile = new DFlowFMPliInputFile(workingDir, childFileName);
+				DFlowFMPliInputFile pliFile = new DFlowFMPliInputFile(dflowFMmodelDir, childFileName);
 				// look for TIM or CMP files
 				for (int fileNr=0 ; fileNr < pliFile.getLocationsCount(); fileNr++) {
 					String timFilePath = baseFileName + String.format("_%04d", fileNr + 1) + ".tim";
-					File timFile = new File(workingDir, timFilePath );
+					File timFile = new File(dflowFMmodelDir, timFilePath );
 					String cmpFilePath = baseFileName + String.format("_%04d", fileNr + 1) + ".cmp";
-					File cmpFile = new File(workingDir, cmpFilePath );
+					File cmpFile = new File(dflowFMmodelDir, cmpFilePath );
 					String locationId = pliFile.getLocationId();
 					
 					// TIM file
@@ -129,7 +126,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 						this.cmpFileNames.add(cmpFilePath);
 						DoubleExchangeItem amplitude;
 						DoubleExchangeItem phase;
-						DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(workingDir,cmpFilePath);
+						DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(dflowFMmodelDir,cmpFilePath);
 						String[] AC = cmpfile.getACname();
 						for (String var: AC) {
 							if (! var.contentEquals("period")){
@@ -345,7 +342,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	 */
 	private void writeComponents(){
 		for(String cmpFilePath : this.cmpFileNames){
-			DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(workingDir,cmpFilePath);
+			DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(dflowFMmodelDir,cmpFilePath);
 			// Check for updates to exchangeItem
 			for(String id : this.cmpNameFromId.keySet()){
 				if(cmpFilePath.equalsIgnoreCase(this.cmpNameFromId.get(id))){
