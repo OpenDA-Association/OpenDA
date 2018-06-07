@@ -22,8 +22,10 @@ import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Tests for IDataObject for Flow-1D's boundary condition file
@@ -71,15 +73,23 @@ public class BcFileTest extends TestCase
 	public void testBcFileWaterLevel() {
 		// Step 1: Read original test file
 		BcFile bcFile = new BcFile();
-		String rewritten = "WaterLevel_rewritten.bc";
-		String[] arguments = {"Waterlevel.bc", rewritten};
+		String rewrittenFileName = "WaterLevel_rewritten.bc";
+		String[] arguments = {"Waterlevel.bc", rewrittenFileName};
 		bcFile.initialize(testBcFileDir, arguments);
 
 		//Step 3: Write test file
 		bcFile.finish();
 
 		// Step 4: Compare written file to expected results
-        assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, "WaterLevel_expected.bc"), new File(testBcFileDir, rewritten)));
+		File expected = new File(testBcFileDir, "WaterLevel_expected.bc");
+		File rewrittenFile = new File(testBcFileDir, rewrittenFileName);
+		List<String> expectedLines = AsciiFileUtils.readLines(expected);
+		List<String> rewrittenLines = AsciiFileUtils.readLines(rewrittenFile);
+		for (int i = 1; i < rewrittenLines.size(); i++) {
+			String rewrittenLine = rewrittenLines.get(i);
+			String expectedLine = expectedLines.get(i);
+			assertEquals(rewrittenLine + "\nnot equal to\n" + expectedLine, expectedLine, rewrittenLine);
+		}
 	}
 
 	public void testBcFileUpdatesCategoriesCorrectly_AxpyOnValues()
