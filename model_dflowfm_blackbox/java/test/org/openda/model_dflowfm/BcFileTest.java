@@ -86,8 +86,11 @@ public class BcFileTest extends TestCase
 		List<String> expectedLines = AsciiFileUtils.readLines(expected);
 		List<String> rewrittenLines = AsciiFileUtils.readLines(rewrittenFile);
 		for (int i = 1; i < rewrittenLines.size(); i++) {
-			String rewrittenLine = rewrittenLines.get(i);
-			String expectedLine = expectedLines.get(i);
+			String rewrittenLine = rewrittenLines.get(i).trim();
+			String expectedLine = expectedLines.get(i).trim();
+			if (!expectedLine.equals(rewrittenLine)) {
+				System.out.println(rewrittenLine + "\nnot equal to\n" + expectedLine);
+			}
 			assertEquals(rewrittenLine + "\nnot equal to\n" + expectedLine, expectedLine, rewrittenLine);
 		}
 	}
