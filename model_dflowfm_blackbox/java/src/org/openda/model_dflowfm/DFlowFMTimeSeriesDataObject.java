@@ -38,14 +38,15 @@ import java.util.Set;
 
 public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	public static final String PROPERTY_PATHNAME = "pathName";
+
 	private TimeSeriesSet timeSeriesSet = null;
 	private LinkedHashMap<String, DoubleExchangeItem> amplitudes=null; 
 	private LinkedHashMap<String, DoubleExchangeItem> phases=null; 
 	private ArrayList<String> cmpFileNames =null;
 	private LinkedHashMap<String, String> cmpNameFromId;
 	private static final String idSeparator= ":";
-	String fileName = null;
-	File workingDir = null;
+	private static final String fileIdSeparator= "-";
+	private File dflowFMmodelDir;
 
 	/**
 	 * Initialize the IDataObject
@@ -56,10 +57,11 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	 *           Additional arguments (may be null zero-length)
 	 */
 	public void initialize(File workingDir, String[] arguments) {
-		if (arguments != null) {
-			this.fileName = arguments[0];
+		File mduFile = null;
+		if (arguments != null && arguments.length > 0) {
+			mduFile = new File(workingDir, arguments[0]);
 			if (arguments.length > 1) {
-				Results.putMessage("DflowFMRestartFile: " + fileName + ", extra arguments ignored");
+				Results.putMessage("DflowFMRestartFile: " + mduFile.getAbsolutePath() + ", extra arguments ignored");
 			}
 		}
 		this.timeSeriesSet = new TimeSeriesSet();
@@ -67,23 +69,20 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 		this.phases = new LinkedHashMap<String, DoubleExchangeItem>();
 		this.cmpFileNames = new ArrayList<String>();
 		this.cmpNameFromId = new LinkedHashMap<String, String>();
-		this.workingDir=workingDir;
-		parseConfigurationFiles(workingDir, fileName);
+		parseConfigurationFiles(mduFile);
 	}
 
 	/**
 	 * Parse through the Dflowfm configuration files and add all defined timeseries 
 	 *
-	 * @param workingDir
-	 *           Working directory
-	 * @param fileName
-	 *           The name of the file containing the data (relative to the working dir) This fileName may NOT contain wildcard
-	 *           characters.
+	 * @param mduFile
+	 *           The file containing the data.
 	 */
-	public void parseConfigurationFiles(File workingDir, String fileName) {
+	public void parseConfigurationFiles(File mduFile) {
 
 		// get forcing file name and time properties from mdu file
-		DFlowFMMduInputFile mduOptions = new DFlowFMMduInputFile(workingDir, fileName);
+		dflowFMmodelDir = mduFile.getParentFile();
+		DFlowFMMduInputFile mduOptions = new DFlowFMMduInputFile(dflowFMmodelDir, mduFile.getName());
 		String forcingFileName = mduOptions.get("external forcing","ExtForceFile");
 		Double referenceDate = mduOptions.getReferenceDateInMjd();
 		Double timeFactor = mduOptions.getTimeToMjdFactor();
@@ -91,22 +90,21 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 //		System.out.println("time unit conversion factor = " + timeFactor );
 		
 		// parse external forcing file
-		DFlowFMExtInputFile extForcings = new DFlowFMExtInputFile(workingDir, forcingFileName);
+		DFlowFMExtInputFile extForcings = new DFlowFMExtInputFile(dflowFMmodelDir, forcingFileName);
 		for (int i=0; i < extForcings.count() ; i++) {
 			String quantity = extForcings.get("QUANTITY", i);
 			String childFileName = extForcings.get("FILENAME", i);
 			String baseFileName = childFileName.substring(0,childFileName.indexOf("."));
 			String fileExtension = childFileName.substring(childFileName.indexOf("."));
-//			System.out.println(baseFileName +  " ; " + fileExtension);
 			/* PLI files*/
 			if (fileExtension.equalsIgnoreCase(".pli")) {
-				DFlowFMPliInputFile pliFile = new DFlowFMPliInputFile(workingDir, childFileName);
+				DFlowFMPliInputFile pliFile = new DFlowFMPliInputFile(dflowFMmodelDir, childFileName);
 				// look for TIM or CMP files
 				for (int fileNr=0 ; fileNr < pliFile.getLocationsCount(); fileNr++) {
 					String timFilePath = baseFileName + String.format("_%04d", fileNr + 1) + ".tim";
-					File timFile = new File(workingDir, timFilePath );
+					File timFile = new File(dflowFMmodelDir, timFilePath );
 					String cmpFilePath = baseFileName + String.format("_%04d", fileNr + 1) + ".cmp";
-					File cmpFile = new File(workingDir, cmpFilePath );
+					File cmpFile = new File(dflowFMmodelDir, cmpFilePath );
 					String locationId = pliFile.getLocationId();
 					
 					// TIM file
@@ -119,7 +117,8 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 						String location = String.format("%s.%d" , locationId ,fileNr+1);
 						series.setLocation(location);
 						series.setQuantity(quantity);
-						String identifier = location + idSeparator + quantity ;
+						String baseName =  timFile.getName().replaceFirst("[.][^.]+$", "");
+						String identifier = location + idSeparator + quantity + fileIdSeparator + baseName;
 //						Results.putMessage("Creating exchange item with id: " + identifier );
 						series.setId(identifier);
 						series.setProperty(PROPERTY_PATHNAME, timFile.getAbsolutePath() );
@@ -129,7 +128,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 						this.cmpFileNames.add(cmpFilePath);
 						DoubleExchangeItem amplitude;
 						DoubleExchangeItem phase;
-						DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(workingDir,cmpFilePath);
+						DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(dflowFMmodelDir,cmpFilePath);
 						String[] AC = cmpfile.getACname();
 						for (String var: AC) {
 							if (! var.contentEquals("period")){
@@ -175,18 +174,14 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	
  	public String [] getExchangeItemIDs() {
 		String [] result = new String[this.timeSeriesSet.size()+2*this.amplitudes.size()];
-		Set<String> quantities = this.timeSeriesSet.getQuantities();
 		int idx=0;
-		for (String quantity: quantities) {
-//			System.out.println(quantity);
-			Set<String> locations = this.timeSeriesSet.getOnQuantity(quantity).getLocations();
-			for (String location: locations) {
-				String id = location + idSeparator + quantity;
-//				System.out.println("getExhangeItemIDs: " + id);
-				result[idx]= id;
-				idx++;	
-			}
+		Iterator<TimeSeries> it = this.timeSeriesSet.iterator();
+		while (it.hasNext()) {
+			TimeSeries t = it.next();
+			result[idx]= t.getId();
+			idx++;
 		}
+
 		for( String id : this.amplitudes.keySet()){
 			result[idx]=id;
 			idx++;
@@ -198,41 +193,13 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 		return result;
 	}
 
-// 	public String [] getExchangeItemIDs() {
-//		String [] result = new String[this.ExchangeItems.size()];
-//		Set<String> keys = this.ExchangeItems.keySet();
-//		int idx=0;
-//		for (String key: keys) {
-//			result[idx]=key;
-//			idx++;
-//		}
-//		return result;
-//	}
 
 	public String [] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 
-//	public IExchangeItem getDataObjectExchangeItem(String ExchangeItemID) {
-//		Set<String> keys = this.ExchangeItems.keySet();
-//		for (String key: keys) {
-//			if (ExchangeItemID.equals(key)){
-//				return this.ExchangeItems.get(key);
-//			}
-//		}
-//		return null;
-//	}
-//	
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		
-		String[] parts = exchangeItemID.split(idSeparator);
-		if (parts.length != 2) {
-			throw new RuntimeException("Invalid exchangeItemID " + exchangeItemID );
-		}
-		String location = parts[0];	
-		String quantity = parts[1];
-//		System.out.println(location + ", " + quantity );
-		
+
 		if(exchangeItemID.endsWith("_amplitude")){
 			if(this.amplitudes.containsKey(exchangeItemID)){
 				DoubleExchangeItem amplitude = this.amplitudes.get(exchangeItemID);
@@ -246,22 +213,17 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 				return phase;
 			}else{
 				throw new RuntimeException("No tidal phase found for " + exchangeItemID);
-			}			
+			}
 		}else{
-			// Get the single time series based on location and quantity
-			TimeSeriesSet myTimeSeriesSet = this.timeSeriesSet.getOnQuantity(quantity)
-					.getOnLocation(location);
-			Iterator<TimeSeries> iterator = myTimeSeriesSet.iterator();
-			if (!iterator.hasNext()) {
-			    throw new RuntimeException("No time series found for " + exchangeItemID);
+			Iterator<TimeSeries> iterator = this.timeSeriesSet.iterator();
+			while (iterator.hasNext()) {
+				TimeSeries ts = iterator.next();
+				if (exchangeItemID.equals(ts.getId()) ) {
+					return ts;
+				};
 			}
-			TimeSeries timeSeries = iterator.next();
-			if (iterator.hasNext()) {
-			    throw new RuntimeException("Time series is not uniquely defined for  " + exchangeItemID);
-			}
-			return timeSeries;
 		}
-
+		return null;
 	}
 	
 	
@@ -345,7 +307,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	 */
 	private void writeComponents(){
 		for(String cmpFilePath : this.cmpFileNames){
-			DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(workingDir,cmpFilePath);
+			DFlowFMCmpInputFile cmpfile = new DFlowFMCmpInputFile(dflowFMmodelDir,cmpFilePath);
 			// Check for updates to exchangeItem
 			for(String id : this.cmpNameFromId.keySet()){
 				if(cmpFilePath.equalsIgnoreCase(this.cmpNameFromId.get(id))){
