@@ -352,6 +352,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_wflow/java/model_wflow.iml" filepath="$PROJECT_DIR$/model_wflow/java/model_wflow.iml" />
       <module fileurl="file://$PROJECT_DIR$/models/java/models.iml" filepath="$PROJECT_DIR$/models/java/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/observers/java/observers.iml" filepath="$PROJECT_DIR$/observers/java/observers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/public_project_view.iml" filepath="$PROJECT_DIR$/public_project_view.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
