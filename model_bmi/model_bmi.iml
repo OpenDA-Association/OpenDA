@@ -14,6 +14,8 @@
       <sourceFolder url="file://$MODULE_DIR$/python/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/thrift/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/python/resources/openda/thrift_generated_code" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/java/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/python/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -83,7 +83,7 @@ public class ioDumper {
 				System.out.println("role ="+item.getRole());
 				System.out.println(((TimeSeries)item).toString());
 				NoosTimeSeriesFormatter f =new NoosTimeSeriesFormatter();
-				f.writeFile(item.getId()+".noos", (TimeSeries)item, false);
+				f.writeToStandardOut( (TimeSeries)item );
 			}else{
 				System.out.println("id ="+item.getId());
 				System.out.println("description ="+item.getDescription());

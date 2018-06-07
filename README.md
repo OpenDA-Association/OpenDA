@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/OpenDA-Association/OpenDA.svg?branch=master)](https://travis-ci.org/OpenDA-Association/OpenDA)
+[![Code Quality](https://img.shields.io/codacy/grade/1fbe3d16ca544c0c8589692632d114de/master.svg)](https://app.codacy.com/app/OpenDA_Association/OpenDA)
 
 # OpenDA
 
