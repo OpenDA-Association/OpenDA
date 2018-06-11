@@ -146,4 +146,8 @@ public class BcFile implements IDataObject
 			if (property.getName().equalsIgnoreCase("name")) return property.getValue();
 		return "";
 	}
+
+	public List<BcCategory> getCategories() {
+		return categories;
+	}
 }
