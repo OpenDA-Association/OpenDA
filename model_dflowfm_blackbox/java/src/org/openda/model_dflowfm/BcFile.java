@@ -53,8 +53,11 @@ public class BcFile implements IDataObject
 		File bcFile = new File(workingDirectory, inputFileName);
 		if(!bcFile.exists()) throw new RuntimeException(String.format("BcFile does not exist: %s", inputFileName));
 
+		System.out.println("File " + bcFile + " found. Start reading");
 		//Step 1: Read BcCategories from (Input) BcFile
 		categories = BcFileReaderWriter.readBcFile(bcFile);
+
+		System.out.println("File " + bcFile + " read.");
 
 		//Step 2: Create ExchangeItems from time series categories
 		List<BcCategory> categoriesWithTimeSeriesData = getCategoriesWithTimeSeriesData();
@@ -72,6 +75,8 @@ public class BcFile implements IDataObject
 			for(int i = 0; i < values.size(); i++) valuesAsDoubles[i] = values.get(i);
 
 			double[] timesAsDoubles = TimeUtils.ConvertBcTimesToModifiedJulianDays(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
+
+			System.out.println("Creating exchange item " + exchangeItemId);
 
 			exchangeItems.put(exchangeItemId, new BcExchangeItem(exchangeItemId, timesAsDoubles, valuesAsDoubles));
 		}
@@ -123,7 +128,12 @@ public class BcFile implements IDataObject
 
 		//Step 2: Write updated BcCategories to (Output) BcFile
 		File bcFile = new File(workingDirectory, outputFileName);
+
+		System.out.println("Start writing " + bcFile);
+
 		BcFileReaderWriter.writeBcFile(bcFile, categories);
+
+		System.out.println("File written " + bcFile);
 	}
 
 	private List<BcCategory> getCategoriesWithTimeSeriesData()
