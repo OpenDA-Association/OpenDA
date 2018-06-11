@@ -18,15 +18,16 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_dflowfm;
+
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.Time;
 
-import java.io.*;
-import java.text.ParseException;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * IDataObject for Flow-1D's Boundary Condition file
@@ -132,7 +133,7 @@ public class BcFile implements IDataObject
 		{
 			Boolean hasTimeSeriesData = false;
 			for (BcProperty property : category.getProperties())
-				if(property.getName().equals("function")) hasTimeSeriesData |=  property.getValue().equals("timeseries");
+				if(property.getName().equalsIgnoreCase("function")) hasTimeSeriesData |=  property.getValue().equalsIgnoreCase("timeseries");
 
 			if(hasTimeSeriesData) categoriesWithTimeSeriesData.add(category);
 		}
@@ -142,7 +143,11 @@ public class BcFile implements IDataObject
 	private String getBoundaryName(BcCategory category)
 	{
 		for (BcProperty property : category.getProperties())
-			if (property.getName().equals("name")) return property.getValue();
+			if (property.getName().equalsIgnoreCase("name")) return property.getValue();
 		return "";
+	}
+
+	public List<BcCategory> getCategories() {
+		return categories;
 	}
 }
