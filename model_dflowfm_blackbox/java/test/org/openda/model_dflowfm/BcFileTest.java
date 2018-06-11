@@ -18,12 +18,15 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_dflowfm;
+
 import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.FileComparer;
 import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Tests for IDataObject for Flow-1D's boundary condition file
@@ -66,6 +69,60 @@ public class BcFileTest extends TestCase
 		// Step 4: Compare written file to expected results
         assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameTimeSeriesValuesHalved),
 				new File(testBcFileDir, bcFileNameGenerated)));
+	}
+
+	public void testBcFileWaterLevel() {
+		System.out.println("Started testBcFileWaterLevel");
+		// Step 1: Read original test file
+		BcFile bcFile = new BcFile();
+		String rewrittenFileName = "WaterLevel_rewritten.bc";
+		String[] arguments = {"WaterLevel.bc", rewrittenFileName};
+		bcFile.initialize(testBcFileDir, arguments);
+
+		List<BcCategory> categories = bcFile.getCategories();
+
+		//Step 3: Write test file
+		bcFile.finish();
+
+		String rewrittenAgainFileName = "WaterLevel_rewrittenAgain.bc";
+		String[] args = {"WaterLevel_rewritten.bc", rewrittenAgainFileName};
+		BcFile bcFileAgain = new BcFile();
+		bcFileAgain.initialize(testBcFileDir, args);
+
+		List<BcCategory> categoriesAgain = bcFileAgain.getCategories();
+
+		assertEquals(3, categories.size());
+
+		System.out.println("Category sizes of original file correct");
+
+		assertEquals(3, categoriesAgain.size());
+
+		System.out.println("Category sizes of rewritten file correct");
+
+		for (int i = 0; i < categories.size(); i++) {
+			BcCategory bcCategory = categories.get(i);
+			BcCategory bcCategoryAgain = categoriesAgain.get(i);
+			assertEquals(bcCategory.getName(), bcCategoryAgain.getName());
+			System.out.println("Category names correct of " + i);
+			assertEquals(bcCategory.getProperties().size(), bcCategoryAgain.getProperties().size());
+			System.out.println("Category property size correct of " + i);
+			assertEquals(bcCategory.getTable().size(), bcCategoryAgain.getTable().size());
+			System.out.println("Category table size correct of " + i);
+		}
+
+		// Step 4: Compare written file to expected results
+		File expected = new File(testBcFileDir, "WaterLevel_expected.bc");
+		File rewrittenFile = new File(testBcFileDir, rewrittenFileName);
+		List<String> expectedLines = AsciiFileUtils.readLines(expected);
+		List<String> rewrittenLines = AsciiFileUtils.readLines(rewrittenFile);
+		for (int i = 1; i < rewrittenLines.size(); i++) {
+			String rewrittenLine = rewrittenLines.get(i).trim();
+			String expectedLine = expectedLines.get(i).trim();
+			if (!expectedLine.equals(rewrittenLine)) {
+				System.out.println(rewrittenLine + "\nnot equal to\n" + expectedLine);
+			}
+			assertEquals(rewrittenLine + "\nnot equal to\n" + expectedLine, expectedLine, rewrittenLine);
+		}
 	}
 
 	public void testBcFileUpdatesCategoriesCorrectly_AxpyOnValues()

@@ -29,11 +29,13 @@ public class BcQuantity
 	private BcProperty quantity;
 	private BcProperty unit;
 	private List<Double> values;
+	private List<String> strings;
 
 	public BcQuantity(BcProperty quantity)
 	{
 		this.quantity = quantity;
 		values = new ArrayList<>();
+		strings = new ArrayList<>();
 	}
 
 	public BcQuantity(BcProperty quantity, BcProperty unit)
@@ -44,9 +46,11 @@ public class BcQuantity
 
 	public void setUnit(BcProperty unit) { this.unit = unit; }
 	public void setColumnData(List<Double> values) { this.values = values; }
-	public void addColumnData(Double value) { values.add(value); }
+	public void addColumnDataDouble(Double value) { values.add(value); }
+	public void addColumnDataString(String value) { strings.add(value); }
 
 	public BcProperty getQuantity() { return quantity; }
 	public BcProperty getUnit() { return unit; }
 	public List<Double> getValues() { return values; }
+	public List<String> getStrings() { return strings; }
 }

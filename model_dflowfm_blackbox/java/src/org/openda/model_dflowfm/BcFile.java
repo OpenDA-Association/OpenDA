@@ -18,15 +18,16 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_dflowfm;
+
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.Time;
 
-import java.io.*;
-import java.text.ParseException;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * IDataObject for Flow-1D's Boundary Condition file
@@ -52,8 +53,11 @@ public class BcFile implements IDataObject
 		File bcFile = new File(workingDirectory, inputFileName);
 		if(!bcFile.exists()) throw new RuntimeException(String.format("BcFile does not exist: %s", inputFileName));
 
+		System.out.println("File " + bcFile + " found. Start reading");
 		//Step 1: Read BcCategories from (Input) BcFile
 		categories = BcFileReaderWriter.readBcFile(bcFile);
+
+		System.out.println("File " + bcFile + " read.");
 
 		//Step 2: Create ExchangeItems from time series categories
 		List<BcCategory> categoriesWithTimeSeriesData = getCategoriesWithTimeSeriesData();
@@ -71,6 +75,8 @@ public class BcFile implements IDataObject
 			for(int i = 0; i < values.size(); i++) valuesAsDoubles[i] = values.get(i);
 
 			double[] timesAsDoubles = TimeUtils.ConvertBcTimesToModifiedJulianDays(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
+
+			System.out.println("Creating exchange item " + exchangeItemId);
 
 			exchangeItems.put(exchangeItemId, new BcExchangeItem(exchangeItemId, timesAsDoubles, valuesAsDoubles));
 		}
@@ -122,7 +128,12 @@ public class BcFile implements IDataObject
 
 		//Step 2: Write updated BcCategories to (Output) BcFile
 		File bcFile = new File(workingDirectory, outputFileName);
+
+		System.out.println("Start writing " + bcFile);
+
 		BcFileReaderWriter.writeBcFile(bcFile, categories);
+
+		System.out.println("File written " + bcFile);
 	}
 
 	private List<BcCategory> getCategoriesWithTimeSeriesData()
@@ -132,7 +143,7 @@ public class BcFile implements IDataObject
 		{
 			Boolean hasTimeSeriesData = false;
 			for (BcProperty property : category.getProperties())
-				if(property.getName().equals("function")) hasTimeSeriesData |=  property.getValue().equals("timeseries");
+				if(property.getName().equalsIgnoreCase("function")) hasTimeSeriesData |=  property.getValue().equalsIgnoreCase("timeseries");
 
 			if(hasTimeSeriesData) categoriesWithTimeSeriesData.add(category);
 		}
@@ -142,7 +153,11 @@ public class BcFile implements IDataObject
 	private String getBoundaryName(BcCategory category)
 	{
 		for (BcProperty property : category.getProperties())
-			if (property.getName().equals("name")) return property.getValue();
+			if (property.getName().equalsIgnoreCase("name")) return property.getValue();
 		return "";
+	}
+
+	public List<BcCategory> getCategories() {
+		return categories;
 	}
 }
