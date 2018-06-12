@@ -34,76 +34,70 @@ public class BcFileReaderWriter
 {
 	private static final String KEY_VALUE_COMMENT_PATTERN = "^\\s*(?<key>[^=\\s]+)\\s*=\\s*(?<value>[^#=]*)(#(?<comment>.*))?$";
 
-	public static List<BcCategory> readBcFile(File bcFile)
-	{
+	public static List<BcCategory> readBcFile(File bcFile) {
 		List<BcCategory> categories = new ArrayList<>();
 		BcCategory lastCategory = null;
 		int lineNumber = 0;
 		String nextLine;
 
-		try
-		{
+		try {
 			BufferedReader reader = new BufferedReader(new FileReader(bcFile));
-			while ((nextLine = reader.readLine()) != null)
-			{
+			boolean extraColumn = false;
+			while ((nextLine = reader.readLine()) != null) {
 				nextLine = nextLine.trim();
 				lineNumber++;
 				if (nextLine.isEmpty() || nextLine.startsWith("#")) continue;
 
-				if (nextLine.startsWith("["))
-				{
+				if (nextLine.startsWith("[")) {
 					String header = nextLine.substring(1, nextLine.lastIndexOf("]"));
 					lastCategory = new BcCategory(lineNumber, header);
+
 					categories.add(lastCategory);
-				}
-				else if (lastCategory != null)
-				{
-					if (nextLine.contains("="))
-					{
+					extraColumn = false;
+				} else if (lastCategory != null) {
+					if (nextLine.contains("=")) {
 						Pattern pattern = Pattern.compile(KEY_VALUE_COMMENT_PATTERN);
 						Matcher matcher = pattern.matcher(nextLine);
-						if (matcher.find())
-						{
+						if (matcher.find()) {
 							String name = matcher.group("key");
 							String value = matcher.group("value");
 							String comment = matcher.group("comment") == null ? "" : matcher.group("comment");
 
 							BcProperty property = new BcProperty(lineNumber, name, value, comment);
 
-							if (name.equals("quantity"))
-							{
+							if (name.equalsIgnoreCase("quantity")) {
 								lastCategory.getTable().add(new BcQuantity(property));
-							}
-							else if (name.equals("unit"))
-							{
+							} else if (name.equalsIgnoreCase("unit")) {
 								List<BcQuantity> table = lastCategory.getTable();
 								table.get(table.size() - 1).setUnit(property);
-							}
-							else
-							{
+							} else if (name.equalsIgnoreCase("function") && ("astronomic".equalsIgnoreCase(value) || "harmonic".equalsIgnoreCase(value))) {
+								extraColumn = true;
+								lastCategory.addProperty(property);
+							} else {
 								lastCategory.addProperty(property);
 							}
 						}
-					}
-					else
-					{
+					} else {
 						List<BcQuantity> table = lastCategory.getTable();
-						String[] values = nextLine.split(" ");
+						String[] values = nextLine.split("[ ]{1,}");
 						if (table.size() != values.length)
 							throw new IllegalArgumentException("Number of values does not match number of quantities");
 
-						for (int i = 0; i < table.size(); i++)
-						{
+						for (int i = 0; i < table.size(); i++) {
+							BcQuantity bcQuantity = table.get(i);
+							if (i == 0 && extraColumn) {
+								bcQuantity.addColumnDataString(values[i]);
+								continue;
+							}
+							// How to handle string column
 							Double value = Double.valueOf(values[i]);
-							table.get(i).addColumnData(value);
+							bcQuantity.addColumnDataDouble(value);
 						}
 					}
 				}
 			}
 			reader.close();
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			String errorMessage = ex.getMessage();
 			if (lastCategory != null) errorMessage = String.format("%s, Category: %s", errorMessage, lastCategory.getName());
 			errorMessage = String.format("%s, BcFile: %s, LineNumber: %s", errorMessage, bcFile.getPath(), lineNumber);
@@ -113,16 +107,13 @@ public class BcFileReaderWriter
 		return categories;
 	}
 
-	public static void writeBcFile(File bcFile, List<BcCategory> categories)
-	{
-		try
-		{
+	public static void writeBcFile(File bcFile, List<BcCategory> categories) {
+		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(bcFile));
 			String currentDateTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
 			writer.write(String.format("# Generated on %s%s%s", currentDateTime, System.lineSeparator(), System.lineSeparator()));
 
-			for (BcCategory category : categories)
-			{
+			for (BcCategory category : categories) {
 				writer.write(String.format("[%s]%s", category.getName(), System.lineSeparator()));
 
 				for (BcProperty property : category.getProperties())
@@ -130,36 +121,38 @@ public class BcFileReaderWriter
 
 
 				List<BcQuantity> table = category.getTable();
-				if(table.size() > 0) // General category will have zero entries in table
+				if (table.size() > 0) // General category will have zero entries in table
 				{
-					String[] tableRows = new String[table.get(0).getValues().size()];
+					BcQuantity bcQuantity = table.get(0);
+					String[] tableRows = new String[bcQuantity.getStrings().size() + bcQuantity.getValues().size()];
 					Arrays.fill(tableRows, "");
 
-					for(BcQuantity column : table)
-					{
+					for (BcQuantity column : table) {
 						writer.write(String.format("%s%s", generatePropertyString(column.getQuantity()), System.lineSeparator()));
 						writer.write(String.format("%s%s", generatePropertyString(column.getUnit()), System.lineSeparator()));
 
+						List<String> strings = column.getStrings();
+						for (int j = 0; j < strings.size(); j++) {
+							tableRows[j] += strings.get(j) + ' ';
+						}
 						List<Double> values = column.getValues();
-						for(int j = 0; j < values.size(); j++)
-							tableRows[j] += values.get(j).toString() + " ";
+						for (int j = 0; j < values.size(); j++) {
+							tableRows[j] += values.get(j).toString() + ' ';
+						}
 					}
 
-					for(String row : tableRows)
+					for (String row : tableRows)
 						writer.write(String.format("    %s%s", row, System.lineSeparator()));
 				}
 				writer.newLine();
 			}
 			writer.close();
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new RuntimeException("Error writing BcFile: " + ex.getMessage());
 		}
 	}
 
-	private static String generatePropertyString(BcProperty property)
-	{
+	private static String generatePropertyString(BcProperty property) {
 		String comment = property.getComment();
 		comment = comment.equals("") ? "" : String.format("# %s", comment);
 
