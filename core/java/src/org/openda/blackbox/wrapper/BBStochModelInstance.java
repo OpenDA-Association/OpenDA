@@ -1457,7 +1457,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			for (int i = 0; i < values.length; i++) {
 				values[i] = parameterDelta;
 			}
-			// TODO EP add multiply
+		} else if (transformation == BBRegularisationConstantConfig.TRANSFORMATION_MULTIPLY) {
+			for (int i = 0; i < values.length; i++) {
+				values[i] *= 1d + parameterDelta;
+			}
 		} else {
 			throw new RuntimeException("BBStochModelInstance.setParameters(): unexpected transformation typ " +
 					exchangeItem.getId());

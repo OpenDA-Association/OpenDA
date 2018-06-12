@@ -120,7 +120,6 @@ public class BBStochModelParametersTest extends TestCase {
 	}
 
 	public void testMultiply() {
-		// TODO ErikP make sure values from exchangeItems are modified trough compute
 		StochVector.setSeed(1234); //fix seed to get same results every time
 
 		BBStochModelFactory stochModelFactory = new BBStochModelFactory();
@@ -129,17 +128,16 @@ public class BBStochModelParametersTest extends TestCase {
 		stochModelFactory.initialize(workingDir, new String[]{"StochModelConfig_transformationMultiply.xml"});
 		stochModelFactory.setTimeHorizon(horizon);
 
-		IStochModelInstance instance = stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		IStochModelInstance stochModelInstance = stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
 
-		instance.setAutomaticNoiseGeneration(true);
-		ITime timeHorizon = instance.getTimeHorizon();
-		ITime startTime = timeHorizon.getBeginTime();
-		instance.compute(startTime);
+		IVector paramClone = stochModelInstance.getParameters().clone();
+		paramClone.setConstant(0.3);
+		stochModelInstance.setParameters(paramClone);
 
-		String[] exchangeItemIDs = instance.getExchangeItemIDs();
-		IPrevExchangeItem exchangeItem = instance.getExchangeItem(exchangeItemIDs[0]);
+		String[] exchangeItemIDs = stochModelInstance.getExchangeItemIDs();
+		IPrevExchangeItem exchangeItem = stochModelInstance.getExchangeItem(exchangeItemIDs[0]);
 		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
-		assertEquals(101.0, valuesAsDoubles[0]);
+		assertEquals(131.3, valuesAsDoubles[0]);
 
 	}
 
