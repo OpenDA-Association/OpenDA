@@ -2,9 +2,8 @@
 
 root = true  ; top-most EditorConfig file
 
-; Unix-style newlines with a newline ending every file
+; newline ending every file
 [*]
-end_of_line = lf
 insert_final_newline = true
 
 ; 4 space indentation
@@ -24,3 +23,7 @@ indent_size  = 2
 ; tab indentation
 [Makefile]
 indent_style = tab
+
+; windows line endings
+[*.bat]
+end_of_line = crlf
