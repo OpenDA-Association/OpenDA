@@ -1,10 +1,16 @@
-#! /usr/bin/python
+#!/usr/bin/env python2
 
 '''A one dimensional reactive pollution model. '''
-
+from __future__ import print_function
+import csv
 import sys
 import math
+import argparse
 
+DEFAULT_INPUT = {
+    'reaction_time': [3.0],      # reaction time (inverse of rate) in seconds
+    'time': [0.0, 1.0, 10.0]     # [t_start, dt, t_end]
+}
 
 def defaultInput():
     input={}
@@ -21,9 +27,6 @@ def defaultInput():
     input['refdate'] = '01 dec 2000'
     #unit is always seconds
     input['unit'] = 'seconds'
-    input['time'] = [0.0, 1.0, 10.0]
-    # reaction time (inverse of rate) in seconds
-    input['reaction_time'] = [3.0]
     # sources mass/m^3/s
     input['source_locations'] = [2]
     input['source_substance'] = [1]
@@ -41,7 +44,6 @@ def defaultInput():
     #output (index based and 0 based)
     input['output_file'] = 'default.output'
     input['matlab_output_file'] = 'default_output.m'
-    input['output_map_times'] = list(input['time'])
     input['output_locations'] = [1, 2, 1 ,3]
     input['output_substance'] = [1, 1, 2 ,2]
     input['output_labels']=['c1_1', 'c1_2', 'c2_1', 'c2_3']
@@ -64,35 +66,35 @@ def initOutput(input):
     return output
 
 def computeNextTimeStep(tIndex, c1, c2, input):
-    #print 'computing next timestep'
+    #print('computing next timestep')
     c1Next = [0.0 for dummy in c1]
     c2Next = [0.0 for dummy in c2]
-    #print 'transport '
+    #print('transport ')
     time=input['time']
     reaction_time=input['reaction_time']
     x=input['x']
     u=input['u']
     for i in xrange(0, len(c1), 1):
-        #print 'computing for gridpoint '+str(i)
+        #print('computing for gridpoint '+str(i))
         di = u[i]*time[1]/x[1]
         iLeft = i+int(math.floor(di))
-        #print 'i = %d di= %f iLeft = %f' % (i, di, iLeft)
+        #print('i = %d di= %f iLeft = %f' % (i, di, iLeft))
         weightRight= (di-math.floor(di))
         weightLeft=1.0-weightRight
         iRight = iLeft+1
         if((iLeft>=0) & (iLeft<len(c1Next))):
-            c1Next[iLeft]  +=  c1[i]*weightLeft;
-            c2Next[iLeft]  +=  c2[i]*weightLeft;
+            c1Next[iLeft]  +=  c1[i]*weightLeft
+            c2Next[iLeft]  +=  c2[i]*weightLeft
         if((iRight>=0) & (iRight<len(c1Next))):
             c1Next[iRight] += c1[i]*weightRight
             c2Next[iRight] += c2[i]*weightRight
-	# reaction
-	rate = time[1]/reaction_time[0];
-	c1Next[i] += - c1Next[i] * rate
-	c2Next[i] +=   c1Next[i] * rate
-    #print 'c1='+str(c1Next)
-    #print 'c2='+str(c2Next)
-    #print 'add sources'
+        # reaction
+        rate = time[1]/reaction_time[0]
+        c1Next[i] += - c1Next[i] * rate
+        c2Next[i] +=   c1Next[i] * rate
+    #print('c1='+str(c1Next))
+    #print('c2='+str(c2Next))
+    #print('add sources')
     source_locations=input['source_locations']
     source_substance=input['source_substance']
     source_labels=input['source_labels']
@@ -108,13 +110,13 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         else:
             cValue = cValues[-1]
         cValue = max(cValue, 0.0)
-	if(iSubstance==1):
+        if(iSubstance==1):
            c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
-	else:
+        else:
            c2Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
-    #print 'c1='+str(c1Next)
-    #print 'c2='+str(c2Next)
-    #print 'inflow boundaries'
+    #print('c1='+str(c1Next))
+    #print('c2='+str(c2Next))
+    #print('inflow boundaries')
     bound_values=input['bound_values']
     if (u[0]>0.0):
         bValues=bound_values['c1_left']
@@ -146,8 +148,8 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         else:
             bValue = bValues[-1]
         c2Next[-1]=bValue
-    #print 'c1='+str(c1Next)
-    #print 'c2='+str(c2Next)
+    #print('c1='+str(c1Next))
+    #print('c2='+str(c2Next))
     return (c1Next,c2Next)
 
 def readInputFile(fileName):
@@ -155,23 +157,19 @@ def readInputFile(fileName):
     source_values= {}
     bound_values= {}
     output_values= {}
-    print 'reading input from file '+fileName
+    print('reading input from file '+fileName)
     inFile=open(fileName, 'r')
     counter =1
     for line in inFile.xreadlines():
-        #print "%d : %s" %(counter, line[:-1])
+        #print("%d : %s" %(counter, line[:-1]))
         exec "global x;"+line  in globals(),  locals()
         counter+=1
     inFile.close()
-    input['x']=x
+    input['x']= x
     input['u']= u
     input['a']= a
-    input['c1']= c1
-    input['c2']= c2
     input['refdate']= refdate
     input['unit']= unit
-    input['time']= time
-    input['reaction_time']= reaction_time
     input['source_locations']= source_locations
     input['source_substance']= source_substance
     input['source_labels']= source_labels
@@ -188,22 +186,31 @@ def readInputFile(fileName):
     input['bound_values']= bound_values
     return input
 
+def readASCIIFile(file_name):
+    """ Reads an ASCII file containing a float value on each line. """
+    with open(file_name, 'r') as fin:
+        file_contents = fin.readlines()
+
+    try:
+        file_contents = [float(val) for val in file_contents]
+    except ValueError:
+        print("ERROR: Could not cast the values in the file %s to floats." % file_name)
+        raise
+
+    return file_contents
+
 def collectOutput(c1, c2, output):
-    for i in range(len(output['output_locations'])):
-        iOutput =output['output_locations'][i]
-        iSubstance =output['output_substance'][i]
-        iLabel=output['output_labels'][i]
-	if (iSubstance==1):
+    """Add current values of c1, c2 at output locations to the appropriate time series."""
+
+    for iOutput, iSubstance, iLabel in zip(output['output_locations'], output['output_substance'], output['output_labels']):
+
+        if (iSubstance==1):
            output['output_values'][iLabel].append(c1[iOutput])
-           #print 'c1[%d]=%f' % (iOutput, c1[iOutput])
-	else:
+        else:
            output['output_values'][iLabel].append(c2[iOutput])
-           #print 'c2[%d]=%f' % (iOutput, c2[iOutput])
-    #print 'c1='+str(c1)
-    #print 'c2='+str(c2)
 
 def writeOutput(outFile, c1, c2):
-    print "writing output to file %s" % output['output_file']
+    print("writing output to file %s" % output['output_file'])
     outFile.write("source_values= {}\n")
     outFile.write("bound_values= {}\n")
     outFile.write("output_values= {}\n")
@@ -277,7 +284,6 @@ def writePythonMapOutput(pythonOutFile, c1, c2, timeIndex):
     pythonOutFile.write("c1_map["+str(timeIndex-1)+"]=["+','.join(map(str, c1))+"]\n")
     pythonOutFile.write("c2_map["+str(timeIndex-1)+"]=["+','.join(map(str, c2))+"]\n")
 
-
 def frange(start, end=None, inc=None):
     "A range function, that does accept float increments..."
     if end == None:
@@ -297,34 +303,97 @@ def frange(start, end=None, inc=None):
 
 
 if __name__ == '__main__':
-    # look for input file
+
+    # parse command line arguments
+    parser = argparse.ArgumentParser(description="Run a reactive pollution model.")
+    parser.add_argument("--model_parameters", default=None,
+                        help="Python file containing all model parameters, except the reaction time, simulation time, and concentrations of substrance 1 and 2.")
+    parser.add_argument("--reaction_time", default=None,
+                        help="ASCII file containing the reaction time.")
+    parser.add_argument("--simulation_time", default=None,
+                        help="ASCII file containing three values: start/end time and time step.")
+    parser.add_argument("--c1", default=None,
+                        help="ASCII file containing the current concentration values of substance 1.")
+    parser.add_argument("--c2", default=None,
+                        help="ASCII file containing the current concentration values of substance 2.")
+
+    args = vars(parser.parse_args())
+
+    # read input files, or use defaults
     input={}
-    if (sys.argv[-1].endswith(".input")):
-        inputFile = sys.argv[-1]
-        input=readInputFile(inputFile)
+    if args['model_parameters']:
+        input = readInputFile(args['model_parameters'])
     else:
-        print "using internal default input"
+        print('using internal default input')
         input=defaultInput()
+
+    if args['reaction_time']:
+        input['reaction_time'] = readASCIIFile(args['reaction_time'])
+    else:
+        input['reaction_time'] = DEFAULT_INPUT['reaction_time']
+
+    if args['simulation_time']:
+        input['time'] = readASCIIFile(args['simulation_time'])
+    else:
+        input['time'] = DEFAULT_INPUT['time']
+    input['output_map_times'] = list(input['time'])
+
+    if args['c1']:
+        input['c1'] = readASCIIFile(args['c1'])
+    else:
+        input['c1'] = [0.] * len(input['u']) # Default: put concentrations to 0.
+
+    if args['c2']:
+        input['c2'] = readASCIIFile(args['c2'])
+    else:
+        input['c2'] = [0.] * len(input['u']) # Default: put concentrations to 0.
+
     output=initOutput(input)
     matlabOutFile=open(output['matlab_output_file'], 'w')
     pythonOutFile=open(output['output_file'], 'w')
     writePythonMapOutputInit(pythonOutFile)
 
-    print 'main computations'
+    # File handles to csv output files (time series and concentration maps).
+    file_handles = {}
+    csv_writers = {}
+    for label in (["c1", "c2"] + input['output_labels']):
+        file_handles.update({label: open("%s.csv" % label, 'a')})
+        csv_writers.update({label: csv.writer(file_handles[label])})
+
+    print('main computations')
     tIndex = 0
     c1Now=input['c1'][:]
     c2Now=input['c2'][:]
     time=input['time']
+
     collectOutput(c1Now, c2Now, output)
+
     for t in frange(time[0], time[2], time[1]):
-        print 'computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%'
+        print('computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%')
         (c1Now,c2Now)=computeNextTimeStep(tIndex, c1Now, c2Now, input)
+
         collectOutput(c1Now, c2Now, output)
         tIndex+=1
+
+        # This writes the entire concentration map at the current time step to file.
+        csv_writers['c1'].writerow(c1Now)
+        csv_writers['c2'].writerow(c2Now)
+
+        # Append to time series.
+        for label in input["output_labels"]:
+            value = output['output_values'][label][-1]
+            csv_writers[label].writerow([t+time[1], value])
+
+        # Same, for the matlab/python output.
         writeMatlabMapOutput(matlabOutFile, c1Now, c2Now, tIndex)
         writePythonMapOutput(pythonOutFile, c1Now, c2Now, tIndex)
+
     writeOutput(pythonOutFile, c1Now, c2Now)
     writeMatlabOutput(matlabOutFile, c1Now, c2Now)
     matlabOutFile.close()
     pythonOutFile.close()
-    print 'simulation ended successfully'
+
+    for label in (["c1", "c2"] + input['output_labels']):
+        file_handles[label].close()
+
+    print('simulation ended successfully')
