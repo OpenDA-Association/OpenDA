@@ -25,6 +25,8 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 
+import org.openda.exchange.DoubleExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -46,7 +48,7 @@ public class ASCIIVectorIoObjectTest extends TestCase {
 		double eps=1.0e-8;
 
 		ASCIIVectorIoObject vec1 = new ASCIIVectorIoObject();
-		vec1.initialize(this.testRunDataDir, "vector1.txt", null);
+		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
 		IPrevExchangeItem[] exchange1 = vec1.getExchangeItems();
 		assertEquals(1,exchange1.length);
 		double[] vals1 = exchange1[0].getValuesAsDoubles();
@@ -65,7 +67,7 @@ public class ASCIIVectorIoObjectTest extends TestCase {
 		vec1.finish();
 
 		ASCIIVectorIoObject vec2 = new ASCIIVectorIoObject();
-		vec2.initialize(this.testRunDataDir, "vector1.txt", null);
+		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
 		IPrevExchangeItem [] exchange2 = vec2.getExchangeItems();
 		assertEquals(1,exchange2.length);
 		double[] vals2 = exchange2[0].getValuesAsDoubles();
@@ -76,6 +78,43 @@ public class ASCIIVectorIoObjectTest extends TestCase {
 		assertEquals(4.001, vals2[3], eps);
 		assertEquals(5.001, vals2[4], eps);
 	}
+
+	public void testIoCopySingleValuesFromFile() {
+
+		double eps=1.0e-8;
+		ASCIIVectorIoObject vec1 = new ASCIIVectorIoObject();
+		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt", "as_separate_exchange_items"});
+
+		IExchangeItem[] exchange_items = vec1.getExchangeItems();
+		assertEquals(5, exchange_items.length);
+		assertEquals(1.0, exchange_items[0].getValuesAsDoubles()[0], eps);
+		assertEquals(2.0, exchange_items[1].getValuesAsDoubles()[0], eps);
+		assertEquals(3.0, exchange_items[2].getValuesAsDoubles()[0], eps);
+		assertEquals(4.0, exchange_items[3].getValuesAsDoubles()[0], eps);
+		assertEquals(5.0, exchange_items[4].getValuesAsDoubles()[0], eps);
+
+		for (IExchangeItem exchange_item : exchange_items) {
+			double[] temp_value = new double[1];
+			temp_value[0] = exchange_item.getValuesAsDoubles()[0] + 0.001;
+			exchange_item.setValuesAsDoubles(temp_value);
+		}
+
+		// Write to file
+		vec1.finish();
+
+		ASCIIVectorIoObject vec2 = new ASCIIVectorIoObject();
+		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt", "as_separate_exchange_items"});
+
+		IExchangeItem[] exchange_items2 = vec2.getExchangeItems();
+		assertEquals(5, exchange_items.length);
+		assertEquals(1.001, exchange_items2[0].getValuesAsDoubles()[0], eps);
+		assertEquals(2.001, exchange_items2[1].getValuesAsDoubles()[0], eps);
+		assertEquals(3.001, exchange_items2[2].getValuesAsDoubles()[0], eps);
+		assertEquals(4.001, exchange_items2[3].getValuesAsDoubles()[0], eps);
+		assertEquals(5.001, exchange_items2[4].getValuesAsDoubles()[0], eps);
+
+	}
+
 }
 
 

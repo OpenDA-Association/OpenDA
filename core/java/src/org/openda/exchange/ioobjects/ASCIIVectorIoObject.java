@@ -20,10 +20,10 @@
 
 package org.openda.exchange.ioobjects;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.ArrayExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.DoubleArraySearch;
+import org.openda.exchange.DoubleExchangeItem;
+import org.openda.interfaces.IDataObject;
+import org.openda.interfaces.IExchangeItem;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -44,62 +44,95 @@ import java.util.Locale;
  * @author Nils van Velzen
  */
 
-public class ASCIIVectorIoObject implements IoObjectInterface {
+public class ASCIIVectorIoObject implements IDataObject {
 
-	private File  myFile;
+	// Either read the values in the ASCII file as:
+	//  - an array of numbers (ARRAY_EXCHANGE_ITEM), or as
+	//  - an array of exchange items (SEPARATE_EXCHANGE_ITEMS)
+    private enum Mode {ARRAY_EXCHANGE_ITEM, SEPARATE_EXCHANGE_ITEMS};
+
+    private Mode mode;
+	private File myFile;
+
 	private ArrayExchangeItem myExchangeItem;
-
+	private List<DoubleExchangeItem> myExchangeItems;
 
 	/**
-	 * Initialize the IoObject
+	 * Initialize the IDataObject
 	 *
 	 * @param workingDir Working directory
-	 * @param fileName   The name of the file containing the data (relative to the working dir.)
-	 * @param arguments  Additional arguments (may be null zero-length)
+	 * @param arguments  Additional arguments (first one being the file name)
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	public void initialize(File workingDir, String[] arguments) {
 		// Check whether the fileName is null or contains * or ?
 		// If so, use the multi-file version
 		// It it doesn't, call readNoosTimeSeries directly
+
+		if (arguments.length == 0) {
+			throw new RuntimeException("The arguments array is empty, at least one argument is expected, namely the filename");
+		} else if (arguments.length > 2) {
+			throw new RuntimeException("No more than two arguments are supported.");
+		}
+
+		for (String arg : arguments) {
+			System.out.printf("  %s%n", arg);
+		}
+
+		String fileName = arguments[0];
+
+		// The (optional) second argument determines how the data in the ASCII file is translated to exchange items.
+		mode = Mode.ARRAY_EXCHANGE_ITEM;
+		if (arguments.length == 2) {
+			if (arguments[1].equalsIgnoreCase("as_separate_exchange_items")) {
+				mode = Mode.SEPARATE_EXCHANGE_ITEMS;
+			}
+		}
 		if (fileName == null || "".equals(fileName)) {
 			throw new RuntimeException("The given filename is empty. Did you forget to fill it in in you XML configuration");
 		}
+
 		// Open File
 		myFile = new File(workingDir,fileName);
 		if (!myFile.exists()) {
 			throw new RuntimeException("I cannot open the file "+myFile+" Hence I cannot read the vector. Did you make a configuration error or did the model not produce any output?");
 		}
-		// Read File
-		List<Double> allValues = new ArrayList<Double>();
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(myFile));
 
-			String line = null;
+		// Read File.
+		List<Double> allValues = new ArrayList<>();
+		try (
+			FileReader reader = new FileReader(myFile);
+			BufferedReader buff_reader = new BufferedReader(reader)
+		) {
+			String line;
 			NumberFormat format = NumberFormat.getInstance(Locale.US);
-			while((line = reader.readLine()) != null) {
+			while((line = buff_reader.readLine()) != null) {
 
 				Number number = format.parse(line);
 				Double d = number.doubleValue();
 				allValues.add(d);
 			}
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException|ParseException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
+		} catch (IOException e){
 			e.printStackTrace();
 		}
 
-		//Copy all values in array
-		int n=allValues.size();
-		double[] values = new double[n];
-		for (int i=0;i<n;i++){
-			values[i]=allValues.get(i);
+		// Create exchange items.
+		String file_basename = getFileBaseName(myFile.getName());
+		if (mode == Mode.ARRAY_EXCHANGE_ITEM) {
+			double[] values = new double[allValues.size()];
+			for (int i = 0; i < allValues.size(); i++) {
+				values[i] = allValues.get(i);
+			}
+			myExchangeItem = new ArrayExchangeItem(file_basename, IExchangeItem.Role.InOut);
+			myExchangeItem.setValuesAsDoubles(values);
+		} else {
+			myExchangeItems = new ArrayList<>();
+			for (int i = 0; i < allValues.size(); i++) {
+				String current_exchange_item_id = String.format("%s[%d]", file_basename, i+1);
+				myExchangeItems.add(new DoubleExchangeItem(current_exchange_item_id, IExchangeItem.Role.InOut, allValues.get(i)));
+			}
 		}
-		//Create exchangeItem and set values
-		myExchangeItem  = new ArrayExchangeItem("ascii_vec", IPrevExchangeItem.Role.InOut);
-		myExchangeItem.setValuesAsDoubles(values);
 	}
 
 	/**
@@ -107,24 +140,112 @@ public class ASCIIVectorIoObject implements IoObjectInterface {
 	 *
 	 * @return The list of element identifiers that can be accessed
 	 */
-	@Override
-	public IPrevExchangeItem[] getExchangeItems() {
-		IPrevExchangeItem[]  items =  new IPrevExchangeItem[1];
-		items[0]=this.myExchangeItem;
+	public IExchangeItem[] getExchangeItems() {
+
+		assert(myExchangeItem == null || myExchangeItems == null);
+
+		IExchangeItem[] items;
+		if (myExchangeItem != null) {
+			items = new IExchangeItem[1];
+			items[0]=this.myExchangeItem;
+		} else {
+			items = myExchangeItems.toArray(new IExchangeItem[myExchangeItems.size()]);
+		}
 		return items;
+	}
+
+	public String[] getExchangeItemIDs() {
+
+		assert(myExchangeItem == null || myExchangeItems == null);
+
+		String[] ids;
+		if (myExchangeItem != null) {
+			ids = new String[1];
+			ids[0] = this.myExchangeItem.getId();
+		} else {
+			ids = new String[myExchangeItems.size()];
+			for (int i = 0; i < myExchangeItems.size(); i++) {
+				ids[i] = myExchangeItems.get(i).getId();
+			}
+		}
+		return ids;
+	}
+
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+
+		assert(myExchangeItem == null || myExchangeItems == null);
+		String[] ids;
+
+		if (myExchangeItem != null) {
+			if (role == this.myExchangeItem.getRole()) {
+				ids = getExchangeItemIDs();
+			} else {
+				ids = new String[0];
+			}
+		} else {
+			// At this moment, the role cannot be set manually and is always InOut AFAIK,
+            // therefore the code below may be simplified.
+			List<DoubleExchangeItem> exchange_items_with_requested_role = new ArrayList<>();
+			for (DoubleExchangeItem exchange_item : myExchangeItems) {
+				if (role == exchange_item.getRole()) {
+					exchange_items_with_requested_role.add(exchange_item);
+				}
+			}
+			ids = new String[exchange_items_with_requested_role.size()];
+			for (int i = 0; i < exchange_items_with_requested_role.size(); i++) {
+				ids[i] = exchange_items_with_requested_role.get(i).getId();
+			}
+		}
+
+		return ids;
+	}
+
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+
+		assert(myExchangeItem == null || myExchangeItems == null);
+
+		if (myExchangeItem != null) {
+			if (this.myExchangeItem.getId().equals(exchangeItemID)) {
+				return this.myExchangeItem;
+			}
+		} else {
+			for (DoubleExchangeItem item : myExchangeItems) {
+				if (item.getId().equals(exchangeItemID)) {
+					return item;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String getFileBaseName(String fileName) {
+		String fileBaseName = fileName;
+		if (fileName.indexOf('.') > 0)
+			fileBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
+		return fileBaseName;
 	}
 
 	@Override
 	public void finish() {
 		//write values to file
+		assert(myExchangeItem == null || myExchangeItems == null);
 
 		PrintWriter fo = null;
-		NumberFormat format = NumberFormat.getInstance(Locale.US);
 		try {
 			fo = new PrintWriter(new FileOutputStream(myFile));
-			double[] values = this.myExchangeItem.getValuesAsDoubles();
-			for (int i=0; i<values.length; i++) {
-				String s = String.format(Locale.US, "%f", values[i]);
+			double[] values;
+
+			if (myExchangeItem != null) {
+				values = this.myExchangeItem.getValuesAsDoubles();
+			} else {
+				values = new double[myExchangeItems.size()];
+				for (int i = 0; i < myExchangeItems.size(); i++) {
+					values[i] = myExchangeItems.get(i).getValue();
+				}
+			}
+
+			for (double value : values) {
+				String s = String.format(Locale.US, "%f", value);
 				fo.println(s);
 			}
 			fo.close();
