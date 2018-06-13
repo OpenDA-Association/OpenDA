@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 
+import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
