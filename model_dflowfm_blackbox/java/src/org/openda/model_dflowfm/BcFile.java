@@ -22,17 +22,16 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.Time;
 
-import java.io.*;
-import java.text.ParseException;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * IDataObject for Flow-1D's Boundary Condition file
  */
-public class BcFile implements IDataObject
-{
+public class BcFile implements IDataObject {
 	private static final String EXCHANGE_ITEM_NAME_SEPARATOR = ".";
 	private File workingDirectory;
 
@@ -42,15 +41,14 @@ public class BcFile implements IDataObject
 	protected HashMap<String, IExchangeItem> exchangeItems; // protected for Mock class in tests
 
 	@Override
-	public void initialize(File workingDirectory, String[] arguments)
-	{
-		if(arguments.length < 2) throw new RuntimeException("BcFile DataObject must be initialised with 2 arguments: InputBcFilePath and OutputBcFilePath");
+	public void initialize(File workingDirectory, String[] arguments) {
+		if (arguments.length < 2) throw new RuntimeException("BcFile DataObject must be initialised with 2 arguments: InputBcFilePath and OutputBcFilePath");
 		String inputFileName = arguments[0];
 		this.outputFileName = arguments[1];
 		this.workingDirectory = workingDirectory;
 
 		File bcFile = new File(workingDirectory, inputFileName);
-		if(!bcFile.exists()) throw new RuntimeException(String.format("BcFile does not exist: %s", inputFileName));
+		if (!bcFile.exists()) throw new RuntimeException(String.format("BcFile does not exist: %s", inputFileName));
 
 		//Step 1: Read BcCategories from (Input) BcFile
 		categories = BcFileReaderWriter.readBcFile(bcFile);
@@ -59,8 +57,7 @@ public class BcFile implements IDataObject
 		List<BcCategory> categoriesWithTimeSeriesData = getCategoriesWithTimeSeriesData();
 
 		exchangeItems = new HashMap<>();
-		for (BcCategory category : categoriesWithTimeSeriesData)
-		{
+		for (BcCategory category : categoriesWithTimeSeriesData) {
 			List<BcQuantity> table = category.getTable();
 			BcQuantity timeSeriesQuantity = table.get(0);
 			BcQuantity valueQuantity = table.get(1);
@@ -68,7 +65,7 @@ public class BcFile implements IDataObject
 
 			List<Double> values = valueQuantity.getValues();
 			double[] valuesAsDoubles = new double[values.size()];
-			for(int i = 0; i < values.size(); i++) valuesAsDoubles[i] = values.get(i);
+			for (int i = 0; i < values.size(); i++) valuesAsDoubles[i] = values.get(i);
 
 			double[] timesAsDoubles = TimeUtils.ConvertBcTimesToModifiedJulianDays(timeSeriesQuantity.getUnit().getValue(), timeSeriesQuantity.getValues());
 
@@ -77,17 +74,15 @@ public class BcFile implements IDataObject
 	}
 
 	@Override
-	public String[] getExchangeItemIDs()
-	{
+	public String[] getExchangeItemIDs() {
 		return exchangeItems.keySet().toArray(new String[exchangeItems.keySet().size()]);
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role)
-	{
+	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
 		List<String> matchingExchangeItemIds = new ArrayList<>();
-		for(IExchangeItem exchangeItem : exchangeItems.values())
-			if(exchangeItem.getRole() == role) matchingExchangeItemIds.add(exchangeItem.getId());
+		for (IExchangeItem exchangeItem : exchangeItems.values())
+			if (exchangeItem.getRole() == role) matchingExchangeItemIds.add(exchangeItem.getId());
 
 		return matchingExchangeItemIds.toArray(new String[matchingExchangeItemIds.size()]);
 	}
@@ -98,13 +93,11 @@ public class BcFile implements IDataObject
 	}
 
 	@Override
-	public void finish()
-	{
+	public void finish() {
 		// Step 1: Update categories with ExchangeItemData
 		List<BcCategory> categoriesWithTimeSeriesData = getCategoriesWithTimeSeriesData();
 
-		for (BcCategory category : categoriesWithTimeSeriesData)
-		{
+		for (BcCategory category : categoriesWithTimeSeriesData) {
 			List<BcQuantity> table = category.getTable();
 			BcQuantity timeSeriesQuantity = table.get(0);
 			BcQuantity valueQuantity = table.get(1);
@@ -125,24 +118,25 @@ public class BcFile implements IDataObject
 		BcFileReaderWriter.writeBcFile(bcFile, categories);
 	}
 
-	private List<BcCategory> getCategoriesWithTimeSeriesData()
-	{
+	private List<BcCategory> getCategoriesWithTimeSeriesData() {
 		List<BcCategory> categoriesWithTimeSeriesData = new ArrayList<>();
-		for (BcCategory category : categories)
-		{
+		for (BcCategory category : categories) {
 			Boolean hasTimeSeriesData = false;
 			for (BcProperty property : category.getProperties())
-				if(property.getName().equals("function")) hasTimeSeriesData |=  property.getValue().equals("timeseries");
+				if (property.getName().equalsIgnoreCase("function")) hasTimeSeriesData |= property.getValue().equalsIgnoreCase("timeseries");
 
-			if(hasTimeSeriesData) categoriesWithTimeSeriesData.add(category);
+			if (hasTimeSeriesData) categoriesWithTimeSeriesData.add(category);
 		}
 		return categoriesWithTimeSeriesData;
 	}
 
-	private String getBoundaryName(BcCategory category)
-	{
+	private String getBoundaryName(BcCategory category) {
 		for (BcProperty property : category.getProperties())
-			if (property.getName().equals("name")) return property.getValue();
+			if (property.getName().equalsIgnoreCase("name")) return property.getValue();
 		return "";
+	}
+
+	public List<BcCategory> getCategories() {
+		return categories;
 	}
 }
