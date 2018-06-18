@@ -324,13 +324,13 @@ public class SimultaneousGroupStochModelTest extends TestCase {
 
 		String config[] = {
 				"<stochObserver>"
-				+ "   <stochObserver id=\"oscillator1\" className=\"org.openda.utils.CsvStochObserver\">"
+				+ "   <stochObserver id=\"oscillator1\" className=\"org.openda.observers.CsvStochObserver\">"
 				+ "   time,index,value,std\n"
 				+ "   0.0,0.0,1.1,0.1\n"
 				+ "   0.1,0.0,1.2,0.1\n"
 				+ "   0.2,0.0,1.3,0.1"
 				+ "   </stochObserver>"
-				+ "   <stochObserver id=\"oscillator2\" className=\"org.openda.utils.CsvStochObserver\">"
+				+ "   <stochObserver id=\"oscillator2\" className=\"org.openda.observers.CsvStochObserver\">"
 				+ "   time,index,value,std\n"
 				+ "   2.0,0.0,2.1,0.1\n"
 				+ "   2.1,0.0,2.2,0.1\n"
