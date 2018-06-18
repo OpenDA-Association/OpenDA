@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "EfdcFortranDLL", "efdc_fortran_dll\EfdcFortranDLL.vfproj", "{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}"
