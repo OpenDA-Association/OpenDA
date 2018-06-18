@@ -1,4 +1,4 @@
-﻿namespace OpenDA.DotNet.Interfaces
+namespace OpenDA.DotNet.Interfaces
 {
 	public enum MessageType
 	{
