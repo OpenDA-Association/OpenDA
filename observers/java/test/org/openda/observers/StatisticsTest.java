@@ -41,7 +41,7 @@ public class StatisticsTest extends TestCase {
         testRunDataDir = testData.getTestRunDataDir();
     }
 
-    public void testStatisticsOscill_Grouped(){
+    public void testStatisticsOscillGrouped(){
         IStochObserver obs1 = new CsvStochObserver();
         obs1.initialize(testRunDataDir,new String[]{"observations_oscillator_generated_2.csv"});
         IVector allValues = obs1.getExpectations();
@@ -55,7 +55,6 @@ public class StatisticsTest extends TestCase {
         int indLast = 0;
         int j=0;
         for (IPrevExchangeItem item : items){
-            String id = item.getId();
             int n = 1;
             double times[] = item.getTimes();
             if (times != null) {

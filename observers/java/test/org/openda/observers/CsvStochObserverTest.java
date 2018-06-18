@@ -30,14 +30,13 @@ import java.io.IOException;
 public class CsvStochObserverTest extends TestCase {
 
     private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
+		OpenDaTestSupport testData = new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
         testRunDataDir = testData.getTestRunDataDir();
     }
 	
-	public static void testStochObserver_1() {
+	public static void testStochObserver1() {
 	   System.out.println("=========================================================");
     // public CsvStochObserver(String content){
 		String content = "time,i,value,std\n"
@@ -54,7 +53,7 @@ public class CsvStochObserverTest extends TestCase {
 		
     }	
 
-    public static void testStochObserver_2() {
+    public static void testStochObserver2() {
  	   System.out.println("=========================================================");
         // public CsvStochObserver(String content){
 		String content = "time,i,value,std\n"
@@ -93,7 +92,7 @@ public class CsvStochObserverTest extends TestCase {
     //  public Time [] getTimes(){
     }
 
-    public static void testStochObserver_3() {
+    public static void testStochObserver3() {
   	   System.out.println("=========================================================");
          // public CsvStochObserver(String content){
  		String content = "time,i,value,std\n"
@@ -115,7 +114,7 @@ public class CsvStochObserverTest extends TestCase {
 		assertEquals("obs3.getSqrtCovariance()",lString,"diag([0.1,0.1,0.1])");		
     }
     
-    public static void testStochObserver_4() {
+    public static void testStochObserver4() {
  	   System.out.println("=========================================================");
 		String content = "time,i,value,std\n"
  			+ "0.0,1.0,8.1,0.1\n"
@@ -131,7 +130,7 @@ public class CsvStochObserverTest extends TestCase {
 		assertTrue(descr4String.contains("0.0,1.0,8.1,0.1"));
     }
 
-    public static void testStochObserver_5() {
+    public static void testStochObserver5() {
  	   System.out.println("=========================================================");
 		String content = "time,i,value,std\n"
  			+ "0.0,1.0,8.1,0.1\n"
@@ -151,7 +150,7 @@ public class CsvStochObserverTest extends TestCase {
 		assertEquals("obs5.createSelection()",obs5selString,"time,i,value,std\n0.1,1.0,8.2,0.1");		
   	}
 
-    public static void testStochObserver_6() {
+    public static void testStochObserver6() {
   	   System.out.println("=========================================================");
        IVector time   = Vector.range(0.0, 10.0, 1.0);
        int n         = time.getSize();
@@ -185,7 +184,7 @@ public class CsvStochObserverTest extends TestCase {
      //  public Time [] getTimes(){
      }
 
-    public void testStochObserver_7() {
+    public void testStochObserver7() {
   	   System.out.println("=========================================================");
 	   String content = "time,i,value,std\n"
 			+ "0.0,1.0,8.1,0.1\n"
@@ -204,7 +203,7 @@ public class CsvStochObserverTest extends TestCase {
 }
 
     
-    public static void testStochObserver_8() {
+    public static void testStochObserver8() {
    	   System.out.println("=========================================================");
  	   String content = "time,i,value,std\n"
  			+ "0.0,1.0,8.1,0.1\n"
@@ -222,7 +221,7 @@ public class CsvStochObserverTest extends TestCase {
   		assertEquals("times.length=",times.length,3);
  }
 
-    public static void testStochObserver_9() {
+    public static void testStochObserver9() {
     	   System.out.println("=========================================================");
   	   String content = "time,i,value,std\n"
   			+ "0.0,1.0,8.1,0.1\n"
@@ -240,11 +239,11 @@ public class CsvStochObserverTest extends TestCase {
         assertEquals(0.1, times.getValue(1), 1e-5);
         
         IVector nonexisting = descr9.getValueProperties("blubblub");
-        boolean exists = !(nonexisting==null);
+        boolean exists = nonexisting != null;
         assertEquals(false, exists);
     }
 
-    public static void testStochObserver_10() {
+    public static void testStochObserver10() {
   	   System.out.println("=========================================================");
   	   // kwadratic observations
  		String content = "time,i,value,std, transform\n"
