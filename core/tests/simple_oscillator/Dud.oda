@@ -5,7 +5,7 @@
 <!--openDaApplication xmlns="http://www.openda.org" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org file:///d:/work/openda_trunk/public/xmlSchemas/openDaApplication.xsd"-->
   
-	<stochObserver className="org.openda.utils.CsvStochObserver">
+	<stochObserver className="org.openda.observers.CsvStochObserver">
 		<workingDirectory>./stochobserver</workingDirectory>
 		<!-- <configFile>OscillatorSimpleStochObsConfig.xml</configFile> -->
 		<configFile>observations_oscillator_generated_for_calibration.csv</configFile>

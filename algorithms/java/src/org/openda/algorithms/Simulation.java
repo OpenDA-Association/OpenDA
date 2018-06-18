@@ -23,6 +23,8 @@ package org.openda.algorithms;
 
 import org.openda.interfaces.*;
 import org.openda.models.simpleModel.SimpleStochModelInstance;
+import org.openda.observers.CsvObservationDescriptions;
+import org.openda.observers.CsvStochObserver;
 import org.openda.utils.*;
 
 import java.io.File;

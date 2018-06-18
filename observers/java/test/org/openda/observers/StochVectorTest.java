@@ -24,12 +24,14 @@
  */
 
 
-package org.openda.utils;
+package org.openda.observers;
 
 import java.io.File;
 import java.io.IOException;
 import junit.framework.TestCase;
 import org.openda.interfaces.*;
+import org.openda.utils.Matrix;
+import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
 
@@ -43,7 +45,7 @@ public class StochVectorTest extends TestCase{
 	private OpenDaTestSupport testData;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(CsvStochObserverTest.class,"core");
+		testData = new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 

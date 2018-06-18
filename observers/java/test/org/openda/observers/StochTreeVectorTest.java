@@ -18,7 +18,7 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openda.utils;
+package org.openda.observers;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import org.openda.interfaces.IStochVector;
 import org.openda.interfaces.IVector;
 
 import junit.framework.TestCase;
+import org.openda.utils.*;
 
 public class StochTreeVectorTest extends TestCase {
 
@@ -35,7 +36,7 @@ public class StochTreeVectorTest extends TestCase {
 	private OpenDaTestSupport testData;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(CsvStochObserverTest.class,"core");
+		testData = new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 

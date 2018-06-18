@@ -27,7 +27,7 @@ import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.IStochObserver;
 import org.openda.interfaces.IVector;
 import org.openda.models.oscillator.OscillatorStochModelFactory;
-import org.openda.utils.CsvStochObserver;
+import org.openda.observers.CsvStochObserver;
 import org.openda.observers.NoosTimeSeriesStochObserver;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Vector;

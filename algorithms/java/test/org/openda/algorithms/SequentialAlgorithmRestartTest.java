@@ -23,7 +23,7 @@ import org.openda.algorithms.kalmanFilter.EnKF;
 import org.openda.algorithms.kalmanFilter.SequentialSimulation;
 import org.openda.interfaces.*;
 import org.openda.models.oscillator.OscillatorStochModelFactory;
-import org.openda.utils.CsvStochObserver;
+import org.openda.observers.CsvStochObserver;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;

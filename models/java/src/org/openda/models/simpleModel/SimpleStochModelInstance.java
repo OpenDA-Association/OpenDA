@@ -24,6 +24,7 @@ import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
+import org.openda.observers.CsvObservationDescriptions;
 import org.openda.observers.TimeSeriesObservationDescriptions;
 import org.openda.utils.*;
 import org.openda.utils.io.FileBasedModelState;
@@ -678,7 +679,7 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 	public IVector applyObservationTangent(IVector deltaState, IObservationDescriptions observationMetaData){
 		IVector result = new Vector(observationMetaData.getObservationCount());
 		IVector obsTimes = null;
-		if(observationMetaData instanceof org.openda.utils.CsvObservationDescriptions){
+		if(observationMetaData instanceof CsvObservationDescriptions){
 			obsTimes=observationMetaData.getValueProperties("time");
 		}else if(observationMetaData instanceof TimeSeriesObservationDescriptions){
 			obsTimes=((TimeSeriesObservationDescriptions)observationMetaData).obs.getAllTimes();
@@ -722,7 +723,7 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		IVector result = this.state.clone();
 		result.setConstant(0.0);
 		IVector obsTimes = null;
-		if(observationMetaData instanceof org.openda.utils.CsvObservationDescriptions){
+		if(observationMetaData instanceof CsvObservationDescriptions){
 			obsTimes=observationMetaData.getValueProperties("time");
 		}else if(observationMetaData instanceof TimeSeriesObservationDescriptions){
 			obsTimes=((TimeSeriesObservationDescriptions)observationMetaData).obs.getAllTimes();

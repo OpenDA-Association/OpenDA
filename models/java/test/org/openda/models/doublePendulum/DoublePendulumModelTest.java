@@ -26,7 +26,7 @@ package org.openda.models.doublePendulum;
 
 import junit.framework.TestCase;
 import org.openda.interfaces.*;
-import org.openda.utils.CsvStochObserver;
+import org.openda.observers.CsvStochObserver;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 import org.openda.utils.Vector;

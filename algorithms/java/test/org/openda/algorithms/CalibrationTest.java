@@ -25,7 +25,7 @@ import org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelFacto
 import org.openda.observers.GroupStochObserver;
 import org.openda.observers.NoosTimeSeriesStochObserver;
 import org.openda.utils.ConfigTree;
-import org.openda.utils.CsvStochObserver;
+import org.openda.observers.CsvStochObserver;
 import org.openda.utils.Vector;
 import org.openda.utils.OpenDaTestSupport;
 
