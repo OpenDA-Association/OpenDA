@@ -225,7 +225,7 @@ public class ConfigTreeTest extends TestCase{
 		// get some elements
 		String stochobsClassString = appConf.getContentString("/stochObserver@className");
 		System.out.println("/stochObserver@className (String) ="+stochobsClassString);
-		assertEquals("naxIter@tag",stochobsClassString,"org.openda.utils.CsvStochObserver");
+		assertEquals("naxIter@tag",stochobsClassString,"org.openda.observers.CsvStochObserver");
 
 		// find includes (openda style)
 		String[][] parts = appConf.getParts();

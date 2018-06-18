@@ -18,9 +18,8 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.openda.utils;
+package org.openda.observers;
 
-import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;

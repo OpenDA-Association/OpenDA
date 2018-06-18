@@ -17,9 +17,12 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.openda.utils;
+package org.openda.observers;
 import junit.framework.TestCase;
 import org.openda.interfaces.*;
+import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.Time;
+import org.openda.utils.Vector;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +33,7 @@ public class CsvStochObserverTest extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(CsvStochObserverTest.class,"core");
+    	testData = new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
         testRunDataDir = testData.getTestRunDataDir();
     }
 	

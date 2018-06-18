@@ -26,7 +26,7 @@ package org.openda.models.lorenz;
 
 import junit.framework.TestCase;
 import org.openda.interfaces.*;
-import org.openda.utils.CsvStochObserver;
+import org.openda.observers.CsvStochObserver;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 import org.openda.utils.Vector;
