@@ -20,6 +20,8 @@
 package org.openda.exchange.dataobjects;
 
 import org.openda.blackbox.config.BBUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.ma2.Array;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
@@ -34,6 +36,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class NetcdfFileConcatenater {
+
+	private static Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenater.class);
+
 	public static void main(String[] arguments) {
 		if (arguments.length != 2) {
 			throw new IllegalArgumentException("NetcdfFileConcatenater expects two arguments:\n" +
@@ -69,10 +74,15 @@ public class NetcdfFileConcatenater {
 					if (timeVariableTarget == null) continue;
 					boolean concatenateTimeVariable = !timeVariableArraysMap.containsKey(timeVariableTarget);
 
-					List<Dimension> targetDimensions = targetVariable.getDimensions();
-					if (targetDimensions.size() != 2) throw new RuntimeException("Only variables supported with a time and location dimension");
 					List<Dimension> addedDimensions = variable.getDimensions();
-					if (addedDimensions.size() != 2) throw new RuntimeException("Only variables supported with a time and location dimension");
+					if (addedDimensions.size() != 2) {
+						LOGGER.warn("Cannot concatenate '{}' in '{}'", targetVariable.getShortName(),netcdfFileToBeAdded.getName());
+						continue;
+					}
+					List<Dimension> targetDimensions = targetVariable.getDimensions();
+					if (targetDimensions.size() != addedDimensions.size())
+						throw new RuntimeException(String.format("Dimensions mismatch for variable '%s' when concatenating file '%s' to '%s'", variable.getShortName(),netcdfFileToBeAdded.getName(), targetNetcdfFile.getName()));
+
 					Dimension targetLocationDimension = targetDimensions.get(1);
 					Dimension addedLocationDimension = addedDimensions.get(1);
 					int targetLocationDimensionLength = targetLocationDimension.getLength();
