@@ -17,9 +17,10 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.openda.utils;
+package org.openda.observers;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IObservationDescriptions;
+import org.openda.utils.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -319,7 +320,7 @@ public class CsvStochObserver extends Instance implements IStochObserver {
 		if (observationType == Type.Assimilation) {
 			return this;
 		}
-		throw new UnsupportedOperationException("org.openda.utils.CsvStochObserver.createSelection(): Not implemented yet.");
+		throw new UnsupportedOperationException("org.openda.observers.CsvStochObserver.createSelection(): Not implemented yet.");
 	}
 
     public ISelector createSelector(Type observationType) {

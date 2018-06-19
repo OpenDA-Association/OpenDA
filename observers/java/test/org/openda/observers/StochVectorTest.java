@@ -24,12 +24,14 @@
  */
 
 
-package org.openda.utils;
+package org.openda.observers;
 
 import java.io.File;
 import java.io.IOException;
 import junit.framework.TestCase;
 import org.openda.interfaces.*;
+import org.openda.utils.Matrix;
+import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
 
@@ -39,15 +41,11 @@ import org.openda.utils.Vector;
  */
 public class StochVectorTest extends TestCase{
 
-	private File testRunDataDir;
-	private OpenDaTestSupport testData;
-
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(CsvStochObserverTest.class,"core");
-		testRunDataDir = testData.getTestRunDataDir();
+		new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
 	}
 
-	public static void testStochVector_1() {
+	public static void testStochVector1() {
 
 		//    public StochVector(Vector mean, Vector std){
 		//    public String toString(){
@@ -110,7 +108,7 @@ public class StochVectorTest extends TestCase{
 		System.out.println("Should be sqrt(cov(sv1)) = diag([0.1,0.1])"); 
 	}
 	
-	public static void testStochVector_2() {
+	public static void testStochVector2() {
 		//    public StochVector(Vector mean, Vector std){
 		//    public String toString(){
 		System.out.println("==============================================================================");
@@ -140,7 +138,7 @@ public class StochVectorTest extends TestCase{
 		assertEquals("[-0.024142246805715386,0.08672786586477418]", sample2_sv2.toString());
 	}
 
-	public static void testStochVector_3() {
+	public static void testStochVector3() {
 		//    check statistics
 		System.out.println("==============================================================================");
 		IVector mean1 = new Vector("[0.0,0.0]");
@@ -149,7 +147,7 @@ public class StochVectorTest extends TestCase{
 		IVector sampleSumSqr = new Vector(2);
 		StochVector sv1= new StochVector(mean1,std1);
 		StochVector.setSeed(10);
-		IVector sample=null;
+		IVector sample;
 		int n=10000; //sample size
 		for(int i=0;i<n;i++){
 			sample = sv1.createRealization();
@@ -174,7 +172,7 @@ public class StochVectorTest extends TestCase{
 		
 	}
 
-	public static void testStochVector_4() {
+	public static void testStochVector4() {
 		System.out.println("==============================================================================");
 		System.out.println("Correlated elements");
 		System.out.println("==============================================================================");

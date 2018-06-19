@@ -18,7 +18,7 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openda.utils;
+package org.openda.observers;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,18 +28,15 @@ import org.openda.interfaces.IStochVector;
 import org.openda.interfaces.IVector;
 
 import junit.framework.TestCase;
+import org.openda.utils.*;
 
 public class StochTreeVectorTest extends TestCase {
 
-	private File testRunDataDir;
-	private OpenDaTestSupport testData;
-
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(CsvStochObserverTest.class,"core");
-		testRunDataDir = testData.getTestRunDataDir();
+		new OpenDaTestSupport(CsvStochObserverTest.class,"observers");
 	}
 
-	public static void testStochTreeVector_1() {
+	public static void testStochTreeVector1() {
 		System.out.println("==============================================================================");
 		System.out.println("Basics : leaves are not StochTreeVectors");
 		System.out.println("==============================================================================");
@@ -60,7 +57,7 @@ public class StochTreeVectorTest extends TestCase {
 		assertEquals(0.0, mean.getValue(0), delta);
 		assertEquals(10.0, mean.getValue(4), delta);
 		IVector mean_part1 = ((TreeVector)mean).getSubTreeVector("StochTreeVector_sub0");
-		assertEquals(0.0, mean1.getValue(0), delta);
+		assertEquals(0.0, mean_part1.getValue(0), delta);
 		
 		IVector std = stv.getStandardDeviations();
 		System.out.println("std = "+std.toString());
@@ -92,7 +89,7 @@ public class StochTreeVectorTest extends TestCase {
 		// stv.getSqrtCovariance()
 	}
 
-	public static void testStochTreeVector_2() {
+	public static void testStochTreeVector2() {
 		System.out.println("==============================================================================");
 		System.out.println("Basics : leaves are StochTreeVectors");
 		System.out.println("==============================================================================");
@@ -117,7 +114,7 @@ public class StochTreeVectorTest extends TestCase {
 		assertEquals(0.0, mean.getValue(0), delta);
 		assertEquals(10.0, mean.getValue(4), delta);
 		IVector mean_part1 = ((TreeVector)mean).getSubTreeVector("mean_part1");
-		assertEquals(0.0, mean1.getValue(0), delta);
+		assertEquals(0.0, mean_part1.getValue(0), delta);
 		
 		IVector std = stv.getStandardDeviations();
 		System.out.println("std = "+std.toString());

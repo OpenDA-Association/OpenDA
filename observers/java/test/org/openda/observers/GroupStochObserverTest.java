@@ -99,13 +99,13 @@ public class GroupStochObserverTest extends TestCase {
 		   System.out.println("=========================================================");
 		   String config[] = {
 				 "<stochObserver>"
-			   + "   <stochObserver id=\"location1\" className=\"org.openda.utils.CsvStochObserver\">"
+			   + "   <stochObserver id=\"location1\" className=\"org.openda.observers.CsvStochObserver\">"
 			   + "   time,i,value,std\n"
 			   + "   0.0,1.0,1.1,0.1\n"
 			   + "   0.1,1.0,1.2,0.1\n"
 			   + "   0.2,1.0,1.3,0.1"
 			   + "   </stochObserver>"
-			   + "   <stochObserver id=\"location2\" className=\"org.openda.utils.CsvStochObserver\">"
+			   + "   <stochObserver id=\"location2\" className=\"org.openda.observers.CsvStochObserver\">"
 			   + "   time,i,value,std\n"
 			   + "   0.0,2.0,2.1,0.1\n"
 			   + "   0.1,2.0,2.2,0.1\n"

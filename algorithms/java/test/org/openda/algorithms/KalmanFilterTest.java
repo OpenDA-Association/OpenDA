@@ -26,7 +26,7 @@ import org.openda.models.lorenz.LorenzStochModelFactory;
 import org.openda.models.oscillator.OscillatorStochModelFactory;
 import org.openda.observers.NoosTimeSeriesStochObserver;
 import org.openda.resultwriters.MatlabResultWriter;
-import org.openda.utils.CsvStochObserver;
+import org.openda.observers.CsvStochObserver;
 import org.openda.utils.Results;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.StochVector;
