@@ -1,3 +1,7 @@
 classes/
+examples/
 opendaTestRuns/
 *.iws
+**/bin
+**/build
+**/MANIFEST.MF
