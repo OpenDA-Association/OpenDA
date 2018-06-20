@@ -11,7 +11,8 @@ install: "./travis_install.sh"
 script: "./travis_test.sh"
 
 jobs:
-  deploy:
+  include:
+  - stage: deploy
     provider: releases
     jdk: oraclejdk8
     api_key:
