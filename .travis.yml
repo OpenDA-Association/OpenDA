@@ -12,9 +12,9 @@ script: "./travis_test.sh"
 
 jobs:
   include:
-  - stage: deploy
+  - stage: test deploy
     script: skip
-    deploy: 
+    deploy: &releases
       provider: releases
       jdk: oraclejdk8
       api_key:
