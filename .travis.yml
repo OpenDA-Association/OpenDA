@@ -1,20 +1,28 @@
 language: java
-
 sudo: required
-
 jdk:
-  - openjdk7
-  - oraclejdk8
-  - oraclejdk9
-
+- openjdk7
+- oraclejdk8
+- oraclejdk9
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install jq
-
-
-install: ./travis_install.sh
-script: ./travis_test.sh 
-
-#after_script:
-#  - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
-
+- sudo apt-get update
+- sudo apt-get install jq
+install: "./travis_install.sh"
+script: "./travis_test.sh"
+deploy:
+  provider: releases
+  jdk: oraclejdk8
+  api_key:
+    secure: ExsjslG82nmM0ztwxD5HmRuQfaWZjlcuaElBNFivNHP3+BdSqUs2VnV1E36spw4e5QVLDpEMgZHaP2hUrJBkbTxrM2UKsTVoNNCMvoP07gwLTrV0HomiBCS8U8pV041inVQ8pTaoDdZxWL7loOCtPu/Ul/Xl3wBc6Omq6pirLmUfasRSy5v21A2h3EJlngaqsn+abvrS9Amb1FRLbf6Rpms1BT1EbJLTipRoI9oTou5QmnVzPv1tjX4hxk9sV/qcecL4D8oysWB7JtaDHbYRB1k+yoyvQ3HpQskRjbaUAsl5/UjggQwq2uNWGkYkusmYHA9QGGzcpowTJ02xhW5dkBeJO52Ae46RRAkwS/Fsha4a52Q2p7OnO0D0qTcI6vZMI7E6eCsAcRwpdQD/fgSLL+JSU3Nfr0sjf34xiXKazwlJBSdig0/2IE2pd0ZNU34sSBB2jRy9QpuRWySizIMYYryWA2ZnyH5sK78D6QJM7740PByQWnr7hLnXEp8F6JSNflcH5pNbr5zqVIE0G7qMsjIhDMoauQ0xP2VXKNUSYAVIV1CT1FbcMJG6l2xTgAO4JP556SEnmN1wAnYwNFygbltBgDUsz5cpyU5QU3Ji2zeVDknS8ucoQqu6siWOo7nvVmVciG+YY0azbfjXZiV3DlOy7kPSZtzTRCu5vhDWI58=
+  file_glob: true
+  file:
+    - bin/*
+    - examples/*
+    - doc/*
+    - xmlSchemas/* 
+    - license.txt
+    - README*
+  skip_cleanup: true
+  on:
+    repo: OpenDA-Association/OpenDA
+    tags: true
