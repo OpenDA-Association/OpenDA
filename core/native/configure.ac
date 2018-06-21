@@ -9,7 +9,7 @@ AC_INIT(costa, 0.1.0, bugs@costapse.org)
 AM_INIT_AUTOMAKE
 
 #set main directory
-AC_CONFIG_SRCDIR(src/unique_file.txt)
+AC_CONFIG_SRCDIR(src)
 AC_MSG_NOTICE([srcdir=${srcdir}])
 # starting point for source files
 relpath=`dirname $0`
