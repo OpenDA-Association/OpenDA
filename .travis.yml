@@ -25,4 +25,4 @@ jobs:
       skip_cleanup: true
       on:
         repo: OpenDA-Association/OpenDA
-        tags: false
+        tags: true
