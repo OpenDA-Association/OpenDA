@@ -14,6 +14,7 @@ jobs:
   include:
   - stage: deploy
     script: skip
+    before_deploy: ant tgz-github
     jdk: oraclejdk8
     deploy:
       provider: releases
