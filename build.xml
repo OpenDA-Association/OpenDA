@@ -509,6 +509,20 @@
       </tar>
     </target>
 
+  <!-- tgz archives: deploys to github -->
+  <target name="tgz-github">
+    <tar compression="gzip" destfile="${projectname}_linux.tgz">
+      <tarfileset dir="bin" prefix="openda/bin" excludes="*.sh" />
+      <tarfileset dir="bin" includes="*.sh" filemode="755" prefix="openda/bin" />
+      <tarfileset dir="doc" prefix="openda/doc"/>
+      <tarfileset dir="examples" prefix="openda/examples" excludes="*.svn" />
+      <tarfileset dir="xmlSchemas" prefix="openda/xmlSchemas" excludes="*.svn" />
+      <tarfileset dir="." includes="README.txt" fullpath="openda/README.md"/>
+      <tarfileset dir="." includes="license.txt" fullpath="openda/license.txt"/>
+      <tarfileset dir="." includes="select_this_version.sh"  prefix="openda" />
+    </tar>
+  </target>
+
     <macrodef name="tgztest">
        <attribute name="testname" default="NOT SET"/>
        <sequential>
