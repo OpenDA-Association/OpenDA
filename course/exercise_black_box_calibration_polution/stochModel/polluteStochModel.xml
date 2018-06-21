@@ -11,7 +11,7 @@
 		<parameters>
 			<regularisationConstant>
 				<stdDev value="100.0" transformation="identity" />
-				<vector id="reactionTime"/>
+				<vector id="reaction_time"/>
 			</regularisationConstant>
 		</parameters>
 		<predictor>
