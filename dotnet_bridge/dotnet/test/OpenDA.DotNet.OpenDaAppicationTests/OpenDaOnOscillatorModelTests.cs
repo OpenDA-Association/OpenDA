@@ -1,4 +1,4 @@
-﻿using OpenDA.DotNet.Models;
+using OpenDA.DotNet.Models;
 using OpenDA.DotNet.SDK;
 using NUnit.Framework;
 

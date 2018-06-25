@@ -1,4 +1,4 @@
-﻿
+
 namespace org.openda.dotnet.DHIStochObserver
 {
     public class XYLayerPoint : IXYLayerPoint

@@ -1,4 +1,4 @@
-﻿using java.io;
+using java.io;
 using OpenDA.DotNet.Interfaces;
 
 namespace OpenDA.DotNet.SDK
