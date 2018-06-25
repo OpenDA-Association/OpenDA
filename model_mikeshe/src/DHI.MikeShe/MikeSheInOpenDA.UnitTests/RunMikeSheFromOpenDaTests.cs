@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenDA.DotNet.Interfaces;
 using OpenDA.DotNet.OpenMI.Bridge;
 using org.openda.application;

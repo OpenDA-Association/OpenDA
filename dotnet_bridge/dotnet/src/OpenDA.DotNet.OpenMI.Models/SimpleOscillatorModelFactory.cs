@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using OpenDA.DotNet.AdditionalInterfaces;
 using OpenMI.Standard2.TimeSpace;

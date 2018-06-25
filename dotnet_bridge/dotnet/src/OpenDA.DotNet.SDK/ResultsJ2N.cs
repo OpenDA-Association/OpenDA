@@ -1,4 +1,4 @@
-﻿using OpenDA.DotNet.Interfaces;
+using OpenDA.DotNet.Interfaces;
 
 namespace OpenDA.DotNet.SDK
 {

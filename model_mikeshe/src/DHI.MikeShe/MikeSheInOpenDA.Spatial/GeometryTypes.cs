@@ -1,4 +1,4 @@
-﻿namespace MikeSheInOpenDA.Spatial
+namespace MikeSheInOpenDA.Spatial
 {
     public enum GeometryTypes
     {
