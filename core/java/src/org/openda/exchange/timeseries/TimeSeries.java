@@ -1167,7 +1167,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * @return Whether this time series intersects with the given time interval
 	 */
 	public boolean intersectsWithTimeInterval(double tStart, double tStop) {
-		return !(tStart > this.tstop) && !(tStop < this.tstart);
+		return (tStart <= this.tstop) && (tStop >= this.tstart);
 	}
 
 	/**
