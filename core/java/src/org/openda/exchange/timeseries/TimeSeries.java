@@ -59,29 +59,29 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	// meta data
 	private String description = null;
 	private String location = "";
-	private final double position[] = {0.0, 0.0};				   // {longitude,latitude} WGS84
-	private double height = 0.0;							// user defined for now
-	private String source = "observed";					 // what produced the data
-	private String quantity = "waterlevel";				   // what do values represent
-	private String unit = "m";							// what is unit of the values
-	private String id = "id-not-set";				   // unique identifier
-	private boolean autoId = true;						   // automatically set to location.quantity
+	private final double position[] = {0.0, 0.0};	// {longitude,latitude} WGS84
+	private double height = 0.0;					// user defined for now
+	private String source = "observed";				// what produced the data
+	private String quantity = "waterlevel";			// what do values represent
+	private String unit = "m";						// what is unit of the values
+	private String id = "id-not-set";				// unique identifier
+	private boolean autoId = true;					// automatically set to location.quantity
 	// by default
 	private final HashMap<String, String> properties = new HashMap<String, String>();  // additional properties
 	private final java.util.Vector<String> defaultProps = new java.util.Vector<String>(); // data
-	private double times[] = null;						   // times for values as MJD
-	private double values[] = null;						   // this is the real data!
+	private double times[] = null;					// times for values as MJD
+	private double values[] = null;					// this is the real data!
 	private final HashMap<String, double[]> extraValues = new HashMap<String, double[]>(); // optional arrays for secondary values
 	// (like Matroos analysis times)
 	protected Role role;
 	private double tstart = Double.NaN;
 	private double tstop = Double.NaN;
 	private double tstep = Double.NaN;
-	private boolean timeOrdered = true;						   // Indicates whether the time array is
+	private boolean timeOrdered = true;				// Indicates whether the time array is
 	// sorted increasing
-	private DoubleArraySearch timesearcher = null;						   // Always update this after a new times
+	private DoubleArraySearch timesearcher = null;	// Always update this after a new times
 	// array is created
-	private TimeSeries parent = null;						   // Source time series
+	private TimeSeries parent = null;				// Source time series
 
 	/**
 	 * Default constructor
@@ -132,17 +132,16 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * Create a TimeSeries from two arrays of doubles and several properties with metadata
 	 *
-	 * @param times	The time stamps in the series
-	 * @param values   A value for each time stamp
-	 * @param x		x-coordinate
-	 * @param y		y-coordinate
-	 * @param source   source of the data, eg. 'observed'
-	 * @param quantity String describing which quantity the values in the series represent
-	 * @param unit	 String describing the value's unit
-	 * @param location String describing the location of this series
+	 * @param times		The time stamps in the series
+	 * @param values	A value for each time stamp
+	 * @param x			x-coordinate
+	 * @param y			y-coordinate
+	 * @param source	source of the data, eg. 'observed'
+	 * @param quantity	String describing which quantity the values in the series represent
+	 * @param unit		String describing the value's unit
+	 * @param location	String describing the location of this series
 	 */
-	public TimeSeries(double times[], double values[], double x, double y, String source, String quantity, String unit,
-					  String location) {
+	public TimeSeries(double times[], double values[], double x, double y, String source, String quantity, String unit, String location) {
 		this(times, values, source, quantity, unit, location);
 		this.setPosition(x, y);
 		this.setId(this.location + "." + this.getQuantityId());
@@ -731,8 +730,8 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 				iEnd++;
 			}
 		}
-		double timesNew[] = null;
-		double valuesNew[] = null;
+		double timesNew[];
+		double valuesNew[];
 		TimeSeries result;
 		if (iEnd > iStart) {
 			timesNew = new double[iEnd - iStart];
@@ -755,8 +754,8 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		result.setSource(this.getSource());
 		result.setUnit(this.getUnitId());
 		String propNames[] = getPropertyNames();
-		for (int i = 0; i < propNames.length; i++) {
-			result.setProperty(propNames[i], this.getProperty(propNames[i]));
+		for (String propName : propNames) {
+			result.setProperty(propName, this.getProperty(propName));
 		}
 
 		//Set the ID to the ID of the parent. This in case that the default ID Location.QuantityID has
@@ -783,9 +782,9 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		for (int i = 0; i < this.values.length; i++) {
 			if ((Double.isNaN(minValue)) | (this.values[i] >= minValue)) {
 				if ((Double.isNaN(maxValue)) | (this.values[i] <= maxValue)) {
-					tempTimes.add(new Double(this.times[i]));
-					tempValues.add(new Double(this.values[i]));
-					tempIndex.add(new Integer(i));
+					tempTimes.add(this.times[i]);
+					tempValues.add(this.values[i]);
+					tempIndex.add(i);
 				}
 			}
 		}
@@ -793,9 +792,9 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		double[] valuesNew = new double[tempTimes.size()];
 		int[] index = new int[tempTimes.size()];
 		for (int i = 0; i < tempTimes.size(); i++) {
-			timesNew[i] = tempTimes.get(i).doubleValue();
-			valuesNew[i] = tempValues.get(i).doubleValue();
-			index[i] = tempIndex.get(i).intValue();
+			timesNew[i] = tempTimes.get(i);
+			valuesNew[i] = tempValues.get(i);
+			index[i] = tempIndex.get(i);
 		}
 		// create new TimeSeries for result
 		TimeSeries result = new TimeSeries(timesNew, valuesNew);
@@ -808,8 +807,8 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		result.setSource(this.getSource());
 		result.setUnit(this.getUnitId());
 		String propNames[] = getPropertyNames();
-		for (int i = 0; i < propNames.length; i++) {
-			result.setProperty(propNames[i], this.getProperty(propNames[i]));
+		for (String propName : propNames) {
+			result.setProperty(propName, this.getProperty(propName));
 		}
 		// add extra values
 		for (String extraName : this.extraValues.keySet()) {
@@ -827,46 +826,46 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 */
 	
 	public String toString() {
-		String result = "TimeSeries(\n";
-		result += "   Location = " + this.getLocation() + "\n";
+		StringBuilder result = new StringBuilder("TimeSeries(\n");
+		result.append("   Location = ").append(this.getLocation()).append("\n");
 		double pos[] = this.getPosition();
-		result += "   Position = (" + pos[0] + "," + pos[1] + ")\n";
-		result += "   Height   = " + this.getHeight() + "\n";
-		result += "   Quantity = " + this.getQuantityId() + "\n";
-		result += "   Unit     = " + this.getUnitId() + "\n";
-		result += "   Source   = " + this.getSource() + "\n";
-		result += "   Id       = " + this.getId() + "\n";
+		result.append("   Position = (").append(pos[0]).append(",").append(pos[1]).append(")\n");
+		result.append("   Height   = ").append(this.getHeight()).append("\n");
+		result.append("   Quantity = ").append(this.getQuantityId()).append("\n");
+		result.append("   Unit     = ").append(this.getUnitId()).append("\n");
+		result.append("   Source   = ").append(this.getSource()).append("\n");
+		result.append("   Id       = ").append(this.getId()).append("\n");
 		String propNames[] = getPropertyNames();
-		for (int i = 0; i < propNames.length; i++) {
-			result += "   " + propNames[i] + "  = " + this.getProperty(propNames[i]) + "\n";
+		for (String propName : propNames) {
+			result.append("   ").append(propName).append("  = ").append(this.getProperty(propName)).append("\n");
 		}
-		result += "   Values   = \n";
+		result.append("   Values   = \n");
 		if (this.times != null) {
 			final int previewLength = 5;
 			int iEnd = Math.min(this.times.length, previewLength);
 			for (int i = 0; i < iEnd; i++) {
-				result += "   (" + this.times[i] + "=" + TimeUtils.mjdToString(this.times[i]) + "," + this.values[i] + ")\n";
+				result.append("   (").append(this.times[i]).append("=").append(TimeUtils.mjdToString(this.times[i])).append(",").append(this.values[i]).append(")\n");
 			}
 			if (this.times.length > (2 * previewLength)) {
-				result += "   ...\n";
+				result.append("   ...\n");
 			}
 			if (this.times.length > previewLength) {
 				int iStart = Math.max(this.times.length - previewLength, previewLength);
 				iEnd = this.times.length;
 				for (int i = iStart; i < iEnd; i++) {
-					result += "   (" + this.times[i] + "=" + TimeUtils.mjdToString(this.times[i]) + "," + this.values[i] + ")\n";
+					result.append("   (").append(this.times[i]).append("=").append(TimeUtils.mjdToString(this.times[i])).append(",").append(this.values[i]).append(")\n");
 				}
 			}
-			result += "\n   Values.length()=" + this.times.length;
+			result.append("\n   Values.length()=").append(this.times.length);
 		} else {
-			result += "()";
+			result.append("()");
 		}
 		for (String extraValueName : this.extraValues.keySet()) {
-			result += "   Extra value " + extraValueName + "; length =" + this.extraValues.get(extraValueName).length + "\n";
+			result.append("   Extra value ").append(extraValueName).append("; length =").append(this.extraValues.get(extraValueName).length).append("\n");
 		}
-		result += "\n";
-		result += ")";
-		return result;
+		result.append("\n");
+		result.append(")");
+		return result.toString();
 	}
 
 	
@@ -1163,20 +1162,12 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	/**
 	 * Check whether this time series intersects with the given time interval
 	 *
-	 * @param t_start The start time of the interval.
-	 * @param t_stop  The end time of the interval.
+	 * @param tStart The start time of the interval.
+	 * @param tStop  The end time of the interval.
 	 * @return Whether this time series intersects with the given time interval
 	 */
-	public boolean intersectsWithTimeInterval(double t_start, double t_stop) {
-		if (this.tstart <= t_stop && this.tstart >= t_start) return true; // this.tstart inside [t_start,t_stop]
-		if (this.tstop <= t_stop && this.tstop >= t_start) return true; // this.tstop inside [t_start,t_stop]
-		if (t_start <= this.tstop && t_start >= this.tstart) return true; // t_start inside [this.tstart,this.tstop]
-		if (t_stop <= this.tstop && t_stop >= this.tstart) return true; // t_stop inside [this.tstart,this.tstop]
-		if (this.tstart <= t_start && this.tstop >= t_stop)
-			return true; // [t_start,t_stop] inside [this.tstart,this.tstop]
-		if (t_start <= this.tstart && t_stop >= this.tstop)
-			return true; // [this.tstart,this.tstop] inside [t_start,t_stop]
-		return false;
+	public boolean intersectsWithTimeInterval(double tStart, double tStop) {
+		return (tStart <= this.tstop) && (tStop >= this.tstart);
 	}
 
 	/**
@@ -1415,14 +1406,12 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 
 	
 	public ITimeInfo getTimeInfo() {
-		ArrayTimeInfo tInfo=new ArrayTimeInfo(this.getTimes(), 0);
-		return tInfo;
+		return new ArrayTimeInfo(this.getTimes(), 0);
 	}
 
 	
 	public IQuantityInfo getQuantityInfo() {
-		QuantityInfo qInfo = new QuantityInfo(this.getQuantityId(), this.getUnitId());
-		return qInfo;
+		return new QuantityInfo(this.getQuantityId(), this.getUnitId());
 	}
 
 	
