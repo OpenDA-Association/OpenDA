@@ -1358,10 +1358,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					double modelTimes[] = modelExchangeItem.getTimes();
 					List<Double> modelTimesInCurrentPeriod;
 					if (modelTimes == null) {
-						if (!modelExchangeItem.getId().toLowerCase().contains("state")) {
-							throw new RuntimeException("No times available for model exchange item " +
-									modelExchangeItem.getId());
-						}
 						double currentModelTime = getCurrentTime().getMJD();
 						modelTimes = new double[] {currentModelTime};
 						modelTimesInCurrentPeriod = new ArrayList<Double>();
