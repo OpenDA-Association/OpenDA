@@ -3,14 +3,17 @@ setlocal enabledelayedexpansion
 
 REM Runs all tests in the tests directories one by one, and puts the output and 
 REM results in a single directory test_results
+REM Note: this test assumes that on teamcity the required binaries and jar files have been build
+REM           and that these binaries and jars have been copied to core\bin
 
 REM set OPENDA_BINDIR, PATH and CLASSPATH
+echo Starting dir: %CD%
 cd ..\bin
 set OPENDA_BINDIR=%CD%
 set Path=%CD%;%Path%
 
 rem no openda jre is available, check if there is a default one
-if "%JDK_17%" == "" goto exitwitherror0
+if "%JAVA_HOME%" == "" goto exitwitherror0
 
 set CLASSPATH=%OPENDA_BINDIR%\*
 
@@ -23,8 +26,8 @@ echo.
 set CURDIR=native_oscillator
 mkdir test_results\%CURDIR%
 call :run_single_test enkf_javaobs       enkf_results.m
-call :run_single_test enkf_sqlobs	 enkf_sqlobs_restults.m
-call :run_single_test simplex		 simplex_results.m
+call :run_single_test enkf_sqlobs    enkf_sqlobs_restults.m
+call :run_single_test simplex       simplex_results.m
 
 REM Only deactivate this part if the correct version of MPICH2 is installed. 
 REM ----
@@ -55,7 +58,7 @@ REM ----
 
 set CURDIR=simple_lorenz
 mkdir test_results\%CURDIR%
-call :run_single_test lorenzEnkf               enkf_results.m
+call :run_single_test lorenzEnkf               enkf_results.m 
 call :run_single_test lorenzEnkf_write_restart enkf_results_write_restart.m
 call :run_single_test lorenzEnsr               ensr_results.m
 call :run_single_test lorenzRRF                particle_filter_results.m
@@ -141,20 +144,20 @@ if defined TestDisabled (
 exit 0
 
 :exitwitherror0
-echo No JAVA runtime found - please check this
+echo No JAVA_HOME found - please check this
 exit 1
 
 :exitwitherror1
 echo One or more tests finished with an error!
-exit 1 
+exit 1
 
 endlocal
 
 :run_single_test
-
 echo Running test: %CURDIR%\%1.oda
 set odafile=%CD%\%CURDIR%\%1.oda
-"%JDK_17%\jre\bin\java" -Xms128m -Xmx1024m -classpath %CLASSPATH% org.openda.application.OpenDaApplication %odafile% 1>test_results\%CURDIR%\%1.out 2>test_results\%CURDIR%\%1.err
+"%JAVA_HOME%\bin\java" -Xms128m -Xmx1024m -classpath %CLASSPATH% org.openda.application.OpenDaApplication %odafile% 1>test_results\%CURDIR%\%1.out 2>test_results\%CURDIR%\%1.err
+
 if %errorlevel% gtr 0 goto Error1
 if not (%2)==() copy %CURDIR%\%2 test_results\%CURDIR%\%1_%2 >nul
 if not (%3)==() copy %CURDIR%\%3 test_results\%CURDIR%\%1_%3 >nul
@@ -165,6 +168,7 @@ goto :eof
 
 :Error1
 echo ***Error occurred in test %CURDIR%\%1
+type test_results\%CURDIR%\%1.err
 set ErrorOccurred=1
 goto :eof
 
@@ -173,3 +177,5 @@ goto :eof
 echo ***Warning: %CURDIR%\%1.oda test is disabled
 set TestDisabled=1
 goto :eof
+
+:eof
