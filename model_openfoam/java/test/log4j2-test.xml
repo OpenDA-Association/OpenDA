@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%level{length=3} %c{2} - %msg%n"/>
+        <!--<MarkerFilter marker="VERBOSE" onMatch="NEUTRAL" onMismatch="DENY"/>-->
+
+    </Console>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.openda.model_openfoam.DictionaryTimeSeriesDataObject" level="info" additivity="false" >
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.openda.model_openfoam.DictionaryDataObject" level="info" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+      <Logger name="org.openda.model_openfoam.DictionaryNoisyDataObject" level="debug" additivity="false">
+          <AppenderRef ref="Console"/>
+      </Logger>
+
+      <Logger name="org.openda.model_openfoam.MeshDataObject" level="debug" additivity="false">
+          <AppenderRef ref="Console"/>
+      </Logger>
+
+    <Logger name="org.openda.model_openfoam.ProbeDataObject" level="info" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

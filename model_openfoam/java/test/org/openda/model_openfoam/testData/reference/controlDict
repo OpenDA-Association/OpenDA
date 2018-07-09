@@ -1,0 +1,165 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application         buoyantBoussinesqPimpleFoam;//simpleFoam;
+
+startFrom           startTime;
+
+startTime           57357.0;//#oda:startTime
+
+stopAt              endTime;
+
+endTime             57358.0;//#oda:endTime
+
+deltaT              1;
+
+writeControl        timeStep;
+
+writeInterval       3600;
+
+purgeWrite          0;
+
+writeFormat         ascii;
+
+writePrecision      6;
+
+writeCompression    false;
+
+timeFormat          general;
+
+timePrecision       6;
+
+graphFormat         xmgr;
+
+runTimeModifiable   yes;
+
+adjustTimeStep      yes;//no;//
+
+maxCo               1000;
+
+maxDeltaT           1;
+
+libs ( "libmeshTools.so" "libfiniteVolume.so" ) ;
+
+functions
+{
+//     fieldAverage
+//     {
+//         type                fieldAverage;
+//         functionObjectLibs  ("libfieldFunctionObjects.so");
+//         enabled             true;
+//         outputControl       outputTime;
+//         resetOnOutput       false;//true;
+//         timeStart           180;
+// //         timeEnd             4000;
+//         fields
+//         (
+//             U
+//             {
+//                 mean        on;
+//                 prime2Mean  on;
+//                 base        time;
+//             }
+//             T
+//             {
+//                 mean        on;
+//                 prime2Mean  on;
+//                 base        time;
+//             }
+//             p_rgh
+//             {
+//                 mean        on;
+//                 prime2Mean  on;
+//                 base        time;
+//             }
+//         );
+//     }
+    residuals
+    {
+        type            residuals;
+        functionObjectLibs ("libutilityFunctionObjects.so");
+        outputControl   timeStep;
+        outputInterval  1;
+        fields
+        (
+            U
+            p_rgh
+            k
+            omega
+            T
+        );
+    }    
+    Q_Crac_1_in
+    {
+        type            faceSource;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+        enabled         true;
+        outputControl   timeStep;
+        log             false;
+        valueOutput     true;
+        source          patch;
+        sourceName      CRAC01_PressureSide;
+        operation       sum;
+        fields
+        (
+            phi
+        );
+        
+        surfaceFormat   null;
+    }    
+    Q_Crac_1_uit
+    {        $Q_Crac_1_in;        sourceName      CRAC01_SuctionSide;    }
+    Q_Crac_2_in
+    {        $Q_Crac_1_in;        sourceName      CRAC02_PressureSide;    }
+    Q_Crac_2_uit
+    {        $Q_Crac_1_in;        sourceName      CRAC02_SuctionSide;    }
+    Q_Crac_3_in
+    {        $Q_Crac_1_in;        sourceName      CRAC03_PressureSide;    }
+    Q_Crac_3_uit
+    {        $Q_Crac_1_in;        sourceName      CRAC03_SuctionSide;    }
+    Q_Crac_4_in
+    {        $Q_Crac_1_in;        sourceName      CRAC04_PressureSide;    }
+    Q_Crac_4_uit
+    {        $Q_Crac_1_in;        sourceName      CRAC04_SuctionSide;    }
+    Q_Crac_5_in
+    {        $Q_Crac_1_in;        sourceName      CRAC05_PressureSide;    }
+    Q_Crac_5_uit
+    {        $Q_Crac_1_in;        sourceName      CRAC05_SuctionSide;    }
+    Q_Crac_6_in
+    {        $Q_Crac_1_in;        sourceName      CRAC06_PressureSide;    }
+    Q_Crac_6_uit
+    {        $Q_Crac_1_in;        sourceName      CRAC06_SuctionSide;    }
+    
+    T_Avg_Crac_1
+    {   $Q_Crac_1_uit;   operation weightedAverage;  fields  ( T );  weightField phi;    }
+    
+    T_Avg_Crac_2
+    {   $Q_Crac_2_uit;   operation weightedAverage;  fields  ( T );  weightField phi;    }
+    
+    T_Avg_Crac_3
+    {   $Q_Crac_3_uit;   operation weightedAverage;  fields  ( T );  weightField phi;    }
+    
+    T_Avg_Crac_4
+    {   $Q_Crac_4_uit;   operation weightedAverage;  fields  ( T );  weightField phi;    }
+    
+    T_Avg_Crac_5
+    {   $Q_Crac_5_uit;   operation weightedAverage;  fields  ( T );  weightField phi;    }
+    
+    T_Avg_Crac_6
+    {   $Q_Crac_6_uit;   operation weightedAverage;  fields  ( T );  weightField phi;    }
+}
+
+// ************************************************************************* //
