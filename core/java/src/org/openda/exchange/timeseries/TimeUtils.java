@@ -374,6 +374,7 @@ public class TimeUtils {
       else {
          // irregular sequence
          result = new double[n];
+         double previous = NEGATIVE_INFINITY;
          for (int i = 0; i < n; i++) {
             try {
                result[i] = TimeUtils.date2Mjd(dateTimes[i]);
@@ -382,8 +383,9 @@ public class TimeUtils {
                throw new RuntimeException("Problem parsing dateTimeSequence at element with index =" + i
                         + " value=" + dateTimes[i]);
             }
-            if (result[i] <= NEGATIVE_INFINITY) { throw new RuntimeException(
+            if (result[i] <= previous) { throw new RuntimeException(
                      "dateTimeSequenceShould be increasing (larger than i-1) at element with index=" + i); }
+            previous = result[i];
          }
       }
       return result;
@@ -442,6 +444,7 @@ public class TimeUtils {
       else {
          // irregular sequence
          result = new double[n];
+         double previous = NEGATIVE_INFINITY;
          for (int i = 0; i < n; i++) {
             try {
                result[i] = parseDouble(dateTimes[i]);
@@ -450,8 +453,9 @@ public class TimeUtils {
                throw new RuntimeException("Problem parsing MjdSequence at element with index =" + i
                         + " value=" + dateTimes[i]);
             }
-            if (result[i] <= NEGATIVE_INFINITY) { throw new RuntimeException(
+            if (result[i] <= previous) { throw new RuntimeException(
                      "MjdSequence should be increasing (larger than i-1) at element with index=" + i); }
+            previous = result[i];
          }
       }
       return result;
