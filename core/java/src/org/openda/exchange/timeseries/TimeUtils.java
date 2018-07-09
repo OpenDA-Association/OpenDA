@@ -252,7 +252,7 @@ public class TimeUtils {
      */
     public static Date mjdToDate(double mjd) {
         long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
-        return new java.util.Date(timeInMillis);
+        return new Date(timeInMillis);
     }
 
    /**
@@ -385,6 +385,7 @@ public class TimeUtils {
             }
             if (result[i] <= previous) { throw new RuntimeException(
                      "dateTimeSequenceShould be increasing (larger than i-1) at element with index=" + i); }
+            previous = result[i];
          }
       }
       return result;
@@ -454,6 +455,7 @@ public class TimeUtils {
             }
             if (result[i] <= previous) { throw new RuntimeException(
                      "MjdSequence should be increasing (larger than i-1) at element with index=" + i); }
+            previous = result[i];
          }
       }
       return result;
