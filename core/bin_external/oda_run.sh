@@ -105,11 +105,11 @@ else
 
     # start timing
     STARTRUN=`date +%s`
-    echo "$configFile" > $logfile
+    echo "$configfile" > $logfile
     date "+%F, %H:%M:%S" >> $logfile 2>&1
 
     # run application
-    java $ODA_JAVAOPTS org.openda.application.OpenDaApplication $configFile > $logfile  2>&1
+    java $ODA_JAVAOPTS org.openda.application.OpenDaApplication $configfile > $logfile  2>&1
 
     # end timing
     date "+%F, %H:%M:%S" >> $logfile 2>&1
