@@ -90,12 +90,12 @@ public abstract class TimeSeriesFormatter {
      *           true if an existing file with the same name should be deleted before writing.
      */
     public void writeFile(File file, TimeSeries series, boolean overwriteExistingFiles) {
-        if (overwriteExistingFiles && file.exists()) {
+        if (!overwriteExistingFiles && file.exists()) {
+            return;
+        } else if(file.exists()) {
             if( !file.delete() ) {
                 System.out.println(String.format("WARNING: Could not delete file %s",file.getName()));
             }
-        } else {
-            return; // disable writing to this file
         }
         try {
             FileOutputStream out = new FileOutputStream(file);
