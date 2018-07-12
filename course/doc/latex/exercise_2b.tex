@@ -24,6 +24,7 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
         For comparison we have also added the configurations for the 'truth' and a oda\_run
         without data-assimilation called 'initial'.
         
+\ifshowmatlab
         \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
         [tt,truth,tobs1,obs1]=load_results('simulation_truth_results');
         [ti,initial,tobs2,obs2]=load_results('simulation_initial_results');
@@ -42,6 +43,7 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
         plot(te,enkf(2,1:2:end),'b');
         hold off;
         \end{lstlisting}
+\fi
 
         \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
         import simulation_truth_results as truth
