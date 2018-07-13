@@ -76,56 +76,35 @@ public abstract class TimeSeriesFormatter {
     */
    public void writeFile(String filename, TimeSeries series, boolean overwriteExistingFiles) {
       File outFile = new File(filename);
-      if (outFile.exists()) {
-         if (overwriteExistingFiles) {
-            outFile.delete();
-         }
-         else {
-            outFile = null; // disable writing to this file
-         }
-      }
-      if (outFile != null) {
-         try {
-            FileOutputStream out = new FileOutputStream(outFile);
-            write(out, series);
-            out.close();
-         }
-         catch (Exception e) {
-            throw new RuntimeException("Problem writing to file " + filename + " : " + e.getMessage());
-         }
-      }
+      writeFile(outFile, series, overwriteExistingFiles);
    }
 
-	/**
-	 * Write TimeSeries to a file. This may be more convenient than constructing the OutputStream yourself
-	 *
-	 * @param file
-	 *           where to write
-	 * @param series
-	 *           TimeSeries with the data
-	 * @param overwriteExistingFiles
-	 *           true if an existing file with the same name should be deleted before writing.
-	 */
-	public void writeFile(File file, TimeSeries series, boolean overwriteExistingFiles) {
-		if (file.exists()) {
-			if (overwriteExistingFiles) {
-				file.delete();
-			}
-			else {
-				file = null; // disable writing to this file
-			}
-		}
-		if (file != null) {
-			try {
-				FileOutputStream out = new FileOutputStream(file);
-				write(out, series);
-				out.close();
-			}
-			catch (Exception e) {
-				throw new RuntimeException("Problem writing to file " + file + " : " + e.getMessage());
-			}
-		}
-	}
+    /**
+     * Write TimeSeries to a file. This may be more convenient than constructing the OutputStream yourself
+     *
+     * @param file
+     *           where to write
+     * @param series
+     *           TimeSeries with the data
+     * @param overwriteExistingFiles
+     *           true if an existing file with the same name should be deleted before writing.
+     */
+    public void writeFile(File file, TimeSeries series, boolean overwriteExistingFiles) {
+        if (!overwriteExistingFiles && file.exists()) {
+            return;
+        } else if(file.exists()) {
+            if( !file.delete() ) {
+                System.out.println(String.format("WARNING: Could not delete file %s",file.getName()));
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            write(out, series);
+            out.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Problem writing to file " + file + " : " + e.getMessage());
+        }
+    }
 
 
    /**
@@ -161,19 +140,7 @@ public abstract class TimeSeriesFormatter {
     * @return TimeSeries with data from file. Returns null in case of trouble.
     */
    public TimeSeries readFile(String filename)  {
-      TimeSeries result = null;
-      File inFile = new File(filename);
-      if (inFile.exists()) {
-         try {
-            FileInputStream in = new FileInputStream(inFile);
-            result = read(in);
-            in.close();
-         }
-         catch (IOException e) {
-            throw new RuntimeException("Problem reading from file " + filename + " : " + e.getMessage());
-         }
-      }
-      return result;
+      return readFile( new File(filename));
    }
 
 	/**
@@ -183,7 +150,7 @@ public abstract class TimeSeriesFormatter {
 	 * @return TimeSeries with data from file. Returns null in case of trouble.
 	 */
 	public TimeSeries readFile(File file)  {
-		TimeSeries result = null;
+		TimeSeries result;
 		try {
 			FileInputStream in = new FileInputStream(file);
 			result = read(in);
@@ -204,7 +171,7 @@ public abstract class TimeSeriesFormatter {
     * @return TimeSeries with data from the string. Returns null in case of trouble.
     */
    public TimeSeries readString(String data) {
-      TimeSeries result = null;
+      TimeSeries result;
       // StringBufferInputStream in = new StringBufferInputStream(buffer);
       try {
          InputStream in = new ByteArrayInputStream(data.getBytes("UTF-8"));
