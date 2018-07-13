@@ -44,7 +44,7 @@ def plot_movie(times,states,more_states=None):
         plot_pendulum(ax1,states[i,:])
         ax1.set_xlim([-2.0*l,2.0*l])
         ax1.set_ylim([-2.0*l,2.0*l])
-        if(more_states!=None):
+        if(more_states is not None):
             plot_pendulum(ax1,more_states[i,:],color='g')
         plt.title('time = %.2f'%times[i])
         plt.draw()
