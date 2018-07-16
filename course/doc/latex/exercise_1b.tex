@@ -84,12 +84,14 @@ results.
       To create a time-series plot in Python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       plt.subplot(2,1,1)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
-      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") #python counts starting at 0
+      plt.ylabel(r"$\theta_1$") # use latex for label
       plt.subplot(2,1,2)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
-      plt.ylabel(r'$\theta_2$')
-      plt.show() #only needed if interactive plotting is off. Set with plt.ioff(), plt.ion()
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],"b")
+      plt.ylabel(r"$\theta_2$")
+      plt.show() 
+      #only needed if interactive plotting is off. 
+      #Set with plt.ioff(), plt.ion()
       \end{lstlisting}
 %
 
@@ -132,13 +134,14 @@ results.
       To create a time-series plot with both results in Python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       plt.subplot(2,1,1)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
-      plt.plot(perturbed.model_time,perturbed.x[:,0],'g') #python counts starting at 0
-      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") 
+      #python counts starting at 0
+      plt.plot(perturbed.model_time,perturbed.x[:,0],"g")
+      plt.ylabel(r"$\theta_1$") # use latex for label
       plt.subplot(2,1,2)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
-      plt.plot(perturbed.model_time,perturbed.x[:,1],'g')
-      plt.ylabel(r'$\theta_2$')
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],"b")
+      plt.plot(perturbed.model_time,perturbed.x[:,1],"g")
+      plt.ylabel(r"$\theta_2$")
       plt.show() 
       \end{lstlisting}
       
@@ -190,11 +193,11 @@ results.
       ens1=ens[:,0,:] #note we start counting at 0
       ens2=ens[:,1,:]
       plt.subplot(2,1,1)
-      plt.plot(t[1:],ens1,'b')
-      plt.ylabel(r'$\theta_1$')
+      plt.plot(t[1:],ens1,"b")
+      plt.ylabel(r"$\theta_1$")
       plt.subplot(2,1,2)
-      plt.plot(t[1:],ens2,'b')
-      plt.ylabel(r'$\theta_2$')
+      plt.plot(t[1:],ens2,"b")
+      plt.ylabel(r"$\theta_2$")
       plt.show()
       \end{lstlisting}
       
@@ -222,13 +225,13 @@ results.
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       import simulation_unperturbed_results as unperturbed
       plt.subplot(2,1,1)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
-      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,0],'k+') #python counts starting at 0
-      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") 
+      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,0],"k+")
+      plt.ylabel(r"$\theta_1$")
       plt.subplot(2,1,2)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
-      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,1],'k+')
-      plt.ylabel(r'$\theta_2$')
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],"b")
+      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,1],"k+")
+      plt.ylabel(r"$\theta_2$")
       plt.show()
       \end{lstlisting}
       
