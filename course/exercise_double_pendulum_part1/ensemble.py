@@ -36,4 +36,4 @@ if __name__ == '__main__':
     #only used for testing
     import simulation_ensemble_results as res
     (t,ens)=reshape_ensemble(res)
-    print "size="+str(np.shape(ens))
+    print("size="+str(np.shape(ens)))
