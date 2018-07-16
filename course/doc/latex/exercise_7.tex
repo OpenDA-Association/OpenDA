@@ -26,7 +26,7 @@ The ensemble is carefully constructed in order to have the right statistics. The
 \item Run the experiment for 50 ensemble members ({\tt enkf\_50.oda}).
 \item The variables $a$, $b$ can be compared to the true state using the python script {\tt plot\_results.py}.
 \item Run the experiment for 25 ensembles, copy the script {\tt plot\_results.py} to e.g. {\tt plot\_results\_25.py} and adjust it in order to read the results from {\tt enkf25\_results.py}.
-(change 2nd line of the {\tt plot\_results.py} script. You will see that the 25 ensemble run is not able to improve the model.
+(change 2nd line of the {\tt plot\_output.py} script. You will see that the 25 ensemble run is not able to improve the model.
 \item Create input to run a 100 ensemble experiment. Note: do not forget to change the name of the output file (section {\tt resultWriter}) 
 to avoid that your previous generated results are overwritten. 
 \item Run an experiment with 25 ensembles with localization ({\tt enkf\_25\_loc.oda}) and generate the plots.

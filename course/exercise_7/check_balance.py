@@ -34,6 +34,8 @@ def main():
     plt.plot(b_loc-b_loc_check,'b')
 
     plt.legend(["25 EnKF", "25 EnKF, localization"])
+    plt.ylabel(r"$b-0.5-10*a_x$")
+    plt.xlabel("state index t=300")
     #plt.plot(b_loc_check-b_loc,'b')
     plt.show()
 
