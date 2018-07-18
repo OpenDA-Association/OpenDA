@@ -3,76 +3,34 @@ STUDENT=openda_student
 
 rm -rf $STUDENT
 mkdir $STUDENT
-cp ./doc/latex/openda_course.pdf $STUDENT
-cp ./doc/latex/openda_course_summerschool2017.pdf $STUDENT
+#cp ./doc/latex/openda_course.pdf $STUDENT
+cp ./doc/latex/openda_course_summerschool2018.pdf $STUDENT
 
 
-# Exercise 1
-cp -r exercise_1 $STUDENT/exercise_1
-# remove files, the students must produce
-rm $STUDENT/exercise_1/all_runs.m
-rm $STUDENT/exercise_1/all_runs.py
-rm $STUDENT/exercise_1/simulation_ensemble.oda
-rm $STUDENT/exercise_1/algorithm/SequentialEnsembleSimulation.xml
-rm -rf $STUDENT/exercise_1/reference_plots
+# Exercises
+#cp -r exercise_lorenz_3var_part1 $STUDENT/
+#cp -r exercise_lorenz_3var_part2 $STUDENT/
 
-# Exercise 2
-mkdir $STUDENT/exercise_2
-cp exercise_2/load_ensemble.m   $STUDENT/exercise_2
-cp exercise_2/ensemble.py       $STUDENT/exercise_2
-cp exercise_2/load_obs.m        $STUDENT/exercise_2
-rm -rf $STUDENT/exercise_2/reference_plots
+cp -r exercise_double_pendulum_part1 $STUDENT/
+rm -f $STUDENT/exercise_double_pendulum_part1/simulation_ensemble.oda
+rm -f $STUDENT/exercise_double_pendulum_part1/algorithm/SequentialEnsembleSimulation.xml
 
-# Exercise 3
-cp -r exercise_3 $STUDENT/exercise_3
-# Remove stuff that they have to make themselves
-rm -rf $STUDENT/exercise_3/reference_plots
-rm $STUDENT/exercise_3/obs1.csv
-rm $STUDENT/exercise_3/obs2.csv
-rm $STUDENT/exercise_3/obs3.csv
-rm $STUDENT/exercise_3/obs1_3.csv
-cp $STUDENT/exercise_3/observations_null.csv $STUDENT/exercise_3/observations.csv
-rm $STUDENT/exercise_3/observations_null.csv
-# rm $STUDENT/exercise_4/simple_wave_model/bin/simple_wave_model.jar
+cp -r exercise_double_pendulum_part2 $STUDENT/
+rm -f $STUDENT/exercise_double_pendulum_part2/enkf_*.oda
+rm -f $STUDENT/exercise_double_pendulum_part2/algorithm/EnKF*.xml
 
-# Exercise 4
-cp -r exercise_4 $STUDENT/exercise_4
-# Remove stuff that they have to make themselves
-rm -rf $STUDENT/exercise_4/reference_plots
+cp -r exercise_localization $STUDENT/
 
-# Exercise 5
-cp -r exercise_5 $STUDENT/exercise_5
-rm $STUDENT/exercise_5/EnKF2.oda
-rm $STUDENT/exercise_5/stochObserver/noosObservations2.xml
-rm $STUDENT/exercise_5/stochModel/polluteStochModel2.xml
-rm -rf $STUDENT/exercise_5/reference_plots
+#cp -r exercise_black_box_calibration_polution $STUDENT/
+cp -r exercise_black_box_enkf_polution $STUDENT/
+mv $STUDENT/exercise_black_box_enkf_polution/stochModel/polluteStochModel2.xml.pre $STUDENT/exercise_black_box_enkf_polution/stochModel/polluteStochModel2.xml
+mv $STUDENT/exercise_black_box_enkf_polution/stochObserver/noosObservations2.xml.pre $STUDENT/exercise_black_box_enkf_polution/stochObserver/noosObservations2.xml
 
-# Exercise 6
-cp -r exercise_6 $STUDENT/exercise_6
-# Remove solution files and replace them with the dummy files
-rm -f $STUDENT/exercise_6/observations.csv
-mv $STUDENT/exercise_6/observations_wrong.csv $STUDENT/exercise_6/observations.csv
-rm -f $STUDENT/exercise_6/simple_advection_model/java/src/org/openda/AdvectionStochModelInstance.java
-mv $STUDENT/exercise_6/simple_advection_model/java/src/org/openda/AdvectionStochModelInstance_empty_java \
-   $STUDENT/exercise_6/simple_advection_model/java/src/org/openda/AdvectionStochModelInstance.java
-rm -rf $STUDENT/exercise_6/reference_plots
+#cp -r exercise_6 $STUDENT/
+#cp -r exercise_oct24 $STUDENT/
+#cp -r exercise_steady_state_filter $STUDENT/
+#cp -r exercise_dflowfm $STUDENT/
 
-# Exercise 7
-cp -r exercise_7 $STUDENT/exercise_7
-rm $STUDENT/exercise_7/enkf_100.oda
-rm $STUDENT/exercise_7/algorithms/EnKF100.xml
-
-
-# Exercise exercise_double_pendulum
-cp -r exercise_double_pendulum_part1 $STUDENT/exercise_double_pendulum_part1
-cp -r exercise_double_pendulum_part2 $STUDENT/exercise_double_pendulum_part2
-
-
-
-# Remove svn stuff
-cd $STUDENT
-find . -name '.svn' -exec rm -rf {} \;
-cd ..
 
 rm -f $STUDENT.zip
 zip -r  $STUDENT.zip $STUDENT
