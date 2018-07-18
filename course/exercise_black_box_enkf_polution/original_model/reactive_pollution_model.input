@@ -21,7 +21,7 @@ refdate = '01 dec 1999'
 #unit is always seconds
 unit = 'seconds'
 # step is 1min total 5hours, while a particle travels through domain in 1hour
-time = [ 0,60,18000]
+time = [ 0,60,1800]
 # sources mass/m^3/s 
 source_locations = [5, 30]
 source_substance = [1, 1]

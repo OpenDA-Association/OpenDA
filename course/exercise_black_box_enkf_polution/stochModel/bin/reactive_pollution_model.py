@@ -67,16 +67,16 @@ def computeNextTimeStep(tIndex, c1, c2, input):
     #print 'computing next timestep'
     c1Next = [0.0 for dummy in c1]
     c2Next = [0.0 for dummy in c2]
-    #print 'transport '
+    #print("transport ")
     time=input['time']
     reaction_time=input['reaction_time']
     x=input['x']
     u=input['u']
-    for i in xrange(0, len(c1), 1):
-        #print 'computing for gridpoint '+str(i)
+    for i in range(0, len(c1), 1):
+        #print("computing for gridpoint "+str(i))
         di = u[i]*time[1]/x[1]
         iLeft = i+int(math.floor(di))
-        #print 'i = %d di= %f iLeft = %f' % (i, di, iLeft)
+        #print("i = %d di= %f iLeft = %f" % (i, di, iLeft))
         weightRight= (di-math.floor(di))
         weightLeft=1.0-weightRight
         iRight = iLeft+1
@@ -86,13 +86,13 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         if((iRight>=0) & (iRight<len(c1Next))):
             c1Next[iRight] += c1[i]*weightRight
             c2Next[iRight] += c2[i]*weightRight
-	# reaction
-	rate = time[1]/reaction_time[0];
-	c1Next[i] += - c1Next[i] * rate
-	c2Next[i] +=   c1Next[i] * rate
-    #print 'c1='+str(c1Next)
-    #print 'c2='+str(c2Next)
-    #print 'add sources'
+    # reaction
+    rate = time[1]/reaction_time[0];
+    c1Next[i] += - c1Next[i] * rate
+    c2Next[i] +=   c1Next[i] * rate
+    #print("c1="+str(c1Next))
+    #print("c2="+str(c2Next))
+    #print("add sources")
     source_locations=input['source_locations']
     source_substance=input['source_substance']
     source_labels=input['source_labels']
@@ -108,13 +108,13 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         else:
             cValue = cValues[-1]
         cValue = max(cValue, 0.0)
-	if(iSubstance==1):
+    if(iSubstance==1):
            c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
-	else:
+    else:
            c2Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
-    #print 'c1='+str(c1Next)
-    #print 'c2='+str(c2Next)
-    #print 'inflow boundaries'
+    #print("c1="+str(c1Next))
+    #print("c2="+str(c2Next))
+    #print("inflow boundaries")
     bound_values=input['bound_values']
     if (u[0]>0.0):
         bValues=bound_values['c1_left']
@@ -146,46 +146,49 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         else:
             bValue = bValues[-1]
         c2Next[-1]=bValue
-    #print 'c1='+str(c1Next)
-    #print 'c2='+str(c2Next)
+    #print("c1="+str(c1Next))
+    #print("c2="+str(c2Next))
     return (c1Next,c2Next)
 
 def readInputFile(fileName):
     input={}
+    input['source_values']=dict()
+    input['bound_values']=dict()
     source_values= {}
     bound_values= {}
     output_values= {}
-    print 'reading input from file '+fileName
+    print("reading input from file "+fileName)
     inFile=open(fileName, 'r')
     counter =1
-    for line in inFile.xreadlines():
-        #print "%d : %s" %(counter, line[:-1])
-        exec "global x;"+line  in globals(),  locals()
+    for line in inFile:
+        print("%d : %s" %(counter, line[:-1]))
+        exec(line,input)
         counter+=1
     inFile.close()
-    input['x']=x
-    input['u']= u
-    input['a']= a
-    input['c1']= c1
-    input['c2']= c2
-    input['refdate']= refdate
-    input['unit']= unit
-    input['time']= time
-    input['reaction_time']= reaction_time
-    input['source_locations']= source_locations
-    input['source_substance']= source_substance
-    input['source_labels']= source_labels
-    input['source_values']= source_values
-    input['output_file']= output_file
-    input['matlab_output_file'] = matlab_output_file
-    input['output_map_times'] = output_map_times
-    input['output_locations']= output_locations
-    input['output_substance']= output_substance
-    input['output_labels']= output_labels
-    input['bound_labels']= bound_labels
-    input['bound_locations']= bound_locations
-    input['bound_substance']= bound_substance
-    input['bound_values']= bound_values
+    #print(input.keys())
+    #input['x']=x
+    #input['u']= u
+    #input['a']= a
+    #input['c1']= c1
+    #input['c2']= c2
+    #input['refdate']= refdate
+    #input['unit']= unit
+    #input['time']= time
+    #input['reaction_time']= reaction_time
+    #input['source_locations']= source_locations
+    #input['source_substance']= source_substance
+    #input['source_labels']= source_labels
+    #input['source_values']= source_values
+    #input['output_file']= output_file
+    #input['matlab_output_file'] = matlab_output_file
+    #input['output_map_times'] = output_map_times
+    #input['output_locations']= output_locations
+    #input['output_substance']= output_substance
+    #input['output_labels']= output_labels
+    #input['bound_labels']= bound_labels
+    #input['bound_locations']= bound_locations
+    #input['bound_substance']= bound_substance
+    #input['bound_values']= bound_values
     return input
 
 def collectOutput(c1, c2, output):
@@ -193,17 +196,17 @@ def collectOutput(c1, c2, output):
         iOutput =output['output_locations'][i]
         iSubstance =output['output_substance'][i]
         iLabel=output['output_labels'][i]
-	if (iSubstance==1):
+    if (iSubstance==1):
            output['output_values'][iLabel].append(c1[iOutput])
-           #print 'c1[%d]=%f' % (iOutput, c1[iOutput])
-	else:
+           #print("c1[%d]=%f" % (iOutput, c1[iOutput]))
+    else:
            output['output_values'][iLabel].append(c2[iOutput])
-           #print 'c2[%d]=%f' % (iOutput, c2[iOutput])
-    #print 'c1='+str(c1)
-    #print 'c2='+str(c2)
+           #print("c2[%d]=%f" % (iOutput, c2[iOutput]))
+    #print("c1="+str(c1))
+    #print("c2="+str(c2))
 
 def writeOutput(outFile, c1, c2):
-    print "writing output to file %s" % output['output_file']
+    print("writing output to file %s" % output['output_file'])
     outFile.write("source_values= {}\n")
     outFile.write("bound_values= {}\n")
     outFile.write("output_values= {}\n")
@@ -303,21 +306,21 @@ if __name__ == '__main__':
         inputFile = sys.argv[-1]
         input=readInputFile(inputFile)
     else:
-        print "using internal default input"
+        print("using internal default input")
         input=defaultInput()
     output=initOutput(input)
     matlabOutFile=open(output['matlab_output_file'], 'w')
     pythonOutFile=open(output['output_file'], 'w')
     writePythonMapOutputInit(pythonOutFile)
 
-    print 'main computations'
+    print("main computations")
     tIndex = 0
     c1Now=input['c1'][:]
     c2Now=input['c2'][:]
     time=input['time']
     collectOutput(c1Now, c2Now, output)
     for t in frange(time[0], time[2], time[1]):
-        print 'computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%'
+        print("computing from time "+str(t)+" to "+str(t+time[1])+"  "+str(100*(t)/(time[2]-time[0]))+"%")
         (c1Now,c2Now)=computeNextTimeStep(tIndex, c1Now, c2Now, input)
         collectOutput(c1Now, c2Now, output)
         tIndex+=1
@@ -327,4 +330,4 @@ if __name__ == '__main__':
     writeMatlabOutput(matlabOutFile, c1Now, c2Now)
     matlabOutFile.close()
     pythonOutFile.close()
-    print 'simulation ended successfully'
+    print("simulation ended successfully")
