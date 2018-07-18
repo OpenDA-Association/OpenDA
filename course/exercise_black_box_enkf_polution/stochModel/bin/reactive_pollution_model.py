@@ -86,10 +86,10 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         if((iRight>=0) & (iRight<len(c1Next))):
             c1Next[iRight] += c1[i]*weightRight
             c2Next[iRight] += c2[i]*weightRight
-    # reaction
-    rate = time[1]/reaction_time[0];
-    c1Next[i] += - c1Next[i] * rate
-    c2Next[i] +=   c1Next[i] * rate
+        # reaction
+        rate = time[1]/reaction_time[0];
+        c1Next[i] += - c1Next[i] * rate
+        c2Next[i] +=   c1Next[i] * rate
     #print("c1="+str(c1Next))
     #print("c2="+str(c2Next))
     #print("add sources")
@@ -108,10 +108,10 @@ def computeNextTimeStep(tIndex, c1, c2, input):
         else:
             cValue = cValues[-1]
         cValue = max(cValue, 0.0)
-    if(iSubstance==1):
-           c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
-    else:
-           c2Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
+        if(iSubstance==1):
+               c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
+        else:
+               c2Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
     #print("c1="+str(c1Next))
     #print("c2="+str(c2Next))
     #print("inflow boundaries")
@@ -154,6 +154,7 @@ def readInputFile(fileName):
     input={}
     input['source_values']=dict()
     input['bound_values']=dict()
+    input['output_values']=dict()
     source_values= {}
     bound_values= {}
     output_values= {}
@@ -193,15 +194,16 @@ def readInputFile(fileName):
 
 def collectOutput(c1, c2, output):
     for i in range(len(output['output_locations'])):
+        #print("i=%d"%i)
         iOutput =output['output_locations'][i]
         iSubstance =output['output_substance'][i]
         iLabel=output['output_labels'][i]
-    if (iSubstance==1):
-           output['output_values'][iLabel].append(c1[iOutput])
-           #print("c1[%d]=%f" % (iOutput, c1[iOutput]))
-    else:
-           output['output_values'][iLabel].append(c2[iOutput])
-           #print("c2[%d]=%f" % (iOutput, c2[iOutput]))
+        if (iSubstance==1):
+               output['output_values'][iLabel].append(c1[iOutput])
+               #print("c1[%d]=%f" % (iOutput, c1[iOutput]))
+        else:
+               output['output_values'][iLabel].append(c2[iOutput])
+               #print("c2[%d]=%f" % (iOutput, c2[iOutput]))
     #print("c1="+str(c1))
     #print("c2="+str(c2))
 

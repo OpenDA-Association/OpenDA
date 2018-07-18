@@ -14,3 +14,4 @@ rm -f *.orp
 rm -f *.png
 rm -f *.pyc
 rm -f OpenDATimings_*
+rm -rf __pycache__
