@@ -19,7 +19,12 @@
  */
 package org.openda.exchange.timeseries;
 
+import org.openda.utils.ConfigTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.text.ParseException;
 
 /**
@@ -225,5 +230,19 @@ public abstract class TimeSeriesFormatter {
       }
       return result;
    }
+
+	public static TimeSeriesFormatter instantiateFrom(String className, ConfigTree configTree) {
+		// Create instance of class
+		final Class javaClass;
+		Object object;
+		try {
+			javaClass = Class.forName(className);
+			Constructor<?>  constructor = javaClass.getConstructor(ConfigTree.class);
+			object = constructor.newInstance(configTree);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not create instance for " + className + ": " + e.getMessage(), e);
+		}
+		return (TimeSeriesFormatter) object;
+	}
 
 }
