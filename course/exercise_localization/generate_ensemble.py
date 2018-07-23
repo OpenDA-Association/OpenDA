@@ -1,7 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-
+import sys
 
 
 def generate_random_coefficients(N):
@@ -92,7 +92,13 @@ def main():
 
     NComb = 25+1
     N     = 1000
-    Nens = int(input("Enter the number of ensembles: "))
+
+    if  len(sys.argv) == 2:
+        plot_ensemble = False
+        Nens = int(sys.argv[1])
+    else:
+        plot_ensemble = True
+        Nens = int(input("Enter the number of ensembles: "))
 
     # Generate first sample
     a_ref = generate_a(NComb, N)
@@ -134,6 +140,9 @@ def main():
     obs_times = range(0, 305, dt)
     observations = [[] for i in range(len(Locations))]
 
+    # Reset random seed to make sure we always generate the same observations
+    # independent from number ensembles
+    np.random.seed(2018)  
     for iLoc in range(len(Locations)):
         for t in range(0, 305, dt):
             ix=Locations[iLoc] -t + len(a_true)
@@ -227,7 +236,7 @@ def main():
         plt.show()
 
 
-    if True:
+    if plot_ensemble:
         plt.figure()
         plt.subplot(2,1,1)
         plt.plot(a_true,'r*')

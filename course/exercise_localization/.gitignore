@@ -1,0 +1,17 @@
+# ignore the typical generated files:
+#
+# initial ensembles and observations:
+ensembles_25.csv
+ensembles_50.csv
+ensembles_100.csv
+observations.csv
+true_state.py
+#
+# openda result and log files:
+enkf100_results.py
+enkf25_loc_results.py
+enkf25_results.py
+enkf50_results.py
+#
+# log files:
+openda_logfile.txt

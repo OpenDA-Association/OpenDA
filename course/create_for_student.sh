@@ -20,6 +20,8 @@ rm -f $STUDENT/exercise_double_pendulum_part2/enkf_*.oda
 rm -f $STUDENT/exercise_double_pendulum_part2/algorithm/EnKF*.xml
 
 cp -r exercise_localization $STUDENT/
+rm -f $STUDENT/exercise_localization/enkf_100.oda
+rm -f $STUDENT/exercise_localization/algorithms/EnKF100.xml
 
 #cp -r exercise_black_box_calibration_polution $STUDENT/
 cp -r exercise_black_box_enkf_polution $STUDENT/

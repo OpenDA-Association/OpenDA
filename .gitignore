@@ -5,3 +5,4 @@ opendaTestRuns/
 **/bin
 **/build
 **/MANIFEST.MF
+**/__pycache__
