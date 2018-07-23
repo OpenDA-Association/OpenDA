@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import enkf25_results as enkf
-import enkf25_loc_results as enkf_loc
+import enkf25_results as enkf25
+import enkf25_loc_results as enkf25_loc
 
 
 def compute_b(a):
@@ -15,7 +15,7 @@ def compute_b(a):
     return b
 
 
-def main():
+def plot_balance(enkf, enkf_loc):
 
     #t=300 -> index 59
     x=enkf.x_f[0]
@@ -44,4 +44,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    plot_balance(enkf25, enkf25_loc)
