@@ -1,7 +1,0 @@
-H_astro              Z A    17     2    17    16  0.0000000e+000 M2S2  M2S2 
-Q_bnd1               Q T     1    15     1    15  0.0000000e+000 Uniform             
-Q_bnd2               Q T     1    11     1    10  0.0000000e+000 Uniform             
-Q_bnd3               Q T     1     5     1     2  0.0000000e+000 Uniform             
-H_bnd1               Z T     4     1     4     1  0.0000000e+000
-H_bnd2               Z T     7     1     8     1  0.0000000e+000
-H_bnd3               Z T    11     1    13     1  0.0000000e+000
