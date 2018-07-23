@@ -23,11 +23,19 @@
 			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
 			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
 			<resultItem id="x_a" outputLevel="All"  maxSize="100000"   />
-			<resultItem id="x_f" outputLevel="All"  maxSize="100000"   /> 
-			<resultItem id="rho_0" outputLevel="All"  maxSize="100000"   /> 
-			<resultItem id="rho_1" outputLevel="All"  maxSize="100000"   /> 
-			<resultItem id="rho_2" outputLevel="All"  maxSize="100000"   /> 
-			<resultItem id="rho_3" outputLevel="All"  maxSize="100000"   /> 
+			<resultItem id="x_f" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="rho_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="rho_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="rho_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="rho_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KpreLoc_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KpreLoc_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KpreLoc_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KpreLoc_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KLoc_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KLoc_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KLoc_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="KLoc_3" outputLevel="All"  maxSize="100000"   />
         </selection>
 	</resultWriter>
         </resultWriters>

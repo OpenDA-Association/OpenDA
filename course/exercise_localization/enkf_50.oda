@@ -22,6 +22,10 @@
 			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
 			<resultItem id="x_a" outputLevel="All"  maxSize="100000"   />
 			<resultItem id="x_f" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="k_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="k_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="k_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="k_3" outputLevel="All"  maxSize="100000"   />
                 </selection>
 	</resultWriter>
         </resultWriters>
