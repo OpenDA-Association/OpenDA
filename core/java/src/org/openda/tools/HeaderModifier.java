@@ -1,5 +1,5 @@
-/* OpenDA v2.4.3 
-* Copyright (c) 2017 OpenDA Association 
+/* OpenDA v2.4.4 
+* Copyright (c) 2018 OpenDA Association 
 * All rights reserved.
 * 
 * This file is part of OpenDA. 
@@ -30,8 +30,8 @@ public class HeaderModifier {
 
 	String suffix = "java";
 	
-	String license= "/* OpenDA v2.4.3 \n"+
-	"* Copyright (c) 2017 OpenDA Association \n"+
+	String license= "/* OpenDA v2.4.4 \n"+
+	"* Copyright (c) 2018 OpenDA Association \n"+
 	"* All rights reserved.\n"+
 	"* \n"+
 	"* This file is part of OpenDA. \n"+
@@ -94,7 +94,7 @@ public class HeaderModifier {
 			boolean containsHeader=false;
 			if(line!=null){
 				needsModification=true;
-				if(line.indexOf("/* OpenDA v2.4.3")>=0){
+				if(line.indexOf("/* OpenDA v2.4.4")>=0){
 					needsModification=false;
 					containsHeader=true;
 				}else if(line.indexOf("/*")>=0){
@@ -184,7 +184,7 @@ public class HeaderModifier {
 				System.out.println("- "+tree.getAbsolutePath());
 			}
 		}else if(tree.isDirectory()){
-			if(tree.getAbsolutePath().indexOf(".svn")<0){
+			if(tree.getAbsolutePath().indexOf(".git")<0 && tree.getAbsolutePath().indexOf(".settings")<0){
 				File fileList[] = tree.listFiles();
 				for(File aFile : fileList){
 					modifyAllHeaders(aFile, replaceFile);
