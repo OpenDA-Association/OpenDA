@@ -38,14 +38,20 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 	protected DateFormat dateFormatter;
 	protected TimeZone timeZone = TimeZone.getTimeZone("GMT");
 	protected String delimiter;
+	protected String commentMarker;
 	protected int skipLines;
+	protected boolean StoreAndwriteSkipped;
+	protected boolean StoreAndwriteComment;
 
 	public DelimitedTextTimeSeriesFormatter(ConfigTree configTree) {
 		String datePattern = configTree.getAsString("dateTimePattern", null);
 		if (datePattern != null ) this.dateFormatter = new SimpleDateFormat(datePattern);
 		this.timeZone = TimeZone.getTimeZone(configTree.getAsString("timeZone","GMT"));
 		this.delimiter = configTree.getAsString("delimiter",null);
+		this.commentMarker = configTree.getAsString("commentMarker",null);
 		this.skipLines = configTree.getAsInt("skipLines",0);
+		this.StoreAndwriteSkipped = configTree.getAsBoolean("StoreAndwriteSkipped",true);
+		this.StoreAndwriteComment = configTree.getAsBoolean("StoreAndwriteComment",true);
 
 		if (this.dateFormatter!=null) {
 			this.dateFormatter.setTimeZone(this.timeZone);
@@ -94,9 +100,11 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 				field = line;
 				// skip header
 				if ( skip > 0 ) { skip--; continue;}
-				if (s.hasNext(Pattern.compile("#.*"))) continue;
+				if (this.commentMarker != null) {
+					if (s.hasNext(Pattern.compile(this.commentMarker + ".*"))) continue;  //TODO use comment marker
+				}
 				//parse date time
-				if (dateFormatter!=null) {
+				if (dateFormatter!=null) {  //TODO make order of data/value configurable
 					field = s.next();
 					Date time = dateFormatter.parse(field);
 					logger.trace("getTime: {} ", time.getTime());
