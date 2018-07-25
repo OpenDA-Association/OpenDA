@@ -35,10 +35,10 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
-	public void testNoosFormatted() {
+	public void testNoosFormatted_skip() {
 		double delta=0.0001;
 
-		ConfigTree config = new ConfigTree("<config><dateTimePattern>yyyyMMddHHmm</dateTimePattern><timeZone>GMT</timeZone><delimiter>\\s+</delimiter></config>");
+		ConfigTree config = new ConfigTree("<config><dateTimePattern>yyyyMMddHHmm</dateTimePattern><timeZone>GMT</timeZone><delimiter>\\s+</delimiter><skipLines>12</skipLines></config>");
 
 		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
 		File denHelderNoos = new File(testRunDataDir, "den_helder_waterlevel_astro.noos");
@@ -47,6 +47,21 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		assertEquals("times[0]", 54466.0,times[0], delta);
 
 	}
+
+	public void testNoosFormatted_comment() {
+		double delta=0.0001;
+
+		ConfigTree config = new ConfigTree("<config><dateTimePattern>yyyyMMddHHmm</dateTimePattern><timeZone>GMT</timeZone><delimiter>\\s+</delimiter><commentMarker>#</commentMarker></config>");
+
+		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
+		File denHelderNoos = new File(testRunDataDir, "den_helder_waterlevel_astro.noos");
+		TimeSeries series1 = formatter.readFile(denHelderNoos.getAbsolutePath());
+		double times[] = series1.getTimesRef();
+		assertEquals("times[0]", 54466.0,times[0], delta);
+
+	}
+
+
 
 	public void testCsvFormatted() {
 		double delta=0.0001;
