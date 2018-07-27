@@ -1,0 +1,7 @@
+# ignore the typical generated files:
+#
+# work directories
+stochModel/output/work*
+#
+# log files:
+openda_logfile.txt
