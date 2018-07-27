@@ -1,5 +1,12 @@
 # ignore the typical generated files:
 #
+# result files
+enkf_results*.py
+enkf_results*.m
+sequentialEnsembleSimulation_results.m
+sequentialEnsembleSimulation_results.py
+sequentialSimulation_results.m
+sequentialSimulation_results.py
 # work directories
 stochModel/output/work*
 #

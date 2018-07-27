@@ -11,9 +11,9 @@ def compute_b(a):
         b[i]=5.0*(a[i+1]-a[i-1])
     b[n-1] = 5.0*(a[0]-a[n-2])
     b[0] = 5.0*(a[1]-a[n-1])
-
+    for i in range(n):
+       b[i] += 0.5
     return b
-
 
 def plot_balance(enkf, enkf_loc):
 
