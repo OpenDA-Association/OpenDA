@@ -15,8 +15,9 @@
         </echo>
     </target>
 
-<property file="module.properties"/>
-<property name="resourcesdir_for_stand_alone" value="../bin"/>
+  <property file="module.properties"/>
+  <property file="../version.properties"/>
+  <property name="resourcesdir_for_stand_alone" value="../bin"/>
 
     <target name="debug">
         <echo>
