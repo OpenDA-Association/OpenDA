@@ -1,7 +1,11 @@
 classes/
 examples/
 opendaTestRuns/
+opendaTestBuild/
+opendaTestReports/
 *.iws
 **/bin
 **/build
+**/build-test
 **/MANIFEST.MF
+OpenDATimings_*
