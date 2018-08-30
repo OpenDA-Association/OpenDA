@@ -23,10 +23,7 @@ import org.openda.blackbox.config.BBUtils;
 import ucar.ma2.Array;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Dimension;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
-import ucar.nc2.Variable;
+import ucar.nc2.*;
 import ucar.nc2.units.DateUnit;
 
 import java.io.File;
@@ -50,7 +47,27 @@ public class NetcdfFileConcatenater {
 		}
 		try {
 			if (!targetNetcdfFile.exists()) {
-				BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
+				NetcdfFile netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+				Dimension time = netcdfToAdd.findDimension("time");
+				if (time != null && time.isUnlimited()) {
+					BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
+				} else {
+					NetcdfFileWriter netcdfWriter = null;
+
+					try {
+						netcdfWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, targetNetcdfFile.getCanonicalPath());
+
+						Dimension timeDimension = redefineVariablesAndDimensions(netcdfToAdd, netcdfWriter);
+
+						netcdfWriter.create();
+
+						writeValues(netcdfToAdd, netcdfWriter);
+					} catch (InvalidRangeException e) {
+						throw new RuntimeException(e.getMessage(), e);
+					} finally {
+						if (netcdfWriter != null) netcdfWriter.close();
+					}
+				}
 			} else {
 				NetcdfFile soureNetCdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath() );
 				List<Variable> variablesToBeAdded = soureNetCdfFile.getVariables();
@@ -126,7 +143,17 @@ public class NetcdfFileConcatenater {
 				netcdfFileWriter.close();
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Error", e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private static void writeValues(NetcdfFile netcdfToAdd, NetcdfFileWriter netcdfWriter) throws IOException, InvalidRangeException {
+		List<Variable> variables = netcdfToAdd.getVariables();
+		for (Variable variable : variables) {
+			String fullNameEscaped = variable.getFullNameEscaped();
+			Variable netcdfFileVariable = netcdfWriter.findVariable(fullNameEscaped);
+			Array read = variable.read();
+			netcdfWriter.write(netcdfFileVariable, read);
 		}
 	}
 
@@ -150,6 +177,49 @@ public class NetcdfFileConcatenater {
 		}
 		if (concatenateTimeVariable) timeVariableArraysMap.put(timeVariableTarget, timeArrayDouble);
 		variableArraysMap.put(targetVariable, valueArrayDouble);
+	}
+
+	private static Dimension redefineVariablesAndDimensions(NetcdfFile source, NetcdfFileWriter target) {
+
+		List<Dimension> dimensions = source.getDimensions();
+		for (Dimension dimension : dimensions) {
+			String fullNameEscaped = dimension.getFullNameEscaped();
+			if (fullNameEscaped.equals("time")) continue;
+			target.addDimension(null, fullNameEscaped, dimension.getLength());
+		}
+
+		Dimension timeDimension = target.addUnlimitedDimension("time");
+		List<Variable> variables = source.getVariables();
+		rewriteVariables(target, variables, timeDimension);
+		return timeDimension;
+	}
+
+	private static void rewriteVariables(NetcdfFileWriter netcdf, List<Variable> variables, Dimension timeDimension) {
+		for (Variable variable : variables) {
+			List<Dimension> newDimensions = getDimensions(variable, timeDimension);
+			String fullNameEscaped = variable.getFullNameEscaped();
+			Variable newVariable = netcdf.addVariable(null, fullNameEscaped, variable.getDataType(), newDimensions);
+			List<Attribute> attributes = variable.getAttributes();
+			for (Attribute attribute : attributes) {
+				netcdf.addVariableAttribute(newVariable, attribute);
+			}
+		}
+	}
+
+	private static List<Dimension> getDimensions(Variable variable, Dimension timeDimension) {
+		List<Dimension> dimensionsAll = variable.getDimensionsAll();
+		List<Dimension> newDimensions = new ArrayList<>(dimensionsAll.size());
+		for (Dimension dimension : dimensionsAll) {
+			switch (dimension.getFullNameEscaped()) {
+				case "time":
+					newDimensions.add(timeDimension);
+					break;
+				default:
+					newDimensions.add(dimension);
+					break;
+			}
+		}
+		return newDimensions;
 	}
 
 }

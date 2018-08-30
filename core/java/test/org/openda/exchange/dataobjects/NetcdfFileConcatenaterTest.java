@@ -66,4 +66,13 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		long size3 = NetcdfFile.open(targetFile.toString()).findVariable("time").read().getSize();
 		assertEquals(size3, size1 + size2);
 	}
+
+	public void testNetcdfFixedTimeDimensionConcatenation() throws IOException {
+		File firstFile = new File(this.testRunDataDir, "toAdd.nc");
+		File targetFile = new File(this.testRunDataDir, "concatenated.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		assertFalse(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+	}
 }
