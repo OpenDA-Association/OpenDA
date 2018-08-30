@@ -17,7 +17,8 @@
         </echo>
     </target>
 
-<property file="module.properties"/>
+  <property file="module.properties"/>
+  <property file="../version.properties"/>
 
     <target name="debug">
         <echo>

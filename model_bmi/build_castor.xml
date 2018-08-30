@@ -18,7 +18,8 @@
         </echo>
     </target>
 
-	<property file="module.properties"/>
+  <property file="module.properties"/>
+  <property file="../version.properties"/>
 
 	<!-- castor properties (output) -->
 	<property name="openda_castor_jar" value="${resourcesdir}/openda/${module}_castor.jar"/>
