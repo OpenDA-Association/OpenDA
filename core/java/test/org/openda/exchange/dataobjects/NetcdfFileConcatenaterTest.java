@@ -68,60 +68,61 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 	}
 
 	public void testNetcdfFixedTimeDimensionConcatenation() {
-		File firstFile = new File(this.testRunDataDir, "toAdd.nc");
-		File targetFile = new File(this.testRunDataDir, "concatenated.nc");
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateFixedTimeDim");
+		File firstFile = new File(testRunDataSubDir, "toAdd.nc");
+		File targetFile = new File(testRunDataSubDir, "concatenated.nc");
 		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
 		assertFalse(targetFile.exists());
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
 		assertTrue(targetFile.exists());
 	}
 
-	public void testNetcdfFixedTimeDimensionUseNewValueOnOverlapConcatenation() throws IOException {
-		File firstFile = new File(this.testRunDataDir, "rrunoff_201250.nc");
-		File targetFile = new File(this.testRunDataDir, "concatenated_rrrunoff.nc");
+	public void testNetcdfFixedTimeDimensionInt() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateTimeInt");
+		File firstFile = new File(testRunDataSubDir, "rrunoff_201250_timeInt.nc");
+		File targetFile = new File(testRunDataSubDir, "concatenated_timeInt.nc");
 		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
 		assertFalse(targetFile.exists());
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
 		assertTrue(targetFile.exists());
-		File secondFile = new File(this.testRunDataDir, "rrunoff_201257.nc");
+		File secondFile = new File(testRunDataSubDir, "rrunoff_201257_timeInt.nc");
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
 		assertTrue(targetFile.exists());
 
-		NetcdfFile firstNetcdf = null;
-		NetcdfFile secondNetcdf = null;
-		NetcdfFile concatenatedNetcdf = null;
-		try {
-			firstNetcdf = NetcdfFile.open(firstFile.toString());
-			secondNetcdf = NetcdfFile.open(secondFile.toString());
-			concatenatedNetcdf = NetcdfFile.open(targetFile.toString());
-			double[] firstValues = (double[]) firstNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
-			double[] secondValues = (double[]) secondNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
-			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
-			assertEquals(firstValues.length + secondValues.length - 1, concatenatedValues.length);
-			for (int i = 0; i < 6; i++) {
-				assertEquals(firstValues[i], concatenatedValues[i]);
-			}
-			for (int i = 6; i < concatenatedValues.length; i++) {
-				assertEquals(secondValues[i - 6], concatenatedValues[i]);
-			}
-		} finally {
-			if (firstNetcdf != null) firstNetcdf.close();
-			if (secondNetcdf != null) secondNetcdf.close();
-			if (concatenatedNetcdf != null) concatenatedNetcdf.close();
-		}
+		checkConcatenatedValues(firstFile, targetFile, secondFile, 6);
+	}
+
+	public void testNetcdfFixedTimeDimensionUseNewValueOnOverlapConcatenation() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateNewValueOnOverlap");
+		File firstFile = new File(testRunDataSubDir, "rrunoff_201250.nc");
+		File targetFile = new File(testRunDataSubDir, "concatenated_rrrunoff.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		assertFalse(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+		File secondFile = new File(testRunDataSubDir, "rrunoff_201257.nc");
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+
+		checkConcatenatedValues(firstFile, targetFile, secondFile, 6);
 	}
 
 	public void testNetcdfFixedTimeDimensionUseOldValueOnOverlapConcatenation() throws IOException {
-		File firstFile = new File(this.testRunDataDir, "rrunoff_201250.nc");
-		File targetFile = new File(this.testRunDataDir, "concatenated_rrrunoff_oldValueOverlap.nc");
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateOldValueOnOverlap");
+		File firstFile = new File(testRunDataSubDir, "rrunoff_201250.nc");
+		File targetFile = new File(testRunDataSubDir, "concatenated_rrrunoff_oldValueOverlap.nc");
 		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
 		assertFalse(targetFile.exists());
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath(), "useOldValueOnOverlap=true"});
 		assertTrue(targetFile.exists());
-		File secondFile = new File(this.testRunDataDir, "rrunoff_201257.nc");
+		File secondFile = new File(testRunDataSubDir, "rrunoff_201257.nc");
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath(), "useOldValueOnOverlap=true"});
 		assertTrue(targetFile.exists());
 
+		checkConcatenatedValues(firstFile, targetFile, secondFile, 7);
+	}
+
+	private void checkConcatenatedValues(File firstFile, File targetFile, File secondFile, int split) throws IOException {
 		NetcdfFile firstNetcdf = null;
 		NetcdfFile secondNetcdf = null;
 		NetcdfFile concatenatedNetcdf = null;
@@ -133,10 +134,10 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 			double[] secondValues = (double[]) secondNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
 			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
 			assertEquals(firstValues.length + secondValues.length - 1, concatenatedValues.length);
-			for (int i = 0; i < 7; i++) {
+			for (int i = 0; i < split; i++) {
 				assertEquals(firstValues[i], concatenatedValues[i]);
 			}
-			for (int i = 7; i < concatenatedValues.length; i++) {
+			for (int i = split; i < concatenatedValues.length; i++) {
 				assertEquals(secondValues[i - 6], concatenatedValues[i]);
 			}
 		} finally {
