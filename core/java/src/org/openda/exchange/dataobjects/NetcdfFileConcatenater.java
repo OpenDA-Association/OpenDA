@@ -123,9 +123,9 @@ public class NetcdfFileConcatenater {
 			double[][] addedValues = (double[][]) variable.read().copyToNDJavaArray();
 
 			Array read = timeVariableTarget.read();
-			double[] timesTarget = (double[]) read.copyTo1DJavaArray();
+			double[] timesTarget = (double[]) read.get1DJavaArray(Double.TYPE);
 			String timeVariableTargetUnitsString = timeVariableTarget.getUnitsString();
-			double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().copyTo1DJavaArray();
+			double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().get1DJavaArray(Double.TYPE);
 			String timeVariableToBeAddedUnitsString = timeVariableToBeAdded.getUnitsString();
 			DateUnit targetDateUnit;
 			DateUnit toBeAddedDateUnit;
