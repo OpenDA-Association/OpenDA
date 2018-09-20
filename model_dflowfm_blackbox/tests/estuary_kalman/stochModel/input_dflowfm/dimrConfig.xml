@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<dimrConfig xmlns="http://schemas.deltares.nl/dimr" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.deltares.nl/dimr http://content.oss.deltares.nl/schemas/dimr-1.0.xsd">
+  <documentation>
+    <fileVersion>1.00</fileVersion>
+    <createdBy>Deltares, Coupling Team</createdBy>
+    <creationDate>2018-06-06T08:45:09.2926864Z</creationDate>
+  </documentation>
+  <!--<control>
+          The <control> specifies the workflow of the deltaresHydro executable.
+          It indicates which components are started in which order. If the data
+          transfer is to be arranged by the main program "d_hydro", then a coupler
+          should be included.
+          The main <control> block is a sequential block; this means that each
+          component is initialized, time stepped, and finalized before the next
+          component starts.
+      <parallel>
+          Within a <parallel> tag the components are started
+          concurrently (if the mpi process ids listed per component don't overlap)
+          or executed synchronously in sequence (first all initialize, then time
+          stepping, and to conclude all finalization calls).
+      <start>
+          A <parallel> block contains exactly one <start/> component, defining the
+          start and end time of the simulation. This is the component inside
+          the <parallel> block with the smallest time step. All other
+          components must be defined with a <startGroup>.
+      <startGroup>
+          A <startGroup> should be used if a component (possibly including couplers)
+          should only be executed at a subset of simulation time steps.
+
+      For each component/coupler there will be a corresponding component/coupler
+      specification block defined below.-->
+  <control>
+    <start name="estuary" />
+  </control>
+  <component name="estuary">
+    <library>dflowfm</library>
+    <workingDir>.</workingDir>
+    <inputFile>estuary.mdu</inputFile>
+  </component>
+</dimrConfig>
