@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<swanCalibStochModelConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openda.org" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/swanCalibStochModelConfig.xsd">
+
+	<model className="org.openda.model_swan.SwanCalibWrapper">
+
+		<!-- directory that will be cloned -->
+		<workingDir>../work</workingDir>
+
+		<!-- arguments (file-name arguments are relative to config dir.) -->
+
+		<!-- swan wrapper configuration -->
+		<argument>swanWrapperConfig.xml</argument>
+
+	</model>
+
+	<uncertaintyModule className="org.openda.uncertainties.UncertaintyEngine">
+
+		<workingDir>.</workingDir>
+
+		<!-- arguments (relative to dir. where this config file is) -->
+
+		<argument>parameterUncertainties.xml</argument>
+
+	</uncertaintyModule>
+
+</swanCalibStochModelConfig>
