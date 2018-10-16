@@ -42,5 +42,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="model_reactive_advection" />
+    <orderEntry type="module" module-name="model_metaswap" />
   </component>
 </module>
