@@ -44,6 +44,7 @@ results.
 \item Try to run a simulation with the double pendulum model. You can use the
       configuration file \texttt{ simulation\_unperturbed.oda}. 
       
+\ifshowmatlab
       For postprocessing in Matlab the results are written to \\ \texttt{ simulation\_unperturbed\_results.m}.
       Next start Matlab and load the results. We have added a routine \texttt{ plot\_movie} to create an intuitive
       representation of the data. Please type (or copy-paste):
@@ -52,6 +53,7 @@ results.
       load_results('simulation_unperturbed_results');
       plot_movie(t,unperturbed)
       \end{lstlisting}
+\fi
       
       For postprocessing in Python the results are written to \\ \texttt{ simulation\_unperturbed\_results.py}.
       These results can be loaded with:
@@ -66,6 +68,7 @@ results.
       p.plot_movie(unperturbed.model_time,unperturbed.x)
       \end{lstlisting}
       
+\ifshowmatlab
       To create a time-series plot in Matlab type:
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
        subplot(2,1,1);
@@ -76,16 +79,19 @@ results.
        ylabel('\theta_2');
        xlabel('time');
       \end{lstlisting}
+\fi
       
       To create a time-series plot in Python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       plt.subplot(2,1,1)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
-      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") #python counts starting at 0
+      plt.ylabel(r"$\theta_1$") # use latex for label
       plt.subplot(2,1,2)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
-      plt.ylabel(r'$\theta_2$')
-      plt.show() #only needed if interactive plotting is off. Set with plt.ioff(), plt.ion()
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],"b")
+      plt.ylabel(r"$\theta_2$")
+      plt.show() 
+      #only needed if interactive plotting is off. 
+      #Set with plt.ioff(), plt.ion()
       \end{lstlisting}
 %
 
@@ -100,6 +106,7 @@ results.
        a movie and a time-series plot of $\theta_1$ and $\theta_2$ variables. Do you see
        the solutions diverging like the theory predicts?
        
+\ifshowmatlab
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
        [tu,unperturbed,tobs1,obs1]=load_results('simulation_unperturbed_results');
        [tp,perturbed,tobs2,obs2]=load_results('simulation_perturbed_results');
@@ -115,6 +122,7 @@ results.
        plot(tp,perturbed(2,:),'g');
        hold off;
       \end{lstlisting}
+\fi
       
       To create a movie with both results in python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python initialize}]
@@ -126,13 +134,14 @@ results.
       To create a time-series plot with both results in Python type:
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       plt.subplot(2,1,1)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
-      plt.plot(perturbed.model_time,perturbed.x[:,0],'g') #python counts starting at 0
-      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") 
+      #python counts starting at 0
+      plt.plot(perturbed.model_time,perturbed.x[:,0],"g")
+      plt.ylabel(r"$\theta_1$") # use latex for label
       plt.subplot(2,1,2)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
-      plt.plot(perturbed.model_time,perturbed.x[:,1],'g')
-      plt.ylabel(r'$\theta_2$')
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],"b")
+      plt.plot(perturbed.model_time,perturbed.x[:,1],"g")
+      plt.ylabel(r"$\theta_2$")
       plt.show() 
       \end{lstlisting}
       
@@ -162,6 +171,7 @@ results.
 
       \item make a plot of the first and second variable of the five ensemble
       members in a single time-series plot
+\ifshowmatlab
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
       [t,ens]=load_ensemble('simulation_ensemble_results');
       ens_th1=reshape(ens(1,:,:),size(ens,2),size(ens,3));
@@ -174,7 +184,8 @@ results.
       ylabel('\theta_2');
       xlabel('time');
       \end{lstlisting}
-      
+\fi
+     
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       import ensemble
       import simulation_ensemble_results as res
@@ -182,16 +193,17 @@ results.
       ens1=ens[:,0,:] #note we start counting at 0
       ens2=ens[:,1,:]
       plt.subplot(2,1,1)
-      plt.plot(t[1:],ens1,'b')
-      plt.ylabel(r'$\theta_1$')
+      plt.plot(t[1:],ens1,"b")
+      plt.ylabel(r"$\theta_1$")
       plt.subplot(2,1,2)
-      plt.plot(t[1:],ens2,'b')
-      plt.ylabel(r'$\theta_2$')
+      plt.plot(t[1:],ens2,"b")
+      plt.ylabel(r"$\theta_2$")
       plt.show()
       \end{lstlisting}
       
       \item Observations of $\theta_1$ and $\theta_2$ are available as well. Make a plot of
       the observations together with the simulation results.
+\ifshowmatlab
       \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
 	[t,unperturbed,tobs,obs]= ...
 	load_results('simulation_unperturbed_results');
@@ -209,16 +221,17 @@ results.
        ylabel('\theta_2');
        xlabel('time');
       \end{lstlisting}
+\fi
       \begin{lstlisting}[language=Python,frame=single,caption={Python}]
       import simulation_unperturbed_results as unperturbed
       plt.subplot(2,1,1)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,0],'b') #python counts starting at 0
-      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,0],'k+') #python counts starting at 0
-      plt.ylabel(r'$\theta_1$') # use raw string and latex for label
+      plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") 
+      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,0],"k+")
+      plt.ylabel(r"$\theta_1$")
       plt.subplot(2,1,2)
-      plt.plot(unperturbed.model_time,unperturbed.x[:,1],'b')
-      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,1],'k+')
-      plt.ylabel(r'$\theta_2$')
+      plt.plot(unperturbed.model_time,unperturbed.x[:,1],"b")
+      plt.plot(unperturbed.analysis_time,unperturbed.obs[:,1],"k+")
+      plt.ylabel(r"$\theta_2$")
       plt.show()
       \end{lstlisting}
       

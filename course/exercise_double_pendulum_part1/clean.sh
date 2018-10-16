@@ -11,3 +11,4 @@ rm -f *.orp
 rm -f OpenDATimings_*
 rm -f restart_*.xml
 rm -f *.pyc
+rm -rf __pycache__
