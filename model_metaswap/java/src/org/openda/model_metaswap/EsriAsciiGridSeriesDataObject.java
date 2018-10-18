@@ -170,7 +170,9 @@ public class EsriAsciiGridSeriesDataObject implements IDataObject {
 			// System.arraycopy(exchangeItemValues, 0 , allValues, timeStartIndex, numEIvalues);
 			exchangeItem.setValuesAsDoubles(exchangeItemValues);
 			timeStartIndex += numEIvalues;
-			timeStepDataObject.finish();
+			if(i>0){ // skip first file
+				timeStepDataObject.finish();
+			}
 		}
 	}
 }
