@@ -16,7 +16,8 @@ public class SwapStateFile implements IDataObject {
 	private LinkedHashMap<String, SwapStateExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private int headerBytesLength = 0;
 	private int lineBytesLength = 0;
-	private static final int START_LENGTH = 221;
+	//private static final int START_LENGTH = 221;
+	private static final int START_LENGTH = 521;
 	private static final int LINE_BREAK_LENGTH = 2;
 	private final DecimalFormat formatDouble;
 	private File sourceFile = null;
@@ -111,7 +112,8 @@ public class SwapStateFile implements IDataObject {
 			if (line == null) return null;
 			lineBytesLength = line.getBytes().length;
 			while (line != null) {
-				strings.add(line.substring(221, 235));
+				//strings.add(line.substring(221, 235));
+				strings.add(line.substring(521, 535));
 				line = bufferedReader.readLine();
 			}
 		} catch (IOException e) {
