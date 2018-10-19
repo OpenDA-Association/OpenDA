@@ -50,7 +50,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private File instanceFileOrDir;
 	private String instanceNumberString;
     private HashMap<String, IoObjectInterface> ioObjects;
-    private HashMap<String, IDataObject> dataObjects;
+    protected HashMap<String, IDataObject> dataObjects;
     protected HashMap<String, BBExchangeItem> bbExchangeItems = new HashMap<String, BBExchangeItem>();
     protected HashMap<String, SelectorInterface> selectors;
 	private ILocalizationDomains localizationDomains;
