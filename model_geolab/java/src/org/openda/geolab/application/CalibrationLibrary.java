@@ -20,9 +20,17 @@
 
 package org.openda.geolab.application;
 
+import org.openda.geolab.CalibrationLibraryStochModelFactory;
+import org.openda.geolab.CalibrationLibraryStochObserver;
+import org.openda.interfaces.IStochModelFactory;
+import org.openda.interfaces.IStochModelInstance;
+
 import java.io.File;
 
 public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
+
+	private CalibrationLibraryStochObserver calibrationLibraryStochObserver = null;
+	private CalibrationLibraryStochModelFactory modelFactory = null;
 
 	public int initialize(File odaFilePath) {
 		return -1;
@@ -30,11 +38,13 @@ public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
 
 	@Override
 	public int observerSetObsAndStdDevs(double[] observations, double[] standardDeviations) {
-		throw new RuntimeException("org.openda.geolab.application.CalibrationLibrary.observerSetObsAndStdDevs() not implemented yet");
+		calibrationLibraryStochObserver = new CalibrationLibraryStochObserver(observations, standardDeviations);
+		return 1;
 	}
 
 	public int modelSetParameterDefinitions(double[] initialParameterValues, double[] standardDeviations) {
-		return -1;
+		modelFactory = new CalibrationLibraryStochModelFactory(initialParameterValues, standardDeviations);
+		return 1;
 	}
 
 	public int modelSetResults(double[] modelResults) {
@@ -42,6 +52,7 @@ public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
 	}
 
 	public double[] algorithmGetNextParameterValues() {
+		IStochModelInstance instance = modelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
 		return new double[0];
 	}
 
