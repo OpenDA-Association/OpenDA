@@ -7,16 +7,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class OpenDaCalibrationLibraryTest extends TestCase {
+public class CalibrationLibraryTest extends TestCase {
 	private File testRunDataDir;
 
 	protected void setUp() throws IOException {
-		OpenDaTestSupport testData = new OpenDaTestSupport(OpenDaCalibrationLibraryTest.class, "model_geolab");
+		OpenDaTestSupport testData = new OpenDaTestSupport(CalibrationLibraryTest.class, "model_geolab");
 		this.testRunDataDir = testData.getTestRunDataDir();
 	}
 
 	public void testSinus() {
-		OpenDaCalibrationLibrary openDaCalibrationLibrary = new OpenDaCalibrationLibrary();
+		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
 
 		double amplitudeObs = 2;
 		double periodObs = 0.5;
@@ -27,7 +27,7 @@ public class OpenDaCalibrationLibraryTest extends TestCase {
 		double[] observations = evaluateSinus(obsParams);
 		double[] observationStandardDeviations = new double[100];
 		Arrays.fill(observationStandardDeviations, 0.2);
-		openDaCalibrationLibrary.observerSetObsAndStdDevs(observations, observationStandardDeviations);
+		calibrationLibrary.observerSetObsAndStdDevs(observations, observationStandardDeviations);
 
 		double amplitudeInitial = 2.1;
 		double periodInitial = 0.55;
@@ -36,17 +36,17 @@ public class OpenDaCalibrationLibraryTest extends TestCase {
 
 		double[] initialParams = {amplitudeInitial, periodInitial, phaseInitial, offsetInitial};
 		double[] parameterStandardDeviations = new double[]{0.2, 0.2, 0.2, 40};
-		openDaCalibrationLibrary.modelSetParameterDefinitions(initialParams, parameterStandardDeviations);
+		calibrationLibrary.modelSetParameterDefinitions(initialParams, parameterStandardDeviations);
 		double[] modelResults = evaluateSinus(initialParams);
-		openDaCalibrationLibrary.modelSetResults(modelResults);
+		calibrationLibrary.modelSetResults(modelResults);
 
-		double[] nextParameterValues = openDaCalibrationLibrary.algorithmGetNextParameterValues();
+		double[] nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
 		while (nextParameterValues != null && nextParameterValues.length == 4) {
 			modelResults = evaluateSinus(nextParameterValues);
-			openDaCalibrationLibrary.modelSetResults(modelResults);
-			nextParameterValues = openDaCalibrationLibrary.algorithmGetNextParameterValues();
+			calibrationLibrary.modelSetResults(modelResults);
+			nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
 		}
-		double[] optimalParameterValues = openDaCalibrationLibrary.algorithmGetOptimalParameterValues();
+		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
 		for (int i = 0; i < optimalParameterValues.length; i++) {
 			assertEquals(obsParams[i], optimalParameterValues[i]);
 		}
