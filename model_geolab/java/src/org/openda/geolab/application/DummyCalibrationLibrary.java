@@ -22,7 +22,7 @@ package org.openda.geolab.application;
 
 import java.io.File;
 
-public class OpenDaDummyCalibrationLibrary implements IOpenDaCalibrationLibrary {
+public class DummyCalibrationLibrary implements ICalibrationLibrary {
 
 	private File odaFilePath;
 	private double[] initialParameterValues;
@@ -38,7 +38,7 @@ public class OpenDaDummyCalibrationLibrary implements IOpenDaCalibrationLibrary 
 
 	@Override
 	public int observerSetObsAndStdDevs(double[] observations, double[] standardDeviations) {
-		throw new RuntimeException("org.openda.geolab.application.OpenDaDummyCalibrationLibrary.observerSetObsAndStdDevs() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.application.DummyCalibrationLibrary.observerSetObsAndStdDevs() not implemented yet");
 	}
 
 	public int modelSetParameterDefinitions(double[] initialParameterValues, double[] standardDeviations) {

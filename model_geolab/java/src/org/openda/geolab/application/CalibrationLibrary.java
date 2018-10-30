@@ -30,7 +30,7 @@ import org.openda.interfaces.IStochObserver;
 import java.io.File;
 import java.util.Arrays;
 
-public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
+public class CalibrationLibrary implements ICalibrationLibrary {
 
 	private CalibrationLibraryStochObserver stochObserver = null;
 	private CalibrationLibraryStochModelFactory stochModelFactory = null;

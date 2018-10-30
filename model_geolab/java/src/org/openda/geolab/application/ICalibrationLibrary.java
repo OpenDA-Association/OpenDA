@@ -2,7 +2,7 @@ package org.openda.geolab.application;
 
 import java.io.File;
 
-public interface IOpenDaCalibrationLibrary {
+public interface ICalibrationLibrary {
 
 	/*
 		(step 2) Start OpenDA, providing the configuration
