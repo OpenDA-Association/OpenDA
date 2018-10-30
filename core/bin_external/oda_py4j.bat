@@ -1,6 +1,6 @@
 @echo off
-rem Usage: oda_run_batch.bat <odafile>
-rem    or: oda_run_batch.bat <odafile> -jre "location where java is installed"
+rem Usage: oda_py4j.bat <odafile>
+rem    or: oda_py4j.bat <odafile> -jre "location where java is installed"
 
 rem The setlocal statement must be on top!
 setlocal enabledelayedexpansion
@@ -52,7 +52,7 @@ pause
 goto End
 
 :Error2
-echo Usage: oda_run_batch.bat OpenDAConfigFile
+echo Usage: oda_py4j.bat OpenDAConfigFile
 pause
 goto End
 
@@ -63,7 +63,7 @@ goto End
 
 :Error4
 echo Error: incorrect user-specified JRE.
-echo Usage: oda_run_batch.bat odafile -jre "location where java is installed"
+echo Usage: oda_py4j.bat odafile -jre "location where java is installed"
 pause
 goto End
 

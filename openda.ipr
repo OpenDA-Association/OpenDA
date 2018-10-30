@@ -115,7 +115,7 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+  <component name="Encoding">
     <file url="PROJECT" charset="UTF-8" />
   </component>
   <component name="ErrorOptionsConfigurable.UI">
@@ -367,6 +367,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_efdc_dll/java/model_efdc_dll.iml" filepath="$PROJECT_DIR$/model_efdc_dll/java/model_efdc_dll.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" filepath="$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" filepath="$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_geolab/java/model_geolab.iml" filepath="$PROJECT_DIR$/model_geolab/java/model_geolab.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_hspf/java/model_hspf.iml" filepath="$PROJECT_DIR$/model_hspf/java/model_hspf.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" filepath="$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_nemo/java/model_nemo.iml" filepath="$PROJECT_DIR$/model_nemo/java/model_nemo.iml" />
@@ -387,7 +388,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ResourceManagerContainer">
