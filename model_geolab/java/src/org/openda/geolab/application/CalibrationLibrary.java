@@ -20,31 +20,45 @@
 
 package org.openda.geolab.application;
 
+import org.openda.algorithms.Dud;
 import org.openda.geolab.CalibrationLibraryStochModelFactory;
 import org.openda.geolab.CalibrationLibraryStochObserver;
+import org.openda.interfaces.IAlgorithm;
 import org.openda.interfaces.IStochModelFactory;
-import org.openda.interfaces.IStochModelInstance;
+import org.openda.interfaces.IStochObserver;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
 
-	private CalibrationLibraryStochObserver calibrationLibraryStochObserver = null;
-	private CalibrationLibraryStochModelFactory modelFactory = null;
+	private CalibrationLibraryStochObserver stochObserver = null;
+	private CalibrationLibraryStochModelFactory stochModelFactory = null;
+	private File workingDir = null;
+	private String exceptionErrmsg = null;
+	private StackTraceElement[] exceptionStackTrace = null;
+	private IAlgorithm algorithm = null;
 
-	public int initialize(File odaFilePath) {
-		return -1;
+	public int initialize(File workingDir) {
+		this.workingDir = workingDir;
+		return 0;
 	}
 
 	@Override
 	public int observerSetObsAndStdDevs(double[] observations, double[] standardDeviations) {
-		calibrationLibraryStochObserver = new CalibrationLibraryStochObserver(observations, standardDeviations);
-		return 1;
+		try {
+			stochObserver = new CalibrationLibraryStochObserver(observations, standardDeviations);
+			return 0;
+		} catch (Exception e) {
+			exceptionErrmsg = e.getMessage();
+			exceptionStackTrace = e.getStackTrace();
+		}
+		return 0;
 	}
 
 	public int modelSetParameterDefinitions(double[] initialParameterValues, double[] standardDeviations) {
-		modelFactory = new CalibrationLibraryStochModelFactory(initialParameterValues, standardDeviations);
-		return 1;
+		stochModelFactory = new CalibrationLibraryStochModelFactory(initialParameterValues, standardDeviations);
+		return 0;
 	}
 
 	public int modelSetResults(double[] modelResults) {
@@ -52,7 +66,9 @@ public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
 	}
 
 	public double[] algorithmGetNextParameterValues() {
-		IStochModelInstance instance = modelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		if (algorithm == null) {
+			algorithm = createAlgorithm(workingDir, stochObserver, stochModelFactory);
+		}
 		return new double[0];
 	}
 
@@ -61,9 +77,19 @@ public class CalibrationLibrary implements IOpenDaCalibrationLibrary {
 	}
 
 	public String getExceptionMessage() {
-		return "getExceptionMessage not implemented yet";
+		return exceptionErrmsg;
 	}
+
 	public String getExceptionStackTrace() {
-		return "getExceptionStackTrace not implemented yet";
+		return Arrays.toString(exceptionStackTrace);
 	}
+
+	private IAlgorithm createAlgorithm(File workingDir, IStochObserver observer, IStochModelFactory modelFactory) {
+		IAlgorithm algorithm = new Dud();
+		algorithm.initialize(workingDir, new String[]{DudXmlConfig});
+		algorithm.setStochComponents(observer, modelFactory);
+		return algorithm;
+	}
+
+	private static final String DudXmlConfig = "<TODO>";
 }

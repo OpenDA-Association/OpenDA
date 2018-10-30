@@ -8,7 +8,7 @@ public interface IOpenDaCalibrationLibrary {
 		(step 2) Start OpenDA, providing the configuration
 		odaFilePath: full path to main oda configuration file
 	*/
-	int initialize(File odaFilePath);
+	int initialize(File workingDir);
 
 	/*
 		(step 3) Feed the parameter definitions to the OpenDA internal model

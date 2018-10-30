@@ -34,6 +34,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Python 3.6 (public) interpreter library" level="application" />
+    <orderEntry type="module" module-name="algorithms" />
     <orderEntry type="module" module-name="observers" />
   </component>
 </module>

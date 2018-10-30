@@ -31,8 +31,8 @@ public class OpenDaDummyCalibrationLibrary implements IOpenDaCalibrationLibrary 
 	private double[] lastModelResults;
 	private double[] optimalParameterValues;
 
-	public int initialize(File odaFilePath) {
-		this.odaFilePath = odaFilePath;
+	public int initialize(File workingDir) {
+		this.odaFilePath = workingDir;
 		return 0;
 	}
 
