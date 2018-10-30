@@ -19,7 +19,7 @@ public class OpenDaCalibrationLibraryTest extends TestCase {
 		OpenDaCalibrationLibrary openDaCalibrationLibrary = new OpenDaCalibrationLibrary();
 
 		double amplitudeObs = 2;
-		double periodObs = 500;
+		double periodObs = 0.5;
 		double phaseObs = 0;
 		double offsetObs = 0;
 
@@ -30,10 +30,10 @@ public class OpenDaCalibrationLibraryTest extends TestCase {
 		openDaCalibrationLibrary.observerSetObsAndStdDevs(observations, observationStandardDeviations);
 
 		double amplitudeInitial = 2.1;
+		double periodInitial = 0.55;
 		double phaseInitial = 0.1;
 		double offsetInitial = 0.1;
-		double periodInitial = 550;
-		
+
 		double[] initialParams = {amplitudeInitial, periodInitial, phaseInitial, offsetInitial};
 		double[] parameterStandardDeviations = new double[]{0.2, 0.2, 0.2, 40};
 		openDaCalibrationLibrary.modelSetParameterDefinitions(initialParams, parameterStandardDeviations);
@@ -41,7 +41,7 @@ public class OpenDaCalibrationLibraryTest extends TestCase {
 		openDaCalibrationLibrary.modelSetResults(modelResults);
 
 		double[] nextParameterValues = openDaCalibrationLibrary.algorithmGetNextParameterValues();
-		while (nextParameterValues != null) {
+		while (nextParameterValues != null && nextParameterValues.length == 4) {
 			modelResults = evaluateSinus(nextParameterValues);
 			openDaCalibrationLibrary.modelSetResults(modelResults);
 			nextParameterValues = openDaCalibrationLibrary.algorithmGetNextParameterValues();
