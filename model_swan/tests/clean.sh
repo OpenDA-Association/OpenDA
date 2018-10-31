@@ -1,5 +1,4 @@
-#! /bin/sh
-
+#!/bin/bash
 #
 # These tests remain still to be included
 #
