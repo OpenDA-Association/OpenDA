@@ -18,11 +18,9 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openda.geolab.application;
+package org.openda.geolab;
 
 import org.openda.algorithms.Dud;
-import org.openda.geolab.CalibrationLibraryStochModelFactory;
-import org.openda.geolab.CalibrationLibraryStochObserver;
 import org.openda.interfaces.IAlgorithm;
 import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.IStochObserver;

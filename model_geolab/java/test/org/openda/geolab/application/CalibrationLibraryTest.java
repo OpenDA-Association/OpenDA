@@ -1,16 +1,16 @@
 package org.openda.geolab.application;
 
 import junit.framework.TestCase;
+import org.openda.geolab.CalibrationLibrary;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 public class CalibrationLibraryTest extends TestCase {
 	private File testRunDataDir;
 
-	protected void setUp() throws IOException {
+	protected void setUp() {
 		OpenDaTestSupport testData = new OpenDaTestSupport(CalibrationLibraryTest.class, "model_geolab");
 		this.testRunDataDir = testData.getTestRunDataDir();
 	}

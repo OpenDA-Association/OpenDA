@@ -1,4 +1,4 @@
-package org.openda.geolab.application;
+package org.openda.geolab;
 
 import java.io.File;
 

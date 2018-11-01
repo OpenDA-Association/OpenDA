@@ -18,7 +18,7 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openda.geolab.application;
+package org.openda.geolab;
 
 import java.io.File;
 
@@ -38,7 +38,7 @@ public class DummyCalibrationLibrary implements ICalibrationLibrary {
 
 	@Override
 	public int observerSetObsAndStdDevs(double[] observations, double[] standardDeviations) {
-		throw new RuntimeException("org.openda.geolab.application.DummyCalibrationLibrary.observerSetObsAndStdDevs() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.DummyCalibrationLibrary.observerSetObsAndStdDevs() not implemented yet");
 	}
 
 	public int modelSetParameterDefinitions(double[] initialParameterValues, double[] standardDeviations) {
