@@ -43,6 +43,7 @@ import org.openda.utils.io.AsciiFileUtils;
 public class WdmUtilsTest extends TestCase {
 
     private File testRunDataDir;
+    private boolean RUNNING_ON_64bit = System.getProperty("sun.arch.data.model").equals("64");
 
     protected void setUp() throws IOException {
         OpenDaTestSupport testData = new OpenDaTestSupport(WdmUtilsTest.class, "model_hspf");
@@ -100,8 +101,9 @@ public class WdmUtilsTest extends TestCase {
      * Tests method WdmUtils.searchDataSetNumber.
      */
     public void testSearchDataSetNumber() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testSearchDataSetNumber: wdm.dll only available for win32.");
             return;
         }
 
@@ -154,8 +156,9 @@ public class WdmUtilsTest extends TestCase {
      * Tests method WdmUtils.createExchangeItemsFromFile.
      */
     public void testCreateExchangeItemsFromFile() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testCreateExchangeItemsFromFile: wdm.dll only available for win32.");
             return;
         }
 
@@ -194,8 +197,9 @@ public class WdmUtilsTest extends TestCase {
      * Tests method WdmUtils.createExchangeItemsFromList.
      */
     public void testCreateExchangeItemsFromList() throws Exception {
-        //currently only wdm.dll available (not wdm.so), so only run this on windows.
-        if (!BBUtils.RUNNING_ON_WINDOWS) {
+        //currently only wdm.dll (32 bit) available, so only run this test on win32.
+        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+            System.out.println("testCreateExchangeItemsFromList: wdm.dll only available for win32.");
             return;
         }
 

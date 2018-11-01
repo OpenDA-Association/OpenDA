@@ -51,7 +51,7 @@ public class EfdcDLLTest extends TestCase {
         
         File fortranDll;
         if (EfdcDLL.RUNNING_ON_WINDOWS) {
-            fortranDll = new File(moduleRootDir, "native_bin/win32_ifort/EfdcFortranDLL.dll");
+            fortranDll = new File(moduleRootDir, "native_bin/win" + System.getProperty("sun.arch.data.model") + "_ifort/EfdcFortranDLL.dll");
         } else if (EfdcDLL.RUNNING_ON_MAC){
             System.out.println("native_bin/darwin/lib/libEFDC.dylib");
             fortranDll = new File(moduleRootDir, "native_bin/darwin/lib/libEFDC.dylib");
