@@ -1,7 +1,6 @@
-package org.openda.geolab.application;
+package org.openda.geolab;
 
 import junit.framework.TestCase;
-import org.openda.geolab.CalibrationLibrary;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;

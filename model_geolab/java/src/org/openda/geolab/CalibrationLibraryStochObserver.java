@@ -23,8 +23,7 @@ public class CalibrationLibraryStochObserver implements IStochObserver {
 
 	@Override
 	public IStochObserver createSelection(ITime selectionTimes) {
-		throw new RuntimeException("org.openda.observers.GeolabStochObserver.createSelection() not implemented yet");
-
+		return this;
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class CalibrationLibraryStochObserver implements IStochObserver {
 
 	@Override
 	public int getCount() {
-		throw new RuntimeException("org.openda.observers.GeolabStochObserver.getCount() not implemented yet");
+		return observations.length;
 
 	}
 
@@ -64,8 +63,7 @@ public class CalibrationLibraryStochObserver implements IStochObserver {
 
 	@Override
 	public IVector getExpectations() {
-		throw new RuntimeException("org.openda.observers.GeolabStochObserver.getExpectations() not implemented yet");
-
+		return new Vector(observations);
 	}
 
 	@Override
@@ -105,7 +103,7 @@ public class CalibrationLibraryStochObserver implements IStochObserver {
 
 	@Override
 	public IObservationDescriptions getObservationDescriptions() {
-		throw new RuntimeException("org.openda.observers.GeolabStochObserver.getObservationDescriptions() not implemented yet");
+		return new GeolabCalObservationDescriptions(observations);
 
 	}
 

@@ -8,6 +8,8 @@ import java.io.File;
 
 public class CalibrationLibraryStochModelFactory implements IStochModelFactory {
 
+	private static double[]
+		modelResults;
 	private final double[] initialParameterValues;
 	private final double[] standardDeviations;
 
@@ -16,26 +18,24 @@ public class CalibrationLibraryStochModelFactory implements IStochModelFactory {
 		this.standardDeviations = standardDeviations;
 	}
 
-	@Override
-	public IStochModelInstance getInstance(OutputLevel outputLevel) {
-		return new CalibrationLibraryStochModelInstance(initialParameterValues, standardDeviations);
+	public static void setlastModelResults(double[] modelResults) {
+		CalibrationLibraryStochModelFactory.modelResults = modelResults;
 	}
 
-	@Override
+	public IStochModelInstance getInstance(OutputLevel outputLevel) {
+		return new CalibrationLibraryStochModelInstance(initialParameterValues, standardDeviations, modelResults);
+	}
+
 	public IStochModelPostProcessor getPostprocessorInstance(File instanceDir) {
 		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelFactory.getPostprocessorInstance() not implemented yet");
 
 	}
 
-	@Override
 	public void finish() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelFactory.finish() not implemented yet");
-
+		// no action needed
 	}
 
-	@Override
 	public void initialize(File workingDir, String[] arguments) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelFactory.initialize() not implemented yet");
-
+		// no action needed
 	}
 }

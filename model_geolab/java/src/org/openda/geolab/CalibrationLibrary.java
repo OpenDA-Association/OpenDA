@@ -23,6 +23,7 @@ package org.openda.geolab;
 import org.openda.algorithms.Dud;
 import org.openda.interfaces.IAlgorithm;
 import org.openda.interfaces.IStochModelFactory;
+import org.openda.interfaces.IStochModelInstance;
 import org.openda.interfaces.IStochObserver;
 
 import java.io.File;
@@ -35,7 +36,7 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private File workingDir = null;
 	private String exceptionErrmsg = null;
 	private StackTraceElement[] exceptionStackTrace = null;
-	private IAlgorithm algorithm = null;
+	private CalibrationLibraryDudAlgorithm algorithm = null;
 
 	public int initialize(File workingDir) {
 		this.workingDir = workingDir;
@@ -60,14 +61,22 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	}
 
 	public int modelSetResults(double[] modelResults) {
-		return -1;
+		CalibrationLibraryStochModelFactory.setlastModelResults(modelResults);
+		return 0;
 	}
 
 	public double[] algorithmGetNextParameterValues() {
 		if (algorithm == null) {
 			algorithm = createAlgorithm(workingDir, stochObserver, stochModelFactory);
+			algorithm.prepare();
+			return algorithm.getBestEstimate().getParameters().getValues();
 		}
-		return new double[0];
+		if (algorithm.hasNext()) {
+			algorithm.next();
+			return algorithm.getBestEstimate().getParameters().getValues();
+		} else {
+			return null;
+		}
 	}
 
 	public double[] algorithmGetOptimalParameterValues() {
@@ -82,8 +91,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		return Arrays.toString(exceptionStackTrace);
 	}
 
-	private IAlgorithm createAlgorithm(File workingDir, IStochObserver observer, IStochModelFactory modelFactory) {
-		IAlgorithm algorithm = new Dud();
+	private CalibrationLibraryDudAlgorithm createAlgorithm(File workingDir, IStochObserver observer, IStochModelFactory modelFactory) {
+		CalibrationLibraryDudAlgorithm algorithm = new CalibrationLibraryDudAlgorithm();
 		algorithm.initialize(workingDir, new String[]{DudXmlConfig});
 		algorithm.setStochComponents(observer, modelFactory);
 		return algorithm;
