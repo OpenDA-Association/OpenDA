@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 # Srcipt to do all runs to prepare output for plotting
 
 #
