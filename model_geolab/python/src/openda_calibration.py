@@ -13,12 +13,17 @@ class OpendaCalibration:
         self.opendaCalibration.observer_set_observations_and_stddevs(obs_values, obs_stddevs)
         self.opendaCalibration.model_set_parameter_definitions(model_params, model_params_stddevs)
 
-        model_results = evaluate(len(obs_values), model_params)
+        model_results = evaluate(model_params)
         self.opendaCalibration.model_set_results(model_results)
+        for i in range(0, 3):
+            params = model_params.copy()
+            params[i] += model_params_stddevs[i]
+            model_results = evaluate(model_params)
+            self.opendaCalibration.model_set_results(model_results)
 
         next_parameter_values = self.opendaCalibration.algorithm_get_next_parameter_values()
         while (next_parameter_values != None):
-            model_results = evaluate(len(obs_values), next_parameter_values)
+            model_results = evaluate(next_parameter_values)
             self.opendaCalibration.model_set_results(model_results)
             next_parameter_values = self.opendaCalibration.algorithm_get_next_parameter_values()
 
@@ -30,7 +35,7 @@ def evaluate_sinus(sinus_params):
     period = sinus_params[1]
     phase = sinus_params[2]
     offset = sinus_params[3]
-    values = []
+    values = [0.0] * 100
     for i in range(0, 99):
         values[i] = amplitude * sin(phase + 1.0 * i / period) + offset
     return values
@@ -47,3 +52,6 @@ if __name__ == "__main__":
     model_sinus_params_stddevs = [0.2, 0.2, 0.2, 40.0]
 
     # calibrate
+    calibration = OpendaCalibration("D:\\tmp")
+    optimal_params = calibration.calibrate(evaluate_sinus, obs_values, obs_std_devs, model_sinus_params, model_sinus_params_stddevs)
+

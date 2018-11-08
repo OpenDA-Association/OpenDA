@@ -35,6 +35,9 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private StackTraceElement[] exceptionStackTrace = null;
 	private CalibrationLibraryDudAlgorithm algorithm = null;
 
+	public CalibrationLibrary() {
+	}
+
 	public int initialize(File workingDir) {
 		this.workingDir = workingDir;
 		return 0;

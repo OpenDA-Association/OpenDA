@@ -50,7 +50,7 @@ class OpendaCalibrationLib:
         # Translate the input argument to java object (File)
         # Create the class and initialize it
         j_working_directory = gateway.jvm.java.io.File(working_directory)
-        self.j_calibLib = gateway.jvm.openda.geolab.CalibrationLibrary()
+        self.j_calibLib = gateway.jvm.org.openda.geolab.CalibrationLibrary()
         self.j_calibLib.initialize(j_working_directory)
 
     def observer_set_observations_and_stddevs(self, obs_values, obs_stddevs):
@@ -89,8 +89,11 @@ class OpendaCalibrationLib:
         (step 6) Check if the algoritm desires more evaluations
         returns: list of new parameter values. null if no evaluations needed any more
         """
-        j_next_parameter_values = self.j_calibLib.algorithm_get_next_parameter_values()
-        return j_array_to_py_list(j_next_parameter_values)
+        j_next_parameter_values = self.j_calibLib.algorithmGetNextParameterValues()
+        if (j_next_parameter_values != None):
+            return j_array_to_py_list(j_next_parameter_values)
+        else:
+            return None
 
     def algorithm_get_optimal_parameter_values(self):
         """
