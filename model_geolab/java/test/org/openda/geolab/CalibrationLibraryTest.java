@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Arrays;
 
 public class CalibrationLibraryTest extends TestCase {
+
 	private File testRunDataDir;
 
 	protected void setUp() {
@@ -22,6 +23,8 @@ public class CalibrationLibraryTest extends TestCase {
 		double phaseObs = 0;
 		double offsetObs = 0;
 
+		calibrationLibrary.initialize(testRunDataDir);
+
 		double[] obsParams = {amplitudeObs, periodObs, phaseObs, offsetObs};
 		double[] observations = evaluateSinus(obsParams);
 		double[] observationStandardDeviations = new double[100];
@@ -36,8 +39,15 @@ public class CalibrationLibraryTest extends TestCase {
 		double[] initialParams = {amplitudeInitial, periodInitial, phaseInitial, offsetInitial};
 		double[] parameterStandardDeviations = new double[]{0.2, 0.2, 0.2, 40};
 		calibrationLibrary.modelSetParameterDefinitions(initialParams, parameterStandardDeviations);
+
 		double[] modelResults = evaluateSinus(initialParams);
 		calibrationLibrary.modelSetResults(modelResults);
+		for (int i = 0; i < initialParams.length; i++) {
+			double[] params = Arrays.copyOf(initialParams, 4);
+			params[i] += parameterStandardDeviations[i];
+			modelResults = evaluateSinus(params);
+			calibrationLibrary.modelSetResults(modelResults);
+		}
 
 		double[] nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
 		while (nextParameterValues != null && nextParameterValues.length == 4) {

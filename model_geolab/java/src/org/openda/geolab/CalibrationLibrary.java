@@ -20,10 +20,7 @@
 
 package org.openda.geolab;
 
-import org.openda.algorithms.Dud;
-import org.openda.interfaces.IAlgorithm;
 import org.openda.interfaces.IStochModelFactory;
-import org.openda.interfaces.IStochModelInstance;
 import org.openda.interfaces.IStochObserver;
 
 import java.io.File;
@@ -69,7 +66,6 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		if (algorithm == null) {
 			algorithm = createAlgorithm(workingDir, stochObserver, stochModelFactory);
 			algorithm.prepare();
-			return algorithm.getBestEstimate().getParameters().getValues();
 		}
 		if (algorithm.hasNext()) {
 			algorithm.next();
