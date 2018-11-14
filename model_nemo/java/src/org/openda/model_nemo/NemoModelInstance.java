@@ -167,7 +167,8 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 	 */
 	@Override
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-		throw new RuntimeException("Not yet implemented");
+        System.out.println("Warning NEMO announceObservedValues is not implemented. Hoping for the best");
+		//throw new RuntimeException("Not yet implemented");
 	}
 
 	/**

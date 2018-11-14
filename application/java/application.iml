@@ -43,5 +43,6 @@
     </orderEntry>
     <orderEntry type="module" module-name="model_reactive_advection" />
     <orderEntry type="module" module-name="model_metaswap" />
+    <orderEntry type="module" module-name="model_nemo" />
   </component>
 </module>
