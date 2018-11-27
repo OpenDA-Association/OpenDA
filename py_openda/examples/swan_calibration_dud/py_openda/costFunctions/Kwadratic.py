@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Module for letting a Python script use the Java object SimulationKwadraticCostFunction which is included in OpenDA.
+Every function below setup() uses global variables calculated by setup(), so when using this module
+it is recomended that setup() is called first.
 Created on Wed Oct 10 14:39:10 2018
 
 @author: hegeman
@@ -15,7 +18,10 @@ gateway = JavaGateway()   # connect to the JVM
 scriptdir = os.getcwd()
 #scriptdir = '/v3/Stage/Rick/openda/openda_public/py_openda/examples/py_swan_calibration'
 
-
+cost_function = None
+model_params = None
+model_ini = None
+observer = None
 
 
 
@@ -34,13 +40,14 @@ def py_list_to_j_array(py_x):
     j_x = gateway.new_array(double_class, n)
 
     for i in range(n):
-        j_x[i] = py_x[i]
+        j_x[i] = float(py_x[i])
 
     return j_x
 
 def j_array_to_py_list(j_x):
     """
     Create a python list from a java array
+    
     :param j_x: java array
     :return: python list with values of j_x
     """
@@ -76,7 +83,7 @@ def setup():
     """
     Setup the OpenDA model factory, stoch observer and object function
 
-    :return:
+    :return: a tuple containing an instance of the cost function, the initial parameters, an instance of the model and a stoch observer
     """
     global cost_function
     global model_params
@@ -112,6 +119,11 @@ def setup():
     return(cost_function, model_params, model_ini, observer)
 
 def get_obs():
+    """
+    Find the observations and corresponding uncertainties at the relevant locations 
+    
+    :return: a tuple containing a list of the mean of all observations at each locations, followed by their respective standard deviations
+    """
     selectionTimes = model_ini.getTimeHorizon()
     observerSelection = observer.createSelection(selectionTimes)
     obs_mean = observerSelection.getExpectations()
@@ -123,9 +135,9 @@ def get_obs():
 
 def object_function(p):
     """
-    Compute the object function for parameters p
+    Compute the predictions of the object function for parameters p
     :param p: parameters
-    :return: value object function
+    :return: list of predictions
     """
 
     # Create an OpenDA TreeVector with parameter value
@@ -134,7 +146,7 @@ def object_function(p):
     p_new.setValues(j_p)
     model_new = model_ini
     model_new.setParameters(p_new)
-    #Compute object function
+
     selectionTimes = model_new.getTimeHorizon()
     observerSelection = observer.createSelection(selectionTimes)
     targetTime = model_new.getTimeHorizon().getEndTime()
