@@ -12,8 +12,6 @@ import jep.python.PyCallable;
 import jep.python.PyObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MarkerFactory;
-
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,19 +47,29 @@ public class PythonDataObject implements IDataObject{
 		File dataFile = new File(workingDir.getAbsolutePath(), arguments[0]);
 		this.pythonClass = arguments[1];
 		JepConfig conf = new JepConfig();
-
 		conf.setInteractive(false);
-		conf.setIncludePath("/v3/Stage/Rick/openda/openda_public/core/java/test/org/openda/exchange/dataobjects/testData/python");
+		if(arguments.length > 2) {
+			conf.setIncludePath(arguments[2]);
+			logger.debug("Looking for Python Data Object at input location:{}", arguments[2]);
+		}
+		else if(System.getenv("PYTHONPATH") != null){
+			logger.debug("No input location for Python Data Object! \n Using PYTHONPATH instead:{}", System.getenv("PYTHONPATH"));
+		}
+		else{
+			logger.debug("No input location for Python Data Object and no PYTHONPATH! \n Using default PYTHONPATH instead.");
+		}
 		conf.setRedirectOutputStreams(true);
-		/*logger.debug(this.jep.eval("import sys") );*/
-
 		try {
 			this.jep = conf.createJep();
 			this.jep.eval("import sys");
 			String pyPath = jep.getValue("sys.executable", String.class);
-			logger.debug(MarkerFactory.getMarker("pyPath") ,pyPath);
+			logger.debug("Pypath is: {}", pyPath);
+			this.jep.eval("print(sys.path)");
+/*
 			this.jep.eval("import " + pythonClass);
-			this.jep.eval(loadClass(pythonClass, dataFile));
+*/
+			this.jep.eval(importBuilder(pythonClass));
+			this.jep.eval(loadClass(pythonClass, dataFile, arguments));
 			this.pythonDataObject = jep.getValue("object_handle", PyObject.class);
 			this.jep.eval("del(object_handle)");
 			// Create Python coupling
@@ -73,7 +81,8 @@ public class PythonDataObject implements IDataObject{
 		}catch (JepException e) {
 			// Allowable exceptions
 			if (e.getMessage().contains("ModuleNotFoundError"))
-				System.out.println("Python module not found, check the configuration");
+				System.out.println("Python module not found, check the configuration.");
+				System.out.println("If the error seems to come from a CPython extension used by the Python module, take a look at the README for more help.");
 			// Otherwise retrow exception
 			e.printStackTrace();
 		}
@@ -82,22 +91,21 @@ public class PythonDataObject implements IDataObject{
 
 	/**
 	 * Get the identifiers of the exchange items that can be retrieved from and set to the model.
-	 * Calls the get_ids() method from the Python class given during initialization.
+	 * Calls the get_exchange_item_ids() method from the Python class given during initialization.
 	 * @return The array of exchange item identifiers, or String[0] if there are no items.
 	 */
 	@Override
 	public String[] getExchangeItemIDs() {
 		String[] IDs = new String[0];
 		try{
-			PyCallable getIds = pythonDataObject.getAttr("get_ids", PyCallable.class);
+			PyCallable getIds = pythonDataObject.getAttr("get_exchange_item_ids", PyCallable.class);
 			ArrayList idList = (ArrayList) getIds.call();
 			IDs = (String[]) idList.toArray(new String[0]);
-			System.out.println(IDs);
 
 		// return String array with exchange Item ID's
 		}catch (JepException e) {
 			if (e.getMessage().contains("FileNotFoundError"))
-				System.out.println("File not found, check the configuration");
+				System.out.println("File not found, check the configuration.");
 			e.printStackTrace();
 		}
 		return IDs;
@@ -111,7 +119,7 @@ public class PythonDataObject implements IDataObject{
 	@Override
 	/**
 	 * Get the exchange item specified by <c>exchangeItemID</c>.
- 	 * Calls the get_values() method from the Python class given during initialization.
+ 	 * Calls the get_data_object_exchange_item() method from the Python class given during initialization.
 	 * Returns null if no exchangeItem with the given exchangeItemID is found.
 	 *
 	 * @param exchangeItemID The exchange item identifier.
@@ -123,8 +131,8 @@ public class PythonDataObject implements IDataObject{
 		IExchangeItem exchangeItem=null;
 		// TODO: preserve dimensions from Python data
 		try{
-			PyCallable getValues = pythonDataObject.getAttr("get_values", PyCallable.class);
-
+			PyCallable getValues = pythonDataObject.getAttr("get_data_object_exchange_item", PyCallable.class);
+			logger.debug("Getting exchange item with ID:{}", exchangeItemID);
 			ArrayList<Double> result =  (ArrayList<Double>) getValues.call(exchangeItemID);
 			double[] values = new double[result.size()];
 			for (int i=0 ; i< values.length; i++) {
@@ -133,7 +141,7 @@ public class PythonDataObject implements IDataObject{
 			exchangeItem = new DoublesExchangeItem(exchangeItemID, IPrevExchangeItem.Role.Input,values);
 		}catch (JepException e) {
 			if (e.getMessage().contains("FileNotFoundError"))
-				System.out.println("File not found, check the configuration");
+				System.out.println("File not found, check the configuration.");
 			e.printStackTrace();
 		}
 		return exchangeItem;
@@ -150,14 +158,30 @@ public class PythonDataObject implements IDataObject{
 
 	}
 	/**
-	 * Creates appopriate string for initializing the Python object.
+	 * Creates appropriate string for importing the Python class.
 	 * For internal use only.
 	 *
 	 * @param pythonClass name of the Python class that will be used.
-	 * @param dataFile    full file name of the file that will be read.
-	 * @return String that will be used by Jep to initialize the Python object.
+	 * @return String that will be used by Jep to import the Python class.
 	 */
-	private String loadClass(String pythonClass, File dataFile){
+	private String importBuilder(String pythonClass) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("import MyPython.");
+		stringBuilder.append(pythonClass);
+		stringBuilder.append(" as " );
+		stringBuilder.append(pythonClass);
+		return stringBuilder.toString();
+	}
+		/**
+		 * Creates appropriate string for initializing the Python object.
+		 * For internal use only.
+		 *
+		 * @param pythonClass name of the Python class that will be used.
+		 * @param dataFile    full file name of the file that will be read.
+		 * @param arguments additional imputs for the Python class.
+		 * @return String that will be used by Jep to initialize the Python object.
+		 */
+	private String loadClass(String pythonClass, File dataFile, String[] arguments){
 		// object_handle = %s.%s('%s');
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("object_handle = ");
@@ -166,6 +190,10 @@ public class PythonDataObject implements IDataObject{
 		stringBuilder.append(pythonClass);
 		stringBuilder.append("('");
 		stringBuilder.append(dataFile.getAbsoluteFile());
+		for (int i=1 ; i< arguments.length; i++) {
+			stringBuilder.append("', '");
+			stringBuilder.append(arguments[i]);
+		}
 		stringBuilder.append("')");
 	return stringBuilder.toString();
 	}
