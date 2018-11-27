@@ -42,10 +42,11 @@ public class PythonDataObjectTest extends TestCase {
     }
 
 	public void testObservations1() throws Exception {
-        File testDir = new File(testData.getTestRunDataDir(),"python");
-        IDataObject ioObject = BBUtils.createDataObject(testDir,
+        File testDir = new File(testData.getTestRunDataDir(),"MyPython");
+        //IDataObject ioObject = BBUtils.createDataObject(testDir,
+		//	PythonDataObject.class.getName(), "swanObservations.txt", new String[]{"swanDataObject", "/v3/Stage/Rick/openda/openda_public/core/java/test/org/openda/exchange/dataobjects/testData/python"});
+		IDataObject ioObject = BBUtils.createDataObject(testDir,
 			PythonDataObject.class.getName(), "swanObservations.txt", new String[]{"swanDataObject"});
-		System.out.println(ioObject.getExchangeItemIDs());
 		String[] actual = ioObject.getExchangeItemIDs();
 		String[] expected = new String[]{"Depth @ 206767.0,622696.0"};
 		assertEquals("swanDataObject ids length", actual.length, 84);
