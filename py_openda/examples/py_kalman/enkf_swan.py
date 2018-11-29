@@ -20,7 +20,7 @@ from py_openda.costFunctions.GenericEnsembleKalmanFilter import GenericEnsembleK
 from py_openda.algorithms.ensemble_kalman import kalman_algorithm, no_filter
 
 #TODO: xmlschema is al gauw veel te streng :/ (t.o.v. Java tenminste)
-
+#FIXME: Kloppen mijn defaults wel????
 
 
 input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_lorenz_3var_part1/simulation_ensemble.oda'
@@ -51,15 +51,13 @@ def main(input_string, observation_location=0):
 
 
 
-#    alg_config = alg_schema.decode('%s/%s' % (main_config.get('algorithm').get('workingDirectory'),
-#                                              main_config.get('algorithm').get('configString')))
+    alg_config = alg_schema.decode('%s/%s' % (main_config.get('algorithm').get('workingDirectory'),
+                                              main_config.get('algorithm').get('configString')))
 
 # ensembleModel@stochParameter=false
 # ensembleModel@stochForcing=true
 # ensembleModel@stochInit=true
-    #FIXME: Defaults van Java zijn niet de defaults voor xsd??????????????
-    alg_config = {'ensembleSize': 50, 'mainModel':{'@stochParameter':False, '@stochForcing':False, '@stochInit':False},
-                  'ensembleModel': {'@stochParameter':False, '@stochForcing':True, '@stochInit':True} }
+    
 
 #    n_ensemble = 3
     n_ensemble = alg_config.get('ensembleSize')
