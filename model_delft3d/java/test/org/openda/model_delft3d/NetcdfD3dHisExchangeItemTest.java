@@ -54,7 +54,7 @@ public class NetcdfD3dHisExchangeItemTest extends TestCase {
 		double[] dataTimeSeriesEN = exchangeItemEN.getValuesAsDoubles();
 
 		assertEquals("#time steps", 17, dataTimeSeriesGRO.length);
-		assertEquals("#squared velocities vs energy", 1000*0.5*(dataTimeSeriesVel1[2]*dataTimeSeriesVel1[2] + dataTimeSeriesVel2[2]*dataTimeSeriesVel2[2]), dataTimeSeriesEN[2]);
+		assertEquals("#squared velocities vs energy", 1000*0.5*(dataTimeSeriesVel1[2]*dataTimeSeriesVel1[2] + dataTimeSeriesVel2[2]*dataTimeSeriesVel2[2]), dataTimeSeriesEN[2], 1.E-10);
 
 	}
 
