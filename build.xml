@@ -645,8 +645,6 @@
                    <exclude name="**/EfdcScalarExchangeItemTest.class"/>
                    <exclude name="**/EfdcScalarExchangeItemXspeciesTest.class"/>
                    <exclude name="**/EfdcWserExchangeItemTest.class"/>
-                   <exclude name="**/SwanCalibWrapperTest.class"/>
-                   <exclude name="**/SwanEnKFTest.class"/>
                    <exclude name="**/NetcdfResultWriterTest.class"/>
 
 
