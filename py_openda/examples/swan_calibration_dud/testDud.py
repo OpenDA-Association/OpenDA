@@ -11,6 +11,7 @@ Created on Wed Oct 10 14:40:17 2018
 """
 
 #FIXME: netjes tussen Python en Java objecten wisselen.
+#TODO: start_dist in Dud moet beter
 
 #from py_openda.costFunctions.PyKwadratic import PyKwadratic as Kwadratic
 from py_openda.costFunctions.Kwadratic import Kwadratic
@@ -24,13 +25,14 @@ def main(cost):
     :param cost: a model object which has the method get_parameters() which returns the parameters,
     get_obs() for getting the observations with standard deviations, and object_function(p) which returns
     the value for parameters p.
-    :return: tuple containing the minimal cost followed by the list of corresponding parameters
+    :return: tuple containing the minimal cost followed by the list of corresponding parameters.
     """
     py_p0 = cost.get_parameters()
     py_p0 = utils.input_to_py_list(py_p0)
     (obs_mean, obs_std) = cost.get_obs()
     results = Dud.dud(cost.object_function,  py_p0, obs_mean, obs_std)
     return results
+
 if __name__ == "__main__":
     cost = Kwadratic()
     results = main(cost)
