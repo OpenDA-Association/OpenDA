@@ -630,11 +630,8 @@
 
                    
 
-                   <!-- looks very broken but take them out for now -->
-                   <exclude name="**/D3dWindMaskTest.class"/>
-                   <exclude name="**/NetcdfD3dHisExchangeItemTest.class"/>
-                   <exclude name="**/NetcdfD3dMapDataObjectTest.class"/>
-                   <exclude name="**/EfdcDLLTest.class"/> 
+                   <!-- EFDC only tested for win32 -->
+                   <exclude name="**/EfdcDLLTest.class"/>
                    <exclude name="**/EfdcGridExchangeItemLayerTest.class"/>
                    <exclude name="**/EfdcGridExchangeItemTest.class"/>
                    <exclude name="**/EfdcGridExchangeItemToxicsTest.class"/>
@@ -645,9 +642,9 @@
                    <exclude name="**/EfdcScalarExchangeItemTest.class"/>
                    <exclude name="**/EfdcScalarExchangeItemXspeciesTest.class"/>
                    <exclude name="**/EfdcWserExchangeItemTest.class"/>
+                   <!-- to be fixed with commit of 64 bits Linux swan executables -->
                    <exclude name="**/SwanCalibWrapperTest.class"/>
                    <exclude name="**/SwanEnKFTest.class"/>
-                   <exclude name="**/NetcdfResultWriterTest.class"/>
 
 
 
