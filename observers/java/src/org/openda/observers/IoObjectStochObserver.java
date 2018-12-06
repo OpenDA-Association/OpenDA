@@ -299,7 +299,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 					//startIndex is inclusive.
                     while (startIndex == Integer.MAX_VALUE && i < times.length) {
                         if (isSpan) {//if time span selected.
-                            if (times[i] > child.beginTimeAsMJD + compareEpsilon) startIndex = i;
+                            if ((times[i] > child.beginTimeAsMJD + compareEpsilon) && (times[i] < (child.endTimeAsMJD + compareEpsilon)))startIndex = i;
                         } else {//if single time selected.
                             if ((times[i] > (child.beginTimeAsMJD - compareEpsilon)) && (times[i] < (child.endTimeAsMJD + compareEpsilon))) startIndex = i;
                         }
