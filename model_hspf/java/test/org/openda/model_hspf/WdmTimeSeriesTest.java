@@ -48,7 +48,6 @@ import org.openda.utils.io.AsciiFileUtils;
 public class WdmTimeSeriesTest extends TestCase {
 
     private File testRunDataDir;
-	private boolean RUNNING_ON_64bit = System.getProperty("sun.arch.data.model").equals("64");
 
     protected void setUp() throws IOException {
         OpenDaTestSupport testData = new OpenDaTestSupport(WdmTimeSeriesTest.class, "model_hspf");
@@ -57,7 +56,7 @@ public class WdmTimeSeriesTest extends TestCase {
 
     public void testReadTimeSeries() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testReadTimeSeries: wdm.dll only available for win32.");
 			return;
 		}
@@ -145,7 +144,7 @@ public class WdmTimeSeriesTest extends TestCase {
      */
     public void testReadEnsembleTimeSeries() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testReadEnsembleTimeSeries: wdm.dll only available for win32.");
 			return;
 		}
@@ -266,7 +265,7 @@ public class WdmTimeSeriesTest extends TestCase {
      */
     public void testWriteTimeSeries() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testWriteTimeSeries: wdm.dll only available for win32.");
 			return;
 		}
@@ -402,7 +401,7 @@ public class WdmTimeSeriesTest extends TestCase {
      */
     public void testReadAndWriteTimeSeriesMultipleTimes() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testReadAndWriteTimeSeriesMultipleTimes: wdm.dll only available for win32.");
 			return;
 		}
@@ -416,7 +415,7 @@ public class WdmTimeSeriesTest extends TestCase {
 
     public void testConvertWdmToNetcdfWithDataCopier() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testConvertWdmToNetcdfWithDataCopier: wdm.dll only available for win32.");
 			return;
 		}
@@ -467,7 +466,7 @@ public class WdmTimeSeriesTest extends TestCase {
 
     public void testConvertEnsembleWdmToEnsembleNetcdfWithDataCopier() throws Exception {
         //currently only wdm.dll (32 bit) available, so only run this test on win32.
-        if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+        if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testConvertEnsembleWdmToEnsembleNetcdfWithDataCopier: wdm.dll only available for win32.");
             return;
         }
@@ -530,7 +529,7 @@ public class WdmTimeSeriesTest extends TestCase {
 
     public void testConvertWdmToUciWithDataCopier() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testConvertWdmToUciWithDataCopier: wdm.dll only available for win32.");
 			return;
 		}

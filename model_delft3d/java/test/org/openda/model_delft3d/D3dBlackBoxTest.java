@@ -46,7 +46,7 @@ public class D3dBlackBoxTest extends TestCase {
     public void tstF34NoActualComputation() {
     	String configFileName=null;
     	if (!BBUtils.RUNNING_ON_WINDOWS) {
-    		if(System.getProperty("sun.arch.data.model").equals("64")){
+    		if(BBUtils.RUNNING_ON_64bit){
     			configFileName="d3dDudOpenDaConfig_linux64_gnu.xml";
     		}else{
     			//no testing on linux 32-bit
@@ -64,7 +64,7 @@ public class D3dBlackBoxTest extends TestCase {
     public void tstWithMissingObservedValues() {
     	String configFileName=null;
     	if (!BBUtils.RUNNING_ON_WINDOWS) {
-    		if(System.getProperty("sun.arch.data.model").equals("64")){
+    		if(BBUtils.RUNNING_ON_64bit){
     			configFileName="d3dDudConfigWithErrors_linux64_gnu.xml";
     		}else{
     			//no testing on linux 32-bit

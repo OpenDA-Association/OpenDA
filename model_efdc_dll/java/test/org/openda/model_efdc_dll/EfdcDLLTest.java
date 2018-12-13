@@ -78,7 +78,7 @@ public class EfdcDLLTest extends TestCase {
         // test getting values after init
         System.out.println("Getting values");
         double expected = 5. / 86400.;
-        double precission = ( System.getProperty("sun.arch.data.model").equals("64") ) ? 1e-15 : 1e-7;
+        double precission = ( BBUtils.RUNNING_ON_64bit ) ? 1e-15 : 1e-7;
         System.out.println("Testing precission = " +  precission);
         assertEquals("Time Step", expected, modelDLLs[0].getDeltaT(), expected*precission  );
         expected = 55979. + 9./24.;

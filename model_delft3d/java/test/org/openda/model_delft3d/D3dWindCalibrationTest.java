@@ -51,7 +51,7 @@ public class D3dWindCalibrationTest extends TestCase {
 	public void tstDudD3d() throws IOException {
     	String configFileName=null;
     	if (!BBUtils.RUNNING_ON_WINDOWS) {
-    		if(System.getProperty("sun.arch.data.model").equals("64")){
+    		if(BBUtils.RUNNING_ON_64bit){
     			configFileName="kalib04-15_linux64_gnu.oda";
     		}else{
     			//no testing on linux 32-bit
