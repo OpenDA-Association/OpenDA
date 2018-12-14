@@ -41,6 +41,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 
 	public int initialize(File workingDir) {
 		this.workingDir = workingDir;
+		stochModelFactory = null;
+		algorithm = null;
 		return 0;
 	}
 

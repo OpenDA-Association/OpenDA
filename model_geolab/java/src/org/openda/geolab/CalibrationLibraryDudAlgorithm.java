@@ -10,6 +10,6 @@ public class CalibrationLibraryDudAlgorithm extends Dud implements Runnable {
 		while(this.hasNext()){
 			this.next();
 		}
-		((CalibrationLibraryStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag();
+		((CalibrationLibraryStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag(true);
 	}
 }

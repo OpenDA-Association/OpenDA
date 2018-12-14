@@ -18,7 +18,20 @@ public class CalibrationLibraryTest extends TestCase {
 
 	public void testSinus() {
 		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
+		calibrateSinusParams(calibrationLibrary);
+	}
 
+	public void testSinusTwice() {
+		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
+		System.out.print("\nStart first calibration\n\n");
+		calibrateSinusParams(calibrationLibrary);
+		System.out.print("\nFirst calibration done\n\n");
+		System.out.print("\nStart second calibration\n\n");
+		calibrateSinusParams(calibrationLibrary);
+		System.out.print("\nSecond calibration done\n\n");
+	}
+
+	private void calibrateSinusParams(CalibrationLibrary calibrationLibrary) {
 		double amplitudeObs = 2;
 		double periodObs = 0.5;
 		double phaseObs = 0;
@@ -47,7 +60,7 @@ public class CalibrationLibraryTest extends TestCase {
 			calibrationLibrary.modelSetResults(modelResults);
 			nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
 		}
-		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
+//		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
 //		for (int i = 0; i < optimalParameterValues.length; i++) {
 //			// Work in Progres, assertion failing.
 //			// assertEquals(obsParams[i], optimalParameterValues[i]);

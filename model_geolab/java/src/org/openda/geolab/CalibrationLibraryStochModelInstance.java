@@ -253,7 +253,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 		this.modelResults = new Vector(modelResults);
 	}
 
-	void setAlgorithmDoneFlag() {
-		algorithmDone = true;
+	void setAlgorithmDoneFlag(boolean flag) {
+		algorithmDone = flag;
 	}
 }
