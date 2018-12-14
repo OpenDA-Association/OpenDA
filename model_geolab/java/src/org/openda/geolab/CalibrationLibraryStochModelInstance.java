@@ -10,14 +10,18 @@ import java.io.File;
 
 public class CalibrationLibraryStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
 
-	private final Vector parameterVector;
-	private final StochVector parameterUncertainties;
 	private Vector modelResults = null;
+	private Vector initialParameterVector;
 
-	public CalibrationLibraryStochModelInstance(double[] parameterValues, double[] standardDeviations, double[] modelResults) {
-		this.parameterVector = new Vector(parameterValues);
+	private final StochVector parameterUncertainties;
+	private Vector parameterVector = null;
+	private boolean algorithmDone = false;
+
+	private final int sleepTimeInMillis = 200;
+
+	CalibrationLibraryStochModelInstance(double[] parameterValues, double[] standardDeviations) {
+		this.initialParameterVector = new Vector(parameterValues);
 		this.parameterUncertainties = new StochVector(parameterValues, standardDeviations);
-		this.modelResults = new Vector(modelResults);
 	}
 
 	public IVector getState() {
@@ -41,15 +45,19 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	public IVector getParameters() {
-		return parameterVector;
+		if (initialParameterVector == null) {
+			throw new RuntimeException("CalibrationLibraryStochModelInstance.getParameters(): initialParameterVector == null");
+		}
+		return initialParameterVector;
 	}
 
 	public void setParameters(IVector parameters) {
-		parameterVector.setValues(parameters.getValues());
+		parameterVector = new Vector(parameters.getValues());
 	}
 
 	public void axpyOnParameters(double alpha, IVector vector) {
-		parameterVector.axpy(alpha, vector);
+		parameterVector = new Vector(initialParameterVector.getValues());
+		parameterVector .axpy(alpha, vector);
 	}
 
 	public IStochVector getStateUncertainty() {
@@ -212,6 +220,40 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 			throw new RuntimeException("Unexpected type " + observationDescriptions.getClass() +
 				"org.openda.geolab.CalibrationLibraryStochModelInstance.announceObservedValues()");
 		}
-		return modelResults;
+		while (modelResults == null) {
+			try {
+				Thread.sleep(sleepTimeInMillis);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Thread that runs the CalibrationLibraryStochModelInstance has been interrupted");
+			}
+		}
+		IVector observedValues = modelResults;
+		modelResults = null;
+		return observedValues;
+	}
+
+	double[] getParametersAsSetByAlgorithm() {
+		while (parameterVector == null && !algorithmDone) {
+			try {
+				Thread.sleep(sleepTimeInMillis);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Thread that runs the CalibrationLibraryStochModelInstance has been interrupted");
+			}
+		}
+		if (algorithmDone) {
+			return null;
+		} else {
+			double[] parameterValues = parameterVector.getValues();
+			parameterVector = null;
+			return parameterValues;
+		}
+	}
+
+	void setModelResults(double[] modelResults) {
+		this.modelResults = new Vector(modelResults);
+	}
+
+	void setAlgorithmDoneFlag() {
+		algorithmDone = true;
 	}
 }

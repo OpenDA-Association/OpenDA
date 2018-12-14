@@ -34,8 +34,9 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private String exceptionErrmsg = null;
 	private StackTraceElement[] exceptionStackTrace = null;
 	private CalibrationLibraryDudAlgorithm algorithm = null;
+	private double[] optimalParameterValues = null;
 
-	public CalibrationLibrary() {
+	CalibrationLibrary() {
 	}
 
 	public int initialize(File workingDir) {
@@ -68,18 +69,18 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	public double[] algorithmGetNextParameterValues() {
 		if (algorithm == null) {
 			algorithm = createAlgorithm(workingDir, stochObserver, stochModelFactory);
-			algorithm.prepare();
+			Thread algorithmThread = new Thread(algorithm);
+			algorithmThread.start();
 		}
-		if (algorithm.hasNext()) {
-			algorithm.next();
-			return algorithm.getBestEstimate().getParameters().getValues();
-		} else {
-			return null;
+		double[] nextParams = CalibrationLibraryStochModelFactory.waitForNextParams();
+		if (nextParams == null) {
+			optimalParameterValues = algorithm.getBestEstimate().getParameters().getValues();
 		}
+		return nextParams;
 	}
 
 	public double[] algorithmGetOptimalParameterValues() {
-		return null;
+		return optimalParameterValues;
 	}
 
 	public String getExceptionMessage() {
@@ -97,5 +98,5 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		return algorithm;
 	}
 
-	private static final String DudXmlConfig = "<TODO>";
+	private static final String DudXmlConfig = "<DudConfig/>";
 }

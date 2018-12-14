@@ -2,7 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python">
-      <configuration sdkName="Python 3.6 (public)" />
+      <configuration sdkName="Python 3.6.6 (D:\Anaconda\envs\py36\python.exe)" />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -33,8 +33,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Python 3.6 (public) interpreter library" level="application" />
     <orderEntry type="module" module-name="algorithms" />
     <orderEntry type="module" module-name="observers" />
+    <orderEntry type="library" name="Python 3.6.6 (D:\Anaconda\envs\py36\python.exe) interpreter library" level="application" />
   </component>
 </module>

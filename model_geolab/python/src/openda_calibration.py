@@ -3,7 +3,7 @@ from math import sin
 from python.src.openda_calibration_lib import OpendaCalibrationLib
 
 
-class OpendaCalibration:
+class openda_calibration:
 
     def __init__(self, working_directory):
         self.working_directory = working_directory
@@ -44,14 +44,14 @@ def evaluate_sinus(sinus_params):
 if __name__ == "__main__":
     working_directory = "."
 
-    obs_sinus_params = [2.0, 0.5, 0.0, 0.0]  # amplitude, period, phase
+    obs_sinus_params = [2.0, 0.5, 0.0, 0.0]  # amplitude, period, phase, offset
     obs_values = evaluate_sinus(obs_sinus_params)
     obs_std_devs = [0.2] * len(obs_values)
 
     model_sinus_params = [2.1, 0.55, 0.1, 0.1]  # amplitude, period, phase and offset
-    model_sinus_params_stddevs = [0.2, 0.2, 0.2, 40.0]
+    model_sinus_params_stddevs = [0.2, 0.2, 0.2, 0.1]
 
     # calibrate
-    calibration = OpendaCalibration("D:\\tmp")
+    calibration = openda_calibration("D:\\tmp")
     optimal_params = calibration.calibrate(evaluate_sinus, obs_values, obs_std_devs, model_sinus_params, model_sinus_params_stddevs)
 
