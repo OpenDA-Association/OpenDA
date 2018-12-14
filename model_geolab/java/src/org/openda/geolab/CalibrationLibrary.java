@@ -36,7 +36,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private CalibrationLibraryDudAlgorithm algorithm = null;
 	private double[] optimalParameterValues = null;
 
-	CalibrationLibrary() {
+	@SuppressWarnings("WeakerAccess")
+	public CalibrationLibrary() {
 	}
 
 	public int initialize(File workingDir) {
