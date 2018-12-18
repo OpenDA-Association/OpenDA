@@ -137,13 +137,17 @@ public class D3dWindExchangeItem implements IExchangeItem {
             throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + values.getClass().getName());
         }
 		List incomingValues = (List) values;
-		valuesOnGrid2D.clear();
-		for (int i = 0, timeStepCount = incomingValues.size(); i < timeStepCount; i++) {
-			Object valuesForOneTimeStep = incomingValues.get(i);
-			if (!(valuesForOneTimeStep instanceof D3dValuesOnGrid2D)) {
-				throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + valuesForOneTimeStep.getClass().getName());
+        // The de-selection may have been done directly in the exchange item
+		// In that case, no further action is needed
+        if (incomingValues != valuesOnGrid2D) {
+			valuesOnGrid2D.clear();
+			for (int i = 0, timeStepCount = incomingValues.size(); i < timeStepCount; i++) {
+				Object valuesForOneTimeStep = incomingValues.get(i);
+				if (!(valuesForOneTimeStep instanceof D3dValuesOnGrid2D)) {
+					throw new RuntimeException("SetValues for " + this.getId() + ": unexpected object type: " + valuesForOneTimeStep.getClass().getName());
+				}
+				valuesOnGrid2D.add((D3dValuesOnGrid2D)valuesForOneTimeStep);
 			}
-			valuesOnGrid2D.add((D3dValuesOnGrid2D)valuesForOneTimeStep);
 		}
         dataChanged = true;
     }

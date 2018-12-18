@@ -23,31 +23,18 @@ package org.openda.model_delft3d;
 /**
  * Simple class containing all information on a 2D Field
  */
-public class D3dValuesOnGrid2D {
+public class D3dValuesOnGrid2D extends D3dField2D {
 
-    private double[] values;
-    private final double missingValue = -999.0;
     private D3dGrid2D grid2D;
 
     public D3dValuesOnGrid2D(D3dGrid2D grid2D) {
-        this.grid2D = grid2D;
+		super(grid2D.getMmax(), grid2D.getNmax());
+		this.grid2D = grid2D;
         this.values = null;
     }
 
     public D3dValuesOnGrid2D(D3dGrid2D grid2D, double[] values) {
         this(grid2D);
-        this.values = values;
-    }
-
-    public double[] getValues() {
-        return values;
-    }
-
-    public void setValues(double[] values) {
-        if (!(values.length == this.values.length)) {
-            throw new IllegalArgumentException("D3dField2D.setValues: #values (" + values.length +
-                    ") != this.values (" + this.values.length + ")");
-        }
         this.values = values;
     }
 

@@ -27,10 +27,10 @@ import java.util.ArrayList;
  */
 public class D3dField2D {
 
-    private double[] values;
+    protected double[] values;
     private int mmax;
     private int nmax;
-    private final double missingValue = -999.0;
+	protected final double missingValue = -999.0;
 
     public D3dField2D(int mmax, int nmax) {
         this.mmax = mmax;
