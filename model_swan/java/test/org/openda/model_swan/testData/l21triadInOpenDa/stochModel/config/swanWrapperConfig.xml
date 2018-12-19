@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <swanCalibWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://www.openda.org/schemas/swanCalibWrapperConfig.xsd">
-	<swanAction linuxExe="../bin/linux/swan_4072ABCDE_del_l32_i11_ser.exe" macExe="../bin/darwin/swan_4072ABCDE_del_l32_i11_ser.exe" windowsExe="../bin/win32/swan4051A.exe"/>
+	<swanAction linuxExe="../../../../../../../../model_swan/native_bin/start_swan.sh" macExe="../bin/darwin/swan_4072ABCDE_del_l32_i11_ser.exe" windowsExe="..\..\..\..\..\..\..\..\model_swan\native_bin\start_swan.bat"/>
 	<cleanupAction className="org.openda.utils.io.FileRemover">
 		<arg>*.bot</arg>
 		<arg>swivt_l021triad001_loc.cuv</arg>

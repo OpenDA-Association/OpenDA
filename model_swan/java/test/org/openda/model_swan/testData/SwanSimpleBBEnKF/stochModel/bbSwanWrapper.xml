@@ -19,7 +19,7 @@
 
 		<computeActions>
             <action workingDirectory="%instanceDir%" windowsExe="%SWANDIR%/bin/win32/copyInput.bat" linuxExe="%SWANDIR%/bin/linux/copyInput.sh" macExe="%SWANDIR%/bin/darwin/copyInput.sh"/>
-			<action workingDirectory="%instanceDir%" windowsExe="%SWANDIR%/bin/win32/swan_4081_del_w32_i11_omp.exe" linuxExe="%SWANDIR%/bin/linux/swan_4072ABCDE_del_l32_i11_ser.exe" macExe="%SWANDIR%/bin/darwin/swan_4072ABCDE_del_l32_i11_ser.exe"/>
+			<action workingDirectory="%instanceDir%" windowsExe="%SWANDIR%/bin/win32/swan_4081_del_w32_i11_omp.exe" linuxExe="%SWANDIR%/bin/linux/swan_4072ABCDE_del_l64_i11_ser.exe" macExe="%SWANDIR%/bin/darwin/swan_4072ABCDE_del_l32_i11_ser.exe"/>
 		</computeActions>
 
 		<finalizeActions/>

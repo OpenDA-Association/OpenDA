@@ -642,14 +642,8 @@
                    <exclude name="**/EfdcScalarExchangeItemTest.class"/>
                    <exclude name="**/EfdcScalarExchangeItemXspeciesTest.class"/>
                    <exclude name="**/EfdcWserExchangeItemTest.class"/>
-                   <!-- to be fixed with commit of 64 bits Linux swan executables -->
-                   <exclude name="**/SwanCalibWrapperTest.class"/>
-                   <exclude name="**/SwanEnKFTest.class"/>
-
-
-
-                   
-
+                   <exclude name="**/NetcdfResultWriterTest.class"/>
+                  
                     <!-- ignore unit tests that fail on Teamcity because Python, PCRaster, PCRGLOBWB, THRIFT and/or ssh are not installed -->
                     <exclude name="**/AbstractModelBridgeTest.class"/>
                     <exclude name="**/AbstractIncrementModelBridgeTest.class"/>

@@ -40,6 +40,7 @@ public class BBUtils {
 
     public static final boolean RUNNING_ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
     public static final boolean RUNNING_ON_LINUX = System.getProperty("os.name").startsWith("Linux");
+    public static final boolean RUNNING_ON_64bit = System.getProperty("sun.arch.data.model").equals("64");
 	public static final boolean RUNNING_ON_MAC = System.getProperty("os.name").startsWith("Mac") || System.getProperty("os.name").startsWith("Darwin");
     private Map<File, ClassLoader> classLoaders = new HashMap<File, ClassLoader>();
     private static long runNanos = 0L;
