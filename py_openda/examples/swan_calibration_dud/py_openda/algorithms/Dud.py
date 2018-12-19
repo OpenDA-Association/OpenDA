@@ -31,9 +31,9 @@ def initialize_dud(func, p_old, obs, std, start_dist=1.1):
 
     :param func: the function for which we aim to find the optimal parameters.
     :param p_old: first guess of the parameters.
-    :param obs: list of observartions we aim to reproduce.
+    :param obs: list of observations we aim to reproduce.
     :param std: list of corresponding standard deviations.
-    :keyword argument start_dist: Factor by which p_old is multiplied to find the search directions
+    :param start_dist: Factor by which p_old is multiplied to find the search directions
     (default 1.1).
     :return: tuple with the parameters, function evaluations and total costs.
     """
@@ -60,16 +60,16 @@ def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
 
     :param func: the function for which we aim to find the optimal parameters.
     :param parameters: array with the parameters.
-    :param func_evals: array with function predicions at the observation locations.
-    :param obs: list of observartions we aim to reproduce.
+    :param func_evals: array with function predictions at the observation locations.
+    :param obs: list of observations we aim to reproduce.
     :param std: list of corresponding standard deviations.
     :keyword argument max_step: upper limit for how much the parameters change (default 10).
     :return: tuple which contains a boolean that is true if finding new parameters was impossible
     and a list containing the next search direction.
     """
     p_new = [None]*p_number
-    Delta_P = np.array([parameters[:, :-1]
-                        - np.transpose(np.array([parameters[:, -1]]))])
+    Delta_P = np.array(parameters[:, :-1]
+                        - np.transpose(np.array([parameters[:, -1]])))
     Delta_F = np.transpose(np.c_[np.divide([(func_evals[:, x] -
                                              func_evals[:, -1]) for x in range(p_number)], std)])
     residue = np.array(obs)-func_evals[:, -1]
@@ -88,9 +88,9 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
 
     :param func: the function for which we aim to find the optimal parameters.
     :param parameters: array with the parameters.
-    :param func_evals: array with function predicions at the observation locations.
+    :param func_evals: array with function predictions at the observation locations.
     :param total_cost: the total cost of the different parameter sets.
-    :param obs: list of observartions we aim to reproduce.
+    :param obs: list of observations we aim to reproduce.
     :param std: list of corresponding standard deviations.
     :param p_new: parameters that suggest the search direction.
     :return: tuple with the next parameters, function evaluations and total costs.
@@ -116,10 +116,10 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
 
     :param func: the function for which we aim to find the optimal parameters.
     :param p_old: first guess of the parameters.
-    :param obs: list of observartions we aim to reproduce.
+    :param obs: list of observations we aim to reproduce.
     :param std: list of corresponding standard deviations.
-    :keyword argument xtol: desired accuracy of the result (default 1e-3).
-    :keyword argument start_dist: Factor by which p_old is multiplied to find
+    :param xtol: desired accuracy of the result (default 1e-3).
+    :param start_dist: Factor by which p_old is multiplied to find
     the search directions (default 1.1).
     :return: tuple containing the minimal cost followed by the list of corresponding parameters.
     """
@@ -134,9 +134,9 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
         (next_parameters, next_func_evals, next_total_cost) = line_search(func, parameters,
                                                                           func_evals, total_cost,
                                                                           obs, std, p_new)
-        next_params = np.concatenate((next_parameters.transpose(),
-                                      np.array([next_func_evals]).transpose(),
-                                      np.array([[next_total_cost]])))
+        next_params = np.concatenate((next_parameters,
+                                      np.array(next_func_evals),
+                                      np.array([next_total_cost])))
         all_params = np.concatenate((parameters, func_evals, np.expand_dims(total_cost, 0)))
         all_params = np.delete(all_params, 0, 1)
         all_params = np.c_[all_params, next_params]
