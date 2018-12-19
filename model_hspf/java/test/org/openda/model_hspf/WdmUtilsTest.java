@@ -101,7 +101,7 @@ public class WdmUtilsTest extends TestCase {
      */
     public void testSearchDataSetNumber() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || !BBUtils.RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testSearchDataSetNumber: wdm.dll only available for win32.");
 			return;
 		}
@@ -156,7 +156,7 @@ public class WdmUtilsTest extends TestCase {
      */
     public void testCreateExchangeItemsFromFile() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || !BBUtils.RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testCreateExchangeItemsFromFile: wdm.dll only available for win32.");
 			return;
 		}
@@ -197,7 +197,7 @@ public class WdmUtilsTest extends TestCase {
      */
     public void testCreateExchangeItemsFromList() throws Exception {
 		//currently only wdm.dll (32 bit) available, so only run this test on win32.
-		if (!BBUtils.RUNNING_ON_WINDOWS || !BBUtils.RUNNING_ON_64bit) {
+		if (!BBUtils.RUNNING_ON_WINDOWS || BBUtils.RUNNING_ON_64bit) {
 			System.out.println("testCreateExchangeItemsFromList: wdm.dll only available for win32.");
 			return;
 		}
