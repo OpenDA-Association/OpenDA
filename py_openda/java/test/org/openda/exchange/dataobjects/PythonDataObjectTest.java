@@ -38,7 +38,7 @@ public class PythonDataObjectTest extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(PythonDataObject.class,"core");
+    	testData = new OpenDaTestSupport(PythonDataObject.class,"py_openda");
     }
 
 	public void testObservations1() throws Exception {
