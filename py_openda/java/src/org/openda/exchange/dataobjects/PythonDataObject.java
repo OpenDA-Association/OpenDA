@@ -47,7 +47,6 @@ public class PythonDataObject implements IDataObject{
 		File dataFile = new File(workingDir.getAbsolutePath(), arguments[0]);
 		this.pythonClass = arguments[1];
 		JepConfig conf = new JepConfig();
-		conf.setInteractive(false);
 		if(arguments.length > 2) {
 			conf.setIncludePath(arguments[2]);
 			logger.debug("Looking for Python Data Object at input location:{}", arguments[2]);
@@ -85,6 +84,7 @@ public class PythonDataObject implements IDataObject{
 				System.out.println("If the error seems to come from a CPython extension used by the Python module, take a look at the README for more help.");
 			// Otherwise retrow exception
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 
 	}
@@ -107,6 +107,7 @@ public class PythonDataObject implements IDataObject{
 			if (e.getMessage().contains("FileNotFoundError"))
 				System.out.println("File not found, check the configuration.");
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		return IDs;
 	}
@@ -143,6 +144,7 @@ public class PythonDataObject implements IDataObject{
 			if (e.getMessage().contains("FileNotFoundError"))
 				System.out.println("File not found, check the configuration.");
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		return exchangeItem;
 	}
