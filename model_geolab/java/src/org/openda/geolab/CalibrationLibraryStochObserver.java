@@ -10,9 +10,21 @@ public class CalibrationLibraryStochObserver implements IStochObserver {
 	private final double[] observations;
 	private final double[] standardDeviations;
 
-	public CalibrationLibraryStochObserver(double[] observations, double[] standardDeviations) {
+	CalibrationLibraryStochObserver(double[] observations, double[] standardDeviations) {
 		this.observations = observations;
 		this.standardDeviations = standardDeviations;
+// Next code was add to check results when calibration is run in python
+// Introduce a debug (level) flag and reactivate
+//		System.out.println("observations:");
+//		for (int i = 0; i < observations.length; i++) {
+//			System.out.println(" " + observations[i]);
+//		}
+//		System.out.println("");
+//		System.out.println("obs std devs:");
+//		for (int i = 0; i < observations.length; i++) {
+//			System.out.println(" " + standardDeviations[i]);
+//		}
+//		System.out.println("");
 	}
 
 	@Override

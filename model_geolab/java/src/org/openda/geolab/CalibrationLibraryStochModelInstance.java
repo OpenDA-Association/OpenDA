@@ -53,11 +53,25 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 
 	public void setParameters(IVector parameters) {
 		parameterVector = new Vector(parameters.getValues());
+// Next code was add to check results when calibration is run in python
+// Introduce a debug (level) flag and reactivate
+//		System.out.print("parameters set from algorithm:");
+//		for (int i = 0; i < parameterVector.getSize(); i++) {
+//			System.out.print(" " + parameterVector.getValue(i));
+//		}
+//		System.out.println("");
 	}
 
 	public void axpyOnParameters(double alpha, IVector vector) {
 		parameterVector = new Vector(initialParameterVector.getValues());
-		parameterVector .axpy(alpha, vector);
+		parameterVector.axpy(alpha, vector);
+// Next code was add to check results when calibration is run in python
+// Introduce a debug (level) flag and reactivate
+//		System.out.print("parameters axpy'd from algorithm:");
+//		for (int i = 0; i < parameterVector.getSize(); i++) {
+//			System.out.print(" " + parameterVector.getValue(i));
+//		}
+//		System.out.println("");
 	}
 
 	public IStochVector getStateUncertainty() {
@@ -227,6 +241,13 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 				throw new RuntimeException("Thread that runs the CalibrationLibraryStochModelInstance has been interrupted");
 			}
 		}
+// Next code was add to check results when calibration is run in python
+// Introduce a debug (level) flag and reactivate
+//		System.out.print("model results to algorithm:");
+//		for (int i = 0; i < modelResults.getSize(); i++) {
+//			System.out.print(" " + modelResults.getValue(i));
+//		}
+//		System.out.println("");
 		IVector observedValues = modelResults;
 		modelResults = null;
 		return observedValues;

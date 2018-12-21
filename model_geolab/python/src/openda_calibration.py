@@ -29,8 +29,8 @@ def evaluate_sinus(sinus_params):
     phase = sinus_params[2]
     offset = sinus_params[3]
     values = [0.0] * 100
-    for i in range(0, 99):
-        values[i] = amplitude * sin(phase + 1.0 * i / period) + offset
+    for i in range(0, 100):
+        values[i] = amplitude * sin(phase + 0.1 * i / period) + offset
     return values
 
 
