@@ -10,18 +10,20 @@ Created on Tue Nov 20 15:33:06 2018
 
 import numpy as np
 
-#from py_openda.costFunctions.JObjects import (JModelFactory as ModelFactory,
-#                                              JStochObserver as StochObserver,
-#                                              JTime as Time)
+#TODO: Use exec() to choose imports
+
+from py_openda.costFunctions.JObjects import (JModelFactory as ModelFactory,
+                                              JStochObserver as StochObserver,
+                                              JTime as Time)
 
 #from py_openda.costFunctions.JObjects import (JStochObserver as StochObserver,
 #                                              PyTime as Time)
 #from py_openda.costFunctions.LorenzStochModelFactory import LorenzStochModelFactory as ModelFactory
 
 
-from py_openda.costFunctions.JObjects import PyTime as Time
-from py_openda.costFunctions.CsvStochObserver import CsvStochObserver as StochObserver
-from py_openda.costFunctions.LorenzStochModelFactory import LorenzStochModelFactory as ModelFactory
+#from py_openda.costFunctions.JObjects import PyTime as Time
+#from py_openda.costFunctions.CsvStochObserver import CsvStochObserver as StochObserver
+#from py_openda.costFunctions.LorenzStochModelFactory import LorenzStochModelFactory as ModelFactory
 
 #from py_openda.costFunctions.JObjects import (JModelFactory as ModelFactory,
 #                                              PyTime as Time)
@@ -61,7 +63,7 @@ class GenericEnsembleKalmanFilter:
         self.analysis_times = utils.input_to_time_list(selection.get_times(), Time)
 
 
-        #FIXME: DIT KLOPT MISSCHIEN NIET HELEMAAL
+        #TODO: This part might not be correct!
         self.this_step = -1
         if alg_config.get('analysisTimes') is not None:
             if alg_config.get('analysisTimes').get('@skipAtInitialTime'):

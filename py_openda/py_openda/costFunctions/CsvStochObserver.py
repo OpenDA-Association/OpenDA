@@ -63,7 +63,6 @@ class CsvStochObserver:
 
         :return: observation descriptions which are compatible with the used model instance
         """
-        #FIXME: Dit later converteren ziet er heel awkward uit
         return self.data
 
     def get_sqrt_covariance(self):

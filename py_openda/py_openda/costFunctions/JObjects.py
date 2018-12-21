@@ -118,7 +118,7 @@ class JStochObserver:
 
         :return: the covariance matrix as numpy array.
         """
-        #FIXME: misschien nog niet super generiek
+        #TODO: This part is not very generic!
         j_sqrt = self.observer.getSqrtCovariance().asVectorArray()
         py_sqrt = utils.j_vector_array_to_np_array(j_sqrt)
         return py_sqrt

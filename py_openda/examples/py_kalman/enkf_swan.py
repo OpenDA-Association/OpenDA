@@ -19,12 +19,11 @@ import xmlschema
 from py_openda.costFunctions.GenericEnsembleKalmanFilter import GenericEnsembleKalmanFilter
 from py_openda.algorithms.ensemble_kalman import kalman_algorithm, no_filter
 
-#TODO: xmlschema is al gauw veel te streng :/ (t.o.v. Java tenminste)
-#FIXME: Kloppen mijn defaults wel????
+#TODO: Some movable parts in Java might still be hard coded in Python
+#TODO: Quite a few xml files might not follow the schema as well as xmlschema wants them to
 
-
-input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_lorenz_3var_part1/simulation_ensemble.oda'
-#input_string = '/v3/Stage/Rick/openda/openda_public/examples/model_swan/kalman_twin_windbound/enkf_wind_bound.oda'
+#input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_lorenz_3var_part1/simulation_ensemble.oda'
+input_string = '/v3/Stage/Rick/openda/openda_public/examples/model_swan/kalman_twin_windbound/enkf_wind_bound.oda'
 #input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_double_pendulum_part2/enkf.oda'
 #input_string = '/v3/Stage/Rick/openda/openda_public/core/tests/simple_oscillator/Enkf.oda'
 
@@ -40,6 +39,9 @@ def main(input_string, observation_location=0):
     :return results: numpy array containing the results for the filtered experiment.
     :return no_results: numpy array containing the results for the unfiltered experiment.
     """
+    #TODO: Create a py4j JavaGateway and make it a global variable using __builtin__
+    #This way you can use a callback server for multiple objects.
+
     os.chdir(input_string.rsplit('/', 1)[0])
 
     scriptdir = os.getcwd()
@@ -67,7 +69,7 @@ def main(input_string, observation_location=0):
     n_obs = main_class.get_n_observations()
 
 #    n_steps = main_class.get_n_times()-3
-    n_steps = 50
+    n_steps = 3
     t = main_class.get_timeline()[:n_steps+1]
     t = [(time - t[0])*24 for time in t]
     results = np.zeros((n_steps+1, n_obs))
@@ -97,4 +99,6 @@ def main(input_string, observation_location=0):
     return(results, no_results)
 
 if __name__ == "__main__":
+    strt = tm()
     (results, no_results) = main(input_string)
+    print(tm()-strt)
