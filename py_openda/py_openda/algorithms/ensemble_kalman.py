@@ -78,10 +78,9 @@ def kalman_update(enkf, observations, predictions, mean_observations, mean_predi
         innovation = enkf.get_realizations() - observations[:, i] - mean_observations.transpose()
         delta = np.zeros((state_lenght, 1))
         delta[:] = K.dot(innovation.transpose())
-        #FIXME: State update met delta maar dan toch de predictions hierbuiten optellen is lelijk
-        #en py4j specifiek, maar scheelt wel een kwart van je tijd
+        #TODO: State update happens both here and within the model object.
+        #Looks terrible but saves 1 conversion.
         enkf.update_state(i, delta)
-        #FIXME: for loop moet ivm MemoryError. Dat is eng.
         for j in range(predictions.shape[0]):
             predictions[j, i] = predictions[j, i] + delta[j]
     prediction_mean = np.array([np.mean(predictions, axis=1)]).transpose() + mean_predicitons
