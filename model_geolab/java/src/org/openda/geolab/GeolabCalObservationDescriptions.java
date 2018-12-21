@@ -9,13 +9,11 @@ import org.openda.interfaces.IVector;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javafx.scene.input.KeyCode.L;
-
 public class GeolabCalObservationDescriptions implements IObservationDescriptions {
 
 	private List<IPrevExchangeItem> exchangeItems = new ArrayList<>();
 
-	public GeolabCalObservationDescriptions(double[] observations) {
+	GeolabCalObservationDescriptions(double[] observations) {
 		DoublesExchangeItem exchangeItem = new DoublesExchangeItem("lab-observations",
 			IPrevExchangeItem.Role.Output, observations);
 		this.exchangeItems.add(exchangeItem);

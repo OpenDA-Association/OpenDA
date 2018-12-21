@@ -101,5 +101,13 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		return algorithm;
 	}
 
-	private static final String DudXmlConfig = "<DudConfig/>";
+	private static final String DudXmlConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+		"<DudConfig xmlns=\"http://www.openda.org\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openda.org\n" +
+		"\t\t\thttp://schemas.openda.org/algorithm/dudConfig.xsd\">\n" +
+		"\t<costFunction weakParameterConstraint=\"false\" class=\"org.openda.algorithms.SimulationKwadraticCostFunction\"/>\n" +
+		"\t<outerLoop maxIterations=\"50\" absTolerance=\"0.0001\" relTolerance=\"0.001\" relToleranceLinearCost=\"0.0001\"/>\n" +
+		"\t<lineSearch maxIterations=\"50\" maxRelStepSize=\"3\">\n" +
+		"\t\t<backTracking shorteningFactor=\"0.5\" startIterationNegativeLook=\"3\"/>\n" +
+		"\t</lineSearch>\n" +
+		"</DudConfig>\n";
 }

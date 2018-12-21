@@ -60,11 +60,11 @@ public class CalibrationLibraryTest extends TestCase {
 			calibrationLibrary.modelSetResults(modelResults);
 			nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
 		}
-//		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
-//		for (int i = 0; i < optimalParameterValues.length; i++) {
-//			// Work in Progres, assertion failing.
-//			// assertEquals(obsParams[i], optimalParameterValues[i]);
-//		}
+		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
+		double[] expectedValues = { 1.974888, 0.550042, 0.190782, 0.097192};
+		for (int i = 0; i < optimalParameterValues.length; i++) {
+			assertEquals(expectedValues[i], optimalParameterValues[i], 1.e-6);
+		}
 	}
 
 	private double[] evaluateSinus(double[] doubles) {

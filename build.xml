@@ -70,25 +70,7 @@
       <buildmodule module="models" />
       <buildmodule module="algorithms" />
       <buildmodule module="application" />
-      <buildmodule module="model_bmi"/>
-      <buildmodule module="model_delwaq"/>
-      <buildmodule module="model_delft3d"/>
-      <buildmodule module="model_damflow"/>
-      <buildmodule module="model_efdc" />
-      <buildmodule module="model_efdc_dll"/>
-      <buildmodule module="model_example_blackbox" />
-      <buildmodule module="model_example_fortran" />
-      <buildmodule module="model_glm" />
-      <buildmodule module="model_gotm" />
-      <buildmodule module="model_hspf" />
-      <buildmodule module="model_metaswap"/>
-      <buildmodule module="model_nemo"/>
-      <buildmodule module="model_reactive_advection"/>
-      <buildmodule module="model_swan"/>
-      <buildmodule module="model_wflow"/>
-      <buildmodule module="model_dflowfm_blackbox"/>
-      <buildmodule module="model_RainfallRunoffZhang"/>
-      <buildmodule module="model_openfoam"/>
+      <buildmodule module="model_geolab"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.sh"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
    </target>
@@ -150,14 +132,7 @@
 
    <target name="tests" depends="init">
       <moduletests module="core" />
-      <moduletests module="model_bmi" />
-      <moduletests module="model_example_blackbox" />
-      <moduletests module="model_swan" />
-      <moduletests module="model_nemo" />
-      <moduletests module="model_delft3d"/>
-      <moduletests module="model_reactive_advection"/>
-      <moduletests module="model_dflowfm_blackbox"/>
-      <moduletests module="model_openfoam"/>      
+      <moduletests module="model_geolab"/>      
    </target>
 
     <macrodef name="moduletests">
@@ -279,6 +254,7 @@
         <cleanmodule module="model_wflow" />
         <cleanmodule module="model_dflowfm_blackbox"/>
         <cleanmodule module="model_openfoam"/>
+        <cleanmodule module="model_geolab"/>
     </target>
 
     <macrodef name="cleanmodule">

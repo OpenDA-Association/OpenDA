@@ -8,7 +8,7 @@ import org.openda.utils.Vector;
 
 import java.io.File;
 
-public class CalibrationLibraryStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated {
+public class CalibrationLibraryStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, IClonableStochModelInstance, Cloneable {
 
 	private Vector modelResults = null;
 	private Vector initialParameterVector;
@@ -17,7 +17,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	private Vector parameterVector = null;
 	private boolean algorithmDone = false;
 
-	private final int sleepTimeInMillis = 200;
+	private final int sleepTimeInMillis = 100;
 
 	CalibrationLibraryStochModelInstance(double[] parameterValues, double[] standardDeviations) {
 		this.initialParameterVector = new Vector(parameterValues);
@@ -53,6 +53,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 
 	public void setParameters(IVector parameters) {
 		parameterVector = new Vector(parameters.getValues());
+		initialParameterVector = parameterVector.clone();
 // Next code was add to check results when calibration is run in python
 // Introduce a debug (level) flag and reactivate
 //		System.out.print("parameters set from algorithm:");
@@ -65,6 +66,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	public void axpyOnParameters(double alpha, IVector vector) {
 		parameterVector = new Vector(initialParameterVector.getValues());
 		parameterVector.axpy(alpha, vector);
+		initialParameterVector = parameterVector.clone();
 // Next code was add to check results when calibration is run in python
 // Introduce a debug (level) flag and reactivate
 //		System.out.print("parameters axpy'd from algorithm:");
@@ -276,5 +278,18 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 
 	void setAlgorithmDoneFlag(boolean flag) {
 		algorithmDone = flag;
+	}
+
+
+	public IStochModelInstance getCopyOf() {
+		try {
+			return (IStochModelInstance) this.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException("Could not clone CalibrationLibraryStochModelInstance");
+		}
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }

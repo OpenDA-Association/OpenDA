@@ -300,6 +300,9 @@ public abstract class BaseDud extends Instance implements IAlgorithm {
 	public void next(){
 		this.optimizer.next();
         this.bestEstimate = this.J.getBestModel();
+        if (bestEstimate instanceof IClonableStochModelInstance) {
+			bestEstimate = ((IClonableStochModelInstance) bestEstimate).getCopyOf();
+		}
 		try {
 			if (!this.hasNext() && this.bestEstimate != null && this.bestEstimate.getModelRunDir() != null) {
 				Results.putMessage("Optimal results are in model run dir "+ this.bestEstimate.getModelRunDir().getAbsolutePath());
