@@ -10,7 +10,7 @@ public class CalibrationLibraryStochModelFactory implements IStochModelFactory {
 
 	private final double[] initialParameterValues;
 	private final double[] standardDeviations;
-	private static CalibrationLibraryStochModelInstance stochModelInstance;
+	static CalibrationLibraryStochModelInstance stochModelInstance;
 
 	CalibrationLibraryStochModelFactory(double[] initialParameterValues, double[] standardDeviations) {
 		this.initialParameterValues = initialParameterValues;
