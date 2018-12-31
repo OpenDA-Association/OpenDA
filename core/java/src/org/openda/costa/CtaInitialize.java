@@ -63,8 +63,14 @@ public class CtaInitialize {
 					System.load(libxml2_filepath.getPath());
 				}
 			}
-		    System.loadLibrary("opendabridge"); //Should be lowercase on linux; case does not matter on windows.
-		    ctaInit();
+			try {
+				System.loadLibrary("opendabridge"); //Should be lowercase on linux; case does not matter on windows.
+			} catch (java.lang.UnsatisfiedLinkError exception) {
+				System.out.println("java.library.path: " + System.getProperty("java.library.path"));
+				System.out.println("sun.arch.data.model: " + System.getProperty("sun.arch.data.model"));
+				throw exception;
+			}
+			ctaInit();
 		    System.out.println("Set default random seed for native implementations:");
 		    setRandomSeed(2101975);
 	}
