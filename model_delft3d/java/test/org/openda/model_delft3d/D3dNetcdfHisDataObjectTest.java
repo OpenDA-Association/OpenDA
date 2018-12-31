@@ -34,7 +34,7 @@ public class D3dNetcdfHisDataObjectTest extends TestCase {
 	private OpenDaTestSupport testData;
 
 	public void setUp() throws Exception {
-		this.testData = new OpenDaTestSupport(D3dNetcdfHisDataObjectTest.class, "public", "model_delft3d");
+		this.testData = new OpenDaTestSupport(D3dNetcdfHisDataObjectTest.class, "model_delft3d");
 		this.testRunDataDir = this.testData.getTestRunDataDir();
 	}
 

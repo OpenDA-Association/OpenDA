@@ -36,7 +36,7 @@ public class D3dField2DMaskTest extends TestCase {
     private OpenDaTestSupport testData = null;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(D3dField2DMaskTest.class,"public","model_delft3d");
+    	testData = new OpenDaTestSupport(D3dField2DMaskTest.class,"model_delft3d");
     }
 
     public void testField2DMask() throws IOException {

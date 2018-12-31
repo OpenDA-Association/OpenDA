@@ -16,7 +16,7 @@ public class EsriAsciiGridDataObjectTest extends TestCase {
 	File testRunDataDir = null;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(EsriAsciiGridDataObjectTest.class, "public", "core");
+		testData = new OpenDaTestSupport(EsriAsciiGridDataObjectTest.class, "core");
 		testRunDataDir = new File(testData.getTestRunDataDir(), "esriAsciiGrid");
 	}
 

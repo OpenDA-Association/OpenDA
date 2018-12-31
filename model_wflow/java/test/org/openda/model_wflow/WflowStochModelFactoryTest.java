@@ -46,7 +46,7 @@ public class WflowStochModelFactoryTest extends TestCase {
     OpenDaTestSupport testData = null;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(WflowStochModelFactoryTest.class, "public", "model_wflow");
+    	testData = new OpenDaTestSupport(WflowStochModelFactoryTest.class, "model_wflow");
     }
 
     public static void testDummy() {

@@ -19,7 +19,7 @@ public class EsriAsciiGridSeriesDataObjectTest extends TestCase {
 	File testRunDataDir = null;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(EsriAsciiGridSeriesDataObjectTest.class, "public", "model_metaswap");
+		testData = new OpenDaTestSupport(EsriAsciiGridSeriesDataObjectTest.class, "model_metaswap");
 		testRunDataDir = new File(testData.getTestRunDataDir(), "gridSeries");
 	}
 
