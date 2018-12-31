@@ -46,23 +46,6 @@ public class CtaInitialize {
 //		    System.loadLibrary("msvcr100");
 // -->	    System.loadLibrary("cta"); problems loading this one on windows MVL
 
-		    // Libxml2.dll is part of jre\bin and not jdk\bin, so explicitly load OpenDA's version.
-		    // Only relevant outside of IDE's - which always use JDK - so check on OPENDA_BINDIR.
-		    String openda_bindir = System.getenv("OPENDA_BINDIR");
-		    if (openda_bindir == null) {
-				String user_dir = System.getProperty("user.dir");
-				File openda_bin_directory = new File(user_dir, "bin");
-				if (openda_bin_directory.getPath().endsWith("\\public\\bin")) {
-					openda_bindir = openda_bin_directory.getPath();
-				}
-			}
-			if (openda_bindir != null) {
-				File lib2xml_directory = new File(openda_bindir);
-				if (lib2xml_directory.isDirectory()) {
-					File libxml2_filepath = new File(lib2xml_directory.getPath(), "libxml2.dll");
-					System.load(libxml2_filepath.getPath());
-				}
-			}
 			try {
 				System.loadLibrary("opendabridge"); //Should be lowercase on linux; case does not matter on windows.
 			} catch (java.lang.UnsatisfiedLinkError exception) {
