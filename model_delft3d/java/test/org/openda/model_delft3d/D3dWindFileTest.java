@@ -34,7 +34,7 @@ public class D3dWindFileTest extends TestCase {
     private OpenDaTestSupport testData = null;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(D3dWindFileTest.class,"public","model_delft3d");
+    	testData = new OpenDaTestSupport(D3dWindFileTest.class,"model_delft3d");
     }
 
     public void testWindFiles() throws IOException {

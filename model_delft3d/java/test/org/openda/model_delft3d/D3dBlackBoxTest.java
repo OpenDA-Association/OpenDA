@@ -35,7 +35,7 @@ public class D3dBlackBoxTest extends TestCase {
     OpenDaTestSupport testData = null;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(D3dBlackBoxTest.class,"public","model_delft3d");
+    	testData = new OpenDaTestSupport(D3dBlackBoxTest.class,"model_delft3d");
     }
 
     public static void testDummy() {

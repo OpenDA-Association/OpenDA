@@ -34,7 +34,7 @@ public class SpaceVaryingWindAndPressureTest extends TestCase{
 	private OpenDaTestSupport testData = null;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(SpaceVaryingWindAndPressureTest.class, "public", "wrapper_utils");
+		testData = new OpenDaTestSupport(SpaceVaryingWindAndPressureTest.class, "wrapper_utils");
 	}
 
 	@Rule

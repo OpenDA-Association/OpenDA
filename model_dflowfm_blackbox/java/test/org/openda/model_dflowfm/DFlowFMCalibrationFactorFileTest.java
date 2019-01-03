@@ -15,7 +15,7 @@ public class DFlowFMCalibrationFactorFileTest extends TestCase {
 	private OpenDaTestSupport testData;
 
 	protected void setUp() {
-		testData = new OpenDaTestSupport(DFlowFMCalibrationFactorFileTest.class, "public", "model_dflowfm_blackbox");
+		testData = new OpenDaTestSupport(DFlowFMCalibrationFactorFileTest.class, "model_dflowfm_blackbox");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 

@@ -34,7 +34,7 @@ public class D3dAstroComponentsTest extends TestCase {
     private OpenDaTestSupport testData = null;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(D3dAstroComponentsTest.class,"public","model_delft3d");
+    	testData = new OpenDaTestSupport(D3dAstroComponentsTest.class,"model_delft3d");
     }
 
     public void testAstroFiles() throws IOException {

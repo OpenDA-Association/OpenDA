@@ -39,7 +39,7 @@ public class D3dRoughParamsTest  extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(D3dRoughParamsTest.class,"public","model_delft3d");
+    	testData = new OpenDaTestSupport(D3dRoughParamsTest.class,"model_delft3d");
         testRunDataDir = testData.getTestRunDataDir();
     }
 

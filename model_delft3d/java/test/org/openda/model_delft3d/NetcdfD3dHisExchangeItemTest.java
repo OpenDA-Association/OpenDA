@@ -32,7 +32,7 @@ public class NetcdfD3dHisExchangeItemTest extends TestCase {
 	OpenDaTestSupport testData = null;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(NetcdfD3dHisExchangeItemTest.class,"public","model_delft3d");
+		testData = new OpenDaTestSupport(NetcdfD3dHisExchangeItemTest.class,"model_delft3d");
 	}
 
 	public void testGetValuesAsDoubles() throws Exception {

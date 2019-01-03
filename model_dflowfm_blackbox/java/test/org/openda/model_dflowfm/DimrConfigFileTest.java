@@ -38,7 +38,7 @@ public class DimrConfigFileTest extends TestCase
 	private String dHydroConfigFileNameGenerated = "d_hydro_config_generated.xml";
 
 	protected void setUp() {
-		OpenDaTestSupport testData = new OpenDaTestSupport(DimrConfigFileTest.class, "public", "model_dflowfm_blackbox");
+		OpenDaTestSupport testData = new OpenDaTestSupport(DimrConfigFileTest.class, "model_dflowfm_blackbox");
 		testRunDataDir = new File(testData.getTestRunDataDir(), "DHydroFile");
 		testRunDataDirOnlyFlow1D = new File(testData.getTestRunDataDir(), "DimrConfigFileOnlyFlow1D");
 	}

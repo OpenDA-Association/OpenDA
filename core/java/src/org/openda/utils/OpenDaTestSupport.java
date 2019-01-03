@@ -105,8 +105,6 @@ public class OpenDaTestSupport {
     static private String testDataDirPostfix   = "testData";
     static private String testRunDirPrefix     = "opendaTestRuns";
     static private String javaTestDirPrefix    = "java"+File.separator+"test";
-    static private String publicProjectDirName = "openda_public";
-	static private String publicProjectDirNameDepricated = "public";
 
 	//global attribute names.
 	private static final String FILE_LOCATION = "netcdf";
@@ -139,10 +137,6 @@ public class OpenDaTestSupport {
 	private File moduleRootDir  = null; 
 
     public OpenDaTestSupport(Class testClass,String moduleName){
-        this(testClass, null, moduleName);
-    }
-
-    public OpenDaTestSupport(Class testClass,String projectName,String moduleName){
 
 		// find proper projectRoot
 		File currentDir = new File("").getAbsoluteFile();
@@ -166,9 +160,6 @@ public class OpenDaTestSupport {
                 }
             }else if(moduleHintName.equalsIgnoreCase("project")){ // main rootDir
             	this.projectRoot = currentDir;
-				if (projectName !=null) {
-					this.projectRoot = new File(currentDir.getParentFile(), projectName);
-				}
             	workInModule = false;
             }else{
             	throw new RuntimeException("Requested module is "+moduleName
@@ -187,21 +178,6 @@ public class OpenDaTestSupport {
         }else{
         	File moduleRoot = new File(this.projectRoot,moduleName);
         	this.moduleRootDir = moduleRoot;
-            // check if we are running from another project than the public project
-            if (projectName==null && !actualProjectRoot.getName().equalsIgnoreCase(publicProjectDirName) &&
-					!actualProjectRoot.getName().equalsIgnoreCase(publicProjectDirNameDepricated)) {
-                File publicProjectRoot = new File(new File(actualProjectRoot,".."), publicProjectDirName);
-				if (!publicProjectRoot.exists()) {
-					publicProjectRoot= new File(new File(actualProjectRoot, ".."), publicProjectDirNameDepricated);
-				}
-				if (moduleIsPartOfPublicProject(publicProjectRoot, moduleName)) {
-                    File publicModuleRoot = new File(publicProjectRoot, moduleName);
-                    if (publicModuleRoot.exists() && (publicModuleRoot.isDirectory())) {
-                        moduleRoot = publicModuleRoot;
-                        actualProjectRoot = publicProjectRoot;
-                    }
-                }
-            } else
         	if(! (moduleRoot.exists() && (moduleRoot.isDirectory())) ){
                 throw new RuntimeException("Did not find module "+moduleName+". Was looking in "+ moduleRoot);
         	}

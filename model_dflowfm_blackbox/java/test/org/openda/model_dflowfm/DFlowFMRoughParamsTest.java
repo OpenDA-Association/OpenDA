@@ -37,7 +37,7 @@ public class DFlowFMRoughParamsTest  extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(DFlowFMRoughParamsTest.class,"public","model_dflowfm_blackbox");
+    	testData = new OpenDaTestSupport(DFlowFMRoughParamsTest.class,"model_dflowfm_blackbox");
         testRunDataDir = testData.getTestRunDataDir();
     }
 
