@@ -38,7 +38,7 @@ public interface IStochObserver extends IConfigurable, IInstance, Serializable {
 	/**
      * Create an new Stochastic Observer, containing a selection of the present stochastic observer.<br>
      * The selection criterium is in the form of an SQLite query.
-     * @param selection    Selection querry
+     * @param selection    Selection query
      * @return             Stochastic Observer containing the required selection.
      */
     public IStochObserver createSelection(String selection);
@@ -56,8 +56,7 @@ public interface IStochObserver extends IConfigurable, IInstance, Serializable {
 	/**
 	 *
 	 * Create an new Stochastic Observer, containing a selection of the present stochastic observer.<br>
-	 * The selection criteria is a timeSpan. The start time of the interval is not included, the end time is
-	 * included, i.e. t_start<t<=t_end
+	 * The selection criteria is a localization domain, represented by an index array.
 	 * @param selector          selection of indices (based on the localization domain).
 	 * @return                  Stochastic Observer containing the required selection.
 	 */
