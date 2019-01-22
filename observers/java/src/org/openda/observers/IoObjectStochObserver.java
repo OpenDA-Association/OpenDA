@@ -345,9 +345,9 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		return child;
 	}
 
+	//TODO: make actual selection for efficiency
 	public IStochObserver createSelection(int[] selector){
-		throw new UnsupportedOperationException(this.getClass().getName()
-				+ ".createSelection() not implemented");
+		return this.createSelection(Type.Assimilation);
 	}
 
 	public IStochObserver createSelection(Type observationType) {
