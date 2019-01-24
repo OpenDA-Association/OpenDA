@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noosObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/observation/noosObservations.xsd">
+	<!-- 1st series uses header lines for meta data
+	contents of this file look like:
+	#======================================================
+	# Timeseries retrieved from the MATROOS series database
+	# Created at Mon Mar 17 10:37:38 CET 2008
+	#======================================================
+	# Location    : aberdeen
+	# Position    : (-2.045543,57.361939)
+	# Source      : observed
+	# Unit        : waterlevel_astro
+	# Analyse time: most recent
+	# Timezone    : GMT
+	#======================================================
+	200801010000   -0.8300
+	200801010010   -0.8800
+	200801010020   -0.9100
+        ...
+	<timeSeries status="use" standardDeviation="0.05" quantity="waterlevel"  location="STAT-WL1">
+		stat_waterlevel.goot
+	</timeSeries>
+	-->
+
+	<timeSeries status="use" standardDeviation="0.005"
+	     minDateTime="199101010000" maxDateTime="199101030000">
+		waterlevel_station01.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.005"
+	     minDateTime="199101010000" maxDateTime="199101030000">
+		waterlevel_station02.noos
+	</timeSeries>
+	<timeSeries status="use" standardDeviation="0.005"
+	     minDateTime="199101010000" maxDateTime="199101030000">
+		waterlevel_station03.noos
+	</timeSeries>
+</noosObserver>
