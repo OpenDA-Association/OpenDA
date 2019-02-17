@@ -57,7 +57,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private final int modelInstanceNumber;
 	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private Map<String, IExchangeItem> forcingExchangeItems;
-	private IExchangeItem modelStateExchangeItem;
+	private Map<String, IExchangeItem> modelStateExchangeItems;
 
 	/**
 	 * Directory where the model reads the input state file(s) from. This is only used if an input state is used.
@@ -72,13 +72,14 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private boolean firstTime = true;
 
 	private boolean inOutputMode = false;
+
+
 	public void setInOutputMode(boolean inOutputMode) {
 		this.inOutputMode = inOutputMode;
 	}
 
 	public BmiModelInstance(int modelInstanceNumber, EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
-							ArrayList<BmiModelForcingConfig> forcingConfig, String[] modelStateExchangeItemIds,
-							Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits, String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
+							ArrayList<BmiModelForcingConfig> forcingConfig, List<BmiModelFactory.BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos, String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
@@ -116,10 +117,9 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
 		exchangeItems = createExchangeItems(model, modelMissingValue);
-
-		modelStateExchangeItem = new BmiStateExchangeItem(modelStateExchangeItemIds,
-				modelStateExchangeItemLowerLimits, modelStateExchangeItemUpperLimits,
-				this.model, modelMissingValue);
+		for (BmiModelFactory.BmiModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
+			modelStateExchangeItems.put(modelStateExchangeItemInfo.getStateId(), new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits()	, modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits(), this.model, modelMissingValue));
+		}
 
 		forcingExchangeItems = createForcingExchangeItems();
 
@@ -249,7 +249,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
 		IExchangeItem exchangeItem = null;
 		if (exchangeItemId.equalsIgnoreCase("state")) {
-			exchangeItem = this.modelStateExchangeItem;
+			// TODO EP: how to handle specific stateIds?
+			exchangeItem = this.modelStateExchangeItems.get(null);
 		}
 		if (exchangeItem == null && this.forcingExchangeItems != null){
 			exchangeItem = this.forcingExchangeItems.get(exchangeItemId);}

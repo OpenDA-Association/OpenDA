@@ -25,6 +25,7 @@ import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Configuration reader for BmiModelFactoryConfig for a BMI model.
@@ -35,11 +36,9 @@ public class BmiModelFactoryConfigReader {
 	private final File pythonModelPythonPath;
 	private final String pythonModelModuleName;
 	private final String pythonModelClassName;
+	private final List<BmiModelFactory.BmiModelStateExchangeItemsInfo> bmiModelStateExchangeItemsInfos;
 	private String pythonExecutablePath;
 	private final File modelTemplateDirectory;
-	private ArrayList<String> stateVectorIds;
-	private ArrayList<Double> lowerLimits;
-	private ArrayList<Double> upperLimits;
 	/**
 	 * The path and name of the model configuration file (relative to the model template directory).
 	 */
@@ -122,23 +121,28 @@ public class BmiModelFactoryConfigReader {
 			}
 		}
 
-		stateVectorIds = new ArrayList<String>();
-		lowerLimits = new ArrayList<Double>();
-		upperLimits = new ArrayList<Double>();
-		BmiModelStateExchangeItemXML bmiModelStateExchangeItems = castor.getBmiModelStateExchangeItems();
-		for(BmiModelStateExchangeItemXMLItem item: bmiModelStateExchangeItems.getBmiModelStateExchangeItemXMLItem()) {
-			LimitedExchangeItem limitedItem = item.getLimitedExchangeItem();
-			stateVectorIds.add(limitedItem.getExchangeItemId());
-			if (limitedItem.hasLowerLimit()){
-				lowerLimits.add(limitedItem.getLowerLimit());
-			} else {
-				lowerLimits.add(Double.NaN);
+		bmiModelStateExchangeItemsInfos = new ArrayList<>();
+		for (int i = 0; i < castor.getBmiModelStateExchangeItemsCount(); i++) {
+			List<String> stateVectorIds = new ArrayList<>();
+			List<Double> lowerLimits = new ArrayList<>();
+			List<Double> upperLimits = new ArrayList<>();
+			BmiModelStateExchangeItemXML bmiModelStateExchangeItems = castor.getBmiModelStateExchangeItems(i);
+			String stateId = bmiModelStateExchangeItems.getStateId();
+			for(BmiModelStateExchangeItemXMLItem item: bmiModelStateExchangeItems.getBmiModelStateExchangeItemXMLItem()) {
+				LimitedExchangeItem limitedItem = item.getLimitedExchangeItem();
+				stateVectorIds.add(limitedItem.getExchangeItemId());
+				if (limitedItem.hasLowerLimit()){
+					lowerLimits.add(limitedItem.getLowerLimit());
+				} else {
+					lowerLimits.add(Double.NaN);
+				}
+				if (limitedItem.hasUpperLimit()){
+					upperLimits.add(limitedItem.getUpperLimit());
+				} else {
+					upperLimits.add(Double.NaN);
+				}
 			}
-			if (limitedItem.hasUpperLimit()){
-				upperLimits.add(limitedItem.getUpperLimit());
-			} else {
-				upperLimits.add(Double.NaN);
-			}
+			bmiModelStateExchangeItemsInfos.add(new BmiModelFactory.BmiModelStateExchangeItemsInfo(stateId, stateVectorIds.toArray(new String[0]), lowerLimits.toArray(new Double[0]), upperLimits.toArray(new Double[0])));
 		}
 
 		this.inputStateDir = castor.getInputStateDirectory();
@@ -186,11 +190,7 @@ public class BmiModelFactoryConfigReader {
 		return hosts;
 	}
 
-	public String[] getModelStateExchangeItemIds() {return stateVectorIds.toArray(new String[0]);}
-
-	public Double[] getModelStateExchangeItemLowerLimits() {return lowerLimits.toArray(new Double[0]);}
-
-	public Double[] getModelStateExchangeItemUpperLimits() {return upperLimits.toArray(new Double[0]);}
+	public List<BmiModelFactory.BmiModelStateExchangeItemsInfo> getModelStateExchangeItemInfos() {return bmiModelStateExchangeItemsInfos;}
 
 	public String getInputStateDir() {
 		return inputStateDir;
@@ -203,4 +203,6 @@ public class BmiModelFactoryConfigReader {
 	public double getModelMissingValue() {
 		return modelMissingValue;
 	}
+
+	
 }
