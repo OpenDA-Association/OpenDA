@@ -1,21 +1,23 @@
-# Generated on 06/06/2018 10:45:09
-# Deltares, FM-Suite DFlowFM Model Version 1.2.2.36595, DFlow FM Version 1.1.198.48807
+# Generated on 2019-02-05 14:02:50
+# Deltares,Delft3D FM 2018 Suite Version 1.5.1.41822, D-Flow FM Version 1.2.26.62988M
 
 [model]
 Program           = D-Flow FM
-Version           = 1.1.198.48807
+Version           = 1.2.26.62988M
 MDUFormatVersion  = 1.02
-GuiVersion        = 1.2.2.36595
+GuiVersion        = 1.5.1.41822
 AutoStart         = 0
 
 [geometry]
 NetFile           = estuary_grid_net.nc
 BathymetryFile    =
 DryPointsFile     =
+GridEnclosureFile =
 WaterLevIniFile   =
 LandBoundaryFile  =
 ThinDamFile       =
 FixedWeirFile     =
+PillarFile        =
 StructureFile     =
 VertplizFile      =
 ProflocFile       =
@@ -108,7 +110,6 @@ InitialSalinity   = 0
 Sal0abovezlev     = -999
 DeltaSalinity     = -999
 Backgroundsalinity= 30
-Temperature       = 0
 InitialTemperature= 6
 Secchidepth       = 1
 Stanton           = -1
@@ -117,6 +118,7 @@ Backgroundwatertemperature= 6
 SecondaryFlow     = 0
 EffectSpiral      = 0
 BetaSpiral        = 0
+Temperature       = 0
 
 [wind]
 ICdtyp            = 2
@@ -144,7 +146,7 @@ TStart            = 0
 TStop             = 2880
 
 [restart]
-RestartFile       =
+RestartFile       = estuary_map.nc
 RestartDateTime   = 19910101
 
 [external forcing]
@@ -155,9 +157,20 @@ ExtForceFileNew   =
 TrtRou            = N
 TrtDef            =
 TrtL              =
-TrtDt             = 60
+DtTrt             = 60
 
 [output]
+Wrishp_crs        = 0
+Wrishp_weir       = 0
+Wrishp_gate       = 0
+Wrishp_fxw        = 0
+Wrishp_thd        = 0
+Wrishp_obs        = 0
+Wrishp_emb        = 0
+Wrishp_dryarea    = 0
+Wrishp_enc        = 0
+Wrishp_src        = 0
+Wrishp_pump       = 0
 OutputDir         =
 FlowGeomFile      =
 ObsFile           = estuary_obs.xyn
@@ -169,10 +182,6 @@ MapFile           =
 MapInterval       = 3600
 RstInterval       = 86400
 S1incinterval     =
-WaqInterval       = 0
-StatsInterval     = 3600
-Writebalancefile  = 0
-TimingsInterval   =
 MapFormat         = 1
 Wrihis_balance    = 1
 Wrihis_structure_gen= 1
@@ -196,7 +205,15 @@ Wrimap_chezy      = 1
 Wrimap_turbulence = 1
 Wrimap_wind       = 1
 Wrimap_heat_fluxes= 0
-Richardsononoutput= 1
 MapOutputTimeVector=
 FullGridOutput    = 0
 EulerVelocities   = 0
+ClassMapFile      =
+WaterlevelClasses = 0.0
+WaterdepthClasses = 0.0
+ClassMapInterval  = 300
+WaqInterval       = 0
+StatsInterval     = 3600
+Writebalancefile  = 0
+TimingsInterval   =
+Richardsononoutput= 1
