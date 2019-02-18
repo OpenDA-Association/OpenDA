@@ -8,10 +8,11 @@
         <alias key="exedir"/>
         <alias key="instanceDir"/>
         <alias key="templateDir"/>
-        <alias key="outputdir"/>
         <alias key="mdufile"/>
         <alias key="mapfile"/>
+        <alias key="mapfile_out"/>
         <alias key="hisfile"/>
+        <alias key="concatenated_hisfile"/>
     </aliasDefinitions>
 
     <run>
@@ -20,21 +21,19 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dflowfm.bat">
-                <arg>%mdufile%</arg>
-                <checkOutput file="%outputdir%/%hisfile%"/>
-                <checkOutput file="%outputdir%/%mapfile%"/>
+            <action workingDirectory="%instanceDir%" windowsExe="%exedir%/start_dimr.bat">
+                <arg>dimrConfigEstuary.xml</arg>
+                <checkOutput file="%hisfile%"/>
+                <checkOutput file="%mapfile_out%"/>
             </action>
             <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
-                <arg>%outputdir%/%mapfile%</arg>
-                <arg>dflowfm/%mapfile%</arg>
+                <arg>%mapfile_out%</arg>
+                <arg>%mapfile%</arg>
             </action>
-            <!-- does not work yet
             <action className="org.openda.exchange.dataobjects.NetcdfFileConcatenater" workingDirectory="%instanceDir%">
-                <arg>full_%hisfile%</arg>
-                <arg>%outputdir%/%hisfile%</arg>
+                <arg>%concatenated_hisfile%</arg>
+                <arg>%hisfile%</arg>
             </action>
-            -->
         </computeActions>
 
         <finalizeActions/>
@@ -51,7 +50,7 @@
             <id>mapfile</id>
         </ioObject>
         <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
-            <file>%outputdir%/%hisfile%</file>
+            <file>%hisfile%</file>
             <id>hisfile</id>
             <arg>true</arg>
             <arg>false</arg>
