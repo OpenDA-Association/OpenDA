@@ -85,7 +85,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
 	private List<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>(); // TODO: check if all models that support local analysis have no longer IPrevExchangeItems
 
-    public IObservationOperator getObservationOperator(){
+	public IObservationOperator getObservationOperator(){
 		return new ObservationOperatorDeprecatedModel(this);
 	}
 
@@ -516,13 +516,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
 			double[] values = getExchangeItem(vectorConfig.getId()).getValuesAsDoubles();
 			stateTreeVector.addChild(vectorConfig.getId(), values);
-
 			stateVectorsEndIndices[i] = values.length;
 			if (i > 0) {
 				stateVectorsEndIndices[i] += stateVectorsEndIndices[i - 1];
 			}
 			i++;
 		}
+
 		timerGetState.stop();
 		return stateTreeVector;
 	}
@@ -1217,6 +1217,22 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 	public ILocalizationDomains getLocalizationDomains(){
+
+		// TODO EP: find better solution
+		if (false) {
+
+			Map<String, String> observationIdSourceVectorIdMap = new HashMap<>();
+			Collection<BBStochModelVectorConfig> predictorVectorCollection = this.bbStochModelVectorsConfig.getPredictorVectorCollection();
+			for (BBStochModelVectorConfig bbStochModelVectorConfig : predictorVectorCollection) {
+				String id = bbStochModelVectorConfig.getId();
+				String sourceId = bbStochModelVectorConfig.getSourceId();
+				observationIdSourceVectorIdMap.put(id, sourceId);
+			}
+
+			ILocalizationDomains localizationDomains = model.getLocalizationDomains();
+			localizationDomains.setObservationSourceMap(observationIdSourceVectorIdMap);
+			return localizationDomains;
+		}
 
 		List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
 		List<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>();

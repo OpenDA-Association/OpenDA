@@ -20,6 +20,8 @@
 
 package org.openda.interfaces;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dirk
@@ -44,5 +46,7 @@ public interface ILocalizationDomains{
 	 * @return indiced of the observations needed for analysis in domain iDomain
 	 */
 	int[] getObservationSelector(IObservationDescriptions observationDescriptions, int iDomain);
+
+	void setObservationSourceMap(Map<String, String> observationIdSourceVectorIdMap);
 }
 
