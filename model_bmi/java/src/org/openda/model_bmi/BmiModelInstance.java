@@ -118,7 +118,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 		exchangeItems = createExchangeItems(model, modelMissingValue);
 		for (BmiModelFactory.BmiModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
-			modelStateExchangeItems.put(modelStateExchangeItemInfo.getStateId(), new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits()	, modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits(), this.model, modelMissingValue));
+			String stateId = modelStateExchangeItemInfo.getStateId();
+			modelStateExchangeItems.put(stateId, new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits()	, modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits(), this.model, modelMissingValue));
 		}
 
 		forcingExchangeItems = createForcingExchangeItems();
@@ -247,11 +248,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	 * @return IExchangeItem.
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
-		IExchangeItem exchangeItem = null;
-		if (exchangeItemId.equalsIgnoreCase("state")) {
-			// TODO EP: how to handle specific stateIds?
-			exchangeItem = this.modelStateExchangeItems.get(null);
-		}
+		IExchangeItem exchangeItem = this.modelStateExchangeItems.get(exchangeItemId);
 		if (exchangeItem == null && this.forcingExchangeItems != null){
 			exchangeItem = this.forcingExchangeItems.get(exchangeItemId);}
 		if (exchangeItem == null && this.exchangeItems != null) {

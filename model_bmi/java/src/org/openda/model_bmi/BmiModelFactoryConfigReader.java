@@ -128,6 +128,7 @@ public class BmiModelFactoryConfigReader {
 			List<Double> upperLimits = new ArrayList<>();
 			BmiModelStateExchangeItemXML bmiModelStateExchangeItems = castor.getBmiModelStateExchangeItems(i);
 			String stateId = bmiModelStateExchangeItems.getStateId();
+			if (stateId == null) stateId = "state";
 			for(BmiModelStateExchangeItemXMLItem item: bmiModelStateExchangeItems.getBmiModelStateExchangeItemXMLItem()) {
 				LimitedExchangeItem limitedItem = item.getLimitedExchangeItem();
 				stateVectorIds.add(limitedItem.getExchangeItemId());
