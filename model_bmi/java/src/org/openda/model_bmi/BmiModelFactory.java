@@ -132,7 +132,6 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
 		this.relativeModelConfigFilePath = configReader.getRelativeModelConfigFilePath();
 		this.forcingConfiguration = configReader.getBmiModelForcingConfigs();
-		// TODO EP use new schema
 		this.modelStateExchangeItemInfos = configReader.getModelStateExchangeItemInfos();
 		this.inputStateDir = configReader.getInputStateDir();
 		this.outputStateDir = configReader.getOutputStateDir();

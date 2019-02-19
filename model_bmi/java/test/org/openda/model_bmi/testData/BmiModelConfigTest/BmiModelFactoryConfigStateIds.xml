@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bmiModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/bmiModelFactoryConfig.xsd">
+	<pythonModel>
+		<pythonPath>dummyPythonPath</pythonPath>
+		<moduleName>test</moduleName>
+		<className>dummy</className>
+	</pythonModel>
+	<modelTemplateDirectory>dummyTemplateDir</modelTemplateDirectory>
+	<modelConfigFile>dummyModelConfig.ini</modelConfigFile>
+	<bmiModelStateExchangeItems stateId="state1">
+		<limitedExchangeItem>
+			<exchangeItemId>DrySnow</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>1000</upperLimit>
+		</limitedExchangeItem>
+		<limitedExchangeItem>
+			<exchangeItemId>FreeWater</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>100</upperLimit>
+		</limitedExchangeItem>
+		<limitedExchangeItem>
+			<exchangeItemId>SoilMoisture</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>300</upperLimit>
+		</limitedExchangeItem>
+	</bmiModelStateExchangeItems>
+	<bmiModelStateExchangeItems stateId="state2">
+		<limitedExchangeItem>
+			<exchangeItemId>LowerZoneStorage</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>1000</upperLimit>
+		</limitedExchangeItem>
+		<limitedExchangeItem>
+			<exchangeItemId>UpperZoneStorage</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>1000</upperLimit>
+		</limitedExchangeItem>
+		<limitedExchangeItem>
+			<exchangeItemId>InterceptionStorage</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>5</upperLimit>
+		</limitedExchangeItem>
+		<limitedExchangeItem>
+			<exchangeItemId>SurfaceRunoff</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>1000</upperLimit>
+		</limitedExchangeItem>
+		<limitedExchangeItem>
+			<exchangeItemId>WaterLevel</exchangeItemId>
+			<lowerLimit>0.0</lowerLimit>
+			<upperLimit>1000</upperLimit>
+		</limitedExchangeItem>
+	</bmiModelStateExchangeItems>
+	<missingValue>-999.0</missingValue>
+</bmiModelFactoryConfig>

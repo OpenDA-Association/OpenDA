@@ -19,13 +19,9 @@
  */
 package org.openda.model_bmi;
 
-import java.io.File;
-import java.util.*;
-
-import bmi.BMIModelException;
 import bmi.BMI;
+import bmi.BMIModelException;
 import bmi.EBMI;
-
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.DoublesExchangeItem;
@@ -37,10 +33,13 @@ import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
-import org.openda.utils.*;
+import org.openda.utils.Time;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.AnalysisDataWriter;
 import org.openda.utils.io.FileBasedModelState;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Interface to a BMI Model. Passes calls to the BMI interface.
@@ -117,6 +116,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
 		exchangeItems = createExchangeItems(model, modelMissingValue);
+		modelStateExchangeItems = new HashMap<>();
 		for (BmiModelFactory.BmiModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
 			String stateId = modelStateExchangeItemInfo.getStateId();
 			modelStateExchangeItems.put(stateId, new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits()	, modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits(), this.model, modelMissingValue));
