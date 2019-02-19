@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bmiModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/bmiModelFactoryConfig.xsd">
 	<pythonModel>
-		<pythonPath>../wflow_openda_py</pythonPath>
-		<moduleName>wflow.wflow_bmi</moduleName>
-		<className>wflowbmi_csdms</className>
+		<pythonPath>dummyPythonPath</pythonPath>
+		<moduleName>test</moduleName>
+		<className>dummy</className>
 	</pythonModel>
-	<modelTemplateDirectory>../openda_work/wflow_hbv_neckar</modelTemplateDirectory>
-	<modelConfigFile>wflow_hbv_openda.ini</modelConfigFile>
+	<modelTemplateDirectory>dummyTemplateDir</modelTemplateDirectory>
+	<modelConfigFile>dummyModelConfig.ini</modelConfigFile>
 	<bmiModelStateExchangeItems>
 		<limitedExchangeItem>
 			<exchangeItemId>DrySnow</exchangeItemId>
