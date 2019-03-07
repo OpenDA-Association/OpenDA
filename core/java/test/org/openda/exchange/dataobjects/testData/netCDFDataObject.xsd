@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2014 rel. 2 sp1 (http://www.altova.com) by Afdeling ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="dataObjectConfig" type="openda:T_dataObjectConfig"/>
+	<xs:complexType name="T_id" mixed="true">
+		<xs:sequence>
+			<xs:element name="template" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_meta">
+		<xs:sequence>
+			<xs:element name="location" type="openda:T_location"/>
+			<xs:element name="layer" type="openda:T_layer" minOccurs="0"/>
+			<xs:element name="quantity" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_layer">
+		<xs:sequence>
+			<xs:element name="selection" type="openda:T_selection"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_times">
+		<xs:sequence>
+			<xs:element name="selection" type="openda:T_selection"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_values">
+		<xs:sequence>
+			<xs:element name="selection" type="openda:T_selection"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_location">
+		<xs:choice>
+			<xs:element name="combinedSelection" type="openda:T_combinedSelection"/>
+			<xs:element name="selection" type="openda:T_selection"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="T_variable">
+		<xs:sequence>
+			<xs:element name="dimension" type="openda:T_dimension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="T_dimension">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="index" type="openda:T_indexStringType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="T_selection">
+		<xs:sequence>
+			<xs:element name="variable" type="openda:T_variable" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_dataObjectConfig">
+		<xs:sequence>
+			<xs:element name="arrayExchangeItem" type="openda:T_arrayExchangeItem" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="timeSeriesExchangeItem" type="openda:T_timeSeriesExchangeItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_arrayExchangeItem">
+		<xs:sequence>
+			<xs:element name="id" type="openda:T_id"/>
+			<xs:element name="values" type="openda:T_values"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_combinedSelection">
+		<xs:sequence>
+			<xs:element name="variable" type="openda:T_variable" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="separator" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="T_timeSeriesExchangeItem">
+		<xs:sequence>
+			<xs:element name="id" type="openda:T_id"/>
+			<xs:element name="meta" type="openda:T_meta" minOccurs="0"/>
+			<xs:element name="times" type="openda:T_times"/>
+			<xs:element name="values" type="openda:T_values"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="T_indexStringType">
+		<xs:annotation>
+			<xs:documentation>index (e.g. 12) or index line (e.g. 11:18) in an array</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([-+]?[0-9]+)(:[-+]?[0-9]+)?"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

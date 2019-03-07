@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataObjectConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org ./netCDFDataObject.xsd">
+	<!-- Get water level time series for a location from 2D data--> 
+	<timeSeriesExchangeItem>
+		<id>Waterlevel.Station_n10_m12</id>
+		<times>
+			<selection>
+				<variable name="time"/>
+			</selection>
+		</times>
+		<values>
+			<selection>
+				<variable name="S1">
+					<!--<dimension name="LAYER" index="1"/>-->
+					<dimension name="N" index="10"/>
+					<dimension name="M" index="12"/>
+				</variable>
+			</selection>
+		</values>
+	</timeSeriesExchangeItem>
+
+	<!-- Get V1 velocity time series for a location at (m,n) and layer 1 from 2D data--> 
+	<timeSeriesExchangeItem>
+		<id>V1_velocity.Station_n10_m12</id>
+		<times>
+			<selection>
+				<variable name="time"/>
+			</selection>
+		</times>
+		<values>
+			<selection>
+				<variable name="V1">
+					<dimension name="KMAXOUT_RESTR" index="1"/>
+					<dimension name="NC" index="10"/>
+					<dimension name="M" index="12"/>
+				</variable>
+			</selection>
+		</values>
+	</timeSeriesExchangeItem>
+
+</dataObjectConfig>

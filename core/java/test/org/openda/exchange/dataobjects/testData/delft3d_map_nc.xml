@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataObjectConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org ./netCDFDataObject.xsd">
+<!--<dataObjectConfig>-->
+	<arrayExchangeItem>
+		<id>Waterlevel.Grid</id>
+		<values>
+			<selection>
+				<variable name="S1">
+					<dimension name="time" index="-1"/>
+					<!--<dimension name="M" index="0:4"/>
+					<dimension name="N" index="2:5"/>-->
+					<!-- TODO: check if variable/dimension name should be case insensitive; at the moment they are case sensitive -->
+				</variable>
+			</selection>
+		</values>
+	</arrayExchangeItem>
+	<!-- Get U velocity grid at surface layer -->
+	<arrayExchangeItem>
+		<id>VELU.SurfaceLayer</id>
+		<values>
+			<selection>
+				<variable name="U1">
+					<dimension name="KMAXOUT_RESTR" index="0"/>
+					<dimension name="time" index="-1"/>
+				</variable>
+			</selection>
+		</values>
+	</arrayExchangeItem>
+	<!-- Get surface layer V velocity grid over a section -->
+	<arrayExchangeItem>
+		<id>VELV.SurfaceLayerSection</id>
+		<values>
+			<selection>
+				<variable name="V1">
+					<dimension name="KMAXOUT_RESTR" index="0"/>
+					<dimension name="NC" index="6:10"/>
+					<dimension name="M" index="5:14"/>
+					<dimension name="time" index="-1"/>
+				</variable>
+			</selection>
+		</values>
+	</arrayExchangeItem>
+</dataObjectConfig>

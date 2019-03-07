@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataObjectConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org ./netCDFDataObject.xsd">
+	<!-- Get water level time series for all stations --> 
+	<timeSeriesExchangeItem>
+		<id>
+			<template>freetext1.${meta:location}.freetext2.${meta:quantity}.freetext3</template>
+		</id>
+		<meta>
+			<location>
+				<selection>
+					<variable name="NAMST"/>
+				</selection>
+			</location>
+			<quantity>waterlevel</quantity>
+		</meta>
+		<times>
+			<selection>
+				<variable name="time"/>
+			</selection>
+		</times>
+		<values>
+			<selection>
+				<variable name="ZWL"/>
+			</selection>
+		</values>
+	</timeSeriesExchangeItem>
+
+	<!-- Get water level time series for some specific stations --> 
+	<timeSeriesExchangeItem>
+		<id>
+			<template>freetext1.${meta:location}.freetext2.${meta:quantity}.freetext3</template>
+		</id>
+		<meta>
+			<location>
+				<selection>
+					<variable name="NAMST" value="station2"/>
+					<variable name="NAMST" value="station4"/>
+				</selection>
+			</location>
+			<quantity>waterlevel</quantity>
+		</meta>
+		<times>
+			<selection>
+				<variable name="time"/>
+			</selection>
+		</times>
+		<values>
+			<selection>
+				<variable name="ZWL"/>
+			</selection>
+		</values>
+	</timeSeriesExchangeItem>
+
+	<!-- Get v-velocity time series for surface layer, for some specific locations --> 
+	<timeSeriesExchangeItem>
+		<id>
+			<template>foo.${meta:location}.layer1.${meta:quantity}</template>
+		</id>
+		<meta>
+			<location>
+				<selection>
+					<variable name="NAMST" value="station1"/>
+					<variable name="NAMST" value="station3"/>
+				</selection>
+			</location>
+			<quantity>v_velocity</quantity>
+		</meta>
+		<times>
+			<selection>
+				<variable name="time"/>
+			</selection>
+		</times>
+		<values>
+			<selection>
+				<variable name="ZCURV">
+					<dimension name="KMAXOUT_RESTR" index="0"/>
+				</variable>
+			</selection>
+		</values>
+	</timeSeriesExchangeItem>
+
+	<!-- Get v-velocity time series for some specific locations for each layer--> 
+	<timeSeriesExchangeItem>
+		<id>
+			<template>foo.${meta:location}.layer_${meta:layer}.${meta:quantity}</template>
+		</id>
+		<meta>
+			<location>
+				<selection>
+					<variable name="NAMST" value="station1"/>
+					<variable name="NAMST" value="station3"/>
+				</selection>
+			</location>
+			<layer>
+				<selection>
+					<variable name="KMAXOUT_RESTR"/>
+				</selection>
+			</layer>
+			<quantity>v_velocity</quantity>
+		</meta>
+		<times>
+			<selection>
+				<variable name="time"/>
+			</selection>
+		</times>
+		<values>
+			<selection>
+				<variable name="ZCURV"/>
+			</selection>
+		</values>
+	</timeSeriesExchangeItem>
+</dataObjectConfig>
