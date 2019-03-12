@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.*;
 
+import static org.openda.blackbox.config.BBStochModelConfigReader.FILTERED_STATE;
+
 /**
  * Black box module's implementation of a stochastic model instance
  */
@@ -462,9 +464,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		TreeVector stateTreeVector = new TreeVector("state", "State From Black Box Stoch Model Instance");
 
 		Collection<BBNoiseModelConfig> noiseModelConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
 		Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig().getUncertaintyOrArmaNoiseConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
 
 		stateNoiseModelsEndIndices = new int[noiseModelConfigs.size()+uncertaintyOrArmaNoiseConfigs.size()];
 
@@ -509,7 +511,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		// add deterministic mode variables to state vector
 		Collection<BBStochModelVectorConfig> vectorCollection =
-				this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
 
 		stateVectorsEndIndices = new int[vectorCollection.size()];
 		i = 0;
@@ -566,7 +568,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		int j = 0;
 
 		Collection<BBNoiseModelConfig> noiseModelConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
 		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
 			IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
 			IVector noiseModelState = noiseModel.getState();
@@ -581,7 +583,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		ITime currentTime = getCurrentTime();
 
 		Collection<BBUncertOrArmaNoiseConfig> stateNoiseModelCollection =
-				this.bbStochModelVectorsConfig.getStateConfig().getUncertaintyOrArmaNoiseConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
 		for (BBUncertOrArmaNoiseConfig stateNoiseModelConfig : stateNoiseModelCollection) {
 			if (stateNoiseModelConfig.getNoiseModelType() !=
 					BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
@@ -602,7 +604,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 		Collection<BBStochModelVectorConfig> vectorCollection =
-				this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
 		i = 0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
 			int start = (i > 0) ? stateVectorsEndIndices[i - 1] : 0;
@@ -833,7 +835,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 		Collection<BBUncertOrArmaNoiseConfig> stateNoiseModelCollection =
-				this.bbStochModelVectorsConfig.getStateConfig().getUncertaintyOrArmaNoiseConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
 		ArrayList<double[]> stdDevList = new ArrayList<double[]>();
 		for (BBUncertOrArmaNoiseConfig stateNoiseModelConfig : stateNoiseModelCollection) {
 			int noiseStateSize = 1; // TODO elaborate
@@ -1158,9 +1160,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 
 				Collection<BBNoiseModelConfig> noiseModelConfigs =
-						this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+						this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
 				Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
-						this.bbStochModelVectorsConfig.getStateConfig().getUncertaintyOrArmaNoiseConfigs();
+						this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
 
 				// add external noise model variables to state
 			    int iNoise = 0;
@@ -1200,7 +1202,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				// add deterministic mode variables to state vector
 				//here bbStochModelStateVectors are listed in the same order as in the configuration.
 				Collection<BBStochModelVectorConfig> bbStochModelStateVectors =
-						this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+						this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
 
 				//here localizationVectors contains a treeVector for each observation.
 				//for each state vector add a child treeVector with weight values to each localizationVector,
@@ -1229,7 +1231,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 			//get # noise model from config
 			Collection<BBNoiseModelConfig> noiseModelConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
 
 			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
 				IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
@@ -1238,7 +1240,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 			//get # model exchange items in the state vector
 			Collection<BBStochModelVectorConfig> vectorCollection =
-				this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
 
 			for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
 				IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
@@ -1274,7 +1276,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		List<IVector[]> noiseModelWeights = new ArrayList<>();
 
 		Collection<BBNoiseModelConfig> noiseModelConfigs =
-			this.bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+			this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
 		int noiseModelCount = noiseModelConfigs.size();
 
 		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
@@ -1319,7 +1321,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		//IVector iWeightsVector = new IVector;
 		TreeVector treeVector = new TreeVector("weights-for " + obsId);
 		Collection<BBStochModelVectorConfig> vectorCollection =
-			this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
+			this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
 
 		//int k=0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
@@ -1392,9 +1394,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	private void createStateNoiseModels() {
-		if (this.bbStochModelVectorsConfig.getStateConfig() != null) {
+		if (this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE) != null) {
 			for (BBUncertOrArmaNoiseConfig noiseModelStateNoiseConfig :
-				this.bbStochModelVectorsConfig.getStateConfig().getUncertaintyOrArmaNoiseConfigs()) {
+				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs()) {
 				ArmaNoiseModel noiseModel = armaNoiseModels.get(noiseModelStateNoiseConfig);
 				if (noiseModel == null) {
 					int noiseModelStateSize = 1; // TODO elaborate
@@ -1423,7 +1425,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	private BBStochModelVectorConfig findPredictionVectorConfig(String obsId) {
 
-		for (BBStochModelVectorConfig bbStochModelVectorConfig : this.bbStochModelVectorsConfig.getPredictorVectorCollection()) {
+		Collection<BBStochModelVectorConfig> predictorVectorCollection = this.bbStochModelVectorsConfig.getPredictorVectorCollection(FILTERED_STATE);
+		for (BBStochModelVectorConfig bbStochModelVectorConfig : predictorVectorCollection) {
 			if (bbStochModelVectorConfig.getId().equalsIgnoreCase(obsId)) {
 				return bbStochModelVectorConfig;
 			}
@@ -1431,16 +1434,16 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		String allVectors = "";
 		for (BBStochModelVectorConfig bbStochModelVectorConfig :
-			this.bbStochModelVectorsConfig.getPredictorVectorCollection()) {
+			predictorVectorCollection) {
 			allVectors += "      " + bbStochModelVectorConfig.getId() + "\n";
 		}
 		throw new RuntimeException(
-				"announceObservedValues:\n" +
-						"No prediction subvector found for obs id \"" +
-						obsId + "\"\n" +
-						"Available subvectors are:\n" +
+			"announceObservedValues:\n" +
+				"No prediction subvector found for obs id \"" +
+				obsId + "\"\n" +
+				"Available subvectors are:\n" +
 
-						allVectors + "\n");
+				allVectors + "\n");
 	}
 
 	private void addParameterDeltaToExchangeItem(double parameterDelta, IPrevExchangeItem exchangeItem, int transformation) {

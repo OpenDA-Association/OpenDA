@@ -482,6 +482,7 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
+    <xs:attribute name="id" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="BlackBoxStochModelVectorsXML">
 		<xs:choice maxOccurs="unbounded">
@@ -496,6 +497,11 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
+    <xs:attribute name="stateId" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Id to specify to which state this predictor belongs. Used for local analysis.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 		<xs:attribute name="collectTimeSeries" type="xs:boolean" default="false">
 			<xs:annotation>
 				<xs:documentation>A flag for indicating whether predictor timeseries should be kept in the memory during simulation.</xs:documentation>
@@ -509,12 +515,12 @@
 					<xs:documentation>Specify the model parameters vectors</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="state" type="openda:BlackBoxStochModelStateXML" minOccurs="0">
+			<xs:element name="state" type="openda:BlackBoxStochModelStateXML" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Specify the model state vectors</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="predictor" type="openda:BlackBoxStochModelVectorsXML" minOccurs="0">
+			<xs:element name="predictor" type="openda:BlackBoxStochModelVectorsXML" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Specify the predictor vectors. i.e. the model variables that correspond to the observer variables. This can contain three different types of mappings between model and observer variables:
 1. a vector for a mapping between an observed scalar and a scalar in the model. In this case the coordinates are not used and no interpolation is done.

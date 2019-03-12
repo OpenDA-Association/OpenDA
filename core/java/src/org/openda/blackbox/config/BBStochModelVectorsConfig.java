@@ -23,6 +23,7 @@ package org.openda.blackbox.config;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Configuration for the vectors in the parameter part, state part and prediction part of a stoch. model
@@ -32,17 +33,17 @@ public class BBStochModelVectorsConfig {
 	private List<BBNoiseModelConfig> paramsUncertaintyModelConfigs;
     private Collection<BBRegularisationConstantConfig> regularisationConstantCollection;
     private Collection<BBCartesianToPolarConfig> cartesianToPolarCollection;
-    private BBStochModelStateConfig stateConfig;
-    private Collection<BBStochModelVectorConfig> predictorVectorCollection;
+    private Map<String, BBStochModelStateConfig> stateConfig;
+    private Map<String, Collection<BBStochModelVectorConfig>> predictorVectorCollection;
     private final RangeValidationConstraint[] rangeValidationConstraints;
     private boolean collectPredictorTimeSeries;
 
     public BBStochModelVectorsConfig(List<BBNoiseModelConfig> paramsUncertaintyModelConfigs,
-                                     Collection<BBRegularisationConstantConfig> regularisationConstantCollection,
-                                     Collection<BBCartesianToPolarConfig> cartesianToPolarCollection,
-                                     BBStochModelStateConfig stateConfig,
-                                     Collection<BBStochModelVectorConfig> predictorVectorCollection,
-                                     boolean collectPredictorTimeSeries, RangeValidationConstraint[] rangeValidationConstraints) {
+									 Collection<BBRegularisationConstantConfig> regularisationConstantCollection,
+									 Collection<BBCartesianToPolarConfig> cartesianToPolarCollection,
+									 Map<String, BBStochModelStateConfig> stateConfig,
+									 Map<String, Collection<BBStochModelVectorConfig>> predictorVectorCollection,
+									 boolean collectPredictorTimeSeries, RangeValidationConstraint[] rangeValidationConstraints) {
 		this.paramsUncertaintyModelConfigs = paramsUncertaintyModelConfigs;
 		this.regularisationConstantCollection = regularisationConstantCollection;
         this.cartesianToPolarCollection = cartesianToPolarCollection;
@@ -64,12 +65,12 @@ public class BBStochModelVectorsConfig {
         return cartesianToPolarCollection;
     }
 
-    public BBStochModelStateConfig getStateConfig() {
-        return stateConfig;
+    public BBStochModelStateConfig getStateConfig(String stateId) {
+        return stateConfig.get(stateId);
     }
 
-    public Collection<BBStochModelVectorConfig> getPredictorVectorCollection() {
-        return predictorVectorCollection;
+    public Collection<BBStochModelVectorConfig> getPredictorVectorCollection(String stateId) {
+        return predictorVectorCollection.get(stateId);
     }
 
     public RangeValidationConstraint[] getRangeValidationConstraints() {

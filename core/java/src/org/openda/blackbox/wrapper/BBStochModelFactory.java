@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import static org.openda.blackbox.config.BBStochModelConfigReader.FILTERED_STATE;
 import static org.openda.utils.performance.OdaGlobSettings.getTimePrecision;
 /**
  * Factory for creating instances of the type BBModelInstance.
@@ -180,7 +182,7 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 		LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> noiseModelForNewInstance =
 				new LinkedHashMap<BBNoiseModelConfig, IStochModelInstance>();
 
-		BBStochModelStateConfig stateVectorConfigs = bbStochModelConfig.getBbStochModelVectorsConfig().getStateConfig();
+		BBStochModelStateConfig stateVectorConfigs = bbStochModelConfig.getBbStochModelVectorsConfig().getStateConfig(FILTERED_STATE);
 		if (stateVectorConfigs != null) {
 			for (BBNoiseModelConfig noiseModelConfig :
 					stateVectorConfigs.getNoiseModelConfigs()) {
@@ -416,8 +418,8 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 				accessedInputExchangeItemIds.add(accessedParameter.getSourceId());
 			}
 		}
-		if (bbStochModelVectorsConfig.getStateConfig() != null) {
-			Collection<BBNoiseModelConfig> noiseModelConfigs = bbStochModelVectorsConfig.getStateConfig().getNoiseModelConfigs();
+		if (bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE) != null) {
+			Collection<BBNoiseModelConfig> noiseModelConfigs = bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
 			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
 				for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseModelConfig.getExchangeItemConfigs()) {
 					for (String modelExchangeItemId : exchangeItemConfig.getModelExchangeItemIds()) {
@@ -427,9 +429,11 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 			}
 		}
 		Collection<BBStochModelVectorConfig> accessedStochResults =
-				bbStochModelVectorsConfig.getPredictorVectorCollection();
-		for (BBStochModelVectorConfig accessedStochResult : accessedStochResults) {
-			accessedOutputExchangeItemIds.add(accessedStochResult.getSourceId());
+				bbStochModelVectorsConfig.getPredictorVectorCollection(FILTERED_STATE);
+		if (accessedStochResults != null ) {
+			for (BBStochModelVectorConfig accessedStochResult : accessedStochResults) {
+				accessedOutputExchangeItemIds.add(accessedStochResult.getSourceId());
+			}
 		}
 	}
 }

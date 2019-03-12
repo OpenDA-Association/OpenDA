@@ -37,7 +37,8 @@ import java.util.*;
  */
 public class BBStochModelConfigReader {
 
-    private BBStochModelConfig bbStochModelConfig;
+	public static final String FILTERED_STATE = "filteredState";
+	private BBStochModelConfig bbStochModelConfig;
 
     public BBStochModelConfigReader(File stochModelConfigFile) {
 
@@ -167,8 +168,8 @@ public class BBStochModelConfigReader {
         // parse vector specification
         Collection<BBRegularisationConstantConfig> regularisationConstantList = new ArrayList<BBRegularisationConstantConfig>();
         Collection<BBCartesianToPolarConfig> cartesianToPolarList = new ArrayList<BBCartesianToPolarConfig>();
-        BBStochModelStateConfig stateConfig = null;
-        Collection<BBStochModelVectorConfig> predictorVectorCollection = new ArrayList<BBStochModelVectorConfig>();
+        Map<String, BBStochModelStateConfig> stateConfigMap = new HashMap<>();
+		Map<String, Collection<BBStochModelVectorConfig>> predictorVectorCollectionMap = new HashMap<>();
 
         BlackBoxStochModelVectorSpecificationXML vectorSpecificationXML = bbStochModelConfigXML.getVectorSpecification();
 
@@ -295,23 +296,26 @@ public class BBStochModelConfigReader {
 				}
 			}
 
-            if (vectorSpecificationXML.getState() != null) {
+			int stateCount = vectorSpecificationXML.getStateCount();
+			for (int j = 0; j < stateCount; j++) {
+				BlackBoxStochModelStateXML state = vectorSpecificationXML.getState(j);
+				String stateId = state.getId();
+				if (stateId == null) stateId = FILTERED_STATE;
 
 				List<BBNoiseModelConfig> stateNoiseModelConfigs = new ArrayList<BBNoiseModelConfig>();
 
 				Collection<BBStochModelVectorConfig> vectorCollection = new ArrayList<BBStochModelVectorConfig>();
 				Collection<BBUncertOrArmaNoiseConfig> uncertOrArmaBasedStateNoiseConfigs = new ArrayList<BBUncertOrArmaNoiseConfig>();
 
-                BlackBoxStochModelStateXMLItem[] stateXMLItems =
-                        vectorSpecificationXML.getState().getBlackBoxStochModelStateXMLItem();
+				BlackBoxStochModelStateXMLItem[] stateXMLItems = state.getBlackBoxStochModelStateXMLItem();
 
-                for (BlackBoxStochModelStateXMLItem stateXMLItem : stateXMLItems) {
+				for (BlackBoxStochModelStateXMLItem stateXMLItem : stateXMLItems) {
 
-                    StateNoiseXML noiseModelXML = stateXMLItem.getNoiseModel();
+					StateNoiseXML noiseModelXML = stateXMLItem.getNoiseModel();
 
-                    if (noiseModelXML != null) {
+					if (noiseModelXML != null) {
 
-                        // Add a noise model to the state
+						// Add a noise model to the state
 
 						if (noiseModelXML.getClassName() != null) {
 							// stochModelFactory / stochModelInstance noise model
@@ -325,24 +329,24 @@ public class BBStochModelConfigReader {
 
 							// vectors to related to noise
 							StateNoiseXMLChoice vectorXMLItems[] =
-									noiseModelXML.getStateNoiseXMLChoice();
+								noiseModelXML.getStateNoiseXMLChoice();
 
 							// Arma model definition, possible choices
 							StateNoiseXMLChoice2 armaModelChoice =
-									noiseModelXML.getStateNoiseXMLChoice2();
+								noiseModelXML.getStateNoiseXMLChoice2();
 							StateNoiseUncertainItemXML uncertainItemXML = armaModelChoice.getUncertainItem();
 							StateNoiseUncertainItemWithArmaConstantsXML itemWithArmaConstantsXML =
-									armaModelChoice.getUncertainItemWithArmaConstants();
+								armaModelChoice.getUncertainItemWithArmaConstants();
 							StateNoiseArmaModelXML armaModelXML = armaModelChoice.getArmaModel();
 							StateNoiseAr1ModelXML ar1ModelXML = armaModelChoice.getAr1Model();
 
 							if (noiseModelXML.getClassName() != null &&
-									(vectorXMLItems == null || vectorXMLItems.length == 0 ||
+								(vectorXMLItems == null || vectorXMLItems.length == 0 ||
 									uncertainItemXML != null || itemWithArmaConstantsXML != null ||
-									armaModelXML != null || ar1ModelXML != null) ) {
+									armaModelXML != null || ar1ModelXML != null)) {
 								throw new RuntimeException("You can not specify Noise Model class and " +
-										"arma model or uncertainty model (and their (sub)vectors) " +
-										"at the same time" + stochModelConfigFile.getAbsolutePath());
+									"arma model or uncertainty model (and their (sub)vectors) " +
+									"at the same time" + stochModelConfigFile.getAbsolutePath());
 							}
 
 							// store vector configs for the (sub)vectors to impose the noise on
@@ -350,9 +354,9 @@ public class BBStochModelConfigReader {
 							for (int i = 0, vectorXMLItemsLength = vectorXMLItems.length; i < vectorXMLItemsLength; i++) {
 								StateNoiseXMLChoice vectorXMLItem = vectorXMLItems[i];
 								vectorConfigs[i] = parseStochModelVectorOrSubVector(
-										stochModelConfigFile, bbModelConfig,
-										vectorXMLItem.getStateNoiseXMLChoiceItem().getSubVector(),
-										vectorXMLItem.getStateNoiseXMLChoiceItem().getVector());
+									stochModelConfigFile, bbModelConfig,
+									vectorXMLItem.getStateNoiseXMLChoiceItem().getSubVector(),
+									vectorXMLItem.getStateNoiseXMLChoiceItem().getVector());
 							}
 
 							// Arma model definition, determine values based on choice
@@ -391,44 +395,54 @@ public class BBStochModelConfigReader {
 								stdDev = stdDevWhiteNoise;
 							}
 							BBUncertOrArmaNoiseConfig stateNoiseModelConfig =
-									new BBUncertOrArmaNoiseConfig(noiseModelXML.getId(),
-											noiseModelType, vectorConfigs, uncertainItemId,
-											stdDev, armaConstants, transformation);
+								new BBUncertOrArmaNoiseConfig(noiseModelXML.getId(),
+									noiseModelType, vectorConfigs, uncertainItemId,
+									stdDev, armaConstants, transformation);
 							uncertOrArmaBasedStateNoiseConfigs.add(stateNoiseModelConfig);
 						}
 
 					} else {
-                        // Add a vector or subvector to the state
-                        BBStochModelVectorConfig vectorConfig = parseStochModelVectorOrSubVector(
-                                stochModelConfigFile, bbModelConfig,
-                                stateXMLItem.getSubVector(), stateXMLItem.getVector());
-                        vectorCollection.add(vectorConfig);
-                    }
-                }
-                stateConfig = new BBStochModelStateConfig(stateNoiseModelConfigs,
-						uncertOrArmaBasedStateNoiseConfigs, vectorCollection);
-            }
+						// Add a vector or subvector to the state
+						BBStochModelVectorConfig vectorConfig = parseStochModelVectorOrSubVector(
+							stochModelConfigFile, bbModelConfig,
+							stateXMLItem.getSubVector(), stateXMLItem.getVector());
+						vectorCollection.add(vectorConfig);
+					}
+				}
+				BBStochModelStateConfig existingStateConfig = stateConfigMap.put(stateId, new BBStochModelStateConfig(stateNoiseModelConfigs, uncertOrArmaBasedStateNoiseConfigs, vectorCollection));
+				if (existingStateConfig != null) {
+					throw new RuntimeException("Config.Error: When configuring multiple states they should all have a unique id");
+				}
+			}
 
             boolean isCollectPredictorTimeSeries = false;
-            if (vectorSpecificationXML.getPredictor() != null) {
-                BlackBoxStochModelVectorsXMLItem[] vectorXMLItems =
-                        vectorSpecificationXML.getPredictor().getBlackBoxStochModelVectorsXMLItem();
-                for (BlackBoxStochModelVectorsXMLItem vectorXMLItem : vectorXMLItems) {
-                    BBStochModelVectorConfig vectorConfig = parseStochModelVectorOrSubVector(
-                            stochModelConfigFile, bbModelConfig,
-                            vectorXMLItem.getSubVector(), vectorXMLItem.getVector());
-                    predictorVectorCollection.add(vectorConfig);
-                }
-                isCollectPredictorTimeSeries = vectorSpecificationXML.getPredictor().getCollectTimeSeries();
-            }
+			int predictorCount = vectorSpecificationXML.getPredictorCount();
+			for (int i = 0; i < predictorCount; i++) {
+				BlackBoxStochModelVectorsXML predictor = vectorSpecificationXML.getPredictor(i);
+				String stateId = predictor.getStateId();
+				if (stateId == null) stateId = FILTERED_STATE;
+				BlackBoxStochModelVectorsXMLItem[] vectorXMLItems = predictor.getBlackBoxStochModelVectorsXMLItem();
+				Collection<BBStochModelVectorConfig> predictorVectorCollection = new ArrayList<BBStochModelVectorConfig>();
+				for (BlackBoxStochModelVectorsXMLItem vectorXMLItem : vectorXMLItems) {
+					BBStochModelVectorConfig vectorConfig = parseStochModelVectorOrSubVector(
+						stochModelConfigFile, bbModelConfig,
+						vectorXMLItem.getSubVector(), vectorXMLItem.getVector());
+					predictorVectorCollection.add(vectorConfig);
+				}
+				Collection<BBStochModelVectorConfig> existing = predictorVectorCollectionMap.put(stateId, predictorVectorCollection);
+				if (existing != null) {
+					throw new RuntimeException("Config.Error: When configuring multiple predictors they should all have a unique stateId");
+				}
+				isCollectPredictorTimeSeries = predictor.getCollectTimeSeries();
+			}
 
 
             bbStochModelVectorsConfig = new BBStochModelVectorsConfig(
 					paramsUncertaintyModelConfigs,
                     regularisationConstantList,
                     cartesianToPolarList,
-                    stateConfig,
-                    predictorVectorCollection,
+                    stateConfigMap,
+                    predictorVectorCollectionMap,
                     isCollectPredictorTimeSeries,
                     rangeValidationConstraints);
         }
