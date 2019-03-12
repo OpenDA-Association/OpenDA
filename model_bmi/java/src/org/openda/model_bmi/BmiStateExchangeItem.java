@@ -235,4 +235,8 @@ public class BmiStateExchangeItem implements IExchangeItem {
 	public void setTimes(double[] times) {
 		throw new RuntimeException("org.openda.model_bmi.BmiStateExchangeItem.setTimes() not implemented yet");
 	}
+
+	public String[] getIds() {
+		return ids.clone();
+	}
 }

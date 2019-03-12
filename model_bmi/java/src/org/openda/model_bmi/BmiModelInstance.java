@@ -56,7 +56,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	private final int modelInstanceNumber;
 	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private Map<String, IExchangeItem> forcingExchangeItems;
-	private Map<String, IExchangeItem> modelStateExchangeItems;
+	private LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
 
 	/**
 	 * Directory where the model reads the input state file(s) from. This is only used if an input state is used.
@@ -116,7 +116,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
 		exchangeItems = createExchangeItems(model, modelMissingValue);
-		modelStateExchangeItems = new HashMap<>();
+		modelStateExchangeItems = new LinkedHashMap<>();
 		for (BmiModelFactory.BmiModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
 			String stateId = modelStateExchangeItemInfo.getStateId();
 			modelStateExchangeItems.put(stateId, new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits()	, modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits(), this.model, modelMissingValue));
@@ -372,7 +372,8 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	// this method is never called if this modelInstance implements the
 	// IModelExtensions interface.
 	public ILocalizationDomains getLocalizationDomains(){
-		return new LocalizationDomainsSimpleModel();
+		BmiModelLocalizationDomains bmiModelLocalizationDomains = new BmiModelLocalizationDomains(modelStateExchangeItems);
+		return bmiModelLocalizationDomains;
 	}
 	
 	/**

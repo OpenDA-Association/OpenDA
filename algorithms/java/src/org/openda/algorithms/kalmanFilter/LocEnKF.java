@@ -145,6 +145,8 @@ public class LocEnKF extends EnKF {
 			for (int iDomain=0; iDomain<nDomain; iDomain++){
 
 				int[] selector = domains.getObservationSelector(obs.getObservationDescriptions(), iDomain);
+				//if (selector.length == 0) continue;
+				
 				IStochObserver lobs = obs.createSelection(selector);
 
 				// Forecast: Get ensemble and predictions from the model ensemble (and output to result writers)
@@ -161,7 +163,7 @@ public class LocEnKF extends EnKF {
 				//the K matrix is stored in variable Kvecs, which is an array of Vectors. There is one Vector for each observation point. Each Vector has the same length as the state vector.
 				//Important note: here for the predictions and predicted observations the numbers are stored in two parts (because this makes the computations easier):
 				//the mean (in ensembleVectorsForecast.mean and ensemblePredictionsForecast.mean) and the deviations from the mean (in ensembleVectorsForecast.ensemble and ensemblePredictionsForecast.ensemble).
-				IVector Kvecs[] = computeGainMatrix(lobs,ensemblePredictionsForecast,ensembleVectorsForecast);
+				IVector Kvecs[] = selector.length == 0 ? new IVector[0] : computeGainMatrix(lobs,ensemblePredictionsForecast,ensembleVectorsForecast);
 
 				// Apply localization to the gain matrix (shur-product)
 				//localization is only applied if it is configured in the algorithm config.
@@ -177,7 +179,7 @@ public class LocEnKF extends EnKF {
 				storeGainMatrix(lobs, analysisTime, Kvecs);
 
 				// Multiply Kalman gain with innovations and update model states
-				updateModelWithGain(lobs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs);
+				if (selector.length != 0) updateModelWithGain(lobs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs);
 
 				// Free ensembles and Kalman gain;
 				for (int j=0; j<Kvecs.length;j++){Kvecs[j].free();}
@@ -190,7 +192,7 @@ public class LocEnKF extends EnKF {
 				EnsembleVectors ensemblePredictionsAnalysis = getEnsembleVectorsPrediction(iDomain, lobs.getObservationDescriptions(),true);
 
 				// Adjust mainModel (adjust mainModel to mean analyzed state)
-				updateMainModel(ensembleVectorsAnalysis);
+				if (selector.length != 0) updateMainModel(ensembleVectorsAnalysis);
 
 				// Free ensembles
 				ensembleVectorsAnalysis.free();

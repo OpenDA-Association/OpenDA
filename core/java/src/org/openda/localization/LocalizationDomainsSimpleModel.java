@@ -23,6 +23,7 @@ package org.openda.localization;
 import org.openda.interfaces.*;
 import org.openda.utils.Vector;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -168,5 +169,10 @@ public class LocalizationDomainsSimpleModel implements ILocalizationDomains {
 		}
 
 		return selector;
+	}
+
+	@Override
+	public void setObservationSourceMap(Map<String, String> observationIdSourceVectorIdMap) {
+
 	}
 }
