@@ -58,8 +58,9 @@ public class ThreadStochModelInstance implements IStochModelInstance, IStochMode
 	boolean cashState=false;
 	boolean nonBlockingAxpy =false;
 	long sleepTime;
+	private ThreadStochModelFinish threadModelFinish;
 
-    public ThreadStochModelInstance(IStochModelInstance model, int factoryID, int maxThreads,
+	public ThreadStochModelInstance(IStochModelInstance model, int factoryID, int maxThreads,
 									boolean cashState, boolean nonBlockingAxpy, long sleepTime){
 
         this.factoryID=factoryID;
@@ -327,7 +328,12 @@ public class ThreadStochModelInstance implements IStochModelInstance, IStochMode
     
     public void finish() {
         block();
-        threadModel.finish();
+		System.out.println("Calling finish of ThreadStochModelInstance");
+		ThreadStochModelAdmin admin = threadAdmins.get(factoryID);
+		threadID = admin.waitUntilFreeThread();
+		threadModelFinish = new ThreadStochModelFinish(threadModel, threadID);
+		threadModelFinish.start();
+		admin.setThread(threadID, threadModelFinish);
     }
 
     
