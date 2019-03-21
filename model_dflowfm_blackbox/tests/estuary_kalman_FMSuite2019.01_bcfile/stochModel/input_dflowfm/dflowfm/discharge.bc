@@ -1,0 +1,11 @@
+[forcing]
+Name                            = westboundary_0001
+Function                        = timeseries
+Time-interpolation              = linear
+Quantity                        = time
+Unit                            = seconds since 1991-01-01 00:00:00
+Quantity                        = dischargebnd
+Unit                            = m³/s
+0        500
+1382400  500
+

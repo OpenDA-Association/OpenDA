@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
+    <analysisTimes type="fromObservationTimes"/>
+    <mainModel stochParameter="false" stochForcing="true" stochInit="false"/>
+    <ensembleSize>4</ensembleSize>
+  <ensembleModel stochParameter="false" stochForcing="true" stochInit="false" />
+  <!--<saveGain>
+    <times type="fixed" timeFormat="dateTimeString" >199101010000,199101010100,...,199101050000</times>
+    
+  --><!--<file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="automatic" xmlTypeMaxSize="40" />--><!--
+   
+    <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="xml" />
+  
+    <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="netcdf"/>
+  </saveGain>-->
+</EnkfConfig>

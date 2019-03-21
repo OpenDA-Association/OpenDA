@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>dflowfmStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.Simulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>simulationAlgorithm.xml</configString>
+	</algorithm>
+        <timingSettings doTiming="true"></timingSettings>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>simulation_results.py</configFile>
+	</resultWriter>
+</openDaApplication>
