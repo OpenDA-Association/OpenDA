@@ -146,7 +146,7 @@ TStart            = 0
 TStop             = 2880
 
 [restart]
-RestartFile       = estuary_map.nc
+RestartFile       =
 RestartDateTime   = 19910101
 
 [external forcing]
