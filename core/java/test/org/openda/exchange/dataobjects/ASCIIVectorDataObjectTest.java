@@ -1,4 +1,4 @@
-package org.openda.exchange.ioobjects;
+package org.openda.exchange.dataobjects;
 /* MOD_V2.0
 * Copyright (c) 2012 OpenDA Association
 * All rights reserved.
@@ -25,29 +25,28 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 
-import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
-public class ASCIIVectorIoObjectTest extends TestCase {
+public class ASCIIVectorDataObjectTest extends TestCase {
 
 	private File testRunDataDir;
 	private OpenDaTestSupport testData;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(ioCopierTest.class, "core");
+		testData = new OpenDaTestSupport(ASCIIVectorDataObject.class, "core");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
 	public void testIoCopySeriesFromObject(){
 		System.out.println("==============================================================================");
-		System.out.println(" Basic test for ASCIIVectorIoObject");
+		System.out.println(" Basic test for ASCIIVectorDataObject");
 		System.out.println("==============================================================================");
 
 		double eps=1.0e-8;
 
-		ASCIIVectorIoObject vec1 = new ASCIIVectorIoObject();
+		ASCIIVectorDataObject vec1 = new ASCIIVectorDataObject();
 		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
 		IPrevExchangeItem[] exchange1 = vec1.getExchangeItems();
 		assertEquals(1,exchange1.length);
@@ -66,7 +65,7 @@ public class ASCIIVectorIoObjectTest extends TestCase {
 
 		vec1.finish();
 
-		ASCIIVectorIoObject vec2 = new ASCIIVectorIoObject();
+		ASCIIVectorDataObject vec2 = new ASCIIVectorDataObject();
 		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
 		IPrevExchangeItem [] exchange2 = vec2.getExchangeItems();
 		assertEquals(1,exchange2.length);
@@ -82,7 +81,7 @@ public class ASCIIVectorIoObjectTest extends TestCase {
 	public void testIoCopySingleValuesFromFile() {
 
 		double eps=1.0e-8;
-		ASCIIVectorIoObject vec1 = new ASCIIVectorIoObject();
+		ASCIIVectorDataObject vec1 = new ASCIIVectorDataObject();
 		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt", "as_separate_exchange_items"});
 
 		IExchangeItem[] exchange_items = vec1.getExchangeItems();
@@ -102,7 +101,7 @@ public class ASCIIVectorIoObjectTest extends TestCase {
 		// Write to file
 		vec1.finish();
 
-		ASCIIVectorIoObject vec2 = new ASCIIVectorIoObject();
+		ASCIIVectorDataObject vec2 = new ASCIIVectorDataObject();
 		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt", "as_separate_exchange_items"});
 
 		IExchangeItem[] exchange_items2 = vec2.getExchangeItems();

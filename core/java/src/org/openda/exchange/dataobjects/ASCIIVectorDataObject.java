@@ -18,7 +18,7 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openda.exchange.ioobjects;
+package org.openda.exchange.dataobjects;
 
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.DoubleExchangeItem;
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Nils van Velzen
  */
 
-public class ASCIIVectorIoObject implements IDataObject {
+public class ASCIIVectorDataObject implements IDataObject {
 
 	// Either read the values in the ASCII file as:
 	//  - an array of numbers (ARRAY_EXCHANGE_ITEM), or as
