@@ -61,23 +61,23 @@
 			<arg></arg>
 		</ioObject>
 
-		<ioObject className="org.openda.exchange.ioobjects.ASCIIVectorIoObject">
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
 			<file>%inputFileReactionTime%</file>
 			<id>input_reaction_time</id>
 		</ioObject>
 
-		<ioObject className="org.openda.exchange.ioobjects.ASCIIVectorIoObject">
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
 			<file>%inputFileSimulationTime%</file>
 			<id>input_simulation_time</id>
 			<arg>as_separate_exchange_items</arg>
 		</ioObject>
 
-		<ioObject className="org.openda.exchange.ioobjects.ASCIIVectorIoObject">
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
 			<file>%inputFileC1%</file>
 			<id>input_c1</id>
         </ioObject>
 
-		<ioObject className="org.openda.exchange.ioobjects.ASCIIVectorIoObject">
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
 			<file>%inputFileC2%</file>
 			<id>input_c2</id>
 		</ioObject>
