@@ -126,42 +126,38 @@ public class BcFileReaderWriter
 
 
 				List<BcQuantity> table = category.getTable();
-				if(table.size() > 0) // General category will have zero entries in table
+				if (table.size() > 0) // General category will have zero entries in table
 				{
 					BcQuantity bcQuantity = table.get(0);
 					String[] tableRows = new String[bcQuantity.getStrings().size() + bcQuantity.getValues().size()];
 					Arrays.fill(tableRows, "");
 
-					for(BcQuantity column : table)
-					{
+					for (BcQuantity column : table) {
 						writer.write(String.format("%s%s", generatePropertyString(column.getQuantity()), System.lineSeparator()));
 						writer.write(String.format("%s%s", generatePropertyString(column.getUnit()), System.lineSeparator()));
 
 						List<String> strings = column.getStrings();
-						for(int j = 0; j < strings.size(); j++) {
+						for (int j = 0; j < strings.size(); j++) {
 							tableRows[j] += strings.get(j) + ' ';
 						}
 						List<Double> values = column.getValues();
-						for(int j = 0; j < values.size(); j++) {
+						for (int j = 0; j < values.size(); j++) {
 							tableRows[j] += values.get(j).toString() + ' ';
 						}
 					}
 
-					for(String row : tableRows)
+					for (String row : tableRows)
 						writer.write(String.format("    %s%s", row, System.lineSeparator()));
 				}
 				writer.newLine();
 			}
 			writer.close();
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new RuntimeException("Error writing BcFile: " + ex.getMessage());
 		}
 	}
 
-	private static String generatePropertyString(BcProperty property)
-	{
+	private static String generatePropertyString(BcProperty property) {
 		String comment = property.getComment();
 		comment = comment.equals("") ? "" : String.format("# %s", comment);
 
