@@ -22,7 +22,6 @@ package org.openda.model_dflowfm;
 import junit.framework.TestCase;
 
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
