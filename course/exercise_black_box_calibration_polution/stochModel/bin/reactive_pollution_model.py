@@ -74,7 +74,7 @@ def computeNextTimeStep(tIndex, c1, c2, input):
     reaction_time=input['reaction_time']
     x=input['x']
     u=input['u']
-    for i in xrange(0, len(c1), 1):
+    for i in range(0, len(c1), 1):
         #print('computing for gridpoint '+str(i))
         di = u[i]*time[1]/x[1]
         iLeft = i+int(math.floor(di))
@@ -162,7 +162,7 @@ def readInputFile(fileName):
     counter =1
     for line in inFile.xreadlines():
         #print("%d : %s" %(counter, line[:-1]))
-        exec "global x;"+line  in globals(),  locals()
+        exec("global x;"+line, globals(), locals())
         counter+=1
     inFile.close()
     input['x']= x
