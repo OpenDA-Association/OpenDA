@@ -12,14 +12,18 @@
 	<aliasValues>
 		<alias key="templateDir" value="input" />
 		<alias key="instanceDir" value="../output/work" />
-		<alias key="binDir" value="bin" />
+		<alias key="binDir" value="../../../native_bin" />
 		<alias key="inputFile" value="reactive_pollution_model.input" />
+		<alias key="inputFileReactionTime" value="reaction_time.txt" />
+		<alias key="inputFileSimulationTime" value="simulation_time.txt" />
+		<alias key="inputFileC1" value="concentration1.txt" />
+		<alias key="inputFileC2" value="concentration2.txt" />
 		<alias key="outputFile" value="reactive_pollution_model.output" />
 	</aliasValues>
 
     <!--  <timeInfoExchangeItems start="" end="" /> -->
     <!-- <timeInfo start="1999-12-01T01:00:00" end="1999-12-01T02:00:00" timeStepInSeconds="120"/> -->
-    <timeInfoExchangeItems start="startTime" end="endTime"/>
+    <timeInfoExchangeItems start="start_time" timeStep="time_step" end="end_time"/>
 
 	<exchangeItems>
 		<vector id="source.factory1.discharge" ioObjectId="input" elementId="source.c1_factory1.discharge" />
@@ -28,20 +32,18 @@
 		<vector id="bound.right.concentration1" ioObjectId="input" elementId="bound.c1_right.concentration" />
 		<vector id="bound.left.concentration2" ioObjectId="input" elementId="bound.c2_left.concentration" />
 		<vector id="bound.right.concentration2" ioObjectId="input" elementId="bound.c2_right.concentration" />
-		<vector id="concentration1.grid_init" ioObjectId="input" elementId="concentration1.grid" />
-		<vector id="concentration2.grid_init" ioObjectId="input" elementId="concentration2.grid" />
-
-		<vector id="startTime" ioObjectId="input" elementId="startTime" />
-		<vector id="endTime" ioObjectId="input" elementId="endTime" />
-
+		<vector id="concentration1.grid" ioObjectId="state_concentration1" elementId="concentration1.grid" />
+		<vector id="concentration2.grid" ioObjectId="state_concentration2" elementId="concentration2.grid" />
+		<vector id="reaction_time" ioObjectId="input_reaction_time" elementId="reaction_time" />
+		<vector id="start_time" ioObjectId="input_simulation_time" elementId="simulation_time[1]" />
+		<vector id="time_step" ioObjectId="input_simulation_time" elementId="simulation_time[2]" />
+		<vector id="end_time" ioObjectId="input_simulation_time" elementId="simulation_time[3]" />
 		<vector id="locA.concentration1" ioObjectId="output" elementId="output.c1_locA.concentration" />
 		<vector id="locB.concentration1" ioObjectId="output" elementId="output.c1_locB.concentration" />
 		<vector id="locC.concentration1" ioObjectId="output" elementId="output.c1_locC.concentration" />
 		<vector id="locA.concentration2" ioObjectId="output" elementId="output.c2_locA.concentration" />
 		<vector id="locB.concentration2" ioObjectId="output" elementId="output.c2_locB.concentration" />
 		<vector id="locC.concentration2" ioObjectId="output" elementId="output.c2_locC.concentration" />
-		<vector id="concentration1.grid_out" ioObjectId="output" elementId="concentration1.grid" />
-		<vector id="concentration2.grid_out" ioObjectId="output" elementId="concentration2.grid" />
 	</exchangeItems>
 
 	<doCleanUp>false</doCleanUp>

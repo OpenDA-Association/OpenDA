@@ -36,6 +36,9 @@
 				<arg>%inputFileC1%</arg>
 				<arg>--c2</arg>
 				<arg>%inputFileC2%</arg>
+				<arg>--logging_level</arg>
+				<arg>INFO</arg>
+
 				<!--
 					<checkOutput file="%outputFile%" expect="Finished Succesfully"/>
 				-->

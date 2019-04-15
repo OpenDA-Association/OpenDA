@@ -187,49 +187,6 @@ public class myWrapperTest extends TestCase {
 		assertTrue(identical);
 	}
 
-	public void testReadWriteTime() {
-
-		IoObjectInterface ioObject = new myWrapper();
-		String args[] = {};
-		File original = new File(testRunDataDir,"reactive_pollution_model.input");
-		File copy = new File(testRunDataDir,"reactive_pollution_model_copy2.input");
-		try {
-			BBUtils.copyFile(original,copy);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
-		}
-		ioObject.initialize(testRunDataDir, "reactive_pollution_model_copy2.input", args);
-
-		for(IPrevExchangeItem item:ioObject.getExchangeItems()){
-			String itemId = item.getId();
-			System.out.println("looking at item: "+itemId);
-			if(itemId.equalsIgnoreCase("startTime")){
-				System.out.println("changing item: "+itemId);
-				double startAsMjd[] = item.getValuesAsDoubles();
-				System.out.println("startTime="+startAsMjd[0]);
-				assertEquals(51513.0, startAsMjd[0], 0.0001);
-				//change
-				startAsMjd[0]=startAsMjd[0]+2.0/60.0/24.0; //start+2minutes
-				item.setValuesAsDoubles(startAsMjd);
-			}
-			if(itemId.equalsIgnoreCase("endTime")){
-				System.out.println("changing item: "+itemId);
-				double endAsMjd[] = item.getValuesAsDoubles();
-				System.out.println("endTime="+endAsMjd[0]);
-				assertEquals(51513.208333, endAsMjd[0], 0.0001);
-				// change
-				endAsMjd[0]=51513.0+5.0/60.0/24.0; //start+5minutes
-				item.setValuesAsDoubles(endAsMjd);
-			}
-		}
-		ioObject.finish();
-
-		File reference = new File(testRunDataDir,"reactive_pollution_model.refinput");
-		boolean identical = testData.FilesAreIdentical(copy,reference);
-		assertTrue(identical);
-
-	}
-
 	public void testCopyState() {
 		String args[] = new String[2];
 		File original = new File(testRunDataDir,"reactive_pollution_model.input");
