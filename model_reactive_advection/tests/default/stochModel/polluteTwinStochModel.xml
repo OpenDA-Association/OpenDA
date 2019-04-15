@@ -9,8 +9,8 @@
 
 	<vectorSpecification>
 		<state>
-  			<vector id="concentration1.grid_init" />
-  			<vector id="concentration2.grid_init" />
+  			<vector id="concentration1.grid" />
+  			<vector id="concentration2.grid" />
 			<noiseModel>
 				<vector id="source.factory1.discharge"/>
 				<ar1Model operation="add">

@@ -9,8 +9,8 @@
 
 	<vectorSpecification>
 		<state>
-  			<vector id="concentration1.grid_init" />
-  			<vector id="concentration2.grid_init" />
+  			<vector id="concentration1.grid" />
+  			<vector id="concentration2.grid" />
 			<noiseModel id="boundaryNoiseModel1" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
                			<configFile>BoundaryNoise1.xml</configFile>
                			<exchangeItems>
