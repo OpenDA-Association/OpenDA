@@ -8,6 +8,7 @@ import math
 import argparse
 import logging
 import os.path
+import yaml
 
 DEFAULT_INPUT = {
     'reaction_time': [3.0],      # reaction time (inverse of rate) in seconds
@@ -54,17 +55,9 @@ def defaultInput():
 def initOutput(inputValues):
     output={}
     #output (index based and 0 based)
-    output['output_file'] = inputValues['output_file']
-    output['matlab_output_file'] = inputValues['matlab_output_file']
-    output['output_locations'] = inputValues['output_locations']
-    output['output_substance'] = inputValues['output_substance']
-    output['output_labels']=inputValues['output_labels']
-    output['output_values']={}
-    for label in output['output_labels']:
-        output['output_values'][label]=[]
-    output['refdate']=inputValues['refdate']
-    output['unit']=inputValues['unit']
-    output['time']=inputValues['time']
+    output['output_timeseries'] = inputValues['output_timeseries']
+    for item in output['output_timeseries']:
+        item['data'] =[]
     return output
 
 def computeNextTimeStep(tIndex, c1, c2, inputValues):
@@ -235,14 +228,14 @@ def writeASCIIFile(file_name, values):
             fout.write("{0:0.2f}\n".format(value))
     return
 
-def collectOutput(c1, c2, output):
+def collectOutput(c1, c2, output,time):
     """Add current values of c1, c2 at output locations to the appropriate time series."""
 
-    for iOutput, iSubstance, iLabel in zip(output['output_locations'], output['output_substance'], output['output_labels']):
-        if (iSubstance==1):
-           output['output_values'][iLabel].append(c1[iOutput])
+    for item in output['output_timeseries']:
+        if (item['substance']==1):
+            item['data'].append({'time': time, 'value' : c1[item['location']]})
         else:
-           output['output_values'][iLabel].append(c2[iOutput])
+            item['data'].append({'time': time, 'value' : c2[item['location']]})
 
 def writeOutput(outFile, c1, c2):
     logger.info("writing output to file %s", outFile.name)
@@ -350,8 +343,6 @@ if __name__ == '__main__':
 
     # parse command line arguments
     parser = argparse.ArgumentParser(description="Run a reactive pollution model.")
-    parser.add_argument("--model_parameters", default=None,
-                        help="Python file containing all model parameters, except the reaction time, simulation time, and concentrations of substance 1 and 2.")
     parser.add_argument("--reaction_time", default=None,
                         help="ASCII file containing the reaction time.")
     parser.add_argument("--simulation_time", default=None,
@@ -371,11 +362,13 @@ if __name__ == '__main__':
 
     # read input files, or use defaults
     inputValues={}
-    if args['model_parameters']:
-        inputValues = readInputFile(args['model_parameters'])
-    else:
-        logger.info('using internal default input')
-        inputValues=defaultInput()
+
+    with open("config.yaml", 'r') as stream:
+        try:
+            inputValues = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            logger.fatal(exc)
+            raise
 
     if args['reaction_time']:
         inputValues['reaction_time'] = readASCIIFile(args['reaction_time'])
@@ -402,16 +395,21 @@ if __name__ == '__main__':
         inputValues['c2'] = [0.] * len(inputValues['u']) # Default: put concentrations to 0.
 
     output=initOutput(inputValues)
-    matlabOutFile=open(output['matlab_output_file'], 'w')
-    pythonOutFile=open(output['output_file'], 'w')
-    writePythonMapOutputInit(pythonOutFile)
+    # matlabOutFile=open(output['matlab_output_file'], 'w')
+    # pythonOutFile=open(output['output_file'], 'w')
+    # writePythonMapOutputInit(pythonOutFile)
 
     # File handles to csv output files (time series and concentration maps).
     file_handles = {}
     csv_writers = {}
-    for label in (["c1", "c2"] + inputValues['output_labels']):
-        file_handles.update({label: open("%s.csv" % label, 'a')})
-        csv_writers.update({label: csv.writer(file_handles[label])})
+    for item in inputValues['output_timeseries']:
+        path = "%s.csv" % item['id']
+        exists = os.path.isfile(path)
+        file_handles.update({item['id']: open(path, 'a', newline='')})
+        dict_writer =  csv.DictWriter(file_handles[item['id']], fieldnames=['time','value'])
+        csv_writers.update({item['id']: dict_writer})
+        if not exists:
+            dict_writer.writeheader()
 
     logger.info('main computations')
     tIndex = 0
@@ -422,8 +420,7 @@ if __name__ == '__main__':
     time=inputValues['time']
     logger.debug(c1Now)
 
-
-    collectOutput(c1Now, c2Now, output)
+    collectOutput(c1Now, c2Now, output, time[0])
 
     logger.info('computing from time %f to %f', time[0], time[2])
 
@@ -431,31 +428,30 @@ if __name__ == '__main__':
         logger.debug('computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%')
         (c1Now,c2Now)=computeNextTimeStep(tIndex, c1Now, c2Now, inputValues)
 
-        collectOutput(c1Now, c2Now, output)
+        collectOutput(c1Now, c2Now, output, t+time[1])
         tIndex+=1
 
         # This writes the entire concentration map at the current time step to file.
-        csv_writers['c1'].writerow(c1Now)
-        csv_writers['c2'].writerow(c2Now)
+        # csv_writers['c1'].writerow(c1Now)
+        # csv_writers['c2'].writerow(c2Now)
 
         # Append to time series.
-        for label in inputValues["output_labels"]:
-            value = output['output_values'][label][-1]
-            csv_writers[label].writerow([t+time[1], value])
+        for item in inputValues['output_timeseries']:
+            csv_writers[item['id']].writerow(item['data'][-1])
 
         # Same, for the matlab/python output.
-        writeMatlabMapOutput(matlabOutFile, c1Now, c2Now, tIndex)
-        writePythonMapOutput(pythonOutFile, c1Now, c2Now, tIndex)
+        # writeMatlabMapOutput(matlabOutFile, c1Now, c2Now, tIndex)
+        # writePythonMapOutput(pythonOutFile, c1Now, c2Now, tIndex)
 
-    writeOutput(pythonOutFile, c1Now, c2Now)
-    writeMatlabOutput(matlabOutFile, c1Now, c2Now)
-    matlabOutFile.close()
-    pythonOutFile.close()
+    # writeOutput(pythonOutFile, c1Now, c2Now)
+    # writeMatlabOutput(matlabOutFile, c1Now, c2Now)
+    # matlabOutFile.close()
+    # pythonOutFile.close()
 
     writeASCIIFile(args['c1'], c1Now)
     writeASCIIFile(args['c2'], c2Now)
 
-    for label in (["c1", "c2"] + inputValues['output_labels']):
+    for label in file_handles:
         file_handles[label].close()
 
     logger.info('simulation ended successfully')
