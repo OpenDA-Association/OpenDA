@@ -33,19 +33,19 @@
 **************************************************************************************************************
 
 QUANTITY=waterlevelbnd
-FILENAME=Lake2d_01.pli
+FILENAME=lake2d_01.pli
 FILETYPE=9
 METHOD=3
 OPERAND=O
 
 QUANTITY=windxy
-FILENAME=Lake2D-original.wnd
+FILENAME=lake2d-original.wnd
 FILETYPE=2
 METHOD=1
 OPERAND=O
 
 QUANTITY=windx
-FILENAME=Lake2d_windx_noise.amu
+FILENAME=lake2d_windx_noise.amu
 FILETYPE=4
 METHOD=1
 OPERAND=+
