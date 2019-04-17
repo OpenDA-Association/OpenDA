@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Nils van Velzen
  */
 
-public class ASCIIVectorDataObject implements IDataObject {
+public class AsciiVectorDataObject implements IDataObject {
 
 	// Either read the values in the ASCII file as:
 	//  - an array of numbers (ARRAY_EXCHANGE_ITEM), or as
