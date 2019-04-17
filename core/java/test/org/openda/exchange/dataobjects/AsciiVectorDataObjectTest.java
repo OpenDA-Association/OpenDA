@@ -29,24 +29,24 @@ import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
-public class ASCIIVectorDataObjectTest extends TestCase {
+public class AsciiVectorDataObjectTest extends TestCase {
 
 	private File testRunDataDir;
 	private OpenDaTestSupport testData;
 
 	protected void setUp() throws IOException {
-		testData = new OpenDaTestSupport(ASCIIVectorDataObject.class, "core");
+		testData = new OpenDaTestSupport(AsciiVectorDataObject.class, "core");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
 	public void testIoCopySeriesFromObject(){
 		System.out.println("==============================================================================");
-		System.out.println(" Basic test for ASCIIVectorDataObject");
+		System.out.println(" Basic test for AsciiVectorDataObject");
 		System.out.println("==============================================================================");
 
 		double eps=1.0e-8;
 
-		ASCIIVectorDataObject vec1 = new ASCIIVectorDataObject();
+		AsciiVectorDataObject vec1 = new AsciiVectorDataObject();
 		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
 		IPrevExchangeItem[] exchange1 = vec1.getExchangeItems();
 		assertEquals(1,exchange1.length);
@@ -65,7 +65,7 @@ public class ASCIIVectorDataObjectTest extends TestCase {
 
 		vec1.finish();
 
-		ASCIIVectorDataObject vec2 = new ASCIIVectorDataObject();
+		AsciiVectorDataObject vec2 = new AsciiVectorDataObject();
 		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
 		IPrevExchangeItem [] exchange2 = vec2.getExchangeItems();
 		assertEquals(1,exchange2.length);
@@ -81,7 +81,7 @@ public class ASCIIVectorDataObjectTest extends TestCase {
 	public void testIoCopySingleValuesFromFile() {
 
 		double eps=1.0e-8;
-		ASCIIVectorDataObject vec1 = new ASCIIVectorDataObject();
+		AsciiVectorDataObject vec1 = new AsciiVectorDataObject();
 		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt", "as_separate_exchange_items"});
 
 		IExchangeItem[] exchange_items = vec1.getExchangeItems();
@@ -101,7 +101,7 @@ public class ASCIIVectorDataObjectTest extends TestCase {
 		// Write to file
 		vec1.finish();
 
-		ASCIIVectorDataObject vec2 = new ASCIIVectorDataObject();
+		AsciiVectorDataObject vec2 = new AsciiVectorDataObject();
 		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt", "as_separate_exchange_items"});
 
 		IExchangeItem[] exchange_items2 = vec2.getExchangeItems();
