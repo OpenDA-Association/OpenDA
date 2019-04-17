@@ -333,7 +333,9 @@ def frange(start, end=None, inc=None):
 
 if __name__ == '__main__':
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO,
+        format="%(asctime)s %(levelname)s:%(message)s",
+        datefmt='%H:%M:%S')
 
     # logging.basicConfig(filename='openda.log',
     #                         filemode='a',
@@ -409,7 +411,11 @@ if __name__ == '__main__':
         dict_writer =  csv.DictWriter(file_handles[item['id']], fieldnames=['time','value'])
         csv_writers.update({item['id']: dict_writer})
         if not exists:
+            logger.info("create new output file '%s' for timeseries '%s'",path, item['id'])
             dict_writer.writeheader()
+        else:
+            logger.info("append timeseries output '%s' to file '%s'",item['id'], path)
+
 
     logger.info('main computations')
     tIndex = 0
