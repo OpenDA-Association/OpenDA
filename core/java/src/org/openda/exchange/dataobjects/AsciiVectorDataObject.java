@@ -129,7 +129,7 @@ public class AsciiVectorDataObject implements IDataObject {
 		} else {
 			myExchangeItems = new ArrayList<>();
 			for (int i = 0; i < allValues.size(); i++) {
-				String current_exchange_item_id = String.format("%s[%d]", file_basename, i+1);
+				String current_exchange_item_id = String.format("%s@%d", file_basename, i+1);
 				myExchangeItems.add(new DoubleExchangeItem(current_exchange_item_id, IExchangeItem.Role.InOut, allValues.get(i)));
 			}
 		}
