@@ -97,6 +97,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			String line;
 			while((line = reader.readLine()) != null) {
 				Scanner s = new Scanner(line).useDelimiter(delimiter);
+				s.useLocale(Locale.US);
 				field = line;
 				// skip header
 				if ( skip > 0 ) { skip--; continue;}
