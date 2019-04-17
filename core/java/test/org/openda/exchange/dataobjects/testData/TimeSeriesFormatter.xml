@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesFormatterConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <formatter class="org.openda.exchange.timeseries.DelimitedTextTimeSeriesFormatter">
+    <dateTimePattern>yyyyMMddHHmm</dateTimePattern>
+    <timeZone>GMT</timeZone>
+    <delimiter>\s+</delimiter>
+    <commentMarker>#</commentMarker>
+  </formatter>
+  <timeSeries id="waterlevel@denhelder" status="use" standardDeviation="0.05">
+    den_helder_waterlevel_astro.noos
+  </timeSeries>
+  <timeSeries id="waterlevel@aberdeen">
+    aberdeen_waterlevel_astro.noos
+  </timeSeries>
+  <timeSeries id="waterlevel@moon" status="ignore">
+    does_not_exist
+  </timeSeries>
+
+</timeSeriesFormatterConfig>

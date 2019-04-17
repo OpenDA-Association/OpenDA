@@ -19,7 +19,13 @@
  */
 package org.openda.exchange.timeseries;
 
+import org.openda.utils.ConfigTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.text.ParseException;
 
 /**
  * This interface describes methods for reading and writing TimeSeries. This allows one to specify the formats for the
@@ -37,16 +43,16 @@ import java.io.*;
 
 public abstract class TimeSeriesFormatter {
 
-   /**
-    * Abstract method for writing a TimeSeries in some format. You have to create/use a subclass that implement this method to
-    * make writing work.
-    *
-    * @param out
-    *           OutputStream to write to
-    * @param series
-    *           TimeSeries with the data
-    */
-   public abstract void write(OutputStream out, TimeSeries series);
+		/**
+		 * Abstract method for writing a TimeSeries in some format. You have to create/use a subclass that implement this method to
+		 * make writing work.
+		 *
+		 * @param out
+		 *           OutputStream to write to
+		 * @param series
+		 *           TimeSeries with the data
+		 */
+   public abstract void write(OutputStream out, TimeSeries series) throws IOException;
 
    /**
     * Abstract method for read a TimeSeries in some format. You have to create/use that implement this method to make writing
@@ -56,7 +62,7 @@ public abstract class TimeSeriesFormatter {
     *           InputStream to read from
     * @return series TimeSeries with the data
     */
-   public abstract TimeSeries read(InputStream in);
+   public abstract TimeSeries read(InputStream in) throws IOException,ParseException;
 
    /*
     * ============================================================================================== general utilities (more
@@ -115,7 +121,11 @@ public abstract class TimeSeriesFormatter {
     */
    public void writeToStandardOut(TimeSeries series) {
 	   OutputStream out = System.out;
-	   write(out, series);
+	   try {
+		   write(out, series);
+	   } catch (IOException ex) {
+	   	throw new RuntimeException(ex.getMessage());
+	   }
    }
 
    /**
@@ -128,7 +138,11 @@ public abstract class TimeSeriesFormatter {
     */
    public String writeString(TimeSeries series) {
       ByteArrayOutputStream out = new ByteArrayOutputStream(10000);
-      write(out, series);
+	   try {
+		   write(out, series);
+	   } catch (IOException ex) {
+		   throw new RuntimeException(ex.getMessage());
+	   }
       return out.toString();
    }
 
@@ -156,7 +170,7 @@ public abstract class TimeSeriesFormatter {
 			result = read(in);
 			in.close();
 		}
-		catch (IOException e) {
+		catch (IOException | ParseException e) {
 			throw new RuntimeException("Problem reading from file " + file + " : " + e.getMessage());
 		}
 		return result;
@@ -183,5 +197,19 @@ public abstract class TimeSeriesFormatter {
       }
       return result;
    }
+
+	public static TimeSeriesFormatter instantiateFrom(String className, ConfigTree configTree) {
+		// Create instance of class
+		final Class javaClass;
+		Object object;
+		try {
+			javaClass = Class.forName(className);
+			Constructor<?>  constructor = javaClass.getConstructor(ConfigTree.class);
+			object = constructor.newInstance(configTree);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not create instance for " + className + ": " + e.getMessage(), e);
+		}
+		return (TimeSeriesFormatter) object;
+	}
 
 }

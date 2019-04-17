@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesFormatterConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <formatter class="org.openda.exchange.timeseries.DelimitedTextTimeSeriesFormatter">
+    <dateTimePattern>yyyyMMddHHmm</dateTimePattern>
+    <dateTimeSelector>0</dateTimeSelector>
+    <valueSelector>1</valueSelector>
+    <delimiter>\s+</delimiter>
+    <commentMarker>#</commentMarker>
+  </formatter>
+  <timeSeries status="use" standardDeviation="0.05">
+    den_helder_waterlevel_astro.noos
+  </timeSeries>
+  <timeSeries status="validate">
+    aberdeen_waterlevel_astro.noos
+  </timeSeries>
+</timeSeriesFormatterConfig>
