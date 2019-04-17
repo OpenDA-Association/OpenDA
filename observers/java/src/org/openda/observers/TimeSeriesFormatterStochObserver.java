@@ -59,6 +59,7 @@ public class TimeSeriesFormatterStochObserver extends TimeSeriesStochObserver {
 			logger.debug("Parsing %s", seriesFile.getName());
 			if (seriesFile.exists()) {
 				TimeSeries series = formatter.readFile(seriesFile.getAbsolutePath());
+				series.setId(seriesTrees[i].getContentString("@id"));
 
 				// Get time series status from file or config  (if present)
 				String keyword = "status";
