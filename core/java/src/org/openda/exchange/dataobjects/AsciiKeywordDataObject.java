@@ -38,28 +38,38 @@ import java.util.*;
 
 /**
  *
- * Read an OpenFOAM dictionary file that contains lines of the format:
+ * This data object searches for the `oda:` keyword in inline comments of Ascii files.
+ * Prerequisite is that the model supports an Ascii input or output file which allows inline comments.
+ * For instance YAML allows inline comments.
  *
- * keyword value;\\#exchangeItemID
+ * For each occurance of the keyword in the `AsciiKeywordDataObject` searches for an integer
+ * or floating point value and creates a new exchange item.
+ * The `id` of the exchange item is taken from the full comment,
+ * e.g.  `oda:my_id` results in a exchange item id `my_id`.
+ * When the line contains multiple values, multiple exchange items are generated
+ * where the exchange item is numbered like `my_id@1` , `my_id@2` etc.
  *
- * and
  *
- * keyword (value1 value2 ...);\\#exchangeItemID
+ * ## Example file
  *
- * For each value found in a line indicated by \\#exchangeItemID a DoubleExchangeItem is created.
- * All other lines are kept as-is.
- *
- * A referenceDate (ISO 8601 format) can be specified as a second argument. When a referenceDate is specified,
- * the value for exchangeItemId's "oda:startTime" and "oda:endTime" is converted from seconds to modified Julian days.
+ * ```yaml
+ * %YAML 1.1
+ * ---
+ * # input for 1d reactive pollution model
+ * #
+ * # simulation timespan
+ * time: [ 0.0, 60.0, 15000.0] #oda:time_control
+ * #unit is always seconds
+ * unit : 'seconds'
+ * # sources mass/m^3/s
+ * reaction_time: 2000.0  #oda:reaction_time
+ * ```
  *
  *  @author Werner Kramer (VORtech)
  */
 
 @SuppressWarnings("unused")
 public class AsciiKeywordDataObject implements IDataObject{
-
-//    ResourceBundle messages =
-//        ResourceBundle.getBundle("LogMessageBundle");
 
     private static final Logger logger = LoggerFactory.getLogger(AsciiKeywordDataObject.class);
     MessageFormat logFormatter = new MessageFormat("");
