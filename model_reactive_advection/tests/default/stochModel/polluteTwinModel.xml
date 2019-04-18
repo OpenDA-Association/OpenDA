@@ -27,12 +27,12 @@
     <timeInfoExchangeItems start="start_time" timeStep="time_step" end="end_time"/>
 
 	<exchangeItems>
-		<vector id="source.factory1.discharge" ioObjectId="input" elementId="source.c1_factory1.discharge" />
-		<vector id="source.factory2.discharge" ioObjectId="input" elementId="source.c1_factory2.discharge" />
-		<vector id="bound.left.concentration1" ioObjectId="input" elementId="bound.c1_left.concentration" />
+		<vector id="source.factory1.discharge" ioObjectId="forcings" elementId="source.c1_factory1.discharge" />
+		<vector id="source.factory2.discharge" ioObjectId="forcings" elementId="source.c1_factory2.discharge" />
+		<!-- <vector id="bound.left.concentration1" ioObjectId="input" elementId="bound.c1_left.concentration" />
 		<vector id="bound.right.concentration1" ioObjectId="input" elementId="bound.c1_right.concentration" />
 		<vector id="bound.left.concentration2" ioObjectId="input" elementId="bound.c2_left.concentration" />
-		<vector id="bound.right.concentration2" ioObjectId="input" elementId="bound.c2_right.concentration" />
+		<vector id="bound.right.concentration2" ioObjectId="input" elementId="bound.c2_right.concentration" /> -->
 		<vector id="concentration1.grid" ioObjectId="state_concentration1" elementId="concentration1" />
 		<vector id="concentration2.grid" ioObjectId="state_concentration2" elementId="concentration2" />
 		<vector id="reaction_time" ioObjectId="configuration" elementId="reaction_time" />

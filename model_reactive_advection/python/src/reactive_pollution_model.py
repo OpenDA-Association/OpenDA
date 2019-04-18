@@ -311,6 +311,38 @@ def writeMatlabOutput(matlabOutFile, c1, c2):
     matlabOutFile.write("unit='%s';\n" % output['unit'])
     matlabOutFile.write("time=[%f,%f,%f]; \n" %(output['time'][0],output['time'][1],output['time'][2]))
 
+def readBoundaries(config):
+    result = config
+    for item in result:
+        if 'file' in item:
+            logger.info("Reading time series for '{}'".format(item['id']))
+            if item['values']:
+                logger.warning('Overwriting values for {}'.format(item['id']))
+            time_series=readTimeSeriesFromCsv(item['file'])
+            item['times'] = time_series['times']
+            item['values'] = time_series['values']
+    return result
+
+def readTimeSeriesFromCsv(file):
+    time_series= {'times':[], 'values': [] }
+    with open(file, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file,delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                logger.debug('Read header {}'.format(row))
+            else:
+                try:
+                    element = row[0]
+                    time_series['times'].append(float(element))
+                    element = row[1]
+                    time_series['values'].append(float(element))
+                except ValueError as exception:
+                    logger.fatal("Could not convert '{}' to a float.".format(element))
+                    exit(EX_CONFIG)
+            line_count +=1
+    return time_series
+
 def writeMatlabMapOutput(matlabOutFile, c1, c2, timeIndex):
     matlabOutFile.write("c1_map{"+str(timeIndex)+"}=["+','.join(map(str, c1))+"];\n")
     matlabOutFile.write("c2_map{"+str(timeIndex)+"}=["+','.join(map(str, c2))+"];\n")
@@ -347,11 +379,19 @@ if __name__ == '__main__':
     #     format="%(asctime)s %(levelname)s:%(message)s",
     #     datefmt='%H:%M:%S')
 
-    logging.basicConfig(filename='openda.log',
+    logging.basicConfig(filename='reactive_pollution_model.log',
                             filemode='a',
                             format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                             datefmt='%H:%M:%S',
                             level=logging.INFO)
+
+    # set up logging to console
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    # set a format which is simpler for console use
+    formatter = logging.Formatter('%(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    # add the handler to the root logger
 
     # parse command line arguments
     parser = argparse.ArgumentParser(description="Run a reactive pollution model.")
@@ -365,7 +405,8 @@ if __name__ == '__main__':
     level = logging.getLevelName(args['log_level'])
     logger = logging.getLogger(__name__)
     logger.setLevel(level)
-
+    logger.addHandler(console)
+    
     logger.debug(args)
     # read input files, or use defaults
     inputValues={}
@@ -383,8 +424,6 @@ if __name__ == '__main__':
         inputValues['a'] = config['a']
         inputValues['time'] = config['time']
         inputValues['reaction_time'] = config['reaction_time']
-        inputValues['sources'] = config['sources']
-        inputValues['boundaries'] = config['boundaries']
     except Exception as e:
         logger.fatal('Failed setting inputValues from config file: %s',e)
         exit(EX_CONFIG)
@@ -397,10 +436,11 @@ if __name__ == '__main__':
     if not 'c2' in inputValues:
         inputValues['c2'] = [0.] * len(inputValues['u']) # Default: put concentrations to 0.
 
+    # read forcings + read boundary values
+    inputValues['sources'] = readBoundaries(config['sources'])
+    inputValues['boundaries'] = readBoundaries(config['boundaries'])
+
     output=initOutput(config)
-    # matlabOutFile=open(output['matlab_output_file'], 'w')
-    # pythonOutFile=open(output['output_file'], 'w')
-    # writePythonMapOutputInit(pythonOutFile)
 
     # File handles to csv output files (time series and concentration maps).
     file_handles = {}
@@ -424,28 +464,26 @@ if __name__ == '__main__':
 
     c1Now=inputValues['c1'][:]
     c2Now=inputValues['c2'][:]
+    
     time=config['time']
-
     logger.debug('Time {}'.format(time))
 
-
-    collectOutput(c1Now, c2Now, output, time[0])
-
     logger.debug('Collect Output {}'.format(time[0]))
-
+    collectOutput(c1Now, c2Now, output, time[0])
 
     # Set next output time for maps
     for maps in config['output']['maps']:
         if (time[0]) > maps['times'][2]:
-            maps['next_output_time'] = None
-        elif (time[0]) <= maps['times'][0]:
+            continue
+        elif abs( (time[0] - maps['times'][0])) < 1.0e-6:
+            maps['next_output_time'] = maps['times'][0] + maps['times'][1]
+        elif (time[0]) < maps['times'][0]:
             maps['next_output_time'] = maps['times'][0]
         else:
             delta = (time[0] - maps['times'][0])/maps['times'][1]
             maps['next_output_time'] = maps['times'][0] + math.ceil(delta)* maps['times'][1]
 
     logger.info('computing from time %f to %f', time[0], time[2])
-
     for t in frange(time[0], time[2], time[1]):
         logger.debug('computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%')
         (c1Now,c2Now)=computeNextTimeStep(tIndex, c1Now, c2Now, inputValues)
@@ -460,10 +498,10 @@ if __name__ == '__main__':
         # Write maps
         currentTime = t+time[1]
         for maps in config['output']['maps']:
-            if not maps['next_output_time'] == None and abs( currentTime - maps['next_output_time']) < 1.0e-6:
+            if 'next_output_time' in maps and abs( currentTime - maps['next_output_time']) < 1.0e-6:
                 maps['next_output_time'] =  maps['next_output_time'] + maps['times'][1]
                 if maps['next_output_time'] > maps['times'][2]:
-                    maps['next_output_time'] = None
+                    maps.pop('next_output_time')
                 outputFile = maps['file'].format(currentTime)
                 if maps['substance'] == 1:
                     writeASCIIFile(outputFile, c1Now)
