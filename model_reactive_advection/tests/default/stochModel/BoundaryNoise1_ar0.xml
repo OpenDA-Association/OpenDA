@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <timeSeriesNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/timeSeriesNoiseModel.xsd">
-	<simulationTimespan timeFormat="dateTimeString">199912010000,199912010001,...,199912010410</simulationTimespan>
+	<simulationTimespan timeFormat="mjd">0,60,...,15000</simulationTimespan>
 <timeSeries id="source.factory1.discharge" standardDeviation="0.1"
             timeCorrelationScale="0.0" timeCorrelationScaleUnit="hours" />
 </timeSeriesNoiseModelConfig>
