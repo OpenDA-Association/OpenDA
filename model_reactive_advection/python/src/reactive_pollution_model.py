@@ -67,7 +67,7 @@ def initOutput(config):
         raise e
     return output
 
-def computeNextTimeStep(tIndex, c1, c2, inputValues):
+def computeNextTimeStep(currentTime, c1, c2, inputValues):
     logger.debug('computing next timestep')
     c1Next = [0.0 for dummy in c1]
     c2Next = [0.0 for dummy in c2]
@@ -101,15 +101,19 @@ def computeNextTimeStep(tIndex, c1, c2, inputValues):
 
     a=inputValues['a']
     for source in inputValues['sources']:
+        if 'times' in source:        
+            found = False
+            for t in range( source['currentIndex'], len(source['times']) ):
+                if abs(source['times'][t] - currentTime) < 1e-6:
+                    found = True
+                    source['currentIndex'] = t
+                    break
+            if not found:
+                logger.fatal('Time {} outside time series for {}: {}'.format(currentTime ,source['id'], source['times']) )
+                exit(EX_CONFIG)
+        cValue = max(source['values'][source['currentIndex']],0.0)
         iLoc = source['location']
-        iSubstance = source['substance']
-        cValues = source['values']
-        if(tIndex<len(cValues)):
-            cValue = cValues[tIndex]
-        else:
-            cValue = cValues[-1]
-        cValue = max(cValue, 0.0)
-        if(iSubstance==1):
+        if(source['substance']==1):
            c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
         else:
            c2Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
@@ -118,28 +122,27 @@ def computeNextTimeStep(tIndex, c1, c2, inputValues):
     logger.debug('inflow boundaries')
 
     for boundary in inputValues['boundaries']:
+        if 'times' in boundary:        
+            found = False
+            for t in range( boundary['currentIndex'], len(boundary['times']) ):
+                if abs(boundary['times'][t] - currentTime) < 1e-6:
+                    found = True
+                    boundary['currentIndex'] = t
+                    break
+            if not found:
+                logger.fatal('Time {} outside time series for {}: {}'.format(currentTime ,boundary['id'], boundary['times']) )
+                exit(EX_CONFIG)
+        bValue = max(boundary['values'][boundary['currentIndex']],0.0)
         location = boundary['location']
         logger.debug(boundary)
         if boundary['id'].endswith('left'):
             if u[location]>0 :            
-                bValues = boundary['values']
-                if(tIndex<len(bValues)):
-                    bValue = bValues[tIndex]
-                else:
-                    bValue = bValues[-1]
-                bValue=max(bValue, 0.0)
                 if boundary['substance'] == 1:
                     c1Next[location] = bValue
                 if boundary['substance'] == 2:
                     c2Next[location] = bValue
         if boundary['id'].endswith('right'):
             if u[location]<0 :            
-                bValues = boundary['values']
-                if(tIndex<len(bValues)):
-                    bValue = bValues[tIndex]
-                else:
-                    bValue = bValues[-1]
-                bValue=max(bValue, 0.0)
                 if boundary['substance'] == 1:
                     c1Next[location] = bValue
                 if boundary['substance'] == 2:
@@ -210,8 +213,12 @@ def readInputFile(fileName):
 def readASCIIFile(file_name):
     """ Reads an ASCII file containing a float value on each line. """
     logger.info('reading from ASCII file %s',file_name)
-    with open(file_name, 'r') as fin:
-        file_contents = fin.readlines()
+    try:
+        with open(file_name, 'r') as fin:
+            file_contents = fin.readlines()
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        exit(-1)
 
     try:
         file_contents = [float(val) for val in file_contents]
@@ -232,9 +239,13 @@ def writeASCIIFile(file_name, values):
         except Exception as e:
             logger.fatal("Cannot create directory: %s", directory)
             raise(e)
-    with open(file_name, 'w') as fout:
-        for value in values:
-            fout.write("{0:0.2f}\n".format(value))
+    try:
+        with open(file_name, 'w') as fout:
+            for value in values:
+                fout.write("{0:0.2f}\n".format(value))
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        exit(-1)
     return
 
 def collectOutput(c1, c2, output,time):
@@ -314,6 +325,7 @@ def writeMatlabOutput(matlabOutFile, c1, c2):
 def readBoundaries(config):
     result = config
     for item in result:
+        item['currentIndex'] = 0
         if 'file' in item:
             logger.info("Reading time series for '{}'".format(item['id']))
             if item['values']:
@@ -325,22 +337,26 @@ def readBoundaries(config):
 
 def readTimeSeriesFromCsv(file):
     time_series= {'times':[], 'values': [] }
-    with open(file, 'r') as csv_file:
-        csv_reader = csv.reader(csv_file,delimiter=',')
-        line_count = 0
-        for row in csv_reader:
-            if line_count == 0:
-                logger.debug('Read header {}'.format(row))
-            else:
-                try:
-                    element = row[0]
-                    time_series['times'].append(float(element))
-                    element = row[1]
-                    time_series['values'].append(float(element))
-                except ValueError as exception:
-                    logger.fatal("Could not convert '{}' to a float.".format(element))
-                    exit(EX_CONFIG)
-            line_count +=1
+    try:
+        with open(file, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file,delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    logger.debug('Read header {}'.format(row))
+                else:
+                    try:
+                        element = row[0]
+                        time_series['times'].append(float(element))
+                        element = row[1]
+                        time_series['values'].append(float(element))
+                    except ValueError:
+                        logger.fatal("Could not convert '{}' to a float.".format(element))
+                        exit(EX_CONFIG)
+                line_count +=1
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        exit(-1)
     return time_series
 
 def writeMatlabMapOutput(matlabOutFile, c1, c2, timeIndex):
@@ -412,12 +428,17 @@ if __name__ == '__main__':
     inputValues={}
     logger.info('start of program')
     logger.info('Reading {}'.format(args['config']))
-    with open(args['config'], 'r') as stream:
-        try:
-            config = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            logger.fatal(exc)
-            raise
+    try:
+        with open(args['config'], 'r') as stream:
+            try:
+                config = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                logger.fatal(exc)
+                exit(EX_CONFIG)
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        exit(-1)
+
     try: 
         inputValues['u'] = config['u']
         inputValues['x'] = config['x']
@@ -448,7 +469,12 @@ if __name__ == '__main__':
     for item in config['output']['timeseries']:
         path = "%s.csv" % item['id']
         exists = os.path.isfile(path)
-        file_handles.update({item['id']: open(path, 'a', newline='')})
+        try:
+            file_handles.update({item['id']: open(path, 'a', newline='')})
+        except EnvironmentError as exception:
+            logger.fatal(exception)
+            exit(-1)
+
         dict_writer =  csv.DictWriter(file_handles[item['id']], fieldnames=['time','value'])
         csv_writers.update({item['id']: dict_writer})
         if not exists:
@@ -459,7 +485,6 @@ if __name__ == '__main__':
 
 
     logger.info('main computations')
-    tIndex = 0
     logger.debug(inputValues['c1'])
 
     c1Now=inputValues['c1'][:]
@@ -486,10 +511,9 @@ if __name__ == '__main__':
     logger.info('computing from time %f to %f', time[0], time[2])
     for t in frange(time[0], time[2], time[1]):
         logger.debug('computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%')
-        (c1Now,c2Now)=computeNextTimeStep(tIndex, c1Now, c2Now, inputValues)
+        (c1Now,c2Now)=computeNextTimeStep(t, c1Now, c2Now, inputValues)
 
         collectOutput(c1Now, c2Now, output, t+time[1])
-        tIndex+=1
 
         # Append to time series.
         for item in output['output_timeseries']:
