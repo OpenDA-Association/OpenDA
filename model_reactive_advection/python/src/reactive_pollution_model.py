@@ -67,6 +67,17 @@ def initOutput(config):
         raise e
     return output
 
+def interp(x,y,x0,index=0):
+    for i in range( index, len(x)-1 ):
+        if (x0  - 1e-6 ) < x[i+1]:
+            w = ( x0 -x[i]) /(x[i+1] - x[i])
+            value = w * y[i+1] + (1.0-w) * y[i]
+            index = i
+            break
+    logger.debug('interp x {} [{},{}] {}'.format(i,x[i],x[i+1], x0))
+    logger.debug('interp y {} [{},{}] {}'.format(w, y[i],y[i+1], value))
+    return value, index
+
 def computeNextTimeStep(currentTime, c1, c2, inputValues):
     logger.debug('computing next timestep')
     c1Next = [0.0 for dummy in c1]
@@ -101,17 +112,10 @@ def computeNextTimeStep(currentTime, c1, c2, inputValues):
 
     a=inputValues['a']
     for source in inputValues['sources']:
+        cValue = source['values'][0]
         if 'times' in source:        
-            found = False
-            for t in range( source['currentIndex'], len(source['times']) ):
-                if abs(source['times'][t] - currentTime) < 1e-6:
-                    found = True
-                    source['currentIndex'] = t
-                    break
-            if not found:
-                logger.fatal('Time {} outside time series for {}: {}'.format(currentTime ,source['id'], source['times']) )
-                exit(EX_CONFIG)
-        cValue = max(source['values'][source['currentIndex']],0.0)
+            cValue, source['currentIndex'] = interp(source['times'],source['values'],currentTime, source['currentIndex'])
+        cValue = max(cValue,0)
         iLoc = source['location']
         if(source['substance']==1):
            c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
@@ -122,17 +126,10 @@ def computeNextTimeStep(currentTime, c1, c2, inputValues):
     logger.debug('inflow boundaries')
 
     for boundary in inputValues['boundaries']:
-        if 'times' in boundary:        
-            found = False
-            for t in range( boundary['currentIndex'], len(boundary['times']) ):
-                if abs(boundary['times'][t] - currentTime) < 1e-6:
-                    found = True
-                    boundary['currentIndex'] = t
-                    break
-            if not found:
-                logger.fatal('Time {} outside time series for {}: {}'.format(currentTime ,boundary['id'], boundary['times']) )
-                exit(EX_CONFIG)
-        bValue = max(boundary['values'][boundary['currentIndex']],0.0)
+        bValue = boundary['values'][0]
+        if 'times' in boundary:
+            cValue, boundary['currentIndex'] = interp(boundary['times'],boundary['values'],currentTime, boundary['currentIndex'])
+        bValue = max(bValue,0)
         location = boundary['location']
         logger.debug(boundary)
         if boundary['id'].endswith('left'):
