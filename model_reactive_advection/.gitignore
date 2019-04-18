@@ -1,2 +1,2 @@
 python/dist
-**/*_results.m
+__pycache__
