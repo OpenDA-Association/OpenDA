@@ -40,11 +40,11 @@ output:
   directory: output
   maps :
   - id: 'c1'
-    times: [0.0, 600.0, 15000.0]
+    times: [0.0, 600.0, 1800.0]
     substance : 1
     file: maps/concentration1_{}.txt
   - id: 'c2'
-    times: [1200.0, 600.0, 10000.0]
+    times: [0.0, 600.0, 1800.0]
     substance : 2
     file: maps/concentration2_{}.txt
   restart :
