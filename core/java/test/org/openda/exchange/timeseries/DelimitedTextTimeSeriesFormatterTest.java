@@ -75,8 +75,18 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		double times[] = series1.getTimesRef();
 		assertEquals("times[0]", 60.0,times[0], delta);
 		assertEquals("times length", 300,times.length);
+	}
 
-
+	public void testSCsvFormattedWithSelectors() {
+		double delta=0.0001;
+		ConfigTree config = new ConfigTree("<root><dateTimeSelector>2</dateTimeSelector><valueSelector>0</valueSelector><delimiter>,</delimiter><skipLines>1</skipLines><decimal>.</decimal></root>");
+		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
+		File csvFile = new File(testRunDataDir, "columnselector.csv");
+		TimeSeries series1 = formatter.readFile(csvFile.getAbsolutePath());
+		assertNotNull(series1);
+		double times[] = series1.getTimesRef();
+		assertEquals("times[0]", 60.0,times[0], delta);
+		assertEquals("times length", 300,times.length);
 	}
 
 
