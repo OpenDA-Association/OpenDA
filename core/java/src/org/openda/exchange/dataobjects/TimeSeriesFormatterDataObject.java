@@ -20,11 +20,14 @@
 
 package org.openda.exchange.dataobjects;
 
+import org.openda.interfaces.IPrevExchangeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
@@ -44,6 +47,8 @@ public class TimeSeriesFormatterDataObject implements IDataObject {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimeSeriesFormatterDataObject.class);
 	private HashMap<String, TimeSeries> seriesMap = new HashMap<>();
+	private ConfigTree config;
+	private File workingDir;
 
 	/**
 	 * Initialize the configurable. Specify what its "working directory" is (usually meaning: the directory
@@ -55,11 +60,12 @@ public class TimeSeriesFormatterDataObject implements IDataObject {
 	 */
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
-		ConfigTree config = new ConfigTree(workingDir, arguments[0], true);
+		this.config = new ConfigTree(workingDir, arguments[0], true);
+		this.workingDir = workingDir;
 		// get formatter class from config and instantiate
-		String className = config.getContentString("formatter@class");
-		TimeSeriesFormatter formatter = TimeSeriesFormatter.instantiateFrom(className, config.getSubTrees("formatter")[0]);
-		ConfigTree seriesTrees[] = config.getSubTrees("timeSeries");
+		String className = this.config.getContentString("formatter@class");
+		TimeSeriesFormatter formatter = TimeSeriesFormatter.instantiateFrom(className, this.config.getSubTrees("formatter")[0]);
+		ConfigTree seriesTrees[] = this.config.getSubTrees("timeSeries");
 		if (seriesTrees.length == 0) {
 			logger.warn("No '<timeSeries>' configured in %s", arguments[0]);
 		}
@@ -145,7 +151,28 @@ public class TimeSeriesFormatterDataObject implements IDataObject {
 	 */
 	@Override
 	public void finish() {
-
+		String className = this.config.getContentString("formatter@class");
+		TimeSeriesFormatter formatter = TimeSeriesFormatter.instantiateFrom(className, this.config.getSubTrees("formatter")[0]);
+		ConfigTree seriesTrees[] = this.config.getSubTrees("timeSeries");
+		// Loop over all configured timeSeries
+		for (ConfigTree seriesTree : seriesTrees) {
+			// Get id from config
+			String id = seriesTree.getAsString("@id", null);
+			if (!"use".equals(seriesTree.getAsString("@status", "use"))) {
+				logger.debug("Ignore timeSeries with id '{}'", id);
+				continue;
+			}
+			String seriesFileName = seriesTree.getContentString("").trim();
+			File seriesFile = new File(workingDir, seriesFileName);
+			logger.debug("Parsing file'{}'", seriesFile.getName());
+			if (seriesFile.exists()) {
+				TimeSeries timeSeries = seriesMap.get(id);
+				if ( timeSeries.getRole() == IPrevExchangeItem.Role.Input ) {
+					continue;
+				}
+				formatter.writeFile(seriesFile, timeSeries, true);
+			}
+		}
 	}
 
 }
