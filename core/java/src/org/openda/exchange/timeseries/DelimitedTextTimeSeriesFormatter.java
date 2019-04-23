@@ -26,9 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -36,15 +34,16 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 
 	private static final Logger logger = LoggerFactory.getLogger(DelimitedTextTimeSeriesFormatter.class);
 
-	protected DateFormat dateFormatter;
-	protected TimeZone timeZone = TimeZone.getTimeZone("GMT");
-	protected String delimiter;
-	protected String commentMarker;
-	protected int skipLines;
-	protected boolean StoreAndwriteSkipped;
-	protected boolean StoreAndwriteComment;
-	protected int dateTimeSelector;
-	protected int valueSelector;
+	private DateFormat dateFormatter;
+	private DecimalFormat decimalFormat;
+	private TimeZone timeZone = TimeZone.getTimeZone("GMT");
+	private String delimiter;
+	private String commentMarker;
+	private int skipLines;
+	private boolean StoreAndwriteSkipped;
+	private boolean StoreAndwriteComment;
+	private int dateTimeSelector;
+	private int valueSelector;
 
 	private IPrevExchangeItem.Role role;
 
@@ -59,6 +58,10 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		this.StoreAndwriteComment = configTree.getAsBoolean("StoreAndwriteComment",true);
 		this.dateTimeSelector = configTree.getAsInt("dateTimeSelector",  0);
 		this.valueSelector = configTree.getAsInt("valueSelector",  1);
+		this.decimalFormat = new DecimalFormat();
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator(configTree.getAsString("decimalSeparator",  ".").charAt(0));
+		this.decimalFormat.setDecimalFormatSymbols(symbols);
 
 		String role = configTree.getAsString("role", "input");
 
@@ -87,6 +90,10 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		double[] values = series.getValuesRef();
 		String headerContents = series.getProperty("header");
 		writer.write(headerContents);
+		if (Math.max(this.dateTimeSelector,this.valueSelector)> 1) {
+			logger.error("Cannot write delimited file with more the two columns");
+			throw new RuntimeException("Cannot write delimited file with more the two columns");
+		}
 		for (int i=0;i< times.length ; i++) {
 			String[] parts = new String[2];
 			String dateString;
@@ -98,7 +105,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 				dateString = String.valueOf(times[i]);
 			}
 			parts[this.dateTimeSelector] = dateString;
-			parts[this.valueSelector] = String.valueOf(values[i]);
+			parts[this.valueSelector] = this.decimalFormat.format(values[i]);
 			for (int s=0; s<parts.length-1;s++) {
 				writer.write(parts[s]);
 				writer.write(this.delimiter);
@@ -129,25 +136,28 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 				field = line;
 				s.useLocale(Locale.US);
 				// skip header
-				if ( skip > 0 ) { headerContents.append(line+"\n"); skip--; continue;}
+				if ( skip > 0 ) { headerContents.append(line).append("\n"); skip--; continue;}
 				if (this.commentMarker != null) {
 					if (s.hasNext(Pattern.compile(this.commentMarker + ".*"))) continue;  //TODO use comment marker
 				}
 				//parse date time
 
 				String[] parts = line.split(this.delimiter);
+				if (parts.length < Math.max(this.dateTimeSelector,this.valueSelector)) {
+					throw new InputMismatchException();
+				}
 				if (dateFormatter!=null) {
 					Date time = dateFormatter.parse(parts[this.dateTimeSelector]);
 					logger.trace("getTime: {} ", time.getTime());
 					times.add(TimeUtils.date2Mjd(time));
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 				} else {
-					double time = Double.parseDouble(parts[this.dateTimeSelector]);
+					double time = this.decimalFormat.parse(parts[this.dateTimeSelector]).doubleValue();
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 					times.add(time);
 				}
 				// parse value
-				double value = Double.parseDouble(parts[this.valueSelector]);
+				double value = this.decimalFormat.parse(parts[this.valueSelector]).doubleValue();
 				logger.trace("value={} at line {}",value, reader.getLineNumber());
 				values.add(value);
 				s.close();
@@ -157,8 +167,8 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			logger.error("Error parsing '{}' at line: {}",field, reader.getLineNumber());
 			throw ex;
 		}
-		double[] t = toPrimitive(times.toArray(new Double[times.size()]) );
-		double[] v = toPrimitive(values.toArray(new Double[values.size()]) );
+		double[] t = toPrimitive(times.toArray(new Double[0]) );
+		double[] v = toPrimitive(values.toArray(new Double[0]) );
 		logger.debug("times: {}",t);
 		logger.debug("values: {}",v);
 
@@ -176,7 +186,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		}
 		final double[] result = new double[array.length];
 		for (int i = 0; i < array.length; i++) {
-			result[i] = array[i].doubleValue();
+			result[i] = array[i];
 		}
 		return result;
 	}

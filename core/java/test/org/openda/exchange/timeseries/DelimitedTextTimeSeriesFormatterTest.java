@@ -23,8 +23,9 @@ package org.openda.exchange.timeseries;
 	import org.openda.utils.ConfigTree;
 	import org.openda.utils.OpenDaTestSupport;
 
-	import java.io.File;
-	import java.io.IOException;
+	import java.io.*;
+	import java.nio.charset.Charset;
+	import java.text.ParseException;
 
 public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 	private File testRunDataDir;
@@ -64,8 +65,6 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 
 
 	public void testCsvFormatted() {
-		double delta=0.0001;
-
 		ConfigTree config = new ConfigTree("<root><delimiter>,</delimiter><skipLines>1</skipLines><decimal>.</decimal></root>");
 
 		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
@@ -73,11 +72,11 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		TimeSeries series1 = formatter.readFile(csvFile.getAbsolutePath());
 		assertNotNull(series1);
 		double times[] = series1.getTimesRef();
-		assertEquals("times[0]", 60.0,times[0], delta);
+		assertEquals("times[0]", 60.0,times[0], Math.ulp(60.0));
 		assertEquals("times length", 300,times.length);
 	}
 
-	public void testSCsvFormattedWithSelectors() {
+	public void testCsvFormattedWithSelectors() {
 		double delta=0.0001;
 		ConfigTree config = new ConfigTree("<root><dateTimeSelector>2</dateTimeSelector><valueSelector>0</valueSelector><delimiter>,</delimiter><skipLines>1</skipLines><decimal>.</decimal></root>");
 		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
@@ -85,8 +84,21 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		TimeSeries series1 = formatter.readFile(csvFile.getAbsolutePath());
 		assertNotNull(series1);
 		double times[] = series1.getTimesRef();
-		assertEquals("times[0]", 60.0,times[0], delta);
+		assertEquals("times[0]", 60.0,times[0], Math.ulp(60.0));
 		assertEquals("times length", 300,times.length);
+	}
+
+	public void testSemicolon() throws ParseException, IOException{
+		double delta=0.0001;
+		ConfigTree config = new ConfigTree("<root><delimiter>;</delimiter><decimalSeparator>,</decimalSeparator></root>");
+		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
+		InputStream testInputStream = new ByteArrayInputStream("60,0;300,0\n".getBytes(Charset.forName("UTF-8")));
+		TimeSeries series1 = formatter.read(testInputStream);
+		assertNotNull(series1);
+		double times[] = series1.getTimesRef();
+		double values[] = series1.getValuesRef();
+		assertEquals("times[0]", 60.0,times[0], Math.ulp(60.0));
+		assertEquals("values[0]", 300.0,values[0], Math.ulp(300.0));
 	}
 
 
