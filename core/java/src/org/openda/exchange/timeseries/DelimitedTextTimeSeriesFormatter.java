@@ -20,6 +20,7 @@
 
 package org.openda.exchange.timeseries;
 
+import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.ConfigTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 	protected int skipLines;
 	protected boolean StoreAndwriteSkipped;
 	protected boolean StoreAndwriteComment;
+	private IPrevExchangeItem.Role role;
 
 	public DelimitedTextTimeSeriesFormatter(ConfigTree configTree) {
 		String datePattern = configTree.getAsString("dateTimePattern", null);
@@ -52,6 +54,15 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		this.skipLines = configTree.getAsInt("skipLines",0);
 		this.StoreAndwriteSkipped = configTree.getAsBoolean("StoreAndwriteSkipped",true);
 		this.StoreAndwriteComment = configTree.getAsBoolean("StoreAndwriteComment",true);
+		String role = configTree.getAsString("role", "input");
+
+		if ("input".equalsIgnoreCase(role)){
+			this.role = IPrevExchangeItem.Role.Input;
+		} else if ("output".equalsIgnoreCase(role)) {
+			this.role = IPrevExchangeItem.Role.Output;
+		} else if ("inout".equalsIgnoreCase(role)) {
+			this.role = IPrevExchangeItem.Role.InOut;
+		}
 
 		if (this.dateFormatter!=null) {
 			this.dateFormatter.setTimeZone(this.timeZone);
@@ -67,18 +78,23 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 	public void write(OutputStream out, TimeSeries series) throws IOException{
 		OutputStreamWriter writer = new OutputStreamWriter(out);
 		double[] times = series.getTimesRef();
-		if (this.dateFormatter== null) {
-			for (double time : times) {
-				writer.write(String.valueOf(time));
-			}
-		} else {
-			for (double time : times) {
-				Date date = TimeUtils.mjdToDate(time);
+		double[] values = series.getValuesRef();
+		String headerContents = series.getProperty("header");
+		writer.write(headerContents);
+		for (int i=0;i< times.length ; i++) {
+			if (this.dateFormatter != null) {
+				Date date = TimeUtils.mjdToDate(times[i]);
 				String dateString = this.dateFormatter.format(date);
 				logger.debug(dateString);
 				writer.write(dateString);
+			} else {
+				writer.write(String.valueOf(times[i]));
 			}
+			writer.write(this.delimiter);
+			writer.write(String.valueOf(values[i]));
+			writer.write("\n");
 		}
+		writer.close();
 	}
 
 	/**
@@ -92,6 +108,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		String field="";
 		ArrayList<Double> times = new ArrayList<>();
 		ArrayList<Double> values = new ArrayList<>();
+		StringBuilder headerContents = new StringBuilder();
 		int skip = skipLines;
 		try {
 			String line;
@@ -100,7 +117,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 				s.useLocale(Locale.US);
 				field = line;
 				// skip header
-				if ( skip > 0 ) { skip--; continue;}
+				if ( skip > 0 ) { headerContents.append(line+"\n"); skip--; continue;}
 				if (this.commentMarker != null) {
 					if (s.hasNext(Pattern.compile(this.commentMarker + ".*"))) continue;  //TODO use comment marker
 				}
@@ -117,9 +134,9 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 					times.add(time);
 				}
 				// parse value
-					double value = s.nextDouble();
-					logger.trace("value={} at line {}",value, reader.getLineNumber());
-					values.add(value);
+				double value = s.nextDouble();
+				logger.trace("value={} at line {}",value, reader.getLineNumber());
+				values.add(value);
 
 				s.close();
 			}
@@ -134,7 +151,8 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		logger.debug("values: {}",v);
 
 		TimeSeries ts = new TimeSeries(t,v);
-
+		ts.setProperty("header",headerContents.toString());
+		ts.role = this.role;
 		return ts;
 	}
 
