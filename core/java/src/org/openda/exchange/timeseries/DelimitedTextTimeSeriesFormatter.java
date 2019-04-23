@@ -43,6 +43,9 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 	protected int skipLines;
 	protected boolean StoreAndwriteSkipped;
 	protected boolean StoreAndwriteComment;
+	protected int dateTimeSelector;
+	protected int valueSelector;
+
 	private IPrevExchangeItem.Role role;
 
 	public DelimitedTextTimeSeriesFormatter(ConfigTree configTree) {
@@ -54,6 +57,9 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		this.skipLines = configTree.getAsInt("skipLines",0);
 		this.StoreAndwriteSkipped = configTree.getAsBoolean("StoreAndwriteSkipped",true);
 		this.StoreAndwriteComment = configTree.getAsBoolean("StoreAndwriteComment",true);
+		this.dateTimeSelector = configTree.getAsInt("dateTimeSelector",  0);
+		this.valueSelector = configTree.getAsInt("valueSelector",  1);
+
 		String role = configTree.getAsString("role", "input");
 
 		if ("input".equalsIgnoreCase(role)){
@@ -82,16 +88,22 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		String headerContents = series.getProperty("header");
 		writer.write(headerContents);
 		for (int i=0;i< times.length ; i++) {
+			String[] parts = new String[2];
+			String dateString;
 			if (this.dateFormatter != null) {
 				Date date = TimeUtils.mjdToDate(times[i]);
-				String dateString = this.dateFormatter.format(date);
+				dateString = this.dateFormatter.format(date);
 				logger.debug(dateString);
-				writer.write(dateString);
 			} else {
-				writer.write(String.valueOf(times[i]));
+				dateString = String.valueOf(times[i]);
 			}
-			writer.write(this.delimiter);
-			writer.write(String.valueOf(values[i]));
+			parts[this.dateTimeSelector] = dateString;
+			parts[this.valueSelector] = String.valueOf(values[i]);
+			for (int s=0; s<parts.length-1;s++) {
+				writer.write(parts[s]);
+				writer.write(this.delimiter);
+			}
+			writer.write(parts[parts.length-1]);
 			writer.write("\n");
 		}
 		writer.close();
@@ -115,29 +127,28 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			while((line = reader.readLine()) != null) {
 				Scanner s = new Scanner(line).useDelimiter(delimiter);
 				s.useLocale(Locale.US);
-				field = line;
 				// skip header
 				if ( skip > 0 ) { headerContents.append(line+"\n"); skip--; continue;}
 				if (this.commentMarker != null) {
 					if (s.hasNext(Pattern.compile(this.commentMarker + ".*"))) continue;  //TODO use comment marker
 				}
 				//parse date time
-				if (dateFormatter!=null) {  //TODO make order of data/value configurable
-					field = s.next();
-					Date time = dateFormatter.parse(field);
+
+				String[] parts = line.split(this.delimiter);
+				if (dateFormatter!=null) {
+					Date time = dateFormatter.parse(parts[this.dateTimeSelector]);
 					logger.trace("getTime: {} ", time.getTime());
 					times.add(TimeUtils.date2Mjd(time));
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 				} else {
-					double time = s.nextDouble();
+					double time = Double.parseDouble(parts[this.dateTimeSelector]);
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 					times.add(time);
 				}
 				// parse value
-				double value = s.nextDouble();
+				double value = Double.parseDouble(parts[this.valueSelector]);
 				logger.trace("value={} at line {}",value, reader.getLineNumber());
 				values.add(value);
-
 				s.close();
 			}
 		}
