@@ -14,7 +14,7 @@ refdate : '01 dec 1999'
 unit : 'seconds'
 # sources mass/m^3/s
 reaction_time: 2000 #oda:reaction_time
-time: [0, 60, 15000] #oda:time_step
+time: [0, 60, 15000] #oda:time_control
 sources:
 - id: 'c1_factory1'
   location : 5
