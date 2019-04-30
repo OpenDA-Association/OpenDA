@@ -48,7 +48,6 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		return 0;
 	}
 
-	@Override
 	public int observerSetObsAndStdDevs(double[] observations, double[] standardDeviations) {
 		try {
 			stochObserver = new CalibrationLibraryStochObserver(observations, standardDeviations);
@@ -81,6 +80,11 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 			optimalParameterValues = algorithm.getBestEstimate().getParameters().getValues();
 		}
 		return nextParams;
+	}
+
+	public String getErrorMessage() {
+		return ((CalibrationLibraryStochModelInstance)stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
+			getErrorString();
 	}
 
 	public double[] algorithmGetOptimalParameterValues() {

@@ -37,7 +37,7 @@ public class CalibrationLibraryStochModelFactory implements IStochModelFactory {
 		if (stochModelInstance == null) {
 			stochModelInstance = new CalibrationLibraryStochModelInstance(initialParameterValues, standardDeviations);
 		}
-		stochModelInstance.setAlgorithmDoneFlag(false);
+		stochModelInstance.setAlgorithmDoneFlag(CalibrationLibraryStochModelInstance.ExitStatus.RUNNING);
 		return stochModelInstance;
 	}
 

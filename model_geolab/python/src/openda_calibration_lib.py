@@ -91,7 +91,11 @@ class OpendaCalibrationLib:
         """
         j_next_parameter_values = self.j_calibLib.algorithmGetNextParameterValues()
         if (j_next_parameter_values != None):
-            return j_array_to_py_list(j_next_parameter_values)
+            if (len(j_next_parameter_values) == 0):
+                message = self.j_calibLib.getErrorMessage()
+                raise Exception(message)
+            else:
+                return j_array_to_py_list(j_next_parameter_values)
         else:
             return None
 

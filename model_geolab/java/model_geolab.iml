@@ -2,7 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python">
-      <configuration sdkName="Python 3.6 (public)" />
+      <configuration sdkName="Python 3.6 (py36)" />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -35,6 +35,15 @@
     </orderEntry>
     <orderEntry type="module" module-name="algorithms" />
     <orderEntry type="module" module-name="observers" />
-    <orderEntry type="library" name="Python 3.6 (public) interpreter library" level="application" />
+    <orderEntry type="library" name="Python 3.6 (py36) interpreter library" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../model_delft3d/java/resources/openda/commons-lang3-3.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

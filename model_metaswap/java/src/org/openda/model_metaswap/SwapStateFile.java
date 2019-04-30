@@ -66,6 +66,7 @@ public class SwapStateFile implements IDataObject {
 
 	private byte[][] convertDoublesToStringBytes(SwapStateExchangeItem swapStateExchangeItem) {
 		double[] doubles = swapStateExchangeItem.getValuesAsDoubles();
+		logStateValues(doubles);
 		byte[][] bytesArray = new byte[doubles.length][];
 		for (int i = 0; i < doubles.length; i++) {
 			String replace = formatDouble.format(doubles[i]);
@@ -118,6 +119,49 @@ public class SwapStateFile implements IDataObject {
 			throw new RuntimeException(e);
 		}
 		return strings;
+	}
+
+	private void logStateValues(double[] stateValues) {
+
+		File svatIdsfile = new File (sourceFile.getParentFile(), "svatids.txt");
+		if (!svatIdsfile.exists())
+			return;
+
+		ArrayList<Integer> svatIds = new ArrayList<>();
+		try {
+			FileReader fileReader = new FileReader(svatIdsfile);
+			BufferedReader inputFileBufferedReader = new BufferedReader(fileReader);
+			String line = inputFileBufferedReader.readLine();
+			while (line != null) {
+				String trimmedLine = line.trim();
+				if (trimmedLine.length() > 0) {
+					if (!trimmedLine.startsWith("#")) {
+						svatIds.add(Integer.parseInt(trimmedLine));
+					}
+				}
+				line = inputFileBufferedReader.readLine();
+			}
+			inputFileBufferedReader.close();
+			fileReader.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not svids read from " + svatIdsfile.getAbsolutePath());
+		}
+
+		File file = new File(sourceFile.getParentFile(), "statevalues.log");
+		Writer writer;
+		try {
+			writer = new FileWriter(file, true);
+			for (int i = 0; i < svatIds.size(); i++) {
+				int id = svatIds.get(i);
+				writer.write(formatDouble.format(stateValues[id - 1]));
+				if (i<svatIds.size()-1)
+					writer.write(",");
+			}
+			writer.write("\n");
+			writer.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not close log file " + file.getAbsolutePath());
+		}
 	}
 
 }

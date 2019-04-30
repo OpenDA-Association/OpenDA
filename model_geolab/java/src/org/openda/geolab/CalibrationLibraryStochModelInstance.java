@@ -10,12 +10,22 @@ import java.io.File;
 
 public class CalibrationLibraryStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, IClonableStochModelInstance, Cloneable {
 
+	private ExitStatus exitStatus;
+	private String errorString = "(no errors set)";
+
+	// possible status values
+	public enum ExitStatus {
+		CREATED,
+		DONE,
+		RUNNING,
+		ERROR
+	}
+
 	private Vector modelResults = null;
 	private Vector initialParameterVector;
 
 	private final StochVector parameterUncertainties;
 	private Vector parameterVector = null;
-	private boolean algorithmDone = false;
 
 	private final int sleepTimeInMillis = 100;
 
@@ -256,30 +266,45 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	double[] getParametersAsSetByAlgorithm() {
-		while (parameterVector == null && !algorithmDone) {
+		while (parameterVector == null && exitStatus == ExitStatus.RUNNING) {
 			try {
 				Thread.sleep(sleepTimeInMillis);
 			} catch (InterruptedException e) {
 				throw new RuntimeException("Thread that runs the CalibrationLibraryStochModelInstance has been interrupted");
 			}
 		}
-		if (algorithmDone) {
+		if (exitStatus == ExitStatus.DONE ) {
 			return null;
+		} else if (exitStatus == ExitStatus.ERROR){
+			return new double[0];
 		} else {
+			if (parameterVector == null) {
+				return new double[0];
+			}
 			double[] parameterValues = parameterVector.getValues();
 			parameterVector = null;
 			return parameterValues;
 		}
 	}
 
+	String getErrorString() {
+		return errorString;
+	}
+
 	void setModelResults(double[] modelResults) {
 		this.modelResults = new Vector(modelResults);
 	}
 
-	void setAlgorithmDoneFlag(boolean flag) {
-		algorithmDone = flag;
+	void setAlgorithmDoneFlag(ExitStatus exitStatus) {
+		setAlgorithmDoneFlag(exitStatus, null);
 	}
 
+	void setAlgorithmDoneFlag(ExitStatus exitStatus, String errorString) {
+		this.exitStatus = exitStatus;
+		if (errorString != null) {
+			this.errorString = errorString;
+		}
+	}
 
 	public IStochModelInstance getCopyOf() {
 		try {
