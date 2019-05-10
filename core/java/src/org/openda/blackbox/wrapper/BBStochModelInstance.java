@@ -452,8 +452,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-
-
 	public ITreeVector getState() {
 
 		if ( timerGetState == null){
@@ -1220,51 +1218,41 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	public ILocalizationDomains getLocalizationDomains(){
 
-		// TODO EP: find better solution
-		if (false) {
-
-			Map<String, String> observationIdSourceVectorIdMap = new HashMap<>();
-			Collection<BBStochModelVectorConfig> predictorVectorCollection = this.bbStochModelVectorsConfig.getPredictorVectorCollection();
-			for (BBStochModelVectorConfig bbStochModelVectorConfig : predictorVectorCollection) {
-				String id = bbStochModelVectorConfig.getId();
-				String sourceId = bbStochModelVectorConfig.getSourceId();
-				observationIdSourceVectorIdMap.put(id, sourceId);
-			}
-
-			ILocalizationDomains localizationDomains = model.getLocalizationDomains();
-			localizationDomains.setObservationSourceMap(observationIdSourceVectorIdMap);
-			return localizationDomains;
-		}
-
-		List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
-		List<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>();
-
 		if (useLocalAnalysis) {
 
-			//Else some are added at every analysis
-			//noiseModelsInState = null;
-			//modelExchangeItemsInState = null;
+			Collection<String> stateIds = this.bbStochModelVectorsConfig.getStateIds();
+			Map<String, Collection<IStochModelInstance>> stochModelMap = new HashMap<>();
+			Map<String, Collection<IPrevExchangeItem>> exchangeItemMap = new HashMap<>();
+			Map<String, Collection<String>> observationIdSourceMap = new HashMap<>();
+			for (String stateId : stateIds) {
+				BBStochModelStateConfig stateConfig = this.bbStochModelVectorsConfig.getStateConfig(stateId);
 
-			//get # noise model from config
-			Collection<BBNoiseModelConfig> noiseModelConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
+				// Noise models
+				Collection<IStochModelInstance> noiseModelsInState = new ArrayList<>();
+				for (BBNoiseModelConfig noiseModelConfig : stateConfig.getNoiseModelConfigs()) {
+					IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
+					noiseModelsInState.add(noiseModel);
+				}
+				stochModelMap.put(stateId, noiseModelsInState);
 
-			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
-				IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
-				noiseModelsInState.add(noiseModel);
+				// model exchange items
+				Collection<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>();
+				for (BBStochModelVectorConfig vectorConfig : stateConfig.getVectorCollection()) {
+					IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
+					IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
+					modelExchangeItemsInState.add(exchangeItem);
+				}
+				exchangeItemMap.put(stateId, modelExchangeItemsInState);
+
+				// predictor items
+				Collection<String> predictorSourceIds = new ArrayList<>();
+				for (BBStochModelVectorConfig predictorVector :
+					this.bbStochModelVectorsConfig.getPredictorVectorCollection(stateId)) {
+					predictorSourceIds.add(predictorVector.getSourceId());
+				}
+				observationIdSourceMap.put(stateId, predictorSourceIds);
 			}
-
-			//get # model exchange items in the state vector
-			Collection<BBStochModelVectorConfig> vectorCollection =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
-
-			for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-				IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
-				IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
-				modelExchangeItemsInState.add(exchangeItem);
-			}
-
-
+			return new LocalizationDomainsBBStochModel(stateIds, stochModelMap, exchangeItemMap, observationIdSourceMap);
 		}
 
 		int numberOfDomains = noiseModelsInState.size() + modelExchangeItemsInState.size();

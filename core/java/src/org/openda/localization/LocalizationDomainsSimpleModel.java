@@ -23,7 +23,6 @@ package org.openda.localization;
 import org.openda.interfaces.*;
 import org.openda.utils.Vector;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -115,7 +114,7 @@ public class LocalizationDomainsSimpleModel implements ILocalizationDomains {
 
 	/**
 	 * Get the selectors for a single localization domain
-	 * This returns what observations are present in the seleted domain
+	 * This returns what observations are present in the selected domain
 	 *
 	 * @param i index of the domain
 	 * @return Selectors for the specified domain
@@ -153,13 +152,12 @@ public class LocalizationDomainsSimpleModel implements ILocalizationDomains {
 	}
 
 	/**
-	 * Get the selectors for the full domain (previously defined).
-	 * That is a vector containing of 1.0 values with the correct size,
-	 * based on the size of the observation descriptor and the state
+	 * Get the selectors for the domain determined by the argument index
 	 *
 	 * @return Selector vector containing the indices for the selection
 	 */
-	public int[] getObservationSelector(IObservationDescriptions observationDescriptions, int iDomain){
+	public int[] getObservationSelector(IObservationDescriptions observationDescriptions, int iDomain)
+	{
 		int[] selector = new int[observationDescriptions.getObservationCount()];
 
 		// In the simple model, all observations will count for each domain.
@@ -171,8 +169,4 @@ public class LocalizationDomainsSimpleModel implements ILocalizationDomains {
 		return selector;
 	}
 
-	@Override
-	public void setObservationSourceMap(Map<String, String> observationIdSourceVectorIdMap) {
-
-	}
 }

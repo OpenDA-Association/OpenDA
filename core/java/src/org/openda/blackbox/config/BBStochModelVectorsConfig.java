@@ -65,6 +65,11 @@ public class BBStochModelVectorsConfig {
         return cartesianToPolarCollection;
     }
 
+    public Collection<String> getStateIds()
+	{
+		return stateConfig.keySet();
+	}
+
     public BBStochModelStateConfig getStateConfig(String stateId) {
         return stateConfig.get(stateId);
     }

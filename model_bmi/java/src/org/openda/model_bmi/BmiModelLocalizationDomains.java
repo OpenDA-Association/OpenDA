@@ -9,11 +9,11 @@ import java.util.*;
 
 public class BmiModelLocalizationDomains implements ILocalizationDomains {
 
-	private BmiModelInstance modelInstance;
 	private LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
 	private Map<String, String> observationIdSourceVectorIdMap;
 
 	public BmiModelLocalizationDomains(LinkedHashMap<String, IExchangeItem> modelStateExchangeItems) {
+
 		this.modelStateExchangeItems = modelStateExchangeItems;
 	}
 
@@ -51,8 +51,4 @@ public class BmiModelLocalizationDomains implements ILocalizationDomains {
 		return ints;
 	}
 
-	@Override
-	public void setObservationSourceMap(Map<String, String> observationIdSourceVectorIdMap) {
-		this.observationIdSourceVectorIdMap = observationIdSourceVectorIdMap;
-	}
 }

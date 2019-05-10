@@ -20,8 +20,6 @@
 
 package org.openda.interfaces;
 
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: dirk
@@ -30,6 +28,9 @@ import java.util.Map;
  *
  */
 public interface ILocalizationDomains{
+
+	// (GvdO) This is a unnecessary function, it is called before the objects are created. It smells of
+	// premature optimization too.
 	void setStateDomainObservations(int iDomain, IObservationDescriptions observationDescriptions);
 
 	/**
@@ -46,7 +47,5 @@ public interface ILocalizationDomains{
 	 * @return indiced of the observations needed for analysis in domain iDomain
 	 */
 	int[] getObservationSelector(IObservationDescriptions observationDescriptions, int iDomain);
-
-	void setObservationSourceMap(Map<String, String> observationIdSourceVectorIdMap);
 }
 
