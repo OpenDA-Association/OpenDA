@@ -329,7 +329,10 @@ public class Matrix implements IMatrix {
      * @param x result of linear solver
      */
     public  void rightSolve(IVector v, IVector x){
-    	if(this.m<this.n) throw(new java.lang.RuntimeException("JAMA bug!"));
+    	if(this.m<this.n) {
+    		String message = "Matrix.rightSolve() not implemented if number of rows less than number of columns";
+    		throw(new java.lang.RuntimeException(message));
+		}
         //init
         double eps=1e-7;
         java.text.DecimalFormat fmt = new java.text.DecimalFormat("0.0000E00");

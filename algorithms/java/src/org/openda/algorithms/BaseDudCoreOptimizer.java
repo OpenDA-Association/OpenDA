@@ -838,7 +838,14 @@ public abstract class BaseDudCoreOptimizer {
 		IVector pStep = new Vector(npars);
 		
 		if (!add_constraints){
-			A.rightSolve(rhs, pStep);
+			try {
+				A.rightSolve(rhs, pStep);
+			} catch (RuntimeException e) {
+				if (e.getMessage().contains("number of rows less than number of columns")) {
+					throw new RuntimeException("Ill posed problem: " +
+						"The number of observations is less than the number of parameters");
+				}
+			}
 		}
 		else{
 			// If gradient is zero, stop the algorithm
