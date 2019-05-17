@@ -96,11 +96,6 @@
       <entry name="?*.tld" />
       <entry name="?*.zip" />
     </wildcardResourcePatterns>
-    <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
-    </annotationProcessing>
   </component>
   <component name="CopyrightManager" default="" />
   <component name="DependenciesAnalyzeManager">
@@ -120,7 +115,7 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+  <component name="Encoding">
     <file url="PROJECT" charset="UTF-8" />
   </component>
   <component name="ErrorOptionsConfigurable.UI">
@@ -130,6 +125,12 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration" detection-enabled="false" />
   <component name="IdProvider" IDEtalkID="C2C79F4DC58D73085D0C2DB2B53DDD2C" />
+  <component name="InspectionProjectProfileManager">
+    <profile version="1.0">
+      <option name="myName" value="Project Default" />
+    </profile>
+    <version value="1.0" />
+  </component>
   <component name="IssueNavigationConfiguration">
     <option name="links">
       <list>
@@ -289,6 +290,33 @@
     <option name="USE_CLIENT_FILTER" value="true" />
     <option name="CLIENT" value="" />
   </component>
+  <component name="ProjectCodeStyleConfiguration">
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
+    <code_scheme name="Project" version="173">
+      <option name="RIGHT_MARGIN" value="200" />
+      <XML>
+        <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+      </XML>
+      <ADDITIONAL_INDENT_OPTIONS fileType="gsp">
+        <option name="INDENT_SIZE" value="2" />
+      </ADDITIONAL_INDENT_OPTIONS>
+      <codeStyleSettings language="Groovy">
+        <indentOptions>
+          <option name="INDENT_SIZE" value="2" />
+        </indentOptions>
+      </codeStyleSettings>
+      <codeStyleSettings language="JAVA">
+        <indentOptions>
+          <option name="USE_TAB_CHARACTER" value="true" />
+        </indentOptions>
+      </codeStyleSettings>
+      <codeStyleSettings language="XML">
+        <indentOptions>
+          <option name="USE_TAB_CHARACTER" value="true" />
+        </indentOptions>
+      </codeStyleSettings>
+    </code_scheme>
+  </component>
   <component name="ProjectCodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
@@ -320,9 +348,6 @@
   </component>
   <component name="ProjectDetails">
     <option name="projectName" value="openDA_1" />
-  </component>
-  <component name="ProjectKey">
-    <option name="state" value="https://svn.oss.deltares.nl/repos/openda/trunk/openda.ipr" />
   </component>
   <component name="ProjectModuleManager">
     <modules>
@@ -358,7 +383,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ResourceManagerContainer">
@@ -388,41 +413,8 @@
     <option name="myValidatorValidationEnabled" value="true" />
     <option name="myReportErrorsAsWarnings" value="true" />
   </component>
-  <component name="SvnBranchConfigurationManager">
-    <option name="myConfigurationMap">
-      <map>
-        <entry key="$PROJECT_DIR$">
-          <value>
-            <SvnBranchConfiguration>
-              <option name="branchUrls">
-                <list>
-                  <option value="https://svn.oss.deltares.nl/repos/openda/branches" />
-                </list>
-              </option>
-              <option name="trunkUrl" value="https://svn.oss.deltares.nl/repos/openda/trunk" />
-            </SvnBranchConfiguration>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="mySupportsUserInfoFilter" value="true" />
-  </component>
-  <component name="SvnChangesBrowserSettings">
-    <option name="USE_AUTHOR_FIELD" value="true" />
-    <option name="AUTHOR" value="" />
-    <option name="LOCATION" value="" />
-    <option name="USE_PROJECT_SETTINGS" value="true" />
-    <option name="USE_ALTERNATE_LOCATION" value="false" />
-  </component>
-  <component name="VCS.FileViewConfiguration">
-    <option name="SELECTED_STATUSES" value="DEFAULT" />
-    <option name="SELECTED_COLUMNS" value="DEFAULT" />
-    <option name="SHOW_FILTERS" value="true" />
-    <option name="CUSTOMIZE_VIEW" value="true" />
-    <option name="SHOW_FILE_HISTORY_AS_TREE" value="true" />
-  </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$" vcs="svn" />
+    <mapping directory="" vcs="Git" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.intellij.ide.util.scopeChooser.ScopeChooserConfigurable" proportions="" version="1">
