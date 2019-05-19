@@ -5,6 +5,7 @@ import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 public class CalibrationLibraryTest extends TestCase {
 
@@ -14,6 +15,24 @@ public class CalibrationLibraryTest extends TestCase {
 		super.setUp();
 		OpenDaTestSupport testData = new OpenDaTestSupport(CalibrationLibraryTest.class, "model_geolab");
 		this.testRunDataDir = testData.getTestRunDataDir();
+	}
+
+	public void testAlgorithmSettings() {
+		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
+		calibrationLibrary.initialize(testRunDataDir);
+		List<String> algorithmNames = calibrationLibrary.getAlgorithmNames();
+		assertEquals(1, algorithmNames.size());
+		String algorithmName = algorithmNames.get(0);
+		assertEquals("Dud", algorithmName);
+		List<String> settingNames = calibrationLibrary.getAlgorithmSettingNames(algorithmName);
+		assertEquals(8, settingNames.size());
+		String settingName = settingNames.get(5);
+		assertEquals("lineSearch@maxRelStepSize", settingName);
+		assertEquals(3.0, calibrationLibrary.getAlgorithmSettingDefault(algorithmName, settingName));
+		assertEquals(3.0, calibrationLibrary.getAlgorithmSettingValue(algorithmName, settingName));
+		calibrationLibrary.setAlgorithmSettingValue(algorithmName, settingName, 9.9d);
+		assertEquals(3.0, calibrationLibrary.getAlgorithmSettingDefault(algorithmName, settingName));
+		assertEquals(9.9, calibrationLibrary.getAlgorithmSettingValue(algorithmName, settingName));
 	}
 
 	public void testSinus() {
@@ -61,7 +80,7 @@ public class CalibrationLibraryTest extends TestCase {
 			nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
 		}
 		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
-		double[] expectedValues = { 1.974888, 0.550042, 0.190782, 0.097192};
+		double[] expectedValues = {1.974888, 0.550042, 0.190782, 0.097192};
 		for (int i = 0; i < optimalParameterValues.length; i++) {
 			assertEquals(expectedValues[i], optimalParameterValues[i], 1.e-6);
 		}

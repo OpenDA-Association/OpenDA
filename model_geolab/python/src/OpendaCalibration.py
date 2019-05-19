@@ -1,11 +1,41 @@
-from openda_calibration_lib import *
+from OpendaCalibrationLib import *
 
 
-class openda_calibration:
+class OpendaCalibration:
 
     def __init__(self, working_directory):
         self.working_directory = working_directory
         self.opendaCalibration = OpendaCalibrationLib(working_directory)
+
+    def get_algorithm_names(self):
+        """
+        returns: list containing the names of the available algorithms
+        """
+        return self.opendaCalibration.get_algorithm_names()
+
+    def get_algorithm_setting_names(self, algorithm_name):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.opendaCalibration.get_algorithm_setting_names(algorithm_name)
+
+    def get_algorithm_setting_value(self, algorithm_name, setting_name):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.opendaCalibration.get_algorithm_setting_value(algorithm_name, setting_name)
+
+    def get_algorithm_setting_default(self, algorithm_name, setting_name):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.opendaCalibration.get_algorithm_setting_default(algorithm_name, setting_name)
+
+    def set_algorithm_setting_value(self, algorithm_name, setting_name, value):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.opendaCalibration.set_algorithm_setting_value(algorithm_name, setting_name, value)
 
     def calibrate(self, evaluate, obs_values, obs_stddevs, model_params, model_params_stddevs):
 
@@ -48,6 +78,6 @@ if __name__ == "__main__":
     model_sinus_params_stddevs = [0.2, 0.05, 0.02, 0.02]
 
     # calibrate
-    calibration = openda_calibration(".")
+    calibration = OpendaCalibration(".")
     optimal_params = calibration.calibrate(evaluate_sinus, obs_values, obs_std_devs, model_sinus_params,
                                            model_sinus_params_stddevs)

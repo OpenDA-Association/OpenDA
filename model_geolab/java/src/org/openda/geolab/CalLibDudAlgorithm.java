@@ -4,7 +4,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openda.algorithms.Dud;
 import org.openda.interfaces.IStochModelFactory;
 
-public class CalLibDudAlgorithm extends Dud implements Runnable {
+public class CalLibDudAlgorithm extends Dud implements ICalLibAlgorithm {
 	@Override
 	public void run() {
 		try {
@@ -22,7 +22,7 @@ public class CalLibDudAlgorithm extends Dud implements Runnable {
 		}
 	}
 
-	String getConfigStringTemplate() {
+	static String getConfigStringTemplate() {
 		return DudXmlConfig;
 	}
 

@@ -53,6 +53,36 @@ class OpendaCalibrationLib:
         self.j_calibLib = gateway.jvm.org.openda.geolab.CalibrationLibrary()
         self.j_calibLib.initialize(j_working_directory)
 
+    def get_algorithm_names(self):
+        """
+        returns: list containing the names of the available algorithms
+        """
+        return self.j_calibLib.getAlgorithmNames()
+
+    def get_algorithm_setting_names(self, algorithm_name):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.j_calibLib.getAlgorithmSettingNames(algorithm_name)
+
+    def get_algorithm_setting_value(self, algorithm_name, setting_name):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.j_calibLib.getAlgorithmSettingValue(algorithm_name, setting_name)
+
+    def get_algorithm_setting_default(self, algorithm_name, setting_name):
+        """
+        returns: the settings for the specified algorithm
+        """
+        return self.j_calibLib.getAlgorithmSettingDefault(algorithm_name, setting_name)
+
+    def set_algorithm_setting_value(self, algorithm_name, setting_name, value):
+        """
+        returns: the settings for the specified algorithm
+        """
+        self.j_calibLib.setAlgorithmSettingValue(algorithm_name, setting_name, value)
+
     def observer_set_observations_and_stddevs(self, obs_values, obs_stddevs):
         """
         (step 1) Start OpenDA, providing the configuration
@@ -66,7 +96,7 @@ class OpendaCalibrationLib:
         """
         (step 2) Feed the parameter definitions to the OpenDA internal model
         initial_parameter_values: initial values of the parameters that have to be calibrated
-        standard_deviations: standard deviations of the parameters ('band with' voor calibration)
+        standard_deviations: standard deviations of the parameters ('band with' for calibration)
         The algorithm will
         """
         j_initial_parameter_values = py_list_to_j_array(initial_parameter_values)
@@ -86,12 +116,12 @@ class OpendaCalibrationLib:
 
     def algorithm_get_next_parameter_values(self):
         """
-        (step 6) Check if the algoritm desires more evaluations
+        (step 6) Check if the algorithm desires more evaluations
         returns: list of new parameter values. null if no evaluations needed any more
         """
         j_next_parameter_values = self.j_calibLib.algorithmGetNextParameterValues()
-        if (j_next_parameter_values != None):
-            if (len(j_next_parameter_values) == 0):
+        if j_next_parameter_values is not None:
+            if len(j_next_parameter_values) == 0:
                 message = self.j_calibLib.getErrorMessage()
                 raise Exception(message)
             else:

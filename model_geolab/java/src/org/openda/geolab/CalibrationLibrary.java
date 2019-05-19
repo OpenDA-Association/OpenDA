@@ -24,7 +24,7 @@ import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.IStochObserver;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.*;
 
 public class CalibrationLibrary implements ICalibrationLibrary {
 
@@ -33,18 +33,25 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private File workingDir = null;
 	private String exceptionErrmsg = null;
 	private StackTraceElement[] exceptionStackTrace = null;
-	private CalLibDudAlgorithm algorithm = null;
+	private ICalLibAlgorithm algorithm = null;
 	private double[] optimalParameterValues = null;
+
+	private LinkedHashMap<String, CalLibAlgorithmSettings> algorithmSettings = new LinkedHashMap<>();
 
 	@SuppressWarnings("WeakerAccess")
 	public CalibrationLibrary() {
 	}
 
 	public int initialize(File workingDir) {
+
 		this.workingDir = workingDir;
+
 		stochModelFactory = null;
 		CalLibStochModelFactory.stochModelInstance = null;
 		algorithm = null;
+
+		algorithmSettings.put("Dud", new CalLibAlgorithmSettings(CalLibDudAlgorithm.getConfigStringTemplate()));
+
 		return 0;
 	}
 
@@ -87,6 +94,43 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 			getErrorString();
 	}
 
+	public List<String> getAlgorithmNames() {
+		return new ArrayList<>(algorithmSettings.keySet());
+	}
+
+	public List<String> getAlgorithmSettingNames(String algorithmName) {
+		if (!algorithmSettings.containsKey(algorithmName)) {
+			throw new RuntimeException("Unknown algorithm name: " + algorithmName);
+		}
+		return new ArrayList<>(algorithmSettings.get(algorithmName).getSettings().keySet());
+	}
+
+	public double getAlgorithmSettingValue(String algorithmName, String settingName) {
+		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
+		return settings.get(settingName).getValue();
+	}
+
+	public double getAlgorithmSettingDefault(String algorithmName, String settingName) {
+		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
+		return settings.get(settingName).getDefaultValue();
+	}
+
+	public void setAlgorithmSettingValue(String algorithmName, String settingName, double value) {
+		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
+		settings.get(settingName).setValue(value);
+	}
+
+	private LinkedHashMap<String, CalLibAlgorithmSetting> findSetting(String algorithmName, String settingName) {
+		if (!algorithmSettings.containsKey(algorithmName)) {
+			throw new RuntimeException("Unknown algorithm name: " + algorithmName);
+		}
+		LinkedHashMap<String, CalLibAlgorithmSetting> settings = algorithmSettings.get(algorithmName).getSettings();
+		if (!settings.containsKey(settingName)) {
+			throw new RuntimeException("Unknown settingName \""+ settingName+ "\" for algorithm \"" + algorithmName + "\"");
+		}
+		return settings;
+	}
+
 	public double[] algorithmGetOptimalParameterValues() {
 		return optimalParameterValues;
 	}
@@ -115,4 +159,5 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		"\t\t<backTracking shorteningFactor=\"0.5\" startIterationNegativeLook=\"3\"/>\n" +
 		"\t</lineSearch>\n" +
 		"</DudConfig>\n";
+
 }
