@@ -6,13 +6,13 @@ import org.openda.interfaces.IStochModelPostProcessor;
 
 import java.io.File;
 
-public class CalibrationLibraryStochModelFactory implements IStochModelFactory {
+public class CalLibStochModelFactory implements IStochModelFactory {
 
 	private final double[] initialParameterValues;
 	private final double[] standardDeviations;
-	static CalibrationLibraryStochModelInstance stochModelInstance;
+	static CalLibStochModelInstance stochModelInstance;
 
-	CalibrationLibraryStochModelFactory(double[] initialParameterValues, double[] standardDeviations) {
+	CalLibStochModelFactory(double[] initialParameterValues, double[] standardDeviations) {
 		this.initialParameterValues = initialParameterValues;
 		this.standardDeviations = standardDeviations;
 // Next code was add to check results when calibration is run in python
@@ -35,14 +35,14 @@ public class CalibrationLibraryStochModelFactory implements IStochModelFactory {
 
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
 		if (stochModelInstance == null) {
-			stochModelInstance = new CalibrationLibraryStochModelInstance(initialParameterValues, standardDeviations);
+			stochModelInstance = new CalLibStochModelInstance(initialParameterValues, standardDeviations);
 		}
-		stochModelInstance.setAlgorithmDoneFlag(CalibrationLibraryStochModelInstance.ExitStatus.RUNNING);
+		stochModelInstance.setAlgorithmDoneFlag(CalLibStochModelInstance.ExitStatus.RUNNING);
 		return stochModelInstance;
 	}
 
 	public IStochModelPostProcessor getPostprocessorInstance(File instanceDir) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelFactory.getPostprocessorInstance() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelFactory.getPostprocessorInstance() not implemented yet");
 	}
 
 	public void finish() {

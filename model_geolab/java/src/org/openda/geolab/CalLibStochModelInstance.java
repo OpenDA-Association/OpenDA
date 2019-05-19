@@ -8,7 +8,7 @@ import org.openda.utils.Vector;
 
 import java.io.File;
 
-public class CalibrationLibraryStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, IClonableStochModelInstance, Cloneable {
+public class CalLibStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, IClonableStochModelInstance, Cloneable {
 
 	private ExitStatus exitStatus;
 	private String errorString = "(no errors set)";
@@ -29,34 +29,34 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 
 	private final int sleepTimeInMillis = 100;
 
-	CalibrationLibraryStochModelInstance(double[] parameterValues, double[] standardDeviations) {
+	CalLibStochModelInstance(double[] parameterValues, double[] standardDeviations) {
 		this.initialParameterVector = new Vector(parameterValues);
 		this.parameterUncertainties = new StochVector(parameterValues, standardDeviations);
 	}
 
 	public IVector getState() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getState() not implemented yet");
 
 	}
 
 	public IVector getState(int iDomain) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getState() not implemented yet");
 
 	}
 
 	public void axpyOnState(double alpha, IVector vector) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.axpyOnState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.axpyOnState() not implemented yet");
 
 	}
 
 	public void axpyOnState(double alpha, IVector vector, int iDomain) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.axpyOnState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.axpyOnState() not implemented yet");
 
 	}
 
 	public IVector getParameters() {
 		if (initialParameterVector == null) {
-			throw new RuntimeException("CalibrationLibraryStochModelInstance.getParameters(): initialParameterVector == null");
+			throw new RuntimeException("CalLibStochModelInstance.getParameters(): initialParameterVector == null");
 		}
 		return initialParameterVector;
 	}
@@ -87,7 +87,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	public IStochVector getStateUncertainty() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getStateUncertainty() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getStateUncertainty() not implemented yet");
 
 	}
 
@@ -96,37 +96,37 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	public IStochVector[] getWhiteNoiseUncertainty(ITime time) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getWhiteNoiseUncertainty() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getWhiteNoiseUncertainty() not implemented yet");
 
 	}
 
 	public boolean isWhiteNoiseStationary() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.isWhiteNoiseStationary() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.isWhiteNoiseStationary() not implemented yet");
 
 	}
 
 	public ITime[] getWhiteNoiseTimes(ITime timeSpan) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getWhiteNoiseTimes() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getWhiteNoiseTimes() not implemented yet");
 
 	}
 
 	public IVector[] getWhiteNoise(ITime timeSpan) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getWhiteNoise() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getWhiteNoise() not implemented yet");
 
 	}
 
 	public void setWhiteNoise(IVector[] whiteNoise) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.setWhiteNoise() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.setWhiteNoise() not implemented yet");
 
 	}
 
 	public void axpyOnWhiteNoise(double alpha, IVector[] vector) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.axpyOnWhiteNoise() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.axpyOnWhiteNoise() not implemented yet");
 
 	}
 
 	public void setAutomaticNoiseGeneration(boolean value) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.setAutomaticNoiseGeneration() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.setAutomaticNoiseGeneration() not implemented yet");
 
 	}
 
@@ -138,22 +138,22 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
 		if (!(observationDescriptions instanceof GeolabCalObservationDescriptions)) {
 			throw new RuntimeException("Unexpected type " + observationDescriptions.getClass() +
-				"org.openda.geolab.CalibrationLibraryStochModelInstance.announceObservedValues()");
+				"org.openda.geolab.CalLibStochModelInstance.announceObservedValues()");
 		}
 	}
 
 	public IVector getStateScaling() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getStateScaling() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getStateScaling() not implemented yet");
 
 	}
 
 	public IVector[] getStateScaling(IObservationDescriptions observationDescriptions) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getStateScaling() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getStateScaling() not implemented yet");
 
 	}
 
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getExchangeItem() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getExchangeItem() not implemented yet");
 
 	}
 
@@ -163,7 +163,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	public ITime getCurrentTime() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getCurrentTime() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getCurrentTime() not implemented yet");
 
 	}
 
@@ -172,57 +172,57 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	public ILocalizationDomains getLocalizationDomains() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getLocalizationDomains() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getLocalizationDomains() not implemented yet");
 
 	}
 
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getObservedLocalization() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getObservedLocalization() not implemented yet");
 
 	}
 
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getObservedLocalization() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getObservedLocalization() not implemented yet");
 
 	}
 
 	public IModelState saveInternalState() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.saveInternalState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.saveInternalState() not implemented yet");
 
 	}
 
 	public void restoreInternalState(IModelState savedInternalState) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.restoreInternalState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.restoreInternalState() not implemented yet");
 
 	}
 
 	public void releaseInternalState(IModelState savedInternalState) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.releaseInternalState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.releaseInternalState() not implemented yet");
 
 	}
 
 	public IModelState loadPersistentState(File persistentStateFile) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.loadPersistentState() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.loadPersistentState() not implemented yet");
 
 	}
 
 	public File getModelRunDir() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getModelRunDir() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getModelRunDir() not implemented yet");
 
 	}
 
 	public String[] getExchangeItemIDs() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getExchangeItemIDs() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getExchangeItemIDs() not implemented yet");
 
 	}
 
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getExchangeItemIDs() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getExchangeItemIDs() not implemented yet");
 
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getDataObjectExchangeItem() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getDataObjectExchangeItem() not implemented yet");
 
 	}
 
@@ -232,25 +232,25 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 	}
 
 	public void initialize(File workingDir, String[] arguments) {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.initialize() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.initialize() not implemented yet");
 
 	}
 
 	public IInstance getParent() {
-		throw new RuntimeException("org.openda.geolab.CalibrationLibraryStochModelInstance.getParent() not implemented yet");
+		throw new RuntimeException("org.openda.geolab.CalLibStochModelInstance.getParent() not implemented yet");
 
 	}
 
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 		if (!(observationDescriptions instanceof GeolabCalObservationDescriptions)) {
 			throw new RuntimeException("Unexpected type " + observationDescriptions.getClass() +
-				"org.openda.geolab.CalibrationLibraryStochModelInstance.announceObservedValues()");
+				"org.openda.geolab.CalLibStochModelInstance.announceObservedValues()");
 		}
 		while (modelResults == null) {
 			try {
 				Thread.sleep(sleepTimeInMillis);
 			} catch (InterruptedException e) {
-				throw new RuntimeException("Thread that runs the CalibrationLibraryStochModelInstance has been interrupted");
+				throw new RuntimeException("Thread that runs the CalLibStochModelInstance has been interrupted");
 			}
 		}
 // Next code was add to check results when calibration is run in python
@@ -270,7 +270,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 			try {
 				Thread.sleep(sleepTimeInMillis);
 			} catch (InterruptedException e) {
-				throw new RuntimeException("Thread that runs the CalibrationLibraryStochModelInstance has been interrupted");
+				throw new RuntimeException("Thread that runs the CalLibStochModelInstance has been interrupted");
 			}
 		}
 		if (exitStatus == ExitStatus.DONE ) {
@@ -310,7 +310,7 @@ public class CalibrationLibraryStochModelInstance implements IStochModelInstance
 		try {
 			return (IStochModelInstance) this.clone();
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException("Could not clone CalibrationLibraryStochModelInstance");
+			throw new RuntimeException("Could not clone CalLibStochModelInstance");
 		}
 	}
 

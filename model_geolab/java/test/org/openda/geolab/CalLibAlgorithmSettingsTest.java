@@ -15,7 +15,7 @@ public class CalLibAlgorithmSettingsTest extends TestCase {
 	}
 
 	public void testSetAttributeValue() {
-		String configTemplate = (new CalibrationLibraryDudAlgorithm()).getConfigStringTemplate();
+		String configTemplate = (new CalLibDudAlgorithm()).getConfigStringTemplate();
 		CalLibAlgorithmSettings calLibAlgorithmSettings = new CalLibAlgorithmSettings(configTemplate);
 		LinkedHashMap<String, CalLibAlgorithmSetting> settings = calLibAlgorithmSettings.getSettings();
 		assertEquals(8, settings.size());

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openda.algorithms.Dud;
 import org.openda.interfaces.IStochModelFactory;
 
-public class CalibrationLibraryDudAlgorithm extends Dud implements Runnable {
+public class CalLibDudAlgorithm extends Dud implements Runnable {
 	@Override
 	public void run() {
 		try {
@@ -12,13 +12,13 @@ public class CalibrationLibraryDudAlgorithm extends Dud implements Runnable {
 			while(this.hasNext()){
 				this.next();
 			}
-			((CalibrationLibraryStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
-				setAlgorithmDoneFlag(CalibrationLibraryStochModelInstance.ExitStatus.DONE);
+			((CalLibStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
+				setAlgorithmDoneFlag(CalLibStochModelInstance.ExitStatus.DONE);
 		} catch (Exception e) {
 			String errorString = e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
 			System.out.println(errorString);
-			((CalibrationLibraryStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
-				setAlgorithmDoneFlag(CalibrationLibraryStochModelInstance.ExitStatus.ERROR, errorString);
+			((CalLibStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
+				setAlgorithmDoneFlag(CalLibStochModelInstance.ExitStatus.ERROR, errorString);
 		}
 	}
 

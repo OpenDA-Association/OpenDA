@@ -5,12 +5,12 @@ import org.openda.utils.Vector;
 
 import java.io.File;
 
-public class CalibrationLibraryStochObserver implements IStochObserver {
+public class CalLibStochObserver implements IStochObserver {
 
 	private final double[] observations;
 	private final double[] standardDeviations;
 
-	CalibrationLibraryStochObserver(double[] observations, double[] standardDeviations) {
+	CalLibStochObserver(double[] observations, double[] standardDeviations) {
 		this.observations = observations;
 		this.standardDeviations = standardDeviations;
 // Next code was add to check results when calibration is run in python

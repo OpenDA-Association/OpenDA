@@ -28,12 +28,12 @@ import java.util.Arrays;
 
 public class CalibrationLibrary implements ICalibrationLibrary {
 
-	private CalibrationLibraryStochObserver stochObserver = null;
-	private CalibrationLibraryStochModelFactory stochModelFactory = null;
+	private CalLibStochObserver stochObserver = null;
+	private CalLibStochModelFactory stochModelFactory = null;
 	private File workingDir = null;
 	private String exceptionErrmsg = null;
 	private StackTraceElement[] exceptionStackTrace = null;
-	private CalibrationLibraryDudAlgorithm algorithm = null;
+	private CalLibDudAlgorithm algorithm = null;
 	private double[] optimalParameterValues = null;
 
 	@SuppressWarnings("WeakerAccess")
@@ -43,14 +43,14 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	public int initialize(File workingDir) {
 		this.workingDir = workingDir;
 		stochModelFactory = null;
-		CalibrationLibraryStochModelFactory.stochModelInstance = null;
+		CalLibStochModelFactory.stochModelInstance = null;
 		algorithm = null;
 		return 0;
 	}
 
 	public int observerSetObsAndStdDevs(double[] observations, double[] standardDeviations) {
 		try {
-			stochObserver = new CalibrationLibraryStochObserver(observations, standardDeviations);
+			stochObserver = new CalLibStochObserver(observations, standardDeviations);
 			return 0;
 		} catch (Exception e) {
 			exceptionErrmsg = e.getMessage();
@@ -60,12 +60,12 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	}
 
 	public int modelSetParameterDefinitions(double[] initialParameterValues, double[] standardDeviations) {
-		stochModelFactory = new CalibrationLibraryStochModelFactory(initialParameterValues, standardDeviations);
+		stochModelFactory = new CalLibStochModelFactory(initialParameterValues, standardDeviations);
 		return 0;
 	}
 
 	public int modelSetResults(double[] modelResults) {
-		CalibrationLibraryStochModelFactory.setlastModelResults(modelResults);
+		CalLibStochModelFactory.setlastModelResults(modelResults);
 		return 0;
 	}
 
@@ -75,7 +75,7 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 			Thread algorithmThread = new Thread(algorithm);
 			algorithmThread.start();
 		}
-		double[] nextParams = CalibrationLibraryStochModelFactory.waitForNextParams();
+		double[] nextParams = CalLibStochModelFactory.waitForNextParams();
 		if (nextParams == null) {
 			optimalParameterValues = algorithm.getBestEstimate().getParameters().getValues();
 		}
@@ -83,7 +83,7 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	}
 
 	public String getErrorMessage() {
-		return ((CalibrationLibraryStochModelInstance)stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
+		return ((CalLibStochModelInstance)stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
 			getErrorString();
 	}
 
@@ -99,8 +99,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		return Arrays.toString(exceptionStackTrace);
 	}
 
-	private CalibrationLibraryDudAlgorithm createAlgorithm(File workingDir, IStochObserver observer, IStochModelFactory modelFactory) {
-		CalibrationLibraryDudAlgorithm algorithm = new CalibrationLibraryDudAlgorithm();
+	private CalLibDudAlgorithm createAlgorithm(File workingDir, IStochObserver observer, IStochModelFactory modelFactory) {
+		CalLibDudAlgorithm algorithm = new CalLibDudAlgorithm();
 		algorithm.initialize(workingDir, new String[]{DudXmlConfig});
 		algorithm.setStochComponents(observer, modelFactory);
 		return algorithm;
