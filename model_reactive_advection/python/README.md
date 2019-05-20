@@ -17,3 +17,4 @@ To create a single executable use
 ```
 
 The resulting folder/executable are located in the `dist` folder.
+Note that when running the option with `--onefile` after running the one folder build you need to clean the `dist` folder manually. 
