@@ -215,7 +215,7 @@ def readASCIIFile(file_name):
             file_contents = fin.readlines()
     except EnvironmentError as exception:
         logger.fatal(exception)
-        exit(-1)
+        sys.exit(-1)
 
     try:
         file_contents = [float(val) for val in file_contents]
@@ -242,7 +242,7 @@ def writeASCIIFile(file_name, values):
                 fout.write("{0:0.2f}\n".format(value))
     except EnvironmentError as exception:
         logger.fatal(exception)
-        exit(-1)
+        sys.exit(-1)
     return
 
 def collectOutput(c1, c2, output,time):
@@ -353,7 +353,7 @@ def readTimeSeriesFromCsv(file):
                 line_count +=1
     except EnvironmentError as exception:
         logger.fatal(exception)
-        exit(-1)
+        sys.exit(-1)
     return time_series
 
 def writeMatlabMapOutput(matlabOutFile, c1, c2, timeIndex):
@@ -431,10 +431,10 @@ if __name__ == '__main__':
                 config = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 logger.fatal(exc)
-                exit(EX_CONFIG)
+                sys.exit(EX_CONFIG)
     except EnvironmentError as exception:
         logger.fatal(exception)
-        exit(-1)
+        sys.exit(-1)
 
     try: 
         inputValues['u'] = config['u']
@@ -444,7 +444,7 @@ if __name__ == '__main__':
         inputValues['reaction_time'] = config['reaction_time']
     except Exception as e:
         logger.fatal('Failed setting inputValues from config file: %s',e)
-        exit(EX_CONFIG)
+        sys.exit(EX_CONFIG)
 
     # read initial fields
     for item in config['initial_values']:
@@ -470,7 +470,7 @@ if __name__ == '__main__':
             file_handles.update({item['id']: open(path, 'a', newline='')})
         except EnvironmentError as exception:
             logger.fatal(exception)
-            exit(-1)
+            sys.exit(-1)
 
         dict_writer =  csv.DictWriter(file_handles[item['id']], fieldnames=['time','value'])
         csv_writers.update({item['id']: dict_writer})
