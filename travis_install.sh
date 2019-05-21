@@ -7,21 +7,12 @@ cd ..
 mv OpenDA public
 cd public
 
-HIER=$PWD
-cd core/native
-./autoreconf_fix.sh 
-./configure  
-make install
-cd $HIER
+echo START BUILDING NATIVE CODE
+. install_native.sh
 
-#build all castor stuff
-for DIRBUILD in model_delft3d core model_wflow model_efdc_dll model_bmi observers
-do
-   cd $DIRBUILD
-   ant -f build_castor.xml build
-   cd $HIER
-done
-ant build 
+echo START BUILDING CASTOR JARs
+
+. install_castor.sh
 
 echo DONE INSTALLING
 
