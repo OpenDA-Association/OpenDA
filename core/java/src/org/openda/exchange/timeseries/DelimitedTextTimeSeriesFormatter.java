@@ -164,6 +164,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			}
 		}
 		catch (ParseException | InputMismatchException ex) {
+			System.out.println("Error parsing '" +  field + "' at line: " +  reader.getLineNumber());
 			logger.error("Error parsing '{}' at line: {}",field, reader.getLineNumber());
 			throw ex;
 		}

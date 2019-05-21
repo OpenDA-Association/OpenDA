@@ -26,6 +26,7 @@ package org.openda.exchange.timeseries;
 	import java.io.*;
 	import java.nio.charset.Charset;
 	import java.text.ParseException;
+	import java.util.Locale;
 
 public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 	private File testRunDataDir;
@@ -34,6 +35,9 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 	protected void setUp() throws IOException {
 		testData = new OpenDaTestSupport(DelimitedTextTimeSeriesFormatterTest.class,"core");
 		testRunDataDir = testData.getTestRunDataDir();
+		Locale currentLocale = Locale.getDefault();
+		System.out.println(currentLocale.getDisplayLanguage());
+		System.out.println(currentLocale.getDisplayCountry());
 	}
 
 	public void testNoosFormatted_skip() {
