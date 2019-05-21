@@ -8,11 +8,13 @@ mv OpenDA public
 cd public
 
 echo START BUILDING NATIVE CODE
-. install_native.sh
+echo "current location $PWD"
+ls 
+bash  install_native.sh
 
 echo START BUILDING CASTOR JARs
 
-. install_castor.sh
+bash install_castor.sh
 
 echo DONE INSTALLING
 
