@@ -7,7 +7,7 @@ cd public
 
 echo START BUILDING NATIVE CODE
 ls 
-bash  install_native.sh
+bash  install_native_travis.sh
 
 echo START BUILDING CASTOR JARs
 
