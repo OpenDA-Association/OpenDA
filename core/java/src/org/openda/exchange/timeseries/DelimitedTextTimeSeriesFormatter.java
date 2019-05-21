@@ -20,14 +20,13 @@
 
 package org.openda.exchange.timeseries;
 
+import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.ConfigTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -35,13 +34,18 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 
 	private static final Logger logger = LoggerFactory.getLogger(DelimitedTextTimeSeriesFormatter.class);
 
-	protected DateFormat dateFormatter;
-	protected TimeZone timeZone = TimeZone.getTimeZone("GMT");
-	protected String delimiter;
-	protected String commentMarker;
-	protected int skipLines;
-	protected boolean StoreAndwriteSkipped;
-	protected boolean StoreAndwriteComment;
+	private DateFormat dateFormatter;
+	private DecimalFormat decimalFormat;
+	private TimeZone timeZone = TimeZone.getTimeZone("GMT");
+	private String delimiter;
+	private String commentMarker;
+	private int skipLines;
+	private boolean StoreAndwriteSkipped;
+	private boolean StoreAndwriteComment;
+	private int dateTimeSelector;
+	private int valueSelector;
+
+	private IPrevExchangeItem.Role role;
 
 	public DelimitedTextTimeSeriesFormatter(ConfigTree configTree) {
 		String datePattern = configTree.getAsString("dateTimePattern", null);
@@ -52,6 +56,22 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		this.skipLines = configTree.getAsInt("skipLines",0);
 		this.StoreAndwriteSkipped = configTree.getAsBoolean("StoreAndwriteSkipped",true);
 		this.StoreAndwriteComment = configTree.getAsBoolean("StoreAndwriteComment",true);
+		this.dateTimeSelector = configTree.getAsInt("dateTimeSelector",  0);
+		this.valueSelector = configTree.getAsInt("valueSelector",  1);
+		this.decimalFormat = new DecimalFormat();
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator(configTree.getAsString("decimalSeparator",  ".").charAt(0));
+		this.decimalFormat.setDecimalFormatSymbols(symbols);
+
+		String role = configTree.getAsString("role", "input");
+
+		if ("input".equalsIgnoreCase(role)){
+			this.role = IPrevExchangeItem.Role.Input;
+		} else if ("output".equalsIgnoreCase(role)) {
+			this.role = IPrevExchangeItem.Role.Output;
+		} else if ("inout".equalsIgnoreCase(role)) {
+			this.role = IPrevExchangeItem.Role.InOut;
+		}
 
 		if (this.dateFormatter!=null) {
 			this.dateFormatter.setTimeZone(this.timeZone);
@@ -67,18 +87,33 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 	public void write(OutputStream out, TimeSeries series) throws IOException{
 		OutputStreamWriter writer = new OutputStreamWriter(out);
 		double[] times = series.getTimesRef();
-		if (this.dateFormatter== null) {
-			for (double time : times) {
-				writer.write(String.valueOf(time));
-			}
-		} else {
-			for (double time : times) {
-				Date date = TimeUtils.mjdToDate(time);
-				String dateString = this.dateFormatter.format(date);
-				logger.debug(dateString);
-				writer.write(dateString);
-			}
+		double[] values = series.getValuesRef();
+		String headerContents = series.getProperty("header");
+		writer.write(headerContents);
+		if (Math.max(this.dateTimeSelector,this.valueSelector)> 1) {
+			logger.error("Cannot write delimited file with more the two columns");
+			throw new RuntimeException("Cannot write delimited file with more the two columns");
 		}
+		for (int i=0;i< times.length ; i++) {
+			String[] parts = new String[2];
+			String dateString;
+			if (this.dateFormatter != null) {
+				Date date = TimeUtils.mjdToDate(times[i]);
+				dateString = this.dateFormatter.format(date);
+				logger.debug(dateString);
+			} else {
+				dateString = String.valueOf(times[i]);
+			}
+			parts[this.dateTimeSelector] = dateString;
+			parts[this.valueSelector] = this.decimalFormat.format(values[i]);
+			for (int s=0; s<parts.length-1;s++) {
+				writer.write(parts[s]);
+				writer.write(this.delimiter);
+			}
+			writer.write(parts[parts.length-1]);
+			writer.write("\n");
+		}
+		writer.close();
 	}
 
 	/**
@@ -92,48 +127,55 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		String field="";
 		ArrayList<Double> times = new ArrayList<>();
 		ArrayList<Double> values = new ArrayList<>();
+		StringBuilder headerContents = new StringBuilder();
 		int skip = skipLines;
 		try {
 			String line;
 			while((line = reader.readLine()) != null) {
 				Scanner s = new Scanner(line).useDelimiter(delimiter);
 				field = line;
+				s.useLocale(Locale.US);
 				// skip header
-				if ( skip > 0 ) { skip--; continue;}
+				if ( skip > 0 ) { headerContents.append(line).append("\n"); skip--; continue;}
 				if (this.commentMarker != null) {
 					if (s.hasNext(Pattern.compile(this.commentMarker + ".*"))) continue;  //TODO use comment marker
 				}
 				//parse date time
-				if (dateFormatter!=null) {  //TODO make order of data/value configurable
-					field = s.next();
-					Date time = dateFormatter.parse(field);
+
+				String[] parts = line.split(this.delimiter);
+				if (parts.length < Math.max(this.dateTimeSelector,this.valueSelector)) {
+					throw new InputMismatchException();
+				}
+				if (dateFormatter!=null) {
+					Date time = dateFormatter.parse(parts[this.dateTimeSelector]);
 					logger.trace("getTime: {} ", time.getTime());
 					times.add(TimeUtils.date2Mjd(time));
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 				} else {
-					double time = s.nextDouble();
+					double time = this.decimalFormat.parse(parts[this.dateTimeSelector]).doubleValue();
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 					times.add(time);
 				}
 				// parse value
-					double value = s.nextDouble();
-					logger.trace("value={} at line {}",value, reader.getLineNumber());
-					values.add(value);
-
+				double value = this.decimalFormat.parse(parts[this.valueSelector]).doubleValue();
+				logger.trace("value={} at line {}",value, reader.getLineNumber());
+				values.add(value);
 				s.close();
 			}
 		}
 		catch (ParseException | InputMismatchException ex) {
+			System.out.println("Error parsing '" +  field + "' at line: " +  reader.getLineNumber());
 			logger.error("Error parsing '{}' at line: {}",field, reader.getLineNumber());
 			throw ex;
 		}
-		double[] t = toPrimitive(times.toArray(new Double[times.size()]) );
-		double[] v = toPrimitive(values.toArray(new Double[values.size()]) );
+		double[] t = toPrimitive(times.toArray(new Double[0]) );
+		double[] v = toPrimitive(values.toArray(new Double[0]) );
 		logger.debug("times: {}",t);
 		logger.debug("values: {}",v);
 
 		TimeSeries ts = new TimeSeries(t,v);
-
+		ts.setProperty("header",headerContents.toString());
+		ts.role = this.role;
 		return ts;
 	}
 
@@ -145,7 +187,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		}
 		final double[] result = new double[array.length];
 		for (int i = 0; i < array.length; i++) {
-			result[i] = array[i].doubleValue();
+			result[i] = array[i];
 		}
 		return result;
 	}
