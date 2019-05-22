@@ -181,27 +181,28 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 
 		LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> noiseModelForNewInstance =
 				new LinkedHashMap<BBNoiseModelConfig, IStochModelInstance>();
-
-		BBStochModelStateConfig stateVectorConfigs = bbStochModelConfig.getBbStochModelVectorsConfig().getStateConfig(FILTERED_STATE);
-		if (stateVectorConfigs != null) {
-			for (BBNoiseModelConfig noiseModelConfig :
+		for (String stateId : bbStochModelConfig.getBbStochModelVectorsConfig().getStateIds()) {
+			BBStochModelStateConfig stateVectorConfigs = bbStochModelConfig.getBbStochModelVectorsConfig().getStateConfig(stateId);
+			if (stateVectorConfigs != null) {
+				for (BBNoiseModelConfig noiseModelConfig :
 					stateVectorConfigs.getNoiseModelConfigs()) {
-				IStochModelFactory noiseModelFactory = noiseModelFactories.get(noiseModelConfig);
-				if (noiseModelFactory == null) {
-					noiseModelFactory = (IStochModelFactory) ObjectSupport.createConfigurable(
+					IStochModelFactory noiseModelFactory = noiseModelFactories.get(noiseModelConfig);
+					if (noiseModelFactory == null) {
+						noiseModelFactory = (IStochModelFactory) ObjectSupport.createConfigurable(
 							"NoiseModel",
 							noiseModelConfig.getClassName(),
 							IStochModelFactory.class,
 							noiseModelConfig.getWorkingDir(),
 							noiseModelConfig.getArgumentsIncludingConfigFile()
-					);
-					if (noiseModelFactory instanceof ITimeHorizonConsumer) {
-						ITime noiseModelTimeHorizon = determineNoiseModelTimeHorizon(modelTimeHorizon);
-						((ITimeHorizonConsumer)noiseModelFactory).setTimeHorizon(noiseModelTimeHorizon);
+						);
+						if (noiseModelFactory instanceof ITimeHorizonConsumer) {
+							ITime noiseModelTimeHorizon = determineNoiseModelTimeHorizon(modelTimeHorizon);
+							((ITimeHorizonConsumer) noiseModelFactory).setTimeHorizon(noiseModelTimeHorizon);
+						}
+						noiseModelFactories.put(noiseModelConfig, noiseModelFactory);
 					}
-					noiseModelFactories.put(noiseModelConfig, noiseModelFactory);
+					noiseModelForNewInstance.put(noiseModelConfig, noiseModelFactory.getInstance(OutputLevel.ModelDefault));
 				}
-				noiseModelForNewInstance.put(noiseModelConfig, noiseModelFactory.getInstance(OutputLevel.ModelDefault));
 			}
 		}
 
@@ -413,26 +414,26 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
 	private void determineAccessedModelItems(BBStochModelVectorsConfig bbStochModelVectorsConfig) {
 		Collection<BBRegularisationConstantConfig> accessedStochParameters =
 				bbStochModelVectorsConfig.getRegularisationConstantCollection();
-		for (BBRegularisationConstantConfig accessedStochParameter : accessedStochParameters) {
-			for (BBStochModelVectorConfig accessedParameter : accessedStochParameter.getVectorConfigs()) {
-				accessedInputExchangeItemIds.add(accessedParameter.getSourceId());
+		for (String stateId : bbStochModelVectorsConfig.getStateIds()) {
+			for (BBRegularisationConstantConfig accessedStochParameter : accessedStochParameters) {
+				for (BBStochModelVectorConfig accessedParameter : accessedStochParameter.getVectorConfigs()) {
+					accessedInputExchangeItemIds.add(accessedParameter.getSourceId());
+				}
 			}
-		}
-		if (bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE) != null) {
-			Collection<BBNoiseModelConfig> noiseModelConfigs = bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
-			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
-				for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseModelConfig.getExchangeItemConfigs()) {
-					for (String modelExchangeItemId : exchangeItemConfig.getModelExchangeItemIds()) {
-						accessedInputExchangeItemIds.add(modelExchangeItemId);
+			if (bbStochModelVectorsConfig.getStateConfig(stateId) != null) {
+				Collection<BBNoiseModelConfig> noiseModelConfigs = bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
+				for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
+					for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseModelConfig.getExchangeItemConfigs()) {
+						accessedInputExchangeItemIds.addAll(exchangeItemConfig.getModelExchangeItemIds());
 					}
 				}
 			}
-		}
-		Collection<BBStochModelVectorConfig> accessedStochResults =
-				bbStochModelVectorsConfig.getPredictorVectorCollection(FILTERED_STATE);
-		if (accessedStochResults != null ) {
-			for (BBStochModelVectorConfig accessedStochResult : accessedStochResults) {
-				accessedOutputExchangeItemIds.add(accessedStochResult.getSourceId());
+			Collection<BBStochModelVectorConfig> accessedStochResults =
+				bbStochModelVectorsConfig.getPredictorVectorCollection(stateId);
+			if (accessedStochResults != null) {
+				for (BBStochModelVectorConfig accessedStochResult : accessedStochResults) {
+					accessedOutputExchangeItemIds.add(accessedStochResult.getSourceId());
+				}
 			}
 		}
 	}

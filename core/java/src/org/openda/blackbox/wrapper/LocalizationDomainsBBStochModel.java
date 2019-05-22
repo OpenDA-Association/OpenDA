@@ -39,7 +39,7 @@ public class LocalizationDomainsBBStochModel implements ILocalizationDomains {
 
 	@Override
 	public void setStateDomainObservations(int iDomain, IObservationDescriptions observationDescriptions) {
-		// Doing to be done here...
+		// Nothing to be done here...
 	}
 
 	@Override

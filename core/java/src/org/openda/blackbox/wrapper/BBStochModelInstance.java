@@ -21,6 +21,7 @@
 
 package org.openda.blackbox.wrapper;
 
+import cli.System.Collections.ICollection;
 import org.openda.blackbox.config.*;
 import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.ArrayGeometryInfo;
@@ -438,35 +439,27 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return exchangeItem;
 	}
 
-	public ITreeVector getState(int iDomain){
-		if (useLocalAnalysis) {
-			//throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.getState(int iDomain): Not implemented yet.");
-			ArrayList<String> StatesIds = this.getState().getSubTreeVectorIds();
-			return this.getState().getSubTreeVector(StatesIds.get(iDomain));
-			//bbStochModelVectorsConfig.getStateConfig().
-			//IVector state = noiseModelsInState.get(iDomain).getState();
-			//ITreeVector ValuesAsVector = (ITreeVector) new Vector(modelExchangeItemsInState.get(iDomain).getValuesAsDoubles());
-			//return noiseModelsInState.get(iDomain).getState();
-		} else {
-			return this.getState();
-		}
+	private ArrayList<String> getOrderedStateIds(){
+		ArrayList<String> stateIds = new ArrayList<>(this.bbStochModelVectorsConfig.getStateIds());
+		Collections.sort(stateIds);
+		return stateIds;
 	}
 
-	public ITreeVector getState() {
+	private ITreeVector getState(String stateId, String caption){
 
-		if ( timerGetState == null){
-			timerGetState = new OdaTiming(ModelID);
+		String treeVectorId = "state";
+		if (useLocalAnalysis){
+			treeVectorId = stateId;
 		}
-		timerGetState.start();
 
-		TreeVector stateTreeVector = new TreeVector("state", "State From Black Box Stoch Model Instance");
+		TreeVector stateTreeVector = new TreeVector(treeVectorId, caption);
 
 		Collection<BBNoiseModelConfig> noiseModelConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
 		Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
 
-		stateNoiseModelsEndIndices = new int[noiseModelConfigs.size()+uncertaintyOrArmaNoiseConfigs.size()];
+		stateNoiseModelsEndIndices = new int[noiseModelConfigs.size() + uncertaintyOrArmaNoiseConfigs.size()];
 
 		int i = 0;
 
@@ -475,10 +468,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
 			IVector noiseModelState = noiseModel.getState();
 			//add this part to state
-			if(noiseModelState instanceof ITreeVector){
-				stateTreeVector.addChild((ITreeVector)noiseModelState);
-			}else{
-				String id = "noise_part_"+i;
+			if (noiseModelState instanceof ITreeVector) {
+				stateTreeVector.addChild((ITreeVector) noiseModelState);
+			} else {
+				String id = "noise_part_" + i;
 				ITreeVector tv = new TreeVector(id, noiseModelState);
 				stateTreeVector.addChild(tv);
 			}
@@ -495,7 +488,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		for (BBUncertOrArmaNoiseConfig noiseModelStateNoiseConfig : uncertaintyOrArmaNoiseConfigs) {
 			ArmaNoiseModel noiseModel = armaNoiseModels.get(noiseModelStateNoiseConfig);
 			if (noiseModelStateNoiseConfig.getNoiseModelType() !=
-					BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
+				BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
 				double[] noiseStateVector = noiseModel.getNoiseStateVector(currentTime);
 				stateTreeVector.addChild(noiseModelStateNoiseConfig.getId(), noiseStateVector);
 
@@ -509,7 +502,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		// add deterministic mode variables to state vector
 		Collection<BBStochModelVectorConfig> vectorCollection =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
 
 		stateVectorsEndIndices = new int[vectorCollection.size()];
 		i = 0;
@@ -522,51 +515,49 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			}
 			i++;
 		}
-
-		timerGetState.stop();
 		return stateTreeVector;
 	}
 
-	public void axpyOnState(double alpha, IVector vector, int iDomain) {
-		if (!useLocalAnalysis) {
-			throw new UnsupportedOperationException("BBStochModelInstance.axpyOnState(double alpha, IVector vector, int iDomain) can not be called if useLocalAnalysis is not specified");
+	public ITreeVector getState(int iDomain){
+		String caption = "State From Black Box Stoch Model Instance";
+		if (useLocalAnalysis){
+			caption = "Sub-State From Black Box Stoch Model Instance";
 		}
-
-		int numNoise = noiseModelsInState.size();
-
-		//call axpyOnState for iDomain-th element:
-		if (iDomain < numNoise) {
-			noiseModelsInState.get(iDomain).axpyOnState(alpha, vector);
-		} else {
-			modelExchangeItemsInState.get(iDomain - numNoise).axpyOnValues(alpha, vector.getValues());
-		}
-
+		return this.getState(this.getOrderedStateIds().get(iDomain), caption);
 	}
 
-	public void axpyOnState(double alpha, IVector vector) {
+	public ITreeVector getState() {
 
-		//TODO If vector is a treevector we can look at the children 
-		//without asking for values. If not we can ask for the state and
-		//overwrite the values. Also then we can look at the children.
-		
-		
-		if ( timerAxpyState == null){
-			timerAxpyState = new OdaTiming(ModelID);
+		if ( timerGetState == null){
+			timerGetState = new OdaTiming(ModelID);
 		}
-		timerAxpyState.start();
+		timerGetState.start();
 
-		if (stateVectorsEndIndices == null) {
-			// no state sizes known, get state first
-			getState();
+		ArrayList<String> stateIds = this.getOrderedStateIds();
+
+		if (useLocalAnalysis){
+			TreeVector parentStateTreeVector = new TreeVector("state", "State From Black Box Stoch Model Instance");
+			for (String stateId : stateIds){
+				parentStateTreeVector.addChild(this.getState(stateId, "Sub-State From Black Box Stoch Model Instance"));
+			}
+			timerGetState.stop();
+			return parentStateTreeVector;
 		}
+		else {
+			timerGetState.stop();
+			return this.getState(stateIds.get(0), "State From Black Box Stoch Model Instance");
+		}
+	}
+
+	private int axpyOnState(double alpha, String stateId, IVector vector, int offset) {
 
 		double[] axpyValues = vector.getValues();
 
 		int i = 0;
-		int j = 0;
+		int j = offset;
 
 		Collection<BBNoiseModelConfig> noiseModelConfigs =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
 		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
 			IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
 			IVector noiseModelState = noiseModel.getState();
@@ -581,7 +572,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		ITime currentTime = getCurrentTime();
 
 		Collection<BBUncertOrArmaNoiseConfig> stateNoiseModelCollection =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
 		for (BBUncertOrArmaNoiseConfig stateNoiseModelConfig : stateNoiseModelCollection) {
 			if (stateNoiseModelConfig.getNoiseModelType() !=
 					BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
@@ -602,7 +593,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 
 		Collection<BBStochModelVectorConfig> vectorCollection =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
 		i = 0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
 			int start = (i > 0) ? stateVectorsEndIndices[i - 1] : 0;
@@ -612,8 +603,36 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			getExchangeItem(vectorConfig.getId()).axpyOnValues(alpha, values);
 			i++;
 		}
+
+		return j;
+	}
+
+	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+		this.axpyOnState(alpha, this.getOrderedStateIds().get(iDomain), vector, 0);
+	}
+
+	public void axpyOnState(double alpha, IVector vector) {
+
+		if ( timerAxpyState == null){
+			timerAxpyState = new OdaTiming(ModelID);
+		}
+		timerAxpyState.start();
+
+		if (stateVectorsEndIndices == null) {
+			// no state sizes known, get state first
+			getState();
+		}
+
+		ArrayList<String> stateIds = this.getOrderedStateIds();
+		int offset = 0;
+
+		for (String stateId : stateIds){
+			offset = this.axpyOnState(alpha, stateId, vector, offset);
+		}
+
 		timerAxpyState.stop();
 	}
+
 
 	public ITreeVector getParameters() {
 		return paramsTreeVector;

@@ -40,7 +40,7 @@ public interface IStochModelInstance extends IModelInstance {
     /**
      * Get the full set of state variables of a single domain from a model.
      *
-     * @param iDomain The index of the localication domain
+     * @param iDomain The index of the localization domain
      * @return A Vector containing the values of all state variables in the model.
      */
     IVector getState(int iDomain);
