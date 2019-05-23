@@ -121,6 +121,7 @@
       <PreprocessorDefinitions>WIN32;FTN_CAPITAL;HAVE_LIBNETCDF;USE_MPI;CTALIB;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\external\pthreads\include\win32;..\..\external\sqlite3;..\..\external\mpi\win_mpich2\include;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\include</AdditionalIncludeDirectories>
+      <AdditionalOptions>/DHAVE_STRUCT_TIMESPEC</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
