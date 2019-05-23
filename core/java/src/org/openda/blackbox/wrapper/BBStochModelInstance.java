@@ -43,8 +43,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.*;
 
-import static org.openda.blackbox.config.BBStochModelConfigReader.FILTERED_STATE;
-
 /**
  * Black box module's implementation of a stochastic model instance
  */
@@ -68,8 +66,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	protected LinkedHashMap<String, SelectorInterface> selectors;
 	protected LinkedHashMap<BBNoiseModelConfig, IStochModelInstance> noiseModels;
 	protected LinkedHashMap<BBUncertOrArmaNoiseConfig, ArmaNoiseModel> armaNoiseModels;
-	protected int[] stateNoiseModelsEndIndices = null;
-	protected int[] stateVectorsEndIndices = null;
+	private Map<String,int[]> stateNoiseModelSizes = new LinkedHashMap<>();
+	private Map<String,int[]> stateVectorSizes = new LinkedHashMap<>();
 	private boolean doAutomaticNoiseGeneration = false;
 	private String savedStatesDirPrefix = null;
 	private String savedStatesNoiseModelPrefix = null;
@@ -445,6 +443,65 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return stateIds;
 	}
 
+	private int[] getNoiseModelSizes(String stateId){
+
+		if(this.stateNoiseModelSizes.containsKey(stateId)){
+			return this.stateNoiseModelSizes.get(stateId);
+		}
+
+		Collection<BBNoiseModelConfig> noiseModelConfigs =
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
+		Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
+
+		int[] result = new int[noiseModelConfigs.size() + uncertaintyOrArmaNoiseConfigs.size()];
+
+		int i = 0;
+
+		// add external noise model variables to state
+		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
+			result[i] = noiseModels.get(noiseModelConfig).getState().getSize();
+			i++;
+		}
+
+		// add blackbox internal noise model contributions to the state vector
+		for (BBUncertOrArmaNoiseConfig bbUncertOrArmaNoiseConfig : uncertaintyOrArmaNoiseConfigs) {
+			if (bbUncertOrArmaNoiseConfig.getNoiseModelType() != BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
+				result[i] = armaNoiseModels.get(bbUncertOrArmaNoiseConfig).getNoiseStateVector(getCurrentTime()).length;
+			}
+			else {
+				result[i] = 0;
+			}
+			i++;
+		}
+
+		this.stateNoiseModelSizes.put(stateId, result);
+
+		return result;
+	}
+
+	private int[] getStateVectorSizes(String stateId){
+
+		if(this.stateVectorSizes.containsKey(stateId)){
+			return this.stateVectorSizes.get(stateId);
+		}
+
+		// add deterministic mode variables to state vector
+		Collection<BBStochModelVectorConfig> vectorCollection =
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
+
+		int[] result = new int[vectorCollection.size()];
+		int i = 0;
+		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
+			result[i] = getExchangeItem(vectorConfig.getId()).getValuesAsDoubles().length;
+			i++;
+		}
+
+		this.stateVectorSizes.put(stateId, result);
+
+		return result;
+	}
+
 	private ITreeVector getState(String stateId, String caption){
 
 		String treeVectorId = "state";
@@ -459,26 +516,18 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
 			this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
 
-		stateNoiseModelsEndIndices = new int[noiseModelConfigs.size() + uncertaintyOrArmaNoiseConfigs.size()];
-
 		int i = 0;
-
 		// add external noise model variables to state
 		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
-			IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
-			IVector noiseModelState = noiseModel.getState();
+			IVector noiseModelState = noiseModels.get(noiseModelConfig).getState();
 			//add this part to state
 			if (noiseModelState instanceof ITreeVector) {
 				stateTreeVector.addChild((ITreeVector) noiseModelState);
 			} else {
+				// TODO (GvdO) : Should this be made unique by prepending stateId?
 				String id = "noise_part_" + i;
 				ITreeVector tv = new TreeVector(id, noiseModelState);
 				stateTreeVector.addChild(tv);
-			}
-			//keep count of lengths for later use
-			stateNoiseModelsEndIndices[i] = noiseModelState.getSize();
-			if (i > 0) {
-				stateNoiseModelsEndIndices[i] += stateNoiseModelsEndIndices[i - 1];
 			}
 			i++;
 		}
@@ -491,30 +540,16 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
 				double[] noiseStateVector = noiseModel.getNoiseStateVector(currentTime);
 				stateTreeVector.addChild(noiseModelStateNoiseConfig.getId(), noiseStateVector);
-
-				stateNoiseModelsEndIndices[i] = noiseStateVector.length;
-				if (i > 0) {
-					stateNoiseModelsEndIndices[i] += stateNoiseModelsEndIndices[i - 1];
-				}
 			}
-			i++;
 		}
 
 		// add deterministic mode variables to state vector
 		Collection<BBStochModelVectorConfig> vectorCollection =
 			this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
-
-		stateVectorsEndIndices = new int[vectorCollection.size()];
-		i = 0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-			double[] values = getExchangeItem(vectorConfig.getId()).getValuesAsDoubles();
-			stateTreeVector.addChild(vectorConfig.getId(), values);
-			stateVectorsEndIndices[i] = values.length;
-			if (i > 0) {
-				stateVectorsEndIndices[i] += stateVectorsEndIndices[i - 1];
-			}
-			i++;
+			stateTreeVector.addChild(vectorConfig.getId(), getExchangeItem(vectorConfig.getId()).getValuesAsDoubles());
 		}
+
 		return stateTreeVector;
 	}
 
@@ -573,6 +608,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		Collection<BBUncertOrArmaNoiseConfig> stateNoiseModelCollection =
 				this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
+		int[] noiseModelSizes = this.getNoiseModelSizes(stateId);
 		for (BBUncertOrArmaNoiseConfig stateNoiseModelConfig : stateNoiseModelCollection) {
 			if (stateNoiseModelConfig.getNoiseModelType() !=
 					BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
@@ -581,11 +617,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					throw new RuntimeException("Noise model not created: " + stateNoiseModelConfig.getId());
 				}
 				double[] noiseStateVector = noiseModel.getNoiseStateVector(currentTime);
+				if (noiseStateVector.length != noiseModelSizes[i]) {
+					throw new RuntimeException("Inconsistent noise model sizes: " + stateNoiseModelConfig.getId());
+				}
 				for (int k = 0; k < noiseStateVector.length; k++) {
 					noiseStateVector[k] += alpha * axpyValues[j++];
-				}
-				if (!(j == stateNoiseModelsEndIndices[i])) {
-					throw new RuntimeException("Inconsistent noise model sizes: " + stateNoiseModelConfig.getId());
 				}
 				noiseModel.setNoiseStateVector(currentTime, noiseStateVector);
 			}
@@ -594,20 +630,22 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		Collection<BBStochModelVectorConfig> vectorCollection =
 				this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
+		int[] vectorSizes = this.getStateVectorSizes(stateId);
 		i = 0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-			int start = (i > 0) ? stateVectorsEndIndices[i - 1] : 0;
-			int subSize = stateVectorsEndIndices[i] - start;
+			int subSize = vectorSizes[i];
 			double[] values = new double[subSize];
-			System.arraycopy(axpyValues, j + start, values, 0, subSize);
+			System.arraycopy(axpyValues, j, values, 0, subSize);
 			getExchangeItem(vectorConfig.getId()).axpyOnValues(alpha, values);
 			i++;
+			j+=subSize;
 		}
 
 		return j;
 	}
 
 	public void axpyOnState(double alpha, IVector vector, int iDomain) {
+
 		this.axpyOnState(alpha, this.getOrderedStateIds().get(iDomain), vector, 0);
 	}
 
@@ -617,11 +655,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			timerAxpyState = new OdaTiming(ModelID);
 		}
 		timerAxpyState.start();
-
-		if (stateVectorsEndIndices == null) {
-			// no state sizes known, get state first
-			getState();
-		}
 
 		ArrayList<String> stateIds = this.getOrderedStateIds();
 		int offset = 0;
@@ -829,46 +862,62 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	//
 	// StochModelInstance Functions
 	//
-
+	// TODO: Check with SH whether this implementation is correct...
 	public IStochVector getStateUncertainty() {
 
-		if (stateVectorsEndIndices == null) {
-			// no state sizes known, get state first
-			getState();
-		}
-
-		// state size is equal to the last sub index
-		if (stateNoiseModelsEndIndices.length<1){
-			System.out.println("Warning no noise model specified but the method getStateUncertainty is called. Pleae check whether this is correct.");
-		   return null;
-		}
-
+		ArrayList<String> stateIds = this.getOrderedStateIds();
+		int totalNoiseModelSize = 0;
 		int fullStateSize = 0;
-		if (stateNoiseModelsEndIndices.length > 0) {
-			fullStateSize += stateNoiseModelsEndIndices[stateNoiseModelsEndIndices.length - 1];
-		}
-		if (stateVectorsEndIndices.length > 0) {
-			fullStateSize += stateVectorsEndIndices[stateVectorsEndIndices.length - 1];
-		}
+		List<double[]> allStdevs = new ArrayList<>();
 
-		Collection<BBUncertOrArmaNoiseConfig> stateNoiseModelCollection =
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
-		ArrayList<double[]> stdDevList = new ArrayList<double[]>();
-		for (BBUncertOrArmaNoiseConfig stateNoiseModelConfig : stateNoiseModelCollection) {
-			int noiseStateSize = 1; // TODO elaborate
-			double[] stdDevs = new double[noiseStateSize];
-			for (int i = 0; i < stdDevs.length; i++) {
-				stdDevs[i] = stateNoiseModelConfig.getStdDev();
+		for( String stateId: stateIds ) {
+			int[] noiseModelSizes = this.getNoiseModelSizes(stateId);
+			int numNoiseModelConfigs =
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs().size();
+			int stateSize = 0;
+			int counter = 0;
+			int offset = 0;
+			for (int i : noiseModelSizes) {
+				stateSize += i;
+				totalNoiseModelSize += i;
+				if(counter < numNoiseModelConfigs)
+				{
+					offset += i;
+				}
+				counter++;
 			}
-			stdDevList.add(stdDevs);
+			for (int i : this.getStateVectorSizes(stateId)) {
+				stateSize += i;
+			}
+			fullStateSize += stateSize;
+			double[] stateStdevs = new double[stateSize];
+
+			Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
+
+			int k = 0;
+			for (BBUncertOrArmaNoiseConfig stateNoiseModelConfig : uncertaintyOrArmaNoiseConfigs) {
+				int subSize = noiseModelSizes[numNoiseModelConfigs + k];
+				for (int i = 0 ; i < subSize; i++){
+					stateStdevs[offset] = stateNoiseModelConfig.getStdDev();
+					offset++;
+				}
+				k++;
+			}
+			allStdevs.add(stateStdevs);
 		}
-		double[] means = new double[fullStateSize];  // value = 0
+		// state size is equal to the last sub index
+		if (totalNoiseModelSize == 0) {
+			System.out.println("Warning: no noise model specified but the method getStateUncertainty is called. Please check whether this is correct.");
+			return null;
+		}
+		double[] means = new double[fullStateSize];
 		double[] stdDevs = new double[fullStateSize];
-		int copyPos = 0;
-		for (double[] boundaryStdDevs : stdDevList) {
-			int count = boundaryStdDevs.length;
-			System.arraycopy(boundaryStdDevs, 0, stdDevs, copyPos, count);
-			copyPos += count;
+		int i = 0;
+		for(double[] stateStdDevs: allStdevs){
+			for (double stateStdDev : stateStdDevs) {
+				stdDevs[i++] = stateStdDev;
+			}
 		}
 		return new StochVector(means, stdDevs);
 	}
@@ -1167,73 +1216,78 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
+	//TODO (GvdO): Should these vectors be deeper or flattened?
 	private IVector[] getObservedLocalizationExtended(IObservationDescriptions observationDescriptions, double distance){
 
-	            int nObs=observationDescriptions.getObservationCount();
-			    TreeVector localizationVectors[] = new TreeVector[nObs];
-			    for (int iObs=0; iObs<nObs; iObs++){
-					localizationVectors[iObs] = new TreeVector("state", "State From Black Box Stoch Model Instance");
-				}
-
-
-				Collection<BBNoiseModelConfig> noiseModelConfigs =
-						this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
-				Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
-						this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs();
-
-				// add external noise model variables to state
-			    int iNoise = 0;
-				for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
-					IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
-					IVector noiseModelState = noiseModel.getState();
-					noiseModelState.setConstant(1.0);
-
-					for (int iObs=0; iObs<nObs; iObs++){
-
-						//add this part to state
-						if(noiseModelState instanceof ITreeVector){
-							localizationVectors[iObs].addChild((ITreeVector)noiseModelState.clone());
-						}else{
-							String id = "noise_part_"+iNoise;
-							ITreeVector tv = new TreeVector(id, noiseModelState);
-							localizationVectors[iObs].addChild(tv);
-						}
-					}
-					iNoise++;
-				}
-
-				// add blackbox internal noise model contributions to the state vector
-				ITime currentTime = getCurrentTime();
-				for (BBUncertOrArmaNoiseConfig noiseModelStateNoiseConfig : uncertaintyOrArmaNoiseConfigs) {
-					ArmaNoiseModel noiseModel = armaNoiseModels.get(noiseModelStateNoiseConfig);
-					if (noiseModelStateNoiseConfig.getNoiseModelType() !=
-							BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
-						double[] noiseStateVector = noiseModel.getNoiseStateVector(currentTime);
-						for (int iElt=0; iElt<noiseStateVector.length; iElt++){ noiseStateVector[iElt]=1.0;}
-						for (int iObs=0; iObs<nObs; iObs++){
-							localizationVectors[iObs].addChild(noiseModelStateNoiseConfig.getId(), noiseStateVector);
-						}
-					}
-				}
-
-				// add deterministic mode variables to state vector
-				//here bbStochModelStateVectors are listed in the same order as in the configuration.
-				Collection<BBStochModelVectorConfig> bbStochModelStateVectors =
-						this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
-
-				//here localizationVectors contains a treeVector for each observation.
-				//for each state vector add a child treeVector with weight values to each localizationVector,
-				//i.e. a mapping with weight values is created between each observation and each state vector.
-				for (BBStochModelVectorConfig vectorConfig : bbStochModelStateVectors) {
-					IModelExtensions modelExtended = (IModelExtensions) model;
-					//TODO bug: this always uses vectorConfig.getId(). This should use vectorConfig.getSourceVectorId() if that is configured.
-					IVector[] localizationVectorsModel= modelExtended.getObservedLocalization(vectorConfig.getId(),observationDescriptions,distance);
-					for (int iObs=0; iObs<nObs; iObs++){
-						localizationVectors[iObs].addChild(vectorConfig.getId(), localizationVectorsModel[iObs].getValues());
-					}
-				}
-				return localizationVectors;
+		int nObs = observationDescriptions.getObservationCount();
+		TreeVector localizationVectors[] = new TreeVector[nObs];
+		for (int iObs=0; iObs<nObs; iObs++){
+			localizationVectors[iObs] = new TreeVector("state", "State From Black Box Stoch Model Instance");
 		}
+		ArrayList<String> stateIds = this.getOrderedStateIds();
+		for (String stateId : stateIds) {
+			Collection<BBNoiseModelConfig> noiseModelConfigs =
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
+			Collection<BBUncertOrArmaNoiseConfig> uncertaintyOrArmaNoiseConfigs =
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs();
+
+			// add external noise model variables to state
+			int iNoise = 0;
+			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
+				IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
+				IVector noiseModelState = noiseModel.getState();
+				noiseModelState.setConstant(1.0);
+
+				for (int iObs = 0; iObs < nObs; iObs++) {
+
+					//add this part to state
+					if (noiseModelState instanceof ITreeVector) {
+						localizationVectors[iObs].addChild((ITreeVector) noiseModelState.clone());
+					} else {
+						//TODO (GvdO): Should this id be made unique?
+						String id = "noise_part_" + iNoise;
+						ITreeVector tv = new TreeVector(id, noiseModelState);
+						localizationVectors[iObs].addChild(tv);
+					}
+				}
+				iNoise++;
+			}
+
+			// add blackbox internal noise model contributions to the state vector
+			ITime currentTime = getCurrentTime();
+			for (BBUncertOrArmaNoiseConfig noiseModelStateNoiseConfig : uncertaintyOrArmaNoiseConfigs) {
+				ArmaNoiseModel noiseModel = armaNoiseModels.get(noiseModelStateNoiseConfig);
+				if (noiseModelStateNoiseConfig.getNoiseModelType() !=
+					BBUncertOrArmaNoiseConfig.NoiseModelType.UncertainItem) {
+					double[] noiseStateVector = noiseModel.getNoiseStateVector(currentTime);
+					for (int iElt = 0; iElt < noiseStateVector.length; iElt++) {
+						noiseStateVector[iElt] = 1.0;
+					}
+					for (int iObs = 0; iObs < nObs; iObs++) {
+						localizationVectors[iObs].addChild(noiseModelStateNoiseConfig.getId(), noiseStateVector);
+					}
+				}
+			}
+
+			// add deterministic mode variables to state vector
+			//here bbStochModelStateVectors are listed in the same order as in the configuration.
+			Collection<BBStochModelVectorConfig> bbStochModelStateVectors =
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
+
+			//here localizationVectors contains a treeVector for each observation.
+			//for each state vector add a child treeVector with weight values to each localizationVector,
+			//i.e. a mapping with weight values is created between each observation and each state vector.
+			for (BBStochModelVectorConfig vectorConfig : bbStochModelStateVectors) {
+				IModelExtensions modelExtended = (IModelExtensions) model;
+				//TODO bug: this always uses vectorConfig.getId(). This should use vectorConfig.getSourceVectorId() if that is configured.
+				IVector[] localizationVectorsModel = modelExtended.getObservedLocalization(vectorConfig.getId(), observationDescriptions, distance);
+				for (int iObs = 0; iObs < nObs; iObs++) {
+					localizationVectors[iObs].addChild(vectorConfig.getId(), localizationVectorsModel[iObs].getValues());
+				}
+			}
+		}
+		return localizationVectors;
+	}
 
 	public ILocalizationDomains getLocalizationDomains(){
 
@@ -1289,23 +1343,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 
+	//TODO (GvdO): Should this be deeper or flattened?
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
 
 		if (model instanceof IModelExtensions) {
 			//System.out.println("I implement the extend interface!");
 			return getObservedLocalizationExtended(observationDescriptions, distance);
-		}
-
-		List<IVector[]> noiseModelWeights = new ArrayList<>();
-
-		Collection<BBNoiseModelConfig> noiseModelConfigs =
-			this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getNoiseModelConfigs();
-		int noiseModelCount = noiseModelConfigs.size();
-
-		for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
-			IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
-			IVector[] noiseModelObservedLocalization = noiseModel.getObservedLocalization(observationDescriptions, distance);
-			noiseModelWeights.add(noiseModelObservedLocalization);
 		}
 
 		// For each observation description, return a vector with the size of the state, containing the weight factors
@@ -1314,37 +1357,53 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		IVector xObs = observationDescriptions.getValueProperties("xposition");
 		IVector yObs = observationDescriptions.getValueProperties("yposition");
 		IVector zObs = observationDescriptions.getValueProperties("height");
-		String obsId[] = observationDescriptions.getStringProperties("id");
+		String[] obsId = observationDescriptions.getStringProperties("id");
 		int obsCount = observationDescriptions.getObservationCount();
 
 		IVector[] obsVectorArray = new IVector[obsCount];
 		for (int i = 0; i < obsCount; i++) {
-			TreeVector noiseModelWeightsTreeVector = new TreeVector("weights-for-noiseModels");
-			for (int n = 0; n < noiseModelCount; n++) {
-				noiseModelWeightsTreeVector.addChild("Noise-Model" + n, noiseModelWeights.get(n)[i].getValues());
+			obsVectorArray[i] = new TreeVector("State-Weight");
+		}
+
+		for (String stateId : this.getOrderedStateIds()) {
+
+			List<IVector[]> noiseModelWeights = new ArrayList<>();
+			Collection<BBNoiseModelConfig> noiseModelConfigs =
+				this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
+			int noiseModelCount = noiseModelConfigs.size();
+
+			for (BBNoiseModelConfig noiseModelConfig : noiseModelConfigs) {
+				IStochModelInstance noiseModel = noiseModels.get(noiseModelConfig);
+				IVector[] noiseModelObservedLocalization = noiseModel.getObservedLocalization(observationDescriptions, distance);
+				noiseModelWeights.add(noiseModelObservedLocalization);
 			}
+			for (int i = 0; i < obsCount; i++) {
+				//TODO (GvdO): Should this be made unique?
+				TreeVector noiseModelWeightsTreeVector = new TreeVector("weights-for-noiseModels");
+				for (int n = 0; n < noiseModelCount; n++) {
+					noiseModelWeightsTreeVector.addChild("Noise-Model" + n, noiseModelWeights.get(n)[i].getValues());
+				}
 
-			ITreeVector modelWeightsTreeVector = getLocalizedCohnWeights(obsId[i], distance,
-				xObs.getValue(i), yObs.getValue(i), zObs.getValue(i));
+				ITreeVector modelWeightsTreeVector = getLocalizedCohnWeights(stateId, obsId[i], distance,
+					xObs.getValue(i), yObs.getValue(i), zObs.getValue(i));
 
-			// TreeVector to vector
+				// TreeVector to vector
 //			IVector statesWeightsArray = new Vector(modelWeightsTreeVector.getValues());
 //			obsVectorArray[i] = statesWeightsArray;
-			TreeVector weightsForFullState = new TreeVector("State-Weight");
-			weightsForFullState.addChild(noiseModelWeightsTreeVector);
-			weightsForFullState.addChild(modelWeightsTreeVector);
-			obsVectorArray[i] = weightsForFullState;
+				((TreeVector)obsVectorArray[i]).addChild(noiseModelWeightsTreeVector);
+				((TreeVector)obsVectorArray[i]).addChild(modelWeightsTreeVector);
+			}
 		}
 		return obsVectorArray;
 	}
 
 	//private IVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
-	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
+	private ITreeVector getLocalizedCohnWeights(String stateId, String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
 
 		//IVector iWeightsVector = new IVector;
 		TreeVector treeVector = new TreeVector("weights-for " + obsId);
 		Collection<BBStochModelVectorConfig> vectorCollection =
-			this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getVectorCollection();
+			this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
 
 		//int k=0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
@@ -1417,30 +1476,33 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	private void createStateNoiseModels() {
-		if (this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE) != null) {
-			for (BBUncertOrArmaNoiseConfig noiseModelStateNoiseConfig :
-				this.bbStochModelVectorsConfig.getStateConfig(FILTERED_STATE).getUncertaintyOrArmaNoiseConfigs()) {
-				ArmaNoiseModel noiseModel = armaNoiseModels.get(noiseModelStateNoiseConfig);
-				if (noiseModel == null) {
-					int noiseModelStateSize = 1; // TODO elaborate
-					boolean doNoiseModelLogging = true; // TODO read from config
-					if (noiseModelStateNoiseConfig.getNoiseModelType() == BBUncertOrArmaNoiseConfig.NoiseModelType.ArmaModel) {
-						boolean useRandomSeed = false; // TODO read from config
-						noiseModel = new ArmaNoiseModel(this.model.getModelRunDir(), noiseModelStateSize,
+		ArrayList<String> stateIds = getOrderedStateIds();
+		for (String stateId : stateIds) {
+			if (this.bbStochModelVectorsConfig.getStateConfig(stateId) != null) {
+				for (BBUncertOrArmaNoiseConfig noiseModelStateNoiseConfig :
+					this.bbStochModelVectorsConfig.getStateConfig(stateId).getUncertaintyOrArmaNoiseConfigs()) {
+					ArmaNoiseModel noiseModel = armaNoiseModels.get(noiseModelStateNoiseConfig);
+					if (noiseModel == null) {
+						int noiseModelStateSize = 1; // TODO elaborate
+						boolean doNoiseModelLogging = true; // TODO read from config
+						if (noiseModelStateNoiseConfig.getNoiseModelType() == BBUncertOrArmaNoiseConfig.NoiseModelType.ArmaModel) {
+							boolean useRandomSeed = false; // TODO read from config
+							noiseModel = new ArmaNoiseModel(this.model.getModelRunDir(), noiseModelStateSize,
 								noiseModelStateNoiseConfig.getArmaConstants(), noiseModelStateNoiseConfig.getStdDev(),
 								useRandomSeed, doNoiseModelLogging);
-					} else if (noiseModelStateNoiseConfig.getNoiseModelType() == BBUncertOrArmaNoiseConfig.NoiseModelType.Ar1Model) {
-						boolean useRandomSeed = false; // TODO MVL read from config
-						noiseModel = new ArmaNoiseModel(this.model.getModelRunDir(), noiseModelStateSize,
+						} else if (noiseModelStateNoiseConfig.getNoiseModelType() == BBUncertOrArmaNoiseConfig.NoiseModelType.Ar1Model) {
+							boolean useRandomSeed = false; // TODO MVL read from config
+							noiseModel = new ArmaNoiseModel(this.model.getModelRunDir(), noiseModelStateSize,
 								noiseModelStateNoiseConfig.getArmaConstants(), noiseModelStateNoiseConfig.getStdDev(),
 								useRandomSeed, doNoiseModelLogging);
-					} else {
-						noiseModel = new ArmaNoiseModel(this.model.getModelRunDir(), noiseModelStateSize,
+						} else {
+							noiseModel = new ArmaNoiseModel(this.model.getModelRunDir(), noiseModelStateSize,
 								noiseModelStateNoiseConfig.getArmaConstants(), doNoiseModelLogging);
-						addWhiteNoiseFromUncertEngineToNoiseModel(noiseModelStateNoiseConfig, noiseModel,
+							addWhiteNoiseFromUncertEngineToNoiseModel(noiseModelStateNoiseConfig, noiseModel,
 								this.getTimeHorizon().getBeginTime());
+						}
+						armaNoiseModels.put(noiseModelStateNoiseConfig, noiseModel);
 					}
-					armaNoiseModels.put(noiseModelStateNoiseConfig, noiseModel);
 				}
 			}
 		}
@@ -1448,16 +1510,17 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	private BBStochModelVectorConfig findPredictionVectorConfig(String obsId) {
 
-		Collection<BBStochModelVectorConfig> predictorVectorCollection = this.bbStochModelVectorsConfig.getPredictorVectorCollection(FILTERED_STATE);
-		for (BBStochModelVectorConfig bbStochModelVectorConfig : predictorVectorCollection) {
-			if (bbStochModelVectorConfig.getId().equalsIgnoreCase(obsId)) {
-				return bbStochModelVectorConfig;
+		Collection<BBStochModelVectorConfig> fullPredictorVectorCollection = new ArrayList<>();
+		for (String stateId : this.getOrderedStateIds()) {
+			for (BBStochModelVectorConfig bbStochModelVectorConfig : this.bbStochModelVectorsConfig.getPredictorVectorCollection(stateId)) {
+				if (bbStochModelVectorConfig.getId().equalsIgnoreCase(obsId)) {
+					return bbStochModelVectorConfig;
+				}
+				fullPredictorVectorCollection.add(bbStochModelVectorConfig);
 			}
 		}
-
 		String allVectors = "";
-		for (BBStochModelVectorConfig bbStochModelVectorConfig :
-			predictorVectorCollection) {
+		for (BBStochModelVectorConfig bbStochModelVectorConfig : fullPredictorVectorCollection) {
 			allVectors += "      " + bbStochModelVectorConfig.getId() + "\n";
 		}
 		throw new RuntimeException(
