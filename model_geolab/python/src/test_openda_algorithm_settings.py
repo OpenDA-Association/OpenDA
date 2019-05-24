@@ -1,4 +1,4 @@
-import OpendaCalibration as oda_cal
+import openda_calibration as oda_cal
 
 calibration = oda_cal.OpendaCalibration(".")
 algorithm_names = calibration.get_algorithm_names()

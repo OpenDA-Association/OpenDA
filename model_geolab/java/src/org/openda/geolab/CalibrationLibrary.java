@@ -22,6 +22,9 @@ package org.openda.geolab;
 
 import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.IStochObserver;
+import org.openda.resultwriters.CsvResultWriter;
+import org.openda.resultwriters.PythonResultWriter;
+import org.openda.utils.Results;
 
 import java.io.File;
 import java.util.*;
@@ -51,6 +54,9 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		algorithm = null;
 
 		algorithmSettings.put("Dud", new CalLibAlgorithmSettings(CalLibDudAlgorithm.getConfigStringTemplate()));
+
+		Results.addResultWriter(new PythonResultWriter(workingDir, "ttt.py"));
+		Results.addResultWriter(new CsvResultWriter(workingDir, "tttt.csv"));
 
 		return 0;
 	}

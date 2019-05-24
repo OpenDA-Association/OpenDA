@@ -1,4 +1,4 @@
-from OpendaCalibrationLib import *
+from openda_calibration_lib import *
 
 
 class OpendaCalibration:
