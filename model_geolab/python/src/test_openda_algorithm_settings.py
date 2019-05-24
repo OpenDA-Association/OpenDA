@@ -5,6 +5,7 @@ algorithm_names = calibration.get_algorithm_names()
 print(algorithm_names)
 algorithm_name = algorithm_names[0]
 settings = calibration.get_algorithm_setting_names(algorithm_name)
+print(settings)
 setting = settings[5]
 print(setting)
 setting_value = calibration.get_algorithm_setting_value(algorithm_name, setting)
