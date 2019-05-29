@@ -64,7 +64,7 @@
 	Compilation
 ===========================================================================
 -->
-   <target name="build" depends="init, tests">
+   <target name="build" depends="init, tests" unless="test-only">
       <buildmodule module="core" />
       <buildmodule module="observers" />
       <buildmodule module="models" />
@@ -626,7 +626,7 @@
 	-->
 
      <!-- compile test classes -->
-    <target name="testclasses">
+    <target name="testclasses" unless="test-only">
         <mkdir dir="${testbuilddir}"/>
     	<buildmoduletests module="core" />
     	<buildmoduletests module="observers" />
@@ -646,7 +646,7 @@
         <buildmoduletests module="model_openfoam"/>        
     </target>
 
-    <target name="testclassesPPC">
+    <target name="testclassesPPC" unless="test-only">
         <mkdir dir="${testbuilddir}"/>
     	<buildmoduletests module="core" />
     	<buildmoduletests module="observers" />
