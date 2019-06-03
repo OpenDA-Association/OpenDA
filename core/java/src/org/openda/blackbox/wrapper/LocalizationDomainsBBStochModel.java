@@ -1,5 +1,7 @@
 package org.openda.blackbox.wrapper;
 
+import org.openda.blackbox.config.BBNoiseModelConfig;
+import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.interfaces.ILocalizationDomains;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IPrevExchangeItem;
@@ -12,29 +14,22 @@ import java.util.Map;
 
 public class LocalizationDomainsBBStochModel implements ILocalizationDomains {
 
-	// What to do with this one?
-	private Collection<Collection<String>> stochModels;
-	// What to do with this one?
-	private Collection<Collection<String>> exchangeItems;
-	private ArrayList<Collection<String>> observationSourceIds;
+	private ArrayList<String> domainIds;
+	private ArrayList<Collection<BBStochModelVectorConfig>> predictorItems;
+	// TODO (GvdO): Should these unused members be removed?
+	private ArrayList<Collection<BBNoiseModelConfig>> noiseModels;
+	private ArrayList<Collection<IPrevExchangeItem>> exchangeItems;
 
 
-	public LocalizationDomainsBBStochModel(Collection<String> stateIds,
-		                                   Map<String, Collection<IStochModelInstance>> stochModelMap,
-										   Map<String, Collection<IPrevExchangeItem>> exchangeItemMap,
-										   Map<String, Collection<String>> observationIdSourceMap) {
+	public LocalizationDomainsBBStochModel(ArrayList<String> stateIds,
+		                                   ArrayList<Collection<BBNoiseModelConfig>> noiseModels,
+										   ArrayList<Collection<IPrevExchangeItem>> exchangeItems,
+										   ArrayList<Collection<BBStochModelVectorConfig>> predictorItems) {
 
-		this.observationSourceIds = new ArrayList<>();
-		for(String stateId : stateIds){
-			if(observationIdSourceMap.containsKey(stateId))
-			{
-				observationSourceIds.add(observationIdSourceMap.get(stateId));
-			}
-			else
-			{
-				observationSourceIds.add(new ArrayList<String>());
-			}
-		}
+		this.domainIds = stateIds;
+		this.noiseModels = noiseModels;
+		this.exchangeItems = exchangeItems;
+		this.predictorItems = predictorItems;
 	}
 
 	@Override
@@ -44,25 +39,24 @@ public class LocalizationDomainsBBStochModel implements ILocalizationDomains {
 
 	@Override
 	public int getStateDomainCount() {
-		return observationSourceIds.size();
+		return this.domainIds.size();
 	}
 
 	@Override
 	public int[] getObservationSelector(IObservationDescriptions observationDescriptions, int iDomain) {
-		ArrayList<Integer> result = new ArrayList<>();
-		int j = 0;
-		for (String observationId : observationDescriptions.getStringProperties("id")) {
-			if (this.observationSourceIds.get(iDomain).contains(observationId)) {
-				result.add(j);
+		int[] result = new int[observationDescriptions.getObservationCount()];
+		// TODO (GvdO): Is the length equal to the number of exchange items?
+		int count = 0;
+		for (IPrevExchangeItem obs_item : observationDescriptions.getExchangeItems()) {
+			int j = 0;
+			for ( BBStochModelVectorConfig predictorVectorConfig : predictorItems.get(iDomain)) {
+				if (obs_item.getId().equals(predictorVectorConfig.getSourceId())) {
+					result[count] = j;
+				}
+				j++;
 			}
-			j++;
+			count++;
 		}
-		int[] returnArray = new int[result.size()];
-		for (j = 0; j < result.size(); j++)
-		{
-			returnArray[j] = result.get(j);
-		}
-		return returnArray;
+		return result;
 	}
-
 }
