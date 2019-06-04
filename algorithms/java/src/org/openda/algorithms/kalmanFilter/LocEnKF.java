@@ -192,7 +192,7 @@ public class LocEnKF extends EnKF {
 				EnsembleVectors ensemblePredictionsAnalysis = getEnsembleVectorsPrediction(iDomain, lobs.getObservationDescriptions(),true);
 
 				// Adjust mainModel (adjust mainModel to mean analyzed state)
-				if (selector.length != 0) updateMainModel(ensembleVectorsAnalysis);
+				if (selector.length != 0) updateMainModel(ensembleVectorsAnalysis, iDomain);
 
 				// Free ensembles
 				ensembleVectorsAnalysis.free();
@@ -203,5 +203,17 @@ public class LocEnKF extends EnKF {
 		}
 	   // CtaUtils.print_native_memory("Enkf end",1);
         System.gc();
+	}
+
+	private void updateMainModel(EnsembleVectors ensembleVectors, int iDomain) {
+		IVector deltaMean = ensembleVectors.mean.clone();
+		IVector xMain = mainModel.getState(iDomain);
+
+		deltaMean.axpy(-1.0,xMain);
+		this.mainModel.axpyOnState(1.0, deltaMean);
+
+		xMain.free();
+		deltaMean.free();
+
 	}
 }

@@ -10,6 +10,7 @@
     <buildFile url="file://$PROJECT_DIR$/observers/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_efdc_dll/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_wflow/build_castor.xml" />
+    <buildFile url="file://$PROJECT_DIR$/model_bmi/build_thrift.xml" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -115,7 +116,7 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
     <file url="PROJECT" charset="UTF-8" />
   </component>
   <component name="ErrorOptionsConfigurable.UI">
@@ -358,6 +359,7 @@
       <module fileurl="file://$PROJECT_DIR$/application/java/application.iml" filepath="$PROJECT_DIR$/application/java/application.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/java/core.iml" filepath="$PROJECT_DIR$/core/java/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/dotnet_bridge/java/dotnet_bridge.iml" filepath="$PROJECT_DIR$/dotnet_bridge/java/dotnet_bridge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fews/fews_openda/java/fews_openda.iml" filepath="$PROJECT_DIR$/../fews/fews_openda/java/fews_openda.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_RainfallRunoffZhang/java/model_RainfallRunoffZhang.iml" filepath="$PROJECT_DIR$/model_RainfallRunoffZhang/java/model_RainfallRunoffZhang.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_bmi/model_bmi.iml" filepath="$PROJECT_DIR$/model_bmi/model_bmi.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_delft3d/java/model_delft3d.iml" filepath="$PROJECT_DIR$/model_delft3d/java/model_delft3d.iml" />
@@ -387,7 +389,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="1.8.0_191 (2)" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ResourceManagerContainer">
@@ -434,7 +436,6 @@
         </entry>
       </map>
     </option>
-    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="SvnChangesBrowserSettings">
     <option name="USE_AUTHOR_FIELD" value="true" />

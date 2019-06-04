@@ -585,12 +585,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	// TODO (GvdO): Check with SH whether this implementation is correct...
-	private int axpyOnState(double alpha, String stateId, IVector vector, int offset) {
+	private int axpyOnState(double alpha, String stateId, IVector vector) {
 
 		double[] axpyValues = vector.getValues();
 
 		int i = 0;
-		int j = offset;
+		int j = 0;
 
 		Collection<BBNoiseModelConfig> noiseModelConfigs =
 				this.bbStochModelVectorsConfig.getStateConfig(stateId).getNoiseModelConfigs();
@@ -599,7 +599,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			IVector noiseModelState = noiseModel.getState();
 			double[] partOfAxpyValues = new double[noiseModelState.getSize()];
 			System.arraycopy(axpyValues, j, partOfAxpyValues, 0, partOfAxpyValues.length);
-			j+=partOfAxpyValues.length;
+			j += partOfAxpyValues.length;
 			IVector partOfAxpyValuesVector = new Vector(partOfAxpyValues);
 			noiseModel.axpyOnState(alpha, partOfAxpyValuesVector);
 		}
@@ -647,7 +647,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 	public void axpyOnState(double alpha, IVector vector, int iDomain) {
 
-		this.axpyOnState(alpha, this.getOrderedStateIds().get(iDomain), vector, 0);
+		this.axpyOnState(alpha, this.getOrderedStateIds().get(iDomain), vector);
 	}
 
 	public void axpyOnState(double alpha, IVector vector) {
@@ -658,10 +658,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		timerAxpyState.start();
 
 		ArrayList<String> stateIds = this.getOrderedStateIds();
-		int offset = 0;
-
+		String id = null;
+		if(vector instanceof TreeVector){
+			id = ((TreeVector)vector).getId();
+		}
 		for (String stateId : stateIds){
-			offset = this.axpyOnState(alpha, stateId, vector, offset);
+			if(id == null || id.equals(stateId)){
+				this.axpyOnState(alpha, stateId, vector);
+			}
 		}
 
 		timerAxpyState.stop();
