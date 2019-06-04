@@ -347,7 +347,19 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 	//TODO: make actual selection for efficiency
 	public IStochObserver createSelection(int[] selector){
-		return this.createSelection(Type.Assimilation);
+
+		IoObjectStochObserver child = this.createEmptyChild();
+//		List<String> assimilationObsIds = this.ioObjectStochObserverConfig.getAssimilationObsIds();
+		List<String> selectedObsIds = new ArrayList<>();
+		for (int i : selector){
+			selectedObsIds.add(this.exchangeItemIds.get(i));
+		}
+		fillObservationTypeChildWithSelectedObservations(child, selectedObsIds);
+		child.initializeCounts();
+		child.initializeAtLeastOneStdDevIsFactor();
+		//TODO not initialized here: child.selectedTimeIndices, child.timesEqualForAllItems, child.beginTimeAsMJD, child.endTimeAsMJD. AK
+		child.observationDescriptions = new IoObjectStochObsDescriptions(child.exchangeItemIds, child.exchangeItems, child.selectedTimeIndices, child);
+		return child;
 	}
 
 	public IStochObserver createSelection(Type observationType) {
