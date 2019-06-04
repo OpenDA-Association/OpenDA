@@ -44,18 +44,22 @@ public class LocalizationDomainsBBStochModel implements ILocalizationDomains {
 
 	@Override
 	public int[] getObservationSelector(IObservationDescriptions observationDescriptions, int iDomain) {
-		int[] result = new int[observationDescriptions.getObservationCount()];
-		// TODO (GvdO): Is the length equal to the number of exchange items?
+
 		int count = 0;
+
+		ArrayList<Integer> selection = new ArrayList<>();
+
 		for (IPrevExchangeItem obs_item : observationDescriptions.getExchangeItems()) {
-			int j = 0;
 			for ( BBStochModelVectorConfig predictorVectorConfig : predictorItems.get(iDomain)) {
-				if (obs_item.getId().equals(predictorVectorConfig.getSourceId())) {
-					result[count] = j;
+				if (obs_item.getId().equals(predictorVectorConfig.getId())) {
+					selection.add(count);
 				}
-				j++;
 			}
 			count++;
+		}
+		int[] result = new int[selection.size()];
+		for (int i =0 ; i < selection.size(); i++){
+			result[i] = selection.get(i);
 		}
 		return result;
 	}
