@@ -21,7 +21,6 @@
 
 package org.openda.blackbox.wrapper;
 
-import cli.System.Collections.ICollection;
 import org.openda.blackbox.config.*;
 import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.ArrayGeometryInfo;
@@ -31,8 +30,8 @@ import org.openda.interfaces.*;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.uncertainties.UncertaintyEngine;
-import org.openda.utils.*;
 import org.openda.utils.Vector;
+import org.openda.utils.*;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
@@ -584,7 +583,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-	// TODO (GvdO): Check with SH whether this implementation is correct...
 	private int axpyOnState(double alpha, String stateId, IVector vector) {
 
 		double[] axpyValues = vector.getValues();
@@ -861,7 +859,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	//
 	// StochModelInstance Functions
 	//
-	// TODO (GvdO): Check with SH whether this implementation is correct...
+	// TODO (GvdO): Check with SH and Nils whether this implementation is correct...
 	public IStochVector getStateUncertainty() {
 
 		ArrayList<String> stateIds = this.getOrderedStateIds();
