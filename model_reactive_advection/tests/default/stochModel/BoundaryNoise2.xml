@@ -2,5 +2,5 @@
 <timeSeriesNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/timeSeriesNoiseModel.xsd">
 	<simulationTimespan timeFormat="mjd">0,60,...,15000</simulationTimespan>
 <timeSeries id="source.factory2.discharge" standardDeviation="5"
-            timeCorrelationScale="360.0"/>
+            timeCorrelationScale="3600.0"/>
 </timeSeriesNoiseModelConfig>
