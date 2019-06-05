@@ -13,7 +13,7 @@ refdate : '01 dec 1999'
 #unit is always seconds
 unit : 'seconds'
 # sources mass/m^3/s
-reaction_time: 2000.0 #oda:reaction_time
+reaction_time: 1000.0 #oda:reaction_time
 time: [0.0, 60.0, 15000.0] #oda:time_control
 initial_values:
 - id: 'c1'
