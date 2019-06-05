@@ -179,7 +179,7 @@ public class LocEnKF extends EnKF {
 				storeGainMatrix(lobs, analysisTime, Kvecs);
 
 				// Multiply Kalman gain with innovations and update model states
-				if (selector.length != 0) updateModelWithGain(lobs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs);
+				if (selector.length != 0) updateModelWithGain(lobs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs, iDomain);
 
 				// Free ensembles and Kalman gain;
 				for (int j=0; j<Kvecs.length;j++){Kvecs[j].free();}
@@ -205,12 +205,38 @@ public class LocEnKF extends EnKF {
         System.gc();
 	}
 
+
+	protected void updateModelWithGain(IStochObserver obs, EnsembleVectors ensemblePredictions, EnsembleVectors ensembleVectors, IVector[] Kvecs, int iDomain) {
+		timerGainMult.start();
+		// correct each member
+		for (int i = 0; i < this.ensembleSize; i++) {
+			//one innovation for each observation point.
+			IVector innovation = obs.getRealizations();
+			innovation.axpy(-1.0, ensemblePredictions.ensemble[i]);
+			innovation.axpy(-1.0, ensemblePredictions.mean);
+			//delta has length of state vector.
+			IVector delta = ensembleVectors.ensemble[0].clone(); //vector of same type; content is overwritten
+			delta.scale(0.0);
+			for (int j = 0; j < Kvecs.length; j++) {
+				delta.axpy(innovation.getValue(j), Kvecs[j]);
+			}
+			Results.putValue("delta_" + i, delta, delta.getSize(), "analysis step", IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.Step);
+			//K_k*(D - H*A^f_k)) = delta
+			//A^a_k = A^f_k + delta
+			//for each element in state vector add corresponding element of delta.
+			ensemble[i].axpyOnState(1.0, delta, iDomain);
+			delta.free();
+			innovation.free();
+		}
+		timerGainMult.stop();
+	}
+
 	private void updateMainModel(EnsembleVectors ensembleVectors, int iDomain) {
 		IVector deltaMean = ensembleVectors.mean.clone();
 		IVector xMain = mainModel.getState(iDomain);
 
 		deltaMean.axpy(-1.0,xMain);
-		this.mainModel.axpyOnState(1.0, deltaMean);
+		this.mainModel.axpyOnState(1.0, deltaMean, iDomain);
 
 		xMain.free();
 		deltaMean.free();

@@ -658,14 +658,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		timerAxpyState.start();
 
 		ArrayList<String> stateIds = this.getOrderedStateIds();
-		String id = null;
-		if(vector instanceof TreeVector){
-			id = ((TreeVector)vector).getId();
-		}
-		for (String stateId : stateIds){
-			if(id == null || id.equals(stateId)){
-				this.axpyOnState(alpha, stateId, vector);
-			}
+		for (String stateId : stateIds) {
+			this.axpyOnState(alpha, stateId, vector);
 		}
 
 		timerAxpyState.stop();
