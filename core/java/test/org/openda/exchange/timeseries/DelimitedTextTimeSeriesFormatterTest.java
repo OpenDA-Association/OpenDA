@@ -88,6 +88,31 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		assertEquals("times length", 300,times.length);
 	}
 
+	public void testCsvFormattedWithExponenents() {
+//		time,value
+//		60,-1.4683382E+00
+//		120,-6.1627460E-02
+//		180,4.6469403E-01
+//		240,8.5277511E-01
+//		300,-7.4561748E-01
+//		360,5.4569893E+01
+
+		double delta=0.0001;
+		ConfigTree config = new ConfigTree("<root><dateTimeSelector>0</dateTimeSelector><valueSelector>1</valueSelector><delimiter>,</delimiter><skipLines>1</skipLines></root>");
+		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
+		File csvFile = new File(testRunDataDir, "c1_locA.csv");
+		TimeSeries series1 = formatter.readFile(csvFile.getAbsolutePath());
+		assertNotNull(series1);
+		double times[] = series1.getTimesRef();
+		double values[] = series1.getValuesRef();
+		assertEquals("times[0]", 60.0,times[0], Math.ulp(60.0));
+		assertEquals("times length", 250,times.length);
+		assertEquals("values[0]", -1.4683382E+00,values[0], Math.ulp(-1.4683382E+00));
+		assertEquals("values[1]", -6.1627460E-02,values[1], Math.ulp(-6.1627460E-02));
+		assertEquals("values[2]", 4.6469403E-01,values[2], Math.ulp(4.6469403E-01));
+		assertEquals("values[5]", 5.4569893E+01,values[5], Math.ulp(5.4569893E+01));
+	}
+
 	public void testSemicolon() throws ParseException, IOException{
 		double delta=0.0001;
 		ConfigTree config = new ConfigTree("<root><delimiter>;</delimiter><decimalSeparator>,</decimalSeparator></root>");
