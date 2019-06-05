@@ -1,22 +1,22 @@
-/* MOD_V2.0 
-* Copyright (c) 2012 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/* MOD_V2.0
+ * Copyright (c) 2019 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package org.openda.resultwriters;
 
@@ -50,7 +50,7 @@ public class NetcdfResultWriter implements ResultWriter {
     // needs its own netcdfile. The netcdffile should be opened before/during first writing ,
     // All netcdf files should be closed together in a finalize call.
 
-    private HashMap<String, Integer> idlist = new HashMap<String, Integer>();    
+    private HashMap<String, Integer> idlist = new HashMap<String, Integer>();
 
     private String netcdfnameprefix = " ";
     private String netcdfnamevar = " ";
@@ -64,17 +64,17 @@ public class NetcdfResultWriter implements ResultWriter {
                 String prefixname = configString.substring(0, configString.length()-3);
 
                 netcdfnameprefix = new File(workingDir,prefixname).getAbsolutePath();
-                
+
                 // first trigger the openDAbridge by making a dummy ctavector
                 Vector dumctavec = new CtaVector(1);
 
                 // The ctanetcdfinit has been moved to the putvalue function: there,
                 // the id-list will be inspected. If the variable is  'new', then
                 // the init function will be called for this variable.
-                
+
                 // ctafilehandle = ctaNetcdfInit(netcdfnameprefix);
 
-                
+
                 // configString directly indicates the netcdf output file
 
             }
@@ -129,7 +129,7 @@ public class NetcdfResultWriter implements ResultWriter {
              ctafilehandle = this.idlist.get(id);
         } else {
              // first time this variable occurs; first initialize the netcdffile!
-            
+
              netcdfnamevar=netcdfnameprefix.concat(id);
              netcdfnamevar=netcdfnamevar.concat(".nc");
              ctafilehandle = ctaNetcdfInit(netcdfnamevar);
@@ -179,7 +179,7 @@ public class NetcdfResultWriter implements ResultWriter {
              TreeVector treevec = new SimpleTreeVector("from_SimpleVector", (SimpleVector) result);
              int retval = ((SimpleTreeVector) treevec).export(ctafilehandle);
              if (retval != 0 ) {
-                 throw new RuntimeException("NetcdfResultWriter: putValue for SimpleVector not succeeded ");            
+                 throw new RuntimeException("NetcdfResultWriter: putValue for SimpleVector not succeeded ");
              }
 
 

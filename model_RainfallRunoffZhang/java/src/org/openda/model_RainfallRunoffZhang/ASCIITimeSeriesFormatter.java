@@ -1,5 +1,5 @@
-/* MOD_V2.0
- * Copyright (c) 2015 OpenDA Association
+/*
+ * Copyright (c) 2019 OpenDA Association
  * All rights reserved.
  *
  * This file is part of OpenDA.
