@@ -1,8 +1,5 @@
-package org.openda.model_nemo;
-
-
-/* MOD_V2.0
- * Copyright (c) 2010 OpenDA Association
+/*
+ * Copyright (c) 2019 OpenDA Association
  * All rights reserved.
  *
  * This file is part of OpenDA.
@@ -20,6 +17,7 @@ package org.openda.model_nemo;
  * You should have received a copy of the GNU Lesser General Public License
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.openda.model_nemo;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.nemo_exchangeItem;

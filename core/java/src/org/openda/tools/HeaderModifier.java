@@ -1,22 +1,22 @@
-/* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * Copyright (c) 2019 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.tools;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,25 +30,26 @@ public class HeaderModifier {
 
 	private String suffix = "java";
 	
-	private String license= "/* MOD_V2.0 \n"+
-	"* Copyright (c) 2012 OpenDA Association \n"+
-	"* All rights reserved.\n"+
-	"* \n"+
-	"* This file is part of OpenDA. \n"+
-	"* \n"+
-	"* OpenDA is free software: you can redistribute it and/or modify \n"+
-	"* it under the terms of the GNU Lesser General Public License as \n"+
-	"* published by the Free Software Foundation, either version 3 of \n"+
-	"* the License, or (at your option) any later version. \n"+
-	"* \n"+
-	"* OpenDA is distributed in the hope that it will be useful, \n"+
-	"* but WITHOUT ANY WARRANTY; without even the implied warranty of \n"+
-	"* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"+
-	"* GNU Lesser General Public License for more details. \n"+
-	"* \n"+
-	"* You should have received a copy of the GNU Lesser General Public License\n"+
-	"* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.\n"+
-	"*/";
+	private String license= 
+	"/* MOD_V2.0\n"+
+	" * Copyright (c) 2019 OpenDA Association\n"+
+	" * All rights reserved.\n"+
+	" *\n"+
+	" * This file is part of OpenDA.\n"+
+	" *\n"+
+	" * OpenDA is free software: you can redistribute it and/or modify\n"+
+	" * it under the terms of the GNU Lesser General Public License as\n"+
+	" * published by the Free Software Foundation, either version 3 of\n"+
+	" * the License, or (at your option) any later version.\n"+
+	" *\n"+
+	" * OpenDA is distributed in the hope that it will be useful,\n"+
+	" * but WITHOUT ANY WARRANTY; without even the implied warranty of\n"+
+	" * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"+
+	" * GNU Lesser General Public License for more details.\n"+
+	" *\n"+
+	" * You should have received a copy of the GNU Lesser General Public License\n"+
+	" * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.\n"+
+	" */";
 
 	/**
 	 * Create a headerModifier which looks for java extensions other than 'java'. The reason
