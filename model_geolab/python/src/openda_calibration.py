@@ -39,17 +39,26 @@ class OpendaCalibration:
 
     def calibrate(self, evaluate, obs_values, obs_stddevs, model_params, model_params_stddevs):
 
+        out_file = open("calib-results.py", 'w')
+
         self.opendaCalibration.observer_set_observations_and_stddevs(obs_values, obs_stddevs)
+        self.write_openda_messages(out_file)
         self.opendaCalibration.model_set_parameter_definitions(model_params, model_params_stddevs)
+        self.write_openda_messages(out_file)
 
         next_parameter_values = self.opendaCalibration.algorithm_get_next_parameter_values()
         while (next_parameter_values != None):
             model_results = evaluate(next_parameter_values)
             self.opendaCalibration.model_set_results(model_results)
             next_parameter_values = self.opendaCalibration.algorithm_get_next_parameter_values()
+            self.write_openda_messages(out_file)
 
         res = self.opendaCalibration.algorithm_get_optimal_parameter_values()
         return res
+
+    def write_openda_messages(self, out_file):
+        while self.opendaCalibration.get_message_count() > 0:
+            out_file.write(self.opendaCalibration.get_next_message() + "\n")
 
 
 if __name__ == "__main__":

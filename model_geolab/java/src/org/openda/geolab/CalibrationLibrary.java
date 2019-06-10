@@ -38,6 +38,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private StackTraceElement[] exceptionStackTrace = null;
 	private ICalLibAlgorithm algorithm = null;
 	private double[] optimalParameterValues = null;
+	private PythonResultWriter pythonResultWriter;
+	private CalLibResultWriter calLibResultWriter = new CalLibResultWriter();
 
 	private LinkedHashMap<String, CalLibAlgorithmSettings> algorithmSettings = new LinkedHashMap<>();
 
@@ -47,16 +49,23 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 
 	public int initialize(File workingDir) {
 
-		this.workingDir = workingDir;
+		try {
+			this.workingDir = workingDir;
 
-		stochModelFactory = null;
-		CalLibStochModelFactory.stochModelInstance = null;
-		algorithm = null;
+			stochModelFactory = null;
+			CalLibStochModelFactory.stochModelInstance = null;
+			algorithm = null;
 
-		algorithmSettings.put("Dud", new CalLibAlgorithmSettings(CalLibDudAlgorithm.getConfigStringTemplate()));
+			String algorithmName = "Dud";
+			algorithmSettings.put(algorithmName, new CalLibAlgorithmSettings(CalLibDudAlgorithm.getConfigStringTemplate()));
 
-		Results.addResultWriter(new PythonResultWriter(workingDir, "ttt.py"));
-		Results.addResultWriter(new CsvResultWriter(workingDir, "tttt.csv"));
+			pythonResultWriter = new PythonResultWriter(workingDir, algorithmName + "-results.py");
+			Results.addResultWriter(pythonResultWriter);
+			Results.addResultWriter(calLibResultWriter);
+		} catch (Exception e) {
+			exceptionErrmsg = e.getMessage();
+			exceptionStackTrace = e.getStackTrace();
+		}
 
 		return 0;
 	}
@@ -138,6 +147,10 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	}
 
 	public double[] algorithmGetOptimalParameterValues() {
+		// pythonResultWriter.free();
+		// TODO: calling this leads to a nearly empty file. For now, accept
+		// that sequential calibration runs are appended to the log file.
+
 		return optimalParameterValues;
 	}
 
@@ -154,6 +167,14 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		algorithm.initialize(workingDir, new String[]{DudXmlConfig});
 		algorithm.setStochComponents(observer, modelFactory);
 		return algorithm;
+	}
+
+	public int getMessageCount() {
+		return calLibResultWriter.getMessageCount();
+	}
+
+	public String getNextMessage() {
+		return calLibResultWriter.getNextMessage();
 	}
 
 	private static final String DudXmlConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

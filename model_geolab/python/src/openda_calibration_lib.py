@@ -136,3 +136,17 @@ class OpendaCalibrationLib:
         """
         j_next_parameter_values = self.j_calibLib.algorithmGetOptimalParameterValues()
         return j_array_to_py_list(j_next_parameter_values)
+
+    def get_message_count(self):
+        """
+        returns: The number of not yet received calibration messages
+        """
+        j_next_parameter_values = self.j_calibLib.algorithmGetOptimalParameterValues()
+        return self.j_calibLib.getMessageCount()
+
+    def get_next_message(self):
+        """
+        returns: The next not yet received message
+        """
+        j_next_parameter_values = self.j_calibLib.algorithmGetOptimalParameterValues()
+        return self.j_calibLib.getNextMessage()

@@ -78,6 +78,9 @@ public class CalibrationLibraryTest extends TestCase {
 			double[] modelResults = evaluateSinus(nextParameterValues);
 			calibrationLibrary.modelSetResults(modelResults);
 			nextParameterValues = calibrationLibrary.algorithmGetNextParameterValues();
+			while (calibrationLibrary.getMessageCount() > 0) {
+				System.out.println(calibrationLibrary.getNextMessage());
+			}
 		}
 		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
 		double[] expectedValues = {1.974888, 0.550042, 0.190782, 0.097192};
