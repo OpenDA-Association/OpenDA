@@ -1,22 +1,22 @@
-/* OpenDA v2.4.4 
-* Copyright (c) 2018 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * Copyright (c) 2019 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.tools;
 import java.io.File;
 import java.io.IOException;
@@ -82,14 +82,10 @@ public class ModifyHeadersTest extends TestCase {
 		File source1_mod = new File(testRunDataDir,"IoObjectInterface.jav.mod");
 		boolean textFound = testData.FileContains(source1_mod, "GNU Lesser General Public License");
 		assertTrue("looking for text in modified file", textFound);
-		textFound = testData.FileContains(source1_mod, "/* OpenDA v2.4.4");
-		assertTrue("looking for text in modified file", textFound);
 
 		mod.modifyAllHeaders(tree,true); // now replace originals
 		source1_mod = new File(testRunDataDir,"IoObjectInterface.jav");
 		textFound = testData.FileContains(source1_mod, "GNU Lesser General Public License");
-		assertTrue("looking for text in modified file", textFound);
-		textFound = testData.FileContains(source1_mod, "/* OpenDA v2.4.4");
 		assertTrue("looking for text in modified file", textFound);
 		
 		File source1 = new File(testRunDataDir,"ThisFileIsAlreadyModified.jav");
@@ -112,8 +108,6 @@ public class ModifyHeadersTest extends TestCase {
 
 		File source1_mod = new File(testRunDataDir,"IoObjectInterface.jav");
 		boolean textFound = testData.FileContains(source1_mod, "GNU Lesser General Public License");
-		assertTrue("looking for text in modified file", textFound);
-		textFound = testData.FileContains(source1_mod, "/* OpenDA v2.4.4");
 		assertTrue("looking for text in modified file", textFound);
 	}
 }
