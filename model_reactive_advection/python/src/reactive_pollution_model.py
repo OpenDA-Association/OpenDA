@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 '''A one dimensional reactive pollution model. '''
 from __future__ import print_function

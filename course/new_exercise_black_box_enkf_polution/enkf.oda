@@ -6,22 +6,21 @@
 	</stochObserver>
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
-		<configFile>polluteTwinStochModel.xml</configFile>
+		<configFile>polluteStochModel.xml</configFile>
 	</stochModelFactory>
-	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
 		<workingDirectory>./algorithms</workingDirectory>
-		<configString>SequentialSimulation.xml</configString>
+		<configString>EnKF.xml</configString>
 	</algorithm>
-	<resultWriters>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
-		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialSimulation_results.m</configFile>
-	</resultWriter>
+        <resultWriters>
 	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialSimulation_results.py</configFile>
+		<configFile>enkf_results.py</configFile>
 		<selection>
-			<resultItem outputLevel="All"  maxSize="100000"  />
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x_a" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="x_f_central" outputLevel="All"  maxSize="100000"   />
 		</selection>
 	</resultWriter>
 	</resultWriters>

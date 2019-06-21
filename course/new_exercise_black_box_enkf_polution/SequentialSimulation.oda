@@ -6,17 +6,14 @@
 	</stochObserver>
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
-		<configFile>polluteTwinStochModel.xml</configFile>
+		<configFile>polluteStochModel.xml</configFile>
 	</stochModelFactory>
 	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
 		<workingDirectory>./algorithms</workingDirectory>
 		<configString>SequentialSimulation.xml</configString>
 	</algorithm>
+
 	<resultWriters>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
-		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialSimulation_results.m</configFile>
-	</resultWriter>
 	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>sequentialSimulation_results.py</configFile>

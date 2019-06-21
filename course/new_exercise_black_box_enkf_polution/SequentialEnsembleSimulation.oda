@@ -6,23 +6,14 @@
 	</stochObserver>
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
-		<configFile>polluteTwinStochModel.xml</configFile>
+		<configFile>polluteStochModel.xml</configFile>
 	</stochModelFactory>
-	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialSimulation">
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation">
 		<workingDirectory>./algorithms</workingDirectory>
-		<configString>SequentialSimulation.xml</configString>
+		<configString>SequentialEnsembleSimulation.xml</configString>
 	</algorithm>
-	<resultWriters>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialSimulation_results.m</configFile>
+		<configFile>sequentialEnsembleSimulation_results.m</configFile>
 	</resultWriter>
-	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
-		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialSimulation_results.py</configFile>
-		<selection>
-			<resultItem outputLevel="All"  maxSize="100000"  />
-		</selection>
-	</resultWriter>
-	</resultWriters>
 </openDaApplication>
