@@ -27,25 +27,25 @@ import java.io.File;
  */
 public interface SelectorInterface {
 
-    /**
-     * Initalize the selector
-     * @param workingDir Working directory
-     * @param arguments Configuration arguments
-     */
-    void initialize(File workingDir, String[] arguments);
+	/**
+	 * Initalize the selector
+	 * @param workingDir Working directory
+	 * @param arguments Configuration arguments
+	 */
+	void initialize(File workingDir, String[] arguments);
 
 	/**
 	 * Apply this selector
-     * @param inputObject The input object for the selection
-     * @return The resulting selection
-     */
-	public Object select(Object inputObject);
+	 * @param inputObject The input object for the selection
+	 * @return The resulting selection
+	 */
+	Object select(Object inputObject);
 
-    /**
-     * Apply this selector in the inversion way
-     * @param selection Result of a previous select() call
-     * @return The adjusted original input for the selection
-     */
-    public Object deselect(Object selection);
+	/**
+	 * Apply this selector in the inversion way
+	 * @param selection Result of a previous select() call
+	 * @return The adjusted original input for the selection
+	 */
+	Object deselect(Object selection);
 
 }

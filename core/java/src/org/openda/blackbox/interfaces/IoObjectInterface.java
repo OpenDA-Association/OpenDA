@@ -30,19 +30,19 @@ import java.io.File;
  */
 public interface IoObjectInterface {
 
-    /**
-     * Initialize the IoObject
-     * @param workingDir   Working directory
-     * @param fileName The name of the file containing the data (relative to the working dir.)
-     * @param arguments Additional arguments (may be null zero-length)
-     */
-    public void initialize(File workingDir, String fileName, String[] arguments);
+	/**
+	 * Initialize the IoObject
+	 * @param workingDir   Working directory
+	 * @param fileName The name of the file containing the data (relative to the working dir.)
+	 * @param arguments Additional arguments (may be null zero-length)
+	 */
+	void initialize(File workingDir, String fileName, String[] arguments);
 
-    /**
-     * Ask which elements can be accessed
-     * @return The list of element identifiers that can be accessed
-     */
-    public IPrevExchangeItem[] getExchangeItems(); //
+	/**
+	 * Ask which elements can be accessed
+	 * @return The list of element identifiers that can be accessed
+	 */
+	IPrevExchangeItem[] getExchangeItems(); //
 
-    public void finish();
+	void finish();
 }
