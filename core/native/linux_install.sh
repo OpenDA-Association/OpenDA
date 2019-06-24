@@ -41,10 +41,10 @@ else
 	else
 		echo "No fortran compiler found"
 		return 1
-        fi
+		fi
 fi	
 #defaults for 64/32bit (=look at architecture of this computer)
-export RAWARCH=`uname -m`
+export RAWARCH=$(uname -m)
 if [ "$RAWARCH" == "x86_64" ]; then
    export ARCH=64
 else
@@ -56,11 +56,11 @@ export IGNORENETCDF="no"
 
 #test for windows mingw
 export OSTYPE="unknown"
-export TMPVAR=`uname -s|grep -i mingw`
+export TMPVAR=$(uname -s|grep -i mingw)
 if [ ! -z  "$TMPVAR" ]; then
 	OSTYPE="win"
 fi
-export TMPVAR=`uname -s|grep -i linux`
+export TMPVAR=$(uname -s|grep -i linux)
 if [ ! -z  "$TMPVAR" ]; then
 	OSTYPE="linux"
 fi
@@ -70,26 +70,26 @@ export DEBUG="no"
 # parse arguments
 for arg in "$@"
 do
-    case "$arg" in
-    64*)    ARCH="64"
-            ;;
-    32*)    ARCH="32"
-            ;;
-    ifort*)    FORT="ifort"
-            ;;
-    gnu*)    FORT="gnu"
-            ;;
-    ignorempi*)    IGNOREMPI="yes"
-            ;;
-    ignorenetcdf*)    IGNORENETCDF="yes"
-            ;;
-    noignorempi*)    IGNOREMPI="no"
-            ;;
-    noignorenetcdf*)    IGNORENETCDF="no"
-            ;;
-    debug*)    DEBUG="yes"
-            ;;
-    esac
+	case "$arg" in
+	64*)    ARCH="64"
+			;;
+	32*)    ARCH="32"
+			;;
+	ifort*)    FORT="ifort"
+			;;
+	gnu*)    FORT="gnu"
+			;;
+	ignorempi*)    IGNOREMPI="yes"
+			;;
+	ignorenetcdf*)    IGNORENETCDF="yes"
+			;;
+	noignorempi*)    IGNOREMPI="no"
+			;;
+	noignorenetcdf*)    IGNORENETCDF="no"
+			;;
+	debug*)    DEBUG="yes"
+			;;
+	esac
 done
 #recheck compilers
 if [ "$FORT" == "ifort" ];then
@@ -102,7 +102,7 @@ if [ "$FORT" == "ifort" ];then
 	fi
 fi
 if [ "$FORT" == "gnu" ];then
-	export GFORTRANPATH=`which gfortran 2>/dev/null`
+	export GFORTRANPATH=$(which gfortran 2>/dev/null)
 	if [ ! -z "$GFORTRANPATH" ]; then
 		export MYFORT="$GFORTRANPATH"
 	else
@@ -173,17 +173,17 @@ fi
 # JAVA
 # 
 if [ "$JAVA_HOME" == "" ]; then
-    if [ -f /opt/java/include/jni.h ]; then
-        export JAVA_HOME=/opt/java
-    elif [ -f /usr/local/include/jni.h ]; then
-        export JAVA_HOME=/usr/local
-    else
-        echo "Please set the environment variable JAVA_HOME to the directory that"
-        echo "contains the Java development kit"
-        exit
-    fi
+	if [ -f /opt/java/include/jni.h ]; then
+		export JAVA_HOME=/opt/java
+	elif [ -f /usr/local/include/jni.h ]; then
+		export JAVA_HOME=/usr/local
+	else
+		echo "Please set the environment variable JAVA_HOME to the directory that"
+		echo "contains the Java development kit"
+		exit
+	fi
 
-    echo "JAVA_HOME set to $JAVA_HOME"
+	echo "JAVA_HOME set to $JAVA_HOME"
 fi
 
 #
