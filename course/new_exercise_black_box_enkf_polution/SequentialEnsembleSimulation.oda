@@ -12,8 +12,11 @@
 		<workingDirectory>./algorithms</workingDirectory>
 		<configString>SequentialEnsembleSimulation.xml</configString>
 	</algorithm>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialEnsembleSimulation_results.m</configFile>
+		<configFile>sequentialEnsembleSimulation_results.py</configFile>
+		<selection>
+			<resultItem outputLevel="All"  maxSize="100000"  />
+		</selection>
 	</resultWriter>
 </openDaApplication>

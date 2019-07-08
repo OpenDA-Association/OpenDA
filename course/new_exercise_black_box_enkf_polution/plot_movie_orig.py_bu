@@ -1,10 +1,9 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Plot movie of output of Ensemble Kalman filter.
-Uses the output from OpenDA contrary to exercise 4
+Plot movie of model results of the original model
 
-@author: verlaanm
+@author: Nils van Velzen
 """
 
 import numpy as np
@@ -13,7 +12,7 @@ from time import sleep
 import polution_utils as util
 
 #load data
-c1,c2 = util.read_maps("twinTrue")
+c1,c2 = util.read_maps("original_model")
 
 # create initial plot
 plt.close("all")
@@ -29,6 +28,7 @@ for i in range(len(c1)):
    ax[1].set_ylabel("c_2")
    ax[0].set_ylim([0, 200])
    ax[1].set_ylim([0, 250])
+   ax[0].set_title("t="+str(60*i))
    plt.draw()
    plt.pause(0.02)
 

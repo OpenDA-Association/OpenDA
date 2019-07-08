@@ -2,11 +2,11 @@
 <openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
 	<stochObserver className="org.openda.observers.TimeSeriesFormatterStochObserver">
 		<workingDirectory>./stochObserver</workingDirectory>
-		<configFile>timeSeriesFormatter.xml</configFile>
+		<configFile>timeSeriesFormatter2.xml</configFile>
 	</stochObserver>
 	<stochModelFactory className="org.openda.models.threadModel.ThreadStochModelFactory">
 		<workingDirectory>.</workingDirectory>
-		<configFile>parallel.xml</configFile>
+		<configFile>parallel2.xml</configFile>
 	</stochModelFactory>
 	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
 		<workingDirectory>./algorithms</workingDirectory>

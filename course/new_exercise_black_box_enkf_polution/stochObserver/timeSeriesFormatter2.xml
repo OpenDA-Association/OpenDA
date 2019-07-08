@@ -7,22 +7,22 @@
     <commentMarker>#</commentMarker>
     <skipLines>1</skipLines>
   </formatter>
-  <!--<timeSeries id="locA.concentration1" status="use" standardDeviation="2.0">
+  <timeSeries id="locA.concentration1" status="use" standardDeviation="2.0">
     c1_locA.csv
   </timeSeries>
   <timeSeries id="locB.concentration1" status="use" standardDeviation="2.0">
     c1_locB.csv
-  </timeSeries> -->
-  <timeSeries id="locC.concentration1" status="use" standardDeviation="5.0">
+  </timeSeries>
+  <timeSeries id="locC.concentration1" status="use" standardDeviation="2.0">
     c1_locC.csv
-  </timeSeries> 
-  <!-- <timeSeries id="locA.concentration2" status="use" standardDeviation="2.0">
+  </timeSeries>
+  <timeSeries id="locA.concentration2" status="use" standardDeviation="2.0">
     c2_locA.csv
   </timeSeries>
   <timeSeries id="locB.concentration2" status="use" standardDeviation="2.0">
     c2_locB.csv
-  </timeSeries> -->
-  <timeSeries id="locC.concentration2" status="use" standardDeviation="5.0">
+  </timeSeries>
+  <timeSeries id="locC.concentration2" status="use" standardDeviation="2.0">
     c2_locC.csv
-  </timeSeries> 
+  </timeSeries>
 </timeSeriesFormatterConfig>

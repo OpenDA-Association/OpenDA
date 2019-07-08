@@ -4,24 +4,18 @@
 		<workingDirectory>./stochObserver</workingDirectory>
 		<configFile>timeSeriesFormatter.xml</configFile>
 	</stochObserver>
-	<stochModelFactory className="org.openda.models.threadModel.ThreadStochModelFactory">
-		<workingDirectory>.</workingDirectory>
-		<configFile>parallel.xml</configFile>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>polluteStochModel.xml</configFile>
 	</stochModelFactory>
-	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+	<algorithm className="org.openda.algorithms.Simulation">
 		<workingDirectory>./algorithms</workingDirectory>
-		<configString>EnKF.xml</configString>
+		<configString>simulationAlgorithm.xml</configString>
 	</algorithm>
-        <resultWriters>
+	<resultWriters>
 	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>enkf_results.py</configFile>
-		<selection>
-			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
-			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
-			<resultItem id="x_a" outputLevel="All"  maxSize="100000"   />
-			<resultItem id="x_f_central" outputLevel="All"  maxSize="100000"   />
-		</selection>
+		<configFile>simulation_results.py</configFile>
 	</resultWriter>
 	</resultWriters>
 </openDaApplication>
