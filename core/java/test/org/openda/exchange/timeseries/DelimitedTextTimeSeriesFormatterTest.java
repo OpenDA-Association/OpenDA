@@ -26,6 +26,7 @@ package org.openda.exchange.timeseries;
 	import java.io.*;
 	import java.nio.charset.Charset;
 	import java.text.ParseException;
+	import java.util.Locale;
 
 public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 	private File testRunDataDir;
@@ -34,6 +35,9 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 	protected void setUp() throws IOException {
 		testData = new OpenDaTestSupport(DelimitedTextTimeSeriesFormatterTest.class,"core");
 		testRunDataDir = testData.getTestRunDataDir();
+		Locale currentLocale = Locale.getDefault();
+		System.out.println(currentLocale.getDisplayLanguage());
+		System.out.println(currentLocale.getDisplayCountry());
 	}
 
 	public void testNoosFormatted_skip() {
@@ -111,6 +115,18 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		assertEquals("values[1]", -6.1627460E-02,values[1], Math.ulp(-6.1627460E-02));
 		assertEquals("values[2]", 4.6469403E-01,values[2], Math.ulp(4.6469403E-01));
 		assertEquals("values[5]", 5.4569893E+01,values[5], Math.ulp(5.4569893E+01));
+	}
+
+	public void testCsvFormattedWithSelectors() {
+		double delta=0.0001;
+		ConfigTree config = new ConfigTree("<root><dateTimeSelector>2</dateTimeSelector><valueSelector>0</valueSelector><delimiter>,</delimiter><skipLines>1</skipLines><decimal>.</decimal></root>");
+		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
+		File csvFile = new File(testRunDataDir, "columnselector.csv");
+		TimeSeries series1 = formatter.readFile(csvFile.getAbsolutePath());
+		assertNotNull(series1);
+		double times[] = series1.getTimesRef();
+		assertEquals("times[0]", 60.0,times[0], Math.ulp(60.0));
+		assertEquals("times length", 300,times.length);
 	}
 
 	public void testSemicolon() throws ParseException, IOException{

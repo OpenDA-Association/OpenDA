@@ -89,7 +89,6 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		double[] values = series.getValuesRef();
 		String headerContents = series.getProperty("header");
 		writer.write(headerContents);
-		// String exponentSymbol = this.decimalFormat.getDecimalFormatSymbols().getExponentSeparator() + "-";
 		if (Math.max(this.dateTimeSelector,this.valueSelector)> 1) {
 			logger.error("Cannot write delimited file with more than two columns");
 			throw new RuntimeException("Cannot write delimited file with more than two columns");
@@ -106,7 +105,6 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			}
 			parts[this.dateTimeSelector] = dateString;
 			parts[this.valueSelector] = this.decimalFormat.format(values[i]);
-			// parts[this.valueSelector] = parts[this.valueSelector].replaceFirst(exponentSymbol+"[^-]", exponentSymbol+"+");
 			for (int s=0; s<parts.length-1;s++) {
 				writer.write(parts[s]);
 				writer.write(this.delimiter);
@@ -135,6 +133,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			String line;
 			while((line = reader.readLine()) != null) {
 				Scanner s = new Scanner(line).useDelimiter(delimiter);
+				field = line;
 				s.useLocale(Locale.US);
 				// skip header
 				if ( skip > 0 ) { headerContents.append(line).append("\n"); skip--; continue;}
@@ -176,6 +175,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 			}
 		}
 		catch (ParseException | InputMismatchException ex) {
+			System.out.println("Error parsing '" +  field + "' at line: " +  reader.getLineNumber());
 			logger.error("Error parsing '{}' at line: {}",field, reader.getLineNumber());
 			throw ex;
 		}
