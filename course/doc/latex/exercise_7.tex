@@ -1,3 +1,5 @@
+{\bf Directory: {\tt exercise\_localization}}\\
+
 In this exercise you will learn about localization techniques and how to use them in OpenDA. This exercise is inspired on the example model and experiments from "Impacts of localisation in the EnKF and EnOI: experiments with a small model", Peter R. Oke, Pavel Sakov and Stuart P. Corney, Ocean Dynamics (2007) 57: 32-45.
 
 The model we use is a simple circular advection model 
@@ -15,7 +17,7 @@ and propagated with an advection model similar to the one for a, i.e.:
 \frac{\partial b}{\partial t}+u\frac{\partial b}{\partial x}=0
 \end{equation}
 Since $a$ and $b$ are propagated with the same flow, the balance relationship will remain valid also for $t>0$.
-The relation ship between a and b is motivated by the geostrophic balance relationship between pressure (a) and velocity (b) in oceanographic and atmospheric applications. 
+The relationship between a and b is motivated by the geostrophic balance relationship between pressure (a) and velocity (b) in oceanographic and atmospheric applications. 
 
 In this experiment we will only observe and assimilate $a$ and investigate how both $a$ as $b$ are updated. 
 The ensemble is carefully constructed in order to have the right statistics. The initial ensembles are generated off line and they will be read when the model is initialised in OpenDA. 

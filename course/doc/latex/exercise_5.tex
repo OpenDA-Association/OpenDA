@@ -30,7 +30,7 @@ The next step is running an ensemble of simulations. In this case we consider ou
 \subsection{parallel computing}
 Running the ensembles takes a lot of time, especially starting the model takes quite some time compared to the actual computation time. Most computers have multiple cores which we can use to propage multiple ensemble members foreward in time simultaniously.
 \begin{itemize}
-	\item compare the configurations {\tt SequentialEnsembleSimulation.oda} and 
+	\item compare the configurations {\tt SequentialEnsembleSimulation.oda} and\\
 		{\tt enkf.oda} which uses parallel propagation of ensemble members. Set the number of simultanious models that corresponds to the number of cores on your computer (maxThreads).
 \end{itemize}
 
@@ -75,7 +75,7 @@ disposed by factory 1, and by including the observation locations downstream of
 factory 1.
 
 \begin{itemize}
-	\item Make a copy of the involved config files, {\tt EnKF.oda}, 
+	\item Make a copy of the involved config files, {\tt EnKF.oda},\\ 
 		{\tt parallel.xml}, {\tt polluteStochModel.xml} and
 		{\tt timeSeriesFormatter.xml} (you could call them
 		{\tt EnKF2.oda}, {\tt parallel2.xml} etc.
