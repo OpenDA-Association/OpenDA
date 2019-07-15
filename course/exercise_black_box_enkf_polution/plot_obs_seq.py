@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 import sequentialSimulation_results as seq_sim
 import matplotlib.pyplot as plt
 
