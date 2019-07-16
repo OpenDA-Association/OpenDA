@@ -14,8 +14,7 @@ rem or
 rem    Set openda_bindir right here below.
 rem OPENDADIR added to PATH by setup_openda.bat
 call %~dp0\setup_openda.bat
-
-set OPENDA_BINDIR=%OPENDADIR%
+set OPENDA_BINDIR=%OPENDADIR%\bin
 
 rem ==== check command line argumtents
 if "%1"=="" goto no_arguments
@@ -45,13 +44,13 @@ set odafile=
 :no_jre
 rem ==== if not specified by the user,
 rem      check if jre is available as distributed with openda ====
-set OPENDA_JRE=%OPENDA_BINDIR%\..\jre
+set OPENDA_JRE=%OPENDADIR%\jre
 
 if exist "%OPENDA_JRE%\bin\java.exe" goto JAVA_OK
 rem no openda jre is available, check if there is a default one
 echo JAVA_HOME %JAVA_HOME%
 if "%JAVA_HOME%" == "" goto Error0
-set OPENDA_JRE=%JAVA_HOME%
+set OPENDA_JRE="%JAVA_HOME%"
 
 :JAVA_OK
 rem ==== check availability and arguments ===
@@ -59,7 +58,7 @@ if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
 rem ==== run ===
 echo %odafile%
-"%OPENDA_JRE%\bin\java" -Xms512m -Xmx8g -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication -gui %odafile%
+"%OPENDA_JRE%\bin\java" -Xms128m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication -gui %odafile%
 if errorlevel 1 goto Error2
 endlocal
 goto End
