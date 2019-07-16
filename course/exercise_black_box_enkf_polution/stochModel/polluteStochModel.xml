@@ -9,27 +9,31 @@
 
 	<vectorSpecification>
 		<state>
-  			<vector id="concentration1.grid_init" />
-  			<vector id="concentration2.grid_init" />
-			<noiseModel id="boundaryNoiseModel1" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+  			<vector id="concentration1.grid" />
+  			<vector id="concentration2.grid" />
+			<!--			<noiseModel id="boundaryNoiseModel1" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
                			<configFile>BoundaryNoise1.xml</configFile>
                			<exchangeItems>
                   			<exchangeItem id="source.factory1.discharge" operation="add">
                      				<modelExchangeItem id="source.factory1.discharge"/>
                   			</exchangeItem>
                			</exchangeItems>
-           		</noiseModel>
-		<!--	<noiseModel>
-				<vector id="source.factory2.discharge"/>
-				<ar1Model operation="add">
-					<stdDevColouredNoised value="40.0"/>
-					<decorrelationTimeScale>PT60M</decorrelationTimeScale>
-					<noiseModelPeriod>PT1M</noiseModelPeriod>
-				</ar1Model>
 			</noiseModel> -->
+			<noiseModel id="boundaryNoiseModel2" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+               			<configFile>BoundaryNoise2.xml</configFile>
+               			<exchangeItems>
+                  			<exchangeItem id="source.factory2.discharge" operation="add">
+                     				<modelExchangeItem id="source.factory2.discharge"/>
+                  			</exchangeItem>
+               			</exchangeItems>
+			</noiseModel> 
 		</state>
 		<predictor>
+			<vector id="locA.concentration1" />
+			<vector id="locB.concentration1" />
 			<vector id="locC.concentration1" />
+			<vector id="locA.concentration2" />
+			<vector id="locB.concentration2" />
 			<vector id="locC.concentration2" />
 		</predictor>
 	</vectorSpecification>

@@ -1,27 +1,41 @@
-{\bf Directory: {\tt exercise\_black\_box\_enkf\_polution}}\\
+%{\bf Directory: {\tt exercise\_black\_box\_enkf\_polution}}\\
 
-We start with some single and ensemble runs to understand where for our black
-box wrapper configuration the model results appear:
+\subsection{Sequential simulation}
+We will first run our polution model from OpenDA using the SequentialSimulation algorithm. This run is exaclty the same as running the model outside openda. The difference is however that we provide a set of observations and run the model and restart the model between the observation times. Output will be available at the end in the generic OpenDa format that allows us to compare the model results with the available observations of the system.
+
 \begin{itemize}
+\item Run the model within OpenDA by using
+	 the \\{\tt SequentialSimulation.oda} configuration. This will create the result file 
+		{\tt sequentialSimulation\_results.py}. Use the script  {\tt plot\_movie\_seq.py} to visualize
+		the simulation results. The script {\tt plot\_obs\_seq.py} shows the difference in time between
+		the model results (prediction) and observed values of the system
+\end{itemize}
 
- \item Run the model within OpenDA by using
-   the \\{\tt SequentialSimulation.oda} configuration. Use the script  {\tt plot\_movie\_seq.py} to visualize the model 
-   results. Compare the results with
-   those from the run you executed without using OpenDA. 
+\subsection{Sequential ensemble simulation}
+The next step is running an ensemble of simulations. In this case we consider our main source of uncertainty the injection of polutant c1 in the model. Similar to the sequential simulation we do not assmilate any data (yet).
+
+\begin{itemize}
  \item Run an ensemble forecast model by using the \\{\tt
    SequentialEnsembleSimulation.oda} configuration. On which variable does the
    algorithm impose stochastic forcing?\\ Have a look at the {\tt
-     stochModel/output} directory, and note that the black box wrapper created
+     work} directory, and note that the black box wrapper created
    the required ensemble members by repeatedly copying the template directory
-   {\tt stochModel/input} to\\ {\tt stochModel/output/work\textless
+   {\tt stochModel/input} to\\ {\tt output/work\textless
      N\textgreater}.
  \item Compare the result between the mean of the ensemble and the results from {\tt
-     SequentialSimulation.oda}. Note the relatively large differences. Check if
-   these differences are reduced by increasing the ensemble size for the
-   sequential ensemble simulation to 20 and rerunning {\tt
-     SequentialEnsembleSimulation..oda} (this run may take a few minutes).
+     SequentialSimulation.oda}. Note the differences. 
      You can use the script {\tt plot\_movie\_enssim.py}.
 \end{itemize}
+
+\subsection{parallel computing}
+Running the ensembles takes a lot of time, especially starting the model takes quite some time compared to the actual computation time. Most computers have multiple cores which we can use to propage multiple ensemble members foreward in time simultaniously.
+\begin{itemize}
+	\item compare the configurations {\tt SequentialEnsembleSimulation.oda} and\\
+		{\tt enkf.oda} which uses parallel propagation of ensemble members. Set the number of simultanious models that corresponds to the number of cores on your computer (maxThreads).
+\end{itemize}
+
+\subsection{ensemble kalman filter}
+
 
 Now let us have a look at the configuration for performing OpenDA's Ensemble
 Kalman Filtering on our black box model, using a twin experiment as an example.
@@ -29,7 +43,7 @@ The model has been run with the 'real' values (time dependent)for the
 concentrations for substance 1 as disposed by factory 1 and factory 2. This
 'truth' stored in the directory {\tt truthmodel}, and the results of that run
 have been used to generate observation time series at the output locations.
-These time series have been copied to the {\tt stochObserver} directory to
+These time series (with some noise added) have been copied to the {\tt stochObserver} directory to
 serve as observations for the filtering run.
 
 The filter run takes the original model as input, which actually is a perturbed
@@ -53,7 +67,7 @@ observations downstream of factory 2 to optimize the forecast.
      stochModel/output/work0} only contains a few time steps. Can you explain
    why?\\ So to compare the observations with the predictions you have to use
    the result file produced by the EnKF algorithm which can be visualised using
-   {\tt plot\_movie.py}.
+   {\tt plot\_movie\_enkf.py}.
 \end{itemize}
 
 Now let us extend the filtering process by incorporating also the concentration
@@ -61,13 +75,13 @@ disposed by factory 1, and by including the observation locations downstream of
 factory 1.
 
 \begin{itemize}
- \item Make a copy of the involved config files, {\tt EnKF.oda} and \\{\tt
-   polluteStochModel.xml} (you could call them {\tt EnKF2.oda} and\\ {\tt
-   polluteStochModel2.xml}.\\ Adjust {\tt EnKF2.oda} so that it refers to the
-   right stochastic model config file and produces a result file with a
-   recognizable name, e.g. {\tt enkf\_results2.py}.
- \item Now adjust {\tt polluteStochModel2.xml} in such a way that the filtering
-   process is extended as described above.
+	\item Make a copy of the involved config files, {\tt EnKF.oda},\\ 
+		{\tt parallel.xml}, {\tt polluteStochModel.xml} and
+		{\tt timeSeriesFormatter.xml} (you could call them
+		{\tt EnKF2.oda}, {\tt parallel2.xml} etc.
+		\\ Adjust the files such that all references to the files are correct.
+	\item Now adjust {\tt polluteStochModel2.xml} and {\tt timeSeriesFormatter2.xml}
+	      in such a way that the filtering process is extended as described above.
  \item Run the filtering process by using the {\tt EnKF2.oda} configuration,
    and compare the results with the previous version of the filtering process.
 \end{itemize}

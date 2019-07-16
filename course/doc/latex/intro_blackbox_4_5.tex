@@ -9,10 +9,7 @@ assuming that all the input and output files of the model can indeed be
 accessed by OpenDA. The exercise focusses on the configuration of the black box
 wrapper in OpenDA.\\
 
-In the directory {\tt { \opgave}/original\_model/} you will find a model written in python \\
-{\tt reactive\_pollution\_model.py} and a compiled version of this code for
-windows. There is also an input file ({\tt reactive\_pollution\_model.input})
-and the output file you should get when you run the model. The model describes
+The model describes
 the advection of two chemical substances. The first substance $c_1$ is emitted
 as a pollutant by a number sources. However, in this case this substance reacts
 with the oxygen in the air to form a more toxic substance $c_2$. The model
@@ -25,30 +22,50 @@ implements the following equations:
     1/T c_1
 \end{eqnarray}
 
+
+In the directory {\tt { \opgave}/original\_model/} you will find:
+\begin{enumerate}
+	\item model executable {\tt reactive\_pollution\_model.py} (linux and mac)
+	      and  {\tt reactive\_pollution\_model.exe} (windows)
+	\item {\tt config.yaml} the model configuration file
+        \item {\tt forcings} the forcings of the model (injection of pollutant)
+	\item {\tt input} the initial model state 
+\end{enumerate}
+
+
 \begin{itemize}
-\item Run the model from the command line (passing input file as argument),
-not using OpenDA.\\
-The model
-  generates the output files: {\tt reactive\_pollution\_model.output} and
-  {\tt reactive\_pollution\_model\_output.m}. You can create a movie of the model 
-  results using the {\tt plot\_movie.py} script from the {\tt original\_model} directory. This allows you  to study the behaviour of the model. 
+	\item Run the model, in the {\tt original\_model} directory from the
+	      command line, not using OpenDA.
+\end{itemize}
+The model generates the output files {\tt c1\_locA},{\tt c1\_locB},
+{\tt c1\_locC}, {\tt c1\_locA}, {\tt c2\_locB}, {\tt c2\_locC} with timeseries
+of substance $c_1$ and $c_2$ at three predefinined locations in the model. The
+folders {\tt maps} contains output files with the conentration of $c_1$ and $c_2$ on each grid point at specfied times.
+The folder {\tt restart} contains files that allows the model to restart; continue the computations from the point where a restart file has been written.
+\begin{itemize}
+	\item Investigate the input and output files of the model 
+	\item generate a movie by running the script {\tt plot\_movie\_orig.py} script from the {\tt { \opgave}} (!) directory. This allows you  to study the behaviour of the model. 
 \end{itemize}
 
-For this exercise, the Java-routines for reading and writing the input and
-output files are already programmed. However, it is not necessary to program
-this in Java. It is also possible to write your own conversion program (in any
-programming language) to convert the input and output files of your model to a
-format that OpenDA is able to handle.
+\subsection{Wrapper configuration files}
 
-When you are interested in the actual java code that parses the input and output files of this black box model. You can find it at \\
-{\tt \$OPENDA/model\_reactive\_advection} in a source distribution of OpenDA.
+The input and outputfiles of this model are all easy to interpret ASCII files. 
+Therefore we do not need model specific routines to couple this model to OpenDA.
+
+When you couple an arbitrary model to OpenDA and you want to use the black box coupler there are two appoaches:
+\begin{itemize}
+	\item write a pre and post processing sript that translates the (relevant)
+	      model files into a more generic format that is already supported
+	      (e.g. ASCII or NetCDF).
+	\item write your own adapter in java (dataobject) to read and write the
+	      model input and output files.
+\end{itemize}
 
 A black box wrapper configuration usually consists of three xml files. For our
 pollution model these files are:
 \begin{enumerate}
-   \item {\tt polluteWrapper.xml}: This file specifies the actions to performed
-     when the model has to be run, and the files and related reader and writers
-     that can be used to let OpenDA interact with the model.\\ This file
+   \item {\tt polluteWrapper.xml}: This file specifies how OpenDA can run the model, which input and output files are involved and dataobjects are used to interpret the model files.
+     \\ This file
      consists of the parts:
      \begin{itemize}
         \item {\tt aliasDefinitions:} This is a list of strings that can be
@@ -82,8 +99,8 @@ pollution model these files are:
         \item {\tt wrapperConfig}: A reference to the wrapper config file
           mentioned above.
         \item {\tt aliasValues}: The actual values to be used for the aliases
-          defined in the wrapper config file. For instance the \%outputFile\%
-          alias is set to the value "reactive\_pollution\_model.output".
+          defined in the wrapper config file. For instance the \%configFile\%
+          alias is set to the value "config.yaml".
         \item {\tt timeInfoExchangeItems}: The name of the model variables (the
           'exchange items') that can be accessed to modify the start and end
           time of the period to that the model should compute to propagate
@@ -121,5 +138,5 @@ for this configuration:
    directory and run the model by using the {\tt Simulation.oda} configuration.
    Note that the actual model results are available in the directory where the
    black box wrapper has let the model perform its computation: {\tt
-     stochModel/output/work0}.
+     work/work0}.
 \end{itemize}

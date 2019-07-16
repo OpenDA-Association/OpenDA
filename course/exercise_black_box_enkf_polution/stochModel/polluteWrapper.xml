@@ -9,6 +9,11 @@
 		<alias key="instanceDir" />
 		<alias key="outputFile" />
 		<alias key="inputFile" />
+		<alias key="configFile" />
+		<alias key="inputFileC1" />
+		<alias key="inputFileC2" />
+		<alias key="restartFileC1" />
+		<alias key="restartFileC2" />
 	</aliasDefinitions>
 
 	<run>
@@ -22,20 +27,25 @@
 
 		<computeActions>
 			<action linuxExe="%binDir%/reactive_pollution_model.py" windowsExe="%binDir%/reactive_pollution_model.exe" workingDirectory="%instanceDir%">
-				<arg>%inputFile%</arg>
-				<!--
-					<checkOutput file="%outputFile%" expect="Finished Succesfully"/>
-				-->
-				<checkOutput file="%outputFile%" /> <!-- should exist -->
-			</action>
-			<!-- WHEN YOU DO THE ORIGINAL EXCERCISE <action className="org.openda.mywrapper.myCopier" > -->
-			<action className="org.openda.model_reactive_advection.myCopier" >
-				<arg>%outputFile%</arg>
-				<arg>%inputFile%</arg>
+				<arg>--config</arg>
+				<arg>%configFile%</arg>
+				<arg>--log_level</arg>
+				<arg>INFO</arg>
+				<checkOutput file="%restartFileC1%"/>
+				<checkOutput file="%restartFileC2%"/>				
 			</action>
 			<!-- <action linuxExe="%binDir%/save.sh" windowsExe="save.bat" workingDirectory="%instanceDir%">
 				<arg>after_copy</arg>
 			</action> -->
+            <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
+                <arg>%restartFileC1%</arg>
+                <arg>%inputFileC1%</arg>
+            </action>
+            <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
+                <arg>%restartFileC2%</arg>
+                <arg>%inputFileC2%</arg>
+            </action>
+
 		</computeActions>
 
 		<additionalComputeActions></additionalComputeActions>
@@ -46,16 +56,38 @@
 
 
 	<inputOutput>
-		<ioObject className="org.openda.model_reactive_advection.myWrapper">
+		<!-- <ioObject className="org.openda.model_reactive_advection.myWrapper">
 			<file>%inputFile%</file>
 			<id>input</id>
 			<arg></arg>
+		</ioObject> -->
+
+		<ioObject className="org.openda.exchange.dataobjects.AsciiKeywordDataObject">
+			<file>%configFile%</file>
+			<id>configuration</id>
 		</ioObject>
 
-		<ioObject className="org.openda.model_reactive_advection.myWrapper">
-			<file>%outputFile%</file>
+		<ioObject className="org.openda.exchange.dataobjects.AsciiVectorDataObject">
+			<file>%inputFileC1%</file>
+			<id>state_concentration1</id>
+        </ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.AsciiVectorDataObject">
+			<file>%inputFileC2%</file>
+			<id>state_concentration2</id>
+		</ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.TimeSeriesFormatterDataObject">
+			<file>timeSeriesFormatter.xml</file>
 			<id>output</id>
 		</ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.TimeSeriesFormatterDataObject">
+			<file>forcingsSeriesFormatter.xml</file>
+			<id>forcings</id>
+		</ioObject>
+
+
 	</inputOutput>
 
 </blackBoxWrapperConfig>

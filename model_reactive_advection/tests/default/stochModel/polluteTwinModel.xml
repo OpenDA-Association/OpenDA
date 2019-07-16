@@ -10,38 +10,41 @@
 
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<aliasValues>
-		<alias key="templateDir" value="inputTwin" />
-		<alias key="instanceDir" value="../output/work" />
-		<alias key="binDir" value="bin" />
+		<alias key="templateDir" value="templateTwin" />
+		<alias key="instanceDir" value="../work/work" />
+		<alias key="binDir" value="../../../native_bin" />
 		<alias key="inputFile" value="reactive_pollution_model.input" />
-		<alias key="outputFile" value="reactive_pollution_model.output" />
+		<alias key="configFile" value="config.yaml" />
+		<alias key="inputFileC1" value="input/concentration1.txt" />
+		<alias key="inputFileC2" value="input/concentration2.txt" />
+		<!-- <alias key="outputFile" value="reactive_pollution_model.output" /> -->
+		<alias key="restartFileC1" value="restart/concentration1.txt" />
+		<alias key="restartFileC2" value="restart/concentration2.txt"/>
 	</aliasValues>
 
     <!--  <timeInfoExchangeItems start="" end="" /> -->
     <!-- <timeInfo start="1999-12-01T01:00:00" end="1999-12-01T02:00:00" timeStepInSeconds="120"/> -->
-    <timeInfoExchangeItems start="startTime" end="endTime"/>
+    <timeInfoExchangeItems start="start_time" timeStep="time_step" end="end_time"/>
 
 	<exchangeItems>
-		<vector id="source.factory1.discharge" ioObjectId="input" elementId="source.c1_factory1.discharge" />
-		<vector id="source.factory2.discharge" ioObjectId="input" elementId="source.c1_factory2.discharge" />
-		<vector id="bound.left.concentration1" ioObjectId="input" elementId="bound.c1_left.concentration" />
+		<vector id="source.factory1.discharge" ioObjectId="forcings" elementId="source.c1_factory1.discharge" />
+		<vector id="source.factory2.discharge" ioObjectId="forcings" elementId="source.c1_factory2.discharge" />
+		<!-- <vector id="bound.left.concentration1" ioObjectId="input" elementId="bound.c1_left.concentration" />
 		<vector id="bound.right.concentration1" ioObjectId="input" elementId="bound.c1_right.concentration" />
 		<vector id="bound.left.concentration2" ioObjectId="input" elementId="bound.c2_left.concentration" />
-		<vector id="bound.right.concentration2" ioObjectId="input" elementId="bound.c2_right.concentration" />
-		<vector id="concentration1.grid_init" ioObjectId="input" elementId="concentration1.grid" />
-		<vector id="concentration2.grid_init" ioObjectId="input" elementId="concentration2.grid" />
-
-		<vector id="startTime" ioObjectId="input" elementId="startTime" />
-		<vector id="endTime" ioObjectId="input" elementId="endTime" />
-
-		<vector id="locA.concentration1" ioObjectId="output" elementId="output.c1_locA.concentration" />
-		<vector id="locB.concentration1" ioObjectId="output" elementId="output.c1_locB.concentration" />
-		<vector id="locC.concentration1" ioObjectId="output" elementId="output.c1_locC.concentration" />
-		<vector id="locA.concentration2" ioObjectId="output" elementId="output.c2_locA.concentration" />
-		<vector id="locB.concentration2" ioObjectId="output" elementId="output.c2_locB.concentration" />
-		<vector id="locC.concentration2" ioObjectId="output" elementId="output.c2_locC.concentration" />
-		<vector id="concentration1.grid_out" ioObjectId="output" elementId="concentration1.grid" />
-		<vector id="concentration2.grid_out" ioObjectId="output" elementId="concentration2.grid" />
+		<vector id="bound.right.concentration2" ioObjectId="input" elementId="bound.c2_right.concentration" /> -->
+		<vector id="concentration1.grid" ioObjectId="state_concentration1" elementId="concentration1" />
+		<vector id="concentration2.grid" ioObjectId="state_concentration2" elementId="concentration2" />
+		<vector id="reaction_time" ioObjectId="configuration" elementId="reaction_time" />
+		<vector id="start_time"    ioObjectId="configuration" elementId="time_control@1" />
+		<vector id="time_step"     ioObjectId="configuration" elementId="time_control@2" />
+		<vector id="end_time"      ioObjectId="configuration" elementId="time_control@3" />
+		<vector id="locA.concentration1" ioObjectId="output" elementId="model.locA.concentration1" />
+		<vector id="locB.concentration1" ioObjectId="output" elementId="model.locB.concentration1" />
+		<vector id="locC.concentration1" ioObjectId="output" elementId="model.locC.concentration1" />
+		<vector id="locA.concentration2" ioObjectId="output" elementId="model.locA.concentration2" />
+		<vector id="locB.concentration2" ioObjectId="output" elementId="model.locB.concentration2" />
+		<vector id="locC.concentration2" ioObjectId="output" elementId="model.locC.concentration2" />
 	</exchangeItems>
 
 	<doCleanUp>false</doCleanUp>

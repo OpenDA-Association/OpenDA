@@ -2,5 +2,5 @@
 # Info for running unit tests when IDE has current directory as startup dir.
 #
 
-ModuleName=reactive_advection_wrapper
+ModuleName=model_reactive_advection
 UnitTestsRootDir=.

@@ -19,14 +19,17 @@
  */
 package org.openda.model_reactive_advection;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.exchange.DoubleExchangeItem;
-import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.*;
 import org.openda.utils.Results;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -44,19 +47,12 @@ import java.util.Set;
  * x = [0.0, 60.0, 3600.0]
  * # stationary flow
  * u = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
- * # reation time
- * reaction_time = [600.0]
  * # cross sectional area
  * a = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
- * # initial concentrations
- * c1 = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
- * c2 = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
  * # simulation timespan
  * refdate = '01 dec 1999'
  * #unit is always seconds
  * unit = 'seconds'
- * # step is 1min total 5hours, while a particle travels through domain in 1hour
- * time = [ 0,60,18000]
  * # sources mass/m^3/s
  * source_locations = [5, 30]
  * source_substance = [1, 1]
@@ -86,7 +82,6 @@ import java.util.Set;
 
 public class myWrapper implements IoObjectInterface{
 	File workingDir;
-	String configString;
 	String fileName = null;
 	HashMap<String,String> variables = new LinkedHashMap<String,String>();
 	HashMap<String,IPrevExchangeItem> items = new LinkedHashMap<String,IPrevExchangeItem>();
@@ -175,27 +170,6 @@ public class myWrapper implements IoObjectInterface{
 			unit = 1.0/24.0/60.0/60.0;
 		}else{
 			throw new RuntimeException("Unit not recognized (expected seconds) was "+unitString);
-		}
-		String timeString = variables.get("time");
-		double time[] = parseVector(timeString);
-		if(time.length!=3){
-			throw new RuntimeException("expecting vector of length 3 for time, but length was"+time.length);
-		}
-		tstart=time[0]*unit;
-		dt=time[1]*unit;
-		tstop=time[2]*unit;
-
-		//add exchange items for time
-		IPrevExchangeItem startTime = new DoubleExchangeItem("startTime", this.refdate+this.tstart);
-		this.items.put("startTime",startTime);
-		IPrevExchangeItem endTime = new DoubleExchangeItem("endTime", this.refdate+this.tstop);
-		this.items.put("endTime",endTime);
-
-		//add reaction_time
-		if(variables.containsKey("reaction_time")){
-			double reactionTimevalues[] = parseVector(variables.get("reaction_time"));
-			IPrevExchangeItem reactionTime = new DoubleExchangeItem("reactionTime", reactionTimevalues[0]);
-			this.items.put("reactionTime",reactionTime);
 		}
 
 		//series for sources
@@ -299,26 +273,6 @@ public class myWrapper implements IoObjectInterface{
 				this.items.put(id, series);
 			}
 		}
-		//concentrations on grid
-		String concentrationString1 = variables.get("c1");
-		DoublesExchangeItem c1 = null;
-		if(concentrationString1!=null){
-			double values[] = parseVector(concentrationString1);
-			c1 = new DoublesExchangeItem("concentration1.grid", Role.InOut,values);
-			this.items.put("concentration1.grid", c1);
-		}else{
-			throw new RuntimeException("Missing input. Was looking for c1");
-		}
-		String concentrationString2 = variables.get("c2");
-		DoublesExchangeItem c2 = null;
-		if(concentrationString2!=null){
-			double values[] = parseVector(concentrationString2);
-			c2 = new DoublesExchangeItem("concentration2.grid", Role.InOut, values);
-			this.items.put("concentration2.grid", c2);
-		}else{
-			throw new RuntimeException("Missing input. Was looking for c2");
-		}
-
 		boolean debug=false;
 		if(debug){
 			for(String key: this.items.keySet()){
@@ -344,22 +298,6 @@ public class myWrapper implements IoObjectInterface{
 	public void finish() {
 		// update variables
 
-		//update times
-		double startAsMjd = this.items.get("startTime").getValuesAsDoubles()[0];
-		this.tstart = startAsMjd - this.refdate;
-		double endAsMjd = this.items.get("endTime").getValuesAsDoubles()[0];
-		this.tstop = endAsMjd - this.refdate;
-
-		double roundVal=100.0; //2 decimal places
-		variables.put("time", "["+Math.round(roundVal*this.tstart/this.unit)/roundVal+
-				","+Math.round(roundVal*this.dt/this.unit)/roundVal+
-				","+Math.round(roundVal*this.tstop/this.unit)/roundVal+"]");
-
-		//update reaction_time
-		if(this.items.containsKey("reactionTime")){
-			double reactionTime = this.items.get("reactionTime").getValuesAsDoubles()[0];
-			variables.put("reaction_time", " ["+reactionTime+"] ");
-		}
 
 		// update sources
 		String sourceLabelsString = variables.get("source_labels");
@@ -444,31 +382,6 @@ public class myWrapper implements IoObjectInterface{
 				this.variables.put(key, valueString);
 			}
 		}
-
-		// concentrations c1 and c2
-		if(this.variables.containsKey("c1")){
-			String id = "concentration1.grid";
-			if(!this.items.containsKey(id)){
-				throw new RuntimeException("ExchangeItem with id ="+id+" got lost.");
-			}
-			IPrevExchangeItem item = this.items.get(id);
-			String key="c1";
-			double values[] = item.getValuesAsDoubles();
-			String valueString = writeVector(values);
-			this.variables.put(key, valueString);
-		}
-		if(this.variables.containsKey("c2")){
-			String id = "concentration2.grid";
-			if(!this.items.containsKey(id)){
-				throw new RuntimeException("ExchangeItem with id ="+id+" got lost.");
-			}
-			IPrevExchangeItem item = this.items.get(id);
-			String key="c2";
-			double values[] = item.getValuesAsDoubles();
-			String valueString = writeVector(values);
-			this.variables.put(key, valueString);
-		}
-
 		//write to file
 		File outputFile = new File(fileName);
 		try{
@@ -485,7 +398,7 @@ public class myWrapper implements IoObjectInterface{
 			Set<String> keys = this.variables.keySet();
 			for(String key : keys){
 				out.write(key+"="+this.variables.get(key)+"\n");
-				//System.out.println(key+"="+this.variables.get(key));
+				// System.out.println(key+"="+this.variables.get(key));
 			}
 
 			out.close();
@@ -500,7 +413,7 @@ public class myWrapper implements IoObjectInterface{
 
 	/**
 	 * Parse a string with format like "[1.0, 2.2, 4.6 , 5.95]"
-	 * @param valuestring to parse
+	 * @param valuestring String to parse
 	 */
 	private double[] parseVector(String valuestring){
 		double result[] = null;

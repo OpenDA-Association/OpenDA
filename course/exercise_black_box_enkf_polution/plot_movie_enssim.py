@@ -1,62 +1,86 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Plot movie of output of Ensemble Kalman filter.
-Uses the output from OpenDA contrary to exercise 4
+Plot movie of model results of the original model
 
-@author: verlaanm
+@author: Nils van Velzen
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from time import sleep
+#import polution_utils as util
+import sequentialEnsembleSimulation_results as sim
 
-#load data
-import reactive_pollution_model_truth as truth
-import sequentialSimulation_results as sim
-import sequentialEnsembleSimulation_results as enkf
-#import enkf_results as enkf
-#import enkf_results2 as enkf
+
+#offsets for chunks in state vector
+ngrid      = 61
+no_sources_sim  = len(sim.x_a[0])-2*ngrid
+
+
+
+#for i in range(len(c1)):
+#   ax[0].clear();
+#   ax[1].clear();
+#   ax[0].plot(c1[i],'k')
+#   ax[1].plot(c2[i],'k')
+#   ax[0].set_ylabel("c_1")
+#   ax[1].set_ylabel("c_2")
+#   ax[0].set_ylim([0, 200])
+#   ax[1].set_ylim([0, 250])
+#   ax[0].set_title("t="+str(60*i))
+#   plt.draw()
+#   plt.pause(0.02)
+
+
+def init():
+    ax[0].set_ylim([0, 200])
+    ax[1].set_ylim([0, 250])
+    return ln,
+
+def update(frame):
+   ax[0].clear();
+   ax[1].clear();
+   time = sim.analysis_time[frame]
+   c1_sim  = sim.x_f_central[frame,(no_sources_sim):(no_sources_sim+ngrid)]
+   c2_sim  = sim.x_f_central[frame,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
+   c1_0  = sim.xi_f_0[frame,(no_sources_sim):(no_sources_sim+ngrid)]
+   c2_0  = sim.xi_f_0[frame,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
+   c1_1  = sim.xi_f_1[frame,(no_sources_sim):(no_sources_sim+ngrid)]
+   c2_1  = sim.xi_f_1[frame,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
+   c1_2  = sim.xi_f_2[frame,(no_sources_sim):(no_sources_sim+ngrid)]
+   c2_2  = sim.xi_f_2[frame,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
+   c1_3  = sim.xi_f_3[frame,(no_sources_sim):(no_sources_sim+ngrid)]
+   c2_3  = sim.xi_f_3[frame,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
+
+
+   ax[0].plot(c1_0,'b')
+   ax[1].plot(c2_0,'b')
+   ax[0].plot(c1_1,'b')
+   ax[1].plot(c2_1,'b')
+   ax[0].plot(c1_2,'b')
+   ax[1].plot(c2_2,'b')
+   ax[0].plot(c1_3,'b')
+   ax[1].plot(c2_3,'b')
+   ax[0].plot(c1_sim,'k',linewidth=3.0)
+   ax[1].plot(c2_sim,'k',linewidth=3.0)
+   ax[0].set_ylabel("c_1")
+   ax[1].set_ylabel("c_2")
+   ax[0].set_ylim([0, 200])
+   ax[1].set_ylim([0, 250])
+   ax[0].set_title("t="+str(int(time)))
+
+   return ln,
+
 
 # create initial plot
 plt.close("all")
-f,ax = plt.subplots(2,1)
+fig,ax = plt.subplots(2,1)
+xdata, ydata = [], []
+ln, = plt.plot([], [], 'ro')
 
-#offsets for chunks in state vector
-ngrid=len(truth.c1)
-no_sources=len(truth.source_locations)
+ani = FuncAnimation(fig, update, frames=range(len(sim.analysis_time)),
+                    init_func=init, repeat=False, interval=20,blit=True)
+plt.show()
 
-# split sources and outputs based on substance
-stypeisone=np.array(truth.source_substance)==1
-stypeistwo=np.array(truth.source_substance)==2
-sloc1=np.array(truth.source_locations)[stypeisone]
-sloc2=np.array(truth.source_locations)[stypeistwo]
-otypeisone=np.array(truth.output_substance)==1
-otypeistwo=np.array(truth.output_substance)==2
-oloc1=np.array(truth.output_locations)[otypeisone]
-oloc2=np.array(truth.output_locations)[otypeistwo]
-
-ii=[10,20]
-for i in range(len(enkf.analysis_time)):
-   ax[0].clear();
-   ax[1].clear();
-   ax[0].plot(truth.c1_map[i],'k')
-   c1_sim=sim.x_a[i,(no_sources-1):(no_sources+ngrid)]
-   ax[0].plot(c1_sim,'b')
-   c1_enkf=enkf.x_a[i,(no_sources-1):(no_sources+ngrid)]
-   ax[0].plot(c1_enkf,'g')
-   ax[0].plot(oloc1,0*oloc1+1,'*')
-   ax[0].plot(sloc1,0*sloc1+1,'d')
-   ax[0].set_ylabel("c_1")
-   ax[1].plot(truth.c2_map[i],'k')
-   c2_sim=sim.x_a[i,(no_sources+ngrid-1):(no_sources+2*ngrid)]
-   ax[1].plot(c2_sim,'b')
-   c2_enkf=enkf.x_a[i,(no_sources+ngrid-1):(no_sources+2*ngrid)]
-   ax[1].plot(c2_enkf,'g')
-   ax[1].plot(oloc2,0*oloc2+1,'*')
-   ax[1].plot(sloc2,0*sloc2+1,'d')
-   ax[1].set_ylabel("c_2")
-   plt.legend(("Truth","First guess","EnsSim"))
-   plt.draw()
-   plt.pause(0.1)
-
-plt.savefig("figure_1.png")

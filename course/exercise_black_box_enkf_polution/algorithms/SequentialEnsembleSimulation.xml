@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequentialAlgorithm>
+<SequentialEnsembleSimulationConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/sequentialEnsembleSimulation.xsd">
 	<!-- default <analysisTimes type="fromObservationTimes" ></analysisTimes> 
 		<analysisTimes type="fixed" timeFormat="dateTimeString" >201008241130,201008241140,...,201008242350</analysisTimes> 
 		<analysisTimes type="fixed" >201008240000,201008240300,201008240600</analysisTimes> 
@@ -8,9 +8,9 @@
 	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a 
 	twin-experpiment -->
 	<mainModel stochParameter="false" stochForcing="false" stochInit="false" />
-	<ensembleSize>3</ensembleSize>
+	<ensembleSize>5</ensembleSize>
 	<!-- selection to add noise to the ensemble members. 
 	This should probably be true unless your model has difficulty with the changes of parameters, initial state
 	or the forcing -->
 	<ensembleModel stochParameter="false" stochForcing="true" stochInit="false" />
-</sequentialAlgorithm>
+</SequentialEnsembleSimulationConfig>

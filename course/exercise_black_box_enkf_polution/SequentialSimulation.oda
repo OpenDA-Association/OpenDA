@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
-	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+	<stochObserver className="org.openda.observers.TimeSeriesFormatterStochObserver">
 		<workingDirectory>./stochObserver</workingDirectory>
-		<configFile>noosObservations.xml</configFile>
+		<configFile>timeSeriesFormatter.xml</configFile>
 	</stochObserver>
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
@@ -12,14 +12,8 @@
 		<workingDirectory>./algorithms</workingDirectory>
 		<configString>SequentialSimulation.xml</configString>
 	</algorithm>
+
 	<resultWriters>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
-		<workingDirectory>.</workingDirectory>
-		<configFile>sequentialSimulation_results.m</configFile>
-		<selection>
-			<resultItem outputLevel="All"  maxSize="100000"  />
-		</selection>
-	</resultWriter>
 	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>sequentialSimulation_results.py</configFile>

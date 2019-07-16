@@ -1,34 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<EnkfConfig>
-<!--
-<EnkfConfig xmlns="http://www.openda.org"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
- -->
-	<!-- default <analysisTimes type="fromObservationTimes" ></analysisTimes>
-	<analysisTimes type="fixed" timeFormat="dateTimeString" >201008241130,201008241140,...,201008242350</analysisTimes>
-	<analysisTimes type="fixed" >201008240000,201008240300,201008240600</analysisTimes>
-	<analysisTimes type="fixed" timeFormat="mjd" >48259.0,48259.125,48259.25</analysisTimes> -->
+<EnkfConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
 	<analysisTimes type="fromObservationTimes"/>
 	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a
 	twin-experpiment -->
 	<mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
-	<ensembleSize>50</ensembleSize>
+	<ensembleSize>20</ensembleSize>
 	<!-- selection to add noise to the ensemble members.
 	This should probably be true unless your model has difficulty with the changes of parameters, initial state
 	or the forcing -->
-	<ensembleModel stochParameter="false" stochForcing="true" stochInit="true"/>
-	<!-- config for times for saving kalman gain
-	 default	<saveGain><times type="none" ></times></saveGain>
-	 or	<saveGain><times type="fixed" timeFormat="dateTimeString" >201008241130,201008241140,...,201008242350</times></saveGain>
-	 or	<saveGain><times type="fixed" >201008240000,201008240300,201008240600</times></saveGain>
-	 or	<saveGain><times type="fixed" timeFormat="mjd" >48259.0,48259.125,48259.25</times></saveGain>
-	 <saveGain>
-	    <times type="fixed" timeFormat="mjd" >0.0,5.0,10.0</times>
-	    <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="automatic" xmlTypeMaxSize="40" />
-	      or
-	      <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="xml" />
-	      <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="netcdf" />
-	 </saveGain>
-	-->
+	<ensembleModel stochParameter="false" stochForcing="true" stochInit="false"/>
 </EnkfConfig>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+		<alias key="binDir" />
+		<alias key="templateDir" />
+		<alias key="instanceDir" />
+		<alias key="outputFile" />
+		<alias key="inputFile" />
+		<alias key="inputFileReactionTime" />
+		<alias key="inputFileSimulationTime" />
+		<alias key="inputFileC1" />
+		<alias key="inputFileC2" />
+	</aliasDefinitions>
+
+	<run>
+
+		<!--
+			for each model instance, the template directory will be cloned to
+			create the instance directory
+		-->
+		<initializeActionsUsingDirClone
+			instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%" />
+
+		<computeActions>
+			<action linuxExe="%binDir%/reactive_pollution_model.py" windowsExe="%binDir%/reactive_pollution_model.exe" workingDirectory="%instanceDir%">
+				<arg>--model_parameters</arg>
+				<arg>%inputFile%</arg>
+				<arg>--reaction_time</arg>
+				<arg>%inputFileReactionTime%</arg>
+				<arg>--simulation_time</arg>
+				<arg>%inputFileSimulationTime%</arg>
+				<arg>--c1</arg>
+				<arg>%inputFileC1%</arg>
+				<arg>--c2</arg>
+				<arg>%inputFileC2%</arg>
+				<arg>--logging_level</arg>
+				<arg>INFO</arg>
+
+				<!--
+					<checkOutput file="%outputFile%" expect="Finished Succesfully"/>
+				-->
+				<checkOutput file="%outputFile%" /> <!-- should exist -->
+			</action>
+			<!-- <action linuxExe="%binDir%/save.sh" windowsExe="save.bat" workingDirectory="%instanceDir%">
+				<arg>after_copy</arg>
+			</action> -->
+		</computeActions>
+
+		<additionalComputeActions></additionalComputeActions>
+
+		<finalizeActions></finalizeActions>
+
+	</run>
+
+
+	<inputOutput>
+	<!-- IF YOU COMPILE THE MODEL YOURSELF 	<ioObject className="org.openda.mywrapper.myWrapper"> -->
+		<ioObject className="org.openda.model_reactive_advection.myWrapper">
+			<file>%inputFile%</file>
+			<id>input</id>
+			<arg></arg>
+		</ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
+			<file>%inputFileReactionTime%</file>
+			<id>input_reaction_time</id>
+		</ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
+			<file>%inputFileSimulationTime%</file>
+			<id>input_simulation_time</id>
+			<arg>as_separate_exchange_items</arg>
+		</ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
+			<file>%inputFileC1%</file>
+			<id>input_c1</id>
+        </ioObject>
+
+		<ioObject className="org.openda.exchange.dataobjects.ASCIIVectorDataObject">
+			<file>%inputFileC2%</file>
+			<id>input_c2</id>
+		</ioObject>
+
+	<!-- IF YOU COMPILE THE MODEL YOURSELF 	<ioObject className="org.openda.mywrapper.myWrapper"> -->
+	<ioObject className="org.openda.model_reactive_advection.myWrapper">
+			<file>%outputFile%</file>
+			<id>output</id>
+		</ioObject>
+	</inputOutput>
+
+</blackBoxWrapperConfig>

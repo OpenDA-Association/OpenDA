@@ -26,21 +26,21 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
         
 \ifshowmatlab
         \begin{lstlisting}[language=Matlab,frame=single,caption={Matlab}]
-        [tt,truth,tobs1,obs1]=load_results('simulation_truth_results');
-        [ti,initial,tobs2,obs2]=load_results('simulation_initial_results');
-        [te,enkf,tobs2,obs2]=load_results('simulation_enkf_results');
+        [tt,truth,tobs1,obs1]=load_results("simulation_truth_results");
+        [ti,initial,tobs2,obs2]=load_results("simulation_initial_results");
+        [te,enkf,tobs2,obs2]=load_results("simulation_enkf_results");
         figure(1);clf;subplot(2,1,1);
-        plot(tt,truth(1,:),'k');
+        plot(tt,truth(1,:),"k");
         hold on;
-        plot(ti,initial(1,:),'g');
-        plot(te,enkf(1,1:2:end),'b');
+        plot(ti,initial(1,:),"g");
+        plot(te,enkf(1,1:2:end),"b");
         hold off;
-        legend('truth','initial','enkf')
+        legend("truth","initial","enkf")
         subplot(2,1,2);
-        plot(tt,truth(2,:),'k');
+        plot(tt,truth(2,:),"k");
         hold on;
-        plot(ti,initial(2,:),'g');
-        plot(te,enkf(2,1:2:end),'b');
+        plot(ti,initial(2,:),"g");
+        plot(te,enkf(2,1:2:end),"b");
         hold off;
         \end{lstlisting}
 \fi
@@ -50,17 +50,17 @@ In this exercise you will learn how to set up and run the EnKF method in OpenDA.
         import simulation_initial_results as initial
         import simulation_enkf_results as enkf
         plt.subplot(2,1,1)
-        plt.plot(initial.model_time,initial.x[:,0],'g')
-        plt.plot(truth.model_time,truth.x[:,0],'k')
-        plt.plot(enkf.analysis_time,enkf.x_f_central[:,0],'b');
-        plt.legend(('initial','truth','EnKF'))
-        plt.ylabel(r'$\theta_1$')
+        plt.plot(initial.model_time,initial.x[:,0],"g")
+        plt.plot(truth.model_time,truth.x[:,0],"k")
+        plt.plot(enkf.analysis_time,enkf.x_f_central[:,0],"b");
+        plt.legend(("initial","truth","EnKF"))
+        plt.ylabel(r"$\theta_1$")
         plt.subplot(2,1,2)
-        plt.plot(initial.model_time,initial.x[:,1],'g')
-        plt.plot(truth.model_time,truth.x[:,1],'k')
-        plt.plot(enkf.analysis_time,enkf.x_f_central[:,1],'b');
-        plt.ylabel(r'$\theta_2$')
-        plt.xlabel(r'$t$')
+        plt.plot(initial.model_time,initial.x[:,1],"g")
+        plt.plot(truth.model_time,truth.x[:,1],"k")
+        plt.plot(enkf.analysis_time,enkf.x_f_central[:,1],"b");
+        plt.ylabel(r"$\theta_2$")
+        plt.xlabel(r"$t$")
         plt.show() 
         \end{lstlisting}
 

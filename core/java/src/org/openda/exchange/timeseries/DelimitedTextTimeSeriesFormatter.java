@@ -58,11 +58,10 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		this.StoreAndwriteComment = configTree.getAsBoolean("StoreAndwriteComment",true);
 		this.dateTimeSelector = configTree.getAsInt("dateTimeSelector",  0);
 		this.valueSelector = configTree.getAsInt("valueSelector",  1);
-		this.decimalFormat = new DecimalFormat();
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator(configTree.getAsString("decimalSeparator",  ".").charAt(0));
+		this.decimalFormat = new DecimalFormat();
 		this.decimalFormat.setDecimalFormatSymbols(symbols);
-
 		String role = configTree.getAsString("role", "input");
 
 		if ("input".equalsIgnoreCase(role)){
@@ -91,8 +90,8 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		String headerContents = series.getProperty("header");
 		writer.write(headerContents);
 		if (Math.max(this.dateTimeSelector,this.valueSelector)> 1) {
-			logger.error("Cannot write delimited file with more the two columns");
-			throw new RuntimeException("Cannot write delimited file with more the two columns");
+			logger.error("Cannot write delimited file with more than two columns");
+			throw new RuntimeException("Cannot write delimited file with more than two columns");
 		}
 		for (int i=0;i< times.length ; i++) {
 			String[] parts = new String[2];
@@ -128,6 +127,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		ArrayList<Double> times = new ArrayList<>();
 		ArrayList<Double> values = new ArrayList<>();
 		StringBuilder headerContents = new StringBuilder();
+		String exponentSymbol = this.decimalFormat.getDecimalFormatSymbols().getExponentSeparator();
 		int skip = skipLines;
 		try {
 			String line;
@@ -152,12 +152,23 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 					times.add(TimeUtils.date2Mjd(time));
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 				} else {
-					double time = this.decimalFormat.parse(parts[this.dateTimeSelector]).doubleValue();
+					ParsePosition pos = new ParsePosition(0);
+					String timeString =  parts[this.dateTimeSelector].trim();
+					double time = this.decimalFormat.parse(timeString,pos).doubleValue();
+					if (pos.getIndex() != timeString.length() ) {
+						throw new ParseException(String.format("Error parsing '%s' in '%s' ",  timeString.substring(pos.getIndex()) ,timeString), pos.getErrorIndex());
+					}
 					logger.trace("time={} at line {}",time, reader.getLineNumber());
 					times.add(time);
 				}
 				// parse value
-				double value = this.decimalFormat.parse(parts[this.valueSelector]).doubleValue();
+				ParsePosition pos = new ParsePosition(0);
+				String valueString =  parts[this.valueSelector].trim();
+				valueString = valueString.replaceFirst(exponentSymbol+"\\+", exponentSymbol);
+				double value = this.decimalFormat.parse(valueString,pos).doubleValue();
+				if (pos.getIndex() != valueString.length() ) {
+					throw new ParseException(String.format("Error parsing '%s' in '%s' ",  valueString.substring(pos.getIndex()) ,valueString), pos.getErrorIndex());
+				}
 				logger.trace("value={} at line {}",value, reader.getLineNumber());
 				values.add(value);
 				s.close();
