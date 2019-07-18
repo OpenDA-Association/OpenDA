@@ -44,13 +44,35 @@ public class BcQuantity
 		this.unit = unit;
 	}
 
-	public void setUnit(BcProperty unit) { this.unit = unit; }
-	public void setColumnData(List<Double> values) { this.values = values; }
-	public void addColumnDataDouble(Double value) { values.add(value); }
-	public void addColumnDataString(String value) { strings.add(value); }
+	public void setUnit(BcProperty unit) {
+		this.unit = unit;
+	}
 
-	public BcProperty getQuantity() { return quantity; }
-	public BcProperty getUnit() { return unit; }
-	public List<Double> getValues() { return values; }
-	public List<String> getStrings() { return strings; }
+	public void setColumnData(List<Double> values) {
+		this.values = values;
+	}
+
+	public void addColumnDataDouble(Double value) {
+		values.add(value);
+	}
+
+	public void addColumnDataString(String value) {
+		strings.add(value);
+	}
+
+	public BcProperty getQuantity() {
+		return quantity;
+	}
+
+	public BcProperty getUnit() {
+		return unit;
+	}
+
+	public List<Double> getValues() {
+		return values;
+	}
+
+	public List<String> getStrings() {
+		return strings;
+	}
 }

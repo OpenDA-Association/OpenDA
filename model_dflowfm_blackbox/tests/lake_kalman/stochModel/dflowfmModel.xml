@@ -17,7 +17,7 @@
 		<alias key="mdufile" value="lake2d.mdu"/>
 		<alias key="hisfile" value="lake2d_his.nc"/>
 		<alias key="mapfile" value="lake2d_map.nc"/>
-		<alias key="meteofile" value="Lake2d_windx_noise.amu"/>
+		<alias key="meteofile" value="lake2d_windx_noise.amu"/>
 	</aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>

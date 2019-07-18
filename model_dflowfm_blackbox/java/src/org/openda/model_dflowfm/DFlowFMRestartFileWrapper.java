@@ -67,8 +67,6 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	int time_index = 0;
 	String netcdffileName = null;
 	HashMap<String,DFlowFMMetaExchangeItem> ExchangeItems = new LinkedHashMap<String,DFlowFMMetaExchangeItem>();
-	// No exchangeItems created for variables time*, NetLink*, BndLink*, FlowLink*, NetElem*, FlowElem*, NetNode*, wgs84 and projected_coordinate_system
-	private String[] excludePattern = new String[]{"time","NetLink","BndLink","FlowLink","NetElem","FlowElem","NetNode","wgs84","projected_coordinate_system"};
 
 
 	/**
@@ -106,12 +104,10 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		List<Variable> allVariables = inputFile.getVariables();
 		List<Variable> exchangeVariables = new ArrayList<Variable>(allVariables);
 		Collections.copy(exchangeVariables,allVariables);
-		for (Variable var : allVariables) {
-			for (String str : excludePattern) {
-				if (var.getShortName().startsWith(str)) {
-//					System.out.println("Excluded: "+ var.getShortName());
-					exchangeVariables.remove(var);
-				}
+		for (Variable var : allVariables)  {
+			if (var.getShortName().contains("time") || var.findDimensionIndex("time") == -1 )  {
+				// System.out.println("Excluded: " + var.getShortName());
+				exchangeVariables.remove(var);
 			}
 		}
 

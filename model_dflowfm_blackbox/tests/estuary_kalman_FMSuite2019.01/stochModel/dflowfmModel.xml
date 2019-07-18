@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" 
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                     xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>dflowfmWrapper.xml</file>
+	</wrapperConfig>
+
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="exedir" value="./bin"/> 
+		<alias key="instanceDir" value="./work"/>
+		<alias key="templateDir" value="./input_dflowfm"/>
+		<alias key="mdufile" value="dflowfm/estuary.mdu"/>
+		<alias key="hisfile" value="dflowfm/DFM_OUTPUT_estuary/estuary_his.nc"/>
+		<alias key="concatenated_hisfile" value="full_estuary_his.nc"/>
+		<alias key="mapfile" value="dflowfm/estuary_map.nc"/>
+		<alias key="mapfile_out" value="dflowfm/DFM_OUTPUT_estuary/estuary_map.nc"/>
+	</aliasValues>
+
+    <timeInfoExchangeItems start="start_time" end="end_time"/>
+
+    <exchangeItems>
+        <vector id="eastboundary_noise.1:waterlevelbnd" ioObjectId="boundaries" elementId="eastboundary.1:waterlevelbnd-estuary_east_noise_0001"/>
+        <vector id="eastboundary_surge.1:waterlevelbnd" ioObjectId="boundaries" elementId="eastboundary.1:waterlevelbnd-estuary_east_surge_0001"/>
+        <vector id="start_time" ioObjectId="mdufile" elementId="start_time" />
+        <vector id="end_time" ioObjectId="mdufile" elementId="end_time" />
+        <vector id="s1" ioObjectId="mapfile" elementId="s1"/>
+        <vector id="s0" ioObjectId="mapfile" elementId="s0"/>
+        <vector id="unorm" ioObjectId="mapfile" elementId="unorm"/>
+        <vector id="u0" ioObjectId="mapfile" elementId="u0"/>	
+        <vector id="station01.waterlevel" ioObjectId="hisfile" elementId="station01.waterlevel"/>
+        <vector id="station02.waterlevel" ioObjectId="hisfile" elementId="station02.waterlevel"/>
+        <vector id="station03.waterlevel" ioObjectId="hisfile" elementId="station03.waterlevel"/>
+    </exchangeItems>
+
+<doCleanUp>false</doCleanUp>
+
+</blackBoxModelConfig>

@@ -11,7 +11,7 @@
             <noiseModel id="boundaryNoiseModelSurge" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
                 <configFile>BoundaryNoiseSurge.xml</configFile>
                 <exchangeItems>
-                    <exchangeItem id="waterlevelnoise" operation="add" modelExchangeItemId="westboundary_noise.1:waterlevelbnd"/>
+                    <exchangeItem id="waterlevelnoise" operation="add" modelExchangeItemId="westboundary_noise.1:waterlevelbnd-estuary_west_noise_0001"/>
                 </exchangeItems>
             </noiseModel>
             <vector id="s1"/>

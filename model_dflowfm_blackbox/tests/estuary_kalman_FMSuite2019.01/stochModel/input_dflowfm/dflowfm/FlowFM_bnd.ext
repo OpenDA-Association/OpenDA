@@ -1,0 +1,57 @@
+* QUANTITY    : waterlevelbnd, velocitybnd, dischargebnd, tangentialvelocitybnd, normalvelocitybnd  filetype=9         method=2,3
+*             : salinitybnd                                                                         filetype=9         method=2,3
+*             : lowergatelevel, damlevel                                                            filetype=9         method=2,3
+*             : frictioncoefficient, horizontaleddyviscositycoefficient, advectiontype              filetype=4,10      method=4
+*             : initialwaterlevel, initialsalinity                                                  filetype=4,10      method=4
+*             : windx, windy, windxy, rain, atmosphericpressure                                     filetype=1,2,4,7,8 method=1,2,3
+*
+* kx = Vectormax = Nr of variables specified on the same time/space frame. Eg. Wind magnitude,direction: kx = 2
+* FILETYPE=1  : uniform              kx = 1 value               1 dim array      uni
+* FILETYPE=2  : unimagdir            kx = 2 values              1 dim array,     uni mag/dir transf to u,v, in index 1,2
+* FILETYPE=3  : svwp                 kx = 3 fields  u,v,p       3 dim array      nointerpolation
+* FILETYPE=4  : arcinfo              kx = 1 field               2 dim array      bilin/direct
+* FILETYPE=5  : spiderweb            kx = 3 fields              3 dim array      bilin/spw
+* FILETYPE=6  : curvi                kx = ?                                      bilin/findnm
+* FILETYPE=7  : triangulation        kx = 1 field               1 dim array      triangulation
+* FILETYPE=8  : triangulation_magdir kx = 2 fields consisting of Filetype=2      triangulation in (wind) stations
+* FILETYPE=9  : poly_tim             kx = 1 field  consisting of Filetype=1      line interpolation in (boundary) stations
+* FILETYPE=10 : inside_polygon       kx = 1 field                                uniform value inside polygon for INITIAL fields
+*
+* METHOD  =0  : provider just updates, another provider that pointers to this one does the actual interpolation
+*         =1  : intp space and time (getval) keep  2 meteofields in memory
+*         =2  : first intp space (update), next intp. time (getval) keep 2 flowfields in memory
+*         =3  : save weightfactors, intp space and time (getval),   keep 2 pointer- and weight sets in memory
+*         =4  : only spatial interpolation
+*
+* OPERAND =+  : Add
+*         =O  : Override
+*
+* VALUE   =   : Offset value for this provider
+*
+* FACTOR  =   : Conversion factor for this provider
+*
+**************************************************************************************************************
+
+QUANTITY=waterlevelbnd
+FILENAME=estuary_east_tide.pli
+FILETYPE=9
+METHOD=3
+OPERAND=O
+
+QUANTITY=waterlevelbnd
+FILENAME=estuary_east_surge.pli
+FILETYPE=9
+METHOD=3
+OPERAND=+
+
+QUANTITY=waterlevelbnd
+FILENAME=estuary_east_noise.pli
+FILETYPE=9
+METHOD=3
+OPERAND=+
+
+QUANTITY=dischargebnd
+FILENAME=estuary_west.pli
+FILETYPE=9
+METHOD=3
+OPERAND=O

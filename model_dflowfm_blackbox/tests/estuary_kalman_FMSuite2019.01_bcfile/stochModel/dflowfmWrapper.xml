@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+        <alias key="exedir"/>
+        <alias key="instanceDir"/>
+        <alias key="templateDir"/>
+        <alias key="mdufile"/>
+        <alias key="mapfile"/>
+        <alias key="mapfile_out"/>
+        <alias key="hisfile"/>
+        <alias key="concatenated_hisfile"/>
+    </aliasDefinitions>
+
+    <run>
+
+        <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+
+        <computeActions>
+            <action workingDirectory="%instanceDir%" windowsExe="%exedir%/start_dimr.bat">
+                <arg>dimrConfigEstuary.xml</arg>
+                <checkOutput file="%hisfile%"/>
+                <checkOutput file="%mapfile_out%"/>
+            </action>
+            <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
+                <arg>%mapfile_out%</arg>
+                <arg>%mapfile%</arg>
+            </action>
+            <action className="org.openda.exchange.dataobjects.NetcdfFileConcatenater" workingDirectory="%instanceDir%">
+                <arg>%concatenated_hisfile%</arg>
+                <arg>%hisfile%</arg>
+            </action>
+        </computeActions>
+
+        <finalizeActions/>
+
+    </run>
+
+    <inputOutput>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
+            <file>%mdufile%</file>
+            <id>mdufile</id>
+        </ioObject>
+        <ioObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
+            <file>%mapfile%</file>
+            <id>mapfile</id>
+        </ioObject>
+        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+            <file>%hisfile%</file>
+            <id>hisfile</id>
+            <arg>true</arg>
+            <arg>false</arg>
+        </ioObject>
+        <!--ioObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
+            <file>%mdufile%</file>
+            <id>boundaries</id>
+        </ioObject-->		
+        <ioObject className="org.openda.model_dflowfm.BcFile">
+            <file>dflowfm/waterlevel_noise.bc</file>
+            <id>bcfile</id>
+            <arg>dflowfm/waterlevel_noise.bc</arg>
+        </ioObject>			
+    </inputOutput>
+
+</blackBoxWrapperConfig>
