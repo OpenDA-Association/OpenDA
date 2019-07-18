@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>dflowfmStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>SequentialEnsembleSimulation.xml</configString>
+	</algorithm>
+        <timingSettings doTiming="true"></timingSettings>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>SequentialEnsemble_results.m</configFile>
+		<selection>
+		    <resultItem id="pred_f"/>
+		    <!--<resultItem id="pred_f_0"/>
+		    <resultItem id="pred_f_1"/>-->
+      <resultItem id="pred_f_1"/>
+      <resultItem id="pred_f_2"/>
+      <resultItem id="pred_f_3"/>
+      <resultItem id="pred_f_4"/>
+      <resultItem id="pred_f_5"/>
+      <resultItem id="pred_f_6"/>
+      <resultItem id="pred_f_7"/>
+      <resultItem id="pred_f_8"/>
+      <resultItem id="pred_f_9"/>
+      <resultItem id="pred_f_10"/>
+      <resultItem id="pred_f_11"/>
+      <resultItem id="pred_f_12"/>
+      <resultItem id="pred_f_13"/>
+      <resultItem id="pred_f_14"/>
+      <resultItem id="pred_f_15"/>
+      <resultItem id="pred_f_16"/>
+      <resultItem id="pred_f_17"/>
+      <resultItem id="pred_f_18"/>
+      <resultItem id="pred_f_19"/>
+      <resultItem id="pred_f_20"/>
+      <resultItem id="pred_f_21"/>
+      <resultItem id="pred_f_22"/>
+      <resultItem id="pred_f_23"/>
+      <resultItem id="pred_f_24"/>
+      <resultItem id="pred_f_25"/>
+		    <resultItem id="pred_f_std"/>
+      <resultItem id="pred_f_central"/>
+		    <resultItem id="pred_a_linear"/>
+		    <resultItem id="analysis_time"/>
+		    <resultItem id="obs"/>
+		</selection>
+	</resultWriter>
+</openDaApplication>
