@@ -88,6 +88,6 @@ def update(frame):
     return ln,
 
 ani = FuncAnimation(fig, update, frames=range(len(c1)),
-                    init_func=init, repeat=False, interval=20,blit=True)
+                    init_func=init, repeat=False, interval=20,blit=False)
 plt.show()
 
