@@ -1,84 +1,97 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 '''A one dimensional reactive pollution model. '''
 from __future__ import print_function
 import csv
 import sys
 import math
+import string
 import argparse
+import logging
+import os.path
+import yaml
 
 DEFAULT_INPUT = {
     'reaction_time': [3.0],      # reaction time (inverse of rate) in seconds
     'time': [0.0, 1.0, 10.0]     # [t_start, dt, t_end]
 }
 
-def defaultInput():
-    input={}
-    # grid
-    input['x']= [0.0, 1.0, 4.0]
-    # stationary flow
-    input['u'] = [1.0, 1.0, 1.0, 1.0, 1.0]
-    # cross sectional area
-    input['a'] = [1.0, 1.0, 1.0, 1.0, 1.0]
-    # initial concentrations
-    input['c1'] = [0.1, 0.2, 0.3, 0.4, 0.5]
-    input['c2'] = [1.1, 1.2, 1.3, 1.4, 1.5]
-    # simulation timespan
-    input['refdate'] = '01 dec 2000'
-    #unit is always seconds
-    input['unit'] = 'seconds'
-    # sources mass/m^3/s
-    input['source_locations'] = [2]
-    input['source_substance'] = [1]
-    input['source_labels'] = ['c1_default']
-    input['source_values']= {}
-    input['source_values']['c1_default'] = [5.0]
-    # boundaries
-    input['bound_labels']=['c1_left', 'c1_right', 'c2_left', 'c2_right']
-    input['bound_locations']=[0, -1, 0 ,-1]
-    input['bound_values']={}
-    input['bound_values']['c1_left']=[-1000.0, 0.01, 0.02, 0.03]
-    input['bound_values']['c1_right']=[0.0]
-    input['bound_values']['c2_left']=[-2000.0, 1.01, 1.02, 1.03]
-    input['bound_values']['c2_right']=[0.0]
-    #output (index based and 0 based)
-    input['output_file'] = 'default.output'
-    input['matlab_output_file'] = 'default_output.m'
-    input['output_locations'] = [1, 2, 1 ,3]
-    input['output_substance'] = [1, 1, 2 ,2]
-    input['output_labels']=['c1_1', 'c1_2', 'c2_1', 'c2_3']
-    return input
+EX_CONFIG = 78
 
-def initOutput(input):
+def defaultInput():
+    inputValues={}
+    # grid
+    inputValues['x']= [0.0, 1.0, 4.0]
+    # stationary flow
+    inputValues['u'] = [1.0, 1.0, 1.0, 1.0, 1.0]
+    # cross sectional area
+    inputValues['a'] = [1.0, 1.0, 1.0, 1.0, 1.0]
+    # initial concentrations
+    inputValues['c1'] = [0.1, 0.2, 0.3, 0.4, 0.5]
+    inputValues['c2'] = [1.1, 1.2, 1.3, 1.4, 1.5]
+    # simulation timespan
+    inputValues['refdate'] = '01 dec 2000'
+    #unit is always seconds
+    inputValues['unit'] = 'seconds'
+    # sources mass/m^3/s
+    inputValues['source_locations'] = [2]
+    inputValues['source_substance'] = [1]
+    inputValues['source_labels'] = ['c1_default']
+    inputValues['source_values']= {}
+    inputValues['source_values']['c1_default'] = [5.0]
+    # boundaries
+    inputValues['bound_labels']=['c1_left', 'c1_right', 'c2_left', 'c2_right']
+    inputValues['bound_locations']=[0, -1, 0 ,-1]
+    inputValues['bound_values']={}
+    inputValues['bound_values']['c1_left']=[-1000.0, 0.01, 0.02, 0.03]
+    inputValues['bound_values']['c1_right']=[0.0]
+    inputValues['bound_values']['c2_left']=[-2000.0, 1.01, 1.02, 1.03]
+    inputValues['bound_values']['c2_right']=[0.0]
+    #output (index based and 0 based)
+    inputValues['output_file'] = 'default.output'
+    inputValues['matlab_output_file'] = 'default_output.m'
+    inputValues['output_locations'] = [1, 2, 1 ,3]
+    inputValues['output_substance'] = [1, 1, 2 ,2]
+    inputValues['output_labels']=['c1_1', 'c1_2', 'c2_1', 'c2_3']
+    return inputValues
+
+def initOutput(config):
     output={}
     #output (index based and 0 based)
-    output['output_file'] = input['output_file']
-    output['matlab_output_file'] = input['matlab_output_file']
-    output['output_locations'] = input['output_locations']
-    output['output_substance'] = input['output_substance']
-    output['output_labels']=input['output_labels']
-    output['output_values']={}
-    for label in output['output_labels']:
-        output['output_values'][label]=[]
-    output['refdate']=input['refdate']
-    output['unit']=input['unit']
-    output['time']=input['time']
+    try:
+        output['output_timeseries'] = config['output']['timeseries']
+        for item in output['output_timeseries']:
+            item['data'] =[]
+    except Exception as e:
+        logger.error("error initializing time series output %s",e)
+        raise e
     return output
 
-def computeNextTimeStep(tIndex, c1, c2, input):
-    #print('computing next timestep')
+def interp(x,y,x0,index=0):
+    for i in range( index, len(x)-1 ):
+        if (x0  - 1e-6 ) < x[i+1]:
+            w = ( x0 -x[i]) /(x[i+1] - x[i])
+            value = w * y[i+1] + (1.0-w) * y[i]
+            index = i
+            break
+    logger.debug('interp x {} [{},{}] {}'.format(i,x[i],x[i+1], x0))
+    logger.debug('interp y {} [{},{}] {}'.format(w, y[i],y[i+1], value))
+    return value, index
+
+def computeNextTimeStep(currentTime, c1, c2, inputValues):
+    logger.debug('computing next timestep')
     c1Next = [0.0 for dummy in c1]
     c2Next = [0.0 for dummy in c2]
-    #print('transport ')
-    time=input['time']
-    reaction_time=input['reaction_time']
-    x=input['x']
-    u=input['u']
-    for i in xrange(0, len(c1), 1):
-        #print('computing for gridpoint '+str(i))
+    logger.debug('transport ')
+    time=inputValues['time']
+    reaction_time=inputValues['reaction_time']
+    x=inputValues['x']
+    u=inputValues['u']
+    for i in range(0, len(c1), 1):
+        # logger.debug('computing for gridpoint '+str(i))
         di = u[i]*time[1]/x[1]
         iLeft = i+int(math.floor(di))
-        #print('i = %d di= %f iLeft = %f' % (i, di, iLeft))
+        # logger.debug('i = %d di= %f iLeft = %f' % (i, di, iLeft))
         weightRight= (di-math.floor(di))
         weightLeft=1.0-weightRight
         iRight = iLeft+1
@@ -89,142 +102,175 @@ def computeNextTimeStep(tIndex, c1, c2, input):
             c1Next[iRight] += c1[i]*weightRight
             c2Next[iRight] += c2[i]*weightRight
         # reaction
-        rate = time[1]/reaction_time[0]
+        rate = time[1]/reaction_time
         c1Next[i] += - c1Next[i] * rate
         c2Next[i] +=   c1Next[i] * rate
-    #print('c1='+str(c1Next))
-    #print('c2='+str(c2Next))
-    #print('add sources')
-    source_locations=input['source_locations']
-    source_substance=input['source_substance']
-    source_labels=input['source_labels']
-    source_values=input['source_values']
-    a=input['a']
-    for iSource  in range(len(source_locations)):
-        iLoc = source_locations[iSource]
-        iSubstance = source_substance[iSource]
-        iLabel=source_labels[iSource]
-        cValues = source_values[iLabel]
-        if(tIndex<len(cValues)):
-            cValue = cValues[tIndex]
-        else:
-            cValue = cValues[-1]
-        cValue = max(cValue, 0.0)
-        if(iSubstance==1):
+    # logger.debug('c1='+str(c1Next))
+    # logger.debug('c2='+str(c2Next))
+    logger.debug('add sources')
+    logger.debug(inputValues['sources'])
+
+    a=inputValues['a']
+    for source in inputValues['sources']:
+        cValue = source['values'][0]
+        if 'times' in source:        
+            cValue, source['currentIndex'] = interp(source['times'],source['values'],currentTime, source['currentIndex'])
+        cValue = max(cValue,0)
+        iLoc = source['location']
+        if(source['substance']==1):
            c1Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
         else:
            c2Next[iLoc]+=cValue*time[1]/x[1]/a[iLoc]
-    #print('c1='+str(c1Next))
-    #print('c2='+str(c2Next))
-    #print('inflow boundaries')
-    bound_values=input['bound_values']
-    if (u[0]>0.0):
-        bValues=bound_values['c1_left']
-        if(tIndex<len(bValues)):
-            bValue = bValues[tIndex]
-        else:
-            bValue = bValues[-1]
-        bValue=max(bValue, 0.0)
-        c1Next[0] = bValue
-    if (u[-1]<0.0):
-        bValues=bound_values['c1_right']
-        if(tIndex<len(bValues)):
-            bValue = bValues[tIndex]
-        else:
-            bValue = bValues[-1]
-        c1Next[-1]=bValue
-    if (u[0]>0.0):
-        bValues=bound_values['c2_left']
-        if(tIndex<len(bValues)):
-            bValue = bValues[tIndex]
-        else:
-            bValue = bValues[-1]
-        bValue=max(bValue, 0.0)
-        c2Next[0] = bValue
-    if (u[-1]<0.0):
-        bValues=bound_values['c2_right']
-        if(tIndex<len(bValues)):
-            bValue = bValues[tIndex]
-        else:
-            bValue = bValues[-1]
-        c2Next[-1]=bValue
-    #print('c1='+str(c1Next))
-    #print('c2='+str(c2Next))
+    # logger.debug('c1='+str(c1Next))
+    # logger.debug('c2='+str(c2Next))
+    logger.debug('inflow boundaries')
+
+    for boundary in inputValues['boundaries']:
+        bValue = boundary['values'][0]
+        if 'times' in boundary:
+            cValue, boundary['currentIndex'] = interp(boundary['times'],boundary['values'],currentTime, boundary['currentIndex'])
+        bValue = max(bValue,0)
+        location = boundary['location']
+        logger.debug(boundary)
+        if boundary['id'].endswith('left'):
+            if u[location]>0 :            
+                if boundary['substance'] == 1:
+                    c1Next[location] = bValue
+                if boundary['substance'] == 2:
+                    c2Next[location] = bValue
+        if boundary['id'].endswith('right'):
+            if u[location]<0 :            
+                if boundary['substance'] == 1:
+                    c1Next[location] = bValue
+                if boundary['substance'] == 2:
+                    c2Next[location] = bValue
+
+    # logger.debug('c1='+str(c1Next))
+    # logger.debug('c2='+str(c2Next))
     return (c1Next,c2Next)
 
 def readInputFile(fileName):
-    input={}
-    source_values= {}
-    bound_values= {}
-    output_values= {}
-    print('reading input from file '+fileName)
-    inFile=open(fileName, 'r')
+    inputValues={}
+    logger.info('reading input from file '+fileName)
     counter =1
-    for line in inFile.xreadlines():
-        #print("%d : %s" %(counter, line[:-1]))
-        exec "global x;"+line  in globals(),  locals()
+    localParams = dict.fromkeys([
+        'x',
+        'u',
+        'a',
+        'refdate',
+        'unit',
+        'source_locations',
+        'source_substance',
+        'source_labels',
+        'source_values',
+        'output_file',
+        'matlab_output_file',
+        'output_map_times',
+        'output_locations',
+        'output_substance',
+        'output_labels',
+        'output_values',
+        'bound_labels',
+        'bound_locations',
+        'bound_substance',
+        'bound_values',
+        ])
+
+    localParams['source_values'] = {} 
+    localParams['bound_values'] = {}
+    localParams['output_values'] = {} 
+
+    with open(fileName, 'r') as inFile:
+     for line in inFile:
+        logger.debug("%d : %s" %(counter, line[:-1]))
+        if not line.startswith("#"):
+            exec(line, None, localParams)
         counter+=1
-    inFile.close()
-    input['x']= x
-    input['u']= u
-    input['a']= a
-    input['refdate']= refdate
-    input['unit']= unit
-    input['source_locations']= source_locations
-    input['source_substance']= source_substance
-    input['source_labels']= source_labels
-    input['source_values']= source_values
-    input['output_file']= output_file
-    input['matlab_output_file'] = matlab_output_file
-    input['output_map_times'] = output_map_times
-    input['output_locations']= output_locations
-    input['output_substance']= output_substance
-    input['output_labels']= output_labels
-    input['bound_labels']= bound_labels
-    input['bound_locations']= bound_locations
-    input['bound_substance']= bound_substance
-    input['bound_values']= bound_values
-    return input
+    inputValues['x']= localParams['x']
+    inputValues['u']= localParams['u']
+    inputValues['a']= localParams['a']
+    inputValues['refdate']= localParams['refdate']
+    inputValues['unit']= localParams['unit']
+    inputValues['source_locations']= localParams['source_locations']
+    inputValues['source_substance']= localParams['source_substance']
+    inputValues['source_labels']= localParams['source_labels']
+    inputValues['source_values']= localParams['source_values']
+    inputValues['output_file']= localParams['output_file']
+    inputValues['matlab_output_file'] = localParams['matlab_output_file']
+    inputValues['output_map_times'] = localParams['output_map_times']
+    inputValues['output_locations']= localParams['output_locations']
+    inputValues['output_substance']= localParams['output_substance']
+    inputValues['output_labels']= localParams['output_labels']
+    inputValues['bound_labels']= localParams['bound_labels']
+    inputValues['bound_locations']= localParams['bound_locations']
+    inputValues['bound_substance']= localParams['bound_substance']
+    inputValues['bound_values']= localParams['bound_values']
+    return inputValues
 
 def readASCIIFile(file_name):
     """ Reads an ASCII file containing a float value on each line. """
-    with open(file_name, 'r') as fin:
-        file_contents = fin.readlines()
+    logger.info('reading from ASCII file %s',file_name)
+    try:
+        with open(file_name, 'r') as fin:
+            file_contents = fin.readlines()
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        sys.exit(-1)
 
     try:
         file_contents = [float(val) for val in file_contents]
     except ValueError:
-        print("ERROR: Could not cast the values in the file %s to floats." % file_name)
+        logger.fatal("ERROR: Could not cast the values in the file %s to floats." % file_name)
         raise
 
+    logger.debug(file_contents)
     return file_contents
 
-def collectOutput(c1, c2, output):
+def writeASCIIFile(file_name, values):
+    """ Write an ASCII file containing a float value on each line. """
+    logger.info('writing to ASCII file %s',file_name)
+    directory = os.path.dirname(file_name)
+    if not os.path.isdir(directory):
+        try:
+            os.makedirs(directory)
+        except Exception as e:
+            logger.fatal("Cannot create directory: %s", directory)
+            raise(e)
+    try:
+        with open(file_name, 'w') as fout:
+            for value in values:
+                fout.write("{0:0.2f}\n".format(value))
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        sys.exit(-1)
+    return
+
+def collectOutput(c1, c2, output,time):
     """Add current values of c1, c2 at output locations to the appropriate time series."""
 
-    for iOutput, iSubstance, iLabel in zip(output['output_locations'], output['output_substance'], output['output_labels']):
-
-        if (iSubstance==1):
-           output['output_values'][iLabel].append(c1[iOutput])
+    logger.debug(output)
+    for item in output['output_timeseries']:
+        if (item['substance']==1):
+            item['data'].append({'time': time, 'value' : c1[item['location']]})
         else:
-           output['output_values'][iLabel].append(c2[iOutput])
+            item['data'].append({'time': time, 'value' : c2[item['location']]})
 
 def writeOutput(outFile, c1, c2):
-    print("writing output to file %s" % output['output_file'])
+    logger.info("writing output to file %s", outFile.name)
     outFile.write("source_values= {}\n")
     outFile.write("bound_values= {}\n")
     outFile.write("output_values= {}\n")
-    outFile.write("source_labels=["+','.join([ "'"+label+"'" for label in input['source_labels']])+"]\n")
-    outFile.write("source_locations=["+','.join(map(str, input['source_locations']))+"]\n")
-    outFile.write("source_substance=["+','.join(map(str, input['source_substance']))+"]\n")
-    source_locations=input['source_locations']
+    outFile.write("source_labels=["+','.join([ "'"+label+"'" for label in inputValues['source_labels']])+"]\n")
+    outFile.write("source_locations=["+','.join(map(str, inputValues['source_locations']))+"]\n")
+    outFile.write("source_substance=["+','.join(map(str, inputValues['source_substance']))+"]\n")
+    source_locations=inputValues['source_locations']
     for i in range(len(source_locations)):
         if (source_locations[i]<0):
             source_locations[i] += len(source_locations)
     outFile.write("source_locations=["+','.join(map(str, source_locations[:]))+"]\n")
-    source_values=input['source_values']
+    source_values=inputValues['source_values']
     for i in range(len(source_locations)):
-        outFile.write("source_values['"+input['source_labels'][i]+"']=["+','.join(map(str, source_values[input['source_labels'][i]]))+"]\n")
+        outFile.write("source_values['"+inputValues['source_labels'][i]+"']=["+','.join(map(str, source_values[inputValues['source_labels'][i]]))+"]\n")
 
     outFile.write("output_labels=["+','.join([ "'"+label+"'" for label in output['output_labels']])+"]\n")
     output_locations=output['output_locations']
@@ -243,6 +289,7 @@ def writeOutput(outFile, c1, c2):
     outFile.write("time=[%f,%f,%f] \n" %(output['time'][0],output['time'][1],output['time'][2]))
 
 def writeMatlabOutput(matlabOutFile, c1, c2):
+    logger.info("writing output to MATLAB file %s", matlabOutFile.name)
     matlabOutFile.write("output_labels=["+','.join([ "'"+label+"'" for label in output['output_labels']])+"];\n")
     output_locations=output['output_locations']
     for i in range(len(output_locations)):
@@ -254,23 +301,60 @@ def writeMatlabOutput(matlabOutFile, c1, c2):
         matlabOutFile.write("output_values."+output['output_labels'][i]+"=["+','.join(map(str, output_values[output['output_labels'][i]]))+"];\n")
     matlabOutFile.write("output_substance=["+','.join(map(str, output['output_substance']))+"];\n")
     #sources
-    matlabOutFile.write("source_labels=["+','.join([ "'"+label+"'" for label in input['source_labels']])+"];\n")
-    matlabOutFile.write("source_locations=["+','.join(map(str, input['source_locations']))+"];\n")
-    matlabOutFile.write("source_substance=["+','.join(map(str, input['source_substance']))+"];\n")
-    source_locations=input['source_locations']
+    matlabOutFile.write("source_labels=["+','.join([ "'"+label+"'" for label in inputValues['source_labels']])+"];\n")
+    matlabOutFile.write("source_locations=["+','.join(map(str, inputValues['source_locations']))+"];\n")
+    matlabOutFile.write("source_substance=["+','.join(map(str, inputValues['source_substance']))+"];\n")
+    source_locations=inputValues['source_locations']
     for i in range(len(source_locations)):
         if (source_locations[i]<0):
             source_locations[i] += len(source_locations)
     matlabOutFile.write("source_locations=["+','.join(map(str, source_locations[:]))+"];\n")
-    source_values=input['source_values']
+    source_values=inputValues['source_values']
     for i in range(len(source_locations)):
-        matlabOutFile.write("source_values."+input['source_labels'][i]+"=["+','.join(map(str, source_values[input['source_labels'][i]]))+"];\n")
+        matlabOutFile.write("source_values."+inputValues['source_labels'][i]+"=["+','.join(map(str, source_values[inputValues['source_labels'][i]]))+"];\n")
     #final state and times
     matlabOutFile.write("c1=["+','.join(map(str, c1))+"];\n")
     matlabOutFile.write("c2=["+','.join(map(str, c2))+"];\n")
     matlabOutFile.write("refdate='%s';\n"%output['refdate'])
     matlabOutFile.write("unit='%s';\n" % output['unit'])
     matlabOutFile.write("time=[%f,%f,%f]; \n" %(output['time'][0],output['time'][1],output['time'][2]))
+
+def readBoundaries(config):
+    result = config
+    for item in result:
+        item['currentIndex'] = 0
+        if 'file' in item:
+            logger.info("Reading time series for '{}'".format(item['id']))
+            if item['values']:
+                logger.warning('Overwriting values for {}'.format(item['id']))
+            time_series=readTimeSeriesFromCsv(item['file'])
+            item['times'] = time_series['times']
+            item['values'] = time_series['values']
+    return result
+
+def readTimeSeriesFromCsv(file):
+    time_series= {'times':[], 'values': [] }
+    try:
+        with open(file, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file,delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    logger.debug('Read header {}'.format(row))
+                else:
+                    try:
+                        element = row[0]
+                        time_series['times'].append(float(element))
+                        element = row[1]
+                        time_series['values'].append(float(element))
+                    except ValueError:
+                        logger.fatal("Could not convert '{}' to a float.".format(element))
+                        exit(EX_CONFIG)
+                line_count +=1
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        sys.exit(-1)
+    return time_series
 
 def writeMatlabMapOutput(matlabOutFile, c1, c2, timeIndex):
     matlabOutFile.write("c1_map{"+str(timeIndex)+"}=["+','.join(map(str, c1))+"];\n")
@@ -293,107 +377,167 @@ def frange(start, end=None, inc=None):
         inc = 1.0
     L = []
     while 1:
-        next = start + len(L) * inc
-        if inc > 0 and next >= end:
+        nextValue = start + len(L) * inc
+        if inc > 0 and nextValue >= end:
             break
-        elif inc < 0 and next <= end:
+        elif inc < 0 and nextValue <= end:
             break
-        L.append(next)
+        L.append(nextValue)
     return L
 
 
 if __name__ == '__main__':
 
+    # logging.basicConfig(level=logging.INFO,
+    #     format="%(asctime)s %(levelname)s:%(message)s",
+    #     datefmt='%H:%M:%S')
+
+    logging.basicConfig(filename='reactive_pollution_model.log',
+                            filemode='a',
+                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.INFO)
+
+    # set up logging to console
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    # set a format which is simpler for console use
+    formatter = logging.Formatter('%(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    # add the handler to the root logger
+
     # parse command line arguments
     parser = argparse.ArgumentParser(description="Run a reactive pollution model.")
-    parser.add_argument("--model_parameters", default=None,
-                        help="Python file containing all model parameters, except the reaction time, simulation time, and concentrations of substrance 1 and 2.")
-    parser.add_argument("--reaction_time", default=None,
-                        help="ASCII file containing the reaction time.")
-    parser.add_argument("--simulation_time", default=None,
-                        help="ASCII file containing three values: start/end time and time step.")
-    parser.add_argument("--c1", default=None,
-                        help="ASCII file containing the current concentration values of substance 1.")
-    parser.add_argument("--c2", default=None,
-                        help="ASCII file containing the current concentration values of substance 2.")
+    parser.add_argument("-c","--config", default='config.yaml',
+                        help="YAML configuration file.")
+    parser.add_argument("--log_level", default="INFO",
+                            help="Set logging level")
 
     args = vars(parser.parse_args())
 
+    level = logging.getLevelName(args['log_level'])
+    logger = logging.getLogger(__name__)
+    logger.setLevel(level)
+    logger.addHandler(console)
+    
+    logger.debug(args)
     # read input files, or use defaults
-    input={}
-    if args['model_parameters']:
-        input = readInputFile(args['model_parameters'])
-    else:
-        print('using internal default input')
-        input=defaultInput()
+    inputValues={}
+    logger.info('start of program')
+    logger.info('Reading {}'.format(args['config']))
+    try:
+        with open(args['config'], 'r') as stream:
+            try:
+                config = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                logger.fatal(exc)
+                sys.exit(EX_CONFIG)
+    except EnvironmentError as exception:
+        logger.fatal(exception)
+        sys.exit(-1)
 
-    if args['reaction_time']:
-        input['reaction_time'] = readASCIIFile(args['reaction_time'])
-    else:
-        input['reaction_time'] = DEFAULT_INPUT['reaction_time']
+    try: 
+        inputValues['u'] = config['u']
+        inputValues['x'] = config['x']
+        inputValues['a'] = config['a']
+        inputValues['time'] = config['time']
+        inputValues['reaction_time'] = config['reaction_time']
+    except Exception as e:
+        logger.fatal('Failed setting inputValues from config file: %s',e)
+        sys.exit(EX_CONFIG)
 
-    if args['simulation_time']:
-        input['time'] = readASCIIFile(args['simulation_time'])
-    else:
-        input['time'] = DEFAULT_INPUT['time']
-    input['output_map_times'] = list(input['time'])
+    # read initial fields
+    for item in config['initial_values']:
+        inputValues[item['id']] = readASCIIFile(item['file'])
+    if not 'c1' in inputValues:
+        inputValues['c1'] = [0.] * len(inputValues['u']) # Default: put concentrations to 0.
+    if not 'c2' in inputValues:
+        inputValues['c2'] = [0.] * len(inputValues['u']) # Default: put concentrations to 0.
 
-    if args['c1']:
-        input['c1'] = readASCIIFile(args['c1'])
-    else:
-        input['c1'] = [0.] * len(input['u']) # Default: put concentrations to 0.
+    # read forcings + read boundary values
+    inputValues['sources'] = readBoundaries(config['sources'])
+    inputValues['boundaries'] = readBoundaries(config['boundaries'])
 
-    if args['c2']:
-        input['c2'] = readASCIIFile(args['c2'])
-    else:
-        input['c2'] = [0.] * len(input['u']) # Default: put concentrations to 0.
-
-    output=initOutput(input)
-    matlabOutFile=open(output['matlab_output_file'], 'w')
-    pythonOutFile=open(output['output_file'], 'w')
-    writePythonMapOutputInit(pythonOutFile)
+    output=initOutput(config)
 
     # File handles to csv output files (time series and concentration maps).
     file_handles = {}
     csv_writers = {}
-    for label in (["c1", "c2"] + input['output_labels']):
-        file_handles.update({label: open("%s.csv" % label, 'a')})
-        csv_writers.update({label: csv.writer(file_handles[label])})
+    for item in config['output']['timeseries']:
+        path = "%s.csv" % item['id']
+        exists = os.path.isfile(path)
+        try:
+            file_handles.update({item['id']: open(path, 'a', newline='')})
+        except EnvironmentError as exception:
+            logger.fatal(exception)
+            sys.exit(-1)
 
-    print('main computations')
-    tIndex = 0
-    c1Now=input['c1'][:]
-    c2Now=input['c2'][:]
-    time=input['time']
+        dict_writer =  csv.DictWriter(file_handles[item['id']], fieldnames=['time','value'])
+        csv_writers.update({item['id']: dict_writer})
+        if not exists:
+            logger.info("create new output file '%s' for timeseries '%s'",path, item['id'])
+            dict_writer.writeheader()
+        else:
+            logger.info("append timeseries output '%s' to file '%s'",item['id'], path)
 
-    collectOutput(c1Now, c2Now, output)
 
+    logger.info('main computations')
+    logger.debug(inputValues['c1'])
+
+    c1Now=inputValues['c1'][:]
+    c2Now=inputValues['c2'][:]
+    
+    time=config['time']
+    logger.debug('Time {}'.format(time))
+
+    logger.debug('Collect Output {}'.format(time[0]))
+    collectOutput(c1Now, c2Now, output, time[0])
+
+    # Set next output time for maps
+    for maps in config['output']['maps']:
+        if (time[0]) > maps['times'][2]:
+            continue
+        elif abs( (time[0] - maps['times'][0])) < 1.0e-6:
+            maps['next_output_time'] = maps['times'][0] + maps['times'][1]
+        elif (time[0]) < maps['times'][0]:
+            maps['next_output_time'] = maps['times'][0]
+        else:
+            delta = (time[0] - maps['times'][0])/maps['times'][1]
+            maps['next_output_time'] = maps['times'][0] + math.ceil(delta)* maps['times'][1]
+
+    logger.info('computing from time %f to %f', time[0], time[2])
     for t in frange(time[0], time[2], time[1]):
-        print('computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%')
-        (c1Now,c2Now)=computeNextTimeStep(tIndex, c1Now, c2Now, input)
+        logger.debug('computing from time '+str(t)+' to '+str(t+time[1])+'  '+str(100*(t)/(time[2]-time[0]))+'%')
+        (c1Now,c2Now)=computeNextTimeStep(t, c1Now, c2Now, inputValues)
 
-        collectOutput(c1Now, c2Now, output)
-        tIndex+=1
-
-        # This writes the entire concentration map at the current time step to file.
-        csv_writers['c1'].writerow(c1Now)
-        csv_writers['c2'].writerow(c2Now)
+        collectOutput(c1Now, c2Now, output, t+time[1])
 
         # Append to time series.
-        for label in input["output_labels"]:
-            value = output['output_values'][label][-1]
-            csv_writers[label].writerow([t+time[1], value])
+        for item in output['output_timeseries']:
+            csv_writers[item['id']].writerow(item['data'][-1])
 
-        # Same, for the matlab/python output.
-        writeMatlabMapOutput(matlabOutFile, c1Now, c2Now, tIndex)
-        writePythonMapOutput(pythonOutFile, c1Now, c2Now, tIndex)
+        # Write maps
+        currentTime = t+time[1]
+        for maps in config['output']['maps']:
+            if 'next_output_time' in maps and abs( currentTime - maps['next_output_time']) < 1.0e-6:
+                maps['next_output_time'] =  maps['next_output_time'] + maps['times'][1]
+                if maps['next_output_time'] > maps['times'][2]:
+                    maps.pop('next_output_time')
+                outputFile = maps['file'].format(currentTime)
+                if maps['substance'] == 1:
+                    writeASCIIFile(outputFile, c1Now)
+                if maps['substance'] == 2:
+                    writeASCIIFile(outputFile, c2Now)
 
-    writeOutput(pythonOutFile, c1Now, c2Now)
-    writeMatlabOutput(matlabOutFile, c1Now, c2Now)
-    matlabOutFile.close()
-    pythonOutFile.close()
+    #  write restart files
+    for restart in config['output']['restart']:
+        if restart['substance'] == 1:
+            writeASCIIFile(restart['file'], c1Now)
+        if restart['substance'] == 2:
+            writeASCIIFile(restart['file'], c2Now)
 
-    for label in (["c1", "c2"] + input['output_labels']):
+    # close timeseries writers
+    for label in file_handles:
         file_handles[label].close()
 
-    print('simulation ended successfully')
+    logger.info('simulation ended successfully')
