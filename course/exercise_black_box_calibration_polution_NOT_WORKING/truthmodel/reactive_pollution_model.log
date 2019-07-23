@@ -1,0 +1,75 @@
+13:51:07,217 __main__ INFO start of program
+13:51:07,217 __main__ INFO Reading config.yaml
+13:51:07,271 __main__ INFO reading from ASCII file input/concentration1.txt
+13:51:07,271 __main__ INFO reading from ASCII file input/concentration2.txt
+13:51:07,271 __main__ INFO Reading time series for 'c1_factory1'
+13:51:07,271 __main__ WARNING Overwriting values for c1_factory1
+13:51:07,272 __main__ INFO Reading time series for 'c1_factory2'
+13:51:07,272 __main__ WARNING Overwriting values for c1_factory2
+13:51:07,272 __main__ INFO append timeseries output 'c1_locA' to file 'c1_locA.csv'
+13:51:07,273 __main__ INFO append timeseries output 'c1_locB' to file 'c1_locB.csv'
+13:51:07,273 __main__ INFO append timeseries output 'c1_locC' to file 'c1_locC.csv'
+13:51:07,273 __main__ INFO append timeseries output 'c2_locA' to file 'c2_locA.csv'
+13:51:07,273 __main__ INFO append timeseries output 'c2_locB' to file 'c2_locB.csv'
+13:51:07,273 __main__ INFO append timeseries output 'c2_locC' to file 'c2_locC.csv'
+13:51:07,273 __main__ INFO main computations
+13:51:07,273 __main__ INFO computing from time 0.000000 to 15000.000000
+13:51:07,276 __main__ INFO writing to ASCII file maps/concentration1_600.0.txt
+13:51:07,276 __main__ INFO writing to ASCII file maps/concentration2_600.0.txt
+13:51:07,278 __main__ INFO writing to ASCII file maps/concentration1_1200.0.txt
+13:51:07,278 __main__ INFO writing to ASCII file maps/concentration2_1200.0.txt
+13:51:07,280 __main__ INFO writing to ASCII file maps/concentration1_1800.0.txt
+13:51:07,280 __main__ INFO writing to ASCII file maps/concentration2_1800.0.txt
+13:51:07,319 __main__ INFO writing to ASCII file restart/concentration1.txt
+13:51:07,319 __main__ INFO writing to ASCII file restart/concentration2.txt
+13:51:07,321 __main__ INFO simulation ended successfully
+13:53:19,114 __main__ INFO start of program
+13:53:19,114 __main__ INFO Reading config.yaml
+13:53:19,167 __main__ INFO reading from ASCII file input/concentration1.txt
+13:53:19,167 __main__ INFO reading from ASCII file input/concentration2.txt
+13:53:19,167 __main__ INFO Reading time series for 'c1_factory1'
+13:53:19,168 __main__ WARNING Overwriting values for c1_factory1
+13:53:19,168 __main__ INFO Reading time series for 'c1_factory2'
+13:53:19,168 __main__ WARNING Overwriting values for c1_factory2
+13:53:19,169 __main__ INFO append timeseries output 'c1_locA' to file 'c1_locA.csv'
+13:53:19,169 __main__ INFO append timeseries output 'c1_locB' to file 'c1_locB.csv'
+13:53:19,169 __main__ INFO append timeseries output 'c1_locC' to file 'c1_locC.csv'
+13:53:19,169 __main__ INFO append timeseries output 'c2_locA' to file 'c2_locA.csv'
+13:53:19,169 __main__ INFO append timeseries output 'c2_locB' to file 'c2_locB.csv'
+13:53:19,169 __main__ INFO append timeseries output 'c2_locC' to file 'c2_locC.csv'
+13:53:19,169 __main__ INFO main computations
+13:53:19,170 __main__ INFO computing from time 0.000000 to 15000.000000
+13:53:19,171 __main__ INFO writing to ASCII file maps/concentration1_600.0.txt
+13:53:19,172 __main__ INFO writing to ASCII file maps/concentration2_600.0.txt
+13:53:19,174 __main__ INFO writing to ASCII file maps/concentration1_1200.0.txt
+13:53:19,175 __main__ INFO writing to ASCII file maps/concentration2_1200.0.txt
+13:53:19,176 __main__ INFO writing to ASCII file maps/concentration1_1800.0.txt
+13:53:19,177 __main__ INFO writing to ASCII file maps/concentration2_1800.0.txt
+13:53:19,211 __main__ INFO writing to ASCII file restart/concentration1.txt
+13:53:19,212 __main__ INFO writing to ASCII file restart/concentration2.txt
+13:53:19,213 __main__ INFO simulation ended successfully
+13:55:06,107 __main__ INFO start of program
+13:55:06,107 __main__ INFO Reading config.yaml
+13:55:06,160 __main__ INFO reading from ASCII file input/concentration1.txt
+13:55:06,160 __main__ INFO reading from ASCII file input/concentration2.txt
+13:55:06,160 __main__ INFO Reading time series for 'c1_factory1'
+13:55:06,160 __main__ WARNING Overwriting values for c1_factory1
+13:55:06,161 __main__ INFO Reading time series for 'c1_factory2'
+13:55:06,161 __main__ WARNING Overwriting values for c1_factory2
+13:55:06,161 __main__ INFO create new output file 'c1_locA.csv' for timeseries 'c1_locA'
+13:55:06,162 __main__ INFO create new output file 'c1_locB.csv' for timeseries 'c1_locB'
+13:55:06,162 __main__ INFO create new output file 'c1_locC.csv' for timeseries 'c1_locC'
+13:55:06,162 __main__ INFO create new output file 'c2_locA.csv' for timeseries 'c2_locA'
+13:55:06,162 __main__ INFO create new output file 'c2_locB.csv' for timeseries 'c2_locB'
+13:55:06,162 __main__ INFO create new output file 'c2_locC.csv' for timeseries 'c2_locC'
+13:55:06,162 __main__ INFO main computations
+13:55:06,163 __main__ INFO computing from time 0.000000 to 15000.000000
+13:55:06,165 __main__ INFO writing to ASCII file maps/concentration1_600.0.txt
+13:55:06,165 __main__ INFO writing to ASCII file maps/concentration2_600.0.txt
+13:55:06,167 __main__ INFO writing to ASCII file maps/concentration1_1200.0.txt
+13:55:06,167 __main__ INFO writing to ASCII file maps/concentration2_1200.0.txt
+13:55:06,169 __main__ INFO writing to ASCII file maps/concentration1_1800.0.txt
+13:55:06,170 __main__ INFO writing to ASCII file maps/concentration2_1800.0.txt
+13:55:06,205 __main__ INFO writing to ASCII file restart/concentration1.txt
+13:55:06,206 __main__ INFO writing to ASCII file restart/concentration2.txt
+13:55:06,207 __main__ INFO simulation ended successfully
