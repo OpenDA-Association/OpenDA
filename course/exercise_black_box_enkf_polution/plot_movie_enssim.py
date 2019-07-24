@@ -8,7 +8,7 @@ Plot movie of model results of the original model
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+import matplotlib.animation as animation
 from time import sleep
 #import polution_utils as util
 import sequentialEnsembleSimulation_results as sim
@@ -80,7 +80,12 @@ fig,ax = plt.subplots(2,1)
 xdata, ydata = [], []
 ln, = plt.plot([], [], 'ro')
 
-ani = FuncAnimation(fig, update, frames=range(len(sim.analysis_time)),
+ani = animation.FuncAnimation(fig, update, frames=range(len(sim.analysis_time)),
                     init_func=init, repeat=False, interval=20,blit=False)
+
+# Set up formatting for the movie files
+#Writer = animation.writers['ffmpeg']
+#writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+#ani.save('im.mp4', writer=writer)
 plt.show()
 
