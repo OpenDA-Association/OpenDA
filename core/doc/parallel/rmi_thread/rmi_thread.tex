@@ -55,8 +55,11 @@ org.openda.models.threadModel.ThreadStochModelFactory
 
 The configuration file of the {\tt ThreadStochModelFactory} specifies
 \begin{itemize}
-\item maxTheads; the max number of simultaneous compute threads. This is typically set to the
-          max number of cores that are available to the user.
+\item maxThreads; the maximum number of simultaneous compute threads. This is typically set to the
+	maximum number of cores that are available to the user (on a single computer).
+\item numThreadGroups; the number of groups each having maxThreads treads. This is typically the number of 
+      hosts that are used for parallel computing. This only makes sense when the Thread Stochastic Model is combined
+      with the RMI Stochastic Model.
 \item stochModelFactory; the configuration of the the back-end stochastic model factory.
 \end{itemize}
 
@@ -65,6 +68,7 @@ A typical example of the {\tt ThreadStochModelFactory} configuration looks like
 \begin{verbatim}
 <threadConfigstoch>
    <maxThreads>8</maxThreads>
+   <numThreadGroups>1</numThreadGroups>
    <stochModelFactory
       className="org.openda.models.lorenz.LorenzStochModelFactory">
       <workingDirectory>model</workingDirectory>

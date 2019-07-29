@@ -36,21 +36,25 @@ import java.io.File;
 
 public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizonConsumer {
 
-    private static int lastFactoryID     = -1;
-    int factoryID                        = -1;
-    int maxThreads                       = -1;
-    protected File workingDir            = null;
-	protected String[] arguments         = null;
-    IStochModelFactory stochModelFactory = null;
-	boolean cashState                    = false;
-	boolean nonBlockingAxpy              = false;
-	long sleepTime                       = 10;
+    private static int lastParallelGroupID = -1;
+    int [] parallelGroupID;
+    int lastAssignedGroup                  = -1;
+    int numThreadGroups                    =  1;
+    int maxThreads                         = -1;
+    protected File workingDir;
+    protected String[] arguments;
+    IStochModelFactory stochModelFactory;
+    boolean cashState                      = false;
+    boolean nonBlockingAxpy                = false;
+    long sleepTime                         = 10;
 
 
 
     public IStochModelInstance getInstance(OutputLevel outputLevel) {
         IStochModelInstance childModelInstance = stochModelFactory.getInstance(outputLevel);
-        IStochModelInstance newThreadModel = new ThreadStochModelInstance(childModelInstance, factoryID, maxThreads, cashState, nonBlockingAxpy, sleepTime);
+        this.lastAssignedGroup ++;
+        int assingToGroup = this.lastAssignedGroup%numThreadGroups;
+        IStochModelInstance newThreadModel = new ThreadStochModelInstance(childModelInstance, parallelGroupID[assingToGroup], maxThreads, cashState, nonBlockingAxpy, sleepTime);
         return newThreadModel;
     }
 
@@ -66,8 +70,7 @@ public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizon
         String configFile;
         boolean configIsFile;
 
-        lastFactoryID++;
-        factoryID=lastFactoryID;
+
         this.workingDir = workingDir;
         this.arguments = arguments;
 
@@ -90,8 +93,11 @@ public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizon
         // Get the name of the model factory from the configuration tree
         configFile = conf.getAsString("stochModelFactory/configFile","");
 
-		// Get the max number of threads
-		maxThreads = conf.getAsInt("maxThreads",4);
+        // Get the number of thread groups
+        numThreadGroups = conf.getAsInt("numThreadsGroups",1);
+
+        // get max number of threads per group
+        maxThreads = conf.getAsInt("maxThreads",4);
 
 		// Get the sleep time between checking running threads (ms)
 		sleepTime = (long) conf.getAsInt("sleepTime",10);
@@ -106,6 +112,13 @@ public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizon
         configIsFile=true;
         OpenDaComponentConfig configuration= new OpenDaComponentConfig(workingDirModel, className, new String[]{configFile}, configIsFile);
 
+        // Deal with the parallel group ID's
+		this.parallelGroupID = new int[numThreadGroups];
+        for (int i=0; i<numThreadGroups; i++) {
+            lastParallelGroupID++;
+            parallelGroupID[i] = lastParallelGroupID;
+        }
+
         // Lookup and create the modelFactory
         IConfigurable factoryInstance = ObjectSupport.createConfigurable("Stoch Model Factory: ", configuration);
         if (!(factoryInstance instanceof IStochModelFactory)) {
@@ -116,6 +129,7 @@ public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizon
 
 		System.out.println("ThreadStochModelFactory configuration:");
 		System.out.println("maxThreads      ="+maxThreads);
+		System.out.println("numThreadGroups ="+numThreadGroups);
 		System.out.println("cashState       ="+cashState);
 		System.out.println("nonBlockingAxpy ="+nonBlockingAxpy);
 		System.out.println("nonBlockingAxpy ="+sleepTime);

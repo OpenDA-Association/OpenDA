@@ -5,6 +5,7 @@
 	<xs:complexType name="ThreadConfigType">
 		<xs:sequence>
 			<xs:element name="maxThreads" type="xs:integer"/>
+			<xs:element name="numThreadsGroups" type="xs:integer"/>
 			<xs:element name="stochModelFactory" type="openda:ThreadStochModelFactoryConfigType"/>
 		</xs:sequence>
 	</xs:complexType>
