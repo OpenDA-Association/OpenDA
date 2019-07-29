@@ -42,25 +42,24 @@ public class PythonResultWriter implements IResultWriter {
 
     private static final String commentPrefix = "# ";
     private PrintStream outputStream = null;
-    private HashMap<String, Integer> iter = new HashMap<String, Integer>();
-    private int defaultMaxSize = 1000;
+    private HashMap<String, Integer> iter = new HashMap<>();
+	private int defaultMaxSize = 1000;
 
     public PythonResultWriter(File workingDir, String configString) {
-        if ( configString.startsWith("<xml") ) {  // TODO: right prefix
-            // TODO: read from config file
-        } else {
-            if ( configString.toLowerCase().endsWith(".py") ) {
-                // configString directly indicates the python output file
-                try {
-                    outputStream = new PrintStream(new File(workingDir, configString));
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException("PythonResultWriter: could not open " +
-                            " for writing (" + e.getMessage() + ")");
-                }
-            }
-        }
-        outputStream.println("import numpy as np");
-    }
+		if ( configString.toLowerCase().endsWith(".py") ) {
+			// configString directly indicates the python output file
+			try {
+				outputStream = new PrintStream(new File(workingDir, configString));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("PythonResultWriter: could not open " +
+					" for writing (" + e.getMessage() + ")");
+			}
+			outputStream.println("import numpy as np");
+		}
+		// TODO else:
+		// configString.startsWith("<xml") (check for correct UTF-8 prefix)
+		// read settings (e.g. output file) from config file
+	}
 
     public void putMessage(Source source, String comment) {
         comment = comment.replaceAll("\n", "\n"+commentPrefix);
@@ -112,21 +111,25 @@ public class PythonResultWriter implements IResultWriter {
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {
     }
 
-    
-    public int getDefaultMaxSize() {
+	public void setDefaultMaxSize(int defaultMaxSize) {
+		this.defaultMaxSize = defaultMaxSize;
+	}
+
+	public int getDefaultMaxSize() {
         return defaultMaxSize;
     }
     
     public void free(){
     	outputStream.println(commentPrefix+"Try to merge lists into arrays");
-    	
+
     	for( String key : this.iter.keySet()){
     		outputStream.println("try :");
     		outputStream.println("   "+key+"=np.vstack("+key+")");
     		outputStream.println("except :");
     		outputStream.println("   print(\"Could not merge list into array for "+key+"\")");
     	}
-		outputStream.println("");
+		outputStream.println();
+    	outputStream.close();
     }
 
     private void serializeMatrix(PrintStream outputStream, IMatrix matrix) {

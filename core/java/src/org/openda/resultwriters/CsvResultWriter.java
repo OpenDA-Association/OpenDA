@@ -35,26 +35,24 @@ import java.util.HashMap;
  */
 public class CsvResultWriter implements IResultWriter {
 
-    protected static final String commentPrefix = "% ";
-    protected PrintStream outputStream = null;
-    protected HashMap<String, Integer> iter = new HashMap<String, Integer>();
+	protected PrintStream outputStream = null;
+    protected HashMap<String, Integer> iter = new HashMap<>();
     protected boolean headerYetToBeWritten = true;
     private int defaultMaxSize = Integer.MAX_VALUE;
 
     public CsvResultWriter(File workingDir, String configString) {
-        if ( configString.startsWith("<xml") ) {  // TODO: right prefix
-            // TODO: read from config file
-        } else {
-            if ( configString.toLowerCase().endsWith(".csv") ) {
-                // configString directly indicates the matlab output file
-                try {
-                    outputStream = new PrintStream(new File(workingDir, configString));
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException("CsvResultWriter: could not open " +
-                            " for writing (" + e.getMessage() + ")");
-                }
-            }
-        }
+		if ( configString.toLowerCase().endsWith(".csv") ) {
+			// configString directly indicates the matlab output file
+			try {
+				outputStream = new PrintStream(new File(workingDir, configString));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("CsvResultWriter: could not open " +
+					" for writing (" + e.getMessage() + ")");
+			}
+		}
+		// TODO else:
+		// configString.startsWith("<xml") (check for correct UTF-8 prefix)
+		// read settings (e.g. output file) from config file
     }
 
     public void free(){}
@@ -89,10 +87,10 @@ public class CsvResultWriter implements IResultWriter {
                 }
                 outputStream.print(name[name.length-1]);
                 outputStream.print('\n');
+                outputStream.flush();
             }
 
-            boolean printComma = false;
-            for (String subTreeVectorId : ((ITreeVector)result).getSubTreeVectorIds()) {
+			for (String subTreeVectorId : ((ITreeVector)result).getSubTreeVectorIds()) {
                 outputStream.print(currentIter+",");
                 outputStream.print(id+",");
                 if (subTreeVectorId.contains(",")){
@@ -105,18 +103,20 @@ public class CsvResultWriter implements IResultWriter {
 					outputStream.print("," + value);
 				}
                 outputStream.println();
+				outputStream.flush();
             }
-        } else {
-            // do nothing
-            //TODO: extend this for other types of vector as well
         }
+		//TODO: extend this for other types of vector as well
 	}
 
     public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {
     }
 
-    
-    public int getDefaultMaxSize() {
+	public void setDefaultMaxSize(int defaultMaxSize) {
+		this.defaultMaxSize = defaultMaxSize;
+	}
+
+	public int getDefaultMaxSize() {
         return defaultMaxSize;
     }
 }
