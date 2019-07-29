@@ -120,17 +120,27 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 		return new ArrayList<>(algorithmSettings.get(algorithmName).getSettings().keySet());
 	}
 
-	public double getAlgorithmSettingValue(String algorithmName, String settingName) {
+	public String getAlgorithmSettingValue(String algorithmName, String settingName) {
 		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
 		return settings.get(settingName).getValue();
 	}
 
-	public double getAlgorithmSettingDefault(String algorithmName, String settingName) {
+	public String getAlgorithmSettingDefault(String algorithmName, String settingName) {
 		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
 		return settings.get(settingName).getDefaultValue();
 	}
 
+	public void setAlgorithmSettingValue(String algorithmName, String settingName, String value) {
+		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
+		settings.get(settingName).setValue(value);
+	}
+
 	public void setAlgorithmSettingValue(String algorithmName, String settingName, double value) {
+		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
+		settings.get(settingName).setValue(value);
+	}
+
+	public void setAlgorithmSettingValue(String algorithmName, String settingName, int value) {
 		LinkedHashMap<String, CalLibAlgorithmSetting> settings = findSetting(algorithmName, settingName);
 		settings.get(settingName).setValue(value);
 	}
@@ -148,9 +158,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 
 	public double[] algorithmGetOptimalParameterValues() {
 		// pythonResultWriter.free();
-		// TODO: calling this leads to a nearly empty file. For now, accept
-		// that sequential calibration runs are appended to the log file.
-
+		// TODO: Calling this pythonResultWriter.free() method leads to a nearly empty file.
+		//       For now, accept that sequential calibration runs are appended to the log file.
 		return optimalParameterValues;
 	}
 
@@ -164,7 +173,7 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 
 	private CalLibDudAlgorithm createAlgorithm(File workingDir, IStochObserver observer, IStochModelFactory modelFactory) {
 		CalLibDudAlgorithm algorithm = new CalLibDudAlgorithm();
-		algorithm.initialize(workingDir, new String[]{DudXmlConfig});
+		algorithm.initialize(workingDir, new String[] {algorithmSettings.get("Dud").getConfigString()});
 		algorithm.setStochComponents(observer, modelFactory);
 		return algorithm;
 	}

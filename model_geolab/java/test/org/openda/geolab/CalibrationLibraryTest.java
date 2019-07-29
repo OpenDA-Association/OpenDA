@@ -28,29 +28,37 @@ public class CalibrationLibraryTest extends TestCase {
 		assertEquals(8, settingNames.size());
 		String settingName = settingNames.get(5);
 		assertEquals("lineSearch@maxRelStepSize", settingName);
-		assertEquals(3.0, calibrationLibrary.getAlgorithmSettingDefault(algorithmName, settingName));
-		assertEquals(3.0, calibrationLibrary.getAlgorithmSettingValue(algorithmName, settingName));
-		calibrationLibrary.setAlgorithmSettingValue(algorithmName, settingName, 9.9d);
-		assertEquals(3.0, calibrationLibrary.getAlgorithmSettingDefault(algorithmName, settingName));
-		assertEquals(9.9, calibrationLibrary.getAlgorithmSettingValue(algorithmName, settingName));
+		assertEquals("3", calibrationLibrary.getAlgorithmSettingDefault(algorithmName, settingName));
+		assertEquals("3", calibrationLibrary.getAlgorithmSettingValue(algorithmName, settingName));
+		try {
+			calibrationLibrary.setAlgorithmSettingValue(algorithmName, settingName, "9.9");
+		} catch (Exception e) {
+			assertTrue(e.getMessage().contains("setting double value for integer settings-attribute"));
+		}
+		assertEquals("3", calibrationLibrary.getAlgorithmSettingDefault(algorithmName, settingName));
 	}
 
 	public void testSinus() {
 		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
-		calibrateSinusParams(calibrationLibrary);
+		calibrateSinusParams(calibrationLibrary, false);
 	}
 
 	public void testSinusTwice() {
 		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
 		System.out.print("\nStart first calibration\n\n");
-		calibrateSinusParams(calibrationLibrary);
+		calibrateSinusParams(calibrationLibrary, false);
 		System.out.print("\nFirst calibration done\n\n");
 		System.out.print("\nStart second calibration\n\n");
-		calibrateSinusParams(calibrationLibrary);
+		calibrateSinusParams(calibrationLibrary, false);
 		System.out.print("\nSecond calibration done\n\n");
 	}
 
-	private void calibrateSinusParams(CalibrationLibrary calibrationLibrary) {
+	public void testIfOptimumIsReturned() {
+		CalibrationLibrary calibrationLibrary = new CalibrationLibrary();
+		calibrateSinusParams(calibrationLibrary, true);
+	}
+
+	private void calibrateSinusParams(CalibrationLibrary calibrationLibrary, boolean useKnownValues) {
 		double amplitudeObs = 2;
 		double periodObs = 0.5;
 		double phaseObs = 0;
@@ -64,10 +72,21 @@ public class CalibrationLibraryTest extends TestCase {
 		Arrays.fill(observationStandardDeviations, 0.2);
 		calibrationLibrary.observerSetObsAndStdDevs(observations, observationStandardDeviations);
 
-		double amplitudeInitial = 2.1;
-		double periodInitial = 0.55;
-		double phaseInitial = 0.1;
-		double offsetInitial = 0.1;
+		double amplitudeInitial;
+		double periodInitial;
+		double phaseInitial;
+		double offsetInitial;
+		if (useKnownValues) {
+			amplitudeInitial = 2;
+			periodInitial = 0.5;
+			phaseInitial = 0;
+			offsetInitial = 0;
+		} else {
+			amplitudeInitial = 2.1;
+			periodInitial = 0.55;
+			phaseInitial = 0.1;
+			offsetInitial = 0.1;
+		}
 
 		double[] initialParams = {amplitudeInitial, periodInitial, phaseInitial, offsetInitial};
 		double[] parameterStandardDeviations = new double[]{0.2, 0.05, 0.02, 0.02};
@@ -83,7 +102,9 @@ public class CalibrationLibraryTest extends TestCase {
 			}
 		}
 		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
-		double[] expectedValues = {1.974888, 0.550042, 0.190782, 0.097192};
+		double[] expectedValuesCalib = {1.974888, 0.550042, 0.190782, 0.097192};
+		double[] expectedValuesKnown = {2, 0.5, 0, 0};
+		double[] expectedValues = useKnownValues ? expectedValuesKnown : expectedValuesCalib;
 		for (int i = 0; i < optimalParameterValues.length; i++) {
 			assertEquals(expectedValues[i], optimalParameterValues[i], 1.e-6);
 		}

@@ -13,16 +13,24 @@ class CalLibAlgorithmSettings {
 		parseConfigStringTemplate(configStringTemplate);
 	}
 
+	void setAttributeValue(String key, String value) {
+		getCalLibAlgorithmSetting(key).setValue(value);
+	}
+
 	void setAttributeValue(String key, double value) {
-		if (!settings.containsKey(key)) {
-			throw new RuntimeException("Unknown attribute name: " + key);
-		}
-		CalLibAlgorithmSetting setting = settings.get(key);
-		setting.setValue(value);
+		getCalLibAlgorithmSetting(key).setValue(value);
+	}
+
+	void setAttributeValue(String key, int value) {
+		getCalLibAlgorithmSetting(key).setValue(value);
 	}
 
 	String getConfigString() {
 		return replaceValuesInConfigString();
+	}
+
+	LinkedHashMap<String, CalLibAlgorithmSetting> getSettings() {
+		return settings;
 	}
 
 	private void parseConfigStringTemplate(String configStringTemplate) {
@@ -41,7 +49,8 @@ class CalLibAlgorithmSettings {
 				int replaceEndPos=atPos+endQuotePos;
 				String[] attribute = remainingConfigString.substring(replaceStartPos, replaceEndPos).split(":");
 				String settingName = attribute[0];
-				settings.put(settingName, new CalLibAlgorithmSetting(settingName, Double.parseDouble(attribute[1])));
+				String settingValue = attribute[1];
+				settings.put(settingName, new CalLibAlgorithmSetting(settingName, settingValue));
 
 				String attrReplaceString = attrStart + settingName + attrEnd;
 				parsedString.append(remainingConfigString, 0, replaceStartPos);
@@ -86,7 +95,10 @@ class CalLibAlgorithmSettings {
 		return configString.toString();
 	}
 
-	LinkedHashMap<String, CalLibAlgorithmSetting> getSettings() {
-		return settings;
+	private CalLibAlgorithmSetting getCalLibAlgorithmSetting(String key) {
+		if (!settings.containsKey(key)) {
+			throw new RuntimeException("Unknown attribute name: " + key);
+		}
+		return settings.get(key);
 	}
 }
