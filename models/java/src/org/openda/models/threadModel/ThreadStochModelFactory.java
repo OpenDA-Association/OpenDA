@@ -41,9 +41,9 @@ public class ThreadStochModelFactory implements IStochModelFactory, ITimeHorizon
     int lastAssignedGroup                  = -1;
     int numThreadGroups                    =  1;
     int maxThreads                         = -1;
-    protected File workingDir              = null;
-    protected String[] arguments           = null;
-    IStochModelFactory stochModelFactory   = null;
+    protected File workingDir;
+    protected String[] arguments;
+    IStochModelFactory stochModelFactory;
     boolean cashState                      = false;
     boolean nonBlockingAxpy                = false;
     long sleepTime                         = 10;
