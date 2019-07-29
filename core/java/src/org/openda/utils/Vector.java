@@ -34,7 +34,7 @@ public class Vector implements IVector, Externalizable {
 
 	private IVector dVec=null;
 	private VectorFloat fVec=null;
-	public int maxFullExpandLength = 20;
+	public int maxFullExpandLength = 1000;
 	private boolean doublePrecision=true;
     private boolean nativeVector=false;
 

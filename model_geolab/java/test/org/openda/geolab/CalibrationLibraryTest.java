@@ -102,7 +102,7 @@ public class CalibrationLibraryTest extends TestCase {
 			}
 		}
 		double[] optimalParameterValues = calibrationLibrary.algorithmGetOptimalParameterValues();
-		double[] expectedValuesCalib = {1.974888, 0.550042, 0.190782, 0.097192};
+		double[] expectedValuesCalib = {1.594726, 0.591106, 0.085015, 0.075891};
 		double[] expectedValuesKnown = {2, 0.5, 0, 0};
 		double[] expectedValues = useKnownValues ? expectedValuesKnown : expectedValuesCalib;
 		for (int i = 0; i < optimalParameterValues.length; i++) {
@@ -111,11 +111,14 @@ public class CalibrationLibraryTest extends TestCase {
 	}
 
 	private double[] evaluateSinus(double[] doubles) {
+		double amplitude = doubles[0];
+		double period = doubles[1];
+		double phase = doubles[2];
+		double offset = doubles[3];
 		int size = 100;
 		double[] observations = new double[size];
 		for (int i = 0; i < size; i++) {
-			double x = i * 0.1;
-			observations[i] = doubles[0] * Math.sin(x / doubles[1] + doubles[2]) + doubles[3];
+			observations[i] = amplitude * Math.sin(phase + 1.0d * i / period) + offset;
 		}
 		return observations;
 	}
