@@ -117,18 +117,6 @@ public class DelimitedTextTimeSeriesFormatterTest extends TestCase {
 		assertEquals("values[5]", 5.4569893E+01,values[5], Math.ulp(5.4569893E+01));
 	}
 
-	public void testCsvFormattedWithSelectors() {
-		double delta=0.0001;
-		ConfigTree config = new ConfigTree("<root><dateTimeSelector>2</dateTimeSelector><valueSelector>0</valueSelector><delimiter>,</delimiter><skipLines>1</skipLines><decimal>.</decimal></root>");
-		TimeSeriesFormatter formatter = new DelimitedTextTimeSeriesFormatter(config);
-		File csvFile = new File(testRunDataDir, "columnselector.csv");
-		TimeSeries series1 = formatter.readFile(csvFile.getAbsolutePath());
-		assertNotNull(series1);
-		double times[] = series1.getTimesRef();
-		assertEquals("times[0]", 60.0,times[0], Math.ulp(60.0));
-		assertEquals("times length", 300,times.length);
-	}
-
 	public void testSemicolon() throws ParseException, IOException{
 		double delta=0.0001;
 		ConfigTree config = new ConfigTree("<root><delimiter>;</delimiter><decimalSeparator>,</decimalSeparator></root>");
