@@ -30,7 +30,6 @@ import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
@@ -54,8 +53,10 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 
 	private final Map<String, IExchangeItem> exchangeItems;
 	private final int modelInstanceNumber;
+	private final ArrayList<BmiModelForcingConfig> staticLimitConfiguration;
 	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private Map<String, IExchangeItem> forcingExchangeItems;
+	private Map<String, IExchangeItem> staticLimitExchangeItems;
 	private LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
 
 	/**
@@ -78,13 +79,14 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 	}
 
 	public BmiModelInstance(int modelInstanceNumber, EBMI model, File modelRunDir, File initFile, ITime overrulingTimeHorizon,
-							ArrayList<BmiModelForcingConfig> forcingConfig, List<BmiModelFactory.BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos, String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
+							ArrayList<BmiModelForcingConfig> forcingConfig, ArrayList<BmiModelForcingConfig> staticLimitConfiguration, List<BmiModelFactory.BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos, String stateInputDir, String stateOutputDir, double modelMissingValue) throws BMIModelException {
 		if (model == null) throw new IllegalArgumentException("model == null");
 		if (modelRunDir == null) throw new IllegalArgumentException("modelRunDir == null");
 		if (initFile == null) throw new IllegalArgumentException("initFile == null");
 
 		this.modelInstanceNumber = modelInstanceNumber;
 		this.forcingConfiguration = forcingConfig;
+		this.staticLimitConfiguration = staticLimitConfiguration;
 		this.model = model;
 		this.modelRunDir = modelRunDir;
 		this.inputStateDir = new File(modelRunDir, stateInputDir);
@@ -116,15 +118,44 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Results.putMessage(getClass().getSimpleName() + ": using time horizon: " + getTimeHorizon().toString());
 
 		exchangeItems = createExchangeItems(model, modelMissingValue);
+		staticLimitExchangeItems = createForcingExchangeItems(this.staticLimitConfiguration);
 		modelStateExchangeItems = new LinkedHashMap<>();
 		for (BmiModelFactory.BmiModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
 			String stateId = modelStateExchangeItemInfo.getStateId();
-			modelStateExchangeItems.put(stateId, new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits()	, modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits(), this.model, modelMissingValue));
+
+			Double[] upperLimits = modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits();
+			Double[] lowerLimits = modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits();
+			String[] lowerLimitExchangeItemIds = modelStateExchangeItemInfo.getLowerLimitExchangeItemIds();
+			String[] upperLimitExchangeItemIds = modelStateExchangeItemInfo.getUpperLimitExchangeItemIds();
+			assert upperLimits.length == lowerLimitExchangeItemIds.length;
+			assert upperLimits.length == upperLimitExchangeItemIds.length;
+
+			double[][] upperLimits2D = getLimits2D(upperLimits, upperLimitExchangeItemIds);
+
+			double[][] lowerLimits2D = getLimits2D(lowerLimits, lowerLimitExchangeItemIds);
+
+			modelStateExchangeItems.put(stateId, new BmiStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), lowerLimits2D, upperLimits2D, this.model, modelMissingValue));
 		}
 
-		forcingExchangeItems = createForcingExchangeItems();
+		forcingExchangeItems = createForcingExchangeItems(this.forcingConfiguration);
 
 		this.analysisDataWriter = new AnalysisDataWriter(exchangeItems.values(), modelRunDir);
+	}
+
+	private double[][] getLimits2D(Double[] lowerLimits, String[] lowerLimitExchangeItemIds) {
+		double[][] lowerLimits2D = new double[lowerLimits.length][];
+		for (int i = 0; i < lowerLimitExchangeItemIds.length; i++) {
+			String lowerLimitExchangeItemId = lowerLimitExchangeItemIds[i];
+			if (lowerLimitExchangeItemId == null) {
+				lowerLimits2D[i] = new double[]{lowerLimits[i]};
+				continue;
+			}
+			IExchangeItem lowerLimitItem = staticLimitExchangeItems.get(lowerLimitExchangeItemId);
+			if (lowerLimitItem == null) throw new RuntimeException("Config.Error: No static limit exchange item found with id " + lowerLimitExchangeItemId);
+			if (!(lowerLimitItem instanceof NetcdfGridTimeSeriesExchangeItem)) throw new RuntimeException("Config.Error: Only static limit exchange items of NetcdfGridTimeSeries supported.");
+			lowerLimits2D[i] = ((NetcdfGridTimeSeriesExchangeItem) lowerLimitItem).getValuesAsDoublesForSingleTimeIndex(0);
+		}
+		return lowerLimits2D;
 	}
 
 	public void initialize(File workingDir, String[] arguments) {
@@ -192,10 +223,10 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		return result;
 	}
 
-	private Map<String, IExchangeItem> createForcingExchangeItems() {
+	private Map<String, IExchangeItem> createForcingExchangeItems(ArrayList<BmiModelForcingConfig> bmiModelForcingConfigs) {
 		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
 
-		for (BmiModelForcingConfig forcingConfig : this.forcingConfiguration) {
+		for (BmiModelForcingConfig forcingConfig : bmiModelForcingConfigs) {
 			File forcingFile = new File(this.modelRunDir, forcingConfig.getDataObjectFileName());
 			if (!forcingFile.exists()) {
 				throw new RuntimeException(getClass().getSimpleName() + ": Cannot find forcing file " + forcingFile.getAbsolutePath() + " configured in bmiModelFactory config xml file.");

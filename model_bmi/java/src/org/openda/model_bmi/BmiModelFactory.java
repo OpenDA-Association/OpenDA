@@ -65,6 +65,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private String modelPythonModuleName;
 	private String modelPythonClassName;
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
+	private ArrayList<BmiModelForcingConfig> staticLimitConfiguration;
 
 
 	// model variables.
@@ -132,6 +133,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
 		this.relativeModelConfigFilePath = configReader.getRelativeModelConfigFilePath();
 		this.forcingConfiguration = configReader.getBmiModelForcingConfigs();
+		this.staticLimitConfiguration = configReader.getStaticLimitDataConfigs();
 		this.modelStateExchangeItemInfos = configReader.getModelStateExchangeItemInfos();
 		this.inputStateDir = configReader.getInputStateDir();
 		this.outputStateDir = configReader.getOutputStateDir();
@@ -184,7 +186,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
 
 			return new BmiModelInstance(this.currentModelInstanceNumber.val(), model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,
-					this.forcingConfiguration, modelStateExchangeItemInfos, inputStateDir, outputStateDir, modelMissingValue);
+					this.forcingConfiguration, staticLimitConfiguration, modelStateExchangeItemInfos, inputStateDir, outputStateDir, modelMissingValue);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
@@ -328,12 +330,16 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		private String[] modelStateExchangeItemIds;
 		private Double[] modelStateExchangeItemLowerLimits;
 		private Double[] modelStateExchangeItemUpperLimits;
+		private final String[] lowerLimitExchangeItemIds;
+		private final String[] upperLimitExchangeItemIds;
 
-		public BmiModelStateExchangeItemsInfo(String stateId, String[] modelStateExchangeItemIds, Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits) {
+		public BmiModelStateExchangeItemsInfo(String stateId, String[] modelStateExchangeItemIds, Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits, String[] lowerLimitExchangeItemIds, String[] upperLimitExchangeItemIds) {
 			this.stateId = stateId;
 			this.modelStateExchangeItemIds = modelStateExchangeItemIds;
 			this.modelStateExchangeItemLowerLimits = modelStateExchangeItemLowerLimits;
 			this.modelStateExchangeItemUpperLimits = modelStateExchangeItemUpperLimits;
+			this.lowerLimitExchangeItemIds = lowerLimitExchangeItemIds;
+			this.upperLimitExchangeItemIds = upperLimitExchangeItemIds;
 		}
 
 		public String[] getModelStateExchangeItemIds() {
@@ -346,6 +352,14 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 
 		public Double[] getModelStateExchangeItemUpperLimits() {
 			return modelStateExchangeItemUpperLimits;
+		}
+
+		public String[] getLowerLimitExchangeItemIds() {
+			return lowerLimitExchangeItemIds;
+		}
+
+		public String[] getUpperLimitExchangeItemIds() {
+			return upperLimitExchangeItemIds;
 		}
 
 		public String getStateId() {
