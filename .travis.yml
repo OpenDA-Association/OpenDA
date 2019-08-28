@@ -10,6 +10,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install jq
   - sudo apt-get install ant
+  - sudo apt-get install ant-optional
 
 install: ./travis_install.sh
 script: ./travis_test.sh 
