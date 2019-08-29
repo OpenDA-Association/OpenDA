@@ -58,6 +58,10 @@ public class delwaqSubstanceExchangeItem implements IExchangeItem {
 		return role;
 	}
 
+	public PrevRole getPrevRole() {
+		return null;
+	}
+
 	/**
 	 * The identifier for the exchangeItem (must be unique within the context of a model instance).
 	 *

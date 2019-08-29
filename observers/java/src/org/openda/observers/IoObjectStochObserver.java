@@ -851,7 +851,11 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		}
 
 		public Role getRole() {
-			return exchangeItem.getRole();
+			return null;
+		}
+
+		public PrevRole getPrevRole() {
+			return exchangeItem.getPrevRole();
 		}
 
 		public Object getValues() {

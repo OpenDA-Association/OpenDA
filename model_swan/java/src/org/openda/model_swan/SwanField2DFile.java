@@ -332,7 +332,7 @@ public class SwanField2DFile implements IDataObject {
         return new String[] {exchangeItems[0].getId()};
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 

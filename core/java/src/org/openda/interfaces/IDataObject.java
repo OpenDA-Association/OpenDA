@@ -40,7 +40,7 @@ public interface IDataObject extends IConfigurable {
      * @param role Input, Output, or InOut (i.e. both)
      * @return The array of exchange item identifiers.
      */
-    String [] getExchangeItemIDs(IPrevExchangeItem.Role role);
+    String [] getExchangeItemIDs(IExchangeItem.Role role);
 
 	/**
 	 * Get the exchange item specified by <c>exchangeItemID</c>.

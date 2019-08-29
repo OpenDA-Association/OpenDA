@@ -281,7 +281,7 @@ public class DictionaryNoisyDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		//TODO: select on role
 		return this.getExchangeItemIDs();
 	}

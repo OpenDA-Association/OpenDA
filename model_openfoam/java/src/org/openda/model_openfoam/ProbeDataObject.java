@@ -30,7 +30,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IComposableDataObject;
 
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.*;
 import java.util.*;

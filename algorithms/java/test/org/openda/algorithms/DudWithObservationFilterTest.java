@@ -242,7 +242,7 @@ public class DudWithObservationFilterTest extends TestCase {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getExchangeItemIDs(): Not implemented yet.");
         }
 
-        public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+        public String[] getExchangeItemIDs(IExchangeItem.Role role) {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getExchangeItemIDs(): Not implemented yet.");
         }
 

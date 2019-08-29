@@ -41,7 +41,7 @@ public class ObservationDescriptionsN2J implements IObservationDescriptions {
 				cli.OpenDA.DotNet.Interfaces.IExchangeItem[javaExchangeItems.size()];
 		for (int i = 0; i < javaExchangeItems.size(); i++) {
 			IPrevExchangeItem javaExchangeItem = javaExchangeItems.get(i);
-			int role = UtilsJ2NAndN2J.ExchangeItemRoleMapJ2N(javaExchangeItem.getRole());
+			int role = UtilsJ2NAndN2J.ExchangeItemRoleMapJ2N(javaExchangeItem.getPrevRole());
 			IExchangeItem dotNetExchangeItem =
 					new DoublesExchangeItem(
 							javaExchangeItem.getId(), javaExchangeItem.getDescription(), role,

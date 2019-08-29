@@ -34,7 +34,7 @@ public class SwapStateFile implements IDataObject {
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

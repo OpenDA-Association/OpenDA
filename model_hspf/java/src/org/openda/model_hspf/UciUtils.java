@@ -325,7 +325,7 @@ public class UciUtils {
 				String parameterId = parameterIds.get(n);
 				String id = locationId + "." + parameterId;
 
-				DoubleExchangeItem newItem = new DoubleExchangeItem(id, IPrevExchangeItem.Role.InOut, values.get(n));
+				DoubleExchangeItem newItem = new DoubleExchangeItem(id, IExchangeItem.Role.InOut, values.get(n));
 				newItem.setTime(stateTime);
 				IExchangeItem previous = exchangeItems.put(id, newItem);
 				if (previous != null) throw new IllegalArgumentException("Multiple exchange items with id '" + id + "' found in uci state file.");

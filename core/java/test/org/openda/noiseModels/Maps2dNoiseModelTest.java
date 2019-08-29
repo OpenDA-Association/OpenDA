@@ -478,7 +478,7 @@ public class Maps2dNoiseModelTest extends TestCase {
     	assertEquals(2, ids.length);
     	System.out.println("ids[0]="+ids[0]);
     	assertEquals("waterlevel@aberdeen", ids[0]);
-    	IPrevExchangeItem series1=model.getExchangeItem("waterlevel@aberdeen");
+    	IExchangeItem series1=model.getExchangeItem("waterlevel@aberdeen");
     	assertTrue(series1 instanceof TimeSeries);
     	System.out.println("location1.quantity1 =>"+series1.toString());
     	double[] times=series1.getTimes();

@@ -31,7 +31,6 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 import org.openda.interfaces.IVector;
@@ -52,7 +51,7 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 
 	private static final long serialVersionUID = 1L;
 	private final String variableName;
-	private final IPrevExchangeItem.Role role;
+	private final IExchangeItem.Role role;
 	private final String type;
 	private final BMI model;
 	private final IQuantityInfo quantityInfo;
@@ -66,7 +65,7 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 	 * @param model
 	 * @throws BMIModelException
 	 */
-	public BmiOutputExchangeItem(String variableName, IPrevExchangeItem.Role role, BMI model, double modelMissingValue) throws BMIModelException {
+	public BmiOutputExchangeItem(String variableName, IExchangeItem.Role role, BMI model, double modelMissingValue) throws BMIModelException {
 		this.modelMissingValue = modelMissingValue;
 		if (variableName == null) throw new IllegalArgumentException("variableName == null");
 		if (role == null) throw new IllegalArgumentException("role == null");
@@ -136,6 +135,8 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 	public Role getRole() {
 		return this.role;
 	}
+
+	public PrevRole getPrevRole() { return null;}
 
 	public ITimeInfo getTimeInfo() {
 		return new TimeInfo(getTimes());

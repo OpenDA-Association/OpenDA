@@ -370,7 +370,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return list.toArray(new String[list.size()]);
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		ArrayList<String> list = new ArrayList<String>();
 		//TODO only add constraintExchangeItems for the given role. AK
 		list.addAll(this.constraintExchangeItemIdConstraintMap.keySet());

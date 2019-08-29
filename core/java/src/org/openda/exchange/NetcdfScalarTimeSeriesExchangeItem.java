@@ -106,6 +106,7 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 		return this.role;
 	}
 
+	public PrevRole getPrevRole() { return PrevRole.InOut;}
 	/**
 	 * Returns all times for which there are non-missing values for this scalar time series.
 	 */

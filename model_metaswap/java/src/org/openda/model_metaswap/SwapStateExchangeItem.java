@@ -15,7 +15,12 @@ public class SwapStateExchangeItem implements IExchangeItem {
 	}
 
 	@Override
-	public IPrevExchangeItem.Role getRole() {
+	public IExchangeItem.Role getRole() {
+		return null;
+	}
+
+	@Override
+	public IPrevExchangeItem.PrevRole getPrevRole() {
 		return null;
 	}
 

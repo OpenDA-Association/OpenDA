@@ -113,8 +113,8 @@ public class SimpleModelInstance implements IModelInstance, IModelAdjoint {
         return exchangeItemIDs;
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-        if (role == IPrevExchangeItem.Role.InOut) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+        if (role == IExchangeItem.Role.InOut) {
             return  getExchangeItemIDs();
         }
         throw new UnsupportedOperationException("getExchangeItemIDs(role = in or out): Selection not yet implemented yet.");

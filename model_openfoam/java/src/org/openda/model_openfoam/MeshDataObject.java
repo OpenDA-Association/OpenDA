@@ -33,7 +33,7 @@ import org.openda.exchange.ArrayExchangeItem;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Array;
 
 

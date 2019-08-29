@@ -80,7 +80,7 @@ public class BaseTemplateDataObject implements IDataObject {
     }
 
     
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
 
     }

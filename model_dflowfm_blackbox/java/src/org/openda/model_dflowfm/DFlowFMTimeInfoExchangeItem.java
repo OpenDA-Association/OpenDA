@@ -53,7 +53,12 @@ public class DFlowFMTimeInfoExchangeItem implements IExchangeItem {
 	}
 
 	public Role getRole() {
-		return IPrevExchangeItem.Role.InOut;
+		return IExchangeItem.Role.InOut;
+	}
+
+	@Override
+	public PrevRole getPrevRole() {
+		return null;
 	}
 
 	public Object getValues() {

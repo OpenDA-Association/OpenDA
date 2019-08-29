@@ -49,7 +49,7 @@ public class SwanWLevelField2DFileTest extends TestCase {
         String exchangeItemID = swanWLevelFile.getExchangeItemIDs()[0];
         IPrevExchangeItem swnWLevelExchItem = swanWLevelFile.getExchangeItem(exchangeItemID);
 //        System.out.println("Number of exchangeItems: "+ swnWLevelExchItem.length);
-        System.out.println("swnWLevelExchItem[0].getRole(): "+ swnWLevelExchItem.getRole());
+        System.out.println("swnWLevelExchItem[0].getRole(): "+ swnWLevelExchItem.getPrevRole());
         System.out.println("swnWLevelExchItem[0].getId(): "+ swnWLevelExchItem.getId());
 //        for (int i=0;i< swnWLevelExchItem.;i++){
 //            System.out.println("swnWLevelExchItem["+i+"].id: "+ swnWLevelExchItem[i].getId());

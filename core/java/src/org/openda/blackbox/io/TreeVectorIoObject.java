@@ -107,8 +107,8 @@ public class TreeVectorIoObject implements IoObjectInterface {
             return double[].class;
         }
 
-        public Role getRole() {
-            return IPrevExchangeItem.Role.InOut;
+        public IPrevExchangeItem.PrevRole getPrevRole() {
+            return IPrevExchangeItem.PrevRole.InOut;
         }
 
         public Object getValues() {

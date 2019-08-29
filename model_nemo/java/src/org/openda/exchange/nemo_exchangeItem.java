@@ -36,6 +36,8 @@ public class nemo_exchangeItem extends ExchangeItem {
 		super(id);
 	}
 
+	public PrevRole getPrevRole() { return null; }
+
 	public void setVector(IVector vector){
 		this.vector=vector;
 	}

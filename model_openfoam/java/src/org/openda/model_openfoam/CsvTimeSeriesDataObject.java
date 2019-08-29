@@ -29,7 +29,7 @@ import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;
 import java.util.Iterator;

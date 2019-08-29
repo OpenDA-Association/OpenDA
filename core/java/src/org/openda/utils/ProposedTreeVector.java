@@ -658,6 +658,8 @@ public class ProposedTreeVector implements ProposedITreeVector {
 		return this.role;
 	}
 
+	public PrevRole getPrevRole() { return PrevRole.InOut;}
+
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		//TODO create more complex actions later that make use of the metadata
 		this.setValuesAsDoubles(sourceItem.getValuesAsDoubles());

@@ -45,9 +45,10 @@ public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
         concatenatedTimes.add(time.getMJD());
     }
 
+    public IExchangeItem.Role getRole() { return null; }
     
-    public Role getRole() {
-        return modelExchangeItem.getRole();
+    public IPrevExchangeItem.PrevRole getPrevRole() {
+        return modelExchangeItem.getPrevRole();
     }
 
     

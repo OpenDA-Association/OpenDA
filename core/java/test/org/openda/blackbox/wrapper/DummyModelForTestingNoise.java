@@ -23,7 +23,7 @@ import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Array;
 import org.openda.utils.Time;
@@ -145,7 +145,7 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyModelForTestingNoise.getModelRunDir(): Not implemented yet.");
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyModelForTestingNoise.getExchangeItemIDs(): Not implemented yet.");
 	}
 

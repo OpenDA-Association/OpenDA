@@ -21,10 +21,6 @@ package org.openda.examples.simplef90model;
 
 import java.io.File;
 
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IInstance;
-import org.openda.interfaces.IModelInstance;
-
 /**
  * Executable version (i.e. version with static main method) of SimpleModelInstanceTest
  */

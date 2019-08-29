@@ -29,7 +29,7 @@ package org.openda.interfaces;
  *
  * If a DataObject implements this interface, then the following methods should ignore any ensemble exchange items:
  * getExchangeItemIDs()
- * getExchangeItemIDs(IPrevExchangeItem.Role role)
+ * getExchangeItemIDs(IExchangeItem.Role role)
  *
  * If a DataObject implements this interface, then the following method should throw an IllegalStateException when it is called for an ensemble exchange item:
  * getDataObjectExchangeItem(String exchangeItemID)

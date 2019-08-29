@@ -80,7 +80,6 @@ public class AbsoluteAveragePerLocationStopCriterion implements IStopCriterion {
         int indLast = 0;
         double absAvg = 0.0;
         double maxAbsAvg = Double.NEGATIVE_INFINITY;
-//        for(IPrevExchangeItem item : items){ // assume the exchangeItems are in the
         for (int i=0; i<nLoc; i++) {
             IPrevExchangeItem item = items.get(i);
             String id = item.getId();

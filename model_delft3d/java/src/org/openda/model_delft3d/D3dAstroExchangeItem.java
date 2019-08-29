@@ -57,8 +57,8 @@ public class D3dAstroExchangeItem implements IPrevExchangeItem {
         return double.class;
     }
 
-    public Role getRole() {
-        return IPrevExchangeItem.Role.InOut;
+    public PrevRole getPrevRole() {
+        return IPrevExchangeItem.PrevRole.InOut;
     }
 
     public Object getValues() {

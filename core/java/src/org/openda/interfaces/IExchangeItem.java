@@ -51,6 +51,18 @@ public interface IExchangeItem extends IPrevExchangeItem{
     }
 
     /**
+     * List of possible roles for the exchange values.
+     */
+    public enum Role {
+        /** Input for the model.*/
+        Input,
+        /** Output from the model.*/
+        Output,
+        /** Both input for the model and output from the model.*/
+        InOut
+    }
+
+    /**
      * Get the role of the exchange item (input, output, or both)
      * @return The exchange items's role
      */

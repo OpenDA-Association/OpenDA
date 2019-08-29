@@ -22,6 +22,7 @@ package org.openda.exchange;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IArray;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IVector;
 
@@ -88,8 +89,8 @@ public class ConstantLimitsRangeValidationExchangeItem implements IPrevExchangeI
 		return this.wrappedExchangeItem.getDescription();
 	}
 
-	public Role getRole() {
-		return this.wrappedExchangeItem.getRole();
+	public PrevRole getPrevRole() {
+		return this.wrappedExchangeItem.getPrevRole();
 	}
 
 	public Class<?> getValueType() {

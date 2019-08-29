@@ -98,6 +98,10 @@ public class DFlowFMXyzExchangeItem implements IExchangeItem {
 		return IExchangeItem.Role.InOut;
 	}
 
+	public PrevRole getPrevRole() {
+		return null;
+	}
+
 	public Object getValues() {
 		return this.vector;
 	}

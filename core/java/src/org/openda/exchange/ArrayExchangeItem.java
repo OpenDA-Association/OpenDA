@@ -89,7 +89,8 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
         return this.role;
     }
 
-    
+    public PrevRole getPrevRole() { return null;}
+
     public String getId() {
         return id;
     }
