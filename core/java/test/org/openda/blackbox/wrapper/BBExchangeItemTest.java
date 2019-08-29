@@ -30,7 +30,7 @@ import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayTimeInfo;
 import org.openda.interfaces.IDimensionIndex;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Array;
 import junit.framework.TestCase;
 import org.openda.utils.DimensionIndex;
@@ -65,7 +65,7 @@ public class BBExchangeItemTest extends TestCase {
 		Array ar = new Array(vals, dims, true);
 
 		// initialize ExchangeItem with values from array
-		ArrayExchangeItem arrayEI = new ArrayExchangeItem("2Darray", IPrevExchangeItem.Role.InOut);
+		ArrayExchangeItem arrayEI = new ArrayExchangeItem("2Darray", IExchangeItem.Role.InOut);
 		arrayEI.setArray(ar);
 
 		// specify indices for the selection
@@ -78,7 +78,7 @@ public class BBExchangeItemTest extends TestCase {
 		IoObjectConfig ioObjectConfig = new IoObjectConfig("ioObject1",
 				"org.openda.blackbox.wrapper.BBExchangeItemTest.DummyIoObject", "not used", new AliasDefinitions(), new String[0]);
 		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", ioObjectConfig, "itemA",
-				dimensionIndices, null, IPrevExchangeItem.Role.Output, null);
+				dimensionIndices, null, IExchangeItem.Role.Output, null);
 
 		// create the BBExchangeItem and ask for values
 		BBExchangeItem bbExchangeItem = new BBExchangeItem("test", vectorConfig, arrayEI, selectors, testRunDataDir);
@@ -109,7 +109,7 @@ public class BBExchangeItemTest extends TestCase {
 		Array ar = new Array(vals, dims, true);
 
 		// initialize ExchangeItem with values from array
-		ArrayExchangeItem arrayEI = new ArrayExchangeItem("2Darray", IPrevExchangeItem.Role.InOut);
+		ArrayExchangeItem arrayEI = new ArrayExchangeItem("2Darray", IExchangeItem.Role.InOut);
 		arrayEI.setArray(ar);
 		arrayEI.setTimeInfo(times);
 
@@ -123,7 +123,7 @@ public class BBExchangeItemTest extends TestCase {
 		IoObjectConfig ioObjectConfig = new IoObjectConfig("ioObject1",
 				"org.openda.blackbox.wrapper.BBExchangeItemTest.DummyIoObject", "not used", new AliasDefinitions(), new String[0]);
 		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", ioObjectConfig, "itemA",
-				dimensionIndices, null, IPrevExchangeItem.Role.Output, null);
+				dimensionIndices, null, IExchangeItem.Role.Output, null);
 
 		// create the BBExchangeItem and ask for values
 		BBExchangeItem bbExchangeItem = new BBExchangeItem("test", vectorConfig, arrayEI, selectors, testRunDataDir);
@@ -135,15 +135,15 @@ public class BBExchangeItemTest extends TestCase {
 
 	private class DummyIoObject implements IoObjectInterface{
 
-		private IPrevExchangeItem[] exchangeItems;
+		private IExchangeItem[] exchangeItems;
 
 		public void initialize(File workingDir, String fileName, String[] arguments) {
-			exchangeItems = new IPrevExchangeItem[1];
-			ArrayExchangeItem item1 = new ArrayExchangeItem("item1", IPrevExchangeItem.Role.Output);
+			exchangeItems = new IExchangeItem[1];
+			ArrayExchangeItem item1 = new ArrayExchangeItem("item1", IExchangeItem.Role.Output);
 			exchangeItems[0] = null;
 		}
 
-		public IPrevExchangeItem[] getExchangeItems() {
+		public IExchangeItem[] getExchangeItems() {
 			return exchangeItems;
 		}
 

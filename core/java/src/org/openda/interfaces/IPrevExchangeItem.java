@@ -35,7 +35,7 @@ public interface IPrevExchangeItem extends Serializable {
     /**
      * List of possible roles for the exchange values.
      */
-    public enum Role {
+    public enum PrevRole {
         /** Input for the model.*/
         Input,
         /** Output from the model.*/
@@ -66,7 +66,7 @@ public interface IPrevExchangeItem extends Serializable {
      * Get the role of the exchange item (input, output, or both)
      * @return The exchange items's role
      */
-    public Role getRole();
+    public PrevRole getPrevRole();
 
     /**
      * Get the values of the exchange item

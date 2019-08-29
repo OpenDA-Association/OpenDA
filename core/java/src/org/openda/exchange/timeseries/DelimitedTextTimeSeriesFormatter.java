@@ -20,7 +20,7 @@
 
 package org.openda.exchange.timeseries;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.ConfigTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 	private int dateTimeSelector;
 	private int valueSelector;
 
-	private IPrevExchangeItem.Role role;
+	private IExchangeItem.Role role;
 
 	public DelimitedTextTimeSeriesFormatter(ConfigTree configTree) {
 		String datePattern = configTree.getAsString("dateTimePattern", null);
@@ -65,11 +65,11 @@ public class DelimitedTextTimeSeriesFormatter extends TimeSeriesFormatter{
 		String role = configTree.getAsString("role", "input");
 
 		if ("input".equalsIgnoreCase(role)){
-			this.role = IPrevExchangeItem.Role.Input;
+			this.role = IExchangeItem.Role.Input;
 		} else if ("output".equalsIgnoreCase(role)) {
-			this.role = IPrevExchangeItem.Role.Output;
+			this.role = IExchangeItem.Role.Output;
 		} else if ("inout".equalsIgnoreCase(role)) {
-			this.role = IPrevExchangeItem.Role.InOut;
+			this.role = IExchangeItem.Role.InOut;
 		}
 
 		if (this.dateFormatter!=null) {

@@ -50,11 +50,11 @@ public class MeshDataObjectTest extends TestCase {
     public void testGetExchangeItemIDs1()  {
         IDataObject scalarObject = new MeshDataObject();
         scalarObject.initialize(testRunDataDir, new String[]{"results/OPENFOAM_TIME_DIR/T"} );
-        String[] ids = scalarObject.getExchangeItemIDs(IPrevExchangeItem.Role.InOut);
+        String[] ids = scalarObject.getExchangeItemIDs(IExchangeItem.Role.InOut);
         assertEquals("T", ids[0]);
         IDataObject vectorObject = new MeshDataObject();
         vectorObject.initialize(testRunDataDir, new String[]{"results/OPENFOAM_TIME_DIR/U"} );
-        ids = vectorObject.getExchangeItemIDs(IPrevExchangeItem.Role.InOut);
+        ids = vectorObject.getExchangeItemIDs(IExchangeItem.Role.InOut);
         Arrays.sort(ids);
 		assertEquals("U1", ids[0]);
         assertEquals("U2", ids[1]);

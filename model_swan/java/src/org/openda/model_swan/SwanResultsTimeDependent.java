@@ -22,7 +22,7 @@ package org.openda.model_swan;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.*;
@@ -280,7 +280,7 @@ public class SwanResultsTimeDependent implements IDataObject, Serializable {
 				for(int iQuant=0;iQuant<nQuants;iQuant++){
 					String quantity=this.quantityIds.get(iQuant);
 					String unit="TODO";
-					IPrevExchangeItem.Role role=IPrevExchangeItem.Role.Output;
+					Role role=Role.Output;
 					double seriesTimes[]=new double[times.size()];
 					for(int i=0;i<times.size();i++){seriesTimes[i]=times.get(i);}
 					ArrayList<Double> thisSeries=values[iLoc*nQuants+iQuant];

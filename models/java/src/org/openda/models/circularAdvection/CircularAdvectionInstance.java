@@ -441,7 +441,7 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new RuntimeException("not implemented");
 	}
 

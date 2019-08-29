@@ -237,7 +237,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 			return _dotNetModelInstance.get_ExchangeItemIDs();
 		}
 
-		public String[] getExchangeItemIDs(org.openda.interfaces.IPrevExchangeItem.Role role)
+		public String[] getExchangeItemIDs(org.openda.interfaces.IExchangeItem.Role role)
 		{
 			return _dotNetModelInstance.GetExchangeItemIDs(role.ordinal());
 		}
@@ -324,7 +324,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 				cli.OpenDA.DotNet.Interfaces.IExchangeItem dotnetExchangeItem =
 						new DoublesExchangeItem(javaExchangeItem.getId(),
 								javaExchangeItem.getDescription(),
-								javaExchangeItem.getRole().ordinal(), 0d);
+								javaExchangeItem.getPrevRole().ordinal(), 0d);
 				dotnetExchangeItem.set_Times(javaExchangeItem.getTimes());
 				dotnetExchangeItem.set_Values(javaExchangeItem.getValuesAsDoubles());
 				dotnetExchangeItems[i] = dotnetExchangeItem;

@@ -54,7 +54,7 @@ import java.util.Set;
  * @author verlaanm
  */
 
-public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
+public class TimeSeries implements IExchangeItem{
 	// define and set defaults
 	// meta data
 	private String description = null;
@@ -1074,6 +1074,8 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	public Role getRole() {
 		return this.role;
 	}
+
+	public PrevRole getPrevRole() {return PrevRole.InOut; }
 
 	/**
 	 * Gets the values of this series at the specified times.

@@ -24,7 +24,7 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
 import org.openda.utils.*;
 import org.openda.utils.io.FileBasedModelState;

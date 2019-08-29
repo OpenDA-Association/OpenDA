@@ -24,7 +24,7 @@ import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.ExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.BufferedReader;

@@ -24,7 +24,6 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.ITimeInfo;
 
 import java.io.*;
@@ -307,7 +306,7 @@ public class SwanOpenBoundaryTPARFile implements IDataObject, ITimeInfo {
 		return new String[] {exchangeItems[0].getId(),exchangeItems[1].getId(),exchangeItems[2].getId(),exchangeItems[3].getId()};
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

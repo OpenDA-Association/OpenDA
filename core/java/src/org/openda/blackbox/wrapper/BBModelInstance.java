@@ -195,7 +195,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
             if (timeStepExchangeItemIds!=null){
                 if (timeStepExchangeItemIds[0] != null){
                     for (int n=0; n < timeStepExchangeItemIds.length; n++){
-                        IPrevExchangeItem timeExchangeItem = getExchangeItem(timeStepExchangeItemIds[n]);
+                        IExchangeItem timeExchangeItem = getExchangeItem(timeStepExchangeItemIds[n]);
                         timeStepMJD = timeExchangeItem.getValuesAsDoubles()[0];
                         if (!Double.isNaN(timeStepMJD)){
                              break;
@@ -277,7 +277,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Note: this method also works in combination with the option "allElementsFromIoObject".
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		checkForPendingComputeActions();
 
 		List<String> exchangeItemIds = new ArrayList<String>();
@@ -327,14 +327,14 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		IPrevExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
+		IExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
 		if (!(exchangeItem instanceof BBExchangeItem)) {
 			throw new RuntimeException("Unexpected exchange item type " + exchangeItem.getClass().toString());
 		}
 		return (BBExchangeItem) exchangeItem;
 	}
 
-	public IPrevExchangeItem getExchangeItem(String searchedBBExchangeItemId) {
+	public IExchangeItem getExchangeItem(String searchedBBExchangeItemId) {
         checkForPendingComputeActions();
 
         BBExchangeItem bbExchangeItem = bbExchangeItems.get(searchedBBExchangeItemId);
@@ -721,7 +721,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
         ITime startOrEndTime = null;
         if (timeExchangeItemId != null) {
             IPrevExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
-            if (timeExchangeItem.getRole() != IPrevExchangeItem.Role.Input) {
+            if (timeExchangeItem.getPrevRole() != IPrevExchangeItem.PrevRole.Input) {
                 if (timeExchangeItem.getValueType() == Date.class) {
                     startOrEndTime = new Time((Date)timeExchangeItem.getValues());
                 } else if (timeExchangeItem.getValueType() == ITime.class) {
@@ -738,7 +738,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private void setStartOrEndTime(ITime startOrEndTime, String timeExchangeItemId) {
         if (timeExchangeItemId != null) {
             IPrevExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
-            if (timeExchangeItem.getRole() != IPrevExchangeItem.Role.Output) {
+            if (timeExchangeItem.getPrevRole() != IPrevExchangeItem.PrevRole.Output) {
                 if (timeExchangeItem.getValueType() == Date.class) {
                     Date startOrEndTimeAsJavaDate = new Date(Time.mjdToMillies(startOrEndTime.getMJD()));
                     timeExchangeItem.setValues(startOrEndTimeAsJavaDate);

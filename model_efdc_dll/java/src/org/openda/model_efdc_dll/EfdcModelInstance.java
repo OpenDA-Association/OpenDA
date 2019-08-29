@@ -27,7 +27,7 @@ import java.util.*;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.model_efdc_dll.EfdcExchangeItemType.EfdcExchangeItemRole;
 import org.openda.utils.Instance;
@@ -506,7 +506,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * @param role Input, Output, or InOut.
 	 * @return exchangeItemIds.
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		List<String> ids = new ArrayList<String>();
 		for (IExchangeItem exchangeItem : this.boundaryExchangeItems.values()) {
 			if (exchangeItem.getRole() == role) {

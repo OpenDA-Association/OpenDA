@@ -104,8 +104,8 @@ public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
         return this.classType;
     }
 
-    public Role getRole() {
-        return IPrevExchangeItem.Role.InOut;
+    public PrevRole getPrevRole() {
+        return IPrevExchangeItem.PrevRole.InOut;
     }
 
     public Object getValues() {

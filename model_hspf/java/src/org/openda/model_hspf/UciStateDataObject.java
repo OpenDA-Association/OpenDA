@@ -132,7 +132,7 @@ public class UciStateDataObject implements IDataObject {
 		return ids.toArray(new String[ids.size()]);
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		//all exchange items have role InOut, so always return all items.
 		return getExchangeItemIDs();
 	}

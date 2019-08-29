@@ -21,7 +21,6 @@ package org.openda.model_dflowfm;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.ConfigTree;
 
 import java.io.File;
@@ -91,7 +90,7 @@ public class RtcToolsRuntimeConfigFile implements IDataObject {
 		return exchangeItems.keySet().toArray(new String[exchangeItems.keySet().size()]);
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role)
+	public String[] getExchangeItemIDs(IExchangeItem.Role role)
 	{
 		List<String> matchingExchangeItemIds = new ArrayList<>();
 		for(IExchangeItem exchangeItem : exchangeItems.values())

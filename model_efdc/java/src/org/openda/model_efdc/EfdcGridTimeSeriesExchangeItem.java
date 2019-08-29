@@ -46,6 +46,7 @@ public class EfdcGridTimeSeriesExchangeItem extends ExchangeItem {
         return Role.Output;
     }
 
+    public PrevRole getPrevRole() { return null; }
     
     @SuppressWarnings("rawtypes")
     public Class getValueType() {

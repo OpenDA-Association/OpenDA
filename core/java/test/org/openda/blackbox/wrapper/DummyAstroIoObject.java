@@ -81,8 +81,8 @@ public class DummyAstroIoObject implements IoObjectInterface {
             return Double.TYPE;
         }
 
-        public Role getRole() {
-            return Role.InOut;
+        public PrevRole getPrevRole() {
+            return PrevRole.InOut;
         }
 
         public Object getValues() {

@@ -130,7 +130,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		return new String[] {exchangeItemId};
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 
@@ -296,7 +296,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		ArrayGeometryInfo geometryInfo = new ArrayGeometryInfo(yCoordArray, yCoordValueIndices,
 			yCoordsQuantityInfo, xCoordArray, xCoordValueIndices, xCoordsQuantityInfo,null,null,null);
 
-		exchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.InOut);
+		exchangeItem = new ArrayExchangeItem(exchangeItemId, IExchangeItem.Role.InOut);
 		exchangeItem.setGeometryInfo(geometryInfo);
 		exchangeItem.setArray(array);
 

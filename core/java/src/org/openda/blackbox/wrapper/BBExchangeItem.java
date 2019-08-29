@@ -93,8 +93,10 @@ public class BBExchangeItem implements IExchangeItem {
         return result;
     }
 
-    public Role getRole() {
-        return ioObjectExchangeItem.getRole();
+	public Role getRole() {return Role.InOut; }
+
+	public PrevRole getPrevRole() {
+        return ioObjectExchangeItem.getPrevRole();
     }
 
     public Object getValues() {

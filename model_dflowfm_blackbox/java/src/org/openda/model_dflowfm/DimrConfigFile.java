@@ -20,7 +20,6 @@
 package org.openda.model_dflowfm;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.ConfigTree;
 
 import java.io.File;
@@ -60,7 +59,7 @@ public class DimrConfigFile implements IDataObject {
 		return flowMdFile.getExchangeItemIDs();
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role)
+	public String[] getExchangeItemIDs(IExchangeItem.Role role)
 	{
 		return flowMdFile.getExchangeItemIDs(role);
 	}

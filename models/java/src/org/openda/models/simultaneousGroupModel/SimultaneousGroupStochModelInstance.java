@@ -30,7 +30,7 @@ package org.openda.models.simultaneousGroupModel;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.observers.GroupObservationDesrciptions;
 import org.openda.utils.Instance;
 import org.openda.utils.StochVector;

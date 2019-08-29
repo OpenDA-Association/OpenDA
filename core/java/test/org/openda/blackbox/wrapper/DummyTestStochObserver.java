@@ -156,6 +156,8 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
                 return Role.InOut;
             }
 
+            public PrevRole getPrevRole() { return PrevRole.InOut; }
+
             public Class getValueType() {
                 throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyTestStochObserver.DummyTestObservationDescriptions.DummyTestExchangeItem.getValueType(): Not implemented yet.");
             }

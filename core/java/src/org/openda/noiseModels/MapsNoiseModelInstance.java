@@ -26,7 +26,7 @@ import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.noiseModels.SpatialCorrelationStochVector.CoordinatesType;

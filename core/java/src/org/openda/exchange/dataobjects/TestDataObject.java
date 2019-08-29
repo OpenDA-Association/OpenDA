@@ -32,7 +32,7 @@ import org.openda.exchange.iotools.IoUtils;
 import org.openda.interfaces.IComposableDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
 /**
@@ -105,7 +105,7 @@ public class TestDataObject implements IComposableDataObject {
 	public void finish() {
 		List<IExchangeItem> outputExchangeItems = new ArrayList<IExchangeItem>();
 		for (IExchangeItem exchangeItem : this.exchangeItems) {
-			if (exchangeItem.getRole() == IPrevExchangeItem.Role.Output || exchangeItem.getRole() == IPrevExchangeItem.Role.InOut) {
+			if (exchangeItem.getRole() == IExchangeItem.Role.Output || exchangeItem.getRole() == IExchangeItem.Role.InOut) {
 				outputExchangeItems.add(exchangeItem);
 			}
 		}

@@ -21,8 +21,7 @@ package org.openda.exchange;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IArrayGeometryInfo;
 import org.openda.interfaces.IArrayTimeInfo;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.utils.Array;
 
@@ -45,7 +44,7 @@ public class ExchangeItemTest extends TestCase{
 		assertEquals("m^3", unit);
 
 		Role role = item.getRole();
-		assertEquals(IPrevExchangeItem.Role.Input, role);
+		assertEquals(Role.Input, role);
 
 		item.setValue(2.0);
 		double value = item.getValue();
@@ -74,7 +73,7 @@ public class ExchangeItemTest extends TestCase{
 		assertEquals("1/m^2", unit);
 
 		Role role = item.getRole();
-		assertEquals(IPrevExchangeItem.Role.Input, role);
+		assertEquals(Role.Input, role);
 
 		item.setValue(2);
 		int value = item.getValue();
@@ -96,7 +95,7 @@ public class ExchangeItemTest extends TestCase{
 		assertEquals("id", id);
 
 		Role role = item.getRole();
-		assertEquals(IPrevExchangeItem.Role.Input, role);
+		assertEquals(Role.Input, role);
 
 		item.setValue("logfile.dat");
 		String value = item.getValue();
@@ -126,7 +125,7 @@ public class ExchangeItemTest extends TestCase{
 		assertEquals("m^3", unit);
 
 		Role role = item.getRole();
-		assertEquals(IPrevExchangeItem.Role.InOut, role);
+		assertEquals(Role.InOut, role);
 
 		double values[] = item.getValuesAsDoubles();
 		assertEquals(4, values.length);
@@ -170,7 +169,7 @@ public class ExchangeItemTest extends TestCase{
 		System.out.println(item.toString());
 
 		Role role = item.getRole();
-		assertEquals(IPrevExchangeItem.Role.InOut, role);
+		assertEquals(Role.InOut, role);
 
 		double values[] = item.getValuesAsDoubles();
 		assertEquals(2*3*4, values.length);
@@ -225,7 +224,7 @@ public class ExchangeItemTest extends TestCase{
 		System.out.println(item.toString());
 
 		Role role = item.getRole();
-		assertEquals(IPrevExchangeItem.Role.InOut, role);
+		assertEquals(Role.InOut, role);
 
 		double values[] = item.getValuesAsDoubles();
 		assertEquals(2*3*4, values.length);

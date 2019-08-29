@@ -46,7 +46,7 @@ public class SwanInputFileExchangeItem implements IPrevExchangeItem {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getValueType(): Not implemented yet.");
     }
 
-    public Role getRole() {
+    public PrevRole getPrevRole() {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getRole(): Not implemented yet.");
     }
 

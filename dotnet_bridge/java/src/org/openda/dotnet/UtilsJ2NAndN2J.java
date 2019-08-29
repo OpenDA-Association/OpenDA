@@ -39,14 +39,14 @@ public class UtilsJ2NAndN2J
 			throw new RuntimeException("Unknown IStochModelFactory.OutputLevel type: " + outputLevel);
 		}
 
-		public static int ExchangeItemRoleMapJ2N(IPrevExchangeItem.Role role) {
-			if (role == IPrevExchangeItem.Role.Input) {
+		public static int ExchangeItemRoleMapJ2N(IPrevExchangeItem.PrevRole role) {
+			if (role == IPrevExchangeItem.PrevRole.Input) {
 				return 0; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
-			if (role == IPrevExchangeItem.Role.Output) {
+			if (role == IPrevExchangeItem.PrevRole.Output) {
 				return 1; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
-			if (role == IPrevExchangeItem.Role.InOut) {
+			if (role == IPrevExchangeItem.PrevRole.InOut) {
 				return 2; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
 			throw new RuntimeException("Unknown IPrevExchangeItem.Role type: " + role);

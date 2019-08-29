@@ -47,8 +47,8 @@ public class SwanField2DFileExchangeItem implements IPrevExchangeItem {
         return double[].class;
     }
 
-    public IPrevExchangeItem.Role getRole(){
-        return IPrevExchangeItem.Role.InOut;
+    public PrevRole getPrevRole(){
+        return PrevRole.InOut;
     }
 
     public Object getValues() {

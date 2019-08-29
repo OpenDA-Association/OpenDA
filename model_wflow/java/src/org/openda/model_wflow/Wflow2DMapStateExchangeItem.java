@@ -41,7 +41,7 @@ import org.openda.utils.Vector;
  */
 public class Wflow2DMapStateExchangeItem implements IExchangeItem {
 	private final String variableName;
-    private final IPrevExchangeItem.Role role;
+    private final IExchangeItem.Role role;
 	private final ITime timeHorizon;
 	private final WflowPythonToJavaAdapter adapter;
 	private final IQuantityInfo quantityInfo;
@@ -56,7 +56,7 @@ public class Wflow2DMapStateExchangeItem implements IExchangeItem {
 	 * @param timeHorizon
 	 * @param adapter
 	 */
-	public Wflow2DMapStateExchangeItem(String variableName, IPrevExchangeItem.Role role,
+	public Wflow2DMapStateExchangeItem(String variableName, IExchangeItem.Role role,
 			IQuantityInfo quantityInfo, ArrayGeometryInfo geometryInfo, ITime timeHorizon, WflowPythonToJavaAdapter adapter) {
 		this.variableName = variableName;
 		this.role = role;
@@ -81,6 +81,8 @@ public class Wflow2DMapStateExchangeItem implements IExchangeItem {
 	public Role getRole() {
 		return this.role;
 	}
+
+	public PrevRole getPrevRole() { return null; }
 
 	public ITimeInfo getTimeInfo() {
 		return new TimeInfo(getTimes());

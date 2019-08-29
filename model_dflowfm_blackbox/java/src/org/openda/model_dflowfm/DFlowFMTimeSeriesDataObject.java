@@ -27,7 +27,6 @@ import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.*;
@@ -138,7 +137,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 								String location = String.format("%s.%d" , locationId ,fileNr+1);
 								String amplitudeId = location + idSeparator + quantity + "."+var+"_amplitude" ;
 								double ampl = cmpfile.getAmplitude(var);
-								amplitude = new DoubleExchangeItem(amplitudeId, Role.InOut, ampl);
+								amplitude = new DoubleExchangeItem(amplitudeId, IExchangeItem.Role.InOut, ampl);
 								amplitude.setQuantityInfo(new QuantityInfo(quantity + ".amplitude","m"));
 								amplitude.setLatitude(lat);
 								amplitude.setLongitude(lon);
@@ -148,7 +147,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
                                 //phase
 								String phaseId = location + idSeparator + quantity + "."+var+"_phase" ;
 								double phi = cmpfile.getPhase(var);
-								phase = new DoubleExchangeItem(phaseId, Role.InOut, phi);
+								phase = new DoubleExchangeItem(phaseId, IExchangeItem.Role.InOut, phi);
 								phase.setQuantityInfo(new QuantityInfo(quantity + ".phase","degrees"));
 								phase.setLatitude(lat);
 								phase.setLongitude(lon);

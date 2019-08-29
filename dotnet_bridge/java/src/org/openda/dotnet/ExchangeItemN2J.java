@@ -47,9 +47,9 @@ public class ExchangeItemN2J implements IPrevExchangeItem {
 		return double[].class;
 	}
 
-	public Role getRole() {
+	public PrevRole getPrevRole() {
 		// for now, just always return in/out
-		return Role.InOut;
+		return PrevRole.InOut;
 	}
 
 	public Object getValues() {

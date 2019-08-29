@@ -30,7 +30,7 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
     private int indexInDLL;
     private Class valueType;
     private SimpleModelInstance SimpleModelInstance;
-    private IPrevExchangeItem.Role role;
+    private IPrevExchangeItem.PrevRole role;
 
     public SimpleExchangeItem(String id, int indexInDLL, Class valueType, SimpleModelInstance SimpleModelInstance) {
 
@@ -42,9 +42,9 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
         if (indexInDLL == SimpleModelDLL.gravity ||
                 indexInDLL == SimpleModelDLL.friction_on_grid ||
                 indexInDLL == SimpleModelDLL.discharge_on_laterals ) {
-           role = IPrevExchangeItem.Role.InOut;
+           role = IPrevExchangeItem.PrevRole.InOut;
         } else if (indexInDLL == SimpleModelDLL.waterlevel_on_grid) {
-           role = IPrevExchangeItem.Role.Output;
+           role = IPrevExchangeItem.PrevRole.Output;
         } else {
             throw new RuntimeException("Unknown role for exchange item: " + id);
         }
@@ -62,7 +62,7 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
         return valueType;
     }
 
-    public Role getRole() {
+    public PrevRole getPrevRole() {
         return role;
     }
 

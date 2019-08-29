@@ -28,7 +28,7 @@ import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IComposableDataObject;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Glob;
 
 

@@ -21,7 +21,6 @@ package org.openda.model_dflowfm;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 import org.openda.utils.io.AsciiFileUtils;
 
@@ -50,7 +49,7 @@ public class DFlowFMCalibrationFactorFile implements IDataObject {
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

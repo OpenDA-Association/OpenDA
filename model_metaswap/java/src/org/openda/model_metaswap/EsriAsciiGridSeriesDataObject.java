@@ -123,7 +123,7 @@ public class EsriAsciiGridSeriesDataObject implements IDataObject {
 			}
 			System.arraycopy(exchangeItemValues, 0 , allValues, i*exchangeItemValues.length, exchangeItemValues.length);
 		}
-		exchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.InOut);
+		exchangeItem = new ArrayExchangeItem(exchangeItemId, IExchangeItem.Role.InOut);
 		exchangeItem.setGeometryInfo(geometryInfo);
 		IArray array = new Array(allValues, new int[]{ filesCount,
 			geometryInfo.getLongitudeArray().length(), geometryInfo.getLatitudeArray().length()},
@@ -137,7 +137,7 @@ public class EsriAsciiGridSeriesDataObject implements IDataObject {
 
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

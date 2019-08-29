@@ -23,7 +23,7 @@ package org.openda.model_hspf;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 	public String[] getExchangeItemIDs(Role role) {
 		List<String> exchangeItemIds = new ArrayList<>();
 		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
-			if (exchangeItem.getRole().equals(role)) {
+			if (exchangeItem.getPrevRole().equals(role)) {
 				exchangeItemIds.add(exchangeItem.getId());
 			}
 		}

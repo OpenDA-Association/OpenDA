@@ -30,7 +30,7 @@ import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.iotools.DataCopier;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Array;
 import org.openda.utils.Instance;
@@ -222,7 +222,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 			//      1 = is output (from the model)
 			//      2 = input/output (state information)
 			//      3 = model parameter
-			IPrevExchangeItem.Role role;
+			IExchangeItem.Role role;
 			switch (variableRole) {
 				case 0:
 					//boundary condition.
@@ -472,7 +472,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 *
 	 * @param observationDescriptions
 	 * @param distance characteristic distance for Cohn's formula.
-	 * @param selector selector to specify the domain.
+	 * @param iDomain integer to specify the domain.
 	 * @return weight vector for each observation location.
 	 */
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain) {
@@ -614,7 +614,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * @param role Input, Output, or InOut.
 	 * @return exchangeItemIds.
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		List<String> ids = new ArrayList<String>();
 		for (IExchangeItem exchangeItem : this.modelExchangeItems.values()) {
 			if (exchangeItem.getRole() == role) {

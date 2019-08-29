@@ -80,14 +80,14 @@ public class ioDumper {
 			System.out.println("#================================");
 			if(item instanceof TimeSeries){
 				System.out.println("TimeSeries id="+item.getId());
-				System.out.println("role ="+item.getRole());
+				System.out.println("role ="+item.getPrevRole());
 				System.out.println(((TimeSeries)item).toString());
 				NoosTimeSeriesFormatter f =new NoosTimeSeriesFormatter();
 				f.writeToStandardOut( (TimeSeries)item );
 			}else{
 				System.out.println("id ="+item.getId());
 				System.out.println("description ="+item.getDescription());
-				System.out.println("role ="+item.getRole());
+				System.out.println("role ="+item.getPrevRole());
 				double times[] = item.getTimes();
 				if(times!=null){
 					System.out.println("times ="+new Vector(times));

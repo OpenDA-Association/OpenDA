@@ -20,7 +20,6 @@
 package org.openda.model_delwaq;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Time;
 
 import java.io.File;
@@ -78,7 +77,7 @@ public class delwaqBinaryFile implements IDataObject {
 	 * @param role Input, Output, or InOut (i.e. both)
 	 * @return The array of exchange item identifiers.
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return ids; // For now return all IDs.
 	}
 
@@ -121,7 +120,7 @@ public class delwaqBinaryFile implements IDataObject {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		items.add(new delwaqSubstanceExchangeItem(ids[index], itemDescription, IPrevExchangeItem.Role.Input, values, this));
+		items.add(new delwaqSubstanceExchangeItem(ids[index], itemDescription, IExchangeItem.Role.Input, values, this));
 		return items.get(items.size()-1);
 	}
 

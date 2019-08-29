@@ -21,7 +21,6 @@ package org.openda.model_dflowfm;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class DFlowFMXyzFile implements IDataObject {
 	}
 
 	
-	public String[] getExchangeItemIDs(Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 		for (IExchangeItem item : this.exchangeItems) {
 			if (item.getRole().equals(role)) {

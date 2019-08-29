@@ -63,6 +63,7 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 		return this.role;
 	}
 
+	public PrevRole getPrevRole() { return null; }
 
 	public String getId() {
 		return this.id;

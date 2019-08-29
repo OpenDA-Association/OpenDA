@@ -24,7 +24,6 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.*;
 import java.text.ParseException;
@@ -226,7 +225,7 @@ public class SwanTimeInfo implements IDataObject {
         exchangeItems[2] = new SwanTimeInfoExchangeItem(swanTimeInfoId[2],this);
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         return exchangeItems;
     }
 
@@ -234,7 +233,7 @@ public class SwanTimeInfo implements IDataObject {
         return new String[] {exchangeItems[0].getId(),exchangeItems[1].getId(),exchangeItems[2].getId()};
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 

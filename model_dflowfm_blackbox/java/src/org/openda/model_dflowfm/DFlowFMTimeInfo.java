@@ -83,7 +83,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 		return exchangeItemIDs;
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

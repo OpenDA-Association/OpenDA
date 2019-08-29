@@ -21,7 +21,7 @@
 package org.openda.model_efdc;
 
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 /**
  * Exchange item for a time series stored in a .INP (EFDC input) file.
@@ -36,6 +36,6 @@ public class EfdcTimeSeriesExchangeItem extends TimeSeries {
 
     
     public Role getRole() {
-        return IPrevExchangeItem.Role.Input;
+        return IExchangeItem.Role.Input;
     }
 }

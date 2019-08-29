@@ -44,7 +44,12 @@ public class Flow1DTimeInfoExchangeItem implements IExchangeItem
 
 	@Override
 	public Role getRole() {
-		return IPrevExchangeItem.Role.InOut;
+		return IExchangeItem.Role.InOut;
+	}
+
+	@Override
+	public PrevRole getPrevRole() {
+		return null;
 	}
 
 	@Override

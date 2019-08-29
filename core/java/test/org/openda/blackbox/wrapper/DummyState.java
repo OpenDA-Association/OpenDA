@@ -24,7 +24,7 @@ package org.openda.blackbox.wrapper;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.*;
 import java.util.ArrayList;

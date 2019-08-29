@@ -74,8 +74,8 @@ public class DummySeries implements IoObjectInterface {
             return Double.TYPE;
         }
 
-        public Role getRole() {
-            return IPrevExchangeItem.Role.InOut;
+        public PrevRole getPrevRole() {
+            return IPrevExchangeItem.PrevRole.InOut;
         }
 
         public Object getValues() {

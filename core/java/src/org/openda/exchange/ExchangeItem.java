@@ -32,7 +32,7 @@ public abstract class ExchangeItem implements IExchangeItem {
     private String description;
     private String quantityId;
     private String unitId;
-    private IPrevExchangeItem.Role role= IPrevExchangeItem.Role.InOut;
+    private IExchangeItem.Role role= IExchangeItem.Role.InOut;
 	private TimeInfo timeInfo = new TimeInfo();
 
 	public ExchangeItem(String id) {
@@ -70,15 +70,19 @@ public abstract class ExchangeItem implements IExchangeItem {
         this.unitId = unitId;
     }
 
-    public void setRole(IPrevExchangeItem.Role role){
+    public void setRole(IExchangeItem.Role role){
     	this.role = role;
     }
 
-    public IPrevExchangeItem.Role getRole(){
-    	return this.role;
+    public IPrevExchangeItem.PrevRole getPrevRole(){
+    	return null;
     }
 
-    public String getQuantityId() {
+	public IExchangeItem.Role getRole(){
+		return this.role;
+	}
+
+	public String getQuantityId() {
         return quantityId;
     }
 

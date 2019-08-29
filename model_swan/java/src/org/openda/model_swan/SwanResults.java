@@ -45,14 +45,6 @@ public class SwanResults implements IDataObject {
         readSwanResultsFile(observationsFile);
     }
 
-//    public IPrevExchangeItem[] getExchangeItems() {
-//        IPrevExchangeItem[] exchangeItems = new IPrevExchangeItem[swanResultsList.size()];
-//        for (int i = 0; i < exchangeItems.length; i++) {
-//            exchangeItems[i] = swanResultsList.get(i);
-//        }
-//        return exchangeItems;
-//    }
-
     private void readSwanResultsFile(File swanResultsFile) {
 
         // Open the swanResults file for reading
@@ -174,7 +166,7 @@ public class SwanResults implements IDataObject {
         return ids;
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 
@@ -299,11 +291,13 @@ public class SwanResults implements IDataObject {
             return ValueType.doubleType;
         }
 
-        public IPrevExchangeItem.Role getRole() {
-            return IPrevExchangeItem.Role.Output;
+        public IExchangeItem.Role getRole() {
+            return IExchangeItem.Role.Output;
         }
 
-        public Object getValues() {
+		public IPrevExchangeItem.PrevRole getPrevRole() { return null; }
+
+		public Object getValues() {
             return value;
         }
 

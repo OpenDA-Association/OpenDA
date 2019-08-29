@@ -21,7 +21,7 @@
 package org.openda.blackbox.config;
 
 import org.openda.interfaces.IDimensionIndex;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 /**
  * Configuration speficying a subvector in the parameter vector, the state vector, or the predictor vector
@@ -29,11 +29,11 @@ import org.openda.interfaces.IPrevExchangeItem;
 public class BBModelVectorConfig extends BBStochModelVectorConfig {
 
     private IoObjectConfig ioObjectConfig;
-	private IPrevExchangeItem.Role role;
+	private IExchangeItem.Role role;
     //can be null.
     private final String idSuffix;
 
-    public BBModelVectorConfig(String id, IoObjectConfig ioObjectConfig, String elementId, IDimensionIndex[] selectionIndices, BBConfigurable selectorConfig, IPrevExchangeItem.Role role, String idSuffix) {
+    public BBModelVectorConfig(String id, IoObjectConfig ioObjectConfig, String elementId, IDimensionIndex[] selectionIndices, BBConfigurable selectorConfig, IExchangeItem.Role role, String idSuffix) {
         super(id, elementId, selectionIndices, selectorConfig);
 		this.role = role;
         this.ioObjectConfig = ioObjectConfig;
@@ -44,7 +44,7 @@ public class BBModelVectorConfig extends BBStochModelVectorConfig {
         return ioObjectConfig;
     }
 
-	public IPrevExchangeItem.Role getRole() {
+	public IExchangeItem.Role getRole() {
 		return role;
 	}
 

@@ -24,7 +24,6 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.io.AsciiFileUtils;
 
@@ -125,8 +124,8 @@ public class UciDataObject implements IDataObject {
 		return new String[]{startTimeExchangeItem.getId(), endTimeExchangeItem.getId()};
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-		if (role == IPrevExchangeItem.Role.Input || role == IPrevExchangeItem.Role.InOut) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+		if (role == IExchangeItem.Role.Input || role == IExchangeItem.Role.InOut) {
 			return new String[]{startTimeExchangeItem.getId(), endTimeExchangeItem.getId()};
 		}
 		return null;

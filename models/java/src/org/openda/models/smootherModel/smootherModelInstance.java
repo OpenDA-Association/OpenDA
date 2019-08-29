@@ -233,7 +233,7 @@ public class smootherModelInstance implements IStochModelInstance, IStochModelIn
 	}
 
 	
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
 	}
 

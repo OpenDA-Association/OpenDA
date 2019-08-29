@@ -219,7 +219,7 @@ public class AsciiKeywordDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		//TODO: select on role
 		return items.keySet().toArray(new String[items.size()]);
 	}

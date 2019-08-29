@@ -23,7 +23,7 @@ package org.openda.exchange.dataobjects;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.*;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 import org.openda.utils.geometry.GeometryUtils;
@@ -366,7 +366,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				exchangeItem = new DoubleExchangeItem(exchangeItemId, Role.InOut, variable.readScalarDouble());
 
 			} else {//if array.
-				ArrayExchangeItem arrayBasedExchangeItem = new ArrayExchangeItem(exchangeItemId, IPrevExchangeItem.Role.InOut);
+				ArrayExchangeItem arrayBasedExchangeItem = new ArrayExchangeItem(exchangeItemId, IExchangeItem.Role.InOut);
 				arrayBasedExchangeItem.setQuantityInfo(new QuantityInfo(exchangeItemId, variable.getUnitsString()));
 				IArrayTimeInfo newTimeInfo = NetcdfUtils.createTimeInfo(variable, netcdfFile, timeInfoCache);
 				//skip variables that do not depend on time.

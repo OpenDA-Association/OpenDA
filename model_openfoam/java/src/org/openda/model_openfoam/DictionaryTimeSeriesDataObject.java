@@ -239,7 +239,7 @@ public class DictionaryTimeSeriesDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-    public String [] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String [] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 
