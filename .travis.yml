@@ -1,17 +1,15 @@
-language: java
+ language: java
 
 sudo: required
 
 jdk:
-  - openjdk7
-  - oraclejdk8
-  - oraclejdk9
+  - oraclejdk11
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install jq
 
-
+install: ant deps
 install: ./travis_install.sh
 script: ./travis_test.sh 
 
