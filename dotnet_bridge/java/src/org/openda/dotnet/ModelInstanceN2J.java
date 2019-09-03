@@ -246,7 +246,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 			throw new UnsupportedOperationException("org.openda.dotnet.ModelInstanceN2J.getDataObjectExchangeItem(): Not implemented yet.");
 		}
 
-        public IPrevExchangeItem getExchangeItem(String str)
+        public IExchangeItem getExchangeItem(String str)
 		{
 			return new ExchangeItemN2J(_dotNetModelInstance.GetExchangeItem(str));
 		}

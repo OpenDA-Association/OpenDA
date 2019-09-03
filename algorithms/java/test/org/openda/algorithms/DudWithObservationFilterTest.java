@@ -250,7 +250,7 @@ public class DudWithObservationFilterTest extends TestCase {
 			throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getDataObjectExchangeItem(): Not implemented yet.");
 		}
 
-		public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+		public IExchangeItem getExchangeItem(String exchangeItemID) {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getExchangeItem(): Not implemented yet.");
         }
 

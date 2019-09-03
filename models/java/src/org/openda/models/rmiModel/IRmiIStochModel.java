@@ -58,7 +58,7 @@ public interface IRmiIStochModel extends Remote {
 
 
     // The methods from IModelInstance but now with RemoteException
-	IPrevExchangeItem getExchangeItem(String exchangeItemID) throws RemoteException;
+	IExchangeItem getExchangeItem(String exchangeItemID) throws RemoteException;
     ITime getTimeHorizon() throws RemoteException;
     ITime getCurrentTime() throws RemoteException;
     void compute(ITime targetTime) throws RemoteException;

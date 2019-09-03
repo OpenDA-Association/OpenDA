@@ -416,7 +416,7 @@ public class SimultaneousGroupStochModelInstance extends Instance implements ISt
 
 
 	
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		throw new UnsupportedOperationException("org.openda.models.simultaneousGroupModel.SimultaneousGroupStochModelInstance.getExchangeItem(String exchangeItemID): Not implemented yet.");
 	}
 	

@@ -100,7 +100,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * when it is first requested in method BBStochModelInstance.getExchangeItem. This is needed because
 	 * some (e.g. output) exchangeItems are not initialized when the model has not run yet.
 	 */
-	private Map<String, IPrevExchangeItem> constraintExchangeItems = new LinkedHashMap<String, IPrevExchangeItem>();
+	private Map<String, IExchangeItem> constraintExchangeItems = new LinkedHashMap<String, IExchangeItem>();
     private IObservationDescriptions observationDescriptions;
 
 	public BBStochModelInstance(File configRootDir, IModelInstance model,
@@ -397,9 +397,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * Get ExchangeItems through old interface of IModelInstance. 
 	 * NOTE: all methods in the stochmodel now use the OLD interface. TODO move to new interface.
 	 */
-	public IPrevExchangeItem getExchangeItem(String exchangeItemId) {
+	public IExchangeItem getExchangeItem(String exchangeItemId) {
 		//check if exchangeItem with given id is a constraintExchangeItem and has already been constructed.
-		IPrevExchangeItem constraintExchangeItem = this.constraintExchangeItems.get(exchangeItemId);
+		IExchangeItem constraintExchangeItem = this.constraintExchangeItems.get(exchangeItemId);
 		if (constraintExchangeItem != null) {
 			return constraintExchangeItem;
 		}
@@ -409,7 +409,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		if (constraint != null) {
 			//construct constraintExchangeItem.
 			//the wrapping constraintExchangeItem always has a different unique id from the original wrapped exchangeItem.
-			IPrevExchangeItem affectedExchangeItem = getExchangeItem(constraint.getAffectedExchangeItemId());
+			IExchangeItem affectedExchangeItem = getExchangeItem(constraint.getAffectedExchangeItemId());
 			constraintExchangeItem = constraint.wrapAffectedExchangeItem(affectedExchangeItem);
 			this.constraintExchangeItems.put(exchangeItemId, constraintExchangeItem);
 			return constraintExchangeItem;
@@ -419,8 +419,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return getExchangeItemDirectlyFromModel(exchangeItemId);
 	}
 
-	private IPrevExchangeItem getExchangeItemDirectlyFromModel(String exchangeItemId) {
-		IPrevExchangeItem exchangeItem = this.model.getExchangeItem(exchangeItemId);
+	private IExchangeItem getExchangeItemDirectlyFromModel(String exchangeItemId) {
+		IExchangeItem exchangeItem = this.model.getExchangeItem(exchangeItemId);
 
 		if (exchangeItem == null) {
 			String allItems = "";

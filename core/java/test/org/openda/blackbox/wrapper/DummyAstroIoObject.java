@@ -22,7 +22,10 @@
 package org.openda.blackbox.wrapper;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 import java.io.File;
 
@@ -31,10 +34,10 @@ import java.io.File;
  */
 public class DummyAstroIoObject implements IoObjectInterface {
 
-    private IPrevExchangeItem[] exchangeItems;
+    private IExchangeItem[] exchangeItems;
 
     public void initialize(File workingDir, String fileName, String[] arguments) {
-        exchangeItems = new IPrevExchangeItem[10];
+        exchangeItems = new IExchangeItem[10];
         exchangeItems[0] = new DummyExchangeItem("locA.Ampl", .6);
         exchangeItems[1] = new DummyExchangeItem("locA.Phase", 145);
         exchangeItems[2] = new DummyExchangeItem("locB.Ampl", .8);
@@ -47,16 +50,16 @@ public class DummyAstroIoObject implements IoObjectInterface {
         exchangeItems[9] = new DummyExchangeItem("locE.Phase", 185);
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         return exchangeItems;
     }
 
-    private class DummyExchangeItem implements IPrevExchangeItem {
+    private class DummyExchangeItem implements IExchangeItem {
 
         private String exchangeItemId;
         private Double value;
 
-        public DummyExchangeItem(String exchangeItemId, double value) {
+        DummyExchangeItem(String exchangeItemId, double value) {
             this.exchangeItemId = exchangeItemId;
             this.value = value;
         }
@@ -69,21 +72,21 @@ public class DummyAstroIoObject implements IoObjectInterface {
             return null;  // no description
         }
 
-        public String getQuantityId() {
-            return exchangeItemId;
-        }
+        public IQuantityInfo getQuantityInfo() { return null; }
 
-        public String getUnitId() {
-            return "-";
-        }
+        public IGeometryInfo getGeometryInfo() { return null; }
 
         public Class getValueType() {
             return Double.TYPE;
         }
 
-        public PrevRole getPrevRole() {
-            return PrevRole.InOut;
+        public ValueType getValuesType() {
+            return ValueType.doubleType;
         }
+
+        public Role getRole() { return Role.InOut; }
+
+        public PrevRole getPrevRole() { return PrevRole.InOut; }
 
         public Object getValues() {
             return value;
@@ -107,7 +110,15 @@ public class DummyAstroIoObject implements IoObjectInterface {
 			this.value *= multiplicationFactors[0];
 		}
 
-		public void setValues(Object values) {
+        public void copyValuesFromItem(IExchangeItem sourceItem) {
+            ValueType sourceType=sourceItem.getValuesType();
+            if(sourceType != ValueType.doublesType){
+                throw new RuntimeException("DummyAstroDataObject.DummyExchangeItem.setValues(): unknown type: " + sourceType );
+            }
+            this.setValues(sourceItem.getValues());
+        }
+
+        public void setValues(Object values) {
             if (!(values instanceof Double)) {
                 throw new RuntimeException("DummyAstroIoObject.DummyExchangeItem.setValues(): unknown object type: " + values.getClass() );
             }
@@ -119,6 +130,10 @@ public class DummyAstroIoObject implements IoObjectInterface {
                 throw new RuntimeException("DummyAstroIoObject.DummyExchangeItem.setValuesAsDoubles(): values size > 1 : " + values.length);
             }
             value = values[0];
+        }
+
+        public ITimeInfo getTimeInfo() { 
+            return null;
         }
 
         public double[] getTimes() {

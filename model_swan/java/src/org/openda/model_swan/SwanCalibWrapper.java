@@ -454,7 +454,7 @@ public class SwanCalibWrapper extends Instance implements IStochModelInstance, I
 	}
 
 	// OpenDA
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper: Method not implemented yet.");
     }
 

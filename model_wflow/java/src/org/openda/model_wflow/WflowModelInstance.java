@@ -642,12 +642,12 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 	 * Returns the exchange item with the given exchangeItemId, if it exists.
 	 *
 	 * @param exchangeItemId
-	 * @return IPrevExchangeItem.
+	 * @return IExchangeItem.
 	 */
 	//TODO this method is only present for backwards compatibility. This should be replaced by the IDataObject.getDataObjectExchangeItem
 	//method once all ioObjects and exchange items have been migrated to the new IDataObject/IExchangeItem approach. AK
 	@Deprecated
-	public IPrevExchangeItem getExchangeItem(String exchangeItemId) {
+	public IExchangeItem getExchangeItem(String exchangeItemId) {
 		//delegate to new getDataObjectExchangeItem method.
 		return getDataObjectExchangeItem(exchangeItemId);
 	}

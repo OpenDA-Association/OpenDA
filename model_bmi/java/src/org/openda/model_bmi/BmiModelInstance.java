@@ -294,7 +294,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		return exchangeItem;
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemID)) {
 			return bufferedExchangeItems.get(exchangeItemID);
 		}

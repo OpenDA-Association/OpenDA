@@ -38,7 +38,7 @@ import java.util.HashMap;
  */
 public class DummyModelForTestingNoise implements IModelInstance {
 
-	private HashMap<String, IPrevExchangeItem> exchangeItems = new HashMap<String, IPrevExchangeItem>();
+	private HashMap<String, IExchangeItem> exchangeItems = new HashMap<String, IExchangeItem>();
 	private Time simulationTime;
 	private Time currentTime;
 	private ArrayList<String> exchangeItemsIdsTS;
@@ -87,7 +87,7 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		return exchangeItems.keySet().toArray(new String[exchangeItems.size()]);
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return exchangeItems.get(exchangeItemID);
 	}
 

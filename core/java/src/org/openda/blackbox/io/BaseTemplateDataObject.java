@@ -23,7 +23,6 @@ import org.openda.blackbox.interfaces.IKeyType;
 import org.openda.exchange.TemplateKeyExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,17 +62,17 @@ public class BaseTemplateDataObject implements IDataObject {
         }
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         return exchangeItems;
     }
 
     
     public String[] getExchangeItemIDs() {
-        if (exchangeItems == null) return new String[]{};
-        IPrevExchangeItem[] items = getExchangeItems();
+		if (exchangeItems == null) return new String[]{};
+        IExchangeItem[] items = getExchangeItems();
         String[] ids = new String[items.length];
         int k=0;
-        for (IPrevExchangeItem exchangeItem : items) {
+        for (IExchangeItem exchangeItem : items) {
             ids[k++] = exchangeItem.getId();
         }
         return ids;
@@ -88,7 +87,7 @@ public class BaseTemplateDataObject implements IDataObject {
     
     public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
         int indexExchangeItem = Integer.MAX_VALUE;
-        IPrevExchangeItem[] items = getExchangeItems();
+        IExchangeItem[] items = getExchangeItems();
         for (int i = 0; i < items.length; i++) {
             if (exchangeItemID.equals(items[i].getId())) {
                 indexExchangeItem = i;
@@ -101,7 +100,7 @@ public class BaseTemplateDataObject implements IDataObject {
             if (!(items[indexExchangeItem] instanceof IExchangeItem)) {
                 throw new RuntimeException("Found exchange item is not instance of IExchangeItem " + exchangeItemID);
             }
-            return (IExchangeItem)items[indexExchangeItem];
+            return items[indexExchangeItem];
         }
 
     }
@@ -149,7 +148,7 @@ public class BaseTemplateDataObject implements IDataObject {
 }
 
     public void writeValuesFile(PrintWriter printer) {
-        for (IPrevExchangeItem exchangeItem: exchangeItems) {
+        for (IExchangeItem exchangeItem: exchangeItems) {
             printer.println(exchangeItem.getId() + "=" + exchangeItem.getValues());
         }
 

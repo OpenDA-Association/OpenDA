@@ -145,7 +145,7 @@ public class ParameterDrawer implements IStochModelInstance, IStochModelInstance
     }
 
     
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         throw new UnsupportedOperationException("org.openda.uncertaintyModels.ParameterDrawer.getExchangeItem(): Not implemented yet.");
     }
 

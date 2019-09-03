@@ -20,6 +20,10 @@
 package org.openda.blackbox.io;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.ITimeInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.ITreeVector;
 import org.openda.utils.Vector;
 import org.openda.utils.io.TreeVectorReader;
@@ -87,11 +91,11 @@ public class TreeVectorIoObject implements IoObjectInterface {
 		return treeVectorFile.toString();
 	}
 
-    private class TreeVectorIoObjectExchangeItem implements IPrevExchangeItem {
+    private class TreeVectorIoObjectExchangeItem implements IExchangeItem {
 
         private ITreeVector treeVector;
 
-        public TreeVectorIoObjectExchangeItem(ITreeVector treeVector) {
+        private TreeVectorIoObjectExchangeItem(ITreeVector treeVector) {
             this.treeVector = treeVector;
         }
 
@@ -103,9 +107,19 @@ public class TreeVectorIoObject implements IoObjectInterface {
             return treeVector.getDescription();
         }
 
+        public IQuantityInfo getQuantityInfo() { return null; }
+
+        public IGeometryInfo getGeometryInfo() { return null; }
+
         public Class getValueType() {
             return double[].class;
         }
+
+        public ValueType getValuesType() { return ValueType.doublesType; }
+
+		public IExchangeItem.Role getRole() {
+			return IExchangeItem.Role.InOut;
+		}
 
         public IPrevExchangeItem.PrevRole getPrevRole() {
             return IPrevExchangeItem.PrevRole.InOut;
@@ -135,9 +149,19 @@ public class TreeVectorIoObject implements IoObjectInterface {
             setValuesAsDoubles((double[]) values);
         }
 
-        public void setValuesAsDoubles(double[] values) {
+		public void copyValuesFromItem(IExchangeItem sourceItem) {
+			ValueType sourceType=sourceItem.getValuesType();
+			if(sourceType != ValueType.doublesType){
+				throw new RuntimeException("TreeVectorIoObjectExchangeItem.copyValuesFromItem(): unknown type: " + sourceType );
+			}
+			this.setValues(sourceItem.getValues());
+		}
+
+		public void setValuesAsDoubles(double[] values) {
             treeVector.setValues(values);
         }
+
+        public ITimeInfo getTimeInfo() { return  null; }
 
         public double[] getTimes() {
             return null;

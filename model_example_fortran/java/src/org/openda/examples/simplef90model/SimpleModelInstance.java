@@ -124,8 +124,8 @@ public class SimpleModelInstance implements IModelInstance, IModelAdjoint {
 		throw new UnsupportedOperationException("org.openda.examples.simplef90model.SimpleModelInstance.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemId) {
-        IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+	public IExchangeItem getExchangeItem(String exchangeItemId) {
+        IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
         if (exchangeItem == null) {
             throw new RuntimeException("Invalid exchange item id: " + exchangeItemId);
         }

@@ -23,7 +23,7 @@ package org.openda.blackbox.wrapper;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoublesExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.*;
@@ -35,7 +35,7 @@ import java.util.Locale;
  */
 public class DummyState implements IoObjectInterface {
 
-    private IPrevExchangeItem[] exchangeItems = null;
+    private IExchangeItem[] exchangeItems = null;
     private File stateFile = null;
 
     public void initialize(File workingDir, String fileName, String[] arguments) {
@@ -60,10 +60,10 @@ public class DummyState implements IoObjectInterface {
         for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
             values[i] = Double.parseDouble(lines.get(i));
         }
-        exchangeItems = new IPrevExchangeItem[]{new DoublesExchangeItem("state", Role.InOut, values)};
+        exchangeItems = new IExchangeItem[]{new DoublesExchangeItem("state", Role.InOut, values)};
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         return exchangeItems;
     }
 

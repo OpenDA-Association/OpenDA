@@ -165,7 +165,7 @@ public class smootherModelInstance implements IStochModelInstance, IStochModelIn
 	}
 
 	
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
