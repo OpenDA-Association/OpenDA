@@ -117,7 +117,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		this.file = new File(workingDir, fileName);
-
+		Set<String> requiredExchangeItemIds = new HashSet<>();
 		for (int i = 1; i < arguments.length; i++) {
 			String argument = arguments[i];
 			if (checkLazyReadingOrLazyWritingArguments(i, argument)) continue;
@@ -127,6 +127,9 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			switch (key) {
 				case ALLOW_TIME_INDEPENDENT_ITEMS:
 					this.allowTimeIndependentItems = Boolean.valueOf(value);
+					continue;
+				case "requiredExchangeItemId":
+					requiredExchangeItemIds.add(value);
 					continue;
 				default:
 					throw new RuntimeException("Unknown key " + key + ". Please specify only " + ALLOW_TIME_INDEPENDENT_ITEMS + " as key=value pair");
@@ -145,7 +148,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			if (this.lazyReading) {//if lazyReading is true, then reading from netcdf file will happen later in exchangeItem.getValues methods.
 				//create exchangeItems that can read lazily.
 				try {
-					createExchangeItems();
+					createExchangeItems(requiredExchangeItemIds);
 				} catch (IOException e) {
 					throw new RuntimeException("Error while creating exchange items for netcdf file '" + this.file.getAbsolutePath()
 							+ "'. Message was: " + e.getMessage(), e);
@@ -204,13 +207,14 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 * For this copied and adapted code from class nl.wldelft.fews.system.plugin.dataImport.NetcdfTimeSeriesTSParser
 	 *
 	 * @throws IOException
+	 * @param requiredExchangeItemIds
 	 */
 	//TODO move this method to a new util class that has as its only purpose to read scalar time series in a specific format,
 	//then here loop over different util classes for different formats. AK
-	private void createExchangeItems() throws IOException {
+	private void createExchangeItems(Set<String> requiredExchangeItemIds) throws IOException {
 		this.exchangeItems.clear();
 
-		//get locationIds. 
+		//get locationIds.
 		//TODO MVL
 		NetcdfFile netcdfFile = this.netcdfFileWriter.getNetcdfFile();
 		Map<Integer, String> stationIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(netcdfFile, stationIdVarName);
@@ -283,6 +287,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 						stationId=crossSectionIndexIdMap.get(stationIndex);
 					}
 					if (realizationDimensionIndex == -1) {
+						String exchangeItemId = stationId + '.' + parameterId;
+						if (!requiredExchangeItemIds.isEmpty() && !requiredExchangeItemIds.contains(exchangeItemId)) continue;
 						IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
 								stationId, parameterId, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
 						this.exchangeItems.add(exchangeItem);
@@ -369,7 +375,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				arrayBasedExchangeItem.setTimeInfo(newTimeInfo);
 				//TODO cache variables with spatial coordinates. AK
 				arrayBasedExchangeItem.setGeometryInfo(NetcdfUtils.createGeometryInfo(variable, netcdfFile));
-				arrayBasedExchangeItem.setArray((IArray) NetcdfUtils.readData(variable));
+				IArray array = (IArray) NetcdfUtils.readData(variable);
+				arrayBasedExchangeItem.setArray(array);
 				exchangeItem = arrayBasedExchangeItem;
 			}
 

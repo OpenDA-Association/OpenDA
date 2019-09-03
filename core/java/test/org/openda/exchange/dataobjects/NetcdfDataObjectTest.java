@@ -63,4 +63,16 @@ public class NetcdfDataObjectTest extends TestCase {
 		double[] itemValues = item.getValuesAsDoublesForSingleTimeIndex(0);
 		assertEquals(2500, itemValues.length);
 	}
+
+	public void testRequiredExchangeItemIds() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		dataObject.initialize(this.testRunDataDir, new String[]{"requiredExchangeItemIds.nc", "true", "false", "requiredExchangeItemId=24.waterlevel", "requiredExchangeItemId=26.waterlevel", "requiredExchangeItemId=27.waterlevel"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertNotNull(exchangeItemIDs);
+		assertEquals(3, exchangeItemIDs.length);
+		String[] expectedExchangeItemIds = {"24.waterlevel", "26.waterlevel", "27.waterlevel"};
+		for (String expectedExchangeItemId : expectedExchangeItemIds) {
+			assertNotNull(dataObject.getDataObjectExchangeItem(expectedExchangeItemId));
+		}
+	}
 }
