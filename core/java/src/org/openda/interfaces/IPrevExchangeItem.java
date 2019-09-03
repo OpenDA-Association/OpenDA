@@ -26,7 +26,10 @@ import java.io.Serializable;
 /**
  * Item for which the values can be retrieved from or provided to the model.
  * The model tells which exchange items it has, after which the exchange item is used to access the values.
- * This version of the exchange item is called the 'previous' version. It will become deprecated not too
+ * This version of the exchange item is called the 'previous' version.
+ * @deprecated
+ * This class is replaced by the generic DFlowFMXynExchangeItem class
+ *
  * long from now, so new model and data object developers should implement
  * @see IExchangeItem
  */
@@ -95,7 +98,7 @@ public interface IPrevExchangeItem extends Serializable {
 
     /**
      * Set the values of the exchange item
-     * @param values  The values to be set, ccording the type as defined in <code>getValueType()</code>
+     * @param values  The values to be set, according the type as defined in <code>getValueType()</code>
      */
     public void setValues(Object values);
 

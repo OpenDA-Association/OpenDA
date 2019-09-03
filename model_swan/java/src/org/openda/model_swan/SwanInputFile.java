@@ -34,7 +34,7 @@ import java.text.ParseException;
  */
 public class SwanInputFile implements IDataObject {
 
-    private IPrevExchangeItem[] exchangeItems;
+    private IExchangeItem[] exchangeItems;
 
     private SwanParameters swanParameter;
     private File swnFile;
@@ -218,7 +218,7 @@ public class SwanInputFile implements IDataObject {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFile.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         if (!exchangeItemID.equals(swanInputFileId)) {
             throw new RuntimeException("unknown exchange item: " + exchangeItemID);
         }

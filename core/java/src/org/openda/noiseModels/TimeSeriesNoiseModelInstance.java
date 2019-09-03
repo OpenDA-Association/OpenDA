@@ -328,7 +328,7 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 		this.sysNoiseIntensity = new StochVector(new Vector(seriesTrees.length) , this.standardDeviation);
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return outputSeries.get(exchangeItemID);
 	}
 

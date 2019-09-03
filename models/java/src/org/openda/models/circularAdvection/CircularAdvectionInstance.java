@@ -263,7 +263,7 @@ public class CircularAdvectionInstance implements IStochModelInstance, IStochMod
 	}
 
 	
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		throw new RuntimeException("not implemented");
 		//return null;
 	}

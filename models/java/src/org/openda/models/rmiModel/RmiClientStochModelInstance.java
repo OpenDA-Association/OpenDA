@@ -390,8 +390,8 @@ public class RmiClientStochModelInstance implements IStochModelInstance, IStochM
         return retVal;
     }
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
-        IPrevExchangeItem retVal=null;
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
+        IExchangeItem retVal=null;
         try {
             retVal=rmiModel.getExchangeItem(exchangeItemID);
          }

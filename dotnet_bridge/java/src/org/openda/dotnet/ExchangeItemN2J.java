@@ -21,12 +21,15 @@
 
 package org.openda.dotnet;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 /**
  * Java wrapper around .net class for an Exchange Item
  */
-public class ExchangeItemN2J implements IPrevExchangeItem {
+public class ExchangeItemN2J implements IExchangeItem {
 
 	private cli.OpenDA.DotNet.Interfaces.IExchangeItem dotNotExchangeItem;
 
@@ -42,15 +45,22 @@ public class ExchangeItemN2J implements IPrevExchangeItem {
 		return dotNotExchangeItem.get_Description();
 	}
 
+	public IQuantityInfo getQuantityInfo() { throw new UnsupportedOperationException("org.openda.dotnet.ExchangeItemN2J.getQuantityInfo(): Not implemented yet."); }
+
+	public IGeometryInfo getGeometryInfo() { throw new UnsupportedOperationException("org.openda.dotnet.ExchangeItemN2J.getGeometryInfo(): Not implemented yet."); }
+
 	public Class getValueType() {
 		// for now, just always return an array of doubles, no matter wat the dotnet object's value type is
 		return double[].class;
 	}
 
-	public PrevRole getPrevRole() {
-		// for now, just always return in/out
-		return PrevRole.InOut;
+	public ValueType getValuesType() {
+		return ValueType.doublesType;
 	}
+
+	public Role getRole() { return Role.InOut; }
+
+	public PrevRole getPrevRole() { return null; }
 
 	public Object getValues() {
 		// for now, just always return an array of doubles, no matter wat the dotnet object's value type is
@@ -59,6 +69,14 @@ public class ExchangeItemN2J implements IPrevExchangeItem {
 
 	public double[] getValuesAsDoubles() {
 		return dotNotExchangeItem.get_ValuesAsDoubles();
+	}
+
+	public void copyValuesFromItem(IExchangeItem sourceItem) {
+		ValueType sourceType=sourceItem.getValuesType();
+		if(sourceType != ValueType.doublesType){
+			throw new RuntimeException("DummyAstroDataObject.DummyExchangeItem.setValues(): unknown type: " + sourceType );
+		}
+		this.setValues(sourceItem.getValues());
 	}
 
 	public void axpyOnValues(double alpha, double[] axpyValues) {
@@ -76,6 +94,8 @@ public class ExchangeItemN2J implements IPrevExchangeItem {
 	public void setValuesAsDoubles(double[] values) {
 		dotNotExchangeItem.set_ValuesAsDoubles(values);
 	}
+
+	public ITimeInfo getTimeInfo() {  throw new UnsupportedOperationException("org.openda.dotnet.ExchangeItemN2J.getTimeInfo(): Not implemented yet."); }
 
 	public double[] getTimes() {
 		return dotNotExchangeItem.get_Times();

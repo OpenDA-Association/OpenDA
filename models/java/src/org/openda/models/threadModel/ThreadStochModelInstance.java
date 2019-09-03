@@ -229,7 +229,7 @@ public class ThreadStochModelInstance implements IStochModelInstance, IStochMode
     }
 
     
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         block();
         return threadModel.getExchangeItem(exchangeItemID);
     }

@@ -21,10 +21,7 @@
 package org.openda.exchange;
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.IArray;
-import org.openda.interfaces.IExchangeItem.Role;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IVector;
+import org.openda.interfaces.*;
 
 /**
  * This exchangeItem wraps another exchangeItem and applies constant range validation limits
@@ -33,13 +30,13 @@ import org.openda.interfaces.IVector;
  * @author Arno Kockx
  */
 @SuppressWarnings("serial")
-public class ConstantLimitsRangeValidationExchangeItem implements IPrevExchangeItem {
+public class ConstantLimitsRangeValidationExchangeItem implements IExchangeItem {
 	/**
 	 * Id of this constraintExchangeItem.
 	 */
 	private final String constraintExchangeItemId;
 
-	private final IPrevExchangeItem wrappedExchangeItem;
+	private final IExchangeItem wrappedExchangeItem;
 
 	/**
 	 * This is Double.NaN if not set.
@@ -60,7 +57,7 @@ public class ConstantLimitsRangeValidationExchangeItem implements IPrevExchangeI
 	 * @param upperLimit Double.NaN means not set.
 	 */
 	public ConstantLimitsRangeValidationExchangeItem(String constraintExchangeItemId,
-			IPrevExchangeItem exchangeItem, double lowerLimit, double upperLimit) {
+			IExchangeItem exchangeItem, double lowerLimit, double upperLimit) {
 
 		if (constraintExchangeItemId == null || constraintExchangeItemId.isEmpty()) {
 			throw new IllegalArgumentException("constraintExchangeItemId is empty.");
@@ -89,13 +86,23 @@ public class ConstantLimitsRangeValidationExchangeItem implements IPrevExchangeI
 		return this.wrappedExchangeItem.getDescription();
 	}
 
+	public IQuantityInfo getQuantityInfo() { return this.wrappedExchangeItem.getQuantityInfo(); }
+
+	public IGeometryInfo getGeometryInfo() { return this.wrappedExchangeItem.getGeometryInfo(); }
+
+	public Role getRole() { return this.wrappedExchangeItem.getRole(); }
+
 	public PrevRole getPrevRole() {
-		return this.wrappedExchangeItem.getPrevRole();
+		return null;
 	}
 
 	public Class<?> getValueType() {
 		return this.wrappedExchangeItem.getValueType();
 	}
+
+	public ValueType getValuesType() { return this.wrappedExchangeItem.getValuesType(); }
+
+	public ITimeInfo getTimeInfo() { return this.wrappedExchangeItem.getTimeInfo(); }
 
 	public double[] getTimes() {
 		return this.wrappedExchangeItem.getTimes();
@@ -137,6 +144,14 @@ public class ConstantLimitsRangeValidationExchangeItem implements IPrevExchangeI
 			values[n] *= multiplicationFactors[n];
 		}
 		setValuesAsDoubles(values);
+	}
+
+	public void copyValuesFromItem(IExchangeItem sourceItem) {
+		ValueType sourceType=sourceItem.getValuesType();
+		if(sourceType != ValueType.doublesType){
+			throw new RuntimeException("TreeVectorIoObjectExchangeItem.copyValuesFromItem(): unknown type: " + sourceType );
+		}
+		this.setValues(sourceItem.getValues());
 	}
 
 	public void setValues(Object values) {

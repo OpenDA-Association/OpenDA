@@ -398,7 +398,7 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 		systemNoise.addChild(spatialCorrelationStochVector);
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return outputSeries.get(exchangeItemID);
 	}
 
