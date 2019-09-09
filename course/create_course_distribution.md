@@ -48,4 +48,4 @@ For the the XML plugin a JRE is required. Configure `xml.java.home` in the Visua
     "xml.java.home": "..\\jre",
 }
 ```
-In this way we use the JRE that is inside the course distibution.
+In this way we use the JRE that is inside the course distribution.
