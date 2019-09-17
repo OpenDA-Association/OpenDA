@@ -17,9 +17,11 @@ public class BmiModelConfigTest extends TestCase {
 
 	public void testStateIds() {
 		File configFile = new File(testRunDataDir, "BmiModelConfigTest/BmiModelFactoryConfigStateIds.xml");
+		System.out.println("Config file " + configFile + " exists: " + configFile.exists());
 		BmiModelFactoryConfigReader reader = new BmiModelFactoryConfigReader(configFile);
 		List<BmiModelFactory.BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos = reader.getModelStateExchangeItemInfos();
 		assertNotNull(modelStateExchangeItemInfos);
+		System.out.println("assertNotNull(modelStateExchangeItemInfos)");
 		assertEquals(2, modelStateExchangeItemInfos.size());
 		System.out.println("assertEquals(2, modelStateExchangeItemInfos.size())");
 		BmiModelFactory.BmiModelStateExchangeItemsInfo info0 = modelStateExchangeItemInfos.get(0);
@@ -56,6 +58,7 @@ public class BmiModelConfigTest extends TestCase {
 
 	public void testNoStateIds() {
 		File configFile = new File(testRunDataDir, "BmiModelConfigTest/BmiModelFactoryConfigNoStateIds.xml");
+		System.out.println("Config file " + configFile + " exists: " + configFile.exists());
 		BmiModelFactoryConfigReader reader = new BmiModelFactoryConfigReader(configFile);
 		List<BmiModelFactory.BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos = reader.getModelStateExchangeItemInfos();
 		assertNotNull(modelStateExchangeItemInfos);
