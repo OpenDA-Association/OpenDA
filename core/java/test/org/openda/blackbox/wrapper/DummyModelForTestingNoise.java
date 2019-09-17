@@ -80,6 +80,11 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		IArray tempArray=new Array("{1,2,3}");
 		state.setArray(tempArray);
 		exchangeItems.put("state",state);
+		//add another state item
+		ArrayExchangeItem state2=new ArrayExchangeItem("state2",Role.InOut);
+		IArray tempArray2=new Array("{4,5,6}");
+		state2.setArray(tempArray2);
+		exchangeItems.put("state2",state2);
 		
 	}
 

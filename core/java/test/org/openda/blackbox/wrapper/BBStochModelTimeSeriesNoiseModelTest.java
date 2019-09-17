@@ -106,6 +106,49 @@ public class BBStochModelTimeSeriesNoiseModelTest extends TestCase
 		stochModelInstance.axpyOnState(0.5, state); //add 50%
 	}
 
+	public void testNoiseModelStateSplit() {
+
+		StochVector.setSeed(1234);
+		BBStochModelFactory bbStochModelFactory = new BBStochModelFactory();
+		File noiseModelDir = new File(testRunDataDir, "noiseModelTimeSeriesStateSplit");
+		System.out.println("noiseModelDir " + noiseModelDir + " exists" + noiseModelDir.exists());
+
+		bbStochModelFactory.initialize(noiseModelDir, new String[]{"bbStochModelConfigStateSplit.xml"});
+
+		IStochModelInstance stochModelInstance = bbStochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress);
+		stochModelInstance.setAutomaticNoiseGeneration(true);
+
+		int timeStepCount = 5;
+		double[] trueValues = {0.0, 0.0, 1.477467, 1.47 - 0.35, -1.85, -3.32}; //TODO the values get summed
+		ITime timeHorizon = stochModelInstance.getTimeHorizon();
+		ITime startTime = timeHorizon.getBeginTime();
+		double deltaTasMJD = 1d / 24d / 60d * 30d; // 30 minutes (3 bc.-timeseries steps)
+		for (int t = 1; t <= timeStepCount; t++) {
+			ITime targetTime = new Time(startTime.getMJD() + t * deltaTasMJD);
+			stochModelInstance.compute(targetTime);
+			double[] values = stochModelInstance.getExchangeItem("model-item-A-1-a").getValuesAsDoubles();
+			assertEquals("instance 2, model-item-A-1-a", trueValues[t], values[0], 1e-2d);
+			System.out.println("assertEquals trueValues");
+		}
+		// How is this state vector setup?
+		IVector state = stochModelInstance.getState();
+		stochModelInstance.axpyOnState(0.5, state);
+		double[] values = state.getValues();
+		assertEquals(8, values.length);
+		System.out.println("assertEquals 8 state");
+		IVector state0 = stochModelInstance.getState(0);
+		stochModelInstance.axpyOnState(0.5, state0, 0);
+		double[] values0 = state0.getValues();
+		assertEquals(5, values0.length);
+		System.out.println("assertEquals 5 state0");
+		IVector state1 = stochModelInstance.getState(1);
+		stochModelInstance.axpyOnState(0.5, state1, 1);
+		double[] values1 = state1.getValues();
+		// TODO EP: check if values are correct
+		assertEquals(3, values1.length);
+		System.out.println("assertEquals 3 state1");
+	}
+
 	public void testBoundaryNoiseModelLN() {
 
 		StochVector.setSeed(1234);

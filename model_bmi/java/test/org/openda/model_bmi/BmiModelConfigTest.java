@@ -21,8 +21,10 @@ public class BmiModelConfigTest extends TestCase {
 		List<BmiModelFactory.BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos = reader.getModelStateExchangeItemInfos();
 		assertNotNull(modelStateExchangeItemInfos);
 		assertEquals(2, modelStateExchangeItemInfos.size());
+		System.out.println("assertEquals(2, modelStateExchangeItemInfos.size())");
 		BmiModelFactory.BmiModelStateExchangeItemsInfo info0 = modelStateExchangeItemInfos.get(0);
 		assertEquals("state1", info0.getStateId());
+		System.out.println("assertEquals(state1, info0.getStateId());");
 		String[] ids0 = info0.getModelStateExchangeItemIds();
 		Double[] lowerLimits0 = info0.getModelStateExchangeItemLowerLimits();
 		Double[] upperLimits0 = info0.getModelStateExchangeItemUpperLimits();
@@ -34,8 +36,10 @@ public class BmiModelConfigTest extends TestCase {
 			assertEquals(expectedLowerLimits0[i], lowerLimits0[i]);
 			assertEquals(expectedUpperLimits0[i], upperLimits0[i]);
 		}
+		System.out.println("asserEquals ids, upper, lower limits");
 		BmiModelFactory.BmiModelStateExchangeItemsInfo info1 = modelStateExchangeItemInfos.get(1);
 		assertEquals("state2", info1.getStateId());
+		System.out.println("assertEquals(state2, info1.getStateId());");
 		String[] ids1 = info1.getModelStateExchangeItemIds();
 		Double[] lowerLimits1 = info1.getModelStateExchangeItemLowerLimits();
 		Double[] upperLimits1 = info1.getModelStateExchangeItemUpperLimits();
@@ -47,7 +51,7 @@ public class BmiModelConfigTest extends TestCase {
 			assertEquals(expectedLowerLimits1[i], lowerLimits1[i]);
 			assertEquals(expectedUpperLimits1[i], upperLimits1[i]);
 		}
-
+		System.out.println("asserEquals ids1, upper1, lower limits1");
 	}
 
 	public void testNoStateIds() {
@@ -58,6 +62,7 @@ public class BmiModelConfigTest extends TestCase {
 		assertEquals(1, modelStateExchangeItemInfos.size());
 		BmiModelFactory.BmiModelStateExchangeItemsInfo info0 = modelStateExchangeItemInfos.get(0);
 		assertEquals("state", info0.getStateId());
+		System.out.println("assertEquals(state1, info0.getStateId());");
 		String[] modelStateExchangeItemIds = info0.getModelStateExchangeItemIds();
 		Double[] modelStateExchangeItemLowerLimits = info0.getModelStateExchangeItemLowerLimits();
 		Double[] modelStateExchangeItemUpperLimits = info0.getModelStateExchangeItemUpperLimits();
@@ -69,5 +74,6 @@ public class BmiModelConfigTest extends TestCase {
 			assertEquals(expectedLowerLimits[i], modelStateExchangeItemLowerLimits[i]);
 			assertEquals(expectedUpperLimits[i], modelStateExchangeItemUpperLimits[i]);
 		}
+		System.out.println("asserEquals ids, upper, lower limits");
 	}
 }
