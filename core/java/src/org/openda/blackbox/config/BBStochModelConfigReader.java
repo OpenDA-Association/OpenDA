@@ -178,10 +178,12 @@ public class BBStochModelConfigReader {
 
 			List<BBNoiseModelConfig> paramsUncertaintyModelConfigs = new ArrayList<BBNoiseModelConfig>();
 
-			if (vectorSpecificationXML.getParameters() != null) {
-
+			BlackBoxStochModelParametersXML parameters = vectorSpecificationXML.getParameters();
+			boolean useValuesInsteadOfDelta = false;
+			if (parameters != null) {
+				useValuesInsteadOfDelta = parameters.getUseValuesInsteadOfDelta();
 				boolean useInLineDefinedStdDevs = false;
-				BlackBoxStochModelParametersXMLItem[] parametersXMLItems = vectorSpecificationXML.getParameters().getBlackBoxStochModelParametersXMLItem();
+				BlackBoxStochModelParametersXMLItem[] parametersXMLItems = parameters.getBlackBoxStochModelParametersXMLItem();
 				for (BlackBoxStochModelParametersXMLItem parametersXMLItem : parametersXMLItems) {
 
 					RegularisationConstantXML regularisationConstantXML = parametersXMLItem.getRegularisationConstant();
@@ -429,7 +431,7 @@ public class BBStochModelConfigReader {
                     stateConfig,
                     predictorVectorCollection,
                     isCollectPredictorTimeSeries,
-                    rangeValidationConstraints);
+                    rangeValidationConstraints, useValuesInsteadOfDelta);
         }
 
 		// get the restart info

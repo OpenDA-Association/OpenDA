@@ -24,7 +24,10 @@ package org.openda.blackbox.wrapper;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IPrevExchangeItem;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Dummy Io Object for testing parameter uncertainty purposes
@@ -32,9 +35,11 @@ import java.io.File;
 public class DummyParametersIoObject implements IoObjectInterface {
 
     private IPrevExchangeItem[] exchangeItems;
+	private File workingDir;
 
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        exchangeItems = new IPrevExchangeItem[10];
+	public void initialize(File workingDir, String fileName, String[] arguments) {
+		this.workingDir = workingDir;
+		exchangeItems = new IPrevExchangeItem[10];
         exchangeItems[0] = new DummyExchangeItem("locA.Par1",  101.d);
         exchangeItems[1] = new DummyExchangeItem("locA.Par2",  102.d);
         exchangeItems[2] = new DummyExchangeItem("locB.Par1",  201.d);
@@ -130,7 +135,22 @@ public class DummyParametersIoObject implements IoObjectInterface {
         }
     }
 
-    public void finish() {
-        // no action needed
-    }
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public void finish() {
+		try {
+			workingDir.mkdirs();
+			File file = new File(workingDir, "DummyParametersIdAndValues.txt");
+			if (file.exists()) file.delete();
+			file.createNewFile();
+
+			try (BufferedWriter output = new BufferedWriter(new FileWriter(file))) {
+				for (IPrevExchangeItem item : exchangeItems) {
+					output.write(item.getId() + ';' + item.getValuesAsDoubles()[0]);
+					output.newLine();
+				}
+			}
+		} catch (IOException ex) {
+			throw new RuntimeException("Cannot write DummyParameters file");
+		}
+	}
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns="http://www.openda.org"
+                    xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+  <modelConfig>
+    <file>DummyModelConfig.xml</file>
+  </modelConfig>
+
+  <vectorSpecification>
+
+    <parameters useValuesInsteadOfDelta="true">
+
+      <regularisationConstant>
+        <stdDev value="10" transformation="identity"/>
+        <vector id="locA.Par1" sourceVectorId="locA.Par1"/>
+      </regularisationConstant>
+
+      <regularisationConstant>
+        <stdDev value="40" transformation="identity"/>
+        <vector id="locE.Par_n" sourceVectorId="locE.Par_n"/>
+      </regularisationConstant>
+
+    </parameters>
+
+    <predictor>
+      <vector id="dummyPredictorItem"/>
+    </predictor>
+
+  </vectorSpecification>
+
+</blackBoxStochModel>

@@ -28,8 +28,8 @@ import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.uncertainties.UncertaintyEngine;
-import org.openda.utils.*;
 import org.openda.utils.Vector;
+import org.openda.utils.*;
 import org.openda.utils.geometry.GeometryUtils;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.performance.OdaGlobSettings;
@@ -91,6 +91,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 */
 	private Map<String, IPrevExchangeItem> constraintExchangeItems = new LinkedHashMap<String, IPrevExchangeItem>();
     private IObservationDescriptions observationDescriptions;
+	private ITreeVector paramsTreeVectorClone;
 
 	public BBStochModelInstance(File configRootDir, IModelInstance model,
 			UncertaintyEngine uncertaintyEngine,
@@ -565,7 +566,29 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public ITreeVector getParameters() {
-		return paramsTreeVector;
+		// TODO EP: create new vector clone with values from exchangeItem added
+		// Store as lastReturnedParamsTreeVector
+		boolean useValuesInsteadOfDelta = bbStochModelVectorsConfig.isUseValuesInsteadOfDelta();
+		if (!useValuesInsteadOfDelta) return paramsTreeVector;
+
+		paramsTreeVectorClone = paramsTreeVector.clone();
+		
+		for (BBRegularisationConstantConfig regularisationConstantConfig : bbStochModelVectorsConfig.getRegularisationConstantCollection()) {
+			String parameterId = BBStochModelFactory.composeRelatedParametersId(regularisationConstantConfig);
+			IVector paramChild = getAndCheckParamChild(paramsTreeVectorClone, parameterId);
+
+			for (BBStochModelVectorConfig stochModelVectorConfig : regularisationConstantConfig.getVectorConfigs()) {
+				IPrevExchangeItem sourceExchangeItem = getExchangeItem(stochModelVectorConfig.getSourceId());
+
+				double[] valuesAsDoubles = sourceExchangeItem.getValuesAsDoubles();
+				for (int i = 0; i < valuesAsDoubles.length; i++) {
+					double valuesAsDouble = valuesAsDoubles[i];
+					paramChild.setValue(i, valuesAsDouble);
+				}
+			}
+		}
+
+		return paramsTreeVectorClone.clone();
 	}
 
 	public void setParameters(IVector parameters) {
@@ -579,10 +602,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					parameters.getClass().getName());
 		}
 
+		// TODO EP if true
+		boolean useValuesInsteadOfDelta = bbStochModelVectorsConfig.isUseValuesInsteadOfDelta();
+
 		for (BBRegularisationConstantConfig regularisationConstantConfig : bbStochModelVectorsConfig.getRegularisationConstantCollection()) {
 			String parameterId = BBStochModelFactory.composeRelatedParametersId(regularisationConstantConfig);
 			IVector paramChild = getAndCheckParamChild(parameters, parameterId);
-			double parameterDelta = paramChild.getValue(0) * regularisationConstantConfig.getScale();
+			// TODO subtract last returnedParamsTreeVector value from paramChildGetValue
+			double parameterDelta = getParameterDelta(regularisationConstantConfig, paramChild, useValuesInsteadOfDelta, paramsTreeVectorClone, parameterId);
 
 			for (BBStochModelVectorConfig stochModelVectorConfig : regularisationConstantConfig.getVectorConfigs()) {
 				IPrevExchangeItem sourceExchangeItem = getExchangeItem(stochModelVectorConfig.getSourceId());
@@ -665,6 +692,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				}
 			}
 		}
+	}
+
+	private double getParameterDelta(BBRegularisationConstantConfig regularisationConstantConfig, IVector paramChild, boolean useValuesInsteadOfDelta, ITreeVector paramsTreeVectorClone, String parameterId) {
+		if (!useValuesInsteadOfDelta) return paramChild.getValue(0) * regularisationConstantConfig.getScale();
+		IVector paramChildClone = getAndCheckParamChild(paramsTreeVectorClone, parameterId);
+		return (paramChild.getValue(0) - paramChildClone.getValue(0))* regularisationConstantConfig.getScale();
 	}
 
 	public void axpyOnParameters(double alpha, IVector vector) {
