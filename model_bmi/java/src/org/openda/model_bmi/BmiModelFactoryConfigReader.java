@@ -60,6 +60,10 @@ public class BmiModelFactoryConfigReader {
 			String pythonPath = pythonModel.getPythonPath();
 			this.pythonModelPythonPath = new File(configFile.getParentFile(), pythonPath);
 			if (!this.pythonModelPythonPath.exists()) {
+
+				System.out.println(getClass().getSimpleName() + ": Cannot find pythonModel pythonPath "
+					+ this.pythonModelPythonPath.getAbsolutePath() + " configured in "
+					+ configFile.getAbsolutePath());
 				throw new RuntimeException(getClass().getSimpleName() + ": Cannot find pythonModel pythonPath "
 						+ this.pythonModelPythonPath.getAbsolutePath() + " configured in "
 						+ configFile.getAbsolutePath());
@@ -67,6 +71,9 @@ public class BmiModelFactoryConfigReader {
 
 			this.pythonModelModuleName = pythonModel.getModuleName();
 			if (this.pythonModelModuleName == null || this.pythonModelModuleName.isEmpty()) {
+				System.out.println(getClass().getSimpleName()
+					+ ": Configured pythonModel moduleName must not be an empty string in config file "
+					+ configFile.getAbsolutePath());
 				throw new RuntimeException(getClass().getSimpleName()
 						+ ": Configured pythonModel moduleName must not be an empty string in config file "
 						+ configFile.getAbsolutePath());
@@ -85,10 +92,13 @@ public class BmiModelFactoryConfigReader {
 			} else {
 				File pythonExe = new File(this.pythonExecutablePath);
 				if (!pythonExe.isFile()) {
+					System.out.println(getClass().getSimpleName() + ": Configured pythonExecutablePath is invalid " + configFile.getAbsolutePath());
 					throw new RuntimeException(getClass().getSimpleName() + ": Configured pythonExecutablePath is invalid " + configFile.getAbsolutePath());
 				}
 			}
 		} else {
+			System.out.println("Unknown model type configured in bmiModelFactoryConfigFile "
+				+ configFile.getAbsolutePath());
 			throw new IllegalArgumentException("Unknown model type configured in bmiModelFactoryConfigFile "
 					+ configFile.getAbsolutePath());
 		}
