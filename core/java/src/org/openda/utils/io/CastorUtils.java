@@ -66,8 +66,10 @@ public class CastorUtils {
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
             } catch (IOException e) {
+				System.out.println("IO exception " + e.getMessage());
                 throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
             } catch (org.exolab.castor.xml.MarshalException e) {
+				System.out.println("Marshall exception " + e.getMessage());
                 throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
             }
         }
