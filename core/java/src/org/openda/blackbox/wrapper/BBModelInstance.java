@@ -86,13 +86,16 @@ public class BBModelInstance extends Instance implements IModelInstance {
 			File templateFileOrDir = new File(configRootDir, bbModelConfig.getWrapperConfig().getTemplateName(this.aliasDefinitions));
 			instanceFileOrDir = new File(configRootDir, bbModelConfig.getWrapperConfig().getInstanceName(this.aliasDefinitions));
 			if (instanceFileOrDir.exists() && bbModelConfig.skipModelActionsIfInstanceDirExists()) {
-                newInstanceDir = false;
+				newInstanceDir = false;
 			} else {
 				if (bbWrapperConfig.getCloneType() == BBWrapperConfig.CloneType.Directory) {
+					System.out.println("bbWrapperConfig.getCloneType() != BBWrapperConfig.CloneType.Directory");
 					BBUtils.makeDirectoryClone(templateFileOrDir, instanceFileOrDir);
 				} else if (bbWrapperConfig.getCloneType() == BBWrapperConfig.CloneType.File) {
+					System.out.println("bbWrapperConfig.getCloneType() != BBWrapperConfig.CloneType.File");
 					BBUtils.makeFileClone(templateFileOrDir, instanceFileOrDir);
 				}
+				System.out.println("MakeClone done");
 			}
 		}
 
