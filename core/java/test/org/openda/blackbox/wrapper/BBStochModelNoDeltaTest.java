@@ -26,12 +26,18 @@ public class BBStochModelNoDeltaTest extends TestCase {
 		IStochModelFactory stochModelFactoryDelta = new BBStochModelFactory();
 		File workingDir = new File(testRunDataDir, "parameterNotAsDelta");
 		System.out.println("Working dir exists: " + workingDir);
-		stochModelFactoryDelta.initialize(workingDir, new String[]{"StochModelConfig_1.xml"});
 
+		String stochModelConfig1 = "StochModelConfig_1.xml";
+		File stochModelConfigFile1 = new File(workingDir, stochModelConfig1);
+		System.out.println("File " + stochModelConfigFile1 + " exists: " + stochModelConfigFile1.exists());
+		stochModelFactoryDelta.initialize(workingDir, new String[]{stochModelConfig1});
+		System.out.println("stochModelFactoryDelta.initialize(workingDir, new String[]{stochModelConfig1});");
 		IStochModelInstance stochModelInstanceDelta = stochModelFactoryDelta.getInstance(IStochModelFactory.OutputLevel.ModelDefault);
-
+		System.out.println("IStochModelInstance stochModelInstanceDelta = stochModelFactoryDelta.getInstance(IStochModelFactory.OutputLevel.ModelDefault);");
 		IVector parameters = stochModelInstanceDelta.getParameters();
+		System.out.println("IVector parameters = stochModelInstanceDelta.getParameters();");
 		double[] initialValuesParameterDelta = parameters.getValues();
+		System.out.println("double[] initialValuesParameterDelta = parameters.getValues();");
 
 		assertEquals(0.0, initialValuesParameterDelta[0]);
 		assertEquals(0.0, initialValuesParameterDelta[1]);
