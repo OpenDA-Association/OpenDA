@@ -59,10 +59,13 @@ public class BBUtils {
     private static final int MAX_COUNT = (64 * 1024 * 1024) - (32 * 1024);
 
     public static void makeDirectoryClone(File source, File target) {
+		System.out.println("checkSourceAndTarget");
         checkSourceAndTarget(source, target, true);
         if (target.exists()) {
+			System.out.println("deleteDirectory");
             deleteDirectory(target);
         }
+		System.out.println("copyDirectory");
         copyDirectory(source, target, false);
     }
 
