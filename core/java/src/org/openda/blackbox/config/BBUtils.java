@@ -253,18 +253,26 @@ public class BBUtils {
     }
 
     private static void checkSourceAndTarget(File source, File target, boolean sourceIsdirectory) {
-        if (!source.exists())
-            throw new RuntimeException("BBUtils.makeClone: source does not exist: " + source.getAbsolutePath());
-        if (!source.canRead())
-            throw new RuntimeException("BBUtils.makeClone: source is unreadable: " + source.getAbsolutePath());
+        if (!source.exists()) {
+			System.out.println("BBUtils.makeClone: source does not exist: " + source.getAbsolutePath());
+			throw new RuntimeException("BBUtils.makeClone: source does not exist: " + source.getAbsolutePath());
+		}
+        if (!source.canRead()) {
+			System.out.println("BBUtils.makeClone: source is unreadable: " + source.getAbsolutePath());
+			throw new RuntimeException("BBUtils.makeClone: source is unreadable: " + source.getAbsolutePath());
+		}
         if (target.exists()) {
             if (sourceIsdirectory) {
                 if (!target.isDirectory()) {
+					System.out.println("BBUtils.makeClone: target dir. " + target.getPath()
+						+ " already exists as a file.");
                     throw new RuntimeException("BBUtils.makeClone: target dir. " + target.getPath()
                             + " already exists as a file.");
                 }
             } else {
                 if (target.isDirectory()) {
+					System.out.println("BBUtils.makeFileClone: target file " + target.getPath()
+						+ " already exists as a directory.");
                     throw new RuntimeException("BBUtils.makeFileClone: target file " + target.getPath()
                             + " already exists as a directory.");
                 }
