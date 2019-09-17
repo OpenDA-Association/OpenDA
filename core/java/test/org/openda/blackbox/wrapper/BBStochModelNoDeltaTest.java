@@ -25,6 +25,7 @@ public class BBStochModelNoDeltaTest extends TestCase {
 
 		IStochModelFactory stochModelFactoryDelta = new BBStochModelFactory();
 		File workingDir = new File(testRunDataDir, "parameterNotAsDelta");
+		System.out.println("Working dir exists: " + workingDir);
 		stochModelFactoryDelta.initialize(workingDir, new String[]{"StochModelConfig_1.xml"});
 
 		IStochModelInstance stochModelInstanceDelta = stochModelFactoryDelta.getInstance(IStochModelFactory.OutputLevel.ModelDefault);
@@ -34,6 +35,7 @@ public class BBStochModelNoDeltaTest extends TestCase {
 
 		assertEquals(0.0, initialValuesParameterDelta[0]);
 		assertEquals(0.0, initialValuesParameterDelta[1]);
+		System.out.println("Assert equals initialValuesParameterDelta");
 
 		IVector axpyVector = new Vector(new double[]{5,5});
 		stochModelInstanceDelta.axpyOnParameters(1, axpyVector);
@@ -42,10 +44,14 @@ public class BBStochModelNoDeltaTest extends TestCase {
 
 		assertEquals(5.0, axpyValuesParameterDelta[0]);
 		assertEquals(5.0, axpyValuesParameterDelta[1]);
+		System.out.println("Assert equals axpyValuesParameterDelta");
 
 		stochModelInstanceDelta.compute(new Time(0.0));
 		stochModelInstanceDelta.finish();
-		String[] contentDelta = FileSupport.readContentOfFile(new File(workingDir, "work0/DummyParametersIdAndValues.txt"));
+		File dummyTextFile = new File(workingDir, "work0/DummyParametersIdAndValues.txt");
+
+		System.out.println("DummyTextFile " + dummyTextFile + " exists: " + dummyTextFile.exists());
+		String[] contentDelta = FileSupport.readContentOfFile(dummyTextFile);
 
 		BBStochModelFactory stochModelFactoryNoDelta = new BBStochModelFactory();
 		stochModelFactoryNoDelta.initialize(workingDir, new String[]{"StochModelConfig_2.xml"});
@@ -58,6 +64,7 @@ public class BBStochModelNoDeltaTest extends TestCase {
 
 		assertEquals(101.0, initialValuesParameterNoDelta[0]);
 		assertEquals(502.0, initialValuesParameterNoDelta[1]);
+		System.out.println("Assert equals initialValuesParameterNoDelta");
 
 		stochModelInstanceNoDelta.axpyOnParameters(1, axpyVector);
 		IVector parametersNoDeltaAxpy = stochModelInstanceNoDelta.getParameters();
@@ -65,16 +72,21 @@ public class BBStochModelNoDeltaTest extends TestCase {
 
 		assertEquals(106.0, axpyValuesParameterNoDelta[0]);
 		assertEquals(507.0, axpyValuesParameterNoDelta[1]);
+		System.out.println("Assert equals  axpyValuesParameterNoDelta");
 
 		stochModelInstanceNoDelta.compute(new Time(0.0));
-
+		System.out.println("stochModelInstanceNoDelta.compute");
 		stochModelInstanceNoDelta.finish();
-		String[] contentNoDelta = FileSupport.readContentOfFile(new File(workingDir, "work0/DummyParametersIdAndValues.txt"));
+		System.out.println("DummyTextFile " + dummyTextFile + " exists: " + dummyTextFile.exists());
+		String[] contentNoDelta = FileSupport.readContentOfFile(dummyTextFile);
 
 		assertEquals(contentDelta.length, contentNoDelta.length);
+		System.out.println("AssertEquals length contentDelta en contentNoDelta");
 		for (int i = 0; i < contentDelta.length; i++) {
 			assertEquals(contentDelta[i], contentNoDelta[i]);
+			System.out.println("AssertEquals contentDelta en contentNoDelta " + i);
 		}
+		System.out.println("AssertEquals all contentDelta en contentNoDelta");
 	}
 
 
