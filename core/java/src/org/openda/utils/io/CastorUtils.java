@@ -61,6 +61,7 @@ public class CastorUtils {
                 parsedObject = unmarshaller.unmarshal(is);
                 reader.close();
             } catch (ValidationException e) {
+				System.out.println("Validation exception " + e.getMessage());
                  throw new RuntimeException(e.getMessage() + " at " + e.getLocation() + " (file: " + xmlFile.getAbsolutePath() + ")");
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
