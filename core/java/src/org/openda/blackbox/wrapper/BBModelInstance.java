@@ -66,6 +66,8 @@ public class BBModelInstance extends Instance implements IModelInstance {
      * configuration or defaults to zet the timeHorizon
      */
 	public BBModelInstance(BBModelConfig bbModelConfig, int instanceNumber, ITime timeHorizon) {
+		//TODO EP: cleanup debug logging
+		System.out.println("Create new BBModelInstance with number: " + instanceNumber);
 		Results.putMessage("Create new BBModelInstance with number: "+instanceNumber);
 		this.bbModelConfig = bbModelConfig;
 		File configRootDir = bbModelConfig.getConfigRootDir();
@@ -74,10 +76,13 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		this.aliasDefinitions=bbModelConfig.getWrapperConfig().getAliasDefinitions().clone();
 		instanceNumberString = getInstanceNumberString(bbModelConfig, instanceNumber);
 		this.aliasDefinitions.setAliasValue("instanceNumber", instanceNumberString);
-		
+		//TODO EP: cleanup debug logging
+		System.out.println("this.aliasDefinitions.setAliasValue(\"instanceNumber\", instanceNumberString);");
 		// Create clone of template directory
         BBWrapperConfig bbWrapperConfig = bbModelConfig.getWrapperConfig();
+		System.out.println("BBWrapperConfig bbWrapperConfig = bbModelConfig.getWrapperConfig();");
         if (bbWrapperConfig.getCloneType() != BBWrapperConfig.CloneType.None) {
+			System.out.println("bbWrapperConfig.getCloneType() != BBWrapperConfig.CloneType.None");
 			File templateFileOrDir = new File(configRootDir, bbModelConfig.getWrapperConfig().getTemplateName(this.aliasDefinitions));
 			instanceFileOrDir = new File(configRootDir, bbModelConfig.getWrapperConfig().getInstanceName(this.aliasDefinitions));
 			if (instanceFileOrDir.exists() && bbModelConfig.skipModelActionsIfInstanceDirExists()) {

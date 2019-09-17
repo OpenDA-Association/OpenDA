@@ -153,7 +153,8 @@ public class BBStochModelFactory implements IStochModelFactory, ITimeHorizonCons
         }
 
 		int ensembleMemberIndex = instanceCounter.val();
-
+        // TODO EP: Cleanup debug loggin
+		System.out.println("int ensembleMemberIndex = instanceCounter.val();");
         return new BBStochModelInstance(configRootDir, modelInstance,
 				uncertaintyEngine,
 				getParameterUncertaintyForNewInstance(ensembleMemberIndex),
