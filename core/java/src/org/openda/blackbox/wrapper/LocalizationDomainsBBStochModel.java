@@ -1,34 +1,22 @@
 package org.openda.blackbox.wrapper;
 
-import org.openda.blackbox.config.BBNoiseModelConfig;
 import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.interfaces.ILocalizationDomains;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IStochModelInstance;
-import org.openda.utils.Array;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 public class LocalizationDomainsBBStochModel implements ILocalizationDomains {
 
 	private ArrayList<String> domainIds;
 	private ArrayList<Collection<BBStochModelVectorConfig>> predictorItems;
-	// TODO (GvdO): Should these unused members be removed?
-	private ArrayList<Collection<BBNoiseModelConfig>> noiseModels;
-	private ArrayList<Collection<IPrevExchangeItem>> exchangeItems;
 
 
-	public LocalizationDomainsBBStochModel(ArrayList<String> stateIds,
-		                                   ArrayList<Collection<BBNoiseModelConfig>> noiseModels,
-										   ArrayList<Collection<IPrevExchangeItem>> exchangeItems,
-										   ArrayList<Collection<BBStochModelVectorConfig>> predictorItems) {
+	public LocalizationDomainsBBStochModel(ArrayList<String> stateIds, ArrayList<Collection<BBStochModelVectorConfig>> predictorItems) {
 
 		this.domainIds = stateIds;
-		this.noiseModels = noiseModels;
-		this.exchangeItems = exchangeItems;
 		this.predictorItems = predictorItems;
 	}
 
