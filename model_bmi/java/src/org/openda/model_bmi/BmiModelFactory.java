@@ -44,6 +44,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * ModelFactory that creates instances of the BMIModelInstance class.
@@ -64,9 +65,8 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	private String modelPythonModuleName;
 	private String modelPythonClassName;
 	private ArrayList<BmiModelForcingConfig> forcingConfiguration;
-	private String[] modelStateExchangeItemIds;
-	private Double[] modelStateExchangeItemLowerLimits;
-	private Double[] modelStateExchangeItemUpperLimits;
+	private ArrayList<BmiModelForcingConfig> staticLimitConfiguration;
+	private List<BmiModelStateExchangeItemsInfo> modelStateExchangeItemInfos;
 
 	// model variables.
 	private File modelTemplateDirectory = null;
@@ -132,9 +132,8 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		this.instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
 		this.relativeModelConfigFilePath = configReader.getRelativeModelConfigFilePath();
 		this.forcingConfiguration = configReader.getBmiModelForcingConfigs();
-		this.modelStateExchangeItemIds = configReader.getModelStateExchangeItemIds();
-		this.modelStateExchangeItemLowerLimits = configReader.getModelStateExchangeItemLowerLimits();
-		this.modelStateExchangeItemUpperLimits = configReader.getModelStateExchangeItemUpperLimits();
+		this.staticLimitConfiguration = configReader.getStaticLimitDataConfigs();
+		this.modelStateExchangeItemInfos = configReader.getModelStateExchangeItemInfos();
 		this.inputStateDir = configReader.getInputStateDir();
 		this.outputStateDir = configReader.getOutputStateDir();
 		this.modelMissingValue = configReader.getModelMissingValue();
@@ -185,8 +184,7 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 			// modelConfigFile must be a relative path.
 			File instanceConfigFile = new File(instanceDirectory, this.relativeModelConfigFilePath);
 
-			return new BmiModelInstance(this.currentModelInstanceNumber.val(), model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,
-					this.forcingConfiguration, this.modelStateExchangeItemIds, this.modelStateExchangeItemLowerLimits, this.modelStateExchangeItemUpperLimits, inputStateDir, outputStateDir, modelMissingValue);
+			return new BmiModelInstance(this.currentModelInstanceNumber.val(), model, instanceDirectory, instanceConfigFile,timeHorizonFromOutside,this.forcingConfiguration, staticLimitConfiguration, modelStateExchangeItemInfos, inputStateDir, outputStateDir, modelMissingValue);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
@@ -323,5 +321,47 @@ public class BmiModelFactory implements IModelFactory, ITimeHorizonConsumer {
 	@Override
 	public void finish() {
 		// do nothing.
+	}
+
+	public static class BmiModelStateExchangeItemsInfo {
+		private String stateId;
+		private String[] modelStateExchangeItemIds;
+		private Double[] modelStateExchangeItemLowerLimits;
+		private Double[] modelStateExchangeItemUpperLimits;
+		private final String[] lowerLimitExchangeItemIds;
+		private final String[] upperLimitExchangeItemIds;
+
+		public BmiModelStateExchangeItemsInfo(String stateId, String[] modelStateExchangeItemIds, Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits, String[] lowerLimitExchangeItemIds, String[] upperLimitExchangeItemIds) {
+			this.stateId = stateId;
+			this.modelStateExchangeItemIds = modelStateExchangeItemIds;
+			this.modelStateExchangeItemLowerLimits = modelStateExchangeItemLowerLimits;
+			this.modelStateExchangeItemUpperLimits = modelStateExchangeItemUpperLimits;
+			this.lowerLimitExchangeItemIds = lowerLimitExchangeItemIds;
+			this.upperLimitExchangeItemIds = upperLimitExchangeItemIds;
+		}
+
+		public String[] getModelStateExchangeItemIds() {
+			return modelStateExchangeItemIds;
+		}
+
+		public Double[] getModelStateExchangeItemLowerLimits() {
+			return modelStateExchangeItemLowerLimits;
+		}
+
+		public Double[] getModelStateExchangeItemUpperLimits() {
+			return modelStateExchangeItemUpperLimits;
+		}
+
+		public String[] getLowerLimitExchangeItemIds() {
+			return lowerLimitExchangeItemIds;
+		}
+
+		public String[] getUpperLimitExchangeItemIds() {
+			return upperLimitExchangeItemIds;
+		}
+
+		public String getStateId() {
+			return stateId;
+		}
 	}
 }

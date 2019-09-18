@@ -36,6 +36,7 @@
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="bmiModelForcingsConfig" type="openda:BmiModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="spaceVaryingLimits" type="openda:BmiModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="bmiModelStateExchangeItems" type="openda:BmiModelStateExchangeItemXML"/>
 			<xs:element name="missingValue" type="xs:double" minOccurs="0">
 				<xs:annotation>
@@ -92,16 +93,32 @@
 								<xs:documentation>Name of a State ExchangeItem.</xs:documentation>
 							</xs:annotation>
 						</xs:element>
-						<xs:element name="lowerLimit" type="xs:double" minOccurs="0">
-							<xs:annotation>
-								<xs:documentation>Optional. If the value of a model exchange item is below the lower limit, then the value is changed to the lower limit.</xs:documentation>
-							</xs:annotation>
-						</xs:element>
-						<xs:element name="upperLimit" type="xs:double" minOccurs="0">
-							<xs:annotation>
-								<xs:documentation>Optional. If the value of a model exchange item is above the upper limit, then the value is changed to the upper limit. </xs:documentation>
-							</xs:annotation>
-						</xs:element>
+            <xs:choice minOccurs="0">
+              <xs:element name="lowerLimit" type="xs:double">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is below the lower limit, then the value is changed to the lower limit.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="spaceVaryingLowerLimitExchangeItemId" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is below the value of the value of this lower limit exchange item, then the value is changed to the lower limit.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+            <xs:choice minOccurs="0">
+              <xs:element name="upperLimit" type="xs:double" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is above the upper limit, then the value is changed to the upper limit.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="spaceVaryingUpperLimitExchangeItemId" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is above the value of the value of this upper limit exchange item, then the value is changed to the upper limit.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
