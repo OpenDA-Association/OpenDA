@@ -53,7 +53,6 @@ public class BmiModelFactoryConfigReader {
 	public BmiModelFactoryConfigReader(File configFile) {
 		BmiModelFactoryConfigXML castor = (BmiModelFactoryConfigXML) CastorUtils.parse(configFile,
 				BmiModelFactoryConfigXML.class);
-
 		if (castor.getBmiModelFactoryConfigXMLChoice().getPythonModel() != null) {
 			BmiPythonModelXML pythonModel = castor.getBmiModelFactoryConfigXMLChoice().getPythonModel();
 
@@ -92,7 +91,6 @@ public class BmiModelFactoryConfigReader {
 			throw new IllegalArgumentException("Unknown model type configured in bmiModelFactoryConfigFile "
 					+ configFile.getAbsolutePath());
 		}
-
 		String modelTemplateDirectoryPath = castor.getModelTemplateDirectory();
 		this.modelTemplateDirectory = new File(configFile.getParentFile(), modelTemplateDirectoryPath);
 		if (!this.modelTemplateDirectory.exists()) {
@@ -106,7 +104,6 @@ public class BmiModelFactoryConfigReader {
 			throw new RuntimeException(getClass().getSimpleName() + ": Cannot find model config file "
 					+ modelConfigFile.getAbsolutePath() + " configured in " + configFile.getAbsolutePath());
 		}
-
 		bmiModelForcingConfigs = new ArrayList<BmiModelForcingConfig>();
 		BmiModelForcingsConfigXML[] bmiModelForcingsConfigXMLs = castor.getBmiModelForcingsConfig();
 		if (bmiModelForcingsConfigXMLs.length > 0){
@@ -121,7 +118,6 @@ public class BmiModelFactoryConfigReader {
 				bmiModelForcingConfigs.add(bmiModelForcingConfig);
 			}
 		}
-
 		staticLimitDataConfigs = new ArrayList<BmiModelForcingConfig>();
 		int staticLimitDataObjectsCount = castor.getStaticLimitDataObjectsCount();
 		for (int i = 0; i < staticLimitDataObjectsCount; i++) {
@@ -135,7 +131,6 @@ public class BmiModelFactoryConfigReader {
 			BmiModelForcingConfig bmiModelForcingConfig = new BmiModelForcingConfig(dataObjectClassName, configFile.getParentFile(), fileName, dataObjectArguments);
 			staticLimitDataConfigs.add(bmiModelForcingConfig);
 		}
-
 		bmiModelStateExchangeItemsInfos = new ArrayList<>();
 		for (int i = 0; i < castor.getBmiModelStateExchangeItemsCount(); i++) {
 			List<String> stateVectorIds = new ArrayList<>();
@@ -174,7 +169,6 @@ public class BmiModelFactoryConfigReader {
 			}
 			bmiModelStateExchangeItemsInfos.add(new BmiModelFactory.BmiModelStateExchangeItemsInfo(stateId, stateVectorIds.toArray(new String[0]), lowerLimits.toArray(new Double[0]), upperLimits.toArray(new Double[0]), lowerLimitExchangeItemIds.toArray(new String[0]), upperLimitExchangeItemIds.toArray(new String[0])));
 		}
-
 		this.inputStateDir = castor.getInputStateDirectory();
 		this.outputStateDir = castor.getOutputStateDirectory();
 

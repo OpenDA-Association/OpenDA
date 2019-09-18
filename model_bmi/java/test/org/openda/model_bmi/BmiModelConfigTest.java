@@ -47,7 +47,6 @@ public class BmiModelConfigTest extends TestCase {
 			assertEquals(expectedLowerLimits1[i], lowerLimits1[i]);
 			assertEquals(expectedUpperLimits1[i], upperLimits1[i]);
 		}
-
 	}
 
 	public void testNoStateIds() {
