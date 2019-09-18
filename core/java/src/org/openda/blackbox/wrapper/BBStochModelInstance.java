@@ -566,7 +566,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public ITreeVector getParameters() {
-		// TODO EP: create new vector clone with values from exchangeItem added
 		// Store as lastReturnedParamsTreeVector
 		boolean useValuesInsteadOfDelta = bbStochModelVectorsConfig.isUseValuesInsteadOfDelta();
 		if (!useValuesInsteadOfDelta) return paramsTreeVector;
@@ -602,7 +601,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					parameters.getClass().getName());
 		}
 
-		// TODO EP if true
 		boolean useValuesInsteadOfDelta = bbStochModelVectorsConfig.isUseValuesInsteadOfDelta();
 
 		for (BBRegularisationConstantConfig regularisationConstantConfig : bbStochModelVectorsConfig.getRegularisationConstantCollection()) {
@@ -1859,7 +1857,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				double nextNoiseValueX;
 				int stepsX;
 				double stepNoiseValueX;
-				if (nextNoiseValueXIndex >= noise.length) {//TODO EP: Fix because incorrect when 2D
+				if (nextNoiseValueXIndex >= noise.length) {
 					nextNoiseValueX = noise[noise.length - 1];
 					double previousNoiseValue = noise[noise.length - 2];
 					stepsX = valuesAsDoubles.length % stateSizeNoiseSizeRatioX;
@@ -1877,7 +1875,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				double nextNoiseValueY;
 				int stepsY;
 				double stepNoiseValueY;
-				if (nextNoiseValueYIndex >= noise.length) {//TODO EP: Fix because incorrect when 2D
+				if (nextNoiseValueYIndex >= noise.length) {
 					nextNoiseValueY = noise[noise.length - 1];
 					double previousNoiseValue = noise[noise.length - 2];
 					stepsY = valuesAsDoubles.length % stateSizeNoiseSizeRatioY;
