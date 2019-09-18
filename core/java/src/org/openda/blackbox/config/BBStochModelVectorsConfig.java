@@ -35,14 +35,15 @@ public class BBStochModelVectorsConfig {
     private BBStochModelStateConfig stateConfig;
     private Collection<BBStochModelVectorConfig> predictorVectorCollection;
     private final RangeValidationConstraint[] rangeValidationConstraints;
-    private boolean collectPredictorTimeSeries;
+	private boolean useValuesInsteadOfDelta;
+	private boolean collectPredictorTimeSeries;
 
     public BBStochModelVectorsConfig(List<BBNoiseModelConfig> paramsUncertaintyModelConfigs,
-                                     Collection<BBRegularisationConstantConfig> regularisationConstantCollection,
-                                     Collection<BBCartesianToPolarConfig> cartesianToPolarCollection,
-                                     BBStochModelStateConfig stateConfig,
-                                     Collection<BBStochModelVectorConfig> predictorVectorCollection,
-                                     boolean collectPredictorTimeSeries, RangeValidationConstraint[] rangeValidationConstraints) {
+									 Collection<BBRegularisationConstantConfig> regularisationConstantCollection,
+									 Collection<BBCartesianToPolarConfig> cartesianToPolarCollection,
+									 BBStochModelStateConfig stateConfig,
+									 Collection<BBStochModelVectorConfig> predictorVectorCollection,
+									 boolean collectPredictorTimeSeries, RangeValidationConstraint[] rangeValidationConstraints, boolean useValuesInsteadOfDelta) {
 		this.paramsUncertaintyModelConfigs = paramsUncertaintyModelConfigs;
 		this.regularisationConstantCollection = regularisationConstantCollection;
         this.cartesianToPolarCollection = cartesianToPolarCollection;
@@ -50,7 +51,8 @@ public class BBStochModelVectorsConfig {
         this.predictorVectorCollection = predictorVectorCollection;
         this.collectPredictorTimeSeries = collectPredictorTimeSeries;
         this.rangeValidationConstraints = rangeValidationConstraints;
-    }
+		this.useValuesInsteadOfDelta = useValuesInsteadOfDelta;
+	}
 
 	public List<BBNoiseModelConfig> getParamsUncertaintyModelConfigs() {
 		return paramsUncertaintyModelConfigs;
@@ -79,4 +81,8 @@ public class BBStochModelVectorsConfig {
     public boolean isCollectPredictorTimeSeries(){
         return collectPredictorTimeSeries;
     }
+
+	public boolean isUseValuesInsteadOfDelta() {
+		return useValuesInsteadOfDelta;
+	}
 }

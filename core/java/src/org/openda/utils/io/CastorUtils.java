@@ -62,12 +62,12 @@ public class CastorUtils {
                 reader.close();
             } catch (ValidationException e) {
                  throw new RuntimeException(e.getMessage() + " at " + e.getLocation() + " (file: " + xmlFile.getAbsolutePath() + ")");
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
-            } catch (org.exolab.castor.xml.MarshalException e) {
-                throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
+			} catch (IOException e) {
+				throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
+			} catch (org.exolab.castor.xml.MarshalException e) {
+				throw new RuntimeException(e.getMessage() + " (file: " + xmlFile.getAbsolutePath() + ")");
             }
         }
         return parsedObject;

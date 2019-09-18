@@ -463,6 +463,11 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
+    <xs:attribute name="useValuesInsteadOfDelta" type="xs:boolean" use="optional" default="false">
+      <xs:annotation>
+        <xs:documentation>Use values instead of deltas in exchange items useful for setting range limits on actual values</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="BlackBoxStochModelStateXML">
 		<xs:choice maxOccurs="unbounded">
