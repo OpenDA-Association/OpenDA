@@ -523,8 +523,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			if (noiseModelState instanceof ITreeVector) {
 				stateTreeVector.addChild((ITreeVector) noiseModelState);
 			} else {
-				// TODO (GvdO) : Should this be made unique by prepending stateId?
-				String id = "noise_part_" + i;
+				String id = useLocalAnalysis ? stateId +"_noise_part_" + i : "noise_part_" + i;
 				ITreeVector tv = new TreeVector(id, noiseModelState);
 				stateTreeVector.addChild(tv);
 			}
@@ -546,7 +545,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		Collection<BBStochModelVectorConfig> vectorCollection =
 			this.bbStochModelVectorsConfig.getStateConfig(stateId).getVectorCollection();
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-			stateTreeVector.addChild(vectorConfig.getId(), getExchangeItem(vectorConfig.getId()).getValuesAsDoubles());
+			String id = vectorConfig.getId();
+			IPrevExchangeItem exchangeItem = getExchangeItem(id);
+			stateTreeVector.addChild(id, exchangeItem.getValuesAsDoubles());
 		}
 
 		return stateTreeVector;
@@ -859,7 +860,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	//
 	// StochModelInstance Functions
 	//
-	// TODO (GvdO): Check with SH and Nils whether this implementation is correct...
 	public IStochVector getStateUncertainty() {
 
 		ArrayList<String> stateIds = this.getOrderedStateIds();
@@ -1213,7 +1213,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-	//TODO (GvdO): Should these vectors be deeper or flattened?
 	private IVector[] getObservedLocalizationExtended(IObservationDescriptions observationDescriptions, double distance){
 
 		int nObs = observationDescriptions.getObservationCount();
@@ -1241,8 +1240,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					if (noiseModelState instanceof ITreeVector) {
 						localizationVectors[iObs].addChild((ITreeVector) noiseModelState.clone());
 					} else {
-						//TODO (GvdO): Should this id be made unique?
-						String id = "noise_part_" + iNoise;
+						String id = useLocalAnalysis ? stateId + "_noise_part_" + iNoise : "noise_part_" + iNoise;
 						ITreeVector tv = new TreeVector(id, noiseModelState);
 						localizationVectors[iObs].addChild(tv);
 					}
@@ -1314,7 +1312,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				predictorItems.add(predictorItemsInState);
 			}
 
-			return new LocalizationDomainsBBStochModel(stateIds, noiseModelConfigs, exchangeItems, predictorItems);
+			return new LocalizationDomainsBBStochModel(stateIds, predictorItems);
 		}
 
 		int numberOfDomains = this.getOrderedStateIds().size();
@@ -1332,7 +1330,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.BBStochModelInstance.getObservedLocalization(): Not implemented yet.");
 	}
 
-	//TODO (GvdO): Should this be deeper or flattened?
 	public IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance) {
 
 		if (model instanceof IModelExtensions) {
@@ -1367,10 +1364,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				noiseModelWeights.add(noiseModelObservedLocalization);
 			}
 			for (int i = 0; i < obsCount; i++) {
-				//TODO (GvdO): Should this be made unique?
 				TreeVector noiseModelWeightsTreeVector = new TreeVector("weights-for-noiseModels");
 				for (int n = 0; n < noiseModelCount; n++) {
-					noiseModelWeightsTreeVector.addChild("Noise-Model" + n, noiseModelWeights.get(n)[i].getValues());
+					noiseModelWeightsTreeVector.addChild(stateId + "_Noise-Model" + n, noiseModelWeights.get(n)[i].getValues());
 				}
 
 				ITreeVector modelWeightsTreeVector = getLocalizedCohnWeights(stateId, obsId[i], distance,
