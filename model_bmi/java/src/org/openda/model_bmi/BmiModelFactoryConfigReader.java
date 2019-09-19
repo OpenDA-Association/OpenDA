@@ -119,9 +119,9 @@ public class BmiModelFactoryConfigReader {
 			}
 		}
 		staticLimitDataConfigs = new ArrayList<BmiModelForcingConfig>();
-		int staticLimitDataObjectsCount = castor.getStaticLimitDataObjectsCount();
+		int staticLimitDataObjectsCount = castor.getSpaceVaryingLimitsCount();
 		for (int i = 0; i < staticLimitDataObjectsCount; i++) {
-			BmiModelForcingsConfigXML staticLimitConfig = castor.getStaticLimitDataObjects(i);
+			BmiModelForcingsConfigXML staticLimitConfig = castor.getSpaceVaryingLimits(i);
 			ForcingDataObjectXML dataObjectXML = staticLimitConfig.getDataObject();
 
 			String dataObjectClassName = dataObjectXML.getClassName();
@@ -150,8 +150,8 @@ public class BmiModelFactoryConfigReader {
 				} else if (lowerLimitChoice.hasLowerLimit()) {
 					lowerLimits.add(lowerLimitChoice.getLowerLimit());
 				}
-				if (lowerLimitChoice != null && lowerLimitChoice.getLowerLimitExchangeItemId() != null) {
-					lowerLimitExchangeItemIds.add(lowerLimitChoice.getLowerLimitExchangeItemId());
+				if (lowerLimitChoice != null && lowerLimitChoice.getSpaceVaryingLowerLimitExchangeItemId() != null) {
+					lowerLimitExchangeItemIds.add(lowerLimitChoice.getSpaceVaryingLowerLimitExchangeItemId());
 				} else {
 					lowerLimitExchangeItemIds.add(null);
 				}
@@ -161,8 +161,8 @@ public class BmiModelFactoryConfigReader {
 				} else if (upperLimitChoice.hasUpperLimit()) {
 					upperLimits.add(upperLimitChoice.getUpperLimit());
 				}
-				if (upperLimitChoice != null && upperLimitChoice.getUpperLimitExchangeItemId() != null) {
-					upperLimitExchangeItemIds.add(upperLimitChoice.getUpperLimitExchangeItemId());
+				if (upperLimitChoice != null && upperLimitChoice.getSpaceVaryingUpperLimitExchangeItemId() != null) {
+					upperLimitExchangeItemIds.add(upperLimitChoice.getSpaceVaryingUpperLimitExchangeItemId());
 				} else {
 					upperLimitExchangeItemIds.add(null);
 				}
