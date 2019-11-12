@@ -12,13 +12,13 @@ public class CalLibDudAlgorithm extends Dud implements ICalLibAlgorithm {
 			while(this.hasNext()){
 				this.next();
 			}
-			((CalLibStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
-				setAlgorithmDoneFlag(CalLibStochModelInstance.ExitStatus.DONE);
+			// Calling getInstance returns a new instance but setAlgorithmDoneFlag sets it in a shared communicator class
+			((CalLibStochModelInstance) this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag(ExitStatus.DONE);
 		} catch (Exception e) {
 			String errorString = e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
 			System.out.println(errorString);
-			((CalLibStochModelInstance)this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
-				setAlgorithmDoneFlag(CalLibStochModelInstance.ExitStatus.ERROR, errorString);
+			// Calling getInstance returns a new instance but setAlgorithmDoneFlag sets it in a shared communicator class
+			((CalLibStochModelInstance) this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag(ExitStatus.ERROR, errorString);
 		}
 	}
 

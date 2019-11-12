@@ -10,27 +10,14 @@ import java.io.File;
 
 public class CalLibStochModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, IClonableStochModelInstance, Cloneable {
 
-	private ExitStatus exitStatus;
-	private String errorString = "(no errors set)";
-
-	// possible status values
-	public enum ExitStatus {
-		CREATED,
-		DONE,
-		RUNNING,
-		ERROR
-	}
-
-	private Vector modelResults = null;
 	private Vector initialParameterVector;
+	private CalibrationCommunicator calibrationCommunicator;
 
 	private final StochVector parameterUncertainties;
-	private Vector parameterVector = null;
 
-	private final int sleepTimeInMillis = 100;
-
-	CalLibStochModelInstance(double[] parameterValues, double[] standardDeviations) {
+	CalLibStochModelInstance(double[] parameterValues, double[] standardDeviations, CalibrationCommunicator calibrationCommunicator) {
 		this.initialParameterVector = new Vector(parameterValues);
+		this.calibrationCommunicator = calibrationCommunicator;
 		this.parameterUncertainties = new StochVector(parameterValues, standardDeviations);
 	}
 
@@ -62,8 +49,8 @@ public class CalLibStochModelInstance implements IStochModelInstance, IStochMode
 	}
 
 	public void setParameters(IVector parameters) {
-		parameterVector = new Vector(parameters.getValues());
-		initialParameterVector = parameterVector.clone();
+		calibrationCommunicator.setParameters(parameters);
+		initialParameterVector = new Vector(parameters.getValues());
 // Next code was add to check results when calibration is run in python
 // Introduce a debug (level) flag and reactivate
 //		System.out.print("parameters set from algorithm:");
@@ -74,8 +61,9 @@ public class CalLibStochModelInstance implements IStochModelInstance, IStochMode
 	}
 
 	public void axpyOnParameters(double alpha, IVector vector) {
-		parameterVector = new Vector(initialParameterVector.getValues());
+		Vector parameterVector = new Vector(initialParameterVector.getValues());
 		parameterVector.axpy(alpha, vector);
+		calibrationCommunicator.setParameters(parameterVector);
 		initialParameterVector = parameterVector.clone();
 // Next code was add to check results when calibration is run in python
 // Introduce a debug (level) flag and reactivate
@@ -246,13 +234,6 @@ public class CalLibStochModelInstance implements IStochModelInstance, IStochMode
 			throw new RuntimeException("Unexpected type " + observationDescriptions.getClass() +
 				"org.openda.geolab.CalLibStochModelInstance.announceObservedValues()");
 		}
-		while (modelResults == null) {
-			try {
-				Thread.sleep(sleepTimeInMillis);
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Thread that runs the CalLibStochModelInstance has been interrupted");
-			}
-		}
 // Next code was add to check results when calibration is run in python
 // Introduce a debug (level) flag and reactivate
 //		System.out.print("model results to algorithm:");
@@ -260,39 +241,7 @@ public class CalLibStochModelInstance implements IStochModelInstance, IStochMode
 //			System.out.print(" " + modelResults.getValue(i));
 //		}
 //		System.out.println("");
-		IVector observedValues = modelResults;
-		modelResults = null;
-		return observedValues;
-	}
-
-	double[] getParametersAsSetByAlgorithm() {
-		while (parameterVector == null && exitStatus == ExitStatus.RUNNING) {
-			try {
-				Thread.sleep(sleepTimeInMillis);
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Thread that runs the CalLibStochModelInstance has been interrupted");
-			}
-		}
-		if (exitStatus == ExitStatus.DONE ) {
-			return null;
-		} else if (exitStatus == ExitStatus.ERROR){
-			return new double[0];
-		} else {
-			if (parameterVector == null) {
-				return new double[0];
-			}
-			double[] parameterValues = parameterVector.getValues();
-			parameterVector = null;
-			return parameterValues;
-		}
-	}
-
-	String getErrorString() {
-		return errorString;
-	}
-
-	void setModelResults(double[] modelResults) {
-		this.modelResults = new Vector(modelResults);
+		return calibrationCommunicator.getModelResults();
 	}
 
 	void setAlgorithmDoneFlag(ExitStatus exitStatus) {
@@ -300,10 +249,8 @@ public class CalLibStochModelInstance implements IStochModelInstance, IStochMode
 	}
 
 	void setAlgorithmDoneFlag(ExitStatus exitStatus, String errorString) {
-		this.exitStatus = exitStatus;
-		if (errorString != null) {
-			this.errorString = errorString;
-		}
+		calibrationCommunicator.setExitStatus(exitStatus);
+		if (errorString != null) calibrationCommunicator.setErrorString(errorString);
 	}
 
 	public IStochModelInstance getCopyOf() {

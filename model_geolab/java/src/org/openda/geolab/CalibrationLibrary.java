@@ -22,12 +22,15 @@ package org.openda.geolab;
 
 import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.IStochObserver;
-import org.openda.resultwriters.CsvResultWriter;
 import org.openda.resultwriters.PythonResultWriter;
 import org.openda.utils.Results;
+import org.openda.utils.Vector;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class CalibrationLibrary implements ICalibrationLibrary {
 
@@ -42,6 +45,7 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	private CalLibResultWriter calLibResultWriter = new CalLibResultWriter();
 
 	private LinkedHashMap<String, CalLibAlgorithmSettings> algorithmSettings = new LinkedHashMap<>();
+	private CalibrationCommunicator calibrationCommunicator;
 
 	@SuppressWarnings("WeakerAccess")
 	public CalibrationLibrary() {
@@ -53,7 +57,6 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 			this.workingDir = workingDir;
 
 			stochModelFactory = null;
-			CalLibStochModelFactory.stochModelInstance = null;
 			algorithm = null;
 
 			String algorithmName = "Dud";
@@ -82,12 +85,13 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	}
 
 	public int modelSetParameterDefinitions(double[] initialParameterValues, double[] standardDeviations) {
-		stochModelFactory = new CalLibStochModelFactory(initialParameterValues, standardDeviations);
+		calibrationCommunicator = new CalibrationCommunicator();
+		stochModelFactory = new CalLibStochModelFactory(initialParameterValues, standardDeviations, calibrationCommunicator);
 		return 0;
 	}
 
 	public int modelSetResults(double[] modelResults) {
-		CalLibStochModelFactory.setlastModelResults(modelResults);
+		calibrationCommunicator.setModelResults(new Vector(modelResults));
 		return 0;
 	}
 
@@ -97,7 +101,8 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 			Thread algorithmThread = new Thread(algorithm);
 			algorithmThread.start();
 		}
-		double[] nextParams = CalLibStochModelFactory.waitForNextParams();
+		Vector parameters = calibrationCommunicator.getParameters();
+		double[] nextParams = parameters != null ? parameters.getValues() : null;
 		if (nextParams == null) {
 			optimalParameterValues = algorithm.getBestEstimate().getParameters().getValues();
 		}
@@ -105,8 +110,7 @@ public class CalibrationLibrary implements ICalibrationLibrary {
 	}
 
 	public String getErrorMessage() {
-		return ((CalLibStochModelInstance)stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).
-			getErrorString();
+		return calibrationCommunicator.getErrorString();
 	}
 
 	public List<String> getAlgorithmNames() {

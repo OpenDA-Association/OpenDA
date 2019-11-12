@@ -10,11 +10,12 @@ public class CalLibStochModelFactory implements IStochModelFactory {
 
 	private final double[] initialParameterValues;
 	private final double[] standardDeviations;
-	static CalLibStochModelInstance stochModelInstance;
+	private CalibrationCommunicator calibrationCommunicator;
 
-	CalLibStochModelFactory(double[] initialParameterValues, double[] standardDeviations) {
+	CalLibStochModelFactory(double[] initialParameterValues, double[] standardDeviations, CalibrationCommunicator calibrationCommunicator) {
 		this.initialParameterValues = initialParameterValues;
 		this.standardDeviations = standardDeviations;
+		this.calibrationCommunicator = calibrationCommunicator;
 // Next code was add to check results when calibration is run in python
 // Introduce a debug (level) flag and reactivate
 //		System.out.print("initial parameters:");
@@ -29,15 +30,9 @@ public class CalLibStochModelFactory implements IStochModelFactory {
 //		System.out.println("");
 	}
 
-	static void setlastModelResults(double[] modelResults) {
-		stochModelInstance.setModelResults(modelResults);
-	}
-
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
-		if (stochModelInstance == null) {
-			stochModelInstance = new CalLibStochModelInstance(initialParameterValues, standardDeviations);
-		}
-		stochModelInstance.setAlgorithmDoneFlag(CalLibStochModelInstance.ExitStatus.RUNNING);
+		CalLibStochModelInstance stochModelInstance = new CalLibStochModelInstance(initialParameterValues, standardDeviations, calibrationCommunicator);
+		stochModelInstance.setAlgorithmDoneFlag(ExitStatus.RUNNING);
 		return stochModelInstance;
 	}
 
@@ -51,9 +46,5 @@ public class CalLibStochModelFactory implements IStochModelFactory {
 
 	public void initialize(File workingDir, String[] arguments) {
 		// no action needed
-	}
-
-	static double[] waitForNextParams() {
-		return stochModelInstance.getParametersAsSetByAlgorithm();
 	}
 }
