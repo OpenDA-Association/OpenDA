@@ -1,6 +1,5 @@
 package org.openda.geolab;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openda.algorithms.Dud;
 import org.openda.interfaces.IStochModelFactory;
 
@@ -15,10 +14,10 @@ public class CalLibDudAlgorithm extends Dud implements ICalLibAlgorithm {
 			// Calling getInstance returns a new instance but setAlgorithmDoneFlag sets it in a shared communicator class
 			((CalLibStochModelInstance) this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag(ExitStatus.DONE);
 		} catch (Exception e) {
-			String errorString = e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
-			System.out.println(errorString);
+			System.out.println(e.getMessage());
+			e.printStackTrace(System.out);
 			// Calling getInstance returns a new instance but setAlgorithmDoneFlag sets it in a shared communicator class
-			((CalLibStochModelInstance) this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag(ExitStatus.ERROR, errorString);
+			((CalLibStochModelInstance) this.stochModelFactory.getInstance(IStochModelFactory.OutputLevel.Suppress)).setAlgorithmDoneFlag(ExitStatus.ERROR, e.getMessage());
 		}
 	}
 
