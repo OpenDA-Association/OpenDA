@@ -19,7 +19,11 @@
 */
 package org.openda.application;
 
+import org.openda.utils.generalJavaUtils.StringUtilities;
 import py4j.GatewayServer;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Setup a Py4JServer to couple OpenDa to Python
@@ -28,20 +32,54 @@ import py4j.GatewayServer;
 
 
 public class Py4JServer {
+	private static final String JAVA_ADDRESS = "javaAddress";
+	private static final String CALLBACK_CLIENT_ADDRESS = "callbackClientAddress";
+	private static final String DEFAULT_ADDRESS = "127.0.0.1";
 
 	//public int addition(int first, int second) {
 	//	System.out.println("bla");
 	//	return first + second;
 	//}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException {
 		System.out.println("Starting up the Py4JServer to make OpenDA callable from Python");
 
-		Py4JServer app = new Py4JServer();
-		// app is now the gateway.entry_point
-		GatewayServer server = new GatewayServer(app);
+		String javaAddress = DEFAULT_ADDRESS;
+		String callbackClientAddress = DEFAULT_ADDRESS;
+		for (int i = 1; i < args.length; i++) {
+			String argument = args[i];
+			String[] keyValue = StringUtilities.getKeyValuePair(argument);
+			String key = keyValue[0];
+			String value = keyValue[1];
+			switch (key) {
+				case JAVA_ADDRESS:
+					javaAddress = value;
+					continue;
+				case CALLBACK_CLIENT_ADDRESS:
+					callbackClientAddress = value;
+					continue;
+				default:
+					throw new RuntimeException("Unknown key " + key + ". Please specify only " + JAVA_ADDRESS + " and/or " + CALLBACK_CLIENT_ADDRESS + " as key=value pair");
+			}
+		}
+
+		GatewayServer server = getGatewayServer(javaAddress, callbackClientAddress);
+
 		server.start();
 	}
+
+	private static GatewayServer getGatewayServer(String javaAddress, String callbackClientAddress) throws UnknownHostException {
+		Py4JServer app = new Py4JServer();
+		// app is now the gateway.entry_point
+		if (javaAddress.equals(DEFAULT_ADDRESS) && callbackClientAddress.equals(DEFAULT_ADDRESS)) return new GatewayServer(app);
+		return new GatewayServer.GatewayServerBuilder()
+			.entryPoint(app)
+			.javaPort(25333)
+			.javaAddress(InetAddress.getByName(javaAddress))
+			.callbackClient(25334, InetAddress.getByName(callbackClientAddress))
+			.build();
+	}
+
 }
 
 
