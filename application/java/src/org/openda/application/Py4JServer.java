@@ -46,8 +46,7 @@ public class Py4JServer {
 
 		String javaAddress = DEFAULT_ADDRESS;
 		String callbackClientAddress = DEFAULT_ADDRESS;
-		for (int i = 1; i < args.length; i++) {
-			String argument = args[i];
+		for (String argument : args) {
 			String[] keyValue = StringUtilities.getKeyValuePair(argument);
 			String key = keyValue[0];
 			String value = keyValue[1];
@@ -71,6 +70,8 @@ public class Py4JServer {
 	private static GatewayServer getGatewayServer(String javaAddress, String callbackClientAddress) throws UnknownHostException {
 		Py4JServer app = new Py4JServer();
 		// app is now the gateway.entry_point
+		System.out.println("Using java address " + javaAddress);
+		System.out.println("Using callback client address " + callbackClientAddress);
 		if (javaAddress.equals(DEFAULT_ADDRESS) && callbackClientAddress.equals(DEFAULT_ADDRESS)) return new GatewayServer(app);
 		return new GatewayServer.GatewayServerBuilder()
 			.entryPoint(app)
