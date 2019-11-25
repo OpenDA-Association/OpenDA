@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="ExternalModelStochModelFactoryConfigXML">
+    <xs:sequence>
+      <xs:element name="portNumber" type="xs:integer"/>
+      <xs:element name="parameter" type="openda:ExternalModelParameterComplexType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExternalModelParameterComplexType">
+    <xs:attribute name="value" type="xs:double" use="required"/>
+    <xs:attribute name="stdDev" type="xs:double" use="required"/>
+    <xs:attribute name="lowerBound" type="xs:double"/>
+    <xs:attribute name="upperBound" type="xs:double"/>
+  </xs:complexType>
+</xs:schema>
