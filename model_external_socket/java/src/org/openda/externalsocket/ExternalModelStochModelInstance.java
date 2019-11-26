@@ -12,6 +12,7 @@ public class ExternalModelStochModelInstance implements IStochModelInstance, ISt
 
 	private int portNumber;
 	private Vector parameterVector;
+	private Vector modelResults;
 	private final double[] lowerBounds;
 	private final double[] upperBounds;
 	private final StochVector parameterUncertainties;
@@ -228,7 +229,7 @@ public class ExternalModelStochModelInstance implements IStochModelInstance, ISt
 		for (int i = 0; i < split.length; i++) {
 			receivedValues[i] = Double.parseDouble(split[i]);
 		}
-		parameterVector = new Vector(receivedValues);
-		return parameterVector;
+		modelResults = new Vector(receivedValues);
+		return modelResults;
 	}
 }
