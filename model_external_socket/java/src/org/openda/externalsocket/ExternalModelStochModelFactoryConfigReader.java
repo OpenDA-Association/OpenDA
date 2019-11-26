@@ -1,7 +1,7 @@
 package org.openda.externalsocket;
 
+import org.openda.model_external_socket.io.castorgenerated.ExternalModelParameterComplexType;
 import org.openda.model_external_socket.io.castorgenerated.ExternalModelStochModelFactoryConfigXML;
-import org.openda.model_external_socket.io.castorgenerated.Parameter;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
@@ -23,7 +23,7 @@ public class ExternalModelStochModelFactoryConfigReader {
 		lowerBounds = new double[parameterCount];
 		upperBounds = new double[parameterCount];
 		for (int i = 0; i < parameterCount; i++) {
-			Parameter parameter = castor.getParameter(i);
+			ExternalModelParameterComplexType parameter = castor.getParameter(i);
 			values[i] = parameter.getValue();
 			stdDev[i] = parameter.getStdDev();
 			lowerBounds[i] = parameter.hasLowerBound() ? parameter.getLowerBound() : Double.NaN;

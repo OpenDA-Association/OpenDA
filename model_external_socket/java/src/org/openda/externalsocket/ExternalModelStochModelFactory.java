@@ -2,10 +2,8 @@ package org.openda.externalsocket;
 
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.blackbox.interfaces.ITimeHorizonConsumer;
-import org.openda.interfaces.IModelInstance;
 import org.openda.interfaces.IStochModelFactory;
 import org.openda.interfaces.ITime;
-import org.openda.utils.Results;
 
 import java.io.File;
 
@@ -14,7 +12,7 @@ public class ExternalModelStochModelFactory implements IModelFactory, ITimeHoriz
 	private ExternalModelStochModelFactoryConfigReader configReader;
 
 	@Override
-	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
+	public ExternalModelStochModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
 		return new ExternalModelStochModelInstance(configReader.getPortNumber(), configReader.getValues(), configReader.getStdDev(), configReader.getLowerBounds(), configReader.getUpperBounds());
 	}
 
@@ -42,9 +40,6 @@ public class ExternalModelStochModelFactory implements IModelFactory, ITimeHoriz
 				+ externalModelFactoryConfigFile.getAbsolutePath());
 		}
 
-		// read model factory config.
-		Results.putMessage(getClass().getSimpleName() + ": reading bmiModelFactory config file "
-			+ externalModelFactoryConfigFile.getAbsolutePath());
 		configReader = new ExternalModelStochModelFactoryConfigReader(externalModelFactoryConfigFile);
 	}
 }
