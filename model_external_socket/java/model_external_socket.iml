@@ -2,7 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/..">
+    <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
@@ -32,12 +32,36 @@
     <orderEntry type="module" module-name="observers" />
     <orderEntry type="module-library">
       <library>
+        <ANNOTATIONS>
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" />
+        </ANNOTATIONS>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" />
+        </JAVADOC>
+        <NATIVE>
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" />
+        </NATIVE>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" />
+        </SOURCES>
+        <jarDirectory url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" recursive="false" />
+        <jarDirectory url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_schemas.zip!/" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_socket_castor_src.zip!/" />
+        </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="CoreResources" level="project" />
   </component>
 </module>
