@@ -33,19 +33,21 @@ import java.net.UnknownHostException;
 
 public class Py4JServer {
 	private static final String JAVA_ADDRESS = "javaAddress";
+	private static final String JAVA_PORT_NUMBER = "javaPortNumber";
 	private static final String CALLBACK_CLIENT_ADDRESS = "callbackClientAddress";
+	private static final String CALLBACK_CLIENT_PORT_NUMBER = "callbackClientPortNumber";
 	private static final String DEFAULT_ADDRESS = "127.0.0.1";
+	private static final int DEFAULT_JAVA_PORT_NUMBER = 25333;
+	private static final int DEFAULT_CALLBACK_CLIENT_PORT_NUMBER = 25334;
 
-	//public int addition(int first, int second) {
-	//	System.out.println("bla");
-	//	return first + second;
-	//}
 
 	public static void main(String[] args) throws UnknownHostException {
 		System.out.println("Starting up the Py4JServer to make OpenDA callable from Python");
 
 		String javaAddress = DEFAULT_ADDRESS;
+		int javaPortNumber = DEFAULT_JAVA_PORT_NUMBER;
 		String callbackClientAddress = DEFAULT_ADDRESS;
+		int callbackClientPortNumber = DEFAULT_CALLBACK_CLIENT_PORT_NUMBER;
 		for (String argument : args) {
 			String[] keyValue = StringUtilities.getKeyValuePair(argument);
 			String key = keyValue[0];
@@ -57,27 +59,35 @@ public class Py4JServer {
 				case CALLBACK_CLIENT_ADDRESS:
 					callbackClientAddress = value;
 					continue;
+				case JAVA_PORT_NUMBER:
+					javaPortNumber = Integer.parseInt(value);
+					continue;
+				case CALLBACK_CLIENT_PORT_NUMBER:
+					callbackClientPortNumber = Integer.parseInt(value);
+					continue;
 				default:
 					throw new RuntimeException("Unknown key " + key + ". Please specify only " + JAVA_ADDRESS + " and/or " + CALLBACK_CLIENT_ADDRESS + " as key=value pair");
 			}
 		}
 
-		GatewayServer server = getGatewayServer(javaAddress, callbackClientAddress);
+		GatewayServer server = getGatewayServer(javaAddress, callbackClientAddress, javaPortNumber, callbackClientPortNumber);
 
 		server.start();
 	}
 
-	private static GatewayServer getGatewayServer(String javaAddress, String callbackClientAddress) throws UnknownHostException {
+	private static GatewayServer getGatewayServer(String javaAddress, String callbackClientAddress, int javaPortNumber, int callbackClientPortNumber) throws UnknownHostException {
 		Py4JServer app = new Py4JServer();
 		// app is now the gateway.entry_point
 		System.out.println("Using java address " + javaAddress);
+		System.out.println("Using java port number " + javaPortNumber);
 		System.out.println("Using callback client address " + callbackClientAddress);
-		if (javaAddress.equals(DEFAULT_ADDRESS) && callbackClientAddress.equals(DEFAULT_ADDRESS)) return new GatewayServer(app);
+		System.out.println("Using callback client port number " + callbackClientPortNumber);
+		if (javaAddress.equals(DEFAULT_ADDRESS) && callbackClientAddress.equals(DEFAULT_ADDRESS) && javaPortNumber == DEFAULT_JAVA_PORT_NUMBER && callbackClientPortNumber == DEFAULT_CALLBACK_CLIENT_PORT_NUMBER) return new GatewayServer(app);
 		return new GatewayServer.GatewayServerBuilder()
 			.entryPoint(app)
-			.javaPort(25333)
+			.javaPort(javaPortNumber)
 			.javaAddress(InetAddress.getByName(javaAddress))
-			.callbackClient(25334, InetAddress.getByName(callbackClientAddress))
+			.callbackClient(callbackClientPortNumber, InetAddress.getByName(callbackClientAddress))
 			.build();
 	}
 
