@@ -19,7 +19,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 	private final double[] upperBounds;
 	private File dummyModelDir;
 	private final StochVector parameterUncertainties;
-	private LinkedHashMap<String, IExchangeItem> exchangeItems = new LinkedHashMap<>();
+	private LinkedHashMap<String, DoubleExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private Time fakeTime = new Time(58119,58120,1d/24d);
 
 	public ExternalSocketModelInstance(int portNumber, double[] parameterValues, double[] standardDeviations, double[] lowerBounds, double[] upperBounds, File dummyModelDir) {
@@ -154,7 +154,41 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 	}
 
 	public void compute(ITime targetTime) {
-		// No action needed (modelResults are se externally
+
+		/*final int port = 8124;
+		Runnable socketServerRunnable = new Runnable() {
+			@Override
+			public void run() {
+				SocketServer socketServer = new SocketServer(port);
+				socketServer.runAndWaitForMessage();
+			}
+		};
+		Thread thread = new Thread(socketServerRunnable);
+		thread.start();*/
+
+		SocketClient socketClient = new SocketClient(portNumber);
+		int size = parameterVector.getSize();
+		StringBuilder stringBuilder = new StringBuilder(10);
+		stringBuilder.append("Z:");
+		for (int i = 0; i < size; i++) {
+			String paramId = "External_Socket_paramEI_" + i;
+			DoubleExchangeItem paramEI = exchangeItems.get(paramId);
+			stringBuilder.append(paramEI.getValue());
+			stringBuilder.append(';');
+		}
+		String messageIn = stringBuilder.toString();
+		System.out.println("Sending message: " + messageIn);
+		String received = socketClient.sendAndReceive(messageIn);
+		System.out.println("Received" + received);
+		String[] split = received.split(";");
+		double[] receivedValues = new double[split.length];
+		for (int i = 0; i < split.length; i++) {
+			double parsedModelResult = Double.parseDouble(split[i]);
+			receivedValues[i] = parsedModelResult;
+			String resultId = "External_Socket_resultEI_" + i;
+			exchangeItems.get(resultId).setValuesAsDoubles(new double[]{parsedModelResult});
+		}
+		modelResults = new Vector(receivedValues);
 	}
 
 	public ILocalizationDomains getLocalizationDomains() {
