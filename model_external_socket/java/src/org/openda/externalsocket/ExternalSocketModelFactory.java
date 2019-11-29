@@ -7,13 +7,18 @@ import org.openda.interfaces.ITime;
 
 import java.io.File;
 
-public class ExternalModelStochModelFactory implements IModelFactory, ITimeHorizonConsumer {
+public class ExternalSocketModelFactory implements IModelFactory, ITimeHorizonConsumer {
 
-	private ExternalModelStochModelFactoryConfigReader configReader;
+	private ExternalSocketModelFactoryConfigReader configReader;
+	private File dummyModelDir;
+
+	public ExternalSocketModelFactory() {
+		
+	}
 
 	@Override
-	public ExternalModelStochModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
-		return new ExternalModelStochModelInstance(configReader.getPortNumber(), configReader.getValues(), configReader.getStdDev(), configReader.getLowerBounds(), configReader.getUpperBounds());
+	public ExternalSocketModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
+		return new ExternalSocketModelInstance(configReader.getPortNumber(), configReader.getValues(), configReader.getStdDev(), configReader.getLowerBounds(), configReader.getUpperBounds(), dummyModelDir);
 	}
 
 	@Override
@@ -34,12 +39,13 @@ public class ExternalModelStochModelFactory implements IModelFactory, ITimeHoriz
 			throw new IllegalArgumentException(getClass().getSimpleName()
 				+ ": First argument should be: relative bmiModelFactoryConfig file path.");
 		}
+		dummyModelDir = new File(workingDir, "dummyModelDir");
 		File externalModelFactoryConfigFile = new File(workingDir, arguments[0]);
 		if (!externalModelFactoryConfigFile.exists()) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": Cannot find bmiModelFactoryConfig file "
 				+ externalModelFactoryConfigFile.getAbsolutePath());
 		}
 
-		configReader = new ExternalModelStochModelFactoryConfigReader(externalModelFactoryConfigFile);
+		configReader = new ExternalSocketModelFactoryConfigReader(externalModelFactoryConfigFile);
 	}
 }

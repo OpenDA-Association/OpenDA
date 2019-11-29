@@ -19,9 +19,9 @@ public class ExternalModelStochModelFactoryTest extends TestCase {
 
 
 	public void testReadConfig() {
-		ExternalModelStochModelFactory externalModelStochModelFactory = new ExternalModelStochModelFactory();
-		externalModelStochModelFactory.initialize(testRunDataDir, new String[]{"ExternalModelStochModelFactory.xml"});
-		ExternalModelStochModelInstance stochModelInstance = externalModelStochModelFactory.getInstance(new String[0], IStochModelFactory.OutputLevel.Suppress);
+		ExternalSocketModelFactory externalModelStochModelFactory = new ExternalSocketModelFactory();
+		externalModelStochModelFactory.initialize(testRunDataDir, new String[]{"ExternalSocketModelFactory.xml"});
+		ExternalSocketModelInstance stochModelInstance = externalModelStochModelFactory.getInstance(new String[0], IStochModelFactory.OutputLevel.Suppress);
 		IVector parameters = stochModelInstance.getParameters();
 		int size = parameters.getSize();
 		assertEquals(3, size);

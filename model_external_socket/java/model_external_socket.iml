@@ -63,5 +63,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="CoreResources" level="project" />
+    <orderEntry type="module" module-name="application" />
   </component>
 </module>

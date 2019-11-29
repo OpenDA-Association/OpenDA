@@ -377,6 +377,19 @@
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
+  <component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="ExternalModelStochModelFactoryTest.testReadConfig" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="model_external_socket" />
+      <option name="PACKAGE_NAME" value="org.openda.externalsocket" />
+      <option name="MAIN_CLASS_NAME" value="org.openda.externalsocket.ExternalModelStochModelFactoryTest" />
+      <option name="METHOD_NAME" value="testReadConfig" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">
       <value>
