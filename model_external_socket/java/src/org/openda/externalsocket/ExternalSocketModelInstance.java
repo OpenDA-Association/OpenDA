@@ -32,11 +32,9 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		for (int i = 0; i < parameterValues.length; i++) {
 			String paramId = "External_Socket_paramEI_" + i;
 			DoubleExchangeItem paramEI = new DoubleExchangeItem(paramId, parameterValues[i]);
-			//paramEI.setTime(fakeTime.getMJD());
 			exchangeItems.put(paramId, paramEI);
 			String resultId = "External_Socket_resultEI_" + i;
 			DoubleExchangeItem resultEI = new DoubleExchangeItem(resultId, i * 100);
-			//resultEI.setTime(fakeTime.getMJD());
 			exchangeItems.put(resultId, resultEI);
 		}
 	}
@@ -169,7 +167,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		SocketClient socketClient = new SocketClient(portNumber);
 		int size = parameterVector.getSize();
 		StringBuilder stringBuilder = new StringBuilder(10);
-		stringBuilder.append("Z:");
+		stringBuilder.append("X:");
 		for (int i = 0; i < size; i++) {
 			String paramId = "External_Socket_paramEI_" + i;
 			DoubleExchangeItem paramEI = exchangeItems.get(paramId);
@@ -279,5 +277,35 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		}
 		modelResults = new Vector(receivedValues);
 		return modelResults;
+	}
+
+	public void sendFinalParameters() {
+		// Used for testing
+		/*final int port = 8124;
+		Runnable socketServerRunnable = new Runnable() {
+			@Override
+			public void run() {
+				SocketServer socketServer = new SocketServer(port);
+				socketServer.runAndWaitForMessage();
+			}
+		};
+		Thread thread = new Thread(socketServerRunnable);
+		thread.start();*/
+
+		SocketClient socketClient = new SocketClient(portNumber);
+		int size = parameterVector.getSize();
+		StringBuilder stringBuilder = new StringBuilder(10);
+		stringBuilder.append("C:");
+		for (int i = 0; i < size; i++) {
+			String paramId = "External_Socket_paramEI_" + i;
+			DoubleExchangeItem paramEI = exchangeItems.get(paramId);
+			stringBuilder.append(paramEI.getValue());
+			stringBuilder.append(';');
+		}
+		String messageIn = stringBuilder.toString();
+		System.out.println("Sending message: " + messageIn);
+		String received = socketClient.sendAndReceive(messageIn);
+		System.out.println("Received" + received);
+
 	}
 }
