@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 
 public class ExternalSocketModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, Cloneable {
 
+	public static final String EXTERNAL_SOCKET_RESULT = "ExternalSocketResult";
+	public static final String EXTERNAL_SOCKET_PARAMETER = "ExternalSocketParameter";
 	private int portNumber;
 	private Vector parameterVector;
 	private Vector modelResults;
@@ -30,10 +32,10 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		this.dummyModelDir = dummyModelDir;
 		this.parameterUncertainties = new StochVector(parameterValues, standardDeviations);
 		for (int i = 0; i < parameterValues.length; i++) {
-			String paramId = "External_Socket_paramEI_" + i;
+			String paramId = EXTERNAL_SOCKET_PARAMETER + "_" + i;
 			DoubleExchangeItem paramEI = new DoubleExchangeItem(paramId, parameterValues[i]);
 			exchangeItems.put(paramId, paramEI);
-			String resultId = "External_Socket_resultEI_" + i;
+			String resultId = EXTERNAL_SOCKET_RESULT + "_" + i;
 			DoubleExchangeItem resultEI = new DoubleExchangeItem(resultId, i * 100);
 			exchangeItems.put(resultId, resultEI);
 		}
@@ -169,7 +171,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		StringBuilder stringBuilder = new StringBuilder(10);
 		stringBuilder.append("X:");
 		for (int i = 0; i < size; i++) {
-			String paramId = "External_Socket_paramEI_" + i;
+			String paramId = EXTERNAL_SOCKET_PARAMETER + "_" + i;
 			DoubleExchangeItem paramEI = exchangeItems.get(paramId);
 			stringBuilder.append(paramEI.getValue());
 			stringBuilder.append(';');
@@ -183,7 +185,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		for (int i = 0; i < split.length; i++) {
 			double parsedModelResult = Double.parseDouble(split[i]);
 			receivedValues[i] = parsedModelResult;
-			String resultId = "External_Socket_resultEI_" + i;
+			String resultId = EXTERNAL_SOCKET_RESULT + "_" + i;
 			exchangeItems.get(resultId).setValuesAsDoubles(new double[]{parsedModelResult});
 		}
 		modelResults = new Vector(receivedValues);
@@ -272,7 +274,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		for (int i = 0; i < split.length; i++) {
 			double parsedModelResult = Double.parseDouble(split[i]);
 			receivedValues[i] = parsedModelResult;
-			String resultId = "External_Socket_resultEI_" + i;
+			String resultId = EXTERNAL_SOCKET_RESULT + "_" + i;
 			exchangeItems.get(resultId).setValuesAsDoubles(new double[]{parsedModelResult});
 		}
 		modelResults = new Vector(receivedValues);
@@ -297,7 +299,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		StringBuilder stringBuilder = new StringBuilder(10);
 		stringBuilder.append("C:");
 		for (int i = 0; i < size; i++) {
-			String paramId = "External_Socket_paramEI_" + i;
+			String paramId = EXTERNAL_SOCKET_PARAMETER + "_" + i;
 			DoubleExchangeItem paramEI = exchangeItems.get(paramId);
 			stringBuilder.append(paramEI.getValue());
 			stringBuilder.append(';');
