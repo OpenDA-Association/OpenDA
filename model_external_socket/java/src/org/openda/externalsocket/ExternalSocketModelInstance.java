@@ -155,11 +155,10 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 
 	public void compute(ITime targetTime) {
 
-		/*final int port = 8124;
-		Runnable socketServerRunnable = new Runnable() {
+/*		Runnable socketServerRunnable = new Runnable() {
 			@Override
 			public void run() {
-				SocketServer socketServer = new SocketServer(port);
+				SocketServer socketServer = new SocketServer(portNumber);
 				socketServer.runAndWaitForMessage();
 			}
 		};
@@ -260,34 +259,15 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 	}
 
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-		SocketClient socketClient = new SocketClient(portNumber);
-		int size = parameterVector.getSize();
-		StringBuilder stringBuilder = new StringBuilder(10);
-		stringBuilder.append("Z:");
-		for (int i = 0; i < size; i++) {
-			stringBuilder.append(parameterVector.getValue(i));
-			stringBuilder.append(';');
-		}
-		String received = socketClient.sendAndReceive(stringBuilder.toString());
-		String[] split = received.split(";");
-		double[] receivedValues = new double[split.length];
-		for (int i = 0; i < split.length; i++) {
-			double parsedModelResult = Double.parseDouble(split[i]);
-			receivedValues[i] = parsedModelResult;
-			String resultId = EXTERNAL_SOCKET_RESULT + "_" + i;
-			exchangeItems.get(resultId).setValuesAsDoubles(new double[]{parsedModelResult});
-		}
-		modelResults = new Vector(receivedValues);
 		return modelResults;
 	}
 
 	public void sendFinalParameters() {
 		// Used for testing
-		/*final int port = 8124;
-		Runnable socketServerRunnable = new Runnable() {
+/*		Runnable socketServerRunnable = new Runnable() {
 			@Override
 			public void run() {
-				SocketServer socketServer = new SocketServer(port);
+				SocketServer socketServer = new SocketServer(portNumber);
 				socketServer.runAndWaitForMessage();
 			}
 		};
