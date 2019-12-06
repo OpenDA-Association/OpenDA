@@ -20,10 +20,18 @@ class SocketClient {
     String sendAndReceive(String messageIn) {
 		try (
 			Socket echoSocket = new Socket(hostAddress, port);
-			PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true)) {
+			PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
+			InputStream inputStream = echoSocket.getInputStream()) {
 			out.println(messageIn);
 			System.out.println("Message sent: " + messageIn);
-			InputStream inputStream = echoSocket.getInputStream();
+			while (inputStream.available() == 0) {
+				try {
+					System.out.println("Waiting for input stream to have data available");
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					System.out.println("Waiting for input stream to have data available interrupted");
+				}
+			}
 			System.out.println("Input stream available: " + inputStream.available());
 			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 			System.out.println("Start reading line from input stream...");
