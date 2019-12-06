@@ -1,7 +1,9 @@
 package org.openda.externalsocket;
 
 import java.io.*;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 class SocketClient {
 
@@ -32,10 +34,12 @@ class SocketClient {
 					System.out.println("Waiting for input stream to have data available interrupted");
 				}
 			}
-			System.out.println("Input stream available: " + inputStream.available());
-			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-			System.out.println("Start reading line from input stream...");
-			return in.readLine();
+			int availableLength = inputStream.available();
+			System.out.println("Input stream available: " + availableLength);
+			byte[] bytes = new byte[availableLength];
+			DataInputStream dataInputStream = new DataInputStream(inputStream);
+			dataInputStream.readFully(bytes);
+			return new String(bytes);
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host " + hostAddress);
 		} catch (IOException e) {

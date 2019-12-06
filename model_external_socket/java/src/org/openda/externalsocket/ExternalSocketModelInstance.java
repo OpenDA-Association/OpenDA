@@ -179,7 +179,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		System.out.println("Sending message: " + messageIn);
 		String received = socketClient.sendAndReceive(messageIn);
 		System.out.println("Received" + received);
-		String[] split = received.split(";");
+		String[] split = received.trim().split(";");
 		double[] receivedValues = new double[split.length];
 		for (int i = 0; i < split.length; i++) {
 			double parsedModelResult = Double.parseDouble(split[i]);
