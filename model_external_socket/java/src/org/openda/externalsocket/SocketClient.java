@@ -47,4 +47,17 @@ class SocketClient {
 		}
 		return null;
 	}
+
+    void send(String messageIn) {
+		try (
+			Socket echoSocket = new Socket(hostAddress, port);
+			PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true)) {
+			out.println(messageIn);
+			System.out.println("Message sent: " + messageIn);
+		} catch (UnknownHostException e) {
+			System.err.println("Don't know about host " + hostAddress);
+		} catch (IOException e) {
+			System.err.println("Couldn't get I/O for the connection to " + hostAddress);
+		}
+	}
 }

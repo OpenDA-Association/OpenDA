@@ -262,7 +262,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		return modelResults;
 	}
 
-	public void sendFinalParameters() {
+	void sendFinalParameters() {
 		// Used for testing
 /*		Runnable socketServerRunnable = new Runnable() {
 			@Override
@@ -286,8 +286,8 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		}
 		String messageIn = stringBuilder.toString();
 		System.out.println("Sending message: " + messageIn);
-		String received = socketClient.sendAndReceive(messageIn);
-		System.out.println("Received" + received);
+		socketClient.send(messageIn);
+		System.out.println("Message sent " + messageIn);
 
 	}
 }
