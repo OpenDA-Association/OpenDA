@@ -22,11 +22,10 @@
 package org.openda.algorithms;
 
 import org.openda.interfaces.*;
-import org.openda.utils.Results;
-import org.openda.utils.Instance;
-import org.openda.utils.Vector;
-import org.openda.utils.io.CalRestartSettings;
 import org.openda.utils.ConfigTree;
+import org.openda.utils.Instance;
+import org.openda.utils.Results;
+import org.openda.utils.io.CalRestartSettings;
 
 import java.io.File;
 
@@ -44,7 +43,7 @@ public class ConjugateGradient extends Instance implements IAlgorithm {
     private IStochModelFactory stochModelFactory;
 	protected ConfigTree conjugateGradientConf;
 
-    private IStochModelInstance bestEstimate = null;
+    protected IStochModelInstance bestEstimate = null;
     
     private SimulationKwadraticCostFunctionWithGradient J=null;
     private PreconditionedCostFunctionWithGradient Jc=null;

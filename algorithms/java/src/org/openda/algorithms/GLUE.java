@@ -39,7 +39,7 @@ public class GLUE extends Instance implements IAlgorithm {
 	private IStochModelFactory stochModelFactory;
     protected ConfigTree glueConf;
 
-    private IStochModelInstance bestEstimate = null;
+    protected IStochModelInstance bestEstimate = null;
     private IStochObserver stochObserver = null;
     private IVector pInit=null;
 
