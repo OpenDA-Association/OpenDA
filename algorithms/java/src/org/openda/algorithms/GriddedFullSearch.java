@@ -40,7 +40,7 @@ public class GriddedFullSearch extends Instance implements IAlgorithm {
 	private IStochModelFactory stochModelFactory;
     protected ConfigTree gfsConf;
 
-    private IStochModelInstance bestEstimate = null;
+    protected IStochModelInstance bestEstimate = null;
     private IStochObserver stochObserver = null;
 
     private SimulationKwadraticCostFunction J=null;
