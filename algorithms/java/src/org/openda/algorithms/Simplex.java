@@ -38,7 +38,7 @@ public class Simplex extends Instance implements IAlgorithm {
 	private IStochModelFactory stochModelFactory;
     protected ConfigTree simplexConf;
 
-    private IStochModelInstance bestEstimate = null;
+    protected IStochModelInstance bestEstimate = null;
     //config
     public double initStep=1.0; //scaling factor for initial perturbations of parameters
     //workspace
