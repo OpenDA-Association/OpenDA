@@ -35,9 +35,6 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 			String paramId = EXTERNAL_SOCKET_PARAMETER + "_" + i;
 			DoubleExchangeItem paramEI = new DoubleExchangeItem(paramId, parameterValues[i]);
 			exchangeItems.put(paramId, paramEI);
-			String resultId = EXTERNAL_SOCKET_RESULT + "_" + i;
-			DoubleExchangeItem resultEI = new DoubleExchangeItem(resultId, i * 100);
-			exchangeItems.put(resultId, resultEI);
 		}
 	}
 
@@ -185,7 +182,13 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 			double parsedModelResult = Double.parseDouble(split[i]);
 			receivedValues[i] = parsedModelResult;
 			String resultId = EXTERNAL_SOCKET_RESULT + "_" + i;
-			exchangeItems.get(resultId).setValuesAsDoubles(new double[]{parsedModelResult});
+			DoubleExchangeItem externalSocketResultEI = exchangeItems.get(resultId);
+			if (externalSocketResultEI == null) {
+				DoubleExchangeItem newExternalSocketResultEI = new DoubleExchangeItem(resultId, parsedModelResult);
+				exchangeItems.put(resultId, newExternalSocketResultEI);
+			} else {
+				externalSocketResultEI.setValuesAsDoubles(new double[]{parsedModelResult});
+			}
 		}
 		modelResults = new Vector(receivedValues);
 	}
