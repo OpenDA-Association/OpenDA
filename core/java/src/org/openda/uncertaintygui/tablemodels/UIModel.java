@@ -20,7 +20,7 @@
 
 package org.openda.uncertaintygui.tablemodels;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.uncertainties.UncertainItem;
 import org.openda.uncertainties.Uncertainties;
 import org.openda.uncertainties.autocorrelationfunctions.AutoCorrelationFunction;
@@ -162,7 +162,7 @@ public class UIModel  {
         uncertainties.addVariationFunction(variationFunction);
     }
 
-    private void addNewPdfFromExchangeItem(Uncertainties uncertainties, IPrevExchangeItem exchangeItem) {
+    private void addNewPdfFromExchangeItem(Uncertainties uncertainties, IExchangeItem exchangeItem) {
 
         //create new UncertainItem for uncertainty from mapping.
         UncertainItem uncertainItem = new UncertainItem(exchangeItem.getId(), "", false);

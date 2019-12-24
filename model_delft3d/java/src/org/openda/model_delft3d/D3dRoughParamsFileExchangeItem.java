@@ -20,7 +20,6 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;

@@ -26,13 +26,11 @@ import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.model_reactive_advection.myCopier;
 import org.openda.model_reactive_advection.myWrapper;
 import org.openda.utils.OpenDaTestSupport;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 
 public class myWrapperTest extends TestCase {

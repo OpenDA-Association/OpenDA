@@ -22,7 +22,6 @@ package org.openda.model_hspf;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;

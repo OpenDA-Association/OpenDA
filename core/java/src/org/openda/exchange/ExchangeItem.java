@@ -24,7 +24,7 @@ package org.openda.exchange;
 import org.openda.interfaces.*;
 
 /**
- * Base implementation of IPrevExchangeItem
+ * Base implementation of IExchangeItem
  */
 public abstract class ExchangeItem implements IExchangeItem {
 
@@ -72,10 +72,6 @@ public abstract class ExchangeItem implements IExchangeItem {
 
     public void setRole(IExchangeItem.Role role){
     	this.role = role;
-    }
-
-    public IPrevExchangeItem.PrevRole getPrevRole(){
-    	return null;
     }
 
 	public IExchangeItem.Role getRole(){

@@ -36,8 +36,6 @@ package org.openda.models.lorenz;
 
 
 
-import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IVector;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
