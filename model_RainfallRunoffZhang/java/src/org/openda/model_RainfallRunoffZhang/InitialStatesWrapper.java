@@ -32,7 +32,6 @@ import java.util.Set;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 /**
  * Allows reading of initial states from matlab readable ASCII file and

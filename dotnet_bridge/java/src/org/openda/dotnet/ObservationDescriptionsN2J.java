@@ -21,7 +21,6 @@ package org.openda.dotnet;
 import cli.OpenDA.DotNet.Bridge.DoublesExchangeItem;
 import cli.OpenDA.DotNet.Interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
 

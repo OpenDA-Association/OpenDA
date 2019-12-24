@@ -25,7 +25,6 @@ import org.openda.exchange.QuantityInfo;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 import org.openda.utils.Array;

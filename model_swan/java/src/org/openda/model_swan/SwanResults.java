@@ -295,8 +295,6 @@ public class SwanResults implements IDataObject {
             return IExchangeItem.Role.Output;
         }
 
-		public IPrevExchangeItem.PrevRole getPrevRole() { return null; }
-
 		public Object getValues() {
             return value;
         }

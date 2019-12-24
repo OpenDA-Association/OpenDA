@@ -19,7 +19,6 @@
 */
 package org.openda.blackbox.io;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.ITimeInfo;
 import org.openda.interfaces.IQuantityInfo;

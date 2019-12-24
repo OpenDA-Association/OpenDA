@@ -22,7 +22,6 @@ package org.openda.model_hspf;
 
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Time;
 
 import java.text.DateFormat;

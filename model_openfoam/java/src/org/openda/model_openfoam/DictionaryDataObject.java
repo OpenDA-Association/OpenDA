@@ -26,7 +26,6 @@ import org.joda.time.DateTime;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.exchange.DoubleExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IExchangeItem;
 
 import java.text.MessageFormat;

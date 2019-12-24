@@ -32,7 +32,6 @@ import java.util.Set;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 /**
  * Allows reading of time variables from matlab readable ASCII file and

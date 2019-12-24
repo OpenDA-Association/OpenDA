@@ -21,10 +21,8 @@ package org.openda.exchange.dataobjects;
 
 import junit.framework.TestCase;
 
-import org.openda.exchange.dataobjects.NoosDataObject;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Array;
 import org.openda.utils.OpenDaTestSupport;
 

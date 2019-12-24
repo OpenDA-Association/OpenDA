@@ -18,9 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.models.oscillator;
-import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IVector;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.models.simpleModel.SimpleStochModelInstance;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;

@@ -3,7 +3,6 @@ package org.openda.model_openfoam;
 import junit.framework.TestCase;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;

@@ -59,10 +59,6 @@ public class SwanOpenBoundarySpectralFileExchangeItem implements IExchangeItem {
         return IExchangeItem.Role.InOut;
     }
 
-	public IPrevExchangeItem.PrevRole getPrevRole(){
-		return null;
-	}
-
 	public Object getValues() {
         return getValuesAsDoubles();
     }

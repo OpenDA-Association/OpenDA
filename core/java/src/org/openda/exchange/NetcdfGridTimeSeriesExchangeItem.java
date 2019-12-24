@@ -87,8 +87,6 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 		return this.role;
 	}
 
-	public IPrevExchangeItem.PrevRole getPrevRole() { return null; }
-
 	public ITimeInfo getTimeInfo() {
 		return this.timeInfo;
 	}

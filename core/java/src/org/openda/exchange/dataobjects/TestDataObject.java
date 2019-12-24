@@ -31,8 +31,6 @@ import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.iotools.IoUtils;
 import org.openda.interfaces.IComposableDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
 /**
@@ -69,7 +67,7 @@ public class TestDataObject implements IComposableDataObject {
 	}
 
 	
-	public String[] getExchangeItemIDs(Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		ArrayList<String> exchangeItemIDs = new ArrayList<String>();
 
 		for (IExchangeItem exchangeItem : this.exchangeItems) {
