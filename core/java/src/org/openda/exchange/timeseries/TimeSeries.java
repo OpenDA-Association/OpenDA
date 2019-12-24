@@ -1065,9 +1065,8 @@ public class TimeSeries implements IExchangeItem{
 	 * Show Type of this object for proper casting
 	 */
 	
-	@SuppressWarnings("rawtypes")
 	public Class getValueType() {
-		return org.openda.utils.Array.class;
+		return org.openda.exchange.timeseries.TimeSeries.class;
 	}
 
 	

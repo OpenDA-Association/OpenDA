@@ -120,7 +120,7 @@ public class DFlowFMFrictionCoefExchangeItem implements IExchangeItem {
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
 		if (this.valuetype != sourceItem.getValuesType()) {
 			throw new RuntimeException("Incompatible value types in copy action from " + sourceItem.getId() +
-					" to " + getId() + "(" + sourceItem.getValueType().toString() + "/=" + this.valuetype.toString());
+					" to " + getId() + "(" + sourceItem.getValuesType().toString() + "/=" + this.valuetype.toString());
 		}
 		setValues(sourceItem.getValues());
 	}

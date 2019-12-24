@@ -25,6 +25,7 @@ import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.model_reactive_advection.myCopier;
 import org.openda.model_reactive_advection.myWrapper;
@@ -55,7 +56,7 @@ public class myWrapperTest extends TestCase {
         for(int item=0;item<exchangeItems.length;item++){
 
 			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1,discharge")){
-				IPrevExchangeItem ex = exchangeItems[0];
+				IExchangeItem ex = (IExchangeItem)exchangeItems[0];
 				//String getId();
 				String id = ex.getId();
 				assertEquals("ex.getId()", "source.factory1.discharge", id);
@@ -69,8 +70,8 @@ public class myWrapperTest extends TestCase {
 				assertEquals("ex.getUnitId()", "kg/s", unitId);
 
 				//public Type getObjectType(); //
-				Type valueType = ex.getValueType();
-				assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
+				IExchangeItem.ValueType valueType = ex.getValuesType();
+				assertTrue(valueType == IExchangeItem.ValueType.IArrayType);
 
 				//public Object getValues();
 				TimeSeries seriesRef = (TimeSeries) ex.getValues();
@@ -97,6 +98,7 @@ public class myWrapperTest extends TestCase {
 		ioObject.initialize(testRunDataDir, "reactive_pollution_model.output", args);
 		//TODO fix data string
 		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		// TODO deze test heeft nooit iets gedaan omdat exchangeItems ids = output.c[1,2]_loc[A,B,C].concentration
 		for(int item=0;item<exchangeItems.length;item++){
 			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1,discharge")){
 				IPrevExchangeItem ex = exchangeItems[0];
@@ -112,9 +114,10 @@ public class myWrapperTest extends TestCase {
 				String unitId = ((TimeSeries) ex).getUnitId();
 				assertEquals("ex.getUnitId()", "kg/s", unitId);
 
-				//public Type getObjectType(); //
-				Type valueType = ex.getValueType();
-				assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
+				//TODO als IExchangeItem ex dan ex.getVakuesType() test toevoegen
+				// public Type getObjectType();
+				//Type valueType = ex.getValueType();
+				//assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
 
 				//public Object getValues();
 				TimeSeries seriesRef = (TimeSeries) ex.getValues();

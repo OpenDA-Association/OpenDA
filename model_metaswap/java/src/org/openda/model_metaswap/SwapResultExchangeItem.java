@@ -110,8 +110,4 @@ public class SwapResultExchangeItem implements IExchangeItem {
 		return null;
 	}
 
-	@Override
-	public Class getValueType() {
-		return null;
-	}
 }

@@ -26,12 +26,12 @@ package org.openda.interfaces;
  * The model tells which exchange items it has, after which the exchange item is used to access the values.
  * The IExchange item currently extends the 'previous' version.
  */
-public interface IExchangeItem extends IPrevExchangeItem{
+public interface IExchangeItem extends IPrevExchangeItem {
 
     /**
      * List of available data types.
      */
-    public enum ValueType {
+    enum ValueType {
         /** corresponds to java int */
         intType,
         /** corresponds to java double */
@@ -47,13 +47,17 @@ public interface IExchangeItem extends IPrevExchangeItem{
         /** IVector -> in future IVector will extend IArray */
         IVectorType,
         /** IArray */
-        IArrayType
+        IArrayType,
+        /** corresponds to java Date */
+        DateType,
+        /** corresponds to ITine */
+        ITimeType
     }
 
     /**
      * List of possible roles for the exchange values.
      */
-    public enum Role {
+    enum Role {
         /** Input for the model.*/
         Input,
         /** Output from the model.*/
@@ -66,7 +70,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
      * Get the role of the exchange item (input, output, or both)
      * @return The exchange items's role
      */
-    public Role getRole();
+    Role getRole();
 
     /**
      * The identifier for the exchangeItem (must be unique within the context of a model instance).
@@ -87,7 +91,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 * @param sourceItem The item to copy the values from.
 	 *
 	 */
-    public void copyValuesFromItem(IExchangeItem sourceItem);
+    void copyValuesFromItem(IExchangeItem sourceItem);
 
 	/**
 	 * Return information about time if it exists.
@@ -96,7 +100,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 *
 	 * @return time info
 	 */
-	public ITimeInfo getTimeInfo();
+    ITimeInfo getTimeInfo();
 
 	/**
 	 * Return information about the content of the data if it exists. Returns null if no quantity info exists.
@@ -104,7 +108,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 *
 	 * @return quantity info
 	 */
-	public IQuantityInfo getQuantityInfo();
+    IQuantityInfo getQuantityInfo();
 
 	/**
 	 * Return information about the spatial aspect of the data if it exists. Returns null if no geometry info exists.
@@ -112,18 +116,18 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 *
 	 * @return geometry info
 	 */
-	public IGeometryInfo getGeometryInfo();
+    IGeometryInfo getGeometryInfo();
 
     /**
      * Ask which object type will be returned by getValues() call
      * @return The object type that will be returned by getValues() call
      */
-	public ValueType getValuesType();
+    ValueType getValuesType();
 
     /**
      * Get the values of the exchange item
      * @return The values, according the type as defined in <code>getValueType()</code>
      */
-    public Object getValues();
+    Object getValues();
 
 }

@@ -103,9 +103,9 @@ public abstract class ExchangeItem implements IExchangeItem {
     }
 
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
-		if (sourceItem.getValueType() != getValueType()) {
+		if (sourceItem.getValuesType() != getValuesType()) {
 			throw new RuntimeException("Incompatible value types in copy action from " + sourceItem.getId() +
-			" to " + getId() + "(" + sourceItem.getValueType().toString() + "/=" + getValueType().toString());
+			" to " + getId() + "(" + sourceItem.getValuesType().toString() + "/=" + getValuesType().toString());
 		}
 		setValues(sourceItem.getValues());
 	}

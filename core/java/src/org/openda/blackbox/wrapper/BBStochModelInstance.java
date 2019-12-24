@@ -344,7 +344,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
                                 vectorConfig.getSourceId());
                     }
                     IPrevExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig,
-                            sourceExchangeItem, selectors, configRootDir);
+						(IExchangeItem)sourceExchangeItem, selectors, configRootDir);
                     double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 					wrappedBbExchangeItem.UpdateTimeStepValue(loopTimeStep,computedValues[0]);
 				}
@@ -642,7 +642,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							stochModelVectorConfig.getSourceId());
 				}
 				IPrevExchangeItem exchangeItem = new BBExchangeItem(stochModelVectorConfig.getId(), stochModelVectorConfig,
-						sourceExchangeItem, selectors, configRootDir);
+					(IExchangeItem)sourceExchangeItem, selectors, configRootDir);
 
 				addParameterDeltaToExchangeItem(parameterDelta, exchangeItem,
 						regularisationConstantConfig.getTransformation());
@@ -961,7 +961,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			String modelExchangeItemId = modelExchangeItem.getId();//only used for log messages.
 
 			//Note: mappedExchangeItem can be a subVector with only a selection of the modelExchangeItem. Therefore below only use mappedExchangeItem.
-			IExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig, modelExchangeItem, selectors, configRootDir);
+			IExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig, (IExchangeItem)modelExchangeItem, selectors, configRootDir);
 			//get model values.
 			double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 
