@@ -20,12 +20,12 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.*;
 
 /**
  * Exchange Item representing a D3D astro component or correction
  */
-public class D3dAstroExchangeItem implements IPrevExchangeItem {
+public class D3dAstroExchangeItem implements IExchangeItem {
 
     private String id;
     private D3dAstroComponent astroComponent;
@@ -56,6 +56,8 @@ public class D3dAstroExchangeItem implements IPrevExchangeItem {
     public Class getValueType() {
         return double.class;
     }
+
+    public Role getRole() { return IExchangeItem.Role.InOut; }
 
     public PrevRole getPrevRole() {
         return IPrevExchangeItem.PrevRole.InOut;
@@ -139,6 +141,31 @@ public class D3dAstroExchangeItem implements IPrevExchangeItem {
 
     public void setTimes(double[] times) {
         throw new RuntimeException(this.getClass().getName() + "setTimes(): time stamps can not be set");
+    }
+
+    @Override
+    public void copyValuesFromItem(IExchangeItem sourceItem) {
+        throw new RuntimeException("org.openda.model_delft3d.D3dAstroExchangeItem.copyValuesFromItem not implemented");
+    }
+
+    @Override
+    public ITimeInfo getTimeInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dAstroExchangeItem.getTimeInfo not implemented");
+    }
+
+    @Override
+    public IQuantityInfo getQuantityInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dAstroExchangeItem.getQuantityInfo not implemented");
+    }
+
+    @Override
+    public IGeometryInfo getGeometryInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dAstroExchangeItem.getGeometryInfo not implemented");
+    }
+
+    @Override
+    public ValueType getValuesType() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dAstroExchangeItem.getValuesType not implemented");
     }
 
 }
