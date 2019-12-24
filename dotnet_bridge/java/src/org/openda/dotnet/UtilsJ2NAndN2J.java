@@ -21,7 +21,7 @@
 
 package org.openda.dotnet;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IStochModelFactory;
 
 public class UtilsJ2NAndN2J
@@ -39,14 +39,14 @@ public class UtilsJ2NAndN2J
 			throw new RuntimeException("Unknown IStochModelFactory.OutputLevel type: " + outputLevel);
 		}
 
-		public static int ExchangeItemRoleMapJ2N(IPrevExchangeItem.PrevRole role) {
-			if (role == IPrevExchangeItem.PrevRole.Input) {
+		public static int ExchangeItemRoleMapJ2N(IExchangeItem.Role role) {
+			if (role == IExchangeItem.Role.Input) {
 				return 0; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
-			if (role == IPrevExchangeItem.PrevRole.Output) {
+			if (role == IExchangeItem.Role.Output) {
 				return 1; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
-			if (role == IPrevExchangeItem.PrevRole.InOut) {
+			if (role == IExchangeItem.Role.InOut) {
 				return 2; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
 			throw new RuntimeException("Unknown IPrevExchangeItem.Role type: " + role);

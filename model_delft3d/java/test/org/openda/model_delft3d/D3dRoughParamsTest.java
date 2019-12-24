@@ -20,7 +20,7 @@
 package org.openda.model_delft3d;
 
 import junit.framework.TestCase;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class D3dRoughParamsTest  extends TestCase {
         D3dRoughParamsFile roughFile=new D3dRoughParamsFile();
         roughFile.initialize(testRunDataDir, "ruw.karak",new String[]{});
 
-        IPrevExchangeItem[] items = roughFile.getExchangeItems();
+        IExchangeItem[] items = roughFile.getExchangeItems();
 
         int n=items.length;
         double delta=0.00001;
@@ -92,7 +92,7 @@ public class D3dRoughParamsTest  extends TestCase {
         D3dRoughParamsFile roughFile=new D3dRoughParamsFile();
         roughFile.initialize(testRunDataDir, "ruwQ7020.karak",new String[]{});
 
-        IPrevExchangeItem[] items = roughFile.getExchangeItems();
+        IExchangeItem[] items = roughFile.getExchangeItems();
 
         int n=items.length;
         double delta=0.00001;
@@ -205,10 +205,10 @@ public class D3dRoughParamsTest  extends TestCase {
         paramsFile.initialize(testRunDataDir, fName, noArguments);
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems =paramsFile.getExchangeItems();
+        IExchangeItem[] exchangeItems =paramsFile.getExchangeItems();
 
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             String id = exchangeItem.getId();
             Double value = (Double) exchangeItem.getValues();
             String out = "Parameter id=" + id + " value=" + Double.toString(value);

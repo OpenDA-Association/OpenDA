@@ -31,7 +31,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import junit.framework.TestCase;
@@ -135,11 +135,11 @@ public class ParametersWrapperTest extends TestCase {
 
 		// 2 exchange items should be present: soilMoistureExchangeItem and
 		// gwStorageExchangeItem.
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 
 		for (int item = 0; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				// String getId();
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id1, expectedId);
@@ -149,7 +149,7 @@ public class ParametersWrapperTest extends TestCase {
 				assertEquals(value1, expectedValue[0]);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id2, expectedId);
 
@@ -157,7 +157,7 @@ public class ParametersWrapperTest extends TestCase {
 				assertEquals(value2, expectedValue[0]);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id3, expectedId);
 
@@ -165,7 +165,7 @@ public class ParametersWrapperTest extends TestCase {
 				assertEquals(value3, expectedValue[0]);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id4)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id4, expectedId);
 
@@ -194,7 +194,7 @@ public class ParametersWrapperTest extends TestCase {
 		// Call to initialize -> reads the file and writes 2 Exchange items.
 		parameterWrapper.initialize(testRunDataDir, fileName, args);
 		
-		IPrevExchangeItem[] exchangeItems = parameterWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = parameterWrapper.getExchangeItems();
 		for (int item = 0; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
 				values1 = exchangeItems[item].getValuesAsDoubles();

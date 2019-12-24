@@ -42,9 +42,6 @@ public class BcExchangeItem implements IExchangeItem
 	public Role getRole() { return Role.InOut; }
 
 	@Override
-	public PrevRole getPrevRole() { return null; }
-
-	@Override
 	public String getId() {
 		return id;
 	}

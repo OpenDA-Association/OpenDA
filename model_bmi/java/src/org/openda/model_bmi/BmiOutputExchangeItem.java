@@ -136,8 +136,6 @@ public class BmiOutputExchangeItem implements IExchangeItem {
 		return this.role;
 	}
 
-	public PrevRole getPrevRole() { return null;}
-
 	public ITimeInfo getTimeInfo() {
 		return new TimeInfo(getTimes());
 	}

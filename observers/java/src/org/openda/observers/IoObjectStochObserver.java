@@ -47,10 +47,10 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 	private List<IDataObject> dataObjects = new ArrayList<IDataObject>();
 	//TODO change to LinkedHashMap and remove exchangeItemIds list. AK
 	//exchangeItems in map can be wrapped within a NonMissingStochObserverExchangeItem or a NonMissingStochObserverGridTimeSeriesExchangeItem.
-	private HashMap<String, IPrevExchangeItem> exchangeItems = null;
+	private HashMap<String, IExchangeItem> exchangeItems = null;
 	private List<String> exchangeItemIds = null;
 
-	private HashMap<IPrevExchangeItem, SelectedTimeIndexRange> selectedTimeIndices = null;
+	private HashMap<IExchangeItem, SelectedTimeIndexRange> selectedTimeIndices = null;
 	private boolean timesEqualForAllItems = false;
 
 	//total number of selected observation values, taking into account all exchangeItems, all selected times and all grid cells.
@@ -93,7 +93,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		// Create the ioObjects, and gather the (output) exchange items.
 		this.ioObjects.clear();
 		this.dataObjects.clear();
-		exchangeItems = new HashMap<String, IPrevExchangeItem>();
+		exchangeItems = new HashMap<String, IExchangeItem>();
 		exchangeItemIds = new ArrayList<String>();
 		boolean timeTypeKnown = false;
 		boolean isTimeDependent = false;
@@ -103,7 +103,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 			IoObjectInterface ioObject = BBUtils.createIoObjectInstance(ioObjectConfig.getWorkingDir(), ioObjectConfig.getClassName(),
 					ioObjectConfig.getFileName(), ioObjectConfig.getArguments());
 
-            IPrevExchangeItem[] ioExchangeItems;
+            IExchangeItem[] ioExchangeItems;
             if (ioObject != null) {
             	this.ioObjects.add(ioObject);
 			    ioExchangeItems = ioObject.getExchangeItems();
@@ -112,7 +112,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 					ioObjectConfig.getFileName(), ioObjectConfig.getArguments());
                 this.dataObjects.add(iDataObject);
                 String[] iDOexchangeItemIDs = iDataObject.getExchangeItemIDs();
-                ioExchangeItems = new IPrevExchangeItem[iDOexchangeItemIDs.length];
+                ioExchangeItems = new IExchangeItem[iDOexchangeItemIDs.length];
                 for (int i=0; i<iDOexchangeItemIDs.length; i++){
 					ioExchangeItems[i] = iDataObject.getDataObjectExchangeItem(iDOexchangeItemIDs[i]);
                 }
@@ -120,7 +120,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 			//default missingValue is Double.NaN.
             double missingValue = ioObjectConfig.getMissingValue();
-			for (IPrevExchangeItem ioExchangeItem : ioExchangeItems) {
+			for (IExchangeItem ioExchangeItem : ioExchangeItems) {
 				//only items that are configured to be uncertain are used here.
 				if (uncertaintyEngine.checkIfItemIsUncertain(ioExchangeItem.getId())) {
 					boolean checkTimeDependence;
@@ -176,13 +176,13 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		if (isTimeDependent) {
 			//for each uncertain exchangeItem store the full timeIndex range in selectedTimeIndices map.
-			selectedTimeIndices = new HashMap<IPrevExchangeItem, SelectedTimeIndexRange>();
+			selectedTimeIndices = new HashMap<IExchangeItem, SelectedTimeIndexRange>();
 			SelectedTimeIndexRange lastSelectedIndices = null;
 			timesEqualForAllItems = true;
 			double[] timeSelected = null;
 			double[] timeLastSelected = null;
 			for (String exchangeItemId : exchangeItemIds) {
-				IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+				IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
 				timeLastSelected = timeSelected;
 				timeSelected = exchangeItem.getTimes();
 				boolean sameTimesAsPreviousExchangeItem = true;
@@ -229,17 +229,17 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		totalSelectedObservationValueCount = 0;
 		selectedObservationValueCounts = new HashMap<String, Integer>();
 		for (String exchangeItemId : exchangeItemIds) {
-			IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+			IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
 
 			int exchangeItemSelectedValueCount = 0;
 			if (selectedTimeIndices != null && selectedTimeIndices.get(exchangeItem) != null) {//if time dependent.
 				SelectedTimeIndexRange selectedIndices = selectedTimeIndices.get(exchangeItem);
 				for (int timeIndex = selectedIndices.getStart(); timeIndex < selectedIndices.getEnd(); timeIndex++) {
-					int gridCellCount = GeometryUtils.getGridCellCount(exchangeItem, timeIndex);
+					int gridCellCount = GeometryUtils.getGridCellCount(exchangeItem);
 					exchangeItemSelectedValueCount += gridCellCount;
 				}
 			} else {//if not time dependent.
-				int gridCellCount = GeometryUtils.getGridCellCount(exchangeItem, -1);
+				int gridCellCount = GeometryUtils.getGridCellCount(exchangeItem);
 				exchangeItemSelectedValueCount += gridCellCount;
 			}
 
@@ -274,13 +274,13 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 				child.beginTimeAsMJD = child.endTimeAsMJD = selectedTime.getMJD();
 			}
 
-			child.selectedTimeIndices = new HashMap<IPrevExchangeItem, SelectedTimeIndexRange>();
+			child.selectedTimeIndices = new HashMap<IExchangeItem, SelectedTimeIndexRange>();
 
 			//for each exchangeItem select the times within the given timeSpan and put these in child.
 			SelectedTimeIndexRange lastSelectedIndices = null;
 			child.timesEqualForAllItems = true;
 			for (String exchangeItemId : exchangeItemIds) {
-				IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+				IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
 
 				double[] times = exchangeItem.getTimes();
                 boolean isObservationAvailableInThisSpan = false;
@@ -379,7 +379,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		uncertaintyEngine.increaseTimeStepSeed();
 
 		child.exchangeItemIds = new ArrayList<String>();
-		child.exchangeItems = new HashMap<String,IPrevExchangeItem>();
+		child.exchangeItems = new HashMap<String,IExchangeItem>();
 
 		child.selectedTimeIndices = this.selectedTimeIndices;
 		child.timesEqualForAllItems = this.timesEqualForAllItems;
@@ -455,7 +455,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		if (timesEqualForAllItems) {
 			// Time dependent, but the selected exchange items have the same selected times.
 			if (selectedTimeIndices.size() > 0) {
-				IPrevExchangeItem firstEI = exchangeItems.get(exchangeItemIds.get(0));
+				IExchangeItem firstEI = exchangeItems.get(exchangeItemIds.get(0));
 				//firstEI contains all times.
 				double[] timesAsMJD = firstEI.getTimes();
 				ArrayList<ITime> selectedTimes = new ArrayList<ITime>();
@@ -475,7 +475,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
             ArrayList<Double> timesArrDbl = new ArrayList<Double>();
 			//for each exchangeItem add all times to timesArrDbl list.
             for (int iExch = 0; iExch<exchangeItemIds.size(); iExch++) {
-                IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemIds.get(iExch));
+                IExchangeItem exchangeItem = exchangeItems.get(exchangeItemIds.get(iExch));
                 double[] thisTimes = exchangeItem.getTimes();
                 for (int iTime=0; iTime<thisTimes.length; iTime++){
                     if (thisTimes[iTime]>=beginTimeAsMJD && thisTimes[iTime]<=endTimeAsMJD){
@@ -518,7 +518,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		if (valuesAsTreeVector == null) {
 			treeVector = new TreeVector("ObsValues");
 			for (String exchangeItemId : exchangeItemIds) {
-				IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+				IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
 
 				Vector childVector;
 				if (selectedTimeIndices == null) {//if not time dependent.
@@ -601,13 +601,13 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		private final List<String> exchangeItemIds;
 		//exchangeItems in map can be wrapped within an IoObjectStochObsTimeSelectionExchangeItem.
-		private final HashMap<String, IPrevExchangeItem> exchangeItems;
+		private final HashMap<String, IExchangeItem> exchangeItems;
 		private final IoObjectStochObserver stochObserver;
-		private final HashMap<IPrevExchangeItem, SelectedTimeIndexRange> selectedTimeIndices;
+		private final HashMap<IExchangeItem, SelectedTimeIndexRange> selectedTimeIndices;
 
 		private IoObjectStochObsDescriptions(List<String> exchangeItemIds,
-											HashMap<String, IPrevExchangeItem> exchangeItems,
-											HashMap<IPrevExchangeItem, SelectedTimeIndexRange> selectionIndices,
+											HashMap<String, IExchangeItem> exchangeItems,
+											HashMap<IExchangeItem, SelectedTimeIndexRange> selectionIndices,
 											IoObjectStochObserver stochObserver) {
 			this.stochObserver = stochObserver;
 			this.selectedTimeIndices = selectionIndices;
@@ -633,10 +633,10 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 				SelectedTimeIndexRange sharedSelectedIndices = null;
 				double[] sharedTimes = null;
 				this.exchangeItemIds = new ArrayList<String>();
-				this.exchangeItems = new HashMap<String, IPrevExchangeItem>();
+				this.exchangeItems = new HashMap<String, IExchangeItem>();
 				//loop over selected exchangeItems.
 				for (String exchangeItemId : exchangeItemIds) {
-					IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+					IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
 					SelectedTimeIndexRange selectedIndices = selectionIndices.get(exchangeItem);
 					double[] selectedTimes;
 					if (timesEqualForAllItems) {
@@ -668,8 +668,8 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		//Note: this should return the exchangeItems in the same order as the ids in this.exchangeItemIds.
 		//This is important for the code in method BBStochModelInstance.getObservedModelValuesForGrid.
-		public List<IPrevExchangeItem> getExchangeItems() {
-			List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
+		public List<IExchangeItem> getExchangeItems() {
+			List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
 			for (String exchangeItemId : exchangeItemIds) {
 				exchangeItems.add(this.exchangeItems.get(exchangeItemId));
 			}
@@ -686,7 +686,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 				boolean isY = keyIsYcoord(key);
 				//if more than one exchangeItem, then add coordinates for each exchangeItem in sequence.
 				for (String exchangeItemId : exchangeItemIds) {
-					IPrevExchangeItem prevExchangeItem = exchangeItems.get(exchangeItemId);
+					IExchangeItem prevExchangeItem = exchangeItems.get(exchangeItemId);
 					// x/y currently only known in case of Swan.
 					// TODO: add X/Y to IPrevExchangeItem
 					// TODO MVL fix properly through IGeometry
@@ -744,7 +744,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 				} else {//if time dependent.
 					//if more than one exchangeItem, then add times for each exchangeItem in sequence.
 					for (String exchangeItemId : exchangeItemIds) {
-						IPrevExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
+						IExchangeItem exchangeItem = exchangeItems.get(exchangeItemId);
 						//in case of IoObjectStochObsTimeSelectionExchangeItem then selectedTimeIndices contains the wrapped exchangeItem,
 						//so need to use the wrapped exchangeItem to lookup the selected time indices in selectedTimeIndices.
 						if (exchangeItem instanceof IoObjectStochObsTimeSelectionExchangeItem) {
@@ -824,11 +824,11 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 	 */
 	private class IoObjectStochObsTimeSelectionExchangeItem implements IExchangeItem, Serializable {
 
-		private IPrevExchangeItem exchangeItem;
+		private IExchangeItem exchangeItem;
 		private SelectedTimeIndexRange selectedIndices;
 		private double[] times;
 
-		private IoObjectStochObsTimeSelectionExchangeItem(IPrevExchangeItem exchangeItem, SelectedTimeIndexRange selectedIndices, double[] times) {
+		private IoObjectStochObsTimeSelectionExchangeItem(IExchangeItem exchangeItem, SelectedTimeIndexRange selectedIndices, double[] times) {
 			this.exchangeItem = exchangeItem;
 			this.selectedIndices = selectedIndices;
 			this.times = times;
@@ -852,10 +852,6 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		public Role getRole() {
 			return null;
-		}
-
-		public PrevRole getPrevRole() {
-			return exchangeItem.getPrevRole();
 		}
 
 		public Object getValues() {

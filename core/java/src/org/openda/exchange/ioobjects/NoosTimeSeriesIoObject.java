@@ -23,7 +23,7 @@ import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesSet;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Glob;
 
 import java.io.*;
@@ -118,8 +118,8 @@ public final class NoosTimeSeriesIoObject implements IoObjectInterface {
     *
     * @return The list of element identifiers can be accessed
     */
-   public IPrevExchangeItem[] getExchangeItems() {
-      return this.timeSeriesSet.toArray(new IPrevExchangeItem[this.timeSeriesSet.size()]);
+   public IExchangeItem[] getExchangeItems() {
+      return this.timeSeriesSet.toArray(new IExchangeItem[this.timeSeriesSet.size()]);
    }
 
    /**

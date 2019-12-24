@@ -31,7 +31,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import junit.framework.TestCase;
@@ -152,11 +152,11 @@ public class ForcingWrapperTest extends TestCase {
 		// Call to initialize -> reads the file and writes 2 Exchange items.
 		forcingWrapper.initialize(testRunDataDir, fileNamePrecip, args);
 
-		IPrevExchangeItem[] exchangeItems = forcingWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = forcingWrapper.getExchangeItems();
 
 		for (int item = 0; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase("Precipitation")) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				expectedTimes = (double[]) expectedExchangeItem.getTimes();
 				expectedValues = (double[]) expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value0, expectedValues[0]);
@@ -179,11 +179,11 @@ public class ForcingWrapperTest extends TestCase {
 		// Call to initialize -> reads the file and writes 2 Exchange items.
 		forcingWrapper.initialize(testRunDataDir, fileNamePotET, args);
 
-		IPrevExchangeItem[] exchangeItems = forcingWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = forcingWrapper.getExchangeItems();
 
 		for (int item = 0; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase("potET")) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				expectedTimes = (double[]) expectedExchangeItem.getTimes();
 				expectedValues = (double[]) expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value0, expectedValues[0]);
@@ -212,7 +212,7 @@ public class ForcingWrapperTest extends TestCase {
 		precipWrapper.initialize(testRunDataDir, fileNamePrecip, args);
 			
 		// Modify times and values in exchange items
-		IPrevExchangeItem[] exchangeItems = precipWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = precipWrapper.getExchangeItems();
 		times[0] = time0 + 30;
 		times[1] = time1 + 30;
 		times[2] = time2 + 30;
@@ -302,7 +302,7 @@ public class ForcingWrapperTest extends TestCase {
 		potETWrapper.initialize(testRunDataDir, fileNamePotET, args);
 			
 		// Modify times and values in exchange items
-		IPrevExchangeItem[] exchangeItems = potETWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = potETWrapper.getExchangeItems();
 		times[0] = time00 + 30;
 		times[1] = time01 + 30;
 		times[2] = time02 + 30;

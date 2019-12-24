@@ -56,11 +56,6 @@ public class DFlowFMTimeInfoExchangeItem implements IExchangeItem {
 		return IExchangeItem.Role.InOut;
 	}
 
-	@Override
-	public PrevRole getPrevRole() {
-		return null;
-	}
-
 	public Object getValues() {
 		double time;
 		if (this.id.equals("start_time")) {

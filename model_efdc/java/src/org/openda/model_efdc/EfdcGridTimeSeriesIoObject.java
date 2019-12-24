@@ -33,7 +33,7 @@ import java.util.TimeZone;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 
@@ -57,7 +57,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
 
     private File timeSeriesFile;
-    private Map<Integer, IPrevExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<Integer, IPrevExchangeItem>();
+    private Map<Integer, IExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<Integer, IExchangeItem>();
 
     /**
      * @param workingDir the working directory.
@@ -396,7 +396,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
         for (int parameterIndex = 0; parameterIndex < data.length; parameterIndex++) {
             //use the columnNumber (not columnIndex) as the id for the exchangeItem.
             int columnNumber = parameterIndex + 5;
-            IPrevExchangeItem exchangeItem = new EfdcGridTimeSeriesExchangeItem(String.valueOf(columnNumber));
+            IExchangeItem exchangeItem = new EfdcGridTimeSeriesExchangeItem(String.valueOf(columnNumber));
 
             //set times and values.
             exchangeItem.setTimes(times);
@@ -413,10 +413,10 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
     }
 
     
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         //return all available exchange items.
-        List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>(this.timeSeriesExchangeItems.values());
-        return exchangeItems.toArray(new IPrevExchangeItem[exchangeItems.size()]);
+        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.timeSeriesExchangeItems.values());
+        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
     }
 
     

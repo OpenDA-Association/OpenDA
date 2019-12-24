@@ -18,7 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.utils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.ITreeVector;
 import org.openda.interfaces.IVector;
@@ -92,15 +92,15 @@ public class Statistics {
     public Statistics(IVector values, IObservationDescriptions descriptions){
 		this.values=values;
 		this.descriptions=descriptions;
-		List<IPrevExchangeItem> items = null;
+		List<IExchangeItem> items = null;
 		try{
 			items = this.descriptions.getExchangeItems();
 		}catch (Exception e) {
-			items = new ArrayList<IPrevExchangeItem>(); //Empty list
+			items = new ArrayList<IExchangeItem>(); //Empty list
 		}
         int indFirst = 0;
         int indLast = 0;
-		for(IPrevExchangeItem item : items){ // assume the exchangeItems are in the
+		for(IExchangeItem item : items){ // assume the exchangeItems are in the
 			String id = item.getId();
             double times[] = item.getTimes();
             if (times != null) {

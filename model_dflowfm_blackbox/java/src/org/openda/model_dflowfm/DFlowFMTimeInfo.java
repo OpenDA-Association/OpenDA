@@ -23,7 +23,6 @@ package org.openda.model_dflowfm;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Locale;

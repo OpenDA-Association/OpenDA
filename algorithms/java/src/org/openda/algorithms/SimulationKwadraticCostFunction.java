@@ -462,13 +462,13 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 				// Add model instance identifier to evaluation
 				String message = "Evaluation:," + numberEvaluation + "," + modelInstanceName;
 				debugFileWriter.write(message + "\n");
-				List<IPrevExchangeItem> observationItems =
+				List<IExchangeItem> observationItems =
 						observationSelection.getObservationDescriptions().getExchangeItems();
 				debugFileWriter.write("obs.id's,size,startIndex\n");
 				List<Double> obsValues = new ArrayList<Double>();
 				List<Double> obsTimes = new ArrayList<Double>();
 				int startIndex = 1;
-				for	(IPrevExchangeItem exchangeItem : observationItems) {
+				for	(IExchangeItem exchangeItem : observationItems) {
 					double[] eiValues = exchangeItem.getValuesAsDoubles();
 					double[] eiTimes = exchangeItem.getTimes();
 					debugFileWriter.write(exchangeItem.getId() + "," + eiValues.length + "," + startIndex + "\n");
@@ -508,7 +508,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 	private IVector removeBias(IStochObserver obsSelection, IVector lastPredicted) {
         IVector prd = lastPredicted.clone();
         IObservationDescriptions descr = obsSelection.getObservationDescriptions();
-        List<IPrevExchangeItem> items;
+        List<IExchangeItem> items;
         try{
             items = descr.getExchangeItems();
         }catch (Exception e) {
@@ -516,7 +516,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
         }
         int firstIndex=0;
         int lastIndex;
-        for(IPrevExchangeItem item : items){
+        for(IExchangeItem item : items){
             String id = item.getId();
             double times[] = item.getTimes();
             if (times == null) {
@@ -555,7 +555,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 	private IVector removeStd(IStochObserver obsSelection, IVector lastPredicted) {
         IVector prd = lastPredicted.clone();
         IObservationDescriptions descr = obsSelection.getObservationDescriptions();
-        List<IPrevExchangeItem> items;
+        List<IExchangeItem> items;
         try{
             items = descr.getExchangeItems();
         }catch (Exception e) {
@@ -563,7 +563,7 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
         }
         int firstIndex=0;
         int lastIndex;
-        for(IPrevExchangeItem item : items){
+        for(IExchangeItem item : items){
             String id = item.getId();
             double times[] = item.getTimes();
             if (times == null) {

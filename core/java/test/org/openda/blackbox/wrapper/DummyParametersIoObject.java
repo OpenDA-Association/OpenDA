@@ -76,17 +76,11 @@ public class DummyParametersIoObject implements IoObjectInterface {
 
         public IGeometryInfo getGeometryInfo() { return null; }
 
-        public Class getValueType() {
-            return Double.TYPE;
-        }
-
         public ValueType getValuesType() {
-            return ValueType.doubleType;
+            return ValueType.doublesType;
         }
 
         public Role getRole() { return Role.InOut; }
-
-        public PrevRole getPrevRole() { return PrevRole.InOut; }
 
         public Object getValues() {
             return value;

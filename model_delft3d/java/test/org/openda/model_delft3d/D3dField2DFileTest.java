@@ -20,7 +20,7 @@
 package org.openda.model_delft3d;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class D3dField2DFileTest extends TestCase {
         // Read depth file, check content
         D3dField2DFile depthFile = new D3dField2DFile();
         depthFile.initialize(testDir, "test.mdf", new String[] {"dep"});
-        IPrevExchangeItem[] depExchItems = depthFile.getExchangeItems();
+        IExchangeItem[] depExchItems = depthFile.getExchangeItems();
         assertEquals("depExchItems.length", 1, depExchItems.length);
         assertEquals("exchItemdepthFile[0].id", "depth", depExchItems[0].getId());
         double[] depthValues = depExchItems[0].getValuesAsDoubles();
@@ -62,7 +62,7 @@ public class D3dField2DFileTest extends TestCase {
         // Read roughness file, check content
         D3dField2DFile roughnessFile = new D3dField2DFile();
         roughnessFile.initialize(testDir, "test.mdf", new String[] {"rgh"});
-        IPrevExchangeItem[] rghExchItems = roughnessFile.getExchangeItems();
+        IExchangeItem[] rghExchItems = roughnessFile.getExchangeItems();
         assertEquals("rghExchItems.length", 2, rghExchItems.length);
         assertEquals("exchItemRoughFile[0].id", "roughness-u", rghExchItems[0].getId());
         assertEquals("exchItemRoughFile[1].id", "roughness-v", rghExchItems[1].getId());

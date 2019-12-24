@@ -52,7 +52,6 @@ public class IntExchangeItem extends MyObservable implements IExchangeItem{
 		return this.role;
 	}
 
-    public PrevRole getPrevRole() { return PrevRole.InOut;}
 
 	public String getId() {
 		return this.id;

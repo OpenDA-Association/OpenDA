@@ -201,8 +201,8 @@ public class NemoModelInstance extends BBModelInstance implements IModelInstance
 		int offset_tb   = 225424-1;
 
 		// get values of sshb //
-		IPrevExchangeItem sshbExchange = this.getExchangeItem("sshb");
-		IPrevExchangeItem tbExchange   = this.getExchangeItem("tb");
+		IExchangeItem sshbExchange = this.getExchangeItem("sshb");
+		IExchangeItem tbExchange   = this.getExchangeItem("tb");
 
 
 		double [] sshb=sshbExchange.getValuesAsDoubles();

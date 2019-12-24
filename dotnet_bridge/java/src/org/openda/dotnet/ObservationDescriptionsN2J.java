@@ -36,12 +36,12 @@ public class ObservationDescriptionsN2J implements IObservationDescriptions {
 
 	public ObservationDescriptionsN2J(IObservationDescriptions javaObservationDescriptions ) {
 
-		List<IPrevExchangeItem> javaExchangeItems = javaObservationDescriptions.getExchangeItems();
+		List<org.openda.interfaces.IExchangeItem> javaExchangeItems = javaObservationDescriptions.getExchangeItems();
 		cli.OpenDA.DotNet.Interfaces.IExchangeItem[] dotNetExchangeItems = new
 				cli.OpenDA.DotNet.Interfaces.IExchangeItem[javaExchangeItems.size()];
 		for (int i = 0; i < javaExchangeItems.size(); i++) {
-			IPrevExchangeItem javaExchangeItem = javaExchangeItems.get(i);
-			int role = UtilsJ2NAndN2J.ExchangeItemRoleMapJ2N(javaExchangeItem.getPrevRole());
+			org.openda.interfaces.IExchangeItem javaExchangeItem = javaExchangeItems.get(i);
+			int role = UtilsJ2NAndN2J.ExchangeItemRoleMapJ2N(javaExchangeItem.getRole());
 			IExchangeItem dotNetExchangeItem =
 					new DoublesExchangeItem(
 							javaExchangeItem.getId(), javaExchangeItem.getDescription(), role,
@@ -57,7 +57,7 @@ public class ObservationDescriptionsN2J implements IObservationDescriptions {
 	}
 
 	
-	public List<IPrevExchangeItem> getExchangeItems() {
+	public List<org.openda.interfaces.IExchangeItem> getExchangeItems() {
 		throw new UnsupportedOperationException("org.openda.dotnet.ObservationDescriptionsN2J.getExchangeItems(): Not implemented yet.");
 	}
 

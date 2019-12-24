@@ -21,7 +21,7 @@
 package org.openda.observers;
 
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
@@ -46,8 +46,8 @@ public class CsvObservationDescriptions implements IObservationDescriptions {
        this.obs = obs;
 	}
 
-    public List<IPrevExchangeItem> getExchangeItems() {
-        List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
+    public List<IExchangeItem> getExchangeItems() {
+        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
         IVector valueVector = obs.values[obs.valueInd];
         IVector timesVector = obs.values[obs.timeInd];
         IVector locIds = obs.values[obs.locInd];

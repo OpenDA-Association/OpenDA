@@ -41,11 +41,11 @@ public class IoObjectNetCdfStochObserverTest extends TestCase {
 		IStochObserver stochObserver = new IoObjectStochObserver();
 		stochObserver.initialize(testRunDataDir, new String[]{"ioObjectNetcdfStochObsConfig.xml"});
 		IObservationDescriptions observationDescriptions = stochObserver.getObservationDescriptions();
-		List<IPrevExchangeItem> exchangeItems = observationDescriptions.getExchangeItems();
+		List<IExchangeItem> exchangeItems = observationDescriptions.getExchangeItems();
 		String var_40_gds4_name = "VAR_40_GDS4_SFC";
-		IPrevExchangeItem var_40_GDS4_item = null;
+		IExchangeItem var_40_GDS4_item = null;
 		for (int i = 0; i < exchangeItems.size(); i++) {
-			IPrevExchangeItem exchangeItem = exchangeItems.get(i);
+			IExchangeItem exchangeItem = exchangeItems.get(i);
 			String exchangeItemId = exchangeItem.getId();
 			if (exchangeItemId.equalsIgnoreCase(var_40_gds4_name)) {
 				var_40_GDS4_item = exchangeItem;

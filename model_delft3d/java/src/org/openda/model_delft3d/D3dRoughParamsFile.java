@@ -21,7 +21,7 @@
 package org.openda.model_delft3d;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 
 	private File workingDir = null;
 	private String configString = null;
-	private IPrevExchangeItem[] exchangeItems =null;
+	private IExchangeItem[] exchangeItems =null;
 
 	public void initialize(File workingDir, String configString, String[] arguments) {
 		/* Just save the initialization input */
@@ -48,7 +48,7 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 		 */
 
 		// Create an arraylist for storing all exchange items that are found in the input file
-		ArrayList<IPrevExchangeItem> listOfExchangeItems= new ArrayList();
+		ArrayList<IExchangeItem> listOfExchangeItems= new ArrayList();
 
 		/* read the parameters file */
 		File roughFile  =new File(workingDir, configString);
@@ -108,37 +108,37 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 					// Add exchange items for all parameters (if they exist)
 					if (hasA){
 						String idA=id+"_A";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idA, roughFile, iLine, "A");
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idA, roughFile, iLine, "A");
 						listOfExchangeItems.add(newExchangeItem);
 					}
 					if (hasB){
 						String idB=id+"_B";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idB, roughFile, iLine, "B");
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idB, roughFile, iLine, "B");
 						listOfExchangeItems.add(newExchangeItem);
 					}
 					if (hasC){
 						String idC=id+"_C";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idC, roughFile, iLine, "C");
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idC, roughFile, iLine, "C");
 						listOfExchangeItems.add(newExchangeItem);
 					}
 					if (hasD){
 						String idD=id+"_D";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "D");
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "D");
 						listOfExchangeItems.add(newExchangeItem);
 					}
 					if (hasE){
 						String idD=id+"_E";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "E");
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "E");
 						listOfExchangeItems.add(newExchangeItem);
 					}
 				}
 			}
 		}
-		this.exchangeItems = new IPrevExchangeItem[listOfExchangeItems.size()];
+		this.exchangeItems = new IExchangeItem[listOfExchangeItems.size()];
 		listOfExchangeItems.toArray(this.exchangeItems);
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		return this.exchangeItems;
 	}
 

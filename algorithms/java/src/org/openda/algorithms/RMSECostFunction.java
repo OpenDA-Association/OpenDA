@@ -383,15 +383,15 @@ public class RMSECostFunction implements ICostFunction{
 	private IVector removeBias(IStochObserver obsSelection, IVector lastPredicted) {
         IVector prd = lastPredicted.clone();
         IObservationDescriptions descr = obsSelection.getObservationDescriptions();
-        List<IPrevExchangeItem> items;
+        List<IExchangeItem> items;
         try{
-            items = (List<IPrevExchangeItem>) descr.getExchangeItems();
+            items = (List<IExchangeItem>) descr.getExchangeItems();
         }catch (Exception e) {
             throw new RuntimeException("No observation data is available.");
         }
         int firstIndex=0;
         int lastIndex;
-        for(IPrevExchangeItem item : items){
+        for(IExchangeItem item : items){
             String id = item.getId();
             double times[] = item.getTimes();
             if (times == null) {

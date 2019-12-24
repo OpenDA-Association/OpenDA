@@ -92,7 +92,7 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 
 	public String[] getExchangeItemIDs() {
 		List<String> exchangeItemIds = new ArrayList<>();
-		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
 			exchangeItemIds.add(exchangeItem.getId());
 		}
 		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
@@ -100,8 +100,8 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 
 	public String[] getExchangeItemIDs(Role role) {
 		List<String> exchangeItemIds = new ArrayList<>();
-		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
-			if (exchangeItem.getPrevRole().equals(role)) {
+		for (IExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
+			if (exchangeItem.getRole().equals(role)) {
 				exchangeItemIds.add(exchangeItem.getId());
 			}
 		}
@@ -109,7 +109,7 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
-		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
 			//a WdmTimeSeriesIoObject returns WdmTimeSeriesExchangeItems that implement TimeSeries which implements both IPrevExchangeItem and IExchangeItem,
 			//so here can cast IPrevExchangeItem to IExchangeItem.
 			if (exchangeItem.getId().equals(exchangeItemId)) return (IExchangeItem) exchangeItem;

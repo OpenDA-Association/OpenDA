@@ -1074,8 +1074,6 @@ public class TimeSeries implements IExchangeItem{
 		return this.role;
 	}
 
-	public PrevRole getPrevRole() {return PrevRole.InOut; }
-
 	/**
 	 * Gets the values of this series at the specified times.
 	 * Does not change the TimeSeries.

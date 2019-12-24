@@ -86,8 +86,6 @@ public class EfdcGridExchangeItem implements IExchangeItem {
 		return this.role;
 	}
 
-	public PrevRole getPrevRole() { return null; }
-
 	public ITimeInfo getTimeInfo() {
 		//return current time, since the efdc model only stores the current values in memory.
 		return new TimeInfo(new double[]{this.modelDll.getCurrentTime()});

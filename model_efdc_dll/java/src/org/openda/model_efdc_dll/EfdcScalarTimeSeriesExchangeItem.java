@@ -88,10 +88,6 @@ public class EfdcScalarTimeSeriesExchangeItem implements IExchangeItem {
 		return this.role;
 	}
 
-	public PrevRole getPrevRole() {
-		return null;
-	}
-
 	public ITimeInfo getTimeInfo() {
 		return new TimeInfo(this.modelDll.getTimesForExchangeItem(this.parameterNumber, this.locationNumber));
 	}

@@ -108,7 +108,7 @@ public class InitialStatesWrapper implements
 	 * 
 	 * @return The list of element identifiers that can be accessed
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		// Get the number of items.
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();

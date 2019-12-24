@@ -73,10 +73,6 @@ public class SimpleExchangeItem implements IExchangeItem{
 
     public Role getRole() { return role; }
 
-    public PrevRole getPrevRole() {
-        return null;
-    }
-
     public Object getValues() {
         if (valueType == double[].class) {
             return SimpleModelInstance.getValuesForExchangeItem(indexInDLL);

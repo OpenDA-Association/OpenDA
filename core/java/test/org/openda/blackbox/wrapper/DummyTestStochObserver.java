@@ -107,7 +107,7 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
 
     private class DummyTestObservationDescriptions implements IObservationDescriptions {
 
-        private List<IPrevExchangeItem> exchangeItems = new ArrayList<>();
+        private List<IExchangeItem> exchangeItems = new ArrayList<>();
 
         DummyTestObservationDescriptions(String[] arguments) {
             for (String argument : arguments) {
@@ -118,7 +118,7 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
             }
         }
 
-        public List<IPrevExchangeItem> getExchangeItems() {
+        public List<IExchangeItem> getExchangeItems() {
             return exchangeItems;
         }
 
@@ -155,8 +155,6 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
             public Role getRole() {
                 return Role.InOut;
             }
-
-            public PrevRole getPrevRole() { return PrevRole.InOut; }
 
             public Class getValueType() {
                 throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyTestStochObserver.DummyTestObservationDescriptions.DummyTestExchangeItem.getValueType(): Not implemented yet.");

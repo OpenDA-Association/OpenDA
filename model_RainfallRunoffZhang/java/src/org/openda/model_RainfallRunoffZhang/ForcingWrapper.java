@@ -34,7 +34,6 @@ import java.util.Set;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 /**
  * ForcingWrapper class reads the entire time series of the example model in one go. 
@@ -113,7 +112,7 @@ public class ForcingWrapper implements IoObjectInterface {
 	 * 
 	 * @return The list of element identifiers that can be accessed
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		// Get the number of items.
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();

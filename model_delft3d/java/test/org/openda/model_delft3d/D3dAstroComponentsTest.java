@@ -20,7 +20,7 @@
 package org.openda.model_delft3d;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -53,12 +53,12 @@ public class D3dAstroComponentsTest extends TestCase {
         // Read astro files, check content
         D3dAstroComponentFiles astroFiles = new D3dAstroComponentFiles();
         astroFiles.initialize(testDir, "m27.mdf", new String[]{});
-        IPrevExchangeItem[] bcaExchItems = astroFiles.getExchangeItems();
+        IExchangeItem[] bcaExchItems = astroFiles.getExchangeItems();
         assertEquals("bcaExchItems.length", 374, bcaExchItems.length);
         assertEquals("bcaExchItems[ 0].id", "BND01.A0", bcaExchItems[ 0].getId());
         assertEquals("bcaExchItems[ 5].id", "BND01.P1.Amplitude", bcaExchItems[ 5].getId());
 
-        for (IPrevExchangeItem bcaExchItem : bcaExchItems) {
+        for (IExchangeItem bcaExchItem : bcaExchItems) {
             System.out.println(bcaExchItem.getId() + "\t" + bcaExchItem.getValues().toString());
         }
         assertEquals("bcaExchItems[ 0].values[0]",  0.0, bcaExchItems[ 0].getValuesAsDoubles()[0]);

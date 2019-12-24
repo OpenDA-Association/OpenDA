@@ -24,7 +24,6 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,11 +191,11 @@ public class AsciiKeywordDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();
-		IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+		IExchangeItem[] result=new IExchangeItem[n];
 		int i=0;
 		for(String key : keys){
 			result[i]=this.items.get(key);

@@ -21,7 +21,7 @@
 */
 package org.openda.blackbox.io;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 import java.io.File;
 
@@ -58,8 +58,8 @@ public class SimpleBbAsciiCopier {
 		IoObjectInterface output = new SimpleBbAsciiFile();
 		String ioArgs[] = {};
 		output.initialize(outputFile.getParentFile(), outputFile.getName(), ioArgs);
-		IPrevExchangeItem outputItem=null;
-		for(IPrevExchangeItem item:output.getExchangeItems()){
+		IExchangeItem outputItem=null;
+		for(IExchangeItem item:output.getExchangeItems()){
 			String itemId = item.getId();
 			System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("concentration.grid")){
@@ -70,7 +70,7 @@ public class SimpleBbAsciiCopier {
 
 		IoObjectInterface input = new SimpleBbAsciiFile();
 		input.initialize(inputFile.getParentFile(), inputFile.getName(), ioArgs);
-		for(IPrevExchangeItem item:input.getExchangeItems()){
+		for(IExchangeItem item:input.getExchangeItems()){
 			String itemId = item.getId();
 			System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("concentration.grid")){

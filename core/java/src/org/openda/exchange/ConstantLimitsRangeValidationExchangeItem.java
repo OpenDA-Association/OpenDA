@@ -92,10 +92,6 @@ public class ConstantLimitsRangeValidationExchangeItem implements IExchangeItem 
 
 	public Role getRole() { return this.wrappedExchangeItem.getRole(); }
 
-	public PrevRole getPrevRole() {
-		return null;
-	}
-
 	public ValueType getValuesType() { return this.wrappedExchangeItem.getValuesType(); }
 
 	public ITimeInfo getTimeInfo() { return this.wrappedExchangeItem.getTimeInfo(); }

@@ -57,8 +57,6 @@ public class NonMissingStochObserverGridTimeSeriesExchangeItem implements IGridT
 		return this.exchangeItem.getRole();
 	}
 
-	public PrevRole getPrevRole() { return PrevRole.InOut;}
-
 	public ITimeInfo getTimeInfo() {
 		return this.exchangeItem.getTimeInfo();
 	}

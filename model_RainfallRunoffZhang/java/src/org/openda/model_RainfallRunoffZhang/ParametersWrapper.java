@@ -32,7 +32,6 @@ import java.util.Set;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 /**
  * Allows reading of time variables from matlab readable ASCII file and
@@ -81,7 +80,7 @@ public class ParametersWrapper implements
 	File workingDir;
 	String configString;
 	String fileName = null;
-	HashMap<String, IPrevExchangeItem> items = new LinkedHashMap<String, IPrevExchangeItem>();
+	HashMap<String, IExchangeItem> items = new LinkedHashMap<String, IExchangeItem>();
 
 	// Cache values to be read.
 	// -- Add variables for initial States to be read here.
@@ -122,11 +121,11 @@ public class ParametersWrapper implements
 	 * 
 	 * @return The list of element identifiers that can be accessed
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		// Get the number of items.
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();
-		IPrevExchangeItem[] result = new IPrevExchangeItem[n];
+		IExchangeItem[] result = new IExchangeItem[n];
 		int i = 0;
 		for (String key : keys) {
 			result[i] = this.items.get(key);

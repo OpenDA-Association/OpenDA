@@ -24,7 +24,6 @@ package org.openda.blackbox.wrapper;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class DummyState implements IoObjectInterface {
         for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
             values[i] = Double.parseDouble(lines.get(i));
         }
-        exchangeItems = new IExchangeItem[]{new DoublesExchangeItem("state", Role.InOut, values)};
+        exchangeItems = new IExchangeItem[]{new DoublesExchangeItem("state", IExchangeItem.Role.InOut, values)};
     }
 
     public IExchangeItem[] getExchangeItems() {

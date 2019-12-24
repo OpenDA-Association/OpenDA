@@ -55,10 +55,6 @@ public class SwanField2DFileExchangeItem implements IExchangeItem {
 
     public IGeometryInfo getGeometryInfo() { return null; }
 
-    public PrevRole getPrevRole(){
-        return null;
-    }
-
     public Object getValues() {
         return getValuesAsDoubles();
     }

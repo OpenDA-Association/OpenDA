@@ -21,7 +21,7 @@ package org.openda.exchange.iotools;
 import java.io.File;
 import java.util.Set;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Reflection;
 
 /**
@@ -39,7 +39,8 @@ public class ioCopier {
 	
 	/**
 	 * Add the dumper to an existing ioObject
-	 * @param ioObject
+	 * @param input
+	 * @parm output
 	 */
 	public ioCopier(IoObjectInterface input, IoObjectInterface output){
 		this.inputIoObject = input;
@@ -98,13 +99,13 @@ public class ioCopier {
 	 * Copy the values for all exchangeItems with named ids
 	 */
 	public void copyValuesForNamedItems(String inputId, String outputId){
-		IPrevExchangeItem[] inputItems = this.inputIoObject.getExchangeItems();
-		IPrevExchangeItem[] outputItems = this.outputIoObject.getExchangeItems();
-		IPrevExchangeItem inputItem = findItem(inputItems,inputId);
+		IExchangeItem[] inputItems = this.inputIoObject.getExchangeItems();
+		IExchangeItem[] outputItems = this.outputIoObject.getExchangeItems();
+		IExchangeItem inputItem = findItem(inputItems,inputId);
 		if(inputItem==null){
 			throw new RuntimeException("Id not found in input object");
 		}
-		IPrevExchangeItem outputItem = findItem(outputItems,outputId);
+		IExchangeItem outputItem = findItem(outputItems,outputId);
 		if(outputItem==null){
 			throw new RuntimeException("Id not found in output object");
 		}
@@ -135,9 +136,9 @@ public class ioCopier {
 	 * @param id
 	 * @return
 	 */
-	private IPrevExchangeItem findItem(IPrevExchangeItem[] exchangeItems, String id){
-		IPrevExchangeItem result = null;
-		for(IPrevExchangeItem item : exchangeItems){
+	private IExchangeItem findItem(IExchangeItem[] exchangeItems, String id){
+		IExchangeItem result = null;
+		for(IExchangeItem item : exchangeItems){
 			if(item.getId().equalsIgnoreCase(id)){
 				result = item;
 			}
@@ -145,7 +146,7 @@ public class ioCopier {
 		if(result==null){
 			System.out.println("Id was not found: "+id);
 			System.out.println("Available id's are:");
-			for(IPrevExchangeItem item : exchangeItems){
+			for(IExchangeItem item : exchangeItems){
 				System.out.println("   id="+item.getId());
 			}			
 		}

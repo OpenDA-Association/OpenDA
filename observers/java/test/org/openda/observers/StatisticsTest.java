@@ -19,7 +19,7 @@
 */
 package org.openda.observers;
 import junit.framework.TestCase;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IStochObserver;
 import org.openda.interfaces.IVector;
@@ -47,14 +47,14 @@ public class StatisticsTest extends TestCase {
         IVector allValues = obs1.getExpectations();
         IObservationDescriptions descr = obs1.getObservationDescriptions();
 
-        List<IPrevExchangeItem> items = descr.getExchangeItems();
+        List<IExchangeItem> items = descr.getExchangeItems();
         double[] thisBias = new double[items.size()];
         double[] thisSTD = new double[items.size()];
         double[] thisRMS = new double[items.size()];
         int indFirst = 0;
         int indLast = 0;
         int j=0;
-        for (IPrevExchangeItem item : items){
+        for (IExchangeItem item : items){
             int n = 1;
             double times[] = item.getTimes();
             if (times != null) {

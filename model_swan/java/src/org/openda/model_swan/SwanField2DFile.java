@@ -38,7 +38,7 @@ import java.util.Locale;
 public class SwanField2DFile implements IDataObject {
 
     private static String[] knownFileTypes = {"WLEV"};
-    private IPrevExchangeItem[] exchangeItems;
+    private IExchangeItem[] exchangeItems;
 
     private File field2dFile;
     private File field2dSeriesFile =null;
@@ -340,7 +340,7 @@ public class SwanField2DFile implements IDataObject {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanField2DFile.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         if (!exchangeItemID.equals(swanField2DFileId)) {
             throw new RuntimeException("unknown exchange item: " + exchangeItemID);
         }

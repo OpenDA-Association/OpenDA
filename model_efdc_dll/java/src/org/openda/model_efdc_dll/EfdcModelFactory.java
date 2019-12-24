@@ -26,7 +26,7 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.blackbox.interfaces.ITimeHorizonConsumer;
 import org.openda.interfaces.IModelInstance;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
 import org.openda.interfaces.ITime;
 import org.openda.model_efdc.EfdcEventTox2InpIoObject;
@@ -127,7 +127,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
 		efdcInpIoObject.initialize(templateDir, EFDC_INP_FILE_NAME,
 				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (IPrevExchangeItem exchangeItem : efdcInpIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : efdcInpIoObject.getExchangeItems()) {
 			if (TSTART.equals(exchangeItem.getId())) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
 			} else if (TSTOP.equals(exchangeItem.getId())) {
@@ -142,7 +142,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
 		efdcEventTox2InpIoObject.initialize(templateDir, EVENT_TOX2_INP_FILE_NAME,
 				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (IPrevExchangeItem exchangeItem : efdcEventTox2InpIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : efdcEventTox2InpIoObject.getExchangeItems()) {
 			if (TSTART.equals(exchangeItem.getId())) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
 			} else if (TSTOP.equals(exchangeItem.getId())) {

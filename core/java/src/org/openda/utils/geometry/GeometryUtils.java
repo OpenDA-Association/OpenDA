@@ -46,39 +46,9 @@ public class GeometryUtils {
 	}
 
 	/**
-	 * Returns the number of grid cells for the given exchangeItem and timeIndex. If item is not a grid, then that is the same as a grid with only one cell.
-	 */
-	public static int getGridCellCount(IPrevExchangeItem prevExchangeItem, int timeIndex) {
-		//get exchangeItem.
-		if (!(prevExchangeItem instanceof IExchangeItem)) {
-			//IPrevExchangeItem has no geometryInfo, so can never be a grid.
-			return 1;
-		}
-		IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
-
-		//get geometryInfo.
-		IGeometryInfo geometryInfo;
-		if (exchangeItem instanceof IGridTimeSeriesExchangeItem && timeIndex != -1) {
-			geometryInfo = ((IGridTimeSeriesExchangeItem) exchangeItem).getGeometryInfoForSingleTimeIndex(timeIndex);
-		} else {
-			geometryInfo = exchangeItem.getGeometryInfo();
-		}
-
-		//get cellCount.
-		return getGridCellCount(geometryInfo);
-	}
-
-	/**
 	 * Returns the number of grid cells for the given exchangeItem. If item is not a grid, then that is the same as a grid with only one cell.
 	 */
-	public static int getGridCellCount(IPrevExchangeItem prevExchangeItem) {
-		//get exchangeItem.
-		if (!(prevExchangeItem instanceof IExchangeItem)) {
-			//IPrevExchangeItem has no geometryInfo, so can never be a grid.
-			return 1;
-		}
-		IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
-
+	public static int getGridCellCount(IExchangeItem exchangeItem) {
 		return getGridCellCount(exchangeItem.getGeometryInfo());
 	}
 
@@ -90,17 +60,6 @@ public class GeometryUtils {
 		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).getCellCount();
 		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
 		return ((LayeredIrregularGridGeometryInfo) geometryInfo).getCellCount();
-	}
-
-	public static boolean isScalar(IPrevExchangeItem prevExchangeItem) {
-		//get exchangeItem.
-		if (!(prevExchangeItem instanceof IExchangeItem)) {
-			//IPrevExchangeItem has no geometryInfo, so can never be a grid.
-			return true;
-		}
-		IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
-
-		return isScalar(exchangeItem.getGeometryInfo());
 	}
 
 	public static boolean isScalar(IGeometryInfo geometryInfo) {

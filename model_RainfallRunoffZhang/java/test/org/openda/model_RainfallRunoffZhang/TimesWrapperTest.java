@@ -30,7 +30,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import junit.framework.TestCase;
@@ -123,11 +123,11 @@ public class TimesWrapperTest extends TestCase {
 
 		// 2 exchange items should be present: soilMoistureExchangeItem and
 		// gwStorageExchangeItem.
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 
 		for (int item = 0; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id1, expectedId);
 
@@ -136,7 +136,7 @@ public class TimesWrapperTest extends TestCase {
 				assertEquals(value1, expectedValue[0]);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id2, expectedId);
 
@@ -144,7 +144,7 @@ public class TimesWrapperTest extends TestCase {
 				assertEquals(value2, expectedValue[0]);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id3, expectedId);
 
@@ -167,24 +167,24 @@ public class TimesWrapperTest extends TestCase {
 		String args[] = {};
 		timesWrapper.initialize(testRunDataDir, fileName, args);
 		
-		IPrevExchangeItem[] exchangeItems = timesWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = timesWrapper.getExchangeItems();
 		
 		// modify the entries of the exchange items.
 		for (int item = 0 ; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IPrevExchangeItem ei = exchangeItems[item];
+				IExchangeItem ei = exchangeItems[item];
 				expectedCurrentTime = ei.getValuesAsDoubles();
 				expectedCurrentTime[0] = 2;
 				ei.setValuesAsDoubles(expectedCurrentTime);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IPrevExchangeItem ei = exchangeItems[item];
+				IExchangeItem ei = exchangeItems[item];
 				expectedSimTimeStep = ei.getValuesAsDoubles();
 				expectedSimTimeStep[0] = 100;
 				ei.setValuesAsDoubles(expectedSimTimeStep);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				IPrevExchangeItem ei = exchangeItems[item];
+				IExchangeItem ei = exchangeItems[item];
 				expectedFinalTime = ei.getValuesAsDoubles();
 				expectedFinalTime[0] = 21;
 				ei.setValuesAsDoubles(expectedFinalTime);

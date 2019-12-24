@@ -21,10 +21,9 @@ package org.openda.blackbox.io;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.DoublesExchangeItem;
-import org.openda.exchange.ExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 
 import java.io.BufferedReader;
@@ -85,7 +84,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 	String configString;
 	String fileName = null;
 	HashMap<String,String> variables = new LinkedHashMap<String,String>();
-	HashMap<String,IPrevExchangeItem> items = new LinkedHashMap<String,IPrevExchangeItem>();
+	HashMap<String,IExchangeItem> items = new LinkedHashMap<String,IExchangeItem>();
 
 	//cache these values
 	double refdate;
@@ -182,9 +181,9 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		tstop=time[2]*unit;
 
 		//add exchange items for time
-		IPrevExchangeItem startTime = new DoubleExchangeItem("startTime", this.refdate+this.tstart);
+		IExchangeItem startTime = new DoubleExchangeItem("startTime", this.refdate+this.tstart);
 		this.items.put("startTime",startTime);
-		IPrevExchangeItem endTime = new DoubleExchangeItem("endTime", this.refdate+this.tstop);
+		IExchangeItem endTime = new DoubleExchangeItem("endTime", this.refdate+this.tstop);
 		this.items.put("endTime",endTime);
 
 		//series for sources
@@ -292,7 +291,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		IExchangeItem c = null;
 		if(concentrationString!=null){
 			double values[] = parseVector(concentrationString);
-			c = new DoublesExchangeItem("concentration.grid",Role.InOut, values);
+			c = new DoublesExchangeItem("concentration.grid",IExchangeItem.Role.InOut, values);
 			this.items.put("concentration.grid", c);
 		}else{
 			throw new RuntimeException("Missing input. Was looking for c");
@@ -307,11 +306,11 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		}
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		//TODO for now return some dummy timeSeries
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();
-		IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+		IExchangeItem[] result=new IExchangeItem[n];
 		int i=0;
 		for(String key : keys){
 			result[i]=this.items.get(key);
@@ -425,7 +424,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 			if(!this.items.containsKey(id)){
 				throw new RuntimeException("ExchangeItem with id ="+id+" got lost.");
 			}
-			IPrevExchangeItem item = this.items.get(id);
+			IExchangeItem item = this.items.get(id);
 			String key="c";
 			double values[] = item.getValuesAsDoubles();
 			String valueString = writeVector(values);
@@ -463,7 +462,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 
 	/**
 	 * Parse a string with format like "[1.0, 2.2, 4.6 , 5.95]"
-	 * @param String to parse
+	 * @param valuestring to parse
 	 */
 	private double[] parseVector(String valuestring){
 		double result[] = null;
