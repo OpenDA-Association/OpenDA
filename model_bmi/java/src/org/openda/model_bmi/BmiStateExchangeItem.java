@@ -72,11 +72,6 @@ public class BmiStateExchangeItem implements IExchangeItem {
 		return Role.InOut;
 	}
 
-	@Override
-	public PrevRole getPrevRole() {
-		return null;
-	}
-
 	public String getId() {
 		return "state";
 	}

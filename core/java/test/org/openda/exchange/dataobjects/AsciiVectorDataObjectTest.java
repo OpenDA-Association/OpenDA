@@ -48,7 +48,7 @@ public class AsciiVectorDataObjectTest extends TestCase {
 
 		AsciiVectorDataObject vec1 = new AsciiVectorDataObject();
 		vec1.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
-		IPrevExchangeItem[] exchange1 = vec1.getExchangeItems();
+		IExchangeItem[] exchange1 = vec1.getExchangeItems();
 		assertEquals(1,exchange1.length);
 		double[] vals1 = exchange1[0].getValuesAsDoubles();
 		assertEquals(5, vals1.length);
@@ -67,7 +67,7 @@ public class AsciiVectorDataObjectTest extends TestCase {
 
 		AsciiVectorDataObject vec2 = new AsciiVectorDataObject();
 		vec2.initialize(this.testRunDataDir, new String[] {"vector1.txt"});
-		IPrevExchangeItem [] exchange2 = vec2.getExchangeItems();
+		IExchangeItem [] exchange2 = vec2.getExchangeItems();
 		assertEquals(1,exchange2.length);
 		double[] vals2 = exchange2[0].getValuesAsDoubles();
 		assertEquals(5, vals1.length);

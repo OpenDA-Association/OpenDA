@@ -48,11 +48,6 @@ public class Flow1DTimeInfoExchangeItem implements IExchangeItem
 	}
 
 	@Override
-	public PrevRole getPrevRole() {
-		return null;
-	}
-
-	@Override
 	public String getId() {
 
 		return id.name();

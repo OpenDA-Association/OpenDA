@@ -28,7 +28,7 @@ import java.util.TimeZone;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
@@ -55,8 +55,8 @@ public class EfdcInpIoObject implements IoObjectInterface {
      */
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
 
-    private IPrevExchangeItem startTimeExchangeItem = null;
-    private IPrevExchangeItem endTimeExchangeItem = null;
+    private IExchangeItem startTimeExchangeItem = null;
+    private IExchangeItem endTimeExchangeItem = null;
     private File efdcInpFile;
 
     /**
@@ -95,8 +95,8 @@ public class EfdcInpIoObject implements IoObjectInterface {
     }
 
     
-    public IPrevExchangeItem[] getExchangeItems() {
-        return new IPrevExchangeItem[]{this.startTimeExchangeItem, this.endTimeExchangeItem};
+    public IExchangeItem[] getExchangeItems() {
+        return new IExchangeItem[]{this.startTimeExchangeItem, this.endTimeExchangeItem};
     }
 
     

@@ -59,10 +59,6 @@ public class D3dAstroExchangeItem implements IExchangeItem {
 
     public Role getRole() { return IExchangeItem.Role.InOut; }
 
-    public PrevRole getPrevRole() {
-        return IPrevExchangeItem.PrevRole.InOut;
-    }
-
     public Object getValues() {
         if (astroComponent != null) {
             if (isAmplitude) {

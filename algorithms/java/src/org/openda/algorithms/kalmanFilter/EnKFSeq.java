@@ -142,7 +142,7 @@ public class EnKFSeq extends EnKF {
 			this.y = y;
 		}
 
-		public List<IPrevExchangeItem> getExchangeItems() {
+		public List<IExchangeItem> getExchangeItems() {
 			throw new UnsupportedOperationException(getClass().getName() + ".getExchangeItems() not implemented.");
 		}
 

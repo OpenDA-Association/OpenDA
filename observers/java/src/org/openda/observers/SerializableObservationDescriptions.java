@@ -20,7 +20,7 @@ package org.openda.observers;
 */
 
 import org.openda.interfaces.IObservationDescriptions;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
 
@@ -49,7 +49,7 @@ public class SerializableObservationDescriptions implements IObservationDescript
 	int propertyCount;
 	int observationCount;
 	ITime[] times;
-	List<IPrevExchangeItem> exchangeItems;
+	List<IExchangeItem> exchangeItems;
 
 
 	/**
@@ -98,7 +98,7 @@ public class SerializableObservationDescriptions implements IObservationDescript
 	}
 
 
-	public List<IPrevExchangeItem> getExchangeItems() {
+	public List<IExchangeItem> getExchangeItems() {
 	    return exchangeItems;
 	}
 

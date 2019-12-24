@@ -69,17 +69,12 @@ public class DummySeries implements IoObjectInterface {
 
         public IGeometryInfo getGeometryInfo() { return null; }
 
-        public Class getValueType() {
-            return Double.TYPE;
-        }
+		@Override
+		public ValueType getValuesType() {
+			return ValueType.doublesType;
+		}
 
-        public ValueType getValuesType() {
-            return ValueType.doubleType;
-        }
-
-        public Role getRole() { return Role.InOut; }
-
-        public PrevRole getPrevRole() { return PrevRole.InOut; }
+		public Role getRole() { return Role.InOut; }
 
         public Object getValues() {
             return value;

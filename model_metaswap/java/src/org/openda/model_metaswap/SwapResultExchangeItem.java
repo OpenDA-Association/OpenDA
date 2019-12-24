@@ -23,11 +23,6 @@ public class SwapResultExchangeItem implements IExchangeItem {
 	}
 
 	@Override
-	public PrevRole getPrevRole() {
-		return null;
-	}
-
-	@Override
 	public double[] getValuesAsDoubles() {
 		return values;
 	}

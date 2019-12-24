@@ -66,7 +66,7 @@ public class SwanBBTest extends TestCase {
             String[] exchangeItemIDs = bbModel.getExchangeItemIDs();
             for (int j = 0; j < exchangeItemIDs.length; j++) {
                 assertEquals("exch.item.ID[" + j + "]", expectedExchangeItemIDs[j], exchangeItemIDs[j]);
-                IPrevExchangeItem exchangeItem = bbModel.getExchangeItem(exchangeItemIDs[j]);
+                IExchangeItem exchangeItem = bbModel.getExchangeItem(exchangeItemIDs[j]);
                 if (exchangeItem.getId().contentEquals("state")) {
                     int iLoc = 3;
                     int iFreq = 6;
@@ -152,7 +152,7 @@ public class SwanBBTest extends TestCase {
 
             for (int j = 0; j < exchangeItemIDs.length; j++) {
                 assertEquals("exch.item.ID[" + j + "]", expectedExchangeItemIDs[j], exchangeItemIDs[j]);
-                IPrevExchangeItem exchangeItem = bbStochModel.getExchangeItem(exchangeItemIDs[j]);
+                IExchangeItem exchangeItem = bbStochModel.getExchangeItem(exchangeItemIDs[j]);
                 if (exchangeItem.getId().contentEquals("state")) {
                     int iLoc = 3;
                     int iFreq = 6;

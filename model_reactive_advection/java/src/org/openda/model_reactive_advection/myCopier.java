@@ -20,7 +20,7 @@
 package org.openda.model_reactive_advection;
 import java.io.File;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 /**
  * Copy values for 'c' concentration on grid from one file to another.
@@ -55,9 +55,9 @@ public class myCopier {
 		IoObjectInterface output = new myWrapper();
 		String ioArgs[] = {};
 		output.initialize(outputFile.getParentFile(), outputFile.getName(), ioArgs);
-		IPrevExchangeItem outputItem1=null;
-		IPrevExchangeItem outputItem2=null;
-		for(IPrevExchangeItem item:output.getExchangeItems()){
+		IExchangeItem outputItem1=null;
+		IExchangeItem outputItem2=null;
+		for(IExchangeItem item:output.getExchangeItems()){
 			String itemId = item.getId();
 			//System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("concentration1.grid")){
@@ -70,7 +70,7 @@ public class myCopier {
 
 		IoObjectInterface input = new myWrapper();
 		input.initialize(inputFile.getParentFile(), inputFile.getName(), ioArgs);
-		for(IPrevExchangeItem item:input.getExchangeItems()){
+		for(IExchangeItem item:input.getExchangeItems()){
 			String itemId = item.getId();
 			//System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("concentration1.grid")){

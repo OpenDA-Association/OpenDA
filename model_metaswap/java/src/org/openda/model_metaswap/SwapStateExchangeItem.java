@@ -19,10 +19,6 @@ public class SwapStateExchangeItem implements IExchangeItem {
 		return null;
 	}
 
-	@Override
-	public IPrevExchangeItem.PrevRole getPrevRole() {
-		return null;
-	}
 
 	@Override
 	public double[] getValuesAsDoubles() {

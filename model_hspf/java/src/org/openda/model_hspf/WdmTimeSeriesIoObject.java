@@ -27,7 +27,7 @@ import java.util.*;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
@@ -85,8 +85,8 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
     private WdmDll wdmDll;
     private Role role;
-    private IPrevExchangeItem startTimeExchangeItem = null;
-    private IPrevExchangeItem endTimeExchangeItem = null;
+    private IExchangeItem startTimeExchangeItem = null;
+    private IExchangeItem endTimeExchangeItem = null;
     private double startTimeDouble = Double.NaN;
     private double endTimeDouble = Double.NaN;
     private List<WdmTimeSeriesExchangeItem> wdmTimeSeriesExchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
@@ -222,14 +222,14 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         if (this.wdmTimeSeriesExchangeItems.isEmpty()) throw new IllegalArgumentException(this.getClass().getSimpleName() + ": No time series found in time series file '" + this.wdmTimeSeriesFilePath + "'.");
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         //return all available exchange items.
-        List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>(this.wdmTimeSeriesExchangeItems);
+        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.wdmTimeSeriesExchangeItems);
         if (this.startTimeExchangeItem != null && this.endTimeExchangeItem != null) {
             exchangeItems.add(this.startTimeExchangeItem);
             exchangeItems.add(this.endTimeExchangeItem);
         }
-        return exchangeItems.toArray(new IPrevExchangeItem[exchangeItems.size()]);
+        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
     }
 
     /**

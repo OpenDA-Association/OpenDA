@@ -21,7 +21,7 @@ package org.openda.dotnet;
 
 import org.openda.exchange.ExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
 
@@ -44,7 +44,7 @@ public class ObservationDescriptionsJ2N implements IObservationDescriptions {
 	 *
 	 * @return All exchange items in the stoch. observer.
 	 */
-	public List<IPrevExchangeItem> getExchangeItems()
+	public List<IExchangeItem> getExchangeItems()
 	{
 			throw new UnsupportedOperationException("Not implemented yet.");
 	}

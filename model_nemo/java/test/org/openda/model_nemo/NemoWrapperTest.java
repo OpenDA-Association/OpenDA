@@ -26,7 +26,7 @@ import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -53,12 +53,12 @@ public class NemoWrapperTest extends TestCase {
 		String args[] = {};
 		ioObject.initialize(testRunDataDir, "SQB_00010368_restart.nc", args);
 
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 
         for(int item=0;item<exchangeItems.length;item++){
 
 			if(exchangeItems[item].getId().equalsIgnoreCase("gcx(t=1, y=81, x=121)")){
-				IPrevExchangeItem ex = exchangeItems[item];
+				IExchangeItem ex = exchangeItems[item];
 				//String getId();
 				String id = ex.getId();
 				assertEquals("ex.getId()","gcx(t=1, y=81, x=121)", id);
@@ -117,7 +117,7 @@ public class NemoWrapperTest extends TestCase {
 		ioObjectRestartList.initialize(testCopyDir, "SQB_00010368_restart.nc", args);
 
 
-		IPrevExchangeItem[] exchangeItems = ioObjectRestartList.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObjectRestartList.getExchangeItems();
 
 		//change some things
 		for(int item=0;item<exchangeItems.length;item++){
@@ -158,7 +158,7 @@ public class NemoWrapperTest extends TestCase {
 			}
 		ioObject.initialize(testCopyDir, "SQB_00010368_restart.nc", args);
 
-			for(IPrevExchangeItem item:ioObject.getExchangeItems()){
+			for(IExchangeItem item:ioObject.getExchangeItems()){
 				String itemId = item.getId();
 				System.out.println("looking at item: "+itemId);
 				if(itemId.equalsIgnoreCase("startTime")){

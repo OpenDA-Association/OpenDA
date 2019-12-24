@@ -60,8 +60,6 @@ public class ExchangeItemN2J implements IExchangeItem {
 
 	public Role getRole() { return Role.InOut; }
 
-	public PrevRole getPrevRole() { return null; }
-
 	public Object getValues() {
 		// for now, just always return an array of doubles, no matter wat the dotnet object's value type is
 		return dotNotExchangeItem.get_ValuesAsDoubles();

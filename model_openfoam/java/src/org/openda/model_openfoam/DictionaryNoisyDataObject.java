@@ -253,10 +253,10 @@ public class DictionaryNoisyDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 
 		int n = this.items.size();
-        IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+        IExchangeItem[] result=new IExchangeItem[n];
 
 		int i=0;
 		for(String key : this.items.keySet()){

@@ -21,7 +21,7 @@ package org.openda.model_RainfallRunoffZhang;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import java.util.List;
 
 public class ASCIITimeSeriesObservationDescriptions implements IObservationDescriptions {
@@ -38,7 +38,7 @@ public class ASCIITimeSeriesObservationDescriptions implements IObservationDescr
 	}
 
     @Override
-    public List<IPrevExchangeItem> getExchangeItems() {
+    public List<IExchangeItem> getExchangeItems() {
         return obs.getExchangeItems();
     }
 

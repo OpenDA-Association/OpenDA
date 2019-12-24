@@ -28,7 +28,7 @@ import java.util.TimeZone;
 import junit.framework.TestCase;
 
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 
@@ -78,11 +78,11 @@ public class EfdcGridTimeSeriesTest extends TestCase {
         efdcGridTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcGridTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcGridTimeSeriesIoObject.getExchangeItems();
         assertEquals(23, exchangeItems.length);
 
         //check times and values.
-        IPrevExchangeItem exchangeItem4 = exchangeItems[3];
+        IExchangeItem exchangeItem4 = exchangeItems[3];
         //the id is the one-based columnNumber of the column in the file.
         assertEquals("8", exchangeItem4.getId());
 

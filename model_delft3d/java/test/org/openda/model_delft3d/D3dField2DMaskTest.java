@@ -21,7 +21,7 @@ package org.openda.model_delft3d;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.SelectorInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -51,7 +51,7 @@ public class D3dField2DMaskTest extends TestCase {
         // Read roughness file, check original content
         D3dField2DFile roughnessFile = new D3dField2DFile();
         roughnessFile.initialize(testDir, "test.mdf", new String[] {"rgh"});
-        IPrevExchangeItem uRoughExchItem = roughnessFile.getExchangeItems()[0];
+        IExchangeItem uRoughExchItem = roughnessFile.getExchangeItems()[0];
         double[] uValues = uRoughExchItem.getValuesAsDoubles();
         assertEquals("exchItemRoughFile[1].values[185]", 7.012, uValues[185]);
         assertEquals("exchItemRoughFile[1].values[186]", 7.013, uValues[186]);

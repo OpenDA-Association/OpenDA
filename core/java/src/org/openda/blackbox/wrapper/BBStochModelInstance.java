@@ -167,7 +167,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						String modelExchangeItemId = mappingExchangeItems.get(boundaryExchangeItemId);
 
 						// Retrieve the boundary exchangeItem.
-						IPrevExchangeItem boundaryExchangeItem = null;
+						IExchangeItem boundaryExchangeItem = null;
 						if (dataObject instanceof IEnsembleDataObject) {
 							for (int aMemberIndex: ((IEnsembleDataObject) dataObject).getEnsembleMemberIndices()){
 								if (aMemberIndex == ensembleMemberIndex) {
@@ -181,7 +181,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						if (boundaryExchangeItem == null) break;
 
 						// Retrieve the model exchangeItem.
-						IPrevExchangeItem modelExchangeItem = model.getExchangeItem(modelExchangeItemId);
+						IExchangeItem modelExchangeItem = model.getExchangeItem(modelExchangeItemId);
 						performOperation(operationType, boundaryExchangeItem, modelExchangeItem);
 					}
 				} else {
@@ -189,15 +189,15 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					if (dataObject instanceof IEnsembleDataObject) {
 						for (String boundaryExchangeItemId: ((IEnsembleDataObject) dataObject).getEnsembleExchangeItemIds()) {
 							if (Arrays.asList(((IEnsembleDataObject) dataObject).getEnsembleMemberIndices()).contains(ensembleMemberIndex)) {
-								IPrevExchangeItem boundaryExchangeItem = ((IEnsembleDataObject) dataObject).getDataObjectExchangeItem(boundaryExchangeItemId, ensembleMemberIndex);
-								IPrevExchangeItem modelExchangeItem = model.getExchangeItem(boundaryExchangeItemId);
+								IExchangeItem boundaryExchangeItem = ((IEnsembleDataObject) dataObject).getDataObjectExchangeItem(boundaryExchangeItemId, ensembleMemberIndex);
+								IExchangeItem modelExchangeItem = model.getExchangeItem(boundaryExchangeItemId);
 								performOperation(operationType, boundaryExchangeItem, modelExchangeItem);
 							}
 						}
 					} else {
 						for (String boundaryExchangeItemId: dataObject.getExchangeItemIDs()) {
-							IPrevExchangeItem boundaryExchangeItem = dataObject.getDataObjectExchangeItem(boundaryExchangeItemId);
-							IPrevExchangeItem modelExchangeItem = model.getExchangeItem(boundaryExchangeItemId);
+							IExchangeItem boundaryExchangeItem = dataObject.getDataObjectExchangeItem(boundaryExchangeItemId);
+							IExchangeItem modelExchangeItem = model.getExchangeItem(boundaryExchangeItemId);
 							performOperation(operationType, boundaryExchangeItem, modelExchangeItem);
 						}
 					}
@@ -206,7 +206,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-	private void performOperation(int operationType, IPrevExchangeItem boundaryExchangeItem, IPrevExchangeItem modelExchangeItem) {
+	private void performOperation(int operationType, IExchangeItem boundaryExchangeItem, IExchangeItem modelExchangeItem) {
 		// TODO Evaluate assumption that the model run is configured for the same time period as the provided boundaries.
 		if (boundaryExchangeItem instanceof IGridTimeSeriesExchangeItem && modelExchangeItem instanceof IGridTimeSeriesExchangeItem) {
 			double[] times = boundaryExchangeItem.getTimes();
@@ -254,7 +254,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-	private void applyValuesToExchangeItem(int operationType, IPrevExchangeItem modelExchangeItem, double[] boundaryExchangeItemValues) {
+	private void applyValuesToExchangeItem(int operationType, IExchangeItem modelExchangeItem, double[] boundaryExchangeItemValues) {
 		switch (operationType) {
 			case BBRegularisationConstantConfig.TRANSFORMATION_ADD:
 				modelExchangeItem.axpyOnValues(1.0d, boundaryExchangeItemValues);
@@ -330,7 +330,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				ITime loopTimeStep = new Time(model.getCurrentTime().getMJD() + modelDeltaT);
 				model.compute(loopTimeStep);
                 if (firstStep && observationDescriptions!=null) {
-                    for (IPrevExchangeItem predictorExchangeItem : observationDescriptions.getExchangeItems()) {
+                    for (IExchangeItem predictorExchangeItem : observationDescriptions.getExchangeItems()) {
                         collectTimeSeriesBbExchangeItems.add(new BBCollectTimeSeriesExchangeItem(predictorExchangeItem));
                     }
                     firstStep = false;
@@ -338,12 +338,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 				for (BBCollectTimeSeriesExchangeItem wrappedBbExchangeItem : collectTimeSeriesBbExchangeItems) {
                     BBStochModelVectorConfig vectorConfig = findPredictionVectorConfig(wrappedBbExchangeItem.getId());
-                    IPrevExchangeItem sourceExchangeItem = getExchangeItem(vectorConfig.getSourceId());
+                    IExchangeItem sourceExchangeItem = getExchangeItem(vectorConfig.getSourceId());
                     if (sourceExchangeItem == null) {
                         throw new RuntimeException("BBStochModelInstance.setParameters(): parameter not found: " +
                                 vectorConfig.getSourceId());
                     }
-                    IPrevExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig,
+                    IExchangeItem mappedExchangeItem = new BBExchangeItem(vectorConfig.getId(), vectorConfig,
 						(IExchangeItem)sourceExchangeItem, selectors, configRootDir);
                     double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 					wrappedBbExchangeItem.UpdateTimeStepValue(loopTimeStep,computedValues[0]);
@@ -385,9 +385,9 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * @return exchangeItem
 	 */
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
-		IPrevExchangeItem item = this.getExchangeItem(exchangeItemId);
+		IExchangeItem item = this.getExchangeItem(exchangeItemId);
 		if(item instanceof IExchangeItem){
-			return (IExchangeItem)item;
+			return item;
 		}else{
 			throw new RuntimeException("BBStochModel.getDataObjectExchangeItem: item "+exchangeItemId+" is not of type IExchangeItem");
 		}
@@ -636,13 +636,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			double parameterDelta = paramChild.getValue(0) * regularisationConstantConfig.getScale();
 
 			for (BBStochModelVectorConfig stochModelVectorConfig : regularisationConstantConfig.getVectorConfigs()) {
-				IPrevExchangeItem sourceExchangeItem = getExchangeItem(stochModelVectorConfig.getSourceId());
+				IExchangeItem sourceExchangeItem = getExchangeItem(stochModelVectorConfig.getSourceId());
 				if (sourceExchangeItem == null) {
 					throw new RuntimeException("BBStochModelInstance.setParameters(): parameter not found: " +
 							stochModelVectorConfig.getSourceId());
 				}
-				IPrevExchangeItem exchangeItem = new BBExchangeItem(stochModelVectorConfig.getId(), stochModelVectorConfig,
-					(IExchangeItem)sourceExchangeItem, selectors, configRootDir);
+				IExchangeItem exchangeItem = new BBExchangeItem(stochModelVectorConfig.getId(), stochModelVectorConfig,
+					sourceExchangeItem, selectors, configRootDir);
 
 				addParameterDeltaToExchangeItem(parameterDelta, exchangeItem,
 						regularisationConstantConfig.getTransformation());
@@ -661,13 +661,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 			int vectorConfigNr = 0;
 			while (vectorConfigNr < cartesianToPolarConfig.getVectorConfigs().size()) {
-				IPrevExchangeItem radiusExchangeItem = getExchangeItem(
+				IExchangeItem radiusExchangeItem = getExchangeItem(
 						cartesianToPolarConfig.getVectorConfigs().get(vectorConfigNr).getSourceId());
 				if (radiusExchangeItem == null) {
 					throw new RuntimeException("BBStochModelInstance.setParameters(): radius parameter not found: " +
 							cartesianToPolarConfig.getVectorConfigs().get(vectorConfigNr).getSourceId());
 				}
-				IPrevExchangeItem angleExchangeItem = getExchangeItem(
+				IExchangeItem angleExchangeItem = getExchangeItem(
 						cartesianToPolarConfig.getVectorConfigs().get(vectorConfigNr + 1).getSourceId());
 				if (angleExchangeItem == null) {
 					throw new RuntimeException("BBStochModelInstance.setParameters(): angle parameter not found: " +
@@ -706,7 +706,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseConfig.getExchangeItemConfigs()) {
 				IVector paramChild = getAndCheckParamChild(parameters, exchangeItemConfig.getId());
 				for (String modelExchangeItemId : exchangeItemConfig.getModelExchangeItemIds()) {
-					IPrevExchangeItem exchangeItem = getExchangeItem(modelExchangeItemId);
+					IExchangeItem exchangeItem = getExchangeItem(modelExchangeItemId);
 					if (exchangeItem == null) {
 						throw new RuntimeException("BBStochModelInstance.setParameters(): parameter not found: " +
 								modelExchangeItemId);
@@ -939,10 +939,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		TreeVector treeVector = new TreeVector("predictions");
 		String errorMessage = "";
-		for (IPrevExchangeItem observationExchangeItem : observationDescriptions.getExchangeItems()) {
+		for (IExchangeItem observationExchangeItem : observationDescriptions.getExchangeItems()) {
 			//get modelExchangeItem that corresponds to current observationExchangeItem.
 			BBStochModelVectorConfig vectorConfig = findPredictionVectorConfig(observationExchangeItem.getId());
-            IPrevExchangeItem modelExchangeItem = null;
+            IExchangeItem modelExchangeItem = null;
             if (this.bbStochModelVectorsConfig.isCollectPredictorTimeSeries()) {
                 for (int i=0; i< collectTimeSeriesBbExchangeItems.size(); i++){
                     if (collectTimeSeriesBbExchangeItems.get(i).getId().contentEquals(observationExchangeItem.getId())){
@@ -966,7 +966,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			double[] computedValues = mappedExchangeItem.getValuesAsDoubles();
 
 			//get the model values at the observed coordinates.
-			if (!GeometryUtils.isScalar(observationExchangeItem)) {//if grid observationExchangeItem.
+			if (!GeometryUtils.isScalar(observationExchangeItem.getGeometryInfo())) {//if grid observationExchangeItem.
 				String logMessage = "Getting model values at observed coordinates for grid observation exchangeItem with id '" + observationExchangeItem.getId() + "'.";
 				if (LOGGER.isInfoEnabled()) LOGGER.info(logMessage);
 				Results.putMessage(logMessage);
@@ -1219,7 +1219,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	public ILocalizationDomains getLocalizationDomains(){
 
 		List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
-		List<IPrevExchangeItem> modelExchangeItemsInState = new ArrayList<>();
+		List<IExchangeItem> modelExchangeItemsInState = new ArrayList<>();
 
 		if (useLocalAnalysis) {
 
@@ -1241,9 +1241,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
 
 			for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-				IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
-				IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
-				modelExchangeItemsInState.add(exchangeItem);
+				IExchangeItem ExchangeItem = getExchangeItem(vectorConfig.getId());
+				modelExchangeItemsInState.add(ExchangeItem);
 			}
 
 
@@ -1323,7 +1322,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		//int k=0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-			IPrevExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
+			IExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
 			if (prevExchangeItem instanceof IExchangeItem) {
 				IExchangeItem exchangeItem = (IExchangeItem) prevExchangeItem;
 
@@ -1443,7 +1442,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						allVectors + "\n");
 	}
 
-	private void addParameterDeltaToExchangeItem(double parameterDelta, IPrevExchangeItem exchangeItem, int transformation) {
+	private void addParameterDeltaToExchangeItem(double parameterDelta, IExchangeItem exchangeItem, int transformation) {
 		double[] values = exchangeItem.getValuesAsDoubles();
 		if (transformation == BBRegularisationConstantConfig.TRANSFORMATION_ADD) {
 			for (int i = 0; i < values.length; i++) {
@@ -1509,7 +1508,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			noiseModel.compute(targetTime);
 			for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseModelConfig.getExchangeItemConfigs()) {
 				double[] noiseModelEITimes;
-				IPrevExchangeItem noiseModelExchangeItem = noiseModel.getExchangeItem(exchangeItemConfig.getId());
+				IExchangeItem noiseModelExchangeItem = noiseModel.getExchangeItem(exchangeItemConfig.getId());
 				if (noiseModelExchangeItem == null) {
 					noiseModelExchangeItem = noiseModel.getDataObjectExchangeItem(exchangeItemConfig.getId());
 				}
@@ -1521,7 +1520,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					throw new RuntimeException("No times for noise model item " + noiseModelExchangeItem.getId());
 				}
 				for (String modelExchangeItemId : exchangeItemConfig.getModelExchangeItemIds()) {
-					IPrevExchangeItem modelExchangeItem = getExchangeItem(modelExchangeItemId);
+					IExchangeItem modelExchangeItem = getExchangeItem(modelExchangeItemId);
 					double modelTimes[] = modelExchangeItem.getTimes();
 					List<Double> modelTimesInCurrentPeriod;
 					if (modelTimes == null) {
@@ -1654,7 +1653,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * @param timeStepIndex
 	 * @return
 	 */
-	private double[] getNoiseModelValuesForTimeStep(IPrevExchangeItem noiseModelExchangeItem, int timeStepIndex) {
+	private double[] getNoiseModelValuesForTimeStep(IExchangeItem noiseModelExchangeItem, int timeStepIndex) {
 		if (noiseModelExchangeItem instanceof IExchangeItem) {
 			IExchangeItem exchangeItem = (IExchangeItem) noiseModelExchangeItem;
 			if (exchangeItem.getTimeInfo() == null) {
@@ -1720,7 +1719,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		for (BBStochModelVectorConfig vectorConfig : stateNoiseModelConfig.getVectorConfigs()) {
 			String exchangeItemID = vectorConfig.getSourceId();
-			IPrevExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
+			IExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
 			int tStart = 0;
 			double[] exchangeItemTimes = exchangeItem.getTimes();
 			if (exchangeItemTimes != null) {
@@ -1738,7 +1737,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	private int determineNumBcTimeSteps(ITime currentTime, ITime targetTime, BBStochModelVectorConfig[] vectorConfigs) {
 		int numBcTimeStepsInPeriod = Integer.MIN_VALUE;
 		for (BBStochModelVectorConfig vectorConfig : vectorConfigs) {
-			IPrevExchangeItem exchangeItem = getExchangeItem(vectorConfig.getSourceId());
+			IExchangeItem exchangeItem = getExchangeItem(vectorConfig.getSourceId());
 			if (exchangeItem.getTimes() != null) {
 				int exchangeItemNumTimestepsInComputationSpan = determineNumTimeStepsInSpan(exchangeItem.getTimes(), currentTime, targetTime);
 				if (numBcTimeStepsInPeriod == Integer.MIN_VALUE) {
@@ -1783,8 +1782,8 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return ((exchangeItemTime + 1.e-6) >= currentTime) && ((exchangeItemTime - 1.e-6) < targetTime);
 	}
 
-	private void addNoiseToExchangeItemForOneTimeStep(IPrevExchangeItem modelExchangeItem,
-													  IPrevExchangeItem noiseModelExchangeItem, int timeIndex, double[] noise, int transformationFromOperation, int stateSizeNoiseSizeRatio) {
+	private void addNoiseToExchangeItemForOneTimeStep(IExchangeItem modelExchangeItem,
+													  IExchangeItem noiseModelExchangeItem, int timeIndex, double[] noise, int transformationFromOperation, int stateSizeNoiseSizeRatio) {
 		int numValuesInExchangeItem;
 		try {
 			// check the number of input values
@@ -1940,7 +1939,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		}
 	}
 
-    private double[] getSpatialNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem, double[] noise, int stateSizeNoiseSizeRatioX, int timeIndex) {
+    private double[] getSpatialNoise(IExchangeItem modelExchangeItem, IExchangeItem noiseModelExchangeItem, double[] noise, int stateSizeNoiseSizeRatioX, int timeIndex) {
 		// ODA-617
 		double[] valuesAsDoubles;
 		if (modelExchangeItem instanceof NetcdfGridTimeSeriesExchangeItem) {
@@ -2070,11 +2069,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return spatialNoise;
 	}
 
-	private static boolean is2DNoise(IPrevExchangeItem modelExchangeItem, IPrevExchangeItem noiseModelExchangeItem) {
+	private static boolean is2DNoise(IExchangeItem modelExchangeItem, IExchangeItem noiseModelExchangeItem) {
 		if (!(noiseModelExchangeItem != null && noiseModelExchangeItem instanceof IExchangeItem && modelExchangeItem instanceof IExchangeItem)) return false;
 
-		IGeometryInfo noiseModelGeometryInfo = ((IExchangeItem) noiseModelExchangeItem).getGeometryInfo();
-		IGeometryInfo modelGeometryInfo = ((IExchangeItem) modelExchangeItem).getGeometryInfo();
+		IGeometryInfo noiseModelGeometryInfo = noiseModelExchangeItem.getGeometryInfo();
+		IGeometryInfo modelGeometryInfo = modelExchangeItem.getGeometryInfo();
 		return modelGeometryInfo instanceof IArrayGeometryInfo && noiseModelGeometryInfo instanceof IArrayGeometryInfo;
 	}
 

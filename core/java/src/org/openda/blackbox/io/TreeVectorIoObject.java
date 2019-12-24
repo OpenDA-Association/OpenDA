@@ -41,7 +41,7 @@ public class TreeVectorIoObject implements IoObjectInterface {
     private ITreeVector treeVector = null;
     private boolean exportAsOneExchangeItem = false;
     private final String exportAsOneExchangeItemString = "OneExchangeItem";
-	private IPrevExchangeItem[] exchangeItems = null;
+	private IExchangeItem[] exchangeItems = null;
 
     public void initialize(File workingDir, String fileName, String[] arguments) {
         treeVectorFile = new File(workingDir, fileName);
@@ -59,16 +59,16 @@ public class TreeVectorIoObject implements IoObjectInterface {
         treeVector = treeVectorReader.readTreeVector();
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         if (treeVectorFile == null) {
             throw new RuntimeException(this.getClass().getName() + ": IoObject has not been initialized");
         }
 		if (exchangeItems == null) {
 			if (exportAsOneExchangeItem) {
-				exchangeItems = new IPrevExchangeItem[] {new TreeVectorIoObjectExchangeItem(treeVector)};
+				exchangeItems = new IExchangeItem[] {new TreeVectorIoObjectExchangeItem(treeVector)};
 			} else {
 				ArrayList<String> subTreeVectorIds = treeVector.getSubTreeVectorIds();
-				exchangeItems = new IPrevExchangeItem[subTreeVectorIds.size()];
+				exchangeItems = new IExchangeItem[subTreeVectorIds.size()];
 				for (int i = 0, subTreeVectorIdsSize = subTreeVectorIds.size(); i < subTreeVectorIdsSize; i++) {
 					String childId = subTreeVectorIds.get(i);
 					exchangeItems[i] = new TreeVectorIoObjectExchangeItem(treeVector.getSubTreeVector(childId));
@@ -107,23 +107,27 @@ public class TreeVectorIoObject implements IoObjectInterface {
             return treeVector.getDescription();
         }
 
-        public IQuantityInfo getQuantityInfo() { return null; }
+		@Override
+		public void copyValuesFromItem(IExchangeItem sourceItem) {
+			throw new RuntimeException("org.openda.blackbox.io.TreeVectorIoObject.TreeVectorIoObjectExchangeItem.copyValuesFromItem not implemented");
+		}
+
+		public IQuantityInfo getQuantityInfo() { return null; }
 
         public IGeometryInfo getGeometryInfo() { return null; }
 
-        public Class getValueType() {
+		@Override
+		public ValueType getValuesType() {
+			throw new RuntimeException("org.openda.blackbox.io.TreeVectorIoObject.TreeVectorIoObjectExchangeItem.getValuesType not implemented");
+		}
+
+		public Class getValueType() {
             return double[].class;
         }
-
-        public ValueType getValuesType() { return ValueType.doublesType; }
 
 		public IExchangeItem.Role getRole() {
 			return IExchangeItem.Role.InOut;
 		}
-
-        public IPrevExchangeItem.PrevRole getPrevRole() {
-            return IPrevExchangeItem.PrevRole.InOut;
-        }
 
         public Object getValues() {
             return getValuesAsDoubles();
@@ -149,6 +153,7 @@ public class TreeVectorIoObject implements IoObjectInterface {
             setValuesAsDoubles((double[]) values);
         }
 
+        /*
 		public void copyValuesFromItem(IExchangeItem sourceItem) {
 			ValueType sourceType=sourceItem.getValuesType();
 			if(sourceType != ValueType.doublesType){
@@ -156,6 +161,7 @@ public class TreeVectorIoObject implements IoObjectInterface {
 			}
 			this.setValues(sourceItem.getValues());
 		}
+        */
 
 		public void setValuesAsDoubles(double[] values) {
             treeVector.setValues(values);

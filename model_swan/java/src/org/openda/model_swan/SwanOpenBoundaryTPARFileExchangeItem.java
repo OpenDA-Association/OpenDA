@@ -56,8 +56,6 @@ public class SwanOpenBoundaryTPARFileExchangeItem implements IExchangeItem {
         return Role.InOut;
     }
 
-    public PrevRole getPrevRole() { return null;}
-
     public Object getValues() {
         return getValuesAsDoubles();
     }

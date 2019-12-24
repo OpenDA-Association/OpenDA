@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.model_efdc.EfdcTimeSeriesExchangeItem;
 import org.openda.model_efdc.EfdcUtils;
 import org.openda.utils.Results;
@@ -110,7 +110,7 @@ public abstract class EfdcTimeSeriesFormatter {
      * @param outputFile
      * @param timeSeriesMap
      */
-    public void writeTimeSeriesToFile(File outputFile, Map<String, IPrevExchangeItem> timeSeriesMap) {
+    public void writeTimeSeriesToFile(File outputFile, Map<String, IExchangeItem> timeSeriesMap) {
         if (timeSeriesMap == null || timeSeriesMap.isEmpty()) {
             throw new RuntimeException("No time series to write to file '" + outputFile.getAbsolutePath() + "'.");
         }
@@ -166,7 +166,7 @@ public abstract class EfdcTimeSeriesFormatter {
      * @param locationId
      * @param timeSeriesMap
      */
-    protected void writeTimeSeriesForLocation(PrintWriter writer, int locationId, Map<String, IPrevExchangeItem> timeSeriesMap) {
+    protected void writeTimeSeriesForLocation(PrintWriter writer, int locationId, Map<String, IExchangeItem> timeSeriesMap) {
         EfdcTimeSeriesExchangeItem timeSeries =
                 (EfdcTimeSeriesExchangeItem) timeSeriesMap.get(locationId + "." + getFileType());
         if (timeSeries == null) {

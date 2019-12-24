@@ -18,7 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.algorithms;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IVector;
 
@@ -72,7 +72,7 @@ public class AbsoluteAveragePerLocationStopCriterion implements IStopCriterion {
     public boolean checkForStop(IVector parameters, IVector residuals, IObservationDescriptions descriptions, double cost, double threshold) {
         boolean isStop = false;
         this.threshold = threshold;
-        List<IPrevExchangeItem> items = descriptions.getExchangeItems();
+        List<IExchangeItem> items = descriptions.getExchangeItems();
         this.nLoc = items.size();
         this.isSatisfied = new boolean[this.nLoc];
         this.Ids = new String[this.nLoc];
@@ -81,7 +81,7 @@ public class AbsoluteAveragePerLocationStopCriterion implements IStopCriterion {
         double absAvg = 0.0;
         double maxAbsAvg = Double.NEGATIVE_INFINITY;
         for (int i=0; i<nLoc; i++) {
-            IPrevExchangeItem item = items.get(i);
+            IExchangeItem item = items.get(i);
             String id = item.getId();
             this.Ids[i] = id.trim();
             int n = 1;

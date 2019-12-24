@@ -31,7 +31,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import junit.framework.TestCase;
@@ -130,11 +130,11 @@ public class InitialStatesWrapperTest extends TestCase {
 
 		// 2 exchange items should be present: soilMoistureExchangeItem and
 		// gwStorageExchangeItem.
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 
 		for (int item = 0; item < exchangeItems.length; item++) {
 			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				// String getId();
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id1, expectedId);
@@ -146,7 +146,7 @@ public class InitialStatesWrapperTest extends TestCase {
 				assertEquals(value0, expectedTimes[0]);
 			}
 			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
+				IExchangeItem expectedExchangeItem = exchangeItems[item];
 				String expectedId = expectedExchangeItem.getId();
 				assertEquals(id2, expectedId);
 
@@ -180,7 +180,7 @@ public class InitialStatesWrapperTest extends TestCase {
 		initialStatesWrapper.initialize(testRunDataDir, fileName, args);
 		
 		// Modify times and values in exchange items
-		IPrevExchangeItem[] exchangeItems = initialStatesWrapper.getExchangeItems();
+		IExchangeItem[] exchangeItems = initialStatesWrapper.getExchangeItems();
 		times[0] = value0 + 1;
 		times[1] = value0 + 2;
 		for (int item = 0; item < exchangeItems.length; item++) {

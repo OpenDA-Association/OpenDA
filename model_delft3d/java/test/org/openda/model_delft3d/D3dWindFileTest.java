@@ -20,7 +20,7 @@
 package org.openda.model_delft3d;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class D3dWindFileTest extends TestCase {
         D3dWindFile winduFile = new D3dWindFile();
         winduFile.initialize(testDir, new String[]{"test.mdf", "gu"});
 		String theOneAndOnlyId = winduFile.getExchangeItemIDs()[0];
-        IPrevExchangeItem windExchItem = winduFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        IExchangeItem windExchItem = winduFile.getDataObjectExchangeItem(theOneAndOnlyId);
         assertEquals("exchItemwinduFile[0].id", "windgu", windExchItem.getId());
         double[] windValues = windExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[25]", 6.0, windValues[25]);
@@ -70,7 +70,7 @@ public class D3dWindFileTest extends TestCase {
         D3dWindFile adjustedWindFile = new D3dWindFile();
         adjustedWindFile.initialize(testDir, new String[] {"test.mdf", "gu"});
 		theOneAndOnlyId = adjustedWindFile.getExchangeItemIDs()[0];
-		IPrevExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
+		IExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
         double[] adjustedVValues = adjustedWindExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[6]", 7.01, adjustedVValues[6]);
         assertEquals("exchItemWindFile[0].values[7]", 8.01, adjustedVValues[7]);

@@ -21,7 +21,7 @@
 package org.openda.model_delft3d;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +62,8 @@ public class D3dAstroComponentFiles implements IoObjectInterface {
         }
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
-        return exchangeItems.toArray(new IPrevExchangeItem[exchangeItems.size()]);
+    public IExchangeItem[] getExchangeItems() {
+        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
     }
 
     public void finish() {

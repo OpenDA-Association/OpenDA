@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import junit.framework.TestCase;
@@ -129,14 +129,14 @@ public class ResultFileWrapperTest extends TestCase {
 		// Call to initialize -> reads the file and writes exchange items.
 		resultFileWrapper.initialize(testRunDataDir, fileName, args);
 
-		IPrevExchangeItem[] resultExchangeItems = resultFileWrapper.getExchangeItems();
+		IExchangeItem[] resultExchangeItems = resultFileWrapper.getExchangeItems();
 		
 		// Iterate through all found exchange items.
         for(int item=0;item<resultExchangeItems.length;item++){
 
         	// If the exchange item with id totalRunoff is found. do the following tests:
         	if(resultExchangeItems[item].getId().equalsIgnoreCase("totalRunoff")){
-				IPrevExchangeItem ex = resultExchangeItems[item];
+				IExchangeItem ex = resultExchangeItems[item];
 				//String getId();
 				String id = ex.getId();
 				assertEquals("ex.getId()","totalRunoff", id);

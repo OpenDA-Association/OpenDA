@@ -135,7 +135,7 @@ public class BBStochModelParametersTest extends TestCase {
 		stochModelInstance.setParameters(paramClone);
 
 		String[] exchangeItemIDs = stochModelInstance.getExchangeItemIDs();
-		IPrevExchangeItem exchangeItem = stochModelInstance.getExchangeItem(exchangeItemIDs[0]);
+		IExchangeItem exchangeItem = stochModelInstance.getExchangeItem(exchangeItemIDs[0]);
 		double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
 		assertEquals(131.3, valuesAsDoubles[0]);
 

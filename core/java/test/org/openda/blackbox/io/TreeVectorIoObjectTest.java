@@ -21,7 +21,7 @@ package org.openda.blackbox.io;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public class TreeVectorIoObjectTest extends TestCase {
 		IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
 				treeVectorDataDir, TreeVectorIoObject.class.getName(),
 				"rtcParameterConfig.xml", new String[]{"OneExchangeItem"});
-		IPrevExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
 		assertTrue("Tree vector id", exchangeItems[0].getId().equals("TV"));
 		double[] values = exchangeItems[0].getValuesAsDoubles();
 		for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
@@ -60,7 +60,7 @@ public class TreeVectorIoObjectTest extends TestCase {
 		IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
 				treeVectorDataDir, TreeVectorIoObject.class.getName(),
 				"rtcParameterConfig.xml", new String[]{});
-		IPrevExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
 		assertTrue("B01.01", exchangeItems[0].getId().equals("B01.01"));
 		assertTrue("endTime", exchangeItems[19].getId().equals("B13.03"));
 		for (int ei = 0; ei<20 ; ei+=19) {
@@ -80,7 +80,7 @@ public class TreeVectorIoObjectTest extends TestCase {
 			IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
 					treeVectorDataDir, TreeVectorIoObject.class.getName(),
 					"state_import.xml", new String[]{});
-			IPrevExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
+			IExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
 			assertTrue("Main_P[0]", exchangeItems[0].getId().equals("Main_P[0]"));
 		} catch (Exception e) {
 			if (!e.getMessage().contains("Parsing Error : Content is not allowed in prolog")) {

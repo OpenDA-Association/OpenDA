@@ -120,8 +120,8 @@ public class DudWithObservationFilterTest extends TestCase {
         public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 
             TreeVector treeVector = new TreeVector("predictions");
-            List<IPrevExchangeItem> items = observationDescriptions.getExchangeItems();
-            for(IPrevExchangeItem item : items) {
+            List<IExchangeItem> items = observationDescriptions.getExchangeItems();
+            for(IExchangeItem item : items) {
                 double[] prd = item.getValuesAsDoubles();
                 for (int i=0; i<prd.length; i++){
                     prd[i] += 0.01;

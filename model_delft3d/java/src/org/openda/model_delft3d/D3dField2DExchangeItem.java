@@ -51,10 +51,6 @@ public class D3dField2DExchangeItem implements IExchangeItem {
 
     public Role getRole() { return IExchangeItem.Role.InOut; }
 
-    public PrevRole getPrevRole() {
-        return IPrevExchangeItem.PrevRole.InOut;
-    }
-
     public Object getValues() {
         return field2D;
     }

@@ -84,7 +84,7 @@ public class myWrapper implements IoObjectInterface{
 	File workingDir;
 	String fileName = null;
 	HashMap<String,String> variables = new LinkedHashMap<String,String>();
-	HashMap<String,IPrevExchangeItem> items = new LinkedHashMap<String,IPrevExchangeItem>();
+	HashMap<String,IExchangeItem> items = new LinkedHashMap<String,IExchangeItem>();
 
 	//cache these values
 	double refdate;
@@ -282,11 +282,11 @@ public class myWrapper implements IoObjectInterface{
 		}
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		//TODO for now return some dummy timeSeries
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();
-		IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+		IExchangeItem[] result=new IExchangeItem[n];
 		int i=0;
 		for(String key : keys){
 			result[i]=this.items.get(key);

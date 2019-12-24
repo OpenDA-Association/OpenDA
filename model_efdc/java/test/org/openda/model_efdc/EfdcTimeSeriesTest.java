@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 
@@ -75,7 +75,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
         assertEquals(arguments.length - 2, exchangeItems.length);
 
         //set start time.
@@ -85,7 +85,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(2011, 0, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
                 exchangeItem.setValues(startTime);
             }
@@ -100,8 +100,8 @@ public class EfdcTimeSeriesTest extends TestCase {
                 String timeSeriesId = locationIds[n] + "." + parameterIds[k];
 
                 //get exchangeItem.
-                IPrevExchangeItem currentExchangeItem = null;
-                for (IPrevExchangeItem exchangeItem : exchangeItems) {
+                IExchangeItem currentExchangeItem = null;
+                for (IExchangeItem exchangeItem : exchangeItems) {
                     if (timeSeriesId.equalsIgnoreCase(exchangeItem.getId())) {
                         currentExchangeItem = exchangeItem;
                         break;
@@ -149,7 +149,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
         assertEquals(arguments.length - 2, exchangeItems.length);
 
         //set times and values.
@@ -164,7 +164,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         for (int n = 0; n < times.length; n++) {
             times[n] = times[n] + 55561;
         }
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
                 exchangeItem.setValues(startTime);
 
@@ -206,7 +206,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
         assertEquals(arguments.length - 2, exchangeItems.length);
 
         //set times and values.
@@ -224,7 +224,7 @@ public class EfdcTimeSeriesTest extends TestCase {
             times[n] = times[n] + 55561.625;
         }
         double[] values = new double[]{4.7, 4.8, 4.9, 2.06};
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
                 exchangeItem.setValues(startTime);
             } else if ("1.PSER".equalsIgnoreCase(exchangeItem.getId())) {
@@ -258,7 +258,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
         assertEquals(arguments.length - 2, exchangeItems.length);
 
         //set times and values.
@@ -268,7 +268,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(2011, 0, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             if ("TSTART23".equalsIgnoreCase(exchangeItem.getId())) {
                 exchangeItem.setValues(startTime);
 
@@ -323,7 +323,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
         assertEquals(arguments.length - 2, exchangeItems.length);
 
         //set times and values.
@@ -333,7 +333,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(2011, 0, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
                 exchangeItem.setValues(startTime);
 

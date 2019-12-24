@@ -311,7 +311,7 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 
 			cli.OpenDA.DotNet.Interfaces.IObservationDescriptions dotNetObservationDescriptions = null;
 
-			List<IPrevExchangeItem> javaExchangeItems = observationDescriptions.getExchangeItems();
+			List<IExchangeItem> javaExchangeItems = observationDescriptions.getExchangeItems();
 			String [] keys =observationDescriptions.getPropertyKeys();
 			int nKeys=observationDescriptions.getPropertyCount();
 			int nObs =observationDescriptions.getObservationCount();
@@ -320,11 +320,11 @@ public class ModelInstanceN2J implements org.openda.interfaces.IModelInstance, I
 			cli.OpenDA.DotNet.Interfaces.IExchangeItem[] dotnetExchangeItems =
 					new cli.OpenDA.DotNet.Interfaces.IExchangeItem[javaExchangeItems.size()];
 			for (int i = 0; i < javaExchangeItems.size(); i++) {
-				IPrevExchangeItem javaExchangeItem = javaExchangeItems.get(i);
+				IExchangeItem javaExchangeItem = javaExchangeItems.get(i);
 				cli.OpenDA.DotNet.Interfaces.IExchangeItem dotnetExchangeItem =
 						new DoublesExchangeItem(javaExchangeItem.getId(),
 								javaExchangeItem.getDescription(),
-								javaExchangeItem.getPrevRole().ordinal(), 0d);
+								javaExchangeItem.getRole().ordinal(), 0d);
 				dotnetExchangeItem.set_Times(javaExchangeItem.getTimes());
 				dotnetExchangeItem.set_Values(javaExchangeItem.getValuesAsDoubles());
 				dotnetExchangeItems[i] = dotnetExchangeItem;

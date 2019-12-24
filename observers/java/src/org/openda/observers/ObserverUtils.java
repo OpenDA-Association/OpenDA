@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.openda.interfaces.IObservationDescriptions;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IStochObserver;
 
 public class ObserverUtils {
@@ -37,19 +37,19 @@ public class ObserverUtils {
 	public ObserverUtils(IObservationDescriptions observationDescriptions){
 		this.numberOfObsValues = observationDescriptions.getObservationCount();
 		this.obsTimes = new double[numberOfObsValues];
-		List<IPrevExchangeItem> items = null;
+		List<IExchangeItem> items = null;
         boolean gelukt=false;
 		boolean whithExchangeItems=true;
 		try{
 			items = observationDescriptions.getExchangeItems();
 		}catch (Exception e) {
-			items = new ArrayList<IPrevExchangeItem>(); //Empty list
+			items = new ArrayList<IExchangeItem>(); //Empty list
 			whithExchangeItems=false;
 		}
 		if(whithExchangeItems && items!=null){
 			int indFirst = 0;
 			int indLast = 0;
-			for(IPrevExchangeItem item : items){ // assume the exchangeItems are in the
+			for(IExchangeItem item : items){ // assume the exchangeItems are in the
 				String id = item.getId();
 				int n = 0;
 				double times[] = item.getTimes();

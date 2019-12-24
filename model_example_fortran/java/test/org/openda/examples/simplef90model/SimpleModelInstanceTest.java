@@ -22,7 +22,7 @@ package org.openda.examples.simplef90model;
 import junit.framework.TestCase;
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IInstance;
 import org.openda.interfaces.IModelInstance;
 import org.openda.utils.OpenDaTestSupport;
@@ -84,7 +84,7 @@ public class SimpleModelInstanceTest extends TestCase {
             IModelInstance modelInstance = modelInstances[i];
 
             // adjust gravity
-            IPrevExchangeItem exchangeItem = modelInstance.getExchangeItem("Gravity");
+            IExchangeItem exchangeItem = modelInstance.getExchangeItem("Gravity");
             assertEquals("gravity", 9.1d, exchangeItem.getValuesAsDoubles()[0], 1e-10);
             exchangeItem.setValues(9.1d + .01d * (i+1));
 

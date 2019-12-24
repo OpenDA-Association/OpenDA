@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 
@@ -62,9 +62,9 @@ public class EfdcRestartFileTest extends TestCase {
                 new String[]{"0", startTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems = efdcRestartFileIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcRestartFileIoObject.getExchangeItems();
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             String id = exchangeItem.getId();
             if (id.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
@@ -97,9 +97,9 @@ public class EfdcRestartFileTest extends TestCase {
                 new String[]{"0", startTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems = efdcRestartFileIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = efdcRestartFileIoObject.getExchangeItems();
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             String id = exchangeItem.getId();
             if (id.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);

@@ -21,7 +21,7 @@
 package org.openda.model_delft3d;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import java.io.*;
 import java.util.Locale;
 
@@ -68,7 +68,7 @@ public class D3dField2DFile implements IoObjectInterface {
         }
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         return exchangeItems;
     }
 

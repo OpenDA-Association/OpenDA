@@ -71,10 +71,6 @@ public class BBExchangeItem implements IExchangeItem {
 
 	public Role getRole() {return Role.InOut; }
 
-	public PrevRole getPrevRole() {
-        return ioObjectExchangeItem.getPrevRole();
-    }
-
     public Object getValues() {
 
 		ValueType valueType = ioObjectExchangeItem.getValuesType();

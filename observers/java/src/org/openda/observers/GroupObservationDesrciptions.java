@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.openda.exchange.DoubleExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
@@ -68,8 +68,8 @@ public class GroupObservationDesrciptions implements IObservationDescriptions {
 	 *
 	 */
 
-    public List<IPrevExchangeItem> getExchangeItems() {
-        List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
+    public List<IExchangeItem> getExchangeItems() {
+        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
         IVector vector = obs.getValues();
         for (int i = 0; i < obs.getIds().length; i++) {
             String id = obs.getIds()[i];

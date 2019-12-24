@@ -118,8 +118,7 @@ public class NonMissingStochObserverExchangeItem implements IExchangeItem, Seria
         return null;
     }
 
-    public PrevRole getPrevRole() { return this.ioExchangeItem.getPrevRole();}
-    
+
     public Object getValues() {
         return this.values;
     }

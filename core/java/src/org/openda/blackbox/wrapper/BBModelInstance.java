@@ -300,7 +300,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 			//add all exchange item ids from ioObject or dataObject.
 			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
 			if (ioObject != null) {
-				for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+				for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                     //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
                     String bbExchangeItemId = sourceItem.getId();
                     if (idSuffix != null) bbExchangeItemId += idSuffix;
@@ -345,7 +345,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                 //find exchangeItem for vectorConfig that does not have id="allElementsFromIoObject".
                 IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
                 if (ioObject != null) {
-                    for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                    for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                         String sourceId = sourceItem.getId();
                         if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
                             bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, (IExchangeItem)sourceItem,
@@ -382,7 +382,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
                     IoObjectInterface ioObject = findOrCreateIoObject(allElementVectorConfig.getIoObjectConfig());
                     if (ioObject != null) {
-                        for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                        for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                             //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
                             String bbExchangeItemId = sourceItem.getId();
                             if (idSuffix != null) bbExchangeItemId += idSuffix;
@@ -721,7 +721,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
         ITime startOrEndTime = null;
         if (timeExchangeItemId != null) {
             IExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
-            if (timeExchangeItem.getPrevRole() != IPrevExchangeItem.PrevRole.Input) {
+            if (timeExchangeItem.getRole() != IExchangeItem.Role.Input) {
                 if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.DateType) {
                     startOrEndTime = new Time((Date)timeExchangeItem.getValues());
                 } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.ITimeType) {
@@ -737,7 +737,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private void setStartOrEndTime(ITime startOrEndTime, String timeExchangeItemId) {
         if (timeExchangeItemId != null) {
             IExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
-            if (timeExchangeItem.getPrevRole() != IPrevExchangeItem.PrevRole.Output) {
+            if (timeExchangeItem.getRole() != IExchangeItem.Role.Output) {
                 if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.DateType) {
                     Date startOrEndTimeAsJavaDate = new Date(Time.mjdToMillies(startOrEndTime.getMJD()));
                     timeExchangeItem.setValues(startOrEndTimeAsJavaDate);

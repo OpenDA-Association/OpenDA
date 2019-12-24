@@ -23,7 +23,7 @@ import org.openda.blackbox.config.BBTemplateConfig;
 import org.openda.blackbox.config.BBTemplateFile;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class BaseTemplateDataObjectTest extends TestCase {
         assertEquals("Number of templateFiles not equal", 1, bbTemplateConfig.getTemplateFiles().size());
         BBTemplateFile bbTemplateFile = bbTemplateConfig.getTemplateFiles().iterator().next();
 
-        IPrevExchangeItem[] exchangeItems = ((BaseTemplateDataObject) baseTemplateDataObject).getExchangeItems();
+        IExchangeItem[] exchangeItems = ((BaseTemplateDataObject) baseTemplateDataObject).getExchangeItems();
         assertTrue("exchangeItems list is null",exchangeItems != null);
         assertEquals("exchangeItems size is not equal",4,exchangeItems.length);
 
@@ -63,7 +63,7 @@ public class BaseTemplateDataObjectTest extends TestCase {
         boolean foundIterations=false;
 
 
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             if (exchangeItem.getId().equals("endtime")) {
                 foundEndTime=true;
                 exchangeItem.setValues("14400.0");

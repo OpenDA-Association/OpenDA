@@ -32,7 +32,7 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.model_efdc.timeseriesformat.EfdcAserTimeSeriesFormatter;
 import org.openda.model_efdc.timeseriesformat.EfdcCwqsrTimeSeriesFormatter;
 import org.openda.model_efdc.timeseriesformat.EfdcPserTimeSeriesFormatter;
@@ -71,8 +71,8 @@ public class EfdcTimeSeriesIoObject implements IoObjectInterface {
 
     private File timeSeriesFile;
     private EfdcTimeSeriesFormatter timeSeriesFormatter;
-    private IPrevExchangeItem startTimeExchangeItem = null;
-    private Map<String, IPrevExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<String, IPrevExchangeItem>();
+    private IExchangeItem startTimeExchangeItem = null;
+    private Map<String, IExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<String, IExchangeItem>();
 
     /**
      * @param workingDir the working directory.
@@ -191,11 +191,11 @@ public class EfdcTimeSeriesIoObject implements IoObjectInterface {
     }
 
     
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         //return all available exchange items.
-        List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>(this.timeSeriesExchangeItems.values());
+        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.timeSeriesExchangeItems.values());
         exchangeItems.add(this.startTimeExchangeItem);
-        return exchangeItems.toArray(new IPrevExchangeItem[exchangeItems.size()]);
+        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
     }
 
     
