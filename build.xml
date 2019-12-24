@@ -72,6 +72,7 @@
       <buildmodule module="application" />
       <buildmodule module="model_bmi"/>
       <buildmodule module="model_delwaq"/>
+      <buildmodule module="model_delft3d"/>
       <buildmodule module="model_damflow"/>
       <buildmodule module="model_efdc" />
       <buildmodule module="model_efdc_dll"/>
@@ -110,6 +111,7 @@
       <docmodule module="model_hspf"/>
       <docmodule module="model_swan" />
       <docmodule module="model_wflow"/>
+      <docmodule module="model_delft3d"/>
       <docmodule module="model_nemo"/>
       <docmodule module="model_dflowfm_blackbox"/>
       <docmodule module="model_openfoam"/>
@@ -153,6 +155,7 @@
       <moduletests module="model_example_blackbox" />
       <moduletests module="model_swan" />
       <moduletests module="model_nemo" />
+      <moduletests module="model_delft3d"/>
       <moduletests module="model_reactive_advection"/>
       <moduletests module="model_dflowfm_blackbox"/>
       <moduletests module="model_openfoam"/>      
@@ -261,6 +264,7 @@
         <cleanmodule module="application" />
         <cleanmodule module="model_bmi" />
         <cleanmodule module="model_damflow" />
+    	<cleanmodule module="model_delft3d" />
         <cleanmodule module="model_delwaq" />
         <cleanmodule module="model_efdc" />
         <cleanmodule module="model_efdc_dll" />
@@ -350,6 +354,7 @@
 	        <zipfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
 	        <zipfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
 	        <zipfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
+	        <zipfileset dir="model_delft3d" prefix="openda_${version}/public/model_delft3d" excludes="*.svn"/>
 	        <zipfileset dir="model_dflowfm_blackbox" prefix="openda_${version}/public/model_dflowfm_blackbox" excludes="*.svn"/>
 	        <zipfileset dir="thirdparty" prefix="openda_${version}/public/thirdparty" excludes="*.svn" />
 	        <zipfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
@@ -423,6 +428,7 @@
         <ziptest testname="core" />
         <ziptest testname="model_example_blackbox" />
     	<ziptest testname="model_swan" />
+        <ziptest testname="model_delft3d" />
         <ziptest testname="model_dflowfm_blackbox" />
     </target>
 
@@ -471,6 +477,7 @@
 	  <tarfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
 	  <tarfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
 	  <tarfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
+	  <tarfileset dir="model_delft3d" prefix="openda_${version}/public/model_delf3d" excludes="*.svn"/>
 	  <tarfileset dir="model_dflowfm_blackbox" prefix="openda_${version}/public/model_dflowfm_blackbox" excludes="*.svn"/>
 	  <tarfileset dir="thirdparty" prefix="openda_${version}/public/thirdparty" excludes="*.svn" />
 	  <tarfileset dir="." includes="build.xml" prefix="openda_${version}/public" />
@@ -518,6 +525,7 @@
         <tgztest testname="core" />
         <tgztest testname="model_example_blackbox" />
     	<tgztest testname="model_swan" />
+        <tgztest testname="model_delft3d" />
         <tgztest testname="model_dflowfm_blackbox" />
     </target>
     <target name="tgz-native" depends="vc-revision,chmod-linux-native" >
@@ -550,6 +558,7 @@
         <buildmoduletests module="model_hspf" />
         <buildmoduletests module="model_swan"/>
         <buildmoduletests module="model_wflow"/>
+        <buildmoduletests module="model_delft3d"/>
         <buildmoduletests module="model_dflowfm_blackbox"/>
         <buildmoduletests module="model_openfoam"/>        
     </target>
@@ -569,7 +578,8 @@
         <buildmoduletests module="model_hspf" />
         <!--<buildmoduletests module="model_swan"/>-->
         <buildmoduletests module="model_wflow"/>
-        <buildmoduletests module="model_openfoam"/>
+        <buildmoduletests module="model_delft3d"/>
+        <buildmoduletests module="model_openfoam"/>                
     </target>
 
 
@@ -751,6 +761,7 @@
        <validatexmlmodule module="models" />
        <validatexmlmodule module="model_bmi"/>
        <validatexmlmodule module="model_damflow"/>
+       <validatexmlmodule module="model_delft3d"/>
        <validatexmlmodule module="model_delwaq"/>
        <validatexmlmodule module="model_dflowfm_blackbox"/>
        <validatexmlmodule module="model_efdc_dll"/>
