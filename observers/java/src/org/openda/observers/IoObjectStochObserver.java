@@ -157,7 +157,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						if (ioExchangeItem instanceof IGridTimeSeriesExchangeItem) {
 							nonMissingExchangeItem = new NonMissingStochObserverGridTimeSeriesExchangeItem((IGridTimeSeriesExchangeItem) ioExchangeItem);
 						} else {
-							nonMissingExchangeItem = new NonMissingStochObserverExchangeItem(ioExchangeItem, missingValue);
+							nonMissingExchangeItem = new NonMissingStochObserverExchangeItem((IExchangeItem)ioExchangeItem, missingValue);
 						}
 						exchangeItemIds.add(nonMissingExchangeItem.getId());
 						exchangeItems.put(nonMissingExchangeItem.getId(), nonMissingExchangeItem);

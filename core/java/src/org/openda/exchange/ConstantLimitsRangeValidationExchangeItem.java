@@ -96,10 +96,6 @@ public class ConstantLimitsRangeValidationExchangeItem implements IExchangeItem 
 		return null;
 	}
 
-	public Class<?> getValueType() {
-		return this.wrappedExchangeItem.getValueType();
-	}
-
 	public ValueType getValuesType() { return this.wrappedExchangeItem.getValuesType(); }
 
 	public ITimeInfo getTimeInfo() { return this.wrappedExchangeItem.getTimeInfo(); }

@@ -348,7 +348,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                     for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
                         String sourceId = sourceItem.getId();
                         if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
-                            bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, sourceItem,
+                            bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, (IExchangeItem)sourceItem,
                                     selectors, bbModelConfig.getConfigRootDir());
                             break;
                         }
@@ -387,7 +387,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                             String bbExchangeItemId = sourceItem.getId();
                             if (idSuffix != null) bbExchangeItemId += idSuffix;
                             if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
-                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, sourceItem,
+                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, (IExchangeItem)sourceItem,
                                         selectors, bbModelConfig.getConfigRootDir());
                                 break;
                             }
@@ -720,14 +720,13 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private ITime getStartOrEndTime(String timeExchangeItemId) {
         ITime startOrEndTime = null;
         if (timeExchangeItemId != null) {
-            IPrevExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
+            IExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
             if (timeExchangeItem.getPrevRole() != IPrevExchangeItem.PrevRole.Input) {
-                if (timeExchangeItem.getValueType() == Date.class) {
+                if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.DateType) {
                     startOrEndTime = new Time((Date)timeExchangeItem.getValues());
-                } else if (timeExchangeItem.getValueType() == ITime.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.ITimeType) {
                     startOrEndTime = (ITime) timeExchangeItem.getValues();
-                } else if (timeExchangeItem.getValueType() == double.class ||
-                        timeExchangeItem.getValueType() == Double.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.doubleType ) {
                     startOrEndTime = new Time((Double)timeExchangeItem.getValues());
                 }
             }
@@ -737,15 +736,14 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
     private void setStartOrEndTime(ITime startOrEndTime, String timeExchangeItemId) {
         if (timeExchangeItemId != null) {
-            IPrevExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
+            IExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
             if (timeExchangeItem.getPrevRole() != IPrevExchangeItem.PrevRole.Output) {
-                if (timeExchangeItem.getValueType() == Date.class) {
+                if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.DateType) {
                     Date startOrEndTimeAsJavaDate = new Date(Time.mjdToMillies(startOrEndTime.getMJD()));
                     timeExchangeItem.setValues(startOrEndTimeAsJavaDate);
-                } else if (timeExchangeItem.getValueType() == ITime.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.ITimeType) {
                     timeExchangeItem.setValues(startOrEndTime);
-                } else if (timeExchangeItem.getValueType() == double.class ||
-                        timeExchangeItem.getValueType() == Double.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.doubleType) {
                     timeExchangeItem.setValues(startOrEndTime.getMJD());
                 }
             }

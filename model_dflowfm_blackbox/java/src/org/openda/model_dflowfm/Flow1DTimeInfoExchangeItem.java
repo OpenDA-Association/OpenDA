@@ -62,9 +62,6 @@ public class Flow1DTimeInfoExchangeItem implements IExchangeItem
 	public String getDescription() { return id.name(); }
 
 	@Override
-	public Class getValueType() { return double.class; }
-
-	@Override
 	public void copyValuesFromItem(IExchangeItem sourceItem) { setValues(sourceItem.getValues()); }
 
 	@Override

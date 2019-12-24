@@ -55,9 +55,6 @@ public class BcExchangeItem implements IExchangeItem
 	}
 
 	@Override
-	public Class getValueType() { return double[].class; }
-
-	@Override
 	public void copyValuesFromItem(IExchangeItem sourceItem) { setValues(sourceItem.getValues()); }
 
 	@Override

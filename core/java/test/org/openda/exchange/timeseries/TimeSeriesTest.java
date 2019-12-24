@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Mask;
 
 import java.lang.reflect.Type;
@@ -429,9 +428,9 @@ public class TimeSeriesTest extends TestCase {
       System.out.println("Should be ex.getUnitId() = unit");
       assertEquals("ex.getUnitId()", "unit", unitId);
 
-      // public Type getObjectType(); //
-      Type valueType = ex.getValueType();
-      assertTrue(valueType == org.openda.utils.Array.class);
+      // public valueType getValuesType(); //
+      IExchangeItem.ValueType valueType = ex.getValuesType();
+      assertTrue(valueType == IExchangeItem.ValueType.IArrayType);
 
       // public Object times;
       TimeSeries seriesRef = (TimeSeries) ex;

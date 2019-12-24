@@ -50,12 +50,7 @@ public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeI
 	public ValueType getValuesType() {
 		return ValueType.doublesType;
 	}
-
-	@Override
-	public Class getValueType() {
-		return double[].class;
-	}
-
+	
 	@Override
 	public Object getValues() {throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem.getValues() not implemented yet");
 //		return netcdfD3dMapDataObject.getExchangeItemValues(varName);
