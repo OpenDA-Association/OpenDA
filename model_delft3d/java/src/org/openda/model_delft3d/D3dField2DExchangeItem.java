@@ -20,12 +20,12 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.*;
 
 /**
  * Exchange Item representing a 2D-field in a D3D file
  */
-public class D3dField2DExchangeItem implements IPrevExchangeItem {
+public class D3dField2DExchangeItem implements IExchangeItem {
 
     private String id;
     private D3dField2D field2D;
@@ -48,6 +48,8 @@ public class D3dField2DExchangeItem implements IPrevExchangeItem {
     public Class getValueType() {
         return D3dField2D.class;
     }
+
+    public Role getRole() { return IExchangeItem.Role.InOut; }
 
     public PrevRole getPrevRole() {
         return IPrevExchangeItem.PrevRole.InOut;
@@ -100,5 +102,30 @@ public class D3dField2DExchangeItem implements IPrevExchangeItem {
 
     public boolean getDataChanged() {
         return dataChanged;
+    }
+
+    @Override
+    public void copyValuesFromItem(IExchangeItem sourceItem) {
+        throw new RuntimeException("org.openda.model_delft3d.D3dField2DExchangeItem.copyValuesFromItem not implemented");
+    }
+
+    @Override
+    public ITimeInfo getTimeInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dField2DExchangeItem.getTimeInfo not implemented");
+    }
+
+    @Override
+    public IQuantityInfo getQuantityInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dField2DExchangeItem.getQuantityInfo not implemented");
+    }
+
+    @Override
+    public IGeometryInfo getGeometryInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dField2DExchangeItem.getGeometryInfo not implemented");
+    }
+
+    @Override
+    public ValueType getValuesType() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dField2DExchangeItem.getValuesType not implemented");
     }
 }
