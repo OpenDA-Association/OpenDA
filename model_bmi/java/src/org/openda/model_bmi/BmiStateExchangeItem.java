@@ -21,8 +21,10 @@ package org.openda.model_bmi;
 import bmi.BMIModelException;
 import bmi.EBMI;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.*;
-import org.openda.utils.Array;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,11 +41,11 @@ public class BmiStateExchangeItem implements IExchangeItem {
 	private Map<String, Integer> stateComponentLengths;
 	private int totalNumberOfStateValues;
 	private ArrayList<Integer> stateValuesRanges;
-	private Double[] lowerLimits;
-	private Double[] upperLimits;
+	private double[][] lowerLimits;
+	private double[][] upperLimits;
 	private double[] values;
 
-	public BmiStateExchangeItem(String[] ids, Double[] lowerLimits, Double[] upperLimits, EBMI model, double modelMissingValue) {
+	public BmiStateExchangeItem(String[] ids, double[][] lowerLimits, double[][] upperLimits, EBMI model, double modelMissingValue) {
 		this.ids = ids;
 		this.lowerLimits = lowerLimits;
 		this.upperLimits = upperLimits;
@@ -53,7 +55,7 @@ public class BmiStateExchangeItem implements IExchangeItem {
 		totalNumberOfStateValues = 0;
 		stateComponentLengths = new HashMap<String, Integer>();
 		stateValuesRanges = new ArrayList<Integer>();
-		for (String id: this.ids) {
+		for (String id : this.ids) {
 			try {
 				int length = this.model.getVarSize(id);
 				stateComponentLengths.put(id, length);
@@ -148,24 +150,18 @@ public class BmiStateExchangeItem implements IExchangeItem {
 		// Apply lower and upper limits to the values which OpenDA will send to the Bmi model.
 		int idx1 = 0;  // slice start index
 		int idx2;      // slice stop index
-		Double lowerLimit;
-		Double upperLimit;
-		for (int i=0; i<stateValuesRanges.size(); i++) {
+		for (int i = 0; i < stateValuesRanges.size(); i++) {
 			idx2 = stateValuesRanges.get(i);
-			lowerLimit = lowerLimits[i];
-			if (!lowerLimit.isNaN()) {
-				for (int j=idx1; j<idx2; j++) {
-					if (checkedValues[j] != modelMissingValue && checkedValues[j] != Double.NaN) {
-						checkedValues[j] = Math.max(checkedValues[j], lowerLimit);
-					}
+			for (int j = idx1; j < idx2; j++) {
+				double lowerLimit = lowerLimits[i].length == 1 ? lowerLimits[i][0] : lowerLimits[i][j];
+				if (checkedValues[j] != modelMissingValue && !Double.isNaN(lowerLimit)) {
+					checkedValues[j] = Math.max(checkedValues[j], lowerLimit);
 				}
 			}
-			upperLimit = upperLimits[i];
-			if (!upperLimit.isNaN()) {
-				for (int j=idx1; j<idx2; j++) {
-					if (checkedValues[j] != modelMissingValue && checkedValues[j] != Double.NaN) {
-						checkedValues[j] = Math.min(checkedValues[j], upperLimit);
-					}
+			for (int j = idx1; j < idx2; j++) {
+				double upperLimit = upperLimits[i].length == 1 ? upperLimits[i][0] : upperLimits[i][j];
+				if (checkedValues[j] != modelMissingValue && !Double.isNaN(upperLimit)) {
+					checkedValues[j] = Math.min(checkedValues[j], upperLimit);
 				}
 			}
 			idx1 = idx2;

@@ -22,7 +22,7 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dflowfm.bat">
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dimr.bat">
                 <arg>%mdufile%</arg>
                 <checkOutput file="%outputdir%/%hisfile%"/>
                 <checkOutput file="%outputdir%/%mapfile%"/>

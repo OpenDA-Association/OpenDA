@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+
+    <modelConfig>
+        <file>./dflowfmModel.xml</file>
+    </modelConfig>
+
+    <vectorSpecification>
+      <state>
+            <noiseModel id="boundaryNoiseModelSurge" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+                <configFile>BoundaryNoiseSurge.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="waterlevelnoise" operation="add" modelExchangeItemId="eastboundary_0001.waterlevelbnd"/>
+                </exchangeItems>
+            </noiseModel>
+            <vector id="s1"/>
+            <vector id="unorm"/>
+        </state>
+        <predictor>
+            <vector id="station01.waterlevel"/>
+            <vector id="station02.waterlevel"/>
+            <vector id="station03.waterlevel"/>
+        </predictor>
+    </vectorSpecification>
+
+</blackBoxStochModel>

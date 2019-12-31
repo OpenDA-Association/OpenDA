@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.NoosTimeSeriesStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>noosObservations.xml</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>dflowfmStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>EnkfAlgorithm.xml</configString>
+	</algorithm>
+        <timingSettings doTiming="true"></timingSettings>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>Enkf_results.m</configFile>
+		<selection>
+		    <resultItem id="pred_f"/>
+		    <resultItem id="pred_f_0"/>
+		    <resultItem id="pred_f_1"/>
+			<resultItem id="pred_a"/>
+		    <resultItem id="pred_a_0"/>
+		    <resultItem id="pred_a_1"/>
+		    <resultItem id="pred_f_std"/>
+		    <resultItem id="pred_f_central"/>
+			<resultItem id="pred_a_central"/>
+		    <resultItem id="pred_a_linear"/>
+		    <resultItem id="analysis_time"/>
+		    <resultItem id="obs"/>
+		</selection>
+	</resultWriter>
+</openDaApplication>

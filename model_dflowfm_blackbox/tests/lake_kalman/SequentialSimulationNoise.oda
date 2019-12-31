@@ -15,6 +15,6 @@
         <timingSettings doTiming="true"></timingSettings>
 	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>SequentialSimulation_results.m</configFile>
+		<configFile>SequentialSimulation_noise_results.m</configFile>
 	</resultWriter>
 </openDaApplication>

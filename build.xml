@@ -616,20 +616,6 @@
                    <exclude name="**/OpenDaApplicationTest.class"/>
                    <exclude name="**/PlotTest.class"/>
 
-                   <!-- Only broken in travis -->
-                   <!-- <exclude name="**/KalmanFilterTest.class"/>
-                   <exclude name="**/BBStochModelMaps2dNoiseModelTest.class"/>
-                   <exclude name="**/BBStochModelParamDrawerTest.class"/>
-                   <exclude name="**/BBStochModelParametersTest.class"/>
-                   <exclude name="**/DFlowFMRestartTest.class"/>
-                   <exclude name="**/SwanCalibWrapperTest.class"/>
-                   <exclude name="**/swan.SwanEnKFTest.class"/>
-                   <exclude name="**/DoublePendulumModelTest.class"/>
-                   <exclude name="**/LorenzModelTest.class"/>
-                   <exclude name="**/OscillatorModelTest.class"/> -->
-
-                   
-
                    <!-- EFDC only tested for win32 -->
                    <exclude name="**/EfdcDLLTest.class"/>
                    <exclude name="**/EfdcGridExchangeItemLayerTest.class"/>
@@ -642,9 +628,8 @@
                    <exclude name="**/EfdcScalarExchangeItemTest.class"/>
                    <exclude name="**/EfdcScalarExchangeItemXspeciesTest.class"/>
                    <exclude name="**/EfdcWserExchangeItemTest.class"/>
-                   <exclude name="**/NetcdfResultWriterTest.class"/>
-                  
-                    <!-- ignore unit tests that fail on Teamcity because Python, PCRaster, PCRGLOBWB, THRIFT and/or ssh are not installed -->
+
+                    <!-- ignore unit tests that fail because Python, PCRaster, PCRGLOBWB, THRIFT and/or ssh are not installed in the test environment -->
                     <exclude name="**/AbstractModelBridgeTest.class"/>
                     <exclude name="**/AbstractIncrementModelBridgeTest.class"/>
                     <exclude name="**/ClusterPythonIncrementModelBridgeTest.class"/>

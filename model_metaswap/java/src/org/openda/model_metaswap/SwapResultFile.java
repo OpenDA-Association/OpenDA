@@ -58,7 +58,8 @@ public class SwapResultFile implements IDataObject {
 			while (lineElements != null && lineElements.length != 0) {
 				Double s01 = Double.valueOf(lineElements[s01Index]);
 				Double dprztb = Double.valueOf(lineElements[dprztbIndex]);
-				doubleValuesList.add(s01 / dprztb);
+				// added divide by 1000 to convert mm to m
+				doubleValuesList.add(s01 / dprztb / 1000);
 				int year = Integer.valueOf(lineElements[yearIndex]);
 				CALENDAR.clear();
 				CALENDAR.set(year, Calendar.JANUARY, 1);

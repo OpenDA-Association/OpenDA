@@ -376,7 +376,7 @@ public class NetcdfUtils {
 		// check if the variable is frequency (the unit is Hz); if so, return false.
 		// This is explicitly written here because getDateUnitFromDimension(variable) does not give null
 		// for frequency, as if frequency is a time coordinate variable.
-		if (variable.getUnitsString().equalsIgnoreCase("Hz")){
+		if ("Hz".equalsIgnoreCase(variable.getUnitsString())){
 			return false;
 		}
 
