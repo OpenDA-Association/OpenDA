@@ -1,0 +1,90 @@
+$*************HEADING***********************************
+$
+PROJ 'l021triad001' 'l021'
+$
+$  Beji & Battjes (1992) triad-wave interaction test
+$
+$ --|--------------------------------------------------------------|--
+$   | This SWAN input file is part of the bench mark tests for     |
+$   | SWAN. More information about this test can be found in       |
+$   | an accompanied document.                                    |
+$ --|--------------------------------------------------------------|--
+$
+$***********MODEL INPUT*********************************
+$
+MODE STAT ONED
+$
+CGRID 0. 0. 0. 30. 0. 300 0 SECTOR -10. 10. 40 0.0837 2.5 40
+$
+INPGRID BOTTOM 0. 0. 0. 30 0 1. 1.
+READINP BOTTOM 1. 'l021triad001.bot' 1 1 FREE
+$
+BOU SIDE W CCW CON FILE 'l021triad001.bnd' 1
+$
+$ --- Begin of settings physical process parameters
+$
+GEN3 <#model#>
+<#WCAPON#>WCAP KOM cds2=<#cds2#> stpm=<#stpm#> powst=<#powst#> delta=<#delta#> powk=<#powk#>
+<#WCAPOFF#>OFF WCAP
+<#QUADON#>QUAD iquad=<#iquad#> lambda=<#lambda#> Cnl4=<#Cnl4#>
+<#QUADON#>LIMITER ursell=<#ursell#> qb=<#qb#>
+<#QUADOFF#>OFF QUAD
+<#FRICON#>FRIC JONSWAP cfjon=<#cfjon#>
+<#FRICOFF#>$
+$
+$     Wave breaking:
+$     Note: only one of these may be active
+$
+$     Keywords for SWAN 40.51A and later
+$
+<#BREAON#>BREA CON alpha=<#alpha#> gamma=<#gamma#>
+$
+$     Keywords for SWAN 40.72A and later
+$
+$     <#BREAON#>BREA BIP alpha=<#alpha#> pown=<#pown#> bref=<#bref#>
+
+<#BREAOFF#>OFF BREA
+<#TRIADON#>TRIAD trfac=<#trfac#> cutfr=<#cutfr#>
+<#TRIADOFF#>$
+$
+$ --- End of settings physical process parameters
+$
+$ --- Begin of convergence criterion
+$
+$
+$
+$
+$ --- End of convergence criterion
+$
+$***************** OUTPUT REQUEST ************************
+QUANT XP HEXP=10.
+QUANT YP HEXP=10.
+$
+$ --- Begin of SWIVT output
+$
+$     Define locations for data output
+$
+POINTS 'POINT1' FILE   'l021triad001.loc'
+CURVE  'CURVE1' 0. 0.  100  30. 0.
+$
+$     Write output data (tables, 1D and 2D spectra) for
+$     these locations
+$
+$     +++ Point +++
+$
+TABLE  'POINT1' HEAD   'swivt_l021triad001_loc.tab' &
+        XP YP DEP BOTLEV WATLEV HS RTP TMM10 TM01 TM02 FSPR DIR DSPR   &
+        WLENGTH TPS DHSIGN DRTM01 WIND VEL DISSIP QB FORCE UBOT STEEP SETUP
+SPEC   'POINT1' SPEC1D 'swivt_l021triad001_loc.sp1'
+SPEC   'POINT1' SPEC2D 'swivt_l021triad001_loc.sp2'
+$
+$     +++ Curve +++
+$
+TABLE  'CURVE1' HEAD   'swivt_l021triad001_loc.cuv' &
+        XP YP DEP BOTLEV WATLEV HS RTP TMM10 TM01 TM02 FSPR DIR DSPR   &
+        WLENGTH TPS DHSIGN DRTM01 WIND VEL DISSIP QB FORCE UBOT STEEP SETUP
+$
+$ --- End of SWIVT output
+$
+COMPUTE
+STOP

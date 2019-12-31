@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xsi:schemaLocation="http://www.wldelft.nl http://schemas.openda.org/uncertainty/uncertainties.xsd" version="1.0" xmlns="http://www.wldelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+
+	<probabilityDistributionFunction id="WCAP.delta" isActive="false">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="WCAP.powk" isActive="false">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="WCAP.powst" isActive="false">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="WCAP.cds2" isActive="false">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="FRIC.cfjon" isActive="false">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="BREA.gamma" isActive="false">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="TRIAD.trfac" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+	<probabilityDistributionFunction id="TRIAD.cutfr" isActive="true">
+		<normal mean="0" stdv="0.1" stdvIsFactor="true"/>
+	</probabilityDistributionFunction>
+
+</uncertainties>
