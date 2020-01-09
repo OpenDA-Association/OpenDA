@@ -28,8 +28,7 @@ class SocketClient {
 			System.out.println("Message sent: " + messageIn);
 			while (inputStream.available() == 0) {
 				try {
-					System.out.println("Waiting for input stream to have data available");
-					Thread.sleep(1000);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					System.out.println("Waiting for input stream to have data available interrupted");
 				}
