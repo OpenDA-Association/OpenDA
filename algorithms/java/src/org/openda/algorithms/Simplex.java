@@ -43,7 +43,7 @@ public class Simplex extends Instance implements IAlgorithm {
     public double initStep=1.0; //scaling factor for initial perturbations of parameters
     //workspace
     private SimulationKwadraticCostFunction J=null;
-    private SimplexCoreOptimizer simplexOptimizer = null;
+    protected SimplexCoreOptimizer simplexOptimizer = null;
 
     private File workingDir=null;
     private String[] arguments=null;

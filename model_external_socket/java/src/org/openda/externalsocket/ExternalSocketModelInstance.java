@@ -265,7 +265,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		return modelResults;
 	}
 
-	void sendFinalParameters() {
+	void sendFinalParameters(double[] stdValues) {
 		// Used for testing
 /*		Runnable socketServerRunnable = new Runnable() {
 			@Override
@@ -285,7 +285,14 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 			String paramId = EXTERNAL_SOCKET_PARAMETER + "_" + i;
 			DoubleExchangeItem paramEI = exchangeItems.get(paramId);
 			stringBuilder.append(paramEI.getValue());
-			stringBuilder.append(';');
+			if (i != size - 1) stringBuilder.append(';');
+		}
+		if (stdValues != null) {
+			stringBuilder.append(':');
+			for (int i = 0; i < stdValues.length; i++) {
+				stringBuilder.append(stdValues[i]);
+				if (i != stdValues.length - 1) stringBuilder.append(';');
+			}
 		}
 		String messageIn = stringBuilder.toString();
 		System.out.println("Sending message: " + messageIn);

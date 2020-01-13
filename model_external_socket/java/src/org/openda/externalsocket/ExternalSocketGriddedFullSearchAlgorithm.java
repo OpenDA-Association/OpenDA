@@ -12,6 +12,6 @@ public class ExternalSocketGriddedFullSearchAlgorithm extends GriddedFullSearch 
 		if (!(bestEstimate instanceof BBStochModelInstance)) return;
 		IModelInstance bestModel = ((BBStochModelInstance) bestEstimate).getModel();
 		if (!(bestModel instanceof ExternalSocketModelInstance)) return;
-		((ExternalSocketModelInstance) bestModel).sendFinalParameters();
+		((ExternalSocketModelInstance) bestModel).sendFinalParameters(null);
 	}
 }

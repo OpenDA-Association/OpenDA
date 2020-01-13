@@ -58,9 +58,10 @@ public class SimplexCoreOptimizer{
 	//stopping
 	private boolean moreToDo = true;         // is this optimization finished
 	private int imain=0;                     // main iterations done
+	private double[] stdValues;
 
 
-    /**
+	/**
      * Constructor for Simplex minimization
      * @param f : cost function to be minimized
      */
@@ -475,7 +476,8 @@ public class SimplexCoreOptimizer{
 					std.sqrt();
 					// now make this pretty for treeVectors
 					IVector stdWithStructure = this.pCurrent[0].clone();
-					stdWithStructure.setValues(std.getValues());
+					stdValues = std.getValues();
+					stdWithStructure.setValues(stdValues);
 					Results.putMessage("Error estimate for this outer iteration");
                     Results.putValue(	"parameterErrorEstimateStd", stdWithStructure, stdWithStructure.getSize(),
                                         "outer iteration "+imain, IResultWriter.OutputLevel.Verbose,
@@ -589,4 +591,7 @@ public class SimplexCoreOptimizer{
 		return result;
 	}
 
+	public double[] getStdValues() {
+		return stdValues;
+	}
 }
