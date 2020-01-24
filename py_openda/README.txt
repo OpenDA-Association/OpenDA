@@ -1,0 +1,2 @@
+conda create --name pyopenda
+
