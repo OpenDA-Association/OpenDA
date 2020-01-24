@@ -1,1 +1,2 @@
-Description of py_openda library goes here
+conda create --name pyopenda
+
