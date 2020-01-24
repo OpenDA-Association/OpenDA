@@ -23,8 +23,8 @@ from py_openda.algorithms.ensemble_kalman import kalman_algorithm, no_filter
 #TODO: Quite a few xml files might not follow the schema as well as xmlschema wants them to
 
 #input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_lorenz_3var_part1/simulation_ensemble.oda'
-input_string = '/v3/Stage/Rick/openda/openda_public/examples/model_swan/kalman_twin_windbound/enkf_wind_bound.oda'
-#input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_double_pendulum_part2/enkf.oda'
+#input_string = '/Users/nils/Develop/openda/stage_rick/OpenDA/examples/model_swan/kalman_twin_windbound/enkf_wind_bound.oda'
+input_string = '/Users/nils/Develop/openda/stage_rick/OpenDA/course/exercise_double_pendulum_part2/enkf.oda'
 #input_string = '/v3/Stage/Rick/openda/openda_public/core/tests/simple_oscillator/Enkf.oda'
 
 def main(input_string, observation_location=0):
@@ -68,8 +68,8 @@ def main(input_string, observation_location=0):
     main_class = GenericEnsembleKalmanFilter(n_ensemble, alg_config, main_config, scriptdir)
     n_obs = main_class.get_n_observations()
 
-#    n_steps = main_class.get_n_times()-3
-    n_steps = 3
+    n_steps = main_class.get_n_times()-3
+#    n_steps = 3
     t = main_class.get_timeline()[:n_steps+1]
     t = [(time - t[0])*24 for time in t]
     results = np.zeros((n_steps+1, n_obs))
@@ -92,10 +92,12 @@ def main(input_string, observation_location=0):
         end = tm()
         print(end-start)
 
+    print(results)
     plt.plot(t, no_results[:, observation_location])
     plt.legend(("EnKF", "no_filter"))
     plt.ylabel("x_f_central")
     plt.xlabel("t in hours")
+    plt.show()
     return(results, no_results)
 
 if __name__ == "__main__":
