@@ -4,4 +4,3 @@ conda create --name pyopenda
 conda activate pyopenda
 conda install setuptools
 python setup.py develop
-
