@@ -67,7 +67,7 @@ if [ check_env ] ; then
 
    # Perform a simake.pl in the src/external/costa directory
    echo "Running simake.pl..."
-   cd $SIM_COSTA
+   cd "$SIM_COSTA"
    simake.pl
 fi
 

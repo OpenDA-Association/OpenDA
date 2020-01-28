@@ -156,7 +156,7 @@ if [ -z "$MPI_ROOT" ]; then
 		echo "Mpich2 already compiled"
 	else
 		echo "Starting compilation of mpich2"
-		pushd $BASE/external/mpi
+		pushd "$BASE/external/mpi"
 		./mpi_install.sh $ARCH $FORT shared | tee mpi_install.log
 		popd
 	fi
@@ -247,10 +247,10 @@ if [ ! -d "$BASE/../native_bin/$SYSTEM" ]; then
 	mkdir -p $BASE/../native_bin/$SYSTEM
 fi
 #mpi
-rsync -ruav $BASE/external/mpi/$SYSTEM/ $BASE/../native_bin/$SYSTEM/
+rsync -ruav "$BASE/external/mpi/$SYSTEM/ $BASE/../native_bin/$SYSTEM/"
 #workaround: !!! teamcity does not like +'s and mpicxx is indentical
-rm -f $BASE/../native_bin/$SYSTEM/bin/mpic++
+rm -f "$BASE/../native_bin/$SYSTEM/bin/mpic++"
 #netcdf
-rsync -ruav $BASE/external/netcdf/$SYSTEM/ $BASE/../native_bin/$SYSTEM/
+rsync -ruav "$BASE/external/netcdf/$SYSTEM/ $BASE/../native_bin/$SYSTEM/"
 #openda
-rsync -ruav $BASE/$SYSTEM/ $BASE/../native_bin/$SYSTEM/
+rsync -ruav "$BASE/$SYSTEM/ $BASE/../native_bin/$SYSTEM/"
