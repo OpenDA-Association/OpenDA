@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/OpenDA-Association/OpenDA.svg?branch=master)](https://travis-ci.org/OpenDA-Association/OpenDA)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e78fb37c00fa4d689eb3a40d4b786d94)](https://www.codacy.com/app/OpenDA_Association/OpenDA?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenDA-Association/OpenDA&amp;utm_campaign=Badge_Grade)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/465833e082b54b279105a280b36c75b8)](https://www.codacy.com/gh/OpenDA-Association/OpenDA?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenDA-Association/OpenDA&amp;utm_campaign=Badge_Grade)
 # OpenDA
 
 OpenDA is an open interface standard for (and free implementation of) a set of tools to quickly implement data-assimilation and calibration for arbitrary numerical models. OpenDA wants to stimulate the use of data-assimilation and calibration by lowering the implementation costs and enhancing the exchange of software among researchers and end-users.
