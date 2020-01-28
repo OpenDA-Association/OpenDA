@@ -1,3 +1,4 @@
+#!/bin/sh
 HIER=$PWD
 # build the native part of OpenDA
 # NOTE: this script must be started in the root dir of OpenDA
