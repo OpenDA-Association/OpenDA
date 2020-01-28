@@ -7,5 +7,5 @@ rm -f results_*.csv
 rm -f openda_logfile.txt
 rm -rf register_cases
 rm -rf register_presentations
-rm -rf *.orp
-rm -f *.log
+rm -rf ./*.orp
+rm -f ./*.log

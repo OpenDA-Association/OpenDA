@@ -9,7 +9,7 @@ if [ "$BINDIR" == "not set" ]; then
 fi
 
 mpiexec -np 2 Application.sh -p PolluteEnKFOpenDaConfigMW.oda : \
-        -np 2 $BINDIR/pollute2d_worker pollute2d_worker_config.xml : \
+        -np 2 "$BINDIR/pollute2d_worker pollute2d_worker_config.xml" : \
         -np 1 Application.sh -p PolluteEnKFOpenDaConfigMW.oda : \
-        -np 2 $BINDIR/pollute2d_worker pollute2d_worker_config.xml
+        -np 2 "$BINDIR/pollute2d_worker pollute2d_worker_config.xml"
 
