@@ -44,7 +44,7 @@ else
         fi
 fi	
 #defaults for 64/32bit (=look at architecture of this computer)
-export RAWARCH=`uname -m`
+export RAWARCH=$(uname -m)
 if [ "$RAWARCH" == "x86_64" ]; then
    export ARCH=64
 else
@@ -56,11 +56,11 @@ export IGNORENETCDF="no"
 
 #test for windows mingw
 export OSTYPE="unknown"
-export TMPVAR=`uname -s|grep -i mingw`
+export TMPVAR=$(uname -s|grep -i mingw)
 if [ ! -z  "$TMPVAR" ]; then
 	OSTYPE="win"
 fi
-export TMPVAR=`uname -s|grep -i linux`
+export TMPVAR=$(uname -s|grep -i linux)
 if [ ! -z  "$TMPVAR" ]; then
 	OSTYPE="linux"
 fi
@@ -102,7 +102,7 @@ if [ "$FORT" == "ifort" ];then
 	fi
 fi
 if [ "$FORT" == "gnu" ];then
-	export GFORTRANPATH=`which gfortran 2>/dev/null`
+	export GFORTRANPATH=$(which gfortran 2>/dev/null)
 	if [ ! -z "$GFORTRANPATH" ]; then
 		export MYFORT="$GFORTRANPATH"
 	else
