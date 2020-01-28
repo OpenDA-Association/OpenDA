@@ -72,7 +72,7 @@ import java.util.*;
 public class AsciiKeywordDataObject implements IDataObject{
 
     private static final Logger logger = LoggerFactory.getLogger(AsciiKeywordDataObject.class);
-    MessageFormat logFormatter = new MessageFormat("");
+    private MessageFormat logFormatter = new MessageFormat("");
 
     private String fileName = null;
 	private static final String keyWordPrefix ="#oda:";
@@ -230,9 +230,7 @@ public class AsciiKeywordDataObject implements IDataObject{
         	//write to file
 		File outputFile = new File(fileName);
 		try{
-			if(outputFile.isFile()){
-				if ( ! outputFile.delete() ) throw new RuntimeException("Cannot delete " + outputFile);
-			}
+			if(outputFile.isFile() && ! outputFile.delete() ) throw new RuntimeException("Cannot delete " + outputFile);
 		}catch (Exception e) {
 			logger.error("DictionaryDataObject: trouble removing file " + this.fileName +" :\n" + e.getMessage());
 		}
