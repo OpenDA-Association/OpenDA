@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/OpenDA-Association/OpenDA.svg?branch=master)](https://travis-ci.org/OpenDA-Association/OpenDA)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/465833e082b54b279105a280b36c75b8)](https://www.codacy.com/gh/OpenDA-Association/OpenDA?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenDA-Association/OpenDA&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/465833e082b54b279105a280b36c75b8)](https://www.codacy.com/gh/OpenDA-Association/OpenDA?utm_source=github.com&utm_medium=referral&utm_content=OpenDA-Association/OpenDA&utm_campaign=Badge_Grade)
 
 # OpenDA
 
@@ -12,34 +12,34 @@ OpenDA is an Open Source project. Contributions are welcome from anyone wishing 
 
 Data-assimilation methods
 
-- Ensemble KF (EnKF)
-- Ensemble SquareRoot KF (EnSR)
-- Steady State KF
-- Particle Filter
-- 3DVar
-- DudEnKF (still under research)
-- DudEnSR (still under research)
+-   Ensemble KF (EnKF)
+-   Ensemble SquareRoot KF (EnSR)
+-   Steady State KF
+-   Particle Filter
+-   3DVar
+-   DudEnKF (still under research)
+-   DudEnSR (still under research)
 
 Parameter estimation (calibration) methods:
 
-- Dud
-- Sparse Dud
-- Simplex
-- Powell
-- Gridded full search
-- Shuffled Comples Evolution (SCE)
-- Generalized Likelihood Uncertainty Estimation (GLUE)
-- (L)BFGS
-- Conjugate Gradient: Fleetjer-Reeves, Polak-Ribiere, Steepest Descent
-- Uncertainty Analaysis methods
-- GLUE
-- DELSA
+-   Dud
+-   Sparse Dud
+-   Simplex
+-   Powell
+-   Gridded full search
+-   Shuffled Comples Evolution (SCE)
+-   Generalized Likelihood Uncertainty Estimation (GLUE)
+-   (L)BFGS
+-   Conjugate Gradient: Fleetjer-Reeves, Polak-Ribiere, Steepest Descent
+-   Uncertainty Analaysis methods
+-   GLUE
+-   DELSA
 
 Language interfaces
 
-- C/C++
-- Java
-- Fortran77/90
+-   C/C++
+-   Java
+-   Fortran77/90
 
 These files are part of the OpenDA software. For more information see our website at
-[http://www.openda.org](http://www.openda.org)
+<http://www.openda.org>
