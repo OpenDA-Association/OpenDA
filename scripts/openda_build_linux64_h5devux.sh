@@ -1,7 +1,7 @@
 #! /bin/bash
 
 export OPENDASCRIPTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd ${OPENDASCRIPTROOT}/../..
+cd "${OPENDASCRIPTROOT}/../.."
 
 export GCCDIR=/opt/gcc/4.9.2
 #source /usr/share/Modules/init/bash

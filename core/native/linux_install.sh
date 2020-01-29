@@ -133,7 +133,7 @@ if [ -z "$NETCDF_ROOT" ]; then
 		echo "Netcdf already compiled"
 	else
 		echo "Starting compilation of Netcdf"
-		pushd $BASE/external/netcdf
+		pushd "$BASE/external/netcdf"
 		./netcdf_install.sh $ARCH $FORT shared | tee netcdf_install.log
 		popd
 	fi
@@ -189,8 +189,8 @@ fi
 #
 # OpenDA settings
 #
-pushd $BASE
-$BASE/autoreconf_fix.sh
+pushd "$BASE"
+"$BASE/autoreconf_fix.sh"
 popd
 
 # compile in a temporary direcory to avoid mixing sources and objects
@@ -214,7 +214,7 @@ else
 fi
 
 if [ -d "$BASE/$SYSTEM" ];then
-	rm -rf $BASE/$SYSTEM
+	rm -rf "$BASE/$SYSTEM"
 fi
 
 

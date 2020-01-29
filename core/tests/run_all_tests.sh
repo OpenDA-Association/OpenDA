@@ -2,7 +2,7 @@
 set -x 
 
 ./clean.sh
-rm -f *.log
+rm -f \.*.log
 
 oda_test.sh simple_lorenz >simple_lorenz.log 2>&1
 oda_test.sh simple_lorenz96 >simple_lorenz96.log 2>&1

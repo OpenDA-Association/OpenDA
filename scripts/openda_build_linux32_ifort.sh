@@ -12,4 +12,4 @@ if [ -d core ]; then
   export TOPDIR=$PWD/..
 fi
 
-$TOPDIR/public/scripts/openda_build_linux.sh linux32_ifort
+"$TOPDIR/public/scripts/openda_build_linux.sh linux33_ifort"

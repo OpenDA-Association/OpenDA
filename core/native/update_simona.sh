@@ -59,7 +59,7 @@ if [ check_env ] ; then
    do
       for file in $group.a $group.la $group.so $group.so.0 $group.so.0.0.0
       do
-          if [ -e $ODA_COSTA_LIB/$file ] ; then
+          if [ -e "$ODA_COSTA_LIB/$file" ] ; then
              cp -vfup "$ODA_COSTA_LIB/$file" "$SIM_COSTA_LIB/$file.$UI_NAME"
           fi
       done
