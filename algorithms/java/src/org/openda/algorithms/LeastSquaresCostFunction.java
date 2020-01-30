@@ -19,7 +19,8 @@
 */
 package org.openda.algorithms;
 
-import org.openda.interfaces.*;
+import org.openda.interfaces.IStochVector;
+import org.openda.interfaces.IVector;
 
 public interface LeastSquaresCostFunction extends ICostFunction{
 
