@@ -44,7 +44,7 @@ public interface LeastSquaresCostFunction extends ICostFunction{
     
     /**
      * Use background term for cost function, i.e. add Jb = (p-p0)'/B(p-p0)
-     * @param boolean to turn backgroundterm on(true) of off(false)
+     * @param onIsTrue to turn backgroundterm on(true) of off(false)
      */
     public abstract void setBackgroundTerm(boolean onIsTrue);
     
