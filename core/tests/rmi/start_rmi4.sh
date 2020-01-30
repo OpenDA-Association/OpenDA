@@ -14,8 +14,8 @@ sleep 5
 
 # start the server with a non-default factory ID
 echo starting server
-java  -Djava.rmi.server.codebase=file:///$OPENDADIR/ org.openda.models.rmiModel.Server IRmiIStochModel_1 &
-java  -Djava.rmi.server.codebase=file:///$OPENDADIR/ org.openda.models.rmiModel.Server IRmiIStochModel_2 &
-java  -Djava.rmi.server.codebase=file:///$OPENDADIR/ org.openda.models.rmiModel.Server IRmiIStochModel_3 &
-java  -Djava.rmi.server.codebase=file:///$OPENDADIR/ org.openda.models.rmiModel.Server IRmiIStochModel_4 &
+java  -Djava.rmi.server.codebase="file:///$OPENDADIR/" org.openda.models.rmiModel.Server IRmiIStochModel_1 &
+java  -Djava.rmi.server.codebase="file:///$OPENDADIR/" org.openda.models.rmiModel.Server IRmiIStochModel_2 &
+java  -Djava.rmi.server.codebase="file:///$OPENDADIR/" org.openda.models.rmiModel.Server IRmiIStochModel_3 &
+java  -Djava.rmi.server.codebase="file:///$OPENDADIR/" org.openda.models.rmiModel.Server IRmiIStochModel_4 &
 

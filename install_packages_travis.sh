@@ -1,3 +1,4 @@
+#!/bin/sh
 # All packages needed in order to compile OpenDA
 # Travis virtual machine
 #

@@ -13,7 +13,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import math
-import time
 
 
 #constants in code for now \TODO improve

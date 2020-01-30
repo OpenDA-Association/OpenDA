@@ -44,7 +44,7 @@ else
         fi
 fi	
 #defaults for 64/32bit (=look at architecture of this computer)
-export RAWARCH=`uname -m`
+export RAWARCH=$(uname -m)
 if [ "$RAWARCH" == "x86_64" ]; then
    export ARCH=64
 else
@@ -56,11 +56,11 @@ export IGNORENETCDF="no"
 
 #test for windows mingw
 export OSTYPE="unknown"
-export TMPVAR=`uname -s|grep -i mingw`
+export TMPVAR=$(uname -s|grep -i mingw)
 if [ ! -z  "$TMPVAR" ]; then
 	OSTYPE="win"
 fi
-export TMPVAR=`uname -s|grep -i linux`
+export TMPVAR=$(uname -s|grep -i linux)
 if [ ! -z  "$TMPVAR" ]; then
 	OSTYPE="linux"
 fi
@@ -102,7 +102,7 @@ if [ "$FORT" == "ifort" ];then
 	fi
 fi
 if [ "$FORT" == "gnu" ];then
-	export GFORTRANPATH=`which gfortran 2>/dev/null`
+	export GFORTRANPATH=$(which gfortran 2>/dev/null)
 	if [ ! -z "$GFORTRANPATH" ]; then
 		export MYFORT="$GFORTRANPATH"
 	else
@@ -133,7 +133,7 @@ if [ -z "$NETCDF_ROOT" ]; then
 		echo "Netcdf already compiled"
 	else
 		echo "Starting compilation of Netcdf"
-		pushd $BASE/external/netcdf
+		pushd "$BASE/external/netcdf"
 		./netcdf_install.sh $ARCH $FORT shared | tee netcdf_install.log
 		popd
 	fi
@@ -156,7 +156,7 @@ if [ -z "$MPI_ROOT" ]; then
 		echo "Mpich2 already compiled"
 	else
 		echo "Starting compilation of mpich2"
-		pushd $BASE/external/mpi
+		pushd "$BASE/external/mpi"
 		./mpi_install.sh $ARCH $FORT shared | tee mpi_install.log
 		popd
 	fi
@@ -189,8 +189,8 @@ fi
 #
 # OpenDA settings
 #
-pushd $BASE
-$BASE/autoreconf_fix.sh
+pushd "$BASE"
+"$BASE/autoreconf_fix.sh"
 popd
 
 # compile in a temporary direcory to avoid mixing sources and objects
@@ -214,7 +214,7 @@ else
 fi
 
 if [ -d "$BASE/$SYSTEM" ];then
-	rm -rf $BASE/$SYSTEM
+	rm -rf "$BASE/$SYSTEM"
 fi
 
 
@@ -247,10 +247,10 @@ if [ ! -d "$BASE/../native_bin/$SYSTEM" ]; then
 	mkdir -p $BASE/../native_bin/$SYSTEM
 fi
 #mpi
-rsync -ruav $BASE/external/mpi/$SYSTEM/ $BASE/../native_bin/$SYSTEM/
+rsync -ruav "$BASE/external/mpi/$SYSTEM/ $BASE/../native_bin/$SYSTEM/"
 #workaround: !!! teamcity does not like +'s and mpicxx is indentical
-rm -f $BASE/../native_bin/$SYSTEM/bin/mpic++
+rm -f "$BASE/../native_bin/$SYSTEM/bin/mpic++"
 #netcdf
-rsync -ruav $BASE/external/netcdf/$SYSTEM/ $BASE/../native_bin/$SYSTEM/
+rsync -ruav "$BASE/external/netcdf/$SYSTEM/ $BASE/../native_bin/$SYSTEM/"
 #openda
-rsync -ruav $BASE/$SYSTEM/ $BASE/../native_bin/$SYSTEM/
+rsync -ruav "$BASE/$SYSTEM/ $BASE/../native_bin/$SYSTEM/"

@@ -35,7 +35,7 @@ void * CTA_Malloc(size_t size){
    void *ptr = malloc(size);
 #ifdef DEBUG
    if (! ptr){
-      printf("CTA_Malloc: Warning: malloc returns NULL. (size=%zd)\n",size);
+      printf("CTA_Malloc: Warning: malloc returns NULL. (size=%zu)\n",size);
    }
    else {
 //      memset(ptr,'@', size);  
@@ -49,7 +49,7 @@ void * CTA_Realloc(void *ptr, size_t size){
    void *ptrOut = realloc(ptr, size);
 #ifdef DEBUG
    if (! ptrOut){
-      printf("CTA_Malloc: Warning: malloc returns NULL. (size=%zd)\n",size);
+      printf("CTA_Malloc: Warning: malloc returns NULL. (size=%zu)\n",size);
    }
 #endif
   return ptrOut;
