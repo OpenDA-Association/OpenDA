@@ -10,7 +10,7 @@ pred = sim.pred_f_central
 time = sim.analysis_time
 
 f,ax = plt.subplots(3,2)
-for i in range(nloc):    
+for i in range(nloc):
    ax[i,0].plot(time,obs[:,i],'r')
    ax[i,0].plot(time,pred[:,i],'b')
    ax[i,1].plot(time,obs[:,i+nloc],'r')
