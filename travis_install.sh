@@ -1,6 +1,6 @@
 #!/bin/sh
 echo INSTALL EXTRA SOFTWARE
-bash install_packages_travis.sh
+#bash install_packages_travis.sh
 cd ..
 mv OpenDA public
 cd public
