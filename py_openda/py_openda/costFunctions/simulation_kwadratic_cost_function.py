@@ -6,6 +6,7 @@ Created on Fri Oct 12 13:44:45 2018
 @author: hegeman
 """
 
+
 class simulation_kwadratic_cost_function:
     def __init__(self, model_instance, stoch_observer):
         self.model_instance = model_instance

@@ -21,9 +21,10 @@ def check_A(A):
     """
     bad = False
     if np.linalg.cond(A) > 1e10:
-        print("WARNING: gradient is approximately zero. Iteration is stopped.")
+        logger.warning("gradient is approximately zero. Iteration is stopped.")
         bad = True
     return bad
+
 
 def initialize_dud(func, p_old, obs, std, start_dist=1.1):
     """
@@ -54,6 +55,7 @@ def initialize_dud(func, p_old, obs, std, start_dist=1.1):
     total_cost = params[-1, :]
     return (parameters, func_evals, total_cost)
 
+
 def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
     """
     Function used to find the next search direction.
@@ -82,6 +84,7 @@ def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
     p_new = parameters[:, -1] + Delta_P.dot(np.transpose(alpha))
     return (False, p_new)
 
+
 def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     """
     Line search that looks along the next search direction for parameters that lower the total cost.
@@ -109,6 +112,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
                 break
             d *= -1
     return (next_parameters, next_func_evals, next_total_cost)
+
 
 def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
     """
@@ -144,7 +148,7 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
         parameters = all_params[:p_number, :]
         func_evals = all_params[p_number:-1, :]
         total_cost = all_params[-1, :]
-        if abs((total_cost[-1] - total_cost[-2]) / total_cost[-2]) < xtol:
+        if abs(total_cost[-1] - total_cost[-2]) < xtol * abs(total_cost[-2]):
             finish += 1
         else:
             finish = 0
