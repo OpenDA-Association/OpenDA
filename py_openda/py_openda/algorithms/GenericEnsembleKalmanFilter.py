@@ -9,25 +9,7 @@ Created on Tue Nov 20 15:33:06 2018
 """
 
 import numpy as np
-
-#TODO: Use exec() to choose imports
-
-from py_openda.costFunctions.JObjects import (JModelFactory as ModelFactory,
-                                              JStochObserver as StochObserver,
-                                              JTime as Time)
-
-#from py_openda.costFunctions.JObjects import (JStochObserver as StochObserver,
-#                                              PyTime as Time)
-#from py_openda.costFunctions.LorenzStochModelFactory import LorenzStochModelFactory as ModelFactory
-
-
-#from py_openda.costFunctions.JObjects import PyTime as Time
-#from py_openda.costFunctions.CsvStochObserver import CsvStochObserver as StochObserver
-#from py_openda.costFunctions.LorenzStochModelFactory import LorenzStochModelFactory as ModelFactory
-
-#from py_openda.costFunctions.JObjects import (JModelFactory as ModelFactory,
-#                                              PyTime as Time)
-#from py_openda.costFunctions.CsvStochObserver import CsvStochObserver as StochObserver
+from py_openda.costFunctions.JObjects import PyTime as Time
 
 import py_openda.utils.py4j_utils as utils
 
@@ -38,18 +20,15 @@ class GenericEnsembleKalmanFilter:
     Class which holds the models and observer that will interact with the Kalman Filter.
     """
 
-    def __init__(self, ensemble_size, alg_config, main_config, scriptdir):
+    def __init__(self, ensemble_size, alg_config, model_factory, stoch_observer):
         """
         :param ensemble_size: number of ensemble members you wish to use.
         :param alg_config: dictionary decoded from an xml configuration file which adheres to
             http://schemas.openda.org/algorithm/enkf.xsd
-        :param main_config: dictionary decoded from an xml configuration file which adheres to
-            http://schemas.openda.org/openDaApplication.xsd
-        :param scriptdir: location of the main .oda file.
         """
-        self.model_factory = ModelFactory(main_config.get('stochModelFactory'), scriptdir)
+        self.model_factory = model_factory
 
-        self.observer = StochObserver(config=main_config.get('stochObserver'), scriptdir=scriptdir)
+        self.observer = stoch_observer
 
         self.main_model = self.model_factory.get_instance(alg_config.get('mainModel'),
                                                           main_or_ens="main")

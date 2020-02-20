@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<stochObserver className="org.openda.observers.CsvStochObserver">
+		<workingDirectory>./observations</workingDirectory>
+		<configFile>observations_lorenz_generated.csv</configFile>
+	</stochObserver>
+	<stochModelFactory className="org.openda.models.lorenz.LorenzStochModelFactory">
+		<workingDirectory>./model</workingDirectory>
+		<configFile>LorenzStochModel.xml</configFile>
+	</stochModelFactory>
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>EnKF10.xml</configString>
+	</algorithm>
+	<resultWriters>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_results.m</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_4" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_5" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_6" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_7" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_8" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_9" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_10" outputLevel="All"  maxSize="100000"   />
+		</selection>
+	</resultWriter>
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>enkf_results.py</configFile>
+		<selection>
+			<resultItem id="obs" outputLevel="All"  maxSize="100000"  />
+			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_0" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_1" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_2" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_3" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_4" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_5" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_6" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_7" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_8" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_9" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="xi_f_10" outputLevel="All"  maxSize="100000"   />
+		</selection>
+	</resultWriter>
+	</resultWriters>
+</openDaApplication>

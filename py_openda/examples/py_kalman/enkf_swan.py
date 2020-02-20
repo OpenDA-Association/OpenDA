@@ -16,15 +16,15 @@ from time import time as tm
 import numpy as np
 import matplotlib.pyplot as plt
 import xmlschema
-from py_openda.costFunctions.GenericEnsembleKalmanFilter import GenericEnsembleKalmanFilter
+from py_openda.algorithms.GenericEnsembleKalmanFilter import GenericEnsembleKalmanFilter
 from py_openda.algorithms.ensemble_kalman import kalman_algorithm, no_filter
 
 #TODO: Some movable parts in Java might still be hard coded in Python
 #TODO: Quite a few xml files might not follow the schema as well as xmlschema wants them to
 
 #input_string = '/v3/Stage/Rick/openda/openda_public/course/exercise_lorenz_3var_part1/simulation_ensemble.oda'
-#input_string = '/Users/nils/Develop/openda/stage_rick/OpenDA/examples/model_swan/kalman_twin_windbound/enkf_wind_bound.oda'
-input_string = '/Users/nils/Develop/openda/stage_rick/OpenDA/course/exercise_double_pendulum_part2/enkf.oda'
+input_string = '/Users/nils/Develop/openda/stage_rick/OpenDA/examples/model_swan/kalman_twin_windbound/enkf_wind_bound.oda'
+#input_string = '/Users/nils/Develop/openda/stage_rick/OpenDA/course/exercise_double_pendulum_part2/enkf.oda'
 #input_string = '/v3/Stage/Rick/openda/openda_public/core/tests/simple_oscillator/Enkf.oda'
 
 def main(input_string, observation_location=0):
