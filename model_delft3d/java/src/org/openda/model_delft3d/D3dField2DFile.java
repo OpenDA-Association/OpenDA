@@ -78,10 +78,6 @@ public class D3dField2DFile implements IDataObject {
         }
     }
 
-    public IExchangeItem[] getExchangeItems() {
-        return exchangeItems;
-    }
-
 	@Override
 	public String[] getExchangeItemIDs() {
 		return ids;
