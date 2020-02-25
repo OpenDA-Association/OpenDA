@@ -21,6 +21,7 @@
 package org.openda.model_delft3d;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import java.io.File;
 import java.util.ArrayList;
@@ -29,20 +30,22 @@ import java.util.List;
 /**
  * Combination of D3D astro file (bca) and its corresponding correction file (cor)
  */
-public class D3dAstroComponentFiles implements IoObjectInterface {
+public class D3dAstroComponentFiles implements IDataObject {
 
     ModelDefinitionFile modelDefinitionFile = null;
     D3dAstroComponentsFile bcaComponents = null;
     D3dAstroComponentsFile corComponents = null;
 
     private List<D3dAstroExchangeItem> exchangeItems = new ArrayList<D3dAstroExchangeItem>();
+	private String[] ids;
 
-    public void initialize(File workingDir, String mdFileName, String[] arguments) {
-        if (arguments != null && arguments.length > 0) {
-            throw new RuntimeException("No  arguments expected");
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
+        if (arguments != null && arguments.length > 1) {
+            throw new RuntimeException("No  arguments except filename expected");
         }
 
-        modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDir, mdFileName);
+        modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDir, arguments[0]);
         File bcaFile = modelDefinitionFile.getFieldFile(ModelDefinitionFile.BC_ASTRONOMIC, true);
         File corFile = modelDefinitionFile.getFieldFile(ModelDefinitionFile.BC_ASTRO_CORR, false);
 
@@ -60,13 +63,33 @@ public class D3dAstroComponentFiles implements IoObjectInterface {
                         astroStation.getId(), D3dAstroExchangeItem.phaseString, astroComponent));
             }
         }
+		int size = exchangeItems.size();
+		ids = new String[size];
+		for (int i = 0; i < size; i++) {
+			ids[i] = exchangeItems.get(i).getId();
+		}
     }
 
-    public IExchangeItem[] getExchangeItems() {
-        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
-    }
+	@Override
+	public String[] getExchangeItemIDs() {
+		return ids;
+	}
 
-    public void finish() {
+	@Override
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+		return getExchangeItemIDs();
+	}
+
+	@Override
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		for (int i = 0; i < ids.length; i++) {
+			if (ids[i].equals(exchangeItemID)) return exchangeItems.get(i);
+		}
+		return null;
+	}
+
+	@Override
+	public void finish() {
         bcaComponents.write(modelDefinitionFile.getFieldFile(ModelDefinitionFile.BC_ASTRONOMIC, true));
         if (corComponents != null) {
             corComponents.write(modelDefinitionFile.getFieldFile(ModelDefinitionFile.BC_ASTRO_CORR, true));
