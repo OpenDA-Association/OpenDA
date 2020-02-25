@@ -20,6 +20,7 @@
 package org.openda.model_delft3d;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -50,9 +51,13 @@ public class D3dField2DFileTest extends TestCase {
         BBUtils.copyFile(depthBase, depth);
 
         // Read depth file, check content
-        D3dField2DFile depthFile = new D3dField2DFile();
-        depthFile.initialize(testDir, "test.mdf", new String[] {"dep"});
-        IExchangeItem[] depExchItems = depthFile.getExchangeItems();
+        IDataObject depthFile = new D3dField2DFile();
+        depthFile.initialize(testDir, new String[] {"test.mdf", "dep"});
+        String[] depExchItemIDs = depthFile.getExchangeItemIDs();
+		IExchangeItem[] depExchItems = new IExchangeItem[depExchItemIDs.length];
+		for (int i = 0; i < depExchItemIDs.length; i++) {
+			depExchItems[i] = depthFile.getDataObjectExchangeItem(depExchItemIDs[i]);;
+		}
         assertEquals("depExchItems.length", 1, depExchItems.length);
         assertEquals("exchItemdepthFile[0].id", "depth", depExchItems[0].getId());
         double[] depthValues = depExchItems[0].getValuesAsDoubles();
@@ -60,9 +65,13 @@ public class D3dField2DFileTest extends TestCase {
         assertEquals("exchItemRoughFile[1].values[345]", -999.000, depthValues[345]);
 
         // Read roughness file, check content
-        D3dField2DFile roughnessFile = new D3dField2DFile();
-        roughnessFile.initialize(testDir, "test.mdf", new String[] {"rgh"});
-        IExchangeItem[] rghExchItems = roughnessFile.getExchangeItems();
+        IDataObject roughnessFile = new D3dField2DFile();
+        roughnessFile.initialize(testDir, new String[] {"test.mdf", "rgh"});
+		String[] rghExchItemIDs = roughnessFile.getExchangeItemIDs();
+		IExchangeItem[] rghExchItems = new IExchangeItem[rghExchItemIDs.length];
+		for (int i = 0; i < rghExchItemIDs.length; i++) {
+			rghExchItems[i] = roughnessFile.getDataObjectExchangeItem(rghExchItemIDs[i]);;
+		}
         assertEquals("rghExchItems.length", 2, rghExchItems.length);
         assertEquals("exchItemRoughFile[0].id", "roughness-u", rghExchItems[0].getId());
         assertEquals("exchItemRoughFile[1].id", "roughness-v", rghExchItems[1].getId());
@@ -81,9 +90,14 @@ public class D3dField2DFileTest extends TestCase {
         roughnessFile.finish();
 
         // Re-read roughness file, check changed vValues
-        D3dField2DFile adjustedRoughnessFile = new D3dField2DFile();
-        adjustedRoughnessFile.initialize(testDir, "test.mdf", new String[] {"rgh"});
-        double[] adjustedVValues = adjustedRoughnessFile.getExchangeItems()[1].getValuesAsDoubles();
+        IDataObject adjustedRoughnessFile = new D3dField2DFile();
+        adjustedRoughnessFile.initialize(testDir, new String[] {"test.mdf","rgh"});
+		String[] adjrghExchItemIDs = adjustedRoughnessFile.getExchangeItemIDs();
+		IExchangeItem[] adjrghExchItems = new IExchangeItem[adjrghExchItemIDs.length];
+		for (int i = 0; i < adjrghExchItemIDs.length; i++) {
+			adjrghExchItems[i] = adjustedRoughnessFile.getDataObjectExchangeItem(adjrghExchItemIDs[i]);;
+		}
+        double[] adjustedVValues = adjrghExchItems[1].getValuesAsDoubles();
         assertEquals("exchItemRoughFile[1].values[6]", 101.008, adjustedVValues[6]);
         assertEquals("exchItemRoughFile[1].values[7]", 101.009, adjustedVValues[7]);
     }

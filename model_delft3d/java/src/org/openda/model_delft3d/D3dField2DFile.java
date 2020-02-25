@@ -21,6 +21,7 @@
 package org.openda.model_delft3d;
 
 import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import java.io.*;
 import java.util.Locale;
@@ -28,24 +29,25 @@ import java.util.Locale;
 /**
  * Delft3D 2d-field files reader/writer
  */
-public class D3dField2DFile implements IoObjectInterface {
+public class D3dField2DFile implements IDataObject {
 
     private static String[] knownFileTypes = {ModelDefinitionFile.DEPTH, ModelDefinitionFile.ROUGHNESS};
     private ModelDefinitionFile modelDefinitionFile = null;
     private D3dField2DExchangeItem[] exchangeItems = null;
+	private String[] ids;
     private String fileKey = null;
     private int lineLength = 12;
 
-    public void initialize(File workingDir, String mdFileName, String[] arguments) {
+    public void initialize(File workingDir, String[] arguments) {
 
-        if (arguments.length != 1) {
+        if (arguments.length != 2) {
             throw new RuntimeException("Expected one argument, the 2D-field type: " +
                     ModelDefinitionFile.getKnownFileTypesString(knownFileTypes));
         }
 
-        fileKey = arguments[0];
+        fileKey = arguments[1];
         ModelDefinitionFile.checkD3dFileArguments(fileKey, knownFileTypes);
-        modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDir, mdFileName);
+        modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDir, arguments[0]);
         File fieldFile = modelDefinitionFile.getFieldFile(fileKey, true);
 
         try {
@@ -54,11 +56,19 @@ public class D3dField2DFile implements IoObjectInterface {
 
             if (fileKey.equals(ModelDefinitionFile.DEPTH)) {
                 exchangeItems = new D3dField2DExchangeItem[1];
-                exchangeItems[0] = readExchangeItem2D(inputFileBufferedReader, "depth");
+				String depthExchangeItemId = "depth";
+				exchangeItems[0] = readExchangeItem2D(inputFileBufferedReader, depthExchangeItemId);
+                ids = new String[1];
+                ids[0] = depthExchangeItemId;
             } else if (fileKey.equals(ModelDefinitionFile.ROUGHNESS)) {
                 exchangeItems = new D3dField2DExchangeItem[2];
-                exchangeItems[0] = readExchangeItem2D(inputFileBufferedReader, "roughness-u");
-                exchangeItems[1] = readExchangeItem2D(inputFileBufferedReader, "roughness-v");
+				String roughuExchangeItemId = "roughness-u";
+				String roughvExchangeItemId = "roughness-v";
+                exchangeItems[0] = readExchangeItem2D(inputFileBufferedReader, roughuExchangeItemId);
+                exchangeItems[1] = readExchangeItem2D(inputFileBufferedReader, roughvExchangeItemId);
+				ids = new String[2];
+				ids[0] = roughuExchangeItemId;
+				ids[1] = roughvExchangeItemId;
             }
             inputFileBufferedReader.close();
             fileReader.close();
@@ -72,7 +82,25 @@ public class D3dField2DFile implements IoObjectInterface {
         return exchangeItems;
     }
 
-    public void finish() {
+	@Override
+	public String[] getExchangeItemIDs() {
+		return ids;
+	}
+
+	@Override
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+		return getExchangeItemIDs();
+	}
+
+	@Override
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
+		for (int i = 0; i < ids.length; i++) {
+			if (ids[i].equals(exchangeItemID)) return exchangeItems[i];
+		}
+		return null;
+	}
+
+	public void finish() {
 
         boolean dataChanged = false;
         for (int i = 0; !dataChanged && i < exchangeItems.length; i++) {
