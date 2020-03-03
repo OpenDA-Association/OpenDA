@@ -3,6 +3,8 @@ package org.openda.exchange;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,7 +20,15 @@ public abstract class AbstractDataObject implements IDataObject {
 
 	@Override
 	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
-		return getExchangeItemIDs();
+		Collection<IExchangeItem> exchangeItems = this.exchangeItems.values();
+		ArrayList<String> idsForRole = new ArrayList<>();
+		for (IExchangeItem exchangeItem : exchangeItems) {
+			IExchangeItem.Role exchangeItemRole = exchangeItem.getRole();
+			if (exchangeItemRole == role) idsForRole.add(exchangeItem.getId());
+			if (role == IExchangeItem.Role.InOut) continue;
+			if (exchangeItemRole == IExchangeItem.Role.InOut) idsForRole.add(exchangeItem.getId());
+		}
+		return idsForRole.toArray(EMPTY_STRING_ARRAY);
 	}
 
 	@Override
