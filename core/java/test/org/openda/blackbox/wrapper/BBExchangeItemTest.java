@@ -25,7 +25,6 @@ import org.openda.blackbox.config.AliasDefinitions;
 import org.openda.blackbox.config.BBModelVectorConfig;
 import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.blackbox.config.IoObjectConfig;
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayTimeInfo;
@@ -131,25 +130,6 @@ public class BBExchangeItemTest extends TestCase {
 
 		// check size of returned array
 		assertEquals(selectedValues.length, dims[0]*dimensionIndices[0].getSize()*dimensionIndices[1].getSize());
-	}
-
-	private class DummyIoObject implements IoObjectInterface{
-
-		private IExchangeItem[] exchangeItems;
-
-		public void initialize(File workingDir, String fileName, String[] arguments) {
-			exchangeItems = new IExchangeItem[1];
-			ArrayExchangeItem item1 = new ArrayExchangeItem("item1", IExchangeItem.Role.Output);
-			exchangeItems[0] = null;
-		}
-
-		public IExchangeItem[] getExchangeItems() {
-			return exchangeItems;
-		}
-
-		public void finish() {
-			// no action
-		}
 	}
 }
 
