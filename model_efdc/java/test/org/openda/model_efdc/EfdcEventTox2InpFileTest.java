@@ -62,15 +62,14 @@ public class EfdcEventTox2InpFileTest extends TestCase {
         String eventTox2InpFilename = "efdcEventTox2InpFileTest/input/EVENT_TOX2.INP";
         String startTimeExchangeItemId = "TSTART1";
         String endTimeExchangeItemId = "TSTOP1";
-        efdcEventTox2InpIoObject.initialize(testRunDataDir, eventTox2InpFilename,
-                new String[]{"0", startTimeExchangeItemId, endTimeExchangeItemId});
+        efdcEventTox2InpIoObject.initialize(testRunDataDir,
+                new String[]{eventTox2InpFilename, "0", startTimeExchangeItemId, endTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IExchangeItem[] exchangeItems = efdcEventTox2InpIoObject.getExchangeItems();
-        //Loop over all exchangeItems items and request the ID, name and value
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
-            if (id.equals(startTimeExchangeItemId)) {
+        String[] exchangeItemIDs = efdcEventTox2InpIoObject.getExchangeItemIDs();
+        for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = efdcEventTox2InpIoObject.getDataObjectExchangeItem(id);
+			if (id.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
             } else if (id.equals(endTimeExchangeItemId)) {
                 exchangeItem.setValues(endDate);
