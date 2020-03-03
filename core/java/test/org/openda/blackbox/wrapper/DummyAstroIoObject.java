@@ -21,7 +21,7 @@
 
 package org.openda.blackbox.wrapper;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
@@ -32,29 +32,33 @@ import java.io.File;
 /**
  * Dummy Astro Io Object for testing purposes
  */
-public class DummyAstroIoObject implements IoObjectInterface {
+public class DummyAstroIoObject extends AbstractDataObject {
 
-    private IExchangeItem[] exchangeItems;
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+		String locAAmplId  = "locA.Ampl";
+		String locAPhaseId = "locA.Phase";
+		String locBAmplId = "locB.Ampl";
+		String locBPhaseId = "locB.Phase";
+		String locCAmplId = "locC.Ampl";
+		String locCPhaseId = "locC.Phase";
+		String locDAmplId = "locD.Ampl";
+		String locDPhaseId = "locD.Phase";
+		String locEAmplId = "locE.Ampl";
+		String locEPhaseId = "locE.Phase";
+		exchangeItems.put(locAAmplId, new DummyExchangeItem(locAAmplId, .6));
+		exchangeItems.put(locAPhaseId, new DummyExchangeItem(locAPhaseId, 145));
+		exchangeItems.put(locBAmplId, new DummyExchangeItem(locBAmplId, .8));
+		exchangeItems.put(locBPhaseId, new DummyExchangeItem(locBPhaseId, 260));
+		exchangeItems.put(locCAmplId, new DummyExchangeItem(locCAmplId, 1.2));
+		exchangeItems.put(locCPhaseId, new DummyExchangeItem(locCPhaseId, -40));
+		exchangeItems.put(locDAmplId, new DummyExchangeItem(locDAmplId, 10));
+		exchangeItems.put(locDPhaseId, new DummyExchangeItem(locDPhaseId, -5));
+		exchangeItems.put(locEAmplId, new DummyExchangeItem(locEAmplId, 10));
+		exchangeItems.put(locEPhaseId, new DummyExchangeItem(locEPhaseId, 185));
+	}
 
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        exchangeItems = new IExchangeItem[10];
-        exchangeItems[0] = new DummyExchangeItem("locA.Ampl", .6);
-        exchangeItems[1] = new DummyExchangeItem("locA.Phase", 145);
-        exchangeItems[2] = new DummyExchangeItem("locB.Ampl", .8);
-        exchangeItems[3] = new DummyExchangeItem("locB.Phase", 260);
-        exchangeItems[4] = new DummyExchangeItem("locC.Ampl", 1.2);
-        exchangeItems[5] = new DummyExchangeItem("locC.Phase", -40);
-        exchangeItems[6] = new DummyExchangeItem("locD.Ampl", 10);
-        exchangeItems[7] = new DummyExchangeItem("locD.Phase", -5);
-        exchangeItems[8] = new DummyExchangeItem("locE.Ampl", 10);
-        exchangeItems[9] = new DummyExchangeItem("locE.Phase", 185);
-    }
-
-    public IExchangeItem[] getExchangeItems() {
-        return exchangeItems;
-    }
-
-    private class DummyExchangeItem implements IExchangeItem {
+	private class DummyExchangeItem implements IExchangeItem {
 
         private String exchangeItemId;
         private Double value;
@@ -139,6 +143,7 @@ public class DummyAstroIoObject implements IoObjectInterface {
         }
     }
 
+    @Override
     public void finish() {
         // no action needed
     }
