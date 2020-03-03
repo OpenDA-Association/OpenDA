@@ -24,7 +24,6 @@ package org.openda.costa;
 import junit.framework.TestCase;
 import org.openda.application.ApplicationRunner;
 import org.openda.utils.OpenDaTestSupport;
-import org.openda.utils.performance.OdaTiming;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +48,7 @@ public class CostaOpendaAppTest extends TestCase {
 	public void testOscill_EnKF() throws IOException {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig.xml");
-        String args[] = new String[1];
+        String[] args = new String[1];
         args[0] = config.getAbsolutePath();
         org.openda.application.OpenDaApplication.main(args);
         System.out.println("testOscill_EnKF DONE");
@@ -58,7 +57,7 @@ public class CostaOpendaAppTest extends TestCase {
     public void tstOscill_Simplex() throws IOException {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillSimplexOpenDaConfig.xml");
-        String args[] = new String[1];
+        String[] args = new String[1];
         args[0] = config.getAbsolutePath();
         org.openda.application.OpenDaApplication.main(args);
     }
@@ -68,7 +67,7 @@ public class CostaOpendaAppTest extends TestCase {
     public void tstOscill_EnKF2() throws IOException {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig_javaobs.xml");
-        String args[] = new String[1];
+        String[] args = new String[1];
         args[0] = config.getAbsolutePath();
         // TODO fails on announce obs. now.
         org.openda.application.OpenDaApplication.main(args);
