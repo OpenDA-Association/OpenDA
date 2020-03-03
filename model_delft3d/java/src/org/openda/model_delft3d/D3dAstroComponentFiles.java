@@ -32,9 +32,9 @@ import java.util.List;
  */
 public class D3dAstroComponentFiles implements IDataObject {
 
-    ModelDefinitionFile modelDefinitionFile = null;
-    D3dAstroComponentsFile bcaComponents = null;
-    D3dAstroComponentsFile corComponents = null;
+	private ModelDefinitionFile modelDefinitionFile = null;
+	private D3dAstroComponentsFile bcaComponents = null;
+    private D3dAstroComponentsFile corComponents = null;
 
     private List<D3dAstroExchangeItem> exchangeItems = new ArrayList<D3dAstroExchangeItem>();
 	private String[] ids;
@@ -42,9 +42,10 @@ public class D3dAstroComponentFiles implements IDataObject {
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
         if (arguments != null && arguments.length > 1) {
-            throw new RuntimeException("No  arguments except filename expected");
+            throw new RuntimeException("No arguments except filename expected");
         }
 
+        // TODO: check roles
         modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDir, arguments[0]);
         File bcaFile = modelDefinitionFile.getFieldFile(ModelDefinitionFile.BC_ASTRONOMIC, true);
         File corFile = modelDefinitionFile.getFieldFile(ModelDefinitionFile.BC_ASTRO_CORR, false);
@@ -76,6 +77,7 @@ public class D3dAstroComponentFiles implements IDataObject {
 	}
 
 	@Override
+	// FIXME: loop over exchange items and check role
 	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
