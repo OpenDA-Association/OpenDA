@@ -24,9 +24,9 @@ public abstract class AbstractDataObject implements IDataObject {
 		ArrayList<String> idsForRole = new ArrayList<>();
 		for (IExchangeItem exchangeItem : exchangeItems) {
 			IExchangeItem.Role exchangeItemRole = exchangeItem.getRole();
-			if (exchangeItemRole == role) idsForRole.add(exchangeItem.getId());
-			if (role == IExchangeItem.Role.InOut) continue;
-			if (exchangeItemRole == IExchangeItem.Role.InOut) idsForRole.add(exchangeItem.getId());
+			if (exchangeItemRole.equals(role)) idsForRole.add(exchangeItem.getId());
+			if (role.equals(IExchangeItem.Role.InOut)) continue;
+			if (exchangeItemRole.equals(IExchangeItem.Role.InOut)) idsForRole.add(exchangeItem.getId());
 		}
 		return idsForRole.toArray(EMPTY_STRING_ARRAY);
 	}
