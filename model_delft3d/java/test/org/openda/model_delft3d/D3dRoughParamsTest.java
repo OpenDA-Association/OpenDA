@@ -20,7 +20,6 @@
 package org.openda.model_delft3d;
 
 import junit.framework.TestCase;
-import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -48,16 +47,16 @@ public class D3dRoughParamsTest  extends TestCase {
         // First write a test file
     	File dataDir=testRunDataDir;
         D3dRoughParamsFile roughFile=new D3dRoughParamsFile();
-        roughFile.initialize(testRunDataDir, "ruw.karak",new String[]{});
+        roughFile.initialize(testRunDataDir, new String[]{"ruw.karak"});
 
-        IExchangeItem[] items = roughFile.getExchangeItems();
+        String[] ids = roughFile.getExchangeItemIDs();
 
-        int n=items.length;
+        int n=ids.length;
         double delta=0.00001;
         assertEquals(10, n);
         for(int i=0;i<n;i++){
-        	String id=items[i].getId();
-        	double values[] =items[i].getValuesAsDoubles();
+        	String id=ids[i];
+        	double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
         	assertEquals(1, values.length);
         	System.out.println("Id="+id+" value="+values[0]);
 
@@ -70,8 +69,8 @@ public class D3dRoughParamsTest  extends TestCase {
         }
 
         // change some parameter
-        items[0].setValuesAsDoubles(new double[]{100.});
-        items[1].setValuesAsDoubles(new double[]{4.5});
+        roughFile.getDataObjectExchangeItem(ids[0]).setValuesAsDoubles(new double[]{100.});
+        roughFile.getDataObjectExchangeItem(ids[1]).setValuesAsDoubles(new double[]{4.5});
         // flush to file
         roughFile.finish();
 
@@ -90,22 +89,21 @@ public class D3dRoughParamsTest  extends TestCase {
         // First write a test file
     	File dataDir=testRunDataDir;
         D3dRoughParamsFile roughFile=new D3dRoughParamsFile();
-        roughFile.initialize(testRunDataDir, "ruwQ7020.karak",new String[]{});
+        roughFile.initialize(testRunDataDir, new String[]{"ruwQ7020.karak"});
 
-        IExchangeItem[] items = roughFile.getExchangeItems();
+        String[] ids = roughFile.getExchangeItemIDs();
 
-        int n=items.length;
-        double delta=0.00001;
+        int n=ids.length;
         assertEquals(137, n);
         for(int i=0;i<n;i++){
-        	String id=items[i].getId();
-        	double values[] =items[i].getValuesAsDoubles();
+        	String id=ids[i];
+        	double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
         	assertEquals(1, values.length);
         	System.out.println("Id="+id+" value="+values[0]);
         }
 
         // change some parameter
-        items[13].setValuesAsDoubles(new double[]{100.});
+        roughFile.getDataObjectExchangeItem(ids[13]).setValuesAsDoubles(new double[]{100.});
         // flush to file
         roughFile.finish();
 
@@ -201,24 +199,18 @@ public class D3dRoughParamsTest  extends TestCase {
         D3dRoughParamsUtils.writeWholeFile(roughFile, sContent);
 
         D3dRoughParamsFile paramsFile=new D3dRoughParamsFile();
-        String[] noArguments = new String[]{};
-        paramsFile.initialize(testRunDataDir, fName, noArguments);
+        paramsFile.initialize(testRunDataDir, new String[]{fName});
 
-        //Get all exchangeItems items
-        IExchangeItem[] exchangeItems =paramsFile.getExchangeItems();
+		//Get all exchangeItems items
+        String[] ids =paramsFile.getExchangeItemIDs();
 
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
-            Double value = (Double) exchangeItem.getValues();
-            String out = "Parameter id=" + id + " value=" + Double.toString(value);
+        for (String id : ids) {
+        	Double value = (Double) paramsFile.getDataObjectExchangeItem(id).getValues();
+            String out = "Parameter id=" + id + " value=" + value;
             System.out.println(out);
         }
     }
-
-
-
-
 
     private String[] testFile(){
         String[] sContent = new String[6];

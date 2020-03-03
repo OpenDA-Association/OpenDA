@@ -57,7 +57,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
 
     private File timeSeriesFile;
-    private Map<Integer, IExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<Integer, IExchangeItem>();
+    private Map<String, IExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<>();
 
     /**
      * @param workingDir the working directory.
@@ -260,7 +260,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
                     + "' does not exist.");
         }
 
-        List<Double> timesList = new ArrayList<Double>();
+        List<Double> timesList = new ArrayList<>();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -403,7 +403,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
             exchangeItem.setValues(data[parameterIndex]);
 
             //add exchangeItem.
-            this.timeSeriesExchangeItems.put(columnNumber, exchangeItem);
+            this.timeSeriesExchangeItems.put(String.valueOf(columnNumber), exchangeItem);
         }
 
         if (this.timeSeriesExchangeItems.isEmpty()) {
@@ -416,7 +416,7 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
     public IExchangeItem[] getExchangeItems() {
         //return all available exchange items.
         List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.timeSeriesExchangeItems.values());
-        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
+        return exchangeItems.toArray(new IExchangeItem[0]);
     }
 
     
