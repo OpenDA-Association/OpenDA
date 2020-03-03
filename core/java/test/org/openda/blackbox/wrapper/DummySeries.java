@@ -21,7 +21,7 @@
 
 package org.openda.blackbox.wrapper;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
@@ -32,22 +32,18 @@ import java.io.File;
 /**
  * Dummy Series object for testing purposes
  */
-public class DummySeries implements IoObjectInterface {
-    private IExchangeItem[] exchangeItems;
+public class DummySeries extends AbstractDataObject {
 
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        String[] exchangeItemIds = fileName.split(";");
-        exchangeItems = new IExchangeItem[exchangeItemIds.length];
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+        String[] exchangeItemIds = arguments[0].split(";");
         for (int i = 0; i < exchangeItemIds.length; i++) {
-            exchangeItems[i] = new DummyExchangeItem(exchangeItemIds[i], (i+1)*1000);
+			String id = exchangeItemIds[i];
+			exchangeItems.put(id, new DummyExchangeItem(id, (i + 1) * 1000));
         }
     }
 
-    public IExchangeItem[] getExchangeItems() {
-        return exchangeItems;
-    }
-
-    private class DummyExchangeItem implements IExchangeItem {
+	private static class DummyExchangeItem implements IExchangeItem {
 
         private String exchangeItemId;
         private Double value;
@@ -133,6 +129,7 @@ public class DummySeries implements IoObjectInterface {
         }
     }
 
+    @Override
     public void finish() {
         // no action needed
     }
