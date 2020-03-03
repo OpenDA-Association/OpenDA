@@ -19,10 +19,8 @@
 */
 package org.openda.blackbox.wrapper;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
-import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Time;
 
 import java.io.File;
