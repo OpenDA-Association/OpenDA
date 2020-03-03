@@ -21,7 +21,12 @@
 package org.openda.exchange;
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.*;
+import org.openda.interfaces.IArray;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
+import org.openda.interfaces.IVector;
 
 /**
  * This exchangeItem wraps another exchangeItem and applies constant range validation limits
