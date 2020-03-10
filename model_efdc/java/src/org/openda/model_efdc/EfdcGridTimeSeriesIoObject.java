@@ -26,12 +26,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
@@ -46,60 +44,59 @@ import org.openda.utils.Time;
  *
  * @author Arno Kockx
  */
-public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
+public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
 
-    /**
-     * The timeZone that is used by the model.
-     * This is required to convert the times of the data values
-     * to/from the timeZone that is used by the model.
-     * Default is GMT.
-     */
-    private TimeZone timeZone = TimeZone.getTimeZone("GMT");
-
-    private File timeSeriesFile;
-    private Map<String, IExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<>();
+	private File timeSeriesFile;
 
     /**
      * @param workingDir the working directory.
-     * @param fileName the name of the file containing the data for this IoObject (relative to the working directory).
-     * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-     *                  the second argument should be the startTime of the model run.
+     * @param arguments the first argument should be the name of the file containing the data for this IDataObject (relative to the working directory).
+	 *                  the second argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
+     *                  the third argument should be the startTime of the model run.
      */
-    
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        this.timeSeriesFile = new File(workingDir, fileName);
+
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+        this.timeSeriesFile = new File(workingDir, arguments[0]);
 
         //get timeZone.
-        if (arguments == null || arguments.length < 1) {
+        if (arguments == null || arguments.length < 2) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
+                    + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
         }
-        try {
-            double timeZoneOffsetInHours = Double.parseDouble(arguments[0]);
-            this.timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
+		/**
+		 * The timeZone that is used by the model.
+		 * This is required to convert the times of the data values
+		 * to/from the timeZone that is used by the model.
+		 * Default is GMT.
+		 */
+		TimeZone timeZone = TimeZone.getTimeZone("GMT");
+		try {
+            double timeZoneOffsetInHours = Double.parseDouble(arguments[1]);
+            timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse first argument '" + arguments[0]
+            throw new IllegalArgumentException("Cannot parse second argument '" + arguments[1]
                     + "' for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
+                    + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).", e);
         }
 
         //get start time.
-        if (arguments.length < 2) {
+        if (arguments.length < 3) {
             throw new IllegalArgumentException("No startTime argument specified for " + this.getClass().getSimpleName()
-                    + ". The second argument should be the start time of the model run.");
+                    + ". The third argument should be the start time of the model run.");
         }
         double startTime;
         try {
-            startTime = TimeUtils.date2Mjd(arguments[1]);
+            startTime = TimeUtils.date2Mjd(arguments[2]);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Invalid startTime argument specified for " + this.getClass().getSimpleName()
-                    + ". Cannot parse second argument '" + arguments[1]
-                    + "'. The second argument should be the startTime of the model run.", e);
+                    + ". Cannot parse third argument '" + arguments[2]
+                    + "'. The third argument should be the startTime of the model run.", e);
         }
         //determine referenceTime.
-        long referenceTime = EfdcUtils.getReferenceTime(Time.mjdToMillies(startTime), this.timeZone);
+        long referenceTime = EfdcUtils.getReferenceTime(Time.mjdToMillies(startTime), timeZone);
 
         //read data from file and create exchangeItems.
         createTimeSeriesExchangeItems(this.timeSeriesFile, referenceTime);
@@ -387,9 +384,6 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
     }
 
     private void createTimeSeriesExchangeItems(double[] times, double[][][] data) {
-        //reset this.timeSeriesExchangeItems list.
-        this.timeSeriesExchangeItems.clear();
-
         //create an exchangeItem for each data column. If only some columns are used,
         //then the whole file has to be read anyway, so always filling all column exchangeItems
         //if some are not used will not take much extra time.
@@ -403,23 +397,16 @@ public class EfdcGridTimeSeriesIoObject implements IoObjectInterface {
             exchangeItem.setValues(data[parameterIndex]);
 
             //add exchangeItem.
-            this.timeSeriesExchangeItems.put(String.valueOf(columnNumber), exchangeItem);
+            exchangeItems.put(String.valueOf(columnNumber), exchangeItem);
         }
 
-        if (this.timeSeriesExchangeItems.isEmpty()) {
+        if (exchangeItems.isEmpty()) {
             throw new IllegalArgumentException("No time series found for time series file '"
                     + this.timeSeriesFile.getAbsolutePath() + "'.");
         }
     }
 
-    
-    public IExchangeItem[] getExchangeItems() {
-        //return all available exchange items.
-        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.timeSeriesExchangeItems.values());
-        return exchangeItems.toArray(new IExchangeItem[0]);
-    }
-
-    
+    @Override
     public void finish() {
         //do nothing.
     }

@@ -40,10 +40,9 @@ import org.openda.utils.Time;
 public class EfdcGridTimeSeriesTest extends TestCase {
 
     private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
-    protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(EfdcGridTimeSeriesTest.class, "model_efdc");
+	protected void setUp() throws IOException {
+		OpenDaTestSupport testData = new OpenDaTestSupport(EfdcGridTimeSeriesTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
 
@@ -74,17 +73,19 @@ public class EfdcGridTimeSeriesTest extends TestCase {
         assertTrue(outputFile.exists());
 
         EfdcGridTimeSeriesIoObject efdcGridTimeSeriesIoObject = new EfdcGridTimeSeriesIoObject();
-        String[] arguments = new String[]{"9", TimeUtils.mjdToString(Time.milliesToMjd(startTime))};
-        efdcGridTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        String[] arguments = new String[]{outputFileName, "9", TimeUtils.mjdToString(Time.milliesToMjd(startTime))};
+        efdcGridTimeSeriesIoObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IExchangeItem[] exchangeItems = efdcGridTimeSeriesIoObject.getExchangeItems();
-        assertEquals(23, exchangeItems.length);
+        String[] exchangeItemIDs = efdcGridTimeSeriesIoObject.getExchangeItemIDs();
+        assertEquals(23, exchangeItemIDs.length);
 
-        //check times and values.
-        IExchangeItem exchangeItem4 = exchangeItems[3];
-        //the id is the one-based columnNumber of the column in the file.
-        assertEquals("8", exchangeItem4.getId());
+		//the id is the one-based columnNumber of the column in the file.
+		String id = exchangeItemIDs[3];
+        IExchangeItem exchangeItem4 = efdcGridTimeSeriesIoObject.getDataObjectExchangeItem(id);
+
+		//check times and values.
+		assertEquals("8", id);
 
         double[] times4 = exchangeItem4.getTimes();
         assertNotNull(times4);
