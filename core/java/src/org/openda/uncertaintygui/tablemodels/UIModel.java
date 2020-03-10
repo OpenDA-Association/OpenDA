@@ -162,36 +162,7 @@ public class UIModel  {
         uncertainties.addVariationFunction(variationFunction);
     }
 
-    private void addNewPdfFromExchangeItem(Uncertainties uncertainties, IExchangeItem exchangeItem) {
-
-        //create new UncertainItem for uncertainty from mapping.
-        UncertainItem uncertainItem = new UncertainItem(exchangeItem.getId(), "", false);
-
-        //get description.
-        if (exchangeItem.getDescription() != null) {
-            uncertainItem.setDescription(exchangeItem.getDescription());
-        }
-
-        // get basic value from mapping file.
-        double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
-        double value = Double.NaN;
-        if (valuesAsDoubles.length == 1) {
-            value = valuesAsDoubles[0];
-        }
-        uncertainItem.setBasicValue(value);
-
-        //create new PDF for uncertainty from mapping.
-        PDF pdf = new NormalDistribution();
-        pdf.setUncertainItem(uncertainItem);
-        uncertainties.addPdf(pdf);
-
-        //create new AutoCorrelationFunction for uncertainty from mapping.
-        AutoCorrelationFunction autoCorrelationFunction = new GaussianCorrelation();
-        autoCorrelationFunction.setUncertainItem(uncertainItem);
-        uncertainties.addAutoCorrelation(autoCorrelationFunction);
-    }
-
-    public File getUncertaintySpecificationFile() {
+	public File getUncertaintySpecificationFile() {
         return this.uncertaintyGuiConfiguration.getUncertaintiesSpecificationFile();
     }
 

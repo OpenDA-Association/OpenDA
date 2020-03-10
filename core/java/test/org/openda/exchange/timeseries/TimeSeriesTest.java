@@ -25,7 +25,6 @@ import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Mask;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class TimeSeriesTest extends TestCase {

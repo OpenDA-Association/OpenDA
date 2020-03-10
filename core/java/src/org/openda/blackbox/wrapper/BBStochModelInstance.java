@@ -100,7 +100,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 * when it is first requested in method BBStochModelInstance.getExchangeItem. This is needed because
 	 * some (e.g. output) exchangeItems are not initialized when the model has not run yet.
 	 */
-	private Map<String, IExchangeItem> constraintExchangeItems = new LinkedHashMap<String, IExchangeItem>();
+	private Map<String, IExchangeItem> constraintExchangeItems;
     private IObservationDescriptions observationDescriptions;
 
 	public BBStochModelInstance(File configRootDir, IModelInstance model,
@@ -148,6 +148,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		if (dataObjectBoundaryMappings.size() > 0) {
 			processProvidedBoundaries(this.dataObjectBoundaryMappings, this.ensembleMemberIndex);
 		}
+		constraintExchangeItems = new LinkedHashMap<String, IExchangeItem>();
 	}
 
 	private void processProvidedBoundaries(LinkedHashMap<IDataObject, ArrayList<BBBoundaryMappingConfig>> boundaryProviderConfigs, int ensembleMemberIndex) {
@@ -1655,7 +1656,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	 */
 	private double[] getNoiseModelValuesForTimeStep(IExchangeItem noiseModelExchangeItem, int timeStepIndex) {
 		if (noiseModelExchangeItem instanceof IExchangeItem) {
-			IExchangeItem exchangeItem = (IExchangeItem) noiseModelExchangeItem;
+			IExchangeItem exchangeItem = noiseModelExchangeItem;
 			if (exchangeItem.getTimeInfo() == null) {
 				throw new RuntimeException(
 						"No time info available in exchange item " + exchangeItem.getId());
