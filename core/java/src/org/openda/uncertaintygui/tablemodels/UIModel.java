@@ -20,11 +20,8 @@
 
 package org.openda.uncertaintygui.tablemodels;
 
-import org.openda.interfaces.IExchangeItem;
 import org.openda.uncertainties.UncertainItem;
 import org.openda.uncertainties.Uncertainties;
-import org.openda.uncertainties.autocorrelationfunctions.AutoCorrelationFunction;
-import org.openda.uncertainties.autocorrelationfunctions.GaussianCorrelation;
 import org.openda.uncertainties.pdfs.NormalDistribution;
 import org.openda.uncertainties.pdfs.PDF;
 import org.openda.uncertainties.variationfunctions.RangeVariation;
