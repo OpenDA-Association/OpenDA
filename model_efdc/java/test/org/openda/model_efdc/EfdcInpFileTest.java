@@ -50,10 +50,10 @@ public class EfdcInpFileTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        calendar.set(2009, 0, 1, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 1, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
-        calendar.set(2009, 0, 3, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 3, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
@@ -62,14 +62,14 @@ public class EfdcInpFileTest extends TestCase {
         String efdcInpFilename = "efdcInpFileTest/input/EFDC.INP";
         String startTimeExchangeItemId = "TSTART1";
         String endTimeExchangeItemId = "TSTOP1";
-        efdcInpIoObject.initialize(testRunDataDir, efdcInpFilename,
-                new String[]{"0", startTimeExchangeItemId, endTimeExchangeItemId});
+        efdcInpIoObject.initialize(testRunDataDir,
+                new String[]{efdcInpFilename, "0", startTimeExchangeItemId, endTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IExchangeItem[] exchangeItems = efdcInpIoObject.getExchangeItems();
+        String[] exchangeItemIDs = efdcInpIoObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
+        for (String id  : exchangeItemIDs) {
+        	IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
             if (id.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
             } else if (id.equals(endTimeExchangeItemId)) {

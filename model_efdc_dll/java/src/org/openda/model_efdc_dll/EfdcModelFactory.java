@@ -125,12 +125,13 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		BBUtils.makeFileClone(new File(templateDir, EFDC_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EFDC_INP_FILE_NAME));
 		EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
-		efdcInpIoObject.initialize(templateDir, EFDC_INP_FILE_NAME,
-				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (IExchangeItem exchangeItem : efdcInpIoObject.getExchangeItems()) {
-			if (TSTART.equals(exchangeItem.getId())) {
+		efdcInpIoObject.initialize(templateDir,
+				new String[]{EFDC_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
+		for (String id : efdcInpIoObject.getExchangeItemIDs()) {
+			IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
+			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
-			} else if (TSTOP.equals(exchangeItem.getId())) {
+			} else if (TSTOP.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{endTime});
 			}
 		}
@@ -140,12 +141,13 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		BBUtils.makeFileClone(new File(templateDir, EVENT_TOX2_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EVENT_TOX2_INP_FILE_NAME));
 		EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
-		efdcEventTox2InpIoObject.initialize(templateDir, EVENT_TOX2_INP_FILE_NAME,
-				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (IExchangeItem exchangeItem : efdcEventTox2InpIoObject.getExchangeItems()) {
-			if (TSTART.equals(exchangeItem.getId())) {
+		efdcEventTox2InpIoObject.initialize(templateDir,
+				new String[]{EVENT_TOX2_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
+		for (String id : efdcEventTox2InpIoObject.getExchangeItemIDs()) {
+			IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
+			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
-			} else if (TSTOP.equals(exchangeItem.getId())) {
+			} else if (TSTOP.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{endTime});
 			}
 		}

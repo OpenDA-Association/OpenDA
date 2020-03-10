@@ -25,10 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
@@ -41,7 +40,7 @@ import org.openda.utils.io.AsciiFileUtils;
  *
  * @author Arno Kockx
  */
-public class EfdcInpIoObject implements IoObjectInterface {
+public class EfdcInpIoObject extends AbstractDataObject {
 
     private static final String TAG = "$";
     private static final String RELATIVE_TSTART_TAG = "RELATIVE_TSTART";
@@ -54,52 +53,49 @@ public class EfdcInpIoObject implements IoObjectInterface {
      * Default is GMT.
      */
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
-
-    private IExchangeItem startTimeExchangeItem = null;
-    private IExchangeItem endTimeExchangeItem = null;
     private File efdcInpFile;
+	private String startTimeID;
+	private String endTimeID;
 
-    /**
+	/**
      * @param workingDir the working directory.
-     * @param fileName the name of the file containing the data for this IoObject (relative to the working directory).
-     * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-     *                  the second and third arguments should be the ids of the startTime and endTime exchangeItems respectively.
+     * @param arguments the first argument is the name of the file containing the data for this IoObject (relative to the working directory),
+	 *                  the second argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
+     *                  the third and fourth arguments should be the ids of the startTime and endTime exchangeItems respectively.
      */
-    
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        this.efdcInpFile = new File(workingDir, fileName);
+
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+        this.efdcInpFile = new File(workingDir, arguments[0]);
 
         //get timeZone.
-        if (arguments == null || arguments.length < 1) {
+        if (arguments == null || arguments.length < 2) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
+                    + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
         }
         try {
-            double timeZoneOffsetInHours = Double.parseDouble(arguments[0]);
+            double timeZoneOffsetInHours = Double.parseDouble(arguments[1]);
             this.timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse first argument '" + arguments[0]
+            throw new IllegalArgumentException("Cannot parse second argument '" + arguments[1]
                     + "' for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
+                    + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).", e);
         }
 
         //create exchange items.
-        if (arguments.length < 3) {
+        if (arguments.length < 4) {
             throw new IllegalArgumentException("No exchange item ids arguments specified for " + this.getClass().getSimpleName()
-                    + ". The second and third arguments should be the ids of the startTime and endTime exchangeItems respectively.");
+                    + ". The third and fourth arguments should be the ids of the startTime and endTime exchangeItems respectively.");
         }
-        this.startTimeExchangeItem = new DoubleExchangeItem(arguments[1], 0);
-        this.endTimeExchangeItem = new DoubleExchangeItem(arguments[2], 0);
+		startTimeID = arguments[2];
+        endTimeID   = arguments[3];
+		exchangeItems.put(startTimeID, new DoubleExchangeItem(startTimeID, 0));
+		exchangeItems.put(endTimeID,   new DoubleExchangeItem(endTimeID, 0));
     }
 
-    
-    public IExchangeItem[] getExchangeItems() {
-        return new IExchangeItem[]{this.startTimeExchangeItem, this.endTimeExchangeItem};
-    }
-
-    
+    @Override
     public void finish() {
         writeControlFile();
     }
@@ -109,7 +105,7 @@ public class EfdcInpIoObject implements IoObjectInterface {
      * that correspond to the ids of the exchangeItems.
      */
     private void writeControlFile() {
-        if (this.startTimeExchangeItem == null || this.endTimeExchangeItem == null) {
+        if (exchangeItems.isEmpty()) {
             throw new IllegalStateException("EfdcInpIoObject not initialized yet.");
         }
         if (!this.efdcInpFile.exists()) {
@@ -119,8 +115,8 @@ public class EfdcInpIoObject implements IoObjectInterface {
         Results.putMessage(this.getClass().getSimpleName() + ": replacing tags in file " + this.efdcInpFile.getAbsolutePath());
 
         //get start and stop times.
-        double startTimeDouble = (Double) this.startTimeExchangeItem.getValues();
-        double endTimeDouble = (Double) this.endTimeExchangeItem.getValues();
+		double startTimeDouble = (Double) this.exchangeItems.get(startTimeID).getValues();
+		double endTimeDouble = (Double) this.exchangeItems.get(endTimeID).getValues();
 
         //read file.
         List<String> content = AsciiFileUtils.readLines(this.efdcInpFile);
