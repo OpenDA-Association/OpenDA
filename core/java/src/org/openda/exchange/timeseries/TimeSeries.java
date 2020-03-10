@@ -889,7 +889,7 @@ public class TimeSeries implements IExchangeItem{
 
 	
 	public void setValues(Object values) {
-		if (values instanceof org.openda.exchange.timeseries.TimeSeries) {
+		if (values instanceof TimeSeries) {
 			TimeSeries series = (TimeSeries) values;
 			this.setData(series.getTimes(), series.getValuesAsDoubles());
 		} else if (values instanceof double[]) {
@@ -1065,7 +1065,7 @@ public class TimeSeries implements IExchangeItem{
 	 */
 	
 	public Class getValueType() {
-		return org.openda.exchange.timeseries.TimeSeries.class;
+		return TimeSeries.class;
 	}
 
 	
