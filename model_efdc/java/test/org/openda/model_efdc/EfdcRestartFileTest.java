@@ -50,7 +50,7 @@ public class EfdcRestartFileTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        calendar.set(2009, 0, 9, 0, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 9, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
@@ -58,15 +58,15 @@ public class EfdcRestartFileTest extends TestCase {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcRestartFilename = "efdcRestartFileTest/input/RESTART1.INP";
         String startTimeExchangeItemId = "TSTART1";
-        efdcRestartFileIoObject.initialize(testRunDataDir, efdcRestartFilename,
-                new String[]{"0", startTimeExchangeItemId});
+        efdcRestartFileIoObject.initialize(testRunDataDir,
+                new String[]{efdcRestartFilename, "0", startTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IExchangeItem[] exchangeItems = efdcRestartFileIoObject.getExchangeItems();
+        String[] exchangeItemIDs = efdcRestartFileIoObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
+        for (String id : exchangeItemIDs) {
             if (id.equals(startTimeExchangeItemId)) {
+				IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
                 exchangeItem.setValues(startDate);
             }
         }
@@ -85,7 +85,7 @@ public class EfdcRestartFileTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        calendar.set(2009, 4, 23, 9, 0, 0);
+        calendar.set(2009, Calendar.MAY, 23, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
@@ -93,15 +93,15 @@ public class EfdcRestartFileTest extends TestCase {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcRestartFilename = "efdcRestartFileTest/input/RESTART2.INP";
         String startTimeExchangeItemId = "TSTART1";
-        efdcRestartFileIoObject.initialize(testRunDataDir, efdcRestartFilename,
-                new String[]{"0", startTimeExchangeItemId});
+        efdcRestartFileIoObject.initialize(testRunDataDir,
+                new String[]{efdcRestartFilename, "0", startTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IExchangeItem[] exchangeItems = efdcRestartFileIoObject.getExchangeItems();
+        String[] exchangeItemIDs = efdcRestartFileIoObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
+        for (String id : exchangeItemIDs) {
             if (id.equals(startTimeExchangeItemId)) {
+				IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
                 exchangeItem.setValues(startDate);
             }
         }
