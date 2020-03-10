@@ -25,7 +25,9 @@ public abstract class AbstractDataObject implements IDataObject {
 		for (IExchangeItem exchangeItem : exchangeItems) {
 			IExchangeItem.Role exchangeItemRole = exchangeItem.getRole();
 			if (exchangeItemRole.equals(role)) idsForRole.add(exchangeItem.getId());
+			// If the role is InOut, then we are done.
 			if (role.equals(IExchangeItem.Role.InOut)) continue;
+			// For roles In and Out,  we also add the exchangeItemIds for InOut to the result.
 			if (exchangeItemRole.equals(IExchangeItem.Role.InOut)) idsForRole.add(exchangeItem.getId());
 		}
 		return idsForRole.toArray(EMPTY_STRING_ARRAY);
