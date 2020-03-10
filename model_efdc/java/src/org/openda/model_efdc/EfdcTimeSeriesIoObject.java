@@ -21,15 +21,10 @@
 package org.openda.model_efdc;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.openda.blackbox.config.BBUtils;
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
@@ -49,7 +44,7 @@ import org.openda.utils.Time;
  *
  * @author Arno Kockx
  */
-public class EfdcTimeSeriesIoObject implements IoObjectInterface {
+public class EfdcTimeSeriesIoObject extends AbstractDataObject {
 
     /**
      * The times in the .INP input files are in this time unit.
@@ -71,59 +66,60 @@ public class EfdcTimeSeriesIoObject implements IoObjectInterface {
 
     private File timeSeriesFile;
     private EfdcTimeSeriesFormatter timeSeriesFormatter;
-    private IExchangeItem startTimeExchangeItem = null;
-    private Map<String, IExchangeItem> timeSeriesExchangeItems = new LinkedHashMap<String, IExchangeItem>();
+	private String startTimeID;
 
-    /**
+	/**
      * @param workingDir the working directory.
-     * @param fileName the name of the file containing the data for this IoObject (relative to the working directory).
-     * @param arguments the first argument should be the type of file, e.g. QSER, TSER or ASER,
-     *                  the second argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-     *                  the third argument should be the id of the startTime exchangeItem,
-     *                  the fourth and further arguments should be the ids of the time series
+     * @param arguments the first argument should be the name of the file containing the data for this IoObject (relative to the working directory),
+	 *                  the second argument should be the type of file, e.g. QSER, TSER or ASER,
+     *                  the third argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
+     *                  the fourth argument should be the id of the startTime exchangeItem,
+     *                  the fifth and further arguments should be the ids of the time series
      *                  for which exchange items should be made.
      */
-    
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        this.timeSeriesFile = new File(workingDir, fileName);
+
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+        this.timeSeriesFile = new File(workingDir, arguments[0]);
 
         //create time series formatter.
-        if (arguments == null || arguments.length < 1) {
+        if (arguments == null || arguments.length < 2) {
             throw new IllegalArgumentException("No arguments specified for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the type of file, e.g. QSER, TSER or ASER.");
+                    + ". The second argument should be the type of file, e.g. QSER, TSER or ASER.");
         }
-        String fileType = arguments[0];
+        String fileType = arguments[1];
         createTimeSeriesFormatter(fileType);
 
         //get timeZone.
-        if (arguments.length < 2) {
+        if (arguments.length < 3) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
-                    + ". The second argument should be the timeZone that is used by the model"
+                    + ". The third argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
         }
         try {
-            double timeZoneOffsetInHours = Double.parseDouble(arguments[1]);
+            double timeZoneOffsetInHours = Double.parseDouble(arguments[2]);
             this.timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse second argument '" + arguments[1]
+            throw new IllegalArgumentException("Cannot parse third argument '" + arguments[2]
                     + "' for " + this.getClass().getSimpleName()
-                    + ". The second argument should be the timeZone that is used by the model"
+                    + ". The third argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).", e);
         }
 
         //create start time exchange item.
-        if (arguments.length < 3) {
+        if (arguments.length < 4) {
             throw new IllegalArgumentException("No exchange item ids arguments specified for " + this.getClass().getSimpleName()
-                    + ". The third argument should be the id of the startTime exchangeItem.");
+                    + ". The fourth argument should be the id of the startTime exchangeItem.");
         }
-        this.startTimeExchangeItem = new DoubleExchangeItem(arguments[2], 0);
+		startTimeID = arguments[3];
+        exchangeItems.put(startTimeID,  new DoubleExchangeItem(startTimeID, 0));
 
         //create exchange items.
-        if (arguments.length < 4) {
+        if (arguments.length < 5) {
             throw new IllegalArgumentException("No time series ids arguments specified for " + this.getClass().getSimpleName()
-                    + ". The fourth and further arguments should be the ids of time series.");
+                    + ". The fifth and further arguments should be the ids of time series.");
         }
-        String[] timeSeriesIdList = Arrays.copyOfRange(arguments, 3, arguments.length);
+        String[] timeSeriesIdList = Arrays.copyOfRange(arguments, 4, arguments.length);
         createTimeSeriesExchangeItems(timeSeriesIdList);
 
         //read file.
@@ -159,11 +155,8 @@ public class EfdcTimeSeriesIoObject implements IoObjectInterface {
     }
 
     private void createTimeSeriesExchangeItems(String[] timeSeriesIdList) {
-        //reset this.timeSeriesExchangeItems list.
-        this.timeSeriesExchangeItems.clear();
-
         //for all identifiers in the idList create a TimeSeriesExchangeItem.
-        List<String> ids = new ArrayList<String>();
+        List<String> ids = new ArrayList<>();
         for (String timeSeriesId : timeSeriesIdList) {
             //create timeSeriesExchangeItem.
             EfdcTimeSeriesExchangeItem timeSeriesExchangeItem = new EfdcTimeSeriesExchangeItem();
@@ -180,32 +173,24 @@ public class EfdcTimeSeriesIoObject implements IoObjectInterface {
             }
 
             //add timeSeriesExchangeItem.
-            this.timeSeriesExchangeItems.put(timeSeriesExchangeItem.getId(), timeSeriesExchangeItem);
+            exchangeItems.put(timeSeriesExchangeItem.getId(), timeSeriesExchangeItem);
             ids.add(id);
         }
 
-        if (this.timeSeriesExchangeItems.isEmpty()) {
+        if (exchangeItems.isEmpty()) {
             throw new IllegalArgumentException("No time series found for time series file '"
                     + this.timeSeriesFile.getAbsolutePath() + "'.");
         }
     }
 
-    
-    public IExchangeItem[] getExchangeItems() {
-        //return all available exchange items.
-        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.timeSeriesExchangeItems.values());
-        exchangeItems.add(this.startTimeExchangeItem);
-        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
-    }
-
-    
+    @Override
     public void finish() {
-        if (this.startTimeExchangeItem == null) {
+        if (exchangeItems.isEmpty()) {
             throw new IllegalStateException("EfdcTimeSeriesIoObject not initialized yet.");
         }
 
         //get startTime.
-        double startTime = (Double) this.startTimeExchangeItem.getValues();
+        double startTime = (Double) exchangeItems.get(startTimeID).getValues();
 
         //determine referenceTime.
         long referenceTime = EfdcUtils.getReferenceTime(Time.mjdToMillies(startTime), this.timeZone);
@@ -213,6 +198,8 @@ public class EfdcTimeSeriesIoObject implements IoObjectInterface {
         //write data to file for each time series exchange item.
         this.timeSeriesFormatter.setReferenceTime(referenceTime);
         this.timeSeriesFormatter.setTimeUnit(SECONDS_PER_TIME_UNIT);
-        this.timeSeriesFormatter.writeTimeSeriesToFile(this.timeSeriesFile, this.timeSeriesExchangeItems);
+		Map<String, IExchangeItem> exchangeItemsWithoutStartTime = new LinkedHashMap<>(this.exchangeItems);
+		exchangeItemsWithoutStartTime.remove(startTimeID);
+		this.timeSeriesFormatter.writeTimeSeriesToFile(this.timeSeriesFile, exchangeItemsWithoutStartTime);
     }
 }

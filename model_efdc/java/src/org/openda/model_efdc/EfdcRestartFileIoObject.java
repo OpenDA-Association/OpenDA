@@ -48,7 +48,7 @@ public class EfdcRestartFileIoObject extends AbstractDataObject {
      */
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
 
-	private String startTimeId;
+	private String startTimeID;
 	private File efdcRestartFile;
 
 	/**
@@ -83,8 +83,8 @@ public class EfdcRestartFileIoObject extends AbstractDataObject {
             throw new IllegalArgumentException("No exchange item id argument specified for " + this.getClass().getSimpleName()
                     + ". The third argument should be the id of the startTime exchangeItem.");
         }
-        startTimeId = arguments[2];
-        exchangeItems.put(startTimeId, new DoubleExchangeItem(arguments[2], 0));
+        startTimeID = arguments[2];
+        exchangeItems.put(startTimeID, new DoubleExchangeItem(arguments[2], 0));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class EfdcRestartFileIoObject extends AbstractDataObject {
         }
 
         //get start time.
-        double startTimeDouble = (Double) this.exchangeItems.get(startTimeId).getValues();
+        double startTimeDouble = (Double) this.exchangeItems.get(startTimeID).getValues();
         //get relative start time.
         double relativeStartTime = getRelativeStartTime(startTimeDouble,
 			this.timeZone);

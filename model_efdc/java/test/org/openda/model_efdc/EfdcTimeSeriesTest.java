@@ -62,32 +62,34 @@ public class EfdcTimeSeriesTest extends TestCase {
         String[] locationIds = new String[]{"1", "2", "3"};
         String[] parameterIds = new String[]{"PATM", "TDRY", "TWET", "RAIN", "EVAP", "SOLSWR", "CLOUD"};
         EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
-        String[] arguments = new String[locationIds.length*parameterIds.length + 3];
-        arguments[0] = "ASER";
-        arguments[1] = "0";
-        arguments[2] = "TSTART1";
+        String[] arguments = new String[locationIds.length*parameterIds.length + 4];
+        arguments[0] = outputFileName;
+        arguments[1] = "ASER";
+        arguments[2] = "0";
+        arguments[3] = "TSTART1";
         for (int n = 0; n < locationIds.length; n++) {
             for (int k = 0; k < parameterIds.length; k++) {
                 String timeSeriesId = locationIds[n] + "." + parameterIds[k];
-                arguments[n*parameterIds.length + k + 3] = timeSeriesId;
+                arguments[n*parameterIds.length + k + 4] = timeSeriesId;
             }
         }
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
-        assertEquals(arguments.length - 2, exchangeItems.length);
+        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set start time.
         //write period from MJD 55562.0 (2011-01-01 00:00) to MJD 55564.0 (2011-01-03 00:00).
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 0, 1, 0, 0, 0);
+        calendar.set(2011, Calendar.JANUARY, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
-                exchangeItem.setValues(startTime);
+        for (String id: exchangeItemIDs) {
+            if ("TSTART1".equalsIgnoreCase(id)) {
+				IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+				exchangeItem.setValues(startTime);
             }
         }
 
@@ -101,9 +103,9 @@ public class EfdcTimeSeriesTest extends TestCase {
 
                 //get exchangeItem.
                 IExchangeItem currentExchangeItem = null;
-                for (IExchangeItem exchangeItem : exchangeItems) {
-                    if (timeSeriesId.equalsIgnoreCase(exchangeItem.getId())) {
-                        currentExchangeItem = exchangeItem;
+                for (String id : exchangeItemIDs) {
+                    if (timeSeriesId.equalsIgnoreCase(id)) {
+                        currentExchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
                         break;
                     }
                 }
@@ -145,17 +147,17 @@ public class EfdcTimeSeriesTest extends TestCase {
         EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
         //here 1 is the location (can be multiple locations with series per file)
         //and CWQSR02 is the parameter.
-        String[] arguments = new String[]{"CWQSR02", "0", "TSTART1", "1.CWQSR02", "2.CWQSR02"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        String[] arguments = new String[]{outputFileName, "CWQSR02", "0", "TSTART1", "1.CWQSR02", "2.CWQSR02"};
+        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
-        assertEquals(arguments.length - 2, exchangeItems.length);
+        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 0, 1, 0, 0, 0);
+        calendar.set(2011, Calendar.JANUARY, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         //write period from MJD 55561.0 (2010-31-12 00:00) to MJD 55927.5 (2012-01-01 12:00).
@@ -164,17 +166,18 @@ public class EfdcTimeSeriesTest extends TestCase {
         for (int n = 0; n < times.length; n++) {
             times[n] = times[n] + 55561;
         }
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
-                exchangeItem.setValues(startTime);
+        for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			if ("TSTART1".equalsIgnoreCase(id)) {
+				exchangeItem.setValues(startTime);
 
-            } else if ("1.CWQSR02".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("1.CWQSR02".equalsIgnoreCase(id)) {
                 double[] values = new double[]{6.7181, 6.7181, 7.1966, 5.7133, 4.5170, 1.3589, 0.4306,
                         1.1867, 1.2728, 1.7896, 2.1628, 1.7800, 0.1436, 0.1436};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("2.CWQSR02".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("2.CWQSR02".equalsIgnoreCase(id)) {
                 double[] values = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
@@ -202,19 +205,19 @@ public class EfdcTimeSeriesTest extends TestCase {
         assertTrue(outputFile.exists());
 
         EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
-        String[] arguments = new String[]{"PSER", "9", "TSTART1", "1.PSER"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        String[] arguments = new String[]{outputFileName, "PSER", "9", "TSTART1", "1.PSER"};
+        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
-        assertEquals(arguments.length - 2, exchangeItems.length);
+        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
         //write period from MJD 55563.625 GMT (2011-01-02 15:00 GMT) to MJD 55568.625 GMT (2011-01-07 15:00 GMT).
         Calendar calendar = Calendar.getInstance();
         //startTimeDouble in exchangeItems is in GMT.
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 0, 2, 15, 0, 0);
+        calendar.set(2011, Calendar.JANUARY, 2, 15, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         //1.PSER
@@ -224,10 +227,11 @@ public class EfdcTimeSeriesTest extends TestCase {
             times[n] = times[n] + 55561.625;
         }
         double[] values = new double[]{4.7, 4.8, 4.9, 2.06};
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
+        for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			if ("TSTART1".equalsIgnoreCase(id)) {
                 exchangeItem.setValues(startTime);
-            } else if ("1.PSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("1.PSER".equalsIgnoreCase(id)) {
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
             }
@@ -254,43 +258,44 @@ public class EfdcTimeSeriesTest extends TestCase {
         assertTrue(outputFile.exists());
 
         EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
-        String[] arguments = new String[]{"QSER", "0", "TSTART23", "3.QSER", "1.QSER", "4.QSER", "2.QSER"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        String[] arguments = new String[]{outputFileName, "QSER", "0", "TSTART23", "3.QSER", "1.QSER", "4.QSER", "2.QSER"};
+        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
-        assertEquals(arguments.length - 2, exchangeItems.length);
+        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
         //write period from MJD 55562.0 (2011-01-01 00:00) to MJD 55564.0 (2011-01-03 00:00).
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 0, 1, 0, 0, 0);
+        calendar.set(2011, Calendar.JANUARY, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            if ("TSTART23".equalsIgnoreCase(exchangeItem.getId())) {
+        for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			if ("TSTART23".equalsIgnoreCase(id)) {
                 exchangeItem.setValues(startTime);
 
-            } else if ("1.QSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("1.QSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{1, -2.2, 3.33, -4.444, 5.5555};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("2.QSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("2.QSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{8888.8888, 99999.9999, 1000000000, 10000000.00000001, 0.0000000001};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("3.QSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("3.QSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, Double.NaN, 55564.0};
                 double[] values = new double[]{1, Double.NaN, Double.NaN, 4, 5};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("4.QSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("4.QSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55563.0, 55564.0};
                 double[] values = new double[]{1.1574E-05, 0, 2.8E-06};
                 exchangeItem.setTimes(times);
@@ -319,43 +324,44 @@ public class EfdcTimeSeriesTest extends TestCase {
         assertTrue(outputFile.exists());
 
         EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
-        String[] arguments = new String[]{"TSER","0",  "TSTART1", "4.TSER", "1.TSER", "2.TSER", "3.TSER"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        String[] arguments = new String[]{outputFileName, "TSER","0",  "TSTART1", "4.TSER", "1.TSER", "2.TSER", "3.TSER"};
+        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IExchangeItem[] exchangeItems = efdcTimeSeriesIoObject.getExchangeItems();
-        assertEquals(arguments.length - 2, exchangeItems.length);
+        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
         //write period from MJD 55562.0 (2011-01-01 00:00) to MJD 55564.0 (2011-01-03 00:00).
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 0, 1, 0, 0, 0);
+        calendar.set(2011, Calendar.JANUARY, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
-        for (IExchangeItem exchangeItem : exchangeItems) {
-            if ("TSTART1".equalsIgnoreCase(exchangeItem.getId())) {
+        for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			if ("TSTART1".equalsIgnoreCase(id)) {
                 exchangeItem.setValues(startTime);
 
-            } else if ("1.TSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("1.TSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{1, -2.2, 3.33, -4.444, 5.5555};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("2.TSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("2.TSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{8888.8888, 99999.9999, 1000000000, 10000000.00000001, 0.0000000001};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("3.TSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("3.TSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, Double.NaN, 55564.0};
                 double[] values = new double[]{1, Double.NaN, Double.NaN, 4, 5};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("4.TSER".equalsIgnoreCase(exchangeItem.getId())) {
+            } else if ("4.TSER".equalsIgnoreCase(id)) {
                 double[] times = new double[]{55562.0, 55563.0, 55564.0};
                 double[] values = new double[]{1.1574E-05, 0, 2.8E-06};
                 exchangeItem.setTimes(times);
