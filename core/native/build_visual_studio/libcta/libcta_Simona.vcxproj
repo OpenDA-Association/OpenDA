@@ -142,9 +142,10 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;C:\Program Files (x86)\Intel\MPI\5.0.3.048\intel64\lib\impi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib;impi.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(I_MPI_ROOT)\intel64\lib\Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
