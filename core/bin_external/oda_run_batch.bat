@@ -37,9 +37,13 @@ rem ==== check availability and arguments ===
 if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
 rem ==== run ===
-"%OPENDA_JRE%\bin\java" -Xms128m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication %1%
+echo =========================================================================
+echo Starting "java org.openda.application.OpenDaApplication %1% > openda_logfile.txt"
+"%OPENDA_JRE%\bin\java" -Xms128m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication %1% > openda_logfile.txt
 if errorlevel 1 goto Error3
 endlocal
+echo Run finished
+echo ========
 goto End
 
 rem ==== show errors ===
