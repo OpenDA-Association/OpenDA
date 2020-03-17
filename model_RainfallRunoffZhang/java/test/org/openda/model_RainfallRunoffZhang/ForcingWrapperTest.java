@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,7 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -40,7 +39,6 @@ public class ForcingWrapperTest extends TestCase {
 	
 	// Use openDA test suite.
 	private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
 	// Class types definitions:
 	private String fileNamePrecip = "forcingWrapperTestPrecip.txt"; // Needs to be created. 
@@ -64,7 +62,7 @@ public class ForcingWrapperTest extends TestCase {
 	protected void setUp() throws IOException {
 		// Use openDA test utilities. This allows the test files to be stored 
 		// in a separate directory from the source code.
-		testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
 		testRunDataDir = testData.getTestRunDataDir();
 		        
 		// Write a test file.
@@ -111,7 +109,7 @@ public class ForcingWrapperTest extends TestCase {
 	/**
 	 * Cleans up test file created in setUp().
 	 */
-	protected void tearDown() throws Exception {
+	protected void tearDown() {
 		
 		try {
 			File file = new File(testRunDataDir, fileNamePrecip);
@@ -144,21 +142,21 @@ public class ForcingWrapperTest extends TestCase {
 	 */
 	public void testReadPrecipitationInput() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface forcingWrapper = new ForcingWrapper();
-		String args[] = {};
-		double[] expectedTimes = new double[3];
-		double[] expectedValues = new double[3];
+		AbstractDataObject forcingWrapper = new ForcingWrapper();
+		String[] args = {fileNamePrecip};
+		double[] expectedTimes;
+		double[] expectedValues;
 			
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		forcingWrapper.initialize(testRunDataDir, fileNamePrecip, args);
+		forcingWrapper.initialize(testRunDataDir, args);
 
-		IExchangeItem[] exchangeItems = forcingWrapper.getExchangeItems();
+		String[] exchangeItemIDs = forcingWrapper.getExchangeItemIDs();
 
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase("Precipitation")) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				expectedTimes = (double[]) expectedExchangeItem.getTimes();
-				expectedValues = (double[]) expectedExchangeItem.getValuesAsDoubles();
+		for (String id:exchangeItemIDs) {
+			if (id.equalsIgnoreCase("Precipitation")) {
+				IExchangeItem expectedExchangeItem = forcingWrapper.getDataObjectExchangeItem(id);
+				expectedTimes = expectedExchangeItem.getTimes();
+				expectedValues = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value0, expectedValues[0]);
 				assertEquals(time0, expectedTimes[0]);
 				assertEquals(value1, expectedValues[1]);
@@ -171,21 +169,21 @@ public class ForcingWrapperTest extends TestCase {
 	
 	public void testReadPotETInput() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface forcingWrapper = new ForcingWrapper();
-		String args[] = {};
-		double[] expectedTimes = new double[3];
-		double[] expectedValues = new double[3];
+		AbstractDataObject forcingWrapper = new ForcingWrapper();
+		String[] args = {fileNamePotET};
+		double[] expectedTimes;
+		double[] expectedValues;
 			
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		forcingWrapper.initialize(testRunDataDir, fileNamePotET, args);
+		forcingWrapper.initialize(testRunDataDir, args);
 
-		IExchangeItem[] exchangeItems = forcingWrapper.getExchangeItems();
+		String[] exchangeItemIDs = forcingWrapper.getExchangeItemIDs();
 
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase("potET")) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				expectedTimes = (double[]) expectedExchangeItem.getTimes();
-				expectedValues = (double[]) expectedExchangeItem.getValuesAsDoubles();
+		for (String id:exchangeItemIDs) {
+			if (id.equalsIgnoreCase("potET")) {
+				IExchangeItem expectedExchangeItem = forcingWrapper.getDataObjectExchangeItem(id);
+				expectedTimes = expectedExchangeItem.getTimes();
+				expectedValues = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value0, expectedValues[0]);
 				assertEquals(time00, expectedTimes[0]);
 				assertEquals(value1, expectedValues[1]);
@@ -197,35 +195,36 @@ public class ForcingWrapperTest extends TestCase {
 	}
 		
 	/**
-	 * Test whether or not the new forcing is written to file. 
-	 * @throws FileNotFoundException 
+	 * Test whether or not the new forcing is written to file.
 	 */
 	
-	public void testPrecipFinish() throws FileNotFoundException {
+	public void testPrecipFinish() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface precipWrapper = new ForcingWrapper();
-		String args[] = {};
+		AbstractDataObject precipWrapper = new ForcingWrapper();
+		String[] args = {fileNamePrecip};
 		double[] times = new double[3];
 		double[] values = new double[3];
 					
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		precipWrapper.initialize(testRunDataDir, fileNamePrecip, args);
+		precipWrapper.initialize(testRunDataDir, args);
 			
 		// Modify times and values in exchange items
-		IExchangeItem[] exchangeItems = precipWrapper.getExchangeItems();
+		String[] exchangeItemIDs = precipWrapper.getExchangeItemIDs();
 		times[0] = time0 + 30;
 		times[1] = time1 + 30;
 		times[2] = time2 + 30;
-		for (int item = 0; item < exchangeItems.length; item++) {
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			String id = exchangeItemIDs[i];
+			IExchangeItem exchangeItem = precipWrapper.getDataObjectExchangeItem(id);
 			values[0] = value1 + 1;
 			values[1] = value1 + 2;
 			values[2] = value1 + 3;
-			exchangeItems[item].setValues(values);
-			exchangeItems[item].setTimes(times);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setValues[0] = " + values[0]);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setValues[1] = " + values[1]);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setTimes[0] = " + times[0]);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setTimes[1] = " + times[1]);
+			exchangeItem.setValues(values);
+			exchangeItem.setTimes(times);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setValues[0] = " + values[0]);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setValues[1] = " + values[1]);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setTimes[0] = " + times[0]);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setTimes[1] = " + times[1]);
 		}
 				
 		precipWrapper.finish();
@@ -239,7 +238,7 @@ public class ForcingWrapperTest extends TestCase {
 		FileInputStream in = new FileInputStream(testFile);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
 		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		boolean eof = false; // End of file cache.
 		double[] expectedTimes = new double[3];
 		double[] expectedValues = new double[3];
 					
@@ -272,8 +271,8 @@ public class ForcingWrapperTest extends TestCase {
 				columns[1] = columns[1].trim();
 
 				// Parse the values.
-				expectedTimes[index] = Double.valueOf(columns[0]);
-				expectedValues[index] = Double.valueOf(columns[1]);
+				expectedTimes[index] = Double.parseDouble(columns[0]);
+				expectedValues[index] = Double.parseDouble(columns[1]);
 				System.out.println("testPrecipFinish(): reads times[" + index + "] = " + expectedTimes[index]);
 				System.out.println("testPrecipFinish(): reads values[" + index + "] = " + expectedValues[index]);
 				index = index + 1;
@@ -291,31 +290,33 @@ public class ForcingWrapperTest extends TestCase {
 		}
 	}
 
-	public void testPotETFinish() throws FileNotFoundException {
+	public void testPotETFinish() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface potETWrapper = new ForcingWrapper();
-		String args[] = {};
+		AbstractDataObject potETWrapper = new ForcingWrapper();
+		String[] args = {fileNamePotET};
 		double[] times = new double[3];
 		double[] values = new double[3];
 					
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		potETWrapper.initialize(testRunDataDir, fileNamePotET, args);
+		potETWrapper.initialize(testRunDataDir, args);
 			
 		// Modify times and values in exchange items
-		IExchangeItem[] exchangeItems = potETWrapper.getExchangeItems();
+		String[] exchangeItemIDs = potETWrapper.getExchangeItemIDs();
 		times[0] = time00 + 30;
 		times[1] = time01 + 30;
 		times[2] = time02 + 30;
-		for (int item = 0; item < exchangeItems.length; item++) {
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			String id = exchangeItemIDs[i];
+			IExchangeItem exchangeItem = potETWrapper.getDataObjectExchangeItem(id);
 			values[0] = value1 + 1;
 			values[1] = value1 + 2;
 			values[2] = value1 + 3;
-			exchangeItems[item].setValues(values);
-			exchangeItems[item].setTimes(times);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setValues[0] = " + values[0]);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setValues[1] = " + values[1]);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setTimes[0] = " + times[0]);
-			System.out.println("testPrecipFinish(): writes exchangeItems[" + item + "].setTimes[1] = " + times[1]);
+			exchangeItem.setValues(values);
+			exchangeItem.setTimes(times);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setValues[0] = " + values[0]);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setValues[1] = " + values[1]);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setTimes[0] = " + times[0]);
+			System.out.println("testPrecipFinish(): writes exchangeItems[" + i + "].setTimes[1] = " + times[1]);
 		}
 				
 		potETWrapper.finish();
@@ -329,7 +330,7 @@ public class ForcingWrapperTest extends TestCase {
 		FileInputStream in = new FileInputStream(testFile);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
 		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		boolean eof = false; // End of file cache.
 		double[] expectedTimes = new double[3];
 		double[] expectedValues = new double[3];
 					
@@ -362,8 +363,8 @@ public class ForcingWrapperTest extends TestCase {
 				columns[1] = columns[1].trim();
 
 				// Parse the values.
-				expectedTimes[index] = Double.valueOf(columns[0]);
-				expectedValues[index] = Double.valueOf(columns[1]);
+				expectedTimes[index] = Double.parseDouble(columns[0]);
+				expectedValues[index] = Double.parseDouble(columns[1]);
 				System.out.println("testPotETFinish(): reads times[" + index + "] = " + expectedTimes[index]);
 				System.out.println("testPotETFinish(): reads values[" + index + "] = " + expectedValues[index]);
 				index = index + 1;

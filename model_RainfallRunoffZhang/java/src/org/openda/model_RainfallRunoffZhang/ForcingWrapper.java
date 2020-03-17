@@ -26,12 +26,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
 
@@ -61,13 +58,11 @@ import org.openda.interfaces.IExchangeItem;
  *
  */
 
-public class ForcingWrapper implements IoObjectInterface {
+public class ForcingWrapper extends AbstractDataObject {
 
 	// Class specific values
 	File workingDir;
-	String configString;
 	String fileName = null;
-	HashMap<String, TimeSeries> items = new LinkedHashMap<String, TimeSeries>();
 
 	/** 
 	 * Cache values to be read. The dynamic form of an ArrayList is chosen here 
@@ -75,12 +70,12 @@ public class ForcingWrapper implements IoObjectInterface {
 	 * Cache Lists for times and values are needed.
 	 * -- Modify variables for forcing to be read here.
 	 */
-	private List<Double> precipitationCache = new ArrayList<Double>();
-	private List<Double> precipTimeCache = new ArrayList<Double>();
-	private List<Double> potETCache = new ArrayList<Double>();
-	private List<Double> potETTimeCache = new ArrayList<Double>();
-	
-	
+	private List<Double> precipitationCache = new ArrayList<>();
+	private List<Double> precipTimeCache = new ArrayList<>();
+	private List<Double> potETCache = new ArrayList<>();
+	private List<Double> potETTimeCache = new ArrayList<>();
+
+
 	// --- Methods --
 	
 	/**
@@ -89,55 +84,37 @@ public class ForcingWrapper implements IoObjectInterface {
 	 * 
 	 * @param workingDir
 	 *            Working directory
-	 * @param fileName
-	 *            The name of the file containing the data (relative to the
-	 *            working directory.)
 	 * @param arguments
-	 *            Additional arguments (may be null zero-length)
+	 * 			  Contains the name of the file containing the data (relative to the
+	 * 	          working directory), and additional arguments (may be null zero-length)
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
 			
 		this.workingDir = workingDir;
-		this.fileName = fileName;
+		fileName = arguments[0];
 		
 		try {
-			ReadNameListFile(workingDir, fileName, arguments);
+			ReadNameListFile(workingDir, fileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Ask which elements can be accessed
-	 * 
-	 * @return The list of element identifiers that can be accessed
-	 */
-	public IExchangeItem[] getExchangeItems() {
-		// Get the number of items.
-		int n = this.items.size();
-		Set<String> keys = this.items.keySet();
-		IExchangeItem[] result = new IExchangeItem[n];
-		int i = 0;
-		for (String key : keys) {
-			result[i] = this.items.get(key);
-			i++;
-		}
-		return result;
-	}
-
-	/**
 	 * Updates the forcing files. Here, the entire time series is written.
 	 */
+	@Override
 	public void finish() {
 		
 		double[] pt;
 		double[] p;
-		if (this.fileName.contains("precip") || this.fileName.contains("Precip")) {
-			pt = this.items.get("precipitation").getTimes();
-			p = this.items.get("precipitation").getValuesAsDoubles();
+		if (fileName.contains("precip") || fileName.contains("Precip")) {
+			pt = exchangeItems.get("precipitation").getTimes();
+			p = exchangeItems.get("precipitation").getValuesAsDoubles();
 			//write to file
-			System.out.println("ForcingWrapper.finish(): Writing to file: "+this.workingDir+"/"+this.fileName);
-			File outputFile = new File(this.workingDir,this.fileName);
+			System.out.println("ForcingWrapper.finish(): Writing to file: "+this.workingDir+"/"+fileName);
+			File outputFile = new File(this.workingDir,fileName);
 			try{
 				if(outputFile.isFile()){
 					outputFile.delete();
@@ -163,12 +140,12 @@ public class ForcingWrapper implements IoObjectInterface {
 			} catch (Exception e) {
 				throw new RuntimeException("ForcingWrapper.finish(): Problem writing to file "+fileName+" : "+System.lineSeparator()+e.getMessage());
 			}
-		} else if (this.fileName.contains("pot") || this.fileName.contains("Pot") || this.fileName.contains("ET")) {
-			pt = this.items.get("potET").getTimes();
-			p = this.items.get("potET").getValuesAsDoubles();
+		} else if (fileName.contains("pot") || fileName.contains("Pot") || fileName.contains("ET")) {
+			pt = exchangeItems.get("potET").getTimes();
+			p = exchangeItems.get("potET").getValuesAsDoubles();
 			//write to file
-			System.out.println("ForcingWrapper.finish(): Writing to file: "+this.workingDir+"/"+this.fileName);
-			File outputFile = new File(this.workingDir,this.fileName);
+			System.out.println("ForcingWrapper.finish(): Writing to file: "+this.workingDir+"/"+fileName);
+			File outputFile = new File(this.workingDir,fileName);
 			try{
 				if(outputFile.isFile()){
 					outputFile.delete();
@@ -208,12 +185,11 @@ public class ForcingWrapper implements IoObjectInterface {
 	 * -- Adapt reading of the key-value pairs to the format of the i/o file 
 	 *     and the number and ids of the ExchangeItem(s).
 	 * 
-	 * @param workingDir
-	 * @param fileName
-	 * @param arguments
-	 * @throws IOException
+	 * @param workingDir WorkingDir
+	 * @param fileName  The name of the file containing the data (relative to the working dir.)
+	 * @throws IOException Exception that might be thrown
 	 */
-	private void ReadNameListFile(File workingDir, String fileName, String[] arguments) throws IOException {
+	private void ReadNameListFile(File workingDir, String fileName) throws IOException {
 		
 		File namelist = new File(workingDir, fileName);
 		if (!namelist.exists()) {
@@ -222,8 +198,8 @@ public class ForcingWrapper implements IoObjectInterface {
 		// Create nested reader.
 		FileInputStream in = new FileInputStream(namelist);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
-		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		String line; // Initialize line.
+		boolean eof = false; // End of file cache.
 			
 		// While End of file is not reached yet do the following:
 		while (!eof) {
@@ -283,10 +259,7 @@ public class ForcingWrapper implements IoObjectInterface {
 			TimeSeries precipitationSeries = new TimeSeries(pt,p);
 			String id = "precipitation";
 			precipitationSeries.setId(id);
-			this.items.put(id,precipitationSeries);
-			@SuppressWarnings("unused")
-			IExchangeItem precipitationExchangeItem = new TimeSeries(precipitationSeries);
-			//System.out.println("<- stored precipSeries ->");
+			exchangeItems.put(id, precipitationSeries);
 			
 		} else if (fileName.contains("pot") || fileName.contains("Pot") || fileName.contains("ET")) {
 			int timeLength = potETTimeCache.size();
@@ -302,7 +275,7 @@ public class ForcingWrapper implements IoObjectInterface {
 			TimeSeries potETSeries = new TimeSeries(pt,p);
 			String id = "potET";
 			potETSeries.setId(id);
-			this.items.put(id,potETSeries);
+			exchangeItems.put(id, potETSeries);
 			@SuppressWarnings("unused")
 			IExchangeItem potETExchangeItem = new TimeSeries(potETSeries);
 			//System.out.println("<- stored potETSeries ->");
