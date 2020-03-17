@@ -21,7 +21,6 @@
 package org.openda.model_efdc;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -41,7 +40,7 @@ public class EfdcEventTox2InpFileTest extends TestCase {
     private OpenDaTestSupport testData;
     private File testRunDataDir;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
     	testData = new OpenDaTestSupport(EfdcEventTox2InpFileTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
@@ -50,10 +49,10 @@ public class EfdcEventTox2InpFileTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        calendar.set(2009, 0, 1, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 1, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
-        calendar.set(2009, 0, 3, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 3, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 

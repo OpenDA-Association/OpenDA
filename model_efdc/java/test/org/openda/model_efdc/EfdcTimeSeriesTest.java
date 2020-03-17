@@ -97,32 +97,32 @@ public class EfdcTimeSeriesTest extends TestCase {
         //write period from MJD 55562.0 (2011-01-01 00:00) to MJD 55564.0 (2011-01-03 00:00).
         double[] times = new double[]{55562.0, 55563.0, 55564.0};
         double currentValue = 1;
-        for (int n = 0; n < locationIds.length; n++) {
-            for (int k = 0; k < parameterIds.length; k++) {
-                String timeSeriesId = locationIds[n] + "." + parameterIds[k];
+		for (String locationId : locationIds) {
+			for (String parameterId : parameterIds) {
+				String timeSeriesId = locationId + "." + parameterId;
 
-                //get exchangeItem.
-                IExchangeItem currentExchangeItem = null;
-                for (String id : exchangeItemIDs) {
-                    if (timeSeriesId.equalsIgnoreCase(id)) {
-                        currentExchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
-                        break;
-                    }
-                }
-                if (currentExchangeItem == null) {
-                    fail("ExchangeItem for time series id '" + timeSeriesId + "' not found.");
-                    return;
-                }
+				//get exchangeItem.
+				IExchangeItem currentExchangeItem = null;
+				for (String id : exchangeItemIDs) {
+					if (timeSeriesId.equalsIgnoreCase(id)) {
+						currentExchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+						break;
+					}
+				}
+				if (currentExchangeItem == null) {
+					fail("ExchangeItem for time series id '" + timeSeriesId + "' not found.");
+					return;
+				}
 
-                double[] values = new double[times.length];
-                for (int i = 0; i < values.length; i++) {
-                    values[i] = currentValue;
-                    currentValue++;
-                }
-                currentExchangeItem.setTimes(times);
-                currentExchangeItem.setValuesAsDoubles(values);
-            }
-        }
+				double[] values = new double[times.length];
+				for (int i = 0; i < values.length; i++) {
+					values[i] = currentValue;
+					currentValue++;
+				}
+				currentExchangeItem.setTimes(times);
+				currentExchangeItem.setValuesAsDoubles(values);
+			}
+		}
 
         //write data to file.
         efdcTimeSeriesIoObject.finish();

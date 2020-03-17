@@ -20,7 +20,6 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import java.io.*;
@@ -36,9 +35,8 @@ public class D3dField2DFile implements IDataObject {
     private D3dField2DExchangeItem[] exchangeItems = null;
 	private String[] ids;
     private String fileKey = null;
-    private int lineLength = 12;
 
-    @Override
+	@Override
     public void initialize(File workingDir, String[] arguments) {
 
         if (arguments.length != 2) {
@@ -159,7 +157,8 @@ public class D3dField2DFile implements IDataObject {
         int index = 0;
         for (int n = 0; n < nmax; n++) {
             for (int m = 0; m < mmax; m++) {
-                if (m > 0 && m % lineLength == 0) {
+				int lineLength = 12;
+				if (m > 0 && m % lineLength == 0) {
                     outputFileBufferedWriter.newLine();
                 }
                 outputFileBufferedWriter.write(String.format(locale, floatValueFormat, values[index++]));

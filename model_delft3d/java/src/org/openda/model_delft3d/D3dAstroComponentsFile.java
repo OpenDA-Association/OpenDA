@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class D3dAstroComponentsFile {
 
-    private List<D3dAstroStation> astroStations = new ArrayList<D3dAstroStation>();
+    private List<D3dAstroStation> astroStations = new ArrayList<>();
 
     public  D3dAstroComponentsFile(File componentsFile) {
         try {

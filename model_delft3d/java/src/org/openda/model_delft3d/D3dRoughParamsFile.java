@@ -63,7 +63,6 @@ public class D3dRoughParamsFile extends AbstractDataObject {
 
 				// Check whether the line starts with R_CODE
 				if (lineParts.length>2){
-					boolean hasA=false;
 					boolean hasB=false;
 					boolean hasC=false;
 					boolean hasD=false;
@@ -72,10 +71,6 @@ public class D3dRoughParamsFile extends AbstractDataObject {
 					String sCode=lineParts[0];
 					String sFormulaNumber=lineParts[1];
 
-					if(lineParts.length>=3){ // first parameter exists
-						hasA=true;
-
-					}
 					if(lineParts.length>=4){ // second parameter exists
 						hasB=true;
 
@@ -100,7 +95,8 @@ public class D3dRoughParamsFile extends AbstractDataObject {
 					}
 
 					// Add exchange items for all parameters (if they exist)
-					if (hasA){
+					// first parameter exists
+					{
 						String idA=id+"_A";
 						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idA, roughFile, iLine, "A");
 						exchangeItems.put(idA, newExchangeItem);

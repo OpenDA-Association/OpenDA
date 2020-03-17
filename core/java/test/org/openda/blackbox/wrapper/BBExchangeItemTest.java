@@ -25,7 +25,6 @@ import org.openda.blackbox.config.AliasDefinitions;
 import org.openda.blackbox.config.BBModelVectorConfig;
 import org.openda.blackbox.config.BBStochModelVectorConfig;
 import org.openda.blackbox.config.IoObjectConfig;
-import org.openda.blackbox.interfaces.SelectorInterface;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayTimeInfo;
 import org.openda.interfaces.IDimensionIndex;
@@ -37,7 +36,6 @@ import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Test for Black Box ExchangeItem
@@ -45,10 +43,9 @@ import java.util.HashMap;
 public class BBExchangeItemTest extends TestCase {
 
     private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
-    protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(BBApplicationTest.class,"core");
+	protected void setUp() throws IOException {
+		OpenDaTestSupport testData = new OpenDaTestSupport(BBApplicationTest.class, "core");
         testRunDataDir = testData.getTestRunDataDir();
     }
 
@@ -73,14 +70,13 @@ public class BBExchangeItemTest extends TestCase {
 		dimensionIndices[1] = new DimensionIndex(2, 5);
 
 		// initialize dummy/minimal objects in order to initialize the BBExchangeItem
-		HashMap<String, SelectorInterface> selectors = null;
 		IoObjectConfig ioObjectConfig = new IoObjectConfig("ioObject1",
 				"org.openda.blackbox.wrapper.BBExchangeItemTest.DummyIoObject", "not used", new AliasDefinitions(), new String[0]);
 		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", ioObjectConfig, "itemA",
 				dimensionIndices, null, IExchangeItem.Role.Output, null);
 
 		// create the BBExchangeItem and ask for values
-		BBExchangeItem bbExchangeItem = new BBExchangeItem("test", vectorConfig, arrayEI, selectors, testRunDataDir);
+		BBExchangeItem bbExchangeItem = new BBExchangeItem("test", vectorConfig, arrayEI, null, testRunDataDir);
 		double[] selectedValues = bbExchangeItem.getValuesAsDoubles();
 
 		// check size of returned array
@@ -118,14 +114,13 @@ public class BBExchangeItemTest extends TestCase {
 		dimensionIndices[1] = new DimensionIndex(4, 7);
 
 		// initialize dummy/minimal objects in order to initialize the BBExchangeItem
-		HashMap<String, SelectorInterface> selectors = null;
 		IoObjectConfig ioObjectConfig = new IoObjectConfig("ioObject1",
 				"org.openda.blackbox.wrapper.BBExchangeItemTest.DummyIoObject", "not used", new AliasDefinitions(), new String[0]);
 		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", ioObjectConfig, "itemA",
 				dimensionIndices, null, IExchangeItem.Role.Output, null);
 
 		// create the BBExchangeItem and ask for values
-		BBExchangeItem bbExchangeItem = new BBExchangeItem("test", vectorConfig, arrayEI, selectors, testRunDataDir);
+		BBExchangeItem bbExchangeItem = new BBExchangeItem("test", vectorConfig, arrayEI, null, testRunDataDir);
 		double[] selectedValues = bbExchangeItem.getValuesAsDoubles();
 
 		// check size of returned array
