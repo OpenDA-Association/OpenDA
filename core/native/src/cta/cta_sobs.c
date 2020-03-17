@@ -128,17 +128,17 @@ int CTA_SObs_Create(
    }
 
    /* determine size of data object (CTA_SOBS_CREATE_SIZE)*/
-   printf("CTA_SOBS: get CREATE_SIZE \n");
+   if (IDEBUG>0){ printf("CTA_SOBS: get CREATE_SIZE \n"); }
    retval=CTA_Func_GetFunc(clsdata->functions[CTA_SOBS_CREATE_SIZE],
                            &my_Create_Size);
-   printf("CTA_SOBS: done calling CREATE_SIZE %p\n",my_Create_Size);
+   if (IDEBUG>0){ printf("CTA_SOBS: done calling CREATE_SIZE %p\n",my_Create_Size); }
    if (retval!=CTA_OK) {
       CTA_WRITE_ERROR("Cannot get function CTA_SOB_CREATE_SIZE");
       return retval;
    }
-   printf("Calling my_create_size\n");
+   if (IDEBUG>0){ printf("Calling my_create_size\n"); }
    my_Create_Size(&memsize,&retval);
-   printf("DOne Calling my_create_size\n");
+   if (IDEBUG>0){ printf("DOne Calling my_create_size\n"); }
    if (retval) {
       CTA_WRITE_ERROR("Error in my_Create_Size");
       return retval;
@@ -152,7 +152,7 @@ int CTA_SObs_Create(
 
    /* copy function pointers */
    for (i=0;i<CTA_SOBS_NUMFUNC;i++){
-      printf("Member function[%d]=%d\n",i,clsdata->functions[i]);
+      if (IDEBUG>0) { printf("Member function[%d]=%d\n",i,clsdata->functions[i]); }
       sobs->functions[i]=clsdata->functions[i];
    }
 

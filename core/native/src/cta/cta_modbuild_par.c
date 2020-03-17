@@ -2033,7 +2033,7 @@ void CTA_Modbuild_par_worker_create(){
 
    /* Do we need to create our sratch model? */
    if (hmodel_scratch==CTA_NULL) {
-      printf("WARNING NOT CREATING SCRATCH MODEL\n");
+      if (IDEBUG>0){ printf("WARNING NOT CREATING SCRATCH MODEL\n"); }
 //      retval=CTA_Model_Create(hmodcl,smodinp,&hmodel_scratch);
 //      if (retval!=CTA_OK) {
 //         printf("#%d Failed to create scratch model\n",CTA_PAR_MY_RANK);
