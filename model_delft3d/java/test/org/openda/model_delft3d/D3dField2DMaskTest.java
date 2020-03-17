@@ -36,7 +36,7 @@ public class D3dField2DMaskTest extends TestCase {
 
     private OpenDaTestSupport testData = null;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
     	testData = new OpenDaTestSupport(D3dField2DMaskTest.class,"model_delft3d");
     }
 
@@ -53,7 +53,7 @@ public class D3dField2DMaskTest extends TestCase {
         IDataObject roughnessFile = new D3dField2DFile();
         roughnessFile.initialize(testDir, new String[] {"test.mdf","rgh"});
 		String[] rghExchItemIDs = roughnessFile.getExchangeItemIDs();
-		IExchangeItem uRoughExchItem = roughnessFile.getDataObjectExchangeItem(rghExchItemIDs[0]);;
+		IExchangeItem uRoughExchItem = roughnessFile.getDataObjectExchangeItem(rghExchItemIDs[0]);
 
         double[] uValues = uRoughExchItem.getValuesAsDoubles();
         assertEquals("exchItemRoughFile[1].values[185]", 7.012, uValues[185]);

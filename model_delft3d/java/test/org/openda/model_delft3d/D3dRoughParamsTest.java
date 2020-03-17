@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +36,7 @@ public class D3dRoughParamsTest  extends TestCase {
     private File testRunDataDir;
     private OpenDaTestSupport testData;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
     	testData = new OpenDaTestSupport(D3dRoughParamsTest.class,"model_delft3d");
         testRunDataDir = testData.getTestRunDataDir();
     }
@@ -54,19 +53,18 @@ public class D3dRoughParamsTest  extends TestCase {
         int n=ids.length;
         double delta=0.00001;
         assertEquals(10, n);
-        for(int i=0;i<n;i++){
-        	String id=ids[i];
-        	double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
-        	assertEquals(1, values.length);
-        	System.out.println("Id="+id+" value="+values[0]);
+		for (String id : ids) {
+			double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
+			assertEquals(1, values.length);
+			System.out.println("Id=" + id + " value=" + values[0]);
 
-        	String code=id.substring(id.length()-1);
-        	if(code.matches("A")){
-        		assertEquals(0.1, values[0], delta);
-        	}else{
-        		assertEquals(2.5, values[0], delta);
-        	}
-        }
+			String code = id.substring(id.length() - 1);
+			if (code.matches("A")) {
+				assertEquals(0.1, values[0], delta);
+			} else {
+				assertEquals(2.5, values[0], delta);
+			}
+		}
 
         // change some parameter
         roughFile.getDataObjectExchangeItem(ids[0]).setValuesAsDoubles(new double[]{100.});
@@ -95,12 +93,11 @@ public class D3dRoughParamsTest  extends TestCase {
 
         int n=ids.length;
         assertEquals(137, n);
-        for(int i=0;i<n;i++){
-        	String id=ids[i];
-        	double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
-        	assertEquals(1, values.length);
-        	System.out.println("Id="+id+" value="+values[0]);
-        }
+		for (String id : ids) {
+			double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
+			assertEquals(1, values.length);
+			System.out.println("Id=" + id + " value=" + values[0]);
+		}
 
         // change some parameter
         roughFile.getDataObjectExchangeItem(ids[13]).setValuesAsDoubles(new double[]{100.});

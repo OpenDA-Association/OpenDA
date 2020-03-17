@@ -58,7 +58,7 @@ public class DummyAstroIoObject extends AbstractDataObject {
 		exchangeItems.put(locEPhaseId, new DummyExchangeItem(locEPhaseId, 185));
 	}
 
-	private class DummyExchangeItem implements IExchangeItem {
+	private static class DummyExchangeItem implements IExchangeItem {
 
         private String exchangeItemId;
         private Double value;

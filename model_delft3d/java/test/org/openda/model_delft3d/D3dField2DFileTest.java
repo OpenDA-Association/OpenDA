@@ -34,7 +34,7 @@ public class D3dField2DFileTest extends TestCase {
 
     private OpenDaTestSupport testData = null;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
     	testData = new OpenDaTestSupport(D3dField2DFileTest.class,"model_delft3d");
     }
 
@@ -56,7 +56,7 @@ public class D3dField2DFileTest extends TestCase {
         String[] depExchItemIDs = depthFile.getExchangeItemIDs();
 		IExchangeItem[] depExchItems = new IExchangeItem[depExchItemIDs.length];
 		for (int i = 0; i < depExchItemIDs.length; i++) {
-			depExchItems[i] = depthFile.getDataObjectExchangeItem(depExchItemIDs[i]);;
+			depExchItems[i] = depthFile.getDataObjectExchangeItem(depExchItemIDs[i]);
 		}
         assertEquals("depExchItems.length", 1, depExchItems.length);
         assertEquals("exchItemdepthFile[0].id", "depth", depExchItems[0].getId());
@@ -70,7 +70,7 @@ public class D3dField2DFileTest extends TestCase {
 		String[] rghExchItemIDs = roughnessFile.getExchangeItemIDs();
 		IExchangeItem[] rghExchItems = new IExchangeItem[rghExchItemIDs.length];
 		for (int i = 0; i < rghExchItemIDs.length; i++) {
-			rghExchItems[i] = roughnessFile.getDataObjectExchangeItem(rghExchItemIDs[i]);;
+			rghExchItems[i] = roughnessFile.getDataObjectExchangeItem(rghExchItemIDs[i]);
 		}
         assertEquals("rghExchItems.length", 2, rghExchItems.length);
         assertEquals("exchItemRoughFile[0].id", "roughness-u", rghExchItems[0].getId());
@@ -95,7 +95,7 @@ public class D3dField2DFileTest extends TestCase {
 		String[] adjrghExchItemIDs = adjustedRoughnessFile.getExchangeItemIDs();
 		IExchangeItem[] adjrghExchItems = new IExchangeItem[adjrghExchItemIDs.length];
 		for (int i = 0; i < adjrghExchItemIDs.length; i++) {
-			adjrghExchItems[i] = adjustedRoughnessFile.getDataObjectExchangeItem(adjrghExchItemIDs[i]);;
+			adjrghExchItems[i] = adjustedRoughnessFile.getDataObjectExchangeItem(adjrghExchItemIDs[i]);
 		}
         double[] adjustedVValues = adjrghExchItems[1].getValuesAsDoubles();
         assertEquals("exchItemRoughFile[1].values[6]", 101.008, adjustedVValues[6]);

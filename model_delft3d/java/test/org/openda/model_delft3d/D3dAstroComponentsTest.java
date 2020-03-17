@@ -34,7 +34,7 @@ public class D3dAstroComponentsTest extends TestCase {
 
     private OpenDaTestSupport testData = null;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
     	testData = new OpenDaTestSupport(D3dAstroComponentsTest.class,"model_delft3d");
     }
 
@@ -58,7 +58,7 @@ public class D3dAstroComponentsTest extends TestCase {
 		String[] astroExchItemIDs = astroFiles.getExchangeItemIDs();
 		IExchangeItem[] bcaExchItems = new IExchangeItem[astroExchItemIDs.length];
 		for (int i = 0; i < astroExchItemIDs.length; i++) {
-			bcaExchItems[i] = astroFiles.getDataObjectExchangeItem(astroExchItemIDs[i]);;
+			bcaExchItems[i] = astroFiles.getDataObjectExchangeItem(astroExchItemIDs[i]);
 		}
 		assertEquals("bcaExchItems.length", 374, bcaExchItems.length);
         assertEquals("bcaExchItems[ 0].id", "BND01.A0", bcaExchItems[ 0].getId());
@@ -84,7 +84,7 @@ public class D3dAstroComponentsTest extends TestCase {
 
 		bcaExchItems = new IExchangeItem[astroExchItemIDs.length];
 		for (int i = 0; i < astroExchItemIDs.length; i++) {
-			bcaExchItems[i] = astroFiles.getDataObjectExchangeItem(astroExchItemIDs[i]);;
+			bcaExchItems[i] = astroFiles.getDataObjectExchangeItem(astroExchItemIDs[i]);
 		}
         assertEquals("bcaExchItems.length", 374, bcaExchItems.length);
         assertEquals("bcaExchItems[ 0].id", "BND01.A0", bcaExchItems[ 0].getId());

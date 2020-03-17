@@ -196,7 +196,7 @@ public class ConstantLimitsRangeValidationExchangeItem implements IExchangeItem 
 
 	private static double[] applyLimits(double[] values, double lowerLimit, double upperLimit) {
 		if (values == null) {
-			return values;
+			return null;
 		}
 
 		//copy values so that original values are not changed.

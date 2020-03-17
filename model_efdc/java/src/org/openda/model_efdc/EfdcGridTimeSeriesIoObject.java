@@ -60,7 +60,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
         this.timeSeriesFile = new File(workingDir, arguments[0]);
 
         //get timeZone.
-        if (arguments == null || arguments.length < 2) {
+        if (arguments.length < 2) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
                     + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
@@ -106,7 +106,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
      * Reads the data from the given inputFile and creates an
      * exchangeItem for each data column in the file.
      *
-     * @param inputFile
+     * @param inputFile inputFile
      */
     private void createTimeSeriesExchangeItems(File inputFile, long referenceTime) {
         if (!inputFile.exists()) {
@@ -146,7 +146,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
     /**
      * Returns the number of columns for the data in the given inputFile.
      *
-     * @param inputFile
+     * @param inputFile InputFile
      */
     private int readColumnCount(File inputFile) {
         if (!inputFile.exists()) {
@@ -170,10 +170,8 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
                 line = reader.readLine();
                 if (line != null) {
                     String[] columns = line.trim().split("\\s+");
-                    if (columns != null) {
-                        columnCount = columns.length;
-                    }
-                }
+					columnCount = columns.length;
+				}
 
             } finally {
                reader.close();
@@ -189,7 +187,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
     /**
      * Returns the number of grid cells for the first time for the data in the given inputFile.
      *
-     * @param inputFile
+     * @param inputFile InputFile
      */
     private int readCellCount(File inputFile) {
         if (!inputFile.exists()) {
@@ -214,7 +212,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
                 line = reader.readLine();
                 while (line != null) {
                     String[] columns = line.trim().split("\\s+");
-                    if (columns == null || columns.length < 1) {
+                    if (columns.length < 1) {
                         throw new IllegalArgumentException("Invalid empty line in file " + inputFile.getAbsolutePath());
                     }
 
@@ -274,7 +272,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
                 while (line != null) {
                     //read time.
                     String[] columns = line.trim().split("\\s+");
-                    if (columns == null || columns.length < 1) {
+                    if (columns.length < 1) {
                         throw new IllegalArgumentException("Invalid empty line in file " + inputFile.getAbsolutePath());
                     }
                     double time = parseDouble(columns[0], inputFile);
@@ -345,7 +343,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
                     int cellIndex = 0;
                     while (line != null && cellIndex < cellCount) {
                         String[] columns = line.trim().split("\\s+");
-                        if (columns == null || columns.length < columnCount) {
+                        if (columns.length < columnCount) {
                             throw new IllegalArgumentException("Invalid line '" + line + "' in file '"
                                     + inputFile.getAbsolutePath() + "'. " + columnCount + " columns expected.");
                         }

@@ -45,7 +45,7 @@ public class CostaOpendaAppTest extends TestCase {
 		//            the test below is de-activated by renaming it to tst...()
 	}
 
-	public void testOscill_EnKF() throws IOException {
+	public void testOscill_EnKF() {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig.xml");
         String[] args = new String[1];
@@ -54,7 +54,7 @@ public class CostaOpendaAppTest extends TestCase {
         System.out.println("testOscill_EnKF DONE");
     }
 
-    public void tstOscill_Simplex() throws IOException {
+    public void tstOscill_Simplex() {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillSimplexOpenDaConfig.xml");
         String[] args = new String[1];
@@ -64,7 +64,7 @@ public class CostaOpendaAppTest extends TestCase {
 
     // Test with a java observer
 
-    public void tstOscill_EnKF2() throws IOException {
+    public void tstOscill_EnKF2() {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig_javaobs.xml");
         String[] args = new String[1];
