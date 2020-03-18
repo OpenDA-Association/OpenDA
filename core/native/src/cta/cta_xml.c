@@ -45,6 +45,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define CLASSNAME "CTA_XML"
 
+#define DEBUG 0
+
 /* Local interfaces */
 CTA_Handle CTAI_XML_CreateObject_Comb(xmlNode *cur_node);
 CTA_TreeVector CTAI_XML_CreatetreeVector(xmlNode *cur_node);
@@ -190,27 +192,24 @@ static CTA_StochObs CTAI_XML_CreateSObs(xmlNode *cur_node) {
    /* first check if the stochobs is a 'combined' one */
 
    if (sobs_class_name) {
-     if (0==strcmp((char *) sobs_class_name,"CTA_COMBINE_SOBS")) {
-       sobsclass = CTA_COMBINE_SOBS ;
-       printf("-- ctai_create_sobs: combiner! --\n");
+      if (0==strcmp((char *) sobs_class_name,"CTA_COMBINE_SOBS")) {
+         sobsclass = CTA_COMBINE_SOBS ;
+         if (DEBUG) printf("-- ctai_create_sobs: combiner! --\n");
 
-       // read a subtree using the sobs-combiner-xml-read
-       // hnew_sub is a valid cta_subtree with the cta_sobs already created
-       hnew_sub = CTAI_XML_Create_Combine_SObs(cur_node->children,CTA_NULL);
-        is_combined = 1;
-
-     }
-     else {    //sobsclass can be sql or netcdf or ...
-       // TODO: better: a  handle_find or sobsclass_find action
-       printf("-- ctai_create_sobs: class name given ,NO combiner! --\n");
-       if (0==strcmp((char *) sobs_class_name,"CTA_NETCDF_SOBS")) {
-       sobsclass = CTA_NETCDF_SOBS ;
-     }
-     }
-   }
-   else {   // sobsclass remains default
-       printf("-- ctai_create_sobs: NO class name given! --\n");
-     };
+         // read a subtree using the sobs-combiner-xml-read
+         // hnew_sub is a valid cta_subtree with the cta_sobs already created
+         hnew_sub = CTAI_XML_Create_Combine_SObs(cur_node->children,CTA_NULL);
+         is_combined = 1;
+      } else {    //sobsclass can be sql or netcdf or ...
+         // TODO: better: a  handle_find or sobsclass_find action
+         if (DEBUG) printf("-- ctai_create_sobs: class name given ,NO combiner! --\n");
+         if (0==strcmp((char *) sobs_class_name,"CTA_NETCDF_SOBS")) {
+            sobsclass = CTA_NETCDF_SOBS ;
+         }
+      }
+   } else { // sobsclass remains default
+     if (DEBUG) printf("-- ctai_create_sobs: NO class name given! --\n");
+   };
 
 
    hnew=CTA_NULL;
@@ -219,91 +218,74 @@ static CTA_StochObs CTAI_XML_CreateSObs(xmlNode *cur_node) {
       /* Create stochastic observer */
 
    CTA_String_Create(&hdb);
-      if (database) {
+   if (database) {
 
+      CTA_String_Set(hdb, (char *) database);
 
-          CTA_String_Set(hdb, (char *) database);
-
-
-          if (timeoffset){
-             timeoffsetval = atof((char *) timeoffset);
-
-             // make a vector of two handles: the subtree and the offset value
-             retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 2, CTA_HANDLE, CTA_NULL, &hvec1);
-             // fill first element (name of database)
-             retval = CTA_Vector_SetVal(hvec1,1,&hdb,CTA_HANDLE);
-             //fill second element
-             retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 1, CTA_DOUBLE, CTA_NULL, &htimeoffset);
-
-             retval = CTA_Vector_SetVal(htimeoffset,1,&timeoffsetval,CTA_DOUBLE);
-             retval = CTA_Vector_SetVal(hvec1,2,&htimeoffset,CTA_HANDLE);
-             // create sobs
-
-             retval = CTA_SObs_Create(sobsclass, hvec1, &hnew);
-
-          } else {
-
-            // 'old' situation: userdata is name of database
-          retval = CTA_SObs_Create(sobsclass, hdb, &hnew);
-          }
+      if (timeoffset){
+         timeoffsetval = atof((char *) timeoffset);
+         // make a vector of two handles: the subtree and the offset value
+         retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 2, CTA_HANDLE, CTA_NULL, &hvec1);
+         // fill first element (name of database)
+         retval = CTA_Vector_SetVal(hvec1,1,&hdb,CTA_HANDLE);
+         // fill second element
+         retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 1, CTA_DOUBLE, CTA_NULL, &htimeoffset);
+         retval = CTA_Vector_SetVal(htimeoffset,1,&timeoffsetval,CTA_DOUBLE);
+         retval = CTA_Vector_SetVal(hvec1,2,&htimeoffset,CTA_HANDLE);
+         // create sobs
+         retval = CTA_SObs_Create(sobsclass, hvec1, &hnew);
+      } else {
+         // 'old' situation: userdata is name of database
+         retval = CTA_SObs_Create(sobsclass, hdb, &hnew);
       }
-      else { //combined CTA_OBS
-        if (is_combined == 1) {
-          /* create the combined SObs  with for the 2nd argument not a database
-             but the subsobs subtree and the timeoffset  */
-          // make a vector of two handles: the subtree and the offset value
-          retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 2, CTA_HANDLE, CTA_NULL, &hvec1);
-          // fill first element
-          retval = CTA_Vector_SetVal(hvec1,1,&hnew_sub,CTA_HANDLE);
-          //fill second element
-          retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 1, CTA_DOUBLE, CTA_NULL, &htimeoffset);
-          if (timeoffset){
-             timeoffsetval = atof((char *) timeoffset);
-          } else {
-             timeoffsetval = 0.0;
-          }
-          retval = CTA_Vector_SetVal(htimeoffset,1,&timeoffsetval,CTA_DOUBLE);
-          retval = CTA_Vector_SetVal(hvec1,2,&htimeoffset,CTA_HANDLE);
-
-
-          retval = CTA_SObs_Create(sobsclass, hvec1, &hnew);
-
-        } else {
-          printf("ERROR: neither database given nor combined observer\n");
-          exit(-1);
-        }
-
-      }
-
-
-      CTA_String_Free(&hdb);
-      if (retval == CTA_OK) {
-         /* Perform initial selection */
-         if (selection) {
-            CTA_String_Create(&hsel);
-            CTA_String_Set(hsel, (char *) selection);
-            retval=CTA_SObs_CreateSel(hnew, hsel, &hnew2);
-            CTA_String_Free(&hsel);
-            CTA_SObs_Free(&hnew);
-            if (retval != CTA_OK){
-               return CTA_NULL;
-            }
-            hnew=hnew2;
-         }
-
-         /* Set name (if any) */
-         if (name) {
-            CTAI_Handle_SetName(hnew, (char *) name);
-           // xmlFree(name);
+   }
+   else { //combined CTA_OBS
+      if (is_combined == 1) {
+         /* create the combined SObs  with for the 2nd argument not a database
+            but the subsobs subtree and the timeoffset  */
+         // make a vector of two handles: the subtree and the offset value
+         retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 2, CTA_HANDLE, CTA_NULL, &hvec1);
+         // fill first element
+         retval = CTA_Vector_SetVal(hvec1,1,&hnew_sub,CTA_HANDLE);
+         //fill second element
+         retval = CTA_Vector_Create(CTA_DEFAULT_VECTOR, 1, CTA_DOUBLE, CTA_NULL, &htimeoffset);
+         if (timeoffset){
+            timeoffsetval = atof((char *) timeoffset);
          } else {
-            CTAI_Handle_SetName(hnew, "");
+            timeoffsetval = 0.0;
          }
+         retval = CTA_Vector_SetVal(htimeoffset,1,&timeoffsetval,CTA_DOUBLE);
+         retval = CTA_Vector_SetVal(hvec1,2,&htimeoffset,CTA_HANDLE);
+         retval = CTA_SObs_Create(sobsclass, hvec1, &hnew);
+      } else {
+         printf("ERROR: neither database given nor combined observer\n");
+         exit(-1);
+      }
+   }
+
+   CTA_String_Free(&hdb);
+   if (retval == CTA_OK) {
+      /* Perform initial selection */
+      if (selection) {
+         CTA_String_Create(&hsel);
+         CTA_String_Set(hsel, (char *) selection);
+         retval=CTA_SObs_CreateSel(hnew, hsel, &hnew2);
+         CTA_String_Free(&hsel);
+         CTA_SObs_Free(&hnew);
+         if (retval != CTA_OK){
+            return CTA_NULL;
+         }
+         hnew=hnew2;
       }
 
-      //      if (is_combined == 1) {
-        // attach combined-subtree to sobs
-
-      //}
+      /* Set name (if any) */
+      if (name) {
+         CTAI_Handle_SetName(hnew, (char *) name);
+         // xmlFree(name);
+      } else {
+         CTAI_Handle_SetName(hnew, "");
+      }
+   }
 
    if (name) xmlFree(name);
    if (database) xmlFree(database);
@@ -312,9 +294,8 @@ static CTA_StochObs CTAI_XML_CreateSObs(xmlNode *cur_node) {
    return hnew;
 }
 
+CTA_Handle CTAI_XML_CreateObject_Comb(xmlNode *cur_node) {
 
-
-   CTA_Handle CTAI_XML_CreateObject_Comb(xmlNode *cur_node) {
    xmlChar       *val;              /* Element value */
    CTA_Handle    hnew = CTA_NULL;   /* The return value */
 
@@ -348,9 +329,6 @@ static CTA_StochObs CTAI_XML_CreateSObs(xmlNode *cur_node) {
    }
    return hnew;
 }
-
-
-
 
 /** \brief Create a COSTA time.
 *
@@ -568,7 +546,8 @@ int CTA_XML_Read(CTA_String hfname, CTA_Tree *hroot) {
 /***************************************************************
 WRITE
 ***************************************************************/
-
+#undef METHOD
+#define METHOD "ConvertInput"
 /**
 * ConvertInput:
 * @in: string in a given encoding
@@ -593,8 +572,10 @@ xmlChar *ConvertInput(const char *in, const char *encoding)
    handler = xmlFindCharEncodingHandler(encoding);
 
    if (!handler) {
-      printf("ConvertInput: no encoding handler found for '%s'\n",
+      char message[128];
+      sprintf(message,"ConvertInput: no encoding handler found for '%s'\n",
          encoding ? encoding : "");
+      CTA_WRITE_ERROR(message);
       return 0;
    }
 
@@ -607,11 +588,13 @@ xmlChar *ConvertInput(const char *in, const char *encoding)
       ret = handler->input(out, &out_size, (const xmlChar *) in, &temp);
       if ((ret < 0) || (temp - size + 1)) {
          if (ret < 0) {
-            printf("ConvertInput: conversion wasn't successful.\n");
+            CTA_WRITE_ERROR("Conversion is not successful.\n");
          } else {
-            printf
-               ("ConvertInput: conversion wasn't successful. converted: %i octets.\n",
+            char message[128];
+            sprintf
+               ("Conversion is not successful. converted: %i octets.\n",
                temp);
+            CTA_WRITE_ERROR(message);
          }
 
          xmlFree(out);
@@ -621,7 +604,7 @@ xmlChar *ConvertInput(const char *in, const char *encoding)
          out[out_size] = 0;  /*null terminating out */
       }
    } else {
-      printf("ConvertInput: no mem\n");
+      CTA_WRITE_ERROR("Cannot allocate memory\n");
    }
 
    return out;

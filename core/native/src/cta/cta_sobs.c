@@ -138,7 +138,7 @@ int CTA_SObs_Create(
    }
    if (IDEBUG>0){ printf("Calling my_create_size\n"); }
    my_Create_Size(&memsize,&retval);
-   if (IDEBUG>0){ printf("DOne Calling my_create_size\n"); }
+   if (IDEBUG>0){ printf("Done Calling my_create_size\n"); }
    if (retval) {
       CTA_WRITE_ERROR("Error in my_Create_Size");
       return retval;

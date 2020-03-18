@@ -69,7 +69,7 @@ void modbuild_models_add(CTA_Model hmodel){
    int iModel;
    CTA_Model *newList;
 
-   printf("Adding model %d\n",hmodel);
+   if (IDEBUG) printf("Adding model %d\n",hmodel);
    numCreatedModels++;
    newList= (CTA_Model*) CTA_Malloc(numCreatedModels*sizeof(CTA_Model));
    for (iModel=0; iModel<numCreatedModels-1; iModel++){

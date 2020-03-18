@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "cta_datatypes.h"
 #include "cta_errors.h"
 #include "cta_util_statistics.h"
+#include "cta_message.h"
 
 #define CTA_RAND_U_F77  F77_CALL(cta_rand_u,CTA_RAND_U)
 #define CTA_RAND_N_F77  F77_CALL(cta_rand_n,CTA_RAND_N)
@@ -44,6 +45,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define NDIV (1+IMM1/NTAB) 
 #define EPS 1.2e-7
 #define RNMX (1.0-EPS)
+
+#define CLASSNAME "CTA_Utils_Statisctics"
 
 static long CTAI_current_state_random=-21075;
 
@@ -82,16 +85,16 @@ float ran2(long *idum)
         }
 }
 
-
+#define METHOD "CTA_rand_seed"
 void CTA_rand_seed(int seed){
-   printf("cta_util_statistics: Set initial seed: %ld\n",seed);
+   char message[64];
+   sprintf(message,"Set initial seed: %ld\n",seed);
+   CTA_WRITE_INFO(message);
    if (seed=0) seed=-21075;
    if (seed>0) seed=-seed;
    CTAI_current_state_random=(long) seed;
    ran2(&CTAI_current_state_random);
 }
-
-
 
 int CTA_rand_u(double *x)
 // Calculate a realization from a uniform [0 1] distribution
@@ -100,7 +103,6 @@ int CTA_rand_u(double *x)
    *x=(double) ran2(&CTAI_current_state_random);
    return CTA_OK;
 }
-
 
 int CTA_rand_n(double *x)
 // Calculate a realization from a standard normal distribution
@@ -146,6 +148,3 @@ CTAEXPORT void CTA_RAND_U_F77(double *x, int *ierr){
 CTAEXPORT void CTA_RAND_N_F77(double *x, int *ierr){
    *ierr=CTA_rand_n(x);
 }
-
-
-
