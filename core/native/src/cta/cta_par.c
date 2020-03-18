@@ -298,8 +298,10 @@ void CTAI_Par_CreateMPIGroups(CTAI_Group *allGroups, int nGroups){
    nWork=nProcWorld-1;
 
    if (CTA_FILTER_PROCESS) {
-      if (IDEBUG) printf("#%d CTAI_Par_CreateMPIGroups: nProcWorld=%d\n",myRank,nProcWorld);
-      if (IDEBUG) printf("#%d CTAI_Par_CreateMPIGroups: nWork=%d\n",myRank, nWork);
+      if (IDEBUG) {
+         printf("#%d CTAI_Par_CreateMPIGroups: nProcWorld=%d\n",myRank,nProcWorld);
+         printf("#%d CTAI_Par_CreateMPIGroups: nWork=%d\n",myRank, nWork);
+      }
    }
 
    /* Check whether we have enough processes and set nTimes fields */
@@ -416,9 +418,11 @@ void CTAI_Par_CreateMPIGroups(CTAI_Group *allGroups, int nGroups){
 
             /* Set global communicators */
             if (isMyGroup) {
-               if (IDEBUG) printf("#%d I'm in group [%d,%d]\n",      myRankInWorld, iGroup+1,itime);
-               if (IDEBUG) printf("#%d CTA_COMM_MYWORLD       =%p\n",myRankInWorld, subCommNoMaster);
-               if (IDEBUG) printf("#%d CTA_COMM_MASTER_WORKER =%p\n",myRankInWorld, subCommWithMaster);
+               if (IDEBUG) {
+                  printf("#%d I'm in group [%d,%d]\n",      myRankInWorld, iGroup+1,itime);
+                  printf("#%d CTA_COMM_MYWORLD       =%p\n",myRankInWorld, subCommNoMaster);
+                  printf("#%d CTA_COMM_MASTER_WORKER =%p\n",myRankInWorld, subCommWithMaster);
+               }
 
                CTA_COMM_MYWORLD       = subCommNoMaster;
                CTA_COMM_MASTER_WORKER = subCommWithMaster;
@@ -564,22 +568,24 @@ int CTAI_Par_SetGroupInfo(CTA_Handle parConfig, CTAI_Group *group){
       }
    }
    if (CTA_FILTER_PROCESS) {
-      printf("----- OpenDA communication/model group information ------\n");
-      printf("Name of group           =%s\n",group->name);
-      printf("number of proccesses    =%d\n",group->nProc);
-      printf("Used for model          =%s\n",group->forModel);
-      printf("Number of replications  =%d\n",group->nTimes);
-      printf("Kind of parallelization =");
-      if (group->parType==WorkerWorker){
-         printf("WorkerWorker\n");
-      } else {
-         printf("MasterWorker\n");
-      }
-      printf("Spawn workers           =");
-      if (group->spawn_workers){
-         printf("Yes\n");
-      } else {
-         printf("No\n");
+      if (IDEBUG) {
+         printf("----- OpenDA communication/model group information ------\n");
+         printf("Name of group           =%s\n",group->name);
+         printf("number of proccesses    =%d\n",group->nProc);
+         printf("Used for model          =%s\n",group->forModel);
+         printf("Number of replications  =%d\n",group->nTimes);
+         printf("Kind of parallelization =");
+         if (group->parType==WorkerWorker){
+            printf("WorkerWorker\n");
+         } else {
+            printf("MasterWorker\n");
+         }
+         printf("Spawn workers           =");
+         if (group->spawn_workers){
+            printf("Yes\n");
+         } else {
+            printf("No\n");
+         }
       }
    }
    return CTA_OK;
@@ -613,8 +619,9 @@ int CTA_Par_WorkerSpawn(int StartPar){
    retval=MPI_Comm_size(CTA_COMM_WORLD, &comm_size);
    retval=MPI_Comm_rank(CTA_COMM_WORLD, &myRankInWorld);
 
-   if (myRankInWorld==0) printf("%s Number of processes that are spawned :%d\n",METHOD, comm_size);
-
+   if (IDEBUG) {
+      if (myRankInWorld==0) printf("%s Number of processes that are spawned :%d\n",METHOD, comm_size);
+   }
    /* Set rank of this process, note: this is not in the whole world! */
    CTA_PAR_MY_RANK=myRankInWorld;
 
@@ -635,12 +642,12 @@ int CTA_Par_WorkerSpawn(int StartPar){
 
    /* Do we need to start the modelbuilder */
    if (StartPar==CTA_TRUE) {
-      printf("=================================================\n");
-      printf("Starting the modelbuilder\n");
-      printf("Inter communicator is %p\n",CTA_COMM_MASTER_WORKER);
-      printf("=================================================\n");
-
-
+      if(IDEBUG) {
+         printf("=================================================\n");
+         printf("Starting the modelbuilder\n");
+         printf("Inter communicator is %p\n",CTA_COMM_MASTER_WORKER);
+         printf("=================================================\n");
+      }
       CTA_Modbuild_par_CreateClass(&CTA_MODBUILD_PAR);
    }
 #endif
@@ -668,7 +675,9 @@ int CTA_Par_CreateGroups(int parConfig, int StartPar){
    /* When this function is called we will always run in parallel */
    CTA_IS_PARALLEL=CTA_TRUE;
 
-   if (myRankInWorld==0) printf("CTA_Par_CreateGroups: Size of CTA_COMM_WORLD is %d\n",comm_size);
+   if (IDEBUG) {
+      if (myRankInWorld==0) printf("CTA_Par_CreateGroups: Size of CTA_COMM_WORLD is %d\n",comm_size);
+   }
 
    /* Get the rank of this process */
    MPI_Comm_rank(CTA_COMM_WORLD, &myRankInWorld);
@@ -684,14 +693,18 @@ int CTA_Par_CreateGroups(int parConfig, int StartPar){
    }
 
    /* Read configuration */
-   if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: number of processes is %d\n",comm_size);
+   if (IDEBUG) {
+      if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: number of processes is %d\n",comm_size);
+   }
 
    /* Count number of process groups */
    CTAI_Par_NumGroups(parConfig, &nGroups1, &nGroups2);
    CTAI_nGroups=nGroups1+nGroups2;
-   if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: number groups defined globally  =%d\n",nGroups1);
-   if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: number groups defined locally   =%d\n",nGroups2);
-   if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: total number of defined ngroups =%d\n",CTAI_nGroups);
+   if (IDEBUG) {
+      if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: number groups defined globally  =%d\n",nGroups1);
+      if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: number groups defined locally   =%d\n",nGroups2);
+      if (CTA_FILTER_PROCESS) printf("CTA_Par_CreateGroups: total number of defined ngroups =%d\n",CTAI_nGroups);
+   }
 
    /* Get properties of the groups and store them in CTAI_AllGroups */
    CTAI_AllGroups=NULL;
