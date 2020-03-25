@@ -48,7 +48,7 @@ import java.util.TimeZone;
  *
  * @author Arno Kockx
  */
-@Deprecated
+//@Deprecated
 // Use UciDataObject instead
 public class UciIoObject implements IoObjectInterface {
 
