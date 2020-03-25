@@ -63,7 +63,7 @@ public class EfdcRestartFileIoObject extends AbstractDataObject {
         this.efdcRestartFile = new File(workingDir, arguments[0]);
 
         //get timeZone.
-        if (arguments == null || arguments.length < 2) {
+        if (arguments.length < 2) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
                     + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
@@ -112,7 +112,7 @@ public class EfdcRestartFileIoObject extends AbstractDataObject {
 
         //read file.
         List<String> content = AsciiFileUtils.readLines(this.efdcRestartFile);
-        if (content == null || content.size() < 1) {
+        if (content.size() < 1) {
             throw new RuntimeException("Invalid RESTART.INP file. File is empty.");
         }
 

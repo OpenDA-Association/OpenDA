@@ -20,17 +20,15 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import junit.framework.TestCase;
-
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Test class for testing EfdcGridTimeSeriesIoObject and EfdcGridTimeSeriesExchangeItem.
@@ -41,7 +39,7 @@ public class EfdcGridTimeSeriesTest extends TestCase {
 
     private File testRunDataDir;
 
-	protected void setUp() throws IOException {
+	protected void setUp() {
 		OpenDaTestSupport testData = new OpenDaTestSupport(EfdcGridTimeSeriesTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
@@ -54,14 +52,13 @@ public class EfdcGridTimeSeriesTest extends TestCase {
      * using a tool called POST_PCfile_ASCII.exe. This tool was developed by
      * EnssoHitech for NIER (National Institute of Environmental Research) in Korea.
      *
-     * @throws Exception
-     */
-    public void testReadGridTimeSeries() throws Exception {
+	 */
+    public void testReadGridTimeSeries() {
         //read period from MJD 55679.375 (2011-04-28 09:00) to MJD 55682.375 (2011-05-01 09:00).
         Calendar calendar = Calendar.getInstance();
         //startTime is in GMT.
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 04, 28, 0, 0, 0);
+        calendar.set(2011, Calendar.MAY, 28, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long startTime = calendar.getTimeInMillis();
         //expectedTimes4 are in GMT.

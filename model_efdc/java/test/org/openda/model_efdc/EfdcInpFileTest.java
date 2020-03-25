@@ -20,16 +20,14 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import junit.framework.TestCase;
-
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Test class for testing EfdcInpIoObject.
@@ -41,7 +39,7 @@ public class EfdcInpFileTest extends TestCase {
     private OpenDaTestSupport testData;
     private File testRunDataDir;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
         testData = new OpenDaTestSupport(EfdcInpFileTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
