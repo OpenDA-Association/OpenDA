@@ -20,7 +20,8 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.blackbox.io;
-import org.openda.blackbox.interfaces.IoObjectInterface;
+
+import org.openda.exchange.AbstractDataObject;
 import org.openda.interfaces.IExchangeItem;
 
 import java.io.File;
@@ -39,9 +40,9 @@ public class SimpleBbAsciiCopier {
 	 * arg[0] is source file
 	 * arg[1] is destination
 	 *
-	 * @param args
+	 * @param args corresponding arguments
 	 */
-	public static void main(String args[]){
+	public static void main(String[] args){
 		if(args.length<2){
 			throw new RuntimeException("SimpleBbAsciiCopier.main requires 2 arguments");
 		}
@@ -55,27 +56,27 @@ public class SimpleBbAsciiCopier {
 		}
 
 
-		IoObjectInterface output = new SimpleBbAsciiFile();
-		String ioArgs[] = {};
-		output.initialize(outputFile.getParentFile(), outputFile.getName(), ioArgs);
+		AbstractDataObject output = new SimpleBbAsciiFile();
+		String[] ioArgs = {outputFile.getName()};
+		output.initialize(outputFile.getParentFile(), ioArgs);
 		IExchangeItem outputItem=null;
-		for(IExchangeItem item:output.getExchangeItems()){
-			String itemId = item.getId();
-			System.out.println("looking at item: "+itemId);
-			if(itemId.equalsIgnoreCase("concentration.grid")){
-				outputItem = item;
+		for(String id:output.getExchangeItemIDs()){
+			System.out.println("looking at item: "+id);
+			if(id.equalsIgnoreCase("concentration.grid")){
+				outputItem = output.getDataObjectExchangeItem(id);
 				break;
 			}
 		}
 
-		IoObjectInterface input = new SimpleBbAsciiFile();
-		input.initialize(inputFile.getParentFile(), inputFile.getName(), ioArgs);
-		for(IExchangeItem item:input.getExchangeItems()){
-			String itemId = item.getId();
-			System.out.println("looking at item: "+itemId);
-			if(itemId.equalsIgnoreCase("concentration.grid")){
-				System.out.println("changing item: "+itemId);
-				double values[] = item.getValuesAsDoubles();
+		AbstractDataObject input = new SimpleBbAsciiFile();
+		ioArgs = new String[]{inputFile.getName()};
+		input.initialize(inputFile.getParentFile(), ioArgs);
+		for(String id:input.getExchangeItemIDs()){
+			System.out.println("looking at item: "+id);
+			if(id.equalsIgnoreCase("concentration.grid")){
+				System.out.println("changing item: "+id);
+				IExchangeItem inputItem = input.getDataObjectExchangeItem(id);
+				double[] values = inputItem.getValuesAsDoubles();
 				outputItem.setValuesAsDoubles(values);
 				break;
 			}
