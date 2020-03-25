@@ -18,21 +18,15 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openda.blackbox.io;
-import org.openda.blackbox.interfaces.IoObjectInterface;
+
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.*;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -79,12 +73,10 @@ import java.util.Set;
  */
 
 
-public class SimpleBbAsciiFile implements IoObjectInterface{
+public class SimpleBbAsciiFile extends AbstractDataObject {
 	File workingDir;
-	String configString;
 	String fileName = null;
-	HashMap<String,String> variables = new LinkedHashMap<String,String>();
-	HashMap<String,IExchangeItem> items = new LinkedHashMap<String,IExchangeItem>();
+	HashMap<String,String> variables = new LinkedHashMap<>();
 
 	//cache these values
 	double refdate;
@@ -92,27 +84,28 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 	double dt=1.0;
 	double tstop;
 	double unit=1.0;
-	String sourceLabels[];
-	String boundLabels[];
-	String outputLabels[];
+	String[] sourceLabels;
+	String[] boundLabels;
+	String[] outputLabels;
 
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
 		this.workingDir = workingDir;
-		this.fileName = fileName;
-		System.out.println("ioObject : filename = "+fileName);
+		this.fileName = arguments[0];
+		System.out.println("ioObject : filename = "+arguments[0]);
 
 
-		if (arguments != null && arguments.length > 0) {
-			for(int i=0;i<arguments.length;i++){
-				System.out.println("ioObject : arg = "+fileName);
+		if (arguments.length > 1) {
+			for(int i=1;i<arguments.length;i++){
+				System.out.println("ioObject : arg = "+arguments[i]);
 			}
-			Results.putMessage("ioObject for file="+fileName+" arguments ignored");
+			Results.putMessage("ioObject for file="+arguments[0]+" arguments ignored");
 			//throw new RuntimeException("IoObject SimpleBbAsciiFile does not expect any additional arguments");
 		}
 		File inputFile=null;
 		// check file
 		try{
-			inputFile = new File(workingDir,fileName);
+			inputFile = new File(workingDir,arguments[0]);
 			if(!inputFile.isFile()){
 				throw new IOException("Can not find file"+inputFile);
 			}
@@ -125,8 +118,8 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 			FileInputStream in = new FileInputStream(inputFile);
 			BufferedReader buff = new BufferedReader(new InputStreamReader(in));
 
-			String line="";
-			Boolean eof=false;
+			String line;
+			boolean eof=false;
 			while (!eof) {
 				line = buff.readLine();
 				if (line == null)
@@ -137,7 +130,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 						// comment or metadata
 					} else if(line.indexOf("=")>0)
 					{ // variable=value
-						String columns[] = line.split("=");
+						String[] columns = line.split("=");
 						columns[0]=columns[0].trim();
 						//System.out.println("variable = "+columns[0]);
 						//System.out.println("value ="+columns[1]);
@@ -147,7 +140,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 			}
 			in.close();
 		} catch (Exception e) {
-			throw new RuntimeException("Problem reading from file "+fileName+" : "+e.getMessage());
+			throw new RuntimeException("Problem reading from file "+arguments[0]+" : "+e.getMessage());
 		}
 
 		//extract exchangeitems
@@ -172,7 +165,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 			throw new RuntimeException("Unit not recognized (expected seconds) was "+unitString);
 		}
 		String timeString = variables.get("time");
-		double time[] = parseVector(timeString);
+		double[] time = parseVector(timeString);
 		if(time.length!=3){
 			throw new RuntimeException("expecting vector of length 3 for time, but length was"+time.length);
 		}
@@ -181,10 +174,8 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		tstop=time[2]*unit;
 
 		//add exchange items for time
-		IExchangeItem startTime = new DoubleExchangeItem("startTime", this.refdate+this.tstart);
-		this.items.put("startTime",startTime);
-		IExchangeItem endTime = new DoubleExchangeItem("endTime", this.refdate+this.tstop);
-		this.items.put("endTime",endTime);
+		exchangeItems.put("startTime", new DoubleExchangeItem("startTime", this.refdate+this.tstart));
+		exchangeItems.put("endTime", new DoubleExchangeItem("endTime", this.refdate+this.tstop));
 
 		//series for sources
 		/*
@@ -198,27 +189,26 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		String sourceLabelsString = variables.get("source_labels");
 		if(sourceLabelsString!=null){
 			sourceLabels = parseStrings(sourceLabelsString);
-			for(int i=0;i<sourceLabels.length;i++){
+			for (String sourceLabel : sourceLabels) {
 				//System.out.println("source label ="+sourceLabels[i]);
-				String valueLabelString = "source_values['"+sourceLabels[i]+"']";
+				String valueLabelString = "source_values['" + sourceLabel + "']";
 				String valueString = variables.get(valueLabelString);
-				if(valueString==null){
-					throw new RuntimeException("Missing input. Was looking for "+valueLabelString);
+				if (valueString == null) {
+					throw new RuntimeException("Missing input. Was looking for " + valueLabelString);
 				}
-				double values[] = parseVector(valueString);
-				int n=values.length;
-				// times
-				double times[] = new double[n];
-				for(int k=0;k<n;k++){
-					times[k] = refdate+tstart+k*dt;
+				double[] values = parseVector(valueString);
+				int n = values.length;
+				double[] times = new double[n];
+				for (int k = 0; k < n; k++) {
+					times[k] = refdate + tstart + k * dt;
 				}
 				TimeSeries series = new TimeSeries(times, values);
-				series.setLocation("source."+sourceLabels[i]);
+				series.setLocation("source." + sourceLabel);
 				series.setUnit("kg/s");
 				series.setQuantity("discharge");
-				String id = "source."+sourceLabels[i]+".discharge";
+				String id = "source." + sourceLabel + ".discharge";
 				series.setProperty("Timezone", "GMT");
-				this.items.put(id, series);
+				exchangeItems.put(id, series);
 			}
 		}
 
@@ -226,27 +216,26 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		String boundLabelsString = variables.get("bound_labels");
 		if(boundLabelsString!=null){
 			boundLabels = parseStrings(boundLabelsString);
-			for(int i=0;i<boundLabels.length;i++){
+			for (String boundLabel : boundLabels) {
 				//System.out.println("bound label ="+boundLabels[i]);
-				String valueLabelString = "bound_values['"+boundLabels[i]+"']";
+				String valueLabelString = "bound_values['" + boundLabel + "']";
 				String valueString = variables.get(valueLabelString);
-				if(valueString==null){
-					throw new RuntimeException("Missing input. Was looking for "+valueLabelString);
+				if (valueString == null) {
+					throw new RuntimeException("Missing input. Was looking for " + valueLabelString);
 				}
-				double values[] = parseVector(valueString);
-				int n=values.length;
-				// times
-				double times[] = new double[n];
-				for(int k=0;k<n;k++){
-					times[k] = refdate+tstart+k*dt;
+				double[] values = parseVector(valueString);
+				int n = values.length;
+				double[] times = new double[n];
+				for (int k = 0; k < n; k++) {
+					times[k] = refdate + tstart + k * dt;
 				}
 				TimeSeries series = new TimeSeries(times, values);
-				series.setLocation("bound."+boundLabels[i]);
+				series.setLocation("bound." + boundLabel);
 				series.setUnit("kg/m^3");
 				series.setQuantity("concentration");
-				String id = "bound."+boundLabels[i]+".concentration";
+				String id = "bound." + boundLabel + ".concentration";
 				series.setProperty("Timezone", "GMT");
-				this.items.put(id, series);
+				exchangeItems.put(id, series);
 			}
 		}
 
@@ -254,78 +243,65 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		String outputLabelsString = variables.get("output_labels");
 		if(outputLabelsString!=null){
 			outputLabels = parseStrings(outputLabelsString);
-			for(int i=0;i<outputLabels.length;i++){
+			for (String outputLabel : outputLabels) {
 				//System.out.println("output label ="+outputLabels[i]);
-				String valueLabelString = "output_values['"+outputLabels[i]+"']";
-				TimeSeries series=null;
-				if(variables.containsKey(valueLabelString)){
+				String valueLabelString = "output_values['" + outputLabel + "']";
+				TimeSeries series;
+				if (variables.containsKey(valueLabelString)) {
 					String valueString = variables.get(valueLabelString);
-					if(valueString==null){
-						throw new RuntimeException("Missing input. Was looking for "+valueLabelString);
+					if (valueString == null) {
+						throw new RuntimeException("Missing input. Was looking for " + valueLabelString);
 					}
-					double values[] = parseVector(valueString);
-					int n=values.length;
-					// times
-					double times[] = new double[n];
-					for(int k=0;k<n;k++){
-						times[k] = refdate+tstart+k*dt;
+					double[] values = parseVector(valueString);
+					int n = values.length;
+					double[] times = new double[n];
+					for (int k = 0; k < n; k++) {
+						times[k] = refdate + tstart + k * dt;
 					}
 					series = new TimeSeries(times, values);
-				}else{ // fill with empty values
-					double times[]={tstart+refdate};
-					double values[]={0.0};
+				} else { // fill with empty values
+					double[] times = {tstart + refdate};
+					double[] values = {0.0};
 					series = new TimeSeries(times, values);
 				}
 
-				series.setLocation("output."+outputLabels[i]);
+				series.setLocation("output." + outputLabel);
 				series.setUnit("kg/m^3");
 				series.setQuantity("concentration");
-				String id = "output."+outputLabels[i]+".concentration";
+				String id = "output." + outputLabel + ".concentration";
 				series.setId(id);
 				series.setProperty("Timezone", "GMT");
-				this.items.put(id, series);
+				exchangeItems.put(id, series);
 			}
 		}
 		//concentrations on grid
 		String concentrationString = variables.get("c");
-		IExchangeItem c = null;
+		IExchangeItem c;
 		if(concentrationString!=null){
-			double values[] = parseVector(concentrationString);
+			double[] values = parseVector(concentrationString);
 			c = new DoublesExchangeItem("concentration.grid",IExchangeItem.Role.InOut, values);
-			this.items.put("concentration.grid", c);
+			exchangeItems.put("concentration.grid", c);
 		}else{
 			throw new RuntimeException("Missing input. Was looking for c");
 		}
 
 		boolean debug=false;
 		if(debug){
-			for(String key: this.items.keySet()){
+			for(String key: exchangeItems.keySet()){
 				System.out.println("key="+key);
-				System.out.println(this.items.get(key).toString());
+				System.out.println(exchangeItems.get(key).toString());
 			}
 		}
 	}
 
-	public IExchangeItem[] getExchangeItems() {
-		//TODO for now return some dummy timeSeries
-		int n = this.items.size();
-		Set<String> keys = this.items.keySet();
-		IExchangeItem[] result=new IExchangeItem[n];
-		int i=0;
-		for(String key : keys){
-			result[i]=this.items.get(key);
-			i++;
-		}
-		return result;
-	}
-
+	@Override
 	public void finish() {
 		// update variables
 
 		//update times
-		double startAsMjd = this.items.get("startTime").getValuesAsDoubles()[0];
+		double startAsMjd = exchangeItems.get("startTime").getValuesAsDoubles()[0];
 		this.tstart = startAsMjd - this.refdate;
-		double endAsMjd = this.items.get("endTime").getValuesAsDoubles()[0];
+		double endAsMjd = exchangeItems.get("endTime").getValuesAsDoubles()[0];
 		this.tstop = endAsMjd - this.refdate;
 
 		double roundVal=100.0; //2 decimal places
@@ -337,25 +313,25 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		// update sources
 		String sourceLabelsString = variables.get("source_labels");
 		if(sourceLabelsString!=null){
-			for(int i=0;i<sourceLabels.length;i++){
-				String id = "source."+sourceLabels[i]+".discharge";
-				TimeSeries item = (TimeSeries)this.items.get(id);
-				double times[] = item.getTimes();
-				String key="source_values[\'"+sourceLabels[i]+"\']";
-				double values[]=item.getValuesAsDoubles();
+			for (String sourceLabel : sourceLabels) {
+				String id = "source." + sourceLabel + ".discharge";
+				TimeSeries item = (TimeSeries) exchangeItems.get(id);
+				double[] times = item.getTimes();
+				String key = "source_values['" + sourceLabel + "']";
+				double[] values = item.getValuesAsDoubles();
 				// first find index of start
-				int skipCount = (int) Math.round((this.refdate+this.tstart-times[0])/this.dt); //MVL
+				int skipCount = (int) Math.round((this.refdate + this.tstart - times[0]) / this.dt); //MVL
 				//time is progressing; adjust start of series
 				//find matching times
-				int newTimesLength = times.length-skipCount;
-				double[] newValues = null;
-				if(newTimesLength>0){
+				int newTimesLength = times.length - skipCount;
+				double[] newValues;
+				if (newTimesLength > 0) {
 					newValues = new double[newTimesLength];
 					System.arraycopy(values, skipCount, newValues, 0, newTimesLength);
-				}else{
+				} else {
 					newValues = new double[1];
-					int last=values.length-1;
-					newValues[0]=values[last];
+					int last = values.length - 1;
+					newValues[0] = values[last];
 				}
 				String valueString = writeVector(newValues);
 				this.variables.put(key, valueString);
@@ -365,25 +341,25 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		// update boundaries
 		String boundLabelsString = variables.get("bound_labels");
 		if(boundLabelsString!=null){
-			for(int i=0;i<boundLabels.length;i++){
-				String id = "bound."+boundLabels[i]+".concentration";
-				TimeSeries item = (TimeSeries)this.items.get(id);
-				double times[] = item.getTimes();
-				String key="bound_values[\'"+boundLabels[i]+"\']";
-				double values[]=item.getValuesAsDoubles();
+			for (String boundLabel : boundLabels) {
+				String id = "bound." + boundLabel + ".concentration";
+				TimeSeries item = (TimeSeries) exchangeItems.get(id);
+				double[] times = item.getTimes();
+				String key = "bound_values['" + boundLabel + "']";
+				double[] values = item.getValuesAsDoubles();
 				// first find index of start
-				int skipCount = (int) Math.round((this.refdate+this.tstart-times[0])/this.dt); //MVL
+				int skipCount = (int) Math.round((this.refdate + this.tstart - times[0]) / this.dt); //MVL
 				//time is progressing; adjust start of series
 				//find matching times
-				int newTimesLength = times.length-skipCount;
-				double[] newValues = null;
-				if(newTimesLength>0){
+				int newTimesLength = times.length - skipCount;
+				double[] newValues;
+				if (newTimesLength > 0) {
 					newValues = new double[newTimesLength];
 					System.arraycopy(values, skipCount, newValues, 0, newTimesLength);
-				}else{
+				} else {
 					newValues = new double[1];
-					int last=values.length-1;
-					newValues[0]=values[last];
+					int last = values.length - 1;
+					newValues[0] = values[last];
 				}
 				String valueString = writeVector(newValues);
 				this.variables.put(key, valueString);
@@ -393,25 +369,25 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		// update outputs
 		String outputLabelsString = variables.get("output_labels");
 		if(outputLabelsString!=null){
-			for(int i=0;i<outputLabels.length;i++){
-				String id = "output."+outputLabels[i]+".concentration";
-				TimeSeries item = (TimeSeries)this.items.get(id);
-				double times[] = item.getTimes();
-				String key="output_values[\'"+outputLabels[i]+"\']";
-				double values[]=item.getValuesAsDoubles();
+			for (String outputLabel : outputLabels) {
+				String id = "output." + outputLabel + ".concentration";
+				TimeSeries item = (TimeSeries) exchangeItems.get(id);
+				double[] times = item.getTimes();
+				String key = "output_values['" + outputLabel + "']";
+				double[] values = item.getValuesAsDoubles();
 				// first find index of start
-				int skipCount = (int) Math.round((this.refdate+this.tstart-times[0])/this.dt); //MVL
+				int skipCount = (int) Math.round((this.refdate + this.tstart - times[0]) / this.dt); //MVL
 				//time is progressing; adjust start of series
 				//find matching times
-				int newTimesLength = times.length-skipCount;
-				double[] newValues = null;
-				if(newTimesLength>0){
+				int newTimesLength = times.length - skipCount;
+				double[] newValues;
+				if (newTimesLength > 0) {
 					newValues = new double[newTimesLength];
 					System.arraycopy(values, skipCount, newValues, 0, newTimesLength);
-				}else{
+				} else {
 					newValues = new double[1];
-					int last=values.length-1;
-					newValues[0]=values[last];
+					int last = values.length - 1;
+					newValues[0] = values[last];
 				}
 				String valueString = writeVector(newValues);
 				this.variables.put(key, valueString);
@@ -421,12 +397,12 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		// concentration
 		if(this.variables.containsKey("c")){
 			String id = "concentration.grid";
-			if(!this.items.containsKey(id)){
+			if(!exchangeItems.containsKey(id)){
 				throw new RuntimeException("ExchangeItem with id ="+id+" got lost.");
 			}
-			IExchangeItem item = this.items.get(id);
+			IExchangeItem item = exchangeItems.get(id);
 			String key="c";
-			double values[] = item.getValuesAsDoubles();
+			double[] values = item.getValuesAsDoubles();
 			String valueString = writeVector(values);
 			this.variables.put(key, valueString);
 		}
@@ -465,7 +441,7 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 	 * @param valuestring to parse
 	 */
 	private double[] parseVector(String valuestring){
-		double result[] = null;
+		double[] result;
 		int ifirst = valuestring.indexOf("[") + 1;
 		int ilast = valuestring.indexOf("]");
 		String buffer = valuestring.substring(ifirst, ilast);
@@ -483,17 +459,17 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 	}
 
 	private String writeVector(double[] values){
-		String result = "[";
+		StringBuilder result = new StringBuilder("[");
 		for(int i=0;i<values.length;i++){
-			if(i>0) result+=",";
-			result += values[i];
+			if(i>0) result.append(",");
+			result.append(values[i]);
 		}
-		result+="]";
-		return result;
+		result.append("]");
+		return result.toString();
 	}
 
 	private String[] parseStrings(String valuestring){
-		String result[] = null;
+		String[] result;
 		int ifirst = valuestring.indexOf("[") + 1;
 		int ilast = valuestring.indexOf("]");
 		String buffer = valuestring.substring(ifirst, ilast);
@@ -501,8 +477,8 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 		int n = values.length;
 		result = new String[n];
 		for (int i = 0; i < n; i++) {
-			int ifirstQuote = values[i].indexOf("\'") + 1;
-			int ilastQoute = values[i].lastIndexOf("\'");
+			int ifirstQuote = values[i].indexOf("'") + 1;
+			int ilastQoute = values[i].lastIndexOf("'");
 			if ((ifirstQuote<0)|(ilastQoute<0)){
 				throw new RuntimeException("Expecting quotes around strings. Trouble reading "+values[i]);
 			}
@@ -515,10 +491,10 @@ public class SimpleBbAsciiFile implements IoObjectInterface{
 	}
 
 	private String parseString(String valuestring){
-		String result = null;
-		int ifirstQuote = valuestring.indexOf("\'") + 1;
-		int ilastQoute = valuestring.lastIndexOf("\'");
-		if ((ifirstQuote<0)|(ilastQoute<0)){
+		String result;
+		int ifirstQuote = valuestring.indexOf("'") + 1;
+		int ilastQoute = valuestring.lastIndexOf("'");
+		if (ilastQoute < 0){
 			throw new RuntimeException("Expecting quotes around strings. Trouble reading "+valuestring);
 		}
 		if (ifirstQuote==ilastQoute){
