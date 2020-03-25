@@ -83,7 +83,7 @@ public class EfdcTimeSeriesIoObject extends AbstractDataObject {
         this.timeSeriesFile = new File(workingDir, arguments[0]);
 
         //create time series formatter.
-        if (arguments == null || arguments.length < 2) {
+        if (arguments.length < 2) {
             throw new IllegalArgumentException("No arguments specified for " + this.getClass().getSimpleName()
                     + ". The second argument should be the type of file, e.g. QSER, TSER or ASER.");
         }

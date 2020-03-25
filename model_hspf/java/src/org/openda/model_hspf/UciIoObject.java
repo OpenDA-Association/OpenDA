@@ -48,6 +48,8 @@ import java.util.TimeZone;
  *
  * @author Arno Kockx
  */
+@Deprecated
+// Use UciDataObject instead
 public class UciIoObject implements IoObjectInterface {
 
     private static final String TAG = "$";

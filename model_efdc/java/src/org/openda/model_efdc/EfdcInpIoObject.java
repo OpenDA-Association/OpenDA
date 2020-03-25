@@ -69,7 +69,7 @@ public class EfdcInpIoObject extends AbstractDataObject {
         this.efdcInpFile = new File(workingDir, arguments[0]);
 
         //get timeZone.
-        if (arguments == null || arguments.length < 2) {
+        if (arguments.length < 2) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
                     + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
@@ -182,7 +182,7 @@ public class EfdcInpIoObject extends AbstractDataObject {
             throw new RuntimeException("Card image with number 8 not found in EFDC.INP file.");
         }
         String[] strings = parameterLine.trim().split("\\s+");
-        if (strings == null || strings.length < 1) {
+        if (strings.length < 1) {
             throw new RuntimeException("TCON not found in EFDC.INP file. Card image with number 8 contains not enough parameters.");
         }
         String tCon = strings[0];
@@ -227,7 +227,7 @@ public class EfdcInpIoObject extends AbstractDataObject {
             throw new RuntimeException("Card image with number 8 not found in EFDC.INP file.");
         }
         String[] strings = parameterLine.trim().split("\\s+");
-        if (strings == null || strings.length < 3) {
+        if (strings.length < 3) {
             throw new RuntimeException("TREF not found in EFDC.INP file. Card image with number 8 contains not enough parameters.");
         }
         String tRef = strings[2];
@@ -260,7 +260,7 @@ public class EfdcInpIoObject extends AbstractDataObject {
             String line = iterator.next();
 
             String[] strings = line.trim().split("\\s+");
-            if (strings != null && strings.length > 0 && searchString.equalsIgnoreCase(strings[0])) {
+            if (strings.length > 0 && searchString.equalsIgnoreCase(strings[0])) {
                 if (!firstLineFound) {
                     firstLineFound = true;
                     continue;
