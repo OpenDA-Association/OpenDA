@@ -70,12 +70,17 @@ public class NetcdfFileConcatenater {
 		}
 		try {
 			if (!targetNetcdfFile.exists()) {
-				NetcdfFile netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
-				Dimension time = netcdfToAdd.findDimension("time");
-				if (time != null && time.isUnlimited()) {
-				BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
-			} else {
-					rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
+				NetcdfFile netcdfToAdd = null;
+				try {
+					netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+					Dimension time = netcdfToAdd.findDimension("time");
+					if (time != null && time.isUnlimited()) {
+						BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
+					} else {
+						rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
+					}
+				} finally {
+					if (netcdfToAdd != null) netcdfToAdd.close();
 				}
 			} else {
 				concatenateNetcdfFiles(useOldValueOnOverlap, netcdfFileToBeAdded, targetNetcdfFile);
@@ -86,26 +91,32 @@ public class NetcdfFileConcatenater {
 	}
 
 	private static void concatenateNetcdfFiles(boolean useOldValueOnOverlap, File netcdfFileToBeAdded, File targetNetcdfFile) throws IOException {
-		NetcdfFile sourceNetCdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
-		List<Variable> variablesToBeAdded = sourceNetCdfFile.getVariables();
-		NetcdfFileWriter netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath());
-
-		Map<Variable, Array> variableArraysMap = new HashMap<>();
-		Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
-
-		concatenateVariables(useOldValueOnOverlap, sourceNetCdfFile, variablesToBeAdded, netcdfFileWriter, variableArraysMap, timeVariableArraysMap);
+		NetcdfFile sourceNetcdfFile = null;
+		NetcdfFileWriter netcdfFileWriter = null;
 		try {
-			for (Map.Entry<Variable, Array> entry : timeVariableArraysMap.entrySet()) {
-				netcdfFileWriter.write(entry.getKey(), entry.getValue());
+			sourceNetcdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+			List<Variable> variablesToBeAdded = sourceNetcdfFile.getVariables();
+			netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath());
+
+			Map<Variable, Array> variableArraysMap = new HashMap<>();
+			Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
+
+			concatenateVariables(useOldValueOnOverlap, sourceNetcdfFile, variablesToBeAdded, netcdfFileWriter, variableArraysMap, timeVariableArraysMap);
+			try {
+				for (Map.Entry<Variable, Array> entry : timeVariableArraysMap.entrySet()) {
+					netcdfFileWriter.write(entry.getKey(), entry.getValue());
+				}
+				for (Map.Entry<Variable, Array> entry : variableArraysMap.entrySet()) {
+					netcdfFileWriter.write(entry.getKey(), entry.getValue());
+				}
+			} catch (InvalidRangeException e) {
+				throw new RuntimeException("Error rewriting variables", e);
 			}
-			for (Map.Entry<Variable, Array> entry : variableArraysMap.entrySet()) {
-				netcdfFileWriter.write(entry.getKey(), entry.getValue());
-			}
-		} catch (InvalidRangeException e) {
-			throw new RuntimeException("Error rewriting variables", e);
+			netcdfFileWriter.flush();
+		} finally {
+			if (netcdfFileWriter != null) netcdfFileWriter.close();
+			if (sourceNetcdfFile != null) sourceNetcdfFile.close();
 		}
-		netcdfFileWriter.flush();
-		netcdfFileWriter.close();
 	}
 
 	private static void concatenateVariables(boolean useOldValueOnOverlap, NetcdfFile sourceNetCdfFile, List<Variable> variablesToBeAdded, NetcdfFileWriter netcdfFileWriter, Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap) throws IOException {
