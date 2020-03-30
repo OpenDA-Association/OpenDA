@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+	<!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+		<alias key="D3D_HOME"/>
+		<alias key="OPENDADIR"/>
+		<alias key="instanceDir"/>
+		<alias key="templateDir"/>
+		<alias key="runid"/>
+		<alias key="exedir"/>
+		<alias key="linexedir"/>
+	</aliasDefinitions>
+	<run>
+		<initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
+		<computeActions>
+			<action workingDirectory="%instanceDir%" windowsExe="%exedir%\run_model.bat" linuxExe="%linexedir%/d_hydro.exe">
+				<arg>config_d_hydro.xml</arg>
+			</action>
+			<action className="org.openda.exchange.dataobjects.NetcdfFileConcatenater" workingDirectory="%instanceDir%">
+				<arg>trih-%runid%_concatenated.nc</arg>
+				<arg>trih-%runid%.nc</arg>
+			</action>
+		</computeActions>
+		<finalizeActions/>
+	</run>
+	<inputOutput>
+		<ioObject className="org.openda.model_delft3d.D3dBctFileDataObject">
+			<file>%runid%.bct</file>
+			<id>bctFile</id>
+		</ioObject>
+		<!-- Model Input File -->
+		<ioObject className="org.openda.model_delft3d.D3dMdFileDataObject">
+			<file>%runid%.mdf</file>
+			<id>mdFile</id>
+			<!-- <arg>%currentTime%</arg> -->
+		</ioObject>
+		<!-- time series results -->
+		<ioObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
+			<file>trih-%runid%.nc</file>
+			<id>trih-file</id>
+			<arg>true</arg>
+		</ioObject>
+		<!-- Reading the model states -->
+		<ioObject className="org.openda.model_delft3d.NetcdfD3dMapDataObject">
+			<file>trim-%runid%.nc</file>
+			<id>states</id>
+			<arg>restart-in</arg>
+			<arg>000000000000</arg>
+		</ioObject>
+	</inputOutput>
+</blackBoxWrapperConfig>
