@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxModelConfig.xsd">
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<wrapperConfig>
+		<file>D3DWrapper.xml</file>
+	</wrapperConfig>
+	<!-- Specify wrapper configuration for which this model is defined -->
+	<aliasValues>
+		<alias key="templateDir" value="./model"/>
+		<alias key="instanceDir" value="./work/work"/>
+		<alias key="runid" value="Est1D"/>
+		<alias key="exedir" value="."/>
+	</aliasValues>
+	<!-- Specify the time interval  NOTE one hour difference!!!!, openDA error!!!-->
+	<!--   <timeInfo start="2015-06-01T00:00:00" end="2015-06-03T00:00:00" /> -->
+	<timeInfoExchangeItems start="Tstart" end="Tstop"/>
+	<exchangeItems>
+		<vector id="allElementsFromIoObject" ioObjectId="trih-file"/>
+		<vector id="allElementsFromIoObject" ioObjectId="states"/>
+		<vector id="allElementsFromIoObject" ioObjectId="mdFile"/>
+		<vector id="allElementsFromIoObject" ioObjectId="bctFile"/>
+	</exchangeItems>
+	<doCleanUp>false</doCleanUp>
+</blackBoxModelConfig>

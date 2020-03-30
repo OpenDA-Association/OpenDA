@@ -80,4 +80,27 @@ public class NetcdfD3dMapDataObjectTest extends TestCase {
 
 	}
 
+	public void testNoZLayers() {
+
+		int exchangeItemID = 2;
+
+		IDataObject netcdfFile = new NetcdfD3dMapDataObject();
+		File testRunDataDir = new File(this.testRunDataDir, "NetcdfD3dMapDataObjectNoZLayers");
+		netcdfFile.initialize(testRunDataDir, new String[]{"trim-NoZLayers.nc"});
+		String[] exchangeItemIDs = netcdfFile.getExchangeItemIDs();
+		System.out.println(Arrays.toString(exchangeItemIDs));
+		assertEquals("#exchange items", 3, exchangeItemIDs.length);
+		IExchangeItem exchangeItem = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[exchangeItemID]);
+		assertNotNull(exchangeItem);
+
+
+		double[] exchangeItemValues = exchangeItem.getValuesAsDoubles();
+		System.out.println("ExchangeItem selected: " + exchangeItemIDs[exchangeItemID]);
+//		System.out.println(Arrays.toString(exchangeItemValues));
+		System.out.println(exchangeItemValues.length);
+
+		//2. Test if we can go back to the right waterlevel (this also tests the writing of history files)
+		netcdfFile.finish();
+	}
+
 }
