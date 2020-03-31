@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- * Dummy Astro Io Object for testing purposes
+ * Dummy Astro DataObject for testing purposes
  */
 public class DummyState extends AbstractDataObject {
 

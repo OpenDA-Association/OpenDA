@@ -20,9 +20,9 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
