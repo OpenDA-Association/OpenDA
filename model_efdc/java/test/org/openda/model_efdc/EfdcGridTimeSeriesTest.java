@@ -80,9 +80,11 @@ public class EfdcGridTimeSeriesTest extends TestCase {
 		//the id is the one-based columnNumber of the column in the file.
 		String id = exchangeItemIDs[3];
         IExchangeItem exchangeItem4 = efdcGridTimeSeriesIoObject.getDataObjectExchangeItem(id);
+        String exId4 = exchangeItem4.getId();
+        assertEquals(id, exId4);
 
 		//check times and values.
-		assertEquals("8", id);
+		assertEquals("8", exId4);
 
         double[] times4 = exchangeItem4.getTimes();
         assertNotNull(times4);
