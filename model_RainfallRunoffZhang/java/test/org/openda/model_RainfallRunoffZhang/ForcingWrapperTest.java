@@ -153,8 +153,10 @@ public class ForcingWrapperTest extends TestCase {
 		String[] exchangeItemIDs = forcingWrapper.getExchangeItemIDs();
 
 		for (String id:exchangeItemIDs) {
-			if (id.equalsIgnoreCase("Precipitation")) {
-				IExchangeItem expectedExchangeItem = forcingWrapper.getDataObjectExchangeItem(id);
+			IExchangeItem expectedExchangeItem = forcingWrapper.getDataObjectExchangeItem(id);
+			String exId = expectedExchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase("Precipitation")) {
 				expectedTimes = expectedExchangeItem.getTimes();
 				expectedValues = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value0, expectedValues[0]);
@@ -180,8 +182,10 @@ public class ForcingWrapperTest extends TestCase {
 		String[] exchangeItemIDs = forcingWrapper.getExchangeItemIDs();
 
 		for (String id:exchangeItemIDs) {
-			if (id.equalsIgnoreCase("potET")) {
-				IExchangeItem expectedExchangeItem = forcingWrapper.getDataObjectExchangeItem(id);
+			IExchangeItem expectedExchangeItem = forcingWrapper.getDataObjectExchangeItem(id);
+			String exId = expectedExchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase("potET")) {
 				expectedTimes = expectedExchangeItem.getTimes();
 				expectedValues = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value0, expectedValues[0]);

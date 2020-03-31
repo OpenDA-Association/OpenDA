@@ -63,8 +63,10 @@ public class EfdcRestartFileTest extends TestCase {
         String[] exchangeItemIDs = efdcRestartFileIoObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id : exchangeItemIDs) {
-            if (id.equals(startTimeExchangeItemId)) {
-				IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
+        	IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
+        	String exId = exchangeItem.getId();
+        	assertEquals(id, exId);
+            if (exId.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
             }
         }
@@ -98,8 +100,10 @@ public class EfdcRestartFileTest extends TestCase {
         String[] exchangeItemIDs = efdcRestartFileIoObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id : exchangeItemIDs) {
-            if (id.equals(startTimeExchangeItemId)) {
-				IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
             }
         }

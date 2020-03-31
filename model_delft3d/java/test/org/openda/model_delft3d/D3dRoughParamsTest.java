@@ -20,6 +20,7 @@
 package org.openda.model_delft3d;
 
 import junit.framework.TestCase;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -54,11 +55,14 @@ public class D3dRoughParamsTest  extends TestCase {
         double delta=0.00001;
         assertEquals(10, n);
 		for (String id : ids) {
-			double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
+			IExchangeItem exchangeItem = roughFile.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			double[] values = exchangeItem.getValuesAsDoubles();
 			assertEquals(1, values.length);
-			System.out.println("Id=" + id + " value=" + values[0]);
+			System.out.println("Id=" + exId + " value=" + values[0]);
 
-			String code = id.substring(id.length() - 1);
+			String code = exId.substring(exId.length() - 1);
 			if (code.matches("A")) {
 				assertEquals(0.1, values[0], delta);
 			} else {
@@ -94,9 +98,12 @@ public class D3dRoughParamsTest  extends TestCase {
         int n=ids.length;
         assertEquals(137, n);
 		for (String id : ids) {
-			double[] values = roughFile.getDataObjectExchangeItem(id).getValuesAsDoubles();
+			IExchangeItem exchangeItem = roughFile.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id,exId);
+			double[] values = exchangeItem.getValuesAsDoubles();
 			assertEquals(1, values.length);
-			System.out.println("Id=" + id + " value=" + values[0]);
+			System.out.println("Id=" + exId + " value=" + values[0]);
 		}
 
         // change some parameter
@@ -203,8 +210,11 @@ public class D3dRoughParamsTest  extends TestCase {
 
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id : ids) {
-        	Double value = (Double) paramsFile.getDataObjectExchangeItem(id).getValues();
-            String out = "Parameter id=" + id + " value=" + value;
+			IExchangeItem exchangeItem = paramsFile.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+        	Double value = (Double) exchangeItem.getValues();
+            String out = "Parameter id=" + exId + " value=" + value;
             System.out.println(out);
         }
     }

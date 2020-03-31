@@ -51,9 +51,8 @@ public class EfdcTimeSeriesTest extends TestCase {
     /**
      * Test writing time series to an existing ASER.INP file.
      *
-     * @throws Exception
-     */
-    public void testWriteAserTimeSeries() throws Exception {
+	 */
+    public void testWriteAserTimeSeries() {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String outputFileName = "efdcTimeSeriesTest/output/ASER.INP";
         File outputFile = new File(testRunDataDir, outputFileName);
@@ -87,8 +86,10 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         for (String id: exchangeItemIDs) {
-            if ("TSTART1".equalsIgnoreCase(id)) {
-				IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+ 			String exId = exchangeItem.getId();
+ 			assertEquals(id, exId);
+			if ("TSTART1".equalsIgnoreCase(exId)) {
 				exchangeItem.setValues(startTime);
             }
         }
@@ -104,8 +105,10 @@ public class EfdcTimeSeriesTest extends TestCase {
 				//get exchangeItem.
 				IExchangeItem currentExchangeItem = null;
 				for (String id : exchangeItemIDs) {
-					if (timeSeriesId.equalsIgnoreCase(id)) {
-						currentExchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+					currentExchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+					String exId = currentExchangeItem.getId();
+					assertEquals(id, exId);
+					if (timeSeriesId.equalsIgnoreCase(exId)) {
 						break;
 					}
 				}
@@ -136,9 +139,8 @@ public class EfdcTimeSeriesTest extends TestCase {
     /**
      * Test writing time series to an existing CWQSR**.INP file.
      *
-     * @throws Exception
-     */
-    public void testWriteCwqsrTimeSeries() throws Exception {
+	 */
+    public void testWriteCwqsrTimeSeries() {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String outputFileName = "efdcTimeSeriesTest/output/CWQSR02.INP";
         File outputFile = new File(testRunDataDir, outputFileName);
@@ -168,16 +170,18 @@ public class EfdcTimeSeriesTest extends TestCase {
         }
         for (String id : exchangeItemIDs) {
 			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
-			if ("TSTART1".equalsIgnoreCase(id)) {
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if ("TSTART1".equalsIgnoreCase(exId)) {
 				exchangeItem.setValues(startTime);
 
-            } else if ("1.CWQSR02".equalsIgnoreCase(id)) {
+            } else if ("1.CWQSR02".equalsIgnoreCase(exId)) {
                 double[] values = new double[]{6.7181, 6.7181, 7.1966, 5.7133, 4.5170, 1.3589, 0.4306,
                         1.1867, 1.2728, 1.7896, 2.1628, 1.7800, 0.1436, 0.1436};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("2.CWQSR02".equalsIgnoreCase(id)) {
+            } else if ("2.CWQSR02".equalsIgnoreCase(exId)) {
                 double[] values = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
@@ -196,9 +200,8 @@ public class EfdcTimeSeriesTest extends TestCase {
     /**
      * Test writing time series to an existing PSER.INP file.
      *
-     * @throws Exception
-     */
-    public void testWritePserTimeSeriesWithTimeZone() throws Exception {
+	 */
+    public void testWritePserTimeSeriesWithTimeZone() {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String outputFileName = "efdcTimeSeriesTest/output/PSER.INP";
         File outputFile = new File(testRunDataDir, outputFileName);
@@ -229,9 +232,10 @@ public class EfdcTimeSeriesTest extends TestCase {
         double[] values = new double[]{4.7, 4.8, 4.9, 2.06};
         for (String id : exchangeItemIDs) {
 			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
-			if ("TSTART1".equalsIgnoreCase(id)) {
+			String exId = exchangeItem.getId();
+			if ("TSTART1".equalsIgnoreCase(exId)) {
                 exchangeItem.setValues(startTime);
-            } else if ("1.PSER".equalsIgnoreCase(id)) {
+            } else if ("1.PSER".equalsIgnoreCase(exId)) {
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
             }
@@ -249,9 +253,8 @@ public class EfdcTimeSeriesTest extends TestCase {
     /**
      * Test writing time series to an existing QSER.INP file.
      *
-     * @throws Exception
-     */
-    public void testWriteQserTimeSeries() throws Exception {
+	 */
+    public void testWriteQserTimeSeries() {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String outputFileName = "efdcTimeSeriesTest/output/QSER.INP";
         File outputFile = new File(testRunDataDir, outputFileName);
@@ -274,28 +277,30 @@ public class EfdcTimeSeriesTest extends TestCase {
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         for (String id : exchangeItemIDs) {
 			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
-			if ("TSTART23".equalsIgnoreCase(id)) {
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if ("TSTART23".equalsIgnoreCase(exId)) {
                 exchangeItem.setValues(startTime);
 
-            } else if ("1.QSER".equalsIgnoreCase(id)) {
+            } else if ("1.QSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{1, -2.2, 3.33, -4.444, 5.5555};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("2.QSER".equalsIgnoreCase(id)) {
+            } else if ("2.QSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{8888.8888, 99999.9999, 1000000000, 10000000.00000001, 0.0000000001};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("3.QSER".equalsIgnoreCase(id)) {
+            } else if ("3.QSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, Double.NaN, 55564.0};
                 double[] values = new double[]{1, Double.NaN, Double.NaN, 4, 5};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("4.QSER".equalsIgnoreCase(id)) {
+            } else if ("4.QSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55563.0, 55564.0};
                 double[] values = new double[]{1.1574E-05, 0, 2.8E-06};
                 exchangeItem.setTimes(times);
@@ -315,9 +320,8 @@ public class EfdcTimeSeriesTest extends TestCase {
     /**
      * Test writing time series to an existing TSER.INP file.
      *
-     * @throws Exception
-     */
-    public void testWriteTserTimeSeries() throws Exception {
+	 */
+    public void testWriteTserTimeSeries() {
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String outputFileName = "efdcTimeSeriesTest/output/TSER.INP";
         File outputFile = new File(testRunDataDir, outputFileName);
@@ -340,28 +344,30 @@ public class EfdcTimeSeriesTest extends TestCase {
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         for (String id : exchangeItemIDs) {
 			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
-			if ("TSTART1".equalsIgnoreCase(id)) {
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if ("TSTART1".equalsIgnoreCase(exId)) {
                 exchangeItem.setValues(startTime);
 
-            } else if ("1.TSER".equalsIgnoreCase(id)) {
+            } else if ("1.TSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{1, -2.2, 3.33, -4.444, 5.5555};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("2.TSER".equalsIgnoreCase(id)) {
+            } else if ("2.TSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, 55563.5, 55564.0};
                 double[] values = new double[]{8888.8888, 99999.9999, 1000000000, 10000000.00000001, 0.0000000001};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("3.TSER".equalsIgnoreCase(id)) {
+            } else if ("3.TSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55562.5, 55563.0, Double.NaN, 55564.0};
                 double[] values = new double[]{1, Double.NaN, Double.NaN, 4, 5};
                 exchangeItem.setTimes(times);
                 exchangeItem.setValuesAsDoubles(values);
 
-            } else if ("4.TSER".equalsIgnoreCase(id)) {
+            } else if ("4.TSER".equalsIgnoreCase(exId)) {
                 double[] times = new double[]{55562.0, 55563.0, 55564.0};
                 double[] values = new double[]{1.1574E-05, 0, 2.8E-06};
                 exchangeItem.setTimes(times);

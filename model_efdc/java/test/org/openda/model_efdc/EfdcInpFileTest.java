@@ -68,9 +68,11 @@ public class EfdcInpFileTest extends TestCase {
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id  : exchangeItemIDs) {
         	IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
-            if (id.equals(startTimeExchangeItemId)) {
+        	String exId = exchangeItem.getId();
+        	assertEquals(id, exId);
+            if (exId.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
-            } else if (id.equals(endTimeExchangeItemId)) {
+            } else if (exId.equals(endTimeExchangeItemId)) {
                 exchangeItem.setValues(endDate);
             }
         }

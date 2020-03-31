@@ -68,9 +68,11 @@ public class EfdcEventTox2InpFileTest extends TestCase {
         String[] exchangeItemIDs = efdcEventTox2InpIoObject.getExchangeItemIDs();
         for (String id : exchangeItemIDs) {
 			IExchangeItem exchangeItem = efdcEventTox2InpIoObject.getDataObjectExchangeItem(id);
-			if (id.equals(startTimeExchangeItemId)) {
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
-            } else if (id.equals(endTimeExchangeItemId)) {
+            } else if (exId.equals(endTimeExchangeItemId)) {
                 exchangeItem.setValues(endDate);
             }
         }

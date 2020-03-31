@@ -50,15 +50,17 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		String[] exchangeItemIDs = ioObject.getExchangeItemIDs();
 
         for(String id:exchangeItemIDs){
+			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
 
-			if(id.equalsIgnoreCase("source.factory1,discharge")){
-				IExchangeItem ex = ioObject.getDataObjectExchangeItem(id);
-				assertEquals("id", "source.factory1.discharge", id);
+			if(exId.equalsIgnoreCase("source.factory1,discharge")){
+				assertEquals("exId", "source.factory1.discharge", exId);
 
-				String quantityId = ((TimeSeries) ex).getQuantityId();
+				String quantityId = ((TimeSeries) exchangeItem).getQuantityId();
 				assertEquals("ex.getQuantityId()", "discharge", quantityId);
 
-				String unitId = ((TimeSeries) ex).getUnitId();
+				String unitId = ((TimeSeries) exchangeItem).getUnitId();
 				assertEquals("ex.getUnitId()", "kg/s", unitId);
 
 				// TODO weer activeren als IExchangeItem ex
@@ -67,21 +69,20 @@ public class SimpleBbAsciiFileTest extends TestCase {
 				//assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
 
 				//public Object getValues();
-				TimeSeries seriesRef = (TimeSeries) ex.getValues();
+				TimeSeries seriesRef = (TimeSeries) exchangeItem.getValues();
 				double[] timesRef = seriesRef.getTimesRef();
 				assertEquals("times[0]", 51513.0, timesRef[0], 0.0001);
 				//public double[] getValuesAsDoubles();
-				double[] valuesCopy = ex.getValuesAsDoubles();
+				double[] valuesCopy = exchangeItem.getValuesAsDoubles();
 				assertEquals("values[1]", 0.0, valuesCopy[0], 0.0001);
 			}
 
-			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
 			if(exchangeItem instanceof TimeSeries){
 				TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
 				TimeSeries series= (TimeSeries)exchangeItem;
 				noosFormatter.writeToStandardOut(series);
 			}else if(exchangeItem instanceof DoublesExchangeItem){
-				System.out.println("Item "+id+" ="+ exchangeItem.toString());
+				System.out.println("Item "+exId+" ="+ exchangeItem.toString());
 			}
 		}
 	}
@@ -93,9 +94,11 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		//TODO fix data string
 		String[] exchangeItemIDs = ioObject.getExchangeItemIDs();
 		for(String id:exchangeItemIDs){
-			if(id.equalsIgnoreCase("source.factory1,discharge")){
-				IExchangeItem ex = ioObject.getDataObjectExchangeItem(id);
-				assertEquals("id", "source.factory1.discharge", id);
+			IExchangeItem ex = ioObject.getDataObjectExchangeItem(id);
+			String exId = ex.getId();
+			assertEquals(id, exId);
+			if(exId.equalsIgnoreCase("source.factory1,discharge")){
+				assertEquals("exId", "source.factory1.discharge", exId);
 
 				String quantityId = ((TimeSeries) ex).getQuantityId();
 				assertEquals("ex.getQuantityId()", "discharge", quantityId);
@@ -117,7 +120,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 				assertEquals("values[1]", 0.0, valuesCopy[0], 0.0001);
 			}
 
-			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(exId);
 			if(exchangeItem instanceof TimeSeries){
 				TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
 				noosFormatter.writeToStandardOut((TimeSeries)exchangeItem);
@@ -144,23 +147,25 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
 			String id = exchangeItemIDs[i];
 			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
-			System.out.println("item = " + i + " id=" + id);
-			if (id.equalsIgnoreCase("concentration.grid")) {
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			System.out.println("item = " + i + " id=" + exId);
+			if (exId.equalsIgnoreCase("concentration.grid")) {
 				double[] values = exchangeItem.getValuesAsDoubles();
 				values[0] = 100.0;
 				exchangeItem.setValuesAsDoubles(values);
 			}
-			if (id.equalsIgnoreCase("source.factory1.discharge")) {
+			if (exId.equalsIgnoreCase("source.factory1.discharge")) {
 				double[] values = exchangeItem.getValuesAsDoubles();
 				values[0] = 123.0;
 				exchangeItem.setValuesAsDoubles(values);
 			}
-			if (id.equalsIgnoreCase("bound.left.concentration")) {
+			if (exId.equalsIgnoreCase("bound.left.concentration")) {
 				double[] values = exchangeItem.getValuesAsDoubles();
 				values[0] = 10.0;
 				exchangeItem.setValuesAsDoubles(values);
 			}
-			if (id.equalsIgnoreCase("output.locA.concentration")) {
+			if (exId.equalsIgnoreCase("output.locA.concentration")) {
 				double[] values = exchangeItem.getValuesAsDoubles();
 				values[0] = 102030.0;
 				exchangeItem.setValuesAsDoubles(values);
@@ -190,10 +195,12 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		ioObject.initialize(testRunDataDir, args);
 
 		for(String id:ioObject.getExchangeItemIDs()){
-			System.out.println("looking at item: "+id);
 			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
-			if(id.equalsIgnoreCase("startTime")){
-				System.out.println("changing item: "+id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			System.out.println("looking at item: "+exId);
+			if(exId.equalsIgnoreCase("startTime")){
+				System.out.println("changing item: "+exId);
 				double[] startAsMjd = exchangeItem.getValuesAsDoubles();
 				System.out.println("startTime="+startAsMjd[0]);
 				assertEquals(51513.0, startAsMjd[0], 0.0001);
@@ -201,8 +208,8 @@ public class SimpleBbAsciiFileTest extends TestCase {
 				startAsMjd[0]=startAsMjd[0]+2.0/60.0/24.0; //start+2minutes
 				exchangeItem.setValuesAsDoubles(startAsMjd);
 			}
-			if(id.equalsIgnoreCase("endTime")){
-				System.out.println("changing item: "+id);
+			if(exId.equalsIgnoreCase("endTime")){
+				System.out.println("changing item: "+exId);
 				double[] endAsMjd = exchangeItem.getValuesAsDoubles();
 				System.out.println("endTime="+endAsMjd[0]);
 				assertEquals(51513.069444444, endAsMjd[0], 0.0001);
