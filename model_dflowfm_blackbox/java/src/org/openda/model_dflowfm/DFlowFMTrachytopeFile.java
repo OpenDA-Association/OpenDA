@@ -20,7 +20,6 @@
 
 package org.openda.model_dflowfm;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 
