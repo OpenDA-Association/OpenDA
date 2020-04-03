@@ -8,13 +8,18 @@ Created on Wed Oct 10 14:39:10 2018
 
 @author: hegeman
 """
-
+import warnings
 import os
 from py4j.java_gateway import JavaGateway
 
 import py_openda.utils.py4j_utils as utils
 
-gateway = JavaGateway()   # connect to the JVM
+try:
+    gateway = JavaGateway()   # connect to the JVM
+except:
+    warnings.warn("Cannot connect to JVM did you start oda_py4j. Java building blocks cannot be used")
+
+
 
 #os.chdir('/v3/Stage/Rick/openda/openda_public/py_openda/examples/py_swan_calibration')
 scriptdir = os.getcwd()

@@ -12,12 +12,16 @@ Created on Tue Nov 20 15:27:05 2018
 
 @author: hegeman
 """
-
+import warnings
 import os
 from py4j.java_gateway import JavaGateway
 import py_openda.utils.py4j_utils as utils
 
-gateway = JavaGateway()
+try:
+    gateway = JavaGateway()   # connect to the JVM
+except:
+    warnings.warn("Cannot connect to JVM did you start oda_py4j. Java building blocks cannot be used")
+
 
 
 class JModelFactory:
