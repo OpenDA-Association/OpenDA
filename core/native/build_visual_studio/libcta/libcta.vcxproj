@@ -104,7 +104,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;FTN_CAPITAL;HAVE_LIBNETCDF;USE_MPI;CTALIB;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;HAVE_STRUCT_TIMESPEC;FTN_CAPITAL;HAVE_LIBNETCDF;USE_MPI;CTALIB;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\external\pthreads\include\win32;..\..\external\sqlite3;..\..\external\mpi\win_mpich2\include;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -133,7 +133,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;FTN_CAPITAL;HAVE_LIBNETCDF;USE_MPI;CTALIB;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;HAVE_STRUCT_TIMESPEC;FTN_CAPITAL;HAVE_LIBNETCDF;USE_MPI;CTALIB;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\external\pthreads\include\win32;..\..\external\sqlite3;..\..\external\mpi\win_mpich2\include;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\include</AdditionalIncludeDirectories>
     </ClCompile>
