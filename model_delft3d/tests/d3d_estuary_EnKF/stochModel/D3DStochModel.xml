@@ -17,6 +17,8 @@
 				</exchangeItems>
 			</noiseModel>
 			<vector id="S1"/>
+			<vector id="U1"/>
+			<vector id="V1"/>
 		</state>
 		<predictor>
 			<vector id="S1.obs" sourceVectorId="S1.ZWL"/>
