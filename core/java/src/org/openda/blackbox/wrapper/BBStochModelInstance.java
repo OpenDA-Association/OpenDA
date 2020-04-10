@@ -1368,9 +1368,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			System.out.println("noisemodel.compute until "+targetTime);
 			//TODO add check on time-span of noise model.
 			noiseModel.compute(targetTime);
-			if(!this.doAutomaticNoiseGeneration){
-				continue;
-			}
 			for (NoiseModelExchangeItemConfig exchangeItemConfig : noiseModelConfig.getExchangeItemConfigs()) {
 				double[] noiseModelEITimes;
 				IPrevExchangeItem noiseModelExchangeItem = noiseModel.getExchangeItem(exchangeItemConfig.getId());
