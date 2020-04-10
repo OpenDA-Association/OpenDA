@@ -107,6 +107,21 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		checkConcatenatedValues(firstFile, targetFile, secondFile, 6);
 	}
 
+	public void testNetcdfFloats() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateFloatValues");
+		File firstFile = new File(testRunDataSubDir, "rrunoff_201250_floats.nc");
+		File targetFile = new File(testRunDataSubDir, "concatenated_rrrunoff_floats.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		assertFalse(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+		File secondFile = new File(testRunDataSubDir, "rrunoff_201257_floats.nc");
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+
+		checkConcatenatedValues(firstFile, targetFile, secondFile, 6);
+	}
+
 	public void testNetcdfFixedTimeDimensionUseOldValueOnOverlapConcatenation() throws IOException {
 		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateOldValueOnOverlap");
 		File firstFile = new File(testRunDataSubDir, "rrunoff_201250.nc");
@@ -130,9 +145,9 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 			firstNetcdf = NetcdfFile.open(firstFile.toString());
 			secondNetcdf = NetcdfFile.open(secondFile.toString());
 			concatenatedNetcdf = NetcdfFile.open(targetFile.toString());
-			double[] firstValues = (double[]) firstNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
-			double[] secondValues = (double[]) secondNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
-			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable("Runoff").read().copyTo1DJavaArray();
+			double[] firstValues = (double[]) firstNetcdf.findVariable("Runoff").read().get1DJavaArray(Double.TYPE);
+			double[] secondValues = (double[]) secondNetcdf.findVariable("Runoff").read().get1DJavaArray(Double.TYPE);
+			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable("Runoff").read().get1DJavaArray(Double.TYPE);
 			assertEquals(firstValues.length + secondValues.length - 1, concatenatedValues.length);
 			for (int i = 0; i < split; i++) {
 				assertEquals(firstValues[i], concatenatedValues[i]);

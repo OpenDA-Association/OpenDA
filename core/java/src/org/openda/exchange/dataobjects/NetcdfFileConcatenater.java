@@ -27,6 +27,7 @@ import org.openda.utils.generalJavaUtils.StringUtilities;
 
 import ucar.ma2.Array;
 import ucar.ma2.ArrayDouble;
+import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.*;
 import ucar.nc2.units.DateUnit;
@@ -69,12 +70,17 @@ public class NetcdfFileConcatenater {
 		}
 		try {
 			if (!targetNetcdfFile.exists()) {
-				NetcdfFile netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
-				Dimension time = netcdfToAdd.findDimension("time");
-				if (time != null && time.isUnlimited()) {
-				BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
-			} else {
-					rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
+				NetcdfFile netcdfToAdd = null;
+				try {
+					netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+					Dimension time = netcdfToAdd.findDimension("time");
+					if (time != null && time.isUnlimited()) {
+						BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
+					} else {
+						rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
+					}
+				} finally {
+					if (netcdfToAdd != null) netcdfToAdd.close();
 				}
 			} else {
 				concatenateNetcdfFiles(useOldValueOnOverlap, netcdfFileToBeAdded, targetNetcdfFile);
@@ -85,87 +91,100 @@ public class NetcdfFileConcatenater {
 	}
 
 	private static void concatenateNetcdfFiles(boolean useOldValueOnOverlap, File netcdfFileToBeAdded, File targetNetcdfFile) throws IOException {
-		NetcdfFile sourceNetCdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath() );
-		List<Variable> variablesToBeAdded = sourceNetCdfFile.getVariables();
-		NetcdfFileWriter netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath() );
-
-		Map<Variable, Array> variableArraysMap = new HashMap<>();
-		Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
-
-		concatenateVariables(useOldValueOnOverlap, sourceNetCdfFile, variablesToBeAdded, netcdfFileWriter, variableArraysMap, timeVariableArraysMap);
+		NetcdfFile sourceNetcdfFile = null;
+		NetcdfFileWriter netcdfFileWriter = null;
 		try {
-			for (Map.Entry<Variable, Array> entry : timeVariableArraysMap.entrySet()) {
-				netcdfFileWriter.write(entry.getKey(), entry.getValue());
+			sourceNetcdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+			List<Variable> variablesToBeAdded = sourceNetcdfFile.getVariables();
+			netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath());
+
+			Map<Variable, Array> variableArraysMap = new HashMap<>();
+			Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
+
+			concatenateVariables(useOldValueOnOverlap, sourceNetcdfFile, variablesToBeAdded, netcdfFileWriter, variableArraysMap, timeVariableArraysMap);
+			try {
+				for (Map.Entry<Variable, Array> entry : timeVariableArraysMap.entrySet()) {
+					netcdfFileWriter.write(entry.getKey(), entry.getValue());
+				}
+				for (Map.Entry<Variable, Array> entry : variableArraysMap.entrySet()) {
+					netcdfFileWriter.write(entry.getKey(), entry.getValue());
+				}
+			} catch (InvalidRangeException e) {
+				throw new RuntimeException("Error rewriting variables", e);
 			}
-			for (Map.Entry<Variable, Array> entry : variableArraysMap.entrySet()) {
-				netcdfFileWriter.write(entry.getKey(), entry.getValue());
-			}
-		} catch (InvalidRangeException e) {
-			throw new RuntimeException("Error rewriting variables", e);
+			netcdfFileWriter.flush();
+		} finally {
+			if (netcdfFileWriter != null) netcdfFileWriter.close();
+			if (sourceNetcdfFile != null) sourceNetcdfFile.close();
 		}
-		netcdfFileWriter.flush();
-		netcdfFileWriter.close();
 	}
 
 	private static void concatenateVariables(boolean useOldValueOnOverlap, NetcdfFile sourceNetCdfFile, List<Variable> variablesToBeAdded, NetcdfFileWriter netcdfFileWriter, Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap) throws IOException {
-				for (Variable variable : variablesToBeAdded) {
-					if (NetcdfUtils.isTimeVariable(variable)) continue;
-					Variable timeVariableToBeAdded = NetcdfUtils.findTimeVariableForVariable(variable, sourceNetCdfFile);
-					if (timeVariableToBeAdded == null) continue;
-					Variable targetVariable = netcdfFileWriter.findVariable(variable.getFullNameEscaped());
-					if (targetVariable == null) continue;
-					Variable timeVariableTarget = NetcdfUtils.findTimeVariableForVariable(targetVariable, netcdfFileWriter.getNetcdfFile());
-					if (timeVariableTarget == null) continue;
-					boolean concatenateTimeVariable = !timeVariableArraysMap.containsKey(timeVariableTarget);
+		for (Variable variable : variablesToBeAdded) {
+			if (NetcdfUtils.isTimeVariable(variable)) continue;
+			Variable timeVariableToBeAdded = NetcdfUtils.findTimeVariableForVariable(variable, sourceNetCdfFile);
+			if (timeVariableToBeAdded == null) continue;
+			Variable targetVariable = netcdfFileWriter.findVariable(variable.getFullNameEscaped());
+			if (targetVariable == null) continue;
+			Variable timeVariableTarget = NetcdfUtils.findTimeVariableForVariable(targetVariable, netcdfFileWriter.getNetcdfFile());
+			if (timeVariableTarget == null) continue;
+			boolean concatenateTimeVariable = !timeVariableArraysMap.containsKey(timeVariableTarget);
 
-					List<Dimension> addedDimensions = variable.getDimensions();
-					if (addedDimensions.size() != 2) {
-						LOGGER.warn("Cannot concatenate '{}'", targetVariable.getShortName());
-						continue;
-					}
-					List<Dimension> targetDimensions = targetVariable.getDimensions();
-					if (targetDimensions.size() != addedDimensions.size())
-						throw new RuntimeException(String.format("Dimensions mismatch for variable '%s' when concatenating files.", variable.getShortName()));
+			List<Dimension> addedDimensions = variable.getDimensions();
+			if (addedDimensions.size() != 2) {
+				LOGGER.warn("Cannot concatenate '{}'", targetVariable.getShortName());
+				continue;
+			}
+			List<Dimension> targetDimensions = targetVariable.getDimensions();
+			if (targetDimensions.size() != addedDimensions.size())
+				throw new RuntimeException(String.format("Dimensions mismatch for variable '%s' when concatenating files.", variable.getShortName()));
 
-					Dimension targetLocationDimension = targetDimensions.get(1);
-					Dimension addedLocationDimension = addedDimensions.get(1);
-					int targetLocationDimensionLength = targetLocationDimension.getLength();
-					if (addedLocationDimension.getLength() != targetLocationDimensionLength) throw new RuntimeException("Variables from source and target must have same location dimension size");
-					double[][] targetValues = (double[][]) targetVariable.read().copyToNDJavaArray();
-					double[][] addedValues = (double[][]) variable.read().copyToNDJavaArray();
+			Dimension targetLocationDimension = targetDimensions.get(1);
+			Dimension addedLocationDimension = addedDimensions.get(1);
+			int targetLocationDimensionLength = targetLocationDimension.getLength();
+			if (addedLocationDimension.getLength() != targetLocationDimensionLength) throw new RuntimeException("Variables from source and target must have same location dimension size");
+			double[][] targetValues = getTargetValuesAsDoubles(targetVariable, targetDimensions);
+			double[][] addedValues = getTargetValuesAsDoubles(variable, addedDimensions);
 
-					Array read = timeVariableTarget.read();
+			Array read = timeVariableTarget.read();
 			double[] timesTarget = (double[]) read.get1DJavaArray(Double.TYPE);
-					String timeVariableTargetUnitsString = timeVariableTarget.getUnitsString();
-					double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().get1DJavaArray(Double.TYPE);
-					String timeVariableToBeAddedUnitsString = timeVariableToBeAdded.getUnitsString();
-					DateUnit targetDateUnit;
-					DateUnit toBeAddedDateUnit;
-					try {
-						targetDateUnit = new DateUnit(timeVariableTargetUnitsString);
-						toBeAddedDateUnit = new DateUnit(timeVariableToBeAddedUnitsString);
-					} catch (Exception e) {
-						throw new RuntimeException("Illegal time unit", e);
-					}
-					Dimension timeVariableTargetDimension = timeVariableTarget.getDimension(0);
-					if (!timeVariableTargetDimension.isUnlimited()) throw new RuntimeException("Netcdf target file should have unlimited time dimension");
-					Date targetDateOrigin = targetDateUnit.getDateOrigin();
-					Date addedDateOrigin = toBeAddedDateUnit.getDateOrigin();
-					long timeDif = addedDateOrigin.getTime() - targetDateOrigin.getTime();
-					double timeDiffInUnit = timeDif / (1000 * targetDateUnit.getTimeUnit().getValueInSeconds());
+			String timeVariableTargetUnitsString = timeVariableTarget.getUnitsString();
+			double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().get1DJavaArray(Double.TYPE);
+			String timeVariableToBeAddedUnitsString = timeVariableToBeAdded.getUnitsString();
+			DateUnit targetDateUnit;
+			DateUnit toBeAddedDateUnit;
+			try {
+				targetDateUnit = new DateUnit(timeVariableTargetUnitsString);
+				toBeAddedDateUnit = new DateUnit(timeVariableToBeAddedUnitsString);
+			} catch (Exception e) {
+				throw new RuntimeException("Illegal time unit", e);
+			}
+			Dimension timeVariableTargetDimension = timeVariableTarget.getDimension(0);
+			if (!timeVariableTargetDimension.isUnlimited()) throw new RuntimeException("Netcdf target file should have unlimited time dimension");
+			Date targetDateOrigin = targetDateUnit.getDateOrigin();
+			Date addedDateOrigin = toBeAddedDateUnit.getDateOrigin();
+			long timeDif = addedDateOrigin.getTime() - targetDateOrigin.getTime();
+			double timeDiffInUnit = timeDif / (1000 * targetDateUnit.getTimeUnit().getValueInSeconds());
 
-					double[] convertedTimesToBeAdded = new double[timesToBeAdded.length];
-					for (int i = 0; i < timesToBeAdded.length; i++) {
-						convertedTimesToBeAdded[i] = timesToBeAdded[i] + timeDiffInUnit;
-					}
-					if (convertedTimesToBeAdded[0] < timesTarget[timesTarget.length - 1]) throw new RuntimeException("File to be added has first time before last time of target file");
-					int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
-					if (convertedTimesToBeAdded[0] == timesTarget[timesTarget.length - 1]) {
-						addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, true, useOldValueOnOverlap);
-					} else {
-						addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, false, false);
-					}
-				}
+			double[] convertedTimesToBeAdded = new double[timesToBeAdded.length];
+			for (int i = 0; i < timesToBeAdded.length; i++) {
+				convertedTimesToBeAdded[i] = timesToBeAdded[i] + timeDiffInUnit;
+			}
+			if (convertedTimesToBeAdded[0] < timesTarget[timesTarget.length - 1]) throw new RuntimeException("File to be added has first time before last time of target file");
+			int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
+			if (convertedTimesToBeAdded[0] == timesTarget[timesTarget.length - 1]) {
+				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, true, useOldValueOnOverlap);
+			} else {
+				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, false, false);
+			}
+		}
+	}
+
+	private static double[][] getTargetValuesAsDoubles(Variable targetVariable, List<Dimension> targetDimensions) throws IOException {
+		Array read = targetVariable.read();
+		if (targetVariable.getDataType() == DataType.DOUBLE) return (double[][]) read.copyToNDJavaArray();
+		double[] doubleArray1D = (double[]) read.get1DJavaArray(Double.TYPE);
+		return split(doubleArray1D, targetDimensions.get(1).getLength());
 	}
 
 	private static void rewriteNetcdfFile(File targetNetcdfFile, NetcdfFile netcdfToAdd) throws IOException {
@@ -179,12 +198,12 @@ public class NetcdfFileConcatenater {
 			netcdfWriter.create();
 
 			writeValues(netcdfToAdd, netcdfWriter);
-				} catch (InvalidRangeException e) {
+		} catch (InvalidRangeException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		} finally {
 			if (netcdfWriter != null) netcdfWriter.close();
 		}
-			}
+	}
 
 	private static void writeValues(NetcdfFile netcdfToAdd, NetcdfFileWriter netcdfWriter) throws IOException, InvalidRangeException {
 		List<Variable> variables = netcdfToAdd.getVariables();
@@ -264,4 +283,47 @@ public class NetcdfFileConcatenater {
 		return newDimensions;
 	}
 
+	public static double[][] split(double[] array, int maxArrayLength) {
+		if (array == null)
+			throw new IllegalArgumentException("array == null");
+
+		if (array.length <= maxArrayLength) return new double[][]{array};
+
+		int arrayCount = array.length / maxArrayLength;
+		int restArrayLength = array.length % maxArrayLength;
+		if (restArrayLength != 0) arrayCount++;
+		double[][] res = new double[arrayCount][];
+
+		for (int i = 0, n = array.length / maxArrayLength; i < n; i++) {
+			double[] subArray = new double[maxArrayLength];
+			arraycopy(array, i * maxArrayLength, subArray, 0, maxArrayLength);
+			res[i] = subArray;
+		}
+
+		if (restArrayLength != 0) {
+			double[] subArray = new double[restArrayLength];
+			arraycopy(array, (arrayCount - 1) * maxArrayLength, subArray, 0, restArrayLength);
+			res[arrayCount - 1] = subArray;
+		}
+
+		return res;
+	}
+
+	public static void arraycopy(double[] src, int srcPos, double[] dest, int destPos, int length) {
+		if (length > 10) {
+			System.arraycopy(src, srcPos, dest, destPos, length);
+			return;
+		}
+
+		if (src == dest && destPos > srcPos) {
+			for (int i = srcPos + length - 1, j = destPos + length - 1; i >= srcPos; i--, j--) {
+				dest[j] = src[i];
+			}
+			return;
+		}
+
+		for (int i = srcPos, j = destPos, n = srcPos + length; i < n; i++, j++) {
+			dest[j] = src[i];
+		}
+	}
 }
