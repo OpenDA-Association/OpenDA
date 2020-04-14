@@ -18,23 +18,16 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_RainfallRunoffZhang;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import junit.framework.TestCase;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
-import junit.framework.TestCase;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 /**
  * Tester for a wrapper. The reading of a correct input file and the storing of
@@ -48,13 +41,10 @@ public class InitialStatesWrapperTest extends TestCase {
 
 	// Use openDA test suite.
 	private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
 	// Class types definitions:
 	private String fileName = "initialStatesTestInput.m"; // Needs to be created. 
-	
-	// Reference ids and values.
-	private String id0 = "currentTime";
+
 	private String id1 = "soilMoisture";
 	private String id2 = "gwStorage";
 	private double value0 = 33000;
@@ -67,10 +57,12 @@ public class InitialStatesWrapperTest extends TestCase {
 	protected void setUp() throws IOException {
 		// Use openDA test utilities. This allows the test files to be stored 
 		// in a separate directory from the source code.
-		testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
 		testRunDataDir = testData.getTestRunDataDir();
 		        
 		// Write a test file.
+		// Reference ids and values.
+		String id0 = "currentTime";
 		String line0 = "% " + id0 + " = " + value0 + ", " + " finalTime " + " = " + value0 + System.getProperty("line.separator");
 		String line1 = id1 + " = " + value1 + "; % Some comment."
 				+ System.getProperty("line.separator"); // Correct input line.
@@ -98,7 +90,7 @@ public class InitialStatesWrapperTest extends TestCase {
 	/**
 	 * Cleans up test file created in setUp().
 	 */
-	protected void tearDown() throws Exception {
+	protected void tearDown() {
 		try {
 			File file = new File(testRunDataDir, fileName);
 			Path path = file.toPath();
@@ -119,43 +111,36 @@ public class InitialStatesWrapperTest extends TestCase {
 	public void testReadInput() {
 
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface ioObject = new InitialStatesWrapper();
-		String args[] = {};
+		AbstractDataObject dataObject = new InitialStatesWrapper();
+		String[] args = {fileName};
 		double[] expectedTimes = new double[1];
 		double[] expectedTimes2 = new double[1];
-		double[] expectedValue = new double[1];
+		double[] expectedValue;
 		
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		ioObject.initialize(testRunDataDir, fileName, args);
+		dataObject.initialize(testRunDataDir, args);
 
 		// 2 exchange items should be present: soilMoistureExchangeItem and
 		// gwStorageExchangeItem.
-		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				// String getId();
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id1, expectedId);
-
-				// public Object getValues();
-				expectedTimes = (double[]) expectedExchangeItem.getTimes();
-				expectedValue = (double[]) expectedExchangeItem.getValuesAsDoubles();
+		for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase(id1)) {
+				expectedTimes = exchangeItem.getTimes();
+				expectedValue = exchangeItem.getValuesAsDoubles();
 				assertEquals(value1, expectedValue[0]);
 				assertEquals(value0, expectedTimes[0]);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id2, expectedId);
-
-				expectedTimes2 = (double[]) expectedExchangeItem.getTimes();
-				expectedValue = (double[]) expectedExchangeItem.getValuesAsDoubles();
+			if (exId.equalsIgnoreCase(id2)) {
+				expectedTimes2 = exchangeItem.getTimes();
+				expectedValue = exchangeItem.getValuesAsDoubles();
 				assertEquals(value2, expectedValue[0]);
 				assertEquals(value0, expectedTimes2[0]);
-				
-				
+
+
 			}
 		}
 
@@ -165,36 +150,38 @@ public class InitialStatesWrapperTest extends TestCase {
 	
 	/**
 	 * Test whether or not the new initial states are written to file.
-	 * @throws FileNotFoundException 
 	 */
 	
-	public void testFinish() throws FileNotFoundException {
+	public void testFinish() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface initialStatesWrapper = new InitialStatesWrapper();
-		String args[] = {};
+		AbstractDataObject initialStatesWrapper = new InitialStatesWrapper();
+		String[] args = {fileName};
 		double[] times = new double[2];
 		double[] values = new double[2];
 		double[] values2 = new double[2];
 				
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		initialStatesWrapper.initialize(testRunDataDir, fileName, args);
+		initialStatesWrapper.initialize(testRunDataDir, args);
 		
 		// Modify times and values in exchange items
-		IExchangeItem[] exchangeItems = initialStatesWrapper.getExchangeItems();
+		String[] exchangeItemIDs = initialStatesWrapper.getExchangeItemIDs();
 		times[0] = value0 + 1;
 		times[1] = value0 + 2;
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
+		for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = initialStatesWrapper.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase(id1)) {
 				values[0] = value1 + 1;
 				values[1] = value1 + 2;
-				exchangeItems[item].setValues(values);
-				exchangeItems[item].setTimes(times);
-			} else if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
+				exchangeItem.setValues(values);
+				exchangeItem.setTimes(times);
+			} else if (exId.equalsIgnoreCase(id2)) {
 				values2[0] = value2 + 1;
 				values2[1] = value2 + 2;
-				exchangeItems[item].setValues(values2);
-				exchangeItems[item].setTimes(times);
-				
+				exchangeItem.setValues(values2);
+				exchangeItem.setTimes(times);
+
 			}
 		}
 		
@@ -210,7 +197,7 @@ public class InitialStatesWrapperTest extends TestCase {
 		FileInputStream in = new FileInputStream(testFile);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
 		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		boolean eof = false; // End of file cache.
 		double[] expectedTime = new double[2];
 		double[] expectedSoilMoisture = new double[1];
 		double[] expectedGwStorage = new double[1];
@@ -236,7 +223,7 @@ public class InitialStatesWrapperTest extends TestCase {
 				// Now parse the line.
 				// Remove comments at end of line.
 				if (line.indexOf("%") > 1) {
-					String columns[] = line.split("%");
+					String[] columns = line.split("%");
 					line = columns[0];
 				}
 				if (line.startsWith("%")) {
@@ -252,14 +239,14 @@ public class InitialStatesWrapperTest extends TestCase {
 							columns[3] = columns[3].trim();
 							// Remove comma from columns[3].
 							String[] tempTime = columns[3].split(",");
-							expectedTime[0] = Double.valueOf(tempTime[0]);
+							expectedTime[0] = Double.parseDouble(tempTime[0]);
 						} else {
 							System.out.println("InitialStatesWrapperTest.TestFinish(): Trouble reading current time.");
 						}
 						
 						if (columns[4].equals("finalTime")) {
 							columns[6] = columns[6].trim();
-							expectedTime[1] = Double.valueOf(columns[6]);
+							expectedTime[1] = Double.parseDouble(columns[6]);
 						} else {
 							System.out.println("InitialStatesWrapperTest.TestFinish(): Trouble reading final time.");
 						}
@@ -279,18 +266,18 @@ public class InitialStatesWrapperTest extends TestCase {
 													// the beginning or the end
 													// of the string.
 					columns[1] = columns[1].trim();
-					// Remove the semicollon at the end of the string in
+					// Remove the semicolon at the end of the string in
 					// columns[1].
-					String temp[] = columns[1].split(";");
+					String[] temp = columns[1].split(";");
 					columns[1] = temp[0];
 					// Parse the values to the key caches in Java.
 					// --> Add if-loops for variables to be read here.
 					if (columns[0].equals("soilMoisture")) {
-						expectedSoilMoisture[0] = Double.valueOf(columns[1]);
+						expectedSoilMoisture[0] = Double.parseDouble(columns[1]);
 						System.out.println(">> soilMoistureCache = " + expectedSoilMoisture[0]);
 					}
 					if (columns[0].equals("gwStorage")) {
-						expectedGwStorage[0] = Double.valueOf(columns[1]);
+						expectedGwStorage[0] = Double.parseDouble(columns[1]);
 						System.out.println(">> gwStorageCache = " + expectedGwStorage[0]);
 					}
 				}
