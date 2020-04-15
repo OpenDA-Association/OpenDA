@@ -14,20 +14,22 @@ before_install:
 
 install: ./travis_install.sh
 script: ./travis_test.sh 
-jobs:
-  include:
-  - stage: deploy
-    script: skip
-    before_deploy: ant tgz-github
-    jdk: openjdk11
-    deploy:
-      provider: releases
-      api_key:
-        secure: TW78Dlk7N7/0pkyY/sQfId7Po5xfuGjn0AX+DMEoV7itIar86wTtfzig0Hdz5wD9RBh7QdNjej8km+gA8jaoAhnJQO8u7tBovuxTuhYE6qbJ+OiIsXMK/OPDciJGwGz6/fLzza81kYbuz0wPkH+M/lVeYkuoJtOV7JgE1Ou+x5DvWZYZvKVmsGEJP8K7WApjgnTRIYwL4hB2Qn/bJoISX502uj2TY711stth5BSEQFUJ/95hWJAwf9TK1Ctf85vUmFUsF3ZCVI9ZasQvJz5ql11RPQr6BAWuHkKU0qQXr1S3W8u3it/IdxO+aGb0aBCwbx14OvNk+Q2z5ltou0eQH9Xz0ktbd5DxLNuzDCwN9IT+ZSbrcF3TBYgiFuqQMQCDwQYHPMNhGwZmt92KYE3jqpc1Jz2lBUIbCrlf6h2R37MOq+AHJ9+f8U7NsDb8rL7AHxox8g9cNeWvOvRNySGbf7Oq88dq4d3hq63LZ6dOSHSsUqKMiT2f2yTVtDIZfVB0SGtF5JL9D2dLkyPM5ES6IK+o5yOy1mznB26+ov49WxGVzeznjqTaFUuSMqPeaqXKWvjtPW3OkHXyrAWbwltCtMC0SeKXyP3/1kBD/+mf7JAXjjWnd0GYLn3KlLyYA3dU7bT6kgvJitjqmtZ22tOOXyL1OabwFyP393AOsPsMbCE=
-      file_glob: true
-      file: 
-        - OpenDA_linux.tgz
-      skip_cleanup: true
-      on:
-        repo: OpenDA-Association/OpenDA
-        tags: true
+before_deploy: 
+  - ant tgz-github
+deploy:
+  provider: releases
+  jdk: oraclejdk8
+  api_key:
+    secure: ExsjslG82nmM0ztwxD5HmRuQfaWZjlcuaElBNFivNHP3+BdSqUs2VnV1E36spw4e5QVLDpEMgZHaP2hUrJBkbTxrM2UKsTVoNNCMvoP07gwLTrV0HomiBCS8U8pV041inVQ8pTaoDdZxWL7loOCtPu/Ul/Xl3wBc6Omq6pirLmUfasRSy5v21A2h3EJlngaqsn+abvrS9Amb1FRLbf6Rpms1BT1EbJLTipRoI9oTou5QmnVzPv1tjX4hxk9sV/qcecL4D8oysWB7JtaDHbYRB1k+yoyvQ3HpQskRjbaUAsl5/UjggQwq2uNWGkYkusmYHA9QGGzcpowTJ02xhW5dkBeJO52Ae46RRAkwS/Fsha4a52Q2p7OnO0D0qTcI6vZMI7E6eCsAcRwpdQD/fgSLL+JSU3Nfr0sjf34xiXKazwlJBSdig0/2IE2pd0ZNU34sSBB2jRy9QpuRWySizIMYYryWA2ZnyH5sK78D6QJM7740PByQWnr7hLnXEp8F6JSNflcH5pNbr5zqVIE0G7qMsjIhDMoauQ0xP2VXKNUSYAVIV1CT1FbcMJG6l2xTgAO4JP556SEnmN1wAnYwNFygbltBgDUsz5cpyU5QU3Ji2zeVDknS8ucoQqu6siWOo7nvVmVciG+YY0azbfjXZiV3DlOy7kPSZtzTRCu5vhDWI58=
+  file_glob: true
+  file:
+    - bin/*
+    - examples/*
+    - doc/*
+    - xmlSchemas/* 
+    - license.txt
+    - README*
+  skip_cleanup: true
+  on:
+    repo: OpenDA-Association/OpenDA
+    tags: true
