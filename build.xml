@@ -611,6 +611,7 @@
         <tgztest testname="model_delft3d" />
         <tgztest testname="model_dflowfm_blackbox" />
     </target>
+
     <target name="tgz-native" depends="vc-revision,chmod-linux-native" >
        <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_native.tgz">
 	       <tarfileset dir="core/native_bin/linux64_gnu" prefix="linux64_gnu" excludes="*.svn"/>
@@ -618,6 +619,19 @@
        </tar>
     </target>
 
+    <!-- tgz archives: deploys to github -->
+    <target name="tgz-github">
+      <tar compression="gzip" destfile="${projectname}_linux.tgz">
+        <tarfileset dir="bin" prefix="openda/bin" excludes="*.sh" />
+        <tarfileset dir="bin" includes="*.sh" filemode="755" prefix="openda/bin" />
+        <tarfileset dir="doc" prefix="openda/doc"/>
+        <tarfileset dir="examples" prefix="openda/examples" excludes="*.svn" />
+        <tarfileset dir="xmlSchemas" prefix="openda/xmlSchemas" excludes="*.svn" />
+        <tarfileset dir="." includes="README.txt" fullpath="openda/README.md"/>
+        <tarfileset dir="." includes="license.txt" fullpath="openda/license.txt"/>
+        <tarfileset dir="." includes="select_this_version.sh"  prefix="openda" />
+      </tar>
+    </target>
 
 	<!--
 	===========================================================================
