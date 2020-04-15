@@ -14,10 +14,10 @@ before_deploy:
 - ant tgz-github
 deploy:
   provider: releases
- jdk: oraclejdk11
   api_key:
     secure: A4Ox2BMe4awCDTAE3xMyEl2fPGSKbJWATq/uv4H8F5h/8BQmgx8D1WqQN7IdzGRoCf1wflQHoVLEfaqiTOVUWL7DSs6F7W5RjVREZY+q9YTNKGsbjYdWmOqeq0EaYFZfTEIHeowOpS8liI0R3KMDHszzyGYfP8mG9hwhcut35+vve+yC34yMFY5xtRLri/x413TaewZ3B9FVnlFobVQ/So1JtNDIZPHT8khniTAX5EPhYvvxhXs1QEWFiZlK55/KM7la7gPDKEfW/7Xg/jR1m0T/+7sl/6pX/n+/RjfWBVf4Cpx+aIFVwsuiUkOF4pBuOIvWDTKWDzBk55dlRBEvCt7MvdLgxtwFpY2JngjlQtlEZCgIsy+0sz2WGwXg2QShG1sJ2r2mV0MO8FVTyp5H3Bon4izMOFL5JcGegHhnDYWfpLyDLUZaHPQMALzAvxeOU924ljFeXL4NfugSDSTdCBYwj4wJww9TUtPvG2Sln+9gq/0FLLnWS13xbNHfkRT3AxOgdMo5I4FeP9blPpeFaoAug0h1QQ2NS499J3j01pB4ZNij6ESf4eEEndE0ujpOLg817VvYLuWLTNVYC94O/noRSQsVxIXepg8G46TPgzoYo7PtpefZuPeK6cbJOAvg2O7M5aURntzygP4iOhGmFTE4N8u+AjmJCRrhtcvOBIw=
   file: OpenDA_linux.tgz
   on:
     repo: OpenDA-Association/OpenDA
+    jdk: oraclejdk11
     tags: true
