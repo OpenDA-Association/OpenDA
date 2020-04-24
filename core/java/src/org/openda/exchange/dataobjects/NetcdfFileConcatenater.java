@@ -176,10 +176,11 @@ public class NetcdfFileConcatenater {
 				convertedTimesToBeAdded[i] = timesToBeAdded[i] + timeDiffInUnit;
 			}
 			if (convertedTimesToBeAdded[0] < timesTarget[timesTarget.length - 1]) throw new RuntimeException("File to be added has first time before last time of target file");
-			int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
 			if (convertedTimesToBeAdded[0] == timesTarget[timesTarget.length - 1]) {
+				int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length + 1;
 				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, true, useOldValueOnOverlap);
 			} else {
+				int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
 				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, false, false);
 			}
 		}
@@ -221,7 +222,6 @@ public class NetcdfFileConcatenater {
 	}
 
 	private static void addConcatenatedValueArraysToMaps(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget, boolean concatenateTimeVariable, int targetLocationDimensionLength, double[][] targetValues, double[][] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
-		if (firstAddedTimeOverlapping) totalTimesCombined--;
 		ArrayDouble.D1 timeArrayDouble = new ArrayDouble.D1(totalTimesCombined);
 		ArrayDouble.D2 valueArrayDouble = new ArrayDouble.D2(totalTimesCombined, targetLocationDimensionLength);
 
