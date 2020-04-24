@@ -27,12 +27,19 @@ import ucar.ma2.Array;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.*;
+import ucar.nc2.Attribute;
+import ucar.nc2.Dimension;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.Variable;
 import ucar.nc2.units.DateUnit;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NetcdfFileConcatenater {
 
@@ -159,8 +166,8 @@ public class NetcdfFileConcatenater {
 			}
 			Dimension timeVariableTargetDimension = timeVariableTarget.getDimension(0);
 			if (!timeVariableTargetDimension.isUnlimited()) throw new RuntimeException("Netcdf target file should have unlimited time dimension");
-			Date targetDateOrigin = targetDateUnit.getDateOrigin();
-			Date addedDateOrigin = toBeAddedDateUnit.getDateOrigin();
+			java.util.Date targetDateOrigin = targetDateUnit.getDateOrigin();
+			java.util.Date addedDateOrigin = toBeAddedDateUnit.getDateOrigin();
 			long timeDif = addedDateOrigin.getTime() - targetDateOrigin.getTime();
 			double timeDiffInUnit = timeDif / (1000 * targetDateUnit.getTimeUnit().getValueInSeconds());
 
