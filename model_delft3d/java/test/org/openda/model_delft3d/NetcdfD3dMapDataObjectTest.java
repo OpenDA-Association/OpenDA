@@ -82,25 +82,42 @@ public class NetcdfD3dMapDataObjectTest extends TestCase {
 
 	public void testNoZLayers() {
 
-		int exchangeItemID = 2;
-
 		IDataObject netcdfFile = new NetcdfD3dMapDataObject();
 		File testRunDataDir = new File(this.testRunDataDir, "NetcdfD3dMapDataObjectNoZLayers");
 		netcdfFile.initialize(testRunDataDir, new String[]{"trim-NoZLayers.nc"});
 		String[] exchangeItemIDs = netcdfFile.getExchangeItemIDs();
 		System.out.println(Arrays.toString(exchangeItemIDs));
 		assertEquals("#exchange items", 3, exchangeItemIDs.length);
-		IExchangeItem exchangeItem = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[exchangeItemID]);
+		String s1ExchangeItemID = exchangeItemIDs[0];
+		assertEquals("S1", s1ExchangeItemID);
+		IExchangeItem exchangeItem = netcdfFile.getDataObjectExchangeItem(s1ExchangeItemID);
 		assertNotNull(exchangeItem);
 
-
 		double[] exchangeItemValues = exchangeItem.getValuesAsDoubles();
-		System.out.println("ExchangeItem selected: " + exchangeItemIDs[exchangeItemID]);
-//		System.out.println(Arrays.toString(exchangeItemValues));
-		System.out.println(exchangeItemValues.length);
+		double[] addValues = new double[exchangeItemValues.length];
+		Arrays.fill(addValues, 1);
 
-		//2. Test if we can go back to the right waterlevel (this also tests the writing of history files)
+		exchangeItem.axpyOnValues(1.1, addValues);
+
+		double[] exchangeItemValuesAfterAxpy = exchangeItem.getValuesAsDoubles();
+
+		double[] clonedExchangeItemValues = exchangeItemValues.clone();
+		for (int i = 0; i < exchangeItemValues.length; i++) {
+			assertEquals(clonedExchangeItemValues[i] + 1.1, exchangeItemValuesAfterAxpy[i], 0.0001); 
+		}
+
 		netcdfFile.finish();
+
+		IDataObject netcdfFileAfterFinish = new NetcdfD3dMapDataObject();
+		netcdfFileAfterFinish.initialize(testRunDataDir, new String[]{"trim-NoZLayers.nc"});
+
+		IExchangeItem s1ExchangeItemAfterFinish = netcdfFileAfterFinish.getDataObjectExchangeItem(s1ExchangeItemID);
+
+		double[] exchangeItemValuesAfterFinish = s1ExchangeItemAfterFinish.getValuesAsDoubles();
+
+		for (int i = 0; i < exchangeItemValuesAfterFinish.length; i++) {
+			assertEquals(clonedExchangeItemValues[i] + 1.1, exchangeItemValuesAfterFinish[i], 0.0001);
+		}
 	}
 
 }
