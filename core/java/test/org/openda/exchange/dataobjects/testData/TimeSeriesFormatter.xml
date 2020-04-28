@@ -7,7 +7,7 @@
     <commentMarker>#</commentMarker>
   </formatter>
   <timeSeries id="waterlevel@denhelder" status="use" standardDeviation="0.05">
-    den_helder_waterlevel_astro.noos
+    den_helder_waterlevel.noos
   </timeSeries>
   <timeSeries id="waterlevel@aberdeen">
     aberdeen_waterlevel_astro.noos
