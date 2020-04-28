@@ -18,23 +18,15 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_RainfallRunoffZhang;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
-import junit.framework.TestCase;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 /**
  * Tester for a wrapper. The reading of a correct input file and the storing of
@@ -48,7 +40,6 @@ public class ParametersWrapperTest extends TestCase {
 
 	// Use openDA test suite.
 	private File testRunDataDir;
-	private OpenDaTestSupport testData;
 
 	private String fileName = "parametersWrapperTestInput.m"; // Needs to be created. 
 	
@@ -69,7 +60,7 @@ public class ParametersWrapperTest extends TestCase {
 		
 		// Use openDA test utilities. This allows the test files to be stored 
 		// in a separate directory from the source code.
-		testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
 		testRunDataDir = testData.getTestRunDataDir();
 		        
 		// Write a test file.
@@ -105,7 +96,7 @@ public class ParametersWrapperTest extends TestCase {
 	/**
 	 * Cleans up test file created in setUp().
 	 */
-	protected void tearDown() throws Exception {
+	protected void tearDown() {
 		
 		try {
 			File file = new File(testRunDataDir, fileName);
@@ -128,46 +119,45 @@ public class ParametersWrapperTest extends TestCase {
 	public void testReadInput() {
 
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface ioObject = new ParametersWrapper();
-		String args[] = {};
+		ParametersWrapper parametersWrapper = new ParametersWrapper();
+		String[] args = {fileName};
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		ioObject.initialize(testRunDataDir, fileName, args);
+		parametersWrapper.initialize(testRunDataDir, args);
 
 		// 2 exchange items should be present: soilMoistureExchangeItem and
 		// gwStorageExchangeItem.
-		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		String[] exchangeItemIDs = parametersWrapper.getExchangeItemIDs();
 
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				// String getId();
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id1, expectedId);
+		for (String id : exchangeItemIDs) {
+			if (id.equalsIgnoreCase(id1)) {
+				IExchangeItem expectedExchangeItem = parametersWrapper.getDataObjectExchangeItem(id);
+				String exId = expectedExchangeItem.getId();
+				assertEquals(exId,id1);
 
 				// public Object getValues();
 				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value1, expectedValue[0]);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id2, expectedId);
+			if (id.equalsIgnoreCase(id2)) {
+				IExchangeItem expectedExchangeItem = parametersWrapper.getDataObjectExchangeItem(id);
+				String exId = expectedExchangeItem.getId();
+				assertEquals(exId,id2);
 
 				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value2, expectedValue[0]);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id3, expectedId);
+			if (id.equalsIgnoreCase(id3)) {
+				IExchangeItem expectedExchangeItem = parametersWrapper.getDataObjectExchangeItem(id);
+				String exId = expectedExchangeItem.getId();
+				assertEquals(exId,id3);
 
 				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value3, expectedValue[0]);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id4)) {
-				IExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id4, expectedId);
+			if (id.equalsIgnoreCase(id4)) {
+				IExchangeItem expectedExchangeItem = parametersWrapper.getDataObjectExchangeItem(id);
+				String exId = expectedExchangeItem.getId();
+				assertEquals(exId,id4);
 
 				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
 				assertEquals(value4, expectedValue[0]);
@@ -183,8 +173,8 @@ public class ParametersWrapperTest extends TestCase {
 	
 	public void testFinish() throws FileNotFoundException {
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface parameterWrapper = new ParametersWrapper();
-		String args[] = {};
+		ParametersWrapper parameterWrapper = new ParametersWrapper();
+		String[] args = {fileName};
 		double[] times = new double[2];
 		double[] values1 = new double[2];
 		double[] values2 = new double[2];
@@ -192,38 +182,41 @@ public class ParametersWrapperTest extends TestCase {
 		double[] values4 = new double[2];
 				
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		parameterWrapper.initialize(testRunDataDir, fileName, args);
+		parameterWrapper.initialize(testRunDataDir, args);
 		
-		IExchangeItem[] exchangeItems = parameterWrapper.getExchangeItems();
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				values1 = exchangeItems[item].getValuesAsDoubles();
+		String[] exchangeItemIDs = parameterWrapper.getExchangeItemIDs();
+		for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = parameterWrapper.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase(id1)) {
+				values1 = exchangeItem.getValuesAsDoubles();
 				values1[0] = values1[0] + 1;
 				values1[1] = values1[1] + 1;
-				exchangeItems[item].setValues(values1);
-				times = exchangeItems[item].getTimes();
+				exchangeItem.setValues(values1);
+				times = exchangeItem.getTimes();
 				times[0] = times[0] + 1;
 				times[1] = times[1] + 1;
-				exchangeItems[item].setTimes(times);
+				exchangeItem.setTimes(times);
 				System.out.println("% currentTime = " + times[0] + ", finalTime = " + times[1]);
-			} else if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				values2 = exchangeItems[item].getValuesAsDoubles();
+			} else if (exId.equalsIgnoreCase(id2)) {
+				values2 = exchangeItem.getValuesAsDoubles();
 				values2[0] = values2[0] + 1;
 				values2[1] = values2[1] + 1;
-				exchangeItems[item].setValues(values2);
-				exchangeItems[item].setTimes(times);
-			} else if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				values3 = exchangeItems[item].getValuesAsDoubles();
+				exchangeItem.setValues(values2);
+				exchangeItem.setTimes(times);
+			} else if (exId.equalsIgnoreCase(id3)) {
+				values3 = exchangeItem.getValuesAsDoubles();
 				values3[0] = values3[0] + 0.4;
 				values3[1] = values3[1] + 0.4;
-				exchangeItems[item].setValues(values3);
-				exchangeItems[item].setTimes(times);
-			} else if (exchangeItems[item].getId().equalsIgnoreCase(id4)) {
-				values4 = exchangeItems[item].getValuesAsDoubles();
+				exchangeItem.setValues(values3);
+				exchangeItem.setTimes(times);
+			} else if (exId.equalsIgnoreCase(id4)) {
+				values4 = exchangeItem.getValuesAsDoubles();
 				values4[0] = values4[0] - 0.4;
 				values4[1] = values4[1] - 0.4;
-				exchangeItems[item].setValues(values4);
-				exchangeItems[item].setTimes(times);
+				exchangeItem.setValues(values4);
+				exchangeItem.setTimes(times);
 			}
 		}
 		
@@ -238,7 +231,7 @@ public class ParametersWrapperTest extends TestCase {
 		FileInputStream in = new FileInputStream(testFile);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
 		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		boolean eof = false; // End of file cache.
 		double[] expectedTime = new double[1];
 		double[] expectedParam_d = new double[1];
 		double[] expectedParam_Smax = new double[1];
@@ -265,7 +258,7 @@ public class ParametersWrapperTest extends TestCase {
 				// Now parse the line.
 				// Remove comments at end of line.
 				if (line.indexOf("%") > 1) {
-					String columns[] = line.split("%");
+					String[] columns = line.split("%");
 					line = columns[0];
 				}
 				if (line.startsWith("%")) {
@@ -282,7 +275,7 @@ public class ParametersWrapperTest extends TestCase {
 							// Remove comma from columns[3].
 							String[] tempTime = columns[3].split(",");
 							System.out.println(">> Parameters : currentTime = " + tempTime[0]);
-							expectedTime[0] = Double.valueOf(tempTime[0]);
+							expectedTime[0] = Double.parseDouble(tempTime[0]);
 						} else {
 							System.out.println("ParametersWrapper.testFinish(): trouble reading current time.");
 						}
@@ -305,25 +298,25 @@ public class ParametersWrapperTest extends TestCase {
 					//System.out.println("dbg1 - key:"+columns[0]+" = value:"+columns[1]);
 					// Remove the semicollon at the end of the string in
 					// columns[1].
-					String temp[] = columns[1].split(";");
+					String[] temp = columns[1].split(";");
 					columns[1] = temp[0];
 					// Parse the values to the key caches in Java.
 					// --> Add if-loops for variables to be read here.
 					if (columns[0].equals("parameter_d")) {
-						expectedParam_d[0] = Double.valueOf(columns[1]);
+						expectedParam_d[0] = Double.parseDouble(columns[1]);
 						System.out.println("expectedParam_d = " + expectedParam_d[0]);
 					}
 					if (columns[0].equals("parameter_Smax")) {
-						expectedParam_Smax[0] = Double.valueOf(columns[1]);
+						expectedParam_Smax[0] = Double.parseDouble(columns[1]);
 						System.out.println("expectedParam_Smax = " + expectedParam_Smax[0]);
 					}
 					// System.out.println("2 - key:"+columns[0]+" = value:"+columns[1]);
 					if (columns[0].equals("parameter_alpha1")) {
-						expectedParam_a1[0] = Double.valueOf(columns[1]);
+						expectedParam_a1[0] = Double.parseDouble(columns[1]);
 						System.out.println("expectedParam_a1 = " + expectedParam_a1[0]);
 					}
 					if (columns[0].equals("parameter_alpha2")) {
-						expectedParam_a2[0] = Double.valueOf(columns[1]);
+						expectedParam_a2[0] = Double.parseDouble(columns[1]);
 						System.out.println("expectedParam_a2 = " + expectedParam_a2[0]);
 					}
 				}

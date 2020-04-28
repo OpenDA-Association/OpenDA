@@ -18,20 +18,12 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_RainfallRunoffZhang;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Set;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
+
+import java.io.*;
 
 /**
  * Allows reading of time variables from matlab readable ASCII file and
@@ -72,15 +64,12 @@ import org.openda.interfaces.IExchangeItem;
  * @author Beatrice Marti, hydrosolutions ltd.
  *
  */
-public class ParametersWrapper implements
-		IoObjectInterface {
+public class ParametersWrapper extends AbstractDataObject {
 
 
 	// Class specific values
 	File workingDir;
-	String configString;
 	String fileName = null;
-	HashMap<String, IExchangeItem> items = new LinkedHashMap<String, IExchangeItem>();
 
 	// Cache values to be read.
 	// -- Add variables for initial States to be read here.
@@ -96,51 +85,32 @@ public class ParametersWrapper implements
 	 * 
 	 * @param workingDir
 	 *            Working directory
-	 * @param fileName
-	 *            The name of the file containing the data (relative to the
-	 *            working directory.)
 	 * @param arguments
-	 *            Additional arguments (may be null zero-length)
+	 *            The name of the file containing the data (relative to the
+	 *            working directory), and additional arguments (may be null zero-length)
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
 		
 		this.workingDir = workingDir;
-		this.fileName = fileName;
+		this.fileName = arguments[0];
 		
 		try {
 			System.out.println("Parameter wrapper starts reading file.");
-			ReadNameListFile(workingDir, fileName, arguments);
+			ReadNameListFile(workingDir, arguments);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Ask which elements can be accessed
-	 * 
-	 * 
-	 * @return The list of element identifiers that can be accessed
-	 */
-	public IExchangeItem[] getExchangeItems() {
-		// Get the number of items.
-		int n = this.items.size();
-		Set<String> keys = this.items.keySet();
-		IExchangeItem[] result = new IExchangeItem[n];
-		int i = 0;
-		for (String key : keys) {
-			result[i] = this.items.get(key);
-			i++;
-		}
-		return result;
-	}
-
+	@Override
 	public void finish() {
 		// Updates parameter file.
-		double[] currentTimeCache = this.items.get("parameter_d").getTimes();
-		double[] parameter_dCache = this.items.get("parameter_d").getValuesAsDoubles();
-		double[] parameter_SmaxCache = this.items.get("parameter_Smax").getValuesAsDoubles();
-		double[] parameter_alpha1Cache = this.items.get("parameter_alpha1").getValuesAsDoubles();
-		double[] parameter_alpha2Cache = this.items.get("parameter_alpha2").getValuesAsDoubles();
+		double[] currentTimeCache = this.exchangeItems.get("parameter_d").getTimes();
+		double[] parameter_dCache = this.exchangeItems.get("parameter_d").getValuesAsDoubles();
+		double[] parameter_SmaxCache = this.exchangeItems.get("parameter_Smax").getValuesAsDoubles();
+		double[] parameter_alpha1Cache = this.exchangeItems.get("parameter_alpha1").getValuesAsDoubles();
+		double[] parameter_alpha2Cache = this.exchangeItems.get("parameter_alpha2").getValuesAsDoubles();
 		
 		//write to file
 		System.out.println("ParametersWrapper.finish(): Writing to file: "+this.workingDir+"/"+this.fileName);
@@ -178,15 +148,16 @@ public class ParametersWrapper implements
 	 * <p>
 	 * -- Adapt reading of the key-value pairs and writing to the ExchangeItem 
 	 *     here below.
-	 * 
+	 *
 	 * @param workingDir
-	 * @param fileName
+	 *            Working directory
 	 * @param arguments
+	 *            The name of the file containing the data (relative to the
+	 *            working directory), and additional arguments (may be null zero-length)
 	 * @throws IOException
 	 */
-	private void ReadNameListFile(File workingDir, String fileName,
-			String[] arguments) throws IOException {
-		File namelist = new File(workingDir, fileName);
+	private void ReadNameListFile(File workingDir, String[] arguments) throws IOException {
+		File namelist = new File(workingDir, arguments[0]);
 		if (!namelist.exists()) {
 			throw new RuntimeException("ParametersWrapper.ReadNameListFile(): settings file "
 					+ namelist.getAbsolutePath() + " does not exist");
@@ -194,8 +165,8 @@ public class ParametersWrapper implements
 		// Create nested reader.
 		FileInputStream in = new FileInputStream(namelist);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
-		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		String line; // Initialize line.
+		boolean eof = false; // End of file cache.
 
 		// While End of file is not reached yet do the following:
 		while (!eof) {
@@ -212,7 +183,7 @@ public class ParametersWrapper implements
 				// Now parse the line.
 				// Remove comments at end of line.
 				if (line.indexOf("%") > 1) {
-					String columns[] = line.split("%");
+					String[] columns = line.split("%");
 					line = columns[0];
 				}
 				if (line.startsWith("%")) {
@@ -229,14 +200,14 @@ public class ParametersWrapper implements
 							columns[3] = columns[3].trim();
 							// Remove comma from columns[3].
 							String[] tempTime = columns[3].split(",");
-							timeCache[0] = Double.valueOf(tempTime[0]);
+							timeCache[0] = Double.parseDouble(tempTime[0]);
 						} else {
 							System.out.println("Error in parameters wrapper. Trouble reading current time.");
 						}
 						if (columns[4].equals("finalTime")) {
 							columns[6] = columns[6].trim();
 							String[] temp = columns[6].split(";");
-							timeCache[1] = Double.valueOf(temp[0]);
+							timeCache[1] = Double.parseDouble(temp[0]);
 						} else {
 							System.out.println("Error in parameters wrapper. Trouble reading final time.");
 						}
@@ -252,27 +223,27 @@ public class ParametersWrapper implements
 					columns[1] = columns[1].trim();
 					// Remove the semicollon at the end of the string in
 					// columns[1].
-					String temp[] = columns[1].split(";");
+					String[] temp = columns[1].split(";");
 					columns[1] = temp[0];
 					
 					// Parse the values to the key caches in Java.
 					// -- Add if-loops for variables to be read here.
 					if (columns[0].equals("parameter_d")) {
-						parameter_dCache[0] = Double.valueOf(columns[1]);
+						parameter_dCache[0] = Double.parseDouble(columns[1]);
 						parameter_dCache[1] = parameter_dCache[0];
 					}
 					if (columns[0].equals("parameter_Smax")) {
-						parameter_SmaxCache[0] = Double.valueOf(columns[1]);
+						parameter_SmaxCache[0] = Double.parseDouble(columns[1]);
 						parameter_SmaxCache[1] = parameter_SmaxCache[0];
 					}
 					
 					if (columns[0].equals("parameter_alpha1")) {
-						parameter_alpha1Cache[0] = Double.valueOf(columns[1]);
+						parameter_alpha1Cache[0] = Double.parseDouble(columns[1]);
 						parameter_alpha1Cache[1] = parameter_alpha1Cache[0];
 					}
 
 					if (columns[0].equals("parameter_alpha2")) {
-						parameter_alpha2Cache[0] = Double.valueOf(columns[1]);
+						parameter_alpha2Cache[0] = Double.parseDouble(columns[1]);
 						parameter_alpha2Cache[1] = parameter_alpha2Cache[0];
 					}
 
@@ -289,7 +260,7 @@ public class ParametersWrapper implements
 		parameter_dSeries.setLocation("default");
 	    String id1 = "parameter_d";
 	    parameter_dSeries.setId(id1);
-	    this.items.put(id1,parameter_dSeries);
+	    this.exchangeItems.put(id1,parameter_dSeries);
 	    @SuppressWarnings("unused")
 		IExchangeItem parameter_dExchangeItem = new TimeSeries(parameter_dSeries);
 		
@@ -297,7 +268,7 @@ public class ParametersWrapper implements
 		parameter_SmaxSeries.setLocation("default");
 	    String id2 = "parameter_Smax";
 	    parameter_SmaxSeries.setId(id2);
-	    this.items.put(id2,parameter_SmaxSeries);
+	    this.exchangeItems.put(id2,parameter_SmaxSeries);
 	    @SuppressWarnings("unused")
 		IExchangeItem parameter_SmaxExchangeItem = new TimeSeries(parameter_SmaxSeries);
 		
@@ -305,7 +276,7 @@ public class ParametersWrapper implements
 		parameter_alpha1Series.setLocation("default");
 	    String id3 = "parameter_alpha1";
 	    parameter_alpha1Series.setId(id3);
-	    this.items.put(id3,parameter_alpha1Series);
+	    this.exchangeItems.put(id3,parameter_alpha1Series);
 	    @SuppressWarnings("unused")
 		IExchangeItem parameter_alpha1ExchangeItem = new TimeSeries(parameter_alpha1Series);
 		
@@ -313,7 +284,7 @@ public class ParametersWrapper implements
 		parameter_alpha2Series.setLocation("default");
 	    String id4 = "parameter_alpha2";
 	    parameter_alpha2Series.setId(id4);
-	    this.items.put(id4,parameter_alpha2Series);
+	    this.exchangeItems.put(id4,parameter_alpha2Series);
 	    @SuppressWarnings("unused")
 		IExchangeItem parameter_alpha2ExchangeItem = new TimeSeries(parameter_alpha2Series);
 	    
