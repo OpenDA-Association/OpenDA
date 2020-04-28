@@ -21,6 +21,7 @@ package org.openda.exchange.dataobjects;
 
 import junit.framework.TestCase;
 
+import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Array;
@@ -50,33 +51,33 @@ public class NoosDataObjectTest extends TestCase {
 		System.out.println("-------------------------------------------------------------------");
 		// read noos file and create object
 		NoosDataObject noosDO = new NoosDataObject();
-		noosDO.initialize(this.testRunDataDir, "aberdeen_waterlevel_astro.noos");
+		noosDO.initialize(this.testRunDataDir, new String[]{"aberdeen_waterlevel_astro.noos"});
 
-		String ids[]=noosDO.getExchangeItemIDs();
+		String[] ids =noosDO.getExchangeItemIDs();
 		assertEquals(1, ids.length);
 		
 		IExchangeItem noosEx = noosDO.getDataObjectExchangeItem(ids[0]);
 		assertEquals("TimeSeries", noosEx.getClass().getSimpleName());
 
 		TimeSeries ts = (TimeSeries) (noosEx);
-		assertEquals("aberdeen.waterlevel_astro", ts.getId());
-		assertEquals("aberdeen", ts.getLocation());
+		assertEquals("Aberdeen.waterlevel_astro", ts.getId());
+		assertEquals("Aberdeen", ts.getLocation());
 		assertEquals("observed", ts.getSource());
 		assertEquals("m", ts.getUnitId());
 		assertEquals("waterlevel_astro", ts.getQuantityId());
-		assertEquals(-2.045543, ts.getPosition()[0]);
-		assertEquals(57.361939, ts.getPosition()[1]);
+		assertEquals(-2.073333, ts.getPosition()[0]);
+		assertEquals(57.143333, ts.getPosition()[1]);
 
-		assertEquals(54466.0, ts.getStartTime());
-		assertEquals(54466.125, ts.getStopTime());
+		assertEquals(58849.0, ts.getStartTime());
+		assertEquals(58849.125, ts.getStopTime());
 
 		assertEquals(19, ts.getTimes().length);
-		assertEquals(54466.0, ts.getTimes()[0]);
-		assertEquals(54466.125, ts.getTimes()[18]);
+		assertEquals(58849.0, ts.getTimes()[0]);
+		assertEquals(58849.125, ts.getTimes()[18]);
 
 		assertEquals(19, ts.getValuesAsDoubles().length);
-		assertEquals(-0.83, ts.getValuesAsDoubles()[0]);
-		assertEquals(-0.6, ts.getValuesAsDoubles()[18]);
+		assertEquals(-1.09, ts.getValuesAsDoubles()[0]);
+		assertEquals(0.4, ts.getValuesAsDoubles()[18]);
 
 		assertEquals(0, ts.getExtraValuesKeySet().size());
 	}
@@ -87,33 +88,33 @@ public class NoosDataObjectTest extends TestCase {
 			System.out.println("-------------------------------------------------------------------");
 			// read noos files and create object
 			NoosDataObject noosDO = new NoosDataObject();
-			noosDO.initialize(this.testRunDataDir, "*_waterlevel_astro.noos");
+			noosDO.initialize(this.testRunDataDir, new String[]{"*_waterlevel*.noos"});
 
-			String ids[]=noosDO.getExchangeItemIDs();
+			String[] ids =noosDO.getExchangeItemIDs();
 			assertEquals(2, ids.length);
 			
-			IExchangeItem noosEx = noosDO.getDataObjectExchangeItem("den helder.waterlevel_astro");
+			IExchangeItem noosEx = noosDO.getDataObjectExchangeItem("Den Helder.waterlevel");
 			assertEquals("TimeSeries", noosEx.getClass().getSimpleName());
 
 			TimeSeries ts = (TimeSeries) (noosEx);
-			assertEquals("den helder.waterlevel_astro", ts.getId());
-			assertEquals("den helder", ts.getLocation());
-			assertEquals("observed", ts.getSource());
+			assertEquals("Den Helder.waterlevel", ts.getId());
+			assertEquals("Den Helder", ts.getLocation());
+			assertEquals("dcsm_v6_kf_hirlam", ts.getSource());
 			assertEquals("m", ts.getUnitId());
-			assertEquals("waterlevel_astro", ts.getQuantityId());
-			assertEquals(4.745356, ts.getPosition()[0]);
-			assertEquals(52.966001, ts.getPosition()[1]);
+			assertEquals("waterlevel", ts.getQuantityId());
+			assertEquals(4.745326, ts.getPosition()[0]);
+			assertEquals(52.965441, ts.getPosition()[1]);
 
-			assertEquals(54466.0, ts.getStartTime());
-			assertEquals(54466.125, ts.getStopTime());
+			assertEquals(58849.0, ts.getStartTime());
+			assertEquals(58849.125, ts.getStopTime());
 
 			assertEquals(19, ts.getTimes().length);
-			assertEquals(54466.0, ts.getTimes()[0]);
-			assertEquals(54466.125, ts.getTimes()[18]);
+			assertEquals(58849.0, ts.getTimes()[0]);
+			assertEquals(58849.125, ts.getTimes()[18]);
 
 			assertEquals(19, ts.getValuesAsDoubles().length);
-			assertEquals(0.73, ts.getValuesAsDoubles()[0]);
-			assertEquals(0.0, ts.getValuesAsDoubles()[18]);
+			assertEquals(0.0997, ts.getValuesAsDoubles()[0]);
+			assertEquals(-0.7394, ts.getValuesAsDoubles()[18]);
 
 			assertEquals(0, ts.getExtraValuesKeySet().size());
 		}
@@ -124,9 +125,9 @@ public class NoosDataObjectTest extends TestCase {
 			System.out.println("-------------------------------------------------------------------");
 			// read noos files and create object
 			NoosDataObject noosDO = new NoosDataObject();
-			noosDO.initialize(this.testRunDataDir, "series*.noos");
+			noosDO.initialize(this.testRunDataDir, new String[]{"series*.noos"});
 
-			String ids[]=noosDO.getExchangeItemIDs();
+			String[] ids =noosDO.getExchangeItemIDs();
 			assertEquals(2, ids.length);
 
 			// check original series
@@ -156,7 +157,7 @@ public class NoosDataObjectTest extends TestCase {
 			assertEquals(0, ts.getExtraValuesKeySet().size());
 			
 			// modify content
-			Array values = (Array)ts.getValues();
+			Array values;
 			values=new Array("{0.,1.,2.,3.,4.}");
 			ts.setValues(values);
 			
@@ -176,9 +177,9 @@ public class NoosDataObjectTest extends TestCase {
 			System.out.println("-------------------------------------------------------------------");
 			// read noos files and create object
 			NoosDataObject noosDO = new NoosDataObject();
-			noosDO.initialize(this.testRunDataDir, ""); // no data yet
+			noosDO.initialize(this.testRunDataDir, new String[]{""}); // no data yet
 
-			String ids[]=noosDO.getExchangeItemIDs();
+			String[] ids =noosDO.getExchangeItemIDs();
 			assertEquals(0, ids.length); //empty	
 			
 			// create and add some timeseries
@@ -205,142 +206,72 @@ public class NoosDataObjectTest extends TestCase {
 			assertTrue(test2);
 	   }
 
-//	public void testWrite1() {
-//
-//		// read noos file and create object
-//		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
-//
-//		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData1.txt");
-//		assertEquals(1, noosIO.getExchangeItems().length);
-//		assertEquals(1, noosIO.getTimeSeriesSet().size());
-//
-//		// then write it again under another name
-//		File noosFile = new File(this.testRunDataDir, "copy_of_NoosTimeSeriesIoObjectTestData1.txt");
-//		NoosTimeSeriesIoObject.writeNoosTimeSeries((TimeSeries) noosIO.getExchangeItems()[0], noosFile);
-//
-//		// finally, test it
-//		TimeSeries series1 = (TimeSeries) noosIO.getExchangeItems()[0];
-//		NoosTimeSeriesIoObject noosIO2 = new NoosTimeSeriesIoObject();
-//		noosIO2.initialize(this.testRunDataDir, "copy_of_NoosTimeSeriesIoObjectTestData1.txt");
-//		TimeSeries series2 = (TimeSeries) noosIO2.getExchangeItems()[0];
-//		assertTrue(series1.equals(series2));
-//	}
-//
-//	@SuppressWarnings("boxing")
-//   public void testRead2() {
-//		// data with analysis times as additional column
-//		// read noos file and create object
-//		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
-//
-//		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData2.txt");
-//
-//		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
-//		assertEquals(1, noosEx.length);
-//		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
-//
-//		TimeSeries ts = (TimeSeries) (noosEx[0]);
-//		assertEquals("hoekvanholland.waterlevel", ts.getId());
-//		assertEquals("hoekvanholland", ts.getLocation());
-//		assertEquals("observed", ts.getSource());
-//		assertEquals("m", ts.getUnitId());
-//		assertEquals("waterlevel", ts.getQuantityId());
-//		assertEquals(4.120131, ts.getPosition()[0]);
-//		assertEquals(51.978539, ts.getPosition()[1]);
-//
-//		assertEquals(55391.0, ts.getStartTime());
-//		assertEquals(55392.0, ts.getStopTime());
-//		assertTrue(ts.intersectsWithTimeInterval(55389.0, 55391.0));
-//		assertTrue(ts.intersectsWithTimeInterval(55391.0, 55392.0));
-//		assertTrue(ts.intersectsWithTimeInterval(55389.0, 55394.0));
-//		assertTrue(ts.intersectsWithTimeInterval(55392.0, 55394.0));
-//		assertFalse(ts.intersectsWithTimeInterval(55389.0, 55390.9));
-//		assertFalse(ts.intersectsWithTimeInterval(55392.1, 55394.0));
-//
-//		assertEquals(145, ts.getTimes().length);
-//		assertEquals(55391.0, ts.getTimes()[0]);
-//		assertEquals(55392.0, ts.getTimes()[144]);
-//
-//		assertEquals(145, ts.getValuesAsDoubles().length);
-//		assertEquals(-0.59, ts.getValuesAsDoubles()[0]);
-//		assertEquals(-0.71, ts.getValuesAsDoubles()[144]);
-//
-//		assertEquals(1, ts.getExtraValuesKeySet().size());
-//		assertTrue(ts.getExtraValuesKeySet().contains("analTimes"));
-//	}
-//
-//	public void testWrite2() {
-//
-//		// read noos file and create object
-//		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
-//
-//		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData2.txt");
-//		assertEquals(1, noosIO.getExchangeItems().length);
-//
-//		// then write it again under another name
-//		File noosFile = new File(this.testRunDataDir, "copy_of_NoosTimeSeriesIoObjectTestData2.txt");
-//		NoosTimeSeriesIoObject.writeNoosTimeSeries((TimeSeries) noosIO.getExchangeItems()[0], noosFile);
-//
-//		// finally, test it
-//		TimeSeries series1 = (TimeSeries) noosIO.getExchangeItems()[0];
-//		NoosTimeSeriesIoObject noosIO2 = new NoosTimeSeriesIoObject();
-//		noosIO2.initialize(this.testRunDataDir, "copy_of_NoosTimeSeriesIoObjectTestData2.txt");
-//		TimeSeries series2 = (TimeSeries) noosIO2.getExchangeItems()[0];
-//		assertTrue(series1.equals(series2));
-//	}
-//
-//	public void testRead3() {
-//
-//		// read noos files and create object
-//		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
-//
-//		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData*.txt");
-//		assertEquals(2, noosIO.getTimeSeriesSet().size());
-//
-//		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
-//		assertEquals(2, noosEx.length);
-//		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
-//		assertEquals("TimeSeries", noosEx[1].getClass().getSimpleName());
-//
-//		TimeSeries ts0 = (TimeSeries) (noosEx[0]);
-//		TimeSeries ts1 = (TimeSeries) (noosEx[1]);
-//		assertTrue((ts0.hasExtraValues("analTimes") && !ts1.hasExtraValues("analTimes"))
-//		      || (ts1.hasExtraValues("analTimes") && !ts0.hasExtraValues("analTimes")));
-//	}
-//
-//	public void testWrite3() {
-//
-//		// read noos files and create object
-//		NoosTimeSeriesIoObject noosIO = new NoosTimeSeriesIoObject();
-//
-//		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData*.txt");
-//		assertEquals(2, noosIO.getTimeSeriesSet().size());
-//
-//		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
-//		assertEquals(2, noosEx.length);
-//		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
-//		assertEquals("TimeSeries", noosEx[1].getClass().getSimpleName());
-//
-//		TimeSeries ts0 = (TimeSeries) (noosEx[0]);
-//		TimeSeries ts1 = (TimeSeries) (noosEx[1]);
-//		assertTrue((ts0.hasExtraValues("analTimes") && !ts1.hasExtraValues("analTimes"))
-//		      || (ts1.hasExtraValues("analTimes") && !ts0.hasExtraValues("analTimes")));
-//
-//		ts0.setProperty(NoosTimeSeriesIoObject.PROPERTY_PATHNAME, new File(this.testRunDataDir, "test0.txt").getAbsolutePath());
-//		ts1.setProperty(NoosTimeSeriesIoObject.PROPERTY_PATHNAME, new File(this.testRunDataDir, "test1.txt").getAbsolutePath());
-//
-//		noosIO.finish();
-//
-//		NoosTimeSeriesIoObject noosIO2 = new NoosTimeSeriesIoObject();
-//
-//		noosIO2.initialize(this.testRunDataDir, "test?.txt");
-//		assertEquals(2, noosIO2.getTimeSeriesSet().size());
-//
-//		IPrevExchangeItem noosEx2[] = noosIO2.getExchangeItems();
-//		TimeSeries ts0a = (TimeSeries) (noosEx2[0]);
-//		TimeSeries ts1a = (TimeSeries) (noosEx2[1]);
-//
-//		assertTrue(ts0.equals(ts0a) || ts0.equals(ts1a));
-//		assertTrue(ts1.equals(ts1a) || ts1.equals(ts0a));
-//	}
+	public void testReadTimeZoneMET() {
+
+		// read noos file and create object
+		NoosDataObject noosDO = new NoosDataObject();
+
+		noosDO.initialize(this.testRunDataDir, new String[]{"NoosTimeSeriesDataObjectTestMETData.txt"});
+
+		String[] ids = noosDO.getExchangeItemIDs();
+		assertEquals(1, ids.length);
+		IExchangeItem noosEx = noosDO.getDataObjectExchangeItem(ids[0]);
+
+		assertEquals("TimeSeries", noosEx.getClass().getSimpleName());
+
+		TimeSeries ts = (TimeSeries) noosEx;
+		assertEquals("Hoek van Holland.waterlevel", ts.getId());
+		assertEquals("Hoek van Holland", ts.getLocation());
+		assertEquals("dcsm_v6_kf_hirlam", ts.getSource());
+		assertEquals("m", ts.getUnitId());
+		assertEquals("waterlevel", ts.getQuantityId());
+		assertEquals(4.120131, ts.getPosition()[0]);
+		assertEquals(51.978539, ts.getPosition()[1]);
+
+		assertEquals(58848.95833333333, ts.getStartTime());
+		assertEquals(58849.08333333333, ts.getStopTime());
+		assertTrue(ts.intersectsWithTimeInterval(58847.0, 58849.0));
+		assertTrue(ts.intersectsWithTimeInterval(58849.0, 58850.0));
+		assertTrue(ts.intersectsWithTimeInterval(58847.0, 58852.0));
+		assertTrue(ts.intersectsWithTimeInterval(58848.95833333333, 58852.0));
+		assertFalse(ts.intersectsWithTimeInterval(58847.0, 58848.9));
+		assertFalse(ts.intersectsWithTimeInterval(58849.1, 58852.0));
+
+		assertEquals(19, ts.getTimes().length);
+		assertEquals(58848.95833333333, ts.getTimes()[0]);
+		assertEquals(58849.08333333333, ts.getTimes()[18]);
+
+		assertEquals(19, ts.getValuesAsDoubles().length);
+		assertEquals(-0.5444, ts.getValuesAsDoubles()[0]);
+		assertEquals(-0.4781, ts.getValuesAsDoubles()[18]);
+
+		assertEquals(0, ts.getExtraValuesKeySet().size());
+		assertEquals("MET", ts.getProperty(NoosTimeSeriesFormatter.PROPERTY_TIMEZONE));
+	}
+
+	public void testWriteTimeZoneMET() {
+
+		// read noos file and create object
+		NoosDataObject noosDO = new NoosDataObject();
+		noosDO.initialize(this.testRunDataDir, new String[]{"NoosTimeSeriesDataObjectTestMETData.txt"});
+
+		String[] ids = noosDO.getExchangeItemIDs();
+		assertEquals(1, ids.length);
+		IExchangeItem noosEx = noosDO.getDataObjectExchangeItem(ids[0]);
+
+		// then write it again under another name
+		File noosFile = new File(this.testRunDataDir, "copy_of_NoosTimeSeriesDataObjectTestMETData.txt");
+		NoosDataObject.writeNoosTimeSeries((TimeSeries) noosEx, noosFile);
+
+		// finally, test it
+		TimeSeries series1 = (TimeSeries) noosEx;
+		NoosDataObject noosDO2 = new NoosDataObject();
+		noosDO2.initialize(this.testRunDataDir, new String[]{"copy_of_NoosTimeSeriesDataObjectTestMETData.txt"});
+
+		ids = noosDO2.getExchangeItemIDs();
+		IExchangeItem noosEx2 = noosDO2.getDataObjectExchangeItem(ids[0]);
+		TimeSeries series2 = (TimeSeries) noosEx2;
+		assertTrue(series1.equals(series2));
+	}
 
 }
