@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesFormatterConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <formatter class="org.openda.exchange.timeseries.DelimitedTextTimeSeriesFormatter">
+    <dateTimeSelector>0</dateTimeSelector>
+    <valueSelector>1</valueSelector>
+    <delimiter>,</delimiter>
+    <commentMarker>#</commentMarker>
+    <skipLines>1</skipLines>
+    <role>inout</role>
+  </formatter>
+  <timeSeries id="source.c1_factory1.discharge">
+    forcings/c1_factory1.csv
+  </timeSeries>
+  <timeSeries id="source.c1_factory2.discharge">
+    forcings/c1_factory2.csv
+  </timeSeries>
+</timeSeriesFormatterConfig>

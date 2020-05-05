@@ -9,7 +9,7 @@ Uses the output from OpenDA contrary to exercise 4
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+import matplotlib.animation as animation
 import polution_utils as util
 
 
@@ -87,7 +87,14 @@ def update(frame):
     ax[0].legend(("Truth","First guess","EnKF"))
     return ln,
 
-ani = FuncAnimation(fig, update, frames=range(len(c1)),
-                    init_func=init, repeat=False, interval=20,blit=True)
+ani = animation.FuncAnimation(fig, update, frames=range(len(c1)),
+                    init_func=init, repeat=False, interval=20,blit=False)
+
+
+# Set up formatting for the movie files
+#Writer = animation.writers['ffmpeg']
+#writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+#ani.save('im.mp4', writer=writer)
+
 plt.show()
 

@@ -64,6 +64,6 @@ def update(frame):
 
 
 ani = FuncAnimation(fig, update, frames=range(len(sim.analysis_time)),
-                    init_func=init, repeat=False, interval=20,blit=True)
+                    init_func=init, repeat=False, interval=20,blit=False)
 plt.show()
 

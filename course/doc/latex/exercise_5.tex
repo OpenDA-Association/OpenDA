@@ -28,7 +28,7 @@ The next step is running an ensemble of simulations. In this case we consider ou
 \end{itemize}
 
 \subsection{parallel computing}
-Running the ensembles takes a lot of time, especially starting the model takes quite some time compared to the actual computation time. Most computers have multiple cores which we can use to propage multiple ensemble members foreward in time simultaniously.
+Running the ensembles takes a lot of time, especially starting the model takes quite some time compared to the actual computation time. Most computers have multiple cores and the reactive pollution model only uses one core, so we can use our cores to propage multiple ensemble members foreward in time simultaniously. 
 \begin{itemize}
 	\item compare the configurations {\tt SequentialEnsembleSimulation.oda} and\\
 		{\tt enkf.oda} which uses parallel propagation of ensemble members. Set the number of simultanious models that corresponds to the number of cores on your computer (maxThreads).
@@ -46,8 +46,8 @@ have been used to generate observation time series at the output locations.
 These time series (with some noise added) have been copied to the {\tt stochObserver} directory to
 serve as observations for the filtering run.
 
-The filter run takes the original model as input, which actually is a perturbed
-version of the 'truth' model: the concentrations for substance 1 as disposed by
+The filter run takes the original unperturbed model as input, while the 'truth' 
+uses a perturbed version of the original model: the concentrations for substance 1 as disposed by
 factories have been flattened out to a constant value. The filter process
 should modify these values in such a way that the results resemble the truth as
 much as possible.

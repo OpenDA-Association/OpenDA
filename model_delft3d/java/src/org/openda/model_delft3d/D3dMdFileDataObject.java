@@ -18,7 +18,6 @@
  * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openda.model_delft3d;
-import org.apache.commons.lang3.ArrayUtils;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
@@ -61,7 +60,6 @@ public class D3dMdFileDataObject implements IDataObject {
 
 	public static final String[] fileKeys = {Stanton, Dalton, D_H, D_Z, V_H, V_Z, SD, Wstres_D1, Wstres_D2, Wstres_D3, Ccofu, Ccofv, Ccofuv, DVicouv};
 	public static final String[] timeKeys = {PROPERTY_STARTTIME, PROPERTY_STOPTIME, PROPERTY_INITDATE, PROPERTY_TUNIT};
-	String[] allKeys = (String[]) ArrayUtils.addAll(fileKeys, timeKeys);
 
 	private File mdFile;
 	private String outputFileName = null;
@@ -143,7 +141,6 @@ public class D3dMdFileDataObject implements IDataObject {
 						exchangeItems.put(key3, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D3));
 
 					}
-//             for (int i = 0; i < allKeys.length; i++) {
 					if (Arrays.asList(fileKeys).contains(key)) {
 
 						double valueAsDouble = Double.parseDouble(value);
