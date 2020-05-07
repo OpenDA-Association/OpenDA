@@ -177,7 +177,7 @@ public class NetcdfFileConcatenater {
 			}
 			if (convertedTimesToBeAdded[0] < timesTarget[timesTarget.length - 1]) throw new RuntimeException("File to be added has first time before last time of target file");
 			if (convertedTimesToBeAdded[0] == timesTarget[timesTarget.length - 1]) {
-				int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length + 1;
+				int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length - 1;
 				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, true, useOldValueOnOverlap);
 			} else {
 				int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
