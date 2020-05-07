@@ -91,7 +91,7 @@
         </antcall>
     </target>
 
-    <!-- This only works if thrift compiler is on the PATH environment variable and output directory already exists -->
+    <!-- This only works if output directory already exists -->
     <target name="thrift-execute">
 		<echo>Generating ${output_language} code in ${output_dir} using thrift code from ${input_file}</echo>
       <exec executable="${resourcesdir}\thrift\thrift-0.11.0.exe" failonerror="${failonerror}">
