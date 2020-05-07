@@ -71,7 +71,7 @@
             <classpath>
                 <fileset dir="${resourcesdir}">
                     <include name="thrift/*.jar"/>
-					<include name="slf4j-api.jar"/>
+                  <include name="slf4j-api-1.7.21.jar"/>
                 </fileset>
                 <pathelement path="."/>
             </classpath>
@@ -94,8 +94,9 @@
     <!-- This only works if thrift compiler is on the PATH environment variable and output directory already exists -->
     <target name="thrift-execute">
 		<echo>Generating ${output_language} code in ${output_dir} using thrift code from ${input_file}</echo>
-        <exec executable="thrift" failonerror="${failonerror}">
-            <arg line="-out ${output_dir}"/>
+      <exec executable="${resourcesdir}\thrift\thrift-0.11.0.exe" failonerror="${failonerror}">
+
+      <arg line="-out ${output_dir}"/>
             <arg line="-gen ${output_language} ${input_file}"/>
         </exec>
     </target>
