@@ -16,6 +16,11 @@ import warnings
 import os
 from py4j.java_gateway import JavaGateway
 import py_openda.utils.py4j_utils as utils
+from py_openda.interfaces.IModelFactory import IModelFactory
+from py_openda.interfaces.IStochModelInstance import IStochModelInstance
+from py_openda.interfaces.IStochObserver import IStochObserver
+from py_openda.interfaces.ITime import ITime
+
 
 try:
     gateway = JavaGateway()   # connect to the JVM
@@ -24,7 +29,7 @@ except:
 
 
 
-class JModelFactory:
+class JModelFactory(IModelFactory):
     """
     Wrapperclass for using a stochModelFactory from Java.
     """
@@ -56,7 +61,7 @@ class JModelFactory:
         model = self.model_factory.getInstance(output_level)
         return JModelInstance(model, noise_config, main_or_ens)
 
-class JStochObserver:
+class JStochObserver(IStochObserver):
     """
     Wrapperclass for using a stochObserver from Java.
     """
@@ -136,7 +141,7 @@ class JStochObserver:
         return self.observer.getRealizations()
 
 
-class JModelInstance:
+class JModelInstance(IStochModelInstance):
     """
     Wrapperclass for using a stochModelInstance from Java.
     """
@@ -239,7 +244,7 @@ class JModelInstance:
         """
         return self.model.getState()
 
-class JTime:
+class JTime(ITime):
     """
     Wrapperclass for using a Time object from Java.
     """
@@ -297,7 +302,7 @@ class JTime:
         """
         return self.time.getMJD()
 
-class PyTime:
+class PyTime(ITime):
     """
     Class used for keeping track of periods of time.
     """

@@ -13,8 +13,10 @@ from scipy.stats import norm
 from scipy.integrate import ode
 from py_openda.costFunctions.JObjects import PyTime
 import py_openda.utils.py4j_utils as utils
+from py_openda.interfaces.IStochModelInstance import IStochModelInstance
 
-class LorenzStochModelInstance:
+
+class LorenzStochModelInstance(IStochModelInstance):
     """
     Instance of a three point Lorenz model.
     """
@@ -47,7 +49,6 @@ class LorenzStochModelInstance:
 
         self.current_time = PyTime(self.span[0])
         self.state = np.array(self.state)
-
 
     def get_time_horizon(self):
         """
