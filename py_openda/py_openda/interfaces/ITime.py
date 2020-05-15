@@ -43,6 +43,13 @@ class ITime:
         """
         raise NotImplemented("Function not implemented.")
 
+    def get_step_mjd():
+        """
+        Get the time step interval in days (as Modified Julian Day).
+        :return The time step interval. Throw an exception if is is not available.
+        """
+        raise NotImplemented("Function not implemented.")
+
     def get_mjd(self):
         """
         Returns a time stamp in the middle of the time period.
