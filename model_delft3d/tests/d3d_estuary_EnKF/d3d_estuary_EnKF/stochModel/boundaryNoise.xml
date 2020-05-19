@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/timeSeriesNoiseModel.xsd">
+	<simulationTimespan timeFormat="dateTimeString">201006240000,201006240010,...,201006250000</simulationTimespan>
+	<timeSeries id="water elevation (z)-noise" initialValue="0.0" location="B" quantity="waterlevel" standardDeviation="0.01" timeCorrelationScale="2" timeCorrelationScaleUnit="hours"/>
+</timeSeriesNoiseModelConfig>

@@ -58,6 +58,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 	private int mMax;
 	private int nMax;
 	private int nLay;
+	private boolean hasZLayers = false;
 
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments.length != 1 && arguments.length != 3) {
@@ -73,6 +74,9 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
+
+		hasZLayers = netcdfFile.findVariable("ZK") != null;
+
 		readNetCdfVariables();
 
 		if (arguments.length == 3) {
@@ -111,7 +115,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 				int LastTimeIndex = timeInfo.getTimes().length;
 				double[] values = getExchangeItemValues(varName);
 				// This is the critical method applying the intelligence:
-				values = back2RealDomain(values,LastTimeIndex);
+				if (hasZLayers) values = back2RealDomain(values,LastTimeIndex);
 				// Might not be the most efficient as we write a second time into the files:
 				writeExchangeItemValues(varName, values);
 			}

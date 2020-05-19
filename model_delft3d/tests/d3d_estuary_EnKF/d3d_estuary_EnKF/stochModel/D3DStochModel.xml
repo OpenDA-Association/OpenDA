@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+	<modelConfig>
+		<file>./D3DModel.xml</file>
+	</modelConfig>
+	<vectorSpecification>
+		<state>
+			<noiseModel id="boundaryNoiseModel" className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" workingDirectory=".">
+				<configFile>boundaryNoise.xml</configFile>
+				<exchangeItems>
+					<!--<exchangeItem id="water elevation (z)-noise" operation="add" skipFirstTimeStep="true">
+						<modelExchangeItem id="water elevation (z)  end A"/>
+					</exchangeItem>-->
+					<exchangeItem id="water elevation (z)-noise" operation="add" skipFirstTimeStep="true">
+						<modelExchangeItem id="water elevation (z)  end B"/>
+					</exchangeItem>
+				</exchangeItems>
+			</noiseModel>
+			<vector id="S1"/>
+			<vector id="U1"/>
+			<vector id="V1"/>
+		</state>
+		<predictor>
+			<vector id="S1.obs" sourceVectorId="S1.ZWL"/>
+			<vector id="S2.obs" sourceVectorId="S2.ZWL"/>
+			<vector id="S3.obs" sourceVectorId="S3.ZWL"/>
+			<vector id="S4.obs" sourceVectorId="S4.ZWL"/>
+		</predictor>
+	</vectorSpecification>
+</blackBoxStochModel>
