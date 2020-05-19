@@ -18,20 +18,12 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_RainfallRunoffZhang;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Set;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.IExchangeItem;
+
+import java.io.*;
 
 /**
  * Allows reading of time variables from matlab readable ASCII file and
@@ -54,23 +46,11 @@ import org.openda.interfaces.IExchangeItem;
  * @author Beatrice Marti, hydrosolutions ltd.
  *
  */
-public class TimesWrapper implements
-		IoObjectInterface {
-
-	// Define a private class to cache the exchange items.
-	private class TimesWrapperExchangeItem {
-		public IExchangeItem exchangeItem;
-
-		TimesWrapperExchangeItem(IExchangeItem exchangeItem) {
-			this.exchangeItem = exchangeItem;
-		}
-	}
+public class TimesWrapper extends AbstractDataObject {
 
 	// Class specific values
 	File workingDir;
-	String configString;
 	String fileName = null;
-	HashMap<String, TimesWrapperExchangeItem> items = new LinkedHashMap<String, TimesWrapperExchangeItem>();
 
 	// Cache values to be read.
 	// -- Add variables for initial States to be read here.
@@ -84,48 +64,29 @@ public class TimesWrapper implements
 	 * 
 	 * @param workingDir
 	 *            Working directory
-	 * @param fileName
-	 *            The name of the file containing the data (relative to the
-	 *            working directory.)
 	 * @param arguments
-	 *            Additional arguments (may be null zero-length)
+	 *            The name of the file containing the data (relative to the
+	 *            working directory), and additional arguments (may be null zero-length)
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
 		
 		this.workingDir = workingDir;
-		this.fileName = fileName;
+		this.fileName = arguments[0];
 		
 		try {
-			ReadNameListFile(workingDir, fileName, arguments);
+			ReadNameListFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Ask which elements can be accessed
-	 * 
-	 * 
-	 * @return The list of element identifiers that can be accessed
-	 */
-	public IExchangeItem[] getExchangeItems() {
-		// Get the number of items.
-		int n = this.items.size();
-		Set<String> keys = this.items.keySet();
-		IExchangeItem[] result = new IExchangeItem[n];
-		int i = 0;
-		for (String key : keys) {
-			result[i] = this.items.get(key).exchangeItem;
-			i++;
-		}
-		return result;
-	}
-
+	@Override
 	public void finish() {
 		// Updates time configuration file.
-		double currentTime = this.items.get("currentTime").exchangeItem.getValuesAsDoubles()[0];
-		double simulationTimeStep = this.items.get("simulationTimeStep").exchangeItem.getValuesAsDoubles()[0];
-		double finalTime = this.items.get("finalTime").exchangeItem.getValuesAsDoubles()[0];
+		double currentTime = exchangeItems.get("currentTime").getValuesAsDoubles()[0];
+		double simulationTimeStep = exchangeItems.get("simulationTimeStep").getValuesAsDoubles()[0];
+		double finalTime = exchangeItems.get("finalTime").getValuesAsDoubles()[0];
 		
 		//write to file
 		System.out.println("TimesWrapper.finish(): writing to " +this.workingDir+"/"+this.fileName);
@@ -162,14 +123,10 @@ public class TimesWrapper implements
 	 * them to an ExchangeItem.
 	 * -- Adapt reading of the key-value pairs and writing to the ExchangeItem 
 	 *     here below.
-	 * 
-	 * @param workingDir
-	 * @param fileName
-	 * @param arguments
+	 *
 	 * @throws IOException
 	 */
-	private void ReadNameListFile(File workingDir, String fileName,
-			String[] arguments) throws IOException {
+	private void ReadNameListFile() throws IOException {
 		File namelist = new File(workingDir, fileName);
 		if (!namelist.exists()) {
 			throw new RuntimeException("TimesWrapper.ReadNameListFile(): settings file "
@@ -179,7 +136,7 @@ public class TimesWrapper implements
 		FileInputStream in = new FileInputStream(namelist);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
 		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		boolean eof = false; // End of file cache.
 
 		// While End of file is not reached yet do the following:
 		while (!eof) {
@@ -196,7 +153,7 @@ public class TimesWrapper implements
 				// Now parse the line.
 				// Remove comments at end of line.
 				if (line.indexOf("%") > 1) {
-					String columns[] = line.split("%");
+					String[] columns = line.split("%");
 					line = columns[0];
 				}
 				if (line.startsWith("%")) {
@@ -211,20 +168,20 @@ public class TimesWrapper implements
 													// of the string.
 					columns[1] = columns[1].trim();
 					// Remove the semicollon at the end of the string in columns[1].
-					String temp[] = columns[1].split(";");
+					String[] temp = columns[1].split(";");
 					columns[1] = temp[0];
 
 					// Parse the values to the key caches in Java.
 					// -- Add if-loops for variables to be read here.
 					if (columns[0].equals("currentTime")) {
-						currentTimeCache = Double.valueOf(columns[1]);
+						currentTimeCache = Double.parseDouble(columns[1]);
 					}
 					if (columns[0].equals("simulationTimeStep")) {
-						simulationTimeStepCache = Double.valueOf(columns[1]);
+						simulationTimeStepCache = Double.parseDouble(columns[1]);
 					}
 					
 					if (columns[0].equals("finalTime")) {
-						finalTimeCache = Double.valueOf(columns[1]);
+						finalTimeCache = Double.parseDouble(columns[1]);
 					}
 
 				}
@@ -238,18 +195,15 @@ public class TimesWrapper implements
 		// -- Add commands for storing the read key-value pairs in the exchange items.
 		IExchangeItem currentTimeExchangeItem = new DoubleExchangeItem(
 				"currentTime", this.currentTimeCache);
-		this.items.put("currentTime", new TimesWrapperExchangeItem(
-				currentTimeExchangeItem));
+		exchangeItems.put("currentTime", currentTimeExchangeItem);
         
         IExchangeItem finalTimeExchangeItem = new DoubleExchangeItem(
                 "finalTime", this.finalTimeCache);
-        this.items.put("finalTime", new TimesWrapperExchangeItem(
-                finalTimeExchangeItem));
+        exchangeItems.put("finalTime", finalTimeExchangeItem);
        
         IExchangeItem simulationTimeStepExchangeItem = new DoubleExchangeItem(
                 "simulationTimeStep", this.simulationTimeStepCache);
-        this.items.put("simulationTimeStep", new TimesWrapperExchangeItem(
-                simulationTimeStepExchangeItem));
+        exchangeItems.put("simulationTimeStep", simulationTimeStepExchangeItem);
         
 	}
 

@@ -133,11 +133,11 @@ public class ResultFileWrapperTest extends TestCase {
 		// Iterate through all found exchange items.
 		for (String id : exchangeItemIDs) {
 			IExchangeItem exchangeItem = resultFileWrapper.getDataObjectExchangeItem(id);
-			assertEquals(exchangeItem.getId(), id);
+			String exId = exchangeItem.getId();
+			assertEquals(exId, id);
 
 			// If the exchange item with id totalRunoff is found, do the following tests:
-			if (exchangeItem.getId().equalsIgnoreCase("totalRunoff")) {
-				String exId = exchangeItem.getId();
+			if (exId.equalsIgnoreCase("totalRunoff")) {
 				assertEquals("ex.getId()", "totalRunoff", exId);
 
 				double[] values = exchangeItem.getValuesAsDoubles();
