@@ -23,12 +23,14 @@ import junit.framework.TestCase;
 
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Array;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * @author johan, verlaanm
@@ -68,12 +70,12 @@ public class NoosDataObjectTest extends TestCase {
 		assertEquals(-2.073333, ts.getPosition()[0]);
 		assertEquals(57.143333, ts.getPosition()[1]);
 
-		assertEquals(58849.0, ts.getStartTime());
-		assertEquals(58849.125, ts.getStopTime());
+		assertEquals("202001010000", TimeUtils.mjdToString(ts.getStartTime()));
+		assertEquals("202001010300", TimeUtils.mjdToString(ts.getStopTime()));
 
 		assertEquals(19, ts.getTimes().length);
-		assertEquals(58849.0, ts.getTimes()[0]);
-		assertEquals(58849.125, ts.getTimes()[18]);
+		assertEquals("202001010000", TimeUtils.mjdToString(ts.getTimes()[0]));
+		assertEquals("202001010300", TimeUtils.mjdToString(ts.getTimes()[18]));
 
 		assertEquals(19, ts.getValuesAsDoubles().length);
 		assertEquals(-1.09, ts.getValuesAsDoubles()[0]);
@@ -105,12 +107,12 @@ public class NoosDataObjectTest extends TestCase {
 			assertEquals(4.745326, ts.getPosition()[0]);
 			assertEquals(52.965441, ts.getPosition()[1]);
 
-			assertEquals(58849.0, ts.getStartTime());
-			assertEquals(58849.125, ts.getStopTime());
+		    assertEquals("202001010000", TimeUtils.mjdToString(ts.getStartTime()));
+		    assertEquals("202001010300", TimeUtils.mjdToString(ts.getStopTime()));
 
 			assertEquals(19, ts.getTimes().length);
-			assertEquals(58849.0, ts.getTimes()[0]);
-			assertEquals(58849.125, ts.getTimes()[18]);
+		    assertEquals("202001010000", TimeUtils.mjdToString(ts.getTimes()[0]));
+		    assertEquals("202001010300", TimeUtils.mjdToString(ts.getTimes()[18]));
 
 			assertEquals(19, ts.getValuesAsDoubles().length);
 			assertEquals(0.0997, ts.getValuesAsDoubles()[0]);
@@ -143,12 +145,12 @@ public class NoosDataObjectTest extends TestCase {
 			assertEquals(-2.0, ts.getPosition()[0]);
 			assertEquals(53.3, ts.getPosition()[1]);
 
-			assertEquals(54466.0, ts.getStartTime());
-			assertEquals(54466.0833333, ts.getStopTime(),1e-3);
+		    assertEquals("200801010000", TimeUtils.mjdToString(ts.getStartTime()));
+		    assertEquals("200801010200", TimeUtils.mjdToString(ts.getStopTime()));
 
 			assertEquals(5, ts.getTimes().length);
-			assertEquals(54466.0, ts.getTimes()[0]);
-			assertEquals(54466.0833333, ts.getTimes()[4],1e-3);
+			assertEquals("200801010000", TimeUtils.mjdToString(ts.getTimes()[0]));
+			assertEquals("200801010200", TimeUtils.mjdToString(ts.getTimes()[4]));
 
 			assertEquals(5, ts.getValuesAsDoubles().length);
 			assertEquals(-0.83, ts.getValuesAsDoubles()[0]);
@@ -206,7 +208,7 @@ public class NoosDataObjectTest extends TestCase {
 			assertTrue(test2);
 	   }
 
-	public void testReadTimeZoneMET() {
+	public void testReadTimeZoneMET() throws ParseException {
 
 		// read noos file and create object
 		NoosDataObject noosDO = new NoosDataObject();
@@ -228,18 +230,18 @@ public class NoosDataObjectTest extends TestCase {
 		assertEquals(4.120131, ts.getPosition()[0]);
 		assertEquals(51.978539, ts.getPosition()[1]);
 
-		assertEquals(58848.95833333333, ts.getStartTime());
-		assertEquals(58849.08333333333, ts.getStopTime());
-		assertTrue(ts.intersectsWithTimeInterval(58847.0, 58849.0));
-		assertTrue(ts.intersectsWithTimeInterval(58849.0, 58850.0));
-		assertTrue(ts.intersectsWithTimeInterval(58847.0, 58852.0));
-		assertTrue(ts.intersectsWithTimeInterval(58848.95833333333, 58852.0));
-		assertFalse(ts.intersectsWithTimeInterval(58847.0, 58848.9));
-		assertFalse(ts.intersectsWithTimeInterval(58849.1, 58852.0));
+		assertEquals("201912312300", TimeUtils.mjdToString(ts.getStartTime()));
+		assertEquals("202001010200", TimeUtils.mjdToString(ts.getStopTime()));
+		assertTrue(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("201912310000"), TimeUtils.date2Mjd("202001010200")));
+		assertTrue(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("202001010100"), TimeUtils.date2Mjd("202001020000")));
+		assertTrue(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("201912290000"), TimeUtils.date2Mjd("202001030000")));
+		assertTrue(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("201912312300"), TimeUtils.date2Mjd("202001030000")));
+		assertFalse(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("201912290000"), TimeUtils.date2Mjd("201912312200")));
+		assertFalse(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("202001010400"), TimeUtils.date2Mjd("202001030000")));
 
 		assertEquals(19, ts.getTimes().length);
-		assertEquals(58848.95833333333, ts.getTimes()[0]);
-		assertEquals(58849.08333333333, ts.getTimes()[18]);
+		assertEquals("201912312300", TimeUtils.mjdToString(ts.getTimes()[0]));
+		assertEquals("202001010200", TimeUtils.mjdToString(ts.getTimes()[18]));
 
 		assertEquals(19, ts.getValuesAsDoubles().length);
 		assertEquals(-0.5444, ts.getValuesAsDoubles()[0]);
