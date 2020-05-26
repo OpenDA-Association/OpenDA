@@ -20,7 +20,6 @@
 package org.openda.model_RainfallRunoffZhang;
 
 import junit.framework.TestCase;
-import org.openda.exchange.AbstractDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -111,7 +110,7 @@ public class InitialStatesWrapperTest extends TestCase {
 	public void testReadInput() {
 
 		// Creates the I/O-Object from the wrapper to be tested.
-		AbstractDataObject dataObject = new InitialStatesWrapper();
+		InitialStatesWrapper dataObject = new InitialStatesWrapper();
 		String[] args = {fileName};
 		double[] expectedTimes = new double[1];
 		double[] expectedTimes2 = new double[1];
@@ -154,7 +153,7 @@ public class InitialStatesWrapperTest extends TestCase {
 	
 	public void testFinish() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		AbstractDataObject initialStatesWrapper = new InitialStatesWrapper();
+		InitialStatesWrapper initialStatesWrapper = new InitialStatesWrapper();
 		String[] args = {fileName};
 		double[] times = new double[2];
 		double[] values = new double[2];

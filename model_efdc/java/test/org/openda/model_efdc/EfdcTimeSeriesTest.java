@@ -60,7 +60,7 @@ public class EfdcTimeSeriesTest extends TestCase {
 
         String[] locationIds = new String[]{"1", "2", "3"};
         String[] parameterIds = new String[]{"PATM", "TDRY", "TWET", "RAIN", "EVAP", "SOLSWR", "CLOUD"};
-        EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
         String[] arguments = new String[locationIds.length*parameterIds.length + 4];
         arguments[0] = outputFileName;
         arguments[1] = "ASER";
@@ -72,10 +72,10 @@ public class EfdcTimeSeriesTest extends TestCase {
                 arguments[n*parameterIds.length + k + 4] = timeSeriesId;
             }
         }
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
+        efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcTimeSeriesDataObject.getExchangeItemIDs();
         assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set start time.
@@ -86,7 +86,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         for (String id: exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcTimeSeriesDataObject.getDataObjectExchangeItem(id);
  			String exId = exchangeItem.getId();
  			assertEquals(id, exId);
 			if ("TSTART1".equalsIgnoreCase(exId)) {
@@ -105,7 +105,7 @@ public class EfdcTimeSeriesTest extends TestCase {
 				//get exchangeItem.
 				IExchangeItem currentExchangeItem = null;
 				for (String id : exchangeItemIDs) {
-					currentExchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+					currentExchangeItem = efdcTimeSeriesDataObject.getDataObjectExchangeItem(id);
 					String exId = currentExchangeItem.getId();
 					assertEquals(id, exId);
 					if (timeSeriesId.equalsIgnoreCase(exId)) {
@@ -128,7 +128,7 @@ public class EfdcTimeSeriesTest extends TestCase {
 		}
 
         //write data to file.
-        efdcTimeSeriesIoObject.finish();
+        efdcTimeSeriesDataObject.finish();
 
         //compare actual result file with expected result file.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
@@ -146,14 +146,14 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
         //here 1 is the location (can be multiple locations with series per file)
         //and CWQSR02 is the parameter.
         String[] arguments = new String[]{outputFileName, "CWQSR02", "0", "TSTART1", "1.CWQSR02", "2.CWQSR02"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
+        efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcTimeSeriesDataObject.getExchangeItemIDs();
         assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
@@ -169,7 +169,7 @@ public class EfdcTimeSeriesTest extends TestCase {
             times[n] = times[n] + 55561;
         }
         for (String id : exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcTimeSeriesDataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			if ("TSTART1".equalsIgnoreCase(exId)) {
@@ -189,7 +189,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         }
 
         //write data to file.
-        efdcTimeSeriesIoObject.finish();
+        efdcTimeSeriesDataObject.finish();
 
         //compare actual result file with expected result file.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
@@ -207,12 +207,12 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
         String[] arguments = new String[]{outputFileName, "PSER", "9", "TSTART1", "1.PSER"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
+        efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcTimeSeriesDataObject.getExchangeItemIDs();
         assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
@@ -231,7 +231,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         }
         double[] values = new double[]{4.7, 4.8, 4.9, 2.06};
         for (String id : exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcTimeSeriesDataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			if ("TSTART1".equalsIgnoreCase(exId)) {
                 exchangeItem.setValues(startTime);
@@ -242,7 +242,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         }
 
         //write data to file.
-        efdcTimeSeriesIoObject.finish();
+        efdcTimeSeriesDataObject.finish();
 
         //compare actual result file with expected result file.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
@@ -260,12 +260,12 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
         String[] arguments = new String[]{outputFileName, "QSER", "0", "TSTART23", "3.QSER", "1.QSER", "4.QSER", "2.QSER"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
+        efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcTimeSeriesDataObject.getExchangeItemIDs();
         assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
@@ -276,7 +276,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         for (String id : exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcTimeSeriesDataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			if ("TSTART23".equalsIgnoreCase(exId)) {
@@ -309,7 +309,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         }
 
         //write data to file.
-        efdcTimeSeriesIoObject.finish();
+        efdcTimeSeriesDataObject.finish();
 
         //compare actual result file with expected result file.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
@@ -327,12 +327,12 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesIoObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
         String[] arguments = new String[]{outputFileName, "TSER","0",  "TSTART1", "4.TSER", "1.TSER", "2.TSER", "3.TSER"};
-        efdcTimeSeriesIoObject.initialize(testRunDataDir, arguments);
+        efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        String[] exchangeItemIDs = efdcTimeSeriesIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcTimeSeriesDataObject.getExchangeItemIDs();
         assertEquals(arguments.length - 3, exchangeItemIDs.length);
 
         //set times and values.
@@ -343,7 +343,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startTime = Time.milliesToMjd(calendar.getTimeInMillis());
         for (String id : exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcTimeSeriesIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcTimeSeriesDataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			if ("TSTART1".equalsIgnoreCase(exId)) {
@@ -376,7 +376,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         }
 
         //write data to file.
-        efdcTimeSeriesIoObject.finish();
+        efdcTimeSeriesDataObject.finish();
 
         //compare actual result file with expected result file.
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc

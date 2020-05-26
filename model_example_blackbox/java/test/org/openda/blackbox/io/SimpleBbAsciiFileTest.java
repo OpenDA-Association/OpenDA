@@ -18,9 +18,9 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.blackbox.io;
+
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
@@ -43,14 +43,14 @@ public class SimpleBbAsciiFileTest extends TestCase {
 
 	public void testReadInput() {
 
-		AbstractDataObject ioObject = new SimpleBbAsciiFile();
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
 		String[] args = {"pollution_model.input"};
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
-		String[] exchangeItemIDs = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 
         for(String id:exchangeItemIDs){
-			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 
@@ -88,13 +88,13 @@ public class SimpleBbAsciiFileTest extends TestCase {
 	}
 
 	public void testReadOutput() {
-		AbstractDataObject ioObject = new SimpleBbAsciiFile();
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
 		String[] args = {"pollution_model.refoutput"};
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 		//TODO fix data string
-		String[] exchangeItemIDs = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 		for(String id:exchangeItemIDs){
-			IExchangeItem ex = ioObject.getDataObjectExchangeItem(id);
+			IExchangeItem ex = dataObject.getDataObjectExchangeItem(id);
 			String exId = ex.getId();
 			assertEquals(id, exId);
 			if(exId.equalsIgnoreCase("source.factory1,discharge")){
@@ -120,7 +120,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 				assertEquals("values[1]", 0.0, valuesCopy[0], 0.0001);
 			}
 
-			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(exId);
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(exId);
 			if(exchangeItem instanceof TimeSeries){
 				TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
 				noosFormatter.writeToStandardOut((TimeSeries)exchangeItem);
@@ -130,7 +130,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 
 	public void testWriteInput() {
 		//First read input
-		AbstractDataObject ioObject = new SimpleBbAsciiFile();
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
 		String[] args = {"pollution_model_copy.input"};
 		File original = new File(testRunDataDir,"pollution_model.input");
 		File copy = new File(testRunDataDir,"pollution_model_copy.input");
@@ -139,14 +139,14 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
 		}
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
-		String[] exchangeItemIDs = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 
 		//change some things
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
 			String id = exchangeItemIDs[i];
-			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			System.out.println("item = " + i + " id=" + exId);
@@ -173,7 +173,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		}
 
 		//write to file
-		ioObject.finish();
+		dataObject.finish();
 		File reference = new File(testRunDataDir,"pollution_model_changed.input");
 		boolean containsLocA =testData.FileContains(reference, "102030");
 		assertTrue(containsLocA);
@@ -183,7 +183,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 
 	public void testReadWriteTime() {
 
-		AbstractDataObject ioObject = new SimpleBbAsciiFile();
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
 		String[] args = {"pollution_model_copy2.input"};
 		File original = new File(testRunDataDir,"pollution_model.input");
 		File copy = new File(testRunDataDir,"pollution_model_copy2.input");
@@ -192,10 +192,10 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
 		}
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
-		for(String id:ioObject.getExchangeItemIDs()){
-			IExchangeItem exchangeItem = ioObject.getDataObjectExchangeItem(id);
+		for(String id:dataObject.getExchangeItemIDs()){
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			System.out.println("looking at item: "+exId);
@@ -218,7 +218,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 				exchangeItem.setValuesAsDoubles(endAsMjd);
 			}
 		}
-		ioObject.finish();
+		dataObject.finish();
 
 		File reference = new File(testRunDataDir,"pollution_model.refinput");
 		boolean identical = testData.FilesAreIdentical(copy,reference);
