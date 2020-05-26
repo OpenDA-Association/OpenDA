@@ -18,9 +18,8 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.blackbox.io;
+
 import junit.framework.TestCase;
-import org.openda.blackbox.config.BBUtils;
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -41,47 +40,55 @@ public class TreeVectorIoObjectTest extends TestCase {
     }
 
     public void testSingleExchangeItem() {
-		IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
-				treeVectorDataDir, TreeVectorIoObject.class.getName(),
-				"rtcParameterConfig.xml", new String[]{"OneExchangeItem"});
-		IExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
-		assertTrue("Tree vector id", exchangeItems[0].getId().equals("TV"));
-		double[] values = exchangeItems[0].getValuesAsDoubles();
+    	TreeVectorIoObject treeVectorObject = new TreeVectorIoObject();
+    	String fileName = "rtcParameterConfig.xml";
+    	String[] arguments = {fileName,"OneExchangeItem"};
+    	treeVectorObject.initialize(treeVectorDataDir, arguments);
+		String[] exchangeItemIDs = treeVectorObject.getExchangeItemIDs();
+		IExchangeItem exchangeItem = treeVectorObject.getDataObjectExchangeItem(exchangeItemIDs[0]);
+		assertEquals("Tree vector id", "TV", exchangeItem.getId());
+		double[] values = exchangeItem.getValuesAsDoubles();
 		for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
 			values[i] += 10.d;
 		}
-		exchangeItems[0].setValuesAsDoubles(values);
-		treeVectorIoObject.finish();
+		exchangeItem.setValuesAsDoubles(values);
+		treeVectorObject.finish();
 		testData.FilesAreIdentical(new File(treeVectorDataDir,"rtcParameterConfig.xml"),
 				new File(treeVectorDataDir, "rtcParameterConfig_ref_1.xml"));
 	}
 
 	public void testMultiExchangeItems() {
-		IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
-				treeVectorDataDir, TreeVectorIoObject.class.getName(),
-				"rtcParameterConfig.xml", new String[]{});
-		IExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
-		assertTrue("B01.01", exchangeItems[0].getId().equals("B01.01"));
-		assertTrue("endTime", exchangeItems[19].getId().equals("B13.03"));
+		TreeVectorIoObject treeVectorObject = new TreeVectorIoObject();
+		String fileName = "rtcParameterConfig.xml";
+		String[] arguments = {fileName};
+		treeVectorObject.initialize(treeVectorDataDir, arguments);
+		String[] exchangeItemIDs = treeVectorObject.getExchangeItemIDs();
+		IExchangeItem firstExchangeItem = treeVectorObject.getDataObjectExchangeItem(exchangeItemIDs[0]);
+		assertEquals("B01.01", "B01.01", firstExchangeItem.getId());
+		IExchangeItem lastExchangeItem = treeVectorObject.getDataObjectExchangeItem(exchangeItemIDs[19]);
+		assertEquals("endTime", "B13.03", lastExchangeItem.getId());
 		for (int ei = 0; ei<20 ; ei+=19) {
-			double[] values = exchangeItems[ei].getValuesAsDoubles();
+			IExchangeItem exchangeItem = treeVectorObject.getDataObjectExchangeItem(exchangeItemIDs[ei]);
+			double[] values = exchangeItem.getValuesAsDoubles();
 			for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
 				values[i] += 1.0d + (double) ei;
 			}
-			exchangeItems[ei].setValuesAsDoubles(values);
+			exchangeItem.setValuesAsDoubles(values);
 		}
-		treeVectorIoObject.finish();
+		treeVectorObject.finish();
 		testData.FilesAreIdentical(new File(treeVectorDataDir, "rtcParameterConfig.xml"),
 				new File(treeVectorDataDir, "rtcParameterConfig_ref_2.xml"));
 	}
 
 	public void testReadRtcStateImport() {
 		try {
-			IoObjectInterface treeVectorIoObject = BBUtils.createIoObjectInstance(
-					treeVectorDataDir, TreeVectorIoObject.class.getName(),
-					"state_import.xml", new String[]{});
-			IExchangeItem[] exchangeItems = treeVectorIoObject.getExchangeItems();
-			assertTrue("Main_P[0]", exchangeItems[0].getId().equals("Main_P[0]"));
+			TreeVectorIoObject treeVectorObject = new TreeVectorIoObject();
+			String fileName = "state_import.xml";
+			String[] arguments = {fileName};
+			treeVectorObject.initialize(treeVectorDataDir, arguments);
+			String[] exchangeItemIDs = treeVectorObject.getExchangeItemIDs();
+			IExchangeItem exchangeItem = treeVectorObject.getDataObjectExchangeItem(exchangeItemIDs[0]);
+			assertEquals("Main_P[0]", "Main_P[0]", exchangeItem.getId());
 		} catch (Exception e) {
 			if (!e.getMessage().contains("Parsing Error : Content is not allowed in prolog")) {
 				throw e;
