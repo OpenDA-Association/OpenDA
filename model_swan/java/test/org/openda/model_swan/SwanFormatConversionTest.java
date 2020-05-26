@@ -41,7 +41,7 @@ public class SwanFormatConversionTest extends TestCase {
     	testData = new OpenDaTestSupport(SwanFormatConversionTest.class,"model_swan");
     }
 
-    public void testObservations_1() throws Exception {
+    public void testObservations_1() {
 		System.out.println("==============================================================================");
 		System.out.println(" Basic test for dumping SWAN time-dependent series.");
 		System.out.println("==============================================================================");
@@ -57,7 +57,7 @@ public class SwanFormatConversionTest extends TestCase {
 		// the DataCopier can be tested more thoroughly below. 
     }
     
-    public void testDataCopier_1() throws Exception {
+    public void testDataCopier_1() {
 		System.out.println("==============================================================================");
 		System.out.println(" Conversion test for dumping SWAN time-dependent series.");
 		System.out.println("==============================================================================");

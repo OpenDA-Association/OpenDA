@@ -59,7 +59,7 @@ public class TimesWrapper extends AbstractDataObject {
 	private double finalTimeCache = 0.0;
 
 	/**
-	 * Initialize the IoObject. Reads the content of a file (fileName) in
+	 * Initialize the DataObject. Reads the content of a file (fileName) in
 	 * directory (workingDir) with given arguments.
 	 * 
 	 * @param workingDir

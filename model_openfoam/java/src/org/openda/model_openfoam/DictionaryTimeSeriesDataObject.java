@@ -86,9 +86,9 @@ public class DictionaryTimeSeriesDataObject implements IDataObject{
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * <li>Optional, a referenceDate in ISO 8601 notatation, e.g
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      *
      * </ol>
      */
@@ -306,7 +306,7 @@ public class DictionaryTimeSeriesDataObject implements IDataObject{
 
     /**
      * @param set
-     *           The TimeSeriesSet to set in this IoObject
+     *           The TimeSeriesSet to set in this DataObject
      */
     public void setTimeSeriesSet(TimeSeriesSet set) {
         this.timeSeriesSet = set;

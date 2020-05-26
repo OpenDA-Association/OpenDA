@@ -80,7 +80,7 @@ public class ParametersWrapper extends AbstractDataObject {
 	private double[] timeCache = new double[2];
 	
 	/**
-	 * Initialize the IoObject. Reads the content of a file (fileName) in
+	 * Initialize the DataObject. Reads the content of a file (fileName) in
 	 * directory (workingDir) with given arguments.
 	 * 
 	 * @param workingDir
