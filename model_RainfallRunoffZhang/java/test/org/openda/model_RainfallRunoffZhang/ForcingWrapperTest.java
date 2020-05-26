@@ -18,22 +18,15 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_RainfallRunoffZhang;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 
-import org.openda.exchange.AbstractDataObject;
+import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
-import junit.framework.TestCase;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 public class ForcingWrapperTest extends TestCase {
 	
@@ -142,7 +135,7 @@ public class ForcingWrapperTest extends TestCase {
 	 */
 	public void testReadPrecipitationInput() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		AbstractDataObject forcingWrapper = new ForcingWrapper();
+		ForcingWrapper forcingWrapper = new ForcingWrapper();
 		String[] args = {fileNamePrecip};
 		double[] expectedTimes;
 		double[] expectedValues;
@@ -171,7 +164,7 @@ public class ForcingWrapperTest extends TestCase {
 	
 	public void testReadPotETInput() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		AbstractDataObject forcingWrapper = new ForcingWrapper();
+		ForcingWrapper forcingWrapper = new ForcingWrapper();
 		String[] args = {fileNamePotET};
 		double[] expectedTimes;
 		double[] expectedValues;
@@ -204,7 +197,7 @@ public class ForcingWrapperTest extends TestCase {
 	
 	public void testPrecipFinish() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		AbstractDataObject precipWrapper = new ForcingWrapper();
+		ForcingWrapper precipWrapper = new ForcingWrapper();
 		String[] args = {fileNamePrecip};
 		double[] times = new double[3];
 		double[] values = new double[3];
@@ -296,7 +289,7 @@ public class ForcingWrapperTest extends TestCase {
 
 	public void testPotETFinish() {
 		// Creates the I/O-Object from the wrapper to be tested.
-		AbstractDataObject potETWrapper = new ForcingWrapper();
+		ForcingWrapper potETWrapper = new ForcingWrapper();
 		String[] args = {fileNamePotET};
 		double[] times = new double[3];
 		double[] values = new double[3];

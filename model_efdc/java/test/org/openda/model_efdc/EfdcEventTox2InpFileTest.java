@@ -56,18 +56,18 @@ public class EfdcEventTox2InpFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
+        EfdcEventTox2InpIoObject efdcEventTox2InpDataObject = new EfdcEventTox2InpIoObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String eventTox2InpFilename = "efdcEventTox2InpFileTest/input/EVENT_TOX2.INP";
         String startTimeExchangeItemId = "TSTART1";
         String endTimeExchangeItemId = "TSTOP1";
-        efdcEventTox2InpIoObject.initialize(testRunDataDir,
+        efdcEventTox2InpDataObject.initialize(testRunDataDir,
                 new String[]{eventTox2InpFilename, "0", startTimeExchangeItemId, endTimeExchangeItemId});
 
         //Get all exchangeItems items
-        String[] exchangeItemIDs = efdcEventTox2InpIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcEventTox2InpDataObject.getExchangeItemIDs();
         for (String id : exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcEventTox2InpIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcEventTox2InpDataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			if (exId.equals(startTimeExchangeItemId)) {
@@ -79,7 +79,7 @@ public class EfdcEventTox2InpFileTest extends TestCase {
 
         //This command actually replaces the tags in the file by the values
         //of the corresponding exchangeItems.
-        efdcEventTox2InpIoObject.finish();
+        efdcEventTox2InpDataObject.finish();
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, eventTox2InpFilename);
