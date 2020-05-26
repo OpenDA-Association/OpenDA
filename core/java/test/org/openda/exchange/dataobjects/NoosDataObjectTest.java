@@ -230,6 +230,8 @@ public class NoosDataObjectTest extends TestCase {
 		assertEquals(4.120131, ts.getPosition()[0]);
 		assertEquals(51.978539, ts.getPosition()[1]);
 
+		//Note: in NoosTimeSeriesFormatter, a correction from the actual time zone to GMT is done,
+		// so therefore there is 1 hour difference with the noos data.
 		assertEquals("201912312300", TimeUtils.mjdToString(ts.getStartTime()));
 		assertEquals("202001010200", TimeUtils.mjdToString(ts.getStopTime()));
 		assertTrue(ts.intersectsWithTimeInterval(TimeUtils.date2Mjd("201912310000"), TimeUtils.date2Mjd("202001010200")));

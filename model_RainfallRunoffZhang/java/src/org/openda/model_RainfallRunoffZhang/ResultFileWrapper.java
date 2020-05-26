@@ -53,7 +53,7 @@ public class ResultFileWrapper extends AbstractDataObject {
 	String fileName = null;
 
 	/**
-	 * Initialize the IoObject. Reads the content of a file in
+	 * Initialize the DataObject. Reads the content of a file in
 	 * directory (workingDir) with given arguments.
 	 * 
 	 * @param workingDir

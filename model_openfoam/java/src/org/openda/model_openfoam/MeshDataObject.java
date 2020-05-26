@@ -86,7 +86,7 @@ public class MeshDataObject implements IDataObject {
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data 
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * </ol>
      */
     public void initialize(File workingDir, String[] arguments) {

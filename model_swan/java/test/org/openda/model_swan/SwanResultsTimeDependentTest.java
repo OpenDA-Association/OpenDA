@@ -21,16 +21,15 @@ package org.openda.model_swan;
 
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
-import org.openda.model_swan.SwanResultsTimeDependent;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Tests for Swan Results IoObject
+ * Tests for Swan Results DataObject
  */
 public class SwanResultsTimeDependentTest extends TestCase {
 
@@ -40,25 +39,25 @@ public class SwanResultsTimeDependentTest extends TestCase {
     	testData = new OpenDaTestSupport(SwanResultsTimeDependentTest.class,"model_swan");
     }
 
-    public void testObservations_1() throws Exception {
+    public void testObservations_1() {
         File test_1_dir = new File(testData.getTestRunDataDir(), "swanObsTimeDependent");
-        IDataObject ioObject = BBUtils.createDataObject(test_1_dir,
+        IDataObject dataObject = BBUtils.createDataObject(test_1_dir,
                 SwanResultsTimeDependent.class.getName(), "out_P1.TAB", new String[]{});
-        checkValues(ioObject);
-        ioObject = BBUtils.createDataObject(test_1_dir,
+        checkValues(dataObject);
+        dataObject = BBUtils.createDataObject(test_1_dir,
                 SwanResultsTimeDependent.class.getName(), "out_P2.TAB", new String[]{});
-        checkValues2(ioObject);
-        ioObject = BBUtils.createDataObject(test_1_dir,
+        checkValues2(dataObject);
+        dataObject = BBUtils.createDataObject(test_1_dir,
                 SwanResultsTimeDependent.class.getName(), "out_P3.TAB", new String[]{});
-        checkValues3(ioObject);
+        checkValues3(dataObject);
     }
 
-    private void checkValues(IDataObject ioObject) {
+    private void checkValues(IDataObject dataObject) {
 
-        String[] exchangeItemsIDs = ioObject.getExchangeItemIDs();
+        String[] exchangeItemsIDs = dataObject.getExchangeItemIDs();
         IExchangeItem[] exchangeItems = new IExchangeItem[exchangeItemsIDs.length];
         for (int i=0; i<exchangeItemsIDs.length; i++){
-            exchangeItems[i] = ioObject.getDataObjectExchangeItem(exchangeItemsIDs[i]);
+            exchangeItems[i] = dataObject.getDataObjectExchangeItem(exchangeItemsIDs[i]);
         }
 
         assertEquals("#exchangeItems", 12, exchangeItems.length);
@@ -75,12 +74,12 @@ public class SwanResultsTimeDependentTest extends TestCase {
         assertEquals("exchangeItems[3].getValuesAsDoubles()[32]", 0.20267, exchangeItems[3].getValuesAsDoubles()[32]);
     }
 
-    private void checkValues2(IDataObject ioObject) {
+    private void checkValues2(IDataObject dataObject) {
 
-        String[] exchangeItemsIDs = ioObject.getExchangeItemIDs();
+        String[] exchangeItemsIDs = dataObject.getExchangeItemIDs();
 		IExchangeItem[] exchangeItems = new IExchangeItem[exchangeItemsIDs.length];
         for (int i=0; i<exchangeItemsIDs.length; i++){
-            exchangeItems[i] = ioObject.getDataObjectExchangeItem(exchangeItemsIDs[i]);
+            exchangeItems[i] = dataObject.getDataObjectExchangeItem(exchangeItemsIDs[i]);
         }
 
         assertEquals("#exchangeItems", 12, exchangeItems.length);
@@ -97,12 +96,12 @@ public class SwanResultsTimeDependentTest extends TestCase {
         assertEquals("exchangeItems[3].getValuesAsDoubles()[32]", 0.10597, exchangeItems[3].getValuesAsDoubles()[32]);
     }
 
-    private void checkValues3(IDataObject ioObject) {
+    private void checkValues3(IDataObject dataObject) {
 
-        String[] exchangeItemsIDs = ioObject.getExchangeItemIDs();
+        String[] exchangeItemsIDs = dataObject.getExchangeItemIDs();
 		IExchangeItem[] exchangeItems = new IExchangeItem[exchangeItemsIDs.length];
         for (int i=0; i<exchangeItemsIDs.length; i++){
-            exchangeItems[i] = ioObject.getDataObjectExchangeItem(exchangeItemsIDs[i]);
+            exchangeItems[i] = dataObject.getDataObjectExchangeItem(exchangeItemsIDs[i]);
         }
         System.out.println("exchangetItems.length: "+exchangeItems.length);
         for (int i=0;i<exchangeItems.length;i++){

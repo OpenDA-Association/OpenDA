@@ -124,34 +124,34 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		//use EfdcInpIoObject to write timeHorizon in EFDC.INP file.
 		BBUtils.makeFileClone(new File(templateDir, EFDC_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EFDC_INP_FILE_NAME));
-		EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
-		efdcInpIoObject.initialize(templateDir,
+		EfdcInpIoObject efdcInpDataObject = new EfdcInpIoObject();
+		efdcInpDataObject.initialize(templateDir,
 				new String[]{EFDC_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (String id : efdcInpIoObject.getExchangeItemIDs()) {
-			IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
+		for (String id : efdcInpDataObject.getExchangeItemIDs()) {
+			IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
 			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
 			} else if (TSTOP.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{endTime});
 			}
 		}
-		efdcInpIoObject.finish();
+		efdcInpDataObject.finish();
 
 		//use EfdcEventTox2InpIoObject to write timeHorizon in EVENT_TOX2.INP file.
 		BBUtils.makeFileClone(new File(templateDir, EVENT_TOX2_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EVENT_TOX2_INP_FILE_NAME));
-		EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
-		efdcEventTox2InpIoObject.initialize(templateDir,
+		EfdcEventTox2InpIoObject efdcEventTox2InpDataObject = new EfdcEventTox2InpIoObject();
+		efdcEventTox2InpDataObject.initialize(templateDir,
 				new String[]{EVENT_TOX2_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (String id : efdcEventTox2InpIoObject.getExchangeItemIDs()) {
-			IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
+		for (String id : efdcEventTox2InpDataObject.getExchangeItemIDs()) {
+			IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
 			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
 			} else if (TSTOP.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{endTime});
 			}
 		}
-		efdcEventTox2InpIoObject.finish();
+		efdcEventTox2InpDataObject.finish();
 	}
 
 	/**

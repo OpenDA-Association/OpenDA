@@ -85,9 +85,9 @@ public class DictionaryDataObject implements IDataObject{
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * <li>Optional, a referenceDate in ISO 8601 notatation, e.g
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      *
      * </ol>
      */

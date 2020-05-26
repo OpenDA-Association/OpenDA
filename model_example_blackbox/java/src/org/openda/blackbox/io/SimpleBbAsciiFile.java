@@ -92,15 +92,15 @@ public class SimpleBbAsciiFile extends AbstractDataObject {
 	public void initialize(File workingDir, String[] arguments) {
 		this.workingDir = workingDir;
 		this.fileName = arguments[0];
-		System.out.println("ioObject : filename = "+arguments[0]);
+		System.out.println("dataobject : filename = "+arguments[0]);
 
 
 		if (arguments.length > 1) {
 			for(int i=1;i<arguments.length;i++){
-				System.out.println("ioObject : arg = "+arguments[i]);
+				System.out.println("dataobject : arg = "+arguments[i]);
 			}
-			Results.putMessage("ioObject for file="+arguments[0]+" arguments ignored");
-			//throw new RuntimeException("IoObject SimpleBbAsciiFile does not expect any additional arguments");
+			Results.putMessage("dataobject for file="+arguments[0]+" arguments ignored");
+			//throw new RuntimeException("DataObject SimpleBbAsciiFile does not expect any additional arguments");
 		}
 		File inputFile=null;
 		// check file
