@@ -38,7 +38,7 @@
 
 <!--
 ===========================================================================
-    Compilation
+    Compilation using-system-thrift
 ===========================================================================
 -->
     <target name="build" depends="thrift-jar">
@@ -91,15 +91,72 @@
         </antcall>
     </target>
 
-    <!-- This only works if output directory already exists -->
-    <target name="thrift-execute">
-		<echo>Generating ${output_language} code in ${output_dir} using thrift code from ${input_file}</echo>
-      <exec executable="${resourcesdir}\thrift\thrift-0.11.0.exe" failonerror="${failonerror}">
+  <!-- This only works if thrift compiler is on the PATH environment variable and output directory already exists -->
+  <target name="thrift-execute">
+    <echo>Generating ${output_language} code in ${output_dir} using thrift code from ${input_file}</echo>
+    <exec executable="thrift" failonerror="${failonerror}">
+      <arg line="-out ${output_dir}"/>
+      <arg line="-gen ${output_language} ${input_file}"/>
+    </exec>
+  </target>
+
+  <!--
+===========================================================================
+    Compilation using included windows executable
+===========================================================================
+-->
+
+  <target name="build-windows-only">
+    <antcall target="thrift-jar-windows-only">
+      <param name="output_dir" value="${thrift_temp_srcdir}"/>
+    </antcall>
+  </target>
+
+  <target name="thrift-jar-windows-only" depends="thrift-classes-windows-only, manifest">
+    <jar jarfile="${openda_thrift_jar}" manifest="MANIFEST.MF">
+      <fileset dir="${thrift_temp_builddir}" includes="**/*.class"/>
+    </jar>
+    <zip zipfile="${openda_thrift_src}">
+      <fileset dir="${thrift_temp_srcdir}" includes="**/*.java"/>
+    </zip>
+  </target>
+
+  <target name="thrift-classes-windows-only" depends="thrift-src-windows-only">
+    <!-- run javac on the thrift generated files -->
+    <javac srcdir="${thrift_temp_srcdir}" destdir="${thrift_temp_builddir}" debug="${debug}" source="1.8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M"
+           memoryMaximumSize="256M">
+      <classpath>
+        <fileset dir="${resourcesdir}">
+          <include name="thrift/*.jar"/>
+          <include name="slf4j-api-1.7.21.jar"/>
+        </fileset>
+        <pathelement path="."/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="thrift-src-windows-only" depends="init">
+    <antcall target="thrift-execute-windows-only">
+      <param name="output_dir" value="${thrift_temp_srcdir}"/>
+      <param name="output_language" value="java"/>
+      <param name="input_file" value="thrift/src/bmi.thrift"/>
+    </antcall>
+    <antcall target="thrift-execute-windows-only">
+      <param name="output_dir" value="python/resources/openda/thrift_generated_code"/>
+      <param name="output_language" value="py:new_style"/>
+      <param name="input_file" value="thrift/src/bmi.thrift"/>
+    </antcall>
+  </target>
+
+  <!-- This only works if output directory already exists and only on Windows -->
+  <target name="thrift-execute-windows-only">
+    <echo>Generating ${output_language} code in ${output_dir} using thrift code from ${input_file}</echo>
+    <exec executable="${resourcesdir}\thrift\thrift-0.11.0.exe" failonerror="${failonerror}">
 
       <arg line="-out ${output_dir}"/>
-            <arg line="-gen ${output_language} ${input_file}"/>
-        </exec>
-    </target>
+      <arg line="-gen ${output_language} ${input_file}"/>
+    </exec>
+  </target>
 
 <!--
 ===========================================================================
