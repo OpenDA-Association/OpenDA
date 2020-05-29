@@ -24,22 +24,22 @@ package org.openda.blackbox.interfaces;
  * Interface class for key types processing startDate and endDate
  */
 public interface IKeyDateType {
-    /**
-     * Set start date
-     *
-     * @param date double value representing the start date
-     */
-    public void setStartDate(double date);
+	/**
+	 * Set start date
+	 *
+	 * @param date double value representing the start date
+	 */
+	void setStartDate(double date);
 
-    /**
-     * Set end date
-     * @param date double value representing the end date
-     */
-    public void setEndDate(double date);
+	/**
+	 * Set end date
+	 * @param date double value representing the end date
+	 */
+	void setEndDate(double date);
 
-    /**
-     * Compute string representation of value
-     * @return interpreted output string
-     */
-    public String calculateValue();
+	/**
+	 * Compute string representation of value
+	 * @return interpreted output string
+	 */
+	String calculateValue();
 }

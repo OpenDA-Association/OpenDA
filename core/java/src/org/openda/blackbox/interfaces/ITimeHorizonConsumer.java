@@ -26,5 +26,5 @@ import org.openda.interfaces.ITime;
  * after the initialize method of the (stoch)ModelFactory has been called.
  */
 public interface ITimeHorizonConsumer {
-	public void setTimeHorizon(ITime timeHorizon);
+	void setTimeHorizon(ITime timeHorizon);
 }

@@ -23,11 +23,11 @@ package org.openda.blackbox.interfaces;
  * Interface class for all key types
  */
 public interface IKeyType {
-    /**
-     * Returns an interpreted string, where the interpretation of the input string is dependent on the key type.
-     *
-     * @param value input string containing a value
-     * @return interpreted output string
-     */
-    public String getValueAsString(String value);
+	/**
+	 * Returns an interpreted string, where the interpretation of the input string is dependent on the key type.
+	 *
+	 * @param value input string containing a value
+	 * @return interpreted output string
+	 */
+	String getValueAsString(String value);
 }

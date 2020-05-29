@@ -35,18 +35,18 @@ public class ArmaNoiseModel {
 
     private static DistributedCounter instanceCount = new DistributedCounter(0);
 
-    private int stateVectorSize = Integer.MIN_VALUE;
-    private double[] armaConstants = null;
+    private int stateVectorSize;
+    private double[] armaConstants;
     private boolean useRandomSeed = false;
 
     private NormalDistribution normalDistribution = null;
 
-    private int instanceNumber = Integer.MIN_VALUE;
+    private int instanceNumber;
     private int realizationCounter = 0;
 
     // state vector for each previous arma step,
     // and 1 for the current state (index 0)
-    private double[][] noiseStateVector = null;
+    private double[][] noiseStateVector;
 
     private ITime currentTime = null;
     private File logFile = null;

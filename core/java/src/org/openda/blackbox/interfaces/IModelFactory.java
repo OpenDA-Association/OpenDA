@@ -30,13 +30,13 @@ import org.openda.interfaces.IStochModelFactory;
  */
 public interface IModelFactory extends IConfigurable {
 
-    /**
-     * Create an instance of the Model
-     * @param arguments Arguments for this instance. (arguments == null) or (arguments.length == 0) means: no arguments.
-     * @param outputLevel The level of output to be produced by the new instance (default, suppressed, etc.)
+	/**
+	 * Create an instance of the Model
+	 * @param arguments Arguments for this instance. (arguments == null) or (arguments.length == 0) means: no arguments.
+	 * @param outputLevel The level of output to be produced by the new instance (default, suppressed, etc.)
 	 * @return The Model instance
-     */
-    IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel);
+	 */
+	IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel);
 
 	/**
 	 * Shut down the model factory.
