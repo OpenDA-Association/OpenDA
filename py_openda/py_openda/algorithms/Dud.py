@@ -21,12 +21,12 @@ def check_A(A):
     """
     bad = False
     if np.linalg.cond(A) > 1e10:
-        logger.warning("gradient is approximately zero. Iteration is stopped.")
+        print("WARNING: gradient is approximately zero. Iteration is stopped.")
         bad = True
     return bad
 
 
-def initialize_dud(func, p_old, obs, std, start_dist=1.1):
+def initialize_dud(func, p_old, obs, std, start_dist=1.1, start_eps=0.1):
     """
     Function used to find the initial search directions.
 
@@ -45,7 +45,7 @@ def initialize_dud(func, p_old, obs, std, start_dist=1.1):
     params = np.transpose(np.array([plist]))
     for i in range(p_number):
         plist = p_old.copy()
-        plist[i] = plist[i]*start_dist
+        plist[i] = plist[i]*start_dist+start_eps
         plist += func(plist)
         plist.append(sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, plist[p_number:], std)))
         params = np.c_[params, np.transpose(np.array([plist]))]
