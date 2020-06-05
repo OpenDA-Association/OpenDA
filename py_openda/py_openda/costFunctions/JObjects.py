@@ -16,6 +16,11 @@ import warnings
 import os
 from py4j.java_gateway import JavaGateway
 import py_openda.utils.py4j_utils as utils
+from py_openda.interfaces.IModelFactory import IModelFactory
+from py_openda.interfaces.IStochModelInstance import IStochModelInstance
+from py_openda.interfaces.IStochObserver import IStochObserver
+from py_openda.interfaces.ITime import ITime
+
 
 try:
     gateway = JavaGateway()   # connect to the JVM
@@ -24,7 +29,7 @@ except:
 
 
 
-class JModelFactory:
+class JModelFactory(IModelFactory):
     """
     Wrapperclass for using a stochModelFactory from Java.
     """
@@ -56,7 +61,7 @@ class JModelFactory:
         model = self.model_factory.getInstance(output_level)
         return JModelInstance(model, noise_config, main_or_ens)
 
-class JStochObserver:
+class JStochObserver(IStochObserver):
     """
     Wrapperclass for using a stochObserver from Java.
     """
@@ -136,7 +141,7 @@ class JStochObserver:
         return self.observer.getRealizations()
 
 
-class JModelInstance:
+class JModelInstance(IStochModelInstance):
     """
     Wrapperclass for using a stochModelInstance from Java.
     """
@@ -239,7 +244,7 @@ class JModelInstance:
         """
         return self.model.getState()
 
-class JTime:
+class JTime(ITime):
     """
     Wrapperclass for using a Time object from Java.
     """
@@ -297,11 +302,11 @@ class JTime:
         """
         return self.time.getMJD()
 
-class PyTime:
+class PyTime(ITime):
     """
     Class used for keeping track of periods of time.
     """
-    def __init__(self, start, end=None):
+    def __init__(self, start, step=None, end=None):
         """
         :param start: start of the time period.
         :param end: end of the time period.
@@ -316,6 +321,9 @@ class PyTime:
             self.is_span = False
         else:
             self.is_span = True
+
+        if step:
+            self.step = step
 
     def get_start(self):
         """
@@ -350,10 +358,21 @@ class PyTime:
         """
         return self.start > other_time.get_end()
 
+    def get_step_mjd(self):
+        """
+        Get the time step interval in days (as Modified Julian Day).
+        :return The time step interval. Throw an exception if is is not available.
+        """
+        if self.is_span:
+            return self.step
+
     def get_mjd(self):
         """
         Returns a time stamp in the middle of the time period.
 
         :return: center of time period.
         """
-        return 0.5*(self.start+self.end)
+        if not self.is_span:
+            return self.start
+        else:
+            return 0.5*(self.start+self.end)

@@ -31,7 +31,7 @@ from py_openda.costFunctions.JObjects import JStochObserver as StochObserver
 from py_openda.utils.parse_xml import parse_main
 
 #Our main configuration file on OpenDA xml format
-input_string = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'enkf.oda')
+input_string = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ENKF.oda')
 
 
 def main(use_java_model, input_string, observation_location=0):
