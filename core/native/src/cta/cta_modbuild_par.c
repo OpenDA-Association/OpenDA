@@ -69,7 +69,7 @@ void modbuild_models_add(CTA_Model hmodel){
    int iModel;
    CTA_Model *newList;
 
-   printf("Adding model %d\n",hmodel);
+   if (IDEBUG) printf("Adding model %d\n",hmodel);
    numCreatedModels++;
    newList= (CTA_Model*) CTA_Malloc(numCreatedModels*sizeof(CTA_Model));
    for (iModel=0; iModel<numCreatedModels-1; iModel++){
@@ -2033,7 +2033,7 @@ void CTA_Modbuild_par_worker_create(){
 
    /* Do we need to create our sratch model? */
    if (hmodel_scratch==CTA_NULL) {
-      printf("WARNING NOT CREATING SCRATCH MODEL\n");
+      if (IDEBUG>0){ printf("WARNING NOT CREATING SCRATCH MODEL\n"); }
 //      retval=CTA_Model_Create(hmodcl,smodinp,&hmodel_scratch);
 //      if (retval!=CTA_OK) {
 //         printf("#%d Failed to create scratch model\n",CTA_PAR_MY_RANK);

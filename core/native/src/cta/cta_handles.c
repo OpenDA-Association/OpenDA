@@ -555,40 +555,54 @@ int CTA_Handle_Free_All(CTA_Handle *handle){
          if (IDEBUG>0) printf("Delete CTA_VECTOR\n");
          return CTA_Vector_Free(handle);
       case CTA_VECTORCLASS :
-         if (IDEBUG>0) printf("Delete CTA_VECTORCLASS\n");
-         printf("WARNING: Cannot delete CTA_VECTORCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_VECTORCLASS\n");
+            printf("WARNING: Cannot delete CTA_VECTORCLASS\n");
+         }
          return CTA_Handle_Free(handle);
       case CTA_TREEVECTOR :
          if (IDEBUG>0) printf("Delete CTA_TREEVECTOR\n");
          return CTA_TreeVector_Free(handle,CTA_TRUE);
       case CTA_MATRIXCLASS :
-         if (IDEBUG>0) printf("Delete CTA_MAXTRIXCLASS\n");
-         printf("WARNING: Cannot delete CTA_MATRIXCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_MAXTRIXCLASS\n");
+            printf("WARNING: Cannot delete CTA_MATRIXCLASS\n");
+         }
          return CTA_Handle_Free(handle);
       case CTA_MATRIX :
          if (IDEBUG>0) printf("Delete CTA_MATRIX\n");
          return CTA_Matrix_Free(handle);
       case CTA_COVMATCLASS :
-         if (IDEBUG>0) printf("Delete CTA_COVMATCLASS\n");
-         printf("WARNING: Cannot delete CTA_COVMATCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_COVMATCLASS\n");
+            printf("WARNING: Cannot delete CTA_COVMATCLASS\n");
+         }
          return CTA_Handle_Free(handle);
       case CTA_COVMAT :
-         if (IDEBUG>0) printf("Delete CTA_COVMAT\n");
-         printf("WARNING: Cannot delete CTA_COVMAT\n");
+         if (IDEBUG>0) { 
+            printf("Delete CTA_COVMAT\n");
+            printf("WARNING: Cannot delete CTA_COVMAT\n");
+         }
          return CTA_OK;
       //   return CTA_Handle_Free(handle);
       case CTA_INTPOL :
-         if (IDEBUG>0) printf("Delete CTA_INTPOL\n");
-         printf("WARNING: Cannot delete CTA_INTPOL\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_INTPOL\n");
+            printf("WARNING: Cannot delete CTA_INTPOL\n");
+         }
          return CTA_OK;
       //   return CTA_Handle_Free(handle);
       case CTA_OBS :
-         if (IDEBUG>0) printf("Delete CTA_OBS\n");
-         printf("WARNING: Cannot delete CTA_OBS\n");
+         if (IDEBUG>0) { 
+            printf("Delete CTA_OBS\n");
+            printf("WARNING: Cannot delete CTA_OBS\n");
+         }
          return CTA_OK;
       case CTA_MODELCLASS :
-         if (IDEBUG>0) printf("Delete CTA_MODELCLASS\n");
-         printf("WARNING: Cannot delete CTA_MODELCLASS\n");
+         if (IDEBUG>0) { 
+            printf("Delete CTA_MODELCLASS\n");
+            printf("WARNING: Cannot delete CTA_MODELCLASS\n");
+         }
          return CTA_OK;
       //   return CTA_Handle_Free(handle);
       case CTA_MODEL :
@@ -601,19 +615,25 @@ int CTA_Handle_Free_All(CTA_Handle *handle){
          if (IDEBUG>0) printf("Delete CTA_SOBS\n");
 		   return CTA_SObs_Free(handle);
       case CTA_SOBSCLASS :
-         if (IDEBUG>0) printf("Delete CTA_SOBCLASS\n");
-         printf("WARNING: Cannot delete CTA_OBSCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_SOBCLASS\n");
+            printf("WARNING: Cannot delete CTA_OBSCLASS\n");
+         }
          return CTA_OK;
       case CTA_OBSDESCR :
          if (IDEBUG>0) printf("Delete CTA_OBSDESCR\n");
 		   return CTA_ObsDescr_Free(handle);
       case CTA_METHODCLASS :
-         if (IDEBUG>0) printf("Delete CTA_METHODCLASS\n");
-         printf("WARNING: Cannot delete CTA_METHODCLASS\n");
+         if (IDEBUG>0) { 
+            printf("Delete CTA_METHODCLASS\n");
+            printf("WARNING: Cannot delete CTA_METHODCLASS\n");
+         }
          return CTA_OK;
       case CTA_METHOD :
-         if (IDEBUG>0) printf("Delete CTA_METHOD\n");
-         printf("WARNING: Cannot delete CTA_METHOD\n");
+         if (IDEBUG>0) { 
+            printf("Delete CTA_METHOD\n");
+            printf("WARNING: Cannot delete CTA_METHOD\n");
+         }
          return CTA_OK;
       case CTA_TREE :
          return CTA_Tree_Free(handle);
@@ -621,22 +641,28 @@ int CTA_Handle_Free_All(CTA_Handle *handle){
          if (IDEBUG>0) printf("Delete CTA_PACK\n");
          return CTA_Pack_Free(handle);
       case CTA_DATABLOCK :
-         if (IDEBUG>0) printf("Delete CTA_DATABLOCK\n");
-         printf("WARNING: Cannot delete CTA_DATABLOCK\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_DATABLOCK\n");
+            printf("WARNING: Cannot delete CTA_DATABLOCK\n");
+         }
          return CTA_OK;
       case CTA_METAINFO :
          if (IDEBUG>0) printf("Delete CTA_METAINFO\n");
          return CTA_Metainfo_Free(handle);
       case CTA_METAINFOCLASS :
-         if (IDEBUG>0) printf("Delete CTA_METAINFOCLASS\n");
-         printf("WARNING: Cannot delete CTA_METAINFOCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_METAINFOCLASS\n");
+            printf("WARNING: Cannot delete CTA_METAINFOCLASS\n");
+         }
          return CTA_OK;
       case CTA_RELTABLE :
          if (IDEBUG>0) printf("Delete CTA_RELTABLE\n");
          return CTA_RelTable_Free(handle);
       case CTA_SUBTREEVECTOR :
-         if (IDEBUG>0) printf("Delete CTA_SUBTREEVECTOR\n");
-         printf("WARNING: Cannot delete CTA_SUBTREEVECTOR\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_SUBTREEVECTOR\n");
+            printf("WARNING: Cannot delete CTA_SUBTREEVECTOR\n");
+         }
          return CTA_OK;
       case CTA_STRING :
          if (IDEBUG>0) printf("Delete CTA_STRING\n");
