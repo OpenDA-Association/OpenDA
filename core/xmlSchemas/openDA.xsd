@@ -11,4 +11,5 @@
 	<xs:include schemaLocation="blackBoxStochModelConfig.xsd"/>
 	<xs:include schemaLocation="blackBoxTemplateConfig.xsd"/>
 	<xs:include schemaLocation="rangeValidationConfig.xsd"/>
+	<xs:include schemaLocation="genericNetcdfDataObject.xsd"/>
 </xs:schema>

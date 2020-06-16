@@ -9,4 +9,6 @@ opendaTestReports/
 **/build-test
 **/MANIFEST.MF
 **/tests/*.log
+**/*_temp_build/
+**/castor_temp_src/
 OpenDATimings_*.txt
