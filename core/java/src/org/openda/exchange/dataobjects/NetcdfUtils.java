@@ -28,7 +28,12 @@ import org.openda.utils.Array;
 import org.openda.utils.Time;
 import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.*;
-import ucar.nc2.*;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.Variable;
+import ucar.nc2.Dimension;
+import ucar.nc2.Attribute;
+import ucar.nc2.NCdumpW;
 import ucar.nc2.units.DateUnit;
 
 import java.io.File;
