@@ -1,0 +1,49 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1712                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [ 0 0 0 1 0 0 0 ];
+
+internalField   uniform 298.15;//25 Graden C.
+
+boundaryField
+{
+    wall//".*"
+    {
+        type            zeroGradient;
+        value           $internalField;
+    }
+    cyclic
+    {
+        type            cyclic;
+        value           $internalField;
+    }
+    CRAC_Inlet
+    {
+        type            inletOutlet;
+        inletValue      uniform 307.15;// 34 Graden C
+        value           uniform 298.15;
+    }
+    CRAC_Outlet
+    {
+        type            inletOutlet;
+        inletValue      uniform 295.15;// 22 Graden C
+        value           uniform 295.15;
+    }
+}
+
+
+// ************************************************************************* //

@@ -1,0 +1,94 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    "p|p_rgh"
+    {
+        solver           GAMG;
+        tolerance        1e-6;
+        relTol           0.01;
+        smoother         GaussSeidel;
+        nPreSweeps       0;
+        nPostSweeps      2;
+        cacheAgglomeration on;
+        agglomerator     faceAreaPair;
+        nCellsInCoarsestLevel 50;
+        mergeLevels      1;
+        maxIter          20;
+    }
+    "(p|p_rgh)Final"
+    {
+        $p_rgh;
+        relTol 0;
+        maxIter          100;
+    }
+
+    "U|k|omega|T"
+    {
+        solver           PBiCGStab;//smoothSolver;
+        preconditioner   DILU;
+        tolerance        1e-8;
+        relTol           0.05;
+        minIter          1;
+    }
+}
+
+SIMPLE
+{
+    nOuterCorrectors            2;
+    turbOnFinalIterOnly         true;
+    nNonOrthogonalCorrectors    1;
+//     nCorrectors                 2;
+//     residualControl
+//     {
+//         p
+//         {
+//            tolerance 1e-2;
+//            relTol       0;
+//         }
+//         U
+//         {
+//            tolerance 5e-3;
+//            relTol       0;
+//         } 
+//         T
+//         {
+//            tolerance 1e-2;
+//            relTol       0;
+//         } 
+//     }
+}
+
+relaxationFactors
+{
+    fields
+    {
+        default         0;
+        p_rgh           0.7;
+    }
+    equations
+    {
+        default         0;
+        U               0.3;
+        k               0.7;
+        omega           0.7;
+        T               0.7;
+    }
+}
+
+
+// ************************************************************************* //

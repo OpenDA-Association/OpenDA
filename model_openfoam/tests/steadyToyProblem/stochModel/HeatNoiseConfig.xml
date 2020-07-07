@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesNoiseModelConfig>
+    <simulationTimespan timeFormat="mjd">0.0,0.00578703,...,0.0578703</simulationTimespan>
+    <timeSeries id="noise:HeatX0Y0" standardDeviation="0.05"
+                      timeCorrelationScale="0" timeCorrelationScaleUnit="seconds"/>
+    <timeSeries id="noise:HeatX0Y1" standardDeviation="0.05"
+                      timeCorrelationScale="0" timeCorrelationScaleUnit="seconds"/>
+    <timeSeries id="noise:HeatX1Y0" standardDeviation="0.05"
+                      timeCorrelationScale="0" timeCorrelationScaleUnit="seconds"/>
+    <timeSeries id="noise:HeatX1Y1" standardDeviation="0.05"
+                      timeCorrelationScale="0" timeCorrelationScaleUnit="seconds"/>
+</timeSeriesNoiseModelConfig>

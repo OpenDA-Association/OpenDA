@@ -1,0 +1,48 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1712                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [ 0 1 -1 0 0 0 0 ];
+
+internalField   uniform ( 0 0 0 );
+
+boundaryField
+{
+    wall
+    {
+        type            fixedValue;
+        value           $internalField;
+    }
+    CRAC_Outlet
+    {
+        type            flowRateInletVelocity;
+        volumetricFlowRate  2;
+        value           uniform (0 0 -2);
+    }
+    CRAC_Inlet
+    {        
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 -2);
+    }
+    cyclic
+    {
+        type            cyclic;
+        value           $internalField;
+    }
+}
+
+
+// ************************************************************************* //
