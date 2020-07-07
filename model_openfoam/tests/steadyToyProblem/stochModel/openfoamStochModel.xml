@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+    <modelConfig>
+        <file>./openfoamModel.xml</file>
+    </modelConfig>
+    <vectorSpecification>
+        <state>
+            <noiseModel className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" id="heatNoiseModel" workingDirectory=".">
+                <configFile>HeatNoiseConfig.xml</configFile>
+                <exchangeItems>
+                    <exchangeItem id="noise:HeatX0Y0" operation="add">
+                        <modelExchangeItem id="HeatX0Y0"/>
+                    </exchangeItem>
+                    <exchangeItem id="noise:HeatX0Y1" operation="add">
+                      <modelExchangeItem id="HeatX0Y1"/>
+                    </exchangeItem>
+                    <exchangeItem id="noise:HeatX1Y0" operation="add">
+                      <modelExchangeItem id="HeatX1Y0"/>
+                    </exchangeItem>
+                    <exchangeItem id="noise:HeatX1Y1" operation="add">
+                      <modelExchangeItem id="HeatX1Y1"/>
+                    </exchangeItem>
+                </exchangeItems>
+            </noiseModel>
+            <vector id="HeatX0Y0"/>
+            <vector id="HeatX1Y0"/>
+            <vector id="HeatX0Y1"/>
+            <vector id="HeatX1Y1"/>
+         </state>
+        <predictor>
+          <vector id="probe_Assimilatie_T#0.T"/>
+          <vector id="probe_Assimilatie_T#1.T"/>
+          <vector id="probe_Assimilatie_T#2.T"/>
+          <vector id="probe_Assimilatie_T#3.T"/>
+        </predictor>
+    </vectorSpecification>
+</blackBoxStochModel>

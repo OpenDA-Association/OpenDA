@@ -1,0 +1,124 @@
+/*--------------------------------*4D-COOL*----------------------------------*\ 
+| -----------------------------OpenFOAM v v1712-------------------------------| 
+\*--------------------------------*4D-COOL*----------------------------------*/ 
+FoamFile 
+{ 
+version    2.0; 
+format     ascii; 
+class      dictionary; 
+object     createBafflesDict; 
+} 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * // 
+
+internalFacesOnly true; 
+noFields true; 
+
+baffles 
+{ 
+    tileX0Y0
+    {
+        type       faceZone;
+        zoneName   tileX0Y0;
+        patchPairs
+        {
+            type       cyclic;
+            patchFields
+            {
+
+            }
+        }
+    }
+    tileX1Y0
+    {
+        type       faceZone;
+        zoneName   tileX1Y0;
+        patchPairs
+        {
+            type       cyclic;
+            patchFields
+            {
+
+            }
+        }
+    }
+    tileX2Y0
+    {
+        type       faceZone;
+        zoneName   tileX2Y0;
+        patchPairs
+        {
+            type       wall;
+            patchFields
+            {
+
+            }
+        }
+    }
+    tileX3Y0
+    {
+        type       faceZone;
+        zoneName   tileX3Y0;
+        patchPairs
+        {
+            type       wall;
+            patchFields
+            {
+
+            }
+        }
+    } 
+    tileX0Y1
+    {
+        type       faceZone;
+        zoneName   tileX0Y1;
+        patchPairs
+        {
+            type       wall;
+            patchFields
+            {
+
+            }
+        }
+    }
+    tileX1Y1
+    {
+        type       faceZone;
+        zoneName   tileX1Y1;
+        patchPairs
+        {
+            type       wall;
+            patchFields
+            {
+
+            }
+        }
+    }
+    tileX2Y1
+    {
+        type       faceZone;
+        zoneName   tileX2Y1;
+        patchPairs
+        {
+            type       cyclic;
+            patchFields
+            {
+
+            }
+        }
+    }
+    tileX3Y1
+    {
+        type       faceZone;
+        zoneName   tileX3Y1;
+        patchPairs
+        {
+            type       cyclic;
+            patchFields
+            {
+
+            }
+        }
+    }
+} 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * // 

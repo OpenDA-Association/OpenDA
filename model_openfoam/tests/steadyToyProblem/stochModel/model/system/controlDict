@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1712                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application         buoyantBoussinesqSimpleFoam;
+
+startFrom           startTime;
+
+startTime           0;//#oda:startTime
+
+stopAt              endTime;
+
+endTime             5000;//#oda:endTime
+
+deltaT              1;//1
+
+writeControl        adjustableRunTime;
+
+writeInterval       500;
+
+purgeWrite          0;
+
+writeFormat         ascii;
+
+writePrecision      6;
+
+writeCompression    no;
+
+timeFormat          general;
+
+timePrecision       6;
+
+graphFormat         xmgr;
+
+runTimeModifiable   yes;
+
+adjustTimeStep      no;
+
+maxCo               5;
+
+maxDeltaT           1;
+
+libs ( "libmeshTools.so" "libfiniteVolume.so" ) ;
+
+#include "functions"
+
+// ************************************************************************* //
