@@ -18,7 +18,7 @@
     <run>
 
         <!-- for each model instance, the template directory will be cloned to create the instance directory -->
-        <initializeActionsUsingDirClone instanceDir="%instanceDir%/%referenceDateTime%/work%instanceNumber%" templateDir="%templateDir%"/>
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%/referencedatetime/work%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
             <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_openfoam.sh" windowsExe="%exedir%/start_openfoam.bat"  checkReturnStatus="true">

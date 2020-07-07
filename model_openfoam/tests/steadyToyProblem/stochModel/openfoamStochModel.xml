@@ -8,24 +8,16 @@
             <noiseModel className="org.openda.noiseModels.TimeSeriesNoiseModelFactory" id="heatNoiseModel" workingDirectory=".">
                 <configFile>HeatNoiseConfig.xml</configFile>
                 <exchangeItems>
-                    <exchangeItem id="noise:HeatX0Y0" operation="add">
-                        <modelExchangeItem id="HeatX0Y0"/>
+                    <exchangeItem id="noise:HeatGroup01" operation="add">
+                        <modelExchangeItem id="HeatGroup01"/>
                     </exchangeItem>
-                    <exchangeItem id="noise:HeatX0Y1" operation="add">
-                      <modelExchangeItem id="HeatX0Y1"/>
-                    </exchangeItem>
-                    <exchangeItem id="noise:HeatX1Y0" operation="add">
-                      <modelExchangeItem id="HeatX1Y0"/>
-                    </exchangeItem>
-                    <exchangeItem id="noise:HeatX1Y1" operation="add">
-                      <modelExchangeItem id="HeatX1Y1"/>
+                    <exchangeItem id="noise:HeatGroup02" operation="add">
+                        <modelExchangeItem id="HeatGroup02"/>
                     </exchangeItem>
                 </exchangeItems>
             </noiseModel>
-            <vector id="HeatX0Y0"/>
-            <vector id="HeatX1Y0"/>
-            <vector id="HeatX0Y1"/>
-            <vector id="HeatX1Y1"/>
+            <vector id="HeatGroup01"/>
+            <vector id="HeatGroup02"/>
          </state>
         <predictor>
           <vector id="probe_Assimilatie_T#0.T"/>

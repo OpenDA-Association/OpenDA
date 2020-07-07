@@ -26,11 +26,9 @@
     <exchangeItems>
         <vector id="startTime" ioObjectId="controlDict" elementId="oda:startTime"/>
         <vector id="endTime" ioObjectId="controlDict" elementId="oda:endTime"/>
-        <vector id="HeatX0Y0" ioObjectId="HEATING" elementId="oda:HeatX0Y0@1"/>
-        <vector id="HeatX1Y0" ioObjectId="HEATING" elementId="oda:HeatX1Y0@1"/>
-        <vector id="HeatX0Y1" ioObjectId="HEATING" elementId="oda:HeatX0Y1@1"/>
-        <vector id="HeatX1Y1" ioObjectId="HEATING" elementId="oda:HeatX1Y1@1"/>
-        <vector id="probe_Assimilatie_T#0.T" ioObjectId="ProbesT" elementId="probe_Assimilatie_T#1.T"/>
+        <vector elementId="oda:HeatGroup01" id="HeatGroup01" ioObjectId="HEATING"/>
+	<vector elementId="oda:HeatGroup02" id="HeatGroup02" ioObjectId="HEATING"/>
+	<vector id="probe_Assimilatie_T#0.T" ioObjectId="ProbesT" elementId="probe_Assimilatie_T#0.T"/>
         <vector id="probe_Assimilatie_T#1.T" ioObjectId="ProbesT" elementId="probe_Assimilatie_T#1.T"/>
         <vector id="probe_Assimilatie_T#2.T" ioObjectId="ProbesT" elementId="probe_Assimilatie_T#2.T"/>
         <vector id="probe_Assimilatie_T#3.T" ioObjectId="ProbesT" elementId="probe_Assimilatie_T#3.T"/>
