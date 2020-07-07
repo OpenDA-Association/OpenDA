@@ -47,11 +47,11 @@ public class GlmNetcdfFileTest extends TestCase {
      */
 //    public void testSeriesWaterlevel1() {
 //
-//        IDataObject ioObject = new GlmNetcdfFile();
+//        IDataObject dataObject = new GlmNetcdfFile();
 //        String args[] = {};
-//        ioObject initialize(testRunDataDir, "SimonaNetcdfFile/waterlevelseries.nc", args);
+//        dataObject initialize(testRunDataDir, "SimonaNetcdfFile/waterlevelseries.nc", args);
 //
-//        TimeSeries[] exchangeItems = ioObject.getExchangeItems();
+//        TimeSeries[] exchangeItems = dataObject.getExchangeItems();
 //        int n = exchangeItems.length;
 //        assertEquals("exchangeItems.length", 275, exchangeItems.length);
 //

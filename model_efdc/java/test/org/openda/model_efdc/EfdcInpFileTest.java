@@ -55,19 +55,19 @@ public class EfdcInpFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
+        EfdcInpIoObject efdcInpDataObject = new EfdcInpIoObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcInpFilename = "efdcInpFileTest/input/EFDC.INP";
         String startTimeExchangeItemId = "TSTART1";
         String endTimeExchangeItemId = "TSTOP1";
-        efdcInpIoObject.initialize(testRunDataDir,
+        efdcInpDataObject.initialize(testRunDataDir,
                 new String[]{efdcInpFilename, "0", startTimeExchangeItemId, endTimeExchangeItemId});
 
         //Get all exchangeItems items
-        String[] exchangeItemIDs = efdcInpIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcInpDataObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id  : exchangeItemIDs) {
-        	IExchangeItem exchangeItem = efdcInpIoObject.getDataObjectExchangeItem(id);
+        	IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
         	String exId = exchangeItem.getId();
         	assertEquals(id, exId);
             if (exId.equals(startTimeExchangeItemId)) {
@@ -79,7 +79,7 @@ public class EfdcInpFileTest extends TestCase {
 
         //This command actually replaces the tags in the file by the values
         //of the corresponding exchangeItems.
-        efdcInpIoObject.finish();
+        efdcInpDataObject.finish();
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, efdcInpFilename);

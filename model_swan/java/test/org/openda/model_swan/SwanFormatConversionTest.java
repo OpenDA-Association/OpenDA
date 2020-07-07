@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Tests for Swan Results IoObject
+ * Tests for Swan Results dataObject
  */
 public class SwanFormatConversionTest extends TestCase {
 
@@ -88,15 +88,15 @@ public class SwanFormatConversionTest extends TestCase {
 
 //    public void testObservations_1() throws Exception {
 //        File test_1_dir = new File(testData.getTestRunDataDir(), "SwanFormatConversion");
-//        IDataObject ioObject = BBUtils.createDataObject(test_1_dir,
+//        IDataObject dataObject = BBUtils.createDataObject(test_1_dir,
 //                SwanResultsTimeDependent.class.getName(), "out_P1.TAB", new String[]{});
-//        checkValues(ioObject);
-//        ioObject = BBUtils.createDataObject(test_1_dir,
+//        checkValues(dataObject);
+//        dataObject = BBUtils.createDataObject(test_1_dir,
 //                SwanResultsTimeDependent.class.getName(), "out_P2.TAB", new String[]{});
-//        checkValues2(ioObject);
-//        ioObject = BBUtils.createDataObject(test_1_dir,
+//        checkValues2(dataObject);
+//        dataObject = BBUtils.createDataObject(test_1_dir,
 //                SwanResultsTimeDependent.class.getName(), "out_P3.TAB", new String[]{});
-//        checkValues3(ioObject);
+//        checkValues3(dataObject);
 //    }
  
 }
