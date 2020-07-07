@@ -1,14 +1,14 @@
-/*--------------------------------*4D-COOL*----------------------------------*\ 
-| -----------------------------OpenFOAM v 3.0.x-------------------------------| 
-\*--------------------------------*4D-COOL*----------------------------------*/ 
-FoamFile 
-{ 
-version    2.0; 
-format     ascii; 
-class      dictionary; 
-object     POROUS; 
-} 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * // 
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
+FoamFile
+{
+version    2.0;
+format     ascii;
+class      dictionary;
+object     POROUS;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 porousX0Y0
 {
@@ -17,13 +17,13 @@ porousX0Y0
     explicitPorositySourceCoeffs
     {
         selectionMode      cellZone;
-        cellZone           rack_X0Y0;
+        cellZone           rackX0Y0;
         type               fixedCoeff;
         active             yes;
         fixedCoeffCoeffs
         {
-               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -1.0 -1.0);
-               beta        alpha [0 -1 0 0 0 0 0] (10 -1.0 -1.0);
+               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -10.0 -10.0);
+               beta        beta [0 -1 0 0 0 0 0] (45.70135 -10.0 -10.0);
                coordinateSystem
                {
                    type    cartesian;
@@ -45,13 +45,13 @@ porousX0Y1
     explicitPorositySourceCoeffs
     {
         selectionMode      cellZone;
-        cellZone           rack_X0Y1;
+        cellZone           rackX0Y1;
         type               fixedCoeff;
         active             yes;
         fixedCoeffCoeffs
         {
-               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -1.0 -1.0);
-               beta        alpha [0 -1 0 0 0 0 0] (10 -1.0 -1.0);
+               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -10.0 -10.0);
+               beta        beta [0 -1 0 0 0 0 0] (7.31222 -10.0 -10.0);
                coordinateSystem
                {
                    type    cartesian;
@@ -73,13 +73,13 @@ porousX1Y0
     explicitPorositySourceCoeffs
     {
         selectionMode      cellZone;
-        cellZone           rack_X1Y0;
+        cellZone           rackX1Y0;
         type               fixedCoeff;
         active             yes;
         fixedCoeffCoeffs
         {
-               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -1.0 -1.0);
-               beta        alpha [0 -1 0 0 0 0 0] (10 -1.0 -1.0);
+               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -10.0 -10.0);
+               beta        beta [0 -1 0 0 0 0 0] (7.31222 -10.0 -10.0);
                coordinateSystem
                {
                    type    cartesian;
@@ -101,13 +101,13 @@ porousX1Y1
     explicitPorositySourceCoeffs
     {
         selectionMode      cellZone;
-        cellZone           rack_X1Y1;
+        cellZone           rackX1Y1;
         type               fixedCoeff;
         active             yes;
         fixedCoeffCoeffs
         {
-               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -1.0 -1.0);
-               beta        alpha [0 -1 0 0 0 0 0] (10 -1.0 -1.0);
+               alpha       alpha [0 0 -1 0 0 0 0] (0.0 -10.0 -10.0);
+               beta        beta [0 -1 0 0 0 0 0] (7.31222 -10.0 -10.0);
                coordinateSystem
                {
                    type    cartesian;
@@ -123,4 +123,4 @@ porousX1Y1
     }
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * // 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

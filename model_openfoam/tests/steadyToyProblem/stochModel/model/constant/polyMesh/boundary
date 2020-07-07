@@ -1,0 +1,276 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1712                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+32
+(
+    Wand
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          1568;
+        startFace       21728;
+    }
+    Vloer
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          400;
+        startFace       23296;
+    }
+    Tegelvloer
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          352;
+        startFace       23696;
+    }
+    Tegelvloer_shadow
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          352;
+        startFace       24048;
+    }
+    Plafond
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          400;
+        startFace       24400;
+    }
+    CRAC_Wand
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          96;
+        startFace       24800;
+    }
+    CRAC_Supply
+    {
+        type            patch;
+        nFaces          16;
+        startFace       24896;
+    }
+    CRAC_Return
+    {
+        type            patch;
+        nFaces          16;
+        startFace       24912;
+    }
+    Top_Koude_Gang
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          32;
+        startFace       24928;
+    }
+    Top_Koude_Gang_shadow
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          32;
+        startFace       24960;
+    }
+    Top_Servers
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          64;
+        startFace       24992;
+    }
+    Top_Servers_shadow
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          64;
+        startFace       25056;
+    }
+    Wand_Tussen_Servers
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          64;
+        startFace       25120;
+    }
+    Wand_Tussen_Servers_shadow
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          64;
+        startFace       25184;
+    }
+    Wand_Tussen_Alley_En_Ruimte
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          96;
+        startFace       25248;
+    }
+    Wand_Tussen_Alley_En_Ruimte_shadow
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          96;
+        startFace       25344;
+    }
+    tileX0Y0_master
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX0Y0);
+        nFaces          4;
+        startFace       25440;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX0Y0_slave;
+        coupleGroup     tileX0Y0;
+    }
+    tileX0Y0_slave
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX0Y0);
+        nFaces          4;
+        startFace       25444;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX0Y0_master;
+        coupleGroup     tileX0Y0;
+    }
+    tileX0Y1_master
+    {
+        type            wall;
+        inGroups        2(wall tileX0Y1);
+        nFaces          4;
+        startFace       25448;
+    }
+    tileX0Y1_slave
+    {
+        type            wall;
+        inGroups        2(wall tileX0Y1);
+        nFaces          4;
+        startFace       25452;
+    }
+    tileX1Y0_master
+    {
+        type            wall;
+        inGroups        2(wall tileX1Y0);
+        nFaces          4;
+        startFace       25456;
+    }
+    tileX1Y0_slave
+    {
+        type            wall;
+        inGroups        2(wall tileX1Y0);
+        nFaces          4;
+        startFace       25460;
+    }
+    tileX1Y1_master
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX1Y1);
+        nFaces          4;
+        startFace       25464;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX1Y1_slave;
+        coupleGroup     tileX1Y1;
+    }
+    tileX1Y1_slave
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX1Y1);
+        nFaces          4;
+        startFace       25468;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX1Y1_master;
+        coupleGroup     tileX1Y1;
+    }
+    tileX2Y0_master
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX2Y0);
+        nFaces          4;
+        startFace       25472;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX2Y0_slave;
+        coupleGroup     tileX2Y0;
+    }
+    tileX2Y0_slave
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX2Y0);
+        nFaces          4;
+        startFace       25476;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX2Y0_master;
+        coupleGroup     tileX2Y0;
+    }
+    tileX2Y1_master
+    {
+        type            wall;
+        inGroups        2(wall tileX2Y1);
+        nFaces          4;
+        startFace       25480;
+    }
+    tileX2Y1_slave
+    {
+        type            wall;
+        inGroups        2(wall tileX2Y1);
+        nFaces          4;
+        startFace       25484;
+    }
+    tileX3Y0_master
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX3Y0);
+        nFaces          4;
+        startFace       25488;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX3Y0_slave;
+        coupleGroup     tileX3Y0;
+    }
+    tileX3Y0_slave
+    {
+        type            cyclic;
+        inGroups        2(cyclic tileX3Y0);
+        nFaces          4;
+        startFace       25492;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  tileX3Y0_master;
+        coupleGroup     tileX3Y0;
+    }
+    tileX3Y1_master
+    {
+        type            wall;
+        inGroups        2(wall tileX3Y1);
+        nFaces          4;
+        startFace       25496;
+    }
+    tileX3Y1_slave
+    {
+        type            wall;
+        inGroups        2(wall tileX3Y1);
+        nFaces          4;
+        startFace       25500;
+    }
+)
+
+// ************************************************************************* //

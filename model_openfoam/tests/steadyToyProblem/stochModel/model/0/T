@@ -1,27 +1,22 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  v1712                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
 FoamFile
 {
-    version     2.0;
-    format      ascii;
-    class       volScalarField;
-    location    "0";
-    object      T;
+version    2.0;
+format     ascii;
+class      volScalarField;
+object     T;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 dimensions      [ 0 0 0 1 0 0 0 ];
 
-internalField   uniform 298.15;//25 Graden C.
+internalField   uniform 295.15;//22 Graden Celsius.
 
 boundaryField
 {
-    wall//".*"
+    ".*"
     {
         type            zeroGradient;
         value           $internalField;
@@ -31,19 +26,24 @@ boundaryField
         type            cyclic;
         value           $internalField;
     }
-    CRAC_Inlet
+    CRAC_Supply
     {
         type            inletOutlet;
-        inletValue      uniform 307.15;// 34 Graden C
-        value           uniform 298.15;
-    }
-    CRAC_Outlet
-    {
-        type            inletOutlet;
-        inletValue      uniform 295.15;// 22 Graden C
+        inletValue      uniform 295.15;// 22 C
         value           uniform 295.15;
+    }
+    CRAC_Return
+    {
+        type            inletOutlet;
+        inletValue      uniform 307.15;// 34 C
+        value           uniform 295.15;
+    }
+    "open.*"
+    {
+        type            inletOutlet;
+        inletValue      uniform 285.15;
+        value           $internalField;
     }
 }
 
-
-// ************************************************************************* //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

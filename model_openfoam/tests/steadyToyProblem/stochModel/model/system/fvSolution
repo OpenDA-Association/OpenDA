@@ -51,7 +51,7 @@ SIMPLE
 {
     nOuterCorrectors            2;
     turbOnFinalIterOnly         true;
-    nNonOrthogonalCorrectors    1;
+    nNonOrthogonalCorrectors    2;
 //     nCorrectors                 2;
 //     residualControl
 //     {
@@ -84,9 +84,9 @@ relaxationFactors
     {
         default         0;
         U               0.3;
-        k               0.7;
-        omega           0.7;
-        T               0.7;
+        k               0.9;
+        omega           0.9;
+        T               0.9;
     }
 }
 
