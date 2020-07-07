@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blackBoxWrapperConfig xmlns="http://www.openda.org"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
 
 	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
 		<alias key="binDir" />
@@ -45,16 +45,16 @@
 
 
 	<inputOutput>
-		<ioObject className="org.openda.mywrapper.myWrapper">
+		<dataObject className="org.openda.mywrapper.myWrapper">
 			<file>%inputFile%</file>
 			<id>input</id>
 			<arg></arg>
-		</ioObject>
+		</dataObject>
 
-		<ioObject className="org.openda.mywrapper.myWrapper">
+		<dataObject className="org.openda.mywrapper.myWrapper">
 			<file>%outputFile%</file>
 			<id>output</id>
-		</ioObject>
+		</dataObject>
 	</inputOutput>
 
 </blackBoxWrapperConfig>

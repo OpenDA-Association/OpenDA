@@ -32,19 +32,19 @@
     </run>
 
     <inputOutput>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
+        <dataObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
             <file>%frictionMultiplierFile%</file>
             <id>frictionCoefFile</id>
             <arg>idsFromTemplateFile=%frictionMultiplierTemplateFile%</arg>
             <arg>idPrefix=friction_</arg>
-        </ioObject>
+        </dataObject>
 
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
             <file>%netcdfoutput%</file>
             <id>%netcdfoutput%</id>
             <arg>true</arg>
             <arg>false</arg>
-        </ioObject>
+        </dataObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

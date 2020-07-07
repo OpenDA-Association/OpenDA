@@ -56,10 +56,10 @@
 
 		<!-- simple state file -->
 
-		<ioObject className="org.openda.blackbox.wrapper.DummyState">
+		<dataObject className="org.openda.blackbox.wrapper.DummyState">
 			<file>%statefile%</file>
 			<id>statefile</id>
-		</ioObject>
+		</dataObject>
 
 	</inputOutput>
 

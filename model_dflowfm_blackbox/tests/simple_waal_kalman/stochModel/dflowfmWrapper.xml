@@ -38,24 +38,24 @@
     </run>
 
     <inputOutput>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
+        <dataObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
             <file>%mdufile%</file>
             <id>mdufile</id>
-        </ioObject>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
+        </dataObject>
+        <dataObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
             <file>%mapfile%</file>
             <id>mapfile</id>
-        </ioObject>
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+        </dataObject>
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
             <file>%outputdir%/%hisfile%</file>
             <id>hisfile</id>
             <arg>true</arg>
             <arg>false</arg>
-        </ioObject>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
+        </dataObject>
+        <dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
             <file>%mdufile%</file>
             <id>boundaries</id>
-        </ioObject>
+        </dataObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

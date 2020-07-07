@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ioObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
+<dataObjectStochObserver xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaStochObserver.xsd">
 	<uncertaintyModule workingDirectory="." className="org.openda.uncertainties.UncertaintyEngine">
 		<arg>stochObsUncertainties.xml</arg>
 	</uncertaintyModule>
-	<ioObject workingDirectory="." className="org.openda.model_gotm.GotmProfileFile">
+	<dataObject workingDirectory="." className="org.openda.model_gotm.GotmProfileFile">
 		<fileName>observ/meantemptop.txt</fileName>
-	</ioObject>
-	<ioObject workingDirectory="." className="org.openda.model_gotm.GotmProfileFile">
+	</dataObject>
+	<dataObject workingDirectory="." className="org.openda.model_gotm.GotmProfileFile">
 		<fileName>observ/meantempmid.txt</fileName>
-	</ioObject>
-	<ioObject workingDirectory="." className="org.openda.model_gotm.GotmProfileFile">
+	</dataObject>
+	<dataObject workingDirectory="." className="org.openda.model_gotm.GotmProfileFile">
 		<fileName>observ/meantempbot.txt</fileName>
-	</ioObject>
-</ioObjectStochObserver>
+	</dataObject>
+</dataObjectStochObserver>

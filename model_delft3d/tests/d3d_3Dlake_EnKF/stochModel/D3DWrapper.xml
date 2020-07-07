@@ -38,39 +38,39 @@
    <inputOutput>
 
       <!-- Model Input File -->
-      <ioObject className="org.openda.model_delft3d.D3dMdFileDataObject">
+      <dataObject className="org.openda.model_delft3d.D3dMdFileDataObject">
          <file>%runid%.mdf</file>
          <id>mdFile</id>
-      </ioObject>
+      </dataObject>
 
       <!-- time series results -->
-      <ioObject className="org.openda.model_delft3d.NetcdfD3dHisDataObject">
+      <dataObject className="org.openda.model_delft3d.NetcdfD3dHisDataObject">
          <file>trih-%runid%.nc</file>
          <id>trih-file</id>
-      </ioObject>
+      </dataObject>
 	  
 	  <!-- input forcing -->
 	  		<!-- wind, u- direction -->
-		<ioObject className="org.openda.model_delft3d.D3dWindFile">
+		<dataObject className="org.openda.model_delft3d.D3dWindFile">
 			<file>%runid%.mdf</file>
 			<id>windwuFile</id>
 			<arg>wu</arg>
-		</ioObject>
+		</dataObject>
 
 		<!-- wind, v- direction -->
-		<ioObject className="org.openda.model_delft3d.D3dWindFile">
+		<dataObject className="org.openda.model_delft3d.D3dWindFile">
 			<file>%runid%.mdf</file>
 			<id>windwvFile</id>
 			<arg>wv</arg>
-		</ioObject>
+		</dataObject>
 
 		<!-- Reading the model states -->
-		<ioObject className="org.openda.model_delft3d.NetcdfD3dMapDataObject">
+		<dataObject className="org.openda.model_delft3d.NetcdfD3dMapDataObject">
 			<file>trim-%runid%.nc</file>
 			<id>states</id>
 		    <arg>tri-rst.restart-in</arg>
 		    <arg>%targetTime%</arg>
-		</ioObject>
+		</dataObject>
 
 	</inputOutput>
 

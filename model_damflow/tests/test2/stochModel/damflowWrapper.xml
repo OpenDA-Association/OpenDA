@@ -28,41 +28,41 @@
 
 <inputOutput>
 
-	<ioObject className="org.openda.model_damflow.DupuitCFile">
+	<dataObject className="org.openda.model_damflow.DupuitCFile">
 		<file>%inputFileName%.C000</file>
 		<id>state0</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitCFile">
+	<dataObject className="org.openda.model_damflow.DupuitCFile">
 		<file>%inputFileName%.C001</file>
 		<id>state1</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitPFile">
+	<dataObject className="org.openda.model_damflow.DupuitPFile">
 		<file>%inputFileName%.P</file>
 		<id>timeInfo</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitBHOFile">
+	<dataObject className="org.openda.model_damflow.DupuitBHOFile">
 		<file>%inputFileName%.O</file>
 		<id>output</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitBHOFile">
+	<dataObject className="org.openda.model_damflow.DupuitBHOFile">
 		<file>%inputFileName%.B</file>
 		<id>input</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitGFile">
+	<dataObject className="org.openda.model_damflow.DupuitGFile">
 		<file>%inputFileName%.G</file>
 		<id>materialProperty</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
 </inputOutput>
 
