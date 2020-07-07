@@ -92,7 +92,10 @@ public class BBModelConfigReader {
                 // subvector (with indices or selector)
                 BlackBoxIoSubVectorXML subVector = exchangeItemXMLItem.getSubVector();
                 id = subVector.getId();
-                objectId = subVector.getIoObjectId();
+                objectId = subVector.getDataObjectId();
+                if (objectId == null){
+					objectId = subVector.getIoObjectId();
+				}
                 elementId = subVector.getElementId();
     			role = determineRoleType(subVector.getRole());
                 selectionIndices = parseSelectionIndices(subVector.getSelection());
@@ -101,7 +104,10 @@ public class BBModelConfigReader {
                 // simple vector
                 BlackBoxIoVectorXML vector = exchangeItemXMLItem.getVector();
                 id = vector.getId();
-                objectId = vector.getIoObjectId();
+				objectId = vector.getDataObjectId();
+				if (objectId == null) {
+					objectId = vector.getIoObjectId();
+				}
                 elementId = vector.getElementId();
     			role = determineRoleType(vector.getRole());
                 if (elementId == null) {

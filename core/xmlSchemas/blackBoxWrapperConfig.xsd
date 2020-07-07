@@ -199,17 +199,46 @@
 		</xs:sequence>
 		<xs:attribute name="className" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>The openda:class name of the input/output object</xs:documentation>
+				<xs:documentation>Obsolete, please use DataObjectXML. The openda:class name of the input/output object</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+  <xs:complexType name="DataObjectXML">
+    <xs:sequence>
+      <xs:element name="file" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of input/output file</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="id" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Identity of the input/output object</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Input argument for the corresponding openda:class</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="className" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>The openda:class name of the input/output data object</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
 	<xs:complexType name="InputOutputXML">
 		<xs:sequence>
-			<xs:element name="ioObject" type="openda:IoObjectXML" maxOccurs="unbounded">
+			<xs:element name="ioObject" type="openda:IoObjectXML" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>Specify the input/output object</xs:documentation>
+					<xs:documentation>Obsolete, please use dataObject. Specify the input/output object</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+      <xs:element name="dataObject" type="openda:DataObjectXML" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Specify the input/output data object</xs:documentation>
+        </xs:annotation>
+      </xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="BlackBoxWrapperRunXML">
