@@ -39,18 +39,18 @@ public class GlmNmlFileTest extends TestCase {
 
 	public void testReadInput() {
 
-		IDataObject ioObject = new GlmNmlFile();
+		IDataObject dataObject = new GlmNmlFile();
 		String args[] = {"fabm.nml"};
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
 		// dump interpreted data to screen
-		System.out.println(ioObject.toString());
+		System.out.println(dataObject.toString());
 		
-		String[] exchangeItemIds = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIds = dataObject.getExchangeItemIDs();
 
 		for(int item=0;item<exchangeItemIds.length;item++){
 
-			IExchangeItem ex = ioObject.getDataObjectExchangeItem(exchangeItemIds[item]);
+			IExchangeItem ex = dataObject.getDataObjectExchangeItem(exchangeItemIds[item]);
 			System.out.println(ex.toString());
 
 			if(exchangeItemIds[item].equalsIgnoreCase("gotm_npzd_rmax")){
@@ -72,7 +72,7 @@ public class GlmNmlFileTest extends TestCase {
 
 	public void testWriteInput() {
 		//First read input
-		IDataObject ioObject = new GlmNmlFile();
+		IDataObject dataObject = new GlmNmlFile();
 		String args[] = {"fabm.nml"};
 		File original = new File(testRunDataDir,"fabm.nml");
 		File copy = new File(testRunDataDir,"fabm_copy.nml");
@@ -81,15 +81,15 @@ public class GlmNmlFileTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
 		}
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
-		String[] exchangeItemIds = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIds = dataObject.getExchangeItemIDs();
 
 		//change some things
 
 
 		//write to file
-		ioObject.finish();
+		dataObject.finish();
 		//File reference = new File(testRunDataDir,"pollution_model_changed.input");
 		//boolean containsLocA =testData.FileContains(reference, "102030");
 		//assertTrue(containsLocA);

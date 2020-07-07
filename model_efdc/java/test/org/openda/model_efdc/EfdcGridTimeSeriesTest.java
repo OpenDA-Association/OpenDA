@@ -69,17 +69,17 @@ public class EfdcGridTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcGridTimeSeriesIoObject efdcGridTimeSeriesIoObject = new EfdcGridTimeSeriesIoObject();
+        EfdcGridTimeSeriesIoObject efdcGridTimeSeriesDataObject = new EfdcGridTimeSeriesIoObject();
         String[] arguments = new String[]{outputFileName, "9", TimeUtils.mjdToString(Time.milliesToMjd(startTime))};
-        efdcGridTimeSeriesIoObject.initialize(testRunDataDir, arguments);
+        efdcGridTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        String[] exchangeItemIDs = efdcGridTimeSeriesIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcGridTimeSeriesDataObject.getExchangeItemIDs();
         assertEquals(23, exchangeItemIDs.length);
 
 		//the id is the one-based columnNumber of the column in the file.
 		String id = exchangeItemIDs[3];
-        IExchangeItem exchangeItem4 = efdcGridTimeSeriesIoObject.getDataObjectExchangeItem(id);
+        IExchangeItem exchangeItem4 = efdcGridTimeSeriesDataObject.getDataObjectExchangeItem(id);
         String exId4 = exchangeItem4.getId();
         assertEquals(id, exId4);
 

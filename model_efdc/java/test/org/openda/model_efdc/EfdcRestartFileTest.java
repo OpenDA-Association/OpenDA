@@ -52,18 +52,18 @@ public class EfdcRestartFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcRestartFileIoObject efdcRestartFileIoObject = new EfdcRestartFileIoObject();
+        EfdcRestartFileIoObject efdcRestartFileDataObject = new EfdcRestartFileIoObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcRestartFilename = "efdcRestartFileTest/input/RESTART1.INP";
         String startTimeExchangeItemId = "TSTART1";
-        efdcRestartFileIoObject.initialize(testRunDataDir,
+        efdcRestartFileDataObject.initialize(testRunDataDir,
                 new String[]{efdcRestartFilename, "0", startTimeExchangeItemId});
 
         //Get all exchangeItems items
-        String[] exchangeItemIDs = efdcRestartFileIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcRestartFileDataObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id : exchangeItemIDs) {
-        	IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
+        	IExchangeItem exchangeItem = efdcRestartFileDataObject.getDataObjectExchangeItem(id);
         	String exId = exchangeItem.getId();
         	assertEquals(id, exId);
             if (exId.equals(startTimeExchangeItemId)) {
@@ -72,7 +72,7 @@ public class EfdcRestartFileTest extends TestCase {
         }
 
         //This command actually replaces the startTime in the restart file.
-        efdcRestartFileIoObject.finish();
+        efdcRestartFileDataObject.finish();
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, efdcRestartFilename);
@@ -89,18 +89,18 @@ public class EfdcRestartFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcRestartFileIoObject efdcRestartFileIoObject = new EfdcRestartFileIoObject();
+        EfdcRestartFileIoObject efdcRestartFileDataObject = new EfdcRestartFileIoObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcRestartFilename = "efdcRestartFileTest/input/RESTART2.INP";
         String startTimeExchangeItemId = "TSTART1";
-        efdcRestartFileIoObject.initialize(testRunDataDir,
+        efdcRestartFileDataObject.initialize(testRunDataDir,
                 new String[]{efdcRestartFilename, "0", startTimeExchangeItemId});
 
         //Get all exchangeItems items
-        String[] exchangeItemIDs = efdcRestartFileIoObject.getExchangeItemIDs();
+        String[] exchangeItemIDs = efdcRestartFileDataObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
         for (String id : exchangeItemIDs) {
-			IExchangeItem exchangeItem = efdcRestartFileIoObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcRestartFileDataObject.getDataObjectExchangeItem(id);
 			String exId = exchangeItem.getId();
 			assertEquals(id, exId);
 			if (exId.equals(startTimeExchangeItemId)) {
@@ -109,7 +109,7 @@ public class EfdcRestartFileTest extends TestCase {
         }
 
         //This command actually replaces the startTime in the restart file.
-        efdcRestartFileIoObject.finish();
+        efdcRestartFileDataObject.finish();
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, efdcRestartFilename);
