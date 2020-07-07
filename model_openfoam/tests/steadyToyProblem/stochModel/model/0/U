@@ -1,17 +1,12 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  v1712                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
 FoamFile
 {
-    version     2.0;
-    format      ascii;
-    class       volVectorField;
-    location    "0";
-    object      U;
+version    2.0;
+format     ascii;
+class      volVectorField;
+object     U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -26,23 +21,29 @@ boundaryField
         type            fixedValue;
         value           $internalField;
     }
-    CRAC_Outlet
-    {
-        type            flowRateInletVelocity;
-        volumetricFlowRate  2;
-        value           uniform (0 0 -2);
-    }
-    CRAC_Inlet
-    {        
-        type            pressureInletOutletVelocity;
-        value           uniform (0 0 -2);
-    }
     cyclic
     {
         type            cyclic;
         value           $internalField;
     }
+
+    CRAC_Return
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 -2);
+    }
+    CRAC_Supply
+    {
+        type            flowRateInletVelocity;
+        volumetricFlowRate  2.222222;
+        value           uniform (0 0 -2);
+    }
+    "open.*"
+    {
+        type            pressureInletOutletVelocity;
+        value           $internalField;
+    }
 }
 
 
-// ************************************************************************* //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

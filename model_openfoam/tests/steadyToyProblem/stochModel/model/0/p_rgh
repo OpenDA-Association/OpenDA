@@ -1,17 +1,12 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  v1712                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
 FoamFile
 {
-    version     2.0;
-    format      ascii;
-    class       volScalarField;
-    location    "0";
-    object      p_rgh;
+version    2.0;
+format     ascii;
+class      volScalarField;
+object     p_rgh;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -26,17 +21,47 @@ boundaryField
         type            fixedFluxPressure;
         value           uniform 0;
     }
-    cyclic
-    {
-        type            porousBafflePressure;
-        patchType       cyclic;
-        jump            uniform 0;
-        D               0;
-        I               10;//857;
-        length          0.01;
-        value           uniform 0;
-    }
-    CRAC_Inlet
+"tileX0Y0.*"
+{
+    type         porousBafflePressure;
+    patchType    cyclic;
+    jump         uniform 0;
+    D            0;
+    I            214.25;
+    length       0.01;
+    value        uniform 0;
+}
+"tileX1Y1.*"
+{
+    type         porousBafflePressure;
+    patchType    cyclic;
+    jump         uniform 0;
+    D            0;
+    I            428.5;
+    length       0.01;
+    value        uniform 0;
+}
+"tileX2Y0.*"
+{
+    type         porousBafflePressure;
+    patchType    cyclic;
+    jump         uniform 0;
+    D            0;
+    I            214.25;
+    length       0.01;
+    value        uniform 0;
+}
+"tileX3Y0.*"
+{
+    type         porousBafflePressure;
+    patchType    cyclic;
+    jump         uniform 0;
+    D            0;
+    I            214.25;
+    length       0.01;
+    value        uniform 0;
+}
+    CRAC_Return
     {
         type            totalPressure;
         p0              uniform 0;
@@ -44,7 +69,18 @@ boundaryField
         value           $internalField;
         rho             rhok;
     }
+    "openNatural.*"
+    {
+        type            totalPressure;
+        p0              uniform 0.0;
+        value           $internalField;
+    }
+    "openRoof.*"
+    {
+        type            totalPressure;
+        p0              uniform 0;
+        value           $internalField;
+    }
 }
 
-
-// ************************************************************************* //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -2,42 +2,33 @@
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
 |  \\    /   O peration     | Version:  v1712                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    location    "0";
-    object      alphat;
+    class       dictionary;
+    object      transportProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [ 0 2 -1 0 0 0 0 ];
+transportModel Newtonian;
 
-internalField   uniform 0.001;
+// Laminar viscosity
+nu              nu [0 2 -1 0 0 0 0] 1.46e-05;
 
-boundaryField
-{
-    wall
-    {
-        type            alphatJayatillekeWallFunction;
-        Prt             0.9;
-        value           $internalField;
-    }
-    cyclic
-    {
-        type            cyclic;
-        value           $internalField;
-    }
-    "CRAC.*"
-    {
-        type            calculated;
-        value           $internalField;
-    }
-}
+// Thermal expansion coefficient
+beta            beta [0 0 0 -1 0 0 0] 3.354e-03; // 25 deg. C
 
+// Reference temperature
+TRef            TRef [0 0 0 1 0 0 0] 298.15;
+
+// Laminar Prandtl number
+Pr              Pr [0 0 0 0 0 0 0] 0.7;
+
+// Turbulent Prandtl number
+Prt             Prt [0 0 0 0 0 0 0] 0.9;
 
 // ************************************************************************* //

@@ -31,13 +31,13 @@ boundaryField
         type            cyclic;
         value           $internalField;
     }
-    CRAC_Inlet
+    CRAC_Return
     {
         type            inletOutlet;
         inletValue      $internalField;// tbd
         value           $internalField;
     }
-    CRAC_Outlet
+    CRAC_Supply
     {
         type            turbulentMixingLengthFrequencyInlet;
         value           $internalField;

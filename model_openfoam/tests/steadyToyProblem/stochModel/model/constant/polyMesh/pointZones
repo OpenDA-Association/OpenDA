@@ -9,35 +9,12 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    location    "0";
-    object      alphat;
+    class       regIOobject;
+    location    "constant/polyMesh";
+    object      pointZones;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [ 0 2 -1 0 0 0 0 ];
-
-internalField   uniform 0.001;
-
-boundaryField
-{
-    wall
-    {
-        type            alphatJayatillekeWallFunction;
-        Prt             0.9;
-        value           $internalField;
-    }
-    cyclic
-    {
-        type            cyclic;
-        value           $internalField;
-    }
-    "CRAC.*"
-    {
-        type            calculated;
-        value           $internalField;
-    }
-}
-
+0()
 
 // ************************************************************************* //

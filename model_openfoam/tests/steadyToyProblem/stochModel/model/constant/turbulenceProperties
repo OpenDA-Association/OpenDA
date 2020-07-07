@@ -2,41 +2,28 @@
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
 |  \\    /   O peration     | Version:  v1712                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    location    "0";
-    object      alphat;
+    class       dictionary;
+    location    "constant";
+    object      turbulenceProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [ 0 2 -1 0 0 0 0 ];
+simulationType  RAS;
 
-internalField   uniform 0.001;
-
-boundaryField
+RAS
 {
-    wall
-    {
-        type            alphatJayatillekeWallFunction;
-        Prt             0.9;
-        value           $internalField;
-    }
-    cyclic
-    {
-        type            cyclic;
-        value           $internalField;
-    }
-    "CRAC.*"
-    {
-        type            calculated;
-        value           $internalField;
-    }
+    RASModel        kOmegaSST;
+
+    turbulence      on;
+
+    printCoeffs     on;
 }
 
 
