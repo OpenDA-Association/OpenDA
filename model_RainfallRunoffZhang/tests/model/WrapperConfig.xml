@@ -42,46 +42,46 @@
         
         <!-- input file initialStates.txt -->
         <!-- read initial soil moisture and groundwater storage -->
-        <ioObject className="org.openda.model_RainfallRunoffZhang.InitialStatesWrapper">
+        <dataObject className="org.openda.model_RainfallRunoffZhang.InitialStatesWrapper">
             <file>%inputFileInitialStates%</file>
             <id>initialStates</id>
             <arg>%instanceDir%%instanceNumber%</arg>
-        </ioObject>
+        </dataObject>
         
         <!-- Read parameters file -->
-        <ioObject className="org.openda.model_RainfallRunoffZhang.ParametersWrapper">
+        <dataObject className="org.openda.model_RainfallRunoffZhang.ParametersWrapper">
         	<file>%inputFileParameters%</file>
         	<id>parameters</id>
         	<arg>%instanceDir%%instanceNumber%</arg>
-        </ioObject>
+        </dataObject>
         
         <!-- Read time specs -->
         <!-- -->
-         <ioObject className="org.openda.model_RainfallRunoffZhang.TimesWrapper">
+         <dataObject className="org.openda.model_RainfallRunoffZhang.TimesWrapper">
         	<file>%inputFileTimes%</file>
         	<id>timeConfig</id>
         	<arg>%instanceDir%%instanceNumber%</arg>
-        </ioObject>
+        </dataObject>
         
         <!-- Read model output -->
-        <ioObject className="org.openda.model_RainfallRunoffZhang.ResultFileWrapper">
+        <dataObject className="org.openda.model_RainfallRunoffZhang.ResultFileWrapper">
         	<file>%outputFile%</file>
         	<id>output</id>
         	<arg>%instanceDir%%instanceNumber%</arg>
-        </ioObject>
+        </dataObject>
         
         <!-- Forcing -->
-        <ioObject className="org.openda.model_RainfallRunoffZhang.ForcingWrapper">
+        <dataObject className="org.openda.model_RainfallRunoffZhang.ForcingWrapper">
             <file>%forcingPrecipFile%</file>
             <id>forcingPrecip</id>
             <arg>%instanceDir%%instanceNumber%</arg>
-        </ioObject>
+        </dataObject>
         
-        <ioObject className="org.openda.model_RainfallRunoffZhang.ForcingWrapper">
+        <dataObject className="org.openda.model_RainfallRunoffZhang.ForcingWrapper">
             <file>%forcingPotETFile%</file>
             <id>forcingPotET</id>
             <arg>%instanceDir%%instanceNumber%</arg>
-        </ioObject>
+        </dataObject>
         
     </inputOutput>
     

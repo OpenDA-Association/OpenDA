@@ -32,31 +32,31 @@
 	<inputOutput>
 
 		<!-- astro -->
-		<ioObject className="org.openda.model_delft3d.D3dAstroComponentFiles">
+		<dataObject className="org.openda.model_delft3d.D3dAstroComponentFiles">
 			<file>%runid%.mdf</file>
 			<id>astro-components</id>
-        </ioObject>
+        </dataObject>
 
 		<!-- u/v rougness -->
-		<ioObject className="org.openda.model_delft3d.D3dField2DFile">
+		<dataObject className="org.openda.model_delft3d.D3dField2DFile">
 			<file>%runid%.mdf</file>
 			<id>roughness</id>
 			<arg>rgh</arg>
-        </ioObject>
+        </dataObject>
 
 		<!-- depth -->
-		<ioObject className="org.openda.model_delft3d.D3dField2DFile">
+		<dataObject className="org.openda.model_delft3d.D3dField2DFile">
 			<file>%runid%.mdf</file>
 			<id>depth</id>
 			<arg>dep</arg>
-        </ioObject>
+        </dataObject>
 
 		<!-- time series results -->
-		<ioObject className="org.openda.model_delft3d.D3dResults">
+		<dataObject className="org.openda.model_delft3d.D3dResults">
             <file>trih-%runid%.dat</file>
             <id>trih-file</id>
 			<arg>%NATIVE_DLL_DIR%</arg>
-        </ioObject>
+        </dataObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

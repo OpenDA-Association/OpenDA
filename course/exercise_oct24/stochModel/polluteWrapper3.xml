@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blackBoxWrapperConfig xmlns="http://www.openda.org"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
 
 	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
 		<alias key="binDir" />
@@ -60,12 +60,6 @@
 
 
 	<inputOutput>
-		<ioObject className="org.openda.blackbox.io.myWrapper">
-			<file>%inputFile%</file>
-			<id>input</id>
-			<arg></arg>
-		</ioObject>
-
 		<ioObject className="org.openda.exchange.ioobjects.NoosTimeSeriesIoObject">
 			<file>%noosFilec1A%</file>
 			<id>c1_locA</id>
@@ -91,15 +85,22 @@
 			<id>c2_locC</id>
 		</ioObject>
 
-                <ioObject className="org.openda.blackbox.io.TreeVectorIoObject">
-                        <file>%xmlFilec1%</file>
-                        <id>grid_c1</id>
-                </ioObject>
+		<dataObject className="org.openda.blackbox.io.myWrapper">
+			<file>%inputFile%</file>
+			<id>input</id>
+			<arg></arg>
+		</dataObject>
 
-                <ioObject className="org.openda.blackbox.io.TreeVectorIoObject">
-                        <file>%xmlFilec2%</file>
-                        <id>grid_c2</id>
-                </ioObject>
+
+    <dataObject className="org.openda.blackbox.io.TreeVectorIoObject">
+      <file>%xmlFilec1%</file>
+      <id>grid_c1</id>
+    </dataObject>
+
+    <dataObject className="org.openda.blackbox.io.TreeVectorIoObject">
+      <file>%xmlFilec2%</file>
+      <id>grid_c2</id>
+    </dataObject>
 
 	</inputOutput>
 

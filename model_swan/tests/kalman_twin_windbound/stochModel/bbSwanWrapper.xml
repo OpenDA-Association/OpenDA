@@ -29,40 +29,40 @@
 
 <inputOutput>
 
-   <ioObject className="org.openda.model_swan.SwanOpenBoundaryTPARFile">
+   <dataObject className="org.openda.model_swan.SwanOpenBoundaryTPARFile">
 		<file>%openboundaryFile%</file>
 		<id>open-boundary</id>
 		<arg></arg>
-    </ioObject>
+    </dataObject>
 
     <!--
-    <ioObject className="org.openda.model_swan.SwanWindFile">
+    <dataObject className="org.openda.model_swan.SwanWindFile">
     -->
-    <ioObject className="org.openda.model_swan.SwanField2DXYFile">
+    <dataObject className="org.openda.model_swan.SwanField2DXYFile">
 		<file>%inputFile%</file>
 		<id>windFile</id>
 		<arg>WIND</arg>
-    </ioObject>
+    </dataObject>
     <!-- -->
 
-    <ioObject className="org.openda.model_swan.SwanStateFile">
+    <dataObject className="org.openda.model_swan.SwanStateFile">
 
             <file>%hotFile%</file>
             <id>hotFile</id>
             <arg></arg>
-    </ioObject>
+    </dataObject>
 
-    <ioObject className="org.openda.model_swan.SwanTimeInfo">
+    <dataObject className="org.openda.model_swan.SwanTimeInfo">
             <file>%inputFile%</file>
             <id>timeInfo</id>
             <arg></arg>
-    </ioObject>
+    </dataObject>
 
-    <ioObject className="org.openda.model_swan.SwanResultsTimeDependent">
+    <dataObject className="org.openda.model_swan.SwanResultsTimeDependent">
             <file>%outFile%</file>
             <id>outFile</id>
             <arg></arg>
-    </ioObject>
+    </dataObject>
 
 
 </inputOutput>
