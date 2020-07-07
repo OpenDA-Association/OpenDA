@@ -12,9 +12,9 @@
         <workingDirectory>./algorithm</workingDirectory>
         <configString>EnKFAlgorithm.xml</configString>
     </algorithm>
-    <timingSettings doTiming="false"></timingSettings>
-    <resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+    <timingSettings doTiming="true"></timingSettings>
+    <resultWriter className="org.openda.resultwriters.PythonResultWriter">
         <workingDirectory>.</workingDirectory>
-        <configFile>EnKF_results.m</configFile>
+	<configFile>EnKF_results.py</configFile>
     </resultWriter>
 </openDaApplication>
