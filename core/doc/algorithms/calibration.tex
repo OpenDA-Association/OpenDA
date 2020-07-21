@@ -472,7 +472,7 @@ linearized model functions by $l_i(\mathbf{x})$. Then
 l_i (\Delta \mathbf{x}) = f_i(\mathbf{x}^{p+1}) + M \Delta \mathbf{x}
 \end{equation}
 with $\Delta \mathbf{x} = \mathbf{x} - \mathbf{x}^{p+1}$ and $M$ the
-approximation of the Jacobian matrix by interpolation. Note that $M = F P^{−1}$
+approximation of the Jacobian matrix by interpolation. Note that $M = F P^{-1}$
 where $F$ is the matrix with $j^{th}$ column equal to $\mathbf{f}(\mathbf{x}^j)
 - \mathbf{f}(\mathbf{x}^{p+1})$ and $P$ the matrix with $j^{th}$ column equal
 to $\mathbf{x}^i - \mathbf{x}^{p+1}$.
@@ -523,7 +523,7 @@ created.
 The method of quadratic programming was used for this. First note that
 minimizing $Q(\Delta \mathbf{x})$ is equivalent to minimizing
 \begin{eqnarray}
-q(\Delta \mathbf{x}) &=& \Delta \mathbf{x}^T M^TM \Delta \mathbf{x} − 2\Delta \mathbf{x}^T M^T \left[\mathbf{y} - \mathbf{f}(\mathbf{x}^{p+1})\right]\nonumber\\
+q(\Delta \mathbf{x}) &=& \Delta \mathbf{x}^T M^TM \Delta \mathbf{x} - 2\Delta \mathbf{x}^T M^T \left[\mathbf{y} - \mathbf{f}(\mathbf{x}^{p+1})\right]\nonumber\\
  &=& \Delta \mathbf{x}^T G\Delta \mathbf{x} - 2\Delta \mathbf{x}^T \mathbf{c}
 \end{eqnarray}
 where $G = M^T M$ and $\mathbf{c} = M^T \left[\mathbf{y}
@@ -574,7 +574,7 @@ $\Delta \mathbf{x} = 0$.
 
 {\bf First Iteration}\\
 First we ignore all constraints given by equation~\ref{eq:constrainedproblem},
-yielding an optimal step $\mathbf{s}$ which satisfies $−G\mathbf{s}
+yielding an optimal step $\mathbf{s}$ which satisfies $-G\mathbf{s}
 = \mathbf{g}^0$ where $\mathbf{g}^0 = \mathbf{c} + G \Delta \mathbf{x}^0$.
 
 If $A(\mathbf{s} + \Delta \mathbf{x}^0) \geq \Delta \mathbf{b}$, the
