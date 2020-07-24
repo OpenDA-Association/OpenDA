@@ -23,21 +23,19 @@ import org.openda.exchange.ExchangeItem;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.*;
+import org.openda.utils.Results;
 import org.openda.utils.Vector;
-
+import ucar.ma2.Array;
+import ucar.ma2.DataType;
+import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriter;
-import ucar.ma2.DataType;
-import ucar.ma2.InvalidRangeException;
-import ucar.ma2.Array;
+import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import ucar.nc2.Variable;
 
 /**
  *  Reading and writing the D-Flow FM restart file <testcase>_map.nc
@@ -96,7 +94,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			netcdffileName = fileNameFull.getAbsolutePath();
 			inputFile = NetcdfFile.open(netcdffileName, null);
 		} catch (Exception e) {
-			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName);
+			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName + " due to " + e.getMessage(), e);
 		}
 
 		// get list of all variables and construct a smaller list of exchange variables from this list:
@@ -127,9 +125,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						}
 					}
 				} catch (IOException e) {
-					throw new RuntimeException("Error reading array 'time' from NetCDF file "+netcdffileName);
+					throw new RuntimeException("Error reading array 'time' from NetCDF file "+ netcdffileName + " due to " + e.getMessage(), e);
 				} catch (InvalidRangeException e) {
-					throw new RuntimeException("Error reading from NetCDF file "+netcdffileName);
+					throw new RuntimeException("Error reading from NetCDF file "+ netcdffileName + " due to " + e.getMessage(), e);
 				}
 			}
 		}
@@ -152,11 +150,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
     		try {
 	    		Array full = inputFile.readSection(var.getShortName());
 			    thisValue = full.slice(0,time_index);
-		    } catch (IOException e) {
-			   	e.printStackTrace();
-		    } catch (InvalidRangeException e) {
-			  	 e.printStackTrace();
-			} catch (ArrayIndexOutOfBoundsException e) {
+		    } catch (IOException | InvalidRangeException e) {
+				throw new RuntimeException("Error reading from NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
+		    } catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Error processing "+var.getShortName());
 				continue;
 				//e.printStackTrace();
@@ -204,6 +200,11 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 			}
 			inputFile.finish();
+		}
+		try {
+			inputFile.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
 	}
 
@@ -261,7 +262,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						try {
 							netcdfFileWriter.write(myVar,array);
 						} catch (InvalidRangeException e) {
-							e.printStackTrace();
+							throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 						}
 					}
 					else {
@@ -274,7 +275,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			netcdfFileWriter.close();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
 	}
 
