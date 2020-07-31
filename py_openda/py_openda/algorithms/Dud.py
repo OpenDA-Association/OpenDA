@@ -26,7 +26,7 @@ def check_A(A):
     return bad
 
 
-def initialize_dud(func, p_old, obs, std, start_dist=1.1, start_eps=0.1):
+def initialize_dud(func, p_old, obs, std, p_pert=None, start_dist=1.1, start_eps=0.1):
     """
     Function used to find the initial search directions.
 
@@ -34,6 +34,7 @@ def initialize_dud(func, p_old, obs, std, start_dist=1.1, start_eps=0.1):
     :param p_old: first guess of the parameters.
     :param obs: list of observations we aim to reproduce.
     :param std: list of corresponding standard deviations.
+    :param p_pert: the initial pertubation of the parameters (user provided)
     :param start_dist: Factor by which p_old is multiplied to find the search directions
     (default 1.1).
     :return: tuple with the parameters, function evaluations and total costs.
@@ -45,7 +46,10 @@ def initialize_dud(func, p_old, obs, std, start_dist=1.1, start_eps=0.1):
     params = np.transpose(np.array([plist]))
     for i in range(p_number):
         plist = p_old.copy()
-        plist[i] = plist[i]*start_dist+start_eps
+        if p_pert:
+            plist[i] = plist[i]+p_pert[i]
+        else:
+            plist[i] = plist[i]*start_dist+start_eps
         plist += func(plist)
         plist.append(sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, plist[p_number:], std)))
         params = np.c_[params, np.transpose(np.array([plist]))]
@@ -130,7 +134,8 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
     finish = 0
     max_step = 10
     p_number = len(p_old)
-    (parameters, func_evals, total_cost) = initialize_dud(func, p_old, obs, std, start_dist)
+    (parameters, func_evals, total_cost) = initialize_dud(func, p_old, obs, std, p_pert=None, start_dist=start_dist,
+                                                          start_eps=0.1)
     while True:
         (stop, p_new) = find_next_params(p_number, parameters, func_evals, obs, std, max_step)
         if stop:
