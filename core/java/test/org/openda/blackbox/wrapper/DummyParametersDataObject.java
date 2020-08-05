@@ -32,7 +32,7 @@ import java.io.File;
 /**
  * Dummy Io Object for testing parameter uncertainty purposes
  */
-public class DummyParametersIoObject extends AbstractDataObject {
+public class DummyParametersDataObject extends AbstractDataObject {
 
     @Override
     public void initialize(File workingDir, String[] arguments) {

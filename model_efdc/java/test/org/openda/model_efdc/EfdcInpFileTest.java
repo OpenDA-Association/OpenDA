@@ -55,7 +55,7 @@ public class EfdcInpFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcInpIoObject efdcInpDataObject = new EfdcInpIoObject();
+        EfdcInpDataObject efdcInpDataObject = new EfdcInpDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcInpFilename = "efdcInpFileTest/input/EFDC.INP";
         String startTimeExchangeItemId = "TSTART1";

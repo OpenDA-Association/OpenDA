@@ -60,7 +60,7 @@ public class EfdcTimeSeriesTest extends TestCase {
 
         String[] locationIds = new String[]{"1", "2", "3"};
         String[] parameterIds = new String[]{"PATM", "TDRY", "TWET", "RAIN", "EVAP", "SOLSWR", "CLOUD"};
-        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesDataObject efdcTimeSeriesDataObject = new EfdcTimeSeriesDataObject();
         String[] arguments = new String[locationIds.length*parameterIds.length + 4];
         arguments[0] = outputFileName;
         arguments[1] = "ASER";
@@ -146,7 +146,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesDataObject efdcTimeSeriesDataObject = new EfdcTimeSeriesDataObject();
         //here 1 is the location (can be multiple locations with series per file)
         //and CWQSR02 is the parameter.
         String[] arguments = new String[]{outputFileName, "CWQSR02", "0", "TSTART1", "1.CWQSR02", "2.CWQSR02"};
@@ -207,7 +207,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesDataObject efdcTimeSeriesDataObject = new EfdcTimeSeriesDataObject();
         String[] arguments = new String[]{outputFileName, "PSER", "9", "TSTART1", "1.PSER"};
         efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
@@ -260,7 +260,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesDataObject efdcTimeSeriesDataObject = new EfdcTimeSeriesDataObject();
         String[] arguments = new String[]{outputFileName, "QSER", "0", "TSTART23", "3.QSER", "1.QSER", "4.QSER", "2.QSER"};
         efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
@@ -327,7 +327,7 @@ public class EfdcTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcTimeSeriesIoObject efdcTimeSeriesDataObject = new EfdcTimeSeriesIoObject();
+        EfdcTimeSeriesDataObject efdcTimeSeriesDataObject = new EfdcTimeSeriesDataObject();
         String[] arguments = new String[]{outputFileName, "TSER","0",  "TSTART1", "4.TSER", "1.TSER", "2.TSER", "3.TSER"};
         efdcTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 

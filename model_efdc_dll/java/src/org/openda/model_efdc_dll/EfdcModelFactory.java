@@ -29,8 +29,8 @@ import org.openda.interfaces.IModelInstance;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
 import org.openda.interfaces.ITime;
-import org.openda.model_efdc.EfdcEventTox2InpIoObject;
-import org.openda.model_efdc.EfdcInpIoObject;
+import org.openda.model_efdc.EfdcEventTox2InpDataObject;
+import org.openda.model_efdc.EfdcInpDataObject;
 import org.openda.utils.DistributedCounter;
 import org.openda.utils.Results;
 
@@ -124,7 +124,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		//use EfdcInpIoObject to write timeHorizon in EFDC.INP file.
 		BBUtils.makeFileClone(new File(templateDir, EFDC_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EFDC_INP_FILE_NAME));
-		EfdcInpIoObject efdcInpDataObject = new EfdcInpIoObject();
+		EfdcInpDataObject efdcInpDataObject = new EfdcInpDataObject();
 		efdcInpDataObject.initialize(templateDir,
 				new String[]{EFDC_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
 		for (String id : efdcInpDataObject.getExchangeItemIDs()) {
@@ -140,7 +140,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		//use EfdcEventTox2InpIoObject to write timeHorizon in EVENT_TOX2.INP file.
 		BBUtils.makeFileClone(new File(templateDir, EVENT_TOX2_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EVENT_TOX2_INP_FILE_NAME));
-		EfdcEventTox2InpIoObject efdcEventTox2InpDataObject = new EfdcEventTox2InpIoObject();
+		EfdcEventTox2InpDataObject efdcEventTox2InpDataObject = new EfdcEventTox2InpDataObject();
 		efdcEventTox2InpDataObject.initialize(templateDir,
 				new String[]{EVENT_TOX2_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
 		for (String id : efdcEventTox2InpDataObject.getExchangeItemIDs()) {

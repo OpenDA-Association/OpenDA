@@ -20,22 +20,17 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.util.*;
-
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.model_efdc.timeseriesformat.EfdcAserTimeSeriesFormatter;
-import org.openda.model_efdc.timeseriesformat.EfdcCwqsrTimeSeriesFormatter;
-import org.openda.model_efdc.timeseriesformat.EfdcPserTimeSeriesFormatter;
-import org.openda.model_efdc.timeseriesformat.EfdcQserTimeSeriesFormatter;
-import org.openda.model_efdc.timeseriesformat.EfdcTimeSeriesFormatter;
-import org.openda.model_efdc.timeseriesformat.EfdcTserTimeSeriesFormatter;
+import org.openda.model_efdc.timeseriesformat.*;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * IoObject for a .INP (EFDC input) file that contains one or more time series.
@@ -44,7 +39,7 @@ import org.openda.utils.Time;
  *
  * @author Arno Kockx
  */
-public class EfdcTimeSeriesIoObject extends AbstractDataObject {
+public class EfdcTimeSeriesDataObject extends AbstractDataObject {
 
     /**
      * The times in the .INP input files are in this time unit.

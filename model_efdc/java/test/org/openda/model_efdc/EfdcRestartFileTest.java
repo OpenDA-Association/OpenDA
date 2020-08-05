@@ -52,7 +52,7 @@ public class EfdcRestartFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcRestartFileIoObject efdcRestartFileDataObject = new EfdcRestartFileIoObject();
+        EfdcRestartFileDataObject efdcRestartFileDataObject = new EfdcRestartFileDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcRestartFilename = "efdcRestartFileTest/input/RESTART1.INP";
         String startTimeExchangeItemId = "TSTART1";
@@ -89,7 +89,7 @@ public class EfdcRestartFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcRestartFileIoObject efdcRestartFileDataObject = new EfdcRestartFileIoObject();
+        EfdcRestartFileDataObject efdcRestartFileDataObject = new EfdcRestartFileDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcRestartFilename = "efdcRestartFileTest/input/RESTART2.INP";
         String startTimeExchangeItemId = "TSTART1";

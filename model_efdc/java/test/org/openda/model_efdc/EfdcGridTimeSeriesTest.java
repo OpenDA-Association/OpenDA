@@ -69,7 +69,7 @@ public class EfdcGridTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcGridTimeSeriesIoObject efdcGridTimeSeriesDataObject = new EfdcGridTimeSeriesIoObject();
+        EfdcGridTimeSeriesDataObject efdcGridTimeSeriesDataObject = new EfdcGridTimeSeriesDataObject();
         String[] arguments = new String[]{outputFileName, "9", TimeUtils.mjdToString(Time.milliesToMjd(startTime))};
         efdcGridTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 

@@ -20,17 +20,17 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * The EFDC.INP control input file for the EFDC (Environmental Fluid Dynamics Code) model
@@ -40,7 +40,7 @@ import org.openda.utils.io.AsciiFileUtils;
  *
  * @author Arno Kockx
  */
-public class EfdcInpIoObject extends AbstractDataObject {
+public class EfdcInpDataObject extends AbstractDataObject {
 
     private static final String TAG = "$";
     private static final String RELATIVE_TSTART_TAG = "RELATIVE_TSTART";
