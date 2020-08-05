@@ -56,7 +56,7 @@ public class EfdcEventTox2InpFileTest extends TestCase {
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcEventTox2InpIoObject efdcEventTox2InpDataObject = new EfdcEventTox2InpIoObject();
+        EfdcEventTox2InpDataObject efdcEventTox2InpDataObject = new EfdcEventTox2InpDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String eventTox2InpFilename = "efdcEventTox2InpFileTest/input/EVENT_TOX2.INP";
         String startTimeExchangeItemId = "TSTART1";

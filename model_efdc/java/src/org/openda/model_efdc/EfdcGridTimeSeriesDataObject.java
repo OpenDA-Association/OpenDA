@@ -20,6 +20,12 @@
 
 package org.openda.model_efdc;
 
+import org.openda.exchange.AbstractDataObject;
+import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.Results;
+import org.openda.utils.Time;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -28,12 +34,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-
-import org.openda.exchange.AbstractDataObject;
-import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IExchangeItem;
-import org.openda.utils.Results;
-import org.openda.utils.Time;
 
 /**
  * IoObject for a .DAT (EFDC grid output) file that contains one or more grid time series.
@@ -44,7 +44,7 @@ import org.openda.utils.Time;
  *
  * @author Arno Kockx
  */
-public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
+public class EfdcGridTimeSeriesDataObject extends AbstractDataObject {
 
 	private File timeSeriesFile;
 
@@ -300,7 +300,7 @@ public class EfdcGridTimeSeriesIoObject extends AbstractDataObject {
         for (int n = 0; n < timesList.size(); n++) {
             double relativeTime = timesList.get(n);
             times[n] = Time.milliesToMjd(EfdcUtils.getAbsoluteTime(relativeTime,
-                    referenceTime, EfdcTimeSeriesIoObject.SECONDS_PER_TIME_UNIT));
+                    referenceTime, EfdcTimeSeriesDataObject.SECONDS_PER_TIME_UNIT));
         }
 
         return times;

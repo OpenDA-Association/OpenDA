@@ -40,7 +40,7 @@ public class TreeVectorIoObjectTest extends TestCase {
     }
 
     public void testSingleExchangeItem() {
-    	TreeVectorIoObject treeVectorObject = new TreeVectorIoObject();
+    	TreeVectorDataObject treeVectorObject = new TreeVectorDataObject();
     	String fileName = "rtcParameterConfig.xml";
     	String[] arguments = {fileName,"OneExchangeItem"};
     	treeVectorObject.initialize(treeVectorDataDir, arguments);
@@ -58,7 +58,7 @@ public class TreeVectorIoObjectTest extends TestCase {
 	}
 
 	public void testMultiExchangeItems() {
-		TreeVectorIoObject treeVectorObject = new TreeVectorIoObject();
+		TreeVectorDataObject treeVectorObject = new TreeVectorDataObject();
 		String fileName = "rtcParameterConfig.xml";
 		String[] arguments = {fileName};
 		treeVectorObject.initialize(treeVectorDataDir, arguments);
@@ -82,7 +82,7 @@ public class TreeVectorIoObjectTest extends TestCase {
 
 	public void testReadRtcStateImport() {
 		try {
-			TreeVectorIoObject treeVectorObject = new TreeVectorIoObject();
+			TreeVectorDataObject treeVectorObject = new TreeVectorDataObject();
 			String fileName = "state_import.xml";
 			String[] arguments = {fileName};
 			treeVectorObject.initialize(treeVectorDataDir, arguments);

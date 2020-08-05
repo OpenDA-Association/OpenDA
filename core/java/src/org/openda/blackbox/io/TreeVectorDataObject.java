@@ -31,7 +31,7 @@ import java.util.ArrayList;
 /**
  * IoObject based on treevector xml-file
  */
-public class TreeVectorIoObject extends AbstractDataObject {
+public class TreeVectorDataObject extends AbstractDataObject {
 
     private File treeVectorFile = null;
     private ITreeVector treeVector = null;

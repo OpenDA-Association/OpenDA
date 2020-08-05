@@ -19,10 +19,10 @@
 
 	<inputOutput>
 
-		<dataObject className="org.openda.blackbox.wrapper.DummyParametersIoObject">
+		<ioObject className="org.openda.blackbox.wrapper.DummyParametersIoObject">
 			<file>not-needed</file>
 			<id>parametersIoObject</id>
-		</dataObject>
+		</ioObject>
 
 	</inputOutput>
 

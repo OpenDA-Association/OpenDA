@@ -20,11 +20,6 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
@@ -32,13 +27,18 @@ import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
 
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 /**
  * This IoObject changes the relative startTime in the RESTART.INP file,
  * which is used for the EFDC (Environmental Fluid Dynamics Code) model.
  *
  * @author Arno Kockx
  */
-public class EfdcRestartFileIoObject extends AbstractDataObject {
+public class EfdcRestartFileDataObject extends AbstractDataObject {
 
     /**
      * The timeZone that is used by the model.
@@ -158,6 +158,6 @@ public class EfdcRestartFileIoObject extends AbstractDataObject {
     private double getRelativeStartTime(double startTimeDouble, TimeZone timeZone) {
         long startTime = Time.mjdToMillies(startTimeDouble);
         long referenceTime = EfdcUtils.getReferenceTime(startTime, timeZone);
-        return EfdcUtils.getRelativeTimeInTimeUnits(startTime, referenceTime, EfdcTimeSeriesIoObject.SECONDS_PER_TIME_UNIT);
+        return EfdcUtils.getRelativeTimeInTimeUnits(startTime, referenceTime, EfdcTimeSeriesDataObject.SECONDS_PER_TIME_UNIT);
     }
 }
