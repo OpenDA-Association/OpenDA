@@ -28,20 +28,20 @@ import org.openda.interfaces.IExchangeItem;
  */
 public class BBModelVectorConfig extends BBStochModelVectorConfig {
 
-    private IoObjectConfig ioObjectConfig;
+    private DataObjectConfig dataObjectConfig;
 	private IExchangeItem.Role role;
     //can be null.
     private final String idSuffix;
 
-    public BBModelVectorConfig(String id, IoObjectConfig ioObjectConfig, String elementId, IDimensionIndex[] selectionIndices, BBConfigurable selectorConfig, IExchangeItem.Role role, String idSuffix) {
+    public BBModelVectorConfig(String id, DataObjectConfig dataObjectConfig, String elementId, IDimensionIndex[] selectionIndices, BBConfigurable selectorConfig, IExchangeItem.Role role, String idSuffix) {
         super(id, elementId, selectionIndices, selectorConfig);
 		this.role = role;
-        this.ioObjectConfig = ioObjectConfig;
+        this.dataObjectConfig = dataObjectConfig;
         this.idSuffix = idSuffix;
     }
 
-    public IoObjectConfig getIoObjectConfig() {
-        return ioObjectConfig;
+    public DataObjectConfig getDataObjectConfig() {
+        return dataObjectConfig;
     }
 
 	public IExchangeItem.Role getRole() {

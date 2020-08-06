@@ -24,7 +24,7 @@ package org.openda.blackbox.wrapper;
 import org.openda.blackbox.config.AliasDefinitions;
 import org.openda.blackbox.config.BBModelVectorConfig;
 import org.openda.blackbox.config.BBStochModelVectorConfig;
-import org.openda.blackbox.config.IoObjectConfig;
+import org.openda.blackbox.config.DataObjectConfig;
 import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.ArrayTimeInfo;
 import org.openda.interfaces.IDimensionIndex;
@@ -70,9 +70,9 @@ public class BBExchangeItemTest extends TestCase {
 		dimensionIndices[1] = new DimensionIndex(2, 5);
 
 		// initialize dummy/minimal objects in order to initialize the BBExchangeItem
-		IoObjectConfig ioObjectConfig = new IoObjectConfig("ioObject1",
+		DataObjectConfig dataObjectConfig = new DataObjectConfig("ioObject1",
 				"org.openda.blackbox.wrapper.BBExchangeItemTest.DummyIoObject", "not used", new AliasDefinitions(), new String[0]);
-		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", ioObjectConfig, "itemA",
+		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", dataObjectConfig, "itemA",
 				dimensionIndices, null, IExchangeItem.Role.Output, null);
 
 		// create the BBExchangeItem and ask for values
@@ -114,9 +114,9 @@ public class BBExchangeItemTest extends TestCase {
 		dimensionIndices[1] = new DimensionIndex(4, 7);
 
 		// initialize dummy/minimal objects in order to initialize the BBExchangeItem
-		IoObjectConfig ioObjectConfig = new IoObjectConfig("ioObject1",
+		DataObjectConfig dataObjectConfig = new DataObjectConfig("ioObject1",
 				"org.openda.blackbox.wrapper.BBExchangeItemTest.DummyIoObject", "not used", new AliasDefinitions(), new String[0]);
-		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", ioObjectConfig, "itemA",
+		BBStochModelVectorConfig vectorConfig = new BBModelVectorConfig("item1", dataObjectConfig, "itemA",
 				dimensionIndices, null, IExchangeItem.Role.Output, null);
 
 		// create the BBExchangeItem and ask for values

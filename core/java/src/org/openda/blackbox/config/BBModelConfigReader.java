@@ -116,13 +116,13 @@ public class BBModelConfigReader {
                 idSuffix = vector.getIdSuffix();
             }
 
-            IoObjectConfig ioObjectConfig = bbWrapperConfig.getIoObject(objectId);
-            if (ioObjectConfig == null) {
+            DataObjectConfig dataObjectConfig = bbWrapperConfig.getIoObject(objectId);
+            if (dataObjectConfig == null) {
                 throw new RuntimeException("ObjectId \"" + objectId + "\" is not specified in the wrapper configuration " +
                         "(model file: " + modelConfigFile.getAbsolutePath() +
                         ", wrapper config. file: " + wrapperConfigFile.getAbsolutePath() + ")");
             }
-            vectorConfigs.add(new BBModelVectorConfig(id, ioObjectConfig, elementId, selectionIndices, selectorConfig, role, idSuffix));
+            vectorConfigs.add(new BBModelVectorConfig(id, dataObjectConfig, elementId, selectionIndices, selectorConfig, role, idSuffix));
         }
 
         ITime startTime = null;
