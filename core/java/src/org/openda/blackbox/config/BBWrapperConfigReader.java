@@ -33,7 +33,7 @@ import java.util.HashMap;
  */
 public class BBWrapperConfigReader {
 
-    private BBWrapperConfig bbWrapperConfig;
+    private final BBWrapperConfig bbWrapperConfig;
 
     public BBWrapperConfigReader(File wrapperConfigFile) {
 
@@ -55,34 +55,34 @@ public class BBWrapperConfigReader {
         String instanceName = null;
         Collection<BBAction> initializeActions;
 
-        BlackBoxWrapperRunXMLChoice inititialActionsChoice = bbWrapperConfigXML.getRun().getBlackBoxWrapperRunXMLChoice();
-        if (inititialActionsChoice.getInitializeActionsUsingFileClone() != null) {
+        BlackBoxWrapperRunXMLChoice initialActionsChoice = bbWrapperConfigXML.getRun().getBlackBoxWrapperRunXMLChoice();
+        if (initialActionsChoice.getInitializeActionsUsingFileClone() != null) {
             cloneType = BBWrapperConfig.CloneType.File;
-            templateName = inititialActionsChoice.getInitializeActionsUsingFileClone().getTemplateFile();
-            instanceName = inititialActionsChoice.getInitializeActionsUsingFileClone().getInstanceFile();
+            templateName = initialActionsChoice.getInitializeActionsUsingFileClone().getTemplateFile();
+            instanceName = initialActionsChoice.getInitializeActionsUsingFileClone().getInstanceFile();
             initializeActions = parseActions(wrapperConfigFile, aliasDefinitions,
-                    inititialActionsChoice.getInitializeActionsUsingFileClone().getAction());
-        } else if (inititialActionsChoice.getInitializeActionsUsingDirClone() != null) {
+                    initialActionsChoice.getInitializeActionsUsingFileClone().getAction());
+        } else if (initialActionsChoice.getInitializeActionsUsingDirClone() != null) {
             cloneType = BBWrapperConfig.CloneType.Directory;
-            templateName = inititialActionsChoice.getInitializeActionsUsingDirClone().getTemplateDir();
-            instanceName = inititialActionsChoice.getInitializeActionsUsingDirClone().getInstanceDir();
+            templateName = initialActionsChoice.getInitializeActionsUsingDirClone().getTemplateDir();
+            instanceName = initialActionsChoice.getInitializeActionsUsingDirClone().getInstanceDir();
             initializeActions = parseActions(wrapperConfigFile, aliasDefinitions,
-                    inititialActionsChoice.getInitializeActionsUsingDirClone().getAction());
+                    initialActionsChoice.getInitializeActionsUsingDirClone().getAction());
         } else {
             initializeActions = parseActions(wrapperConfigFile, aliasDefinitions,
-                    inititialActionsChoice.getInitializeActions().getAction());
+                    initialActionsChoice.getInitializeActions().getAction());
         }
 
         // parse computate actions and cleanup actions
         Collection<BBAction> computeActions = parseActions(wrapperConfigFile, aliasDefinitions, bbWrapperConfigXML.getRun().getComputeActions().getAction());
-        Collection<BBAction> addionalComputeActions = new ArrayList<BBAction>();
+        Collection<BBAction> addionalComputeActions = new ArrayList<>();
         if (bbWrapperConfigXML.getRun().getAdditionalComputeActions() != null) {
             addionalComputeActions = parseActions(wrapperConfigFile, aliasDefinitions, bbWrapperConfigXML.getRun().getAdditionalComputeActions().getAction());
         }
         Collection<BBAction> finalizeActions = parseActions(wrapperConfigFile, aliasDefinitions, bbWrapperConfigXML.getRun().getFinalizeActions().getAction());
 
         // parse IO objects
-        HashMap<String, IoObjectConfig> ioObjects = parseIoObjects(aliasDefinitions, bbWrapperConfigXML.getInputOutput().getIoObject());
+        HashMap<String, DataObjectConfig> ioObjects = parseIoObjects(aliasDefinitions, bbWrapperConfigXML.getInputOutput().getInputOutputXMLItem());
 
         // create the config for all
         bbWrapperConfig = new BBWrapperConfig(aliasDefinitions, cloneType, templateName, instanceName,
@@ -94,12 +94,16 @@ public class BBWrapperConfigReader {
         return bbWrapperConfig;
     }
 
-    private static HashMap<String, IoObjectConfig> parseIoObjects(AliasDefinitions aliasDefinitions, IoObjectXML[] ioObjectXMLs) {
-        HashMap<String, IoObjectConfig> ioObjects = new HashMap<String, IoObjectConfig>();
-        for (IoObjectXML ioObjectXML : ioObjectXMLs) {
-            ioObjects.put(ioObjectXML.getId(), new IoObjectConfig(ioObjectXML.getId(), ioObjectXML.getClassName(),
-                    ioObjectXML.getFile(), aliasDefinitions, ioObjectXML.getArg()));
-        }
+    private static HashMap<String, DataObjectConfig> parseIoObjects(AliasDefinitions aliasDefinitions, InputOutputXMLItem[] ioOrDataObjectXMLs) {
+        HashMap<String, DataObjectConfig> ioObjects = new HashMap<>();
+        for (InputOutputXMLItem inputOutputXMLItem : ioOrDataObjectXMLs) {
+			DataObjectXML dataObjectXML = inputOutputXMLItem.getIoObject();
+			if (dataObjectXML == null) {
+			   dataObjectXML = inputOutputXMLItem.getDataObject();
+			}
+		   ioObjects.put(dataObjectXML.getId(), new DataObjectConfig(dataObjectXML.getId(), dataObjectXML.getClassName(),
+			   dataObjectXML.getFile(), aliasDefinitions, dataObjectXML.getArg()));
+		}
         return ioObjects;
     }
 
@@ -153,7 +157,7 @@ public class BBWrapperConfigReader {
     }
 
     public static Collection<BBAction> parseActions(File configFile, AliasDefinitions aliasDefinitions, ActionXML[] computeActionsXML) {
-        ArrayList<BBAction> actions = new ArrayList<BBAction>();
+        ArrayList<BBAction> actions = new ArrayList<>();
         for (ActionXML actionXML : computeActionsXML) {
             BBAction bbAction = parseBBAction(configFile, actionXML, aliasDefinitions);
             if (bbAction != null) {
@@ -169,7 +173,7 @@ public class BBWrapperConfigReader {
             return null;
         }
 
-        ArrayList<BBCheckOutput> checkOutputs = new ArrayList<BBCheckOutput>();
+        ArrayList<BBCheckOutput> checkOutputs = new ArrayList<>();
         for (CheckOutputXML checkOutputXML : actionXML.getCheckOutput()) {
             checkOutputs.add(new BBCheckOutput(checkOutputXML.getFile(),
                     checkOutputXML.getExpect(), aliasDefinitions));
@@ -182,7 +186,6 @@ public class BBWrapperConfigReader {
         }
 
         String exeName = actionXML.getExe();
-		String os = System.getProperty("os.name");
         if (exeName == null) {
             if (BBUtils.RUNNING_ON_LINUX) {
                 exeName = actionXML.getLinuxExe();

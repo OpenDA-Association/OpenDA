@@ -23,11 +23,11 @@ package org.openda.blackbox.config;
 import java.util.Collection;
 
 /**
- * Object for storage of the data needed to initialize or reinitialize an IoObject.
+ * Object for storage of the data needed to initialize or reinitialize a data object.
  * Now that aliases have become more dynamic, it has become necessary to pass the aliases as
  * an argument instead of storing them with this config-object. 
  */
-public class IoObjectConfig {
+public class DataObjectConfig {
 
     private String id;
     private String className;
@@ -39,7 +39,7 @@ public class IoObjectConfig {
     private Collection<String> aliasesUsedInFileName;
     private Collection<String> aliasesUsedInArguments;
 
-    public IoObjectConfig(String id, String className, String fileName, AliasDefinitions aliasDefinitions, String[] arguments) {
+    public DataObjectConfig(String id, String className, String fileName, AliasDefinitions aliasDefinitions, String[] arguments) {
         this.id = id;
         this.className = className;
         this.fileName = fileName;

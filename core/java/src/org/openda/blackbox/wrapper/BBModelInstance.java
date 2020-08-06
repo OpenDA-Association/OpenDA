@@ -298,7 +298,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
 		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
 			//add all exchange item ids from ioObject or dataObject.
-			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
+			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getDataObjectConfig());
 			if (ioObject != null) {
 				for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                     //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
@@ -307,7 +307,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                     bbExchangeItemIds.add(bbExchangeItemId);
 				}
 			} else {
-				IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
+				IDataObject dataObject = findOrCreateDataObject(vectorConfig.getDataObjectConfig());
 				if (dataObject != null) {
                     String[] sourceIds = dataObject.getExchangeItemIDs();
                     //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
@@ -316,7 +316,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                         bbExchangeItemIds.add(bbExchangeItemId);
                     }
 				} else {
-					throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" + vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+					throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" + vectorConfig.getDataObjectConfig().getId(this.aliasDefinitions) + "\"");
 				}
 			}
 		} else {
@@ -343,7 +343,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 			BBModelVectorConfig vectorConfig = findVectorConfig(searchedBBExchangeItemId);
 			if (vectorConfig != null) {
                 //find exchangeItem for vectorConfig that does not have id="allElementsFromIoObject".
-                IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
+                IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getDataObjectConfig());
                 if (ioObject != null) {
                     for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                         String sourceId = sourceItem.getId();
@@ -355,7 +355,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                         newExchangeItemIDs.add(sourceId);
                     }
                 } else {
-                    IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
+                    IDataObject dataObject = findOrCreateDataObject(vectorConfig.getDataObjectConfig());
                     if (dataObject != null) {
                         for (String sourceId : dataObject.getExchangeItemIDs()) {
                             if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
@@ -367,7 +367,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                         }
                     } else {
                         throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
-                                vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+                                vectorConfig.getDataObjectConfig().getId(this.aliasDefinitions) + "\"");
                     }
                 }
 
@@ -380,7 +380,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                 for (BBModelVectorConfig allElementVectorConfig : allElementVectorConfigs) {
                     String idSuffix = allElementVectorConfig.getIdSuffix();
 
-                    IoObjectInterface ioObject = findOrCreateIoObject(allElementVectorConfig.getIoObjectConfig());
+                    IoObjectInterface ioObject = findOrCreateIoObject(allElementVectorConfig.getDataObjectConfig());
                     if (ioObject != null) {
                         for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                             //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
@@ -394,7 +394,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                             newExchangeItemIDs.add(sourceItem.getId());
                         }
                     } else {
-                        IDataObject dataObject = findOrCreateDataObject(allElementVectorConfig.getIoObjectConfig());
+                        IDataObject dataObject = findOrCreateDataObject(allElementVectorConfig.getDataObjectConfig());
                         if (dataObject != null) {
                             for (String sourceId : dataObject.getExchangeItemIDs()) {
                                 //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
@@ -409,7 +409,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                             }
                         } else {
                             throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
-                                    allElementVectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+                                    allElementVectorConfig.getDataObjectConfig().getId(this.aliasDefinitions) + "\"");
                         }
                     }
 
@@ -620,7 +620,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 
-	private IoObjectInterface findOrCreateIoObject(IoObjectConfig ioObjectConfig) {
+	private IoObjectInterface findOrCreateIoObject(DataObjectConfig ioObjectConfig) {
 
 		// find or create io object
 		IoObjectInterface ioObject = ioObjects.get(ioObjectConfig.getId(this.aliasDefinitions));
@@ -638,7 +638,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		return ioObject;
 	}
 
-    private IDataObject findOrCreateDataObject(IoObjectConfig ioObjectConfig) {
+    private IDataObject findOrCreateDataObject(DataObjectConfig ioObjectConfig) {
 
         // find or create io object
         IDataObject dataObject = dataObjects.get(ioObjectConfig.getId(this.aliasDefinitions));
