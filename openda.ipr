@@ -11,6 +11,7 @@
     <buildFile url="file://$PROJECT_DIR$/model_efdc_dll/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_wflow/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_external_socket/build_castor.xml" />
+    <buildFile url="file://$PROJECT_DIR$/model_external_socket/build.xml" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />

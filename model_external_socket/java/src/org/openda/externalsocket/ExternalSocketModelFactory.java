@@ -3,17 +3,29 @@ package org.openda.externalsocket;
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.blackbox.interfaces.ITimeHorizonConsumer;
 import org.openda.interfaces.IStochModelFactory;
+import org.openda.interfaces.IStochModelPostProcessor;
 import org.openda.interfaces.ITime;
 
 import java.io.File;
 
-public class ExternalSocketModelFactory implements IModelFactory, ITimeHorizonConsumer {
+public class ExternalSocketModelFactory implements IModelFactory, ITimeHorizonConsumer, IStochModelFactory {
 
 	private ExternalSocketModelFactoryConfigReader configReader;
 	private File dummyModelDir;
 
 	public ExternalSocketModelFactory() {
 		
+	}
+
+	@Override
+	public ExternalSocketModelInstance getInstance(OutputLevel outputLevel) {
+		return new ExternalSocketModelInstance(configReader.getPortNumber(), configReader.getValues(), configReader.getStdDev(), configReader.getLowerBounds(), configReader.getUpperBounds(), dummyModelDir);
+	}
+
+	@Override
+	public IStochModelPostProcessor getPostprocessorInstance(File instanceDir) {
+		throw new RuntimeException("org.openda.externalsocket.ExternalSocketModelFactory.getPostprocessorInstance() not implemented yet");
+
 	}
 
 	@Override
