@@ -10,10 +10,9 @@ import java.io.File;
 public class ExternalModelStochModelFactoryTest extends TestCase {
 
 	private File testRunDataDir;
-	private OpenDaTestSupport testData;
 
 	protected void setUp() {
-		testData = new OpenDaTestSupport(ExternalModelStochModelFactoryTest.class, "model_external_socket");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ExternalModelStochModelFactoryTest.class, "model_external_socket");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
