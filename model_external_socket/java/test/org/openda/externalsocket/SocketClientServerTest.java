@@ -8,9 +8,6 @@ public class SocketClientServerTest extends TestCase {
 		super.setUp();
 	}
 
-	public void tearDown() {
-	}
-
 	public void testSendAndReceive() {
 		final int port = 8124;
 		Runnable socketServerRunnable = new Runnable() {

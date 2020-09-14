@@ -13,10 +13,6 @@ public class ExternalSocketModelFactory implements IModelFactory, ITimeHorizonCo
 	private ExternalSocketModelFactoryConfigReader configReader;
 	private File dummyModelDir;
 
-	public ExternalSocketModelFactory() {
-		
-	}
-
 	@Override
 	public ExternalSocketModelInstance getInstance(OutputLevel outputLevel) {
 		return new ExternalSocketModelInstance(configReader.getPortNumber(), configReader.getValues(), configReader.getStdDev(), configReader.getLowerBounds(), configReader.getUpperBounds(), dummyModelDir);

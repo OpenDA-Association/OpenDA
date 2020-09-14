@@ -1,7 +1,18 @@
 package org.openda.externalsocket;
 
 import org.openda.exchange.DoubleExchangeItem;
-import org.openda.interfaces.*;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IInstance;
+import org.openda.interfaces.ILocalizationDomains;
+import org.openda.interfaces.IModelState;
+import org.openda.interfaces.IObservationDescriptions;
+import org.openda.interfaces.IObservationOperator;
+import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IStochModelInstance;
+import org.openda.interfaces.IStochModelInstanceDeprecated;
+import org.openda.interfaces.IStochVector;
+import org.openda.interfaces.ITime;
+import org.openda.interfaces.IVector;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.utils.StochVector;
 import org.openda.utils.Time;
@@ -124,7 +135,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 	}
 
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-
+		// Not used
 	}
 
 	public IVector getStateScaling() {
@@ -240,7 +251,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 	}
 
 	public void finish() {
-
+		// Not used, sendFinalParameters is used instead
 	}
 
 	public void initialize(File workingDir, String[] arguments) {
