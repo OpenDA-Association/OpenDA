@@ -78,6 +78,7 @@
       <buildmodule module="model_efdc_dll"/>
       <buildmodule module="model_example_blackbox" />
       <buildmodule module="model_example_fortran" />
+      <buildmodule module="model_external_socket" />
       <buildmodule module="model_glm" />
       <buildmodule module="model_gotm" />
       <buildmodule module="model_hspf" />

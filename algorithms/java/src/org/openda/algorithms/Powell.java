@@ -40,7 +40,7 @@ public class Powell extends Instance implements IAlgorithm {
 	private IStochModelFactory stochModelFactory;
     protected ConfigTree powellConf;
 
-    private IStochModelInstance bestEstimate = null;
+    protected IStochModelInstance bestEstimate = null;
 
     private SimulationKwadraticCostFunction J=null;
     private PowellCoreOptimizer powellOptimizer;

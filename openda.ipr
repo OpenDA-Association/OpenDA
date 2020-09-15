@@ -10,6 +10,8 @@
     <buildFile url="file://$PROJECT_DIR$/observers/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_efdc_dll/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_wflow/build_castor.xml" />
+    <buildFile url="file://$PROJECT_DIR$/model_external_socket/build_castor.xml" />
+    <buildFile url="file://$PROJECT_DIR$/model_external_socket/build.xml" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -115,7 +117,7 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+  <component name="Encoding">
     <file url="PROJECT" charset="UTF-8" />
   </component>
   <component name="ErrorOptionsConfigurable.UI">
@@ -143,21 +145,6 @@
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/javadoc" />
-    <option name="OPTION_SCOPE" value="protected" />
-    <option name="OPTION_HIERARCHY" value="true" />
-    <option name="OPTION_NAVIGATOR" value="true" />
-    <option name="OPTION_INDEX" value="true" />
-    <option name="OPTION_SEPARATE_INDEX" value="true" />
-    <option name="OPTION_DOCUMENT_TAG_USE" value="false" />
-    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="false" />
-    <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
-    <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
-    <option name="OPTION_DEPRECATED_LIST" value="true" />
-    <option name="OTHER_OPTIONS" />
-    <option name="HEAP_SIZE" />
-    <option name="LOCALE" />
-    <option name="OPEN_IN_BROWSER" value="true" />
-    <option name="OPTION_INCLUDE_LIBS" value="false" />
   </component>
   <component name="LogConsolePreferences">
     <option name="FILTER_ERRORS" value="false" />
@@ -367,6 +354,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_efdc_dll/java/model_efdc_dll.iml" filepath="$PROJECT_DIR$/model_efdc_dll/java/model_efdc_dll.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" filepath="$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" filepath="$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_external_socket/java/model_external_socket.iml" filepath="$PROJECT_DIR$/model_external_socket/java/model_external_socket.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_hspf/java/model_hspf.iml" filepath="$PROJECT_DIR$/model_hspf/java/model_hspf.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" filepath="$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_nemo/java/model_nemo.iml" filepath="$PROJECT_DIR$/model_nemo/java/model_nemo.iml" />
@@ -389,6 +377,19 @@
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
+  </component>
+  <component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="ExternalModelStochModelFactoryTest.testReadConfig" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="model_external_socket" />
+      <option name="PACKAGE_NAME" value="org.openda.externalsocket" />
+      <option name="MAIN_CLASS_NAME" value="org.openda.externalsocket.ExternalModelStochModelFactoryTest" />
+      <option name="METHOD_NAME" value="testReadConfig" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">

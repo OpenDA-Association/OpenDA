@@ -72,6 +72,7 @@ public abstract class BaseDudCoreOptimizer {
 	public boolean add_constraints = false;
 	public String lower = null;
 	public String upper = null;
+	private double[] stdValues;
 
 	protected int numberOfSearchDirections() {
 		IStochVector parameterUncertainty = f.getParameterUncertainty();
@@ -1004,7 +1005,8 @@ public abstract class BaseDudCoreOptimizer {
 			
 			// now make this pretty for treeVectors
 			IVector stdWithStructure = pTry.clone();
-			stdWithStructure.setValues(std.getValues());
+			stdValues = std.getValues();
+			stdWithStructure.setValues(stdValues);
 			Results.putMessage("Error estimate for this outer iteration");
 			Results.putValue(	"parameterErrorEstimateStd", stdWithStructure, stdWithStructure.getSize(), 
 								"outer iteration "+imain, IResultWriter.OutputLevel.Verbose,
@@ -1140,6 +1142,10 @@ public abstract class BaseDudCoreOptimizer {
 				result[i] = this.predCurrent[i].clone();
 		}
 		return result;
+	}
+
+	public double[] getStdValues() {
+		return stdValues;
 	}
 }
 
