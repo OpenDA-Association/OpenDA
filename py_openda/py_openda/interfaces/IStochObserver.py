@@ -51,6 +51,13 @@ class IStochObserver:
         """
         raise NotImplemented("Function not implemented.")
 
+
+    def get_standard_deviation(self):
+        """
+        Get the standard deviation for each stochastic observation
+        """
+        raise NotImplemented("Function not implemented.")
+
     def get_realizations(self):
         """
         Get realization values for all observations, for one ensemble member.
