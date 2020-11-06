@@ -89,6 +89,28 @@ def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
     return (False, p_new)
 
 
+def max_step_p_new(parameters, p_new, l_bound, u_bound):
+    # Check for valid starting point
+    if not all([l <= p <= u for p, l, u in zip(parameters[:, -1], l_bound, u_bound)]):
+        raise ValueError("current parameters are outside upper and lower bounds")
+    alpha = 1.0
+    for p, p_n, l, u in zip (parameters[:, -1], p_new, l_bound, u_bound):
+        if p_n < l:
+            alpha_max_i = (p-l)/(p-p_n)
+        elif p_n > u:
+            alpha_max_i = (u-p)/(p_n-p)
+        else:
+            alpha_max_i = 1.0
+        alpha = min(alpha, alpha_max_i)
+
+    if alpha < 1.0:
+        print("domain protection alpha ="+str(alpha))
+        p_bound = [p + alpha*(p_n-p) for p, p_n in zip(parameters[:,-1], p_new)]
+        return np.array(p_bound)
+    else:
+        return p_new
+
+
 def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     """
     Line search that looks along the next search direction for parameters that lower the total cost.
@@ -118,7 +140,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     return (next_parameters, next_func_evals, next_total_cost)
 
 
-def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
+def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None):
     """
     Main function which minimizes a least squares problem without using derivatives.
 
@@ -131,6 +153,11 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
     the search directions (default 1.1).
     :return: tuple containing the minimal cost followed by the list of corresponding parameters.
     """
+    if l_bound is None:
+        l_bound = [-float('inf')]*len(p_old)
+    if u_bound is None:
+        u_bound = [float('inf')]*len(p_old)
+
     finish = 0
     max_step = 10
     p_number = len(p_old)
@@ -140,6 +167,8 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1):
         (stop, p_new) = find_next_params(p_number, parameters, func_evals, obs, std, max_step)
         if stop:
             break
+
+        p_new = max_step_p_new(parameters, p_new, l_bound, u_bound)
         (next_parameters, next_func_evals, next_total_cost) = line_search(func, parameters,
                                                                           func_evals, total_cost,
                                                                           obs, std, p_new)
