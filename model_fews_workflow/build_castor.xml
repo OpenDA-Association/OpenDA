@@ -1,0 +1,138 @@
+<project name="model_fews_workflow-castor" default="help" basedir=".">
+<!--
+================================================================================
+  Ant build file for openda java code
+  install ant and type
+  "ant help"
+  for a list of options
+================================================================================
+-->
+    <target name="help">
+        <echo>
+        	Build castor jar in 2 steps:
+				- target castor-src
+				- target castor-jar
+            See "NOTE:" in build_castor.xml (this file)
+            ant help                     --> print this help
+            ant castor                   --> rebuild castor parsers from xml
+        </echo>
+    </target>
+
+  <property file="module.properties"/>
+  <property file="../version.properties"/>
+
+	<!-- castor properties (output) -->
+	<property name="openda_castor_jar" value="${resourcesdir}/openda/${module}_castor.jar"/>
+	<property name="openda_castor_schemas" value="${resourcesdir}/openda/${module}_castor_schemas.zip"/>
+	<property name="openda_castor_src" value="${resourcesdir}/openda/${module}_castor_src.zip"/>
+	<!-- castor properties (input/build) -->
+	<property name="core_resourcesdir" value="../core/java/resources"/>
+	<property name="castor_temp_srcdir" value="castor_temp_src"/>
+	<property name="castor_temp_builddir" value="castor_temp_build"/>
+
+    <target name="debug">
+        <echo>
+		module=${module}
+		srcdir=${srcdir}
+		openda_castor_jar=${openda_castor_jar}
+		openda_castor_schemas=${openda_castor_schemas}
+		openda_castor_src=${openda_castor_src}
+		castor_temp_srcdir=${castor_temp_srcdir}
+		castor_temp_builddir=${castor_temp_builddir}
+	</echo>
+    </target>
+
+<!--
+===========================================================================
+	Compilation
+===========================================================================
+-->
+    <target name="build" depends="castor-jar">
+    </target>
+
+    <target name="castor-jar" depends="castor-classes, manifest">
+        <jar jarfile="${openda_castor_jar}" manifest="MANIFEST.MF">
+            <fileset dir="${castor_temp_builddir}" includes="**/*.class"/>
+        </jar>
+        <zip zipfile="${openda_castor_src}">
+            <fileset dir="${castor_temp_srcdir}" includes="**/*.java"/>
+        </zip>
+        <zip zipfile="${openda_castor_schemas}">
+            <fileset dir="xmlSchemas" includes="**/*.xsd"/>
+        </zip>
+    </target>
+
+    <target name="manifest">
+        <tstamp/>
+        <manifest file="MANIFEST.MF">
+		<attribute name="Specification-Title" value="${projectname}"/>
+            <attribute name="Specification-Version" value="${version} ${TODAY}"/>
+	    <attribute name="Specification-Vendor" value="${vendor}"/>
+	    <attribute name="Implementation-Title" value="${projectname}"/>
+            <attribute name="Implementation-Version" value="${version} ${TODAY}"/>
+	    <attribute name="Implementation-Vendor" value="${vendor}"/>
+        </manifest>
+    </target>
+
+<!-- NOTE: this dependency makes the ant build in IntelliJ wait forever.
+     Perform the two steps by hand: castor-src and castor-jar
+    <target name="castor-classes" depends="castor-src">
+ -->
+    <target name="castor-classes">
+        <!-- run javac on the castor generated files -->
+        <javac srcdir="${castor_temp_srcdir}" destdir="${castor_temp_builddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="256M" memoryMaximumSize="256M">
+            <classpath>
+                <fileset dir="${core_resourcesdir}">
+                    <include name="castor/*.jar"/>
+                    <include name="xerces/*.jar"/>
+                </fileset>
+                <pathelement path="."/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="castor-src" depends="init">
+        <antcall target="castor-execute">
+            <param name="schema" value="xmlSchemas/fewsWorkflowModelFactory.xsd"/>
+            <param name="package" value="org.openda.${module}.io.castorgenerated"/>
+        </antcall>
+    </target>
+
+    <target name="castor-execute">
+        <echo>Generate Castor XML based on ${schema} </echo>
+        <java classname="org.exolab.castor.builder.SourceGenerator" fork="true" failonerror="${failonerror}" maxmemory="128M">
+            <classpath>
+                <fileset dir="${core_resourcesdir}">
+                    <include name="castor/*.jar"/>
+                    <include name="xerces/*.jar"/>
+                </fileset>
+                <pathelement path="."/>
+            </classpath>
+            <arg line="-i ${schema}"/>
+            <arg line="-package ${package}"/>
+            <arg line="-dest ${castor_temp_srcdir}"/>
+            <arg line="-f -types j2"/>
+        </java>
+    </target>
+
+<!--
+===========================================================================
+	Tools: init, clean, etc.
+===========================================================================
+-->
+    <target name="init" depends="clean">
+        <tstamp/>
+		<mkdir dir="${castor_temp_srcdir}"/>
+		<mkdir dir="${castor_temp_builddir}"/>
+    </target>
+
+    <target name="clean">
+        <delete file="${openda_castor_jar}"/>
+        <delete file="${openda_castor_src}"/>
+        <delete file="${openda_castor_schemas}"/>
+		<delete dir="${castor_temp_builddir}"/>
+		<delete dir="${castor_temp_srcdir}"/>
+    </target>
+
+</project>
+
