@@ -1,17 +1,17 @@
-package org.openda.fewsworkflow;
+package org.openda.externalfile;
 
-import org.openda.model_fews_workflow.io.castorgenerated.FewsWorkflowModelFactoryConfigXML;
+import org.openda.model_external_file.io.castorgenerated.ExternalFileModelFactoryConfigXML;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
 
-public class FewsWorkflowModelFactoryConfigReader {
+public class ExternalFileModelFactoryConfigReader {
 
 	private final String modelParametersFile;
 	private final String modelResultsFile;
 
-	public FewsWorkflowModelFactoryConfigReader(File configFile) {
-		FewsWorkflowModelFactoryConfigXML castor = (FewsWorkflowModelFactoryConfigXML) CastorUtils.parse(configFile, FewsWorkflowModelFactoryConfigXML.class);
+	public ExternalFileModelFactoryConfigReader(File configFile) {
+		ExternalFileModelFactoryConfigXML castor = (ExternalFileModelFactoryConfigXML) CastorUtils.parse(configFile, ExternalFileModelFactoryConfigXML.class);
 		modelParametersFile = castor.getModelParametersFile();
 		modelResultsFile = castor.getModelResultsFile();
 	}

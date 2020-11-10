@@ -1,4 +1,4 @@
-package org.openda.fewsworkflow;
+package org.openda.externalfile;
 
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.blackbox.interfaces.ITimeHorizonConsumer;
@@ -9,24 +9,24 @@ import org.openda.interfaces.ITime;
 
 import java.io.File;
 
-public class FewsWorkflowModelFactory implements IModelFactory, ITimeHorizonConsumer, IStochModelFactory {
+public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonConsumer, IStochModelFactory {
 
-	private FewsWorkflowModelFactoryConfigReader configReader;
+	private ExternalFileModelFactoryConfigReader configReader;
 	private File dummyModelDir;
 
-	public FewsWorkflowModelFactory() {
+	public ExternalFileModelFactory() {
 		
 	}
 
 
 	//@Override
-	public FewsWorkflowModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
-		return new FewsWorkflowModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), dummyModelDir);
+	public ExternalFileModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
+		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), dummyModelDir);
 	}
 
 	@Override
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
-		return new FewsWorkflowModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), dummyModelDir);
+		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), dummyModelDir);
 	}
 
 	@Override
@@ -60,6 +60,6 @@ public class FewsWorkflowModelFactory implements IModelFactory, ITimeHorizonCons
 				+ fewsWorkflowModelFactoryConfigFile.getAbsolutePath());
 		}
 
-		configReader = new FewsWorkflowModelFactoryConfigReader(fewsWorkflowModelFactoryConfigFile);
+		configReader = new ExternalFileModelFactoryConfigReader(fewsWorkflowModelFactoryConfigFile);
 	}
 }

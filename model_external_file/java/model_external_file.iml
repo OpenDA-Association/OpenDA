@@ -35,12 +35,10 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/resources/openda/model_fews_workflow_castor.jar!/" />
+          <root url="jar://$MODULE_DIR$/resources/openda/model_external_file_castor.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/resources/openda/model_fews_workflow_castor_src.zip!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

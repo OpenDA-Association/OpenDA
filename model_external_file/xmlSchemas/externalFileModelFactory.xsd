@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by ICT (Stichting Deltares) -->
 <xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <xs:element name="fewsWorkflowModelFactory" type="openda:FewsWorkflowModelFactoryConfigXML">
+  <xs:element name="externalFileModelFactory" type="openda:ExternalFileModelFactoryConfigXML">
     <xs:annotation>
       <xs:documentation>Configuration for an external model factory. It contains information on the socket port number and parameter initialisation values</xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:complexType name="FewsWorkflowModelFactoryConfigXML">
+  <xs:complexType name="ExternalFileModelFactoryConfigXML">
     <xs:sequence>
       <xs:element name="modelParametersFile" type="xs:string"/>
       <xs:element name="modelResultsFile" type="xs:string"/>

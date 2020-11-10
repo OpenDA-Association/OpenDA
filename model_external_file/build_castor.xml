@@ -1,4 +1,4 @@
-<project name="model_fews_workflow-castor" default="help" basedir=".">
+<project name="model_external_file-castor" default="help" basedir=".">
 <!--
 ================================================================================
   Ant build file for openda java code
@@ -93,7 +93,7 @@
 
     <target name="castor-src" depends="init">
         <antcall target="castor-execute">
-            <param name="schema" value="xmlSchemas/fewsWorkflowModelFactory.xsd"/>
+            <param name="schema" value="xmlSchemas/externalFileModelFactory.xsd"/>
             <param name="package" value="org.openda.${module}.io.castorgenerated"/>
         </antcall>
     </target>

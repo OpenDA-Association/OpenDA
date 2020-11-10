@@ -1,4 +1,4 @@
-package org.openda.fewsworkflow;
+package org.openda.externalfile;
 
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.*;
@@ -12,7 +12,7 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class FewsWorkflowModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, Cloneable {
+public class ExternalFileModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, Cloneable {
 
 	private final String modelResultsFile;
 	private Vector parameterVector;
@@ -23,7 +23,7 @@ public class FewsWorkflowModelInstance implements IStochModelInstance, IStochMod
 	private Time fakeTime = new Time(58119,58120,1d/24d);
 	private File modelParFile;
 
-	public FewsWorkflowModelInstance(String modelParametersFileName, String modelResultsFile, File dummyModelDir) {
+	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File dummyModelDir) {
 
 		modelParFile = new File(dummyModelDir, modelParametersFileName);
 
