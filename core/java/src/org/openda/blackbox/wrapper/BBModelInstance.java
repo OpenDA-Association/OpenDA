@@ -44,6 +44,7 @@ import java.util.List;
  */
 public class BBModelInstance extends Instance implements IModelInstance {
     private final String ALL_ELEMENTS_FROM_IO_OBJECT = "allElementsFromIoObject";
+	private final String ALL_ELEMENTS_FROM_DATA_OBJECT = "allElementsFromDataObject";
 
 	protected BBModelConfig bbModelConfig;
 
@@ -296,7 +297,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	private void addAllExchangeItemIdsFromVectorConfig(BBModelVectorConfig vectorConfig, List<String> bbExchangeItemIds) {
         String idSuffix = vectorConfig.getIdSuffix();
 
-		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
+		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT) || vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_DATA_OBJECT)) {
 			//add all exchange item ids from ioObject or dataObject.
 			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getDataObjectConfig());
 			if (ioObject != null) {
@@ -612,7 +613,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	private List<BBModelVectorConfig> findAllVectorConfigsWithAllElementsFromIoObject() {
 		List<BBModelVectorConfig> allElementsVectorConfigs = new ArrayList<BBModelVectorConfig>();
 		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
-			if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
+			if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT) || vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_DATA_OBJECT)) {
 				allElementsVectorConfigs.add(vectorConfig);
 			}
 		}
