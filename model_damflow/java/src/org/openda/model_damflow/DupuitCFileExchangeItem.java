@@ -38,7 +38,7 @@ public class DupuitCFileExchangeItem implements IExchangeItem {
 
 	
 	public Role getRole() {
-		return IPrevExchangeItem.Role.InOut;
+		return IExchangeItem.Role.InOut;
 	}
 
 	

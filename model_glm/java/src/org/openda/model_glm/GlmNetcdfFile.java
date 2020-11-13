@@ -98,7 +98,7 @@ package org.openda.model_glm;
 
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;
 import java.io.IOException;

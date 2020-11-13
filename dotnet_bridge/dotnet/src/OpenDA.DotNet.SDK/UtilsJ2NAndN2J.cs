@@ -44,16 +44,16 @@ namespace OpenDA.DotNet.SDK
 			throw new NotImplementedException();
 		}
 
-		public static org.openda.interfaces.IPrevExchangeItem.Role RoleMapN2J(int role)
+		public static org.openda.interfaces.IExchangeItem.Role RoleMapN2J(int role)
 		{
 			switch (role)
 			{
 				case 0:
-					return org.openda.interfaces.IPrevExchangeItem.Role.Input;
+					return org.openda.interfaces.IExchangeItem.Role.Input;
 				case 1:
-					return org.openda.interfaces.IPrevExchangeItem.Role.Output;
+					return org.openda.interfaces.IExchangeItem.Role.Output;
 				case 2:
-					return org.openda.interfaces.IPrevExchangeItem.Role.InOut;
+					return org.openda.interfaces.IExchangeItem.Role.InOut;
 			}
 			throw new Exception("Unknown IExchangeItem.Role  value: " + role);
 		}
@@ -86,7 +86,7 @@ namespace OpenDA.DotNet.SDK
 			throw new Exception("Unknown value type " + valueTypeString);
 		}
 
-		public static Role RoleMapJ2N(org.openda.interfaces.IPrevExchangeItem.Role role)
+		public static Role RoleMapJ2N(org.openda.interfaces.IExchangeItem.Role role)
 		{
 			string roleString = role.toString();
 			if (roleString.ToLower().Equals("input"))
