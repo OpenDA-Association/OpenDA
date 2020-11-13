@@ -61,7 +61,7 @@ public class DupuitPFile implements IDataObject {
 	}
 
 	
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFile - Method Name : getExchangeItemIDs");
 	}
 

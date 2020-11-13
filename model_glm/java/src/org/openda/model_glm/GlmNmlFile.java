@@ -20,7 +20,7 @@
 package org.openda.model_glm;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

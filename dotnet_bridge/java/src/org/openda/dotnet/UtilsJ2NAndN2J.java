@@ -49,6 +49,6 @@ public class UtilsJ2NAndN2J
 			if (role == IExchangeItem.Role.InOut) {
 				return 2; // TODO cli.OpenDA.DotNet.Interfaces.Role.Input;
 			}
-			throw new RuntimeException("Unknown IPrevExchangeItem.Role type: " + role);
+			throw new RuntimeException("Unknown IExchangeItem.Role type: " + role);
 		}
 	}
