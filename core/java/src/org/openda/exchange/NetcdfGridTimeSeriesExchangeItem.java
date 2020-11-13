@@ -23,7 +23,6 @@ package org.openda.exchange;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.interfaces.*;
 
 /**
