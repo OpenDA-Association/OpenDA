@@ -10,18 +10,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/junit/junit-3.8.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="algorithms" />
     <orderEntry type="module" module-name="application" />
     <orderEntry type="module" module-name="models" />
     <orderEntry type="module" module-name="observers" />
+    <orderEntry type="library" name="CoreResources" level="project" />
   </component>
 </module>
