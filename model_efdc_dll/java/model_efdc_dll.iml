@@ -29,16 +29,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/junit/junit-3.8.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="model_efdc" />
     <orderEntry type="module" module-name="application" />
+    <orderEntry type="library" name="CoreResources" level="project" />
   </component>
 </module>
