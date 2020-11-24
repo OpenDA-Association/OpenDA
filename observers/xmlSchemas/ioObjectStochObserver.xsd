@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by Stef Hummel (Stichting DELTARES) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="dataStochObserversSharedTypes.xsd"/>
+	<xs:element name="ioObjectStochObserver" type="openda:DataObjectStochObserverXML">
+		<xs:annotation>
+			<xs:documentation>Obsolete. Please use dataObjectStochObserver. Configuration of a stochastic observer. It contains two main components: the observer that contains all measurement data and the uncertainty module that contains uncertainty information about the observation data.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

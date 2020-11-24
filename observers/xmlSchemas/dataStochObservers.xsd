@@ -1,0 +1,7 @@
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- -->
+	<!-- stoch observer xsd's -->
+	<!-- -->
+	<xs:include schemaLocation="dataObjectStochObserver.xsd"/>
+	<xs:include schemaLocation="ioObjectStochObserver.xsd"/>
+</xs:schema>

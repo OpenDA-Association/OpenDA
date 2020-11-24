@@ -40,7 +40,7 @@ import java.util.*;
  */
 public class IoObjectStochObserver extends Instance implements IStochObserver {
 
-	IoObjectStochObserverConfig ioObjectStochObserverConfig = null;
+	DataObjectStochObserverConfig dataObjectStochObserverConfig = null;
 	private UncertaintyEngine uncertaintyEngine = null;
 
 	private List<IoObjectInterface> ioObjects = new ArrayList<IoObjectInterface>();
@@ -77,13 +77,13 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 			throw new RuntimeException("IoObjectStochObserver config file not found: " + configFile.getAbsolutePath());
 		}
 		IoObjectStochObserverConfigReader configReader = new IoObjectStochObserverConfigReader(configFile);
-		ioObjectStochObserverConfig = configReader.getIoObjectStochObserverConfig();
+		dataObjectStochObserverConfig = configReader.getDataObjectStochObserverConfig();
 
 		// Create the uncertainty module.
 		// For the time being, we always expect the openda UncertaintyEngine.
 		// This may change if we introduce IUncertainty.
 		Class<UncertaintyEngine> expectedClassType = UncertaintyEngine.class;
-		IoObjectStochObserverConfig.IoStochObsUncertaintyConfig uncertaintyModuleConfig = ioObjectStochObserverConfig.getUncertaintyModuleConfig();
+		DataObjectStochObserverConfig.DataStochObsUncertaintyConfig uncertaintyModuleConfig = dataObjectStochObserverConfig.getUncertaintyModuleConfig();
 		String className = (uncertaintyModuleConfig.getClassName() != null) ?
 				uncertaintyModuleConfig.getClassName() : UncertaintyEngine.class.getName();
 		uncertaintyEngine = (UncertaintyEngine) ObjectSupport.createNewInstance(className, expectedClassType);
@@ -99,7 +99,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		boolean isTimeDependent = false;
 		//for each ioObject store the uncertain exchangeItems in this.exchangeItems map and check if these are all of the same type (either all time dependent or all time independent).
 		//Important note: this code assumes that all uncertain exchangeItemIds are unique, even if exchangeItems from multiple ioObjects are used.
-		for (IoObjectStochObserverConfig.IoStochObsIoObjectConfig ioObjectConfig : ioObjectStochObserverConfig.getIoObjectConfigs()) {
+		for (DataObjectStochObserverConfig.IoStochObsIoObjectConfig ioObjectConfig : dataObjectStochObserverConfig.getIoObjectConfigs()) {
 			IoObjectInterface ioObject = BBUtils.createIoObjectInstance(ioObjectConfig.getWorkingDir(), ioObjectConfig.getClassName(),
 					ioObjectConfig.getFileName(), ioObjectConfig.getArguments());
 
@@ -148,7 +148,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
                     // get rid off missing values.
                     // WAS: if (ioExchangeItem instanceof SwanResults.SwanResult){
-					boolean removeMissingValues = ioObjectStochObserverConfig.removeMissingValues();
+					boolean removeMissingValues = dataObjectStochObserverConfig.removeMissingValues();
                     	// NonMissingStochObserverExchangeItem does not work if times are missing
                     	if(ioExchangeItem.getTimes()==null){removeMissingValues=false;}
 
@@ -354,10 +354,10 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		IoObjectStochObserver child = this.createEmptyChild();
 		if (observationType == Type.Assimilation) {
-			List<String> selectedObsIds = this.ioObjectStochObserverConfig.getAssimilationObsIds();
+			List<String> selectedObsIds = this.dataObjectStochObserverConfig.getAssimilationObsIds();
 			fillObservationTypeChildWithSelectedObservations(child, selectedObsIds);
 		} else {
-			fillObservationTypeChildWithSelectedObservations(child, this.ioObjectStochObserverConfig.getValidationObsIds());
+			fillObservationTypeChildWithSelectedObservations(child, this.dataObjectStochObserverConfig.getValidationObsIds());
 		}
 		child.initializeCounts();
 		child.initializeAtLeastOneStdDevIsFactor();
@@ -374,7 +374,7 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		IoObjectStochObserver child = new IoObjectStochObserver();
 
-		child.ioObjectStochObserverConfig = this.ioObjectStochObserverConfig;
+		child.dataObjectStochObserverConfig = this.dataObjectStochObserverConfig;
 		child.uncertaintyEngine = this.uncertaintyEngine;
 		uncertaintyEngine.increaseTimeStepSeed();
 
