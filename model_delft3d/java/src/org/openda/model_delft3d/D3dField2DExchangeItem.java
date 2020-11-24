@@ -121,7 +121,8 @@ public class D3dField2DExchangeItem implements IExchangeItem {
     }
 
     @Override
-    public ValueType getValuesType() {
-        throw new RuntimeException("org.openda.model_delft3d.D3dField2DExchangeItem.getValuesType not implemented");
-    }
+	public ValueType getValuesType() {
+		return ValueType.custom;
+	}
+
 }

@@ -18,10 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.utils;
-import org.openda.interfaces.IAlgorithm;
-import org.openda.interfaces.IConfigurable;
-import org.openda.interfaces.IStochModelFactory;
-import org.openda.interfaces.IStochObserver;
+import org.openda.interfaces.*;
 
 import java.io.File;
 
@@ -31,10 +28,11 @@ import java.io.File;
 public class ObjectSupport {
 
     public static void checkCompatibility(Object objectInstance, Class expectedType, String messagePrefix) {
+    	if (expectedType == IExchangeItem.ValueType.custom.getClass()) return;
         if (!expectedType.isInstance(objectInstance)) {
             String prefix = messagePrefix != null ? messagePrefix + ": " : "";
             throw new RuntimeException(prefix + "Object instance of type " + objectInstance.getClass().getName()
-                    + " is not assignable to " + (expectedType.isInterface() ? "interface" : "class") + expectedType.getName());
+                    + " is not assignable to " + (expectedType.isInterface() ? "interface" : "class ") + expectedType.getName());
         }
     }
 
