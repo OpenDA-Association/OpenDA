@@ -25,6 +25,7 @@
         <vector id="ne1b.K1.Amplitude" ioObjectId="astro-components"/>
 
         <vector id="depth" ioObjectId="depth"/>
+        <!--TODO: replace with netcdf Delft3D history file -->
         <vector id="H-W1" ioObjectId="trih-file" elementId="W1.water level"/>
         <vector id="H-W2" ioObjectId="trih-file" elementId="W2.water level"/>
         <vector id="H-W3" ioObjectId="trih-file" elementId="W3.water level"/>

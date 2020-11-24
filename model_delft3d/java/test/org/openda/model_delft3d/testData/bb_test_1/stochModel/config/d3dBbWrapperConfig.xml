@@ -52,7 +52,8 @@
         </dataObject>
 
 		<!-- time series results -->
-		<dataObject className="org.openda.model_delft3d.D3dResults">
+    <!--TODO: replace with netcdf Delft3D history file -->
+    <dataObject className="org.openda.model_delft3d.D3dResults">
             <file>trih-%runid%.dat</file>
             <id>trih-file</id>
 			<arg>%NATIVE_DLL_DIR%</arg>

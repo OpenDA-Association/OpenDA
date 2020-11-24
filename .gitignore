@@ -10,3 +10,4 @@ opendaTestReports/
 **/MANIFEST.MF
 **/tests/*.log
 OpenDATimings_*.txt
+*.*~

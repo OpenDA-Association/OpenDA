@@ -53,7 +53,9 @@ public interface IExchangeItem extends Serializable {
         /** corresponds to java Date */
         DateType,
         /** corresponds to ITine */
-        ITimeType
+        ITimeType,
+		/** can be any type of object, only used for very specific implementations */
+		custom
     }
 
     /**
