@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class SwapStateFile implements IDataObject {
+public class SwapStateFile implements IDataObject{
 	static final String PRESSURE_HEAD_ROOT_ZONE = "pressureHeadRootZone";
 	private LinkedHashMap<String, SwapStateExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private int headerBytesLength = 0;
@@ -67,6 +67,7 @@ public class SwapStateFile implements IDataObject {
 
 	private byte[][] convertDoublesToStringBytes(SwapStateExchangeItem swapStateExchangeItem) {
 		double[] doubles = swapStateExchangeItem.getValuesAsDoubles();
+		logStateValues("AFTER ", doubles);
 		byte[][] bytesArray = new byte[doubles.length][];
 		for (int i = 0; i < doubles.length; i++) {
 			String replace = formatDouble.format(doubles[i]);
@@ -90,7 +91,7 @@ public class SwapStateFile implements IDataObject {
 		}
 		int size = strings.size();
 		double[] doubles = convertStringsToDoubles(strings, size);
-
+		logStateValues("BEFORE", doubles);
 		SwapStateExchangeItem pressureHeadRootZone = new SwapStateExchangeItem(PRESSURE_HEAD_ROOT_ZONE, doubles);
 		exchangeItems.put(PRESSURE_HEAD_ROOT_ZONE, pressureHeadRootZone);
 	}
@@ -121,5 +122,48 @@ public class SwapStateFile implements IDataObject {
 		}
 		return strings;
 	}
+	private void logStateValues(String beforeOrAfter, double[] stateValues) {
 
+		File svatIdsfile = new File (sourceFile.getParentFile(), "svatids.txt");
+		if (!svatIdsfile.exists())
+			return;
+
+		ArrayList<Integer> svatIds = new ArrayList<>();
+		try {
+			FileReader fileReader = new FileReader(svatIdsfile);
+			BufferedReader inputFileBufferedReader = new BufferedReader(fileReader);
+			String line = inputFileBufferedReader.readLine();
+			while (line != null) {
+				String trimmedLine = line.trim();
+				if (trimmedLine.length() > 0) {
+					if (!trimmedLine.startsWith("#")) {
+						svatIds.add(Integer.parseInt(trimmedLine));
+					}
+				}
+				line = inputFileBufferedReader.readLine();
+			}
+			inputFileBufferedReader.close();
+			fileReader.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not svids read from " + svatIdsfile.getAbsolutePath());
+		}
+
+		File file = new File(sourceFile.getParentFile(), "statevalues.log");
+		Writer writer;
+		try {
+			writer = new FileWriter(file, true);
+			writer.write(beforeOrAfter);
+			for (int i = 0; i < svatIds.size(); i++) {
+				writer.write(",");
+				int id = svatIds.get(i);
+				String valueAsString = formatDouble.format(stateValues[id - 1]);
+				if (valueAsString.length() < 14) valueAsString += ' ';
+				writer.write(valueAsString);
+			}
+			writer.write("\n");
+			writer.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not close log file " + file.getAbsolutePath());
+		}
+	}
 }
