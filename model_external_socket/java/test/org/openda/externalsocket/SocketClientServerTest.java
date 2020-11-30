@@ -8,7 +8,7 @@ public class SocketClientServerTest extends TestCase {
 		super.setUp();
 	}
 
-	public void testSendAndReceive() {
+	public void tstSendAndReceive() {
 		final int port = 8124;
 		Runnable socketServerRunnable = new Runnable() {
 			@Override
