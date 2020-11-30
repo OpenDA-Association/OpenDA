@@ -10,7 +10,7 @@
 
 HIER=$PWD
 
-for DIRBUILD in model_delft3d core model_wflow model_efdc_dll model_bmi observers
+for DIRBUILD in model_delft3d core model_wflow model_efdc_dll model_bmi observers model_external_socket
 do
    cd $DIRBUILD
    ant -f build_castor.xml build
