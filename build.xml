@@ -108,6 +108,7 @@
       <docmodule module="model_efdc_dll"/>
       <docmodule module="model_example_blackbox" />
       <docmodule module="model_example_fortran" />
+      <docmodule module="model_external_socket"/>
       <docmodule module="model_hspf"/>
       <docmodule module="model_swan" />
       <docmodule module="model_wflow"/>
@@ -153,6 +154,7 @@
       <moduletests module="core" />
       <moduletests module="model_bmi" />
       <moduletests module="model_example_blackbox" />
+      <moduletests module="model_external_socket"/>
       <moduletests module="model_swan" />
       <moduletests module="model_nemo" />
       <moduletests module="model_delft3d"/>
@@ -270,6 +272,7 @@
         <cleanmodule module="model_efdc_dll" />
         <cleanmodule module="model_example_blackbox" />
         <cleanmodule module="model_example_fortran" />
+        <cleanmodule module="model_external_socket"/>
         <cleanmodule module="model_glm" />
         <cleanmodule module="model_gotm" />
         <cleanmodule module="model_hspf" />
@@ -346,6 +349,7 @@
 	        <zipfileset dir="model_efdc_dll" prefix="openda_${version}/public/model_efdc_dll" excludes="*.svn"/>
 	        <zipfileset dir="model_example_fortran" prefix="openda_${version}/public/model_example_fortran" excludes="*.svn" />
 	        <zipfileset dir="model_example_blackbox" prefix="openda_${version}/public/model_example_blackbox" excludes="*.svn" />
+	        <zipfileset dir="model_external_socket" prefix="openda_${version}/public/model_external_socket" excludes="*.svn" />
 	        <zipfileset dir="model_glm" prefix="openda_${version}/public/model_glm" excludes="*.svn"/>
 	        <zipfileset dir="model_gotm" prefix="openda_${version}/public/model_gotm" excludes="*.svn"/>
         	<zipfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
@@ -555,6 +559,7 @@
         <buildmoduletests module="model_efdc_dll"/>
         <buildmoduletests module="model_example_blackbox" />
         <buildmoduletests module="model_example_fortran" />
+        <buildmoduletests module="model_external_socket" />
         <buildmoduletests module="model_hspf" />
         <buildmoduletests module="model_swan"/>
         <buildmoduletests module="model_wflow"/>
