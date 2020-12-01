@@ -8,7 +8,7 @@ public class SocketClientServerTest extends TestCase {
 		super.setUp();
 	}
 
-	public void tstSendAndReceive() {
+/*	public void testSendAndReceive() {
 		final int port = 8124;
 		Runnable socketServerRunnable = new Runnable() {
 			@Override
@@ -22,5 +22,5 @@ public class SocketClientServerTest extends TestCase {
 		SocketClient socketClient = new SocketClient(port);
 		String messageReceived = socketClient.sendAndReceive("Z:0.1;0.2;0.3;");
 		assertEquals("0.05;0.6000000000000001;1.15;", messageReceived);
-	}
+	}*/
 }
