@@ -2,16 +2,25 @@
 
 rem Setup bin. dir for openda.
 rem Script has to be run from the dir. containing the script.
+set ODASYSTEM=win64_ifort
+set OPENDA_BINDIR=%~dp0
+for %%a in (%OPENDA_BINDIR:~0,-1%) do set "OPENDADIR=%%~dpa"
+set ODALIBDIR="%OPENDADIR%\bin\%ODASYSTEM%"
+echo.
+echo OPENDADIR set to %OPENDADIR%
+echo System set to %ODASYSTEM%
 
-set OPENDADIR=%~dp0
-set PATH=%~dp0;%PATH%
-@echo OPENDADIR set to %OPENDADIR%
+rem Try if setup_openda.bat can be found in the Windows PATH
+rem If not OPENDA_BINDIR should be added to the PATH
+rem Do not run WHERE from the current directory as it might contain setup_openda.bat
+pushd .
+CD /D c:\
+where /Q setup_openda.bat
+set NOTFOUND=%errorlevel%
+popd
+if %NOTFOUND%==0 goto :End
 
-rem system type: something like win64_gnu or win32_ifort
-set ODASYSTEM=win32_ifort
-echo "System set to %ODASYSTEM%"
-
-set ODALIBDIR="%OPENDADIR%\%ODASYSTEM%"
-
-rem set OPENDA_BINDIR to OPENDADIR for now to keep things working
-set OPENDA_BINDIR=%OPENDADIR%
+echo Include OpenDA bin\ dir to PATH
+echo.
+set PATH=%OPENDADIR%\bin;%PATH%
+:End
