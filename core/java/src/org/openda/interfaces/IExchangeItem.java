@@ -40,19 +40,23 @@ public interface IExchangeItem extends Serializable {
         doubleType,
         /** corresponds to java double[]   -> to be replaced by IArray */
         doublesType,
+		/** corresponds to java float */
+		floatType,
         /** corresponds to java float[]    -> to be replaced by IArray */
         floatsType,
         /** corresponds to java double[][] -> to be replaced by IArray */
         doubles2dType,
         /** corresponds to java String */
         StringType,
+		/** corresponds to java Boolean */
+		BooleanType,
         /** IVector -> in future IVector will extend IArray */
         IVectorType,
         /** IArray */
         IArrayType,
         /** corresponds to java Date */
         DateType,
-        /** corresponds to ITine */
+        /** corresponds to ITime */
         ITimeType,
 		/** can be any type of object, only used for very specific implementations */
 		custom
