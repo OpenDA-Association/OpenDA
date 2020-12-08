@@ -353,7 +353,7 @@ public class TimeSeries implements IExchangeItem{
 	}
 
 	/**
-	 * @see org.openda.interfaces.IPrevExchangeItem#setTimes(double[])
+	 * @see org.openda.interfaces.IExchangeItem#setTimes(double[])
 	 */
 	
 	public void setTimes(double[] times) {
@@ -384,7 +384,7 @@ public class TimeSeries implements IExchangeItem{
 	}
 
 	/**
-	 * @see org.openda.interfaces.IPrevExchangeItem#axpyOnValues(double, double[])
+	 * @see org.openda.interfaces.IExchangeItem#axpyOnValues(double, double[])
 	 */
 	
 	public void axpyOnValues(double alpha, double[] axpyValues) {
@@ -401,7 +401,7 @@ public class TimeSeries implements IExchangeItem{
 	}
 
 	/**
-	 * @see org.openda.interfaces.IPrevExchangeItem#multiplyValues(double[])
+	 * @see org.openda.interfaces.IExchangeItem#multiplyValues(double[])
 	 */
 	
 	public void multiplyValues(double[] multiplicationFactors) {

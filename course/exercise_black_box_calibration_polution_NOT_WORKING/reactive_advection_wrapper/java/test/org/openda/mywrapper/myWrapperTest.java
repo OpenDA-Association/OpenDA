@@ -25,7 +25,6 @@ import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import java.io.File;
 import java.io.IOException;
@@ -48,12 +47,12 @@ public class myWrapperTest extends TestCase {
 		String args[] = {};
 		ioObject.initialize(testRunDataDir, "reactive_pollution_model.input", args);
 
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 
         for(int item=0;item<exchangeItems.length;item++){
 
 			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1,discharge")){
-				IPrevExchangeItem ex = exchangeItems[0];
+				IExchangeItem ex = exchangeItems[0];
 				//String getId();
 				String id = ex.getId();
 				assertEquals("ex.getId()", "source.factory1.discharge", id);
@@ -94,10 +93,10 @@ public class myWrapperTest extends TestCase {
 		String args[] = {};
 		ioObject.initialize(testRunDataDir, "reactive_pollution_model.output", args);
 		//TODO fix data string
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 		for(int item=0;item<exchangeItems.length;item++){
 			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1,discharge")){
-				IPrevExchangeItem ex = exchangeItems[0];
+				IExchangeItem ex = exchangeItems[0];
 				//String getId();
 				String id = ex.getId();
 				assertEquals("ex.getId()", "source.factory1.discharge", id);
@@ -143,7 +142,7 @@ public class myWrapperTest extends TestCase {
 		}
 		ioObject.initialize(testRunDataDir, "reactive_pollution_model_copy.input", args);
 
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 
 		//change some things
 		for(int item=0;item<exchangeItems.length;item++){
@@ -198,7 +197,7 @@ public class myWrapperTest extends TestCase {
 		}
 		ioObject.initialize(testRunDataDir, "reactive_pollution_model_copy2.input", args);
 
-		for(IPrevExchangeItem item:ioObject.getExchangeItems()){
+		for(IExchangeItem item:ioObject.getExchangeItems()){
 			String itemId = item.getId();
 			System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("startTime")){

@@ -543,7 +543,7 @@ public class EfdcModelInstance extends Instance implements IModelInstance {
 	 * Returns the exchange item with the given exchangeItemId, if it exists.
 	 *
 	 * @param exchangeItemId Identifier of exchange item
-	 * @return IPrevExchangeItem
+	 * @return IExchangeItem
 	 */
 	//TODO this method is only present for backwards compatibility. This method should be removed
 	//once all ioObjects and exchange items have been migrated to the new IDataObject/IExchangeItem approach. AK

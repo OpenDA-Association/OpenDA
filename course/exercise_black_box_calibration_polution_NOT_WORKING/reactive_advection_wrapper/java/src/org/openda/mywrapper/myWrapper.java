@@ -94,7 +94,7 @@ public class myWrapper implements IoObjectInterface{
 	File workingDir;
 	String fileName = null;
 	HashMap<String,String> variables = new LinkedHashMap<String,String>();
-	HashMap<String,IPrevExchangeItem> items = new LinkedHashMap<String,IPrevExchangeItem>();
+	HashMap<String,IExchangeItem> items = new LinkedHashMap<String,IExchangeItem>();
 
 	//cache these values
 	double refdate;
@@ -191,15 +191,15 @@ public class myWrapper implements IoObjectInterface{
 		tstop=time[2]*unit;
 
 		//add exchange items for time
-		IPrevExchangeItem startTime = new DoubleExchangeItem("startTime", this.refdate+this.tstart);
+		IExchangeItem startTime = new DoubleExchangeItem("startTime", this.refdate+this.tstart);
 		this.items.put("startTime",startTime);
-		IPrevExchangeItem endTime = new DoubleExchangeItem("endTime", this.refdate+this.tstop);
+		IExchangeItem endTime = new DoubleExchangeItem("endTime", this.refdate+this.tstop);
 		this.items.put("endTime",endTime);
 
 		//add reaction_time
 		if(variables.containsKey("reaction_time")){
 			double reactionTimevalues[] = parseVector(variables.get("reaction_time"));
-			IPrevExchangeItem reactionTime = new DoubleExchangeItem("reactionTime", reactionTimevalues[0]);
+			IExchangeItem reactionTime = new DoubleExchangeItem("reactionTime", reactionTimevalues[0]);
 			this.items.put("reactionTime",reactionTime);
 		}
 
@@ -333,11 +333,11 @@ public class myWrapper implements IoObjectInterface{
 		}
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 		//TODO for now return some dummy timeSeries
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();
-		IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+		IExchangeItem[] result=new IExchangeItem[n];
 		int i=0;
 		for(String key : keys){
 			result[i]=this.items.get(key);
@@ -456,7 +456,7 @@ public class myWrapper implements IoObjectInterface{
 			if(!this.items.containsKey(id)){
 				throw new RuntimeException("ExchangeItem with id ="+id+" got lost.");
 			}
-			IPrevExchangeItem item = this.items.get(id);
+			IExchangeItem item = this.items.get(id);
 			String key="c1";
 			double values[] = item.getValuesAsDoubles();
 			String valueString = writeVector(values);
@@ -467,7 +467,7 @@ public class myWrapper implements IoObjectInterface{
 			if(!this.items.containsKey(id)){
 				throw new RuntimeException("ExchangeItem with id ="+id+" got lost.");
 			}
-			IPrevExchangeItem item = this.items.get(id);
+			IExchangeItem item = this.items.get(id);
 			String key="c2";
 			double values[] = item.getValuesAsDoubles();
 			String valueString = writeVector(values);

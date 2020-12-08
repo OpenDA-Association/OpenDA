@@ -83,7 +83,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	// files for local analysis
 	private boolean useLocalAnalysis = true; // TODO: SH: add it to BB Stoch Model config
 	private List<IStochModelInstance> noiseModelsInState = new ArrayList<>();
-	private List<IExchangeItem> modelExchangeItemsInState = new ArrayList<>(); // TODO: check if all models that support local analysis have no longer IPrevExchangeItems
+	private List<IExchangeItem> modelExchangeItemsInState = new ArrayList<>();
 
     public IObservationOperator getObservationOperator(){
 		return new ObservationOperatorDeprecatedModel(this);

@@ -92,11 +92,11 @@ public class GotmNetcdfFileTest extends TestCase {
 //        File inputFile = new File(testRunDataDir, "SimonaNetcdfFile/waqua.nc");
 //        ioObject.initialize(testRunDataDir, "SimonaNetcdfFile/waqua.nc", args);
 //
-//        IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+//        IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 //        int n = exchangeItems.length;
 //        assertEquals("exchangeItems.length", 32, n);
 //
-//        IPrevExchangeItem lastExchangeItem = exchangeItems[n-1];
+//        IExchangeItem lastExchangeItem = exchangeItems[n-1];
 //        assertEquals("last exchangeItems id", "SEP", lastExchangeItem.getId());
 
 //		TODO (SV): Fix test. Test gives error

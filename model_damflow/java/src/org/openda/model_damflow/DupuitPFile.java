@@ -21,7 +21,6 @@ package org.openda.model_damflow;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.*;
 import java.util.Locale;
