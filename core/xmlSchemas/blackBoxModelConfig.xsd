@@ -161,12 +161,12 @@
 				<xs:documentation>Identity of the exchange item vector to be used in the stochastic model configuration</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="ioObjectId" type="xs:string" use="required">
+		<xs:attribute name="ioObjectId" type="xs:string">
 			<xs:annotation>
 				<xs:documentation>Obsolete, please use dataObjectId. The corresponding object identity of the exchange item</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-    <xs:attribute name="dataObjectId" type="xs:string" use="required">
+    <xs:attribute name="dataObjectId" type="xs:string">
       <xs:annotation>
         <xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
       </xs:annotation>
