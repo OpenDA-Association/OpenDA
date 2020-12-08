@@ -198,12 +198,12 @@ public class DoubleExchangeItem extends MyObservable implements IExchangeItem{
 	}
 
 
-	@Deprecated public double[] getTimes() {
+	public double[] getTimes() {
 		return null;
 	}
 
 
-	@Deprecated public void setTimes(double[] times) {
+	public void setTimes(double[] times) {
 		throw new UnsupportedOperationException("setTimes method make no sense for a DoubleExchangeItem");
 	}
 
