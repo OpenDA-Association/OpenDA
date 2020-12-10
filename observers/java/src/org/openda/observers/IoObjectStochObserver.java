@@ -100,10 +100,10 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 		//for each ioObject store the uncertain exchangeItems in this.exchangeItems map and check if these are all of the same type (either all time dependent or all time independent).
 		//Important note: this code assumes that all uncertain exchangeItemIds are unique, even if exchangeItems from multiple ioObjects are used.
 		for (DataObjectStochObserverConfig.IoStochObsIoObjectConfig ioObjectConfig : dataObjectStochObserverConfig.getIoObjectConfigs()) {
+			IExchangeItem[] ioExchangeItems;
+
 			IoObjectInterface ioObject = BBUtils.createIoObjectInstance(ioObjectConfig.getWorkingDir(), ioObjectConfig.getClassName(),
 					ioObjectConfig.getFileName(), ioObjectConfig.getArguments());
-
-            IExchangeItem[] ioExchangeItems;
             if (ioObject != null) {
             	this.ioObjects.add(ioObject);
 			    ioExchangeItems = ioObject.getExchangeItems();

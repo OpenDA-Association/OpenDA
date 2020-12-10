@@ -66,11 +66,18 @@
 			</xs:element>
 			<!-- -->
 			<!-- The DataObjects containing the observations -->
-			<xs:element name="dataObject" type="openda:StochObsDataObjectXML" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>One or more data objects. The first argument of each data object is interpreted as the file to be read</xs:documentation>
-				</xs:annotation>
-			</xs:element>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="dataObject" type="openda:StochObsDataObjectXML">
+          <xs:annotation>
+            <xs:documentation>One or more data objects. The first argument of each data object is interpreted as the file to be read</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ioObject" type="openda:StochObsDataObjectXML">
+          <xs:annotation>
+            <xs:documentation>DEPRECATED. Please use dataObject</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
 			<!-- -->
 			<xs:element name="assimilationStations" type="openda:StochObservationStationsXML" minOccurs="0"/>
 			<xs:element name="validationStations" type="openda:StochObservationStationsXML" minOccurs="0"/>

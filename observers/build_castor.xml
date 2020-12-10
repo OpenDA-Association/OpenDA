@@ -93,7 +93,7 @@
 
     <target name="castor-src" depends="init">
         <antcall target="castor-execute">
-            <param name="schema" value="xmlSchemas/dataStochObservers.xsd"/>
+            <param name="schema" value="xmlSchemas/openDaStochObserver.xsd"/>
             <param name="package" value="org.openda.${module}.io.castorgenerated"/>
         </antcall>
     </target>

@@ -19,9 +19,7 @@
 */
 package org.openda.observers;
 
-import org.openda.observers.io.castorgenerated.DataObjectStochObserverXML;
-import org.openda.observers.io.castorgenerated.StochObsDataObjectXML;
-import org.openda.observers.io.castorgenerated.StochObsUncertaintyModuleXML;
+import org.openda.observers.io.castorgenerated.*;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
@@ -50,8 +48,14 @@ public class IoObjectStochObserverConfigReader {
 
         // io objects
         ArrayList<DataObjectStochObserverConfig.IoStochObsIoObjectConfig> ioObjectConfigs = new ArrayList<DataObjectStochObserverConfig.IoStochObsIoObjectConfig>();
-        for (StochObsDataObjectXML stochObsDataObjectXML : dataObjectStochObserverXML.getDataObject()) {
-            double missingValue;
+		 int dataObjectStochObserverXMLChoiceCount = dataObjectStochObserverXML.getDataObjectStochObserverXMLChoiceCount();
+		for (int i = 0; i < dataObjectStochObserverXMLChoiceCount; i++) {
+			DataObjectStochObserverXMLChoice dataObjectStochObserverXMLChoice = dataObjectStochObserverXML.getDataObjectStochObserverXMLChoice(i);
+			DataObjectStochObserverXMLChoiceItem dataObjectStochObserverXMLChoiceItem = dataObjectStochObserverXMLChoice.getDataObjectStochObserverXMLChoiceItem();
+			StochObsDataObjectXML stochObsDataObjectXML = dataObjectStochObserverXMLChoiceItem.getDataObject();
+			if (stochObsDataObjectXML == null) stochObsDataObjectXML = dataObjectStochObserverXMLChoiceItem.getIoObject();
+
+			double missingValue;
             if (stochObsDataObjectXML.hasMissingValue()){
                 missingValue = stochObsDataObjectXML.getMissingValue();
             } else {
