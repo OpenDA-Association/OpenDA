@@ -54,13 +54,13 @@ public class ReflectionTest extends TestCase {
 		}
 
 		// get classes that implement a certain interface
-		String ifaceName = ref.findFullName("IoObjectInterface");
-		assertEquals("org.openda.blackbox.interfaces.IoObjectInterface", ifaceName);
+		String ifaceName = ref.findFullName("IDataObject");
+		assertEquals("org.openda.interfaces.IDataObject", ifaceName);
 		Set<String> selection = ref.getClassNames(ifaceName);
-		System.out.println("There are "+selection.size()+" classes that implement the IoObjectInterface");
+		System.out.println("There are "+selection.size()+" classes that implement the IDataObject");
 		assertTrue(selection.size()>4); //some classes were found
 		counter=0;
-		System.out.println("classes that implement the IoObjectInterface:");
+		System.out.println("classes that implement the IDataObject:");
 		for(String classname : selection){
 			System.out.println("  "+counter+" class name:"+classname);
 			counter++;
@@ -72,7 +72,7 @@ public class ReflectionTest extends TestCase {
 		System.out.println(" Basic test for relation between classes that implement an interface");
 		System.out.println("==============================================================================");
 		Class aClass = Class.forName("org.openda.exchange.ioobjects.NoosTimeSeriesIoObject");
-		Class interfaces[] = aClass.getInterfaces();
+		Class[] interfaces = aClass.getInterfaces();
 		boolean found=false;
 		for(Class iface : interfaces){
 			String iName = iface.getCanonicalName();
@@ -81,7 +81,7 @@ public class ReflectionTest extends TestCase {
 				found=true;
 			}
 		}
-		assertEquals(true, found);
+		assertTrue(found);
 	}
 
 	public void testInfoMain(){

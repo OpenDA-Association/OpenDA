@@ -27,7 +27,6 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.IMyObservable;
 import org.openda.utils.IMyObserver;
 
@@ -109,9 +108,9 @@ public class DictionaryNoisyDataObject implements IDataObject{
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * <li>Optional, a referenceDate in ISO 8601 notatation, e.g
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      *
      * </ol>
      */
@@ -253,10 +252,10 @@ public class DictionaryNoisyDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 
 		int n = this.items.size();
-        IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+        IExchangeItem[] result=new IExchangeItem[n];
 
 		int i=0;
 		for(String key : this.items.keySet()){
@@ -281,7 +280,7 @@ public class DictionaryNoisyDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		//TODO: select on role
 		return this.getExchangeItemIDs();
 	}

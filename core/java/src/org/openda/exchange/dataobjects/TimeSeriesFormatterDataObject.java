@@ -20,18 +20,15 @@
 
 package org.openda.exchange.dataobjects;
 
-import org.openda.interfaces.IPrevExchangeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
@@ -167,7 +164,7 @@ public class TimeSeriesFormatterDataObject implements IDataObject {
 			logger.debug("Parsing file'{}'", seriesFile.getName());
 			if (seriesFile.exists()) {
 				TimeSeries timeSeries = seriesMap.get(id);
-				if ( timeSeries.getRole() == IPrevExchangeItem.Role.Input ) {
+				if ( timeSeries.getRole() == IExchangeItem.Role.Input ) {
 					continue;
 				}
 				formatter.writeFile(seriesFile, timeSeries, true);

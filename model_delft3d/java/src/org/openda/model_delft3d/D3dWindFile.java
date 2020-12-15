@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +92,7 @@ public class D3dWindFile implements IDataObject {
 		return new String[] {windExchangeItem.getId()};
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		if (windExchangeItem.getRole().equals(role)) {
 			return new String[] {windExchangeItem.getId()};
 		}

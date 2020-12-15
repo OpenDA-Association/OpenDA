@@ -40,46 +40,46 @@
    <inputOutput>
 
       <!-- u/v rougness -->
-      <ioObject className="org.openda.model_delft3d.D3dField2DFile">
+      <dataObject className="org.openda.model_delft3d.D3dField2DFile">
          <file>%runid%1.mdf</file>
          <id>roughness1</id>
          <arg>rgh</arg>
-      </ioObject>
-      <ioObject className="nl.deltares.openda.models.d3dflow.D3dField2DFile">
+      </dataObject>
+      <dataObject className="nl.deltares.openda.models.d3dflow.D3dField2DFile">
          <file>%runid%2.mdf</file>
          <id>roughness2</id>
          <arg>rgh</arg>
-      </ioObject>
+      </dataObject>
 
       <!-- depth -->
-      <ioObject className="org.openda.model_delft3d.D3dField2DFile">
+      <dataObject className="org.openda.model_delft3d.D3dField2DFile">
          <file>%runid%1.mdf</file>
          <id>depth1</id>
          <arg>dep</arg>
-      </ioObject>
-      <ioObject className="org.openda.model_delft3d.D3dField2DFile">
+      </dataObject>
+      <dataObject className="org.openda.model_delft3d.D3dField2DFile">
          <file>%runid%2.mdf</file>
          <id>depth2</id>
          <arg>dep</arg>
-      </ioObject>
+      </dataObject>
    
       <!-- astro -->
-      <ioObject className="org.openda.model_delft3d.D3dAstroComponentFiles">
+      <dataObject className="org.openda.model_delft3d.D3dAstroComponentFiles">
          <file>%runid%1.mdf</file>
          <id>astro-components</id>
-      </ioObject>
+      </dataObject>
 
       <!-- time series results -->
-      <ioObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
+      <dataObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
          <file>trih-%runid%1.nc</file>
          <id>trih-file1</id>
          <arg>true</arg>
-      </ioObject>
-      <ioObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
+      </dataObject>
+      <dataObject className="org.openda.model_delft3d.D3dNetcdfHisDataObject">
          <file>trih-%runid%2.nc</file>
          <id>trih-file2</id>
          <arg>true</arg>
-      </ioObject>
+      </dataObject>
    </inputOutput>
 
 </blackBoxWrapperConfig>

@@ -20,7 +20,7 @@
 
 package org.openda.uncertaintygui.tablemodels;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.uncertainties.UncertainItem;
 import org.openda.uncertainties.Uncertainties;
 import org.openda.uncertainties.autocorrelationfunctions.AutoCorrelationFunction;
@@ -65,7 +65,7 @@ public class UIModel  {
      *
      * @param uncertaintiesSpecificationFile File containing the uncertainty specification
      * @param reader If not equal to null, there is already an opened file reader
-     * @throws IOException
+     * @throws IOException If an error occurs, an exception is thrown.
      */
     public void readUncertaintyFiles(File uncertaintiesSpecificationFile, Reader reader) throws IOException {
 
@@ -79,8 +79,7 @@ public class UIModel  {
             } else {
                 uncertaintyReader = new UncertaintyReader(reader);
             }
-            boolean getActiveUncertaintiesOnly = false;
-            uncertainties = uncertaintyReader.getUncertainties(getActiveUncertaintiesOnly);
+			uncertainties = uncertaintyReader.getUncertainties(false);
             uncertaintyReader.close();
         }
 
@@ -161,37 +160,36 @@ public class UIModel  {
         variationFunction.setUncertainItem(uncertainItem);
         uncertainties.addVariationFunction(variationFunction);
     }
+   private void addNewPdfFromExchangeItem(Uncertainties uncertainties, IExchangeItem exchangeItem) {
 
-    private void addNewPdfFromExchangeItem(Uncertainties uncertainties, IPrevExchangeItem exchangeItem) {
+	   //create new UncertainItem for uncertainty from mapping.
+	   UncertainItem uncertainItem = new UncertainItem(exchangeItem.getId(), "", false);
 
-        //create new UncertainItem for uncertainty from mapping.
-        UncertainItem uncertainItem = new UncertainItem(exchangeItem.getId(), "", false);
+	   //get description.
+	   if (exchangeItem.getDescription() != null) {
+		   uncertainItem.setDescription(exchangeItem.getDescription());
+	   }
 
-        //get description.
-        if (exchangeItem.getDescription() != null) {
-            uncertainItem.setDescription(exchangeItem.getDescription());
-        }
+	   // get basic value from mapping file.
+	   double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+	   double value = Double.NaN;
+	   if (valuesAsDoubles.length == 1) {
+		   value = valuesAsDoubles[0];
+	   }
+	   uncertainItem.setBasicValue(value);
 
-        // get basic value from mapping file.
-        double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
-        double value = Double.NaN;
-        if (valuesAsDoubles.length == 1) {
-            value = valuesAsDoubles[0];
-        }
-        uncertainItem.setBasicValue(value);
+	   //create new PDF for uncertainty from mapping.
+	   PDF pdf = new NormalDistribution();
+	   pdf.setUncertainItem(uncertainItem);
+	   uncertainties.addPdf(pdf);
 
-        //create new PDF for uncertainty from mapping.
-        PDF pdf = new NormalDistribution();
-        pdf.setUncertainItem(uncertainItem);
-        uncertainties.addPdf(pdf);
+	   //create new AutoCorrelationFunction for uncertainty from mapping.
+	   AutoCorrelationFunction autoCorrelationFunction = new GaussianCorrelation();
+	   autoCorrelationFunction.setUncertainItem(uncertainItem);
+	   uncertainties.addAutoCorrelation(autoCorrelationFunction);
+   }
 
-        //create new AutoCorrelationFunction for uncertainty from mapping.
-        AutoCorrelationFunction autoCorrelationFunction = new GaussianCorrelation();
-        autoCorrelationFunction.setUncertainItem(uncertainItem);
-        uncertainties.addAutoCorrelation(autoCorrelationFunction);
-    }
-
-    public File getUncertaintySpecificationFile() {
+	public File getUncertaintySpecificationFile() {
         return this.uncertaintyGuiConfiguration.getUncertaintiesSpecificationFile();
     }
 

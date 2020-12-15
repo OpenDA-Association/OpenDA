@@ -46,7 +46,7 @@ public class ASCII_TimeSeriesStochObserver extends Instance implements IStochObs
 	double tolerance = 1.0/24.0/60.0/2.0; // 0.5 minute
 	// cache propertyLabels
 	java.util.Vector<String> propertyLabels = new java.util.Vector<String>();
-	private List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
+	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
     private HashMap<String,Integer> allObsIds = new HashMap<String,Integer>();
 
 
@@ -74,7 +74,7 @@ public class ASCII_TimeSeriesStochObserver extends Instance implements IStochObs
 
 	/**
 	 * Save some property names to a list of time series. These properties are: location, quantity, source, unit, height, xposition, yposition, and id. 
-	 * @param series[] A list of time series.
+	 * @param series A list of time series.
 	 */
 	public void setSeries(TimeSeries series[]){
 		this.series = series;
@@ -714,7 +714,7 @@ public class ASCII_TimeSeriesStochObserver extends Instance implements IStochObs
 		return this.propertyLabels.size();
 	}
 
-	public List<IPrevExchangeItem> getExchangeItems() {
+	public List<IExchangeItem> getExchangeItems() {
 		return exchangeItems;
 	}
 

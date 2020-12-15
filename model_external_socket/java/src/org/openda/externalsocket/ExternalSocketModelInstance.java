@@ -7,7 +7,6 @@ import org.openda.interfaces.ILocalizationDomains;
 import org.openda.interfaces.IModelState;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IObservationOperator;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IStochModelInstance;
 import org.openda.interfaces.IStochModelInstanceDeprecated;
 import org.openda.interfaces.IStochVector;
@@ -148,7 +147,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return exchangeItems.get(exchangeItemID);
 	}
 
@@ -240,7 +239,7 @@ public class ExternalSocketModelInstance implements IStochModelInstance, IStochM
 		return exchangeItems.keySet().toArray(new String[0]);
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new RuntimeException("org.openda.externalsocket.ExternalSocketModelInstance.getExchangeItemIDs() not implemented yet");
 
 	}

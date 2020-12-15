@@ -44,6 +44,7 @@ import java.util.List;
  */
 public class BBModelInstance extends Instance implements IModelInstance {
     private final String ALL_ELEMENTS_FROM_IO_OBJECT = "allElementsFromIoObject";
+	private final String ALL_ELEMENTS_FROM_DATA_OBJECT = "allElementsFromDataObject";
 
 	protected BBModelConfig bbModelConfig;
 
@@ -195,7 +196,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
             if (timeStepExchangeItemIds!=null){
                 if (timeStepExchangeItemIds[0] != null){
                     for (int n=0; n < timeStepExchangeItemIds.length; n++){
-                        IPrevExchangeItem timeExchangeItem = getExchangeItem(timeStepExchangeItemIds[n]);
+                        IExchangeItem timeExchangeItem = getExchangeItem(timeStepExchangeItemIds[n]);
                         timeStepMJD = timeExchangeItem.getValuesAsDoubles()[0];
                         if (!Double.isNaN(timeStepMJD)){
                              break;
@@ -277,7 +278,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	/**
 	 * Note: this method also works in combination with the option "allElementsFromIoObject".
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		checkForPendingComputeActions();
 
 		List<String> exchangeItemIds = new ArrayList<String>();
@@ -296,18 +297,18 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	private void addAllExchangeItemIdsFromVectorConfig(BBModelVectorConfig vectorConfig, List<String> bbExchangeItemIds) {
         String idSuffix = vectorConfig.getIdSuffix();
 
-		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
+		if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT) || vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_DATA_OBJECT)) {
 			//add all exchange item ids from ioObject or dataObject.
-			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
+			IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getDataObjectConfig());
 			if (ioObject != null) {
-				for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+				for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                     //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
                     String bbExchangeItemId = sourceItem.getId();
                     if (idSuffix != null) bbExchangeItemId += idSuffix;
                     bbExchangeItemIds.add(bbExchangeItemId);
 				}
 			} else {
-				IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
+				IDataObject dataObject = findOrCreateDataObject(vectorConfig.getDataObjectConfig());
 				if (dataObject != null) {
                     String[] sourceIds = dataObject.getExchangeItemIDs();
                     //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
@@ -316,7 +317,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                         bbExchangeItemIds.add(bbExchangeItemId);
                     }
 				} else {
-					throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" + vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+					throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" + vectorConfig.getDataObjectConfig().getId(this.aliasDefinitions) + "\"");
 				}
 			}
 		} else {
@@ -327,14 +328,14 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		IPrevExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
+		IExchangeItem exchangeItem = getExchangeItem(exchangeItemID);
 		if (!(exchangeItem instanceof BBExchangeItem)) {
 			throw new RuntimeException("Unexpected exchange item type " + exchangeItem.getClass().toString());
 		}
 		return (BBExchangeItem) exchangeItem;
 	}
 
-	public IPrevExchangeItem getExchangeItem(String searchedBBExchangeItemId) {
+	public IExchangeItem getExchangeItem(String searchedBBExchangeItemId) {
         checkForPendingComputeActions();
 
         BBExchangeItem bbExchangeItem = bbExchangeItems.get(searchedBBExchangeItemId);
@@ -343,19 +344,19 @@ public class BBModelInstance extends Instance implements IModelInstance {
 			BBModelVectorConfig vectorConfig = findVectorConfig(searchedBBExchangeItemId);
 			if (vectorConfig != null) {
                 //find exchangeItem for vectorConfig that does not have id="allElementsFromIoObject".
-                IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getIoObjectConfig());
+                IoObjectInterface ioObject = findOrCreateIoObject(vectorConfig.getDataObjectConfig());
                 if (ioObject != null) {
-                    for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                    for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                         String sourceId = sourceItem.getId();
                         if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
-                            bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, sourceItem,
+                            bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, (IExchangeItem)sourceItem,
                                     selectors, bbModelConfig.getConfigRootDir());
                             break;
                         }
                         newExchangeItemIDs.add(sourceId);
                     }
                 } else {
-                    IDataObject dataObject = findOrCreateDataObject(vectorConfig.getIoObjectConfig());
+                    IDataObject dataObject = findOrCreateDataObject(vectorConfig.getDataObjectConfig());
                     if (dataObject != null) {
                         for (String sourceId : dataObject.getExchangeItemIDs()) {
                             if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
@@ -367,7 +368,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                         }
                     } else {
                         throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
-                                vectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+                                vectorConfig.getDataObjectConfig().getId(this.aliasDefinitions) + "\"");
                     }
                 }
 
@@ -380,21 +381,21 @@ public class BBModelInstance extends Instance implements IModelInstance {
                 for (BBModelVectorConfig allElementVectorConfig : allElementVectorConfigs) {
                     String idSuffix = allElementVectorConfig.getIdSuffix();
 
-                    IoObjectInterface ioObject = findOrCreateIoObject(allElementVectorConfig.getIoObjectConfig());
+                    IoObjectInterface ioObject = findOrCreateIoObject(allElementVectorConfig.getDataObjectConfig());
                     if (ioObject != null) {
-                        for (IPrevExchangeItem sourceItem : ioObject.getExchangeItems()) {
+                        for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                             //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
                             String bbExchangeItemId = sourceItem.getId();
                             if (idSuffix != null) bbExchangeItemId += idSuffix;
                             if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
-                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, sourceItem,
+                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, (IExchangeItem)sourceItem,
                                         selectors, bbModelConfig.getConfigRootDir());
                                 break;
                             }
                             newExchangeItemIDs.add(sourceItem.getId());
                         }
                     } else {
-                        IDataObject dataObject = findOrCreateDataObject(allElementVectorConfig.getIoObjectConfig());
+                        IDataObject dataObject = findOrCreateDataObject(allElementVectorConfig.getDataObjectConfig());
                         if (dataObject != null) {
                             for (String sourceId : dataObject.getExchangeItemIDs()) {
                                 //for allElementsFromIoObject the bbExchangeItemId is the same as the sourceId.
@@ -409,7 +410,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
                             }
                         } else {
                             throw new IllegalArgumentException("IoObject or DataObject could not be created for \"" +
-                                    allElementVectorConfig.getIoObjectConfig().getId(this.aliasDefinitions) + "\"");
+                                    allElementVectorConfig.getDataObjectConfig().getId(this.aliasDefinitions) + "\"");
                         }
                     }
 
@@ -612,7 +613,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	private List<BBModelVectorConfig> findAllVectorConfigsWithAllElementsFromIoObject() {
 		List<BBModelVectorConfig> allElementsVectorConfigs = new ArrayList<BBModelVectorConfig>();
 		for (BBModelVectorConfig vectorConfig : bbModelConfig.getVectorConfigs()) {
-			if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT)) {
+			if (vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_IO_OBJECT) || vectorConfig.getId().equalsIgnoreCase(ALL_ELEMENTS_FROM_DATA_OBJECT)) {
 				allElementsVectorConfigs.add(vectorConfig);
 			}
 		}
@@ -620,7 +621,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 
-	private IoObjectInterface findOrCreateIoObject(IoObjectConfig ioObjectConfig) {
+	private IoObjectInterface findOrCreateIoObject(DataObjectConfig ioObjectConfig) {
 
 		// find or create io object
 		IoObjectInterface ioObject = ioObjects.get(ioObjectConfig.getId(this.aliasDefinitions));
@@ -638,7 +639,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		return ioObject;
 	}
 
-    private IDataObject findOrCreateDataObject(IoObjectConfig ioObjectConfig) {
+    private IDataObject findOrCreateDataObject(DataObjectConfig ioObjectConfig) {
 
         // find or create io object
         IDataObject dataObject = dataObjects.get(ioObjectConfig.getId(this.aliasDefinitions));
@@ -720,14 +721,13 @@ public class BBModelInstance extends Instance implements IModelInstance {
     private ITime getStartOrEndTime(String timeExchangeItemId) {
         ITime startOrEndTime = null;
         if (timeExchangeItemId != null) {
-            IPrevExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
-            if (timeExchangeItem.getRole() != IPrevExchangeItem.Role.Input) {
-                if (timeExchangeItem.getValueType() == Date.class) {
+            IExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
+            if (timeExchangeItem.getRole() != IExchangeItem.Role.Input) {
+                if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.DateType) {
                     startOrEndTime = new Time((Date)timeExchangeItem.getValues());
-                } else if (timeExchangeItem.getValueType() == ITime.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.ITimeType) {
                     startOrEndTime = (ITime) timeExchangeItem.getValues();
-                } else if (timeExchangeItem.getValueType() == double.class ||
-                        timeExchangeItem.getValueType() == Double.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.doubleType ) {
                     startOrEndTime = new Time((Double)timeExchangeItem.getValues());
                 }
             }
@@ -737,15 +737,14 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
     private void setStartOrEndTime(ITime startOrEndTime, String timeExchangeItemId) {
         if (timeExchangeItemId != null) {
-            IPrevExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
-            if (timeExchangeItem.getRole() != IPrevExchangeItem.Role.Output) {
-                if (timeExchangeItem.getValueType() == Date.class) {
+            IExchangeItem timeExchangeItem = getExchangeItem(timeExchangeItemId);
+            if (timeExchangeItem.getRole() != IExchangeItem.Role.Output) {
+                if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.DateType) {
                     Date startOrEndTimeAsJavaDate = new Date(Time.mjdToMillies(startOrEndTime.getMJD()));
                     timeExchangeItem.setValues(startOrEndTimeAsJavaDate);
-                } else if (timeExchangeItem.getValueType() == ITime.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.ITimeType) {
                     timeExchangeItem.setValues(startOrEndTime);
-                } else if (timeExchangeItem.getValueType() == double.class ||
-                        timeExchangeItem.getValueType() == Double.class) {
+                } else if (timeExchangeItem.getValuesType() == IExchangeItem.ValueType.doubleType) {
                     timeExchangeItem.setValues(startOrEndTime.getMJD());
                 }
             }

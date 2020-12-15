@@ -23,7 +23,7 @@ import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Array;
 import org.openda.utils.Time;
@@ -38,7 +38,7 @@ import java.util.HashMap;
  */
 public class DummyModelForTestingNoise implements IModelInstance {
 
-	private HashMap<String, IPrevExchangeItem> exchangeItems = new HashMap<String, IPrevExchangeItem>();
+	private HashMap<String, IExchangeItem> exchangeItems = new HashMap<String, IExchangeItem>();
 	private Time simulationTime;
 	private Time currentTime;
 	private ArrayList<String> exchangeItemsIdsTS;
@@ -87,7 +87,7 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		return exchangeItems.keySet().toArray(new String[exchangeItems.size()]);
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return exchangeItems.get(exchangeItemID);
 	}
 
@@ -145,7 +145,7 @@ public class DummyModelForTestingNoise implements IModelInstance {
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyModelForTestingNoise.getModelRunDir(): Not implemented yet.");
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new UnsupportedOperationException("org.openda.blackbox.wrapper.DummyModelForTestingNoise.getExchangeItemIDs(): Not implemented yet.");
 	}
 

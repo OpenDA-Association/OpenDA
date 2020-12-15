@@ -22,7 +22,7 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.BufferedReader;

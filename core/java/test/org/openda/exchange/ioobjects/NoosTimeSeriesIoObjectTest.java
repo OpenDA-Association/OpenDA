@@ -22,7 +22,7 @@ package org.openda.exchange.ioobjects;
 import junit.framework.TestCase;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 
 		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData1.txt");
 
-		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
+		IExchangeItem noosEx[] = noosIO.getExchangeItems();
 		assertEquals(1, noosEx.length);
 		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
 
@@ -112,7 +112,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 
 		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData2.txt");
 
-		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
+		IExchangeItem noosEx[] = noosIO.getExchangeItems();
 		assertEquals(1, noosEx.length);
 		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
 
@@ -174,7 +174,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData*.txt");
 		assertEquals(2, noosIO.getTimeSeriesSet().size());
 
-		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
+		IExchangeItem noosEx[] = noosIO.getExchangeItems();
 		assertEquals(2, noosEx.length);
 		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
 		assertEquals("TimeSeries", noosEx[1].getClass().getSimpleName());
@@ -193,7 +193,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestData*.txt");
 		assertEquals(2, noosIO.getTimeSeriesSet().size());
 
-		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
+		IExchangeItem noosEx[] = noosIO.getExchangeItems();
 		assertEquals(2, noosEx.length);
 		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
 		assertEquals("TimeSeries", noosEx[1].getClass().getSimpleName());
@@ -213,7 +213,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 		noosIO2.initialize(this.testRunDataDir, "test?.txt");
 		assertEquals(2, noosIO2.getTimeSeriesSet().size());
 
-		IPrevExchangeItem noosEx2[] = noosIO2.getExchangeItems();
+		IExchangeItem noosEx2[] = noosIO2.getExchangeItems();
 		TimeSeries ts0a = (TimeSeries) (noosEx2[0]);
 		TimeSeries ts1a = (TimeSeries) (noosEx2[1]);
 
@@ -229,7 +229,7 @@ public class NoosTimeSeriesIoObjectTest extends TestCase {
 
 		noosIO.initialize(this.testRunDataDir, "NoosTimeSeriesIoObjectTestCETData.txt");
 
-		IPrevExchangeItem noosEx[] = noosIO.getExchangeItems();
+		IExchangeItem noosEx[] = noosIO.getExchangeItems();
 		assertEquals(1, noosEx.length);
 		assertEquals("TimeSeries", noosEx[0].getClass().getSimpleName());
 

@@ -39,12 +39,12 @@ public class BBExchangeItem implements IExchangeItem {
     private String id;
     private String description = null;
     private BBStochModelVectorConfig vectorConfig;
-    private IPrevExchangeItem ioObjectExchangeItem;
+    private IExchangeItem ioObjectExchangeItem;
 	private HashMap<String, SelectorInterface> selectors;
 	private File configRootDir;
 
 	public BBExchangeItem(String id, BBStochModelVectorConfig vectorConfig,
-                          IPrevExchangeItem ioObjectExchangeItem,
+                          IExchangeItem ioObjectExchangeItem,
                           HashMap<String, SelectorInterface> selectors, File configRootDir) {
         this.id = id;
         this.vectorConfig = vectorConfig;
@@ -65,41 +65,15 @@ public class BBExchangeItem implements IExchangeItem {
         return description;
     }
 
-    public Class getValueType() {
-        return ioObjectExchangeItem.getValueType();
-    }
-
     public ValueType getValuesType() {
-    	ValueType result;
-    	if(ioObjectExchangeItem.getValueType()==double.class){
-    		result=ValueType.doubleType;
-    	}else if(ioObjectExchangeItem.getValueType()==double[].class){
-    		result=ValueType.doublesType;
-    	}else if(ioObjectExchangeItem.getValueType()==float[].class){
-    		result=ValueType.floatsType;
-    	}else if(ioObjectExchangeItem.getValueType()==double[][].class){
-    		result=ValueType.doubles2dType;
-    	}else if(ioObjectExchangeItem.getValueType()==int.class){
-    		result=ValueType.intType;
-    	}else if(ioObjectExchangeItem.getValueType()==String.class){
-    		result=ValueType.StringType;
-    	}else if(ioObjectExchangeItem.getValueType()==IVector.class){
-    		result=ValueType.IVectorType;
-    	}else if(ioObjectExchangeItem.getValueType()==IArray.class){
-    		result=ValueType.IArrayType;
-    	}else{
-    		throw new RuntimeException("BBExchangeItem: unsupported ValueType");
-    	}
-        return result;
+        return ioObjectExchangeItem.getValuesType();
     }
 
-    public Role getRole() {
-        return ioObjectExchangeItem.getRole();
-    }
+	public Role getRole() {return Role.InOut; }
 
     public Object getValues() {
 
-		Class valueType = ioObjectExchangeItem.getValueType();
+		ValueType valueType = ioObjectExchangeItem.getValuesType();
 
 		Object valuesObject = ioObjectExchangeItem.getValues();
 
@@ -115,19 +89,19 @@ public class BBExchangeItem implements IExchangeItem {
 			}
 			return selectorResult;
 		} else if (vectorConfig.getSelectionIndices() != null) {
-			if ( valueType != IVector.class && valueType != ITreeVector.class && valueType != double[].class && valueType != IArray.class) {
+			if ( valueType != ValueType.IVectorType && valueType != ValueType.doublesType && valueType != ValueType.IArrayType) {
 				throw new RuntimeException("Index selection can not be applied on values of type " + valueType);
 			}
 
 			IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
 			double[] orgValues = ioObjectExchangeItem.getValuesAsDoubles();
             int[] dimSizes;
-            if (valueType == double[].class) {
+            if (valueType == ValueType.doublesType) {
 				dimSizes = new int[1];
                 dimSizes[0] = orgValues.length;
-			} else if (valueType == IArray.class) {
+			} else if (valueType == ValueType.IArrayType) {
 				dimSizes = ((IArray) valuesObject).getDimensions();
-            } else if (valueType == IVector.class) {
+            } else if (valueType == ValueType.IVectorType) {
 				dimSizes = getDimensionSizes((IVector) valuesObject);
 			} else {
 				throw new RuntimeException("BBModelInstance.getValues: method not implemented for type " + valuesObject.getClass().getName());
@@ -259,7 +233,7 @@ public class BBExchangeItem implements IExchangeItem {
                 // setvalues without selections
                 if (values instanceof  double[]){
                     ioObjectExchangeItem.setValuesAsDoubles((double[]) values);
-                } else if (ioObjectExchangeItem.getValueType() == double.class) {
+                } else if (ioObjectExchangeItem.getValuesType() == ValueType.doubleType) {
                     if (values instanceof Double) {
 						setBaseOrOrgExchangeItemValues(values);
                     } else if (values instanceof IVector) {
@@ -271,7 +245,7 @@ public class BBExchangeItem implements IExchangeItem {
 						setBaseOrOrgExchangeItemValues(vector.getValue(0));
                     }
                 } else {
-					ObjectSupport.checkCompatibility(values, ioObjectExchangeItem.getValueType(),
+					ObjectSupport.checkCompatibility(values, ioObjectExchangeItem.getValuesType().getClass(),
 							this.getClass().getName() + ".setValues()");
 					setBaseOrOrgExchangeItemValues(values);
                 }
@@ -304,9 +278,9 @@ public class BBExchangeItem implements IExchangeItem {
 	}
 
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
-		if (sourceItem.getValueType() != getValueType()) {
+		if (sourceItem.getValuesType() != getValuesType()) {
 			throw new RuntimeException("Incompatible value types in copy action from " + sourceItem.getId() +
-					" to " + getId() + "(" + sourceItem.getValueType().toString() + "/=" + getValueType().toString());
+					" to " + getId() + "(" + sourceItem.getValuesType().toString() + "/=" + getValuesType().toString());
 		}
 		setValues(sourceItem.getValues());
 	}

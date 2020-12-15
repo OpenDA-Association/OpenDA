@@ -20,10 +20,8 @@
 
 package org.openda.model_dflowfm;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -168,8 +166,8 @@ public class DFlowFMTrachytopeFile implements IDataObject {
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(Role role) {
-		if(role==Role.InOut){
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+		if(role==IExchangeItem.Role.InOut){
 			return getExchangeItemIDs();
 		}else{
 			return new String[0];

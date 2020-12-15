@@ -33,7 +33,7 @@ import org.openda.exchange.ArrayExchangeItem;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Array;
 
 
@@ -86,7 +86,7 @@ public class MeshDataObject implements IDataObject {
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data 
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * </ol>
      */
     public void initialize(File workingDir, String[] arguments) {

@@ -31,7 +31,7 @@ public class BBWrapperConfig {
         None, Directory, File
     }
 
-    private HashMap<String, IoObjectConfig> ioObjects = new HashMap<String, IoObjectConfig>();
+    private HashMap<String, DataObjectConfig> ioObjects = new HashMap<String, DataObjectConfig>();
     private AliasDefinitions aliasDefinitions;
 
     private CloneType cloneType;
@@ -54,7 +54,7 @@ public class BBWrapperConfig {
                            Collection<BBAction> computeActions,
                            Collection<BBAction> additionalComputeActions,
                            Collection<BBAction> finalizeActions,
-                           HashMap<String, IoObjectConfig> ioObjects) {
+                           HashMap<String, DataObjectConfig> ioObjects) {
 
         this.aliasDefinitions = aliasDefinitions;
         this.cloneType = cloneType;
@@ -123,7 +123,7 @@ public class BBWrapperConfig {
         return finalizeActions;
     }
 
-    public IoObjectConfig getIoObject(String id) {
+    public DataObjectConfig getIoObject(String id) {
         return ioObjects.get(id);
     }
 

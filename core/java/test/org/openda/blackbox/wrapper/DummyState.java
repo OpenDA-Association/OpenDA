@@ -21,26 +21,26 @@
 
 package org.openda.blackbox.wrapper;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoublesExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- * Dummy Astro Io Object for testing purposes
+ * Dummy Astro DataObject for testing purposes
  */
-public class DummyState implements IoObjectInterface {
+public class DummyState extends AbstractDataObject {
 
-    private IPrevExchangeItem[] exchangeItems = null;
-    private File stateFile = null;
+	public static final String STATE = "state";
+	private File stateFile = null;
 
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        stateFile = new File(workingDir, fileName);
-        ArrayList<String> lines = new ArrayList<String>();
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+        stateFile = new File(workingDir, arguments[0]);
+        ArrayList<String> lines = new ArrayList<>();
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(stateFile));
             String line = bufferedReader.readLine();
@@ -60,19 +60,16 @@ public class DummyState implements IoObjectInterface {
         for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
             values[i] = Double.parseDouble(lines.get(i));
         }
-        exchangeItems = new IPrevExchangeItem[]{new DoublesExchangeItem("state", Role.InOut, values)};
+		exchangeItems.put(STATE, new DoublesExchangeItem(STATE, IExchangeItem.Role.InOut, values));
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
-        return exchangeItems;
-    }
-
+    @Override
     public void finish() {
         Locale locale = new Locale("EN");
         try {
             FileWriter fileWriter = new FileWriter(stateFile);
             BufferedWriter outputFileBufferedWriter = new BufferedWriter(fileWriter);
-            for (double value : exchangeItems[0].getValuesAsDoubles()) {
+            for (double value : exchangeItems.get(STATE).getValuesAsDoubles()) {
                 outputFileBufferedWriter.write(String.format(locale, "%5.2f", value));
                 outputFileBufferedWriter.newLine();
             }

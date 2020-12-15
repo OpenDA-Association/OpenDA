@@ -27,8 +27,8 @@ import java.util.*;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 
 /**
@@ -85,8 +85,8 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
 
     private WdmDll wdmDll;
     private Role role;
-    private IPrevExchangeItem startTimeExchangeItem = null;
-    private IPrevExchangeItem endTimeExchangeItem = null;
+    private IExchangeItem startTimeExchangeItem = null;
+    private IExchangeItem endTimeExchangeItem = null;
     private double startTimeDouble = Double.NaN;
     private double endTimeDouble = Double.NaN;
     private List<WdmTimeSeriesExchangeItem> wdmTimeSeriesExchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
@@ -152,7 +152,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         //Note: the timeInfoExchangeItems are also set after the input ioObjects have already been initialized,
         //but the timeInfoExchangeItems need only be created during ioObject initialization and can then be
         //used later, after they have been set.
-        if (this.role == IPrevExchangeItem.Role.Input) {
+        if (this.role == Role.Input) {
             //create exchange items.
             if (arguments.length < 6) {
                 throw new IllegalArgumentException("No start/endTime exchange item ids arguments specified for " + getClass().getSimpleName()
@@ -162,7 +162,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
             this.startTimeExchangeItem = new DoubleExchangeItem(arguments[4], 0);
             this.endTimeExchangeItem = new DoubleExchangeItem(arguments[5], 0);
 
-        } else {//if this.role == IPrevExchangeItem.Role.Output.
+        } else {
             if (arguments.length < 6) {
                 throw new IllegalArgumentException("No start/endTime arguments specified for " + getClass().getSimpleName()
                         + ". For role OUTPUT the fifth and sixth arguments should be respectively the startTime and endTime of the model run.");
@@ -222,14 +222,14 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
         if (this.wdmTimeSeriesExchangeItems.isEmpty()) throw new IllegalArgumentException(this.getClass().getSimpleName() + ": No time series found in time series file '" + this.wdmTimeSeriesFilePath + "'.");
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
+    public IExchangeItem[] getExchangeItems() {
         //return all available exchange items.
-        List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>(this.wdmTimeSeriesExchangeItems);
+        List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>(this.wdmTimeSeriesExchangeItems);
         if (this.startTimeExchangeItem != null && this.endTimeExchangeItem != null) {
             exchangeItems.add(this.startTimeExchangeItem);
             exchangeItems.add(this.endTimeExchangeItem);
         }
-        return exchangeItems.toArray(new IPrevExchangeItem[exchangeItems.size()]);
+        return exchangeItems.toArray(new IExchangeItem[exchangeItems.size()]);
     }
 
     /**
@@ -240,7 +240,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      * Updates the in-memory stored values and times by reading from the wdm file.
      */
     private void readValuesAndTimesFromFile() {
-        if (this.role == IPrevExchangeItem.Role.Input) {
+        if (this.role == Role.Input) {
             return;
         }
 
@@ -269,7 +269,7 @@ public class WdmTimeSeriesIoObject implements IoObjectInterface {
      * so that it can be used as input by the model.
      */
     public void finish() {
-        if (this.role == IPrevExchangeItem.Role.Output) {
+        if (this.role == Role.Output) {
             return;
         }
 

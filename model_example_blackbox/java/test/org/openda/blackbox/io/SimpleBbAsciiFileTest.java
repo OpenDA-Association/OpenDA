@@ -18,101 +18,98 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.blackbox.io;
+
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 public class SimpleBbAsciiFileTest extends TestCase {
 
 	private File testRunDataDir;
 	private OpenDaTestSupport testData;
 
-	protected void setUp() throws IOException {
+	protected void setUp() {
 		testData = new OpenDaTestSupport(SimpleBbAsciiFileTest.class,"model_example_blackbox");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
 	public void testReadInput() {
 
-		IoObjectInterface ioObject = new SimpleBbAsciiFile();
-		String args[] = {};
-		ioObject.initialize(testRunDataDir, "pollution_model.input", args);
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
+		String[] args = {"pollution_model.input"};
+		dataObject.initialize(testRunDataDir, args);
 
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 
-        for(int item=0;item<exchangeItems.length;item++){
+        for(String id:exchangeItemIDs){
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
 
-			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1,discharge")){
-				IPrevExchangeItem ex = exchangeItems[0];
-				//String getId();
-				String id = ex.getId();
-				assertEquals("ex.getId()", "source.factory1.discharge", id);
+			if(exId.equalsIgnoreCase("source.factory1,discharge")){
+				assertEquals("exId", "source.factory1.discharge", exId);
 
-				//String getQuantityId();
-				String quantityId = ((TimeSeries) ex).getQuantityId();
+				String quantityId = ((TimeSeries) exchangeItem).getQuantityId();
 				assertEquals("ex.getQuantityId()", "discharge", quantityId);
 
-				//String getUnitId();
-				String unitId = ((TimeSeries) ex).getUnitId();
+				String unitId = ((TimeSeries) exchangeItem).getUnitId();
 				assertEquals("ex.getUnitId()", "kg/s", unitId);
 
-				//public Type getObjectType(); //
-				Type valueType = ex.getValueType();
-				assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
+				// TODO weer activeren als IExchangeItem ex
+				//public Type getObjectType();
+				//Type valueType = ex.getValueType();
+				//assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
 
 				//public Object getValues();
-				TimeSeries seriesRef = (TimeSeries) ex.getValues();
+				TimeSeries seriesRef = (TimeSeries) exchangeItem.getValues();
 				double[] timesRef = seriesRef.getTimesRef();
 				assertEquals("times[0]", 51513.0, timesRef[0], 0.0001);
 				//public double[] getValuesAsDoubles();
-				double[] valuesCopy = ex.getValuesAsDoubles();
+				double[] valuesCopy = exchangeItem.getValuesAsDoubles();
 				assertEquals("values[1]", 0.0, valuesCopy[0], 0.0001);
 			}
 
-			if(exchangeItems[item] instanceof TimeSeries){
+			if(exchangeItem instanceof TimeSeries){
 				TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
-				TimeSeries series= (TimeSeries)exchangeItems[item];
+				TimeSeries series= (TimeSeries)exchangeItem;
 				noosFormatter.writeToStandardOut(series);
-			}else if(exchangeItems[item] instanceof DoublesExchangeItem){
-				System.out.println("Item["+exchangeItems[item].getId()+"] ="+ exchangeItems[item].toString());
+			}else if(exchangeItem instanceof DoublesExchangeItem){
+				System.out.println("Item "+exId+" ="+ exchangeItem.toString());
 			}
 		}
 	}
 
 	public void testReadOutput() {
-		IoObjectInterface ioObject = new SimpleBbAsciiFile();
-		String args[] = {};
-		ioObject.initialize(testRunDataDir, "pollution_model.refoutput", args);
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
+		String[] args = {"pollution_model.refoutput"};
+		dataObject.initialize(testRunDataDir, args);
 		//TODO fix data string
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
-		for(int item=0;item<exchangeItems.length;item++){
-			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1,discharge")){
-				IPrevExchangeItem ex = exchangeItems[0];
-				//String getId();
-				String id = ex.getId();
-				assertEquals("ex.getId()", "source.factory1.discharge", id);
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		for(String id:exchangeItemIDs){
+			IExchangeItem ex = dataObject.getDataObjectExchangeItem(id);
+			String exId = ex.getId();
+			assertEquals(id, exId);
+			if(exId.equalsIgnoreCase("source.factory1,discharge")){
+				assertEquals("exId", "source.factory1.discharge", exId);
 
-				//String getQuantityId();
 				String quantityId = ((TimeSeries) ex).getQuantityId();
 				assertEquals("ex.getQuantityId()", "discharge", quantityId);
 
-				//String getUnitId();
 				String unitId = ((TimeSeries) ex).getUnitId();
 				assertEquals("ex.getUnitId()", "kg/s", unitId);
 
+                // TODO weer activeren als IExchangeItem ex
 				//public Type getObjectType(); //
-				Type valueType = ex.getValueType();
-				assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
+				//Type valueType = ex.getValueType();
+				//assertTrue(valueType == org.openda.exchange.timeseries.TimeSeries.class);
 
 				//public Object getValues();
 				TimeSeries seriesRef = (TimeSeries) ex.getValues();
@@ -123,17 +120,18 @@ public class SimpleBbAsciiFileTest extends TestCase {
 				assertEquals("values[1]", 0.0, valuesCopy[0], 0.0001);
 			}
 
-			if(exchangeItems[item] instanceof TimeSeries){
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(exId);
+			if(exchangeItem instanceof TimeSeries){
 				TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
-				noosFormatter.writeToStandardOut((TimeSeries)exchangeItems[item]);
+				noosFormatter.writeToStandardOut((TimeSeries)exchangeItem);
 			}
 		}
 	}
 
 	public void testWriteInput() {
 		//First read input
-		IoObjectInterface ioObject = new SimpleBbAsciiFile();
-		String args[] = {};
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
+		String[] args = {"pollution_model_copy.input"};
 		File original = new File(testRunDataDir,"pollution_model.input");
 		File copy = new File(testRunDataDir,"pollution_model_copy.input");
 		try {
@@ -141,37 +139,41 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
 		}
-		ioObject.initialize(testRunDataDir, "pollution_model_copy.input", args);
+		dataObject.initialize(testRunDataDir, args);
 
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 
 		//change some things
-		for(int item=0;item<exchangeItems.length;item++){
-			System.out.println("item = "+item+" id="+exchangeItems[item].getId());
-			if(exchangeItems[item].getId().equalsIgnoreCase("concentration.grid")){
-				double values[] = exchangeItems[item].getValuesAsDoubles();
-				values[0]= 100.0;
-				exchangeItems[item].setValuesAsDoubles(values);
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			String id = exchangeItemIDs[i];
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			System.out.println("item = " + i + " id=" + exId);
+			if (exId.equalsIgnoreCase("concentration.grid")) {
+				double[] values = exchangeItem.getValuesAsDoubles();
+				values[0] = 100.0;
+				exchangeItem.setValuesAsDoubles(values);
 			}
-			if(exchangeItems[item].getId().equalsIgnoreCase("source.factory1.discharge")){
-				double values[] = exchangeItems[item].getValuesAsDoubles();
-				values[0]= 123.0;
-				exchangeItems[item].setValuesAsDoubles(values);
+			if (exId.equalsIgnoreCase("source.factory1.discharge")) {
+				double[] values = exchangeItem.getValuesAsDoubles();
+				values[0] = 123.0;
+				exchangeItem.setValuesAsDoubles(values);
 			}
-			if(exchangeItems[item].getId().equalsIgnoreCase("bound.left.concentration")){
-				double values[] = exchangeItems[item].getValuesAsDoubles();
-				values[0]= 10.0;
-				exchangeItems[item].setValuesAsDoubles(values);
+			if (exId.equalsIgnoreCase("bound.left.concentration")) {
+				double[] values = exchangeItem.getValuesAsDoubles();
+				values[0] = 10.0;
+				exchangeItem.setValuesAsDoubles(values);
 			}
-			if(exchangeItems[item].getId().equalsIgnoreCase("output.locA.concentration")){
-				double values[] = exchangeItems[item].getValuesAsDoubles();
-				values[0]= 102030.0;
-				exchangeItems[item].setValuesAsDoubles(values);
+			if (exId.equalsIgnoreCase("output.locA.concentration")) {
+				double[] values = exchangeItem.getValuesAsDoubles();
+				values[0] = 102030.0;
+				exchangeItem.setValuesAsDoubles(values);
 			}
 		}
 
 		//write to file
-		ioObject.finish();
+		dataObject.finish();
 		File reference = new File(testRunDataDir,"pollution_model_changed.input");
 		boolean containsLocA =testData.FileContains(reference, "102030");
 		assertTrue(containsLocA);
@@ -181,8 +183,8 @@ public class SimpleBbAsciiFileTest extends TestCase {
 
 	public void testReadWriteTime() {
 
-		IoObjectInterface ioObject = new SimpleBbAsciiFile();
-		String args[] = {};
+		SimpleBbAsciiFile dataObject = new SimpleBbAsciiFile();
+		String[] args = {"pollution_model_copy2.input"};
 		File original = new File(testRunDataDir,"pollution_model.input");
 		File copy = new File(testRunDataDir,"pollution_model_copy2.input");
 		try {
@@ -190,31 +192,33 @@ public class SimpleBbAsciiFileTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
 		}
-		ioObject.initialize(testRunDataDir, "pollution_model_copy2.input", args);
+		dataObject.initialize(testRunDataDir, args);
 
-		for(IPrevExchangeItem item:ioObject.getExchangeItems()){
-			String itemId = item.getId();
-			System.out.println("looking at item: "+itemId);
-			if(itemId.equalsIgnoreCase("startTime")){
-				System.out.println("changing item: "+itemId);
-				double startAsMjd[] = item.getValuesAsDoubles();
+		for(String id:dataObject.getExchangeItemIDs()){
+			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			System.out.println("looking at item: "+exId);
+			if(exId.equalsIgnoreCase("startTime")){
+				System.out.println("changing item: "+exId);
+				double[] startAsMjd = exchangeItem.getValuesAsDoubles();
 				System.out.println("startTime="+startAsMjd[0]);
 				assertEquals(51513.0, startAsMjd[0], 0.0001);
 				//change
 				startAsMjd[0]=startAsMjd[0]+2.0/60.0/24.0; //start+2minutes
-				item.setValuesAsDoubles(startAsMjd);
+				exchangeItem.setValuesAsDoubles(startAsMjd);
 			}
-			if(itemId.equalsIgnoreCase("endTime")){
-				System.out.println("changing item: "+itemId);
-				double endAsMjd[] = item.getValuesAsDoubles();
+			if(exId.equalsIgnoreCase("endTime")){
+				System.out.println("changing item: "+exId);
+				double[] endAsMjd = exchangeItem.getValuesAsDoubles();
 				System.out.println("endTime="+endAsMjd[0]);
 				assertEquals(51513.069444444, endAsMjd[0], 0.0001);
 				// change
 				endAsMjd[0]=51513.0+5.0/60.0/24.0; //start+5minutes
-				item.setValuesAsDoubles(endAsMjd);
+				exchangeItem.setValuesAsDoubles(endAsMjd);
 			}
 		}
-		ioObject.finish();
+		dataObject.finish();
 
 		File reference = new File(testRunDataDir,"pollution_model.refinput");
 		boolean identical = testData.FilesAreIdentical(copy,reference);
@@ -223,7 +227,7 @@ public class SimpleBbAsciiFileTest extends TestCase {
 	}
 
 	public void testCopyState() {
-		String args[] = new String[2];
+		String[] args = new String[2];
 		File original = new File(testRunDataDir,"pollution_model.input");
 		File destination = new File(testRunDataDir,"pollution_model_copy3.input");
 		try {

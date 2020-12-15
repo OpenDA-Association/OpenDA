@@ -23,7 +23,6 @@ import org.ini4j.InvalidFileFormatException;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +115,7 @@ public class Md1dFile implements IDataObject
 		return exchangeItems.keySet().toArray(new String[exchangeItems.keySet().size()]);
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role)
+	public String[] getExchangeItemIDs(IExchangeItem.Role role)
 	{
 		List<String> matchingExchangeItemIds = new ArrayList<>();
 		for(IExchangeItem exchangeItem : exchangeItems.values())

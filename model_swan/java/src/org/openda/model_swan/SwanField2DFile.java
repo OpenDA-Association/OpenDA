@@ -23,7 +23,6 @@ package org.openda.model_swan;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.*;
 import java.text.ParseException;
@@ -38,7 +37,7 @@ import java.util.Locale;
 public class SwanField2DFile implements IDataObject {
 
     private static String[] knownFileTypes = {"WLEV"};
-    private IPrevExchangeItem[] exchangeItems;
+    private IExchangeItem[] exchangeItems;
 
     private File field2dFile;
     private File field2dSeriesFile =null;
@@ -332,7 +331,7 @@ public class SwanField2DFile implements IDataObject {
         return new String[] {exchangeItems[0].getId()};
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 
@@ -340,7 +339,7 @@ public class SwanField2DFile implements IDataObject {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanField2DFile.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         if (!exchangeItemID.equals(swanField2DFileId)) {
             throw new RuntimeException("unknown exchange item: " + exchangeItemID);
         }

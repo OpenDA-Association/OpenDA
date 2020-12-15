@@ -39,18 +39,18 @@ public class GotmMeteoFileTest extends TestCase {
 
 	public void testReadInput() {
 
-		IDataObject ioObject = new GotmMeteoFile();
+		IDataObject dataObject = new GotmMeteoFile();
 		String args[] = {"meteo_test.dat"};
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
 		// dump interpreted data to screen
-		// System.out.println(ioObject.toString());
+		// System.out.println(dataObject.toString());
 		
-		String[] exchangeItemIds = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIds = dataObject.getExchangeItemIDs();
 
 		for(int item=0;item<exchangeItemIds.length;item++){
 
-			IExchangeItem ex = ioObject.getDataObjectExchangeItem(exchangeItemIds[item]);
+			IExchangeItem ex = dataObject.getDataObjectExchangeItem(exchangeItemIds[item]);
 			System.out.println(ex.toString());
 
 			if(exchangeItemIds[item].equalsIgnoreCase("1.u10")){
@@ -74,7 +74,7 @@ public class GotmMeteoFileTest extends TestCase {
 
 	public void testWriteInput() {
 		//First read input
-		IDataObject ioObject = new GotmMeteoFile();
+		IDataObject dataObject = new GotmMeteoFile();
 		String args[] = {"meteo_test.dat"};
 		File original = new File(testRunDataDir,"meteo_test.dat");
 		File copy = new File(testRunDataDir,"meteo_file_copy.dat");
@@ -83,11 +83,11 @@ public class GotmMeteoFileTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy file "+original.getAbsolutePath()+" to "+copy.getAbsolutePath());
 		}
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
-		//String[] exchangeItemIds = ioObject.getExchangeItemIDs();
+		//String[] exchangeItemIds = dataObject.getExchangeItemIDs();
 		// System.out.println(exchangeItemIds);source
-		IExchangeItem item = ioObject.getDataObjectExchangeItem("1.u10");
+		IExchangeItem item = dataObject.getDataObjectExchangeItem("1.u10");
 		double[] values = new double[3];
 		values[0] = 1.0;
 		values[1] = 2.0;
@@ -97,7 +97,7 @@ public class GotmMeteoFileTest extends TestCase {
 		//change some things
 
 		//write to file
-		ioObject.finish();
+		dataObject.finish();
 		File reference = new File(testRunDataDir,"meteo_file_ref.dat");
 		//boolean containsLocA =testData.FileContains(reference, "102030");
 		//assertTrue(containsLocA);

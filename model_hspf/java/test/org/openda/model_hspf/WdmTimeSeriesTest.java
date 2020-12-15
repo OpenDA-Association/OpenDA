@@ -31,7 +31,6 @@ import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.exchange.iotools.DataCopier;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
@@ -89,7 +88,7 @@ public class WdmTimeSeriesTest extends TestCase {
         wdmTimeSeriesIoObject.initialize(testRunDataDir, inputFileName, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = wdmTimeSeriesIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = wdmTimeSeriesIoObject.getExchangeItems();
         assertEquals(2, exchangeItems.length);
 
         //check id for RCH103.FLOW
@@ -293,7 +292,7 @@ public class WdmTimeSeriesTest extends TestCase {
         wdmTimeSeriesIoObject1.initialize(testRunDataDir, relativeOutputFilePath, arguments1);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems1 = wdmTimeSeriesIoObject1.getExchangeItems();
+        IExchangeItem[] exchangeItems1 = wdmTimeSeriesIoObject1.getExchangeItems();
         assertEquals(4, exchangeItems1.length);
 
         //set times and values.
@@ -318,7 +317,7 @@ public class WdmTimeSeriesTest extends TestCase {
         expectedValues[7] = 5;
         expectedValues[8] = 15000;
         expectedValues[9] = 1;
-        for (IPrevExchangeItem exchangeItem1 : exchangeItems1) {
+        for (IExchangeItem exchangeItem1 : exchangeItems1) {
             if ("TSTART1".equalsIgnoreCase(exchangeItem1.getId())) {
                 exchangeItem1.setValues(expectedTimes[0]);
 
@@ -354,13 +353,13 @@ public class WdmTimeSeriesTest extends TestCase {
         wdmTimeSeriesIoObject2.initialize(testRunDataDir, relativeOutputFilePath, arguments2);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems2 = wdmTimeSeriesIoObject2.getExchangeItems();
+        IExchangeItem[] exchangeItems2 = wdmTimeSeriesIoObject2.getExchangeItems();
         assertEquals(2, exchangeItems2.length);
 
         //get exchangeItem for RCH103.FLOW
         String timeSeriesId = "RCH103.FLOW";
-        IPrevExchangeItem currentExchangeItem = null;
-        for (IPrevExchangeItem exchangeItem : exchangeItems2) {
+        IExchangeItem currentExchangeItem = null;
+        for (IExchangeItem exchangeItem : exchangeItems2) {
             if (timeSeriesId.equalsIgnoreCase(exchangeItem.getId())) {
                 currentExchangeItem = exchangeItem;
                 break;

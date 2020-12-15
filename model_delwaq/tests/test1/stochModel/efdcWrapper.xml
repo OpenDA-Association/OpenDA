@@ -30,16 +30,16 @@
     </run>
 
     <inputOutput>
-        <ioObject className="org.openda.model_delwaq.delwaqInpConstants">
+        <dataObject className="org.openda.model_delwaq.delwaqInpConstants">
             <file>%inpConstantsFile%</file>
             <id>constantsFile</id>            
             <arg>%inpConstantsDataFile%</arg>
-        </ioObject>
+        </dataObject>
 
-        <ioObject className="org.openda.model_delwaq.delwaqBinaryFile">
+        <dataObject className="org.openda.model_delwaq.delwaqBinaryFile">
             <file>%delwaqOutputFile%</file>
             <id>outputFile</id>
-        </ioObject>
+        </dataObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

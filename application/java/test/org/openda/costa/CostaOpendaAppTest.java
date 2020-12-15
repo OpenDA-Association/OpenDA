@@ -24,7 +24,6 @@ package org.openda.costa;
 import junit.framework.TestCase;
 import org.openda.application.ApplicationRunner;
 import org.openda.utils.OpenDaTestSupport;
-import org.openda.utils.performance.OdaTiming;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,29 +45,29 @@ public class CostaOpendaAppTest extends TestCase {
 		//            the test below is de-activated by renaming it to tst...()
 	}
 
-	public void testOscill_EnKF() throws IOException {
+	public void testOscill_EnKF() {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig.xml");
-        String args[] = new String[1];
+        String[] args = new String[1];
         args[0] = config.getAbsolutePath();
         org.openda.application.OpenDaApplication.main(args);
         System.out.println("testOscill_EnKF DONE");
     }
 
-    public void tstOscill_Simplex() throws IOException {
+    public void tstOscill_Simplex() {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillSimplexOpenDaConfig.xml");
-        String args[] = new String[1];
+        String[] args = new String[1];
         args[0] = config.getAbsolutePath();
         org.openda.application.OpenDaApplication.main(args);
     }
 
     // Test with a java observer
 
-    public void tstOscill_EnKF2() throws IOException {
+    public void tstOscill_EnKF2() {
         ApplicationRunner.setRunningInTest(true);
         File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig_javaobs.xml");
-        String args[] = new String[1];
+        String[] args = new String[1];
         args[0] = config.getAbsolutePath();
         // TODO fails on announce obs. now.
         org.openda.application.OpenDaApplication.main(args);

@@ -22,10 +22,10 @@
   <inputOutput>
 
 
-    <ioObject className="org.openda.exchange.dataobjects.EsriAsciiGridDataObject">
+    <dataObject className="org.openda.exchange.dataobjects.EsriAsciiGridDataObject">
       <file>param2D_20020102.asc</file>
       <id>param2D</id>
-    </ioObject>
+    </dataObject>
 
 
   </inputOutput>

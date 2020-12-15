@@ -99,14 +99,14 @@ public class CtaOpenDaModel extends CtaObject implements StochModelInstance{
 		throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.getExchangeItemIDs(): Not implemented yet.");
 	}
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-        if (role == IPrevExchangeItem.Role.InOut) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+        if (role == IExchangeItem.Role.InOut) {
             return getExchangeItemIDs();
         }
         throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.getExchangeItemIDs(): Role selection not implemented yet.");
     }
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         throw new UnsupportedOperationException("org.costa.CtaOpenDaModel.getExchangeItem(): Not implemented yet.");
     }
 

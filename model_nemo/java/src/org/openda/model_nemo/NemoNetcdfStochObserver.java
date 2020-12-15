@@ -345,7 +345,7 @@ public class NemoNetcdfStochObserver extends Instance implements IStochObserver,
 	 *
 	 * @return All exchange items in the stoch. observer.
 	 */
-	public List<IPrevExchangeItem> getExchangeItems() {
+	public List<IExchangeItem> getExchangeItems() {
 		throw new RuntimeException("not yet implemented");
 	}
 

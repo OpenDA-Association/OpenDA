@@ -29,11 +29,12 @@ import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;
 import java.util.Iterator;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -75,7 +76,7 @@ public final class CsvTimeSeriesDataObject implements IComposableDataObject {
             timeSeriesSet.add(series);
         } else if (file.exists() && file.isDirectory()) {
             logger.debug("Finding files in directory: " + file.getAbsolutePath());
-            for (File myFile : file.listFiles() ) {
+            for (File myFile : Objects.requireNonNull(file.listFiles())) {
                 if (myFile.isFile()) {
                     TimeSeries series = csvFormatter.readFile(myFile);
                     series.setProperty(PROPERTY_PATHNAME, myFile.getAbsolutePath());
@@ -184,7 +185,7 @@ public final class CsvTimeSeriesDataObject implements IComposableDataObject {
 
 	/**
 	 * @param set
-	 *           The TimeSeriesSet to set in this IoObject
+	 *           The TimeSeriesSet to set in this DataObject
 	 */
 	public void setTimeSeriesSet(TimeSeriesSet set) {
 		this.timeSeriesSet = set;

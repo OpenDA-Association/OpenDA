@@ -29,11 +29,11 @@ import java.util.Hashtable;
  */
 public class NonMissingStochObserverExchangeItem implements IExchangeItem, Serializable {
 
-    private IPrevExchangeItem ioExchangeItem;
+    private IExchangeItem ioExchangeItem;
     private double[] values;
     private double[] times;
 
-    public NonMissingStochObserverExchangeItem(IPrevExchangeItem ioExchangeItem, double missingValue){
+    public NonMissingStochObserverExchangeItem(IExchangeItem ioExchangeItem, double missingValue){
         this.ioExchangeItem = ioExchangeItem;
         Hashtable<Integer,Double> eiValues = new Hashtable<Integer,Double>();
         Hashtable<Integer,Double> eiTimes = new Hashtable<Integer,Double>();
@@ -108,42 +108,17 @@ public class NonMissingStochObserverExchangeItem implements IExchangeItem, Seria
         return this.ioExchangeItem.getDescription();
     }
 
-    
-    public Class getValueType() {
-        return this.ioExchangeItem.getValueType();
-    }
-
     public ValueType getValuesType() {
-    	ValueType result;
-    	if(ioExchangeItem.getValueType()==double.class){
-    		result=ValueType.doubleType;
-    	}else if(ioExchangeItem.getValueType()==double[].class){
-    		result=ValueType.doublesType;
-    	}else if(ioExchangeItem.getValueType()==float[].class){
-    		result=ValueType.floatsType;
-    	}else if(ioExchangeItem.getValueType()==double[][].class){
-    		result=ValueType.doubles2dType;
-    	}else if(ioExchangeItem.getValueType()==int.class){
-    		result=ValueType.intType;
-    	}else if(ioExchangeItem.getValueType()==String.class){
-    		result=ValueType.StringType;
-    	}else if(ioExchangeItem.getValueType()==IVector.class){
-    		result=ValueType.IVectorType;
-    	}else if(ioExchangeItem.getValueType()==IArray.class){
-    		result=ValueType.IArrayType;
-    	}else{
-    		throw new RuntimeException("NonMissingStochObserver: unsupported ValueType");
-    	}
-        return result;
+        return ioExchangeItem.getValuesType();
     }
 
 
     
     public Role getRole() {
-        return this.ioExchangeItem.getRole();
+        return null;
     }
 
-    
+
     public Object getValues() {
         return this.values;
     }

@@ -19,56 +19,34 @@
  */
 package org.openda.exchange.dataobjects;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-
+import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IComposableDataObject;
-import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Glob;
 
+import java.io.*;
+import java.util.Arrays;
 
-public class NoosDataObject implements IDataObject, IComposableDataObject{
+
+public class NoosDataObject extends AbstractDataObject implements IComposableDataObject {
 	private static final String PROPERTY_PATHNAME = "pathName";
-	private LinkedHashMap<String, TimeSeries> timeSeriesSet = new LinkedHashMap<String, TimeSeries>();
 	private File workingDir = new File(".");
 
-
 	/**
 	 * Initialize the IDataObject
 	 *
 	 * @param workingDir
 	 *           Working directory
 	 * @param arguments
-	 *           First argument should be a filename his fileName may be null, empty or
-	 *           contain wildcard characters.
-	 *           Additional arguments (may be null zero-length) These arguments are ignored.
-	 */
-
-	public void initialize(File workingDir, String[] arguments) {
-		String fileName=arguments[0];
-		String newArguments[] = new String[arguments.length-1];
-		System.arraycopy(arguments, 1, newArguments, 0, arguments.length - 1);
-		this.initialize(workingDir, fileName, newArguments);
-	}
-
-	/**
-	 * Initialize the IDataObject
-	 *
-	 * @param workingDir
-	 *           Working directory
-	 * @param fileName
 	 *           The name of the file containing the data (relative to the working dir) This fileName may be null, empty or
-	 *           contain wildcard characters.
-	 * @param arguments
+	 * 	         contain wildcard characters.
 	 *           Additional arguments (may be null zero-length) These arguments are ignored.
 	 */
-	public void initialize(File workingDir, String fileName, String[] arguments) {
-		this.timeSeriesSet = new LinkedHashMap<String, TimeSeries>();
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
+		String fileName = arguments[0];
 
 		if(workingDir==null){
 			this.workingDir=new File(".");
@@ -88,6 +66,7 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 			}
 			else {
 				final String regexp = Glob.createRegex(fileName);
+				assert workingDir != null;
 				fileNames = workingDir.list(new FilenameFilter() {
 					public boolean accept(File dir, String name) {
 						return name.matches(regexp);
@@ -96,6 +75,7 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 			}
 
 			// Sort names to make the order independent of the OS
+			assert fileNames != null;
 			Arrays.sort(fileNames);
 			// Then, read each file
 			for (String name : fileNames) {
@@ -106,20 +86,6 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 			// Read the file indicated by fileName directly
 			readNoosTimeSeries(workingDir, fileName);
 		}
-	}
-
-	/**
-	 * Initialize the IDataObject without arguments
-	 *
-	 * @param workingDir
-	 *           Working directory
-	 * @param fileName
-	 *           The name of the file containing the data (relative to the working dir) This fileName may be null, empty or
-	 *           contain wildcard characters.
-	 */
-	public void initialize(File workingDir, String fileName) {
-		final String args[] = {};
-		this.initialize(workingDir, fileName, args);
 	}
 
 	/**
@@ -143,33 +109,20 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 		NoosTimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
 		TimeSeries series = noosFormatter.read(noosFileInputStream);
 		series.setProperty(PROPERTY_PATHNAME, noosFile.getAbsolutePath());
-		this.timeSeriesSet.put(series.getId(),series);
-	}
-
-
-	
-	public String[] getExchangeItemIDs() {
-		return this.timeSeriesSet.keySet().toArray(new String[this.timeSeriesSet.size()]);
-	}
-
-	
-	public String[] getExchangeItemIDs(Role role) {
-		return this.timeSeriesSet.keySet().toArray(new String[this.timeSeriesSet.size()]);
-	}
-
-	
-	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		return this.timeSeriesSet.get(exchangeItemID);
+		this.exchangeItems.put(series.getId(),series);
 	}
 
 	/**
 	 * Write all time series in this IDataObject that were read from file (with property NoosTimeSeriesIDataObject.PROPERTY_PATHNAME
 	 * set). Ignores all other time series, including those obtained from an URL.
 	 */
+	@Override
 	public void finish() {
-		if (this.timeSeriesSet == null) return;
-		for (TimeSeries series : this.timeSeriesSet.values())
-			if (series.hasProperty(PROPERTY_PATHNAME)) writeNoosTimeSeries(series);
+		if (this.exchangeItems == null) return;
+		for (IExchangeItem exchangeItem : this.exchangeItems.values()) {
+			TimeSeries timeSeries = (TimeSeries) exchangeItem;
+			if (timeSeries.hasProperty(PROPERTY_PATHNAME)) writeNoosTimeSeries(timeSeries);
+		}
 	}
 
 	/**
@@ -237,12 +190,12 @@ public class NoosDataObject implements IDataObject, IComposableDataObject{
 			File file = new File(this.workingDir,fileName);
 			s.setProperty(PROPERTY_PATHNAME, file.getAbsolutePath());
 		}
-		this.timeSeriesSet.put(id, s);
+		this.exchangeItems.put(id, s);
 	}
 	
 	public String toString(){
 		StringBuilder result= new StringBuilder("noosDataObject{\n");
-		for(TimeSeries series: this.timeSeriesSet.values()){
+		for(IExchangeItem series: this.exchangeItems.values()){
 			result.append(series.toString());
 		}
 		result.append("}\n");

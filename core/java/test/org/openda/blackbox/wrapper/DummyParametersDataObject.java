@@ -21,42 +21,49 @@
 
 package org.openda.blackbox.wrapper;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.exchange.AbstractDataObject;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 import java.io.File;
 
 /**
  * Dummy Io Object for testing parameter uncertainty purposes
  */
-public class DummyParametersIoObject implements IoObjectInterface {
+public class DummyParametersDataObject extends AbstractDataObject {
 
-    private IPrevExchangeItem[] exchangeItems;
-
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        exchangeItems = new IPrevExchangeItem[10];
-        exchangeItems[0] = new DummyExchangeItem("locA.Par1",  101.d);
-        exchangeItems[1] = new DummyExchangeItem("locA.Par2",  102.d);
-        exchangeItems[2] = new DummyExchangeItem("locB.Par1",  201.d);
-        exchangeItems[3] = new DummyExchangeItem("locB.Par2",  202.d);
-        exchangeItems[4] = new DummyExchangeItem("locC.Par_I", 301.d);
-        exchangeItems[5] = new DummyExchangeItem("locC.Par_II",302.d);
-        exchangeItems[6] = new DummyExchangeItem("locD.Par_I", 401.d);
-        exchangeItems[7] = new DummyExchangeItem("locD.Par_II",402.d);
-        exchangeItems[8] = new DummyExchangeItem("locE.Par_m", 501.d);
-        exchangeItems[9] = new DummyExchangeItem("locE.Par_n", 502.d);
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+    	String locAPar1   = "locA.Par1";
+    	String locAPar2   = "locA.Par2";
+    	String locBPar1   = "locB.Par1";
+    	String locBPar2   = "locB.Par2";
+    	String locCPar_I  = "locC.Par_I";
+    	String locCPar_II = "locC.Par_II";
+    	String locDPar_I  = "locD.Par_I";
+    	String locDPar_II = "locD.Par_II";
+    	String locEPar_m  = "locE.Par_m";
+    	String locEPar_n  = "locE.Par_n";
+    	exchangeItems.put(locAPar1  , new DummyExchangeItem(locAPar1, 101.d));
+        exchangeItems.put(locAPar2  , new DummyExchangeItem(locAPar2, 102.d));
+        exchangeItems.put(locBPar1  , new DummyExchangeItem(locBPar1, 201.d));
+        exchangeItems.put(locBPar2  , new DummyExchangeItem(locBPar2, 202.d));
+        exchangeItems.put(locCPar_I , new DummyExchangeItem(locCPar_I, 301.d));
+        exchangeItems.put(locCPar_II, new DummyExchangeItem(locCPar_II, 302.d));
+        exchangeItems.put(locDPar_I , new DummyExchangeItem(locDPar_I, 401.d));
+        exchangeItems.put(locDPar_II, new DummyExchangeItem(locDPar_II, 402.d));
+        exchangeItems.put(locEPar_m , new DummyExchangeItem(locEPar_m, 501.d));
+        exchangeItems.put(locEPar_n , new DummyExchangeItem(locEPar_n, 502.d));
     }
 
-    public IPrevExchangeItem[] getExchangeItems() {
-        return exchangeItems;
-    }
-
-    private class DummyExchangeItem implements IPrevExchangeItem {
+	private static class DummyExchangeItem implements IExchangeItem {
 
         private String exchangeItemId;
         private Double value;
 
-        public DummyExchangeItem(String exchangeItemId, double value) {
+        DummyExchangeItem(String exchangeItemId, double value) {
             this.exchangeItemId = exchangeItemId;
             this.value = value;
         }
@@ -69,21 +76,15 @@ public class DummyParametersIoObject implements IoObjectInterface {
             return null;  // no description
         }
 
-        public String getQuantityId() {
-            return exchangeItemId;
+        public IQuantityInfo getQuantityInfo() { return null; }
+
+        public IGeometryInfo getGeometryInfo() { return null; }
+
+        public ValueType getValuesType() {
+            return ValueType.doublesType;
         }
 
-        public String getUnitId() {
-            return "-";
-        }
-
-        public Class getValueType() {
-            return Double.TYPE;
-        }
-
-        public Role getRole() {
-            return Role.InOut;
-        }
+        public Role getRole() { return Role.InOut; }
 
         public Object getValues() {
             return value;
@@ -107,6 +108,14 @@ public class DummyParametersIoObject implements IoObjectInterface {
 			this.value *= multiplicationFactors[0];
 		}
 
+        public void copyValuesFromItem(IExchangeItem sourceItem) {
+            ValueType sourceType=sourceItem.getValuesType();
+            if(sourceType != ValueType.doublesType){
+                throw new RuntimeException("DummyAstroDataObject.DummyExchangeItem.setValues(): unknown type: " + sourceType );
+            }
+            this.setValues(sourceItem.getValues());
+        }
+
 		public void setValues(Object values) {
             if (!(values instanceof Double)) {
                 throw new RuntimeException("DummyAstroIoObject.DummyExchangeItem.setValues(): unknown object type: " + values.getClass() );
@@ -121,6 +130,10 @@ public class DummyParametersIoObject implements IoObjectInterface {
             value = values[0];
         }
 
+        public ITimeInfo getTimeInfo() { 
+            return null;
+        }
+
         public double[] getTimes() {
             return null;
         }
@@ -130,6 +143,7 @@ public class DummyParametersIoObject implements IoObjectInterface {
         }
     }
 
+    @Override
     public void finish() {
         // no action needed
     }

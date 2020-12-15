@@ -23,7 +23,7 @@ import java.util.Set;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.timeseries.NoosTimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeries;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Reflection;
 import org.openda.utils.Vector;
 
@@ -75,8 +75,8 @@ public class ioDumper {
 	 * Dump contents to stdout.
 	 */
 	public void dump(){
-		IPrevExchangeItem[] items = this.ioObject.getExchangeItems();
-		for(IPrevExchangeItem item : items){
+		IExchangeItem[] items = this.ioObject.getExchangeItems();
+		for(IExchangeItem item : items){
 			System.out.println("#================================");
 			if(item instanceof TimeSeries){
 				System.out.println("TimeSeries id="+item.getId());

@@ -20,18 +20,17 @@
 
 package org.openda.model_efdc;
 
+import org.openda.exchange.AbstractDataObject;
+import org.openda.exchange.DoubleExchangeItem;
+import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.utils.Results;
+import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
+
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.exchange.DoubleExchangeItem;
-import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.Results;
-import org.openda.utils.Time;
-import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * This IoObject changes the relative startTime in the RESTART.INP file,
@@ -39,7 +38,7 @@ import org.openda.utils.io.AsciiFileUtils;
  *
  * @author Arno Kockx
  */
-public class EfdcRestartFileIoObject implements IoObjectInterface {
+public class EfdcRestartFileDataObject extends AbstractDataObject {
 
     /**
      * The timeZone that is used by the model.
@@ -49,49 +48,46 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
      */
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
 
-    private IPrevExchangeItem startTimeExchangeItem = null;
-    private File efdcRestartFile;
+	private String startTimeID;
+	private File efdcRestartFile;
 
-    /**
+	/**
      * @param workingDir the working directory.
-     * @param fileName the name of the restart file for this IoObject (relative to the working directory).
-     * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-     *                  the second argument should be the id of the startTime exchangeItem.
+     * @param arguments the first argument should be  the name of the restart file for this IoObject (relative to the working directory),
+	 *                  the second argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
+     *                  the third argument should be the id of the startTime exchangeItem.
      */
-    
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        this.efdcRestartFile = new File(workingDir, fileName);
+
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+        this.efdcRestartFile = new File(workingDir, arguments[0]);
 
         //get timeZone.
-        if (arguments == null || arguments.length < 1) {
+        if (arguments.length < 2) {
             throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
+                    + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).");
         }
         try {
-            double timeZoneOffsetInHours = Double.parseDouble(arguments[0]);
+            double timeZoneOffsetInHours = Double.parseDouble(arguments[1]);
             this.timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse first argument '" + arguments[0]
+            throw new IllegalArgumentException("Cannot parse second argument '" + arguments[1]
                     + "' for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
+                    + ". The second argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).", e);
         }
 
         //create exchange items.
-        if (arguments.length < 2) {
+        if (arguments.length < 3) {
             throw new IllegalArgumentException("No exchange item id argument specified for " + this.getClass().getSimpleName()
-                    + ". The second argument should be the id of the startTime exchangeItem.");
+                    + ". The third argument should be the id of the startTime exchangeItem.");
         }
-        this.startTimeExchangeItem = new DoubleExchangeItem(arguments[1], 0);
+        startTimeID = arguments[2];
+        exchangeItems.put(startTimeID, new DoubleExchangeItem(arguments[2], 0));
     }
 
-    
-    public IPrevExchangeItem[] getExchangeItems() {
-        return new IPrevExchangeItem[]{this.startTimeExchangeItem};
-    }
-
-    
+    @Override
     public void finish() {
         changeRelativeStartTimeInRestartFile();
     }
@@ -100,7 +96,7 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
      * This method changes the relative startTime in the RESTART.INP file.
      */
     private void changeRelativeStartTimeInRestartFile() {
-        if (this.startTimeExchangeItem == null) {
+        if (exchangeItems.isEmpty()) {
             throw new IllegalStateException("EfdcRestartFileIoObject not initialized yet.");
         }
         if (!this.efdcRestartFile.exists()) {
@@ -109,14 +105,14 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
         }
 
         //get start time.
-        double startTimeDouble = (Double) this.startTimeExchangeItem.getValues();
+        double startTimeDouble = (Double) this.exchangeItems.get(startTimeID).getValues();
         //get relative start time.
         double relativeStartTime = getRelativeStartTime(startTimeDouble,
-                EfdcTimeSeriesIoObject.SECONDS_PER_TIME_UNIT, this.timeZone);
+			this.timeZone);
 
         //read file.
         List<String> content = AsciiFileUtils.readLines(this.efdcRestartFile);
-        if (content == null || content.size() < 1) {
+        if (content.size() < 1) {
             throw new RuntimeException("Invalid RESTART.INP file. File is empty.");
         }
 
@@ -159,9 +155,9 @@ public class EfdcRestartFileIoObject implements IoObjectInterface {
         return -1;
     }
 
-    private double getRelativeStartTime(double startTimeDouble, double secondsPerTimeUnit, TimeZone timeZone) {
+    private double getRelativeStartTime(double startTimeDouble, TimeZone timeZone) {
         long startTime = Time.mjdToMillies(startTimeDouble);
         long referenceTime = EfdcUtils.getReferenceTime(startTime, timeZone);
-        return EfdcUtils.getRelativeTimeInTimeUnits(startTime, referenceTime, secondsPerTimeUnit);
+        return EfdcUtils.getRelativeTimeInTimeUnits(startTime, referenceTime, EfdcTimeSeriesDataObject.SECONDS_PER_TIME_UNIT);
     }
 }

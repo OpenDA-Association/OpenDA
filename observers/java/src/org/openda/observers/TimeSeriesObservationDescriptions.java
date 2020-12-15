@@ -21,7 +21,7 @@ package org.openda.observers;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.ITime;
 import org.openda.interfaces.IVector;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import java.util.List;
 
 public class TimeSeriesObservationDescriptions implements IObservationDescriptions {
@@ -38,7 +38,7 @@ public class TimeSeriesObservationDescriptions implements IObservationDescriptio
 	}
 
     
-    public List<IPrevExchangeItem> getExchangeItems() {
+    public List<IExchangeItem> getExchangeItems() {
         return obs.getExchangeItems();
     }
 

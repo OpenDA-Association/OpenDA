@@ -66,7 +66,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	assertEquals(3, ids.length);
     	System.out.println("ids[0]="+ids[0]);
     	assertEquals("location1.quantity1", ids[0]);
-    	IPrevExchangeItem series1=model.getExchangeItem("location1.quantity1");
+    	IExchangeItem series1=model.getExchangeItem("location1.quantity1");
     	assertTrue(series1 instanceof TimeSeries);
     	System.out.println("location1.quantity1 =>"+series1.toString());
     	double[] times=series1.getTimes();
@@ -79,7 +79,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	valueVector1.maxFullExpandLength=1000;
     	System.out.println("values1="+valueVector1.toString());
     	//series 2
-    	IPrevExchangeItem series2=model.getExchangeItem("location2.quantity2");
+    	IExchangeItem series2=model.getExchangeItem("location2.quantity2");
     	assertTrue(series2 instanceof TimeSeries);
     	System.out.println("location2.quantity2 =>"+series2.toString());
     	double[] values2=series2.getValuesAsDoubles();
@@ -90,7 +90,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	System.out.println("values2="+valueVector2.toString());
 
     	//series 3
-    	IPrevExchangeItem series3=model.getExchangeItem("location3.quantity3");
+    	IExchangeItem series3=model.getExchangeItem("location3.quantity3");
     	assertTrue(series3 instanceof TimeSeries);
     	System.out.println("location3.quantity3 =>"+series3.toString());
     	double[] values3=series3.getValuesAsDoubles();
@@ -118,7 +118,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
 		model.compute(new Time((double)endTimeInDays));
 
 		String noiseModelExchItemId=model.getExchangeItemIDs()[0];
-		IPrevExchangeItem series1=model.getExchangeItem(noiseModelExchItemId);
+		IExchangeItem series1=model.getExchangeItem(noiseModelExchItemId);
 		double[] times=series1.getTimes();
 		double[] values=series1.getValuesAsDoubles();
 		File file = new File(testRunDataDir, "noise_with_initial_values.csv");
@@ -172,7 +172,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	assertEquals(2, ids.length);
     	System.out.println("ids[0]="+ids[0]);
     	assertEquals("waterlevel@aberdeen", ids[0]);
-    	IPrevExchangeItem series1=model.getExchangeItem("waterlevel@aberdeen");
+    	IExchangeItem series1=model.getExchangeItem("waterlevel@aberdeen");
     	assertTrue(series1 instanceof TimeSeries);
     	System.out.println("location1.quantity1 =>"+series1.toString());
     	double[] times=series1.getTimes();
@@ -261,7 +261,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
 			modelWithFixedSeed.setAutomaticNoiseGeneration(true);
 			ITime targetTime = modelWithFixedSeed.getTimeHorizon().getEndTime();
 			modelWithFixedSeed.compute(targetTime);
-			IPrevExchangeItem seriesWithFixedSeed=modelWithFixedSeed.getExchangeItem("waterlevel@aberdeen");
+			IExchangeItem seriesWithFixedSeed=modelWithFixedSeed.getExchangeItem("waterlevel@aberdeen");
 			resultsFixedSeed[i]=seriesWithFixedSeed.getValuesAsDoubles();
 
 			StochVector.setInitialSeedType(StochVector.InitialSeedType.random);
@@ -270,7 +270,7 @@ public class TimeSeriesNoiseModelTest extends TestCase {
 			modelWithRandomSeed = factoryWithRandomSeed.getInstance(OutputLevel.Debug);
 			modelWithRandomSeed.setAutomaticNoiseGeneration(true);
 			modelWithRandomSeed.compute(targetTime);
-			IPrevExchangeItem seriesWithRandomSeed=modelWithRandomSeed.getExchangeItem("waterlevel@aberdeen");
+			IExchangeItem seriesWithRandomSeed=modelWithRandomSeed.getExchangeItem("waterlevel@aberdeen");
 			resultsRandomSeed[i]=seriesWithRandomSeed.getValuesAsDoubles();
 		}
 

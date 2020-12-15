@@ -27,9 +27,7 @@ package org.openda.models.simpleModel;
 * d(u)/d(t) = - omega^2 * x - (2/t_damp) u
 */
 
-import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IVector;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
 

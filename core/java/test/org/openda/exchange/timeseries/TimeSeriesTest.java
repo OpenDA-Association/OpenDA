@@ -23,31 +23,29 @@ import junit.framework.TestCase;
 
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Mask;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class TimeSeriesTest extends TestCase {
 
-   public static void testTimeSeries() {
+   public void testTimeSeries() {
       System.out.println("==============================================================================");
       System.out.println("test TimeSeries");
       System.out.println("==============================================================================");
       double delta = 0.00001;
 
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3 };
       TimeSeries ts1 = new TimeSeries(times, values);
       // public double[] getTimes(){
-      double times2[] = ts1.getTimes();
+      double[] times2 = ts1.getTimes();
       System.out.println("times2[1] =" + times2[1]);
       System.out.println("Should be times2[1] = 1.0");
       assertEquals(1.0, times2[1], delta);
       // public double[] getValues(){
-      double values2[] = ts1.getValuesAsDoubles();
+      double[] values2 = ts1.getValuesAsDoubles();
       System.out.println("values2[1] =" + values2[1]);
       System.out.println("Should be values2[1] = 0.1");
       assertEquals(0.1, values2[1], delta);
@@ -62,12 +60,12 @@ public class TimeSeriesTest extends TestCase {
       TimeSeries ts2 = new TimeSeries(times, values, x, y, source, quantity, unit, location);
       // public TimeSeries(double times[], double values[]){
       // public double[] getTimes(){
-      double times3[] = ts2.getTimes();
+      double[] times3 = ts2.getTimes();
       System.out.println("times3[1] =" + times3[1]);
       System.out.println("Should be times3[1] = 1.0");
       assertEquals(1.0, times3[1], delta);
       // public double[] getValues(){
-      double values3[] = ts2.getValuesAsDoubles();
+      double[] values3 = ts2.getValuesAsDoubles();
       System.out.println("values3[1] =" + values3[1]);
       System.out.println("Should be values3[1] = 0.1");
       assertEquals(0.1, values3[1], delta);
@@ -146,13 +144,13 @@ public class TimeSeriesTest extends TestCase {
       assertEquals(0.1, height2, delta);
 
       // public void setData(double[] times,double[] values){
-      double times4[] = { 10.0, 11.0, 12.0, 13.0 };
-      double values4[] = { 10.0, 10.1, 10.2, 10.3 };
+      double[] times4 = { 10.0, 11.0, 12.0, 13.0 };
+      double[] values4 = { 10.0, 10.1, 10.2, 10.3 };
       ts2.setData(times4, values4);
       // public double[] getTimesRef(){
-      double times5[] = ts2.getTimesRef();
+      double[] times5 = ts2.getTimesRef();
       // public double[] getValuesRef(){
-      double values5[] = ts2.getValuesRef();
+      double[] values5 = ts2.getValuesRef();
       System.out.println("times5[1] =" + times5[1]);
       System.out.println("Should be times5[1] = 11.0");
       assertEquals(11.0, times5[1], delta);
@@ -172,13 +170,13 @@ public class TimeSeriesTest extends TestCase {
       String property2 = ts2.getProperty("doesNotExist");
       System.out.println("property2 =" + property2);
       System.out.println("Should be property2 = null");
-      assertEquals(null, property2);
+	   assertNull(property2);
 
       // check for a property
       boolean propIsThere = ts2.hasProperty("referencePlane");
       boolean propIsNotThere = ts2.hasProperty("doesNotExist");
-      assertEquals(true, propIsThere);
-      assertEquals(false, propIsNotThere);
+      assertTrue(propIsThere);
+	  assertFalse(propIsNotThere);
 
       // get property with a default if it is not there
       String refPlane = ts2.getStringProperty("referencePlane", "Rijksdriehoek");
@@ -194,22 +192,22 @@ public class TimeSeriesTest extends TestCase {
 
    }
 
-   public static void testTimeSeriesSelection() {
+   public void testTimeSeriesSelection() {
       System.out.println("==============================================================================");
       System.out.println("test selection on TimeSeries");
       System.out.println("==============================================================================");
       double delta = 0.00001;
 
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3 };
 
       TimeSeries ts1 = new TimeSeries(times, values);
       ts1.setLocation("location");
       // public double[] getTimes(){
       TimeSeries ts2 = ts1.selectTimeSubset(0.5, 2.5);
-      double times2[] = ts2.getTimesRef();
-      double values2[] = ts2.getValuesRef();
+      double[] times2 = ts2.getTimesRef();
+      double[] values2 = ts2.getValuesRef();
       System.out.println("times2.length =" + times2.length);
       System.out.println("Should be times2.length = 2");
       assertEquals(2, times2.length);
@@ -246,8 +244,8 @@ public class TimeSeriesTest extends TestCase {
 
       // times[] = {0.0, 1.0, 2.0, 3.0};
       TimeSeries ts3 = ts1.selectTimeSubset(0.5, 4.0);
-      double times3[] = ts3.getTimesRef();
-      double values3[] = ts3.getValuesRef();
+      double[] times3 = ts3.getTimesRef();
+      double[] values3 = ts3.getValuesRef();
       System.out.println("times3.length =" + times3.length);
       System.out.println("Should be times3.length = 3");
       assertEquals(3, times3.length);
@@ -262,8 +260,8 @@ public class TimeSeriesTest extends TestCase {
 
       // times[] = {0.0, 1.0, 2.0, 3.0};
       TimeSeries ts4 = ts1.selectTimeSubset(-0.5, 2.5);
-      double times4[] = ts4.getTimesRef();
-      double values4[] = ts4.getValuesRef();
+      double[] times4 = ts4.getTimesRef();
+      double[] values4 = ts4.getValuesRef();
       System.out.println("times4.length =" + times4.length);
       System.out.println("Should be times4.length = 4");
       assertEquals(3, times4.length);
@@ -278,21 +276,21 @@ public class TimeSeriesTest extends TestCase {
 
       // times[] = {0.0, 1.0, 2.0, 3.0}; Empty selection
       TimeSeries ts5 = ts1.selectTimeSubset(3.5, 5.5);
-      double times5[] = ts5.getTimesRef();
-      double values5[] = ts5.getValuesRef();
-      assertTrue(times5 == null);
-      assertTrue(values5 == null);
+      double[] times5 = ts5.getTimesRef();
+      double[] values5 = ts5.getValuesRef();
+	  assertNull(times5);
+	  assertNull(values5);
    }
 
-   public static void testTimeSeriesMaskSelection() {
+   public void testTimeSeriesMaskSelection() {
       System.out.println("==============================================================================");
       System.out.println("test mask selection on TimeSeries");
       System.out.println("==============================================================================");
       double delta = 0.00001;
 
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3 };
       TimeSeries ts1 = new TimeSeries(times, values);
       ts1.setLocation("location");
       // public double[] getTimes(){
@@ -309,8 +307,8 @@ public class TimeSeriesTest extends TestCase {
       assertTrue(ts2.equals(ts2d));
       assertTrue(ts2.equals(ts2e));
 
-      double times2[] = ts2.getTimesRef();
-      double values2[] = ts2.getValuesRef();
+      double[] times2 = ts2.getTimesRef();
+      double[] values2 = ts2.getValuesRef();
       System.out.println("times2.length =" + times2.length);
       System.out.println("Should be times2.length = 2");
       assertEquals(2, times2.length);
@@ -352,8 +350,8 @@ public class TimeSeriesTest extends TestCase {
       assertTrue(ts3.equals(ts3a));
       assertTrue(ts3.equals(ts3b));
 
-      double times3[] = ts3.getTimesRef();
-      double values3[] = ts3.getValuesRef();
+      double[] times3 = ts3.getTimesRef();
+      double[] values3 = ts3.getValuesRef();
       System.out.println("times3.length =" + times3.length);
       System.out.println("Should be times3.length = 3");
       assertEquals(3, times3.length);
@@ -371,8 +369,8 @@ public class TimeSeriesTest extends TestCase {
       TimeSeries ts4a = ts1.selectTimeSubset(-0.5, 2.5);
       assertTrue(ts4.equals(ts4a));
 
-      double times4[] = ts4.getTimesRef();
-      double values4[] = ts4.getValuesRef();
+      double[] times4 = ts4.getTimesRef();
+      double[] values4 = ts4.getValuesRef();
       System.out.println("times4.length =" + times4.length);
       System.out.println("Should be times4.length = 4");
       assertEquals(3, times4.length);
@@ -390,26 +388,26 @@ public class TimeSeriesTest extends TestCase {
       TimeSeries ts5a = ts1.selectTimeSubset(3.5, 5.5);
       assertTrue(ts5.equals(ts5a));
 
-      double times5[] = ts5.getTimesRef();
-      double values5[] = ts5.getValuesRef();
-      assertTrue(times5 == null);
-      assertTrue(values5 == null);
+      double[] times5 = ts5.getTimesRef();
+      double[] values5 = ts5.getValuesRef();
+	  assertNull(times5);
+	  assertNull(values5);
    }
 
-   public static void testTimeSeries2() {
+   public void testTimeSeries2() {
       System.out.println("==============================================================================");
       System.out.println("test TimeSeries as an implementation of IExchange");
       System.out.println("==============================================================================");
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3 };
       double x = 1.0;
       double y = 2.0;
       String source = "source";
       String quantity = "quantity";
       String unit = "unit";
       String location = "location";
-      IExchangeItem ex = new TimeSeries(times, values, x, y, source, quantity, unit, location);
+      TimeSeries ex = new TimeSeries(times, values, x, y, source, quantity, unit, location);
 
       // String getId();
       String id = ex.getId();
@@ -418,24 +416,23 @@ public class TimeSeriesTest extends TestCase {
       assertEquals("ex.getId()", "location.quantity", id);
 
       // String getQuantityId();
-      String quantityId = ((TimeSeries) ex).getQuantityId();
+      String quantityId = ex.getQuantityId();
       System.out.println("ex.getQuantityId() =" + quantityId);
       System.out.println("Should be ex.getQuantityId() = quantity");
       assertEquals("ex.getQuantityId()", "quantity", quantityId);
 
       // String getUnitId();
-      String unitId = ((TimeSeries) ex).getUnitId();
+      String unitId = ex.getUnitId();
       System.out.println("ex.getUnitId() =" + unitId);
       System.out.println("Should be ex.getUnitId() = unit");
       assertEquals("ex.getUnitId()", "unit", unitId);
 
-      // public Type getObjectType(); //
-      Type valueType = ex.getValueType();
-      assertTrue(valueType == org.openda.utils.Array.class);
+      // public valueType getValuesType(); //
+      IExchangeItem.ValueType valueType = ex.getValuesType();
+	  assertSame(valueType, IExchangeItem.ValueType.IArrayType);
 
       // public Object times;
-      TimeSeries seriesRef = (TimeSeries) ex;
-      double[] timesRef = seriesRef.getTimesRef();
+	   double[] timesRef = ex.getTimesRef();
       System.out.println("times[1] =" + timesRef[1]);
       System.out.println("Should be times[1] = 1.0");
       assertEquals("times[1]", 1.0, timesRef[1], 0.0001);
@@ -447,7 +444,7 @@ public class TimeSeriesTest extends TestCase {
       assertEquals("values[1]", 0.1, valuesCopy[1], 0.0001);
 
       // public void setValues(Object values);
-      double newValues[] = { 2.0, 2.1, 2.2, 2.3 };
+      double[] newValues = { 2.0, 2.1, 2.2, 2.3 };
       ex.setValuesAsDoubles(newValues);
       double[] valuesCopy2 = ex.getValuesAsDoubles();
       System.out.println("values[1] =" + valuesCopy2[1]);
@@ -470,18 +467,18 @@ public class TimeSeriesTest extends TestCase {
 
    }
 
-   public static void testTimeSeriesSelection_2() {
+   public void testTimeSeriesSelection_2() {
       System.out.println("==============================================================================");
       System.out.println("test time selection on TimeSeries");
       System.out.println("==============================================================================");
       double delta = 0.01;
 
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3, 0.4 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3, 0.4 };
       TimeSeries ts1 = new TimeSeries(times, values);
       ts1.setLocation("location");
-      double times2[] = { 1.0, 1.999, 2.001, 3.0, 7.0 };
+      double[] times2 = { 1.0, 1.999, 2.001, 3.0, 7.0 };
       // 1.999,2.001 are within tolerance and 7.0 does not exist
       // now get selection
       double[] values2 = ts1.getValuesAsDoubles(times2, delta, 999.00);
@@ -490,30 +487,30 @@ public class TimeSeriesTest extends TestCase {
       assertEquals("values2", "[0.1, 0.2, 0.2, 0.3, 999.0]", Arrays.toString(values2));
    }
 
-   public static void testTimeSeriesSelection_3() {
-      double times[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3, 0.4 };
+   public void testTimeSeriesSelection_3() {
+      double[] times = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3, 0.4 };
       TimeSeries ts1 = new TimeSeries(times, values);
-      double times2[] = { 1.0, 1.999, 2.001, 3.0, 7.0 };
+      double[] times2 = { 1.0, 1.999, 2.001, 3.0, 7.0 };
       TimeSeries ts2 = ts1.selectTimeSubset(times2);
       assertEquals(2, ts2.getSize());
       assertEquals(1.0, ts2.getTimesRef()[0], 0.01);
       assertEquals(3.0, ts2.getTimesRef()[1], 0.01);
       assertEquals(0.1, ts2.getValuesRef()[0], 0.01);
       assertEquals(0.3, ts2.getValuesRef()[1], 0.01);
-      double times3[] = { -1.0, 1.999, 2.001, 7.0, 7.0 };
+      double[] times3 = { -1.0, 1.999, 2.001, 7.0, 7.0 };
       TimeSeries ts3 = ts1.selectTimeSubset(times3);
       assertEquals(0, ts3.getSize());
    }
 
-   public static void testTimeSeriesId() {
+   public void testTimeSeriesId() {
       System.out.println("==============================================================================");
       System.out.println("test default and overrule for id");
       System.out.println("==============================================================================");
 
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3, 0.4 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3, 0.4 };
       TimeSeries ts1 = new TimeSeries(times, values);
       ts1.setLocation("valve1");
       ts1.setQuantity("pressure");
@@ -525,14 +522,14 @@ public class TimeSeriesTest extends TestCase {
       assertEquals("default id", "pressure@valve1", id);
    }
 
-   public static void testTimeSeriesValueSelection() {
+   public void testTimeSeriesValueSelection() {
       System.out.println("==============================================================================");
       System.out.println("test excluding values outside the range");
       System.out.println("==============================================================================");
 
       // public TimeSeries(double times[], double values[]){
-      double times[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
-      double values[] = { 0.0, 0.1, 0.2, 0.3, 0.4 };
+      double[] times = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+      double[] values = { 0.0, 0.1, 0.2, 0.3, 0.4 };
       TimeSeries ts1 = new TimeSeries(times, values);
       ts1.setLocation("valve1");
       ts1.setQuantity("pressure");
@@ -556,29 +553,29 @@ public class TimeSeriesTest extends TestCase {
       assertEquals("values4", "[0.1, 0.2, 0.3, 0.4]", Arrays.toString(values4));
    }
 
-   public static void testTimeSeriesToString() {
+   public void testTimeSeriesToString() {
       System.out.println("==============================================================================");
       System.out.println("test TimeSeries.toString");
       System.out.println("==============================================================================");
 
       // public TimeSeries(double times[], double values[]){
-      double times1[] = { 0.0, 1.0, 2.0, 3.0 };
-      double values1[] = { 0.0, 0.1, 0.2, 0.3 };
+      double[] times1 = { 0.0, 1.0, 2.0, 3.0 };
+      double[] values1 = { 0.0, 0.1, 0.2, 0.3 };
       TimeSeries ts1 = new TimeSeries(times1, values1);
       String ts1String = ts1.toString();
       assertEquals(-297300475, ts1String.hashCode());
 
       // public TimeSeries(double times[], double values[]){
-      double times2[] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
-      double values2[] = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 };
+      double[] times2 = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
+      double[] values2 = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 };
       TimeSeries ts2 = new TimeSeries(times2, values2);
       String ts2String = ts2.toString();
       System.out.println("ts2=" + ts2String);
       assertEquals(-925868425, ts2String.hashCode());
 
       // public TimeSeries(double times[], double values[]){
-      double times3[] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0 };
-      double values3[] = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3 };
+      double[] times3 = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0 };
+      double[] values3 = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3 };
       TimeSeries ts3 = new TimeSeries(times3, values3);
       String ts3String = ts3.toString();
       System.out.println("ts3=" + ts3String);

@@ -21,40 +21,64 @@
 
 package org.openda.interfaces;
 
+import java.io.Serializable;
+
 /**
  * Item for which the values can be retrieved from or provided to the model.
  * The model tells which exchange items it has, after which the exchange item is used to access the values.
  * The IExchange item currently extends the 'previous' version.
  */
-public interface IExchangeItem extends IPrevExchangeItem{
+public interface IExchangeItem extends Serializable {
 
     /**
      * List of available data types.
      */
-    public enum ValueType {
+    enum ValueType {
         /** corresponds to java int */
         intType,
         /** corresponds to java double */
         doubleType,
         /** corresponds to java double[]   -> to be replaced by IArray */
         doublesType,
+		/** corresponds to java float */
+		floatType,
         /** corresponds to java float[]    -> to be replaced by IArray */
         floatsType,
         /** corresponds to java double[][] -> to be replaced by IArray */
         doubles2dType,
         /** corresponds to java String */
         StringType,
+		/** corresponds to java Boolean */
+		BooleanType,
         /** IVector -> in future IVector will extend IArray */
         IVectorType,
         /** IArray */
-        IArrayType
+        IArrayType,
+        /** corresponds to java Date */
+        DateType,
+        /** corresponds to ITime */
+        ITimeType,
+		/** can be any type of object, only used for very specific implementations */
+		custom
+    }
+
+    /**
+     * List of possible roles for the exchange values.
+     */
+    enum Role {
+        /** Input for the model.*/
+        Input,
+        /** Output from the model.*/
+        Output,
+        /** Both input for the model and output from the model.*/
+        InOut
     }
 
     /**
      * Get the role of the exchange item (input, output, or both)
      * @return The exchange items's role
      */
-    public Role getRole();
+    Role getRole();
 
     /**
      * The identifier for the exchangeItem (must be unique within the context of a model instance).
@@ -75,7 +99,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 * @param sourceItem The item to copy the values from.
 	 *
 	 */
-    public void copyValuesFromItem(IExchangeItem sourceItem);
+    void copyValuesFromItem(IExchangeItem sourceItem);
 
 	/**
 	 * Return information about time if it exists.
@@ -84,7 +108,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 *
 	 * @return time info
 	 */
-	public ITimeInfo getTimeInfo();
+    ITimeInfo getTimeInfo();
 
 	/**
 	 * Return information about the content of the data if it exists. Returns null if no quantity info exists.
@@ -92,7 +116,7 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 *
 	 * @return quantity info
 	 */
-	public IQuantityInfo getQuantityInfo();
+    IQuantityInfo getQuantityInfo();
 
 	/**
 	 * Return information about the spatial aspect of the data if it exists. Returns null if no geometry info exists.
@@ -100,18 +124,63 @@ public interface IExchangeItem extends IPrevExchangeItem{
 	 *
 	 * @return geometry info
 	 */
-	public IGeometryInfo getGeometryInfo();
+    IGeometryInfo getGeometryInfo();
 
     /**
      * Ask which object type will be returned by getValues() call
      * @return The object type that will be returned by getValues() call
      */
-	public ValueType getValuesType();
+    ValueType getValuesType();
 
     /**
      * Get the values of the exchange item
      * @return The values, according the type as defined in <code>getValueType()</code>
      */
-    public Object getValues();
+    Object getValues();
+
+	/**
+	 * Get the values of the exchange item as an array of doubles
+	 * @return The values as an array of doubles
+	 */
+	double[] getValuesAsDoubles();
+
+	/**
+	 * Perform a values += alpha * axpyValues</c> operation on each value in the exchange item.
+	 * @param alpha The <c>alpha</c> in <c>state variable += alpha * vector</c>.
+	 * @param axpyValues  The values for the axpy-operation on all values in the exchange item.
+	 */
+	void axpyOnValues(double alpha, double[] axpyValues);
+
+	/**
+	 * Multiply each value in the exchange item's value with the related multiplication factor.
+	 * @param multiplicationFactors  The multiplication factors for all exchange time values.
+	 */
+	void multiplyValues(double[] multiplicationFactors);
+
+	/**
+	 * Set the values of the exchange item
+	 * @param values  The values to be set, according the type as defined in <code>getValueType()</code>
+	 */
+	void setValues(Object values);
+
+	/**
+	 * Set the values of the exchange item
+	 * @param values  The values as an array of doubles
+	 */
+	void setValuesAsDoubles(double[] values);
+
+	/**
+	 * Check if the exchange item is a time series
+	 * @return null if the exchange item is time independent, series of time stamps/spans otherwise
+	 */
+	double[] getTimes();
+
+	/**
+	 * Set the times for the exchangeItem
+	 * setTimes is only allowed if getTimes() != null
+	 * and if the exchangeItem has role Input or InOut
+	 * @param times The times as an array of doubles
+	 */
+	void setTimes(double[] times);
 
 }

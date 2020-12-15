@@ -39,9 +39,7 @@ public class BcExchangeItem implements IExchangeItem
 	}
 
 	@Override
-	public Role getRole() {
-		return Role.InOut;
-	}
+	public Role getRole() { return Role.InOut; }
 
 	@Override
 	public String getId() {
@@ -52,9 +50,6 @@ public class BcExchangeItem implements IExchangeItem
 	public String getDescription() {
 		return id;
 	}
-
-	@Override
-	public Class getValueType() { return double[].class; }
 
 	@Override
 	public void copyValuesFromItem(IExchangeItem sourceItem) { setValues(sourceItem.getValues()); }

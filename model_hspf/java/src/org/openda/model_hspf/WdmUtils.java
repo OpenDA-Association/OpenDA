@@ -23,7 +23,7 @@ package org.openda.model_hspf;
 import java.io.File;
 import java.util.*;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 
@@ -125,9 +125,9 @@ public class WdmUtils {
         return wdmMessageFile.getAbsolutePath();
     }
 
-    public static IPrevExchangeItem.Role initializeRole(String roleString) {
-        if ("input".equalsIgnoreCase(roleString)) return IPrevExchangeItem.Role.Input;
-        if ("output".equalsIgnoreCase(roleString)) return IPrevExchangeItem.Role.Output;
+    public static IExchangeItem.Role initializeRole(String roleString) {
+        if ("input".equalsIgnoreCase(roleString)) return IExchangeItem.Role.Input;
+        if ("output".equalsIgnoreCase(roleString)) return IExchangeItem.Role.Output;
 
         throw new IllegalArgumentException(WdmUtils.class.getSimpleName() + ": unknown role type '" + roleString + "' specified.");
     }
@@ -510,7 +510,7 @@ public class WdmUtils {
     /**
      * Creates an exchange item with the given role for each dataSet in the wdm file with the given unit number.
      */
-    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromFile(WdmDll wdmDll, int wdmFileNumber, IPrevExchangeItem.Role role) {
+    public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromFile(WdmDll wdmDll, int wdmFileNumber, IExchangeItem.Role role) {
         List<WdmTimeSeriesExchangeItem> exchangeItems = new ArrayList<WdmTimeSeriesExchangeItem>();
 
         //get first existing dataSet and put its number in the variable dataSetNumber.
@@ -543,7 +543,7 @@ public class WdmUtils {
      * Creates an exchange item with the given role for each dataSet in the wdm file that is also in the given timeSeriesIdList.
      */
     public static List<WdmTimeSeriesExchangeItem> createExchangeItemsFromList(WdmDll wdmDll, int wdmFileNumber, String wdmFilePath,
-            IPrevExchangeItem.Role role, String[] timeSeriesIdList) {
+            IExchangeItem.Role role, String[] timeSeriesIdList) {
         if (timeSeriesIdList == null || timeSeriesIdList.length == 0) throw new IllegalArgumentException("timeSeriesIdList == null || timeSeriesIdList.length == 0");
         Set<String> timeSeriesIdSet = new HashSet<String>(Arrays.asList(timeSeriesIdList));
 

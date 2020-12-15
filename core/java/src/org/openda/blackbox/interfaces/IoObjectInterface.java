@@ -20,7 +20,7 @@
 
 package org.openda.blackbox.interfaces;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 import java.io.File;
 
@@ -42,7 +42,7 @@ public interface IoObjectInterface {
      * Ask which elements can be accessed
      * @return The list of element identifiers that can be accessed
      */
-    public IPrevExchangeItem[] getExchangeItems(); //
+    public IExchangeItem[] getExchangeItems(); //
 
     public void finish();
 }

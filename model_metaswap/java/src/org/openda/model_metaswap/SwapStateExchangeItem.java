@@ -15,9 +15,10 @@ public class SwapStateExchangeItem implements IExchangeItem {
 	}
 
 	@Override
-	public IPrevExchangeItem.Role getRole() {
+	public IExchangeItem.Role getRole() {
 		return null;
 	}
+
 
 	@Override
 	public double[] getValuesAsDoubles() {
@@ -103,8 +104,4 @@ public class SwapStateExchangeItem implements IExchangeItem {
 		return null;
 	}
 
-	@Override
-	public Class getValueType() {
-		return null;
-	}
 }

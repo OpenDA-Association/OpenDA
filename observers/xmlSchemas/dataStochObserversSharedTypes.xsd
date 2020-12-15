@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by Stef Hummel (Stichting DELTARES) -->
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="StochObsUncertaintyModuleXML">
+		<xs:sequence>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify list of  input arguments for the implementation of the.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The class name to be started</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="workingDirectory" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Directory where executable file is run.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="StochObservationStationsXML">
+		<xs:sequence>
+			<xs:element name="observationId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StochObsDataObjectXML">
+		<xs:sequence>
+			<xs:element name="fileName" type="xs:string" minOccurs="0"/>
+			<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specify list of  input arguments</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="className" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The class name to be started</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="workingDirectory" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Directory where executable file is run.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sameTimeSeries" type="xs:string" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>This is never used in the code. If true, all time series for all exchange items have the same time series</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="missingValue" type="xs:double" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specify a dummy value for indicating missing observations. If not specified, a default value of NaN is used. Note: For NetcdfDataObject this missingValue is ignored, since the missing_value (or _FillValue) is already defined in the netcdf file itself.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DataObjectStochObserverXML">
+		<xs:sequence>
+			<!-- -->
+			<!-- The Uncertainty Module -->
+			<xs:element name="uncertaintyModule" type="openda:StochObsUncertaintyModuleXML">
+				<xs:annotation>
+					<xs:documentation>The uncertainty module to be started (e.g. org.openda.uncertainties.UncertaintyEngine).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- -->
+			<!-- The DataObjects containing the observations -->
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="dataObject" type="openda:StochObsDataObjectXML">
+          <xs:annotation>
+            <xs:documentation>One or more data objects. The first argument of each data object is interpreted as the file to be read</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ioObject" type="openda:StochObsDataObjectXML">
+          <xs:annotation>
+            <xs:documentation>DEPRECATED. Please use dataObject</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+			<!-- -->
+			<xs:element name="assimilationStations" type="openda:StochObservationStationsXML" minOccurs="0"/>
+			<xs:element name="validationStations" type="openda:StochObservationStationsXML" minOccurs="0"/>
+			<xs:element name="removeMissingValues" type="xs:boolean" default="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Should missing values in the observations be removed, or should they be presented as NaN?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

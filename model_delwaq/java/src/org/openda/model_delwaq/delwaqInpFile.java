@@ -20,10 +20,8 @@
 package org.openda.model_delwaq;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -84,7 +82,7 @@ public abstract class delwaqInpFile implements IDataObject {
 	 * @param role Input, Output, or InOut (i.e. both)
 	 * @return The array of exchange item identifiers.
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		ArrayList<String> identifiers = null;
 		for (IExchangeItem item : items) {
 			if (item.getRole().equals(role)) {
@@ -176,7 +174,7 @@ public abstract class delwaqInpFile implements IDataObject {
 			for (int i=0; i<names.size(); i++) {
 				items.add(new ScientificNotationExchangeItem(names.get(i).toString(),
 						                                     itemDescription,
-						                                     IPrevExchangeItem.Role.InOut,
+						                                     IExchangeItem.Role.InOut,
 						                                     Double.parseDouble(values.get(i).toString()),
 						                                     format));
 			}

@@ -41,18 +41,18 @@ public class GotmProfileFileTest extends TestCase {
 
 	public void testReadInput() {
 
-		IDataObject ioObject = new GotmProfileFile();
+		IDataObject dataObject = new GotmProfileFile();
 		String args[] = {"vel_prof_file.dat"};
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
 		// dump interpreted data to screen
-		System.out.println(ioObject.toString());
+		System.out.println(dataObject.toString());
 		
-		String[] exchangeItemIds = ioObject.getExchangeItemIDs();
+		String[] exchangeItemIds = dataObject.getExchangeItemIDs();
 
 		for(int item=0;item<exchangeItemIds.length;item++){
 
-			IExchangeItem ex = ioObject.getDataObjectExchangeItem(exchangeItemIds[item]);
+			IExchangeItem ex = dataObject.getDataObjectExchangeItem(exchangeItemIds[item]);
 			System.out.println(ex.toString());
 
 			if(exchangeItemIds[item].equalsIgnoreCase("model_setup_dt")){
@@ -74,20 +74,20 @@ public class GotmProfileFileTest extends TestCase {
 	public void testWriteInput() {
 		//First read input
 		
-		IDataObject ioObject = new GotmProfileFile();
+		IDataObject dataObject = new GotmProfileFile();
 		String args[] = {"vel_prof_file.dat"};
 		File original = new File(testRunDataDir,"vel_prof_file.dat");
-		ioObject.initialize(testRunDataDir, args);
+		dataObject.initialize(testRunDataDir, args);
 
-		//String[] exchangeItemIds = ioObject.getExchangeItemIDs();
+		//String[] exchangeItemIds = dataObject.getExchangeItemIDs();
 		// System.out.println(exchangeItemIds);source
-		IExchangeItem item = ioObject.getDataObjectExchangeItem("vel_prof_file_1_0");
+		IExchangeItem item = dataObject.getDataObjectExchangeItem("vel_prof_file_1_0");
 		//double[] values = new double[1];
 		//values[0] = 1.0;
 		//item.setValues(1.0);
 
 		//write to file
-		ioObject.finish();
+		dataObject.finish();
 		File reference = new File(testRunDataDir,"vel_prof_file.ref.dat");
 		boolean identical = testData.FilesAreIdentical(original,reference);
 		assertTrue(identical);

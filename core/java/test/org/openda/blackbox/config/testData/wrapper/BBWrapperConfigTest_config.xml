@@ -21,11 +21,11 @@
 		<finalizeActions/>
 	</run>
 	<inputOutput>
-		<ioObject className="org.openda.model_efdc.EfdcGridTimeSeriesIoObject">
+		<dataObject className="org.openda.model_efdc.EfdcGridTimeSeriesIoObject">
 			<file>%outputFile%</file>
 			<id>outputIoObject</id>
 			<arg>%timeZone%</arg>
 			<arg>%startTime%</arg>
-		</ioObject>
+		</dataObject>
 	</inputOutput>
 </blackBoxWrapperConfig>

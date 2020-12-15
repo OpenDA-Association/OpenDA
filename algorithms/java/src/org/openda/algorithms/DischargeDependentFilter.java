@@ -18,7 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.algorithms;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IObservationDescriptions;
 import org.openda.interfaces.IStochObserver;
 import org.openda.observers.DischargeDependentSelector;
@@ -77,13 +77,13 @@ public class DischargeDependentFilter implements IObservationSpaceFilter {
 
 	private void stopIfNoSelectedData(IStochObserver observer) {
         IObservationDescriptions descr = observer.getObservationDescriptions();
-        List<IPrevExchangeItem> items;
+        List<IExchangeItem> items;
         try{
             items = descr.getExchangeItems();
         }catch (Exception e) {
-            items = new ArrayList<IPrevExchangeItem>(); //Empty list
+            items = new ArrayList<IExchangeItem>(); //Empty list
         }
-        for(IPrevExchangeItem item : items){ // assume the exchangeItems are in the
+        for(IExchangeItem item : items){ // assume the exchangeItems are in the
             String id = item.getId();
             double times[] = item.getTimes();
             if (times == null) {
@@ -143,11 +143,11 @@ public class DischargeDependentFilter implements IObservationSpaceFilter {
 	}
 
 	private void logObservationSpace(ObservationSpace observationSpace) throws IOException {
-		List<IPrevExchangeItem> observationItems =
+		List<IExchangeItem> observationItems =
 				observationSpace.observer.getObservationDescriptions().getExchangeItems();
 		String idLine = "obs.EI id's/size";
 		List<Double> obsValues = new ArrayList<Double>();
-		for	(IPrevExchangeItem exchangeItem : observationItems) {
+		for	(IExchangeItem exchangeItem : observationItems) {
 			double[] eiValues = exchangeItem.getValuesAsDoubles();
 			idLine += "," + exchangeItem.getId() + "=" + eiValues.length;
 			for (double eiValue : eiValues) {

@@ -1,8 +1,11 @@
 package org.openda.model_delft3d;
 
-import org.openda.interfaces.*;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
-public class D3dBctExchangeItem implements IPrevExchangeItem, IExchangeItem {
+public class D3dBctExchangeItem implements IExchangeItem {
 	private final String id;
 	private double[] values;
 	private final double[] times;
@@ -101,8 +104,4 @@ public class D3dBctExchangeItem implements IPrevExchangeItem, IExchangeItem {
 		return null;
 	}
 
-	@Override
-	public Class getValueType() {
-		return null;
-	}
 }

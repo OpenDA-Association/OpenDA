@@ -19,12 +19,10 @@
 */
 package org.openda.models.river1;
 
-import org.openda.interfaces.IExchangeItem;
 import org.openda.models.simpleModel.SimpleStochModelInstance;
 import org.openda.utils.StochVector;
 import org.openda.utils.Vector;
 import org.openda.interfaces.IVector;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
 

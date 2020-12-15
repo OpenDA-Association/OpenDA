@@ -19,7 +19,7 @@
  */
 package org.openda.blackbox.config;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 /**
  * Interface to be implemented by classes that can wrap an exchange item in a rangeValidationExchangeItem
@@ -53,5 +53,5 @@ public interface RangeValidationConstraint {
 	 * @param affectedExchangeItem the item to be wrapped.
 	 * @return rangeValidationExchangeItem that wraps the given item.
 	 */
-	public IPrevExchangeItem wrapAffectedExchangeItem(IPrevExchangeItem affectedExchangeItem);
+	public IExchangeItem wrapAffectedExchangeItem(IExchangeItem affectedExchangeItem);
 }

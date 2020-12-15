@@ -20,16 +20,14 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import junit.framework.TestCase;
-
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Test class for testing EfdcInpIoObject.
@@ -41,7 +39,7 @@ public class EfdcInpFileTest extends TestCase {
     private OpenDaTestSupport testData;
     private File testRunDataDir;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
         testData = new OpenDaTestSupport(EfdcInpFileTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
@@ -50,36 +48,38 @@ public class EfdcInpFileTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        calendar.set(2009, 0, 1, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 1, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
-        calendar.set(2009, 0, 3, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 3, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
+        EfdcInpDataObject efdcInpDataObject = new EfdcInpDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String efdcInpFilename = "efdcInpFileTest/input/EFDC.INP";
         String startTimeExchangeItemId = "TSTART1";
         String endTimeExchangeItemId = "TSTOP1";
-        efdcInpIoObject.initialize(testRunDataDir, efdcInpFilename,
-                new String[]{"0", startTimeExchangeItemId, endTimeExchangeItemId});
+        efdcInpDataObject.initialize(testRunDataDir,
+                new String[]{efdcInpFilename, "0", startTimeExchangeItemId, endTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems = efdcInpIoObject.getExchangeItems();
+        String[] exchangeItemIDs = efdcInpDataObject.getExchangeItemIDs();
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
-            if (id.equals(startTimeExchangeItemId)) {
+        for (String id  : exchangeItemIDs) {
+        	IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
+        	String exId = exchangeItem.getId();
+        	assertEquals(id, exId);
+            if (exId.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
-            } else if (id.equals(endTimeExchangeItemId)) {
+            } else if (exId.equals(endTimeExchangeItemId)) {
                 exchangeItem.setValues(endDate);
             }
         }
 
         //This command actually replaces the tags in the file by the values
         //of the corresponding exchangeItems.
-        efdcInpIoObject.finish();
+        efdcInpDataObject.finish();
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, efdcInpFilename);

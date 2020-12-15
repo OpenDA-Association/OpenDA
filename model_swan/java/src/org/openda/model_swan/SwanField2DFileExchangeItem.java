@@ -20,12 +20,12 @@
 
 package org.openda.model_swan;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.*;
 
 /**
  * Exchange item of SWAN with scalar 2D field data format.
  */
-public class SwanField2DFileExchangeItem implements IPrevExchangeItem {
+public class SwanField2DFileExchangeItem implements IExchangeItem {
     private String id;
     private SwanField2DFile swanField2DFile;
     private Integer iTime = -1;
@@ -47,9 +47,13 @@ public class SwanField2DFileExchangeItem implements IPrevExchangeItem {
         return double[].class;
     }
 
-    public IPrevExchangeItem.Role getRole(){
-        return IPrevExchangeItem.Role.InOut;
-    }
+    public ValueType getValuesType() { return ValueType.doublesType; }
+
+    public Role getRole() {return Role.InOut; }
+
+    public IQuantityInfo getQuantityInfo() { return null; }
+
+    public IGeometryInfo getGeometryInfo() { return null; }
 
     public Object getValues() {
         return getValuesAsDoubles();
@@ -100,7 +104,15 @@ public class SwanField2DFileExchangeItem implements IPrevExchangeItem {
 //        }
     }
 
-    public void setValues(Object values) {
+	public void copyValuesFromItem(IExchangeItem sourceItem) {
+		ValueType sourceType=sourceItem.getValuesType();
+		if(sourceType != ValueType.doublesType){
+			throw new RuntimeException("TreeVectorIoObjectExchangeItem.copyValuesFromItem(): unknown type: " + sourceType );
+		}
+		this.setValues(sourceItem.getValues());
+	}
+
+	public void setValues(Object values) {
         if (!(values instanceof double[])) {
             throw new RuntimeException("SetValues for" + this.getId() + ": unexpected object type: " + values.getClass().getName());
         }
@@ -116,6 +128,8 @@ public class SwanField2DFileExchangeItem implements IPrevExchangeItem {
 //            swanField2DFile.setXYComp(iTimeXY,values);
 //        }
     }
+
+    public ITimeInfo getTimeInfo() { throw new UnsupportedOperationException("org.openda.model_swan.SwanStateFileExchangeItem.getTimeInfo(): Not implemented yet.");}
 
     public double[] getTimes() {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanStateFileExchangeItem.getTimes(): Not implemented yet.");

@@ -114,11 +114,16 @@
 				<xs:documentation>Identity of the exchange item vector to be used in the stochastic model configuration. Note: by using the reserved id "allElementsFromIoObject" all the elements in the data/io object are exposed as exchange items (with the element id in the data/io object as id)</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="ioObjectId" type="xs:string" use="required">
+		<xs:attribute name="ioObjectId" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
+				<xs:documentation>Obsolete, please use dataObjectId. The corresponding object identity of the exchange item</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+    <xs:attribute name="dataObjectId" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 		<xs:attribute name="elementId" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The corresponding identity of the exchange item as used internally within the model. If this is not specified, then the elementId will be equal to the specified id.</xs:documentation>
@@ -156,11 +161,16 @@
 				<xs:documentation>Identity of the exchange item vector to be used in the stochastic model configuration</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="ioObjectId" type="xs:string" use="required">
+		<xs:attribute name="ioObjectId" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
+				<xs:documentation>Obsolete, please use dataObjectId. The corresponding object identity of the exchange item</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+    <xs:attribute name="dataObjectId" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>The corresponding object identity of the exchange item</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 		<xs:attribute name="elementId" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>The corresponding identity of the exchange item as used internally within the model</xs:documentation>

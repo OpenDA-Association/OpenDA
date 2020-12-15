@@ -24,8 +24,6 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.model_swan.SwanParameters;
 
 import java.io.*;
 import java.text.ParseException;
@@ -35,7 +33,7 @@ import java.text.ParseException;
  */
 public class SwanInputFile implements IDataObject {
 
-    private IPrevExchangeItem[] exchangeItems;
+    private IExchangeItem[] exchangeItems;
 
     private SwanParameters swanParameter;
     private File swnFile;
@@ -211,7 +209,7 @@ public class SwanInputFile implements IDataObject {
         return new String[] {exchangeItems[0].getId()};
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 
@@ -219,7 +217,7 @@ public class SwanInputFile implements IDataObject {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFile.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         if (!exchangeItemID.equals(swanInputFileId)) {
             throw new RuntimeException("unknown exchange item: " + exchangeItemID);
         }

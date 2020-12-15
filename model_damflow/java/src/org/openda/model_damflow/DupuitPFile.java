@@ -21,7 +21,6 @@ package org.openda.model_damflow;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.*;
 import java.util.Locale;
@@ -61,7 +60,7 @@ public class DupuitPFile implements IDataObject {
 	}
 
 	
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitPFile - Method Name : getExchangeItemIDs");
 	}
 

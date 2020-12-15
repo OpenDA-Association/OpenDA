@@ -3,7 +3,6 @@ package org.openda.model_metaswap;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.io.CsvReader;
 
 import java.io.File;
@@ -23,7 +22,7 @@ public class SwapResultFile implements IDataObject {
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

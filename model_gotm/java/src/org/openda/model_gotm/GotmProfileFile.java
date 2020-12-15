@@ -24,7 +24,7 @@ import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.utils.Results;
 import org.openda.utils.Vector;
 
@@ -214,7 +214,7 @@ public class GotmProfileFile implements IDataObject{
 		}
 		
 		for ( int iVar = 0 ; iVar < nVar ; iVar++  ) {
-			ArrayExchangeItem item = new ArrayExchangeItem(idVar[iVar], IPrevExchangeItem.Role.InOut);
+			ArrayExchangeItem item = new ArrayExchangeItem(idVar[iVar], IExchangeItem.Role.InOut);
             item.setValuesAsDoubles(valuesVector[iVar].getValues());
             item.setTimeInfo(new TimeInfo(timesVector.getValues()));
             items.add(item);

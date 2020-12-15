@@ -59,10 +59,10 @@ public class DischargeDependentSelector implements ISelector {
     }
 
 //    public IStochObserver createSelection(IStochObserver inpObserver, TimeSeries[] inpVar, double minVal, double maxVal){
-//        List<IPrevExchangeItem> items = inpObserver.getObservationDescriptions().getExchangeItems();
+//        List<IExchangeItem> items = inpObserver.getObservationDescriptions().getExchangeItems();
 //        TimeSeries[] selectedTimeSeries = new TimeSeries[items.size()];
 //        int k=0;
-//        for (IPrevExchangeItem item : items) {
+//        for (IExchangeItem item : items) {
 //            double[] values = item.getValuesAsDoubles();
 //            double[] times = item.getTimes();
 //            List<Double> newValues = new ArrayList<Double>();

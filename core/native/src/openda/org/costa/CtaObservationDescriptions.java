@@ -34,7 +34,7 @@ public class CtaObservationDescriptions extends CtaObject implements Observation
         this.ctaHandle = ctaHandle;
     }
 
-    public List<IPrevExchangeItem> getExchangeItems() {
+    public List<IExchangeItem> getExchangeItems() {
         throw new UnsupportedOperationException("org.costa.CtaObservationDescriptions.getExchangeItems(): Not implemented yet.");
     }
 

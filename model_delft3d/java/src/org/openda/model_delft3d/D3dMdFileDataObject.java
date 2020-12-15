@@ -23,7 +23,6 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.*;
 import java.util.*;
@@ -84,7 +83,7 @@ public class D3dMdFileDataObject implements IDataObject {
 	}
 
 	@java.lang.Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 
 		List<String> matchingExchangeItemIds = new ArrayList<>();
 		for(IExchangeItem exchangeItem : exchangeItems.values())
@@ -138,16 +137,16 @@ public class D3dMdFileDataObject implements IDataObject {
 						double valueAsDouble_D2 = Double.parseDouble(values_D[4].trim());
 						double valueAsDouble_D3 = Double.parseDouble(values_D[8].trim());
 
-						exchangeItems.put(key1, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D1));
-						exchangeItems.put(key2, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D2));
-						exchangeItems.put(key3, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble_D3));
+						exchangeItems.put(key1, new DoubleExchangeItem(key, IExchangeItem.Role.InOut, valueAsDouble_D1));
+						exchangeItems.put(key2, new DoubleExchangeItem(key, IExchangeItem.Role.InOut, valueAsDouble_D2));
+						exchangeItems.put(key3, new DoubleExchangeItem(key, IExchangeItem.Role.InOut, valueAsDouble_D3));
 
 					}
 //             for (int i = 0; i < allKeys.length; i++) {
 					if (Arrays.asList(fileKeys).contains(key)) {
 
 						double valueAsDouble = Double.parseDouble(value);
-						exchangeItems.put(key, new DoubleExchangeItem(key, IPrevExchangeItem.Role.InOut, valueAsDouble));
+						exchangeItems.put(key, new DoubleExchangeItem(key, IExchangeItem.Role.InOut, valueAsDouble));
 
 					}else if (Arrays.asList(timeKeys).contains(key)) {
 
@@ -157,10 +156,10 @@ public class D3dMdFileDataObject implements IDataObject {
 							this.mjdFactor = getTimeToMjdFactor(value);
 						}else if(key.equalsIgnoreCase(PROPERTY_STARTTIME)){
 							StartTime = getMjdFromDiff(Double.parseDouble(value));
-							exchangeItems.put(PROPERTY_STARTTIME, new DoubleExchangeItem(PROPERTY_STARTTIME, IPrevExchangeItem.Role.InOut, StartTime));
+							exchangeItems.put(PROPERTY_STARTTIME, new DoubleExchangeItem(PROPERTY_STARTTIME, IExchangeItem.Role.InOut, StartTime));
 						}else if(key.equalsIgnoreCase(PROPERTY_STOPTIME)){
 							StopTime = getMjdFromDiff(Double.parseDouble(value));
-							exchangeItems.put(PROPERTY_STOPTIME, new DoubleExchangeItem(PROPERTY_STOPTIME, IPrevExchangeItem.Role.InOut, StopTime));
+							exchangeItems.put(PROPERTY_STOPTIME, new DoubleExchangeItem(PROPERTY_STOPTIME, IExchangeItem.Role.InOut, StopTime));
 						}
 
 					}
@@ -168,12 +167,12 @@ public class D3dMdFileDataObject implements IDataObject {
 					if (Arrays.asList(fileKeys).contains(Ccofuv) && key.equalsIgnoreCase(Ccofu)){
 						double valueAsDouble = Double.parseDouble(value);
 						CcofuvInit = valueAsDouble;
-						exchangeItems.put(Ccofuv, new DoubleExchangeItem(Ccofuv, IPrevExchangeItem.Role.InOut, valueAsDouble));
+						exchangeItems.put(Ccofuv, new DoubleExchangeItem(Ccofuv, IExchangeItem.Role.InOut, valueAsDouble));
 
 					}else if (Arrays.asList(fileKeys).contains(DVicouv) && key.equalsIgnoreCase(D_H)){
 						double valueAsDouble = Double.parseDouble(value);
 						DVicouvInit = valueAsDouble;
-						exchangeItems.put(DVicouv, new DoubleExchangeItem(DVicouv, IPrevExchangeItem.Role.InOut, valueAsDouble));
+						exchangeItems.put(DVicouv, new DoubleExchangeItem(DVicouv, IExchangeItem.Role.InOut, valueAsDouble));
 
 					}
 

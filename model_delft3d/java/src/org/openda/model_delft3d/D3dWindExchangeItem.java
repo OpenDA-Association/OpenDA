@@ -89,9 +89,7 @@ public class D3dWindExchangeItem implements IExchangeItem {
         return List.class;
     }
 
-    public Role getRole() {
-        return Role.InOut;
-    }
+    public Role getRole() { return Role.InOut; }
 
     public Object getValues() {
         return valuesOnGrid2D;

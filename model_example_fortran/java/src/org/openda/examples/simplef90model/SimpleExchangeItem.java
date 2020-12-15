@@ -19,18 +19,21 @@
 */
 package org.openda.examples.simplef90model;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 /**
  * Exchange item for a DLL based model
  */
-public class SimpleExchangeItem implements IPrevExchangeItem{
+public class SimpleExchangeItem implements IExchangeItem{
 
     private String id;
     private int indexInDLL;
     private Class valueType;
     private SimpleModelInstance SimpleModelInstance;
-    private IPrevExchangeItem.Role role;
+    private IExchangeItem.Role role;
 
     public SimpleExchangeItem(String id, int indexInDLL, Class valueType, SimpleModelInstance SimpleModelInstance) {
 
@@ -42,9 +45,9 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
         if (indexInDLL == SimpleModelDLL.gravity ||
                 indexInDLL == SimpleModelDLL.friction_on_grid ||
                 indexInDLL == SimpleModelDLL.discharge_on_laterals ) {
-           role = IPrevExchangeItem.Role.InOut;
+           role = IExchangeItem.Role.InOut;
         } else if (indexInDLL == SimpleModelDLL.waterlevel_on_grid) {
-           role = IPrevExchangeItem.Role.Output;
+           role = IExchangeItem.Role.Output;
         } else {
             throw new RuntimeException("Unknown role for exchange item: " + id);
         }
@@ -58,13 +61,17 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
         return null; // no description
     }
 
+    public IQuantityInfo getQuantityInfo() { return null; }
+
+    public IGeometryInfo getGeometryInfo() { return null; }
+
     public Class getValueType() {
         return valueType;
     }
 
-    public Role getRole() {
-        return role;
-    }
+    public ValueType getValuesType() { return null; }
+
+    public Role getRole() { return role; }
 
     public Object getValues() {
         if (valueType == double[].class) {
@@ -96,7 +103,15 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
 		setValuesAsDoubles(values);
 	}
 
-	public void setValues(Object o) {
+	public void copyValuesFromItem(IExchangeItem sourceItem) {
+		ValueType sourceType = sourceItem.getValuesType();
+		if (sourceType != ValueType.doublesType) {
+			throw new RuntimeException("ConstantLimitsRangeValidationExchangeItem.copyValuesFromItem(): unknown type: " + sourceType);
+		}
+		this.setValues(sourceItem.getValues());
+	}
+
+		public void setValues(Object o) {
         if (o instanceof double[]) {
             if (valueType != double[].class) {
                 throw new RuntimeException("Incompatible object type in setValues: " +
@@ -117,6 +132,8 @@ public class SimpleExchangeItem implements IPrevExchangeItem{
 
     public void setValuesAsDoubles(double[] doubles) {
     }
+
+    public ITimeInfo getTimeInfo() { return null; }
 
     public double[] getTimes() {
         return SimpleModelInstance.getTimes();

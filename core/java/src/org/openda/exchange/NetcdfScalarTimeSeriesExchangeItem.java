@@ -312,21 +312,20 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 
     private double[] getSelectedValues(IExchangeItem sourceItem, IDimensionIndex[] selectionIndices) {
 
-        Class valueType = sourceItem.getValueType();
+        ValueType valueType = sourceItem.getValuesType();
 
         Object valuesObject = sourceItem.getValues();
 
         if (selectionIndices != null) {
-            if ( valueType != IVector.class &&
-                    valueType != ITreeVector.class &&
-                    valueType != double[].class) {
+            if ( valueType != ValueType.IVectorType &&
+                    valueType != ValueType.doublesType) {
                 throw new RuntimeException("Index selection can not be applied on values of type " +
                         valueType);
             }
 //            IDimensionIndex[] selectionIndices = vectorConfig.getSelectionIndices();
             int[] dimSizes;
             double[] orgValues;
-            if (valueType == double[].class) {
+            if (valueType == ValueType.doublesType) {
                 dimSizes = new int[1];
                 orgValues = (double[])valuesObject;
                 dimSizes[0] = orgValues.length;

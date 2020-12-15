@@ -20,17 +20,15 @@
 
 package org.openda.model_efdc;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import junit.framework.TestCase;
-
 import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Test class for testing EfdcGridTimeSeriesIoObject and EfdcGridTimeSeriesExchangeItem.
@@ -40,10 +38,9 @@ import org.openda.utils.Time;
 public class EfdcGridTimeSeriesTest extends TestCase {
 
     private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
-    protected void setUp() throws IOException {
-    	testData = new OpenDaTestSupport(EfdcGridTimeSeriesTest.class, "model_efdc");
+	protected void setUp() {
+		OpenDaTestSupport testData = new OpenDaTestSupport(EfdcGridTimeSeriesTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
 
@@ -55,14 +52,13 @@ public class EfdcGridTimeSeriesTest extends TestCase {
      * using a tool called POST_PCfile_ASCII.exe. This tool was developed by
      * EnssoHitech for NIER (National Institute of Environmental Research) in Korea.
      *
-     * @throws Exception
-     */
-    public void testReadGridTimeSeries() throws Exception {
+	 */
+    public void testReadGridTimeSeries() {
         //read period from MJD 55679.375 (2011-04-28 09:00) to MJD 55682.375 (2011-05-01 09:00).
         Calendar calendar = Calendar.getInstance();
         //startTime is in GMT.
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calendar.set(2011, 04, 28, 0, 0, 0);
+        calendar.set(2011, Calendar.MAY, 28, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long startTime = calendar.getTimeInMillis();
         //expectedTimes4 are in GMT.
@@ -73,18 +69,22 @@ public class EfdcGridTimeSeriesTest extends TestCase {
         File outputFile = new File(testRunDataDir, outputFileName);
         assertTrue(outputFile.exists());
 
-        EfdcGridTimeSeriesIoObject efdcGridTimeSeriesIoObject = new EfdcGridTimeSeriesIoObject();
-        String[] arguments = new String[]{"9", TimeUtils.mjdToString(Time.milliesToMjd(startTime))};
-        efdcGridTimeSeriesIoObject.initialize(testRunDataDir, outputFileName, arguments);
+        EfdcGridTimeSeriesDataObject efdcGridTimeSeriesDataObject = new EfdcGridTimeSeriesDataObject();
+        String[] arguments = new String[]{outputFileName, "9", TimeUtils.mjdToString(Time.milliesToMjd(startTime))};
+        efdcGridTimeSeriesDataObject.initialize(testRunDataDir, arguments);
 
         //get all exchangeItems.
-        IPrevExchangeItem[] exchangeItems = efdcGridTimeSeriesIoObject.getExchangeItems();
-        assertEquals(23, exchangeItems.length);
+        String[] exchangeItemIDs = efdcGridTimeSeriesDataObject.getExchangeItemIDs();
+        assertEquals(23, exchangeItemIDs.length);
 
-        //check times and values.
-        IPrevExchangeItem exchangeItem4 = exchangeItems[3];
-        //the id is the one-based columnNumber of the column in the file.
-        assertEquals("8", exchangeItem4.getId());
+		//the id is the one-based columnNumber of the column in the file.
+		String id = exchangeItemIDs[3];
+        IExchangeItem exchangeItem4 = efdcGridTimeSeriesDataObject.getDataObjectExchangeItem(id);
+        String exId4 = exchangeItem4.getId();
+        assertEquals(id, exId4);
+
+		//check times and values.
+		assertEquals("8", exId4);
 
         double[] times4 = exchangeItem4.getTimes();
         assertNotNull(times4);

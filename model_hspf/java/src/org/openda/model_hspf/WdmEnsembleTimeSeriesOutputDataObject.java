@@ -23,8 +23,6 @@ package org.openda.model_hspf;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IEnsembleDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
 
 import java.io.File;
@@ -73,8 +71,8 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 		if (arguments.length < 4) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": No role argument specified. The third argument should be the role of this DataObject. Role must be 'output'.");
 		}
-		Role role = WdmUtils.initializeRole(arguments[3]);
-		if (role == IPrevExchangeItem.Role.Input) {
+		IExchangeItem.Role role = WdmUtils.initializeRole(arguments[3]);
+		if (role == IExchangeItem.Role.Input) {
 			throw new UnsupportedOperationException(getClass().getSimpleName() + " not implemented for role input.");
 		}
 
@@ -116,7 +114,7 @@ public class WdmEnsembleTimeSeriesOutputDataObject implements IDataObject, IEnse
 		return new String[0];
 	}
 
-	public String[] getExchangeItemIDs(Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		//ignore ensemble exchange items.
 		return new String[0];
 	}

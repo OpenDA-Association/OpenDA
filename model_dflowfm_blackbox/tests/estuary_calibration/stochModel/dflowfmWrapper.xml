@@ -34,30 +34,30 @@
     </run>
 
     <inputOutput>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
+        <dataObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
             <file>%frictionMultiplierFile%</file>
             <id>frictionCoefFile</id>
             <arg>idsFromTemplateFile=%frictionMultiplierTemplateFile%</arg>
             <arg>idPrefix=friction_</arg>
-        </ioObject>
+        </dataObject>
 
-        <ioObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
+        <dataObject className="org.openda.model_dflowfm.DFlowFMXyzFile">
             <file>%depthMultiplierFile%</file>
             <id>depthCoefFile</id>
             <arg>idsFromTemplateFile=%depthMultiplierTemplateFile%</arg>
             <arg>idPrefix=depth_</arg>
-        </ioObject>
+        </dataObject>
 
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
             <file>%netcdfoutput%</file>
             <id>%netcdfoutput%</id>
             <arg>true</arg>
             <arg>false</arg>
-        </ioObject>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
+        </dataObject>
+        <dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
             <file>%inputFile%</file>
             <id>boundaries</id>
-        </ioObject>
+        </dataObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

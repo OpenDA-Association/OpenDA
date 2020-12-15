@@ -25,7 +25,7 @@ import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 //import org.openda.model_dflowfm.DFlowFMTimTimeSeriesFormatter;
 import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.QuantityInfo;

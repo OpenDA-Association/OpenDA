@@ -24,7 +24,7 @@ package org.openda.exchange;
 import org.openda.interfaces.*;
 
 /**
- * Base implementation of IPrevExchangeItem
+ * Base implementation of IExchangeItem
  */
 public abstract class ExchangeItem implements IExchangeItem {
 
@@ -32,7 +32,7 @@ public abstract class ExchangeItem implements IExchangeItem {
     private String description;
     private String quantityId;
     private String unitId;
-    private IPrevExchangeItem.Role role= IPrevExchangeItem.Role.InOut;
+    private IExchangeItem.Role role= IExchangeItem.Role.InOut;
 	private TimeInfo timeInfo = new TimeInfo();
 
 	public ExchangeItem(String id) {
@@ -70,15 +70,15 @@ public abstract class ExchangeItem implements IExchangeItem {
         this.unitId = unitId;
     }
 
-    public void setRole(IPrevExchangeItem.Role role){
+    public void setRole(IExchangeItem.Role role){
     	this.role = role;
     }
 
-    public IPrevExchangeItem.Role getRole(){
-    	return this.role;
-    }
+	public IExchangeItem.Role getRole(){
+		return this.role;
+	}
 
-    public String getQuantityId() {
+	public String getQuantityId() {
         return quantityId;
     }
 
@@ -99,9 +99,9 @@ public abstract class ExchangeItem implements IExchangeItem {
     }
 
 	public void copyValuesFromItem(IExchangeItem sourceItem) {
-		if (sourceItem.getValueType() != getValueType()) {
+		if (sourceItem.getValuesType() != getValuesType()) {
 			throw new RuntimeException("Incompatible value types in copy action from " + sourceItem.getId() +
-			" to " + getId() + "(" + sourceItem.getValueType().toString() + "/=" + getValueType().toString());
+			" to " + getId() + "(" + sourceItem.getValuesType().toString() + "/=" + getValuesType().toString());
 		}
 		setValues(sourceItem.getValues());
 	}

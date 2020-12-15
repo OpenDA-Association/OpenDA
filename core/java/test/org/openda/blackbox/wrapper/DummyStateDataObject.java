@@ -4,7 +4,6 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.File;
 
@@ -20,7 +19,7 @@ public class DummyStateDataObject implements IDataObject {
     }
 
     @Override
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         throw new RuntimeException("org.openda.blackbox.wrapper.DummyStateDataObject.getExchangeItemIDs() not implemented yet");
 
     }
@@ -32,13 +31,13 @@ public class DummyStateDataObject implements IDataObject {
                 //double[] values = new double[1061];
                 double[] values = new double[stateSize];
                 fillWithRandomValues(values);
-                return new DoublesExchangeItem("state", IPrevExchangeItem.Role.InOut, values);
+                return new DoublesExchangeItem("state", IExchangeItem.Role.InOut, values);
             case "StartTime" :
-                return new DoubleExchangeItem("StartTime", IPrevExchangeItem.Role.InOut, 0);
+                return new DoubleExchangeItem("StartTime", IExchangeItem.Role.InOut, 0);
             case "StopTime" :
-                return new DoubleExchangeItem("StopTime", IPrevExchangeItem.Role.InOut, 10);
+                return new DoubleExchangeItem("StopTime", IExchangeItem.Role.InOut, 10);
             case "TimeStep" :
-                return new DoubleExchangeItem("TimeStep", IPrevExchangeItem.Role.InOut, 1);
+                return new DoubleExchangeItem("TimeStep", IExchangeItem.Role.InOut, 1);
             default:
                 return null;
         }

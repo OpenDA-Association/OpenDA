@@ -22,8 +22,7 @@ package org.openda.model_hspf;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -92,27 +91,27 @@ public class WdmTimeSeriesDataObject implements IDataObject {
 
 	public String[] getExchangeItemIDs() {
 		List<String> exchangeItemIds = new ArrayList<>();
-		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
 			exchangeItemIds.add(exchangeItem.getId());
 		}
-		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
+		return exchangeItemIds.toArray(new String[0]);
 	}
 
 	public String[] getExchangeItemIDs(Role role) {
 		List<String> exchangeItemIds = new ArrayList<>();
-		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
 			if (exchangeItem.getRole().equals(role)) {
 				exchangeItemIds.add(exchangeItem.getId());
 			}
 		}
-		return exchangeItemIds.toArray(new String[exchangeItemIds.size()]);
+		return exchangeItemIds.toArray(new String[0]);
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
-		for (IPrevExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
+		for (IExchangeItem exchangeItem : wrappedIoObject.getExchangeItems()) {
 			//a WdmTimeSeriesIoObject returns WdmTimeSeriesExchangeItems that implement TimeSeries which implements both IPrevExchangeItem and IExchangeItem,
 			//so here can cast IPrevExchangeItem to IExchangeItem.
-			if (exchangeItem.getId().equals(exchangeItemId)) return (IExchangeItem) exchangeItem;
+			if (exchangeItem.getId().equals(exchangeItemId)) return exchangeItem;
 		}
 
 		//if not found.

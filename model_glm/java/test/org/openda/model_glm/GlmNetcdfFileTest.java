@@ -47,11 +47,11 @@ public class GlmNetcdfFileTest extends TestCase {
      */
 //    public void testSeriesWaterlevel1() {
 //
-//        IDataObject ioObject = new GlmNetcdfFile();
+//        IDataObject dataObject = new GlmNetcdfFile();
 //        String args[] = {};
-//        ioObject initialize(testRunDataDir, "SimonaNetcdfFile/waterlevelseries.nc", args);
+//        dataObject initialize(testRunDataDir, "SimonaNetcdfFile/waterlevelseries.nc", args);
 //
-//        TimeSeries[] exchangeItems = ioObject.getExchangeItems();
+//        TimeSeries[] exchangeItems = dataObject.getExchangeItems();
 //        int n = exchangeItems.length;
 //        assertEquals("exchangeItems.length", 275, exchangeItems.length);
 //
@@ -92,11 +92,11 @@ public class GlmNetcdfFileTest extends TestCase {
 //        File inputFile = new File(testRunDataDir, "SimonaNetcdfFile/waqua.nc");
 //        ioObject.initialize(testRunDataDir, "SimonaNetcdfFile/waqua.nc", args);
 //
-//        IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+//        IExchangeItem[] exchangeItems = ioObject.getExchangeItems();
 //        int n = exchangeItems.length;
 //        assertEquals("exchangeItems.length", 32, n);
 //
-//        IPrevExchangeItem lastExchangeItem = exchangeItems[n-1];
+//        IExchangeItem lastExchangeItem = exchangeItems[n-1];
 //        assertEquals("last exchangeItems id", "SEP", lastExchangeItem.getId());
 
 //		TODO (SV): Fix test. Test gives error

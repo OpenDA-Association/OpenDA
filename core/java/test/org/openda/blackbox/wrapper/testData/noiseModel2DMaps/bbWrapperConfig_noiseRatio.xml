@@ -22,10 +22,10 @@
   <inputOutput>
 
 
-    <ioObject className="org.openda.blackbox.wrapper.DummyStateDataObject">
+    <dataObject className="org.openda.blackbox.wrapper.DummyStateDataObject">
       <file>notUsed</file>
       <id>DummyStateObject</id>
-    </ioObject>
+    </dataObject>
 
 
   </inputOutput>

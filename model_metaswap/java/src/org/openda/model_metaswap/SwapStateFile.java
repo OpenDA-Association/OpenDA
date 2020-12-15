@@ -2,7 +2,6 @@ package org.openda.model_metaswap;
 
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -34,7 +33,7 @@ public class SwapStateFile implements IDataObject{
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

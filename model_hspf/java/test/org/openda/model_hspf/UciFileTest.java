@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 import org.openda.utils.io.AsciiFileUtils;
@@ -65,11 +64,11 @@ public class UciFileTest extends TestCase {
         uciIoObject.initialize(testRunDataDir, uciFilename, arguments);
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems = uciIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = uciIoObject.getExchangeItems();
         assertEquals(2, exchangeItems.length);
 
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             String id = exchangeItem.getId();
             if ("TSTART".equals(id)) {
                 exchangeItem.setValues(startDate);
@@ -105,11 +104,11 @@ public class UciFileTest extends TestCase {
         uciIoObject.initialize(testRunDataDir, uciFilename, arguments);
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems = uciIoObject.getExchangeItems();
+        IExchangeItem[] exchangeItems = uciIoObject.getExchangeItems();
         assertEquals(2, exchangeItems.length);
 
         //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
+        for (IExchangeItem exchangeItem : exchangeItems) {
             String id = exchangeItem.getId();
             if ("TSTART".equals(id)) {
                 exchangeItem.setValues(startDate);

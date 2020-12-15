@@ -27,18 +27,18 @@ import java.util.List;
 /**
  * Configuration for IoObject based stochastic observer.
  */
-public class IoObjectStochObserverConfig implements Serializable{
+public class DataObjectStochObserverConfig implements Serializable{
 
-    private IoStochObsUncertaintyConfig uncertaintyModuleConfig;
+    private DataStochObsUncertaintyConfig uncertaintyModuleConfig;
     private ArrayList<IoStochObsIoObjectConfig> ioObjectConfigs;
 	private List<String> assimilationObsIds;
 	private List<String> validationObsIds;
     private boolean removeMissingValues;
 
-	public IoObjectStochObserverConfig(IoStochObsUncertaintyConfig uncertaintyModuleConfig,
-                                       ArrayList<IoStochObsIoObjectConfig> ioObjectConfigs,
-                                       List<String> assimilationObsIds,
-                                       List<String> validationObsIds, boolean removeMissingValues) {
+	public DataObjectStochObserverConfig(DataStochObsUncertaintyConfig uncertaintyModuleConfig,
+										 ArrayList<IoStochObsIoObjectConfig> ioObjectConfigs,
+										 List<String> assimilationObsIds,
+										 List<String> validationObsIds, boolean removeMissingValues) {
         this.uncertaintyModuleConfig = uncertaintyModuleConfig;
         this.ioObjectConfigs = ioObjectConfigs;
 		this.assimilationObsIds = assimilationObsIds;
@@ -46,7 +46,7 @@ public class IoObjectStochObserverConfig implements Serializable{
         this.removeMissingValues = removeMissingValues;
     }
 
-    public IoStochObsUncertaintyConfig getUncertaintyModuleConfig() {
+    public DataStochObsUncertaintyConfig getUncertaintyModuleConfig() {
         return uncertaintyModuleConfig;
     }
 
@@ -109,12 +109,12 @@ public class IoObjectStochObserverConfig implements Serializable{
     /**
      * Configuration for the uncertainty  module in an IoObject based stochastic observer.
      */
-    public static class IoStochObsUncertaintyConfig implements Serializable {
+    public static class DataStochObsUncertaintyConfig implements Serializable {
         private File workingDir;
         private String className;
         private String[] arguments;
 
-        public IoStochObsUncertaintyConfig(File workingDir, String className, String[] arguments) {
+        public DataStochObsUncertaintyConfig(File workingDir, String className, String[] arguments) {
             this.workingDir = workingDir;
             this.className = className;
             this.arguments = arguments;

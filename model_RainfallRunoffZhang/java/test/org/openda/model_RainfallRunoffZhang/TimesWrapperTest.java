@@ -18,22 +18,15 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_RainfallRunoffZhang;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import junit.framework.TestCase;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.OpenDaTestSupport;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-
-import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.OpenDaTestSupport;
-
-import junit.framework.TestCase;
 
 /**
  * Tester for a wrapper. The reading of a correct input file and the storing of
@@ -48,7 +41,6 @@ public class TimesWrapperTest extends TestCase {
 
 	// Use openDA test suite.
 	private File testRunDataDir;
-    private OpenDaTestSupport testData;
 
 	private String fileName = "timesWrapperTestInput.m"; // Needs to be created. 
 	
@@ -67,7 +59,7 @@ public class TimesWrapperTest extends TestCase {
 		
 		// Use openDA test utilities. This allows the test files to be stored 
 		// in a separate directory from the source code.
-		testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ResultFileWrapperTest.class, "model_RainfallRunoffZhang");
 		testRunDataDir = testData.getTestRunDataDir();
 		        
 		// Write a test input file.
@@ -94,7 +86,7 @@ public class TimesWrapperTest extends TestCase {
 	/**
 	 * Cleans up test file created in setUp().
 	 */
-	protected void tearDown() throws Exception {
+	protected void tearDown() {
 		try {
 			File file = new File(testRunDataDir, fileName);
 			Path path = file.toPath();
@@ -116,39 +108,29 @@ public class TimesWrapperTest extends TestCase {
 	public void testReadInput() {
 
 		// Creates the I/O-Object from the wrapper to be tested.
-		IoObjectInterface ioObject = new TimesWrapper();
-		String args[] = {};
+		TimesWrapper timesWrapper = new TimesWrapper();
+		String[] args = {fileName};
 		// Call to initialize -> reads the file and writes 2 Exchange items.
-		ioObject.initialize(testRunDataDir, fileName, args);
+		timesWrapper.initialize(testRunDataDir, args);
 
 		// 2 exchange items should be present: soilMoistureExchangeItem and
 		// gwStorageExchangeItem.
-		IPrevExchangeItem[] exchangeItems = ioObject.getExchangeItems();
+		String[] exchangeItemIDs = timesWrapper.getExchangeItemIDs();
 
-		for (int item = 0; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id1, expectedId);
-
-				// public Object getValues();
-				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
+		for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = timesWrapper.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase(id1)) {
+				double[] expectedValue = exchangeItem.getValuesAsDoubles();
 				assertEquals(value1, expectedValue[0]);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id2, expectedId);
-
-				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
+			if (exId.equalsIgnoreCase(id2)) {
+				double[] expectedValue = exchangeItem.getValuesAsDoubles();
 				assertEquals(value2, expectedValue[0]);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				IPrevExchangeItem expectedExchangeItem = exchangeItems[item];
-				String expectedId = expectedExchangeItem.getId();
-				assertEquals(id3, expectedId);
-
-				double[] expectedValue = expectedExchangeItem.getValuesAsDoubles();
+			if (exId.equalsIgnoreCase(id3)) {
+				double[] expectedValue = exchangeItem.getValuesAsDoubles();
 				assertEquals(value3, expectedValue[0]);
 			}
 		}
@@ -163,31 +145,31 @@ public class TimesWrapperTest extends TestCase {
 		double[] expectedSimTimeStep = new double[1];
 		double[] expectedFinalTime = new double[1];
 		
-		IoObjectInterface timesWrapper = new TimesWrapper();
-		String args[] = {};
-		timesWrapper.initialize(testRunDataDir, fileName, args);
+		TimesWrapper timesWrapper = new TimesWrapper();
+		String[] args = {fileName};
+		timesWrapper.initialize(testRunDataDir, args);
 		
-		IPrevExchangeItem[] exchangeItems = timesWrapper.getExchangeItems();
+		String[] exchangeItemIDs = timesWrapper.getExchangeItemIDs();
 		
 		// modify the entries of the exchange items.
-		for (int item = 0 ; item < exchangeItems.length; item++) {
-			if (exchangeItems[item].getId().equalsIgnoreCase(id1)) {
-				IPrevExchangeItem ei = exchangeItems[item];
-				expectedCurrentTime = ei.getValuesAsDoubles();
+		for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = timesWrapper.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equalsIgnoreCase(id1)) {
+				expectedCurrentTime = exchangeItem.getValuesAsDoubles();
 				expectedCurrentTime[0] = 2;
-				ei.setValuesAsDoubles(expectedCurrentTime);
+				exchangeItem.setValuesAsDoubles(expectedCurrentTime);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id2)) {
-				IPrevExchangeItem ei = exchangeItems[item];
-				expectedSimTimeStep = ei.getValuesAsDoubles();
+			if (exId.equalsIgnoreCase(id2)) {
+				expectedSimTimeStep = exchangeItem.getValuesAsDoubles();
 				expectedSimTimeStep[0] = 100;
-				ei.setValuesAsDoubles(expectedSimTimeStep);
+				exchangeItem.setValuesAsDoubles(expectedSimTimeStep);
 			}
-			if (exchangeItems[item].getId().equalsIgnoreCase(id3)) {
-				IPrevExchangeItem ei = exchangeItems[item];
-				expectedFinalTime = ei.getValuesAsDoubles();
+			if (exId.equalsIgnoreCase(id3)) {
+				expectedFinalTime = exchangeItem.getValuesAsDoubles();
 				expectedFinalTime[0] = 21;
-				ei.setValuesAsDoubles(expectedFinalTime);
+				exchangeItem.setValuesAsDoubles(expectedFinalTime);
 			}
 		}
 		
@@ -204,8 +186,8 @@ public class TimesWrapperTest extends TestCase {
 		try{
 		FileInputStream in = new FileInputStream(namelist);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
-		String line = ""; // Initialize line.
-		Boolean eof = false; // End of file cache.
+		String line; // Initialize line.
+		boolean eof = false; // End of file cache.
 
 		// While End of file is not reached yet do the following:
 		while (!eof) {
@@ -222,7 +204,7 @@ public class TimesWrapperTest extends TestCase {
 				// Now parse the line.
 				// Remove comments at end of line.
 				if (line.indexOf("%") > 1) {
-					String columns[] = line.split("%");
+					String[] columns = line.split("%");
 					line = columns[0];
 				}
 				if (line.startsWith("%")) {
@@ -237,20 +219,20 @@ public class TimesWrapperTest extends TestCase {
 													// of the string.
 					columns[1] = columns[1].trim();
 					// Remove the semicollon at the end of the string in columns[1].
-					String temp[] = columns[1].split(";");
+					String[] temp = columns[1].split(";");
 					columns[1] = temp[0];
 
 					// Parse the values to the key caches in Java.
 					// --> Add if-loops for variables to be read here.
 					if (columns[0].equals("currentTime")) {
-						readCurrentTime = Double.valueOf(columns[1]);
+						readCurrentTime = Double.parseDouble(columns[1]);
 					}
 					if (columns[0].equals("simulationTimeStep")) {
-						readSimulationTimeStep = Double.valueOf(columns[1]);
+						readSimulationTimeStep = Double.parseDouble(columns[1]);
 					}
 					
 					if (columns[0].equals("finalTime")) {
-						readFinalTime = Double.valueOf(columns[1]);
+						readFinalTime = Double.parseDouble(columns[1]);
 					}
 
 				}

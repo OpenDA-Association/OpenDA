@@ -25,7 +25,6 @@ import org.openda.exchange.QuantityInfo;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 import org.openda.utils.Array;
@@ -54,12 +53,12 @@ import java.util.Set;
  * @author verlaanm
  */
 
-public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
+public class TimeSeries implements IExchangeItem{
 	// define and set defaults
 	// meta data
 	private String description = null;
 	private String location = "";
-	private final double position[] = {0.0, 0.0};	// {longitude,latitude} WGS84
+	private final double[] position = {0.0, 0.0};	// {longitude,latitude} WGS84
 	private double height = 0.0;					// user defined for now
 	private String source = "observed";				// what produced the data
 	private String quantity = "waterlevel";			// what do values represent
@@ -67,11 +66,11 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	private String id = "id-not-set";				// unique identifier
 	private boolean autoId = true;					// automatically set to location.quantity
 	// by default
-	private final HashMap<String, String> properties = new HashMap<String, String>();  // additional properties
-	private final java.util.Vector<String> defaultProps = new java.util.Vector<String>(); // data
-	private double times[] = null;					// times for values as MJD
-	private double values[] = null;					// this is the real data!
-	private final HashMap<String, double[]> extraValues = new HashMap<String, double[]>(); // optional arrays for secondary values
+	private final HashMap<String, String> properties = new HashMap<>();  // additional properties
+	private final java.util.Vector<String> defaultProps = new java.util.Vector<>(); // data
+	private double[] times = null;					// times for values as MJD
+	private double[] values = null;					// this is the real data!
+	private final HashMap<String, double[]> extraValues = new HashMap<>(); // optional arrays for secondary values
 	// (like Matroos analysis times)
 	protected Role role;
 	private double tstart = Double.NaN;
@@ -118,12 +117,12 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * @param times  The time array.
 	 * @param values The value array.
 	 */
-	public TimeSeries(double times[], double values[]) {
+	public TimeSeries(double[] times, double[] values) {
 		this();
 		this.setData(times, values);
 	}
 
-	public TimeSeries(double times[], double values[], double x, double y, String source, String quantity, String unit,
+	public TimeSeries(double[] times, double[] values, double x, double y, String source, String quantity, String unit,
 					  String location, Role role) {
 		this(times, values, x, y, source, quantity, unit, location);
 		this.role = role;
@@ -141,7 +140,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * @param unit		String describing the value's unit
 	 * @param location	String describing the location of this series
 	 */
-	public TimeSeries(double times[], double values[], double x, double y, String source, String quantity, String unit, String location) {
+	public TimeSeries(double[] times, double[] values, double x, double y, String source, String quantity, String unit, String location) {
 		this(times, values, source, quantity, unit, location);
 		this.setPosition(x, y);
 		this.setId(this.location + "." + this.getQuantityId());
@@ -274,7 +273,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * @return Array containing the X and the Y coordinate.
 	 */
 	public double[] getPosition() {
-		double result[] = new double[2];
+		double[] result = new double[2];
 		result[0] = this.position[0];
 		result[1] = this.position[1];
 		return result;
@@ -354,7 +353,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	}
 
 	/**
-	 * @see org.openda.interfaces.IPrevExchangeItem#setTimes(double[])
+	 * @see org.openda.interfaces.IExchangeItem#setTimes(double[])
 	 */
 	
 	public void setTimes(double[] times) {
@@ -385,7 +384,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	}
 
 	/**
-	 * @see org.openda.interfaces.IPrevExchangeItem#axpyOnValues(double, double[])
+	 * @see org.openda.interfaces.IExchangeItem#axpyOnValues(double, double[])
 	 */
 	
 	public void axpyOnValues(double alpha, double[] axpyValues) {
@@ -402,7 +401,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	}
 
 	/**
-	 * @see org.openda.interfaces.IPrevExchangeItem#multiplyValues(double[])
+	 * @see org.openda.interfaces.IExchangeItem#multiplyValues(double[])
 	 */
 	
 	public void multiplyValues(double[] multiplicationFactors) {
@@ -562,7 +561,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * @return Array with the property names.
 	 */
 	public String[] getPropertyNames() {
-		String result[] = new String[this.properties.size()];
+		String[] result = new String[this.properties.size()];
 		int i = 0;
 		for (String label : this.properties.keySet()) {
 			result[i] = label;
@@ -578,7 +577,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * @return Array with the default property names.
 	 */
 	public String[] getDefaultPropertyNames() {
-		String result[] = new String[this.defaultProps.size()];
+		String[] result = new String[this.defaultProps.size()];
 		int i = 0;
 		for (String label : this.defaultProps) {
 			result[i] = label;
@@ -730,8 +729,8 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 				iEnd++;
 			}
 		}
-		double timesNew[];
-		double valuesNew[];
+		double[] timesNew;
+		double[] valuesNew;
 		TimeSeries result;
 		if (iEnd > iStart) {
 			timesNew = new double[iEnd - iStart];
@@ -748,12 +747,12 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		// add metadata
 		result.setHeight(this.getHeight());
 		result.setLocation(this.getLocation());
-		double pos[] = this.getPosition();
+		double[] pos = this.getPosition();
 		result.setPosition(pos[0], pos[1]);
 		result.setQuantity(this.getQuantityId());
 		result.setSource(this.getSource());
 		result.setUnit(this.getUnitId());
-		String propNames[] = getPropertyNames();
+		String[] propNames = getPropertyNames();
 		for (String propName : propNames) {
 			result.setProperty(propName, this.getProperty(propName));
 		}
@@ -776,9 +775,9 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 */
 	public TimeSeries selectValueSubset(double minValue, double maxValue) {
 		// make selection of values
-		java.util.Vector<Double> tempTimes = new java.util.Vector<Double>();
-		java.util.Vector<Double> tempValues = new java.util.Vector<Double>();
-		java.util.Vector<Integer> tempIndex = new java.util.Vector<Integer>();
+		java.util.Vector<Double> tempTimes = new java.util.Vector<>();
+		java.util.Vector<Double> tempValues = new java.util.Vector<>();
+		java.util.Vector<Integer> tempIndex = new java.util.Vector<>();
 		for (int i = 0; i < this.values.length; i++) {
 			if ((Double.isNaN(minValue)) | (this.values[i] >= minValue)) {
 				if ((Double.isNaN(maxValue)) | (this.values[i] <= maxValue)) {
@@ -801,12 +800,12 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		// add metadata
 		result.setHeight(this.getHeight());
 		result.setLocation(this.getLocation());
-		double pos[] = this.getPosition();
+		double[] pos = this.getPosition();
 		result.setPosition(pos[0], pos[1]);
 		result.setQuantity(this.getQuantityId());
 		result.setSource(this.getSource());
 		result.setUnit(this.getUnitId());
-		String propNames[] = getPropertyNames();
+		String[] propNames = getPropertyNames();
 		for (String propName : propNames) {
 			result.setProperty(propName, this.getProperty(propName));
 		}
@@ -828,14 +827,14 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	public String toString() {
 		StringBuilder result = new StringBuilder("TimeSeries(\n");
 		result.append("   Location = ").append(this.getLocation()).append("\n");
-		double pos[] = this.getPosition();
+		double[] pos = this.getPosition();
 		result.append("   Position = (").append(pos[0]).append(",").append(pos[1]).append(")\n");
 		result.append("   Height   = ").append(this.getHeight()).append("\n");
 		result.append("   Quantity = ").append(this.getQuantityId()).append("\n");
 		result.append("   Unit     = ").append(this.getUnitId()).append("\n");
 		result.append("   Source   = ").append(this.getSource()).append("\n");
 		result.append("   Id       = ").append(this.getId()).append("\n");
-		String propNames[] = getPropertyNames();
+		String[] propNames = getPropertyNames();
 		for (String propName : propNames) {
 			result.append("   ").append(propName).append("  = ").append(this.getProperty(propName)).append("\n");
 		}
@@ -890,7 +889,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 
 	
 	public void setValues(Object values) {
-		if (values instanceof org.openda.exchange.timeseries.TimeSeries) {
+		if (values instanceof TimeSeries) {
 			TimeSeries series = (TimeSeries) values;
 			this.setData(series.getTimes(), series.getValuesAsDoubles());
 		} else if (values instanceof double[]) {
@@ -902,7 +901,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 			this.values = new double[valuesCast.length];
 			System.arraycopy(valuesCast, 0, this.values, 0, valuesCast.length);
 		}else if (values instanceof IArray){
-			double valuesCast[]=((IArray)values).getValuesAsDoubles(); 
+			double[] valuesCast =((IArray)values).getValuesAsDoubles();
 			if ((this.times == null) || (this.times.length != valuesCast.length)) {
 				throw new RuntimeException(
 						"TimeSeries: length for times and values do not match.");
@@ -1065,9 +1064,8 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 	 * Show Type of this object for proper casting
 	 */
 	
-	@SuppressWarnings("rawtypes")
 	public Class getValueType() {
-		return org.openda.utils.Array.class;
+		return TimeSeries.class;
 	}
 
 	
@@ -1194,14 +1192,14 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		if (this.values == null && other.values == null) return true;
 		if (this.times.length != other.times.length) {
 			if (verbose)
-				System.err.println("Lengths of the time arrays do not match. this: " + String.valueOf(this.times.length)
-						+ "; other: " + String.valueOf(other.times.length));
+				System.err.println("Lengths of the time arrays do not match. this: " + this.times.length
+						+ "; other: " + other.times.length);
 			return false;
 		}
 		if (this.values.length != other.values.length) {
 			if (verbose)
-				System.err.println("Lengths of the value arrays do not match. this: " + String.valueOf(this.values.length)
-						+ "; other: " + String.valueOf(other.values.length));
+				System.err.println("Lengths of the value arrays do not match. this: " + this.values.length
+						+ "; other: " + other.values.length);
 			return false;
 		}
 		if (this.extraValues.keySet().size() != other.extraValues.keySet().size()) {
@@ -1209,13 +1207,13 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 			return false;
 		}
 		for (String key : this.extraValues.keySet()) {
-			if (!other.extraValues.keySet().contains(key)) {
+			if (!other.extraValues.containsKey(key)) {
 				if (verbose) System.err.println("this.extraValues key missing in other: " + key);
 				return false;
 			}
 		}
 		for (String key : other.extraValues.keySet()) {
-			if (!this.extraValues.keySet().contains(key)) {
+			if (!this.extraValues.containsKey(key)) {
 				if (verbose) System.err.println("other.extraValues key missing in this: " + key);
 				return false;
 			}
@@ -1223,22 +1221,22 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 		for (int i = 0; i < this.times.length; ++i) {
 			if (this.times[i] != other.times[i] && !(Double.isNaN(this.times[i]) && Double.isNaN(other.times[i]))) {
 				if (verbose)
-					System.err.println("At index " + String.valueOf(i) + ": times do not match. this: "
-							+ String.valueOf(this.times[i]) + "; other: " + String.valueOf(other.times[i]));
+					System.err.println("At index " + i + ": times do not match. this: "
+							+ this.times[i] + "; other: " + other.times[i]);
 				return false;
 			}
 			if (this.values[i] != other.values[i] && !(Double.isNaN(this.values[i]) && Double.isNaN(other.values[i]))) {
 				if (verbose)
-					System.err.println("At index " + String.valueOf(i) + ": values do not match. this: "
-							+ String.valueOf(this.values[i]) + "; other: " + String.valueOf(other.values[i]));
+					System.err.println("At index " + i + ": values do not match. this: "
+							+ this.values[i] + "; other: " + other.values[i]);
 				return false;
 			}
 			for (String key : this.extraValues.keySet()) {
 				if (this.extraValues.get(key)[i] != other.extraValues.get(key)[i] && !(Double.isNaN(this.extraValues.get(key)[i])
 						&& Double.isNaN(other.extraValues.get(key)[i]))) {
 					if (verbose)
-						System.err.println("At index " + String.valueOf(i) + ": extraValues " + key + " do not match. this: "
-								+ String.valueOf(this.values[i]) + "; other: " + String.valueOf(other.values[i]));
+						System.err.println("At index " + i + ": extraValues " + key + " do not match. this: "
+								+ this.values[i] + "; other: " + other.values[i]);
 					return false;
 				}
 			}
@@ -1416,7 +1414,7 @@ public class TimeSeries implements IPrevExchangeItem, IExchangeItem{
 
 	
 	public IGeometryInfo getGeometryInfo() {
-		double pos[]=this.getPosition();
+		double[] pos=this.getPosition();
 		if((pos!=null) && (pos.length==2)){
 			return new PointGeometryInfo(pos[0], pos[1], this.getHeight());
 		}else{

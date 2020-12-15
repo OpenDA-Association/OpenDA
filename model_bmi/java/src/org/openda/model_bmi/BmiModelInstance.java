@@ -29,7 +29,7 @@ import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.localization.LocalizationDomainsSimpleModel;
 import org.openda.utils.Instance;
 import org.openda.utils.Results;
@@ -187,17 +187,17 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		Map<String, IExchangeItem> result = new HashMap<String, IExchangeItem>();
 
 		for (String variable : inputVars) {
-			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Input, model, modelMissingValue);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IExchangeItem.Role.Input, model, modelMissingValue);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
-			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.Output, model, modelMissingValue);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IExchangeItem.Role.Output, model, modelMissingValue);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
-			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IPrevExchangeItem.Role.InOut, model, modelMissingValue);
+			BmiOutputExchangeItem item = new BmiOutputExchangeItem(variable, IExchangeItem.Role.InOut, model, modelMissingValue);
 			result.put(variable, item);
 		}
 		return result;
@@ -294,7 +294,7 @@ public class BmiModelInstance extends Instance implements IModelInstance, IModel
 		return exchangeItem;
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemID)) {
 			return bufferedExchangeItems.get(exchangeItemID);
 		}

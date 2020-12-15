@@ -98,7 +98,7 @@ package org.openda.model_glm;
 
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +141,7 @@ public class GlmNetcdfFile implements IDataObject{
      * Returns exchange Items from the netcdf file
      * For all waterlevel stations a TimeSeries exchange item is created
      * For the SEP variable a SimonaNetcdfFileExchangeItem is created to pass the netcdf file itself
-     * @return IPrevExchangeItem[] list of exchangeItems
+     * @return IExchangeItem[] list of exchangeItems
      */
     public TimeSeries[] getExchangeItems() {
     	TimeSeries[] result=null;
@@ -149,7 +149,7 @@ public class GlmNetcdfFile implements IDataObject{
     	//     = new WaquaNetcdfTimeSeriesFormatter();
     	//String timeSeriesIds[] = waquaFormatter.getTimeSeriesIds(this.fileName);
         //String mapsIds[] = waquaFormatter.getMapIds(this.fileName);
-    	//result = new IPrevExchangeItem[timeSeriesIds.length + mapsIds.length]; MVL disabled maps
+    	//result = new IExchangeItem[timeSeriesIds.length + mapsIds.length]; MVL disabled maps
     	//result = new TimeSeries[timeSeriesIds.length];
         int i = 0;
     	//for(String id: timeSeriesIds) {

@@ -283,7 +283,7 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 	}
 
 	
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		throw new RuntimeException("not implemented");
 		//return null;
 	}
@@ -444,7 +444,7 @@ public class CircularAdvection1000Instance implements IStochModelInstance, IStoc
 	}
 
 	@Override
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new RuntimeException("not implemented");
 	}
 

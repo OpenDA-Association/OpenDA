@@ -442,8 +442,8 @@ public class SwanCalibWrapper extends Instance implements IStochModelInstance, I
         throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper: Method not implemented yet.");
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-        if (role == IPrevExchangeItem.Role.InOut) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+        if (role == IExchangeItem.Role.InOut) {
             return getExchangeItemIDs();
         }
         throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper.getExchangeItemIDs(): Role selection not implemented yet.");
@@ -454,7 +454,7 @@ public class SwanCalibWrapper extends Instance implements IStochModelInstance, I
 	}
 
 	// OpenDA
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanCalibWrapper: Method not implemented yet.");
     }
 

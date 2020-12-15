@@ -31,7 +31,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.channels.FileChannel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TODO: description
@@ -117,15 +120,9 @@ public class BBUtils {
 
     public static Object createIoOrDataObject(String className) {
         // Create instance of class
-        final Class javaClass;
-        Object object;
-        try {
-            javaClass = Class.forName(className);
-            object = javaClass.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Could not create instance for " + className + ": " + e.getMessage(), e);
-        }
-        if (className.equals("org.openda.interfaces.IDataObject") &&
+		Class javaClass = getJavaClass(className);
+		Object object = getNewInstanceOfJavaClass(className, javaClass);
+		if (className.equals("org.openda.interfaces.IDataObject") &&
                 !IDataObject.class.isInstance(object)) {
             return null;
         }
@@ -136,7 +133,30 @@ public class BBUtils {
         return object;
     }
 
-    public static SelectorInterface createSelectorInstance(File workingDir, String className, String[] arguments) {
+	private static Object getNewInstanceOfJavaClass(String className, Class javaClass) {
+		try {
+			return javaClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("Could not create instance for " + className + ": " + e.getMessage(), e);
+		}
+	}
+
+	private static Class getJavaClass(String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			String newDataObjectClassName = IoObjectToDataObjectDictionary.getNewDataObjectClassName(className);
+			if (newDataObjectClassName == null) throw new RuntimeException("Java class " + className + " not found please check the spelling");
+			try {
+				System.out.println("Class name " + className + " is obsolete, please use new class name " + newDataObjectClassName);
+				return Class.forName(newDataObjectClassName);
+			} catch (ClassNotFoundException ex) {
+				throw new RuntimeException("Programming error: Class from IoObjectToDataObjectDictionary " + newDataObjectClassName + " not found, this should be fixed in the dictionary.");
+			}
+		}
+	}
+
+	public static SelectorInterface createSelectorInstance(File workingDir, String className, String[] arguments) {
         SelectorInterface selector = (SelectorInterface) ObjectSupport.createNewInstance(className, SelectorInterface.class);
         selector.initialize(workingDir, arguments);
         return selector;

@@ -193,7 +193,7 @@ public class Server implements IRmiIStochModel{
         return getStateScaling(observationDescriptions);
     }
 
-    public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+    public IExchangeItem getExchangeItem(String exchangeItemID) {
         return stochModel.getExchangeItem(exchangeItemID);
     }
 

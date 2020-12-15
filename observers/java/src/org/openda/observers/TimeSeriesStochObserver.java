@@ -44,7 +44,7 @@ public class TimeSeriesStochObserver extends Instance implements IStochObserver 
 	double tolerance = 1.0/24.0/60.0/2.0; // 0.5 minute
 	// cache propertyLabels
 	java.util.Vector<String> propertyLabels = new java.util.Vector<String>();
-	private List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
+	private List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
     private HashMap<String,Integer> allObsIds = new HashMap<String,Integer>();
 	protected File file = null;
 
@@ -716,7 +716,7 @@ public class TimeSeriesStochObserver extends Instance implements IStochObserver 
 		return this.propertyLabels.size();
 	}
 
-	public List<IPrevExchangeItem> getExchangeItems() {
+	public List<IExchangeItem> getExchangeItems() {
 		return exchangeItems;
 	}
 

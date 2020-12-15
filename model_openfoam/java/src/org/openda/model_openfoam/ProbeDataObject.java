@@ -30,7 +30,7 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IComposableDataObject;
 
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 import java.io.*;
 import java.util.*;
@@ -104,7 +104,7 @@ public class ProbeDataObject implements IComposableDataObject {
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * </ol>
      */
     public void initialize(File workingDir, String[] arguments) {

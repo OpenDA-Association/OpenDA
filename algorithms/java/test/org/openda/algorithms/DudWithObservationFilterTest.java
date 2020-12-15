@@ -120,8 +120,8 @@ public class DudWithObservationFilterTest extends TestCase {
         public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 
             TreeVector treeVector = new TreeVector("predictions");
-            List<IPrevExchangeItem> items = observationDescriptions.getExchangeItems();
-            for(IPrevExchangeItem item : items) {
+            List<IExchangeItem> items = observationDescriptions.getExchangeItems();
+            for(IExchangeItem item : items) {
                 double[] prd = item.getValuesAsDoubles();
                 for (int i=0; i<prd.length; i++){
                     prd[i] += 0.01;
@@ -242,7 +242,7 @@ public class DudWithObservationFilterTest extends TestCase {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getExchangeItemIDs(): Not implemented yet.");
         }
 
-        public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+        public String[] getExchangeItemIDs(IExchangeItem.Role role) {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getExchangeItemIDs(): Not implemented yet.");
         }
 
@@ -250,7 +250,7 @@ public class DudWithObservationFilterTest extends TestCase {
 			throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getDataObjectExchangeItem(): Not implemented yet.");
 		}
 
-		public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+		public IExchangeItem getExchangeItem(String exchangeItemID) {
             throw new UnsupportedOperationException("org.openda.algorithms.DudWithObservationFilterTest.DummyModelInstance.getExchangeItem(): Not implemented yet.");
         }
 

@@ -28,12 +28,12 @@ import java.util.ArrayList;
 **/
 
 public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
-    private IPrevExchangeItem modelExchangeItem;
+    private IExchangeItem modelExchangeItem;
     private ArrayList<Double> concatenatedValues = new ArrayList<Double>();
     private ArrayList<Double> concatenatedTimes = new ArrayList<Double>();
 //    private Class valueType;
 
-    public BBCollectTimeSeriesExchangeItem(IPrevExchangeItem modelExchangeItem)
+    public BBCollectTimeSeriesExchangeItem(IExchangeItem modelExchangeItem)
     {
         this.modelExchangeItem = modelExchangeItem;
 //        this.valueType = modelExchangeItem.getValueType();
@@ -45,10 +45,7 @@ public class BBCollectTimeSeriesExchangeItem implements IExchangeItem	{
         concatenatedTimes.add(time.getMJD());
     }
 
-    
-    public Role getRole() {
-        return modelExchangeItem.getRole();
-    }
+    public IExchangeItem.Role getRole() { return null; }
 
     
     public String getId() {

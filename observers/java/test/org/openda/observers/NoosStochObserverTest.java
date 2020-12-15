@@ -510,13 +510,13 @@ public class NoosStochObserverTest extends TestCase {
 
 		IStochObserver noosStochObserver_a = new NoosTimeSeriesStochObserver();
 		noosStochObserver_a.initialize(workingDir, new String[]{"noosStochObsConfig_a.xml"});
-		List<IPrevExchangeItem> exchangeItems_a = noosStochObserver_a.getObservationDescriptions().getExchangeItems();
+		List<IExchangeItem> exchangeItems_a = noosStochObserver_a.getObservationDescriptions().getExchangeItems();
 		assertEquals("First Series", "location 1 Measurement", exchangeItems_a.get(0).getId());
 		assertEquals("First Series", "location 2 Measurement", exchangeItems_a.get(1).getId());
 
 		IStochObserver noosStochObserver_b = new NoosTimeSeriesStochObserver();
 		noosStochObserver_b.initialize(workingDir, new String[]{"noosStochObsConfig_b.xml"});
-		List<IPrevExchangeItem> exchangeItems_b = noosStochObserver_b.getObservationDescriptions().getExchangeItems();
+		List<IExchangeItem> exchangeItems_b = noosStochObserver_b.getObservationDescriptions().getExchangeItems();
 		assertEquals("First Series", "ObsPoint1.waterlevel", exchangeItems_b.get(0).getId());
 		assertEquals("First Series", "ObsPoint2.waterlevel", exchangeItems_b.get(1).getId());
 
@@ -525,7 +525,7 @@ public class NoosStochObserverTest extends TestCase {
 		double endTime = times[times.length-1];
 		ITime timeSpan = new Time(startTime, endTime);
 		IStochObserver selection = noosStochObserver_b.createSelection(timeSpan);
-		List<IPrevExchangeItem> exchangeItems_c = selection.getObservationDescriptions().getExchangeItems();
+		List<IExchangeItem> exchangeItems_c = selection.getObservationDescriptions().getExchangeItems();
 		assertEquals("First Series", "ObsPoint1.waterlevel", exchangeItems_c.get(0).getId());
 		assertEquals("First Series", "ObsPoint2.waterlevel", exchangeItems_c.get(1).getId());
 	}

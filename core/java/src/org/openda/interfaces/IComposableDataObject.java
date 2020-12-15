@@ -26,7 +26,7 @@ public interface IComposableDataObject extends IDataObject {
 	 * exchangeItem after adding it, but before calling finish, may alter the outcome.
 	 * Throws an UnsupportedOperationException when the dataObject does not support the addition of items.
 	 * A RuntimeException is thrown if the type of data can not be handled. Note that in general, it is also
-	 * possible that the type of echchangeItem can be handled, but with degraded meta data.
+	 * possible that the type of exchangeItem can be handled, but with degraded meta data.
 	 *
 	 * @param item  exchangeItem to be duplicated
 	 */

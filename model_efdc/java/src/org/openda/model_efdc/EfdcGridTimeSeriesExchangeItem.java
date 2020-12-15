@@ -46,11 +46,6 @@ public class EfdcGridTimeSeriesExchangeItem extends ExchangeItem {
         return Role.Output;
     }
 
-    
-    @SuppressWarnings("rawtypes")
-    public Class getValueType() {
-        return double[][].class;
-    }
 
     public ValueType getValuesType() {
         return ValueType.doubles2dType;

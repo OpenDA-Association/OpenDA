@@ -24,7 +24,6 @@ import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,9 +93,9 @@ public class AsciiKeywordDataObject implements IDataObject{
      * @param arguments list of other arguments:
      * <ol>
      * <li>The name of the file containing the data
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      * <li>Optional, a referenceDate in ISO 8601 notatation, e.g
-     *      for this IoObject (relative to the working directory).</li>
+     *      for this DataObject (relative to the working directory).</li>
      *
      * </ol>
      */
@@ -192,11 +191,11 @@ public class AsciiKeywordDataObject implements IDataObject{
 
 	/** {@inheritDoc}
 	 */
-	public IPrevExchangeItem[] getExchangeItems() {
+	public IExchangeItem[] getExchangeItems() {
 
 		int n = this.items.size();
 		Set<String> keys = this.items.keySet();
-		IPrevExchangeItem[] result=new IPrevExchangeItem[n];
+		IExchangeItem[] result=new IExchangeItem[n];
 		int i=0;
 		for(String key : keys){
 			result[i]=this.items.get(key);
@@ -214,14 +213,14 @@ public class AsciiKeywordDataObject implements IDataObject{
 	/** {@inheritDoc}
 	 */
 	public String[] getExchangeItemIDs() {
-		return items.keySet().toArray(new String[items.size()]);
+		return items.keySet().toArray(new String[0]);
 	}
 
 	/** {@inheritDoc}
 	 */
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		//TODO: select on role
-		return items.keySet().toArray(new String[items.size()]);
+		return items.keySet().toArray(new String[0]);
 	}
 
 	/** {@inheritDoc}

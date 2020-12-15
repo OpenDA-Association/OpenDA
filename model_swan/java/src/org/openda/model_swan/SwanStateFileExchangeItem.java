@@ -53,10 +53,10 @@ public class SwanStateFileExchangeItem implements IExchangeItem {
     }
 
     public Role getRole(){
-        return IPrevExchangeItem.Role.InOut;
+        return Role.InOut;
     }
 
-    public Object getValues() {
+	public Object getValues() {
         return getValuesAsDoubles();
     }
 

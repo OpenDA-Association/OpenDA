@@ -89,7 +89,7 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
         return this.role;
     }
 
-    
+
     public String getId() {
         return id;
     }
@@ -134,7 +134,7 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
 
         Object values = sourceItem.getValues();
         if (!(values instanceof IArray)) {
-            throw new IllegalArgumentException("Cannot convert values of type " + sourceItem.getValueType().getSimpleName()
+            throw new IllegalArgumentException("Cannot convert values of type " + sourceItem.getValuesType().getClass().getSimpleName()
                     + " to type " + getValueType().getSimpleName());
         }
 

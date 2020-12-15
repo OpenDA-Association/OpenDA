@@ -45,14 +45,6 @@ public class SwanResults implements IDataObject {
         readSwanResultsFile(observationsFile);
     }
 
-//    public IPrevExchangeItem[] getExchangeItems() {
-//        IPrevExchangeItem[] exchangeItems = new IPrevExchangeItem[swanResultsList.size()];
-//        for (int i = 0; i < exchangeItems.length; i++) {
-//            exchangeItems[i] = swanResultsList.get(i);
-//        }
-//        return exchangeItems;
-//    }
-
     private void readSwanResultsFile(File swanResultsFile) {
 
         // Open the swanResults file for reading
@@ -174,7 +166,7 @@ public class SwanResults implements IDataObject {
         return ids;
     }
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
         return getExchangeItemIDs();
     }
 
@@ -299,11 +291,11 @@ public class SwanResults implements IDataObject {
             return ValueType.doubleType;
         }
 
-        public IPrevExchangeItem.Role getRole() {
-            return IPrevExchangeItem.Role.Output;
+        public IExchangeItem.Role getRole() {
+            return IExchangeItem.Role.Output;
         }
 
-        public Object getValues() {
+		public Object getValues() {
             return value;
         }
 
@@ -317,9 +309,9 @@ public class SwanResults implements IDataObject {
 		}
 
 		public void copyValuesFromItem(IExchangeItem sourceItem) {
-			if (sourceItem.getValueType() != getValueType()) {
+			if (sourceItem.getValuesType() != getValuesType()) {
 				throw new RuntimeException("Incompatible value types in copy action from " + sourceItem.getId() +
-						" to " + getId() + "(" + sourceItem.getValueType().toString() + "/=" + getValueType().toString());
+						" to " + getId() + "(" + sourceItem.getValuesType().getClass().toString() + "/=" + getValueType().toString());
 			}
 			setValues(sourceItem.getValues());
 		}

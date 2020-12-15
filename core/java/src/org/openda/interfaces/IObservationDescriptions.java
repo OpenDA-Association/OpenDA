@@ -32,7 +32,7 @@ public interface IObservationDescriptions extends Serializable{
     /** Get the exchange items describing the measures available in the stoch. observer.
      * @return All exchange items in the stoch. observer.
      */
-    List<IPrevExchangeItem> getExchangeItems();
+    List<IExchangeItem> getExchangeItems();
 
 	/** Get properties (values) that correspond to a given key.
 	 *

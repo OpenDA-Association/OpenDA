@@ -21,7 +21,7 @@ package org.openda.model_delft3d;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.SelectorInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 
@@ -52,7 +52,7 @@ public class D3dWindMaskTest extends TestCase {
         D3dWindFile windFile = new D3dWindFile();
         windFile.initialize(testDir, new String[] {"test.mdf", "gv"});
         String theOneAndOnlyId = windFile.getExchangeItemIDs()[0];
-        IPrevExchangeItem windExchItem = windFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        IExchangeItem windExchItem = windFile.getDataObjectExchangeItem(theOneAndOnlyId);
         double[] vValues = windExchItem.getValuesAsDoubles();
         assertEquals("windFile[0].values[19]", 20.0, vValues[19]);
         assertEquals("windFile[0].values[20]", 1.0, vValues[20]);
@@ -74,7 +74,7 @@ public class D3dWindMaskTest extends TestCase {
         D3dWindFile adjustedWindFile = new D3dWindFile();
         adjustedWindFile.initialize(testDir, new String[] {"test.mdf", "gv"});
         theOneAndOnlyId = adjustedWindFile.getExchangeItemIDs()[0];
-        IPrevExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        IExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
         double[] adjustedvValues = adjustedWindExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[5]", -6.0, adjustedvValues[5]);
         assertEquals("exchItemWindFile[0].values[6]",  7.0, adjustedvValues[6]);
@@ -97,7 +97,7 @@ public class D3dWindMaskTest extends TestCase {
         D3dWindFile windFile = new D3dWindFile();
         windFile.initialize(testDir, new String[] {"test.mdf", "gv"});
         String theOneAndOnlyId = windFile.getExchangeItemIDs()[0];
-        IPrevExchangeItem windExchItem = windFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        IExchangeItem windExchItem = windFile.getDataObjectExchangeItem(theOneAndOnlyId);
         double[] vValues = windExchItem.getValuesAsDoubles();
         assertEquals("windFile[0].values[19]", 20.0, vValues[19]);
         assertEquals("windFile[0].values[20]", 1.0, vValues[20]);
@@ -119,7 +119,7 @@ public class D3dWindMaskTest extends TestCase {
         D3dWindFile adjustedWindFile = new D3dWindFile();
         adjustedWindFile.initialize(testDir, new String[] {"test.mdf", "gv"});
         theOneAndOnlyId = adjustedWindFile.getExchangeItemIDs()[0];
-        IPrevExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
+        IExchangeItem adjustedWindExchItem = adjustedWindFile.getDataObjectExchangeItem(theOneAndOnlyId);
         double[] adjustedvValues = adjustedWindExchItem.getValuesAsDoubles();
         assertEquals("exchItemWindFile[0].values[5]", -6.0, adjustedvValues[5]);
         assertEquals("exchItemWindFile[0].values[6]",  7.0, adjustedvValues[6]);

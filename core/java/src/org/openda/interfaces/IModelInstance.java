@@ -39,7 +39,7 @@ public interface IModelInstance extends IDataObject, IInstance {
 	 * @param exchangeItemID The exchange item identifier.
 	 * @return The required exchange item.
 	 */
-	IPrevExchangeItem getExchangeItem(String exchangeItemID);
+	IExchangeItem getExchangeItem(String exchangeItemID);
 
 	/*************************************
 	 *** Time information / Computing

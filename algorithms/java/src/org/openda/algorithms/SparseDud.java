@@ -66,7 +66,7 @@ public class SparseDud extends BaseDud {
 		}
 
 		ConfigTree[] subTrees = configtree.getSubTrees("dependencies/obs");
-		List<IPrevExchangeItem> exchangeItems = stochObserver.getObservationDescriptions().getExchangeItems();
+		List<IExchangeItem> exchangeItems = stochObserver.getObservationDescriptions().getExchangeItems();
 		checkDependenciesForAllExchangeItems(subTrees, exchangeItems);
 
 		boolean[] allParsFound = new boolean[npar];
@@ -97,7 +97,7 @@ public class SparseDud extends BaseDud {
 						if ( predFound==0) {
 							String allObservations="";
 							if (exchangeItems != null) {
-								for (IPrevExchangeItem exchangeItem : exchangeItems) {
+								for (IExchangeItem exchangeItem : exchangeItems) {
 									allObservations +=  "\t'" + exchangeItem.getId() + "'\n";
 								}
 							} else {
@@ -150,9 +150,9 @@ public class SparseDud extends BaseDud {
 			throw new RuntimeException(parsNotFound + " parameter(s) found without any dependency");
 	}
 
-	private void checkDependenciesForAllExchangeItems(ConfigTree[] subTrees, List<IPrevExchangeItem> exchangeItems) {
+	private void checkDependenciesForAllExchangeItems(ConfigTree[] subTrees, List<IExchangeItem> exchangeItems) {
 		boolean anyExchangeItemNotFound = false;
-		for (IPrevExchangeItem exchangeItem : exchangeItems) {
+		for (IExchangeItem exchangeItem : exchangeItems) {
 			String exchangeItemId = exchangeItem.getId();
 			boolean exchangeItemFound = false;
 			for (ConfigTree subTree : subTrees) {

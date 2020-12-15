@@ -22,7 +22,7 @@ package org.openda.blackbox.config;
 
 import org.openda.core.io.castorgenerated.*;
 import org.openda.core.io.castorgenerated.types.BlackBoxModelRoleTypesXML;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.ITime;
 import org.openda.utils.DimensionIndex;
 import org.openda.utils.Time;
@@ -84,7 +84,7 @@ public class BBModelConfigReader {
             String id;
             String objectId;
             String elementId;
-			IPrevExchangeItem.Role role;
+			IExchangeItem.Role role;
             DimensionIndex[] selectionIndices = null;
             BBConfigurable selectorConfig = null;
             String idSuffix = null;
@@ -92,7 +92,10 @@ public class BBModelConfigReader {
                 // subvector (with indices or selector)
                 BlackBoxIoSubVectorXML subVector = exchangeItemXMLItem.getSubVector();
                 id = subVector.getId();
-                objectId = subVector.getIoObjectId();
+                objectId = subVector.getDataObjectId();
+                if (objectId == null){
+					objectId = subVector.getIoObjectId();
+				}
                 elementId = subVector.getElementId();
     			role = determineRoleType(subVector.getRole());
                 selectionIndices = parseSelectionIndices(subVector.getSelection());
@@ -101,7 +104,10 @@ public class BBModelConfigReader {
                 // simple vector
                 BlackBoxIoVectorXML vector = exchangeItemXMLItem.getVector();
                 id = vector.getId();
-                objectId = vector.getIoObjectId();
+				objectId = vector.getDataObjectId();
+				if (objectId == null) {
+					objectId = vector.getIoObjectId();
+				}
                 elementId = vector.getElementId();
     			role = determineRoleType(vector.getRole());
                 if (elementId == null) {
@@ -110,13 +116,13 @@ public class BBModelConfigReader {
                 idSuffix = vector.getIdSuffix();
             }
 
-            IoObjectConfig ioObjectConfig = bbWrapperConfig.getIoObject(objectId);
-            if (ioObjectConfig == null) {
+            DataObjectConfig dataObjectConfig = bbWrapperConfig.getIoObject(objectId);
+            if (dataObjectConfig == null) {
                 throw new RuntimeException("ObjectId \"" + objectId + "\" is not specified in the wrapper configuration " +
                         "(model file: " + modelConfigFile.getAbsolutePath() +
                         ", wrapper config. file: " + wrapperConfigFile.getAbsolutePath() + ")");
             }
-            vectorConfigs.add(new BBModelVectorConfig(id, ioObjectConfig, elementId, selectionIndices, selectorConfig, role, idSuffix));
+            vectorConfigs.add(new BBModelVectorConfig(id, dataObjectConfig, elementId, selectionIndices, selectorConfig, role, idSuffix));
         }
 
         ITime startTime = null;
@@ -190,15 +196,15 @@ public class BBModelConfigReader {
         return selectionIndices;
     }
 
-	private static IPrevExchangeItem.Role determineRoleType(BlackBoxModelRoleTypesXML roleXML) {
-		IPrevExchangeItem.Role role = IPrevExchangeItem.Role.InOut;
+	private static IExchangeItem.Role determineRoleType(BlackBoxModelRoleTypesXML roleXML) {
+		IExchangeItem.Role role = IExchangeItem.Role.InOut;
 		if (roleXML == null) return role;
 		if (roleXML.getType() ==
 				BlackBoxModelRoleTypesXML.INPUT_TYPE) {
-			role = IPrevExchangeItem.Role.Input;
+			role = IExchangeItem.Role.Input;
 		} else if (roleXML.getType() ==
 				BlackBoxModelRoleTypesXML.OUTPUT_TYPE) {
-			role = IPrevExchangeItem.Role.Output;
+			role = IExchangeItem.Role.Output;
 		}
 		return role;
 	}

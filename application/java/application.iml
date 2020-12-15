@@ -13,24 +13,6 @@
     <orderEntry type="module" module-name="algorithms" />
     <orderEntry type="module" module-name="models" />
     <orderEntry type="module" module-name="observers" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/xom/xom-1.2.6.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/junit/junit-3.8.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="model_dflowfm_blackbox" />
     <orderEntry type="module-library">
       <library>
@@ -42,6 +24,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="model_reactive_advection" />
-    <orderEntry type="module" module-name="model_metaswap" />
+    <orderEntry type="library" name="CoreResources" level="project" />
   </component>
 </module>

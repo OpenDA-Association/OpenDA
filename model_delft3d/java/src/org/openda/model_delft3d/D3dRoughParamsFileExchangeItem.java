@@ -20,7 +20,10 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 import java.io.File;
 
@@ -49,7 +52,7 @@ import java.io.File;
  * items implementation
  *
  */
-public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
+public class D3dRoughParamsFileExchangeItem implements IExchangeItem {
 
     private String id;                    // Unique ID of the parameter
     private String quantityId ="-";       // The code A,B,C,D
@@ -80,6 +83,8 @@ public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
         this.description = description;
     }
 
+    public Role getRole() { return IExchangeItem.Role.InOut; }
+
     public String getId() {
         return this.id;
     }
@@ -92,6 +97,31 @@ public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
         return description;
     }
 
+    @Override
+    public void copyValuesFromItem(IExchangeItem sourceItem) {
+        throw new RuntimeException("org.openda.model_delft3d.D3dRoughParamsFileExchangeItem.copyValuesFromItem not implemented");
+    }
+
+    @Override
+    public ITimeInfo getTimeInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dRoughParamsFileExchangeItem.getTimeInfo not implemented");
+   }
+
+    @Override
+    public IQuantityInfo getQuantityInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dRoughParamsFileExchangeItem.getQuantityInfo not implemented");
+    }
+
+    @Override
+    public IGeometryInfo getGeometryInfo() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dRoughParamsFileExchangeItem.getGeometryInfo not implemented");
+    }
+
+    @Override
+    public ValueType getValuesType() {
+        throw new RuntimeException("org.openda.model_delft3d.D3dRoughParamsFileExchangeItem.getValuesType not implemented");
+    }
+
     public String getQuantityId() {
         return this.quantityId;
     }
@@ -102,10 +132,6 @@ public class D3dRoughParamsFileExchangeItem implements IPrevExchangeItem {
 
     public Class getValueType() {
         return this.classType;
-    }
-
-    public Role getRole() {
-        return IPrevExchangeItem.Role.InOut;
     }
 
     public Object getValues() {

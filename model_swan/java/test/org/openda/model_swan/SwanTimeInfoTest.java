@@ -21,7 +21,7 @@
 package org.openda.model_swan;
 
 import junit.framework.TestCase;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class SwanTimeInfoTest extends TestCase {
         SwanTimeInfo swanTimeInfo = new SwanTimeInfo();
         swanTimeInfo.initialize(testRunDataParamFilesDir,new String[]{"swantestunstruct_circle.swn"});
 
-        IPrevExchangeItem[] swnTimeInfoExchangeItem = swanTimeInfo.getExchangeItems();
+        IExchangeItem[] swnTimeInfoExchangeItem = swanTimeInfo.getExchangeItems();
 
         assertEquals("swnTimeInfoExchangeItem.length: ",3,swnTimeInfoExchangeItem.length);
         assertEquals("swnTimeInfoExchangeItem[0].getId(): ","start_time",swnTimeInfoExchangeItem[0].getId());
@@ -65,7 +65,7 @@ public class SwanTimeInfoTest extends TestCase {
         // reread input file:
         SwanTimeInfo swanTimeInfo2 = new SwanTimeInfo();
         swanTimeInfo2.initialize(testRunDataParamFilesDir,new String[]{"swantestunstruct_circle.swn"});
-        IPrevExchangeItem[] swnTimeInfoExchangeItem2 = swanTimeInfo2.getExchangeItems();
+        IExchangeItem[] swnTimeInfoExchangeItem2 = swanTimeInfo2.getExchangeItems();
         assertEquals("swnTimeInfoExchangeItem2[0].getValues(): ",timestart[0],swnTimeInfoExchangeItem2[0].getValues());
         assertEquals("swnTimeInfoExchangeItem2[1].getValues(): ",timeend[0],swnTimeInfoExchangeItem2[1].getValues());
         swanTimeInfo2.finish();

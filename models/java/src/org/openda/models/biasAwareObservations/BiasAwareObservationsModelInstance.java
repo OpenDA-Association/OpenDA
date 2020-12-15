@@ -256,7 +256,7 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance, 
 		return new IVector[0];  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
+	public IExchangeItem getExchangeItem(String exchangeItemID) {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
@@ -358,7 +358,7 @@ public class BiasAwareObservationsModelInstance implements IStochModelInstance, 
 	}
 
 	
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
 	}
 

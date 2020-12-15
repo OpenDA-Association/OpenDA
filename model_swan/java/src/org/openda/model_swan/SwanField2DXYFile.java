@@ -26,10 +26,7 @@ import org.openda.exchange.XYTGridExchangeItem;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.IPrevExchangeItem.Role;
-import org.openda.model_swan.SwanParameters;
 import org.openda.utils.Array;
 import org.openda.utils.IMyObservable;
 import org.openda.utils.IMyObserver;
@@ -121,7 +118,7 @@ public class SwanField2DXYFile implements IDataObject,IMyObserver {
 		yValues.scale(valuesScaling);
 
 		// create exchangeItems
-		XYTGridExchangeItem windX = new XYTGridExchangeItem("wind.x", Role.InOut);
+		XYTGridExchangeItem windX = new XYTGridExchangeItem("wind.x", IExchangeItem.Role.InOut);
 		IArray xGrid = Array.Range1(this.xInp,this.mXInp,this.dXInp);
 		IArray yGrid = Array.Range1(this.yInp,this.mYInp,this.dYInp);
 		windX.setXYGrid(xGrid, yGrid);
@@ -133,7 +130,7 @@ public class SwanField2DXYFile implements IDataObject,IMyObserver {
 		windX.addObserver(this);
 		this.exchangeItems.put("wind.x", windX);
 		
-		XYTGridExchangeItem windY = new XYTGridExchangeItem("wind.y", Role.InOut);
+		XYTGridExchangeItem windY = new XYTGridExchangeItem("wind.y", IExchangeItem.Role.InOut);
 		xGrid = Array.Range1(this.xInp,this.mXInp,this.dXInp);
 		yGrid = Array.Range1(this.yInp,this.mYInp,this.dYInp);
 		windY.setXYGrid(xGrid, yGrid);
@@ -212,7 +209,7 @@ public class SwanField2DXYFile implements IDataObject,IMyObserver {
 		return result;
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		return getExchangeItemIDs();
 	}
 

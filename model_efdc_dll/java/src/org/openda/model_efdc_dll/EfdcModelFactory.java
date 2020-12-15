@@ -26,11 +26,11 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.blackbox.interfaces.ITimeHorizonConsumer;
 import org.openda.interfaces.IModelInstance;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IStochModelFactory.OutputLevel;
 import org.openda.interfaces.ITime;
-import org.openda.model_efdc.EfdcEventTox2InpIoObject;
-import org.openda.model_efdc.EfdcInpIoObject;
+import org.openda.model_efdc.EfdcEventTox2InpDataObject;
+import org.openda.model_efdc.EfdcInpDataObject;
 import org.openda.utils.DistributedCounter;
 import org.openda.utils.Results;
 
@@ -124,32 +124,34 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		//use EfdcInpIoObject to write timeHorizon in EFDC.INP file.
 		BBUtils.makeFileClone(new File(templateDir, EFDC_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EFDC_INP_FILE_NAME));
-		EfdcInpIoObject efdcInpIoObject = new EfdcInpIoObject();
-		efdcInpIoObject.initialize(templateDir, EFDC_INP_FILE_NAME,
-				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (IPrevExchangeItem exchangeItem : efdcInpIoObject.getExchangeItems()) {
-			if (TSTART.equals(exchangeItem.getId())) {
+		EfdcInpDataObject efdcInpDataObject = new EfdcInpDataObject();
+		efdcInpDataObject.initialize(templateDir,
+				new String[]{EFDC_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
+		for (String id : efdcInpDataObject.getExchangeItemIDs()) {
+			IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
+			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
-			} else if (TSTOP.equals(exchangeItem.getId())) {
+			} else if (TSTOP.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{endTime});
 			}
 		}
-		efdcInpIoObject.finish();
+		efdcInpDataObject.finish();
 
 		//use EfdcEventTox2InpIoObject to write timeHorizon in EVENT_TOX2.INP file.
 		BBUtils.makeFileClone(new File(templateDir, EVENT_TOX2_INP_TEMPLATE_FILE_NAME),
 				new File(templateDir, EVENT_TOX2_INP_FILE_NAME));
-		EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
-		efdcEventTox2InpIoObject.initialize(templateDir, EVENT_TOX2_INP_FILE_NAME,
-				new String[]{String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
-		for (IPrevExchangeItem exchangeItem : efdcEventTox2InpIoObject.getExchangeItems()) {
-			if (TSTART.equals(exchangeItem.getId())) {
+		EfdcEventTox2InpDataObject efdcEventTox2InpDataObject = new EfdcEventTox2InpDataObject();
+		efdcEventTox2InpDataObject.initialize(templateDir,
+				new String[]{EVENT_TOX2_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
+		for (String id : efdcEventTox2InpDataObject.getExchangeItemIDs()) {
+			IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
+			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
-			} else if (TSTOP.equals(exchangeItem.getId())) {
+			} else if (TSTOP.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{endTime});
 			}
 		}
-		efdcEventTox2InpIoObject.finish();
+		efdcEventTox2InpDataObject.finish();
 	}
 
 	/**

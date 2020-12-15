@@ -27,7 +27,6 @@ import org.openda.exchange.SwanNetcdfRestartTemplateKeyExchangeItem;
 import org.openda.exchange.SwanRestartTemplateKeyExchangeItem;
 import org.openda.exchange.TemplateKeyExchangeItem;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.io.FileSupport;
 
 import java.io.File;
@@ -56,8 +55,8 @@ public class SwanTemplateDataObject extends BaseTemplateDataObject {
 
 
     
-    public IPrevExchangeItem[] getExchangeItems() {
-        IPrevExchangeItem[] tempExchangeItems = super.getExchangeItems();
+    public IExchangeItem[] getExchangeItems() {
+        IExchangeItem[] tempExchangeItems = super.getExchangeItems();
         exchangeItems = new IExchangeItem[tempExchangeItems.length + numberOfExtraExchangeItems];
         int length = tempExchangeItems.length;
         arraycopy(tempExchangeItems, 0, exchangeItems, 0, length);
@@ -126,7 +125,7 @@ public class SwanTemplateDataObject extends BaseTemplateDataObject {
         String restartValue = restartExchangeItem.calculateValue();
         String ncRestartValue = ncRestartExchangeItem.calculateValue();
 
-        for (IPrevExchangeItem exchangeItem: exchangeItems) {
+        for (IExchangeItem exchangeItem: exchangeItems) {
             if (exchangeItem != null && exchangeItem instanceof TemplateKeyExchangeItem) {
                 TemplateKeyExchangeItem keyExchangeItem = (TemplateKeyExchangeItem) exchangeItem;
                 if (keyExchangeItem.getId().equals(RESTART_ID)) continue;

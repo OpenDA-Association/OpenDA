@@ -21,12 +21,10 @@
 package org.openda.model_dflowfm;
 
 import org.openda.exchange.ArrayExchangeItem;
-import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Vector;
 
 import java.io.*;
@@ -209,7 +207,7 @@ public class DFlowFMMeteoFile implements IDataObject {
 		return result;
 	}
 
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		if (exchangeItem.getRole() == role) {
 			String[] result = new String[1];
 			result[0] = exchangeItem.getId();

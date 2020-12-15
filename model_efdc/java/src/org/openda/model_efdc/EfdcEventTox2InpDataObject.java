@@ -20,20 +20,19 @@
 
 package org.openda.model_efdc;
 
+import org.openda.exchange.AbstractDataObject;
+import org.openda.exchange.DoubleExchangeItem;
+import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.utils.Results;
+import org.openda.utils.Time;
+import org.openda.utils.io.AsciiFileUtils;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
-
-import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.exchange.DoubleExchangeItem;
-import org.openda.exchange.timeseries.TimeUtils;
-import org.openda.interfaces.IPrevExchangeItem;
-import org.openda.utils.Results;
-import org.openda.utils.Time;
-import org.openda.utils.io.AsciiFileUtils;
 
 /**
  * The EVENT_TOX2.INP control input file for the EFDC (Environmental Fluid Dynamics Code) model
@@ -47,7 +46,7 @@ import org.openda.utils.io.AsciiFileUtils;
  *
  * @author Arno Kockx
  */
-public class EfdcEventTox2InpIoObject implements IoObjectInterface {
+public class EfdcEventTox2InpDataObject extends AbstractDataObject {
 
     private static final String TAG = "$";
     private static final String TSTART_TAG = "TSTART";
@@ -61,44 +60,48 @@ public class EfdcEventTox2InpIoObject implements IoObjectInterface {
      */
     private TimeZone timeZone = TimeZone.getTimeZone("GMT");
 
-    private IPrevExchangeItem startTimeExchangeItem = null;
-    private IPrevExchangeItem endTimeExchangeItem = null;
     private File eventTox2InpFile;
     private DateFormat dateFormat;
+	private String startTimeID;
+	private String endTimeID;
 
-    /**
+	/**
      * @param workingDir the working directory.
-     * @param fileName the name of the file containing the data for this IoObject (relative to the working directory).
-     * @param arguments the first argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
-     *                  the second and third arguments should be the ids of the startTime and endTime exchangeItems respectively.
+     * @param arguments the first argument should be the the name of the file containing the data for this IDataObject (relative to the working directory),
+	 *                  the second argument should be the timeZone that is used by the model (in hours with respect to GMT, between -12 and 12),
+     *                  the third and fourth arguments should be the ids of the startTime and endTime exchangeItems respectively.
      */
-    
-    public void initialize(File workingDir, String fileName, String[] arguments) {
-        this.eventTox2InpFile = new File(workingDir, fileName);
 
-        //get timeZone.
-        if (arguments == null || arguments.length < 1) {
-            throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
-                    + ". The first argument should be the timeZone that is used by the model"
-                    + " (in hours with respect to GMT, between -12 and 12).");
-        }
+    @Override
+    public void initialize(File workingDir, String[] arguments) {
+		//get timeZone.
+		if (arguments == null || arguments.length < 2) {
+			throw new IllegalArgumentException("No timeZone argument specified for " + this.getClass().getSimpleName()
+				+ ". The second argument should be the timeZone that is used by the model"
+				+ " (in hours with respect to GMT, between -12 and 12).");
+		}
+
+        this.eventTox2InpFile = new File(workingDir, arguments[0]);
+
         try {
-            double timeZoneOffsetInHours = Double.parseDouble(arguments[0]);
+            double timeZoneOffsetInHours = Double.parseDouble(arguments[1]);
             this.timeZone = TimeUtils.createTimeZoneFromDouble(timeZoneOffsetInHours);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse first argument '" + arguments[0]
+            throw new IllegalArgumentException("Cannot parse first argument '" + arguments[1]
                     + "' for " + this.getClass().getSimpleName()
                     + ". The first argument should be the timeZone that is used by the model"
                     + " (in hours with respect to GMT, between -12 and 12).", e);
         }
 
         //create exchange items.
-        if (arguments.length < 3) {
+        if (arguments.length < 4) {
             throw new IllegalArgumentException("No exchange item ids arguments specified for " + this.getClass().getSimpleName()
-                    + ". The second and third arguments should be the ids of the startTime and endTime exchangeItems respectively.");
+                    + ". The third and fourth arguments should be the ids of the startTime and endTime exchangeItems respectively.");
         }
-        this.startTimeExchangeItem = new DoubleExchangeItem(arguments[1], 0);
-        this.endTimeExchangeItem = new DoubleExchangeItem(arguments[2], 0);
+		startTimeID = arguments[2];
+		endTimeID = arguments[3];
+		exchangeItems.put(startTimeID, new DoubleExchangeItem(startTimeID, 0));
+		exchangeItems.put(endTimeID, new DoubleExchangeItem(endTimeID, 0));
 
         //The dateFormat for the start and end dates in the EVENT_TOX2.INP file is yyyy MM dd HH mm, e.g.:
         //"2009 01 01 09 00"
@@ -107,12 +110,7 @@ public class EfdcEventTox2InpIoObject implements IoObjectInterface {
         this.dateFormat.setTimeZone(this.timeZone);
     }
 
-    
-    public IPrevExchangeItem[] getExchangeItems() {
-        return new IPrevExchangeItem[]{this.startTimeExchangeItem, this.endTimeExchangeItem};
-    }
-
-    
+    @Override
     public void finish() {
         writeControlFile();
     }
@@ -122,7 +120,7 @@ public class EfdcEventTox2InpIoObject implements IoObjectInterface {
      * that correspond to the ids of the exchangeItems.
      */
     public void writeControlFile() {
-        if (this.startTimeExchangeItem == null || this.endTimeExchangeItem == null) {
+        if (exchangeItems.isEmpty()) {
             throw new IllegalStateException("EfdcEventTox2InpIoObject not initialized yet.");
         }
         if (!this.eventTox2InpFile.exists()) {
@@ -135,8 +133,8 @@ public class EfdcEventTox2InpIoObject implements IoObjectInterface {
         List<String> content = AsciiFileUtils.readLines(this.eventTox2InpFile);
 
         //get start and stop times.
-        double startTime = (Double) this.startTimeExchangeItem.getValues();
-        double endTime = (Double) this.endTimeExchangeItem.getValues();
+        double startTime = (Double) this.exchangeItems.get(startTimeID).getValues();
+        double endTime = (Double) this.exchangeItems.get(endTimeID).getValues();
 
         //get keyword values.
         String startTimeString = getTimeString(startTime);

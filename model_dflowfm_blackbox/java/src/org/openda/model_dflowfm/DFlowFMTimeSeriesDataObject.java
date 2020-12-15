@@ -27,14 +27,15 @@ import org.openda.exchange.timeseries.TimeSeriesFormatter;
 import org.openda.exchange.timeseries.TimeSeriesSet;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem.Role;
 import org.openda.utils.Results;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 	public static final String PROPERTY_PATHNAME = "pathName";
@@ -65,10 +66,10 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 			}
 		}
 		this.timeSeriesSet = new TimeSeriesSet();
-		this.amplitudes = new LinkedHashMap<String, DoubleExchangeItem>();
-		this.phases = new LinkedHashMap<String, DoubleExchangeItem>();
-		this.cmpFileNames = new ArrayList<String>();
-		this.cmpNameFromId = new LinkedHashMap<String, String>();
+		this.amplitudes = new LinkedHashMap<>();
+		this.phases = new LinkedHashMap<>();
+		this.cmpFileNames = new ArrayList<>();
+		this.cmpNameFromId = new LinkedHashMap<>();
 		parseConfigurationFiles(mduFile);
 	}
 
@@ -138,7 +139,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 								String location = String.format("%s.%d" , locationId ,fileNr+1);
 								String amplitudeId = location + idSeparator + quantity + "."+var+"_amplitude" ;
 								double ampl = cmpfile.getAmplitude(var);
-								amplitude = new DoubleExchangeItem(amplitudeId, Role.InOut, ampl);
+								amplitude = new DoubleExchangeItem(amplitudeId, IExchangeItem.Role.InOut, ampl);
 								amplitude.setQuantityInfo(new QuantityInfo(quantity + ".amplitude","m"));
 								amplitude.setLatitude(lat);
 								amplitude.setLongitude(lon);
@@ -148,7 +149,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
                                 //phase
 								String phaseId = location + idSeparator + quantity + "."+var+"_phase" ;
 								double phi = cmpfile.getPhase(var);
-								phase = new DoubleExchangeItem(phaseId, Role.InOut, phi);
+								phase = new DoubleExchangeItem(phaseId, IExchangeItem.Role.InOut, phi);
 								phase.setQuantityInfo(new QuantityInfo(quantity + ".phase","degrees"));
 								phase.setLatitude(lat);
 								phase.setLongitude(lon);
@@ -175,10 +176,8 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
  	public String [] getExchangeItemIDs() {
 		String [] result = new String[this.timeSeriesSet.size()+2*this.amplitudes.size()];
 		int idx=0;
-		Iterator<TimeSeries> it = this.timeSeriesSet.iterator();
-		while (it.hasNext()) {
-			TimeSeries t = it.next();
-			result[idx]= t.getId();
+		for (TimeSeries t : this.timeSeriesSet) {
+			result[idx] = t.getId();
 			idx++;
 		}
 
@@ -215,12 +214,10 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 				throw new RuntimeException("No tidal phase found for " + exchangeItemID);
 			}
 		}else{
-			Iterator<TimeSeries> iterator = this.timeSeriesSet.iterator();
-			while (iterator.hasNext()) {
-				TimeSeries ts = iterator.next();
-				if (exchangeItemID.equals(ts.getId()) ) {
+			for (TimeSeries ts : this.timeSeriesSet) {
+				if (exchangeItemID.equals(ts.getId())) {
 					return ts;
-				};
+				}
 			}
 		}
 		return null;
@@ -295,7 +292,7 @@ public final class DFlowFMTimeSeriesDataObject implements IDataObject {
 
 	/**
 	 * @param set
-	 *           The TimeSeriesSet to set in this IoObject
+	 *           The TimeSeriesSet to set in this DataObject
 	 */
 	public void setTimeSeriesSet(TimeSeriesSet set) {
 		this.timeSeriesSet = set;

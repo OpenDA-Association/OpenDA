@@ -20,10 +20,9 @@
 
 package org.openda.model_delft3d;
 
-import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.exchange.AbstractDataObject;
+import org.openda.interfaces.IExchangeItem;
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,16 +30,12 @@ import java.util.ArrayList;
  * Date: May 8, 2009
  * Time: 2:49:06 PM
  */
-public class D3dRoughParamsFile implements IoObjectInterface {
+public class D3dRoughParamsFile extends AbstractDataObject {
 
-	private File workingDir = null;
-	private String configString = null;
-	private IPrevExchangeItem[] exchangeItems =null;
-
-	public void initialize(File workingDir, String configString, String[] arguments) {
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
 		/* Just save the initialization input */
-		this.workingDir    = workingDir;
-		this.configString = configString;
+		String configString = arguments[0];
 
 		/*Not sure what will be the content of  fileName
          This can be a whole XML-file specifying what parameters we will use but for now
@@ -48,7 +43,6 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 		 */
 
 		// Create an arraylist for storing all exchange items that are found in the input file
-		ArrayList<IPrevExchangeItem> listOfExchangeItems= new ArrayList();
 
 		/* read the parameters file */
 		File roughFile  =new File(workingDir, configString);
@@ -69,7 +63,6 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 
 				// Check whether the line starts with R_CODE
 				if (lineParts.length>2){
-					boolean hasA=false;
 					boolean hasB=false;
 					boolean hasC=false;
 					boolean hasD=false;
@@ -78,10 +71,6 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 					String sCode=lineParts[0];
 					String sFormulaNumber=lineParts[1];
 
-					if(lineParts.length>=3){ // first parameter exists
-						hasA=true;
-
-					}
 					if(lineParts.length>=4){ // second parameter exists
 						hasB=true;
 
@@ -106,42 +95,38 @@ public class D3dRoughParamsFile implements IoObjectInterface {
 					}
 
 					// Add exchange items for all parameters (if they exist)
-					if (hasA){
+					// first parameter exists
+					{
 						String idA=id+"_A";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idA, roughFile, iLine, "A");
-						listOfExchangeItems.add(newExchangeItem);
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idA, roughFile, iLine, "A");
+						exchangeItems.put(idA, newExchangeItem);
 					}
 					if (hasB){
 						String idB=id+"_B";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idB, roughFile, iLine, "B");
-						listOfExchangeItems.add(newExchangeItem);
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idB, roughFile, iLine, "B");
+						exchangeItems.put(idB, newExchangeItem);
 					}
 					if (hasC){
 						String idC=id+"_C";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idC, roughFile, iLine, "C");
-						listOfExchangeItems.add(newExchangeItem);
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idC, roughFile, iLine, "C");
+						exchangeItems.put(idC, newExchangeItem);
 					}
 					if (hasD){
 						String idD=id+"_D";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "D");
-						listOfExchangeItems.add(newExchangeItem);
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "D");
+						exchangeItems.put(idD, newExchangeItem);
 					}
 					if (hasE){
-						String idD=id+"_E";
-						IPrevExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idD, roughFile, iLine, "E");
-						listOfExchangeItems.add(newExchangeItem);
+						String idE=id+"_E";
+						IExchangeItem newExchangeItem=new D3dRoughParamsFileExchangeItem(idE, roughFile, iLine, "E");
+						exchangeItems.put(idE, newExchangeItem);
 					}
 				}
 			}
 		}
-		this.exchangeItems = new IPrevExchangeItem[listOfExchangeItems.size()];
-		listOfExchangeItems.toArray(this.exchangeItems);
 	}
 
-	public IPrevExchangeItem[] getExchangeItems() {
-		return this.exchangeItems;
-	}
-
+	@Override
 	public void finish() {
 		// no action needed
 	}

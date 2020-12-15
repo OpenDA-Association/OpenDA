@@ -21,7 +21,7 @@
 package org.openda.model_swan;
 
 import junit.framework.TestCase;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -47,7 +47,7 @@ public class SwanWLevelField2DFileTest extends TestCase {
         swanWLevelFile.initialize(wLevelFilesTestDir,new String[] {"waterlevels.dat","swan_nautboom.swn","WLEV"});
 
         String exchangeItemID = swanWLevelFile.getExchangeItemIDs()[0];
-        IPrevExchangeItem swnWLevelExchItem = swanWLevelFile.getExchangeItem(exchangeItemID);
+        IExchangeItem swnWLevelExchItem = swanWLevelFile.getExchangeItem(exchangeItemID);
 //        System.out.println("Number of exchangeItems: "+ swnWLevelExchItem.length);
         System.out.println("swnWLevelExchItem[0].getRole(): "+ swnWLevelExchItem.getRole());
         System.out.println("swnWLevelExchItem[0].getId(): "+ swnWLevelExchItem.getId());

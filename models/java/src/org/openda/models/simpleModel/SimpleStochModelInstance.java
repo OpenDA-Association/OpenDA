@@ -652,8 +652,8 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		throw new UnsupportedOperationException("org.openda.models.simpleModel.SimpleStochModelInstance.getExchangeItemIDs(): Not implemented yet.");
 	}
 
-    public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
-        if (role == IPrevExchangeItem.Role.InOut) {
+    public String[] getExchangeItemIDs(IExchangeItem.Role role) {
+        if (role == IExchangeItem.Role.InOut) {
             return getExchangeItemIDs();
         }
         throw new UnsupportedOperationException("org.openda.models.simpleModel.SimpleOscillatorStochModelInstance.getExchangeItemIDs(): Role selection not implemented yet.");
@@ -663,7 +663,7 @@ public abstract class SimpleStochModelInstance extends Instance implements IStoc
 		throw new UnsupportedOperationException("org.openda.models.simpleModel.SimpleOscillatorStochModelInstance.getDataObjectExchangeItem(): Not implemented yet.");
 	}
 
-	public IPrevExchangeItem getExchangeItem(String exchangeItemID){
+	public IExchangeItem getExchangeItem(String exchangeItemID){
 		throw new UnsupportedOperationException("org.openda.models.simpleModel.SimpleOscillatorStochModelInstance.getExchangeItem(): Not implemented yet.");
 	}
 

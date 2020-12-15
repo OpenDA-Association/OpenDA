@@ -37,35 +37,35 @@
 
 <inputOutput>
 
-	<ioObject className="org.openda.model_damflow.DupuitCFile">
+	<dataObject className="org.openda.model_damflow.DupuitCFile">
 		<file>%inputFileName%.C000</file>
 		<id>dupuitC</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitPFile">
+	<dataObject className="org.openda.model_damflow.DupuitPFile">
 		<file>%inputFileName%.P</file>
 		<id>dupuitP</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitBHOFile">
+	<dataObject className="org.openda.model_damflow.DupuitBHOFile">
 		<file>%inputFileName%.O</file>
 		<id>dupuitO</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitBHOFile">
+	<dataObject className="org.openda.model_damflow.DupuitBHOFile">
 		<file>%inputFileName%.B</file>
 		<id>dupuitB</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
-	<ioObject className="org.openda.model_damflow.DupuitGFile">
+	<dataObject className="org.openda.model_damflow.DupuitGFile">
 		<file>%inputFileName%.G</file>
 		<id>dupuitG</id>
 		<arg></arg>
-	</ioObject>
+	</dataObject>
 
 </inputOutput>
 

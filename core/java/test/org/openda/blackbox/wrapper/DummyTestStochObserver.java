@@ -107,9 +107,9 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
 
     private class DummyTestObservationDescriptions implements IObservationDescriptions {
 
-        private List<IPrevExchangeItem> exchangeItems = new ArrayList<IPrevExchangeItem>();
+        private List<IExchangeItem> exchangeItems = new ArrayList<>();
 
-        public DummyTestObservationDescriptions(String[] arguments) {
+        DummyTestObservationDescriptions(String[] arguments) {
             for (String argument : arguments) {
                 String[] ids = argument.trim().split(";");
                 for (String id : ids) {
@@ -118,7 +118,7 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
             }
         }
 
-        public List<IPrevExchangeItem> getExchangeItems() {
+        public List<IExchangeItem> getExchangeItems() {
             return exchangeItems;
         }
 
@@ -146,9 +146,9 @@ public class DummyTestStochObserver extends Instance implements IStochObserver {
 			return null;
 		}
 
-		private class DummyTestExchangeItem extends ExchangeItem implements IPrevExchangeItem {
+		private class DummyTestExchangeItem extends ExchangeItem {
 
-            public DummyTestExchangeItem(String argument) {
+            DummyTestExchangeItem(String argument) {
                 super(argument);
             }
 

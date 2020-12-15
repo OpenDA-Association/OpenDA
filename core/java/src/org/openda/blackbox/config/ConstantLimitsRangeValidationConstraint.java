@@ -20,7 +20,7 @@
 package org.openda.blackbox.config;
 
 import org.openda.exchange.ConstantLimitsRangeValidationExchangeItem;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 
 /**
  * Constraint that limits the range of the values of an exchangeItem using a constant lower and/or upper limit.
@@ -107,7 +107,7 @@ public class ConstantLimitsRangeValidationConstraint implements RangeValidationC
 	 * @param affectedExchangeItem the item to be wrapped.
 	 * @return rangeValidationExchangeItem that wraps the given item.
 	 */
-	public IPrevExchangeItem wrapAffectedExchangeItem(IPrevExchangeItem affectedExchangeItem) {
+	public IExchangeItem wrapAffectedExchangeItem(IExchangeItem affectedExchangeItem) {
 		if (affectedExchangeItem == null) {
 			throw new IllegalArgumentException("affectedExchangeItem is null.");
 		}

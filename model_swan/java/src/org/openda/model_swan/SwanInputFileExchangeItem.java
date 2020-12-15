@@ -20,12 +20,15 @@
 
 package org.openda.model_swan;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IQuantityInfo;
+import org.openda.interfaces.ITimeInfo;
 
 /**
  * Exchange item for reading and writing SWAN main input file.
  */
-public class SwanInputFileExchangeItem implements IPrevExchangeItem {
+public class SwanInputFileExchangeItem implements IExchangeItem {
     private SwanInputFile swanInputFile;
     private String id;
 
@@ -46,9 +49,9 @@ public class SwanInputFileExchangeItem implements IPrevExchangeItem {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getValueType(): Not implemented yet.");
     }
 
-    public Role getRole() {
-        throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getRole(): Not implemented yet.");
-    }
+    public ValueType getValuesType() { return ValueType.doublesType; }
+
+    public Role getRole() { throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getRole(): Not implemented yet."); }
 
     public Object getValues() {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getValues(): Not implemented yet.");
@@ -70,11 +73,19 @@ public class SwanInputFileExchangeItem implements IPrevExchangeItem {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.setValues(): Not implemented yet.");
     }
 
-    public void setValuesAsDoubles(double[] values) {
+	public void setValuesAsDoubles(double[] values) {
         throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.setValuesAsDoubles(): Not implemented yet.");
     }
 
-    public double[] getTimes() {
+	public void copyValuesFromItem(IExchangeItem sourceItem) { throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.copyValuesFromItem(): Not implemented yet.");}
+
+	public ITimeInfo getTimeInfo() { throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getTimeInfo(): Not implemented yet."); }
+
+	public IQuantityInfo getQuantityInfo() { throw new UnsupportedOperationException("org.openda.model_swan.SwanInputFileExchangeItem.getQuantityInfo(): Not implemented yet."); }
+
+	public IGeometryInfo getGeometryInfo() { return null; }
+
+	public double[] getTimes() {
         double[] times = new double[2];
         times[0] = swanInputFile.getDblTStartSimulation();
         times[1] = swanInputFile.getDblTStopSimulation();

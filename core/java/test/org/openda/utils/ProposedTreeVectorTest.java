@@ -28,7 +28,7 @@ import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IArrayExchangeItem;
 import org.openda.interfaces.IQuantityInfo;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 import org.openda.interfaces.IArrayTimeInfo;
 import org.openda.interfaces.ProposedITreeVector;
 import org.openda.utils.ProposedTreeVector;

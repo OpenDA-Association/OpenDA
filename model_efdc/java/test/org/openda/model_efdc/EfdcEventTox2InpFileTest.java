@@ -21,13 +21,12 @@
 package org.openda.model_efdc;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.Time;
 
@@ -41,7 +40,7 @@ public class EfdcEventTox2InpFileTest extends TestCase {
     private OpenDaTestSupport testData;
     private File testRunDataDir;
 
-    protected void setUp() throws IOException {
+    protected void setUp() {
     	testData = new OpenDaTestSupport(EfdcEventTox2InpFileTest.class, "model_efdc");
         testRunDataDir = testData.getTestRunDataDir();
     }
@@ -50,36 +49,37 @@ public class EfdcEventTox2InpFileTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        calendar.set(2009, 0, 1, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 1, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double startDate = Time.milliesToMjd(calendar.getTimeInMillis());
-        calendar.set(2009, 0, 3, 9, 0, 0);
+        calendar.set(2009, Calendar.JANUARY, 3, 9, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         double endDate = Time.milliesToMjd(calendar.getTimeInMillis());
 
-        EfdcEventTox2InpIoObject efdcEventTox2InpIoObject = new EfdcEventTox2InpIoObject();
+        EfdcEventTox2InpDataObject efdcEventTox2InpDataObject = new EfdcEventTox2InpDataObject();
         //working directory (testRunDataDir) is openda_public/opendaTestRuns/model_efdc/org/openda/model_efdc
         String eventTox2InpFilename = "efdcEventTox2InpFileTest/input/EVENT_TOX2.INP";
         String startTimeExchangeItemId = "TSTART1";
         String endTimeExchangeItemId = "TSTOP1";
-        efdcEventTox2InpIoObject.initialize(testRunDataDir, eventTox2InpFilename,
-                new String[]{"0", startTimeExchangeItemId, endTimeExchangeItemId});
+        efdcEventTox2InpDataObject.initialize(testRunDataDir,
+                new String[]{eventTox2InpFilename, "0", startTimeExchangeItemId, endTimeExchangeItemId});
 
         //Get all exchangeItems items
-        IPrevExchangeItem[] exchangeItems = efdcEventTox2InpIoObject.getExchangeItems();
-        //Loop over all exchangeItems items and request the ID, name and value
-        for (IPrevExchangeItem exchangeItem : exchangeItems) {
-            String id = exchangeItem.getId();
-            if (id.equals(startTimeExchangeItemId)) {
+        String[] exchangeItemIDs = efdcEventTox2InpDataObject.getExchangeItemIDs();
+        for (String id : exchangeItemIDs) {
+			IExchangeItem exchangeItem = efdcEventTox2InpDataObject.getDataObjectExchangeItem(id);
+			String exId = exchangeItem.getId();
+			assertEquals(id, exId);
+			if (exId.equals(startTimeExchangeItemId)) {
                 exchangeItem.setValues(startDate);
-            } else if (id.equals(endTimeExchangeItemId)) {
+            } else if (exId.equals(endTimeExchangeItemId)) {
                 exchangeItem.setValues(endDate);
             }
         }
 
         //This command actually replaces the tags in the file by the values
         //of the corresponding exchangeItems.
-        efdcEventTox2InpIoObject.finish();
+        efdcEventTox2InpDataObject.finish();
 
         //compare actual result file with expected result file.
         File actualOutputFile = new File(testRunDataDir, eventTox2InpFilename);

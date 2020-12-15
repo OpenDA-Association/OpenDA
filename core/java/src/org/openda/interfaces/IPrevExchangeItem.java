@@ -26,7 +26,10 @@ import java.io.Serializable;
 /**
  * Item for which the values can be retrieved from or provided to the model.
  * The model tells which exchange items it has, after which the exchange item is used to access the values.
- * This version of the exchange item is called the 'previous' version. It will become deprecated not too
+ * This version of the exchange item is called the 'previous' version.
+ * @deprecated
+ * This class is replaced by the generic DFlowFMXynExchangeItem class
+ *
  * long from now, so new model and data object developers should implement
  * @see IExchangeItem
  */
@@ -35,7 +38,7 @@ public interface IPrevExchangeItem extends Serializable {
     /**
      * List of possible roles for the exchange values.
      */
-    public enum Role {
+    enum PrevRole {
         /** Input for the model.*/
         Input,
         /** Output from the model.*/
@@ -57,53 +60,47 @@ public interface IPrevExchangeItem extends Serializable {
     String getDescription();
 
     /**
-     * Ask which object type will be returned by getValues() call
-     * @return The object type that will be returned by getValues() call
-     */
-	public Class getValueType();
-
-    /**
      * Get the role of the exchange item (input, output, or both)
      * @return The exchange items's role
      */
-    public Role getRole();
+    PrevRole getPrevRole();
 
     /**
      * Get the values of the exchange item
      * @return The values, according the type as defined in <code>getValueType()</code>
      */
-    public Object getValues();
+    Object getValues();
 
     /**
      * Get the values of the exchange item as an array of doubles
      * @return The values as an array of doubles
      */
-    public double[] getValuesAsDoubles();
+    double[] getValuesAsDoubles();
 
     /**
      * Perform a values += alpha * axpyValues</c> operation on each value in the exchange item.
      * @param alpha The <c>alpha</c> in <c>state variable += alpha * vector</c>.
      * @param axpyValues  The values for the axpy-operation on all values in the exchange item.
      */
-    public void axpyOnValues(double alpha, double[] axpyValues);
+    void axpyOnValues(double alpha, double[] axpyValues);
 
 	/**
 	 * Multiply each value in the exchange item's value with the related multiplication factor.
 	 * @param multiplicationFactors  The multiplication factors for all exchange time values.
 	 */
-	public void multiplyValues(double[] multiplicationFactors);
+	void multiplyValues(double[] multiplicationFactors);
 
     /**
      * Set the values of the exchange item
-     * @param values  The values to be set, ccording the type as defined in <code>getValueType()</code>
+     * @param values  The values to be set, according the type as defined in <code>getValueType()</code>
      */
-    public void setValues(Object values);
+    void setValues(Object values);
 
     /**
      * Set the values of the exchange item
      * @param values  The values as an array of doubles
      */
-    public void setValuesAsDoubles(double[] values);
+    void setValuesAsDoubles(double[] values);
 
     /**
      * Check if the exchange item is a time series
@@ -117,5 +114,5 @@ public interface IPrevExchangeItem extends Serializable {
      * and if the exchangeItem has role Input or InOut
      * @param times The times as an array of doubles
      */
-    public void setTimes(double[] times);
+    void setTimes(double[] times);
 }

@@ -51,7 +51,7 @@ public class SwanTimeInfoExchangeItem implements IExchangeItem {
     }
 
     public Role getRole() {
-        return IPrevExchangeItem.Role.InOut;
+        return Role.InOut;
     }
 
     public Object getValues() {

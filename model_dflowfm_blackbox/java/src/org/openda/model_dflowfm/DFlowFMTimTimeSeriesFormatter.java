@@ -30,7 +30,7 @@ import java.util.Vector;
 
 import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeSeriesFormatter;
-import org.openda.interfaces.IPrevExchangeItem.Role;
+import org.openda.interfaces.IExchangeItem.Role;
 
 public class DFlowFMTimTimeSeriesFormatter extends TimeSeriesFormatter {
 

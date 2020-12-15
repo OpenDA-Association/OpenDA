@@ -21,10 +21,10 @@
     <inputOutput>
 
         <!-- Reading the model states -->
-        <ioObject className="org.openda.blackbox.wrapper.DummyState">
+        <dataObject className="org.openda.blackbox.wrapper.DummyState">
             <file>dflow1d/wlevStateFileIn.xyz</file>
             <id>state</id>
-        </ioObject>
+        </dataObject>
 
 
     </inputOutput>

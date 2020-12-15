@@ -21,7 +21,7 @@
 package org.openda.model_swan;
 
 import junit.framework.TestCase;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class SwanInputFileTest extends TestCase {
         SwanInputFile swanInputFile = new SwanInputFile();
         swanInputFile.initialize(testRunDataParamFilesDir,new String[]{"swantestunstruct_circle.swn"});
 
-        IPrevExchangeItem swnInputExchangeItem = swanInputFile.getExchangeItem(swanInputFile.getExchangeItemIDs()[0]);
+        IExchangeItem swnInputExchangeItem = swanInputFile.getExchangeItem(swanInputFile.getExchangeItemIDs()[0]);
         double[] times = swnInputExchangeItem.getTimes();
         assertEquals("times[0]: ",55197.0,times[0]);
         assertEquals("times[1]: ",55198.0,times[1]);

@@ -20,7 +20,9 @@
 package org.openda.model_reactive_advection;
 import java.io.File;
 import org.openda.blackbox.interfaces.IoObjectInterface;
-import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.interfaces.IExchangeItem;
+
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Copy values for 'c' concentration on grid from one file to another.
@@ -52,35 +54,44 @@ public class myCopier {
 		}
 
 
-		IoObjectInterface output = new myWrapper();
-		String ioArgs[] = {};
-		output.initialize(outputFile.getParentFile(), outputFile.getName(), ioArgs);
-		IPrevExchangeItem outputItem1=null;
-		IPrevExchangeItem outputItem2=null;
-		for(IPrevExchangeItem item:output.getExchangeItems()){
-			String itemId = item.getId();
+		myWrapper output = new myWrapper();
+		String[] ioArgs = {outputFile.getName()};
+		output.initialize(outputFile.getParentFile(), ioArgs);
+		IExchangeItem outputItem1=null;
+		IExchangeItem outputItem2=null;
+		String[] ids = output.getExchangeItemIDs();
+		for(String id: ids){
+			IExchangeItem exchangeItem = output.getDataObjectExchangeItem(id);
+			String itemId = exchangeItem.getId();
+			assertEquals(id, itemId);
 			//System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("concentration1.grid")){
-				outputItem1 = item;
+				outputItem1 = exchangeItem;
 			}
 			if(itemId.equalsIgnoreCase("concentration2.grid")){
-				outputItem2 = item;
+				outputItem2 = exchangeItem;
 			}
 		}
 
-		IoObjectInterface input = new myWrapper();
-		input.initialize(inputFile.getParentFile(), inputFile.getName(), ioArgs);
-		for(IPrevExchangeItem item:input.getExchangeItems()){
-			String itemId = item.getId();
+		myWrapper input = new myWrapper();
+		ioArgs = new String[]{inputFile.getName()};
+		input.initialize(inputFile.getParentFile(), ioArgs);
+		ids = input.getExchangeItemIDs();
+		for(String id:ids){
+			IExchangeItem exchangeItem = input.getDataObjectExchangeItem(id);
+			String itemId = exchangeItem.getId();
+			assertEquals(id, itemId);
 			//System.out.println("looking at item: "+itemId);
 			if(itemId.equalsIgnoreCase("concentration1.grid")){
 				//System.out.println("changing item: "+itemId);
-				double values[] = item.getValuesAsDoubles();
+				double[] values = exchangeItem.getValuesAsDoubles();
+				assert outputItem1 != null;
 				outputItem1.setValuesAsDoubles(values);
 			}
 			if(itemId.equalsIgnoreCase("concentration2.grid")){
 				//System.out.println("changing item: "+itemId);
-				double values[] = item.getValuesAsDoubles();
+				double[] values = exchangeItem.getValuesAsDoubles();
+				assert outputItem2 != null;
 				outputItem2.setValuesAsDoubles(values);
 			}
 		}

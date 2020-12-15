@@ -136,7 +136,7 @@ public class DupuitCFile implements IDataObject, ITimeInfo {
 	}
 
 	
-	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
+	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
 		throw new UnsupportedOperationException("Class Name : org.openda.model_damflow.DupuitCFile - Method Name : getExchangeItemIDs");
 	}
 

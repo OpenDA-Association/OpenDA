@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by Stef Hummel (Stichting DELTARES) -->
 <xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:complexType name="AliasDefinitionXML">
 		<xs:sequence>
@@ -179,7 +180,7 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
-	<xs:complexType name="IoObjectXML">
+	<xs:complexType name="DataObjectXML">
 		<xs:sequence>
 			<xs:element name="file" type="xs:string">
 				<xs:annotation>
@@ -199,18 +200,23 @@
 		</xs:sequence>
 		<xs:attribute name="className" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>The openda:class name of the input/output object</xs:documentation>
+				<xs:documentation>The openda:class name of the input/output data object</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="InputOutputXML">
-		<xs:sequence>
-			<xs:element name="ioObject" type="openda:IoObjectXML" maxOccurs="unbounded">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="ioObject" type="openda:DataObjectXML">
 				<xs:annotation>
-					<xs:documentation>Specify the input/output object</xs:documentation>
+					<xs:documentation>element ioObject is obsolete, please use dataObject</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-		</xs:sequence>
+			<xs:element name="dataObject" type="openda:DataObjectXML">
+				<xs:annotation>
+					<xs:documentation>Specify the input/output data object</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="BlackBoxWrapperRunXML">
 		<xs:sequence>
