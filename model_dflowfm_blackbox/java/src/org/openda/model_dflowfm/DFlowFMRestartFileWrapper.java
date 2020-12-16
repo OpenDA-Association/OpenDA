@@ -20,8 +20,10 @@
 package org.openda.model_dflowfm;
 
 import org.openda.exchange.ExchangeItem;
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Vector;
@@ -35,7 +37,13 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  *  Reading and writing the D-Flow FM restart file <testcase>_map.nc
@@ -142,6 +150,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 			}
 		}
+		IGeometryInfo geometryInfo = getGeometryInfo(inputFile);
 
 		// read all variables not containing geometry information
 		// full arrays contain information for all times, take a slice for the time index determined above.
@@ -186,7 +195,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 				//System.out.println("DEBUG: "+ fullName + " unitID: " + unitID  );
 				if (unitID != null) {
-					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName), unitID);
+					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName), unitID, geometryInfo);
 					exchange.setValues(new Vector(dValues));
 					double[] timeinfo = { Reftime };
 					exchange.setTimes(timeinfo);
@@ -206,6 +215,35 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		} catch (IOException e) {
 			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
+	}
+
+	private IGeometryInfo getGeometryInfo(NetcdfFile inputFile) {
+		Variable variableX = inputFile.findVariable("FlowElem_xcc");
+		if (variableX == null) return null;
+		String unitsString = variableX.getUnitsString();
+		boolean unitInMeters = "m".equals(unitsString);
+
+		Variable variableY = inputFile.findVariable("FlowElem_ycc");
+		int[] originXY = createOrigin(variableX);
+		if (variableY == null) return null;
+		int[] sizeArrayXY = variableX.getShape();
+		// For geometryInfo
+		double[] xCoords = NetcdfUtils.readSelectedData(variableX, originXY, sizeArrayXY, -1);
+		double[] yCoords = NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY, -1);
+
+		double[] zCoords = getZCoords(inputFile);
+
+		assert xCoords != null;
+		assert yCoords != null;
+		return new DFlowFMMapExchangeItemGeometryInfo(xCoords, yCoords, zCoords, unitInMeters);
+	}
+
+	private double[] getZCoords(NetcdfFile inputFile) {
+		Variable variableZ = inputFile.findVariable("FlowElem_zcc");
+		if (variableZ == null) return null;
+		int[] originZ = createOrigin(variableZ);
+		int[] sizeArrayZ = variableZ.getShape();
+		return NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ, -1);
 	}
 
 	public String [] getExchangeItemIDs() {
@@ -312,5 +350,12 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		String[] subStr = fullName.split("\\(");
 //		System.out.println("Short name is "+subStr[0]);
 		return subStr[0];
+	}
+
+	private static int[] createOrigin(Variable var) {
+		int dimensionCount = var.getDimensions().size();
+		int[] origin = new int[dimensionCount];
+		Arrays.fill(origin, 0);
+		return origin;
 	}
 }
