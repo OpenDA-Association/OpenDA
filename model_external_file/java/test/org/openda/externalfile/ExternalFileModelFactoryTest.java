@@ -13,7 +13,7 @@ public class ExternalFileModelFactoryTest extends TestCase {
 	private OpenDaTestSupport testData;
 
 	protected void setUp() {
-		testData = new OpenDaTestSupport(ExternalFileModelFactoryTest.class, "model_fews_workflow");
+		testData = new OpenDaTestSupport(ExternalFileModelFactoryTest.class, "model_external_file");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 

@@ -1,6 +1,7 @@
 package org.openda.externalfile;
 
 import org.openda.exchange.DoubleExchangeItem;
+import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.*;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
 import org.openda.utils.StochVector;
@@ -8,13 +9,16 @@ import org.openda.utils.Time;
 import org.openda.utils.Vector;
 import org.openda.utils.io.AsciiFileUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ExternalFileModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, Cloneable {
 
 	private final String modelResultsFile;
+	private Time time;
 	private Vector parameterVector;
 	private Vector modelResults;
 	private File dummyModelDir;
@@ -32,7 +36,21 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 
 		this.modelResultsFile = modelResultsFile;
 		this.dummyModelDir = dummyModelDir;
-		this.parameterUncertainties = new StochVector(parameterValuesFromFile, new double[]{0.4, 0.8, 1.6});
+		this.parameterUncertainties = new StochVector(parameterValuesFromFile, new double[]{0.4});
+
+		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
+		netcdfDataScalarTimeSeriesDataObject.initialize(dummyModelDir, new String[]{modelResultsFile, "true", "false"});
+		String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
+			ITimeInfo timeInfo = dataObjectExchangeItem.getTimeInfo();
+			double[] times = timeInfo.getTimes();
+			double firstTime = times[0];
+			double secondTime = times[1];
+			double endTime = times[times.length - 1];
+			double deltaTasMJD = secondTime - firstTime;
+			time = new Time(firstTime - deltaTasMJD, endTime, deltaTasMJD);
+		}
 	}
 
 	public IVector getState() {
@@ -141,7 +159,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public ITime getTimeHorizon() {
-		return fakeTime;
+		return time;
 	}
 
 	public ITime getCurrentTime() {
@@ -150,11 +168,18 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 
 	public void compute(ITime targetTime) {
 
-		if (modelParFile.exists()) modelParFile.delete();
+		if (modelParFile.exists()) {
+			boolean delete = modelParFile.delete();
+			while (!delete) {
+				delete = modelParFile.delete();
+			}
+		}
 		try {
 			FileWriter writer = new FileWriter(modelParFile, false);
 			for (int i = 0; i < parameterVector.getSize(); i++) {
-				writer.write(String.valueOf(parameterVector.getValue(i)));
+				String value = String.valueOf(parameterVector.getValue(i));
+				System.out.println(value);
+				writer.write(value);
 				writer.write("\n");
 			}
 			writer.close();
@@ -178,12 +203,51 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
-		openDASigFile.delete();
+		if (openDASigFile.exists()) {
+			boolean delete = openDASigFile.delete();
+			while (!delete) {
+				delete = openDASigFile.delete();
+			}
+		}
 
-		File modelResults = new File(dummyModelDir, modelResultsFile);
-		double[] receivedValues = readValuesFromFile(modelResults);
+		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
+		netcdfDataScalarTimeSeriesDataObject.initialize(dummyModelDir, new String[]{modelResultsFile, "true", "false"});
+		String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
+		Vector vector = null;
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
+			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
+			// TODO EP: support more EI's
+			vector = new Vector(valuesAsDoubles);
+		}
 
-		this.modelResults = new Vector(receivedValues);
+		/*File modelResults = new File(dummyModelDir, modelResultsFile);
+		SimpleTimeSeriesContentHandler contentHandler = new SimpleTimeSeriesContentHandler();
+		try {
+			FileUtils.parse(modelResults, new PiTimeSeriesParser(), contentHandler);
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		TimeSeriesArrays timeSeriesArrays = contentHandler.getTimeSeriesArrays();
+		int size = 0;
+		for (int i = 0; i < timeSeriesArrays.size(); i++) {
+			TimeSeriesArray timeSeriesArray = timeSeriesArrays.get(i);
+			size += timeSeriesArray.size();
+		}
+
+		Vector vector = new Vector(size);
+
+		int index = 0;
+		for (int i = 0; i < timeSeriesArrays.size(); i++) {
+			TimeSeriesArray timeSeriesArray = timeSeriesArrays.get(i);
+			for (int j = 0; j < timeSeriesArray.size(); j++) {
+				double value = timeSeriesArray.getValue(j);
+				vector.setValue(index++, value);
+			}
+		}*/
+		//double[] receivedValues = readValuesFromFile(modelResults);
+
+		this.modelResults = vector;
 	}
 
 	private double[] readValuesFromFile(File modelResults) {
