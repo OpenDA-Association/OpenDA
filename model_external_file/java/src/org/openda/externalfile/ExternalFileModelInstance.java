@@ -26,10 +26,12 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	private LinkedHashMap<String, DoubleExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private Time fakeTime = new Time(58119,58120,1d/24d);
 	private File modelParFile;
+	private File modelParFinalFile;
 
 	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File dummyModelDir) {
 
 		modelParFile = new File(dummyModelDir, modelParametersFileName);
+		modelParFinalFile = new File(dummyModelDir, "final" + modelParametersFileName);
 
 		double[] parameterValuesFromFile = readValuesFromFile(modelParFile);
 		this.parameterVector = new Vector(parameterValuesFromFile);
@@ -330,5 +332,23 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
 		return modelResults;
+	}
+
+	void sendFinalParameters() {
+		System.out.println("Sending final parameters");
+		try {
+			FileWriter writer = new FileWriter(modelParFinalFile, false);
+			for (int i = 0; i < parameterVector.getSize(); i++) {
+				String value = String.valueOf(parameterVector.getValue(i));
+				System.out.println(value);
+				writer.write(value);
+				writer.write("\n");
+			}
+			writer.close();
+			System.out.println("Final parameters written to " + modelParFinalFile);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+
 	}
 }
