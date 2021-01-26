@@ -27,18 +27,21 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	private Time fakeTime = new Time(58119,58120,1d/24d);
 	private File modelParFile;
 	private File modelParFinalFile;
+	private File stdDevParFile;
 
 	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File dummyModelDir) {
 
 		modelParFile = new File(dummyModelDir, modelParametersFileName);
 		modelParFinalFile = new File(dummyModelDir, "final" + modelParametersFileName);
+		stdDevParFile = new File(dummyModelDir, "stdDev" + modelParametersFileName);
 
 		double[] parameterValuesFromFile = readValuesFromFile(modelParFile);
 		this.parameterVector = new Vector(parameterValuesFromFile);
 
 		this.modelResultsFile = modelResultsFile;
 		this.dummyModelDir = dummyModelDir;
-		this.parameterUncertainties = new StochVector(parameterValuesFromFile, new double[]{0.4});
+		double[] stdDevs = readValuesFromFile(stdDevParFile);
+		this.parameterUncertainties = new StochVector(parameterValuesFromFile, stdDevs);
 
 		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
 		netcdfDataScalarTimeSeriesDataObject.initialize(dummyModelDir, new String[]{modelResultsFile, "true", "false"});

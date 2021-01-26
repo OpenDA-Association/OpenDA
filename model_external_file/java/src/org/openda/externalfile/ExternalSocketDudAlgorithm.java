@@ -19,6 +19,7 @@ public class ExternalSocketDudAlgorithm extends Dud {
 		if (this.bestEstimate == null) return;
 		if (!(bestEstimate instanceof ExternalFileModelInstance)) return;
 		((ExternalFileModelInstance) bestEstimate).sendFinalParameters();
+		//optimizer.getCurrentCosts()
 	}
 
 
