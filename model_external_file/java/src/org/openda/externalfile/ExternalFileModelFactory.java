@@ -37,7 +37,6 @@ public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonCons
 
 	//@Override
 	public void finish() {
-		throw new RuntimeException("org.openda.externalsocket.ExternalModelStochModelFactory.finish() not implemented yet");
 
 	}
 

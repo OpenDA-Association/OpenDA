@@ -44,7 +44,7 @@ public class SCE extends Instance implements IAlgorithm {
 	private IStochModelFactory stochModelFactory;
     protected ConfigTree sceConf;
 
-    private IStochModelInstance bestEstimate = null;
+    protected IStochModelInstance bestEstimate = null;
     //config
     public double initStep=1.0; //scaling factor for initial perturbations of parameters
     //workspace
