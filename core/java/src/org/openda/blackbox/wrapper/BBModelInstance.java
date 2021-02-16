@@ -30,6 +30,8 @@ import org.openda.utils.Instance;
 import org.openda.utils.Results;
 import org.openda.utils.Time;
 import org.openda.utils.io.FileBasedModelState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +45,7 @@ import java.util.List;
  * Black box module's implementation of a model instance
  */
 public class BBModelInstance extends Instance implements IModelInstance {
+	private static Logger LOGGER = LoggerFactory.getLogger(BBStochModelInstance.class);
     private final String ALL_ELEMENTS_FROM_IO_OBJECT = "allElementsFromIoObject";
 
 	protected BBModelConfig bbModelConfig;
@@ -567,12 +570,23 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	public static File createDirectoryForSavedState(ITime time, boolean mustExist, File savedStatesRootDir, String savedStatesDirPrefix) {
 		String timeString = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Time.timeStampToDate(time));
 		File dirForRestartFiles;
-        if (new File(savedStatesDirPrefix).isAbsolute()) {
+		File file = new File(savedStatesDirPrefix);
+		/*Results.putProgression("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix " + savedStatesDirPrefix);
+		Results.putProgression("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix path " + file.getPath());
+		Results.putProgression("BBModelInstance.createDirectoryForSavedState: path is absolute: " + file.isAbsolute());
+		System.out.println("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix " + savedStatesDirPrefix);
+		System.out.println("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix path " + file.getPath());
+		System.out.println("BBModelInstance.createDirectoryForSavedState: path is absolute: " + file.isAbsolute());*/
+		if (file.isAbsolute()) {
             dirForRestartFiles = new File(savedStatesDirPrefix + timeString);
         } else {
-            dirForRestartFiles = new File(savedStatesRootDir, savedStatesDirPrefix + timeString);
-        }
-        if (mustExist) {
+			/*Results.putProgression("BBModelInstance.createDirectoryForSavedState: savedStatesRootDir path " + savedStatesRootDir.getPath());
+			System.out.println("BBModelInstance.createDirectoryForSavedState: savedStatesRootDir path " + savedStatesRootDir.getPath());*/
+			dirForRestartFiles = new File(savedStatesRootDir, savedStatesDirPrefix + timeString);
+		}
+		/*Results.putProgression("BBModelInstance.createDirectoryForSavedState: dirForRestartFiles path " + dirForRestartFiles.getPath());
+		System.out.println("BBModelInstance.createDirectoryForSavedState: dirForRestartFiles path " + dirForRestartFiles.getPath());*/
+		if (mustExist) {
 			if (!dirForRestartFiles.exists()) {
 				throw new RuntimeException("Dir for restart files not found: " + dirForRestartFiles.getAbsolutePath());
 			}

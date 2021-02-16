@@ -725,7 +725,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public IModelState saveInternalState() {
-		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false);
+		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
         FileBasedModelState stochSavedModelState = new FileBasedModelState();
         stochSavedModelState.setDirContainingModelstateFiles(dirForRestartFiles);
 		int i = 0;
@@ -761,7 +761,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					" for " + this.getClass().getName() + ".releaseInternalState");
 		}
 		FileBasedModelState stochModelState = (FileBasedModelState) savedInternalState;
-		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false);
+		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
         File incomingStateDir = stochModelState.getDirContainingModelStateFiles();
 
         // the particle filter exchanges full states. Copy a full state dir from another ensemble member
@@ -797,13 +797,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			throw new IllegalArgumentException("Unknown state type (" + savedInternalState.getClass().getName() +
 					" for " + this.getClass().getName() + ".releaseInternalState");
 		}
-		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false);
+		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
 		FileBasedModelState modelState = (FileBasedModelState) savedInternalState;
 		modelState.releaseState(dirForRestartFiles);
 	}
 
 	public IModelState loadPersistentState(File persistentStateFile) {
-		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false);
+		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
 		return FileBasedModelState.loadPersistenState(persistentStateFile, dirForRestartFiles);
 	}
 
