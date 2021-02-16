@@ -571,21 +571,11 @@ public class BBModelInstance extends Instance implements IModelInstance {
 		String timeString = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Time.timeStampToDate(time));
 		File dirForRestartFiles;
 		File file = new File(savedStatesDirPrefix);
-		/*Results.putProgression("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix " + savedStatesDirPrefix);
-		Results.putProgression("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix path " + file.getPath());
-		Results.putProgression("BBModelInstance.createDirectoryForSavedState: path is absolute: " + file.isAbsolute());
-		System.out.println("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix " + savedStatesDirPrefix);
-		System.out.println("BBModelInstance.createDirectoryForSavedState: savedStatesDirPrefix path " + file.getPath());
-		System.out.println("BBModelInstance.createDirectoryForSavedState: path is absolute: " + file.isAbsolute());*/
 		if (file.isAbsolute()) {
             dirForRestartFiles = new File(savedStatesDirPrefix + timeString);
         } else {
-			/*Results.putProgression("BBModelInstance.createDirectoryForSavedState: savedStatesRootDir path " + savedStatesRootDir.getPath());
-			System.out.println("BBModelInstance.createDirectoryForSavedState: savedStatesRootDir path " + savedStatesRootDir.getPath());*/
 			dirForRestartFiles = new File(savedStatesRootDir, savedStatesDirPrefix + timeString);
 		}
-		/*Results.putProgression("BBModelInstance.createDirectoryForSavedState: dirForRestartFiles path " + dirForRestartFiles.getPath());
-		System.out.println("BBModelInstance.createDirectoryForSavedState: dirForRestartFiles path " + dirForRestartFiles.getPath());*/
 		if (mustExist) {
 			if (!dirForRestartFiles.exists()) {
 				throw new RuntimeException("Dir for restart files not found: " + dirForRestartFiles.getAbsolutePath());

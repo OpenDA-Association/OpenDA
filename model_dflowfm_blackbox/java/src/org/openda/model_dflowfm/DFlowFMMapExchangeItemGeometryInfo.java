@@ -10,12 +10,12 @@ import org.openda.utils.Array;
 public class DFlowFMMapExchangeItemGeometryInfo implements IGeometryInfo {
 
 	private final int[] dimensions;
-	private double[] xCoords;
-	private double[] yCoords;
+	private final double[] xCoords;
+	private final double[] yCoords;
 	private double[] zCoords;
-	private boolean is3D;
+	private final boolean is3D;
 	private static final double METERS_PER_DEGREE = 60. * 1852.27;
-	private boolean unitInMeters;
+	private final boolean unitInMeters;
 
 	public DFlowFMMapExchangeItemGeometryInfo(double[] xCoords, double[] yCoords, double[] zCoords, boolean unitInMeters) {
 		this.unitInMeters = unitInMeters;
