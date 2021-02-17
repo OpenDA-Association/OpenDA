@@ -489,7 +489,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
         flushAndClearDataObjects(false);
 
 		FileBasedModelState modelState = (FileBasedModelState) savedInternalState;
-		File savedStateDir = checkRestartDir(getCurrentTime(), false);
+		File savedStateDir = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
 		modelState.setDirContainingModelstateFiles(savedStateDir);
 		modelState.restoreState();
 		for (String restartFileName : bbModelConfig.getRestartFileNames()) {
@@ -518,7 +518,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 	}
 
 	public IModelState loadPersistentState(File persistentStateFile) {
-		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false);
+		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
 		return FileBasedModelState.loadPersistenState(persistentStateFile, dirForRestartFiles);
 	}
 
