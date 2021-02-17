@@ -449,7 +449,7 @@ public class BBModelInstance extends Instance implements IModelInstance {
 
 		// copy the model's restart files to a subdirectory for the current time stap,
 		// and gather them in a file based model state
-		File savedStateDir = checkRestartDir(getCurrentTime(), false);
+		File savedStateDir = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
 		for (String restartFileName : bbModelConfig.getRestartFileNames()) {
 			File modelStateFile = new File(getModelRunDir(), restartFileName);
 			File file = new File(restartFileName);

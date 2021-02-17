@@ -797,7 +797,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			throw new IllegalArgumentException("Unknown state type (" + savedInternalState.getClass().getName() +
 					" for " + this.getClass().getName() + ".releaseInternalState");
 		}
-		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false).getAbsoluteFile();
+		File dirForRestartFiles = checkRestartDir(getCurrentTime(), false);
 		FileBasedModelState modelState = (FileBasedModelState) savedInternalState;
 		modelState.releaseState(dirForRestartFiles);
 	}
