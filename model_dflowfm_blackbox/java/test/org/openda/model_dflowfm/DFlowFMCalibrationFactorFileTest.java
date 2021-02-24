@@ -1,5 +1,5 @@
-/* OpenDA v2.4.4 
-* Copyright (c) 2018 OpenDA Association 
+/*
+* Copyright (c) 2021 OpenDA Association 
 * All rights reserved.
 * 
 * This file is part of OpenDA. 

@@ -1,5 +1,5 @@
-/* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
+/*
+* Copyright (c) 2021 OpenDA Association 
 * All rights reserved.
 * 
 * This file is part of OpenDA. 
@@ -30,8 +30,8 @@ public class HeaderModifier {
 
 	private String suffix = "java";
 	
-	private String license= "/* MOD_V2.0 \n"+
-	"* Copyright (c) 2012 OpenDA Association \n"+
+	private String license= "/*\n"+
+	"* Copyright (c) 2021 OpenDA Association \n"+
 	"* All rights reserved.\n"+
 	"* \n"+
 	"* This file is part of OpenDA. \n"+
@@ -95,7 +95,7 @@ public class HeaderModifier {
 			if(line!=null){
 				needsModification=true;
 				if(line.indexOf("/* MOD_V2.0")>=0){
-					needsModification=false;
+					needsModification=true;
 					containsHeader=true;
 				}else if(line.indexOf("/*")>=0){
 					needsModification=true;
