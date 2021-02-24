@@ -12,6 +12,7 @@ import org.openda.utils.io.AsciiFileUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -21,31 +22,35 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	private Time time;
 	private Vector parameterVector;
 	private Vector modelResults;
-	private File dummyModelDir;
+	private File exchangeDir;
+	private File runDir;
 	private final StochVector parameterUncertainties;
 	private LinkedHashMap<String, DoubleExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private Time fakeTime = new Time(58119,58120,1d/24d);
 	private File modelParFile;
 	private File modelParFinalFile;
-	private File stdDevParFile;
+	//private File stdDevParFile;
 
-	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File dummyModelDir) {
+	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File runDir) {
 
-		modelParFile = new File(dummyModelDir, modelParametersFileName);
-		modelParFinalFile = new File(dummyModelDir, "final" + modelParametersFileName);
-		stdDevParFile = new File(dummyModelDir, "stdDev" + modelParametersFileName);
+		this.exchangeDir = new File(runDir, "exchangeDir");
+		this.runDir = runDir;
+		modelParFile = new File(exchangeDir, modelParametersFileName);
+		modelParFinalFile = new File(exchangeDir, "final" + modelParametersFileName);
+		//stdDevParFile = new File(runDir, "stdDev" + modelParametersFileName);
 
 		double[] parameterValuesFromFile = readValuesFromFile(modelParFile);
 		this.parameterVector = new Vector(parameterValuesFromFile);
 
 		this.modelResultsFile = modelResultsFile;
-		this.dummyModelDir = dummyModelDir;
-		double[] stdDevs = readValuesFromFile(stdDevParFile);
+		double[] stdDevs = new double[parameterValuesFromFile.length];
+		Arrays.fill(stdDevs, 0.1);
 		this.parameterUncertainties = new StochVector(parameterValuesFromFile, stdDevs);
 
 		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
-		netcdfDataScalarTimeSeriesDataObject.initialize(dummyModelDir, new String[]{modelResultsFile, "true", "false"});
+		netcdfDataScalarTimeSeriesDataObject.initialize(runDir, new String[]{modelResultsFile, "true", "false"});
 		String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
+		Vector vector = null;
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
 			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
 			ITimeInfo timeInfo = dataObjectExchangeItem.getTimeInfo();
@@ -55,7 +60,12 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			double endTime = times[times.length - 1];
 			double deltaTasMJD = secondTime - firstTime;
 			time = new Time(firstTime - deltaTasMJD, endTime, deltaTasMJD);
+			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
+			// TODO EP: support more EI's
+			vector = new Vector(valuesAsDoubles);
 		}
+		netcdfDataScalarTimeSeriesDataObject.finish();
+		modelResults = vector;
 	}
 
 	public IVector getState() {
@@ -193,14 +203,14 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		}
 
 		// Tdod make configurable
-		File externalSigFile = new File(dummyModelDir, "FewsCanRun.sig");
+		File externalSigFile = new File(exchangeDir, "FewsCanRun.sig");
 		try {
 			boolean newFile = externalSigFile.createNewFile();
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 
-		File openDASigFile = new File(dummyModelDir, "OpenDACanRun.sig");
+		File openDASigFile = new File(exchangeDir, "OpenDACanRun.sig");
 		while (!openDASigFile.exists()) {
 			try {
 				Thread.sleep(100L);
@@ -215,16 +225,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			}
 		}
 
-		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
-		netcdfDataScalarTimeSeriesDataObject.initialize(dummyModelDir, new String[]{modelResultsFile, "true", "false"});
-		String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
-		Vector vector = null;
-		for (int i = 0; i < exchangeItemIDs.length; i++) {
-			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
-			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
-			// TODO EP: support more EI's
-			vector = new Vector(valuesAsDoubles);
-		}
+		Vector modelResults = getModelResults();
 
 		/*File modelResults = new File(dummyModelDir, modelResultsFile);
 		SimpleTimeSeriesContentHandler contentHandler = new SimpleTimeSeriesContentHandler();
@@ -252,7 +253,22 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		}*/
 		//double[] receivedValues = readValuesFromFile(modelResults);
 
-		this.modelResults = vector;
+		this.modelResults = modelResults;
+	}
+
+	private Vector getModelResults() {
+		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
+		netcdfDataScalarTimeSeriesDataObject.initialize(runDir, new String[]{modelResultsFile, "true", "false"});
+		String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
+		Vector vector = null;
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
+			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
+			// TODO EP: support more EI's
+			vector = new Vector(valuesAsDoubles);
+		}
+		netcdfDataScalarTimeSeriesDataObject.finish();
+		return vector;
 	}
 
 	private double[] readValuesFromFile(File modelResults) {
@@ -301,7 +317,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public File getModelRunDir() {
-		return dummyModelDir;
+		return exchangeDir;
 	}
 
 	public String[] getExchangeItemIDs() {

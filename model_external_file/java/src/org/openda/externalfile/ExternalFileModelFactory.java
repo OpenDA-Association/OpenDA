@@ -12,7 +12,7 @@ import java.io.File;
 public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonConsumer, IStochModelFactory {
 
 	private ExternalFileModelFactoryConfigReader configReader;
-	private File dummyModelDir;
+	private File exchangeDir;
 
 	public ExternalFileModelFactory() {
 		
@@ -21,12 +21,12 @@ public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonCons
 
 	//@Override
 	public ExternalFileModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
-		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), dummyModelDir);
+		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), exchangeDir);
 	}
 
 	@Override
 	public IStochModelInstance getInstance(OutputLevel outputLevel) {
-		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), dummyModelDir);
+		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), exchangeDir);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonCons
 			throw new IllegalArgumentException(getClass().getSimpleName()
 				+ ": First argument should be: relative bmiModelFactoryConfig file path.");
 		}
-		dummyModelDir = new File(workingDir, "dummyModelDir");
+		exchangeDir = workingDir;
 		File fewsWorkflowModelFactoryConfigFile = new File(workingDir, arguments[0]);
 		if (!fewsWorkflowModelFactoryConfigFile.exists()) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + ": Cannot find fewsWorkflowModelFactoryConfig file "
