@@ -29,7 +29,6 @@ import org.openda.utils.Vector;
 import org.openda.utils.io.CalRestartSettings;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -48,7 +47,7 @@ public class SCE extends Instance implements IAlgorithm {
     //config
     public double initStep=1.0; //scaling factor for initial perturbations of parameters
     //workspace
-    private SimulationKwadraticCostFunction J=null;
+    private ICostFunction J=null;
     private SCECoreOptimizer sceOptimizer = null;
 
     private File workingDir=null;
@@ -78,16 +77,21 @@ public class SCE extends Instance implements IAlgorithm {
         
         // Create costFunction
         Results.putMessage("costFunction@class="+ sceConf.getAsString("costFunction@class","SimulationKwadraticCostFunction"));
-        if(sceConf.getAsString("costFunction@class","SimulationKwadraticCostFunction").contains("SimulationKwadraticCostFunction")){
-            this.J = new SimulationKwadraticCostFunction(stochModelFactory, stochObserver);
-        }else{
-        	throw new RuntimeException("Only implemented for one costfunction yet: org.openda.algorithms.SimulationKwadraticCostFunction");
-        }
+		if (sceConf.getAsString("costFunction@class", "SimulationKwadraticCostFunction").contains("SimulationKwadraticCostFunction")) {
+			this.J = new SimulationKwadraticCostFunction(stochModelFactory, stochObserver);
+		} else if (sceConf.getAsString("costFunction@class", "RMSECostFunction").contains("RMSECostFunction")) {
+			this.J = new RMSECostFunction(stochModelFactory, stochObserver);
+		} else {
+			throw new RuntimeException("Only implemented for one costfunction yet: org.openda.algorithms.SimulationKwadraticCostFunction");
+		}
         // options for costFunctions
-        J.addBackgroundTerm = sceConf.getAsBoolean("costFunction@weakParameterConstraint",false);
-        Results.putMessage("costFunction@weakParameterConstraint="+J.addBackgroundTerm);
-        J.factor = sceConf.getAsDouble("costFunction@factor",J.factor);
-        Results.putMessage("costFunction@factor="+J.factor);
+		if (J instanceof SimulationKwadraticCostFunction) {
+			SimulationKwadraticCostFunction simtemp = (SimulationKwadraticCostFunction) J;
+			simtemp.addBackgroundTerm = sceConf.getAsBoolean("costFunction@weakParameterConstraint", false);
+			Results.putMessage("costFunction@weakParameterConstraint=" + simtemp.addBackgroundTerm);
+			simtemp.factor = sceConf.getAsDouble("costFunction@factor", simtemp.factor);
+			Results.putMessage("costFunction@factor=" + simtemp.factor);
+		}
 
         // Initialize core optimizer
         this.sceOptimizer = new SCECoreOptimizer(J);
@@ -195,7 +199,13 @@ public class SCE extends Instance implements IAlgorithm {
 
         // Initialize core optimizer
         this.sceOptimizer.initialize(InitialPopulation);
-        this.bestEstimate = this.J.getBestModel();
+		if (J instanceof SimulationKwadraticCostFunction) {
+			SimulationKwadraticCostFunction simtemp = (SimulationKwadraticCostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		} else if (J instanceof RMSECostFunction) {
+			RMSECostFunction simtemp = (RMSECostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		}
 		stochModelInstance.finish();
 	}
 
@@ -220,7 +230,14 @@ public class SCE extends Instance implements IAlgorithm {
 	 */
 	public void next(){
 		this.sceOptimizer.next();
-        this.bestEstimate = this.J.getBestModel();
+		if (J instanceof SimulationKwadraticCostFunction) {
+			SimulationKwadraticCostFunction simtemp = (SimulationKwadraticCostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		} else if (J instanceof RMSECostFunction) {
+			RMSECostFunction simtemp = (RMSECostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		}
+
 		try {
 			if (!this.hasNext() && this.bestEstimate != null && this.bestEstimate.getModelRunDir() != null) {
 				Results.putMessage("Optimal results are in model run dir "+ this.bestEstimate.getModelRunDir().getAbsolutePath());
