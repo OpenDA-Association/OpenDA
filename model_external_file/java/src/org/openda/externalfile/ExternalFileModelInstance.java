@@ -22,21 +22,19 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	private Time time;
 	private Vector parameterVector;
 	private Vector modelResults;
-	private File exchangeDir;
-	private File runDir;
+	private final File exchangeDir;
+	private final File runDir;
 	private final StochVector parameterUncertainties;
-	private LinkedHashMap<String, DoubleExchangeItem> exchangeItems = new LinkedHashMap<>();
-	private Time fakeTime = new Time(58119,58120,1d/24d);
-	private File modelParFile;
-	private File modelParFinalFile;
-	//private File stdDevParFile;
+	private final Time fakeTime = new Time(58119,58120,1d/24d);
+	private final File modelParFile;
+	private final File modelParFinalFile;
 
 	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File runDir) {
 
 		this.exchangeDir = new File(runDir, "exchangeDir");
 		this.runDir = runDir;
 		modelParFile = new File(exchangeDir, modelParametersFileName);
-		modelParFinalFile = new File(exchangeDir, "final" + modelParametersFileName);
+		modelParFinalFile = new File(exchangeDir, "finalModelParFile.txt");
 		//stdDevParFile = new File(runDir, "stdDev" + modelParametersFileName);
 
 		double[] parameterValuesFromFile = readValuesFromFile(modelParFile);
@@ -170,7 +168,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public IPrevExchangeItem getExchangeItem(String exchangeItemID) {
-		return exchangeItems.get(exchangeItemID);
+		return null;
 	}
 
 	public ITime getTimeHorizon() {
@@ -187,6 +185,11 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			boolean delete = modelParFile.delete();
 			while (!delete) {
 				delete = modelParFile.delete();
+				try {
+					Thread.sleep(10L);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
 			}
 		}
 		try {
@@ -225,35 +228,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			}
 		}
 
-		Vector modelResults = getModelResults();
-
-		/*File modelResults = new File(dummyModelDir, modelResultsFile);
-		SimpleTimeSeriesContentHandler contentHandler = new SimpleTimeSeriesContentHandler();
-		try {
-			FileUtils.parse(modelResults, new PiTimeSeriesParser(), contentHandler);
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		TimeSeriesArrays timeSeriesArrays = contentHandler.getTimeSeriesArrays();
-		int size = 0;
-		for (int i = 0; i < timeSeriesArrays.size(); i++) {
-			TimeSeriesArray timeSeriesArray = timeSeriesArrays.get(i);
-			size += timeSeriesArray.size();
-		}
-
-		Vector vector = new Vector(size);
-
-		int index = 0;
-		for (int i = 0; i < timeSeriesArrays.size(); i++) {
-			TimeSeriesArray timeSeriesArray = timeSeriesArrays.get(i);
-			for (int j = 0; j < timeSeriesArray.size(); j++) {
-				double value = timeSeriesArray.getValue(j);
-				vector.setValue(index++, value);
-			}
-		}*/
-		//double[] receivedValues = readValuesFromFile(modelResults);
-
-		this.modelResults = modelResults;
+		this.modelResults = getModelResults();
 	}
 
 	private Vector getModelResults() {
@@ -321,7 +296,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public String[] getExchangeItemIDs() {
-		return exchangeItems.keySet().toArray(new String[0]);
+		return new String[0];
 	}
 
 	public String[] getExchangeItemIDs(IPrevExchangeItem.Role role) {
@@ -330,12 +305,10 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		return exchangeItems.get(exchangeItemID);
-
+		return null;
 	}
 
 	public void finish() {
-		// TODO EP socket client send final parameters
 
 	}
 
@@ -354,17 +327,14 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	void sendFinalParameters() {
-		System.out.println("Sending final parameters");
 		try {
 			FileWriter writer = new FileWriter(modelParFinalFile, false);
 			for (int i = 0; i < parameterVector.getSize(); i++) {
 				String value = String.valueOf(parameterVector.getValue(i));
-				System.out.println(value);
 				writer.write(value);
 				writer.write("\n");
 			}
 			writer.close();
-			System.out.println("Final parameters written to " + modelParFinalFile);
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
