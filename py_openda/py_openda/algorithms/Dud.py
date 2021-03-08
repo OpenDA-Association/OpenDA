@@ -92,6 +92,10 @@ def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
 def max_step_p_new(parameters, p_new, l_bound, u_bound):
     # Check for valid starting point
     if not all([l <= p <= u for p, l, u in zip(parameters[:, -1], l_bound, u_bound)]):
+        print("print all parameters and bound, error will follow")
+        print("lower, param, upper")
+        for p, l, u in zip(parameters[:, -1], l_bound, u_bound):
+            print (str(l)+" "+str(p) + " "+str(u))
         raise ValueError("current parameters are outside upper and lower bounds")
     alpha = 1.0
     for p, p_n, l, u in zip (parameters[:, -1], p_new, l_bound, u_bound):
@@ -105,7 +109,7 @@ def max_step_p_new(parameters, p_new, l_bound, u_bound):
 
     if alpha < 1.0:
         print("domain protection alpha ="+str(alpha))
-        p_bound = [p + alpha*(p_n-p) for p, p_n in zip(parameters[:,-1], p_new)]
+        p_bound = [p + alpha*0.99*(p_n-p) for p, p_n in zip(parameters[:,-1], p_new)]
         return np.array(p_bound)
     else:
         return p_new
