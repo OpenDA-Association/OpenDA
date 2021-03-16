@@ -50,7 +50,7 @@ some more detail in the following sections.
   using exchangeItems. The exchangeItems contain values that are read from
   model output files or need to be written to model input files. The creation
   of the exchangeItems and reading from/writing to files is implemented by one
-  or more ioObjects. The black box wrapper will run the model executable when
+  or more IDataObjects. The black box wrapper will run the model executable when
   all input files are prepared.}
 \label{Fig:overview}
 \end{center}
@@ -86,7 +86,7 @@ exchangeItems and handles the reading and writing of the values in the
 exchangeItems from and to the model input and output files.
 
 For each file format we need to handle we have to implement a java class that
-implements the IoObjectInterface interface. This interface only contains three
+implements the IDataObjectInterface interface. This interface only contains three
 public methods:
 \begin{itemize}
 \item initialize: creates all exchangeItems. The values of the input and inout
@@ -116,7 +116,7 @@ when needed.
 \begin{itemize}
 \item Identify the input and output files that contain values you need and
   determine how these values are stored
-\item Write an IoObjectInterface class for each file format you need such that
+\item Write an IDataObjectInterface class for each file format you need such that
   you have exchangeItems for all the data you are going to use in \oda. Try to
   use existing implementations of exchangeItems when possible. For inspiration
   look at available example implementations. Note: Use a "simple" wrapper like
