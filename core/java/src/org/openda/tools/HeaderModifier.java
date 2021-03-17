@@ -31,7 +31,7 @@ public class HeaderModifier {
 	private String suffix = "java";
 	
 	private String license= "/*\n"+
-	"* Copyright (c) 2021 OpenDA Association \n"+
+	"* Copyright (c) 2021 OpenDA Association\r\n"+
 	"* All rights reserved.\n"+
 	"* \n"+
 	"* This file is part of OpenDA. \n"+
@@ -84,7 +84,7 @@ public class HeaderModifier {
 			if(line.indexOf("package")>=0){ //TODO This is not a very thorough check
 				packageLine=line;
 				line = buff.readLine();
-			} 
+			}
 			//skip empty lines
 			while((line!=null) && (line.trim().length()==0)){
 				line=buff.readLine();
