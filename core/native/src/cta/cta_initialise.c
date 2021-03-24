@@ -28,14 +28,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "cta_sobs_netcdf.h"
 #include "cta_sobs_combine.h"
 #include "cta_sobs_sqlite3.h"
+#include "cta_message.h"
 
+#define CLASSNAME "CTA_Core"
 #define CTA_INITIALISE_F77 F77_CALL(cta_core_initialise,CTA_CORE_INITIALISE)
 #define CTA_FINALISE_F77 F77_CALL(cta_core_finalise,CTA_CORE_FINALISE)
 #define CTA_SOBS_MAORI_INITIALISE_F77 F77_CALL(cta_sobs_maori_initialise, CTA_SOBS_MAORI_INITIALISE)
 
+#define IDEBUG (0)
 
 int is_initialised=0;
 
+#define METHOD "Initialise"
 int CTA_Core_Initialise()
 {
 
@@ -48,7 +52,10 @@ int CTA_Core_Initialise()
    // Default library name for user routines
    strcpy(userDefaultDynamicLibrary,"libuseropenda");
 
-   printf("OpenDA Native initialize: Initial random seed %ld\n",CTA_INITIAL_RANDOM_SEED);
+   char message[64];
+   sprintf(message,"OpenDA Native initialize: Initial random seed %ld\n",CTA_INITIAL_RANDOM_SEED);
+   CTA_WRITE_INFO(message);
+
    CTA_rand_seed((long) CTA_INITIAL_RANDOM_SEED);
    if (! is_initialised)
    {
@@ -62,7 +69,6 @@ int CTA_Core_Initialise()
       CTA_SObs_combine_initialise(&CTA_COMBINE_SOBS);
 
       CTA_ObsDescr_table_initialise(&CTA_OBSDESCR_TABLE);
-
 
       CTA_Vector_blas_initialise (&CTA_DEFAULT_VECTOR);
 
@@ -95,26 +101,25 @@ int CTA_Core_Initialise()
 
       CTA_MODBUILD_PAR=CTA_NULL;
 
-      if (0) {
-      printf("cta_initialise :CTA_MODBUILD_PAR  =%d\n",CTA_MODBUILD_PAR);
-      printf("cta_initialise :CTA_FILE_STDOUT   =%d\n",CTA_FILE_STDOUT);
-      printf("cta_initialise :CTA_DEFAULT_SOBS  =%d\n",CTA_DEFAULT_SOBS);
-      printf("cta_initialise :CTA_NETCDF_SOBS   =%d\n",CTA_NETCDF_SOBS);
-      printf("cta_initialise :CTA_COMBINE_SOBS  =%d\n",CTA_COMBINE_SOBS);
-      printf("cta_initialise :CTA_OBSDESCR_TABLE=%d\n",CTA_OBSDESCR_TABLE);
-      printf("cta_initialise :CTA_DEFAULT_VECTOR=%d\n",CTA_DEFAULT_VECTOR);
-      printf("cta_initialise :CTA_DEFAULT_MATRIX=%d\n",CTA_DEFAULT_MATRIX);
-      printf("cta_initialise :CTA_MODBUILD_SP   =%d\n",CTA_MODBUILD_SP);
-      printf("cta_initialise :CTA_MODELCOMBINER =%d\n",CTA_MODELCOMBINER);
-      printf("cta_initialise :CTA_MODBUILD_B3B  =%d\n",CTA_MODBUILD_B3B);
-      printf("cta_initialise :CTA_MODBUILD_BB   =%d\n",CTA_MODBUILD_BB);
-      printf("cta_initialise :CTA_OP_ROOT_RMS   =%d\n",CTA_OP_ROOT_RMS);
-      printf("cta_initialise :CTA_OP_ROOT_AMAX  =%d\n",CTA_OP_ROOT_AMAX);
-      printf("cta_initialise :CTA_OP_ROOT_PRINTI=%d\n",CTA_OP_ROOT_PRINTI);
-      printf("cta_initialise :CTA_OP_ROOT_SSQ   =%d\n",CTA_OP_ROOT_SSQ);
-      printf("cta_initialise :CTA_MAORI_SOBS    =%d\n",CTA_MAORI_SOBS);
-      printf("cta_initialise :CTA_USER_SOBS     =%d\n",CTA_USER_SOBS);
-      exit(-1);
+      if (IDEBUG) {
+         printf("cta_initialise :CTA_MODBUILD_PAR  =%d\n",CTA_MODBUILD_PAR);
+         printf("cta_initialise :CTA_FILE_STDOUT   =%d\n",CTA_FILE_STDOUT);
+         printf("cta_initialise :CTA_DEFAULT_SOBS  =%d\n",CTA_DEFAULT_SOBS);
+         printf("cta_initialise :CTA_NETCDF_SOBS   =%d\n",CTA_NETCDF_SOBS);
+         printf("cta_initialise :CTA_COMBINE_SOBS  =%d\n",CTA_COMBINE_SOBS);
+         printf("cta_initialise :CTA_OBSDESCR_TABLE=%d\n",CTA_OBSDESCR_TABLE);
+         printf("cta_initialise :CTA_DEFAULT_VECTOR=%d\n",CTA_DEFAULT_VECTOR);
+         printf("cta_initialise :CTA_DEFAULT_MATRIX=%d\n",CTA_DEFAULT_MATRIX);
+         printf("cta_initialise :CTA_MODBUILD_SP   =%d\n",CTA_MODBUILD_SP);
+         printf("cta_initialise :CTA_MODELCOMBINER =%d\n",CTA_MODELCOMBINER);
+         printf("cta_initialise :CTA_MODBUILD_B3B  =%d\n",CTA_MODBUILD_B3B);
+         printf("cta_initialise :CTA_MODBUILD_BB   =%d\n",CTA_MODBUILD_BB);
+         printf("cta_initialise :CTA_OP_ROOT_RMS   =%d\n",CTA_OP_ROOT_RMS);
+         printf("cta_initialise :CTA_OP_ROOT_AMAX  =%d\n",CTA_OP_ROOT_AMAX);
+         printf("cta_initialise :CTA_OP_ROOT_PRINTI=%d\n",CTA_OP_ROOT_PRINTI);
+         printf("cta_initialise :CTA_OP_ROOT_SSQ   =%d\n",CTA_OP_ROOT_SSQ);
+         printf("cta_initialise :CTA_MAORI_SOBS    =%d\n",CTA_MAORI_SOBS);
+         printf("cta_initialise :CTA_USER_SOBS     =%d\n",CTA_USER_SOBS);
       }
    };
    return CTA_OK;
@@ -122,7 +127,7 @@ int CTA_Core_Initialise()
 
 
 int CTA_Core_Finalise(){
-   printf("Calling CTA_Finalise\n");
+   if (IDEBUG) printf("Calling CTA_Finalise\n");
    CTA_Modbuild_par_Finalize();
    return CTA_OK;
 }
