@@ -730,7 +730,7 @@
 
     <target name="test-linux64-teamcity" >
 
-        <!--echo>Turning on X11 Windows server for GUI tests... </echo>
+        <--echo>Turning on X11 Windows server for GUI tests... </echo>
         <exec executable="Xvfb" os="Linux" spawn="true" searchpath="true" >
            <arg value=":1"/>
            <arg value="-screen"/>
@@ -742,14 +742,14 @@
            <arg value="-screen"/>
            <arg value="0"/>
            <arg value="1024x768x24"/>
-        </exec-->
+        </exec>
 
         <ant target="test"/>
 
-        <!--echo>Turning off X11 Windows server... </echo>
+        <--echo>Turning off X11 Windows server... </echo>
        	<exec executable="killall" os="Linux,Mac OS,Mac OS X,Darwin" searchpath="true" >
     	         <arg value="Xvfb"/>
-        </exec-->
+        </exec>
    </target>
 
    <target name="validate-xml">
