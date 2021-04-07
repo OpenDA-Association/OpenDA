@@ -7,8 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: setup Java environment
+        uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
@@ -18,3 +20,10 @@ jobs:
         run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
       - name: Run the Tests (from the old Travis script)
         run: ./travis_test.sh
+      - name: Archive test reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: ant-test-reports
+          path: opendaTestReports
+        
+      
