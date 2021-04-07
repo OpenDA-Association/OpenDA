@@ -12,5 +12,9 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Update Ubuntu packages
+        run: sudo apt-get update
+      - name: Install Ubuntu packages
+        run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
       - name: Run the Tests (from the old Travis script)
         run: ./travis_test.sh
