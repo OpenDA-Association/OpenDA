@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -24,6 +24,7 @@
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>libcta</RootNamespace>
     <ProjectName>libcta</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -31,28 +32,28 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -136,14 +137,15 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;FTN_CAPITAL;HAVE_LIBNETCDF;USE_MPI;CTALIB;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\external\pthreads\include\win32;..\..\external\sqlite3;..\..\external\mpi\win_mpich2\include;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\external;..\..\external\pthreads\include\win32;..\..\external\sqlite3;$(I_MPI_ROOT)\intel64\include;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\include</AdditionalIncludeDirectories>
       <AdditionalOptions>/DHAVE_STRUCT_TIMESPEC</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\mpi\win_mpich2\$(PlatformName)\mpi.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(Outdir)\blas_lapack.lib;..\..\external\pthreads\bin\$(PlatformName)\pthreadVCE2.lib;..\..\external\libxml\$(PlatformName)\libxml2.lib;..\..\external\netcdf\netcd_4.3.0_win\$(PlatformName)\lib\netcdf.lib;impi.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(I_MPI_ROOT)\intel64\lib\Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
