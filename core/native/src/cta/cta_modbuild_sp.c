@@ -1058,15 +1058,15 @@ void  modbuild_sp_ar1_covar(CTA_TreeVector *colsvar,int* nnoise, CTA_Handle husr
 
   CTA_Vector_Create(CTA_DEFAULT_VECTOR, 3, CTA_DOUBLE, CTA_NULL, &hvec1);
   ier2 = CTA_Tree_GetHandleStr(husrdata,"/p0",&hvec1);
-  printf ("-----------ar1_covar:tree: ier2=%d   \n",ier2);
+  if (IDEBUG) printf ("-----------ar1_covar:tree: ier2=%d   \n",ier2);
   ier2=CTA_Vector_GetVals(hvec1,p0,3,CTA_DOUBLE);
-  printf("ar1_covar: getvals ier p0 %d %f \n",ier2, p0[1]);
+  if (IDEBUG) printf("ar1_covar: getvals ier p0 %d %f \n",ier2, p0[1]);
 
   ier2 = CTA_Tree_GetHandleStr(husrdata,"/hgrid",&hhandle);
 
   ier2=CTA_Handle_GetData((CTA_Handle) hhandle,(void**) &hgrid);
 
-  printf("ar1_covar: ier2 grid.nx %d %d \n",ier2,hgrid->nx);
+  if (IDEBUG) printf("ar1_covar: ier2 grid.nx %d %d \n",ier2,hgrid->nx);
 
 
   ier2 = modbuild_sp_compute_covars(nmodel,Lar1,p0, *hgrid);
@@ -1078,7 +1078,7 @@ void  modbuild_sp_ar1_covar(CTA_TreeVector *colsvar,int* nnoise, CTA_Handle husr
     CTA_Vector_Create(CTA_DEFAULT_VECTOR, nmodel, CTA_DOUBLE, CTA_NULL, &hvec2);
     CTA_Vector_SetVals(hvec2,col1,nmodel,CTA_DOUBLE);
     CTA_TreeVector_SetVec(colsvar[i],hvec2);
-  printf("ar1_covar: state-setvec ier %d %d\n",i,ier2);
+    if (IDEBUG) printf("ar1_covar: state-setvec ier %d %d\n",i,ier2);
   }
 
   CTA_Vector_Free(&hvec1);

@@ -927,10 +927,10 @@ int CTAI_Model_GetObsLocalization(
       /* Call user supplied implementation */
       if (IDEBUG) printf("CTA_MODEL DEBUG: Calling Localization function \n");
       if (domain_version){
-         function(data->data, &hdescr, &distance, &locVecs, &retval);
+         function(data->data, &hdescr, &distance, iDomain, &locVecs, &retval);
       }
       else {
-         function(data->data, &hdescr, &distance, iDomain, &locVecs, &retval);
+         function(data->data, &hdescr, &distance, &locVecs, &retval);
       }
       if (IDEBUG) printf("CTA_MODEL DEBUG: Return code Localization function %d \n",
          retval);

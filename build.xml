@@ -730,12 +730,6 @@
 
     <target name="test-linux64-teamcity" >
 
-	<!--
-        <chmod perm="ugo+rx" dir="${projectbin}" includes="*.sh" verbose="true"/>
-	<chmod perm="ugo+rx" dir="${projectbin}/linux64_gnu/bin" includes="**" verbose="true"/>
-        <chmod perm="ugo+rx" dir="${projectbin}/linux64_gnu/lib" includes="**" verbose="true"/>
-	-->
-
         <echo>Turning on X11 Windows server for GUI tests... </echo>
         <exec executable="Xvfb" os="Linux" spawn="true" searchpath="true" >
            <arg value=":1"/>
@@ -755,7 +749,7 @@
         <echo>Turning off X11 Windows server... </echo>
        	<exec executable="killall" os="Linux,Mac OS,Mac OS X,Darwin" searchpath="true" >
     	         <arg value="Xvfb"/>
-    	</exec>
+        </exec>
    </target>
 
    <target name="validate-xml">
