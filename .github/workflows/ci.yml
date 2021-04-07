@@ -19,7 +19,9 @@ jobs:
       - name: Install Ubuntu packages
         run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
       - name: Build Native code
-        run: ./travis_install.sh
+        run: ./install_native_travis.sh
+      - name: Build Castor xml-parser code
+        run: ./install_castor.sh
       - name: Run the Tests (from the old Travis script)
         run: ./travis_test.sh
       - name: Archive test reports
