@@ -30,5 +30,11 @@ jobs:
         with:
           name: ant-test-reports
           path: opendaTestReports
+      - name: Publish Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v2
+        with:
+          report_paths: 'opendaTestReports/*.xml'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         
       
