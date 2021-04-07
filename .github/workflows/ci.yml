@@ -23,6 +23,7 @@ jobs:
       - name: Run the Tests (from the old Travis script)
         run: ./travis_test.sh
       - name: Archive test reports
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: ant-test-reports
