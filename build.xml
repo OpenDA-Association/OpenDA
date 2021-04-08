@@ -600,7 +600,7 @@
     </macrodef>
 
 
-   <target name="test-travis" depends="testclasses">
+   <target name="test-github" depends="testclasses">
         <mkdir dir="${testreportdir}"/>
         <mkdir dir="${testrundir}"/>
 
