@@ -34,7 +34,7 @@ public class DFlowFMMapExchangeItemGeometryInfo implements IGeometryInfo {
 			this.zCoords[0] = 0;
 		}
 
-		dimensions = new int[]{this.xCoords.length, this.zCoords.length};
+		dimensions = new int[]{this.xCoords.length};
 	}
 
 	private static double distanceInMetersFromLatLon(double lat1, double lon1, double lat2, double lon2) {
@@ -56,13 +56,9 @@ public class DFlowFMMapExchangeItemGeometryInfo implements IGeometryInfo {
 
 		Array arrayDistances = new Array(dimensions);
 
-		int k = 0;
-		for (int lay = 0; lay < dimensions[1]; lay++) {
-			for (int xy = 0; xy < dimensions[0]; xy++) {
-				double distance = unitInMeters ? distance(y, x, this.yCoords[xy], this.xCoords[xy]) : distanceInMetersFromLatLon(y, x, this.yCoords[xy], this.xCoords[xy]);
-				arrayDistances.setValueAsDouble(k, distance);
-				k++;
-			}
+		for (int i = 0; i < dimensions[0]; i++) {
+			double distance = unitInMeters ? distance(y, x, this.yCoords[i], this.xCoords[i]) : distanceInMetersFromLatLon(y, x, this.yCoords[i], this.xCoords[i]);
+			arrayDistances.setValueAsDouble(i, distance);
 		}
 		return arrayDistances;
 	}
