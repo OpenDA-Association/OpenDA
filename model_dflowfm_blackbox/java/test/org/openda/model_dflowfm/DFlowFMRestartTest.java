@@ -21,8 +21,10 @@ package org.openda.model_dflowfm;
 
 import junit.framework.TestCase;
 
+import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 import java.io.File;
 import java.io.IOException;
@@ -127,6 +129,24 @@ public class DFlowFMRestartTest extends TestCase {
 					values[i] = 100.0;
 				}
 				RestartFile.getDataObjectExchangeItem(id).setValuesAsDoubles(values);
+				IGeometryInfo geometryInfo = ex.getGeometryInfo();
+				assertNotNull(geometryInfo);
+				assertTrue(geometryInfo instanceof DFlowFMMapExchangeItemGeometryInfo);
+				DFlowFMMapExchangeItemGeometryInfo dFlowFMGeometry = (DFlowFMMapExchangeItemGeometryInfo) geometryInfo;
+				assertEquals(87, dFlowFMGeometry.getSize());
+				assertFalse(dFlowFMGeometry.is3D());
+				assertEquals(0, dFlowFMGeometry.getZCoord(0), 0.001);
+				double xCoord0 = dFlowFMGeometry.getXCoord(0);
+				assertEquals(157080.05234218697, xCoord0, 0.001);
+				assertEquals(170668.49413182843, dFlowFMGeometry.getXCoord(55), 0.001);
+				assertEquals(179393.00276083976, dFlowFMGeometry.getXCoord(86), 0.001);
+				double yCoord0 = dFlowFMGeometry.getYCoord(0);
+				assertEquals(429554.3158721777, yCoord0, 0.001);
+				assertEquals(434611.9683101297, dFlowFMGeometry.getYCoord(55), 0.001);
+				assertEquals(433143.09523854207, dFlowFMGeometry.getYCoord(86), 0.001);
+				IArray distanceToPointArray = dFlowFMGeometry.distanceToPoint(xCoord0, yCoord0, 0);
+				assertEquals(0.0, distanceToPointArray.getValueAsDouble(0), 0.01);
+				assertEquals(14499.158542949863, distanceToPointArray.getValueAsDouble(55), 0.01);
 			}
 		}
 		// write file

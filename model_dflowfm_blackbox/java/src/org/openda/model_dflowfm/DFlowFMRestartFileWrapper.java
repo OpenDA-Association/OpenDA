@@ -20,23 +20,30 @@
 package org.openda.model_dflowfm;
 
 import org.openda.exchange.ExchangeItem;
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.utils.*;
+import org.openda.interfaces.IGeometryInfo;
+import org.openda.interfaces.IPrevExchangeItem;
+import org.openda.utils.Results;
 import org.openda.utils.Vector;
-
+import ucar.ma2.Array;
+import ucar.ma2.DataType;
+import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriter;
-import ucar.ma2.DataType;
-import ucar.ma2.InvalidRangeException;
-import ucar.ma2.Array;
+import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-
-import ucar.nc2.Variable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  *  Reading and writing the D-Flow FM restart file <testcase>_map.nc
@@ -95,7 +102,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			netcdffileName = fileNameFull.getAbsolutePath();
 			inputFile = NetcdfFile.open(netcdffileName, null);
 		} catch (Exception e) {
-			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName);
+			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName + " due to " + e.getMessage(), e);
 		}
 
 		// get list of all variables and construct a smaller list of exchange variables from this list:
@@ -126,9 +133,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						}
 					}
 				} catch (IOException e) {
-					throw new RuntimeException("Error reading array 'time' from NetCDF file "+netcdffileName);
+					throw new RuntimeException("Error reading array 'time' from NetCDF file "+ netcdffileName + " due to " + e.getMessage(), e);
 				} catch (InvalidRangeException e) {
-					throw new RuntimeException("Error reading from NetCDF file "+netcdffileName);
+					throw new RuntimeException("Error reading from NetCDF file "+ netcdffileName + " due to " + e.getMessage(), e);
 				}
 			}
 		}
@@ -143,6 +150,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 			}
 		}
+		IGeometryInfo geometryInfo = getGeometryInfo(inputFile);
 
 		// read all variables not containing geometry information
 		// full arrays contain information for all times, take a slice for the time index determined above.
@@ -151,11 +159,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
     		try {
 	    		Array full = inputFile.readSection(var.getShortName());
 			    thisValue = full.slice(0,time_index);
-		    } catch (IOException e) {
-			   	e.printStackTrace();
-		    } catch (InvalidRangeException e) {
-			  	 e.printStackTrace();
-			} catch (ArrayIndexOutOfBoundsException e) {
+		    } catch (IOException | InvalidRangeException e) {
+				throw new RuntimeException("Error reading from NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
+		    } catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Error processing "+var.getShortName());
 				continue;
 				//e.printStackTrace();
@@ -189,7 +195,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 				//System.out.println("DEBUG: "+ fullName + " unitID: " + unitID  );
 				if (unitID != null) {
-					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName), unitID);
+					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName), unitID, geometryInfo);
 					exchange.setValues(new Vector(dValues));
 					double[] timeinfo = { Reftime };
 					exchange.setTimes(timeinfo);
@@ -204,6 +210,40 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			}
 			inputFile.finish();
 		}
+		try {
+			inputFile.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
+		}
+	}
+
+	private IGeometryInfo getGeometryInfo(NetcdfFile inputFile) {
+		Variable variableX = inputFile.findVariable("FlowElem_xcc");
+		if (variableX == null) return null;
+		String unitsString = variableX.getUnitsString();
+		boolean unitInMeters = "m".equals(unitsString);
+
+		Variable variableY = inputFile.findVariable("FlowElem_ycc");
+		int[] originXY = createOrigin(variableX);
+		if (variableY == null) return null;
+		int[] sizeArrayXY = variableX.getShape();
+		// For geometryInfo
+		double[] xCoords = NetcdfUtils.readSelectedData(variableX, originXY, sizeArrayXY, -1);
+		double[] yCoords = NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY, -1);
+
+		double[] zCoords = getZCoords(inputFile);
+
+		assert xCoords != null;
+		assert yCoords != null;
+		return new DFlowFMMapExchangeItemGeometryInfo(xCoords, yCoords, zCoords, unitInMeters);
+	}
+
+	private double[] getZCoords(NetcdfFile inputFile) {
+		Variable variableZ = inputFile.findVariable("FlowElem_zcc");
+		if (variableZ == null) return null;
+		int[] originZ = createOrigin(variableZ);
+		int[] sizeArrayZ = variableZ.getShape();
+		return NetcdfUtils.readSelectedData(variableZ, originZ, sizeArrayZ, -1);
 	}
 
 	public String [] getExchangeItemIDs() {
@@ -260,7 +300,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						try {
 							netcdfFileWriter.write(myVar,array);
 						} catch (InvalidRangeException e) {
-							e.printStackTrace();
+							throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 						}
 					}
 					else {
@@ -273,7 +313,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			netcdfFileWriter.close();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
 	}
 
@@ -310,5 +350,12 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		String[] subStr = fullName.split("\\(");
 //		System.out.println("Short name is "+subStr[0]);
 		return subStr[0];
+	}
+
+	private static int[] createOrigin(Variable var) {
+		int dimensionCount = var.getDimensions().size();
+		int[] origin = new int[dimensionCount];
+		Arrays.fill(origin, 0);
+		return origin;
 	}
 }
