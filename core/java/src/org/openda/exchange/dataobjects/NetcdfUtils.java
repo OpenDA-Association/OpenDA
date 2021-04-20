@@ -655,6 +655,19 @@ public class NetcdfUtils {
 		return readSelectedData(variable, origin, sizeArray, -1);
 	}
 
+	public static double[] readDataForVariableForSingleLocationAndLayer(Variable variable, int stationDimensionIndex, int stationIndex, int layerDimensionIndex, int layerIndex) {
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+
+		//select only the given station.
+		origin[stationDimensionIndex] = stationIndex;
+		sizeArray[stationDimensionIndex] = 1;
+		//select only the given realization
+		origin[layerDimensionIndex] = layerIndex;
+		sizeArray[layerDimensionIndex] = 1;
+		return readSelectedData(variable, origin, sizeArray, -1);
+	}
+
 	public static double[] readDataForVariableFor2DGridForSingleTime(Variable variable, int timeDimensionIndex, int timeIndex,
 			int dimensionIndexToFlip) {
 		int[] origin = createOrigin(variable);
