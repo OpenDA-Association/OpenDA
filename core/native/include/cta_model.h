@@ -78,22 +78,21 @@ typedef CTA_Handle CTA_ModelClass;
 #define I_CTA_MODEL_GETOBSLOCALIZATION (28)
 
 /* Loading and restoring of state */
+#define CTA_MODEL_LOAD_PERSISTENTSTATE       (29)
 #define CTA_MODEL_SAVE_INTERNALSTATE         (30)
 #define CTA_MODEL_RESTORE_INTERNALSTATE      (31)
 #define CTA_MODEL_RELEASE_INTERNALSTATE      (32)
 #define CTA_MODEL_SAVE_PERSISTENTSTATE       (33)
-#define CTA_MODEL_LOAD_PERSISTENTSTATE       (29)
 
 /* Domain and local analysis support */
-#define CTA_MODEL_GET_NUMDOMAINS              (30)
-#define CTA_MODEL_GET_OBSSELECTOR             (31)
-#define CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN   (32)
-#define CTA_MODEL_GET_STATEDOMAIN             (33)
-#define CTA_MODEL_AXPY_STATEDOMAIN            (34)
+#define CTA_MODEL_GET_NUMDOMAINS              (34)
+#define CTA_MODEL_GET_OBSSELECTOR             (35)
+#define CTA_MODEL_GET_OBSLOCALIZATIONDOMAIN   (36)
+#define CTA_MODEL_GET_STATEDOMAIN             (37)
+#define CTA_MODEL_AXPY_STATEDOMAIN            (38)
 
-
-
-#define CTA_MODEL_NUMFUNC                   (35)
+/* Number of model function handles */
+#define CTA_MODEL_NUMFUNC                   (39)
 
 #ifdef __cplusplus
 extern "C" {
