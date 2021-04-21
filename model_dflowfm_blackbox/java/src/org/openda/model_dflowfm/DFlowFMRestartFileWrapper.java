@@ -95,7 +95,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			netcdffileName = fileNameFull.getAbsolutePath();
 			inputFile = NetcdfFile.open(netcdffileName, null);
 		} catch (Exception e) {
-			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName);
+			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName + " due to " + e.getMessage(), e);
 		}
 
 		// get list of all variables and construct a smaller list of exchange variables from this list:
@@ -126,9 +126,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						}
 					}
 				} catch (IOException e) {
-					throw new RuntimeException("Error reading array 'time' from NetCDF file "+netcdffileName);
+					throw new RuntimeException("Error reading array 'time' from NetCDF file "+ netcdffileName + " due to " + e.getMessage(), e);
 				} catch (InvalidRangeException e) {
-					throw new RuntimeException("Error reading from NetCDF file "+netcdffileName);
+					throw new RuntimeException("Error reading from NetCDF file "+ netcdffileName + " due to " + e.getMessage(), e);
 				}
 			}
 		}
@@ -151,10 +151,8 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
     		try {
 	    		Array full = inputFile.readSection(var.getShortName());
 			    thisValue = full.slice(0,time_index);
-		    } catch (IOException e) {
-			   	e.printStackTrace();
-		    } catch (InvalidRangeException e) {
-			  	 e.printStackTrace();
+			} catch (IOException | InvalidRangeException e) {
+				throw new RuntimeException("Error reading from NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Error processing "+var.getShortName());
 				continue;
@@ -203,6 +201,11 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 			}
 			inputFile.finish();
+		}
+		try {
+			inputFile.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
 	}
 
@@ -260,7 +263,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						try {
 							netcdfFileWriter.write(myVar,array);
 						} catch (InvalidRangeException e) {
-							e.printStackTrace();
+							throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 						}
 					}
 					else {
@@ -273,7 +276,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			netcdfFileWriter.close();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
 	}
 
