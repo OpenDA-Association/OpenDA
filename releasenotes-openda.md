@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+OpenDA - Version 3.0.2
+----------------------
+
+### Improvements
+
+-   Parse DFlowFM BC-files with tabs (D-FlowFM)
+-   Close DFlowFM restart file after reading and halt on IO errors (D-FlowFM)
+-   Fix conflicting function handle values (native model interface)
+-   Fix relative directory errors for saving states on Linux (BlackBox model)
+
 OpenDA - Version 3.0.1
 ----------------------
 
