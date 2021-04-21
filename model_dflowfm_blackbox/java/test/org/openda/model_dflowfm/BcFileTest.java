@@ -25,6 +25,7 @@ import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,6 +69,30 @@ public class BcFileTest extends TestCase
 		// Step 4: Compare written file to expected results
         assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameTimeSeriesValuesHalved),
 				new File(testBcFileDir, bcFileNameGenerated)));
+	}
+
+	public void testBcFileWithTabs()
+	{
+		// Step 1: Read original test file
+		BcFile bcFile = new BcFile();
+		bcFile.initialize(testBcFileDir, new String[]{"BoundaryConditions_tabs.bc", "BoundaryConditions_tabs_generated.bc"});
+
+		// Step 2: Alter ExchangeItem Values
+		String[] exchangeItemIDs = bcFile.getExchangeItemIDs();
+		for(String id : exchangeItemIDs)
+		{
+			IExchangeItem exchangeItem = bcFile.getDataObjectExchangeItem(id);
+			double[] multiplicationFactors = new double[exchangeItem.getValuesAsDoubles().length];
+			Arrays.fill(multiplicationFactors, 0.5);
+			exchangeItem.multiplyValues(multiplicationFactors);
+		}
+
+		//Step 3: Write test file
+		bcFile.finish();
+
+		// Step 4: Compare written file to expected results
+		assertTrue(FileComparer.CompareIniFiles(new File(testBcFileDir, "BoundaryConditions_tabs_expected.bc"),
+			new File(testBcFileDir, "BoundaryConditions_tabs_generated.bc")));
 	}
 
 	public void testBcFileWaterLevel() {

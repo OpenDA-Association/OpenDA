@@ -1,5 +1,7 @@
-[![Build Status](https://travis-ci.org/OpenDA-Association/OpenDA.svg?branch=master)](https://travis-ci.org/OpenDA-Association/OpenDA)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e78fb37c00fa4d689eb3a40d4b786d94)](https://www.codacy.com/app/OpenDA_Association/OpenDA?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenDA-Association/OpenDA&amp;utm_campaign=Badge_Grade)
+[![Java CI](https://github.com/OpenDA-Association/OpenDA/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OpenDA-Association/OpenDA/actions/workflows/ci.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/465833e082b54b279105a280b36c75b8)](https://www.codacy.com/gh/OpenDA-Association/OpenDA/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenDA-Association/OpenDA&amp;utm_campaign=Badge_Grade)
+
+Old Travis Build: [![Build Status](https://travis-ci.org/OpenDA-Association/OpenDA.svg?branch=master)](https://travis-ci.org/OpenDA-Association/OpenDA)
 
 # OpenDA
 

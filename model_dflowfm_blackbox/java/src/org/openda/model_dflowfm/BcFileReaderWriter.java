@@ -81,7 +81,7 @@ public class BcFileReaderWriter
 						}
 					} else {
 						List<BcQuantity> table = lastCategory.getTable();
-						String[] values = nextLine.split("[ ]{1,}");
+						String[] values = nextLine.split("[\\s]{1,}");
 						if (table.size() != values.length)
 							throw new IllegalArgumentException("Number of values does not match number of quantities");
 

@@ -1,0 +1,40 @@
+name: Java CI
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: setup Java environment
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Update Ubuntu packages
+        run: sudo apt-get update
+      - name: Install Ubuntu packages
+        run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
+      - name: Build Native code
+        run: bash install_native_travis.sh
+      - name: Build Castor xml-parser code
+        run: bash install_castor.sh
+      - name: Run the Tests (from the old Travis script)
+        run: ./travis_test.sh
+      - name: Archive test reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ant-test-reports
+          path: opendaTestReports
+      - name: Publish Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v2
+        with:
+          report_paths: 'opendaTestReports/*.xml'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+      
