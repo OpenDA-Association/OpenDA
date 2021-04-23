@@ -28,6 +28,7 @@ jobs:
       - name: Ant Build
         run: bash github_build.sh
       - name: Run the Tests
+        if: always()
         run: bash github_test.sh
       - name: Archive test reports
         if: always()

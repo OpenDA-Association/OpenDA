@@ -1,4 +1,4 @@
-<project name="openDA" default="help" basedir=".">
+<project xmlns:if="ant:if" name="openDA" default="help" basedir=".">
 <!--
 ================================================================================
   Ant build file for OpenDA Java code
@@ -65,7 +65,8 @@
 ===========================================================================
 -->
    <target name="build" depends="init, tests" unless="test-only">
-      <buildmodule module="core" />
+     <delete file="./build.errors" quiet="true"/>
+     <buildmodule module="core" />
       <buildmodule module="observers" />
       <buildmodule module="models" />
       <buildmodule module="algorithms" />
@@ -92,6 +93,9 @@
       <buildmodule module="model_openfoam"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.sh"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
+      <loadfile property="build.errors" srcFile="build.errors" quiet="true"/>
+      <fail message="Build has failed for modules:${line.separator}${build.errors}" if="build.errors">
+      </fail>
    </target>
 
    <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
@@ -305,7 +309,7 @@
     <available file=".git" type="dir" property="do.git" />
     <available file=".svn" type="dir" property="do.svn" />
     <target name="vc-revision" depends="git-revision,svn-revision" >
-        <echo>Suversion Revision or Git commit hash: ${vc.revision}</echo>
+        <echo>Subversion Revision or Git commit hash: ${vc.revision}</echo>
     </target>
 
     <target name="svn-revision" if="do.svn">

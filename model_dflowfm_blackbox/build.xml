@@ -1,4 +1,4 @@
-<project name="openDA-model_dflowfm_blackbox" default="help" basedir=".">
+<project xmlns:if="ant:if" name="openDA-model_dflowfm_blackbox" default="help" basedir=".">
 <!--
 ================================================================================
   Ant build file for openda java code
@@ -63,7 +63,7 @@
     </target>
 
     <target name="moduleclasses" depends="init,copy-module-resources">
-	    <javac includeantruntime="false" srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}">
+	    <javac includeantruntime="false" srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" errorProperty="build.errors">
 		<classpath>
 			<fileset dir=".">
 				<include name="${modulelibdir}/*.jar"/>
@@ -73,6 +73,7 @@
 			</fileset>
 		</classpath>
         </javac>
+        <echo file="${projectdir}/build.errors" append="true" if:set="build.errors">${module}${line.separator}</echo>
     </target>
 
     <target name="javadoc" depends="init">
@@ -229,4 +230,3 @@
 	</target>
 
 </project>
-

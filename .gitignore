@@ -11,3 +11,4 @@ opendaTestReports/
 **/tests/*.log
 OpenDATimings_*.txt
 *.*~
+build.errors
