@@ -10,5 +10,5 @@ export LD_LIBRARY_PATH=$OPENDADIR/linux64_gnu/lib:$LD_LIBRARY_PATH
 echo LIBDIR
 ls -tral "$OPENDADIR/linux64_gnu/lib"
 
-echo "Start of script github_test.sh"
+echo "Start of ant test-ci"
 ant test-ci

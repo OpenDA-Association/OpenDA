@@ -69,7 +69,6 @@
           </fileset>
         </classpath>
       </javac>
-      <echo>Build ${build.errors}</echo>
       <echo file="${projectdir}/build.errors" append="true" if:set="build.errors">${module}${line.separator}</echo>
     </target>
 
