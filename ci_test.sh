@@ -11,4 +11,4 @@ echo LIBDIR
 ls -tral "$OPENDADIR/linux64_gnu/lib"
 
 echo "Start of script github_test.sh"
-ant test-github
+ant test-ci

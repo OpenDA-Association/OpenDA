@@ -22,14 +22,14 @@ jobs:
       - name: Install Ubuntu packages
         run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
       - name: Build Native code
-        run: bash github_compile_native.sh
+        run: bash ci_compile_native.sh
       - name: Ant Build Castor xml-parser code
-        run: bash github_build_castor.sh
+        run: bash ci_build_castor.sh
       - name: Ant Build
-        run: bash github_build.sh
+        run: bash ci_build.sh
       - name: Run the Tests
         if: always()
-        run: bash github_test.sh
+        run: bash ci_test.sh
       - name: Archive test reports
         if: always()
         uses: actions/upload-artifact@v2

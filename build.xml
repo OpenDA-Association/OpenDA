@@ -23,6 +23,7 @@
             ant clean                    --> remove output
             ant doc                      --> collect documentation
             ant test                     --> execute unit tests (excluding broken tests)
+            ant test-ci                  --> execute unit tests for ci environment
             ant test-all                 --> execute all unit tests
             ant test-broken              --> execute broken unit tests
             ant zip                      --> creates zip files with sources, binaries,
@@ -604,7 +605,7 @@
     </macrodef>
 
 
-   <target name="test-github" depends="testclasses">
+   <target name="test-ci" depends="testclasses">
         <mkdir dir="${testreportdir}"/>
         <mkdir dir="${testrundir}"/>
 
