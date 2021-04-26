@@ -60,8 +60,8 @@ typedef struct {
    char *name;              // Name of handle for debugging and informational messages
    CTA_Datatype datatype;   // Data type associated with this handle
    void *data;              // Pointer to the type dependent data
-   int refCount; 	        // Number of references from which we expect a free 
-	                        // (only used for a limited number of components used from java) 
+   int refCount; 	        // Number of references from which we expect a free
+	                        // (only used for a limited number of components used from java)
    int globCount;   //DEBUG
    char debugTag[80];
 } CTAI_HandleInfo;
@@ -117,7 +117,7 @@ int CTA_Handle_Create(const char *name, const CTA_Datatype datatype,
       pthread_mutex_lock( &mutex );
    }
    counter++;
-   
+
    // Find a new handle:
    if (CTAI_Handles_size == 0)
    {
@@ -152,7 +152,7 @@ int CTA_Handle_Create(const char *name, const CTA_Datatype datatype,
       else {
          CTAI_Handles = Handles_new;
       }
-      
+
       // Initialise reallocated part
       for (i=oldlen;i<newlen;i++){
          CTAI_Handles[i]=NULL;
@@ -182,7 +182,7 @@ int CTA_Handle_Create(const char *name, const CTA_Datatype datatype,
    }
    CTAI_Handles[*handle]->datatype=datatype;
    CTAI_Handles[*handle]->data=data;
-   CTAI_Handles[*handle]->refCount=1;	
+   CTAI_Handles[*handle]->refCount=1;
 
    pthread_mutex_unlock( &mutex );
 
@@ -219,7 +219,7 @@ int CTA_Handle_GetRefCount(const CTA_Handle handle, int *refCount){
 #undef METHOD
 #define METHOD "IncRefCount"
 int CTA_Handle_IncRefCount(const CTA_Handle handle){
-   
+
    pthread_mutex_lock( &mutex );
 
    if (handle>=0 && handle<CTAI_Handles_size && CTAI_Handles[handle]!=NULL){
@@ -245,7 +245,7 @@ int CTA_Handle_IncRefCount(const CTA_Handle handle){
 #undef METHOD
 #define METHOD "DecrRefCount"
 int CTA_Handle_DecrRefCount(const CTA_Handle handle){
-   
+
    pthread_mutex_lock( &mutex );
 
    if (handle>=0 && handle<CTAI_Handles_size && CTAI_Handles[handle]!=NULL){
@@ -296,7 +296,7 @@ int CTA_Handle_Check(const CTA_Handle handle,
              char message[1024];
 		     pthread_mutex_unlock( &mutex );
              sprintf(message,"Handle is of type %d  instead of %d .\nSee cta_datatypes.h for more information.",CTAI_Handles[handle]->datatype, datatype);
-             CTA_WRITE_ERROR(message);		   
+             CTA_WRITE_ERROR(message);
 
 
              return CTA_INCOMPATIBLE_HANDLE;
@@ -428,7 +428,7 @@ int CTA_Handle_GetName(const CTA_Handle handle, CTA_String hname){
    pthread_mutex_lock( &mutex );
    name = CTAI_Handles[handle]->name;
    pthread_mutex_unlock( &mutex );
-   
+
    retVal=CTA_String_Set(hname, name);
 
 
@@ -481,7 +481,7 @@ const char *CTAI_Handle_GetName(const CTA_Handle handle){
  *  \return error status: CTA_OK, CTA_ILLEGAL_HANDLE
  */
 #undef METHOD
-#define METHOD "CGetDatatype"   
+#define METHOD "CGetDatatype"
 int CTA_Handle_GetDatatype(const CTA_Handle handle, CTA_Datatype *datatype){
 
 
@@ -509,7 +509,7 @@ int CTA_Handle_GetDatatype(const CTA_Handle handle, CTA_Datatype *datatype){
  *  \return           name of data type,
  */
 CTA_Datatype CTAI_Handle_GetDatatype(const CTA_Handle handle){
-   
+
    CTA_Datatype retVal;
 
    pthread_mutex_lock( &mutex );
@@ -547,7 +547,7 @@ int CTA_RelTable_Free(CTA_Handle *handle);
 int CTA_Array_Free(CTA_Handle *handle);
 
 int CTA_Handle_Free_All(CTA_Handle *handle){
-    
+
    /* If handle is CTA_FUNC_NULL -> nothing to be done */
    if (*handle==CTA_NULL) return CTA_OK;
 
@@ -565,40 +565,54 @@ int CTA_Handle_Free_All(CTA_Handle *handle){
          if (IDEBUG>0) printf("Delete CTA_VECTOR\n");
          return CTA_Vector_Free(handle);
       case CTA_VECTORCLASS :
-         if (IDEBUG>0) printf("Delete CTA_VECTORCLASS\n");
-         printf("WARNING: Cannot delete CTA_VECTORCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_VECTORCLASS\n");
+            printf("WARNING: Cannot delete CTA_VECTORCLASS\n");
+         }
          return CTA_Handle_Free(handle);
       case CTA_TREEVECTOR :
          if (IDEBUG>0) printf("Delete CTA_TREEVECTOR\n");
          return CTA_TreeVector_Free(handle,CTA_TRUE);
       case CTA_MATRIXCLASS :
-         if (IDEBUG>0) printf("Delete CTA_MAXTRIXCLASS\n");
-         printf("WARNING: Cannot delete CTA_MATRIXCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_MAXTRIXCLASS\n");
+            printf("WARNING: Cannot delete CTA_MATRIXCLASS\n");
+         }
          return CTA_Handle_Free(handle);
       case CTA_MATRIX :
          if (IDEBUG>0) printf("Delete CTA_MATRIX\n");
          return CTA_Matrix_Free(handle);
       case CTA_COVMATCLASS :
-         if (IDEBUG>0) printf("Delete CTA_COVMATCLASS\n");
-         printf("WARNING: Cannot delete CTA_COVMATCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_COVMATCLASS\n");
+            printf("WARNING: Cannot delete CTA_COVMATCLASS\n");
+         }
          return CTA_Handle_Free(handle);
       case CTA_COVMAT :
-         if (IDEBUG>0) printf("Delete CTA_COVMAT\n");
-         printf("WARNING: Cannot delete CTA_COVMAT\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_COVMAT\n");
+            printf("WARNING: Cannot delete CTA_COVMAT\n");
+         }
          return CTA_OK;
       //   return CTA_Handle_Free(handle);
       case CTA_INTPOL :
-         if (IDEBUG>0) printf("Delete CTA_INTPOL\n");
-         printf("WARNING: Cannot delete CTA_INTPOL\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_INTPOL\n");
+            printf("WARNING: Cannot delete CTA_INTPOL\n");
+         }
          return CTA_OK;
       //   return CTA_Handle_Free(handle);
       case CTA_OBS :
-         if (IDEBUG>0) printf("Delete CTA_OBS\n");
-         printf("WARNING: Cannot delete CTA_OBS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_OBS\n");
+            printf("WARNING: Cannot delete CTA_OBS\n");
+         }
          return CTA_OK;
       case CTA_MODELCLASS :
-         if (IDEBUG>0) printf("Delete CTA_MODELCLASS\n");
-         printf("WARNING: Cannot delete CTA_MODELCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_MODELCLASS\n");
+            printf("WARNING: Cannot delete CTA_MODELCLASS\n");
+         }
          return CTA_OK;
       //   return CTA_Handle_Free(handle);
       case CTA_MODEL :
@@ -611,19 +625,25 @@ int CTA_Handle_Free_All(CTA_Handle *handle){
          if (IDEBUG>0) printf("Delete CTA_SOBS\n");
 		   return CTA_SObs_Free(handle);
       case CTA_SOBSCLASS :
-         if (IDEBUG>0) printf("Delete CTA_SOBCLASS\n");
-         printf("WARNING: Cannot delete CTA_OBSCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_SOBCLASS\n");
+            printf("WARNING: Cannot delete CTA_OBSCLASS\n");
+         }
          return CTA_OK;
       case CTA_OBSDESCR :
          if (IDEBUG>0) printf("Delete CTA_OBSDESCR\n");
 		   return CTA_ObsDescr_Free(handle);
       case CTA_METHODCLASS :
-         if (IDEBUG>0) printf("Delete CTA_METHODCLASS\n");
-         printf("WARNING: Cannot delete CTA_METHODCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_METHODCLASS\n");
+            printf("WARNING: Cannot delete CTA_METHODCLASS\n");
+         }
          return CTA_OK;
       case CTA_METHOD :
-         if (IDEBUG>0) printf("Delete CTA_METHOD\n");
-         printf("WARNING: Cannot delete CTA_METHOD\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_METHOD\n");
+            printf("WARNING: Cannot delete CTA_METHOD\n");
+         }
          return CTA_OK;
       case CTA_TREE :
          return CTA_Tree_Free(handle);
@@ -631,22 +651,28 @@ int CTA_Handle_Free_All(CTA_Handle *handle){
          if (IDEBUG>0) printf("Delete CTA_PACK\n");
          return CTA_Pack_Free(handle);
       case CTA_DATABLOCK :
-         if (IDEBUG>0) printf("Delete CTA_DATABLOCK\n");
-         printf("WARNING: Cannot delete CTA_DATABLOCK\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_DATABLOCK\n");
+            printf("WARNING: Cannot delete CTA_DATABLOCK\n");
+         }
          return CTA_OK;
       case CTA_METAINFO :
          if (IDEBUG>0) printf("Delete CTA_METAINFO\n");
          return CTA_Metainfo_Free(handle);
       case CTA_METAINFOCLASS :
-         if (IDEBUG>0) printf("Delete CTA_METAINFOCLASS\n");
-         printf("WARNING: Cannot delete CTA_METAINFOCLASS\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_METAINFOCLASS\n");
+            printf("WARNING: Cannot delete CTA_METAINFOCLASS\n");
+         }
          return CTA_OK;
       case CTA_RELTABLE :
          if (IDEBUG>0) printf("Delete CTA_RELTABLE\n");
          return CTA_RelTable_Free(handle);
       case CTA_SUBTREEVECTOR :
-         if (IDEBUG>0) printf("Delete CTA_SUBTREEVECTOR\n");
-         printf("WARNING: Cannot delete CTA_SUBTREEVECTOR\n");
+         if (IDEBUG>0) {
+            printf("Delete CTA_SUBTREEVECTOR\n");
+            printf("WARNING: Cannot delete CTA_SUBTREEVECTOR\n");
+         }
          return CTA_OK;
       case CTA_STRING :
          if (IDEBUG>0) printf("Delete CTA_STRING\n");
@@ -732,9 +758,9 @@ int CTA_Handle_Find(CTA_String sname, CTA_Datatype datatype, int *handlenr)
 
           //printf("gevonden! %d \n",i);
           *handlenr = i;
-          
+
           pthread_mutex_unlock( &mutex );
-          
+
           free(sstr);
           return CTA_OK; }
 

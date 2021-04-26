@@ -45,6 +45,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define CLASSNAME "CTA_XML"
 
+#define DEBUG 0
 /* Local interfaces */
 CTA_Handle CTAI_XML_CreateObject_Comb(xmlNode *cur_node);
 CTA_TreeVector CTAI_XML_CreatetreeVector(xmlNode *cur_node);
@@ -190,27 +191,24 @@ static CTA_StochObs CTAI_XML_CreateSObs(xmlNode *cur_node) {
    /* first check if the stochobs is a 'combined' one */
 
    if (sobs_class_name) {
-     if (0==strcmp((char *) sobs_class_name,"CTA_COMBINE_SOBS")) {
-       sobsclass = CTA_COMBINE_SOBS ;
-       printf("-- ctai_create_sobs: combiner! --\n");
+      if (0==strcmp((char *) sobs_class_name,"CTA_COMBINE_SOBS")) {
+         sobsclass = CTA_COMBINE_SOBS ;
+         if (DEBUG) printf("-- ctai_create_sobs: combiner! --\n");
 
-       // read a subtree using the sobs-combiner-xml-read
-       // hnew_sub is a valid cta_subtree with the cta_sobs already created
-       hnew_sub = CTAI_XML_Create_Combine_SObs(cur_node->children,CTA_NULL);
-        is_combined = 1;
-
-     }
-     else {    //sobsclass can be sql or netcdf or ...
-       // TODO: better: a  handle_find or sobsclass_find action
-       printf("-- ctai_create_sobs: class name given ,NO combiner! --\n");
-       if (0==strcmp((char *) sobs_class_name,"CTA_NETCDF_SOBS")) {
-       sobsclass = CTA_NETCDF_SOBS ;
-     }
-     }
-   }
-   else {   // sobsclass remains default
-       printf("-- ctai_create_sobs: NO class name given! --\n");
-     };
+         // read a subtree using the sobs-combiner-xml-read
+         // hnew_sub is a valid cta_subtree with the cta_sobs already created
+         hnew_sub = CTAI_XML_Create_Combine_SObs(cur_node->children,CTA_NULL);
+         is_combined = 1;
+      } else {    //sobsclass can be sql or netcdf or ...
+         // TODO: better: a  handle_find or sobsclass_find action
+         if (DEBUG) printf("-- ctai_create_sobs: class name given ,NO combiner! --\n");
+         if (0==strcmp((char *) sobs_class_name,"CTA_NETCDF_SOBS")) {
+            sobsclass = CTA_NETCDF_SOBS ;
+         }
+      }
+   } else { // sobsclass remains default
+     if (DEBUG) printf("-- ctai_create_sobs: NO class name given! --\n");
+   };
 
 
    hnew=CTA_NULL;
@@ -568,7 +566,8 @@ int CTA_XML_Read(CTA_String hfname, CTA_Tree *hroot) {
 /***************************************************************
 WRITE
 ***************************************************************/
-
+#undef METHOD
+#define METHOD "ConvertInput"
 /**
 * ConvertInput:
 * @in: string in a given encoding
@@ -593,8 +592,10 @@ xmlChar *ConvertInput(const char *in, const char *encoding)
    handler = xmlFindCharEncodingHandler(encoding);
 
    if (!handler) {
-      printf("ConvertInput: no encoding handler found for '%s'\n",
+      char message[128];
+      sprintf(message,"ConvertInput: no encoding handler found for '%s'\n",
          encoding ? encoding : "");
+      CTA_WRITE_ERROR(message);
       return 0;
    }
 
@@ -607,11 +608,13 @@ xmlChar *ConvertInput(const char *in, const char *encoding)
       ret = handler->input(out, &out_size, (const xmlChar *) in, &temp);
       if ((ret < 0) || (temp - size + 1)) {
          if (ret < 0) {
-            printf("ConvertInput: conversion wasn't successful.\n");
+            CTA_WRITE_ERROR("Conversion is not successful.\n");
          } else {
-            printf
-               ("ConvertInput: conversion wasn't successful. converted: %i octets.\n",
+            char message[128];
+            sprintf
+               ("Conversion is not successful. converted: %i octets.\n",
                temp);
+            CTA_WRITE_ERROR(message);
          }
 
          xmlFree(out);
@@ -621,7 +624,7 @@ xmlChar *ConvertInput(const char *in, const char *encoding)
          out[out_size] = 0;  /*null terminating out */
       }
    } else {
-      printf("ConvertInput: no mem\n");
+      CTA_WRITE_ERROR("Cannot allocate memory\n");
    }
 
    return out;
