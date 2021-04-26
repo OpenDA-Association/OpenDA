@@ -1,4 +1,4 @@
-<project name="openDA" default="help" basedir=".">
+<project xmlns:if="ant:if" name="openDA" default="help" basedir=".">
 <!--
 ================================================================================
   Ant build file for openda java code
@@ -46,7 +46,7 @@
                     <include name="${projectlib}/*.jar"/>
                 </fileset>
             </classpath>
-        </javac>    
+        </javac>
     </target>
 
     <target name="jarfile" depends="moduleclasses,manifest">
@@ -59,16 +59,17 @@
     </target>
 
     <target name="moduleclasses" depends="init,copy-module-resources">
-	    <javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" includeantruntime="false">
-		<classpath>
-			<fileset dir=".">
-				<include name="${modulelibdir}/*.jar"/>
-			</fileset>
-			<fileset dir="${projectdir}">
-				<include name="${projectlib}/*.jar"/>
-			</fileset>
-		</classpath>
-        </javac>
+      <javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" includeantruntime="false" errorProperty="build.errors">
+        <classpath>
+          <fileset dir=".">
+            <include name="${modulelibdir}/*.jar"/>
+          </fileset>
+          <fileset dir="${projectdir}">
+            <include name="${projectlib}/*.jar"/>
+          </fileset>
+        </classpath>
+      </javac>
+      <echo file="${projectdir}/build.errors" append="true" if:set="build.errors">${module}${line.separator}</echo>
     </target>
 
     <target name="javadoc" depends="init">
@@ -165,4 +166,3 @@
 	</target>
 
 </project>
-

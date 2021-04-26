@@ -6,7 +6,7 @@
   for a list of options
 ================================================================================
 -->
-<project name="model_bmi" default="help" basedir=".">
+<project xmlns:if="ant:if" name="model_bmi" default="help" basedir=".">
 	<target name="help">
 		<echo>
             ant help                     --> print this help
@@ -63,7 +63,7 @@
 
 	<!-- this first copies all resources to the bin folder, then uses the copies to compile the Java code (intuitively this would happen the other way around) -->
 	<target name="moduleclasses" depends="init,copy-module-resources">
-		<javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" includeantruntime="false">
+		<javac srcdir="${srcdir}" destdir="${builddir}" debug="${debug}" source="${source}" encoding="UTF-8" failonerror="${failonerror}" listfiles="${listfiles}" fork="yes" memoryInitialSize="${minmemory}" memoryMaximumSize="${maxmemory}" includeantruntime="false" errorProperty="build.errors">
 			<classpath>
 				<fileset dir=".">
 					<include name="${modulelibdir}/*.jar"/>
@@ -73,6 +73,7 @@
 				</fileset>
 			</classpath>
 		</javac>
+    <echo file="${projectdir}/build.errors" append="true" if:set="build.errors">${module}${line.separator}</echo>
 	</target>
 
 	<target name="javadoc" depends="init">

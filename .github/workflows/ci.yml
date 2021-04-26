@@ -1,6 +1,9 @@
 name: Java CI
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches: master
 
 jobs:
   build:
@@ -19,11 +22,14 @@ jobs:
       - name: Install Ubuntu packages
         run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
       - name: Build Native code
-        run: bash install_native_travis.sh
-      - name: Build Castor xml-parser code
-        run: bash install_castor.sh
-      - name: Run the Tests (from the old Travis script)
-        run: ./travis_test.sh
+        run: bash ci_compile_native.sh
+      - name: Ant Build Castor xml-parser code
+        run: bash ci_build_castor.sh
+      - name: Ant Build
+        run: bash ci_build.sh
+      - name: Run the Tests
+        if: always()
+        run: bash ci_test.sh
       - name: Archive test reports
         if: always()
         uses: actions/upload-artifact@v2
@@ -36,5 +42,3 @@ jobs:
         with:
           report_paths: 'opendaTestReports/*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-        
-      

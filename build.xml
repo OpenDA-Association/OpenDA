@@ -1,4 +1,4 @@
-<project name="openDA" default="help" basedir=".">
+<project xmlns:if="ant:if" name="openDA" default="help" basedir=".">
 <!--
 ================================================================================
   Ant build file for OpenDA Java code
@@ -23,6 +23,7 @@
             ant clean                    --> remove output
             ant doc                      --> collect documentation
             ant test                     --> execute unit tests (excluding broken tests)
+            ant test-ci                  --> execute unit tests for ci environment
             ant test-all                 --> execute all unit tests
             ant test-broken              --> execute broken unit tests
             ant zip                      --> creates zip files with sources, binaries,
@@ -65,7 +66,8 @@
 ===========================================================================
 -->
    <target name="build" depends="init, tests" unless="test-only">
-      <buildmodule module="core" />
+     <delete file="./build.errors" quiet="true"/>
+     <buildmodule module="core" />
       <buildmodule module="observers" />
       <buildmodule module="models" />
       <buildmodule module="algorithms" />
@@ -92,6 +94,9 @@
       <buildmodule module="model_openfoam"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.sh"/>
       <chmod dir="${projectlib}" perm="ugo+rx" includes="**/*.pl"/>
+      <loadfile property="build.errors" srcFile="build.errors" quiet="true"/>
+      <fail message="Build has failed for modules:${line.separator}${build.errors}" if="build.errors">
+      </fail>
    </target>
 
    <target name="build-win32" depends="build, copy-win32-executables, copy-jre-win32" />
@@ -160,7 +165,7 @@
       <moduletests module="model_delft3d"/>
       <moduletests module="model_reactive_advection"/>
       <moduletests module="model_dflowfm_blackbox"/>
-      <moduletests module="model_openfoam"/>      
+      <moduletests module="model_openfoam"/>
    </target>
 
     <macrodef name="moduletests">
@@ -305,7 +310,7 @@
     <available file=".git" type="dir" property="do.git" />
     <available file=".svn" type="dir" property="do.svn" />
     <target name="vc-revision" depends="git-revision,svn-revision" >
-        <echo>Suversion Revision or Git commit hash: ${vc.revision}</echo>
+        <echo>Subversion Revision or Git commit hash: ${vc.revision}</echo>
     </target>
 
     <target name="svn-revision" if="do.svn">
@@ -322,7 +327,7 @@
       <arg value="HEAD"/>
     </exec>
     <property name="vc.revision" value="${git.revision}" />
-    </target> 
+    </target>
 
   <!--
   ============================================================================================================
@@ -565,7 +570,7 @@
         <buildmoduletests module="model_wflow"/>
         <buildmoduletests module="model_delft3d"/>
         <buildmoduletests module="model_dflowfm_blackbox"/>
-        <buildmoduletests module="model_openfoam"/>        
+        <buildmoduletests module="model_openfoam"/>
     </target>
 
     <target name="testclassesPPC" unless="test-only">
@@ -584,7 +589,7 @@
         <!--<buildmoduletests module="model_swan"/>-->
         <buildmoduletests module="model_wflow"/>
         <buildmoduletests module="model_delft3d"/>
-        <buildmoduletests module="model_openfoam"/>                
+        <buildmoduletests module="model_openfoam"/>
     </target>
 
 
@@ -600,7 +605,7 @@
     </macrodef>
 
 
-   <target name="test-travis" depends="build,testclasses">
+   <target name="test-ci" depends="testclasses">
         <mkdir dir="${testreportdir}"/>
         <mkdir dir="${testrundir}"/>
 
@@ -790,4 +795,3 @@
     </macrodef>
 
 </project>
-

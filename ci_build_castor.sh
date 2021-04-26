@@ -8,14 +8,10 @@
 
 #NOTE: this script must be started in the root dir of OpenDA
 
-HIER=$PWD
-
 for DIRBUILD in model_delft3d core model_wflow model_efdc_dll model_bmi observers model_external_socket
 do
-   cd $DIRBUILD
+   pushd $DIRBUILD
    ant -f build_castor.xml build
-   cd $HIER
+   popd
 done
-ant build
-
 echo DONE BUILDING CASTOR JARs
