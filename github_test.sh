@@ -8,7 +8,7 @@ export OPENDADIR=$PWD/bin
 export LD_LIBRARY_PATH=$OPENDADIR/linux64_gnu/lib:$LD_LIBRARY_PATH
 
 echo LIBDIR
-ls -tral $OPENDADIR/linux64_gnu/lib
+ls -tral "$OPENDADIR/linux64_gnu/lib"
 
 echo "Start of script github_test.sh"
 ant test-github
