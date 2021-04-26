@@ -13,6 +13,10 @@ echo START BUILDING CASTOR JARs
 
 bash github_build_castor.sh
 
+echo START BUILDING JAVA
+
+ant build
+
 echo DONE INSTALLING
 
 #export OPENDADIR=$PWD/bin
