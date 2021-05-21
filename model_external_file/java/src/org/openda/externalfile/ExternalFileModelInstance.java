@@ -1,6 +1,5 @@
 package org.openda.externalfile;
 
-import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.*;
 import org.openda.observationOperators.ObservationOperatorDeprecatedModel;
@@ -13,7 +12,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ExternalFileModelInstance implements IStochModelInstance, IStochModelInstanceDeprecated, Cloneable {
@@ -44,26 +42,31 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		double[] stdDevs = new double[parameterValuesFromFile.length];
 		Arrays.fill(stdDevs, 0.1);
 		this.parameterUncertainties = new StochVector(parameterValuesFromFile, stdDevs);
-
-		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
-		netcdfDataScalarTimeSeriesDataObject.initialize(runDir, new String[]{modelResultsFile, "true", "false"});
-		String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
-		Vector vector = null;
-		for (int i = 0; i < exchangeItemIDs.length; i++) {
-			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
-			ITimeInfo timeInfo = dataObjectExchangeItem.getTimeInfo();
-			double[] times = timeInfo.getTimes();
-			double firstTime = times[0];
-			double secondTime = times[1];
-			double endTime = times[times.length - 1];
-			double deltaTasMJD = secondTime - firstTime;
-			time = new Time(firstTime - deltaTasMJD, endTime, deltaTasMJD);
+		NetcdfDataObject netcdfDataScalarTimeSeriesDataObject = null;
+		try {
+			 netcdfDataScalarTimeSeriesDataObject = new NetcdfDataObject();
+			 netcdfDataScalarTimeSeriesDataObject.initialize(runDir, new String[]{modelResultsFile, "true", "false"});
+			 String[] exchangeItemIDs = netcdfDataScalarTimeSeriesDataObject.getExchangeItemIDs();
+			 if (exchangeItemIDs.length != 1)
+				 throw new RuntimeException("Only 1 exchange item supported currently but " + exchangeItemIDs.length + " found in " + new File(runDir, modelResultsFile).getAbsolutePath());
+			 IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[0]);
+			time = getTime(dataObjectExchangeItem);
 			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
-			// TODO EP: support more EI's
-			vector = new Vector(valuesAsDoubles);
+			modelResults = new Vector(valuesAsDoubles);
+		} finally {
+			if (netcdfDataScalarTimeSeriesDataObject != null) netcdfDataScalarTimeSeriesDataObject.finish();
 		}
-		netcdfDataScalarTimeSeriesDataObject.finish();
-		modelResults = vector;
+	}
+
+	private Time getTime(IExchangeItem dataObjectExchangeItem) {
+		ITimeInfo timeInfo = dataObjectExchangeItem.getTimeInfo();
+		double[] times = timeInfo.getTimes();
+		if (times.length == 1) return new Time(times[0]);
+		double firstTime = times[0];
+		double secondTime = times[1];
+		double endTime = times[times.length - 1];
+		double deltaTasMJD = secondTime - firstTime;
+		return new Time(firstTime - deltaTasMJD, endTime, deltaTasMJD);
 	}
 
 	public IVector getState() {
