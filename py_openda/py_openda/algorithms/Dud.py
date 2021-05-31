@@ -20,7 +20,8 @@ def check_A(A):
     :return: boolean that states whether or not A is singular.
     """
     bad = False
-    if np.linalg.cond(A) > 1e10:
+    cnum = np.linalg.cond(A)
+    if np.linalg.cond(A) > 1e20:
         print("WARNING: gradient is approximately zero. Iteration is stopped.")
         bad = True
     return bad
@@ -144,7 +145,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     return (next_parameters, next_func_evals, next_total_cost)
 
 
-def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None):
+def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None):
     """
     Main function which minimizes a least squares problem without using derivatives.
 
@@ -165,7 +166,7 @@ def dud(func, p_old, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=
     finish = 0
     max_step = 10
     p_number = len(p_old)
-    (parameters, func_evals, total_cost) = initialize_dud(func, p_old, obs, std, p_pert=None, start_dist=start_dist,
+    (parameters, func_evals, total_cost) = initialize_dud(func, p_old, obs, std, p_pert=p_pert, start_dist=start_dist,
                                                           start_eps=0.1)
     while True:
         (stop, p_new) = find_next_params(p_number, parameters, func_evals, obs, std, max_step)
