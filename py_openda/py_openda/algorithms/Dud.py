@@ -11,7 +11,7 @@ Created on Wed Oct 10 14:35:15 2018
 
 import numpy as np
 from scipy.linalg import lu_factor, lu_solve
-
+import math
 def check_A(A):
     """
     Function to check if matrix A is singular. Exists to prevent errors when inverting the matrix.
@@ -23,6 +23,7 @@ def check_A(A):
     cnum = np.linalg.cond(A)
     if np.linalg.cond(A) > 1e20:
         print("WARNING: gradient is approximately zero. Iteration is stopped.")
+        print("A="+str(A))
         bad = True
     return bad
 
@@ -129,18 +130,22 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     :param p_new: parameters that suggest the search direction.
     :return: tuple with the next parameters, function evaluations and total costs.
     """
+    print("Linesearch: Cost to reduce:"+str(math.sqrt(2.0* total_cost[-1])))
     next_parameters = p_new
     next_func_evals = func(next_parameters)
     next_total_cost = sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, next_func_evals, std))
     d = 1
+    print("alpha="+str(d)+" cost="+str(math.sqrt(2.0*next_total_cost)))
     while next_total_cost > total_cost[-1]:
         d *= 0.5
         next_parameters = d*p_new+(1-d)*parameters[:, -1]
         next_func_evals = func(next_parameters)
         next_total_cost = sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, next_func_evals, std))
+        print("alpha=" + str(d) + " cost=" + str(math.sqrt(2.0* next_total_cost)))
         if abs(d) < 0.0625:
             if d < 0:
                 break
+            print("Warning swapping search direction")
             d *= -1
     return (next_parameters, next_func_evals, next_total_cost)
 
