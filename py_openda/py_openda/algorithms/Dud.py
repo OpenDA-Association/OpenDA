@@ -88,7 +88,23 @@ def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
     if np.max(abs(alpha)) > max_step:
         alpha *= max_step/np.max(abs(alpha))
     p_new = parameters[:, -1] + Delta_P.dot(np.transpose(alpha))
+
     return (False, p_new)
+
+
+def check_step_conv(p_new, parameters, p_tol=1.0e-4):
+    p_step = p_new - parameters[:, -1]
+    p_rel = [abs(dp) / max(abs(p), 1.0e-8) for dp, p in zip(p_step, parameters[:, -1])]
+    convergence = False
+    if max(p_rel)<p_tol:
+        print("converged max relative stepsize is <"+str(p_tol))
+        print("rel stepsize ="+str(p_rel))
+        convergence = True
+    return convergence
+
+
+
+
 
 
 def max_step_p_new(parameters, p_new, l_bound, u_bound):
@@ -117,6 +133,7 @@ def max_step_p_new(parameters, p_new, l_bound, u_bound):
         return p_new
 
 
+
 def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     """
     Line search that looks along the next search direction for parameters that lower the total cost.
@@ -131,6 +148,11 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     :return: tuple with the next parameters, function evaluations and total costs.
     """
     print("Linesearch: Cost to reduce:"+str(math.sqrt(2.0* total_cost[-1])))
+    p_step = p_new-parameters[:, -1]
+    p_rel = [abs(dp)/max(abs(p),1.0e-8) for dp, p in zip(p_step, parameters[:, -1])]
+    print("initial step is"+str(p_new-parameters[:, -1]))
+    print("relative stepsize ="+str(p_rel))
+
     next_parameters = p_new
     next_func_evals = func(next_parameters)
     next_total_cost = sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, next_func_evals, std))
@@ -150,7 +172,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     return (next_parameters, next_func_evals, next_total_cost)
 
 
-def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None):
+def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None, max_iter=10):
     """
     Main function which minimizes a least squares problem without using derivatives.
 
@@ -173,9 +195,14 @@ def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, 
     p_number = len(p_old)
     (parameters, func_evals, total_cost) = initialize_dud(func, p_old, obs, std, p_pert=p_pert, start_dist=start_dist,
                                                           start_eps=0.1)
+    iter =0
     while True:
         (stop, p_new) = find_next_params(p_number, parameters, func_evals, obs, std, max_step)
         if stop:
+            break
+
+        # Check convergence based on stepsize
+        if check_step_conv(p_new, parameters, p_tol=1.0e-4):
             break
 
         p_new = max_step_p_new(parameters, p_new, l_bound, u_bound)
@@ -198,4 +225,9 @@ def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, 
             finish = 0
         if finish > 2:
             break
+        iter+=1
+        if iter>=max_iter:
+            print("terminated in max number of iterations")
+            break
+
     return (total_cost[-1], parameters[:, -1])
