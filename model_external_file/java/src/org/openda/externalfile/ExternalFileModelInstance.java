@@ -33,6 +33,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		this.runDir = runDir;
 		modelParFile = new File(exchangeDir, modelParametersFileName);
 		modelParFinalFile = new File(exchangeDir, "finalModelParFile.txt");
+		//stdDevParFile = new File(runDir, "stdDev" + modelParametersFileName);
 
 		double[] parameterValuesFromFile = readValuesFromFile(modelParFile);
 		this.parameterVector = new Vector(parameterValuesFromFile);
@@ -50,6 +51,8 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 				 throw new RuntimeException("Only 1 exchange item supported currently but " + exchangeItemIDs.length + " found in " + new File(runDir, modelResultsFile).getAbsolutePath());
 			 IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[0]);
 			time = getTime(dataObjectExchangeItem);
+			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
+			modelResults = new Vector(valuesAsDoubles);
 		} finally {
 			if (netcdfDataScalarTimeSeriesDataObject != null) netcdfDataScalarTimeSeriesDataObject.finish();
 		}
@@ -251,7 +254,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		int size = lines.size();
 		double[] receivedValues = new double[size];
 		for (int i = 0; i < size; i++) {
-			receivedValues[i] = Double.NEGATIVE_INFINITY;
+			receivedValues[i] = Double.parseDouble(lines.get(i));
 		}
 		return receivedValues;
 	}
