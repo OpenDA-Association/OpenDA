@@ -154,7 +154,13 @@ public class SCECoreOptimizer {
         int[] iSort = this.sortedIndex(this.fCurrent);
         this.fCurrent = this.applyIndexToDoubles(this.fCurrent,iSort);
         this.pCurrent = this.applyIndexToVectors(this.pCurrent,iSort);
-        double diff=this.fCurrent[nparam]-this.fCurrent[0]; // Cost of worst member - Cost of best member.
+		int nparamBelow1012 = this.nparam;
+		for (int i = this.nparam; i >= 0; i--) {
+			if (fCurrent[i] > 1E12) continue;
+			nparamBelow1012 = i;
+			break;
+		}
+        double diff=this.fCurrent[nparamBelow1012]-this.fCurrent[0]; // Cost of worst member - Cost of best member.
 	    this.moreToDo = (imain<this.maxitSCE) & (diff>this.absTolSCE) & ((diff)>this.relTolSCE *Math.abs(this.fCurrent[0]))
                         & (nCostEvaluation<=maxCostEvaluation);
 	}
@@ -371,7 +377,13 @@ public class SCECoreOptimizer {
             sortPopulationByCost();
 
             // Compute new best-worst difference and put message on stopping criteria:
-            double diff=(costs[nparam]-costs[0]);
+			int nparamBelow1012 = this.nparam;
+			for (int i = this.nparam; i >= 0; i--) {
+				if (fCurrent[i] > 1E12) continue;
+				nparamBelow1012 = i;
+				break;
+			}
+            double diff=(costs[nparamBelow1012]-costs[0]);
             double relDiff = diff/costs[0];
             Results.putMessage("costs"+ new Vector(costs)+ "costs in simplex");
             Results.putMessage("stop criterion 1, imain > maxit:\t "+imain+" < "+Math.round(this.maxitSCE));
@@ -418,11 +430,13 @@ public class SCECoreOptimizer {
             // check lower bounds
 			if (paramTry.getValue(i) < LB.getValue(i)){
 				costTry = 1E12 + (LB.getValue(i)-paramTry.getValue(i)) * 1E6;
+				Results.putMessage("Parameter to low " + paramTry.getValue(i) + " calculate  very high costs " + costTry);
 				return costTry;
 			}
 			// check upper bounds
 			if (paramTry.getValue(i) > UB.getValue(i)){
 				costTry = 1E12 + (paramTry.getValue(i)-UB.getValue(i)) * 1E6;
+				Results.putMessage("Parameter to high " + paramTry.getValue(i) + " calculate  very high costs " + costTry);
 				return costTry;
 			}
         }
