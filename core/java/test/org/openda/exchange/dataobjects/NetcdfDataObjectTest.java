@@ -75,4 +75,13 @@ public class NetcdfDataObjectTest extends TestCase {
 			assertNotNull(dataObject.getDataObjectExchangeItem(expectedExchangeItemId));
 		}
 	}
+
+	public void testWFlowJuliaState() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		File testRunDataDir = new File(this.testRunDataDir, "WFlowJuliaState");
+		dataObject.initialize(testRunDataDir, new String[]{"instates-vecht.nc", "true", "false"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertNotNull(exchangeItemIDs);
+		assertEquals(12, exchangeItemIDs.length);
+	}
 }

@@ -9,3 +9,6 @@ version 3.4.0 of JNA (jna-3.4.0.jar) Was demonstrated to work correctly together
 2013-09-25:
 Jna version 3.4 is not working on the team-city test machines, so we reverted to version 3.3. For projects that need version 3.4 some
 manual changes are needed.
+
+2021-07-09
+Upgraded jna to 5.7.0 to support WFlowJulia netcdf files

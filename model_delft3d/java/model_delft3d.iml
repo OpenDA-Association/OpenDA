@@ -28,15 +28,6 @@
     </orderEntry>
     <orderEntry type="module" module-name="algorithms" />
     <orderEntry type="module" module-name="observers" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/jna/jna-4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="application" />
     <orderEntry type="module-library">
       <library>
@@ -57,5 +48,14 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="netcdf" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../core/java/resources/jna/jna-5.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
