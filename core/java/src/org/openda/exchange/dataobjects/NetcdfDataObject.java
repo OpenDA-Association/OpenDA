@@ -64,7 +64,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	
 	protected String stationDimensionVarName = NetcdfUtils.STATION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
 	protected String CrossSectionDimensionVarName = NetcdfUtils.CROSS_SECTION_DIMENSION_VARIABLE_NAME; // can be overruled by subclasses
-	
+
+	private String layerDimensionName = null;
 
 	private File file = null;
 	private NetcdfFileWriter netcdfFileWriter = null;
@@ -130,6 +131,9 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					continue;
 				case "requiredExchangeItemId":
 					requiredExchangeItemIds.add(value);
+					continue;
+				case "layerDimensionName":
+					this.layerDimensionName = value;
 					continue;
 				default:
 					throw new RuntimeException("Unknown key " + key + ". Please specify only " + ALLOW_TIME_INDEPENDENT_ITEMS + " as key=value pair");
@@ -262,7 +266,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				dimensionCount -= 1;
 			}
 
-			if (dimensionCount != 2 && dimensionCount != 3) {
+			if (dimensionCount != 2 && dimensionCount != 3 && dimensionCount != 4) {
 				continue;
 			}
 			//TODO MVL
@@ -273,6 +277,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				stationDimensionIndex = variable.findDimensionIndex(CrossSectionDimensionVarName);
 				nameSource="CrossSectionDimensionVarName";
 			}
+			int layerDimensionIndex = layerDimensionName == null ? -1 : variable.findDimensionIndex(layerDimensionName);
 			if (dimensionCount == 2 && stationDimensionIndex != -1) {
 				//if variable has data for scalar time series for a list of separate stations.
 				int stationCount = variable.getDimension(stationDimensionIndex).getLength();
@@ -307,7 +312,22 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 			int timeDimensionIndex = variable.findDimensionIndex(timeVariable.getShortName());
 			IGeometryInfo geometryInfo = NetcdfUtils.createGeometryInfo(variable,netcdfFile);
-			if (dimensionCount == 3 && geometryInfo != null) {
+			if (dimensionCount == 4 && geometryInfo != null && layerDimensionIndex != -1 && realizationDimensionIndex == -1) {
+				//if variable has data for a 2D grid time series.
+				String parameterId = variable.getShortName();
+
+				int layerDimensionLength = variable.getDimension(layerDimensionIndex).getLength();
+
+				//create an exchangeItem that can read/write lazily.
+				IQuantityInfo quantityInfo = new QuantityInfo(parameterId, variable.getUnitsString());
+				int dimensionIndexToFlipForReadData = NetcdfUtils.getDimensionIndexToFlipFor2DGrid(variable, netcdfFile,
+					this.internalGridStartCorner);
+				for (int layerIndex = 0; layerIndex < layerDimensionLength; layerIndex++) {
+					IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, Role.InOut,
+						timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData, layerDimensionIndex, layerIndex);
+					this.exchangeItems.add(exchangeItem);
+				}
+			} else if (dimensionCount == 3 && geometryInfo != null) {
 				//if variable has data for a 2D grid time series.
 				String parameterId = variable.getShortName();
 
@@ -317,13 +337,13 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 						this.internalGridStartCorner);
 				if (realizationDimensionIndex == -1) {
 					IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, Role.InOut,
-							timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
+							timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData, -1, -1);
 					this.exchangeItems.add(exchangeItem);
 				} else {
 					//TODO Edwin: this code assumes that the realization indices are always the numbers 0, 1, 2, 3, etc. in sorted order. It should read the actual ensemble member indices from the file. AK
 					for (int realizationIndex = 0; realizationIndex < variable.getDimension(realizationDimensionIndex).getLength(); realizationIndex++) {
 						IExchangeItem exchangeItem = new NetcdfGridTimeSeriesExchangeItem(parameterId, realizationDimensionIndex, realizationIndex, Role.InOut,
-								timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData);
+								timeInfo, quantityInfo, geometryInfo, this, timeDimensionIndex, dimensionIndexToFlipForReadData, -1, -1);
 						addEnsembleExchangeItem(exchangeItem, realizationIndex);
 					}
 				}
@@ -746,6 +766,13 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				dimensionIndexToFlip);
 	}
 
+	public double[] readDataForExchangeItemFor2DGridForSingleTimeSingleLayer(IExchangeItem item, int timeDimensionIndex, int timeIndex,
+																			 int dimensionIndexToFlip, int layerDimensionIndex, int layerIndex) {
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
+		return NetcdfUtils.readDataForVariableFor2DGridForSingleTimeSingleLayer(variable, timeDimensionIndex, timeIndex,
+				dimensionIndexToFlip, layerDimensionIndex, layerIndex);
+	}
+
 	public double[] readDataForExchangeItemFor2DGridForSingleTimeAndRealization(
 			IExchangeItem item, int realizationDimensionIndex, int realizationIndex, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip) {
 		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
@@ -756,6 +783,11 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
     public void writeDataForExchangeItemForSingleTime(IExchangeItem item, int timeDimensionIndex, int timeIndex, double[] values) {
 		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
         NetcdfUtils.writeDataForVariableForSingleTime(this.netcdfFileWriter, variable, timeDimensionIndex, timeIndex, values);
+    }
+
+    public void writeDataForVariableFor2DGridForSingleTimeSingleLayer(IExchangeItem item, int timeDimensionIndex, int timeIndex, int layerDimensionIndex, int layerIndex, double[] values) {
+		Variable variable = NetcdfUtils.getVariableForExchangeItem(netcdfFileWriter.getNetcdfFile(), item);
+        NetcdfUtils.writeDataForVariableFor2DGridForSingleTimeSingleLayer(this.netcdfFileWriter, variable, timeDimensionIndex, timeIndex, layerDimensionIndex, layerIndex, values);
     }
 
     public void writeDataForExchangeItemForSingleTimeSingleLocation(IExchangeItem item, int timeIndex, int stationDimensionIndex, int stationIndex, double[] values) {

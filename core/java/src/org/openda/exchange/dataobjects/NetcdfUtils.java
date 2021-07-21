@@ -666,6 +666,19 @@ public class NetcdfUtils {
 		return readSelectedData(variable, origin, sizeArray, dimensionIndexToFlip);
 	}
 
+	public static double[] readDataForVariableFor2DGridForSingleTimeSingleLayer(Variable variable, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip, int layerDimensionIndex, int layerIndex) {
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+
+		//select only the given time.
+		origin[timeDimensionIndex] = timeIndex;
+		sizeArray[timeDimensionIndex] = 1;
+		//select only the given realization
+		origin[layerDimensionIndex] = layerIndex;
+		sizeArray[layerDimensionIndex] = 1;
+		return readSelectedData(variable, origin, sizeArray, dimensionIndexToFlip);
+	}
+
 	public static double[] readDataForVariableFor2DGridForSingleTimeAndRealization(Variable variable,
 		   int realizationDimensionIndex, int realizationIndex, int timeDimensionIndex, int timeIndex, int dimensionIndexToFlip) {
 		int[] origin = createOrigin(variable);
@@ -688,6 +701,19 @@ public class NetcdfUtils {
 		origin[timeDimensionIndex] = timeIndex;
 		sizeArray[timeDimensionIndex] = 1;
 
+		writeSelectedData(netcdfFileWriter, variable, origin, sizeArray, values);
+	}
+
+	public static void writeDataForVariableFor2DGridForSingleTimeSingleLayer(NetcdfFileWriter netcdfFileWriter, Variable variable, int timeDimensionIndex, int timeIndex, int layerDimensionIndex, int layerIndex, double[] values) {
+		int[] origin = createOrigin(variable);
+		int[] sizeArray = variable.getShape();
+
+		//select only the given time.
+		origin[timeDimensionIndex] = timeIndex;
+		sizeArray[timeDimensionIndex] = 1;
+		//select only the given realization
+		origin[layerDimensionIndex] = layerIndex;
+		sizeArray[layerDimensionIndex] = 1;
 		writeSelectedData(netcdfFileWriter, variable, origin, sizeArray, values);
 	}
 

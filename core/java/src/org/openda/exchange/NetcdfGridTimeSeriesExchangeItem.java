@@ -44,6 +44,8 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 	private final NetcdfDataObject netcdfDataObject;
 	private final int timeDimensionIndex;
 	private final int dimensionIndexToFlipForReadData;
+	private int layerDimensionIndex;
+	private int layerIndex;
 
 	/**
 	 * @param id
@@ -54,11 +56,13 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 	 * @param netcdfDataObject
 	 * @param timeDimensionIndex
 	 * @param dimensionIndexToFlipForReadData index of dimension to flip for read data. If this is -1, then nothing is flipped.
+	 * @param layerDimensionIndex
+	 * @param layerIndex
 	 */
 	public NetcdfGridTimeSeriesExchangeItem(String id, int realizationDimensionIndex, int realizationIndex, Role role, ITimeInfo timeInfo, IQuantityInfo quantityInfo,
-			IGeometryInfo geometryInfo, NetcdfDataObject netcdfDataObject, int timeDimensionIndex,
-			int dimensionIndexToFlipForReadData) {
-		this.id = id;
+											IGeometryInfo geometryInfo, NetcdfDataObject netcdfDataObject, int timeDimensionIndex,
+											int dimensionIndexToFlipForReadData, int layerDimensionIndex, int layerIndex) {
+		this.id = layerIndex == -1 ? id : id + ".layer" + layerIndex;
 		this.realizationDimensionIndex = realizationDimensionIndex;
 		this.realizationIndex = realizationIndex;
 		this.role = role;
@@ -67,12 +71,14 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 		this.geometryInfo = geometryInfo;
 		this.netcdfDataObject = netcdfDataObject;
 		this.timeDimensionIndex = timeDimensionIndex;
+		this.layerDimensionIndex = layerDimensionIndex;
+		this.layerIndex = layerIndex;
 		this.dimensionIndexToFlipForReadData = dimensionIndexToFlipForReadData;
 	}
 
 	public NetcdfGridTimeSeriesExchangeItem(String id, Role role, ITimeInfo timeInfo, IQuantityInfo quantityInfo,
-			IGeometryInfo geometryInfo, NetcdfDataObject netcdfDataObject, int timeDimensionIndex, int dimensionIndexToFlipForReadData) {
-		this(id, -1, -1, role, timeInfo, quantityInfo, geometryInfo, netcdfDataObject, timeDimensionIndex, dimensionIndexToFlipForReadData);
+											IGeometryInfo geometryInfo, NetcdfDataObject netcdfDataObject, int timeDimensionIndex, int dimensionIndexToFlipForReadData, int layerDimensionIndex, int layerIndex) {
+		this(id, -1, -1, role, timeInfo, quantityInfo, geometryInfo, netcdfDataObject, timeDimensionIndex, dimensionIndexToFlipForReadData, layerDimensionIndex, layerIndex);
 	}
 
 	public String getId() {
@@ -137,7 +143,9 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
 	}
 
 	public double[] getValuesAsDoublesForSingleTimeIndex(int timeIndex) {
-		if (this.realizationDimensionIndex == -1) {
+		if (layerIndex != -1) {
+			return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTimeSingleLayer(this, this.timeDimensionIndex, timeIndex, this.dimensionIndexToFlipForReadData, layerDimensionIndex, layerIndex);
+		} else if (this.realizationDimensionIndex == -1) {
 			return this.netcdfDataObject.readDataForExchangeItemFor2DGridForSingleTime(this, this.timeDimensionIndex, timeIndex,
 					this.dimensionIndexToFlipForReadData);
 		} else {//if ensemble exchange item.
@@ -192,7 +200,11 @@ public class NetcdfGridTimeSeriesExchangeItem implements IGridTimeSeriesExchange
     public void setValuesAsDoublesForSingleTimeIndex(int timeIndex, double[] values) {
         //write all values for given timeIndex.
 		this.netcdfDataObject.makeSureFileHasBeenCreated();
-        this.netcdfDataObject.writeDataForExchangeItemForSingleTime(this, this.timeDimensionIndex, timeIndex, values);
+		if (layerIndex == -1) {
+			this.netcdfDataObject.writeDataForExchangeItemForSingleTime(this, this.timeDimensionIndex, timeIndex, values);
+			return;
+		}
+		this.netcdfDataObject.writeDataForVariableFor2DGridForSingleTimeSingleLayer(this, this.timeDimensionIndex, timeIndex, layerDimensionIndex, layerIndex, values);
     }
 
 	public void setValuesAsDoublesForSingleTime(double sourceTime, double[] valuesForSourceTime) {
