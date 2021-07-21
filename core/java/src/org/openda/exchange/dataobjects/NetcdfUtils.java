@@ -545,7 +545,7 @@ public class NetcdfUtils {
 	 * @return times array.
 	 * @throws IOException
 	 */
-	private static double[] readTimes(Variable timeVariable) throws IOException {
+	public static double[] readTimes(Variable timeVariable) throws IOException {
 		double[] convertedTimes = new double[0];
 
 		if ((timeVariable != null) && timeVariable.isCoordinateVariable()) {
