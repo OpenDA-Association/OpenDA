@@ -25,16 +25,13 @@
         <vector id="start_time" ioObjectId="mdufile" elementId="start_time" />
         <vector id="end_time" ioObjectId="mdufile" elementId="end_time" />
 
-        <vector id="s1" ioObjectId="mapfile" elementId="s1"/>
-        <vector id="s0" ioObjectId="mapfile" elementId="s0"/>
-        <vector id="unorm" ioObjectId="mapfile" elementId="unorm"/>
-        <vector id="u0" ioObjectId="mapfile" elementId="u0"/>   
+        <vector id="mesh2d_s1" ioObjectId="mapfile" elementId="s1"/>
 
         <vector id="Obs01.waterlevel" ioObjectId="hisfile" elementId="Obs01.waterlevel"/>
         <vector id="Obs02.waterlevel" ioObjectId="hisfile" elementId="Obs02.waterlevel"/>
         <vector id="Obs03.waterlevel" ioObjectId="hisfile" elementId="Obs03.waterlevel"/>
 
-        <vector id="eastboundary.1:dischargebnd" ioObjectId="boundaries" elementId="eastboundary.1:dischargebnd"/>
+        <vector id="eastboundary.1:dischargebnd" ioObjectId="boundaries" elementId="eastboundary.1:dischargebnd-sw_east_dis_noise_0001"/>
 
     </exchangeItems>
 

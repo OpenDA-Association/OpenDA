@@ -46,16 +46,16 @@
 
 
 QUANTITY=dischargebnd
-FILENAME=sw_east_dis.pli
-FILETYPE=9
-METHOD=3
-OPERAND=O
-
-QUANTITY=dischargebnd
 FILENAME=sw_east_dis_noise.pli
 FILETYPE=9
 METHOD=3
 OPERAND=+
+
+QUANTITY=dischargebnd
+FILENAME=sw_east_dis.pli
+FILETYPE=9
+METHOD=3
+OPERAND=O
 
 QUANTITY=waterlevelbnd
 FILENAME=sw_west_wlev.pli
