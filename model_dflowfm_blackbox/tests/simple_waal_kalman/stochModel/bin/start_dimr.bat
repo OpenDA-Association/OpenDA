@@ -1,8 +1,8 @@
 @echo off
-rem set DFLOWFMDIR=
+set DFLOWFMDIR=
 if "%DFLOWFMDIR%"=="" goto error_not_defined
 
-set dimr="%DFLOWFMDIR%\plugins\DeltaShell.Dimr\run_dimr.bat"
+set dimr="%DFLOWFMDIR%\plugins\DeltaShell.Dimr\kernels\x64\dimr\scripts\run_dimr.bat"
 rem 
 rem check if dimr is available
 rem
