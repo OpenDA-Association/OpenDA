@@ -14,7 +14,7 @@
                     <exchangeItem id="dischargenoise" operation="add" modelExchangeItemId="eastboundary.1:dischargebnd"/>
                 </exchangeItems>
             </noiseModel>
-            <vector id="mesh2d_s1"/>
+            <vector id="s1"/>
         </state>
         <predictor>
             <vector id="Obs01.waterlevel"/>

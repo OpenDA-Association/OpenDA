@@ -25,7 +25,7 @@
         <vector id="start_time" ioObjectId="mdufile" elementId="start_time" />
         <vector id="end_time" ioObjectId="mdufile" elementId="end_time" />
 
-        <vector id="mesh2d_s1" ioObjectId="mapfile" elementId="s1"/>
+        <vector id="allElementsFromIoObject" ioObjectId="mapfile"/>
 
         <vector id="Obs01.waterlevel" ioObjectId="hisfile" elementId="Obs01.waterlevel"/>
         <vector id="Obs02.waterlevel" ioObjectId="hisfile" elementId="Obs02.waterlevel"/>

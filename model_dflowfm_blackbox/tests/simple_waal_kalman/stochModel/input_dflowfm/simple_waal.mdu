@@ -65,7 +65,7 @@ TStop                = 8640000.            # Stop  time w.r.t. RefDate (in TUnit
 
 [restart]
 RestartFile          =                     # Restart file, only map, hence: *_map.nc
-RestartDateTime      =                     # Restart time (yyyymmddhhmmss)
+RestartDateTime      = 19920831000000                    # Restart time (yyyymmddhhmmss)
 
 [external forcing]
 ExtForceFile         = simple_waal.ext     # *.ext
@@ -84,3 +84,4 @@ WaqFileBase          = simple_waal         # Basename (without extension) for al
 WaqInterval          = 0.                  # Interval (in s) between Delwaq file outputs
 StatsInterval        = 0.                  # Interval (in s) between simulation statistics output.
 SnapshotDir          = snapshots           # Directory where snapshots/screendumps are saved.
+MapFormat            = 1
