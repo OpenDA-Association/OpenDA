@@ -4,14 +4,14 @@
 {$LastChangedRevision: $}
 {$LastChangedBy: $}
 
-\odachapter{Data assimilation methods available in \oda}
+\odachapter{Data-assimilation methods available in \oda}
 
 \begin{tabular}{p{4cm}l}
 \textbf{Origin:} & CTA memo200802\\
 \textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
 \end{tabular}
 
-\section{Introduction to Data assimilation}
+\section{Introduction to data assimilation}
 The terminology of 'data assimilation' originates from the field of meteorology
 where in 1950's and 1960's new methods were developed to improve weather
 forecasts. Due to rapid development of computers in the 1950's the applications
@@ -20,7 +20,7 @@ phase the initial state of the model was estimated directly from the
 measurement. The numerical model was then used to produce the forecast. It was
 soon recognized that the forecasts could be improved if the initial state was
 not only based on the measurements but also on the forecast produced by the
-previous model run. The first data assimilation method was direct insertion
+previous model run. The first data-assimilation method was direct insertion
 which was based on replacement of a model variable by its measured value.
 Although it was simple to implement, it suffered from the lack of smoothness in
 the assimilation results. Much of the research at the time was concentrated on
@@ -29,10 +29,10 @@ oscillations.
 
 In recent years more and more complex methods are being used. These methods are
 either based on the minimization of a criterion or on statistical principles.
-This difference divides the data assimilation methods into two classes: the
+This difference divides the data-assimilation methods into two classes: the
 variational and the sequential methods.
 
-The following data assimilation methods are implemented in \oda :
+The following data-assimilation methods are implemented in \oda :
 \begin{itemize}
 \item Reduced-rank square-root filter (RRSQRT)
 \item Ensemble KF (EnKF)
@@ -284,7 +284,7 @@ computationally dominant. As a result the computational effort required for the
 EnKF is approximately $N$ model simulations. The standard deviation of the
 errors in the state estimate are of a statistical nature and converge very
 slowly with the sample size ($\approx N$). Here it should be noted that for
-many atmospheric data assimilation problems the analysis step is also a very
+many atmospheric data-assimilation problems the analysis step is also a very
 time consuming part of the algorithm.
 
 
@@ -533,7 +533,7 @@ Moreover, the perturbation $\delta$ (i.e. $\epsilon$ in equation
 (\ref{eq.COFFEE_lf})) needs also to be specified.
 
 In this implementation, the modes and ensembles are represented as COSTA model
-instances. Here each model instance represent one mode or ensemble. This is
+instances. Here each model instance represents one mode or ensemble. This is
 chosen for supporting parallel computation implementation in the future.
 
 In the implementation of COFFEE filter, the initial matrix $[L^a(0) E^a(0)]$ in
