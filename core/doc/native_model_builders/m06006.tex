@@ -7,7 +7,7 @@
 \odachapter{The COSTA parallel modelbuilder}
 
 {\bf{Remark:}}
-COSTA is incorporated in \oda, {\tt /public/core/native/src/cta}.\\
+COSTA is incorporated in \oda, \verb|/public/core/native/src/cta|.\\
 
 \begin{tabular}{p{4cm}l}
 \textbf{Contributed by:} & Nils van Velzen, CTA memo200606\\
@@ -16,7 +16,7 @@ COSTA is incorporated in \oda, {\tt /public/core/native/src/cta}.\\
 
 \section{Introduction}
 The COSTA environment makes a number of building blocks available for
-creating data assimilation and calibration systems. Combining and creating
+creating data-assimilation and calibration systems. Combining and creating
 building new building blocks should be possible with a minimum of effort.
 
 COSTA contains tools for rapidly creating COSTA model components. These
@@ -27,11 +27,11 @@ arbitrary COSTA model.
 This memo describes the first version of the parallel modelbuilder.
 Section \ref{Sec:Mode-parallel} describes the form of parallelization
 implemented by the parallel modelbuilder. The usage of the modelbuilder
-and how to adjust your existing sequential data assimilation system is
+and how to adjust your existing sequential data-assimilation system is
 described in Section \ref{Sec:Using the COSTA modelbuilder}. The design
 of the parallel modelbuilder is described in Section 
 \ref{Sec:Technical aspects of the modelbuilder}. The modelbuilder is
-tested with a number of models and data assimilation methods. The results
+tested with a number of models and data-assimilation methods. The results
 of these tests are presented in Section \ref{Sec:Tests and Performance}.
 This document describes the initial version. The testing and development
 stages yielded some ideas for future improvement of the modelbuilder.
@@ -40,7 +40,7 @@ These ideas are presented in Section \ref{Sec:Future improvements}.
 
 
 \section{Mode-parallel} \label{Sec:Mode-parallel}
-Data assimilation and model calibration algorithms need to perform a large
+Data-assimilation and model calibration algorithms need to perform a large
 number of model computations for a given timespan, called model
 propagations. These propagations are often very computational expensive and
 dominate the total time needed to do the assimilation or calibration run.
@@ -57,12 +57,12 @@ perform them in arbitrary order and in parallel. For example:
 
 The COSTA parallel modelbuilder makes it possible to perform the
 propagations of different model instances in parallel. Significantly decreasing
-the computational time for most data assimilation applications.
+the computational time for most data-assimilation applications.
 
 \section{Using the COSTA modelbuilder} \label{Sec:Using the COSTA modelbuilder}
 \subsection{Adjusting the code}
 In order to use the parallel modelbuilder it is necessary to make a small
-extension to the code of an (existing) COSTA data assimilation system.
+extension to the code of an (existing) COSTA data-assimilation system.
 After the initialization of the model the function 
 {\tt CTA\_MODBUILD\_PAR\_CREATECLASS} must be called. From that
 point the parallel modelbuilder is initialized and the available processes
@@ -122,7 +122,7 @@ call cta_finalise(retval)
 \\
 \hline
 \end{tabular}
-\caption{\em Main program of a data assimilation system using the parallel
+\caption{\em Main program of a data-assimilation system using the parallel
 modelbuilder.}
 \label{Tab: main program}
 \end{table}
@@ -295,7 +295,7 @@ handled by the parallel modelbuilder. The disadvantage is however that the
 parallelization will not be optimal. 
 
 \subsection{Sequential bottleneck}
-The parallel modelbuilder will speedup most data assimilation systems but
+The parallel modelbuilder will speedup most data-assimilation systems but
 the improvement is limited by the sequential parts in the assimilation
 method. We will illustrate this using the ensemble Kalman filter. 
 
@@ -330,7 +330,7 @@ The simulation results that are presented in Section \ref{Sec:Tests and
 Performance} will illustrate this behavior.
 
 \subsection{Sequential runs}
-A data assimilation system that uses the parallel modelbuilder should be
+A data-assimilation system that uses the parallel modelbuilder should be
 equally efficient as the sequential implementation when running on one
 process. The parallel modelbuilder recognizes when it is initialized in a
 sequential run. In that case all methods of the model are directly
@@ -426,7 +426,7 @@ model to look at the performance of the parallel model builder.
 The tests have been performed on two different machines.
 \begin{itemize}
 \item Laptop with Intel centrino duo, 1.66GHz CPU,
-\item Aster, an SGI Altix 3700 system with 416 Intel Itanium 2, 1.3GHz CPU's
+\item Aster, an SGI Altix 3700 system with 416 Intel Itanium 2, 1.3GHz CPUs
 \end{itemize}
 
 The tests on the Intel centrino duo processor will illustrate that parallel
@@ -448,7 +448,7 @@ a simulation period of 2 hours.}
 \label{Table:Lotos Laptop}
 \end{table}
 
-The same simulation is also performed on the Aster on a number of CPU's
+The same simulation is also performed on the Aster on a number of CPUs
 varying from 1 to 12. The results are presented in Figure \ref{Fig:drie}
 and Figure \ref{Fig:vier}. The speedup of the small model is much better
 than of the big model. We have not yet investigated this behavior.
@@ -516,7 +516,7 @@ models. An extension to the parallel modelbuilder is the possibility to
 remotely hold state-vectors.  This has two advantages:
 \begin{enumerate}
 \item part of the linear algebra computations with state-vectors in the
-assimilation part of the data assimilation method can be performed
+assimilation part of the data-assimilation method can be performed
 in parallel resulting in a better performance,
 \item when the computations are performed on a non-shared memory machine
 the memory consumption is better distributed over the various machines and

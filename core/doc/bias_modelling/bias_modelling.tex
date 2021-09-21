@@ -11,8 +11,8 @@
 \textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
 \end{tabular}
 
-\section{Bias aware modelling}
-Data assimilation methods normally assume no bias in the model and the
+\section{Bias aware modeling}
+Data-assimilation methods normally assume no bias in the model and the
 observation errors. In real life this is unfortunately not always the case.
 There are some mathematical methods available to detect and estimate structural
 differences between observations and mode (bias). \oda contains a wrapper
@@ -54,7 +54,7 @@ In order to use the bias aware model, the user specifies the
 \begin{verbatim}
 org.openda.models.biasAwareObservations.BiasAwareObservationsModelFactory
 \end{verbatim}
-in the main OpenDA configuration file. The "real" dynamical model is specified in "child" model in the configuration of the bias aware model.
+in the main \oda configuration file. The "real" dynamical model is specified in "child" model in the configuration of the bias aware model.
 
 
 The model configuration contains of two parts:
@@ -82,7 +82,7 @@ The second part with tag {\tt state} defines the augmented state that is used to
    \end{itemize} 
 \end{itemize}
 
-It is sometimes not known in advance what the id's are of the observations. A trick is to perform a small run, not individually specifying the observations. In the message file you will then find the id's of the observations when they are assigned to an element of the augmented state for the first time.
+It is sometimes not known in advance what the ids are of the observations. A trick is to perform a small run, not individually specifying the observations. In the message file you will then find the ids of the observations when they are assigned to an element of the augmented state for the first time.
 
 A typical configuration where all observations have the same bias uncertainty looks like:
 \begin{verbatim}
