@@ -35,7 +35,7 @@
         <vector id="Obs02.salinity" ioObjectId="hisfile" elementId="Obs02.salinity"/>
         <vector id="Obs03.salinity" ioObjectId="hisfile" elementId="Obs03.salinity"/>
 
-        <vector id="eastboundary.1:salinitybnd" ioObjectId="boundaries" elementId="eastboundary.1:salinitybnd"/>
+        <vector id="eastboundary.1:salinitybnd" ioObjectId="boundaries" elementId="eastboundary.1:salinitybnd-sw_east_dis_sal_noise_0001"/>
 
     </exchangeItems>
 
