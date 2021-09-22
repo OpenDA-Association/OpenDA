@@ -75,4 +75,23 @@ public class NetcdfDataObjectTest extends TestCase {
 			assertNotNull(dataObject.getDataObjectExchangeItem(expectedExchangeItemId));
 		}
 	}
+
+	public void testMultipleLayers() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		File testRunDataDir = new File(this.testRunDataDir, "multipleLayers");
+		dataObject.initialize(testRunDataDir, new String[]{"multipleLayers.nc", "true", "false", "layerDimensionName=laydim"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertNotNull(exchangeItemIDs);
+		assertEquals(442, exchangeItemIDs.length);
+		IExchangeItem temperatureEI0 = dataObject.getDataObjectExchangeItem("station01.temperature.layer0");
+		double[] valuesEI0 = temperatureEI0.getValuesAsDoubles();
+		IExchangeItem temperatureEI13 = dataObject.getDataObjectExchangeItem("station01.temperature.layer13");
+		double[] valuesEI13 = temperatureEI13.getValuesAsDoubles();
+		IExchangeItem temperatureEI19 = dataObject.getDataObjectExchangeItem("station01.temperature.layer19");
+		double[] valuesEI19 = temperatureEI19.getValuesAsDoubles();
+		assertEquals(49, valuesEI0.length);
+		assertEquals(49, valuesEI13.length);
+		assertEquals(49, valuesEI19.length);
+		assertTrue( valuesEI13[48] - valuesEI0[48] != 0.0d);
+	}
 }

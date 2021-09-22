@@ -46,6 +46,8 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 
 	private final int locationDimensionIndex;
 	private int locationIndex;
+	private int layerDimensionIndex;
+	private int layerIndex;
 	private final int realizationDimensionIndex;
 	private int realizationIndex;
 	private final String id;
@@ -65,11 +67,16 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	private ITimeInfo timesWithNonMissingValuesInfo;
 
 	public NetcdfScalarTimeSeriesExchangeItem(int locationDimensionIndex, int locationIndex,
-			String locationId, String parameterId, int realizationDimensionIndex, int realizationIndex, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
+											  String locationId, String parameterId, int realizationDimensionIndex, int realizationIndex, int layerDimensionIndex, int layerIndex, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
 		this.locationDimensionIndex = locationDimensionIndex;
 		this.locationIndex = locationIndex;
-		//id = "locationId.parameterId"
-		this.id = locationId + "." + parameterId;
+		// When layer(Dimension)Index == -1 there are no layers
+		this.layerDimensionIndex = layerDimensionIndex;
+		this.layerIndex = layerIndex;
+		//id = "locationId.parameterId" when there are no layers (layerIndex -1)
+		// id = "locationId.parameterId.layer<layerIndex>" when there are layers (layerIndex  != -1)
+		this.id = layerIndex == -1 ? locationId + "." + parameterId : locationId + "." + parameterId + "." + "layer" + layerIndex;
+		// When realization(Dimension)Index == -1 there are no realizations / ensembles
 		this.realizationDimensionIndex = realizationDimensionIndex;
 		this.realizationIndex = realizationIndex;
 		this.role = role;
@@ -177,7 +184,9 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	 * Returns all values for this scalar time series (also missing values).
 	 */
 	private double[] getAllValues() {
-		if (this.realizationDimensionIndex == -1) {
+		if (layerDimensionIndex != -1) {
+			return this.netcdfDataObject.readDataForExchangeItemForSingleLocationSingleLayer(this, this.locationDimensionIndex, this.locationIndex, layerDimensionIndex, layerIndex);
+		} else if (this.realizationDimensionIndex == -1) {
 			return this.netcdfDataObject.readDataForExchangeItemForSingleLocation(this, this.locationDimensionIndex, this.locationIndex);
 		} else {//if ensemble exchange item.
 			return this.netcdfDataObject.readDataForExchangeItemForSingleLocationSingleRealization(this, this.locationDimensionIndex, this.locationIndex, this.realizationDimensionIndex, this.realizationIndex);
