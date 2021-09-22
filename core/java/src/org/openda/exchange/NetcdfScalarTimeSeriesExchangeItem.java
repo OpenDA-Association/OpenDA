@@ -70,10 +70,13 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 											  String locationId, String parameterId, int realizationDimensionIndex, int realizationIndex, int layerDimensionIndex, int layerIndex, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
 		this.locationDimensionIndex = locationDimensionIndex;
 		this.locationIndex = locationIndex;
+		// When layer(Dimension)Index == -1 there are no layers
 		this.layerDimensionIndex = layerDimensionIndex;
 		this.layerIndex = layerIndex;
-		//id = "locationId.parameterId"
+		//id = "locationId.parameterId" when there are no layers (layerIndex -1)
+		// id = "locationId.parameterId.layer<layerIndex>" when there are layers (layerIndex  != -1)
 		this.id = layerIndex == -1 ? locationId + "." + parameterId : locationId + "." + parameterId + "." + "layer" + layerIndex;
+		// When realization(Dimension)Index == -1 there are no realizations / ensembles
 		this.realizationDimensionIndex = realizationDimensionIndex;
 		this.realizationIndex = realizationIndex;
 		this.role = role;

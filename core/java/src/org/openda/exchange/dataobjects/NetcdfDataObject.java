@@ -279,6 +279,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				nameSource="CrossSectionDimensionVarName";
 			}
 
+			// When layerDimensionName == null it means there are no layers, therefore layerDimension will be set to -1
+			// layerDimension -1 will indicate there are no layers
 			int layerDimensionIndex = layerDimensionName == null ? -1 : variable.findDimensionIndex(layerDimensionName);
 			if (dimensionCount == 3 && stationDimensionIndex != -1 && layerDimensionIndex != -1) {
 				int stationCount = variable.getDimension(stationDimensionIndex).getLength();
