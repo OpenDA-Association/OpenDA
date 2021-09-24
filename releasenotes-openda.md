@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+OpenDA - Version 3.0.3
+----------------------
+
+### Improvements
+
+-   Fix D-Flow FM simple waal kalman examples for recent D-Flow FM versions
+-   Support 3D station data in DFlowFMRestartFileWrapper
+
 OpenDA - Version 3.0.2
 ----------------------
 
