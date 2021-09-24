@@ -290,8 +290,6 @@ def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, 
 
             if abs(total_cost[-1] - total_cost[-2]) < xtol * abs(total_cost[-2]):
                 finish += 1
-            elif:
-
             else:
                 finish = 0
             if finish > 2:
