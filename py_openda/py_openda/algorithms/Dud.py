@@ -104,13 +104,13 @@ def find_next_params(p_number, parameters, func_evals, obs, std, max_step=10):
     return (False, p_new)
 
 
-def check_step_conv(p_new, parameters, p_tol=1.0e-4):
+def check_step_conv(p_new, parameters, std, p_tol=1.0e-4):
     p_step = p_new - parameters[:, -1]
-    p_rel = [abs(dp) / max(abs(p), 1.0e-8) for dp, p in zip(p_step, parameters[:, -1])]
+    p_rel = [abs(dp) / max(abs(sigma), 1.0e-8) for dp, sigma in zip(p_step, std)]
     convergence = False
+    print("relative stepsize:"+str(p_rel))
     if max(p_rel)<p_tol:
         print("converged max relative stepsize is <"+str(p_tol))
-        print("rel stepsize ="+str(p_rel))
         convergence = True
     return convergence
 
@@ -249,7 +249,7 @@ def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, 
             break
 
         # Check convergence based on stepsize
-        if check_step_conv(p_new, parameters, p_tol=1.0e-4):
+        if check_step_conv(p_new, parameters, std, p_tol=1.0e-4):
             break
 
         p_new = max_step_p_new(parameters, p_new, l_bound, u_bound)
