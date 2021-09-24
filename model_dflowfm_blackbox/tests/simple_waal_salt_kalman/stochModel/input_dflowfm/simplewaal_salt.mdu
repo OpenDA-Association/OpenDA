@@ -84,3 +84,4 @@ WaqFileBase          = simplewaal_salt    # Basename (without extension) for all
 WaqInterval          = 0.                  # Interval (in s) between Delwaq file outputs
 StatsInterval        = 0.                  # Interval (in s) between simulation statistics output.
 SnapshotDir          = snapshots           # Directory where snapshots/screendumps are saved.
+MapFormat            = 1
