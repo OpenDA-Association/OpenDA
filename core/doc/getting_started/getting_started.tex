@@ -148,13 +148,13 @@ The explanation of each configuration file is given below.
 
 \oda defines certain interfaces, which standardize how different components of \oda communicate with each other. For the model component, \oda defines two levels of interface: the \emph{model-instance interface} and the \emph{stochastic model-instance interface}. The model-instance interface defines functionality which a (deterministic) model should implement. On the other hand, the stochastic model-instance interface defines the stochastic extension of the deterministic model.
 
-In order for a model to work within \oda, the model should be extended by implementing these interfaces. This is usually called wrapping the model. There are at least five ways one can wrap a model:
+In order for a model to work within \oda, the model should be extended by implementing these interfaces. This is usually called \emph{wrapping the model}. There are at least five ways one can wrap a model:
 \begin{itemize}
 \item The first way is to write the model code from scratch in Java and deliberately design the code to match \oda's requirements. The distribution of \oda contains several of such models. Those are small (toy) models, which are developed to test and illustrate various applications of \oda. 
 \item The second way is to combine native model code (related to the platform Linux/Mac/Windows) with a wrapping Java extension. In this way, we keep the computation core of the model in its original code while extending it with an \oda wrapper. 
 \item The third way is to write a model in Java, which implements only the (deterministic) model-instance interface, and to use the existing Stochastic Black Box model utilities for its stochastic extension. The Black Box model utilities are various functions in \oda for implementing the required interfaces, which are generic and independent from the actual model. Making use of these utilities reduces the work one has to do to wrap a model. 
 \item The fourth way is like the third one, but the computation core of the model uses the native code. 
-\item The fifth way is the simplest method to wrap a model: a full black box model. In this way, one only needs to write several functions which read and/or write input and output files of the model. Once these methods are ready, one can simply use the Black Box model utilities to create a complete stochastic model extension required for a data-assimilation application. While it is the easiest way to implement, an application based on the Black Box wrapper is the most computationally expensive. This is because the communication between the model and other \oda components is performed through writing and reading files.
+\item The fifth way is the simplest method to wrap a model: a full black box model. In this way, one only needs to write several functions which read and/or write input and output files of the model. Once these methods are ready, one can simply use the Black Box model utilities to create a complete stochastic-model extension required for a data-assimilation application. While it is the easiest way to implement, an application based on the Black Box wrapper is the most computationally expensive. This is because the communication between the model and other \oda components is performed through writing and reading files.
 \end{itemize}
 
 The configuration files for the stochastic model depend on the type of model. For the toy models which are installed by default with \oda, there is only one model-configuration file needed. On the other hand, three configuration files are required for black-box models: 
@@ -177,13 +177,13 @@ Run the \verb|oda_run_gui.bat| batch file to open the \oda GUI. Optionally the p
 \subsection{\oda examples}
 You can find examples in the \verb|examples| directory.
 
-\chapter{Developers' corner}
+\odachapter{Developers' corner}
 For people who want to (or have to) start from the \oda source code, the Developers' corner is added. The developers' corner is split in two parts: a Java section and a native section. The term native is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
 
 \section{Building Java sources}
 The \oda Java source code is located in the \verb|core/java| directory of the source distribution, but when building everything, \verb|Ant| can be run from the \oda root directory (it will use the \verb|build.xml| file located there).
 
-\oda software consists of four different \emph{modules}. The first module is the \verb|core| module, which contains the core of the \oda software. The three other modules are named after the conceptual components of data assimilation: \verb|models|, \verb|observers|, and \verb|algorithms|. Each of these modules contain all programs and files related to the respective data-assimilation component. The \verb|core| module contains programs, which interface the other three modules. Modules for larger models with concrete applications are stored separately.
+\oda software consists of four different \emph{modules}. The first module is the \verb|core| module, which contains the core of the \oda software. The three other modules are named after the conceptual components of data assimilation: \verb|models|, \verb|observers|, and \verb|algorithms|. Each of these modules contain all programs and files related to the respective data-assimilation component. The \verb|core| module contains programs, which interface the other three modules. Modules for larger models with concrete applications are stored separately (\verb|model_*|).
 
 Native libraries, written e.g. in C or Fortran are provided both as source and binaries with \oda. By default the build processes use the binaries. All binaries provided are 32-bit and therefore need a 32-bit version of Java. You can recompile the required native libraries as 64-bit if needed, for which you will need a 64-bit version of Java. For some blackbox-wrappers en small models you may not need any native libraries, so both 32-bit and 64-bit Java can be used.
 
@@ -206,7 +206,7 @@ From the \oda main directory, you can compile all modules at once. Besides compi
 \end{itemize}
 
 \subsection{Compiling individual components}
-From the module directory (\verb|core|, \verb|modules|, \verb|observers|, or \verb|algorithms|), you can compile a single module. Within a module directory the build file has somewhat different options:
+From the module directory (\verb|core|, \verb|models|, \verb|model_*|, \verb|observers|, or \verb|algorithms|), you can compile a single module. Within a module directory the build file has somewhat different options:
 
 \begin{itemize}
 \item \verb|ant| (without any argument): to show help with a list of possible \verb|ant| arguments.
@@ -223,7 +223,7 @@ When providing others with a stand-alone module, you will have to provide other 
 Upon the execution of the command \verb|ant build| or \verb|ant doc|, the following folders are created in the main directory:
 
 \begin{itemize}
-\item \verb|bin|: contains all binary files required for running \oda. This will be the content of \oda distribution file.
+\item \verb|bin|: contains all binary files required for running \oda. This will be the content of an \oda distribution file.
 \item \verb|doc|: contains \oda documentation, including some examples.
 \item \verb|xmlSchemas|: contains the XML Schema files for the \oda configuration files.
 \end{itemize}
@@ -247,18 +247,20 @@ To remove the files generated by a build, you can use \verb|ant clean| on the co
 Data-assimilation techniques are widely used in various modeling areas like meteorology, oceanography and chemistry. Most implementations of data-assimilation methods however are custom implementations specially designed for a particular model. This is probably a consequence of the lack of generic data-assimilation software packages and tools. An advantage of these custom implementations is that they are in general very computationally efficient. But the use of custom implementations has a number of significant disadvantages:
 
 \begin{itemize}
-\item Costs - The development and implementation of these methods is very time consuming and therefore expensive.
-\item Incompatibility - It is very hard to reuse these data-assimilation methods and tools for other models than they were originally developed for. 
+\item Costs: the development and implementation of these methods is very time consuming and therefore expensive.
+\item Incompatibility: it is very hard to reuse these data-assimilation methods and tools for other models than they were originally developed for. 
 \end{itemize}
     
 \textbf{How \oda improves the situation}
 
 The \oda project tries to enhance the reuse of data-assimilation software by offering a modular framework for data assimilation, containing methods and tools that can be easily applied for general applications. \oda is set up in order to be as computationally efficient as possible, without losing its generic properties. The aim is that applications developed with \oda have a comparable computational performance as custom implementations.
 
-\textbf{\oda offers support for both users and developers of data-assimilation methods.}
+\textbf{\oda offers support for both users and developers of data-assimilation methods}
 
-For users it allows models to be quickly connected to the \oda framework and hence to all the methods that are available in \oda. For developers, \oda offers efficient basic building blocks that save a lot of programming work and at the same time makes the new data-assimilation software directly connectable to all \oda compliant models.
-How \oda works
+For users it allows models to be quickly connected to the \oda framework and hence to all the methods that are available in \oda. For developers, \oda offers efficient basic building blocks that save a lot of programming work and at the same time make the new data-assimilation software directly connectable to all \oda compliant models.
+
+\textbf{How \oda works}
+
 \oda provides a generic framework for data assimilation. It is aimed both at model programmers that want to use data-assimilation methods and at developers of data-assimilation methods.
 
 \textbf{\oda for model programmers}
@@ -267,7 +269,7 @@ For model programmers, \oda provides a rich set of data-assimilation methods. To
 
 \textbf{What is \oda compliant?}
 
-Making your model \oda compliant involves implementing a number of routines that are going to be called from the data-assimilation methods. The set of routines that you must implement is called the stochastic model interface. There are other interfaces as well, each one defining a specific entity called a component. You will read more about components in the next section.
+Making your model \oda compliant involves implementing a number of routines that are going to be called from the data-assimilation methods. The set of routines that you must implement is called the \emph{stochastic model interface}. There are other interfaces as well, each one defining a specific entity called a \emph{component}. You will read more about components in Section \ref{sec:components}.
 
 \textbf{How \oda calls your implementation of the interface routines}
 
@@ -275,15 +277,15 @@ Making your model \oda compliant involves implementing a number of routines that
 
 \textbf{Providing your observations}
 
-Likewise, your observations must be provided in an \oda compliant way. For the observations there is also a set of routines, called the stochastic observer interface. Usually, you will not implement the interface but convert your observations to a format that can be handled by the standard \oda implementation of the stochastic observer component.
+Likewise, your observations must be provided in an \oda compliant way. For the observations there is also a set of routines, called the \emph{stochastic observer interface}. Usually, you will not implement the interface but convert your observations to a format that can be handled by the standard \oda implementation of the stochastic observer component.
 
 \textbf{\oda for developers of data-assimilation methods}
 
-For developers of data-assimilation methods, \oda offers a platform for quickly building data-assimilation methods that can be used from a wide range of models. \oda provides various sets of routines that can be used as building blocks. Such a set is called a component. You will read more about components in the section Components.
+For developers of data-assimilation methods, \oda offers a platform for quickly building data-assimilation methods that can be used from a wide range of models. \oda provides various sets of routines that can be used as building blocks. Such a set is called a \emph{component}. You will read more about components in Section \ref{sec:components}.
 
 \textbf{Routines to interact with models}
 
-First of all, \oda specifies a set of routines to interact with the model to which the data assimilation must be applied. Each \oda compliant model implements these routines (otherwise it will not be \oda compliant). The specification of this set of routines is called the stochastic model interface.
+First of all, \oda specifies a set of routines to interact with the model to which the data assimilation must be applied. Each \oda-compliant model implements these routines (otherwise it will not be \oda compliant). The specification of this set of routines is called the \emph{stochastic model interface}.
 
 \textbf{Routines to interact with observations}
 
@@ -293,7 +295,7 @@ A second set of routines that is essential for data-assimilation methods compris
 
 Finally, there are various sets of basic building blocks (e.g. for handling vectors, matrices and time). These interact seamlessly with the other \oda components to let you construct data-assimilation methods with a minimum of coding.
 
-\section{Basic concepts of the \oda native components}
+\section{Basic concepts of the \oda native components}\label{sec:components}
 
 \subsection{The overall goals}
 
@@ -302,7 +304,7 @@ The overall goal of \oda is to provide a toolbox with data-assimilation capabili
 \begin{itemize}
 \item \oda should be applicable to a wide range of existing computational models.
 \begin{itemize}
-\item complex, large-scale models should be supported as well as small scale test models;
+\item complex, large-scale models should be supported as well as small-scale test models;
 \item the models may be implemented using various programming languages, particularly Fortran, C/C++, Java;
 \item the models may use parallel computing.
 \end{itemize}
@@ -319,7 +321,7 @@ The overall goal of \oda is to provide a toolbox with data-assimilation capabili
 \label{fig:legoblocks}
 \end{figure}
 
-The basic design philosophy of \oda is illustrated in figure \ref{fig:legoblocks}. The key elements in this picture are:
+The basic design philosophy of \oda is illustrated in Figure \ref{fig:legoblocks}. The key elements in this picture are:
 
 \begin{itemize}
 \item a deterministic or stochastic model (red/white bricks);
@@ -337,14 +339,14 @@ The figure intends to illustrate a number of important points:
 \end{enumerate}
     
 
-Other aspects, which are not yet illustrated in figure \ref{fig:legoblocks} are:
+Other aspects, which are not yet illustrated in Figure \ref{fig:legoblocks} are:
 
 \begin{enumerate}
 \item different "model builders" are provided for quickly packaging existing models and for combining separate models into larger ones;
 \item techniques from object orientation are used for providing a basic framework that may be optimized for efficiency.
 \end{enumerate}
 
-In \oda two components are defined: the \oda model component and the \oda stochastic observer component. There can be multiple instances of each of these components, each with their own set of data. The set of routines to manipulate the data is called the interface of the component. (Note: the terminology used in \oda with respect to object orientation is described in the paragraph about OO terminology).
+In \oda two components are defined: the \oda model component and the \oda stochastic observer component. There can be multiple instances of each of these components, each with their own set of data. The set of routines to manipulate the data is called the \emph{interface of the component}. (Note: the terminology used in \oda with respect to object orientation is described in the paragraph about OO terminology).
 
 \oda defines the interface of the \oda model component. This consists of the list of methods/routines that a model must provide. Examples are "perform a time-step", "deliver the model state", or "accept a modified state". This interface of the model component is visualized through the shape of the empty space in the yellow bricks in the figure above.
 
@@ -360,7 +362,7 @@ The basic design does have a huge advantage over an ad-hoc approach for adding d
 
 \subsection{Contents of the \oda toolbox}
 
-The yellow part in figure \ref{fig:legoblocks} provides the infrastructure needed for connecting generic model and observation components to generic data-assimilation methods. We go into the contents of this part in order to gain a better insight in the structure and working of the \oda system.
+The yellow part in Figure \ref{fig:legoblocks} provides the infrastructure needed for connecting generic model and observation components to generic data-assimilation methods. We go into the contents of this part in order to gain a better insight in the structure and working of the \oda system.
 
 The non-Java components of \oda are implemented using non-object oriented programming languages, particularly using Fortran and C. (One reason for this is to avoid difficulties when connecting model software that is written in Fortran and C, another motivation is the experience with Fortran and C of the original developers). However, \oda does use ideas from object orientation. In particular the following terminology is used:
 
@@ -450,7 +452,7 @@ The SP model builder ("single processor") can be used to quickly create sequenti
 
 The parallel model builder is meant for computational models that use parallel computing, and which probably must be started in an appropriate way. It is primarily meant for computational models that use MPI, which are based on multiple executables. Parallelization using multi-threading, especially using OpenMP, can often be used in \oda using a direct approach, for instance using the sp-builder.
 
-Note that parallelization of data-assimilation methods can often be achieved in different ways. A data-assimilation algorithm often contains multiple model computations that may be performed in parallel, and each model computation itself may be parallelized too. The former approach to parallelization is called "mode-parallel". This name stems from the term "error modes" that may be used for different model instantiations in certain Kalman filtering algorithms. The latter approach using parallelization of the model computation itself is called "space-parallel", which indirectly refers to the domain decomposition approach. The two approaches may be combined as well, which gives a "mode and space-parallel" approach.
+Note that parallelization of data-assimilation methods can often be achieved in different ways. A data-assimilation algorithm often contains multiple model computations that may be performed in parallel, and each model computation itself may be parallelized too. The former approach to parallelization is called \emph{mode parallel}. This name stems from the term \emph{error modes} that may be used for different model instantiations in certain Kalman filtering algorithms. The latter approach using parallelization of the model computation itself is called \emph{space parallel}, which indirectly refers to the domain decomposition approach. The two approaches may be combined as well, which gives a "mode and space-parallel" approach.
 
 The parallel model builder is primarily concerned with space-parallelization. Mode-parallelization is already provided by the sp-builder ("using \oda, you get mode-parallelization for free"). It is provided by the parallel model builder as well, which yields the mode+space parallel approach.
 
