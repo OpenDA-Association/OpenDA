@@ -4,14 +4,14 @@
 {$LastChangedRevision: 4372 $}
 {$LastChangedBy: vrielin $}
 
-\odachapter{Generation of output with \oda}
+\odachapter{Generation of output with \oda}\label{chapter:output}
 
 \begin{tabular}{p{4cm}l}
 %\textbf{Contributed by:} & ? \\
 \textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
 \end{tabular}
 
-\odasection{Concepts}
+\section{Concepts}
 
 \oda has an advanced output processing system. The main concept can be
 understood as a publisher-subscriber mechanism. In many places in the code of
@@ -29,7 +29,7 @@ old syntax. We suggest that you replace them with the new syntax described
 here. If you really need to use the old format, please consult the xsd-file or
 xsd-documentation on our website.
 
-\odasection{Getting started}
+\section{Getting started}
 
 We recommend that you start with following defaults at the end of your main
 oda-file:
@@ -57,7 +57,7 @@ and the larger items to netcdf. The default outputLevel should be good for a
 start, but can easily be adapted if needed. Valid outputLevels are: None,
 Essential, Normal, Verbose and All.
 
-\odasection{Advanced filtering}
+\section{Advanced filtering}
 
 In some cases the simple approach above is not sufficient and more advanced
 filtering is needed. You should keep in mind that multiple criteria for
@@ -95,7 +95,7 @@ context="inner iteration 10", but to select all inner-iterations one can use
 context="inner iteration (.*)".
 \end{itemize}
 
-\odasection{ResultWriters}
+\section{ResultWriters}
 
 In addition to the two most common result-writers, several others exist for
 more specific purposes. Moreover, you can implement your own result-writer to
@@ -116,7 +116,7 @@ used to load the main results into a spreadsheet program.
 \item {\tt org.openda.resultwriters.McCsvResultWriter}: TODO
 \end{itemize}
 
-\odasection{Finally}
+\section{Finally}
 
 Several nice examples can be found in the examples-directory\\
 \verb|public/examples/core/simple\_resultwriters|.
