@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SCEConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/sceConfig.xsd">
-    <costFunction class="org.openda.algorithms.SimulationKwadraticCostFunction"/>
+    <costFunction class="org.openda.algorithms.SimulationKwadraticCostFunction" />
     <outerLoop nComplex="5" maxIterations="20" absTolerance="0.001" relTolerance="0.001" />
     <innerLoop numIterations = "10"/>
     <parameterRange min="[8.4,1.68]" max="[8.6,1.88]"/>

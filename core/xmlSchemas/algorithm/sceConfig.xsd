@@ -29,6 +29,21 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	<xs:complexType name="shufflingLoopStoppingCriteria">
+		<xs:annotation>
+			<xs:documentation>Settings for when to stop reshuffling vertices into complexes.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="maxIterationsForMinImprovement" type="xs:integer" default="5">
+			<xs:annotation>
+				<xs:documentation>Maximum number of iterations until there is no more improvement than a minimum percentage of improvement in cost.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="minImprovementPercentage" type="xs:double" default="0.01">
+			<xs:annotation>
+				<xs:documentation>Minimum percentage of improvement in cost.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 	<xs:complexType name="SCEConfigXML">
 		<xs:sequence>
 			<xs:element name="costFunction" type="openda:CostFunctionXML">
@@ -36,16 +51,52 @@
 					<xs:documentation>Configure cost function to minimize</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="outerLoop" type="openda:OuterLoopXML">
-				<xs:annotation>
-					<xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="innerLoop" type="openda:innerLoop">
-				<xs:annotation>
-					<xs:documentation>Splitting each complex into simplexes and propagating each simplex to obtain better parameter estimates.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element name="outerLoop" type="openda:OuterLoopXML">
+            <xs:annotation>
+              <xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="innerLoop" type="openda:innerLoop">
+            <xs:annotation>
+              <xs:documentation>Splitting each complex into simplexes and propagating each simplex to obtain better parameter estimates.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element name="numberOfComplexes" type="xs:integer" default="5">
+            <xs:annotation>
+              <xs:documentation>Number of complexes. Total number of vertices is equal to 2 * nComplex * nParam + 1, where nParam is the number of calibration/optimization parameters.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="shufflingLoopStoppingCriteria" type="openda:shufflingLoopStoppingCriteria">
+            <xs:annotation>
+              <xs:documentation>Specify outer-loop stopping criteria.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="evolutionStepsPerComplex" type="xs:integer" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Number of evolution steps taken by each complex before next shuffling loop</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="pointsInEachComplex" type="xs:integer" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Number of points in each complex</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="pointsInEachSimplex" type="xs:integer" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Number of points in each simplex / subcomplex</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="maxIterations" type="xs:positiveInteger">
+            <xs:annotation>
+              <xs:documentation>Maximum number of different parameter suggestions</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:choice>
 			<xs:element name="parameterRange" type="openda:parameterRange">
 				<xs:annotation>
 					<xs:documentation>Range of values from where random numbers are drawn for perturbing the optimization/calibration parameters</xs:documentation>

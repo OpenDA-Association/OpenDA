@@ -29,6 +29,7 @@ import org.openda.utils.Vector;
 import org.openda.utils.io.CalRestartSettings;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -55,7 +56,7 @@ public class SCE extends Instance implements IAlgorithm {
     private IStochObserver stochObserver;
     private Random randomGenerator = new Random();
 
-    public void initialize(File workingDir, String[] arguments) {
+	public void initialize(File workingDir, String[] arguments) {
         this.workingDir = workingDir;
         this.arguments = arguments;
     }
@@ -136,19 +137,34 @@ public class SCE extends Instance implements IAlgorithm {
 			throw new RuntimeException(this.getClass().getName()+": the size of parameterRange max is not equal to the number of calibration parameters.");
 		}
 
-        // read number of complexes
-        this.sceOptimizer.nComplexes = sceConf.getAsInt("outerLoop@nComplex",this.sceOptimizer.nComplexes);
-        Results.putMessage("outerLoop@nComplex="+this.sceOptimizer.nComplexes);
+		int numberOfComplexes = sceConf.getAsInt("numberOfComplexes", Integer.MIN_VALUE);
+		this.sceOptimizer.useOuterInnerLoopConfig = numberOfComplexes == Integer.MIN_VALUE;
+		if (this.sceOptimizer.useOuterInnerLoopConfig) {
 
-        // set stopping thresholds:
-        this.sceOptimizer.maxitSCE = sceConf.getAsInt("outerLoop@maxIterations", sceOptimizer.maxitSCE);
-        Results.putMessage("outerLoop@maxIterations="+this.sceOptimizer.maxitSCE);
-        this.sceOptimizer.absTolSCE = sceConf.getAsDouble("outerLoop@absTolerance",this.sceOptimizer.absTolSCE);
-        Results.putMessage("outerLoop@absTolerance="+this.sceOptimizer.absTolSCE);
-        this.sceOptimizer.relTolSCE = sceConf.getAsDouble("outerLoop@relTolerance",this.sceOptimizer.relTolSCE);
-        Results.putMessage("outerLoop@relTolerance="+this.sceOptimizer.relTolSCE);
-        this.sceOptimizer.numInnerLoop = sceConf.getAsInt("innerLoop@numIteration",this.sceOptimizer.numInnerLoop);
-        Results.putMessage("innerLoop@numIteration="+this.sceOptimizer.numInnerLoop);
+			// read number of complexes
+			this.sceOptimizer.nComplexes = sceConf.getAsInt("outerLoop@nComplex", this.sceOptimizer.nComplexes);
+			Results.putMessage("outerLoop@nComplex=" + this.sceOptimizer.nComplexes);
+
+			// set stopping thresholds:
+			this.sceOptimizer.maxitSCE = sceConf.getAsInt("outerLoop@maxIterations", sceOptimizer.maxitSCE);
+			Results.putMessage("outerLoop@maxIterations=" + this.sceOptimizer.maxitSCE);
+			this.sceOptimizer.absTolSCE = sceConf.getAsDouble("outerLoop@absTolerance", this.sceOptimizer.absTolSCE);
+			Results.putMessage("outerLoop@absTolerance=" + this.sceOptimizer.absTolSCE);
+			this.sceOptimizer.relTolSCE = sceConf.getAsDouble("outerLoop@relTolerance", this.sceOptimizer.relTolSCE);
+			Results.putMessage("outerLoop@relTolerance=" + this.sceOptimizer.relTolSCE);
+			this.sceOptimizer.numInnerLoop = sceConf.getAsInt("innerLoop@numIteration", this.sceOptimizer.numInnerLoop);
+			Results.putMessage("innerLoop@numIteration=" + this.sceOptimizer.numInnerLoop);
+		} else {
+			this.sceOptimizer.nComplexes = numberOfComplexes;
+			this.sceOptimizer.maxIterationsForMinImprovement = sceConf.getAsInt("shufflingLoopStoppingCriteria@maxIterationsForMinImprovement", Integer.MIN_VALUE);
+			this.sceOptimizer.minImprovementPercentage = sceConf.getAsDouble("shufflingLoopStoppingCriteria@minImprovementPercentage", Double.NEGATIVE_INFINITY);
+			this.sceOptimizer.numInnerLoop = sceConf.getAsInt("evolutionStepsPerComplex", 2 * this.sceOptimizer.nparam + 1);
+			this.sceOptimizer.maxIterations = sceConf.getAsInt("maxIterations", Integer.MIN_VALUE);
+			this.sceOptimizer.nPointsComplex = sceConf.getAsInt("pointsInEachComplex", this.sceOptimizer.nPointsComplex);
+			this.sceOptimizer.nPointsSimplex = sceConf.getAsInt("pointsInEachSimplex", this.sceOptimizer.nPointsSimplex);
+			this.sceOptimizer.previousCostsForMaxIterationsBuffer = new double[sceOptimizer.maxIterationsForMinImprovement];
+			Arrays.fill(sceOptimizer.previousCostsForMaxIterationsBuffer, Double.POSITIVE_INFINITY);
+		}
         // additional stopCriteria
         ConfigTree parts[] = sceConf.getSubTrees("stopCriteria/stopCriterion");
         if (parts != null) {

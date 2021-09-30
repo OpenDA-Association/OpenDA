@@ -199,7 +199,6 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			FileWriter writer = new FileWriter(modelParFile, false);
 			for (int i = 0; i < parameterVector.getSize(); i++) {
 				String value = String.valueOf(parameterVector.getValue(i));
-				System.out.println(value);
 				writer.write(value);
 				writer.write("\n");
 			}
@@ -242,7 +241,6 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
 			IExchangeItem dataObjectExchangeItem = netcdfDataScalarTimeSeriesDataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
 			double[] valuesAsDoubles = dataObjectExchangeItem.getValuesAsDoubles();
-			// TODO EP: support more EI's
 			vector = new Vector(valuesAsDoubles);
 		}
 		netcdfDataScalarTimeSeriesDataObject.finish();

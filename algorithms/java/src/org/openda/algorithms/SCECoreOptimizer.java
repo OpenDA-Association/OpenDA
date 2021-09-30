@@ -33,6 +33,11 @@ import java.util.Random;
 
 public class SCECoreOptimizer {
 
+	public int maxIterationsForMinImprovement;
+	public double minImprovementPercentage;
+	public int maxIterations;
+	public boolean useOuterInnerLoopConfig;
+	public double[] previousCostsForMaxIterationsBuffer;
 	// fields of this class
 	private IVector pCurrent[] = null; //values under consideration
 	private double fCurrent[] = null;
@@ -151,6 +156,7 @@ public class SCECoreOptimizer {
     }
 
 	private void sortPopulationByCost(){
+		Results.putMessage("costs "+ new Vector(fCurrent)+ "costs in simplex before sorting");
         int[] iSort = this.sortedIndex(this.fCurrent);
         this.fCurrent = this.applyIndexToDoubles(this.fCurrent,iSort);
         this.pCurrent = this.applyIndexToVectors(this.pCurrent,iSort);
@@ -160,12 +166,46 @@ public class SCECoreOptimizer {
 			nparamBelow1012 = i;
 			break;
 		}
-        double diff=this.fCurrent[nparamBelow1012]-this.fCurrent[0]; // Cost of worst member - Cost of best member.
-	    this.moreToDo = (imain<this.maxitSCE) & (diff>this.absTolSCE) & ((diff)>this.relTolSCE *Math.abs(this.fCurrent[0]))
-                        & (nCostEvaluation<=maxCostEvaluation);
+		if (useOuterInnerLoopConfig) {
+			double diff = this.fCurrent[nparamBelow1012] - this.fCurrent[0]; // Cost of worst member - Cost of best member.
+			Results.putMessage("costs " + new Vector(fCurrent) + "costs in simplex after sorting");
+			boolean maxItReached = imain < this.maxitSCE;
+			Results.putMessage("imain < this.maxitSCE " + imain + '<' + this.maxitSCE + " = " + maxItReached);
+			boolean absReached = diff > this.absTolSCE;
+			Results.putMessage("diff > this.absTolSCE " + diff + '>' + this.absTolSCE + " = " + absReached);
+			boolean relReached = (diff) > this.relTolSCE * Math.abs(this.fCurrent[0]);
+			Results.putMessage("diff >this.relTolSCE * Math.abs(this.fCurrent[0]) " + diff + '>' + this.relTolSCE * Math.abs(this.fCurrent[0]) + " = " + relReached);
+			boolean maxCostEvalReached = nCostEvaluation <= maxCostEvaluation;
+			Results.putMessage("nCostEvaluation <= maxCostEvaluation " + nCostEvaluation + "<=" + maxCostEvaluation + " = " + maxCostEvalReached);
+			this.moreToDo = maxItReached & absReached & relReached & maxCostEvalReached;
+		} else {
+			moreToDo = isMoreToDoBasedOnShufflingLoopConfig();
+		}
 	}
 
-    private void sortComplexByCost(IVector[] pars, double[] costValues){
+	private boolean isMoreToDoBasedOnShufflingLoopConfig() {
+		for (int i = 0; i < previousCostsForMaxIterationsBuffer.length - 1; i++) {
+			previousCostsForMaxIterationsBuffer[i] = previousCostsForMaxIterationsBuffer[i + 1];
+		}
+		previousCostsForMaxIterationsBuffer[maxIterationsForMinImprovement - 1] = this.fCurrent[0];
+		for (int i = 0; i < previousCostsForMaxIterationsBuffer.length; i++) {
+			Results.putMessage("previousCostsForMaxIterationsBuffer " + i + ": " + previousCostsForMaxIterationsBuffer[i]);
+		}
+		if (imain > this.maxIterations) {
+			Results.putMessage(String.format("MaxIterations %s reached", maxIterations));
+			return false;
+		}
+		if (imain < maxIterationsForMinImprovement) return true;
+		IVector costs = f.getCosts();
+		Results.putMessage("Number of costs: " + costs.getSize() + " at imain " + imain);
+
+		double improvement = 100 - 100 * (previousCostsForMaxIterationsBuffer[maxIterationsForMinImprovement - 1] / previousCostsForMaxIterationsBuffer[0]);
+		boolean maxIterationForMinImprovementReached = improvement < this.minImprovementPercentage;
+		Results.putMessage(String.format("MaxIterations %s for minimal improvement %s reached %s", maxIterationsForMinImprovement, improvement, maxIterationForMinImprovementReached));
+		return !maxIterationForMinImprovementReached;
+	}
+
+	private void sortComplexByCost(IVector[] pars, double[] costValues){
         int[] iSort = this.sortedIndex(costValues);
         costValues = this.applyIndexToDoubles(costValues,iSort);
         pars = this.applyIndexToVectors(pars,iSort);
@@ -379,17 +419,19 @@ public class SCECoreOptimizer {
             // Compute new best-worst difference and put message on stopping criteria:
 			int nparamBelow1012 = this.nparam;
 			for (int i = this.nparam; i >= 0; i--) {
-				if (fCurrent[i] > 1E12) continue;
+				if (costs[i] > 1E12) continue;
 				nparamBelow1012 = i;
 				break;
 			}
             double diff=(costs[nparamBelow1012]-costs[0]);
             double relDiff = diff/costs[0];
-            Results.putMessage("costs"+ new Vector(costs)+ "costs in simplex");
-            Results.putMessage("stop criterion 1, imain > maxit:\t "+imain+" < "+Math.round(this.maxitSCE));
-            Results.putMessage("stop criterion 2, diff < abstol:\t "+diff+" > "+this.absTolSCE);
-            Results.putMessage("stop criterion 3, relDiff < reltol:\t "+relDiff+" > "+this.relTolSCE);
-            Results.putMessage("stop criterion 4, nCostEvaluation > maxCostEvaluation:\t "+nCostEvaluation+" < "+maxCostEvaluation);
+            if (useOuterInnerLoopConfig) {
+				Results.putMessage("costs" + new Vector(costs) + "costs in simplex");
+				Results.putMessage("stop criterion 1, imain > maxit:\t " + imain + " < " + Math.round(this.maxitSCE));
+				Results.putMessage("stop criterion 2, diff < abstol:\t " + diff + " > " + this.absTolSCE);
+				Results.putMessage("stop criterion 3, relDiff < reltol:\t " + relDiff + " > " + this.relTolSCE);
+				Results.putMessage("stop criterion 4, nCostEvaluation > maxCostEvaluation:\t " + nCostEvaluation + " < " + maxCostEvaluation);
+			}
 
 		} // outer loop / this.moreToDo
 
@@ -430,13 +472,11 @@ public class SCECoreOptimizer {
             // check lower bounds
 			if (paramTry.getValue(i) < LB.getValue(i)){
 				costTry = 1E12 + (LB.getValue(i)-paramTry.getValue(i)) * 1E6;
-				Results.putMessage("Parameter to low " + paramTry.getValue(i) + " calculate  very high costs " + costTry);
 				return costTry;
 			}
 			// check upper bounds
 			if (paramTry.getValue(i) > UB.getValue(i)){
 				costTry = 1E12 + (paramTry.getValue(i)-UB.getValue(i)) * 1E6;
-				Results.putMessage("Parameter to high " + paramTry.getValue(i) + " calculate  very high costs " + costTry);
 				return costTry;
 			}
         }
