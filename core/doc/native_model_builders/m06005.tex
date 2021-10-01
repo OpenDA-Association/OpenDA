@@ -24,7 +24,7 @@
 
 %===============================================================================
 
-\odachapter{Using the modelbuilders in COSTA}
+\odachapter{Using the model builders in COSTA}
 
 {\bf{Remark:}}
 COSTA is incorporated in \oda, \verb|/public/core/native/src/cta|.\\
@@ -40,7 +40,7 @@ creating data-assimilation and calibration systems. Combining and building
 new building blocks should be possible with a minimum of effort.
 
 COSTA contains tools for rapidly creating a COSTA model component. These
-tools are called \emph{modelbuilders}. The various modelbuilders are described in
+tools are called \emph{model builders}. The various model builders are described in
 this document.
 
 \section{General description of a model}
@@ -56,7 +56,7 @@ with
 \begin{itemize}
 \item $\phi_0$ the initial model state,
 \item $\phi\left(t\right)$ the model state at time $t$,
-\item $A$ the operator that computes one time-step of the numerical
+\item $A$ the operator that computes one time step of the numerical
       simulation model,
 \item $u\left(t\right)$ the time dependent forcings at
       time $t$,
@@ -73,10 +73,10 @@ optimal value for $g$ is determined using observed data.
 \end{equation}
 
 \section{SP Model builder}
-The SP modelbuilder (Single processor) can be used to create
-sequential (non-parallel) model components. The SP modelbuilder handles the
+The SP (single processor) model builder can be used to create
+sequential (non-parallel) model components. The SP model builder handles the
 storage and administration of the model-instance specific data. By using
-this modelbuilder it is possible to create a full working COSTA model
+this model builder it is possible to create a full working COSTA model
 component by only implementing a very small number of routines.
 
 The routines that are supported in the current version of the SP Model
@@ -102,11 +102,11 @@ builder are:
 \item cta\_model\_addnoise 
 \end{itemize}
 
-Not all methods are supported in the current release of the modelbuilder.
-The modelbuilder will support in the near future however.
+Not all methods are supported in the current release of the model builder.
+The model builder will support in the near future however.
 
-Using the modelbuilder the model programmer only needs to implement a small
-number of subroutines. The modelbuilder will use these subroutines for
+Using the model builder the model programmer only needs to implement a small
+number of subroutines. The model builder will use these subroutines for
 implementing all methods. The subroutines that must be provided by the
 model programmer and their interface are given in the following sections.
 
@@ -121,7 +121,7 @@ This routine creates and initialises a new model instance.
 \funcline{IN} {hinput}    {Model configuration CTA\_Tree of CTA\_String}\\
 \funcline{OUT}{state}     {Model state (initialized to initial value}\\
 \funcline{}   {}          {Note this statevector must be created}\\
-\funcline{OUT}{sbound}    {State-vector for the offset on the forcings.}\\
+\funcline{OUT}{sbound}    {State vector for the offset on the forcings.}\\
 \funcline{}   {}          {CTA\_NULL if not used}\\
 \funcline{}   {}          {Note this statevector must be created}\\
 \funcline{OUT}{nnoise}    {The number of noise parameters in model state}\\
@@ -151,13 +151,13 @@ This routine creates and initialises a new model instance.
 \end{verbatim}
 
 \subsection{Compute}
-This routine is computes several timesteps over a giving timespan.
+This routine computes several time steps over a given time span.
 
 \horzline
 \begin{tabbing}
 \functab
 \funcdef{USR\_COMPUTE(timespan,state, saxpyforc, baddnoise, sparam, husrdata, ierr)}
-\funcline{IN}     {timespan}  {Timespan to simulate}\\
+\funcline{IN}     {timespan}  {Time span to simulate}\\
 \funcline{IN/OUT} {state}     {State vector}\\
 \funcline{IN}     {saxpyforc} {Offset on models forcings}\\
 \funcline{IN}     {baddnoise} {flag (CTA\_TRUE/CTA\_FALSE) whether to add noise}\\
@@ -204,7 +204,7 @@ This routine is responsible for returning the covariance matrix of the noise par
 \end{verbatim}
 
 \subsection{Model state to observations}
-This routine is responsible for the transformation of the state-vector to the observations. 
+This routine is responsible for the transformation of the state vector to the observations. 
 
 \horzline
 \begin{tabbing}
@@ -238,7 +238,7 @@ observations that are outside the computational domain.
 \functab
 \funcdef{USR\_OBSSEL(state, ttime, hdescr, sselect, husrdata, ierr)}
 \funcline{IN} {state}  {state vector} \\
-\funcline{IN} {ttime}  {timespan for selection} \\
+\funcline{IN} {ttime}  {time span for selection} \\
 \funcline{IN} {hdescr} {observation description of all available observations}  \\
 \funcline{OUT} {sselect} {The select criterion to filter out all invalid observations}\\
 \funcline{IN/OUT} {husrdata}  {Instance specific data}\\
@@ -256,12 +256,12 @@ observations that are outside the computational domain.
    integer state, ttime, hdescr, sselect, husrdata, ierr
 \end{verbatim}
 
-\subsection{xml-configuration}
-The modelbuilder need to be configured in order to create a new model. This
+\subsection{XML configuration}
+The model builder need to be configured in order to create a new model. This
 configuration specifies which functions
 are provided to implement the model.
 
-The configuration has the following form (in xml)
+The configuration has the following form (in XML)
 \begin{verbatim}
 <modelbuild_sp> 
 <functions>
@@ -284,11 +284,11 @@ argument for each instance that is created.
 The names of the functions eg. my\_compute, correspond to the name specified when administrating the function in
 COSTA using the {\tt cta\_func\_create}. 
 
-Future versions of the modelbuilder will support dynamic linking to the user functions. When this is supported it
+Future versions of the model builder will support dynamic linking to the user functions. When this is supported it
 will be possible to directly link the routines from the dynamic link library. 
 
 \subsection{Examples}
-The modelbuilder is used for the models \verb|lorenz96|, \verb|lorenz|, and \verb|oscill| in the COSTA model-directory. These models are
-a source of information concerning the use of this modelbuilder.
+The model builder is used for the models \verb|lorenz96|, \verb|lorenz|, and \verb|oscill| in the COSTA model-directory. These models are
+a source of information concerning the use of this model builder.
 
 

@@ -43,7 +43,7 @@ The following data-assimilation methods are implemented in \oda :
 \item 3DVar
 \end{itemize}
 
-\subsection{Variational methods}
+\subsection{Variational methods}\label{sec:variational_methods}
 Variational methods aim at adjusting a model solution to all the observations
 available over the assimilation period (\cite{Talagrand1997}). In variational
 methods, one first defines a scalar function which, for any model solution over
@@ -205,13 +205,13 @@ to reduce the number of columns in $L^a_k$ to $q$ in $\tilde{L}^a(k)$.
 
 \subsection{The configuration of the RRSQRT method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of modes
 \item {\tt mode}: Model configuration
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
@@ -225,7 +225,7 @@ to reduce the number of columns in $L^a_k$ to $q$ in $\tilde{L}^a(k)$.
   <!-- Filter configuration -->
   <method name="lbfgs">
   <parameter_calibration>
-    <!-- Simulatie timespan en stapgrootte via CTA_Time -->
+    <!-- Simulatie time span en stapgrootte via CTA_Time -->
     <CTA_TIME id="simulation_span" start="0" stop="50.0" step=".1"/>
     <output>
         <filename>results_oscill.m</filename> 
@@ -292,13 +292,13 @@ time consuming part of the algorithm.
 
 \subsection{The configuration of the Ensemble method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of ensembles
 \item {\tt model}: The configuration of a model
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 \begin{verbatim}
 <costa xmlns:xi="http://www.w3.org/2001/XInclude">
   <!-- De invoer m.b.t. de observaties -->
@@ -427,13 +427,13 @@ taking square root of its diagonal elements.
 
 \subsection{The configuration of the ENSRF method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of ensembles
 \item {\tt model}: Model configuration
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
  \begin{verbatim}
 <costa xmlns:xi="http://www.w3.org/2001/XInclude">
   <CTA_SOBS id="obs_assim" database="obs_oscill.sql"/>
@@ -441,7 +441,7 @@ taking square root of its diagonal elements.
   <CTA_MODELCLASS id="modelclass"  name="CTA_MODBUILD_SP" />
   <method name="ensrf"> 
 <ensrf_filter>
-  <!-- Simulatie timespan en stapgrootte via CTA_Time -->
+  <!-- Simulatie time span en stapgrootte via CTA_Time -->
   <CTA_TIME id="simulation_span" start="0" stop="5" step="0.0005"/>
     <output>
        <filename>results.m</filename>
@@ -585,7 +585,7 @@ the moment.
 \subsection{The configuration of the COFFEE method}
 \begin{itemize}
 
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of modes
 \item {\tt delta}: perturbation, see equation \ref{eq.COFFEE_lf}
@@ -593,7 +593,7 @@ the moment.
 \item {\tt ensembles}: the number of ensembles
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 
 \begin{verbatim}
 

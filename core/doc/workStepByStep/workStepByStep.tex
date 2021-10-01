@@ -9,7 +9,7 @@
 
 
 \begin{tabular}{p{4cm}l}
-\textbf{Contributed by:} & Nils van Velzen, \vortech, Martin Verlaan, Deltares \\
+\textbf{Contributed by:} & Nils van Velzen, VORtech, Martin Verlaan, Deltares \\
 \textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
 \end{tabular}
 
@@ -66,7 +66,7 @@ When the uncertainty is dominated by the forcing, e.g. coastal sea-, rivers-, ai
 
 When the uncertainty is in the parameters of the model, e.g.  groundwater and run-off models, (and we are not planning to estimate them), you can carefully generate an ensemble of these parameters that represents their uncertainty. Then you set up your ensemble in such a way that each member has a different set of parameters.  Be aware that this setup is not suited for all flavors of EnKF, since the model state after the update must in some sense correspond to the perturbed set of model parameters!
 
-Combinations of the above are possible as well. It is a good investment of time to generate and explore your (initial) ensemble. Note that the filter can only improve your model based on the uncertainty (sub-space) of your ensemble. When important sources are not captured by your ensemble, the filter will not be able to perform well. 
+Combinations of the above are possible as well. It is a good investment of time to generate and explore your (initial) ensemble. Note that the filter can only improve your model based on the uncertainty (subspace) of your ensemble. When important sources are not captured by your ensemble, the filter will not be able to perform well. 
 
 Finally, your model may have time-dependent systematic errors. We often found it useful to add an artificial forcing to the model to describe these model errors.
 
