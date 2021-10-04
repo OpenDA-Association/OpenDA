@@ -25,5 +25,6 @@
     </orderEntry>
     <orderEntry type="module" module-name="model_reactive_advection" />
     <orderEntry type="library" name="CoreResources" level="project" />
+    <orderEntry type="module" module-name="model_example_blackbox" />
   </component>
 </module>

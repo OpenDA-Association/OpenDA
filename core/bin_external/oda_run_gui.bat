@@ -59,7 +59,7 @@ if not exist %OPENDA_BINDIR%\openda_core.jar goto Error1
 
 rem ==== run ===
 echo %odafile%
-"%OPENDA_JRE%\bin\java" -Xms512m -Xmx8g -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication -gui %odafile%
+"%OPENDA_JRE%\bin\java" -Xms512m -Xmx1024m -classpath %OPENDA_BINDIR%\* org.openda.application.OpenDaApplication -gui %odafile%
 if errorlevel 1 goto Error2
 endlocal
 goto End

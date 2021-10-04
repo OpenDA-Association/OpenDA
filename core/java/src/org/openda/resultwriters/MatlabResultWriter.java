@@ -94,17 +94,17 @@ public class MatlabResultWriter implements IResultWriter {
     	}
     	this.iter.put(id, currentIter+1);
         if (result instanceof ITreeVector) {
-            printMessage(" " + ((ITreeVector)result).getId() + ": ");
-            boolean printComma = false;
-            for (String subTreeVectorId : ((ITreeVector)result).getSubTreeVectorIds()) {
-                if (printComma) {
-                    outputStream.print(", ");
-                } else {
-                    printComma = true;
-                }
-                outputStream.print(subTreeVectorId);
-            }
-            outputStream.println();
+			String outputMessage = "";
+			boolean printComma = false;
+			for (String subTreeVectorId : ((ITreeVector)result).getSubTreeVectorIds()) {
+				if (printComma) {
+					outputMessage = outputMessage + ", " + subTreeVectorId;
+				} else {
+					printComma = true;
+					outputMessage = outputMessage + subTreeVectorId;
+				}
+			}
+			printMessage(" " + ((ITreeVector)result).getId() + ": " + outputMessage);
         }
         //MVL outputStream.print(id + (iteration>-1 ? "{"+(iteration+1)+"}" : "") + "=");
         outputStream.print(id + "{"+(currentIter+1)+"}	=");
