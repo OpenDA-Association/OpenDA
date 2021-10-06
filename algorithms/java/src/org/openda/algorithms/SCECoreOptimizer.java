@@ -190,6 +190,10 @@ public class SCECoreOptimizer {
 		for (int i = 0; i < previousCostsForMaxIterationsBuffer.length; i++) {
 			Results.putMessage("previousCostsForMaxIterationsBuffer " + i + ": " + previousCostsForMaxIterationsBuffer[i]);
 		}
+		if (nCostEvaluation >= maxCostEvaluation) {
+			Results.putMessage(String.format("Max number of cost evaluations %s reached", nCostEvaluation));
+			return false;
+		}
 		if (imain < maxIterationsForMinImprovement) return true;
 		IVector costs = f.getCosts();
 		Results.putMessage("Number of costs: " + costs.getSize() + " at imain " + imain);
