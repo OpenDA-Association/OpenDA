@@ -355,8 +355,7 @@ public class RMSECostFunction implements ICostFunction{
         this.allPars.add(p.clone());
         this.allCosts.add(totalCost);
 
-        Results.putProgression("SimulationKwadraticCostFunction: evaluation "
-                + this.numberEvaluation + " : cost = " + PrintNumber.printNumber(totalCost));
+        Results.putProgression("RMSECostFunction: evaluation " + this.numberEvaluation + " : cost = " + PrintNumber.printNumber(totalCost));
         Results.putIterationReport(mod, this.numberEvaluation, totalCost, p);
 
         if (doComputeCosts) {

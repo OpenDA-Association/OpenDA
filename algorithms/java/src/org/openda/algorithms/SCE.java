@@ -83,7 +83,7 @@ public class SCE extends Instance implements IAlgorithm {
 		} else if (sceConf.getAsString("costFunction@class", "RMSECostFunction").contains("RMSECostFunction")) {
 			this.J = new RMSECostFunction(stochModelFactory, stochObserver);
 		} else {
-			throw new RuntimeException("Only implemented for one costfunction yet: org.openda.algorithms.SimulationKwadraticCostFunction");
+			throw new RuntimeException("Only implemented for two cost functions: org.openda.algorithms.SimulationKwadraticCostFunction & org.openda.algorithms.RMSECostFunction");
 		}
         // options for costFunctions
 		if (J instanceof SimulationKwadraticCostFunction) {
@@ -156,12 +156,17 @@ public class SCE extends Instance implements IAlgorithm {
 			Results.putMessage("innerLoop@numIteration=" + this.sceOptimizer.numInnerLoop);
 		} else {
 			this.sceOptimizer.nComplexes = numberOfComplexes;
+			Results.putMessage(String.format("Number of complexes: %s", numberOfComplexes));
 			this.sceOptimizer.maxIterationsForMinImprovement = sceConf.getAsInt("shufflingLoopStoppingCriteria@maxIterationsForMinImprovement", Integer.MIN_VALUE);
+			Results.putMessage(String.format("Number of max iterations for min improvement: %s", this.sceOptimizer.maxIterationsForMinImprovement));
 			this.sceOptimizer.minImprovementPercentage = sceConf.getAsDouble("shufflingLoopStoppingCriteria@minImprovementPercentage", Double.NEGATIVE_INFINITY);
+			Results.putMessage(String.format("Min improvement percentage: %s", this.sceOptimizer.minImprovementPercentage));
 			this.sceOptimizer.numInnerLoop = sceConf.getAsInt("evolutionStepsPerComplex", 2 * this.sceOptimizer.nparam + 1);
-			this.sceOptimizer.maxIterations = sceConf.getAsInt("maxIterations", Integer.MIN_VALUE);
+			Results.putMessage(String.format("Evolution steps per complex: %s", this.sceOptimizer.numInnerLoop));
 			this.sceOptimizer.nPointsComplex = sceConf.getAsInt("pointsInEachComplex", this.sceOptimizer.nPointsComplex);
+			Results.putMessage(String.format("Number of points per complex: %s", this.sceOptimizer.nPointsComplex));
 			this.sceOptimizer.nPointsSimplex = sceConf.getAsInt("pointsInEachSimplex", this.sceOptimizer.nPointsSimplex);
+			Results.putMessage(String.format("Number of points per simplex: %s", this.sceOptimizer.nPointsSimplex));
 			this.sceOptimizer.previousCostsForMaxIterationsBuffer = new double[sceOptimizer.maxIterationsForMinImprovement];
 			Arrays.fill(sceOptimizer.previousCostsForMaxIterationsBuffer, Double.POSITIVE_INFINITY);
 		}

@@ -90,11 +90,6 @@
               <xs:documentation>Number of points in each simplex / subcomplex</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="maxIterations" type="xs:positiveInteger">
-            <xs:annotation>
-              <xs:documentation>Maximum number of different parameter suggestions</xs:documentation>
-            </xs:annotation>
-          </xs:element>
         </xs:sequence>
       </xs:choice>
 			<xs:element name="parameterRange" type="openda:parameterRange">

@@ -97,7 +97,6 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public void setParameters(IVector parameters) {
-		System.out.println("ExternalSocketModelInstance.setParameters: " + parameters);
 		parameterVector = new Vector(parameters.getValues());
 	}
 

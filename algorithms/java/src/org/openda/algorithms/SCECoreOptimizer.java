@@ -35,7 +35,6 @@ public class SCECoreOptimizer {
 
 	public int maxIterationsForMinImprovement;
 	public double minImprovementPercentage;
-	public int maxIterations;
 	public boolean useOuterInnerLoopConfig;
 	public double[] previousCostsForMaxIterationsBuffer;
 	// fields of this class
@@ -190,10 +189,6 @@ public class SCECoreOptimizer {
 		previousCostsForMaxIterationsBuffer[maxIterationsForMinImprovement - 1] = this.fCurrent[0];
 		for (int i = 0; i < previousCostsForMaxIterationsBuffer.length; i++) {
 			Results.putMessage("previousCostsForMaxIterationsBuffer " + i + ": " + previousCostsForMaxIterationsBuffer[i]);
-		}
-		if (imain > this.maxIterations) {
-			Results.putMessage(String.format("MaxIterations %s reached", maxIterations));
-			return false;
 		}
 		if (imain < maxIterationsForMinImprovement) return true;
 		IVector costs = f.getCosts();
