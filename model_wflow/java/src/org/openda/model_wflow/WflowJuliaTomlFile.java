@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class WflowJuliaForcingAndTomlFile extends AbstractDataObject {
+public class WflowJuliaTomlFile extends AbstractDataObject {
 	public static final String STARTTIME = "starttime";
 	public static final String ENDTIME = "endtime";
 	public static final String START_TIME_ID = "startTime";
@@ -26,10 +26,10 @@ public class WflowJuliaForcingAndTomlFile extends AbstractDataObject {
 
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
-		File forcingFile = new File(workingDir, arguments[0]);
-		tomlFile = new File(workingDir, arguments[1]);
+		tomlFile = new File(workingDir, arguments[0]);
 
-		getStartEndTimesFromForcingFile(forcingFile);
+		File netcdfPeriodFile = new File(workingDir, arguments[1]);
+		getStartEndTimesFromNetcdfFile(netcdfPeriodFile);
 
 		tomlLines = AsciiFileUtils.readLines(tomlFile);
 
@@ -59,7 +59,7 @@ public class WflowJuliaForcingAndTomlFile extends AbstractDataObject {
 		}
 	}
 
-	private void getStartEndTimesFromForcingFile(File forcingFile) {
+	private void getStartEndTimesFromNetcdfFile(File forcingFile) {
 		NetcdfFileWriter netcdfFileWriter = null;
 		try {
 			try {

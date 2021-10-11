@@ -1,0 +1,238 @@
+# This is an example TOML configuration file. It is used to test the wflow configuration
+# features, and can also be used to work towards an example of what we want the
+# configuration file to look like.
+# Relative file paths are interpreted as being relative to this TOML file.
+# TOML documentation: https://github.com/toml-lang/toml
+
+casename = "Vecht25"
+
+calendar = "proleptic_gregorian" 
+starttime = 2001-06-18T00:00:00
+endtime = 2001-06-20T00:00:00
+time_units = "days since 1900-01-01 00:00:00" 
+timestepsecs = 86400 
+fews_run = true                         # optional, default value is false
+
+[state]
+path_input = "instate/instates-vecht.nc" 
+path_output = "outstate/outstates-vecht.nc"
+
+# if listed, the variable must be present in the NetCDF or error
+# if not listed, the variable can get a default value if it has one
+
+[state.vertical]
+satwaterdepth = "satwaterdepth"
+snow = "snow"
+tsoil = "tsoil"
+ustorelayerdepth = "ustorelayerdepth"
+snowwater = "snowwater"
+canopystorage = "canopystorage"
+
+[state.lateral.river]
+q = "q_river"
+h = "h_river"
+h_av = "h_av_river"
+
+[state.lateral.river.reservoir]
+#volume = "volume_reservoir"
+
+[state.lateral.subsurface]
+ssf = "ssf"
+
+[state.lateral.land]
+q = "q_land"
+h = "h_land"
+h_av = "h_av_land"
+
+[input]
+path_forcing = "inmaps/inmaps.nc"
+path_static = "staticmaps/staticmaps.nc"
+
+# these are not directly part of the model
+gauges = "wflow_gauges_final"
+ldd = "wflow_ldd"
+river_location = "wflow_river"
+subcatchment = "wflow_subcatch"
+
+# specify the internal IDs of the parameters which vary over time
+# the external name mapping needs to be below together with the other mappings
+forcing = [
+  "vertical.precipitation",
+  "vertical.temperature",
+  "vertical.potential_evaporation",
+]
+
+cyclic = ["vertical.leaf_area_index"]
+
+[input.vertical]
+altitude = "wflow_dem" 
+c = "c" 
+cf_soil = "cf_soil" 
+cfmax = "Cfmax" 
+e_r = "EoverR" 
+infiltcappath = "InfiltCapPath" 
+infiltcapsoil = "InfiltCapSoil" 
+kext = "Kext" 
+"kv₀" = "KsatVer" 
+leaf_area_index = "LAI" # TODO support cyclic
+m = "M_" 
+maxleakage = "MaxLeakage" 
+pathfrac = "PathFrac" 
+potential_evaporation = "evapotranspiration" # forcing
+precipitation = "precipitation" # forcing
+rootdistpar = "rootdistpar" 
+rootingdepth = "RootingDepth" 
+soilminthickness = "SoilMinThickness" 
+soilthickness = "SoilThickness" 
+specific_leaf = "Sl" 
+storage_wood = "Swood" 
+temperature = "temperature" # forcing
+tt = "TT" 
+tti = "TTI" 
+ttm = "TTM" 
+w_soil = "wflow_soil" 
+water_holding_capacity = "WHC" 
+waterfrac = "WaterFrac" 
+"θᵣ" = "thetaR" 
+"θₛ" = "thetaS"
+
+[input.lateral.river]
+length = "wflow_riverlength"
+n = "N_River"
+slope = "RiverSlope"
+width = "wflow_riverwidth"
+
+#[input.lateral.river.reservoir]
+#area = "ResSimpleArea"
+#areas = "wflow_reservoirareas"
+#demand = "ResDemand"
+#locs = "wflow_reservoirlocs"
+#maxrelease = "ResMaxRelease"
+#maxvolume = "ResMaxVolume"
+#targetfullfrac = "ResTargetFullFrac"
+#targetminfrac = "ResTargetMinFrac"
+
+#[input.lateral.river.lake]
+#area = "lake_area"
+#areas = "wflow_lakeareas"
+#b = "lake_b"
+#e = "lake_e"
+#locs = "wflow_lakelocs"
+#outflowfunc = "lake_outflowfunc"
+#storfunc  = "lake_storfunc"
+#threshold  = "lake_threshold"
+#waterlevel = "lake_waterlevel"
+
+#area = "LakeArea"
+#areas = "wflow_lakeareas"
+#b = "Lake_b"
+#e = "Lake_e"
+#locs = "wflow_lakelocs"
+#outflowfunc = "LakeOutflowFunc"
+#storfunc  = "LakeStorFunc"
+#threshold  = "LakeThreshold"
+#linkedlakelocs = "LinkedLakeLocs"
+#waterlevel = "LakeAvgLevel"
+
+[input.lateral.subsurface]
+ksathorfrac = "KsatHorFrac"
+
+[input.lateral.land]
+n = "N"
+slope = "Slope" 
+
+[model]
+type = "sbm"
+masswasting = true
+snow = true
+reinit = false
+reservoirs = false
+lakes = false
+glacier = false
+kin_wave_iteration = true
+# Fixed sub-timestep for iterations of channel flow (river cells)
+kw_river_tstep = 900
+# Fixed sub-timestep for iterations of overland flow (land cells)
+kw_land_tstep = 3600
+thicknesslayers = [100, 300, 800]
+
+[output]
+path = "run_default/output.nc"
+
+[output.vertical]
+satwaterdepth = "satwaterdepth"
+snow = "snow"
+tsoil = "tsoil"
+ustorelayerdepth = "ustorelayerdepth"
+snowwater = "snowwater"
+canopystorage = "canopystorage"
+potential_evaporation = "evapotranspiration"
+precipitation = "precipitation"
+temperature = "temperature"
+
+[output.lateral.river]
+q = "q_river"
+h = "h_river"
+
+[output.lateral.river.reservoir]
+#volume = "volume_reservoir"
+
+[output.lateral.subsurface]
+ssf = "ssf"
+
+[output.lateral.land]
+q = "q_land"
+h = "h_land"
+
+[netcdf]
+path = "run_default/output_scalar.nc"
+
+[[netcdf.variable]]
+name = "Q"
+map = "gauges"
+parameter = "lateral.river.q"
+
+
+[csv]
+path = "data/output_vecht.csv"
+
+#[[csv.column]]
+#header = "Q"
+#parameter = "lateral.river.q"
+#reducer = "maximum"
+
+#[[csv.column]]
+#header = "volume"
+#index = 1
+#parameter = "lateral.river.reservoir.volume"
+
+#[[csv.column]]
+#coordinate.x = 6.255
+#coordinate.y = 50.012
+#header = "temp_bycoord"
+#parameter = "vertical.temperature"
+
+#[[csv.column]]
+#header = "temp_byindex"
+#index.x = 100
+#index.y = 50
+#parameter = "vertical.temperature"
+
+[[csv.column]]
+header = "Q"
+map = "gauges"
+parameter = "lateral.river.q_av"
+
+[[csv.column]]
+header = "Qland"
+map = "gauges"
+parameter = "lateral.land.q_av"
+
+
+[[csv.column]]
+header = "recharge"
+map = "subcatchment"
+parameter = "vertical.recharge"
+reducer = "mean"
+
+
