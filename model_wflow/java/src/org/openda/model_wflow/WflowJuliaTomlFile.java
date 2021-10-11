@@ -11,6 +11,7 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 public class WflowJuliaTomlFile extends AbstractDataObject {
@@ -28,16 +29,19 @@ public class WflowJuliaTomlFile extends AbstractDataObject {
 	public void initialize(File workingDir, String[] arguments) {
 		tomlFile = new File(workingDir, arguments[0]);
 
-		File netcdfPeriodFile = new File(workingDir, arguments[1]);
-		getStartEndTimesFromNetcdfFile(netcdfPeriodFile);
-
 		tomlLines = AsciiFileUtils.readLines(tomlFile);
 
-		getStartEndTimeLineIndices();
+		boolean startEndTimeFromToml = true;
+		if (arguments.length > 1) {
+			File netcdfPeriodFile = new File(workingDir, arguments[1]);
+			getStartEndTimesFromNetcdfFile(netcdfPeriodFile);
+			startEndTimeFromToml = false;
+		}
 
+		getStartEndTimeLineIndices(startEndTimeFromToml);
 	}
 
-	private void getStartEndTimeLineIndices() {
+	private void getStartEndTimeLineIndices(boolean extractStartEndTime) {
 		boolean startTimeFound = false;
 		boolean endTimeFound = false;
 		for (int i = 0, size = tomlLines.size(); i < size; i++) {
@@ -47,15 +51,35 @@ public class WflowJuliaTomlFile extends AbstractDataObject {
 			if (!startTimeFound && split[0].trim().equals(STARTTIME)) {
 				startTimeLineIndex = i;
 				startTimeFound = true;
+				if (extractStartEndTime) extractStartTime(split[1]);
 				if (endTimeFound) break;
 				continue;
 			}
 			if (!endTimeFound && split[0].trim().equals(ENDTIME)) {
 				endTimeLineIndex = i;
 				endTimeFound = true;
+				if (extractStartEndTime) extractEndTime(split[1]);
 				if (!startTimeFound) continue;
 				break;
 			}
+		}
+	}
+
+	private void extractStartTime(String startTimeValueString) {
+		try {
+			double startTimeMjd = TimeUtils.date2Mjd(startTimeValueString.trim(), PATTERN);
+			exchangeItems.put(START_TIME_ID, new DoubleExchangeItem(START_TIME_ID, startTimeMjd));
+		} catch (ParseException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private void extractEndTime(String endTimeValueString) {
+		try {
+			double startTimeMjd = TimeUtils.date2Mjd(endTimeValueString.trim(), PATTERN);
+			exchangeItems.put(END_TIME_ID, new DoubleExchangeItem(END_TIME_ID, startTimeMjd));
+		} catch (ParseException e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 

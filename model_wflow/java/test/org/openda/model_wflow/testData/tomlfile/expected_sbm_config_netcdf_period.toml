@@ -7,8 +7,8 @@
 casename = "Vecht25"
 
 calendar = "proleptic_gregorian" 
-starttime = 1989-01-03T00:00:00
-endtime = 1989-01-05T00:00:00
+starttime = 2001-06-18T00:00:00
+endtime = 2001-06-20T00:00:00
 time_units = "days since 1900-01-01 00:00:00" 
 timestepsecs = 86400 
 fews_run = true                         # optional, default value is false
