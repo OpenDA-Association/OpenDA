@@ -4,7 +4,7 @@
 {$LastChangedRevision: $}
 {$LastChangedBy: $}
 
-\odachapter{\oda black box wrapper cookbook}
+\odachapter{\oda black-box wrapper cookbook}\label{chap:bb}
 
 \begin{tabular}{p{4cm}l}
 \textbf{Contributed by:} & Nils van Velzen\\
@@ -13,30 +13,27 @@
 
 \section{What not to expect from this chapter}
 This chapter is not a thorough reference manual on configuring and using the
-black box wrapper of \oda. The purpose of this chapter is to give you some
-overview information to get you started making your own black box wrapper for
-your model. There are many example implementations available and at some point
-we hope that there will be an user guide available for the black box wrapper
-explaining all the details on configuration and implementation. This kind of
-detailed information is not to be found in this chapter. This chapter should be
-used in combination with the existing examples and the \oda course\footnote{The
-  \oda course is available as a separate download from the \oda website.} where
-you already can find a lot of information on the black box wrapper.
+black-box wrapper of \oda. The purpose of this chapter is to give you some
+overview information to get you started making your own black-box wrapper for
+your model. There are many example implementations available and it is highly
+recommended to use this introduction together with the \oda course\footnote{This 
+\oda course can be downloaded from the \oda website.}, where
+you can find a lot of information on the black-box wrapper.
 
-\section{The design of the black box wrapper}
-Using models in black box form in \oda means that data-assimilation and model
+\section{The design of the black-box wrapper}
+Using models in black-box form in \oda means that data-assimilation and model
 calibration techniques are applied to a model without changing the existing
-model code. \oda and the black box wrapper have no knowledge of the model
+model code. \oda and the black-box wrapper have no knowledge of the model
 internals (black box) and only uses the input and output files of the model.
-The black box implementation of \oda can also be used in a slightly different
+The black-box implementation of \oda can also be used in a slightly different
 way as well like we do for C\# models and EFDC, but this is beyond the scope of
 this document.
 
 
-The black box wrapper is an implementation of a stochastic model in \oda. The
-difference with a normal model is that the black box wrapper does not contain
+The black-box wrapper is an implementation of a stochastic model in \oda. The
+difference with a normal model is that the black-box wrapper does not contain
 any model equations. It is a layer that helps you to link and configure a model
-to \oda using the black box approach. The black box wrapper is illustrated in
+to \oda using the black-box approach. The black-box wrapper is illustrated in
 Figure \ref{Fig:overview}, the elements of this figure will be explained in
 some more detail in the following sections.
 
@@ -44,13 +41,13 @@ some more detail in the following sections.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.7]{./blackbox/bb_overview.pdf}
-\caption{Overview of a black box configuration in \oda. The model interacts
-  with the generic black box wrapper of \oda implementing an \oda stochastic
-  model. The black box wrapper builds its state, parameters and predictions
+\caption{Overview of a black-box configuration in \oda. The model interacts
+  with the generic black-box wrapper of \oda implementing an \oda stochastic
+  model. The black-box wrapper builds its state, parameters and predictions
   using exchangeItems. The exchangeItems contain values that are read from
   model output files or need to be written to model input files. The creation
   of the exchangeItems and reading from/writing to files is implemented by one
-  or more IDataObjects. The black box wrapper will run the model executable when
+  or more IDataObjects. The black-box wrapper will run the model executable when
   all input files are prepared.}
 \label{Fig:overview}
 \end{center}
@@ -58,7 +55,7 @@ some more detail in the following sections.
 
 
 \section{ExchangeItems}
-Values from the input and output files are represented in the \oda black box
+Values from the input and output files are represented in the \oda black-box
 wrapper in the form of exchangeItems. An exchangeItem is a container of values
 with optionally some meta information. In the most simple form an exchangeItem
 contains a single value or array and has en ID. ExchangeItems can have three
@@ -80,7 +77,7 @@ exchangeItem is typically used for storing model results that need to be
 matched to observations.
 
 \section{Model wrappers}
-The model uses files for input and output and the black box wrapper uses
+The model uses files for input and output and the black-box wrapper uses
 exchangeItems. Therefore we need to write some code that creates all the
 exchangeItems and handles the reading and writing of the values in the
 exchangeItems from and to the model input and output files.
@@ -123,10 +120,10 @@ when needed.
   reactive\_advection\_pollution\_wrapper from the \oda course or model\_nemo
   as inspiration and not one of the very complex wrappers with a lot of support
   and functionality.
-\item set up a black box configuration environment (model input and
+\item set up a black-box configuration environment (model input and
   configuration files). Best way is to copy an existing example and replace
-  model input files and change the black box configuration files. The basic
-  ideas of the black box configuration are explained in the \oda course.
+  model input files and change the black-box configuration files. The basic
+  ideas of the black-box configuration are explained in the \oda course.
 \item Done
 \end{itemize}
 

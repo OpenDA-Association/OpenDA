@@ -18,11 +18,11 @@ It is a modular framework, containing methods and tools that can be used for a w
 
 We assume that the reader is familiar with computational modeling, and with the principal aspects of data assimilation: the distinction between offline and on\-line methods, the statistical framework used, the notions of deterministic and stochastic models, and the general structure of filtering methods. 
 
-\section{Installation}\label{sec:installation}
+\section{Installing and running \oda}\label{sec:installation}
 The first thing that needs to be taken care of is the installation of \oda. Please read the appropriate installation section to see how that is done and whether it is done properly. We offer installation instructions for Linux, Mac and Windows. The following instructions hold for all platforms: 
 \begin{itemize}
-\item Ensure that Java version 1.6 or higher is installed on your computer. You can check which version is installed through the \verb|java -version| command. We have tested our software with the jre from SUN. The easiest way to install Java is often with the package manager that comes with your distribution (e.g. APT, yum for Red Hat-, dpkg for Debian- or YaST for SUSE-related distributions), but you can also download the latest version from \href{http://www.java.com/download}{www.java.com/download}.
-\item Download \oda from \href{http://www.openda.org}{www.openda.org}. There is a script available to perform this download: \href{http://www.openda.org/docu/openda_2.1/doc/usedoc/openda_checkout_sf.sh}{openda\_checkout\_sf.sh}.
+\item Ensure that a 64-bit Java version 1.8 or higher is installed on your computer. You can check which version is installed through the \verb|java -version| command in a terminal or command window. We have tested our software with the jre from SUN. The easiest way to install Java is often with the package manager that comes with your distribution (e.g. APT, yum for Red Hat-, dpkg for Debian- or YaST for SUSE-related distributions), but you can also download the latest version from \href{http://www.java.com/download}{www.java.com/download}.
+\item Download the \oda binaries from \href{https://github.com/OpenDA-Association/OpenDA/releases}{GitHub}. 
 \item Extract the \oda distribution file to the desired location on your computer. On some Linux systems unzip/ark is not installed by default, in that case try the package manager again.  Note: \oda does not work when it is installed on a location with a space in the path (like "\verb|My Documents|").
 \end{itemize}
 
@@ -64,6 +64,11 @@ Most convenient is to have the variables set automatically. Add the following tw
 Note that the '.' is significant in the latter of these lines.
 \end{itemize}
 
+
+\textbf{Starting \oda}
+
+In the folder \verb|<path_to_openda_release>/bin|, run \verb|oda_run.sh -gui| to open the \oda GUI. Optionally the path to the oda file can be supplied as an argument, which will open that \oda configuration (\verb|oda_run.sh -gui <path_to_oda_file>|).
+
 \subsection{\oda installation for Mac users}
 \textbf{Step-by-step installation}
 
@@ -87,6 +92,9 @@ The default local-settings script might work out of the box for your system. You
 Note that the '.' is significant in the latter of these lines.
 \end{itemize}
 
+\textbf{Starting \oda}
+
+In the folder \verb|<path_to_openda_release>/bin|, run \verb|oda_run.sh -gui| to open the \oda GUI. Optionally the path to the oda file can be supplied as an argument, which will open that \oda configuration (\verb|oda_run.sh -gui <path_to_oda_file>|).
 \subsection{\oda installation for Windows users}
 \textbf{Note about 64-bit systems}
 
@@ -96,15 +104,22 @@ Windows XP is a 32-bit operating system, but some versions of Windows Server, Wi
 \item Compile the native libraries on your machine, see \ref{dc:build:windows}.
 \end{itemize}
 
-\textbf{Step-by-step installation}
 
-\begin{itemize}
-\item It is no longer needed to edit the start-up bat scripts, as in previous versions of \oda.
-\item If you use the command line (\verb|cmd.exe|), then it is probably convenient to add the \verb|bin| directory within the \oda directory to the \verb|PATH| environment variable.
-\end{itemize}
 
+\textbf{Starting \oda}
+
+If you use the command line (\verb|cmd.exe|), then you can run the \oda GUI by running the \verb|oda_run_gui.bat| batch file in the folder \verb|<path_to_openda_release>/bin|. It is probably convenient to add the \verb|bin| directory within the \oda directory to the \verb|PATH| environment variable. Optionally the path to the oda file can be supplied as an argument, which will open that \oda configuration (\verb|oda_run_gui.bat <path_to_oda_file>|). The location of your system's Java Runtime Environment can be specified through \verb|-jre "<path_to_jre>"|. This should be the general Java folder (not the specific \verb|bin| directory in it).
+
+\subsection{\oda examples}
+You can find examples in the \verb|<path_to_openda_release>/examples| directory. An example that can easily be executed is found in
+
+\verb|model_example_blackbox/blackbox_example_calibration/Dud.oda|
+
+After opening this file in the GUI, you can run the simulation. 
+
+For other examples in this folder, it might be necessary to connect to existing models. (TODO Erik)
 \section{Using \oda}
-The next step will be learning how to use \oda. At first, a brief introduction to data assimilation is presented. The next step is an introduction to \oda itself. After these introductions, you should be ready to start \oda, either from the command line or the graphical user interface (GUI). Some examples are presented to see how it works.
+The next step will be learning how to use \oda. At first, a brief introduction to data assimilation is presented. The next step is an introduction to \oda itself. After these introductions, you should be ready to start \oda, either from the command line or the graphical user interface (GUI). 
 
 \subsection{Introduction to data assimilation}
 Data assimilation is about the combination of two sources of information - computational models and observations - in order to utilize both of their strengths and compensate for their weaknesses.
@@ -151,10 +166,10 @@ The explanation of each configuration file is given below.
 In order for a model to work within \oda, the model should be extended by implementing these interfaces. This is usually called \emph{wrapping the model}. There are at least five ways one can wrap a model:
 \begin{itemize}
 \item The first way is to write the model code from scratch in Java and deliberately design the code to match \oda's requirements. The distribution of \oda contains several of such models. Those are small (toy) models, which are developed to test and illustrate various applications of \oda. 
-\item The second way is to combine native model code (related to the platform Linux/Mac/Windows) with a wrapping Java extension. In this way, we keep the computation core of the model in its original code while extending it with an \oda wrapper. 
-\item The third way is to write a model in Java, which implements only the (deterministic) model-instance interface, and to use the existing Stochastic Black Box model utilities for its stochastic extension. The Black Box model utilities are various functions in \oda for implementing the required interfaces, which are generic and independent from the actual model. Making use of these utilities reduces the work one has to do to wrap a model. 
+\item The second way is to combine native model code (related to the platform Linux/Mac/Win\-dows) with a wrapping Java extension. In this way, we keep the computation core of the model in its original code while extending it with an \oda wrapper. 
+\item The third way is to write a model in Java, which implements only the (deterministic) model-instance interface, and to use the existing Stochastic black-box model utilities for its stochastic extension. The black-box model utilities are various functions in \oda for implementing the required interfaces, which are generic and independent from the actual model. Making use of these utilities reduces the work one has to do to wrap a model. 
 \item The fourth way is like the third one, but the computation core of the model uses the native code. 
-\item The fifth way is the simplest method to wrap a model: a full black box model. In this way, one only needs to write several functions which read and/or write input and output files of the model. Once these methods are ready, one can simply use the Black Box model utilities to create a complete stochastic-model extension required for a data-assimilation application. While it is the easiest way to implement, an application based on the Black Box wrapper is the most computationally expensive. This is because the communication between the model and other \oda components is performed through writing and reading files.
+\item The fifth way is the simplest, most-used, and advised method to wrap a model: a full black-box model. In this way, one only needs to write several functions which read and/or write input and output files of the model. Once these methods are ready, one can simply use the black-box model utilities to create a complete stochastic-model extension required for a data-assimilation application. While it is the easiest way to implement, an application based on the black-box wrapper is the most computationally expensive. This is because the communication between the model and other \oda components is performed through writing and reading files. More information about the black-box configuration can be found in Chapter \ref{chap:bb}.
 \end{itemize}
 
 The configuration files for the stochastic model depend on the type of model. For the toy models which are installed by default with \oda, there is only one model-configuration file needed. On the other hand, three configuration files are required for black-box models: 
@@ -163,27 +178,21 @@ The configuration files for the stochastic model depend on the type of model. Fo
 \item The model configuration: here, specific information of the particular model is given.
 \item The stochastic-model configuration: this file contains the information about vector specifications and may also contain information about the uncertainty of the model. 
 \end{itemize}
-For the DLL-based models, the configuration files needed depend on the choices made by the programmers of the \oda wrapper. In principle, they will require configuration files, where users can specify all the four data-assimilation components mentioned above. 
+Note that these three configuration files together are used to define the stochastic-model configuration that was mentioned above.
 
-\subsection{Starting \oda}
-\textbf{Starting \oda on Linux/Mac}
+For the DLL-based models, the configuration files needed depend on the choices made by the programmers of the \oda wrapper. In principle, they will require configuration files, where users can specify the four configuration files mentioned above (one main configuration file, and three data-assimilation-related configuration files). 
 
-Run \verb|oda_run.sh -gui| to open the \oda GUI. Optionally the path to the oda file can be supplied as an argument, which will open that \oda configuration.
 
-\textbf{Starting \oda on Windows}
 
-Run the \verb|oda_run_gui.bat| batch file to open the \oda GUI. Optionally the path to the oda file can be supplied as an argument, which will open that \oda configuration. The location of your system's Java Runtime Environment can be specified through \verb|-jre "<path_to_jre>"|.
+\odachapter{Developers' corner: Java}
+For people who want to (or have to) start from the \oda source code, the Developers' corner is added. The developers' corner is split in two parts: a Java part (this chapter) and a native part (Chapter \ref{chap:native}. The term native is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
 
-\subsection{\oda examples}
-You can find examples in the \verb|examples| directory.
-
-\odachapter{Developers' corner}
-For people who want to (or have to) start from the \oda source code, the Developers' corner is added. The developers' corner is split in two parts: a Java section and a native section. The term native is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
+TODO Erik: review this chapter, and add a section on IntelIJ.
 
 \section{Building Java sources}
 The \oda Java source code is located in the \verb|core/java| directory of the source distribution, but when building everything, \verb|Ant| can be run from the \oda root directory (it will use the \verb|build.xml| file located there).
 
-\oda software consists of four different \emph{modules}. The first module is the \verb|core| module, which contains the core of the \oda software. The three other modules are named after the conceptual components of data assimilation: \verb|models|, \verb|observers|, and \verb|algorithms|. Each of these modules contain all programs and files related to the respective data-assimilation component. The \verb|core| module contains programs, which interface the other three modules. Modules for larger models with concrete applications are stored separately (\verb|model_*|).
+\oda software consists of four main \emph{modules}. The first module is the \verb|core| module, which contains the core of the \oda software. The three other modules are named after the conceptual components of data assimilation: \verb|models|, \verb|observers|, and \verb|algorithms|. Each of these modules contain all programs and files related to the respective data-assimilation component. The \verb|core| module contains programs, which interface the other three modules. Modules for larger models with concrete applications are stored separately (\verb|model_*|).
 
 Native libraries, written e.g. in C or Fortran are provided both as source and binaries with \oda. By default the build processes use the binaries. All binaries provided are 32-bit and therefore need a 32-bit version of Java. You can recompile the required native libraries as 64-bit if needed, for which you will need a 64-bit version of Java. For some blackbox-wrappers en small models you may not need any native libraries, so both 32-bit and 64-bit Java can be used.
 
@@ -237,7 +246,7 @@ Each module directory has the following structure:
 \end{itemize}
 
 \section{Removal of generated files}
-To remove the files generated by a build, you can use \verb|ant clean| on the command line. From within a module directory, this command will remove the \verb|bin|, \verb|build| and \verb|javadoc| directories, and the \verb|MANIFEST.MF| file. It does not affect other modules nor the folder \verb|bin| in the \oda main directory. Executing the command line \verb|ant clean| from the \oda main directory will delete the folders \verb|bin|, \verb|doc|, and \verb|xmlSchemas| in the main directory, as well as removing all modules' generated files. Note: to be able to delete files, they cannot be in use (obviously), so close them first.
+To remove the files generated by a build, you can use \verb|ant clean| on the command line. From within a module directory, this command will remove the \verb|bin|, \verb|build| and \verb|javadoc| directories, and the \verb|MANIFEST.MF| file\footnote{This file contains meta information about the used JDK version etc.}. It does not affect other modules nor the folder \verb|bin| in the \oda main directory. Executing the command line \verb|ant clean| from the \oda main directory will delete the folders \verb|bin|, \verb|doc|, and \verb|xmlSchemas| in the main directory, as well as removing all modules' generated files. Note: to be able to delete files, they cannot be in use (obviously), so close them first.
 
 \section{Native components}
 
@@ -273,7 +282,7 @@ Making your model \oda compliant involves implementing a number of routines that
 
 \textbf{How \oda calls your implementation of the interface routines}
 
-\oda connects your implementations of these methods to their standard names. These standard names are used in the implementation of the data-assimilation methods. There are provisions for working with black-box models (i.e. models for which you do not have the source code), but this will not be discussed in this document.
+\oda connects your implementations of these methods to their standard names. These standard names are used in the implementation of the data-assimilation methods. There are provisions for working with black-box models (i.e. models for which you do not have the source code), see Chapter \ref{chap:bb}.
 
 \textbf{Providing your observations}
 
@@ -358,7 +367,7 @@ Usually, existing model code does not yet provide the required routines, and cer
 
 \oda similarly prescribes the interface of the \oda observation component. This is visualized using a second empty space in the yellow bricks in the Lego figure. For using \oda for your model you must fill in this part, by wrapping the existing code for manipulation of your observations and providing it in the required form.
 
-The data-assimilation algorithms in the Lego figure cannot (yet) be seen as instances of another component. For now they are merely routines that implement different data-assimilation techniques with the elements provided by \oda as the building blocks (models, observations, state vectors etc.). There is however a convergence to a fixed form, a more or less standardised argument list for data-assimilation algorithms, such that eventually these may be turned into a well-defined component.
+The data-assimilation algorithms in the Lego figure cannot (yet) be seen as instances of another component. For now they are merely routines that implement different data-assimilation techniques with the elements provided by \oda as the building blocks (models, observations, state vectors\footnote{A vector with all the values corresponding to the state of the model. \oda can change these values, depending on the difference between observations and model results} etc.). There is however a convergence to a fixed form, a more or less standardised argument list for data-assimilation algorithms, such that eventually these may be turned into a well-defined component.
 
 \textbf{The benefits of using \oda}
 
@@ -377,7 +386,7 @@ The non-Java components of \oda are implemented using non object-oriented progra
 	\item A \emph{class} is the specification of a kind of objects. Objects are instantiations of the class to which they belong. The specification of a class describes both the data (properties, attributes) that objects of the class contain as well as the operations that may be performed. 
 	\item The term \emph{(software) component} is used in \oda to indicate classes which may involve a large amount of functionality. This concerns the \emph{\oda model component} and the \emph{\oda (stochastic) observer component}. 
 	\item The \emph{interface} of a class or a component is the set of routines that may be used to manipulate their instantiations. 
-	\item An \emph{\oda application} consists of a main program plus all the components, classes and other routines used. It may be packaged into a single executable, may be implemented using dynamic link libraries, or may be implemented in other forms as well. 
+        \item An \emph{\oda application} (\verb|*.oda| file) consists of a main program plus all the components, classes and other routines used. It may be packaged into a single executable, may be implemented using dynamic link libraries, or may be implemented in other forms as well. 
 \end{itemize}
 
 Whereas the current \oda software and documentation often uses the word "component", Wikipedia suggests that "class" would be more appropriate in most cases, with exceptions for the model and observer components.\footnote{At Wikipedia, look for the pages about "Component-based software engineering", and "Class (computer programming)"} We suggest to adhere to the terminology introduced here.
@@ -418,7 +427,7 @@ The \oda toolbox can be installed on various Linux and Unix platforms using the 
 
 \subsection{Data-assimilation methods and the \oda Application script}
 
-In the examples above \oda applications are created by writing a main program and calling \oda routines. In many cases it is more convenient to use the \oda Application script instead. This is a generic main program that may be configured to use your model, observations, and the requested data-assimilation method.
+In the examples above \oda applications are created by writing a main program and calling \oda routines. In many cases it is more convenient to use the \oda Application script instead (a \verb|*.oda| file). This is a generic main program that may be configured to use your model, observations, and the requested data-assimilation method.
 
 The \oda Application script uses an XML file to create new \oda applications. The XML file defines the three main ingredients to be used: the \oda model component, the stochastic-observer component, and the data-assimilation method.
 
@@ -436,7 +445,7 @@ Here $x$ stands for the model state, $t$ represents time, $p$ is a vector of par
 
 Data-assimilation techniques will have to access the model state. This cannot be done directly. A model may use its own representation of the state. The interface of the \oda model component however requires that a model is able to provide a copy of the state in an \oda tree vector, and that linear operations on a state vector can be performed.
 
-Linear operations on the model state are an important aspect of the interface of the model component because these operations are used frequently in data-assimilation algorithms, and because the implementation may be dependent on the actual model that is implemented. For instance a model may require positivity of specific quantities that it computes (e.g. water depth in a flow model), such that blindly combining two state vectors may give inappropriate results. Therefore a more careful combination recipe may be implemented by the model itself. 
+Linear operations on the model state are an important aspect of the interface of the model component because these operations are used frequently in data-assimilation algorithms, and because the implementation of these operations may be dependent on the actual model that is implemented. For instance a model may require positivity of specific quantities that it computes (e.g. water depth in a flow model), such that blindly combining two state vectors may give inappropriate results. Therefore a more careful combination recipe may be implemented by the model itself. 
 
 \subsection{The use of native model builders}
 
@@ -480,7 +489,7 @@ The stochastic observer further takes care of computing predicted values at obse
 
 \oda provides default implementations of the stochastic observer and observation descriptions. In this default implementation observations are stored in an SQLite3 database. The database contains two tables, "stations" and "data" for time-independent and time-dependent information respectively. This default implementation provides a basis for setting up ones own observation component. It should grow over time with features that are relevant to different computational models. 
 
-\section{Building sources}
+\section{Building native source code}
 
 \subsection{Linux}\label{sec:buildLinux}
 

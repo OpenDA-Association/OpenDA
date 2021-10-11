@@ -46,7 +46,7 @@ We have introduced some control over precision in \oda. Note the word "some" sin
 \end{verbatim}}  
 The option VectorPrecisionIsFloat="true" will mark the wish of the user to use single precision. Programmers of \oda classes can introduce dual precision support by checking the user selected precision in the global static class OdaGlobSettings.
 
-Currently the standard (java) vector implementation in \oda (Vector) is implemented in dual precision. Since many classes like the black box model make use of the standard Vector implementation it already works in many configurations. 
+Currently the standard (java) vector implementation in \oda (Vector) is implemented in dual precision. Since many classes like the black-box model make use of the standard Vector implementation it already works in many configurations. 
 
 Note: you can always use the available timing in \oda to spot the impact of the "VectorPrecisionIsFloat" option. If you do not see any improvement in linear algebra computations it is likely that the class used in your implementation ignores the user precision preference. In that case you can introduce it yourself or try to convince the programmer of that class to do it for you.
 
