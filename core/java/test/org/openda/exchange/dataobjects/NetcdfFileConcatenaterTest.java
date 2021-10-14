@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.utils.OpenDaTestSupport;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
@@ -128,13 +129,32 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		File targetFile = new File(testRunDataSubDir, "concatenated_rrrunoff_oldValueOverlap.nc");
 		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
 		assertFalse(targetFile.exists());
-		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath(), "useOldValueOnOverlap=true"});
+		NetcdfFileConcatenater.main(new String[]{firstFile.getAbsolutePath(), targetFile.getAbsolutePath(), "useOldValueOnOverlap=true"});
 		assertTrue(targetFile.exists());
 		File secondFile = new File(testRunDataSubDir, "rrunoff_201257.nc");
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath(), "useOldValueOnOverlap=true"});
 		assertTrue(targetFile.exists());
 
 		checkConcatenatedValues(firstFile, targetFile, secondFile, 7);
+	}
+
+	public void testWflowJuliaScalar() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenatewflowjuliascalar");
+		File firstFile = new File(testRunDataSubDir, "output_scalar22.nc");
+		File targetFile = new File(testRunDataSubDir, "output_scalar_concat.nc");
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+		File secondFile = new File(testRunDataSubDir, "output_scalar23.nc");
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+
+		NetcdfFile open = NetcdfFile.open(targetFile.getAbsolutePath());
+		Variable timeVariable = open.findVariable("time");
+		double[] allMjdTimes = NetcdfUtils.readTimes(timeVariable);
+		double[] expectedTimes = {54670, 54671, 54672, 54673, 54674, 54675};
+		for (int i = 0; i < allMjdTimes.length; i++) {
+			assertEquals(expectedTimes[i], allMjdTimes[i]);
+		}
 	}
 
 	private void checkConcatenatedValues(File firstFile, File targetFile, File secondFile, int split) throws IOException {

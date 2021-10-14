@@ -25,10 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 
 
-import ucar.ma2.Array;
-import ucar.ma2.ArrayDouble;
-import ucar.ma2.DataType;
-import ucar.ma2.InvalidRangeException;
+import ucar.ma2.*;
 import ucar.nc2.*;
 import ucar.nc2.units.DateUnit;
 
@@ -217,10 +214,30 @@ public class NetcdfFileConcatenater {
 
 	private static void addConcatenatedValueArraysToMaps(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget, boolean concatenateTimeVariable, int targetLocationDimensionLength, double[][] targetValues, double[][] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
 		if (firstAddedTimeOverlapping) totalTimesCombined--;
+		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
+
+		DataType dataType = targetVariable.getDataType();
 		ArrayDouble.D1 timeArrayDouble = new ArrayDouble.D1(totalTimesCombined);
+
+		Array valueArray;
+		switch (dataType) {
+			case DOUBLE:
+				valueArray = getArrayDouble(concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, useOldValueOnOverlap, targetTimes, timeArrayDouble);
+				break;
+			case FLOAT:
+				valueArray = getArrayFloat(concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, useOldValueOnOverlap, targetTimes, timeArrayDouble);
+				break;
+			default:
+				throw new RuntimeException(String.format("Unsupported Datatype: %s", dataType));
+		}
+
+		if (concatenateTimeVariable) timeVariableArraysMap.put(timeVariableTarget, timeArrayDouble);
+		variableArraysMap.put(targetVariable, valueArray);
+	}
+
+	private static ArrayDouble.D2 getArrayDouble(boolean concatenateTimeVariable, int targetLocationDimensionLength, double[][] targetValues, double[][] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean useOldValueOnOverlap, int targetTimes, ArrayDouble.D1 timeArrayDouble) {
 		ArrayDouble.D2 valueArrayDouble = new ArrayDouble.D2(totalTimesCombined, targetLocationDimensionLength);
 
-		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
 		for (int i = 0; i < targetTimes; i++) {
 			if (concatenateTimeVariable) timeArrayDouble.set(i, timesTarget[i]);
 			for (int j = 0; j < targetLocationDimensionLength; j++) {
@@ -237,8 +254,29 @@ public class NetcdfFileConcatenater {
 				valueArrayDouble.set(i + targetTimes, j, addedValues[convertedIndex][j]);
 			}
 		}
-		if (concatenateTimeVariable) timeVariableArraysMap.put(timeVariableTarget, timeArrayDouble);
-		variableArraysMap.put(targetVariable, valueArrayDouble);
+		return valueArrayDouble;
+	}
+
+	private static ArrayFloat.D2 getArrayFloat(boolean concatenateTimeVariable, int targetLocationDimensionLength, double[][] targetValues, double[][] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean useOldValueOnOverlap, int targetTimes, ArrayDouble.D1 timeArrayDouble) {
+		ArrayFloat.D2 arrayFloat = new ArrayFloat.D2(totalTimesCombined, targetLocationDimensionLength);
+
+		for (int i = 0; i < targetTimes; i++) {
+			if (concatenateTimeVariable) timeArrayDouble.set(i, timesTarget[i]);
+			for (int j = 0; j < targetLocationDimensionLength; j++) {
+				arrayFloat.set(i, j, (float) targetValues[i][j]);
+			}
+		}
+		int length = useOldValueOnOverlap ? convertedTimesToBeAdded.length - 1 : convertedTimesToBeAdded.length;
+		for (int i = 0; i < length; i++) {
+			int convertedIndex = useOldValueOnOverlap ? i + 1 : i;
+			if (concatenateTimeVariable) {
+				timeArrayDouble.set(i + targetTimes, convertedTimesToBeAdded[convertedIndex]);
+			}
+			for (int j = 0; j < targetLocationDimensionLength; j++) {
+				arrayFloat.set(i + targetTimes, j, (float) addedValues[convertedIndex][j]);
+			}
+		}
+		return arrayFloat;
 	}
 
 	private static void redefineVariablesAndDimensions(NetcdfFile source, NetcdfFileWriter target) {
