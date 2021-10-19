@@ -117,7 +117,12 @@ You can find examples in the \verb|<path_to_openda_release>/examples| directory.
 
 After opening this file in the GUI, you can run the simulation. 
 
-For other examples in this folder, it might be necessary to connect to existing models. (TODO Erik)
+For other examples in this folder, it might be necessary to connect to existing models. 
+
+This is the case for \verb|model_dflowfm_blackbox| there is a readme.md which explains some extra steps which might be needed, like installing the D-Flow FM software.
+The same goes for \verb|model_delft3d|
+
+
 \section{Using \oda}
 The next step will be learning how to use \oda. At first, a brief introduction to data assimilation is presented. The next step is an introduction to \oda itself. After these introductions, you should be ready to start \oda, either from the command line or the graphical user interface (GUI). 
 
@@ -187,23 +192,32 @@ For the DLL-based models, the configuration files needed depend on the choices m
 \odachapter{Developers' corner: Java source}\label{chap:Java}
 For people who want to (or have to) start from the \oda source code, the Developers' corner is added. The developers' corner is split in two parts: a Java part (this chapter) and a native part (Chapter \ref{chap:native}. The term \emph{native} is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
 
-TODO Erik: review this chapter, and add a section on IntelIJ.
+\section{Development with IntelliJ}
+The easiest way to develop on the \oda source code is using the IntelliJ idea.
+The free community version can be downloaded from: https://www.jetbrains.com/idea/download/
+By opening the \verb|openda.ipr| with IntelliJ most of the sources will already be setup correctly.
 
-\section{Building Java sources}
+Make sure there is at least a 64-bit jdk 1.8 as a project sdk.
+To build the source code into usable binaries Ant is used which is already present in recent versions of IntelliJ.
+By opening the \verb|build.xml| in the Ant pluging a list of build target can be run.
+By running the build-64 target the \oda binaries will be generated in \verb|bin|, these binaries can be used to run \oda by non developer users outside of IntelliJ.
+
+
+\section{Building Java sources without an IDE}
 The \oda Java source code is located in the \verb|core/java| directory of the source distribution, but when building everything, \verb|Ant| can be run from the \oda root directory (it will use the \verb|build.xml| file located there).
 
 \oda software consists of four main \emph{modules}. The first module is the \verb|core| module, which contains the core of the \oda software. The three other modules are named after the conceptual components of data assimilation: \verb|models|, \verb|observers|, and \verb|algorithms|. Each of these modules contain all programs and files related to the respective data-assimilation component. The \verb|core| module contains programs, which interface the other three modules. Modules for larger models with concrete applications are stored separately (\verb|model_*|).
 
 Native libraries, written e.g. in C or Fortran are provided both as source and binaries with \oda. By default the build processes use the binaries. All binaries provided are 32-bit and therefore need a 32-bit version of Java. You can recompile the required native libraries as 64-bit if needed, for which you will need a 64-bit version of Java. For some blackbox-wrappers en small models you may not need any native libraries, so both 32-bit and 64-bit Java can be used.
 
-\section{Installation of Ant}
+\subsection{Installation of Ant}
 To build \oda software, a command-line tool called \verb|Ant| is used. \verb|Ant| is similar to \verb|make|, but written in Java, so that it is portable between different platforms. If \verb|Ant| is not installed on your computer yet, you can download it from \href{http://ant.apache.org/bindownload.cgi}{ant.apache.org/bindownload.cgi}. For Linux users it is probably easier to use their package manager to install \verb|Ant|. Before installing \verb|Ant|, please check that a recent 32-bit version of Java is installed (which can be downloaded from \href{http://www.java.com/download}{www.java.com/download} or in case of Linux, installed with the package manager).
 
-\section{Build commands}
+\subsection{Build commands}
 For the following description it is assumed that the \oda source is available in a directory named \verb|<path_to_openda>/public| .
 Start by opening a command shell (Linux) or a command window (Windows) and change directory to the \oda main directory.
 
-\subsection{Compiling \oda}
+\subsubsection{Compiling \oda}
 From the \oda main directory, you can compile all modules at once. Besides compilation there are several other options:
 \begin{itemize}
 \item \verb|ant| (without any argument): to show help with a list of possible \verb|ant| arguments (the same as \verb|ant help|).
@@ -214,7 +228,7 @@ From the \oda main directory, you can compile all modules at once. Besides compi
 \item \verb|ant zip-tests|: to create zip files for the various test cases. Each case is stored as separate zip file. Each file is named after the case followed by the version number.
 \end{itemize}
 
-\subsection{Compiling individual components}
+\subsubsection{Compiling individual components}
 From the module directory (\verb|core|, \verb|models|, \verb|model_*|, \verb|observers|, or \verb|algorithms|), you can compile a single module. Within a module directory the build file has somewhat different options:
 
 \begin{itemize}
@@ -225,10 +239,10 @@ From the module directory (\verb|core|, \verb|models|, \verb|model_*|, \verb|obs
 \item \verb|ant make-standalone|: copy required external binaries to the module directory.
 \end{itemize}
 
-\subsection{Compiling stand-alone modules}
+\subsubsection{Compiling stand-alone modules}
 When providing others with a stand-alone module, you will have to provide other modules your stand-alone module depends upon (if any). The easiest way to achieve this, is by using \verb|ant make-standalone| (after building all \oda modules) in the module directory. This will copy the files needed to the module directory.
 
-\section{Directory structure}
+\subsection{Directory structure}
 Upon the execution of the command \verb|ant build| or \verb|ant doc|, the following folders are created in the main directory:
 
 \begin{itemize}
