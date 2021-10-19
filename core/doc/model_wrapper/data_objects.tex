@@ -1,0 +1,11 @@
+\odachapter{Important data objects}
+
+This chapter will describe some important data objects that can be used for multiple different wrappers when reading observations, model results or even updating states or boundary conditions.
+
+\section{NetcdfDataObject}
+
+The netcdf data object is very useful since many different model software packages use netcdf files for storing and reading data.
+
+\oda has created the data object org.openda.exchange.dataobjects.NetcdfDataObject for this.
+It supports many different variable formats like scalar and gridded but not all since there can be an infinite number of different variable formats with infinite dimensions.
+The most important ones will be described here.
