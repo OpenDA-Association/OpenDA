@@ -9,3 +9,34 @@ The netcdf data object is very useful since many different model software packag
 \oda has created the data object org.openda.exchange.dataobjects.NetcdfDataObject for this.
 It supports many different variable formats like scalar and gridded but not all since there can be an infinite number of different variable formats with infinite dimensions.
 The most important ones will be described here.
+
+\subsection{Scalar data}
+
+The simplest format of scalar data has two dimensions, one for time and one for locations.
+This will create exchange items for each location in each variable with the variable name combined with the location name as id.
+
+\subsection{Gridded data}
+There are 2 formats of gridded data variables supported, one with 3 dimensions containing time, x and y and one with 4 dimensions containing time, x, y and an ensemble/realization dimension. When there is no ensemble/realization dimension 1 exchange item will be created for the whole variable. 
+When there is an ensemble/realization dimension an exchange item for each member will be created.
+
+\subsection{Extra arguments}
+
+\subsubsection{Boolean: Lazy reading and writing}
+It is possible to specify extra arguments for the data object, the first two are boolean values for lazy reading and lazy writing.
+When lazy reading is set to true, the data will only be read from the netcdf file when the data is needed instead of when initializing the data object.
+When lazy writing is set to true, the data will be written when the data object is closed instead of directly when the data is being changed by OpenDA.
+
+\subsubsection{Key=value: requiredExchangeItemId}
+In order to prevent a long list of arguments with a specific order, key value pair arguments have been introduced.
+Any number of requiredExchangeItemId=<ID> arguments can be supplied which limits the exchange items being created to the ones supplied, this can save a lot of memory and performance for large netcdf files.
+
+\subsubsection{Key=value: layerDimensionName}
+For scalar data which has multiple layers a layerDimensionName=<name> needs to be provided. 
+The size of that dimension will determine the amount of layer specific exchange items that will be created.
+When this argument is provided the id of the exchange items will be <variableName>.<locationName>.<layerIndex>
+
+\subsubsection{Key=value: allowTimeIndependentItems}
+The argument allowTimeIndependentItems=true/false determines whether time independent exchange items should be created.
+Time independent exchange items can be created for variables that do not depend on a time dimension.
+Default is false.
+
