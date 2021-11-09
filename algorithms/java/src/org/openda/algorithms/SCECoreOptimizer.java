@@ -194,7 +194,7 @@ public class SCECoreOptimizer {
 			Results.putMessage(String.format("Max number of cost evaluations %s reached", nCostEvaluation));
 			return false;
 		}
-		if (imain < maxIterationsForMinImprovement) return true;
+		if (imain < (maxIterationsForMinImprovement - 1)) return true;
 		IVector costs = f.getCosts();
 		Results.putMessage("Number of costs: " + costs.getSize() + " at imain " + imain);
 
@@ -393,6 +393,10 @@ public class SCECoreOptimizer {
                         Results.putMessage("REFLECTION");
                     }
 
+					int[] iSort = this.sortedIndex(fSimplex);
+					fSimplex = this.applyIndexToDoubles(fSimplex, iSort);
+					this.applyIndexToVectors(pSimplex, iSort);
+
                     // replace the simplex into the complex
                     for (int i=0; i<nPointsSimplex; i++){
                         pComplex[location[i]].setValues(pSimplex[i].getValues());
@@ -469,7 +473,14 @@ public class SCECoreOptimizer {
 		nCostEvaluation++;
         for (int i=0; i<paramTry.getSize(); i++){
             // check lower bounds
-			if (paramTry.getValue(i) < LB.getValue(i)){
+			double paramTryValue = paramTry.getValue(i);
+			double lbValue = LB.getValue(i);
+			double ubValue = UB.getValue(i);
+			if (paramTryValue < lbValue || paramTryValue > ubValue) {
+				double newParamValue = lbValue + (ubValue - lbValue) * randomGenerator.nextDouble();
+				paramTry.setValue(i, newParamValue);
+			}
+			/*if (paramTry.getValue(i) < LB.getValue(i)){
 				costTry = 1E12 + (LB.getValue(i)-paramTry.getValue(i)) * 1E6;
 				return costTry;
 			}
@@ -477,7 +488,7 @@ public class SCECoreOptimizer {
 			if (paramTry.getValue(i) > UB.getValue(i)){
 				costTry = 1E12 + (paramTry.getValue(i)-UB.getValue(i)) * 1E6;
 				return costTry;
-			}
+			}*/
         }
         costTry = costFunction.evaluate(paramTry,"any");
         return costTry;
