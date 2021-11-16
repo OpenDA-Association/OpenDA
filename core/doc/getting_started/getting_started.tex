@@ -117,11 +117,8 @@ You can find examples in the \verb|<path_to_openda_release>/examples| directory.
 
 After opening this file in the GUI, you can run the simulation. 
 
-For other examples in this folder, it might be necessary to connect to existing models. 
-
-This is the case for \verb|model_dflowfm_blackbox| there is a readme.md which explains some extra steps which might be needed, like installing the D-Flow FM software.
-The same goes for \verb|model_delft3d|
-
+For the examples \verb|model_dflowfm_blackbox| and \verb|model_delft3d| in this folder, it is necessary to connect to existing models. 
+There is a readme available which explains some extra steps which might be needed, like installing the D-Flow FM software.
 
 \section{Using \oda}
 The next step will be learning how to use \oda. At first, a brief introduction to data assimilation is presented. The next step is an introduction to \oda itself. After these introductions, you should be ready to start \oda, either from the command line or the graphical user interface (GUI). 
@@ -190,17 +187,19 @@ For the DLL-based models, the configuration files needed depend on the choices m
 
 
 \odachapter{Developers' corner: Java source}\label{chap:Java}
-For people who want to (or have to) start from the \oda source code, the Developers' corner is added. The developers' corner is split in two parts: a Java part (this chapter) and a native part (Chapter \ref{chap:native}. The term \emph{native} is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
+For people who want to (or have to) start from the \oda source code, the Developers' corner is added. The developers' corner is split in two parts: a Java part (this chapter) and a native part (Chapter \ref{chap:native}). The term \emph{native} is used for parts of the source code that need to be compiled to a specific platform (Linux, Mac or Windows), formerly known as the Costa PSE.
 
-\section{Development with IntelliJ}
-The easiest way to develop on the \oda source code is using the IntelliJ idea.
-The free community version can be downloaded from: https://www.jetbrains.com/idea/download/
+The \oda source code can be cloned from the \oda \href{https://github.com/OpenDA-Association/OpenDA.git}{GitHub page}.
+
+\section{Development with IntelliJ IDEA}
+The easiest way to develop on the \oda Java source code is using the IntelliJ IDEA.
+The free community version can be downloaded from: \href{https://www.jetbrains.com/idea/download/}{https://www.jetbrains.com/idea/download/}.
 By opening the \verb|openda.ipr| with IntelliJ most of the sources will already be setup correctly.
 
-Make sure there is at least a 64-bit jdk 1.8 as a project sdk.
-To build the source code into usable binaries Ant is used which is already present in recent versions of IntelliJ.
-By opening the \verb|build.xml| in the Ant pluging a list of build target can be run.
-By running the build-64 target the \oda binaries will be generated in \verb|bin|, these binaries can be used to run \oda by non developer users outside of IntelliJ.
+Make sure there is at least a 64-bit jdk 1.8 as a project SDK.
+To build the source code into usable binaries, Ant is used which is already present in recent versions of IntelliJ.
+By opening the \verb|build.xml| in the Ant plugin, a list of build targets can be run.
+By running the build-64 target the \oda binaries will be generated in \verb|bin|. These binaries can be used to run \oda by non-developer users outside of IntelliJ.
 
 
 \section{Building Java sources without an IDE}
