@@ -28,7 +28,7 @@ spring constant, while $T_{d}$ is the damping time.
 
 \section{Lorenz model}
 Edward Lorenz (\cite{Lorenz1963}) developed a very simplified model of
-convection called the Lorenz model. The Lorenz model is defined by three
+convection called the \emph{Lorenz model}. The Lorenz model is defined by three
 differential equations giving the time evolution of the variables $x,y,z$:
 \begin{eqnarray}
   \frac{dx}{dt}=\sigma(y-x) \\
@@ -83,8 +83,8 @@ $c_b(t)=1+sin(\frac{2\pi}{10}t)$.
 \section{Stochastic Extension}
 The previous subsections describe the deterministic models available within
 \oda. Especially for the implementation of Kalman filtering, we need to extend
-the models into a stochastic environment. This is done, for the oscillation,
-Lorenz, and Lorenz96 models, by adding a white noise process to each variable.
+the models into a stochastic environment. This is done, for the \verb|oscillation|,
+\verb|Lorenz|, and \verb|Lorenz96| models, by adding a white noise process to each variable.
 On the other hand, for the heat transfer and 1-d advection models, this is done
 by adding a colored noise process, represented by an AR(1) process, to the
 boundary condition. For the heat model the noise is also spatially correlated.

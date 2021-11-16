@@ -12,3 +12,10 @@ opendaTestReports/
 OpenDATimings_*.txt
 *.*~
 build.errors
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.pdf
+*.toc
