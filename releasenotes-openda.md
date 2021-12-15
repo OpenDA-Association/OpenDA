@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+OpenDA - Version 3.0.4
+----------------------
+
+### Improvements
+
+-   Removed obsolete Log4j library
+
 OpenDA - Version 3.0.3
 ----------------------
 
