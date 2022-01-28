@@ -20,6 +20,7 @@
 package org.openda.exchange.dataobjects;
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.interfaces.IConfigurable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openda.utils.generalJavaUtils.StringUtilities;
@@ -36,7 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class NetcdfFileConcatenater {
+public class NetcdfFileConcatenater implements IConfigurable {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenater.class);
 
@@ -325,5 +326,17 @@ public class NetcdfFileConcatenater {
 		for (int i = srcPos, j = destPos, n = srcPos + length; i < n; i++, j++) {
 			dest[j] = src[i];
 		}
+	}
+
+	@Override
+	public void initialize(File workingDir, String[] arguments) {
+		if (arguments.length < 2) {
+			throw new IllegalArgumentException("NetcdfFileConcatenater expects at least two arguments:\n" +
+				"<targetNetcdfFile> and <netcdfFileToBeAdded>");
+		}
+		if (!new File(arguments[0]).isAbsolute()) arguments[0] = new File(workingDir, arguments[0]).getAbsolutePath();
+		if (!new File(arguments[1]).isAbsolute()) arguments[1] = new File(workingDir, arguments[1]).getAbsolutePath();
+		main(arguments);
+
 	}
 }

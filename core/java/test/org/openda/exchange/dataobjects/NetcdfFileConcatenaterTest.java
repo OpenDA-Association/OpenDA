@@ -56,7 +56,9 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		File targetFile = new File(this.testRunDataDir, "simple_waal_his.nc");
 		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
 		assertFalse(targetFile.exists());
-		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		NetcdfFileConcatenater concatenater = new NetcdfFileConcatenater();
+		String[] arguments = {targetFile.getAbsolutePath(), firstFile.getAbsolutePath()};
+		concatenater.initialize(this.testRunDataDir, arguments);
 		assertTrue(targetFile.exists());
 		File secondFile = new File(this.testRunDataDir, "simple_waal_part2_his.nc");
 		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
