@@ -47,8 +47,6 @@ public class DFlowFMTimTimeSeriesFormatter extends TimeSeriesFormatter {
 		this();
 		referenceDateInMjd = refDate;
 		factorToMjd = timeFactor;
-		// TODO: overrule timeFactor for TIM files it is always minutes, change this when the TIM file format is changed
-		factorToMjd = 1.0 / (60.0*24.0); 
 	}
 	
 	
