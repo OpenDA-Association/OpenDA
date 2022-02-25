@@ -183,6 +183,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     #print("relative stepsize ="+str(p_rel))
 
     next_parameters = p_new
+    print("evaluate with"+str(next_parameters))
     next_func_evals = func(next_parameters)
     next_total_cost = sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, next_func_evals, std))
     d = 1
@@ -191,6 +192,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     while next_total_cost > total_cost[-1]:
         d *= 0.5
         next_parameters = d*p_new+(1-d)*parameters[:, -1]
+        print("evaluate with" + str(next_parameters))
         next_func_evals = func(next_parameters)
         next_total_cost = sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, next_func_evals, std))
         print("alpha=" + str(d) + " cost=" + str(math.sqrt(2.0* next_total_cost)))
@@ -202,7 +204,7 @@ def line_search(func, parameters, func_evals, total_cost, obs, std, p_new):
     return (next_parameters, next_func_evals, next_total_cost, succes)
 
 
-def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None, max_iter=10, max_restart=1):
+def dud(func, p_old, p_std, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, u_bound=None, max_iter=10, max_restart=1):
     """
     Main function which minimizes a least squares problem without using derivatives.
 
@@ -249,7 +251,7 @@ def dud(func, p_old, p_pert, obs, std, xtol=1e-3, start_dist=1.1, l_bound=None, 
             break
 
         # Check convergence based on stepsize
-        if check_step_conv(p_new, parameters, std, p_tol=1.0e-4):
+        if check_step_conv(p_new, parameters, p_std, p_tol=1.0e-4):
             break
 
         p_new = max_step_p_new(parameters, p_new, l_bound, u_bound)
