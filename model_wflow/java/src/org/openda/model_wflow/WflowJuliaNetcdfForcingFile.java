@@ -20,13 +20,12 @@ public class WflowJuliaNetcdfForcingFile extends AbstractDataObject {
 	private double[] allMjdTimes;
 	public static final String START_TIME_ID = "startTime";
 	public static final String END_TIME_ID = "endTime";
-	//private double[] allRawNetcdfTimes;
 
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
 		String fileName = arguments[0];
 		slicedFile = new File(workingDir, fileName);
-		completeFile = new File(workingDir, "complete_" + fileName);
+		completeFile = new File(slicedFile.getParentFile(), "complete_" + slicedFile.getName());
 
 		NetcdfFileWriter netcdfFileWriter = null;
 		try {
@@ -35,8 +34,6 @@ public class WflowJuliaNetcdfForcingFile extends AbstractDataObject {
 				netcdfFileWriter = NetcdfFileWriter.openExisting(this.completeFile.getAbsolutePath());
 				Variable timeVariable = netcdfFileWriter.findVariable("time");
 				if (timeVariable == null) throw new RuntimeException("No variable named time found in " + slicedFile);
-				//Array timesArray = timeVariable.read();
-				//allRawNetcdfTimes = (double[]) timesArray.get1DJavaArray(double.class);
 				allMjdTimes = NetcdfUtils.readTimes(timeVariable);
 				exchangeItems.put(START_TIME_ID, new DoubleExchangeItem(START_TIME_ID, allMjdTimes[0]));
 				exchangeItems.put(END_TIME_ID, new DoubleExchangeItem(END_TIME_ID, allMjdTimes[allMjdTimes.length - 1]));
@@ -56,50 +53,63 @@ public class WflowJuliaNetcdfForcingFile extends AbstractDataObject {
 		int startTimeIndex = getTimeIndex(startTime);
 		int endTimeIndex = getTimeIndex(endTime);
 		int timeLength = endTimeIndex - startTimeIndex + 1;
-		NetcdfFileWriter completeNetcdfFile = null;
 		try {
-			try {
-				NetcdfFileWriter newSlicedNetcdfFile = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf4, slicedFile.getAbsolutePath());
-				completeNetcdfFile = NetcdfFileWriter.openExisting(this.completeFile.getAbsolutePath());
-				NetcdfFile netcdfFile = completeNetcdfFile.getNetcdfFile();
-				List<Dimension> dimensions = netcdfFile.getDimensions();
-				for (Dimension dimension : dimensions) {
-					String fullName = dimension.getFullName();
-					if (fullName.equals("time")) {
-						newSlicedNetcdfFile.addDimension(null, fullName, timeLength);
-						continue;
-					}
-					newSlicedNetcdfFile.addDimension(null, fullName, dimension.getLength());
-				}
-				List<Variable> variables = netcdfFile.getVariables();
-				for (Variable variable : variables) {
-					Variable newVar = newSlicedNetcdfFile.addVariable(null, variable.getShortName(), variable.getDataType(), variable.getDimensionsString());
-					copyAttributes(variable, newVar);
-				}
-				NetcdfUtils.addGlobalAttributes(newSlicedNetcdfFile);
-				newSlicedNetcdfFile.create();
-				for (Variable variable : variables) {
-					Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, netcdfFile);
-					Variable newVar = newSlicedNetcdfFile.findVariable(variable.getFullNameEscaped());
-					if (timeVariable == null) {
-						Array read = variable.read();
-						newSlicedNetcdfFile.write(newVar, read);
-						continue;
-					}
-					int[] shapeForRead = variable.getShape();
-					shapeForRead[0] = timeLength;
-					int[] originForRead = new int[shapeForRead.length];
-					originForRead[0] = startTimeIndex;
-					Array read = variable.read(originForRead, shapeForRead);
-					newSlicedNetcdfFile.write(newVar, read);
-				}
-				newSlicedNetcdfFile.close();
-			} finally {
-				if (completeNetcdfFile != null) completeNetcdfFile.close();
-			}
+			sliceNetcdfFile(startTimeIndex, timeLength);
 		} catch (IOException | InvalidRangeException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void sliceNetcdfFile(int startTimeIndex, int timeLength) throws IOException, InvalidRangeException {
+		NetcdfFileWriter completeNetcdfFile = null;
+		NetcdfFileWriter newSlicedNetcdfFile = null;
+		try {
+			newSlicedNetcdfFile = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf4, slicedFile.getAbsolutePath());
+			completeNetcdfFile = NetcdfFileWriter.openExisting(this.completeFile.getAbsolutePath());
+			NetcdfFile netcdfFile = completeNetcdfFile.getNetcdfFile();
+			List<Variable> variables = netcdfFile.getVariables();
+			defineSlicedNetcdf(timeLength, newSlicedNetcdfFile, netcdfFile, variables);
+			fillSlicedNetcdf(startTimeIndex, timeLength, newSlicedNetcdfFile, netcdfFile, variables);
+		} finally {
+			if (newSlicedNetcdfFile != null) newSlicedNetcdfFile.close();
+			if (completeNetcdfFile != null) completeNetcdfFile.close();
+		}
+	}
+
+	private void fillSlicedNetcdf(int startTimeIndex, int timeLength, NetcdfFileWriter newSlicedNetcdfFile, NetcdfFile netcdfFile, List<Variable> variables) throws IOException, InvalidRangeException {
+		for (Variable variable : variables) {
+			Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, netcdfFile);
+			Variable newVar = newSlicedNetcdfFile.findVariable(variable.getFullNameEscaped());
+			if (timeVariable == null) {
+				Array read = variable.read();
+				newSlicedNetcdfFile.write(newVar, read);
+				continue;
+			}
+			int[] shapeForRead = variable.getShape();
+			shapeForRead[0] = timeLength;
+			int[] originForRead = new int[shapeForRead.length];
+			originForRead[0] = startTimeIndex;
+			Array read = variable.read(originForRead, shapeForRead);
+			newSlicedNetcdfFile.write(newVar, read);
+		}
+	}
+
+	private void defineSlicedNetcdf(int timeLength, NetcdfFileWriter newSlicedNetcdfFile, NetcdfFile netcdfFile, List<Variable> variables) throws IOException {
+		List<Dimension> dimensions = netcdfFile.getDimensions();
+		for (Dimension dimension : dimensions) {
+			String fullName = dimension.getFullName();
+			if (fullName.equals("time")) {
+				newSlicedNetcdfFile.addDimension(null, fullName, timeLength);
+				continue;
+			}
+			newSlicedNetcdfFile.addDimension(null, fullName, dimension.getLength());
+		}
+		for (Variable variable : variables) {
+			Variable newVar = newSlicedNetcdfFile.addVariable(null, variable.getShortName(), variable.getDataType(), variable.getDimensionsString());
+			copyAttributes(variable, newVar);
+		}
+		NetcdfUtils.addGlobalAttributes(newSlicedNetcdfFile);
+		newSlicedNetcdfFile.create();
 	}
 
 	private void copyAttributes(Variable variable, Variable newVar) {
