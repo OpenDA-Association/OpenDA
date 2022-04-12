@@ -323,7 +323,30 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-		return modelResults;
+		return getFilteredResults(observationDescriptions);
+	}
+
+	private Vector getFilteredResults(IObservationDescriptions observationDescriptions) {
+		ITime[] times = observationDescriptions.getTimes();
+		double beginMJD = time.getBeginMJD();
+		double stepMJD = time.getStepMJD();
+		double endMJD = time.getEndMJD();
+		Vector filteredResults = new Vector(times.length);
+		int count = 0;
+		for (ITime oneTime : times) {
+			double timeMJD = oneTime.getMJD();
+			if (timeMJD > endMJD) continue;
+			double diffMJD = timeMJD - beginMJD;
+			if (diffMJD < 0) continue;
+			int index = (int) (diffMJD / stepMJD);
+			double value = modelResults.getValue(index);
+			filteredResults.setValue(count, value);
+			count++;
+		}
+		for (int i = count; i < times.length; i++) {
+			filteredResults.remove_entry(i);
+		}
+		return filteredResults;
 	}
 
 	void sendFinalParameters() {
