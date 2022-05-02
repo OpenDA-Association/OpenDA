@@ -2,9 +2,9 @@
 #
 # argument:
 # $1 : type of build is one of
-# linux32_gnu 
+# linux32_gnu
 # linux64_gnu
-# linux32_ifort 
+# linux32_ifort
 # linux64_ifort
 #
 # Compile native code for a linux system
@@ -12,7 +12,7 @@
 # requirements:
 # * Current directory should contain a directory public as checked out from the repos!
 # - install: (apt-get install <prog> )
-#  - g++ gfortan automake
+#  - g++ gfortran automake
 #  - sun-java6-jdk
 #  - libxml2-dev
 #  - ant subversion
@@ -67,7 +67,7 @@ if [ ! -d $TOPDIR/public/core/native_bin/$SYSTEM/bin ]; then
    mkdir -p $TOPDIR/public/core/native_bin/$SYSTEM/include
 fi
 
-# now compile openda native for linux 
+# now compile openda native for linux
 echo "going to dir $TOPDIR/public/core/native"
 pushd $TOPDIR/public/core/native
 if [ "$SYSTEM" == "linux64_gnu" ]; then
