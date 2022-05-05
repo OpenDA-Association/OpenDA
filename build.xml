@@ -212,7 +212,7 @@
 
 	<target name="copy-x64-executables">
 
-		<copy  toDir="${modulebindir}" flatten="yes">
+		<copy  toDir="${modulebindir}/win64_ifort" flatten="yes">
 			<fileset dir = "${modulebindir}/win64_ifort"/>
 		</copy>
 
