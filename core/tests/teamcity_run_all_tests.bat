@@ -10,7 +10,7 @@ REM set OPENDA_BINDIR, PATH and CLASSPATH
 echo Starting dir: %CD%
 cd ..\bin
 set OPENDA_BINDIR=%CD%
-set Path=%CD%;%OPENDA_BINDIR%\win64_ifort%Path%
+set Path=%CD%;%OPENDA_BINDIR%\win64_ifort;%Path%
 
 rem no openda jre is available, check if there is a default one
 if "%JAVA_HOME%" == "" goto exitwitherror0
