@@ -4,20 +4,20 @@ setlocal enabledelayedexpansion
 REM Runs all tests in the tests directories one by one, and puts the output and 
 REM results in a single directory test_results
 REM Note: this test assumes that on teamcity the required binaries and jar files have been build
-REM           and that these binaries and jars have been copied to core\bin
+REM           and that these binaries and jars have been copied to public\bin
 
 REM set OPENDA_BINDIR, PATH and CLASSPATH
 echo Starting dir: %CD%
-cd ..\bin
+cd ..\..\bin
 set OPENDA_BINDIR=%CD%
-set Path=%CD%;%OPENDA_BINDIR%\win64_ifort%Path%
+set PATH=%CD%;%OPENDA_BINDIR%;%OPENDA_BINDIR%\win64_ifort;%PATH%
 
 rem no openda jre is available, check if there is a default one
 if "%JAVA_HOME%" == "" goto exitwitherror0
 
 set CLASSPATH=%OPENDA_BINDIR%\*
 
-cd ..\tests
+cd ..\core\tests
 if exist test_results rd /s/q test_results
 mkdir test_results
 
@@ -134,7 +134,7 @@ call :run_single_test Simulation             simulation_results.m
 call :run_single_test Simulation1            simulation1_results.m
 call :run_single_test Simulation2            simulation1_results.m
 
-echo.
+echo
 if defined ErrorOccurred goto exitwitherror1
 if defined TestDisabled (
    echo WARNING: One or more tests were disabled, the remaining tests finished without error
