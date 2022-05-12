@@ -561,7 +561,7 @@
     	<buildmoduletests module="application" />
         <buildmoduletests module="model_bmi" />
         <buildmoduletests module="model_efdc" />
-        <buildmoduletests module="model_efdc_dll"/>
+        <!--buildmoduletests module="model_efdc_dll"/-->
         <buildmoduletests module="model_example_blackbox" />
         <buildmoduletests module="model_example_fortran" />
         <buildmoduletests module="model_external_socket" />
