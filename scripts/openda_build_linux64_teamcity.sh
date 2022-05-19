@@ -1,7 +1,7 @@
 #! /bin/bash
 
 module(){ eval $(/usr/bin/modulecmd bash $*);};
-
+ 
 export OPENDASCRIPTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${OPENDASCRIPTROOT}/../..
 
@@ -15,6 +15,9 @@ module load libtool/2.4.6_gcc9.2.0
 # overwrite JAVA_HOME set by module load ant
 # reason: incorrect installation of ant/java on TeamCity agents
 export JAVA_HOME=/opt/apps/java/amazon-corretto-11.0.7.10.1-linux-x64/amazon-corretto-11.0.7.10.1-linux-x64
+
+rm -rf public/bin/*
+rm -rf public/*.tgz
 
 # build native
 public/scripts/openda_build_linux64_gnu.sh
