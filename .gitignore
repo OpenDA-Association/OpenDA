@@ -9,6 +9,7 @@ opendaTestReports/
 **/build-test
 **/MANIFEST.MF
 **/tests/*.log
+**/.vs
 OpenDATimings_*.txt
 *.*~
 build.errors
