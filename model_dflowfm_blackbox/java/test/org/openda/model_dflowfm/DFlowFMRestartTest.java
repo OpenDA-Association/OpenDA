@@ -24,10 +24,12 @@ import junit.framework.TestCase;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Tests reading from and writing to the D-Flow FM restart file dflowfm_map.nc.
@@ -45,6 +47,28 @@ public class DFlowFMRestartTest extends TestCase {
 		testCopyDir = new File(testRunDataRestartFileDir,"copy");
 	}
 
+
+	public void testRestartFileInsteadOfMap() {
+		IDataObject initialRestartFile = new DFlowFMRestartFileWrapper();
+		String[] args = new String[]{"dcsmv5", "applyToMostRecentRstFile=true"};
+
+		initialRestartFile.initialize(testRunDataRestartFileDir, args);
+
+		DFlowFMExchangeItem initialS1 = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("s1");
+		double[] initialValuesAsDoubles = initialS1.getValuesAsDoubles().clone();
+		double[] axpyValues = new double[initialValuesAsDoubles.length];
+		Arrays.fill(axpyValues, 1);
+		initialS1.axpyOnValues(0.1, axpyValues);
+		initialRestartFile.finish();
+
+		IDataObject finishedRestartFile = new DFlowFMRestartFileWrapper();
+		finishedRestartFile.initialize(testRunDataRestartFileDir, args);
+		DFlowFMExchangeItem finishedS1 = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("s1");
+		double[] finishedS1ValuesAsDoubles = finishedS1.getValuesAsDoubles();
+		for (int i = 0; i < initialValuesAsDoubles.length; i++) {
+			assertEquals(initialValuesAsDoubles[i] + 0.1, finishedS1ValuesAsDoubles[i], 0.000001);
+		}
+	}
 
 	public void testReadInput() {
 

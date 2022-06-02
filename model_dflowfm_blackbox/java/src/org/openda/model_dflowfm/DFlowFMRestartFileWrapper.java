@@ -24,9 +24,9 @@ import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
-import org.openda.interfaces.IPrevExchangeItem;
 import org.openda.utils.Results;
 import org.openda.utils.Vector;
+import org.openda.utils.generalJavaUtils.StringUtilities;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -37,18 +37,17 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *  Reading and writing the D-Flow FM restart file <testcase>_map.nc
  */
 public class DFlowFMRestartFileWrapper implements IDataObject {
+
+	public static final String APPLY_TO_MOST_RECENT_RST_FILE = "applyToMostRecentRstFile";
+	private Boolean applyToMostRecentRstFile;
 
 	// create a MetaExchangeItem
 	private class DFlowFMMetaExchangeItem{
@@ -83,9 +82,22 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		this.workingDir = workingDir;
 		if (arguments != null) {
 			this.fileName = arguments[0];
+			for (int i = 1; i < arguments.length; i++) {
+				String argument = arguments[i];
+				String[] keyValue = StringUtilities.getKeyValuePair(argument);
+				String key = keyValue[0];
+				String value = keyValue[1];
+				switch (key) {
+					case APPLY_TO_MOST_RECENT_RST_FILE:
+						this.applyToMostRecentRstFile = Boolean.valueOf(value);
+						continue;
+					default:
+						throw new RuntimeException("Unknown key " + key + ". Please specify only " + APPLY_TO_MOST_RECENT_RST_FILE + " as key=value pair");
+				}
+			}
 			try {
 				Reftime = Double.parseDouble(arguments[1]);
-			} catch (ArrayIndexOutOfBoundsException e){
+			} catch (Exception e){
 				Results.putMessage("DFlowFMRestartFileWrapper: no time specified, reading values for the last time index");
 			}
 			if (arguments.length > 1) {
@@ -95,10 +107,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		NetcdfFile inputFile;
 		// check file
 		try{
-			File fileNameFull= new File(workingDir,fileName);
-			if (!fileNameFull.exists()){
-				throw new RuntimeException("DFlowFMRestartFileWrapper: restart Input file "+ fileNameFull.getAbsolutePath()+" does not exist");
-			}
+			File fileNameFull = getNetcdfFile(workingDir);
 			netcdffileName = fileNameFull.getAbsolutePath();
 			inputFile = NetcdfFile.open(netcdffileName, null);
 		} catch (Exception e) {
@@ -215,6 +224,30 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		} catch (IOException e) {
 			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
+	}
+
+	private File getNetcdfFile(File workingDir) {
+		if (!this.applyToMostRecentRstFile) {
+			File fileNameFull = new File(workingDir, fileName);
+			if (!fileNameFull.exists()) {
+				throw new RuntimeException("DFlowFMRestartFileWrapper: restart Input file " + fileNameFull.getAbsolutePath() + " does not exist");
+			}
+			return fileNameFull;
+		}
+		String fileNamePattern = "'" + fileName + "_'yyyyMMdd'_'HHmmss'_rst.nc'";
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fileNamePattern);
+		ArrayList<Date> dates = new ArrayList<>();
+		File[] files = workingDir.listFiles(pathname -> {
+			try {
+				dates.add(simpleDateFormat.parse(pathname.getName()));
+				return true;
+			} catch (ParseException e) {
+				return false;
+			}
+		});
+		if (files == null) throw new RuntimeException("DFlowFMRestartFileWrapper: no restart file found with pattern " + fileNamePattern);
+		Collections.sort(dates);
+		return new File(workingDir, simpleDateFormat.format(dates.get(dates.size() - 1)));
 	}
 
 	private IGeometryInfo getGeometryInfo(NetcdfFile inputFile) {
