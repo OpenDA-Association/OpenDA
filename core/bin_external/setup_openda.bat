@@ -7,8 +7,7 @@ set OPENDADIR=%~dp0
 set PATH=%~dp0;%PATH%
 @echo OPENDADIR set to %OPENDADIR%
 
-rem system type: something like win64_gnu or win32_ifort
-set ODASYSTEM=win32_ifort
+set ODASYSTEM=win64_ifort
 echo "System set to %ODASYSTEM%"
 
 set ODALIBDIR="%OPENDADIR%\%ODASYSTEM%"
