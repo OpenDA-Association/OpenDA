@@ -9,7 +9,7 @@
 
 \section{Introduction}
 
-An OpenDA Stochastic Model may be limited in the number of time steps that can
+An \oda Stochastic Model may be limited in the number of time steps that can
 be advanced without recomputing the forcing terms. Storage of the forcing terms
 can be quite expensive in memory and may therefore be limited to a maximum.
 
@@ -39,9 +39,9 @@ line
 <analysisTimes type="fixed" timeFormat="dateTimeString">
 200701010000,200701010060,...,200701020000</analysisTimes>}
 \end{verbatim}
-forces an OpenDA run to interrupt the computation every hour. This means that
+forces an \oda run to interrupt the computation every hour. This means that
 the stochastic model is restarted a number of times. Depending on the file I/O
-that is needed for a restart, this may slow down the OpenDA computation more
+that is needed for a restart, this may slow down the \oda computation more
 than necessary.
 
 \section{Setting a barrier for a model computation}

@@ -1,0 +1,322 @@
+\odachapter{Developers' corner: native components}\label{chap:native}
+In this chapter, an explanation is given about native components and how to use them in \oda.
+\section{Native components}
+
+\subsection{Brief introduction to \oda native components}
+\textbf{Current practice in data-assimilation software}
+
+Data-assimilation techniques are widely used in various modeling areas like meteorology, oceanography and chemistry. Most implementations of data-assimilation methods however are custom implementations specially designed for a particular model. This is probably a consequence of the lack of generic data-assimilation software packages and tools. An advantage of these custom implementations is that they are in general very computationally efficient. But the use of custom implementations has a number of significant disadvantages:
+
+\begin{itemize}
+\item Costs: the development and implementation of these methods is very time consuming and therefore expensive.
+\item Incompatibility: it is very hard to reuse these data-assimilation methods and tools for other models than they were originally developed for. 
+\end{itemize}
+    
+\textbf{How \oda improves the situation}
+
+The \oda project tries to enhance the reuse of data-assimilation software by offering a modular framework for data assimilation, containing methods and tools that can be easily applied for general applications. \oda is set up in order to be as computationally efficient as possible, without losing its generic properties. The aim is that applications developed with \oda have a comparable computational performance as custom implementations.
+
+\textbf{\oda offers support for both users and developers of data-assimilation methods}
+
+For users it allows models to be quickly connected to the \oda framework and hence to all the methods that are available in \oda. For developers, \oda offers efficient basic building blocks that save a lot of programming work and at the same time make the new data-assimilation software directly connectable to all \oda compliant models.
+
+\textbf{How \oda works}
+
+\oda provides a generic framework for data assimilation. It is aimed both at model programmers that want to use data-assimilation methods and at developers of data-assimilation methods.
+
+\textbf{\oda for model programmers}
+
+For model programmers, \oda provides a rich set of data-assimilation methods. To use them, you have to make your model \oda compliant. Once your model can interact with \oda, all the \oda methods are at your disposal.
+
+\textbf{What is \oda compliant?}
+
+Making your model \oda compliant involves implementing a number of routines that are going to be called from the data-assimilation methods. The set of routines that you must implement is called the \emph{stochastic model interface}. There are other interfaces as well, each one defining a specific entity called a \emph{component}. You will read more about components in Section \ref{sec:components}.
+
+\textbf{How \oda calls your implementation of the interface routines}
+
+\oda connects your implementations of these methods to their standard names. These standard names are used in the implementation of the data-assimilation methods. There are provisions for working with black-box models (i.e. models for which you do not have the source code), see Chapter \ref{chap:bb}.
+
+\textbf{Providing your observations}
+
+Likewise, your observations must be provided in an \oda compliant way. For the observations there is also a set of routines, called the \emph{stochastic-observer interface}. Usually, you will not implement the interface but convert your observations to a format that can be handled by the standard \oda implementation of the stochastic-observer component.
+
+\textbf{\oda for developers of data-assimilation methods}
+
+For developers of data-assimilation methods, \oda offers a platform for quickly building data-assimilation methods that can be used from a wide range of models. \oda provides various sets of routines that can be used as building blocks. Such a set is called a \emph{component}. You will read more about components in Section \ref{sec:components}.
+
+\textbf{Routines to interact with models}
+
+First of all, \oda specifies a set of routines to interact with the model to which the data assimilation must be applied. Each \oda-compliant model implements these routines (otherwise it will not be \oda compliant). The specification of this set of routines is called the \emph{stochastic-model interface}.
+
+\textbf{Routines to interact with observations}
+
+A second set of routines that is essential for data-assimilation methods comprises routines to interact with the observations. These include routines to retrieve values and routines to retrieve meta-information.
+
+\textbf{Basic building blocks}
+
+Finally, there are various sets of basic building blocks (e.g. for handling vectors, matrices and time). These interact seamlessly with the other \oda components to let you construct data-assimilation methods with a minimum of coding.
+
+\section{Basic concepts of the \oda native components}\label{sec:components}
+
+\subsection{The overall goals}
+
+The overall goal of \oda is to provide a toolbox with data-assimilation capabilities which may be added easily to existing computational models:
+
+\begin{itemize}
+\item \oda should be applicable to a wide range of existing computational models.
+\begin{itemize}
+\item complex, large-scale models should be supported as well as small-scale test models;
+\item the models may be implemented using various programming languages, particularly Fortran, C/C++, Java;
+\item the models may use parallel computing.
+\end{itemize}
+\item It should be easy to get started, and one should quickly get initial results.
+\item One must be able to achieve good performance for large-scale models.
+\end{itemize}
+
+\subsection{The overall philosophy}
+
+\begin{figure}[ht]
+\center
+\includegraphics[width=1.0\textwidth]{getting_started/figures/legocomponents2.png}
+\caption{Basic design of the \oda system. Model and observation components (red/white bricks) are plugged into the core of the \oda environment (yellow bricks), and can then exploit the available data-assimilation methods (grey bricks).}
+\label{fig:legoblocks}
+\end{figure}
+
+The basic design philosophy of \oda is illustrated in Figure \ref{fig:legoblocks}. The key elements in this picture are:
+
+\begin{itemize}
+\item a deterministic or stochastic model: a combination of white and red bricks. The white bricks stand for the original model code, whereas the red bricks concern the wrapping of the model in order to provide it in the required form.
+\item a collection of observations: also a combination of white and red bricks, with the same setup as above.
+\item several data-assimilation procedures (the grey bricks).
+\item the core of the \oda system that connects the different building blocks (the yellow bricks).
+\end{itemize}
+
+The figure intends to illustrate a number of important points:
+
+\begin{enumerate}
+\item in \oda, data assimilation is implemented on top of existing model software;
+\item the model and available observations need to be packaged in an appropriate way;
+\item the different parts of the complete application are strongly separated from each other.
+\end{enumerate}
+    
+
+Other aspects, which are not yet illustrated in Figure \ref{fig:legoblocks} are:
+
+\begin{enumerate}
+\item different "model builders" are provided for quickly packaging existing models and for combining separate models into larger ones;
+\item techniques from object orientation are used for providing a basic framework that may be optimized for efficiency.
+\end{enumerate}
+
+In \oda two components are defined: the \emph{\oda model component} and the \emph{\oda stochastic-observer component}. There can be multiple instances of each of these components, each with their own set of data. The set of routines to manipulate the data is called the \emph{interface} of the component. (Note: the terminology used in \oda with respect to object orientation is described in Section \ref{sec:OO}).
+
+\textbf{The \oda model component}
+
+\oda defines the interface of the \oda model component. This consists of the list of methods/routines that a model must provide. Examples are "perform a time step", "deliver the model state", or "accept a modified state". This interface of the model component is visualized through the shape of the empty space in the yellow bricks in the figure above.
+
+Usually, existing model code does not yet provide the required routines, and certainly not in the prescribed form. Therefore some additional code has to be written to convert between the existing code and the \oda model-components interface. This is illustrated in the figure using red and white bricks: the white bricks stand for the original model code, whereas the red bricks concern the wrapping of the model in order to provide it in the required form.
+
+\textbf{The \oda stochastic-observer component}
+
+\oda similarly prescribes the interface of the \oda observation component. This is visualized using a second empty space in the yellow bricks in the Lego figure. For using \oda for your model you must fill in this part, by wrapping the existing code for manipulation of your observations and providing it in the required form.
+
+The data-assimilation algorithms in the Lego figure cannot (yet) be seen as instances of another component. For now they are merely routines that implement different data-assimilation techniques with the elements provided by \oda as the building blocks (models, observations, state vectors\footnote{A vector with all the values corresponding to the state of the model. \oda can change these values, depending on the difference between observations and model results} etc.). There is however a convergence to a fixed form, a more or less standardised argument list for data-assimilation algorithms, such that eventually these may be turned into a well-defined component.
+
+\textbf{The benefits of using \oda}
+
+The basic design of \oda may seem disadvantageous at first, because it appears to require additional programming work in comparison to an approach where data assimilation is added to a computational model in an ad-hoc way. This is usually not the case. Most of the work in restructuring of the existing model code is needed in an ad-hoc approach too. This is because data assimilation itself puts requirements on the way in which the model equations are implemented in software routines: one must be able to repeat a time step, to adjust the model state, to add noise to forcings or the model state, and so on, which is often not true for computational models that are not implemented with data assimilation in mind.
+
+The basic design does have a huge advantage over an ad-hoc approach for adding data assimilation to an existing program: the different aspects of a data-assimilation algorithm are clearly separated. The algorithmics of the precise Kalman-filtering algorithm used are separated from the noise model, which in turn may be largely separated from the deterministic model and the processing of observations. This makes it easy to experiment with different choices for each of the parts: adjusting the noise model, adding observations, testing another data-assimilation algorithm and so on. This is the major benefit of using the \oda approach.
+
+\subsection{Contents of the \oda toolbox}\label{sec:OO}
+
+The yellow part in Figure \ref{fig:legoblocks} provides the infrastructure needed for connecting generic model and observation components to generic data-assimilation methods. We go into the contents of this part in order to gain a better insight in the structure and working of the \oda system.
+
+The non-Java components of \oda are implemented using non object-oriented programming languages, particularly using Fortran and C. (One reason for this is to avoid difficulties when connecting model software that is written in Fortran and C, another motivation is the experience with Fortran and C of the original developers). However, \oda does use ideas from object orientation. In particular the following terminology is used:
+
+\begin{itemize}
+	\item An \emph{object} in \oda is a variable in a computer program that cannot be manipulated directly, but only through the operations that are defined for it. 
+	\item A \emph{class} is the specification of a kind of objects. Objects are instantiations of the class to which they belong. The specification of a class describes both the data (properties, attributes) that objects of the class contain as well as the operations that may be performed. 
+	\item The term \emph{(software) component} is used in \oda to indicate classes which may involve a large amount of functionality. This concerns the \emph{\oda model component} and the \emph{\oda (stochastic) observer component}. 
+	\item The \emph{interface} of a class or a component is the set of routines that may be used to manipulate their instantiations. 
+        \item An \emph{\oda application} (\verb|*.oda| file) consists of a main program plus all the components, classes and other routines used. It may be packaged into a single executable, may be implemented using dynamic link libraries, or may be implemented in other forms as well. 
+\end{itemize}
+
+Whereas the current \oda software and documentation often uses the word "component", Wikipedia suggests that "class" would be more appropriate in most cases, with exceptions for the model and observer components.\footnote{At Wikipedia, look for the pages about "Component-based software engineering", and "Class (computer programming)"} We suggest to adhere to the terminology introduced here.
+
+\begin{table}
+\centering
+\begin{tabular}{l l}
+\textbf{OO Language}       &	\textbf{\oda}\\
+\verb|String s1, s2;|      &	\verb|CTA_String s1, s2;|\\
+\verb|char cstr[100];| &	\verb|char cstr[100];|\\
+\verb|S1 = new String;|    &	\verb|CTA_String_Create(&s1);|\\
+\verb|s2 = new String;|    &	\verb|CTA_String_Create(&s2);|\\
+\verb|s1.Set("hello ");|   &	\verb|CTA_String_Set(s1,"hello ");|\\
+\verb|s2.Set("world");|    &	\verb|CTA_String_Set(s2,"world");|\\
+\verb|s1.Conc(s2);|        &	\verb|CTA_String_Conc(s1, s2);|\\
+\verb|s1.Get(cstr);|       &	\verb|CTA_String_Get(s1, cstr);|\\
+\verb|free(s1);|           &	\verb|CTA_String_Free(s1);|\\
+\verb|free(s2);|           &	\verb|CTA_String_Free(s2);|\\
+\end{tabular}
+\caption{Illustration of the use of object orientation in the \oda native components: objects are instantiations of \oda-defined classes, are represented by object handles, and are manipulated using \oda-defined functions for the class.}\label{tab:OO}
+\end{table}
+
+As an example we consider the support for strings in \oda (see Table \ref{tab:OO}). A class \verb|CTA_String| is provided, which is a simple container for character strings, primarily introduced to shield the difficulties of sharing text strings between Fortran and C. The operations provided for \oda strings are to create a new instance, set its value, concatenate strings, retrieve its value, and cleanup a string when it is not needed anymore. 
+
+Another basic class is the \oda time class, which provides a uniform way of handling time. The class registers a time span (interval) and optionally contains a time-step attribute. It may be extended in a future version with various time scales and representations, time zones, etc..
+
+A third basic building block is the \oda vector class, which contains a dimension (length), the data type of the vector elements (equal for all elements), and the values of the vector elements. An advantage of incorporating a vector class in \oda is that it provides a generic entity on which data-assimilation algorithms can be based, without unnecessarily restricting oneself to the actual data type being used. Further, one can choose to provide different implementations (derived classes) of the vector class, for instance a distributed vector (for parallel computing), sparse vector (if a significant amount of zeros may occur), or using an optimized BLAS version.
+
+An important class in the \oda toolbox is the \oda tree. It is a generic class for grouping and structuring of data. It may be compared to a "struct" in C or derived type in Fortran. One notable difference is that an \oda tree is a dynamic entity: additional items may be added at runtime, with the names of the items provided as string arguments to the creation routines. Therefore an \oda tree may also be compared to a file system; nodes contain \oda trees (like directories), and leafs contain other \oda objects (like files).
+
+A special kind (derived class) of \oda tree is the \oda tree vector. It is an \oda tree that contains only \oda vectors as leaf elements. Of course it provides all the operations that an \oda tree class provides. Further it supports the operations that an \oda vector is able to perform. The \oda tree vector is important for instance for describing a model state. In data assimilation one must be able to combine different model states much like vectors can be combined. However, representing the model state by a single vector is a severe restriction for many computational models. It is preferable to be able to distinguish different parts of the state, and sometimes it is needed to distinguish elements with different data types. Furthermore the hierarchical nature of the \oda tree vector supports composition of larger models states out of smaller ones as described later on.
+
+\oda primarily uses the XML format for input/configuration files. There are several facilities for quickly reading such input files. \oda trees (and tree vectors) may be written to and read from XML files as well.
+
+Interfaces are defined to the \oda classes for use in Fortran and C/C++. An interface for Java is defined separately in the \oda project. This allows data-assimilation algorithms to be implemented in Java, and be used together with model components made in Fortran and C.
+
+The \oda toolbox can be installed on various Linux and Unix platforms using the well-known Automake facilities. For the Windows platform project files for Microsoft Visual Studio are provided.
+
+\subsection{Data-assimilation methods and the \oda Application script}
+
+In the examples above \oda applications are created by writing a main program and calling \oda routines. In many cases it is more convenient to use the \oda Application script instead (a \verb|*.oda| file). This is a generic main program that may be configured to use your model, observations, and the requested data-assimilation method.
+
+The \oda Application script uses an XML file to create new \oda applications. The XML file defines the three main ingredients to be used: the \oda model component, the stochastic-observer component, and the data-assimilation method.
+
+The \oda Application script reads this configuration data, initializes the main model and observation components and then starts the data-assimilation algorithm. The assimilation algorithm performs the actual work, and finally the Application script shuts down the computation.
+
+Within the field of data assimilation a distinction between offline and online assimilation methods can be made. Offline data assimilation concerns model calibration, i.e. optimizing the parameters of a model such that the best fit with a set of observations is obtained. In these methods the initial value of the model state may be considered as an input parameter of the model as well. This links the 3D-VAR and 4D-VAR (Section \ref{sec:variational_methods}) variational approaches to the offline methods listed above.
+
+Online or sequential data-assimilation methods consist of a cycle of forecast and analysis steps, where the methods assimilate the data each time that observations become available. Optimal-interpolation methods and Kalman-filtering methods fall into this class.
+
+\subsection{The \oda stochastic-model component}
+
+\oda uses a fixed form for a model component, in order to provide consistent terminology to both data-assimilation methods and model implementers. The general form of an \oda model is
+$x(t+\Delta t) = M(x(t), p, u(t), w(t))$.
+Here $x$ stands for the model state, $t$ represents time, $p$ is a vector of parameters, $u$ concerns the forcings of the model, $w$ is the noise/uncertainty, and $M$ is the model operator. Simpler forms of models are possible, for instance a deterministic model without noise/uncertainty, a model without parameters or without forcings, and so on. Although this does not turn a model into an invalid \oda model, it may limit the data-assimilation techniques that can be applied.
+
+Data-assimilation techniques will have to access the model state. This cannot be done directly. A model may use its own representation of the state. The interface of the \oda model component however requires that a model is able to provide a copy of the state in an \oda tree vector, and that linear operations on a state vector can be performed.
+
+Linear operations on the model state are an important aspect of the interface of the model component because these operations are used frequently in data-assimilation algorithms, and because the implementation of these operations may be dependent on the actual model that is implemented. For instance a model may require positivity of specific quantities that it computes (e.g. water depth in a flow model), such that blindly combining two state vectors may give inappropriate results. Therefore a more careful combination recipe may be implemented by the model itself. 
+
+\subsection{The use of native model builders}
+
+The idea of \oda is to make it simple to get started, but to provide full flexibility as well. This is implemented by providing default implementations where possible, but also allowing redefinition of the \oda components.
+
+One place where this idea is given concrete form is in the concept of model builders. A model builder is more or less a template for creating new native model components. It fills in as many of the routines that must be provided, such that setting up a new model component is greatly simplified. Once one is up and running one can then tune the implementation to ones own ideas.
+
+\textbf{The SP model builder}
+
+The SP (single processor) model builder can be used to quickly create sequential (non-parallel) model components. This model builder defines choices for the storage and administration of the state vector, model parameters, changes to the forcings, and the noise parameters. With these choices made, a large portion of the methods that must be provided by a model component are provided by the model builder already, and only a few model-specific methods have to be filled in.
+
+\textbf{The parallel model builder}
+
+The parallel model builder is meant for computational models that use parallel computing, and which probably must be started in an appropriate way. It is primarily meant for computational models that use MPI, which are based on multiple executables. Parallelization using multi-threading, especially using OpenMP, can often be used in \oda using a direct approach, for instance using the SP builder.
+
+Note that parallelization of data-assimilation methods can often be achieved in different ways. A data-assimilation algorithm often contains multiple model computations that may be performed in parallel, and each model computation itself may be parallelized too. The former approach to parallelization is called \emph{mode parallel}. This name stems from the term \emph{error modes} that may be used for different model instantiations in certain Kalman-filtering algorithms. The latter approach using parallelization of the model computation itself is called \emph{space parallel}, which indirectly refers to the domain-decomposition approach. The two approaches may be combined as well, which gives a "mode and space-parallel" approach.
+
+The parallel model builder is primarily concerned with space parallelization. Mode par\-al\-lelization is already provided by the SP builder ("using \oda, you get mode parallelization for free"). It is provided by the parallel model builder as well, which yields the mode and space-parallel approach.
+
+The architecture used by the parallel model builder is to use an SPMD (single-program, multiple data) approach, i.e. to start the main \oda application (executable) multiple times. Within the group of processes that is created in this way, the first one acts as the master process. This process performs the data-assimilation algorithm. The other processes perform the model computations.
+
+Computational models that use a master-worker approach for their parallelization may fit well into this approach. The master process of the original computational model may be integrated with the \oda master process. The subroutines that are required by the \oda model-components interface may be filled in using the routines of the model's master process. This may be achieved well with the SP builder.
+
+The parallel model builder is mainly concerned with computational models that are parallelized using a worker-worker approach, e.g. using domain decomposition, where each computational process solves a different part of the global domain.
+
+The routines that are specified in the \oda model-components interface, like "perform a time step", are implemented differently in the master and worker processes. In the master process, these routines consist of sending MPI messages to the worker processes, and waiting for the corresponding results. The results are joined together more or less the same as when different submodels are combined into a composite model.
+
+The worker processes read a configuration file from which they learn about their role in the global computation. Then they go into "worker-mode". This consists of an indefinite loop, waiting for MPI messages, and calling the appropriate model routines. The model routines are implemented just like for a sequential model. One notable difference is that these routines are called in all worker processes simultaneously, such that communication between the workers may be used.
+
+The parallel model builder provides the infrastructure needed for setting up this scheme. It provides the model routines for the master process and the worker mode for the \oda main program. The model engineer just has to provide the model routines for the worker processes.
+
+\subsection{The \oda stochastic-observer component}
+
+In \oda an observation is not just a value, but contains all the information available for use in a data-assimilation method. This involves for instance information on the measurement error, which may be described by a probability density function. Other aspects of observations are the type of quantity that is observed, the unit, time, grid location, and so on.
+
+The Stochastic Observer is the \oda component that holds an arbitrary number of observations. It may be instantiated multiple times.
+
+A stochastic observer may be queried for a selection of the observations that it holds. For instance the observations within a given time span may be requested, for a selected set of "stations", or that measure a specific quantity. Such a selection may be used to create a new stochastic-observer object.
+
+The stochastic observer further takes care of computing predicted values at observation locations. This concerns the observation relation that is used in data-assimilation algorithms: the model state is interpolated and/or converted to the observation location and observed quantity. For this the implementation of a stochastic observer must know the structure of a model state vector, the meaning of its components, and the procedures available for spatial and/or temporal interpolation. For this a stochastic observer contains a substantial application-dependent part.
+
+\oda provides default implementations of the stochastic observer and observation descriptions. In this default implementation observations are stored in an SQLite3 database. The database contains two tables, "stations" and "data" for time-independent and time-dependent information respectively. This default implementation provides a basis for setting up ones own observation component. It should grow over time with features that are relevant to different computational models. 
+
+\section{Building native source code}
+
+\subsection{Linux}\label{sec:buildLinux}
+
+This section describes how to build the \oda native source code on Linux computers. The source code is located in the \verb|core/native| directory of the source distribution. On Linux, the native sources are compiled using the GNU Automake system.
+
+Directory scripts of the source distribution contains a script \verb|openda_build_native.sh| that may be useful to compile the native code. It was tested for Ubuntu 8.04 lts 32-bit only. In this script, you will recognize the steps described below.
+
+\textbf{Building step by step}
+
+\begin{enumerate}
+        \item The first step is starting the configure script in the directory \verb|core/native|, usually through \verb|./configure| (the dot ensures the script you are starting is the one in the current directory and not another one from the search path). This will detect the configuration of the computer being used and will warn when specific requirements are not met. When all requirements are met, make files will be generated. It is possible to alter the behaviour of the configure script by using command-line arguments. The most important ones are: 
+	\begin{itemize}
+		\item \verb|--help| will list all options with some help text.
+		\item \verb|--prefix=PATH| indicates the place the library should be copied to after make install.
+		\item \verb|--disable-mpi| disables MPI.
+		\item \verb|--with-netcdf=PATH| indicates the location of the NetCDF library.
+		\item \verb|--with-blas=PATH| indicates the location of the BLAS library. By default, an unoptimized BLAS library is used.
+		\item \verb|--with-lapack=PATH| indicates the location of the LAPACK library. By default, an unoptimized LAPACK library is used.
+		\item \verb|--with-jdk=PATH| indicates the location of the Java Development Kit (JDK) if it differs from the value of \verb|$JAVA_HOME|.
+		\item \verb|--with-jikes=PATH| indicates the location of the Jikes Java compiler in case that compiler is to be used. Default: no.
+	\end{itemize}
+	Do not forget to scan the configure output for warnings. Those are often very informative. 
+\item The second step is using \verb|make| to build (compile and link) the source files.
+\item The final step is copying the resulting libraries (and executables) to the place specified using the \verb|--prefix=| command-line argument. This step is activated by \verb|make install|. 
+\end{enumerate}
+
+The Automake system also generated the other usual make options (like \verb|make clean|). It is unlikely that you want to remove the libraries and executables you just built, but in case you want to, this is nice to know. 
+
+\textbf{Note about OpenMPI}
+
+There is a known problem with OpenMPI versions 1.3 and 1.4 where an external dependency \verb|mca_base_param_reg_int| cannot be found during runtime. This can be avoided by recompiling OpenMPI itself. Use command-line arguments \verb|--enable-shared --enable-static| when running the configure script. 
+
+\subsection{Mac}
+
+This section describes how to build the \oda native source code on Mac computers. The source code is located in the \verb|core/native| directory of the source distribution. On Mac computers, the native sources are compiled using the Xcode development environment. 
+
+\textbf{Preliminaries}
+
+\begin{enumerate}
+	\item Install Xcode.
+	\item Install a GFortran compiler that is compatible with your Xcode installation.
+	\item Install OpenMPI (the same version as Xcode) with fortran support (\verb|--enable-static --enable-dynamic|) and insert the path in front of your \verb|%PATH%| and \verb|%LD_LIBRARY_PATH%| variables.
+	\item Install a Java Development Kit (JDK).
+\end{enumerate}
+
+After having installed the preliminaries, follow the 'Building step by step' instructions belonging to Section \ref{sec:buildLinux}.
+
+\subsection{Windows}
+\label{dc:build:windows}
+
+This section describes how to build the \oda native source code on Windows computers. The source code is located in the \verb|core/native| directory of the source distribution. The Microsoft Visual Studio solution file is located at \verb|core/native/build_visual_studio/OpenDANativeAll.sln|.
+
+\textbf{Note about Microsoft Visual Studio and Intel Fortran}
+
+The solution and project files provided are for the following version of the development environment: vs2010 and Intel Fortran Composer 13 or higher.
+
+When you use a newer version of mentioned tools, it is fine to upgrade these files to your version. In case you are working from the repository, please do not check in these upgraded files. 
+
+\textbf{Building step by step}
+
+\begin{enumerate}
+	\item Load the solution file \verb|core/native/build_visual_studio/OpenDANativeAll.sln| into Microsoft Visual Studio.
+	\item Select whether you want to perform a Release build or a Debug build.
+	\item Start the build process with Build All.
+\end{enumerate}
+
+\textbf{Note about the Intel Fortran library path}
+
+In some installations of Microsoft Visual Studio, the Intel Fortran library path is not added to the library path during the installation (and integration) of Intel Visual Fortran. This will lead to a link error about one or more missing libraries, usually \verb|ifconsol.lib|.
+
+If this is the case, solve it by either:
+
+\begin{itemize}
+	\item Add the \verb|lib| directory of the Intel Fortran installation to the global library path in Microsoft Visual Studio. This path can be found in Visual Studio menu path Tools/Options/Projects and Solutions/VC++ Directories/Library files.
+	\item Add the \verb|lib| directory of the Intel Fortran installation to the project's (probably libcta's) library path. This path can be found the project's right-click menu: path Properties/Configuration Properties/Linker/General/Additional Library Directories.
+\end{itemize}
+    
+    

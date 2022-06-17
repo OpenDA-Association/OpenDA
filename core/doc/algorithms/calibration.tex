@@ -114,14 +114,14 @@ present setup. Perhaps shortening the interval over which the optimization
 is carried out can make the cost function better behaved.
 \subsection{The configuration of the Simplex method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt iteration}: Number of iterations and convergence tolerance
 \item {\tt model<n>}: Model configuration for the initial model state at every
 starting vertex
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 
 \begin{verbatim}
   <parameter_calibration>
@@ -225,7 +225,7 @@ the width of the bracketing interval will reduce and the position of the
 minimum will be better defined. The procedure is then repeated until the
 width achieves a desired tolerance. It can be shown that if the new test
 point, $x$, is chosen to be a proportion $(3-\sqrt{5})/2$ (hence Golden
-Section) along the larger sub-interval, measured from the mid-point $b$,
+Section) along the larger subinterval, measured from the mid-point $b$,
 then the width of the full interval $(a,c)$ will reduce at an optimal rate.
 
 In the absence of an adjoint formalism in COSTA a numerical approximation
@@ -273,7 +273,7 @@ This can easily be done by using the function cta\_state\_dot.
 
 \subsection{The configuration of the CG method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt maxit}: the maximum number of iterations
 \item {\tt tol\_step, tol\_grad}: Stopping criterium  according to the step
   size or the gradient norm
@@ -284,7 +284,7 @@ This can easily be done by using the function cta\_state\_dot.
 \item {\tt model}: Model configuration for the initial model
 \end{itemize}
 
-\subsection {XML-example}
+\subsection {XML example}
    \begin{verbatim}
   <parameter_calibration>
     <CTA_TIME id="simulation_span" start="0" stop="50.0" step=".1"/>
@@ -378,7 +378,7 @@ However for using this method the user also needs to specify $nstore$,
 which is the number of vectors $s_i$ and $y_i$ to store.
 
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt iteration}: Number of iterations and convergence tolerance, {\tt
   maxln} is the maximum number of iteration steps in the line search part.
@@ -391,10 +391,10 @@ which is the number of vectors $s_i$ and $y_i$ to store.
 \end{itemize}
 
 
-\subsection{XML-example}
+\subsection{XML example}
 \begin{verbatim}
   <parameter_calibration>
-    <!-- Simulatie timespan en stapgrootte via CTA_Time -->
+    <!-- Simulatie time span en stapgrootte via CTA_Time -->
     <CTA_TIME id="simulation_span" start="0" stop="50.0" step=".1"/>
     <output>
         <filename>results_oscill.m</filename> 

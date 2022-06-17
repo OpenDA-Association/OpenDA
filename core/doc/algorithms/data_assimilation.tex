@@ -4,14 +4,14 @@
 {$LastChangedRevision: $}
 {$LastChangedBy: $}
 
-\odachapter{Data assimilation methods available in \oda}
+\odachapter{Data-assimilation methods available in \oda}
 
 \begin{tabular}{p{4cm}l}
 \textbf{Origin:} & CTA memo200802\\
 \textbf{Last update:}    & \svnfilemonth-\svnfileyear\\
 \end{tabular}
 
-\section{Introduction to Data assimilation}
+\section{Introduction to data assimilation}
 The terminology of 'data assimilation' originates from the field of meteorology
 where in 1950's and 1960's new methods were developed to improve weather
 forecasts. Due to rapid development of computers in the 1950's the applications
@@ -20,7 +20,7 @@ phase the initial state of the model was estimated directly from the
 measurement. The numerical model was then used to produce the forecast. It was
 soon recognized that the forecasts could be improved if the initial state was
 not only based on the measurements but also on the forecast produced by the
-previous model run. The first data assimilation method was direct insertion
+previous model run. The first data-assimilation method was direct insertion
 which was based on replacement of a model variable by its measured value.
 Although it was simple to implement, it suffered from the lack of smoothness in
 the assimilation results. Much of the research at the time was concentrated on
@@ -29,10 +29,10 @@ oscillations.
 
 In recent years more and more complex methods are being used. These methods are
 either based on the minimization of a criterion or on statistical principles.
-This difference divides the data assimilation methods into two classes: the
+This difference divides the data-assimilation methods into two classes: the
 variational and the sequential methods.
 
-The following data assimilation methods are implemented in \oda :
+The following data-assimilation methods are implemented in \oda :
 \begin{itemize}
 \item Reduced-rank square-root filter (RRSQRT)
 \item Ensemble KF (EnKF)
@@ -43,7 +43,7 @@ The following data assimilation methods are implemented in \oda :
 \item 3DVar
 \end{itemize}
 
-\subsection{Variational methods}
+\subsection{Variational methods}\label{sec:variational_methods}
 Variational methods aim at adjusting a model solution to all the observations
 available over the assimilation period (\cite{Talagrand1997}). In variational
 methods, one first defines a scalar function which, for any model solution over
@@ -205,13 +205,13 @@ to reduce the number of columns in $L^a_k$ to $q$ in $\tilde{L}^a(k)$.
 
 \subsection{The configuration of the RRSQRT method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of modes
 \item {\tt mode}: Model configuration
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
@@ -225,7 +225,7 @@ to reduce the number of columns in $L^a_k$ to $q$ in $\tilde{L}^a(k)$.
   <!-- Filter configuration -->
   <method name="lbfgs">
   <parameter_calibration>
-    <!-- Simulatie timespan en stapgrootte via CTA_Time -->
+    <!-- Simulatie time span en stapgrootte via CTA_Time -->
     <CTA_TIME id="simulation_span" start="0" stop="50.0" step=".1"/>
     <output>
         <filename>results_oscill.m</filename> 
@@ -284,7 +284,7 @@ computationally dominant. As a result the computational effort required for the
 EnKF is approximately $N$ model simulations. The standard deviation of the
 errors in the state estimate are of a statistical nature and converge very
 slowly with the sample size ($\approx N$). Here it should be noted that for
-many atmospheric data assimilation problems the analysis step is also a very
+many atmospheric data-assimilation problems the analysis step is also a very
 time consuming part of the algorithm.
 
 
@@ -292,13 +292,13 @@ time consuming part of the algorithm.
 
 \subsection{The configuration of the Ensemble method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of ensembles
 \item {\tt model}: The configuration of a model
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 \begin{verbatim}
 <costa xmlns:xi="http://www.w3.org/2001/XInclude">
   <!-- De invoer m.b.t. de observaties -->
@@ -427,13 +427,13 @@ taking square root of its diagonal elements.
 
 \subsection{The configuration of the ENSRF method}
 \begin{itemize}
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of ensembles
 \item {\tt model}: Model configuration
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
  \begin{verbatim}
 <costa xmlns:xi="http://www.w3.org/2001/XInclude">
   <CTA_SOBS id="obs_assim" database="obs_oscill.sql"/>
@@ -441,7 +441,7 @@ taking square root of its diagonal elements.
   <CTA_MODELCLASS id="modelclass"  name="CTA_MODBUILD_SP" />
   <method name="ensrf"> 
 <ensrf_filter>
-  <!-- Simulatie timespan en stapgrootte via CTA_Time -->
+  <!-- Simulatie time span en stapgrootte via CTA_Time -->
   <CTA_TIME id="simulation_span" start="0" stop="5" step="0.0005"/>
     <output>
        <filename>results.m</filename>
@@ -533,7 +533,7 @@ Moreover, the perturbation $\delta$ (i.e. $\epsilon$ in equation
 (\ref{eq.COFFEE_lf})) needs also to be specified.
 
 In this implementation, the modes and ensembles are represented as COSTA model
-instances. Here each model instance represent one mode or ensemble. This is
+instances. Here each model instance represents one mode or ensemble. This is
 chosen for supporting parallel computation implementation in the future.
 
 In the implementation of COFFEE filter, the initial matrix $[L^a(0) E^a(0)]$ in
@@ -585,7 +585,7 @@ the moment.
 \subsection{The configuration of the COFFEE method}
 \begin{itemize}
 
-\item {\tt simulation\_span}: the overall timespan to run the model
+\item {\tt simulation\_span}: the overall time span to run the model
 \item {\tt output}: output specification
 \item {\tt modes}: The number of modes
 \item {\tt delta}: perturbation, see equation \ref{eq.COFFEE_lf}
@@ -593,7 +593,7 @@ the moment.
 \item {\tt ensembles}: the number of ensembles
 \end{itemize}
 
-\subsection{XML-example}
+\subsection{XML example}
 
 \begin{verbatim}
 
