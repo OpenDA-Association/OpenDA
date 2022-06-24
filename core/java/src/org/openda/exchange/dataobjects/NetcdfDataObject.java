@@ -55,6 +55,7 @@ import java.util.*;
 public class NetcdfDataObject implements IComposableDataObject, IComposableEnsembleDataObject {
 
 	public static final String ALLOW_TIME_INDEPENDENT_ITEMS = "allowTimeIndependentItems";
+	public static final String REQUIRED_EXCHANGE_ITEM_ID = "requiredExchangeItemId";
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
@@ -128,11 +129,11 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				case ALLOW_TIME_INDEPENDENT_ITEMS:
 					this.allowTimeIndependentItems = Boolean.valueOf(value);
 					continue;
-				case "requiredExchangeItemId":
+				case REQUIRED_EXCHANGE_ITEM_ID:
 					requiredExchangeItemIds.add(value);
 					continue;
 				default:
-					throw new RuntimeException("Unknown key " + key + ". Please specify only " + ALLOW_TIME_INDEPENDENT_ITEMS + " as key=value pair");
+					throw new RuntimeException("Unknown key " + key + ". Please specify only [" + ALLOW_TIME_INDEPENDENT_ITEMS + ", " + REQUIRED_EXCHANGE_ITEM_ID  + "] as key=value pair");
 			}
 		}
 

@@ -294,7 +294,7 @@ public class EsriAsciiGridDataObject implements IDataObject{
 		IArray yCoordArray = new Array(yCoords);
 
 		ArrayGeometryInfo geometryInfo = new ArrayGeometryInfo(yCoordArray, yCoordValueIndices,
-			yCoordsQuantityInfo, xCoordArray, xCoordValueIndices, xCoordsQuantityInfo,null,null,null);
+			yCoordsQuantityInfo, xCoordArray, xCoordValueIndices, xCoordsQuantityInfo,null,null,null, false);
 
 		exchangeItem = new ArrayExchangeItem(exchangeItemId, IExchangeItem.Role.InOut);
 		exchangeItem.setGeometryInfo(geometryInfo);

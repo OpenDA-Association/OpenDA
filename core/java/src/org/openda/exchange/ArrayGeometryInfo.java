@@ -36,6 +36,7 @@ import java.util.Arrays;
  */
 //TODO rename to LatLonGridGeometryInfo or 2DGridGeometryInfo? AK
 public class ArrayGeometryInfo implements IArrayGeometryInfo {
+	private static final double METERS_PER_DEGREE = 60. * 1852.27;
 
 	private IArray latitudeCoordinateValues=null;
 	private IArray longitudeCoordinateValues=null;
@@ -49,8 +50,11 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 //	private IQuantityInfo xCoordQuantityInfo=null;
 //	private IQuantityInfo yCoordQuantityInfo=null;
 	boolean is3D;
+	// Added to check if distance needs to be converted to meters
+	// Before it always assumed it was WGS84 and calculated the "distances" in lat lon which gives unrealistic results since it depends on the exact location on earth
+	private boolean isWGS84;
 
-    /**
+	/**
      * latitudeValueIndices contains for each dimension in the latitudeCoordinateValues array
      * the index of the corresponding dimension in the values array.
      * Not clear why this is needed.
@@ -74,14 +78,15 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 	}
 	
 	public ArrayGeometryInfo(IArray latitudeArray, int[] latitudeValueIndices, IQuantityInfo latitudeQuantityInfo,
-			IArray longitudeArray, int[] longitudeValueIndices, IQuantityInfo longitudeQuantityInfo,
-			IArray heightArray, int[] heightValueIndices, IQuantityInfo heightQuantityInfo) {
+							 IArray longitudeArray, int[] longitudeValueIndices, IQuantityInfo longitudeQuantityInfo,
+							 IArray heightArray, int[] heightValueIndices, IQuantityInfo heightQuantityInfo, boolean isWGS84) {
 
 		this(latitudeArray, latitudeValueIndices, latitudeQuantityInfo,
 				longitudeArray, longitudeValueIndices, longitudeQuantityInfo,
 				heightArray, heightValueIndices, heightQuantityInfo, null);
 
 		is3D = (heightArray != null);
+		this.isWGS84 = isWGS84;
 		if (!is3D) {
 			this.heightCoordinateValues = new Array(1);
 	}
@@ -433,20 +438,25 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		double[] zCoords = heightCoordinateValues.getValuesAsDoubles();
 
 		Array arrayDistances = new Array(xCoords.length*yCoords.length*zCoords.length);
-
+		if (Double.isNaN(z)) z = 0;
 		int k=0;
 		for (int lay=0; lay < zCoords.length;lay++){
 			for (int yInd = 0; yInd < yCoords.length; yInd++) {
-				for (int xInd = 0; xInd <xCoords.length; xInd++){
-					if (xCoords[xInd] == 0.0 | yCoords[yInd] == 0.0) {
-						arrayDistances.setValueAsDouble(k,Double.NaN);
-					}else{
-						arrayDistances.setValueAsDouble(k,Math.sqrt((x - xCoords[xInd])*(x - xCoords[xInd]) + (y - yCoords[yInd])*(y - yCoords[yInd]) + (z - zCoords[lay])*(z - zCoords[lay])));
-					}
+				for (int xInd = 0; xInd < xCoords.length; xInd++) {
+					double distance = isWGS84 ? distanceInMetersFromLatLon(y, x, yCoords[yInd], xCoords[xInd]) : Math.sqrt((x - xCoords[xInd]) * (x - xCoords[xInd]) + (y - yCoords[yInd]) * (y - yCoords[yInd]) + (z - zCoords[lay]) * (z - zCoords[lay]));
+					arrayDistances.setValueAsDouble(k, distance);
 					k++;
 				}
 			}
 		}
 		return arrayDistances;
+	}
+
+	private static double distanceInMetersFromLatLon(double lat1, double lon1, double lat2, double lon2) {
+		double dy = (lat2 - lat1) * METERS_PER_DEGREE;
+		double phi = (lat2 + lat1) * 0.017453 / 2;
+		double dx = (lon2 - lon1) * METERS_PER_DEGREE * Math.cos(phi);
+
+		return Math.hypot(dx, dy);
 	}
 }

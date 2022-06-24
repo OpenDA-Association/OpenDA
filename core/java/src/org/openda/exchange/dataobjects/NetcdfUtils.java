@@ -205,7 +205,7 @@ public class NetcdfUtils {
 		IArray longitudeArray = (IArray) readData(longitudeVariable);
         //the latitude and longitude coordinates are stored in the same order as in the netcdf file.
 		ArrayGeometryInfo geometryInfo = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices,
-				latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo,null,null,null);
+				latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo,null,null,null, true);
 		return geometryInfo;
 	}
 

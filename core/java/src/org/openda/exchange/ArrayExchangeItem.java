@@ -126,7 +126,7 @@ public class ArrayExchangeItem implements IArrayExchangeItem, IMyObservable {
 	        	setGeometryInfo(new ArrayGeometryInfo(geometry.getLatitudeArray(), geometry.getLatitudeValueIndices(),
 	        			geometry.getLatitudeQuantityInfo(), geometry.getLongitudeArray(),
 	        			geometry.getLongitudeValueIndices(), geometry.getLongitudeQuantityInfo(),
-	        			geometry.getHeightArray(), geometry.getHeightValueIndices(), geometry.getHeightQuantityInfo()));
+	        			geometry.getHeightArray(), geometry.getHeightValueIndices(), geometry.getHeightQuantityInfo(), true));
 	        } else {
 	        	//other IGeometryInfo types not supported.
 	        }

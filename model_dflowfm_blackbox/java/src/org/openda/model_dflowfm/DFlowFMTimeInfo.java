@@ -24,11 +24,14 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import org.openda.utils.Results;
+import org.openda.utils.generalJavaUtils.StringUtilities;
 
 /**
  * Reading and writing information to [time] block of MDU-file
@@ -36,6 +39,7 @@ import org.openda.utils.Results;
 
 public class DFlowFMTimeInfo implements IDataObject {
 
+	public static final String USE_RST_FOR_RESTART = "useRstForRestart";
 	private IExchangeItem[] exchangeItems;
 
 	private DFlowFMMduInputFile mduOptions;
@@ -45,6 +49,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 	private String[] DFlowFMTimeInfoId = new String[]{"start_time","end_time"};
 	private int NTimeInfoIds = DFlowFMTimeInfoId.length;
 	private static Map<String, String> timeFormat;
+	private boolean useRstForRestart = false;
 
 
 
@@ -58,7 +63,19 @@ public class DFlowFMTimeInfo implements IDataObject {
 
 
 	private void initialize(File workingDir, String fileName, String[] arguments) {
-		if (arguments.length > 0) Results.putMessage("Initialize DFlowTimeInfo: additional arguments not used");
+		for (int i = 0; i < arguments.length; i++) {
+			String argument = arguments[i];
+			String[] keyValue = StringUtilities.getKeyValuePair(argument);
+			String key = keyValue[0];
+			String value = keyValue[1];
+			switch (key) {
+				case USE_RST_FOR_RESTART:
+					this.useRstForRestart = Boolean.parseBoolean(value);
+					continue;
+				default:
+					throw new RuntimeException("Unknown key " + key + ". Please specify only " + USE_RST_FOR_RESTART + " as key=value pair");
+			}
+		}
 		this.mduFile = new File(workingDir, fileName);
 	    mduOptions = new DFlowFMMduInputFile(workingDir, fileName);
 		exchangeItems = new DFlowFMTimeInfoExchangeItem[NTimeInfoIds];
@@ -153,10 +170,20 @@ public class DFlowFMTimeInfo implements IDataObject {
 
 	private void setRestartOptions(double dblTime) {
 		String RestartDateTime = TimeUtils.mjdToString(dblTime);
-		String mapfile = mduFile.getName().replace(".mdu","_map.nc");
+		String mduFileName = mduFile.getName();
+		if (!useRstForRestart) {
+			String mapfile = mduFileName.replace(".mdu", "_map.nc");
 
-		mduOptions.put("restart","RestartFile",mapfile);
-		mduOptions.put("restart","RestartDateTime",RestartDateTime+"00");
+			mduOptions.put("restart", "RestartFile", mapfile);
+			mduOptions.put("restart", "RestartDateTime", RestartDateTime + "00");
+			return;
+		}
+		Date startDate = TimeUtils.mjdToDate(dblTime);
+		String rstFileNamePattern = "'" + mduFileName.substring(0, mduFileName.length() - 4) + "_'yyyyMMdd'_'HHmmss'_rst.nc'";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(rstFileNamePattern);
+		String rstFileName = simpleDateFormat.format(startDate);
+		mduOptions.put("restart", "RestartFile", rstFileName);
+		mduOptions.put("restart", "RestartDateTime", null);
 	}
 
 	private void readTimeInfo() throws RuntimeException {

@@ -354,9 +354,9 @@ public class StringUtilities {
 
 	public static String[] getKeyValuePair(String argument) {
 		int index = argument.indexOf('=');
-		if (index == -1 || index == argument.length() - 1) throw new IllegalArgumentException("Not a key value pair: " + argument);
+		if (index == -1 || index == argument.length() - 1) return null;//throw new IllegalArgumentException("Not a key value pair: " + argument);
 		String[] split = argument.split("=");
-		if (split.length > 2) throw new IllegalArgumentException("Not a key value pair: " + argument);
+		if (split.length > 2) return null; //throw new IllegalArgumentException("Not a key value pair: " + argument);
 		return split;
 	}
 }

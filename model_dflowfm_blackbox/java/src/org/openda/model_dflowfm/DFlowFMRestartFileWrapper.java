@@ -30,10 +30,7 @@ import org.openda.utils.generalJavaUtils.StringUtilities;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
-import ucar.nc2.Variable;
+import ucar.nc2.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +44,7 @@ import java.util.*;
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
 	public static final String APPLY_TO_MOST_RECENT_RST_FILE = "applyToMostRecentRstFile";
-	private Boolean applyToMostRecentRstFile;
+	private boolean applyToMostRecentRstFile = false;
 
 	// create a MetaExchangeItem
 	private class DFlowFMMetaExchangeItem{
@@ -85,6 +82,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			for (int i = 1; i < arguments.length; i++) {
 				String argument = arguments[i];
 				String[] keyValue = StringUtilities.getKeyValuePair(argument);
+				if (keyValue == null) continue;
 				String key = keyValue[0];
 				String value = keyValue[1];
 				switch (key) {
@@ -166,8 +164,13 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		Array thisValue = null;
 		for (Variable var : exchangeVariables) {
     		try {
-	    		Array full = inputFile.readSection(var.getShortName());
-			    thisValue = full.slice(0,time_index);
+				List<Dimension> dimensions = var.getDimensions();
+				int dimensionSize = dimensions.size();
+				int[] origin = new int[dimensionSize];
+				origin[0] = time_index;
+				int[] shape = var.getShape();
+				shape[0] = 1;
+			    thisValue = var.read(origin, shape);
 		    } catch (IOException | InvalidRangeException e) {
 				throw new RuntimeException("Error reading from NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		    } catch (ArrayIndexOutOfBoundsException e) {
