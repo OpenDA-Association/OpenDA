@@ -723,7 +723,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public IModelState saveInternalState() {
-		File dirForRestartFiles = checkRestartDir(getCurrentTime());
+		File dirForRestartFiles = checkRestartDir(getCurrentTime()).getAbsoluteFile();
         FileBasedModelState stochSavedModelState = new FileBasedModelState();
         stochSavedModelState.setDirContainingModelstateFiles(dirForRestartFiles);
 		int i = 0;
@@ -759,7 +759,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 					" for " + this.getClass().getName() + ".releaseInternalState");
 		}
 		FileBasedModelState stochModelState = (FileBasedModelState) savedInternalState;
-		File dirForRestartFiles = checkRestartDir(getCurrentTime());
+		File dirForRestartFiles = checkRestartDir(getCurrentTime()).getAbsoluteFile();
         File incomingStateDir = stochModelState.getDirContainingModelStateFiles();
 
         // the particle filter exchanges full states. Copy a full state dir from another ensemble member
@@ -801,7 +801,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 	}
 
 	public IModelState loadPersistentState(File persistentStateFile) {
-		File dirForRestartFiles = checkRestartDir(getCurrentTime());
+		File dirForRestartFiles = checkRestartDir(getCurrentTime()).getAbsoluteFile();
 		return FileBasedModelState.loadPersistenState(persistentStateFile, dirForRestartFiles);
 	}
 
