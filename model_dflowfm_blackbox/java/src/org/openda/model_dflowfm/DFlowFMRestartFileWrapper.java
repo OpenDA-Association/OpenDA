@@ -43,9 +43,6 @@ import java.util.*;
  */
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
-	public static final String APPLY_TO_MOST_RECENT_RST_FILE = "applyToMostRecentRstFile";
-	private boolean applyToMostRecentRstFile = false;
-
 	// create a MetaExchangeItem
 	private class DFlowFMMetaExchangeItem{
 		public ExchangeItem exchangeItem;
@@ -79,20 +76,6 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		this.workingDir = workingDir;
 		if (arguments != null) {
 			this.fileName = arguments[0];
-			for (int i = 1; i < arguments.length; i++) {
-				String argument = arguments[i];
-				String[] keyValue = StringUtilities.getKeyValuePair(argument);
-				if (keyValue == null) continue;
-				String key = keyValue[0];
-				String value = keyValue[1];
-				switch (key) {
-					case APPLY_TO_MOST_RECENT_RST_FILE:
-						this.applyToMostRecentRstFile = Boolean.valueOf(value);
-						continue;
-					default:
-						throw new RuntimeException("Unknown key " + key + ". Please specify only " + APPLY_TO_MOST_RECENT_RST_FILE + " as key=value pair");
-				}
-			}
 			try {
 				Reftime = Double.parseDouble(arguments[1]);
 			} catch (Exception e){
@@ -230,27 +213,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	}
 
 	private File getNetcdfFile(File workingDir) {
-		if (!this.applyToMostRecentRstFile) {
-			File fileNameFull = new File(workingDir, fileName);
-			if (!fileNameFull.exists()) {
-				throw new RuntimeException("DFlowFMRestartFileWrapper: restart Input file " + fileNameFull.getAbsolutePath() + " does not exist");
-			}
-			return fileNameFull;
-		}
-		String fileNamePattern = "'" + fileName + "_'yyyyMMdd'_'HHmmss'_rst.nc'";
-		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fileNamePattern);
-		ArrayList<Date> dates = new ArrayList<>();
-		File[] files = workingDir.listFiles(pathname -> {
-			try {
-				dates.add(simpleDateFormat.parse(pathname.getName()));
-				return true;
-			} catch (ParseException e) {
-				return false;
-			}
-		});
-		if (files == null) throw new RuntimeException("DFlowFMRestartFileWrapper: no restart file found with pattern " + fileNamePattern);
-		Collections.sort(dates);
-		return new File(workingDir, simpleDateFormat.format(dates.get(dates.size() - 1)));
+		File fileNameFull = new File(workingDir, fileName);
+		if (!fileNameFull.exists()) throw new RuntimeException("DFlowFMRestartFileWrapper: restart Input file " + fileNameFull.getAbsolutePath() + " does not exist");
+		return fileNameFull;
 	}
 
 	private IGeometryInfo getGeometryInfo(NetcdfFile inputFile) {

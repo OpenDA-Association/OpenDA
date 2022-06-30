@@ -63,8 +63,7 @@ public class DFlowFMTimeInfo implements IDataObject {
 
 
 	private void initialize(File workingDir, String fileName, String[] arguments) {
-		for (int i = 0; i < arguments.length; i++) {
-			String argument = arguments[i];
+		for (String argument : arguments) {
 			String[] keyValue = StringUtilities.getKeyValuePair(argument);
 			String key = keyValue[0];
 			String value = keyValue[1];
@@ -171,19 +170,11 @@ public class DFlowFMTimeInfo implements IDataObject {
 	private void setRestartOptions(double dblTime) {
 		String RestartDateTime = TimeUtils.mjdToString(dblTime);
 		String mduFileName = mduFile.getName();
-		if (!useRstForRestart) {
-			String mapfile = mduFileName.replace(".mdu", "_map.nc");
+		if (useRstForRestart) return;
+		String mapfile = mduFileName.replace(".mdu", "_map.nc");
 
-			mduOptions.put("restart", "RestartFile", mapfile);
-			mduOptions.put("restart", "RestartDateTime", RestartDateTime + "00");
-			return;
-		}
-		Date startDate = TimeUtils.mjdToDate(dblTime);
-		String rstFileNamePattern = "'" + mduFileName.substring(0, mduFileName.length() - 4) + "_'yyyyMMdd'_'HHmmss'_rst.nc'";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(rstFileNamePattern);
-		String rstFileName = simpleDateFormat.format(startDate);
-		mduOptions.put("restart", "RestartFile", rstFileName);
-		mduOptions.put("restart", "RestartDateTime", null);
+		mduOptions.put("restart", "RestartFile", mapfile);
+		mduOptions.put("restart", "RestartDateTime", RestartDateTime + "00");
 	}
 
 	private void readTimeInfo() throws RuntimeException {

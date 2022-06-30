@@ -47,10 +47,10 @@ public class DFlowFMRestartTest extends TestCase {
 		testCopyDir = new File(testRunDataRestartFileDir,"copy");
 	}
 
-
-	public void testRestartFileInsteadOfMap() {
+// Commented out because no small restart file available, but below test should work with any
+/*	public void testRestartFileInsteadOfMap() {
 		IDataObject initialRestartFile = new DFlowFMRestartFileWrapper();
-		String[] args = new String[]{"dcsmv5", "applyToMostRecentRstFile=true"};
+		String[] args = new String[]{"dcsmv5_20070104_000000_rst.nc"};
 
 		initialRestartFile.initialize(testRunDataRestartFileDir, args);
 
@@ -68,7 +68,7 @@ public class DFlowFMRestartTest extends TestCase {
 		for (int i = 0; i < initialValuesAsDoubles.length; i++) {
 			assertEquals(initialValuesAsDoubles[i] + 0.1, finishedS1ValuesAsDoubles[i], 0.000001);
 		}
-	}
+	}*/
 
 	public void testReadInput() {
 
