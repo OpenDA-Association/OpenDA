@@ -18,12 +18,12 @@ public class DFlowFMRestartFilePostProcessorTest extends TestCase {
 
 
 	public void testRestartFileInsteadOfMap() {
-		File restartFile4 = new File(testRunDataRestartFileDir, "notARealRestartFile_20070104_000000_rst.nc");
+		File restartFile4 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070104_000000_rst.nc");
 		assertTrue(restartFile4.exists());
-		File restartFile5 = new File(testRunDataRestartFileDir, "notARealRestartFile_20070105_000000_rst.nc");
+		File restartFile5 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070105_000000_rst.nc");
 		assertTrue(restartFile5.exists());
 		DFlowFMRestartFilePostProcessor dFlowFMRestartFilePostProcessor = new DFlowFMRestartFilePostProcessor();
-		dFlowFMRestartFilePostProcessor.initialize(testRunDataRestartFileDir, new String[]{"runId=notARealRestartFile", "targetRestartFileName=notARealRestartFile_20220101_000000_rst.nc"});
+		dFlowFMRestartFilePostProcessor.initialize(testRunDataRestartFileDir, new String[]{"runId=notARealRestartFile", "sourceRestartFileSubDir=subdir", "targetRestartFileName=notARealRestartFile_20220101_000000_rst.nc"});
 		assertTrue(restartFile4.exists());
 		assertFalse(restartFile5.exists());
 		File restartFile2022 = new File(testRunDataRestartFileDir, "notARealRestartFile_20220101_000000_rst.nc");
