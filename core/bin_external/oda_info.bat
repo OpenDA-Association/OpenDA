@@ -25,8 +25,6 @@ if errorlevel 1 goto Error3
 endlocal
 goto End
 
-..\jre\bin\java org.openda.utils.Reflection %1
-
 rem ==== show errors ===
 :Error0
 echo No JAVA runtime found - please check this

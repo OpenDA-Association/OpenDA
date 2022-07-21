@@ -9,8 +9,8 @@ set PATH=%~dp0;%PATH%
 
 set ODASYSTEM=win64_ifort
 echo "System set to %ODASYSTEM%"
-
-set ODALIBDIR="%OPENDADIR%\%ODASYSTEM%"
+set ODALIBDIR=%OPENDADIR%%ODASYSTEM%
+set PATH=%ODALIBDIR%;%PATH%
 
 rem set OPENDA_BINDIR to OPENDADIR for now to keep things working
 set OPENDA_BINDIR=%OPENDADIR%
