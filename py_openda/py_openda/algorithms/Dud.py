@@ -351,7 +351,7 @@ def max_step_p_new(printer,p_curr, p_new, l_bound, u_bound, alpha_min=1e-2):
     else:
         p_reinit = None
 
-    p_corrected =[]
+    p_corrected_active =[]
     if alpha<1.0: alpha=alpha*0.99
 
 
@@ -365,9 +365,11 @@ def max_step_p_new(printer,p_curr, p_new, l_bound, u_bound, alpha_min=1e-2):
         elif p_corrected_i > u:
             printer.print("Parameter: "+str(i)+" hits upper boundary "+str(u))
             p_corrected_i = 0.5*(u+p)    #Half distance between boundary and current value
-        p_corrected.append(p_corrected_i)
+        p_corrected_active.append(p_corrected_i)
         i+=1
-    return np.array(p_corrected), p_reinit
+    p_corrected = p_new.copy()
+    p_corrected.set_act(p_corrected_active)
+    return p_corrected, p_reinit
 
 
 
@@ -412,14 +414,14 @@ def line_search(printer,func, parameters, func_evals, total_cost, obs, std, p_ne
         next_parameters=next_parameters_eval.get_act()
         next_func_evals = func(next_parameters_eval.get_all())
         next_total_cost = sum(0.5*((y-x)/z)**2 for y, x, z in zip(obs, next_func_evals, std))
-        printer.print("   -alpha=" + "%6.5f"%d + " p=" + str(p_new.get_all()) + " obj=" + str(math.sqrt(2.0 * next_total_cost)))
+        printer.print("   -alpha=" + "%6.5f"%d + " p=" + str(next_parameters_eval.get_all()) + " obj=" + str(math.sqrt(2.0 * next_total_cost)))
 
     succes =  next_total_cost < total_cost[-1]
 
     return (next_parameters, next_func_evals, next_total_cost, succes)
 
 
-def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dist=1.1, l_bound=None, u_bound=None, max_iter=10,
+def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-4, start_dist=1.1, l_bound=None, u_bound=None, max_iter=10,
         max_restart=1, alpha_min=0.1):
     """
     Main function which minimizes a least squares problem without using derivatives.
@@ -433,7 +435,7 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
     :param l_bound: lower bound on variables  (Note: DUD uses bounds in linesearch to avoid object function evaluation
                                                     with illegal values there is no robust handing of constraints)
     :param u_bound: upper bound on variables
-    :param max_iter: max number of DUD (outer) iterations
+    :param max_iter: max number of DUD iterations (sum of all inner iterations)
     :param alpha_min: minimal damping factor. DUD is restarted when damping factor drops below this value
     :max_restart: max number of times DUD reinitialises when no improvement can be found (re-perturbing all parameters)
     the search directions (default 1.1).
@@ -456,7 +458,7 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
     #For the handling of bounds we can activate and deactivate parameters.
     #Initially all parameters are active
     active = [True] * len(p_start)
-    p_new = masked_parameters(p_start, active)
+    p_curr = masked_parameters(p_start, active)
     l_bound_masked = masked_parameters(l_bound, active)
     u_bound_masked = masked_parameters(u_bound, active)
     p_pert_masked = masked_parameters(p_pert, active)
@@ -467,51 +469,58 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
     #Outerloop, start each time with a new initialization of the system
 
     iter = 0
+    restart_cycles = 0
+    set_last_value = True
     printer = dud_printer()
 
     while do_new_outer_loop:
 
         # Initialize by perturbing all parameters
-        (parameters, func_evals, total_cost) = initialize_dud(func, p_new, obs, std, p_pert_m=p_pert_masked,
+        # -Check whether there all still parameters to optimize (all might be fixed to boundaries)
+        if (len(p_curr.idx_active) == 0):
+            printer.print("!!> No parameers (left) to optimize")
+            do_new_outer_loop = False
+            set_last_value = False
+            break
+
+        # Notes: p_new is our current approximation of the solution
+        (parameters, func_evals, total_cost) = initialize_dud(func, p_curr, obs, std, p_pert_m=p_pert_masked,
                                                               l_bound=l_bound_masked, u_bound=u_bound_masked, start_dist=start_dist,
                                                               start_eps=0.1)
 
+        # TODO: For new outerloop we should not throw the previous steps away!
         hist = {}
         hist["parameters"] = list(parameters.copy())
         hist["func_evals"] = list(func_evals.copy())
         hist["total_cost"] = list(total_cost.copy())
 
 
-        restart_cycles = 0
-        reinitialize = False
         iterate_innerloop = True
 
         #Inner loop
         while iterate_innerloop:
 
             # Find new optimum of linear apporixmation of optimizatiopn problem
-            p_curr = p_new.copy()
-            (stop, p_new) = find_next_params(printer, p_new, parameters, func_evals, obs, std, max_step)
+            (stop, p_propose) = find_next_params(printer, p_curr, parameters, func_evals, obs, std, max_step)
             if stop:
                 do_new_outer_loop = False
                 break
 
             # Check convergence based on stepsize
-            if check_step_conv(printer, p_new, parameters, p_std, p_tol=p_tol):
+            if check_step_conv(printer, p_propose, parameters, p_std, p_tol=p_tol):
                 do_new_outer_loop = False
-                break
+                iterate_innerloop = False #Last linesearch and then done
 
-            # Adust approximate soltion by limiting stepsize and checking the selected bounds
-            p_new_act, p_reinit = max_step_p_new(printer, p_curr, p_new, l_bound_masked, u_bound_masked)
+
+            # Adust approximate solution by limiting stepsize and checking the selected bounds
+            p_propose, p_reinit = max_step_p_new(printer, p_curr, p_propose, l_bound_masked, u_bound_masked)
 
             # We perform a linesearch and find a new best value but only when there are not issues with bounds
             if (p_reinit is None):
-                # All ok, start with linesearch
-                p_new.set_act(p_new_act)
                 # Perform a linesearch in order to reduce object function
                 (next_parameters, next_func_evals, next_total_cost, success) = line_search(printer, func, parameters,
                                                                                   func_evals, total_cost,
-                                                                                  obs, std, p_new, alpha_min=alpha_min)
+                                                                                  obs, std, p_propose, alpha_min=alpha_min)
 
                 # Heuristic part to deal with parameters hitting boundaries and poor convergence
                 if not success and restart_cycles<max_restart:
@@ -520,8 +529,7 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
                     # Decrease pertubation (compared to input pertubation)
                     p_pert_restart = [p * 0.1 for p in p_pert]
                     p_pert_masked.set_all(p_pert_restart)
-
-                    reinitialize=True
+                    p_curr.set_act(parameters[:, -1])   #TODO SHOULD BE same as p_cur
                     do_new_outer_loop = True
                     restart_cycles+=1
                     break
@@ -529,6 +537,7 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
                     # Linesearch is no succes but we are not going to restart anymore
                     # That means that we are done.
                     do_new_outer_loop=False
+                    break
 
                 next_params = np.concatenate((next_parameters,
                                               np.array(next_func_evals),
@@ -538,37 +547,33 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
                 # When a parameter hits the bound we fix its value and restart DUD
                 printer.print("!!> DUD will be reinitialized due to parameter hitting bound")
                 # set problematic valiable to bound
-                # set reinitialization value
-                p_new = p_reinit
+
 
                 # adjust masked arrays when needed
-                active_p_new = p_new.get_active_mask()
-                l_bound_masked = masked_parameters(l_bound, active_p_new)
-                u_bound_masked = masked_parameters(u_bound, active_p_new)
+                active_p_reinit = p_reinit.get_active_mask()
+                l_bound_masked = masked_parameters(l_bound, active_p_reinit)
+                u_bound_masked = masked_parameters(u_bound, active_p_reinit)
 
                 # Decrease pertubation
                 p_pert_restart = [p*0.1 for p in p_pert]
-                p_pert_restart_masked = masked_parameters(p_pert_restart, active_p_new)
+                p_pert_restart_masked = masked_parameters(p_pert_restart, active_p_reinit)
 
-                next_parameters_act = p_new.copy() # glue active/non-active together
-
-               # (parameters, func_evals, total_cost) = initialize_dud(func, next_parameters_act, obs, std, p_pert_m=p_pert_restart_masked,
-               #                                                       l_bound=l_bound_masked, u_bound=u_bound_masked,
-               #                                                       start_dist=start_dist,
-               #                                                       start_eps=0.1)
-
-                p_new = next_parameters_act
+                #next_parameters_act = p_new.copy() # glue active/non-active together
+                #p_new = next_parameters_act
                 p_pert_masked = p_pert_restart_masked
+
+                # set reinitialization value
+                p_curr = p_reinit
 
                 do_new_outer_loop = True
                 break
 
-
+            #TODO WHAT TO DO WHEN WE RESTART......
             hist["parameters"].append(next_parameters.copy())
             hist["func_evals"].append(next_func_evals.copy())
             hist["total_cost"].append(next_total_cost.copy())
 
-            p_number = p_new.len_act()
+            p_number = p_propose.len_act()
             all_params = np.concatenate((parameters, func_evals, np.expand_dims(total_cost, 0)))
             all_params = np.delete(all_params, 0, 1)
             all_params = np.c_[all_params, next_params]
@@ -577,10 +582,8 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
             func_evals = all_params[p_number:-1, :]
             total_cost = all_params[-1, :]
 
-            #some tollerances:
-            dx_rel = abs(total_cost[-1] - total_cost[-2])/abs(total_cost[-2])
-
-
+            # Set new best approximation
+            p_curr.set_act(parameters[:, -1])
 
             if abs(total_cost[-1] - total_cost[-2]) < xtol * abs(total_cost[-2]):
                 finish += 1
@@ -602,12 +605,9 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-2, start_dis
         hist["parameters"] = np.array([list(p) for p in hist["parameters"]]).T.tolist()
         hist["func_evals"] = np.array([list(p) for p in hist["func_evals"]]).T.tolist()
 
-        #Translate optimal value to whole parameter array
-        #p_opt_mask=p_new.copy()
-        #p_opt_mask.set_act(parameters[:, -1])
-
     # Get the parameters that correspond to lowest object function
-    p_new.set_act(parameters[:, -1])
+    if set_last_value:
+        p_curr.set_act(parameters[:, -1])
 
 
-    return (total_cost[-1], p_new.get_all(), hist)
+    return (total_cost[-1], p_curr.get_all(), hist)
