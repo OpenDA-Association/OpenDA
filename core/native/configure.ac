@@ -448,7 +448,6 @@ AC_CONFIG_FILES([Makefile \
                  src/cta_f90/generated/Makefile\
                  src/openda/Makefile \
                  src/openda/bridge/Makefile \
-                 src/sangoma/Makefile \
                  models/Makefile \
                  models/advec1d/Makefile \
                  models/advec1d/src/Makefile \
