@@ -234,7 +234,9 @@
 
 	<target name="copy-jre">
 		<copy  toDir="${projectjre}">
-			<fileset dir = "thirdparty/jre"/>
+                        <fileset dir = "thirdparty/jre">
+                                <exclude name=".gitkeep"/>
+                        </fileset>
 		</copy>
 	</target>
 
