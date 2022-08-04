@@ -139,6 +139,7 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 			//      <file dirPrefix="kgStorage_" fileName="kalmanGainStorage.xml" fileType="netcdf" />
 			String storageTypeString=this.configurationAsTree.getAsString("saveGain/file@fileType", this.gainStorageFileType.toString());
 			if(storageTypeString.equalsIgnoreCase("netcdf")){this.gainStorageFileType=StorageType.netcdf;}
+			if (storageTypeString.equalsIgnoreCase("netcdf_cf")) this.gainStorageFileType = StorageType.netcdf_cf;
 			if(storageTypeString.equalsIgnoreCase("xml")){this.gainStorageFileType=StorageType.xml;}
 			Results.putMessage("saveGain/file@fileType="+this.gainStorageFileType);
 			this.gainStorageDirPrefix=this.configurationAsTree.getAsString("saveGain/file@dirPrefix", this.gainStorageDirPrefix);

@@ -1574,8 +1574,8 @@ public class NetcdfUtils {
 
 	public static void addGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
 		netcdfFileWriter.addGroupAttribute(null,new Attribute("title", "Netcdf data"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("institution", "Deltares"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("source", "written by OpenDA"));
+		netcdfFileWriter.addGroupAttribute(null,new Attribute("institution", "OpenDA Association"));
+		netcdfFileWriter.addGroupAttribute(null,new Attribute("source", "Written by OpenDA"));
 		netcdfFileWriter.addGroupAttribute(null,new Attribute("history", "Created at " + new Date(System.currentTimeMillis()) ));
 		netcdfFileWriter.addGroupAttribute(null,new Attribute("references", "http://www.openda.org"));
 		netcdfFileWriter.addGroupAttribute(null,new Attribute("Conventions", "CF-1.6"));
