@@ -24,6 +24,7 @@ import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Tests for NetcdfDataObject
@@ -62,6 +63,29 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertFalse(item == null);
 		double[] itemValues = item.getValuesAsDoublesForSingleTimeIndex(0);
 		assertEquals(2500, itemValues.length);
+	}
+
+	public void testPressureNoiseDFlowFM() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		dataObject.initialize(this.testRunDataDir, new String[]{"dcsmv5_airpressure_noise.nc", "true", "false"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertTrue(exchangeItemIDs.length > 0);
+		NetcdfGridTimeSeriesExchangeItem airPressure = (NetcdfGridTimeSeriesExchangeItem) dataObject.getDataObjectExchangeItem("air_pressure");
+		double[] valuesAsDoubles = airPressure.getValuesAsDoublesForSingleTimeIndex(0);
+		Arrays.sort(valuesAsDoubles);
+		assertEquals(-10.0387, valuesAsDoubles[0], 0.0001);
+		assertEquals(-10.0387, valuesAsDoubles[valuesAsDoubles.length - 1], 0.0001);
+		double[] valuesAsDoubles1 = airPressure.getValuesAsDoublesForSingleTimeIndex(1);
+		Arrays.sort(valuesAsDoubles1);
+		assertEquals(-10.0387, valuesAsDoubles1[0], 0.0001);
+		assertEquals(-10.0387, valuesAsDoubles1[valuesAsDoubles.length - 1], 0.0001);
+		double[] axpyValues = new double[valuesAsDoubles.length];
+		Arrays.fill(axpyValues, 1);
+		airPressure.axpyOnValuesForSingleTimeIndex(1, 1.1, axpyValues);
+		double[] valuesAsDoubles1Axpy = airPressure.getValuesAsDoublesForSingleTimeIndex(1);
+		Arrays.sort(valuesAsDoubles1Axpy);
+		assertEquals(-10.0387, valuesAsDoubles1Axpy[0], 0.0001);
+		assertEquals(-10.0387, valuesAsDoubles1Axpy[valuesAsDoubles.length - 1], 0.0001);
 	}
 
 	public void testRequiredExchangeItemIds() {

@@ -70,10 +70,6 @@ public class KalmanGainStorageTest extends TestCase {
 
 	public void testReadWriteKalmanGainNetcdfCF2DNoise() {
 
-		File kgStorageDir = new File(testRunDataDir, "kgStorage_200701010000");
-		File kgStorageDirCopy = new File(testRunDataDir, "kgStorage_200701010000_copy");
-		BBUtils.makeDirectoryClone(kgStorageDir, kgStorageDirCopy);
-
 		double timeAsMJD = 54101;
 
 		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
@@ -103,18 +99,19 @@ public class KalmanGainStorageTest extends TestCase {
 
 		assertEquals(8, kalmanGainColumns.length);
 		IVector firstKalmanGainColumn = kalmanGainColumns[0];
-		assertEquals(432, firstKalmanGainColumn.getSize());
+		assertEquals(437, firstKalmanGainColumn.getSize());
 		assertTrue(firstKalmanGainColumn instanceof TreeVector);
 		TreeVector firstTreeVector = (TreeVector) firstKalmanGainColumn;
 		String id = firstTreeVector.getId();
 		assertEquals("state", id);
 		ArrayList<String> subTreeVectorIds = firstTreeVector.getSubTreeVectorIds();
-		assertEquals(1, subTreeVectorIds.size());
+		assertEquals(2, subTreeVectorIds.size());
+
 		assertEquals("state", subTreeVectorIds.get(0));
-		TreeVector treeVector = (TreeVector) firstTreeVector.getSubTreeVector("state");
-		ArrayList<String> subSubTreeVectorIds = treeVector.getSubTreeVectorIds();
-		assertEquals(1, subSubTreeVectorIds.size());
-		assertEquals("2DNoise", subSubTreeVectorIds.get(0));
+		TreeVector stateTreeVector = (TreeVector) firstTreeVector.getSubTreeVector("state");
+		ArrayList<String> stateSubTreeVectorIds = stateTreeVector.getSubTreeVectorIds();
+		assertEquals(1, stateSubTreeVectorIds.size());
+		assertEquals("2DNoise", stateSubTreeVectorIds.get(0));
 
 		double[] values = firstKalmanGainColumn.getValues();
 		double delta = 0.000001;
@@ -126,6 +123,17 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(-0.078988, values[27], delta);
 		assertEquals(-0.076138, values[28], delta);
 		assertEquals(0.109289, values[431], delta);
+
+		assertEquals("s1", subTreeVectorIds.get(1));
+		TreeVector s1TreeVector = (TreeVector) firstTreeVector.getSubTreeVector("s1");
+		ArrayList<String> s1SubTreeVectorIds = s1TreeVector.getSubTreeVectorIds();
+		assertTrue(s1SubTreeVectorIds.isEmpty());
+
+		assertEquals(-0.049176, values[432], delta);
+		assertEquals(-0.018843, values[433], delta);
+		assertEquals(-0.052612, values[434], delta);
+		assertEquals(0.015112, values[435], delta);
+		assertEquals(-0.038791, values[436], delta);
 	}
 
 
