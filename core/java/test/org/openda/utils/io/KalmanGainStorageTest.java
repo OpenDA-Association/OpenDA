@@ -18,10 +18,12 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.utils.io;
+import gov.noaa.pmel.sgt.contour.Tree;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
+import org.openda.interfaces.ITreeVector;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.TreeVector;
@@ -29,6 +31,7 @@ import org.openda.utils.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Tests for Kalman gain storage object.
@@ -63,6 +66,66 @@ public class KalmanGainStorageTest extends TestCase {
 				new File(kgStorageDir, "kalmanGainStorage_out.xml"),
 				new File(kgStorageDirCopy, "kalmanGainStorage.xml"));
 
+	}
+
+	public void testReadWriteKalmanGainNetcdfCF2DNoise() {
+
+		File kgStorageDir = new File(testRunDataDir, "kgStorage_200701010000");
+		File kgStorageDirCopy = new File(testRunDataDir, "kgStorage_200701010000_copy");
+		BBUtils.makeDirectoryClone(kgStorageDir, kgStorageDirCopy);
+
+		double timeAsMJD = 54101;
+
+		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageIn.readKalmanGain();
+
+		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
+
+		String[] observationIds = kgStorageIn.getObservationIds();
+		checkKalmanGainContents(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
+
+		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn);
+		kgStorageOut.readKalmanGain();
+
+		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
+	}
+
+	private void checkKalmanGainContents(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
+		String[] expectedObservationIds = {"WICK.waterlevel", "VLISSGN.waterlevel", "DENHDR.waterlevel", "NORTHSS.waterlevel", "DOVR.waterlevel", "SHEERNS.waterlevel", "HOEKVHLD.waterlevel", "LOWST.waterlevel"};
+		for (int i = 0; i < expectedObservationIds.length; i++) {
+			assertEquals(expectedObservationIds[i], observationIds[i]);
+		}
+
+		assertEquals(timeAsMJD, kgStorageIn.getTimeStampAsMjd());
+
+		assertEquals(8, kalmanGainColumns.length);
+		IVector firstKalmanGainColumn = kalmanGainColumns[0];
+		assertEquals(432, firstKalmanGainColumn.getSize());
+		assertTrue(firstKalmanGainColumn instanceof TreeVector);
+		TreeVector firstTreeVector = (TreeVector) firstKalmanGainColumn;
+		String id = firstTreeVector.getId();
+		assertEquals("state", id);
+		ArrayList<String> subTreeVectorIds = firstTreeVector.getSubTreeVectorIds();
+		assertEquals(1, subTreeVectorIds.size());
+		assertEquals("state", subTreeVectorIds.get(0));
+		TreeVector treeVector = (TreeVector) firstTreeVector.getSubTreeVector("state");
+		ArrayList<String> subSubTreeVectorIds = treeVector.getSubTreeVectorIds();
+		assertEquals(1, subSubTreeVectorIds.size());
+		assertEquals("2DNoise", subSubTreeVectorIds.get(0));
+
+		double[] values = firstKalmanGainColumn.getValues();
+		double delta = 0.000001;
+		assertEquals(-0.115087, values[0], delta);
+		assertEquals(0.101872, values[15], delta);
+		assertEquals(0.111053, values[16], delta);
+		assertEquals(0.118487, values[17], delta);
+		assertEquals(0.146230, values[26], delta);
+		assertEquals(-0.078988, values[27], delta);
+		assertEquals(-0.076138, values[28], delta);
+		assertEquals(0.109289, values[431], delta);
 	}
 
 

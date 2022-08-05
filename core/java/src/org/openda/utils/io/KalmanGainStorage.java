@@ -490,7 +490,6 @@ public class KalmanGainStorage {
 		File directoryForStorage = determineStorageDirectory(true);
 
 		if (this.gainFileType == StorageType.netcdf_cf) {
-			long start = System.currentTimeMillis();
 			NetcdfFile netcdfFile;
 			try {
 				File file = new File(directoryForStorage, "KalmanGainStorage.nc");
@@ -518,7 +517,10 @@ public class KalmanGainStorage {
 						this.observationOffsetInDays = (double[]) variable.read().get1DJavaArray(double.class);
 						continue;
 					}
-					System.out.printf("Reading variable %s%n", shortName);
+					if (TIME_STAMP.equals(shortName)) {
+						this.timeStampAsMJD = ((double[]) variable.read().get1DJavaArray(double.class))[0];
+						continue;
+					}
 					int[] shape = variable.getShape();
 					int[] shapeForRead = variable.getShape();
 					shapeForRead[0] = 1;
@@ -542,9 +544,10 @@ public class KalmanGainStorage {
 							double[] doubleArray = (double[]) read.get1DJavaArray(Double.TYPE);
 							DimensionIndex[] dimensionIndices = {new DimensionIndex(shape[1]), new DimensionIndex(shape[2])};
 							Vector doubleVector = new Vector(doubleArray);
-							TreeVector vector = new TreeVector(shortName, doubleVector, dimensionIndices);
 							Attribute parentVectorIdAttribute = variable.findAttribute(PARENT_VECTOR_ID);
-							TreeVector parentVector = new TreeVector(parentVectorIdAttribute.getStringValue(), vector);
+							TreeVector parentVector = new TreeVector(parentVectorIdAttribute.getStringValue());
+							TreeVector vector = new TreeVector(shortName, doubleVector, dimensionIndices);
+							parentVector.addChild(vector);
 							kalmanGainColumns[i].addChild(parentVector);
 							continue;
 						}
@@ -556,8 +559,6 @@ public class KalmanGainStorage {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			long end = System.currentTimeMillis();
-			System.out.println("Reading took " + (end - start));
 			return;
 		}
 
