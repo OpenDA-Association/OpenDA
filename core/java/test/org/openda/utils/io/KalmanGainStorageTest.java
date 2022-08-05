@@ -68,7 +68,7 @@ public class KalmanGainStorageTest extends TestCase {
 
 	}
 
-	public void testReadWriteKalmanGainNetcdfCF2DNoise() {
+	public void testReadWriteKalmanGainNetcdfCF() {
 
 		double timeAsMJD = 54101;
 
