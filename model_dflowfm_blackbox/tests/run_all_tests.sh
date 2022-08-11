@@ -1,0 +1,17 @@
+#! /bin/sh
+set -x 
+
+./clean.sh
+rm -f *.log
+
+oda_test.sh calibration_discharge_dependent_river_roughness >calibration_discharge_dependent_river_roughness.log 2>&1
+oda_test.sh calibration_river_roughness >calibration_river_roughness.log 2>&1
+oda_test.sh dcsmv5_kalman >dcsmv5_kalman.log 2>&1
+oda_test.sh estuary_calibration >estuary_calibration.log 2>&1
+oda_test.sh estuary_kalman >estuary_kalman.log 2>&1
+oda_test.sh estuary_kalman_FMSuite2019.01 >estuary_kalman_FMSuite2019.01.log 2>&1
+oda_test.sh estuary_kalman_FMSuite2019.01_bcfile >estuary_kalman_FMSuite2019.01_bcfile.log 2>&1
+oda_test.sh lake_kalman >lake_kalman.log 2>&1
+oda_test.sh simple_waal_calibration_roughness >simple_waal_calibration_roughness.log 2>&1
+oda_test.sh simple_waal_kalman >simple_waal_kalman.log 2>&1
+oda_test.sh simple_waal_salt_kalman >simple_waal_salt_kalman.log 2>&1
