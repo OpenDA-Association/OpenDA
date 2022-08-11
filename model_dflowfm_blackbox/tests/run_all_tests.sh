@@ -1,5 +1,9 @@
 #! /bin/sh
-set -x 
+if [ -z $DFLOWFMDIR ]; then
+    echo ERROR: No environment variable \$DFLOWFMDIR available.
+    echo use \"export DFLOWFMDIR={installation directory of D-Flow FM}\" before starting this script.
+    exit 1
+fi
 
 ./clean.sh
 rm -f *.log
