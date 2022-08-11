@@ -18,7 +18,8 @@
 		<alias key="trachytopeFile" value="ruw.ttd"/>
 		<alias key="depthMultiplierFile" value="river1D_friction_factor.xyz"/>
 		<alias key="depthMultiplierTemplateFile" value="river1D_friction_factor_template.xyz"/>
-		<alias key="inputFile" value="river1D.mdu"/>
+		<alias key="mduFile" value="river1D.mdu"/>
+		<alias key="dimrFile" value="dimrConfig.xml"/>
 		<alias key="netcdfoutput" value="DFM_OUTPUT_river1D/river1D_his.nc"/>
 	</aliasValues>
 

@@ -17,13 +17,12 @@
 		<alias key="concatenated_hisfile" value="full_estuary_his.nc"/>
 		<alias key="mapfile" value="dflowfm/estuary_map.nc"/>
 		<alias key="mapfile_out" value="dflowfm/DFM_OUTPUT_estuary/estuary_map.nc"/>
+		<alias key="dimrfile" value="dimrConfigEstuary.xml"/>
 	</aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>
 
     <exchangeItems>
-        <vector id="eastboundary_noise.1:waterlevelbnd" ioObjectId="boundaries" elementId="eastboundary.1:waterlevelbnd-estuary_east_noise_0001"/>
-        <vector id="eastboundary_surge.1:waterlevelbnd" ioObjectId="boundaries" elementId="eastboundary.1:waterlevelbnd-estuary_east_surge_0001"/>
         <vector id="start_time" ioObjectId="mdufile" elementId="start_time" />
         <vector id="end_time" ioObjectId="mdufile" elementId="end_time" />
         <vector id="s1" ioObjectId="mapfile" elementId="s1"/>
@@ -33,6 +32,9 @@
         <vector id="station01.waterlevel" ioObjectId="hisfile" elementId="station01.waterlevel"/>
         <vector id="station02.waterlevel" ioObjectId="hisfile" elementId="station02.waterlevel"/>
         <vector id="station03.waterlevel" ioObjectId="hisfile" elementId="station03.waterlevel"/>
+        <vector id="eastboundary_noise.1:waterlevelbnd" ioObjectId="boundaries" elementId="eastboundary.1:waterlevelbnd-estuary_east_noise_0001"/>
+        <vector id="eastboundary_surge.1:waterlevelbnd" ioObjectId="boundaries" elementId="eastboundary.1:waterlevelbnd-estuary_east_surge_0001"/>
+
     </exchangeItems>
 
 <doCleanUp>false</doCleanUp>

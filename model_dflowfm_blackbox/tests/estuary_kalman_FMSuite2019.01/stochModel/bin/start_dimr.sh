@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 ## This script requires one input argument i.e. file name of the dimr_config.xml
 ## To use this script, set DFLOWFMDIR to the installation directory of DIMR
 export DFLOWFMDIR=
 #export DFLOWFMDIR=/opt/delft3dfm/2.13.02.67836
+=======
+# This script requires one input argument: a file name (typically called dimr_config.xml). 
+# To use this script, uncomment the next line and set DFLOWFMDIR to <Your installation base dir>
+#export DFLOWFMDIR=
+# or create an environment variable DFLOWFMDIR.
+>>>>>>> a42825562... Updated all examples to use run_dimr.{bat|sh} to start D-FLOW FM.
 if [ -z $1 ]; then
     echo ERROR: no dimr configuration file is specified
     exit 1

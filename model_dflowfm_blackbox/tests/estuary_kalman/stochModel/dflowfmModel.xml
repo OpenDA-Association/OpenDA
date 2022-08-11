@@ -17,6 +17,7 @@
 		<alias key="mdufile" value="estuary.mdu"/>
 		<alias key="hisfile" value="estuary_his.nc"/>
 		<alias key="mapfile" value="estuary_map.nc"/>
+		<alias key="dimrfile" value="dimrConfig.xml"/>
 	</aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>
