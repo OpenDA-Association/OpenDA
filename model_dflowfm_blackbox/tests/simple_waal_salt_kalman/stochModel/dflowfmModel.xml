@@ -10,13 +10,14 @@
     <!-- Specify wrapper configuration for which this model is defined -->
     <aliasValues>
         <alias key="exedir" value="./bin"/> 
-        <alias key="instanceDir" value="./work"/>
+        <alias key="instanceDir" value="../work/work"/>
         <alias key="templateDir" value="./input_dflowfm"/>
         <alias key="runid" value="simplewaal_salt"/>
         <alias key="outputdir" value="DFM_OUTPUT_simplewaal_salt"/>
         <alias key="mdufile" value="simplewaal_salt.mdu"/>
         <alias key="hisfile" value="simplewaal_salt_his.nc"/>
         <alias key="mapfile" value="simplewaal_salt_map.nc"/>
+        <alias key="dimrfile" value="dimrConfig.xml"/>
     </aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>

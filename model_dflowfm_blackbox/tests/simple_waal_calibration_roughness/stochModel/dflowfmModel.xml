@@ -15,7 +15,8 @@
 		<alias key="runid" value="simple_waal"/>
 		<alias key="frictionMultiplierFile" value="sw_frcfact_all.xyz"/>
 		<alias key="frictionMultiplierTemplateFile" value="sw_frcfact_template.xyz"/>
-		<alias key="inputFile" value="simple_waal.mdu"/>
+		<alias key="mduFile" value="simple_waal.mdu"/>
+		<alias key="dimrFile" value="dimrConfig.xml"/>		
 		<alias key="netcdfoutput" value="DFM_OUTPUT_simple_waal/simple_waal_his.nc"/>
 	</aliasValues>
 

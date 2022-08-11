@@ -13,6 +13,7 @@
         <alias key="mapfile_out"/>
         <alias key="hisfile"/>
         <alias key="concatenated_hisfile"/>
+        <alias key="dimrfile"/>
     </aliasDefinitions>
 
     <run>
@@ -21,8 +22,8 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" windowsExe="%exedir%/start_dimr.bat">
-                <arg>dimrConfigEstuary.xml</arg>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dimr.sh" windowsExe="%exedir%/start_dimr.bat">
+                <arg>%dimrfile%</arg>
                 <checkOutput file="%hisfile%"/>
                 <checkOutput file="%mapfile_out%"/>
             </action>
