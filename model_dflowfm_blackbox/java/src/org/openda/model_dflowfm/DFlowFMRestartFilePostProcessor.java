@@ -4,6 +4,9 @@ import org.openda.interfaces.IConfigurable;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +65,10 @@ public class DFlowFMRestartFilePostProcessor implements IConfigurable {
 		File sourceRestartFile = new File(sourcesDir, formattedFileName);
 		File targetRestartFile = new File(workingDir, targetRestartFileName);
 		if (!sourceRestartFile.exists()) throw new RuntimeException("DFlowFMRestartFileWrapper: Source restart file does not exist " + sourceRestartFile);
-		boolean succeeded = sourceRestartFile.renameTo(targetRestartFile);
-		if (!succeeded) throw new RuntimeException("DFlowFMRestartFileWrapper: failed to rename " + sourceRestartFile + " to " + targetRestartFile);
+		try {
+			Files.move(sourceRestartFile.toPath(), targetRestartFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			throw new RuntimeException("DFlowFMRestartFileWrapper: failed to move " + sourceRestartFile + " to " + targetRestartFile + " due to " + e.getMessage(), e);
+		}
 	}
 }

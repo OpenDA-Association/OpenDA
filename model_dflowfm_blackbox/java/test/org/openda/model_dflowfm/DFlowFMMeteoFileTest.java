@@ -59,4 +59,26 @@ public class DFlowFMMeteoFileTest extends TestCase {
         assertTrue(testData.FilesAreIdentical(outputFile, referenceFile));
 
     }
+
+    public void testMeteo(){
+
+        // First write a test file
+        File dataDir=testRunDataDir;
+
+        DFlowFMMeteoFile frictionCoefficientFile = new DFlowFMMeteoFile();
+        String arg[] = new String[3];
+        arg[0] = "DCSM-FM_0_5nm_windx_noise.amu";
+        frictionCoefficientFile.initialize(testRunDataDir, arg);
+        String ids[] = frictionCoefficientFile.getExchangeItemIDs();
+		assertEquals(1, ids.length);
+        frictionCoefficientFile.finish();
+
+        // check output
+        File outputFile=new File(testRunDataDir,"windx.amu");
+        File referenceFile=new File(testRunDataDir,"windx_ref.amu");
+        assertTrue(outputFile.exists());
+        assertTrue(referenceFile.exists());
+        assertTrue(testData.FilesAreIdentical(outputFile, referenceFile));
+
+    }
 }
