@@ -17,14 +17,34 @@ public class DFlowFMRestartFilePostProcessorTest extends TestCase {
 	}
 
 
-	public void testRestartFileInsteadOfMap() {
+	public void testRenameNewestRestartFile() {
+		File restartFile3 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070103_000000_rst.nc");
+		assertTrue(restartFile3.exists());
 		File restartFile4 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070104_000000_rst.nc");
 		assertTrue(restartFile4.exists());
 		File restartFile5 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070105_000000_rst.nc");
 		assertTrue(restartFile5.exists());
 		DFlowFMRestartFilePostProcessor dFlowFMRestartFilePostProcessor = new DFlowFMRestartFilePostProcessor();
 		dFlowFMRestartFilePostProcessor.initialize(testRunDataRestartFileDir, new String[]{"runId=notARealRestartFile", "sourceRestartFileSubDir=subdir", "targetRestartFileName=notARealRestartFile_20220101_000000_rst.nc"});
+		assertTrue(restartFile3.exists());
 		assertTrue(restartFile4.exists());
+		assertFalse(restartFile5.exists());
+		File restartFile2022 = new File(testRunDataRestartFileDir, "notARealRestartFile_20220101_000000_rst.nc");
+		assertTrue(restartFile2022.exists());
+	}
+
+
+	public void testDeleteOlderRestartFiles() {
+		File restartFile3 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070103_000000_rst.nc");
+		assertTrue(restartFile3.exists());
+		File restartFile4 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070104_000000_rst.nc");
+		assertTrue(restartFile4.exists());
+		File restartFile5 = new File(testRunDataRestartFileDir, "subdir/notARealRestartFile_20070105_000000_rst.nc");
+		assertTrue(restartFile5.exists());
+		DFlowFMRestartFilePostProcessor dFlowFMRestartFilePostProcessor = new DFlowFMRestartFilePostProcessor();
+		dFlowFMRestartFilePostProcessor.initialize(testRunDataRestartFileDir, new String[]{"runId=notARealRestartFile", "sourceRestartFileSubDir=subdir", "targetRestartFileName=notARealRestartFile_20220101_000000_rst.nc", "deleteOlderRstFiles=true"});
+		assertFalse(restartFile3.exists());
+		assertFalse(restartFile4.exists());
 		assertFalse(restartFile5.exists());
 		File restartFile2022 = new File(testRunDataRestartFileDir, "notARealRestartFile_20220101_000000_rst.nc");
 		assertTrue(restartFile2022.exists());
