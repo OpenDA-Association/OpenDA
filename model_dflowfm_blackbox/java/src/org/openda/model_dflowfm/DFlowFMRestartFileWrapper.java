@@ -43,6 +43,9 @@ import java.util.*;
  */
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
+	public static final String EXCHANGE_ITEM_ID_POST_FIX = "exchangeItemIdPostFix";
+	private String exchangeItemIdPostFix;
+
 	// create a MetaExchangeItem
 	private class DFlowFMMetaExchangeItem{
 		public ExchangeItem exchangeItem;
@@ -81,8 +84,19 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 			} catch (Exception e){
 				Results.putMessage("DFlowFMRestartFileWrapper: no time specified, reading values for the last time index");
 			}
-			if (arguments.length > 1) {
-				Results.putMessage("DflowFMRestartFile: "+fileName+", extra arguments ignored");
+			for (int i = 1; i < arguments.length; i++) {
+				String argument = arguments[i];
+				String[] keyValue = StringUtilities.getKeyValuePair(argument);
+				if (keyValue == null) continue;
+				String key = keyValue[0];
+				String value = keyValue[1];
+				switch (key) {
+					case EXCHANGE_ITEM_ID_POST_FIX:
+						exchangeItemIdPostFix = value;
+						continue;
+					default:
+						throw new RuntimeException("Unknown key " + key + ". Please specify only " + EXCHANGE_ITEM_ID_POST_FIX + " as key=value pair");
+				}
 			}
 		}
 		NetcdfFile inputFile;
@@ -190,7 +204,8 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 				//System.out.println("DEBUG: "+ fullName + " unitID: " + unitID  );
 				if (unitID != null) {
-					ExchangeItem exchange = new DFlowFMExchangeItem(fullNameToShortName(fullName), unitID, geometryInfo);
+					String id = getId(fullName);
+					ExchangeItem exchange = new DFlowFMExchangeItem(id, unitID, geometryInfo);
 					exchange.setValues(new Vector(dValues));
 					double[] timeinfo = { Reftime };
 					exchange.setTimes(timeinfo);
@@ -198,7 +213,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					if (att != null) {
 						exchange.setQuantityId(att.getStringValue());
 					}
-					this.ExchangeItems.put(var.getShortName(), new DFlowFMMetaExchangeItem(exchange, true, fullName));
+					this.ExchangeItems.put(id, new DFlowFMMetaExchangeItem(exchange, true, fullName));
 				} else {
 					throw new RuntimeException("Error: no unit specified for variable "  + var.getShortName() + " in netcdf file " + netcdffileName);
 				}
@@ -210,6 +225,12 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		} catch (IOException e) {
 			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
+	}
+
+	private String getId(String fullName) {
+		String id = fullNameToShortName(fullName);
+		if (exchangeItemIdPostFix == null) return id;
+		return id + exchangeItemIdPostFix;
 	}
 
 	private File getNetcdfFile(File workingDir) {
