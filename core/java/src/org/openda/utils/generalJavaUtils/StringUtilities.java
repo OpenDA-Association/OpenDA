@@ -359,4 +359,14 @@ public class StringUtilities {
 		if (split.length > 2) return null; //throw new IllegalArgumentException("Not a key value pair: " + argument);
 		return split;
 	}
+
+	public static String padLeft(String aText, int aLength, char aChar) {
+		if (aText.length() >= aLength) return aText;
+
+		//noinspection StringConcatenationMissingWhitespace
+		char[] buf = new char[aLength - aText.length()];
+		Arrays.fill(buf, aChar);
+
+		return new String(buf) + aText;
+	}
 }

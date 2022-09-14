@@ -4,7 +4,6 @@ import org.openda.exchange.AbstractDataObject;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 
 import java.io.File;
-import java.util.Arrays;
 
 public class DFlowFMPartitionedRestartFilesWrapper extends AbstractDataObject {
 
@@ -35,7 +34,7 @@ public class DFlowFMPartitionedRestartFilesWrapper extends AbstractDataObject {
 
 		dFlowFMRestartFileWrapperArray = new DFlowFMRestartFileWrapper[numberOfPartitions];
 		for (int i = 0; i < numberOfPartitions; i++) {
-			String partition = padLeft(String.valueOf(i), 4, '0');
+			String partition = StringUtilities.padLeft(String.valueOf(i), 4, '0');
 			String fileName = String.format("%s_%s_00000000_000000_rst.nc", runId, partition);
 			DFlowFMRestartFileWrapper dFlowFMRestartFileWrapper = new DFlowFMRestartFileWrapper();
 			dFlowFMRestartFileWrapper.initialize(workingDir, new String[]{fileName, "exchangeItemIdPostFix=_" + partition});
@@ -47,16 +46,6 @@ public class DFlowFMPartitionedRestartFilesWrapper extends AbstractDataObject {
 			dFlowFMRestartFileWrapperArray[i] = dFlowFMRestartFileWrapper;
 		}
 
-	}
-
-	public static String padLeft(String aText, int aLength, char aChar) {
-		if (aText.length() >= aLength) return aText;
-
-		//noinspection StringConcatenationMissingWhitespace
-		char[] buf = new char[aLength - aText.length()];
-		Arrays.fill(buf, aChar);
-
-		return new String(buf) + aText;
 	}
 
 	@Override

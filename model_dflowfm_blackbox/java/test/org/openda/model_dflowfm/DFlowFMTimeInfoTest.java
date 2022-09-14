@@ -182,4 +182,46 @@ public class DFlowFMTimeInfoTest extends TestCase {
 		File fileExpected = new File(testRunDataMDUFileDir, "dcsmv5_expected.mdu");
 		assertEquals(AsciiFileUtils.readText(fileExpected), AsciiFileUtils.readText(fileChanged));
 	}
+
+	public void testDFlowFMPartitionedMDU() {
+		File testRunDataMDUFileDir = new File(testData.getTestRunDataDir(), "MDUfile");
+		DFlowFMTimeInfo DFlowFMTimeInfo = new DFlowFMTimeInfo();
+		DFlowFMTimeInfo.initialize(testRunDataMDUFileDir, new String[]{"dcsmv5.mdu", "useRstForRestart=true", "numberOfPartitions=3"});
+
+		IExchangeItem[] DFlowFMTimeInfoExchangeItemMin = DFlowFMTimeInfo.getExchangeItems();
+
+		assertEquals("DflowFMTimeInfoExchangeItem.length: ", 2, DFlowFMTimeInfoExchangeItemMin.length);
+		DFlowFMTimeInfoExchangeItem startTimeEI = (DFlowFMTimeInfoExchangeItem) DFlowFMTimeInfoExchangeItemMin[0];
+		assertEquals("DFlowFMTimeInfoExchangeItem[0].getId(): ", "start_time", startTimeEI.getId());
+		DFlowFMTimeInfoExchangeItem endTimeEI = (DFlowFMTimeInfoExchangeItem) DFlowFMTimeInfoExchangeItemMin[1];
+		assertEquals("DFlowFMTimeInfoExchangeItem[1].getId(): ", "end_time", endTimeEI.getId());
+		Double startValue = (Double) startTimeEI.getValues();
+		assertEquals(54101.0, startValue, 0.00001);
+		Double endValue = (Double) endTimeEI.getValues();
+		assertEquals( 54101.041666, endValue, 0.00001);
+
+		startTimeEI.setValues(startValue + 1);
+		endTimeEI.setValues(endValue + 1);
+
+		DFlowFMTimeInfo.finish();
+
+		checkPartitionedMduFile(testRunDataMDUFileDir, "dcsmv5_0000.mdu");
+		checkPartitionedMduFile(testRunDataMDUFileDir, "dcsmv5_0001.mdu");
+		checkPartitionedMduFile(testRunDataMDUFileDir, "dcsmv5_0002.mdu");
+	}
+
+	private static void checkPartitionedMduFile(File testRunDataMDUFileDir, String mduFileName) {
+		DFlowFMTimeInfo dFlowFMTimeInfoRebuild = new DFlowFMTimeInfo();
+		dFlowFMTimeInfoRebuild.initialize(testRunDataMDUFileDir, new String[]{mduFileName, "useRstForRestart=true"});
+
+		IExchangeItem[] dFlowFMTimeInfoExchangeItemsRebuild = dFlowFMTimeInfoRebuild.getExchangeItems();
+
+		assertEquals("DflowFMTimeInfoExchangeItem.length: ", 2, dFlowFMTimeInfoExchangeItemsRebuild.length);
+		assertEquals("DFlowFMTimeInfoExchangeItem[0].getId(): ", "start_time", dFlowFMTimeInfoExchangeItemsRebuild[0].getId());
+		assertEquals("DFlowFMTimeInfoExchangeItem[1].getId(): ", "end_time", dFlowFMTimeInfoExchangeItemsRebuild[1].getId());
+		Double startValueRebuild = (Double) dFlowFMTimeInfoExchangeItemsRebuild[0].getValues();
+		assertEquals(54102.0, startValueRebuild, 0.00001);
+		Double endValueRebuild = (Double) dFlowFMTimeInfoExchangeItemsRebuild[1].getValues();
+		assertEquals( 54102.041666, endValueRebuild, 0.00001);
+	}
 }
