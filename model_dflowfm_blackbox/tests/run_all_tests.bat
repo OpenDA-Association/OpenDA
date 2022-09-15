@@ -3,7 +3,7 @@ rem setlocal enabledelayedexpansion
 
 REM Runs all tests in the tests directories one by one, and puts the output and 
 REM results in a single directory test_results
-REN set DFLOWFMDIR=C:\Program Files\Deltares\Delft3D Flexible Mesh Suite HM (2021.05)\plugins\DeltaShell.Dimr\kernels
+rem set DFLOWFMDIR=C:\Program Files\Deltares\Delft3D Flexible Mesh Suite HM (2021.05)\plugins\DeltaShell.Dimr\kernels
 
 REM set OPENDA_BINDIR, PATH and CLASSPATH
 cd ..\..\bin
@@ -30,82 +30,83 @@ mkdir test_results
 
 echo.
 
+REM all 2 tests finish correctly
 set CURDIR=calibration_discharge_dependent_river_roughness
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation results_simulation.m
-rem call :run_single_test Dud results_dud.m
-rem next 2 tests NullPointerException. Why are they present? The directory name suggests a calibration example.
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem call :run_single_test EnKF results_enkf.m
+call :run_single_test Dud results_dud.m
 
+REM all 2 tests finish correctly
 set CURDIR=calibration_river_roughness
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation results_simulation.m
-rem call :run_single_test Dud results_dud.m
-rem next 2 tests NullPointerException. Why are they present? The directory name suggests a calibration example.
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem call :run_single_test EnKF results_enkf.m
+call :run_single_test Dud results_dud.m
 
+REM all 4 tests finish correctly
 set CURDIR=dcsmv5_kalman
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.m
-rem call :run_single_test SimulationNoise simulation_noise_results.m
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem restart file verouderd, tijden worden niet goed geupdate, oneindige som?
-rem call :run_single_test EnKF Enkf_results.m
+call :run_single_test SimulationNoise simulation_noise_results.m
+call :run_single_test SequentialSimulation SequentialSimulation_results.m
+call :run_single_test EnKF Enkf_results.m
 
+REM all 2 tests finish correctly
 set CURDIR=estuary_calibration
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation results_simulation.m
-rem call :run_single_test Dud results_dud.m
-rem next 2 tests NullPointerException. Why are they present? The directory name suggests a calibration example.
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem call :run_single_test Enkf Enkf_results.m
+call :run_single_test Dud results_dud.m
 
+REM all 3 tests finish correctly
 set CURDIR=estuary_kalman
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.m
-rem call :run_single_test SequentialSimulation simulation_results.m
-rem KAPOT op niet vinden ExchangeItem
-rem call :run_single_test Enkf Enkf_results.m
+call :run_single_test SequentialSimulation simulation_results.m
+call :run_single_test Enkf Enkf_results.m
 
+REM all 4 tests finish correctly
 set CURDIR=estuary_kalman_FMSuite2019.01
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.py
+call :run_single_test SequentialSimulation sequential_results.py
+rem beware: long run_time! call :run_single_test SequentialEnsembleSimulation ensemble_results.py
+call :run_single_test Enkf Enkf_results.py
 
+REM all 4 tests finish correctly
 set CURDIR=estuary_kalman_FMSuite2019.01_bcfile
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.py
+call :run_single_test SequentialSimulation sequential_results.py
+rem beware: long run_time! call :run_single_test SequentialEnsembleSimulation ensemble_results.py
+call :run_single_test Enkf Enkf_results.py
 
+REM all 5 tests finish correctly
 set CURDIR=lake_kalman
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.m
-rem call :run_single_test SimulationNoise simulation_noise_results.m
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem call :run_single_test SequentialSimulationNoise SequentialSimulation_noise_results.m
-rem nog naar kijken
-rem call :run_single_test Enkf Enkf_results.m
+call :run_single_test SimulationNoise simulation_noise_results.m
+call :run_single_test SequentialSimulation SequentialSimulation_results.m
+call :run_single_test SequentialSimulationNoise Sequential_noise_results.m
+call :run_single_test Enkf Enkf_results.m
 
+REM all 2 tests finish correctly
 set CURDIR=simple_waal_calibration_roughness
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.m
-rem call :run_single_test Dud dud_results.m
+call :run_single_test Dud dud_results.m
 
+REM all 3 tests finish correctly
 set CURDIR=simple_waal_kalman
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation Simulation_results.m
-rem niet gevonden exchange item
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem Error message: DFLOW-FM tidal components of fourier type with user specified frequency not implemented in OpenDA yet
-rem call :run_single_test Enkf_results.m
+call :run_single_test SequentialSimulation SequentialSimulation_results.m
+call :run_single_test Enkf Enkf_results.m
 
+REM all 3 tests finish correctly
 set CURDIR=simple_waal_salt_kalman
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation Simulation_results.m
-rem niet gevonden exchange item
-rem call :run_single_test SequentialSimulation SequentialSimulation_results.m
-rem Error message: DFLOW-FM tidal components of fourier type with user specified frequency not implemented in OpenDA yet
-rem call :run_single_test Enkf Enkf_results.m
+call :run_single_test SequentialSimulation SequentialSimulation_results.m
+call :run_single_test Enkf Enkf_results.m
 
 echo.
 if %ErrorOccurred% gtr 0 goto exitwitherror1

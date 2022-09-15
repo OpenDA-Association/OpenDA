@@ -13,8 +13,8 @@
 		<configString>simulationAlgorithm.xml</configString>
 	</algorithm>
         <timingSettings doTiming="true"></timingSettings>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>simulation_results.m</configFile>
+		<configFile>simulation_results.py</configFile>
 	</resultWriter>
 </openDaApplication>

@@ -10,7 +10,7 @@
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<aliasValues>
 		<alias key="exedir" value="./bin"/> 
-		<alias key="instanceDir" value="../work/work"/>
+		<alias key="instanceDir" value="./work"/>
 		<alias key="templateDir" value="./input_dflowfm"/>
 		<alias key="runid" value="river1D"/>
 		<alias key="frictionMultiplierFile" value="river1D_friction_factor.xyz"/>
