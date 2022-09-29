@@ -56,15 +56,8 @@ mkdir test_results\%CURDIR%
 call :run_single_test Simulation results_simulation.m
 call :run_single_test Dud results_dud.m
 
-REM all 3 tests finish correctly
-set CURDIR=estuary_kalman
-mkdir test_results\%CURDIR%
-call :run_single_test Simulation simulation_results.m
-call :run_single_test SequentialSimulation simulation_results.m
-call :run_single_test Enkf Enkf_results.m
-
 REM all 4 tests finish correctly
-set CURDIR=estuary_kalman_FMSuite2019.01
+set CURDIR=estuary_kalman_pli-file
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.py
 call :run_single_test SequentialSimulation sequential_results.py
@@ -72,7 +65,7 @@ rem beware: long run_time! call :run_single_test SequentialEnsembleSimulation en
 call :run_single_test Enkf Enkf_results.py
 
 REM all 4 tests finish correctly
-set CURDIR=estuary_kalman_FMSuite2019.01_bcfile
+set CURDIR=estuary_kalman_bc-file
 mkdir test_results\%CURDIR%
 call :run_single_test Simulation simulation_results.py
 call :run_single_test SequentialSimulation sequential_results.py
