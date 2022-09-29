@@ -22,15 +22,11 @@ pushd estuary_calibration
 ./clean.sh
 popd
 
-pushd estuary_kalman
+pushd estuary_kalman_pli-file
 ./clean.sh
 popd
 
-pushd estuary_kalman_FMSuite2019.01
-./clean.sh
-popd
-
-pushd estuary_kalman_FMSuite2019.01_bcfile
+pushd estuary_kalman_bc-file
 ./clean.sh
 popd
 
