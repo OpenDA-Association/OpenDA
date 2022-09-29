@@ -12,7 +12,7 @@ opendaTestReports/
 **/tests/*.log
 **/.vs
 OpenDATimings_*.txt
-**/stochModel/work[0-9]
+**/stochModel/work*
 *.*~
 build.errors
 *.aux
