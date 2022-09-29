@@ -13,8 +13,8 @@
 		<configString>SequentialSimulation.xml</configString>
 	</algorithm>
         <timingSettings doTiming="true"></timingSettings>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>SequentialSimulation_results.m</configFile>
+		<configFile>SequentialSimulation_results.py</configFile>
 	</resultWriter>
 </openDaApplication>

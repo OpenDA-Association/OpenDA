@@ -6,7 +6,6 @@
     <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
     <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
         <alias key="exedir"/>
-        <alias key="openda_bindir"/>
         <alias key="instanceDir"/>
         <alias key="templateDir"/>
         <alias key="outputdir"/>
@@ -15,6 +14,7 @@
         <alias key="mdufile"/>
         <alias key="mapfile"/>
         <alias key="hisfile"/>
+        <alias key="dimrfile"/>
     </aliasDefinitions>
 
     <run>
@@ -23,8 +23,8 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dimr.bat">
-                <arg>%mdufile%</arg>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dimr.sh" windowsExe="%exedir%/start_dimr.bat">
+                <arg>%dimrfile%</arg>
                 <checkOutput file="%outputdir%/%hisfile%"/>
                 <checkOutput file="%outputdir%/%mapfile%"/>
             </action>

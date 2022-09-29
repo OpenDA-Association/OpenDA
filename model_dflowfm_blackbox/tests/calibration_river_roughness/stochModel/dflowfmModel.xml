@@ -10,7 +10,7 @@
 	<!-- Specify wrapper configuration for which this model is defined -->
 	<aliasValues>
 		<alias key="exedir" value="./bin"/> 
-		<alias key="instanceDir" value="../work/work"/>
+		<alias key="instanceDir" value="./work"/>
 		<alias key="templateDir" value="./input_dflowfm"/>
 		<alias key="runid" value="river1D"/>
 		<alias key="frictionMultiplierFile" value="river1D_friction_factor.xyz"/>
@@ -18,7 +18,8 @@
 		<alias key="trachytopeFile" value="ruw.ttd"/>
 		<alias key="depthMultiplierFile" value="river1D_friction_factor.xyz"/>
 		<alias key="depthMultiplierTemplateFile" value="river1D_friction_factor_template.xyz"/>
-		<alias key="inputFile" value="river1D.mdu"/>
+		<alias key="mduFile" value="river1D.mdu"/>
+		<alias key="dimrFile" value="dimrConfig.xml"/>
 		<alias key="netcdfoutput" value="DFM_OUTPUT_river1D/river1D_his.nc"/>
 	</aliasValues>
 

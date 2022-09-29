@@ -1,38 +1,33 @@
 @echo off
-set executable="C:\Program Files (x86)\Deltares\Delft3D FM Suite 2017 HMWQ (1.2.2.36603)\plugins\DeltaShell.Dimr\run_dimr.bat"
+rem This script requires one input argument: a file name (typically called dimr_config.xml)
+rem To use this script, uncomment the next line and set DFLOWFMDIR to <Your installation base dir>
+rem set DFLOWFMDIR=
+rem or create an environment variable %DFLOWFMDIR%
+if "%DFLOWFMDIR%"=="" goto error_not_defined
+
+set dimr="%DFLOWFMDIR%\x64\dimr\scripts\run_dimr.bat"
 rem 
-rem check if executable is available on PATH
+rem check if dimr is available
 rem
-rem where /Q %executable%
-rem if errorlevel 1 goto error_not_found
-rem if errorlevel 2 goto error_unknown
+if not exist %dimr% goto error_dimr_not_found
+rem
+rem start DIMR for D-Flow FM 
 rem 
-rem set work-dir and mdu-file  
-rem
-rem set mdufile=%1%
-rem set work=%cd%
-rem
-rem copy ini files to work-directory
-rem
-rem for /f %%j in ("%executable%") do (
-rem     set DFLOWFMDIR=%%~dp$PATH:j
-rem )
-rem copy %DFLOWFMDIR%unstruc.ini %work%
-rem copy %DFLOWFMDIR%interact.ini %work%
-rem
-rem start D-Flow FM
-rem 
-%executable% dimrConfig.xml
+%dimr% %1
 goto eof
 
 rem
 rem error messages
 rem
 
-:error_not_found
+:error_not_defined
 echo ERROR in ./stochModel/bin/start_dimr.bat:
-echo No installation directory of D-Flow FM found in PATH.
-echo PATH = %PATH%
+echo No installation directory of D-Flow FM specified.
+goto eof
+
+:error_dimr_not_found
+echo ERROR in ./stochModel/bin/start_dimr.bat:
+echo File not found: %dimr%
 goto eof
 
 :eof

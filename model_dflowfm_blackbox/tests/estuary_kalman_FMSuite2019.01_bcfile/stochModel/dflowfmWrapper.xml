@@ -13,6 +13,7 @@
         <alias key="mapfile_out"/>
         <alias key="hisfile"/>
         <alias key="concatenated_hisfile"/>
+        <alias key="dimrfile"/>
     </aliasDefinitions>
 
     <run>
@@ -21,8 +22,8 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" windowsExe="%exedir%/start_dimr.bat">
-                <arg>dimrConfigEstuary.xml</arg>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dimr.sh" windowsExe="%exedir%/start_dimr.bat">
+                <arg>%dimrfile%</arg>
                 <checkOutput file="%hisfile%"/>
                 <checkOutput file="%mapfile_out%"/>
             </action>
@@ -55,10 +56,6 @@
             <arg>true</arg>
             <arg>false</arg>
         </dataObject>
-        <!--dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
-            <file>%mdufile%</file>
-            <id>boundaries</id>
-        </dataObject-->		
         <dataObject className="org.openda.model_dflowfm.BcFile">
             <file>dflowfm/waterlevel_noise.bc</file>
             <id>bcfile</id>

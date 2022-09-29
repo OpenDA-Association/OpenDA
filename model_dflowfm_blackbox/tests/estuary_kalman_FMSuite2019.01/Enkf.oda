@@ -13,9 +13,9 @@
 		<configString>EnkfAlgorithm.xml</configString>
 	</algorithm>
         <timingSettings doTiming="true"></timingSettings>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
-		<configFile>Enkf_results.m</configFile>
+		<configFile>Enkf_results.py</configFile>
 		<selection>
 		    <resultItem id="pred_f"/>
 		    <resultItem id="pred_f_0"/>
