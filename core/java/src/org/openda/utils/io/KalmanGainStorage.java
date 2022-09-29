@@ -46,16 +46,18 @@ public class KalmanGainStorage {
 
 	public static final String STATION_DIMENSION = "station_dimension";
 	public static final String STATION_ID = "station_id";
+	public static final int STATION_ID_CHAR_LENGTH = 64;
+	public static final String CHAR_LENGTH_ID = "char_length_id";
 	public static final String PARENT_VECTOR_ID = "parentVectorId";
 	public static final String TIME_STAMP = "time_stamp";
 	public static final String OBSERVATION_OFFSET = "observation_offset";
-	public static final Attribute TIME_STAMP_UNIT_ATT = new Attribute("unit", "days");
+	public static final Attribute TIME_STAMP_UNIT_ATT = new Attribute("units", "days");
 	public static final Attribute TIME_STAMP_LONG_NAME_ATT = new Attribute("long_name", "time in MJD");
 	public static final Attribute STATION_IDENTIFICATION_CODE_ATT = new Attribute("long_name", "station identification code");
 	public static final Attribute TIME_SERIES_ID_ATT = new Attribute("cf_role", "timeseries_id");
 	public static final Attribute OBSERVATION_OFFSET_LONG_NAME_ATT = new Attribute("long_name", "offset in days for observations");
 	public static final Attribute KALMAN_GAIN_LONG_NAME_ATT = new Attribute("long_name", "kalman gain");
-	public static final Attribute FRACTIONS_UNIT_ATT = new Attribute("unit", "1");
+	public static final Attribute FRACTIONS_UNIT_ATT = new Attribute("units", "1");
 	public static int DefaultMaxKeepVectorInXMLSize = 40;
 
 	// set in constructor
@@ -293,6 +295,7 @@ public class KalmanGainStorage {
 			addGlobalAttributes(netcdfFileWriter);
 			Variable timeStampVariable = createTimeStampVariable(netcdfFileWriter);
 			Dimension stationDimension = netcdfFileWriter.addDimension(null, STATION_DIMENSION, observationIds.length);
+			netcdfFileWriter.addDimension(null, CHAR_LENGTH_ID, STATION_ID_CHAR_LENGTH);
 			Variable observationOffsetVariable = createObservationOffsetVariable(netcdfFileWriter);
 			Variable stationVariable = createStationVariable(netcdfFileWriter);
 
@@ -365,10 +368,10 @@ public class KalmanGainStorage {
 	}
 
 	private void writeStationData(String[] observationIds, NetcdfFileWriter netcdfFileWriter, Variable stationVariable) throws IOException, InvalidRangeException {
-		ArrayString.D1 stationArray = new ArrayString.D1(observationIds.length);
+		ArrayChar.D2 stationArray = new ArrayChar.D2(observationIds.length, STATION_ID_CHAR_LENGTH);
 		for (int i = 0; i < observationIds.length; i++) {
 			String observationId = observationIds[i];
-			stationArray.set(i, observationId);
+			stationArray.setString(i, observationId);
 		}
 		netcdfFileWriter.write(stationVariable, stationArray);
 	}
@@ -447,7 +450,7 @@ public class KalmanGainStorage {
 	}
 
 	private Variable createStationVariable(NetcdfFileWriter netcdfFileWriter) {
-		Variable stationVariable = netcdfFileWriter.addVariable(null, STATION_ID, DataType.STRING, STATION_DIMENSION);
+		Variable stationVariable = netcdfFileWriter.addVariable(null, STATION_ID, DataType.CHAR, STATION_DIMENSION + ' ' + CHAR_LENGTH_ID);
 		stationVariable.addAttribute(STATION_IDENTIFICATION_CODE_ATT);
 		stationVariable.addAttribute(TIME_SERIES_ID_ATT);
 		return stationVariable;
@@ -606,7 +609,7 @@ public class KalmanGainStorage {
 
 			String shortName = variable.getShortName();
 			if (STATION_ID.equals(shortName)) {
-				this.observationIds = read1DimensionalStringArray(variable);
+				this.observationIds = variable.getDataType() == DataType.STRING ? read1DimensionalStringArray(variable) : read2DCharVariable(variable);
 				continue;
 			}
 			if (OBSERVATION_OFFSET.equals(shortName)) {
@@ -640,6 +643,28 @@ public class KalmanGainStorage {
 		String[] strings = new String[array.length];
 		for (int i = 0; i < array.length; i++) {
 			strings[i] = (String) array[i];
+		}
+		return strings;
+	}
+
+	static String[] read2DCharVariable(Variable variable) throws IOException {
+		if (variable.getDimensions().size() != 2) {
+			throw new IllegalArgumentException("variable must have 2 dimensions.");
+		}
+
+		Array read = variable.read();
+		char[] chars = (char[]) read.copyTo1DJavaArray();
+		int stringCount = variable.getDimension(0).getLength();
+		int charCount = variable.getDimension(1).getLength();
+
+		//convert chars to Strings.
+		String[] strings = new String[stringCount];
+		for (int n = 0; n < stringCount; n++) {
+			StringBuilder builder = new StringBuilder(charCount);
+			for (int k = 0; k < charCount; k++) {
+				builder.append(chars[n * charCount + k]);
+			}
+			strings[n] = builder.toString().trim();
 		}
 		return strings;
 	}

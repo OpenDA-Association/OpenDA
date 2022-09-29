@@ -82,8 +82,8 @@ public class KalmanGainStorageTest extends TestCase {
 
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
-		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn);
 		kgStorageOut.setKalmanGainStorageFileName("KalmanGainStorage.nc");
+		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn);
 		kgStorageOut.readKalmanGain();
 
 		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
