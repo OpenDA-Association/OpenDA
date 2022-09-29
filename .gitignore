@@ -1,5 +1,6 @@
 classes/
 examples/
+jre/
 opendaTestRuns/
 opendaTestBuild/
 opendaTestReports/
@@ -11,6 +12,7 @@ opendaTestReports/
 **/tests/*.log
 **/.vs
 OpenDATimings_*.txt
+**/stochModel/work[0-9]
 *.*~
 build.errors
 *.aux
