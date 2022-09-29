@@ -18,12 +18,10 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.utils.io;
-import gov.noaa.pmel.sgt.contour.Tree;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
-import org.openda.interfaces.ITreeVector;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.TreeVector;
@@ -58,7 +56,7 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageIn.readKalmanGain();
 
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
-		kgStorageOut.setKalmanGainStorageXmlFileName("kalmanGainStorage_out.xml");
+		kgStorageOut.setKalmanGainStorageFileName("kalmanGainStorage_out.xml");
 		kgStorageOut.writeKalmanGain(kgStorageIn.getObservationIds(),
 				kgStorageIn.getObservationOffsetInDays(), kgStorageIn.getKalmanGainColumns());
 
@@ -74,6 +72,7 @@ public class KalmanGainStorageTest extends TestCase {
 
 		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorage.nc");
 		kgStorageIn.readKalmanGain();
 
 		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
@@ -84,6 +83,7 @@ public class KalmanGainStorageTest extends TestCase {
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
 		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn);
+		kgStorageOut.setKalmanGainStorageFileName("KalmanGainStorage.nc");
 		kgStorageOut.readKalmanGain();
 
 		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
@@ -159,12 +159,12 @@ public class KalmanGainStorageTest extends TestCase {
 		String commentOut = "this is a four column kalman gain";
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setComment(commentOut);
-		kgStorageOut.setKalmanGainStorageXmlFileName("fourColumnStorage.xml");
+		kgStorageOut.setKalmanGainStorageFileName("fourColumnStorage.xml");
 		kgStorageOut.writeKalmanGain(observationIdsOut, observationOffsetsInDaysOut, kalmanGainColumnsOut);
 
 		// read the kalman gain
 		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
-		kgStorageIn.setKalmanGainStorageXmlFileName("fourColumnStorage.xml");
+		kgStorageIn.setKalmanGainStorageFileName("fourColumnStorage.xml");
 		kgStorageIn.readKalmanGain();
 		String commentIn = kgStorageIn.getComment();
 		assertEquals("Comment out/in", commentOut, commentIn);

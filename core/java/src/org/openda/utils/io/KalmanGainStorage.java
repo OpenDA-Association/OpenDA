@@ -65,7 +65,7 @@ public class KalmanGainStorage {
 	// properties that be can be overridden before writing
 	private String storageDirPrefix = "kgStorage_";
 	private String columnFilePrefix = "obsColumn_";
-	private String kalmanGainStorageXmlFileName = "kalmanGainStorage.xml";
+	private String kalmanGainStorageFileName = "kalmanGainStorage.xml";
 	private int maxKeepVectorInXMLSize = DefaultMaxKeepVectorInXMLSize;
 	private boolean useTimeStampInDirectoryName = true;
 
@@ -159,10 +159,10 @@ public class KalmanGainStorage {
 
 	/**
 	 * Set the name of the kalman gain storage xml file
-	 * @param kalmanGainStorageXmlFileName The file name
+	 * @param kalmanGainStorageFileName The file name
 	 */
-	public void setKalmanGainStorageXmlFileName(String kalmanGainStorageXmlFileName) {
-		this.kalmanGainStorageXmlFileName = kalmanGainStorageXmlFileName;
+	public void setKalmanGainStorageFileName(String kalmanGainStorageFileName) {
+		this.kalmanGainStorageFileName = kalmanGainStorageFileName;
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class KalmanGainStorage {
 				writeKalmanGainColumnToNetCdfFile(netcdfFileName, kalmanGainColumns[i]);
 			}
 		}
-		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageXmlFileName);
+		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageFileName);
 		CastorUtils.write(kgStorageXML, kgStorageXmlFile, "opendaKalmanGainStorage", null, null);
 		long timePassed = System.currentTimeMillis() - start;
 		Results.putMessage("Writing kalman gain to xml took: " + timePassed);
@@ -287,7 +287,7 @@ public class KalmanGainStorage {
 	private void writeKalmanGainToNetcdfCF(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage) {
 		NetcdfFileWriter netcdfFileWriter = null;
 		try {
-			File file = new File(directoryForStorage, "KalmanGainStorage.nc");
+			File file = new File(directoryForStorage, kalmanGainStorageFileName);
 			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf4, file.getAbsolutePath());
 			netcdfFileWriter.setFill(true);
 			addGlobalAttributes(netcdfFileWriter);
@@ -538,7 +538,7 @@ public class KalmanGainStorage {
 			return;
 		}
 
-		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageXmlFileName);
+		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageFileName);
 		if (!kgStorageXmlFile.exists()) {
 			throw new RuntimeException("Kalman Gain Storage XML file not found: "
 					+ kgStorageXmlFile.getAbsolutePath());
@@ -585,7 +585,7 @@ public class KalmanGainStorage {
 	private void readKalmanGainFromNetcdfCF(File directoryForStorage) {
 		NetcdfFile netcdfFile;
 		try {
-			File file = new File(directoryForStorage, "KalmanGainStorage.nc");
+			File file = new File(directoryForStorage, kalmanGainStorageFileName);
 			netcdfFile = NetcdfDataset.openDataset(file.getAbsolutePath());
 			List<Variable> variables = netcdfFile.getVariables();
 			Variable stationVariable = netcdfFile.findVariable(STATION_ID);

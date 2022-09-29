@@ -54,7 +54,7 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 	// - the actual analysis is performed by the filter
 	protected ITime saveGainTimes[] = null; //save Kalman gain at these times
 	protected String gainStorageDirPrefix = "kgStorage_";
-	protected String gainStorageXmlFileName = "kalmanGainStorage.xml";
+	protected String gainStorageFileName = "kalmanGainStorage.xml";
 	protected StorageType gainStorageFileType = StorageType.automatic;
 	protected int gainStorageMaxXmlStore = 40;
 
@@ -144,8 +144,8 @@ public abstract class AbstractSequentialEnsembleAlgorithm extends AbstractSequen
 			Results.putMessage("saveGain/file@fileType="+this.gainStorageFileType);
 			this.gainStorageDirPrefix=this.configurationAsTree.getAsString("saveGain/file@dirPrefix", this.gainStorageDirPrefix);
 			Results.putMessage("saveGain/file@dirPrefix="+gainStorageDirPrefix);
-			this.gainStorageXmlFileName=this.configurationAsTree.getAsString("saveGain/file@fileName", this.gainStorageXmlFileName);
-			Results.putMessage("saveGain/file@fileName="+gainStorageXmlFileName);
+			this.gainStorageFileName =this.configurationAsTree.getAsString("saveGain/file@fileName", this.gainStorageFileName);
+			Results.putMessage("saveGain/file@fileName="+ gainStorageFileName);
 			this.gainStorageMaxXmlStore=this.configurationAsTree.getAsInt("saveGain/file@xmlTypeMaxSize", this.gainStorageMaxXmlStore);
 			Results.putMessage("saveGain/file@xmlTypeMaxSize="+gainStorageMaxXmlStore);
 		}else{

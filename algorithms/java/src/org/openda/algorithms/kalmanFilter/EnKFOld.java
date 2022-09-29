@@ -259,7 +259,7 @@ public class EnKFOld extends AbstractSequentialEnsembleAlgorithm {
 					gainStorage.setMaxKeepVectorInXMLSize(this.gainStorageMaxXmlStore);
 					gainStorage.setStorageDirPrefix(this.gainStorageDirPrefix);
 
-					gainStorage.setKalmanGainStorageXmlFileName(this.gainStorageXmlFileName);
+					gainStorage.setKalmanGainStorageFileName(this.gainStorageFileName);
 					gainStorage.setColumnFileType(this.gainStorageFileType);
 					gainStorage.setComment("algorithm = "+this.getClass().getSimpleName()+"\n"
 							+"model = "+this.mainModel.getClass().getSimpleName()+"\n"
