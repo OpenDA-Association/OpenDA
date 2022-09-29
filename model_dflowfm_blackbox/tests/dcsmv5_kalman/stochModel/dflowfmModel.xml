@@ -18,6 +18,7 @@
         <alias key="hisfile" value="dcsmv5_his.nc"/>
         <alias key="mapfile" value="dcsmv5_map.nc"/>
         <alias key="meteofile" value="dcsmv5_windx_noise.amu"/>
+        <alias key="dimrfile" value="dimrConfig.xml"/>
     </aliasValues>
 
     <timeInfoExchangeItems start="start_time" end="end_time"/>

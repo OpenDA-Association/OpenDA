@@ -17,7 +17,8 @@
 		<alias key="frictionMultiplierTemplateFile" value="estuary_friction_factor_template.xyz"/>
 		<alias key="depthMultiplierFile" value="estuary_depth_correction.xyz"/>
 		<alias key="depthMultiplierTemplateFile" value="estuary_depth_correction_template.xyz"/>
-		<alias key="inputFile" value="estuary.mdu"/>
+		<alias key="mduFile" value="estuary.mdu"/>
+		<alias key="dimrFile" value="dimrConfig.xml"/>
 		<alias key="netcdfoutput" value="DFM_OUTPUT_estuary/estuary_his.nc"/>
 	</aliasValues>
 
