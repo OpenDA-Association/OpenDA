@@ -89,10 +89,16 @@ public class DataCopier implements IConfigurable {
 	}
 
 	private void run(String[] arguments) {
+
+		// check for -h (help) option
+		if(arguments.length==0 || arguments[0].trim().equalsIgnoreCase("-h")){
+			String message = getUsageMessage();
+			System.out.println(message);
+			Results.putMessage(getClass().getSimpleName() + ":\n" + message);
+			return;
+		}
 		processArguments(arguments);
-
 		initDataObjects();
-
 		copyAll();
 		finish();
 	}
@@ -356,14 +362,6 @@ public class DataCopier implements IConfigurable {
 		//
 		//read arguments.
 		//
-		// check for -h (help) option
-		if(arguments.length==0 || arguments[0].trim().equalsIgnoreCase("-h")){
-			String message = getUsageMessage();
-			System.out.println(message);
-			Results.putMessage(getClass().getSimpleName() + ":\n" + message);
-			return;
-		}
-
 		int argIndex=0;
 		String nextArg=(arguments[argIndex]).trim();
 		// 1) SRC OPTIONS
