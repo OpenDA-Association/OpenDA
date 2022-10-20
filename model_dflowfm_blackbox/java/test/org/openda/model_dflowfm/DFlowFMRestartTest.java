@@ -55,10 +55,21 @@ public class DFlowFMRestartTest extends TestCase {
 		initialRestartFile.initialize(testRunDataRestartFileDir, args);
 
 		DFlowFMExchangeItem initialS1 = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("s1");
+		IGeometryInfo geometryInfoS1 = initialS1.getGeometryInfo();
+		assertNotNull(geometryInfoS1);
+		assertTrue(geometryInfoS1 instanceof DFlowFMMapExchangeItemGeometryInfo);
+		assertEquals(17843, ((DFlowFMMapExchangeItemGeometryInfo) geometryInfoS1).getSize());
 		double[] initialValuesAsDoubles = initialS1.getValuesAsDoubles().clone();
 		double[] axpyValues = new double[initialValuesAsDoubles.length];
 		Arrays.fill(axpyValues, 1);
 		initialS1.axpyOnValues(0.1, axpyValues);
+
+		DFlowFMExchangeItem initialUnorm = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("unorm");
+		IGeometryInfo geometryInfoUnorm = initialUnorm.getGeometryInfo();
+		assertNotNull(geometryInfoUnorm);
+		assertTrue(geometryInfoUnorm instanceof DFlowFMMapExchangeItemGeometryInfo);
+		assertEquals(34921, ((DFlowFMMapExchangeItemGeometryInfo) geometryInfoUnorm).getSize());
+		
 		initialRestartFile.finish();
 
 		IDataObject finishedRestartFile = new DFlowFMRestartFileWrapper();
