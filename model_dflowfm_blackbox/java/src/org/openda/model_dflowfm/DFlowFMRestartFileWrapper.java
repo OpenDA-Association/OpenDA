@@ -241,11 +241,13 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 
 	private IGeometryInfo getGeometryInfo(NetcdfFile inputFile) {
 		Variable variableX = inputFile.findVariable("FlowElem_xcc");
+		if (variableX == null) variableX = inputFile.findVariable("FlowElem_xzw");
 		if (variableX == null) return null;
 		String unitsString = variableX.getUnitsString();
 		boolean unitInMeters = "m".equals(unitsString);
 
 		Variable variableY = inputFile.findVariable("FlowElem_ycc");
+		if (variableY == null) variableY = inputFile.findVariable("FlowElem_yzw");
 		int[] originXY = createOrigin(variableX);
 		if (variableY == null) return null;
 		int[] sizeArrayXY = variableX.getShape();
