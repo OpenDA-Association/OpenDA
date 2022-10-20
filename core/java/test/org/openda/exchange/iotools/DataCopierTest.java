@@ -38,6 +38,13 @@ public class DataCopierTest extends TestCase {
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
+	public void testHelporNoArguments() {
+		DataCopier copier = new DataCopier();
+		String[] args = {"-h"};
+		copier.main(args);
+		copier.finish();
+	}
+
 	public void testCopyNetcdfToTextObject(){
 		//read input.
 		NetcdfDataObject input = new NetcdfDataObject();
