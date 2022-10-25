@@ -7,11 +7,19 @@ Welcome to OpenDA's documentation!
 ==================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
-   introduction_da
+   Introduction_OpenDA/introduction_openda
+   Introduction_OpenDA/index
    Getting_started
+   Windows_installation
+   Linux_installation
+   Mac_installation
+   contributing
+   java_source
+   IntelIJ
+   non_IDE
 
 
 
