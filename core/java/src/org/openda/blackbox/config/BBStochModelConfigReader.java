@@ -506,7 +506,7 @@ public class BBStochModelConfigReader {
 						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
 								exchangeItemXML.getId(),
 								exchangeItemXML.getModelExchangeItemId(),
-							transformationType, skipFirstTimeStep, addOnlyNoiseDifference)
+							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getAllowAddNoiseMultipleTimesForTimeSteps())
 						);
 					} else {
 						for (UncertaintyOrNoiseModelExchangeItemXML modelExchangeItemXML : modelExchangeItemXMLs) {
@@ -515,7 +515,7 @@ public class BBStochModelConfigReader {
 						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
 								exchangeItemXML.getId(),
 								modelExchangeItemIds,
-							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute())
+							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute(), exchangeItemXML.getAllowAddNoiseMultipleTimesForTimeSteps())
 						);
 					}
 				}

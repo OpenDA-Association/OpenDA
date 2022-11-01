@@ -1531,7 +1531,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							this.lastNoiseTimes.put(modelExchangeItemId, Double.NEGATIVE_INFINITY);
 						}
 						double timePrecision = OdaGlobSettings.getTimePrecision();
-						if (time > this.lastNoiseTimes.get(modelExchangeItemId) + 0.5 * timePrecision) {
+						if (time > this.lastNoiseTimes.get(modelExchangeItemId) + 0.5 * timePrecision || exchangeItemConfig.isAllowAddNoiseMultipleTimesForTimeSteps()) {
 							// we need values for each of the model times in this forecast
 
 							// look for index in ALL times for noise model exchange item

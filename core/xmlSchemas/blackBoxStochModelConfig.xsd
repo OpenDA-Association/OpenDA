@@ -74,6 +74,11 @@
         <xs:documentation>When true, state noise will be added after compute instead of before</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="allowAddNoiseMultipleTimesForTimeSteps" type="xs:boolean" use="optional" default="false">
+      <xs:annotation>
+        <xs:documentation>When true, adding noise for a time step will not be skipped if for that time step noise has already been added before. For example for overlapping time steps add the end of a forecast period and at the beginning of a forecast period</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="UncertaintyOrNoiseExchangeItemsXML">
 		<xs:sequence>
