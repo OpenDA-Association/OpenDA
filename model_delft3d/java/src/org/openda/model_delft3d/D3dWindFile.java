@@ -20,10 +20,11 @@
 
 package org.openda.model_delft3d;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.generalJavaUtils.StringUtilities;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class D3dWindFile implements IDataObject {
 
 		if (arguments.length != 2) {
 			// Change to String.join upon migrating to Java 1.8.
-			throw new RuntimeException("Please specify a mdf-filename and a wind field type as arguments. Supported types are: " + StringUtils.join(supportedFieldTypes, ", "));
+			throw new RuntimeException("Please specify a mdf-filename and a wind field type as arguments. Supported types are: " + StringUtilities.joinStringArrayUsingSeparator(supportedFieldTypes.toArray(new String[0]), ", "));
 		}
 
 		String mdfFileName = arguments[0];
@@ -60,7 +61,7 @@ public class D3dWindFile implements IDataObject {
 		fieldType = arguments[1];
 		if (!(supportedFieldTypes.contains(fieldType))) {
 			// Change to String.join upon migrating to Java 1.8.
-			throw new RuntimeException("Unrecognised wind field type specified as argument, choose from: " + StringUtils.join(supportedFieldTypes, ", "));
+			throw new RuntimeException("Unrecognised wind field type specified as argument, choose from: " + StringUtilities.joinStringArrayUsingSeparator(supportedFieldTypes.toArray(new String[0]), ", "));
 		}
 
 		modelDefinitionFile = ModelDefinitionFile.getModelDefinitionFile(workingDirectory, mdfFileName);
