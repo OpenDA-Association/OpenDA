@@ -20,7 +20,8 @@
 
 package org.openda.model_delft3d;
 
-import org.apache.commons.lang3.StringUtils;
+import org.openda.utils.generalJavaUtils.StringUtilities;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
@@ -151,7 +152,7 @@ public class ModelDefinitionFile {
     }
 
     public static String getKnownFileTypesString(String[] fileTypes) {
-		return StringUtils.join(Arrays.asList(fileTypes), ", ");
+		return StringUtilities.joinStringArrayUsingSeparator(fileTypes, ", ");
     }
 
     public File getMdFile() {
