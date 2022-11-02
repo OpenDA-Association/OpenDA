@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testConfig>
-        <id>/home/verlaanm/deltares/src/openda_20110523/public/model_swan/tests/swan_l21triad/./swanDudWithConstr.oda</id>
+        <id>public/model_swan/tests/swan_l21triad/./swanDudWithConstr.oda</id>
         <odaFile>../swanDudWithConstr.oda</odaFile>
         <checks>
                 <check>

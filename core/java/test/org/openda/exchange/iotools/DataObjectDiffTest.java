@@ -38,6 +38,13 @@ public class DataObjectDiffTest extends TestCase {
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
+	public void testHelporNoArguments() {
+		DataObjectDiff differ = new DataObjectDiff();
+		String[] args = {};
+		differ.main(args);
+		differ.finish();
+	}
+
 	public void testDiffNetcdfObject(){
 		//read input.
 //		NetcdfDataObject referenceDataObject = new NetcdfDataObject();

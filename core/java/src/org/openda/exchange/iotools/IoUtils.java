@@ -26,6 +26,7 @@ import java.util.HashMap;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.dataobjects.NetcdfDataObject;
 import org.openda.interfaces.IArray;
+import org.openda.interfaces.IVector;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
@@ -178,9 +179,13 @@ public class IoUtils {
 			case doublesType:
 				values = (double[]) valueObject;
 				break;
+			case IVectorType:
+				values = ((IVector) valueObject).getValues();
+				break;
 			default:
-				throw new UnsupportedOperationException(IoUtils.class.getSimpleName() + ": writing values of type "
-						+ valueType + " not implemented yet.");
+				System.out.printf("%s: writing values of type %s not implemented yet.%n", IoUtils.class.getSimpleName(), valueType);
+				values = null;
+				break;
 		}
 
 		if (values != null) {

@@ -1,4 +1,4 @@
-See also ../../doc/openda_dflowfm.tex.
+See also ../../doc/dflowfm_wrapper.html
 
 The m-files can be used to plot results after running the corresponding
 simulations. The results are not very good yet, settings of the noise model

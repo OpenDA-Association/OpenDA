@@ -19,6 +19,7 @@
 */
 package org.openda.exchange.iotools;
 
+import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Results;
@@ -40,8 +41,6 @@ public class DataObjectDiff implements IConfigurable {
     private String testFileName = null;
     private String testClassName = null;
     private String[] testArgs = null;
-
-    private boolean foundDifference = false;
     private IDataObject referenceDataObject = null;
     private IDataObject testDataObject = null;
 
@@ -77,7 +76,7 @@ public class DataObjectDiff implements IConfigurable {
      @param
       */
     public void initialize(File workingDir, String[] arguments) {
-        processArguments(arguments);
+    	processArguments(arguments);
         initDataObjects();
     }
 
@@ -93,7 +92,13 @@ public class DataObjectDiff implements IConfigurable {
      * @param arguments command line arguments: see help text above
      */
     public static void main(String[] arguments) {
-        DataObjectDiff differ = new DataObjectDiff();
+		// check for -h (help) option
+		if(arguments.length==0 || arguments[0].trim().equalsIgnoreCase("-h")){
+			String message = getUsageMessage();
+			System.out.println(message);
+			return;
+		}
+		DataObjectDiff differ = new DataObjectDiff();
         differ.initialize(null, arguments);
         boolean result = differ.compare();
         if ( !result) {
@@ -204,12 +209,33 @@ public class DataObjectDiff implements IConfigurable {
         if (result) {
             System.out.println(String.format(Locale.UK, DIFF_OUTPUT_LINE, id, "", null, null, null));
         }
-        System.out.print(String.format(HLINE));
+        System.out.print(HLINE);
         return result;
     }
 
     public void finish() {
     }
+	/**
+	 * Help text for the command line
+	 */
+	private static String getUsageMessage() {
+		StringBuffer message = new StringBuffer();
+		if (BBUtils.RUNNING_ON_LINUX) {
+			message.append("NAME\n"
+				+ "\t oda_diff.sh - a tool to compare the contents of one IDataObject to another IDataObject\n");
+		} else {
+			message.append("NAME\n"
+				+ "\t oda_diff.bat - a tool to compare the contents of one IDataObject to another IDataObject\n");
+		}
+		message.append("SYNOPSIS\n"
+			+"\t oda_diff.sh FILE1 FILE2 ...]\n"
+			+"\t or on windows: oda_diff.bat FILE1 FILE2...]\n"
+			+"\t compares the contents of FILE1 to the contents of FILE2\n");
+		message.append("DESCRIPTION\n"
+			+"\t The IDataObject is the central interface for connecting files in different format to OpenDA.\n"
+			+"\t This tools uses the reading routines of this class to compare data between files/objects\n");
+		return message.toString();
+	}
 
     /**
      * Gathers the following variables from the given arguments.
@@ -229,7 +255,7 @@ public class DataObjectDiff implements IConfigurable {
         referenceClassName=null;
         referenceArgs=new String[0];
         while(nextArg.startsWith("-")){
-            String argValue=null;
+            String argValue;
             if((argIndex+1)<arguments.length){
                 argValue=arguments[argIndex+1];
             }else{
@@ -238,8 +264,7 @@ public class DataObjectDiff implements IConfigurable {
             if(nextArg.toLowerCase().startsWith("-c")){
                 referenceClassName=argValue;
             }else if(nextArg.toLowerCase().startsWith("-a")){
-                String inputArgsAsOne=argValue;
-                referenceArgs=inputArgsAsOne.split(" ");
+                referenceArgs=argValue.split(" ");
             }
             argIndex+=2;
             if(argIndex<arguments.length){
@@ -260,7 +285,7 @@ public class DataObjectDiff implements IConfigurable {
         testClassName=null;
         testArgs=new String[0];
         while(nextArg.startsWith("-")){
-            String argValue=null;
+            String argValue;
             if((argIndex+1)<arguments.length){
                 argValue=arguments[argIndex+1];
             }else{
@@ -269,8 +294,7 @@ public class DataObjectDiff implements IConfigurable {
             if(nextArg.toLowerCase().startsWith("-c")){
                 testClassName=argValue;
             }else if(nextArg.toLowerCase().startsWith("-a")){
-                String outputArgsAsOne=argValue;
-                testArgs=outputArgsAsOne.split(" ");
+                testArgs=argValue.split(" ");
             }
             argIndex+=2;
             if(argIndex<arguments.length){
@@ -334,18 +358,17 @@ public class DataObjectDiff implements IConfigurable {
         boolean result= true;
         System.out.print(String.format(DIFF_OUTPUT_HEADER, this.testFileName));
         System.out.print(String.format(HLINE));
-        foundDifference = true;
 
         for (String id : exchangeItemIds) {
             if ( ! validateExchangeItem(referenceDataObject.getDataObjectExchangeItem(id), testDataObject) ) {
                 result = false;
-            };
+            }
         }
         return result;
     }
 
 
-    public static double rmsDifference (List<Double> d1, List<Double> d2) {
+    private static double rmsDifference(List<Double> d1, List<Double> d2) {
         double rms = 0;
         for (int i = 0; i < d1.size(); i++) {
             rms += Math.pow(d1.get(i) - d2.get(i), 2);
@@ -354,7 +377,7 @@ public class DataObjectDiff implements IConfigurable {
         return rms;
     }
 
-    public static double p99Difference (List<Double> d1, List<Double> d2) {
+    private static double p99Difference(List<Double> d1, List<Double> d2) {
         List<Double> d = new ArrayList(d1.size());
         for (int i = 0; i < d1.size(); i++) {
             d.add(i, Math.abs(d1.get(i) - d2.get(i)) );
@@ -365,7 +388,7 @@ public class DataObjectDiff implements IConfigurable {
     }
 
 
-    public static double maxDifference (List<Double> d1, List<Double> d2) {
+    private static double maxDifference(List<Double> d1, List<Double> d2) {
         List<Double> d = new ArrayList(d1.size());
         for (int i = 0; i < d1.size(); i++) {
             d.add(i, Math.abs(d1.get(i) - d2.get(i) ));
@@ -377,7 +400,7 @@ public class DataObjectDiff implements IConfigurable {
         return almostEquals(d1, d2, EPSILON);
     }
 
-    public static boolean almostEquals(double d1, double d2, double epsilon) {
+    private static boolean almostEquals(double d1, double d2, double epsilon) {
         return Math.abs(d1 - d2) < epsilon;
     }
 

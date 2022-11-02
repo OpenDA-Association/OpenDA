@@ -62,7 +62,7 @@ public class DataCopier implements IConfigurable {
 		this.outputDataObject = output;
 	}
 
-	public DataCopier() {
+	DataCopier() {
 	}
 
 	/**
@@ -89,10 +89,16 @@ public class DataCopier implements IConfigurable {
 	}
 
 	private void run(String[] arguments) {
+
+		// check for -h (help) option
+		if(arguments.length==0 || arguments[0].trim().equalsIgnoreCase("-h")){
+			String message = getUsageMessage();
+			System.out.println(message);
+			Results.putMessage(getClass().getSimpleName() + ":\n" + message);
+			return;
+		}
 		processArguments(arguments);
-
 		initDataObjects();
-
 		copyAll();
 		finish();
 	}
@@ -202,7 +208,6 @@ public class DataCopier implements IConfigurable {
 
 		String message = "Copying " + id;
 		System.out.println(message);
-		//TODO: [LOGGING] move to debug when new logging is avalablle
 		//Results.putMessage(DataCopier.class.getSimpleName() + ": " + message);
 		outputExchangeItem.copyValuesFromItem(inputExchangeItem);
 	}
@@ -321,8 +326,13 @@ public class DataCopier implements IConfigurable {
 	 */
 	private static String getUsageMessage() {
 		StringBuffer message = new StringBuffer();
-		message.append("NAME\n"
-				+"\t oda_copy.sh - a tool for copying data between OpenDA data-objects\n");
+        if (BBUtils.RUNNING_ON_LINUX) {
+			message.append("NAME\n"
+				+ "\t oda_copy.sh - a tool for copying data between OpenDA data-objects\n");
+		} else {
+			message.append("NAME\n"
+				+ "\t oda_copy.bat - a tool for copying data between OpenDA data-objects\n");
+		}
 		message.append("SYNOPSIS\n"
 				+"\t oda_copy.sh [SRCOPTION...] SRC [DESTOPTION...] DEST [COPYOPTION...]\n"
 				+"\t or on windows: oda_copy.bat [SRCOPTION...] SRC [DESTOPTION...] DEST [COPYOPTION...]\n"
@@ -356,14 +366,6 @@ public class DataCopier implements IConfigurable {
 		//
 		//read arguments.
 		//
-		// check for -h (help) option
-		if(arguments.length==0 || arguments[0].trim().equalsIgnoreCase("-h")){
-			String message = getUsageMessage();
-			System.out.println(message);
-			Results.putMessage(getClass().getSimpleName() + ":\n" + message);
-			return;
-		}
-
 		int argIndex=0;
 		String nextArg=(arguments[argIndex]).trim();
 		// 1) SRC OPTIONS

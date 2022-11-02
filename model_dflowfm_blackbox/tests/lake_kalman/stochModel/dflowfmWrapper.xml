@@ -11,10 +11,10 @@
         <alias key="mapfile"/>
         <alias key="mdufile"/>
         <alias key="meteofile"/>
-        <alias key="openda_bindir"/>
         <alias key="outputdir"/>
         <alias key="runid"/>
         <alias key="templateDir"/>
+        <alias key="dimrfile"/>
     </aliasDefinitions>
 
     <run>
@@ -23,8 +23,8 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dimr.bat">
-                <arg>%mdufile%</arg>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dimr.sh" windowsExe="%exedir%/start_dimr.bat">
+                <arg>%dimrfile%</arg>
                 <checkOutput file="%outputdir%/%hisfile%"/>
                 <checkOutput file="%outputdir%/%mapfile%"/>
             </action>

@@ -13,7 +13,8 @@
         <alias key="frictionMultiplierTemplateFile"/>
         <alias key="depthMultiplierFile"/>
         <alias key="depthMultiplierTemplateFile"/>
-        <alias key="inputFile"/>
+        <alias key="mduFile"/>
+        <alias key="dimrFile"/>
         <alias key="netcdfoutput"/>
     </aliasDefinitions>
 
@@ -23,8 +24,8 @@
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%"/>
 
         <computeActions>
-            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dflowfm.sh" windowsExe="%exedir%/start_dimr.bat">
-                <arg>%inputFile%</arg>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_dimr.sh" windowsExe="%exedir%/start_dimr.bat">
+                <arg>%dimrFile%</arg>
                 <checkOutput file="%netcdfoutput%"/>
             </action>
         </computeActions>
@@ -55,7 +56,7 @@
             <arg>false</arg>
         </dataObject>
         <dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
-            <file>%inputFile%</file>
+            <file>%mduFile%</file>
             <id>boundaries</id>
         </dataObject>
     </inputOutput>
