@@ -33,38 +33,38 @@ Start small
 -----------
 
 Setting up a data-assimilation system involves many steps and
-challenges. It is not advised to directly focus on your final setup,
+challenges. We advise not to focus on your final setup directly,
 which will involve real observations and probably a large simulation
-model. The last thing you will introduce are your real observations. You
-need their specifications e.g. location, quantity, quality and sampling
-rate in an early stage since it is an important aspect of your system
-but the measured values will not be used the first 80% of the time. In
-order to set up and test your framework it is best to use
-generated/synthetic data that you understand. This will be explained in
-more detail, when we explain about setting up twin experiments below.
+model. The last thing you will introduce is your real observations. You
+need their specifications e.g. location, quantity, quality, and sampling
+rate in an early stage since it is an important aspect of your system,
+but the measured values will not be used the first 80% of the time. To 
+set up and test your framework it is best to use
+generated/synthetic data that you understand. We will explain this in
+more detail in the paragraph about setting up twin experiments below.
 
 If possible, make various variations of your model. Start with a very,
 very simplified model that runs blisteringly fast and only incorporates
 the most basic features. When you have everything working for this small
-model, you move towards a more complex model. The amount of steps you
-have to take towards your full model depends on many aspects. Making
-these "extra" small steps is time well spent and in our experience you
+model, you move toward a more complex model. The number of steps you
+need to take to implement your full model depends on many aspects. Making
+these "extra" small steps is time well spent, and in our experience, you
 will save a lot of time in the end.
 
 Create experiments with one group of observations at a time when you
 want to assimilate observations of various quantities and/or sources.
 You will learn a lot about the behavior of your model when assimilating
-these different types of observations and it is much easier to identify
+these different types of observations, and it is much easier to identify
 which kind of observations might cause problems, like model
 instabilities.
 
 Check the restart of a model
 ----------------------------
 
-In order to use a model [1]_ as part of a sequential data-assimilation
+In order to use a programmed model as part of a sequential data-assimilation
 algorithm, it needs to have a proper restart functionality. This makes
 it possible to split up a long simulation run into several shorter ones.
-The model will write the internal state to a restart file or files, at
+The model will write the internal state to one or more restart files, at
 the end of each run. This will contain the model state :math:`x`, but
 often some other information as well e.g. the information on the
 integration step size, computed forcing, etc. The restart information
@@ -72,13 +72,13 @@ will be read from disk at the start of the next run. There should be no
 differences in the result between the restarted simulations and the
 original simulation when the restart is implemented correctly.
 
-The first step is to check whether the restart functionality of your
-model is working properly. Run a simulation in one go and perform the
+To check whether the restart functionality of your
+model is working properly, run a simulation in one go and perform the
 same simulation with a number of restarts. It is always best to choose
-the same interval between the restarts as your assimilation interval you
+the same interval between the restarts as the assimilation interval you
 are planning to use in your data-assimilation framework.
 
-Note: When your model is already available in , you can use to do this
+Note: When your model is already available in OpenDA, you can use OpenDA to do this
 experiment (will be explained later), but do not skip this step, because
 your model configuration might contain features that have not been used
 before and for which the restart might be faulty!
@@ -164,7 +164,7 @@ found it useful to add an artificial forcing to the model to describe
 these model errors.
 
 We will explain in Section `4.3 <#Sec:SequentialEnsembleSimulation>`__
-how these experiments can be carried out using .
+how these experiments can be carried out using OpenDA.
 
 .. _`Sec:Twin`:
 
@@ -182,22 +182,22 @@ uncertainty of your ensemble. Note: Do not use the mean (or
 deterministic run), because that realization is special. The true state
 is known in the twin experiment and has the dynamics of your model. This
 makes it easy to investigate the performance of your data-assimilation
-framework. The SequentialSimulation algorithm in is a useful tool for
+framework. The SequentialSimulation algorithm in OpenDA is a useful tool for
 creating your twin experiment.
 
 Workflow
 ========
 
-implements a number of algorithms that can be used to gradually grow
+OpenDA implements a number of algorithms that can be used to gradually grow
 from a simulation model to a data-assimilation system.
 
 org.openda.algorithms.Simulation
 --------------------------------
 
 Running this algorithm is equivalent to running the model standalone.
-The only difference it that is that it runs from within . It allows you
+The only difference it that is that it runs from within OpenDA. It allows you
 to test whether the configuration is handled correctly and the output of
-the model can be processed by .
+the model can be processed by OpenDA.
 
 SequentialSimulation
 --------------------
@@ -208,7 +208,7 @@ moment in which we have observations (or at predefined intervals). The
 interpolated model state to the observations are written to the output.
 
 This algorithm is used to check whether the restart functionality of the
-model within the framework is working correctly (by comparing the
+model within the OpenDA framework is working correctly (by comparing the
 results to a normal simulation). Another usage for this algorithm is to
 create synthetic observations for a twin experiment. You set up
 observations with arbitrary values but with the location and time you
@@ -250,13 +250,9 @@ Localization, Kalman smoothing, parallel computing, steady state Kalman etc
 To improve performance you can add additional techniques like
 localization to cope with spurious correlations and steady state
 filtering or parallel computing filtering to computational performance.
-can output many of the variables involved, such as the Kalman gain.
+OpenDA can output many of the variables involved, such as the Kalman gain.
 Please, consult Chapter `[chapter:output] <#chapter:output>`__ for more
 info.
-
-.. [1]
-   Here we refer to the model as the program, not the mathematical
-   description or the set-up for a particular application/area
 
 .. [2]
    org.openda.algorithms.kalmanFilter.SequentialSimulation

@@ -24,8 +24,8 @@ Getting started with OpenDA
    Linux_installation
    Mac_installation
 
-How to setup and test your application step by step
-***************************************************
+How to set up and test your application step by step
+****************************************************
 .. toctree::
    :maxdepth: 1
    workStepByStep
