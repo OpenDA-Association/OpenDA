@@ -25,10 +25,10 @@ couple your own model to OpenDA, you should provide all necessary
 settings, file names, variable names, etc. to OpenDA in XML input files.
 The format of the XML files is specified in `XML schema
 files <https://en.wikipedia.org/wiki/XML_schema>`__ (``.xsd``) that are
-hosted on the `OpenDA
-website <http://openda.org/docu/openda_2.4/doc/xmlSchemasHTML/index.html>`__.
-The diagrams describing the format of the XML schemas can be found there
-as well.
+hosted on the `OpenDA schemas
+website <http://schemas.openda.org>`__.
+The diagrams describing the format of the XML schemas can be found using
+an XML visualisation tool.
 
 In general, the user needs to provide one main configuration file and
 several configuration files describing each data-assimilation component.

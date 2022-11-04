@@ -41,6 +41,6 @@ and stochastic models, noise models, the combination of values (weights
 are needed), data assimilation on top of an existing model, and the
 general structure of filtering methods.
 
-On open-source text book considering the fundamentals of data
+An open-source text book considering the fundamentals of data
 assimilation can be found
 `here <https://library.oapen.org/handle/20.500.12657/54434>`__.
