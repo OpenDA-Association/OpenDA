@@ -46,6 +46,7 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 
 	private final int locationDimensionIndex;
 	private int locationIndex;
+	private PointGeometryInfo pointGeometryInfo;
 	private final int realizationDimensionIndex;
 	private int realizationIndex;
 	private final String id;
@@ -65,9 +66,10 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	private ITimeInfo timesWithNonMissingValuesInfo;
 
 	public NetcdfScalarTimeSeriesExchangeItem(int locationDimensionIndex, int locationIndex,
-			String locationId, String parameterId, int realizationDimensionIndex, int realizationIndex, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
+											  String locationId, String parameterId, PointGeometryInfo pointGeometryInfo, int realizationDimensionIndex, int realizationIndex, Role role, ITimeInfo allTimesInfo, NetcdfDataObject netcdfDataObject) {
 		this.locationDimensionIndex = locationDimensionIndex;
 		this.locationIndex = locationIndex;
+		this.pointGeometryInfo = pointGeometryInfo;
 		//id = "locationId.parameterId"
 		this.id = locationId + "." + parameterId;
 		this.realizationDimensionIndex = realizationDimensionIndex;
@@ -132,7 +134,7 @@ public class NetcdfScalarTimeSeriesExchangeItem implements IExchangeItem { //TOD
 	}
 
 	public IGeometryInfo getGeometryInfo() {
-		return null;
+		return pointGeometryInfo;
 	}
 
 	public ValueType getValuesType() {

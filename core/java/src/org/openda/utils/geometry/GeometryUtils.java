@@ -26,6 +26,7 @@ import org.openda.exchange.LayeredIrregularGridGeometryInfo;
 import org.openda.exchange.PointGeometryInfo;
 import org.openda.interfaces.*;
 import org.openda.utils.Vector;
+import org.openda.utils.VectorDouble;
 
 import java.util.Arrays;
 
@@ -75,6 +76,7 @@ public class GeometryUtils {
 
 	//TODO add getYCoordinates to IGeometryInfo interface. AK
 	public static IVector getYCoordinates(IGeometryInfo geometryInfo) {
+		if (geometryInfo instanceof PointGeometryInfo) return new VectorDouble(new double[]{((PointGeometryInfo) geometryInfo).getLatitude()});
 		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellYCoordinates();
 		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getYCoordinates();
 		if (geometryInfo instanceof LayeredIrregularGridGeometryInfo) return ((LayeredIrregularGridGeometryInfo) geometryInfo).getYCoordinates();
@@ -84,6 +86,7 @@ public class GeometryUtils {
 
 	//TODO add getXCoordinates to IGeometryInfo interface. AK
 	public static IVector getXCoordinates(IGeometryInfo geometryInfo) {
+		if (geometryInfo instanceof PointGeometryInfo) return new VectorDouble(new double[]{((PointGeometryInfo) geometryInfo).getLongitude()});
 		if (geometryInfo instanceof ArrayGeometryInfo) return ((ArrayGeometryInfo) geometryInfo).toCurvilinearGeometryInfo().getCellXCoordinates();
 		if (geometryInfo instanceof IrregularGridGeometryInfo) return ((IrregularGridGeometryInfo) geometryInfo).getXCoordinates();
 		if (geometryInfo instanceof LayeredIrregularGridGeometryInfo) return ((LayeredIrregularGridGeometryInfo) geometryInfo).getXCoordinates();

@@ -209,6 +209,26 @@ public class NetcdfUtils {
 		return geometryInfo;
 	}
 
+	public static PointGeometryInfo[] createPointGeometryInfos(Variable variable, NetcdfFile netcdfFile) {
+
+		Variable latitudeVariable = findLatitudeVariableForVariable(variable, netcdfFile);
+		Variable longitudeVariable = findLongitudeVariableForVariable(variable, netcdfFile);
+		if (latitudeVariable == null || longitudeVariable == null) {//if data does not depend on space.
+			return null;
+		}
+		
+		IArray latitudeArray = (IArray) readData(latitudeVariable);
+		IArray longitudeArray = (IArray) readData(longitudeVariable);
+
+		int length = latitudeArray.length();
+		PointGeometryInfo[] pointGeometryInfos = new PointGeometryInfo[length];
+		for (int i = 0; i < length; i++) {
+			pointGeometryInfos[i] = new PointGeometryInfo(longitudeArray.getValueAsDouble(i), latitudeArray.getValueAsDouble(i), 0);
+		}
+
+		return pointGeometryInfos;
+	}
+
 	/**
 	 * Searches all the variables that the given variable depends on,
 	 * and returns the first variable that is a valid time variable.
