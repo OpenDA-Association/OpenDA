@@ -117,7 +117,7 @@ public class NetcdfDataObjectTest extends TestCase {
 			IExchangeItem dataObjectExchangeItem = dataObject.getDataObjectExchangeItem(expectedExchangeItemId);
 			assertNotNull(dataObjectExchangeItem);
 			assertTrue(dataObjectExchangeItem instanceof NetcdfScalarTimeSeriesExchangeItem);
-			IGeometryInfo geometryInfo = ((NetcdfScalarTimeSeriesExchangeItem) dataObjectExchangeItem).getGeometryInfo();
+			IGeometryInfo geometryInfo = dataObjectExchangeItem.getGeometryInfo();
 			assertNotNull(geometryInfo);
 			assertTrue(geometryInfo instanceof PointGeometryInfo);
 		}
