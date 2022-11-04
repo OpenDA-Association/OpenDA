@@ -28,6 +28,7 @@ How to set up and test your application step by step
 ****************************************************
 .. toctree::
    :maxdepth: 1
+
    workStepByStep
 
 Contributing to the code
