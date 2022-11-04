@@ -1,32 +1,29 @@
-===========================================================
-OpenDA: How to setup and test your application step by step
-===========================================================
-
-Introduction
-============
+============================================================
+OpenDA: How to set up and test your application step by step
+============================================================
 
 Setting up a data-assimilation framework for a model is a difficult
 task. Several things contribute to the complexity. The dynamical models
 are often complex software packages with many options. In addition, we
-add (real) observed data and blow up the amount of computations and data
+add (real) observed data and blow up the number of computations and data
 by an order of 100. Another problem is related to our way of using the
 models in a data-assimilation framework. For sequential
 data-assimilation algorithms, such as the Ensemble Kalman Filter or
 3D-VAR, we often perform (short) model runs and update the parameters or
-state of the model between these short runs. This is a way of using the
-simulation models, for which they are often not developed.
+state of the model between these short runs. However, the used simulation models
+are often not developed to be applied in this way.
 
-We have seen very often that users are struggling to get things
-to work, because they want to do too much too soon. A recipe for failure
-is to attempt to setup your data-assimilation system for a real
+Many users are struggling to get things
+to work because they want to do too much too soon. A recipe for failure
+is to attempt to set up your data-assimilation system for a real
 (big/huge) model with real data in one go. On this page, we describe some
-intermediate stepsthat can be taken to setup and test your application. There is no
-one-size-fits-all approach but we try to present a
-recipe, which you can use or adapt to your own needs. In between there
-are tips/ideas, which are hopefully useful to you.
+intermediate steps that can be taken to set up and test your application. There is no
+one-size-fits-all approach, but we try to present a
+recipe that you can use or adapt to your own needs. In between, there
+are useful tips and ideas.
 
-For simplicity we assume that the user uses a black-box coupling and
-wants to setup a data-assimilation system using a sequential
+For simplicity, we assume that the user uses a black-box coupling and
+wants to set up a data-assimilation system using a sequential
 data-assimilation algorithm e.g. a flavor of the ensemble Kalman filter.
 
 Preparation
@@ -42,10 +39,9 @@ model. The last thing you will introduce are your real observations. You
 need their specifications e.g. location, quantity, quality and sampling
 rate in an early stage since it is an important aspect of your system
 but the measured values will not be used the first 80% of the time. In
-order to setup and test your framework it is best to use
-generate/synthetic data which you understand. This will be explained in
-more detail, when we explain about setting up twin experiments in
-Section `3 <#Sec:Twin>`__.
+order to set up and test your framework it is best to use
+generated/synthetic data that you understand. This will be explained in
+more detail, when we explain about setting up twin experiments below.
 
 If possible, make various variations of your model. Start with a very,
 very simplified model that runs blisteringly fast and only incorporates
@@ -56,7 +52,7 @@ these "extra" small steps is time well spent and in our experience you
 will save a lot of time in the end.
 
 Create experiments with one group of observations at a time when you
-want to assimilate observations of various quantities and/or sources .
+want to assimilate observations of various quantities and/or sources.
 You will learn a lot about the behavior of your model when assimilating
 these different types of observations and it is much easier to identify
 which kind of observations might cause problems, like model
@@ -134,12 +130,12 @@ Uncertainty of your model
 
 For the ensemble based algorithms, you need to have an ensemble that
 statistically represents the uncertainty in your model prediction. There
-are various ways to setup your ensemble.
+are various ways to set up your ensemble.
 
 When your model is dominated by chaotic behavior, e.g. for most ocean
 models and atmospheric models, you can generate an initial ensemble by
 running the model for some time and taking various snapshots of the
-state. Another approach is to setup an ensemble with some initial
+state. Another approach is to set up an ensemble with some initial
 perturbation. Then run the ensemble long enough for the chaotic behavior
 to do its work and use that as the initial ensemble of your experiment.
 
@@ -214,7 +210,7 @@ interpolated model state to the observations are written to the output.
 This algorithm is used to check whether the restart functionality of the
 model within the framework is working correctly (by comparing the
 results to a normal simulation). Another usage for this algorithm is to
-create synthetic observations for a twin experiment. You setup
+create synthetic observations for a twin experiment. You set up
 observations with arbitrary values but with the location and time you
 are interested in. After you have run the SequentialSimulation you can
 find the model predictions that you can use for your synthetic
