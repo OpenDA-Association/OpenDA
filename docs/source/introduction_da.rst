@@ -1,6 +1,6 @@
-***************
-Introduction DA
-***************
+*********************************
+Introduction to data assimilation
+*********************************
 
 Data assimilation is about the combination of two sources of information
 - computational models and observations - to utilize both of their
