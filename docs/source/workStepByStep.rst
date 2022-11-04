@@ -1,11 +1,6 @@
-:math:`HeadURL:`
-:math:`LastChangedDate: 2017-08-28 18:10:04 +0200 (Tue, 08 Jul 2014)`
-:math:`LastChangedRevision:` :math:`LastChangedBy:`
-
-=================== ==================================================
-**Contributed by:** Nils van Velzen, VORtech, Martin Verlaan, Deltares
-**Last update:**    -
-=================== ==================================================
+===========================================================
+OpenDA: How to setup and test your application step by step
+===========================================================
 
 Introduction
 ============

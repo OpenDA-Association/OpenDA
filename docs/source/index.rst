@@ -17,7 +17,7 @@ Welcome to OpenDA's documentation!
    Linux_installation
    Mac_installation
    contributing
-   workStepbyStep
+   workStepByStep
    java_source
    IntelIJ
    non_IDE
