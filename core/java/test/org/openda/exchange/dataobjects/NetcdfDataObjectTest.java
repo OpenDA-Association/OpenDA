@@ -20,7 +20,10 @@
 package org.openda.exchange.dataobjects;
 import junit.framework.TestCase;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
+import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
+import org.openda.exchange.PointGeometryInfo;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -111,7 +114,12 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertEquals(3, exchangeItemIDs.length);
 		String[] expectedExchangeItemIds = {"24.waterlevel", "26.waterlevel", "27.waterlevel"};
 		for (String expectedExchangeItemId : expectedExchangeItemIds) {
-			assertNotNull(dataObject.getDataObjectExchangeItem(expectedExchangeItemId));
+			IExchangeItem dataObjectExchangeItem = dataObject.getDataObjectExchangeItem(expectedExchangeItemId);
+			assertNotNull(dataObjectExchangeItem);
+			assertTrue(dataObjectExchangeItem instanceof NetcdfScalarTimeSeriesExchangeItem);
+			IGeometryInfo geometryInfo = ((NetcdfScalarTimeSeriesExchangeItem) dataObjectExchangeItem).getGeometryInfo();
+			assertNotNull(geometryInfo);
+			assertTrue(geometryInfo instanceof PointGeometryInfo);
 		}
 	}
 }
