@@ -12,16 +12,16 @@ add (real) observed data and blow up the amount of computations and data
 by an order of 100. Another problem is related to our way of using the
 models in a data-assimilation framework. For sequential
 data-assimilation algorithms, such as the Ensemble Kalman Filter or
-3D-VAR, We often perform (short) model runs and update the parameters or
+3D-VAR, we often perform (short) model runs and update the parameters or
 state of the model between these short runs. This is a way of using the
 simulation models, for which they are often not developed.
 
-We have seen so often that students/users are struggling to get things
+We have seen very often that users are struggling to get things
 to work, because they want to do too much too soon. A recipe for failure
 is to attempt to setup your data-assimilation system for a real
-(big/huge) model with real data in one go. So it is clear that you
-should take some intermediate steps, but which? There is no
-one-size-fits-all approach but in this document we try to present a
+(big/huge) model with real data in one go. On this page, we describe some
+intermediate stepsthat can be taken to setup and test your application. There is no
+one-size-fits-all approach but we try to present a
 recipe, which you can use or adapt to your own needs. In between there
 are tips/ideas, which are hopefully useful to you.
 
