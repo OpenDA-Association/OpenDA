@@ -6,18 +6,35 @@
 Welcome to OpenDA's documentation!
 ==================================
 
+Introduction to OpenDA
+**********************
 .. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+   :maxdepth: 1
 
-   Introduction_OpenDA/introduction_openda
-   Introduction_OpenDA/index
-   Getting_started
+   introduction_openda
+   introduction_da
+   configuration_files
+
+Getting started with OpenDA
+***************************
+.. toctree::
+   :maxdepth: 1
+
    Windows_installation
    Linux_installation
    Mac_installation
-   contributing
+
+How to setup and test your application step by step
+***************************************************
+.. toctree::
+   :maxdepth: 1
    workStepByStep
+
+Contributing to the code
+************************
+.. toctree::
+   :maxdepth: 1
+
    java_source
    IntelIJ
    non_IDE
