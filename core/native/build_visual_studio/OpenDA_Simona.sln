@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31529.145
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "blas_lapack", "blas_lapack\blas_lapack.vfproj", "{31885DEC-B56D-4900-A2C6-30097F4C2AF3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opendabridge", "opendabridge\opendabridge.vcxproj", "{26BF455E-DD7C-48A3-B13F-48F427AC216F}"
@@ -8,7 +10,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opendabridge", "opendabridg
 		{C56A4B5C-5817-4190-BBF0-46AEFC935692} = {C56A4B5C-5817-4190-BBF0-46AEFC935692}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcta_Simona", "libcta\libcta_Simona.vcxproj", "{C56A4B5C-5817-4190-BBF0-46AEFC935692}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcta", "libcta\libcta_Simona.vcxproj", "{C56A4B5C-5817-4190-BBF0-46AEFC935692}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31885DEC-B56D-4900-A2C6-30097F4C2AF3} = {31885DEC-B56D-4900-A2C6-30097F4C2AF3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,5 +50,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {700ACC5C-0DB2-46C1-9ECF-51626D541DF0}
 	EndGlobalSection
 EndGlobal
