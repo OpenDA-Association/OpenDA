@@ -61,47 +61,46 @@ instabilities.
 Check the restart of a model
 ----------------------------
 
-In order to use a programmed model as part of a sequential data-assimilation
-algorithm, it needs to have a proper restart functionality. This makes
+To use a programmed model as part of a sequential data-assimilation
+algorithm, it should have a proper restart functionality. This makes
 it possible to split up a long simulation run into several shorter ones.
-The model will write the internal state to one or more restart files, at
+The model will write the internal state to one or more restart files at
 the end of each run. This will contain the model state :math:`x`, but
-often some other information as well e.g. the information on the
+often some other information as well, e.g. the information on the
 integration step size, computed forcing, etc. The restart information
 will be read from disk at the start of the next run. There should be no
 differences in the result between the restarted simulations and the
 original simulation when the restart is implemented correctly.
 
 To check whether the restart functionality of your
-model is working properly, run a simulation in one go and perform the
-same simulation with a number of restarts. It is always best to choose
+model is working properly, run a simulation in one go (using the algorithm `Simulation`_) and perform the
+same simulation with several restarts (using the algorithm `Sequential simulation`_). It is always best to choose
 the same interval between the restarts as the assimilation interval you
-are planning to use in your data-assimilation framework.
+plan to use in your data-assimilation framework.
 
-Note: When your model is already available in OpenDA, you can use OpenDA to do this
-experiment (will be explained later), but do not skip this step, because
-your model configuration might contain features that have not been used
-before and for which the restart might be faulty!
+Note: In case your model software is already coupled to OpenDA it is still very important to
+check whether for your particular model setup the restart functionality works.
+Your model may be using features that impact the restart and 
+have not been catered to in the original coupling to OpenDA. 
 
 Unfortunately, the restart functionality of models is often not perfect.
-When that is the case you have to look how bad it is. Here is a list of
+When that is the case you have to look at how bad it is. Here is a list of
 issues we have seen in the past that might cause differences:
 
--  Loss of precision: It can happen that some precision is lost in
+-  Loss of precision: some precision can be lost in
    reading and writing values from the restart files (e.g. computations
    are in double precision but restart is in single precision). When we
    expect that the model updates of the data-assimilation algorithm are
    much larger than this loss of precision, it is only annoying (it
-   makes testing/comparing/debugging more difficult), but no show
-   stopper.
+   makes testing/comparing/debugging more difficult) but no showstopper.
 
--  Incomplete restart information: At some point in the history of the
-   model some functionality has been added but the developers forgot to
+-  Incomplete restart information: at some point in the model history
+   some functionality has been added but the developers forgot to
    incorporate the relevant new (state) information in the restart file.
 
--  Imperfect by design: Sometimes the developers never intended to have
+-  Imperfect by design: sometimes, the developers never intended to have
    a perfect restart functionality, which means the results are not
-   exactly same as without the restart. Writing a correct restart
+   exactly the same as without the restart. Writing a correct restart
    functionality is in many cases far from easy.
 
 Some tips when you notice the restart is imperfect:
@@ -120,7 +119,7 @@ Some tips when you notice the restart is imperfect:
 -  Contact the developers of the code. With some luck, they are willing
    to help you.
 
-In the end you have to figure out whether the errors in the restart are
+In the end, you have to figure out whether the errors in the restart are
 acceptably small. When the deviation between the original run and a run
 with restarts is much smaller than the expected impact of your data
 assimilation you might be OK.
@@ -163,10 +162,8 @@ Finally, your model may have time-dependent systematic errors. We often
 found it useful to add an artificial forcing to the model to describe
 these model errors.
 
-We will explain in Section `4.3 <#Sec:SequentialEnsembleSimulation>`__
+We will explain :ref:`here <SequentialEnsembleSimulation>`
 how these experiments can be carried out using OpenDA.
-
-.. _`Sec:Twin`:
 
 Twin experiments
 ================
@@ -191,6 +188,8 @@ Workflow
 OpenDA implements a number of algorithms that can be used to gradually grow
 from a simulation model to a data-assimilation system.
 
+.. _Simulation:
+
 org.openda.algorithms.Simulation
 --------------------------------
 
@@ -198,6 +197,8 @@ Running this algorithm is equivalent to running the model standalone.
 The only difference it that is that it runs from within OpenDA. It allows you
 to test whether the configuration is handled correctly and the output of
 the model can be processed by OpenDA.
+
+.. _Sequential simulation:
 
 SequentialSimulation
 --------------------
@@ -218,7 +219,7 @@ observations. Note: Do not forget to perturb your observation according
 to the measurement error and perturb the initial state and/or have the
 model generate noise on the forcing.
 
-.. _`Sec:SequentialEnsembleSimulation`:
+.. _SequentialEnsembleSimulation:
 
 SequentialEnsembleSimulation
 ----------------------------
