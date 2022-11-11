@@ -8,7 +8,7 @@ are often complex software packages with many options. In addition, we
 add (real) observed data and blow up the number of computations and data
 by an order of 100. Another problem is related to our way of using the
 models in a data-assimilation framework. For sequential
-data-assimilation algorithms, such as the Ensemble Kalman Filter or
+data-assimilation algorithms, such as the ensemble Kalman Filter (EnKF) or
 3D-VAR, we often perform (short) model runs and update the parameters or
 state of the model between these short runs. However, the used simulation models
 are often not developed to be applied in this way.
@@ -127,30 +127,13 @@ assimilation you might be OK.
 Uncertainty of your model
 -------------------------
 
-For the ensemble based algorithms, you need to have an ensemble that
+For the ensemble-based algorithms, you need to have an ensemble that
 statistically represents the uncertainty in your model prediction. There
 are various ways to set up your ensemble.
 
-When your model is dominated by chaotic behavior, e.g. for most ocean
-models and atmospheric models, you can generate an initial ensemble by
-running the model for some time and taking various snapshots of the
-state. Another approach is to set up an ensemble with some initial
-perturbation. Then run the ensemble long enough for the chaotic behavior
-to do its work and use that as the initial ensemble of your experiment.
-
-When the uncertainty is dominated by the forcing, e.g. coastal sea-,
-rivers-, air pollution-, run-off- and sewage-models, you have to work on
-describing the uncertainty, including time and spatial correlations of
-these forcings.
-
-When the uncertainty is in the parameters of the model, e.g. groundwater
-and run-off models, (and we are not planning to estimate them), you can
-carefully generate an ensemble of these parameters that represents their
-uncertainty. Then you set up your ensemble in such a way that each
-member has a different set of parameters. Be aware that this setup is
-not suited for all flavors of EnKF, since the model state after the
-update must in some sense correspond to the perturbed set of model
-parameters!
+* When your model is dominated by chaotic behavior, e.g. for most ocean and atmospheric models, you can generate an initial ensemble by running the model for some time and taking various snapshots of the state. Another approach is to set up an ensemble with some initial perturbation. Then run the ensemble long enough for the chaotic behavior to do its work and use that as the initial ensemble of your experiment.
+* When the uncertainty is dominated by the forcing, e.g. coastal-sea, river, air-pollution, run-off and sewage models, you have to work on describing the uncertainty, including time and spatial correlations of these forcings.
+* When the uncertainty is in the parameters of the model, e.g. groundwater and run-off models (and we are not planning to estimate them), you can carefully generate an ensemble of these parameters that represents their uncertainty. Then you set up your ensemble in such a way that each member has a different set of parameters. Be aware that this setup is not suited for all flavors of EnKF, since the model state after the update must in some sense correspond to the perturbed set of model parameters!
 
 Combinations of the above are possible as well. It is a good investment
 of time to generate and explore your (initial) ensemble. Note that the
