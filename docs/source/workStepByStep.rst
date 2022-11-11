@@ -1,6 +1,6 @@
-============================================================
-OpenDA: How to set up and test your application step by step
-============================================================
+==============================
+Step-by-step application setup
+==============================
 
 Setting up a data-assimilation framework for a model is a difficult
 task. Several things contribute to the complexity. The dynamical models
@@ -87,7 +87,7 @@ Unfortunately, the restart functionality of models is often not perfect.
 When that is the case you have to look how bad it is. Here is a list of
 issues we have seen in the past that might cause differences:
 
--  loss of precision: It can happen that some precision is lost in
+-  Loss of precision: It can happen that some precision is lost in
    reading and writing values from the restart files (e.g. computations
    are in double precision but restart is in single precision). When we
    expect that the model updates of the data-assimilation algorithm are
@@ -101,8 +101,8 @@ issues we have seen in the past that might cause differences:
 
 -  Imperfect by design: Sometimes the developers never intended to have
    a perfect restart functionality, which means the results are not
-   exactly same as without the restart. (Writing a correct restart
-   functionality is in many cases far from easy)
+   exactly same as without the restart. Writing a correct restart
+   functionality is in many cases far from easy.
 
 Some tips when you notice the restart is imperfect:
 
