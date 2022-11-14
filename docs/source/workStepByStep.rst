@@ -167,85 +167,75 @@ makes it easy to investigate the performance of your data-assimilation
 framework. The `Sequential simulation`_ algorithm in OpenDA is a useful tool for
 creating your twin experiment.
 
-Workflow
-========
+Useful algorithms
+=================
 
-OpenDA implements a number of algorithms that can be used to gradually grow
+OpenDA implements several algorithms that can be used to gradually grow
 from a simulation model to a data-assimilation system.
 
 .. _Simulation:
 
-org.openda.algorithms.Simulation
---------------------------------
+Simulation algorithm
+--------------------
 
-Running this algorithm is equivalent to running the model standalone.
-The only difference it that is that it runs from within OpenDA. It allows you
-to test whether the configuration is handled correctly and the output of
+Running the algorithm ``org.openda.algorithms.Simulation`` is equivalent to running the model stand-alone.
+The only difference is that it runs from within OpenDA. It allows you
+to test whether the configuration is handled correctly and whether the output of
 the model can be processed by OpenDA.
 
 .. _Sequential simulation:
 
-SequentialSimulation
---------------------
+Sequential simulation algorithm
+-------------------------------
 
-The SequentialSimulation algorithm  [2]_) is again equivalent to running
-the model by itself. However this time the model is stopped at each
+The algorithm ``org.openda.algorithms.kalmanFilter.SequentialSimulation`` 
+is again equivalent to running
+the model by itself. However, this time the model is stopped at each
 moment in which we have observations (or at predefined intervals). The
-interpolated model state to the observations are written to the output.
+interpolated model state to the observations is written to the output.
 
-This algorithm is used to check whether the restart functionality of the
-model within the OpenDA framework is working correctly (by comparing the
-results to a normal simulation). Another usage for this algorithm is to
-create synthetic observations for a twin experiment. You set up
-observations with arbitrary values but with the location and time you
-are interested in. After you have run the SequentialSimulation you can
-find the model predictions that you can use for your synthetic
-observations. Note: Do not forget to perturb your observation according
+The purpose of this algorithm is twofold: 
+
+* Check whether the restart functionality of the model within the OpenDA framework is working correctly. This is done by comparing the results to a normal simulation. 
+* In addition, it is also used to create synthetic observations for a twin experiment. You set up observations with arbitrary values but with the location and time you are interested in. After you have run this algorithm, you can find the model predictions that you can use for your synthetic observations. 
+
+Note: Do not forget to perturb your observation according
 to the measurement error and perturb the initial state and/or have the
 model generate noise on the forcing.
 
 .. _SequentialEnsembleSimulation:
 
-SequentialEnsembleSimulation
-----------------------------
+Sequential-ensemble simulation
+------------------------------
 
-The SequentialEnsembleSimulation algorithm  [3]_ will propagate your
+The sequential-ensemble simulation algorithm   
+(``org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation``)
+will propagate your
 model ensemble without any data assimilation. This algorithm helps you
-study the behavior of your ensemble. How is explicit noise propagated in
-to the model? Or how is the initial ensemble propagated? At the same
-time it is interesting to study the difference between the mean ensemble
+study the behavior of your ensemble. How is explicit noise propagated into the model? How is the initial ensemble propagated? At the same
+time, it is interesting to study the difference between the mean ensemble
 and your model run. Due to nonlinearities, your mean ensemble can behave
 significantly differently from your deterministic run.
 
-EnKF
-----
+Ensemble Kalman filtering
+-------------------------
 
-The title suggest to use EnKF  [4]_, but other algorithms, e.g. DEnKF or
-EnSR, are possible as well. However this is the time to start filtering.
+Next, it is time to start filtering. Therefore, ensemble Kalman filtering
+can be used (``org.openda.algorithms.kalmanFilter.EnkF``), but 
+other algorithms, e.g. DEnKF or
+EnSR, are also possible. 
 Start with a twin experiment so that you know that there are no
-artifacts in the observation data. Start small! First assimilate a small
-number of observations and take those of which you think that they have
-a lot of impact. Then start adding observations and see what happens.
-When you want to assimilate observations from various quantity or
-quality, first investigate their impact as group and only mix
+artifacts in the observation data. Start small! First, assimilate a small
+number of observations and take the ones that may have 
+a lot of impacts. Then start adding observations and see what happens.
+When you want to assimilate observations from various quantities or
+qualities, first investigate their impact as a group and only mix
 observations in the final steps.
 
-Localization, Kalman smoothing, parallel computing, steady state Kalman etc
----------------------------------------------------------------------------
+Localization, Kalman smoothing, parallel computing, steady state Kalman, etc
+----------------------------------------------------------------------------
 
-To improve performance you can add additional techniques like
-localization to cope with spurious correlations and steady state
+To improve performance, you can add additional techniques like
+localization to cope with spurious correlations and steady-state
 filtering or parallel computing filtering to computational performance.
-OpenDA can output many of the variables involved, such as the Kalman gain.
-Please, consult Chapter `[chapter:output] <#chapter:output>`__ for more
-info.
-
-.. [2]
-   org.openda.algorithms.kalmanFilter.SequentialSimulation
-
-.. [3]
-   class name
-   org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation
-
-.. [4]
-   class name org.openda.algorithms.kalmanFilter.EnkF
+OpenDA can output many variables involved, such as the Kalman gain.
