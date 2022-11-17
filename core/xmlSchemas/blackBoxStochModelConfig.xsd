@@ -76,7 +76,7 @@
     </xs:attribute>
     <xs:attribute name="allowOverwriteForecastWithAnalysisNoise" type="xs:boolean" use="optional" default="false">
       <xs:annotation>
-        <xs:documentation>When true, adding noise for a time step will not be skipped if for that time step noise has already been added before. For example for overlapping time steps add the end of a forecast period and at the beginning of a forecast period</xs:documentation>
+        <xs:documentation>When true, adding noise for a time step will not be skipped if for that time step noise has already been added before. For example for overlapping time steps add the end of a forecast period and at the beginning of a forecast period. This element should only be set to true with transformation="set" otherwise noise will be added/multiplied twice at analysis time</xs:documentation>
       </xs:annotation>
     </xs:attribute>
 	</xs:complexType>
