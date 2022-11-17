@@ -33,11 +33,11 @@ public class NoiseModelExchangeItemConfig {
 	private boolean addOnlyNoiseDifference;
     private int stateSizeNoiseSizeRatio;
     private boolean addStateNoiseAfterCompute;
-	private boolean allowAddNoiseMultipleTimesForTimeSteps;
+	private boolean allowOverwriteForecastWithAnalysisNoise;
 
 
 	public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute, boolean allowAddNoiseMultipleTimesForTimeSteps) {
+										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute, boolean allowOverwriteForecastWithAnalysisNoise) {
 		this.id = id;		
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.transformation = transformation;
@@ -45,13 +45,13 @@ public class NoiseModelExchangeItemConfig {
 		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
         this.stateSizeNoiseSizeRatio = stateSizeNoiseSizeRatio;
         this.addStateNoiseAfterCompute = addStateNoiseAfterCompute;
-		this.allowAddNoiseMultipleTimesForTimeSteps = allowAddNoiseMultipleTimesForTimeSteps;
+		this.allowOverwriteForecastWithAnalysisNoise = allowOverwriteForecastWithAnalysisNoise;
 	}
 	
-	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, boolean allowAddNoiseMultipleTimesForTimeSteps) {
+	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, boolean allowOverwriteForecastWithAnalysisNoise) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false, allowAddNoiseMultipleTimesForTimeSteps);
+		this(id, new ArrayList<String>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false, allowOverwriteForecastWithAnalysisNoise);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
@@ -89,7 +89,7 @@ public class NoiseModelExchangeItemConfig {
         return addStateNoiseAfterCompute;
     }
 
-	public boolean isAllowAddNoiseMultipleTimesForTimeSteps() {
-		return allowAddNoiseMultipleTimesForTimeSteps;
+	public boolean isAllowOverwriteForecastWithAnalysisNoise() {
+		return allowOverwriteForecastWithAnalysisNoise;
 	}
 }

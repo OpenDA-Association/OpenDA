@@ -1531,7 +1531,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 							this.lastNoiseTimes.put(modelExchangeItemId, Double.NEGATIVE_INFINITY);
 						}
 						double timePrecision = OdaGlobSettings.getTimePrecision();
-						if (time > this.lastNoiseTimes.get(modelExchangeItemId) + 0.5 * timePrecision || exchangeItemConfig.isAllowAddNoiseMultipleTimesForTimeSteps()) {
+						if (time > this.lastNoiseTimes.get(modelExchangeItemId) + 0.5 * timePrecision || exchangeItemConfig.isAllowOverwriteForecastWithAnalysisNoise()) {
 							// we need values for each of the model times in this forecast
 
 							// look for index in ALL times for noise model exchange item
@@ -1565,10 +1565,10 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 								}
 							}
 							int modelTimeIndex = TimeUtils.findMatchingTimeIndex(modelTimes, time, timePrecision);
-							boolean addNoiseBefore = !afterCompute && !exchangeItemConfig.isAddStateNoiseAfterCompute();
-							boolean addNoiseAfter = afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute();
+							boolean setNoiseBefore = !afterCompute && !exchangeItemConfig.isAddStateNoiseAfterCompute();
+							boolean setNoiseAfter = afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute();
 							addNoiseAfterComputeForAnyExchangeItem |= (!afterCompute && exchangeItemConfig.isAddStateNoiseAfterCompute());
-							if (addNoiseAfter || addNoiseBefore) addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, noiseModelExchangeItem, modelTimeIndex,
+							if (setNoiseAfter || setNoiseBefore) addNoiseToExchangeItemForOneTimeStep(modelExchangeItem, noiseModelExchangeItem, modelTimeIndex,
 								noiseModelEIValuesForTimeStep, exchangeItemConfig.getTransformation(), exchangeItemConfig.getStateSizeNoiseSizeRatio());
 							this.lastNoiseTimes.put(modelExchangeItemId, time);
 						}
@@ -1855,8 +1855,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 				}
 				break;
 			case BBRegularisationConstantConfig.TRANSFORMATION_SET:
-				throw new RuntimeException("addNoiseToExchangeItemForOneTimeStep on " + modelExchangeItem.getId() +
-						": invalid call for setting values");
+				if (modelExchangeItem instanceof IGridTimeSeriesExchangeItem) {
+					((IGridTimeSeriesExchangeItem)modelExchangeItem).setValuesAsDoublesForSingleTimeIndex(timeIndex, noise);
+				} else {
+					modelExchangeItem.setValuesAsDoubles(noise);
+				}
 			}
 		} else {
 			int numValuesToBeSet=noise.length;
