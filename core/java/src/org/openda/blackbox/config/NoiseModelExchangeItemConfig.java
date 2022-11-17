@@ -38,6 +38,7 @@ public class NoiseModelExchangeItemConfig {
 
 	public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
 										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute, boolean allowOverwriteForecastWithAnalysisNoise) {
+		if (allowOverwriteForecastWithAnalysisNoise && transformation != BBRegularisationConstantConfig.TRANSFORMATION_SET) throw new RuntimeException("allowOverwriteForecastWithAnalysisNoise=true should only be combined with transformation / operation=set otherwise noise will be added/multiplied twice at analysis time");
 		this.id = id;		
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.transformation = transformation;
