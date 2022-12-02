@@ -104,7 +104,7 @@ issues we have seen in the past that might cause differences:
 -  Imperfect by design: sometimes, the developers never intended to have
    a perfect restart functionality, which means the results are not
    exactly the same as without the restart. Writing a correct restart
-   functionality is in many cases far from easy.
+   functionality is often far from easy.
 
 Some tips when you notice the restart is imperfect:
 
@@ -236,4 +236,4 @@ observations in the final steps.
 
 Next steps
 ----------
-There are various methods and options that can help to improve the performance of your assimilation. In order to improve the performance you can try to use a pre-computed steady-state Kalman gain (``org.openda.algorithms.kalmanFilter.SteadyStateFilter``) or use parallel computing to propagate the ensemble in parallel. Spurious correlations can be catered with using localization techniques, which are available on most ensemble-based algorithms. 
+There are various methods and options that can help to improve the performance of your assimilation. To improve the performance you can try to use a pre-computed steady-state Kalman gain (``org.openda.algorithms.kalmanFilter.SteadyStateFilter``) or use parallel computing to propagate the ensemble in parallel. Spurious correlations can be catered to using localization techniques, which are available on most ensemble-based algorithms. 
