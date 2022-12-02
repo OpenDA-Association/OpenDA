@@ -131,7 +131,7 @@ For the ensemble-based algorithms, you need to have an ensemble that
 statistically represents the uncertainty in your model prediction. There
 are various ways to set up your ensemble.
 
-* When your model is dominated by chaotic behavior, e.g. for most ocean and atmospheric models, you can generate an initial ensemble by running the model for some time and taking various snapshots of the state. Another approach is to set up an ensemble with some initial perturbation. Then run the ensemble long enough for the chaotic behavior to do its work and use that as the initial ensemble of your experiment.
+* When your model is dominated by chaotic behavior, e.g. for most ocean and atmospheric models, you can generate an initial ensemble by running the model for some time and taking various snapshots of the state. Another approach is to set up an ensemble of model states with some initial perturbation. Then run the ensemble long enough for the chaotic behavior to do its work and use that as the initial ensemble of your experiment.
 * When the uncertainty is dominated by the forcing, e.g. coastal-sea, river, air-pollution, run-off and sewage models, you have to work on describing the uncertainty, including time and spatial correlations of these forcings.
 * When the uncertainty is in the parameters of the model, e.g. groundwater and run-off models (and we are not planning to estimate them), you can carefully generate an ensemble of these parameters that represents their uncertainty. Then you set up your ensemble in such a way that each member has a different set of parameters. Be aware that this setup is not suited for all flavors of EnKF, since the model state after the update must in some sense correspond to the perturbed set of model parameters!
 
@@ -149,7 +149,7 @@ We will explain :ref:`here <SequentialEnsembleSimulation>`
 how these experiments can be carried out using OpenDA.
 
 Twin experiments
-================
+----------------
 
 In real-life applications, we use data assimilation to estimate the true
 state of the system. Unfortunately, we do not know the true state and
@@ -191,17 +191,13 @@ Sequential simulation algorithm
 The algorithm ``org.openda.algorithms.kalmanFilter.SequentialSimulation`` 
 is again equivalent to running
 the model by itself. However, this time the model is stopped at each
-moment in which we have observations (or at predefined intervals). The
-interpolated model state to the observations is written to the output.
+moment at which we have observations (or at predefined intervals). 
+For each observed value, the corresponding value as predicted by the model is written to the output.
 
 The purpose of this algorithm is twofold: 
 
 * Check whether the restart functionality of the model within the OpenDA framework is working correctly. This is done by comparing the results to a normal simulation. 
-* In addition, it is also used to create synthetic observations for a twin experiment. You set up observations with arbitrary values but with the location and time you are interested in. After you have run this algorithm, you can find the model predictions that you can use for your synthetic observations. 
-
-Note: Do not forget to perturb your observation according
-to the measurement error and perturb the initial state and/or have the
-model generate noise on the forcing.
+* In addition, it is also used to create synthetic observations for a twin experiment. You set up observations with arbitrary values but with the location and time you are interested in. After you have run this algorithm, you can find the model predictions that you can use for your synthetic observations.  Do not forget to add noise to the generated observations. The noise must be of the order of the measurement error when collecting 'real' data.
 
 .. _SequentialEnsembleSimulation:
 
@@ -216,6 +212,9 @@ study the behavior of your ensemble. How is explicit noise propagated into the m
 time, it is interesting to study the difference between the mean ensemble
 and your model run. Due to nonlinearities, your mean ensemble can behave
 significantly differently from your deterministic run.
+
+Additional methods
+==================
 
 Ensemble Kalman filtering
 -------------------------
@@ -232,10 +231,6 @@ When you want to assimilate observations from various quantities or
 qualities, first investigate their impact as a group and only mix
 observations in the final steps.
 
-Localization, Kalman smoothing, parallel computing, steady state Kalman, etc
-----------------------------------------------------------------------------
-
-To improve performance, you can add additional techniques like
-localization to cope with spurious correlations and steady-state
-filtering or parallel computing filtering to computational performance.
-OpenDA can output many variables involved, such as the Kalman gain.
+Next steps
+----------
+There are various methods and options that can help to improve the performance of your assimilation. In order to improve the performance you can try to use a pre-computed steady-state Kalman gain (``org.openda.algorithms.kalmanFilter.SteadyStateFilter``) or use parallel computing to propagate the ensemble in parallel. Spurious correlations can be catered with using localization techniques, which are available on most ensemble-based algorithms. 
