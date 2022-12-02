@@ -12,7 +12,7 @@ a Windows machine:
 
 -  Download the `OpenDA
    binaries <https://github.com/OpenDA-Association/OpenDA/releases>`__.
-   Note that the OpenDA binaries include a 64-bit Java 11 installation
+   Note that the OpenDA binaries include a 64-bit Java 11 (or newer) installation
    to be used by the program.
 -  Extract the OpenDA distribution file to the desired location on your
    computer. Note: OpenDA does not work when it is installed on a
@@ -37,7 +37,7 @@ a Linux machine:
 
 -  Download the `OpenDA
    binaries <https://github.com/OpenDA-Association/OpenDA/releases>`__.
--  Download a 64-bit Java 11 installation via the package manager.
+-  Download a 64-bit Java 11 (or newer) installation via the package manager.
 -  Extract the OpenDA distribution file to the desired location on your
    computer. Note: OpenDA does not work when it is installed on a
    location with a space in the path (like “``My Documents``”).
@@ -92,7 +92,7 @@ a Mac machine:
 -  Download the Linux `OpenDA
    binaries <https://github.com/OpenDA-Association/OpenDA/releases>`__
    (these binaries also work for a Mac).
--  Download a 64-bit Java 11 installation for Mac
+-  Download a 64-bit Java 11 (or newer) installation for Mac
    `here <https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html>`__.
 -  Extract the OpenDA distribution file to the desired location on your
    computer. Note: OpenDA does not work when it is installed on a
