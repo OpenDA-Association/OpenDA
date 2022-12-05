@@ -170,8 +170,8 @@ makes it easy to investigate the performance of your data-assimilation
 framework. The `Sequential simulation`_ algorithm in OpenDA is a useful tool for
 creating your twin experiment.
 
-Useful algorithms
-=================
+Simulation algorithms
+=====================
 
 OpenDA implements several algorithms that can be used to gradually grow
 from a simulation model to a data-assimilation system.
@@ -216,8 +216,8 @@ time, it is interesting to study the difference between the mean ensemble
 and your model run. Due to nonlinearities, your mean ensemble can behave
 significantly differently from your deterministic run.
 
-Additional methods
-==================
+Basic assimilation algorithms
+=============================
 
 Ensemble Kalman filtering
 -------------------------
