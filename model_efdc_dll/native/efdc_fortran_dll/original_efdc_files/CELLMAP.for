@@ -104,31 +104,37 @@ C
         ELSE  
           LNC(L)=LIJ(I,J+1)  
         ENDIF  
+!        IF(LNC(L).EQ.0) LNC(L)=LC
         IF(IJCT(I,J-1).EQ.9)THEN  
           LSC(L)=LC  
         ELSE  
           LSC(L)=LIJ(I,J-1)  
         ENDIF  
+!        IF(LSC(L).EQ.0) LSC(L)=LC 
         IF(IJCT(I+1,J+1).EQ.9)THEN  
           LNEC(L)=LC  
         ELSE  
           LNEC(L)=LIJ(I+1,J+1)  
         ENDIF  
+!        IF(LNEC(L).EQ.0) LNEC(L)=LC
         IF(IJCT(I-1,J+1).EQ.9)THEN  
           LNWC(L)=LC  
         ELSE  
           LNWC(L)=LIJ(I-1,J+1)  
         ENDIF  
+!        IF(LNWC(L).EQ.0) LNWC(L)=LC
         IF(IJCT(I+1,J-1).EQ.9)THEN  
           LSEC(L)=LC  
         ELSE  
           LSEC(L)=LIJ(I+1,J-1)  
         ENDIF  
+!        IF(LSEC(L).EQ.0) LSEC(L)=LC
         IF(IJCT(I-1,J-1).EQ.9)THEN  
           LSWC(L)=LC  
         ELSE  
           LSWC(L)=LIJ(I-1,J-1)  
         ENDIF  
+!        IF(LSWC(L).EQ.0) LSWC(L)=LC
       ENDDO  
 C  
 C **  MODIFY NORTH-SOUTH CELL MAPPING FOR PERIOD GRID IN N-S DIRECTION  
