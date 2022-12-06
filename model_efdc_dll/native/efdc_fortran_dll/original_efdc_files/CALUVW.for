@@ -23,17 +23,8 @@ C
 C  
 C **  CALCULATE BOTTOM FRICTION COEFFICIENT  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& Q1,Q2,
-!$OMP& RCDZM,RCDZU,RCDZL,CMU,CMV,EU,EV,
-!$OMP& RCDZR,CRU,CRV,
-!$OMP& RDZG,RCDZD)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(ISTL_.EQ.3)THEN  
-        DO L=LF,LL
+        DO L=2,LA  
           RCX(L)=AVCON1/H1U(L)+STBX(L)*SQRT(U1(L,1)*U1(L,1)  
      &        +V1U(L)*V1U(L))  
           RCY(L)=AVCON1/H1V(L)+STBY(L)*SQRT(U1V(L)*U1V(L)  
@@ -44,7 +35,7 @@ C       LF=2+(ND-1)*LDM
 C  
       ELSE  
         IF(AVCON1.LT.0.00001)THEN  
-          DO L=LF,LL
+          DO L=2,LA  
             ! *** FOR 2TL U1 & U AND V1 & V ARE THE SAME
             ! *** THESE ARE ONLY DIFFERENCE FOR 3TL ISTL=2 TRAP CORRECTION STEP
             Q1=SQRT(U1(L,1)*U1(L,1)+V1U(L)*V1U(L))  
@@ -55,7 +46,7 @@ C
             RCY(L)=STBY(L)*SQRT(Q1*Q2)  
           ENDDO  
         ELSE  
-          DO L=LF,LL
+          DO L=2,LA  
             Q1=SQRT(U1(L,1)*U1(L,1)+V1U(L)*V1U(L))  
             Q2=SQRT(U(L,1)*U(L,1)+VU(L)*VU(L))  
             RCX(L)=AVCON1/SQRT(H1U(L)*HU(L))+STBX(L)*SQRT(Q1*Q2)  
@@ -74,7 +65,7 @@ C
       RCDZM=CDZM(1)*DELTI  
       RCDZU=CDZU(1)  
       RCDZL=CDZL(1)  
-      DO L=LF,LL
+      DO L=2,LA  
         CMU=1.+RCDZM*HU(L)*AVUI(L,1)  
         CMV=1.+RCDZM*HV(L)*AVVI(L,1)  
         EU=1./CMU  
@@ -90,7 +81,7 @@ C
         RCDZM=CDZM(K)*DELTI  
         RCDZU=CDZU(K)  
         RCDZL=CDZL(K)  
-        DO L=LF,LL
+        DO L=2,LA  
           CMU=1.+RCDZM*HU(L)*AVUI(L,K)  
           CMV=1.+RCDZM*HV(L)*AVVI(L,K)  
           EU=1./(CMU-RCDZL*CU1(L,K-1))  
@@ -104,14 +95,14 @@ C
         ENDDO  
       ENDDO  
       DO K=KS-1,1,-1  
-        DO L=LF,LL
+        DO L=2,LA  
           DU(L,K)=DU(L,K)-CU1(L,K)*DU(L,K+1)  
           DV(L,K)=DV(L,K)-CU2(L,K)*DV(L,K+1)  
           UUU(L,K)=UUU(L,K)-CU1(L,K)*UUU(L,K+1)  
           VVV(L,K)=VVV(L,K)-CU2(L,K)*VVV(L,K+1)  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         AAU(L)=0.  
         AAV(L)=0.  
         BBU(L)=1.  
@@ -119,7 +110,7 @@ C
       ENDDO  
       DO K=1,KS  
         RCDZR=CDZR(K)  
-        DO L=LF,LL
+        DO L=2,LA  
           CRU=RCDZR*RCX(L)*AVUI(L,K)  
           CRV=RCDZR*RCY(L)*AVVI(L,K)  
           AAU(L)=AAU(L)+CRU*DU(L,K)  
@@ -128,36 +119,40 @@ C
           BBV(L)=BBV(L)+CRV*VVV(L,K)  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         AAU(L)=AAU(L)/BBU(L)  
         AAV(L)=AAV(L)/BBV(L)  
       ENDDO  
       DO K=1,KS  
         RDZG=DZG(K)  
-        RCDZD=CDZD(K)  
-        DO L=LF,LL
+        DO L=2,LA  
           DU(L,K)=RDZG*HU(L)*AVUI(L,K)*(DU(L,K)-AAU(L)*UUU(L,K))  
           DV(L,K)=RDZG*HV(L)*AVVI(L,K)*(DV(L,K)-AAV(L)*VVV(L,K))  
+        ENDDO  
+      ENDDO  
 C  
 C **  CALCULATED U AND V  
 C **  DUSUM+UHE=UHE, DVSUM+VHE=VHE  
 C  
+      DO K=1,KS  
+        RCDZD=CDZD(K)  
+        DO L=2,LA  
           UHE(L)=UHE(L)+RCDZD*DU(L,K)  
           VHE(L)=VHE(L)+RCDZD*DV(L,K)  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         UHDY(L,KC)=UHE(L)*SUB(L)  
         VHDX(L,KC)=VHE(L)*SVB(L)  
       ENDDO  
       DO K=KS,1,-1  
-        DO L=LF,LL
+        DO L=2,LA  
           UHDY(L,K)=UHDY(L,K+1)-DU(L,K)*SUB(L)  
           VHDX(L,K)=VHDX(L,K+1)-DV(L,K)*SVB(L)  
         ENDDO  
       ENDDO  
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           U(L,K)=UHDY(L,K)*HUI(L)  
           V(L,K)=VHDX(L,K)*HVI(L)  
           UHDY(L,K)=UHDY(L,K)*DYU(L)  
@@ -167,22 +162,26 @@ C
 C  
 C **  ADD ADJUSTMENT TO 3D HORIZONTAL TRANSPORT  
 C  
-      DO L=LF,LL
+      DO L=2,LA  
         TVAR3E(L)=0.  
         TVAR3N(L)=0.  
       ENDDO  
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           TVAR3E(L)=TVAR3E(L)+UHDY(L,K)*DZC(K)  
           TVAR3N(L)=TVAR3N(L)+VHDX(L,K)*DZC(K)  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      UERMX=-1.E+12  
+      UERMN=1.E+12  
+      VERMX=-1.E+12  
+      VERMN=1.E+12  
+      DO L=2,LA  
         TVAR3E(L)=TVAR3E(L)-UHDYE(L)  
         TVAR3N(L)=TVAR3N(L)-VHDXE(L)  
       ENDDO  
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           UHDY(L,K)=UHDY(L,K)-TVAR3E(L)*DZIC(K)  
           VHDX(L,K)=VHDX(L,K)-TVAR3N(L)*DZIC(K)  
         ENDDO  
@@ -190,26 +189,28 @@ C
 C  
 C **  RESET VELOCITIES  
 C  
-      DO L=LF,LL
+      DO L=2,LA  
         UHE(L)=0.  
         VHE(L)=0.  
       ENDDO  
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           UHE(L)=UHE(L)+UHDY(L,K)*DZC(K)  
           VHE(L)=VHE(L)+VHDX(L,K)*DZC(K)  
           U(L,K)=UHDY(L,K)*HUI(L)  
           V(L,K)=VHDX(L,K)*HVI(L)  
+        ENDDO  
+      ENDDO  
+      DO K=1,KC  
+        DO L=2,LA  
           U(L,K)=U(L,K)*DYIU(L)  
           V(L,K)=V(L,K)*DXIV(L)  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         UHE(L)=UHE(L)*DYIU(L)  
         VHE(L)=VHE(L)*DXIV(L)  
       ENDDO  
-c
-      enddo
 C  
 C **  UNCOMMENT BELOW TO WRITE CONTINUITY DIAGNOSITCS  
 C  
@@ -220,20 +221,15 @@ C
 C  
 C **  CALCULATE W  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN,LE)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(ISTL_.EQ.3)THEN  
-        DO L=LF,LL
+        DO L=2,LA  
           TVAR3E(L)=UHDYE(L+1   )  
           TVAR3N(L)=VHDXE(LNC(L))  
           TVAR3W(L)=UHDY2E(L+1   )  
           TVAR3S(L)=VHDX2E(LNC(L))  
         ENDDO  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             TVAR1E(L,K)=UHDY(L+1   ,K)  
             TVAR1N(L,K)=VHDX(LNC(L),K)  
             TVAR1W(L,K)=UHDY2(L+1   ,K)  
@@ -241,7 +237,7 @@ c
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             W(L,K)=W(L,K-1) - 0.5*DZC(K)*DXYIP(L)*   
      &          (TVAR1E(L,K)-UHDY(L,K)-TVAR3E(L)+UHDYE(L)  
@@ -255,7 +251,7 @@ c
       ELSEIF(ISTL_.EQ.2)THEN  
 
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)
             LE=L+1  
             W(L,K)=W(L,K-1) - 0.5*DZC(K)*DXYIP(L)*  
@@ -264,11 +260,10 @@ c
      &          + VHDX(LN,K)- VHDX(L,K)- VHDXE(LN)+VHDXE(L)  
      &          +VHDX1(LN,K)-VHDX1(L,K)-VHDX1E(LN)+VHDX1E(L))  
      &          +(QSUM(L,K)-DZC(K)*QSUME(L) )*DXYIP(L)
+            iii=0  
           ENDDO  
         ENDDO  
       ENDIF  
-c
-      enddo
 
       ! *** APPLY OPEN BOUNDARYS 
       DO LL=1,NBCSOP
@@ -298,6 +293,8 @@ C
             V(LN,K)=0.  
           ENDIF  
         ENDDO  
+      ENDDO  
+      DO K=1,KC  
         DO LL=1,NCBW  
           L=LCBW(LL)  
           LP=L+1  
@@ -310,11 +307,15 @@ C
             U(LP,K)=0.  
           ENDIF  
         ENDDO   
+      ENDDO  
+      DO K=1,KC  
         DO LL=1,NCBE  
           L=LCBE(LL)  
           UHDY(L,K)=UHDY(L-1,K)-UHDYE(L-1)+UHDYE(L)  
           U(L,K)=UHDY(L,K)/(HU(L)*DYU(L))  
         ENDDO  
+      ENDDO  
+      DO K=1,KC  
         DO LL=1,NCBN  
           L=LCBN(LL)  
           LS=LSC(L)  
@@ -326,14 +327,9 @@ C
 C **  CALCULATE AVERAGE CELL FACE TRANSPORTS FOR SALT, TEMPERATURE AND  
 C **  SEDIMENT TRANSPORT AND PLACE IN UHDY2, VHDX2 AND W2  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN,LE)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(ISTL_.EQ.2)THEN  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             UHDY2(L,K)=0.5*(UHDY(L,K)+UHDY1(L,K))  
             VHDX2(L,K)=0.5*(VHDX(L,K)+VHDX1(L,K))  
             U2(L,K)=0.5*(U(L,K)+U1(L,K))  
@@ -343,7 +339,7 @@ c
         ENDDO  
       ELSE  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             UHDY2(L,K)=0.5*(UHDY(L,K)+UHDY2(L,K))  
             VHDX2(L,K)=0.5*(VHDX(L,K)+VHDX2(L,K))  
             U2(L,K)=0.5*(U(L,K)+U2(L,K))  
@@ -355,7 +351,7 @@ c
 C
       IF(ISWVSD.GE.1)THEN  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             UHDY2(L,K)=UHDY2(L,K)+DYU(L)*UVPT(L,K)  
             VHDX2(L,K)=VHDX2(L,K)+DXV(L)*VVPT(L,K)  
             U2(L,K)=U2(L,K)+UVPT(L,K)/HMU(L)  
@@ -368,27 +364,18 @@ C
 C **  ADDITIONAL 3D CONTINUITY ADJUSTED ADDED BELOW  
 C  
       IF(KC.GT.1)THEN  
-        DO L=LF,LL
+        DO L=2,LA  
           TVAR3E(L)=0.  
           TVAR3N(L)=0.  
         ENDDO  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             TVAR3E(L)=TVAR3E(L)+UHDY2(L,K)*DZC(K)  
             TVAR3N(L)=TVAR3N(L)+VHDX2(L,K)*DZC(K)  
           ENDDO  
         ENDDO  
-      ENDIF  
-C
-      enddo
-      IF(KC.GT.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN,HPPTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         IF(ISTL_.EQ.3)THEN  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             HPPTMP=H2P(L)+DELT*DXYIP(L)*( QSUME(L)  
      &          -TVAR3E(L+1)+TVAR3E(L)  
@@ -399,7 +386,7 @@ c
             HPI(L)=1./HP(L)  
           ENDDO  
         ELSE  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             HPPTMP=H1P(L)+DELT*DXYIP(L)*( QSUME(L)  
      &          -TVAR3E(L+1)+TVAR3E(L)  
@@ -410,8 +397,6 @@ c
             HPI(L)=1./HP(L)  
           ENDDO  
         ENDIF  
-C
-      enddo
         IF(MDCHH.GE.1)THEN  
           RLAMN=QCHERR  
           RLAMO=1.-RLAMN  
@@ -441,14 +426,8 @@ C **  ACCUMULTATE MAX COURANT NUMBERS
 C  
 C *** DSLLC BEGIN BLOCK
       IF(ISINWV.EQ.1.OR.ISNEGH.GT.0)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& CFLUUUT,CFLVVVT,CFLWWWT,CFLCACT)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             CFLUUUT=DELT*ABS(DXIU(L)*U(L,K))  
             CFLUUU(L,K)=MAX(CFLUUUT,CFLUUU(L,K))  
             CFLVVVT=DELT*ABS(DYIV(L)*V(L,K))  
@@ -459,8 +438,6 @@ c
             CFLCAC(L,K)=MAX(CFLCACT,CFLCAC(L,K))  
           ENDDO  
         ENDDO  
-c
-      enddo
       ENDIF
 C *** DSLLC END BLOCK
 C  
@@ -472,8 +449,8 @@ C **  WRITE TO DIAGNOSTIC FILE CFL.OUT WITH DIAGNOSTICS OF MAXIMUM
 C **  TIME STEP  
 C **  SEDIMENT TRANSPORT AND PLACE IN UHDY2, VHDX2 AND W2  
 C  
-!      IF(ISCFL.GE.1.AND.ISTL_.EQ.3.AND.DEBUG)THEN  ! GEOSR. 2011.11.29
-      IF(ISCFL.GE.1.AND.DEBUG)THEN  ! GEOSR. 2011.11.29
+!      IF(ISCFL.GE.1.AND.ISTL_.EQ.3.AND.DEBUG)THEN  
+      IF(ISCFL.GE.1)THEN  
         OPEN(1,FILE='CFL.OUT',STATUS='UNKNOWN',POSITION='APPEND')  
         IF(ISCFLM.GE.1.AND.N.EQ.1)THEN  
           OPEN(2,FILE='CFLMP.OUT',STATUS='UNKNOWN')  

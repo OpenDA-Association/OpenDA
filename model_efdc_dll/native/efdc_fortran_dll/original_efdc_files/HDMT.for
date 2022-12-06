@@ -1048,15 +1048,7 @@ C
         ENDIF  
 C  
         IF(BSC.GT.1.E-6)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          CALL CALBUOY(LF,LL)
-c
-      enddo
-
+          CALL CALBUOY
         ELSE  
           DO K=1,KC  
             DO L=2,LA  
@@ -1642,7 +1634,7 @@ C
         ENDIF
         IF(TIMEDAY.GE.SNAPSHOTHYD) THEN
 !          WRITE(*,*)'WRITE================',N,TIMEDAY,TIMEDAY*1440.
-          CALL RESTOUT(-21)
+!         CALL RESTOUT(-21)
           IHYDCNT=IHYDCNT+1
           SNAPSHOTHYD=FLOAT(ISHYD*IHYDCNT)*60./86400.+TBEGIN
         ENDIF
