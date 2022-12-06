@@ -694,14 +694,8 @@ C **  ADVANCE INTERNAL VARIABLES
 C
 C----------------------------------------------------------------------C
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-         !print*, lf, ll, omp_get_thread_num(), omp_get_num_threads()
-c
       DO K=1,KC
-        DO L=LF,LL
+        DO L=2,LA  
           UHDY2(L,K)=UHDY1(L,K)
           UHDY1(L,K)=UHDY(L,K)
           VHDX2(L,K)=VHDX1(L,K)
@@ -714,8 +708,6 @@ c
           W1(L,K)=W(L,K)
         ENDDO
       ENDDO
-c
-      enddo
 C
 C**********************************************************************C
 C
@@ -751,52 +743,34 @@ C----------------------------------------------------------------------C
 C
       ! *** PMC BYPASS IF NOT SIMULATING SEDIMENTS
       IF(ISTRAN(6).GT.0.OR.ISTRAN(7).GT.0)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL,SEDBT0,SNDBT0,SEDT0,SNDT0)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
         DO K=1,KB
-          DO L=LF,LL
+          DO L=1,LC  
             SEDBT(L,K)=0.
             SNDBT(L,K)=0.
           ENDDO
         ENDDO
         DO K=1,KC
-          DO L=LF,LL
+          DO L=1,LC  
             SEDT(L,K)=0.
             SNDT(L,K)=0.
           ENDDO
         ENDDO
 C
         DO NS=1,NSED
-          DO K=1,KB
-            DO L=LF,LL
-              SEDBT(L,K)=SEDBT(L,K)+SEDB(L,K,NS)
-            ENDDO
-          ENDDO
           DO K=1,KC
-            DO L=LF,LL
+            DO L=1,LC  
               SEDT(L,K)=SEDT(L,K)+SED(L,K,NS)
             ENDDO
           ENDDO
         ENDDO
 C
         DO NS=1,NSND
-          DO K=1,KB
-            DO L=LF,LL
-              SNDBT(L,K)=SNDBT(L,K)+SNDB(L,K,NS)
-            ENDDO
-          ENDDO
           DO K=1,KC
-            DO L=LF,LL
+            DO L=1,LC  
               SNDT(L,K)=SNDT(L,K)+SND(L,K,NS)
             ENDDO
           ENDDO
         ENDDO
-
-c
-      enddo
       ENDIF
 C
 C----------------------------------------------------------------------C
@@ -1184,29 +1158,14 @@ C
 C **  UPDATE BUOYANCY AND CALCULATE NEW BUOYANCY USING
 C **  AN EQUATION OF STATE
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC
-        DO L=LF,LL
+        DO L=2,LA  
           B1(L,K)=B(L,K)
         ENDDO
       ENDDO
-c
-      enddo
 C
       IF(BSC.GT.1.E-6)THEN
-c        t01=rtc()
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        CALL CALBUOY(LF,LL)
-c
-      enddo
+        CALL CALBUOY
       ELSE
         DO K=1,KC
           DO L=2,LA
@@ -1227,13 +1186,9 @@ C **  CALCULATE U AT V AND V AT U AT TIME LEVEL (N+1)
 C
 C----------------------------------------------------------------------C
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LN,LS,LNW,LSE,LSW)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      STIME=MPI_TIC() !!### WT_NLEVEL
+C
+      DO L=2,LA  
         LN=LNC(L)
         LS=LSC(L)
         LNW=LNWC(L)
@@ -1246,8 +1201,6 @@ c
         VU(L)=0.25*(HP(L-1)*(V(LNW,1)+V(L-1,1))
      &      +HP(L)*(V(LN,1)+V(L,1)))*HUI(L)
       ENDDO
-c
-      enddo
 C
 C**********************************************************************C
 C
@@ -1263,19 +1216,13 @@ C
       T1TMP=SECNDS(0.0)
 C
       CALL CALTBXY(ISTL,IS2TL)
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+C  
+      DO L=2,LA  
         TBX(L)=(AVCON1*HUI(L)+STBX(L)*SQRT(VU(L)*VU(L)
      &      +U(L,1)*U(L,1)))*U(L,1)
         TBY(L)=(AVCON1*HVI(L)+STBY(L)*SQRT(UV(L)*UV(L)
      &      +V(L,1)*V(L,1)))*V(L,1)
       ENDDO
-c
-      enddo
 C
 C**********************************************************************C
 C
@@ -1313,25 +1260,21 @@ C **  SET BOTTOM AND SURFACE TURBULENT INTENSITY SQUARED AT (N+1)
 C
 C----------------------------------------------------------------------C
 C
+C
       IF(ISWAVE.EQ.0)THEN
 C
 C----------------------------------------------------------------------c
 C
         IF(ISCORTBC.EQ.0) THEN
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& TMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO L=LF,LL
+          DO L=2,LA  
             TVAR3S(L)=TSY(LNC(L))
             TVAR3W(L)=TSX(L+1)
             TVAR3E(L)=TBX(L+1   )
             TVAR3N(L)=TBY(LNC(L))
-c         ENDDO  
+          ENDDO  
 C
+          DO L=2 ,LA  
 ! { GEOSR (IBM request)
             IF (ISNAN(TVAR3S(L))) TVAR3S(L)=0.
             IF (ISNAN(TVAR3W(L))) TVAR3W(L)=0.
@@ -1352,8 +1295,6 @@ C
 
             QQSQR(L,0)=SQRT(QQ(L,0))  ! *** DSLLC
           ENDDO
-c
-      enddo
 C
         ENDIF
 C
@@ -1834,18 +1775,11 @@ C
 C
 C----------------------------------------------------------------------C
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
       DO K=1,KC
-        DO L=LF,LL
+        DO L=1,LC  
           TVAR1S(L,K)=TOX(L,K,1)
         ENDDO
       ENDDO
-c
-      enddo
 C
       IPLTTMP=0
       IF(ISSPH(1).EQ.1.OR.ISSPH(1).EQ.2)IPLTTMP=1

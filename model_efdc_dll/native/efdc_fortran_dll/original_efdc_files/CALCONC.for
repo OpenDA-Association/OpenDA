@@ -146,49 +146,8 @@ C **  3D ADVECTI0N TRANSPORT CALCULATION
 C  
 C **  PRESPECIFY THE UPWIND CELLS FOR 3D ADVECTION  
 C  
-c     t00=rtc()
-      IF(IDRYTBP.EQ.0)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC
-        DO L=LF,LL
-            IF(UHDY2(L,K).GE.0.0)THEN
-              LUPU(L,K)=L-1
-            ELSE
-              LUPU(L,K)=L
-            END IF
-            IF(VHDX2(L,K).GE.0.0)THEN
-              LUPV(L,K)=LSC(L)
-            ELSE
-              LUPV(L,K)=L
-            END IF
-        ENDDO
-      ENDDO
-      IF(KC.GT.1)THEN
-        DO K=1,KS
-          DO L=LF,LL
-              IF(W2(L,K).GE.0.)THEN
-                KUPW(L,K)=K
-              ELSE
-                KUPW(L,K)=K+1  ! *** DSLLC SINGLE LINE CHANGE, CHANGED K-1 TO K+1
-              END IF
-          ENDDO
-        ENDDO
-      ENDIF
-c
-      enddo
-
-      ELSE
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           IF(LMASKDRY(L))THEN  
             IF(UHDY2(L,K).GE.0.0)THEN  
               LUPU(L,K)=L-1  
@@ -205,7 +164,7 @@ c
       ENDDO  
       IF(KC.GT.1)THEN  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               IF(W2(L,K).GE.0.)THEN
                 KUPW(L,K)=K  
@@ -216,12 +175,6 @@ c
           ENDDO  
         ENDDO  
       ENDIF  
-c
-      enddo
-      ENDIF
-c     t00=rtc()-t00
-c     write(6,*) '==>001      ',t00*1d3
-
       TTMP=SECNDS(0.0)  
 C  
       IF(ISTRAN(1).EQ.1.AND.ISCDCA(1).LT.4)  
@@ -292,7 +245,6 @@ C
         ENDDO  
       ENDIF  
       CALL CPU_TIME(T2TMP)
-      
       TSADV=TSADV+T2TMP-TTMP  
 C  
 C **  3D COSMIC ADVECTI0N TRANSPORT CALCULATION  
@@ -555,13 +507,10 @@ C **  VERTICAL DIFFUSION IMPLICIT HALF STEP CALCULATION
 C  
       IF(KC.EQ.1) GOTO 1500  
       CALL CPU_TIME(T1TMP) 
-!$OMP PARALLEL DO PRIVATE(LF,LL,LF_LC,LL_LC,K,
-!$OMP& RCDZKMK,RCDZKK,CCUBTMP,CCMBTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       RCDZKK=-DELTD2*CDZKK(1)   
+      DO ND=1,NDM  
+        LF=2+(ND-1)*LDM  
+        LL=LF+LDM-1  
         DO L=LF,LL  
           CCUBTMP=RCDZKK*HPI(L)*AB(L,1)  
           CCMBTMP=1.-CCUBTMP  
@@ -604,7 +553,10 @@ c
             ENDDO  
           ENDDO  
         ENDIF  
-c
+      ENDDO  
+      DO ND=1,NDM  
+        LF=2+(ND-1)*LDM  
+        LL=LF+LDM-1  
         DO K=2,KS  
           RCDZKMK=-DELTD2*CDZKMK(K)  
           RCDZKK=-DELTD2*CDZKK(K)  
@@ -652,10 +604,12 @@ c
             ENDDO  
           ENDIF  
         ENDDO  
-C
+      ENDDO  
       K=KC  
       RCDZKMK=-DELTD2*CDZKMK(K)  
-c
+      DO ND=1,NDM  
+        LF=2+(ND-1)*LDM  
+        LL=LF+LDM-1  
         DO L=LF,LL  
           CCLBTMP(L)=RCDZKMK*HPI(L)*AB(L,K-1)  
           CCMBTMP=1.-CCLBTMP(L)  
@@ -697,7 +651,10 @@ c
             ENDDO  
           ENDDO  
         ENDIF  
-c
+      ENDDO  
+      DO ND=1,NDM  
+        LF=2+(ND-1)*LDM  
+        LL=LF+LDM-1  
         DO K=KC-1,1,-1  
           IF(ISTRAN(1).GE.1)THEN  
             DO L=LF,LL  
@@ -736,52 +693,47 @@ c
             ENDDO  
           ENDIF  
         ENDDO  
-         LF_LC=jse_LC(1,ithds)
-         LL_LC=jse_LC(2,ithds)
-c
+      ENDDO  
       DO K=1,KB  
-        DO L=LF_LC,LL_LC
+        DO L=1,LC  
           SEDBT(L,K)=0.  
           SNDBT(L,K)=0.  
         ENDDO  
       ENDDO  
-      DO NS=1,NSED  
+      DO K=1,KC  
+        DO L=1,LC  
+          SEDT(L,K)=0.  
+          SNDT(L,K)=0.  
+        ENDDO  
+      ENDDO  
       DO K=1,KB  
-          DO L=LF_LC,LL_LC
+        DO NS=1,NSED  
+          DO L=1,LC  
             SEDBT(L,K)=SEDBT(L,K)+SEDB(L,K,NS)  
           ENDDO  
         ENDDO  
       ENDDO  
       DO NS=1,NSND  
         DO K=1,KB  
-          DO L=LF_LC,LL_LC
+          DO L=1,LC  
             SNDBT(L,K)=SNDBT(L,K)+SNDB(L,K,NS)  
           ENDDO  
         ENDDO  
       ENDDO  
-C
-      DO K=1,KC  
-        DO L=LF_LC,LL_LC
-          SEDT(L,K)=0.  
-          SNDT(L,K)=0.  
-        ENDDO  
-      ENDDO  
       DO NS=1,NSED  
         DO K=1,KC  
-          DO L=LF_LC,LL_LC
+          DO L=1,LC  
             SEDT(L,K)=SEDT(L,K)+SED(L,K,NS)  
           ENDDO  
         ENDDO  
       ENDDO  
       DO NS=1,NSND  
         DO K=1,KC  
-          DO L=LF_LC,LL_LC
+          DO L=1,LC  
             SNDT(L,K)=SNDT(L,K)+SND(L,K,NS)  
           ENDDO  
         ENDDO  
       ENDDO
-c
-	  enddo  
       CALL CPU_TIME(T2TMP)  
       TVDIF=TVDIF+T2TMP-T1TMP  
  1500 CONTINUE  
