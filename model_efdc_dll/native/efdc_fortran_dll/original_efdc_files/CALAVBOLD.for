@@ -195,45 +195,31 @@ C
       ENDIF  
       ! *** NOW APPLY MAXIMUM, IF REQURIED
       IF(ISAVBMX.GE.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL,ABTMP,AVTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             AVTMP=AVMX*HPI(L)  
             ABTMP=ABMX*HPI(L)  
             AV(L,K)=MIN(AV(L,K),AVTMP)  
             AB(L,K)=MIN(AB(L,K),ABTMP)  
           ENDDO  
         ENDDO  
-c
-      enddo
       ENDIF  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           LS=LSC(L)  
           AVUI(L,K)=2./(AV(L,K)+AV(L-1,K))  
           AVVI(L,K)=2./(AV(L,K)+AV(LS,K))  
         ENDDO  
       ENDDO  
       DO K=2,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           AQ(L,K)=0.205*(AV(L,K-1)+AV(L,K))  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         AQ(L,1)=0.205*AV(L,1)  
         AQ(L,KC)=0.205*AV(L,KS)  
       ENDDO  
-c
-      enddo
       RETURN  
       END  
 

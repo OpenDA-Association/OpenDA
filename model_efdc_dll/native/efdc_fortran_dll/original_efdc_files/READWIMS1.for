@@ -74,7 +74,7 @@ C
       NPTXLDS=FLOAT(NINT(TLOADTX*86400.))                ! LOADING START TIME  [SEC]
       NPTXLDE=NPTXLDS+FLOAT(NINT(FLOAT(ITXPRD)*60.))     ! LOADING END TIME    [SEC]
           TXMASS2=TXMASS/(FLOAT(ITXPRD)*60.)          ! RELEASED MASS/TIME   [KG/SEC]
-      TXVOL=0.000001                              ! LOADING VOL/SEC     [M3/SEC]
+      TXVOL=0.001                                 ! LOADING VOL/SEC     [M3/SEC]
       TXLDC=TXMASS2/TXVOL                         ! CONC. FOR TXSER.INP [MG/L]
 
 	  TBEGIN1=SDAY
