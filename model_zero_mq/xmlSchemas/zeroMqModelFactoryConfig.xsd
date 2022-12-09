@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:openda="http://www.openda.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openda.org" elementFormDefault="qualified">
+  <xs:element name="zeroMqModelFactoryConfig" type="openda:ZeroMqModelFactoryConfigXML">
+    <xs:annotation>
+      <xs:documentation>Configuration for a ZeroMQ model factory.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+	<xs:complexType name="ZeroMqModelFactoryConfigXML">
+		<xs:sequence>
+			<xs:element name="modelTemplateDirectory" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Path and name of the model template directory (relative to this configuration file). This directory will be cloned to create instance directories called work0, work1, work2, etc. The work directories will be created next to the model template directory, i.e. with the same parent directory. Before each run, any work directories from previous runs will be removed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modelConfigFile" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The path and name of the model configuration file (relative to the model template directory).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inputStateDirectory" type="xs:string" default="input_state" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The directory in the model instance that contains the input state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outputStateDirectory" type="xs:string" default="output_state" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The directory in the model instance that contains the input state</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+      <xs:element name="executable" type="xs:string" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Julia WFlow port number.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="executableArguments" type="xs:string" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Julia WFlow port number.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+			<xs:element name="host" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Julia WFlow host.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+      <xs:element name="port" type="xs:integer" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Julia WFlow port number.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+			<xs:element name="zeroMqModelStateExchangeItems" type="openda:ZeroMqModelStateExchangeItemXML"/>
+			<xs:element name="missingValue" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>NaN or a valid double value, indicating a missing value in the model data. Default: NaN</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ZeroMqModelStateExchangeItemXML">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="limitedExchangeItem">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="exchangeItemId" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>Name of a State ExchangeItem.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+            <xs:choice minOccurs="0">
+              <xs:element name="lowerLimit" type="xs:double">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is below the lower limit, then the value is changed to the lower limit.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="spaceVaryingLowerLimitExchangeItemId" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is below the value of the value of this lower limit exchange item, then the value is changed to the lower limit.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+            <xs:choice minOccurs="0">
+              <xs:element name="upperLimit" type="xs:double" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is above the upper limit, then the value is changed to the upper limit.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="spaceVaryingUpperLimitExchangeItemId" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Optional. If the value of a model exchange item is above the value of the value of this upper limit exchange item, then the value is changed to the upper limit.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

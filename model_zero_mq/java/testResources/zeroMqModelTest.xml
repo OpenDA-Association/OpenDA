@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zeroMqModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org//zeroMqModelFactoryConfig.xsd">
+  <modelTemplateDirectory>qwerty</modelTemplateDirectory>
+  <modelConfigFile>qwerty</modelConfigFile>
+  <inputStateDirectory>qwerty</inputStateDirectory>
+  <outputStateDirectory>qwerty</outputStateDirectory>
+  <executable>julia</executable>
+  <executableArguments>--project="server\." "server\src\WflowBmiServer.jl"</executableArguments>
+  <host>localhost</host>
+  <port>55555</port>
+  <zeroMqModelStateExchangeItems>
+    <limitedExchangeItem>
+      <exchangeItemId>1</exchangeItemId>
+    </limitedExchangeItem>
+  </zeroMqModelStateExchangeItems>
+  <missingValue>-999.0</missingValue>
+</zeroMqModelFactoryConfig>
