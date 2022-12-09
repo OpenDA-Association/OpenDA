@@ -445,4 +445,5 @@
 !  x-species
       IWQBENOX=0
       TIME_NUM=0
+      IBIN_TYPE=0
       END
