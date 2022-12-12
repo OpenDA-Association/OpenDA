@@ -714,15 +714,7 @@ C
 C  
 C **  INITIALIZE BUOYANCY AND EQUATION OF STATE  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-         CALL CALBUOY(LF,LL)
-c
-      enddo   
+      CALL CALBUOY
 C  
 C **  INITIALIZE SFL IF(ISRESTI.EQ.0.AND ISTRAN(4).GE.1)  
 C  
