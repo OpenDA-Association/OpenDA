@@ -30,11 +30,11 @@ import java.util.TimeZone;
 /**
  * Test for the DLL based model instance
  */
-public class EfdcScalarExchangeItemLayerTest extends TestCase {
+public class EfdcScalarExchangeItem2022NakdongTest extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() {
-    	testData = new OpenDaTestSupport(EfdcScalarExchangeItemLayerTest.class,"model_efdc_dll");
+    	testData = new OpenDaTestSupport(EfdcScalarExchangeItem2022NakdongTest.class,"model_efdc_dll");
     }
 
     public void testScalarExchangeItem() {
@@ -66,11 +66,11 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
         
         exchangeItemIDs[0] = "1.Precipitation";
         exchangeItemIDs[1] = "1_layer1.DissolvedONitrogen";
-        exchangeItemIDs[2] = "22_layer5.DissolvedONitrogen";
+        exchangeItemIDs[2] = "22_layer11.DissolvedONitrogen";
         exchangeItemIDs[3] = "1_layer3.Discharge";
 
         // create instance directories and intialize the model instances
-        File modelTemplateDir = new File(modelParentDir, "model_layers");
+        File modelTemplateDir = new File(modelParentDir, "model_nakdong");
 
         EfdcDLL.initialize(simpleFortranDll, modelParentDir, modelTemplateDir, TimeZone.getTimeZone("GMT"));
 
@@ -106,9 +106,7 @@ public class EfdcScalarExchangeItemLayerTest extends TestCase {
                 double[] testValues = exchangeItem.getValuesAsDoubles();
                 assertEquals( exchangeItemId + ".length", testValues.length, values.length);
                 assertEquals( exchangeItemId + "[2]", 2 , testValues[2], 1e-5);
-            	
             }
-                
         }
     }
 }
