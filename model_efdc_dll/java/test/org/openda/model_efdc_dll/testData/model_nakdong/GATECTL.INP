@@ -1,0 +1,606 @@
+******************************************************************************
+*                                                                            *
+*  GATE CONTROL FILE                                                         *
+*  EDITED BY GEOSR (JGCHO 2010.5.6)                                          *
+*                                                                            *
+******************************************************************************
+GC1 NUMBER OF GATE TYPE
+*   NGTYPES: NUMBER OF GATE TYPE
+*   GARTM: GARBAGE TIME [min.]
+*
+GC1 NGTYPES  GARTM  IWSYS
+          65     0.      4
+------------------------------------------------------------------------------
+GC2 GATE INFORMATION 1            LINE=NQCTL
+*   NGATE:  NUMBER OF GATE
+*   NGATEC: NUMBER OF GATE CELL
+*   NGTYP: ID OF GATE TYPE
+*
+GC2 NGATE  NGATEC  NGTYP
+        1       1        1 ' ***   GATESER_  1 Sangju_Power Generation                   
+        1       1        2 ' ***   GATESER_  2 Sangju_Gate1                              
+        1       1        3 ' ***   GATESER_  3 Sangju_Gate2                              
+        1       1        4 ' ***   GATESER_  4 Sangju_Overflow Gate                      
+        1       1        5 ' ***   GATESER_  5 Sangju_Fixed weir1                        
+        1       1        6 ' ***   GATESER_  6 Sangju_Fishway                            
+        1       1        7 ' ***   GATESER_  7 Nakdan_Power Generation                   
+        1       1        8 ' ***   GATESER_  8 Nakdan_Gate3                              
+        1       1        9 ' ***   GATESER_  9 Nakdan_Gate2                              
+        1       1       10 ' ***   GATESER_ 10 Nakdan_Gate1                              
+        1       1       11 ' ***   GATESER_ 11 Nakdan_Sand Gate                          
+        1       1       12 ' ***   GATESER_ 12 Nakdan_Fixed weir                         
+        1       1       13 ' ***   GATESER_ 13 Nakdan_Fishway                            
+        1       1       14 ' ***   GATESER_ 14 Gumi_Fixed weir1                          
+        2       1       15 ' ***   GATESER_ 15 Gumi_Gate                                 
+        2       1       16 ' ***   GATESER_ 16 Gumi_Overflow Gate                        
+        1       1       17 ' ***   GATESER_ 17 Gumi_Fixed weir2                          
+        1       1       18 ' ***   GATESER_ 18 Gumi_Sand Gate                            
+        1       1       19 ' ***   GATESER_ 19 Gumi_Power Generation                     
+        1       1       20 ' ***   GATESER_ 20 Gumi_Fishway                              
+        1       1       21 ' ***   GATESER_ 21 Chilgok_Fishway                           
+        1       1       22 ' ***   GATESER_ 22 Chilgok_Power Generation                  
+        1       1       23 ' ***   GATESER_ 23 Chilgok_Fixed weir4                       
+        1       1       24 ' ***   GATESER_ 24 Chilgok_Overflow Gate                     
+        1       1       25 ' ***   GATESER_ 25 Chilgok_Gate3                             
+        1       1       26 ' ***   GATESER_ 26 Chilgok_Fixed weir3                       
+        1       1       27 ' ***   GATESER_ 27 Chilgok_Gate2                             
+        1       1       28 ' ***   GATESER_ 28 Chilgok_Fixed weir2                       
+        1       1       29 ' ***   GATESER_ 29 Chilgok_Gate1                             
+        1       1       30 ' ***   GATESER_ 30 Chilgok_Overflow Gate1                    
+        1       1       31 ' ***   GATESER_ 31 Chilgok_Fixed weir1                       
+        1       1       32 ' ***   GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+        1       1       33 ' ***   GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+        1       1       34 ' ***   GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+        1       1       35 ' ***   GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+        1       1       36 ' ***   GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+        1       1       37 ' ***   GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+        1       1       38 ' ***   GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+        1       1       39 ' ***   GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+        1       1       40 ' ***   GATESER_ 40 Dalseong_weir_Fishway_L1                  
+        1       1       41 ' ***   GATESER_ 41 Dalseong_weir_Fishway_L2                  
+        1       1       42 ' ***   GATESER_ 42 Dalseong_weir_Fixed weir4                 
+        1       1       43 ' ***   GATESER_ 43 Dalseong_weir_Gate3                       
+        1       1       44 ' ***   GATESER_ 44 Dalseong_weir_Fixed weir3                 
+        1       1       45 ' ***   GATESER_ 45 Dalseong_weir_Gate2                       
+        1       1       46 ' ***   GATESER_ 46 Dalseong_weir_Fixed weir2                 
+        1       1       47 ' ***   GATESER_ 47 Dalseong_weir_Gate1                       
+        1       1       48 ' ***   GATESER_ 48 Dalseong_weir_Fixed weir1                 
+        1       1       49 ' ***   GATESER_ 49 Dalseong_weir_Fishway_R                   
+        1       1       50 ' ***   GATESER_ 50 Dalseong_weir_Power Generation            
+        1       1       51 ' ***   GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+        1       1       52 ' ***   GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+        1       1       53 ' ***   GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+        1       1       54 ' ***   GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+        1       1       55 ' ***   GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+        1       1       56 ' ***   GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+        1       1       57 ' ***   GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+        1       1       58 ' ***   GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+        1       1       59 ' ***   GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+        1       1       60 ' ***   GATESER_ 60 Changnyeong-Haman_Fishway_L               
+        1       1       61 ' ***   GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+        3       1       62 ' ***   GATESER_ 62 Changnyeong-Haman_weir_Gate               
+        1       1       63 ' ***   GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+        1       1       64 ' ***   GATESER_ 64 Changnyeong-Haman_Power Generation        
+        1       1       65 ' ***   GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC3 GATE INFORMATION 2
+*   SILL: SILL LEVEL [m]
+*   SILLHH : HEIGHT OF NOT OPERATE WEIR
+*   GATEHI: GATE HEIGHT OF INSIDE (UPSTREAM) [m]
+*   GATEHO: GATE HEIGHT OF OUTSIDE (DOWNSTREAM) [m]
+*   GATEWI: GATE WIDTH OF INSIDE (UPSTREAM) [m]
+*   GATEWO: GATE WIDTH OF OUTSIDE (DOWNSTREAM) [m]
+*   MAXQ: MAXIMUM GATE FLUX [m^3/S] (NEGATIVE VALUE MEANS UNLIMITED MAX.)
+*   GOTIME: GATE COMPLETELY OPEN TIME INTERVAL (GOTIME > 0.) [min.]
+*   GCTIME: GATE COMPLETELY CLOSE TIME INTERVAL (GOTIME > 0.) [min.]
+*
+GC3 SILL  SILLHH  GATEHI  GATEHO  GATEWI  GATEWO  MAXQ   GOTIME  GCTIME     IATS(∆Ú±’¡ˆ¡§timestep, default 1, ex. 5min*60/dt(3s)=100)
+   37.18   37.18     0.0     0.0    6.64    6.64    -1.     60.      60.      1      ' GATESER_  1 Sangju_Power Generation
+   37.18   47.00    9.82    9.82   45.00   45.00    -1.     60.      60.      1      ' GATESER_  2 Sangju_Gate1
+   37.18   47.00    9.82    9.82   45.00   45.00    -1.     60.      60.      1      ' GATESER_  3 Sangju_Gate2
+   37.18   47.00    9.82    9.82   45.00   45.00    -1.     60.      60.      1      ' GATESER_  4 Sangju_Overflow Gate
+   47.00   47.00    9.82    9.82	185.00 	185.00    -1.     60.      60.      1      ' GATESER_  5 Sangju_Fixed weir1
+   46.50   46.50     0.0 	   0.0	  4.00 	  4.00    -1.     60.      60.      1      ' GATESER_  6 Sangju_Fishway
+   28.50 	 28.50 	   0.0 	   0.0	  9.22 	  9.22    -1.     60.      60.      1      ' GATESER_  7 Nakdan_Power Generation
+   28.50   40.00    11.5    11.5   40.00   40.00    -1.     60.      60.      1      ' GATESER_  8 Nakdan_Gate3
+   28.50   40.00    11.5    11.5   40.00   40.00    -1.     60.      60.      1      ' GATESER_  9 Nakdan_Gate2
+   28.50   40.00    11.5    11.5   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 10 Nakdan_Gate1
+   28.50   40.00    11.5    11.5   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 11 Nakdan_Sand Gate
+   40.00   40.00    11.5    11.5  144.40  144.40    -1.     60.      60.      1      ' GATESER_ 12 Nakdan_Fixed weir
+   39.60   39.60     0.0     0.0    6.00    6.00    -1.     60.      60.      1      ' GATESER_ 13 Nakdan_Fishway
+   32.50   32.50    10.5    10.5  120.00  120.00    -1.     60.      60.      1      ' GATESER_ 14 Gumi_Fixed weir1
+   22.00   32.50    10.5    10.5   45.00   45.00    -1.     60.      60.      1      ' GATESER_ 15 Gumi_Gate
+   22.00   32.50    10.5    10.5   45.00   45.00    -1.     60.      60.      1      ' GATESER_ 16 Gumi_Overflow Gate
+   32.50   32.50    10.5    10.5	140.00 	140.00    -1.     60.      60.      1      ' GATESER_ 17 Gumi_Fixed weir2
+   22.00   32.50    10.5    10.5   10.00   10.00    -1.     60.      60.      1      ' GATESER_ 18 Gumi_Sand Gate
+   22.00 	 22.00 	   0.0 	   0.0	  8.50   	8.50    -1.     60.      60.      1      ' GATESER_ 19 Gumi_Power Generation
+   32.30   32.30     0.0     0.0    5.50    5.50    -1.     60.      60.      1      ' GATESER_ 20 Gumi_Fishway
+   25.00   25.00     0.0     0.0   10.00   10.00    -1.     60.      60.      1      ' GATESER_ 21 Chilgok_Fishway
+   14.70   14.70     0.0     0.0   20.00   20.00    -1.     60.      60.      1      ' GATESER_ 22 Chilgok_Power Generation
+   25.50   25.50    10.8    10.8   20.00   20.00    -1.     60.      60.      1      ' GATESER_ 23 Chilgok_Fixed weir4
+   14.70   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 24 Chilgok_Overflow Gate
+   14.70   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 25 Chilgok_Gate3
+   25.50   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 26 Chilgok_Fixed weir3
+   14.70   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 27 Chilgok_Gate2
+   25.50   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 28 Chilgok_Fixed weir2
+   14.70   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 29 Chilgok_Gate1
+   14.70   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 30 Chilgok_Overflow Gate1
+   25.50   25.50    10.8    10.8   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 31 Chilgok_Fixed weir1
+   18.80   18.80     0.0     0.0   11.00   11.00    -1.     60.      60.      1      ' GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L
+    9.50    9.50     0.0     0.0   15.00   15.00    -1.     60.      60.      1      ' GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation
+   19.50   19.50    10.0    10.0   15.00   15.00    -1.     60.      60.      1      ' GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3
+    9.50   19.50    10.0    10.0   45.00   45.00    -1.     60.      60.      1      ' GATESER_ 35 Gangjeong-Goryeong_weir_Gate2
+    9.50   19.50    10.0    10.0   45.00   45.00    -1.     60.      60.      1      ' GATESER_ 36 Gangjeong-Goryeong_weir_Gate1
+   19.50   19.50    10.0    10.0  150.00  150.00    -1.     60.      60.      1      ' GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1
+   18.80   18.80     0.0     0.0   11.00   11.00    -1.     60.      60.      1      ' GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R
+   19.50   19.50    10.0    10.0  530.00  530.00    -1.     60.      60.      1      ' GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2
+   13.30   13.30     0.0     0.0    7.00    7.00    -1.     60.      60.      1      ' GATESER_ 40 Dalseong_weir_Fishway_L1
+   13.30   13.30     0.0     0.0   10.00   10.00    -1.     60.      60.      1      ' GATESER_ 41 Dalseong_weir_Fishway_L2
+   14.00   14.00     8.0     8.0 	 61.00 	 61.00    -1.     60.      60.      1      ' GATESER_ 42 Dalseong_weir_Fixed weir4
+    6.00   14.00     8.0     8.0   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 43 Dalseong_weir_Gate3
+   14.00   14.00     8.0     8.0 	 61.00 	 61.00    -1.     60.      60.      1      ' GATESER_ 44 Dalseong_weir_Fixed weir3
+    6.00   14.00     8.0     8.0   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 45 Dalseong_weir_Gate2
+   14.00   14.00     8.0     8.0 	 61.00 	 61.00    -1.     60.      60.      1      ' GATESER_ 46 Dalseong_weir_Fixed weir2
+    6.00   14.00     8.0     8.0   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 47 Dalseong_weir_Gate1
+   14.00   14.00     8.0     8.0 	 61.00 	 61.00    -1.     60.      60.      1      ' GATESER_ 48 Dalseong_weir_Fixed weir1
+   13.30   13.30     0.0     0.0    7.00    7.00    -1.     60.      60.      1      ' GATESER_ 49 Dalseong_weir_Fishway_R
+    6.00    6.00     0.0     0.0   20.00   20.00    -1.     60.      60.      1      ' GATESER_ 50 Dalseong_weir_Power Generation
+    9.80    9.80     0.0     0.0    4.00    4.00    -1.     60.      60.      1      ' GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L
+   10.50   10.50     8.6     8.6  110.00  110.00    -1.     60.      60.      1      ' GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir
+    1.90   10.50     8.6     8.6   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3
+    1.90   10.50     8.6     8.6	 40.00 	 40.00    -1.     60.      60.      1      ' GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2
+    1.90   10.50     8.6     8.6   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2
+    1.90   10.50     8.6     8.6	 40.00 	 40.00    -1.     60.      60.      1      ' GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1
+    1.90   10.50     8.6     8.6   40.00   40.00    -1.     60.      60.      1      ' GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1
+    9.80    9.80     0.0     0.0    4.00    4.00    -1.     60.      60.      1      ' GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R
+    1.50    1.50     0.0     0.0    4.00    4.00    -1.     60.      60.      1      ' GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+    3.90    3.90     0.0     0.0   10.00   10.00    -1.     60.      60.      1      ' GATESER_ 60 Changnyeong-Haman_Fishway_L
+    5.00    5.00    7.08    7.08  156.95  156.95    -1.     60.      60.      1      ' GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2
+   -2.08    5.00    7.08    7.08  144.00  144.00    -1.     60.      60.      1      ' GATESER_ 62 Changnyeong-Haman_weir_Gate
+    5.00    5.00    7.08    7.08  143.95  143.95    -1.     60.      60.      1      ' GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1
+   -2.08   -2.08	   0.0 	   0.0	 36.00   36.00    -1.     60.      60.      1      ' GATESER_ 64 Changnyeong-Haman_Power Generation
+    3.90    3.90     0.0     0.0   10.00   10.00    -1.     60.      60.      1      ' GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC4 FLOW CONSTANT & FOMULAR CHOICE
+*   CG1 : DISCHARGE COEFFICIENT : COMPLETE OVERFLOW
+*   CG2 : DISCHARGE COEFFICIENT : SUBMERGED WEIR
+*   CG3 : DISCHARGE COEFFICIENT : COMPLETE ORIFICE 1
+*   CG4 : DISCHARGE COEFFICIENT : COMPLETE ORIFICE 2
+*   CG5 : DISCHARGE COEFFICIENT : SUBMERGED ORIFICE
+*   NCG3FOM : CHOICE SUBMERGED INCOMPLETE ORIFICE FOMULAR
+*             1 = KOREA RURAL COMMUNITY CORPORATION, 2004.12, MIN,BM. & WJ.KIM, 2009.
+*             2 = TEXT BOOK
+*
+GC4   CGH1  CGH2  CG1    CG2    CG3    CG4    CG5    CG6    CG7    CG8
+      0.00  99.0  0.324  0.324  0.600  0.600  0.600  0.795  0.600  0.310   15  'GATESER_  1 Sangju_Power Generation                   
+      0.00  99.0  0.324  0.324  0.600  0.600  0.600  0.795  0.600  0.310   15  'GATESER_  2 Sangju_Gate1                              
+      0.00  99.0  0.324  0.324  0.600  0.600  0.600  0.795  0.600  0.310   15  'GATESER_  3 Sangju_Gate2                              
+      0.00  99.0  0.324  0.324  0.600  0.600  0.600  0.795  0.600  0.310   15  'GATESER_  4 Sangju_Overflow Gate                      
+      0.00  99.0  0.324  0.324  0.600  0.600  0.600  0.795  0.600  0.310   15  'GATESER_  5 Sangju_Fixed weir1                        
+      0.00  99.0  0.324  0.324  0.600  0.600  0.600  0.795  0.600  0.310   15  'GATESER_  6 Sangju_Fishway                            
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.500  0.600  0.200   15  'GATESER_  7 Nakdan_Power Generation                   
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.743  0.600  0.200   15  'GATESER_  8 Nakdan_Gate3                              
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.743  0.600  0.200   15  'GATESER_  9 Nakdan_Gate2                              
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.743  0.600  0.200   15  'GATESER_ 10 Nakdan_Gate1                              
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.743  0.600  0.200   15  'GATESER_ 11 Nakdan_Sand Gate                          
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.743  0.600  0.200   15  'GATESER_ 12 Nakdan_Fixed weir                         
+      0.00  99.0  0.200  0.200  0.600  0.600  0.600  0.743  0.600  0.200   15  'GATESER_ 13 Nakdan_Fishway                            
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.500  0.600  0.560   15  'GATESER_ 14 Gumi_Fixed weir1                          
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.904  0.600  0.560   15  'GATESER_ 15 Gumi_Gate                                 
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.904  0.600  0.560   15  'GATESER_ 16 Gumi_Overflow Gate                        
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.904  0.600  0.560   15  'GATESER_ 17 Gumi_Fixed weir2                          
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.904  0.600  0.560   15  'GATESER_ 18 Gumi_Sand Gate                            
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.904  0.600  0.560   15  'GATESER_ 19 Gumi_Power Generation                     
+      0.00  99.0  0.510  0.510  0.600  0.600  0.600  0.904  0.600  0.560   15  'GATESER_ 20 Gumi_Fishway                              
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.500  0.600  0.403   15  'GATESER_ 21 Chilgok_Fishway                           
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 22 Chilgok_Power Generation                  
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 23 Chilgok_Fixed weir4                       
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 24 Chilgok_Overflow Gate                     
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 25 Chilgok_Gate3                             
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 26 Chilgok_Fixed weir3                       
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 27 Chilgok_Gate2                             
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 28 Chilgok_Fixed weir2                       
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 29 Chilgok_Gate1                             
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 30 Chilgok_Overflow Gate1                    
+      0.00  99.0  0.303  0.303  0.600  0.600  0.600  0.719  0.600  0.403   15  'GATESER_ 31 Chilgok_Fixed weir1                       
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+      0.10  0.21  0.490  0.490  0.600  0.600  0.600  0.600  0.600  0.647   15  'GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 40 Dalseong_weir_Fishway_L1                  
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 41 Dalseong_weir_Fishway_L2                  
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 42 Dalseong_weir_Fixed weir4                 
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 43 Dalseong_weir_Gate3                       
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 44 Dalseong_weir_Fixed weir3                 
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 45 Dalseong_weir_Gate2                       
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 46 Dalseong_weir_Fixed weir2                 
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 47 Dalseong_weir_Gate1                       
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 48 Dalseong_weir_Fixed weir1                 
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 49 Dalseong_weir_Fishway_R                   
+      0.00  99.0  0.362  0.362  0.600  0.600  0.600  0.600  0.600  0.572   15  'GATESER_ 50 Dalseong_weir_Power Generation            
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+      0.00  99.0  0.478  0.478  0.600  0.600  0.600  0.801  0.600  0.634   15  'GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+      0.00  99.0  0.374  0.374  0.600  0.600  0.600  0.600  0.600  0.681   15  'GATESER_ 60 Changnyeong-Haman_Fishway_L               
+      0.00  99.0  0.374  0.374  0.600  0.600  0.600  0.600  0.600  0.681   15  'GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+      0.00  99.0  0.374  0.374  0.600  0.600  0.600  0.600  0.600  0.681   15  'GATESER_ 62 Changnyeong-Haman_weir_Gate               
+      0.00  99.0  0.374  0.374  0.600  0.600  0.600  0.600  0.600  0.681   15  'GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+      0.00  99.0  0.374  0.374  0.600  0.600  0.600  0.600  0.600  0.681   15  'GATESER_ 64 Changnyeong-Haman_Power Generation        
+      0.00  99.0  0.374  0.374  0.600  0.600  0.600  0.600  0.600  0.681   15  'GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC5 GATE CONTROL
+*   DELHINOUT: GATE OPEN CONTIDION1 - DIFFERENCE OF INSIDE LEVEL - OUTSIDE LEVEL [m]
+*   DELHSEL1:  GATE OPEN CONDITION2 - DIFFERENCE OF INSIDE LEVEL - TARGET LEVEL [m]
+*   SEL1:      TARGET LOW LEVEL OF GATE INSIDE [m]
+*   SEL2:      TARGET HIGH LEVEL OF GATE INSIDE [m]
+*   TIDCHK:    TIDE CHECK TIME INTERVAL [min.]
+*
+GC5 DELHINOUT  DELHSEL1  SEL1  SEL2  TIDCHK
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  1 Sangju_Power Generation                   
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  2 Sangju_Gate1                              
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  3 Sangju_Gate2                              
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  4 Sangju_Overflow Gate                      
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  5 Sangju_Fixed weir1                        
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  6 Sangju_Fishway                            
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  7 Nakdan_Power Generation                   
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  8 Nakdan_Gate3                              
+         0.05      0.03   0.0   0.0    -1. 'GATESER_  9 Nakdan_Gate2                              
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 10 Nakdan_Gate1                              
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 11 Nakdan_Sand Gate                          
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 12 Nakdan_Fixed weir                         
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 13 Nakdan_Fishway                            
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 14 Gumi_Fixed weir1                          
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 15 Gumi_Gate                                 
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 16 Gumi_Overflow Gate                        
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 17 Gumi_Fixed weir2                          
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 18 Gumi_Sand Gate                            
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 19 Gumi_Power Generation                     
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 20 Gumi_Fishway                              
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 21 Chilgok_Fishway                           
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 22 Chilgok_Power Generation                  
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 23 Chilgok_Fixed weir4                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 24 Chilgok_Overflow Gate                     
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 25 Chilgok_Gate3                             
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 26 Chilgok_Fixed weir3                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 27 Chilgok_Gate2                             
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 28 Chilgok_Fixed weir2                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 29 Chilgok_Gate1                             
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 30 Chilgok_Overflow Gate1                    
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 31 Chilgok_Fixed weir1                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 40 Dalseong_weir_Fishway_L1                  
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 41 Dalseong_weir_Fishway_L2                  
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 42 Dalseong_weir_Fixed weir4                 
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 43 Dalseong_weir_Gate3                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 44 Dalseong_weir_Fixed weir3                 
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 45 Dalseong_weir_Gate2                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 46 Dalseong_weir_Fixed weir2                 
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 47 Dalseong_weir_Gate1                       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 48 Dalseong_weir_Fixed weir1                 
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 49 Dalseong_weir_Fishway_R                   
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 50 Dalseong_weir_Power Generation            
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 60 Changnyeong-Haman_Fishway_L               
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 62 Changnyeong-Haman_weir_Gate               
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 64 Changnyeong-Haman_Power Generation        
+         0.05      0.03   0.0   0.0    -1. 'GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC6 NUMBER OF SURFACE LEVEL COMPARE CELL
+*   NICMP:  NUMBER OF COMPARE CELL OF IN-SIDE (UPSTREAM)
+*   NOCMP:  NUMBER OF COMPARE CELL OF OUT-SIDE (DOWNSTREAM)
+*
+GC6 NICMP  NOCMP
+        1      1 ' GATESER_  1 Sangju_Power Generation                   
+        1      1 ' GATESER_  2 Sangju_Gate1                              
+        1      1 ' GATESER_  3 Sangju_Gate2                              
+        1      1 ' GATESER_  4 Sangju_Overflow Gate                      
+        1      1 ' GATESER_  5 Sangju_Fixed weir1                        
+        1      1 ' GATESER_  6 Sangju_Fishway                            
+        1      1 ' GATESER_  7 Nakdan_Power Generation                   
+        1      1 ' GATESER_  8 Nakdan_Gate3                              
+        1      1 ' GATESER_  9 Nakdan_Gate2                              
+        1      1 ' GATESER_ 10 Nakdan_Gate1                              
+        1      1 ' GATESER_ 11 Nakdan_Sand Gate                          
+        1      1 ' GATESER_ 12 Nakdan_Fixed weir                         
+        1      1 ' GATESER_ 13 Nakdan_Fishway                            
+        1      1 ' GATESER_ 14 Gumi_Fixed weir1                          
+        1      1 ' GATESER_ 15 Gumi_Gate                                 
+        1      1 ' GATESER_ 16 Gumi_Overflow Gate                        
+        1      1 ' GATESER_ 17 Gumi_Fixed weir2                          
+        1      1 ' GATESER_ 18 Gumi_Sand Gate                            
+        1      1 ' GATESER_ 19 Gumi_Power Generation                     
+        1      1 ' GATESER_ 20 Gumi_Fishway                              
+        1      1 ' GATESER_ 21 Chilgok_Fishway                           
+        1      1 ' GATESER_ 22 Chilgok_Power Generation                  
+        1      1 ' GATESER_ 23 Chilgok_Fixed weir4                       
+        1      1 ' GATESER_ 24 Chilgok_Overflow Gate                     
+        1      1 ' GATESER_ 25 Chilgok_Gate3                             
+        1      1 ' GATESER_ 26 Chilgok_Fixed weir3                       
+        1      1 ' GATESER_ 27 Chilgok_Gate2                             
+        1      1 ' GATESER_ 28 Chilgok_Fixed weir2                       
+        1      1 ' GATESER_ 29 Chilgok_Gate1                             
+        1      1 ' GATESER_ 30 Chilgok_Overflow Gate1                    
+        1      1 ' GATESER_ 31 Chilgok_Fixed weir1                       
+        1      1 ' GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+        1      1 ' GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+        1      1 ' GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+        1      1 ' GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+        1      1 ' GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+        1      1 ' GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+        1      1 ' GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+        1      1 ' GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+        1      1 ' GATESER_ 40 Dalseong_weir_Fishway_L1                  
+        1      1 ' GATESER_ 41 Dalseong_weir_Fishway_L2                  
+        1      1 ' GATESER_ 42 Dalseong_weir_Fixed weir4                 
+        1      1 ' GATESER_ 43 Dalseong_weir_Gate3                       
+        1      1 ' GATESER_ 44 Dalseong_weir_Fixed weir3                 
+        1      1 ' GATESER_ 45 Dalseong_weir_Gate2                       
+        1      1 ' GATESER_ 46 Dalseong_weir_Fixed weir2                 
+        1      1 ' GATESER_ 47 Dalseong_weir_Gate1                       
+        1      1 ' GATESER_ 48 Dalseong_weir_Fixed weir1                 
+        1      1 ' GATESER_ 49 Dalseong_weir_Fishway_R                   
+        1      1 ' GATESER_ 50 Dalseong_weir_Power Generation            
+        1      1 ' GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+        1      1 ' GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+        1      1 ' GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+        1      1 ' GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+        1      1 ' GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+        1      1 ' GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+        1      1 ' GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+        1      1 ' GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+        1      1 ' GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+        1      1 ' GATESER_ 60 Changnyeong-Haman_Fishway_L               
+        1      1 ' GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+        1      1 ' GATESER_ 62 Changnyeong-Haman_weir_Gate               
+        1      1 ' GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+        1      1 ' GATESER_ 64 Changnyeong-Haman_Power Generation        
+        1      1 ' GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC7 CELL INDEX OF UPSTREAM
+*   ICMPI:  COMPARE CELL I INDEX (UPSTREAM)
+*   JCMPI:  COMPARE CELL J INDEX (UPSTREAM)
+*
+GC7 ICMPI  JCMPI
+       14   1291 '  GATESER_  1 Sangju_Power Generation                   
+       14   1291 '  GATESER_  2 Sangju_Gate1                              
+       14   1291 '  GATESER_  3 Sangju_Gate2                              
+       14   1291 '  GATESER_  4 Sangju_Overflow Gate                      
+       14   1291 '  GATESER_  5 Sangju_Fixed weir1                        
+       14   1291 '  GATESER_  6 Sangju_Fishway                            
+       14   1196 '  GATESER_  7 Nakdan_Power Generation                   
+       14   1196 '  GATESER_  8 Nakdan_Gate3                              
+       14   1196 '  GATESER_  9 Nakdan_Gate2                              
+       14   1196 '  GATESER_ 10 Nakdan_Gate1                              
+       14   1196 '  GATESER_ 11 Nakdan_Sand Gate                          
+       14   1196 '  GATESER_ 12 Nakdan_Fixed weir                         
+       14   1196 '  GATESER_ 13 Nakdan_Fishway                            
+       14   1112 '  GATESER_ 14 Gumi_Fixed weir1                          
+       14   1112 '  GATESER_ 15 Gumi_Gate                                 
+       14   1112 '  GATESER_ 16 Gumi_Overflow Gate                        
+       14   1112 '  GATESER_ 17 Gumi_Fixed weir2                          
+       14   1112 '  GATESER_ 18 Gumi_Sand Gate                            
+       14   1112 '  GATESER_ 19 Gumi_Power Generation                     
+       14   1112 '  GATESER_ 20 Gumi_Fishway                              
+       13    949 '  GATESER_ 21 Chilgok_Fishway                           
+       13    949 '  GATESER_ 22 Chilgok_Power Generation                  
+       13    949 '  GATESER_ 23 Chilgok_Fixed weir4                       
+       13    949 '  GATESER_ 24 Chilgok_Overflow Gate                     
+       13    949 '  GATESER_ 25 Chilgok_Gate3                             
+       13    949 '  GATESER_ 26 Chilgok_Fixed weir3                       
+       13    949 '  GATESER_ 27 Chilgok_Gate2                             
+       13    949 '  GATESER_ 28 Chilgok_Fixed weir2                       
+       13    949 '  GATESER_ 29 Chilgok_Gate1                             
+       13    949 '  GATESER_ 30 Chilgok_Overflow Gate1                    
+       13    949 '  GATESER_ 31 Chilgok_Fixed weir1                       
+       17    835 '  GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+       17    835 '  GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+       17    835 '  GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+       17    835 '  GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+       17    835 '  GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+       17    835 '  GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+       17    835 '  GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+       17    835 '  GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+       19    736 '  GATESER_ 40 Dalseong_weir_Fishway_L1                  
+       19    736 '  GATESER_ 41 Dalseong_weir_Fishway_L2                  
+       19    736 '  GATESER_ 42 Dalseong_weir_Fixed weir4                 
+       19    736 '  GATESER_ 43 Dalseong_weir_Gate3                       
+       19    736 '  GATESER_ 44 Dalseong_weir_Fixed weir3                 
+       19    736 '  GATESER_ 45 Dalseong_weir_Gate2                       
+       19    736 '  GATESER_ 46 Dalseong_weir_Fixed weir2                 
+       19    736 '  GATESER_ 47 Dalseong_weir_Gate1                       
+       19    736 '  GATESER_ 48 Dalseong_weir_Fixed weir1                 
+       19    736 '  GATESER_ 49 Dalseong_weir_Fishway_R                   
+       19    736 '  GATESER_ 50 Dalseong_weir_Power Generation            
+       18    583 '  GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+       18    583 '  GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+       18    583 '  GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+       18    583 '  GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+       18    583 '  GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+       18    583 '  GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+       18    583 '  GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+       18    583 '  GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+       18    583 '  GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+       19    382 '  GATESER_ 60 Changnyeong-Haman_Fishway_L               
+       19    382 '  GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+       19    382 '  GATESER_ 62 Changnyeong-Haman_weir_Gate               
+       19    382 '  GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+       19    382 '  GATESER_ 64 Changnyeong-Haman_Power Generation        
+       19    382 '  GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC8 CELL INDEX OF DOWNSTREAM
+*   ICMPO:  COMPARE CELL I INDEX (DOWNSTREAM)
+*   JCMPO:  COMPARE CELL J INDEX (DOWNSTREAM)
+*
+GC8 ICMPO  JCMPO
+       14   1285 ' GATESER_  1 Sangju_Power Generation                   
+       14   1285 ' GATESER_  2 Sangju_Gate1                              
+       14   1285 ' GATESER_  3 Sangju_Gate2                              
+       14   1285 ' GATESER_  4 Sangju_Overflow Gate                      
+       14   1285 ' GATESER_  5 Sangju_Fixed weir1                        
+       14   1285 ' GATESER_  6 Sangju_Fishway                            
+       14   1190 ' GATESER_  7 Nakdan_Power Generation                   
+       14   1190 ' GATESER_  8 Nakdan_Gate3                              
+       14   1190 ' GATESER_  9 Nakdan_Gate2                              
+       14   1190 ' GATESER_ 10 Nakdan_Gate1                              
+       14   1190 ' GATESER_ 11 Nakdan_Sand Gate                          
+       14   1190 ' GATESER_ 12 Nakdan_Fixed weir                         
+       14   1190 ' GATESER_ 13 Nakdan_Fishway                            
+       15   1078 ' GATESER_ 14 Gumi_Fixed weir1                          
+       15   1078 ' GATESER_ 15 Gumi_Gate                                 
+       15   1078 ' GATESER_ 16 Gumi_Overflow Gate                        
+       15   1078 ' GATESER_ 17 Gumi_Fixed weir2                          
+       15   1078 ' GATESER_ 18 Gumi_Sand Gate                            
+       15   1078 ' GATESER_ 19 Gumi_Power Generation                     
+       15   1078 ' GATESER_ 20 Gumi_Fishway                              
+       13    943 ' GATESER_ 21 Chilgok_Fishway                           
+       13    943 ' GATESER_ 22 Chilgok_Power Generation                  
+       13    943 ' GATESER_ 23 Chilgok_Fixed weir4                       
+       13    943 ' GATESER_ 24 Chilgok_Overflow Gate                     
+       13    943 ' GATESER_ 25 Chilgok_Gate3                             
+       13    943 ' GATESER_ 26 Chilgok_Fixed weir3                       
+       13    943 ' GATESER_ 27 Chilgok_Gate2                             
+       13    943 ' GATESER_ 28 Chilgok_Fixed weir2                       
+       13    943 ' GATESER_ 29 Chilgok_Gate1                             
+       13    943 ' GATESER_ 30 Chilgok_Overflow Gate1                    
+       13    943 ' GATESER_ 31 Chilgok_Fixed weir1                       
+       17    829 ' GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+       17    829 ' GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+       17    829 ' GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+       17    829 ' GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+       17    829 ' GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+       17    829 ' GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+       17    829 ' GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+       17    829 ' GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+       19    726 ' GATESER_ 40 Dalseong_weir_Fishway_L1                  
+       19    726 ' GATESER_ 41 Dalseong_weir_Fishway_L2                  
+       19    726 ' GATESER_ 42 Dalseong_weir_Fixed weir4                 
+       19    726 ' GATESER_ 43 Dalseong_weir_Gate3                       
+       19    726 ' GATESER_ 44 Dalseong_weir_Fixed weir3                 
+       19    726 ' GATESER_ 45 Dalseong_weir_Gate2                       
+       19    726 ' GATESER_ 46 Dalseong_weir_Fixed weir2                 
+       19    726 ' GATESER_ 47 Dalseong_weir_Gate1                       
+       19    726 ' GATESER_ 48 Dalseong_weir_Fixed weir1                 
+       19    726 ' GATESER_ 49 Dalseong_weir_Fishway_R                   
+       19    726 ' GATESER_ 50 Dalseong_weir_Power Generation            
+       19    573 ' GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+       19    573 ' GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+       19    573 ' GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+       19    573 ' GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+       19    573 ' GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+       19    573 ' GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+       19    573 ' GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+       19    573 ' GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+       19    573 ' GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+       19    374 ' GATESER_ 60 Changnyeong-Haman_Fishway_L               
+       19    374 ' GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+       19    374 ' GATESER_ 62 Changnyeong-Haman_weir_Gate               
+       19    374 ' GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+       19    374 ' GATESER_ 64 Changnyeong-Haman_Power Generation        
+       19    374 ' GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC9 CONSIDER ESTUARY DIKE OUTER TIDE START TIME (FOR NQCTYP=6) LINE=NGTYPES
+*    IGYY:  YEAR  (-1 : NOT USE)
+*    IGMM:  MONTH (-1 : NOT USE)
+*    IGDD:  DAY   (-1 : NOT USE)
+*
+*
+GC9 IGYY IGMM IGDD CLOC
+     -1   -1   -1   'NONE'  ' GATESER_  1 Sangju_Power Generation                   
+     -1   -1   -1   'NONE'  ' GATESER_  2 Sangju_Gate1                              
+     -1   -1   -1   'NONE'  ' GATESER_  3 Sangju_Gate2                              
+     -1   -1   -1   'NONE'  ' GATESER_  4 Sangju_Overflow Gate                      
+     -1   -1   -1   'NONE'  ' GATESER_  5 Sangju_Fixed weir1                        
+     -1   -1   -1   'NONE'  ' GATESER_  6 Sangju_Fishway                            
+     -1   -1   -1   'NONE'  ' GATESER_  7 Nakdan_Power Generation                   
+     -1   -1   -1   'NONE'  ' GATESER_  8 Nakdan_Gate3                              
+     -1   -1   -1   'NONE'  ' GATESER_  9 Nakdan_Gate2                              
+     -1   -1   -1   'NONE'  ' GATESER_ 10 Nakdan_Gate1                              
+     -1   -1   -1   'NONE'  ' GATESER_ 11 Nakdan_Sand Gate                          
+     -1   -1   -1   'NONE'  ' GATESER_ 12 Nakdan_Fixed weir                         
+     -1   -1   -1   'NONE'  ' GATESER_ 13 Nakdan_Fishway                            
+     -1   -1   -1   'NONE'  ' GATESER_ 14 Gumi_Fixed weir1                          
+     -1   -1   -1   'NONE'  ' GATESER_ 15 Gumi_Gate                                 
+     -1   -1   -1   'NONE'  ' GATESER_ 16 Gumi_Overflow Gate                        
+     -1   -1   -1   'NONE'  ' GATESER_ 17 Gumi_Fixed weir2                          
+     -1   -1   -1   'NONE'  ' GATESER_ 18 Gumi_Sand Gate                            
+     -1   -1   -1   'NONE'  ' GATESER_ 19 Gumi_Power Generation                     
+     -1   -1   -1   'NONE'  ' GATESER_ 20 Gumi_Fishway                              
+     -1   -1   -1   'NONE'  ' GATESER_ 21 Chilgok_Fishway                           
+     -1   -1   -1   'NONE'  ' GATESER_ 22 Chilgok_Power Generation                  
+     -1   -1   -1   'NONE'  ' GATESER_ 23 Chilgok_Fixed weir4                       
+     -1   -1   -1   'NONE'  ' GATESER_ 24 Chilgok_Overflow Gate                     
+     -1   -1   -1   'NONE'  ' GATESER_ 25 Chilgok_Gate3                             
+     -1   -1   -1   'NONE'  ' GATESER_ 26 Chilgok_Fixed weir3                       
+     -1   -1   -1   'NONE'  ' GATESER_ 27 Chilgok_Gate2                             
+     -1   -1   -1   'NONE'  ' GATESER_ 28 Chilgok_Fixed weir2                       
+     -1   -1   -1   'NONE'  ' GATESER_ 29 Chilgok_Gate1                             
+     -1   -1   -1   'NONE'  ' GATESER_ 30 Chilgok_Overflow Gate1                    
+     -1   -1   -1   'NONE'  ' GATESER_ 31 Chilgok_Fixed weir1                       
+     -1   -1   -1   'NONE'  ' GATESER_ 32 Gangjeong-Goryeong_weir_Fishway_L         
+     -1   -1   -1   'NONE'  ' GATESER_ 33 Gangjeong-Goryeong_weir_Power Generation  
+     -1   -1   -1   'NONE'  ' GATESER_ 34 Gangjeong-Goryeong_weir_Fixed weir3       
+     -1   -1   -1   'NONE'  ' GATESER_ 35 Gangjeong-Goryeong_weir_Gate2             
+     -1   -1   -1   'NONE'  ' GATESER_ 36 Gangjeong-Goryeong_weir_Gate1             
+     -1   -1   -1   'NONE'  ' GATESER_ 37 Gangjeong-Goryeong_weir_Fixed weir1       
+     -1   -1   -1   'NONE'  ' GATESER_ 38 Gangjeong-Goryeong_weir_Fishway_R         
+     -1   -1   -1   'NONE'  ' GATESER_ 39 Gangjeong-Goryeong_weir_Fixed weir2       
+     -1   -1   -1   'NONE'  ' GATESER_ 40 Dalseong_weir_Fishway_L1                  
+     -1   -1   -1   'NONE'  ' GATESER_ 41 Dalseong_weir_Fishway_L2                  
+     -1   -1   -1   'NONE'  ' GATESER_ 42 Dalseong_weir_Fixed weir4                 
+     -1   -1   -1   'NONE'  ' GATESER_ 43 Dalseong_weir_Gate3                       
+     -1   -1   -1   'NONE'  ' GATESER_ 44 Dalseong_weir_Fixed weir3                 
+     -1   -1   -1   'NONE'  ' GATESER_ 45 Dalseong_weir_Gate2                       
+     -1   -1   -1   'NONE'  ' GATESER_ 46 Dalseong_weir_Fixed weir2                 
+     -1   -1   -1   'NONE'  ' GATESER_ 47 Dalseong_weir_Gate1                       
+     -1   -1   -1   'NONE'  ' GATESER_ 48 Dalseong_weir_Fixed weir1                 
+     -1   -1   -1   'NONE'  ' GATESER_ 49 Dalseong_weir_Fishway_R                   
+     -1   -1   -1   'NONE'  ' GATESER_ 50 Dalseong_weir_Power Generation            
+     -1   -1   -1   'NONE'  ' GATESER_ 51 Hapcheon-Changnyeong_weir_Fishway_L       
+     -1   -1   -1   'NONE'  ' GATESER_ 52 Hapcheon-Changnyeong_weir_Fixed weir      
+     -1   -1   -1   'NONE'  ' GATESER_ 53 Hapcheon-Changnyeong_weir_Gate3           
+     -1   -1   -1   'NONE'  ' GATESER_ 54 Hapcheon-Changnyeong_weir_Overflow Gate2  
+     -1   -1   -1   'NONE'  ' GATESER_ 55 Hapcheon-Changnyeong_weir_Gate2           
+     -1   -1   -1   'NONE'  ' GATESER_ 56 Hapcheon-Changnyeong_weir_Overflow Gate1  
+     -1   -1   -1   'NONE'  ' GATESER_ 57 Hapcheon-Changnyeong_weir_Gate1           
+     -1   -1   -1   'NONE'  ' GATESER_ 58 Hapcheon-Changnyeong_weir_Fishway_R       
+     -1   -1   -1   'NONE'  ' GATESER_ 59 Hapcheon-Changnyeong_weir_Power Generation
+     -1   -1   -1   'NONE'  ' GATESER_ 60 Changnyeong-Haman_Fishway_L               
+     -1   -1   -1   'NONE'  ' GATESER_ 61 Changnyeong-Haman_weir_Fixed weir2        
+     -1   -1   -1   'NONE'  ' GATESER_ 62 Changnyeong-Haman_weir_Gate               
+     -1   -1   -1   'NONE'  ' GATESER_ 63 Changnyeong-Haman_weir_Fixed weir1        
+     -1   -1   -1   'NONE'  ' GATESER_ 64 Changnyeong-Haman_Power Generation        
+     -1   -1   -1   'NONE'  ' GATESER_ 65 Changnyeong-Haman_Fishway_R               
+------------------------------------------------------------------------------
+GC10 GATE FLUX MONITORING
+*    ISINK: 0= NOT MONITORING, 1= WRITE SINK##.OUT
+*    DTSNK: WRITE INTERVAL [min.]
+*
+GC10 ISINK  DTSNK
+         1   60.     !0.25

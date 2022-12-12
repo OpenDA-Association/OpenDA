@@ -1,0 +1,22 @@
+C  dser.inp file,salinity is nc=1 conc, charles river DDD  2009-04-12 ¿ÀÈÄ 9:00:52
+C  repeats ncser(1) times, test case
+C
+C  ISTYP  MCSER(NS,1)  TCCSER(NS,1)  TACSER(NS,1)  RMULADJ(NS,1)  ADDADJ(NS,1)
+C
+C  if istyp.eq.1 then read depth weights and single value of CSER
+C
+C  (WKQ(K),K=1,KC)
+C
+C  TCSER(M,NS,1)   CSER(M,NS,1)  !(mcser(ns,1) pairs for ns=1,ncser(1) series)
+C
+C  else read a value of dser for each layer
+C
+C  TCSER(M,NS,1)   (CSER(M,K,NS,1),K=1,KC) !(mcser(ns,1) pairs)
+C
+       1       5   86400       0       1       0 ' *** Series_01
+  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  1.00
+     1.000 0.0000
+   586.958 0.0000
+   587.000 1000000.0000
+   587.125 0.0000
+   999.000 0.0000
