@@ -31,11 +31,11 @@ import java.util.TimeZone;
 /**
  * Test for the DLL based model instance
  */
-public class EfdcGridExchangeItem2022Test extends TestCase {
+public class EfdcGridExchangeItem2022NakdongTest extends TestCase {
     private OpenDaTestSupport testData;
 
     protected void setUp() {
-        testData = new OpenDaTestSupport(EfdcGridExchangeItem2022Test.class,"model_efdc_dll");
+        testData = new OpenDaTestSupport(EfdcGridExchangeItem2022NakdongTest.class,"model_efdc_dll");
     }
 
     public void testGridExchangeItem() {
