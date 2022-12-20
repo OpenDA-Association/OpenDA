@@ -230,11 +230,11 @@ public class ZeroMqModelTest extends TestCase {
 
 		zeroMqModelInstance.initializeModel(new File("good-config-file.toml"));
 
-		assertEquals("Start time", 123456789L, zeroMqModelInstance.getStartTime());
-		assertEquals("End time", 987654321L, zeroMqModelInstance.getEndTime());
-		assertEquals("Time step", 12345L, zeroMqModelInstance.getTimeStep());
+		assertEquals("Start time", 123456789.0D, zeroMqModelInstance.getStartTime());
+		assertEquals("End time", 987654321.0D, zeroMqModelInstance.getEndTime());
+		assertEquals("Time step", 12345D, zeroMqModelInstance.getTimeStep());
 		assertEquals("Time units", "Days", zeroMqModelInstance.getTimeUnits());
-		assertEquals("Current time", 567894321L, zeroMqModelInstance.getCurrentTimeInstant()); // Method name clashed
+		assertEquals("Current time", 567894321.0D, zeroMqModelInstance.getCurrentTimeInstant()); // Method name clashed
 
 		List<String> inputVarNames = zeroMqModelInstance.getInputVarNames();
 
@@ -265,7 +265,7 @@ public class ZeroMqModelTest extends TestCase {
 		zeroMqModelFactory.initialize(new File(TEST_RESOURCES_DIRECTORY), new String[]{"zeroMqModelTest.xml"});
 		ZeroMqModelInstance zeroMqModelInstance = (ZeroMqModelInstance) zeroMqModelFactory.getInstance(null, null);
 
-		assertTrue("Update until time returned ok", zeroMqModelInstance.updateUntil(9753197531L));
+		assertTrue("Update until time returned ok", zeroMqModelInstance.updateUntil(9753197531D));
 	}
 
 	public void testGivenModelInstanceAndBadTimeWhenUpdatedUntilThenErrorStatus() {
@@ -281,7 +281,7 @@ public class ZeroMqModelTest extends TestCase {
 			exceptionMessage = runtimeException.getMessage();
 		}
 
-		assertEquals("Update until time  returned error", "Update until: was updated until: 864286428642", exceptionMessage);
+		assertEquals("Update until time  returned error", "Update until: was updated until: 8.64286428642E11", exceptionMessage);
 	}
 
 	public void testGivenModelInstanceWhenModelFinalizedThenOnlyFinalizedOnce() {

@@ -11,6 +11,8 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.Executors;
 
 public class ZeroMqModelFactory implements IModelFactory {
 
@@ -26,10 +28,8 @@ public class ZeroMqModelFactory implements IModelFactory {
 	@Override
 	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
 		try {
-			if(executable != null) {
-				ProcessBuilder builder = new ProcessBuilder();
-				builder.command(executable, executableArguments);
-				builder.start();
+			if(executable != null && !"".equals(executable)) {
+				runProcess();
 			}
 
 			// Create ZeroMQClient
@@ -49,6 +49,27 @@ public class ZeroMqModelFactory implements IModelFactory {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void runProcess() {
+		Executors.newSingleThreadExecutor().submit(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					System.out.println("Building process");
+					ProcessBuilder builder = new ProcessBuilder();
+					builder.command(executable, executableArguments);
+					Process process = builder.start();
+					System.out.println("Process started");
+					process.waitFor();
+					System.out.println("Process terminated");
+				} catch (IOException ioException) {
+					System.out.println("IO Exception: " + ioException.getMessage());
+				} catch (InterruptedException interruptedException) {
+					System.out.println("Interrupted Exception: " + interruptedException.getMessage());
+				}
+			}
+		});
 	}
 
 	@Override

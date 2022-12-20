@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zeroMqModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org//zeroMqModelFactoryConfig.xsd">
   <modelTemplateDirectory>qwerty</modelTemplateDirectory>
-  <modelConfigFile>qwerty</modelConfigFile>
+  <modelConfigFile>D:/OpenDA/wflow_model/sbm_config.toml</modelConfigFile>
   <inputStateDirectory>qwerty</inputStateDirectory>
   <outputStateDirectory>qwerty</outputStateDirectory>
-  <executable></executable>
-  <executableArguments></executableArguments>
+  <executable>julia</executable>
+  <executableArguments>--project="D:/Git_projects/Wflow.jl/server/." "D:/Git_projects/Wflow.jl/server/src/WflowBmiServer.jl"</executableArguments>
   <host>localhost</host>
-  <port>55555</port>
+  <port>5555</port>
   <zeroMqModelStateExchangeItems>
     <limitedExchangeItem>
       <exchangeItemId>1</exchangeItemId>

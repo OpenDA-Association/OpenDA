@@ -93,19 +93,19 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return getLongValue(FUNCTION_GET_END_TIME, RETURN_END_TIME);
 	}
 
-	public long getTimeStep() {
-		return getLongValue(FUNCTION_GET_TIME_STEP, RETURN_TIME_STEP);
+	public double getTimeStep() {
+		return getDoubleValue(FUNCTION_GET_TIME_STEP, RETURN_TIME_STEP);
 	}
 
 	public String getTimeUnits() {
 		return getReply(FUNCTION_GET_TIME_UNITS, RETURN_TIME_UNITS).asText();
 	}
 
-	public long getCurrentTimeInstant() {
-		return getLongValue(FUNCTION_GET_CURRENT_TIME, RETURN_CURRENT_TIME);
+	public double getCurrentTimeInstant() {
+		return getDoubleValue(FUNCTION_GET_CURRENT_TIME, RETURN_CURRENT_TIME);
 	}
 
-	public boolean updateUntil(long time) {
+	public boolean updateUntil(double time) {
 		ObjectNode request = objectMapper.createObjectNode();
 		request.put(FUNCTION_KEY, FUNCTION_UPDATE_UNTIL);
 		request.put(UPDATE_UNTIL, time);
@@ -245,6 +245,10 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	private long getLongValue(String functionName, String returnName) {
 		return getReply(functionName, returnName).asLong();
+	}
+
+	private double getDoubleValue(String functionName, String returnName) {
+		return getReply(functionName, returnName).asDouble();
 	}
 
 	private JsonNode getReply(String functionName, String returnName) {
