@@ -1574,7 +1574,7 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 						}
 					}
 				}
-			}// for noise model
+			}
 		}
 
 
