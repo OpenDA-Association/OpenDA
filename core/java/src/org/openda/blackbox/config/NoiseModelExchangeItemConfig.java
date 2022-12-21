@@ -52,7 +52,7 @@ public class NoiseModelExchangeItemConfig {
 	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, boolean allowOverwriteForecastWithAnalysisNoise) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false, allowOverwriteForecastWithAnalysisNoise);
+		this(id, new ArrayList<String>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false, allowOverwriteForecastWithAnalysisNoise);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
