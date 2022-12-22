@@ -3,6 +3,7 @@
 
 pushd core/native
 ./autoreconf_fix.sh
-./configure
+#Added flags due to stricter gfortran 10
+./configure FFLAGS=-fallow-argument-mismatch FCFLAGS=-fallow-argument-mismatch
 make install
 popd
