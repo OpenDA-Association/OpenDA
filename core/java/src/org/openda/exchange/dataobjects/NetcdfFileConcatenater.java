@@ -20,11 +20,9 @@
 package org.openda.exchange.dataobjects;
 
 import org.openda.blackbox.config.BBUtils;
+import org.openda.utils.generalJavaUtils.StringUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.openda.utils.generalJavaUtils.StringUtilities;
-
-
 import ucar.ma2.Array;
 import ucar.ma2.ArrayDouble;
 import ucar.ma2.DataType;
@@ -54,7 +52,7 @@ public class NetcdfFileConcatenater {
 			switch (key) {
 				case "useOldValueOnOverlap":
 					useOldValueOnOverlap = Boolean.valueOf(value);
-					continue;
+					break;
 				default:
 					throw new RuntimeException("Unknown key " + key + ". Please specify only useOldValueOnOverlap as key=value pair");
 			}
@@ -68,25 +66,84 @@ public class NetcdfFileConcatenater {
 			// target file is not there yet; make path absolute
 			targetNetcdfFile = new File(netcdfFileToBeAdded.getParentFile(), arguments[0]);
 		}
-		try {
-			if (!targetNetcdfFile.exists()) {
-				NetcdfFile netcdfToAdd = null;
-				try {
-					netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
-					Dimension time = netcdfToAdd.findDimension("time");
-					if (time != null && time.isUnlimited()) {
-						BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
-					} else {
-						rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
-					}
-				} finally {
-					if (netcdfToAdd != null) netcdfToAdd.close();
+
+		if(netcdfFileToBeAdded.isDirectory()) {
+			List<File> netcdfFilesToBeAdded = new ArrayList<>(Arrays.asList(Objects.requireNonNull(netcdfFileToBeAdded.listFiles())));
+
+			try {
+				if (!targetNetcdfFile.exists()) {
+					File firstNetcdfFileToBeAdded = netcdfFilesToBeAdded.get(0);
+
+					addNetcdfFile(targetNetcdfFile, firstNetcdfFileToBeAdded);
+
+					netcdfFilesToBeAdded.remove(firstNetcdfFileToBeAdded);
 				}
-			} else {
-				concatenateNetcdfFiles(useOldValueOnOverlap, netcdfFileToBeAdded, targetNetcdfFile);
+
+				if(!netcdfFilesToBeAdded.isEmpty()) {
+					concatenateNetcdfFiles(useOldValueOnOverlap, netcdfFilesToBeAdded, targetNetcdfFile);
+				}
+
+			} catch (IOException e) {
+				throw new RuntimeException(e.getMessage(), e);
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
+		} else {
+			try {
+				if (!targetNetcdfFile.exists()) {
+					addNetcdfFile(targetNetcdfFile, netcdfFileToBeAdded);
+				} else {
+					concatenateNetcdfFiles(useOldValueOnOverlap, netcdfFileToBeAdded, targetNetcdfFile);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+		}
+	}
+
+	private static void addNetcdfFile(File targetNetcdfFile, File netcdfFileToBeAdded) throws IOException {
+		NetcdfFile netcdfToAdd = null;
+		try {
+			netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+			Dimension time = netcdfToAdd.findDimension("time");
+			if (time != null && time.isUnlimited()) {
+				BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
+			} else {
+				rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
+			}
+		} finally {
+			if (netcdfToAdd != null) netcdfToAdd.close();
+		}
+	}
+
+	private static void concatenateNetcdfFiles(boolean useOldValueOnOverlap, List<File> netcdfFilesToBeAdded, File targetNetcdfFile) throws IOException {
+		NetcdfFile sourceNetcdfFile = null;
+		NetcdfFileWriter netcdfFileWriter = null;
+		try {
+			netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath());
+
+			Map<Variable, Array> variableArraysMap = new HashMap<>();
+			Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
+
+			for(File netcdfFileToBeAdded : netcdfFilesToBeAdded) {
+				sourceNetcdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+				List<Variable> variablesToBeAdded = sourceNetcdfFile.getVariables();
+
+				concatenateVariables(useOldValueOnOverlap, sourceNetcdfFile, variablesToBeAdded, netcdfFileWriter, variableArraysMap, timeVariableArraysMap);
+
+				try {
+					for (Map.Entry<Variable, Array> entry : timeVariableArraysMap.entrySet()) {
+						netcdfFileWriter.write(entry.getKey(), entry.getValue());
+					}
+					for (Map.Entry<Variable, Array> entry : variableArraysMap.entrySet()) {
+						netcdfFileWriter.write(entry.getKey(), entry.getValue());
+					}
+				} catch (InvalidRangeException e) {
+					throw new RuntimeException("Error rewriting variables", e);
+				}
+				netcdfFileWriter.flush();
+			}
+		} finally {
+			if (netcdfFileWriter != null) netcdfFileWriter.close();
+			if (sourceNetcdfFile != null) sourceNetcdfFile.close();
 		}
 	}
 
@@ -177,6 +234,7 @@ public class NetcdfFileConcatenater {
 			} else {
 				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, false, false);
 			}
+			break;
 		}
 	}
 
