@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.9.1)
+find_package(LibXml2 REQUIRED)
 
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 set(SOURCES
@@ -16,8 +17,10 @@ set(SOURCES
 )
 
 add_library(cta SHARED ${SOURCES})
+
+
 target_include_directories(cta PUBLIC ../include)
 target_include_directories(cta PUBLIC ${CMAKE_SOURCE_DIR}/external)
-
+target_include_directories(cta PUBLIC ${LIBXML2_INCLUDE_DIR}) 
 #target_link_libraries(cta INTERFACE libxml)
 
