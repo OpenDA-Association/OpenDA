@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+Index
+=====
+
 .. toctree::
    :caption: Introduction
    :maxdepth: 1
@@ -25,10 +28,8 @@
    java_source
 
 
+:ref:`genindex`
 
-Indices and tables
-==================
+:ref:`modindex`
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+:ref:`search`
