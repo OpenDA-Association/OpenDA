@@ -16,6 +16,7 @@
 
    OpenDA_installation
    workStepByStep
+   OpenDA_course
 
 .. toctree::
    :caption: Contributing to the source
