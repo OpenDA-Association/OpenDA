@@ -12,6 +12,7 @@
     <buildFile url="file://$PROJECT_DIR$/model_wflow/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_external_socket/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_external_socket/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/model_zero_mq/build_castor.xml" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -294,9 +295,6 @@
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
     <code_scheme name="Project" version="173">
       <option name="RIGHT_MARGIN" value="200" />
-      <XML>
-        <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
-      </XML>
       <ADDITIONAL_INDENT_OPTIONS fileType="gsp">
         <option name="INDENT_SIZE" value="2" />
       </ADDITIONAL_INDENT_OPTIONS>
@@ -375,6 +373,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" filepath="$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_swan/java/model_swan.iml" filepath="$PROJECT_DIR$/model_swan/java/model_swan.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_wflow/java/model_wflow.iml" filepath="$PROJECT_DIR$/model_wflow/java/model_wflow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_zero_mq/model_zero_mq.iml" filepath="$PROJECT_DIR$/model_zero_mq/model_zero_mq.iml" />
       <module fileurl="file://$PROJECT_DIR$/models/java/models.iml" filepath="$PROJECT_DIR$/models/java/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/observers/java/observers.iml" filepath="$PROJECT_DIR$/observers/java/observers.iml" />
       <module fileurl="file://$PROJECT_DIR$/public_project_view.iml" filepath="$PROJECT_DIR$/public_project_view.iml" />
@@ -388,7 +387,7 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="ProjectRunConfigurationManager">

@@ -12,6 +12,8 @@ import org.zeromq.ZMQ;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class ZeroMqModelFactory implements IModelFactory {
@@ -21,7 +23,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private static final String PROTOCOL = "tcp://";
 	private static final String PORT_SEPARATOR = ":";
 	private String executable;
-	private String executableArguments;
+	private List<String> executableArguments;
 	private String host;
 	private Integer port;
 
@@ -42,6 +44,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 				addressBuilder.append(PORT_SEPARATOR);
 				addressBuilder.append(port);
 			}
+
 			socket.connect(addressBuilder.toString());
 
 			return new ZeroMqModelInstance(socket);
@@ -52,22 +55,20 @@ public class ZeroMqModelFactory implements IModelFactory {
 	}
 
 	private void runProcess() {
-		Executors.newSingleThreadExecutor().submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					System.out.println("Building process");
-					ProcessBuilder builder = new ProcessBuilder();
-					builder.command(executable, executableArguments);
-					Process process = builder.start();
-					System.out.println("Process started");
-					process.waitFor();
-					System.out.println("Process terminated");
-				} catch (IOException ioException) {
-					System.out.println("IO Exception: " + ioException.getMessage());
-				} catch (InterruptedException interruptedException) {
-					System.out.println("Interrupted Exception: " + interruptedException.getMessage());
-				}
+		Executors.newSingleThreadExecutor().submit(() -> {
+			try {
+				List<String> commands = new ArrayList<>();
+				commands.add(executable);
+				commands.addAll(executableArguments);
+				ProcessBuilder builder = new ProcessBuilder()
+					.inheritIO()
+					.command(commands);
+				Process process = builder.start();
+				process.waitFor();
+			} catch (IOException ioException) {
+				System.out.println("IO Exception: " + ioException.getMessage());
+			} catch (InterruptedException interruptedException) {
+				System.out.println("Interrupted Exception: " + interruptedException.getMessage());
 			}
 		});
 	}

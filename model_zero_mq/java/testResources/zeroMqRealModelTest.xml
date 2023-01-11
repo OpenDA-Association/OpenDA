@@ -5,7 +5,10 @@
   <inputStateDirectory>qwerty</inputStateDirectory>
   <outputStateDirectory>qwerty</outputStateDirectory>
   <executable>julia</executable>
-  <executableArguments>--project="D:/Git_projects/Wflow.jl/server/." "D:/Git_projects/Wflow.jl/server/src/WflowBmiServer.jl"</executableArguments>
+  <executableArguments>
+    <argument>--project=D:/Git_projects/Wflow.jl/server/.</argument>
+    <argument>D:/Git_projects/Wflow.jl/server/src/WflowBmiServer.jl</argument>
+  </executableArguments>
   <host>localhost</host>
   <port>5555</port>
   <zeroMqModelStateExchangeItems>

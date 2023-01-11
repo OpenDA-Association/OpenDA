@@ -1,13 +1,15 @@
 package org.openda.model_zero_mq;
 
-import org.openda.model_zero_mq.io.castorgenerated.*;
+import org.openda.model_zero_mq.io.castorgenerated.ZeroMqModelFactoryConfigXML;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class ZeroMqModelFactoryConfigReader {
 	private final String executable;
-	private final String executableArguments;
+	private final List<String> executableArguments;
 	private final String host;
 	private final Integer port;
 
@@ -15,7 +17,7 @@ public class ZeroMqModelFactoryConfigReader {
 		ZeroMqModelFactoryConfigXML castor = (ZeroMqModelFactoryConfigXML) CastorUtils.parse(configFile, ZeroMqModelFactoryConfigXML.class);
 
 		executable = castor.getExecutable();
-		executableArguments = castor.getExecutableArguments();
+		executableArguments = Arrays.asList(castor.getExecutableArguments().getArgument());
 		host = castor.getHost();
 		port = castor.getPort();
 	}
@@ -24,7 +26,7 @@ public class ZeroMqModelFactoryConfigReader {
 		return executable;
 	}
 
-	public String getExecutableArguments() {
+	public List<String> getExecutableArguments() {
 		return executableArguments;
 	}
 
