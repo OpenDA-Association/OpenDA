@@ -144,7 +144,7 @@ public class EfdcModelFactory implements IModelFactory, ITimeHorizonConsumer {
 		efdcEventTox2InpDataObject.initialize(templateDir,
 				new String[]{EVENT_TOX2_INP_FILE_NAME, String.valueOf(timeZoneOffsetInHours), TSTART, TSTOP});
 		for (String id : efdcEventTox2InpDataObject.getExchangeItemIDs()) {
-			IExchangeItem exchangeItem = efdcInpDataObject.getDataObjectExchangeItem(id);
+			IExchangeItem exchangeItem = efdcEventTox2InpDataObject.getDataObjectExchangeItem(id);
 			if (TSTART.equals(id)) {
 				exchangeItem.setValuesAsDoubles(new double[]{startTime});
 			} else if (TSTOP.equals(id)) {
