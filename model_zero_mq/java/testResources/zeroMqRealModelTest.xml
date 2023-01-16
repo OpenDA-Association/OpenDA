@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zeroMqModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org//zeroMqModelFactoryConfig.xsd">
-  <modelTemplateDirectory>qwerty</modelTemplateDirectory>
-  <modelConfigFile>D:/OpenDA/wflow_model/sbm_config.toml</modelConfigFile>
-  <inputStateDirectory>qwerty</inputStateDirectory>
-  <outputStateDirectory>qwerty</outputStateDirectory>
+  <modelTemplateDirectory>template-directory</modelTemplateDirectory>
+  <modelConfigFile>java/testResources/real-config-file.toml</modelConfigFile>
+  <inputStateDirectory>input-state-directory</inputStateDirectory>
+  <outputStateDirectory>output-state-directory</outputStateDirectory>
   <executable>julia</executable>
   <executableArguments>
     <argument>--project=D:/Git_projects/Wflow.jl/server/.</argument>

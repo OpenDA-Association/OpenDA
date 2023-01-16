@@ -3,6 +3,7 @@ package org.openda.model_zero_mq;
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.interfaces.IModelInstance;
 import org.openda.interfaces.IStochModelFactory;
+import org.openda.model_zero_mq.io.castorgenerated.ZeroMqModelStateExchangeItemXML;
 import org.openda.utils.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,12 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private List<String> executableArguments;
 	private String host;
 	private Integer port;
+	private String modelConfigFile;
+	private String modelTemplateDirectory;
+	private ZeroMqModelStateExchangeItemXML modelStateExchangeItems;
+	private String inputStateDirectory;
+	private String outputStateDirectory;
+	private double missingValue;
 
 	@Override
 	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
@@ -47,7 +54,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 
 			socket.connect(addressBuilder.toString());
 
-			return new ZeroMqModelInstance(socket);
+			return new ZeroMqModelInstance(socket, modelConfigFile);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
@@ -96,13 +103,13 @@ public class ZeroMqModelFactory implements IModelFactory {
 		executableArguments = configReader.getExecutableArguments();
 		host = configReader.getHost();
 		port = configReader.getPort();
+		modelConfigFile = configReader.getModelConfigFile();
 
-		// What todo with the next parts, are they all needed:
-		/*this.forcingConfiguration = configReader.getZeroMqModelForcingConfigs();
-		this.staticLimitConfiguration = configReader.getStaticLimitDataConfigs();
-		this.modelStateExchangeItemInfos = configReader.getModelStateExchangeItemInfos();
-		this.inputStateDir = configReader.getInputStateDir();
-		this.outputStateDir = configReader.getOutputStateDir();
-		this.modelMissingValue = configReader.getModelMissingValue();*/
+		// currently unused
+		modelTemplateDirectory = configReader.getModelTemplateDirectory();
+		modelStateExchangeItems = configReader.getZeroMqModelStateExchangeItems();
+		inputStateDirectory = configReader.getInputStateDirectory();
+		outputStateDirectory = configReader.getOutputStateDirectory();
+		missingValue = configReader.getMissingValue();
 	}
 }

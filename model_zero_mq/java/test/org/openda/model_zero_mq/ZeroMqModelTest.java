@@ -40,6 +40,7 @@ public class ZeroMqModelTest extends TestCase {
 							case "initialize":
 								switch (request.get("config_file").asText()) {
 									case "good-config-file.toml":
+									case "java\\testResources\\empty-config-file.toml":
 										response.put("status", "OK");
 										break;
 									case "bad-config-file.toml":
@@ -205,6 +206,14 @@ public class ZeroMqModelTest extends TestCase {
 		ZeroMqModelInstance zeroMqModelInstance = (ZeroMqModelInstance) zeroMqModelFactory.getInstance(null, null);
 
 		assertTrue("Initialised instance returned ok", zeroMqModelInstance.initializeModel(new File("good-config-file.toml")));
+	}
+
+	public void testGivenModelInstanceAndRealConfigWhenInitialisedThenOkStatus() {
+		ZeroMqModelFactory zeroMqModelFactory = new ZeroMqModelFactory();
+		zeroMqModelFactory.initialize(new File(TEST_RESOURCES_DIRECTORY), new String[]{"zeroMqModelTest.xml"});
+		ZeroMqModelInstance zeroMqModelInstance = (ZeroMqModelInstance) zeroMqModelFactory.getInstance(null, null);
+
+		assertTrue("Initialised instance returned ok", zeroMqModelInstance.initializeModel());
 	}
 
 	public void testGivenModelInstanceAndBadConfigWhenInitialisedThenErrorStatus() {

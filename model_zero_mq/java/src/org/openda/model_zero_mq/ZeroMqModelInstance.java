@@ -53,14 +53,27 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String REPLY_OK = "OK";
 	private static final String REPLY_ERROR = "ERROR";
 	private static final String REPLY_ERROR_MESSAGE = "error";
+	private static final String FUNCTION_FINISH_MODEL = "finish";
 	private final ZMQ.Socket socket;
+	private final String modelConfigFile;
 
-	public ZeroMqModelInstance(ZMQ.Socket socket) {
+	public ZeroMqModelInstance(ZMQ.Socket socket, String modelConfigFile) {
 		// initialize model
 		// create exchange items
 
 		//initializeModel(socket, new File("../../test/sbm_config.toml"));
 		this.socket = socket;
+		this.modelConfigFile = modelConfigFile;
+	}
+
+	public boolean initializeModel() {
+		File modelConfigurationFile = new File(modelConfigFile);
+
+		if (!modelConfigurationFile.exists()) {
+			throw new RuntimeException("Initialisation failure: Model configuration file does not exist: " + modelConfigFile);
+		}
+
+		return initializeModel(modelConfigurationFile);
 	}
 
 	public boolean initializeModel(File configFile) {
@@ -305,7 +318,15 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void finish() {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.finish() not implemented yet");
+		ObjectNode request = objectMapper.createObjectNode();
+		request.put(FUNCTION_KEY, FUNCTION_FINISH_MODEL);
+
+		try {
+			socket.send(objectMapper.writeValueAsString(request).getBytes(ZMQ.CHARSET), 0);
+			socket.close();
+		} catch (JsonProcessingException jsonProcessingException) {
+			throw new RuntimeException(jsonProcessingException);
+		}
 	}
 
 	@Override
