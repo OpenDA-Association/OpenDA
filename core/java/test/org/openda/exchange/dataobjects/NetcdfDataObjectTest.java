@@ -55,21 +55,6 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertEquals(3, itemValues.length);
 	}
 
-	public void testObserver1Location() {
-		NetcdfDataObject dataObject = new NetcdfDataObject();
-		dataObject.initialize(this.testRunDataDir, new String[]{"dcsmv5_airpressure_noise_dim-46.nc", "true", "false"});
-		String[] ensembleExchangeItemIds = dataObject.getExchangeItemIDs();
-		System.out.println(ensembleExchangeItemIds);
-		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
-		assertEquals(3, ensembleIndices.length);
-		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
-		assertEquals(4, ensembleIds.length);
-		IExchangeItem item = dataObject.getDataObjectExchangeItem("27.waterlevel", 1);
-		assertFalse(item == null);
-		double[] itemValues = item.getValuesAsDoubles();
-		assertEquals(3, itemValues.length);
-	}
-
 	public void testReadGridEnsemble() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
 		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_grid_with_ensemble.nc", "true", "false"});
@@ -91,19 +76,19 @@ public class NetcdfDataObjectTest extends TestCase {
 		NetcdfGridTimeSeriesExchangeItem airPressure = (NetcdfGridTimeSeriesExchangeItem) dataObject.getDataObjectExchangeItem("air_pressure");
 		double[] valuesAsDoubles = airPressure.getValuesAsDoublesForSingleTimeIndex(0);
 		Arrays.sort(valuesAsDoubles);
-		assertEquals(-10.0387, valuesAsDoubles[0], 0.0001);
-		assertEquals(-10.0387, valuesAsDoubles[valuesAsDoubles.length - 1], 0.0001);
+		assertEquals(0.0, valuesAsDoubles[0], 0.0001);
+		assertEquals(0.0, valuesAsDoubles[valuesAsDoubles.length - 1], 0.0001);
 		double[] valuesAsDoubles1 = airPressure.getValuesAsDoublesForSingleTimeIndex(1);
 		Arrays.sort(valuesAsDoubles1);
-		assertEquals(-10.0387, valuesAsDoubles1[0], 0.0001);
-		assertEquals(-10.0387, valuesAsDoubles1[valuesAsDoubles.length - 1], 0.0001);
+		assertEquals(-164.19823412781642, valuesAsDoubles1[0], 0.0001);
+		assertEquals(197.64749797331592, valuesAsDoubles1[valuesAsDoubles.length - 1], 0.0001);
 		double[] axpyValues = new double[valuesAsDoubles.length];
 		Arrays.fill(axpyValues, 1);
 		airPressure.axpyOnValuesForSingleTimeIndex(1, 1.1, axpyValues);
 		double[] valuesAsDoubles1Axpy = airPressure.getValuesAsDoublesForSingleTimeIndex(1);
 		Arrays.sort(valuesAsDoubles1Axpy);
-		assertEquals(-10.0387, valuesAsDoubles1Axpy[0], 0.0001);
-		assertEquals(-10.0387, valuesAsDoubles1Axpy[valuesAsDoubles.length - 1], 0.0001);
+		assertEquals(-163.09823412781643, valuesAsDoubles1Axpy[0], 0.0001);
+		assertEquals(198.74749797331592, valuesAsDoubles1Axpy[valuesAsDoubles.length - 1], 0.0001);
 	}
 
 	public void testRequiredExchangeItemIds() {

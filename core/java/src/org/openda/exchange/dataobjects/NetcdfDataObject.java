@@ -292,7 +292,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					if (realizationDimensionIndex == -1) {
 						String exchangeItemId = stationId + '.' + parameterId;
 						if (!requiredExchangeItemIds.isEmpty() && !requiredExchangeItemIds.contains(exchangeItemId)) continue;
-						PointGeometryInfo pointGeometryInfo = pointGeometryInfos[stationIndex];
+						PointGeometryInfo pointGeometryInfo = pointGeometryInfos != null ? pointGeometryInfos[stationIndex] : null;
 						NetcdfScalarTimeSeriesExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
 								stationId, parameterId, pointGeometryInfo, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
 						this.exchangeItems.add(exchangeItem);
