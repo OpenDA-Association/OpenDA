@@ -123,17 +123,55 @@ public class DFlowFMTimeInfoTest extends TestCase {
 		timeend = DFlowFMTimeInfoExchangeItemSec[1].getValuesAsDoubles();
 //      add 1 MJD (86400 seconds) to TStart, add 0.5 MJD (43200 seconds) to TStop
 		timestart[0]++;
-		timeend[0] = timeend[0]+0.5;
+		timeend[0] = timeend[0] + 0.5;
 		DFlowFMTimeInfoExchangeItemSec[0].setValuesAsDoubles(timestart);
 		DFlowFMTimeInfoExchangeItemSec[1].setValuesAsDoubles(timeend);
 		DFlowFMTimeInfo.finish();
 
 		// reread input file:
 		DFlowFMTimeInfo2 = new DFlowFMTimeInfo();
-		DFlowFMTimeInfo2.initialize(testRunDataMDUFileDir,new String[]{"dflowfm_second.mdu"});
+		DFlowFMTimeInfo2.initialize(testRunDataMDUFileDir, new String[]{"dflowfm_second.mdu"});
 		DFlowFMTimeInfoExchangeItem2 = DFlowFMTimeInfo2.getExchangeItems();
-		assertEquals("DFlowFMTimeInfoExchangeItem2[0].getValues(): ",timestart[0],DFlowFMTimeInfoExchangeItem2[0].getValues());
-		assertEquals("DFlowFMTimeInfoExchangeItem2[1].getValues(): ",timeend[0],DFlowFMTimeInfoExchangeItem2[1].getValues());
+		assertEquals("DFlowFMTimeInfoExchangeItem2[0].getValues(): ", timestart[0], DFlowFMTimeInfoExchangeItem2[0].getValues());
+		assertEquals("DFlowFMTimeInfoExchangeItem2[1].getValues(): ", timeend[0], DFlowFMTimeInfoExchangeItem2[1].getValues());
 		DFlowFMTimeInfo2.finish();
+	}
+
+	public void testGivenStartAndStopDatetimeWhenRunThenLoadsCorrectTimes() {
+		File testRunDataMDUFileDir = new File(testData.getTestRunDataDir(), "MDUfile");
+		DFlowFMTimeInfo DFlowFMTimeInfo = new DFlowFMTimeInfo();
+		DFlowFMTimeInfo.initialize(testRunDataMDUFileDir, new String[]{"dflowfm_hour_start_end_datetime.mdu"});
+
+		IExchangeItem[] DFlowFMTimeInfoExchangeItemHour = DFlowFMTimeInfo.getExchangeItems();
+
+		assertEquals("dFlowFMTimeInfoExchangeItem.length: ", 2, DFlowFMTimeInfoExchangeItemHour.length);
+		assertEquals("dFlowFMTimeInfoExchangeItem[0].getId(): ", "start_time", DFlowFMTimeInfoExchangeItemHour[0].getId());
+		assertEquals("dFlowFMTimeInfoExchangeItem[1].getId(): ", "end_time", DFlowFMTimeInfoExchangeItemHour[1].getId());
+		assertEquals("dFlowFMTimeInfoExchangeItem[0].getValues(): ", 48866.0, DFlowFMTimeInfoExchangeItemHour[0].getValues());
+		assertEquals("dFlowFMTimeInfoExchangeItem[1].getValues(): ", 48867.75, DFlowFMTimeInfoExchangeItemHour[1].getValues());
+
+		testRunDataMDUFileDir = new File(testData.getTestRunDataDir(), "MDUfile");
+		DFlowFMTimeInfo = new DFlowFMTimeInfo();
+		DFlowFMTimeInfo.initialize(testRunDataMDUFileDir, new String[]{"dflowfm_minute_start_end_datetime.mdu"});
+
+		DFlowFMTimeInfoExchangeItemHour = DFlowFMTimeInfo.getExchangeItems();
+
+		assertEquals("dFlowFMTimeInfoExchangeItem.length: ", 2, DFlowFMTimeInfoExchangeItemHour.length);
+		assertEquals("dFlowFMTimeInfoExchangeItem[0].getId(): ", "start_time", DFlowFMTimeInfoExchangeItemHour[0].getId());
+		assertEquals("dFlowFMTimeInfoExchangeItem[1].getId(): ", "end_time", DFlowFMTimeInfoExchangeItemHour[1].getId());
+		assertEquals("dFlowFMTimeInfoExchangeItem[0].getValues(): ", 48866.0, DFlowFMTimeInfoExchangeItemHour[0].getValues());
+		assertEquals("dFlowFMTimeInfoExchangeItem[1].getValues(): ", 48867.774305555555, DFlowFMTimeInfoExchangeItemHour[1].getValues());
+
+		testRunDataMDUFileDir = new File(testData.getTestRunDataDir(), "MDUfile");
+		DFlowFMTimeInfo = new DFlowFMTimeInfo();
+		DFlowFMTimeInfo.initialize(testRunDataMDUFileDir, new String[]{"dflowfm_second_start_end_datetime.mdu"});
+
+		DFlowFMTimeInfoExchangeItemHour = DFlowFMTimeInfo.getExchangeItems();
+
+		assertEquals("dFlowFMTimeInfoExchangeItem.length: ", 2, DFlowFMTimeInfoExchangeItemHour.length);
+		assertEquals("dFlowFMTimeInfoExchangeItem[0].getId(): ", "start_time", DFlowFMTimeInfoExchangeItemHour[0].getId());
+		assertEquals("dFlowFMTimeInfoExchangeItem[1].getId(): ", "end_time", DFlowFMTimeInfoExchangeItemHour[1].getId());
+		assertEquals("dFlowFMTimeInfoExchangeItem[0].getValues(): ", 48866.0, DFlowFMTimeInfoExchangeItemHour[0].getValues());
+		assertEquals("dFlowFMTimeInfoExchangeItem[1].getValues(): ", 48867.774826388886, DFlowFMTimeInfoExchangeItemHour[1].getValues());
 	}
 }
