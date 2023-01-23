@@ -39,7 +39,7 @@ public class DFlowFMMduInputFile {
 	 *   key = value
 	 *   
 	 *   [geometry]
-	 *   
+	 *
 	 *   [numerics]
 	 *   [physics]
 	 *   [wind]
@@ -49,9 +49,9 @@ public class DFlowFMMduInputFile {
 	 *
 	 */
 	private File inputFile = null;
-	private Ini ini = new Ini();
+	private final Ini ini = new Ini();
 	private final static String COMMENT_CHAR = "#";
-	private static Map<String, Double> timeMap;
+	private static final Map<String, Double> timeMap;
 
 	static {
 	    timeMap = new HashMap<String, Double>();
@@ -88,7 +88,7 @@ public class DFlowFMMduInputFile {
 		String value = ini.get(sectionName, key);
 		if (value == null) {
 			String error = String.format("The option '[%s] %s' not specified in'" + inputFile.getAbsolutePath() + "'.", sectionName, key);
-			
+
 			throw new RuntimeException(error);
 		}
 		// remove inline comment from value
@@ -97,16 +97,20 @@ public class DFlowFMMduInputFile {
 		//logger.debug("Get [" + sectionName + "] " + key + " = " + value);
 		return value;
 	}
-	
+
+	public boolean contains(String sectionName, String key) {
+		String value = ini.get(sectionName, key);
+		return !(null == value || value.trim().isEmpty());
+	}
+
 	public Double getReferenceDateInMjd() {
 		// get reference date for future use
-		String dateString = this.get("time","RefDate");
-		Double dateInMjd;
+		String dateString = this.get("time", "RefDate");
+		double dateInMjd;
 		try {
-			dateInMjd = TimeUtils.date2Mjd(dateString + "0000" );
-		}
-		catch (Exception e)  {
-			throw new RuntimeException("Error parsing reference date" + this.get("time","RefDate") );
+			dateInMjd = TimeUtils.date2Mjd(dateString + "0000");
+		} catch (Exception e) {
+			throw new RuntimeException("Error parsing reference date" + this.get("time", "RefDate"));
 		}
 		return dateInMjd;
 	}
