@@ -355,7 +355,7 @@ public class WflowModelInstance extends Instance implements IModelInstance {
 				//as id for SubVector/SelectedIndicesExchangeItem, this becomes the locationId in the netcdf file).
 				//Then can remove hacks for writing scalars from NetcdfScalarTimeSeriesExchangeItem and NetcdfDataObject. AK
 			//here assume that stationDimensionIndex is 1.
-			IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, BBUtils.getLocationFromId(id), BBUtils.getParameterFromId(id), -1, -1, Role.Output, new TimeInfo(outputTimes), netcdfOutputDataObject);
+			IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, BBUtils.getLocationFromId(id), BBUtils.getParameterFromId(id), null, -1, -1, Role.Output, new TimeInfo(outputTimes), netcdfOutputDataObject);
 			netcdfOutputDataObject.addExchangeItem(newItem);
 		}
 
