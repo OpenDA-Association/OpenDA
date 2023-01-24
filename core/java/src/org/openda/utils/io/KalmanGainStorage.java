@@ -290,8 +290,7 @@ public class KalmanGainStorage {
 		NetcdfFileWriter netcdfFileWriter = null;
 		try {
 			File file = new File(directoryForStorage, kalmanGainStorageFileName);
-			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf4, file.getAbsolutePath());
-			netcdfFileWriter.setFill(true);
+			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, file.getAbsolutePath());
 			addGlobalAttributes(netcdfFileWriter);
 			Variable timeStampVariable = createTimeStampVariable(netcdfFileWriter);
 			Dimension stationDimension = netcdfFileWriter.addDimension(null, STATION_DIMENSION, observationIds.length);
