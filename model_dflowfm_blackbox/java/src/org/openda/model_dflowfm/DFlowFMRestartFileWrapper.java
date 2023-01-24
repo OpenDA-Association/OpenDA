@@ -342,10 +342,14 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						Array array=Array.factory(DataType.FLOAT,nDims);
 						double[] vals = exchangeItem.getValuesAsDoubles();
 						//Check Dimensions
-						if (nDims[1] != vals.length) {
+						int totalNumberOfValues = 1;
+						for (int i = 1; i < nDims.length; i++) {
+							totalNumberOfValues *= nDims[i];
+						}
+						if (totalNumberOfValues != vals.length) {
 							throw new RuntimeException("Array "+this.ExchangeItems.get(key).shortName+", incorrect length");
 						}
-						int offset = nDims[1]*time_index;
+						int offset = totalNumberOfValues * time_index;
 						for (int i=0; i<vals.length; i++){
 							array.setFloat(i+offset, (float) vals[i]);
 						}
