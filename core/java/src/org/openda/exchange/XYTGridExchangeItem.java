@@ -56,7 +56,7 @@ public class XYTGridExchangeItem extends ArrayExchangeItem{
 		QuantityInfo latitudeQuantityInfo = new QuantityInfo("latitude", "degree_north");
 		QuantityInfo longitudeQuantityInfo = new QuantityInfo("longitude", "degree_east");
 		IArrayGeometryInfo geometry = new ArrayGeometryInfo(y, latitudeValueIndices, latitudeQuantityInfo, 
-				x, longitudeValueIndices, longitudeQuantityInfo, null, null, null);
+				x, longitudeValueIndices, longitudeQuantityInfo, null, null, null, true);
 		this.setGeometryInfo(geometry);
 	}
 	

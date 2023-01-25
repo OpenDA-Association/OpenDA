@@ -20,7 +20,10 @@
 package org.openda.exchange.dataobjects;
 import junit.framework.TestCase;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
+import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
+import org.openda.exchange.PointGeometryInfo;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -41,6 +44,21 @@ public class NetcdfDataObjectTest extends TestCase {
 	public void testReadTimeSeriesEnsemble() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
 		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_timeseries_ensemble.nc", "true", "false"});
+		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
+		assertEquals(3, ensembleIndices.length);
+		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
+		assertEquals(4, ensembleIds.length);
+		IExchangeItem item = dataObject.getDataObjectExchangeItem("27.waterlevel", 1);
+		assertFalse(item == null);
+		double[] itemValues = item.getValuesAsDoubles();
+		assertEquals(3, itemValues.length);
+	}
+
+	public void testObserver1Location() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		dataObject.initialize(this.testRunDataDir, new String[]{"dcsmv5_airpressure_noise_dim-46.nc", "true", "false"});
+		String[] ensembleExchangeItemIds = dataObject.getExchangeItemIDs();
+		System.out.println(ensembleExchangeItemIds);
 		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
 		assertEquals(3, ensembleIndices.length);
 		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
@@ -72,7 +90,12 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertEquals(3, exchangeItemIDs.length);
 		String[] expectedExchangeItemIds = {"24.waterlevel", "26.waterlevel", "27.waterlevel"};
 		for (String expectedExchangeItemId : expectedExchangeItemIds) {
-			assertNotNull(dataObject.getDataObjectExchangeItem(expectedExchangeItemId));
+			IExchangeItem dataObjectExchangeItem = dataObject.getDataObjectExchangeItem(expectedExchangeItemId);
+			assertNotNull(dataObjectExchangeItem);
+			assertTrue(dataObjectExchangeItem instanceof NetcdfScalarTimeSeriesExchangeItem);
+			IGeometryInfo geometryInfo = dataObjectExchangeItem.getGeometryInfo();
+			assertNotNull(geometryInfo);
+			assertTrue(geometryInfo instanceof PointGeometryInfo);
 		}
 	}
 

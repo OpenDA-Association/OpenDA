@@ -206,7 +206,7 @@ public class ExchangeItemTest extends TestCase{
 		double[] xValues = new double[]{1.0,2.0,3.0};
 		double[] yValues = new double[]{10.0,20.0,30.0,40.0};
 		IArrayGeometryInfo geometryInfo = new ArrayGeometryInfo(new Array(yValues), new int[]{1}, null, 
-		     new Array(xValues), new int[]{2}, null, null, null, null);
+		     new Array(xValues), new int[]{2}, null, null, null, null, true);
 		item.setGeometryInfo(geometryInfo);
 		IArrayTimeInfo timeInfo =new TimeInfo("201201010000,201201020000",true);
 		item.setTimeInfo(timeInfo);
