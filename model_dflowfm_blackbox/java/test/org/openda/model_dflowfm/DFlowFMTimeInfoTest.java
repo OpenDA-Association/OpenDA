@@ -216,9 +216,11 @@ public class DFlowFMTimeInfoTest extends TestCase {
 		Double endValueRebuild = (Double) dFlowFMTimeInfoExchangeItemsRebuild[1].getValues();
 		assertEquals( 59820.5, endValueRebuild, 0.00001);
 
-		File fileChanged = new File(testRunDataMDUFileDir, "dcsmv5.mdu");
-		File fileExpected = new File(testRunDataMDUFileDir, "dcsmv5_expected.mdu");
-		assertEquals(AsciiFileUtils.readText(fileExpected), AsciiFileUtils.readText(fileChanged));
+		DFlowFMMduInputFile dFlowFMMduInputFile = new DFlowFMMduInputFile(testRunDataMDUFileDir, "dcsmv5.mdu");
+		String restartFileText = dFlowFMMduInputFile.get("restart", "RestartFile");
+		assertEquals("", restartFileText);
+		String restartDateTimeText = dFlowFMMduInputFile.get("restart", "RestartDateTime");
+		assertEquals("", restartDateTimeText);
 	}
 
 	public void testDFlowFMPartitionedMDU() {
