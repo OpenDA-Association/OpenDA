@@ -176,10 +176,10 @@ public class TimeSeriesNoiseModelTest extends TestCase {
     	assertTrue(series1 instanceof TimeSeries);
     	System.out.println("location1.quantity1 =>"+series1.toString());
     	double[] times=series1.getTimes();
-    	assertEquals("times.length",71, times.length);
+    	assertEquals("times.length",72, times.length);
     	assertEquals("times[70]",55432.98611111117, times[70],0.00001);
     	double[] values=series1.getValuesAsDoubles();
-    	assertEquals("values.length",71, values.length);
+    	assertEquals("values.length",72, values.length);
     	assertEquals("values[70]",0.05608590539600699, values[70],0.00001);
     }
     public void testNoiseForTimeSeries_multistart(){
