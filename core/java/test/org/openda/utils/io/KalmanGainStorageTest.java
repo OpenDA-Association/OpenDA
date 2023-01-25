@@ -76,6 +76,7 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageIn.readKalmanGain();
 
 		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
+		assertEquals(8, kalmanGainColumnsIn.length);
 
 		String[] observationIds = kgStorageIn.getObservationIds();
 		checkKalmanGainContents(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);

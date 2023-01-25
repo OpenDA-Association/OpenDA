@@ -23,6 +23,7 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.core.io.castorgenerated.*;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDimensionIndex;
 import org.openda.interfaces.IResultWriter;
@@ -474,11 +475,7 @@ public class KalmanGainStorage {
 
 	private void addGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
 		netcdfFileWriter.addGroupAttribute(null, new Attribute("title", "Kalman gain data"));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("institution", "OpenDA Association"));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("source", "Written by OpenDA"));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("history", "Created at " + new Date(System.currentTimeMillis())));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("references", "http://www.openda.org"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("Conventions", "CF-1.6"));
+		NetcdfUtils.addGeneralGlobalAttributes(netcdfFileWriter);
 		if (comment != null && !comment.isEmpty()) netcdfFileWriter.addGroupAttribute(null, new Attribute("Comment", comment));
 	}
 
