@@ -21,16 +21,19 @@
 package org.openda.model_dflowfm;
 
 import org.openda.exchange.ExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IVector;
 import org.openda.utils.Vector;
 
 
 public class DFlowFMExchangeItem extends ExchangeItem {
 
-	IVector vector;
+	private final IGeometryInfo geometryInfo;
+	private IVector vector;
 
-	public DFlowFMExchangeItem(String id, String unitId) {
+	public DFlowFMExchangeItem(String id, String unitId, IGeometryInfo geometryInfo) {
 		super(id, id, unitId);
+		this.geometryInfo = geometryInfo;
 	}
 
 	/**
@@ -107,5 +110,9 @@ public class DFlowFMExchangeItem extends ExchangeItem {
 	public void setValuesAsDoubles(double[] values) {
 		vector.setValues(values);
 		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	public IGeometryInfo getGeometryInfo() {
+		return geometryInfo;
 	}
 }
