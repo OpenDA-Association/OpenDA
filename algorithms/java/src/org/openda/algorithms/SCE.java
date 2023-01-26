@@ -29,6 +29,7 @@ import org.openda.utils.Vector;
 import org.openda.utils.io.CalRestartSettings;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -47,7 +48,7 @@ public class SCE extends Instance implements IAlgorithm {
     //config
     public double initStep=1.0; //scaling factor for initial perturbations of parameters
     //workspace
-    private SimulationKwadraticCostFunction J=null;
+    private ICostFunction J=null;
     private SCECoreOptimizer sceOptimizer = null;
 
     private File workingDir=null;
@@ -55,7 +56,7 @@ public class SCE extends Instance implements IAlgorithm {
     private IStochObserver stochObserver;
     private Random randomGenerator = new Random();
 
-    public void initialize(File workingDir, String[] arguments) {
+	public void initialize(File workingDir, String[] arguments) {
         this.workingDir = workingDir;
         this.arguments = arguments;
     }
@@ -77,16 +78,21 @@ public class SCE extends Instance implements IAlgorithm {
         
         // Create costFunction
         Results.putMessage("costFunction@class="+ sceConf.getAsString("costFunction@class","SimulationKwadraticCostFunction"));
-        if(sceConf.getAsString("costFunction@class","SimulationKwadraticCostFunction").contains("SimulationKwadraticCostFunction")){
-            this.J = new SimulationKwadraticCostFunction(stochModelFactory, stochObserver);
-        }else{
-        	throw new RuntimeException("Only implemented for one costfunction yet: org.openda.algorithms.SimulationKwadraticCostFunction");
-        }
+		if (sceConf.getAsString("costFunction@class", "SimulationKwadraticCostFunction").contains("SimulationKwadraticCostFunction")) {
+			this.J = new SimulationKwadraticCostFunction(stochModelFactory, stochObserver);
+		} else if (sceConf.getAsString("costFunction@class", "RMSECostFunction").contains("RMSECostFunction")) {
+			this.J = new RMSECostFunction(stochModelFactory, stochObserver);
+		} else {
+			throw new RuntimeException("Only implemented for two cost functions: org.openda.algorithms.SimulationKwadraticCostFunction & org.openda.algorithms.RMSECostFunction");
+		}
         // options for costFunctions
-        J.addBackgroundTerm = sceConf.getAsBoolean("costFunction@weakParameterConstraint",false);
-        Results.putMessage("costFunction@weakParameterConstraint="+J.addBackgroundTerm);
-        J.factor = sceConf.getAsDouble("costFunction@factor",J.factor);
-        Results.putMessage("costFunction@factor="+J.factor);
+		if (J instanceof SimulationKwadraticCostFunction) {
+			SimulationKwadraticCostFunction simtemp = (SimulationKwadraticCostFunction) J;
+			simtemp.addBackgroundTerm = sceConf.getAsBoolean("costFunction@weakParameterConstraint", false);
+			Results.putMessage("costFunction@weakParameterConstraint=" + simtemp.addBackgroundTerm);
+			simtemp.factor = sceConf.getAsDouble("costFunction@factor", simtemp.factor);
+			Results.putMessage("costFunction@factor=" + simtemp.factor);
+		}
 
         // Initialize core optimizer
         this.sceOptimizer = new SCECoreOptimizer(J);
@@ -131,19 +137,39 @@ public class SCE extends Instance implements IAlgorithm {
 			throw new RuntimeException(this.getClass().getName()+": the size of parameterRange max is not equal to the number of calibration parameters.");
 		}
 
-        // read number of complexes
-        this.sceOptimizer.nComplexes = sceConf.getAsInt("outerLoop@nComplex",this.sceOptimizer.nComplexes);
-        Results.putMessage("outerLoop@nComplex="+this.sceOptimizer.nComplexes);
+		int numberOfComplexes = sceConf.getAsInt("numberOfComplexes", Integer.MIN_VALUE);
+		this.sceOptimizer.useOuterInnerLoopConfig = numberOfComplexes == Integer.MIN_VALUE;
+		if (this.sceOptimizer.useOuterInnerLoopConfig) {
 
-        // set stopping thresholds:
-        this.sceOptimizer.maxitSCE = sceConf.getAsInt("outerLoop@maxIterations", sceOptimizer.maxitSCE);
-        Results.putMessage("outerLoop@maxIterations="+this.sceOptimizer.maxitSCE);
-        this.sceOptimizer.absTolSCE = sceConf.getAsDouble("outerLoop@absTolerance",this.sceOptimizer.absTolSCE);
-        Results.putMessage("outerLoop@absTolerance="+this.sceOptimizer.absTolSCE);
-        this.sceOptimizer.relTolSCE = sceConf.getAsDouble("outerLoop@relTolerance",this.sceOptimizer.relTolSCE);
-        Results.putMessage("outerLoop@relTolerance="+this.sceOptimizer.relTolSCE);
-        this.sceOptimizer.numInnerLoop = sceConf.getAsInt("innerLoop@numIteration",this.sceOptimizer.numInnerLoop);
-        Results.putMessage("innerLoop@numIteration="+this.sceOptimizer.numInnerLoop);
+			// read number of complexes
+			this.sceOptimizer.nComplexes = sceConf.getAsInt("outerLoop@nComplex", this.sceOptimizer.nComplexes);
+			Results.putMessage("outerLoop@nComplex=" + this.sceOptimizer.nComplexes);
+
+			// set stopping thresholds:
+			this.sceOptimizer.maxitSCE = sceConf.getAsInt("outerLoop@maxIterations", sceOptimizer.maxitSCE);
+			Results.putMessage("outerLoop@maxIterations=" + this.sceOptimizer.maxitSCE);
+			this.sceOptimizer.absTolSCE = sceConf.getAsDouble("outerLoop@absTolerance", this.sceOptimizer.absTolSCE);
+			Results.putMessage("outerLoop@absTolerance=" + this.sceOptimizer.absTolSCE);
+			this.sceOptimizer.relTolSCE = sceConf.getAsDouble("outerLoop@relTolerance", this.sceOptimizer.relTolSCE);
+			Results.putMessage("outerLoop@relTolerance=" + this.sceOptimizer.relTolSCE);
+			this.sceOptimizer.numInnerLoop = sceConf.getAsInt("innerLoop@numIteration", this.sceOptimizer.numInnerLoop);
+			Results.putMessage("innerLoop@numIteration=" + this.sceOptimizer.numInnerLoop);
+		} else {
+			this.sceOptimizer.nComplexes = numberOfComplexes;
+			Results.putMessage(String.format("Number of complexes: %s", numberOfComplexes));
+			this.sceOptimizer.maxIterationsForMinImprovement = sceConf.getAsInt("shufflingLoopStoppingCriteria@maxIterationsForMinImprovement", Integer.MIN_VALUE);
+			Results.putMessage(String.format("Number of max iterations for min improvement: %s", this.sceOptimizer.maxIterationsForMinImprovement));
+			this.sceOptimizer.minImprovementPercentage = sceConf.getAsDouble("shufflingLoopStoppingCriteria@minImprovementPercentage", Double.NEGATIVE_INFINITY);
+			Results.putMessage(String.format("Min improvement percentage: %s", this.sceOptimizer.minImprovementPercentage));
+			this.sceOptimizer.numInnerLoop = sceConf.getAsInt("evolutionStepsPerComplex", 2 * this.sceOptimizer.nparam + 1);
+			Results.putMessage(String.format("Evolution steps per complex: %s", this.sceOptimizer.numInnerLoop));
+			this.sceOptimizer.nPointsComplex = sceConf.getAsInt("pointsInEachComplex", this.sceOptimizer.nPointsComplex);
+			Results.putMessage(String.format("Number of points per complex: %s", this.sceOptimizer.nPointsComplex));
+			this.sceOptimizer.nPointsSimplex = sceConf.getAsInt("pointsInEachSimplex", this.sceOptimizer.nPointsSimplex);
+			Results.putMessage(String.format("Number of points per simplex: %s", this.sceOptimizer.nPointsSimplex));
+			this.sceOptimizer.previousCostsForMaxIterationsBuffer = new double[sceOptimizer.maxIterationsForMinImprovement];
+			Arrays.fill(sceOptimizer.previousCostsForMaxIterationsBuffer, Double.POSITIVE_INFINITY);
+		}
         // additional stopCriteria
         ConfigTree parts[] = sceConf.getSubTrees("stopCriteria/stopCriterion");
         if (parts != null) {
@@ -194,7 +220,13 @@ public class SCE extends Instance implements IAlgorithm {
 
         // Initialize core optimizer
         this.sceOptimizer.initialize(InitialPopulation);
-        this.bestEstimate = this.J.getBestModel();
+		if (J instanceof SimulationKwadraticCostFunction) {
+			SimulationKwadraticCostFunction simtemp = (SimulationKwadraticCostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		} else if (J instanceof RMSECostFunction) {
+			RMSECostFunction simtemp = (RMSECostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		}
 		stochModelInstance.finish();
 	}
 
@@ -219,7 +251,14 @@ public class SCE extends Instance implements IAlgorithm {
 	 */
 	public void next(){
 		this.sceOptimizer.next();
-        this.bestEstimate = this.J.getBestModel();
+		if (J instanceof SimulationKwadraticCostFunction) {
+			SimulationKwadraticCostFunction simtemp = (SimulationKwadraticCostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		} else if (J instanceof RMSECostFunction) {
+			RMSECostFunction simtemp = (RMSECostFunction) J;
+			this.bestEstimate = simtemp.getBestModel();
+		}
+
 		try {
 			if (!this.hasNext() && this.bestEstimate != null && this.bestEstimate.getModelRunDir() != null) {
 				Results.putMessage("Optimal results are in model run dir "+ this.bestEstimate.getModelRunDir().getAbsolutePath());

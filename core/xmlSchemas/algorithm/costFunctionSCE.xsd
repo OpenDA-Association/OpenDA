@@ -9,6 +9,7 @@
 			<xs:simpleType>
 				<xs:restriction base="xs:string">
 					<xs:enumeration value="org.openda.algorithms.SimulationKwadraticCostFunction"/>
+					<xs:enumeration value="org.openda.algorithms.RMSECostFunction"/>
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:attribute>
