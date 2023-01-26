@@ -482,7 +482,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 					gainStorage.setMaxKeepVectorInXMLSize(this.gainStorageMaxXmlStore);
 					gainStorage.setStorageDirPrefix(this.gainStorageDirPrefix);
 
-					gainStorage.setKalmanGainStorageXmlFileName(this.gainStorageXmlFileName);
+					gainStorage.setKalmanGainStorageFileName(this.gainStorageFileName);
 					gainStorage.setColumnFileType(this.gainStorageFileType);
 					gainStorage.setComment("algorithm = "+this.getClass().getSimpleName()+"\n"
 							+"model = "+this.mainModel.getClass().getSimpleName()+"\n"
@@ -622,7 +622,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 
 				// Read and load K into memory
 				KalmanGainStorage gainStorage = new KalmanGainStorage(kgStorage);
-				gainStorage.setKalmanGainStorageXmlFileName("kalmanGainStorage.xml");
+				gainStorage.setKalmanGainStorageFileName("kalmanGainStorage.xml");
 				gainStorage.readKalmanGain(this.getCurrentState());
 				String[] obsIds = gainStorage.getObservationIds();
 				double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();

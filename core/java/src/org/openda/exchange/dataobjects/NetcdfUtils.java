@@ -1607,11 +1607,7 @@ public class NetcdfUtils {
 
 	public static void addGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
 		netcdfFileWriter.addGroupAttribute(null,new Attribute("title", "Netcdf data"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("institution", "Deltares"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("source", "written by OpenDA"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("history", "Created at " + new Date(System.currentTimeMillis()) ));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("references", "http://www.openda.org"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("Conventions", "CF-1.6"));
+		addGeneralGlobalAttributes(netcdfFileWriter);
 	}
 
 	public static double[] addMissingValuesForNonActiveGridCells(IGeometryInfo geometryInfo, double[] values) {
@@ -1711,5 +1707,13 @@ public class NetcdfUtils {
 		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(UNITS_ATTRIBUTE_NAME, "1"));
 
 		return realizationDimension;
+	}
+
+	public static void addGeneralGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
+		netcdfFileWriter.addGroupAttribute(null, new Attribute("institution", "OpenDA Association"));
+		netcdfFileWriter.addGroupAttribute(null, new Attribute("source", "Written by OpenDA"));
+		netcdfFileWriter.addGroupAttribute(null, new Attribute("history", "Created at " + new Date(System.currentTimeMillis())));
+		netcdfFileWriter.addGroupAttribute(null, new Attribute("references", "http://www.openda.org"));
+		netcdfFileWriter.addGroupAttribute(null,new Attribute("Conventions", "CF-1.6"));
 	}
 }
