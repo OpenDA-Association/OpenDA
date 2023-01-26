@@ -294,7 +294,7 @@ public class MapsNoiseModelInstance extends Instance implements IStochModelInsta
 			QuantityInfo latitudeQuantityInfo = null; //TODO
 			QuantityInfo longitudeQuantityInfo = null;
 			ArrayGeometryInfo tempG = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, 
-					   longitudeArray, longitudeValueIndices, longitudeQuantityInfo,null,null,null);
+					   longitudeArray, longitudeValueIndices, longitudeQuantityInfo,null,null,null, coordsType == CoordinatesType.WGS84);
 			tempItem.setGeometryInfo(tempG);
 			
 			// initialValue

@@ -1311,10 +1311,13 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 		//int k=0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
-			IExchangeItem prevExchangeItem = getExchangeItem(vectorConfig.getId());
+			String id = vectorConfig.getId();
+			IExchangeItem prevExchangeItem = getExchangeItem(id);
 			if (prevExchangeItem != null) {
 
-				double[] distancesForExchangeItem = prevExchangeItem.getGeometryInfo().distanceToPoint(xObs, yObs, zObs).getValuesAsDoubles();
+				IGeometryInfo geometryInfo = prevExchangeItem.getGeometryInfo();
+				if (geometryInfo == null) throw new RuntimeException(String.format("ExchangeItem with id %s does not have geometry info which is needed for localization", id));
+				double[] distancesForExchangeItem = geometryInfo.distanceToPoint(xObs, yObs, zObs).getValuesAsDoubles();
 				double[] weightsForExchangeItem = new double[distancesForExchangeItem.length];
 
 				for (int xy = 0; xy < distancesForExchangeItem.length; xy++) {
