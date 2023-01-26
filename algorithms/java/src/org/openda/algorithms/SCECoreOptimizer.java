@@ -179,7 +179,7 @@ public class SCECoreOptimizer {
 
 	private int getNumberOfParsBelow1012(double[] fCurrent, int numberOfParams) {
 		for (int i = numberOfParams; i >= 0; i--) {
-			if (!(fCurrent[i] > 1E12)) return i;
+			if (fCurrent[i] <= 1E12) return i;
 		}
 		return 0;
 	}
