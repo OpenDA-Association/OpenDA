@@ -438,12 +438,12 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		double[] zCoords = heightCoordinateValues.getValuesAsDoubles();
 
 		Array arrayDistances = new Array(xCoords.length*yCoords.length*zCoords.length);
-		if (Double.isNaN(z)) z = 0;
+		double nonNanZ = Double.isNaN(z) ? 0 : z;
 		int k=0;
 		for (int lay=0; lay < zCoords.length;lay++){
 			for (int yInd = 0; yInd < yCoords.length; yInd++) {
 				for (int xInd = 0; xInd < xCoords.length; xInd++) {
-					double distance = isWGS84 ? distanceInMetersFromLatLon(y, x, yCoords[yInd], xCoords[xInd]) : Math.sqrt((x - xCoords[xInd]) * (x - xCoords[xInd]) + (y - yCoords[yInd]) * (y - yCoords[yInd]) + (z - zCoords[lay]) * (z - zCoords[lay]));
+					double distance = isWGS84 ? distanceInMetersFromLatLon(y, x, yCoords[yInd], xCoords[xInd]) : Math.sqrt((x - xCoords[xInd]) * (x - xCoords[xInd]) + (y - yCoords[yInd]) * (y - yCoords[yInd]) + (nonNanZ - zCoords[lay]) * (nonNanZ - zCoords[lay]));
 					arrayDistances.setValueAsDouble(k, distance);
 					k++;
 				}
