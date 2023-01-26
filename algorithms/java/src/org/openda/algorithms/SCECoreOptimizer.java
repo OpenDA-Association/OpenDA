@@ -159,14 +159,9 @@ public class SCECoreOptimizer {
         int[] iSort = this.sortedIndex(this.fCurrent);
         this.fCurrent = this.applyIndexToDoubles(this.fCurrent,iSort);
         this.pCurrent = this.applyIndexToVectors(this.pCurrent,iSort);
-		int nparamBelow1012 = this.nparam;
-		for (int i = this.nparam; i >= 0; i--) {
-			if (fCurrent[i] > 1E12) continue;
-			nparamBelow1012 = i;
-			break;
-		}
+		int numberOfParsBelow1012 = getNumberOfParsBelow1012(fCurrent, this.nparam);
 		if (useOuterInnerLoopConfig) {
-			double diff = this.fCurrent[nparamBelow1012] - this.fCurrent[0]; // Cost of worst member - Cost of best member.
+			double diff = this.fCurrent[numberOfParsBelow1012] - this.fCurrent[0]; // Cost of worst member - Cost of best member.
 			Results.putMessage("costs " + new Vector(fCurrent) + "costs in simplex after sorting");
 			boolean maxItReached = imain < this.maxitSCE;
 			Results.putMessage("imain < this.maxitSCE " + imain + '<' + this.maxitSCE + " = " + maxItReached);
@@ -180,6 +175,14 @@ public class SCECoreOptimizer {
 		} else {
 			moreToDo = isMoreToDoBasedOnShufflingLoopConfig();
 		}
+	}
+
+	private int getNumberOfParsBelow1012(double[] fCurrent, int numberOfParams) {
+		for (int i = numberOfParams; i >= 0; i--) {
+			if (fCurrent[i] > 1E12) continue;
+			return i;
+		}
+		return 0;
 	}
 
 	private boolean isMoreToDoBasedOnShufflingLoopConfig() {
@@ -420,13 +423,8 @@ public class SCECoreOptimizer {
             sortPopulationByCost();
 
             // Compute new best-worst difference and put message on stopping criteria:
-			int nparamBelow1012 = this.nparam;
-			for (int i = this.nparam; i >= 0; i--) {
-				if (costs[i] > 1E12) continue;
-				nparamBelow1012 = i;
-				break;
-			}
-            double diff=(costs[nparamBelow1012]-costs[0]);
+			int numberOfParsBelow1012 = getNumberOfParsBelow1012(costs, this.nparam);
+			double diff = (costs[numberOfParsBelow1012] - costs[0]);
             double relDiff = diff/costs[0];
             if (useOuterInnerLoopConfig) {
 				Results.putMessage("costs" + new Vector(costs) + "costs in simplex");
