@@ -10,3 +10,9 @@ Makefile
 autom4te.cache
 config.log
 config.status
+*.u2d
+*.suo
+*.sdf
+*.vcxproj.user
+**/Debug
+**/Release
