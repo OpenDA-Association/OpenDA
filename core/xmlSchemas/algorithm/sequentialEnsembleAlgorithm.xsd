@@ -79,6 +79,11 @@
 						<xs:enumeration value="automatic"/>
 						<xs:enumeration value="xml"/>
 						<xs:enumeration value="netcdf"/>
+						<xs:enumeration value="netcdf_cf">
+              <xs:annotation>
+                <xs:documentation>Kalman gain will be saved in netcdf format according to the cf conventions. This does not use an extra xml file, all information will be stored in the netcdf file itself</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>

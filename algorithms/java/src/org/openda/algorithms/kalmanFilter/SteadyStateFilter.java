@@ -154,7 +154,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
         steadyStateTimeCounter++;
 		KalmanGainStorage gainStorage = new KalmanGainStorage(this.workingDir, this.gainTimeMjd[0]);
 		gainStorage.setStorageDirPrefix(this.gainDirPrefix);
-		gainStorage.setKalmanGainStorageXmlFileName(this.gainFileName);
+		gainStorage.setKalmanGainStorageFileName(this.gainFileName);
+		if (gainFileName.endsWith(".nc")) gainStorage.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
 		gainStorage.readKalmanGain( this.getCurrentState());
 		String[] obsIds = gainStorage.getObservationIds();
 		double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();
@@ -239,7 +240,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
         if (this.readGainTime!=null){
             KalmanGainStorage gainStorage = new KalmanGainStorage(this.workingDir, this.gainTimeMjd[steadyStateTimeCounter]);
             gainStorage.setStorageDirPrefix(this.gainDirPrefix);
-            gainStorage.setKalmanGainStorageXmlFileName(this.gainFileName);
+            gainStorage.setKalmanGainStorageFileName(this.gainFileName);
             gainStorage.readKalmanGain(this.getCurrentState());
             String[] obsIds = gainStorage.getObservationIds();
             double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();
