@@ -24,6 +24,9 @@ public class ExternalFileModelFactoryTest extends TestCase {
 
 		IVector parameters = modelInstance.getParameters();
 		assertEquals(3, parameters.getSize());
+		assertEquals(10.0, parameters.getValue(0));
+		assertEquals(20.0, parameters.getValue(1));
+		assertEquals(30.0, parameters.getValue(2));
 	}
 
 }
