@@ -10,10 +10,9 @@ import java.io.File;
 public class ExternalFileModelFactoryTest extends TestCase {
 
 	private File testRunDataDir;
-	private OpenDaTestSupport testData;
 
 	protected void setUp() {
-		testData = new OpenDaTestSupport(ExternalFileModelFactoryTest.class, "model_external_file");
+		OpenDaTestSupport testData = new OpenDaTestSupport(ExternalFileModelFactoryTest.class, "model_external_file");
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
