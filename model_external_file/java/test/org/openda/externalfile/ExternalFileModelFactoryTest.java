@@ -20,9 +20,7 @@ public class ExternalFileModelFactoryTest extends TestCase {
 
 	public void testReadConfig() {
 		ExternalFileModelFactory externalModelStochModelFactory = new ExternalFileModelFactory();
-		File testDataDir = testRunDataDir;
-		//File workDir = new File(testDataDir, "exchangeDir");
-		externalModelStochModelFactory.initialize(testDataDir, new String[]{"ExternalFileModelFactory.xml"});
+		externalModelStochModelFactory.initialize(testRunDataDir, new String[]{"ExternalFileModelFactory.xml"});
 		ExternalFileModelInstance modelInstance = externalModelStochModelFactory.getInstance(new String[0], IStochModelFactory.OutputLevel.Suppress);
 
 		IVector parameters = modelInstance.getParameters();

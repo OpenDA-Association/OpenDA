@@ -185,17 +185,44 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 
 	public void compute(ITime targetTime) {
 
-		if (modelParFile.exists()) {
-			boolean delete = modelParFile.delete();
-			while (!delete) {
-				delete = modelParFile.delete();
-				try {
-					Thread.sleep(10L);
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e.getMessage(), e);
-				}
+		if (modelParFile.exists()) deleteModelParFile();
+
+		writeNewParFile(modelParFile);
+
+		createExternalSigFile();
+
+		deleteOpenDASigFile();
+
+		this.modelResults = getModelResults();
+	}
+
+	private void deleteOpenDASigFile() {
+		File openDASigFile = new File(exchangeDir, "OpenDACanRun.sig");
+		while (!openDASigFile.exists()) {
+			try {
+				Thread.sleep(10L);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
+		if (!openDASigFile.exists()) return;
+		boolean delete = openDASigFile.delete();
+		while (!delete) {
+			delete = openDASigFile.delete();
+		}
+	}
+
+	private void createExternalSigFile() {
+		File externalSigFile = new File(exchangeDir, "FewsCanRun.sig");
+		try {
+			boolean newFileCreated = externalSigFile.createNewFile();
+			assert newFileCreated;
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private void writeNewParFile(File modelParFile) {
 		try {
 			FileWriter writer = new FileWriter(modelParFile, false);
 			for (int i = 0; i < parameterVector.getSize(); i++) {
@@ -207,31 +234,18 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
+	}
 
-		// Tdod make configurable
-		File externalSigFile = new File(exchangeDir, "FewsCanRun.sig");
-		try {
-			boolean newFile = externalSigFile.createNewFile();
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-
-		File openDASigFile = new File(exchangeDir, "OpenDACanRun.sig");
-		while (!openDASigFile.exists()) {
+	private void deleteModelParFile() {
+		boolean delete = modelParFile.delete();
+		while (!delete) {
+			delete = modelParFile.delete();
 			try {
 				Thread.sleep(10L);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
-		if (openDASigFile.exists()) {
-			boolean delete = openDASigFile.delete();
-			while (!delete) {
-				delete = openDASigFile.delete();
-			}
-		}
-
-		this.modelResults = getModelResults();
 	}
 
 	private Vector getModelResults() {
@@ -352,17 +366,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	void sendFinalParameters() {
-		try {
-			FileWriter writer = new FileWriter(modelParFinalFile, false);
-			for (int i = 0; i < parameterVector.getSize(); i++) {
-				String value = String.valueOf(parameterVector.getValue(i));
-				writer.write(value);
-				writer.write("\n");
-			}
-			writer.close();
-		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
+		writeNewParFile(modelParFinalFile);
 
 	}
 }
