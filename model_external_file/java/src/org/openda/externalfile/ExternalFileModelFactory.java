@@ -14,12 +14,8 @@ public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonCons
 	private ExternalFileModelFactoryConfigReader configReader;
 	private File exchangeDir;
 
-	public ExternalFileModelFactory() {
-		
-	}
 
-
-	//@Override
+	@Override
 	public ExternalFileModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
 		return new ExternalFileModelInstance(configReader.getModelParametersFile(), configReader.getModelResultsFile(), exchangeDir);
 	}
@@ -35,9 +31,9 @@ public class ExternalFileModelFactory implements IModelFactory, ITimeHorizonCons
 
 	}
 
-	//@Override
+	@Override
 	public void finish() {
-
+		// not needed
 	}
 
 	@Override

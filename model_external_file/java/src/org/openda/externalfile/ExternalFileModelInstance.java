@@ -156,7 +156,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-
+		// not needed
 	}
 
 	public IVector getStateScaling() {
@@ -325,7 +325,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	}
 
 	public void finish() {
-
+		// not needed
 	}
 
 	public void initialize(File workingDir, String[] arguments) {
@@ -367,6 +367,5 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 
 	void sendFinalParameters() {
 		writeNewParFile(modelParFinalFile);
-
 	}
 }
