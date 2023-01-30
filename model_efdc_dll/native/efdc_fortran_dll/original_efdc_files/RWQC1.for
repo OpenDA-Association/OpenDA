@@ -2082,9 +2082,9 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
           ENDDO          
         ENDIF
 ! *** C21 WQ3DWC2.INP
-!        CALL SEEK('C21')  
         IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
-        IF(ISSKIP .EQ. 0) READ(1,*)  
+        IF(ISSKIP .EQ. 0) READ(1,*)
+        CALL SEEK('C21')
         write(2,*) 'C21'
         DO nsp=1,NXSP
           READ(1,*) NWQCSRX(nsp)

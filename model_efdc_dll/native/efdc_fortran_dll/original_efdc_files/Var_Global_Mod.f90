@@ -3925,4 +3925,5 @@
       REAL,ALLOCATABLE::WQSALAX(:)
       REAL,ALLOCATABLE::WQSALBX(:)
 !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      INTEGER :: ITIMING,IBIN_TYPE
       END
