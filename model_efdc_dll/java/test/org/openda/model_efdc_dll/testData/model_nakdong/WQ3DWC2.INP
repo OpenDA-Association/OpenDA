@@ -344,6 +344,7 @@ C  NUM_CELL  :   Cyanobactetia cell number (CELL/m2)
 C
 C20 MM     NUM_CELL
 C---------------------------------------------------------------
+
 C21 CWQSRX##.INP (C30 in WQ3DWC.INP) 
 C
 C CONCENTRATION TIME SERIES DATA FOR OPEN BOUNDARIES $$
