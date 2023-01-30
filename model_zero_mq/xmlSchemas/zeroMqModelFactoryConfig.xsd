@@ -43,7 +43,9 @@
           <xs:documentation>Julia WFlow port number.</xs:documentation>
         </xs:annotation>
       </xs:element>
-			<xs:element name="zeroMqModelStateExchangeItems" type="openda:ZeroMqModelStateExchangeItemXML"/>
+      <xs:element name="modelForcings" type="openda:ZeroMqModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="spaceVaryingLimits" type="openda:ZeroMqModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="zeroMqModelStateExchangeItems" type="openda:ZeroMqModelStateExchangeItemXML"/>
 			<xs:element name="missingValue" type="xs:double" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>NaN or a valid double value, indicating a missing value in the model data. Default: NaN</xs:documentation>
@@ -56,6 +58,15 @@
       <xs:element name="argument" block="extension" type="xs:string" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
           <xs:documentation>Julia WFlow start up argument.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ZeroMqModelForcingsConfigXML">
+    <xs:sequence>
+      <xs:element name="dataObject" type="openda:ForcingDataObjectXML">
+        <xs:annotation>
+          <xs:documentation>The data object containing the forcing data.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
@@ -101,4 +112,23 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+  <xs:complexType name="ForcingDataObjectXML">
+    <xs:sequence>
+      <xs:element name="className" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The openda class name of the forcing's data object.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="file" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of the forcing's data file.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Input argument(s) for the corresponding openda:class</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
 </xs:schema>

@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.openda.blackbox.config.BBUtils;
+import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.DoublesExchangeItem;
+import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
+import org.openda.exchange.TimeInfo;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Instance;
@@ -11,8 +16,7 @@ import org.openda.utils.Time;
 import org.zeromq.ZMQ;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ZeroMqModelInstance extends Instance implements IModelInstance, IModelExtensions, IOutputModeSetter {
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -40,10 +44,18 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String FUNCTION_SAVE_STATE = "save_state";
 	private static final String SAVE_STATE_PATH = "path";
 	private static final String FUNCTION_GET_VAR_ITEM_SIZE = "get_var_itemsize";
+	private static final String FUNCTION_GET_VAR_GRID = "get_var_grid";
+	private static final String FUNCTION_GET_GRID_X = "get_grid_x";
+	private static final String FUNCTION_GET_GRID_Y = "get_grid_y";
+	private static final String RETURN_GRID = "grid";
+	private static final String RETURN_GRID_X = "grid_x";
+	private static final String RETURN_GRID_Y = "grid_y";
 	private static final String VAR_ITEM_ID = "name";
 	private static final String RETURN_ITEM_SIZE = "var_itemsize";
 	private static final String FUNCTION_GET_VAR_ITEM_TYPE = "get_var_type";
+	private static final String FUNCTION_GET_VAR_UNITS = "get_var_units";
 	private static final String RETURN_ITEM_TYPE = "var_type";
+	private static final String RETURN_VAR_UNITS = "var_units";
 	private static final String FUNCTION_GET_VALUE = "get_value";
 	private static final String RETURN_VALUE = "value";
 	private static final String FUNCTION_SET_VALUE = "set_value";
@@ -55,15 +67,148 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String REPLY_ERROR_MESSAGE = "error";
 	private static final String FUNCTION_FINISH_MODEL = "finish";
 	private final ZMQ.Socket socket;
+	private final File modelRunDir;
 	private final String modelConfigFile;
+	private final int modelInstanceNumber;
 
-	public ZeroMqModelInstance(ZMQ.Socket socket, String modelConfigFile) {
-		// initialize model
-		// create exchange items
+	private final Map<String, IExchangeItem> exchangeItems;
+	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
+	private final Map<String, IExchangeItem> forcingExchangeItems;
+	private final Map<String, IExchangeItem> staticLimitExchangeItems;
+	private final LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
+
+	private boolean inOutputMode = false;
+
+	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos) {
+		this.modelInstanceNumber = modelInstanceNumber;
 
 		//initializeModel(socket, new File("../../test/sbm_config.toml"));
 		this.socket = socket;
+		this.modelRunDir = modelRunDir;
 		this.modelConfigFile = modelConfigFile;
+
+		exchangeItems = createExchangeItems(missingValue);
+
+		staticLimitExchangeItems = createForcingExchangeItems(staticLimitConfiguration);
+		modelStateExchangeItems = new LinkedHashMap<>();
+		for (ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
+			String stateId = modelStateExchangeItemInfo.getStateId();
+
+			Double[] upperLimits = modelStateExchangeItemInfo.getModelStateExchangeItemUpperLimits();
+			Double[] lowerLimits = modelStateExchangeItemInfo.getModelStateExchangeItemLowerLimits();
+			String[] lowerLimitExchangeItemIds = modelStateExchangeItemInfo.getLowerLimitExchangeItemIds();
+			String[] upperLimitExchangeItemIds = modelStateExchangeItemInfo.getUpperLimitExchangeItemIds();
+			assert upperLimits.length == lowerLimitExchangeItemIds.length;
+			assert upperLimits.length == upperLimitExchangeItemIds.length;
+
+			double[][] upperLimits2D = getLimits2D(upperLimits, upperLimitExchangeItemIds);
+
+			double[][] lowerLimits2D = getLimits2D(lowerLimits, lowerLimitExchangeItemIds);
+
+			modelStateExchangeItems.put(stateId, new ZeroMqStateExchangeItem(modelStateExchangeItemInfo.getModelStateExchangeItemIds(), lowerLimits2D, upperLimits2D, this, missingValue));
+		}
+
+		forcingExchangeItems = createForcingExchangeItems(forcingConfiguration);
+	}
+	private Map<String, IExchangeItem> createForcingExchangeItems(ArrayList<ZeroMqModelForcingConfig> bmiModelForcingConfigs) {
+		Map<String, IExchangeItem> result = new HashMap<>();
+
+		for (ZeroMqModelForcingConfig forcingConfig : bmiModelForcingConfigs) {
+			File forcingFile = new File(this.modelRunDir, forcingConfig.getDataObjectFileName());
+			if (!forcingFile.exists()) {
+				throw new RuntimeException(getClass().getSimpleName() + ": Cannot find forcing file " + forcingFile.getAbsolutePath() + " configured in bmiModelFactory config xml file.");
+			}
+
+			IDataObject dataObject = BBUtils.createDataObject(this.modelRunDir, forcingConfig.getClassName(), forcingConfig.getDataObjectFileName(), forcingConfig.getArguments());
+			for (String ExchangeItemId : dataObject.getExchangeItemIDs()) {
+				result.put(ExchangeItemId, dataObject.getDataObjectExchangeItem(ExchangeItemId));
+			}
+			if (dataObject instanceof IEnsembleDataObject) {
+				IEnsembleDataObject ensembleDataObject = (IEnsembleDataObject) dataObject;
+				String[] ensembleExchangeItemIds = ensembleDataObject.getEnsembleExchangeItemIds();
+				for (String exchangeItemId : ensembleExchangeItemIds) {
+					IExchangeItem ensembleExchangeItem = ensembleDataObject.getDataObjectExchangeItem(exchangeItemId, this.modelInstanceNumber);
+					result.put(ensembleExchangeItem.getId(), ensembleExchangeItem);
+				}
+			}
+		}
+
+		return result;
+	}
+
+
+	private Map<String, IExchangeItem> createExchangeItems(double modelMissingValue) {
+		Set<String> inoutVars = new HashSet<>();
+
+		// first fill sets with input and output variables
+		Set<String> inputVars = new HashSet<>(getInputVarNames());
+		Set<String> outputVars = new HashSet<>(getOutputVarNames());
+
+		// then put duplicates in inout variables.
+		// Note: Loop over copy of set to prevent iterator exception
+		for (String var : inputVars.toArray(new String[0])) {
+			if (outputVars.contains(var)) {
+				inputVars.remove(var);
+				outputVars.remove(var);
+				inoutVars.add(var);
+			}
+		}
+
+		Map<String, IExchangeItem> result = new HashMap<>();
+
+		for (String variable : inputVars) {
+			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, IExchangeItem.Role.Input, this, modelMissingValue);
+			result.put(variable, item);
+		}
+
+		for (String variable : outputVars) {
+			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, IExchangeItem.Role.Output, this, modelMissingValue);
+			result.put(variable, item);
+		}
+
+		for (String variable : inoutVars) {
+			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, IExchangeItem.Role.InOut, this, modelMissingValue);
+			result.put(variable, item);
+		}
+		return result;
+	}
+
+	// Buffer for output ExchangeItems in order to facilitate asynchronous filtering.
+	private Map<String, DoublesExchangeItem> createBufferedExchangeItems(ITime[] bufferTimes) {
+		Map<String, DoublesExchangeItem> result = new HashMap<>();
+
+		// ITime has no double[] getTimes?
+		double[] selectedTimes = new double[bufferTimes.length];
+		for (int i = 0; i < bufferTimes.length; i++) {
+			selectedTimes[i] = bufferTimes[i].getMJD();
+		}
+
+		for (Map.Entry<String, IExchangeItem> entry : this.exchangeItems.entrySet()) {
+			int cellCount = ((ArrayGeometryInfo) entry.getValue().getGeometryInfo()).getCellCount();
+			int[] dimensions = new int[]{bufferTimes.length, cellCount};
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), IExchangeItem.Role.Output,
+				new double[cellCount * bufferTimes.length], dimensions);
+			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
+			result.put(entry.getKey(), bufferExchangeItem);
+		}
+
+		return result;
+	}
+
+	private double[][] getLimits2D(Double[] limits, String[] lowerLimitExchangeItemIds) {
+		double[][] lowerLimits2D = new double[limits.length][];
+		for (int i = 0; i < lowerLimitExchangeItemIds.length; i++) {
+			String lowerLimitExchangeItemId = lowerLimitExchangeItemIds[i];
+			if (lowerLimitExchangeItemId == null) {
+				lowerLimits2D[i] = new double[]{limits[i]};
+				continue;
+			}
+			IExchangeItem lowerLimitItem = staticLimitExchangeItems.get(lowerLimitExchangeItemId);
+			if (lowerLimitItem == null) throw new RuntimeException("Config.Error: No static limit exchange item found with id " + lowerLimitExchangeItemId);
+			if (!(lowerLimitItem instanceof NetcdfGridTimeSeriesExchangeItem)) throw new RuntimeException("Config.Error: Only static limit exchange items of NetcdfGridTimeSeries supported.");
+			lowerLimits2D[i] = ((NetcdfGridTimeSeriesExchangeItem) lowerLimitItem).getValuesAsDoublesForSingleTimeIndex(0);
+		}
+		return lowerLimits2D;
 	}
 
 	public boolean initializeModel() {
@@ -221,16 +366,51 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return REPLY_OK.equals(reply.get(REPLY_STATUS).asText());
 	}
 
-	public long getVarItemSize(String id) {
-		return getReplyById(FUNCTION_GET_VAR_ITEM_SIZE, RETURN_ITEM_SIZE, id).asLong();
+	public int getVarItemSize(String id) {
+		return getReplyById(FUNCTION_GET_VAR_ITEM_SIZE, RETURN_ITEM_SIZE, id).asInt();
+	}
+
+	public double[] getGridX(int grid) {
+		Iterator<JsonNode> elements = getReplyForInt(FUNCTION_GET_GRID_X, RETURN_GRID_X, grid).elements();
+		List<Double> values = new ArrayList<>();
+		while (elements.hasNext()) {
+			values.add(elements.next().asDouble());
+		}
+		return values.stream().mapToDouble(Double::doubleValue).toArray();
+	}
+
+	public double[] getGridY(int grid) {
+		Iterator<JsonNode> elements = getReplyForInt(FUNCTION_GET_GRID_Y, RETURN_GRID_Y, grid).elements();
+		List<Double> values = new ArrayList<>();
+		while (elements.hasNext()) {
+			values.add(elements.next().asDouble());
+		}
+		return values.stream().mapToDouble(Double::doubleValue).toArray();
+	}
+
+	public int getVarGrid(String id) {
+		return getReplyById(FUNCTION_GET_VAR_GRID, RETURN_GRID, id).asInt();
 	}
 
 	public String getVarType(String id) {
 		return getReplyById(FUNCTION_GET_VAR_ITEM_TYPE, RETURN_ITEM_TYPE, id).asText();
 	}
 
+	public String getVarUnits(String id) {
+		return getReplyById(FUNCTION_GET_VAR_UNITS, RETURN_VAR_UNITS, id).asText();
+	}
+
 	public Double getValue(String id) {
 		return getReplyById(FUNCTION_GET_VALUE, RETURN_VALUE, id).asDouble();
+	}
+
+	public double[] getValues(String id) {
+		Iterator<JsonNode> elements = getReplyById(FUNCTION_GET_VALUE, RETURN_VALUE, id).elements();
+		List<Double> values = new ArrayList<>();
+		while (elements.hasNext()) {
+			values.add(elements.next().asDouble());
+		}
+		return values.stream().mapToDouble(Double::doubleValue).toArray();
 	}
 
 	public boolean setValue(String id, String slice) {
@@ -279,6 +459,14 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return getJsonNode(returnName, request);
 	}
 
+	private JsonNode getReplyForInt(String functionName, String returnName, int value) {
+		ObjectNode request = objectMapper.createObjectNode();
+		request.put(FUNCTION_KEY, functionName);
+		request.put(VAR_ITEM_ID, value);
+
+		return getJsonNode(returnName, request);
+	}
+
 	private JsonNode getJsonNode(String returnName, ObjectNode request) {
 		JsonNode reply;
 
@@ -300,20 +488,34 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public String[] getExchangeItemIDs() {
-		// see BmiModelInstance
-		return null;
+		Set<String> ids = exchangeItems.keySet();
+		return ids.toArray(new String[0]);
 	}
 
 	@Override
 	public String[] getExchangeItemIDs(IExchangeItem.Role role) {
-		// see BmiModelInstance
-		return null;
+		List<String> ids = new ArrayList<>();
+		for (IExchangeItem exchangeItem : this.exchangeItems.values()) {
+			if (exchangeItem.getRole() == role) {
+				ids.add(exchangeItem.getId());
+			}
+		}
+		return ids.toArray(new String[0]);
 	}
 
 	@Override
-	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
-		// see BmiModelInstance
-		return null;
+	public IExchangeItem getDataObjectExchangeItem(String exchangeItemId) {
+		IExchangeItem exchangeItem = this.modelStateExchangeItems.get(exchangeItemId);
+		if (exchangeItem == null && this.forcingExchangeItems != null) {
+			exchangeItem = this.forcingExchangeItems.get(exchangeItemId);
+		}
+		if (exchangeItem == null && this.exchangeItems != null) {
+			exchangeItem = this.exchangeItems.get(exchangeItemId);
+		}
+		if (exchangeItem == null) {
+			throw new RuntimeException("Exchange item with id '" + exchangeItemId + "' not found in " + getClass().getSimpleName());
+		}
+		return exchangeItem;
 	}
 
 	@Override
@@ -336,7 +538,12 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.announceObservedValues() not implemented yet");
+		ITime[] selectedTimes = observationDescriptions.getTimes();
+		if (selectedTimes == null || selectedTimes.length == 0) {
+			return;
+		}
+			if (bufferedExchangeItems != null) { bufferedExchangeItems.clear(); }
+			bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);
 	}
 
 	@Override
@@ -345,8 +552,11 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	@Override
-	public IExchangeItem getExchangeItem(String exchangeItemID) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.getExchangeItem() not implemented yet");
+	public IExchangeItem getExchangeItem(String exchangeItemId) {
+		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemId)) {
+			return bufferedExchangeItems.get(exchangeItemId);
+		}
+		return getDataObjectExchangeItem(exchangeItemId);
 	}
 
 	@Override
@@ -416,6 +626,6 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void setInOutputMode(boolean inOutputMode) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.setInOutputMode() not implemented yet");
+		this.inOutputMode = inOutputMode;
 	}
 }

@@ -1,9 +1,11 @@
 package org.openda.model_zero_mq;
 
+import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.interfaces.IModelInstance;
 import org.openda.interfaces.IStochModelFactory;
 import org.openda.model_zero_mq.io.castorgenerated.ZeroMqModelStateExchangeItemXML;
+import org.openda.utils.DistributedCounter;
 import org.openda.utils.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,6 @@ import java.util.concurrent.Executors;
 public class ZeroMqModelFactory implements IModelFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ZeroMqModelFactory.class);
-	//private static final String EXECUTABLE = "julia";
 	private static final String PROTOCOL = "tcp://";
 	private static final String PORT_SEPARATOR = ":";
 	private String executable;
@@ -28,16 +29,28 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private String host;
 	private Integer port;
 	private String modelConfigFile;
-	private String modelTemplateDirectory;
-	private ZeroMqModelStateExchangeItemXML modelStateExchangeItems;
+	private File modelTemplateDirectory;
+	private File instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
 	private String inputStateDirectory;
 	private String outputStateDirectory;
 	private double missingValue;
+	private final DistributedCounter currentModelInstanceNumber = new DistributedCounter(-1);
+	private List<ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos;
+	private ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration;
+	private ArrayList<ZeroMqModelForcingConfig> forcingConfiguration;
 
 	@Override
 	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
+
+		this.currentModelInstanceNumber.inc();
+		int instanceID = this.currentModelInstanceNumber.val();
+
+		// create a output directory for this member
+		File instanceDirectory = new File(this.instanceDirectoryWithoutPostfix.getAbsolutePath() + instanceID);
+		BBUtils.makeDirectoryClone(this.modelTemplateDirectory, instanceDirectory);
+
 		try {
-			if(executable != null && !"".equals(executable)) {
+			if (executable != null && !"".equals(executable)) {
 				runProcess();
 			}
 
@@ -47,14 +60,14 @@ public class ZeroMqModelFactory implements IModelFactory {
 			StringBuilder addressBuilder = new StringBuilder();
 			addressBuilder.append(PROTOCOL);
 			addressBuilder.append(host);
-			if(port != null) {
+			if (port != null) {
 				addressBuilder.append(PORT_SEPARATOR);
 				addressBuilder.append(port);
 			}
 
 			socket.connect(addressBuilder.toString());
 
-			return new ZeroMqModelInstance(socket, modelConfigFile);
+			return new ZeroMqModelInstance(this.currentModelInstanceNumber.val(), socket, instanceDirectory, modelConfigFile, missingValue, forcingConfiguration, staticLimitConfiguration, modelStateExchangeItemInfos);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
@@ -107,9 +120,54 @@ public class ZeroMqModelFactory implements IModelFactory {
 
 		// currently unused
 		modelTemplateDirectory = configReader.getModelTemplateDirectory();
-		modelStateExchangeItems = configReader.getZeroMqModelStateExchangeItems();
+		instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
+		forcingConfiguration = configReader.getZeroMqModelForcingConfigs();
+		staticLimitConfiguration = configReader.getStaticLimitDataConfigs();
+		modelStateExchangeItemInfos = configReader.getZeroMqModelStateExchangeItemInfos();
 		inputStateDirectory = configReader.getInputStateDirectory();
 		outputStateDirectory = configReader.getOutputStateDirectory();
 		missingValue = configReader.getMissingValue();
+	}
+
+	public static class ZeroMqModelStateExchangeItemsInfo {
+		private final String stateId;
+		private final String[] modelStateExchangeItemIds;
+		private final Double[] modelStateExchangeItemLowerLimits;
+		private final Double[] modelStateExchangeItemUpperLimits;
+		private final String[] lowerLimitExchangeItemIds;
+		private final String[] upperLimitExchangeItemIds;
+
+		public ZeroMqModelStateExchangeItemsInfo(String stateId, String[] modelStateExchangeItemIds, Double[] modelStateExchangeItemLowerLimits, Double[] modelStateExchangeItemUpperLimits, String[] lowerLimitExchangeItemIds, String[] upperLimitExchangeItemIds) {
+			this.stateId = stateId;
+			this.modelStateExchangeItemIds = modelStateExchangeItemIds;
+			this.modelStateExchangeItemLowerLimits = modelStateExchangeItemLowerLimits;
+			this.modelStateExchangeItemUpperLimits = modelStateExchangeItemUpperLimits;
+			this.lowerLimitExchangeItemIds = lowerLimitExchangeItemIds;
+			this.upperLimitExchangeItemIds = upperLimitExchangeItemIds;
+		}
+
+		public String[] getModelStateExchangeItemIds() {
+			return modelStateExchangeItemIds;
+		}
+
+		public Double[] getModelStateExchangeItemLowerLimits() {
+			return modelStateExchangeItemLowerLimits;
+		}
+
+		public Double[] getModelStateExchangeItemUpperLimits() {
+			return modelStateExchangeItemUpperLimits;
+		}
+
+		public String[] getLowerLimitExchangeItemIds() {
+			return lowerLimitExchangeItemIds;
+		}
+
+		public String[] getUpperLimitExchangeItemIds() {
+			return upperLimitExchangeItemIds;
+		}
+
+		public String getStateId() {
+			return stateId;
+		}
 	}
 }
