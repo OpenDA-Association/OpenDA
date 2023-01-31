@@ -436,7 +436,7 @@ public class TimeUtils {
          double tstep = tsecond - tfirst;
          if (tstep <= 0) throw new RuntimeException("timestep for regular sequence should be positive"
                   + dateTimes[0] + ">=" + dateTimes[1]);
-         int nSequence = (int) Math.floor((tlast - tfirst) / tstep) + 1;
+         int nSequence = (int) Math.floor((tlast - tfirst + OdaGlobSettings.getTimePrecision()) / tstep) + 1;
          result = new double[nSequence];
          for (int i = 0; i < nSequence; i++) {
             result[i] = tfirst + i * tstep;
