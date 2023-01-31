@@ -443,7 +443,8 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 		for (int lay=0; lay < zCoords.length;lay++){
 			for (int yInd = 0; yInd < yCoords.length; yInd++) {
 				for (int xInd = 0; xInd < xCoords.length; xInd++) {
-					double distance = isWGS84 ? distanceInMetersFromLatLon(y, x, yCoords[yInd], xCoords[xInd]) : Math.sqrt((x - xCoords[xInd]) * (x - xCoords[xInd]) + (y - yCoords[yInd]) * (y - yCoords[yInd]) + (z - zCoords[lay]) * (z - zCoords[lay]));
+					double zCoordNonNan = Double.isNaN(zCoords[lay]) ? 0 : zCoords[lay];
+					double distance = isWGS84 ? distanceInMetersFromLatLon(y, x, yCoords[yInd], xCoords[xInd]) : Math.sqrt((x - xCoords[xInd]) * (x - xCoords[xInd]) + (y - yCoords[yInd]) * (y - yCoords[yInd]) + (z - zCoordNonNan) * (z - zCoordNonNan));
 					arrayDistances.setValueAsDouble(k, distance);
 					k++;
 				}
