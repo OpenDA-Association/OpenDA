@@ -26,6 +26,7 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 	private final Time fakeTime = new Time(58119,58120,1d/24d);
 	private final File modelParFile;
 	private final File modelParFinalFile;
+	private double[] resultTimes;
 
 	public ExternalFileModelInstance(String modelParametersFileName, String modelResultsFile, File runDir) {
 
@@ -60,11 +61,11 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 
 	private Time getTime(IExchangeItem dataObjectExchangeItem) {
 		ITimeInfo timeInfo = dataObjectExchangeItem.getTimeInfo();
-		double[] times = timeInfo.getTimes();
-		if (times.length == 1) return new Time(times[0]);
-		double firstTime = times[0];
-		double secondTime = times[1];
-		double endTime = times[times.length - 1];
+		resultTimes = timeInfo.getTimes();
+		if (resultTimes.length == 1) return new Time(resultTimes[0]);
+		double firstTime = resultTimes[0];
+		double secondTime = resultTimes[1];
+		double endTime = resultTimes[resultTimes.length - 1];
 		double deltaTasMJD = secondTime - firstTime;
 		return new Time(firstTime - deltaTasMJD, endTime, deltaTasMJD);
 	}
@@ -354,7 +355,8 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			if (timeMJD > endMJD) continue;
 			double diffMJD = timeMJD - beginMJD;
 			if (diffMJD < 0) continue;
-			int index = (int) (diffMJD / stepMJD);
+			int index = getIndex(stepMJD, timeMJD, diffMJD);
+			if (index == -1) continue;
 			double value = modelResults.getValue(index);
 			filteredResults.setValue(count, value);
 			count++;
@@ -363,6 +365,12 @@ public class ExternalFileModelInstance implements IStochModelInstance, IStochMod
 			filteredResults.remove_entry(i);
 		}
 		return filteredResults;
+	}
+
+	private int getIndex(double stepMJD, double timeMJD, double diffMJD) {
+		int index = (int) (diffMJD / stepMJD);
+		if (index >= resultTimes.length) return Arrays.binarySearch(resultTimes, timeMJD);
+		return resultTimes[index] == timeMJD ? index : Arrays.binarySearch(resultTimes, timeMJD);
 	}
 
 	void sendFinalParameters() {
