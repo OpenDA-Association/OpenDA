@@ -30,7 +30,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private Integer port;
 	private String modelConfigFile;
 	private File modelTemplateDirectory;
-	private File instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
+	private File instanceDirectoryWithoutPostfix;
 	private String inputStateDirectory;
 	private String outputStateDirectory;
 	private double missingValue;
@@ -38,6 +38,10 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private List<ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos;
 	private ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration;
 	private ArrayList<ZeroMqModelForcingConfig> forcingConfiguration;
+
+	public ZeroMqModelFactory() {
+		// Needed
+	}
 
 	@Override
 	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
