@@ -193,8 +193,15 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				String unitID = null;
 				List<Attribute> atts = var.getAttributes();
 				for (Attribute temp : atts) {
-					if (temp.getShortName().contains("units")) {
+					String shortName = temp.getShortName();
+					if (shortName.contains("units")) {
 						unitID = temp.getStringValue();
+						continue;
+					}
+					if ("coordinates".equals(shortName)) {
+						DFlowFMMapExchangeItemGeometryInfo variableSpecificGeometry = getVariableSpecificGeometryInfo(inputFile, temp);
+						if (variableSpecificGeometry == null) continue;
+						geometryInfo = variableSpecificGeometry;
 					}
 				}
 				//System.out.println("DEBUG: "+ fullName + " unitID: " + unitID  );
@@ -225,6 +232,28 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		} catch (IOException e) {
 			throw new RuntimeException("Error closing NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 		}
+	}
+
+	private DFlowFMMapExchangeItemGeometryInfo getVariableSpecificGeometryInfo(NetcdfFile inputFile, Attribute temp) {
+		String coordinatesStringValue = temp.getStringValue();
+		String[] coordinateVariableNames = coordinatesStringValue.split(" ");
+		if (coordinateVariableNames.length != 2) return null;
+		Variable variableX = inputFile.findVariable(coordinateVariableNames[0]);
+		if (variableX == null) return null;
+		String unitsString = variableX.getUnitsString();
+		boolean unitInMeters = "m".equals(unitsString);
+		int[] originXY = createOrigin(variableX);
+		int[] sizeArrayXY = variableX.getShape();
+		double[] xCoords = NetcdfUtils.readSelectedData(variableX, originXY, sizeArrayXY, -1);
+
+		Variable variableY = inputFile.findVariable(coordinateVariableNames[1]);
+		if (variableY == null) return null;
+		// For geometryInfo
+		double[] yCoords = NetcdfUtils.readSelectedData(variableY, originXY, sizeArrayXY, -1);
+
+		assert xCoords != null;
+		assert yCoords != null;
+		return new DFlowFMMapExchangeItemGeometryInfo(xCoords, yCoords, null, unitInMeters);
 	}
 
 	private String getId(String fullName) {
