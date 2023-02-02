@@ -34,8 +34,6 @@ import ucar.nc2.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -204,7 +202,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						continue;
 					}
 					if ("coordinates".equals(shortName)) {
-						DFlowFMMapExchangeItemGeometryInfo variableSpecificGeometry = getVariableSpecificGeometryInfo(inputFile, temp);
+						DFlowFMMapExchangeItemGeometryInfo variableSpecificGeometry = getVariableSpecificGeometryInfo(inputFile, temp, dValues);
 						if (variableSpecificGeometry == null) continue;
 						geometryInfo = variableSpecificGeometry;
 					}
@@ -234,7 +232,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		}
 	}
 
-	private DFlowFMMapExchangeItemGeometryInfo getVariableSpecificGeometryInfo(NetcdfFile inputFile, Attribute temp) {
+	private DFlowFMMapExchangeItemGeometryInfo getVariableSpecificGeometryInfo(NetcdfFile inputFile, Attribute temp, double[] dValues) {
 		String coordinatesStringValue = temp.getStringValue();
 		String[] coordinateVariableNames = coordinatesStringValue.split(" ");
 		if (coordinateVariableNames.length != 2) return null;
@@ -253,7 +251,20 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 
 		assert xCoords != null;
 		assert yCoords != null;
+		// If there are X times more values than coordinates assume multiple layers and add coordinates also X times
+		if (dValues.length % xCoords.length == 0 && dValues.length / xCoords.length > 1) return getDFlowFMMapExchangeItemGeometryInfo3D(dValues, unitInMeters, xCoords, yCoords);
 		return new DFlowFMMapExchangeItemGeometryInfo(xCoords, yCoords, null, unitInMeters);
+	}
+
+	private static DFlowFMMapExchangeItemGeometryInfo getDFlowFMMapExchangeItemGeometryInfo3D(double[] dValues, boolean unitInMeters, double[] xCoords, double[] yCoords) {
+		int layers = dValues.length / xCoords.length;
+		double[] xCoords3D = new double[dValues.length];
+		double[] yCoords3D = new double[dValues.length];
+		for (int i = 0; i < layers; i++) {
+			System.arraycopy(xCoords, 0, xCoords3D, xCoords.length * i, xCoords.length);
+			System.arraycopy(yCoords, 0, yCoords3D, yCoords.length * i, yCoords.length);
+		}
+		return new DFlowFMMapExchangeItemGeometryInfo(xCoords3D, yCoords3D, null, unitInMeters);
 	}
 
 	private String getId(String fullName) {
