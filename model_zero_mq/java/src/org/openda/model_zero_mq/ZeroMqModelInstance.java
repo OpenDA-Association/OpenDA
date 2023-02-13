@@ -73,12 +73,13 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private final int modelInstanceNumber;
 
 	private final Map<String, IExchangeItem> exchangeItems;
-	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
+	//private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private final Map<String, IExchangeItem> forcingExchangeItems;
 	private final Map<String, IExchangeItem> staticLimitExchangeItems;
 	private final LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
 
 	private boolean inOutputMode = false;
+	private String timeUnitsString;
 
 	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos) {
 		this.modelInstanceNumber = modelInstanceNumber;
@@ -549,24 +550,24 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-		ITime[] selectedTimes = observationDescriptions.getTimes();
+/*		ITime[] selectedTimes = observationDescriptions.getTimes();
 		if (selectedTimes == null || selectedTimes.length == 0) {
 			return;
 		}
 			if (bufferedExchangeItems != null) { bufferedExchangeItems.clear(); }
-			bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);
+			bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);*/
 	}
 
 	@Override
 	public IVector getObservedValues(IObservationDescriptions observationDescriptions) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.getObservedValues() not implemented yet");
+		return null;
 	}
 
 	@Override
 	public IExchangeItem getExchangeItem(String exchangeItemId) {
-		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemId)) {
+/*		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemId)) {
 			return bufferedExchangeItems.get(exchangeItemId);
-		}
+		}*/
 		return getDataObjectExchangeItem(exchangeItemId);
 	}
 
@@ -575,7 +576,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		double startTime = getStartTime();
 		double endTime = getEndTime();
 		double timeStepDurationInModelUnits = getTimeStep();
-		String timeUnitsString = getTimeUnits();
+		timeUnitsString = getTimeUnits();
 
 		double startTimeMjd = TimeUtils.udUnitsTimeToMjd(startTime, timeUnitsString);
 		double endTimeMjd = TimeUtils.udUnitsTimeToMjd(endTime, timeUnitsString);
@@ -592,7 +593,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void compute(ITime targetTime) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.compute() not implemented yet");
+		double time = TimeUtils.mjdToUdUnitsTime(targetTime.getMJD(), timeUnitsString);
+		updateUntil(time);
 	}
 
 	@Override
@@ -632,7 +634,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public File getModelRunDir() {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.getModelRunDir() not implemented yet");
+		return modelRunDir;
 	}
 
 	@Override
