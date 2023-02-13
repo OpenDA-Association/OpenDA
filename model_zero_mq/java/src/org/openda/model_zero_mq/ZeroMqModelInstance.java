@@ -47,9 +47,10 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String FUNCTION_GET_VAR_GRID = "get_var_grid";
 	private static final String FUNCTION_GET_GRID_X = "get_grid_x";
 	private static final String FUNCTION_GET_GRID_Y = "get_grid_y";
-	private static final String RETURN_GRID = "grid";
+	private static final String RETURN_GRID = "var_grid";
 	private static final String RETURN_GRID_X = "grid_x";
 	private static final String RETURN_GRID_Y = "grid_y";
+	private static final String VAR_ITEM_NAME = "grid";
 	private static final String VAR_ITEM_ID = "name";
 	private static final String RETURN_ITEM_SIZE = "var_itemsize";
 	private static final String FUNCTION_GET_VAR_ITEM_TYPE = "get_var_type";
@@ -81,11 +82,11 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos) {
 		this.modelInstanceNumber = modelInstanceNumber;
-
-		//initializeModel(socket, new File("../../test/sbm_config.toml"));
 		this.socket = socket;
 		this.modelRunDir = modelRunDir;
 		this.modelConfigFile = modelConfigFile;
+
+		initializeModel();
 
 		exchangeItems = createExchangeItems(missingValue);
 
@@ -212,7 +213,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	public boolean initializeModel() {
-		File modelConfigurationFile = new File(modelConfigFile);
+		File modelConfigurationFile = new File(modelRunDir, modelConfigFile);
 
 		if (!modelConfigurationFile.exists()) {
 			throw new RuntimeException("Initialisation failure: Model configuration file does not exist: " + modelConfigFile);
@@ -307,19 +308,25 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	public List<String> getInputVarNames() {
-		try {
-			return Arrays.asList(objectMapper.readValue(getReply(FUNCTION_GET_INPUT_VAR_NAMES, RETURN_INPUT_VAR_NAMES).asText(), String[].class));
-		} catch (JsonProcessingException jsonProcessingException) {
-			throw new RuntimeException("Getting input var names", jsonProcessingException);
-		}
+		JsonNode reply = getReply(FUNCTION_GET_INPUT_VAR_NAMES, RETURN_INPUT_VAR_NAMES);
+
+		return getVarNamesFromResponse(reply);
 	}
 
 	public List<String> getOutputVarNames() {
-		try {
-			return Arrays.asList(objectMapper.readValue(getReply(FUNCTION_GET_OUTPUT_VAR_NAMES, RETURN_OUTPUT_VAR_NAMES).asText(), String[].class));
-		} catch (JsonProcessingException jsonProcessingException) {
-			throw new RuntimeException("Getting output var names", jsonProcessingException);
+		JsonNode reply = getReply(FUNCTION_GET_OUTPUT_VAR_NAMES, RETURN_OUTPUT_VAR_NAMES);
+
+		return getVarNamesFromResponse(reply);
+	}
+
+	private static List<String> getVarNamesFromResponse(JsonNode reply) {
+		List<String> varNames = new ArrayList<>(reply.size());
+
+		for (int varNameIndex = 0; varNameIndex < reply.size(); varNameIndex++) {
+			varNames.add(reply.get(varNameIndex).asText());
 		}
+
+		return varNames;
 	}
 
 	public boolean loadState(File path) {
@@ -371,16 +378,20 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	public double[] getGridX(int grid) {
-		Iterator<JsonNode> elements = getReplyForInt(FUNCTION_GET_GRID_X, RETURN_GRID_X, grid).elements();
-		List<Double> values = new ArrayList<>();
-		while (elements.hasNext()) {
-			values.add(elements.next().asDouble());
-		}
-		return values.stream().mapToDouble(Double::doubleValue).toArray();
+		return getGridValues(grid, FUNCTION_GET_GRID_X, RETURN_GRID_X);
 	}
 
 	public double[] getGridY(int grid) {
-		Iterator<JsonNode> elements = getReplyForInt(FUNCTION_GET_GRID_Y, RETURN_GRID_Y, grid).elements();
+		return getGridValues(grid, FUNCTION_GET_GRID_Y, RETURN_GRID_Y);
+	}
+
+	private double[] getGridValues(int grid, String getGridDimension, String returnGridDimension) {
+		System.out.println("Grid accessed: " + grid);
+		JsonNode replyForInt = getReplyForInt(getGridDimension, returnGridDimension, grid);
+		if(replyForInt==null) {
+			return new double[0];
+		}
+		Iterator<JsonNode> elements = replyForInt.elements();
 		List<Double> values = new ArrayList<>();
 		while (elements.hasNext()) {
 			values.add(elements.next().asDouble());
@@ -462,7 +473,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private JsonNode getReplyForInt(String functionName, String returnName, int value) {
 		ObjectNode request = objectMapper.createObjectNode();
 		request.put(FUNCTION_KEY, functionName);
-		request.put(VAR_ITEM_ID, value);
+		request.put(VAR_ITEM_NAME, value);
 
 		return getJsonNode(returnName, request);
 	}
