@@ -388,11 +388,9 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	private double[] getGridValues(int grid, String getGridDimension, String returnGridDimension) {
-		System.out.println("Grid accessed: " + grid);
 		JsonNode replyForInt = getReplyForInt(getGridDimension, returnGridDimension, grid);
-		if(replyForInt==null) {
-			return new double[0];
-		}
+		// TODO: prevent by filtering exchange items?
+		if (replyForInt==null) return new double[0];
 		Iterator<JsonNode> elements = replyForInt.elements();
 		List<Double> values = new ArrayList<>();
 		while (elements.hasNext()) {
