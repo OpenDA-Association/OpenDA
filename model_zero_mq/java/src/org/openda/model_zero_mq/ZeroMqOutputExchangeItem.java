@@ -153,7 +153,7 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 			} else
 				checkedValues[i] = values[i];
 		}
-		model.setValue(variableName, Arrays.toString(checkedValues));
+		model.setValue(variableName, checkedValues);
 	}
 
 	public void copyValuesFromItem(IExchangeItem sourceItem) {

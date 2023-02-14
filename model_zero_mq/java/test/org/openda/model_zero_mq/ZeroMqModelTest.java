@@ -346,12 +346,12 @@ public class ZeroMqModelTest extends TestCase {
 		zeroMqModelFactory.initialize(new File(TEST_RESOURCES_DIRECTORY), new String[]{"zeroMqModelTest.xml"});
 		ZeroMqModelInstance zeroMqModelInstance = (ZeroMqModelInstance) zeroMqModelFactory.getInstance(null, null);
 
-		assertTrue("Set value returned ok", zeroMqModelInstance.setValue("good-set", "[1.0,2.3,4.5]"));
+		assertTrue("Set value returned ok", zeroMqModelInstance.setValue("good-set", new double[]{1.0, 2.3, 4.5}));
 
 		String exceptionMessage = "";
 
 		try {
-			zeroMqModelInstance.setValue("good-set", "[4.5,2.3,1.0]");
+			zeroMqModelInstance.setValue("good-set", new double[]{4.5, 2.3, 1.0});
 		} catch (RuntimeException runtimeException) {
 			exceptionMessage = runtimeException.getMessage();
 		}
@@ -359,7 +359,7 @@ public class ZeroMqModelTest extends TestCase {
 		assertEquals("Set value returned error", "Set value: Set value good version but with bad slice", exceptionMessage);
 
 		try {
-			zeroMqModelInstance.setValue("bad-set", "[1.0,2.3,4.5]");
+			zeroMqModelInstance.setValue("bad-set", new double[]{1.0, 2.3, 4.5});
 		} catch (RuntimeException runtimeException) {
 			exceptionMessage = runtimeException.getMessage();
 		}

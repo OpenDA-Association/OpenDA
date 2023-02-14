@@ -3,6 +3,7 @@ package org.openda.model_zero_mq;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.ArrayGeometryInfo;
@@ -217,7 +218,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		File modelConfigurationFile = new File(modelRunDir, modelConfigFile);
 
 		if (!modelConfigurationFile.exists()) {
-			throw new RuntimeException("Initialisation failure: Model configuration file does not exist: " + modelConfigFile);
+			throw new RuntimeException("Initialisation failure: Model configuration file does not exist: " + modelConfigurationFile);
 		}
 
 		return initializeModel(modelConfigurationFile);
@@ -417,7 +418,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	public double[] getValues(String id) {
-		Iterator<JsonNode> elements = getReplyById(FUNCTION_GET_VALUE, RETURN_VALUE, id).elements();
+		JsonNode replyById = getReplyById(FUNCTION_GET_VALUE, RETURN_VALUE, id);
+		Iterator<JsonNode> elements = replyById.elements();
 		List<Double> values = new ArrayList<>();
 		while (elements.hasNext()) {
 			values.add(elements.next().asDouble());
@@ -425,11 +427,14 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return values.stream().mapToDouble(Double::doubleValue).toArray();
 	}
 
-	public boolean setValue(String id, String slice) {
+	public boolean setValue(String id, double[] slice) {
 		ObjectNode request = objectMapper.createObjectNode();
 		request.put(FUNCTION_KEY, FUNCTION_SET_VALUE);
 		request.put(VAR_ITEM_ID, id);
-		request.put(SLICE, slice);
+		ArrayNode arrayNode = request.putArray(SLICE);
+		for (double value : slice) {
+			arrayNode.add(value);
+		}
 
 		JsonNode reply;
 

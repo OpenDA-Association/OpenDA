@@ -135,7 +135,7 @@ public class ZeroMqStateExchangeItem implements IExchangeItem {
 			double[] slice = new double[sliceLength];
 			System.arraycopy(checkedValues, offset, slice, 0, sliceLength);
 
-			model.setValue(id, Arrays.toString(slice));
+			model.setValue(id, slice);
 
 			offset += sliceLength;
 		}
