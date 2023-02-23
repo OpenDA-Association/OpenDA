@@ -340,7 +340,7 @@
   ============================================================================================================
   -->
     <target name="zip" depends="vc-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
-    <target name="tgz" depends="vc-revision,chmod-linux-native,build,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas" />
+    <target name="tgz" depends="vc-revision,chmod-linux-native,build,copy-jre,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas,tgz-jre" />
     <target name="zip-win32" depends="vc-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
     <target name="zip-x64" depends="vc-revision,build-x64,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
     <target name="zip-windows" depends="zip-win32" />
@@ -460,6 +460,7 @@
             <tarfileset dir="doc" prefix="openda_${version}/doc"/>
             <tarfileset dir="examples" prefix="openda_${version}/examples" excludes="*.svn" />
             <tarfileset dir="xmlSchemas" prefix="openda_${version}/xmlSchemas" excludes="*.svn" />
+            <tarfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
             <tarfileset dir="." includes="README.txt" fullpath="openda_${version}/README_${vc.evision}.txt"/>
             <tarfileset dir="." includes="license.txt" fullpath="openda_${version}/license.txt"/>
             <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
@@ -524,6 +525,12 @@
          <!--<tarfileset dir="." includes="release-notes-2.0.pdf " fullpath="openda_${version}/release-notes-2.0.pdf"/>-->
       </tar>
     </target>
+
+  <target name="tgz-jre" depends="vc-revision">
+    <tar destfile="${projectname}_${version}_${vc.revision}_jre.tgz">
+      <tarfileset dir="jre" prefix="openda_${version}/jre" excludes="*.svn" />
+    </tar>
+  </target>
 
     <macrodef name="tgztest">
        <attribute name="testname" default="NOT SET"/>
