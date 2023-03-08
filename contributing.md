@@ -10,7 +10,7 @@ share your code with the OpenDA community this document applies.
 
 For OpenDA we distinguish two methods for contributing:
 1. Create a fork on github and then a pull request. When you contribute for the first time, then this is probably what you want.
-2. Ask a core-developer of OpenDA to create a branch where you can push you contributions. If you do not know who the core-developers of OpenDA are then you can contact one at info@openda.org
+2. Ask a core-developer of OpenDA to create a branch where you can push your contributions. If you do not know who the core-developers of OpenDA are then you can contact one at info@openda.org
 
 ## Repository structure
 
