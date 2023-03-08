@@ -5,6 +5,15 @@
 \newif\ifshowmatlab
 \showmatlabtrue
 
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    linktoc=all,
+}
+
 
 %opening
 \title{OpenDA Course and Exercises}
@@ -39,7 +48,7 @@
 \section*{Installation of OpenDA}
 Before you can start with the exercises you must first install OpenDA. For the
 latest instructions, you are referred to \verb|$OPENDA/doc/OpenDA_domunentation.pdf|, 
-section ``Installation'' or the same document on our website \verb|www.openda.org|.
+section ``Installation'' or the same document on our website \url{www.openda.org}.
 
 \section{Getting started: Lorenz 3 variable model}
 \input{exercise_1a}
