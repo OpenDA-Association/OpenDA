@@ -11,19 +11,19 @@ The dynamics of a double-pendulum can be descibed with the following equations
 
 variables $\theta_1, \theta_2, p_{\theta_1}, p_{\theta_2}$:
 \begin{eqnarray}
-   \frac{d \theta_1}{dt}= \frac{6}{m l^2} \frac{2 p_{\theta_1} - 3cos(\theta_1-\theta_2) p_{\theta_2}}
-   {16-9 cos^2(\theta_1-\theta_2)}\\
-   \frac{d \theta_2}{dt}= \frac{6}{m l^2} \frac{8 p_{\theta_2} - 3cos(\theta_1-\theta_2) p_{\theta_1}}
-   {16-9 cos^2(\theta_1-\theta_2)}\\
-   \frac{dp_{\theta_1}}{dt} = -\frac{1}{2} ml^2 \left( \frac{d \theta_1}{dt} \frac{d \theta_2}{dt} sin(\theta_1-\theta_2) + 3\frac{g}{l} sin(\theta_1) \right)  \\
-   \frac{dp_{\theta_1}}{dt} = -\frac{1}{2} ml^2 \left( -\frac{d \theta_1}{dt} \frac{d \theta_2}{dt} sin(\theta_1-\theta_2) + \frac{g}{l} sin(\theta_2) \right) 
+   \frac{d \theta_1}{dt}= \frac{6}{m l^2} \frac{2 p_{\theta_1} - 3\cos(\theta_1-\theta_2) p_{\theta_2}}
+   {16-9 \cos^2(\theta_1-\theta_2)}\\
+   \frac{d \theta_2}{dt}= \frac{6}{m l^2} \frac{8 p_{\theta_2} - 3\cos(\theta_1-\theta_2) p_{\theta_1}}
+   {16-9 \cos^2(\theta_1-\theta_2)}\\
+   \frac{dp_{\theta_1}}{dt} = -\frac{1}{2} ml^2 \left( \frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + 3\frac{g}{l} \sin(\theta_1) \right)  \\
+   \frac{dp_{\theta_1}}{dt} = -\frac{1}{2} ml^2 \left( -\frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + \frac{g}{l} \sin(\theta_2) \right) 
 \end{eqnarray}
 where the $x,y$-position of the middle of the two segments can be computed as:
 \begin{eqnarray}
-   x_1 = \frac{l}{2} sin(\theta_1) \\
-   y_1 = \frac{-l}{2} cos(\theta_1) \\
-   x_2 = l ( sin(\theta_1) + \frac{1}{2} sin(\theta_2) ) \\
-   y_2 = -l ( cos(\theta_1) + \frac{1}{2} cos(\theta_2) )
+   x_1 = \frac{l}{2} \sin(\theta_1) \\
+   y_1 = \frac{-l}{2} \cos(\theta_1) \\
+   x_2 = l ( \sin(\theta_1) + \frac{1}{2} \sin(\theta_2) ) \\
+   y_2 = -l ( \cos(\theta_1) + \frac{1}{2} \cos(\theta_2) )
 \end{eqnarray}
 
 This model, although simple, is very nonlinear and has a chaotic nature.  Its
