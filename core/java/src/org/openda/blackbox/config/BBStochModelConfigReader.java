@@ -501,12 +501,13 @@ public class BBStochModelConfigReader {
 									"the elements <modelExchangeItem> can not be mixed, file: " +
 									stochModelConfigFile.getAbsolutePath());
 				} else {
+					if (exchangeItemXML.getOperation() != null) throw new RuntimeException("Attribute 'operation' configured in noise model exchange item, this is deprecated, use 'transformation' instead.");
 					int transformationType = determineTransformationType(exchangeItemXML.getTransformation());
 					if (modelExchangeItemXMLs.length == 0 && exchangeItemXML.getModelExchangeItemId() != null ) {//HERE
 						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
 								exchangeItemXML.getId(),
 								exchangeItemXML.getModelExchangeItemId(),
-							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getAllowOverwriteForecastWithAnalysisNoise())
+							transformationType, skipFirstTimeStep, addOnlyNoiseDifference)
 						);
 					} else {
 						for (UncertaintyOrNoiseModelExchangeItemXML modelExchangeItemXML : modelExchangeItemXMLs) {
@@ -515,7 +516,7 @@ public class BBStochModelConfigReader {
 						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(
 								exchangeItemXML.getId(),
 								modelExchangeItemIds,
-							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute(), exchangeItemXML.getAllowOverwriteForecastWithAnalysisNoise())
+							transformationType, skipFirstTimeStep, addOnlyNoiseDifference, exchangeItemXML.getStateSizeNoiseSizeRatio(), exchangeItemXML.getAddStateNoiseAfterCompute())
 						);
 					}
 				}

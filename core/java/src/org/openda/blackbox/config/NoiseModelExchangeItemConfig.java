@@ -26,33 +26,30 @@ import java.util.List;
  */
 public class NoiseModelExchangeItemConfig {
 
-	private String id;
-	private List<String> modelExchangeItemIds;
-	private int transformation;
-	private boolean skipFirstTimeStep;
-	private boolean addOnlyNoiseDifference;
-    private int stateSizeNoiseSizeRatio;
-    private boolean addStateNoiseAfterCompute;
-	private final boolean allowOverwriteForecastWithAnalysisNoise;
+	private final String id;
+	private final List<String> modelExchangeItemIds;
+	private final int transformation;
+	private final boolean skipFirstTimeStep;
+	private final boolean addOnlyNoiseDifference;
+    private final int stateSizeNoiseSizeRatio;
+    private final boolean addStateNoiseAfterCompute;
 
 
     public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
-										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute, boolean allowOverwriteForecastWithAnalysisNoise) {
-		if (allowOverwriteForecastWithAnalysisNoise && transformation != BBRegularisationConstantConfig.TRANSFORMATION_SET) throw new RuntimeException("allowOverwriteForecastWithAnalysisNoise=true should only be combined with transformation / operation=set otherwise noise will be added/multiplied twice at analysis time");
-		this.id = id;		
+										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute) {
+		this.id = id;
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.transformation = transformation;
 		this.skipFirstTimeStep = skipFirstTimeStep;
 		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
         this.stateSizeNoiseSizeRatio = stateSizeNoiseSizeRatio;
         this.addStateNoiseAfterCompute = addStateNoiseAfterCompute;
-		this.allowOverwriteForecastWithAnalysisNoise = allowOverwriteForecastWithAnalysisNoise;
 	}
 	
-	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, boolean allowOverwriteForecastWithAnalysisNoise) {
+	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		
 		// call default constructor with empty modelExchangeItemIds list
-		this(id, new ArrayList<String>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false, allowOverwriteForecastWithAnalysisNoise);
+		this(id, new ArrayList<String>(), transformation, skipFirstTimeStep, addOnlyNoiseDifference, 1, false);
 		// add modelExchangeItemId if defined
 		if (modelExchangeItemId != null) {
 			this.modelExchangeItemIds.add(modelExchangeItemId);
@@ -89,8 +86,4 @@ public class NoiseModelExchangeItemConfig {
     public boolean isAddStateNoiseAfterCompute() {
         return addStateNoiseAfterCompute;
     }
-
-	public boolean isAllowOverwriteForecastWithAnalysisNoise() {
-		return allowOverwriteForecastWithAnalysisNoise;
-	}
 }
