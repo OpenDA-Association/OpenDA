@@ -1,30 +1,30 @@
 {\bf Directory: {\tt exercise\_double\_pendulum\_part1}}\\
 
-A pendulum is a rigid body that can swing under the influence of gravity. It is attached at the top so it can roatate freely in a two-dimensional plane ($x,y$).
+A pendulum is a rigid body that can swing under the influence of gravity. It is attached at the top so it can rotate freely in a two-dimensional plane ($x,y$).
 We will assume a thin rectangular shape with the mass equally distributed. A double pendulum is a pendulum connected to the end of another pendulum. Contrary to the 
 regular movement of a pendulum, the motion of a double-pendulum is very irregular when sufficient energy is put into the system. 
 
 \includegraphics[height=4cm]{Double-compound-pendulum.png}
 
-The dynamics of a double-pendulum can be descibed with the following equations 
-( This example was copied from https://en.wikipedia.org/wiki/Double\_pendulum )
+The dynamics of a double-pendulum can be described with the following equations. 
+(This example was copied from \url{https://en.wikipedia.org/wiki/Double_pendulum})
 
-variables $\theta_1, \theta_2, p_{\theta_1}, p_{\theta_2}$:
-\begin{eqnarray}
-   \frac{d \theta_1}{dt}= \frac{6}{m l^2} \frac{2 p_{\theta_1} - 3\cos(\theta_1-\theta_2) p_{\theta_2}}
+With variables $\theta_1, \theta_2, p_{\theta_1}, p_{\theta_2}$:
+\begin{align}
+   \frac{d \theta_1}{dt}&= \frac{6}{m l^2} \frac{2 p_{\theta_1} - 3\cos(\theta_1-\theta_2) p_{\theta_2}}
    {16-9 \cos^2(\theta_1-\theta_2)}\\
-   \frac{d \theta_2}{dt}= \frac{6}{m l^2} \frac{8 p_{\theta_2} - 3\cos(\theta_1-\theta_2) p_{\theta_1}}
+   \frac{d \theta_2}{dt}&= \frac{6}{m l^2} \frac{8 p_{\theta_2} - 3\cos(\theta_1-\theta_2) p_{\theta_1}}
    {16-9 \cos^2(\theta_1-\theta_2)}\\
-   \frac{dp_{\theta_1}}{dt} = -\frac{1}{2} ml^2 \left( \frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + 3\frac{g}{l} \sin(\theta_1) \right)  \\
-   \frac{dp_{\theta_1}}{dt} = -\frac{1}{2} ml^2 \left( -\frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + \frac{g}{l} \sin(\theta_2) \right) 
-\end{eqnarray}
+   \frac{dp_{\theta_1}}{dt} &= -\frac{1}{2} ml^2 \left( \frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + 3\frac{g}{l} \sin(\theta_1) \right)  \\
+   \frac{dp_{\theta_1}}{dt} &= -\frac{1}{2} ml^2 \left( -\frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + \frac{g}{l} \sin(\theta_2) \right) 
+\end{align}
 where the $x,y$-position of the middle of the two segments can be computed as:
-\begin{eqnarray}
-   x_1 = \frac{l}{2} \sin(\theta_1) \\
-   y_1 = \frac{-l}{2} \cos(\theta_1) \\
-   x_2 = l ( \sin(\theta_1) + \frac{1}{2} \sin(\theta_2) ) \\
-   y_2 = -l ( \cos(\theta_1) + \frac{1}{2} \cos(\theta_2) )
-\end{eqnarray}
+\begin{align}
+   x_1 &= \frac{l}{2} \sin(\theta_1) \\
+   y_1 &= \frac{-l}{2} \cos(\theta_1) \\
+   x_2 &= l ( \sin(\theta_1) + \frac{1}{2} \sin(\theta_2) ) \\
+   y_2 &= -l ( \cos(\theta_1) + \frac{1}{2} \cos(\theta_2) )
+\end{align}
 
 This model, although simple, is very nonlinear and has a chaotic nature.  Its
 solution is very sensitive to the parameters and the initial conditions: a
@@ -33,17 +33,19 @@ small difference in those values can lead to a very different solution.
 The purpose of this exercise is to get you started with OpenDA. You will learn
 to run a model in OpenDA, make modifications to the input files and plot the
 results.
-
-\begin{itemize}
-\item The input for this exercise is located in directory \texttt{ exercise\_pendulum\_part1}.
+\subsection{Input files}
+The input for this exercise is located in directory \texttt{ exercise\_pendulum\_part1}.
       For Linux and Mac OS X, go to this directory and start \texttt{ oda\_run.sh}, the
       main application of OpenDA. For Windows, start the main application with 
       \texttt{ oda\_run\_gui.bat} from the \texttt{ \$OPENDA/bin} directory. The main 
       application allows you to view and edit the OpenDA configuration files, run your
       simulations and visualize the results.
-\item Try to run a simulation with the double pendulum model. You can use the
-      configuration file \texttt{ simulation\_unperturbed.oda}. 
-      
+
+\subsection{Simulation and postprocessing with the double pendulum model}
+\subsubsection{simulation}
+Try to run a simulation with the double pendulum model. You can use the configuration file \texttt{ simulation\_unperturbed.oda}. 
+
+\subsubsection{postprocessing}      
 \ifshowmatlab
       For postprocessing in Matlab the results are written to \\ \texttt{ simulation\_unperturbed\_results.m}.
       Next start Matlab and load the results. We have added a routine \texttt{ plot\_movie} to create an intuitive
@@ -94,15 +96,15 @@ results.
       #Set with plt.ioff(), plt.ion()
       \end{lstlisting}
 %
+\subsection{An alternative simulation with the double-pendulum model}
 
-
-\item Then you can start an alternative simulation with the double-pendulum model that
+Then you can start an alternative simulation with the double-pendulum model that
        starts with a slightly different initial condition using the
        configuration file \texttt{ simulation\_perturbed.oda}. The different initial conditions
        can be found in \texttt{model\/DoublePendulumStochModel.xml} and \\
        \texttt{model\/DoublePendulumStochModel\_perturbed.xml}
 
-\item  Visualize the unperturbed and perturbed results in a single plot. Make
+Visualize the unperturbed and perturbed results in a single plot. Make
        a movie and a time-series plot of $\theta_1$ and $\theta_2$ variables. Do you see
        the solutions diverging like the theory predicts?
        
@@ -144,8 +146,9 @@ results.
       plt.ylabel(r"$\theta_2$")
       plt.show() 
       \end{lstlisting}
-      
-\item Next we want to create an ensemble of model runs all with slightly different initial conditions. 
+
+\subsection{An ensemble of model runs}
+Next, we want to create an ensemble of model runs all with slightly different initial conditions. 
       You can do this in a number of steps:
       \begin{itemize}
       \item First create the input file \texttt{ simulation\_ensemble.oda} based on\\
@@ -153,8 +156,8 @@ results.
             configuration of the algorithm.\\
             hint: the algorithm is called \\
             org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation.
-      \item Create a configuration file for the Ensemble algorithm (e.g. named
-            \texttt{ algorithm/SequentialEnsembleSimulation.xml}) with the following content:
+      \item Create a configuration file for the Ensemble algorithm (e.g. named\\
+            \texttt{algorithm/SequentialEnsembleSimulation.xml}) with the following content:
       \begin{lstlisting}[language=XML,frame=single,caption={XML-input for sequentialAlgorithm}]
       <?xml version="1.0" encoding="UTF-8"?>
       <sequentialAlgorithm>
@@ -238,5 +241,3 @@ results.
       We can see that although our simulation starts on the right track, it quickly diverges from the observations.
       The aim of the Ensemble Kalman filter or data-assimilation in general, is to keep the model on track. 
       \end{itemize}
-
-\end{itemize}
