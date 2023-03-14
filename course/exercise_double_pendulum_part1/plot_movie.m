@@ -36,6 +36,9 @@ for t = times,
    set(gca,'ytick',[]);
    title(sprintf('t=%.2f',t));
    pause(0.2); %x times slower (plus plotting)
+   % uncomment to populate the directory frames with the snapshots that can be
+   % combined into a video using the 
+   % make_video.sh script.
    %figname=sprintf('frames/fig_double_pendulum_%4.4d.png',i);
    %figname=sprintf('frames/fig_ensemble_double_pendulum_%4.4d.png',i);
    %print(figname,'-dpng');
