@@ -84,6 +84,7 @@ Your model may be using features that impact the restart and
 have not been catered to in the original coupling to OpenDA. 
 
 .. image:: images/restart.png
+
 Example of a proper restart functionality
 
 Unfortunately, the restart functionality of models is often not perfect.
