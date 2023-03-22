@@ -18,6 +18,7 @@ Index
    :maxdepth: 2
 
    OpenDA_installation
+   Example_configurations
    workStepByStep
    OpenDA_course
 

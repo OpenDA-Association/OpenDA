@@ -8,7 +8,7 @@ import sphinx_rtd_theme
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'OpenDA'
-copyright = '2022, The OpenDA Association'
+copyright = '2023, The OpenDA Association'
 author = 'The OpenDA Association'
 
 # -- General configuration ---------------------------------------------------

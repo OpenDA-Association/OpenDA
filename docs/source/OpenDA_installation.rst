@@ -1,3 +1,5 @@
+.. _OpenDA installation:
+
 ===================
 OpenDA installation
 ===================
@@ -19,13 +21,7 @@ a Windows machine:
    location with a space in the path (like “``My Documents``”).
 -  Open the OpenDA GUI by clicking the file ``oda_run_gui.bat`` in the
    folder ``<path_to_openda_release>/bin``.
--  Try to run an example. You can find examples in the
-   ``<path_to_openda_release>/examples`` directory. An example that can
-   easily be executed is found in
-   ``model_example_blackbox/blackbox_example_calibration/Dud.oda``.
-   After opening this file in the GUI, you can run the simulation. For
-   the examples ``model_dflowfm_blackbox`` and ``model_delft3d`` in this
-   folder, it is necessary to connect to existing models.
+-  Try to run an :ref:`example <Example configurations>`. 
 
 
 Linux installation
@@ -73,14 +69,7 @@ a Linux machine:
    folder ``<path_to_openda_release>/bin``. Optionally the path to the
    ``.oda`` file can be supplied as an argument, which will open that
    OpenDA configuration (``oda_run.sh -gui <path_to_oda_file>``).
--  Try to run an example. You can find examples in the
-   ``<path_to_openda_release>/examples`` directory. An example that can
-   easily be executed is found in
-   ``model_example_blackbox/blackbox_example_calibration/Dud.oda``.
-   After opening this file in the GUI, you can run the simulation. For
-   the examples ``model_dflowfm_blackbox`` and ``model_delft3d`` in this
-   folder, it is necessary to connect to existing models.
-
+-  Try to run an :ref:`example <Example configurations>`. 
 
 Mac installation
 ================
@@ -128,10 +117,4 @@ a Mac machine:
    folder ``<path_to_openda_release>/bin``. Optionally the path to the
    ``.oda`` file can be supplied as an argument, which will open that
    OpenDA configuration (``oda_run.sh -gui <path_to_oda_file>``).
--  Try to run an example. You can find examples in the
-   ``<path_to_openda_release>/examples`` directory. An example that can
-   easily be executed is found in
-   ``model_example_blackbox/blackbox_example_calibration/Dud.oda``.
-   After opening this file in the GUI, you can run the simulation. For
-   the examples ``model_dflowfm_blackbox`` and ``model_delft3d`` in this
-   folder, it is necessary to connect to existing models.
+-  Try to run an :ref:`example <Example configurations>`. 
