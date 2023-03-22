@@ -29,7 +29,7 @@ Dud (which stands for **D** oesn't **U** se **D** erivative).
 #. Run the OpenDA application with ``Dud.oda`` as the main configuration
    file in the mode that you prefer (with or without GUI). In GUI mode,
    you can get a real-time update of the execution by checking either
-   Control, Output, or Cost Function tabs. See the screenshots below.
+   Control, Output, or Cost Function tabs.
 #. Check the results. Upon completion a new file ``dud_results.m`` is
    created. This file contains the results of OpenDA-Dud application,
    which are written in Matlab format. If you have no access to Matlab,
