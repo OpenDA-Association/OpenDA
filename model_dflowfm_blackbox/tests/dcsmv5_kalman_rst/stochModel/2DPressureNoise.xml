@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapsNoiseModelConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/noiseModels/mapsNoiseModel.xsd">
+    <simulationTimespan timeFormat="dateTimeString">200612010000,200612010100,...,300702070000</simulationTimespan>
+    <noiseItem id="2DPressureNoise" 
+                        quantity="p" 
+                        unit="Pa" 
+                        standardDeviation="1000.0" 
+                        timeCorrelationScale="1" 
+                        timeCorrelationScaleUnit="days"
+                        initialValue="0.0" 
+                        horizontalCorrelationScale="165" 
+                        horizontalCorrelationScaleUnit="km" >
+        <grid type="cartesian" coordinates="wgs84">
+            <x>-12,-11,...,14</x>
+            <y>48,49,...,63</y>
+        </grid>
+    </noiseItem>
+</mapsNoiseModelConfig>
+<!-- appropriate range for timeCorrelationScale 1 week to couple hours (3-4days)-->
+
+<!-- <simulationTimespan timeFormat="dateTimeString">200701010000,200701010200,...,200702070000</simulationTimespan> -->
+        <!-- <grid type="cartesian" coordinates="wgs84">
+            <x>-15,-14,...,14</x>
+            <y>43,44,...,64</y>
+        </grid> -->

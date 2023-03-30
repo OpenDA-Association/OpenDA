@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SteadyStateFilterConfig  xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/steadyStateFilter.xsd">
+    <analysisTimes type="fromObservationTimes" skipAtInitialTime="true"/> 
+    <mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
+    <readGain> 
+        <dirPrefix>kgStorage_L100km_</dirPrefix>
+		<time timeFormat="dateTimeString">202209011200</time>
+		<file>kalmanGainStorage.nc</file>
+    </readGain>
+</SteadyStateFilterConfig>
