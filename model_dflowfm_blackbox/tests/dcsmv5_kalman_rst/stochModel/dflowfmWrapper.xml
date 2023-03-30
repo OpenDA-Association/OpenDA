@@ -51,36 +51,26 @@
         </finalizeActions>
     </run>
     <inputOutput>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
+        <dataObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
             <file>%mdufile%</file>
             <id>mdufile</id>
             <arg>useRstForRestart=true</arg>
-        </ioObject>
-        <ioObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
+        </dataObject>
+        <dataObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
             <file>%rstfile%</file>
             <id>rstfile</id>
-        </ioObject>
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+        </dataObject>
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
             <file>%outputDir%/%hisfile%</file>
             <id>hisfile</id>
             <arg>true</arg>
             <arg>false</arg>
-        </ioObject>
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
-            <file>%outputDir%/%concatenated_hisfile%</file>
-            <id>concatenated_hisfile</id>
-            <arg>true</arg>
-        </ioObject>
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
-            <file>%outputDir%/%concatenated_mapfile%</file>
-            <id>concatenated_mapfile</id>
-            <arg>true</arg>
-        </ioObject>
-        <ioObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+        </dataObject>
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
             <file>%meteofile_p%</file>
             <id>meteofile_p</id>
             <arg>true</arg>
             <arg>false</arg>
-        </ioObject>
+        </dataObject>
     </inputOutput>
 </blackBoxWrapperConfig>
