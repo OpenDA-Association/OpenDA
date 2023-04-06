@@ -209,7 +209,9 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 			Results.putProgression("processing obs "+gainVectorId+"\n");
 			// add to analysis increment for this obs
 			if(this.gainVectors.containsKey(gainVectorId)){
-				delta.axpy(innovation.getValue(i), this.gainVectors.get(gainVectorId));
+				IVector gainVector = this.gainVectors.get(gainVectorId);
+				if (gainVector.getSize() != delta.getSize()) Results.putMessage("Warning: Kalman Gain does not have exact same size as current state, this can cause suboptimal results. Please check if the contents of the state match the contents of the Kalman Gain.");
+				delta.axpy(innovation.getValue(i), gainVector);
 			}else{
 				throw new RuntimeException("No matching column found for observation with id="
 						+obsIds[i]+"and offset="+obsTimeOffsets[i]+"\n");
