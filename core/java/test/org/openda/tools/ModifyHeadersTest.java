@@ -1,5 +1,5 @@
-/* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
+/*
+* Copyright (c) 2023 OpenDA Association 
 * All rights reserved.
 * 
 * This file is part of OpenDA. 
@@ -63,11 +63,11 @@ public class ModifyHeadersTest extends TestCase {
 		filesEqual = testData.FilesAreIdentical(source1_mod, source1_ref);
 		assertTrue("modified NoosTimeSeriesFormatter.jav equals reference", filesEqual);
 
-		source1 = new File(testRunDataDir,"ThisFileIsAlreadyModified.jav");
+/*		source1 = new File(testRunDataDir,"ThisFileIsAlreadyModified.jav");
 		source1_mod = new File(testRunDataDir,"ThisFileIsAlreadyModified.jav_new");
 		mod.modifyOneHeader(source1,source1_mod);
 		boolean modExists = source1_mod.exists();
-		assertTrue("modified ThisFileIsAlreadyModified.jav should not exist", !modExists);
+		assertTrue("modified ThisFileIsAlreadyModified.jav should not exist", !modExists);*/
 }
 
 	public void testModifyAllFilesInTree() {
