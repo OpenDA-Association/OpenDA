@@ -19,12 +19,16 @@ import org.zeromq.ZMQ;
 import java.io.File;
 import java.util.*;
 
+import static org.openda.model_zero_mq.ZeroMqModelInstance.TimeUnit.D;
+
 public class ZeroMqModelInstance extends Instance implements IModelInstance, IModelExtensions, IOutputModeSetter {
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private static final String FUNCTION_KEY = "fn";
 	private static final String FUNCTION_INITIALISE = "initialize";
 	private static final String FUNCTION_GET_START_TIME = "get_start_time";
+	private static final String FUNCTION_GET_START_UNIX_TIME = "get_start_unix_time";
 	private static final String RETURN_START_TIME = "start_time";
+	private static final String RETURN_START_UNIX_TIME = "start_unix_time";
 	private static final String FUNCTION_GET_END_TIME = "get_end_time";
 	private static final String RETURN_END_TIME = "end_time";
 	private static final String FUNCTION_GET_TIME_STEP = "get_time_step";
@@ -80,7 +84,18 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private final LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
 
 	private boolean inOutputMode = false;
-	private String timeUnitsString;
+	private TimeUnit timeUnit;
+	private double startTimeMjd;
+
+	public enum TimeUnit {
+		S(1000), MIN(60000), H(36000000), D(864000000);
+
+		private final long millies;
+
+		TimeUnit(long millies) {
+			this.millies = millies;
+		}
+	}
 
 	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos) {
 		this.modelInstanceNumber = modelInstanceNumber;
@@ -176,28 +191,6 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return result;
 	}
 
-	// Buffer for output ExchangeItems in order to facilitate asynchronous filtering.
-	private Map<String, DoublesExchangeItem> createBufferedExchangeItems(ITime[] bufferTimes) {
-		Map<String, DoublesExchangeItem> result = new HashMap<>();
-
-		// ITime has no double[] getTimes?
-		double[] selectedTimes = new double[bufferTimes.length];
-		for (int i = 0; i < bufferTimes.length; i++) {
-			selectedTimes[i] = bufferTimes[i].getMJD();
-		}
-
-		for (Map.Entry<String, IExchangeItem> entry : this.exchangeItems.entrySet()) {
-			int cellCount = ((ArrayGeometryInfo) entry.getValue().getGeometryInfo()).getCellCount();
-			int[] dimensions = new int[]{bufferTimes.length, cellCount};
-			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), IExchangeItem.Role.Output,
-				new double[cellCount * bufferTimes.length], dimensions);
-			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
-			result.put(entry.getKey(), bufferExchangeItem);
-		}
-
-		return result;
-	}
-
 	private double[][] getLimits2D(Double[] limits, String[] lowerLimitExchangeItemIds) {
 		double[][] lowerLimits2D = new double[limits.length][];
 		for (int i = 0; i < lowerLimitExchangeItemIds.length; i++) {
@@ -248,6 +241,10 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	public double getStartTime() {
 		return getLongValue(FUNCTION_GET_START_TIME, RETURN_START_TIME);
+	}
+
+	public long getStartUnixTime() {
+		return getLongValue(FUNCTION_GET_START_UNIX_TIME, RETURN_START_UNIX_TIME);
 	}
 
 	public double getEndTime() {
@@ -576,27 +573,31 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public ITime getTimeHorizon() {
-		double startTime = getStartTime();
-		double endTime = getEndTime();
+		long startUnixTime = getStartUnixTime();
+		startTimeMjd = Time.milliesToMjd(startUnixTime * 1000);
 		double timeStepDurationInModelUnits = getTimeStep();
-		timeUnitsString = getTimeUnits();
-
-		double startTimeMjd = TimeUtils.udUnitsTimeToMjd(startTime, timeUnitsString);
-		double endTimeMjd = TimeUtils.udUnitsTimeToMjd(endTime, timeUnitsString);
+		String timeUnits = getTimeUnits();
+		this.timeUnit = TimeUnit.valueOf(timeUnits.toUpperCase());
+		double endTime = getEndTime();
+		long endTimeMillis = (long) (endTime * this.timeUnit.millies);
+		double endTimeMjd = Time.milliesToMjd(endTimeMillis) + startTimeMjd;
 		//convert time step duration from model time units to MJD.
-		double timeStepDurationInDays = timeStepDurationInModelUnits * (endTimeMjd - startTimeMjd) / (endTime - startTime);
+		double timeStepDurationInDays = timeStepDurationInModelUnits * (endTimeMjd - startTimeMjd) / (endTime - startUnixTime);
 
 		return new Time(startTimeMjd, endTimeMjd, timeStepDurationInDays);
 	}
 
 	@Override
 	public ITime getCurrentTime() {
-		return new Time(getCurrentTimeInstant());
+		double currentTimeInstant = getCurrentTimeInstant();
+		double currentTimeMjd = timeUnit.millies * currentTimeInstant / D.millies + startTimeMjd;
+		return new Time(currentTimeMjd);
 	}
 
 	@Override
 	public void compute(ITime targetTime) {
-		double time = TimeUtils.mjdToUdUnitsTime(targetTime.getMJD(), timeUnitsString);
+		double mjd = targetTime.getMJD() - startTimeMjd;
+		double time = mjd * D.millies / timeUnit.millies;
 		updateUntil(time);
 	}
 
