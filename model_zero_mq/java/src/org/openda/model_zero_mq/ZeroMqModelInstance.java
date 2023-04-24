@@ -88,7 +88,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private double startTimeMjd;
 
 	public enum TimeUnit {
-		S(1000), MIN(60000), H(36000000), D(864000000);
+		S(1000), MIN(60000), H(3600000), D(86400000);
 
 		private final long millies;
 
@@ -579,10 +579,9 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		String timeUnits = getTimeUnits();
 		this.timeUnit = TimeUnit.valueOf(timeUnits.toUpperCase());
 		double endTime = getEndTime();
-		long endTimeMillis = (long) (endTime * this.timeUnit.millies);
-		double endTimeMjd = Time.milliesToMjd(endTimeMillis) + startTimeMjd;
+		double endTimeMjd = (long) (endTime * this.timeUnit.millies / D.millies) + startTimeMjd;
 		//convert time step duration from model time units to MJD.
-		double timeStepDurationInDays = timeStepDurationInModelUnits * (endTimeMjd - startTimeMjd) / (endTime - startUnixTime);
+		double timeStepDurationInDays = timeStepDurationInModelUnits * timeUnit.millies / D.millies;
 
 		return new Time(startTimeMjd, endTimeMjd, timeStepDurationInDays);
 	}

@@ -68,7 +68,7 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	}
 
 	public double[] getTimes() {
-		return new double[]{TimeUtils.udUnitsTimeToMjd(model.getCurrentTime().getMJD(), model.getTimeUnits())};
+		return new double[]{model.getCurrentTime().getMJD()};
 	}
 
 	public void setTimes(double[] times) {
