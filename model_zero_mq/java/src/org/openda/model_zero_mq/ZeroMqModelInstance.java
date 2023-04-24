@@ -6,11 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.ArrayGeometryInfo;
-import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
-import org.openda.exchange.TimeInfo;
-import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Instance;
 import org.openda.utils.Time;
@@ -18,8 +14,6 @@ import org.zeromq.ZMQ;
 
 import java.io.File;
 import java.util.*;
-
-import static org.openda.model_zero_mq.ZeroMqModelInstance.TimeUnit.D;
 
 public class ZeroMqModelInstance extends Instance implements IModelInstance, IModelExtensions, IOutputModeSetter {
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -88,12 +82,12 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private double startTimeMjd;
 
 	public enum TimeUnit {
-		S(1000), MIN(60000), H(3600000), D(86400000);
+		S(86400), MIN(1440), H(24), D(1);
 
-		private final long millies;
+		private final int partsInDay;
 
-		TimeUnit(long millies) {
-			this.millies = millies;
+		TimeUnit(int partsInDay) {
+			this.partsInDay = partsInDay;
 		}
 	}
 
@@ -579,9 +573,9 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		String timeUnits = getTimeUnits();
 		this.timeUnit = TimeUnit.valueOf(timeUnits.toUpperCase());
 		double endTime = getEndTime();
-		double endTimeMjd = (long) (endTime * this.timeUnit.millies / D.millies) + startTimeMjd;
+		double endTimeMjd = (long) (endTime / this.timeUnit.partsInDay) + startTimeMjd;
 		//convert time step duration from model time units to MJD.
-		double timeStepDurationInDays = timeStepDurationInModelUnits * timeUnit.millies / D.millies;
+		double timeStepDurationInDays = timeStepDurationInModelUnits / timeUnit.partsInDay;
 
 		return new Time(startTimeMjd, endTimeMjd, timeStepDurationInDays);
 	}
@@ -589,14 +583,14 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	@Override
 	public ITime getCurrentTime() {
 		double currentTimeInstant = getCurrentTimeInstant();
-		double currentTimeMjd = timeUnit.millies * currentTimeInstant / D.millies + startTimeMjd;
+		double currentTimeMjd = currentTimeInstant / timeUnit.partsInDay + startTimeMjd;
 		return new Time(currentTimeMjd);
 	}
 
 	@Override
 	public void compute(ITime targetTime) {
 		double mjd = targetTime.getMJD() - startTimeMjd;
-		double time = mjd * D.millies / timeUnit.millies;
+		double time = mjd * timeUnit.partsInDay;
 		updateUntil(time);
 	}
 
