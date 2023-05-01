@@ -65,7 +65,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String REPLY_OK = "OK";
 	private static final String REPLY_ERROR = "ERROR";
 	private static final String REPLY_ERROR_MESSAGE = "error";
-	private static final String FUNCTION_FINISH_MODEL = "finish";
+	private static final String FUNCTION_SHUTDOWN_MODEL = "shutdown";
 	private final ZMQ.Socket socket;
 	private final File modelRunDir;
 	private final String modelConfigFile;
@@ -526,8 +526,11 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void finish() {
+
+		finalizeModel();
+
 		ObjectNode request = objectMapper.createObjectNode();
-		request.put(FUNCTION_KEY, FUNCTION_FINISH_MODEL);
+		request.put(FUNCTION_KEY, FUNCTION_SHUTDOWN_MODEL);
 
 		try {
 			socket.send(objectMapper.writeValueAsString(request).getBytes(ZMQ.CHARSET), 0);
