@@ -31,12 +31,14 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	private IGeometryInfo createGeometryInfo() {
 
 		int varGrid = model.getVarGrid(variableName);
-		// data in grid lower-to-higher latitudes (south to north)
-		double[] latitudes = this.model.getGridY(varGrid);
+
+		// grid numbers > 4 are not gridded
+		double[] latitudes = varGrid > 4 ? new double[0] : this.model.getGridY(varGrid);
 
 		IArray latitudeArray = new Array(latitudes);
 
-		double[] longitudes = this.model.getGridX(varGrid);
+		// grid numbers > 4 are not gridded
+		double[] longitudes = varGrid > 4 ? new double[0] : this.model.getGridX(varGrid);
 
 		IArray longitudeArray = new Array(longitudes);
 		int[] latitudeValueIndices = new int[]{0};
