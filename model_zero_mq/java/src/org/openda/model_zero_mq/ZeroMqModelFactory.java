@@ -4,7 +4,6 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IModelFactory;
 import org.openda.interfaces.IModelInstance;
 import org.openda.interfaces.IStochModelFactory;
-import org.openda.model_zero_mq.io.castorgenerated.ZeroMqModelStateExchangeItemXML;
 import org.openda.utils.DistributedCounter;
 import org.openda.utils.Results;
 import org.slf4j.Logger;
@@ -27,7 +26,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private String executable;
 	private List<String> executableArguments;
 	private String host;
-	private Integer port;
+	private Integer firstPortNumber;
 	private String modelConfigFile;
 	private File modelTemplateDirectory;
 	private File instanceDirectoryWithoutPostfix;
@@ -64,9 +63,9 @@ public class ZeroMqModelFactory implements IModelFactory {
 			StringBuilder addressBuilder = new StringBuilder();
 			addressBuilder.append(PROTOCOL);
 			addressBuilder.append(host);
-			if (port != null) {
+			if (firstPortNumber != null) {
 				addressBuilder.append(PORT_SEPARATOR);
-				addressBuilder.append(port);
+				addressBuilder.append(firstPortNumber + instanceID);
 			}
 
 			socket.connect(addressBuilder.toString());
@@ -83,7 +82,10 @@ public class ZeroMqModelFactory implements IModelFactory {
 			try {
 				List<String> commands = new ArrayList<>();
 				commands.add(executable);
-				commands.addAll(executableArguments);
+				for (String executableArgument : executableArguments) {
+					String translatedArgument = "%port%".equals(executableArgument) ? String.valueOf(firstPortNumber + currentModelInstanceNumber.val()) : executableArgument;
+					commands.add(translatedArgument);
+				}
 				ProcessBuilder builder = new ProcessBuilder()
 					.inheritIO()
 					.command(commands);
@@ -119,7 +121,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 		executable = configReader.getExecutable();
 		executableArguments = configReader.getExecutableArguments();
 		host = configReader.getHost();
-		port = configReader.getPort();
+		firstPortNumber = configReader.getFirstPortNumber();
 		modelConfigFile = configReader.getModelConfigFile();
 
 		// currently unused

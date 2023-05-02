@@ -38,9 +38,9 @@
 					<xs:documentation>Julia WFlow host.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-      <xs:element name="port" type="xs:integer" minOccurs="0">
+      <xs:element name="firstPortNumber" type="xs:integer" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Julia WFlow port number.</xs:documentation>
+          <xs:documentation>First ZeroMQ port number, for each ensemble the port number will be increased by 1.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="modelForcings" type="openda:ZeroMqModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
@@ -57,7 +57,7 @@
     <xs:sequence>
       <xs:element name="argument" block="extension" type="xs:string" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
-          <xs:documentation>Julia WFlow start up argument.</xs:documentation>
+          <xs:documentation>Argument for the executable. %port% will be replaced with the port number associated with the ensemble.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>

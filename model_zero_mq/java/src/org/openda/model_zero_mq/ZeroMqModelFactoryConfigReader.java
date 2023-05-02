@@ -12,7 +12,7 @@ public class ZeroMqModelFactoryConfigReader {
 	private final String executable;
 	private final List<String> executableArguments;
 	private final String host;
-	private final Integer port;
+	private final Integer firstPortNumber;
 	private final String modelConfigFile;
 	private final File modelTemplateDirectory;
 	private final String inputStateDirectory;
@@ -28,7 +28,7 @@ public class ZeroMqModelFactoryConfigReader {
 		executable = castor.getExecutable();
 		executableArguments = Arrays.asList(castor.getExecutableArguments().getArgument());
 		host = castor.getHost();
-		port = castor.getPort();
+		firstPortNumber = castor.getFirstPortNumber();
 
 		modelConfigFile = castor.getModelConfigFile();
 		String modelTemplateDirectoryPath = castor.getModelTemplateDirectory();
@@ -119,8 +119,8 @@ public class ZeroMqModelFactoryConfigReader {
 		return host;
 	}
 
-	public Integer getPort() {
-		return port;
+	public Integer getFirstPortNumber() {
+		return firstPortNumber;
 	}
 
 	public String getModelConfigFile() {
