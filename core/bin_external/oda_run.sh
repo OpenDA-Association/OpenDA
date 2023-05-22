@@ -47,7 +47,7 @@ do
         ;;
         *)
         CONFIG="${i#*=}"
-        configfile="`dirname $CONFIG`/$CONFIG"
+        configfile="`dirname $CONFIG`/`basename $CONFIG`"
         shift
         ;;
     esac
