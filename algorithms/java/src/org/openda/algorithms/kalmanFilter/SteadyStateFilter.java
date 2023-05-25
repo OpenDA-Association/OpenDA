@@ -53,7 +53,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	private double[] gainTimeMjd;
 	private double[] readGainTime;
 	private int steadyStateTimeCounter = 0;
-	private double skipGainStandardDeviationFactor = Double.NEGATIVE_INFINITY;
+	private double skipAssimilationStandardDeviationFactor = Double.NEGATIVE_INFINITY;
 
 	public void initialize(File workingDir, String[] arguments) {
 		super.initialize(workingDir, arguments);
@@ -150,7 +150,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
                 i++;
             }
 		}
-		this.skipGainStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipGainStandardDeviationFactor", Double.NEGATIVE_INFINITY);
+		this.skipAssimilationStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipAssimilationStandardDeviationFactor", Double.NEGATIVE_INFINITY);
 		
 		//now read the first gain file into memory
         steadyStateTimeCounter++;
@@ -217,8 +217,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 				if (gainVector.getSize() != delta.getSize()) Results.putMessage("Warning: Kalman Gain does not have exact same size as current state, this can cause suboptimal results. Please check if the contents of the state match the contents of the Kalman Gain.");
 				double observedValue = innovation.getValue(i);
 				double predictionValue = pred_a.getValue(i);
-				// Skip gain when observations and predictions differ more than observation standard deviations times skipGainStandardDeviationFactor
-				if (Math.abs(observedValue - predictionValue) > skipGainStandardDeviationFactor * standardDeviations.getValue(i)) continue;
+				// Skip assimilation when observations and predictions differ more than observation standard deviations times skipAssimilationStandardDeviationFactor
+				if (Math.abs(observedValue - predictionValue) > skipAssimilationStandardDeviationFactor * standardDeviations.getValue(i)) continue;
 				delta.axpy(observedValue, gainVector);
 			}else{
 				throw new RuntimeException("No matching column found for observation with id="
