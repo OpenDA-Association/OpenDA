@@ -2,8 +2,6 @@
 NetCDF data objects
 ===================
 On this page, we describe the use of the NetCDF data object which can be used to create exchange items for NetCDF files. 
-For this, the files should follow the cf conventions (for more info see https://cfconventions.org/).
-If the NetCDF file does not, then its own data object should be implemented.
 This data object is not specific to particular wrappers but can be used for many NetCDF files as long as the format of the variables matches one of the examples below when reading observations, model results
 or even updating states or boundary conditions.
 The NetCDF data object is very useful since many different model
@@ -12,19 +10,23 @@ software packages use NetCDF files for storing and reading data.
 
 In ``org.openda.exchange.dataobjects.NetcdfDataObject``, the
 implementation of NetCDF data objects can be found. It supports many
-different variable formats like 
+different variable formats, such as
 
 - Scalar data, which in the NetCDF variables have 2 dimensions one for time and one for stations;
 - Three-dimensional scalar data, which in the NetCDF variables have 3 dimensions one for time, one for stations, and one for the vertical layers;
-- Gridded data, which in the NetCDF variables have 3 dimensions one for time, one for y coordinates, and one for x coordinates.
+- Gridded data, which in the NetCDF variables have 3 dimensions one for time, one for :math:`y` coordinates, and one for :math:`x` coordinates.
 
+These formats will be described in more detail below. 
+
+Note that the current implementation only applies to files that follow the `CF metadata conventions <https://cfconventions.org/>`__.
+If the NetCDF file does not, then its own data object should be implemented in ``org.openda.exchange.dataobjects.NetcdfDataObject``.
 
 Scalar data
 -----------
 
 The simplest form of scalar data has two dimensions, one for time and
-one for location. This will create exchange items for each location in
-each variable. The corresponding id is a combination of the variable name 
+one for location. This will create exchange items for each measurement location in
+each observation variable. The corresponding id is a combination of the variable name 
 with the location name which can be any string. The exchange item will contain the data for all the time steps. As an example, we create the exchange items
 
 ``24.waterlevel``, ``25.waterlevel``, ``26.waterlevel``, ``27.waterlevel``,
@@ -59,11 +61,14 @@ Three-dimensional scalar data
 For scalar data that have multiple layers an extra key=value argument needs to be provided:
 ``layerDimensionName=<name>``. The size of that
 dimension will determine the amount of layer-specific exchange items
-that will be created. When this argument is provided the id of the
+that will be created. 
+When this argument is provided the id of the
 exchange items will be
 ``<variableName>.<locationName>.layer<layerIndex>``.
+Examples of layer-specific values are concentration or temperature measurements
+at different water depths or atmospheric heights.
 
-If we have the next variables ``temperature`` and ``data``::
+Suppose we have the next variables ``temperature`` and ``data``::
 
   double temperature(time=49, stations=3, laydim=20); 
     :coordinates = "station_x_coordinate station_y_coordinate station_name zcoordinate_c";
@@ -90,8 +95,9 @@ The corresponding XML config looks as follows::
 Gridded data
 ------------
 
-Gridded data variables are supported with three dimensions containing time, :math:`x` and :math:`y`:
-in this case, 1 exchange item will be created for the whole variable with the variable id as a name.
+Gridded data variables are used to describe model results for a computation on a grid :math:`(x,y)`.
+They are supported with three dimensions containing time, :math:`x` and :math:`y`.
+In this case, 1 exchange item will be created for the whole variable with the variable id as a name.
 
 Example of a gridded variable::
 
@@ -122,7 +128,7 @@ reading is set to true, the data will only be read from the NetCDF file
 when the data is needed instead of when initializing the data object.
 When lazy writing is set to true, the data will be written when the data
 object is closed instead of directly when the data is being changed by
-OpenDA. Depending on how much data will be read and or written, how many times this will happens and available memory, users can choose which settings will be most suitable.
+OpenDA. Depending on how much data will be read and or written, how many times this will happen and available memory, users can choose which settings will be most suitable.
 
 These boolean arguments always have to be specified as the first two ``<arg>`` elements in the XML config for the NetCDF data object::
 
