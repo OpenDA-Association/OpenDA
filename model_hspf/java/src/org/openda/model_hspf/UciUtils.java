@@ -402,10 +402,10 @@ public class UciUtils {
 				// Make optimal use of 8 characters, with one reserved for a sign.
 
 				// Check if value is unrealistically small and set it to default when necessary (see email Changmin, 27-02-2017, ODA-542)
-				if (value < 1E-10){
+				if (value < 1E-9) {
 					IExchangeItem itemDefaultInit = exchangeItemsDefaultInit.get(id);
-					if (itemDefaultInit==null){
-						throw new RuntimeException("A value of "+ id +" that is less than 1E-10 is found in the updated state and should be set to a default value. Please specify an UCI file containing default initial values.");
+					if (itemDefaultInit==null) {
+						throw new RuntimeException("A value of "+ id +" that is less than 1E-9 is found in the updated state and should be set to a default value. Please specify an UCI file containing default initial values.");
 					}
 					value = (double) itemDefaultInit.getValues();
 				}
@@ -473,7 +473,7 @@ public class UciUtils {
 
 					IExchangeItem itemDefaultInit = exchangeItemsDefaultInit.get(id);
 					if (itemDefaultInit==null){
-						throw new RuntimeException("The value of NaN (-1.00E+30) is found in the updated state. Please specify an UCI file containing default initial values.");
+						throw new RuntimeException("The value of NaN (-1.00E+30) is found in the updated state for id "+ id + ". Please specify an UCI file containing default initial values.");
 					}
 					double defaultValue = (double) itemDefaultInit.getValues();
 
