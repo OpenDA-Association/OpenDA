@@ -19,7 +19,7 @@ Example 1: Oscillator-Dud application
 In this example, we will learn how to use OpenDA for model
 calibration. To do so, we use an Oscillator model, which is one of the
 OpenDA internal/toy models. The algorithm used in this example is the
-Dud (which stands for **D** oesn't **U** se **D** erivative).
+`Dud <https://www.tandfonline.com/doi/abs/10.1080/00401706.1978.10489610>`__ (which stands for **D** oesn't **U** se **D** erivative).
 
 #. Check and examine the ``core/simple_oscillator`` directory. The main components in this directory are
    a main configuration file ``Dud.oda`` and three subdirectories that each contain a data-assimilation component: algorithm, model, and
