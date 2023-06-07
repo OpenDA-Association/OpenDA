@@ -219,7 +219,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 				double predictionValue = pred_a.getValue(i);
 				// Skip assimilation when observations and predictions differ more than observation standard deviations times skipAssimilationStandardDeviationFactor
 				if (Math.abs(observedValue - predictionValue) > skipAssimilationStandardDeviationFactor * standardDeviations.getValue(i)) {
-					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observedValue + ", model prediction value " + predictionValue + ", skipAssimilationStandardDeviationFactor = "+ skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i));
+					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observedValue + ", model prediction value " + predictionValue + ", skipAssimilationStandardDeviationFactor = "+ skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i) +"\n");
 					continue;
 				}
 				delta.axpy(observedValue, gainVector);
