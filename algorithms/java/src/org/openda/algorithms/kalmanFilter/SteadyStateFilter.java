@@ -53,7 +53,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	private double[] gainTimeMjd;
 	private double[] readGainTime;
 	private int steadyStateTimeCounter = 0;
-	private double skipAssimilationStandardDeviationFactor = Double.NEGATIVE_INFINITY;
+	private double skipAssimilationStandardDeviationFactor = Double.POSITIVE_INFINITY;
 
 	public void initialize(File workingDir, String[] arguments) {
 		super.initialize(workingDir, arguments);
@@ -150,7 +150,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
                 i++;
             }
 		}
-		this.skipAssimilationStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipAssimilationStandardDeviationFactor", Double.NEGATIVE_INFINITY);
+		this.skipAssimilationStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipAssimilationStandardDeviationFactor", Double.POSITIVE_INFINITY);
 		
 		//now read the first gain file into memory
         steadyStateTimeCounter++;
@@ -194,7 +194,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		String[] obsIds = obsUtils.getObsIds();
 		double[] obsTimeOffsets = obsUtils.getObsTimeOffsets(analysisTime.getMJD());
 		// obs-pred
-		IVector innovation = observations.getExpectations();
+		IVector observationValues = observations.getExpectations();
+		IVector innovation = observationValues.clone();
 		innovation.axpy(-1.0, predictions);
 		IVector standardDeviations = observations.getStandardDeviations();
 		// x_a = x_f + K(y-H x_f)
@@ -215,14 +216,13 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 			if(this.gainVectors.containsKey(gainVectorId)){
 				IVector gainVector = this.gainVectors.get(gainVectorId);
 				if (gainVector.getSize() != delta.getSize()) Results.putMessage("Warning: Kalman Gain does not have exact same size as current state, this can cause suboptimal results. Please check if the contents of the state match the contents of the Kalman Gain.");
-				double observedValue = innovation.getValue(i);
-				double predictionValue = pred_a.getValue(i);
 				// Skip assimilation when observations and predictions differ more than observation standard deviations times skipAssimilationStandardDeviationFactor
-				if (Math.abs(observedValue - predictionValue) > skipAssimilationStandardDeviationFactor * standardDeviations.getValue(i)) {
-					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observedValue + ", model prediction value " + predictionValue + ", skipAssimilationStandardDeviationFactor = "+ skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i) +"\n");
+				double innovationValue = innovation.getValue(i);
+				if (skipAssimilationStandardDeviationFactor != Double.POSITIVE_INFINITY && Math.abs(innovationValue) > skipAssimilationStandardDeviationFactor * standardDeviations.getValue(i)) {
+					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observationValues.getValue(i) + ", model prediction value " + pred_a.getValue(i) + ", skipAssimilationStandardDeviationFactor = "+ skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i) +"\n");
 					continue;
 				}
-				delta.axpy(observedValue, gainVector);
+				delta.axpy(innovationValue, gainVector);
 			}else{
 				throw new RuntimeException("No matching column found for observation with id="
 						+obsIds[i]+"and offset="+obsTimeOffsets[i]+"\n");
