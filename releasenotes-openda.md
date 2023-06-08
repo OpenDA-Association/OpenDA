@@ -1,6 +1,19 @@
 Release Notes
 =============
 
+OpenDA - Version 3.1.1
+----------------------
+
+### Improvements
+
+-   Error output stream of external process of black box actions is being written to OpenDA output
+-   Improved logging and bugfix in HSPF model wrapper
+-   Small fix in oda_run.sh
+
+### New functionalities
+
+-   Option added to SSKF to skip assimilation of observations when they differ too much from the model results
+
 OpenDA - Version 3.1
 ----------------------
 
