@@ -1,3 +1,5 @@
+.. _data objects:
+
 ===================
 NetCDF data objects
 ===================
@@ -71,7 +73,7 @@ at different water depths or atmospheric heights.
 Suppose we have the next variables ``temperature`` and ``data``::
 
   double temperature(time=49, stations=3, laydim=20); 
-    :coordinates = "station_x_coordinate station_y_coordinate station_name zcoordinate_c";
+    :coordinates = "station_x_coordinate station_y_coordinate station_id zcoordinate_c";
     :units = "degC"; 
     :geometry = "station_geom"; 
     :_FillValue = -999.0; // double 
