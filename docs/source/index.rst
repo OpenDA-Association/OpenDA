@@ -28,7 +28,7 @@ Index
 
    data_objects.rst
    localization.rst
-   restarting.rst
+   continuing.rst
 
 .. toctree::
    :caption: Contributing to the source
