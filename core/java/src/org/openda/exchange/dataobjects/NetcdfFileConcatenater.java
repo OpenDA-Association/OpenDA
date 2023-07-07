@@ -69,6 +69,7 @@ public class NetcdfFileConcatenater {
 
 		if (netcdfFileToBeAdded.isDirectory()) {
 			List<File> netcdfFilesToBeAdded = new ArrayList<>(Arrays.asList(Objects.requireNonNull(netcdfFileToBeAdded.listFiles())));
+			netcdfFilesToBeAdded.sort(Comparator.comparing(File::getName));
 
 			try {
 				if (!targetNetcdfFile.exists()) {
