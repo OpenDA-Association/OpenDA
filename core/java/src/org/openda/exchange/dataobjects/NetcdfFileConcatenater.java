@@ -234,7 +234,6 @@ public class NetcdfFileConcatenater {
 			} else {
 				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetLocationDimensionLength, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, false, false);
 			}
-			break;
 		}
 	}
 
