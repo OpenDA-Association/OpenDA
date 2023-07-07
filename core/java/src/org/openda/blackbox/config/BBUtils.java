@@ -233,10 +233,13 @@ public class BBUtils {
 
 	private static void writeProcessErrorToSystemOut(Process process) throws IOException {
 		BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-		String errorLine;
+		String errorLine = stdError.readLine();
+		if (errorLine == null) return;
 		System.out.println("<ERROR>");
-		while ((errorLine = stdError.readLine()) != null)
+		System.out.println(errorLine);
+		while ((errorLine = stdError.readLine()) != null) {
 			System.out.println(errorLine);
+		}
 		System.out.println("</ERROR>");
 	}
 
