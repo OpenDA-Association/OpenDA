@@ -205,7 +205,7 @@ public class ConfigTreeTest extends TestCase{
 		System.out.println("xml parsing error="+message);
 		// NOTE: this does not work without an internet connection.
 		if(message.indexOf("Failed to read schema document")<0){
-			assertTrue(message.indexOf("Invalid content was found starting with element 'stochModelBakery")>0);
+			assertTrue(message.indexOf("Invalid content was found starting with element '{\"http://www.openda.org\":stochModelBakery}'")>0);
 		}
 	}
 
