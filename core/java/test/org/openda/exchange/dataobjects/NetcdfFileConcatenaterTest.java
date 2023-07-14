@@ -143,7 +143,9 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		File inputDirectory = new File(testRunDataSubDir, "input");
 		File targetFile = new File(testRunDataSubDir, "concatenated_averaged.nc");
 		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
-		for(File file : Objects.requireNonNull(inputDirectory.listFiles())) {
+		File[] files = Objects.requireNonNull(inputDirectory.listFiles());
+		Arrays.sort(files);
+		for(File file : files) {
 			NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), file.getAbsolutePath(), "useOldValueOnOverlap=true"});
 		}
 		File expectedFile = new File(testRunDataSubDir, "expected_averaged.nc");
