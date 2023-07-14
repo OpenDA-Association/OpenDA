@@ -26,6 +26,7 @@ import ucar.nc2.NetcdfFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class NetcdfFileConcatenaterTest extends TestCase {
