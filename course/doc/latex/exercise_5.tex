@@ -16,7 +16,8 @@ The next step is running an ensemble of simulations. In this case we consider ou
 
 \begin{itemize}
  \item Run an ensemble forecast model by using the \\{\tt
-   SequentialEnsembleSimulation.oda} configuration. On which variable does the
+   SequentialEnsembleSimulation.oda} configuration. Look at the configuration file
+   of the model ({\tt stochModel\/polluteStochModel.xml }). To which variable does the
    algorithm impose stochastic forcing?\\ Have a look at the {\tt
      work} directory, and note that the black box wrapper created
    the required ensemble members by repeatedly copying the template directory
@@ -39,7 +40,7 @@ Running the ensembles takes a lot of time, especially starting the model takes q
 
 Now let us have a look at the configuration for performing OpenDA's Ensemble
 Kalman Filtering on our black box model, using a twin experiment as an example.
-The model has been run with the 'real' values (time dependent)for the
+The model has been run with the 'real' values (time dependent) for the
 concentrations for substance 1 as disposed by factory 1 and factory 2. This
 'truth' stored in the directory {\tt truthmodel}, and the results of that run
 have been used to generate observation time series at the output locations.

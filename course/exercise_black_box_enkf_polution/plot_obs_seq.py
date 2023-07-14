@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
-#import sequentialSimulation_results as sim
-import enkf_results as sim
+# Select the correct file with simulation results.
+import sequentialSimulation_results as sim
+#import enkf_results as sim
+
 import matplotlib.pyplot as plt
 
 
