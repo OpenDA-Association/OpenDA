@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ini4j.Config;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.openda.exchange.timeseries.TimeUtils;
@@ -58,6 +59,7 @@ public class DFlowFMMduInputFile {
 	    timeMap.put("S", 1.0 / (60.0*60.0*24.0) );
 	    timeMap.put("M", 1.0 / (60.0*24.0) );
 	    timeMap.put("H", 1.0 / 24.0 );
+		Config.getGlobal().setEscape(false);
 	}
 
 	public DFlowFMMduInputFile(File workingDir, String fileName) {

@@ -18,6 +18,7 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.model_dflowfm;
+import org.ini4j.Config;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.openda.exchange.timeseries.TimeUtils;
@@ -61,9 +62,14 @@ public class Md1dFile implements IDataObject
 
 		File inputFile = new File(workingDirectory, inputFileName);
 
-		try	{ ini.load(inputFile); }
-		catch (InvalidFileFormatException e) { throw new RuntimeException("Invalid Formatting in '" + inputFile.getAbsolutePath() + "'.", e); }
-		catch (IOException ex) { throw new RuntimeException(String.format("%s, File does not exist: %s", ex.getMessage(), inputFile.getPath())); }
+		try {
+			Config.getGlobal().setEscape(false);
+			ini.load(inputFile);
+		} catch (InvalidFileFormatException e) {
+			throw new RuntimeException("Invalid Formatting in '" + inputFile.getAbsolutePath() + "'.", e);
+		} catch (IOException ex) {
+			throw new RuntimeException(String.format("%s, File does not exist: %s", ex.getMessage(), inputFile.getPath()));
+		}
 
 		String startTimeString = ini.get(CATEGORY_TIME, PROPERTY_STARTTIME);
 		if(startTimeString == null) throw new RuntimeException(String.format("Error parsing %s, property not found in file: %s", PROPERTY_STARTTIME, inputFile.getPath()));
