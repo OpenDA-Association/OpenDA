@@ -318,7 +318,7 @@ public class D3dWindFile implements IDataObject {
 	private void writeExchangeItem2D(BufferedWriter outputFileBufferedWriter, D3dWindExchangeItem EI) throws IOException {
 
 		Locale locale = new Locale("EN");
-		String floatValueFormat = "%10.3f";
+		String floatValueFormat = "%10.2e";
 
 		// first write the header:
 		int eoh = EI.getEndOfHeader();

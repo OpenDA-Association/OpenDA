@@ -1,26 +1,25 @@
-/* MOD_V2.0 
-* Copyright (c) 2012 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/* MOD_V2.0
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.model_delft3d;
 import org.openda.exchange.ExchangeItem;
 import org.openda.interfaces.IExchangeItem;
-import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.ITimeInfo;
 
 /**
@@ -29,13 +28,12 @@ import org.openda.interfaces.ITimeInfo;
 public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeItem {
 
 	private final ITimeInfo timeInfo;
-	private final IGeometryInfo geometryInfo;
 	private String varName;
-//	private int stationIndex;
+	//	private int stationIndex;
 //	private int layerIndex;
 	private NetcdfD3dMapDataObject netcdfD3dMapDataObject;
 
-	public NetcdfD3dMapExchangeItem(String varName, NetcdfD3dMapDataObject netcdfD3dMapDataObject, ITimeInfo timeInfo, IGeometryInfo geometryInfo) {
+	public NetcdfD3dMapExchangeItem(String varName, NetcdfD3dMapDataObject netcdfD3dMapDataObject, ITimeInfo timeInfo) {
 		super(varName);
 //		super(stationName + "." + varName + ".lay-" + layerIndex);
 		this.varName = varName;
@@ -43,14 +41,17 @@ public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeI
 //		this.layerIndex = layerIndex;
 		this.netcdfD3dMapDataObject = netcdfD3dMapDataObject;
 		this.timeInfo = timeInfo;
-		this.geometryInfo = geometryInfo;
 	}
 
 	@Override
 	public ValueType getValuesType() {
 		return ValueType.doublesType;
 	}
-	
+
+	public Class getValueType() {
+		return double[].class;
+	}
+
 	@Override
 	public Object getValues() {throw new RuntimeException("org.openda.exchange.dataobjects.NetcdfD3dMapExchangeItem.getValues() not implemented yet");
 //		return netcdfD3dMapDataObject.getExchangeItemValues(varName);
@@ -109,11 +110,4 @@ public class NetcdfD3dMapExchangeItem extends ExchangeItem implements IExchangeI
 	public void setTimes(double[] times) {
 		throw new UnsupportedOperationException(getClass().getSimpleName() + ": setTimes not implemented.");
 	}
-
-	@Override
-	public IGeometryInfo getGeometryInfo() {
-		return this.geometryInfo;
-	}
-
 }
-

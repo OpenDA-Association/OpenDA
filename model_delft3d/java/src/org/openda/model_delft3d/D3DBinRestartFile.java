@@ -1,22 +1,22 @@
-/* MOD_V2.0 
-* Copyright (c) 2012 OpenDA Association 
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/* MOD_V2.0
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.model_delft3d;
 import ucar.ma2.Array;
 
@@ -73,7 +73,7 @@ public class D3DBinRestartFile {
 					int binIndex = m + mMax * n + mMax * nMax * lay;
 					if (!Double.isNaN(values[ncIndex])) {
 						valuesInRestartBinOrder[binIndex] = values[ncIndex];
- 					}
+					}
 					else {
 						valuesInRestartBinOrder[binIndex] = 0d;
 					}
@@ -161,11 +161,18 @@ public class D3DBinRestartFile {
 
 		if (varName.equals("S1")){
 			positionAndSize[0] = recLenIndicatorSize; // after first rec length
+//			positionAndSize[1] = mMax*nMax*valueSize;
 		}else if (varName.equals("U1")){
 			positionAndSize[0] = 2 * recLenIndicatorSize + mMax*nMax*valueSize + recordDividerSize;
+//			positionAndSize[0] = 2 * recLenIndicatorSize + recordDividerSize + mMax*nMax*valueSize;
+//			positionAndSize[1] = mMax*nMax*nLay*valueSize;
 		}else if (varName.equals("V1")){
+//			positionAndSize[0] = 3 * recLenIndicatorSize + 2 * recordDividerSize + mMax*nMax*nLay*valueSize;
+//			positionAndSize[1] = mMax*nMax*nLay*valueSize;
 			positionAndSize[0] = (2+nLay) * recLenIndicatorSize + (1+nLay)*recordDividerSize + mMax*nMax*valueSize + mMax*nMax*nLay*valueSize;
 		}else if (varName.equals("R1")){
+//			positionAndSize[0] = 4 * recLenIndicatorSize + 3 * recordDividerSize + 2*mMax*nMax*nLay*valueSize;
+//			positionAndSize[1] = mMax*nMax*nLay*nSubstances*valueSize;
 			positionAndSize[0] = (2+2*nLay) * recLenIndicatorSize + (1+2*nLay)*recordDividerSize + mMax*nMax*valueSize + 2*mMax*nMax*nLay*valueSize;
 		}else{
 			throw new RuntimeException("Only S1, U1 V1 and R1 are supported for writing into the binary restart file");
@@ -174,6 +181,9 @@ public class D3DBinRestartFile {
 	}
 
 	private static byte[] float2ByteArray(float value) {
+//		byte[] bytes = new byte[4];
+//		ByteBuffer.wrap(bytes).putFloat(value);
+//		return bytes;
 		byte[] bytes = ByteBuffer.allocate(4).putFloat(value).array();
 		return swapBytes(bytes);
 	}

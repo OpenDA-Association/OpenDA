@@ -1,22 +1,22 @@
 /* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
-* All rights reserved.
-*
-* This file is part of OpenDA.
-*
-* OpenDA is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation, either version 3 of
-* the License, or (at your option) any later version.
-*
-* OpenDA is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.model_delft3d;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfUtils;
@@ -24,7 +24,6 @@ import org.openda.interfaces.*;
 import ucar.ma2.Array;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -48,10 +47,6 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	int lstsciDimensionIndex = -1;
 	int kmaxOutRestrDimensionIndex = -1;
 	int statDimensionIndex = -1;
-	// Different indices are needed for the variables of interest since they have different sizes
-	//int timeDimensionIndexVelocity = -1;
-	int kmaxOutRestrDimensionIndexVelocity = -1;
-	int statDimensionIndexVelocity = -1;
 
 	public void initialize(File workingDir, String[] arguments) {
 		if (arguments.length != 1) {
@@ -60,15 +55,12 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		try {
-			netcdfFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
+			netcdfFile = new NetcdfFile(netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
-			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
+			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
 
 		readNetCdfVariables();
-		createEnergyExchangeItem();
-		createVelocityMagnitudeExchangeItem();
-
 	}
 
 	public void finish() {
@@ -100,7 +92,8 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	private void readNetCdfVariables() {
 
 		//in most netcdfFiles the time and spatial coordinate variables are shared between multiple data variables.
-		//Therefore cache timeInfo objects so that time coordinate variables are never read more than once.
+		//Therefore cache timeInfo objects so that time coordinate variables
+		//are never read more than once.
 		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
 
 		// Loading of variable containing stations names
@@ -121,14 +114,14 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		for (Variable variable : this.netcdfFile.getVariables()) {
 
-			if (variable.getShortName().equalsIgnoreCase("GRO")) {
+			if (variable.getName().equalsIgnoreCase("GRO")) {
 
 				Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, this.netcdfFile);
 				if (timeVariable == null) {
 					throw new RuntimeException("NetcdfD3dHisDataObject: no time axis for GRO, file: " + netcdfFile.getLocation());
 				}
-				timeDimensionIndex = variable.findDimensionIndex(timeVariable.getShortName());
-				timeDependentVars.put(variable.getShortName(), variable);
+				timeDimensionIndex = variable.findDimensionIndex(timeVariable.getName());
+				timeDependentVars.put(variable.getName(), variable);
 				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
 
 				// if this is the first time dependent variable: read the times
@@ -137,8 +130,8 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 					try {
 						timesArray = timeVariable.read();
 					} catch (IOException e) {
-						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getShortName() +
-								"from netcdf file " + netcdfFile.getLocation());
+						throw new RuntimeException("NetcdfD3dMapDataObject could not read time variable " + timeVariable.getName() +
+							"from netcdf file " + netcdfFile.getLocation());
 					}
 					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
 				}
@@ -156,26 +149,26 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 				int layerCount = 0;
 				for (int i = 0; i < dimensions.size(); i++) {
 					Dimension dimension = dimensions.get(i);
-					if (dimension.getShortName().equalsIgnoreCase("LSTSCI")) {
+					if (dimension.getName().equalsIgnoreCase("LSTSCI")) {
 						lstsciDimensionIndex = i;
 						if (dimension.getLength() != 1) {
 							throw new RuntimeException("NetcdfD3dHisDataObject: #GRO != 1 is not supported (temp. or salt), file: "
-									+ netcdfFile.getLocation());
+								+ netcdfFile.getLocation());
 						}
 					}
-					if (dimension.getShortName().equalsIgnoreCase("KMAXOUT_RESTR")) {
+					if (dimension.getName().equalsIgnoreCase("KMAXOUT_RESTR")) {
 						kmaxOutRestrDimensionIndex = i;
 						if (dimension.getLength() < 0) {
 							throw new RuntimeException("NetcdfD3dHisDataObject: could not read number of layers, file: "
-									+ netcdfFile.getLocation());
+								+ netcdfFile.getLocation());
 						}
 						layerCount = dimension.getLength();
 					}
-					if (dimension.getShortName().equalsIgnoreCase("NOSTAT")) {
+					if (dimension.getName().equalsIgnoreCase("NOSTAT")) {
 						statDimensionIndex = i;
 						if (dimension.getLength() < 1) {
 							throw new RuntimeException("NetcdfD3dHisDataObject: no station found, file: "
-									+ netcdfFile.getLocation());
+								+ netcdfFile.getLocation());
 						}
 						statCount = dimension.getLength();
 					}
@@ -183,76 +176,6 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 				if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 || statDimensionIndex == 0) {
 					throw new RuntimeException("NetcdfD3dHisDataObject: dims not available, file: "
-							+ netcdfFile.getLocation());
-
-				}
-
-				stationNames = new String[statCount];
-				for (int stat = 0; stat < statCount ; stat++) {
-					for (int layer = 0; layer < layerCount ; layer++) {
-
-						// Building station names (strings) from list of chars
-						String statName = String.valueOf(java.util.Arrays.copyOfRange(nameCharArray,(stat*stringLength),((stat+1)*stringLength-1))).replaceAll("\\s","");
-						IExchangeItem exchangeItem = new NetcdfD3dHisExchangeItem(
-								variable.getShortName(), statName, stat, layer, this, timeInfo);
-						this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
-					}
-				}
-			}else if (variable.getShortName().equalsIgnoreCase("ZCURU") || variable.getShortName().equalsIgnoreCase("ZCURV") || variable.getShortName().equalsIgnoreCase("ZCURW")) {
-
-				Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(variable, this.netcdfFile);
-				if (timeVariable == null) {
-					throw new RuntimeException("NetcdfD3dHisDataObject: no time axis for velocities (U, V or W), file: " + netcdfFile.getLocation());
-				}
-				//timeDimensionIndexVelocity = variable.findDimensionIndex(timeVariable.getName());
-				timeDependentVars.put(variable.getShortName(), variable);
-				ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
-
-				// if this is the first time dependent variable: read the times
-				if (timesInNetcdfFile == null) {
-					ucar.ma2.Array timesArray;
-					try {
-						timesArray = timeVariable.read();
-					} catch (IOException e) {
-						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getShortName() +
-							"from netcdf file " + netcdfFile.getLocation());
-					}
-					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
-				}
-				timeInfoForAllTimeDepVars = new TimeInfo(timesInNetcdfFile);
-
-				// get the number of spatial dimensions
-				// one of the dimensions was for time
-				List<Dimension> dimensions = variable.getDimensions();
-				int nonTimeDimensions = dimensions.size() - 1;
-				if (nonTimeDimensions != 2) {
-					throw new RuntimeException("NetcdfD3dHisDataObject: #dims for ZCURU/ZCURV/ZCURW should be two, file: " + netcdfFile.getLocation());
-				}
-
-				int statCount = 0;
-				int layerCount = 0;
-				for (int i = 0; i < dimensions.size(); i++) {
-					Dimension dimension = dimensions.get(i);
-					if (dimension.getShortName().equalsIgnoreCase("KMAXOUT_RESTR")) {
-						kmaxOutRestrDimensionIndexVelocity = i;
-						if (dimension.getLength() < 0) {
-							throw new RuntimeException("NetcdfD3dHisDataObject: could not read number of layers, file: "
-								+ netcdfFile.getLocation());
-						}
-						layerCount = dimension.getLength();
-					}
-					if (dimension.getShortName().equalsIgnoreCase("NOSTAT")) {
-						statDimensionIndexVelocity = i;
-						if (dimension.getLength() < 1) {
-							throw new RuntimeException("NetcdfD3dHisDataObject: no station found, file: "
-								+ netcdfFile.getLocation());
-						}
-						statCount = dimension.getLength();
-					}
-				}
-
-				if (kmaxOutRestrDimensionIndexVelocity == 0 || statDimensionIndexVelocity == 0) {
-					throw new RuntimeException("NetcdfD3dHisDataObject: velocity dims not available, file: "
 						+ netcdfFile.getLocation());
 
 				}
@@ -264,7 +187,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 						// Building station names (strings) from list of chars
 						String statName = String.valueOf(java.util.Arrays.copyOfRange(nameCharArray,(stat*stringLength),((stat+1)*stringLength-1))).replaceAll("\\s","");
 						IExchangeItem exchangeItem = new NetcdfD3dHisExchangeItem(
-							variable.getShortName(), statName, stat, layer, this, timeInfo);
+							variable.getName(), statName, stat, layer, this, timeInfo);
 						this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
 					}
 				}
@@ -272,292 +195,33 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 		}
 	}
 
-	public void createEnergyExchangeItem(){
-		// Read the ZCURU exchangeItems and for each of those create an energy exchangeItem
-		String[] exchangeItemsIDs = this.getExchangeItemIDs();
-
-		for (int i = 0; i < exchangeItemsIDs.length; i++){
-			if (exchangeItemsIDs[i].toLowerCase().contains(("ZCURU").toLowerCase())){
-				IExchangeItem exchangeItemTemp = getDataObjectExchangeItem(exchangeItemsIDs[i]);
-				ITimeInfo timeInfo = exchangeItemTemp.getTimeInfo();
-
-				String[] keySplit = exchangeItemTemp.getId().split("\\.");
-				String statName = keySplit[0];
-
-				int[] stationValues = (int[]) exchangeItemTemp.getValues();
-				int stat = stationValues[0];
-				int layer = stationValues[1];
-
-				//int stat = Integer.parseInt(statName.replaceAll("[^0-9]", "")) - 1;
-				//int layer = Integer.parseInt(keySplit[2].replaceAll("[^0-9]", ""));
-
-				IExchangeItem exchangeItem = new NetcdfD3dHisExchangeItem(
-					"kEN", statName, stat, layer, this, timeInfo);
-				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
-			}
-		}
-	}
-
-	public void createVelocityMagnitudeExchangeItem(){
-		// Read the ZCURU exchangeItems and for each of those create an absolute velocity exchangeItem
-		String[] exchangeItemsIDs = this.getExchangeItemIDs();
-
-		for (int i = 0; i < exchangeItemsIDs.length; i++){
-			if (exchangeItemsIDs[i].toLowerCase().contains(("ZCURU").toLowerCase())){
-				IExchangeItem exchangeItemTemp = getDataObjectExchangeItem(exchangeItemsIDs[i]);
-				ITimeInfo timeInfo = exchangeItemTemp.getTimeInfo();
-
-				String[] keySplit = exchangeItemTemp.getId().split("\\.");
-				String statName = keySplit[0];
-
-				int[] stationValues = (int[]) exchangeItemTemp.getValues();
-				int stat = stationValues[0];
-				int layer = stationValues[1];
-
-				//int stat = Integer.parseInt(statName.replaceAll("[^0-9]", "")) - 1;
-				//int layer = Integer.parseInt(keySplit[2].replaceAll("[^0-9]", ""));
-
-				IExchangeItem exchangeItem = new NetcdfD3dHisExchangeItem(
-					"vMAG", statName, stat, layer, this, timeInfo);
-				this.exchangeItems.put(exchangeItem.getId(), exchangeItem);
-			}
-		}
-	}
-
 	public double[] getExchangeItemValues(String varName, int stationIndex, int layerIndex) {
 
-		Variable variable;
-		if (varName.equalsIgnoreCase("kEN") || varName.equalsIgnoreCase("vMAG")) {
-			variable = this.netcdfFile.findVariable("ZCURU");
-		} else {
-			variable = this.netcdfFile.findVariable(varName);
-		}
+		// find variable. gevalues for sle
+
+		Variable variable = this.netcdfFile.findVariable(varName);
 
 		int[] origin = createOrigin(variable);
 		int[] sizeArray = variable.getShape();
 
+		//select only the given station and layer
 		origin[timeDimensionIndex] = 0;
-		if (varName.equalsIgnoreCase("GRO")) {
-			//select only the given station and layer
-			//origin[timeDimensionIndex] = 0;
-			origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, if several, arguments need to be changed
-			origin[kmaxOutRestrDimensionIndex] = layerIndex;
-			origin[statDimensionIndex] = stationIndex;
-			//only one station and layer
-			sizeArray[kmaxOutRestrDimensionIndex] = 1;
-			sizeArray[statDimensionIndex] = 1;
-		}else if (varName.equalsIgnoreCase("ZCURU") || varName.equalsIgnoreCase("ZCURV") || varName.equalsIgnoreCase("ZCURW")|| varName.equalsIgnoreCase("kEN")) {
-			//origin[timeDimensionIndexVelocity] = 0;
-			origin[kmaxOutRestrDimensionIndexVelocity] = layerIndex;
-			origin[statDimensionIndexVelocity] = stationIndex;
-			//only one station and layer
-			sizeArray[kmaxOutRestrDimensionIndexVelocity] = 1;
-			sizeArray[statDimensionIndexVelocity] = 1;
-		}else if (varName.equalsIgnoreCase("ZWL")){
-			origin[statDimensionIndex] = stationIndex;
-			sizeArray[statDimensionIndexVelocity] = 1;
-		}
+		origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, if several, arguments need to be changed
+		origin[kmaxOutRestrDimensionIndex] = layerIndex;
+		origin[statDimensionIndex] = stationIndex;
 
-		if (varName.equalsIgnoreCase("kEN")) {
-			return getKineticEnergyValues(origin, sizeArray);
-		}else if (varName.equalsIgnoreCase("vMAG")){
-			return getVelocityMagnitudeValues(origin, sizeArray);
-		} else{
-			return NetcdfUtils.readSelectedData(variable, origin, sizeArray, -1);
-		}
+		//only one station and layer
+		sizeArray[kmaxOutRestrDimensionIndex] = 1;
+		sizeArray[statDimensionIndex] = 1;
+		return NetcdfUtils.readSelectedData(variable, origin, sizeArray, -1);
 
 	}
-
-	public double[] getKineticEnergyValues(int[] origin, int[] sizeArray){
-		double[] velocityU1values = NetcdfUtils.readSelectedData(this.netcdfFile.findVariable("ZCURU"), origin, sizeArray, -1);
-		double[] velocityV1values = NetcdfUtils.readSelectedData(this.netcdfFile.findVariable("ZCURV"), origin, sizeArray, -1);
-		double[] kEN = new double[velocityV1values.length];
-
-		for (int i = 0; i < velocityV1values.length; i++){
-			if (velocityU1values[i] == -999 || velocityV1values[i] == -999){
-				kEN[i] = -999;
-			}else {
-				double absVelocity = Math.sqrt(velocityU1values[i] * velocityU1values[i] + velocityV1values[i] * velocityV1values[i]);
-				kEN[i] = 0.5*1000*(absVelocity * absVelocity);
-			}
-		}
-
-		return kEN;
-	}
-
-	public double[] getVelocityMagnitudeValues(int[] origin, int[] sizeArray){
-		double[] velocityU1values = NetcdfUtils.readSelectedData(this.netcdfFile.findVariable("ZCURU"), origin, sizeArray, -1);
-		double[] velocityV1values = NetcdfUtils.readSelectedData(this.netcdfFile.findVariable("ZCURV"), origin, sizeArray, -1);
-		double[] absVelocity = new double[velocityV1values.length];
-
-		for (int i = 0; i < velocityV1values.length; i++){
-			if (velocityU1values[i] == -999 || velocityV1values[i] == -999){
-				absVelocity[i] = -999;
-			}else {
-				absVelocity[i] = Math.sqrt(velocityU1values[i] * velocityU1values[i] + velocityV1values[i] * velocityV1values[i]);
-			}
-		}
-
-		return absVelocity;
-	}
-
-	//TB: this static method is to be called everytime the Map file is written, so that the History file is also updated accordingly
-	public static void hisFileWriter(String varName, double[] values,File workingDir,String runID,int mMax,int nMax,int nLay) {
-
-		//Names in the history files don't match the ones in the map file
-		if (varName.equalsIgnoreCase("R1")) {
-			varName = "GRO";
-		}else if (varName.equalsIgnoreCase("U1")){
-			varName = "ZCURU";
-		}else if (varName.equalsIgnoreCase("V1")){
-			varName = "ZCURV";
-		}else if (varName.equalsIgnoreCase("S1")){
-			varName = "ZWL";
-			nLay = 1;
-		}else {
-			throw new RuntimeException("NetcdfD3dHisDataObject writing of the following variable is not implemented: " + varName);
-		}
-
-		File netcdfFilePath = new File(workingDir, "trih-" + runID + ".nc");
-
-		NetcdfFile netcdfHisFile;
-		try {
-			netcdfHisFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
-		} catch (IOException e) {
-			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
-		}
-
-		Variable stationIndices = netcdfHisFile.findVariable("MNSTAT");
-
-		Variable timeVariable = NetcdfUtils.findTimeVariableForVariable(stationIndices, netcdfHisFile);
-		int timeDimensionIndex = stationIndices.findDimensionIndex(timeVariable.getShortName());
-
-		//int LastTimeIndex = timeInfo.getTimes().length;
-		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
-		ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(stationIndices, netcdfHisFile,timeInfoCache);
-		int LastTimeIndex = timeInfo.getTimes().length;
-
-		double[] stationsMN = NetcdfUtils.readDataForVariableFor2DGridForSingleTime(stationIndices,timeDimensionIndex,LastTimeIndex-1,-1);
-		int nStation = stationsMN.length/2;
-
-		double[][][] Domain3D = from1dTo3dArray(values,mMax,nMax,nLay);
-
-		// Extracting the stations from the 3D domain
-		double[] stationValues = new double[nStation*nLay];
-		for (int nstat = 0; nstat < nStation; nstat++){
-
-			int mStat = (int) stationsMN[nstat*2];
-			int nStat = (int) stationsMN[nstat*2+1];
-
-			double[] stationArray = getStationArray(Domain3D,mStat,nStat,nLay);
-
-			int k=0;
-			for (int i = 0;i < stationArray.length;i++){
-				stationValues[k*nStation+nstat] = stationArray[i];
-				k++;
-			}
-
-		}
-
-		// Writing StationValues into the netcdf his file:
-		Variable variable = netcdfHisFile.findVariable(varName);
-		int[] sizeArray = variable.getShape();
-		int[] origin = createOrigin(variable);
-
-		origin[timeDimensionIndex] = LastTimeIndex-1;
-		sizeArray[timeDimensionIndex] = 1;
-
-		int kmaxOutRestrDimensionIndex = -1;
-		int lstsciDimensionIndex = -1;
-
-		List<Dimension> dimensions = variable.getDimensions();
-		for (int i = 0; i < dimensions.size(); i++) {
-			Dimension dimension = dimensions.get(i);
-			if (varName.equalsIgnoreCase("GRO")){
-				if (dimension.getShortName().equalsIgnoreCase("LSTSCI")) {
-					lstsciDimensionIndex = i;
-					if (dimension.getLength() != 1) {
-						throw new RuntimeException("NetcdfD3dHisDataObject: #R1 != 1 is not supported (temp. or salinity), file: "
-								+ netcdfHisFile.getLocation());
-					}
-					origin[lstsciDimensionIndex] = 0; //Only a single constituent possible for now, needs to be changed
-				}
-			}
-			if (!varName.equalsIgnoreCase("ZWL")) {
-				if (dimension.getShortName().equalsIgnoreCase("KMAXOUT_RESTR")) {
-					kmaxOutRestrDimensionIndex = i;
-					if (dimension.getLength() < 0) {
-						throw new RuntimeException("NetcdfD3dHisDataObject: could not read number of layers, file: "
-								+ netcdfHisFile.getLocation());
-					}
-					origin[kmaxOutRestrDimensionIndex] = 0;
-				}
-			}
-
-		}
-
-		if (lstsciDimensionIndex == 0 || kmaxOutRestrDimensionIndex == 0 ) {
-			throw new RuntimeException("NetcdfD3dHisDataObject: dims not available, file: "
-					+ netcdfHisFile.getLocation());
-		}
-
-
-		NetcdfFileWriter netcdfFileWriter = null;
-		try {
-			netcdfFileWriter = NetcdfFileWriter.openExisting(netcdfFilePath.getAbsolutePath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		NetcdfUtils.writeSelectedData(netcdfFileWriter,variable, origin, sizeArray, stationValues);
-
-		try {
-			netcdfFileWriter.close();
-			netcdfHisFile.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
 
 	public static int[] createOrigin(Variable var) {
 		int dimensionCount = var.getDimensions().size();
 		int[] origin = new int[dimensionCount];
 		Arrays.fill(origin, 0);
 		return origin;
-	}
-
-	private static double[][][] from1dTo3dArray(double[] oneDArray, int mMax, int nMax, int nLay){
-
-		double Domain3D[][][] = new double[mMax][nMax][nLay];
-
-		int k=0;
-		for (int lay = 0; lay < nLay; lay++) {
-			for (int m = 0; m < mMax; m++) {
-				for (int n = 0; n < nMax; n++) {
-
-					Domain3D[m][n][lay] = oneDArray[k];
-					k++;
-
-				}
-			}
-		}
-		return Domain3D;
-	}
-
-	private static double[] getStationArray(double[][][] Domain3D,int mStat,int nStat,int nLay){
-
-		double[] StationArray = new double[nLay];
-
-		int k=0;
-		for (int layer = 0; layer < nLay; layer++){
-
-			StationArray[k] = Domain3D[mStat-1][nStat-1][layer];
-			k++;
-		}
-
-		return StationArray;
 	}
 
 }
