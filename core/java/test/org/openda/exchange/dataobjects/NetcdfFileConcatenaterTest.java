@@ -26,6 +26,7 @@ import ucar.nc2.NetcdfFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class NetcdfFileConcatenaterTest extends TestCase {
 	private File testRunDataDir;
@@ -135,6 +136,36 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		assertTrue(targetFile.exists());
 
 		checkConcatenatedValues(firstFile, targetFile, secondFile, 7);
+	}
+
+	public void testConcatenationOfManyFiles() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateStress");
+		File inputDirectory = new File(testRunDataSubDir, "input");
+		File targetFile = new File(testRunDataSubDir, "concatenated_averaged.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		File[] files = Objects.requireNonNull(inputDirectory.listFiles());
+		Arrays.sort(files);
+		for(File file : files) {
+			NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), file.getAbsolutePath(), "useOldValueOnOverlap=true"});
+		}
+		File expectedFile = new File(testRunDataSubDir, "expected_averaged.nc");
+		long expected = NetcdfFile.open(expectedFile.toString()).findVariable("time").read().getSize();
+		long target = NetcdfFile.open(targetFile.toString()).findVariable("time").read().getSize();
+		assertEquals("Time data matches", expected, target);
+	}
+
+	public void testConcatenationOfManyFilesInOneGo() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateStress");
+		File inputDirectory = new File(testRunDataSubDir, "input");
+		File targetFile = new File(testRunDataSubDir, "concatenated_averaged.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), inputDirectory.getAbsolutePath(), "useOldValueOnOverlap=true"});
+		assertTrue(targetFile.exists());
+		File expectedFile = new File(testRunDataSubDir, "expected_averaged.nc");
+		long expected = NetcdfFile.open(expectedFile.toString()).findVariable("time").read().getSize();
+		long target = NetcdfFile.open(targetFile.toString()).findVariable("time").read().getSize();
+		assertEquals("Time data matches", expected, target);
 	}
 
 	private void checkConcatenatedValues(File firstFile, File targetFile, File secondFile, int split) throws IOException {
