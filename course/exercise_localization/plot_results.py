@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
-import enkf50_results as enkf
+# set the name of your result input file in this import
+import enkf25_loc_results as enkf
 import true_state
 
 
@@ -41,10 +42,6 @@ def main():
 
     plt.show()
 
-
-
-
-#    plaatje_timeseries()
 
 if __name__ == "__main__":
     main()
