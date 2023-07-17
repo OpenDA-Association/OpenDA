@@ -80,17 +80,17 @@ pollution model these files are:
           when the model is run.
         \item {\tt inputOutput:} the list of 'input/output objects', usually
           files, that are used to access the model, i.e. to adjust the model's
-          input, and to retrieve the model's results. For each 'ioObject' one
+          input, and to retrieve the model's results. For each 'dataObject' one
           must specify:
         \begin{itemize}
            \item the java class that handles the reading from and/or writing to
              the file
-           \item the identifier of the ioObject, so that the model
+           \item the identifier of the dataObject, so that the model
              configuration file can refer to it when specifying the model
              variables that can be accessed by OpenDA, the so called 'exchange
              items' (see below)
            \item optionally, the arguments that are needed to initialize the
-             ioObject, i.e. to open the file.
+             dataObject, i.e. to open the file.
         \end{itemize}
      \end{itemize}
    \item {\tt polluteModel.xml}: This is the main specification of the
@@ -108,8 +108,8 @@ pollution model these files are:
         \item {\tt exchangeItems}: The model variables that are allowed to be
           accessed by OpenDA, for instance parameters, boundary conditions, and
           computed values at certain locations. Each variable exchange item
-          consists of its id, the ioObject that contains the item, and the
-          'element name', the name of the exchange item in the ioObject.
+          consists of its id, the dataObject that contains the item, and the
+          'element name', the name of the exchange item in the dataObject.
      \end{itemize}
    \item {\tt polluteStochModel.xml}: This is the specification of the
      stochastic model. It contains of two parts:
