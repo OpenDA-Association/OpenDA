@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 """
 Plot cost evolution
@@ -25,4 +25,4 @@ ax[0].set_ylabel("cost function");
 ax[1].plot(dud.evaluatedParameters);
 ax[1].set_xlabel('model run');
 ax[1].set_ylabel('change of reaction\_time [seconds]');
-
+plt.show()
