@@ -6,6 +6,7 @@
 		<configFile>timeSeriesFormatter.xml</configFile>
 	</stochObserver>
 	<restartOutFilePrefix>restart_</restartOutFilePrefix>
+	<!-- <restartInFile>restart_3..xml</restartInFile> -->
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
 		<configFile>polluteStochModel.xml</configFile>
@@ -15,10 +16,10 @@
 		<configString>dudAlgorithm.xml</configString>
 	</algorithm>
 	<resultWriters>
-	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+	<!--<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>dud_results.m</configFile>
-	</resultWriter>
+	</resultWriter> -->
 	<resultWriter className="org.openda.resultwriters.PythonResultWriter">
 		<workingDirectory>.</workingDirectory>
 		<configFile>dud_results.py</configFile>
