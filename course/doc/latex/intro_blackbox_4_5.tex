@@ -1,35 +1,37 @@
-
-
 A simple way to connect a model to OpenDA is by letting OpenDA access the input
 and output files of the model. OpenDA cannot directly understand the input and
 output files of an arbitrary model. Some code has to be written such that the
-black box model implementation of OpenDA can read and write these files. In
-this exercise you will learn how to connect an existing model to OpenDA
+black-box model implementation of OpenDA can read and write these files. In
+this exercise, you will learn how to connect an existing model to OpenDA
 assuming that all the input and output files of the model can indeed be
-accessed by OpenDA. The exercise focusses on the configuration of the black box
-wrapper in OpenDA.\\
+accessed by OpenDA. The exercise focuses on the configuration of the black-box
+wrapper in OpenDA.
 
 The model describes
 the advection of two chemical substances. The first substance $c_1$ is emitted
-as a pollutant by a number sources. However, in this case this substance reacts
+as a pollutant by a number of sources. However, in this case this substance reacts
 with the oxygen in the air to form a more toxic substance $c_2$. The model
 implements the following equations:
 
 \begin{eqnarray}
     \frac{\partial c_1}{\partial t} + u\frac{\partial c_1}{\partial x} & = & -
-    1/T c_1 \\
+    1/T c_1, \\
     \frac{\partial c_2}{\partial t} + u\frac{\partial c_2}{\partial x} & = &
-    1/T c_1
+    1/T c_1.
 \end{eqnarray}
 
 
-In the directory {\tt { \opgave}/original\_model/} you will find:
+In the directory 
+
+{\tt { \opgave}/original\_model/}
+
+you will find:
 \begin{enumerate}
-	\item model executable {\tt reactive\_pollution\_model.py} (linux and mac)
-	      and  {\tt reactive\_pollution\_model.exe} (windows)
-	\item {\tt config.yaml} the model configuration file
-        \item {\tt forcings} the forcings of the model (injection of pollutant)
-	\item {\tt input} the initial model state 
+	\item the model executable: {\tt reactive\_pollution\_model.py} (Linux and Mac)
+	      and  {\tt reactive\_pollution\_model.exe} (Windows);
+	\item the model configuration file: {\tt config.yaml};
+        \item the forcings of the model (injection of pollutant): {\tt forcings};
+	\item the initial model state: {\tt input}.
 \end{enumerate}
 
 
@@ -37,60 +39,63 @@ In the directory {\tt { \opgave}/original\_model/} you will find:
 	\item Run the model, in the {\tt original\_model} directory from the
 	      command line, not using OpenDA.
 \end{itemize}
-The model generates the output files {\tt c1\_locA},{\tt c1\_locB},
-{\tt c1\_locC}, {\tt c1\_locA}, {\tt c2\_locB}, {\tt c2\_locC} with timeseries
-of substance $c_1$ and $c_2$ at three predefinined locations in the model. The
-folders {\tt maps} contains output files with the conentration of $c_1$ and $c_2$ on each grid point at specfied times.
-The folder {\tt restart} contains files that allows the model to restart; continue the computations from the point where a restart file has been written.
+The model generates the output files 
+
+{\tt c1\_locA},{\tt c1\_locB}, {\tt c1\_locC}, {\tt c1\_locA}, {\tt c2\_locB}, and {\tt c2\_locC},
+
+with time series
+of substance $c_1$ and $c_2$ at three predefined locations in the model. The
+folder {\tt maps} contains output files with the concentration of $c_1$ and $c_2$ on each grid point at specified times.
+The folder {\tt restart} contains files that allow the model to restart; continue the computations from the point where a restart file has been written.
 \begin{itemize}
-	\item Investigate the input and output files of the model 
-	\item generate a movie by running the script {\tt plot\_movie\_orig.py} script from the {\tt { \opgave}} (!) directory. This allows you  to study the behaviour of the model. 
+	\item Investigate the input and output files of the model. 
+	\item Generate a movie by running the script {\tt plot\_movie\_orig.py} script from the {\tt { \opgave}} (!) directory. This allows you  to study the behavior of the model. 
 \end{itemize}
 
 \subsection{Wrapper configuration files}
 
-The input and outputfiles of this model are all easy to interpret ASCII files. 
-Therefore we do not need model specific routines to couple this model to OpenDA.
+The input and output files of this model are all easy-to-interpret ASCII files. 
+Therefore, we do not need model-specific routines to couple this model to OpenDA.
 
-When you couple an arbitrary model to OpenDA and you want to use the black box coupler there are two appoaches:
+When you couple an arbitrary model to OpenDA and you want to use the black-box coupler, there are two approaches:
 \begin{itemize}
-	\item write a pre and post processing sript that translates the (relevant)
+	\item write a pre- and post-processing script that translates the (relevant)
 	      model files into a more generic format that is already supported
 	      (e.g. ASCII or NetCDF).
-	\item write your own adapter in java (dataobject) to read and write the
+	\item write your own adapter in Java (data object) to read and write the
 	      model input and output files.
 \end{itemize}
 
-A black box wrapper configuration usually consists of three xml files. For our
-pollution model these files are:
+A black-box wrapper configuration usually consists of three XML files. For our
+pollution model, these files are:
 \begin{enumerate}
-   \item {\tt polluteWrapper.xml}: This file specifies how OpenDA can run the model, which input and output files are involved and dataobjects are used to interpret the model files.
+   \item {\tt polluteWrapper.xml}: This file specifies how OpenDA can run the model, which input and output files are involved, and which data objects are used to interpret the model files.
      \\ This file
      consists of the parts:
      \begin{itemize}
         \item {\tt aliasDefinitions:} This is a list of strings that can be
-          aliased in the other xml files. This helps to make the
-          wrapperxml-file more generic. E.g. the alias definition
-          \%outputFile\% can be used to refer to the output file of the model,
+          aliased in the other XML files. This helps to make the
+          wrapper XML file more generic. E.g. the alias definition
+          \verb|%outputFile%| can be used to refer to the output file of the model,
           without having to know the actual name of that output file.\\ Note
-          the special alias definition \%instanceNumber\%. This will be
+          the special alias definition \verb|%instanceNumber%|. This will be
           replaced internally at runtime with the member number of each created
           model instance.
         \item {\tt run:} the specification of what commands need to be executed
           when the model is run.
         \item {\tt inputOutput:} the list of 'input/output objects', usually
           files, that are used to access the model, i.e. to adjust the model's
-          input, and to retrieve the model's results. For each 'dataObject' one
+          input, and to retrieve the model's results. For each 'dataObject', one
           must specify:
         \begin{itemize}
-           \item the java class that handles the reading from and/or writing to
+           \item the Java class that handles the reading from and/or writing to
              the file
            \item the identifier of the dataObject, so that the model
              configuration file can refer to it when specifying the model
-             variables that can be accessed by OpenDA, the so called 'exchange
+             variables that can be accessed by OpenDA, the so-called 'exchange
              items' (see below)
            \item optionally, the arguments that are needed to initialize the
-             dataObject, i.e. to open the file.
+             data object, i.e. to open the file.
         \end{itemize}
      \end{itemize}
    \item {\tt polluteModel.xml}: This is the main specification of the
@@ -99,44 +104,44 @@ pollution model these files are:
         \item {\tt wrapperConfig}: A reference to the wrapper config file
           mentioned above.
         \item {\tt aliasValues}: The actual values to be used for the aliases
-          defined in the wrapper config file. For instance the \%configFile\%
-          alias is set to the value "config.yaml".
+          defined in the wrapper config file. For instance, the \verb|%configFile%|
+          alias is set to the value \verb|config.yaml|.
         \item {\tt timeInfoExchangeItems}: The name of the model variables (the
           'exchange items') that can be accessed to modify the start and end
-          time of the period to that the model should compute to propagate
+          time of the period that the model should compute to propagate
           itself to the next analysis time.
         \item {\tt exchangeItems}: The model variables that are allowed to be
-          accessed by OpenDA, for instance parameters, boundary conditions, and
+          accessed by OpenDA, for instance, parameters, boundary conditions, and
           computed values at certain locations. Each variable exchange item
           consists of its id, the dataObject that contains the item, and the
           'element name', the name of the exchange item in the dataObject.
      \end{itemize}
-   \item {\tt polluteStochModel.xml}: This is the specification of the
-     stochastic model. It contains of two parts:
+   \item {\tt polluteStochModel.xml}: the specification of the
+     stochastic model. It consists of two parts:
      \begin{itemize}
         \item {\tt modelConfig}: A reference to the deterministic model
           configuration file mentioned above {\tt polluteModel.xml}.
         \item {\tt vectorSpecification}: The specification of the vectors that
           will be accessed by the OpenDA algorithm. These vectors are grouped
-          in two parts:
+          into two parts:
           \begin{itemize}
              \item The state that is manipulated by an OpenDA filtering
                algorithm, i.e. the state of the model combined with the noise
                model(s).
-             \item The so called predictions, i.e. the values on observation
+             \item The so-called predictions, i.e. the values on observation
                locations as computed by the model.
           \end{itemize}
      \end{itemize}
 \end{enumerate}
 
-Start with a single OpenDA-run to understand where the model results appear
+Start with a single OpenDA run to understand where the model results appear
 for this configuration:
 \begin{itemize}
  \item Have a look at the files {\tt polluteWrapper.xml}, {\tt
    polluteModel.xml} and {\tt polluteStochModel.xml}, and recognize the various
-   items mentioned above. Start the OpenDA GUI from the {\tt public/bin}
-   directory and run the model by using the {\tt Simulation.oda} configuration.
+   items mentioned a\-bove. Start the OpenDA GUI from the {\tt public/bin}
+   directory and run the model using the {\tt Simulation.oda} configuration.
    Note that the actual model results are available in the directory where the
-   black box wrapper has let the model perform its computation: {\tt
+   black-box wrapper has let the model perform its computation: {\tt
      work/work0}.
 \end{itemize}

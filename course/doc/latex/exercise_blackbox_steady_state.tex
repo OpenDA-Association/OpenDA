@@ -1,17 +1,21 @@
-{\bf Directory: {\tt exercise\_black\_box\_steady\_state\_filter}}\\
+{\bf Directory: {\tt exercise\_black\_box\_steady\_state\_filter}}
 
-  In this section you will learn how to create and use a steady-state Kalman
+  In this section, you will learn how to create and use a steady-state Kalman
   filter with OpenDA. The example continues with the black-box reaction-pollution-model. Make sure you have completed the previous exercise before you start with this one.
 
-  The steady-state Kalman filter is a special case of the Kalman filter. If the measurement stations are fixed in time and measure with a fixed time-step and the model is linear and time-invariant then the Kalman gain matrix can converge over time to a fixed matrix. Sufficient conditions for this are the stability of the model or the controllability and observability of the model. If the Kalman gain converges, then it's possible to compute it, store it and the re-use the stored gain-matrix. This has a large impact on the computational demand of the algorithm. The steady-filter only uses only a bit more computer time than the model, which is much faster than the Ensemble Kalman filter. The steady-state filter is therefore very suitable for real-time applications, when it can be applied. In a strict sense the steady-state filter has a limited applicability, but if the model is not very non-linear or well constrained by the observations, then the Kalman gain matrix can still show very little variablity over time. In this case the steady-state filter can still be used. Clearly, this will not always work, but the computational advantage are so large that it is often worth considering.
+  The steady-state Kalman filter is a special case of the Kalman filter. If the measurement stations are fixed in time and measure with a fixed time-step and the model is linear and time invariant, then the Kalman gain matrix can converge to a fixed matrix over time. Sufficient conditions for this are the stability of the model or the controllability and observability of the model. If the Kalman gain converges, then it is possible to compute, store, and re-use the stored gain matrix. This has a large impact on the computational demand of the algorithm. The steady-state filter uses only a bit more computer time than the model, which is much faster than the Ensemble Kalman filter. The steady-state filter is therefore very suitable for real-time applications when it can be applied. In a strict sense, the steady-state filter has limited applicability, but if the model is not very non-linear or well constrained by the observations, then the Kalman gain matrix can still show very little variability over time. In this case, the steady-state filter can still be used. Clearly, this will not always work, but the computational advantage is so large that it is often worth considering.
 
 
 \begin{itemize}
-\item Run the {\tt SequentialSimulation.oda} and the {\tt EnKf.oda} in the folder {\tt exercise\_black\_box\_steady\_state\_filter}. While running, have a look at the file {\tt algorithms\/EnKF.xml} in there and notice how the Kalman gains can be written to disc. You can plot these Kalman gains with the script {\tt plot\_gains.py} and study how similar they are. Would you conclude that the Kalman gains are converging? If so, would you conclude that the steady-state filter is applicable? Irrespective of your answer, continue with the next step.
+\item Run the {\tt SequentialSimulation.oda} and the {\tt EnKf.oda} in the folder {\tt exercise\_black\_box\_steady\_state\_filter}. While running, have a look at the file {\tt algorithms\/EnKF.xml} in there and notice how the Kalman gains can be written to the disc. You can plot these Kalman gains with the script {\tt plot\_gains.py} and study how similar they are. Would you conclude that the Kalman gains are converging? If so, would you conclude that the steady-state filter is applicable? Irrespective of your answer, continue with the next step.
 
-\item Now run the {\tt SteadyStateFilter.oda}. What do you notie about the run-time? You can plot the results using the script {\tt plot\_movie\_steady\_state.py} How do the results of the steady-state filter compare to the results of the EnKF? 
+\item Now run the {\tt SteadyStateFilter.oda}. What do you notice about the run time? You can plot the results using the script 
 
-\item  Now repeat the steady-state filter run, but first rerun teh EnKf with a larger number of ensembles. What do you notice about the results of the steady-state filter?
+        {\tt plot\_movie\_steady\_state.py}. How do the results of the steady-state filter compare to the results of the EnKF? 
 
-\item Finally, rerun the steady-state filter, but now with the kalman gain at a different time. You can modify the file {\tt algorithms\/SteadyStateFilter.xml} to do this. Are the results different? What is the cause of teh remaining differences?
+\item  Now repeat the steady-state filter run, but first rerun the EnKf with a larger number of ensembles. What do you notice about the results of the steady-state filter?
+
+\item Finally, rerun the steady-state filter with the Kalman gain at a different time. You can modify the file 
+
+        {\tt algorithms\/SteadyStateFilter.xml} to do this. Are the results different? What is the cause of the remaining differences?
 \end{itemize}

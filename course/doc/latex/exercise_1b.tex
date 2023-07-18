@@ -1,31 +1,28 @@
-{\bf Directory:} \lstinline{exercise_double_pendulum_part1}\\
+{\bf Directory:} \lstinline{exercise_double_pendulum_part1}
 
 A pendulum is a rigid body that can swing under the influence of gravity. It is attached at the top so it can rotate freely in a two-dimensional plane ($x,y$).
 We will assume a thin rectangular shape with the mass equally distributed. A double pendulum is a pendulum connected to the end of another pendulum. Contrary to the 
-regular movement of a pendulum, the motion of a double-pendulum is very irregular when sufficient energy is put into the system. 
+regular movement of a pendulum, the motion of a double pendulum is very irregular when sufficient energy is put into the system. 
 
 \begin{center}
     \includegraphics[height=4cm]{Double-compound-pendulum.png}
 \end{center}
 
-The dynamics of a double-pendulum can be described with the following equations. 
-(This example was copied from \url{https://en.wikipedia.org/wiki/Double_pendulum})
-
-With variables $\theta_1, \theta_2, p_{\theta_1}, p_{\theta_2}$:
+The dynamics of a double pendulum can be described with the following equations (\url{https://en.wikipedia.org/wiki/Double_pendulum}):
 \begin{align}
    \frac{d \theta_1}{dt}&= \frac{6}{m l^2} \frac{2 p_{\theta_1} - 3\cos(\theta_1-\theta_2) p_{\theta_2}}
-   {16-9 \cos^2(\theta_1-\theta_2)}\\
+   {16-9 \cos^2(\theta_1-\theta_2)},\\
    \frac{d \theta_2}{dt}&= \frac{6}{m l^2} \frac{8 p_{\theta_2} - 3\cos(\theta_1-\theta_2) p_{\theta_1}}
-   {16-9 \cos^2(\theta_1-\theta_2)}\\
-   \frac{dp_{\theta_1}}{dt} &= -\frac{1}{2} ml^2 \left( \frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + 3\frac{g}{l} \sin(\theta_1) \right)  \\
-   \frac{dp_{\theta_1}}{dt} &= -\frac{1}{2} ml^2 \left( -\frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + \frac{g}{l} \sin(\theta_2) \right) 
+   {16-9 \cos^2(\theta_1-\theta_2)},\\
+   \frac{dp_{\theta_1}}{dt} &= -\frac{1}{2} ml^2 \left( \frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + 3\frac{g}{l} \sin(\theta_1) \right),  \\
+   \frac{dp_{\theta_1}}{dt} &= -\frac{1}{2} ml^2 \left( -\frac{d \theta_1}{dt} \frac{d \theta_2}{dt} \sin(\theta_1-\theta_2) + \frac{g}{l} \sin(\theta_2) \right), 
 \end{align}
 where the $x,y$-position of the middle of the two segments can be computed as:
 \begin{align}
-   x_1 &= \frac{l}{2} \sin(\theta_1) \\
-   y_1 &= \frac{-l}{2} \cos(\theta_1) \\
-   x_2 &= l ( \sin(\theta_1) + \frac{1}{2} \sin(\theta_2) ) \\
-   y_2 &= -l ( \cos(\theta_1) + \frac{1}{2} \cos(\theta_2) )
+   x_1 &= \frac{l}{2} \sin(\theta_1), \\
+   y_1 &= \frac{-l}{2} \cos(\theta_1), \\
+   x_2 &= l ( \sin(\theta_1) + \frac{1}{2} \sin(\theta_2) ), \\
+   y_2 &= -l ( \cos(\theta_1) + \frac{1}{2} \cos(\theta_2) ).
 \end{align}
 
 This model, although simple, is very nonlinear and has a chaotic nature.  Its
@@ -33,24 +30,22 @@ solution is very sensitive to the parameters and the initial conditions: a
 small difference in those values can lead to a very different solution.
 
 The purpose of this exercise is to get you started with OpenDA. You will learn
-to run a model in OpenDA, make modifications to the input files and plot the
+to run a model in OpenDA, make modifications to the input files, and plot the
 results.
 \subsection{Input files}
-The input for this exercise is located in directory \lstinline{exercise_pendulum_part1}. 
+The input for this exercise is located in the directory \lstinline{exercise_pendulum_part1}. 
 
 For Linux and Mac OS X, go to this directory and start \lstinline{oda_run.sh}, the
 main application of OpenDA. For Windows, start the main application with 
 \lstinline{oda_run_gui.bat} from the \lstinline{$OPENDA/bin} directory. The main 
 application allows you to view and edit the OpenDA configuration files, run your
-simulations and visualize the results.
+simulations, and visualize the results.
 
-\subsection{Simulation and postprocessing with the double pendulum model}
-\subsubsection{simulation}
-Try to run a simulation with the double pendulum model. You can use the configuration file \lstinline{simulation_unperturbed.oda}. 
+\subsection{Simulation and postprocessing with the double-pen\-du\-lum model}
+Try to run a simulation with the double-pendulum model. You can use the configuration file \lstinline{simulation_unperturbed.oda}. 
 
-\subsubsection{postprocessing}      
 \ifshowmatlab
-      For postprocessing in Matlab the results are written to the file
+      For postprocessing in Matlab, the results are written to the file
       \begin{center}
         \lstinline{simulation_unperturbed_results.m}
       \end{center}
@@ -62,7 +57,7 @@ load_results('simulation_unperturbed_results');
 plot_movie(t,unperturbed)\end{lstlisting}
 \fi
       
-For postprocessing in Python the results are written to the file
+For postprocessing in Python, the results are written to the file
 \begin{center}
   \texttt{ simulation\_unperturbed\_results.py}
 \end{center}
@@ -110,7 +105,11 @@ plt.show()
 Then you can start an alternative simulation with the double-pendulum model that
 starts with a slightly different initial condition using the
 configuration file \texttt{ simulation\_perturbed.oda}. The different initial conditions
-can be found in {\ttfamily model\/DoublePendulumStochModel.xml} and {\ttfamily model\/DoublePendulumStochModel\_perturbed.xml}
+can be found in 
+\begin{itemize}
+ \item {\ttfamily model\/DoublePendulumStochModel.xml}, and 
+ \item {\ttfamily model\/DoublePendulumStochModel\_perturbed.xml}.
+\end{itemize}
 
 Visualize the unperturbed and perturbed results in a single plot. Make
        a movie and a time-series plot of $\theta_1$ and $\theta_2$ variables. Do you see
@@ -133,7 +132,7 @@ plot(tp,perturbed(2,:),'g');
 hold off;\end{lstlisting}
 \fi
       
-To create a movie with both results in python type:
+To create a movie with both results in Python type:
 \begin{lstlisting}[style=PythonStyle,caption={Python initialize}]
 import simulation_unperturbed_results as unperturbed
 import simulation_perturbed_results as perturbed
@@ -155,16 +154,18 @@ plt.show() \end{lstlisting}
 
 \subsection{An ensemble of model runs}
 Next, we want to create an ensemble of model runs all with slightly different initial conditions. 
-      You can do this in a number of steps:
+      You can do this in several steps:
       \begin{itemize}
-      \item First create the input file \texttt{ simulation\_ensemble.oda} based on\\
-            \texttt{ simulation\_unperturbed.oda}. Change the algorithm and the
-            configuration of the algorithm.\\
-            hint: the algorithm is called \\
-            org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation.
-      \item Create a configuration file for the Ensemble algorithm (e.g. named\\
-            \texttt{algorithm/SequentialEnsembleSimulation.xml}) with the following content:
-\begin{lstlisting}[language=XML,frame=single,caption={XML-input for sequentialAlgorithm}]
+      \item First, create the input file \texttt{ simulation\_ensemble.oda} based on
+
+            \texttt{simulation\_unperturbed.oda}. Change the algorithm and the
+            configuration of the algorithm. Hint: the algorithm is called
+
+            \verb|org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation|.
+      \item Create a configuration file for the ensemble algorithm (e.g. named
+
+            \texttt{algorithm/SequentialEnsembleSimulation.xml}). It should contain the following content:
+\begin{lstlisting}[language=XML,frame=single,caption={XML input for sequentialAlgorithm}]
 <?xml version="1.0" encoding="UTF-8"?>
 <sequentialAlgorithm>
   <analysisTimes type="fromObservationTimes"></analysisTimes>
@@ -175,11 +176,15 @@ Next, we want to create an ensemble of model runs all with slightly different in
 </sequentialAlgorithm>
 
 \end{lstlisting}
-      Hint: do not forget to reference \texttt{ algorithm/SequentialEnsembleSimulation.xml} in \\ \texttt{ simulation\_ensemble.oda}
-      and do not forget to give a diferent name to the output files.
+      Hint: do not forget to refer to 
+
+      \texttt{algorithm/SequentialEnsembleSimulation.xml} in 
+
+      \texttt{simulation\_ensemble.oda}
+      and do not forget to give a different name to the output files.
       \item Run the new configuration with OpenDA.
 
-      \item make a plot of the first and second variable of the five ensemble
+      \item Make a plot of the first and second variables of the five ensemble
       members in a single time-series plot
 \ifshowmatlab
 \begin{lstlisting}[style=MatlabStyle,frame=single,caption={Matlab}]
@@ -245,5 +250,5 @@ plt.show()
 \end{lstlisting}
       
 We can see that although our simulation starts on the right track, it quickly diverges from the observations.
-The aim of the Ensemble Kalman filter or data-assimilation in general, is to keep the model on track. 
+The aim of the Ensemble Kalman filter or data assimilation in general, is to keep the model on track. 
 \end{itemize}
