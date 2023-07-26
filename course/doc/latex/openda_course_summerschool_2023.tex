@@ -1,4 +1,5 @@
 \documentclass[a4paper,10pt]{article}
+\setlength{\parindent}{0cm}
 %\usepackage[utf8x]{inputenc}
 \usepackage{listings}
 \usepackage{color}
@@ -111,7 +112,7 @@
 \usepackage{graphicx}
 
 %opening
-\title{OpenDA Course and Exercises}
+\title{OpenDA Course 2023}
 \author{Nils van Velzen, Martin Verlaan}
 
 \begin{document}
@@ -143,12 +144,13 @@
 \tableofcontents
 
 \section*{Installation of OpenDA}
-Before you can start with the exercises you must first install OpenDA. For the
-latest instructions, you are referred to \verb|$OPENDA/doc/OpenDA_domunentation.pdf|, 
-section ``Installation'' or the same document on our website \url{www.openda.org}.
+Before you can start with the exercises, you should first install OpenDA. For the
+latest instructions, you are referred to
+
+\url{https://docs.openda.org/en/readthedocs/OpenDA_installation.html}.
 
 \newpage
-\section{Exercise: Getting started}
+\section{Exercise: Getting Started}
 \input{exercise_1b}
 
 \section{Exercise: Some basic properties of the EnKF}
@@ -161,15 +163,19 @@ section ``Installation'' or the same document on our website \url{www.openda.org
 \section{Exercise: Localization}
 \input{exercise_7}
 
-\section{Exercise  A black box model - Calibration}
+\section{Exercise:  A black-box model --- Calibration}
 \newcommand{\opgave}{exercise\_black\_box\_calibration\_polution}
 \input{intro_blackbox_4_5}
 \input{exercise_4}
 
 
-\section{Exercise: A black box model - Filtering}
+\section{Exercise: A black-box model --- Filtering}
 \renewcommand{\opgave}{exercise\_black\_box\_enkf\_polution}
 \input{exercise_5}
+
+% Steady-state filter for black-box pollution model
+\section{Exercise: A black-box model --- Steady-state filter}
+\input{exercise_blackbox_steady_state}
 
 %\section{Exercise 6: Writing your own toy model}
 %\input{exercise_6}
