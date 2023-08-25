@@ -229,10 +229,12 @@ public class NetcdfFileConcatenater {
 			}
 			if (convertedTimesToBeAdded[0] < timesTarget[timesTarget.length - 1]) throw new RuntimeException("File to be added has first time before last time of target file");
 			int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
+			VariablesToJoin variablesToJoin = new VariablesToJoin(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget);
+			ArraysToJoin arraysToJoin = new ArraysToJoin(targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded);
 			if (convertedTimesToBeAdded[0] == timesTarget[timesTarget.length - 1]) {
-				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, new ArraysToJoin(targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded), totalTimesCombined, true, useOldValueOnOverlap);
+				addConcatenatedValueArraysToMaps(variablesToJoin, concatenateTimeVariable, arraysToJoin, totalTimesCombined, true, useOldValueOnOverlap);
 			} else {
-				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, new ArraysToJoin(targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded), totalTimesCombined, false, false);
+				addConcatenatedValueArraysToMaps(variablesToJoin, concatenateTimeVariable, arraysToJoin, totalTimesCombined, false, false);
 			}
 		}
 	}
@@ -266,12 +268,12 @@ public class NetcdfFileConcatenater {
 		}
 	}
 
-	private static void addConcatenatedValueArraysToMaps(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget, boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
+	private static void addConcatenatedValueArraysToMaps(VariablesToJoin variablesToJoin, boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
 		if (firstAddedTimeOverlapping) totalTimesCombined--;
 		ArrayDouble.D1 timeArrayDouble = new ArrayDouble.D1(totalTimesCombined);
 		ArrayDouble valueArrayDouble = getArray(concatenateTimeVariable, arraysToJoin, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
-		if (concatenateTimeVariable) timeVariableArraysMap.put(timeVariableTarget, timeArrayDouble);
-		variableArraysMap.put(targetVariable, valueArrayDouble);
+		if (concatenateTimeVariable) variablesToJoin.getTimeVariableArraysMap().put(variablesToJoin.getTimeVariableTarget(), timeArrayDouble);
+		variablesToJoin.getVariableArraysMap().put(variablesToJoin.getTargetVariable(), valueArrayDouble);
 	}
 
 	private static ArrayDouble getArray(boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
@@ -472,6 +474,36 @@ public class NetcdfFileConcatenater {
 
 		public double[] getConvertedTimesToBeAdded() {
 			return convertedTimesToBeAdded;
+		}
+	}
+
+	private static class VariablesToJoin {
+		private final Map<Variable, Array> variableArraysMap;
+		private final Map<Variable, Array> timeVariableArraysMap;
+		private final Variable targetVariable;
+		private final Variable timeVariableTarget;
+
+		private VariablesToJoin(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget) {
+			this.variableArraysMap = variableArraysMap;
+			this.timeVariableArraysMap = timeVariableArraysMap;
+			this.targetVariable = targetVariable;
+			this.timeVariableTarget = timeVariableTarget;
+		}
+
+		public Map<Variable, Array> getVariableArraysMap() {
+			return variableArraysMap;
+		}
+
+		public Map<Variable, Array> getTimeVariableArraysMap() {
+			return timeVariableArraysMap;
+		}
+
+		public Variable getTargetVariable() {
+			return targetVariable;
+		}
+
+		public Variable getTimeVariableTarget() {
+			return timeVariableTarget;
 		}
 	}
 }
