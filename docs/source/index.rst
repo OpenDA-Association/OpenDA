@@ -23,12 +23,19 @@ Index
    OpenDA_course
 
 .. toctree::
+   :caption: Wrappers
+   :maxdepth: 2
+
+   DFlowFMWrapper
+
+.. toctree::
    :caption: Additional information
    :maxdepth: 2
 
    data_objects.rst
    localization.rst
    continuing.rst
+   DFlowFM_info.rst
 
 .. toctree::
    :caption: Contributing to the source
