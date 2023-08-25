@@ -85,6 +85,8 @@ Here, the *Kalman gain matrix*, :math:`K(k)`, determines the change to the model
 difference between the current model forecast, :math:`H(k)x^f(k)`, and the observation, :math:`y^0(k)`.
 Various methods are available to determine this Kalman gain.
 
+.. _Optimal_interpolation:
+
 Optimal interpolation
 ---------------------
 One popular sequential method is related to 
