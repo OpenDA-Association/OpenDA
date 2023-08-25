@@ -269,59 +269,88 @@ public class NetcdfFileConcatenater {
 	private static void addConcatenatedValueArraysToMaps(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget, boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
 		if (firstAddedTimeOverlapping) totalTimesCombined--;
 		ArrayDouble.D1 timeArrayDouble = new ArrayDouble.D1(totalTimesCombined);
-		ArrayDouble valueArrayDouble = null;
-		if (targetLocationDimensions.size() == 2) {
-			int targetLocationDimensionLength = targetLocationDimensions.get(1).getLength();
-			ArrayDouble.D2 valueArrayDoubleD2 = new ArrayDouble.D2(totalTimesCombined, targetLocationDimensionLength);
-
-			int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
-			for (int i = 0; i < targetTimes; i++) {
-				if (concatenateTimeVariable) timeArrayDouble.set(i, timesTarget[i]);
-				for (int j = 0; j < targetLocationDimensionLength; j++) {
-					valueArrayDoubleD2.set(i, j, targetValues[i * targetLocationDimensionLength + j]);
-				}
-			}
-			int length = useOldValueOnOverlap ? convertedTimesToBeAdded.length - 1 : convertedTimesToBeAdded.length;
-			for (int timeIndex = 0; timeIndex < length; timeIndex++) {
-				int convertedIndex = useOldValueOnOverlap ? timeIndex + 1 : timeIndex;
-				if (concatenateTimeVariable) {
-					timeArrayDouble.set(timeIndex + targetTimes, convertedTimesToBeAdded[convertedIndex]);
-				}
-				for (int secondIndex = 0; secondIndex < targetLocationDimensionLength; secondIndex++) {
-					valueArrayDoubleD2.set(timeIndex + targetTimes, secondIndex, addedValues[convertedIndex * targetLocationDimensionLength + secondIndex]);
-				}
-			}
-			valueArrayDouble = valueArrayDoubleD2;
-		} else if (targetLocationDimensions.size() == 3) {
-			int targetDimensionLength1 = targetLocationDimensions.get(1).getLength();
-			int targetDimensionLength2 = targetLocationDimensions.get(2).getLength();
-			ArrayDouble.D3 valueArrayDoubleD3 = new ArrayDouble.D3(totalTimesCombined, targetDimensionLength1, targetDimensionLength2);
-
-			int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
-			for (int timeIndex = 0; timeIndex < targetTimes; timeIndex++) {
-				if (concatenateTimeVariable) timeArrayDouble.set(timeIndex, timesTarget[timeIndex]);
-				for (int secondIndex = 0; secondIndex < targetDimensionLength1; secondIndex++) {
-					for (int thirdIndex = 0; thirdIndex < targetDimensionLength2; thirdIndex++) {
-						valueArrayDoubleD3.set(timeIndex, secondIndex, thirdIndex, targetValues[timeIndex * targetDimensionLength1 * targetDimensionLength2 + secondIndex * targetDimensionLength2 + thirdIndex]);
-					}
-				}
-			}
-			int length = useOldValueOnOverlap ? convertedTimesToBeAdded.length - 1 : convertedTimesToBeAdded.length;
-			for (int i = 0; i < length; i++) {
-				int convertedIndex = useOldValueOnOverlap ? i + 1 : i;
-				if (concatenateTimeVariable) {
-					timeArrayDouble.set(i + targetTimes, convertedTimesToBeAdded[convertedIndex]);
-				}
-				for (int secondIndex = 0; secondIndex < targetDimensionLength1; secondIndex++) {
-					for (int thirdIndex = 0; thirdIndex < targetDimensionLength2; thirdIndex++) {
-						valueArrayDoubleD3.set(i + targetTimes, secondIndex, thirdIndex, addedValues[convertedIndex * targetDimensionLength1 * targetDimensionLength2 + secondIndex * targetDimensionLength2 + thirdIndex]);
-					}
-				}
-			}
-			valueArrayDouble = valueArrayDoubleD3;
-		}
+		ArrayDouble valueArrayDouble = getArray(concatenateTimeVariable, targetLocationDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
 		if (concatenateTimeVariable) timeVariableArraysMap.put(timeVariableTarget, timeArrayDouble);
 		variableArraysMap.put(targetVariable, valueArrayDouble);
+	}
+
+	private static ArrayDouble getArray(boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
+		if (targetLocationDimensions.size() == 2)
+			return get2DArray(concatenateTimeVariable, targetLocationDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
+		if (targetLocationDimensions.size() == 3)
+			return get3DArray(concatenateTimeVariable, targetLocationDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
+		// should not happen
+		assert false;
+		return null;
+	}
+
+	private static ArrayDouble get3DArray(boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
+		int targetDimensionLength1 = targetLocationDimensions.get(1).getLength();
+		int targetDimensionLength2 = targetLocationDimensions.get(2).getLength();
+		ArrayDouble.D3 valueArrayDoubleD3 = new ArrayDouble.D3(totalTimesCombined, targetDimensionLength1, targetDimensionLength2);
+
+		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
+		fillFirstPartOf3DArray(concatenateTimeVariable, targetValues, timesTarget, timeArrayDouble, targetDimensionLength1, targetDimensionLength2, valueArrayDoubleD3, targetTimes);
+		fillSecondPartOf3DArray(concatenateTimeVariable, addedValues, convertedTimesToBeAdded, useOldValueOnOverlap, timeArrayDouble, targetDimensionLength1, targetDimensionLength2, valueArrayDoubleD3, targetTimes);
+		return valueArrayDoubleD3;
+	}
+
+	private static void fillSecondPartOf3DArray(boolean concatenateTimeVariable, double[] addedValues, double[] convertedTimesToBeAdded, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble, int targetDimensionLength1, int targetDimensionLength2, ArrayDouble.D3 valueArrayDoubleD3, int targetTimes) {
+		int length = useOldValueOnOverlap ? convertedTimesToBeAdded.length - 1 : convertedTimesToBeAdded.length;
+		for (int i = 0; i < length; i++) {
+			int convertedIndex = useOldValueOnOverlap ? i + 1 : i;
+			if (concatenateTimeVariable) {
+				timeArrayDouble.set(i + targetTimes, convertedTimesToBeAdded[convertedIndex]);
+			}
+			for (int secondIndex = 0; secondIndex < targetDimensionLength1; secondIndex++) {
+				for (int thirdIndex = 0; thirdIndex < targetDimensionLength2; thirdIndex++) {
+					valueArrayDoubleD3.set(i + targetTimes, secondIndex, thirdIndex, addedValues[convertedIndex * targetDimensionLength1 * targetDimensionLength2 + secondIndex * targetDimensionLength2 + thirdIndex]);
+				}
+			}
+		}
+	}
+
+	private static void fillFirstPartOf3DArray(boolean concatenateTimeVariable, double[] targetValues, double[] timesTarget, ArrayDouble.D1 timeArrayDouble, int targetDimensionLength1, int targetDimensionLength2, ArrayDouble.D3 valueArrayDoubleD3, int targetTimes) {
+		for (int timeIndex = 0; timeIndex < targetTimes; timeIndex++) {
+			if (concatenateTimeVariable) timeArrayDouble.set(timeIndex, timesTarget[timeIndex]);
+			for (int secondIndex = 0; secondIndex < targetDimensionLength1; secondIndex++) {
+				for (int thirdIndex = 0; thirdIndex < targetDimensionLength2; thirdIndex++) {
+					valueArrayDoubleD3.set(timeIndex, secondIndex, thirdIndex, targetValues[timeIndex * targetDimensionLength1 * targetDimensionLength2 + secondIndex * targetDimensionLength2 + thirdIndex]);
+				}
+			}
+		}
+	}
+
+	private static ArrayDouble get2DArray(boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
+		int targetLocationDimensionLength = targetLocationDimensions.get(1).getLength();
+		ArrayDouble.D2 valueArrayDoubleD2 = new ArrayDouble.D2(totalTimesCombined, targetLocationDimensionLength);
+
+		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
+		fillFirstPartOf2DArray(concatenateTimeVariable, targetValues, timesTarget, timeArrayDouble, targetLocationDimensionLength, valueArrayDoubleD2, targetTimes);
+		fillSecondPartOf2DArray(concatenateTimeVariable, addedValues, convertedTimesToBeAdded, useOldValueOnOverlap, timeArrayDouble, targetLocationDimensionLength, valueArrayDoubleD2, targetTimes);
+		return valueArrayDoubleD2;
+	}
+
+	private static void fillSecondPartOf2DArray(boolean concatenateTimeVariable, double[] addedValues, double[] convertedTimesToBeAdded, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble, int targetLocationDimensionLength, ArrayDouble.D2 valueArrayDoubleD2, int targetTimes) {
+		int length = useOldValueOnOverlap ? convertedTimesToBeAdded.length - 1 : convertedTimesToBeAdded.length;
+		for (int timeIndex = 0; timeIndex < length; timeIndex++) {
+			int convertedIndex = useOldValueOnOverlap ? timeIndex + 1 : timeIndex;
+			if (concatenateTimeVariable) {
+				timeArrayDouble.set(timeIndex + targetTimes, convertedTimesToBeAdded[convertedIndex]);
+			}
+			for (int secondIndex = 0; secondIndex < targetLocationDimensionLength; secondIndex++) {
+				valueArrayDoubleD2.set(timeIndex + targetTimes, secondIndex, addedValues[convertedIndex * targetLocationDimensionLength + secondIndex]);
+			}
+		}
+	}
+
+	private static void fillFirstPartOf2DArray(boolean concatenateTimeVariable, double[] targetValues, double[] timesTarget, ArrayDouble.D1 timeArrayDouble, int targetLocationDimensionLength, ArrayDouble.D2 valueArrayDoubleD2, int targetTimes) {
+		for (int i = 0; i < targetTimes; i++) {
+			if (concatenateTimeVariable) timeArrayDouble.set(i, timesTarget[i]);
+			for (int j = 0; j < targetLocationDimensionLength; j++) {
+				valueArrayDoubleD2.set(i, j, targetValues[i * targetLocationDimensionLength + j]);
+			}
+		}
 	}
 
 	private static void redefineVariablesAndDimensions(NetcdfFile source, NetcdfFileWriter target) {
