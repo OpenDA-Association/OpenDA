@@ -7,7 +7,7 @@ This way, observations further away will have a smaller effect on the Kalman gai
 
 Localization has been explained in the :ref:`OpenDA course <course>`: for more information, we refer to that document. A nice introductory paper on localization can be found `here <https://link.springer.com/article/10.1007/s10236-006-0088-8>`__.
 
-In OpenDA, we have two different options for localization: `Hamill localization <https://journals.ametsoc.org/view/journals/mwre/129/11/1520-0493_2001_129_2776_ddfobe_2.0.co_2.xml>`__ (commonly used) and `Zhang localization <https://d-nb.info/1199809977/34>`__ (no need to implement maskers). 
+In OpenDA, we have two different options for localization: `Hamill localization <https://journals.ametsoc.org/view/journals/mwre/129/11/1520-0493_2001_129_2776_ddfobe_2.0.co_2.xml>`__ (commonly used) and `Zhang localization <https://d-nb.info/1199809977/34>`__ (no need to implement masks). 
 
 Example configurations can be found in 
 
