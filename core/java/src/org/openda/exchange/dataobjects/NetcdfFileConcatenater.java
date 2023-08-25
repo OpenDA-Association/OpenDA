@@ -230,9 +230,9 @@ public class NetcdfFileConcatenater {
 			if (convertedTimesToBeAdded[0] < timesTarget[timesTarget.length - 1]) throw new RuntimeException("File to be added has first time before last time of target file");
 			int totalTimesCombined = timeVariableTargetDimension.getLength() + timesToBeAdded.length;
 			if (convertedTimesToBeAdded[0] == timesTarget[timesTarget.length - 1]) {
-				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, true, useOldValueOnOverlap);
+				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, new ArraysToJoin(targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded), totalTimesCombined, true, useOldValueOnOverlap);
 			} else {
-				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, false, false);
+				addConcatenatedValueArraysToMaps(variableArraysMap, timeVariableArraysMap, targetVariable, timeVariableTarget, concatenateTimeVariable, new ArraysToJoin(targetDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded), totalTimesCombined, false, false);
 			}
 		}
 	}
@@ -266,32 +266,32 @@ public class NetcdfFileConcatenater {
 		}
 	}
 
-	private static void addConcatenatedValueArraysToMaps(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget, boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
+	private static void addConcatenatedValueArraysToMaps(Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap, Variable targetVariable, Variable timeVariableTarget, boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap) {
 		if (firstAddedTimeOverlapping) totalTimesCombined--;
 		ArrayDouble.D1 timeArrayDouble = new ArrayDouble.D1(totalTimesCombined);
-		ArrayDouble valueArrayDouble = getArray(concatenateTimeVariable, targetLocationDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
+		ArrayDouble valueArrayDouble = getArray(concatenateTimeVariable, arraysToJoin, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
 		if (concatenateTimeVariable) timeVariableArraysMap.put(timeVariableTarget, timeArrayDouble);
 		variableArraysMap.put(targetVariable, valueArrayDouble);
 	}
 
-	private static ArrayDouble getArray(boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
-		if (targetLocationDimensions.size() == 2)
-			return get2DArray(concatenateTimeVariable, targetLocationDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
-		if (targetLocationDimensions.size() == 3)
-			return get3DArray(concatenateTimeVariable, targetLocationDimensions, targetValues, addedValues, timesTarget, convertedTimesToBeAdded, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
+	private static ArrayDouble getArray(boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
+		if (arraysToJoin.getTargetLocationDimensions().size() == 2)
+			return get2DArray(concatenateTimeVariable, arraysToJoin, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
+		if (arraysToJoin.getTargetLocationDimensions().size() == 3)
+			return get3DArray(concatenateTimeVariable, arraysToJoin, totalTimesCombined, firstAddedTimeOverlapping, useOldValueOnOverlap, timeArrayDouble);
 		// should not happen
 		assert false;
 		return null;
 	}
 
-	private static ArrayDouble get3DArray(boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
-		int targetDimensionLength1 = targetLocationDimensions.get(1).getLength();
-		int targetDimensionLength2 = targetLocationDimensions.get(2).getLength();
+	private static ArrayDouble get3DArray(boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
+		int targetDimensionLength1 = arraysToJoin.getTargetLocationDimensions().get(1).getLength();
+		int targetDimensionLength2 = arraysToJoin.getTargetLocationDimensions().get(2).getLength();
 		ArrayDouble.D3 valueArrayDoubleD3 = new ArrayDouble.D3(totalTimesCombined, targetDimensionLength1, targetDimensionLength2);
 
-		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
-		fillFirstPartOf3DArray(concatenateTimeVariable, targetValues, timesTarget, timeArrayDouble, targetDimensionLength1, targetDimensionLength2, valueArrayDoubleD3, targetTimes);
-		fillSecondPartOf3DArray(concatenateTimeVariable, addedValues, convertedTimesToBeAdded, useOldValueOnOverlap, timeArrayDouble, targetDimensionLength1, targetDimensionLength2, valueArrayDoubleD3, targetTimes);
+		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? arraysToJoin.getTimesTarget().length - 1 : arraysToJoin.getTimesTarget().length;
+		fillFirstPartOf3DArray(concatenateTimeVariable, arraysToJoin.getTargetValues(), arraysToJoin.getTimesTarget(), timeArrayDouble, targetDimensionLength1, targetDimensionLength2, valueArrayDoubleD3, targetTimes);
+		fillSecondPartOf3DArray(concatenateTimeVariable, arraysToJoin.getAddedValues(), arraysToJoin.getConvertedTimesToBeAdded(), useOldValueOnOverlap, timeArrayDouble, targetDimensionLength1, targetDimensionLength2, valueArrayDoubleD3, targetTimes);
 		return valueArrayDoubleD3;
 	}
 
@@ -321,13 +321,13 @@ public class NetcdfFileConcatenater {
 		}
 	}
 
-	private static ArrayDouble get2DArray(boolean concatenateTimeVariable, List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
-		int targetLocationDimensionLength = targetLocationDimensions.get(1).getLength();
+	private static ArrayDouble get2DArray(boolean concatenateTimeVariable, ArraysToJoin arraysToJoin, int totalTimesCombined, boolean firstAddedTimeOverlapping, boolean useOldValueOnOverlap, ArrayDouble.D1 timeArrayDouble) {
+		int targetLocationDimensionLength = arraysToJoin.getTargetLocationDimensions().get(1).getLength();
 		ArrayDouble.D2 valueArrayDoubleD2 = new ArrayDouble.D2(totalTimesCombined, targetLocationDimensionLength);
 
-		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? timesTarget.length - 1 : timesTarget.length;
-		fillFirstPartOf2DArray(concatenateTimeVariable, targetValues, timesTarget, timeArrayDouble, targetLocationDimensionLength, valueArrayDoubleD2, targetTimes);
-		fillSecondPartOf2DArray(concatenateTimeVariable, addedValues, convertedTimesToBeAdded, useOldValueOnOverlap, timeArrayDouble, targetLocationDimensionLength, valueArrayDoubleD2, targetTimes);
+		int targetTimes = firstAddedTimeOverlapping && !useOldValueOnOverlap ? arraysToJoin.getTimesTarget().length - 1 : arraysToJoin.getTimesTarget().length;
+		fillFirstPartOf2DArray(concatenateTimeVariable, arraysToJoin.getTargetValues(), arraysToJoin.getTimesTarget(), timeArrayDouble, targetLocationDimensionLength, valueArrayDoubleD2, targetTimes);
+		fillSecondPartOf2DArray(concatenateTimeVariable, arraysToJoin.getAddedValues(), arraysToJoin.getConvertedTimesToBeAdded(), useOldValueOnOverlap, timeArrayDouble, targetLocationDimensionLength, valueArrayDoubleD2, targetTimes);
 		return valueArrayDoubleD2;
 	}
 
@@ -436,6 +436,42 @@ public class NetcdfFileConcatenater {
 
 		for (int i = srcPos, j = destPos, n = srcPos + length; i < n; i++, j++) {
 			dest[j] = src[i];
+		}
+	}
+
+	private static class ArraysToJoin {
+		private final List<Dimension> targetLocationDimensions;
+		private final double[] targetValues;
+		private final double[] addedValues;
+		private final double[] timesTarget;
+		private final double[] convertedTimesToBeAdded;
+
+		private ArraysToJoin(List<Dimension> targetLocationDimensions, double[] targetValues, double[] addedValues, double[] timesTarget, double[] convertedTimesToBeAdded) {
+			this.targetLocationDimensions = targetLocationDimensions;
+			this.targetValues = targetValues;
+			this.addedValues = addedValues;
+			this.timesTarget = timesTarget;
+			this.convertedTimesToBeAdded = convertedTimesToBeAdded;
+		}
+
+		public List<Dimension> getTargetLocationDimensions() {
+			return targetLocationDimensions;
+		}
+
+		public double[] getTargetValues() {
+			return targetValues;
+		}
+
+		public double[] getAddedValues() {
+			return addedValues;
+		}
+
+		public double[] getTimesTarget() {
+			return timesTarget;
+		}
+
+		public double[] getConvertedTimesToBeAdded() {
+			return convertedTimesToBeAdded;
 		}
 	}
 }
