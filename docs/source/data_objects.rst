@@ -56,6 +56,7 @@ with corresponding XML config::
       <arg>false</arg>
   </dataObject>
 
+The two arguments for lazy reading and writing listed in this configuration will be explained :ref:`below <Lazy reading writing>`.
 
 Three-dimensional scalar data
 -----------------------------
@@ -84,7 +85,7 @@ Suppose we have the next variables ``temperature`` and ``data``::
 
 This will result in 60 exchange items with ids like:``station0i.temperature.layerj``, where i=1,2,3, j=0,...,19.
 
-The corresponding XML config looks as follows::
+The corresponding XML config looks as follows (note that the ``layerDimensionName=laydim`` argument refers to the snippet ``laydim=20`` above)::
 
   <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
     <file>scalarLayers.nc</file> 
@@ -124,6 +125,7 @@ In this section, we describe some extra arguments that can be used in the NetCDF
 
 Boolean: Lazy reading and writing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _Lazy reading writing:
 
 The first two possible extra arguments are boolean values for lazy reading and lazy writing. When lazy
 reading is set to true, the data will only be read from the NetCDF file
