@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.9.1)
 find_package(LibXml2 REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 set(SOURCES
@@ -25,8 +26,12 @@ set(CTA_PUBLIC_HEADERS ${HEADER_FILES})
 
 target_include_directories(cta PRIVATE ../include)
 target_include_directories(cta PRIVATE ${CMAKE_SOURCE_DIR}/external)
-target_include_directories(cta PRIVATE ${LIBXML2_INCLUDE_DIR}) 
+target_include_directories(cta PRIVATE ${LIBXML2_INCLUDE_DIR})
+target_include_directories(cta PRIVATE ${SQLite3_INCLUDE_DIRS}) 
+
 target_link_libraries(cta PRIVATE ${LIBXML2_LIBRARIES})
+target_link_libraries(cta PRIVATE ${SQLite3_LIBRARIES})
+
 target_link_libraries(cta PRIVATE blas)
 target_link_libraries(cta PRIVATE lapack)
 
