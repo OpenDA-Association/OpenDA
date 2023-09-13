@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.9.1)
 find_package(LibXml2 REQUIRED)
 find_package(SQLite3 REQUIRED)
 
+string(REPLACE ":" ";" LIBRARY_DIRS $ENV{LD_LIBRARY_PATH})
+find_library (NETCDF_LIBRARIES libnetcdf.so PATHS ${LIBRARY_DIRS})
+
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 set(SOURCES
   cta_array.c       cta_matrix_blas.c      cta_obsdescr_combine.c  cta_sobs_combine.c  cta_util_sort.c
@@ -31,6 +34,7 @@ target_include_directories(cta PRIVATE ${SQLite3_INCLUDE_DIRS})
 
 target_link_libraries(cta PRIVATE ${LIBXML2_LIBRARIES})
 target_link_libraries(cta PRIVATE ${SQLite3_LIBRARIES})
+target_link_libraries(cta PRIVATE ${NETCDF_LIBRARIES})
 
 target_link_libraries(cta PRIVATE blas)
 target_link_libraries(cta PRIVATE lapack)
