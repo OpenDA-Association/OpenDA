@@ -13,7 +13,7 @@ file(GLOB CTA_PUBLIC_HEADERS
     "cta/include/*.h"
 )
 
-install(TARGETS cta cta_f90 opendabridge 
+install(TARGETS blas lapack cta cta_f90 opendabridge
     LIBRARY DESTINATION lib
 )
 
