@@ -7,5 +7,5 @@ add_subdirectory(external/lapack)
 
 add_subdirectory(cta/src)
 add_subdirectory(cta_f90/generated)
-add_subdirectory(openda/bridge/src)
+add_subdirectory(bridge/src)
 
