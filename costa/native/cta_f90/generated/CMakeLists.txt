@@ -15,5 +15,6 @@ cta_f90_initialise.f90  cta_f90_model_factory.f90  cta_f90_string.f90
 )
 
 add_library(cta_f90 SHARED ${SOURCES})
-target_include_directories(cta_f90 PUBLIC ../include)
+target_include_directories(cta_f90 PRIVATE ../include)
+target_link_libraries(cta_f90 PRIVATE cta)
 

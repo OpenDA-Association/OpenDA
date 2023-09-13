@@ -17,10 +17,17 @@ set(SOURCES
 )
 
 add_library(cta SHARED ${SOURCES})
+file(GLOB HEADER_FILES
+  "../include/*.h"
+)
 
+set(CTA_PUBLIC_HEADERS ${HEADER_FILES})
 
-target_include_directories(cta PUBLIC ../include)
-target_include_directories(cta PUBLIC ${CMAKE_SOURCE_DIR}/external)
-target_include_directories(cta PUBLIC ${LIBXML2_INCLUDE_DIR}) 
-#target_link_libraries(cta INTERFACE libxml)
+target_include_directories(cta PRIVATE ../include)
+target_include_directories(cta PRIVATE ${CMAKE_SOURCE_DIR}/external)
+target_include_directories(cta PRIVATE ${LIBXML2_INCLUDE_DIR}) 
+target_link_libraries(cta PRIVATE ${LIBXML2_LIBRARIES})
+target_link_libraries(cta PRIVATE blas)
+target_link_libraries(cta PRIVATE lapack)
+
 
