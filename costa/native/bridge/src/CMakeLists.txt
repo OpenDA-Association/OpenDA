@@ -4,6 +4,8 @@ find_package(JNI REQUIRED)
 
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 set(SOURCES
+  jni_cta_CtaObsdescr_NativeToJava.c               jni_cta_CtaObsdescr_NativeToJava.h
+  jni_cta_utils.h                                  jni_datatypes.h
   jni_cta_utils.cpp                                org_openda_costa_CtaRelationTable.cpp
   org_openda_costa_CtaArray.cpp                    org_openda_costa_CtaStochObserver.cpp
   org_openda_costa_CtaInitialize.cpp               org_openda_costa_CtaTime.cpp
