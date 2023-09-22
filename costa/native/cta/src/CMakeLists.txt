@@ -1,4 +1,13 @@
 cmake_minimum_required(VERSION 3.9.1)
+# Check for the presence of dlfcn.h
+include(CheckIncludeFile)
+
+# Perform the check
+CHECK_INCLUDE_FILE("dlfcn.h" HAVE_DLFCN_H)
+if(HAVE_DLFCN_H)
+    add_definitions(-DHAVE_DLFCN_H)
+endif()
+
 find_package(LibXml2 REQUIRED)
 find_package(SQLite3 REQUIRED)
 
