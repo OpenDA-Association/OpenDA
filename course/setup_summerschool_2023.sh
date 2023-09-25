@@ -1,3 +1,4 @@
+#!/bin/sh
 mkdir summerschool_2023
 cd summerschool_2023
 cp -r ../exercise_double_pendulum_part1 .
