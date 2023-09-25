@@ -140,7 +140,6 @@ public class D3dMdFileDataObject implements IDataObject {
 						exchangeItems.put(key3, new DoubleExchangeItem(key, IExchangeItem.Role.InOut, valueAsDouble_D3));
 
 					}
-//             for (int i = 0; i < allKeys.length; i++) {
 					if (Arrays.asList(fileKeys).contains(key)) {
 
 						double valueAsDouble = Double.parseDouble(value);

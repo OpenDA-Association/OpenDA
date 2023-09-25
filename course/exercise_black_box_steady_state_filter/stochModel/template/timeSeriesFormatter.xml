@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timeSeriesFormatterConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <formatter class="org.openda.exchange.timeseries.DelimitedTextTimeSeriesFormatter">
+    <dateTimeSelector>0</dateTimeSelector>
+    <valueSelector>1</valueSelector>
+    <delimiter>,</delimiter>
+    <commentMarker>#</commentMarker>
+    <skipLines>1</skipLines>
+  </formatter>
+  <timeSeries id="model.locA.concentration1">
+    c1_locA.csv
+  </timeSeries>
+  <timeSeries id="model.locB.concentration1">
+    c1_locB.csv
+  </timeSeries>
+  <timeSeries id="model.locC.concentration1">
+    c1_locC.csv
+  </timeSeries>
+  <timeSeries id="model.locA.concentration2">
+    c2_locA.csv
+  </timeSeries>
+  <timeSeries id="model.locB.concentration2">
+    c2_locB.csv
+  </timeSeries>
+  <timeSeries id="model.locC.concentration2">
+    c2_locC.csv
+  </timeSeries>
+</timeSeriesFormatterConfig>
