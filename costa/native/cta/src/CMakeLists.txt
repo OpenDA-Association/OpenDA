@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.9.1)
 # Check for the presence of dlfcn.h
 include(CheckIncludeFile)
+include(FindMPI)
+
+if(MPI_FOUND)
+  message("Found MPI: ${MPI_FOUND}\n")
+  add_definitions(-DUSE_MPI)
+endif()
 
 # Perform the check
 CHECK_INCLUDE_FILE("dlfcn.h" HAVE_DLFCN_H)
