@@ -18,11 +18,10 @@ set(SOURCES
 
 add_library(opendabridge SHARED ${SOURCES})
 
+target_include_directories(opendabridge PRIVATE ${LIBXML2_INCLUDE_DIR})
+target_include_directories(opendabridge PRIVATE ${JNI_INCLUDE_DIRS})
+
 target_include_directories(opendabridge PRIVATE ../include)
 target_include_directories(opendabridge PRIVATE ${CMAKE_SOURCE_DIR}/cta/include)
-target_include_directories(opendabridge PRIVATE ${CMAKE_SOURCE_DIR}/external)
-target_include_directories(opendabridge PRIVATE ${LIBXML2_INCLUDE_DIR}) 
-target_include_directories(opendabridge PRIVATE ${JNI_INCLUDE_DIRS})
-target_link_libraries(opendabridge PRIVATE ${LIBXML2_LIBRARIES})
 target_link_libraries(opendabridge PRIVATE cta)
 
