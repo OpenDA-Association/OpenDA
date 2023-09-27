@@ -19,8 +19,12 @@ find_package(SQLite3 REQUIRED)
 
 string(REPLACE ":" ";" LIBRARY_DIRS $ENV{LD_LIBRARY_PATH})
 find_library (NETCDF_LIBRARIES libnetcdf.so PATHS ${LIBRARY_DIRS})
+set(NETCDF_INCLUDE_DIRS ${NETCDF_LIBRARIES})
+cmake_path(REMOVE_FILENAME NETCDF_INCLUDE_DIRS)
 
+string(REPLACE "/lib" "/include" NETCDF_INCLUDE_DIRS ${NETCDF_INCLUDE_DIRS})
 add_definitions(-DHAVE_LIBNETCDF)
+message("NetCDF include : ${NETCDF_INCLUDE_DIRS}\n")
 
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 set(SOURCES
@@ -48,6 +52,7 @@ target_include_directories(cta PRIVATE ../include)
 target_include_directories(cta PRIVATE ${CMAKE_SOURCE_DIR}/external)
 target_include_directories(cta PRIVATE ${LIBXML2_INCLUDE_DIR})
 target_include_directories(cta PRIVATE ${SQLite3_INCLUDE_DIRS}) 
+target_include_directories(cta PRIVATE ${NETCDF_INCLUDE_DIRS})
 
 target_link_libraries(cta PRIVATE ${LIBXML2_LIBRARIES})
 target_link_libraries(cta PRIVATE ${SQLite3_LIBRARIES})
