@@ -20,6 +20,8 @@ find_package(SQLite3 REQUIRED)
 string(REPLACE ":" ";" LIBRARY_DIRS $ENV{LD_LIBRARY_PATH})
 find_library (NETCDF_LIBRARIES libnetcdf.so PATHS ${LIBRARY_DIRS})
 
+add_definitions(-DHAVE_LIBNETCDF)
+
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 set(SOURCES
   cta_array.c       cta_matrix_blas.c      cta_obsdescr_combine.c  cta_sobs_combine.c  cta_util_sort.c
