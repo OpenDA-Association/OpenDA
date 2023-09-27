@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define CTA_PAR_CREATEGROUPS_F77  F77_CALL(cta_par_creategroups,CTA_PAR_CREATEGROUPS)
 #define CTA_PAR_GETGROUPINFO_F77  F77_CALL(cta_par_getgroupinfo,CTA_PAR_GETGROUPINFO)
 
-#define IDEBUG (0)
+#define IDEBUG (1)
 enum CTAI_ParType  {WorkerWorker,MasterWorker};
 enum CTA_ParProcType CTA_MY_PROC_TYPE=CTA_ParMaster;
 int  CTA_IS_PARALLEL=CTA_FALSE;
