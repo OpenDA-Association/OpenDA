@@ -34,8 +34,6 @@ import ucar.nc2.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -205,7 +203,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						continue;
 					}
 					if ("coordinates".equals(shortName)) {
-						DFlowFMMapExchangeItemGeometryInfo variableSpecificGeometry = getVariableSpecificGeometryInfo(inputFile, temp);
+						DFlowFMMapExchangeItemGeometryInfo variableSpecificGeometry = getVariableSpecificGeometryInfo(inputFile, temp, dValues, var);
 						if (variableSpecificGeometry == null) continue;
 						geometryInfo = variableSpecificGeometry;
 					}
@@ -240,7 +238,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		}
 	}
 
-	private DFlowFMMapExchangeItemGeometryInfo getVariableSpecificGeometryInfo(NetcdfFile inputFile, Attribute temp) {
+	private DFlowFMMapExchangeItemGeometryInfo getVariableSpecificGeometryInfo(NetcdfFile inputFile, Attribute temp, double[] dValues, Variable var) {
 		String coordinatesStringValue = temp.getStringValue();
 		String[] coordinateVariableNames = coordinatesStringValue.split(" ");
 		if (coordinateVariableNames.length != 2) return null;
@@ -259,7 +257,30 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 
 		assert xCoords != null;
 		assert yCoords != null;
+		// If there are X times more values than coordinates assume multiple layers and add coordinates also X times
+		if (dValues.length % xCoords.length == 0 && dValues.length / xCoords.length > 1) return getDFlowFMMapExchangeItemGeometryInfo3D(dValues, unitInMeters, xCoords, yCoords, var);
 		return new DFlowFMMapExchangeItemGeometryInfo(xCoords, yCoords, null, unitInMeters);
+	}
+
+	private DFlowFMMapExchangeItemGeometryInfo getDFlowFMMapExchangeItemGeometryInfo3D(double[] dValues, boolean unitInMeters, double[] xCoords, double[] yCoords, Variable var) {
+		int layers = dValues.length / xCoords.length;
+		double[] xCoords3D = new double[dValues.length];
+		double[] yCoords3D = new double[dValues.length];
+		boolean transposeNeeded = isTransposeNeeded(var);
+		if (transposeNeeded) {
+			for (int i = 0; i < layers; i++) {
+				System.arraycopy(xCoords, 0, xCoords3D, xCoords.length * i, xCoords.length);
+				System.arraycopy(yCoords, 0, yCoords3D, yCoords.length * i, yCoords.length);
+			}
+		} else {
+			for (int i = 0; i < xCoords.length; i++) {
+				for (int j = 0; j < layers; j++) {
+					xCoords3D[i * layers + j] = xCoords[i];
+					yCoords3D[i * layers + j] = yCoords[i];
+				}
+			}
+		}
+		return new DFlowFMMapExchangeItemGeometryInfo(xCoords3D, yCoords3D, null, unitInMeters);
 	}
 
 	private String getId(String fullName) {

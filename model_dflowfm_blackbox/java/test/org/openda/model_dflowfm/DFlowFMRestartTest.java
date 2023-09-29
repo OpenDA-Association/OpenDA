@@ -88,7 +88,15 @@ public class DFlowFMRestartTest extends TestCase {
 
 		initialRestartFile.initialize(testRunDataRestartFileDir, transposeArgs);
 
-		double[] transposedValuesAsDoubles = initialRestartFile.getDataObjectExchangeItem("tem1").getValuesAsDoubles().clone();
+		IExchangeItem tem1Transposed = initialRestartFile.getDataObjectExchangeItem("tem1");
+		double[] transposedValuesAsDoubles = tem1Transposed.getValuesAsDoubles().clone();
+		DFlowFMMapExchangeItemGeometryInfo transposedFmGeometry = (DFlowFMMapExchangeItemGeometryInfo) tem1Transposed.getGeometryInfo();
+		int transposedFmGeometrySize = transposedFmGeometry.getSize();
+		assertEquals(transposedValuesAsDoubles.length, transposedFmGeometrySize);
+		assertEquals(47.915, transposedFmGeometry.getXCoord(25), 0.0001);
+		assertEquals(29.425, transposedFmGeometry.getYCoord(25), 0.0001);
+		assertEquals(47.915, transposedFmGeometry.getXCoord(2), 0.0001);
+		assertEquals(29.475, transposedFmGeometry.getYCoord(2), 0.0001);
 
 		initialRestartFile.finish();
 
@@ -102,7 +110,15 @@ public class DFlowFMRestartTest extends TestCase {
 		IDataObject normalRestartFile = new DFlowFMRestartFileWrapper();
 		String[] normalArgs = new String[]{"FlowFM3D_00000000_000000_rst.nc"};
 		normalRestartFile.initialize(testRunDataRestartFileDir, normalArgs);
-		double[] normalValuesAsDoubles = normalRestartFile.getDataObjectExchangeItem("tem1").getValuesAsDoubles();
+		IExchangeItem tem1Normal = normalRestartFile.getDataObjectExchangeItem("tem1");
+		DFlowFMMapExchangeItemGeometryInfo normalGeometryInfo = (DFlowFMMapExchangeItemGeometryInfo) tem1Normal.getGeometryInfo();
+		int normalGeometrySize = normalGeometryInfo.getSize();
+		assertEquals(transposedValuesAsDoubles.length, normalGeometrySize);
+		assertEquals(47.915, normalGeometryInfo.getXCoord(1), 0.001);
+		assertEquals(29.425, normalGeometryInfo.getYCoord(1), 0.001);
+		assertEquals(47.915, normalGeometryInfo.getXCoord(10), 0.001);
+		assertEquals(29.475, normalGeometryInfo.getYCoord(10), 0.001);
+		double[] normalValuesAsDoubles = tem1Normal.getValuesAsDoubles();
 		for (int i = 0; i < 25; i++) {
 			for (int j = 0; j < 5; j++) {
 				int normalIndex = i * 5 + j;
