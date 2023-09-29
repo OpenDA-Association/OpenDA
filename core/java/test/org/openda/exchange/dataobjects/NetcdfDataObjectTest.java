@@ -18,7 +18,9 @@
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.openda.exchange.dataobjects;
+
 import junit.framework.TestCase;
+import org.openda.exchange.ArrayExchangeItem;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.exchange.PointGeometryInfo;
@@ -101,5 +103,98 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertEquals(49, valuesEI13.length);
 		assertEquals(49, valuesEI19.length);
 		assertTrue( valuesEI13[48] - valuesEI0[48] != 0.0d);
+	}
+
+	public void testNoSpecifyGridDimensionOrder() {
+		NetcdfDataObject dataObject32 = new NetcdfDataObject();
+		dataObject32.initialize(this.testRunDataDir, new String[]{"drymask_3_2.nc"});
+		String[] exchangeItemIds = dataObject32.getExchangeItemIDs();
+		assertEquals(1, exchangeItemIds.length);
+		ArrayExchangeItem item = (ArrayExchangeItem) dataObject32.getDataObjectExchangeItem("DRYMASK");
+		assertNotNull(item);
+		double[] valuesAsDoubles32 = item.getValuesAsDoubles();
+		assertEquals(6, valuesAsDoubles32.length);
+
+
+		NetcdfDataObject dataObject23 = new NetcdfDataObject();
+		dataObject23.initialize(this.testRunDataDir, new String[]{"drymask_2_3.nc"});
+		String[] exchangeItemIds23 = dataObject23.getExchangeItemIDs();
+		assertEquals(1, exchangeItemIds23.length);
+		ArrayExchangeItem item23 = (ArrayExchangeItem) dataObject23.getDataObjectExchangeItem("DRYMASK");
+		assertNotNull(item23);
+		double[] valuesAsDoubles23 = item23.getValuesAsDoubles();
+		assertEquals(6, valuesAsDoubles23.length);
+
+		item23.multiplyValues(valuesAsDoubles32);
+
+		double[] valuesAsDoublesMultiplied = item23.getValuesAsDoubles();
+		assertEquals(1, valuesAsDoublesMultiplied[0], 0.01);
+		assertEquals(8, valuesAsDoublesMultiplied[1], 0.01);
+		assertEquals(6, valuesAsDoublesMultiplied[2], 0.01);
+		assertEquals(20, valuesAsDoublesMultiplied[3], 0.01);
+		assertEquals(15, valuesAsDoublesMultiplied[4], 0.01);
+		assertEquals(36, valuesAsDoublesMultiplied[5], 0.01);
+	}
+
+	public void testSpecifyGridDimensionOrder() {
+		NetcdfDataObject dataObject32 = new NetcdfDataObject();
+		dataObject32.initialize(this.testRunDataDir, new String[]{"drymask_3_2.nc", "timeDimensionName=TIME", "gridDimensionName1=N", "gridDimensionName2=M"});
+		String[] exchangeItemIds = dataObject32.getExchangeItemIDs();
+		assertEquals(1, exchangeItemIds.length);
+		ArrayExchangeItem item = (ArrayExchangeItem) dataObject32.getDataObjectExchangeItem("DRYMASK");
+		assertNotNull(item);
+		double[] valuesAsDoubles32 = item.getValuesAsDoubles();
+		assertEquals(6, valuesAsDoubles32.length);
+
+
+		NetcdfDataObject dataObject23 = new NetcdfDataObject();
+		dataObject23.initialize(this.testRunDataDir, new String[]{"drymask_2_3.nc"});
+		String[] exchangeItemIds23 = dataObject23.getExchangeItemIDs();
+		assertEquals(1, exchangeItemIds23.length);
+		ArrayExchangeItem item23 = (ArrayExchangeItem) dataObject23.getDataObjectExchangeItem("DRYMASK");
+		assertNotNull(item23);
+		double[] valuesAsDoubles23 = item23.getValuesAsDoubles();
+		assertEquals(6, valuesAsDoubles23.length);
+
+		item23.multiplyValues(valuesAsDoubles32);
+
+		double[] valuesAsDoublesMultiplied = item23.getValuesAsDoubles();
+		assertEquals(1, valuesAsDoublesMultiplied[0], 0.01);
+		assertEquals(4, valuesAsDoublesMultiplied[1], 0.01);
+		assertEquals(9, valuesAsDoublesMultiplied[2], 0.01);
+		assertEquals(16, valuesAsDoublesMultiplied[3], 0.01);
+		assertEquals(25, valuesAsDoublesMultiplied[4], 0.01);
+		assertEquals(36, valuesAsDoublesMultiplied[5], 0.01);
+	}
+
+	public void testSpecifyGridDimensionOrderViceVersa() {
+		NetcdfDataObject dataObject32 = new NetcdfDataObject();
+		dataObject32.initialize(this.testRunDataDir, new String[]{"drymask_3_2.nc"});
+		String[] exchangeItemIds = dataObject32.getExchangeItemIDs();
+		assertEquals(1, exchangeItemIds.length);
+		ArrayExchangeItem item = (ArrayExchangeItem) dataObject32.getDataObjectExchangeItem("DRYMASK");
+		assertNotNull(item);
+		double[] valuesAsDoubles32 = item.getValuesAsDoubles();
+		assertEquals(6, valuesAsDoubles32.length);
+
+
+		NetcdfDataObject dataObject23 = new NetcdfDataObject();
+		dataObject23.initialize(this.testRunDataDir, new String[]{"drymask_2_3.nc", "timeDimensionName=TIME", "gridDimensionName1=N", "gridDimensionName2=M"});
+		String[] exchangeItemIds23 = dataObject23.getExchangeItemIDs();
+		assertEquals(1, exchangeItemIds23.length);
+		ArrayExchangeItem item23 = (ArrayExchangeItem) dataObject23.getDataObjectExchangeItem("DRYMASK");
+		assertNotNull(item23);
+		double[] valuesAsDoubles23 = item23.getValuesAsDoubles();
+		assertEquals(6, valuesAsDoubles23.length);
+
+		item23.multiplyValues(valuesAsDoubles32);
+
+		double[] valuesAsDoublesMultiplied = item23.getValuesAsDoubles();
+		assertEquals(1, valuesAsDoublesMultiplied[0], 0.01);
+		assertEquals(16, valuesAsDoublesMultiplied[1], 0.01);
+		assertEquals(4, valuesAsDoublesMultiplied[2], 0.01);
+		assertEquals(25, valuesAsDoublesMultiplied[3], 0.01);
+		assertEquals(9, valuesAsDoublesMultiplied[4], 0.01);
+		assertEquals(36, valuesAsDoublesMultiplied[5], 0.01);
 	}
 }

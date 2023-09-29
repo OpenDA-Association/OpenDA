@@ -28,14 +28,7 @@ import org.openda.utils.Array;
 import org.openda.utils.Time;
 import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.*;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
-import ucar.nc2.Variable;
-import ucar.nc2.Dimension;
-import ucar.nc2.Attribute;
-import ucar.nc2.NCdumpW;
-
-
+import ucar.nc2.*;
 import ucar.nc2.units.DateUnit;
 
 import java.io.File;
@@ -600,7 +593,8 @@ public class NetcdfUtils {
 	public static Object readData(Variable variable) {
 		double[] values;
 		try {
-			values = (double[]) variable.read().get1DJavaArray(double.class);
+			ucar.ma2.Array read = variable.read();
+			values = (double[]) read.get1DJavaArray(double.class);
 		} catch (IOException e) {
 			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getShortName()
 					+ "'. Message was: " + e.getMessage(), e);
@@ -613,6 +607,74 @@ public class NetcdfUtils {
 		NetcdfUtils.convertDoubleValuesFromNetcdf(values, missingValue, scaleFactor, offSet);
 
 		return new Array(values, variable.getShape(), false);
+	}
+
+	/**
+	 * Reads and returns the data from the given variable.
+	 *
+	 * @param variable
+	 * @param gridDimensionIndices
+	 * @param gridDimensionNames
+	 * @param timeDimensionName
+	 * @return Object.
+	 */
+	public static Object readDataWithDifferentDimensions(Variable variable, List<Integer> gridDimensionIndices, List<String> gridDimensionNames, String timeDimensionName) {
+
+		int timeDimensionIndex = variable.findDimensionIndex(timeDimensionName);
+		int size = 3;
+		int[] gridReadDimensionOrder = new int[size];
+
+		for (int i = 0; i < gridDimensionNames.size(); i++) {
+			String dimensionName = gridDimensionNames.get(i);
+			int dimensionIndex = variable.findDimensionIndex(dimensionName);
+			int readIndex = gridDimensionIndices.get(i);
+			gridReadDimensionOrder[readIndex - 1] = dimensionIndex;
+		}
+
+		int[] totalShape = variable.getShape();
+		int totalSize = 1;
+		for (int dimSize : totalShape) {
+			totalSize *= dimSize;
+		}
+		double[] values = new double[totalSize];
+
+		int firstReadIndex = gridReadDimensionOrder[0];
+		int secondReadIndex = gridReadDimensionOrder[1];
+		int secondDimensionSize = totalShape[secondReadIndex];
+		int timeLength = totalShape[timeDimensionIndex];
+
+		try {
+			int[] origin = new int[size];
+			for (int timeIndex = 0; timeIndex < timeLength; timeIndex++) {
+				origin[timeDimensionIndex] = timeIndex;
+				for (int secondGridDimensionIndex = 0; secondGridDimensionIndex < secondDimensionSize; secondGridDimensionIndex++) {
+					int[] readShape = new int[size];
+					Arrays.fill(readShape, 1);
+					int readSize = totalShape[firstReadIndex];
+					readShape[firstReadIndex] = readSize;
+					origin[secondReadIndex] = secondGridDimensionIndex;
+
+					ucar.ma2.Array read = variable.read(origin, readShape);
+					double[] slice = (double[]) read.get1DJavaArray(Double.class);
+					for (int indexWithinSlice = 0; indexWithinSlice < readSize; indexWithinSlice++) {
+						int valueIndex = timeIndex * secondDimensionSize * readSize + secondGridDimensionIndex * readSize + indexWithinSlice;
+						values[valueIndex] = slice[indexWithinSlice];
+					}
+				}
+			}
+		} catch (IOException | InvalidRangeException e) {
+			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getShortName()
+				+ "'. Message was: " + e.getMessage(), e);
+		}
+
+
+		//apply scale factor and offset and replace missing values with Double.NaN.
+		double missingValue = getMissingValueDouble(variable);
+		double scaleFactor = getScaleFactorDouble(variable);
+		double offSet = getOffSetDouble(variable);
+		NetcdfUtils.convertDoubleValuesFromNetcdf(values, missingValue, scaleFactor, offSet);
+
+		return new Array(values, totalShape, false);
 	}
 
 	/**
