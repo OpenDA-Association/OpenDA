@@ -74,10 +74,41 @@ public class DFlowFMRestartTest extends TestCase {
 
 		IDataObject finishedRestartFile = new DFlowFMRestartFileWrapper();
 		finishedRestartFile.initialize(testRunDataRestartFileDir, args);
-		DFlowFMExchangeItem finishedS1 = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("s1");
+		DFlowFMExchangeItem finishedS1 = (DFlowFMExchangeItem) finishedRestartFile.getDataObjectExchangeItem("s1");
 		double[] finishedS1ValuesAsDoubles = finishedS1.getValuesAsDoubles();
 		for (int i = 0; i < initialValuesAsDoubles.length; i++) {
 			assertEquals(initialValuesAsDoubles[i] + 0.1, finishedS1ValuesAsDoubles[i], 0.000001);
+		}
+	}
+
+// Commented out because no small restart file available, but below test should work with any
+	public void testRestartFileTranspose3DVariableDimensions() {
+		IDataObject initialRestartFile = new DFlowFMRestartFileWrapper();
+		String[] transposeArgs = new String[]{"FlowFM3D_00000000_000000_rst.nc", "transposeDimensions=nFlowElem,laydim"};
+
+		initialRestartFile.initialize(testRunDataRestartFileDir, transposeArgs);
+
+		double[] transposedValuesAsDoubles = initialRestartFile.getDataObjectExchangeItem("tem1").getValuesAsDoubles().clone();
+
+		initialRestartFile.finish();
+
+		IDataObject finishedRestartFile = new DFlowFMRestartFileWrapper();
+		finishedRestartFile.initialize(testRunDataRestartFileDir, transposeArgs);
+		double[] finishedTransposedValuesAsDoubles = finishedRestartFile.getDataObjectExchangeItem("tem1").getValuesAsDoubles();
+		for (int i = 0; i < transposedValuesAsDoubles.length; i++) {
+			assertEquals(transposedValuesAsDoubles[i], finishedTransposedValuesAsDoubles[i], 0.000001);
+		}
+
+		IDataObject normalRestartFile = new DFlowFMRestartFileWrapper();
+		String[] normalArgs = new String[]{"FlowFM3D_00000000_000000_rst.nc"};
+		normalRestartFile.initialize(testRunDataRestartFileDir, normalArgs);
+		double[] normalValuesAsDoubles = normalRestartFile.getDataObjectExchangeItem("tem1").getValuesAsDoubles();
+		for (int i = 0; i < 25; i++) {
+			for (int j = 0; j < 5; j++) {
+				int normalIndex = i * 5 + j;
+				int transposedIndex = j * 25 + i;
+				assertEquals(transposedValuesAsDoubles[transposedIndex], normalValuesAsDoubles[normalIndex], 0.000001);
+			}
 		}
 	}
 

@@ -44,7 +44,9 @@ import java.util.*;
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
 	public static final String EXCHANGE_ITEM_ID_POST_FIX = "exchangeItemIdPostFix";
+	public static final String TRANSPOSE_DIMENSIONS = "transposeDimensions";
 	private String exchangeItemIdPostFix;
+	private String[] transposeDimensions;
 
 	// create a MetaExchangeItem
 	private class DFlowFMMetaExchangeItem{
@@ -93,6 +95,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				switch (key) {
 					case EXCHANGE_ITEM_ID_POST_FIX:
 						exchangeItemIdPostFix = value;
+						continue;
+					case TRANSPOSE_DIMENSIONS:
+						transposeDimensions = value.split(",");
 						continue;
 					default:
 						throw new RuntimeException("Unknown key " + key + ". Please specify only " + EXCHANGE_ITEM_ID_POST_FIX + " as key=value pair");
@@ -163,6 +168,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
     		try {
 	    		Array full = inputFile.readSection(var.getShortName());
 			    thisValue = full.slice(0,time_index);
+				if (isTransposeNeeded(var)) thisValue = thisValue.transpose(0, 1);
 			} catch (IOException | InvalidRangeException e) {
 				throw new RuntimeException("Error reading from NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 			} catch (ArrayIndexOutOfBoundsException e) {
@@ -338,8 +344,11 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					IExchangeItem exchangeItem=this.ExchangeItems.get(key).exchangeItem;
 					int[] nDims=this.ExchangeItems.get(key).nDims;
 					// Get the dimension of the exchangeItem.
-					if (nDims!=null){
-						Array array=Array.factory(DataType.FLOAT,nDims);
+					if (nDims!=null) {
+						Variable variable = netcdfFileWriter.findVariable(this.ExchangeItems.get(key).shortName);
+						boolean transposeNeeded = isTransposeNeeded(variable);
+						if (transposeNeeded) transposeDims(nDims);
+						Array array = Array.factory(DataType.FLOAT, nDims);
 						double[] vals = exchangeItem.getValuesAsDoubles();
 						//Check Dimensions
 						int totalNumberOfValues = 1;
@@ -353,9 +362,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						for (int i=0; i<vals.length; i++){
 							array.setFloat(i+offset, (float) vals[i]);
 						}
-						Variable myVar =  netcdfFileWriter.findVariable(this.ExchangeItems.get(key).shortName);
+						if (transposeNeeded) array = array.transpose(1, 2);
 						try {
-							netcdfFileWriter.write(myVar,array);
+							netcdfFileWriter.write(variable, array);
 						} catch (InvalidRangeException e) {
 							throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 						}
@@ -374,7 +383,24 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		}
 	}
 
-   // find dimensions of a variable
+	private static void transposeDims(int[] nDims) {
+		int firstDim = nDims.length - 2;
+		int firstDimSize = nDims[firstDim];
+		int secondDim = nDims.length - 1;
+		int secondDimDize = nDims[secondDim];
+		nDims[firstDim] = secondDimDize;
+		nDims[secondDim] = firstDimSize;
+	}
+
+	private boolean isTransposeNeeded(Variable variable) {
+		if (transposeDimensions == null || transposeDimensions.length != 2) return false;
+		int transposeDim1 = variable.findDimensionIndex(transposeDimensions[0]);
+		if (transposeDim1 == -1) return false;
+		int transposeDim2 = variable.findDimensionIndex(transposeDimensions[1]);
+		return transposeDim2 != -1;
+	}
+
+	// find dimensions of a variable
    private int [] fullNameToDims(String fullName){
 		// format fullName:
 		// u0(time=38, nFlowLink=148)
