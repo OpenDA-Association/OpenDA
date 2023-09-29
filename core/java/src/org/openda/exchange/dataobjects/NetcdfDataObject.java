@@ -55,7 +55,13 @@ import java.util.*;
 public class NetcdfDataObject implements IComposableDataObject, IComposableEnsembleDataObject {
 
 	public static final String ALLOW_TIME_INDEPENDENT_ITEMS = "allowTimeIndependentItems";
+	public static final String TIME_DIMENSION_NAME = "timeDimensionName";
+	public static final String GRID_DIMENSION_NAME = "gridDimensionName";
 	public static final String REQUIRED_EXCHANGE_ITEM_ID = "requiredExchangeItemId";
+	private String timeDimensionName;
+	private List<String> gridDimensionNames;
+	private List<Integer> gridDimensionIndices;
+	private boolean dimensionOrderSpecified;
 	public static final String LAYER_DIMENSION_NAME = "layerDimensionName";
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
@@ -122,6 +128,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		String fileName = arguments[0];
 		this.file = new File(workingDir, fileName);
 		Set<String> requiredExchangeItemIds = new HashSet<>();
+		gridDimensionNames = new ArrayList<>();
+		gridDimensionIndices = new ArrayList<>();
 		for (int i = 1; i < arguments.length; i++) {
 			String argument = arguments[i];
 			if (checkLazyReadingOrLazyWritingArguments(i, argument)) continue;
@@ -135,13 +143,22 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				case REQUIRED_EXCHANGE_ITEM_ID:
 					requiredExchangeItemIds.add(value);
 					continue;
+				case TIME_DIMENSION_NAME:
+					timeDimensionName = value;
+					continue;
 				case LAYER_DIMENSION_NAME:
 					this.layerDimensionName = value;
 					continue;
 				default:
+					if (key.startsWith(GRID_DIMENSION_NAME)) {
+						parseGridDimensionName(key, value);
+						continue;
+					}
 					throw new RuntimeException("Unknown key " + key + ". Please specify only [" + ALLOW_TIME_INDEPENDENT_ITEMS + ", " + REQUIRED_EXCHANGE_ITEM_ID + ", " + LAYER_DIMENSION_NAME  + "] as key=value pair");
 			}
 		}
+
+		checkSpecifiedDimensionOrder();
 
 		if (this.file.exists()) {
 			//open existing netcdf file. Always use NetcdfFileWriteable in case data needs to be written later.
@@ -187,6 +204,27 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			this.netcdfFileWriter.setLargeFile(true);
 			NetcdfUtils.addGlobalAttributes(this.netcdfFileWriter);
 		}
+	}
+
+	private void parseGridDimensionName(String key, String value) {
+		String substring = null;
+		try {
+			substring = key.substring(GRID_DIMENSION_NAME.length());
+			int gridDimensionIndex = Integer.parseInt(substring);
+			gridDimensionIndices.add(gridDimensionIndex);
+			gridDimensionNames.add(value);
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("Invalid gridDimensionName index " + substring + ". When specifying dimension names always supply time and 2 grid dimension names in separate arguments according to the next format: timeDimensionName=? gridDimensionName1=? gridDimensionName2=?");
+		}
+	}
+
+	private void checkSpecifiedDimensionOrder() {
+		dimensionOrderSpecified = !gridDimensionNames.isEmpty() || !gridDimensionIndices.isEmpty() || timeDimensionName != null;
+		if (!dimensionOrderSpecified) return;
+		if (!lazyWriting) throw new RuntimeException("Specifying dimension names only supported when lazyWriting=true, but writing will always be skipped when dimensions names are speicfied.");
+		boolean dimensionOrderSpecsFaulty = gridDimensionNames.size() != 2 || gridDimensionIndices.size() != 2 || timeDimensionName == null;
+		if (!dimensionOrderSpecsFaulty) return;
+		throw new RuntimeException("When specifying dimension names always supply time and 2 grid dimension names in separate arguments according to the next format: timeDimensionName=? gridDimensionName1=? gridDimensionName2=?");
 	}
 
 	private boolean checkLazyReadingOrLazyWritingArguments(int i, String argument) {
@@ -397,7 +435,9 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			IExchangeItem exchangeItem;
 			//Note: never use standard name or long name as exchangeItemId, since these are not always unique within a netcdf file.
 			String exchangeItemId = variable.getShortName();
-			if (variable.getDimensions().isEmpty()) {//if scalar.
+			List<Dimension> dimensions = variable.getDimensions();
+			if (dimensionOrderSpecified && dimensions.size() != 3) throw new RuntimeException("Specifying dimension order only supported for variables with exactly 3 dimensions.");
+			if (dimensions.isEmpty()) {//if scalar.
 				exchangeItem = new DoubleExchangeItem(exchangeItemId, Role.InOut, variable.readScalarDouble());
 
 			} else {//if array.
@@ -409,8 +449,15 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 				arrayBasedExchangeItem.setTimeInfo(newTimeInfo);
 				//TODO cache variables with spatial coordinates. AK
-				arrayBasedExchangeItem.setGeometryInfo(NetcdfUtils.createGeometryInfo(variable, netcdfFile));
-				IArray array = (IArray) NetcdfUtils.readData(variable);
+				IArrayGeometryInfo geometryInfo = NetcdfUtils.createGeometryInfo(variable, netcdfFile);
+				if (geometryInfo != null && dimensionOrderSpecified) throw new RuntimeException("Specifying dimension order not supported when there is geometry info about latitude longitude");
+				IArray array;
+				if (!dimensionOrderSpecified) {
+					arrayBasedExchangeItem.setGeometryInfo(geometryInfo);
+					array = (IArray) NetcdfUtils.readData(variable);
+				} else {
+					array = (IArray) NetcdfUtils.readDataWithDifferentDimensions(variable, gridDimensionIndices, gridDimensionNames, timeDimensionName);
+				}
 				arrayBasedExchangeItem.setArray(array);
 				exchangeItem = arrayBasedExchangeItem;
 			}
@@ -593,7 +640,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		makeSureFileHasBeenCreated();
 
 		//TODO remove. This is only used for SWAN state files (see SwanStateNetcdfFileTest.testSwanNetcdfStateFile_1). AK
-		if (this.lazyWriting) {
+		if (this.lazyWriting && !dimensionOrderSpecified) {
+
 			//write data to netcdf file.
 			Results.putMessage(this.getClass().getSimpleName() + ": writing data to file " + this.file.getAbsolutePath());
 			writeData(this.netcdfFileWriter, this.exchangeItems);
