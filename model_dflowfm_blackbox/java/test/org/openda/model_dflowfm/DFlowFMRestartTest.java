@@ -84,7 +84,7 @@ public class DFlowFMRestartTest extends TestCase {
 // Commented out because no small restart file available, but below test should work with any
 	public void testRestartFileTranspose3DVariableDimensions() {
 		IDataObject initialRestartFile = new DFlowFMRestartFileWrapper();
-		String[] transposeArgs = new String[]{"FlowFM3D_00000000_000000_rst.nc", "transposeDimensions=nFlowElem,laydim"};
+		String[] transposeArgs = new String[]{"FlowFM3D_00000000_000000_rst.nc"};
 
 		initialRestartFile.initialize(testRunDataRestartFileDir, transposeArgs);
 
@@ -97,6 +97,8 @@ public class DFlowFMRestartTest extends TestCase {
 		assertEquals(29.425, transposedFmGeometry.getYCoord(25), 0.0001);
 		assertEquals(47.915, transposedFmGeometry.getXCoord(2), 0.0001);
 		assertEquals(29.475, transposedFmGeometry.getYCoord(2), 0.0001);
+		assertEquals(30.0229, transposedValuesAsDoubles[25], 0.0001);
+		assertEquals(29.9773, transposedValuesAsDoubles[2], 0.0001);
 
 		initialRestartFile.finish();
 
@@ -105,26 +107,6 @@ public class DFlowFMRestartTest extends TestCase {
 		double[] finishedTransposedValuesAsDoubles = finishedRestartFile.getDataObjectExchangeItem("tem1").getValuesAsDoubles();
 		for (int i = 0; i < transposedValuesAsDoubles.length; i++) {
 			assertEquals(transposedValuesAsDoubles[i], finishedTransposedValuesAsDoubles[i], 0.000001);
-		}
-
-		IDataObject normalRestartFile = new DFlowFMRestartFileWrapper();
-		String[] normalArgs = new String[]{"FlowFM3D_00000000_000000_rst.nc"};
-		normalRestartFile.initialize(testRunDataRestartFileDir, normalArgs);
-		IExchangeItem tem1Normal = normalRestartFile.getDataObjectExchangeItem("tem1");
-		DFlowFMMapExchangeItemGeometryInfo normalGeometryInfo = (DFlowFMMapExchangeItemGeometryInfo) tem1Normal.getGeometryInfo();
-		int normalGeometrySize = normalGeometryInfo.getSize();
-		assertEquals(transposedValuesAsDoubles.length, normalGeometrySize);
-		assertEquals(47.915, normalGeometryInfo.getXCoord(1), 0.001);
-		assertEquals(29.425, normalGeometryInfo.getYCoord(1), 0.001);
-		assertEquals(47.915, normalGeometryInfo.getXCoord(10), 0.001);
-		assertEquals(29.475, normalGeometryInfo.getYCoord(10), 0.001);
-		double[] normalValuesAsDoubles = tem1Normal.getValuesAsDoubles();
-		for (int i = 0; i < 25; i++) {
-			for (int j = 0; j < 5; j++) {
-				int normalIndex = i * 5 + j;
-				int transposedIndex = j * 25 + i;
-				assertEquals(transposedValuesAsDoubles[transposedIndex], normalValuesAsDoubles[normalIndex], 0.000001);
-			}
 		}
 	}
 

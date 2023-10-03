@@ -42,9 +42,7 @@ import java.util.*;
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
 	public static final String EXCHANGE_ITEM_ID_POST_FIX = "exchangeItemIdPostFix";
-	public static final String TRANSPOSE_DIMENSIONS = "transposeDimensions";
 	private String exchangeItemIdPostFix;
-	private String[] transposeDimensions;
 
 	// create a MetaExchangeItem
 	private class DFlowFMMetaExchangeItem{
@@ -93,9 +91,6 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				switch (key) {
 					case EXCHANGE_ITEM_ID_POST_FIX:
 						exchangeItemIdPostFix = value;
-						continue;
-					case TRANSPOSE_DIMENSIONS:
-						transposeDimensions = value.split(",");
 						continue;
 					default:
 						throw new RuntimeException("Unknown key " + key + ". Please specify only " + EXCHANGE_ITEM_ID_POST_FIX + " as key=value pair");
@@ -414,11 +409,11 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	}
 
 	private boolean isTransposeNeeded(Variable variable) {
-		if (transposeDimensions == null || transposeDimensions.length != 2) return false;
-		int transposeDim1 = variable.findDimensionIndex(transposeDimensions[0]);
+		int transposeDim1 = variable.findDimensionIndex("nFlowElem");
 		if (transposeDim1 == -1) return false;
-		int transposeDim2 = variable.findDimensionIndex(transposeDimensions[1]);
-		return transposeDim2 != -1;
+		int transposeDim2 = variable.findDimensionIndex("laydim");
+		if (transposeDim2 == -1) return false;
+		return transposeDim2 - transposeDim1 == 1;
 	}
 
 	// find dimensions of a variable
