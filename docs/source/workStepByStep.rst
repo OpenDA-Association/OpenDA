@@ -8,7 +8,7 @@ are often complex software packages with many options. In addition, we
 add (real) observed data and blow up the number of computations and data
 by an order of 100. Another problem is related to our way of using the
 models in a data-assimilation framework. For sequential
-data-assimilation algorithms, such as the ensemble Kalman Filter (EnKF) or
+data-assimilation algorithms, such as the Ensemble Kalman Filter (EnKF) or
 3D-VAR, we often perform (short) model runs and update the parameters or
 state of the model between these short runs. However, the used simulation models
 are often not developed to be applied in this way.
@@ -24,7 +24,7 @@ are useful tips and ideas.
 
 For simplicity, we assume that the user uses a black-box coupling and
 wants to set up a data-assimilation system using a sequential
-data-assimilation algorithm e.g. a flavor of the ensemble Kalman filter.
+data-assimilation algorithm e.g. a flavor of the Ensemble Kalman filter.
 
 Preparation
 ===========
@@ -223,7 +223,7 @@ Basic assimilation algorithms
 Ensemble Kalman filtering
 -------------------------
 
-Next, it is time to start filtering. Therefore, ensemble Kalman filtering
+Next, it is time to start filtering. Therefore, Ensemble Kalman filtering
 can be used (``org.openda.algorithms.kalmanFilter.EnkF``), but 
 other algorithms, e.g. DEnKF or
 EnSR, are also possible. 
