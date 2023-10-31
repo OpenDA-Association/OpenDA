@@ -71,6 +71,7 @@ public class KalmanGainStorage {
 	private String kalmanGainStorageFileName = "kalmanGainStorage.xml";
 	private int maxKeepVectorInXMLSize = DefaultMaxKeepVectorInXMLSize;
 	private boolean useTimeStampInDirectoryName = true;
+	private double[][] hk = null;
 
 	public enum StorageType {
 		xml, netcdf, automatic, netcdf_cf
@@ -519,6 +520,10 @@ public class KalmanGainStorage {
 		return this.kalmanGainColumns;
 	}
 
+	public double[][] getHk() {
+		return hk;
+	}
+
 	/**
 	 * Read the kalman gain matrix from xml file and, in case of large column vectors, to netdcf files.
 	 */
@@ -614,6 +619,10 @@ public class KalmanGainStorage {
 			}
 			if (TIME_STAMP.equals(shortName)) {
 				this.timeStampAsMJD = ((double[]) variable.read().get1DJavaArray(double.class))[0];
+				continue;
+			}
+			if ("HK".equals(shortName)) {
+				this.hk = (double[][]) variable.read().copyToNDJavaArray();
 				continue;
 			}
 			int[] shape = variable.getShape();
