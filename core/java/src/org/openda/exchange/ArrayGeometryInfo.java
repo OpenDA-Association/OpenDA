@@ -52,7 +52,7 @@ public class ArrayGeometryInfo implements IArrayGeometryInfo {
 	boolean is3D;
 	// Added to check if distance needs to be converted to meters
 	// Before it always assumed it was WGS84 and calculated the "distances" in lat lon which gives unrealistic results since it depends on the exact location on earth
-	private boolean isWGS84;
+	boolean isWGS84;
 
 	/**
      * latitudeValueIndices contains for each dimension in the latitudeCoordinateValues array

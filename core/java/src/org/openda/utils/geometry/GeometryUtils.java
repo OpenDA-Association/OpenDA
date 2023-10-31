@@ -557,4 +557,21 @@ public class GeometryUtils {
 			return p1_12*z5 - p1_2*z4 + p5_8*z3 + p5_3*z2 - 5*z1 + 4 - p2_3/z1;
 		}
 	}
+
+	public static IVector[] calculateCohnWeightsBetweenPointGeometries(double distance, IGeometryInfo[] geometryInfos, IVector xObs, IVector yObs, IVector zObs) {
+		int obsCount = xObs.getSize();
+		IVector[] obsVectorArray = new IVector[xObs.getSize()];
+		for (int i = 0; i < geometryInfos.length; i++) {
+			double[] weightsObservation = new double[obsCount];
+			IGeometryInfo geometryInfo = geometryInfos[i];
+			for (int j = 0; j < obsCount; j++) {
+				IArray distanceToPoint = geometryInfo.distanceToPoint(xObs.getValue(j), yObs.getValue(j), zObs.getValue(j));
+				if (distanceToPoint.length() != 1) throw new RuntimeException("Calculating Rho for localization only supported for single point geometries.");
+				double obsDistance = distanceToPoint.getValueAsDouble(0);
+				weightsObservation[j] = calculateCohnWeight(obsDistance, distance);
+			}
+			obsVectorArray[i] = new Vector(weightsObservation);
+		}
+		return obsVectorArray;
+	}
 }
