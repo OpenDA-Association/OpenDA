@@ -23,6 +23,7 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
 import org.openda.interfaces.ITreeVector;
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.TreeVector;
@@ -30,6 +31,7 @@ import org.openda.utils.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
@@ -89,6 +91,37 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.readKalmanGain();
 
 		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
+	}
+
+	public void testReadWriteKalmanGainNetcdfCFHK() throws ParseException {
+
+		double timeAsMJD = TimeUtils.date2Mjd("202209011200");
+
+		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorageHK.nc");
+		kgStorageIn.readKalmanGain();
+
+		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
+		assertEquals(4, kalmanGainColumnsIn.length);
+
+		String[] observationIds = kgStorageIn.getObservationIds();
+		String[] expectedObsIds = {"WESTKPLE.waterlevel", "VLISSGN.waterlevel", "SCHEVNGN.waterlevel", "ROOMPBTN.waterlevel"};
+		assertEquals(4, observationIds.length);
+		for (int i = 0; i < observationIds.length; i++) {
+			assertEquals(expectedObsIds[i], observationIds[i]);
+		}
+		double[][] hk = kgStorageIn.getHk();
+		assertNotNull(hk);
+		assertEquals(4, hk.length);
+		assertEquals(4, hk[0].length);
+		double[][] expectedHK = {{0.19371548763628316, 0.21185091852367516, 0.23657124885992412, 0.21748081376956335} , {0.21185091852367666, 0.23168416850382453, 0.2587187889765871, 0.23784112835038507},{0.2365712488599269, 0.2587187889765884, 0.28890800869895084, 0.26559418838590676}, {0.2174808137695654, 0.23784112835038568, 0.2655941883859062, 0.24416170815767535}};
+		for (int i = 0; i < hk.length; i++) {
+			double[] hkRow = hk[i];
+			for (int j = 0; j < hkRow.length; j++) {
+				assertEquals(expectedHK[i][j], hkRow[j]);
+			}
+		}
 	}
 
 	private void checkKalmanGainContents(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {

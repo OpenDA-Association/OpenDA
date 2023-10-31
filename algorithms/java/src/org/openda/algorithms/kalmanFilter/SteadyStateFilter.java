@@ -22,12 +22,14 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.observers.ObserverUtils;
 import org.openda.utils.ConfigTree;
+import org.openda.utils.Matrix;
 import org.openda.utils.Results;
 import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.performance.OdaGlobSettings;
 
 import java.io.File;
 import java.text.ParseException;
+import java.util.*;
 
 /**
  * Steady state Kalman filter implementation as introduced already in the original papers of Kalman and Bucy.
@@ -54,6 +56,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	private double[] readGainTime;
 	private int steadyStateTimeCounter = 0;
 	private double skipAssimilationStandardDeviationFactor = Double.POSITIVE_INFINITY;
+	private double[][] hk;
+	private String[] gainStorageObservationIdsArray;
 
 	public void initialize(File workingDir, String[] arguments) {
 		super.initialize(workingDir, arguments);
@@ -159,13 +163,14 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		gainStorage.setKalmanGainStorageFileName(this.gainFileName);
 		if (gainFileName.endsWith(".nc")) gainStorage.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
 		gainStorage.readKalmanGain( this.getCurrentState());
-		String[] obsIds = gainStorage.getObservationIds();
+		hk = gainStorage.getHk();
+		gainStorageObservationIdsArray = gainStorage.getObservationIds();
 		double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();
 		IVector[] KVecs = gainStorage.getKalmanGainColumns();
-		for(int i=0;i<obsIds.length;i++){
-			String gainVectorId = obsIds[i]+":"+Math.round(obsTimeOffsets[i]*24.0*3600.0); //conversion to seconds
+		for(int i = 0; i< gainStorageObservationIdsArray.length; i++){
+			String gainVectorId = gainStorageObservationIdsArray[i]+":"+Math.round(obsTimeOffsets[i]*24.0*3600.0); //conversion to seconds
 			this.gainVectors.put(gainVectorId, KVecs[i]);
-			this.obsId.put(gainVectorId, obsIds[i]);
+			this.obsId.put(gainVectorId, gainStorageObservationIdsArray[i]);
 			this.obsTimeOffset.put(gainVectorId, 0.0);
 		}
 	}
@@ -208,24 +213,86 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 
 		int m=innovation.getSize();
 		IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(observations.getObservationDescriptions());
-		for(int i=0;i<m;i++){
+		ArrayList<Integer> missingObservationIndices = new ArrayList<>();
+		ArrayList<Integer> availableObservationIndices = new ArrayList<>();
+		for (int i = 0; i < gainStorageObservationIdsArray.length; i++) {
+			int indexOf = Arrays.binarySearch(obsIds, gainStorageObservationIdsArray[i]);
+			if (indexOf >= 0) {
+				availableObservationIndices.add(i);
+				continue;
+			}
+			missingObservationIndices.add(i);
+		}
+		int numberOfMissingObservations = missingObservationIndices.size();
+		int numberOfAvailableObservations = gainStorageObservationIdsArray.length - numberOfMissingObservations;
+		Matrix m1 = new Matrix(numberOfMissingObservations, numberOfAvailableObservations);
+		Matrix m2 = new Matrix(numberOfMissingObservations, numberOfMissingObservations);
+		for (int rowIndex = 0; rowIndex < missingObservationIndices.size(); rowIndex++) {
+			Integer missingObservationRowIndex = missingObservationIndices.get(rowIndex);
+			for (int columnIndex = 0; columnIndex < availableObservationIndices.size(); columnIndex++) {
+				Integer availableObservationColumnIndex = availableObservationIndices.get(columnIndex);
+				m1.setValue(rowIndex, columnIndex, hk[missingObservationRowIndex][availableObservationColumnIndex]);
+			}
+			for (int columnIndex = 0; columnIndex < missingObservationIndices.size(); columnIndex++) {
+				Integer missingObservationColumnIndex = missingObservationIndices.get(columnIndex);
+				m2.setValue(rowIndex, columnIndex, hk[missingObservationRowIndex][missingObservationColumnIndex]);
+			}
+		}
+		Matrix dAvailable = new Matrix(numberOfAvailableObservations, 1);
+		Matrix identityMatrix = new Matrix(numberOfMissingObservations, numberOfAvailableObservations);
+		for (int i = 0; i < numberOfMissingObservations; i++) {
+			identityMatrix.setValue(i, i, 1);
+		}
+
+		for (int i = 0; i < m; i++) {
 			// find matching column in steady-state gain
-			String gainVectorId = obsIds[i]+":"+Math.round(obsTimeOffsets[i]*24.0*3600.0); //conversion to seconds
-			Results.putProgression("processing obs "+gainVectorId+"\n");
+			String gainVectorId = obsIds[i] + ":" + Math.round(obsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
+			Results.putProgression("processing obs " + gainVectorId + "\n");
 			// add to analysis increment for this obs
-			if(this.gainVectors.containsKey(gainVectorId)){
+			if (this.gainVectors.containsKey(gainVectorId)) {
 				IVector gainVector = this.gainVectors.get(gainVectorId);
-				if (gainVector.getSize() != delta.getSize()) Results.putMessage("Warning: Kalman Gain does not have exact same size as current state, this can cause suboptimal results. Please check if the contents of the state match the contents of the Kalman Gain.");
+				if (gainVector.getSize() != delta.getSize())
+					Results.putMessage("Warning: Kalman Gain does not have exact same size as current state, this can cause suboptimal results. Please check if the contents of the state match the contents of the Kalman Gain.");
 				// Skip assimilation when observations and predictions differ more than observation standard deviations times skipAssimilationStandardDeviationFactor
 				double innovationValue = innovation.getValue(i);
 				if (skipAssimilationStandardDeviationFactor != Double.POSITIVE_INFINITY && Math.abs(innovationValue) > skipAssimilationStandardDeviationFactor * standardDeviations.getValue(i)) {
-					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observationValues.getValue(i) + ", model prediction value " + pred_a.getValue(i) + ", skipAssimilationStandardDeviationFactor = "+ skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i) +"\n");
+					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observationValues.getValue(i) + ", model prediction value " + pred_a.getValue(i) + ", skipAssimilationStandardDeviationFactor = " + skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i) + "\n");
 					continue;
 				}
 				delta.axpy(innovationValue, gainVector);
-			}else{
-				throw new RuntimeException("No matching column found for observation with id="
-						+obsIds[i]+"and offset="+obsTimeOffsets[i]+"\n");
+				dAvailable.setValue(i, 0, innovationValue);
+			} else {
+
+				if (hk == null) throw new RuntimeException("No matching column found for observation with id=" + obsIds[i] + "and offset=" + obsTimeOffsets[i] + "\n");
+			}
+		}
+
+		Matrix iMinusM2 = new Matrix(numberOfMissingObservations, numberOfMissingObservations);
+		for (int row = 0; row < numberOfMissingObservations; row++) {
+			for (int column = 0; column < numberOfMissingObservations; column++) {
+				double m2Value = m2.getValue(row, column);
+				double iMinusM2Value = row == column ? 1 - m2Value : -m2Value;
+				iMinusM2.setValue(row, column, iMinusM2Value);
+			}
+		}
+		if (numberOfMissingObservations != 0) {
+			Matrix inverseIMinusM2 = iMinusM2.inverse();
+			Matrix m1DAvailable = m1.mult(dAvailable);
+			Matrix dMissing = inverseIMinusM2.mult(m1DAvailable);
+			System.out.println(dMissing);
+			for (int i = 0; i < missingObservationIndices.size(); i++) {
+				Integer missingObservationIndex = missingObservationIndices.get(i);
+				String missingObservationId = gainStorageObservationIdsArray[missingObservationIndex];
+				// TODO fix obsTimeOffset
+				String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[0] * 24.0 * 3600.0); //conversion to seconds
+				Results.putProgression("processing obs " + gainVectorId + "\n");
+				// add to analysis increment for this obs
+				if (this.gainVectors.containsKey(gainVectorId)) {
+					IVector gainVector = this.gainVectors.get(gainVectorId);
+					double calculatedInnovation = dMissing.getValue(i, 0);
+					System.out.println("Calculated innovation for " + missingObservationId + ": " + calculatedInnovation);
+					delta.axpy(calculatedInnovation, gainVector);
+				}
 			}
 		}
 		this.mainModel.axpyOnState(1.0, delta);
