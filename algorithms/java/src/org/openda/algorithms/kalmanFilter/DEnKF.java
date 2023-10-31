@@ -19,6 +19,7 @@
  */
 package org.openda.algorithms.kalmanFilter;
 import org.openda.interfaces.*;
+import org.openda.utils.Matrix;
 import org.openda.utils.Results;
 
 /**
@@ -101,8 +102,9 @@ import org.openda.utils.Results;
 			// Apply localization to the gain matrix (shur-product)
 			applyLocalizationToGain(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast);
 
+			double[][] hk = getHK(obs, ensemblePredictionsForecast);
 			// Store kalman gain for future use in this object
-			storeGainMatrix(obs, analysisTime, Kvecs);
+			storeGainMatrix(obs, analysisTime, Kvecs, hk);
 
 			// Multiply Kalman gain with innovations and update model states
 			updateModelWithGain(obs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs);
