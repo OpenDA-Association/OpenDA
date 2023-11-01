@@ -56,6 +56,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	private double[] readGainTime;
 	private int steadyStateTimeCounter = 0;
 	private double skipAssimilationStandardDeviationFactor = Double.POSITIVE_INFINITY;
+	private boolean tryCompensatingForMissingObservationWithHK = false;
 	private double[][] hk;
 	private String[] gainStorageObservationIdsArray;
 
@@ -155,7 +156,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
             }
 		}
 		this.skipAssimilationStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipAssimilationStandardDeviationFactor", Double.POSITIVE_INFINITY);
-		
+		this.tryCompensatingForMissingObservationWithHK = this.configurationAsTree.getAsBoolean("tryCompensatingForMissingObservationWithHK", false);
+
 		//now read the first gain file into memory
         steadyStateTimeCounter++;
 		KalmanGainStorage gainStorage = new KalmanGainStorage(this.workingDir, this.gainTimeMjd[0]);
@@ -275,7 +277,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 				iMinusM2.setValue(row, column, iMinusM2Value);
 			}
 		}
-		if (numberOfMissingObservations != 0) {
+		if (tryCompensatingForMissingObservationWithHK && numberOfMissingObservations != 0) {
 			Matrix inverseIMinusM2 = iMinusM2.inverse();
 			Matrix m1DAvailable = m1.mult(dAvailable);
 			Matrix dMissing = inverseIMinusM2.mult(m1DAvailable);
