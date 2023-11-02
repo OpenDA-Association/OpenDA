@@ -602,8 +602,8 @@ def dud(func, p_start, p_std, p_pert, obs, std, xtol=1e-3, p_tol=1e-4, start_dis
                 break
 
         #tidy up hist
-        hist["parameters"] = np.array([list(p) for p in hist["parameters"]]).T.tolist()
-        hist["func_evals"] = np.array([list(p) for p in hist["func_evals"]]).T.tolist()
+        #hist["parameters"] = np.array([list(p) for p in hist["parameters"]]).T.tolist()
+        #hist["func_evals"] = np.array([list(p) for p in hist["func_evals"]]).T.tolist()
 
     # Get the parameters that correspond to lowest object function
     if set_last_value:
