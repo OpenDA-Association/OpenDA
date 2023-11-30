@@ -175,7 +175,7 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
-      TTMP=SECNDS(0.0)  
+      TTMP=SECOND()  
 C  
       IF(ISTRAN(1).EQ.1.AND.ISCDCA(1).LT.4)  
      &    CALL CALTRAN (ISTL_,IS2TL_,1,1,SAL,SAL1)  
@@ -452,7 +452,7 @@ C
           CALL SSEDTOX(ISTL,IS2TL,1.0)  
           IBALSTDT=1  
         ENDIF  
-C       TVDIF=TVDIF+SECNDS(TTMP)  
+C       TVDIF=TVDIF+TTMP-SECOND()  
       ENDIF  
 C  
 C 888 FORMAT('N,IC,I,DTS,DT = ',3I5,2F12.8)  
