@@ -196,6 +196,8 @@ CONTAINS
     REAL(RKD) ,INTENT(IN )::WDIR   ![0,360]
     INTEGER(4)::ZONE
 
+    ZONE=0
+
     IF     (WDIR>337.5 .OR. WDIR <= 22.5) THEN
      ZONE = 1
     ELSEIF (WDIR>22.5 .AND. WDIR <= 67.5) THEN
