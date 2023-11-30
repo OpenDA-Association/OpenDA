@@ -937,7 +937,7 @@ C
           ENDDO  
         ENDIF  
 C  
-C6222 FORMAT(' TC,SNEW,SASSM,SOLD=',4F10.2)  
+C6222 FORMAT(' TC,SNEW,SASSM,SOLD='4F10.2)  
 C  
         IF(ISCDA(7).GT.0)THEN  
           DO NX=1,NSND  
