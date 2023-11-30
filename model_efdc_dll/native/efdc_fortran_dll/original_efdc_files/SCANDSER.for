@@ -1,9 +1,13 @@
       SUBROUTINE SCANDSER(NCSER3)  
       USE GLOBAL  
+      INTEGER IOS
       WRITE(*,'(A)')'SCANNING INPUT FILE: DSER.INP'  
       OPEN(1,FILE='DSER.INP',STATUS='OLD')  
       DO NS=1,NCSER3  
-   10   READ(1,*,ERR=10,END=40)I,M,R,R,R,R  
+        IOS=1
+        DO WHILE (IOS>0)
+          READ(1,*,IOSTAT=IOS,END=40)I,M,R,R,R,R  
+        ENDDO
         NDCSER=MAX(NDCSER,M)  
         IF(I.EQ.1)THEN  
           READ(1,*,ERR=20,END=40)(R,K=1,KC)  

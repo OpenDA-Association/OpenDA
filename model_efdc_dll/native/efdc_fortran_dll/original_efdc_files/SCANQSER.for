@@ -1,12 +1,15 @@
       SUBROUTINE SCANQSER  
       USE GLOBAL
-      INTEGER*4 NS, I, J, M
-        
+      INTEGER IOS
+
       WRITE(*,'(A)')'SCANNING INPUT FILE: QSER.INP'  
       OPEN(1,FILE='QSER.INP',STATUS='OLD')  
 
       DO NS=1,NQSER  
-   10   READ(1,*,ERR=10,END=40)I,M,R,R,R,R,J  
+        IOS=1
+        DO WHILE (IOS>0)
+          READ(1,*,IOSTAT=IOS,END=40)I,M,R,R,R,R,J  
+        ENDDO
         NDQSER=MAX(NDQSER,M)  
         IF(I.EQ.1)THEN  
           READ(1,*,ERR=20,END=40)(R,K=1,KC)  
@@ -56,7 +59,10 @@ C *****************************************************************************
       OPEN(1,FILE='QWRS.INP',STATUS='OLD') 
 
       DO NS=1,NQWRSR  
-   10   READ(1,*,ERR=10,END=40)I,M,R,R,R,R
+        IOS=1
+        DO WHILE (IOS>0)
+          READ(1,*,IOSTAT=IOS,END=40)I,M,R,R,R,R
+        ENDDO
         NDQWRSR=MAX(NDQWRSR,M)  
         IF(I.EQ.0)THEN  
           ! *** Flow Only

@@ -11,6 +11,7 @@
       LOGICAL*4     BFLAG
       INTEGER*4     I,J,K,ITMP,NW
       REAL*4        XPSQ
+      INTEGER IOS
       LOGICAL       fileExists
       
       WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC.INP'
@@ -85,7 +86,10 @@ C
           READ(1,1)  
         ENDDO  
         DO NS=1,NPSTMSR  
-   10     READ(1,*,ERR=10,END=20)M,TM,TA,RMULADJ,ADDADJ  
+          IOS=1
+          DO WHILE (IOS>0)
+            READ(1,*,IOSTAT=IOS,END=20)M,TM,TA,RMULADJ,ADDADJ  
+          ENDDO
           NDWQPSR=MAX(NDWQPSR,M)
           DO J=1,M  
             !READ(1,*)T,(RLDTMP(K),K=1,NWQV)  
@@ -116,7 +120,10 @@ C
             READ(1,1)  
           ENDDO  
           DO NS=1,1000  
-   30       READ(1,*,ERR=30,END=40)ISTYP,M,T1,T2,RMULADJ,ADDADJ  
+            IOS=1
+            DO WHILE (IOS>0)
+              READ(1,*,IOSTAT=IOS,END=40)ISTYP,M,T1,T2,RMULADJ,ADDADJ  
+            ENDDO
             
             IF(ISTYP.EQ.1) READ(1,*)   ! GeoSR, 2014.10.13 JHLEE, CWQSR SCANNING
 
