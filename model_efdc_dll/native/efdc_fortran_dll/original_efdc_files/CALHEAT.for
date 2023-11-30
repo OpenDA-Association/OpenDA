@@ -702,7 +702,7 @@ C 600 FORMAT(4I5,2E12.4)
 
         ! *** Day of the Year
         THOUR    = (TIMEDAY-INT(TIMEDAY))*24.0
-        IDAY     =  TIMEDAY-INT(TIMEDAY/365.)*365.
+        IDAY     = INT(TIMEDAY-INT(TIMEDAY/365.)*365.,KIND(IDAY))
         IDAY     =  IDAY+INT(INT(TIMEDAY/365.)/4.)
         JDAY     = REAL(IDAY)
         PMC1     = (2.*PI*(JDAY-1.))/365.
