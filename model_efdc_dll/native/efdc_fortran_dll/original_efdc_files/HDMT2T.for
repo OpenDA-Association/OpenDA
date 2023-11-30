@@ -596,7 +596,7 @@ C----------------------------------------------------------------------C
 C
 C **  REENTER HERE FOR TWO TIME LEVEL LOOP
 C
-  500 CONTINUE
+C 500 CONTINUE  
 C
 C**********************************************************************C
 C
@@ -1427,9 +1427,9 @@ C
       ENDIF
 C
  3678 FORMAT(2I6,4F13.3)
- 3679 FORMAT(12x,4F13.3)
- 3680 FORMAT(12x,6F13.5)
- 3681 FORMAT(12X,5E13.4,F13.5)
+C3679 FORMAT(12x,4F13.3)  
+C3680 FORMAT(12x,6F13.5)  
+C3681 FORMAT(12X,5E13.4,F13.5)  
  3677 FORMAT('CORNER',2I5,5E14.5)
  3676 FORMAT(6X,2I5,5E14.5)
  3675 FORMAT(F11.3,I6,' TIME IN DAYS AND NUMBER OF CORNERS')
@@ -1954,7 +1954,7 @@ C       UNNECESSARY DUPLICATION
 C *** EE END BLOCK
 C**********************************************************************C
 C
- 2000 CONTINUE
+C2000 CONTINUE  
 C
 C**********************************************************************C
 C

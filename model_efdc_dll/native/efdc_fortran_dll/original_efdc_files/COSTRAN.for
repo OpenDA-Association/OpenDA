@@ -501,7 +501,7 @@ C
           ENDIF  
         ENDDO  
       ENDDO  
- 6001 FORMAT('N,K,CBTS = ',2I10,F12.3)  
+C6001 FORMAT('N,K,CBTS = ',2I10,F12.3)  
       DO K=1,KC  
         DO LL=1,NCBW  
           NSID=NCSERW(LL,M)  
@@ -610,7 +610,7 @@ C
           ENDIF  
         ENDDO  
       ENDDO  
- 6002 FORMAT('N,K,CBTN = ',2I10,F12.3)  
+C6002 FORMAT('N,K,CBTN = ',2I10,F12.3)  
 C  
 C **  MODIFIY VERTICAL MASS DIFFUSION IF ANTI-DIFFUSIVE ADVECTIVE  
 C **  IS TURNED OFF  

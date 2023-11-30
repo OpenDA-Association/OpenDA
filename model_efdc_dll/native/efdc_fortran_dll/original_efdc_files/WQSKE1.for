@@ -267,7 +267,7 @@ C
           ENDIF  
         ENDDO  
 		! *** DSLLC END BLOCK
-  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)  
+  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)
   911 FORMAT('ERROR: TIME, L, I, J, K, TWQ(L),TEM(L,K) = ',  
      &    F10.5, 4I4, 2F10.4,/)  
   
@@ -1863,7 +1863,7 @@ C
  1111 FORMAT(I12,F10.4)  
  1112 FORMAT(2I5,12F7.2)  
  1113 FORMAT(2I5,12E12.4)  
- 1414 FORMAT(I12,11E12.4)  
+C1414 FORMAT(I12,11E12.4)
       RETURN  
       END  
       

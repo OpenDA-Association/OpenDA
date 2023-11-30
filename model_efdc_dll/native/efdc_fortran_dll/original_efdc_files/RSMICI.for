@@ -70,7 +70,7 @@ C
    50 FORMAT(A79)  
    52 FORMAT(I7, 1X, A3)  
    60 FORMAT(/, A24, I5, A24)  
-   84 FORMAT(3I5, 20F8.4, F8.2)  
+C  84 FORMAT(3I5, 20F8.4, F8.2)  
    90 FORMAT(2I5, 18E12.4)  
       RETURN  
       END  
