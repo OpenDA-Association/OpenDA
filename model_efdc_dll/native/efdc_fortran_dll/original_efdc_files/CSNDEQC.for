@@ -61,7 +61,7 @@ C
         USTAR=SQRT(TAUB)  
         IF(USTAR.LT.WS) CSNDEQC=0.  
       ENDIF  
-  600 FORMAT(10E12.4)  
+C 600 FORMAT(10E12.4)  
       RETURN  
       END  
 

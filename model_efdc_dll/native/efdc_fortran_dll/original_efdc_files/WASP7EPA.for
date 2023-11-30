@@ -644,8 +644,8 @@ C qtmp array holds the horizontal area of each cell:
           END DO
         END IF
 C
- 6999 format(9i5,f5.1)
- 6996 format(9i5,f5.1)
+C6999 format(9i5,f5.1)
+C6996 format(9i5,f5.1)
 C
         WRITE(92,2030) LL
         DO L=1,LL,4
@@ -692,7 +692,7 @@ C add system bypass array to bottom of data group D:
         CLOSE(92)
       END IF
  2020 format(2i5,a12,'    Data Group D: Flows')
- 2021 FORMAT(1p,I5,2e10.3,'    Data Block D.1 Advective Flows')
+C2021 FORMAT(1p,I5,2e10.3,'    Data Block D.1 Advective Flows')
  2022 FORMAT(1p,I5,2e10.3,'    Data Block D.2 Pore Water Flows')
  2023 FORMAT(1p,I5,2e10.3,'    Data Block D.3 Sed. #1 Transport Field')
  2024 FORMAT(1p,I5,2e10.3,'    Data Block D.4 Sed. #2 Transport Field')
@@ -1275,16 +1275,16 @@ C----------------------------------------------------------------------C
 C
   901 FORMAT(2I5,E12.5,4I5,E12.5)
   902 FORMAT(I5,2X,3F20.8,3I5)
-  903 FORMAT(3E12.5,2I5)
+C 903 FORMAT(3E12.5,2I5)
   904 FORMAT(I5,2X,F20.8,10I5)
   905 FORMAT(I5)
-  906 FORMAT(5E12.5)
+C 906 FORMAT(5E12.5)
   941 FORMAT(3I5,3F20.5,I5)
-  942 FORMAT(3E12.5,2I5)
-  943 FORMAT(3E12.5,2I5)
+C 942 FORMAT(3E12.5,2I5)
+C 943 FORMAT(3E12.5,2I5)
   944 FORMAT(I5,2X,F20.8,10I5)
  9440 FORMAT(4F20.8)
-  945 FORMAT(I5)
+C 945 FORMAT(I5)
   946 FORMAT(4E17.9)
  9946 FORMAT(3e17.9,I5)
  9941 FORMAT(2I5,'    !',3i5,3x,a3)

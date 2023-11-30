@@ -402,7 +402,7 @@ C ** DIAGNOSTICS OF INITIALIZATION
 C             TMP1=-999.  
 C             TMP2=-999.  
 C  
- 2222 FORMAT(2I5,7E13.4)  
+C2222 FORMAT(2I5,7E13.4)  
 C  
 C **  SAVE OLD VALUES  
 C  
@@ -730,7 +730,7 @@ C
       ENDIF 
 C
 C**********************************************************************C
-  869 FORMAT(' I,J,HGDH = ',2I5,F10.3)  
+C 869 FORMAT(' I,J,HGDH = ',2I5,F10.3)  
       IF(IWRSP(1).LT.98)THEN !do not recalculate bed when SEDZLJ dynamics are active
 	  DO L=2,LA  
           HBEDA(L)=0.0  
@@ -831,7 +831,7 @@ C
           ENDDO  
         ENDIF  
       ENDIF  
- 8669 FORMAT('PA ERR ',I10,F10.5,8E14.6)  
+C8669 FORMAT('PA ERR ',I10,F10.5,8E14.6)  
 C  
 C **  UPDATE TOP BED LAYER THICKNESS AND VOID RATIO  
 C **  FOR DEPOSITION-RESUSPENSION STEP  
@@ -1028,7 +1028,7 @@ C
  2345 FORMAT('NEG DEPTH DUE TO MORPH CHANGE', 2I5,12F12.5)
  2347 FORMAT('                             ', 2I5,12F12.5)
  2348 FORMAT('WITHIN TOLERANCE MORPH CHANGE NEG DEPTH',F10.5,2I5,5F12.5)
- 2346 FORMAT('MORP ERR ',2I5,6E15.6)
+C2346 FORMAT('MORP ERR ',2I5,6E15.6)
  1993 FORMAT(2I6,4E14.6)
 C  
 C ++  ADJUST CONCENTRATIONS OF TRANSPORT VARIABLES IN RESPONSE TO  
@@ -1115,7 +1115,7 @@ C
 C
 C**********************************************************************C
 C
- 8800 FORMAT(I5,8E14.5)  
+C8800 FORMAT(I5,8E14.5)  
       CLOSE(1)  
       CLOSE(11)  
       CLOSE(21)  

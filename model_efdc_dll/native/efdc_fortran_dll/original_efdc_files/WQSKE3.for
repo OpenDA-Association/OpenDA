@@ -159,7 +159,7 @@ C          IWQT(L) = NINT( 4.*TWQ(L)+121.)
 C            STOP 'ERROR!! INVALID WATER TEMPERATURE'  
           ENDIF  
         ENDDO  
-  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)  
+  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)
   911 FORMAT(/,'ERROR: TIME, L, I, J, K, TWQ(L) = ', F10.5, 4I4, F10.4)  
 C  
 C NOTE: MRM 04/29/99  ADDED ARRAYS TO KEEP TRACK OF  
@@ -868,7 +868,6 @@ C          DO L=2,LA
              enddo
             ENDIF
           ENDDO  
-!}
         ELSE  
           DO L=2,LA  
             WQV(L,K,1)=WQVO(L,K,1)  

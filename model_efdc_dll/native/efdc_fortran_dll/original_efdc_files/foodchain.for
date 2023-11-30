@@ -715,9 +715,9 @@ C
   112 FORMAT(20X,10F10.4)
   101 FORMAT(F12.4,2I7,F12.3)
   102 FORMAT(1X,2I6,10E13.5)
-  103 FORMAT('              TXWF         TXWC         TXWP',
-     &       '         DOCW         POCW         TXBF         TXBC',
-     &       '         TXBP (roc)   DOCB         POCB        TXBPD (r)')
+C 103 FORMAT('              TXWF         TXWC         TXWP',
+C    &       '         DOCW         POCW         TXBF         TXBC',
+C    &       '         TXBP (roc)   DOCB         POCB        TXBPD (r)')
   121 FORMAT('DATA: OUTPUT TIME (DAYS), NTOX, NZONES, ',
      &       'AERAGING PERIOD (SECS)')
   122 FORMAT('DATA: NT    NZ   TXWF         TXWC         TXWP',

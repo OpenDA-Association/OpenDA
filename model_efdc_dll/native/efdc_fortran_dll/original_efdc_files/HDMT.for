@@ -628,7 +628,7 @@ CX      IF(ISDRY.EQ.3.OR.ISDRY.EQ.4) CALL CALPUV6(ISTL) !7 MOVED TO 8
 C       IF(ISDRY.EQ.3.OR.ISDRY.EQ.4) CALL CALPUV8(ISTL)  
 CJH      ENDIF  
 C  
- 5555   CONTINUE  
+C5555   CONTINUE  
 C  
         TPUV=TPUV+SECNDS(T1TMP)  
 C  
@@ -1678,11 +1678,11 @@ C**********************************************************************C
 C  
 C **  TIME LOOP COMPLETED  
 C  
- 1001 THDMT=THDMT+SECNDS(TTMP)  
+C1001 THDMT=THDMT+SECNDS(TTMP)  
 C  
 C**********************************************************************C  
 C  
- 2000 CONTINUE  
+C2000 CONTINUE  
 C  
 C**********************************************************************C  
 C  
