@@ -28,6 +28,7 @@ C
       REAL GQT(NQCTLM),LUA(NQCTLM),LDA(NQCTLM)
       REAL CG10
       REAL CQ(LCM),CV(LCM)				! GEOSR UNG 2014.11.12 Warning message writing
+      CHARACTER*256 FMTSTR
       CHARACTER*80 CTLE1
       ! open time control : jgcho 2010.8.17 temporary
 !      IF (N.EQ.1) GATEOTM=1.0
@@ -64,25 +65,24 @@ C
         OPEN(711,FILE=TRIM(FSINK),STATUS='UNKNOWN')  ! OPEN OLD FILE
         CLOSE(711,STATUS='DELETE')             ! DELETE OLD FILE
         OPEN(711,FILE=FSINK,STATUS='UNKNOWN')  ! OPEN NEW FILE
-        WRITE(711,7101) 
- 7101   FORMAT('       N      TIME  '
-     &        ,<NQCTL>('ID     HUP     HDW     DIF    Q',<8*(KC-1)+5>X
-     &                ,20X))
+        WRITE(FMTSTR, '("(       N      TIME  ,",I0,"(ID     HUP     HDW
+     *DIF    Q,",I0,"X,20X))" )') NQCTL, 8*(KC-1)+5
         CLOSE(711)
 
         OPEN(712,FILE='SINKT.OUT',STATUS='UNKNOWN')  ! OPEN OLD FILE
         CLOSE(712,STATUS='DELETE')             ! DELETE OLD FILE
         OPEN(712,FILE='SINKT.OUT',STATUS='UNKNOWN')  ! OPEN NEW FILE
-        WRITE(712,7102) '       N      TIME',(NS,NS=1,NQCTL)
- 7102   FORMAT(A,<NQCTL>I8)
+        WRITE(FMTSTR, '("(A,",I0,"I8)")') NQCTL
+        WRITE(712,FMTSTR) '       N      TIME',(NS,NS=1,NQCTL)
  
         ! GEOSR GATE: SINK2
         OPEN(713,FILE='SINK2.OUT',STATUS='UNKNOWN')  ! OPEN OLD FILE
         CLOSE(713,STATUS='DELETE')             ! DELETE OLD FILE
         OPEN(713,FILE='SINK2.OUT',STATUS='UNKNOWN')  ! OPEN NEW FILE
-        write(713,7103) '       N      TIME',
+        write(FMTSTR, '("(A,",I0,"(3x,i2.2,a,i2.2))")') 1000
+        write(713,FMTSTR) '       N      TIME',
      &                  ((NS,'_K',k,k=1,KC),NS,'_O',00,NS=1,NQCTL)
- 7103   FORMAT(A,<1000>(3x,i2.2,a,i2.2))
+!} GEOSR GATE : jgcho 2016.07.14
 
 
         ISINK=2            ! READY TO WRITE SINK##.OUT 
@@ -1448,10 +1448,12 @@ C
 C
           FSINK='SINK.OUT'
           OPEN(711,FILE=TRIM(FSINK),POSITION='APPEND')  
-          WRITE(711,7110) N,TIMEDAY,(IGCHECK(NS),HUPG(NS),HDWG(NS)
+          WRITE(FMTSTR,
+     &        '("(I8,F10.4,",I0,"(I4,3F8.2,",I0,"F8.2,F20.1))")')
+     &        NQCTL, KC
+          WRITE(711,FMTSTR) N,TIMEDAY,(IGCHECK(NS),HUPG(NS),HDWG(NS)
      &                   ,DELHG(NS),(QCTLT(K,NS),K=1,KC),GGQSUM(NS)
      &                   ,NS=1,NQCTL) !,(GGQSUM(NS),NS=1,NQCTL)
- 7110 FORMAT(I8,F10.4,<NQCTL>(I4,3F8.2,<KC>F8.2,F20.1))
           CLOSE(711)
 C
           OPEN(712,FILE='SINKT.OUT',POSITION='APPEND')  ! OPEN NEW FILE
@@ -1460,15 +1462,15 @@ C
               GQT(NS)=GQT(NS)+QCTLT(K,NS)
             ENDDO
           ENDDO
-          WRITE(712,7120) N,TIMEDAY,(GQT(NS),NS=1,NQCTL)
- 7120 FORMAT(I8,F10.4,<NQCTL>F8.2)
+          WRITE(FMTSTR, '("(I8,F10.4,",I0,"F8.2)")') NQCTL
+          WRITE(712,FMTSTR) N,TIMEDAY,(GQT(NS),NS=1,NQCTL)
 
 ! GEOSR GATE: write sink2.out
           OPEN(713,FILE='SINK2.OUT',POSITION='APPEND')  
-          WRITE(713,7130) N,TIMEDAY,((QCTLT(K,NS),K=1,KC-1)
+          WRITE(FMTSTR, '("(I8,F10.5,",I0,"(",I0,"F9.2))")') NQCTL, KC+1
+          WRITE(713,FMTSTR) N,TIMEDAY,((QCTLT(K,NS),K=1,KC-1)
      &                   ,QCTLT(KC,NS)-DUMPG2(NS),DUMPG2(NS)
      &                   ,NS=1,NQCTL)
- 7130 FORMAT(I8,F10.5,<NQCTL>(<KC+1>F9.2))
           CLOSE(713)
 
         ENDIF  ! IF (MOD(FLOAT(N),SNKW).EQ.0.) THEN
