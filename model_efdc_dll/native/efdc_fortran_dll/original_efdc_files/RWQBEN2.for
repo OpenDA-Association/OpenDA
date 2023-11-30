@@ -56,8 +56,8 @@ C
       REWIND(1)  
       CCMRM = '#'  
       CALL SKIPCOMM(1, CCMRM)  
-      READ(1, *) IBENZ  
-      WRITE(2, 65) TIMTMP, IBENZ  
+      READ(1, *) IBENZ
+      WRITE(2, 65) TIMTMP, IBENZ
    65 FORMAT(' * BENTHIC FLUXES AT     ', F10.5,' DAYS OF MODEL RUN',/,  
      &    ' NUMBER OF BENTHIC FLUX ZONES = ', I4)  
 C  

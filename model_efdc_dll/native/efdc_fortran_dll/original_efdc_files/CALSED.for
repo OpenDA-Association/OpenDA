@@ -1060,7 +1060,8 @@ C
             DO L=2,LA
               IF(SED(L,K,NS).LT.-1.0)THEN
                 WRITE(1,107)TIME,NS,IL(L),JL(L),K,SED(L,K,NS)
-                PAUSE
+                PRINT *, "Application suspended. Hit ENTER to continue"
+                READ(*,*)
               ENDIF
             ENDDO
             ENDDO
@@ -1071,7 +1072,8 @@ C
             IF(SEDB(L,KBT(L),NS).LT.0.)THEN
               WRITE(1,108)TIME,NS,IL(L),JL(L),KBT(L),SEDB(L,KBT(L),NS),
      &             SEDF(L,0,NS)
-              PAUSE
+              PRINT *, "Application suspended. Hit ENTER to continue"
+              READ(*,*)
             ENDIF
           ENDDO
         ENDDO
