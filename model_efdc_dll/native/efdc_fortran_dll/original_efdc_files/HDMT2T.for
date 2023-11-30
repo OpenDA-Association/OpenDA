@@ -72,7 +72,7 @@ C
 	  LCORNSN=0
 	ENDIF
 C
-      TTMP=SECNDS(0.0)
+      TTMP=SECOND()  
       ICALLTP=0
 C
       ISTL=2
@@ -602,7 +602,7 @@ C**********************************************************************C
 C
 C **  CALCULATE VERTICAL VISCOSITY AND DIFFUSIVITY AT TIME LEVEL (N)
 C
-      T1TMP=SECNDS(0.0)
+      T1TMP=SECOND()
       IF(KC.GT.1)THEN
         IF(ISQQ.EQ.1)THEN
           IF(ISTOPT(0).EQ.0)CALL CALAVBOLD (ISTL)
@@ -610,7 +610,7 @@ C
         ENDIF
         IF(ISQQ.EQ.2) CALL CALAVB2 (ISTL)
       ENDIF
-      TAVB=TAVB+SECNDS(T1TMP)
+      TAVB=TAVB+T1TMP-SECOND()
 C
 C**********************************************************************C
 C
@@ -644,7 +644,7 @@ c     IF(IS2TIM.EQ.1) CALL CALEXP2T
          ENDIF
       ENDIF
       IF(IS2TIM.EQ.2) CALL CALIMP2T
-      TCEXP=TCEXP+SECNDS(T1TMP)
+      TCEXP=TCEXP+T1TMP-SECOND()
 C
 C**********************************************************************C
 C
@@ -661,10 +661,10 @@ C**********************************************************************C
 C
 C **  SOLVE EXTERNAL MODE EQUATIONS FOR P, UHDYE, AND VHDXE
 C
-      T1TMP=SECNDS(0.0)
+      T1TMP=SECOND()
       IF(ISCHAN.EQ.0.AND.ISDRY.EQ.0) CALL CALPUV2T
       IF(ISCHAN.GE.1.OR.ISDRY.GE.1) CALL CALPUV2C
-      TPUV=TPUV+SECNDS(T1TMP)
+      TPUV=TPUV+T1TMP-SECOND()
 C
 C**********************************************************************C
 C
@@ -714,7 +714,7 @@ C **  SOLVE INTERNAL SHEAR MODE EQUATIONS FOR U, UHDY, V, VHDX, AND W
 C
 C----------------------------------------------------------------------C
 C
-      T1TMP=SECNDS(0.0)
+      T1TMP=SECOND()
       IF(KC.GT.1)THEN
         CALL CALUVW (ISTL,IS2TL)
       ELSE
@@ -727,7 +727,7 @@ C
         ENDDO
         CALL CALUVW (ISTL,IS2TL)
       ENDIF
-      TUVW=TUVW+SECNDS(T1TMP)
+      TUVW=TUVW+T1TMP-SECOND()
 C
 C**********************************************************************C
 C
@@ -1212,7 +1212,7 @@ C**********************************************************************C
 C
 C **  CALCULATE BOTTOM STRESS AT LEVEL (N+1)
 C
-      T1TMP=SECNDS(0.0)
+      T1TMP=SECOND()
 C
       CALL CALTBXY(ISTL,IS2TL)
 C  
@@ -1633,9 +1633,9 @@ C
 !{GEOSR, OIL, CWCHO, 101122
       IF(ISPD.GE.2.AND.IDTOX.LT.4440) THEN   !DHC
         IF (TIMEDAY.GE.LA_BEGTI.AND.TIMEDAY.LE.LA_ENDTI) THEN
-          T1TMP=SECNDS(0.0)
+          T1TMP=SECOND()                
           CALL DRIFTERC
-          TLRPD=TLRPD+SECNDS(T1TMP)
+          TLRPD=TLRPD+T1TMP-SECOND()  
         ENDIF
       ENDIF
 
@@ -1649,14 +1649,14 @@ C
 !GEOSR}
 
 !      IF(ISLRPD.GE.1)THEN
-!        T1TMP=SECNDS(0.0)                  !DHC:13-04-09
+!        T1TMP=SECOND()                  !DHC:13-04-09
 !        IF(ISLRPD.LE.2)THEN
 !          IF(N.GE.NLRPDRT(1)) CALL LAGRES
 !        ENDIF
 !        IF(ISLRPD.GE.3)THEN
 !          IF(N.GE.NLRPDRT(1)) CALL GLMRES
 !        ENDIF
-!        TLRPD=TLRPD+SECNDS(T1TMP)
+!        TLRPD=TLRPD+T1TMP-SECOND()  
 !      ENDIF
 C
 C**********************************************************************C
@@ -1945,7 +1945,7 @@ C**********************************************************************C
 C
 C **  TIME LOOP COMPLETED
 C
-      THDMT=THDMT+SECNDS(TTMP)
+      THDMT=THDMT+TTMP-SECOND()  
 C
 C**********************************************************************C
 C *** EE BEGIN BLOCK
