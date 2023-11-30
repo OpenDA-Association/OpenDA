@@ -85,6 +85,14 @@ C
       !REAL,SAVE ::    PTIME
       !REAL,SAVE ::    PMCTOL
       REAL            K_ABOVE
+      REAL WQCHLS_ABOVE
+      REAL TSSS_ABOVE
+      REAL POMS_ABOVE
+      REAL EXPBOT
+      WQCHLS_ABOVE = 0.0
+      TSSS_ABOVE = 0.0
+      POMS_ABOVE = 0.0
+      EXPBOT = 0.0
 C
       IF(.NOT.ALLOCATED(NETRAD))THEN
         ALLOCATE(NETRAD(LCM,KCM))

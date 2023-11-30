@@ -53,6 +53,13 @@ C
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::WQISD
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::WQISG
 
+      WQF1NM=0.0
+      WQTTB=0.0
+      WQTTT=0.0
+      WQVREA=0.0
+      WQTT1=0.0
+      L=0
+
 C
       ! ***  1) CHC - cyanobacteria
       ! ***  2) CHD - diatom algae
@@ -1875,6 +1882,10 @@ C1414 FORMAT(I12,11E12.4)
       
       REAL TSSS_ABOVE,WQCHLS_ABOVE,POMS_ABOVE
       REAL K_ABOVE
+      REAL EXPTOP
+      INTEGER L
+      L = 0
+      EXPTOP=0.0
       
       K=KC
       IF(ISTRAN(6).GT.0.OR.ISTRAN(7).GT.0)THEN

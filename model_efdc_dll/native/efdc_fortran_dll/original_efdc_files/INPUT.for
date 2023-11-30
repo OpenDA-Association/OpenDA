@@ -4809,6 +4809,7 @@ C 970 WRITE(6,971)
         CHARACTER*(*) INLINE
         CHARACTER*12  CVAL
         LOGICAL       PARSE_LOGICAL
+        PARSE_LOGICAL=.FALSE.
         
         ILEN=LEN_TRIM(INLINE)
         DO IC=1,ILEN

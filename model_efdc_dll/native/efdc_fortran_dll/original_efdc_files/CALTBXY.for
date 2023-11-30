@@ -37,6 +37,12 @@ C
         INTEGER::LF,LL,ithds
         REAL::t00,rtc
 
+      LZBMIN=0
+      LZBMAX=0
+      LCDMIN=0
+      LCDMAX=0
+      WVDTMP=0.0
+
       DELT=DT2  
       ISUD=1  
       IF(ISTL_.NE.3)THEN  

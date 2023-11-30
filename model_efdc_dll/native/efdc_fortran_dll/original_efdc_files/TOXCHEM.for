@@ -13,6 +13,9 @@ C
       USE GLOBAL  
 !{GeoSR, 2014.09.16. YSSONG
       INTEGER::L,K,NT
+      REAL TXKL,TXKLL
+      TXKL=0.0
+      TXKLL=0.0
 !}      
       IF(ISTRAN(5).GE.1)THEN  
 
