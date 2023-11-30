@@ -12,6 +12,7 @@ C
 C      PARAMETER (CONV1=1.0E3,CONV2=8.64E4)  PMC Single Line
       CHARACTER TITLE(5)*79, CCMRM*1  
       CHARACTER LINE*255
+      CHARACTER FMTSTR*80
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::XDSL  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::XPSL  
       REAL      WQTDTEMP(1000),CONV1,CONV2,WQDIUDT,XC,XP,XPC,XPD,XPG
@@ -2205,16 +2206,19 @@ C INITIALIZE
               write(1,'(a,a)') 'VERTICAL VELOCITY, ALGAL-DENSITY,'
      &             ,' SOLAR RADIATION, chl-a PRINT AT EACH LAYER'
               write(1,'(a,i4,a,i4)') 'I=',iww(i),'   J=',jww(i)
-              write(1,7111) '          tm'
-     & ,((('vel_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
-     & ,((('den_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
-     & ,((('sol_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
-     & ,(('chl_',k),k=KC,1,-1)
+              write(FMTSTR,
+     & '("(a, 3(",I0,"(",I0,"(3x,a,i2.2,a,i2.2))),",I0,"(6x,a,i2.2))")')
+     & KC, NXSP, KC
+              write(1,FMTSTR) '          tm'
+     & ,(('vel_',nsp,'_',k,nsp=1,NXSP),k=KC,1,-1)
+     & ,(('den_',nsp,'_',k,nsp=1,NXSP),k=KC,1,-1)
+     & ,(('sol_',nsp,'_',k,nsp=1,NXSP),k=KC,1,-1)
+     & ,('chl_',k,k=KC,1,-1)
               CLOSE(1)
           enddo
         ENDIF
       ENDIF
- 7111 format(a, 3(<kc>(<NXSP>(3x,a,i2.2,a,i2.2))),<kc>(6x,a,i2.2) )
+
 !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
       if (IWQDGSTOX.eq.1) then
         PRINT *,'WQ: READING WQDGSTOX.INP - DG Salt TOX Control'
@@ -2252,6 +2256,7 @@ C INITIALIZE
         CLOSE(1)
       endif
 !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+
       DO I=1,IWQZ  
         IWQKA(I)=IWQKA(1)  
         WQKRO(I)=WQKRO(1)  
