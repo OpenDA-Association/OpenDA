@@ -7,6 +7,10 @@ C CHANGE RECORD
 C  
       USE GLOBAL  
       CHARACTER*3 CWQHDR(NWQVM)  
+!{GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10    
+      CHARACTER*11 FLN1,FLN2
+      CHARACTER*12 FLNX
+!}
 C PMC      CHARACTER*11  HHMMSS  
       DATA IWQTICI,IWQTAGR,IWQTSTL,IWQTSUN,IWQTBEN,IWQTPSL,IWQTNPL/7*0/  
       DATA ISMTICI/0/  
@@ -183,6 +187,27 @@ C
       ! *** READ WQ TIMESERIES
       CALL RWQCSR
 C  
+!{GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10   
+        IF(IWQTS.GE.1)THEN
+          IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
+            DO K=1,KC
+              WRITE(FLN1,"('WQRTS',I2.2,'.DAT')") K
+              WRITE(FLN2,"('WQLIM',I2.2,'.DAT')") K
+              IF(MYRANK.EQ.0)THEN
+              OPEN(1,FILE=FLN1,STATUS='UNKNOWN')
+              OPEN(3,FILE=FLN2,STATUS='UNKNOWN')
+              CLOSE(1,STATUS='DELETE')        
+              CLOSE(3,STATUS='DELETE')        
+              IF(NXSP.GT.0) THEN
+                WRITE(FLNX,"('WQLIMX',I2.2,'.DAT')") K
+                OPEN(333,FILE=FLNX,STATUS='UNKNOWN')
+                CLOSE(333,STATUS='DELETE')             
+              ENDIF
+              ENDIF
+            ENDDO  
+          ENDIF
+        ENDIF
+!}GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10 
 C 100 FORMAT('  TIME = ',A11,' HH.MM.SS.HH')  
       RETURN  
       END  
