@@ -16,6 +16,12 @@ C
      &          QSUMNAD(0:LCM1,KCM),QSUMPAD(0:LCM1,KCM)
  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::CONQ  
+      REAL QVKTMP,QUKTMP
+
+      L = 0
+      QVKTMP = 0.0
+      QUKTMP = 0.0
+
       IF(.NOT.ALLOCATED(CONQ))THEN
         ALLOCATE(CONQ(LCM,KCM))
         CONQ=0.0 

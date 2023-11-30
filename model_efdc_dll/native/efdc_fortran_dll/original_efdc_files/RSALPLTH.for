@@ -8,6 +8,8 @@ C
       DIMENSION DBS(10)  
       CHARACTER*80 TITLE  
       DIMENSION CONC(LCM,KCM)  
+      INTEGER LUN
+      LUN=0
 C  
       IF(JSRSPH(ICON).NE.1) GOTO 300  
       LINES=LA-1  

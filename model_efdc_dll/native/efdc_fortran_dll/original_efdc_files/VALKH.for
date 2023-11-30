@@ -3,6 +3,7 @@ C
 C CHANGE RECORD  
 C  
       USE GLOBAL  
+      VALKH=0.0
       IF(HFFDG.LE.0.02)THEN  
         VALKH=HFFDG*HFFDG  
         RETURN  

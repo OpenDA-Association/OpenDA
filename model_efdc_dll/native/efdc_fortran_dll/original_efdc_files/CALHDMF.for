@@ -38,6 +38,7 @@ C
        SXY2NN=0.0    
        HMC=0.0
       ENDIF    
+      SLIPCO=0.0
 C
       AHMAX=AHO
 C
