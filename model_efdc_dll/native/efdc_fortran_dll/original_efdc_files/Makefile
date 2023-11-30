@@ -36,9 +36,8 @@ MAKE_FFLAGS = \
 
 #FFLAGS = -ffixed-line-length-none -ffree-line-length-none -fPIC
 
-POBJECTS = CGATEFLX.po RWQC1.po
-
 OBJECTS =  \
+CGATEFLX.o   RWQC1.o \
 ACON.o       CALEXP.o      CALTSXY.o     READWIMS1.o  WQSKE4.o     GATECTLREAD.o  SCANEFDC.o \
 VELPLTH.o    DRIFTER.o     SURFPLT.o     WINDWAVE.o   s_sedzlj.o   EEXPOUT.o      RESTOUT.o \
 WQ3D.o       s_shear.o     CALHEAT.o     CALPUVTT.o   VARZEROReal.o \
@@ -94,9 +93,9 @@ openmp: MAKE_FFLAGS += $(F_OPENMP)
 openmp: MAKE_SO += $(F_OPENMP)
 openmp: libEfdcOrig.a
 
-libEfdcOrig.a:	$(POBJECTS) $(OBJECTS) $(COMPAT_OBJS)
+libEfdcOrig.a:	$(OBJECTS) $(COMPAT_OBJS)
 	rm -f $@
-	ar cq $@ $(POBJECTS) $(OBJECTS) $(COMPAT_OBJS)
+	ar cq $@ $(OBJECTS) $(COMPAT_OBJS)
 
 install:
 
