@@ -58,7 +58,7 @@ C
   999 FORMAT(1X)  
    50 FORMAT(A79)  
    51 FORMAT(I3, 50F8.3)  
-   52 FORMAT(I7, 1X, A3)  
+C  52 FORMAT(I7, 1X, A3)  
    60 FORMAT(/, A24, F5.1, A24)  
       RETURN  
       END  

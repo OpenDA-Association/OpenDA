@@ -47,7 +47,7 @@ C
         ENDDO  
       ENDIF  
    10 FORMAT (5X,E12.4,5X,A1,5X,E12.4)  
-   11 FORMAT (////)  
+C  11 FORMAT (////)  
       WRITE(7,12)  
    12 FORMAT(1H1)  
 C  

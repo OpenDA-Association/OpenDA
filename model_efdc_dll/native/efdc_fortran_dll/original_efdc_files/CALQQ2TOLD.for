@@ -508,11 +508,11 @@ C *** DSLLC BEGIN BLOCK
         ENDDO  
       ENDDO  
 C *** DSLLC END BLOCK
-  110 FORMAT('    I    J   QQ BOT        QQ MID        QQ SURF',  
-     &    '       PROD+ADV      1./DIAGON')  
-  111 FORMAT(2I5,5E14.5)  
-  600 FORMAT('N,QX,QN,QLX,QLN,CX,CN=',I5,6E12.4)  
-  601 FORMAT('NEG QQ I,J,K,QQ=',3I5,E13.5)  
+C 110 FORMAT('    I    J   QQ BOT        QQ MID        QQ SURF',  
+C    &    '       PROD+ADV      1./DIAGON')  
+C 111 FORMAT(2I5,5E14.5)  
+C 600 FORMAT('N,QX,QN,QLX,QLN,CX,CN=',I5,6E12.4)  
+C 601 FORMAT('NEG QQ I,J,K,QQ=',3I5,E13.5)  
       RETURN  
       END  
 

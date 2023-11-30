@@ -322,7 +322,7 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
-  800 FORMAT('N,NS,SNDFBL2T,DEL',2I5,2E14.5)  
+C 800 FORMAT('N,NS,SNDFBL2T,DEL',2I5,2E14.5)  
       RETURN  
       END  
 

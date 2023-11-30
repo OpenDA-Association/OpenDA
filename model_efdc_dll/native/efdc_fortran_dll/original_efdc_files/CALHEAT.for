@@ -612,7 +612,7 @@ c     &          -TATMT(L))
         ENDDO  
       ENDIF  
 
-  600 FORMAT(4I5,2E12.4)  
+C 600 FORMAT(4I5,2E12.4)  
 
       RETURN  
       END  

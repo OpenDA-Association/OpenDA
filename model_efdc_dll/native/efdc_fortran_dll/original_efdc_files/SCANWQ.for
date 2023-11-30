@@ -149,7 +149,7 @@ C
      &           CYA_TEM,CYA_P4D,CYA_NO3,CYA_Light,Light_Factor2,NNAT
       endif
       CLOSE(1)
-   50 RETURN
+      RETURN
    
     1 FORMAT(1X)
     9 FORMAT(A120) 

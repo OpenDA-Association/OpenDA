@@ -183,7 +183,7 @@ C
       ! *** READ WQ TIMESERIES
       CALL RWQCSR
 C  
-  100 FORMAT('  TIME = ',A11,' HH.MM.SS.HH')  
+C 100 FORMAT('  TIME = ',A11,' HH.MM.SS.HH')  
       RETURN  
       END  
 

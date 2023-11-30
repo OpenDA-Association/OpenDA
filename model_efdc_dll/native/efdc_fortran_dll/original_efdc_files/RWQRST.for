@@ -53,7 +53,7 @@ C
           ENDDO  
         ENDIF  
       ENDIF  
-   90 FORMAT(2I5, 21E12.4)  
+C  90 FORMAT(2I5, 21E12.4)  
   999 FORMAT(1X)  
       RETURN  
       END  
