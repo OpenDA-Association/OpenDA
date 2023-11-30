@@ -31,7 +31,7 @@ C      PARAMETER (CONV1=1.0E3,CONV2=8.64E4)  PMC Single Line
       REAL      XMRM1, XMRM2, XMRM3,XMRM4,XMRMA,XMRMB,XMRMC,XMRMD,  ! MACROALGAE
      &          XMRME  
       REAL      XPSQ,XDSQ,XMUD
-      INTEGER   M,N1,II,JJ,KK,M1,NT,ISSKIP,NW,ND,LF,LL,L,nsp
+      INTEGER   M,N1,II,JJ,KK,NT,ISSKIP,NW,ND,LF,LL,L,nsp
       INTEGER   IWQDT,IWQKIN,ITMP,IZ,IN,IJKC,IWQZX,IZMUD,IZSAND
       INTEGER   IZANOX,MDUM    ! Variables for benthic flux for anoxic env
       INTEGER   I,J,K
@@ -41,7 +41,6 @@ C      PARAMETER (CONV1=1.0E3,CONV2=8.64E4)  PMC Single Line
       REAL      WQKGX1(NXSP),WQKGX2(NXSP),WQKGPX1(NXSP) ! C05 in WQ3DWC2.INP
      &         ,WQKGPX2(NXSP)
       REAL      WQTRX(NXSP),WQKTBX(NXSP)                ! C06 in WQ3DWC2.INP
-      REAL      XWQVX(NXSP)
       CHARACTER*80 FLN
       integer iww(100),jww(100)
 C
