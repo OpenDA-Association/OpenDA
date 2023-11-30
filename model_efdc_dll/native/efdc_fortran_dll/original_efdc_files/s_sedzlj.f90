@@ -305,7 +305,8 @@ SUBROUTINE SEDZLJ(L)
         SN10=(TAUDD(1)-TAU(L))/(TAUDD(1)-TAUDD(2)) !weigthing factor 2
         SN01=D50TMPP/NSCTOT                        !weighting factor 3
         SN11=(NSCTOT-D50TMPP)/NSCTOT               !weighting factor 4
-        ERATEMOD(L)=(SN00*EXP(SN11*LOG(ERATEND(NSC0,NTAU0))+SN01*LOG(ERATEND(NSC1,NTAU0)))+SN10*EXP(SN11*LOG(ERATEND(NSC0,NTAU1))+SN01*LOG(ERATEND(NSC1,NTAU1))))*BULKDENS(LL,L) !log-linear interpolation
+        ERATEMOD(L)=(SN00*EXP(SN11*LOG(ERATEND(NSC0,NTAU0))+SN01*LOG(ERATEND(NSC1,NTAU0)))+SN10*EXP(SN11*LOG(ERATEND(NSC0,NTAU1)) &
+                    +SN01*LOG(ERATEND(NSC1,NTAU1))))*BULKDENS(LL,L) !log-linear interpolation
      ENDIF
 
      ! Sort out Thicknesses and Erosion Rates
