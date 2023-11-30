@@ -37,7 +37,8 @@ SUBROUTINE MORPHJ
      IF(HP(L)<=0.0) THEN  
         IF(ABS(H1P(L))>=HWET) THEN  
            ITMP=1  
-           WRITE(8,"('NEG DEPTH DUE TO MORPH CHANGE', 2I5,12F12.5)")IL(L),JL(L),HBED1(L,KBT(L)),HBED(L,KBT(L)),BELV1(L),BELV(L),DELT,QSBDTOP(L),QWBDTOP(L),HBEDA(L)  
+           WRITE(8,"('NEG DEPTH DUE TO MORPH CHANGE', 2I5,12F12.5)")IL(L),JL(L),HBED1(L,KBT(L)),HBED(L,KBT(L)), &
+                                                                    BELV1(L),BELV(L),DELT,QSBDTOP(L),QWBDTOP(L),HBEDA(L)
            WRITE(8,"('NEG DEPTH DUE TO MORPH CHANGE', 2I5,12F12.5)")L,KBT(L),(HBED(L,K),K=1,KBT(L))  
         ELSE  
            HP(L)=0.9*HDRY  
