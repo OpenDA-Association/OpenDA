@@ -10,9 +10,6 @@ C
       USE GLOBAL
   
       REAL, DIMENSION(LCM,KCM), intent(inout) :: CON,CON1
-      REAL, DIMENSION(:,:), allocatable :: UTERM0, VTERM0, 
-     +                           SSCORUEWNS, SSCORWAB
-      INTEGER, dimension(0:nthds-1,KC) ::  icount
 
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::CONTMN  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::CONTMX  
@@ -24,11 +21,6 @@ C
       REAL CTMP
       CTMP=0.0
 
-      ALLOCATE(UTERM0(LC,KC)) 
-      ALLOCATE(VTERM0(LC,KC)) 
-      ALLOCATE(SSCORUEWNS(LC,KC)) 
-      ALLOCATE(SSCORWAB(LC,KC)) 
-      
       IF(.NOT.ALLOCATED(CONTMN))THEN
         ALLOCATE(CONTMN(0:LCM1,KCM))  
         ALLOCATE(CONTMX(0:LCM1,KCM))  
