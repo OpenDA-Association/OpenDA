@@ -6,9 +6,9 @@
 
       IMPLICIT NONE
 
-      INTEGER(4):: NP1, I, J, K
-      REAL(RKD) :: XC(4), YC(4), AREA2, RANVAL
-      REAL(8), EXTERNAL::DRAND
+      INTEGER(4):: NP1
+      REAL(RKD) :: RANVAL
+      REAL(8)   :: DRAND
   
       REAL(RKD) :: OILAREAP
       REAL(RKD) :: ACCRAD

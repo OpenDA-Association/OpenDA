@@ -29,7 +29,6 @@ C
       REAL CG10
       REAL CQ(LCM),CV(LCM)				! GEOSR UNG 2014.11.12 Warning message writing
       CHARACTER*256 FMTSTR
-      CHARACTER*80 CTLE1
       ! open time control : jgcho 2010.8.17 temporary
 !      IF (N.EQ.1) GATEOTM=1.0
 !      GTIMENOW=TIMEDAY !N*DT/86400.
