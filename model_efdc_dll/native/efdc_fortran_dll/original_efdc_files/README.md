@@ -23,6 +23,11 @@ conflicts...
   sources. It has been decided to cherry-pick these line diffs and
   remove the remaining source file corresponding to `CALEXP2TO` all
   together.
+* `RWQBEN2.for`: There seemed to be a patch missing in OpenDA. The NIER
+  version is taken for this file where a slightly different (possibly
+  renamed) set of variables are used to extract properties from cards.
+  These seem to be reassigned at previously used variables elsewhere in
+  the source.
 * `VARINIT.for`: The comparison for `NQCTYPM` has been changed from
   `.EQ.` to `.GE`. This seems mostly used. Inspection of the input decks
   does not give more hints to the proper use of these values. Also,
