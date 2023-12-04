@@ -50,7 +50,7 @@ C GEOSR 2010.5.7
       IF(NQCTL.GE.1 .AND. NQCTYP1.GE.3) THEN
         CALL SCANGATECTL
         CALL SCANGSER ! GEOSR 2011.10.27
-        IF(NQCTYPM .GE. 13) THEN
+        IF(NQCTYPM .eq. 13) THEN
           CALL SCANGTAB  ! GEOSR 2014.09. UNG
         ENDIF
       ENDIF
@@ -90,7 +90,7 @@ C
       IF(ISTRAN(8).GT.0)THEN
         LCMWQ=LCM  
       ELSE
-        LCMWQ=1
+        LCMWQ=LCM
       ENDIF
       NQINFLM=MAX(1,NQSIJ+NQCTL+NQWR+2*MDCHH)  
 C  
