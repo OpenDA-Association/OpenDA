@@ -12,3 +12,9 @@ conflicts...
   Additionally, the array GKMULT seems not to have been initialized in
   all possible situations and could have been used uninitialized in
   some. These patches were not brought back to OpenDA.
+* `HDMT2T.for`: The NIER source does not invoke `CALEXP2TO` any longer
+  and shows slightly modified if-statements to consider which subroutine
+  to call. This subroutine is also no longer present in the provided
+  sources. It has been decided to cherry-pick these line diffs and
+  remove the remaining source file corresponding to `CALEXP2TO` all
+  together.
