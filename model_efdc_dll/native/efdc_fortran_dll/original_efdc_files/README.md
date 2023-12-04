@@ -24,3 +24,8 @@ conflicts...
   `IF(LMASKDRY(L).AND.IWQM.GE.1)THEN` from `.AND.` to `.OR.` to be
   consistent with all other comparisons done like this. Also, the
   comparison `IF(IWQBEN.EQ.1)THEN` now compares to zero instead.
+* `CALAVBOLD_mpi.for`: It is noted that `CALAVBOLD_mpi` performs
+  calculations using `SQRT` while the corresponding non-MPI
+  implementation uses multiplication with `0.5`... It is unclear why
+  this difference exists. No action has been taken to unify these
+  computations.
