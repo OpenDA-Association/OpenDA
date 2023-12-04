@@ -42,7 +42,7 @@ CGATEFLX.o   RWQC1.o \
 ACON.o       CALEXP.o      CALTSXY.o     READWIMS1.o  WQSKE4.o     GATECTLREAD.o  SCANEFDC.o \
 VELPLTH.o    DRIFTER.o     SURFPLT.o     WINDWAVE.o   s_sedzlj.o   EEXPOUT.o      RESTOUT.o \
 WQ3D.o       s_shear.o     CALHEAT.o     CALPUVTT.o   VARZEROReal.o \
-BAL2T5.o     READOIL.o     CALEXP2T0.o \
+BAL2T5.o     READOIL.o \
 AINIT.o      CALEXP2T.o    CALUVW.o      DUMP.o       READWIMS2.o  SCANGATECTL.o  SVBKSB.o          WQZERO.o \
 BAL2T1.o     CALFQC.o      CALVEGSER.o   RELAX2T.o    SCANGSER.o   SVDCMP.o       WQZERO2.o \
 BAL2T2.o     CALHDMF.o     CALWQC.o      RESTIN1.o    SCANGWSR.o   TIMELOG.o      WQZERO3.o \
