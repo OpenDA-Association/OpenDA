@@ -103,13 +103,28 @@ C
       DO L=2,LA  
         IZM = IBENMAP(L,1)  
         IZS = IBENMAP(L,2)  
+        IF(IWQBENOX.NE.0) IZA = IBENMAP(L,3)                          !{ GEOSR BENTHIC FLUX FOR ANOXIC ENV : YSSONG 2015.09.08
         XM = XBENMUD(L)  
-        WQBFPO4D(L) = XM*XBFPO4D(IZM) + (1.0-XM)*XBFPO4D(IZS)  
-        WQBFNH4(L)  = XM*XBFNH4(IZM)  + (1.0-XM)*XBFNH4(IZS)  
-        WQBFNO3(L)  = XM*XBFNO3(IZM)  + (1.0-XM)*XBFNO3(IZS)  
-        WQBFSAD(L)  = XM*XBFSAD(IZM)  + (1.0-XM)*XBFSAD(IZS)  
-        WQBFCOD(L)  = XM*XBFCOD(IZM)  + (1.0-XM)*XBFCOD(IZS)  
-        WQBFO2(L)   = XM*XBFO2(IZM)   + (1.0-XM)*XBFO2(IZS)  
+C        WQBFPO4D(L) = XM*XBFPO4D(IZM) + (1.0-XM)*XBFPO4D(IZS)  !{ GEOSR BENTHIC FLUX FOR ANOXIC ENV : YSSONG 2015.09.08
+C        WQBFNH4(L)  = XM*XBFNH4(IZM)  + (1.0-XM)*XBFNH4(IZS)  
+C        WQBFNO3(L)  = XM*XBFNO3(IZM)  + (1.0-XM)*XBFNO3(IZS)  
+C        WQBFSAD(L)  = XM*XBFSAD(IZM)  + (1.0-XM)*XBFSAD(IZS)  
+C        WQBFCOD(L)  = XM*XBFCOD(IZM)  + (1.0-XM)*XBFCOD(IZS)  
+C        WQBFO2(L)   = XM*XBFO2(IZM)   + (1.0-XM)*XBFO2(IZS)  
+          WQBFOXPO4D(L,1) = XM*XBFPO4D(IZM) + (1.0-XM)*XBFPO4D(IZS)   !{ GEOSR BENTHIC FLUX FOR ANOXIC ENV : YSSONG 2015.09.08
+          WQBFOXNH4(L,1)  = XM*XBFNH4(IZM)  + (1.0-XM)*XBFNH4(IZS)  
+          WQBFOXNO3(L,1)  = XM*XBFNO3(IZM)  + (1.0-XM)*XBFNO3(IZS)  
+          WQBFOXSAD(L,1)  = XM*XBFSAD(IZM)  + (1.0-XM)*XBFSAD(IZS)  
+          WQBFOXCOD(L,1)  = XM*XBFCOD(IZM)  + (1.0-XM)*XBFCOD(IZS)  
+          WQBFOXO2(L,1)   = XM*XBFO2(IZM)   + (1.0-XM)*XBFO2(IZS)  
+        IF(IWQBENOX.NE.0)THEN
+          WQBFOXPO4D(L,2) = XBFPO4D(IZA)                     
+          WQBFOXNH4(L,2)  = XBFNH4(IZA)
+          WQBFOXNO3(L,2)  = XBFNO3(IZA)
+          WQBFOXSAD(L,2)  = XBFSAD(IZA)
+          WQBFOXCOD(L,2)  = XBFCOD(IZA)
+          WQBFOXO2(L,2)   = XBFO2(IZA)     
+        ENDIF
       ENDDO  
       CLOSE(1)  
       CLOSE(2)  
