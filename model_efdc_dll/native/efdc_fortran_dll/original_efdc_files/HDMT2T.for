@@ -645,13 +645,9 @@ C **  CALCULATE EXPLICIT MOMENTUM EQUATION TERMS
 C
       T1TMP=SECNDS(0.0)
 c     IF(IS2TIM.EQ.1) CALL CALEXP2T  
-      IF(IS2TIM.EQ.1) THEN
-         IF(IDRYTBP.EQ.0)THEN
-            CALL CALEXP2T0
-         ELSE
-            CALL CALEXP2T
-         ENDIF
-      ENDIF
+      IF(IS2TIM.EQ.1.AND.N.EQ.1) PRINT*, 'RUN CALEXP2T'
+      IF(IS2TIM.EQ.2.AND.N.EQ.1) PRINT*, 'RUN CALIMP2T'
+      IF(IS2TIM.EQ.1) CALL CALEXP2T  
       IF(IS2TIM.EQ.2) CALL CALIMP2T
       TCEXP=TCEXP+T1TMP-SECOND()
 C
@@ -759,6 +755,23 @@ C
             SNDBT(L,K)=0.
           ENDDO
         ENDDO
+C  
+        DO NS=1,NSED  
+          DO K=1,KB  
+            DO L=1,LC  
+              SEDBT(L,K)=SEDBT(L,K)+SEDB(L,K,NS)  
+            ENDDO  
+          ENDDO  
+        ENDDO  
+C  
+        DO NS=1,NSND  
+          DO K=1,KB  
+            DO L=1,LC  
+              SNDBT(L,K)=SNDBT(L,K)+SNDB(L,K,NS)  
+            ENDDO  
+          ENDDO  
+        ENDDO  
+C  
         DO K=1,KC
           DO L=1,LC  
             SEDT(L,K)=0.
