@@ -774,7 +774,7 @@ C ****  PARAM 01
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
@@ -899,7 +899,7 @@ C ****  PARAM 02
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
@@ -995,7 +995,7 @@ C ****  PARAM 03
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
@@ -1093,7 +1093,7 @@ C ****  PARAM 04
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    HYDROLYSIS  SETTLING  
@@ -1160,7 +1160,7 @@ C ****  PARAM 05
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQC5 = - (WQKLPC(L)+WQLPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQC5)  
@@ -1221,7 +1221,7 @@ C ****  PARAM 06
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQD6 = - (WQKHR(L)+WQDENIT(L))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQD6)  
@@ -1280,7 +1280,7 @@ C ****  PARAM 07
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQE7 = - (WQKRPP(L)+WQRPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQE7)  
@@ -1346,7 +1346,7 @@ C ****  PARAM 08
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQF8 = - (WQKLPP(L)+WQLPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQF8)  
@@ -1412,7 +1412,7 @@ C ****  PARAM 09
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDOP(L))  
               WQA9C = (WQFPDC*WQBMC(L) + WQFPDP*WQPRC(L)) * WQVO(L,K,1)  
@@ -1462,7 +1462,7 @@ C ****  PARAM 10
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQA10C=(WQFPIC*WQBMC(L)+WQFPIP*WQPRC(L)-WQPC(L))
      &              *WQVO(L,K,1)  
@@ -1542,7 +1542,7 @@ C ****  PARAM 11
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQI11 = - (WQKRPN(L)+WQRPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQI11)  
@@ -1611,7 +1611,7 @@ C ****  PARAM 12
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQJ12 = - (WQKLPN(L)+WQLPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQJ12)  
@@ -1680,7 +1680,7 @@ C ****  PARAM 13
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDON(L))  
               WQA13C=(WQFNDC*WQBMC(L)+WQFNDP*WQPRC(L))*WQANCC
@@ -1734,7 +1734,7 @@ C ****  PARAM 14
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
@@ -1797,7 +1797,7 @@ C ****  PARAM 15
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
@@ -1855,7 +1855,7 @@ C ****  PARAM 16
           IF(IWQSI.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQM16 = - (WQKSUA(IWQT(L)) + WQBDSET(L,1))  
                 WQKK(L) = 1.0 / (1.0 - DTWQO2*WQM16)  
@@ -1912,7 +1912,7 @@ C ****  PARAM 17
           IF(IWQSI.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQKK(L) = (WQFSID*WQBMD(L) + WQFSIP*WQPRD(L) - WQPD(L))  
      &              * WQASCD * WQVO(L,K,2)  
@@ -1974,7 +1974,7 @@ C ****  PARAM 18
         IF(ISTRWQ(18).EQ.1)THEN  
           DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 - WQO18(L))  
 C  
@@ -2017,7 +2017,7 @@ C ****  PARAM 19
         IF(ISTRWQ(19).EQ.1)THEN  
           DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQP19(L))  
 C  
@@ -2167,7 +2167,7 @@ C ****  PARAM 20
           IF(IWQSRP.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQT20 = - DTWQO2*WQWSSET(L,1)  
                 WQKK(L) = 1.0 / (1.0 - WQT20)  
@@ -2204,7 +2204,7 @@ C ****  PARAM 21
           IF(IWQFCB.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQKK(L) = WQTD2FCB(IWQT(L))  
 C  
@@ -2306,7 +2306,7 @@ C COUPLING TO SEDIMENT MODEL
 C: EVALUATE DEP. FLUX USING NEW VALUES CAUSE IMPLICIT SCHEME IS USED IN  
 C  SPM  
 C  
-      IF(IWQBEN.EQ.1)THEN  
+      IF(IWQBEN.EQ.0)THEN  
         DO L=2,LA  
           IMWQZ = IWQZMAP(L,1)  
           WQDFBC(L) = SCB(L)*WQWSC(IMWQZ)*WQV(L,1,1)  

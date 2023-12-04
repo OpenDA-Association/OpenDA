@@ -18,3 +18,9 @@ conflicts...
   sources. It has been decided to cherry-pick these line diffs and
   remove the remaining source file corresponding to `CALEXP2TO` all
   together.
+* `WQSKE3.for`: This includes the missing loops (2 chunks) regarding
+  "green algae salinity tox" from NIER towards OpenDA. Additionally,
+  this converts all comparisons in OpenDA of the form
+  `IF(LMASKDRY(L).AND.IWQM.GE.1)THEN` from `.AND.` to `.OR.` to be
+  consistent with all other comparisons done like this. Also, the
+  comparison `IF(IWQBEN.EQ.1)THEN` now compares to zero instead.
