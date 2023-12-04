@@ -23,6 +23,13 @@ conflicts...
   sources. It has been decided to cherry-pick these line diffs and
   remove the remaining source file corresponding to `CALEXP2TO` all
   together.
+* `INPUT.for`: Input processing is extended with processing of
+  `WINDCOEFF` and `EFDC2` input files. It is unclear why this was not
+  yet present in OpenDA? Also, `IBIN_TYPE` is extracted with read calls.
+  NOTE: variable `TIDAPL` is *not* scaled with 86400 in OpenDA while
+  this is done in NIER. This seems to be a difference in conversion
+  factors of one day (86400 seconds in one day). It is unclear where
+  this difference comes from and how to resolve it...
 * `READWIMS1.for`: It seems the variable initialisation was not divided
   by the loop limit. This has been reintroduced. Note, there were
   differences in various timing calculations. These are considered to be

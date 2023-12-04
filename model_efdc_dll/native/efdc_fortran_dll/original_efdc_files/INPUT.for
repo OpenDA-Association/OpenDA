@@ -31,6 +31,7 @@ C
       CHARACTER*3  NCARD  
       CHARACTER    CCMRM*1, ADUMMY*5                                         !  EJH
       LOGICAL PARSE_LOGICAL, status  
+      LOGICAL lwd, le2
       REAL,ALLOCATABLE,DIMENSION(:)::RMULADS  
       REAL,ALLOCATABLE,DIMENSION(:)::ADDADS 
       INTEGER      IPMC 
@@ -60,10 +61,10 @@ C2**  READ RESTART AND DIAGNOSTIC SWITCHES
       NCARD='2'  
       CALL SEEK('C2')  
       READ(1,*,IOSTAT=ISO) ISRESTI,ISRESTO,ISRESTR,ISPAR,ISLOG,ISDIVEX,  
-     &    ISNEGH,ISMMC,ISBAL,IS2TIM,ISHOW  
+     &    ISNEGH,ISMMC,ISBAL,IS2TIM,ISHOW,ITIMING,IBIN_TYPE
       WRITE(7,1002)NCARD  
       WRITE(7,*) ISRESTI,ISRESTO,ISRESTR,ISPAR,ISLOG,ISDIVEX,  
-     &    ISNEGH,ISMMC,ISBAL,IS2TIM,ISHOW  
+     &    ISNEGH,ISMMC,ISBAL,IS2TIM,ISHOW,ITIMING,IBIN_TYPE
       IF(ISMMC.LT.0)THEN
         DEBUG=.TRUE.
         ISMMC=0
@@ -1909,6 +1910,15 @@ C
    22 FORMAT (A80)  
    23 FORMAT (1X,A80)  
 C  
+!{ GEOSR, Check file WINDCOEFF.INP exist jgcho 2016.10.21
+      inquire (file='WINDCOEFF.INP', exist = lwd)
+      if(.not.lwd) then ! Not exist
+        ISWIND=0
+        goto 9883
+      else
+        ISWIND=1
+      endif
+!} GEOSR, Check file WINDCOEFF.INP exist jgcho 2016.10.21
 !{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
       IF(ISWIND.EQ.1)THEN
       PRINT *,'READING WINDCOEFF.INP'
@@ -4625,6 +4635,36 @@ C
  7121 FORMAT('  READ ERROR FOR FILE VEGSER.INP ')  
       STOP  
  7122 CONTINUE  
+
+!{ GEOSR, Check file EFDC2.INP read jgcho 2016.10.21
+      inquire (file='EFDC2.INP', exist = le2)
+      if(.not.le2) then
+        goto 3000
+      endif
+
+      IF(MYRANK.EQ.0) PRINT *,'READING THE extra EFDC 
+     & CONTROL FILE: EFDC2.INP'
+      OPEN(1,FILE='EFDC2.INP',STATUS='UNKNOWN')  
+C  
+C1**  READ TITLE CARD
+      NCARD='1'  
+      CALL SEEK('C1')  
+      READ(1,*,IOSTAT=ISO) ISICE
+      IF(MYRANK.EQ.0) WRITE(7,4002)NCARD  
+      IF(MYRANK.EQ.0) WRITE(7,*) ISICE
+      IF(ISO.GT.0) GOTO 400  
+      
+      CLOSE(1)  
+      goto 3000
+
+  400 WRITE(6,4001)NCARD  
+      IF(MYRANK.EQ.0) WRITE(8,4001)NCARD  
+      IF(MYRANK.EQ.0) WRITE(7,4001)NCARD  
+ 4001 FORMAT(/,'READ ERROR FROM FILE EFDC2.INP ON CARD ',A3/)  
+ 4002 FORMAT(/,'INPUT ECHO NCARD = ',A/)  
+      STOP  
+!} GEOSR, Check file EFDC2.INP read jgcho 2016.10.21
+      
       GOTO 3000  
 C  
 C **  WRITE READ ERROR FOR OTHER INPUT FILES AND TERMINATE RUN  
