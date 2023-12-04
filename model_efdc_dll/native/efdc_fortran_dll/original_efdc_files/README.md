@@ -27,6 +27,10 @@ conflicts...
   `.EQ.` to `.GE`. This seems mostly used. Inspection of the input decks
   does not give more hints to the proper use of these values. Also,
   `LCMWQ` setting is updated to match NIER.
+* `WQ3D.for`: The version in OpenDA also considered `TASER` values in
+  the condition for the various while-loops and other statements. The
+  decision was made that the version in OpenDA is accurate and the
+  patches are to be propagated back to NIER.
 * `WQSKE3.for`: This includes the missing loops (2 chunks) regarding
   "green algae salinity tox" from NIER towards OpenDA. Additionally,
   this converts all comparisons in OpenDA of the form
