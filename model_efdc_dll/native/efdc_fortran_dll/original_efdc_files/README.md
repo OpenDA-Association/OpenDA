@@ -7,6 +7,11 @@ Each file corresponds with a single commit that introduced the patch for
 that file. Note, this might not have been the right way to resolve the
 conflicts...
 
+* `CALAVBOLD_mpi.for`: It is noted that `CALAVBOLD_mpi` performs
+  calculations using `SQRT` while the corresponding non-MPI
+  implementation uses multiplication with `0.5`... It is unclear why
+  this difference exists. No action has been taken to unify these
+  computations.
 * `CGATEFLX.for`: The NIER source misses the fix introducing boolean
   `HUPG_HDWG_INITIALIZED` that was added in 2016 in OpenDA.
   Additionally, the array GKMULT seems not to have been initialized in
@@ -18,14 +23,13 @@ conflicts...
   sources. It has been decided to cherry-pick these line diffs and
   remove the remaining source file corresponding to `CALEXP2TO` all
   together.
+* `VARINIT.for`: The comparison for `NQCTYPM` has been changed from
+  `.EQ.` to `.GE`. This seems mostly used. Inspection of the input decks
+  does not give more hints to the proper use of these values. Also,
+  `LCMWQ` setting is updated to match NIER.
 * `WQSKE3.for`: This includes the missing loops (2 chunks) regarding
   "green algae salinity tox" from NIER towards OpenDA. Additionally,
   this converts all comparisons in OpenDA of the form
   `IF(LMASKDRY(L).AND.IWQM.GE.1)THEN` from `.AND.` to `.OR.` to be
   consistent with all other comparisons done like this. Also, the
   comparison `IF(IWQBEN.EQ.1)THEN` now compares to zero instead.
-* `CALAVBOLD_mpi.for`: It is noted that `CALAVBOLD_mpi` performs
-  calculations using `SQRT` while the corresponding non-MPI
-  implementation uses multiplication with `0.5`... It is unclear why
-  this difference exists. No action has been taken to unify these
-  computations.
