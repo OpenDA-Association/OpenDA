@@ -23,6 +23,11 @@ conflicts...
   sources. It has been decided to cherry-pick these line diffs and
   remove the remaining source file corresponding to `CALEXP2TO` all
   together.
+* `READWIMS1.for`: It seems the variable initialisation was not divided
+  by the loop limit. This has been reintroduced. Note, there were
+  differences in various timing calculations. These are considered to be
+  the right ones in OpenDA. The differences are to be propagated back to
+  NIER.
 * `RWQBEN2.for`: There seemed to be a patch missing in OpenDA. The NIER
   version is taken for this file where a slightly different (possibly
   renamed) set of variables are used to extract properties from cards.
