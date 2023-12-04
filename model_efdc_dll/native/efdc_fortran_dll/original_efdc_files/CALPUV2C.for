@@ -283,13 +283,13 @@ C
           ELSE  
             QSUMTMP(L)=QSUME(L)  
           ENDIF  
-          DIFQVOL(L)=QSUME(L)-QSUMTMP(L)  
-          QSUME(L)=QSUMTMP(L)  
         ENDDO  
+        DO L=2,LA  
+          DIFQVOL=QSUME(L)-QSUMTMP(L)  
           DO K=1,KC  
-        DO L=2,LA
             QSUM(L,K)=QSUM(L,K)-DIFQVOL(L)*DZC(K)  
           ENDDO  
+          QSUME(L)=QSUMTMP(L)  
         ENDDO  
       ENDIF  
 C  
@@ -357,13 +357,13 @@ C
             EVAPSW(L)=0.  
             QSUMTMP(L)=MAX(QSUME(L),0.0)  
           ENDIF  
-          DIFQVOL(L)=QSUME(L)-QSUMTMP(L)  
-          QSUME(L)=QSUMTMP(L)  
         ENDDO  
         DO L=2,LA  
+          DIFQVOL=QSUME(L)-QSUMTMP(L)  
           DO K=1,KC  
             QSUM(L,K)=QSUM(L,K)-DIFQVOL(L)*DZC(K)  
           ENDDO  
+          QSUME(L)=QSUMTMP(L)  
         ENDDO  
       ENDIF  
 C  
@@ -707,38 +707,19 @@ C
           IF(HP(L).LE.HDRY)THEN  
             IF(ISCDRY(L).EQ.0)THEN  
               ISCDRY(L)=1  
-              ICORDRY=ICORDRY+1  
+              ICORDRY=1  
             ENDIF  
             SUB(L)=0.  
             SVB(L)=0.  
-            SBX(L)=0.  
-            SBY(L)=0.  
             SUB(L+1)=0.  
-            SBX(L+1)=0.  
-          ENDIF  
-        ENDDO  
-           L=LL
-          IF(HP(L).LE.HDRY)THEN
-            IF(ISCDRY(L).EQ.0)THEN
-              ISCDRY(L)=1
-              ICORDRY=ICORDRY+1
-            ENDIF
-            SUB(L)=0.
-            SVB(L)=0.
+            SVB(LN)=0.  
             SBX(L)=0.
             SBY(L)=0.
-            SUB(L+1)=0.
             SBX(L+1)=0.
-          ENDIF
-
-        DO L=2,LA  
-          IF(HP(L).LE.HDRY)THEN  
-            LN=LNC(L)  
-            IF(SVB(LN).NE.0.) SVB(LN)=0.  
-            IF(SBY(LN).NE.0.) SBY(LN)=0.  
+            SBY(LN)=0.  
           ENDIF  
         ENDDO  
-        IF(ICORDRY.GT.0)THEN  
+        IF(ICORDRY.EQ.1)THEN  
           NCORDRY=NCORDRY+1  
           GOTO 1000  
         ENDIF  
