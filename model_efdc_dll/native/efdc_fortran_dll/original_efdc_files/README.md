@@ -12,6 +12,12 @@ conflicts...
   implementation uses multiplication with `0.5`... It is unclear why
   this difference exists. No action has been taken to unify these
   computations.
+* `CALPUV2C.for`: The diffs contain some odd instructions in the loops
+  present in the OpenDA version. It has been decided to accept the
+  patches from NIER here and adopt that variant of the implementation.
+  Similarly, the assignment of `ICORDRY=1` is replaced with the NIER
+  alternative of `ICORDRY=ICORDRY+1`. It is not clear why these
+  differences exist and which might be the proper one...
 * `CGATEFLX.for`: The NIER source misses the fix introducing boolean
   `HUPG_HDWG_INITIALIZED` that was added in 2016 in OpenDA.
   Additionally, the array GKMULT seems not to have been initialized in
