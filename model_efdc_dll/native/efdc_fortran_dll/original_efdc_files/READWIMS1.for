@@ -97,7 +97,7 @@ C
         OPEN(21,FILE='TXSER.INP',STATUS='UNKNOWN')  
 
         DO K=1,KC
-            TXMASS_3D(K)=TXLDC
+            TXMASS_3D(K)=TXLDC/FLOAT(KC)
             TXMASS0(K)=0.0
         ENDDO
         
