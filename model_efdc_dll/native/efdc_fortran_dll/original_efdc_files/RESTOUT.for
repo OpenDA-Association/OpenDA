@@ -6,6 +6,7 @@ C   ADD OUTPUT OF BED LOAD TRANSPORT QSBDLDX  QSBDLDY
 C **  SUBROUTINE RESTOUT WRITES A RESTART FILE  
 C  
       USE GLOBAL  
+      USE MPI
 
       CHARACTER*64 RESTFN ! { GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.5.23
       REAL HPRES(LCM),H1PRES(LCM),HWQRES(LCM),H2WQRES(LCM) ! NEG. DEP.: JGCHO 2014.9.3
@@ -16,13 +17,165 @@ C
 ! { GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.6.3
       IF (IRSTYP.EQ.-19) GOTO 7502
 ! } GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.6.3
-	IF(IRSTYP.EQ.0)THEN  
+
+      call collect_in_zero(BELV)
+      call collect_in_zero(HP)
+      call collect_in_zero(H1P)
+      call collect_in_zero(HWQ)
+      call collect_in_zero(H2WQ)
+      call collect_in_zero(UHDYE)
+      call collect_in_zero(UHDY1E)
+      call collect_in_zero(VHDXE)
+      call collect_in_zero(VHDX1E)
+
+      do k=0,kcm
+         call collect_in_zero(QQSQR(:,k))
+         call collect_in_zero(QQ(:,k))
+         call collect_in_zero(QQ1(:,k))
+         call collect_in_zero(QQL(:,k))
+         call collect_in_zero(QQL1(:,k))
+         call collect_in_zero(DML(:,k))
+      enddo
+
+      call collect_in_zero_array(U)
+      call collect_in_zero_array(U1)
+      call collect_in_zero_array(V)
+      call collect_in_zero_array(V1)
+
+      IF(ISCO(1).EQ.1)THEN
+         call collect_in_zero_array(SAL)
+         call collect_in_zero_array(SAL1)
+      ENDIF
+      IF(ISCO(2).EQ.1)THEN
+         call collect_in_zero_array(TEM)
+         call collect_in_zero_array(TEM1)
+      ENDIF
+      IF(ISCO(3).EQ.1)THEN
+         call collect_in_zero_array(DYE)
+         call collect_in_zero_array(DYE1)
+      ENDIF
+      IF(ISCO(4).EQ.1)THEN
+         call collect_in_zero(SFLSBOT)
+         call collect_in_zero_array(SFL)
+         call collect_in_zero_array(SFL2)
+      ENDIF
+      IF(ISCO(5).EQ.1)THEN
+      do nt=1,ntox
+         call collect_in_zero_array(TOX(:,:,nt))
+         call collect_in_zero_array(TOX1(:,:,nt))
+         call collect_in_zero_array_kbm(TOXB(:,:,nt))
+         call collect_in_zero_array_kbm(TOXB1(:,:,nt))
+      enddo
+      ENDIF
+      IF(ISCO(6).EQ.1)THEN
+      do ns=1,nsed
+         call collect_in_zero_array(SED(:,:,ns))
+         call collect_in_zero_array(SED1(:,:,ns))
+         call collect_in_zero_array_kbm(SEDB(:,:,ns))
+         call collect_in_zero_array_kbm(SEDB1(:,:,ns))
+      enddo
+      ENDIF
+      IF(ISCO(7).EQ.1)THEN
+      do ns=1,nsnd
+         call collect_in_zero_array(SND(:,:,ns))
+         call collect_in_zero_array(SND1(:,:,ns))
+         call collect_in_zero_array_kbm(SNDB(:,:,ns))
+         call collect_in_zero_array_kbm(SNDB1(:,:,ns))
+      enddo
+      ENDIF
+      IF(ISCO(6).EQ.1.OR.ISCO(7).EQ.1)THEN
+         call collect_in_zero_array_kbm(HBED)
+         call collect_in_zero_array_kbm(HBED1)
+         call collect_in_zero_array_kbm(VDRBED)
+         call collect_in_zero_array_kbm(VDRBED1)
+      ENDIF
+      call collect_in_zero(QSUME)
+      call collect_in_zero_array(QSUM)
+      IF(ISGWIE.GE.1)THEN
+         call collect_in_zero(AGWELV)
+         call collect_in_zero(AGWELV1)
+      ENDIF
+
+      CLOS_TMP=CLOS
+      CLOW_TMP=CLOW
+      CLOE_TMP=CLOE
+      CLON_TMP=CLON
+      NLOS_TMP=NLOS
+      NLOW_TMP=NLOW
+      NLOE_TMP=NLOE
+      NLON_TMP=NLON
+
+      DO K=1,KCM
+        DO LL=1,NBBSM
+          IF(.NOT.ISDOMAIN(LCBS(LL)))THEN
+            CLOS_TMP(LL,K,1:NSTVM)=0.
+            NLOS_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      DO K=1,KCM
+        DO LL=1,NBBWM
+          IF(.NOT.ISDOMAIN(LCBW(LL)))THEN
+            CLOW_TMP(LL,K,1:NSTVM)=0.
+            NLOW_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      DO K=1,KCM
+        DO LL=1,NBBEM
+          IF(.NOT.ISDOMAIN(LCBE(LL)))THEN
+            CLOE_TMP(LL,K,1:NSTVM)=0.
+            NLOE_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      DO K=1,KCM
+        DO LL=1,NBBNM
+          IF(.NOT.ISDOMAIN(LCBN(LL)))THEN
+            CLON_TMP(LL,K,1:NSTVM)=0.
+            NLON_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      CALL MPI_ALLREDUCE(CLOS_TMP,CLOS,NBBSM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(CLOW_TMP,CLOW,NBBWM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(CLOE_TMP,CLOE,NBBEM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(CLON_TMP,CLON,NBBNM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLOS_TMP,NLOS,NBBSM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLOW_TMP,NLOW,NBBWM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLOE_TMP,NLOE,NBBEM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLON_TMP,NLON,NBBNM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+
+CGEO      if(myrank.eq.0)THEN
+CGEO        print*, n,'NLOS1',sum(NLOS)
+CGEO        print*, n,'CLOS1',sum(CLOS)
+CGEO        print*, n,'NLOW1',sum(NLOW)
+CGEO        print*, n,'CLOW1',sum(CLOW)
+CGEO        print*, n,'NLOE1',sum(NLOE)
+CGEO        print*, n,'CLOE1',sum(CLOE)
+CGEO        print*, n,'NLON1',sum(NLON)
+CGEO        print*, n,'CLON1',sum(CLON)
+CGEO      endif
+
+        IF(IRSTYP.EQ.0.AND.MYRANK.EQ.0)THEN
         PRINT *,'Restart Snapshot @ Timeday: ',TIMEDAY
         OPEN(99,FILE='RESTART.OUT',STATUS='UNKNOWN')  
         CLOSE(99,STATUS='DELETE')  
         OPEN(99,FILE='RESTART.OUT',STATUS='UNKNOWN')  
       ENDIF  
-      IF(IRSTYP.EQ.1)THEN  
+      IF(IRSTYP.EQ.1.AND.MYRANK.EQ.0)THEN
         OPEN(99,FILE='CRASHST.OUT',STATUS='UNKNOWN')  
         CLOSE(99,STATUS='DELETE')  
         OPEN(99,FILE='CRASHST.OUT',STATUS='UNKNOWN')  
@@ -69,6 +222,7 @@ C
       ELSE  
         TIME=TIMESEC/TCON  
       ENDIF  
+      IF(MYRANK.EQ.0) THEN
       WRITE(99,909)N,TIME  
       DO L=2,LA  
 !{ NEG. DEP.: JGCHO 2014.9.3
@@ -288,30 +442,40 @@ C
         ENDDO  
       ENDIF  
       CLOSE(99)  
+      ENDIF
 C
 C *** SPECIAL FILES
 C
       IF(ISWAVE.GE.1)THEN  
-        OPEN(1,FILE='WVQWCP.OUT',STATUS='UNKNOWN')  
-        CLOSE(1, STATUS='DELETE')  
-        OPEN(1,FILE='WVQWCP.OUT',STATUS='UNKNOWN')  
-        DO L=2,LA  
-          WRITE(1,911)IL(L),JL(L),QQWV1(L),QQWV2(L),QQWV3(L),QQWC(L),  
-     &        QQWCR(L),QQ(L,0)  
-        ENDDO  
-        CLOSE(1)  
+         call collect_in_zero(QQWV1)
+         call collect_in_zero(QQWV2)
+         call collect_in_zero(QQWV3)
+         call collect_in_zero(QQWC)
+         call collect_in_zero(QQWCR)
+         do k=0,kcm
+          call collect_in_zero(QQ(:,k))
+         enddo
       ENDIF  
       IF(ISCO(1).GE.1.AND.ISTRAN(1).GT.0)THEN  
-        OPEN(1,FILE='SALT.RST',STATUS='UNKNOWN')  
-        CLOSE(1, STATUS='DELETE')  
-        OPEN(1,FILE='SALT.RST',STATUS='UNKNOWN')  
-        DO L=2,LA  
-          WRITE(1,912)L,IL(L),JL(L),(SAL(L,K),K=1,KC)  
-        ENDDO  
-        CLOSE(1)  
+         call collect_in_zero_array(SAL)
       ENDIF  
       IF(ISCO(2).GE.1.AND.ISTRAN(2).GT.0)THEN  
-        OPEN(1,FILE='TEMP.RSTO',STATUS='UNKNOWN')  
+         call collect_in_zero_array(TEM)
+         call collect_in_zero(TEMB)
+      ENDIF
+      IF(ISDRY.EQ.99)THEN
+         call collect_in_zero_int(ISCDRY)
+         call collect_in_zero_int(NATDRY)
+         call collect_in_zero_int(IMASKDRY)
+         call collect_in_zero(SUB)
+         call collect_in_zero(SVB)
+         call collect_in_zero(SUBO)
+         call collect_in_zero(SVBO)
+      ENDIF
+C
+      IF(MYRANK.EQ.0)THEN
+      IF(ISWAVE.GE.1)THEN
+        OPEN(1,FILE='WVQWCP.OUT',STATUS='UNKNOWN')
         CLOSE(1, STATUS='DELETE')  
         OPEN(1,FILE='TEMP.RSTO',STATUS='UNKNOWN')  
         DO L=2,LA  
@@ -329,10 +493,17 @@ C
         ENDDO  
         CLOSE(1)  
       ENDIF  
+      ENDIF
 C  
 C **  OUTPUT SALINITY AND TEMPATURE DATA ASSIMILATION  
 C  
-      IF(NLCDA.GT.0)THEN
+CGEO      if(myrank.eq.0)THEN
+CGEO        print*, n,'FSALASM1',sum(FSALASM)
+CGEO        print*, n,'FVOLASM1',sum(FVOLASM)
+CGEO        print*, n,'FTEMASM1',sum(FTEMASM)
+CGEO      endif
+C
+      IF(NLCDA.GT.0.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='DATAASM.OUT')  
         CLOSE(1,STATUS='DELETE')  
         OPEN(1,FILE='DATAASM.OUT')  
@@ -344,6 +515,35 @@ C
       ENDIF
  5678 FORMAT(2I6,3E14.5)  
 C
+        do ns=1,nsed
+           call collect_in_zero_array_kbm(SEDB(:,:,ns))
+        enddo
+        do ns=1,nsnd
+           call collect_in_zero_array_kbm(SNDB(:,:,ns))
+        enddo
+        call collect_in_zero_array_kbm(VDRBED)
+        call collect_in_zero_array_kbm(PORBED)
+        call collect_in_zero(ZELBEDA)
+        call collect_in_zero(HBEDA)
+        call collect_in_zero_array_kbm(HBED)
+        call collect_in_zero_array_kbm(BDENBED)
+        call collect_in_zero(BELV)
+        call collect_in_zero(HP)
+        do ns=1,nsed
+           call collect_in_zero_array(SED(:,:,ns))
+        enddo
+        do ns=1,nsnd
+           call collect_in_zero_array(SND(:,:,ns))
+        enddo
+        do nx=1,nsnd
+          call collect_in_zero(QSBDLDX(:,nx))
+          call collect_in_zero(QSBDLDY(:,nx))
+        enddo
+        do nt=1,ntox
+          call collect_in_zero_array_kbm(TOXB(:,:,nx))
+        enddo
+C
+      IF(MYRANK.EQ.0)THEN
       IF(ISTRAN(6).GT.0.OR.ISTRAN(7).GT.0.AND.
      &            ISDTXBUG.EQ.1.AND.N.EQ.NTS)THEN  
         OPEN(1,FILE='BEDRST.SED')  
@@ -480,6 +680,7 @@ C
         ENDDO  
         CLOSE(1)  
       ENDIF  
+      ENDIF
 C 339 FORMAT(2I5,6F14.5)  
   101 FORMAT(2I5,18E13.5)  
   102 FORMAT(10X,18E13.5)  
@@ -506,6 +707,23 @@ C 339 FORMAT(2I5,6F14.5)
 
 ! { GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
  7501 CONTINUE !      IF (IRSTYP.EQ.-20) GOTO 7501
+      call collect_in_zero(HP)
+      call collect_in_zero_array(UHDY2)
+      call collect_in_zero_array(VHDX2)
+      call collect_in_zero_array(W2)
+      call collect_in_zero_array(U)
+      call collect_in_zero_array(V)
+
+      call collect_in_zero_array(SAL)
+      call collect_in_zero_array(TEM)
+      do ns=1,nsed
+         call collect_in_zero_array(SED(:,:,ns))
+      enddo
+
+CGEO      if(myrank.eq.0)THEN
+CGEO        print*, n,'QCTLT',sum(QCTLT)
+CGEO      endif
+      IF(MYRANK.EQ.0)THEN
       IF (IRSTYP.LE.-20 .AND. ISRESTO.LE.-20) THEN
         IF(IRSTYP.EQ.-20)THEN
           OPEN(7510,FILE='EE_HYDRO.OUT',STATUS='UNKNOWN')
@@ -572,11 +790,154 @@ C 339 FORMAT(2I5,6F14.5)
         CALL FLUSH(7510)
         CLOSE(7510,STATUS='KEEP')
       ENDIF
+      ENDIF
 ! } GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
 
 ! { GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.5.23
  7502 CONTINUE ! IF (IRSTYP.EQ.-19) GOTO 7502
-      IF (IRSTYP.EQ.-19) THEN
+      call collect_in_zero(HP)
+      call collect_in_zero(H1P)
+      call collect_in_zero(HWQ)
+      call collect_in_zero(H2WQ)
+
+      call collect_in_zero(UHDYE)
+      call collect_in_zero(UHDY1E)
+      call collect_in_zero(VHDXE)
+      call collect_in_zero(VHDX1E)
+
+      call collect_in_zero_array(U)
+      call collect_in_zero_array(U1)
+      call collect_in_zero_array(V)
+      call collect_in_zero_array(V1)
+
+      do k=0,kcm
+         call collect_in_zero(QQSQR(:,k))
+         call collect_in_zero(QQ(:,k))
+         call collect_in_zero(QQ1(:,k))
+         call collect_in_zero(QQL(:,k))
+         call collect_in_zero(QQL1(:,k))
+         call collect_in_zero(DML(:,k))
+      enddo
+
+      IF(ISCO(1).EQ.1)THEN
+         call collect_in_zero_array(SAL)
+         call collect_in_zero_array(SAL1)
+      ENDIF
+      IF(ISCO(2).EQ.1)THEN
+         call collect_in_zero_array(TEM)
+         call collect_in_zero_array(TEM1)
+      ENDIF
+      IF(ISCO(3).EQ.1)THEN
+         call collect_in_zero_array(DYE)
+         call collect_in_zero_array(DYE1)
+      ENDIF
+      IF(ISCO(4).EQ.1)THEN
+         call collect_in_zero(SFLSBOT)
+         call collect_in_zero_array(SFL)
+         call collect_in_zero_array(SFL2)
+      ENDIF
+      IF(ISCO(5).EQ.1)THEN
+      do nt=1,ntox
+         call collect_in_zero_array(TOX(:,:,nt))
+         call collect_in_zero_array(TOX1(:,:,nt))
+         call collect_in_zero_array_kbm(TOXB(:,:,nt))
+         call collect_in_zero_array_kbm(TOXB1(:,:,nt))
+      enddo
+      ENDIF
+      IF(ISCO(6).EQ.1)THEN
+      do ns=1,nsed
+         call collect_in_zero_array(SED(:,:,ns))
+         call collect_in_zero_array(SED1(:,:,ns))
+         call collect_in_zero_array_kbm(SEDB(:,:,ns))
+         call collect_in_zero_array_kbm(SEDB1(:,:,ns))
+      enddo
+      ENDIF
+      IF(ISCO(7).EQ.1)THEN
+      do ns=1,nsnd
+         call collect_in_zero_array(SND(:,:,ns))
+         call collect_in_zero_array(SND1(:,:,ns))
+         call collect_in_zero_array_kbm(SNDB(:,:,ns))
+         call collect_in_zero_array_kbm(SNDB1(:,:,ns))
+      enddo
+      ENDIF
+      IF(ISCO(6).EQ.1.OR.ISCO(7).EQ.1)THEN
+         call collect_in_zero_array_kbm(HBED)
+         call collect_in_zero_array_kbm(HBED1)
+         call collect_in_zero_array_kbm(VDRBED)
+         call collect_in_zero_array_kbm(VDRBED1)
+      ENDIF
+
+      call collect_in_zero(QSUME)
+      call collect_in_zero_array(QSUM)
+      IF(ISGWIE.GE.1)THEN
+         call collect_in_zero(AGWELV)
+         call collect_in_zero(AGWELV1)
+      ENDIF
+
+      CLOS_TMP=CLOS
+      CLOW_TMP=CLOW
+      CLOE_TMP=CLOE
+      CLON_TMP=CLON
+      NLOS_TMP=NLOS
+      NLOW_TMP=NLOW
+      NLOE_TMP=NLOE
+      NLON_TMP=NLON
+
+      DO K=1,KCM
+        DO LL=1,NBBSM
+          IF(.NOT.ISDOMAIN(LCBS(LL)))THEN
+            CLOS_TMP(LL,K,1:NSTVM)=0.
+            NLOS_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      DO K=1,KCM
+        DO LL=1,NBBWM
+          IF(.NOT.ISDOMAIN(LCBW(LL)))THEN
+            CLOW_TMP(LL,K,1:NSTVM)=0.
+            NLOW_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      DO K=1,KCM
+        DO LL=1,NBBEM
+          IF(.NOT.ISDOMAIN(LCBE(LL)))THEN
+            CLOE_TMP(LL,K,1:NSTVM)=0.
+            NLOE_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      DO K=1,KCM
+        DO LL=1,NBBNM
+          IF(.NOT.ISDOMAIN(LCBN(LL)))THEN
+            CLON_TMP(LL,K,1:NSTVM)=0.
+            NLON_TMP(LL,K,1:NSTVM)=0
+          ENDIF
+        ENDDO
+      ENDDO
+
+      CALL MPI_ALLREDUCE(CLOS_TMP,CLOS,NBBSM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(CLOW_TMP,CLOW,NBBWM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(CLOE_TMP,CLOE,NBBEM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(CLON_TMP,CLON,NBBNM*KCM*NSTVM,
+     &           MPI_REAL,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLOS_TMP,NLOS,NBBSM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLOW_TMP,NLOW,NBBWM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLOE_TMP,NLOE,NBBEM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+      CALL MPI_ALLREDUCE(NLON_TMP,NLON,NBBNM*KCM*NSTVM,
+     &        MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,IERR)
+
+      IF(MYRANK.EQ.0)THEN
+      IF(IRSTYP.EQ.-19) THEN
         WRITE(*,'(A,F10.6,2x,i3.3)')'Restart Snapshot @ Timeday: '
      &                              ,TIMEDAY,NINT(TIMEDAY)
 
@@ -727,7 +1088,7 @@ C 339 FORMAT(2I5,6F14.5)
               WRITE(99,907)(CLON(LL,K,M),K=1,KC)  
             ENDDO  
           ENDDO  
-        ENDIF  
+        ENDIF
         IF(ISCO(6).EQ.1)THEN  
           DO NT=1,NSED  
             M=MSVSED(NT)  
@@ -760,7 +1121,7 @@ C 339 FORMAT(2I5,6F14.5)
               WRITE(99,907)(CLON(LL,K,M),K=1,KC)  
             ENDDO  
           ENDDO  
-        ENDIF  
+        ENDIF
         IF(ISCO(7).EQ.1)THEN  
           DO NT=1,NSND  
             M=MSVSND(NT)  
@@ -809,9 +1170,23 @@ C 339 FORMAT(2I5,6F14.5)
           ENDDO  
         ENDIF  
         CLOSE(99)  
+        ENDIF
+      ENDIF
 C
 C *** SPECIAL FILES
 C
+      call collect_in_zero_array(SAL)
+      call collect_in_zero_array(TEM)
+      call collect_in_zero(TEMB)
+      call collect_in_zero_int(ISCDRY)
+      call collect_in_zero_int(NATDRY)
+      call collect_in_zero_int(IMASKDRY)
+      call collect_in_zero(SUB)
+      call collect_in_zero(SVB)
+      call collect_in_zero(SUBO)
+      call collect_in_zero(SVBO)
+C
+      IF(MYRANK.EQ.0)THEN
         IF(ISWAVE.GE.1)THEN  
           WRITE(RESTFN,'(A,I3.3,A)') 'WVQWCP',NINT(TIMEDAY),'.OUT'
           OPEN(1,FILE=TRIM(RESTFN),STATUS='UNKNOWN')  
@@ -858,9 +1233,37 @@ C
             ENDDO  
           ENDDO  
         ENDIF
-
+      ENDIF
 C
-        IF(ISTRAN(6).GT.0 .OR. ISTRAN(7).GT.0 .AND. 
+      do ns=1,nsed
+         call collect_in_zero_array_kbm(SEDB(:,:,ns))
+      enddo
+      do ns=1,nsnd
+         call collect_in_zero_array_kbm(SNDB(:,:,ns))
+      enddo
+      call collect_in_zero_array_kbm(VDRBED)
+      call collect_in_zero_array_kbm(PORBED)
+      call collect_in_zero(ZELBEDA)
+      call collect_in_zero(HBEDA)
+      call collect_in_zero_array_kbm(HBED)
+      call collect_in_zero_array_kbm(BDENBED)
+      call collect_in_zero(BELV)
+      call collect_in_zero(HP)
+      do ns=1,nsed
+         call collect_in_zero_array(SED(:,:,ns))
+      enddo
+      do ns=1,nsnd
+         call collect_in_zero_array(SND(:,:,ns))
+      enddo
+      do nx=1,nsnd
+        call collect_in_zero(QSBDLDX(:,nx))
+        call collect_in_zero(QSBDLDY(:,nx))
+      enddo
+      do nt=1,ntox
+        call collect_in_zero_array_kbm(TOXB(:,:,nx))
+      enddo
+      IF(MYRANK.EQ.0)THEN
+      IF(ISTRAN(6).GT.0 .OR. ISTRAN(7).GT.0 .AND. 
      &            ISDTXBUG.EQ.1.AND.N.EQ.NTS)THEN  
 
           WRITE(RESTFN,'(A,I3.3,A)') 'BEDRST',NINT(TIMEDAY),'.SED'
@@ -988,8 +1391,7 @@ C
           ENDDO  
           CLOSE(1)  
         ENDIF  
-
-      ENDIF ! IF (IRSTYP.EQ.-19) THEN
+      ENDIF
 ! } GEOSR WRITE RESTART FILE EVERY REFERENCE TIME : JGCHO 2011.5.23
 
 

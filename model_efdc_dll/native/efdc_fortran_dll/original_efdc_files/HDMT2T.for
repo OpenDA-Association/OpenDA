@@ -25,6 +25,7 @@ C
       USE GLOBAL
       USE DRIFTER
       USE WINDWAVE ,ONLY:WINDWAVEINIT,WINDWAVETUR
+      USE MPI
       INTRINSIC ISNAN
       LOGICAL ISNAN
 
@@ -87,6 +88,8 @@ C
       FOURDPI=4./PI
       ISTL=2
       IS2TL=1
+      MPI_WTIMES=0
+      CALL MPI_INITIALIZE
 C
 C**********************************************************************C
 C
@@ -322,7 +325,7 @@ C----------------------------------------------------------------------c
 C
         IF(ISCORTBC.GE.1) THEN
 C
-          IF(DEBUG)THEN
+          IF(DEBUG.AND.MYRANK.EQ.0)THEN
             IF(ISCORTBCD.GE.1)THEN
               OPEN(1,FILE='ADJSTRESSE.OUT')
               CLOSE(1,STATUS='DELETE')
@@ -496,6 +499,9 @@ C
  1001 CONTINUE
       IF(N.GE.NTS)GO TO 1000
 C
+C  ITERATION START
+      TTIME=MPI_TIC()
+      STIME=MPI_TIC()
       IF(ISDYNSTP.EQ.0)THEN
         N=N+1
         ETIMESEC=DT*FLOAT(N)
@@ -524,10 +530,9 @@ C
         TIMESEC=(DT*FLOAT(N)+TCON*TBEGIN)
         TIMEDAY=(DT*FLOAT(N)+TCON*TBEGIN)/86400.
       ENDIF
-      PRINT*, "TIME: ", TIMEDAY
 C
 C PMC      IF(ILOGC.EQ.NTSMMT)THEN
-      IF(ILOGC.EQ.NTSPTC)THEN
+      IF(ILOGC.EQ.NTSPTC.AND.MYRANK.EQ.0)THEN  
         CLOSE(8,STATUS='DELETE')
         OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')
         IF(DEBUG)THEN
@@ -590,6 +595,9 @@ C
         GP=GPO
       ENDIF
 C
+      MPI_WTIMES(2)=MPI_WTIMES(2)+MPI_TOC(STIME)
+      STIME=MPI_TIC()
+C  
 C----------------------------------------------------------------------C
 C
 C **  INITIALIZE TWO-TIME LEVEL BALANCES
@@ -600,6 +608,8 @@ C
         ENDIF
       ENDIF
 C
+      MPI_WTIMES(3)=MPI_WTIMES(3)+MPI_TOC(STIME)
+C  
 C----------------------------------------------------------------------C
 C
 C **  REENTER HERE FOR TWO TIME LEVEL LOOP
@@ -610,7 +620,8 @@ C**********************************************************************C
 C
 C **  CALCULATE VERTICAL VISCOSITY AND DIFFUSIVITY AT TIME LEVEL (N)
 C
-      CALL CPU_TIME(T1TMP)
+      STIME=MPI_TIC() !!### WT_CALAVB
+C      CALL CPU_TIME(T1TMP)  
       IF(KC.GT.1)THEN
         IF(ISQQ.EQ.1)THEN
           IF(ISTOPT(0).EQ.0)CALL CALAVBOLD (ISTL)
@@ -618,17 +629,18 @@ C
         ENDIF
         IF(ISQQ.EQ.2) CALL CALAVB2 (ISTL)
       ENDIF
-      CALL CPU_TIME(T2TMP)
-      TAVB=TAVB+T2TMP-T1TMP
+C      TAVB=TAVB+T1TMP-SECOND()  
+      MPI_WTIMES(4)=MPI_WTIMES(4)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  CALCULATE WAVE BOUNDARY LAYER AND WAVE REYNOLDS STRESS FORCINGS
 C
+      STIME=MPI_TIC()
       IF(ISWAVE.EQ.1) CALL WAVEBL
       IF(ISWAVE.EQ.2) CALL WAVESXY
       IF(ISWAVE.EQ.3.AND.NWSER > 0) CALL WINDWAVETUR   !DHC NEXT CALL
-
+      MPI_WTIMES(5)=MPI_WTIMES(5)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -637,40 +649,46 @@ C **  STRESSES  *** DSLLC MOVED
 C
 C----------------------------------------------------------------------C
 C
+      STIME=MPI_TIC() !!### WT_CALTSXY
       CALL CALTSXY
+      MPI_WTIMES(6)=MPI_WTIMES(6)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  CALCULATE EXPLICIT MOMENTUM EQUATION TERMS
 C
-      T1TMP=SECNDS(0.0)
-c     IF(IS2TIM.EQ.1) CALL CALEXP2T  
+      STIME=MPI_TIC() !!### WT_CALEXP2T
+C      CALL CPU_TIME(T1TMP)  
       IF(IS2TIM.EQ.1.AND.N.EQ.1) PRINT*, 'RUN CALEXP2T'
       IF(IS2TIM.EQ.2.AND.N.EQ.1) PRINT*, 'RUN CALIMP2T'
       IF(IS2TIM.EQ.1) CALL CALEXP2T  
       IF(IS2TIM.EQ.2) CALL CALIMP2T
-      TCEXP=TCEXP+T1TMP-SECOND()
+C      TCEXP=TCEXP+T1TMP-SECOND()  
+      MPI_WTIMES(7)=MPI_WTIMES(7)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  UPDATE TIME VARIABLE VOLUME SOURCES AND SINKS, CONCENTRATIONS,
 C **  VEGETATION CHARACTERISTICS AND SURFACE ELEVATIONS
 C
+      STIME=MPI_TIC() !!### WT_CALCSER
       CALL CALCSER (ISTL)
       CALL CALVEGSER (ISTL)
       CALL CALQVS (ISTL)
       PSERT(0)=0.
       IF(NPSER.GE.1) CALL CALPSER (ISTL)
+      MPI_WTIMES(8)=MPI_WTIMES(8)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  SOLVE EXTERNAL MODE EQUATIONS FOR P, UHDYE, AND VHDXE
 C
-      CALL CPU_TIME(T1TMP)
+      STIME=MPI_TIC() !!### WT_CALPUV2C
+C      CALL CPU_TIME(T1TMP)  
       IF(ISCHAN.EQ.0.AND.ISDRY.EQ.0) CALL CALPUV2T
       IF(ISCHAN.GE.1.OR.ISDRY.GE.1) CALL CALPUV2C
-      CALL CPU_TIME(T2TMP)
-      TPUV=TPUV+T2TMP-T1TMP
+C      TPUV=TPUV+T1TMP-SECOND()  
+      MPI_WTIMES(9)=MPI_WTIMES(9)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -699,6 +717,7 @@ C **  ADVANCE INTERNAL VARIABLES
 C
 C----------------------------------------------------------------------C
 C
+      STIME=MPI_TIC() !!### WT_ADVANCE
       DO K=1,KC
         DO L=2,LA  
           UHDY2(L,K)=UHDY1(L,K)
@@ -713,6 +732,7 @@ C
           W1(L,K)=W(L,K)
         ENDDO
       ENDDO
+      MPI_WTIMES(10)=MPI_WTIMES(10)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -720,7 +740,8 @@ C **  SOLVE INTERNAL SHEAR MODE EQUATIONS FOR U, UHDY, V, VHDX, AND W
 C
 C----------------------------------------------------------------------C
 C
-      CALL CPU_TIME(T1TMP)
+      STIME=MPI_TIC() !!### WT_CALUVW
+C      CALL CPU_TIME(T1TMP)  
       IF(KC.GT.1)THEN
         CALL CALUVW (ISTL,IS2TL)
       ELSE
@@ -733,8 +754,8 @@ C
         ENDDO
         CALL CALUVW (ISTL,IS2TL)
       ENDIF
-      CALL CPU_TIME(T2TMP)
-      TUVW=TUVW+T2TMP-T1TMP
+C      TUVW=TUVW+T1TMP-SECOND()  
+      MPI_WTIMES(11)=MPI_WTIMES(11)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -743,9 +764,13 @@ C **  AT TIME LEVEL (N+1)
 C
 C----------------------------------------------------------------------C
 C
+      STIME=MPI_TIC() !!### WT_CALCONC
       CALL CALCONC (ISTL,IS2TL)
+      MPI_WTIMES(12)=MPI_WTIMES(12)+MPI_TOC(STIME)
 C
 C----------------------------------------------------------------------C
+C
+      STIME=MPI_TIC() !!### WT_PMC
 C
       ! *** PMC BYPASS IF NOT SIMULATING SEDIMENTS
       IF(ISTRAN(6).GT.0.OR.ISTRAN(7).GT.0)THEN
@@ -796,9 +821,12 @@ C
         ENDDO
       ENDIF
 C
+      MPI_WTIMES(13)=MPI_WTIMES(13)+MPI_TOC(STIME)
 C----------------------------------------------------------------------C
 C
 C **  CHECK RANGE OF SALINITY AND DYE CONCENTRATION
+C
+      STIME=MPI_TIC()
 C
       IF(ISMMC.EQ.1)THEN
 C
@@ -902,6 +930,8 @@ C
 C
       ENDIF
 C
+      MPI_WTIMES(14)=MPI_WTIMES(14)+MPI_TOC(STIME)
+C  
  6001 FORMAT('  N=',I10)
  6002 FORMAT('  SALMAX=',F14.4,5X,'I,J,K=',(3I10))
  6003 FORMAT('  SALMIN=',F14.4,5X,'I,J,K=',(3I10))
@@ -912,8 +942,10 @@ C
  6008 FORMAT('  TEMMAX=',F14.4,5X,'I,J,K=',(3I10))
  6009 FORMAT('  TEMMIN=',F14.4,5X,'I,J,K=',(3I10))
 
+      STIME=MPI_TIC() !!### MPI_WRITE
+C
       ! *** DSLLC
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         BTEST=.FALSE.
         LTEST=.FALSE.
         DO L=2,LA
@@ -1103,6 +1135,8 @@ C
   918 FORMAT('ERROR: TIME, L, I, J, K, NW, WQV = ',F10.5,5I6,2F10.4)
       ENDIF
 C
+      MPI_WTIMES(15)=MPI_WTIMES(15)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  CALCULATE SHELL FISH LARVAE AND/OR WATER QUALITY CONSTITUENT
@@ -1110,6 +1144,8 @@ C **  CONCENTRATIONS AT TIME LEVEL (N+1) AFTER SETTING DOUBLE TIME
 C **  STEP TRANSPORT FIELD
 C
 C----------------------------------------------------------------------C
+C
+      STIME=MPI_TIC() !!### WT_WQ3D
 C
       ITMP=0
       IF(ISTRAN(4).GE.1) ITMP=1
@@ -1167,6 +1203,8 @@ C
 C
 C     END ADD CHANNEL INTERACTIONS
 C
+        IF(ISTRAN(8).GE.1.AND.N.EQ.1) PRINT*,'RUN WQ3D',ISTL,IS2TL
+        IF(ISTRAN(4).GE.1.AND.N.EQ.1) PRINT*,'RUN CALSFT',ISTL,IS2TL
         IF(ISTRAN(8).GE.1) CALL WQ3D(ISTL,IS2TL)
         IF(ISTRAN(4).GE.1) CALL CALSFT(ISTL,IS2TL)
 C
@@ -1176,10 +1214,14 @@ C
 C
       ENDIF
 C
+      MPI_WTIMES(16)=MPI_WTIMES(16)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  UPDATE BUOYANCY AND CALCULATE NEW BUOYANCY USING
 C **  AN EQUATION OF STATE
+C
+      STIME=MPI_TIC() !!### WT_CALBUOY
 C
       DO K=1,KC
         DO L=2,LA  
@@ -1197,12 +1239,17 @@ C
         ENDDO
       ENDIF
 C
+      MPI_WTIMES(17)=MPI_WTIMES(17)+MPI_TOC(STIME)
 C **  CALL TWO-TIME LEVEL BALANCES
+C
+      STIME=MPI_TIC()
 C
       IF(ISBAL.GE.1)THEN
         CALL BAL2T4
       ENDIF
 C
+      MPI_WTIMES(18)=MPI_WTIMES(18)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  CALCULATE U AT V AND V AT U AT TIME LEVEL (N+1)
@@ -1225,18 +1272,25 @@ C
      &      +HP(L)*(V(LN,1)+V(L,1)))*HUI(L)
       ENDDO
 C
+      MPI_WTIMES(19)=MPI_WTIMES(19)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  CALCULATE HORIZONTAL VISCOSITY AND MOMENTUM DIFFUSION FLUXES
 C **  AT TIME LEVEL (N)
 C
+      STIME=MPI_TIC() !!### WT_CALHDMF
+C
       IF(ISHDMF.GE.1) CALL CALHDMF
 C
+      MPI_WTIMES(20)=MPI_WTIMES(20)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  CALCULATE BOTTOM STRESS AT LEVEL (N+1)
 C
-      CALL CPU_TIME(T1TMP)  
+C      CALL CPU_TIME(T1TMP)  
+      STIME=MPI_TIC() !!### WT_CALTBXY
 C
       CALL CALTBXY(ISTL,IS2TL)
 C  
@@ -1247,9 +1301,13 @@ C
      &      +V(L,1)*V(L,1)))*V(L,1)
       ENDDO
 C
+      MPI_WTIMES(21)=MPI_WTIMES(21)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  SET DEPTH DEVIATION FROM UNIFORM FLOW ON FLOW FACES
+C
+      STIME=MPI_TIC()
 C
       IF(ISBSDFUF.GE.1)THEN
         HDFUFM=1.E-12
@@ -1277,6 +1335,8 @@ C
 C
       ENDIF
 C
+      MPI_WTIMES(22)=MPI_WTIMES(22)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  SET BOTTOM AND SURFACE TURBULENT INTENSITY SQUARED AT (N+1)
@@ -1284,7 +1344,9 @@ C
 C----------------------------------------------------------------------C
 C
 C
-      IF(ISWAVE.EQ.0)THEN
+      IF(ISWAVE.EQ.0)THEN !!### WT_QQSQR
+C  
+      STIME=MPI_TIC()
 C
 C----------------------------------------------------------------------c
 C
@@ -1321,7 +1383,11 @@ C
 C
         ENDIF
 C
+      MPI_WTIMES(23)=MPI_WTIMES(23)+MPI_TOC(STIME)
+C  
 C----------------------------------------------------------------------c
+C
+      STIME=MPI_TIC()
 C
         IF(ISCORTBC.GE.1) THEN
 C
@@ -1448,6 +1514,8 @@ C
 C
 C----------------------------------------------------------------------c
 C
+      MPI_WTIMES(25)=MPI_WTIMES(25)+MPI_TOC(STIME)
+C  
       ENDIF
 C
  3678 FORMAT(2I6,4F13.3)
@@ -1465,6 +1533,8 @@ C
 C **  SET BOTTOM AND SURFACE TURBULENT INTENSITY SQUARED AT (N+1)
 C
 C----------------------------------------------------------------------C
+C
+      STIME=MPI_TIC()
 C
       IF(ISWAVE.GE.1)THEN
 C
@@ -1503,13 +1573,17 @@ C
 C
       ENDIF
 C
-      TTBXY=TTBXY+SECNDS(T1TMP)
+      MPI_WTIMES(26)=MPI_WTIMES(26)+MPI_TOC(STIME)
+C  
+C      TTBXY=TTBXY+T1TMP-SECOND()  
 C
 C**********************************************************************C
 C
 C **  CALCULATE TURBULENT INTENSITY SQUARED
 C
-      CALL CPU_TIME(T1TMP)
+      STIME=MPI_TIC() !!### WT_CALQQ2T
+C
+C      CALL CPU_TIME(T1TMP)  
       IF(KC.GT.1)THEN
         IF(ISQQ.EQ.1)THEN
           IF(ISTOPT(0).EQ.0)CALL CALQQ2TOLD (ISTL)
@@ -1517,11 +1591,15 @@ C
         ENDIF
         IF(ISQQ.EQ.2) CALL CALQQ2 (ISTL)
       ENDIF
-      TQQQ=TQQQ+SECNDS(T1TMP)
+C      TQQQ=TQQQ+T1TMP-SECOND()  
+C  
+      MPI_WTIMES(27)=MPI_WTIMES(27)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  CALCULATE MEAN MASS TRANSPORT FIELD
+C
+      STIME=MPI_TIC()
 C
       IF(ISSSMMT.NE.2)THEN
         IF(ISICM.GE.1)THEN
@@ -1532,6 +1610,8 @@ C
 C
 C      IF(ISSSMMT.NE.2) CALL CALMMT
 C
+      MPI_WTIMES(28)=MPI_WTIMES(28)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  HYDRODYNAMIC CALCULATIONS FOR THIS TIME STEP ARE COMPLETED
@@ -1539,6 +1619,8 @@ C
 C**********************************************************************C
 C
 C **  WRITE TO TIME SERIES FILES
+C
+      STIME=MPI_TIC()
 C
       IF(ISDYNSTP.EQ.0)THEN
         CTIM=DT*FLOAT(N)+TCON*TBEGIN
@@ -1600,7 +1682,7 @@ C
 C----------------------------------------------------------------------C
 C
       IF(ISDRY.GE.1.AND.ISDRY.LT.98)THEN
-        IF(ICALLTP.EQ.1.AND.DEBUG)THEN
+        IF(ICALLTP.EQ.1.AND.DEBUG.AND.MYRANK.EQ.0)THEN  
           OPEN(1,FILE='ZVOLBAL.OUT',POSITION='APPEND',STATUS='UNKNOWN')
           DO LS=1,LORMAX
             IF(VOLZERD.GE.VOLSEL(LS).AND.VOLZERD.LT.VOLSEL(LS+1))THEN
@@ -1637,9 +1719,13 @@ C
         ENDIF
       ENDIF
 C
+      MPI_WTIMES(29)=MPI_WTIMES(29)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  CALCULATE MEAN MASS TRANSPORT FIELD
+C
+      STIME=MPI_TIC()
 C
       IF(ISSSMMT.NE.2)THEN
         IF(ISICM.EQ.0) CALL CALMMT
@@ -1647,13 +1733,17 @@ C
 C
 C      IF(ISSSMMT.NE.2) CALL CALMMT
 C
+      MPI_WTIMES(30)=MPI_WTIMES(30)+MPI_TOC(STIME)
+C  
 C**********************************************************************C
 C
 C **  ADVANCE NEUTRALLY BUOYANT PARTICLE DRIFTER TRAJECTORIES
 C
       !IF(ISPD.EQ.1)THEN
       !  IF(N.GE.NPDRT) CALL DRIFTER
-
+C
+      STIME=MPI_TIC()
+C
 !{GEOSR, OIL, CWCHO, 101122
       IF(ISPD.GE.2.AND.IDTOX.LT.4440) THEN   !DHC
         IF (TIMEDAY.GE.LA_BEGTI.AND.TIMEDAY.LE.LA_ENDTI) THEN
@@ -1672,7 +1762,9 @@ C
 	    ENDIF
       ENDIF
 !GEOSR}
-
+C
+      MPI_WTIMES(31)=MPI_WTIMES(31)+MPI_TOC(STIME)
+C  
 !      IF(ISLRPD.GE.1)THEN
 !        CALL CPU_TIME(T1TMP)                  !DHC:13-04-09
 !        IF(ISLRPD.LE.2)THEN
@@ -1712,34 +1804,50 @@ C       ENDIF
 C
 C **  CALL TWO-TIME LEVEL BALANCES
 C
+      STIME=MPI_TIC()
+C
       IF(ISBAL.GE.1)THEN
         CALL BAL2T5
       ENDIF
+C
+      MPI_WTIMES(32)=MPI_WTIMES(32)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  PERFORM AN M2 TIDE HARMONIC ANALYSIS EVERY 2 M2 PERIODS
 C
+      STIME=MPI_TIC()
+C
       IF(ISHTA.EQ.1) CALL CALHTA
+C
+      MPI_WTIMES(33)=MPI_WTIMES(33)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
 C **  CALCULATE DISPERSION COEFFICIENTS
 C
 C     IF(N.GE.NDISP)THEN
+      STIME=MPI_TIC()
+C
       IF(N.GE.NDISP.AND.NCTBC.EQ.1)THEN
         IF(ISDISP.EQ.2) CALL CALDISP2
         IF(ISDISP.EQ.3) CALL CALDISP3
       ENDIF
 C
+      MPI_WTIMES(34)=MPI_WTIMES(34)+MPI_TOC(STIME)
+C
 C**********************************************************************C
 C
 C **  PERFORM LEAST SQUARES HARMONIC ANALYSIS AT SELECTED LOCATIONS
+C
+      STIME=MPI_TIC()
 C
       IF(ISLSHA.EQ.1.AND.N.EQ.NCLSHA)THEN
         CALL LSQHARM
         NCLSHA=NCLSHA+(NTSPTC/24)
       ENDIF
+C
+      MPI_WTIMES(35)=MPI_WTIMES(35)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -1747,12 +1855,16 @@ C **  PRINT INTERMEDIATE RESULTS
 C
 C----------------------------------------------------------------------C
 C
+      STIME=MPI_TIC()
+C
       IF(NPRINT .EQ. NTSPP)THEN
         NPRINT=1
         CALL OUTPUT1
       ELSE
         NPRINT=NPRINT+1
       ENDIF
+C
+      MPI_WTIMES(36)=MPI_WTIMES(36)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -1762,14 +1874,21 @@ C----------------------------------------------------------------------C
 C
 CDYN      IF(N.EQ.NCPPH.AND.ISPPH.EQ.1)THEN
 Cpmc      IF(N.GE.NCPPH.AND.ISPPH.GE.1)THEN
+C
+      STIME=MPI_TIC()
+C
       IF(TIMEDAY.GE.SNAPSHOTS(NSNAPSHOTS))THEN
         CALL SURFPLT
       ENDIF
+C
+      MPI_WTIMES(37)=MPI_WTIMES(37)+MPI_TOC(STIME)
 C
 C
 C----------------------------------------------------------------------C
 C
 CDYN      IF(N.EQ.NCBPH.AND.ISBPH.EQ.1)THEN
+C
+      STIME=MPI_TIC()
 C
       IF(N.GE.NCBPH.AND.ISBPH.GE.1)THEN
         IF(ISBEXP.EQ.0)THEN
@@ -1778,9 +1897,13 @@ C
         ENDIF
       ENDIF
 C
+      MPI_WTIMES(38)=MPI_WTIMES(38)+MPI_TOC(STIME)
+C
 C----------------------------------------------------------------------C
 C
 CDYN      IF(N.EQ.NCVPH.AND.ISVPH.GE.1)THEN
+C
+      STIME=MPI_TIC() !!### WT_VELPLTH
 C
       IPLTTMP=0
       IF(ISVPH.EQ.1.OR.ISVPH.EQ.2)IPLTTMP=1
@@ -1788,16 +1911,24 @@ C
         CALL VELPLTH
       ENDIF
 C
+      MPI_WTIMES(39)=MPI_WTIMES(39)+MPI_TOC(STIME)
+C
 C----------------------------------------------------------------------C
 C
 CDYN      IF(N.EQ.NCVPV.AND.ISVPV.GE.1)THEN
+C
+      STIME=MPI_TIC()
 C
       IF(N.GE.NCVPV.AND.ISVPV.GE.1)THEN
         CALL VELPLTV
         NCVPV=NCVPV+(NTSPTC/NPVPV)
       ENDIF
 C
+      MPI_WTIMES(40)=MPI_WTIMES(40)+MPI_TOC(STIME)
+C
 C----------------------------------------------------------------------C
+C
+      STIME=MPI_TIC() !!### WT_SALPLTH
 C
       DO K=1,KC
         DO L=1,LC  
@@ -1854,7 +1985,11 @@ C
         NCSPH(7)=NCSPH(7)+(NTSPTC/NPSPH(7))
       ENDIF
 C
+      MPI_WTIMES(41)=MPI_WTIMES(41)+MPI_TOC(STIME)
+C
 C----------------------------------------------------------------------C
+C
+      STIME=MPI_TIC()
 C
       DO ITMP=1,7
         IF(N.GE.NCSPV(ITMP).AND.ISSPV(ITMP).GE.1)THEN
@@ -1863,9 +1998,13 @@ C
         ENDIF
       ENDDO
 C
+      MPI_WTIMES(42)=MPI_WTIMES(42)+MPI_TOC(STIME)
+C
 C----------------------------------------------------------------------C
 C
 C **  WRITE EFDC EXPLORER FORMAT OUTPUT
+C
+      STIME=MPI_TIC() !!### WT_EEXPOUT
 C
       IF(ISSPH(8).EQ.1.OR.ISBEXP.EQ.1)THEN
         IF(TIMEDAY.GE.SNAPSHOTS(NSNAPSHOTS))THEN
@@ -1876,20 +2015,28 @@ C
         NSNAPSHOTS=NSNAPSHOTS+1
       ENDIF
 C
+      MPI_WTIMES(43)=MPI_WTIMES(43)+MPI_TOC(STIME)
+C
 C**********************************************************************C
 C
 C **  WRITE TO TIME VARYING 3D HDF GRAPHICS FILES
 C
 C----------------------------------------------------------------------C
 C
+      STIME=MPI_TIC()
+C
       IF(N.EQ.NC3DO.AND.IS3DO.EQ.1)THEN
         CALL OUT3D
         NC3DO=NC3DO+(NTSPTC/NP3DO)
       ENDIF
 C
+      MPI_WTIMES(44)=MPI_WTIMES(44)+MPI_TOC(STIME)
+C
 C**********************************************************************C
 C
 C **  WRITE RESTART FILE EVERY ISRESTO M2 TIDAL CYCLES
+C
+      STIME=MPI_TIC()
 C
       IF(ISRESTO.GE.1)THEN
         IF((N-ISSREST).GT.NRESTO)THEN
@@ -1923,12 +2070,14 @@ C
         ENDIF
         IF(TIMEDAY.GE.SNAPSHOTHYD) THEN
 !          WRITE(*,*)'WRITE================',N,TIMEDAY,TIMEDAY*1440.
-          CALL RESTOUT(-21)
+!          CALL RESTOUT(-21)
           IHYDCNT=IHYDCNT+1
           SNAPSHOTHYD=FLOAT(ISHYD*IHYDCNT)*60./86400.+TBEGIN
         ENDIF
       ENDIF
 ! } GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
+C
+      MPI_WTIMES(45)=MPI_WTIMES(45)+MPI_TOC(STIME)
 C
 C**********************************************************************C
 C
@@ -1954,6 +2103,16 @@ C**********************************************************************C
 C
 C *** DJB
 ![ykchoi 10.04.26 for linux version
+      MPI_WTIMES(1)=MPI_WTIMES(1)+MPI_TOC(TTIME)
+      IF(N.GE.NTSPTC/200)THEN
+         DO II=1,45
+            IF(NINT(200*REAL(MPI_WTIMES(II))).GE.1) 
+     &       WRITE(*,'(I5,F10.3)') II, (10*REAL(MPI_WTIMES(II)))
+     
+         ENDDO
+         STOP 'LOOP MPI'
+      ENDIF
+
 	GOTO 1001
 !      IF(.NOT.KBHIT())GOTO 1001
 !      I1=GETCH()
@@ -2025,7 +2184,7 @@ C
 C **  OUTPUT COURANT NUMBER DIAGNOSTICS
 C
 C *** DSLLC BEGIN BLOCK
-      IF(ISINWV.GT.0.AND.DEBUG)THEN
+      IF(ISINWV.GT.0.AND.DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='CFLMAX.OUT')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='CFLMAX.OUT')
@@ -2049,7 +2208,7 @@ C**********************************************************************C
 C
 C **  OUTPUT COSMETIC VOLUME LOSSES FORM DRY CELLS
 C
-      IF(NDRYSTP.LT.0.AND.DEBUG) THEN
+      IF(NDRYSTP.LT.0.AND.DEBUG.AND.MYRANK.EQ.0) THEN  
 C
         OPEN(1,FILE='DRYLOSS.OUT')
         CLOSE(1,STATUS='DELETE')

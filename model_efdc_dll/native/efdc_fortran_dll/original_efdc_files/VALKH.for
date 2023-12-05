@@ -3,6 +3,7 @@ C
 C CHANGE RECORD  
 C  
       USE GLOBAL  
+      USE MPI
       VALKH=0.0
       IF(HFFDG.LE.0.02)THEN  
         VALKH=HFFDG*HFFDG  
@@ -21,7 +22,7 @@ C
           RETURN  
         ENDIF  
       ENDDO  
-      IF(NTAB.EQ.1001)THEN  
+      IF(NTAB.EQ.1001.AND.MYRANK.EQ.0)THEN  
         WRITE(6,600) RKHTAB(1001)  
         WRITE(8,600) RKHTAB(1001)  
         STOP  
