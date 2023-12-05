@@ -8,12 +8,14 @@ subroutine model_init
   ! local
   CHARACTER(len=80) :: TITLE
 
-  call model_init_1
+  call model_init_1  ! opens output files
 
   ! **  CALL INPUT SUBROUTINE
   CALL VARINIT
 
   CALL INPUT(TITLE)
+
+  CALL MPI_DECOMPOSITION
 
   call model_init_2
 

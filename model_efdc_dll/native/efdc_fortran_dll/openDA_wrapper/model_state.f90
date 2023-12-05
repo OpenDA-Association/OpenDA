@@ -552,6 +552,8 @@ contains
 
     call INPUT(TITLE)
 
+    call MPI_DECOMPOSITION
+
     call model_init_2
 
     ! Act like this is a restart
