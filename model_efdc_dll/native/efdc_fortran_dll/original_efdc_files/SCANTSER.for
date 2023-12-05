@@ -1,7 +1,8 @@
       SUBROUTINE SCANTSER(NCSER2)  
       USE GLOBAL  
+      USE MPI
       INTEGER IOS
-      WRITE(*,'(A)')'SCANNING INPUT FILE: TSER.INP'  
+      IF(MYRANK.EQ.0)WRITE(*,'(A)')'SCANNING INPUT FILE: TSER.INP'  
       OPEN(1,FILE='TSER.INP',STATUS='OLD')  
       DO NS=1,NCSER2  
    10   READ(1,*,ERR=10,END=40)I,M,R,R,R,R  
@@ -19,12 +20,14 @@
       ENDDO  
       CLOSE(1)  
       RETURN  
-   20 WRITE(*,30)  
-      WRITE(8,30)  
+   20 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,30)  
+      IF(MYRANK.EQ.0) WRITE(8,30)  
    30 FORMAT('READ ERROR IN INPUT FILE')  
       STOP  
-   40 WRITE(*,50)  
-      WRITE(8,50)  
+   40 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,50)  
+      IF(MYRANK.EQ.0) WRITE(8,50)  
    50 FORMAT('UNEXPECTED END OF INPUT FILE')  
       STOP  
       END  

@@ -7,6 +7,7 @@ C ** SUBROUTINE CGATEFLX
 C    GATE CONTROL FLUX
 C  
       USE GLOBAL  
+      USE MPI
       implicit none
       integer:: I,K, LG, NCMP, NCTL, NS
       integer :: id, iu, jd, ju, ld, ldu, lu
@@ -68,6 +69,8 @@ C
 
       IF (ISINK.EQ.1) THEN   ! READY SINK#.OUT
         FSINK='SINK.OUT'
+        !IF(MYRANK.EQ.0.AND.DEBUG)THEN
+        IF(MYRANK.EQ.0)THEN
         OPEN(711,FILE=TRIM(FSINK),STATUS='UNKNOWN')  ! OPEN OLD FILE
         CLOSE(711,STATUS='DELETE')             ! DELETE OLD FILE
         OPEN(711,FILE=FSINK,STATUS='UNKNOWN')  ! OPEN NEW FILE
@@ -89,7 +92,7 @@ C
         write(713,FMTSTR) '       N      TIME',
      &                  ((NS,'_K',k,k=1,KC),NS,'_O',00,NS=1,NQCTL)
 !} GEOSR GATE : jgcho 2016.07.14
-
+        ENDIF
 
         ISINK=2            ! READY TO WRITE SINK##.OUT 
         SNKW=DTSNK*60./DT  ! WRITING TIME INTERVAL
@@ -1452,6 +1455,7 @@ C
       IF (ISINK.EQ.2) THEN
         IF (MOD(FLOAT(N),SNKW).EQ.0. .OR. DTSNK.EQ.-1.) THEN
 C
+        IF(MYRANK.EQ.0)THEN
           FSINK='SINK.OUT'
           OPEN(711,FILE=TRIM(FSINK),POSITION='APPEND')  
           WRITE(FMTSTR,
@@ -1479,6 +1483,7 @@ C
      &                   ,NS=1,NQCTL)
           CLOSE(713)
 
+        ENDIF
         ENDIF  ! IF (MOD(FLOAT(N),SNKW).EQ.0.) THEN
       ENDIF    ! IF (ISINK.EQ.2) THEN
 !     END: WRITE SINK.OUT

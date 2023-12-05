@@ -3,6 +3,7 @@
       ! *** Merged SNL & DS-INTL Codes
 
       USE GLOBAL
+      USE MPI
 
       CHARACTER*10  INFILE
       CHARACTER*2   SNUM
@@ -13,7 +14,7 @@
       REAL*4        XPSQ
       LOGICAL       fileExists
       
-      WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC.INP'
+      IF(MYRANK.EQ.0)WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC.INP'
       INFILE='WQ3DWC.INP'
 
       OPEN(1,FILE='WQ3DWC.INP',STATUS='UNKNOWN')  
@@ -79,7 +80,7 @@ C
 
       ! *** SCAN THE TIME SERIES
       IF(NPSTMSR.GE.1.AND.IWQPSL.NE.2)THEN  
-        WRITE(*,'(A)')'SCANNING INPUT FILE: WQPSL.INP'
+        IF(MYRANK.EQ.0)WRITE(*,'(A)')'SCANNING INPUT FILE: WQPSL.INP'
         OPEN(1,FILE='WQPSL.INP',STATUS='UNKNOWN')  
         DO IS=1,13  
           READ(1,1)  
@@ -135,7 +136,7 @@ C
       ! For x-species WQ3DWC2 needs to be checked
       INQUIRE(FILE='WQ3DWC2.INP',EXIST=fileExists)
       if (fileExists) then
-        WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC2.INP'
+        IF(MYRANK.EQ.0)WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC2.INP'
         OPEN(1,FILE='WQ3DWC2.INP',STATUS='UNKNOWN')  
 
         CALL SEEK('C01')  

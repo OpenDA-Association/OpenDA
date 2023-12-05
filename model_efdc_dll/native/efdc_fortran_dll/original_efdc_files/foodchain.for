@@ -22,6 +22,7 @@ C
 C**********************************************************************C
 C
       USE GLOBAL
+      USE MPI
 C
       ! *** DSLLC BEGIN
       INTEGER,ALLOCATABLE,DIMENSION(:)::KBFC  
@@ -159,7 +160,7 @@ C
 C
 C      WRITE(8,*)' FIRST ENTRY TO FOODCHAIN.FOR '
 C
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='FOODCHAIN.OUT')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='FOODCHAIN.OUT')
@@ -486,7 +487,7 @@ C###############################################################################
         ENDIF
       ENDDO
 C
-      IF(JSFDCH.EQ.1.AND.DEBUG)THEN
+      IF(JSFDCH.EQ.1.AND.DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='FOODCHAIN.DIA')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='FOODCHAIN.DIA')
@@ -664,7 +665,7 @@ C###############################################################################
       ENDDO
       ENDDO
 C
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='FOODCHAIN.OUT',POSITION='APPEND')
 C
         WRITE(1,101)TIME,NTOX,NFDCHZ,TIMFDCH

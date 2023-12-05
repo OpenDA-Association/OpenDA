@@ -8,6 +8,7 @@ C **  SUBROUTINES CALBAL CALCULATE GLOBAL VOLUME, MASS, MOMENTUM,
 C **  AND ENERGY BALANCES  
 C  
       USE GLOBAL  
+      USE MPI 
  	IMPLICIT NONE
 	INTEGER::LUTMP,LDTMP,L,K,NSX,NSB,IBALSTDT,NT,M  
       IF(ISDYNSTP.EQ.0)THEN  
@@ -28,7 +29,7 @@ C
       IF(ISTRAN(5).GE.1)THEN  
         DO NT=1,NTOX  
           M=MSVTOX(NT)  
-      WRITE(8,*)'NT M ',NT,M  
+          IF(MYRANK.EQ.0) WRITE(8,*)'NT M ',NT,M  
           DO K=1,KC  
             DO L=2,LC
               CONT(L,K)=TOX(L,K,NT)  

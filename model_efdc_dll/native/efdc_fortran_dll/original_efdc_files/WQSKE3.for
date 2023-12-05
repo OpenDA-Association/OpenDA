@@ -10,6 +10,7 @@ C
 C LAST MODIFIED BY YSSONG ON 24 NOVEMBER 2011
 
       USE GLOBAL  
+      USE MPI
 C
       CHARACTER*11 FLN ! character array to print growth limit and algal rate
       INTEGER   IZA ! Integer for benthic flux for anoxic env
@@ -161,8 +162,8 @@ C          IWQT(L) = NINT( 4.*TWQ(L)+121.)
             ELSE  
               TIMTMP=TIMESEC/86400.  
             ENDIF  
-            WRITE(8,911) TIMTMP, L, IL(L), JL(L), K, TWQ(L)  
-            WRITE(6,600)IL(L),JL(L),K,TWQ(L)  
+            IF(MYRANK.EQ.0) WRITE(8,911) TIMTMP,L,IL(L),JL(L),K,TWQ(L)
+c            IF(MYRANK.EQ.0) WRITE(6,600)IL(L),JL(L),K,TWQ(L)
             IWQT(L)=MAX(IWQT(L),1)  
             IWQT(L)=MIN(IWQT(L),NWQTD)  
 C            STOP 'ERROR!! INVALID WATER TEMPERATURE'  
@@ -2239,6 +2240,7 @@ C
           IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
             TIME=DT*FLOAT(N)+TCON*TBEGIN  
             TIME=TIME/TCON 
+            IF(MYRANK.EQ.0)THEN
             WRITE(FLN,"('WQRTS',I2.2,'.DAT')") K
             OPEN(3,FILE=FLN,POSITION='APPEND')
             DO M=1,IWQTS
@@ -2249,6 +2251,8 @@ C
             CLOSE(3)
           ENDIF            
         ENDIF
+        ENDIF
+!}GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10
       ENDDO  
 C ----------------------------------------------------------------  
 C  
@@ -2356,7 +2360,7 @@ C
 C DIURNAL DO ANALYSIS  
 C  
       IF(NDDOAVG.GE.1)THEN  
-        OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')
         NDDOCNT=NDDOCNT+1  
         NSTPTMP=NDDOAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -2374,11 +2378,13 @@ C
           ELSE  
             TIME=TIMESEC/TCON  
           ENDIF  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1112)IL(L),JL(L),(DDOMIN(L,K),K=1,KC),  
      &          (DDOMAX(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               DDOMAX(L,K)=-1.E6  
@@ -2386,13 +2392,13 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 C  
 C LIGHT EXTINCTION ANALYSIS  
 C  
       IF(NDLTAVG.GE.1)THEN  
-        OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')
         NDLTCNT=NDLTCNT+1  
         NSTPTMP=NDLTAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -2422,11 +2428,13 @@ C
               RLIGHTC(L,K)=RMULTMP*RLIGHTC(L,K)  
             ENDDO  
           ENDDO  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1113)IL(L),JL(L),(RLIGHTT(L,K),K=1,KC),  
      &          (RLIGHTC(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               RLIGHTT(L,K)=0.  
@@ -2434,7 +2442,7 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 !{ GEOSR STOKES : YSSONG 2015.08.18      
       do nsp=1,NXSP
@@ -2453,6 +2461,7 @@ C
       
       if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
         IF(ISSTOKEX(1).EQ.1)THEN
+          IF(MYRANK.EQ.0)THEN
           do i=1,IWQTS
             WRITE(FLN,"('STOKE',I2.2,'.OUT')") i
             OPEN(1,FILE=trim(FLN),POSITION='APPEND')      ! VERTICAL VELOCITY, ALGAL-DENSITY, SOLAR RADIATION, chl-a PRINT AT EACH LAYER
@@ -2463,6 +2472,7 @@ C
      & ,(WQCHL(LWQTS(i),k),k=kc,1,-1)
             close(1)
           enddo
+          ENDIF 
         ENDIF 
       endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
  1114 FORMAT(F12.6,(E12.4))  
