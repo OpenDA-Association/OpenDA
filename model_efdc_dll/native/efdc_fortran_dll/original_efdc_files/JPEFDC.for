@@ -9,6 +9,7 @@ C **  FOR MORE INFO EMAIL HAM@VISI.NET
 C CHANGE RECORD  
 C  
       USE GLOBAL  
+      USE MPI
       PARAMETER (NJELM=2,NATDM=1)  
       CHARACTER*11 FNJPGEO,FNJPVEL,FNJPCON,FNJPTOX,FNJPTPF,FNJPLOG,  
      &    FNNRFLD,FNNRFLB  
@@ -268,8 +269,10 @@ C
         FNNUM(23)= '23'  
         FNNUM(24)= '24'  
         FNNUM(25)= '25'  
+        IF(MYRANK.EQ.0)THEN
         OPEN(88,FILE='JPBUG.DIA',POSITION='APPEND')  
         CLOSE(88,STATUS='DELETE')  
+      ENDIF
       ENDIF
 C  
 C **  LOOP OVER ALL JET/PLUME LOCATIONS  
@@ -281,7 +284,7 @@ C
           VJPAVG(K,NJP)=0.0  
           WJPAVG(K,NJP)=0.0  
         ENDDO
-        IF(DEBUG)THEN  
+        IF(DEBUG.AND.MYRANK.EQ.0)THEN  
           FNJPLOG='JPLOG' // FNNUM(NJP) // '.OUT'  
           IF(N.EQ.1) OPEN(10,FILE=FNJPLOG,STATUS='UNKNOWN')  
           IF(N.EQ.1) CLOSE(10,STATUS='DELETE')  
@@ -492,7 +495,7 @@ C
      &          +U(L,K)*(BELV(L)-BELV(L-1))*DXIU(L)  
      &          +V(LN,K)*(BELV(LN)-BELV(L))*DYIV(LN)  
      &          +V(L,K)*(BELV(L)-BELV(LS))*DYIV(L))  
-            IF(DEBUG)THEN
+            IF(DEBUG.AND.MYRANK.EQ.0)THEN
               OPEN(88,FILE='JPBUG.DIA',POSITION='APPEND')  
               WRITE(88,889)NZ,K,L,LN,LS,SALAD(NZ,1),TEMAD(NZ,1),
      &          TOXAD(NZ,1,1)  
@@ -524,7 +527,7 @@ C
 C  
 C **  OPEN OUTPUT FILES  
 C  
-          IF(LOUTJET)THEN
+          IF(LOUTJET.AND.MYRANK.EQ.0)THEN
             FNJPGEO='JPGEO' // FNNUM(NJP) // '.OUT'  
             FNJPVEL='JPVEL' // FNNUM(NJP) // '.OUT'  
             FNJPCON='JPCON' // FNNUM(NJP) // '.OUT'  
@@ -568,7 +571,7 @@ C
             ENDIF 
           ENDIF
           
-          IF(DEBUG)THEN 
+          IF(DEBUG.AND.MYRANK.EQ.0)THEN 
             IF(N.EQ.1) THEN  
               OPEN(11,FILE='JPMOMENT.OUT')  
               CLOSE(11,STATUS='DELETE')  
@@ -1222,11 +1225,13 @@ C
             IF(NI.GT.NIMAX)THEN  
               KFLAG=1  
               
+              IF(MYRANK.EQ.0)THEN
               IF(DEBUG)WRITE(10,620)NJP,NJE,NI,ITMP,DRMAJSA,DRMAJSO,
      &                              DRMAJFA,DRMAJFO  
               WRITE(6,601)NJE,NI  
               IF(DEBUG)WRITE(10,601)NJE,NI  
               WRITE(8,601)NJE,NI  
+              ENDIF
               GOTO 2000  
             ENDIF  
 C  
@@ -1235,10 +1240,12 @@ C
             IF(ISTOP.EQ.1)THEN  
               ZJGTOP=ZJG(NE)  
               IF(ZJGTOP.GT.ZSUR)THEN  
+                IF(MYRANK.EQ.0)THEN  
                 WRITE(6,6050)NJP,NJE,NI,ZJGTOP,ZSUR  
                 IF(DEBUG)WRITE(10,605)NJP,NJE,NI,ZJGTOP,ZSUR  
                 IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
                 WRITE(8,605)NJP,NJE,NI,ZJGTOP,ZSUR  
+                ENDIF
                 GOTO 2000  
               ENDIF  
             ENDIF  
@@ -1248,10 +1255,12 @@ C
             IF(ISTOP.EQ.1)THEN  
               ZJGBOT=ZJG(NE)  
               IF(ZJGBOT.LT.ZBOT)THEN  
+                IF(MYRANK.EQ.0)THEN
                 WRITE(6,6060)NJP,NJE,NI,ZJGBOT,ZBOT  
                 IF(DEBUG)WRITE(10,606)NJP,NJE,NI,ZJGBOT,ZBOT  
                 IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
                 WRITE(8,606)NJP,NJE,NI,ZJGBOT,ZBOT  
+                ENDIF
                 GOTO 2000  
               ENDIF  
             ENDIF  
@@ -1261,10 +1270,12 @@ C
             IF(ISTOP.EQ.2)THEN  
               ZJGTOP=ZJG(NE)+RADJ(NE)*COS(0.0175*PHJ(NE))  
               IF(ZJGTOP.GT.ZSUR)THEN  
+                IF(MYRANK.EQ.0)THEN
                 WRITE(6,6020)NJP,NJE,NI,ZJGTOP,ZSUR  
                 IF(DEBUG)WRITE(10,602)NJP,NJE,NI,ZJGTOP,ZSUR  
                 IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
                 WRITE(8,602)NJP,NJE,NI,ZJGTOP,ZSUR  
+                ENDIF
                 GOTO 2000  
               ENDIF  
             ENDIF  
@@ -1274,10 +1285,12 @@ C
             IF(ISTOP.EQ.2)THEN  
               ZJGBOT=ZJG(NE)-RADJ(NE)*COS(0.0175*PHJ(NE))  
               IF(ZJGBOT.LT.ZBOT)THEN  
+                IF(MYRANK.EQ.0)THEN
                 WRITE(6,6030)NJP,NJE,NI,ZJGBOT,ZBOT  
                 IF(DEBUG)WRITE(10,603)NJP,NJE,NI,ZJGBOT,ZBOT  
                 IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
                 WRITE(8,603)NJP,NJE,NI,ZJGBOT,ZBOT  
+                ENDIF
                 GOTO 2000  
               ENDIF  
             ENDIF  
@@ -1289,10 +1302,12 @@ C
             IF(RHOJ(NE).GE.RHOJ(NM))THEN
               DRHOT=(RHOA-RHOJ(NE))/RHOA
               IF(DRHOT.LT.0.)THEN
+                IF(MYRANK.EQ.0)THEN
                 WRITE(6,6040)NJP,NJE,NI,ZJG(NE)
                 IF(DEBUG)WRITE(10,604)NJP,NJE,NI,ZJG(NE)
                 IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)
                 WRITE(8,604)NJP,NJE,NI,ZJG(NE)
+                ENDIF
                 GOTO 2000
               ENDIF
             ENDIF
@@ -1302,10 +1317,12 @@ C
             IF(RHOJ(NE).LT.RHOJ(NM))THEN
               DRHOT=(RHOA-RHOJ(NE))/RHOA
               IF(DRHOT.GT.0.)THEN
+                IF(MYRANK.EQ.0)THEN
                 WRITE(6,6040)NJP,NJE,NI,ZJG(NE)
                 IF(DEBUG)WRITE(10,604)NJP,NJE,NI,ZJG(NE)
                 IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)
                 WRITE(8,604)NJP,NJE,NI,ZJG(NE)
+                ENDIF
                 GOTO 2000
               ENDIF
             ENDIF
@@ -1489,7 +1506,7 @@ C
           DO K=1,KC  
             QJPENTT(NJP)=QJPENTT(NJP)+QJPENT(K,NJP)  
           ENDDO
-          IF(DEBUG)THEN  
+          IF(DEBUG.AND.MYRANK.EQ.0)THEN  
             WRITE(8,898)NJP,TIME,(QJPENT(K,NJP),K=1,KC),QJPENTT(NJP)  
             WRITE(10,898)NJP,TIME,(QJPENT(K,NJP),K=1,KC),QJPENTT(NJP)  
           ENDIF
@@ -1589,7 +1606,8 @@ C
 C  
 C **  WRITE OUT SAVED RESULTS IN COMPACT ASCII FORMAT  
 C  
-          IF(LOUTJET.AND.(IOUTJP(NJP).EQ.2.OR.IOUTJP(NJP).EQ.3))THEN  
+          IF(LOUTJET.AND.(IOUTJP(NJP).EQ.2.OR.IOUTJP(NJP).EQ.3)
+     &      .AND.MYRANK.EQ.0)THEN  
             IF(N.EQ.1) OPEN(1,FILE=FNNRFLD,STATUS='UNKNOWN')  
             IF(N.EQ.1) CLOSE(1,STATUS='DELETE')  
             OPEN(1,FILE=FNNRFLD,STATUS='UNKNOWN',POSITION='APPEND')  
@@ -1632,7 +1650,7 @@ C
 C  
 C **  WRITE OUT SAVED RESULTS IN BINARY FORMAT  
 C  
-          IF(IOUTJP(NJP).EQ.4)THEN  
+          IF(IOUTJP(NJP).EQ.4.AND.MYRANK.EQ.0)THEN  
             IF(N.EQ.1) OPEN(1,FILE=FNNRFLB,FORM='UNFORMATTED')  
             IF(N.EQ.1) CLOSE(1,STATUS='DELETE')  
             OPEN(1,FILE=FNNRFLB,POSITION='APPEND',FORM='UNFORMATTED')  
@@ -1681,7 +1699,8 @@ C
  9000     CONTINUE  
           KEFFJP(NJP)=KQJP(NJP)  
  9001     CONTINUE  
-          WRITE(8 ,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
+          IF(MYRANK.EQ.0) WRITE(8 ,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
+          IF(MYRANK.EQ.0)THEN
           IF(DEBUG)WRITE(10,899)NJP,TIME,(QJPENT(K,NJP),K=1,KC)  
           IF(DEBUG)THEN
             WRITE(10,135)NJP,TIME,KFLAG,KEFFJP(NJP),KQJP(NJP),
@@ -1695,6 +1714,7 @@ C            WRITE(6 ,135)NJP,TIME,KFLAG,KEFFJP(NJP),KQJP(NJP),QVJET,
 C     &                   QJTOT  
 C          ENDIF
             CLOSE(10)  
+          ENDIF
           ENDIF
 C  
 C **  CALCULATION MOMENT INTERFACE QUANTITIES  

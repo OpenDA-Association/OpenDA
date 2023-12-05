@@ -3,6 +3,7 @@ C
 C CHANGE RECORD  
 C  
       USE GLOBAL  
+      USE MPI
       CHARACTER BLANK,ASTER,LET1(51),LET2(51)  
       DIMENSION BNDU(51),BNDL(51)  
       CHARACTER*1,ALLOCATABLE,DIMENSION(:,:)::CHARY  
@@ -39,16 +40,16 @@ C
       ENDDO  
       IF(IPT.EQ.1)THEN  
         DO M=1,NBAN  
-          WRITE (7,10) BNDU(M),LET1(M),BNDL(M)  
+          IF(MYRANK.EQ.0) WRITE (7,10) BNDU(M),LET1(M),BNDL(M)  
         ENDDO  
       ELSE  
         DO M=1,NBAN  
-          WRITE (7,10) BNDU(M),LET2(M),BNDL(M)  
+          IF(MYRANK.EQ.0) WRITE (7,10) BNDU(M),LET2(M),BNDL(M)  
         ENDDO  
       ENDIF  
    10 FORMAT (5X,E12.4,5X,A1,5X,E12.4)  
 C  11 FORMAT (////)  
-      WRITE(7,12)  
+      IF(MYRANK.EQ.0) WRITE(7,12)  
    12 FORMAT(1H1)  
 C  
 C **  LOAD CHARACTER ARRAY  
@@ -78,9 +79,9 @@ C
         JS=JJ  
         JE=JJ+119  
         IF(JE.GT.JC) JE=JC  
-        WRITE(7,22)JS,JE  
+        IF(MYRANK.EQ.0) WRITE(7,22)JS,JE  
         DO I=1,IC  
-          WRITE (7,20) I,(CHARY(I,J),J=JS,JE)  
+          IF(MYRANK.EQ.0) WRITE (7,20) I,(CHARY(I,J),J=JS,JE)  
         ENDDO  
       ENDDO  
    20 FORMAT (1X,I3,2X,120A1)  

@@ -100,7 +100,7 @@ openmp: MAKE_FFLAGS += $(F_OPENMP)
 openmp: MAKE_SO += $(F_OPENMP)
 openmp: libEfdcOrig.a
 
-libEfdcOrig.a:	$(OBJECTS) $(COMPAT_OBJS)
+libEfdcOrig.a: global.mod mpi.mod $(OBJECTS) $(COMPAT_OBJS)
 	rm -f $@
 	ar cq $@ $(OBJECTS) $(COMPAT_OBJS)
 

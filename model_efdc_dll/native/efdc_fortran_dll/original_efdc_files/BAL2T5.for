@@ -23,6 +23,7 @@ C
 C**********************************************************************C
 C
       USE GLOBAL  
+      USE MPI
 
 	IMPLICIT NONE
 	INTEGER::K,L,NS
@@ -464,6 +465,7 @@ C **  OUTPUT BALANCE RESULTS TO FILE BAL2T.OUT
 C
 C----------------------------------------------------------------------C
 C
+      IF(MYRANK.EQ.0)THEN
       IF(JSBAL.EQ.1)THEN
         OPEN(89,FILE='BAL2T.OUT')
         CLOSE(89,STATUS='DELETE')
@@ -731,6 +733,7 @@ C
       CLOSE(82)
       CLOSE(83)
       CLOSE(84)
+      ENDIF  ! MYRANK0
 C
  8899 FORMAT(A18,E15.7)
   950 FORMAT(I5,12E17.9)

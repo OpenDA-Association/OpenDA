@@ -56,6 +56,7 @@ C **  SUBROUTINE SSEDTOX CALCULATES SETTLING AND WATER COLUMN-BED
 C **  EXCHANGE OF SEDIMENT AND SORBED TOXIC CONTAMINANTS  
 C  
       USE GLOBAL  
+      USE MPI
 
       ! *** EE BEGIN BLOCK  
 	IMPLICIT NONE
@@ -995,14 +996,18 @@ C
         DO L=2,LA  
           IF(HP(L).LT.0.0)THEN  
             IF(ABS(H1P(L)).GT.HWET)THEN
+              IF(MYRANK.EQ.0)THEN
               WRITE(8,2348)TIMEDAY,IL(L),JL(L),HBED1(L,KBT(L)),
      &            HBED(L,KBT(L)),BELV1(L),BELV(L),DELT 
             ENDIF
+            ENDIF
             IF(ABS(H1P(L)).GE.HADJ)THEN  ! PMC-WAS HWET
               ITMP=1  
+              IF(MYRANK.EQ.0)THEN
               WRITE(8,2345)IL(L),JL(L),HBED1(L,KBT(L)),HBED(L,KBT(L)),  
      &            BELV1(L),BELV(L),DELT,QSBDTOP(L),QWBDTOP(L),HBEDA(L)  
               WRITE(8,2347)L,KBT(L),(HBED(L,K),K=1,KBT(L))  
+              ENDIF
             ELSE  
               HP(L)=0.9*HDRY  
             ENDIF  
@@ -1010,7 +1015,7 @@ C
         ENDDO  
         IF(ITMP.EQ.1)THEN  
           CALL RESTOUT(1)  
-          IF(NDRYSTP.LT.0.AND.DEBUG) THEN
+          IF(NDRYSTP.LT.0.AND.DEBUG.AND.MYRANK.EQ.0) THEN
             OPEN(1,FILE='DRYLOSS.OUT')
             CLOSE(1,STATUS='DELETE')
             OPEN(1,FILE='DRYLOSS.OUT')
