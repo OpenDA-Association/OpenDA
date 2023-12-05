@@ -102,6 +102,7 @@ contains
 #endif
 
     use omp_lib
+    use mpi
     USE GLOBAL, only: TBEGIN, TCON, TIDALP, NTC, TIMEDAY, & 
          NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM,NDCSER, NCSERM, &
          NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM, &
@@ -113,7 +114,7 @@ contains
 
     ! return value
     integer(kind=c_int) :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
-        
+
     !locals
     character(len=max_path_length) :: output_file_name, message_file_name
     character(len=max_path_length) :: cwd
@@ -123,39 +124,45 @@ contains
     integer :: i_number
     integer :: i
     logical :: i_open
-    
+
+    ! initialise MPI environments
+    !
+    ! NOTE: This only supports runs with maximum of 1 rank and no care has been
+    ! taken to isolate print statements to run only on the first rank.
+    call mpi_initialize
+
     ! body
     ret_val = -1
 
     ret_val = c_to_f_string(parent_directory_c, parent_directory)
-    if (ret_val /= 0) then 
+    if (ret_val /= 0) then
         print*, "ERROR: maximum path length exceeded for ", parent_directory
         return
     end if
     ret_val = c_to_f_string(template_directory_c, template_directory)
-    if (ret_val /= 0) then 
+    if (ret_val /= 0) then
         print*, "ERROR: maximum path length exceeded for ", template_directory
         return
     end if
-    
+
     dm_model_parent_dir    = trim(parent_directory)
     dm_template_model_dir  = trim(template_directory)
 
     print*, trim(dm_model_parent_dir)
     output_file_name = trim(dm_model_parent_dir) // '/model.log'
     message_file_name = trim(dm_model_parent_dir) // '/messages.log'
-    
+
     ! create new model.log
-    inquire(file = output_file_name, opened=i_open, number=i_number) 
+    inquire(file = output_file_name, opened=i_open, number=i_number)
     if (i_open .and. (i_number == dm_general_log_handle)) close(i_number)
     open(dm_general_log_handle, file=output_file_name, status = 'replace')
     write(dm_general_log_handle,'(A)') 'EFDC initialized'
 
     ! create new messages.log
-    inquire(file = message_file_name, opened=i_open, number=i_number) 
+    inquire(file = message_file_name, opened=i_open, number=i_number)
     if (i_open .and. (i_number == message_file_handle)) close(i_number)
     open(message_file_handle, file=message_file_name, status = 'replace')
-    
+
     message = "Starting EFDC run"
     call write_message(message, M_INFO)
 
@@ -250,7 +257,8 @@ contains
     write(dm_general_log_handle,'(A)') 'EFDC destroy()'
     close(dm_general_log_handle)
     close(message_file_handle)
-    
+
+    call mpi_finalize(ret_val)
   end subroutine m_openda_wrapper_destroy_
 
   ! --------------------------------------------------------------------------
@@ -506,6 +514,7 @@ contains
 #endif
 
     use global, only : ISTRAN, IWQRST, IWQBEN, ISMRST, ISRESTI, TIMESEC, TIMEDAY, TBEGIN, IWQAGR, HP
+    use mpi
 
     
     ! return value
@@ -530,6 +539,7 @@ contains
 
            call INPUT(TITLE)
            ! Act like this is a restart
+           call MPI_DECOMPOSITION
            ISRESTI = 1
            call model_init_2    
 
