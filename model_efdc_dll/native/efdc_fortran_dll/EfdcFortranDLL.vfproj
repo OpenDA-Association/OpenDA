@@ -476,5 +476,7 @@
 		<File RelativePath=".\original_efdc_files\WWQTS.for"/>
 		<File RelativePath=".\original_efdc_files\WWQTSBIN.for"/>
 		<File RelativePath=".\original_efdc_files\ZBRENT.for"/></Filter>
-		<Filter Name="Unused EFDC files"/></Filter></Files>
-	<Globals/></VisualStudioProject>
+		<Filter Name="Unused EFDC files"/></Filter>
+	</Files>
+	<Globals/>
+</VisualStudioProject>
