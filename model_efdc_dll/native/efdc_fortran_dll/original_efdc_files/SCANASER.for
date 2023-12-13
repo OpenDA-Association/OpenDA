@@ -1,15 +1,11 @@
       SUBROUTINE SCANASER  
       USE GLOBAL  
       CHARACTER*120 LIN
-      INTEGER IOS
       
       WRITE(*,'(A)')'SCANNING INPUT FILE: ASER.INP'  
       OPEN(1,FILE='ASER.INP',STATUS='OLD')  
       DO N=1,NASER  
-        IOS=1
-        DO WHILE (IOS > 0)
-          READ(1,*,IOSTAT=IOS,END=40)M,R,R,I,R,R,R,R  
-        ENDDO
+   10   READ(1,*,ERR=10,END=40)M,R,R,I,R,R,R,R  
         READ(1,*,ERR=20,END=40)I,R,R,R,R,R,R,R,R,R  
         NDASER=MAX(NDASER,M)  
         DO I=1,M  
