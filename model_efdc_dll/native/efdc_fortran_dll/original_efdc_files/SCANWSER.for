@@ -4,10 +4,7 @@
       WRITE(*,'(A)')'SCANNING INPUT FILE: WSER.INP'  
       OPEN(1,FILE='WSER.INP',STATUS='OLD')  
       DO NS=1,NWSER  
-        IOS=1
-        DO WHILE (IOS>0)
-          READ(1,*,IOSTAT=IOS,END=40)M,R,R,R,I  
-        ENDDO
+   10   READ(1,*,ERR=10,END=40)M,R,R,R,I  
         NDWSER=MAX(NDWSER,M)  
         DO I=1,M  
           READ(1,*,ERR=20,END=40)R,R,R  

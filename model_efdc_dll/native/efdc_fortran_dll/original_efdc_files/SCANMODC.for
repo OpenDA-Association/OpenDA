@@ -3,10 +3,7 @@
       INTEGER IOS
       WRITE(*,'(A)')'SCANNING INPUT FILE: MODCHAN.INP'  
       OPEN(1,FILE='MODCHAN.INP',STATUS='OLD')  
-      IOS=1
-      DO WHILE (IOS>0)
-        READ(1,*,IOSTAT=IOS,END=40)M,I,I  
-      ENDDO
+   10 READ(1,*,ERR=10,END=40)M,I,I  
       NCHANM=MAX(1,M)  
       READ(1,*,ERR=20,END=40)I,I,R  
       CLOSE(1)  
