@@ -83,8 +83,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -94,8 +94,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -105,8 +105,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug 64|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -116,8 +116,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release OpenMP|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -127,8 +127,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release Double Precission|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" RuntimeLibrary="rtMultiThreadedDLL"/>
-			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -138,8 +138,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release OpenMP Double Precission|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
-			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -149,8 +149,8 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release(64bit)|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 			<Tool Name="VFCustomBuildTool" CommandLine="copy $(TargetPath) $(ProjectDir)..\..\native_bin\win64_ifort\" Description="Performing Custom Build Step (copy binaries)" Outputs="EFDC.dll"/>
@@ -261,6 +261,7 @@
 		<File RelativePath=".\original_efdc_files\CALBED9.for"/>
 		<File RelativePath=".\original_efdc_files\CALBLAY.for"/>
 		<File RelativePath=".\original_efdc_files\CALBUOY.for"/>
+		<File RelativePath=".\original_efdc_files\CALBUOY_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALCONC.for"/>
 		<File RelativePath=".\original_efdc_files\CALCONC_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALCSER.for"/>
@@ -358,6 +359,7 @@
 		<File RelativePath=".\original_efdc_files\DUMP.for"/>
 		<File RelativePath=".\original_efdc_files\EEXPOUT.for"/>
 		<File RelativePath=".\original_efdc_files\EEXPOUT_mpi.for"/>
+		<File RelativePath=".\original_efdc_files\EEXPOUT_opt_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\FDSTRSE.for"/>
 		<File RelativePath=".\original_efdc_files\FHYDCN.for"/>
 		<File RelativePath=".\original_efdc_files\foodchain.for"/>
@@ -431,6 +433,7 @@
 		<File RelativePath=".\original_efdc_files\SALPLTH_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\SALPLTV.for"/>
 		<File RelativePath=".\original_efdc_files\SALTSMTH.for"/>
+		<File RelativePath=".\original_efdc_files\SALTSMTH_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\SCANASER.for"/>
 		<File RelativePath=".\original_efdc_files\SCANDSER.for"/>
 		<File RelativePath=".\original_efdc_files\SCANEFDC.for"/>
