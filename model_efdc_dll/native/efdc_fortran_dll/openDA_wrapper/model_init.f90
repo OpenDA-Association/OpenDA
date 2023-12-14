@@ -1,6 +1,7 @@
 subroutine model_init
 
   use global
+  use mpi
 
   ! arguments
   !real, intent(out) :: time_period
