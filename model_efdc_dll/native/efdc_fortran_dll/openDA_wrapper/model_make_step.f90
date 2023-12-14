@@ -15,9 +15,9 @@ NTS = nint(time_period/DT)
 NITERAT=0
 IF(IS2TIM.EQ.0) then 
     write(*,'(A,F8.4,A,F6.1,A)') "time integration with HDMT from day ", TBEGIN, ' over ', time_period / 60.0, ' minutes'
-    CALL HDMT_mpi
+    CALL HDMT
 elseif (IS2TIM.GE.1) then
-    write(*,'(A,F8.4,A,F6.1,A)') "time integration with HDMT2T from day ", TBEGIN, ' over ', time_period / 60.0, ' minutes'
+    write(*,'(A,F8.4,A,F6.1,A)') "time integration with HDMT2T_mpi from day ", TBEGIN, ' over ', time_period / 60.0, ' minutes'
     CALL HDMT2T_mpi
 end if
 
