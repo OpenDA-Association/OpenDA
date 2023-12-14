@@ -534,6 +534,7 @@ contains
          WQV, WQVX,&
          ISRESTI, TIMEDAY, NXSP
     use model_extra_global
+    use mpi
 
     implicit none
 
