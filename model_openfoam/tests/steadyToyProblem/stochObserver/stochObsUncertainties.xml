@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uncertainties xmlns="http://www.wldelft.nl" version="1.0" xsi:schemaLocation=" http://www.wldelft.nl http://schemas.openda.org/uncertainty/uncertainties.xsd"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <uncertaintyType>ProbabilityDistributionFunction</uncertaintyType>
+    <probabilityDistributionFunction id="probe_Assimilatie_T#0.T" isActive="true">
+        <normal mean="0" stdv="0.1" stdvIsFactor="false"/>
+    </probabilityDistributionFunction>
+</uncertainties>
