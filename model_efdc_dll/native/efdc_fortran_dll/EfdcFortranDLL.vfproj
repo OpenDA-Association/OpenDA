@@ -83,7 +83,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
 			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -94,7 +94,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
 			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -105,7 +105,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug 64|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
 			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -116,7 +116,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release OpenMP|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
 			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -127,7 +127,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release Double Precission|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
 			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -138,7 +138,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release OpenMP Double Precission|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
 			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -149,7 +149,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release(64bit)|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
 			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -170,15 +170,15 @@
 		<File RelativePath=".\openDA_wrapper\model_cser_time_series.f90">
 			<FileConfiguration Name="Release Double Precission|Win32">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release Double Precission|x64">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release Double Precission|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release(64bit)|Win32">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release(64bit)|x64">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release(64bit)|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
@@ -196,15 +196,15 @@
 		<File RelativePath=".\openDA_wrapper\model_pser_time_series.f90">
 			<FileConfiguration Name="Release Double Precission|Win32">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release Double Precission|x64">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release Double Precission|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release(64bit)|Win32">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release(64bit)|x64">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release(64bit)|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
@@ -213,15 +213,15 @@
 		<File RelativePath=".\openDA_wrapper\model_qser_time_series.f90">
 			<FileConfiguration Name="Release Double Precission|Win32">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release Double Precission|x64">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release Double Precission|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release(64bit)|Win32">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release(64bit)|x64">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release(64bit)|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|x64">
 			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
