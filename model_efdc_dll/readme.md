@@ -5,11 +5,10 @@ This module contains code that can be used for connecting the EFDC model to Open
 
 Warning: The Linux and AIX version are not yet fully implemented. 
 
-
 Building and installing the Fortan source code
 ----------------------------------------------
 
-The directory model_efdc_dll/native/ contains the Fortran source files. The Fortran source code needs to be compiled as a dynamic link library (Windows) or a shared library (unix/linux). This library then needs to be placed in the appropriate subdirectory in model_efdc_dll/native_bin/. When building OpenDA (with ant build in the OpenDA root directory) the contents of native_bin/ directory is copied to the OpenDA bin directory. 
+The directory model_efdc_dll/native/ contains the Fortran source files. The Fortran source code needs to be compiled as a dynamic link library (Windows) or a shared library (unix/linux). This library then needs to be placed in the appropriate subdirectory in model_efdc_dll/native_bin/. When building OpenDA (with ant build in the OpenDA root directory) the contents of `native_bin/` directory is copied to the OpenDA bin directory. 
 
 For Windows there are Visual Studio 2008 and 2010 solution files available (requiring the Intel Fortran compiler). When the model is built using the release configuration the EfdcFortranDll.dll is automatically copied to the correct location for windows binaries (native_bin/win32_ifort/).  
 
@@ -56,3 +55,8 @@ A new name mangling scheme is also required. Use the GfortranFunctionMapper.java
     > nm libEFDC.so | grep openda 
     
 Note that using a 32-bit java runtime environment (jre) for OpenDA requires a 32-bit version of the dynamical-link library or shared library. Likewise, using a 64-bit jre requires a 64-bit library. 
+
+Building and installing the Fortan source code under Windows
+------------------------------------------------------------
+A Visual Studio solution file is provided in `model_efdc_dll\native`. Open this file in Visual Studio. 
+This requires the Intel Fortran Compilere and Intel MPI to be installed.
