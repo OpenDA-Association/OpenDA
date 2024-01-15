@@ -19,6 +19,9 @@ C
       REAL WQTTX(NXSP)
       REAL WQACX(NXSP),WQKKX(LCMWQ,NXSP)
       REAL WQA2X(NXSP),WQA3X(NXSP)
+      !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      REAL WQFDGSC(2),WQFDGSCX
+      !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
       CNS1=2.718  
       NS=1  
       DO L=2,LA  
@@ -381,8 +384,39 @@ C
           ELSE  
             WQPC(L) = WQPMC(IMWQZT(L))*WQF1NC*WQF2IC*WQTDGC(IWQT(L))  
           ENDIF  
+    !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+!          WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))
+!          WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))
+          if (IWQDGSTOX.eq.1) then
+            tdiff=WQSALB(1)-WQSALA(1)
+            wctm1=( WQSALB(1) - SWQ(L) )/tdiff
+            wctm2=( SWQ(L) - WQSALA(1) )/tdiff
+            WQFDGSC(1)=wctm1*WQCOEFSA(1) + wctm2*WQCOEFSB(1)
+            if (WQFDGSC(1).lt.WQCOEFSA(1)) WQFDGSC(1)=WQCOEFSA(1)
+            if (WQFDGSC(1).gt.WQCOEFSB(1)) WQFDGSC(1)=WQCOEFSB(1)
+
+            tdiff=WQSALB(2)-WQSALA(2)
+            wctm1=(WQSALB(2)-SWQ(L))/tdiff
+            wctm2=(SWQ(L)-WQSALA(2))/tdiff
+            WQFDGSC(2)=wctm1*WQCOEFSA(2) + wctm2*WQCOEFSB(2)
+            if (WQFDGSC(2).lt.WQCOEFSA(2)) WQFDGSC(2)=WQCOEFSA(2)
+            if (WQFDGSC(2).gt.WQCOEFSB(2)) WQFDGSC(2)=WQCOEFSB(2)
+
+            WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))
+     &          *WQFDGSC(1)
+            WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))
+     &          *WQFDGSC(2)
+
+!            if (L.eq.3690 .and. K.eq.KC) then
+!                write(7111,'(i5,100f10.5)') N,WQFDGSC(1),WQFDGSC(2)
+!     & ,tdiff,wctm1,wctm2,SWQ(L),WQSALB(1),WQSALA(1)
+!     & ,( WQSALB(1) - SWQ(L) )/tcdiff
+!            endif
+
+          else
           WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))  
           WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))  
+          endif
           ! X-species
           do nsp=1,NXSP
             IF(IWQSTOX.EQ.1 .and. IWQX(nsp).eq.1)THEN  
@@ -391,9 +425,31 @@ C
               WQPX(L,nsp)=WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
      &            *WQTDGX(IWQT(L),nsp)*WQF4SC  
             ENDIF  
+!            WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
+!     &                   *WQTDGX(IWQT(L),nsp)
+    !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+            IF(IWQDGSTOX.eq.1 .and. IWQX(nsp).ge.2)THEN
+              tdiff=WQSALBX(nsp)-WQSALAX(nsp)
+              wctm1=(WQSALBX(nsp)-SWQ(L))/tdiff
+              wctm2=(SWQ(L)-WQSALAX(nsp))/tdiff
+              WQFDGSCX=wctm1*WQCOEFSAX(nsp) + wctm2*WQCOEFSBX(nsp)
+              if (WQFDGSCX.lt.WQCOEFSAX(nsp)) WQFDGSCX=WQCOEFSAX(nsp)
+              if (WQFDGSCX.gt.WQCOEFSBX(nsp)) WQFDGSCX=WQCOEFSBX(nsp)
+
+              WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
+     &                   *WQTDGX(IWQT(L),nsp)*WQFDGSCX
+!          if (L.eq.6609 .and. K.eq.KC) then
+!      write(7112,'(2i5,100f10.5)') N,nsp,WQFDGSCX
+!     & ,WQCOEFSAX(nsp),WQCOEFSBX(nsp),WQSALAX(nsp),WQSALBX(nsp)
+!     & ,tdiff,wctm1,wctm2
+!          endif
+            ELSE ! IF(IWQDGSTOX.eq.1)THEN
             WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
      &                   *WQTDGX(IWQT(L),nsp)  
+            ENDIF ! IF(IWQDGSTOX.eq.1)THEN
+    !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
           enddo
+!} GEOSR X-species : jgcho 2015.09.25
 C  
 C      AT NIGHT, I.E., WHEN SOLAR RADIATION IS LESS THAN 0.001 (05/11/99  
 C  

@@ -149,6 +149,18 @@ C
      &           CYA_TEM,CYA_P4D,CYA_NO3,CYA_Light,Light_Factor2,NNAT
       endif
       CLOSE(1)
+!} GEOSR x-species. Check WQ3DWC2.INP jgcho 2015.9.16
+  119 continue ! GEOSR x-species. Check file WQ3DWC2.INP exist jgcho 2016.10.21
+
+!{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      inquire (file='WQDGSTOX.INP', exist = fileExists)
+      if(.not.fileExists) then
+        IWQDGSTOX=0
+      else
+        IWQDGSTOX=1
+      endif
+!} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+
    50 RETURN
    
     1 FORMAT(1X)

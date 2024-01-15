@@ -117,9 +117,14 @@ C
           DELT=DTDYN  
         ENDIF  
         WRITE (10)N,TIME,DELT  
+        IF(IBIN_TYPE.EQ.1)THEN
         DO L=2,LA  
-          WRITE(10)HP(L)  
+          WRITE(10) HP(L)
         ENDDO 
+        ENDIF
+        IF(IBIN_TYPE.EQ.0)THEN
+        WRITE(10) HP
+        ENDIF
         CALL FLUSH(10)
         CLOSE(10)  
 

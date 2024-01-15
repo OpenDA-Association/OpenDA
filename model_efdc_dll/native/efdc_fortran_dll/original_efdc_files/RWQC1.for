@@ -2082,9 +2082,9 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
           ENDDO          
         ENDIF
 ! *** C21 WQ3DWC2.INP
-        CALL SEEK('C21')  
         IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
-        IF(ISSKIP .EQ. 0) READ(1,*)  
+        IF(ISSKIP .EQ. 0) READ(1,*)
+        CALL SEEK('C21')
         write(2,*) 'C21'
         DO nsp=1,NXSP
           READ(1,*) NWQCSRX(nsp)
@@ -2215,6 +2215,43 @@ C INITIALIZE
         ENDIF
       ENDIF
  7111 format(a, 3(<kc>(<NXSP>(3x,a,i2.2,a,i2.2))),<kc>(6x,a,i2.2) )
+!{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      if (IWQDGSTOX.eq.1) then
+        PRINT *,'WQ: READING WQDGSTOX.INP - DG Salt TOX Control'
+        write(2,*)
+        write(2,*)
+        write(2,*)
+        write(2,'(a)') '===============Check WQDGSTOX.INP=============='
+        OPEN(1,FILE='WQDGSTOX.INP',STATUS='OLD')
+! *** C01 WQDGSTOX.INP
+        ISSKIP = 0  
+        READ(1,'(A1)') CCMRM  
+        BACKSPACE(1)  
+        IF(CCMRM .EQ. '#') ISSKIP = 1  
+        CCMRM = '#'  
+        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+        READ(1,*) WQCOEFSA(1),WQCOEFSB(1),WQSALA(1),WQSALB(1)
+        READ(1,*) WQCOEFSA(2),WQCOEFSB(2),WQSALA(2),WQSALB(2)
+        WRITE(2,*) WQCOEFSA(1),WQCOEFSB(1),WQSALA(1),WQSALB(1)
+        WRITE(2,*) WQCOEFSA(2),WQCOEFSB(2),WQSALA(2),WQSALB(2)
+        IF (NXSP.gt.0) then
+          allocate(WQCOEFSAX(NXSP))
+          allocate(WQCOEFSBX(NXSP))
+          allocate(WQSALAX(NXSP))
+          allocate(WQSALBX(NXSP))
+!
+! *** C02 WQDGSTOX.INP
+!
+          IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
+          IF(ISSKIP .EQ. 0) READ(1,*)  
+          do i=1,NXSP
+           READ(1,*) WQCOEFSAX(i),WQCOEFSBX(i),WQSALAX(i),WQSALBX(i)
+           WRITE(2,*) i,WQCOEFSAX(i),WQCOEFSBX(i),WQSALAX(i),WQSALBX(i)
+          enddo
+        ENDIF
+        CLOSE(1)
+      endif
+!} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
       DO I=1,IWQZ  
         IWQKA(I)=IWQKA(1)  
         WQKRO(I)=WQKRO(1)  
