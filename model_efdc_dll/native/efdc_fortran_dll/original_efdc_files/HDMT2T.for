@@ -1256,8 +1256,6 @@ C **  CALCULATE U AT V AND V AT U AT TIME LEVEL (N+1)
 C
 C----------------------------------------------------------------------C
 C
-      STIME=MPI_TIC() !!### WT_NLEVEL
-C
       DO L=2,LA  
         LN=LNC(L)
         LS=LSC(L)
