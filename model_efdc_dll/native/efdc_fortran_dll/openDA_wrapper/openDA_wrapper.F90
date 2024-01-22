@@ -82,7 +82,7 @@ module m_openda_wrapper
   integer :: dm_model_instance_count = 0  ! actual #instance
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
-  logical, parameter :: debug = .false.
+  logical, parameter :: debug = .true.
   logical :: ATM_WARNING_REQUIRED = .true.
   
 contains
@@ -191,6 +191,9 @@ contains
     if (ret_val == 0 ) then
         write(dm_general_log_handle,'(A, I2)') "integer kind: ", kind(NTC)
         write(dm_general_log_handle,'(A, I2)') "real    kind: ", kind(TIDALP)    
+        print*, 'TBEGIN, TCON =', TBEGIN, TCON  
+
+        
         TIMEDAY = TBEGIN* TCON / 86400.d0
 
         ! store sizes of time series (the global ones are redetermined each time we do a restart)
@@ -828,7 +831,7 @@ contains
     !current_time = dble(state(instance)%timesec) / 86400.0d0
     current_time = real( dt * nint( state(instance)%timesec/ dt), c_double) / 86400.0d0
     ret_val = 0
-
+    
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
       'get_current_time( instance: ', instance, ', current_time: ' , current_time, ')'
     call flush(dm_outfile_handle(instance))
@@ -1099,7 +1102,7 @@ contains
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4,A,I4)') 'Error in get_times_for_ei: ', ret_val, ' for ', exchange_item_id
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'get_times_for_ei( instance: ', instance, &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I8,A)') 'get_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
        if ( values_count .ge. 13 ) then
@@ -1288,7 +1291,7 @@ contains
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4)') 'Error in set_times_for_ei: ', ret_val, ' for ', exchange_item_id
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'set_times_for_ei( instance: ', instance, &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I8,A)') 'set_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),'(A,F8.4)') 'conversion_factor: ', factor
        write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
@@ -1614,7 +1617,7 @@ contains
          exchange_item_id, ' is not configured in EFDC.'
     else
        last_index = end_index - start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'get_values( exchange_item_id: ', &
+       write(dm_outfile_handle(instance),'(A,I4,A,I8,A,I8,A)') 'get_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
@@ -1719,7 +1722,7 @@ contains
          exchange_item_id, ' is not configured in EFDC.'
     else
        last_index = end_index - start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'set_values( exchange_item_id: ', &
+       write(dm_outfile_handle(instance),'(A,I4,A,I8,A,I8,A)') 'set_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
@@ -2035,7 +2038,7 @@ contains
     elseif (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_times_count_for_time_span: ', ret_val
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8)') & 
             'get_times_count_for_time_span( instance: ', instance, &
                 ', exchange_item_id: ', exchange_item_id,& 
                 ', bc_index: ', bc_index,&
@@ -2217,7 +2220,7 @@ contains
           exchange_item_id, ' not configured in EFDC.'
     else
        last_index = end_index-start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4,A)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8,A)') & 
             'get_values_for_time_span( instance', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ', bc_index ,  &
             ', layer_index: ', layer_index ,  &
@@ -2391,7 +2394,7 @@ contains
           exchange_item_id, ' not configured in EFDC.'
     else
        last_index = end_index-start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4,A)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8,A)') & 
             'set_values_for_time_span( instance', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ', bc_index ,  &
             ', start_time: ', start_time, ', end_time: ', end_time, ', values_count: ', values_count ,'):'
