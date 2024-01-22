@@ -6,8 +6,8 @@
 	</Platforms>
 	<Configurations>
 		<Configuration Name="Debug|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
-			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories=" $(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 			<Tool Name="VFCustomBuildTool"/>
@@ -101,7 +101,7 @@
 			<Tool Name="VFCustomBuildTool"/>
 			<Tool Name="VFPreLinkEventTool"/>
 			<Tool Name="VFPreBuildEventTool"/>
-			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win64_ifort\"/>
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug 64|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
