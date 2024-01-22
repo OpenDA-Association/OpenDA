@@ -2491,44 +2491,6 @@ C INITIALIZE
 
 !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
       if (IWQDGSTOX.eq.1) then
-        PRINT *,'WQ: READING WQDGSTOX.INP - DG Salt TOX Control'
-        write(2,*)
-        write(2,*)
-        write(2,*)
-        write(2,'(a)') '===============Check WQDGSTOX.INP=============='
-        OPEN(1,FILE='WQDGSTOX.INP',STATUS='OLD')
-! *** C01 WQDGSTOX.INP
-        ISSKIP = 0  
-        READ(1,'(A1)') CCMRM  
-        BACKSPACE(1)  
-        IF(CCMRM .EQ. '#') ISSKIP = 1  
-        CCMRM = '#'  
-        IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
-        READ(1,*) WQCOEFSA(1),WQCOEFSB(1),WQSALA(1),WQSALB(1)
-        READ(1,*) WQCOEFSA(2),WQCOEFSB(2),WQSALA(2),WQSALB(2)
-        WRITE(2,*) WQCOEFSA(1),WQCOEFSB(1),WQSALA(1),WQSALB(1)
-        WRITE(2,*) WQCOEFSA(2),WQCOEFSB(2),WQSALA(2),WQSALB(2)
-        IF (NXSP.gt.0) then
-          allocate(WQCOEFSAX(NXSP))
-          allocate(WQCOEFSBX(NXSP))
-          allocate(WQSALAX(NXSP))
-          allocate(WQSALBX(NXSP))
-!
-! *** C02 WQDGSTOX.INP
-!
-          IF(ISSKIP .GT. 0) CALL SKIPCOMM(1,CCMRM)  
-          IF(ISSKIP .EQ. 0) READ(1,*)  
-          do i=1,NXSP
-           READ(1,*) WQCOEFSAX(i),WQCOEFSBX(i),WQSALAX(i),WQSALBX(i)
-           WRITE(2,*) i,WQCOEFSAX(i),WQCOEFSBX(i),WQSALAX(i),WQSALBX(i)
-          enddo
-        ENDIF
-        CLOSE(1)
-      endif
-!} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
-
-!{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
-      if (IWQDGSTOX.eq.1) then
         IF(MYRANK.EQ.0)THEN
         PRINT *,'WQ: READING WQDGSTOX.INP - DG Salt TOX Control'
         write(2,*)
