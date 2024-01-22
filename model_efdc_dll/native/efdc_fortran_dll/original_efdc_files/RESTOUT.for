@@ -472,29 +472,48 @@ C
          call collect_in_zero(SUBO)
          call collect_in_zero(SVBO)
       ENDIF
-C
+C  
       IF(MYRANK.EQ.0)THEN
       IF(ISWAVE.GE.1)THEN
         OPEN(1,FILE='WVQWCP.OUT',STATUS='UNKNOWN')
-        CLOSE(1, STATUS='DELETE')  
-        OPEN(1,FILE='TEMP.RSTO',STATUS='UNKNOWN')  
-        DO L=2,LA  
-          WRITE(1,912)L,IL(L),JL(L),(TEM(L,K),K=1,KC),TEMB(L)  
-        ENDDO  
-        CLOSE(1)  
-      ENDIF  
-      IF(ISDRY.EQ.99)THEN  
-        OPEN(1,FILE='RSTWD.OUT',STATUS='UNKNOWN')  
-        CLOSE(1, STATUS='DELETE')  
-        OPEN(1,FILE='RSTWD.OUT',STATUS='UNKNOWN')  
-        DO L=2,LA  
-          WRITE(1,913)L,IL(L),JL(L),ISCDRY(L),NATDRY(L),  
-     &        IMASKDRY(L),SUB(L),SVB(L),SUBO(L),SVBO(L)  
-        ENDDO  
-        CLOSE(1)  
-      ENDIF  
+        CLOSE(1, STATUS='DELETE')
+        OPEN(1,FILE='WVQWCP.OUT',STATUS='UNKNOWN')
+        DO L=2,LA
+          WRITE(1,911)IL(L),JL(L),QQWV1(L),QQWV2(L),QQWV3(L),QQWC(L),
+     &        QQWCR(L),QQ(L,0)
+        ENDDO
+        CLOSE(1)
       ENDIF
-C  
+      IF(ISCO(1).GE.1.AND.ISTRAN(1).GT.0)THEN
+        OPEN(1,FILE='SALT.RST',STATUS='UNKNOWN')
+        CLOSE(1, STATUS='DELETE')
+        OPEN(1,FILE='SALT.RST',STATUS='UNKNOWN')
+        DO L=2,LA
+          WRITE(1,912)L,IL(L),JL(L),(SAL(L,K),K=1,KC)
+        ENDDO
+        CLOSE(1)
+      ENDIF
+      IF(ISCO(2).GE.1.AND.ISTRAN(2).GT.0)THEN
+        OPEN(1,FILE='TEMP.RST',STATUS='UNKNOWN')
+        CLOSE(1, STATUS='DELETE')
+        OPEN(1,FILE='TEMP.RSTO',STATUS='UNKNOWN')
+        DO L=2,LA
+          WRITE(1,912)L,IL(L),JL(L),(TEM(L,K),K=1,KC),TEMB(L)
+        ENDDO
+        CLOSE(1)
+      ENDIF
+      IF(ISDRY.EQ.99)THEN
+        OPEN(1,FILE='RSTWD.OUT',STATUS='UNKNOWN')
+        CLOSE(1, STATUS='DELETE')
+        OPEN(1,FILE='RSTWD.OUT',STATUS='UNKNOWN')
+        DO L=2,LA
+          WRITE(1,913)L,IL(L),JL(L),ISCDRY(L),NATDRY(L),
+     &        IMASKDRY(L),SUB(L),SVB(L),SUBO(L),SVBO(L)
+        ENDDO
+        CLOSE(1)
+      ENDIF
+      ENDIF
+C
 C **  OUTPUT SALINITY AND TEMPATURE DATA ASSIMILATION  
 C  
 CGEO      if(myrank.eq.0)THEN
