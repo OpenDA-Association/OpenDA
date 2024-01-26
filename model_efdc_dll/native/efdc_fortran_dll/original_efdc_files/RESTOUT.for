@@ -120,7 +120,7 @@ C
         IF(ISCO(6).EQ.1)THEN  
           DO NS=1,NSED  
             WRITE(99,907)(SEDB(L,K,NS),K=1,KB)  
-            WRITE(99,907)(SED1(L,K,NS),K=1,KC)  
+            WRITE(99,907)(SED(L,K,NS),K=1,KC)
             WRITE(99,907)(SEDB1(L,K,NS),K=1,KB)  
             WRITE(99,907)(SED1(L,K,NS),K=1,KC)  
           ENDDO  

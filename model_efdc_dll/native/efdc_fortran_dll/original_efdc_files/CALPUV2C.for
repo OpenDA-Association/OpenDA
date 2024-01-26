@@ -100,19 +100,14 @@ C
       NCORDRY=0  
       ICORDRY=0  
       NEWDRY=0  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      DO L=1,LC  
         IQDRYDWN(L)=0  
         ISCDRY(L)=0
+      ENDDO
+      DO L=1,LC  
         SUB1(L)=SUB(L)
         SVB1(L)=SVB(L)
       ENDDO  
-c
-      enddo
 C  
 C **  INITIALIZE SUBGRID SCALE CHANNEL INTERACTIONS  
 C  
@@ -126,28 +121,16 @@ C
 C **  CALCULATE EXTERNAL BUOYANCY INTEGRALS AT TIME LEVEL (N)  
 C  
       IF(BSC.GT.1.E-6)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        CALL CALEBI0(LF,LL)
-c
-      enddo
-      ENDIF
+        CALL CALEBI
 C
         ! *** CALCULATE EXPLICIT EXTERNAL PRESSURE GRADIENTS  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      IF(BSC.GT.1.E-6)THEN
-        DO L=LF,LL
+        DO L=2,LA
           !SBX(L)=0.5*SUB(L)*DYU(L)  
           FPGXE(L)=-SBX(L)*HU(L)*GP*((BI2(L)+BI2(L-1))*(HP(L)-HP(L-1))  
      &        +2.0*HU(L)*(BI1(L)-BI1(L-1))    
      &        +(BE(L)+BE(L-1))*(BELV(L)-BELV(L-1)))  
+        ENDDO  
+        DO L=2,LA  
           LS=LSC(L)  
           !SBY(L)=0.5*SVB(L)*DXV(L)  
           FPGYE(L)=-SBY(L)*HV(L)*GP*((BI2(L)+BI2(LS))*(HP(L)-HP(LS))  
@@ -155,19 +138,15 @@ c
      &        +(BE(L)+BE(LS))*(BELV(L)-BELV(LS)))  
         ENDDO  
       ENDIF
-c
-c     enddo
 C  
 C **  CALCULATE EXPLICIT EXTERNAL UHDYE AND VHDXE EQUATION TERMS  
 C **  HRU=SUB*HMU*DYU/DXU & HRV=SVB*HMV*DXV/DYV  
 C  
-c!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-c     do ithds=0,nthds-1
-c        LF=jse(1,ithds)
-c        LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA
         H2P(L)=HP(L)  ! *** DSLLC SINGLE LINE
+      ENDDO
+C
+      DO L=2,LA
         LS=LSC(L)  
         !DXYU(L)=DXU(L)*DYU(L)  
         !DXIU(L)=1./DXU(L)  
@@ -185,8 +164,6 @@ C
      &      +SVB(L)*DELT*DYIV(L)*(DXYV(L)*(TSY(L)-RITB1*TBY(L))  
      &      -FCAYE(L)+FPGYE(L)-SNLT*FYE(L)) 
       ENDDO  
-c
-      enddo
       IF(ISDSOLV.GE.1.AND.DEBUG)THEN  
         OPEN(1,FILE='FUV.OUT',POSITION='APPEND',STATUS='UNKNOWN')  
         WRITE(1,1001)N,ISTL  
@@ -217,19 +194,12 @@ c
 C  
 C **  SET IMPLICIT BOTTOM AND VEGETATION DRAG AS APPROPRIATE  
 C   
-      RCX(1)=0.  
-      RCY(1)=0.  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA
         RCX(L)=1.  
         RCY(L)=1.  
       ENDDO  
-c
-      enddo
+      RCX(1)=0.  
+      RCY(1)=0.  
       RCX(LC)=0.  
       RCY(LC)=0.  
 C  
@@ -276,12 +246,7 @@ C
 C  
 C **  RESET BOUNDARY CONDITIONS SWITCHES  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA
         SUB(L)=SUBO(L)  
         SVB(L)=SVBO(L)  
         SBX(L)=SBXO(L)  
@@ -289,8 +254,6 @@ c
 c       SUB(L+1)=SUBO(L+1)  
 c       SBX(L+1)=SBXO(L+1)  
       ENDDO  
-c
-      enddo
         SUB(LC)=SUBO(LC)  
         SBX(LC)=SBXO(LC)  
         SVB(1)=SVBO(1)  
@@ -306,12 +269,7 @@ C
 C **  ADJUST VOLUME SOURCE AND SINKS  
 C  
       IF(ISGWIE.EQ.0)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-        DO L=LF,LL
+        DO L=2,LA
           IF(QSUME(L).LE.0.)THEN  
             IF(H1P(L).LE.HDRY)THEN  
               QSUMTMP(L)=0.  
@@ -326,12 +284,10 @@ c
           QSUME(L)=QSUMTMP(L)  
         ENDDO  
           DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA
             QSUM(L,K)=QSUM(L,K)-DIFQVOL(L)*DZC(K)  
           ENDDO  
         ENDDO  
-c
-      enddo
       ENDIF  
 C  
 C **  ADJUST SOURCES AND SINKS ESTIMATING SURFACE AND GROUNDWATER  
@@ -410,12 +366,7 @@ C
 C  
 C **  ADVANCE EXTERNAL VARIABLES  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA
         UHDY1E(L)=UHDYE(L)  
         VHDX1E(L)=VHDXE(L)  
         P1(L)=P(L)  
@@ -428,7 +379,7 @@ C PMC        H2P(L)=H1P(L)
       ENDDO
 C
       IF(ISGWIE.GE.1)THEN
-        DO L=LF,LL
+        DO L=2,LA
           AGWELV2(L)=AGWELV1(L)  
           AGWELV1(L)=AGWELV(L)  
         ENDDO
@@ -439,13 +390,11 @@ C **  HRU=HMU*DYU/DXU & HRV=HMV*DXV/DYV
 C **  DXYIP=1/(DXP*DYP)  
 C  
 C *** DSLLC BEGIN BLOCK
-      DO L=LF,LL
+      DO L=2,LA
         LN=LNC(L)
         FP1(L)=DELTI*DXYP(L)*P(L)-0.5*G*(UHDYE(L+1)-UHDYE(L)
      &                                  +VHDXE(LN )-VHDXE(L))
       ENDDO  
-c
-      enddo
 C  
 C **  SET NEW TIME LEVEL TERMS IN CONTINUITY EQUATION INCLUDING  
 C **  HOST-GUEST CHANNAL INTERACTION FOR NON BOUNDARY POINTS  
@@ -454,20 +403,13 @@ C **  INTERACTION
 C  
  1000 CONTINUE  
       C1=0.5*G
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA
         LN=LNC(L)
         ! ***  THE SUB & SVB SWITCHES ALREADY ACCOUNTED FOR
         FP(L)=FP1(L)-C1*(FUHDYE(L+1)-FUHDYE(L)  
      &                  +FVHDXE(LN )-FVHDXE(L)
      &              -2.0*QSUME(L) )
       ENDDO  
-c
-      enddo
 C
       IF(ISGWIE.GE.1)THEN  
         DO L=2,LA  
@@ -476,36 +418,24 @@ C
       ENDIF  
 C
       C1=-0.5*DELTD2*G  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA
         CS(L)=C1*SVB(L  )*HRVO(L  )*RCY(L  )*HV(L  )  
         CW(L)=C1*SUB(L  )*HRUO(L  )*RCX(L  )*HU(L  )  
         CE(L)=C1*SUB(L+1)*HRUO(L+1)*RCX(L+1)*HU(L+1)  
+      ENDDO  
+      DO L=2,LA  
         LN=LNC(L)  
         CN(L)=C1*SVB(LN )*HRVO(LN )*RCY(LN )*HV(LN )  
       ENDDO  
-c
-      enddo
 C
 C *** APPLY THE OPEN BOUNDARY CONDITIONS
 C
       IF(NBCSOP.GT.0) CALL SETOPENBC(DELT,DELTD2,DELTI,HU,HV)    
 C  
       ! *** SET THE CENTER
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA  
         CC(L)=DELTI*DXYP(L)-CS(L)-CW(L)-CE(L)-CN(L)  
       ENDDO  
-c
-      enddo
 C
 C **  INSERT IMPLICT SUB-GRID SCALE CHANNEL INTERACTIONS  
 C  
@@ -514,17 +444,10 @@ C
 C  
       ! *** SCALE COEFFICIENTS IN EXTERNAL MODEL LINEAR EQUATION SYSTEM  
       CCMNM=1.E+18  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(min:CCMNM)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-      DO L=LF,LL
+      DO L=2,LA  
         CCMNM=MIN(CCMNM,CC(L))  
         FPTMP(L)=FP(L)  
       ENDDO  
-c
-      enddo
       CCMNMI=1./CCMNM  
 
 C
@@ -566,12 +489,7 @@ C
 C **  SCALE BY MINIMUM DIAGONAL  
 C  
       IF(IRVEC.EQ.9)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL) 
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c 
-        DO L=LF,LL
+        DO L=2,LA  
           CCS(L)=CS(L)*CCMNMI  
           CCW(L)=CW(L)*CCMNMI  
           CCE(L)=CE(L)*CCMNMI  
@@ -580,8 +498,6 @@ c
           FPTMP(L)=FPTMP(L)*CCMNMI  
           CCCI(L)=1./CCC(L)  
         ENDDO  
-c
-      enddo   
         IF(MDCHH.GE.1)THEN  
           DO NMD=1,MDCHH  
             CCCCHH(NMD)=CCCCHH(NMD)*CCMNMI  
@@ -677,12 +593,7 @@ C
 C **  CALCULATE UHEX AND VHEX AND TOTAL DEPTHS AT TIME LEVEL (N+1)  
 C **  HRU=SUB*DYU/DXU & HRV=SVB*DXV/DYV  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA
         LS=LSC(L)  
         UHDYE(L)=SUB(L)*( FUHDYE(L)  
      &      -DELTD2*HRUO(L)*RCX(L)*HU(L)*(P(L)-P(L-1)) )  
@@ -693,8 +604,6 @@ c
         UHE(L)=UHDYE(L)*DYIU(L)  
         VHE(L)=VHDXE(L)*DXIV(L)  
       ENDDO  
-c
-      enddo
 C  
 C **  CALCULATE NEW SUB-GRID SCALE CHANNEL EXCHANGE FLOWS  
 C  
@@ -738,19 +647,12 @@ C
 C **  CALCULATE REVISED CELL DEPTHS BASED ON NEW HORIZONTAL  
 C **  TRANSPORTS AT (N+1)  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         LN=LNC(L)  
         HP(L)=H1P(L)+DELTD2*DXYIP(L)*(2.*QSUME(L) !+QSUM1E(L) PMC
      &           -(UHDYE(L+1)+UHDY1E(L+1)-UHDYE(L)-UHDY1E(L)  
      &            +VHDXE(LN) +VHDX1E(LN )-VHDXE(L)-VHDX1E(L)))  
       ENDDO  
-c
-      enddo
 C
       IF(ISGWIE.GE.1)THEN  
         DO L=2,LA  
@@ -788,27 +690,17 @@ C
 C  
 C **  PERFORM INTERMEDIATE UPDATES OF P
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         P(L)=G*(HP(L)+BELV(L))  
       ENDDO  
-c
-      enddo
 C  
 C **  CHECK FOR DRYING AND RESOLVE EQUATIONS IF NECESSARY  
 C  
       IF(ISDRY.GT.0.AND.ISDRY.LT.98)THEN  
         ICORDRY=0  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(+:ICORDRY)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL-1
+        DO L=2,LA  
+          LS=LSC(L)  
+          LN=LNC(L)  
           IF(HP(L).LE.HDRY)THEN  
             IF(ISCDRY(L).EQ.0)THEN  
               ISCDRY(L)=1  
@@ -822,11 +714,6 @@ c
             SBX(L+1)=0.  
           ENDIF  
         ENDDO  
-c
-      enddo
-      do ithds=0,nthds-1
-         LL=jse(2,ithds)
-c
            L=LL
           IF(HP(L).LE.HDRY)THEN
             IF(ISCDRY(L).EQ.0)THEN
@@ -840,8 +727,6 @@ c
             SUB(L+1)=0.
             SBX(L+1)=0.
           ENDIF
-c
-      enddo
 
         DO L=2,LA  
           IF(HP(L).LE.HDRY)THEN  
@@ -1036,38 +921,28 @@ C**********************************************************************C
 C  
 C **  PERFORM FINAL UPDATES OF P,HU, AND HV  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA
         P(L)=G*(HP(L)+BELV(L))  
+      ENDDO  
+      DO L=2,LA  
         LS=LSC(L)
         HU(L)=0.5*(DXYP(L)*HP(L)+DXYP(L-1)*HP(L-1))*DXYIU(L)  
         HV(L)=0.5*(DXYP(L)*HP(L)+DXYP(LS )*HP(LS ))*DXYIV(L)  
         H1P(L)=H2P(L)  ! *** DSLLC, UPDATE THE LAST DEPTH TO ACTUAL PREVIOUS  
+      ENDDO  
+      DO L=2,LA  
         HPI(L)=1./HP(L)  
         HUI(L)=1./HU(L)  
         HVI(L)=1./HV(L)  
       ENDDO  
-c
-      enddo
 C  
 C **  SET TRANSPORT MASK FOR DRY CELLS  
 C  
       IF(ISDRY.GT.0)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA  
           IMASKDRY(L)=0  
           LMASKDRY(L)=.TRUE.  
         END DO  
-c
-      enddo
         IF(IDRYTBP.EQ.1)THEN  
           DO L=2,LA  
             LN=LNC(L)  

@@ -91,33 +91,19 @@ C **  INITIALIZE EXTERNAL CORIOLIS-CURVATURE AND ADVECTIVE FLUX TERMS
 C  
 C----------------------------------------------------------------------C  
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      DO L=1,LC
         FCAXE(L)=0.  
         FCAYE(L)=0.  
         FXE(L)=0.  
         FYE(L)=0.  
       ENDDO  
-c
-      enddo
 C  
 C  
 C----------------------------------------------------------------------C  
 C  
       IF(IS2LMC.NE.1)THEN 
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,UHC,UHB,VHC,VHB,
-!$OMP& WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA
               LN=LNC(L)  
               LS=LSC(L)
 
@@ -173,21 +159,10 @@ c     DO K=1,KS
         ENDDO  
       ENDIF
       ENDDO  
-      enddo
 C  
       ELSE  !IF(IS2LMC.EQ.1)THEN  
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,UHC1,UHB1,VHC1,VHB1,UHC2,UHB2,VHC2,VHB2,
-!$OMP& UHB1MX,UHB1MN,VHC1MX,VHC1MN,UHC1MX,UHC1MN,VHB1MX,VHB1MN,
-!$OMP& UHB2MX,UHB2MN,VHC2MX,VHC2MN,UHC2MX,UHC2MN,VHB2MX,VHB2MN,
-!$OMP& BOTT,
-!$OMP& WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA
             LN=LNC(L)  
             LS=LSC(L)  
             UHC1=0.5*(UHDY(L,1)+UHDY(LS,1))  
@@ -309,8 +284,6 @@ c
   
         ENDDO  
       ENDDO  
-c
-      enddo
       ENDIF  
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 1----->',t03*1.e3,nthds,IS2LMC
@@ -375,14 +348,8 @@ C----------------------------------------------------------------------C
 C  
 C *** COMPUTE VERTICAL ACCELERATIONS
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LS,WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
 c     DO K=1,KS  
-c       DO L=LF,LL
+c       DO L=2,LA
 c           LS=LSC(L)
 c           WU=0.5*DXYU(L)*(W(L,K)+W(L-1,K))  
 c           WV=0.5*DXYV(L)*(W(L,K)+W(LS,K))  
@@ -401,14 +368,12 @@ C ** BLOCK MOMENTUM FLUX ON LAND SIDE OF TRIANGULAR CELLS
 C  
       IF(ITRICELL.GT.0)THEN
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA
             FUHU(L,K)=STCUV(L)*FUHU(L,K)  
             FVHV(L,K)=STCUV(L)*FVHV(L,K)  
           ENDDO  
         ENDDO  
       ENDIF
-c
-      enddo
 C  
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 3----->',t03*1.e3,nthds
@@ -424,14 +389,8 @@ C
 
         IF(ISDCCA.EQ.0)THEN  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN)
-!$OMP& REDUCTION(+:CACSUM)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LA
                 LN=LNC(L)  
                 CAC(L,K)=( FCORC(L)*DXYP(L)  
      &            +0.5*SNLT*(V(LN,K)+V(L,K))*DYDI(L)  
@@ -439,12 +398,10 @@ c
             ENDDO  
           ENDDO  
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LA
               CACSUM=CACSUM+CAC(L,K) 
             ENDDO  
           ENDDO  
-c
-      enddo
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 40---->',t03*1.e3,nthds
 C  
@@ -507,14 +464,8 @@ C **  STANDARD CALCULATION
 C  
       IF(IS2LMC.EQ.0.AND.CACSUM.GT.1.E-7)THEN
 
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,LNW,LSE)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA
               LN=LNC(L)  
               LS=LSC(L)  
               LNW=LNWC(L)  
@@ -525,7 +476,6 @@ c
      &            +CAC(LS,K)*(U(LSE,K)+U(LS,K)))  
           ENDDO  
         ENDDO  
-      enddo
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 6----->',t03*1.e3,nthds
 C  
@@ -620,14 +570,8 @@ c      write(6,*) 'Timing 8----->',t03*1.e3,nthds
 C  
 C----------------------------------------------------------------------C  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA
             LN=LNC(L) 
             LS=LSC(L) 
             !HRUO(L)=SUBO(L)*DYU(L)*DXIU(L)  
@@ -638,8 +582,6 @@ c
      &          +FVHJ(L,K) )  
         ENDDO  
       ENDDO
-c
-      enddo  
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 9----->',t03*1.e3,nthds
 
@@ -891,11 +833,6 @@ C----------------------------------------------------------------------C
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 12---->',t03*1.e3,nthds
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(KC.GT.1)THEN
 C  
 C**********************************************************************C  
@@ -905,7 +842,7 @@ C
 C----------------------------------------------------------------------C  
 C  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA
               FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
               FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
               FXE(L)=FXE(L)+FX(L,K)*DZC(K)  
@@ -934,7 +871,7 @@ C
       IF(MDCHH.GE.1.AND.ISCHAN.EQ.3)THEN  
 C  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA
             QMCSOURX(L,K)=0.  
             QMCSOURY(L,K)=0.  
             QMCSINKX(L,K)=0.  
@@ -942,8 +879,6 @@ C
           ENDDO  
         ENDDO  
       ENDIF
-c
-      enddo
 C  
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 13---->',t03*1.e3,nthds
@@ -1112,13 +1047,8 @@ C
      
         IF(IINTPG.EQ.0)THEN  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA
               LS=LSC(L)  
               FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &          ( HU(L)*( (B(L,K+1)-B(L-1,K+1))*DZC(K+1)  
@@ -1132,8 +1062,6 @@ c
      &          (BELV(L)-BELV(LS)+Z(K)*(HP(L)-HP(LS))) )  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
         ENDIF  
 C  
@@ -1281,15 +1209,10 @@ C
           DU(L,KC)=0.0
           DV(L,KC)=0.0
       ENDIF
-!$OMP PARALLEL DO PRIVATE(LF,LL,RCDZF)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(KC.GT.1)THEN
         DO K=1,KS
           RCDZF=CDZF(K)
-          DO L=LF,LL
+          DO L=2,LA
               !DXYIU(L)=1./(DXU(L)*DYU(L))  
               DU(L,K)=RCDZF*( HU(L)*(U(L,K+1)-U(L,K))*DELTI
      &           +DXYIU(L)*(FCAX(L,K+1)-FCAX(L,K)+FBBX(L,K)
@@ -1304,13 +1227,11 @@ C
 C      IF(ISTL.EQ.2)THEN
 C 
       IF(NWSER.GT.0)THEN
-        DO L=LF,LL
+        DO L=2,LA
           DU(L,KS)=DU(L,KS)-CDZU(KS)*TSX(L)
           DV(L,KS)=DV(L,KS)-CDZU(KS)*TSY(L)
         ENDDO
       ENDIF
-c
-      enddo
 c        t03=rtc()-t02
 c      write(6,*) 'Timing 4----->',t03*1.e3,nthds
 C

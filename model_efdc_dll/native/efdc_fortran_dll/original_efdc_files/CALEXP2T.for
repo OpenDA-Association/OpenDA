@@ -89,32 +89,19 @@ C **  INITIALIZE EXTERNAL CORIOLIS-CURVATURE AND ADVECTIVE FLUX TERMS
 C  
 C----------------------------------------------------------------------C  
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      DO L=1,LC  
         FCAXE(L)=0.  
         FCAYE(L)=0.  
         FXE(L)=0.  
         FYE(L)=0.  
       ENDDO  
-c
-      enddo
 C  
 C  
 C----------------------------------------------------------------------C  
 C  
       IF(IS2LMC.NE.1)THEN 
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,UHC,UHB,VHC,VHB)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA
             IF(LMASKDRY(L))THEN  
               LN=LNC(L)  
               LS=LSC(L)
@@ -141,20 +128,10 @@ C
             ENDIF  
           ENDDO  
         ENDDO
-      enddo
 C  
       ELSE  !IF(IS2LMC.EQ.1)THEN  
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,UHC1,UHB1,VHC1,VHB1,UHC2,UHB2,VHC2,VHB2,
-!$OMP& UHB1MX,UHB1MN,VHC1MX,VHC1MN,UHC1MX,UHC1MN,VHB1MX,VHB1MN,
-!$OMP& UHB2MX,UHB2MN,VHC2MX,VHC2MN,UHC2MX,UHC2MN,VHB2MX,VHB2MN,
-!$OMP& BOTT)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA  
           IF(LMASKDRY(L))THEN  
             LN=LNC(L)  
             LS=LSC(L)  
@@ -264,7 +241,6 @@ C
             FVHJ(L,2)=0.  
           ENDIF  
         ENDDO  
-      enddo
       ENDIF  
 C  
 C ADD RETURN FLOW MOMENTUM FLUX  
@@ -324,14 +300,8 @@ C----------------------------------------------------------------------C
 C  
 C *** COMPUTE VERTICAL ACCELERATIONS
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LS,WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           IF(LMASKDRY(L))THEN  
             LS=LSC(L)
             WU=0.5*DXYU(L)*(W(L,K)+W(L-1,K))  
@@ -355,16 +325,13 @@ C ** BLOCK MOMENTUM FLUX ON LAND SIDE OF TRIANGULAR CELLS
 C  
       IF(ITRICELL.GT.0)THEN
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=1,LA  
             FUHU(L,K)=STCUV(L)*FUHU(L,K)  
             FVHV(L,K)=STCUV(L)*FVHV(L,K)  
           ENDDO  
         ENDDO  
       ENDIF
-c
-      enddo
 C  
-
 C**********************************************************************C  
 C  
 C **  CALCULATE CORIOLIS AND CURVATURE ACCELERATION COEFFICIENTS  
@@ -377,14 +344,8 @@ C
 
         IF(ISDCCA.EQ.0)THEN  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN) 
-!$OMP& REDUCTION(+:CACSUM) 
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(LMASKDRY(L))THEN  
                 LN=LNC(L)  
                 CAC(L,K)=( FCORC(L)*DXYP(L)  
@@ -396,9 +357,6 @@ c
               CACSUM=CACSUM+CAC(L,K) 
             ENDDO  
           ENDDO  
-c
-      enddo
-
 C  
         ELSE  
 C  
@@ -427,7 +385,6 @@ C
             ENDDO  
             CLOSE(1)  
           ENDIF  
-
         ENDIF  
 
         ! *** ENSURE FCAY & FCAX ARE RESET
@@ -439,7 +396,6 @@ C
               FCAY(L,K)=0.
             ENDDO
           ENDDO
-
         ENDIF
             
       ENDIF
@@ -457,14 +413,8 @@ C **  STANDARD CALCULATION
 C  
       IF(IS2LMC.EQ.0.AND.CACSUM.GT.1.E-7)THEN
 
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,LNW,LSE)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN
               LN=LNC(L)  
               LS=LSC(L)  
@@ -480,8 +430,6 @@ c
             ENDIF  
           ENDDO  
         ENDDO  
-      enddo
-
 C  
 C----------------------------------------------------------------------C  
 C  
@@ -527,7 +475,6 @@ C
           ENDIF  
         ENDDO  
       ENDIF
-
 C  
 C----------------------------------------------------------------------C  
 C  
@@ -576,18 +523,11 @@ C
           ENDIF  
         ENDDO  
       ENDIF  
-
 C  
 C----------------------------------------------------------------------C  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           IF(LMASKDRY(L))THEN  
             LN=LNC(L) 
             LS=LSC(L) 
@@ -603,9 +543,6 @@ c
           ENDIF  
         ENDDO  
       ENDDO
-c
-      enddo  
-
 
       ! *** TREAT BC'S NEAR EDGES
       DO LL=1,NBCS
@@ -628,7 +565,6 @@ c
           FY(L,K)=SAAY(L)*FY(L,K)
         ENDDO
       ENDDO  
-
 C  
 C----------------------------------------------------------------------C  
 C  
@@ -680,7 +616,6 @@ C
           CLOSE(1)  
         ENDIF  
       ENDIF  
-
 C  
 C**********************************************************************C  
 C  
@@ -867,16 +802,10 @@ C
 C **  CALCULATE EXTERNAL ACCELERATIONS  
 C  
 C----------------------------------------------------------------------C  
-
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(ISDRY.GT.0)THEN
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
               FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
@@ -887,7 +816,7 @@ c
         ENDDO  
       ELSE
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
             FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
             FXE(L)=FXE(L)+FX(L,K)*DZC(K)  
@@ -904,7 +833,7 @@ C----------------------------------------------------------------------C
 C  
       IF(KC.GT.1)THEN
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               FX(L,K)=FX(L,K)+SAAX(L)*(FWU(L,K)-FWU(L,K-1))*DZIC(K)
               FY(L,K)=FY(L,K)+SAAY(L)*(FWV(L,K)-FWV(L,K-1))*DZIC(K)  
@@ -922,7 +851,7 @@ C
       IF(MDCHH.GE.1.AND.ISCHAN.EQ.3)THEN  
 C  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             QMCSOURX(L,K)=0.  
             QMCSOURY(L,K)=0.  
             QMCSINKX(L,K)=0.  
@@ -930,9 +859,6 @@ C
           ENDDO  
         ENDDO  
       ENDIF
-c
-      enddo
-C  
 
       IF(MDCHH.GE.1.AND.ISCHAN.EQ.3)THEN  
 C  
@@ -1098,13 +1024,8 @@ C
      
         IF(IINTPG.EQ.0)THEN  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               LS=LSC(L)  
               FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &          ( HU(L)*( (B(L,K+1)-B(L-1,K+1))*DZC(K+1)  
@@ -1118,8 +1039,6 @@ c
      &          (BELV(L)-BELV(LS)+Z(K)*(HP(L)-HP(LS))) )  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
         ENDIF  
 C  
@@ -1257,24 +1176,14 @@ C **  CALCULATE EXPLICIT INTERNAL U AND V SHEAR EQUATION TERMS
 C
 C----------------------------------------------------------------------C
 C
-
       IF(KC.GT.1)THEN
-           L=1
+        DO L=1,LC
           DU(L,KC)=0.0
           DV(L,KC)=0.0
-           L=LC
-          DU(L,KC)=0.0
-          DV(L,KC)=0.0
-      ENDIF
-!$OMP PARALLEL DO PRIVATE(LF,LL,RCDZF)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      IF(KC.GT.1)THEN
+        ENDDO
         DO K=1,KS
           RCDZF=CDZF(K)
-          DO L=LF,LL
+          DO L=2,LA
             IF(LMASKDRY(L))THEN
               !DXYIU(L)=1./(DXU(L)*DYU(L))  
               DU(L,K)=RCDZF*( HU(L)*(U(L,K+1)-U(L,K))*DELTI
@@ -1295,14 +1204,11 @@ C
 C      IF(ISTL.EQ.2)THEN
 C 
       IF(NWSER.GT.0)THEN
-        DO L=LF,LL
+        DO L=2,LA
           DU(L,KS)=DU(L,KS)-CDZU(KS)*TSX(L)
           DV(L,KS)=DV(L,KS)-CDZU(KS)*TSY(L)
         ENDDO
       ENDIF
-c
-      enddo
-
 C
 C      ENDIF
 C

@@ -20,36 +20,21 @@ C
 C **  ACCUMULATE INTERNAL SOURCES AND SINKS  
 C  
       IF(IBALSTDT.EQ.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(-:WVOLOUT)
-!$OMP&  REDUCTION(+:BVOLOUT,VOLMORPH2T)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA  
           WVOLOUT=WVOLOUT-DTSED*QMORPH(L)  
           BVOLOUT=BVOLOUT+DTSED*QMORPH(L)
           VOLMORPH2T=VOLMORPH2T+DTSED*QMORPH(L)
         ENDDO  
-c
-      enddo
       ENDIF  
       IF(ISTRAN(5).GE.1)THEN  
         DO NT=1,NTOX  
           M=MSVTOX(NT)  
       WRITE(8,*)'NT M ',NT,M  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LC
               CONT(L,K)=TOX(L,K,NT)  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
 C  TOXBLB2T(NT) IS NET TOXIC MASS GOING OUT OF DOMAIN DUE  
 C  DUE TO BED LOAD TRANSPORT OUT OF DOMAIN  
@@ -79,18 +64,11 @@ C
       IF(ISTRAN(6).GE.1)THEN  
         DO NSX=1,NSED  
           M=MSVSED(NSX)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LC
               CONT(L,K)=SED(L,K,NSX)  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
 C SEDFLUX2T(NSX) IS IS NET COHESIVE MASS FLUX POSITIVE FROM BED  
 C   TO WATER COLUMN  
@@ -105,18 +83,11 @@ C
       IF(ISTRAN(7).GE.1)THEN  
         DO NSX=1,NSND  
           M=MSVSND(NSX)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LC
               CONT(L,K)=SND(L,K,NSX)  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
 C  SBLOUT2T(NSX) IS NET NONCOHESIVE SEDIMENT MASS GOING OUT OF DOMAIN DU  
 C  DUE TO BED LOAD TRANSPORT OUT OF DOMAIN  

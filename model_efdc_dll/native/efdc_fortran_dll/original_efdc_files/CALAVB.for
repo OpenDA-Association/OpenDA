@@ -31,23 +31,14 @@ C
       ABMIN=10.  
       RIQMIN=-0.023  
       RIQMAX=0.28  
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-                do ithds=0,nthds-1
-                  LF=jse_LC(1,ithds)
-                  LL=jse_LC(2,ithds)
-!
       DO K=1,KC  
-        DO L=LF,LL  
+        DO L=1,LC  
           IF(IMASKDRY(L).EQ.1)THEN  
             AV(L,K)=AVO*HPI(L)  
             AB(L,K)=ABO*HPI(L)  
           ENDIF  
         ENDDO  
       ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO 
       IF(ISFAVB.EQ.0)THEN  
         DO K=1,KS  
           DO L=2,LA  
@@ -85,17 +76,15 @@ C
         ENDDO  
       ENDIF  
       IF(ISFAVB.EQ.1)THEN  
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,RIQ,SFAV,SFAB,ABTMP,AVTMP)
-!$OMP& REDUCTION(max:AVMAX,ABMAX) REDUCTION(min:AVMIN,ABMIN)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               QQI(L)=1./QQ(L,K)  
               QQI(L)=MIN(QQI(L),QQIMAX)  
+            ENDIF  
+          ENDDO  
+          DO L=2,LA  
+            IF(LMASKDRY(L))THEN  
               RIQ=-GP*HP(L)*DML(L,K)*DML(L,K)*DZIG(K)  
      &            *(B(L,K+1)-B(L,K))*QQI(L)  
               RIQ=MAX(RIQ,RIQMIN)  
@@ -121,9 +110,6 @@ C
             ENDIF  
           ENDDO  
         ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
       ENDIF  
       IF(ISFAVB.EQ.2)THEN  
         DO K=1,KS  
@@ -159,29 +145,17 @@ C
       ENDIF  
       ! *** NOW APPLY MAXIMUM, IF REQURIED
       IF(ISAVBMX.GE.1)THEN  
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,ABTMP,AVTMP)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             AVTMP=AVMX*HPI(L)  
             ABTMP=ABMX*HPI(L)  
             AV(L,K)=MIN(AV(L,K),AVTMP)  
             AB(L,K)=MIN(AB(L,K),ABTMP)  
           ENDDO  
         ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
       ENDIF  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
       DO K=1,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           LS=LSC(L)  
 c pmc          AVUI(L,K)=2./(AV(L,K)+AV(L-1,K))  
 c pmc          AVVI(L,K)=2./(AV(L,K)+AV(LS,K))  
@@ -190,17 +164,14 @@ c pmc          AVVI(L,K)=2./(AV(L,K)+AV(LS,K))
         ENDDO  
       ENDDO  
       DO K=2,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           AQ(L,K)=0.205*(AV(L,K-1)+AV(L,K))  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         AQ(L,1)=0.205*AV(L,1)  
         AQ(L,KC)=0.205*AV(L,KS)  
       ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
       RETURN  
       END  
 
