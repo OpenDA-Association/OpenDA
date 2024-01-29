@@ -10,6 +10,7 @@ import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.interfaces.*;
 import org.openda.utils.Instance;
 import org.openda.utils.Time;
+import org.openda.utils.io.AnalysisDataWriter;
 import org.zeromq.ZMQ;
 
 import java.io.File;
@@ -43,15 +44,19 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String FUNCTION_SAVE_STATE = "save_state";
 	private static final String SAVE_STATE_PATH = "path";
 	private static final String FUNCTION_GET_VAR_ITEM_SIZE = "get_var_itemsize";
+	private static final String FUNCTION_GET_VAR_N_BYTES = "get_var_nbytes";
 	private static final String FUNCTION_GET_VAR_GRID = "get_var_grid";
+	private static final String FUNCTION_GET_GRID_SIZE = "get_grid_size";
 	private static final String FUNCTION_GET_GRID_X = "get_grid_x";
 	private static final String FUNCTION_GET_GRID_Y = "get_grid_y";
 	private static final String RETURN_GRID = "var_grid";
+	private static final String RETURN_GRID_SIZE = "grid_size";
 	private static final String RETURN_GRID_X = "grid_x";
 	private static final String RETURN_GRID_Y = "grid_y";
-	private static final String VAR_ITEM_NAME = "grid";
+	private static final String VAR_GRID = "grid";
 	private static final String VAR_ITEM_ID = "name";
 	private static final String RETURN_ITEM_SIZE = "var_itemsize";
+	private static final String RETURN_N_BYTES = "var_nbytes";
 	private static final String FUNCTION_GET_VAR_ITEM_TYPE = "get_var_type";
 	private static final String FUNCTION_GET_VAR_UNITS = "get_var_units";
 	private static final String RETURN_ITEM_TYPE = "var_type";
@@ -60,6 +65,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private static final String RETURN_VALUE = "value";
 	private static final String FUNCTION_SET_VALUE = "set_value";
 	private static final String SLICE = "src";
+	private static final String DEST = "dest";
 	private static final String CONFIGURATION_FILE = "config_file";
 	private static final String REPLY_STATUS = "status";
 	private static final String REPLY_OK = "OK";
@@ -80,6 +86,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private boolean inOutputMode = false;
 	private TimeUnit timeUnit;
 	private double startTimeMjd;
+	private final AnalysisDataWriter analysisDataWriter;
+	private boolean firstTime = true;
 
 	public enum TimeUnit {
 		S(86400), MIN(1440), H(24), D(1);
@@ -121,6 +129,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		}
 
 		forcingExchangeItems = createForcingExchangeItems(forcingConfiguration);
+
+		this.analysisDataWriter = new AnalysisDataWriter(exchangeItems.values(), modelRunDir);
 	}
 	private Map<String, IExchangeItem> createForcingExchangeItems(ArrayList<ZeroMqModelForcingConfig> bmiModelForcingConfigs) {
 		Map<String, IExchangeItem> result = new HashMap<>();
@@ -367,22 +377,34 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	public int getVarItemSize(String id) {
+		if (id.equals("lateral.land.alpha_pow")) {
+			System.out.println("get var itemsize for " + id);
+		}
 		return getReplyById(FUNCTION_GET_VAR_ITEM_SIZE, RETURN_ITEM_SIZE, id).asInt();
 	}
 
-	public double[] getGridX(int grid) {
-		return getGridValues(grid, FUNCTION_GET_GRID_X, RETURN_GRID_X);
+	public int getVarNBytes(String id) {
+		return getReplyById(FUNCTION_GET_VAR_N_BYTES, RETURN_N_BYTES, id).asInt();
 	}
 
-	public double[] getGridY(int grid) {
-		return getGridValues(grid, FUNCTION_GET_GRID_Y, RETURN_GRID_Y);
+	public int getGridSize(int id) {
+		JsonNode replyById = getReplyForGridSize(FUNCTION_GET_GRID_SIZE, RETURN_GRID_SIZE, id);
+		return replyById.asInt();
 	}
 
-	private double[] getGridValues(int grid, String getGridDimension, String returnGridDimension) {
-		JsonNode replyForInt = getReplyForInt(getGridDimension, returnGridDimension, grid);
+	public double[] getGridX(int grid, double[] gridArray) {
+		return getGridValues(grid, FUNCTION_GET_GRID_X, RETURN_GRID_X, gridArray, "x");
+	}
+
+	public double[] getGridY(int grid, double[] gridArray) {
+		return getGridValues(grid, FUNCTION_GET_GRID_Y, RETURN_GRID_Y, gridArray, "y");
+	}
+
+	private double[] getGridValues(int grid, String getGridDimension, String returnGridDimension, double[] gridArray, String axis) {
+		JsonNode replyForGridValues = getReplyForGridValues(getGridDimension, returnGridDimension, grid, gridArray, axis);
 		// TODO: prevent by filtering exchange items?
-		if (replyForInt==null) return new double[0];
-		Iterator<JsonNode> elements = replyForInt.elements();
+		if (replyForGridValues == null) return new double[0];
+		Iterator<JsonNode> elements = replyForGridValues.elements();
 		List<Double> values = new ArrayList<>();
 		while (elements.hasNext()) {
 			values.add(elements.next().asDouble());
@@ -406,8 +428,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return getReplyById(FUNCTION_GET_VALUE, RETURN_VALUE, id).asDouble();
 	}
 
-	public double[] getValues(String id) {
-		JsonNode replyById = getReplyById(FUNCTION_GET_VALUE, RETURN_VALUE, id);
+	public double[] getValues(String id, double[] dummyValuesArray) {
+		JsonNode replyById = getReplyForGetValues(FUNCTION_GET_VALUE, RETURN_VALUE, id, dummyValuesArray);
 		Iterator<JsonNode> elements = replyById.elements();
 		List<Double> values = new ArrayList<>();
 		while (elements.hasNext()) {
@@ -465,10 +487,36 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		return getJsonNode(returnName, request);
 	}
 
-	private JsonNode getReplyForInt(String functionName, String returnName, int value) {
+	private JsonNode getReplyForGetValues(String functionName, String returnName, String id, double[] gridArray) {
 		ObjectNode request = objectMapper.createObjectNode();
 		request.put(FUNCTION_KEY, functionName);
-		request.put(VAR_ITEM_NAME, value);
+		request.put(VAR_ITEM_ID, id);
+
+		ArrayNode arrayNode = request.putArray(DEST);
+		for (double index : gridArray) {
+			arrayNode.add(index);
+		}
+
+		return getJsonNode(returnName, request);
+	}
+
+	private JsonNode getReplyForGridValues(String functionName, String returnName, int value, double[] gridArray, String axis) {
+		ObjectNode request = objectMapper.createObjectNode();
+		request.put(FUNCTION_KEY, functionName);
+		request.put(VAR_GRID, value);
+
+		ArrayNode arrayNode = request.putArray(axis);
+		for (double index : gridArray) {
+			arrayNode.add(index);
+		}
+
+		return getJsonNode(returnName, request);
+	}
+
+	private JsonNode getReplyForGridSize(String functionName, String returnName, int value) {
+		ObjectNode request = objectMapper.createObjectNode();
+		request.put(FUNCTION_KEY, functionName);
+		request.put(VAR_GRID, value);
 
 		return getJsonNode(returnName, request);
 	}
@@ -526,6 +574,9 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void finish() {
+
+		analysisDataWriter.writeDataAfterAnalysis();
+		analysisDataWriter.close();
 
 		finalizeModel();
 
@@ -592,9 +643,18 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void compute(ITime targetTime) {
+		if (firstTime) {
+			firstTime = false;
+		} else {
+			//write model state data after analysis (state update).
+			analysisDataWriter.writeDataAfterAnalysis();
+		}
+
 		double mjd = targetTime.getMJD() - startTimeMjd;
 		double time = mjd * timeUnit.partsInDay;
 		updateUntil(time);
+
+		analysisDataWriter.writeDataBeforeAnalysis();
 	}
 
 	@Override

@@ -1,13 +1,11 @@
 package org.openda.model_zero_mq;
 
-import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IQuantityInfo;
 import org.openda.interfaces.ITimeInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,9 +32,11 @@ public class ZeroMqStateExchangeItem implements IExchangeItem {
 		stateComponentLengths = new HashMap<>();
 		stateValuesRanges = new ArrayList<>();
 		for (String id : this.ids) {
-			int length = this.model.getVarItemSize(id);
-			stateComponentLengths.put(id, length);
-			totalNumberOfStateValues += length;
+			int bytesPerItem = this.model.getVarItemSize(id);
+			int totalBytes = this.model.getVarNBytes(id);
+			int numberOfItems = totalBytes / bytesPerItem;
+			stateComponentLengths.put(id, numberOfItems);
+			totalNumberOfStateValues += numberOfItems;
 			stateValuesRanges.add(totalNumberOfStateValues);
 		}
 		values = new double[totalNumberOfStateValues];
@@ -87,7 +87,7 @@ public class ZeroMqStateExchangeItem implements IExchangeItem {
 
 		double[] allModelValues = new double[values.length];
 		for (String id : this.ids) {
-			double[] modelValues = model.getValues(id);
+			double[] modelValues = model.getValues(id, new double[stateComponentLengths.get(id)]);
 			int numberOfValues = modelValues.length;
 			System.arraycopy(modelValues, 0, allModelValues, offset, numberOfValues);
 

@@ -1,14 +1,11 @@
 package org.openda.model_zero_mq;
 
-import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.IrregularGridGeometryInfo;
 import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.TimeInfo;
-import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.*;
 import org.openda.utils.Array;
 import org.openda.utils.Vector;
-
-import java.util.Arrays;
 
 public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	private final String variableName;
@@ -17,6 +14,7 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	private final IQuantityInfo quantityInfo;
 	private final IGeometryInfo geometryInfo;
 	private final double modelMissingValue;
+	private final double[] dummyValuesArray;
 
 
 	public ZeroMqOutputExchangeItem(String variable, IExchangeItem.Role input, ZeroMqModelInstance model, double modelMissingValue) {
@@ -24,21 +22,28 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 		role = input;
 		this.model = model;
 		this.modelMissingValue = modelMissingValue;
-		this.quantityInfo = new QuantityInfo(variableName, model.getVarUnits(variableName));
+		this.quantityInfo = new QuantityInfo(variableName.replaceAll("\\.", "_"), model.getVarUnits(variableName));
 		this.geometryInfo = createGeometryInfo();
+		int bytesPerItem = this.model.getVarItemSize(variableName);
+		int totalBytes = this.model.getVarNBytes(variableName);
+		dummyValuesArray = new double[totalBytes / bytesPerItem];
 	}
 
 	private IGeometryInfo createGeometryInfo() {
 
 		int varGrid = model.getVarGrid(variableName);
+		int gridSize = model.getGridSize(varGrid);
+
+		double[] latitudes = new double[gridSize];
 
 		// grid numbers > 4 are not gridded
-		double[] latitudes = varGrid > 4 ? new double[0] : this.model.getGridY(varGrid);
+		latitudes = varGrid > 4 ? new double[0] : this.model.getGridY(varGrid, latitudes);
 
 		IArray latitudeArray = new Array(latitudes);
 
 		// grid numbers > 4 are not gridded
-		double[] longitudes = varGrid > 4 ? new double[0] : this.model.getGridX(varGrid);
+		double[] longitudes= new double[gridSize];
+		longitudes = varGrid > 4 ? new double[0] : this.model.getGridX(varGrid, longitudes);
 
 		IArray longitudeArray = new Array(longitudes);
 		int[] latitudeValueIndices = new int[]{0};
@@ -48,9 +53,9 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 			"meter");
 		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system",
 			"meter");
+		return new IrregularGridGeometryInfo(latitudes.length, longitudes, latitudes);
 		//here create a rectangular grid geometryInfo, otherwise GeometryUtils.getObservedValuesBilinearInterpolation does not work and GeometryUtils.getLocalizationWeights works slow.
-		return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray,
-			longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
+		//return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
 	}
 
 	public String getId() {
@@ -97,7 +102,7 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	 * values in memory.
 	 */
 	public double[] getValuesAsDoubles() {
-		double[] allModelValues = model.getValues(variableName);
+		double[] allModelValues = model.getValues(variableName, dummyValuesArray);
 		double[] checkedValues = new double[allModelValues.length];
 		for (int i = 0; i < allModelValues.length; i++) {
 			checkedValues[i] = Double.compare(allModelValues[i], modelMissingValue) == 0 ? Double.NaN : allModelValues[i];
