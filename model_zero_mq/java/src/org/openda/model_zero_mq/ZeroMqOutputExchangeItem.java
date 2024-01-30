@@ -1,11 +1,15 @@
 package org.openda.model_zero_mq;
 
-import org.openda.exchange.IrregularGridGeometryInfo;
+import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
 import org.openda.utils.Array;
 import org.openda.utils.Vector;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	private final String variableName;
@@ -30,21 +34,13 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	}
 
 	private IGeometryInfo createGeometryInfo() {
-
 		int varGrid = model.getVarGrid(variableName);
 		int gridSize = model.getGridSize(varGrid);
 
-		double[] latitudes = new double[gridSize];
-
-		// grid numbers > 4 are not gridded
-		latitudes = varGrid > 4 ? new double[0] : this.model.getGridY(varGrid, latitudes);
+		double[] latitudes = getLatitudes(varGrid, gridSize);
+		double[] longitudes = getLongitudes(varGrid, gridSize);
 
 		IArray latitudeArray = new Array(latitudes);
-
-		// grid numbers > 4 are not gridded
-		double[] longitudes= new double[gridSize];
-		longitudes = varGrid > 4 ? new double[0] : this.model.getGridX(varGrid, longitudes);
-
 		IArray longitudeArray = new Array(longitudes);
 		int[] latitudeValueIndices = new int[]{0};
 		int[] longitudeValueIndices = new int[]{1};
@@ -53,9 +49,41 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 			"meter");
 		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system",
 			"meter");
-		return new IrregularGridGeometryInfo(latitudes.length, longitudes, latitudes);
 		//here create a rectangular grid geometryInfo, otherwise GeometryUtils.getObservedValuesBilinearInterpolation does not work and GeometryUtils.getLocalizationWeights works slow.
-		//return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
+		return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
+	}
+
+	private double[] getLongitudes(int varGrid, int gridSize) {
+		double[] longitudes = new double[gridSize];
+
+		if (varGrid > 4) {
+			longitudes = new double[0];
+		} else {
+			longitudes = this.model.getGridX(varGrid, longitudes);
+			longitudes = deduplicateAndSortArray(longitudes);
+		}
+		return longitudes;
+	}
+
+	private double[] getLatitudes(int varGrid, int gridSize) {
+		double[] latitudes = new double[gridSize];
+
+		if (varGrid > 4) {
+			latitudes = new double[0];
+		} else {
+			latitudes = this.model.getGridY(varGrid, latitudes);
+			latitudes = deduplicateAndSortArray(latitudes);
+		}
+		return latitudes;
+	}
+
+	private double[] deduplicateAndSortArray(double[] longitudes) {
+		List<Double> longitudesList = Arrays.stream(longitudes).boxed().distinct().sorted().collect(Collectors.toList());
+		longitudes = new double[longitudesList.size()];
+		for (int index = 0; index < longitudesList.size(); index++) {
+			longitudes[index] = longitudesList.get(index);
+		}
+		return longitudes;
 	}
 
 	public String getId() {
