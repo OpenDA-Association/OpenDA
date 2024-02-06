@@ -198,7 +198,6 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	private void createOutputExchangeItem(double modelMissingValue, ArrayList<IExchangeItem> analysisExchangeItems, Map<String, IExchangeItem> result, String variable, IExchangeItem.Role input) {
 		int varGrid = getVarGrid(variable);
-		int gridSize = getGridSize(varGrid);
 
 		QuantityInfo quantityInfo = new QuantityInfo(variable.replaceAll("\\.", "_"), this.getVarUnits(variable));
 		if (varGrid > 4) {
@@ -207,6 +206,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 			result.put(variable, item);
 			return;
 		}
+		int gridSize = getGridSize(varGrid);
 		double[] latitudes = new double[gridSize];
 		double[] latitudesForIndividualPoints = getGridY(varGrid, latitudes);
 		double[] deduplicatedSortedLatitudes = deduplicateAndSortArray(latitudesForIndividualPoints);
