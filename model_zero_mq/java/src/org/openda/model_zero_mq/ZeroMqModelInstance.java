@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.openda.blackbox.config.BBUtils;
-import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
+import org.openda.exchange.*;
 import org.openda.interfaces.*;
+import org.openda.utils.Array;
+import org.openda.utils.DoubleArraySearch;
 import org.openda.utils.Instance;
 import org.openda.utils.Time;
 import org.openda.utils.io.AnalysisDataWriter;
@@ -15,6 +17,7 @@ import org.zeromq.ZMQ;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ZeroMqModelInstance extends Instance implements IModelInstance, IModelExtensions, IOutputModeSetter {
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -107,7 +110,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 		initializeModel();
 
-		exchangeItems = createExchangeItems(missingValue);
+		ArrayList<IExchangeItem> analysisExchangeItems = new ArrayList<>();
+		exchangeItems = createExchangeItems(missingValue, analysisExchangeItems);
 
 		staticLimitExchangeItems = createForcingExchangeItems(staticLimitConfiguration);
 		modelStateExchangeItems = new LinkedHashMap<>();
@@ -130,7 +134,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 		forcingExchangeItems = createForcingExchangeItems(forcingConfiguration);
 
-		this.analysisDataWriter = new AnalysisDataWriter(exchangeItems.values(), modelRunDir);
+		this.analysisDataWriter = new AnalysisDataWriter(analysisExchangeItems, modelRunDir);
 	}
 	private Map<String, IExchangeItem> createForcingExchangeItems(ArrayList<ZeroMqModelForcingConfig> bmiModelForcingConfigs) {
 		Map<String, IExchangeItem> result = new HashMap<>();
@@ -159,7 +163,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 
-	private Map<String, IExchangeItem> createExchangeItems(double modelMissingValue) {
+	private Map<String, IExchangeItem> createExchangeItems(double modelMissingValue, ArrayList<IExchangeItem> analysisExchangeItems) {
 		Set<String> inoutVars = new HashSet<>();
 
 		// first fill sets with input and output variables
@@ -179,20 +183,72 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		Map<String, IExchangeItem> result = new HashMap<>();
 
 		for (String variable : inputVars) {
-			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, IExchangeItem.Role.Input, this, modelMissingValue);
-			result.put(variable, item);
+			createOutputExchangeItem(modelMissingValue, analysisExchangeItems, result, variable, IExchangeItem.Role.Input);
 		}
 
 		for (String variable : outputVars) {
-			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, IExchangeItem.Role.Output, this, modelMissingValue);
-			result.put(variable, item);
+			createOutputExchangeItem(modelMissingValue, analysisExchangeItems, result, variable, IExchangeItem.Role.Output);
 		}
 
 		for (String variable : inoutVars) {
-			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, IExchangeItem.Role.InOut, this, modelMissingValue);
-			result.put(variable, item);
+			createOutputExchangeItem(modelMissingValue, analysisExchangeItems, result, variable, IExchangeItem.Role.InOut);
 		}
 		return result;
+	}
+
+	private void createOutputExchangeItem(double modelMissingValue, ArrayList<IExchangeItem> analysisExchangeItems, Map<String, IExchangeItem> result, String variable, IExchangeItem.Role input) {
+		int varGrid = getVarGrid(variable);
+		int gridSize = getGridSize(varGrid);
+
+		QuantityInfo quantityInfo = new QuantityInfo(variable.replaceAll("\\.", "_"), this.getVarUnits(variable));
+		if (varGrid > 4) {
+			IrregularGridGeometryInfo irregularGridGeometryInfo = new IrregularGridGeometryInfo(0, new double[0], new double[0]);
+			ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, input, this, modelMissingValue, irregularGridGeometryInfo, quantityInfo);
+			result.put(variable, item);
+			return;
+		}
+		double[] latitudes = new double[gridSize];
+		double[] latitudesForIndividualPoints = getGridY(varGrid, latitudes);
+		double[] deduplicatedSortedLatitudes = deduplicateAndSortArray(latitudesForIndividualPoints);
+
+		double[] longitudes = new double[gridSize];
+		double[] longitudesForIndividualPoints = getGridX(varGrid, longitudes);
+		double[] deduplicatedSortedLongitudes = deduplicateAndSortArray(longitudesForIndividualPoints);
+
+		int[] latitudeIndices = new int[gridSize];
+		int[] longitudeIndices = new int[gridSize];
+		DoubleArraySearch latitudeArraySearch = new DoubleArraySearch(deduplicatedSortedLatitudes);
+		DoubleArraySearch longitudeArraySearch = new DoubleArraySearch(deduplicatedSortedLongitudes);
+		for (int i = 0; i < gridSize; i++) {
+			int latitudeIndex = latitudeArraySearch.search(latitudesForIndividualPoints[i]);
+			latitudeIndices[i] = latitudeIndex;
+			int longitudeIndex = longitudeArraySearch.search(longitudesForIndividualPoints[i]);
+			longitudeIndices[i] = longitudeIndex;
+		}
+
+		IArray latitudeArray = new Array(deduplicatedSortedLatitudes);
+		IArray longitudeArray = new Array(deduplicatedSortedLongitudes);
+		int[] latitudeValueIndices = new int[]{0};
+		int[] longitudeValueIndices = new int[]{1};
+
+		IQuantityInfo latitudeQuantityInfo = new QuantityInfo("y coordinate according to model coordinate system", "meter");
+		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system","meter");
+		ArrayGeometryInfo arrayGeometryInfo = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
+		ZeroMqAnalysisOutputExchangeItem analysisEI = new ZeroMqAnalysisOutputExchangeItem(variable, arrayGeometryInfo, latitudeIndices, longitudeIndices, quantityInfo, this, modelMissingValue, latitudeArray.length(), longitudeArray.length());
+		analysisExchangeItems.add(analysisEI);
+
+		IrregularGridGeometryInfo irregularGridGeometryInfo = new IrregularGridGeometryInfo(0, latitudesForIndividualPoints, longitudesForIndividualPoints);
+		ZeroMqOutputExchangeItem item = new ZeroMqOutputExchangeItem(variable, input, this, modelMissingValue, irregularGridGeometryInfo, quantityInfo);
+		result.put(variable, item);
+	}
+
+	private double[] deduplicateAndSortArray(double[] coordinateArray) {
+		List<Double> longitudesList = Arrays.stream(coordinateArray).boxed().distinct().sorted().collect(Collectors.toList());
+		double[] deduplicatedSortedDoubles = new double[longitudesList.size()];
+		for (int index = 0; index < longitudesList.size(); index++) {
+			deduplicatedSortedDoubles[index] = longitudesList.get(index);
+		}
+		return deduplicatedSortedDoubles;
 	}
 
 	private double[][] getLimits2D(Double[] limits, String[] lowerLimitExchangeItemIds) {

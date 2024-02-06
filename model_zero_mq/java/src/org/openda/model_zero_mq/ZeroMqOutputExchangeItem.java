@@ -1,10 +1,9 @@
 package org.openda.model_zero_mq;
 
-import org.openda.exchange.ArrayGeometryInfo;
+import org.openda.exchange.IrregularGridGeometryInfo;
 import org.openda.exchange.QuantityInfo;
 import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
-import org.openda.utils.Array;
 import org.openda.utils.Vector;
 
 import java.util.Arrays;
@@ -21,69 +20,16 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 	private final double[] dummyValuesArray;
 
 
-	public ZeroMqOutputExchangeItem(String variable, IExchangeItem.Role input, ZeroMqModelInstance model, double modelMissingValue) {
+	public ZeroMqOutputExchangeItem(String variable, Role input, ZeroMqModelInstance model, double modelMissingValue, IrregularGridGeometryInfo irregularGridGeometryInfo, QuantityInfo quantityInfo) {
 		this.variableName = variable;
 		role = input;
 		this.model = model;
 		this.modelMissingValue = modelMissingValue;
-		this.quantityInfo = new QuantityInfo(variableName.replaceAll("\\.", "_"), model.getVarUnits(variableName));
-		this.geometryInfo = createGeometryInfo();
+		this.quantityInfo = quantityInfo;
+		this.geometryInfo = irregularGridGeometryInfo;
 		int bytesPerItem = this.model.getVarItemSize(variableName);
 		int totalBytes = this.model.getVarNBytes(variableName);
 		dummyValuesArray = new double[totalBytes / bytesPerItem];
-	}
-
-	private IGeometryInfo createGeometryInfo() {
-		int varGrid = model.getVarGrid(variableName);
-		int gridSize = model.getGridSize(varGrid);
-
-		double[] latitudes = getLatitudes(varGrid, gridSize);
-		double[] longitudes = getLongitudes(varGrid, gridSize);
-
-		IArray latitudeArray = new Array(latitudes);
-		IArray longitudeArray = new Array(longitudes);
-		int[] latitudeValueIndices = new int[]{0};
-		int[] longitudeValueIndices = new int[]{1};
-
-		IQuantityInfo latitudeQuantityInfo = new QuantityInfo("y coordinate according to model coordinate system",
-			"meter");
-		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system",
-			"meter");
-		//here create a rectangular grid geometryInfo, otherwise GeometryUtils.getObservedValuesBilinearInterpolation does not work and GeometryUtils.getLocalizationWeights works slow.
-		return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
-	}
-
-	private double[] getLongitudes(int varGrid, int gridSize) {
-		double[] longitudes = new double[gridSize];
-
-		if (varGrid > 4) {
-			longitudes = new double[0];
-		} else {
-			longitudes = this.model.getGridX(varGrid, longitudes);
-			longitudes = deduplicateAndSortArray(longitudes);
-		}
-		return longitudes;
-	}
-
-	private double[] getLatitudes(int varGrid, int gridSize) {
-		double[] latitudes = new double[gridSize];
-
-		if (varGrid > 4) {
-			latitudes = new double[0];
-		} else {
-			latitudes = this.model.getGridY(varGrid, latitudes);
-			latitudes = deduplicateAndSortArray(latitudes);
-		}
-		return latitudes;
-	}
-
-	private double[] deduplicateAndSortArray(double[] longitudes) {
-		List<Double> longitudesList = Arrays.stream(longitudes).boxed().distinct().sorted().collect(Collectors.toList());
-		longitudes = new double[longitudesList.size()];
-		for (int index = 0; index < longitudesList.size(); index++) {
-			longitudes[index] = longitudesList.get(index);
-		}
-		return longitudes;
 	}
 
 	public String getId() {
@@ -114,14 +60,7 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 		return IExchangeItem.ValueType.IVectorType;
 	}
 
-	public Class<?> getValueType() {
-		return IVector.class;
-	}
-
 	public Object getValues() {
-		// TODO to use native code (to improve performance) for vector and
-		// matrix calculations in algorithm, for that need to return a CtaVector
-		// here. AK
 		return new Vector(getValuesAsDoubles());
 	}
 
@@ -146,7 +85,6 @@ public class ZeroMqOutputExchangeItem implements IExchangeItem {
 		double[] allValues = getValuesAsDoubles();
 
 		for (int n = 0; n < allValues.length; n++) {
-			// for all NaNs results in NaN
 			allValues[n] += alpha * axpyValues[n];
 		}
 		setValuesAsDoubles(allValues);
