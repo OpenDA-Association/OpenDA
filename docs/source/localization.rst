@@ -2,7 +2,7 @@
 Localization
 ============
 
-When multiple observation stations are used that are spread over quite some distance, it can be beneficial to apply localization of the Kalman gain.
+When multiple observation stations are used that are spread over quite some distance, it can be beneficial to apply localization of the :ref:`Kalman gain<Kalman_gain>`.
 This way, observations further away will have a smaller effect on the Kalman gain. Localization can also be used to handle situations where the number of observation locations is larger than the number of ensemble members.
 
 Localization has been explained in the :ref:`OpenDA course <course>`: for more information, we refer to that document. A nice introductory paper on localization can be found `here <https://link.springer.com/article/10.1007/s10236-006-0088-8>`__.
