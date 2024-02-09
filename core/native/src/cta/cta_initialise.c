@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "cta_modbuild_b3b.h"
 #include "cta_sobs_netcdf.h"
 #include "cta_sobs_combine.h"
-#include "cta_sobs_sqlite3.h"
 #include "cta_message.h"
 
 #define CLASSNAME "CTA_Core"
@@ -62,7 +61,6 @@ int CTA_Core_Initialise()
       is_initialised=1;
       CTA_File_Create(&CTA_FILE_STDOUT);
       CTA_File_Set(CTA_FILE_STDOUT, stdout);
-      CTA_SObs_sqlite3_initialise(&CTA_DEFAULT_SOBS);
 
       CTA_SObs_netcdf_initialise(&CTA_NETCDF_SOBS);
 

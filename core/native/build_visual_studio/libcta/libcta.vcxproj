@@ -155,7 +155,6 @@
     <None Include="..\..\src\cta\cta_util_timing.f90" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\external\sqlite3\sqlite3.c" />
     <ClCompile Include="..\..\src\cta\cta_array.c" />
     <ClCompile Include="..\..\src\cta\cta_datatypes.c" />
     <ClCompile Include="..\..\src\cta\cta_datetime.c" />
@@ -181,7 +180,6 @@
     <ClCompile Include="..\..\src\cta\cta_obsdescr_combine.c" />
     <ClCompile Include="..\..\src\cta\cta_obsdescr_maori.c" />
     <ClCompile Include="..\..\src\cta\cta_obsdescr_netcdf.c" />
-    <ClCompile Include="..\..\src\cta\cta_obsdescr_sqlite3.c" />
     <ClCompile Include="..\..\src\cta\cta_obsdescr_table.c" />
     <ClCompile Include="..\..\src\cta\cta_obsdescr_user.c" />
     <ClCompile Include="..\..\src\cta\cta_pack.c" />
@@ -192,7 +190,6 @@
     <ClCompile Include="..\..\src\cta\cta_sobs_factory.c" />
     <ClCompile Include="..\..\src\cta\cta_sobs_maori.c" />
     <ClCompile Include="..\..\src\cta\cta_sobs_netcdf.c" />
-    <ClCompile Include="..\..\src\cta\cta_sobs_sqlite3.c" />
     <ClCompile Include="..\..\src\cta\cta_sobs_user.c" />
     <ClCompile Include="..\..\src\cta\cta_string.c" />
     <ClCompile Include="..\..\src\cta\cta_time.c" />
@@ -200,7 +197,6 @@
     <ClCompile Include="..\..\src\cta\cta_treevector.c" />
     <ClCompile Include="..\..\src\cta\cta_util_methods.c" />
     <ClCompile Include="..\..\src\cta\cta_util_sort.c" />
-    <ClCompile Include="..\..\src\cta\cta_util_sqlite3.c" />
     <ClCompile Include="..\..\src\cta\cta_util_statistics.c" />
     <ClCompile Include="..\..\src\cta\cta_vector.c" />
     <ClCompile Include="..\..\src\cta\cta_vector_blas.c" />
@@ -247,7 +243,6 @@
     <ClInclude Include="..\..\include\cta_model_factory.h" />
     <ClInclude Include="..\..\include\cta_model_utilities.h" />
     <ClInclude Include="..\..\include\cta_obsdescr.h" />
-    <ClInclude Include="..\..\include\cta_obsdescr_sqlite3.h" />
     <ClInclude Include="..\..\include\cta_obsdescr_table.h" />
     <ClInclude Include="..\..\include\cta_pack.h" />
     <ClInclude Include="..\..\include\cta_par.h" />
@@ -255,7 +250,6 @@
     <ClInclude Include="..\..\include\cta_sobs.h" />
     <ClInclude Include="..\..\include\cta_sobs_combine.h" />
     <ClInclude Include="..\..\include\cta_sobs_netcdf.h" />
-    <ClInclude Include="..\..\include\cta_sobs_sqlite3.h" />
     <ClInclude Include="..\..\include\cta_string.h" />
     <ClInclude Include="..\..\include\cta_system.h" />
     <ClInclude Include="..\..\include\cta_time.h" />
@@ -269,14 +263,12 @@
     <ClInclude Include="..\..\include\cta_usr_vector.h" />
     <ClInclude Include="..\..\include\cta_util_methods.h" />
     <ClInclude Include="..\..\include\cta_util_sort.h" />
-    <ClInclude Include="..\..\include\cta_util_sqlite3.h" />
     <ClInclude Include="..\..\include\cta_util_statistics.h" />
     <ClInclude Include="..\..\include\cta_vector.h" />
     <ClInclude Include="..\..\include\cta_vector_blas.h" />
     <ClInclude Include="..\..\include\cta_xml.h" />
     <ClInclude Include="..\..\include\f_cta_utils.h" />
     <ClInclude Include="..\..\include\modbuild_sp_model_template.h" />
-    <ClInclude Include="..\..\include\sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

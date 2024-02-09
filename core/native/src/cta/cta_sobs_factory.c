@@ -288,10 +288,8 @@ CTA_SObsClass CTAI_XML_CreateSObsClass(xmlNode *cur_node) {
          }
       }
 
-      /* Create a default observation description. Should be changed??? */
-      CTA_ObsDescr_sqlite3_initialise(&descrcl);
-
       /* Create new function class */
+      descrcl = CTA_NULL;
       retval=CTA_SObs_DefineClass2((char *)clsname, h_func, descrcl, &hsobscl);
 
       /* Set id (=name) of handle */

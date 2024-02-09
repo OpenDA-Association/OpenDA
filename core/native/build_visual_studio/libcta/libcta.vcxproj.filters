@@ -104,9 +104,6 @@
     <ClCompile Include="..\..\src\cta\cta_obsdescr_netcdf.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\cta\cta_obsdescr_sqlite3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\cta\cta_obsdescr_table.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -137,9 +134,6 @@
     <ClCompile Include="..\..\src\cta\cta_sobs_netcdf.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\cta\cta_sobs_sqlite3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\cta\cta_sobs_user.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -161,9 +155,6 @@
     <ClCompile Include="..\..\src\cta\cta_util_sort.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\cta\cta_util_sqlite3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\cta\cta_util_statistics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -177,9 +168,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\cta\f_cta_defaults.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\external\sqlite3\sqlite3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -277,9 +265,6 @@
     <ClInclude Include="..\..\include\cta_obsdescr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\cta_obsdescr_sqlite3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\cta_obsdescr_table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -299,9 +284,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\cta_sobs_netcdf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\cta_sobs_sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\cta_string.h">
@@ -343,9 +325,6 @@
     <ClInclude Include="..\..\include\cta_util_sort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\cta_util_sqlite3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\cta_util_statistics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -383,9 +362,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\modbuild_sp_model_template.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

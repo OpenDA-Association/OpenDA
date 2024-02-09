@@ -39,7 +39,6 @@ include_HEADERS = include/cta_bb_modbuild.h \
                   include/cta_model.h \
                   include/cta_model_utilities.h \
                   include/cta_obsdescr.h \
-                  include/cta_obsdescr_sqlite3.h \
                   include/cta_obsdescr_table.h \
                   include/cta_pack.h \
                   include/cta_par.h \
@@ -47,7 +46,6 @@ include_HEADERS = include/cta_bb_modbuild.h \
                   include/cta_sobs_combine.h \
                   include/cta_sobs.h \
                   include/cta_sobs_netcdf.h \
-                  include/cta_sobs_sqlite3.h \
                   include/cta_string.h \
                   include/cta_system.h \
                   include/cta_time.h \
@@ -61,7 +59,6 @@ include_HEADERS = include/cta_bb_modbuild.h \
                   include/cta_usr_vector.h \
                   include/cta_util_methods.h \
                   include/cta_util_sort.h \
-                  include/cta_util_sqlite3.h \
                   include/cta_util_statistics.h \
                   include/cta_vector_blas.h \
                   include/cta_vector.h \

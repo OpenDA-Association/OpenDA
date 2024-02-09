@@ -37,7 +37,6 @@ TODO: fill the main page of the doxygen documentation
 #include "cta_matrix.h"
 #include "cta_matrix_blas.h"
 #include "cta_sobs.h"
-//#include "cta_sobs_sqlite3.h"
 #include "cta_treevector.h"
 #include "cta_model.h"
 #include "cta_model_factory.h"
