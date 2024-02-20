@@ -67,7 +67,7 @@ int CTAI_ObsDescr_CreateRelTable(CTA_ObsDescr hobsdescr1, CTA_ObsDescr hobsdescr
                              CTA_RelTable reltab){
    int nobs1, nobs2;
    CTA_Vector vtime1, vtime2, vid1, vid2, vselect;
-   int ilo, iup, imid, i2;
+   int i2;
    double t1, t2;
    int id1, id2;
    int retval;
@@ -108,8 +108,9 @@ int CTAI_ObsDescr_CreateRelTable(CTA_ObsDescr hobsdescr1, CTA_ObsDescr hobsdescr
        if (IDEBUG) printf("==>looking for %f, %d\n",t2,id2);
 
        /* Use bi-section in order to find the elements */
-       ilo=1;
-       iup=nobs1;
+       int ilo=1;
+       int iup=nobs1;
+       int imid;
        if (IDEBUG) printf("ilo=%d, iup=%d \n",ilo,iup);
 
        found=FALSE;
