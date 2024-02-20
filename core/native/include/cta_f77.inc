@@ -208,19 +208,19 @@
       integer, parameter :: CTA_FILE_STDOUT    =  1
       integer, parameter :: CTA_DEFAULT_SOBS   = 23
       integer, parameter :: CTA_COMBINE_SOBS   = 45
-      integer, parameter :: CTA_NETCDF_SOBS    = 67
-      integer, parameter :: CTA_MAORI_SOBS     = -173
-      integer, parameter :: CTA_OBSDESCR_TABLE = 77
-      integer, parameter :: CTA_DEFAULT_VECTOR = 100
-      integer, parameter :: CTA_DEFAULT_MATRIX = 116
-      integer, parameter :: CTA_MODBUILD_SP    = 147
+      integer, parameter :: CTA_NETCDF_SOBS    = 23
+      integer, parameter :: CTA_MAORI_SOBS     = 131
+      integer, parameter :: CTA_OBSDESCR_TABLE = 55
+      integer, parameter :: CTA_DEFAULT_VECTOR = 78
+      integer, parameter :: CTA_DEFAULT_MATRIX = 94
+      integer, parameter :: CTA_MODBUILD_SP    = 125
       integer, parameter :: CTA_MODELCOMBINER  = 0
       integer, parameter :: CTA_MODBUILD_B3B   = 0
       integer, parameter :: CTA_MODBUILD_BB    = 0
-      integer, parameter :: CTA_OP_ROOT_RMS    = 148
-      integer, parameter :: CTA_OP_ROOT_AMAX   = 149 
-      integer, parameter :: CTA_OP_ROOT_PRINTI = 150
-      integer, parameter :: CTA_OP_ROOT_SSQ    = 151
+      integer, parameter :: CTA_OP_ROOT_RMS    = 126
+      integer, parameter :: CTA_OP_ROOT_AMAX   = 127 
+      integer, parameter :: CTA_OP_ROOT_PRINTI = 128
+      integer, parameter :: CTA_OP_ROOT_SSQ    = 129
 
 !      external CTA_DEFAULT_VECTOR, CTA_DEFAULT_MATRIX,                    &
 !     &         CTA_DEFAULT_SOBS, CTA_MODBUILD_SP,                         &
