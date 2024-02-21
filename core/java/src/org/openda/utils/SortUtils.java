@@ -30,6 +30,32 @@ import org.openda.interfaces.IVector;
  */
 public class SortUtils {
 
+	public static int indexOfString(String[] array, String string) {
+		return indexOfString(array, 0, array.length, string);
+	}
+
+	private static int indexOfString(String[] array, int pos, int length, String string) {
+		if (string == null) {
+			for (int i = pos, n = pos + length; i < n; i++) {
+				if (array[i] == null) return i;
+			}
+		} else {
+			for (int i = pos, n = pos + length; i < n; i++) {
+				if (stringEquals(array[i], string)) return i;
+			}
+		}
+		return -1;
+	}
+
+	private static boolean stringEquals(String s1, String s2) {
+		if (s1 == s2) return true;
+		if (s1 == null || s2 == null) return false;
+		int length = s1.length();
+		if (length != s2.length()) return false;
+		if (s1.hashCode() != s2.hashCode()) return false;
+		return s1.regionMatches(0, s2, 0, length);  // 3 times faster than equals, no cast required
+	}
+
 	//merge type
 	public enum MergeType {left, union, intersection};
 
