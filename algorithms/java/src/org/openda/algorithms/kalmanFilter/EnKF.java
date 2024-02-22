@@ -423,6 +423,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		// are not upadted until after the next forecast
 		// H*K = PRED*PRED'*inv(D)
 		timerLinalg.start();
+		// This is H*K and should also be written to Kalman Gain Storage
 		Matrix K_pred = new Matrix(m,m);
 		K_pred.multiply(1.0, predMat, E, 0.0, false, false);
 		// pred_a_linear = predAvg + K_pred*(obsVal-predAvg)
@@ -444,9 +445,53 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		return Kvecs;
 	}
 
+	protected Matrix computeHK(IStochObserver obs, EnsembleVectors ensemblePredictions){
+		int m = obs.getCount(); // number of observations
+		int q = this.ensembleSize; // number of ensemble members
 
+		// compute Kalman gain
+		// D = HPH+R = (1/(q-1))PRED*PRED'+sqrtR*sqrtR' : covariance of
+		// innovations
+		timerLinalg.start();
+		//H*A^f_k = predMat = prediction of the observed model values, after removing the mean.
+		Matrix predMat = new Matrix(ensemblePredictions.ensemble);
+		predMat.scale(Math.sqrt(1.0 / (q - 1.0)));
+		// System.out.println("predMat="+predMat);
+		Matrix D = new Matrix(m, m);
+		D.multiply(1.0, predMat, predMat, 0.0, false, true);
+		IMatrix sqrtR = obs.getSqrtCovariance().asMatrix();
+		D.multiply(1.0, sqrtR, sqrtR, 1.0, false, true);
 
-	protected void storeGainMatrix(IStochObserver obs, ITime analysisTime, IVector[] Kvecs){
+		// System.out.println("PHT="+K);
+		Matrix inverseD = D.inverse();
+		// System.out.println("inverseD="+inverseD);
+
+		// version without large matrices
+		// K = XI * E with E=PRED'*inv(D)
+		Matrix E = new Matrix(q, m);
+		E.multiply(1.0, predMat, inverseD, 0.0, true, false);
+
+		// Compute H*K for linear update of predictions, since for blackbox models the predictions
+		// are not upadted until after the next forecast
+		// H*K = PRED*PRED'*inv(D)
+		timerLinalg.start();
+		// This is H*K and should also be written to Kalman Gain Storage
+		Matrix K_pred = new Matrix(m, m);
+		K_pred.multiply(1.0, predMat, E, 0.0, false, false);
+		// pred_a_linear = predAvg + K_pred*(obsVal-predAvg)
+		IVector innovAvg = obs.getExpectations();
+		innovAvg.axpy(-1, ensemblePredictions.mean);
+		IVector pred_a_linear = ensemblePredictions.mean.clone();
+		K_pred.rightMultiply(1.0, innovAvg, 1.0, pred_a_linear);
+		innovAvg.free();
+		timerLinalg.stop();
+
+		pred_a_linear.free();
+
+		return K_pred;
+	}
+
+	protected void storeGainMatrix(IStochObserver obs, ITime analysisTime, IVector[] Kvecs, Matrix hk){
 
 					// store kalman gain for future use in this object
 			if(this.saveGainTimes!=null){
@@ -488,6 +533,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 							+"model = "+this.mainModel.getClass().getSimpleName()+"\n"
 							+"observer = "+obs.getClass().getSimpleName()+"\n");
 
+					gainStorage.setHk(hk.asArray());
 					gainStorage.writeKalmanGain(this.gainVectors, this.obsId, this.obsTimeOffset);
 									this.gainVectors.clear();
 									this.obsId.clear();
@@ -576,8 +622,9 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 				this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 			}
 
+			Matrix hk = computeHK(obs, ensemblePredictionsForecast);
 			// Store kalman gain for future use in this object
-			storeGainMatrix(obs, analysisTime, Kvecs);
+			storeGainMatrix(obs, analysisTime, Kvecs, hk);
 
 			// Multiply Kalman gain with innovations and update model states
 			updateModelWithGain(obs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs);
