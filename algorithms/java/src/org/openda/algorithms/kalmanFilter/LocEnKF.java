@@ -19,11 +19,8 @@
  */
 package org.openda.algorithms.kalmanFilter;
 import org.openda.interfaces.*;
-import org.openda.observers.ObserverUtils;
 import org.openda.utils.Matrix;
 import org.openda.utils.Results;
-import org.openda.utils.io.KalmanGainStorage;
-import org.openda.utils.performance.OdaTiming;
 
 /**
  * @author Nils van Velzen based in the initial OpenDA implementation by Martin Verlaan
@@ -173,8 +170,9 @@ public class LocEnKF extends EnKF {
 					this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 				}
 
+				Matrix hk = computeHK(obs, ensemblePredictionsForecast);
 				// Store kalman gain for future use in this object
-				storeGainMatrix(lobs, analysisTime, Kvecs);
+				storeGainMatrix(lobs, analysisTime, Kvecs, hk);
 
 				// Multiply Kalman gain with innovations and update model states
 				updateModelWithGain(lobs, ensemblePredictionsForecast, ensembleVectorsForecast, Kvecs);
