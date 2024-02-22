@@ -1,21 +1,146 @@
-cmake_minimum_required(VERSION 3.9.1)
-enable_language(Fortran)
-
-set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
-set(SOURCES
-caxpy.f  cher.f    csyr2k.f  dcabs1.f  dspmv.f   dtpmv.f   lsame.f   srot.f   ssyr2k.f  zcopy.f   zher.f    zsyrk.f
-ccopy.f  cher2.f   csyrk.f   dcopy.f   dspr.f    dtpsv.f   sasum.f   srotg.f  ssyrk.f   zdotc.f   zher2.f   ztbmv.f
-cdotc.f  cher2k.f  ctbmv.f   ddot.f    dspr2.f   dtrmm.f   saxpy.f   ssbmv.f  stbmv.f   zdotu.f   zher2k.f  ztbsv.f
-cdotu.f  cherk.f   ctbsv.f   dgbmv.f   dswap.f   dtrmv.f   scasum.f  sscal.f  stbsv.f   zdscal.f  zherk.f   ztpmv.f
-cgbmv.f  chpmv.f   ctpmv.f   dgemm.f   dsymm.f   dtrsm.f   scnrm2.f  sspmv.f  stpmv.f   zgbmv.f   zhpmv.f   ztpsv.f
-cgemm.f  chpr.f    ctpsv.f   dgemv.f   dsymv.f   dtrsv.f   scopy.f   sspr.f   stpsv.f   zgemm.f   zhpr.f    ztrmm.f
-cgemv.f  chpr2.f   ctrmm.f   dger.f    dsyr.f    dzasum.f  sdot.f    sspr2.f  strmm.f   zgemv.f   zhpr2.f   ztrmv.f
-cgerc.f  crotg.f   ctrmv.f   dnrm2.f   dsyr2.f   dznrm2.f  sgbmv.f   sswap.f  strmv.f   zgerc.f   zrotg.f   ztrsm.f
-cgeru.f  cscal.f   ctrsm.f   drot.f    dsyr2k.f  icamax.f  sgemm.f   ssymm.f  strsm.f   zgeru.f   zscal.f   ztrsv.f
-chbmv.f  csscal.f  ctrsv.f   drotg.f   dsyrk.f   idamax.f  sgemv.f   ssymv.f  strsv.f   zhbmv.f   zswap.f
-chemm.f  cswap.f   dasum.f   dsbmv.f   dtbmv.f   isamax.f  sger.f    ssyr.f   xerbla.f  zhemm.f   zsymm.f
-chemv.f  csymm.f   daxpy.f   dscal.f   dtbsv.f   izamax.f  snrm2.f   ssyr2.f  zaxpy.f   zhemv.f   zsyr2k.f
+add_library(blas SHARED
+  caxpy.f
+  ccopy.f
+  cdotc.f
+  cdotu.f
+  cgbmv.f
+  cgemm.f
+  cgemv.f
+  cgerc.f
+  cgeru.f
+  chbmv.f
+  chemm.f
+  chemv.f
+  cher.f
+  cher2.f
+  cher2k.f
+  cherk.f
+  chpmv.f
+  chpr.f
+  chpr2.f
+  crotg.f
+  cscal.f
+  csscal.f
+  cswap.f
+  csymm.f
+  csyr2k.f
+  csyrk.f
+  ctbmv.f
+  ctbsv.f
+  ctpmv.f
+  ctpsv.f
+  ctrmm.f
+  ctrmv.f
+  ctrsm.f
+  ctrsv.f
+  dasum.f
+  daxpy.f
+  dcabs1.f
+  dcopy.f
+  ddot.f
+  dgbmv.f
+  dgemm.f
+  dgemv.f
+  dger.f
+  dnrm2.f
+  drot.f
+  drotg.f
+  dsbmv.f
+  dscal.f
+  dspmv.f
+  dspr.f
+  dspr2.f
+  dswap.f
+  dsymm.f
+  dsymv.f
+  dsyr.f
+  dsyr2.f
+  dsyr2k.f
+  dsyrk.f
+  dtbmv.f
+  dtbsv.f
+  dtpmv.f
+  dtpsv.f
+  dtrmm.f
+  dtrmv.f
+  dtrsm.f
+  dtrsv.f
+  dzasum.f
+  dznrm2.f
+  icamax.f
+  idamax.f
+  isamax.f
+  izamax.f
+  lsame.f
+  sasum.f
+  saxpy.f
+  scasum.f
+  scnrm2.f
+  scopy.f
+  sdot.f
+  sgbmv.f
+  sgemm.f
+  sgemv.f
+  sger.f
+  snrm2.f
+  srot.f
+  srotg.f
+  ssbmv.f
+  sscal.f
+  sspmv.f
+  sspr.f
+  sspr2.f
+  sswap.f
+  ssymm.f
+  ssymv.f
+  ssyr.f
+  ssyr2.f
+  ssyr2k.f
+  ssyrk.f
+  stbmv.f
+  stbsv.f
+  stpmv.f
+  stpsv.f
+  strmm.f
+  strmv.f
+  strsm.f
+  strsv.f
+  xerbla.f
+  zaxpy.f
+  zcopy.f
+  zdotc.f
+  zdotu.f
+  zdscal.f
+  zgbmv.f
+  zgemm.f
+  zgemv.f
+  zgerc.f
+  zgeru.f
+  zhbmv.f
+  zhemm.f
+  zhemv.f
+  zher.f
+  zher2.f
+  zher2k.f
+  zherk.f
+  zhpmv.f
+  zhpr.f
+  zhpr2.f
+  zrotg.f
+  zscal.f
+  zswap.f
+  zsymm.f
+  zsyr2k.f
+  zsyrk.f
+  ztbmv.f
+  ztbsv.f
+  ztpmv.f
+  ztpsv.f
+  ztrmm.f
+  ztrmv.f
+  ztrsm.f
+  ztrsv.f
 )
-
-add_library(blas SHARED ${SOURCES})
-
+if(WIN32)
+  set_target_properties(blas PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()

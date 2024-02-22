@@ -21,6 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include <stdio.h>
 #include <string.h>
+
+#ifdef WIN32
+   // Workaround for bug in pthreads-win32 resulting in redefinition of
+   // the timespec struct.
+   #define HAVE_STRUCT_TIMESPEC
+#endif
 #include <pthread.h>
 
 #include "cta_mem.h"
