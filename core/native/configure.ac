@@ -124,37 +124,6 @@ AC_CHECK_HEADERS(dlfcn.h,[],[
 AC_CHECK_LIB([dl],[dlopen],,AC_MSG_ERROR([cannot find libdl]))
 
 #
-# SQLITE3
-#
-# Try to find a version on the system 
-# The user can explicitly request to use the version in the exteral folder
-AC_ARG_ENABLE(system-sqlite3,  [  --disable-system-sqlite3   compile without system sqlite3, use OpenDA sqlite3],[disable_system_sqlite3="yes"],[disable_system_sqlite3="no"] )
-if test "x$disable_system_sqlite3" = "xyes"; then
-   SQLITE3_DIR="sqlite3"
-   INT_SQLITE_VERSION="OpenDA sqlite3 version"
-   CPPFLAGS="-I$OPENDA_NATIVE_DIR/external/sqlite3/ $CPPFLAGS"
-   AC_SUBST(CPPFLAGS)
- 
-   LTL_SQLITE3_ADD="../../external/sqlite3/libsqlite3.la"
-   SQLITE_LIB="-lsqlite3"
-else
-   SQLITE3_DIR=""
-   SQLITE_LIB=""
-   INT_SQLITE_VERSION="System sqlite3 version"
-   LTL_SQLITE3_ADD=""
-
-   #When we are here we need to find system sqlite3
-   AC_CHECK_HEADERS(sqlite3.h,[],[
-      AC_MSG_RESULT([Header file sqlite3 is not found. If your system does not contain sqlite3 you can force compilation of the internal version in OpenDA by setting the flag --disable-system-sqlite3])])
-AC_CHECK_LIB([sqlite3],[sqlite3_open],,AC_MSG_ERROR([cannot find libsqlite3]))
-   
-
-fi
-AC_SUBST(SQLITE3_DIR)
-AC_SUBST(LTL_SQLITE3_ADD)
-AC_SUBST(SQLITE_LIB)
-
-#
 # BLAS
 #
 # Note: there are several options
@@ -231,12 +200,10 @@ if test "x$use_tcl" = "xyes"; then
    AC_CHECK_LIB([tcl],Tcl_Init,[],[])
 fi
 
-AC_MSG_NOTICE([SQLITE3_DIR = $SQLITE3_DIR])
 AC_MSG_NOTICE([CPPFLAGS = $CPPFLAGS])
 AC_MSG_NOTICE([LDFLAGS = $LDFLAGS])
 AC_MSG_NOTICE([LIBS = $LIBS])
 AC_MSG_NOTICE([DEFS = $DEFS])
-AC_SUBST(SQLITE3_DIR)
 AC_MSG_NOTICE([LIBS = $LIBS])
 AC_MSG_NOTICE([LIBS_EXT = $LIBS_EXT])
 
@@ -438,10 +405,8 @@ fi
 
 AC_CONFIG_FILES([Makefile \
                  external/Makefile \
-                 external/sqlite-source-3_3_13/Makefile \
                  external/blas/Makefile \
                  external/lapack/Makefile \
-                 external/sqlite3/Makefile \
                  src/Makefile \
                  src/cta/Makefile\
                  src/cta_f90/Makefile\
@@ -470,7 +435,6 @@ echo ["Fortran-compiler :$FC"]
 echo ["MPI-support      :$INT_USE_MPI"]
 echo ["BLAS version     :$INT_BLAS_VERSION"]
 echo ["LAPACK version   :$INT_LAPACK_VERSION"]
-#echo ["SQLITE3 version  :$INT_SQLITE3_VERSION"]
 echo ["NETCDF  version  :$INT_NETCDF_VERSION"]
 echo ["OpenDA binding   :$INT_OPENDA_BRIDGE"]
 echo ["Example models   :$INT_EXAMPLE_MODELS"]

@@ -56,8 +56,109 @@ typedef struct {
 #endif
 } CTAI_ObsDescr_netcdf;
 
+/*
+   Fills the relation table for the elements in hobsdescr2 that are also in
+   hobsdescr1.
 
+   Note hobsdescr2 MUST be a subset of hobsdescr1!
 
+*/
+int CTAI_ObsDescr_CreateRelTable(CTA_ObsDescr hobsdescr1, CTA_ObsDescr hobsdescr2,
+                             CTA_RelTable reltab){
+   int nobs1, nobs2;
+   CTA_Vector vtime1, vtime2, vid1, vid2, vselect;
+   int i2;
+   double t1, t2;
+   int id1, id2;
+   int retval;
+   BOOL found;
+
+   /* Count number of observations */
+   CTA_ObsDescr_Observation_Count(hobsdescr1,&nobs1);
+   CTA_ObsDescr_Observation_Count(hobsdescr2,&nobs2);
+
+   /* Check whether nobs1>=nobs2 since hobsdecr2 must be a subset of
+    * hobsdecr1
+    */
+   if (nobs1<nobs2){
+      return CTA_INTERNAL_ERROR;
+   }
+
+   /* Allocate arrays for holding primary keys */
+   CTA_Vector_Create(CTA_DEFAULT_VECTOR, nobs1, CTA_DOUBLE,  CTA_NULL, &vtime1);
+   CTA_Vector_Create(CTA_DEFAULT_VECTOR, nobs2, CTA_DOUBLE,  CTA_NULL, &vtime2);
+   CTA_Vector_Create(CTA_DEFAULT_VECTOR, nobs1, CTA_INTEGER, CTA_NULL, &vid1);
+   CTA_Vector_Create(CTA_DEFAULT_VECTOR, nobs2, CTA_INTEGER, CTA_NULL, &vid2);
+   CTA_Vector_Create(CTA_DEFAULT_VECTOR, nobs2, CTA_INTEGER, CTA_NULL, &vselect);
+
+   /* Get Time and ID from both */
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr1, "TIME", vtime1, CTA_DOUBLE);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr2, "TIME", vtime2, CTA_DOUBLE);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr1, "STATION_ID",vid1,CTA_INTEGER);
+   CTA_ObsDescr_Get_ValueProperties(hobsdescr2, "STATION_ID",vid2,CTA_INTEGER);
+
+   /* now we have to figure out which elements from hobsdescr1 are also
+    * present in hobsdescr2                                           */
+
+    /* Note we know that elements are sorted first by time then by id! */
+    for (i2=1;i2<=nobs2;i2++){
+       CTA_Vector_GetVal(vtime2, i2, &t2,  CTA_DOUBLE);
+       CTA_Vector_GetVal(vid2,   i2, &id2, CTA_INTEGER);
+
+       if (IDEBUG) printf("==>looking for %f, %d\n",t2,id2);
+
+       /* Use bi-section in order to find the elements */
+       int ilo=1;
+       int iup=nobs1;
+       int imid;
+       if (IDEBUG) printf("ilo=%d, iup=%d \n",ilo,iup);
+
+       found=FALSE;
+       for (;;){
+          imid=(iup+ilo)/2;
+          CTA_Vector_GetVal(vtime1, imid, &t1,  CTA_DOUBLE);
+          CTA_Vector_GetVal(vid1,   imid, &id1, CTA_INTEGER);
+          if (IDEBUG) printf("imid= %d found %f, %d\n",imid, t1,id1);
+          if (t1==t2 && id1==id2){
+             found=TRUE;
+             break;
+          }
+
+          /* exit loop when element is not there :*/
+          if(ilo==iup){break;}  /*Ony one element there */
+
+          /* check whether element (t1,id1)<(t2,id2) and
+           * set new values for ilo and iup
+           */
+          if (t1<t2 || (t1==t2 && id1<id2)) {
+             if (ilo==imid) {ilo=iup;} else {ilo=imid;}
+          } else {
+             if (iup==imid) {iup=ilo;} else {iup=imid;}
+          }
+       }
+       if (!found){
+          /* INTERNAL ERROR */
+          /* nicely Free memory */
+          CTA_Vector_Free(&vtime1);
+          CTA_Vector_Free(&vtime2);
+          CTA_Vector_Free(&vid1);
+          CTA_Vector_Free(&vid2);
+          CTA_Vector_Free(&vselect);
+          return CTA_INTERNAL_ERROR;
+       }
+       CTA_Vector_SetVal(vselect, i2, &imid, CTA_INTEGER);
+    }
+    retval=CTA_RelTable_SetSelect(reltab, vselect);
+
+   /* Free memory */
+   CTA_Vector_Free(&vtime1);
+   CTA_Vector_Free(&vtime2);
+   CTA_Vector_Free(&vid1);
+   CTA_Vector_Free(&vid2);
+   CTA_Vector_Free(&vselect);
+
+   return retval;
+}
 
 void CTAI_ObsDescr_netcdf_Create_Size(
    // OUTPUTS:

@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "cta_datatypes.h"
 #include "cta_handles.h"
 #include "cta_functions.h"
-#include "cta_util_sqlite3.h"
 #include "cta_sobs.h"
 #include "cta_obsdescr.h"
 
