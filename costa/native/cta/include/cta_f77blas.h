@@ -66,7 +66,7 @@ extern "C" /* prevent C++ name mangling */
 #endif
 CTAEXPORT int ISAMAX_F77(int *n, float *x, int *incx);
 
-#define SGER_F77 F77_FUNC(sger,sger)
+#define SGER_F77 F77_FUNC(sger,SGER)
 #ifdef __cplusplus
 extern "C" /* prevent C++ name mangling */
 #endif
@@ -129,7 +129,7 @@ extern "C" /* prevent C++ name mangling */
 #endif
 CTAEXPORT int IDAMAX_F77(int *n, double *x, int *incx);
 
-#define DGER_F77 F77_FUNC(dger,dger)
+#define DGER_F77 F77_FUNC(dger,DGER)
 #ifdef __cplusplus
 extern "C" /* prevent C++ name mangling */
 #endif
