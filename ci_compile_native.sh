@@ -2,9 +2,5 @@
 # NOTE: this script must be started in the root dir of OpenDA
 set -euo pipefail
 
-pushd core/native
-./autoreconf_fix.sh
-#Added flags due to stricter gfortran 10
-./configure FFLAGS=-fallow-argument-mismatch FCFLAGS=-fallow-argument-mismatch
-make install
-popd
+cmake -S costa/native -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=bin/linux64_gnu
+cmake --build build --target install
