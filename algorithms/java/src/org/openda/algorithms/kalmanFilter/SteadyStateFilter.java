@@ -283,8 +283,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		for (int i = 0; i < missingObservationIndices.size(); i++) {
 			Integer missingObservationIndex = missingObservationIndices.get(i);
 			String missingObservationId = gainStorageObservationIdsArray[missingObservationIndex];
-			// TODO fix obsTimeOffset
-			String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[0] * 24.0 * 3600.0); //conversion to seconds
+			String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
 			Results.putProgression("processing obs " + gainVectorId + "\n");
 			// add to analysis increment for this obs
 			if (this.gainVectors.containsKey(gainVectorId)) {
