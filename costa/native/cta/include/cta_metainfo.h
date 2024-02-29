@@ -123,7 +123,8 @@ CTAEXPORT int CTA_Metainfo_DefineClass(const char *name,
  */
 CTAEXPORT int CTA_Metainfo_SetUnit( CTA_Metainfo hobsdscr,  char* Key); 
 
-
+CTAEXPORT int CTA_Metainfo_SetTag(CTA_Metainfo hobsdescr,  char* tagname);
+CTAEXPORT int CTA_Metainfo_SetGrid(CTA_Metainfo hobsdescr, CTAI_Gridm *hgrid);
 
 /** \brief set tag of metainfo
 
@@ -136,18 +137,12 @@ CTANOEXPORT int CTAI_Grid_IsEqual( CTAI_Gridm *hgrid1, CTAI_Gridm *hgrid2 );
 
 CTANOEXPORT int CTA_Metainfo_Import(CTA_Metainfo minfo, CTA_Handle usrdata);
 
-
-CTANOEXPORT int CTA_Metainfo_SetTag(CTA_Metainfo hobsdescr,  char* tagname);
-
-
 CTANOEXPORT int CTA_Metainfo_Free( CTA_Metainfo *hobsdscr);
 
 
 CTANOEXPORT int CTA_Metainfo_SetDescription(CTA_Metainfo hobsdescr,  char* description);
 
 CTANOEXPORT int CTA_Metainfo_SetRest(CTA_Metainfo hobsdescr, int *rest);
-
-CTANOEXPORT int CTA_Metainfo_SetGrid(CTA_Metainfo hobsdescr, CTAI_Gridm *hgrid);
 
 CTANOEXPORT int CTA_Metainfo_GetGrid(CTA_Metainfo hobsdescr, CTAI_Gridm *hgrid);
 
