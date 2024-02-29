@@ -1,0 +1,101 @@
+$URL: https://repos.deltares.nl/repos/openda/public/trunk/core/native/TODO $
+$Revision: 761 $, $Date: 2008-12-19 12:52:42 +0100 (Fri, 19 Dec 2008) $
+
+COSTA is a work in progress. You are welcome to contribute. If you wish to
+do so please let us know at info@costapse.org.
+
+Be sure that you become familiar with the basic concepts of COSTA and its
+design ideas first. For this you may use the Getting Started document
+(see `doc/index.html') and browse through the Developers Guide.
+
+Here a list of ideas for extension and refinement of the COSTA system.
+
+
+------------------------------------------------------------------------ 
+
+ * the Getting Started document should be extended. 
+    - It should contain a complete hello-world application, for which the
+      code could be provided in the examples-directory as well.
+    - It should provide an example that illustrates the use of COSTA trees.
+    - The programming conventions should be described, such as use of
+      handles, build-up of component- and subroutine-names, etc.
+    - The interfacing with OpenDA should be elaborated upon.
+    - The description of the model-builders should be extended.
+    - The description of parallel computing should be made consistent with
+      the newest ideas on this.
+    - A complete step-by-step guide should be added for the migration of an
+      existing elementary model to a COSTA-application.
+
+------------------------------------------------------------------------ 
+
+ * in the Getting Started document the terminology for the use of object
+   orientation in COSTA is slightly modified. Most data types are now
+   called "classes" instead of "components". This change in terminology
+   should be implemented throughout the COSTA system (code and
+   documentation).
+
+------------------------------------------------------------------------ 
+
+ * a few elementary "methods" should be provided such that the migration
+   of existing model code can be done step-by-step
+    - the no-asm method should be added, that performs a deterministic
+      model simulation without data-assimilation;
+    - the no-asm method should be able to produce "observations" for
+      performing a twin experiment;
+    - the repeat-method should be added, that performs each time step of
+      the deterministic model twice, and that tests whether the model step
+      is repeatable.
+
+------------------------------------------------------------------------ 
+
+ * the *_tool-directories under old_stuff/methods contain rough
+   implementations of data assimilation methods that extend on the existing
+   methods available in src/methods. These extensions should be integrated
+   into the central implementations in src/methods.
+
+------------------------------------------------------------------------ 
+
+ * the ideas with respect to object orientation in COSTA might be worked
+   out further, among others with respect to different implementations of
+   a base class. For instance the ideas for inheritance of a distributed
+   vector or a sparse vector from the generic vector class might be worked
+   out in detail.
+
+------------------------------------------------------------------------ 
+
+ * the time-class might be extended with various time-scales and
+   representations, time-zones, etc.
+
+------------------------------------------------------------------------ 
+
+ * a simple hello-world application should be provided in the examples
+   directory, illustrating the basics of Costa and the Costa string class.
+
+------------------------------------------------------------------------ 
+
+cta_datatypes.h:
+ * remove usage of CTA_STRLEN_NAME and CTA_STRLEN_TAG
+ * think of something smart for CTA_F77_STDOUT
+
+cta_file:
+ * Implementation of open function
+ * support for both C as FORTRAN files
+
+cta_functions:
+ * The interface that is set should be a copy
+ * returning the name of the function should be a COSTA string object
+
+cta_model:
+ * The contruction of a state is very complicated and not known outside
+   the model. For that reason it is possible to have a state being created
+   for you for one of the 'get'-methods. We should think of someting to
+   add some extra configuration like e.g. what vector representation and
+   state-vector class to use.
+ * The covariance matrix of the noise parameters is now represented as an
+   array of state vectors. Altough very usefull for rrsqrt, it is not really
+   elegant. Maybe it must be represented differently in the future.
+  
+cta_obsdescr:
+ * In the interface of CTA_ObsDescr_Get_Properties is argument datatype. 
+   It shouldn't be there because it is part of a vector.
+
