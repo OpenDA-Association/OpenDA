@@ -4,8 +4,11 @@ project(openda
   LANGUAGES C CXX Fortran
 )
 
+option(BUILD_MODELS "Build example models" ON)
+
 message(STATUS "------------------------------------------------------------")
 message(STATUS "Build configuration:")
+message(STATUS "    Build example models  ${BUILD_MODELS}")
 message(STATUS "    CMAKE_INSTALL_PREFIX  ${CMAKE_INSTALL_PREFIX}")
 if(DEFINED JAVA_HOME)
   message(STATUS "    JAVA_HOME             ${JAVA_HOME}")
@@ -46,6 +49,10 @@ add_subdirectory(cta/src)
 add_subdirectory(cta_f90/generated)
 add_subdirectory(bridge/src)
 
+if(${BUILD_MODELS})
+  add_subdirectory(models)
+endif()
+
 # Install libraries.
 install(TARGETS
   blas
@@ -54,6 +61,15 @@ install(TARGETS
   cta_f90
   opendabridge
 )
+if(${BUILD_MODELS})
+  install(TARGETS
+    advec1d
+    heat_stoch
+    oscill
+    pollute2d
+    resultwriter
+  )
+endif()
 
 # Install public headers.
 file(GLOB CTA_PUBLIC_HEADERS
