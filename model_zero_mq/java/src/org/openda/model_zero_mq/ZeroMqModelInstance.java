@@ -8,11 +8,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.*;
 import org.openda.interfaces.*;
-import org.openda.utils.Array;
-import org.openda.utils.DoubleArraySearch;
-import org.openda.utils.Instance;
-import org.openda.utils.Time;
+import org.openda.utils.*;
 import org.openda.utils.io.AnalysisDataWriter;
+import org.openda.utils.io.FileBasedModelState;
 import org.zeromq.ZMQ;
 
 import java.io.File;
@@ -78,6 +76,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private final ZMQ.Socket socket;
 	private final File modelRunDir;
 	private final String modelConfigFile;
+	private final File inputStateDir;
+	private final File outputStateDir;
 	private final int modelInstanceNumber;
 
 	private final Map<String, IExchangeItem> exchangeItems;
@@ -102,11 +102,14 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		}
 	}
 
-	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos) {
+	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos, String inputStateDirectory, String outputStateDirectory) {
 		this.modelInstanceNumber = modelInstanceNumber;
 		this.socket = socket;
 		this.modelRunDir = modelRunDir;
 		this.modelConfigFile = modelConfigFile;
+		this.inputStateDir = new File(modelRunDir, inputStateDirectory);
+		this.outputStateDir = new File(modelRunDir, outputStateDirectory);
+		if (!inputStateDir.exists()&& !inputStateDir.mkdirs()) throw new RuntimeException(getClass().getSimpleName() + ": Cannot create input state directory " + inputStateDir.getAbsolutePath());
 
 		initializeModel();
 
@@ -737,22 +740,33 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public IModelState saveInternalState() {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.saveInternalState() not implemented yet");
+		if (!outputStateDir.exists() && !outputStateDir.mkdirs())
+			throw new RuntimeException(getClass().getSimpleName() + ": Cannot create output state directory " + outputStateDir.getAbsolutePath());
+
+		//save state to disk.
+		Results.putMessage(this.getClass().getSimpleName() + ": saving internal state to output state files for instance " + this.modelRunDir.getAbsolutePath());
+		this.saveState(outputStateDir.getAbsoluteFile());
+
+		//create a FileBasedModelState object that refers to the folder with output state files.
+		return new ZeroMqModelState(outputStateDir);
 	}
 
 	@Override
 	public void restoreInternalState(IModelState savedInternalState) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.restoreInternalState() not implemented yet");
+		Results.putMessage(this.getClass().getSimpleName() + ": restoring internal state from input state files for instance " + this.modelRunDir.getAbsolutePath());
+		loadState(inputStateDir.getAbsoluteFile());
 	}
 
 	@Override
-	public void releaseInternalState(IModelState savedInternalState) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.releaseInternalState() not implemented yet");
-	}
+	public void releaseInternalState(IModelState savedInternalState) {}
 
 	@Override
-	public IModelState loadPersistentState(File persistentStateFile) {
-		throw new RuntimeException("org.openda.model_wflow.ZeroMQModelInstance.loadPersistentState() not implemented yet");
+	public IModelState loadPersistentState(File persistentStateZipFile) {
+		Results.putMessage(this.getClass().getSimpleName() + ": unzipping state files from zip file " + persistentStateZipFile.getAbsolutePath() + " to directory " + this.inputStateDir.getAbsolutePath());
+		FileBasedModelState persistentState = new ZeroMqModelState(this.inputStateDir);
+		persistentState.setZippedStateFile(persistentStateZipFile);
+		persistentState.restoreState();
+		return persistentState;
 	}
 
 	@Override
@@ -763,5 +777,19 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	@Override
 	public void setInOutputMode(boolean inOutputMode) {
 		this.inOutputMode = inOutputMode;
+	}
+
+	private static class ZeroMqModelState extends FileBasedModelState {
+		private final File stateFilesDirectory;
+
+		public ZeroMqModelState(File stateFilesDirectory) {
+			super(stateFilesDirectory);
+			this.stateFilesDirectory = stateFilesDirectory;
+		}
+
+		public void savePersistentState(File savedStateFile) {
+			Results.putMessage(this.getClass().getSimpleName() + ": zipping state files from directory " + this.stateFilesDirectory.getAbsolutePath() + " to zip file " + savedStateFile.getAbsolutePath());
+			super.savePersistentState(savedStateFile);
+		}
 	}
 }
