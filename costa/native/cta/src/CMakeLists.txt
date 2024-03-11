@@ -76,6 +76,8 @@ if(WIN32)
   target_compile_definitions(cta PRIVATE CTALIB)
   # Call BLAS and LAPACK subroutines with capitalised names.
   target_compile_definitions(cta PRIVATE FTN_CAPITAL)
+  # Use Unicode paths for the Windows API as assumed in the implementation.
+  target_compile_definitions(cta PRIVATE UNICODE)
 endif()
 
 target_include_directories(cta PRIVATE
