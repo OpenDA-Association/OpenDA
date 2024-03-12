@@ -716,9 +716,10 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 			analysisDataWriter.writeDataAfterAnalysis();
 		}
 
-		double mjd = targetTime.getMJD() - startTimeMjd;
-		double time = mjd * timeUnit.partsInDay;
-		updateUntil(time);
+		double days = targetTime.getMJD() - startTimeMjd;
+		double time = days * timeUnit.partsInDay;
+		double roundedTime = Math.round(1_000_000 * time) / 1_000_000d;
+		updateUntil(roundedTime);
 
 		analysisDataWriter.writeDataBeforeAnalysis();
 	}
