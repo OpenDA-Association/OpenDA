@@ -90,11 +90,16 @@ if(${BUILD_MODELS})
   )
 endif()
 
-# Install public headers.
+# Install public C headers and Fortran include files.
 file(GLOB CTA_PUBLIC_HEADERS
   "cta/include/*.h"
 )
-install(FILES ${CTA_PUBLIC_HEADERS}
+file(GLOB CTA_FORTRAN_INCLUDES
+  "cta_f90/include/*.inc"
+)
+install(FILES
+  ${CTA_PUBLIC_HEADERS}
+  ${CTA_FORTRAN_INCLUDES}
   DESTINATION include
 )
 
