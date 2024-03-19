@@ -191,22 +191,16 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		Map<String, IExchangeItem> result = new HashMap<>();
 
 		for (String variable : inputVars) {
-			if (variable.endsWith("[4]")) continue;
-			if (variable.endsWith("[5]")) continue;
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Input, false);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
-			if (variable.endsWith("[4]")) continue;
-			if (variable.endsWith("[5]")) continue;
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Output, false);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
-			if (variable.endsWith("[4]")) continue;
-			if (variable.endsWith("[5]")) continue;
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.InOut, false);
 			result.put(variable, item);
 		}
