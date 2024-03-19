@@ -50,7 +50,6 @@ public class OpenDaConfiguration {
 	private boolean vectorIsNative;
 	private StochVector.InitialSeedType initialSeedType = StochVector.InitialSeedType.fixed;
 	private int initialSeedValue;
-	private final boolean restartOnlyAtEndOfRun;
 
 	public OpenDaConfiguration(OpenDaComponentConfig stochObserverConfig,
 							   OpenDaComponentConfig stochModelFactoryConfig,
@@ -58,11 +57,10 @@ public class OpenDaConfiguration {
 							   List<OpenDaResultWriterConfig> resultWriterConfigs,
 							   File restartInFile,
 							   File restartOutFilePrefix, String restartOutFileExtension,
-							   String restartOutFileTimes, boolean restartOnlyAtEndOfRun, String restartOutFileTimeFormat, boolean restartOutFileTimeTag,
+							   String restartOutFileTimes, String restartOutFileTimeFormat, boolean restartOutFileTimeTag,
 							   boolean doTiming, boolean productionRun,
 							   double timePrecision, boolean vectorPrecisionIsFloat, boolean vectorIsNative,
 							   StochVector.InitialSeedType initialSeedType, int initialSeedValue) {
-		this.restartOnlyAtEndOfRun = restartOnlyAtEndOfRun;
 		componentConfigs = new OpenDaComponentConfig[NUM_COMPONENT_TYPES];
 		componentConfigs[STOCH_OBSERVER] = stochObserverConfig;
 		componentConfigs[STOCH_MODEL_FACTORY] = stochModelFactoryConfig;
@@ -149,8 +147,4 @@ public class OpenDaConfiguration {
 	public StochVector.InitialSeedType getInitialSeedType() { return initialSeedType; }
 
 	public int getInitialSeedValue() { return initialSeedValue; }
-
-	public boolean isRestartOnlyAtEndOfRun() {
-		return restartOnlyAtEndOfRun;
-	}
 }

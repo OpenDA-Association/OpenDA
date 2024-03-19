@@ -173,8 +173,6 @@ public class OpenDaConfigurationReader {
 			restartOutFileTimes = applicationXML.getRestartOutFileTimes().getContent();
 			restartOutFileTimeFormat = applicationXML.getRestartOutFileTimes().getTimeFormat().toString();
 		}
-		boolean restartOnlyAtEndOfRun = applicationXML.getRestartOutFileOnlyAtEndOfRun();
-		if (restartOutFileTimes != null && restartOnlyAtEndOfRun) throw new RuntimeException("Config.Error: <restartOutFileTimes> should not be used in combination with <restartOutFileOnlyAtEndOfRun>true");
 
 		boolean doTiming = false;
 		if (applicationXML.getTimingSettings() != null) {
@@ -246,7 +244,7 @@ public class OpenDaConfigurationReader {
 		openDaConfiguration = new OpenDaConfiguration(stochObserverConfig, stochModelFactoryConfig,
 				algorithmConfig, resultWriterConfigs,
 				restartInFile, restartOutFilePrefix, restartOutFileExtension,
-				restartOutFileTimes, restartOnlyAtEndOfRun, restartOutFileTimeFormat,restartOutFileTimeTag,
+				restartOutFileTimes, restartOutFileTimeFormat,restartOutFileTimeTag,
 				doTiming, productionRun, timePrecision, vectorPrecisionIsFloat, vectorIsNative,
 				initialSeedType, initialSeedValue);
     }
