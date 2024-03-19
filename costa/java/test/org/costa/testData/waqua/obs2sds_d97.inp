@@ -1,0 +1,381 @@
+ WATERLEVEL
+
+    STATION NAME N = 'Wick'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  49.2524986
+          System       ='ED50'    
+             LONGITUDE       : d=  -3.0000  m=   0.0000  s=  -0.0020
+             LATITUDE       : d=  58.0000  m=  24.0000  s=  58.5000
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000     9999.00000
+              4330.00000     9999.00000
+              4340.00000     9999.00000
+              4350.00000     9999.00000
+              4360.00000     9999.00000
+              4370.00000     9999.00000
+              4380.00000     9999.00000
+              4390.00000     9999.00000
+              4400.00000     9999.00000
+              4410.00000     9999.00000
+              4420.00000     9999.00000
+              4430.00000     9999.00000
+              4440.00000     9999.00000
+
+    STATION NAME N = 'North Shields'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  30.4200001
+          System       ='ED50'    
+             LONGITUDE       : d=  -1.0000  m= -22.0000  s= -30.0015
+             LATITUDE       : d=  54.0000  m=  59.0000  s=  59.0000
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000       -2.21000
+              4330.00000       -2.14000
+              4340.00000       -2.05000
+              4350.00000       -1.98000
+              4360.00000       -1.87000
+              4370.00000       -1.74000
+              4380.00000       -1.62000
+              4390.00000       -1.48000
+              4400.00000       -1.34000
+              4410.00000       -1.17000
+              4420.00000       -1.01000
+              4430.00000       -0.82000
+              4440.00000       -0.61000
+
+    STATION NAME N = 'Lowestoft'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  14.5
+          System       ='ED50'    
+             LONGITUDE       : d=   1.0000  m=  44.0000  s=  59.9985
+             LATITUDE       : d=  52.0000  m=  29.0000  s=  59.3594
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000     9999.00000
+              4330.00000     9999.00000
+              4340.00000     9999.00000
+              4350.00000     9999.00000
+              4360.00000     9999.00000
+              4370.00000     9999.00000
+              4380.00000     9999.00000
+              4390.00000     9999.00000
+              4400.00000     9999.00000
+              4410.00000     9999.00000
+              4420.00000     9999.00000
+              4430.00000     9999.00000
+              4440.00000     9999.00000
+
+    STATION NAME N = 'Sheerness'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  8.92749977
+          System       ='ED50'    
+             LONGITUDE       : d=   0.0000  m=  52.0000  s=  29.9983
+             LATITUDE       : d=  51.0000  m=  24.0000  s=  59.5000
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000        0.67000
+              4330.00000        0.81000
+              4340.00000        0.97000
+              4350.00000        1.12000
+              4360.00000        1.26000
+              4370.00000        1.41000
+              4380.00000        1.55000
+              4390.00000        1.71000
+              4400.00000        1.85000
+              4410.00000        1.99000
+              4420.00000        2.12000
+              4430.00000        2.24000
+              4440.00000        2.35000
+
+    STATION NAME N = 'Vlissingen'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  7.75500011
+          System       ='ED50'    
+             LONGITUDE       : d=   3.0000  m=  29.0000  s=  59.9980
+             LATITUDE       : d=  51.0000  m=  24.0000  s=  59.5000
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000       -1.15000
+              4330.00000       -1.05000
+              4340.00000       -0.96000
+              4350.00000       -0.87000
+              4360.00000       -0.78000
+              4370.00000       -0.68000
+              4380.00000       -0.57000
+              4390.00000       -0.45000
+              4400.00000       -0.31000
+              4410.00000       -0.14000
+              4420.00000        0.05000
+              4430.00000        0.27000
+              4440.00000        0.53000
+
+    STATION NAME N = 'Hoek van Holland'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  14.7350006
+          System       ='ED50'    
+             LONGITUDE       : d=   3.0000  m=  59.0000  s=  59.9980
+             LATITUDE       : d=  51.0000  m=  59.0000  s=  59.4219
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000       -0.82000
+              4330.00000       -0.82000
+              4340.00000       -0.81000
+              4350.00000       -0.80000
+              4360.00000       -0.78000
+              4370.00000       -0.78000
+              4380.00000       -0.73000
+              4390.00000       -0.72000
+              4400.00000       -0.68000
+              4410.00000       -0.64000
+              4420.00000       -0.61000
+              4430.00000       -0.58000
+              4440.00000       -0.54000
+
+    STATION NAME N = 'IJmuiden'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  13.2649994
+          System       ='ED50'    
+             LONGITUDE       : d=   4.0000  m=  29.0000  s=  59.9980
+             LATITUDE       : d=  52.0000  m=  24.0000  s=  59.3594
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000       -1.06000
+              4330.00000       -1.07000
+              4340.00000       -1.07000
+              4350.00000       -1.10000
+              4360.00000       -1.11000
+              4370.00000       -1.08000
+              4380.00000       -1.09000
+              4390.00000       -1.12000
+              4400.00000       -1.13000
+              4410.00000       -1.12000
+              4420.00000       -1.15000
+              4430.00000       -1.16000
+              4440.00000       -1.15000
+
+    STATION NAME N = 'Den Helder'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  19.6725006
+          System       ='ED50'    
+             LONGITUDE       : d=   4.0000  m=  37.0000  s=  29.9980
+             LATITUDE       : d=  52.0000  m=  59.0000  s=  59.2812
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000       -0.85000
+              4330.00000       -0.90000
+              4340.00000       -0.95000
+              4350.00000       -0.99000
+              4360.00000       -1.04000
+              4370.00000       -1.09000
+              4380.00000       -1.12000
+              4390.00000       -1.15000
+              4400.00000       -1.18000
+              4410.00000       -1.21000
+              4420.00000       -1.25000
+              4430.00000       -1.28000
+              4440.00000       -1.32000
+
+    STATION NAME N = 'Harlingen'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  2.49250007
+          System       ='ED50'    
+             LONGITUDE       : d=   5.0000  m=  22.0000  s=  29.9980
+             LATITUDE       : d=  53.0000  m=  14.0000  s=  59.2344
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000        0.15000
+              4330.00000        0.11000
+              4340.00000        0.07000
+              4350.00000        0.01000
+              4360.00000       -0.05000
+              4370.00000       -0.10000
+              4380.00000       -0.16000
+              4390.00000       -0.21000
+              4400.00000       -0.27000
+              4410.00000       -0.32000
+              4420.00000       -0.38000
+              4430.00000       -0.43000
+              4440.00000       -0.49000
+
+    STATION NAME N = 'Dover'
+
+       COORDINATES
+          Zpos         =  0.
+          Zref         ='NAP'               
+          Bottom       =  14.6300001
+          System       ='ED50'    
+             LONGITUDE       : d=   1.0000  m=  22.0000  s=  29.9985
+             LATITUDE       : d=  51.0000  m=   9.0000  s=  59.5469
+
+       TIMES
+          Zone         ='MET'
+          Offset       = 0.0 # minutes
+          Series       ='IRREGULAR'
+          RefDate      = '13 DEC 1997'
+          DateFormat   ='mmmmmmmmmm'
+
+       VALUES
+          Dummy        =  9999.
+          Unit         ='m'                 
+          ConversionFac= 1.0
+          StandardDev  =  1.41421354 # m         
+
+       DATA VALUES
+              4320.00000     9999.00000
+              4330.00000     9999.00000
+              4340.00000     9999.00000
+              4350.00000     9999.00000
+              4360.00000     9999.00000
+              4370.00000     9999.00000
+              4380.00000     9999.00000
+              4390.00000     9999.00000
+              4400.00000     9999.00000
+              4410.00000     9999.00000
+              4420.00000     9999.00000
+              4430.00000     9999.00000
+              4440.00000     9999.00000
