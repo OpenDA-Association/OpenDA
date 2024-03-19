@@ -17,10 +17,8 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Update Ubuntu packages
-        run: sudo apt-get update
       - name: Install Ubuntu packages
-        run: sudo apt-get install jq gfortran mpi-default-dev libnetcdf-dev liblapack-dev
+        run: sudo apt-get update && sudo apt-get -y install jq cmake gfortran mpi-default-dev libnetcdf-dev libxml2-dev
       - name: Build Native code
         run: bash ci_compile_native.sh
       - name: Ant Build Castor xml-parser code

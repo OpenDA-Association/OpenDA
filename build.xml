@@ -339,8 +339,8 @@
   build archives
   ============================================================================================================
   -->
-    <target name="zip" depends="vc-revision,chmod-linux-native,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
-    <target name="tgz" depends="vc-revision,chmod-linux-native,build,copy-jre,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas,tgz-jre" />
+    <target name="zip" depends="vc-revision,build,doc,zip-src,zip-bin,zip-doc,zip-schemas" />
+    <target name="tgz" depends="vc-revision,build,copy-jre,doc,tgz-src,tgz-bin,tgz-doc,tgz-schemas,tgz-jre" />
     <target name="zip-win32" depends="vc-revision,build-win32,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
     <target name="zip-x64" depends="vc-revision,build-x64,doc,zip-src,zip-bin,zip-doc,zip-schemas,zip-jre" />
     <target name="zip-windows" depends="zip-win32" />
@@ -550,7 +550,7 @@
         <tgztest testname="model_delft3d" />
         <tgztest testname="model_dflowfm_blackbox" />
     </target>
-    <target name="tgz-native" depends="vc-revision,chmod-linux-native" >
+    <target name="tgz-native" depends="vc-revision" >
        <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_native.tgz">
 	       <tarfileset dir="core/native_bin/linux64_gnu" prefix="linux64_gnu" excludes="*.svn"/>
 	       <tarfileset dir="core/native_bin/darwin" prefix="darwin" excludes="*.svn"/>
