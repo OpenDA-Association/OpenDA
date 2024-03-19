@@ -19,7 +19,7 @@
 */
 
 
-package org.costa;
+package org.openda.costa;
 
 import junit.framework.TestCase;
 
