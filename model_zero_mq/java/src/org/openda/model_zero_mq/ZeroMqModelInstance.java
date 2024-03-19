@@ -81,10 +81,10 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	private final int modelInstanceNumber;
 
 	private final Map<String, IExchangeItem> exchangeItems;
-	//private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 	private final Map<String, IExchangeItem> forcingExchangeItems;
 	private final Map<String, IExchangeItem> staticLimitExchangeItems;
 	private final LinkedHashMap<String, IExchangeItem> modelStateExchangeItems;
+	private Map<String, DoublesExchangeItem> bufferedExchangeItems;
 
 	private boolean inOutputMode = false;
 	private TimeUnit timeUnit;
@@ -109,7 +109,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		this.modelConfigFile = modelConfigFile;
 		this.inputStateDir = new File(modelRunDir, inputStateDirectory);
 		this.outputStateDir = new File(modelRunDir, outputStateDirectory);
-		if (!inputStateDir.exists()&& !inputStateDir.mkdirs()) throw new RuntimeException(getClass().getSimpleName() + ": Cannot create input state directory " + inputStateDir.getAbsolutePath());
+		if (!inputStateDir.exists() && !inputStateDir.mkdirs()) throw new RuntimeException(getClass().getSimpleName() + ": Cannot create input state directory " + inputStateDir.getAbsolutePath());
 
 		initializeModel();
 
@@ -143,6 +143,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 		this.analysisDataWriter = new AnalysisDataWriter(analysisExchangeItems, modelRunDir);
 	}
+
 	private Map<String, IExchangeItem> createForcingExchangeItems(ArrayList<ZeroMqModelForcingConfig> bmiModelForcingConfigs) {
 		Map<String, IExchangeItem> result = new HashMap<>();
 
@@ -190,16 +191,22 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		Map<String, IExchangeItem> result = new HashMap<>();
 
 		for (String variable : inputVars) {
+			if (variable.endsWith("[4]")) continue;
+			if (variable.endsWith("[5]")) continue;
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Input, false);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
+			if (variable.endsWith("[4]")) continue;
+			if (variable.endsWith("[5]")) continue;
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Output, false);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
+			if (variable.endsWith("[4]")) continue;
+			if (variable.endsWith("[5]")) continue;
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.InOut, false);
 			result.put(variable, item);
 		}
@@ -222,7 +229,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 			analysisExchangeItems.add(analysisEI);
 		}
 
-		IrregularGridGeometryInfo irregularGridGeometryInfo = new IrregularGridGeometryInfo(0, latitudesForIndividualPoints, longitudesForIndividualPoints);
+		IrregularGridGeometryInfo irregularGridGeometryInfo = new IrregularGridGeometryInfo(latitudesForIndividualPoints.length, latitudesForIndividualPoints, longitudesForIndividualPoints);
 		return new ZeroMqOutputExchangeItem(variable, input, this, modelMissingValue, irregularGridGeometryInfo, quantityInfo);
 	}
 
@@ -247,7 +254,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		int[] longitudeValueIndices = new int[]{1};
 
 		IQuantityInfo latitudeQuantityInfo = new QuantityInfo("y coordinate according to model coordinate system", "meter");
-		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system","meter");
+		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system", "meter");
 		ArrayGeometryInfo arrayGeometryInfo = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
 		return new ZeroMqAnalysisOutputExchangeItem(variable, arrayGeometryInfo, latitudeIndices, longitudeIndices, quantityInfo, this, modelMissingValue, latitudeArray.length(), longitudeArray.length());
 	}
@@ -443,10 +450,11 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	public int getVarItemSize(String id) {
-		if (id.equals("lateral.land.alpha_pow")) {
-			System.out.println("get var itemsize for " + id);
+		JsonNode replyById = getReplyById(FUNCTION_GET_VAR_ITEM_SIZE, RETURN_ITEM_SIZE, id);
+		if (replyById == null) {
+			System.out.println("No reply for " + id);
 		}
-		return getReplyById(FUNCTION_GET_VAR_ITEM_SIZE, RETURN_ITEM_SIZE, id).asInt();
+		return replyById.asInt();
 	}
 
 	public int getVarNBytes(String id) {
@@ -655,6 +663,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		} catch (JsonProcessingException jsonProcessingException) {
 			throw new RuntimeException(jsonProcessingException);
 		}
+		bufferedExchangeItems = null;
 	}
 
 	@Override
@@ -664,12 +673,45 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void announceObservedValues(IObservationDescriptions observationDescriptions) {
-/*		ITime[] selectedTimes = observationDescriptions.getTimes();
+		ITime[] selectedTimes = observationDescriptions.getTimes();
 		if (selectedTimes == null || selectedTimes.length == 0) {
 			return;
 		}
-			if (bufferedExchangeItems != null) { bufferedExchangeItems.clear(); }
-			bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);*/
+		if (bufferedExchangeItems != null) {
+			bufferedExchangeItems.clear();
+		}
+		bufferedExchangeItems = createBufferedExchangeItems(selectedTimes);
+	}
+
+	private Map<String, DoublesExchangeItem> createBufferedExchangeItems(ITime[] bufferTimes) {
+		Map<String, DoublesExchangeItem> result = new HashMap<String, DoublesExchangeItem>();
+
+		// ITime has no double[] getTimes?
+		double[] selectedTimes = new double[bufferTimes.length];
+		for (int i = 0; i < bufferTimes.length; i++) {
+			selectedTimes[i] = bufferTimes[i].getMJD();
+		}
+
+		for (Map.Entry<String, IExchangeItem> entry : this.exchangeItems.entrySet()) {
+			IGeometryInfo geometryInfo = entry.getValue().getGeometryInfo();
+			int cellCount;
+			if (geometryInfo instanceof IrregularGridGeometryInfo) {
+				IrregularGridGeometryInfo irregularGridGeometryInfo = (IrregularGridGeometryInfo) geometryInfo;
+				cellCount = irregularGridGeometryInfo.getCellCount();
+			} else if (geometryInfo instanceof ArrayGeometryInfo) {
+				cellCount = ((ArrayGeometryInfo) geometryInfo).getCellCount();
+			} else {
+				System.out.println("Oei!");
+				cellCount = 1;
+			}
+			int[] dimensions = new int[]{bufferTimes.length, cellCount};
+			DoublesExchangeItem bufferExchangeItem = new DoublesExchangeItem(entry.getKey(), IExchangeItem.Role.Output,
+				new double[cellCount * bufferTimes.length], dimensions);
+			bufferExchangeItem.setTimeInfo(new TimeInfo(selectedTimes));
+			result.put(entry.getKey(), bufferExchangeItem);
+		}
+
+		return result;
 	}
 
 	@Override
@@ -679,9 +721,9 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public IExchangeItem getExchangeItem(String exchangeItemId) {
-/*		if (inOutputMode && bufferedExchangeItems !=null && bufferedExchangeItems.containsKey(exchangeItemId)) {
+		if (inOutputMode && bufferedExchangeItems != null && bufferedExchangeItems.containsKey(exchangeItemId)) {
 			return bufferedExchangeItems.get(exchangeItemId);
-		}*/
+		}
 		return getDataObjectExchangeItem(exchangeItemId);
 	}
 
@@ -720,8 +762,32 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		double time = days * timeUnit.partsInDay;
 		double roundedTime = Math.round(1_000_000 * time) / 1_000_000d;
 		updateUntil(roundedTime);
+		setBufferEIsfromModelEIs(getCurrentTime().getMJD());
 
 		analysisDataWriter.writeDataBeforeAnalysis();
+	}
+
+	private void setBufferEIsfromModelEIs(double currentTimeMJD) {
+		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
+		if (bufferedExchangeItems == null) return;
+		for (Map.Entry<String, DoublesExchangeItem> entry : bufferedExchangeItems.entrySet()) {
+			IExchangeItem bufferEI = entry.getValue();
+			double[] times = bufferEI.getTimes();
+			String key = entry.getKey();
+			/*if (key.equals("lateral.river.q_av")) {
+				System.out.println("Here!");
+			}*/
+			double[] newValues = exchangeItems.get(key).getValuesAsDoubles();
+			for (int aTimeIndex = 0; aTimeIndex < times.length; aTimeIndex++) {
+				if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
+					double[] allValues = bufferEI.getValuesAsDoubles();
+					int valuesPerTime = newValues.length;
+					int offset = aTimeIndex * valuesPerTime;
+					System.arraycopy(newValues, 0, allValues, offset, valuesPerTime);
+					bufferEI.setValuesAsDoubles(allValues);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -759,7 +825,8 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 	@Override
-	public void releaseInternalState(IModelState savedInternalState) {}
+	public void releaseInternalState(IModelState savedInternalState) {
+	}
 
 	@Override
 	public IModelState loadPersistentState(File persistentStateZipFile) {
