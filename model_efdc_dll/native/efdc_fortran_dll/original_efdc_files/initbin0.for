@@ -27,6 +27,7 @@ C
 C-------------------------------------------------------------------
 C
       USE GLOBAL
+      USE MPI
 C
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::XLON  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::YLAT  
@@ -117,7 +118,7 @@ C---------------------------------------------------------
 C
 C IF HYDTS.BIN ALREADY EXISTS, OPEN FOR APPENDING HERE.
 C
-      IF(ISTMSR .EQ. 2)THEN
+      IF(ISTMSR .EQ. 2.AND.MYRANK.EQ.0)THEN
         IO = 1
 5       IO = IO+1
         IF(IO .GT. 99)THEN
@@ -144,7 +145,7 @@ C-------------------------------------------------------------------
 C
 C IF HYDTS.BIN ALREADY EXISTS, DELETE IT HERE.
 C
-      IF(ISTMSR .EQ. 1)THEN
+      IF(ISTMSR .EQ. 1.AND.MYRANK.EQ.0)THEN
         TBEGAN = TBEGIN
         IO = 1
 10      IO = IO+1

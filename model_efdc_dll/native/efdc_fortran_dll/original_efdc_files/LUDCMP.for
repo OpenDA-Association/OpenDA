@@ -5,6 +5,8 @@ C
       PARAMETER (TINY=1.0E-20)  
       DIMENSION A(NP,NP),INDX(N)  
       REAL,ALLOCATABLE,DIMENSION(:)::VV  
+      INTEGER IMAX
+      IMAX=0
       ALLOCATE(VV(N))  
 C  
       D=1.  
@@ -13,7 +15,11 @@ C
         DO 11 J=1,N  
           IF(ABS(A(I,J)).GT.AAMAX) AAMAX=ABS(A(I,J))  
    11   CONTINUE  
-        IF(AAMAX.EQ.0.) PAUSE 'SINGULAR MATRIX.'  
+        IF(AAMAX.EQ.0.) THEN
+            PRINT *, 'SINGULAR MATRIX.'
+            PRINT *, "Application suspended. Hit ENTER to continue"
+            READ(*,*)
+        ENDIF
         VV(I)=1./AAMAX  
    12 CONTINUE  
       DO 19 J=1,N  

@@ -5,7 +5,7 @@ C ** SUBROUTINE CALQVS UPDATES TIME VARIABLE VOLUME SOURCES
 C  
       USE GLOBAL  
 
-      REAL T1TMP, SECNDS
+      REAL T1TMP,T2TMP
       INTEGER*4  NS
       
       ! *** PMC
@@ -37,79 +37,51 @@ C
           GWCSERT(0,NC)=0.  
         ENDDO  
       
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA  
           QGW(L)=0.0  
         END DO
         IF(ISTRAN(5).GT.0)THEN  
           DO NC=1,NCTMP  
-            DO L=LF,LL
+            DO L=2,LA  
               CONGW(L,NC)=0.0  
             END DO  
           END DO  
         ENDIF
-c
-      enddo
       ENDIF
 C  
 C **  INITIALIZE TOTAL FLOW SERIES  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      DO L=1,LC
         QSUM1E(L)=QSUME(L)  ! *** DSLLC SINGLE LINE
         QSUME(L)=0.  
       ENDDO  
-c
-      enddo
       
       ! *** SELECTIVE ZEROING
       IF(KC.GT.1)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
         IF(NGWSER.GT.0.OR.ISGWIT.NE.0)THEN
-          DO L=LF,LL
+          DO L=1,LC  
             QSUM(L,1)=0.  
           ENDDO  
         ENDIF
         
         ! *** ZERO EVAP/RAINFALL        
-        DO L=LF,LL
+        DO L=1,LC  
           QSUM(L,KC)=0.  
         ENDDO  
-c
-      enddo
         
         ! *** ZERO ALL DEFINED BC'S
-          DO K=1,KC
         DO NS=1,NBCS
           L=LBCS(NS)
+          DO K=1,KC
             QSUM(L,K)=0.
           ENDDO
         ENDDO
 
       ELSE
         ! *** SINGLE LAYER
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-        DO L=LF,LL
+        DO L=1,LC  
           QSUM(L,1)=0.  
         ENDDO  
-c
-      enddo
       ENDIF
 C  
 C **  VOLUME SOURCE/SINK INTERPOLATION  
@@ -204,40 +176,26 @@ C
             GWCSERT(NC,NS)=WTM1*GWCSER(M1,NC,NS)+WTM2*GWCSER(M2,NC,NS)  
           END DO  
         ENDDO  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA  
           QGW(L)=GWFAC(L)*GWSERT(NGWSL(L))  
         END DO
         IF(ISTRAN(5).GT.0)THEN  
           DO NC=1,NCTMP  
-            DO L=LF,LL
+            DO L=2,LA  
               CONGW(L,NC)=GWCSERT(NC,NGWSL(L))  
             END DO  
           END DO  
         ENDIF
-c
-      enddo
       ENDIF  
 
       ! *** CONSTANT GW LOSSES
       IF(ISGWIT.EQ.3)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA
           IF(H1P(L).GE.HDRY)THEN
             !VOLOUTO=VOLOUTO+RIFTR(L)*DTIM
             QSUM(L,1)=QSUM(L,1)-RIFTR(L)
           ENDIF
         ENDDO
-c
-      enddo
         !IF((H1P(343).GE.HDRY.or.HP(343).GE.HDRY).and.TIMEDAY.GT.6.5)THEN
         !  VOLOUTE=VOLOUTE+RIFTR(L)*DTIM
         !  WRITE(99,*)N,TIMEDAY,RIFTR(L),H1P(L),HP(L),VOLOUTE
@@ -246,7 +204,7 @@ c
 C  
 C **  CONTROL STRUCTURES AND TIDAL INLETS  
 C  
-      T1TMP=SECNDS(0.0)  
+      CALL CPU_TIME(T1TMP)  
       DO NCTL=1,NQCTL  
         IF(NQCTYP(NCTL).LE.1)THEN  
           NCTLT=NQCTLQ(NCTL)  
@@ -430,7 +388,8 @@ C {   GEOSR 2010.5.6 GATE NORMAL FORMULA
         ENDIF
       ENDIF
 C }   GEOSR 2010.5.6 GATE NORMAL FORMULA
-      TQCTL=TQCTL+SECNDS(T1TMP)  
+      CALL CPU_TIME(T2TMP)
+      TQCTL=TQCTL+T2TMP-T1TMP
 C  
 C **  FLOW WITHDRAWAL AND RETURN  
 C  
@@ -564,14 +523,9 @@ C
 C  
 C **  GROUND WATER INTERACTION, EVAPORATION AND RAINFALL  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,SVPW)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(ISGWIE.EQ.0)THEN  
         IF(EVAPCVT.LT.0.)THEN  
-          DO L=LF,LL
+          DO L=2,LA  
             SVPW=(10.**((0.7859+0.03477*TEM(L,KC))/  
      &          (1.+0.00412*TEM(L,KC))))  
            EVAPT(L)=CLEVAP(L)*0.7464E-3*WINDST(L)*(SVPW-VPA(L))/PATMT(L)  
@@ -579,33 +533,24 @@ c
             QSUM(L,KC)=QSUM(L,KC)+DXYP(L)*(RAINT(L)-EVAPT(L))  
           ENDDO  
         ELSE  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(HP(L).LT.HWET) EVAPT(L)=0.  
             QSUM(L,KC)=QSUM(L,KC)+DXYP(L)*(RAINT(L)-EVAPT(L))  
           ENDDO  
         ENDIF  
       ELSE  
-        DO L=LF,LL
+        DO L=2,LA  
           QSUM(L,KC)=QSUM(L,KC)+DXYP(L)*RAINT(L)  
         ENDDO  
       ENDIF  
-c
-      enddo
 C  
 C **  DETERMINE NET EXTERNAL VOLUME SOURCE/SINK  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=1,LC  
           QSUME(L)=QSUME(L)+QSUM(L,K)  
         ENDDO  
       ENDDO  
-c
-      enddo
 C  
 C **  UPDATE ZERO DIMENSION VOLUME BALANCE  
 C       VOLADD=0.  
@@ -706,14 +651,14 @@ C
       ENDIF  
   101 FORMAT('  SOURCE/SINK DIAGNOSTICS AT TIME STEP =',I8,//)  
   102 FORMAT(3X,'CONST NQSIJ SOURCE/SINK FLOW AT I =',I5,' J =',I5,/)  
-  103 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K,1) = ',E12.4,  
-     &    5X,'CQS(K,5) = ',E12.4)  
-  203 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K, ) = ',  
-     &    5X, 12E12.4)  
+C 103 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K,1) = ',E12.4,  
+C    &    5X,'CQS(K,5) = ',E12.4)  
+C 203 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K, ) = ',  
+C    &    5X, 12E12.4)  
   104 FORMAT(/)  
   105 FORMAT(3X,'TIME VAR NQSIJ SOURCE/SINK FLOW AT I =',I5,' J=',I5,/)  
-  106 FORMAT(5X,'K =',I5,5X,'QSERT(K) = ',E12.4,  
-     &    5X,'CSERT(K,1) = ',E12.4,5X,'CSERT(K,5) = ',E12.4)  
+C 106 FORMAT(5X,'K =',I5,5X,'QSERT(K) = ',E12.4,  
+C    &    5X,'CSERT(K,1) = ',E12.4,5X,'CSERT(K,5) = ',E12.4)  
   206 FORMAT(5X,'NQ,LQ     =',2I4,7X,'QSERT() = ',12E12.4)  
   207 FORMAT(5X,'NQ,NT,NCQ =',3I4,3X,'CSERT() = ',12E12.4)  
   216 FORMAT(5X,'NQ,LQ =',2I4,3X,'QSS() = ',12E12.4)  

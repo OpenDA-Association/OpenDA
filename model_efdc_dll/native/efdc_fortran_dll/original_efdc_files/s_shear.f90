@@ -7,7 +7,7 @@ SUBROUTINE SEDZLJ_SHEAR
   INTEGER::M1,M2
   INTEGER::FZONE
   !PT: All real values are explicitly written in DOUBLE PRECISION 7/16/08.
-  DOUBLE PRECISION::TEMP,MMW,SIGMAWV,JJW
+  DOUBLE PRECISION::MMW,SIGMAWV,JJW
   DOUBLE PRECISION::VELMAG,VELANG,DELW,APROUGH
   DOUBLE PRECISION::UTMP,VTMP
   DOUBLE PRECISION::WVLENGTH,WVANGLE,WFTIM
@@ -15,6 +15,9 @@ SUBROUTINE SEDZLJ_SHEAR
   DOUBLE PRECISION::FWINDS,FWINDD
   DOUBLE PRECISION::TDIFF,WTM1,WTM2,AVGDEPTH
   DOUBLE PRECISION,DIMENSION(LCM)::ZBTEMP
+  VELANG=0.0
+  WVANGLE=0.0
+  FZONE=0
   
   ! CALCULATES Wave and Current Shear Stress Based on Log-Law of Cristofferson Jonsson
   ! 
@@ -212,7 +215,7 @@ SUBROUTINE SEDZLJ_SHEAR
              FWW(L)=MMW*0.15/JJW
              !Calculate total wave and current shear stress (dynes/cm^2)
              TAU(L)=0.5*FWW(L)*WVORBIT(L)**2*10000.0*MMW
-             TAUB(L)=0.1*TAU(L) !PT: conversion from dynes/cm^2 to Pa
+             TAUB(L)=REAL(0.1*TAU(L),KIND(TAUB)) !PT: conversion from dynes/cm^2 to Pa
              USTAR(L)=SQRT(TAUB(L)/1000.0) !only true because USTAR=SQRT(Tau/RhoH2O) and RhoH2O is 1000 kg/cm^3. 
           ENDIF
         ENDIF
@@ -222,7 +225,7 @@ SUBROUTINE SEDZLJ_SHEAR
   ELSE !Set constant tau is TAUCONST (dynes/cm^2) is greater than 0
      DO L=2,LA
         TAU(L)=TAUCONST
-        TAUB(L)=0.1*TAU(L)
+        TAUB(L)=REAL(0.1*TAU(L),KIND(TAUB))
         USTAR(L)=SQRT(TAUB(L)/1000.)
      ENDDO
   ENDIF

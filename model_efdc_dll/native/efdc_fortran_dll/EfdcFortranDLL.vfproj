@@ -2,68 +2,163 @@
 <VisualStudioProject ProjectType="typeDynamicLibrary" ProjectCreator="Intel Fortran" Keyword="Dll" Version="11.0" ProjectIdGuid="{9C6829F1-4638-48ED-8B6B-EA0DA5E59C78}">
 	<Platforms>
 		<Platform Name="Win32"/>
-		<Platform Name="x64"/></Platforms>
+		<Platform Name="x64"/>
+	</Platforms>
 	<Configurations>
-		<Configuration Name="Debug|Win32" TargetName="$(ProjectName)_Debug" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName).dll" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release|Win32" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release OpenMP|Win32" TargetName="$(ProjectName)_OpenMP" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Debug|x64" TargetName="$(ProjectName)_Debug" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName).dll" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win64_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release|x64" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win64_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release OpenMP|x64" TargetName="$(ProjectName)_OpenMP" ConfigurationType="typeDynamicLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories=" $(I_MPI_ONEAPI_ROOT)\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories=" $(I_MPI_ONEAPI_ROOT)\lib\$(ConfigurationName);$(I_MPI_ONEAPI_ROOT)\lib" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Debug 64|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release OpenMP|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release Double Precission|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release OpenMP Double Precission|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" LinkDLL="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release(64bit)|Win32" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays:1024 " SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" FloatingPointExceptionHandling="fpe0" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_Debug.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" GenerateDebugInformation="true" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win64_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Debug 64|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" WarnInterfaces="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release OpenMP|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" FloatingPointModel="source" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(ProjectName)_OpenMP.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy &quot;$(TargetPath)&quot; ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release Double Precission|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" RealKIND="realKIND8" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win32_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release OpenMP Double Precission|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" OpenMP="OpenMPParallelCode" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release(64bit)|x64" UseCompiler="ifortCompiler" ConfigurationType="typeDynamicLibrary">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qopenmp /check:uninit /traceback /Qtrapuv" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\include" PreprocessorDefinitions="WIN32_IFORT" FloatingPointExceptionHandling="fpe0" FloatingPointModel="source" Traceback="true" RuntimeChecks="rtChecksAll" RuntimeLibrary="rtMultiThreadedDLL"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\Program Files (x86)\Intel\oneAPI\mpi\2021.11\lib;C:\Program Files (x86)\Intel\oneAPI\compiler\2024.0\lib;Original EFDC files\" SubSystem="subSystemWindows" StackReserveSize="10000000" LinkDLL="true" AdditionalDependencies="impi.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool" CommandLine="copy $(TargetPath) $(ProjectDir)..\..\native_bin\win64_ifort\" Description="Performing Custom Build Step (copy binaries)" Outputs="EFDC.dll"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="copy $(TargetPath) ..\..\native_bin\win64_ifort\"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
 	</Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd"/>
@@ -74,21 +169,21 @@
 		<File RelativePath=".\openDA_wrapper\model_aser_time_series.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_cser_time_series.f90">
 			<FileConfiguration Name="Release Double Precission|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release Double Precission|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release Double Precission|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release(64bit)|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release(64bit)|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release(64bit)|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
 		<File RelativePath=".\openDA_wrapper\model_end.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_exchange_items.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_extra_global.f90"/>
@@ -100,38 +195,38 @@
 		<File RelativePath=".\openDA_wrapper\model_make_step.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_pser_time_series.f90">
 			<FileConfiguration Name="Release Double Precission|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release Double Precission|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release Double Precission|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release(64bit)|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release(64bit)|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release(64bit)|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
 		<File RelativePath=".\openDA_wrapper\model_qser_time_series.f90">
 			<FileConfiguration Name="Release Double Precission|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release Double Precission|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release Double Precission|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release(64bit)|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
-			<FileConfiguration Name="Release(64bit)|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<FileConfiguration Name="Release(64bit)|x64">
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration>
 			<FileConfiguration Name="Release|Win32">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
+			<Tool Name="VFFortranCompilerTool" AdditionalOptions="/heap-arrays"/></FileConfiguration></File>
 		<File RelativePath=".\openDA_wrapper\model_restart_init.for"/>
 		<File RelativePath=".\openDA_wrapper\model_state.f90"/>
 		<File RelativePath=".\openDA_wrapper\model_wser_time_series.f90"/>
@@ -154,7 +249,9 @@
 		<File RelativePath=".\original_efdc_files\BUDGET5.for"/>
 		<File RelativePath=".\original_efdc_files\CALAVB.for"/>
 		<File RelativePath=".\original_efdc_files\CALAVB2.for"/>
+		<File RelativePath=".\original_efdc_files\CALAVB_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALAVBOLD.for"/>
+		<File RelativePath=".\original_efdc_files\CALAVBOLD_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALBAL1.for"/>
 		<File RelativePath=".\original_efdc_files\CALBAL2.for"/>
 		<File RelativePath=".\original_efdc_files\CALBAL3.for"/>
@@ -164,25 +261,37 @@
 		<File RelativePath=".\original_efdc_files\CALBED9.for"/>
 		<File RelativePath=".\original_efdc_files\CALBLAY.for"/>
 		<File RelativePath=".\original_efdc_files\CALBUOY.for"/>
+		<File RelativePath=".\original_efdc_files\CALBUOY_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALCONC.for"/>
+		<File RelativePath=".\original_efdc_files\CALCONC_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALCSER.for"/>
+		<File RelativePath=".\original_efdc_files\CALCSER_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALDIFF.for"/>
+		<File RelativePath=".\original_efdc_files\CALDIFF_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALDISP2.for"/>
 		<File RelativePath=".\original_efdc_files\CALDISP3.for"/>
 		<File RelativePath=".\original_efdc_files\CALEBI.for"/>
+		<File RelativePath=".\original_efdc_files\CALEBI_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALEXP.for"/>
 		<File RelativePath=".\original_efdc_files\CALEXP2T.for"/>
-		<File RelativePath=".\original_efdc_files\CALEXP2T0.for"/>
+		<File RelativePath=".\original_efdc_files\CALEXP2T_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALFQC.for"/>
+		<File RelativePath=".\original_efdc_files\CALFQC_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALHDMF.for"/>
+		<File RelativePath=".\original_efdc_files\CALHDMF_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALHEAT.for"/>
+		<File RelativePath=".\original_efdc_files\CALHEAT_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALHTA.for"/>
 		<File RelativePath=".\original_efdc_files\CALIMP2T.for"/>
 		<File RelativePath=".\original_efdc_files\CALMMT.for"/>
+		<File RelativePath=".\original_efdc_files\CALMMT_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALPGCORR.for"/>
 		<File RelativePath=".\original_efdc_files\CALPNHS.for"/>
+		<File RelativePath=".\original_efdc_files\CALPNHS_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALPSER.for"/>
+		<File RelativePath=".\original_efdc_files\CALPSER_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALPUV2C.for"/>
+		<File RelativePath=".\original_efdc_files\CALPUV2C_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALPUV2T.for"/>
 		<File RelativePath=".\original_efdc_files\CALPUV9.for"/>
 		<File RelativePath=".\original_efdc_files\CALPUV9C.for"/>
@@ -191,22 +300,32 @@
 		<File RelativePath=".\original_efdc_files\CALQQ1OLD.for"/>
 		<File RelativePath=".\original_efdc_files\CALQQ2.for"/>
 		<File RelativePath=".\original_efdc_files\CALQQ2T.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ2T_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALQQ2TOLD.for"/>
+		<File RelativePath=".\original_efdc_files\CALQQ2TOLD_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALQVS.for"/>
+		<File RelativePath=".\original_efdc_files\CALQVS_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALSED.for"/>
 		<File RelativePath=".\original_efdc_files\CALSFT.for"/>
+		<File RelativePath=".\original_efdc_files\CALSFT_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALSND.for"/>
 		<File RelativePath=".\original_efdc_files\CALSTEP.for"/>
 		<File RelativePath=".\original_efdc_files\CALSTEPD.for"/>
 		<File RelativePath=".\original_efdc_files\CALTBXY.for"/>
+		<File RelativePath=".\original_efdc_files\CALTBXY_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALTOX.for"/>
 		<File RelativePath=".\original_efdc_files\CALTOXB.for"/>
 		<File RelativePath=".\original_efdc_files\CALTRAN.for"/>
+		<File RelativePath=".\original_efdc_files\CALTRAN_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALTRANQ.for"/>
 		<File RelativePath=".\original_efdc_files\CALTSXY.for"/>
+		<File RelativePath=".\original_efdc_files\CALTSXY_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALUVW.for"/>
+		<File RelativePath=".\original_efdc_files\CALUVW_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALVEGSER.for"/>
+		<File RelativePath=".\original_efdc_files\CALVEGSER_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CALWQC.for"/>
+		<File RelativePath=".\original_efdc_files\CALWQC_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CBALEV1.for"/>
 		<File RelativePath=".\original_efdc_files\CBALEV2.for"/>
 		<File RelativePath=".\original_efdc_files\CBALEV3.for"/>
@@ -222,6 +341,7 @@
 		<File RelativePath=".\original_efdc_files\CEQICM.for"/>
 		<File RelativePath=".\original_efdc_files\CGATEFLX.for"/>
 		<File RelativePath=".\original_efdc_files\CONGRAD.for"/>
+		<File RelativePath=".\original_efdc_files\CONGRAD_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\CONGRADC.for"/>
 		<File RelativePath=".\original_efdc_files\COSTRAN.for"/>
 		<File RelativePath=".\original_efdc_files\COSTRANW.for"/>
@@ -238,6 +358,8 @@
 		<File RelativePath=".\original_efdc_files\DRIFTER.f90"/>
 		<File RelativePath=".\original_efdc_files\DUMP.for"/>
 		<File RelativePath=".\original_efdc_files\EEXPOUT.for"/>
+		<File RelativePath=".\original_efdc_files\EEXPOUT_mpi.for"/>
+		<File RelativePath=".\original_efdc_files\EEXPOUT_opt_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\FDSTRSE.for"/>
 		<File RelativePath=".\original_efdc_files\FHYDCN.for"/>
 		<File RelativePath=".\original_efdc_files\foodchain.for"/>
@@ -248,6 +370,7 @@
 		<File RelativePath=".\original_efdc_files\GATECTLREAD.for"/>
 		<File RelativePath=".\original_efdc_files\HDMT.for"/>
 		<File RelativePath=".\original_efdc_files\HDMT2T.for"/>
+		<File RelativePath=".\original_efdc_files\HDMT2T_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\initbin.for"/>
 		<File RelativePath=".\original_efdc_files\initbin0.for"/>
 		<File RelativePath=".\original_efdc_files\initbin2.for"/>
@@ -259,6 +382,7 @@
 		<File RelativePath=".\original_efdc_files\LSQHARM.for"/>
 		<File RelativePath=".\original_efdc_files\LUBKSB.for"/>
 		<File RelativePath=".\original_efdc_files\LUDCMP.for"/>
+		<File RelativePath=".\original_efdc_files\MPI.f90"/>
 		<File RelativePath=".\original_efdc_files\NEGDEP.for"/>
 		<File RelativePath=".\original_efdc_files\OILCHEM.for"/>
 		<File RelativePath=".\original_efdc_files\OUT3D.for"/>
@@ -290,6 +414,7 @@
 		<File RelativePath=".\original_efdc_files\RVELPLTV.for"/>
 		<File RelativePath=".\original_efdc_files\RWQAGR.for"/>
 		<File RelativePath=".\original_efdc_files\RWQATM.for"/>
+		<File RelativePath=".\original_efdc_files\RWQATM_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\RWQBEN2.for"/>
 		<File RelativePath=".\original_efdc_files\RWQC1.for"/>
 		<File RelativePath=".\original_efdc_files\RWQCSR.for"/>
@@ -305,8 +430,10 @@
 		<File RelativePath=".\original_efdc_files\s_sedzlj.f90"/>
 		<File RelativePath=".\original_efdc_files\s_shear.f90"/>
 		<File RelativePath=".\original_efdc_files\SALPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\SALPLTH_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\SALPLTV.for"/>
 		<File RelativePath=".\original_efdc_files\SALTSMTH.for"/>
+		<File RelativePath=".\original_efdc_files\SALTSMTH_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\SCANASER.for"/>
 		<File RelativePath=".\original_efdc_files\SCANDSER.for"/>
 		<File RelativePath=".\original_efdc_files\SCANEFDC.for"/>
@@ -329,6 +456,7 @@
 		<File RelativePath=".\original_efdc_files\SEDFLUX.for"/>
 		<File RelativePath=".\original_efdc_files\SEEK.for"/>
 		<File RelativePath=".\original_efdc_files\SETBCS.for"/>
+		<File RelativePath=".\original_efdc_files\SETBCS_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\SETFPOCB.for"/>
 		<File RelativePath=".\original_efdc_files\SETOBC2T.for"/>
 		<File RelativePath=".\original_efdc_files\SETOPENBC.for"/>
@@ -366,6 +494,7 @@
 		<File RelativePath=".\original_efdc_files\VARZEROInt.f90"/>
 		<File RelativePath=".\original_efdc_files\VARZEROReal.f90"/>
 		<File RelativePath=".\original_efdc_files\VELPLTH.for"/>
+		<File RelativePath=".\original_efdc_files\VELPLTH_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\VELPLTV.for"/>
 		<File RelativePath=".\original_efdc_files\VSFP.for"/>
 		<File RelativePath=".\original_efdc_files\WASP4.for"/>
@@ -378,11 +507,13 @@
 		<File RelativePath=".\original_efdc_files\WELCOME.f90"/>
 		<File RelativePath=".\original_efdc_files\WINDWAVE.f90"/>
 		<File RelativePath=".\original_efdc_files\WQ3D.for"/>
+		<File RelativePath=".\original_efdc_files\WQ3D_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\WQ3DINP.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE0.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE1.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE2.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE3.for"/>
+		<File RelativePath=".\original_efdc_files\WQSKE3_mpi.for"/>
 		<File RelativePath=".\original_efdc_files\WQSKE4.for"/>
 		<File RelativePath=".\original_efdc_files\WQSTOKES01.for"/>
 		<File RelativePath=".\original_efdc_files\WQZERO.for"/>
@@ -397,5 +528,7 @@
 		<File RelativePath=".\original_efdc_files\WWQTS.for"/>
 		<File RelativePath=".\original_efdc_files\WWQTSBIN.for"/>
 		<File RelativePath=".\original_efdc_files\ZBRENT.for"/></Filter>
-		<Filter Name="Unused EFDC files"/></Filter></Files>
-	<Globals/></VisualStudioProject>
+		<Filter Name="Unused EFDC files"/></Filter>
+	</Files>
+	<Globals/>
+</VisualStudioProject>

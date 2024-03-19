@@ -4,12 +4,16 @@ C USING BRENT'S METHOD, FIND THE ROOT OF A FUNC SEDFLUX KNOWN TO LIE
 C   BETWEEN RMIN & RMAX WITHIN AN ACCURACY OF TOL (P. 253 IN NUMERICAL  
 C   RECIPE).  
 C  
+      REAL A,B,C,D,E
       EXTERNAL SEDFLUX  
       PARAMETER (IZMAX=100,EPS=3.0E-8,TOL=1.0E-5,  
      &    RMIN=1.0E-4,RMAX=100.0)  
       ISMERR = 0  
       A = RMIN  
       B = RMAX  
+      C = 0.0
+      D = 0.0
+      E = 0.0
       FA = SEDFLUX(A)  
       FB = SEDFLUX(B)  
       ZBRENT = 0

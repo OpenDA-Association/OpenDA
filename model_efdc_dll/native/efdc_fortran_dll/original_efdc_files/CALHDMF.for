@@ -12,9 +12,9 @@ C     2008-10  SANG YUK (DSLLC) CORRECTED THE DIFFUSIVE MOMENTUM FLUXES COMPUTAT
 C
       USE GLOBAL      
 	IMPLICIT NONE 
-	INTEGER::L,LN,LS,LE,LW,K,LL,J,I,ithds,LF ! ithds,LF GEOSR jgcho 151118
+      INTEGER::L,LN,LS,LW,K,LL,J,I
       REAL::SLIPCO,DY2DZBR,DX2DZBR,CSDRAG,SLIPFAC,TMPVAL,DSQR,WVFACT   
-      REAL::DTMPH,DTMPX,AHWVX,SXYLN,SXYEE,PMC     
+      REAL::DTMPH,DTMPX,AHWVX,SXYLN,SXYEE
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::AHEE  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::AHNN  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::SXY   
@@ -38,6 +38,7 @@ C
        SXY2NN=0.0    
        HMC=0.0
       ENDIF    
+      SLIPCO=0.0
 C
       AHMAX=AHO
 C
@@ -71,25 +72,19 @@ C
       IF(AHD.GT.0.0)THEN     
         SLIPCO=0.5/SQRT(AHD) 
       ENDIF    
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LN,LS,DY2DZBR,CSDRAG,SLIPFAC,
-!$OMP& LW,DX2DZBR)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
-!
       DO K=1,KC
-        DO L=LF,LL
+        DO L=2,LA     
           LN=LNC(L)   
           ! *** DXU1 = dU/dX, UNITS: 1/S   
           DXU1(L,K)=SUB(L+1)*(U(L+1,K)-U(L,K))/DXP(L)    
           ! *** DYV1 = dV/dY, UNITS: 1/S   
           DYV1(L,K)=SVB(LN )*(V(LN,K)-V(L,K))/DYP(L)     
         ENDDO  
+      ENDDO  
 C
       ! *** DYU1 = dU/dY     
-        DO L=LF,LL
+      DO K=1,KC
+        DO L=2,LA     
           LS=LSC(L)   
           IF(ICORDYU(L).EQ.1)THEN   
             DYU1(L,K)=2.*SVB(L)*(U(L,K)-U(LS,K))/(DYU(L)+DYU(LS))      
@@ -112,9 +107,11 @@ C
             ENDIF     
           ENDIF
         ENDDO  
+      ENDDO  
 C
       ! *** DXV1 = dV/dX     
-        DO L=LF,LL
+      DO K=1,KC
+        DO L=2,LA     
           LW=L-1      
           IF(ICORDXV(L).EQ.1)THEN   
             DXV1(L,K)=2.*SUB(L)*(V(L,K)-V(LW,K))/(DXV(L)+DXV(LW))      
@@ -137,15 +134,14 @@ C
             ENDIF     
           ENDIF
         ENDDO  
+      ENDDO  
 C
       ! *** SXY = dU/dY + dV/dX     
-        DO L=LF,LL
+      DO K=1,KC
+        DO L=2,LA     
           SXY(L,K)=DYU1(L,K)+DXV1(L,K)     
         ENDDO  
       ENDDO    
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
 C
 C      DO K=1,KC      
 C DO L=2,LA    
@@ -163,39 +159,21 @@ C      ENDDO
 C
       IF(AHD.GT.0.0)THEN     
         ! *** CALCULATE SMAGORINSKY HORIZONTAL VISCOSITY 
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& TMPVAL,DSQR)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
         DO K=1,KC     
-         DO L=LF,LL
+         DO L=2,LA   
            TMPVAL=AHD*DXP(L)*DYP(L)
            DSQR=DXU1(L,K)*DXU1(L,K)+DYV1(L,K)*DYV1(L,K)+
      &         SXY(L,K)*SXY(L,K)/4
            AH(L,K)=AHO+TMPVAL*SQRT(DSQR)  
          ENDDO
         ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
       ELSEIF(N.LT.10)THEN    
         ! *** ONLY NEED TO ASSIGN INITIALLY
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& TMPVAL,DSQR)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
         DO K=1,KC     
-         DO L=LF,LL
+         DO L=2,LA   
            AH(L,K)=AHO      
          ENDDO
         ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
       ENDIF    
 C
 C *** DSLLC BEGIN BLOCK      
@@ -248,14 +226,8 @@ C
 C
 C **  CALCULATE DIFFUSIVE MOMENTUM FLUXES  
 C
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LS,LN)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
       DO K=1,KC
-        DO L=LF,LL
+        DO L=2,LA     
           LS=LSC(L)   
           LN=LNC(L)   
           ! SANG'S CORRECTION
@@ -277,20 +249,10 @@ C
 
         ENDDO  
       ENDDO 
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
 C
       ! *** TREAT THE NORTH & WEST WALL SLIPPAGE  
       IF(ISHDMF.EQ.2)THEN    
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LN,DY2DZBR,CSDRAG,SLIPFAC,
-!$OMP& SXYLN,DX2DZBR,SXYEE)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
-        DO L=LF,LL
+        DO L=2,LA     
           LN=LNC(L)   
           IF(SVBO(LN).LT.0.5)THEN   
             DO K=1,KC 
@@ -311,9 +273,6 @@ C
             ENDDO     
           ENDIF
         ENDDO 
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
       ENDIF    
 
       ! *** ZERO BOUNDARY CELL MOMENTUM DIFFUSION 

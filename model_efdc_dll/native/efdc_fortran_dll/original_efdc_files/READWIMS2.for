@@ -34,7 +34,7 @@ C	ENDIF                                      ! 2014.09.14. YSSONG, COMMENTOUT
 	ENDIF
 
  8999 FORMAT('LOADING POINT        :',2(F12.3,1X),2X,'(',I4,',',I4,')')
- 8998 FORMAT('LOADING POINT        :',2(F12.3,1X)) !,2X,'(',I4,',',I4,')')
+C8998 FORMAT('LOADING POINT        :',2(F12.3,1X)) !,2X,'(',I4,',',I4,')')
       CLOSE(21)
 
       RETURN

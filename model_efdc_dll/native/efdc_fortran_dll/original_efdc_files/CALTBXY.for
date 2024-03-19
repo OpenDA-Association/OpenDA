@@ -27,15 +27,19 @@ C
       REAL::FRACLAY,FHLAYC,FHLAYW,FHLAYS,WCHAN,RLCHN,HCHAN,STBXCH
       REAL::FXVEGCH,STBYCH,FYVEGCH,TMPVALW,WVFACT,QQWCTMP,TWCTMP
       REAL::AEXTMP,TMPVAL,USTARC,CDRGTMP,TAUBTMP,TAUE,RIPAMP
-      REAL::TAUBTM,RIPSTP,RIPFAC,ZBRMAX,ZBRMIN,CDRGMAX,ZBREU
+      REAL::RIPSTP,RIPFAC,ZBRMAX,ZBRMIN,CDRGMAX,ZBREU
       REAL::CDRGMIN,WVDTMP,RKZTURB,UTMP,VTMP,DWVDZ,DWUDZ,DWVD2Z
       REAL::DWUD2Z,HZRVDZ,HZRUDZ,ZDHZRV,ZDHZRU,ZBREV,HZREFV,HZREFU
       REAL::QWDQCV,QWDQCU,QCTMPV,QCTMPU,HOTLYMN,HOTLYMX,CDTMPVY
       REAL::BOTTMP,DWVDHR,DWUDHR,QWCTMPV,QWCTMPU
       REAL::CDTMPV,CDTMPU,COSWC,CURANG,CDTMPUX
       REAL::WVDELV,WVDELU,TAUTMP
-        INTEGER::LF,LL,ithds
-        REAL::t00,rtc
+
+      LZBMIN=0
+      LZBMAX=0
+      LCDMIN=0
+      LCDMAX=0
+      WVDTMP=0.0
 
       DELT=DT2  
       ISUD=1  
@@ -80,35 +84,20 @@ C
         OPEN(1,FILE='CBOT.LOG',STATUS='UNKNOWN')  
         CLOSE(1,STATUS='DELETE')  
       ENDIF  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         STBXO(L)=STBX(L)  
         STBYO(L)=STBY(L)  
       ENDDO  
-c
-      enddo
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      DO L=1,LC  
         STBX(L)=0.  
         STBY(L)=0.  
       ENDDO  
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=1,LC  
           FXVEG(L,K)=0.  
           FYVEG(L,K)=0.  
         ENDDO  
       ENDDO  
-c
-      enddo
-C
       N=-2  
       JSTBXY=1  
   100 CONTINUE  
@@ -250,91 +239,7 @@ C
       VISEXP=2./7.
       VISFAC=0.0258*(COEFTSBL**VISEXP)
 C
-      IF(IDRYTBP.EQ.0)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& UMAGTMP,VMAGTMP,CDMAXU,CDMAXV,VISMUDU,VISMUDV,VISDHU,VISDHV,
-!$OMP& SEDTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
-          IF(ZBR(L).LE.1.E-6)THEN
-            UMAGTMP=SQRT( U1(L,1)*U1(L,1)+V1U(L)*V1U(L)+1.E-12 )
-            VMAGTMP=SQRT( U1V(L)*U1V(L)+V1(L,1)*V1(L,1)+1.E-12 )
-            CDMAXU=CDLIMIT*STBXO(L)*H1U(L)/( DELT*UMAGTMP )
-            CDMAXV=CDLIMIT*STBYO(L)*H1V(L)/( DELT*VMAGTMP )
-            VISMUDU=VISMUD
-            VISMUDV=VISMUD
-            IF(ISMUD.GE.1)THEN
-              SEDTMP=0.5*(SED(L,1,1)+SED(L-1,1,1))
-              VISMUDU=CSEDVIS(SEDTMP)
-              SEDTMP=0.5*(SED(L,1,1)+SED(LSC(L),1,1))
-              VISMUDV=CSEDVIS(SEDTMP)
-            ENDIF
-C **  DELETED COMMENTED OUT LINES & UNUSED VARIABLES
-            VISDHU=0.0
-            VISDHV=0.0
-            IF(UMAGTMP.GT.0.0) VISDHU=(VISMUDU*HUI(L)/UMAGTMP)*VISEXP
-            IF(VMAGTMP.GT.0.0) VISDHV=(VISMUDV*HVI(L)/VMAGTMP)*VISEXP
-            STBX(L)=VISFAC*AVCON*STBXO(L)*VISDHU
-            STBY(L)=VISFAC*AVCON*STBYO(L)*VISDHV
-            STBX(L)=MIN(CDMAXU,STBX(L))
-            STBY(L)=MIN(CDMAXV,STBY(L))
-          ENDIF
-      ENDDO
-c
-      enddo
-C
-C **  END SMOOTH DRAG FORMULATION
-C
-C **  BEGIN ROUGH DRAG FORMULATION
-C
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LS,ZBRATU,ZBRATV,
-!$OMP& UMAGTMP,VMAGTMP,CDMAXU,CDMAXV,HURTMP,HVRTMP,DZHUDZBR,DZHVDZBR)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
-          LS=LSC(L)
-          IF(ZBR(L).GT.1.E-6)THEN
-            ZBRATU=0.5*(DXP(L-1)*ZBR(L-1)+DXP(L)*ZBR(L))*DXIU(L)
-            ZBRATV=0.5*(DYP(LS )*ZBR(LS )+DYP(L)*ZBR(L))*DYIV(L)
-            UMAGTMP=SQRT( U1(L,1)*U1(L,1)+V1U(L)*V1U(L)+1.E-12 )
-            VMAGTMP=SQRT( U1V(L)*U1V(L)+V1(L,1)*V1(L,1)+1.E-12 )
-            CDMAXU=CDLIMIT*STBXO(L)*H1U(L)/( DELT*UMAGTMP )
-            CDMAXV=CDLIMIT*STBYO(L)*H1V(L)/( DELT*VMAGTMP )
-            !IF(ISDYNSTP.GE.1)THEN  ! PMC
-            !IF(IS2TIM.GE.1)THEN   ! PMC
-            !  CDMAXU=1000.
-            !  CDMAXV=1000.
-            !END IF
-            HURTMP=MAX(ZBRATU,H1U(L))
-            HVRTMP=MAX(ZBRATV,H1V(L))
-            DZHUDZBR=1.+0.5*DZC(1)*HURTMP/ZBRATU
-            DZHVDZBR=1.+0.5*DZC(1)*HVRTMP/ZBRATV
-C
-            STBX(L)=AVCON*STBXO(L)*.16/((LOG(DZHUDZBR))**2)
-            STBY(L)=AVCON*STBYO(L)*.16/((LOG(DZHVDZBR))**2)
-            STBX(L)=MIN(CDMAXU,STBX(L))
-            STBY(L)=MIN(CDMAXV,STBY(L))
-          ENDIF
-      ENDDO
-c
-      enddo
-
-
-      ELSE
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& UMAGTMP,VMAGTMP,CDMAXU,CDMAXV,VISMUDU,VISMUDV,VISDHU,VISDHV,
-!$OMP& SEDTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         IF(LMASKDRY(L))THEN  
           IF(ZBR(L).LE.1.E-6)THEN  
             UMAGTMP=SQRT( U1(L,1)*U1(L,1)+V1U(L)*V1U(L)+1.E-12 )  
@@ -361,21 +266,12 @@ C **  DELETED COMMENTED OUT LINES & UNUSED VARIABLES
           ENDIF  
         ENDIF  
       ENDDO  
-c
-      enddo
 C  
 C **  END SMOOTH DRAG FORMULATION  
 C
 C **  BEGIN ROUGH DRAG FORMULATION  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LS,ZBRATU,ZBRATV,
-!$OMP& UMAGTMP,VMAGTMP,CDMAXU,CDMAXV,HURTMP,HVRTMP,DZHUDZBR,DZHVDZBR)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         IF(LMASKDRY(L))THEN  
           LS=LSC(L)  
           IF(ZBR(L).GT.1.E-6)THEN  
@@ -402,10 +298,7 @@ C
           ENDIF  
         ENDIF  
       ENDDO  
-c
-      enddo
 C  
-      ENDIF
 C **  END ROUGH DRAG FORMULATION  
 C  
       IF(N.EQ.-2)THEN  
@@ -832,12 +725,12 @@ C
         ENDIF  
       ENDIF
  1948 CONTINUE  
- 1717 FORMAT(' N,I,J = ',I10,2I5,'   CDTOTU,CDMAXU = ',2F15.10)  
- 1718 FORMAT(' N,I,J = ',I10,2I5,'   CDTOTV,CDMAXV = ',2F15.10)  
- 1727 FORMAT(' N,I,J = ',I10,2I5,'   LAM CDTOTU,CDMAXU = ',2F15.10)  
- 1728 FORMAT(' N,I,J = ',I10,2I5,'   LAM CDTOTV,CDMAXV = ',2F15.10)  
- 1719 FORMAT(' N = ',I10,'  CDTOTUM,CDTOTVM = ',2F15.10)  
- 1729 FORMAT(' N = ',I10,'  CDMAXUM,CDMAXVM = ',2F15.10)  
+C1717 FORMAT(' N,I,J = ',I10,2I5,'   CDTOTU,CDMAXU = ',2F15.10)  
+C1718 FORMAT(' N,I,J = ',I10,2I5,'   CDTOTV,CDMAXV = ',2F15.10)  
+C1727 FORMAT(' N,I,J = ',I10,2I5,'   LAM CDTOTU,CDMAXU = ',2F15.10)  
+C1728 FORMAT(' N,I,J = ',I10,2I5,'   LAM CDTOTV,CDMAXV = ',2F15.10)  
+C1719 FORMAT(' N = ',I10,'  CDTOTUM,CDTOTVM = ',2F15.10)  
+C1729 FORMAT(' N = ',I10,'  CDMAXUM,CDMAXVM = ',2F15.10)  
  1739 FORMAT(' N,I,J = ',I10,2I5,'  ZBRMAX,HBTLYMX = ',2E14.6)  
  1749 FORMAT(' N,I,J = ',I10,2I5,'  ZBRMIN,HBTLYMN = ',2E14.6)  
  1759 FORMAT(' N,I,J = ',I10,2I5,'  CDRGMAX,STBX,STBY = ',3E14.6)  

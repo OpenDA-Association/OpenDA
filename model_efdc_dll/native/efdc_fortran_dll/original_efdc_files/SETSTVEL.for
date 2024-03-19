@@ -1,4 +1,6 @@
       FUNCTION SETSTVEL(D,SSG)  
+          REAL WSET
+          WSET=0.0
 C  
 C CHANGE RECORD  
 C  

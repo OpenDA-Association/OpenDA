@@ -5,8 +5,8 @@
 #
 
 #-----	Fortran Compiler Settings  ---------------------------------------------
-# gfortran compiler
-MAKE_FF=gfortran
+# mpi gfortran compiler
+MAKE_FF=mpifort
 
 # we want to use linux32 command to simulate 32bit on a 64bit machine
 MACH = $(shell arch)
@@ -28,7 +28,8 @@ endif
 MAKE_FDEBUG = -g -fbounds-check -Wall -fbacktrace -finit-real=nan -ffpe-trap=invalid,zero,overflow		# debug
 MAKE_FOPTIMIZE = -O   	# optimize
 
-MAKE_FFLAGS_SPECIFIC = -fPIC -ffixed-line-length-none -ffree-line-length-none # gfortran
+# Add '-fallow-argument-mismatch' to suppress errors on type mismatch in mpi library calls
+MAKE_FFLAGS_SPECIFIC = -fPIC -ffixed-line-length-none -ffree-line-length-none -fallow-argument-mismatch # gfortran
 
 MAKE_FFLAGS = \
     $(MAKE_FFLAGS_SPECIFIC) $(MFLAG_ARCH)
@@ -36,13 +37,12 @@ MAKE_FFLAGS = \
 
 #FFLAGS = -ffixed-line-length-none -ffree-line-length-none -fPIC
 
-POBJECTS = CGATEFLX.po RWQC1.po
-
 OBJECTS =  \
+CGATEFLX.o   RWQC1.o \
 ACON.o       CALEXP.o      CALTSXY.o     READWIMS1.o  WQSKE4.o     GATECTLREAD.o  SCANEFDC.o \
 VELPLTH.o    DRIFTER.o     SURFPLT.o     WINDWAVE.o   s_sedzlj.o   EEXPOUT.o      RESTOUT.o \
 WQ3D.o       s_shear.o     CALHEAT.o     CALPUVTT.o   VARZEROReal.o \
-BAL2T5.o     READOIL.o     CALEXP2T0.o \
+BAL2T5.o     READOIL.o \
 AINIT.o      CALEXP2T.o    CALUVW.o      DUMP.o       READWIMS2.o  SCANGATECTL.o  SVBKSB.o          WQZERO.o \
 BAL2T1.o     CALFQC.o      CALVEGSER.o   RELAX2T.o    SCANGSER.o   SVDCMP.o       WQZERO2.o \
 BAL2T2.o     CALHDMF.o     CALWQC.o      RESTIN1.o    SCANGWSR.o   TIMELOG.o      WQZERO3.o \
@@ -76,7 +76,13 @@ CALDIFF.o    CALTOX.o      CSNDSET.o     RCAHQ.o      SALTSMTH.o   SOLVSMBE.o   
 CALDISP2.o   CALTOXB.o     CSNDZEQ.o     SCANASER.o   SCANGTAB.o   SSEDTOX.o    WQSKE1.o \
 CALDISP3.o   CALTRAN.o     DEPPLT.o      SCANDSER.o   SUBCHAN.o    WQSKE2.o \
 VARALLOC1.o  VARALLOC2.o   VARALLOC3.o   VARALLOC4.o   VARALLOC5.o VARALLOC6.o    VARALLOC7.o  VARALLOC8.o\
-CALEBI.o     CALTRANQ.o    READTOX.o     WQSKE3.o     pbm_cut.o    Sub_spore.o   WQSTOKES01.o
+CALEBI.o     CALTRANQ.o    READTOX.o     WQSKE3.o     pbm_cut.o    Sub_spore.o   WQSTOKES01.o \
+CALAVB_mpi.o CALAVBOLD_mpi.o CALBUOY_mpi.o CALCONC_mpi.o CALCSER_mpi.o CALDIFF_mpi.o CALEBI_mpi.o \
+CALEXP2T_mpi.o CALFQC_mpi.o CALHDMF_mpi.o CALHEAT_mpi.o CALMMT_mpi.o CALPNHS_mpi.o CALPSER_mpi.o \
+CALPUV2C_mpi.o CALQQ2T_mpi.o CALQQ2TOLD_mpi.o CALQVS_mpi.o CALSFT_mpi.o CALTBXY_mpi.o CALTRAN_mpi.o \
+CALTSXY_mpi.o CALUVW_mpi.o CALVEGSER_mpi.o CALWQC_mpi.o CONGRAD_mpi.o \
+EEXPOUT_mpi.o HDMT2T_mpi.o RWQATM_mpi.o SALPLTH_mpi.o SALTSMTH_mpi.o SETBCS_mpi.o \
+VELPLTH_mpi.o WQ3D_mpi.o WQSKE3_mpi.o
 
 COMPAT_OBJS = \
 drand.o 
@@ -94,9 +100,9 @@ openmp: MAKE_FFLAGS += $(F_OPENMP)
 openmp: MAKE_SO += $(F_OPENMP)
 openmp: libEfdcOrig.a
 
-libEfdcOrig.a:	$(POBJECTS) $(OBJECTS) $(COMPAT_OBJS)
+libEfdcOrig.a: global.mod mpi.mod $(OBJECTS) $(COMPAT_OBJS)
 	rm -f $@
-	ar cq $@ $(POBJECTS) $(OBJECTS) $(COMPAT_OBJS)
+	ar cq $@ $(OBJECTS) $(COMPAT_OBJS)
 
 install:
 
@@ -128,6 +134,7 @@ clobber:
 	$(MAKE_FF) $(MAKE_FFLAGS) -c  $< -o $@
 
 global.mod:	Var_Global_Mod.o
+mpi.mod: global.mod MPI.o
 drifter.mod:	DRIFTER.o
 windwave.mod:	WINDWAVE.o
 
@@ -141,7 +148,7 @@ CALHEAT.o:	global.mod
 GATECTLREAD.o:	global.mod
 CALPUVTT.o:	global.mod
 READOIL.o:	global.mod
-CGATEFLX.po:	global.mod
+CGATEFLX.o:	global.mod
 RESTOUT.o:	global.mod
 VARZEROReal.o:	global.mod
 s_sedzlj.o:	global.mod
@@ -357,3 +364,40 @@ s_bedload.o:	global.mod
 s_main.o:	global.mod
 s_morph.o:	global.mod
 s_sedic.o:	global.mod
+
+
+CALAVB_mpi.o: 	global.mod mpi.mod
+CALAVBOLD_mpi.o: 	global.mod mpi.mod
+CALBUOY_mpi.o: 	global.mod mpi.mod
+CALCONC_mpi.o: 	global.mod mpi.mod
+CALCSER_mpi.o: 	global.mod mpi.mod
+CALDIFF_mpi.o: 	global.mod mpi.mod
+CALEBI_mpi.o: 	global.mod mpi.mod
+CALEXP2T_mpi.o: 	global.mod mpi.mod
+CALFQC_mpi.o: 	global.mod mpi.mod
+CALHDMF_mpi.o: 	global.mod mpi.mod
+CALHEAT_mpi.o: 	global.mod mpi.mod
+CALMMT_mpi.o: 	global.mod mpi.mod
+CALPNHS_mpi.o: 	global.mod mpi.mod
+CALPSER_mpi.o: 	global.mod mpi.mod
+CALPUV2C_mpi.o: 	global.mod mpi.mod
+CALQQ2T_mpi.o: 	global.mod mpi.mod
+CALQQ2TOLD_mpi.o: 	global.mod mpi.mod
+CALQVS_mpi.o: 	global.mod mpi.mod
+CALSFT_mpi.o: 	global.mod mpi.mod
+CALTBXY_mpi.o: 	global.mod mpi.mod
+CALTRAN_mpi.o: 	global.mod mpi.mod
+CALTSXY_mpi.o: 	global.mod mpi.mod
+CALUVW_mpi.o: 	global.mod mpi.mod
+CALVEGSER_mpi.o: 	global.mod mpi.mod
+CALWQC_mpi.o: 	global.mod mpi.mod
+CONGRAD_mpi.o: 	global.mod mpi.mod
+EEXPOUT_mpi.o: 	global.mod mpi.mod
+HDMT2T_mpi.o: 	global.mod mpi.mod
+RWQATM_mpi.o: 	global.mod mpi.mod
+SALPLTH_mpi.o: 	global.mod mpi.mod
+SALTSMTH_mpi.o: 	global.mod mpi.mod
+SETBCS_mpi.o: 	global.mod mpi.mod
+VELPLTH_mpi.o: 	global.mod mpi.mod
+WQ3D_mpi.o: 	global.mod mpi.mod
+WQSKE3_mpi.o: 	global.mod mpi.mod

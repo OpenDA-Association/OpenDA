@@ -39,9 +39,7 @@ C
       ENDIF  
  1001 FORMAT(/' TRANSPORT VARIABLE ID =',I5/)  
  1002 FORMAT(I5,2X,12E12.4)
-      
-      
- 6000 FORMAT('N, PSERT = ',I6,4X,F12.4)  
+C6000 FORMAT('N, PSERT = ',I6,4X,F12.4)  
       RETURN  
       END  
 

@@ -446,7 +446,7 @@ C     &        U(L+1,K),U(L,K),DXV(LN),DXV(L),HP(L),CAC(L,K)
 C       ENDDO  
 C       CLOSE(1)  
 C      ENDIF  
- 1111 FORMAT(3I5,10E13.4)  
+C1111 FORMAT(3I5,10E13.4)  
 C  
 C**********************************************************************C  
 C  
@@ -960,7 +960,7 @@ C
         CLOSE(1)  
       ENDIF  
 C  
- 1112 FORMAT('N,NW,NS,I,J,K,NF,H,Q,QU,FUU,FVV=',/,2X,7I5,5E12.4)  
+C1112 FORMAT('N,NW,NS,I,J,K,NF,H,Q,QU,FUU,FVV=',/,2X,7I5,5E12.4)  
 C  
 C**********************************************************************C  
 C  

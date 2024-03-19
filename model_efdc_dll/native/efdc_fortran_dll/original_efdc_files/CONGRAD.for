@@ -6,91 +6,71 @@ C **  GRADIENT SCHEME
 C  
       USE GLOBAL 
 
-      REAL TTMP, SECNDS
+      REAL TTMP,T1TMP
  
       ! *** DSLLC
+      REAL,SAVE,ALLOCATABLE,DIMENSION(:)::PNORTH  
+      REAL,SAVE,ALLOCATABLE,DIMENSION(:)::PSOUTH  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::TMPCG  
-      IF(.NOT.ALLOCATED(TMPCG))THEN
+      IF(.NOT.ALLOCATED(PNORTH))THEN
+        ALLOCATE(PNORTH(LCM))
+        ALLOCATE(PSOUTH(LCM))
 		ALLOCATE(TMPCG(LCM))
+        PNORTH=0.0 
+        PSOUTH=0.0 
 		TMPCG=0.0 
 	ENDIF
       ! *** DSLLC
 C  
-      TTMP=SECNDS(0.0)  
-      RPCG=0.  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(+:RPCG)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
-        RCG(L)=FPTMP(L)-CCC(L)*P(L)
-     &      -CCN(L)*P(LNC(L))-CCS(L)*P(LSC(L))
+      CALL CPU_TIME(TTMP)  
+      DO L=2,LA
+        PNORTH(L)=P(LNC(L))
+        PSOUTH(L)=P(LSC(L))
+      ENDDO
+      DO L=2,LA
+        RCG(L)=FPTMP(L)-CCC(L)*P(L)-CCN(L)*PNORTH(L)-CCS(L)*PSOUTH(L)  
      &      -CCW(L)*P(L-1)-CCE(L)*P(L+1)  
+      ENDDO
+      DO L=2,LA
         PCG(L)=RCG(L)*CCCI(L)  
+      ENDDO
+      RPCG=0.0
+      DO L=2,LA
         RPCG=RPCG+RCG(L)*PCG(L)  
       ENDDO 
-
-c
-      enddo
-
       IF(RPCG.EQ.0.0)RETURN   ! *** DSLLC SINGLE LINE
       ITER=0  
   100 CONTINUE  
       ITER=ITER+1  
-      PAPCG=0.  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(+:PAPCG)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
-        APCG(L)=CCC(L)*PCG(L)
-     &      +CCS(L)*PCG(LSC(L))+CCN(L)*PCG(LNC(L))
+      DO L=2,LA
+        PNORTH(L)=PCG(LNC(L))
+        PSOUTH(L)=PCG(LSC(L))
+      ENDDO
+      DO L=2,LA
+        APCG(L)=CCC(L)*PCG(L)+CCS(L)*PSOUTH(L)+CCN(L)*PNORTH(L)  
      &      +CCW(L)*PCG(L-1)+CCE(L)*PCG(L+1)
+      ENDDO
+      PAPCG=0.0
+      DO L=2,LA
         PAPCG=PAPCG+APCG(L)*PCG(L)  
       ENDDO  
-
-c
-      enddo
-
-c     t01=rtc()
       ALPHA=RPCG/PAPCG  
-
+      DO L=2,LA
+        P(L)=P(L)+ALPHA*PCG(L)  
+      ENDDO  
+      DO L=2,LA
+        RCG(L)=RCG(L)-ALPHA*APCG(L)  
+      ENDDO  
+      DO L=2,LA
+        TMPCG(L)=CCCI(L)*RCG(L)  
+      ENDDO  
       RPCGN=0.  
       RSQ=0.  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(+:RPCGN,RSQ)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
-        P(L)=P(L)+ALPHA*PCG(L)  
-        RCG(L)=RCG(L)-ALPHA*APCG(L)  
-        TMPCG(L)=CCCI(L)*RCG(L)  
+      DO L=2,LA
         RPCGN=RPCGN+RCG(L)*TMPCG(L)  
         RSQ=RSQ+RCG(L)*RCG(L)  
       ENDDO  
-c
-      enddo
-
-
       IF(RSQ .LE. RSQM) GOTO 200  
-      IF(ITER .LT. ITERM)THEN  
-      BETA=RPCGN/RPCG  
-      RPCG=RPCGN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
-        PCG(L)=TMPCG(L)+BETA*PCG(L)  
-      ENDDO  
-c
-      enddo
-      GOTO 100  
-      ENDIF
       IF(ITER .GE. ITERM)THEN  
         WRITE(6,600)  
 C  
@@ -110,6 +90,12 @@ C
         CLOSE(8)  
         STOP  
       ENDIF  
+      BETA=RPCGN/RPCG  
+      RPCG=RPCGN  
+      DO L=2,LA  
+        PCG(L)=TMPCG(L)+BETA*PCG(L)  
+      ENDDO  
+      GOTO 100  
   600 FORMAT('  MAXIMUM ITERATIONS EXCEEDED IN EXTERNAL SOLUTION')  
 C  
 C ** CALCULATE FINAL RESIDUAL  
@@ -117,26 +103,26 @@ C
   200 CONTINUE
       ! *** DSLLC BEGIN BLOCK
       IF(ISLOG.GE.1)THEN  
+        DO L=2,LA  
+          PNORTH(L)=P(LNC(L))  
+          PSOUTH(L)=P(LSC(L))  
+        ENDDO  
         RSQ=0.  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(+:RSQ)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
-          RCG(L)=CCC(L)*P(L)
-     &      +CCS(L)*P(LSC(L))+CCN(L)*P(LNC(L))
+        DO L=2,LA  
+          RCG(L)=CCC(L)*P(L)+CCS(L)*PSOUTH(L)+CCN(L)*PNORTH(L)  
      &      +CCW(L)*P(L-1)+CCE(L)*P(L+1)-FPTMP(L)  
+        ENDDO  
+        DO L=2,LA  
           RCG(L)=RCG(L)*CCCI(L)  
+        ENDDO  
+        DO L=2,LA  
           RSQ=RSQ+RCG(L)*RCG(L)  
         ENDDO  
-c
-      enddo
-
       ENDIF
       ! *** DSLLC END BLOCK
-      TCONG=TCONG+SECNDS(TTMP)  
-  800 FORMAT(I5,8E13.4)  
+      CALL CPU_TIME(T1TMP)
+      TCONG=TCONG+T1TMP-TTMP
+C 800 FORMAT(I5,8E13.4)  
   808 FORMAT(2I5,9E13.4)  
       RETURN  
       END  

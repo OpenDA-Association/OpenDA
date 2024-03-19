@@ -200,7 +200,7 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
-  600 FORMAT(' VOLCON,VOLMAS = ',2E14.6)  
+C 600 FORMAT(' VOLCON,VOLMAS = ',2E14.6)  
       RETURN  
       END  
 

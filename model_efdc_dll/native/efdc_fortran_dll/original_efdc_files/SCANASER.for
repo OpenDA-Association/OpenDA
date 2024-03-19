@@ -1,8 +1,9 @@
       SUBROUTINE SCANASER  
       USE GLOBAL  
+      USE MPI
       CHARACTER*120 LIN
       
-      WRITE(*,'(A)')'SCANNING INPUT FILE: ASER.INP'  
+      IF(MYRANK.EQ.0) WRITE(*,'(A)')'SCANNING INPUT FILE: ASER.INP'  
       OPEN(1,FILE='ASER.INP',STATUS='OLD')  
       DO N=1,NASER  
    10   READ(1,*,ERR=10,END=40)M,R,R,I,R,R,R,R  
@@ -16,7 +17,8 @@
 
       IF(ISTRAN(8).GT.0)THEN
         IF(IWQSUN.EQ.1)THEN
-          WRITE(*,'(A)')'SCANNING INPUT FILE: SUNDAY.INP'  
+          IF(MYRANK.EQ.0) 
+     &    WRITE(*,'(A)')'SCANNING INPUT FILE: SUNDAY.INP'  
           OPEN(1,FILE='SUNDAY.INP',STATUS='UNKNOWN')  
           M=0  
           DO I = 1,7
@@ -30,12 +32,14 @@
       
       RETURN  
 
-   20 WRITE(*,30)  
-      WRITE(8,30)  
+   20 CONTINUE 
+      IF(MYRANK.EQ.0) WRITE(*,30)  
+      IF(MYRANK.EQ.0) WRITE(8,30)  
    30 FORMAT('READ ERROR IN INPUT FILE')  
       STOP  
-   40 WRITE(*,50)  
-      WRITE(8,50)  
+   40 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,50)  
+      IF(MYRANK.EQ.0) WRITE(8,50)  
    50 FORMAT('UNEXPECTED END OF INPUT FILE')  
       STOP  
       END  

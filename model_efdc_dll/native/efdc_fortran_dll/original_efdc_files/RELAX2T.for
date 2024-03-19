@@ -14,6 +14,9 @@ C **  NON-CONVERGENCE IS SIGNALED WHEN THE ITERATIONS EXCEED A
 C **  MAXIMUM.  
 C  
       USE GLOBAL  
+      USE MPI
+      REAL RPT
+      RPT=0.0
       RJ2=RP  
 C  
 C      PAVG=0.0  
@@ -67,7 +70,7 @@ C
 C  
 C **  CHECK MAXIMUM ITERATION CRITERIA  
 C  
-      IF(ITER .GE. ITERM)THEN  
+      IF(ITER .GE. ITERM.AND.MYRANK.EQ.0)THEN  
         WRITE(6,600)  
         WRITE(6,601)RSQ  
         WRITE(8,600)  

@@ -534,6 +534,7 @@ contains
          WQV, WQVX,&
          ISRESTI, TIMEDAY, NXSP
     use model_extra_global
+    use mpi
 
     implicit none
 
@@ -551,6 +552,8 @@ contains
     call VARZEROInt
 
     call INPUT(TITLE)
+
+    call MPI_DECOMPOSITION
 
     call model_init_2
 

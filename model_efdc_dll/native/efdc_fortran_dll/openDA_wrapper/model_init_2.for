@@ -184,6 +184,7 @@ C **  DXDJ
 
       use omp_lib
       USE GLOBAL
+      USE MPI
 
 
 
@@ -1009,7 +1010,7 @@ C
 C  
 C **  SET BOUNDARY CONDITION SWITCHES  
 C  
-      CALL SETBCS  
+      CALL SETBCS_mpi
 C  
 C **  CALCUATE CURVATURE METRICS (NEW ADDITION)  
 C  

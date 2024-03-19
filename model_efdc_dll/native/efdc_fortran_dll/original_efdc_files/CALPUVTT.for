@@ -39,22 +39,13 @@ C     HP(L)     = PMCTESTX(5,L)
 C
       USE GLOBAL  
       DIMENSION QSUMTMP(LCM)
-      DIMENSION QCHANUT(NCHANM),QCHANVT(NCHANM)
 
       PARAMETER (LLCM=200)
       REAL, SAVE :: CCW1(LLCM),CCE1(LLCM),CCN1(LLCM),CCS1(LLCM)
       REAL, SAVE :: CCC1(LLCM)
 
-      REAL, SAVE :: UHDY1ET(LLCM)
-      REAL, SAVE :: VHDX1ET(LLCM)
-      REAL, SAVE :: H1PT(LLCM)
-
-      REAL*8   DTMP
       REAL*4   EPSILON
 
-      LOGICAL HILOWX(LCM)
-      LOGICAL HILOWY(LCM)
-      REAL*4  DELTAHP
 C
 C**********************************************************************C
 C  

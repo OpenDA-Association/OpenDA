@@ -1,0 +1,226 @@
+      SUBROUTINE CONGRAD_mpi (ISTL_)
+C
+C CHANGE RECORD
+C **  SUBROUTINE CONGRAD SOLVES THE EXTERNAL MODE BY A CONJUGATE
+C **  GRADIENT SCHEME
+C
+      USE GLOBAL
+      USE MPI
+
+      ! *** DSLLC
+      REAL,SAVE,ALLOCATABLE,DIMENSION(:)::PNORTH
+      REAL,SAVE,ALLOCATABLE,DIMENSION(:)::PSOUTH
+      REAL,SAVE,ALLOCATABLE,DIMENSION(:)::TMPCG
+      REAL*8 :: RPC8G,PAPC8G,RPCG8N,ALPH8A,BET8A,RS8Q
+!      REAL*8 :: RPCG,PAPCG,RPCGN,RS8Q,ALPHA,BETA
+      IF(.NOT.ALLOCATED(PNORTH))THEN
+      	ALLOCATE(PNORTH(LCM))
+      	ALLOCATE(PSOUTH(LCM))
+      	ALLOCATE(TMPCG(LCM))
+      	PNORTH=0.0
+      	PSOUTH=0.0
+        TMPCG =0.0
+      ENDIF
+      ! *** DSLLC
+C
+C      CALL CPU_TIME(TTMP)
+C
+      CALL broadcast_boundary(P,ic)
+      S2TIME=MPI_TIC()
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        PNORTH(L)=P(LNC(L))
+        PSOUTH(L)=P(LSC(L))
+      ENDDO
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        RCG(L)=FPTMP(L)-CCC(L)*P(L)-CCN(L)*PNORTH(L)-CCS(L)*PSOUTH(L)
+     &      -CCW(L)*P(L-1)-CCE(L)*P(L+1)
+      ENDDO
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        PCG(L)=RCG(L)*CCCI(L)
+      ENDDO
+      CALL broadcast_boundary(PCG,ic)
+      RPC8G=0.
+!      RPCG =0.
+C!$OMP PARALLEL DO REDUCTION(+:RPCG)
+      DO L=LMPI2,LMPILA
+        RPC8G=RPC8G+RCG(L)*PCG(L)
+!        RPCG =RPCG +RCG(L)*PCG(L)
+      ENDDO
+      CALL MPI_ALLREDUCE(RPC8G,MPI_R8,1,MPI_DOUBLE,
+     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+      RPC8G=MPI_R8
+!      CALL MPI_ALLREDUCE(RPCG,MPI_R4,1,MPI_REAL,
+!     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+!      RPCG=MPI_R4
+      MPI_WTIMES(242)=MPI_WTIMES(242)+MPI_TOC(S2TIME)
+!      PRINT*, '1',sum(abs(dble(RCG))),sum(abs(dble(PCG))),RPC8G
+      IF(RPC8G.EQ.0.0)RETURN   ! *** DSLLC SINGLE LINE
+      ITER=0
+  100 CONTINUE
+      ITER=ITER+1
+      S2TIME=MPI_TIC()
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        PNORTH(L)=PCG(LNC(L))
+        PSOUTH(L)=PCG(LSC(L))
+      ENDDO
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        APCG(L)=CCC(L)*PCG(L)+CCS(L)*PSOUTH(L)+CCN(L)*PNORTH(L)
+     &      +CCW(L)*PCG(L-1)+CCE(L)*PCG(L+1)
+      ENDDO
+      MPI_WTIMES(243)=MPI_WTIMES(243)+MPI_TOC(S2TIME)
+      PAPC8G=0.
+!      PAPCG =0.
+      S2TIME=MPI_TIC()
+C!$OMP PARALLEL DO REDUCTION(+:PAPCG)
+      DO L=LMPI2,LMPILA
+        PAPC8G=PAPC8G+APCG(L)*PCG(L)
+!        PAPCG =PAPCG +APCG(L)*PCG(L)
+      ENDDO
+      CALL MPI_ALLREDUCE(PAPC8G,MPI_R8,1,MPI_DOUBLE,
+     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+      PAPC8G=MPI_R8
+!      CALL MPI_ALLREDUCE(PAPCG,MPI_R4,1,MPI_REAL,
+!     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+!      PAPCG=MPI_R4
+      ALPH8A=(RPC8G)/(PAPC8G)
+!      ALPHA =RPCG/PAPCG
+!      PRINT*, '2',iter,sum(abs(dble(APCG))),sum(abs(dble(PCG))),PAPC8G,
+!     & RPC8G,ALPH8A
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        P(L)=REAL(P(L)+(ALPH8A)*PCG(L),KIND(P))
+      ENDDO
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        RCG(L)=REAL(RCG(L)-(ALPH8A)*APCG(L),KIND(RCG))
+      ENDDO
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        TMPCG(L)=CCCI(L)*RCG(L)
+      ENDDO
+      MPI_WTIMES(244)=MPI_WTIMES(244)+MPI_TOC(S2TIME)
+      RPCG8N=0.
+      RS8Q  =0.
+!      RPCGN =0.
+!      RSQ   =0.
+      S2TIME=MPI_TIC()
+C!$OMP PARALLEL DO REDUCTION(+:RPCGN,RS8Q)
+      DO L=LMPI2,LMPILA
+        RPCG8N=RPCG8N+RCG(L)*TMPCG(L)
+        RS8Q  =RS8Q  +RCG(L)*RCG(L)
+!        RPCGN =RPCGN +RCG(L)*TMPCG(L)
+!        RSQ   =RSQ   +RCG(L)*RCG(L)
+      ENDDO
+      CALL MPI_ALLREDUCE(RPCG8N,MPI_R8,1,MPI_DOUBLE,
+     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+      RPCG8N=MPI_R8
+      CALL MPI_ALLREDUCE(RS8Q,MPI_R8,1,MPI_DOUBLE,
+     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+      RS8Q=MPI_R8
+!      CALL MPI_ALLREDUCE(RPCGN,MPI_R4,1,MPI_REAL,
+!     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+!      RPCGN=MPI_R4
+!      CALL MPI_ALLREDUCE(RSQ,MPI_R4,1,MPI_REAL,
+!     &     MPI_SUM,MPI_COMM_WORLD,IERR)
+!      RSQ=MPI_R4
+c      IF(MYRANK.EQ.0) PRINT*,RPCG8N,RS8Q,RPCGN,RSQ
+      MPI_WTIMES(245)=MPI_WTIMES(245)+MPI_TOC(S2TIME)
+!      PRINT*, '3',iter,sum(abs(dble(APCG))),sum(abs(dble(P))),RPCG8N
+!      PRINT*, '4',iter,sum(abs(dble(RCG))),sum(abs(dble(TMPCG))),RS8Q
+      IF(RS8Q.LE.RSQM) GOTO 200
+      IF(ITER.GE.ITERM.AND.MYRANK.EQ.0)THEN
+        WRITE(6,600)
+C
+C *** PMC BEGIN BLOCK
+C
+      WRITE(8,*)'  I    J       CCS          CCW          CCC
+     &    CCE          CCN        CDIADOM       FPTMP         HU
+     &    HV'
+C
+C *** PMC END BLOCK
+C
+        DO L=1,LC
+          CDIADOM=CCC(L)+CCE(L)+CCN(L)+CCS(L)+CCW(L)
+          WRITE(8,808)IL(L),JL(L),CCS(L),CCW(L),CCC(L),CCE(L),CCN(L),
+     &        CDIADOM,FPTMP(L),HU(L),HV(L)
+        END DO
+        CLOSE(8)
+        STOP
+      ENDIF
+      BET8A =(RPCG8N)/(RPC8G)
+!      BETA  =RPCGN/RPCG
+
+!      CALL MPI_BARRIER(MPI_COMM_WORLD,IERR); STOP
+
+      RPC8G=RPCG8N
+!      RPCG =RPCGN
+      S2TIME=MPI_TIC()
+!$OMP PARALLEL DO
+      DO L=LMPI2,LMPILA
+        PCG(L)=REAL(TMPCG(L)+(BET8A)*PCG(L),KIND(PCG))
+      ENDDO
+      CALL broadcast_boundary(PCG,ic)
+      MPI_WTIMES(246)=MPI_WTIMES(246)+MPI_TOC(S2TIME)
+      GOTO 100
+  600 FORMAT('  MAXIMUM ITERATIONS EXCEEDED IN EXTERNAL SOLUTION')
+C
+C ** CALCULATE FINAL RESIDUAL
+C
+  200 CONTINUE
+      ! *** DSLLC BEGIN BLOCK
+      S2TIME=MPI_TIC()
+      CALL broadcast_boundary(P,ic)
+      IF(ISLOG.GE.1)THEN
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA
+          PNORTH(L)=P(LNC(L))
+          PSOUTH(L)=P(LSC(L))
+        ENDDO
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA
+          RCG(L)=CCC(L)*P(L)+CCS(L)*PSOUTH(L)+CCN(L)*PNORTH(L)
+     &      +CCW(L)*P(L-1)+CCE(L)*P(L+1)-FPTMP(L)
+        ENDDO
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA
+          RCG(L)=RCG(L)*CCCI(L)
+        ENDDO
+        RS8Q=0.
+!        RSQ =0.
+C!$OMP PARALLEL DO REDUCTION(+:RQG)
+        DO L=LMPI2,LMPILA
+          RS8Q=RS8Q+RCG(L)*RCG(L)
+!          RSQ =RSQ+RCG(L)*RCG(L)
+        ENDDO
+        CALL MPI_ALLREDUCE(RS8Q,MPI_R8,1,MPI_DOUBLE,
+     &       MPI_SUM,MPI_COMM_WORLD,IERR)
+        RS8Q=MPI_R8
+!        CALL MPI_ALLREDUCE(RSQ,MPI_R4,1,MPI_REAL,
+!     &       MPI_SUM,MPI_COMM_WORLD,IERR)
+!        RSQ=MPI_R4
+        ENDIF
+      MPI_WTIMES(247)=MPI_WTIMES(247)+MPI_TOC(S2TIME)
+      ! *** DSLLC END BLOCK
+C      TCONG=TCONG+TTMP-SECOND()
+C 800 FORMAT(I5,8E13.4)
+  808 FORMAT(2I5,9E13.4)
+      CALL broadcast_boundary(P,ic)
+
+      IF(PRINT_SUM)THEN
+      call collect_in_zero(P)
+      call collect_in_zero(RCG)
+      call collect_in_zero(PCG)
+      IF(MYRANK.EQ.0)THEN
+        PRINT*, n,'P     = ', sum(abs(dble(P)))
+        PRINT*, n,'RCG   = ', sum(abs(dble(RCG)))
+        PRINT*, n,'PCG   = ', sum(abs(dble(PCG)))
+      ENDIF
+      ENDIF
+
+      RETURN
+      END

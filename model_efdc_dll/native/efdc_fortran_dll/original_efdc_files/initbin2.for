@@ -33,6 +33,7 @@ C**********************************************************************C
 C
 C
       USE GLOBAL
+      USE MPI
 C
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::XLON  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::YLAT  
@@ -158,7 +159,7 @@ C---------------------------------------------------------
 C
 C IF WQDIURDO.BIN ALREADY EXISTS, OPEN FOR APPENDING HERE.
 C
-      IF(ISDIURDO .EQ. 2)THEN
+      IF(ISDIURDO .EQ. 2.AND.MYRANK.EQ.0)THEN
         INQUIRE(FILE='WQDIURDO.BIN', EXIST=FEXIST)
         IF(FEXIST)THEN
           OPEN(UNIT=2, FILE='WQDIURDO.BIN', ACCESS='DIRECT',
@@ -177,7 +178,7 @@ C-------------------------------------------------------------------
 C
 C IF WQDIURDO.BIN ALREADY EXISTS, DELETE IT HERE.
 C
-      IF(ISDIURDO .EQ. 1)THEN
+      IF(ISDIURDO .EQ. 1.AND.MYRANK.EQ.0)THEN
         TBEGAN = TBEGIN
         INQUIRE(FILE='WQDIURDO.BIN', EXIST=FEXIST)
         IF(FEXIST)THEN
