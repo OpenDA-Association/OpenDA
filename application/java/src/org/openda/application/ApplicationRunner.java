@@ -60,6 +60,7 @@ public class ApplicationRunner implements Runnable{
     protected boolean doWriteRestart = false;
     protected boolean doReadRestart = false;
     protected Time[] restartTimes=new Time[0];
+	private boolean restartOnlyAtEndOfRun;
 
 	// possible status values
     public static enum Status {
@@ -425,6 +426,7 @@ public class ApplicationRunner implements Runnable{
 				this.restartTimes = Time.Mjds2Times(TimeUtils.MjdSequenceString2Mjd(outFileTimes));
 			}
 		}
+		restartOnlyAtEndOfRun = configuration.isRestartOnlyAtEndOfRun();
 
 		// Get class types
         List<OpenDaResultWriterConfig> resultWriterConfigs = configuration.getResultWriterConfigs();
@@ -568,25 +570,10 @@ public class ApplicationRunner implements Runnable{
         return (IStochModelFactory) factoryInstance;
     }
 
-    protected void writeRestart(){
+	protected void writeRestart(){
 		ITime time = algorithm.getCurrentTime();
 
-		// We do not want to write at the start time. But this can only be checked for algorithms that know about time.
-		// In case an algorithm is clueless it will return null, in that case the behaviour is to write the restart.
-		// Note: typically calibration algorithms do not know about time
-		boolean writeAtThisTime = true;
-		if (time != null){
-			writeAtThisTime = (time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
-		}
-		if ((this.restartTimes.length>0) & (time!=null)){
-			writeAtThisTime=false;
-			for(int i=0;i<this.restartTimes.length;i++){
-				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
-				if(Math.abs(currentTime-this.restartTimes[i].getMJD())<OdaGlobSettings.getTimePrecision()){
-					writeAtThisTime=true;
-				}
-			}
-		}
+		boolean writeAtThisTime = isWriteAtThisTime(time);
 		if (writeAtThisTime){
 			IModelState savedInternalState = this.algorithm.saveInternalState();
 			File stateFile;
@@ -596,7 +583,7 @@ public class ApplicationRunner implements Runnable{
 					timeString= String.valueOf(++currentAlgorithmStep);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-						timeString+ "." + restartOutFileExtension);
+					timeString+ "." + restartOutFileExtension);
 			}else{
 				this.restartOutFileExtension="zip"; //zip extension for kalmanfilters
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
@@ -605,11 +592,30 @@ public class ApplicationRunner implements Runnable{
 					timeString= TimeUtils.mjdToString(currentTime);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-						timeString+ "." + restartOutFileExtension);
+					timeString+ "." + restartOutFileExtension);
 			}
 			savedInternalState.savePersistentState(stateFile);
 			this.algorithm.releaseInternalState(savedInternalState);
 		}
 
-    }
+	}
+
+	private boolean isWriteAtThisTime(ITime time) {
+		// We do not want to write at the start time. But this can only be checked for algorithms that know about time.
+		// In case an algorithm is clueless it will return null, in that case the behaviour is to write the restart.
+		// Note: typically calibration algorithms do not know about time
+		if (time == null) return true;
+
+		if (this.restartTimes.length > 0) {
+			for (Time restartTime : this.restartTimes) {
+				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD()) / 2d;
+				if (Math.abs(currentTime - restartTime.getMJD()) < OdaGlobSettings.getTimePrecision()) {
+					return true;
+				}
+			}
+			return false;
+		}
+		if (restartOnlyAtEndOfRun) return Math.abs(time.getMJD() - algorithm.getTimeHorizon().getEndTime().getMJD()) < OdaGlobSettings.getTimePrecision();
+		return (time.getMJD() > algorithm.getTimeHorizon().getBeginTime().getMJD());
+	}
 }
