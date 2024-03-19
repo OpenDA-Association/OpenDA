@@ -68,6 +68,7 @@
    <target name="build" depends="init, tests" unless="test-only">
      <delete file="./build.errors" quiet="true"/>
      <buildmodule module="core" />
+      <buildmodule module="costa" />
       <buildmodule module="observers" />
       <buildmodule module="models" />
       <buildmodule module="algorithms" />
@@ -272,6 +273,7 @@
     	<cleanmodule module="observers" />
     	<cleanmodule module="models" />
     	<cleanmodule module="algorithms" />
+    	<cleanmodule module="costa" />
         <cleanmodule module="application" />
         <cleanmodule module="model_bmi" />
         <cleanmodule module="model_damflow" />
@@ -348,6 +350,7 @@
     <target name="zip-src">
         <zip destfile="${projectname}_${version}_${vc.revision}_src.zip">
 	        <zipfileset dir="core" prefix="openda_${version}/public/core" excludes="*.svn" />
+	        <zipfileset dir="costa" prefix="openda_${version}/public/costa" excludes="*.svn" />
 	        <zipfileset dir="models" prefix="openda_${version}/public/models" excludes="*.svn" />
 	        <zipfileset dir="observers" prefix="openda_${version}/public/observers" excludes="*.svn" />
 	        <zipfileset dir="algorithms" prefix="openda_${version}/public/algorithms" excludes="*.svn" />
@@ -424,7 +427,7 @@
 
     <target name="zip-native" depends="vc-revision">
        <zip destfile="${projectname}_${version}_${vc.revision}_native.zip">
-	       <zipfileset dir="core/native_bin/win64_ifort" prefix="win64_ifort"/>
+	       <zipfileset dir="costa/native_bin/win64_ifort" prefix="win64_ifort"/>
        </zip>
     </target>
 
@@ -445,11 +448,6 @@
     	<ziptest testname="model_swan" />
         <ziptest testname="model_delft3d" />
         <ziptest testname="model_dflowfm_blackbox" />
-    </target>
-
-    <target name="chmod-linux-native">
-	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/" includes="*.sh" verbose="true"/>
-	    <chmod perm="ug+rx" dir="${projectdir}/core/native_bin/linux64_gnu/lib" includes="**" verbose="true"/>
     </target>
 
     <!-- tgz archives: mainly for non-windows platforms as they preserve file-permissions -->
@@ -550,12 +548,6 @@
         <tgztest testname="model_delft3d" />
         <tgztest testname="model_dflowfm_blackbox" />
     </target>
-    <target name="tgz-native" depends="vc-revision" >
-       <tar compression="gzip" destfile="${projectname}_${version}_${vc.revision}_native.tgz">
-	       <tarfileset dir="core/native_bin/linux64_gnu" prefix="linux64_gnu" excludes="*.svn"/>
-	       <tarfileset dir="core/native_bin/darwin" prefix="darwin" excludes="*.svn"/>
-       </tar>
-    </target>
 
 
 	<!--
@@ -568,6 +560,7 @@
     <target name="testclasses" unless="test-only">
         <mkdir dir="${testbuilddir}"/>
     	<buildmoduletests module="core" />
+    	<buildmoduletests module="costa" />
     	<buildmoduletests module="observers" />
     	<buildmoduletests module="models" />
     	<buildmoduletests module="algorithms" />
@@ -589,6 +582,7 @@
     <target name="testclassesPPC" unless="test-only">
         <mkdir dir="${testbuilddir}"/>
     	<buildmoduletests module="core" />
+    	<buildmoduletests module="costa" />
     	<buildmoduletests module="observers" />
     	<buildmoduletests module="models" />
     	<buildmoduletests module="algorithms" />

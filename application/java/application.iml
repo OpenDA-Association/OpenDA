@@ -9,11 +9,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="costa" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="algorithms" />
-    <orderEntry type="module" module-name="models" />
     <orderEntry type="module" module-name="observers" />
+    <orderEntry type="module" module-name="models" />
     <orderEntry type="module" module-name="model_dflowfm_blackbox" />
+    <orderEntry type="module" module-name="model_example_blackbox" />
+    <orderEntry type="library" name="CoreResources" level="project" />
+    <orderEntry type="module" module-name="model_reactive_advection" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -23,8 +27,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="model_reactive_advection" />
-    <orderEntry type="library" name="CoreResources" level="project" />
-    <orderEntry type="module" module-name="model_example_blackbox" />
   </component>
 </module>
