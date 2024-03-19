@@ -106,7 +106,7 @@
 
 	<taskdef resource="org/tigris/subversion/svnant/svnantlib.xml">
 		<classpath>
-			<fileset dir="./java/resources/svnant-1.3.0/lib" includes="**/*.jar" />
+			<fileset dir="../core/java/resources/svnant-1.3.0/lib" includes="**/*.jar" />
 		</classpath>
 	</taskdef>
 
