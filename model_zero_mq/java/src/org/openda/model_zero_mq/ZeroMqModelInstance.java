@@ -191,16 +191,25 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		Map<String, IExchangeItem> result = new HashMap<>();
 
 		for (String variable : inputVars) {
+			/*if (variable.endsWith("]")) continue;
+			if (variable.endsWith("vertical.z_layered")) continue;
+			if (variable.endsWith("lateral.subsurface.kh")) continue;*/
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Input, false);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
+			/*if (variable.endsWith("]")) continue;
+			if (variable.endsWith("vertical.z_layered")) continue;
+			if (variable.endsWith("lateral.subsurface.kh")) continue;*/
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Output, false);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
+			/*if (variable.endsWith("]")) continue;
+			if (variable.endsWith("vertical.z_layered")) continue;
+			if (variable.endsWith("lateral.subsurface.kh")) continue;*/
 			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.InOut, false);
 			result.put(variable, item);
 		}
@@ -445,9 +454,6 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	public int getVarItemSize(String id) {
 		JsonNode replyById = getReplyById(FUNCTION_GET_VAR_ITEM_SIZE, RETURN_ITEM_SIZE, id);
-		if (replyById == null) {
-			System.out.println("No reply for " + id);
-		}
 		return replyById.asInt();
 	}
 
@@ -498,6 +504,10 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	public double[] getValues(String id, double[] dummyValuesArray) {
 		JsonNode replyById = getReplyForGetValues(FUNCTION_GET_VALUE, RETURN_VALUE, id, dummyValuesArray);
+		/*if (replyById == null) {
+			System.out.println("Null for " + id);
+			return new double[0];
+		}*/
 		Iterator<JsonNode> elements = replyById.elements();
 		List<Double> values = new ArrayList<>();
 		while (elements.hasNext()) {
@@ -752,10 +762,18 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 			analysisDataWriter.writeDataAfterAnalysis();
 		}
 
-		double days = targetTime.getMJD() - startTimeMjd;
-		double time = days * timeUnit.partsInDay;
-		double roundedTime = Math.round(1_000_000 * time) / 1_000_000d;
-		updateUntil(roundedTime);
+		double tolerance = 1d / 24d / 60d / 2; // half a minute (expressed as MJD)
+		double modelTimeStep = getTimeHorizon().getStepMJD();
+		double days = getCurrentTime().getMJD() - startTimeMjd;
+		while (getCurrentTime().getMJD() + tolerance < targetTime.getMJD()) {
+			days += modelTimeStep;
+			double time = days * timeUnit.partsInDay;
+			double roundedTime = Math.round(1_000_000 * time) / 1_000_000d;
+			updateUntil(roundedTime);
+			// Get bufferEI data of this timestep from modelEI.
+			setBufferEIsfromModelEIs(getCurrentTime().getMJD());
+		}
+
 		setBufferEIsfromModelEIs(getCurrentTime().getMJD());
 
 		analysisDataWriter.writeDataBeforeAnalysis();
@@ -768,9 +786,6 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 			IExchangeItem bufferEI = entry.getValue();
 			double[] times = bufferEI.getTimes();
 			String key = entry.getKey();
-			/*if (key.equals("lateral.river.q_av")) {
-				System.out.println("Here!");
-			}*/
 			double[] newValues = exchangeItems.get(key).getValuesAsDoubles();
 			for (int aTimeIndex = 0; aTimeIndex < times.length; aTimeIndex++) {
 				if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
