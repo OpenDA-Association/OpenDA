@@ -9,10 +9,10 @@
                 </check>
                 <check>
 		<!-- last line looks like
-		x_f_central{102}	=[5.865551814494317,8.90458092953776
+		x_f_central{51}	=[5.879433301067781,8.98461820713056, ...
 		-->
                         <file removeBeforeTest="yes" >../enkf_results.m</file>
-			<regex>x_f_central\{102\}(.*)\[5.86(.*)8.90(.*)</regex>
+			<regex>x_f_central\{51\}(.*)\[5.87(.*)8.98(.*)</regex>
                 </check>
         </checks>
 </testConfig>
