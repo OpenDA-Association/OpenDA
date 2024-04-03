@@ -15,8 +15,6 @@ tests=(
     'simple_resultwriters'
     'simple_river1d'
     'simple_two_oscillators'
-    'native_advec1d'
-    'native_heat'
     'native_oscillator'
     'native_parallel'
     'native_parallel_from_examples'

@@ -7,15 +7,7 @@
 #native_parallel_from_examples
 #rmi
 
-pushd native_heat
-./clean.sh
-popd
-
 pushd native_oscillator
-./clean.sh
-popd
-
-pushd native_advec1d
 ./clean.sh
 popd
 
