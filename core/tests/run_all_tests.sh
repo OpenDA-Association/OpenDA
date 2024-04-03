@@ -24,6 +24,10 @@ tests=(
     'rmi'
 )
 
+if [ $is_teamcity = true ]; then
+    echo "##teamcity[testSuiteStarted name='Core tests']"
+fi
+
 is_error=0
 for test in "${tests[@]}"; do
     # Remove log from previous test.
@@ -47,6 +51,10 @@ for test in "${tests[@]}"; do
         fi
     fi
 done
+
+if [ $is_teamcity = true ]; then
+    echo "##teamcity[testSuiteFinished name='Core tests']"
+fi
 
 # If any test has failed, exit with error code.
 if [ $is_error -ne 0 ]; then
