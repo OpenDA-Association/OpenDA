@@ -36,7 +36,7 @@ public class CostaOpendaAppTest extends TestCase {
         ApplicationRunner.setRunningInTest(true);
         ApplicationRunner.setRunningInTest(true);
         org.openda.application.OpenDaApplication.main(new String[]{
-                "./test/org/openda/costa/testData/OscillEnKFOpenDaConfig.xml"
+                "./application/java/test/org/openda/costa/testData/OscillEnKFOpenDaConfig.xml"
         });
     }
 
@@ -44,7 +44,7 @@ public class CostaOpendaAppTest extends TestCase {
         ApplicationRunner.setRunningInTest(true);
         ApplicationRunner.setRunningInTest(true);
         org.openda.application.OpenDaApplication.main(new String[]{
-                "./test/org/openda/costa/testData/OscillSimplexOpenDaConfig.xml"
+                "./application/java/test/org/openda/costa/testData/OscillSimplexOpenDaConfig.xml"
         });
     }
 }
