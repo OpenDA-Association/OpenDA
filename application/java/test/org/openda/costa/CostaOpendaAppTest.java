@@ -32,7 +32,7 @@ import org.openda.application.ApplicationRunner;
  */
 public class CostaOpendaAppTest extends TestCase {
 
-    public static void testOscill_EnKF() throws IOException {
+    public static void testOscillEnKF() throws IOException {
         ApplicationRunner.setRunningInTest(true);
         ApplicationRunner.setRunningInTest(true);
         org.openda.application.OpenDaApplication.main(new String[]{
@@ -40,7 +40,7 @@ public class CostaOpendaAppTest extends TestCase {
         });
     }
 
-    public static void testOscill_Simplex() throws IOException {
+    public static void testOscillSimplex() throws IOException {
         ApplicationRunner.setRunningInTest(true);
         ApplicationRunner.setRunningInTest(true);
         org.openda.application.OpenDaApplication.main(new String[]{
