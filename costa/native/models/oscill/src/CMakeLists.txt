@@ -14,6 +14,9 @@ target_include_directories(oscill PRIVATE
   ${LIBXML2_INCLUDE_DIR}
 )
 if(WIN32)
+  # Add a "lib" prefix, as some of the tests expect the library to be named
+  # liboscill.dll, like its Linux equivalent liboscill.so.
+  set_target_properties(oscill PROPERTIES PREFIX "lib")
   # Call Fortran subroutines with capitalised names.
   target_compile_definitions(oscill PRIVATE FTN_CAPITAL)
 endif()
