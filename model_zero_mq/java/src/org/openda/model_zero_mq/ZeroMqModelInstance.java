@@ -749,7 +749,9 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	@Override
 	public ITime getCurrentTime() {
 		double currentTimeInstant = getCurrentTimeInstant();
+		//System.out.println("Get current time " + currentTimeInstant);
 		double currentTimeMjd = currentTimeInstant / timeUnit.partsInDay + startTimeMjd;
+		//System.out.println("Current time converted to MJD " + currentTimeMjd);
 		return new Time(currentTimeMjd);
 	}
 
@@ -768,7 +770,11 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		while (getCurrentTime().getMJD() + tolerance < targetTime.getMJD()) {
 			days += modelTimeStep;
 			double time = days * timeUnit.partsInDay;
-			double roundedTime = Math.round(1_000_000 * time) / 1_000_000d;
+			/*System.out.println("System.out: time before rounding " + time);
+			Results.putMessage("Results message: time before rounding " + time);*/
+			double roundedTime = Math.round(time);
+			/*System.out.println("System.out: Calling update_until with rounded time " + roundedTime);
+			Results.putMessage("Results message: Calling update_until with rounded time " + roundedTime);*/
 			updateUntil(roundedTime);
 			// Get bufferEI data of this timestep from modelEI.
 			setBufferEIsfromModelEIs(getCurrentTime().getMJD());
