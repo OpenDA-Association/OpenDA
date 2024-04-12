@@ -102,7 +102,7 @@ import org.openda.utils.Results;
 			// Apply localization to the gain matrix (shur-product)
 			applyLocalizationToGain(obs, Kvecs, ensemblePredictionsForecast, ensembleVectorsForecast);
 
-			Matrix hk = computeHK(obs, ensemblePredictionsForecast);
+			double[][] hk = getHK(obs, ensemblePredictionsForecast);
 			// Store kalman gain for future use in this object
 			storeGainMatrix(obs, analysisTime, Kvecs, hk);
 
