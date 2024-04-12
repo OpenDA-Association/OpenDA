@@ -491,7 +491,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		return K_pred;
 	}
 
-	protected void storeGainMatrix(IStochObserver obs, ITime analysisTime, IVector[] Kvecs, Matrix hk){
+	protected void storeGainMatrix(IStochObserver obs, ITime analysisTime, IVector[] Kvecs, double[][] hkArray){
 
 					// store kalman gain for future use in this object
 			if(this.saveGainTimes!=null){
@@ -533,7 +533,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 							+"model = "+this.mainModel.getClass().getSimpleName()+"\n"
 							+"observer = "+obs.getClass().getSimpleName()+"\n");
 
-					gainStorage.setHk(hk.asArray());
+					gainStorage.setHk(hkArray);
 					gainStorage.writeKalmanGain(this.gainVectors, this.obsId, this.obsTimeOffset);
 									this.gainVectors.clear();
 									this.obsId.clear();
@@ -622,7 +622,16 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 				this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 			}
 
-			Matrix hk = computeHK(obs, ensemblePredictionsForecast);
+
+			/*ObserverUtils obsUtils = new ObserverUtils(obs);
+			String[] obsIds = obsUtils.getObsIds();
+			double[] obsTimeOffsets = obsUtils.getObsTimeOffsets(analysisTime.getMJD());
+			System.out.println("Observation order for writing HK");
+			for (int i = 0; i < obsIds.length; i++) {
+				System.out.printf("ObsId:offset %s:%f%n", obsIds[i], obsTimeOffsets[i]);
+			}*/
+
+			double[][] hk = getHK(obs, ensemblePredictionsForecast);
 			// Store kalman gain for future use in this object
 			storeGainMatrix(obs, analysisTime, Kvecs, hk);
 
@@ -650,6 +659,21 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		}
 	   // CtaUtils.print_native_memory("Enkf end",1);
         System.gc();
+	}
+
+	protected double[][] getHK(IStochObserver obs, EnsembleVectors ensemblePredictionsForecast) {
+		if (localizationMethod != LocalizationMethodType.none) {
+			System.out.println("Not computing HK for Kalman Gain Storage because it is not compatible with localization method " + localizationMethod);
+			return null;
+		}
+		Matrix hk = computeHK(obs, ensemblePredictionsForecast);
+		double[][] array = new double[hk.getNumberOfRows()][hk.getNumberOfRows()];
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[0].length; j++) {
+				array[i][j] = hk.getValue(i, j);
+			}
+		}
+		return array;
 	}
 
 	@Override

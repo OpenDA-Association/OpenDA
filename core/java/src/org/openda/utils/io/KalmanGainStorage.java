@@ -202,9 +202,11 @@ public class KalmanGainStorage {
 		IVector[] kalmanGainColumns = new IVector[n];
 		Set<String> gainIds = gainVectors.keySet();
 		int index=0;
+		//System.out.println("Observation order for writing kalman gain");
 		for(String gainId : gainIds){
 			observationIds[index] = obsId.get(gainId);
 			observationOffsetsInDays[index] = obsTimeOffset.get(gainId);
+			//System.out.printf("ObsId:offset %s:%f%n", observationIds[index], observationOffsetsInDays[index]);
 			kalmanGainColumns[index] = gainVectors.get(gainId);
 			index++;
 		}

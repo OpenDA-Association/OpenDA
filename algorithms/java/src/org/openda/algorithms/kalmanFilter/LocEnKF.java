@@ -170,7 +170,7 @@ public class LocEnKF extends EnKF {
 					this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 				}
 
-				Matrix hk = computeHK(obs, ensemblePredictionsForecast);
+				double[][] hk = getHK(obs, ensemblePredictionsForecast);
 				// Store kalman gain for future use in this object
 				storeGainMatrix(lobs, analysisTime, Kvecs, hk);
 
