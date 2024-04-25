@@ -1288,6 +1288,7 @@ SUBROUTINE VARZEROReal
       WC=0.0
       WC2=0.0
       WINDD=0.0
+      WINDH=0.0
       WINDS=0.0
       WINDST=0.0
       WINDSTKA=0.0
