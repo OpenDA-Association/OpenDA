@@ -32,6 +32,8 @@
       SAVE IWQ
       SAVE NSEDSTEPS
 
+      LOGICAL FILE_EXISTS
+
       IF(ISDYNSTP.EQ.0)THEN
         DELT=DT
       ELSE
@@ -235,9 +237,12 @@
 C **  INITIAL CALL
       S1TIME=MPI_TIC()
       IF(JSEXPLORER.EQ.1.AND.MYRANK.EQ.0)THEN
+        inquire(file='EE_WC.OUT', exist=file_exists)
+        if (file_exists) then
         OPEN(95,FILE='EE_WC.OUT',STATUS='UNKNOWN',
      &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
         CLOSE(95,STATUS='DELETE')
+        end if
         OPEN(95,FILE='EE_WC.OUT',STATUS='UNKNOWN',
      &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
         VER=106

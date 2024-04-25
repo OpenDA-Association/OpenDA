@@ -33,6 +33,8 @@ c      INTEGER N1_1D(LCM)
       INTEGER NP1
       INTEGER COUNTCELL(LA)
 
+      LOGICAL FILE_EXISTS
+      
       SAVE IWQ
       SAVE NSEDSTEPS
 
@@ -252,9 +254,12 @@ c      INTEGER N1_1D(LCM)
 C **  INITIAL CALL
       S1TIME=MPI_TIC()
       IF(JSEXPLORER.EQ.1.AND.MYRANK.EQ.0)THEN
+        inquire(file='EE_WC.OUT', exist=file_exists)
+        if (file_exists) then
         OPEN(95,FILE='EE_WC.OUT',STATUS='UNKNOWN',
      &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
         CLOSE(95,STATUS='DELETE')
+        end if
         OPEN(95,FILE='EE_WC.OUT',STATUS='UNKNOWN',
      &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
         VER=106
