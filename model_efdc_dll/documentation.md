@@ -57,14 +57,27 @@ C73 ISVPH NPVPH ISRVPH IVPHXY
 
 ## Restart files
 
-Input
+| Input  | Output | 
+| ------ | ---- |
+| RESTART.INP | RESTART.OUT |
+| RSTWD.INP |  RSTWD.OUT |
+| TEMP.RST | TEMP.RSTO  |
+| WQWCRST.INP | TEMP.RSTO |
 
-```
-RESTART.INP, RSTWD.INP, TEMP.RST,  WQWCRST.INP
-```
+## Run time period
 
-Output
+| Template file              | EFDC file       | Keyword  |
+| -------------------------- | ------------------------ | ---- |
+| `EFDC_TEMPLATE.INP`            |`EFDC.INP`  | `C7` `$N_REF_PERIODS$` |
+| `EFDC_TEMPLATE.INP`          | `EFDC.INP`             | `C8` `$RELATIVE_TSTART$` (`TCON` must be 86400) |
+| `TOX_EVENT2_TEMPLATE.INP`    | `TOX_EVENT2.INP`       | `$TSTART$` `$TSTOP$` |          
 
-```
-RESTART.OUT, RSTWD.OUT, TEMP.RSTO, WQWCRST.OUT
-```
+### Logging
+
+| File  | Content |
+| ----- | ------- |
+| `model.log` | Initialisation of dll, displays exchange items supported by current EFDC configuration  |
+| `instance001.log` | Per instance log, logs data exchange with exchange item id for times and values, compute steps, etc. |
+
+
+
