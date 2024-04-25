@@ -1,0 +1,10 @@
+*genmod.*
+*.obj
+*.mod
+*.lib
+*.exp
+*.u2d
+*.pdb
+*.manifest*
+
+BuildLog.htm
