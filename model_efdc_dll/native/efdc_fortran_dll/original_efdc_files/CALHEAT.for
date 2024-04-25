@@ -89,10 +89,12 @@ C
       REAL TSSS_ABOVE
       REAL POMS_ABOVE
       REAL EXPBOT
+      REAL CSHE
       WQCHLS_ABOVE = 0.0
       TSSS_ABOVE = 0.0
       POMS_ABOVE = 0.0
       EXPBOT = 0.0
+      CSHE = 0.0
 C
       IF(.NOT.ALLOCATED(NETRAD))THEN
         ALLOCATE(NETRAD(LCM,KCM))
@@ -702,6 +704,7 @@ C 600 FORMAT(4I5,2E12.4)
         TDEW_F   = DEG_F(TDEW)
         TAIR_F   = DEG_F(TAIR)
         WIND_MPH = WSPD*MPS_TO_MPH
+        print*, 'WIND', WIND_MPH, WINDH, MPS_TO_MPH
         WIND_2M  = WIND_MPH*(LOG(2.0/0.003)/LOG(WINDH/0.003))
 
 ******* Shortwave Radiation
@@ -751,8 +754,11 @@ C 600 FORMAT(4I5,2E12.4)
         ET    = TDEW_F
         TSTAR = (ET+TDEW_F)*0.5
         BETA  = 0.255-(8.5E-3*TSTAR)+(2.04E-4*TSTAR*TSTAR)
+        print*, 'EQUILIBRIUM_TEMPERATURE', W_M2_TO_BTU_FT2_DAY, AFW,
+     &    BCONV, BFW, WIND_2M, CFW
         FW    = W_M2_TO_BTU_FT2_DAY*AFW+BCONV*BFW*WIND_2M**CFW
         CSHE  = 15.7+(0.26+BETA)*FW
+        print*, 'EQUILIBRIUM_TEMPERATURE', CSHE, BETA, FW
         RA    = 3.1872E-08*(TAIR_F+459.67)**4
         ETP   = (SRO_BR+RA-1801.0)/CSHE+(CSHE-15.7)
      .            *(0.26*TAIR_F+BETA*TDEW_F)/(CSHE*(0.26+BETA))
