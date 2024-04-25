@@ -28,6 +28,8 @@
 	INTEGER NP1
 	INTEGER COUNTCELL(LA)
 
+      LOGICAL FILE_EXISTS
+      
       SAVE IWQ
       SAVE NSEDSTEPS
 
@@ -62,9 +64,14 @@
 
 C **  INITIAL CALL
       IF(JSEXPLORER.EQ.1)THEN
+          
+        ! Check if the file exists
+        inquire(file='EE_WC.OUT', exist=FILE_EXISTS)
+        if (FILE_EXISTS) then
         OPEN(95,FILE='EE_WC.OUT',STATUS='UNKNOWN',
      &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
         CLOSE(95,STATUS='DELETE')
+        end if
         OPEN(95,FILE='EE_WC.OUT',STATUS='UNKNOWN',
      &         ACCESS='SEQUENTIAL',FORM='UNFORMATTED')
         VER=106
