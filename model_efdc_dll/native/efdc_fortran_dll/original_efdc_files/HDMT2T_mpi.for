@@ -1228,7 +1228,12 @@ C
             ENDDO
           ENDDO
         ENDIF
-        IF(LTEST)CLOSE(1,STATUS='KEEP')
+        IF(LTEST) then 
+            CLOSE(1,STATUS='KEEP')
+            PRINT*, "NaN Temperatures"
+            STOP
+        END IF
+
         MPI_WTIMES(574)=MPI_WTIMES(574)+MPI_TOC(S1TIME)
 
 !{ GEOSR 2012.8.30 jgcho
