@@ -886,7 +886,7 @@ contains
            TBEGIN = state(instance)%tbegin
            TIMESEC = state(instance)%timesec
            TIMEDAY = TIMESEC/86400.0  
-           if (debug) write(dm_outfile_handle(instance), '(A, F8.3, A, I5)' ) & 
+           if (debug) write(dm_outfile_handle(instance), '(A, F9.3, A, I5)' ) & 
              "Integrating over [s] ", time_period, " #steps", nint(time_period/dt)
            call model_make_step(time_period)
            state(instance)%timesec = TIMESEC
