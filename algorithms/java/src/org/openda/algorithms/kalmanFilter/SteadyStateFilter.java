@@ -219,17 +219,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 
 		int m=innovation.getSize();
 		IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(observations.getObservationDescriptions());
-		boolean compensateForMissingObservationsWithHK = tryCompensatingForMissingObservationWithHK && hk != null;
-		ArrayList<Integer> missingObservationIndices = new ArrayList<>();
-		ArrayList<Integer> availableObservationIndicesGainStorage = new ArrayList<>();
-		ArrayList<Integer> availableObservationIndicesObserver = new ArrayList<>();
-		if (compensateForMissingObservationsWithHK) fillIndicesArrays(availableObsGainVectorIdArray, missingObservationIndices, availableObservationIndicesGainStorage, availableObservationIndicesObserver);
-		int numberOfMissingObservations = compensateForMissingObservationsWithHK ? missingObservationIndices.size() : 0;
-		int numberOfAvailableObservations = compensateForMissingObservationsWithHK ? gainStorageObservationIdsArray.length - numberOfMissingObservations : 0;
-		Matrix m1 = new Matrix(numberOfMissingObservations, numberOfAvailableObservations);
-		Matrix m2 = new Matrix(numberOfMissingObservations, numberOfMissingObservations);
-		fillM1M2Matrices(missingObservationIndices, availableObservationIndicesGainStorage, m1, m2);
-		Matrix dAvailable = new Matrix(numberOfAvailableObservations, 1);
+
+		HKCalculator hkCalculator = tryCompensatingForMissingObservationWithHK && hk != null ? new HKCalculator(availableObsGainVectorIdArray, this.gainVectors) : null;
 
 		for (int i = 0; i < m; i++) {
 			// find matching column in steady-state gain
@@ -248,13 +239,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 				}
 				System.out.println("Innovation value for " + obsIds[i] + ": " + innovationValue);
 				delta.axpy(innovationValue, gainVector);
-				if (numberOfAvailableObservations > 0) {
-					int indexOf = SortUtils.indexOfString(availableObsGainVectorIdArray, gainVectorId);
-					int indexOfDAvailable = availableObservationIndicesObserver.indexOf(indexOf);
-					System.out.println("Index in dAvailable " + indexOfDAvailable);
-					System.out.println();
-					dAvailable.setValue(indexOfDAvailable, 0, innovationValue);
-				}
+				if (hkCalculator != null && hkCalculator.hasObservationsAvailable()) hkCalculator.setDAvailableValue(gainVectorId, innovationValue);
 			} else {
 
 				if (hk == null) throw new RuntimeException("No matching column found for observation with id=" + obsIds[i] + "and offset=" + obsTimeOffsets[i] + "\n");
@@ -262,52 +247,9 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		}
 		System.out.println();
 
-		if (tryCompensatingForMissingObservationWithHK && numberOfMissingObservations != 0)
-			compensateForMissingObservationsWithHK(obsTimeOffsets, delta, missingObservationIndices, numberOfMissingObservations, m1, m2, dAvailable);
+		if (hkCalculator != null && hkCalculator.hasMissingObservations()) hkCalculator.compensateForMissingObservationsWithHK(obsTimeOffsets, delta);
 		this.mainModel.axpyOnState(1.0, delta);
 		Results.putValue("pred_a", pred_a, pred_a.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
-	}
-
-	private void compensateForMissingObservationsWithHK(double[] obsTimeOffsets, IVector delta, ArrayList<Integer> missingObservationIndices, int numberOfMissingObservations, Matrix m1, Matrix m2, Matrix dAvailable) {
-		Matrix iMinusM2 = createIMinusM2(numberOfMissingObservations, m2);
-		System.out.println("Trying to compensate for missing observations using HK from kalman gain storage");
-		Matrix inverseIMinusM2 = iMinusM2.inverse();
-		Matrix m1DAvailable = m1.mult(dAvailable);
-		Matrix dMissing = inverseIMinusM2.mult(m1DAvailable);
-		System.out.println("M1: " + m1);
-		System.out.println("M2: " + m2);
-		System.out.println("inverseIMinusM2: " + inverseIMinusM2);
-		System.out.println("dAvailable: " + dAvailable);
-		System.out.println("m1DAvailable: " + m1DAvailable);
-		System.out.println("dMissing: " + dMissing);
-		for (int i = 0; i < missingObservationIndices.size(); i++) {
-			Integer missingObservationIndex = missingObservationIndices.get(i);
-			String missingObservationId = gainStorageObservationIdsArray[missingObservationIndex];
-			String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
-			Results.putProgression("processing obs " + gainVectorId + "\n");
-			// add to analysis increment for this obs
-			if (this.gainVectors.containsKey(gainVectorId)) {
-				IVector gainVector = this.gainVectors.get(gainVectorId);
-				double calculatedInnovation = dMissing.getValue(i, 0);
-				System.out.println("Calculated innovation for " + missingObservationId + ": " + calculatedInnovation + " index in dMissing: " + i);
-				delta.axpy(calculatedInnovation, gainVector);
-			}
-		}
-		System.out.println();
-	}
-
-	private void fillIndicesArrays(String[] availableObsGainVectorIdArray, ArrayList<Integer> missingObservationIndices, ArrayList<Integer> availableObservationIndicesGainStorage, ArrayList<Integer> availableObservationIndicesObserver) {
-		for (int i = 0; i < gainVectorIdArray.length; i++) {
-			String gainVectorId = gainVectorIdArray[i];
-			int indexOf = SortUtils.indexOfString(availableObsGainVectorIdArray, gainVectorId);
-			if (indexOf >= 0) {
-				availableObservationIndicesGainStorage.add(i);
-				availableObservationIndicesObserver.add(indexOf);
-				continue;
-			}
-			System.out.printf("Observation for %s missing%n", gainVectorId);
-			missingObservationIndices.add(i);
-		}
 	}
 
 	private static String[] getAvailableObsGainVectorIdArray(String[] obsIds, double[] obsTimeOffsets) {
@@ -375,4 +317,90 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
         }
     }
 
+	class HKCalculator {
+		private final String[] availableObsGainVectorIdArray;
+		private final HashMap<String, IVector> gainVectors;
+		ArrayList<Integer> missingObservationIndices = new ArrayList<>();
+		ArrayList<Integer> availableObservationIndicesGainStorage = new ArrayList<>();
+		ArrayList<Integer> availableObservationIndicesObserver = new ArrayList<>();
+		private int numberOfMissingObservations;
+		private int numberOfAvailableObservations;
+		private Matrix m1;
+		private Matrix m2;
+		private Matrix dAvailable;
+
+		public HKCalculator(String[] availableObsGainVectorIdArray, HashMap<String, IVector> gainVectors) {
+			this.availableObsGainVectorIdArray = availableObsGainVectorIdArray;
+			this.gainVectors = gainVectors;
+			createMatrices();
+		}
+
+		private void fillIndicesArrays() {
+			for (int i = 0; i < gainVectorIdArray.length; i++) {
+				String gainVectorId = gainVectorIdArray[i];
+				int indexOf = SortUtils.indexOfString(this.availableObsGainVectorIdArray, gainVectorId);
+				if (indexOf >= 0) {
+					this.availableObservationIndicesGainStorage.add(i);
+					this.availableObservationIndicesObserver.add(indexOf);
+					continue;
+				}
+				System.out.printf("Observation for %s missing%n", gainVectorId);
+				this.missingObservationIndices.add(i);
+			}
+		}
+
+		public void createMatrices() {
+			fillIndicesArrays();
+			numberOfMissingObservations = missingObservationIndices.size();
+			numberOfAvailableObservations = gainStorageObservationIdsArray.length - numberOfMissingObservations;
+			m1 = new Matrix(numberOfMissingObservations, numberOfAvailableObservations);
+			m2 = new Matrix(numberOfMissingObservations, numberOfMissingObservations);
+			fillM1M2Matrices(missingObservationIndices, availableObservationIndicesGainStorage, m1, m2);
+			dAvailable = new Matrix(this.numberOfAvailableObservations, 1);
+		}
+
+		public boolean hasObservationsAvailable() {
+			return this.numberOfAvailableObservations > 0;
+		}
+
+		public void setDAvailableValue(String gainVectorId, double innovationValue) {
+			int indexOf = SortUtils.indexOfString(availableObsGainVectorIdArray, gainVectorId);
+			int indexOfDAvailable = availableObservationIndicesObserver.indexOf(indexOf);
+			System.out.println("Index in dAvailable " + indexOfDAvailable);
+			System.out.println();
+			dAvailable.setValue(indexOfDAvailable, 0, innovationValue);
+		}
+
+		public boolean hasMissingObservations() {
+			return this.numberOfMissingObservations > 0;
+		}
+
+		private void compensateForMissingObservationsWithHK(double[] obsTimeOffsets, IVector delta) {
+			Matrix iMinusM2 = createIMinusM2(this.numberOfMissingObservations, this.m2);
+			System.out.println("Trying to compensate for missing observations using HK from kalman gain storage");
+			Matrix inverseIMinusM2 = iMinusM2.inverse();
+			Matrix m1DAvailable = this.m1.mult(this.dAvailable);
+			Matrix dMissing = inverseIMinusM2.mult(m1DAvailable);
+		/*System.out.println("M1: " + m1);
+		System.out.println("M2: " + m2);
+		System.out.println("inverseIMinusM2: " + inverseIMinusM2);
+		System.out.println("dAvailable: " + dAvailable);
+		System.out.println("m1DAvailable: " + m1DAvailable);
+		System.out.println("dMissing: " + dMissing);*/
+			for (int i = 0; i < this.missingObservationIndices.size(); i++) {
+				Integer missingObservationIndex = this.missingObservationIndices.get(i);
+				String missingObservationId = gainStorageObservationIdsArray[missingObservationIndex];
+				String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
+				Results.putProgression("processing obs " + gainVectorId + "\n");
+				// add to analysis increment for this obs
+				if (this.gainVectors.containsKey(gainVectorId)) {
+					IVector gainVector = this.gainVectors.get(gainVectorId);
+					double calculatedInnovation = dMissing.getValue(i, 0);
+					System.out.println("Calculated innovation for " + missingObservationId + ": " + calculatedInnovation + " index in dMissing: " + i);
+					delta.axpy(calculatedInnovation, gainVector);
+				}
+			}
+			System.out.println();
+		}
+	}
 }
