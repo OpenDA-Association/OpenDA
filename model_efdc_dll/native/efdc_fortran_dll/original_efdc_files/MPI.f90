@@ -41,6 +41,11 @@
       CALL MPI_INIT(IERR)
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPROCS,IERR)
       CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYRANK,IERR)
+      
+      IF (NPROCS > 1) THEN
+          PRINT*, 'EFDC library does not support running with multiple MPI processes'
+          STOP
+      END IF
 
 !$OMP PARALLEL
       OMPNUM=OMP_GET_MAX_THREADS()
