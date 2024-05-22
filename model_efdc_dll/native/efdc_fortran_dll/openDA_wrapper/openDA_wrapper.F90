@@ -82,7 +82,7 @@ module m_openda_wrapper
   integer :: dm_model_instance_count = 0  ! actual #instance
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
-  logical, parameter :: debug = .true.
+  logical, parameter :: debug = .false.
   logical :: ATM_WARNING_REQUIRED = .true.
   
 contains
