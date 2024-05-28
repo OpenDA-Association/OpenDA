@@ -100,6 +100,7 @@ C **      GWATER.INP
 C  
 C *** EE BEGIN BLOCK  
       USE GLOBAL
+      USE MPI
 C 
 C *** WASP7 Linkage     
 CPMC      COMMON/WASPHYDRO/  IHL_HANDLE,ibegin,idays,ad,adcoeff,abwmax,abwmx
@@ -107,6 +108,7 @@ CPMC	INCLUDE 'hydrolink_set.INT'
 CPMC      CHARACTER*256 errstring
 C
       CHARACTER*80 TITLE  
+      CHARACTER*10 MPI_ARG
 C
       REAL,ALLOCATABLE,DIMENSION(:,:)::SHOTS
 C  
@@ -117,8 +119,10 @@ C
       REAL*8 T1,T2,DELSNAP
       INTEGER COUNT
       LOGICAL PAUSEIT
-	CHARACTER*20 BUFFER
+      CHARACTER*20 BUFFER
 C
+      CALL MPI_INITIALIZE
+
 ![ykchoi 10.04.26. for linux version
 !      INTERFACE TO INTEGER FUNCTION ATEXIT  
 !     &    [C,ALIAS:'_atexit'](FUN)  
@@ -143,33 +147,37 @@ C
 
       ! *** GET THE COMMAND LINE ARGUMENTS, IF ANY
       IF(COUNT.GT.0)THEN
-        CALL GETARG(1, BUFFER, iStatus)
-        IF (Buffer(1:4).EQ.'-NOP'.OR.Buffer(1:4).EQ.'-nop') THEN
-          PAUSEIT=.FALSE.
-        ENDIF
+C        CALL GETARG(1, BUFFER, iStatus)
+C        IF (Buffer(1:4).EQ.'-NOP'.OR.Buffer(1:4).EQ.'-nop') THEN
+C          PAUSEIT=.FALSE.
+C        ENDIF
+C        CALL GETARG(1, MPI_ARG)
       ENDIF
+      MPI_ARG='PARL'
 C  
 C *** EE END BLOCK  
 C  
-      CALL WELCOME  
+      IF(MYRANK.EQ.0) CALL WELCOME  
 C  
       IF(PAUSEIT)THEN
-        WRITE(*,'(A)')'SETTING EXCEPTION TRAPS(TAP SPACEBAR TO QUIT)'  
+        IF(MYRANK.EQ.0) 
+     &   WRITE(*,'(A)')'SETTING EXCEPTION TRAPS(TAP SPACEBAR TO QUIT)'  
 ![ykchoi 10.04.26. for linux version
 !        IF(ATEXIT(QUIT).NE.0)STOP'CAN''T TRAP EXCEPTIONS'  
 !ykchoi]
       ENDIF
 C  
-C **  OPEN OUTPUT FILES  
+C **  OPEN OUTPUT FILES
 C  
+      IF(MYRANK.EQ.0) THEN
       OPEN(7,FILE='EFDC.OUT',STATUS='UNKNOWN')  
-      OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')  
+      OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')
       OPEN(9,FILE='TIME.LOG',STATUS='UNKNOWN') 
       CLOSE(7,STATUS='DELETE')  
       CLOSE(8,STATUS='DELETE')  
       CLOSE(9,STATUS='DELETE')  
       OPEN(7,FILE='EFDC.OUT',STATUS='UNKNOWN')  
-      write(7,*) 'Modified by GEOSR (NH014_161006_alg_stl_day)' !GEOSR 2016.10.06 jgcho
+      WRITE(7,*) 'Modified by GEO_YOON_JG MPI EFDC-NIER 210528' ! GEOSR 2021.05.28 jgcho
       OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')  
       OPEN(9,FILE='TIME.LOG',STATUS='UNKNOWN')  
 
@@ -185,12 +193,15 @@ C
       CLOSE(1,STATUS='DELETE')  
       OPEN(1,FILE='ERROR.LOG',STATUS='UNKNOWN')  
       CLOSE(1,STATUS='DELETE')
+      ENDIF
 C  
 C **  CALL INPUT SUBROUTINE  
 C  
       CALL VARINIT  
       CALL INPUT(TITLE)  
 C  
+      CALL MPI_DECOMPOSITION
+C
 C **  CALL SUBROUTINE TO ADJUST, CONVERT AND SMOOTH DEPTH FIELD  
 C  
 C      IF(NSHMAX.GE.1) CALL DEPSMTH     PMC
@@ -351,7 +362,7 @@ C
 
         ! *** HIGH FREQUENCY SNAPSHOTS
         IF(ISPPH.EQ.100)THEN
-          PRINT *, 'HIGH FREQ SNAPSHOTS USED'
+          IF(MYRANK.EQ.0) PRINT *, 'HIGH FREQ SNAPSHOTS USED'
           NS=0
           OPEN(1,FILE='SNAPSHOTS.INP',STATUS='UNKNOWN',ERR=999)  
           DO NS=1,4  
@@ -446,10 +457,10 @@ C
           ENDIF  
         ENDDO
       ENDIF
-      PRINT *, 'NSNAPSHOTS=',  NSNAPSHOTS
-      WRITE(7,*)'NSNAPSHOTS=',  NSNAPSHOTS 
+      IF(MYRANK.EQ.0) PRINT *, 'NSNAPSHOTS=',  NSNAPSHOTS
+      IF(MYRANK.EQ.0) WRITE(7,*)'NSNAPSHOTS=',  NSNAPSHOTS 
       DO I=1,NSNAPSHOTS
-        WRITE(7,*)'SNAPSHOT: ',I,SNAPSHOTS(I)
+        IF(MYRANK.EQ.0) WRITE(7,*)'SNAPSHOT: ',I,SNAPSHOTS(I)
       ENDDO
       IF(NSNAPSHOTS.GT.2)THEN
         IF(SNAPSHOTS(NSNAPSHOTS).LT.T2)SNAPSHOTS(NSNAPSHOTS+1)=T2+.001
@@ -719,7 +730,7 @@ C
             WINDSTKA(L)=TMPVAL  
             FCORC(L)=TMPCOR  
             DETTMP=1./( CUE(L)*CVN(L)-CUN(L)*CVE(L) )  
-            IF(DETTMP.EQ.0.0)THEN  
+            IF(DETTMP.EQ.0.0.AND.MYRANK.EQ.0)THEN  
               WRITE(6,6262)  
               WRITE(6,6263)IL(L),JL(L)  
               STOP  
@@ -750,7 +761,7 @@ C
             WINDSTKA(L)=TMPVAL  
             FCORC(L)=CF  
             DETTMP=1./( CUE(L)*CVN(L)-CUN(L)*CVE(L) )  
-            IF(DETTMP.EQ.0.0)THEN  
+            IF(DETTMP.EQ.0.0.AND.MYRANK.EQ.0)THEN  
               WRITE(6,6262)  
               WRITE(6,6263)IL(L),JL(L)  
               STOP  
@@ -778,7 +789,7 @@ C *** DSLLC END BLOCK
  3002 CONTINUE  
 
       ZERO=0.  
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='LIJMAP.OUT',STATUS='UNKNOWN')  
         DO L=2,LA  
           WRITE(1,1113)L,IL(L),JL(L),ZERO  
@@ -869,7 +880,7 @@ C
 C  
 C **  SET BOUNDARY CONDITION SWITCHES  
 C  
-      CALL SETBCS  
+      CALL SETBCS_mpi  
 C  
 C **  CALCUATE CURVATURE METRICS (NEW ADDITION)  
 C  
@@ -947,7 +958,7 @@ C
         IF(ISRESTI.EQ.2) CALL RESTIN2  
         IF(ISRESTI.EQ.10) CALL RESTIN10  
       ENDIF  
-      IF(ISRESTI.EQ.-1) CALL RESTIN1  
+      IF(ISRESTI.EQ.-1) CALL RESTIN1
 C  
 C **  INTIALIZE SALINITY FIELD IF NOT READ IN FROM RESTART FILE  
 C  
@@ -1781,9 +1792,11 @@ C
 C **  INITIALIZE ZERO DIMENSION VOLUME BALANCE  
 C  
       IF(ISDRY.GE.1.AND.ISDRY.LE.98)THEN  
+        IF(MYRANK.EQ.0)THEN
         OPEN(1,FILE='ZVOLBAL.OUT',STATUS='UNKNOWN')  
         CLOSE(1,STATUS='DELETE')  
         OPEN(1,FILE='AVSEL.OUT',STATUS='UNKNOWN')  
+        ENDIF
         LPBTMP=0  
         DO L=2,LA  
           TVAR3C(L)=0  
@@ -1809,27 +1822,30 @@ C
           LORDER(LS)=LBELMIN  
           TVAR3C(LBELMIN)=1  
         ENDDO  
-        WRITE(1,5300)  
+        IF(MYRANK.EQ.0) WRITE(1,5300)  
         LS=1  
         L=LORDER(LS)  
         BELSURF(LS)=BELV(L)  
         ASURFEL(LS)=DXYP(L)  
         VOLSEL(LS)=0.  
-        WRITE(1,5301)LS,BELSURF(LS),ASURFEL(LS),VOLSEL(LS)  
+        IF(MYRANK.EQ.0) WRITE(1,5301)LS,BELSURF(LS),
+     &   ASURFEL(LS),VOLSEL(LS)  
         DO LS=2,LORMAX  
           L=LORDER(LS)  
           BELSURF(LS)=BELV(L)  
           ASURFEL(LS)=ASURFEL(LS-1)+DXYP(L)  
           VOLSEL(LS)=VOLSEL(LS-1)+0.5*(BELSURF(LS)-BELSURF(LS-1))*  
      &        (ASURFEL(LS)+ASURFEL(LS-1))  
-          WRITE(1,5301)LS,BELSURF(LS),ASURFEL(LS),VOLSEL(LS)  
+          IF(MYRANK.EQ.0) 
+     &     WRITE(1,5301)LS,BELSURF(LS),ASURFEL(LS),VOLSEL(LS)  
         ENDDO  
         LS=LORMAX+1  
         BELSURF(LS)=BELV(L)+10.0  
         ASURFEL(LS)=ASURFEL(LS-1)  
         VOLSEL(LS)=VOLSEL(LS-1)+0.5*(BELSURF(LS)-BELSURF(LS-1))*  
      &      (ASURFEL(LS)+ASURFEL(LS-1))  
-        WRITE(1,5301)LS,BELSURF(LS),ASURFEL(LS),VOLSEL(LS)  
+        IF(MYRANK.EQ.0) 
+     &   WRITE(1,5301)LS,BELSURF(LS),ASURFEL(LS),VOLSEL(LS)  
         VOLZERD=0.  
         VOLLDRY=0.  
         DO L=2,LA  
@@ -1850,8 +1866,8 @@ C
           ENDIF  
         ENDDO  
         VETZERD=VOLZERD  
-        WRITE(1,5302)  
-        WRITE(1,5303) SELZERD,ASFZERD,VOLZERD,VOLLDRY  
+        IF(MYRANK.EQ.0) WRITE(1,5302)  
+        IF(MYRANK.EQ.0) WRITE(1,5303) SELZERD,ASFZERD,VOLZERD,VOLLDRY  
         CLOSE(1)  
       ENDIF  
  5300 FORMAT('   M    BELSURF     ASURFEL     ',  
@@ -1878,7 +1894,8 @@ C
         DO L=2,LA  
           AGWELV1(L)=AGWELV(L)  
           AGWELV2(L)=AGWELV(L)  
-        ENDDO  
+        ENDDO 
+        IF(MYRANK.EQ.0)THEN 
         OPEN(1,FILE='GWELV.OUT',STATUS='UNKNOWN')  
         WRITE(1,5400)  
         WRITE(1,5402)  
@@ -1886,6 +1903,7 @@ C
           WRITE(1,5401)IL(L),JL(L),BELV(L),BELAGW(L),AGWELV(L)  
         ENDDO  
         CLOSE(1)  
+        ENDIF
       ENDIF  
  5400 FORMAT('   I   J    BELELV      BELAGW     ',  
      &    '   AGWELV',/)  
@@ -1952,7 +1970,7 @@ C
 C **  SMOOTH INITIAL SALINITY  
 C  
       IF(NSBMAX.GE.1)THEN  
-        CALL SALTSMTH  
+        CALL SALTSMTH_mpi
       ENDIF  
 C  
 C **  OUTPUT INITIAL DEPTH AND SALINITY FIELDS  
@@ -1961,7 +1979,7 @@ C
       DO L=2,LA  
         PAM(L)=HMP(L)  
       ENDDO  
-      WRITE (7,16)  
+      IF(MYRANK.EQ.0) WRITE (7,16)  
       CALL PPLOT (2)  
       IF(DEBUG)CALL DEPPLT  
 C  
@@ -1971,7 +1989,7 @@ C
         DO L=2,LA  
           PAM(L)=SAL(L,KK)  
         ENDDO  
-        WRITE (7,316) KK  
+        IF(MYRANK.EQ.0) WRITE (7,316) KK  
         CALL PPLOT (1)  
       ENDDO  
    16 FORMAT (1H1,' CELL CENTER STATIC DEPTHS',//)  
@@ -1994,19 +2012,17 @@ C
 C **  INITIALIZE EFDC EXPLORER OUTPUT  
 C  
       IF(IBIN_TYPE.EQ.1)THEN
-         STOP "Unsupported setting: 'IBIN_TYPE=1'"
+         IF(MYRANK.EQ.0) WRITE(88,*) 'EEXPOUT_mpi(init)'
+         IF(ISSPH(8).EQ.1.OR.ISBEXP.EQ.1) CALL EEXPOUT_mpi(1)
       ELSEIF(IBIN_TYPE.EQ.0)THEN
-         IF(ISSPH(8).EQ.1.OR.ISBEXP.EQ.1) CALL EEXPOUT(1)
-      ELSE
-          WRITE(6, *) "Uknown IBIN_TYPE: ", IBIN_TYPE
-          WRITE(6, *) "Only supports: IBIN_TYPE = 0, 1"
-          STOP
+         IF(MYRANK.EQ.0) WRITE(88,*) 'EEXPOUT_opt_mpi(init)'
+         IF(ISSPH(8).EQ.1.OR.ISBEXP.EQ.1) CALL EEXPOUT_opt_mpi(1)
       ENDIF
 ! { GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
 C **  INITIALIZE EFDC HYDRO DISTRIBUTION OUTPUT  
-      IF(ISRESTO.LT.-20)THEN
-        CALL RESTOUT(-20)
-      ENDIF
+!      IF(ISRESTO.LT.-20)THEN
+!        CALL RESTOUT(-20)
+!      ENDIF
 ! } GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
 C  
 C **  SELECT FULL HYDRODYNAMIC AND MASS TRANSPORT CALCULATION OR  
@@ -2015,8 +2031,14 @@ C
       NITERAT=0  
 C      IF(ISLTMT.EQ.0)THEN  
 C        IF(IS1DCHAN.EQ.0)THEN  
+          IF(MYRANK.EQ.0) THEN
+          IF(IS2TIM.EQ.0) PRINT*, "HDMT"  
+          IF(IS2TIM.GE.1.AND.TRIM(MPI_ARG).EQ.'SERL')PRINT*,"HDMT2T"  
+          IF(IS2TIM.GE.1.AND.TRIM(MPI_ARG).EQ.'PARL')PRINT*,"HDMT2T_mpi"
+          ENDIF
           IF(IS2TIM.EQ.0) CALL HDMT  
-          IF(IS2TIM.GE.1) CALL HDMT2T  
+          IF(IS2TIM.GE.1.AND.TRIM(MPI_ARG).EQ.'SERL')CALL HDMT2T  
+          IF(IS2TIM.GE.1.AND.TRIM(MPI_ARG).EQ.'PARL')CALL HDMT2T_mpi
 C        ENDIF  
 C        IF(IS1DCHAN.GE.1) CALL HDMT1D  
 C      ENDIF  
@@ -2057,6 +2079,7 @@ C
       TWQDIF=TWQDIF/3600.
       TWQKIN=TWQKIN/3600.
       TWQSED=TWQSED/3600.
+      IF(MYRANK.EQ.0)THEN
       WRITE(6,1995)THDMT,TCONG  
       IF( NSEDFLUME==0 )THEN
         WRITE(6,1996)TPUV,TSSED  
@@ -2073,6 +2096,7 @@ C
       ENDIF
       WRITE(6,2003)CPUTIME(1),CPUTIME(2)  
       WRITE(6,2004)TIME_END,  TCPU  
+      ENDIF
  1995 FORMAT('***TIMING (HOURS)',/,  
      &       'T HDMT      =',F7.3,'  T CONG GRAD =',F7.3)  
  1996 FORMAT('T P&UV VELS =',F7.3,'  T SSEDTOX   =',F7.3)  
@@ -2087,6 +2111,7 @@ C
  2005 FORMAT('T P&UV VELS =',F7.3,'  T SEDZLJ    =',F7.3)  
 
       ! *** EFDC LOG
+      IF(MYRANK.EQ.0)THEN
       WRITE(8,1995)THDMT,TCONG
       IF( NSEDFLUME==0 )THEN
         WRITE(8,1996)TPUV,TSSED  
@@ -2139,6 +2164,7 @@ C
       CLOSE(7)  
       CLOSE(8)  
       CLOSE(9)  
+      ENDIF
 
 C***** Added By Meng Xia, Nov.19,2007
 
@@ -2153,6 +2179,8 @@ CPMC        END IF
 CPMC      END IF
 
 C***** Added By Meng Xia, Nov.19,2007
+      CALL MPI_BARRIER(MPI_COMM_WORLD,IERR)
+      !CALL MPI_FINALIZE(MPI_COMM_WORLD,IERR)
 
       STOP  
       END  
