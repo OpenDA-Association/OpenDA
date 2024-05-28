@@ -1749,6 +1749,21 @@ SUBROUTINE VARZEROReal
       LightAVG=0.
       LightAVG1=0.
       LightAVG0=0.
+      
+      CLOE_TMP   =0.
+      CLON_TMP   =0.
+      CLOS_TMP   =0.
+      CLOW_TMP   =0.
+      
+      CSERT_TMP  =0.
+      CSERT_SUM  =0.
 
+      DZCB_2D    =0.
+      BK_2D      =0.
+      DBK_1D     =0.
+      SHEAR_1D   =0.
+      HBED_1D    =0.
+      BDENBED_1D =0.
+      PORBED_1D  =0.
 
 END SUBROUTINE VARZEROReal

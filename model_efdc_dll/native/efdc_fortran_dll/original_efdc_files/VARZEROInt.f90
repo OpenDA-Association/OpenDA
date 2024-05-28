@@ -449,24 +449,10 @@
       TIME_NUM=0
       IBIN_TYPE=0
 
-      DZCB_2D    =0
-      BK_2D      =0
-      DBK_1D     =0
-      SHEAR_1D   =0
-      HBED_1D    =0
-      BDENBED_1D =0
-      PORBED_1D  =0
       N1_1D      =0
-      CLOE_TMP   =0
-      CLON_TMP   =0
-      CLOS_TMP   =0
-      CLOW_TMP   =0
       NLOE_TMP   =0
       NLON_TMP   =0
       NLOS_TMP   =0
       NLOW_TMP   =0
-      CSERT_TMP  =0
-      CSERT_SUM  =0
-
 
       END
