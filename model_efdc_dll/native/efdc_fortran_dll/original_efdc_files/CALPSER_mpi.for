@@ -6,6 +6,13 @@ C ** BOUNDARY CONDITIONS
 C  
       USE GLOBAL  
       USE MPI
+      IMPLICIT NONE
+      INTEGER::ISTL_
+      INTEGER::NS
+      INTEGER::M1,M2
+      REAL::TDIFF,TIME
+      REAL::WTM1,WTM2
+      
 C
       S1TIME=MPI_TIC()
 C

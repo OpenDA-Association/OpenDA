@@ -76,7 +76,30 @@ C CHANGE RECORD
 C **  SUBROUTINE CALHEAT CALCULATES SURFACE AND INTERNAL HEAT SOURCES  
 C **  AND SINKS IN THE HEAT (TEM) TRANSPORT EQUATION  
 C  
-      USE GLOBAL  
+      USE GLOBAL
+      IMPLICIT NONE
+      
+      INTEGER::I,J,K,L,L1,IS,ND
+      INTEGER::LL,LF
+      INTEGER::ISTL_
+      REAL::C1,C2
+      REAL::RB,RC,RE,ET,FW
+      REAL::TMPVAL,TMPKC
+      REAL::USPD,UBED,VBED
+      REAL::CLDFAC
+      REAL::TFAST,TFAST1,TSLOW,TSLOW1
+      REAL::T1,T2
+      REAL::BOT,TOP,EXPTOP,EXPBOT
+      REAL::GAMMA
+      REAL::TIMTMP
+      REAL::NDUM
+      REAL::SHDAY,SHDDAY,PSHADE0,PSHADE_OLD,NDATASHD
+      REAL::SRO,SRON,SVPW 
+      REAL::RAN,RSN
+      REAL::DTHEQT
+      REAL::THICK,TFLUX
+      REAL::TSS_ABOVE,WQCHL_ABOVE,POM_ABOVE
+            
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::NETRAD  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::TBEDTHK
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::HDEP
@@ -88,7 +111,6 @@ C
       REAL WQCHLS_ABOVE
       REAL TSSS_ABOVE
       REAL POMS_ABOVE
-      REAL EXPBOT
       REAL CSHE
       WQCHLS_ABOVE = 0.0
       TSSS_ABOVE = 0.0
@@ -637,11 +659,27 @@ C 600 FORMAT(4I5,2E12.4)
       SUBROUTINE HEAT_EXCHANGE
 
       USE GLOBAL
+      IMPLICIT NONE
       
 ******* Tupe declaration
 
-        REAL      JDAY
-        INTEGER*4 IDAY
+      REAL      JDAY
+      INTEGER*4 IDAY
+      INTEGER::J
+      REAL::ET,ETP
+      REAL::BETA
+      REAL::TAIR,TD,TD_C,TDEW,WIND_MPH,TSTAR
+      REAL::DEG_F,DEG_C
+      REAL::DECL,H
+      REAL::THOUR,PMC1,EQTNEW
+      REAL::X
+      REAL::VAPORP
+      REAL::CLD,CLD10
+      REAL::STANDARD,SINAL
+      REAL::A0,ASIN
+      REAL::SRO,SRON,SRO_BR
+
+      REAL::WSPD,ATMPR,FW,CSHE,RA,TA_C
 
 ******* Allocate/Dimension declaration
 
@@ -651,7 +689,6 @@ C 600 FORMAT(4I5,2E12.4)
         Real, SAVE ::  AFW,BFW,CFW, BCONV
         Real, SAVE ::  TDEW_F, TAIR_F, WIND_2M
         Real, SAVE ::  TIMENEXT
-
 
 ******* Data declaration
 
@@ -675,7 +712,7 @@ C 600 FORMAT(4I5,2E12.4)
 ************************************************************************
 
       ENTRY SHORT_WAVE_RADIATION(WSPD,TD,TAIR,CLD,ATMPR,SRO,SRON)
-
+      
 ******* Input Conversions
         IF(TD.LT.1.1.AND.IRELH(NASER).EQ.1)THEN
           ! *** TD IS RELATIVE HUMIDITY.  CONVERT TO DEW POINT
@@ -742,7 +779,7 @@ C 600 FORMAT(4I5,2E12.4)
 ************************************************************************
 
       ENTRY EQUILIBRIUM_TEMPERATURE(SRON,ET,CSHE)
-
+      
 ******* British units
         
         ! *** SRON Should already be adjusted for Shading & Reflection
