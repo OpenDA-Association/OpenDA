@@ -1230,7 +1230,7 @@ C
         ENDIF
         IF(LTEST) then 
             CLOSE(1,STATUS='KEEP')
-            PRINT*, "NaN Temperatures"
+            PRINT*, "ERROR IN VARIABLES, CHECK ERROR.LOG"
             STOP
         END IF
 
