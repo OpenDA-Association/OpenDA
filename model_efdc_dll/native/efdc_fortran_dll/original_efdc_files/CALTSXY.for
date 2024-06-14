@@ -392,12 +392,7 @@ C      IF(NASER.GT.0)THEN
             ENDDO  
           ENDDO  
         ELSE
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO L=LF,LL
+          DO L=2,LA  
             PATMT(L)=PATMTT(1)  
             TATMT(L)=TATMTT(1)  
             RAINT(L)=RAINTT(1)  
@@ -408,19 +403,12 @@ c
             RHA(L)=RHAT(1)  
             VPA(L)=VPAT(1)  
           ENDDO  
-c
-      enddo
         ENDIF  
 
         ! *** PMC - MOVED ALL TIME INVARIANT PARAMETERS TO KEEP FROM COMPUTING EVERY TIME
-!$OMP PARALLEL DO PRIVATE(LF,LL,CLEVAPTMP,CCNHTTTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         IF(REVC.LT.0.)THEN  
           CLEVAPTMP=0.001*ABS(REVC)
-          DO L=LF,LL
+          DO L=2,LA  
             CLEVAP(L)=1.E-3*(0.8+0.065*WINDST(L))  
             CLEVAP(L)=MAX(CLEVAP(L),CLEVAPTMP)  
           ENDDO  
@@ -428,13 +416,11 @@ c
 
         IF(RCHC.LT.0.)THEN  
           CCNHTTTMP=0.001*ABS(RCHC)
-          DO L=LF,LL
+          DO L=2,LA  
             CCNHTT(L)=1.E-3*(0.8+0.065*WINDST(L))  
             CCNHTT(L)=MAX(CCNHTT(L),CCNHTTTMP)  
           ENDDO  
         ENDIF
-c
-      enddo
       ENDIF  
 C
       RETURN  

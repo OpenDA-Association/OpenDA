@@ -14,7 +14,6 @@ C
 	REAL::QQIMAX,RIQMIN,RIQMAX,RIQ
 	REAL::SFAV,SFAB,ABTMP,AVTMP
 	INTEGER::K,L,LS,ISTL_
-	INTEGER::LF,LL,ithds
 C   SMTOP2   =      7.8464  
 C   SMBOT1   =     34.6764  
 C   SMBOT2   =      6.1272  
@@ -32,21 +31,14 @@ C
       RIQMIN=-0.023  
       RIQMAX=0.28  
       IF(IDRYTBP.NE.0)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO K=1,KC  
-        DO L=LF,LL
+      DO K=1,KC
+        DO L=1,LC
           IF(IMASKDRY(L).EQ.1)THEN  
             AV(L,K)=AVO*HPI(L)  
             AB(L,K)=ABO*HPI(L)  
           ENDIF  
         ENDDO  
       ENDDO  
-c
-      enddo
       ENDIF
       IF(ISFAVB.EQ.0)THEN  
         DO K=1,KS  
@@ -83,14 +75,8 @@ C
       ENDIF  
       IF(ISFAVB.EQ.1)THEN  
       IF(IDRYTBP.EQ.0)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL,RIQ,SFAV,SFAB,ABTMP,AVTMP)
-!$OMP& REDUCTION(max:AVMAX,ABMAX) REDUCTION(min:AVMIN,ABMIN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO K=1,KS  
-          DO L=LF,LL
+        DO K=1,KS
+          DO L=2,LA
               QQI(L)=1./QQ(L,K)
               QQI(L)=MIN(QQI(L),QQIMAX)
               RIQ=-GP*HP(L)*DML(L,K)*DML(L,K)*DZIG(K)
@@ -115,24 +101,15 @@ C
           ENDDO
         ENDDO
 c
-      enddo
-
       ELSE
-
-!$OMP PARALLEL DO PRIVATE(LF,LL,RIQ,SFAV,SFAB,ABTMP,AVTMP)
-!$OMP& REDUCTION(max:AVMAX,ABMAX) REDUCTION(min:AVMIN,ABMIN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO K=1,KS  
-          DO L=LF,LL
+        DO K=1,KS
+          DO L=2,LA
             IF(LMASKDRY(L))THEN  
               QQI(L)=1./QQ(L,K)  
               QQI(L)=MIN(QQI(L),QQIMAX)  
             ENDIF  
-c         ENDDO  
-c         DO L=LF,LL
+          ENDDO
+          DO L=2,LA
             IF(LMASKDRY(L))THEN  
               RIQ=-GP*HP(L)*DML(L,K)*DML(L,K)*DZIG(K)  
      &            *(B(L,K+1)-B(L,K))*QQI(L)  
@@ -156,10 +133,8 @@ C
             ENDIF  
           ENDDO  
         ENDDO  
-c
-      enddo
-      ENDIF  
-      ENDIF  
+      ENDIF
+      ENDIF
       IF(ISFAVB.EQ.2)THEN  
         DO K=1,KS  
           DO L=2,LA  
@@ -195,45 +170,31 @@ C
       ENDIF  
       ! *** NOW APPLY MAXIMUM, IF REQURIED
       IF(ISAVBMX.GE.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL,ABTMP,AVTMP)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             AVTMP=AVMX*HPI(L)  
             ABTMP=ABMX*HPI(L)  
             AV(L,K)=MIN(AV(L,K),AVTMP)  
             AB(L,K)=MIN(AB(L,K),ABTMP)  
           ENDDO  
         ENDDO  
-c
-      enddo
       ENDIF  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           LS=LSC(L)  
           AVUI(L,K)=2./(AV(L,K)+AV(L-1,K))  
           AVVI(L,K)=2./(AV(L,K)+AV(LS,K))  
         ENDDO  
       ENDDO  
       DO K=2,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           AQ(L,K)=0.205*(AV(L,K-1)+AV(L,K))  
         ENDDO  
       ENDDO  
-      DO L=LF,LL
+      DO L=2,LA  
         AQ(L,1)=0.205*AV(L,1)  
         AQ(L,KC)=0.205*AV(L,KS)  
       ENDDO  
-c
-      enddo
       RETURN  
       END  
 

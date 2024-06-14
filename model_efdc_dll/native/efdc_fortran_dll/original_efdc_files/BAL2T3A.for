@@ -12,7 +12,6 @@ C
  	IMPLICIT NONE
 	INTEGER::LD,K,L,NSX,NS,NWR,NCTL,ID,JD,KU,NT,M,JU,LU,KD,LL,NQSTMP
 	INTEGER::IU,NCSTMP
-	INTEGER::LF,ithds
 	REAL::RQWD
 
       IF(ISDYNSTP.EQ.0)THEN  
@@ -23,20 +22,12 @@ C
 C  
 C **  ACCUMULATE INTERNAL SOURCES AND SINKS  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(-:VOLOUT,WVOLOUT)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         VOLOUT=VOLOUT-DELT*(QSUME(L)-QDWASTE(L))
-c     ENDDO  
-c     DO L=2,LA  
+      ENDDO  
+      DO L=2,LA  
         WVOLOUT=WVOLOUT-DELT*(QSUME(L)-QDWASTE(L))  
       ENDDO  
-c
-      enddo
-
       DO K=1,KC  
         DO LL=1,NQSIJ  
           L=LQS(LL)  
@@ -45,19 +36,11 @@ c
         ENDDO  
       ENDDO  
       IF(ISTRAN(1).GE.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LC  
             CONT(L,K)=SAL1(L,K)  
           ENDDO  
         ENDDO  
-c
-      enddo
-
         DO NS=1,NQSIJ  
           L=LQS(NS)  
           NQSTMP=NQSERQ(NS)  
@@ -104,19 +87,11 @@ c
         ENDDO  
       ENDIF  
       IF(ISTRAN(3).GE.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LC
             CONT(L,K)=DYE1(L,K)  
           ENDDO  
         ENDDO  
-c
-      enddo
-
         DO NS=1,NQSIJ  
           L=LQS(NS)  
           NQSTMP=NQSERQ(NS)  
@@ -176,18 +151,11 @@ c
       IF(ISTRAN(5).GE.1)THEN  
         DO NT=1,NTOX  
           M=MSVTOX(NT)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LC
               CONT(L,K)=TOX1(L,K,NT)  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
 C  TOXOUT2T(NT) IS NET TOXIC MASS GOING OUT OF DOMAIN DUE  
 C  TO WATER COLUMN VOLUME SOURCES AND SINKS  
@@ -241,18 +209,11 @@ C
       IF(ISTRAN(6).GE.1)THEN  
         DO NSX=1,NSED  
           M=MSVSED(NSX)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LC
               CONT(L,K)=SED1(L,K,NSX)  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
 C SEDOUT2T(NSX) IS IS NET COHESIVE MASS GOING OUT OF DOMAIN DUE  
 C   TO WATER COLUMN VOLUME SOURCES AND SINKS  
@@ -306,18 +267,11 @@ C
       IF(ISTRAN(7).GE.1)THEN  
         DO NSX=1,NSND  
           M=MSVSND(NSX)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_2_LC(1,ithds)
-         LL=jse_2_LC(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL
+            DO L=2,LC
               CONT(L,K)=SND1(L,K,NSX)  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
 C  SNDOUT2T(NSX) IS NET NONCOHESIVE MASS GOING OUT OF DOMAIN DUE  
 C  TO WATER COLUMN VOLUME SOURCES AND SINKS  
