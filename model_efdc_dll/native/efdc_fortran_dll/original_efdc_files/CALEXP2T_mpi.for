@@ -1,4 +1,4 @@
-      SUBROUTINE CALEXP2T0
+      SUBROUTINE CALEXP2T_mpi
 C  
 C **  SUBROUTINE CALEXP2T CALCULATES EXPLICIT MOMENTUM EQUATION TERMS  
 C **  USING A TWO TIME LEVEL SCHEME  
@@ -19,21 +19,20 @@ C
 C     2008-12  SANG YUK/PMC (DSLLC) CORRECTED THE EXPLICIT INTERNAL BUOYANCY FORCINGS
 C  
       USE GLOBAL  
+      USE MPI
 
-	IMPLICIT NONE
-	INTEGER::LF,ithds
-	INTEGER::L,K,LN,LS,ID,JD,KD,NWR,IU,JU,KU,LU,NS,LNW,LSE,LL
-	INTEGER::LD,NMD,LHOST,LCHNU,LW,LE,LCHNV
-	REAL::TMPANG,WU,WV,CACSUM,CFEFF,VEAST2,VWEST2,FCORE,FCORW
-	REAL::UNORT1,USOUT1,UNORT2,USOUT2,FCORN,FCORS,VTMPATU
-	REAL::UTMPATV,UMAGTMP,VMAGTMP,DZICK,DZICKC,DZPU,DZPV
-	REAL::RCDZF,TMPVAL,WVFACT,DETH,CI11H,CI12H,CI22H,DETU
-	REAL::CI11V,CI12V,CI21V,CI22V,CI21H,CI12U,CI21U,CI22U,DETV,CI11U
-	REAL::UHC,UHB,VHC,VHB,UHC1,UHB1,VHC1,VHB1,UHC2,UHB2,VHC2,VHB2
-	REAL::UHB1MX,UHB1MN,VHC1MX,VHC1MN,UHC1MX,UHC1MN,VHB1MX
-	REAL::VHB1MN,UHB2MX,UHB2MN,VHC2MX,VHC2MN,UHC2MX,UHC2MN,VHB2MX
-	REAL::VHB2MN,BOTT,QMF,QUMF,VEAST1,VWEST1
-	REAL::t02,t03,rtc
+      IMPLICIT NONE
+      INTEGER::L,K,LN,LS,ID,JD,KD,NWR,IU,JU,KU,LU,NS,LNW,LSE,LL
+      INTEGER::LD,NMD,LHOST,LCHNU,LW,LE,LCHNV
+      REAL::TMPANG,WU,WV,CACSUM,CFEFF,VEAST2,VWEST2,FCORE,FCORW
+      REAL::UNORT1,USOUT1,UNORT2,USOUT2,FCORN,FCORS,VTMPATU
+      REAL::UTMPATV,UMAGTMP,VMAGTMP,DZICK,DZICKC,DZPU,DZPV
+      REAL::RCDZF,TMPVAL,WVFACT,DETH,CI11H,CI12H,CI22H,DETU
+      REAL::CI11V,CI12V,CI21V,CI22V,CI21H,CI12U,CI21U,CI22U,DETV,CI11U
+      REAL::UHC,UHB,VHC,VHB,UHC1,UHB1,VHC1,VHB1,UHC2,UHB2,VHC2,VHB2
+      REAL::UHB1MX,UHB1MN,VHC1MX,VHC1MN,UHC1MX,UHC1MN,VHB1MX
+      REAL::VHB1MN,UHB2MX,UHB2MN,VHC2MX,VHC2MN,UHC2MX,UHC2MN,VHB2MX
+      REAL::VHB2MN,BOTT,QMF,QUMF,VEAST1,VWEST1
 
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::DZPC
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::TMPVEC1  
@@ -66,7 +65,6 @@ C
         DZPC=0.
       ENDIF
 C  
-c      t02=rtc()
       IF(ISDYNSTP.EQ.0)THEN  
         DELT=DT  
       ELSE  
@@ -79,7 +77,7 @@ C
 C  
       DELTI=1./DELT  
 C  
-      IF(N.EQ.1.AND.DEBUG)THEN  
+      IF(MYRANK.EQ.0.AND.N.EQ.1.AND.DEBUG)THEN  
         OPEN(1,FILE='MFLUX.DIA')  
         CLOSE(1,STATUS='DELETE')  
       ENDIF  
@@ -91,33 +89,26 @@ C **  INITIALIZE EXTERNAL CORIOLIS-CURVATURE AND ADVECTIVE FLUX TERMS
 C  
 C----------------------------------------------------------------------C  
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      S1TIME=MPI_TIC()
+!$OMP PARALLEL DO
+      DO L=LMPI1,LMPILC  
         FCAXE(L)=0.  
         FCAYE(L)=0.  
         FXE(L)=0.  
         FYE(L)=0.  
       ENDDO  
-c
-      enddo
-C  
+      MPI_WTIMES(301)=MPI_WTIMES(301)+MPI_TOC(S1TIME)
+C
 C  
 C----------------------------------------------------------------------C  
 C  
+  
       IF(IS2LMC.NE.1)THEN 
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,UHC,UHB,VHC,VHB,
-!$OMP& WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
+        S1TIME=MPI_TIC()
         DO K=1,KC  
-          DO L=LF,LL
+!$OMP PARALLEL DO PRIVATE(LN,LS,UHC,UHB,VHC,VHB)
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN  
               LN=LNC(L)  
               LS=LSC(L)
 
@@ -128,66 +119,31 @@ c
 C  
               FUHU(L,K)=MAX(UHB,0.)*U(L,  K)  ! *** CELL CENTERED 
      &                 +MIN(UHB,0.)*U(L+1,K)  
-c             IF(UHB.GE.0.) THEN
-c                FUHU(L,K)=UHB*U(L,  K)
-c             ELSE
-c                FUHU(L,K)=UHB*U(L+1,  K)
-c             ENDIF
               FVHU(L,K)=MAX(VHC,0.)*U(LS, K)  
      &                 +MIN(VHC,0.)*U(L,  K)
-c             IF(VHC.GE.0.) THEN
-c                FVHU(L,K)=VHC*U(LS,  K)
-c             ELSE
-c                FVHU(L,K)=VHC*U(L,  K)
-c             ENDIF
 C  
               FVHV(L,K)=MAX(VHB,0.)*V(L,  K)  ! *** CELL CENTERED
      &                 +MIN(VHB,0.)*V(LN, K)  
-c             IF(VHB.GE.0.) THEN
-c                FVHV(L,K)=VHB*V(L ,  K)
-c             ELSE
-c                FVHV(L,K)=VHB*V(LN,  K)
-c             ENDIF
               FUHV(L,K)=MAX(UHC,0.)*V(L-1,K)  
      &                 +MIN(UHC,0.)*V(L,  K)
-c             IF(UHC.GE.0.) THEN
-c                FUHV(L,K)=UHC*V(L-1,  K)
-c             ELSE
-c                FUHV(L,K)=UHC*V(L,  K)
-c             ENDIF
+            ELSE
+              FUHU(L,K)=0.  
+              FVHU(L,K)=0.  
+              FVHV(L,K)=0.  
+              FUHV(L,K)=0.  
+            ENDIF  
           ENDDO  
-c       ENDDO
-c
-c     DO K=1,KS  
-      IF(K.LE.KS) THEN 
-        DO L=LF,LL
-            LS=LSC(L)
-            WU=0.5*DXYU(L)*(W(L,K)+W(L-1,K))  
-            WV=0.5*DXYV(L)*(W(L,K)+W(LS,K))  
-
-            FWU(L,K)=MAX(WU,0.)*U(L,K)  
-     &          +MIN(WU,0.)*U(L,K+1)  
-            FWV(L,K)=MAX(WV,0.)*V(L,K)  
-     &          +MIN(WV,0.)*V(L,K+1)  
-  
-        ENDDO  
-      ENDIF
-      ENDDO  
-      enddo
+        ENDDO
+        MPI_WTIMES(302)=MPI_WTIMES(302)+MPI_TOC(S1TIME)
 C  
       ELSE  !IF(IS2LMC.EQ.1)THEN  
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,UHC1,UHB1,VHC1,VHB1,UHC2,UHB2,VHC2,VHB2,
-!$OMP& UHB1MX,UHB1MN,VHC1MX,VHC1MN,UHC1MX,UHC1MN,VHB1MX,VHB1MN,
-!$OMP& UHB2MX,UHB2MN,VHC2MX,VHC2MN,UHC2MX,UHC2MN,VHB2MX,VHB2MN,
-!$OMP& BOTT,
-!$OMP& WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+      S1TIME=MPI_TIC()
+!$OMP PARALLEL DO PRIVATE(LN,LS,UHC1,UHB1,VHC1,VHB1,UHC2,UHB2,VHC2,VHB2
+!$OMP+  ,UHB1MX,UHB1MN,VHC1MX,VHC1MN,VHB1MX,VHB1MN,UHB2MX,UHB2MN,VHC2MX
+!$OMP+  ,VHC2MN,UHC2MX,UHC2MN,VHB2MX,VHB2MN,BOTT)
+        DO L=LMPI2,LMPILA  
+          IF(LMASKDRY(L))THEN  
             LN=LNC(L)  
             LS=LSC(L)  
             UHC1=0.5*(UHDY(L,1)+UHDY(LS,1))  
@@ -294,30 +250,14 @@ C
      &          +VHB2MN*MIN(VHB2,0.)*V(LN,2)  
             FUHJ(L,2)=0.  
             FVHJ(L,2)=0.  
+          ENDIF  
         ENDDO  
-c
-      DO K=1,KS  
-        DO L=LF,LL
-            LS=LSC(L)
-            WU=0.5*DXYU(L)*(W(L,K)+W(L-1,K))  
-            WV=0.5*DXYV(L)*(W(L,K)+W(LS,K))  
-
-            FWU(L,K)=MAX(WU,0.)*U(L,K)  
-     &          +MIN(WU,0.)*U(L,K+1)  
-            FWV(L,K)=MAX(WV,0.)*V(L,K)  
-     &          +MIN(WV,0.)*V(L,K+1)  
-  
-        ENDDO  
-      ENDDO  
-c
-      enddo
+      MPI_WTIMES(329)=MPI_WTIMES(329)+MPI_TOC(S1TIME)
       ENDIF  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 1----->',t03*1.e3,nthds,IS2LMC
-
 C  
 C ADD RETURN FLOW MOMENTUM FLUX  
 C  
+      S1TIME=MPI_TIC()
       DO NWR=1,NQWR  
         IF(NQWRMFU(NWR).GT.0)THEN  
           IU=IQWRU(NWR)  
@@ -354,64 +294,61 @@ C
           IF(NQWRMFD(NWR).EQ.-2) FVHJ(LD     ,KD)=QUMF  
           IF(NQWRMFD(NWR).EQ.-3) FUHJ(LD+1   ,KD)=QUMF  
           IF(NQWRMFD(NWR).EQ.-4) FVHJ(LNC(LD),KD)=QUMF  
-C         IF(N.LE.4.AND.DEBUG)THEN  
-C           WRITE(1,1112)N,NWR,NS,ID,JD,KD,NQWRMFD(NWR),H1P(LD),QMF,  
-C     &                  QUMF,FUHJ(LD,KD),FVHJ(LD,KD)  
-C         ENDIF  
         ENDIF  
       ENDDO  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 2----->',t03*1.e3,nthds
-C  
-C ** HARDWIRE FOR PEACH BOTTOM  
-C  
-C      DO K=1,KC  
-C       FVHV(535,K)=700./H1P(535)  
-C      ENDDO  
-C  
-C ** END HARDWIRE FOR PEACH BOTTOM  
+      MPI_WTIMES(330)=MPI_WTIMES(330)+MPI_TOC(S1TIME)
 C  
 C----------------------------------------------------------------------C  
 C  
 C *** COMPUTE VERTICAL ACCELERATIONS
 C
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LS,WU,WV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-c     DO K=1,KS  
-c       DO L=LF,LL
-c           LS=LSC(L)
-c           WU=0.5*DXYU(L)*(W(L,K)+W(L-1,K))  
-c           WV=0.5*DXYV(L)*(W(L,K)+W(LS,K))  
+      S1TIME=MPI_TIC()
+      DO K=1,KS  
+!$OMP PARALLEL DO PRIVATE(LS,WU,WV)
+        DO L=LMPI2,LMPILA  
+          IF(LMASKDRY(L))THEN  
+            LS=LSC(L)
+            WU=0.5*DXYU(L)*(W(L,K)+W(L-1,K))  
+            WV=0.5*DXYV(L)*(W(L,K)+W(LS,K))  
 
-c           FWU(L,K)=MAX(WU,0.)*U(L,K)  
-c    &          +MIN(WU,0.)*U(L,K+1)  
-c           FWV(L,K)=MAX(WV,0.)*V(L,K)  
-c    &          +MIN(WV,0.)*V(L,K+1)  
-c 
-c       ENDDO  
-c     ENDDO  
+            FWU(L,K)=MAX(WU,0.)*U(L,K)  
+     &          +MIN(WU,0.)*U(L,K+1)  
+            FWV(L,K)=MAX(WV,0.)*V(L,K)  
+     &          +MIN(WV,0.)*V(L,K+1)  
+          ELSE
+            FWU(L,K)=0.
+            FWV(L,K)=0.
+          ENDIF
+  
+        ENDDO  
+      ENDDO  
+      MPI_WTIMES(303)=MPI_WTIMES(303)+MPI_TOC(S1TIME)
 C  
 C**********************************************************************C  
 C  
 C ** BLOCK MOMENTUM FLUX ON LAND SIDE OF TRIANGULAR CELLS  
 C  
+      S1TIME=MPI_TIC()
       IF(ITRICELL.GT.0)THEN
         DO K=1,KC  
-          DO L=LF,LL
+!$OMP PARALLEL DO
+          DO L=LMPI1,LMPILA  
             FUHU(L,K)=STCUV(L)*FUHU(L,K)  
             FVHV(L,K)=STCUV(L)*FVHV(L,K)  
           ENDDO  
         ENDDO  
       ENDIF
-c
-      enddo
+      MPI_WTIMES(304)=MPI_WTIMES(304)+MPI_TOC(S1TIME)
 C  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 3----->',t03*1.e3,nthds
+      S1TIME=MPI_TIC()
+      CALL broadcast_boundary_array(FUHU,ic)
+      CALL broadcast_boundary_array(FVHU,ic)
+      CALL broadcast_boundary_array(FVHV,ic)
+      CALL broadcast_boundary_array(FUHV,ic)
+      CALL broadcast_boundary_array(FWU,ic)
+      CALL broadcast_boundary_array(FWV,ic)
+      MPI_WTIMES(331)=MPI_WTIMES(331)+MPI_TOC(S1TIME)
+C
 C**********************************************************************C  
 C  
 C **  CALCULATE CORIOLIS AND CURVATURE ACCELERATION COEFFICIENTS  
@@ -421,38 +358,38 @@ C
       CACSUM=0. 
       CFMAX=CF  
       IF(ISCURVATURE)THEN
-
         IF(ISDCCA.EQ.0)THEN  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN)
-!$OMP& REDUCTION(+:CACSUM)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO K=1,KC  
-            DO L=LF,LL
+          S1TIME=MPI_TIC()
+          DO K=1,KC
+!$OMP PARALLEL DO PRIVATE(LN) REDUCTION(+:CACSUM)
+            DO L=LMPI2,LMPILA  
+              IF(LMASKDRY(L))THEN  
                 LN=LNC(L)  
                 CAC(L,K)=( FCORC(L)*DXYP(L)  
      &            +0.5*SNLT*(V(LN,K)+V(L,K))*DYDI(L)  
      &            -0.5*SNLT*(U(L+1,K)+U(L,K))*DXDJ(L) )*HP(L)  
-            ENDDO  
-          ENDDO  
-          DO K=1,KC  
-            DO L=LF,LL
+              ELSE
+                CAC(L,K)=0.0  ! *** DSLLC SINGLE LINE
+              ENDIF
               CACSUM=CACSUM+CAC(L,K) 
             ENDDO  
           ENDDO  
-c
-      enddo
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 40---->',t03*1.e3,nthds
+          MPI_WTIMES(305)=MPI_WTIMES(305)+MPI_TOC(S1TIME)
+C
+          S1TIME=MPI_TIC()
+          CALL broadcast_boundary_array(CAC,ic)
+          CALL MPI_ALLREDUCE(CACSUM,MPI_R4,1,MPI_REAL,MPI_SUM,
+     &     MPI_COMM_WORLD,IERR)
+          CACSUM=MPI_R4         
+          MPI_WTIMES(332)=MPI_WTIMES(332)+MPI_TOC(S1TIME)
 C  
         ELSE  
 C  
-C  
           DO K=1,KC  
-            DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LN,CFEFF) REDUCTION(+:CACSUM) 
+!$OMP+                              REDUCTION(MAX:CFMAX)
+            DO L=LMPI2,LMPILA  
               LN=LNC(L)  
               CAC(L,K)=( FCORC(L)*DXYP(L)  
      &          +0.5*SNLT*(V(LN,K)+V(L,K))*DYDI(L)  
@@ -462,8 +399,14 @@ C
               CACSUM=CACSUM+CAC(L,K) 
             ENDDO  
           ENDDO  
+          S1TIME=MPI_TIC()
+          CALL broadcast_boundary_array(CAC,ic)
+          CALL MPI_ALLREDUCE(CACSUM,MPI_R4,1,MPI_REAL,MPI_SUM,
+     &     MPI_COMM_WORLD,IERR)
+          CACSUM=MPI_R4         
+          MPI_WTIMES(333)=MPI_WTIMES(333)+MPI_TOC(S1TIME)
 C  
-          IF(N.EQ.NTS.AND.DEBUG)THEN  
+          IF(MYRANK.EQ.0.AND.N.EQ.NTS.AND.DEBUG)THEN  
             OPEN(1,FILE='CORC1.DIA')  
             CLOSE(1,STATUS='DELETE')  
             OPEN(1,FILE='CORC1.DIA')  
@@ -475,23 +418,22 @@ C
             ENDDO  
             CLOSE(1)  
           ENDIF  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 4----->',t03*1.e3,nthds
+
         ENDIF  
 
         ! *** ENSURE FCAY & FCAX ARE RESET
+        S1TIME=MPI_TIC()
         CACSUM=ABS(CACSUM)
         IF(CACSUM.LT.1.E-7)THEN
           DO K=1,KC
-            DO L=2,LA
+!$OMP PARALLEL DO
+            DO L=LMPI2,LMPILA
               FCAX(L,K)=0.
               FCAY(L,K)=0.
             ENDDO
           ENDDO
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 5----->',t03*1.e3,nthds
         ENDIF
-            
+        MPI_WTIMES(306)=MPI_WTIMES(306)+MPI_TOC(S1TIME)
       ENDIF
 C  
  1111 FORMAT(3I5,10E13.4)  
@@ -507,14 +449,11 @@ C **  STANDARD CALCULATION
 C  
       IF(IS2LMC.EQ.0.AND.CACSUM.GT.1.E-7)THEN
 
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS,LNW,LSE)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
+        S1TIME=MPI_TIC()
         DO K=1,KC  
-          DO L=LF,LL
+!$OMP PARALLEL DO PRIVATE(LN,LS,LNW,LSE)
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN
               LN=LNC(L)  
               LS=LSC(L)  
               LNW=LNWC(L)  
@@ -523,22 +462,26 @@ c
      &            +CAC(L-1,K)*(V(LNW,K)+V(L-1,K)))  
               FCAY(L,K)=0.25*SCAY(L)*(CAC(L,K)*(U(L+1,K)+U(L,K))  
      &            +CAC(LS,K)*(U(LSE,K)+U(LS,K)))  
+            ELSE
+              FCAX(L,K)=0.
+              FCAY(L,K)=0.
+            ENDIF  
           ENDDO  
         ENDDO  
-      enddo
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 6----->',t03*1.e3,nthds
-C  
+        MPI_WTIMES(307)=MPI_WTIMES(307)+MPI_TOC(S1TIME)
+C
 C----------------------------------------------------------------------C  
 C  
 C **  MODIFICATION FOR TYPE 2 OPEN BOUNDARIES  
 C  
-            DO K=1,KC  
+      S1TIME=MPI_TIC()
         DO LL=1,NPBW  
           IF(ISPBW(LL).EQ.2)THEN  
             L=LPBW(LL)+1  
             LN=LNC(L)  
+            DO K=1,KC  
               FCAX(L,K)=0.5*SCAX(L)*CAC(L,K)*(V(LN,K)+V(L,K))  
+            ENDDO  
           ENDIF  
         ENDDO  
 C  
@@ -546,14 +489,18 @@ C
           IF(ISPBE(LL).EQ.2)THEN  
             L=LPBE(LL)  
             LNW=LNWC(L)  
+            DO K=1,KC  
               FCAX(L,K)=0.5*SCAX(L)*CAC(L-1,K)*(V(LNW,K)+V(L-1,K))  
+            ENDDO  
           ENDIF  
         ENDDO  
 C  
         DO LL=1,NPBS  
           IF(ISPBS(LL).EQ.2)THEN  
             L=LNC(LPBS(LL))  
+            DO K=1,KC  
               FCAY(L,K)=0.5*SCAY(L)*CAC(L,K)*(U(L+1,K)+U(L,K))  
+            ENDDO  
           ENDIF  
         ENDDO  
 C  
@@ -562,13 +509,14 @@ C
             L=LPBN(LL)  
             LS=LSC(L)  
             LSE=LSEC(L)  
+            DO K=1,KC  
               FCAY(L,K)=0.5*SCAY(L)*CAC(LS,K)*(U(LSE,K)+U(LS,K))  
+            ENDDO  
           ENDIF  
         ENDDO  
-            ENDDO  
+      MPI_WTIMES(308)=MPI_WTIMES(308)+MPI_TOC(S1TIME)
+
       ENDIF
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 7----->',t03*1.e3,nthds
 C  
 C----------------------------------------------------------------------C  
 C  
@@ -577,7 +525,11 @@ C *** PMC - USED TO BE ONLY FOR 2 LAYERS, JH ALLOWED ANY # OF LAYERS
 C  
       IF(IS2LMC.EQ.1.AND.CACSUM.GT.1.E-7)THEN  
 CJH     IF(KC.EQ.2)THEN  
-        DO L=2,LA  
+      S1TIME=MPI_TIC()
+!$OMP PARALLEL DO PRIVATE(LN,LS,LNW,LSE,VEAST1,VWEST1,VEAST2,VWEST2,
+!$OMP+  FCORE,FCORW,UNORT1,USOUT1,UNORT2,USOUT2,FCORN,FCORS)
+        DO L=LMPI2,LMPILA  
+          IF(LMASKDRY(L))THEN  
             LN=LNC(L)  
             LS=LSC(L)  
             LNW=LNWC(L)  
@@ -613,66 +565,63 @@ C
      &                   CAC(L,2)*UNORT2+FCORN  
      &                  +CAC(LS,2)*USOUT2+FCORS)  
 C  
+          ENDIF  
         ENDDO  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 8----->',t03*1.e3,nthds
+      MPI_WTIMES(309)=MPI_WTIMES(309)+MPI_TOC(S1TIME)
       ENDIF  
 C  
 C----------------------------------------------------------------------C  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL, 
-!$OMP& LN,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
+      S1TIME=MPI_TIC()
       DO K=1,KC  
-        DO L=LF,LL
+!$OMP PARALLEL DO PRIVATE(LN,LS)
+        DO L=LMPI2,LMPILA  
+          IF(LMASKDRY(L))THEN  
             LN=LNC(L) 
             LS=LSC(L) 
-            !HRUO(L)=SUBO(L)*DYU(L)*DXIU(L)  
-            !HRXYU(L)=DXU(L)/DYU(L)         ! PMC - NOT USED
             FX(L,K)=(FUHU(L,K)-FUHU(L-1,K)+FVHU(LN,K)-FVHU(L,K)  
      &          +FUHJ(L,K) )  
             FY(L,K)=(FUHV(L+1,K)-FUHV(L,K)+FVHV(L,K)-FVHV(LS,K)  
      &          +FVHJ(L,K) )  
+          ELSE
+            FX(L,K)=0.
+            FY(L,K)=0.
+          ENDIF  
         ENDDO  
       ENDDO
-c
-      enddo  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 9----->',t03*1.e3,nthds
-
+      MPI_WTIMES(310)=MPI_WTIMES(310)+MPI_TOC(S1TIME)
+C
+      S1TIME=MPI_TIC()
       ! *** TREAT BC'S NEAR EDGES
       DO LL=1,NBCS
         ! *** BC CELL
         L=LBCS(LL)
-        DO K=1,KC
-          FX(L,K)=SAAX(L)*FX(L,K)
-          FY(L,K)=SAAY(L)*FY(L,K)
-        ENDDO
+        !DO K=1,KC
+        FX(L,1:KC)=SAAX(L)*FX(L,1:KC)
+        FY(L,1:KC)=SAAY(L)*FY(L,1:KC)
+        !ENDDO
 
         ! *** EAST/WEST ADJACENT CELL
         L=LBERC(LL)
-        DO K=1,KC
-          FX(L,K)=SAAX(L)*FX(L,K)
-        ENDDO
+        !DO K=1,KC
+        FX(L,1:KC)=SAAX(L)*FX(L,1:KC)
+        !ENDDO
 
         ! *** NORTH/SOUTH ADJACENT CELL
         L=LBNRC(LL)
-        DO K=1,KC
-          FY(L,K)=SAAY(L)*FY(L,K)
-        ENDDO
+        !DO K=1,KC
+        FY(L,1:KC)=SAAY(L)*FY(L,1:KC)
+        !ENDDO
       ENDDO  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 10---->',t03*1.e3,nthds
+      MPI_WTIMES(311)=MPI_WTIMES(311)+MPI_TOC(S1TIME)
 C  
 C----------------------------------------------------------------------C  
 C  
 C **  CORIOLIS-CURVATURE DIAGNOSTICS  
 C  
+      S1TIME=MPI_TIC()
       IF(ISDCCA.EQ.1.AND.DEBUG)THEN  
-        IF(N.EQ.NTS)THEN  
+        IF(MYRANK.EQ.0.AND.N.EQ.NTS)THEN  
           OPEN(1,FILE='CORC2.DIA')  
           CLOSE(1,STATUS='DELETE')  
           OPEN(1,FILE='CORC2.DIA')  
@@ -688,7 +637,7 @@ C
           CLOSE(1)  
         ENDIF  
 C  
-        IF(N.EQ.NTS)THEN  
+        IF(MYRANK.EQ.0.AND.N.EQ.NTS)THEN  
           OPEN(1,FILE='CORC3.DIA')  
           CLOSE(1,STATUS='DELETE')  
           OPEN(1,FILE='CORC3.DIA')  
@@ -704,7 +653,7 @@ C
           CLOSE(1)  
         ENDIF  
 C  
-        IF(N.EQ.NTS)THEN  
+        IF(MYRANK.EQ.0.AND.N.EQ.NTS)THEN  
           OPEN(1,FILE='CORC4.DIA')  
           CLOSE(1,STATUS='DELETE')  
           OPEN(1,FILE='CORC4.DIA')  
@@ -717,8 +666,7 @@ C
           CLOSE(1)  
         ENDIF  
       ENDIF  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 11---->',t03*1.e3,nthds,ISVEG,ISHDMF
+      MPI_WTIMES(312)=MPI_WTIMES(312)+MPI_TOC(S1TIME)
 C  
 C**********************************************************************C  
 C  
@@ -726,15 +674,20 @@ C **  ADD VEGETATION DRAG TO HORIZONTAL ADVECTIVE ACCELERATIONS
 C  
 C----------------------------------------------------------------------C  
 C  
+      S1TIME=MPI_TIC()
       IF(ISVEG.GE.1)THEN  
 C  
-        DO L=1,LC  
+!$OMP PARALLEL DO
+        DO L=LMPI1,LMPILC  
           FXVEGE(L)=0.  
           FYVEGE(L)=0.  
         ENDDO  
 C  
         DO K=1,KC  
-          DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LW,LE,LS,LN,LNW,LSE,
+!$OMP+      VTMPATU,UTMPATV,UMAGTMP,VMAGTMP)
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN  
               LW=L-1  
               LE=L+1  
               LS=LSC(L)  
@@ -749,27 +702,33 @@ C
               FYVEG(L,K)=VMAGTMP*SVB(L)*DXYV(L)*FYVEG(L,K)  
               FXVEGE(L)=FXVEGE(L)+FXVEG(L,K)*DZC(K)  
               FYVEGE(L)=FYVEGE(L)+FYVEG(L,K)*DZC(K)  
+            ENDIF  
           ENDDO  
         ENDDO  
 C  
         DO K=1,KC  
-          DO L=2,LA  
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN  
               FXVEG(L,K)=FXVEG(L,K)*U(L,K)  
               FYVEG(L,K)=FYVEG(L,K)*V(L,K)  
               FX(L,K)=FX(L,K)+FXVEG(L,K)-FXVEGE(L)*U(L,K)  
               FY(L,K)=FY(L,K)+FYVEG(L,K)-FYVEGE(L)*V(L,K)  
+            ENDIF  
           ENDDO  
         ENDDO  
 C  
-        DO L=2,LA  
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA  
           FXVEGE(L)=DXYIU(L)*FXVEGE(L)/HU(L)  
           FYVEGE(L)=DXYIV(L)*FYVEGE(L)/HV(L)  
         ENDDO  
 C  
       ENDIF  
+      MPI_WTIMES(313)=MPI_WTIMES(313)+MPI_TOC(S1TIME)
 C  
- 1947 FORMAT(3I5,10E12.4)  
- 1948 FORMAT(15X,10E12.4)  
+C1947 FORMAT(3I5,10E12.4)  
+C1948 FORMAT(15X,10E12.4)  
 C  
 C**********************************************************************C  
 C  
@@ -777,16 +736,21 @@ C **  ADD HORIZONTAL MOMENTUM DIFFUSION TO ADVECTIVE ACCELERATIONS
 C  
 C----------------------------------------------------------------------C  
 C  
+      S1TIME=MPI_TIC()
       IF(ISHDMF.GE.1)THEN  
 C  
         DO K=1,KC  
-          DO L=2,LA  
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN
               FX(L,K)=FX(L,K)-(FMDUX(L,K)+FMDUY(L,K))  
               FY(L,K)=FY(L,K)-(FMDVX(L,K)+FMDVY(L,K))  
+            ENDIF
           ENDDO  
         ENDDO
 C
       ENDIF  
+      MPI_WTIMES(314)=MPI_WTIMES(314)+MPI_TOC(S1TIME)
 C  
 C**********************************************************************C  
 C  
@@ -796,55 +760,66 @@ C **  DISTRIBUTE OVER SURFACE LAYER IF ISBODYF=2
 C  
 C----------------------------------------------------------------------C  
 C  
+      S1TIME=MPI_TIC()
       IF(ISBODYF.EQ.1)THEN  
 C  
         DO K=1,KC  
           DZICK=1./DZC(K)  
-          DO L=2,LA  
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
             FX(L,K)=FX(L,K)-DYU(L)*HU(L)*FBODYFX(L)  
             FY(L,K)=FY(L,K)-DXV(L)*HV(L)*FBODYFY(L)  
           ENDDO  
         ENDDO  
 C  
       ENDIF  
+      MPI_WTIMES(315)=MPI_WTIMES(315)+MPI_TOC(S1TIME)
 C  
+      S1TIME=MPI_TIC()
       IF(ISBODYF.EQ.2)THEN  
 C  
         DZICKC=1./DZC(KC)  
-        DO L=2,LA  
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA  
           FX(L,KC)=FX(L,KC)-DZICKC*DYU(L)*HU(L)*FBODYFX(L)  
           FY(L,KC)=FY(L,KC)-DZICKC*DXV(L)*HV(L)*FBODYFY(L)  
         ENDDO  
 C  
       ENDIF  
+      MPI_WTIMES(316)=MPI_WTIMES(316)+MPI_TOC(S1TIME)
 C  
 C**********************************************************************C  
 C  
 C ** ADD EXPLICIT NONHYDROSTATIC PRESSURE  
 C  
+      S1TIME=MPI_TIC()
       IF(KC.GT.1.AND.ISPNHYDS.GE.1) THEN  
 C  
         TMPVAL=2./(DZC(1)+DZC(2))  
-        DO L=2,LA  
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA  
           DZPC(L,1)=TMPVAL*(PNHYDS(L,2)-PNHYDS(L,1))  
         ENDDO  
 C  
         TMPVAL=2./(DZC(KC)+DZC(KC-1))  
-        DO L=2,LA  
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA  
           DZPC(L,KC)=TMPVAL*(PNHYDS(L,KC)-PNHYDS(L,KC-1))  
         ENDDO  
   
         IF(KC.GE.3)THEN  
           DO K=2,KS  
             TMPVAL=2./(DZC(K+1)+2.*DZC(K)+DZC(K-1))  
-            DO L=2,LA  
+!$OMP PARALLEL DO
+            DO L=LMPI2,LMPILA  
               DZPC(L,K)=TMPVAL*(PNHYDS(L,K+1)-PNHYDS(L,K-1))  
             ENDDO  
           ENDDO  
         ENDIF  
 C  
         DO K=1,KC  
-          DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LS,DZPU,DZPV)
+          DO L=LMPI2,LMPILA  
             LS=LSC(L)  
             DZPU=0.5*(DZPC(L,K)+DZPC(L-1,K))  
             DZPV=0.5*(DZPC(L,K)+DZPC(LS ,K))  
@@ -858,12 +833,14 @@ C
         ENDDO  
 C  
       ENDIF  
+      MPI_WTIMES(317)=MPI_WTIMES(317)+MPI_TOC(S1TIME)
 C  
 C----------------------------------------------------------------------C  
 C  
 C **  ADD NET WAVE REYNOLDS STRESSES TO EXTERNAL ADVECTIVE ACCEL.  
 C  
 C *** DSLLC BEGIN BLOCK
+      S1TIME=MPI_TIC()
       IF(ISWAVE.EQ.2)THEN
 C
         IF(N.LT.NTSWV)THEN  
@@ -873,14 +850,28 @@ C
           WVFACT=1.0  
         ENDIF  
 C
+        IF(ISDRY.GT.0)THEN
           DO K=1,KC
-            DO L=2,LA
+!$OMP PARALLEL DO
+            DO L=LMPI2,LMPILA
+              IF(LMASKDRY(L))THEN  
                 FX(L,K)=FX(L,K)+WVFACT*SAAX(L)*FXWAVE(L,K)
                 FY(L,K)=FY(L,K)+WVFACT*SAAY(L)*FYWAVE(L,K)
+              ENDIF
             ENDDO
           ENDDO
+        ELSE
+          DO K=1,KC
+!$OMP PARALLEL DO
+            DO L=LMPI2,LMPILA
+              FX(L,K)=FX(L,K)+WVFACT*SAAX(L)*FXWAVE(L,K)
+              FY(L,K)=FY(L,K)+WVFACT*SAAY(L)*FYWAVE(L,K)
+            ENDDO
+          ENDDO
+        ENDIF
 C  
       ENDIF  
+      MPI_WTIMES(318)=MPI_WTIMES(318)+MPI_TOC(S1TIME)
 C *** DSLLC END BLOCK
 C  
 C**********************************************************************C  
@@ -888,15 +879,32 @@ C
 C **  CALCULATE EXTERNAL ACCELERATIONS  
 C  
 C----------------------------------------------------------------------C  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 12---->',t03*1.e3,nthds
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      IF(KC.GT.1)THEN
+      S1TIME=MPI_TIC()
+      IF(ISDRY.GT.0)THEN  !! ISDRY = 99
+        DO K=1,KC  
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN  
+              FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
+              FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
+              FXE(L)=FXE(L)+FX(L,K)*DZC(K)  
+              FYE(L)=FYE(L)+FY(L,K)*DZC(K)  
+            ENDIF  
+          ENDDO  
+        ENDDO  
+      ELSE
+        DO K=1,KC  
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
+            FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
+            FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
+            FXE(L)=FXE(L)+FX(L,K)*DZC(K)  
+            FYE(L)=FYE(L)+FY(L,K)*DZC(K)  
+          ENDDO  
+        ENDDO
+      ENDIF
+      MPI_WTIMES(319)=MPI_WTIMES(319)+MPI_TOC(S1TIME)
 C  
 C**********************************************************************C  
 C  
@@ -904,50 +912,38 @@ C **  COMPLETE CALCULATION OF INTERNAL ADVECTIVE ACCELERATIONS
 C  
 C----------------------------------------------------------------------C  
 C  
+      S1TIME=MPI_TIC()
+      IF(KC.GT.1)THEN
         DO K=1,KC  
-          DO L=LF,LL
-              FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
-              FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
-              FXE(L)=FXE(L)+FX(L,K)*DZC(K)  
-              FYE(L)=FYE(L)+FY(L,K)*DZC(K)  
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
+            IF(LMASKDRY(L))THEN  
               FX(L,K)=FX(L,K)+SAAX(L)*(FWU(L,K)-FWU(L,K-1))*DZIC(K)
               FY(L,K)=FY(L,K)+SAAY(L)*(FWV(L,K)-FWV(L,K-1))*DZIC(K)  
-          ENDDO  
-        ENDDO  
-      ELSE
-        DO K=1,KC  
-          DO L=LF,LL
-              FCAXE(L)=FCAXE(L)+FCAX(L,K)*DZC(K)  
-              FCAYE(L)=FCAYE(L)+FCAY(L,K)*DZC(K)  
-              FXE(L)=FXE(L)+FX(L,K)*DZC(K)  
-              FYE(L)=FYE(L)+FY(L,K)*DZC(K)  
+            ENDIF  
           ENDDO  
         ENDDO  
       ENDIF
-C  
+      MPI_WTIMES(320)=MPI_WTIMES(320)+MPI_TOC(S1TIME)
+C 
 C**********************************************************************C  
 C  
 C **  ADD SUBGRID SCALE CHANNEL VIRTURAL MOMENTUM SOURCES AND SINKS  
 C  
 C----------------------------------------------------------------------C  
 C  
+      S1TIME=MPI_TIC()
       IF(MDCHH.GE.1.AND.ISCHAN.EQ.3)THEN  
 C  
         DO K=1,KC  
-          DO L=LF,LL
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA  
             QMCSOURX(L,K)=0.  
             QMCSOURY(L,K)=0.  
             QMCSINKX(L,K)=0.  
             QMCSINKY(L,K)=0.  
           ENDDO  
         ENDDO  
-      ENDIF
-c
-      enddo
-C  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 13---->',t03*1.e3,nthds
-      IF(MDCHH.GE.1.AND.ISCHAN.EQ.3)THEN  
 C  
         DO NMD=1,MDCHH  
 C  
@@ -1062,7 +1058,8 @@ C
         ENDDO  
 C  
         DO K=1,KC  
-          DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LN,TMPVAL)
+          DO L=LMPI2,LMPILA  
             IF(QMCSOURX(L,K).NE.0.0)THEN  
               TMPVAL=SUB(L)+SUB(L+1)  
               TMPVAL=MAX(TMPVAL,1.0)  
@@ -1092,9 +1089,8 @@ C
           ENDDO  
         ENDDO  
 C  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 20---->',t03*1.e3,nthds,BSC,IINTPG
       ENDIF  
+      MPI_WTIMES(321)=MPI_WTIMES(321)+MPI_TOC(S1TIME)
 C  
 C**********************************************************************C  
 C  
@@ -1108,17 +1104,20 @@ c      IINTPG=0
 C  
 C     ORIGINAL  
 C  
+      S1TIME=MPI_TIC()
+      CALL broadcast_boundary_array(B,ic)
+      CALL broadcast_boundary(BELV,ic)
+      CALL broadcast_boundary(HP,ic)
+      MPI_WTIMES(334)=MPI_WTIMES(334)+MPI_TOC(S1TIME)
+C
       IF(BSC.GT.1.E-6)THEN
-     
+
+        S1TIME=MPI_TIC()
         IF(IINTPG.EQ.0)THEN  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KS  
-            DO L=LF,LL
+!$OMP PARALLEL DO PRIVATE(LS)
+            DO L=LMPI2,LMPILA  
               LS=LSC(L)  
               FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &          ( HU(L)*( (B(L,K+1)-B(L-1,K+1))*DZC(K+1)  
@@ -1132,16 +1131,17 @@ c
      &          (BELV(L)-BELV(LS)+Z(K)*(HP(L)-HP(LS))) )  
             ENDDO  
           ENDDO  
-c
-      enddo
 C  
         ENDIF  
-C  
+        MPI_WTIMES(322)=MPI_WTIMES(322)+MPI_TOC(S1TIME)
+C
 C *** JACOBIAN
 C  
         IF(IINTPG.EQ.1.)THEN
         K=1  
-        DO L=2,LA  
+        S1TIME=MPI_TIC()
+!$OMP PARALLEL DO PRIVATE(LS)
+        DO L=LMPI2,LMPILA  
           LS=LSC(L)  
           FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &        ( 0.5*HU(L)*( (B(L,K+2)-B(L-1,K+2))*DZC(K+2)  
@@ -1163,10 +1163,13 @@ C
      &        -0.5*(B(L,K  )-B(L,K  )+B(LS ,K  )-B(LS ,K  ))*  
      &        (BELV(L)-BELV(LS )+Z(K-1)*(HP(L)-HP(LS ))) )  
         ENDDO  
-C  
+        MPI_WTIMES(323)=MPI_WTIMES(323)+MPI_TOC(S1TIME)
+C
+        S1TIME=MPI_TIC()
         IF(KC.GT.2)THEN  
           K=KS  
-          DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LS)
+          DO L=LMPI2,LMPILA  
             LS=LSC(L)  
             FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &          ( 0.5*HU(L)*( (B(L,K+1)-B(L-1,K+1))*DZC(K+1)  
@@ -1188,10 +1191,13 @@ C
      &          (BELV(L)-BELV(LS )+Z(K-1)*(HP(L)-HP(LS ))) )  
           ENDDO  
         ENDIF  
-C  
+        MPI_WTIMES(324)=MPI_WTIMES(324)+MPI_TOC(S1TIME)
+C
+        S1TIME=MPI_TIC()
         IF(KC.GT.3)THEN  
           DO K=1,KS  
-            DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LS)
+            DO L=LMPI2,LMPILA  
               LS=LSC(L)  
               FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &            ( 0.5*HU(L)*( (B(L,K+2)-B(L-1,K+2))*DZC(K+2)  
@@ -1214,15 +1220,18 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
+        MPI_WTIMES(325)=MPI_WTIMES(325)+MPI_TOC(S1TIME)
 C  
-      ENDIF  
+        ENDIF  
 C  
 C     FINITE VOLUME  
 C  
         IF(IINTPG.EQ.2)THEN  
 C  
+        S1TIME=MPI_TIC()
         DO K=1,KS  
-          DO L=2,LA  
+!$OMP PARALLEL DO PRIVATE(LS)
+          DO L=LMPI2,LMPILA  
             LS=LSC(L)  
             FBBX(L,K)=SBX(L)*GP*HU(L)*  
      &          ( ( HP(L)*B(L,K+1)-HP(L-1)*B(L-1,K+1) )*DZC(K+1)  
@@ -1244,10 +1253,9 @@ C
      &          +HP(LS)*ZZ(K+1)*B(LS ,K+1)-HP(LS)*ZZ(K)*B(LS ,K) )  
           ENDDO  
         ENDDO  
+        MPI_WTIMES(326)=MPI_WTIMES(326)+MPI_TOC(S1TIME)
 C  
         ENDIF  
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 41---->',t03*1.e3,nthds
       ENDIF  ! *** END OF BOUYANCY 
 C
 C     IF(N.EQ.1)THEN
@@ -1273,23 +1281,18 @@ C **  CALCULATE EXPLICIT INTERNAL U AND V SHEAR EQUATION TERMS
 C
 C----------------------------------------------------------------------C
 C
+      S1TIME=MPI_TIC()
       IF(KC.GT.1)THEN
-           L=1
+!$OMP PARALLEL DO
+        DO L=LMPI1,LMPILC
           DU(L,KC)=0.0
           DV(L,KC)=0.0
-           L=LC
-          DU(L,KC)=0.0
-          DV(L,KC)=0.0
-      ENDIF
-!$OMP PARALLEL DO PRIVATE(LF,LL,RCDZF)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      IF(KC.GT.1)THEN
+        ENDDO  
         DO K=1,KS
           RCDZF=CDZF(K)
-          DO L=LF,LL
+!$OMP PARALLEL DO
+          DO L=LMPI2,LMPILA
+            IF(LMASKDRY(L))THEN
               !DXYIU(L)=1./(DXU(L)*DYU(L))  
               DU(L,K)=RCDZF*( HU(L)*(U(L,K+1)-U(L,K))*DELTI
      &           +DXYIU(L)*(FCAX(L,K+1)-FCAX(L,K)+FBBX(L,K)
@@ -1297,22 +1300,27 @@ c
               DV(L,K)=RCDZF*( HV(L)*(V(L,K+1)-V(L,K))*DELTI
      &           +DXYIV(L)*(FCAY(L,K)-FCAY(L,K+1)+FBBY(L,K)
      &           +SNLT*(FY(L,K)-FY(L,K+1))) )
+            ELSE
+              ! *** TEMPORARY VARIABLE, SO MUST BE INITIALIZED
+              DU(L,K)=0.0  
+              DV(L,K)=0.0  
+            ENDIF
           ENDDO
         ENDDO
       ENDIF
+      MPI_WTIMES(327)=MPI_WTIMES(327)+MPI_TOC(S1TIME)
 C
 C      IF(ISTL.EQ.2)THEN
 C 
+      S1TIME=MPI_TIC()
       IF(NWSER.GT.0)THEN
-        DO L=LF,LL
+!$OMP PARALLEL DO
+        DO L=LMPI2,LMPILA
           DU(L,KS)=DU(L,KS)-CDZU(KS)*TSX(L)
           DV(L,KS)=DV(L,KS)-CDZU(KS)*TSY(L)
         ENDDO
       ENDIF
-c
-      enddo
-c        t03=rtc()-t02
-c      write(6,*) 'Timing 4----->',t03*1.e3,nthds
+      MPI_WTIMES(328)=MPI_WTIMES(328)+MPI_TOC(S1TIME)
 C
 C      ENDIF
 C
@@ -1322,7 +1330,7 @@ C      IF(N.LE.4)THEN
 C        CLOSE(1)
 C      ENDIF
 C
- 1112 FORMAT('N,NW,NS,I,J,K,NF,H,Q,QU,FUU,FVV=',/,2X,7I5,5E12.4)
+C1112 FORMAT('N,NW,NS,I,J,K,NF,H,Q,QU,FUU,FVV=',/,2X,7I5,5E12.4)
 C
 C**********************************************************************C
 C

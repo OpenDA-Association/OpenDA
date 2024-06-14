@@ -7,6 +7,8 @@ C
       USE GLOBAL
       
       INTEGER    ICYAM
+      REAL WQKESS1
+      WQKESS1=0.0
       
 !      ITM=(NAT*3600)/(DT*NWQKDPT)
       
@@ -58,7 +60,7 @@ C    Average temperature
           LightAVG(L)=WQ_Light(L)
         ENDIF
         
-        ICYAM = ICYAMAP(L)
+        ICYAM = INT(ICYAMAP(L),KIND(ICYAM))
         GER0(L) = CUM_GER(L)
         IF(TEMAVG(L).GE.CYA_TEM.AND.WQV(L,1,10).GE.CYA_P4D.AND.
      &     WQV(L,1,15).GE.CYA_NO3.AND.LightAVG(L).GE.CYA_Light) THEN

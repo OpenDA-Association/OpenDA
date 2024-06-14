@@ -22,33 +22,20 @@ C
       S2TL=0.0  
       BSMALL=1.E-12  
 C 
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-      DO L=LF,LL
+      DO K=1,KS  
+        DO L=2,LA  
+          QQ2(L,K)=QQ(L,K)+QQ(L,K)  
+          QQL2(L,K)=QQL(L,K)+QQL(L,K)  
+        ENDDO  
+      ENDDO  
+C
+      DO L=1,LC
         UUU(L,KC)=0.  
         VVV(L,KC)=0.  
         FUHU(L,KC)=0.  
         FUHV(L,KC)=0.  
         FVHU(L,KC)=0.  
         FUHV(L,KC)=0.  
-      ENDDO
-c
-      enddo
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& WB,LS,UHUW,VHVW)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-C 
-      DO K=1,KS  
-        DO L=LF,LL
-          QQ2(L,K)=QQ(L,K)+QQ(L,K)  
-          QQL2(L,K)=QQL(L,K)+QQL(L,K)  
-        ENDDO  
       ENDDO
 C  
 C **  CALCULATE ADVECTIVE FLUXES BY UPWIND DIFFERENCE WITH TRANSPORT  
@@ -59,7 +46,7 @@ C **  FUHQQ=FUHU, FVHQQ=FVHU, FUHQQL=FUHV, FVHQQL=FVHV
 C  
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             WB=0.5*DXYP(L)*(W2(L,K-1)+W2(L,K))  
             FWQQ(L,K)=MAX(WB,0.)*QQ(L,K-1)  
      &          +MIN(WB,0.)*QQ(L,K)  
@@ -69,7 +56,7 @@ C
         ENDDO  
       ELSE  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               WB=0.5*DXYP(L)*(W2(L,K-1)+W2(L,K))  
               FWQQ(L,K)=MAX(WB,0.)*QQ(L,K-1)  
@@ -91,7 +78,7 @@ C        WB=0.25*DXYP(L)*(W2(L,K-1)+W2(L,K))
 C  
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             LS=LSC(L)  
             UHUW=0.5*(UHDY2(L,K)+UHDY2(L,K+1))  
             VHVW=0.5*(VHDX2(L,K)+VHDX2(L,K+1))  
@@ -107,7 +94,7 @@ C
         ENDDO  
       ELSE  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               LS=LSC(L)  
               UHUW=0.5*(UHDY2(L,K)+UHDY2(L,K+1))  
@@ -129,8 +116,6 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
-c
-      enddo
 C  
 C      ELSE  
 C        UHUW=0.25*(UHDY2(L,K)+UHDY2(L,K+1))  
@@ -174,16 +159,10 @@ C
           ENDIF  
         ENDDO  
       ENDDO  
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LN,LS,PQQB,PQQU,PQQ,TMPVAL,WVFACT,PQQV,PQQW,FFTMP,PQQL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(ISWAVE.LE.1.OR.ISWAVE.EQ.3)THEN  
         IF(IDRYTBP.EQ.0)THEN  
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               LN=LNC(L)  
               UUU(L,K)=QQ(L,K)*H1P(L)  
      &            +DELT*(FUHU(L,K)-FUHU(L+1,K)+FVHU(L,K)-FVHU(LN,K)  
@@ -191,8 +170,17 @@ c
               VVV(L,K)=QQL(L,K)*H1P(L)  
      &            +DELT*(FUHV(L,K)-FUHV(L+1,K)+FVHV(L,K)-FVHV(LN,K)  
      &            +(FWQQL(L,K)-FWQQL(L,K+1))*DZIG(K))*DXYIP(L)  
+            ENDDO  
+          ENDDO  
+          DO K=1,KS  
+            DO L=2,LA  
               UUU(L,K)=MAX(UUU(L,K),0.)  
               VVV(L,K)=MAX(VVV(L,K),0.)  
+            ENDDO  
+          ENDDO  
+          DO K=1,KS  
+            DO L=2,LA  
+              LN=LNC(L)  
               LS=LSC(L)  
               PQQB=AB(L,K)*GP*HP(L)*DZIG(K)*(B(L,K+1)-B(L,K))  
               PQQU=AV(L,K)*DZIGSD4(K)*(U(L+1,K+1)-U(L+1,K)+U(L,K+1)-
@@ -205,7 +193,7 @@ c
           ENDDO  
         ELSE  
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(LMASKDRY(L))THEN  
                 LN=LNC(L)  
                 UUU(L,K)=QQ(L,K)*H1P(L)  
@@ -225,7 +213,7 @@ c
           ENDDO  
 C
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(LMASKDRY(L))THEN  
                 LN=LNC(L)  
                 LS=LSC(L)  
@@ -255,12 +243,12 @@ C
           WVFACT=1.0  
         ENDIF  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             TVAR1W(L,K)=WVDTKEM(K)*WVDISP(L,K)+WVDTKEP(K)*WVDISP(L,K+1)  
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             LS=LSC(L)  
             PQQB=AB(L,K)*GP*HP(L)*DZIG(K)*(B(L,K+1)-B(L,K))  
@@ -281,8 +269,6 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
-c
-      enddo
 C  
 C *** DSLLC END BLOCK  
 C  
@@ -325,16 +311,9 @@ C
           ENDDO  
         ENDIF  
       ENDIF  
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& CLQTMP,CUQTMP,CMQTMP,CMQLTMP,EQ,EQL,
-!$OMP& QQHDH,DMLTMP,DELB,DMLMAX)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(KC.GT.2)THEN  
         IF(IDRYTBP.EQ.0)THEN  
-          DO L=LF,LL
+          DO L=2,LA  
             CLQTMP=-DELT*CDZKK(1)*AQ(L,1)*HPI(L)  
             CUQTMP=-DELT*CDZKKP(1)*AQ(L,2)*HPI(L)  
             CMQTMP=1.-CLQTMP-CUQTMP  
@@ -352,7 +331,7 @@ c
             UUU(L,KS)=UUU(L,KS)-CUQTMP*HP(L)*QQ(L,KC)  
           ENDDO  
           DO K=2,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               CLQTMP=-DELT*CDZKK(K)*AQ(L,K)*HPI(L)  
               CUQTMP=-DELT*CDZKKP(K)*AQ(L,K+1)*HPI(L)  
               CMQTMP=1.-CLQTMP-CUQTMP  
@@ -372,13 +351,13 @@ C
             ENDDO  
           ENDDO  
           DO K=KS-1,1,-1  
-            DO L=LF,LL
+            DO L=2,LA  
               UUU(L,K)=UUU(L,K)-CU1(L,K)*UUU(L,K+1)  
               VVV(L,K)=VVV(L,K)-CU2(L,K)*VVV(L,K+1)  
             ENDDO  
           ENDDO  
         ELSE  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               CLQTMP=-DELT*CDZKK(1)*AQ(L,1)*HPI(L)  
               CUQTMP=-DELT*CDZKKP(1)*AQ(L,2)*HPI(L)  
@@ -398,7 +377,7 @@ C
             ENDIF  
           ENDDO  
           DO K=2,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(LMASKDRY(L))THEN  
                 CLQTMP=-DELT*CDZKK(K)*AQ(L,K)*HPI(L)  
                 CUQTMP=-DELT*CDZKKP(K)*AQ(L,K+1)*HPI(L)  
@@ -420,7 +399,7 @@ C
             ENDDO  
           ENDDO  
           DO K=KS-1,1,-1  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(LMASKDRY(L))THEN  
                 UUU(L,K)=UUU(L,K)-CU1(L,K)*UUU(L,K+1)  
                 VVV(L,K)=VVV(L,K)-CU2(L,K)*VVV(L,K+1)  
@@ -431,14 +410,14 @@ C
       ENDIF  
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             QQ1(L,K)=QQ(L,K)  
             QQHDH=UUU(L,K)*HPI(L)  
             QQ(L,K)=MAX(QQHDH,QQMIN)  
-c         ENDDO  
-c       ENDDO  
-c       DO K=1,KS  
-c         DO L=LF,LL
+          ENDDO  
+        ENDDO  
+        DO K=1,KS  
+          DO L=2,LA  
             QQL1(L,K)=QQL(L,K)  
             QQHDH=VVV(L,K)*HPI(L)  
             QQL(L,K)=MAX(QQHDH,QQLMIN)  
@@ -455,7 +434,7 @@ c         DO L=LF,LL
         ENDDO  
       ELSE  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               QQ1(L,K)=QQ(L,K)  
               QQHDH=UUU(L,K)*HPI(L)  
@@ -464,7 +443,7 @@ c         DO L=LF,LL
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               QQL1(L,K)=QQL(L,K)  
               QQHDH=VVV(L,K)*HPI(L)  
@@ -482,8 +461,6 @@ c         DO L=LF,LL
           ENDDO  
         ENDDO  
       ENDIF  
-c
-      enddo
 C  
 C      QQMXSV=-1.E+12  
 C      QQMNSV=1.E+12  
@@ -498,18 +475,24 @@ C
           QQL(L,K)=QQL(LN,K)  
           DML(L,K)=DML(LN,K)  
         ENDDO  
+      ENDDO  
+      DO K=1,KS  
         DO LL=1,NCBW  
           L=LCBW(LL)  
           QQ(L,K)=QQ(L+1,K)  
           QQL(L,K)=QQL(L+1,K)  
           DML(L,K)=DML(L+1,K)  
         ENDDO  
+      ENDDO  
+      DO K=1,KS  
         DO LL=1,NCBE  
           L=LCBE(LL)  
           QQ(L,K)=QQ(L-1,K)  
           QQL(L,K)=QQL(L-1,K)  
           DML(L,K)=DML(L-1,K)  
         ENDDO  
+      ENDDO  
+      DO K=1,KS  
         DO LL=1,NCBN  
           L=LCBN(LL)  
           LS=LSC(L)  
@@ -519,24 +502,17 @@ C
         ENDDO  
       ENDDO  
 C *** DSLLC BEGIN BLOCK
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
       DO K=1,KS  
-        DO L=LF,LL
+        DO L=1,LC
           QQSQR(L,K)=SQRT(QQ(L,K))  ! *** DSLLC
         ENDDO  
       ENDDO  
-c
-      enddo
 C *** DSLLC END BLOCK
-  110 FORMAT('    I    J   QQ BOT        QQ MID        QQ SURF',  
-     &    '       PROD+ADV      1./DIAGON')  
-  111 FORMAT(2I5,5E14.5)  
-  600 FORMAT('N,QX,QN,QLX,QLN,CX,CN=',I5,6E12.4)  
-  601 FORMAT('NEG QQ I,J,K,QQ=',3I5,E13.5)  
+C 110 FORMAT('    I    J   QQ BOT        QQ MID        QQ SURF',  
+C    &    '       PROD+ADV      1./DIAGON')  
+C 111 FORMAT(2I5,5E14.5)  
+C 600 FORMAT('N,QX,QN,QLX,QLN,CX,CN=',I5,6E12.4)  
+C 601 FORMAT('NEG QQ I,J,K,QQ=',3I5,E13.5)  
       RETURN  
       END  
 

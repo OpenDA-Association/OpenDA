@@ -10,24 +10,17 @@ C
       USE GLOBAL
   
       REAL, DIMENSION(LCM,KCM), intent(inout) :: CON,CON1
-      REAL, DIMENSION(:,:), allocatable :: UTERM0, VTERM0, 
-     +                           SSCORUEWNS, SSCORWAB
-      INTEGER, dimension(0:nthds-1,KC) ::  icount
 
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::CONTMN  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::CONTMX  
-      REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::FQCPAD  
-      REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::QSUMNAD  
-      REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::QSUMPAD  
+!      REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::FQCPAD  
+!      REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::QSUMNAD  
+!      REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::QSUMPAD  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::POS
-
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::WQBCCON
+      REAL CTMP
+      CTMP=0.0
 
-      ALLOCATE(UTERM0(LC,KC)) 
-      ALLOCATE(VTERM0(LC,KC)) 
-      ALLOCATE(SSCORUEWNS(LC,KC)) 
-      ALLOCATE(SSCORWAB(LC,KC)) 
-      
       IF(.NOT.ALLOCATED(CONTMN))THEN
         ALLOCATE(CONTMN(0:LCM1,KCM))  
         ALLOCATE(CONTMX(0:LCM1,KCM))  
@@ -37,17 +30,10 @@ C
         ALLOCATE(POS(0:LCM1,KCM))  
         ALLOCATE(WQBCCON(0:LCM1,KCM))
 
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-        DO L=LF,LL
+        DO L=1,LC  
           FWU(L,0)=0.  
           FWU(L,KC)=0.  
         ENDDO  
-c
-      enddo
         CONTMN=0.0
         CONTMX=0.0
         FQCPAD=0.0
@@ -82,20 +68,7 @@ C
       IF(IS2TL_.EQ.1)THEN  
         ISUD=1  
         IF(MVAR.NE.8)THEN
-c         CON1=CON    ! *** ARRAYS
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-        DO K=1,KC
-        DO L=LF,LL
-           CON1(L,K)=CON(L,K)
-        ENDDO
-        ENDDO
-c
-      enddo
-
+          CON1=CON    ! *** ARRAYS
         ENDIF            
       ENDIF  
       
@@ -112,7 +85,7 @@ c
 C  
 C **  CALCULATED EXTERNAL SOURCES AND SINKS  
 C  
-      CALL CALFQC (ISTL_,IS2TL_,MVAR,M,CON,CON1,FQCPAD,QSUMPAD,QSUMNAD)  
+      CALL CALFQC (ISTL_,IS2TL_,MVAR,M,CON,CON1)!,FQCPAD,QSUMPAD,QSUMNAD)       
 C  
 C **  SELECT TRANSPORT OPTION, ISPLIT=1 FOR HORIZONTAL-VERTICAL  
 C **  OPERATOR SPLITTING  
@@ -129,28 +102,23 @@ C **  AVERAGED BETWEEN (N) AND (N+1) OR (N-1) AND (N+1) AND ADVECTED
 C **  AT (N) OR (N-1) IF ISTL EQUALS 2 OR 3 RESPECTIVELY  
 C  
   300 CONTINUE  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       IF(IDRYTBP.EQ.0)THEN  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
               FUHU(L,K)=UHDY2(L,K)*CON1(LUPU(L,K),K)  
               FVHU(L,K)=VHDX2(L,K)*CON1(LUPV(L,K),K)  
           ENDDO  
         ENDDO  
         IF(KC.GT.1)THEN
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               FWU(L,K)=W2(L,K)*CON1(L,KUPW(L,K))  
             ENDDO  
           ENDDO  
         ENDIF
       ELSE  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(LMASKDRY(L))THEN  
               FUHU(L,K)=UHDY2(L,K)*CON1(LUPU(L,K),K)  
               FVHU(L,K)=VHDX2(L,K)*CON1(LUPV(L,K),K)  
@@ -162,7 +130,7 @@ c
         ENDDO  
         IF(KC.GT.1)THEN  
           DO K=1,KS  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(LMASKDRY(L))THEN  
                 FWU(L,K)=W2(L,K)*CON1(L,KUPW(L,K))  
               ELSE
@@ -172,8 +140,6 @@ c
           ENDDO  
         ENDIF  
       ENDIF  
-c
-      enddo
       GOTO 500  
 C  
 C **  CALCULATE ADVECTIVE FLUXES BY UPWIND DIFFERENCE WITH ADVECTION  
@@ -181,39 +147,25 @@ C **  AVERAGED BETWEEN  (N-1) AND (N+1) AND ADVECTED FIELD AVERAGED
 C **  BETWEEN AT (N-1) AND (N) IF ISTL 3 ONLY  
 C  
   350 CONTINUE  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           CONT(L,K)=0.5*(CON(L,K)+CON1(L,K))  
      &        +DELT*0.5*FQC(L,K)*DXYIP(L)/H2P(L)  
         ENDDO  
       ENDDO  
-c
-      enddo
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           FUHU(L,K)=UHDY2(L,K)*CONT(LUPU(L,K),K)  
           FVHU(L,K)=VHDX2(L,K)*CONT(LUPV(L,K),K)  
         ENDDO  
       ENDDO  
       IF(KC.GT.1)THEN
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             FWU(L,K)=W2(L,K)*CONT(L,KUPW(L,K))  
           ENDDO  
         ENDDO
       ENDIF  
-c
-      enddo
       GOTO 500  
 C  
 C **  CALCULATE ADVECTIVE FLUXES BY CENTRAL DIFFERENCE WITH TRANSPORT  
@@ -225,26 +177,13 @@ C PMC        DO L=2,LA
 C PMC          CONT(L,K)=CON1(L,K)  
 C PMC        ENDDO  
 C PMC      ENDDO  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
       DO K=1,KC  
-        DO L=LF,LL
+        DO L=2,LA  
           LS=LSC(L)  
           FUHU(L,K)=0.5*UHDY2(L,K)*(CON(L,K)+CON(L-1,K))  
           FVHU(L,K)=0.5*VHDX2(L,K)*(CON(L,K)+CON(LS,K))  
         ENDDO  
       ENDDO  
-      DO K=1,KS  
-        DO L=LF,LL
-          FWU(L,K)=0.5*W2(L,K)*(CON(L,K+1)+CON(L,K))  
-        ENDDO  
-      ENDDO  
-c
-      enddo
-
       DO K=1,KC  
         DO LL=1,NCBS  
           L=LCBS(LL)  
@@ -265,6 +204,11 @@ c
           IF(VHDX2(L,K).GT.0.) FVHU(L,K)=VHDX2(L,K)*CON1(LS,K)  
         ENDDO  
       ENDDO 
+      DO K=1,KS  
+        DO L=2,LA  
+          FWU(L,K)=0.5*W2(L,K)*(CON(L,K+1)+CON(L,K))  
+        ENDDO  
+      ENDDO  
 C  
 C **  STANDARD ADVECTION CALCULATION  
 C  
@@ -277,16 +221,11 @@ C
 
       ! *** IF ISACAC EQ 0 INCLUDE FQC MASS SOURCES IN UPDATE  
       IF(ISCDCA(MVAR).EQ.0)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL,RDZIC)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         IF(ISTL_.EQ.2)THEN  
           IF(IDRYTBP.EQ.0)THEN  
             DO K=1,KC  
               RDZIC=DZIC(K)  
-              DO L=LF,LL
+              DO L=2,LA 
                 CH(L,K)=CON1(L,K)*H1P(L)  
      &              +DELT*( ( RDZIC*FQC(L,K)  
      &              +FUHU(L,K)-FUHU(L+1,K)  
@@ -297,7 +236,7 @@ c
           ELSE  
             DO K=1,KC  
               RDZIC=DZIC(K)  
-              DO L=LF,LL
+              DO L=2,LA  
                 IF(IMASKDRY(L).EQ.0)  
      &              CH(L,K)=CON1(L,K)*H1P(L)  
      &              +DELT*( ( RDZIC*FQC(L,K)+FUHU(L,K)-FUHU(L+1,K)  
@@ -313,7 +252,7 @@ c
           ENDIF  
           IF(ISFCT(MVAR).GE.1.AND.ISADAC(MVAR).GT.0)THEN  ! *** DSLLC SINGLE LINE
             DO K=1,KC  
-              DO L=LF,LL
+              DO L=2,LA  
                 CON2(L,K)=CON1(L,K)  
               ENDDO  
             ENDDO  
@@ -324,7 +263,7 @@ C
         ELSE
           DO K=1,KC  
             RDZIC=DZIC(K)  
-            DO L=LF,LL
+            DO L=2,LA  
               CH(L,K)=CON1(L,K)*H2P(L)  
      &            +DELT*( ( RDZIC*FQC(L,K)  
      &            +FUHU(L,K)-FUHU(L+1,K)  
@@ -334,14 +273,12 @@ C
           ENDDO  
           IF(ISFCT(MVAR).GE.1.AND.ISADAC(MVAR).GT.0)THEN  ! *** DSLLC SINGLE LINE
             DO K=1,KC  
-              DO L=LF,LL
+              DO L=2,LA  
                 CON2(L,K)=CON(L,K)  
               ENDDO  
             ENDDO  
           ENDIF  
         ENDIF  
-c
-      enddo
 C  
 C ENDIF ON TIME LEVEL CHOICE FOR ISCDCA=0  
 C  
@@ -351,35 +288,19 @@ C
               L=LOBCS(IOBC)  
               CON(L,K)=CON1(L,K)  
             ENDDO  
-          ENDDO  
 
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO K=1,KC
-            DO L=LF,LL
+            DO L=2,LA
               CON1(L,K)=CON(L,K)
             ENDDO  
           ENDDO  
-c
-      enddo
         ENDIF
 
         ! *** UPDATE NEW CONCENTRATIONS        
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             CON(L,K)=CH(L,K)*HPI(L)  
           ENDDO  
         ENDDO  
-c
-      enddo
 C  
 C *** ELSE ON TRANSPORT OPTION CHOICE  
 C *** IF ISACAC NE 0 DO NOT INCLUDE FQC MASS SOURCES IN UPDATE  
@@ -389,15 +310,10 @@ C
 C BEGIN IF ON TIME LEVEL CHOICE FOR ISCDCA.NE.0  
 C  
         IF(ISTL_.EQ.2)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL,RDZIC)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           IF(IDRYTBP.EQ.0)THEN  
             DO K=1,KC  
               RDZIC=DZIC(K)  
-              DO L=LF,LL
+              DO L=2,LA  
                 CH(L,K)=CON1(L,K)*H1P(L)  
      &              +DELT*( ( RDZIC*FQC(L,K)
      &              +FUHU(L,K)-FUHU(L+1,K)  
@@ -408,7 +324,7 @@ c
           ELSE  
             DO K=1,KC  
               RDZIC=DZIC(K)  
-              DO L=LF,LL
+              DO L=2,LA  
                 IF(IMASKDRY(L).EQ.0)  
      &              CH(L,K)=CON1(L,K)*H1P(L)  
      &              +DELT*( ( RDZIC*FQC(L,K)
@@ -423,9 +339,6 @@ c
               ENDDO  
             ENDDO  
           ENDIF  
-c
-      enddo
-
           IF(ISFCT(MVAR).GE.1)THEN  
             CON2=CON1   ! *** ARRAYS
           ENDIF  
@@ -433,23 +346,15 @@ C
 C ELSE ON TIME LEVEL CHOICE FOR ISCDCA.NE.0 AND ISTL.EQ.3
 C  
         ELSE  
-!$OMP PARALLEL DO PRIVATE(LF,LL,RDZIC)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KC  
             RDZIC=DZIC(K)  
-            DO L=LF,LL
+            DO L=2,LA  
               CH(L,K)=CON1(L,K)*H2P(L)  
      &            +DELT*( ( RDZIC*FQC(L,K)+FUHU(L,K)-FUHU(L+1,K)  
      &            +FVHU(L,K)-FVHU(LNC(L),K))*DXYIP(L)  
      &            +(FWU(L,K-1)-FWU(L,K))*RDZIC )  
             ENDDO  
           ENDDO  
-c
-      enddo
-
           IF(ISFCT(MVAR).GE.1)THEN  
             CON2=CON    ! *** ARRAYS
           ENDIF  
@@ -458,41 +363,24 @@ C
 C ENDIF ON TIME LEVEL CHOICE FOR ISCDCA.NE.0  
 C  
         IF(ISUD.EQ.1.AND.MVAR.NE.8)THEN  
-!$OMP PARALLEL DO PRIVATE(L)
           DO K=1,KC
             DO IOBC=1,NBCSOP  
               L=LOBCS(IOBC)  
               CON(L,K)=CON1(L,K)  
             ENDDO  
-          ENDDO  
 
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO K=1,KC
-            DO L=LF,LL
+            DO L=2,LA
               CON1(L,K)=CON(L,K)
             ENDDO  
           ENDDO  
-c
-      enddo
         ENDIF
 
         ! *** PMC-BOUNDARY CONDITIONS APPLIED BELOW
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             CON(L,K)=CH(L,K)*HPI(L)  
           ENDDO  
         ENDDO  
-c
-      enddo
 
       ENDIF  
 C  
@@ -696,106 +584,41 @@ C
 
       ! *** PMC BEGIN BLOCK
       ! *** GET ONLY POSITIVE CONCENTRATIONS
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
+      DO L=2,LA
         DO K=1,KC
-      DO L=LF,LL
           POS(L,K)=MAX(CON(L,K),0.)
         ENDDO
       ENDDO
-c
-      enddo
       ! *** PMC END BLOCK
 
       IF(IDRYTBP.EQ.0)THEN  
-C
-!$OMP PARALLEL DO PRIVATE(LF,LL,LF_LC,LL_LC,L,K,
-!$OMP& RDZIG,LS,AUHU,AVHV)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-         LF_LC=jse_LC(1,ithds)
-         LL_LC=jse_LC(2,ithds)
-c
         DO K=1,KC  
-          IF(LF.eq.2) THEN
-             L=1
-            UUU(L,K)=0.0
-            VVV(L,K)=0.0
-          ENDIF
-          DO L=LF,LL
+          UUU(LC,K)=0.0  
+          VVV(LC,K)=0.0  
+          UUU(1,K)=0.0  
+          VVV(1,K)=0.0  
+        ENDDO  
+        DO L=1,LC  
+          WWW(L,0)=0.0  
+          WWW(L,KC)=0.0  
+        ENDDO  
+C
+        DO K=1,KC  
+          DO L=2,LA  
             LS=LSC(L)  
             UUU(L,K)=U2(L,K)*(POS(L,K)-POS(L-1,K))*DXIU(L)  
             VVV(L,K)=V2(L,K)*(POS(L,K)-POS(LS,K))*DYIV(L)  
-c           AUHU=ABS(UHDY2(L,K))
-c           AVHV=ABS(VHDX2(L,K))
-c           UTERM0(L,K)=AUHU*(POS(L,K)-POS(L-1,K))
-c           VTERM0(L,K)=AVHV*(POS(L,K)-POS(LS,K))
           ENDDO  
-          IF(LL.eq.LA) THEN
-             L=LC
-            UUU(L,K)=0.0
-            VVV(L,K)=0.0
-          ENDIF
-        ENDDO  
-           K=0
-          DO L=LF_LC,LL_LC
-            WWW(L,K)=0.0
-          ENDDO
+        ENDDO
         DO K=1,KS  
           RDZIG=DZIG(K)  
-          DO L=LF,LL
+          DO L=2,LA  
             WWW(L,K)=W2(L,K)*(POS(L,K+1)-POS(L,K))*HPI(L)*RDZIG  
           ENDDO  
         ENDDO  
-           K=KC
-          DO L=LF_LC,LL_LC
-            WWW(L,K)=0.0
-          ENDDO
-c
-       enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>5C',t00*1d6
-c     t00=rtc()
-       IF(ISADAC(MVAR).GE.2)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL,LF_LC,LL_LC,
-!$OMP& RDZIC)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-         LF_LC=jse_LC(1,ithds)
-         LL_LC=jse_LC(2,ithds)
-c
-        DO K=1,KC
-          RDZIC=DZIC(K)
-          DO L=LF_LC,LL_LC
-              SSCORUEWNS(L,K)=DELTA*RDZIC*DXYIP(L)*HPI(L)*(FQCPAD(L,K)
-     &            -QSUMPAD(L,K)*CON(L,K))
-          ENDDO
-          DO L=LF,LL
-              SSCORWAB(L,K)=DELTA*DZIG(K)*HPI(L)*DXYIP(L)
-     &            *(FQCPAD(L,K  )-QSUMPAD(L,K  )*POS(L,K  ))
-          ENDDO
-        ENDDO
-c
-      enddo
-       ENDIF
-
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& RDZIC,LN,LS,LNW,LSE,
-!$OMP& AUHU,AVHV,UTERM,VTERM,SSCORUE,SSCORUW,SSCORVN,SSCORVS,
-!$OMP& SSCORU,SSCORV,UHU,VHV,
-!$OMP& AWW,WTERM,SSCORWA,SSCORWB,SSCORW,WW)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
           RDZIC=DZIC(K)  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             LS=LSC(L)  
             LNW=LNWC(L)  
@@ -804,22 +627,15 @@ c
             AVHV=ABS(VHDX2(L,K))  
             UTERM=AUHU*(POS(L,K)-POS(L-1,K))  
             VTERM=AVHV*(POS(L,K)-POS(LS,K))  
-c           UTERM=UTERM0(L,K)
-c           VTERM=VTERM0(L,K)
             IF(ISADAC(MVAR).GE.2)THEN  
-c             SSCORUE=DELTA*RDZIC*DXYIP(L  )*HPI(L  )*(FQCPAD(L  ,K)  
-c    &            -QSUMPAD(L  ,K)*CON(L  ,K))  
-c             SSCORUW=DELTA*RDZIC*DXYIP(L-1)*HPI(L-1)*(FQCPAD(L-1,K)  
-c    &            -QSUMPAD(L-1,K)*CON(L-1,K))  
-c             SSCORVN=DELTA*RDZIC*DXYIP(L  )*HPI(L  )*(FQCPAD(L  ,K)  
-c    &            -QSUMPAD(L  ,K)*CON(L  ,K))  
-c             SSCORVS=DELTA*RDZIC*DXYIP(LS )*HPI(LS )*(FQCPAD(LS ,K)  
-c    &            -QSUMPAD(LS ,K)*CON(LS ,K))  
-              SSCORUE=SSCORUEWNS(L,K)
-              SSCORUW=SSCORUEWNS(L-1,K)
-              SSCORVN=SSCORUEWNS(L,K)
-              SSCORVS=SSCORUEWNS(LS,K)
-
+              SSCORUE=DELTA*RDZIC*DXYIP(L  )*HPI(L  )*(FQCPAD(L  ,K)  
+     &            -QSUMPAD(L  ,K)*CON(L  ,K))  
+              SSCORUW=DELTA*RDZIC*DXYIP(L-1)*HPI(L-1)*(FQCPAD(L-1,K)  
+     &            -QSUMPAD(L-1,K)*CON(L-1,K))  
+              SSCORVN=DELTA*RDZIC*DXYIP(L  )*HPI(L  )*(FQCPAD(L  ,K)  
+     &            -QSUMPAD(L  ,K)*CON(L  ,K))  
+              SSCORVS=DELTA*RDZIC*DXYIP(LS )*HPI(LS )*(FQCPAD(LS ,K)  
+     &            -QSUMPAD(LS ,K)*CON(LS ,K))  
               SSCORU=MAX(UHDY2(L,K),0.0)*SSCORUW+MIN(UHDY2(L,K),0.0)
      &            *SSCORUE  
               SSCORV=MAX(VHDX2(L,K),0.0)*SSCORVS+MIN(VHDX2(L,K),0.0)
@@ -863,18 +679,15 @@ c    &            -QSUMPAD(LS ,K)*CON(LS ,K))
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             AWW=ABS(W2(L,K))  
             WTERM=AWW*(POS(L,K+1)-POS(L,K))  
             IF(ISADAC(MVAR).GE.2)THEN  
-c             SSCORWA=DELTA*DZIG(K+1)*HPI(L)*DXYIP(L)  
-c    &            *(FQCPAD(L,K+1)-QSUMPAD(L,K+1)*POS(L,K+1))  
-c             SSCORWB=DELTA*DZIG(K)*HPI(L)*DXYIP(L)  
-c    &            *(FQCPAD(L,K  )-QSUMPAD(L,K  )*POS(L,K  ))  
-              SSCORWA=SSCORWAB(L,K+1)
-              SSCORWB=SSCORWAB(L,K)
-
+              SSCORWA=DELTA*DZIG(K+1)*HPI(L)*DXYIP(L)  
+     &            *(FQCPAD(L,K+1)-QSUMPAD(L,K+1)*POS(L,K+1))  
+              SSCORWB=DELTA*DZIG(K)*HPI(L)*DXYIP(L)  
+     &            *(FQCPAD(L,K  )-QSUMPAD(L,K  )*POS(L,K  ))  
               SSCORW=MAX(W2(L,K),0.0)*SSCORWB+MIN(W2(L,K),0.0)*SSCORWA  
               WTERM=WTERM+SSCORW  
             ENDIF  
@@ -899,164 +712,74 @@ c    &            *(FQCPAD(L,K  )-QSUMPAD(L,K  )*POS(L,K  ))
             ENDIF  
           ENDDO  
         ENDDO  
-c
-        enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>6C',t00*1d6
-c     t00=rtc()
 C  
 C ** SET ANTIDIFFUSIVE FLUXES TO ZERO FOR SOURCE CELLS
 C  
         IF(ISADAC(MVAR).EQ.1)THEN  
           ! *** ANTIDIFFUSION TURNED OFF FOR SOURCE CELLS  
-!$OMP PARALLEL DO PRIVATE(LF,LL,L)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
           DO K=1,KC  
-            DO L=LF,LL-1
-c           DO L=2,LA
+            DO L=2,LA  
               IF(QSUMPAD(L,K).GT.0.0)THEN  
-                IF(FUHU(L  ,K).NE.0.) FUHU(L  ,K)=0.  
-                IF(FUHU(L+1,K).NE.0.) FUHU(L+1,K)=0.  
-                IF(FVHU(L  ,K).NE.0.) FVHU(L  ,K)=0.
-                IF(FWU(L,K  ).NE.0.) FWU(L,K  )=0.  
-                IF(FWU(L,K-1).NE.0.) FWU(L,K-1)=0.  
-              ENDIF  
-            ENDDO  
-          ENDDO  
-      enddo
-c
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO K=1,KC
-               L=LL
-              IF(QSUMPAD(L,K).GT.0.0)THEN
-                IF(FUHU(L  ,K).NE.0.) FUHU(L  ,K)=0.  
-                IF(FUHU(L+1,K).NE.0.) FUHU(L+1,K)=0.  
-                IF(FVHU(L  ,K).NE.0.) FVHU(L  ,K)=0.
-                IF(FWU(L,K  ).NE.0.) FWU(L,K  )=0.  
-                IF(FWU(L,K-1).NE.0.) FWU(L,K-1)=0.  
-              ENDIF
-          ENDDO
-      enddo
-
-
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN,ii) 
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-          DO K=1,KC
-            ii=0
-            DO L=LF,LL
-              IF(QSUMPAD(L,K).GT.0.0)THEN
                 LN=LNC(L)
-                IF(LN.NE.LC) THEN
-                 IF(FVHU(LN ,K).NE.0.) FVHU(LN ,K)=0.
-                ELSE
-                 ii=ii+1 
-                ENDIF
+                FUHU(L  ,K)=0.  
+                FUHU(L+1,K)=0.  
+                FVHU(L  ,K)=0.  
+                FVHU(LN ,K)=0.  
+                FWU(L,K  )=0.  
+                FWU(L,K-1)=0.  
               ENDIF
             ENDDO
-            icount(ithds,K)=ii
           ENDDO
-      enddo
-          DO K=1,KC
-            ii=0
-            do ithds=0,nthds-1
-               ii=ii+icount(ithds,K)
-            enddo
-          if(ii.gt.0) then
-             LN=LC
-             FVHU(LN ,K)=0.
-          endif   
-          ENDDO
-
         ENDIF  
 C  
 C ** SET ANTIDIFFUSIVE FLUXES TO ZERO FOR OPEN BOUNDARY CELLS  
 C  
+        DO K=1,KC  
           DO LL=1,NCBS  
             L=LCBS(LL)  
             LN=LNC(L)  
-        DO K=1,KC  
             FVHU(LN,K)=0.0  
         ENDDO  
-          ENDDO  
-          DO LL=1,NCBW  
-            L=LCBW(LL)  
-        DO K=1,KC  
-            FUHU(L+1,K)=0.0  
+        DO LL=1,NCBW  
+          L=LCBW(LL)  
+          FUHU(L+1,K)=0.0  
         ENDDO  
-          ENDDO  
-          DO LL=1,NCBE  
-            L=LCBE(LL)  
-        DO K=1,KC  
-            FUHU(L,K)=0.0  
+        DO LL=1,NCBE  
+          L=LCBE(LL)  
+          FUHU(L,K)=0.0  
         ENDDO  
-          ENDDO  
-          DO LL=1,NCBN  
-            L=LCBN(LL)  
-        DO K=1,KC  
+        DO LL=1,NCBN  
+          L=LCBN(LL)  
             FVHU(L,K)=0.0  
-        ENDDO  
           ENDDO  
+        ENDDO  
 C  
 C **  CALCULATE AND APPLY FLUX CORRECTED TRANSPORT LIMITERS  
 C  
-c     t00=rtc()-t00
-c     write(6,*) '==>7C',t00*1d6
-c     t00=rtc()
         IF(ISFCT(MVAR).EQ.0) GOTO 1100  
 C  
 C **  DETERMINE MAX AND MIN CONCENTRATIONS  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,L)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          IF(LF.eq.2) THEN
-             L=1
+          DO L=1,LC  
             CONTMX(L,K)=0.0
             CONTMN(L,K)=0.0
-          ENDIF
-          DO L=LF,LL
+          ENDDO
+        ENDDO
+        DO K=1,KC
+          DO L=2,LA
             CONTMX(L,K)=MAX(CON(L,K),CON2(L,K))  
             CONTMN(L,K)=MIN(CON(L,K),CON2(L,K))  
           ENDDO  
-          IF(LL.eq.LA) THEN
-             L=LC
-            CONTMX(L,K)=0.0
-            CONTMN(L,K)=0.0
-          ENDIF
         ENDDO  
-c
-        enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>8C',t00*1d6
-c     t00=rtc()
-
-!$OMP PARALLEL DO PRIVATE(LF,LL,K,
-!$OMP& LS,LN,
-!$OMP& CWMAX,CEMAX,CSMAX,CNMAX,CMAXT,CWMIN,CEMIN,CSMIN,CNMIN,CMINT)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-        DO L=LF,LL
+        DO L=2,LA  
           CMAX(L,1)=MAX(CONTMX(L,1),CONTMX(L,2))
           CMAX(L,KC)=MAX(CONTMX(L,KS),CONTMX(L,KC))
           CMIN(L,1)=MIN(CONTMN(L,1),CONTMN(L,2))
           CMIN(L,KC)=MIN(CONTMN(L,KS),CONTMN(L,KC))
         ENDDO
         DO K=2,KS
-          DO L=LF,LL
+          DO L=2,LA  
             CMAXT=MAX(CONTMX(L,K-1),CONTMX(L,K+1))
             CMAX(L,K)=MAX(CONTMX(L,K),CMAXT)
             CMINT=MIN(CONTMN(L,K-1),CONTMN(L,K+1))
@@ -1064,7 +787,7 @@ c
           ENDDO
         ENDDO
         DO K=1,KC
-          DO L=LF,LL
+          DO L=2,LA  
             LS=LSC(L)
             LN=LNC(L)
             CWMAX=SUB(L)*CONTMX(L-1,K)
@@ -1085,13 +808,12 @@ c
             CMIN(L,K)=MIN(CMIN(L,K),CMINT)
           ENDDO
         ENDDO
-
 C  
 C **  SEPARATE POSITIVE AND NEGATIVE FLUXES PUTTING NEGATIVE FLUXES  
 C **  INTO FUHV, FVHV, AND FWV  
 C  
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             FUHV(L,K)=MIN(FUHU(L,K),0.)  
             FUHU(L,K)=MAX(FUHU(L,K),0.)  
             FVHV(L,K)=MIN(FVHU(L,K),0.)  
@@ -1099,29 +821,18 @@ C
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             FWV(L,K)=MIN(FWU(L,K),0.)  
             FWU(L,K)=MAX(FWU(L,K),0.)  
           ENDDO  
         ENDDO  
-c
-        enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>9C',t00*1d6
-c     t00=rtc()
 C  
 C **  CALCULATE INFLUX AND OUTFLUX IN CONCENTRATION UNITS AND LOAD  
 C **  INTO DU AND DV, THEN ADJUCT VALUES AT BOUNDARIES  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& RDZIC,LN)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
           RDZIC=DZIC(K)  
-          DO L=LF,LL
+          DO L=2,LA  
             LN=LNC(L)  
             DU(L,K)=DELT*(DXYIP(L)*(FUHU(L,K)-FUHV(L+1,K)  
      &          +FVHU(L,K)-FVHV(LN,K))  
@@ -1131,45 +842,33 @@ c
      &          +RDZIC*(FWU(L,K)-FWV(L,K-1)) )*HPI(L)  
           ENDDO  
         ENDDO  
-c
-        enddo
-
-c     t00=rtc()-t00
-c     write(6,*) '==>10C',t00*1d6
-c     t00=rtc()
+        DO K=1,KC
           DO IOBC=1,NBCSOP  
             L=LOBCS(IOBC)  
-        DO K=1,KC
             DU(L,K)=0.  
             DV(L,K)=0.  
           ENDDO  
         END DO
+        DO K=1,KC  
           DO LL=1,NCBS  
             L=LCBS(LL)  
             LN=LNC(L)  
-        DO K=1,KC  
             DU(LN,K)=0.  
             DV(LN,K)=0.  
           ENDDO  
-        ENDDO  
           DO LL=1,NCBW  
             L=LCBW(LL)  
-        DO K=1,KC  
             DU(L+1,K)=0.  
             DV(L+1,K)=0.  
           ENDDO  
-        ENDDO  
           DO LL=1,NCBE  
             L=LCBE(LL)  
             DU(L-1,K)=0.  
-        DO K=1,KC  
             DV(L-1,K)=0.  
           ENDDO  
-        ENDDO  
           DO LL=1,NCBN  
             L=LCBN(LL)  
             LS=LSC(L)  
-        DO K=1,KC  
             DU(LS,K)=0.  
             DV(LS,K)=0.  
           ENDDO  
@@ -1177,65 +876,19 @@ c     t00=rtc()
 C  
 C **  CALCULATE BETA COEFFICIENTS WITH BETAUP AND BETADOWN IN DU AND DV  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,BB)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
-          IF(DU(L,K).GT.0.) THEN
-          IF((CMAX(L,K)-POS(L,K)).LT.(DU(L,K)+BSMALL)) THEN
-            BB=(CMAX(L,K)-POS(L,K))/(DU(L,K)+BSMALL)
-          ELSE
-            BB=1.
-          ENDIF  
-          ELSE
-           BB=MIN(DU(L,K),1.)
-          ENDIF
-          DU(L,K)=BB
-c         IF(DU(L,K).GT.0.)DU(L,K)=(CMAX(L,K)-POS(L,K))/(DU(L,K)+BSMALL)  
-c           DU(L,K)=MIN(DU(L,K),1.)  
-c          if(BB.ne.DU(L,K)) THEN
-c     cc     write(6,*) BB,DU(L,K)
-c            stop 10
-c          endif
-          IF(DV(L,K).GT.0.) THEN
-          IF((CON(L,K)-CMIN(L,K)).LT.(DV(L,K)+BSMALL)) THEN
-            BB=(CON(L,K)-CMIN(L,K))/(DV(L,K)+BSMALL)
-          ELSE
-            BB=1.
-          ENDIF
-          ELSE
-           BB=MIN(DV(L,K),1.)
-          ENDIF
-          DV(L,K)=BB
-
-c         IF(DV(L,K).GT.0.)DV(L,K)=(CON(L,K)-CMIN(L,K))/(DV(L,K)+BSMALL)  
-c           DV(L,K)=MIN(DV(L,K),1.)  
-c          if(BB.ne.DV(L,K)) THEN
-c     cc     write(6,*) BB,DV(L,K)
-c            stop 10
-c          endif
-
+          DO L=2,LA  
+          IF(DU(L,K).GT.0.)DU(L,K)=(CMAX(L,K)-POS(L,K))/(DU(L,K)+BSMALL)  
+            DU(L,K)=MIN(DU(L,K),1.)  
+          IF(DV(L,K).GT.0.)DV(L,K)=(CON(L,K)-CMIN(L,K))/(DV(L,K)+BSMALL)  
+            DV(L,K)=MIN(DV(L,K),1.)  
           ENDDO  
         ENDDO  
-c
-      enddo
 C  
-c     t00=rtc()-t00
-c     write(6,*) '==>11C',t00*1d6
-c     t00=rtc()
 C **  LIMIT FLUXES  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& LS)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             LS=LSC(L)  
             FUHU(L,K)=MIN(DV(L-1,K),DU(L,K))*FUHU(L,K)  
      &          +MIN(DU(L-1,K),DV(L,K))*FUHV(L,K)  
@@ -1244,30 +897,19 @@ c
           ENDDO  
         ENDDO  
         DO K=1,KS  
-          DO L=LF,LL
+          DO L=2,LA  
             FWU(L,K)=MIN(DV(L,K),DU(L,K+1))*FWU(L,K)  
      &          +MIN(DU(L,K),DV(L,K+1))*FWV(L,K)  
           ENDDO  
         ENDDO  
-c
-      enddo
 C  
 C **  ANTI-DIFFUSIVE ADVECTION CALCULATION  
 C  
  1100   CONTINUE  
 C    
-c     t00=rtc()-t00
-c     write(6,*) '==>12C',t00*1d6
-c     t00=rtc()
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& RDZIC)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
           RDZIC=DZIC(K)  
-          DO L=LF,LL
+          DO L=2,LA  
             CH(L,K)=CON(L,K)*HP(L)  
      &          +DELT*( (FUHU(L,K)-FUHU(L+1,K)  
      &          +FVHU(L,K)-FVHU(LNC(L),K))*DXYIP(L)  
@@ -1275,19 +917,14 @@ c
             CON(L,K)=SCB(L)*CH(L,K)*HPI(L)+(1.-SCB(L))*CON(L,K)  
           ENDDO  
         ENDDO  
-c
-      enddo
 C  
 C **  ADD REMAINING SEDIMENT SETTLING AND FLUX  
 C  
       ENDIF  
-c     t00=rtc()-t00
-c     write(6,*) '==>13C',t00*1d6
 C  
 C **  ANTI-DIFFUSIVE ADVECTIVE FLUX CALCULATION WITH DRY BYPASS  
 C  
       IF(IDRYTBP.GT.0)THEN  
-c     t00=rtc()
         ! *** DSLLC BEGIN 
         DO L=1,LC  
           WWW(L,0)=0.0 
@@ -1434,6 +1071,17 @@ C
 C  
 C ** SET ANTIDIFFUSIVE FLUXES TO ZERO FOR SOURCE CELLS
 C  
+        if(n.gt.2400.AND..FALSE.)then   ! PMC PMC
+          L = 6795
+          k = 1
+          write(*,9999)n,con(l-1,k),con(l,k),con(l+1,k),
+     1                 fuhu(l-1,k),fuhu(l,k),fuhu(l+1,k),
+     1                 UHDY2(l-1,k),UHDY2(l,k),UHDY2(l+1,k),
+     1                 VHDX2(l-1,k),VHDX2(l,k),VHDX2(l+1,k)
+    ! 1                 fwu(l-1,k),fwu(l,k),fwu(l+1,k)
+ 9999 format(i5,6f12.2/5x,6f12.2)
+        endif
+
         IF(ISADAC(MVAR).EQ.1)THEN  
           DO K=1,KC  
             DO L=2,LA
@@ -1690,34 +1338,21 @@ C
  
       ! *** ZERO HEAT FLUXES
  2000 IF(MVAR.EQ.2)THEN        
-c     t00=rtc()
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
         ! *** ZERO EVAP/RAINFALL
-        DO L=LF,LL 
+        DO L=1,LC  
           FQC(L,KC)=0.  
         ENDDO  
         IF(ISADAC(MVAR).GE.2)THEN
-          DO L=LF,LL 
+          DO L=1,LC  
             FQCPAD(L,KC)=0.  
           ENDDO  
         ENDIF
         IF(ISADAC(MVAR).GT.0)THEN
-          DO L=LF,LL 
+          DO L=1,LC  
             QSUMPAD(L,KC)=0.  
           ENDDO  
         ENDIF
-c
-      enddo
       ENDIF
-      DEALLOCATE(UTERM0) 
-      DEALLOCATE(VTERM0) 
-      DEALLOCATE(SSCORUEWNS) 
-      DEALLOCATE(SSCORWAB) 
-      
       
       RETURN  
       END  

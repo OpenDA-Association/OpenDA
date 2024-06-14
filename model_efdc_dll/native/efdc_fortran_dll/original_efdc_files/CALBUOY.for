@@ -1,4 +1,4 @@
-      SUBROUTINE CALBUOY(LF,LL)
+      SUBROUTINE CALBUOY  
 C  
 C CHANGE RECORD  
 C **  CALBUOY CALCULATES THE BUOYANCY USING MELLOR'S APPROXIMATION  
@@ -9,7 +9,6 @@ C
 	IMPLICIT NONE
 	INTEGER::NS,K,L
 	REAL::RHOO,SSTMP,TTMP,RHTMP,PRES,CCON,TMP,TEM0
-        INTEGER::LF,LL,ithds
 C  
       IF(IBSC.EQ.1) GOTO 1000  
       ISPCOR=0  
@@ -22,14 +21,14 @@ C
      &    +6.536332E-9*TEM0*TEM0*TEM0*TEM0*TEM0  
       IF(ISTRAN(1).EQ.0.AND.ISTRAN(2).EQ.0)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             B(L,K)=RHOO  
           ENDDO  
         ENDDO  
       ENDIF  
       IF(ISTRAN(1).GE.1.AND.ISTRAN(2).EQ.0)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             SAL(L,K)=MAX(SAL(L,K),0.)  
             SSTMP=SAL(L,K)  
             TEM0=ABS(TEMO)
@@ -42,7 +41,7 @@ C
       ENDIF  
       IF(ISTRAN(1).EQ.0.AND.ISTRAN(2).GE.1)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             TTMP=TEM(L,K)  
             B(L,K)=999.842594+6.793952E-2*TTMP-9.095290E-3*TTMP*TTMP  
      &          +1.001685E-4*TTMP*TTMP*TTMP-1.120083E-6*TTMP*TTMP*
@@ -52,7 +51,7 @@ C
       ENDIF  
       IF(ISTRAN(1).GE.1.AND.ISTRAN(2).GE.1)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             SAL(L,K)=MAX(SAL(L,K),0.)  
             SSTMP=SAL(L,K)  
             TTMP=TEM(L,K)  
@@ -71,7 +70,7 @@ C **  APPLY MELLOR'S PRESSURE CORRECTION
 C  
       IF(ISPCOR.EQ.1)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             PRES=RHOO*G*HP(L)*(1.-ZZ(K))*1.E-6  
             CCON=1449.2+1.34*(SAL(L,K)-35.)+4.55*TEM(L,K)  
      &          -0.045*TEM(L,K)*TEM(L,K)+0.00821*PRES+15.E-9*PRES*PRES  
@@ -84,7 +83,7 @@ C
 C **  REPLACE DENSITY B(L,K) WITH BUOYANCY B(L,K)  
 C  
       DO K=1,KC  
-        DO L=LF,LL  
+        DO L=2,LA  
           B(L,K)=(B(L,K)/RHOO)-1.  
         ENDDO  
       ENDDO  
@@ -93,7 +92,7 @@ C **  APPLY LOW SEDIMENT CONCENTRATION CORRECTION TO BUOYANCY
 C  
       IF(ISTRAN(6).GE.1.OR.ISTRAN(7).GE.1)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             TVAR1S(L,K)=0.  
             TVAR1W(L,K)=0.  
           ENDDO  
@@ -102,7 +101,7 @@ C
       IF(ISTRAN(6).GE.1)THEN  
         DO NS=1,NSED  
           DO K=1,KC  
-            DO L=LF,LL  
+            DO L=2,LA  
               TVAR1S(L,K)=TVAR1S(L,K)+SDEN(NS)*SED(L,K,NS)  
               TVAR1W(L,K)=TVAR1W(L,K)+(SSG(NS)-1.)*SDEN(NS)*SED(L,K,NS)  
             ENDDO  
@@ -113,7 +112,7 @@ C
         DO NN=1,NSND  
           NS=NN+NSED  
           DO K=1,KC  
-            DO L=LF,LL  
+            DO L=2,LA  
               TVAR1S(L,K)=TVAR1S(L,K)+SDEN(NS)*SND(L,K,NN)  
               TVAR1W(L,K)=TVAR1W(L,K)+(SSG(NS)-1.)*SDEN(NS)*SND(L,K,NN)  
             ENDDO  
@@ -122,7 +121,7 @@ C
       ENDIF  
       IF(ISTRAN(6).GE.1.OR.ISTRAN(7).GE.1)THEN  
         DO K=1,KC  
-          DO L=LF,LL  
+          DO L=2,LA  
             B(L,K)=B(L,K)*(1.-TVAR1S(L,K))+TVAR1W(L,K)  
           ENDDO  
         ENDDO  
@@ -134,7 +133,7 @@ C     PURPOSES ONLY
 C  
  1000 CONTINUE  
       DO K=1,KC  
-        DO L=LF,LL  
+        DO L=2,LA  
           B(L,K)=0.00075*SAL(L,K)  
         ENDDO  
       ENDDO  

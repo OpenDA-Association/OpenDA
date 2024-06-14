@@ -1,5 +1,5 @@
-      SUBROUTINE CALFQC(ISTL_,IS2TL_,MVAR,MO,CON,CON1,FQCPAD,QSUMPAD,  
-     &    QSUMNAD)  
+      SUBROUTINE CALFQC(ISTL_,IS2TL_,MVAR,MO,CON,CON1)!,FQCPAD,QSUMPAD,  
+!     &    QSUMNAD)  
 C  
 C CHANGE RECORD  
 C **  SUBROUTINE CALFQC CALCULATES MASS SOURCES AND SINKS ASSOCIATED  
@@ -9,14 +9,19 @@ C **  OUTFLOWS; AND  EMBEDED CHANNEL INFLOWS AND OUTFLOWS
 C  
       USE GLOBAL  
 
-	INTEGER::L,K,LN,LS,ID,JD,KD,NWR,IU,JU,KU,LU,NS,LNW,LSE,LL
-	INTEGER::LD,NMD,LHOST,LCHNU,LW,LE,NJP
-	REAL::TMPVAL
+      INTEGER::L,K,ID,JD,KD,NWR,IU,JU,KU,LU,NS
+      INTEGER::LD,NMD,NJP
 
-      DIMENSION CON(LCM,KCM),CON1(LCM,KCM),FQCPAD(0:LCM1,KCM),
-     &          QSUMNAD(0:LCM1,KCM),QSUMPAD(0:LCM1,KCM)
+      DIMENSION CON(LCM,KCM),CON1(LCM,KCM)!,FQCPAD(0:LCM1,KCM),
+!     &          QSUMNAD(0:LCM1,KCM),QSUMPAD(0:LCM1,KCM)
  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::CONQ  
+      REAL QVKTMP,QUKTMP
+
+      L = 0
+      QVKTMP = 0.0
+      QUKTMP = 0.0
+
       IF(.NOT.ALLOCATED(CONQ))THEN
         ALLOCATE(CONQ(LCM,KCM))
         CONQ=0.0 
@@ -26,41 +31,33 @@ C
       
       ! *** SELECTIVE ZEROING
       IF(KC.GT.1)THEN
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
-
         IF(NGWSER.GT.0.OR.ISGWIT.NE.0)THEN
-          DO L=LF,LL
+          DO L=1,LC  
             FQC(L,1)=0.  
           ENDDO  
         ENDIF
 
         ! *** ZERO EVAP/RAINFALL
         IF(MVAR.EQ.2)THEN        
-          DO L=LF,LL
+          DO L=1,LC  
             FQC(L,KC)=0.  
           ENDDO  
           IF(ISADAC(MVAR).GE.2)THEN
-            DO L=LF,LL
+            DO L=1,LC  
               FQCPAD(L,KC)=0.  
             ENDDO  
           ENDIF
           IF(ISADAC(MVAR).GT.0)THEN
-            DO L=LF,LL
+            DO L=1,LC  
               QSUMPAD(L,KC)=0.  
             ENDDO  
           ENDIF
         ENDIF
-c
-      enddo
         
         ! *** ZERO ALL DEFINED BC'S
-          DO K=1,KC
         DO NS=1,NBCS
           L=LBCS(NS)
+          DO K=1,KC
             FQC(L,K)=0.  
             FQCPAD(L,K)=0  
             QSUMPAD(L,K)=0.  
@@ -130,30 +127,23 @@ C
        
       ! *** 2TL STANDARD
       IF(ISTL_.EQ.2.AND.IS2TL_.EQ.1)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse_LC(1,ithds)
-         LL=jse_LC(2,ithds)
-c
         IF(NGWSER.GT.0.OR.ISGWIT.NE.0)THEN
-          DO L=LF,LL
+          DO L=1,LC  
             CONQ(L,1)=0.5*(3.*CON(L,1)-CON1(L,1))  
           ENDDO  
         ENDIF
 
         ! *** ZERO EVAP/RAINFALL
         IF(MVAR.EQ.2)THEN        
-          DO L=LF,LL
+          DO L=1,LC  
             CONQ(L,KC)=0.5*(3.*CON(L,KC)-CON1(L,KC))  
           ENDDO  
         ENDIF
-c
-      enddo
         
         ! *** INITIALIZE ALL DEFINED BC'S
-          DO K=1,KC
         DO NS=1,NBCS
           L=LBCS(NS)
+          DO K=1,KC
             CONQ(L,K)=0.5*(3.*CON(L,K)-CON1(L,K))  
           ENDDO  
         ENDDO  
@@ -354,20 +344,15 @@ C     &        -(QWR(NWR)+QWRSERT(NQSTMP))
         ENDIF  
 
         ! *** GROUNDWATER, EVAP, RAINFALL (2TL)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         IF(ISGWIE.NE.0)THEN  
-          DO L=LF,LL
+          DO L=2,LA  
             FQC(L,1)=FQC(L,1)-RIFTR(L)*CONQ(L,1)  
           ENDDO  
         ENDIF  
         
         ! *** ZONED SEEPAGE (2TL)  
         IF(ISGWIT.EQ.3)THEN  
-          DO L=LF,LL
+          DO L=2,LA
             IF(H1P(L).GT.HDRY)THEN  
               FQC(L,1)=FQC(L,1)-RIFTR(L)*CONQ(L,1)
             ENDIF 
@@ -378,12 +363,12 @@ c
         IF(M.EQ.2)THEN 
            
           IF(ISTOPT(2).EQ.0.OR.ISTOPT(2).EQ.3)THEN  
-            DO L=LF,LL
+            DO L=2,LA  
               FQC(L,KC)=FQC(L,KC)+RAINT(L)*TEMO*DXYP(L)  
             ENDDO  
           ENDIF  
           IF(ISTOPT(2).EQ.1.OR.ISTOPT(2).EQ.2.OR.ISTOPT(2).EQ.4)THEN  
-            DO L=LF,LL
+            DO L=2,LA  
               FQC(L,KC)=FQC(L,KC)+RAINT(L)*TATMT(L)*DXYP(L)  
               FQCPAD(L,KC)=FQCPAD(L,KC)+RAINT(L)*TATMT(L)*DXYP(L)
               QSUMPAD(L,KC)=QSUMPAD(L,KC)+RAINT(L)*DXYP(L)
@@ -392,13 +377,11 @@ c
         ENDIF  
         IF(M.EQ.2)THEN  
           IF(ISTOPT(2).EQ.0)THEN  
-            DO L=LF,LL
+            DO L=2,LA  
               FQC(L,KC)=FQC(L,KC)-EVAPSW(L)*CONQ(L,KC)  
             ENDDO  
           ENDIF  
         ENDIF  
-c
-      enddo
       ENDIF 
 C
 C *********************************************************************C

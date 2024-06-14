@@ -85,6 +85,16 @@ C
       !REAL,SAVE ::    PTIME
       !REAL,SAVE ::    PMCTOL
       REAL            K_ABOVE
+      REAL WQCHLS_ABOVE
+      REAL TSSS_ABOVE
+      REAL POMS_ABOVE
+      REAL EXPBOT
+      REAL CSHE
+      WQCHLS_ABOVE = 0.0
+      TSSS_ABOVE = 0.0
+      POMS_ABOVE = 0.0
+      EXPBOT = 0.0
+      CSHE = 0.0
 C
       IF(.NOT.ALLOCATED(NETRAD))THEN
         ALLOCATE(NETRAD(LCM,KCM))
@@ -260,22 +270,14 @@ CPMC      DELT=DT2
 
       IF(ISTOPT(2).EQ.1)THEN  
         ! *** FULL HEAT BALANCE WITH ATMOSPHERIC LINKAGE
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& SVPW,CLDFAC,RAN,FW,RE,RC,
-!$OMP& RB,TFAST,TFAST1,TSLOW,TSLOW1,
-!$OMP& RSN,C2,UBED,VBED,USPD,TMPVAL,
-!$OMP& C1)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
 
-        ! NET HEAT FLUX = RSN+RAN-RB-RE-RC  (WATT/M2)
-        DO L=LF,LL
-          ! *** SET UP MIN DEPTH
+        ! *** SET UP MIN DEPTH
+        DO L=2,LA  
           HDEP(L)=MAX(HP(L),0.)  
+        ENDDO
         
-
+        ! NET HEAT FLUX = RSN+RAN-RB-RE-RC  (WATT/M2)
+        DO L=2,LA  
           SVPW=(10.**((0.7859+0.03477*TEM(L,KC))/  
      &          (1.+0.00412*TEM(L,KC))))  
 
@@ -315,14 +317,14 @@ CPMC      DELT=DT2
           TSLOW=SWRATNS*(Z(KC)-1.)
           TSLOW1=SWRATNS*(Z(KC-1)-1.)
           IF(FSWRATF.LT.1.)THEN
-            DO L=LF,LL
+            DO L=2,LA  
               RSN=SOLSWRT(L)*  
      &           (    FSWRATF*(EXP(TFAST*HDEP(L))-EXP(TFAST1*HDEP(L)))  
      &          +(1.-FSWRATF)*(EXP(TSLOW*HDEP(L))-EXP(TSLOW1*HDEP(L))))    
               NETRAD(L,KC)=NETRAD(L,KC)+RSN
             ENDDO
           ELSE
-            DO L=LF,LL
+            DO L=2,LA  
               RSN=SOLSWRT(L)*(1.-EXP(TFAST1*HDEP(L)))  
               NETRAD(L,KC)=NETRAD(L,KC)+RSN
             ENDDO
@@ -337,14 +339,14 @@ CPMC      DELT=DT2
               IF(FSWRATF.LT.1.)THEN
                 TSLOW=SWRATNS*(Z(K)-1.)
                 TSLOW1=SWRATNS*(Z(K-1)-1.)
-                DO L=LF,LL
+                DO L=2,LA  
                   RSN=SOLSWRT(L)*   
      &             (    FSWRATF*(EXP(TFAST*HDEP(L))-EXP(TFAST1*HDEP(L)))  
      &           +(1.-FSWRATF)*(EXP(TSLOW*HDEP(L))-EXP(TSLOW1*HDEP(L))))    
                   NETRAD(L,K)=RSN
                 ENDDO  
               ELSE
-                DO L=LF,LL
+                DO L=2,LA  
                   RSN=SOLSWRT(L)*
      &               (EXP(TFAST*HDEP(L))-EXP(TFAST1*HDEP(L)))
                   NETRAD(L,K)=RSN
@@ -357,7 +359,7 @@ CPMC      DELT=DT2
           TFAST=SWRATNF*(Z(0)-1.)
           IF(FSWRATF.LT.1.)THEN
             TSLOW=SWRATNS*(Z(0)-1.)
-            DO L=LF,LL
+            DO L=2,LA  
               UBED=0.5*( U(L,1)+U(L+1,1) )  
               VBED=0.5*( V(L,1)+V(LNC(L),1) )  
               USPD=SQRT( UBED*UBED+VBED*VBED )  
@@ -372,7 +374,7 @@ CPMC      DELT=DT2
               ENDIF
             ENDDO  
           ELSE
-            DO L=LF,LL
+            DO L=2,LA  
               UBED=0.5*( U(L,1)+U(L+1,1) )  
               VBED=0.5*( V(L,1)+V(LNC(L),1) )  
               USPD=SQRT( UBED*UBED+VBED*VBED )  
@@ -393,48 +395,47 @@ CPMC      DELT=DT2
             ! *** CP  = 4179.0  Specific Heat (J / kg / degC)
             ! *** 0.2393E-6 = 1/RHO/CP
             C1=DELT*DZIC(K)*0.2393E-6
-            DO L=LF,LL
+            DO L=2,LA  
               TEM(L,K)=TEM(L,K)+HPI(L)*C1*NETRAD(L,K)  
             ENDDO  
           ENDDO  
 
           IF(ISDRY.GT.0.AND.ISTOPT(2).EQ.1)THEN  
-            DO L=LF,LL
+            DO L=2,LA  
               IF(IMASKDRY(L).EQ.1.) TEMB(L)=TATMT(L)  
             ENDDO  
           ENDIF  
   
         ELSE   ! IF(IASWRAD.EQ.1)THEN  
           
-          C1=DELT*DZIC(KC)*0.2393E-6
-          DO L=LF,LL
-            ! *** ADSORB SW SOLR RAD TO TO SURFACE LAYER
+          ! *** ADSORB SW SOLR RAD TO TO SURFACE LAYER
+          DO L=2,LA  
             NETRAD(L,KC)=NETRAD(L,KC)+SOLSWRT(L)
-            ! *** NOW FINALIZE THE TEMPERATURE 
+          ENDDO
+
+          ! *** NOW FINALIZE THE TEMPERATURE 
+          C1=DELT*DZIC(KC)*0.2393E-6
+          DO L=2,LA  
             TEM(L,KC)=TEM(L,KC)+HPI(L)*C1*NETRAD(L,KC)  
           ENDDO  
         ENDIF  
-!                
-                enddo
-!$OMP END PARALLEL DO
+
       ELSEIF(ISTOPT(2).EQ.2)THEN  
         ! *** IMPLEMENT EXTERNALLY SPECIFIED EQUILIBRIUM TEMPERATURE FORMULATION  
         TMPKC=DELT/DZC(KC)  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
+        DO ND=1,NDM
+          LF=2+(ND-1)*LDM  
+          LL=LF+LDM-1  
           DO L=LF,LL  
 ! [ GEOSR 2010.5.13
-c            TEM(L,KC)=TEM(L,KC)-TMPKC*CLOUDT(L)*HPI(L)*(TEM(L,KC)
-c     &          -TATMT(L))  
-            TEM(L,KC)=TEM(L,KC)-TMPKC*SOLSWRT(L)*HPI(L)*(TEM(L,KC)
+            TEM(L,KC)=TEM(L,KC)-TMPKC*CLOUDT(L)*HPI(L)*(TEM(L,KC)
      &          -TATMT(L))  
+c            TEM(L,KC)=TEM(L,KC)-TMPKC*SOLSWRT(L)*HPI(L)*(TEM(L,KC)
+c     &          -TATMT(L))  
 ! GEOSR 2010.5.13 ]
           ENDDO  
         ENDDO  
-!$OMP END PARALLEL DO
+
       ELSEIF(ISTOPT(2).EQ.3)THEN  
         ! *** IMPLEMENT CONSTANT COEFFICIENT EQUILIBRIUM TEMPERATURE FORMULATION  
         DTHEQT=DELT*HEQT*FLOAT(KC)  
@@ -600,13 +601,8 @@ c     &          -TATMT(L))
 
       ! *** APPLY DRY CELL CORRECTIONS
       IF(ISDRY.GT.0)THEN  
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
         DO K=1,KC  
-          DO L=LF,LL
+          DO L=2,LA  
             IF(.NOT.LMASKDRY(L))THEN
               TEM(L,K)=TATMT(L)  
               ! *** BEGIN PMC
@@ -624,11 +620,9 @@ c
             ENDIF
           ENDDO  
         ENDDO  
-c
-      enddo
       ENDIF  
 
-  600 FORMAT(4I5,2E12.4)  
+C 600 FORMAT(4I5,2E12.4)  
 
       RETURN  
       END  
@@ -710,6 +704,7 @@ c
         TDEW_F   = DEG_F(TDEW)
         TAIR_F   = DEG_F(TAIR)
         WIND_MPH = WSPD*MPS_TO_MPH
+        print*, 'WIND', WIND_MPH, WINDH, MPS_TO_MPH
         WIND_2M  = WIND_MPH*(LOG(2.0/0.003)/LOG(WINDH/0.003))
 
 ******* Shortwave Radiation
@@ -718,7 +713,7 @@ c
 
         ! *** Day of the Year
         THOUR    = (TIMEDAY-INT(TIMEDAY))*24.0
-        IDAY     =  TIMEDAY-INT(TIMEDAY/365.)*365.
+        IDAY     = INT(TIMEDAY-INT(TIMEDAY/365.)*365.,KIND(IDAY))
         IDAY     =  IDAY+INT(INT(TIMEDAY/365.)/4.)
         JDAY     = REAL(IDAY)
         PMC1     = (2.*PI*(JDAY-1.))/365.
@@ -759,8 +754,11 @@ c
         ET    = TDEW_F
         TSTAR = (ET+TDEW_F)*0.5
         BETA  = 0.255-(8.5E-3*TSTAR)+(2.04E-4*TSTAR*TSTAR)
+        print*, 'EQUILIBRIUM_TEMPERATURE', W_M2_TO_BTU_FT2_DAY, AFW,
+     &    BCONV, BFW, WIND_2M, CFW
         FW    = W_M2_TO_BTU_FT2_DAY*AFW+BCONV*BFW*WIND_2M**CFW
         CSHE  = 15.7+(0.26+BETA)*FW
+        print*, 'EQUILIBRIUM_TEMPERATURE', CSHE, BETA, FW
         RA    = 3.1872E-08*(TAIR_F+459.67)**4
         ETP   = (SRO_BR+RA-1801.0)/CSHE+(CSHE-15.7)
      .            *(0.26*TAIR_F+BETA*TDEW_F)/(CSHE*(0.26+BETA))

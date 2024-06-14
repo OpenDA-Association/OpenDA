@@ -7,7 +7,7 @@ C **  AND ENERGY BALANCES
 C  
       USE GLOBAL  
 	IMPLICIT NONE
-	INTEGER::L,LN,K,LF,LL,ithds
+	INTEGER::L,LN,K
 	REAL::DUTMP,DVTMP
       IF(ISDYNSTP.EQ.0)THEN  
         DELT=DT  
@@ -17,13 +17,7 @@ C
 C  
 C **  CALCULATE MOMENTUM AND ENERGY DISSIPATION  
 C  
-!$OMP PARALLEL DO PRIVATE(LF,LL,LN,DUTMP,DVTMP)
-!$OMP& REDUCTION(+:UUEOUT,VVEOUT,BBEOUT)
-      do ithds=0,nthds-1
-         LF=jse(1,ithds)
-         LL=jse(2,ithds)
-c
-      DO L=LF,LL
+      DO L=2,LA  
         LN=LNC(L)  
         UUEOUT=UUEOUT+0.5*DELT*SPB(L)*DXYP(L)*(U(L,1)*TBX(L)  
      &      +U(L+1,1)*TBX(L+1)-U(L,KC)*TSX(L)-U(L+1,KC)*TSX(L+1))  
@@ -31,7 +25,7 @@ c
      &      +V(LN,1)*TBX(LN)-V(L,KC)*TSY(L)-V(LN,KC)*TSX(LN))  
       ENDDO  
       DO K=1,KS  
-        DO L=LF,LL
+        DO L=2,LA  
           LN=LNC(L)  
           DUTMP=0.5*( U(L,K+1)+U(L+1,K+1)-U(L,K)-U(L+1,K) )  
           DVTMP=0.5*( V(L,K+1)+V(LN,K+1)-V(L,K)-V(LN,K) )  
@@ -43,8 +37,6 @@ c
      &        *GP*AB(L,K)*(B(L,K+1)-B(L,K))  
         ENDDO  
       ENDDO  
-c
-      enddo
       RETURN  
       END  
 

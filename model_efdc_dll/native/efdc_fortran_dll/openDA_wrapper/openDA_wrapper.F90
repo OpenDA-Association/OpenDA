@@ -82,7 +82,7 @@ module m_openda_wrapper
   integer :: dm_model_instance_count = 0  ! actual #instance
   integer :: dm_model_instance_in_memory = 0 ! index of the instance currenty in memory
 
-  logical, parameter :: debug = .false.
+  logical, parameter :: debug = .true.
   logical :: ATM_WARNING_REQUIRED = .true.
   
 contains
@@ -102,6 +102,7 @@ contains
 #endif
 
     use omp_lib
+    use mpi
     USE GLOBAL, only: TBEGIN, TCON, TIDALP, NTC, TIMEDAY, & 
          NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM,NDCSER, NCSERM, &
          NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM, &
@@ -113,7 +114,7 @@ contains
 
     ! return value
     integer(kind=c_int) :: ret_val     ! ret_val < 0: Error; ret_val == 0 success
-        
+
     !locals
     character(len=max_path_length) :: output_file_name, message_file_name
     character(len=max_path_length) :: cwd
@@ -123,39 +124,45 @@ contains
     integer :: i_number
     integer :: i
     logical :: i_open
-    
+
+    ! initialise MPI environments
+    !
+    ! NOTE: This only supports runs with maximum of 1 rank and no care has been
+    ! taken to isolate print statements to run only on the first rank.
+    call mpi_initialize
+
     ! body
     ret_val = -1
 
     ret_val = c_to_f_string(parent_directory_c, parent_directory)
-    if (ret_val /= 0) then 
+    if (ret_val /= 0) then
         print*, "ERROR: maximum path length exceeded for ", parent_directory
         return
     end if
     ret_val = c_to_f_string(template_directory_c, template_directory)
-    if (ret_val /= 0) then 
+    if (ret_val /= 0) then
         print*, "ERROR: maximum path length exceeded for ", template_directory
         return
     end if
-    
+
     dm_model_parent_dir    = trim(parent_directory)
     dm_template_model_dir  = trim(template_directory)
 
     print*, trim(dm_model_parent_dir)
     output_file_name = trim(dm_model_parent_dir) // '/model.log'
     message_file_name = trim(dm_model_parent_dir) // '/messages.log'
-    
+
     ! create new model.log
-    inquire(file = output_file_name, opened=i_open, number=i_number) 
+    inquire(file = output_file_name, opened=i_open, number=i_number)
     if (i_open .and. (i_number == dm_general_log_handle)) close(i_number)
     open(dm_general_log_handle, file=output_file_name, status = 'replace')
     write(dm_general_log_handle,'(A)') 'EFDC initialized'
 
     ! create new messages.log
-    inquire(file = message_file_name, opened=i_open, number=i_number) 
+    inquire(file = message_file_name, opened=i_open, number=i_number)
     if (i_open .and. (i_number == message_file_handle)) close(i_number)
     open(message_file_handle, file=message_file_name, status = 'replace')
-    
+
     message = "Starting EFDC run"
     call write_message(message, M_INFO)
 
@@ -184,6 +191,9 @@ contains
     if (ret_val == 0 ) then
         write(dm_general_log_handle,'(A, I2)') "integer kind: ", kind(NTC)
         write(dm_general_log_handle,'(A, I2)') "real    kind: ", kind(TIDALP)    
+        print*, 'TBEGIN, TCON =', TBEGIN, TCON  
+
+        
         TIMEDAY = TBEGIN* TCON / 86400.d0
 
         ! store sizes of time series (the global ones are redetermined each time we do a restart)
@@ -250,7 +260,8 @@ contains
     write(dm_general_log_handle,'(A)') 'EFDC destroy()'
     close(dm_general_log_handle)
     close(message_file_handle)
-    
+
+    call mpi_finalize(ret_val)
   end subroutine m_openda_wrapper_destroy_
 
   ! --------------------------------------------------------------------------
@@ -506,6 +517,7 @@ contains
 #endif
 
     use global, only : ISTRAN, IWQRST, IWQBEN, ISMRST, ISRESTI, TIMESEC, TIMEDAY, TBEGIN, IWQAGR, HP
+    use mpi
 
     
     ! return value
@@ -530,6 +542,7 @@ contains
 
            call INPUT(TITLE)
            ! Act like this is a restart
+           call MPI_DECOMPOSITION
            ISRESTI = 1
            call model_init_2    
 
@@ -818,7 +831,7 @@ contains
     !current_time = dble(state(instance)%timesec) / 86400.0d0
     current_time = real( dt * nint( state(instance)%timesec/ dt), c_double) / 86400.0d0
     ret_val = 0
-
+    
     write(dm_outfile_handle(instance), '(A,I4,A,F14.10,A)') & 
       'get_current_time( instance: ', instance, ', current_time: ' , current_time, ')'
     call flush(dm_outfile_handle(instance))
@@ -873,7 +886,7 @@ contains
            TBEGIN = state(instance)%tbegin
            TIMESEC = state(instance)%timesec
            TIMEDAY = TIMESEC/86400.0  
-           if (debug) write(dm_outfile_handle(instance), '(A, F8.3, A, I5)' ) & 
+           if (debug) write(dm_outfile_handle(instance), '(A, F9.3, A, I5)' ) & 
              "Integrating over [s] ", time_period, " #steps", nint(time_period/dt)
            call model_make_step(time_period)
            state(instance)%timesec = TIMESEC
@@ -1089,7 +1102,7 @@ contains
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4,A,I4)') 'Error in get_times_for_ei: ', ret_val, ' for ', exchange_item_id
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'get_times_for_ei( instance: ', instance, &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I8,A)') 'get_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
        if ( values_count .ge. 13 ) then
@@ -1278,7 +1291,7 @@ contains
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4)') 'Error in set_times_for_ei: ', ret_val, ' for ', exchange_item_id
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'set_times_for_ei( instance: ', instance, &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I8,A)') 'set_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),'(A,F8.4)') 'conversion_factor: ', factor
        write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
@@ -1604,7 +1617,7 @@ contains
          exchange_item_id, ' is not configured in EFDC.'
     else
        last_index = end_index - start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'get_values( exchange_item_id: ', &
+       write(dm_outfile_handle(instance),'(A,I4,A,I8,A,I8,A)') 'get_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
@@ -1709,7 +1722,7 @@ contains
          exchange_item_id, ' is not configured in EFDC.'
     else
        last_index = end_index - start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'set_values( exchange_item_id: ', &
+       write(dm_outfile_handle(instance),'(A,I4,A,I8,A,I8,A)') 'set_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
@@ -2025,7 +2038,7 @@ contains
     elseif (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_times_count_for_time_span: ', ret_val
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8)') & 
             'get_times_count_for_time_span( instance: ', instance, &
                 ', exchange_item_id: ', exchange_item_id,& 
                 ', bc_index: ', bc_index,&
@@ -2207,7 +2220,7 @@ contains
           exchange_item_id, ' not configured in EFDC.'
     else
        last_index = end_index-start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4,A)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8,A)') & 
             'get_values_for_time_span( instance', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ', bc_index ,  &
             ', layer_index: ', layer_index ,  &
@@ -2381,7 +2394,7 @@ contains
           exchange_item_id, ' not configured in EFDC.'
     else
        last_index = end_index-start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4,A)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8,A)') & 
             'set_values_for_time_span( instance', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ', bc_index ,  &
             ', start_time: ', start_time, ', end_time: ', end_time, ', values_count: ', values_count ,'):'

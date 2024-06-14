@@ -7,7 +7,7 @@ C **  CALLED ONLY ON ODD THREE TIME LEVEL STEPS
 C  
       USE GLOBAL  
       
-      REAL TTMP, SECNDS
+      REAL TTMP,T1TMP
 
       DELT=DT2  
       IF(IS2TIM.GE.1) THEN  
@@ -23,7 +23,7 @@ C
 C **  UPDATED TIME SERIES CONCENTRATION BOUNDARY CONDITIONS  
 C **  3D ADVECTI0N TRANSPORT CALCULATION  
 C  
-      TTMP=SECNDS(0.0)  
+      CALL CPU_TIME(TTMP)  
       DO NW=1,NWQV  
         IF(ISTRWQ(NW).EQ.1)THEN  
           CALL CALTRAN(ISTL_,IS2TL_,8,NW,WQV(1,1,NW),WQV(1,1,NW))  
@@ -33,26 +33,17 @@ C
       DO nsp=1,NXSP  
        CALL CALTRAN(ISTL_,IS2TL_,8,nsp+NWQV,WQVX(1,1,nsp),WQVX(1,1,nsp))  
       ENDDO  
-
-      TWQADV=TWQADV+SECNDS(TTMP)  
+      CALL CPU_TIME(T1TMP)
+      TWQADV=TWQADV+T1TMP-TTMP
 C  
 C **  CALLS TO SOURCE-SINK CALCULATIONS  
 C **  BYPASS OR INITIALIZE VERTICAL DIFFUSION CALCULATION  
 C  
       IF(KC.EQ.1) GOTO 2000  
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
-!
-      DO L=LF,LL
+      DO L=2,LA  
         HWQI(L)=1./HWQ(L)  
       ENDDO  
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
-      TTMP=SECNDS(0.0)  
+      CALL CPU_TIME(TTMP)  
 C  
 C **  VERTICAL DIFFUSION CALCULATION LEVEL 1  
 C  
@@ -323,15 +314,10 @@ C
 C **  VERTICAL DIFFUSION CALCULATION LEVEL 3  
 C  
       ELSEIF(ISWQLVL.EQ.3)THEN  
-!
-!$OMP PARALLEL DO PRIVATE(LF,LL,
-!$OMP& RCDZKK,CCUBTMP,CCMBTMP,EEB,
-!$OMP& RCDZKMK,CCLBTMP, NSP)
-                do ithds=0,nthds-1
-                  LF=jse(1,ithds)
-                  LL=jse(2,ithds)
-!
         RCDZKK=-DELT*CDZKK(1)   
+        DO ND=1,NDM  
+          LF=2+(ND-1)*LDM  
+          LL=LF+LDM-1  
           DO L=LF,LL  
             CCUBTMP=RCDZKK*HWQI(L)*AB(L,1)  
             CCMBTMP=1.-CCUBTMP  
@@ -371,6 +357,11 @@ C
               ENDDO  
             enddo
           endif  
+          !} GEOSR X-species : jgcho 2015.11.09
+        ENDDO  
+        DO ND=1,NDM  
+          LF=2+(ND-1)*LDM  
+          LL=LF+LDM-1  
           DO K=2,KS  
             RCDZKMK=-DELT*CDZKMK(K)  
             RCDZKK=-DELT*CDZKK(K)  
@@ -421,8 +412,13 @@ C
               enddo
             enddo
           endif
+          !} GEOSR X-species : jgcho 2015.11.09
+        ENDDO  
         K=KC  
         RCDZKMK=-DELT*CDZKMK(K)  
+        DO ND=1,NDM  
+          LF=2+(ND-1)*LDM  
+          LL=LF+LDM-1  
           DO L=LF,LL  
             CCLBTMP=RCDZKMK*HWQI(L)*AB(L,K-1)  
             CCMBTMP=1.-CCLBTMP  
@@ -461,6 +457,11 @@ C
               ENDDO  
             enddo
           endif
+          !} GEOSR X-species : jgcho 2015.11.09
+        ENDDO  
+        DO ND=1,NDM  
+          LF=2+(ND-1)*LDM  
+          LL=LF+LDM-1  
           DO K=KC-1,1,-1  
             DO L=LF,LL  
               WQV(L,K, 1)=WQV(L,K, 1)-CU1(L,K)*WQV(L,K+1, 1)  
@@ -496,11 +497,10 @@ C
               enddo
             enddo
           endif
-!
-                enddo !do ithds=0,nthds-1
-!$OMP END PARALLEL DO
+        ENDDO
       ENDIF  
-      TWQDIF=TWQDIF+SECNDS(TTMP)  
+      CALL CPU_TIME(T1TMP)
+      TWQDIF=TWQDIF+T1TMP-TTMP
  2000 CONTINUE  
       RETURN  
       END  

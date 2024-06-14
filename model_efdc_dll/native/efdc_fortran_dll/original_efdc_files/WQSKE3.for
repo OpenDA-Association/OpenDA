@@ -10,6 +10,7 @@ C
 C LAST MODIFIED BY YSSONG ON 24 NOVEMBER 2011
 
       USE GLOBAL  
+      USE MPI
 C
       CHARACTER*11 FLN ! character array to print growth limit and algal rate
       INTEGER   IZA ! Integer for benthic flux for anoxic env
@@ -22,6 +23,15 @@ C
       !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
       REAL WQFDGSC(2),WQFDGSCX
       !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      REAL WQVREA,WQTT1,WQTTT,WQF1NM,WQAVGIO,WQTTB,WQA1C
+      WQVREA=0.0
+      WQTTT=0.0
+      WQF1NM=0.0
+      WQAVGIO=0.0
+      WQTTB=0.0
+      WQA1C=0.0
+      WQTT1=0.0
+
       CNS1=2.718  
       NS=1  
       DO L=2,LA  
@@ -152,14 +162,14 @@ C          IWQT(L) = NINT( 4.*TWQ(L)+121.)
             ELSE  
               TIMTMP=TIMESEC/86400.  
             ENDIF  
-            WRITE(8,911) TIMTMP, L, IL(L), JL(L), K, TWQ(L)  
-            WRITE(6,600)IL(L),JL(L),K,TWQ(L)  
+            IF(MYRANK.EQ.0) WRITE(8,911) TIMTMP,L,IL(L),JL(L),K,TWQ(L)
+c            IF(MYRANK.EQ.0) WRITE(6,600)IL(L),JL(L),K,TWQ(L)
             IWQT(L)=MAX(IWQT(L),1)  
             IWQT(L)=MIN(IWQT(L),NWQTD)  
 C            STOP 'ERROR!! INVALID WATER TEMPERATURE'  
           ENDIF  
         ENDDO  
-  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)  
+  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)
   911 FORMAT(/,'ERROR: TIME, L, I, J, K, TWQ(L) = ', F10.5, 4I4, F10.4)  
 C  
 C NOTE: MRM 04/29/99  ADDED ARRAYS TO KEEP TRACK OF  
@@ -765,7 +775,7 @@ C ****  PARAM 01
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
@@ -868,7 +878,6 @@ C          DO L=2,LA
              enddo
             ENDIF
           ENDDO  
-!}
         ELSE  
           DO L=2,LA  
             WQV(L,K,1)=WQVO(L,K,1)  
@@ -891,7 +900,7 @@ C ****  PARAM 02
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
@@ -987,7 +996,7 @@ C ****  PARAM 03
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    GROWTH  BASAL METAB  PREDATION  SETTLING      TIME STEP  
@@ -1085,7 +1094,7 @@ C ****  PARAM 04
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    HYDROLYSIS  SETTLING  
@@ -1152,7 +1161,7 @@ C ****  PARAM 05
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQC5 = - (WQKLPC(L)+WQLPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQC5)  
@@ -1213,7 +1222,7 @@ C ****  PARAM 06
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQD6 = - (WQKHR(L)+WQDENIT(L))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQD6)  
@@ -1272,7 +1281,7 @@ C ****  PARAM 07
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQE7 = - (WQKRPP(L)+WQRPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQE7)  
@@ -1338,7 +1347,7 @@ C ****  PARAM 08
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQF8 = - (WQKLPP(L)+WQLPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQF8)  
@@ -1404,7 +1413,7 @@ C ****  PARAM 09
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDOP(L))  
               WQA9C = (WQFPDC*WQBMC(L) + WQFPDP*WQPRC(L)) * WQVO(L,K,1)  
@@ -1454,7 +1463,7 @@ C ****  PARAM 10
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQA10C=(WQFPIC*WQBMC(L)+WQFPIP*WQPRC(L)-WQPC(L))
      &              *WQVO(L,K,1)  
@@ -1534,7 +1543,7 @@ C ****  PARAM 11
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQI11 = - (WQKRPN(L)+WQRPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQI11)  
@@ -1603,7 +1612,7 @@ C ****  PARAM 12
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQJ12 = - (WQKLPN(L)+WQLPSET(L,1))  
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQJ12)  
@@ -1672,7 +1681,7 @@ C ****  PARAM 13
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 + DTWQO2*WQKDON(L))  
               WQA13C=(WQFNDC*WQBMC(L)+WQFNDP*WQPRC(L))*WQANCC
@@ -1726,7 +1735,7 @@ C ****  PARAM 14
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
@@ -1789,7 +1798,7 @@ C ****  PARAM 15
           DO L=2,LA  
             IZ=IWQZMAP(L,K)  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
 C  
 C DEFINITIONS    ATM DRY DEP       LOADS          VOLUMN  
@@ -1847,7 +1856,7 @@ C ****  PARAM 16
           IF(IWQSI.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQM16 = - (WQKSUA(IWQT(L)) + WQBDSET(L,1))  
                 WQKK(L) = 1.0 / (1.0 - DTWQO2*WQM16)  
@@ -1904,7 +1913,7 @@ C ****  PARAM 17
           IF(IWQSI.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+              IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQKK(L) = (WQFSID*WQBMD(L) + WQFSIP*WQPRD(L) - WQPD(L))  
      &              * WQASCD * WQVO(L,K,2)  
@@ -1966,7 +1975,7 @@ C ****  PARAM 18
         IF(ISTRWQ(18).EQ.1)THEN  
           DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 - WQO18(L))  
 C  
@@ -2009,7 +2018,7 @@ C ****  PARAM 19
         IF(ISTRWQ(19).EQ.1)THEN  
           DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-            IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
               WQKK(L) = 1.0 / (1.0 - DTWQO2*WQP19(L))  
 C  
@@ -2159,7 +2168,7 @@ C ****  PARAM 20
           IF(IWQSRP.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQT20 = - DTWQO2*WQWSSET(L,1)  
                 WQKK(L) = 1.0 / (1.0 - WQT20)  
@@ -2196,7 +2205,7 @@ C ****  PARAM 21
           IF(IWQFCB.EQ.1)THEN  
             DO L=2,LA  
 !{GeoSR, YSSONG, WQ WET/DRY, 110915
-              IF(LMASKDRY(L).AND.IWQM.GE.1)THEN
+            IF(LMASKDRY(L).OR.IWQM.GE.1)THEN
 !}
                 WQKK(L) = WQTD2FCB(IWQT(L))  
 C  
@@ -2232,6 +2241,7 @@ C
           IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
             TIME=DT*FLOAT(N)+TCON*TBEGIN  
             TIME=TIME/TCON 
+            IF(MYRANK.EQ.0)THEN
             WRITE(FLN,"('WQRTS',I2.2,'.DAT')") K
             OPEN(3,FILE=FLN,POSITION='APPEND')
             DO M=1,IWQTS
@@ -2242,6 +2252,8 @@ C
             CLOSE(3)
           ENDIF            
         ENDIF
+        ENDIF
+!}GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10
       ENDDO  
 C ----------------------------------------------------------------  
 C  
@@ -2298,7 +2310,7 @@ C COUPLING TO SEDIMENT MODEL
 C: EVALUATE DEP. FLUX USING NEW VALUES CAUSE IMPLICIT SCHEME IS USED IN  
 C  SPM  
 C  
-      IF(IWQBEN.EQ.1)THEN  
+      IF(IWQBEN.EQ.0)THEN  
         DO L=2,LA  
           IMWQZ = IWQZMAP(L,1)  
           WQDFBC(L) = SCB(L)*WQWSC(IMWQZ)*WQV(L,1,1)  
@@ -2349,7 +2361,7 @@ C
 C DIURNAL DO ANALYSIS  
 C  
       IF(NDDOAVG.GE.1)THEN  
-        OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')
         NDDOCNT=NDDOCNT+1  
         NSTPTMP=NDDOAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -2367,11 +2379,13 @@ C
           ELSE  
             TIME=TIMESEC/TCON  
           ENDIF  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1112)IL(L),JL(L),(DDOMIN(L,K),K=1,KC),  
      &          (DDOMAX(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               DDOMAX(L,K)=-1.E6  
@@ -2379,13 +2393,13 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 C  
 C LIGHT EXTINCTION ANALYSIS  
 C  
       IF(NDLTAVG.GE.1)THEN  
-        OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')
         NDLTCNT=NDLTCNT+1  
         NSTPTMP=NDLTAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -2415,11 +2429,13 @@ C
               RLIGHTC(L,K)=RMULTMP*RLIGHTC(L,K)  
             ENDDO  
           ENDDO  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1113)IL(L),JL(L),(RLIGHTT(L,K),K=1,KC),  
      &          (RLIGHTC(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               RLIGHTT(L,K)=0.  
@@ -2427,7 +2443,7 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 !{ GEOSR STOKES : YSSONG 2015.08.18      
       do nsp=1,NXSP
@@ -2446,6 +2462,7 @@ C
       
       if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
         IF(ISSTOKEX(1).EQ.1)THEN
+          IF(MYRANK.EQ.0)THEN
           do i=1,IWQTS
             WRITE(FLN,"('STOKE',I2.2,'.OUT')") i
             OPEN(1,FILE=trim(FLN),POSITION='APPEND')      ! VERTICAL VELOCITY, ALGAL-DENSITY, SOLAR RADIATION, chl-a PRINT AT EACH LAYER
@@ -2456,6 +2473,7 @@ C
      & ,(WQCHL(LWQTS(i),k),k=kc,1,-1)
             close(1)
           enddo
+          ENDIF 
         ENDIF 
       endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
  1114 FORMAT(F12.6,(E12.4))  
