@@ -401,15 +401,15 @@ public class KalmanGainStorage {
 	}
 
 	private KalmanGainVariableData[] getKalmanGainVariableData(IVector[] kalmanGainColumns, NetcdfFileWriter netcdfFileWriter, Dimension stationDimension) {
-		ITreeVector kalmanGainColumn = (ITreeVector) kalmanGainColumns[0];
+		TreeVector kalmanGainColumn = (TreeVector) kalmanGainColumns[0];
 		ArrayList<String> subTreeVectorIds = kalmanGainColumn.getSubTreeVectorIds();
 		KalmanGainVariableData[] kalmanGainVariableData = new KalmanGainVariableData[subTreeVectorIds.size()];
-		for (int j = 0; j < subTreeVectorIds.size(); j++) {
+		for (int subTreeIndex = 0; subTreeIndex < subTreeVectorIds.size(); subTreeIndex++) {
 			ArrayList<String> vectorIds = new ArrayList<>();
 			String variableId = null;
-			String subTreeVectorId = subTreeVectorIds.get(j);
+			String subTreeVectorId = subTreeVectorIds.get(subTreeIndex);
 			vectorIds.add(subTreeVectorId);
-			ITreeVector subTreeVector = kalmanGainColumn.getSubTreeVector(subTreeVectorId);
+			ITreeVector subTreeVector = kalmanGainColumn.getSubTreeVector(subTreeIndex);
 			IDimensionIndex[] dimensionIndices = subTreeVector.getDimensionIndices();
 			int[] shape = null;
 			ITreeVector dataVector = null;
@@ -442,7 +442,7 @@ public class KalmanGainStorage {
 				}
 			}
 			assert shape != null;
-			kalmanGainVariableData[j] = createKalmanGainVariableData(netcdfFileWriter, stationDimension, vectorIds, variableId, shape, dataVector);
+			kalmanGainVariableData[subTreeIndex] = createKalmanGainVariableData(netcdfFileWriter, stationDimension, vectorIds, variableId, shape, dataVector);
 		}
 		return kalmanGainVariableData;
 	}
@@ -510,7 +510,15 @@ public class KalmanGainStorage {
 		if (contains) return kalmanGainColumnForObservation.getSubTreeVector(variableId);
 		ArrayList<String> vectorIds = kalmanGainVariableDatum.getVectorIds();
 		String parentVectorId = vectorIds.get(0);
-		return kalmanGainColumnForObservation.getSubTreeVector(parentVectorId).getSubTreeVector(variableId);
+
+		TreeVector treeVector = (TreeVector) kalmanGainColumnForObservation;
+		for (int i = 0; i < treeVector.getSubTreeVectorIds().size() ; i++) {
+			ITreeVector subTreeVector = treeVector.getSubTreeVector(i);
+			if (!parentVectorId.equals(subTreeVector.getId())) continue;
+			if (!subTreeVector.getSubTreeVectorIds().contains(variableId)) continue;
+			return subTreeVector.getSubTreeVector(variableId);
+		}
+		throw new IllegalStateException("Program error: Cannot find variable " + variableId + " in Kalman Gain Storage.");
 	}
 
 	/**

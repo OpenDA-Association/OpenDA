@@ -168,6 +168,10 @@ public class TreeVector implements ITreeVector {
         throw new RuntimeException("TreeVector.getSubTreeVector(): Child " + id + " not found");
     }
 
+    public ITreeVector getSubTreeVector(int index) {
+        return subTreeVectors.get(index);
+    }
+
     public IDimensionIndex[] getDimensionIndices() {
         return dimensions;
     }

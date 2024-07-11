@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
+import org.openda.interfaces.ITreeVector;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
@@ -81,7 +82,7 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(8, kalmanGainColumnsIn.length);
 
 		String[] observationIds = kgStorageIn.getObservationIds();
-		checkKalmanGainContents(timeAsMJD, kalmanGainColumnsIn, observationIds, kgStorageIn.getTimeStampAsMjd(), kgStorageIn.getHk());
+		checkKalmanGainContents(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
 
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
@@ -89,7 +90,7 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn, kgStorageIn.getHk());
 		kgStorageOut.readKalmanGain();
 
-		checkKalmanGainContents(timeAsMJD, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds(), kgStorageOut.getTimeStampAsMjd(), kgStorageOut.getHk());
+		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
 	}
 
 	public void testReadWriteKalmanGainNetcdfCFHK() throws ParseException {
@@ -123,13 +124,37 @@ public class KalmanGainStorageTest extends TestCase {
 		}
 	}
 
-	private void checkKalmanGainContents(double timeAsMJD, IVector[] kalmanGainColumns, String[] observationIds, double timeStampFromStorage, double[][] hk) {
+	public void testReadWriteKalmanGainNetcdfCFDoubleState() {
+
+		double timeAsMJD = 60310;
+
+		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorage.nc");
+		kgStorageIn.readKalmanGain();
+
+		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
+		assertEquals(8, kalmanGainColumnsIn.length);
+
+		String[] observationIds = kgStorageIn.getObservationIds();
+		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
+
+		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageOut.setKalmanGainStorageFileName("KalmanGainStorage.nc");
+		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn, null);
+		kgStorageOut.readKalmanGain();
+
+		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
+	}
+
+	private void checkKalmanGainContents(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
 		String[] expectedObservationIds = {"WICK.waterlevel", "VLISSGN.waterlevel", "DENHDR.waterlevel", "NORTHSS.waterlevel", "DOVR.waterlevel", "SHEERNS.waterlevel", "HOEKVHLD.waterlevel", "LOWST.waterlevel"};
 		for (int i = 0; i < expectedObservationIds.length; i++) {
 			assertEquals(expectedObservationIds[i], observationIds[i]);
 		}
 
-		assertEquals(timeAsMJD, timeStampFromStorage);
+		assertEquals(timeAsMJD, kgStorageIn.getTimeStampAsMjd());
 
 		assertEquals(8, kalmanGainColumns.length);
 		IVector firstKalmanGainColumn = kalmanGainColumns[0];
@@ -169,6 +194,8 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(0.015112, values[435], delta);
 		assertEquals(-0.038791, values[436], delta);
 
+		double[][] hk = kgStorageIn.getHk();
+
 		assertEquals(8, hk.length);
 		assertEquals(8, hk[0].length);
 		for (int i = 0; i < hk.length; i++) {
@@ -176,6 +203,64 @@ public class KalmanGainStorageTest extends TestCase {
 				assertEquals(i * 10 + j, hk[i][j], 0.000001);
 			}
 		}
+	}
+
+	private void checkKalmanGainContentsDoubleState(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
+		String[] expectedObservationIds = {"WICK.waterlevel", "VLISSGN.waterlevel", "DENHDR.waterlevel", "NORTHSS.waterlevel", "DOVR.waterlevel", "SHEERNS.waterlevel", "HOEKVHLD.waterlevel", "LOWST.waterlevel"};
+		for (int i = 0; i < expectedObservationIds.length; i++) {
+			assertEquals(expectedObservationIds[i], observationIds[i]);
+		}
+
+		assertEquals(timeAsMJD, kgStorageIn.getTimeStampAsMjd());
+
+		assertEquals(8, kalmanGainColumns.length);
+		IVector firstKalmanGainColumn = kalmanGainColumns[0];
+		assertEquals(35, firstKalmanGainColumn.getSize());
+		assertTrue(firstKalmanGainColumn instanceof TreeVector);
+		TreeVector firstTreeVector = (TreeVector) firstKalmanGainColumn;
+		String id = firstTreeVector.getId();
+		assertEquals("state", id);
+		ArrayList<String> subTreeVectorIds = firstTreeVector.getSubTreeVectorIds();
+		assertEquals(3, subTreeVectorIds.size());
+
+		assertEquals("state", subTreeVectorIds.get(0));
+		TreeVector stateTreeVector = (TreeVector) firstTreeVector.getSubTreeVector("state");
+		ArrayList<String> stateSubTreeVectorIds = stateTreeVector.getSubTreeVectorIds();
+		assertEquals(1, stateSubTreeVectorIds.size());
+		assertEquals("NoiseX", stateSubTreeVectorIds.get(0));
+
+		double[] firstStateValues = stateTreeVector.getValues();
+		double delta = 0.000001;
+		assertEquals(0, firstStateValues[0], delta);
+		assertEquals(1, firstStateValues[1], delta);
+		assertEquals(2, firstStateValues[2], delta);
+		assertEquals(13, firstStateValues[13], delta);
+		assertEquals(14, firstStateValues[14], delta);
+
+		ITreeVector secondStateTreeVector = firstTreeVector.getSubTreeVector(1);
+		assertEquals("state", secondStateTreeVector.getId());
+		ArrayList<String> secondStateSubTreeVectorIds = secondStateTreeVector.getSubTreeVectorIds();
+		assertEquals(1, secondStateSubTreeVectorIds.size());
+		assertEquals("NoiseY", secondStateSubTreeVectorIds.get(0));
+
+		double[] secondStateValues = secondStateTreeVector.getValues();
+		assertEquals(120 - 0, secondStateValues[0], delta);
+		assertEquals(120 - 1, secondStateValues[1], delta);
+		assertEquals(120 - 2, secondStateValues[2], delta);
+		assertEquals(120 - 13, secondStateValues[13], delta);
+		assertEquals(120 - 14, secondStateValues[14], delta);
+
+		ITreeVector s1TreeVector = firstTreeVector.getSubTreeVector(2);
+		ArrayList<String> s1SubTreeVectorIds = s1TreeVector.getSubTreeVectorIds();
+		assertTrue(s1SubTreeVectorIds.isEmpty());
+
+		double[] s1Values = s1TreeVector.getValues();
+
+		assertEquals(-0.049176, s1Values[0], delta);
+		assertEquals(-0.018843, s1Values[1], delta);
+		assertEquals(-0.052612, s1Values[2], delta);
+		assertEquals(0.015112, s1Values[3], delta);
+		assertEquals(-0.038791, s1Values[4], delta);
 	}
 
 
