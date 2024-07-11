@@ -5,6 +5,10 @@ import org.openda.exchange.DoublesExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WandaSeawatGridDataObjectTest extends TestCase {
 	OpenDaTestSupport testData = null;
@@ -15,30 +19,28 @@ public class WandaSeawatGridDataObjectTest extends TestCase {
 		testRunDataDir = new File(testData.getTestRunDataDir(), "WandaSeawatGridDataObject");
 	}
 
-	public void test_givenWandaSeawatData_whenInitialized_thenExchangeItemsLoaded() {
-		File file = new File(testRunDataDir, "HTO_TEMP_20220531000100.ASC");
+	public void test_givenWandaSeawatData_whenInitialized_thenExchangeItemsLoaded() throws IOException {
+		File file = new File(testRunDataDir, "HTO_TEMP_");
 		WandaSeawatGridDataObject wandaSeawatGridDataObject = new WandaSeawatGridDataObject();
 		wandaSeawatGridDataObject.initialize(testRunDataDir, new String[]{file.getName()});
-		assertEquals("Exchange items all loaded", 3, wandaSeawatGridDataObject.getExchangeItemIDs().length);
-
-		Object radiiExchangeItemObject = wandaSeawatGridDataObject.getDataObjectExchangeItem("radii");
-		assertTrue(radiiExchangeItemObject instanceof DoublesExchangeItem);
-		DoublesExchangeItem radiiExchangeItem = (DoublesExchangeItem) radiiExchangeItemObject;
-		double[] radii = radiiExchangeItem.getValuesAsDoubles();
-		assertEquals("72 radii exist", 72, radii.length);
-		assertEquals("The 2nd radius is 0.7624999881", 0.7624999881, radii[1]);
-
-		Object heightsExchangeItemObject = wandaSeawatGridDataObject.getDataObjectExchangeItem("heights");
-		assertTrue(heightsExchangeItemObject instanceof DoublesExchangeItem);
-		DoublesExchangeItem heightsExchangeItem = (DoublesExchangeItem) heightsExchangeItemObject;
-		double[] heights = heightsExchangeItem.getValuesAsDoubles();
-		assertEquals("30 heights exist", 30, heights.length);
-		assertEquals("The 20th height is -298.0", -298.0, heights[19]);
+		assertEquals("Exchange items all loaded", 1, wandaSeawatGridDataObject.getExchangeItemIDs().length);
 
 		Object dataExchangeItemObject = wandaSeawatGridDataObject.getDataObjectExchangeItem("data");
 		assertTrue(dataExchangeItemObject instanceof DoublesExchangeItem);
 		DoublesExchangeItem dataExchangeItem = (DoublesExchangeItem) dataExchangeItemObject;
 		double[] values = dataExchangeItem.getValuesAsDoubles();
+		assertEquals("Data for 30 rows and 72 columns", 2160, values.length);
 		assertEquals("Get value from 20th row of 30 and 2nd column of 72", 0.10554802E+02, values[19 * 72 + 1]);
+		
+		values[1] = 123456.0;
+		dataExchangeItem.setValues(values);
+		wandaSeawatGridDataObject.finish();
+
+		File output = new File(testRunDataDir, "HTO_TEMP_20220531000100.ASC");
+		try (Stream<String> stream = Files.lines(output.toPath())) {
+			String lines = stream.collect(Collectors.joining("\n"));
+			assertTrue("Updated value present in ini file", lines.contains(" -222.0000          0.10000001E+02          0.12345600E+06          0.10000000E+02"));
+			assertTrue("Existing values present in ini file", lines.contains(" -290.0000          0.16336172E+02          0.10554955E+02          0.10028170E+02"));
+		}
 	}
 }
