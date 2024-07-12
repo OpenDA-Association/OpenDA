@@ -30,17 +30,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 			return;
 		}
 
-		String filePrefix = arguments[0];
-
-		fileNamesToFiles = new TreeMap<>();
-
-		for (File file : workingDir.listFiles()) {
-			if (!file.getName().startsWith(filePrefix)) {
-				continue;
-			}
-
-			fileNamesToFiles.putIfAbsent(file.getName(), file);
-		}
+		findFiles(workingDir, arguments[0]);
 
 		Map<String, List<Double>> keyToValues = new HashMap<>();
 		for (Map.Entry<String, File> entry : fileNamesToFiles.entrySet()) {
@@ -63,20 +53,46 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 				double height = Double.parseDouble(values[0]);
 				heights.add(height);
 
-				for (int valueIndex = FIRST_VALUE_OFFSET; valueIndex < values.length; valueIndex++) {
-					String value = values[valueIndex];
-					String key = String.format("depth%s_radius%s", height, radii.get(valueIndex - FIRST_VALUE_OFFSET));
-					List<Double> valueList = keyToValues.computeIfAbsent(key, v -> new ArrayList<>());
-					valueList.add(Double.parseDouble(value));
-
-					if (!Objects.equals(fileNamesToFiles.lastKey(), entry.getKey())) {
-						continue;
-					}
-
-					DoublesExchangeItem doublesExchangeItem = new DoublesExchangeItem(key, IExchangeItem.Role.InOut, valueList.stream().mapToDouble(Double::doubleValue).toArray());
-					exchangeItems.putIfAbsent(key, doublesExchangeItem);
-				}
+				readRow(keyToValues, entry, values, height);
 			}
+		}
+	}
+
+	private void readRow(Map<String, List<Double>> keyToValues, Map.Entry<String, File> entry, String[] values, double height) {
+		for (int valueIndex = FIRST_VALUE_OFFSET; valueIndex < values.length; valueIndex++) {
+			String value = values[valueIndex];
+			String key = String.format("depth%s_radius%s", height, radii.get(valueIndex - FIRST_VALUE_OFFSET));
+			List<Double> valueList = keyToValues.computeIfAbsent(key, v -> new ArrayList<>());
+			valueList.add(Double.parseDouble(value));
+
+			if (!Objects.equals(fileNamesToFiles.lastKey(), entry.getKey())) {
+				continue;
+			}
+
+			DoublesExchangeItem doublesExchangeItem = new DoublesExchangeItem(key, IExchangeItem.Role.InOut, valueList.stream().mapToDouble(Double::doubleValue).toArray());
+			exchangeItems.putIfAbsent(key, doublesExchangeItem);
+		}
+	}
+
+	private void findFiles(File workingDir, String filePrefix) {
+		fileNamesToFiles = new TreeMap<>();
+		
+		if (workingDir == null) {
+			return;
+		}
+		
+		File[] fileList = workingDir.listFiles();
+		
+		if (fileList == null) {
+			return;
+		}
+
+		for (File file : fileList) {
+			if (!file.getName().startsWith(filePrefix)) {
+				continue;
+			}
+
+			fileNamesToFiles.putIfAbsent(file.getName(), file);
 		}
 	}
 
@@ -86,10 +102,10 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 		}
 
 		List<Double> columns = new ArrayList<>();
-		String[] headers = lines.get(0).split("\\s+");
-		for (int headerIndex = 1; headerIndex < headers.length; headerIndex++) {
-			String header = headers[headerIndex];
-			columns.add(Double.parseDouble(header));
+		String[] columnTitles = lines.get(0).split("\\s+");
+		for (int columnTitleIndex = 1; columnTitleIndex < columnTitles.length; columnTitleIndex++) {
+			String columnTitle = columnTitles[columnTitleIndex];
+			columns.add(Double.parseDouble(columnTitle));
 		}
 		return columns;
 	}

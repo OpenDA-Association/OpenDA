@@ -70,15 +70,7 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 
 		String filePrefix = arguments[0];
 
-		TreeMap<String, File> fileNamesToFiles = new TreeMap<>();
-
-		for (File listedFile : workingDir.listFiles()) {
-			if (!listedFile.getName().startsWith(filePrefix)) {
-				continue;
-			}
-
-			fileNamesToFiles.putIfAbsent(listedFile.getName(), listedFile);
-		}
+		TreeMap<String, File> fileNamesToFiles = getFileNamesToFiles(workingDir, filePrefix);
 
 		file = fileNamesToFiles.firstEntry().getValue();
 		List<String> lines = AsciiFileUtils.readLines(file);
@@ -111,5 +103,24 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 		DoublesExchangeItem dataExchangeItem = new DoublesExchangeItem("dataExchangeItem", IExchangeItem.Role.InOut, dataArray);
 		
 		exchangeItems.put("data", dataExchangeItem);
+	}
+
+	private static TreeMap<String, File> getFileNamesToFiles(File workingDir, String filePrefix) {
+		TreeMap<String, File> fileNamesToFiles = new TreeMap<>();
+
+		File[] fileList = workingDir.listFiles();
+
+		if (fileList == null) {
+			return fileNamesToFiles;
+		}
+
+		for (File listedFile : fileList) {
+			if (!listedFile.getName().startsWith(filePrefix)) {
+				continue;
+			}
+
+			fileNamesToFiles.putIfAbsent(listedFile.getName(), listedFile);
+		}
+		return fileNamesToFiles;
 	}
 }
