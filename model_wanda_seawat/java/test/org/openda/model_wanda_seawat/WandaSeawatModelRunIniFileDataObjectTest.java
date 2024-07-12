@@ -2,14 +2,11 @@ package org.openda.model_wanda_seawat;
 
 import junit.framework.TestCase;
 import org.openda.exchange.DoubleExchangeItem;
-import org.openda.exchange.IntExchangeItem;
-import org.openda.exchange.StringExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
