@@ -123,9 +123,10 @@ Extra arguments
 ---------------
 In this section, we describe some extra arguments that can be used in the NetCDF data object. 
 
+.. _Lazy reading writing:
+
 Boolean: Lazy reading and writing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. _Lazy reading writing:
 
 The first two possible extra arguments are boolean values for lazy reading and lazy writing. When lazy
 reading is set to true, the data will only be read from the NetCDF file
