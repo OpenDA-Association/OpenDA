@@ -65,6 +65,7 @@ In OpenDA, we have implemented a variational method called 3DVar, but the most
 common is to use one of the sequential methods described below. 
 
 .. _Kalman_gain:
+
 Sequential Methods
 ==================
 
