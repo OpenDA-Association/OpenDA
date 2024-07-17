@@ -4,8 +4,9 @@
 ! ***
 
       USE GLOBAL  
+      USE MPI
 !  
-      WRITE(*,'(A)')'ZEROING Integer ARRAYS'  
+      IF(MYRANK.EQ.0) WRITE(*,'(A)')'ZEROING Integer ARRAYS'  
 !
 ! *** INTEGER ARRAYS
 !

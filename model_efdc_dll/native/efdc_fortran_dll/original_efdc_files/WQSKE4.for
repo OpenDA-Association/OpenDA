@@ -29,7 +29,8 @@ C
 C  
 C**********************************************************************C  
 C  
-      USE GLOBAL  
+      USE GLOBAL
+      USE MPI  
 C  
 C**********************************************************************C  
 C  
@@ -114,9 +115,9 @@ C MRM +++++++++ ADDED BY M. MORTON 08/05/98
               ELSE  
                 TIMTMP=TIMESEC/86400.  
               ENDIF  
-              WRITE(8,911) TIMTMP, L, IL(L), JL(L), K, TWQ(L)  
+              IF(MYRANK.EQ.0) WRITE(8,911) TIMTMP,L,IL(L),JL(L),K,TWQ(L)
 C MRM +++++++++ ADDED BY M. MORTON 07/24/98  
-              WRITE(6,600)IL(L),JL(L),K,TWQ(L)  
+c              IF(MYRANK.EQ.0) WRITE(6,600)IL(L),JL(L),K,TWQ(L)
               IWQT(L)=MAX(IWQT(L),1)  
               IWQT(L)=MIN(IWQT(L),NWQTD)  
 C          STOP 'ERROR!! INVALID WATER TEMPERATURE'  
@@ -1531,7 +1532,7 @@ C
 C DIURNAL DO ANALYSIS  
 C  
       IF(NDDOAVG.GE.1)THEN  
-        OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')
         NDDOCNT=NDDOCNT+1  
         NSTPTMP=NDDOAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -1551,11 +1552,13 @@ C
           ELSE  
             TIME=TIMESEC/TCON  
           ENDIF  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1112)IL(L),JL(L),(DDOMIN(L,K),K=1,KC),  
      &          (DDOMAX(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               DDOMAX(L,K)=-1.E6  
@@ -1564,13 +1567,13 @@ C
           ENDDO  
         ENDIF  
 C  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 C  
 C LIGHT EXTINCTION ANALYSIS  
 C  
       IF(NDLTAVG.GE.1)THEN  
-        OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')
         NDLTCNT=NDLTCNT+1  
         NSTPTMP=NDLTAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -1607,11 +1610,13 @@ C
               RLIGHTC(L,K)=RMULTMP*RLIGHTC(L,K)  
             ENDDO  
           ENDDO  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1113)IL(L),JL(L),(RLIGHTT(L,K),K=1,KC),  
      &          (RLIGHTC(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               RLIGHTT(L,K)=0.  
@@ -1620,7 +1625,7 @@ C
           ENDDO  
         ENDIF  
 C  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 C  
 C  

@@ -102,6 +102,7 @@ contains
 #endif
 
     use omp_lib
+    use mpi
     USE GLOBAL, only: TBEGIN, TCON, TIDALP, NTC, TIMEDAY, & 
          NDASER, NASERM, NDPSER, NPSERM, NDQSER, NQSERM,NDCSER, NCSERM, &
          NTOX, NSED, NSND, NWQV, NTHDS, NDQCLT, NQCTLM, &
@@ -124,6 +125,12 @@ contains
     integer :: i
     logical :: i_open
     
+    ! initialise MPI environments
+    !
+    ! NOTE: This only supports runs with maximum of 1 rank and no care has been
+    ! taken to isolate print statements to run only on the first rank.
+    call mpi_initialize
+
     ! body
     ret_val = -1
 
@@ -251,6 +258,7 @@ contains
     close(dm_general_log_handle)
     close(message_file_handle)
     
+    call mpi_finalize(ret_val)
   end subroutine m_openda_wrapper_destroy_
 
   ! --------------------------------------------------------------------------

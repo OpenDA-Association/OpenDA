@@ -3,7 +3,7 @@ C
 C CHANGE RECORD  
 C  
       USE GLOBAL  
-      
+      USE MPI
       IMPLICIT NONE
       
       CHARACTER*11 FNWQSR(40)
@@ -13,7 +13,9 @@ C
       CHARACTER*12 FNWQSRX(NXSP) ! X-species 
       INTEGER*4 nsp ! Number of x-species.
         
+      IF(MYRANK.EQ.0)THEN
       PRINT *,'WQ: READING CWQSRxx.INP - WQ CONCENTRATION TIME SERIES'
+      ENDIF
 
       ! *** DEFINE THE INPUT FILE NAMES
       DO NW = 1,NWQV
@@ -72,9 +74,9 @@ C
       STOP  
   901 CONTINUE  
       if (NXSP.gt.0) then
-        ! Deal with x-species
-        PRINT *,
-     &    'WQ: READING CWQSRX##.INP, X WQ CONCENTRATION TIME SERIES'
+      IF(MYRANK.EQ.0)THEN
+      PRINT *,'WQ: READING CWQSRX##.INP, X WQ CONCENTRATION TIME SERIES'
+      ENDIF
         DO nsp=1,NXSP
           WRITE(SNUM,'(I2.2)')nsp
           FNWQSRX(nsp)='CWQSRX'//SNUM//'.INP'

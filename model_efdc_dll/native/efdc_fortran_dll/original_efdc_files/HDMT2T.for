@@ -25,6 +25,7 @@ C
       USE GLOBAL
       USE DRIFTER
       USE WINDWAVE ,ONLY:WINDWAVEINIT,WINDWAVETUR
+      USE MPI
       INTRINSIC ISNAN
       LOGICAL ISNAN
 
@@ -315,7 +316,7 @@ C----------------------------------------------------------------------c
 C
         IF(ISCORTBC.GE.1) THEN
 C
-          IF(DEBUG)THEN
+          IF(DEBUG.AND.MYRANK.EQ.0)THEN
             IF(ISCORTBCD.GE.1)THEN
               OPEN(1,FILE='ADJSTRESSE.OUT')
               CLOSE(1,STATUS='DELETE')
@@ -519,7 +520,7 @@ C
       ENDIF
 C
 C PMC      IF(ILOGC.EQ.NTSMMT)THEN
-      IF(ILOGC.EQ.NTSPTC)THEN
+      IF(ILOGC.EQ.NTSPTC.AND.MYRANK.EQ.0)THEN  
         CLOSE(8,STATUS='DELETE')
         OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')
         IF(DEBUG)THEN
@@ -915,7 +916,7 @@ C
  6009 FORMAT('  TEMMIN=',F14.4,5X,'I,J,K=',(3I10))
 
       ! *** DSLLC
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         BTEST=.FALSE.
         LTEST=.FALSE.
         DO L=2,LA
@@ -1635,7 +1636,7 @@ C
 C----------------------------------------------------------------------C
 C
       IF(ISDRY.GE.1.AND.ISDRY.LT.98)THEN
-        IF(ICALLTP.EQ.1.AND.DEBUG)THEN
+        IF(ICALLTP.EQ.1.AND.DEBUG.AND.MYRANK.EQ.0)THEN  
           OPEN(1,FILE='ZVOLBAL.OUT',POSITION='APPEND',STATUS='UNKNOWN')
           DO LS=1,LORMAX
             IF(VOLZERD.GE.VOLSEL(LS).AND.VOLZERD.LT.VOLSEL(LS+1))THEN
@@ -2065,7 +2066,7 @@ C
 C **  OUTPUT COURANT NUMBER DIAGNOSTICS
 C
 C *** DSLLC BEGIN BLOCK
-      IF(ISINWV.GT.0.AND.DEBUG)THEN
+      IF(ISINWV.GT.0.AND.DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='CFLMAX.OUT')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='CFLMAX.OUT')
@@ -2089,7 +2090,7 @@ C**********************************************************************C
 C
 C **  OUTPUT COSMETIC VOLUME LOSSES FORM DRY CELLS
 C
-      IF(NDRYSTP.LT.0.AND.DEBUG) THEN
+      IF(NDRYSTP.LT.0.AND.DEBUG.AND.MYRANK.EQ.0) THEN  
 C
         OPEN(1,FILE='DRYLOSS.OUT')
         CLOSE(1,STATUS='DELETE')

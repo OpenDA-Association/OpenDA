@@ -5,6 +5,7 @@ C **  SUBROUTINE CALSED CALCULATES COHESIVE SEDIMENT SETTLING,
 C **  DEPOSITION AND RESUSPENSION AND IS CALLED FOR SSEDTOX  
 C  
       USE GLOBAL
+      USE MPI
 C  
 C**********************************************************************C  
 C  
@@ -1053,6 +1054,7 @@ CDIAG  104 FORMAT(' N,NS,I,J,SEDBMN,SEDBSMN = ',4I5,4E13.4)
 CDIAG  105 FORMAT(' N,NS,I,J,SEDFMX,SEDFSMX = ',4I5,4E13.4)       
 CDIAG  106 FORMAT(' N,NS,I,J,SEDFMN,SEDFSMN = ',4I5,4E13.4)       
 C
+        IF(DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='NEGSEDSND.OUT',POSITION='APPEND')
 C
         DO NS=1,NSED
@@ -1060,7 +1062,8 @@ C
             DO L=2,LA
               IF(SED(L,K,NS).LT.-1.0)THEN
                 WRITE(1,107)TIME,NS,IL(L),JL(L),K,SED(L,K,NS)
-                PAUSE
+                PRINT *, "Application suspended. Hit ENTER to continue"
+                READ(*,*)
               ENDIF
             ENDDO
             ENDDO
@@ -1071,12 +1074,14 @@ C
             IF(SEDB(L,KBT(L),NS).LT.0.)THEN
               WRITE(1,108)TIME,NS,IL(L),JL(L),KBT(L),SEDB(L,KBT(L),NS),
      &             SEDF(L,0,NS)
-              PAUSE
+              PRINT *, "Application suspended. Hit ENTER to continue"
+              READ(*,*)
             ENDIF
           ENDDO
         ENDDO
 C
         CLOSE(1)
+        ENDIF
 C
 C **  ACCUMULATE NET POSTIVE AND NEGATIVE COHESIVE SEDIMENT FLUXES
 C

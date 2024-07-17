@@ -4,8 +4,9 @@ SUBROUTINE VARZEROReal
 !C ***
 
       USE GLOBAL  
+      USE MPI
 !C  
-      WRITE(*,'(A)')'ZEROING REAL ARRAYS'  
+      IF(MYRANK.EQ.0) WRITE(*,'(A)')'ZEROING REAL ARRAYS'  
 
 !C
 !C *** REAL ARRAYS

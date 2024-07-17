@@ -4,6 +4,7 @@ C **  SUBROUTINE CELLMAP GENERATES CELL MAPPINGS
 C CHANGE RECORD  
 C  
       USE GLOBAL  
+      USE MPI
 C  
 C **  SET 1D CELL INDEX SEQUENCE AND MAPPINGS  
 C  
@@ -24,7 +25,7 @@ C          IF(IJCT(I,J).EQ.9) WRITE(1,1616)I,J
       ENDDO  
       LA=L-1  
       LCTT=L  
-      IF(LCTT.NE.LC)THEN  
+      IF(LCTT.NE.LC.AND.MYRANK.EQ.0)THEN  
         WRITE(6,1617)LCTT,LC  
         WRITE(7,1617)LCTT,LC  
         WRITE(8,1617)LCTT,LC  
@@ -35,8 +36,8 @@ C          IF(IJCT(I,J).EQ.9) WRITE(1,1616)I,J
       JL(1)=0  
       JL(LC)=0  
 c      WRITE(1,601)LA  
-      WRITE(7,601)LA  
-      WRITE(8,601)LA  
+      IF(MYRANK.EQ.0) WRITE(7,601)LA  
+      IF(MYRANK.EQ.0) WRITE(8,601)LA  
 c      CLOSE(1)  
   601 FORMAT('  LA=',I10,//)  
  1616 FORMAT(2I10)  
@@ -74,8 +75,8 @@ c      CLOSE(1)
         LALT=L-1  
         LCLT=L  
       ENDIF  
-      WRITE(7,1616)LALT,LCLT  
-      WRITE(8,1616)LALT,LCLT  
+      IF(MYRANK.EQ.0) WRITE(7,1616)LALT,LCLT  
+      IF(MYRANK.EQ.0) WRITE(8,1616)LALT,LCLT  
 C  
 C **  ASSIGN RED AND BLACK CELL SEQUENCES  (PMC - NOT FUNCTIONAL)
 C  
@@ -104,31 +105,37 @@ C
         ELSE  
           LNC(L)=LIJ(I,J+1)  
         ENDIF  
+!        IF(LNC(L).EQ.0) LNC(L)=LC
         IF(IJCT(I,J-1).EQ.9)THEN  
           LSC(L)=LC  
         ELSE  
           LSC(L)=LIJ(I,J-1)  
         ENDIF  
+!        IF(LSC(L).EQ.0) LSC(L)=LC 
         IF(IJCT(I+1,J+1).EQ.9)THEN  
           LNEC(L)=LC  
         ELSE  
           LNEC(L)=LIJ(I+1,J+1)  
         ENDIF  
+!        IF(LNEC(L).EQ.0) LNEC(L)=LC
         IF(IJCT(I-1,J+1).EQ.9)THEN  
           LNWC(L)=LC  
         ELSE  
           LNWC(L)=LIJ(I-1,J+1)  
         ENDIF  
+!        IF(LNWC(L).EQ.0) LNWC(L)=LC
         IF(IJCT(I+1,J-1).EQ.9)THEN  
           LSEC(L)=LC  
         ELSE  
           LSEC(L)=LIJ(I+1,J-1)  
         ENDIF  
+!        IF(LSEC(L).EQ.0) LSEC(L)=LC
         IF(IJCT(I-1,J-1).EQ.9)THEN  
           LSWC(L)=LC  
         ELSE  
           LSWC(L)=LIJ(I-1,J-1)  
         ENDIF  
+!        IF(LSWC(L).EQ.0) LSWC(L)=LC
       ENDDO  
 C  
 C **  MODIFY NORTH-SOUTH CELL MAPPING FOR PERIOD GRID IN N-S DIRECTION  

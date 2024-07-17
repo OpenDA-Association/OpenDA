@@ -220,6 +220,7 @@
 		<File RelativePath=".\original_efdc_files\LSQHARM.for"/>
 		<File RelativePath=".\original_efdc_files\LUBKSB.for"/>
 		<File RelativePath=".\original_efdc_files\LUDCMP.for"/>
+		<File RelativePath=".\original_efdc_files\MPI.f90"/>
 		<File RelativePath=".\original_efdc_files\NEGDEP.for"/>
 		<File RelativePath=".\original_efdc_files\OILCHEM.for"/>
 		<File RelativePath=".\original_efdc_files\OUT3D.for"/>
