@@ -873,7 +873,7 @@ contains
            TBEGIN = state(instance)%tbegin
            TIMESEC = state(instance)%timesec
            TIMEDAY = TIMESEC/86400.0  
-           if (debug) write(dm_outfile_handle(instance), '(A, F8.3, A, I5)' ) & 
+           if (debug) write(dm_outfile_handle(instance), '(A, F9.3, A, I5)' ) & 
              "Integrating over [s] ", time_period, " #steps", nint(time_period/dt)
            call model_make_step(time_period)
            state(instance)%timesec = TIMESEC
@@ -1089,7 +1089,7 @@ contains
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4,A,I4)') 'Error in get_times_for_ei: ', ret_val, ' for ', exchange_item_id
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'get_times_for_ei( instance: ', instance, &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I8,A)') 'get_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
        if ( values_count .ge. 13 ) then
@@ -1278,7 +1278,7 @@ contains
     if (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2,A,I4)') 'Error in set_times_for_ei: ', ret_val, ' for ', exchange_item_id
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A)') 'set_times_for_ei( instance: ', instance, &
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I8,A)') 'set_times_for_ei( instance: ', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ' , bc_index, ', values_count: ', values_count ,')'
        write(dm_outfile_handle(instance),'(A,F8.4)') 'conversion_factor: ', factor
        write(dm_outfile_handle(instance),*) times(1:min(9,values_count))
@@ -1604,7 +1604,7 @@ contains
          exchange_item_id, ' is not configured in EFDC.'
     else
        last_index = end_index - start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'get_values( exchange_item_id: ', &
+       write(dm_outfile_handle(instance),'(A,I4,A,I8,A,I8,A)') 'get_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
@@ -1709,7 +1709,7 @@ contains
          exchange_item_id, ' is not configured in EFDC.'
     else
        last_index = end_index - start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A)') 'set_values( exchange_item_id: ', &
+       write(dm_outfile_handle(instance),'(A,I4,A,I8,A,I8,A)') 'set_values( exchange_item_id: ', &
             exchange_item_id, ', start_index: ' , start_index, ', end_index: ', end_index,  '):'
        write(dm_outfile_handle(instance),*) values(1:min(9,last_index))
        if ( last_index .ge. 13 ) then
@@ -2025,7 +2025,7 @@ contains
     elseif (ret_val < 0) then
        write(dm_outfile_handle(instance),'(A,I2)') 'Error in get_times_count_for_time_span: ', ret_val
     else
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8)') & 
             'get_times_count_for_time_span( instance: ', instance, &
                 ', exchange_item_id: ', exchange_item_id,& 
                 ', bc_index: ', bc_index,&
@@ -2207,7 +2207,7 @@ contains
           exchange_item_id, ' not configured in EFDC.'
     else
        last_index = end_index-start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4,A)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8,A)') & 
             'get_values_for_time_span( instance', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ', bc_index ,  &
             ', layer_index: ', layer_index ,  &
@@ -2381,7 +2381,7 @@ contains
           exchange_item_id, ' not configured in EFDC.'
     else
        last_index = end_index-start_index+1
-       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I4,A)') & 
+       write(dm_outfile_handle(instance),'(A,I4,A,I4,A,I4,A,F8.2,A,F8.2,A,I8,A)') & 
             'set_values_for_time_span( instance', instance, &
             ', exchange_item_id: ', exchange_item_id, ', bc_index: ', bc_index ,  &
             ', start_time: ', start_time, ', end_time: ', end_time, ', values_count: ', values_count ,'):'

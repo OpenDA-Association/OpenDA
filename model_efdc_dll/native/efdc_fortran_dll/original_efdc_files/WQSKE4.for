@@ -123,7 +123,7 @@ C          STOP 'ERROR!! INVALID WATER TEMPERATURE'
             ENDIF  
           ENDDO  
 C  
-  600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)  
+C 600 FORMAT(' I,J,K,TEM = ',3I5,E13.4)
   911 FORMAT(/,'ERROR  ',
      &    'TIME, L, I, J, K, TWQ(L) = ', F10.5, 4I4, F10.4)  
 C  

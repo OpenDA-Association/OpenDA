@@ -40,7 +40,7 @@ C
         ENDDO  
         CLOSE(1)  
       ENDIF  
-   90 FORMAT(I5, 18E12.4)  
+C  90 FORMAT(I5, 18E12.4)  
   999 FORMAT(1X)  
       RETURN  
       END  

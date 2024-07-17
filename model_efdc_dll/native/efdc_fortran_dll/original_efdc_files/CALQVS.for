@@ -706,14 +706,14 @@ C
       ENDIF  
   101 FORMAT('  SOURCE/SINK DIAGNOSTICS AT TIME STEP =',I8,//)  
   102 FORMAT(3X,'CONST NQSIJ SOURCE/SINK FLOW AT I =',I5,' J =',I5,/)  
-  103 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K,1) = ',E12.4,  
-     &    5X,'CQS(K,5) = ',E12.4)  
-  203 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K, ) = ',  
-     &    5X, 12E12.4)  
+C 103 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K,1) = ',E12.4,  
+C    &    5X,'CQS(K,5) = ',E12.4)  
+C 203 FORMAT(5X,'K =',I5,5X,'QSS(K) = ',E12.4,5X,'CQS(K, ) = ',  
+C    &    5X, 12E12.4)  
   104 FORMAT(/)  
   105 FORMAT(3X,'TIME VAR NQSIJ SOURCE/SINK FLOW AT I =',I5,' J=',I5,/)  
-  106 FORMAT(5X,'K =',I5,5X,'QSERT(K) = ',E12.4,  
-     &    5X,'CSERT(K,1) = ',E12.4,5X,'CSERT(K,5) = ',E12.4)  
+C 106 FORMAT(5X,'K =',I5,5X,'QSERT(K) = ',E12.4,  
+C    &    5X,'CSERT(K,1) = ',E12.4,5X,'CSERT(K,5) = ',E12.4)  
   206 FORMAT(5X,'NQ,LQ     =',2I4,7X,'QSERT() = ',12E12.4)  
   207 FORMAT(5X,'NQ,NT,NCQ =',3I4,3X,'CSERT() = ',12E12.4)  
   216 FORMAT(5X,'NQ,LQ =',2I4,3X,'QSS() = ',12E12.4)  

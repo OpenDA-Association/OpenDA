@@ -12,6 +12,7 @@ C
 C      PARAMETER (CONV1=1.0E3,CONV2=8.64E4)  PMC Single Line
       CHARACTER TITLE(5)*79, CCMRM*1  
       CHARACTER LINE*255
+      CHARACTER FMTSTR*80
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::XDSL  
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::XPSL  
       REAL      WQTDTEMP(1000),CONV1,CONV2,WQDIUDT,XC,XP,XPC,XPD,XPG
@@ -321,9 +322,9 @@ C PMC      IF(MOD(IWQTSDT,IWQDT).NE.0)
 C PMC     &    STOP 'ERROR!! IWQTSDT SHOULD BE MULTIPLE OF IWQDT'  
   999 FORMAT(1X)  
    90 FORMAT(A79)  
-   91 FORMAT(10I8)  
-   92 FORMAT(10F8.4)  
-   93 FORMAT(I8,3F8.4)  
+C  91 FORMAT(10I8)  
+C  92 FORMAT(10F8.4)  
+C  93 FORMAT(I8,3F8.4)  
    94 FORMAT(2I5, 13I5, /, 10X, 9I5)  
    95 FORMAT(A254)  
    80 FORMAT(A50)  
@@ -802,7 +803,7 @@ C
         IF(WTEMP.GT.WQTMD2)THEN  
           WQTDGP(M) = EXP(-WQKG2P*(WTEMP-WQTMP2)*(WTEMP-WQTMP2) )  
         ENDIF  
-  555 FORMAT(F7.2,4E12.4)  
+C 555 FORMAT(F7.2,4E12.4)  
         WQTDRC(M) = EXP( WQKTBC*(WTEMP-WQTRC) )  
         WQTDRD(M) = EXP( WQKTBD*(WTEMP-WQTRD) )  
         WQTDRG(M) = EXP( WQKTBG*(WTEMP-WQTRG) )  
@@ -1707,12 +1708,12 @@ C ***     MG/L FOR 1-19, TAM-MOLES/L, AND FCB-MPN/L
       ENDIF  
   294 FORMAT(2I4,2I3, 7F8.3, /, 14X, 7F8.3, /, 14X, 8F8.3)  
   295 FORMAT(44X, A50)  
-   96 FORMAT(2I5, 13I5, /, 10X, 8I5)  
+C  96 FORMAT(2I5, 13I5, /, 10X, 8I5)  
   969 FORMAT(2I4,1X,21I3)  
   970 FORMAT(1X,21I3)  
    97 FORMAT(2I4, 6F8.3, /, 8X, 7F8.3, /, 8X, 8F8.3)  
-   98 FORMAT(6F8.4, /, 7F8.4, /, 8F8.4)  
-   99 FORMAT(7F8.4, /, 7F8.4, /, 8F8.4)  
+C  98 FORMAT(6F8.4, /, 7F8.4, /, 8F8.4)  
+C  99 FORMAT(7F8.4, /, 7F8.4, /, 8F8.4)  
    21 FORMAT(A27, 1P, 4E11.3)  
   981 FORMAT(A27, 1P, 3E11.3)  
    23 FORMAT(A46, I5)  
@@ -2205,16 +2206,18 @@ C INITIALIZE
               write(1,'(a,a)') 'VERTICAL VELOCITY, ALGAL-DENSITY,'
      &             ,' SOLAR RADIATION, chl-a PRINT AT EACH LAYER'
               write(1,'(a,i4,a,i4)') 'I=',iww(i),'   J=',jww(i)
-              write(1,7111) '          tm'
-     & ,((('vel_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
-     & ,((('den_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
-     & ,((('sol_',nsp,'_',k),nsp=1,NXSP),k=KC,1,-1)
-     & ,(('chl_',k),k=KC,1,-1)
+              write(FMTSTR,
+     &'("(a,3(",I0,"(",I0,"(3x,a,i2.2,a,i2.2))),",I0,"(6x,a,i2.2))")')
+     &KC,NXSP,KC
+              write(1,FMTSTR) '          tm'
+     & ,(('vel_',nsp,'_',k,nsp=1,NXSP),k=KC,1,-1)
+     & ,(('den_',nsp,'_',k,nsp=1,NXSP),k=KC,1,-1)
+     & ,(('sol_',nsp,'_',k,nsp=1,NXSP),k=KC,1,-1)
+     & ,('chl_',k,k=KC,1,-1)
               CLOSE(1)
           enddo
         ENDIF
       ENDIF
- 7111 format(a, 3(<kc>(<NXSP>(3x,a,i2.2,a,i2.2))),<kc>(6x,a,i2.2) )
 !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
       if (IWQDGSTOX.eq.1) then
         PRINT *,'WQ: READING WQDGSTOX.INP - DG Salt TOX Control'
