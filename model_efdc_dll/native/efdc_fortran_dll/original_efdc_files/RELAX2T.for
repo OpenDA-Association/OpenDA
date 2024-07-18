@@ -15,6 +15,8 @@ C **  MAXIMUM.
 C  
       USE GLOBAL  
       USE MPI
+      REAL RPT
+      RPT=0.0
       RJ2=RP  
 C  
 C      PAVG=0.0  

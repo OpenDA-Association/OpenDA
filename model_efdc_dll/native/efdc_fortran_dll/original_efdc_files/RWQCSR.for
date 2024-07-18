@@ -8,8 +8,8 @@ C
       
       CHARACTER*11 FNWQSR(40)
       CHARACTER*2  SNUM
-      INTEGER*4    I,NT,NW,IS,NS,ISO,ISTYP,K,M,M1,M2,LL,L,NSID
-      REAL         RMULADJ,ADDADJ,CSERTMP,TIME,TDIFF,WTM1,WTM2
+      INTEGER*4    NT,NW,IS,NS,ISO,ISTYP,K,M
+      REAL         RMULADJ,ADDADJ,CSERTMP
       CHARACTER*12 FNWQSRX(NXSP) ! X-species 
       INTEGER*4 nsp ! Number of x-species.
         

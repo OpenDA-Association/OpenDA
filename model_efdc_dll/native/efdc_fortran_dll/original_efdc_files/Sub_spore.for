@@ -7,6 +7,8 @@ C
       USE GLOBAL
       
       INTEGER    ICYAM
+      REAL WQKESS1
+      WQKESS1=0.0
       
 !      ITM=(NAT*3600)/(DT*NWQKDPT)
       

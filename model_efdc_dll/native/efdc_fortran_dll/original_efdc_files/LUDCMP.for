@@ -5,6 +5,8 @@ C
       PARAMETER (TINY=1.0E-20)  
       DIMENSION A(NP,NP),INDX(N)  
       REAL,ALLOCATABLE,DIMENSION(:)::VV  
+      INTEGER IMAX
+      IMAX=0
       ALLOCATE(VV(N))  
 C  
       D=1.  

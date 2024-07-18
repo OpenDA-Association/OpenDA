@@ -444,7 +444,15 @@
 !} GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
       ISICE=0  !{GeoSR, 2015.01.15 JHLEE, NEGATIVE WATER TEMPERATURE PROBLEM
 !  x-species
+      NNN=0
       IWQBENOX=0
       TIME_NUM=0
       IBIN_TYPE=0
+
+      N1_1D      =0
+      NLOE_TMP   =0
+      NLON_TMP   =0
+      NLOS_TMP   =0
+      NLOW_TMP   =0
+
       END

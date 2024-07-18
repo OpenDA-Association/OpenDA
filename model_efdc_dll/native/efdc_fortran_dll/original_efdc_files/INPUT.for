@@ -32,6 +32,7 @@ C
       CHARACTER*3  NCARD  
       CHARACTER    CCMRM*1, ADUMMY*5                                         !  EJH
       LOGICAL PARSE_LOGICAL, status  
+      LOGICAL lwd, le2
       REAL,ALLOCATABLE,DIMENSION(:)::RMULADS  
       REAL,ALLOCATABLE,DIMENSION(:)::ADDADS 
       INTEGER      IPMC 

@@ -30,7 +30,17 @@ C
 C**********************************************************************C  
 C  
       USE GLOBAL
-      USE MPI  
+      REAL WQVREA,WQTT1,WQTTT,WQF1NM,WQAVGIO,WQTTB,WQA1C,WQKESS1
+      INTEGER L
+      L = 0
+      WQVREA=0.0
+      WQTTT=0.0
+      WQF1NM=0.0
+      WQAVGIO=0.0
+      WQTTB=0.0
+      WQA1C=0.0
+      WQTT1=0.0
+      WQKESS1=0.0
 C  
 C**********************************************************************C  
 C  

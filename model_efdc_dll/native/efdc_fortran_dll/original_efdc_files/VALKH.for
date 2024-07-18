@@ -4,6 +4,7 @@ C CHANGE RECORD
 C  
       USE GLOBAL  
       USE MPI
+      VALKH=0.0
       IF(HFFDG.LE.0.02)THEN  
         VALKH=HFFDG*HFFDG  
         RETURN  
