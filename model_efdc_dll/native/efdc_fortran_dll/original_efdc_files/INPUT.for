@@ -2166,6 +2166,15 @@ C
    22 FORMAT (A80)  
    23 FORMAT (1X,A80)  
 C  
+!{ GEOSR, Check file WINDCOEFF.INP exist jgcho 2016.10.21
+      inquire (file='WINDCOEFF.INP', exist = lwd)
+      if(.not.lwd) then ! Not exist
+        ISWIND=0
+        goto 9883
+      else
+        ISWIND=1
+      endif
+!} GEOSR, Check file WINDCOEFF.INP exist jgcho 2016.10.21
 !{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.
       IF(ISWIND.EQ.1)THEN
       IF(MYRANK.EQ.0) PRINT *,'READING WINDCOEFF.INP'
