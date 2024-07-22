@@ -67,7 +67,7 @@ VARALLOC1.o  VARALLOC2.o   VARALLOC3.o   VARALLOC4.o   VARALLOC5.o VARALLOC6.o  
 CALEBI.o     CALTRANQ.o    READTOX.o     WQSKE3.o     pbm_cut.o    Sub_spore.o   WQSTOKES01.o
 
 COMPAT_OBJS = \
-drand.o FLUSH.o secnds.o
+drand.o FLUSH.o
 
 .SUFFIXES:	.for .FOR .f90 .F90 .po
 

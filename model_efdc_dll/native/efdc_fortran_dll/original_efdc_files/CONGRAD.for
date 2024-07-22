@@ -6,7 +6,7 @@ C **  GRADIENT SCHEME
 C  
       USE GLOBAL 
 
-      REAL TTMP, SECNDS
+      REAL TTMP,T1TMP
  
       ! *** DSLLC
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::TMPCG  
@@ -16,7 +16,7 @@ C
 	ENDIF
       ! *** DSLLC
 C  
-      TTMP=SECNDS(0.0)  
+      CALL CPU_TIME(TTMP)  
       RPCG=0.  
 !$OMP PARALLEL DO PRIVATE(LF,LL) REDUCTION(+:RPCG)
       do ithds=0,nthds-1
@@ -51,10 +51,8 @@ c
         PAPCG=PAPCG+APCG(L)*PCG(L)  
       ENDDO  
 
-c
       enddo
 
-c     t01=rtc()
       ALPHA=RPCG/PAPCG  
 
       RPCGN=0.  
@@ -135,7 +133,8 @@ c
 
       ENDIF
       ! *** DSLLC END BLOCK
-      TCONG=TCONG+SECNDS(TTMP)  
+      CALL CPU_TIME(T1TMP)
+      TCONG=TCONG+T1TMP-TTMP
 C 800 FORMAT(I5,8E13.4)  
   808 FORMAT(2I5,9E13.4)  
       RETURN  
