@@ -153,7 +153,7 @@ SUBROUTINE SEDZLJ(L)
      SURFACE=SLLN(L) !otherwise the top layer is SLLN
   ENDIF
   D50AVG(L)=SUM(PER(1:NSCM,SURFACE,L)*D50(1:NSCM)) !calculate local d50 at sediment bed surface
-  FORALL(LL=1:KB)SEDDIA50(L,LL)=SUM(PER(1:NSCM,LL,L)*D50(1:NSCM)) !EFDC variable
+  FORALL(LL=1:KB)SEDDIA50(L,LL)=REAL(SUM(PER(1:NSCM,LL,L)*D50(1:NSCM)),KIND(SEDDIA50)) !EFDC variable
  
   ! Identify Size Class interval to use for Taucrit erosion calculation
   DO K=1,NSICM-1
@@ -355,7 +355,7 @@ SUBROUTINE SEDZLJ(L)
         TSED(LL,L)=TEMP !new layer thickness
         FORALL(K=1:NSCM)PER(K,LL,L)=TTEMP(K,L)/TSED(LL,L) !new mass fractions
      ENDIF
-     IF(IMORPH==0)HBED(L,KB+1-LL)=0.01*TSED(LL,L)/BULKDENS(LL,L)    !if there is no morphology, save the EFDC bed thickness
+     IF(IMORPH==0)HBED(L,KB+1-LL)=REAL(0.01*TSED(LL,L)/BULKDENS(LL,L),KIND(HBED))    !if there is no morphology, save the EFDC bed thickness
   ENDDO ALL_LAYERS
 
 ! DETERMINE TOTAL SEDIMENT FLUX
@@ -375,8 +375,8 @@ SUBROUTINE SEDZLJ(L)
   ! Flux calculations for EFDC
   ! Convert the BED_SED_FLX from g/cm^2 to g/m^2*s
   WDTDZ=DT*HPI(L)*DZIC(1) !Detla t over Delta z
-  SEDF(L,0,1:NSCM)=BED_SED_FLX(L,1:NSCM)*10000.0/DT !EFDC variable for sediment flux
-  SED(L,1,1:NSCM)=SEDS(L,1,1:NSCM)+(SEDF(L,0,1:NSCM)-SEDF(L,1,1:NSCM))*WDTDZ !EFDC variable for suspended sediment concentration
+  SEDF(L,0,1:NSCM)=REAL(BED_SED_FLX(L,1:NSCM)*10000.0/DT,KIND(SEDF)) !EFDC variable for sediment flux
+  SED(L,1,1:NSCM)=REAL(SEDS(L,1,1:NSCM)+(SEDF(L,0,1:NSCM)-SEDF(L,1,1:NSCM))*WDTDZ,KIND(SED)) !EFDC variable for suspended sediment concentration
   ETOTO(L)=ETOTO(L)/(DT) !total erosion rate
 
   IF(IS_TIMING)THEN  

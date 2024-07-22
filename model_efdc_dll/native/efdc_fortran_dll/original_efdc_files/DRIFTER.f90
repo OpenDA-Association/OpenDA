@@ -91,7 +91,7 @@ SUBROUTINE DRIFTERC   ! ********************************************************
 	!FLUSH(ULGR)
 	CALL FLUSH(ULGR)
 	!ykchoi]
-      TIMENEXT=TIMEDAY+LA_FREQ+0.000001  
+    TIMENEXT=REAL(TIMEDAY+LA_FREQ+0.000001,KIND(TIMENEXT))
   ENDIF
 
   !----NEXT CALL--------------------------- 
@@ -105,7 +105,7 @@ SUBROUTINE DRIFTERC   ! ********************************************************
       ALFA = (CFAY_2*CFAY_2/32.0)*(DELTARHO*G*OILVOLINI**2/sqrt(WKVISC))**(1./3.)
       IF(OSPD.EQ.1) THEN
        TRANSTIME = (CFAY_2/CFAY_1)**4 * (OILVOLINI/(G*DELTARHO*WKVISC))**(1./3.)
-       DIFFCOEF  = ALFA*(1/SQRT(TRANSTIME))
+       DIFFCOEF  = REAL(ALFA*1/SQRT(TRANSTIME), KIND(DIFFCOEF))
        ALFA_OLD  = ALFA
        OSPD=0
 	  ELSE
@@ -315,7 +315,7 @@ SUBROUTINE DRIFTERC   ! ********************************************************
 	!FLUSH(ULGR)
 	CALL FLUSH(ULGR)
 	!ykchoi]
-    TIMENEXT = TIMENEXT+LA_FREQ
+    TIMENEXT = REAL(TIMENEXT+LA_FREQ,KIND(TIMENEXT))
   ENDIF  
 END SUBROUTINE
  
