@@ -282,6 +282,7 @@ contains
           CSER(1:n,1:k,1:m,:)= CSER_orig
                   
           deallocate(TCSER_orig, CSER_orig)
+          ndcser_max= NDCSER
           
           !ALLOCATE(CSERT_EFDC(KCM,0:NCSERM,NSTVM))
           !ALLOCATE(MCTLAST(NCSERM,NSTVM))
