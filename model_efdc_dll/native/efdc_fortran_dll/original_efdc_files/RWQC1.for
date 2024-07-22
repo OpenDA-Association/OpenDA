@@ -2753,6 +2753,15 @@ C
         ENDIF  
         CLOSE(1)  
       ENDIF        
+
+!      IF(ISCYANO.EQ.1)THEN
+!        OPEN(1,FILE='CYANO.OUT')  
+!        CLOSE(1,STATUS='DELETE')
+!        OPEN(1,FILE='CYANO.OUT')  
+!        CLOSE(1)
+!      ENDIF
+!} GeoSR Bentic-cyano : JHLEE 2015.10.12
+      
       IF(MYRANK.EQ.0) CLOSE(2)  
  2222 FORMAT(' M,WQKTR(1),WQTDKR(M,1) = ',I5,2F10.4)  
  2223 FORMAT(' M,I,WQKTR(1),WQTDKR(M,I) = ',2I5,2F10.4)  
