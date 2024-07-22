@@ -183,12 +183,12 @@ C----------------------------------------------------------------------C
       DATE3=DATE2+153
 
       IF(IMONTH.GE.3 .AND. IMONTH.LE.7 ) THEN
-        ITDATE=DATE2
+        ITDATE=INT(DATE2)
         IRMONTH=8
        ENDIF
 
       IF(IMONTH.GE.8 .AND. IMONTH.LE.12 ) THEN
-        ITDATE=DATE3
+        ITDATE=INT(DATE3)
         IRMONTH=13     
       ENDIF
 

@@ -158,8 +158,8 @@ SUBROUTINE SEDZLJ(L)
   ! Identify Size Class interval to use for Taucrit erosion calculation
   DO K=1,NSICM-1
      IF(D50AVG(L)>=SCND(K).AND.D50AVG(L)<SCND(K+1))THEN
-        NSCD(1)=SCND(K)
-        NSCD(2)=SCND(K+1)
+        NSCD(1)=INT(SCND(K))
+        NSCD(2)=INT(SCND(K+1))
         NSC0=K
         NSC1=K+1
         EXIT
@@ -245,8 +245,8 @@ SUBROUTINE SEDZLJ(L)
      ! Find upper and lower limits of size classes on mean bed diameter
      DO K=1,NSICM-1
         IF(D50AVG(L)>=SCND(K).AND.D50AVG(L)<SCND(K+1))THEN
-           NSCD(1)=SCND(K)
-           NSCD(2)=SCND(K+1)
+           NSCD(1)=INT(SCND(K))
+           NSCD(2)=INT(SCND(K+1))
            NSC0=K
            NSC1=K+1
            EXIT
