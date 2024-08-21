@@ -490,8 +490,7 @@ public class KalmanGainStorage {
 		for (int i = 0; i < treeVector.getSubTreeVectorIds().size() ; i++) {
 			ITreeVector subTreeVector = treeVector.getSubTreeVector(i);
 			if (!parentVectorId.equals(subTreeVector.getId())) continue;
-			if (!subTreeVector.getSubTreeVectorIds().contains(variableId)) continue;
-			return subTreeVector.getSubTreeVector(variableId);
+			if (subTreeVector.getSubTreeVectorIds().contains(variableId)) return subTreeVector.getSubTreeVector(variableId);
 		}
 		throw new IllegalStateException("Program error: Cannot find variable " + variableId + " in Kalman Gain Storage.");
 	}
