@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 
@@ -207,5 +208,14 @@ public class TimeUtilsTest extends TestCase {
 		//convert time step duration from MJD to model time units.
 		double timeStepDurationInModelUnits = timeStepDurationInDays * (endTime - startTime) / (endTimeMjd - startTimeMjd);
 		assertEquals(86400, timeStepDurationInModelUnits, 1e-6);
+	}
+
+	public void testNoRoundingErrorOver100Years() {
+		double[] mjdTimes = TimeUtils.dateTimeSequenceString2Mjd("200001010000,200001010100,...,210001010000");
+		for (double mjd : mjdTimes) {
+			long millisTime = TimeUtils.mjdToDate(mjd).getTime();
+			long leftOverMillisFromHour = millisTime % 3_600_000;
+			assertEquals(0, leftOverMillisFromHour);
+		}
 	}
 }
