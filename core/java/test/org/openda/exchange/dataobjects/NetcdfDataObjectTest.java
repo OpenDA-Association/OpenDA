@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.openda.exchange.NetcdfGridTimeSeriesExchangeItem;
 import org.openda.exchange.NetcdfScalarTimeSeriesExchangeItem;
 import org.openda.exchange.PointGeometryInfo;
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
@@ -101,5 +102,22 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertEquals(49, valuesEI13.length);
 		assertEquals(49, valuesEI19.length);
 		assertTrue( valuesEI13[48] - valuesEI0[48] != 0.0d);
+	}
+
+	public void testRoundingTimesToWholeSeconds() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		File testRunDataDir = new File(this.testRunDataDir, "roundingTimesToWholeSeconds");
+		dataObject.initialize(testRunDataDir, new String[]{"synthetic_wl_obs.nc", "true", "false"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertNotNull(exchangeItemIDs);
+		assertEquals(12, exchangeItemIDs.length);
+		IExchangeItem dataObjectExchangeItem = dataObject.getDataObjectExchangeItem("VLISSGN.waterlevel");
+		assertNotNull(dataObjectExchangeItem);
+		double[] times = dataObjectExchangeItem.getTimes();
+		assertEquals(633, times.length);
+		assertEquals(60310.041666666664, times[1]);
+		assertEquals("202401010100", TimeUtils.mjdToString(times[1]));
+		assertEquals(60336.333333333336, times[632]);
+		assertEquals("202401270800", TimeUtils.mjdToString(times[632]));
 	}
 }
