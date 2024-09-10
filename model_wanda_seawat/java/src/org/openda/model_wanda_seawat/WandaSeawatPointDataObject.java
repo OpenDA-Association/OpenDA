@@ -2,6 +2,7 @@ package org.openda.model_wanda_seawat;
 
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoublesExchangeItem;
+import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.io.AsciiFileUtils;
 
@@ -30,7 +31,10 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 			return;
 		}
 
-		findFiles(workingDir, arguments[0]);
+		String filePrefix = arguments[0];
+		findFiles(workingDir, filePrefix);
+
+		TimeInfo timeInfo = WandaSeawatUtils.getTimeInfo(filePrefix, fileNamesToFiles);
 
 		Map<String, List<Double>> keyToValues = new HashMap<>();
 		for (Map.Entry<String, File> entry : fileNamesToFiles.entrySet()) {
@@ -53,12 +57,12 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 				double height = Double.parseDouble(values[0]);
 				heights.add(height);
 
-				readRow(keyToValues, entry, values, height);
+				readRow(keyToValues, entry, values, height, timeInfo);
 			}
 		}
 	}
 
-	private void readRow(Map<String, List<Double>> keyToValues, Map.Entry<String, File> entry, String[] values, double height) {
+	private void readRow(Map<String, List<Double>> keyToValues, Map.Entry<String, File> entry, String[] values, double height, TimeInfo timeInfo) {
 		for (int valueIndex = FIRST_VALUE_OFFSET; valueIndex < values.length; valueIndex++) {
 			String value = values[valueIndex];
 			String key = String.format("depth%s_radius%s", height, radii.get(valueIndex - FIRST_VALUE_OFFSET));
@@ -70,6 +74,8 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 			}
 
 			DoublesExchangeItem doublesExchangeItem = new DoublesExchangeItem(key, IExchangeItem.Role.InOut, valueList.stream().mapToDouble(Double::doubleValue).toArray());
+			doublesExchangeItem.setTimeInfo(timeInfo);
+
 			exchangeItems.putIfAbsent(key, doublesExchangeItem);
 		}
 	}

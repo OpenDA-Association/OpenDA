@@ -20,6 +20,8 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 	}
 
 	public void test_givenWandaSeawatIniFile_whenInitialized_thenExchangeItemsLoaded() throws IOException {
+		// TODO: write start date time end date time according to dateformat
+		// TODO prevent new line wandaModel = .....
 		File file = new File(testRunDataDir, "example.ini");
 		WandaSeawatModelRunIniFileDataObject wandaSeawatModelRunIniFileDataObject = new WandaSeawatModelRunIniFileDataObject();
 		wandaSeawatModelRunIniFileDataObject.initialize(testRunDataDir, new String[]{file.getName()});

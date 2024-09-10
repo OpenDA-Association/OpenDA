@@ -2,6 +2,7 @@ package org.openda.model_wanda_seawat;
 
 import junit.framework.TestCase;
 import org.openda.exchange.DoublesExchangeItem;
+import org.openda.interfaces.ITimeInfo;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -31,7 +32,15 @@ public class WandaSeawatPointDataObjectTest extends TestCase {
 		DoublesExchangeItem doublesExchangeItem = (DoublesExchangeItem) exchangeItemObject;
 		assertEquals("Get first value from 20th row of 30 and 2nd column of 72", 0.10554802E+02, doublesExchangeItem.getValuesAsDoubles()[0]);
 		assertEquals("Get second value from 20th row of 30 and 2nd column of 72", 0.12345600E+02, doublesExchangeItem.getValuesAsDoubles()[1]);
-		
+
+		ITimeInfo timeInfo = doublesExchangeItem.getTimeInfo();
+		assertNotNull(timeInfo);
+
+		double[] times = timeInfo.getTimes();
+		assertEquals(2, times.length);
+		assertEquals(59729.91736111111, times[0], 0.0000001d);
+		assertEquals(59729.91805555555, times[1], 0.0000001d);
+
 		doublesExchangeItem.setValuesAsDoubles(new double[]{0.10554802E+02, 0.65432100E+02});
 		wandaSeawatPointDataObject.finish();
 

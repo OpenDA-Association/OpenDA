@@ -2,6 +2,7 @@ package org.openda.model_wanda_seawat;
 
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoublesExchangeItem;
+import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.io.AsciiFileUtils;
 
@@ -11,10 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TreeMap;
+import java.util.*;
 
 public class WandaSeawatGridDataObject extends AbstractDataObject {
 	private String header;
@@ -100,9 +98,11 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 		for (int datum = 0; datum < data.size(); datum++) {
 			dataArray[datum] = data.get(datum);
 		}
-		DoublesExchangeItem dataExchangeItem = new DoublesExchangeItem("dataExchangeItem", IExchangeItem.Role.InOut, dataArray);
-		
-		exchangeItems.put("data", dataExchangeItem);
+		String id = filePrefix + "Grid";
+		DoublesExchangeItem dataExchangeItem = new DoublesExchangeItem(id, IExchangeItem.Role.InOut, dataArray);
+		TimeInfo timeInfo = WandaSeawatUtils.getTimeInfo(filePrefix, fileNamesToFiles);
+		dataExchangeItem.setTimeInfo(timeInfo);
+		exchangeItems.put(id, dataExchangeItem);
 	}
 
 	private static TreeMap<String, File> getFileNamesToFiles(File workingDir, String filePrefix) {
