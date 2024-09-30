@@ -87,7 +87,6 @@
       <buildmodule module="model_gotm" />
       <buildmodule module="model_hspf" />
       <buildmodule module="model_metaswap"/>
-      <buildmodule module="model_nemo"/>
       <buildmodule module="model_reactive_advection"/>
       <buildmodule module="model_swan"/>
       <buildmodule module="model_wflow"/>
@@ -121,7 +120,6 @@
       <docmodule module="model_swan" />
       <docmodule module="model_wflow"/>
       <docmodule module="model_delft3d"/>
-      <docmodule module="model_nemo"/>
       <docmodule module="model_dflowfm_blackbox"/>
       <docmodule module="model_openfoam"/>
       <copy todir="${projectdoc}/javadoc" >
@@ -164,7 +162,6 @@
       <moduletests module="model_example_blackbox" />
       <moduletests module="model_external_socket"/>
       <moduletests module="model_swan" />
-      <moduletests module="model_nemo" />
       <moduletests module="model_delft3d"/>
       <moduletests module="model_reactive_advection"/>
       <moduletests module="model_dflowfm_blackbox"/>
@@ -289,7 +286,6 @@
         <cleanmodule module="model_gotm" />
         <cleanmodule module="model_hspf" />
         <cleanmodule module="model_metaswap" />
-        <cleanmodule module="model_nemo" />
         <cleanmodule module="model_reactive_advection" />
         <cleanmodule module="model_swan" />
         <cleanmodule module="model_wflow" />
@@ -368,7 +364,6 @@
 	        <zipfileset dir="model_gotm" prefix="openda_${version}/public/model_gotm" excludes="*.svn"/>
         	<zipfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
 	        <zipfileset dir="model_metaswap" prefix="openda_${version}/public/model_metaswap" excludes="*.svn"/>
-	        <zipfileset dir="model_nemo" prefix="openda_${version}/public/model_nemo" excludes="*.svn"/>
 	        <zipfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
 	        <zipfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
 	        <zipfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
@@ -487,7 +482,6 @@
   	  <tarfileset dir="model_gotm" prefix="openda_${version}/public/model_gotm" excludes="*.svn"/>
       <tarfileset dir="model_hspf" prefix="openda_${version}/public/model_hspf" excludes="*.svn"/>
 	  <tarfileset dir="model_metaswap" prefix="openda_${version}/public/model_metaswap" excludes="*.svn"/>
-	  <tarfileset dir="model_nemo" prefix="openda_${version}/public/model_nemo" excludes="*.svn"/>
 	  <tarfileset dir="model_mikeshe" prefix="openda_${version}/public/model_mikeshe" excludes="*.svn"/>
 	  <tarfileset dir="model_swan" prefix="openda_${version}/public/model_swan" excludes="*.svn" />
 	  <tarfileset dir="model_wflow" prefix="openda_${version}/public/model_wflow" excludes="*.svn"/>
@@ -785,7 +779,6 @@
        <validatexmlmodule module="model_example_blackbox"/>
        <validatexmlmodule module="model_glm" />
        <validatexmlmodule module="model_gotm" />
-       <validatexmlmodule module="model_nemo"/>
        <validatexmlmodule module="model_RainfallRunoffZhang"/>
        <validatexmlmodule module="model_reactive_advection"/>
 	   <validatexmlmodule module="model_swan"/>
