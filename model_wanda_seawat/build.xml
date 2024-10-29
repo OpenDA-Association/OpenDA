@@ -1,4 +1,4 @@
-<project xmlns:if="ant:if" name="model_wflow" default="help" basedir=".">
+<project xmlns:if="ant:if" name="model_wanda_seawat" default="help" basedir=".">
 <!--
 ================================================================================
   Ant build file for openda java code
