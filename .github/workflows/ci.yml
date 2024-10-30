@@ -30,7 +30,7 @@ jobs:
         run: bash ci_test.sh
       - name: Archive test reports
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ant-test-reports
           path: opendaTestReports
