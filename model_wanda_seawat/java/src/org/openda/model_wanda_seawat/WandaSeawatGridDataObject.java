@@ -18,10 +18,11 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 	private String header;
 	private List<Double> heights;
 	private File file;
+	private String filePrefix;
 
 	@Override
 	public void finish() {
-		DoublesExchangeItem data = (DoublesExchangeItem) exchangeItems.get("data");
+		DoublesExchangeItem data = (DoublesExchangeItem) exchangeItems.get(filePrefix + "Grid");
 		double[] values = data.getValuesAsDoubles();
 
 		if (values.length % heights.size() != 0) {
@@ -66,9 +67,13 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 			return;
 		}
 
-		String filePrefix = arguments[0];
+		String subDirString = arguments[0];
+		filePrefix = arguments[1];
+		File fileDirectory = new File(workingDir, subDirString);
 
-		TreeMap<String, File> fileNamesToFiles = getFileNamesToFiles(workingDir, filePrefix);
+		if (!fileDirectory.exists() || !fileDirectory.isDirectory()) throw new RuntimeException(fileDirectory + " does not exist or is not a directory");
+
+		TreeMap<String, File> fileNamesToFiles = getFileNamesToFiles(fileDirectory, filePrefix);
 
 		file = fileNamesToFiles.firstEntry().getValue();
 		List<String> lines = AsciiFileUtils.readLines(file);

@@ -31,8 +31,13 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 			return;
 		}
 
-		String filePrefix = arguments[0];
-		findFiles(workingDir, filePrefix);
+		String subDirString = arguments[0];
+		String filePrefix = arguments[1];
+		File fileDirectory = new File(workingDir, subDirString);
+
+		if (!fileDirectory.exists() || !fileDirectory.isDirectory()) throw new RuntimeException(fileDirectory + " does not exist or is not a directory");
+
+		findFiles(fileDirectory, filePrefix);
 
 		TimeInfo timeInfo = WandaSeawatUtils.getTimeInfo(filePrefix, fileNamesToFiles);
 
@@ -57,15 +62,15 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 				double height = Double.parseDouble(values[0]);
 				heights.add(height);
 
-				readRow(keyToValues, entry, values, height, timeInfo);
+				readRow(keyToValues, entry, values, height, timeInfo, filePrefix);
 			}
 		}
 	}
 
-	private void readRow(Map<String, List<Double>> keyToValues, Map.Entry<String, File> entry, String[] values, double height, TimeInfo timeInfo) {
+	private void readRow(Map<String, List<Double>> keyToValues, Map.Entry<String, File> entry, String[] values, double height, TimeInfo timeInfo, String filePrefix) {
 		for (int valueIndex = FIRST_VALUE_OFFSET; valueIndex < values.length; valueIndex++) {
 			String value = values[valueIndex];
-			String key = String.format("depth%s_radius%s", height, radii.get(valueIndex - FIRST_VALUE_OFFSET));
+			String key = String.format("%sdepth%s_radius%s", filePrefix, height, radii.get(valueIndex - FIRST_VALUE_OFFSET));
 			List<Double> valueList = keyToValues.computeIfAbsent(key, v -> new ArrayList<>());
 			valueList.add(Double.parseDouble(value));
 
@@ -118,6 +123,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 
 	@Override
 	public void finish() {
+		if (true) return;
 		DecimalFormat decimalFormat = new DecimalFormat(".00000000E00", new DecimalFormatSymbols(Locale.UK));
 
 		int fileCount = 0;
