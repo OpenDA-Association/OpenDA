@@ -4,13 +4,14 @@ import org.ini4j.Ini;
 import org.ini4j.Profile;
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoubleExchangeItem;
+import org.openda.exchange.timeseries.TimeSeries;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.io.AsciiFileUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 	private static final String SECTION_RUN = "run";
@@ -32,8 +33,23 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 		ini.put(SECTION_RUN, OPTION_END_DATE_TIME, TimeUtils.mjdToString(endTimeExchangeItem.getValue(), datePattern));
 		Profile.Section optionsFromParameters = ini.get(SECTION_PARAMETERS);
 		for (String option : optionsFromParameters.keySet()) {
-			DoubleExchangeItem parameterExchangeItem = (DoubleExchangeItem) exchangeItems.get(option);
-			if (parameterExchangeItem == null) continue;
+			IExchangeItem exchangeItem = exchangeItems.get(option);
+			if (exchangeItem instanceof TimeSeries) {
+				String csvFileName = optionsFromParameters.get(option);
+				double[] times = exchangeItem.getTimes();
+				double[] values = exchangeItem.getValuesAsDoubles();
+				File csvFile = new File(file.getParentFile(), csvFileName);
+				try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+					for (int i = 0; i < times.length; i++) {
+						writer.write(String.format("%s;%s", TimeUtils.mjdToString(times[i]), values[i]));
+						writer.newLine();
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				continue;
+			}
+			DoubleExchangeItem parameterExchangeItem = (DoubleExchangeItem) exchangeItem;
 			ini.put(SECTION_PARAMETERS, option, parameterExchangeItem.getValue());
 		}
 		try {
@@ -52,13 +68,35 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 			ini.load(file);
 			dateTimeExchangeItem(ini, OPTION_START_DATE_TIME, OPTION_START_DATE_TIME);
 			dateTimeExchangeItem(ini, OPTION_END_DATE_TIME, OPTION_END_DATE_TIME);
+			Profile.Section optionsFromParameters = ini.get(SECTION_PARAMETERS);
+			for (String option : optionsFromParameters.keySet()) {
+				String valueString = ini.get(SECTION_PARAMETERS, option);
+				if (valueString.endsWith(".csv")) {
+					createTimeSeriesExchangeItem(workingDir, option, valueString);
+					continue;
+				}
+				DoubleExchangeItem doubleExchangeItem = new DoubleExchangeItem(option, IExchangeItem.Role.InOut, Double.parseDouble(valueString));
+				exchangeItems.putIfAbsent(option, doubleExchangeItem);
+			}
 		} catch (IOException | ParseException exception) {
 			throw new RuntimeException(exception);
 		}
-		Profile.Section optionsFromParameters = ini.get(SECTION_PARAMETERS);
-		for (String option : optionsFromParameters.keySet()) {
-			doubleExchangeItem(ini, option, option);
+	}
+
+	private void createTimeSeriesExchangeItem(File workingDir, String option, String valueString) throws ParseException {
+		File csvFile = new File(workingDir, valueString);
+		List<String> lines = AsciiFileUtils.readLines(csvFile);
+		double[] times = new double[lines.size()];
+		double[] values = new double[lines.size()];
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			String[] split = line.split(";");
+			times[i] = TimeUtils.date2Mjd(split[0]);
+			values[i] = Double.parseDouble(split[1]);
 		}
+		TimeSeries timeSeriesExchangeItem = new TimeSeries(times, values);
+		timeSeriesExchangeItem.setId(option);
+		exchangeItems.put(option, timeSeriesExchangeItem);
 	}
 
 	private void dateTimeExchangeItem(Ini ini, String optionName, String id) throws ParseException {
@@ -67,11 +105,5 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 		DoubleExchangeItem doubleExchangeItem = new DoubleExchangeItem(id, IExchangeItem.Role.InOut, dateTime);
 		exchangeItems.putIfAbsent(id, doubleExchangeItem);
 	}
-	
-	private void doubleExchangeItem(Ini ini, String optionName, String id) {
-		String valueString = ini.get(SECTION_PARAMETERS, optionName);
-		if (valueString.endsWith(".csv")) return;
-		DoubleExchangeItem doubleExchangeItem = new DoubleExchangeItem(id, IExchangeItem.Role.InOut, Double.parseDouble(valueString));
-		exchangeItems.putIfAbsent(id, doubleExchangeItem);
-	}
+
 }

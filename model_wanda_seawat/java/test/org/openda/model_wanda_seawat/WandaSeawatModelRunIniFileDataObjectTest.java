@@ -2,6 +2,8 @@ package org.openda.model_wanda_seawat;
 
 import junit.framework.TestCase;
 import org.openda.exchange.DoubleExchangeItem;
+import org.openda.exchange.timeseries.TimeSeries;
+import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -25,7 +27,7 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 		File file = new File(testRunDataDir, "example.ini");
 		WandaSeawatModelRunIniFileDataObject wandaSeawatModelRunIniFileDataObject = new WandaSeawatModelRunIniFileDataObject();
 		wandaSeawatModelRunIniFileDataObject.initialize(testRunDataDir, new String[]{file.getName()});
-		assertEquals("The 5 exchange items exist", 5, wandaSeawatModelRunIniFileDataObject.getExchangeItemIDs().length);
+		assertEquals("The 6 exchange items exist", 6, wandaSeawatModelRunIniFileDataObject.getExchangeItemIDs().length);
 
 		Object startDateTimeExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("startDateTime");
 		assertTrue(startDateTimeExchangeItemObject instanceof DoubleExchangeItem);
@@ -51,7 +53,29 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 		assertTrue(maxYearlyWaterVolumeExchangeItemObject instanceof DoubleExchangeItem);
 		DoubleExchangeItem maxYearlyWaterVolumeExchangeItem = (DoubleExchangeItem) maxYearlyWaterVolumeExchangeItemObject;
 		assertEquals("The max yearly water volume is 65484", 65484.0, maxYearlyWaterVolumeExchangeItem.getValue());
-		
+
+		IExchangeItem timeSeriesEI = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("timeseries");
+		assertNotNull(timeSeriesEI);
+		assertTrue(timeSeriesEI instanceof TimeSeries);
+		double[] times = timeSeriesEI.getTimes();
+		assertEquals(49, times.length);
+		assertEquals(60310, times[0], 0.0001);
+		assertEquals(60310.04166666667, times[1], 0.0001);
+		assertEquals(60311.95833333333, times[47], 0.0001);
+		assertEquals(60312, times[48], 0.0001);
+		double[] values = timeSeriesEI.getValuesAsDoubles();
+		assertEquals(49, values.length);
+		assertEquals(0.752464259, values[0], 0.0001);
+		assertEquals(0.747373312, values[1], 0.0001);
+		assertEquals(0.865188971, values[47], 0.0001);
+		assertEquals(0.356379411, values[48], 0.0001);
+
+		values[0] = 1;
+		values[1] = 1.1;
+		values[47] = 1.47;
+		values[48] = 1.48;
+		timeSeriesEI.setValuesAsDoubles(values);
+
 		porosityExchangeItem.setValue(5.4);
 		wandaSeawatModelRunIniFileDataObject.finish();
 
@@ -59,5 +83,24 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 			String lines = stream.collect(Collectors.joining("\n"));
 			assertTrue("Updated value present in ini file", lines.contains("HTGEOFIL H1.Geoformations.Porosity formation.kleilaag 1 = 5.4"));
 		}
+
+		WandaSeawatModelRunIniFileDataObject wandaSeawatModelRunIniFileDataObject2 = new WandaSeawatModelRunIniFileDataObject();
+		wandaSeawatModelRunIniFileDataObject2.initialize(testRunDataDir, new String[]{file.getName()});
+
+		IExchangeItem timeSeriesEIRewritten = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("timeseries");
+		assertNotNull(timeSeriesEIRewritten);
+		assertTrue(timeSeriesEIRewritten instanceof TimeSeries);
+		double[] timesRewritten = timeSeriesEIRewritten.getTimes();
+		assertEquals(49, timesRewritten.length);
+		assertEquals(60310, timesRewritten[0], 0.0001);
+		assertEquals(60310.04166666667, timesRewritten[1], 0.0001);
+		assertEquals(60311.95833333333, timesRewritten[47], 0.0001);
+		assertEquals(60312, timesRewritten[48], 0.0001);
+		double[] valuesRewritten = timeSeriesEIRewritten.getValuesAsDoubles();
+		assertEquals(49, valuesRewritten.length);
+		assertEquals(1.0, valuesRewritten[0], 0.0001);
+		assertEquals(1.1, valuesRewritten[1], 0.0001);
+		assertEquals(1.47, valuesRewritten[47], 0.0001);
+		assertEquals(1.48, valuesRewritten[48], 0.0001);
 	}
 }
