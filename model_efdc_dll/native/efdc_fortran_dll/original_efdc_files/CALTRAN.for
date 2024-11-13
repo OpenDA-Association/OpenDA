@@ -22,7 +22,8 @@ C
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::POS
 
       REAL,SAVE,ALLOCATABLE,DIMENSION(:,:)::WQBCCON
-
+      REAL CTMP
+      CTMP=0.0
       ALLOCATE(UTERM0(LC,KC)) 
       ALLOCATE(VTERM0(LC,KC)) 
       ALLOCATE(SSCORUEWNS(LC,KC)) 
@@ -898,12 +899,8 @@ c    &            *(FQCPAD(L,K  )-QSUMPAD(L,K  )*POS(L,K  ))
      &            +MIN(WW,0.)*POS(L,K+1)  
             ENDIF  
           ENDDO  
-        ENDDO  
-c
+        ENDDO
         enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>6C',t00*1d6
-c     t00=rtc()
 C  
 C ** SET ANTIDIFFUSIVE FLUXES TO ZERO FOR SOURCE CELLS
 C  
@@ -1008,9 +1005,6 @@ C
 C  
 C **  CALCULATE AND APPLY FLUX CORRECTED TRANSPORT LIMITERS  
 C  
-c     t00=rtc()-t00
-c     write(6,*) '==>7C',t00*1d6
-c     t00=rtc()
         IF(ISFCT(MVAR).EQ.0) GOTO 1100  
 C  
 C **  DETERMINE MAX AND MIN CONCENTRATIONS  
@@ -1038,9 +1032,6 @@ c
         ENDDO  
 c
         enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>8C',t00*1d6
-c     t00=rtc()
 
 !$OMP PARALLEL DO PRIVATE(LF,LL,K,
 !$OMP& LS,LN,
@@ -1106,9 +1097,7 @@ C
         ENDDO  
 c
         enddo
-c     t00=rtc()-t00
-c     write(6,*) '==>9C',t00*1d6
-c     t00=rtc()
+
 C  
 C **  CALCULATE INFLUX AND OUTFLUX IN CONCENTRATION UNITS AND LOAD  
 C **  INTO DU AND DV, THEN ADJUCT VALUES AT BOUNDARIES  
@@ -1134,9 +1123,7 @@ c
 c
         enddo
 
-c     t00=rtc()-t00
-c     write(6,*) '==>10C',t00*1d6
-c     t00=rtc()
+
           DO IOBC=1,NBCSOP  
             L=LOBCS(IOBC)  
         DO K=1,KC
@@ -1223,9 +1210,6 @@ c          endif
 c
       enddo
 C  
-c     t00=rtc()-t00
-c     write(6,*) '==>11C',t00*1d6
-c     t00=rtc()
 C **  LIMIT FLUXES  
 C  
 !$OMP PARALLEL DO PRIVATE(LF,LL,
@@ -1256,9 +1240,6 @@ C **  ANTI-DIFFUSIVE ADVECTION CALCULATION
 C  
  1100   CONTINUE  
 C    
-c     t00=rtc()-t00
-c     write(6,*) '==>12C',t00*1d6
-c     t00=rtc()
 !$OMP PARALLEL DO PRIVATE(LF,LL,
 !$OMP& RDZIC)
       do ithds=0,nthds-1
@@ -1281,13 +1262,10 @@ C
 C **  ADD REMAINING SEDIMENT SETTLING AND FLUX  
 C  
       ENDIF  
-c     t00=rtc()-t00
-c     write(6,*) '==>13C',t00*1d6
 C  
 C **  ANTI-DIFFUSIVE ADVECTIVE FLUX CALCULATION WITH DRY BYPASS  
 C  
       IF(IDRYTBP.GT.0)THEN  
-c     t00=rtc()
         ! *** DSLLC BEGIN 
         DO L=1,LC  
           WWW(L,0)=0.0 
@@ -1690,7 +1668,6 @@ C
  
       ! *** ZERO HEAT FLUXES
  2000 IF(MVAR.EQ.2)THEN        
-c     t00=rtc()
 !$OMP PARALLEL DO PRIVATE(LF,LL)
       do ithds=0,nthds-1
          LF=jse_LC(1,ithds)

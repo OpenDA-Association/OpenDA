@@ -1,6 +1,7 @@
       SUBROUTINE SCNTXSED
       
       USE GLOBAL
+      USE MPI
       CHARACTER*80 SKIP
       CHARACTER*10 INFILE
 
@@ -10,7 +11,8 @@
         IF(N.EQ.1)THEN
           NC=5  ! MSVTOX(1)
           IF(NTOX.GT.0.AND.NTOXSER.GT.0)THEN
-            WRITE(*,'(A)')'SCANNING INPUT FILE: TXSER.INP'
+            IF(MYRANK.EQ.0)
+     &            WRITE(*,'(A)')'SCANNING INPUT FILE: TXSER.INP'
             INFILE='TXSER.INP'
             OPEN(1,FILE='TXSER.INP',STATUS='UNKNOWN')
             NLOOP=NTOX
@@ -19,7 +21,8 @@
         ELSEIF(N.EQ.2)THEN
           NC=NTOX+1  ! MSVSED(1)
           IF(NSED.GT.0.AND.NSEDSER.GT.0)THEN
-            WRITE(*,'(A)')'SCANNING INPUT FILE: SDSER.INP'
+            IF(MYRANK.EQ.0)
+     &            WRITE(*,'(A)')'SCANNING INPUT FILE: SDSER.INP'
             INFILE='SDSER.INP'
             OPEN(1,FILE='SDSER.INP',STATUS='UNKNOWN')
             NLOOP=NSED
@@ -28,7 +31,8 @@
         ELSEIF(N.EQ.3)THEN
           NC=NTOX+NSED+1  ! MSVSND(1)
           IF(NSND.GT.0.AND.NSNDSER.GT.0)THEN
-            WRITE(*,'(A)')'SCANNING INPUT FILE: SNSER.INP'
+            IF(MYRANK.EQ.0)
+     &            WRITE(*,'(A)')'SCANNING INPUT FILE: SNSER.INP'
             INFILE='SNSER.INP'
             OPEN(1,FILE='SNSER.INP',STATUS='UNKNOWN')
             NLOOP=NSND
@@ -69,12 +73,14 @@
       ENDDO
       RETURN
 
-   20 WRITE(*,30)INFILE
-      WRITE(8,30)INFILE
+   20 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,30)INFILE
+      IF(MYRANK.EQ.0) WRITE(8,30)INFILE
    30 FORMAT(' READ ERROR IN FILE: ',A10)
       STOP
-   40 WRITE(*,50)INFILE
-      WRITE(8,50)INFILE
+   40 CONTINUE 
+      IF(MYRANK.EQ.0) WRITE(*,50)INFILE
+      IF(MYRANK.EQ.0) WRITE(8,50)INFILE
    50 FORMAT(' UNEXPECTED END OF FILE: ',A10)
    60 FORMAT(A80)
       STOP

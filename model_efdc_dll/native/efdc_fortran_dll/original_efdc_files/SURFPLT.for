@@ -5,6 +5,7 @@ C **  SUBROUTINE SURFPLT WRITES FILES TO CONTOUR FREE SURFACE
 C **  ELEVATION  
 C  
       USE GLOBAL
+      USE MPI
       CHARACTER*80 TITLE  
 C  
 C *** EE BEGIN BLOCK  
@@ -13,6 +14,7 @@ C
 C  
 C *** EE END BLOCK  
 C  
+      IF(MYRANK.EQ.0)THEN
       IF(IPPHXY.LE.2)THEN  
         IF(JSPPH.NE.1) GOTO 300  
         OPEN(10,FILE='SURFCON.OUT')  
@@ -129,6 +131,7 @@ C
         CLOSE(10)  
 
       ENDIF  
+      ENDIF  ! MYRANK.EQ.0
 C  
 C *** EE END BLOCK  
 C  

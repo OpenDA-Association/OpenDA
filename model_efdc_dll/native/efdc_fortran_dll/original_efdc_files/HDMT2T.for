@@ -25,12 +25,12 @@ C
       USE GLOBAL
       USE DRIFTER
       USE WINDWAVE ,ONLY:WINDWAVEINIT,WINDWAVETUR
+      USE MPI
       INTRINSIC ISNAN
       LOGICAL ISNAN
 
-      REAL TTMP, T1TMP, TMP, SECNDS
+      REAL TTMP, T1TMP, TMP, T2TMP
 
-      INTEGER::I1,I2
       INTEGER,SAVE,ALLOCATABLE,DIMENSION(:)::ISSBCP
       LOGICAL BTEST, LTEST
 
@@ -43,7 +43,15 @@ C
 
 ! { GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
       INTEGER ISHYD,IHYDCNT
+      INTEGER NTMPVAL
+      INTEGER ISAVESEDDT
+      INTEGER LN
       REAL SNAPSHOTHYD
+      SNAPSHOTHYD=0.0
+      NTMPVAL=0
+      IHYDCNT=0
+      ISAVESEDDT=0
+      LN=0
 ! } GEOSR WRITE HYDRO FIELD FOR WQ ALONE : JGCHO 2010.11.10
 C
 ![ykchoi 10.04.26 for linux version
@@ -73,7 +81,7 @@ C
 	  LCORNSN=0
 	ENDIF
 C
-      TTMP=SECNDS(0.0)
+      CALL CPU_TIME(TTMP)  
       ICALLTP=0
 C
       ISTL=2
@@ -315,7 +323,7 @@ C----------------------------------------------------------------------c
 C
         IF(ISCORTBC.GE.1) THEN
 C
-          IF(DEBUG)THEN
+          IF(DEBUG.AND.MYRANK.EQ.0)THEN
             IF(ISCORTBCD.GE.1)THEN
               OPEN(1,FILE='ADJSTRESSE.OUT')
               CLOSE(1,STATUS='DELETE')
@@ -517,10 +525,9 @@ C
         TIMESEC=(DT*FLOAT(N)+TCON*TBEGIN)
         TIMEDAY=(DT*FLOAT(N)+TCON*TBEGIN)/86400.
       ENDIF
-      PRINT*, "TIME: ", TIMEDAY
 C
 C PMC      IF(ILOGC.EQ.NTSMMT)THEN
-      IF(ILOGC.EQ.NTSPTC)THEN
+      IF(ILOGC.EQ.NTSPTC.AND.MYRANK.EQ.0)THEN  
         CLOSE(8,STATUS='DELETE')
         OPEN(8,FILE='EFDCLOG.OUT',STATUS='UNKNOWN')
         IF(DEBUG)THEN
@@ -597,13 +604,13 @@ C----------------------------------------------------------------------C
 C
 C **  REENTER HERE FOR TWO TIME LEVEL LOOP
 C
-  500 CONTINUE
+C 500 CONTINUE  
 C
 C**********************************************************************C
 C
 C **  CALCULATE VERTICAL VISCOSITY AND DIFFUSIVITY AT TIME LEVEL (N)
 C
-      T1TMP=SECNDS(0.0)
+      CALL CPU_TIME(T1TMP)
       IF(KC.GT.1)THEN
         IF(ISQQ.EQ.1)THEN
           IF(ISTOPT(0).EQ.0)CALL CALAVBOLD (ISTL)
@@ -611,7 +618,8 @@ C
         ENDIF
         IF(ISQQ.EQ.2) CALL CALAVB2 (ISTL)
       ENDIF
-      TAVB=TAVB+SECNDS(T1TMP)
+      CALL CPU_TIME(T2TMP)
+      TAVB=TAVB+T2TMP-T1TMP
 C
 C**********************************************************************C
 C
@@ -635,7 +643,7 @@ C**********************************************************************C
 C
 C **  CALCULATE EXPLICIT MOMENTUM EQUATION TERMS
 C
-      T1TMP=SECNDS(0.0)
+      CALL CPU_TIME(T1TMP)
 c     IF(IS2TIM.EQ.1) CALL CALEXP2T  
       IF(IS2TIM.EQ.1) THEN
          IF(IDRYTBP.EQ.0)THEN
@@ -645,7 +653,8 @@ c     IF(IS2TIM.EQ.1) CALL CALEXP2T
          ENDIF
       ENDIF
       IF(IS2TIM.EQ.2) CALL CALIMP2T
-      TCEXP=TCEXP+SECNDS(T1TMP)
+      CALL CPU_TIME(T2TMP)
+      TCEXP=TCEXP+T2TMP-T1TMP
 C
 C**********************************************************************C
 C
@@ -662,10 +671,11 @@ C**********************************************************************C
 C
 C **  SOLVE EXTERNAL MODE EQUATIONS FOR P, UHDYE, AND VHDXE
 C
-      T1TMP=SECNDS(0.0)
+      CALL CPU_TIME(T1TMP)
       IF(ISCHAN.EQ.0.AND.ISDRY.EQ.0) CALL CALPUV2T
       IF(ISCHAN.GE.1.OR.ISDRY.GE.1) CALL CALPUV2C
-      TPUV=TPUV+SECNDS(T1TMP)
+      CALL CPU_TIME(T2TMP)
+      TPUV=TPUV+T2TMP-T1TMP
 C
 C**********************************************************************C
 C
@@ -723,7 +733,7 @@ C **  SOLVE INTERNAL SHEAR MODE EQUATIONS FOR U, UHDY, V, VHDX, AND W
 C
 C----------------------------------------------------------------------C
 C
-      T1TMP=SECNDS(0.0)
+      CALL CPU_TIME(T1TMP)
       IF(KC.GT.1)THEN
         CALL CALUVW (ISTL,IS2TL)
       ELSE
@@ -736,7 +746,8 @@ C
         ENDDO
         CALL CALUVW (ISTL,IS2TL)
       ENDIF
-      TUVW=TUVW+SECNDS(T1TMP)
+      CALL CPU_TIME(T2TMP)
+      TUVW=TUVW+T2TMP-T1TMP
 C
 C**********************************************************************C
 C
@@ -916,7 +927,7 @@ C
  6009 FORMAT('  TEMMIN=',F14.4,5X,'I,J,K=',(3I10))
 
       ! *** DSLLC
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         BTEST=.FALSE.
         LTEST=.FALSE.
         DO L=2,LA
@@ -1260,7 +1271,7 @@ C**********************************************************************C
 C
 C **  CALCULATE BOTTOM STRESS AT LEVEL (N+1)
 C
-      T1TMP=SECNDS(0.0)
+      CALL CPU_TIME(T1TMP)
 C
       CALL CALTBXY(ISTL,IS2TL)
 !$OMP PARALLEL DO PRIVATE(LF,LL)
@@ -1487,9 +1498,9 @@ C
       ENDIF
 C
  3678 FORMAT(2I6,4F13.3)
- 3679 FORMAT(12x,4F13.3)
- 3680 FORMAT(12x,6F13.5)
- 3681 FORMAT(12X,5E13.4,F13.5)
+C3679 FORMAT(12x,4F13.3)  
+C3680 FORMAT(12x,6F13.5)  
+C3681 FORMAT(12X,5E13.4,F13.5)  
  3677 FORMAT('CORNER',2I5,5E14.5)
  3676 FORMAT(6X,2I5,5E14.5)
  3675 FORMAT(F11.3,I6,' TIME IN DAYS AND NUMBER OF CORNERS')
@@ -1539,13 +1550,13 @@ C
 C
       ENDIF
 C
-      TTBXY=TTBXY+SECNDS(T1TMP)
-C
+      CALL CPU_TIME(T2TMP)
+      TTBXY=TTBXY+T2TMP-T1TMP
 C**********************************************************************C
 C
 C **  CALCULATE TURBULENT INTENSITY SQUARED
 C
-      T1TMP=SECNDS(0.0)
+      CALL CPU_TIME(T1TMP)
       IF(KC.GT.1)THEN
         IF(ISQQ.EQ.1)THEN
           IF(ISTOPT(0).EQ.0)CALL CALQQ2TOLD (ISTL)
@@ -1553,7 +1564,8 @@ C
         ENDIF
         IF(ISQQ.EQ.2) CALL CALQQ2 (ISTL)
       ENDIF
-      TQQQ=TQQQ+SECNDS(T1TMP)
+      CALL CPU_TIME(T2TMP)
+      TQQQ=TQQQ+T2TMP-T1TMP
 C
 C**********************************************************************C
 C
@@ -1636,7 +1648,7 @@ C
 C----------------------------------------------------------------------C
 C
       IF(ISDRY.GE.1.AND.ISDRY.LT.98)THEN
-        IF(ICALLTP.EQ.1.AND.DEBUG)THEN
+        IF(ICALLTP.EQ.1.AND.DEBUG.AND.MYRANK.EQ.0)THEN  
           OPEN(1,FILE='ZVOLBAL.OUT',POSITION='APPEND',STATUS='UNKNOWN')
           DO LS=1,LORMAX
             IF(VOLZERD.GE.VOLSEL(LS).AND.VOLZERD.LT.VOLSEL(LS+1))THEN
@@ -1693,9 +1705,10 @@ C
 !{GEOSR, OIL, CWCHO, 101122
       IF(ISPD.GE.2.AND.IDTOX.LT.4440) THEN   !DHC
         IF (TIMEDAY.GE.LA_BEGTI.AND.TIMEDAY.LE.LA_ENDTI) THEN
-          T1TMP=SECNDS(0.0)
+          CALL CPU_TIME(T1TMP)                
           CALL DRIFTERC
-          TLRPD=TLRPD+SECNDS(T1TMP)
+          CALL CPU_TIME(T2TMP)
+          TLRPD=TLRPD+T2TMP-T1TMP
         ENDIF
       ENDIF
 
@@ -1709,14 +1722,15 @@ C
 !GEOSR}
 
 !      IF(ISLRPD.GE.1)THEN
-!        T1TMP=SECNDS(0.0)                  !DHC:13-04-09
+!        CALL CPU_TIME(T1TMP)                  !DHC:13-04-09
 !        IF(ISLRPD.LE.2)THEN
 !          IF(N.GE.NLRPDRT(1)) CALL LAGRES
 !        ENDIF
 !        IF(ISLRPD.GE.3)THEN
 !          IF(N.GE.NLRPDRT(1)) CALL GLMRES
 !        ENDIF
-!        TLRPD=TLRPD+SECNDS(T1TMP)
+!         CALL CPU_TIME(T2TMP)
+!         TLRPD=TLRPD+T2TMP-T1TMP
 !      ENDIF
 C
 C**********************************************************************C
@@ -2012,7 +2026,8 @@ C**********************************************************************C
 C
 C **  TIME LOOP COMPLETED
 C
-      THDMT=THDMT+SECNDS(TTMP)
+      CALL CPU_TIME(T1TMP)
+      THDMT=THDMT+T1TMP-TTMP
 C
 C**********************************************************************C
 C *** EE BEGIN BLOCK
@@ -2021,7 +2036,7 @@ C       UNNECESSARY DUPLICATION
 C *** EE END BLOCK
 C**********************************************************************C
 C
- 2000 CONTINUE
+C2000 CONTINUE  
 C
 C**********************************************************************C
 C
@@ -2066,7 +2081,7 @@ C
 C **  OUTPUT COURANT NUMBER DIAGNOSTICS
 C
 C *** DSLLC BEGIN BLOCK
-      IF(ISINWV.GT.0.AND.DEBUG)THEN
+      IF(ISINWV.GT.0.AND.DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='CFLMAX.OUT')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='CFLMAX.OUT')
@@ -2090,7 +2105,7 @@ C**********************************************************************C
 C
 C **  OUTPUT COSMETIC VOLUME LOSSES FORM DRY CELLS
 C
-      IF(NDRYSTP.LT.0.AND.DEBUG) THEN
+      IF(NDRYSTP.LT.0.AND.DEBUG.AND.MYRANK.EQ.0) THEN  
 C
         OPEN(1,FILE='DRYLOSS.OUT')
         CLOSE(1,STATUS='DELETE')

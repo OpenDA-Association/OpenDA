@@ -22,7 +22,7 @@
 ! **
       MODULE GLOBAL
 !
-      Integer, PARAMETER :: NTSWQVM=23  !VB NTSWQVM CHANGED FROM 22 TO 23 TO ACCOMODATE CO2
+      INTEGER, PARAMETER :: NTSWQVM=23  !VB NTSWQVM CHANGED FROM 22 TO 23 TO ACCOMODATE CO2
       REAL, PARAMETER    :: EPS=1e-8
 !
       CHARACTER*50 AGRFN
@@ -3793,7 +3793,7 @@
 
       INTEGER(4)            ::maxprocs,maxprocs1
       parameter(maxprocs=64,maxprocs1=maxprocs-1)
-      INTEGER(4)            ::nthds, jse(2,0:maxprocs1),jse_LC(2,0:maxprocs1),jse_2_LC(2,0:maxprocs1),jse_LC1(2,0:maxprocs1)
+      INTEGER(4)            ::nthds, jse(2,0:maxprocs1),jse_LC(2,0:maxprocs1),jse_2_LC(2,0:maxprocs1)
 
 !{GeoSR, 2014.07.04 YSSONG, WIND DRAG COEFF.     
       INTEGER::ISWIND
@@ -3876,7 +3876,7 @@
       REAL,ALLOCATABLE,DIMENSION(:,:)::WQPNX
       REAL,ALLOCATABLE,DIMENSION(:,:)::WQRRX
       INTEGER,ALLOCATABLE::NWQCSRX(:)
-      REAL,ALLOCATABLE::ICYAMAP(:)
+      INTEGER,ALLOCATABLE::ICYAMAP(:)
       REAL,ALLOCATABLE::XCYAMUD(:)
       REAL,ALLOCATABLE::CYA_ADD(:)
       REAL,ALLOCATABLE::CYA_TIME(:)

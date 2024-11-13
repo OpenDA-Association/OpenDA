@@ -4,8 +4,9 @@ SUBROUTINE VARZEROReal
 !C ***
 
       USE GLOBAL  
+      USE MPI
 !C  
-      WRITE(*,'(A)')'ZEROING REAL ARRAYS'  
+      IF(MYRANK.EQ.0) WRITE(*,'(A)')'ZEROING REAL ARRAYS'  
 
 !C
 !C *** REAL ARRAYS
@@ -1287,6 +1288,7 @@ SUBROUTINE VARZEROReal
       WC=0.0
       WC2=0.0
       WINDD=0.0
+      WINDH=0.0
       WINDS=0.0
       WINDST=0.0
       WINDSTKA=0.0
@@ -1748,5 +1750,20 @@ SUBROUTINE VARZEROReal
       LightAVG1=0.
       LightAVG0=0.
 
+      CLOE_TMP   =0.
+      CLON_TMP   =0.
+      CLOS_TMP   =0.
+      CLOW_TMP   =0.
+      
+      CSERT_TMP  =0.
+      CSERT_SUM  =0.
+
+      DZCB_2D    =0.
+      BK_2D      =0.
+      DBK_1D     =0.
+      SHEAR_1D   =0.
+      HBED_1D    =0.
+      BDENBED_1D =0.
+      PORBED_1D  =0.
 
 END SUBROUTINE VARZEROReal

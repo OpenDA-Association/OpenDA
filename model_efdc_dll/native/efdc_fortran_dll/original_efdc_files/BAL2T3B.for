@@ -8,6 +8,7 @@ C **  SUBROUTINES CALBAL CALCULATE GLOBAL VOLUME, MASS, MOMENTUM,
 C **  AND ENERGY BALANCES  
 C  
       USE GLOBAL  
+      USE MPI 
  	IMPLICIT NONE
 	INTEGER::LUTMP,LDTMP,L,K,NSX,NSB,IBALSTDT,NT,M  
         INTEGER::LF,LL,ithds
@@ -37,7 +38,7 @@ c
       IF(ISTRAN(5).GE.1)THEN  
         DO NT=1,NTOX  
           M=MSVTOX(NT)  
-      WRITE(8,*)'NT M ',NT,M  
+          IF(MYRANK.EQ.0) WRITE(8,*)'NT M ',NT,M  
 !$OMP PARALLEL DO PRIVATE(LF,LL)
       do ithds=0,nthds-1
          LF=jse_2_LC(1,ithds)
@@ -148,7 +149,7 @@ C
           ENDIF  
         ENDDO  
       ENDIF  
-  800 FORMAT('N,NS,SNDFBL2T,DEL',2I5,2E14.5)  
+C 800 FORMAT('N,NS,SNDFBL2T,DEL',2I5,2E14.5)  
       RETURN  
       END  
 
