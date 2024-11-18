@@ -22,56 +22,29 @@
 package org.openda.costa;
 
 import junit.framework.TestCase;
-import org.openda.application.ApplicationRunner;
-import org.openda.utils.OpenDaTestSupport;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.openda.application.ApplicationRunner;
+
 /**
- * Appilication tests with native oscillator model
+ * TODO: description
  */
 public class CostaOpendaAppTest extends TestCase {
 
-    private File testRunDataDir;
-
-    protected void setUp() throws IOException {
-        OpenDaTestSupport testData = new OpenDaTestSupport(CostaOpendaAppTest.class, "application");
-        testRunDataDir = testData.getTestRunDataDir();
-    }
-
-	public static void testDummy() {
-		// No action. Test only exist to avoid warnings on empty test class when
-		//            the test below is de-activated by renaming it to tst...()
-	}
-
-	public void testOscill_EnKF() {
+    public static void testOscillEnKF() throws IOException {
         ApplicationRunner.setRunningInTest(true);
-        File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig.xml");
-        String[] args = new String[1];
-        args[0] = config.getAbsolutePath();
-        org.openda.application.OpenDaApplication.main(args);
-        System.out.println("testOscill_EnKF DONE");
-    }
-
-    public void tstOscill_Simplex() {
         ApplicationRunner.setRunningInTest(true);
-        File config = new File(testRunDataDir, "OscillSimplexOpenDaConfig.xml");
-        String[] args = new String[1];
-        args[0] = config.getAbsolutePath();
-        org.openda.application.OpenDaApplication.main(args);
+        org.openda.application.OpenDaApplication.main(new String[]{
+                "./application/java/test/org/openda/costa/testData/OscillEnKFOpenDaConfig.xml"
+        });
     }
 
-    // Test with a java observer
-
-    public void tstOscill_EnKF2() {
+    public static void testOscillSimplex() throws IOException {
         ApplicationRunner.setRunningInTest(true);
-        File config = new File(testRunDataDir, "OscillEnKFOpenDaConfig_javaobs.xml");
-        String[] args = new String[1];
-        args[0] = config.getAbsolutePath();
-        // TODO fails on announce obs. now.
-        org.openda.application.OpenDaApplication.main(args);
+        ApplicationRunner.setRunningInTest(true);
+        org.openda.application.OpenDaApplication.main(new String[]{
+                "./application/java/test/org/openda/costa/testData/OscillSimplexOpenDaConfig.xml"
+        });
     }
-
-
 }

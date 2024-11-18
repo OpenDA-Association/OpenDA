@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+        <alias key="exeDir"/>
+        <alias key="openda_bindir"/>
+        <alias key="instanceDir"/>
+        <alias key="templateDir"/>
+        <alias key="outputDir"/>
+        <alias key="initDir"/>
+        <alias key="concatenated_hisfile"/>
+        <alias key="concatenated_mapfile"/>
+        <alias key="dimrconfigfile"/>
+        <alias key="mdufile"/>
+        <alias key="mapfile"/>
+        <alias key="rstfile"/>
+        <alias key="hisfile"/>
+        <alias key="meteofile_p"/>
+        <alias key="runid"/>
+        <alias key="startTime"/>
+        <alias key="concatenated_mapfile_dir"/>
+        <alias key="endTime"/>
+    </aliasDefinitions>
+    <run>
+        <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%/" templateDir="%templateDir%" />
+        <computeActions>
+            <action workingDirectory="%instanceDir%" linuxExe="%exeDir%/start_dimr.sh" windowsExe="%exeDir%/start_dimr.bat">
+                <arg>%dimrconfigfile%</arg>
+                <checkOutput file="%outputDir%/%hisfile%"/>
+                <checkOutput file="%outputDir%/%mapfile%"/>
+            </action>
+            <action className="org.openda.model_dflowfm.DFlowFMRestartFilePostProcessor" workingDirectory="%instanceDir%">
+                <arg>runId=%runid%</arg>
+                <arg>sourceRestartFileSubDir=%outputDir%</arg>
+                <arg>targetRestartFileNamePostFix=00000000_000000_rst.nc</arg>
+                <arg>deleteOlderRstFiles=true</arg>
+            </action>
+            <action className="org.openda.exchange.dataobjects.NetcdfFileConcatenater" workingDirectory="%instanceDir%/">
+                <arg>%concatenated_hisfile%</arg>
+                <arg>%outputDir%/%hisfile%</arg>
+            </action>
+            <action className="org.openda.exchange.dataobjects.NetcdfFileConcatenater" workingDirectory="%instanceDir%/">
+                <arg>%concatenated_mapfile%</arg>
+                <arg>%outputDir%/%mapfile%</arg>
+            </action>
+        </computeActions>
+        <finalizeActions>
+        </finalizeActions>
+    </run>
+    <inputOutput>
+        <dataObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
+            <file>%mdufile%</file>
+            <id>mdufile</id>
+            <arg>useRstForRestart=true</arg>
+        </dataObject>
+        <dataObject className="org.openda.model_dflowfm.DFlowFMRestartFileWrapper">
+            <file>%rstfile%</file>
+            <id>rstfile</id>
+        </dataObject>
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+            <file>%outputDir%/%hisfile%</file>
+            <id>hisfile</id>
+            <arg>true</arg>
+            <arg>false</arg>
+        </dataObject>
+        <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
+            <file>%meteofile_p%</file>
+            <id>meteofile_p</id>
+            <arg>true</arg>
+            <arg>false</arg>
+        </dataObject>
+    </inputOutput>
+</blackBoxWrapperConfig>

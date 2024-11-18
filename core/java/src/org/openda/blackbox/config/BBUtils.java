@@ -203,15 +203,9 @@ public class BBUtils {
 			System.out.println("workingDir="+workingDir);
             process = Runtime.getRuntime().exec(commandArgs, null, workingDir);
 
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(process.getInputStream()));
+			writeProcessOutputToSystemOut(process);
 
-            //Tunnel screen output of executable's stdout
-            String line;
-            System.out.println("<OUTPUT>");
-            while ((line = stdInput.readLine()) != null)
-                System.out.println(line);
-            System.out.println("</OUTPUT>");
+			writeProcessErrorToSystemOut(process);
 
             //wait until executable is finished
             exitValue = process.waitFor();
@@ -225,7 +219,31 @@ public class BBUtils {
 		return exitValue;
     }
 
-    public static Object runJavaClass(String className, File fileOrDir, String[] arguments) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	private static void writeProcessOutputToSystemOut(Process process) throws IOException {
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+		//Tunnel screen output of executable's stdout
+		String line;
+		System.out.println("<OUTPUT>");
+		while ((line = stdInput.readLine()) != null) {
+			System.out.println(line);
+		}
+		System.out.println("</OUTPUT>");
+	}
+
+	private static void writeProcessErrorToSystemOut(Process process) throws IOException {
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+		String errorLine = stdError.readLine();
+		if (errorLine == null) return;
+		System.out.println("<ERROR>");
+		System.out.println(errorLine);
+		while ((errorLine = stdError.readLine()) != null) {
+			System.out.println(errorLine);
+		}
+		System.out.println("</ERROR>");
+	}
+
+	public static Object runJavaClass(String className, File fileOrDir, String[] arguments) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Object retClass = null;
         // Create instance of class and run it
         final Class javaClass;

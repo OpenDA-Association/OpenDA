@@ -33,23 +33,23 @@ public class OpenDaConfiguration {
     public static final int ALGORITHM = 2;
     public static final int NUM_COMPONENT_TYPES = 3;
 
-    private OpenDaComponentConfig[] componentConfigs;
-    private List<OpenDaResultWriterConfig> resultWriterConfigs;
-    private File restartInFile;
-    private File restartOutFilePrefix;
-    private boolean doReadRestart;
-    private boolean doWriteRestart;
-    private String restartOutFileExtension;
-	private String restartOutFileTimes;
-	private String restartOutFileTimeFormat;
-	private boolean restartOutFileTimeTag;
-	private boolean doTiming;
-	private boolean productionRun;
-	private double timePrecision;
-	private boolean vectorPrecisionIsFloat;
-	private boolean vectorIsNative;
-	private StochVector.InitialSeedType initialSeedType = StochVector.InitialSeedType.fixed;
-	private int initialSeedValue;
+    private final OpenDaComponentConfig[] componentConfigs;
+    private final List<OpenDaResultWriterConfig> resultWriterConfigs;
+    private final File restartInFile;
+    private final File restartOutFilePrefix;
+    private final boolean doReadRestart;
+    private final boolean doWriteRestart;
+    private final String restartOutFileExtension;
+	private final String restartOutFileTimes;
+	private final String restartOutFileTimeFormat;
+	private final boolean restartOutFileTimeTag;
+	private final boolean doTiming;
+	private final boolean productionRun;
+	private final double timePrecision;
+	private final boolean vectorPrecisionIsFloat;
+	private final boolean vectorIsNative;
+	private StochVector.InitialSeedType initialSeedType;
+	private final int initialSeedValue;
 	private final boolean restartOnlyAtEndOfRun;
 
 	public OpenDaConfiguration(OpenDaComponentConfig stochObserverConfig,

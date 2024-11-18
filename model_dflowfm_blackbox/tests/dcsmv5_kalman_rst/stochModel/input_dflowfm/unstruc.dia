@@ -1,0 +1,4 @@
+* Deltares, D-Flow FM Version 1.2.105.67088, Jun 18 2020, 23:39:47
+* Source: https://svn.oss.deltares.nl/repos/delft3d/trunk/
+* File creation date: 13:57:13, 14-04-2022
+** INFO   : Command: /p/d-hydro/dimrset/weekly/2.12.09.67490/lnx64/bin/../bin/dflowfm --nodisplay --autostartstop --autostartstop dcsmv5.init.mdu

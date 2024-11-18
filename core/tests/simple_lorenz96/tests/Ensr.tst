@@ -10,9 +10,9 @@
                 <check>
                         <file removeBeforeTest="yes" >../ensr_results.m</file>
 			<!-- last line looks like:
-			x_f_central{102}	=[5.891248852555715,8.938625342437101
+			x_f_central{51}	=[5.834383006199769,9.0091227587933, ...
 			-->
-			<regex>x_f_central\{102\}(.*)\[5.89(.*)8.93(.*)</regex>
+			<regex>x_f_central\{51\}(.*)\[5.83(.*)9.00(.*)</regex>
                 </check>
         </checks>
 </testConfig>

@@ -18,7 +18,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../core/java/resources/ini4j/ini4j-0.5.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../core/java/resources/ini4j/ini4j-0.5.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -12,7 +12,6 @@
     <buildFile url="file://$PROJECT_DIR$/model_wflow/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_external_socket/build_castor.xml" />
     <buildFile url="file://$PROJECT_DIR$/model_external_socket/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/model_zero_mq/build_castor.xml" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -355,6 +354,7 @@
       <module fileurl="file://$PROJECT_DIR$/algorithms/java/algorithms.iml" filepath="$PROJECT_DIR$/algorithms/java/algorithms.iml" />
       <module fileurl="file://$PROJECT_DIR$/application/java/application.iml" filepath="$PROJECT_DIR$/application/java/application.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/java/core.iml" filepath="$PROJECT_DIR$/core/java/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/costa/costa.iml" filepath="$PROJECT_DIR$/costa/costa.iml" />
       <module fileurl="file://$PROJECT_DIR$/dotnet_bridge/java/dotnet_bridge.iml" filepath="$PROJECT_DIR$/dotnet_bridge/java/dotnet_bridge.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_RainfallRunoffZhang/java/model_RainfallRunoffZhang.iml" filepath="$PROJECT_DIR$/model_RainfallRunoffZhang/java/model_RainfallRunoffZhang.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_bmi/model_bmi.iml" filepath="$PROJECT_DIR$/model_bmi/model_bmi.iml" />
@@ -365,6 +365,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_efdc_dll/java/model_efdc_dll.iml" filepath="$PROJECT_DIR$/model_efdc_dll/java/model_efdc_dll.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" filepath="$PROJECT_DIR$/model_example_blackbox/java/model_example_blackbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" filepath="$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_external_file/java/model_external_file.iml" filepath="$PROJECT_DIR$/model_external_file/java/model_external_file.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_external_socket/java/model_external_socket.iml" filepath="$PROJECT_DIR$/model_external_socket/java/model_external_socket.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_hspf/java/model_hspf.iml" filepath="$PROJECT_DIR$/model_hspf/java/model_hspf.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" filepath="$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" />
@@ -373,7 +374,6 @@
       <module fileurl="file://$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" filepath="$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_swan/java/model_swan.iml" filepath="$PROJECT_DIR$/model_swan/java/model_swan.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_wflow/java/model_wflow.iml" filepath="$PROJECT_DIR$/model_wflow/java/model_wflow.iml" />
-      <module fileurl="file://$PROJECT_DIR$/model_zero_mq/model_zero_mq.iml" filepath="$PROJECT_DIR$/model_zero_mq/model_zero_mq.iml" />
       <module fileurl="file://$PROJECT_DIR$/models/java/models.iml" filepath="$PROJECT_DIR$/models/java/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/observers/java/observers.iml" filepath="$PROJECT_DIR$/observers/java/observers.iml" />
       <module fileurl="file://$PROJECT_DIR$/public_project_view.iml" filepath="$PROJECT_DIR$/public_project_view.iml" />
@@ -387,21 +387,8 @@
       <SplitterProportionsDataImpl />
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
-  </component>
-  <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="ExternalModelStochModelFactoryTest.testReadConfig" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
-      <module name="model_external_socket" />
-      <option name="PACKAGE_NAME" value="org.openda.externalsocket" />
-      <option name="MAIN_CLASS_NAME" value="org.openda.externalsocket.ExternalModelStochModelFactoryTest" />
-      <option name="METHOD_NAME" value="testReadConfig" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="PARAMETERS" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
   </component>
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">

@@ -56,6 +56,7 @@ C **  SUBROUTINE SSEDTOX CALCULATES SETTLING AND WATER COLUMN-BED
 C **  EXCHANGE OF SEDIMENT AND SORBED TOXIC CONTAMINANTS  
 C  
       USE GLOBAL  
+      USE MPI
 
       ! *** EE BEGIN BLOCK  
 	IMPLICIT NONE
@@ -402,7 +403,7 @@ C ** DIAGNOSTICS OF INITIALIZATION
 C             TMP1=-999.  
 C             TMP2=-999.  
 C  
- 2222 FORMAT(2I5,7E13.4)  
+C2222 FORMAT(2I5,7E13.4)  
 C  
 C **  SAVE OLD VALUES  
 C  
@@ -730,7 +731,7 @@ C
       ENDIF 
 C
 C**********************************************************************C
-  869 FORMAT(' I,J,HGDH = ',2I5,F10.3)  
+C 869 FORMAT(' I,J,HGDH = ',2I5,F10.3)  
       IF(IWRSP(1).LT.98)THEN !do not recalculate bed when SEDZLJ dynamics are active
 	  DO L=2,LA  
           HBEDA(L)=0.0  
@@ -831,7 +832,7 @@ C
           ENDDO  
         ENDIF  
       ENDIF  
- 8669 FORMAT('PA ERR ',I10,F10.5,8E14.6)  
+C8669 FORMAT('PA ERR ',I10,F10.5,8E14.6)  
 C  
 C **  UPDATE TOP BED LAYER THICKNESS AND VOID RATIO  
 C **  FOR DEPOSITION-RESUSPENSION STEP  
@@ -995,14 +996,18 @@ C
         DO L=2,LA  
           IF(HP(L).LT.0.0)THEN  
             IF(ABS(H1P(L)).GT.HWET)THEN
+              IF(MYRANK.EQ.0)THEN
               WRITE(8,2348)TIMEDAY,IL(L),JL(L),HBED1(L,KBT(L)),
      &            HBED(L,KBT(L)),BELV1(L),BELV(L),DELT 
             ENDIF
+            ENDIF
             IF(ABS(H1P(L)).GE.HADJ)THEN  ! PMC-WAS HWET
               ITMP=1  
+              IF(MYRANK.EQ.0)THEN
               WRITE(8,2345)IL(L),JL(L),HBED1(L,KBT(L)),HBED(L,KBT(L)),  
      &            BELV1(L),BELV(L),DELT,QSBDTOP(L),QWBDTOP(L),HBEDA(L)  
               WRITE(8,2347)L,KBT(L),(HBED(L,K),K=1,KBT(L))  
+              ENDIF
             ELSE  
               HP(L)=0.9*HDRY  
             ENDIF  
@@ -1010,7 +1015,7 @@ C
         ENDDO  
         IF(ITMP.EQ.1)THEN  
           CALL RESTOUT(1)  
-          IF(NDRYSTP.LT.0.AND.DEBUG) THEN
+          IF(NDRYSTP.LT.0.AND.DEBUG.AND.MYRANK.EQ.0) THEN
             OPEN(1,FILE='DRYLOSS.OUT')
             CLOSE(1,STATUS='DELETE')
             OPEN(1,FILE='DRYLOSS.OUT')
@@ -1028,7 +1033,7 @@ C
  2345 FORMAT('NEG DEPTH DUE TO MORPH CHANGE', 2I5,12F12.5)
  2347 FORMAT('                             ', 2I5,12F12.5)
  2348 FORMAT('WITHIN TOLERANCE MORPH CHANGE NEG DEPTH',F10.5,2I5,5F12.5)
- 2346 FORMAT('MORP ERR ',2I5,6E15.6)
+C2346 FORMAT('MORP ERR ',2I5,6E15.6)
  1993 FORMAT(2I6,4E14.6)
 C  
 C ++  ADJUST CONCENTRATIONS OF TRANSPORT VARIABLES IN RESPONSE TO  
@@ -1115,7 +1120,7 @@ C
 C
 C**********************************************************************C
 C
- 8800 FORMAT(I5,8E14.5)  
+C8800 FORMAT(I5,8E14.5)  
       CLOSE(1)  
       CLOSE(11)  
       CLOSE(21)  

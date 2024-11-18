@@ -23,9 +23,9 @@ C
       REAL*8 TMPVAL,TMPVAL1,SBTOP,SVTOP,TMPVAL2,SVTOP2,SVBOT
       REAL*8 SFAV,SFAB,SBBOT,TMPVAL3
       REAL*8 ATURB1,ATURB2,TURBC1
-      REAL*8 AVTMP,ABTMP,BBTC,DELBSQ
+      REAL*8 AVTMP,ABTMP
 C
-      REAL*8 TMP1,AQTMP
+      REAL*8 AQTMP
 C
       INTEGER K,L,LS,ISTL_
 C
@@ -59,12 +59,13 @@ C
           IF(RITMP.GT.0.)THEN  
             RIQ=DML(L,K)*DML(L,K)*RITMP  
             BFUN=EXP(-3.11*RIQ)  
-            CTURBB1(L,K)=CTURB/(BFUN+1.E-12)  
+            CTURBB1(L,K)=REAL(CTURB/(BFUN+1.E-12),KIND(CTURBB1))
 
             ! *** Original Code
             IF(BBT(L,K).GT.0.)THEN   ! *** PMC BBT is never set, so this is never used
               TMPVAL=DELBTMP*DELBTMP/(RITMP*BBT(L,K))  
-              CTURBB2(L,K)=CTURB2B/(1.+0.61*(1.-BFUN)*TMPVAL)  
+              CTURBB2(L,K)=REAL(CTURB2B/(1.+0.61*(1.-BFUN)*TMPVAL),
+     &                          KIND(CTURBB2))
             ENDIF  
           ENDIF  
         ENDDO
@@ -89,14 +90,14 @@ C
           AVTMP=AVCON*SFAV*DML(L,K)*HP(L)*QQSQR(L,K)+AVO
 C
           IF(ISFAVB.EQ.0)THEN  
-            AV(L,K)=AVTMP*HPI(L)
-            AB(L,K)=SCB(L)*ABTMP*HPI(L)
+            AV(L,K)=REAL(AVTMP*HPI(L),KIND(AV))
+            AB(L,K)=REAL(SCB(L)*ABTMP*HPI(L),KIND(AB))
           ELSEIF(ISFAVB.EQ.1)THEN  
-            AV(L,K)=0.5*(AV(L,K)+AVTMP*HPI(L))  
-            AB(L,K)=SCB(L)*0.5*(AB(L,K)+ABTMP*HPI(L))  
+            AV(L,K)=REAL(0.5*(AV(L,K)+AVTMP*HPI(L)),KIND(AV))
+            AB(L,K)=REAL(SCB(L)*0.5*(AB(L,K)+ABTMP*HPI(L)),KIND(AB))
           ELSEIF(ISFAVB.EQ.2)THEN  
-            AV(L,K)=SQRT(AV(L,K)*AVTMP*HPI(L))  
-            AB(L,K)=SCB(L)*SQRT(AB(L,K)*ABTMP*HPI(L))  
+            AV(L,K)=REAL(SQRT(AV(L,K)*AVTMP*HPI(L)),KIND(AV))
+            AB(L,K)=REAL(SCB(L)*SQRT(AB(L,K)*ABTMP*HPI(L)),KIND(AB))
           ENDIF
         ENDDO        
       ENDDO
@@ -122,8 +123,8 @@ C
           DO L=2,LA  
             AVTMP=AVMX*HPI(L)  
             ABTMP=ABMX*HPI(L)  
-            AV(L,K)=MIN(AV(L,K),AVTMP)  
-            AB(L,K)=MIN(AB(L,K),ABTMP)  
+            AV(L,K)=REAL(MIN(AV(L,K),AVTMP),KIND(AV))
+            AB(L,K)=REAL(MIN(AB(L,K),ABTMP),KIND(AB))
           ENDDO  
         ENDDO  
       ENDIF
@@ -150,14 +151,14 @@ C
         DO K=2,KS  
           DO L=2,LA  
             AQTMP=0.205*(AV(L,K-1)+AV(L,K))  
-            AQ(L,K)=AQTMP  
+            AQ(L,K)=REAL(AQTMP,KIND(AQ))
           ENDDO  
         ENDDO  
         DO L=2,LA  
           AQTMP=0.205*AV(L,1)  
-          AQ(L,1)=AQTMP  
+          AQ(L,1)=REAL(AQTMP,KIND(AQ))
           AQTMP=0.205*AV(L,KS)  
-          AQ(L,KC)=AQTMP  
+          AQ(L,KC)=REAL(AQTMP,KIND(AQ))
         ENDDO  
       ENDIF  
 

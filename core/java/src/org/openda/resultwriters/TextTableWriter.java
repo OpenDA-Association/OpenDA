@@ -52,7 +52,9 @@ public class TextTableWriter implements IResultWriter {
     }
 
 
-    public void free(){}
+    public void free() {
+    	outputStream.close();
+	}
 
     public void putMessage(Source source, String message) {
 		// Nothing to do

@@ -5,6 +5,7 @@
 
 echo "Removing working directories"
 rm -f sim*_results*.m
+rm -f en*_results*.m
 rm -f *_results*.py
 rm -f openda_logfile.txt
 rm -f *.orp

@@ -374,11 +374,11 @@
 					Default is yes. Possible values: yes, no</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="restartOutFileTimes" type="openda:RestartOutFileTimesXML" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>Specify the time stamps for which to write restarts</xs:documentation>
-				</xs:annotation>
-			</xs:element>
+      <xs:element name="restartOutFileTimes" type="openda:RestartOutFileTimesXML" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specify the time stamps for which to write restarts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="restartOutFileOnlyAtEndOfRun" type="xs:boolean" minOccurs="0">
         <xs:annotation>
           <xs:documentation>When true, only at the end of the run restart files are written and not at every analysis step. Do not use this element in combination with the restartOutFileTimes</xs:documentation>

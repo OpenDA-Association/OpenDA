@@ -53,6 +53,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	private double[] gainTimeMjd;
 	private double[] readGainTime;
 	private int steadyStateTimeCounter = 0;
+	private double skipAssimilationStandardDeviationFactor = Double.POSITIVE_INFINITY;
 
 	public void initialize(File workingDir, String[] arguments) {
 		super.initialize(workingDir, arguments);
@@ -149,12 +150,14 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
                 i++;
             }
 		}
+		this.skipAssimilationStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipAssimilationStandardDeviationFactor", Double.POSITIVE_INFINITY);
 		
 		//now read the first gain file into memory
         steadyStateTimeCounter++;
 		KalmanGainStorage gainStorage = new KalmanGainStorage(this.workingDir, this.gainTimeMjd[0]);
 		gainStorage.setStorageDirPrefix(this.gainDirPrefix);
-		gainStorage.setKalmanGainStorageXmlFileName(this.gainFileName);
+		gainStorage.setKalmanGainStorageFileName(this.gainFileName);
+		if (gainFileName.endsWith(".nc")) gainStorage.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
 		gainStorage.readKalmanGain( this.getCurrentState());
 		String[] obsIds = gainStorage.getObservationIds();
 		double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();
@@ -191,8 +194,10 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		String[] obsIds = obsUtils.getObsIds();
 		double[] obsTimeOffsets = obsUtils.getObsTimeOffsets(analysisTime.getMJD());
 		// obs-pred
-		IVector innovation = observations.getExpectations();
+		IVector observationValues = observations.getExpectations();
+		IVector innovation = observationValues.clone();
 		innovation.axpy(-1.0, predictions);
+		IVector standardDeviations = observations.getStandardDeviations();
 		// x_a = x_f + K(y-H x_f)
 		IVector x = this.getCurrentState();
 		IVector delta = x.clone(); //vector of same type; content is overwritten
@@ -202,23 +207,29 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
         Results.putValue("pred_f", predictions, predictions.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
 
 		int m=innovation.getSize();
+		IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(observations.getObservationDescriptions());
 		for(int i=0;i<m;i++){
 			// find matching column in steady-state gain
 			String gainVectorId = obsIds[i]+":"+Math.round(obsTimeOffsets[i]*24.0*3600.0); //conversion to seconds
 			Results.putProgression("processing obs "+gainVectorId+"\n");
 			// add to analysis increment for this obs
 			if(this.gainVectors.containsKey(gainVectorId)){
-				delta.axpy(innovation.getValue(i), this.gainVectors.get(gainVectorId));
+				IVector gainVector = this.gainVectors.get(gainVectorId);
+				if (gainVector.getSize() != delta.getSize()) Results.putMessage("Warning: Kalman Gain does not have exact same size as current state, this can cause suboptimal results. Please check if the contents of the state match the contents of the Kalman Gain.");
+				// Skip assimilation when observations and predictions differ more than observation standard deviations times skipAssimilationStandardDeviationFactor
+				double innovationValue = innovation.getValue(i);
+				if (skipAssimilationStandardDeviationFactor != Double.POSITIVE_INFINITY && Math.abs(innovationValue) > skipAssimilationStandardDeviationFactor * standardDeviations.getValue(i)) {
+					Results.putProgression("Info: Skipping assimilation for " + gainVectorId + " because innovation > (skipAssimilationStandardDeviationFactor * obs standard deviation). Observed value = " + observationValues.getValue(i) + ", model prediction value " + pred_a.getValue(i) + ", skipAssimilationStandardDeviationFactor = "+ skipAssimilationStandardDeviationFactor + ", obs stdv = " + standardDeviations.getValue(i) +"\n");
+					continue;
+				}
+				delta.axpy(innovationValue, gainVector);
 			}else{
 				throw new RuntimeException("No matching column found for observation with id="
 						+obsIds[i]+"and offset="+obsTimeOffsets[i]+"\n");
 			}
 		}
 		this.mainModel.axpyOnState(1.0, delta);
-		
-		IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(observations.getObservationDescriptions());
-        Results.putValue("pred_a", pred_a, pred_a.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
-
+		Results.putValue("pred_a", pred_a, pred_a.getSize(), "analysis step", IResultWriter.OutputLevel.Essential, IResultWriter.MessageType.Step);
 	}
 
     private boolean isReplaceGainAtThisTime(ITime time){
@@ -239,7 +250,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
         if (this.readGainTime!=null){
             KalmanGainStorage gainStorage = new KalmanGainStorage(this.workingDir, this.gainTimeMjd[steadyStateTimeCounter]);
             gainStorage.setStorageDirPrefix(this.gainDirPrefix);
-            gainStorage.setKalmanGainStorageXmlFileName(this.gainFileName);
+            gainStorage.setKalmanGainStorageFileName(this.gainFileName);
             gainStorage.readKalmanGain(this.getCurrentState());
             String[] obsIds = gainStorage.getObservationIds();
             double[] obsTimeOffsets = gainStorage.getObservationOffsetInDays();

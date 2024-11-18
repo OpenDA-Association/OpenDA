@@ -22,6 +22,7 @@ package org.openda.observers;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.blackbox.interfaces.IoObjectInterface;
 import org.openda.exchange.NonMissingStochObserverGridTimeSeriesExchangeItem;
+import org.openda.exchange.PointGeometryInfo;
 import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.*;
 import org.openda.uncertainties.UncertaintyEngine;
@@ -704,31 +705,13 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 						coordinatesList.add(pos);
 					}else{
 						//get geometryInfo.
-						IGeometryInfo geometryInfo;
-						if (!(prevExchangeItem instanceof IExchangeItem)) {
-							//IPrevExchangeItem has no geometryInfo, so can never be a grid.
-							geometryInfo = null;
-						} else {
-							geometryInfo = ((IExchangeItem) prevExchangeItem).getGeometryInfo();
-						}
+						IGeometryInfo geometryInfo = prevExchangeItem == null ? null : prevExchangeItem.getGeometryInfo();
 
-						//get geometry.
-						if (GeometryUtils.isScalar(geometryInfo)) {
-							throw new RuntimeException("No coordinates available for scalar exchangeItem " + exchangeItemId);
-						}
+						if (geometryInfo == null) throw new RuntimeException("No coordinates available for exchangeItem " + exchangeItemId);
 
-						//get coordinates.
-						IVector coordinates;
-						if (isY) {//if y.
-							//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
-							//need one coordinate for each grid cell.
-							coordinates = GeometryUtils.getYCoordinates(geometryInfo);
-						} else {//if x.
-							//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
-							//need one coordinate for each grid cell.
-							coordinates = GeometryUtils.getXCoordinates(geometryInfo);
-						}
-						//if more than one exchangeItem, then add coordinates for each exchangeItem in sequence.
+						//this code assumes that the coordinates are stored in the same order as the values in the exchangeItem.
+						IVector coordinates = isY ? GeometryUtils.getYCoordinates(geometryInfo) : GeometryUtils.getXCoordinates(geometryInfo);
+
 						for (int n = 0; n < coordinates.getSize(); n++) {
 							coordinatesList.add(coordinates.getValue(n));
 						}
@@ -760,6 +743,16 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 				}
 				properties = new Vector(BBUtils.unbox(timesList.toArray(new Double[timesList.size()])));
 
+			} else if ("height".equals(key)) {
+				List<Double> coordinatesList = new ArrayList<>();
+				for (String exchangeItemId : exchangeItemIds) {
+					IExchangeItem prevExchangeItem = exchangeItems.get(exchangeItemId);
+					//get geometryInfo.
+					IGeometryInfo geometryInfo = prevExchangeItem == null ? null : prevExchangeItem.getGeometryInfo();
+					double height = getHeight(geometryInfo);
+					coordinatesList.add(height);
+				}
+				properties = new Vector(BBUtils.unbox(coordinatesList.toArray(new Double[coordinatesList.size()])));
 			} else if (keyIsStdDev(key)) {
 				properties = getStandardDeviations();
 			} else if (keyIsValues(key)) {
@@ -769,6 +762,12 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 			}
 
 			return properties;
+		}
+
+		private double getHeight(IGeometryInfo geometryInfo) {
+			if (geometryInfo == null) return 0;
+			if (!(geometryInfo instanceof PointGeometryInfo)) return 0;
+			return ((PointGeometryInfo) geometryInfo).getHeight();
 		}
 
 		public String[] getStringProperties(String key) {
@@ -796,12 +795,12 @@ public class IoObjectStochObserver extends Instance implements IStochObserver {
 
 		private boolean keyIsXcoord(String key) {
 			return key.equalsIgnoreCase("x") || key.equalsIgnoreCase("xp") ||
-					key.equalsIgnoreCase("xCoord") || key.equalsIgnoreCase("x-Coord");
+					key.equalsIgnoreCase("xCoord") || key.equalsIgnoreCase("xposition") || key.equalsIgnoreCase("x-Coord");
 		}
 
 		private boolean keyIsYcoord(String key) {
 			return key.equalsIgnoreCase("y") || key.equalsIgnoreCase("yp") ||
-					key.equalsIgnoreCase("yCoord") || key.equalsIgnoreCase("y-Coord");
+					key.equalsIgnoreCase("yCoord") || key.equalsIgnoreCase("yposition") || key.equalsIgnoreCase("y-Coord");
 		}
 
 		private boolean keyIsTime(String key) {

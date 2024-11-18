@@ -349,8 +349,8 @@ public class BBModelInstance extends Instance implements IModelInstance {
                     for (IExchangeItem sourceItem : ioObject.getExchangeItems()) {
                         String sourceId = sourceItem.getId();
                         if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
-                            bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, (IExchangeItem)sourceItem,
-                                    selectors, bbModelConfig.getConfigRootDir());
+                            bbExchangeItem = sourceItem instanceof IGridTimeSeriesExchangeItem ? new BBGridExchangeItem(searchedBBExchangeItemId, vectorConfig, (IGridTimeSeriesExchangeItem) sourceItem,
+								selectors, bbModelConfig.getConfigRootDir()) : new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, sourceItem, selectors, bbModelConfig.getConfigRootDir());
                             break;
                         }
                         newExchangeItemIDs.add(sourceId);
@@ -360,8 +360,9 @@ public class BBModelInstance extends Instance implements IModelInstance {
                     if (dataObject != null) {
                         for (String sourceId : dataObject.getExchangeItemIDs()) {
                             if (sourceId.equalsIgnoreCase(vectorConfig.getSourceId())) {
-                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, dataObject.getDataObjectExchangeItem(sourceId),
-                                        selectors, bbModelConfig.getConfigRootDir());
+								IExchangeItem sourceItem = dataObject.getDataObjectExchangeItem(sourceId);
+								bbExchangeItem = sourceItem instanceof IGridTimeSeriesExchangeItem ? new BBGridExchangeItem(searchedBBExchangeItemId, vectorConfig, (IGridTimeSeriesExchangeItem) sourceItem,
+									selectors, bbModelConfig.getConfigRootDir()) : new BBExchangeItem(searchedBBExchangeItemId, vectorConfig, sourceItem, selectors, bbModelConfig.getConfigRootDir());
                                 break;
                             }
                             newExchangeItemIDs.add(sourceId);
@@ -388,8 +389,8 @@ public class BBModelInstance extends Instance implements IModelInstance {
                             String bbExchangeItemId = sourceItem.getId();
                             if (idSuffix != null) bbExchangeItemId += idSuffix;
                             if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
-                                bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, (IExchangeItem)sourceItem,
-                                        selectors, bbModelConfig.getConfigRootDir());
+                                bbExchangeItem = sourceItem instanceof IGridTimeSeriesExchangeItem ? new BBGridExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, (IGridTimeSeriesExchangeItem) sourceItem,
+									selectors, bbModelConfig.getConfigRootDir()) : new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, sourceItem, selectors, bbModelConfig.getConfigRootDir());
                                 break;
                             }
                             newExchangeItemIDs.add(sourceItem.getId());
@@ -402,8 +403,9 @@ public class BBModelInstance extends Instance implements IModelInstance {
                                 String bbExchangeItemId = sourceId;
                                 if (idSuffix != null) bbExchangeItemId += idSuffix;
                                 if (bbExchangeItemId.equalsIgnoreCase(searchedBBExchangeItemId)) {
-                                    bbExchangeItem = new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, dataObject.getDataObjectExchangeItem(sourceId),
-                                            selectors, bbModelConfig.getConfigRootDir());
+									IExchangeItem sourceItem = dataObject.getDataObjectExchangeItem(sourceId);
+									bbExchangeItem = sourceItem instanceof IGridTimeSeriesExchangeItem ? new BBGridExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, (IGridTimeSeriesExchangeItem) sourceItem,
+										selectors, bbModelConfig.getConfigRootDir()) : new BBExchangeItem(searchedBBExchangeItemId, allElementVectorConfig, sourceItem, selectors, bbModelConfig.getConfigRootDir());
                                     break;
                                 }
                                 newExchangeItemIDs.add(sourceId);

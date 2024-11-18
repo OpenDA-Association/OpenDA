@@ -129,7 +129,9 @@ public class TreeVectorReader {
                         throw new RuntimeException("SubTreeVector \"" + subTreeVector.getId() +
                                 "\" has unsupported parent type (" + parent.getClass().getName() + ")");
                     }
-                }
+				} else {
+					((TreeVector) treeVector).addChild(subTreeVector);
+				}
             }
         }
         return treeVector;

@@ -5,6 +5,9 @@ C CHANGE RECORD
 C  
       DIMENSION A(MP,NP),W(NP),V(NP,NP)  
       REAL,ALLOCATABLE,DIMENSION(:)::RV1  
+      INTEGER NM,L
+      NM=0
+      L=0
       ALLOCATE(RV1(N))  
       G=0.0  
       SCALE=0.0  

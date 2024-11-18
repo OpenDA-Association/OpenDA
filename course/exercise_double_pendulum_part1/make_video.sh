@@ -1,4 +1,7 @@
 #! /bin/bash
+# utility script to create a video from the plots generated in plot_movie.m
+# Note that some lines of code need to be commented out in plot_movie.m in order to 
+# write the plots into the framesdirectory.
 
 #ffmpeg -r 25 -i frames/fig_double_pendulum_%04d.png -vcodec libx264 -crf 25  movie_double_pendulum.mp4
 #ffmpeg -r 25 -i frames/fig_double_pendulum_%04d.png -vcodec mpeg4 -crf 25  movie_double_pendulum.avi

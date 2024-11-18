@@ -1,0 +1,56 @@
+
+#======================================================================================================
+[time]
+#======================================================================================================
+# Editable
+#------------------------------------------------------------------------------------------------------
+RefDate                             = 20061225                                                            # Reference date (yyyymmdd)
+#Startdatetime                       = 20070101000000                                                      # Start date time (yyyymmddHHMMSS)
+TStart=8236090.0
+TStop=8244720.0
+#Stopdatetime                        = 20070105000000                                                      # Stop date time (yyyymmddHHMMSS)
+#TStop                               = 15840                   # Stop time w.r.t. RefDate (in TUnit,  )
+#Stopdatetime                        = 20070108000000                                                      # Stop date time (yyyymmddHHMMSS)
+#TStop                               = 63360                   # Stop time w.r.t. RefDate (in TUnit,  )
+Tunit                               = M                                                                   # Time unit for start/stop times (D, H, M or S)
+#------------------------------------------------------------------------------------------------------
+# Uneditable
+#------------------------------------------------------------------------------------------------------
+Tzone                               = 0.                                                                  # Time zone assigned to input time series
+DtUser                              = 600.                                                                # Time interval (s) for external forcing update
+DtNodal                             = 21600.                                                              # Time interval (s) for updating nodal factors in astronomical boundary conditions
+DtMax                               = 600.                                                                # Maximal computation timestep (s)
+Dtfacmax                            = 1.1                                                                 # Max timestep increase factor ( )
+DtInit                              = 60.                                                                 # Initial computation timestep (s)
+AutoTimestep                        = 0                                                                   # 0 = no, 1 = 2D (hor. out), 3=3D (hor. out), 5 = 3D (hor. inout + ver. inout), smallest dt
+
+#======================================================================================================
+[restart]
+#======================================================================================================
+# Editable
+#------------------------------------------------------------------------------------------------------
+RestartFile                         =                                                                     # Restart netcdf-file, either *_rst.nc or *_map.nc
+RestartDateTime                     =                                                                     # Restart date and time (yyyymmddhhmmss) when restarting from *_map.nc
+
+#======================================================================================================
+[output]
+#======================================================================================================
+# Editable
+#------------------------------------------------------------------------------------------------------
+OutputDir                           =                                                                     # Output directory of map-, his-, rst-, dat- and timings-files, default: DFM_OUTPUT_<modelname>. Set to . for current dir.
+ObsFile                             = dcsmv5.xyn                                                          #
+CrsFile                             =                                                                     #
+FouFile                             =                                                                     # Fourier analysis input file *.fou
+HisFile                             =                                                                     # HisFile name *_his.nc
+MapFile                             =                                                                     # MapFile name *_map.nc
+HisInterval                         = 600.                                                                # History output times, given as "interval" "start period" "end period" (s)
+MapInterval                         = 3600.                                                                # Map file output, given as "interval" "start period" "end period" (s)
+RstInterval=43200
+WaqInterval                         = 0.                                                                  # DELWAQ output times, given as "interval" "start period" "end period" (s)
+TimingsInterval                     = 86400.                                                              # Timings statistics output interval
+#------------------------------------------------------------------------------------------------------
+# Uneditable
+#------------------------------------------------------------------------------------------------------
+MapFormat                           = 1                                                                   # Map file format, 1: netCDF, 2: Tecplot, 3: netCFD and Tecplot, 4: NetCDF-UGRID
+NcFormat                            = 3                                                                   # Format for all NetCDF output files (3: classic, 4: NetCDF4+HDF5)
+NcWriteLatLon                       = 1                                                                   # Write extra lat-lon coordinates for all projected coordinate variables in each NetCDF file (for CF-compliancy).

@@ -55,6 +55,8 @@ import java.util.*;
 public class NetcdfDataObject implements IComposableDataObject, IComposableEnsembleDataObject {
 
 	public static final String ALLOW_TIME_INDEPENDENT_ITEMS = "allowTimeIndependentItems";
+	public static final String REQUIRED_EXCHANGE_ITEM_ID = "requiredExchangeItemId";
+	public static final String LAYER_DIMENSION_NAME = "layerDimensionName";
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
@@ -130,14 +132,14 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				case ALLOW_TIME_INDEPENDENT_ITEMS:
 					this.allowTimeIndependentItems = Boolean.valueOf(value);
 					continue;
-				case "requiredExchangeItemId":
+				case REQUIRED_EXCHANGE_ITEM_ID:
 					requiredExchangeItemIds.add(value);
 					continue;
-				case "layerDimensionName":
+				case LAYER_DIMENSION_NAME:
 					this.layerDimensionName = value;
 					continue;
 				default:
-					throw new RuntimeException("Unknown key " + key + ". Please specify only " + ALLOW_TIME_INDEPENDENT_ITEMS + " as key=value pair");
+					throw new RuntimeException("Unknown key " + key + ". Please specify only [" + ALLOW_TIME_INDEPENDENT_ITEMS + ", " + REQUIRED_EXCHANGE_ITEM_ID + ", " + LAYER_DIMENSION_NAME  + "] as key=value pair");
 			}
 		}
 
@@ -300,7 +302,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 						String exchangeItemId = stationId + '.' + parameterId;
 						if (!requiredExchangeItemIds.isEmpty() && !requiredExchangeItemIds.contains(exchangeItemId)) continue;
 						IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
-							stationId, parameterId, realizationDimensionIndex, -1, layerDimensionIndex, layerIndex, Role.InOut, timeInfo, this);
+							stationId, parameterId, null, layerDimensionIndex, layerIndex, realizationDimensionIndex, -1, Role.InOut, timeInfo, this);
 						this.exchangeItems.add(exchangeItem);
 					}
 				}
@@ -309,6 +311,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				int stationCount = variable.getDimension(stationDimensionIndex).getLength();
 				String parameterId = variable.getShortName();
 
+				PointGeometryInfo[] pointGeometryInfos = NetcdfUtils.createPointGeometryInfos(variable, netcdfFile);
 				//create an exchangeItem that can read/write lazily, for each location in this variable.
 				for (int stationIndex = 0; stationIndex < stationCount; stationIndex++) {
 					String stationId;
@@ -320,14 +323,15 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					if (realizationDimensionIndex == -1) {
 						String exchangeItemId = stationId + '.' + parameterId;
 						if (!requiredExchangeItemIds.isEmpty() && !requiredExchangeItemIds.contains(exchangeItemId)) continue;
-						IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
-								stationId, parameterId, realizationDimensionIndex, -1, -1, -1, Role.InOut, timeInfo, this);
+						PointGeometryInfo pointGeometryInfo = pointGeometryInfos == null ? null : pointGeometryInfos[stationIndex];
+						NetcdfScalarTimeSeriesExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
+							stationId, parameterId, pointGeometryInfo, -1, -1, -1, -1, Role.InOut, timeInfo, this);
 						this.exchangeItems.add(exchangeItem);
 					} else {
 						//TODO Edwin: this code assumes that the realization indices are always the numbers 0, 1, 2, 3, etc. in sorted order. It should read the actual ensemble member indices from the file. AK
 						for (int realizationIndex = 0; realizationIndex < variable.getDimension(realizationDimensionIndex).getLength(); realizationIndex++) {
 							IExchangeItem exchangeItem = new NetcdfScalarTimeSeriesExchangeItem(stationDimensionIndex, stationIndex,
-									stationId, parameterId, realizationDimensionIndex, realizationIndex, -1, -1, Role.InOut, timeInfo, this);
+								stationId, parameterId, null,-1, -1, realizationDimensionIndex, realizationIndex, Role.InOut, timeInfo, this);
 							addEnsembleExchangeItem(exchangeItem, realizationIndex);
 						}
 					}
@@ -538,7 +542,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		//create a new internal exchangeItem in this dataObject that matches the given external exchangeItem.
 		//This internal exchangeItem can then be used later to copy data from the matching external exchangeItem.
 		//here assume that stationDimensionIndex is 1.
-		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), -1, -1, -1, -1, Role.Output, item.getTimeInfo(), this);
+		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(1, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), null, -1, -1, -1, -1, Role.Output, item.getTimeInfo(), this);
 		//store new item.
         this.exchangeItems.add(newItem);
     }
@@ -566,7 +570,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		//This internal ensemble exchangeItem can then be used later to copy data from the matching external ensemble exchangeItem.
 		//here assume that realizationDimensionIndex is 1.
 		//here assume that stationDimensionIndex is 2.
-		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(2, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), 1, -1, -1, -1, Role.Output, item.getTimeInfo(), this);
+		IExchangeItem newItem = new NetcdfScalarTimeSeriesExchangeItem(2, -1, NetcdfUtils.getStationId(item), NetcdfUtils.getVariableName(item), null, -1, -1, -1, -1, Role.Output, item.getTimeInfo(), this);
 
 		//store new item.
 		addEnsembleExchangeItem(newItem, ensembleMemberIndex);

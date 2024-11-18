@@ -73,7 +73,9 @@ public class MatlabResultWriter implements IResultWriter {
         }
     }
 
-    public void free(){}
+    public void free() {
+    	outputStream.close();
+	}
 
     public void putMessage(Source source, String comment) {
         comment = comment.replaceAll("\n", "\n%");

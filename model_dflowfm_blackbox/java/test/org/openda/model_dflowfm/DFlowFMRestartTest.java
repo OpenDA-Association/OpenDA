@@ -21,11 +21,15 @@ package org.openda.model_dflowfm;
 
 import junit.framework.TestCase;
 
+import org.openda.interfaces.IArray;
 import org.openda.interfaces.IDataObject;
 import org.openda.blackbox.config.BBUtils;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Tests reading from and writing to the D-Flow FM restart file dflowfm_map.nc.
@@ -43,6 +47,39 @@ public class DFlowFMRestartTest extends TestCase {
 		testCopyDir = new File(testRunDataRestartFileDir,"copy");
 	}
 
+// Commented out because no small restart file available, but below test should work with any
+	public void testRestartFileInsteadOfMap() {
+		IDataObject initialRestartFile = new DFlowFMRestartFileWrapper();
+		String[] args = new String[]{"dcsmv5_20070104_000000_rst.nc"};
+
+		initialRestartFile.initialize(testRunDataRestartFileDir, args);
+
+		DFlowFMExchangeItem initialS1 = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("s1");
+		IGeometryInfo geometryInfoS1 = initialS1.getGeometryInfo();
+		assertNotNull(geometryInfoS1);
+		assertTrue(geometryInfoS1 instanceof DFlowFMMapExchangeItemGeometryInfo);
+		assertEquals(17843, ((DFlowFMMapExchangeItemGeometryInfo) geometryInfoS1).getSize());
+		double[] initialValuesAsDoubles = initialS1.getValuesAsDoubles().clone();
+		double[] axpyValues = new double[initialValuesAsDoubles.length];
+		Arrays.fill(axpyValues, 1);
+		initialS1.axpyOnValues(0.1, axpyValues);
+
+		DFlowFMExchangeItem initialUnorm = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("unorm");
+		IGeometryInfo geometryInfoUnorm = initialUnorm.getGeometryInfo();
+		assertNotNull(geometryInfoUnorm);
+		assertTrue(geometryInfoUnorm instanceof DFlowFMMapExchangeItemGeometryInfo);
+		assertEquals(34921, ((DFlowFMMapExchangeItemGeometryInfo) geometryInfoUnorm).getSize());
+		
+		initialRestartFile.finish();
+
+		IDataObject finishedRestartFile = new DFlowFMRestartFileWrapper();
+		finishedRestartFile.initialize(testRunDataRestartFileDir, args);
+		DFlowFMExchangeItem finishedS1 = (DFlowFMExchangeItem) initialRestartFile.getDataObjectExchangeItem("s1");
+		double[] finishedS1ValuesAsDoubles = finishedS1.getValuesAsDoubles();
+		for (int i = 0; i < initialValuesAsDoubles.length; i++) {
+			assertEquals(initialValuesAsDoubles[i] + 0.1, finishedS1ValuesAsDoubles[i], 0.000001);
+		}
+	}
 
 	public void testReadInput() {
 
@@ -127,6 +164,24 @@ public class DFlowFMRestartTest extends TestCase {
 					values[i] = 100.0;
 				}
 				RestartFile.getDataObjectExchangeItem(id).setValuesAsDoubles(values);
+				IGeometryInfo geometryInfo = ex.getGeometryInfo();
+				assertNotNull(geometryInfo);
+				assertTrue(geometryInfo instanceof DFlowFMMapExchangeItemGeometryInfo);
+				DFlowFMMapExchangeItemGeometryInfo dFlowFMGeometry = (DFlowFMMapExchangeItemGeometryInfo) geometryInfo;
+				assertEquals(87, dFlowFMGeometry.getSize());
+				assertFalse(dFlowFMGeometry.is3D());
+				assertEquals(0, dFlowFMGeometry.getZCoord(0), 0.001);
+				double xCoord0 = dFlowFMGeometry.getXCoord(0);
+				assertEquals(157080.05234218697, xCoord0, 0.001);
+				assertEquals(170668.49413182843, dFlowFMGeometry.getXCoord(55), 0.001);
+				assertEquals(179393.00276083976, dFlowFMGeometry.getXCoord(86), 0.001);
+				double yCoord0 = dFlowFMGeometry.getYCoord(0);
+				assertEquals(429554.3158721777, yCoord0, 0.001);
+				assertEquals(434611.9683101297, dFlowFMGeometry.getYCoord(55), 0.001);
+				assertEquals(433143.09523854207, dFlowFMGeometry.getYCoord(86), 0.001);
+				IArray distanceToPointArray = dFlowFMGeometry.distanceToPoint(xCoord0, yCoord0, 0);
+				assertEquals(0.0, distanceToPointArray.getValueAsDouble(0), 0.01);
+				assertEquals(14499.158542949863, distanceToPointArray.getValueAsDouble(55), 0.01);
 			}
 		}
 		// write file

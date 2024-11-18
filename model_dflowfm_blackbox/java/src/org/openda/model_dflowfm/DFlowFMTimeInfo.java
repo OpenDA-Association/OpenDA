@@ -24,11 +24,14 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import org.openda.utils.Results;
+import org.openda.utils.generalJavaUtils.StringUtilities;
 
 /**
  * Reading and writing information to [time] block of MDU-file
@@ -36,34 +39,62 @@ import org.openda.utils.Results;
 
 public class DFlowFMTimeInfo implements IDataObject {
 
+	public static final String USE_RST_FOR_RESTART = "useRstForRestart";
+	public static final String NUMBER_OF_PARTITIONS = "numberOfPartitions";
 	private IExchangeItem[] exchangeItems;
 
 	private DFlowFMMduInputFile mduOptions;
 	private File mduFile;
-	private String TStart = null;
-	private String TStop = null;
-	private String[] DFlowFMTimeInfoId = new String[]{"start_time","end_time"};
-	private int NTimeInfoIds = DFlowFMTimeInfoId.length;
-	private static Map<String, String> timeFormat;
-
-
+	private final String[] DFlowFMTimeInfoId = new String[]{"start_time", "end_time"};
+	private final int NTimeInfoIds = DFlowFMTimeInfoId.length;
+	private static final Map<String, String> timeFormat;
+	private static final String SECTION_TIME = "time";
+	private static final String START_OFFSET = "TStart";
+	private static final String STOP_OFFSET = "TStop";
+	private static final String START_DATETIME = "StartDatetime";
+	private static final String STOP_DATETIME = "StopDatetime";
+	private static final String REPLACE_MINUTES_AND_SECONDS = "0000";
+	private static final String REPLACE_SECONDS = "00";
+	private boolean useRstForRestart = false;
+	private int numberOfPartitions = 0;
 
 	static {
-		timeFormat= new HashMap<String, String>();
-		timeFormat.put("S", "%.2f" );
-		timeFormat.put("M", "%.6f" );
-		timeFormat.put("H", "%.8f" );
+		timeFormat = new HashMap<>();
+		timeFormat.put("S", "%.2f");
+		timeFormat.put("M", "%.6f");
+		timeFormat.put("H", "%.8f");
 	}
-
-
+	private DFlowFMMduInputFile[] dFlowFMMduInputFiles;
 
 	private void initialize(File workingDir, String fileName, String[] arguments) {
-		if (arguments.length > 0) Results.putMessage("Initialize DFlowTimeInfo: additional arguments not used");
-		this.mduFile = new File(workingDir, fileName);
-	    mduOptions = new DFlowFMMduInputFile(workingDir, fileName);
+		for (String argument : arguments) {
+			String[] keyValue = StringUtilities.getKeyValuePair(argument);
+			String key = keyValue[0];
+			String value = keyValue[1];
+			switch (key) {
+				case USE_RST_FOR_RESTART:
+					this.useRstForRestart = Boolean.parseBoolean(value);
+					continue;
+				case NUMBER_OF_PARTITIONS:
+					numberOfPartitions = Integer.parseInt(value);
+					continue;
+				default:
+					throw new RuntimeException("Unknown key " + key + ". Please specify only " + USE_RST_FOR_RESTART + " as key=value pair");
+			}
+		}
+		String mainFileName = numberOfPartitions == 0 ? fileName : fileName.substring(0, fileName.length() - 4) + "_0000" + fileName.substring(fileName.length() - 4);
+		this.mduFile = new File(workingDir, mainFileName);
+		mduOptions = new DFlowFMMduInputFile(workingDir, mainFileName);
 		exchangeItems = new DFlowFMTimeInfoExchangeItem[NTimeInfoIds];
 		for (int n = 0 ; n < NTimeInfoIds ; n++) {
 			exchangeItems[n] = new DFlowFMTimeInfoExchangeItem(DFlowFMTimeInfoId[n], this);
+		}
+		if (numberOfPartitions == 0) return;
+		dFlowFMMduInputFiles = new DFlowFMMduInputFile[numberOfPartitions - 1];
+		for (int i = 1; i < numberOfPartitions; i++) {
+			String partionedString = StringUtilities.padLeft(String.valueOf(i), 4, '0');
+			String partitionedFileName = fileName.substring(0, fileName.length() - 4) + "_" + partionedString + fileName.substring(fileName.length() - 4);
+			dFlowFMMduInputFiles[i - 1] = new DFlowFMMduInputFile(workingDir, partitionedFileName);
 		}
 	}
 
@@ -89,14 +120,16 @@ public class DFlowFMTimeInfo implements IDataObject {
 	public IExchangeItem getDataObjectExchangeItem(String exchangeItemID) {
 		int index = NTimeInfoIds;
 		int n = 0;
-		while(n < NTimeInfoIds) {
+		while (n < NTimeInfoIds) {
 			if (exchangeItemID.equals(DFlowFMTimeInfoId[n])) {
 				index = n;
 				n = NTimeInfoIds;
-        	}
+			}
 			n++;
 		}
-        if (index == NTimeInfoIds ) {throw new RuntimeException("unknown exchange item: " + exchangeItemID);}
+		if (index == NTimeInfoIds) {
+			throw new RuntimeException("unknown exchange item: " + exchangeItemID);
+		}
 		return exchangeItems[index];
 	}
 
@@ -104,21 +137,42 @@ public class DFlowFMTimeInfo implements IDataObject {
 		return exchangeItems;
 	}
 
-	double getDblTStartSimulation() {
-		if (TStart==null) {
-			readTimeInfo();
+	private double getDoubleTime(String offset, String datetime) {
+		if (mduOptions.contains(SECTION_TIME, offset)) {
+			String time = mduOptions.get(SECTION_TIME, offset);
+			return Double.parseDouble(time) * mduOptions.getTimeToMjdFactor() + mduOptions.getReferenceDateInMjd();
 		}
-		double dblTStart;
-	    dblTStart = Double.parseDouble(TStart) * mduOptions.getTimeToMjdFactor();
-	    dblTStart = dblTStart +  mduOptions.getReferenceDateInMjd();	
-	    return dblTStart;
+
+		if (mduOptions.contains(SECTION_TIME, datetime)) {
+			String time = mduOptions.get(SECTION_TIME, datetime);
+			String timeUnit = mduOptions.get(SECTION_TIME, "Tunit");
+			if ("H".equalsIgnoreCase(timeUnit)) {
+				time = time.substring(0, time.length() - REPLACE_MINUTES_AND_SECONDS.length()) + REPLACE_MINUTES_AND_SECONDS;
+			}
+
+			if ("M".equalsIgnoreCase(timeUnit)) {
+				time = time.substring(0, time.length() - REPLACE_SECONDS.length()) + REPLACE_SECONDS;
+			}
+
+			try {
+				return TimeUtils.date2Mjd(time);
+			} catch (Exception e) {
+				throw new RuntimeException(String.format("Error parsing %s " + mduOptions.get(SECTION_TIME, datetime), datetime));
+			}
+		}
+
+		throw new RuntimeException(String.format("Neither %s nor %s are specified in %s", offset, datetime, SECTION_TIME));
 	}
 
-	void setDblTStartSimulation(double dblTStart){
+	double getDblTStartSimulation() {
+		return getDoubleTime(START_OFFSET, START_DATETIME);
+	}
+
+	void setDblTStartSimulation(double dblTStart) {
 		// Determine TStart since RefDate, RefDate should not be changed.
 		double dblTref = mduOptions.getReferenceDateInMjd();
-		Double tStartInMduUnit = (dblTStart-dblTref)/ mduOptions.getTimeToMjdFactor();
-		if (Math.abs(dblTStart - dblTref) > 0.007){
+		Double tStartInMduUnit = (dblTStart - dblTref) / mduOptions.getTimeToMjdFactor();
+		if (Math.abs(dblTStart - dblTref) > 0.007) {
 			// assumption: run is started if TStart 'equals' Reference Date;
 			// run is restarted if Tstart is more than 1 minute larger than RefDate
 			// 1 minute = 1/(24*60) = 6.94e-4 MJD
@@ -126,45 +180,48 @@ public class DFlowFMTimeInfo implements IDataObject {
 		}
 		// round to 1 decimal place
 		// tStartInMduUnit = Math.round(tStartInMduUnit*10)/10.0d;
-		TStart =String.format(Locale.US, timeFormat.get( mduOptions.get("time","Tunit")), tStartInMduUnit);
-		mduOptions.put("time", "TStart", TStart);
+		String TStart = String.format(Locale.US, timeFormat.get(mduOptions.get(SECTION_TIME, "Tunit")), tStartInMduUnit);
+		mduOptions.put(SECTION_TIME, START_OFFSET, TStart);
+		if (numberOfPartitions == 0) return;
+		for (int i = 1; i < numberOfPartitions; i++) {
+			dFlowFMMduInputFiles[i - 1].put("time", "TStart", TStart);
+		}
 	}
 
 	double getDblTStopSimulation() {
-		if (TStop==null) {
-			readTimeInfo();
-		}
-		double dblTStop;
-	    dblTStop = Double.parseDouble(TStop) * mduOptions.getTimeToMjdFactor();
-	    dblTStop = dblTStop +  mduOptions.getReferenceDateInMjd();	
-	    return dblTStop;
+		return getDoubleTime(STOP_OFFSET, STOP_DATETIME);
 	}
 
-	void setDblTStopSimulation(double dblTStop){
+	void setDblTStopSimulation(double dblTStop) {
 		// Determine TStop since RefDate, RefDate should not be changed.
 		double dblTref = mduOptions.getReferenceDateInMjd();
-		Double tStopInMduUnit = (dblTStop-dblTref)/ mduOptions.getTimeToMjdFactor();
+		double tStopInMduUnit = (dblTStop - dblTref) / mduOptions.getTimeToMjdFactor();
 		// round to 1 decimal place
-	    tStopInMduUnit = Math.round(tStopInMduUnit*10)/10.0d;
+		tStopInMduUnit = Math.round(tStopInMduUnit * 10) / 10.0d;
 		//TStop = tStopInMduUnit.toString();
-		TStop =String.format(Locale.US, timeFormat.get( mduOptions.get("time","Tunit")), tStopInMduUnit);
-		mduOptions.put("time","TStop",TStop);
+		String TStop = String.format(Locale.US, timeFormat.get(mduOptions.get(SECTION_TIME, "Tunit")), tStopInMduUnit);
+		mduOptions.put(SECTION_TIME, STOP_OFFSET, TStop);
+		if (numberOfPartitions == 0) return;
+		for (int i = 1; i < numberOfPartitions; i++) {
+			dFlowFMMduInputFiles[i - 1].put("time", "TStop", TStop);
+		}
 	}
 
 	private void setRestartOptions(double dblTime) {
 		String RestartDateTime = TimeUtils.mjdToString(dblTime);
-		String mapfile = mduFile.getName().replace(".mdu","_map.nc");
+		String mduFileName = mduFile.getName();
+		if (useRstForRestart) return;
+		String mapfile = mduFileName.replace(".mdu", "_map.nc");
 
-		mduOptions.put("restart","RestartFile",mapfile);
-		mduOptions.put("restart","RestartDateTime",RestartDateTime+"00");
-	}
-
-	private void readTimeInfo() throws RuntimeException {
-		TStart = mduOptions.get("time","TStart");
-		TStop  = mduOptions.get("time","TStop");
+		mduOptions.put("restart", "RestartFile", mapfile);
+		mduOptions.put("restart", "RestartDateTime", RestartDateTime + "00");
 	}
 
 	public void finish() {
 		mduOptions.store();
+		if (numberOfPartitions == 0) return;
+		for (int i = 1; i < numberOfPartitions; i++) {
+			dFlowFMMduInputFiles[i - 1].store();
+		}
 	}
 }

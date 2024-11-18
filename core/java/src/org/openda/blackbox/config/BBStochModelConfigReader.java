@@ -27,6 +27,7 @@ import org.openda.core.io.castorgenerated.types.NoiseOperationTypesXML;
 import org.openda.core.io.castorgenerated.types.ParameterTransformationTypesXML;
 import org.openda.uncertainties.UncertaintyEngine;
 import org.openda.utils.DimensionIndex;
+import org.openda.utils.Results;
 import org.openda.utils.io.CastorUtils;
 
 import java.io.File;
@@ -501,6 +502,7 @@ public class BBStochModelConfigReader {
 									"the elements <modelExchangeItem> can not be mixed, file: " +
 									stochModelConfigFile.getAbsolutePath());
 				} else {
+					if (exchangeItemXML.getOperation() != null) Results.putMessage("Warning: Attribute 'operation' configured in noise model exchange item, this is deprecated, use 'transformation' instead.");
 					int transformationType = determineTransformationType(exchangeItemXML.getTransformation());
 					if (modelExchangeItemXMLs.length == 0 && exchangeItemXML.getModelExchangeItemId() != null ) {//HERE
 						exchangeItemConfigs.add(new NoiseModelExchangeItemConfig(

@@ -26,25 +26,25 @@ import java.util.List;
  */
 public class NoiseModelExchangeItemConfig {
 
-	private String id;
-	private List<String> modelExchangeItemIds;
-	private int transformation;
-	private boolean skipFirstTimeStep;
-	private boolean addOnlyNoiseDifference;
-    private int stateSizeNoiseSizeRatio;
-    private boolean addStateNoiseAfterCompute;
+	private final String id;
+	private final List<String> modelExchangeItemIds;
+	private final int transformation;
+	private final boolean skipFirstTimeStep;
+	private final boolean addOnlyNoiseDifference;
+    private final int stateSizeNoiseSizeRatio;
+    private final boolean addStateNoiseAfterCompute;
 
 
     public NoiseModelExchangeItemConfig(String id, List<String> modelExchangeItemIds,
 										int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference, int stateSizeNoiseSizeRatio, boolean addStateNoiseAfterCompute) {
-		this.id = id;		
+		this.id = id;
 		this.modelExchangeItemIds = modelExchangeItemIds;
 		this.transformation = transformation;
 		this.skipFirstTimeStep = skipFirstTimeStep;
 		this.addOnlyNoiseDifference = addOnlyNoiseDifference;
         this.stateSizeNoiseSizeRatio = stateSizeNoiseSizeRatio;
         this.addStateNoiseAfterCompute = addStateNoiseAfterCompute;
-    }
+	}
 	
 	public NoiseModelExchangeItemConfig(String id, String modelExchangeItemId, int transformation, boolean skipFirstTimeStep, boolean addOnlyNoiseDifference) {
 		

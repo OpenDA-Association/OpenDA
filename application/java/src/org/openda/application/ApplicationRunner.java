@@ -427,7 +427,6 @@ public class ApplicationRunner implements Runnable{
 			}
 		}
 		restartOnlyAtEndOfRun = configuration.isRestartOnlyAtEndOfRun();
-
 		// Get class types
         List<OpenDaResultWriterConfig> resultWriterConfigs = configuration.getResultWriterConfigs();
 
@@ -570,7 +569,7 @@ public class ApplicationRunner implements Runnable{
         return (IStochModelFactory) factoryInstance;
     }
 
-	protected void writeRestart(){
+    protected void writeRestart(){
 		ITime time = algorithm.getCurrentTime();
 
 		boolean writeAtThisTime = isWriteAtThisTime(time);
@@ -583,7 +582,7 @@ public class ApplicationRunner implements Runnable{
 					timeString= String.valueOf(++currentAlgorithmStep);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-					timeString+ "." + restartOutFileExtension);
+						timeString+ "." + restartOutFileExtension);
 			}else{
 				this.restartOutFileExtension="zip"; //zip extension for kalmanfilters
 				double currentTime = (time.getBeginTime().getMJD() + time.getEndTime().getMJD())/2d;
@@ -592,13 +591,13 @@ public class ApplicationRunner implements Runnable{
 					timeString= TimeUtils.mjdToString(currentTime);
 				}
 				stateFile = new File(restartOutFilePrefix.getAbsolutePath() +
-					timeString+ "." + restartOutFileExtension);
+						timeString+ "." + restartOutFileExtension);
 			}
 			savedInternalState.savePersistentState(stateFile);
 			this.algorithm.releaseInternalState(savedInternalState);
 		}
 
-	}
+    }
 
 	private boolean isWriteAtThisTime(ITime time) {
 		// We do not want to write at the start time. But this can only be checked for algorithms that know about time.

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<externalFileModelFactory xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openda.org" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/externalFileModelFactory.xsd">
+  <modelParametersFile>modelParFile.txt</modelParametersFile>
+  <modelResultsFile>results.nc</modelResultsFile>
+</externalFileModelFactory>

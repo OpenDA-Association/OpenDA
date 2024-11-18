@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnkfConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/steadyStateFilter.xsd">
+	<analysisTimes type="fromObservationTimes"/>
+	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a
+	twin-experpiment -->
+	<mainModel stochParameter="false" stochForcing="false" stochInit="false"/>
+
+	<!-- selection to add noise to the ensemble members.
+	This should probably be true unless your model has difficulty with the changes of parameters, initial state
+	or the forcing -->
+	<ensembleModel stochParameter="false" stochForcing="false" stochInit="false" />
+	<readGain>
+		<dirPrefix>../enkf_gain_</dirPrefix>
+		<!-- <time timeFormat="dateTimeString">201008240000</time> -->
+		<time timeFormat="mjd">6000.0</time>
+		<file>enkf_pollute_gain.xml</file>
+	</readGain>
+</EnkfConfig>
+

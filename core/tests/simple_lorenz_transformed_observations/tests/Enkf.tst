@@ -10,10 +10,9 @@
                 <check>
                         <file removeBeforeTest="yes" >../enkf_results.m</file>
 			<!-- last line looks like
-			x_f_central{100}	=[-6.126947970396822,-3.765484921139002,27.45332107385561];
-			x_f_central{100}	=[-1.9932608250875528,0.16612298360391708,26.95731815538849];
+                        x_f_central{50}	=[-2.9210526731141533,-3.8394213552984002,19.48173201984313];
 			-->
-			<regex>x_f_central\{100\}(.*)-1.99(.*)0.16(.*)26.95(.*)</regex>
+			<regex>x_f_central\{50\}(.*)-2.92(.*)-3.83(.*)19.48(.*)</regex>
                 </check>
         </checks>
 </testConfig>

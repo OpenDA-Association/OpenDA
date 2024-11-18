@@ -1,5 +1,5 @@
 <threadConfigstoch>
-   	<maxThreads>8</maxThreads>
+   	<maxThreads>4</maxThreads>
 	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
 		<workingDirectory>./stochModel</workingDirectory>
 		<configFile>polluteStochModel2.xml</configFile>

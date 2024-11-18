@@ -10,6 +10,7 @@ C
 C LAST MODIFIED BY YSSONG ON 24 NOVEMBER 2011
 
       USE GLOBAL  
+      USE MPI
 C
       CHARACTER*11 FLN ! character array to print growth limit and algal rate
       INTEGER   IZA ! Integer for benthic flux for anoxic env
@@ -19,6 +20,18 @@ C
       REAL WQTTX(NXSP)
       REAL WQACX(NXSP),WQKKX(LCMWQ,NXSP)
       REAL WQA2X(NXSP),WQA3X(NXSP)
+      !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      REAL WQFDGSC(2),WQFDGSCX
+      !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+      REAL WQVREA,WQTT1,WQTTT,WQF1NM,WQAVGIO,WQTTB,WQA1C
+      WQVREA=0.0
+      WQTTT=0.0
+      WQF1NM=0.0
+      WQAVGIO=0.0
+      WQTTB=0.0
+      WQA1C=0.0
+      WQTT1=0.0
+
       CNS1=2.718  
       NS=1  
       DO L=2,LA  
@@ -149,8 +162,8 @@ C          IWQT(L) = NINT( 4.*TWQ(L)+121.)
             ELSE  
               TIMTMP=TIMESEC/86400.  
             ENDIF  
-            WRITE(8,911) TIMTMP, L, IL(L), JL(L), K, TWQ(L)  
-            WRITE(6,600)IL(L),JL(L),K,TWQ(L)  
+            IF(MYRANK.EQ.0) WRITE(8,911) TIMTMP,L,IL(L),JL(L),K,TWQ(L)
+c            IF(MYRANK.EQ.0) WRITE(6,600)IL(L),JL(L),K,TWQ(L)
             IWQT(L)=MAX(IWQT(L),1)  
             IWQT(L)=MIN(IWQT(L),NWQTD)  
 C            STOP 'ERROR!! INVALID WATER TEMPERATURE'  
@@ -381,8 +394,39 @@ C
           ELSE  
             WQPC(L) = WQPMC(IMWQZT(L))*WQF1NC*WQF2IC*WQTDGC(IWQT(L))  
           ENDIF  
+    !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+!          WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))
+!          WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))
+          if (IWQDGSTOX.eq.1) then
+            tdiff=WQSALB(1)-WQSALA(1)
+            wctm1=( WQSALB(1) - SWQ(L) )/tdiff
+            wctm2=( SWQ(L) - WQSALA(1) )/tdiff
+            WQFDGSC(1)=wctm1*WQCOEFSA(1) + wctm2*WQCOEFSB(1)
+            if (WQFDGSC(1).lt.WQCOEFSA(1)) WQFDGSC(1)=WQCOEFSA(1)
+            if (WQFDGSC(1).gt.WQCOEFSB(1)) WQFDGSC(1)=WQCOEFSB(1)
+
+            tdiff=WQSALB(2)-WQSALA(2)
+            wctm1=(WQSALB(2)-SWQ(L))/tdiff
+            wctm2=(SWQ(L)-WQSALA(2))/tdiff
+            WQFDGSC(2)=wctm1*WQCOEFSA(2) + wctm2*WQCOEFSB(2)
+            if (WQFDGSC(2).lt.WQCOEFSA(2)) WQFDGSC(2)=WQCOEFSA(2)
+            if (WQFDGSC(2).gt.WQCOEFSB(2)) WQFDGSC(2)=WQCOEFSB(2)
+
+            WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))
+     &          *WQFDGSC(1)
+            WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))
+     &          *WQFDGSC(2)
+
+!            if (L.eq.3690 .and. K.eq.KC) then
+!                write(7111,'(i5,100f10.5)') N,WQFDGSC(1),WQFDGSC(2)
+!     & ,tdiff,wctm1,wctm2,SWQ(L),WQSALB(1),WQSALA(1)
+!     & ,( WQSALB(1) - SWQ(L) )/tcdiff
+!            endif
+
+          else
           WQPD(L) = WQPMD(IMWQZT(L))*WQF1ND*WQF2ID*WQTDGD(IWQT(L))  
           WQPG(L) = WQPMG(IMWQZT(L))*WQF1NG*WQF2IG*WQTDGG(IWQT(L))  
+          endif
           ! X-species
           do nsp=1,NXSP
             IF(IWQSTOX.EQ.1 .and. IWQX(nsp).eq.1)THEN  
@@ -391,9 +435,31 @@ C
               WQPX(L,nsp)=WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
      &            *WQTDGX(IWQT(L),nsp)*WQF4SC  
             ENDIF  
+!            WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
+!     &                   *WQTDGX(IWQT(L),nsp)
+    !{ GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
+            IF(IWQDGSTOX.eq.1 .and. IWQX(nsp).ge.2)THEN
+              tdiff=WQSALBX(nsp)-WQSALAX(nsp)
+              wctm1=(WQSALBX(nsp)-SWQ(L))/tdiff
+              wctm2=(SWQ(L)-WQSALAX(nsp))/tdiff
+              WQFDGSCX=wctm1*WQCOEFSAX(nsp) + wctm2*WQCOEFSBX(nsp)
+              if (WQFDGSCX.lt.WQCOEFSAX(nsp)) WQFDGSCX=WQCOEFSAX(nsp)
+              if (WQFDGSCX.gt.WQCOEFSBX(nsp)) WQFDGSCX=WQCOEFSBX(nsp)
+
+              WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
+     &                   *WQTDGX(IWQT(L),nsp)*WQFDGSCX
+!          if (L.eq.6609 .and. K.eq.KC) then
+!      write(7112,'(2i5,100f10.5)') N,nsp,WQFDGSCX
+!     & ,WQCOEFSAX(nsp),WQCOEFSBX(nsp),WQSALAX(nsp),WQSALBX(nsp)
+!     & ,tdiff,wctm1,wctm2
+!          endif
+            ELSE ! IF(IWQDGSTOX.eq.1)THEN
             WQPX(L,nsp) = WQPMX(IMWQZT(L),nsp)*WQF1NX(nsp)*WQF2IX(nsp)
      &                   *WQTDGX(IWQT(L),nsp)  
+            ENDIF ! IF(IWQDGSTOX.eq.1)THEN
+    !} GeoSR Diatom, Green algae Salinity TOX : jgcho 2019.11.27
           enddo
+!} GEOSR X-species : jgcho 2015.09.25
 C  
 C      AT NIGHT, I.E., WHEN SOLAR RADIATION IS LESS THAN 0.001 (05/11/99  
 C  
@@ -2176,6 +2242,7 @@ C
           IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
             TIME=DT*FLOAT(N)+TCON*TBEGIN  
             TIME=TIME/TCON 
+            IF(MYRANK.EQ.0)THEN
             WRITE(FLN,"('WQRTS',I2.2,'.DAT')") K
             OPEN(3,FILE=FLN,POSITION='APPEND')
             DO M=1,IWQTS
@@ -2186,6 +2253,8 @@ C
             CLOSE(3)
           ENDIF            
         ENDIF
+        ENDIF
+!}GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10
       ENDDO  
 C ----------------------------------------------------------------  
 C  
@@ -2293,7 +2362,7 @@ C
 C DIURNAL DO ANALYSIS  
 C  
       IF(NDDOAVG.GE.1)THEN  
-        OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='DIURNDO.OUT',POSITION='APPEND')
         NDDOCNT=NDDOCNT+1  
         NSTPTMP=NDDOAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -2311,11 +2380,13 @@ C
           ELSE  
             TIME=TIMESEC/TCON  
           ENDIF  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1112)IL(L),JL(L),(DDOMIN(L,K),K=1,KC),  
      &          (DDOMAX(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               DDOMAX(L,K)=-1.E6  
@@ -2323,13 +2394,13 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 C  
 C LIGHT EXTINCTION ANALYSIS  
 C  
       IF(NDLTAVG.GE.1)THEN  
-        OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')  
+        IF(MYRANK.EQ.0) OPEN(1,FILE='LIGHT.OUT',POSITION='APPEND')
         NDLTCNT=NDLTCNT+1  
         NSTPTMP=NDLTAVG*NTSPTC/2  
         RMULTMP=1./FLOAT(NSTPTMP)  
@@ -2359,11 +2430,13 @@ C
               RLIGHTC(L,K)=RMULTMP*RLIGHTC(L,K)  
             ENDDO  
           ENDDO  
+          IF(MYRANK.EQ.0)THEN
           WRITE(1,1111)N,TIME  
           DO L=2,LA  
             WRITE(1,1113)IL(L),JL(L),(RLIGHTT(L,K),K=1,KC),  
      &          (RLIGHTC(L,K),K=1,KC)  
           ENDDO  
+          ENDIF
           DO K=1,KC  
             DO L=2,LA  
               RLIGHTT(L,K)=0.  
@@ -2371,7 +2444,7 @@ C
             ENDDO  
           ENDDO  
         ENDIF  
-        CLOSE(1)  
+        IF(MYRANK.EQ.0) CLOSE(1)
       ENDIF  
 !{ GEOSR STOKES : YSSONG 2015.08.18      
       do nsp=1,NXSP
@@ -2390,6 +2463,7 @@ C
       
       if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
         IF(ISSTOKEX(1).EQ.1)THEN
+          IF(MYRANK.EQ.0)THEN
           do i=1,IWQTS
             WRITE(FLN,"('STOKE',I2.2,'.OUT')") i
             OPEN(1,FILE=trim(FLN),POSITION='APPEND')      ! VERTICAL VELOCITY, ALGAL-DENSITY, SOLAR RADIATION, chl-a PRINT AT EACH LAYER
@@ -2400,6 +2474,7 @@ C
      & ,(WQCHL(LWQTS(i),k),k=kc,1,-1)
             close(1)
           enddo
+          ENDIF 
         ENDIF 
       endif !if (NXSP.gt.0) then !{ GEOSR X-species : jgcho 2015.10.15
  1114 FORMAT(F12.6,(E12.4))  

@@ -1,0 +1,16 @@
+******************************************************************************
+*                                                                            *
+*  WELCOME TO THE ENVIRONMENTAL FLUID DYNAMICS COMPUTER CODE SERIES          *
+*  DEVELOPED BY JOHN M. HAMRICK.                                             *
+*                                                                            *
+*  THIS IS THE extra INPUT FILE EFDC2.INP.                                   *
+*                                                                            *
+*  GENERATED WITH NIER and Geosystem Research Corp.                          *
+*                                                                            *
+******************************************************************************
+C1 ICE COVER EFFECT
+*  ISICE : SWITCH TO ACTIVATE THE ICE COVER EFFECT FOR HEAT EXCHANGE
+*       0 = USE MODULE IN ORIGINAL CODE
+*       1 = USE MODULE EDITED BY GEOSR
+C1    ISICE
+        1

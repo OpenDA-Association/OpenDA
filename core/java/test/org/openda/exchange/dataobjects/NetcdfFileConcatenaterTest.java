@@ -26,6 +26,8 @@ import ucar.nc2.NetcdfFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class NetcdfFileConcatenaterTest extends TestCase {
 	private File testRunDataDir;
@@ -122,6 +124,59 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		checkConcatenatedValues(firstFile, targetFile, secondFile, 6);
 	}
 
+	public void testNetcdf3Dhis() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenate3dVariables");
+		File firstFile = new File(testRunDataSubDir, "first_FlowFM_his.nc");
+		File targetFile = new File(testRunDataSubDir, "full_FlowFM_his.nc");
+		File secondFile = new File(testRunDataSubDir, "FlowFM_his.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		assertFalse(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
+
+		checkConcatenated3dVariable(firstFile, targetFile, secondFile, "temperature", 18000);
+	}
+
+	public void testNetcdf3Dmap() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenate3dVariables");
+		File firstFile = new File(testRunDataSubDir, "first_FlowFM_map.nc");
+		File targetFile = new File(testRunDataSubDir, "full_FlowFM_map.nc");
+		File secondFile = new File(testRunDataSubDir, "FlowFM_map.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		assertFalse(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), firstFile.getAbsolutePath()});
+		assertTrue(targetFile.exists());
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), secondFile.getAbsolutePath()});
+
+		checkConcatenated3dVariable(firstFile, targetFile, secondFile, "tem1", 3000);
+	}
+
+	private static void checkConcatenated3dVariable(File firstFile, File targetFile, File secondFile, String variableName, int split) throws IOException {
+		NetcdfFile firstNetcdf = null;
+		NetcdfFile secondNetcdf = null;
+		NetcdfFile concatenatedNetcdf = null;
+		try {
+			firstNetcdf = NetcdfFile.open(firstFile.toString());
+			secondNetcdf = NetcdfFile.open(secondFile.toString());
+			concatenatedNetcdf = NetcdfFile.open(targetFile.toString());
+			double[] firstValues = (double[]) firstNetcdf.findVariable(variableName).read().get1DJavaArray(Double.TYPE);
+			double[] secondValues = (double[]) secondNetcdf.findVariable(variableName).read().get1DJavaArray(Double.TYPE);
+			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable(variableName).read().get1DJavaArray(Double.TYPE);
+			assertEquals(firstValues.length + secondValues.length - 125, concatenatedValues.length);
+			for (int i = 0; i < split; i++) {
+				assertEquals(firstValues[i], concatenatedValues[i]);
+			}
+			for (int i = split; i < concatenatedValues.length; i++) {
+				assertEquals(secondValues[i - split], concatenatedValues[i]);
+			}
+		} finally {
+			if (firstNetcdf != null) firstNetcdf.close();
+			if (secondNetcdf != null) secondNetcdf.close();
+			if (concatenatedNetcdf != null) concatenatedNetcdf.close();
+		}
+	}
+
 	public void testNetcdfFixedTimeDimensionUseOldValueOnOverlapConcatenation() throws IOException {
 		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateOldValueOnOverlap");
 		File firstFile = new File(testRunDataSubDir, "rrunoff_201250.nc");
@@ -135,6 +190,54 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 		assertTrue(targetFile.exists());
 
 		checkConcatenatedValues(firstFile, targetFile, secondFile, 7);
+	}
+
+	public void testConcatenationOfManyFiles() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateStress");
+		File inputDirectory = new File(testRunDataSubDir, "input");
+		File targetFile = new File(testRunDataSubDir, "concatenated_averaged.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+		File[] files = Objects.requireNonNull(inputDirectory.listFiles());
+		Arrays.sort(files);
+		for(File file : files) {
+			NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), file.getAbsolutePath(), "useOldValueOnOverlap=true"});
+		}
+		File expectedFile = new File(testRunDataSubDir, "expected_averaged.nc");
+		NetcdfFile expectedNetcdf = null;
+		NetcdfFile targetNetcdf = null;
+		try {
+			expectedNetcdf = NetcdfFile.open(expectedFile.toString());
+			long expected = expectedNetcdf.findVariable("time").read().getSize();
+			targetNetcdf = NetcdfFile.open(targetFile.toString());
+			long target = targetNetcdf.findVariable("time").read().getSize();
+			assertEquals("Time data matches", expected, target);
+		} finally {
+			if (expectedNetcdf != null) expectedNetcdf.close();
+			if (targetNetcdf != null) targetNetcdf.close();
+		}
+	}
+
+	public void testConcatenationOfManyFilesInOneGo() throws IOException {
+		File testRunDataSubDir = new File(this.testRunDataDir, "concatenateStress");
+		File inputDirectory = new File(testRunDataSubDir, "input");
+		File targetFile = new File(testRunDataSubDir, "concatenated_averaged.nc");
+		if (targetFile.exists()) BBUtils.deleteFileOrDir(targetFile);
+
+		NetcdfFileConcatenater.main(new String[]{targetFile.getAbsolutePath(), inputDirectory.getAbsolutePath(), "useOldValueOnOverlap=true"});
+		assertTrue(targetFile.exists());
+		File expectedFile = new File(testRunDataSubDir, "expected_averaged.nc");
+		NetcdfFile expectedNetcdf = null;
+		NetcdfFile targetNetcdf = null;
+		try {
+			expectedNetcdf = NetcdfFile.open(expectedFile.toString());
+			long expected = expectedNetcdf.findVariable("time").read().getSize();
+			targetNetcdf = NetcdfFile.open(targetFile.toString());
+			long target = targetNetcdf.findVariable("time").read().getSize();
+			assertEquals("Time data matches", expected, target);
+		} finally {
+			if (expectedNetcdf != null) expectedNetcdf.close();
+			if (targetNetcdf != null) targetNetcdf.close();
+		}
 	}
 
 	private void checkConcatenatedValues(File firstFile, File targetFile, File secondFile, int split) throws IOException {

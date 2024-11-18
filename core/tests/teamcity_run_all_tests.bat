@@ -23,12 +23,6 @@ mkdir test_results
 
 echo.
 
-set CURDIR=native_oscillator
-mkdir test_results\%CURDIR%
-call :run_single_test enkf_javaobs       enkf_results.m
-call :run_single_test enkf_sqlobs    enkf_sqlobs_restults.m
-call :run_single_test simplex       simplex_results.m
-
 REM Only deactivate this part if the correct version of MPICH2 is installed. 
 REM ----
 REM since the tests in native_parallel work with a special script to start

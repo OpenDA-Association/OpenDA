@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+	<aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+		<alias key="binDir" />
+		<alias key="templateDir" />
+		<alias key="instanceDir" />
+		<alias key="outputFile" />
+		<alias key="inputFile" />
+		<alias key="configFile" />
+		<alias key="inputFileC1" />
+		<alias key="inputFileC2" />
+		<alias key="restartFileC1" />
+		<alias key="restartFileC2" />
+	</aliasDefinitions>
+
+	<run>
+
+		<!--
+			for each model instance, the template directory will be cloned to
+			create the instance directory
+		-->
+		<initializeActionsUsingDirClone
+			instanceDir="%instanceDir%%instanceNumber%" templateDir="%templateDir%" />
+
+		<computeActions>
+			<action linuxExe="%binDir%/reactive_pollution_model.py" windowsExe="%binDir%/reactive_pollution_model.exe" workingDirectory="%instanceDir%">
+				<arg>--config</arg>
+				<arg>%configFile%</arg>
+				<arg>--log_level</arg>
+				<arg>INFO</arg>
+				<checkOutput file="%restartFileC1%"/>
+				<checkOutput file="%restartFileC2%"/>				
+			</action>
+			<!-- <action linuxExe="%binDir%/save.sh" windowsExe="save.bat" workingDirectory="%instanceDir%">
+				<arg>after_copy</arg>
+			</action> -->
+            <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
+                <arg>%restartFileC1%</arg>
+                <arg>%inputFileC1%</arg>
+            </action>
+            <action className="org.openda.utils.io.FileCopier" workingDirectory="%instanceDir%">
+                <arg>%restartFileC2%</arg>
+                <arg>%inputFileC2%</arg>
+            </action>
+
+		</computeActions>
+
+		<additionalComputeActions></additionalComputeActions>
+
+		<finalizeActions></finalizeActions>
+
+	</run>
+
+
+	<inputOutput>
+		<dataObject className="org.openda.exchange.dataobjects.AsciiKeywordDataObject">
+			<file>%configFile%</file>
+			<id>configuration</id>
+		</dataObject>
+
+		<dataObject className="org.openda.exchange.dataobjects.AsciiVectorDataObject">
+			<file>%inputFileC1%</file>
+			<id>state_concentration1</id>
+                </dataObject>
+
+		<dataObject className="org.openda.exchange.dataobjects.AsciiVectorDataObject">
+			<file>%inputFileC2%</file>
+			<id>state_concentration2</id>
+		</dataObject>
+
+		<dataObject className="org.openda.exchange.dataobjects.TimeSeriesFormatterDataObject">
+			<file>timeSeriesFormatter.xml</file>
+			<id>output</id>
+		</dataObject>
+
+		<dataObject className="org.openda.exchange.dataobjects.TimeSeriesFormatterDataObject">
+			<file>forcingsSeriesFormatter.xml</file>
+			<id>forcings</id>
+		</dataObject>
+
+
+	</inputOutput>
+
+</blackBoxWrapperConfig>

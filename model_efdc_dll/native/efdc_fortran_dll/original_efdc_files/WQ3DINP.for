@@ -6,7 +6,12 @@ C  OPTIMIZED AND MODIFIED BY J. M. HAMRICK
 C CHANGE RECORD  
 C  
       USE GLOBAL  
+      USE MPI
       CHARACTER*3 CWQHDR(NWQVM)  
+!{GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10    
+      CHARACTER*11 FLN1,FLN2
+      CHARACTER*12 FLNX
+!}
 C PMC      CHARACTER*11  HHMMSS  
       DATA IWQTICI,IWQTAGR,IWQTSTL,IWQTSUN,IWQTBEN,IWQTPSL,IWQTNPL/7*0/  
       DATA ISMTICI/0/  
@@ -17,9 +22,13 @@ C PMC      CHARACTER*11  HHMMSS
       IWQTBEN=IWQTBEN  
       IWQTPSL=IWQTPSL  
       IWQTNPL=IWQTNPL  
-      ISMTICI=ISMTICI  
-      OPEN(1,FILE='WQ3D.OUT',STATUS='UNKNOWN')  
-      CLOSE(1,STATUS='DELETE')  
+      ISMTICI=ISMTICI
+      
+      IF(MYRANK.EQ.0)THEN
+      OPEN(8702,FILE='WQ3D.OUT',STATUS='UNKNOWN')  
+      CLOSE(8702,STATUS='DELETE')  
+      ENDIF
+
 C  
 C **  HARDWIRE BY PASS OF RATE COEFFICIENT MAPS  
 C  
@@ -43,7 +52,7 @@ C      ENDDO
        WQHT(KC)=0.0
        DO K=KS,1,-1
          WQHT(K)=WQHT(K+1)+DZC(K+1)
-      ENDDO  
+       ENDDO  
 C  
 C      WQTSNAME(1)  = 'CHL'  
 C      WQTSNAME(2)  = 'TPC'  
@@ -125,9 +134,12 @@ C
 C      CALL RWQC2  
 C      CALL RWQMAP  
 C  
+      IF(DEBUG)THEN
+      IF(MYRANK.EQ.0)THEN
       OPEN(1,FILE='WQWCTS.OUT',STATUS='UNKNOWN')  
       CLOSE(1,STATUS='DELETE')  
       OPEN(1,FILE='WQWCTS.OUT',STATUS='UNKNOWN')  
+      ENDIF
       NWQVOUT=0  
       DO NW=1,NWQV  
         IF(ISTRWQ(NW).EQ.1)THEN  
@@ -135,18 +147,21 @@ C
           CWQHDR(NWQVOUT)=WQTSNAME(NW)  
         ENDIF  
       ENDDO  
-      WRITE(1,1969)(CWQHDR(NW),NW=1,NWQVOUT)  
+      IF(MYRANK.EQ.0) WRITE(1,1969)(CWQHDR(NW),NW=1,NWQVOUT)  
  1969 FORMAT('C   I    J    K    TIME',7X,A3,8X,A3,8X,A3,  
      &    8X,A3,8X,A3,8X,A3,8X,A3,8X,A3,8X,A3,  
      &    8X,A3,8X,A3,8X,A3,8X,A3,8X,A3,8X,A3,  
      &    8X,A3,8X,A3,8X,A3,8X,A3,8X,A3,8X,A3)  
-      CLOSE(1)  
+      IF(MYRANK.EQ.0) CLOSE(1)  
+      ENDIF
 C  
 C **  INITIALIZE DIURNAL DO ANALYSIS  
 C  
       IF(NDDOAVG.GE.1.AND.DEBUG)THEN  
+        IF(MYRANK.EQ.0)THEN
         OPEN(1,FILE='DIURNDO.OUT')  
         CLOSE(1,STATUS='DELETE')  
+        ENDIF
         DO K=1,KC  
           DO L=2,LA  
             DDOMAX(L,K)=-1.E6  
@@ -158,8 +173,10 @@ C
 C **  INITIALIZE LIGHT EXTINCTION ANALYSIS  
 C  
       IF(NDLTAVG.GE.1)THEN  
+        IF(MYRANK.EQ.0)THEN
         OPEN(1,FILE='LIGHT.OUT')  
         CLOSE(1,STATUS='DELETE')  
+        ENDIF
         NDLTCNT=0  
         DO K=1,KC  
           DO L=2,LA  
@@ -183,7 +200,28 @@ C
       ! *** READ WQ TIMESERIES
       CALL RWQCSR
 C  
-  100 FORMAT('  TIME = ',A11,' HH.MM.SS.HH')  
+!{GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10   
+        IF(IWQTS.GE.1)THEN
+          IF(ISCOMP .EQ. 3. OR. ISCOMP .EQ. 4)THEN
+            DO K=1,KC
+              WRITE(FLN1,"('WQRTS',I2.2,'.DAT')") K
+              WRITE(FLN2,"('WQLIM',I2.2,'.DAT')") K
+              IF(MYRANK.EQ.0)THEN
+              OPEN(1,FILE=FLN1,STATUS='UNKNOWN')
+              OPEN(3,FILE=FLN2,STATUS='UNKNOWN')
+              CLOSE(1,STATUS='DELETE')        
+              CLOSE(3,STATUS='DELETE')        
+              IF(NXSP.GT.0) THEN
+                WRITE(FLNX,"('WQLIMX',I2.2,'.DAT')") K
+                OPEN(333,FILE=FLNX,STATUS='UNKNOWN')
+                CLOSE(333,STATUS='DELETE')             
+              ENDIF
+              ENDIF
+            ENDDO  
+          ENDIF
+        ENDIF
+!}GeoSR, GROWTH LIMIT AND ALGAL RATE PRINT, YSSONG, 2015.12.10 
+C 100 FORMAT('  TIME = ',A11,' HH.MM.SS.HH')  
       RETURN  
       END  
 

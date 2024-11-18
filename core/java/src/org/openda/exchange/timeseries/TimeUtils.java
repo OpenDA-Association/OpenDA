@@ -21,6 +21,7 @@ package org.openda.exchange.timeseries;
 
 import org.openda.utils.SortUtils;
 import org.openda.utils.Time;
+import org.openda.utils.performance.OdaGlobSettings;
 import ucar.nc2.units.DateUnit;
 
 import java.text.ParseException;
@@ -211,7 +212,22 @@ public class TimeUtils {
 	   return (t.getTime()) * millisToDays + mjdAtJanFirst1970; // convert from millis to days and add offset for mjd
    }
 
-   /**
+	public static long dateString2Millis(String dateString, TimeZone tz) throws ParseException {
+		SimpleDateFormat formatter = getDateFormatForStringLength(dateString);
+		formatter.setTimeZone(tz);
+		Date date = formatter.parse(dateString);
+		return date.getTime();
+	}
+
+	private static SimpleDateFormat getDateFormatForStringLength(String dateString) throws ParseException {
+		if (dateString.length() == 12) return new SimpleDateFormat("yyyyMMddHHmm", Locale.UK);
+		if (dateString.length() == 14) return new SimpleDateFormat("yyyyMMddHHmmss", Locale.UK);
+		if (dateString.length() == 19) return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
+		throw new ParseException("DateTime string did not match length of formats yyyyMMddHHmm or yyyyMMddHHmmss;"
+			+ " arg was " + dateString, 0);
+	}
+
+	/**
     * Convert formatted string to mjd Modified Julian Date (days since 00:00 November 17, 1858 UTC)
     *
     * @param date
@@ -332,63 +348,55 @@ public class TimeUtils {
     * @return Mjd's as doubles
     */
    public static double[] dateTimeSequenceString2Mjd(String input) {
-      double result[];
-      String[] dateTimes = input.split(",");
-      int n = dateTimes.length;
-      if ((n == 4) && (dateTimes[2].equals("..."))) {
-         double tfirst;
-         double tsecond;
-         double tlast;
+	   String[] dateTimes = input.split(",");
+	   if (dateTimes.length == 4 && dateTimes[2].equals("...")) {
+		   long tFirstMillis;
+		   long tSecondMillis;
+		   long tLastMillis;
 
-         // regular sequence
-         try {
-            tfirst = TimeUtils.date2Mjd(dateTimes[0]);
-         }
-         catch (ParseException e) {
-            throw new RuntimeException("Problem parsing dateTimeSequence at first element ="
-                     + " value=" + dateTimes[0]);
-         }
-         try {
-            tsecond = TimeUtils.date2Mjd(dateTimes[1]);
-         }
-         catch (ParseException e) {
-            throw new RuntimeException("Problem parsing dateTimeSequence at second element ="
-                     + " value=" + dateTimes[1]);
-         }
-         try {
-            tlast = TimeUtils.date2Mjd(dateTimes[3]);
-         }
-         catch (ParseException e) {
-            throw new RuntimeException("Problem parsing dateTimeSequence at last element ="
-                     + " value=" + dateTimes[3]);
-         }
-         double tstep = tsecond - tfirst;
-         if (tstep <= 0) throw new RuntimeException("timestep for regular sequence should be positive"
-                  + dateTimes[0] + ">=" + dateTimes[1]);
-         int nSequence = (int) Math.floor((tlast - tfirst) / tstep) + 1;
-         result = new double[nSequence];
-         for (int i = 0; i < nSequence; i++) {
-            result[i] = tfirst + i * tstep;
-         }
-      }
-      else {
-         // irregular sequence
-         result = new double[n];
-         double previous = NEGATIVE_INFINITY;
-         for (int i = 0; i < n; i++) {
-            try {
-               result[i] = TimeUtils.date2Mjd(dateTimes[i]);
-            }
-            catch (ParseException e) {
-               throw new RuntimeException("Problem parsing dateTimeSequence at element with index =" + i
-                        + " value=" + dateTimes[i]);
-            }
-            if (result[i] <= previous) { throw new RuntimeException(
-                     "dateTimeSequenceShould be increasing (larger than i-1) at element with index=" + i); }
-            previous = result[i];
-         }
-      }
-      return result;
+		   // regular sequence
+		   try {
+			   tFirstMillis = dateString2Millis(dateTimes[0], TimeZone.getTimeZone("UTC"));
+		   } catch (ParseException e) {
+			   throw new RuntimeException("Problem parsing dateTimeSequence at first element: " + dateTimes[0]);
+		   }
+		   try {
+			   tSecondMillis = dateString2Millis(dateTimes[1], TimeZone.getTimeZone("UTC"));
+		   } catch (ParseException e) {
+			   throw new RuntimeException("Problem parsing dateTimeSequence at second element: " + dateTimes[1]);
+		   }
+		   try {
+			   tLastMillis = dateString2Millis(dateTimes[3], TimeZone.getTimeZone("UTC"));
+		   } catch (ParseException e) {
+			   throw new RuntimeException("Problem parsing dateTimeSequence at last element: " + dateTimes[3]);
+		   }
+		   long tStepMillies = tSecondMillis - tFirstMillis;
+		   if (tStepMillies <= 0) throw new RuntimeException("timestep for regular sequence should be positive" + dateTimes[0] + ">=" + dateTimes[1]);
+		   int nSequenceMillis = (int) Math.floor((tLastMillis - tFirstMillis) / (double) tStepMillies) + 1;
+		   double[] mjdMilliesResult = new double[nSequenceMillis];
+		   for (int i = 0; i < nSequenceMillis; i++) {
+			   long millis = tFirstMillis + i * tStepMillies;
+			   mjdMilliesResult[i] = date2Mjd(new Date(millis));
+		   }
+		   return mjdMilliesResult;
+	   }
+	   // irregular sequence
+	   double[] result = new double[dateTimes.length];
+	   double previous = NEGATIVE_INFINITY;
+	   for (int i = 0; i < dateTimes.length; i++) {
+		   try {
+			   result[i] = TimeUtils.date2Mjd(dateTimes[i]);
+		   } catch (ParseException e) {
+			   throw new RuntimeException("Problem parsing dateTimeSequence at element with index =" + i
+				   + " value=" + dateTimes[i]);
+		   }
+		   if (result[i] <= previous) {
+			   throw new RuntimeException(
+				   "dateTimeSequenceShould be increasing (larger than i-1) at element with index=" + i);
+		   }
+		   previous = result[i];
+	   }
+	   return result;
    }
 
    /**
@@ -435,7 +443,7 @@ public class TimeUtils {
          double tstep = tsecond - tfirst;
          if (tstep <= 0) throw new RuntimeException("timestep for regular sequence should be positive"
                   + dateTimes[0] + ">=" + dateTimes[1]);
-         int nSequence = (int) Math.floor((tlast - tfirst) / tstep) + 1;
+         int nSequence = (int) Math.floor((tlast - tfirst + OdaGlobSettings.getTimePrecision()) / tstep) + 1;
          result = new double[nSequence];
          for (int i = 0; i < nSequence; i++) {
             result[i] = tfirst + i * tstep;
