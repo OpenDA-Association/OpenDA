@@ -7,8 +7,8 @@ Quantity                        = waterlevelbnd amplitude
 Unit                            = m
 Quantity                        = waterlevelbnd phase
 Unit                            = deg
-M2  0.6  0
-S2  0.2  0
+M2  0.6  0.8
+S2  0.2  0.4
 
 [forcing]
 Name                            = eastboundary_0001

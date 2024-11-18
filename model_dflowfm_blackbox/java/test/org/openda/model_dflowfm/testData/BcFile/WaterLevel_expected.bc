@@ -9,8 +9,8 @@
     Unit                  = m
     Quantity              = waterlevelbnd phase
     Unit                  = deg
-    M2 0.3 0.0
-    S2 0.1 0.0
+    M2 0.3 0.4
+    S2 0.1 0.2
 
 [forcing]
     Name                  = eastboundary_0001
