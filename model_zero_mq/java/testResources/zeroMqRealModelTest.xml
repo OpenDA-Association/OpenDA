@@ -10,7 +10,7 @@
     <argument>D:/Git_projects/Wflow.jl/server/src/WflowBmiServer.jl</argument>
   </executableArguments>
   <host>localhost</host>
-  <port>5555</port>
+  <firstPortNumber>5555</firstPortNumber>
   <zeroMqModelStateExchangeItems>
     <limitedExchangeItem>
       <exchangeItemId>1</exchangeItemId>

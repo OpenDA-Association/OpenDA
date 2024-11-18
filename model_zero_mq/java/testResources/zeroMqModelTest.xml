@@ -7,7 +7,7 @@
   <executable></executable>
   <executableArguments></executableArguments>
   <host>localhost</host>
-  <port>55555</port>
+  <firstPortNumber>5555</firstPortNumber>
   <zeroMqModelStateExchangeItems>
     <limitedExchangeItem>
       <exchangeItemId>1</exchangeItemId>
