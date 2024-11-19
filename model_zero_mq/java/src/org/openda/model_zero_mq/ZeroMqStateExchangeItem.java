@@ -101,34 +101,42 @@ public class ZeroMqStateExchangeItem implements IExchangeItem {
 	}
 
 	private void updateModel() {
-
-		// Replace occurences of OpenDA's missing value by the Bmi model's missing value.
+		// Replace occurrences of OpenDA's missing value by the Bmi model's missing value.
 		double[] checkedValues = new double[values.length];
 		for (int i = 0; i < values.length; i++) {
 			checkedValues[i] = Double.isNaN(values[i]) ? modelMissingValue : values[i];
 		}
 
 		// Apply lower and upper limits to the values which OpenDA will send to the Bmi model.
+		limitCheckedValues(checkedValues);
+
+		// Each State variable has its values stored in a slice of OpenDA's total values array. Feed the Bmi model slices.
+		feedSlicesToBmiModel(checkedValues);
+	}
+
+	private void limitCheckedValues(double[] checkedValues) {
 		int idx1 = 0;  // slice start index
-		int idx2;      // slice stop index
 		for (int i = 0; i < stateValuesRanges.size(); i++) {
-			idx2 = stateValuesRanges.get(i);
+			int idx2 = stateValuesRanges.get(i); // slice stop index
 			for (int j = idx1; j < idx2; j++) {
-				double lowerLimit = lowerLimits[i].length == 1 ? lowerLimits[i][0] : lowerLimits[i][j];
-				if (checkedValues[j] != modelMissingValue && !Double.isNaN(lowerLimit)) {
-					checkedValues[j] = Math.max(checkedValues[j], lowerLimit);
-				}
-			}
-			for (int j = idx1; j < idx2; j++) {
-				double upperLimit = upperLimits[i].length == 1 ? upperLimits[i][0] : upperLimits[i][j];
-				if (checkedValues[j] != modelMissingValue && !Double.isNaN(upperLimit)) {
-					checkedValues[j] = Math.min(checkedValues[j], upperLimit);
-				}
+				limitCheckedValue(checkedValues, i, j);
 			}
 			idx1 = idx2;
 		}
+	}
 
-		// Each State variable has its values stored in a slice of OpenDA's total values array. Feed the Bmi model slices.
+	private void limitCheckedValue(double[] checkedValues, int i, int j) {
+		double lowerLimit = lowerLimits[i].length == 1 ? lowerLimits[i][0] : lowerLimits[i][j];
+		double upperLimit = upperLimits[i].length == 1 ? upperLimits[i][0] : upperLimits[i][j];
+		if (checkedValues[j] != modelMissingValue && !Double.isNaN(lowerLimit)) {
+			checkedValues[j] = Math.max(checkedValues[j], lowerLimit);
+		}
+		if (checkedValues[j] != modelMissingValue && !Double.isNaN(upperLimit)) {
+			checkedValues[j] = Math.min(checkedValues[j], upperLimit);
+		}
+	}
+
+	private void feedSlicesToBmiModel(double[] checkedValues) {
 		int offset = 0;
 		for (String id : this.ids) {
 			int sliceLength = stateComponentLengths.get(id);
