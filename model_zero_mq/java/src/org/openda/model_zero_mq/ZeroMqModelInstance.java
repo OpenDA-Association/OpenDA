@@ -259,7 +259,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		IQuantityInfo latitudeQuantityInfo = new QuantityInfo("y coordinate according to model coordinate system", "meter");
 		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system", "meter");
 		ArrayGeometryInfo arrayGeometryInfo = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
-		return new ZeroMqAnalysisOutputExchangeItem(variable, arrayGeometryInfo, latitudeIndices, longitudeIndices, quantityInfo, this, modelMissingValue, latitudeArray.length(), longitudeArray.length());
+		return new ZeroMqAnalysisOutputExchangeItem(variable, arrayGeometryInfo, latitudeIndices, longitudeIndices, quantityInfo, this, modelMissingValue, longitudeArray.length());
 	}
 
 	private double[] deduplicateAndSortArray(double[] coordinateArray) {
@@ -794,7 +794,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 			String key = entry.getKey();
 			double[] newValues = exchangeItems.get(key).getValuesAsDoubles();
 			for (int aTimeIndex = 0; aTimeIndex < times.length; aTimeIndex++) {
-				if (java.lang.Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
+				if (Math.abs(times[aTimeIndex] - currentTimeMJD) < tolerance) {
 					double[] allValues = bufferEI.getValuesAsDoubles();
 					int valuesPerTime = newValues.length;
 					int offset = aTimeIndex * valuesPerTime;
@@ -841,6 +841,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 	@Override
 	public void releaseInternalState(IModelState savedInternalState) {
+		// Needed
 	}
 
 	@Override

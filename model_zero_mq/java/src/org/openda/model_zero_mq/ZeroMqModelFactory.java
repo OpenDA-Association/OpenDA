@@ -101,6 +101,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 
 	@Override
 	public void finish() {
+		// Needed
 	}
 
 	@Override

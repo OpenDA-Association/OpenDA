@@ -17,13 +17,12 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 	private final int[] longitudeIndices;
 	private final QuantityInfo quantityInfo;
 	private final ZeroMqModelInstance model;
-	private double[] values;
+	private final double[] values;
 	private final double modelMissingValue;
-	private final int latitudeLength;
 	private final int longitudeLength;
 	private final double[] dummyValuesArray;
 
-	public ZeroMqAnalysisOutputExchangeItem(String variable, ArrayGeometryInfo arrayGeometryInfo, int[] latitudeIndices, int[] longitudeIndices, QuantityInfo quantityInfo, ZeroMqModelInstance zeroMqModelInstance, double modelMissingValue, int latitudeLength, int longitudeLength) {
+	public ZeroMqAnalysisOutputExchangeItem(String variable, ArrayGeometryInfo arrayGeometryInfo, int[] latitudeIndices, int[] longitudeIndices, QuantityInfo quantityInfo, ZeroMqModelInstance zeroMqModelInstance, double modelMissingValue, int longitudeLength) {
 		this.variable = variable;
 		this.arrayGeometryInfo = arrayGeometryInfo;
 		this.latitudeIndices = latitudeIndices;
@@ -32,7 +31,6 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 		this.model = zeroMqModelInstance;
 		values = new double[arrayGeometryInfo.getCellCount()];
 		this.modelMissingValue = modelMissingValue;
-		this.latitudeLength = latitudeLength;
 		this.longitudeLength = longitudeLength;
 		Arrays.fill(values, Double.NaN);
 		int bytesPerItem = this.model.getVarItemSize(variable);
