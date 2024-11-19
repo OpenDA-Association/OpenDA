@@ -18,9 +18,9 @@ public class ZeroMqModelFactoryConfigReader {
 	private final String inputStateDirectory;
 	private final String outputStateDirectory;
 	private final double missingValue;
-	private final List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> zeroMqModelStateExchangeItemInfos;
-	private final ArrayList<ZeroMqModelForcingConfig> zeroMqModelForcingConfigs;
-	private final ArrayList<ZeroMqModelForcingConfig> staticLimitDataConfigs;
+	private List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> zeroMqModelStateExchangeItemInfos;
+	private ArrayList<ZeroMqModelForcingConfig> zeroMqModelForcingConfigs;
+	private ArrayList<ZeroMqModelForcingConfig> staticLimitDataConfigs;
 
 	public ZeroMqModelFactoryConfigReader(File configFile) {
 		ZeroMqModelFactoryConfigXML castor = (ZeroMqModelFactoryConfigXML) CastorUtils.parse(configFile, ZeroMqModelFactoryConfigXML.class);
@@ -41,35 +41,40 @@ public class ZeroMqModelFactoryConfigReader {
 		outputStateDirectory = castor.getOutputStateDirectory();
 		missingValue = castor.getMissingValue();
 
+		initializeMqModelForcingConfigs(configFile, castor);
+		initializeZeroMqModelForcingConfigs(configFile, castor);
+		initializeZeroMqModelStateExchangeItemsInfos(castor);
+	}
+
+	private void initializeMqModelForcingConfigs(File configFile, ZeroMqModelFactoryConfigXML castor) {
 		zeroMqModelForcingConfigs = new ArrayList<>();
 		ZeroMqModelForcingsConfigXML[] zeroMqModelForcingsConfigXMLs = castor.getModelForcings();
-		if (zeroMqModelForcingsConfigXMLs.length > 0){
-			for (ZeroMqModelForcingsConfigXML forcingsConfig : zeroMqModelForcingsConfigXMLs) {
-				ForcingDataObjectXML dataObjectXML = forcingsConfig.getDataObject();
-
-				String dataObjectClassName = dataObjectXML.getClassName();
-				String fileName = dataObjectXML.getFile();
-				String[] dataObjectArguments = dataObjectXML.getArg();
-
-				ZeroMqModelForcingConfig zeroMqModelForcingConfig = new ZeroMqModelForcingConfig(dataObjectClassName, configFile.getParentFile(), fileName, dataObjectArguments);
-				zeroMqModelForcingConfigs.add(zeroMqModelForcingConfig);
-			}
+		for (ZeroMqModelForcingsConfigXML forcingsConfig : zeroMqModelForcingsConfigXMLs) {
+			addForcingConfig(forcingsConfig, configFile, zeroMqModelForcingConfigs);
 		}
+	}
 
+	private void initializeZeroMqModelForcingConfigs(File configFile, ZeroMqModelFactoryConfigXML castor) {
 		staticLimitDataConfigs = new ArrayList<>();
 		int staticLimitDataObjectsCount = castor.getSpaceVaryingLimitsCount();
 		for (int i = 0; i < staticLimitDataObjectsCount; i++) {
 			ZeroMqModelForcingsConfigXML staticLimitConfig = castor.getSpaceVaryingLimits(i);
-			ForcingDataObjectXML dataObjectXML = staticLimitConfig.getDataObject();
-
-			String dataObjectClassName = dataObjectXML.getClassName();
-			String fileName = dataObjectXML.getFile();
-			String[] dataObjectArguments = dataObjectXML.getArg();
-
-			ZeroMqModelForcingConfig zeroMqModelForcingConfig = new ZeroMqModelForcingConfig(dataObjectClassName, configFile.getParentFile(), fileName, dataObjectArguments);
-			staticLimitDataConfigs.add(zeroMqModelForcingConfig);
+			addForcingConfig(staticLimitConfig, configFile, staticLimitDataConfigs);
 		}
+	}
 
+	private void addForcingConfig(ZeroMqModelForcingsConfigXML staticLimitConfig, File configFile, ArrayList<ZeroMqModelForcingConfig> staticLimitDataConfigs) {
+		ForcingDataObjectXML dataObjectXML = staticLimitConfig.getDataObject();
+
+		String dataObjectClassName = dataObjectXML.getClassName();
+		String fileName = dataObjectXML.getFile();
+		String[] dataObjectArguments = dataObjectXML.getArg();
+
+		ZeroMqModelForcingConfig zeroMqModelForcingConfig = new ZeroMqModelForcingConfig(dataObjectClassName, configFile.getParentFile(), fileName, dataObjectArguments);
+		staticLimitDataConfigs.add(zeroMqModelForcingConfig);
+	}
+
+	private void initializeZeroMqModelStateExchangeItemsInfos(ZeroMqModelFactoryConfigXML castor) {
 		zeroMqModelStateExchangeItemInfos = new ArrayList<>();
 		ZeroMqModelStateExchangeItemXML zeroMqModelStateExchangeItems = castor.getZeroMqModelStateExchangeItems();
 		List<String> stateVectorIds = new ArrayList<>();
@@ -81,30 +86,38 @@ public class ZeroMqModelFactoryConfigReader {
 		for (ZeroMqModelStateExchangeItemXMLItem item : zeroMqModelStateExchangeItems.getZeroMqModelStateExchangeItemXMLItem()) {
 			LimitedExchangeItem limitedItem = item.getLimitedExchangeItem();
 			stateVectorIds.add(limitedItem.getExchangeItemId());
-			LimitedExchangeItemChoice lowerLimitChoice = limitedItem.getLimitedExchangeItemChoice();
-			if (lowerLimitChoice == null || !lowerLimitChoice.hasLowerLimit()) {
-				lowerLimits.add(Double.NaN);
-			} else if (lowerLimitChoice.hasLowerLimit()) {
-				lowerLimits.add(lowerLimitChoice.getLowerLimit());
-			}
-			if (lowerLimitChoice != null && lowerLimitChoice.getSpaceVaryingLowerLimitExchangeItemId() != null) {
-				lowerLimitExchangeItemIds.add(lowerLimitChoice.getSpaceVaryingLowerLimitExchangeItemId());
-			} else {
-				lowerLimitExchangeItemIds.add(null);
-			}
-			LimitedExchangeItemChoice2 upperLimitChoice = limitedItem.getLimitedExchangeItemChoice2();
-			if (upperLimitChoice == null || !upperLimitChoice.hasUpperLimit()) {
-				upperLimits.add(Double.NaN);
-			} else if (upperLimitChoice.hasUpperLimit()) {
-				upperLimits.add(upperLimitChoice.getUpperLimit());
-			}
-			if (upperLimitChoice != null && upperLimitChoice.getSpaceVaryingUpperLimitExchangeItemId() != null) {
-				upperLimitExchangeItemIds.add(upperLimitChoice.getSpaceVaryingUpperLimitExchangeItemId());
-			} else {
-				upperLimitExchangeItemIds.add(null);
-			}
+			processLowerLimits(limitedItem, lowerLimits, lowerLimitExchangeItemIds);
+			processUpperLimits(limitedItem, upperLimits, upperLimitExchangeItemIds);
 		}
 		zeroMqModelStateExchangeItemInfos.add(new ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo(stateId, stateVectorIds.toArray(new String[0]), lowerLimits.toArray(new Double[0]), upperLimits.toArray(new Double[0]), lowerLimitExchangeItemIds.toArray(new String[0]), upperLimitExchangeItemIds.toArray(new String[0])));
+	}
+
+	private static void processLowerLimits(LimitedExchangeItem limitedItem, List<Double> lowerLimits, List<String> lowerLimitExchangeItemIds) {
+		LimitedExchangeItemChoice lowerLimitChoice = limitedItem.getLimitedExchangeItemChoice();
+		if (lowerLimitChoice == null || !lowerLimitChoice.hasLowerLimit()) {
+			lowerLimits.add(Double.NaN);
+		} else if (lowerLimitChoice.hasLowerLimit()) {
+			lowerLimits.add(lowerLimitChoice.getLowerLimit());
+		}
+		if (lowerLimitChoice != null && lowerLimitChoice.getSpaceVaryingLowerLimitExchangeItemId() != null) {
+			lowerLimitExchangeItemIds.add(lowerLimitChoice.getSpaceVaryingLowerLimitExchangeItemId());
+		} else {
+			lowerLimitExchangeItemIds.add(null);
+		}
+	}
+
+	private static void processUpperLimits(LimitedExchangeItem limitedItem, List<Double> upperLimits, List<String> upperLimitExchangeItemIds) {
+		LimitedExchangeItemChoice2 upperLimitChoice = limitedItem.getLimitedExchangeItemChoice2();
+		if (upperLimitChoice == null || !upperLimitChoice.hasUpperLimit()) {
+			upperLimits.add(Double.NaN);
+		} else if (upperLimitChoice.hasUpperLimit()) {
+			upperLimits.add(upperLimitChoice.getUpperLimit());
+		}
+		if (upperLimitChoice != null && upperLimitChoice.getSpaceVaryingUpperLimitExchangeItemId() != null) {
+			upperLimitExchangeItemIds.add(upperLimitChoice.getSpaceVaryingUpperLimitExchangeItemId());
+		} else {
+			upperLimitExchangeItemIds.add(null);
+		}
 	}
 
 	public String getExecutable() {
