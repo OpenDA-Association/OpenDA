@@ -38,10 +38,6 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration;
 	private ArrayList<ZeroMqModelForcingConfig> forcingConfiguration;
 
-	public ZeroMqModelFactory() {
-		// Needed
-	}
-
 	@Override
 	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
 
