@@ -374,6 +374,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" filepath="$PROJECT_DIR$/model_reactive_advection/java/model_reactive_advection.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_swan/java/model_swan.iml" filepath="$PROJECT_DIR$/model_swan/java/model_swan.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_wflow/java/model_wflow.iml" filepath="$PROJECT_DIR$/model_wflow/java/model_wflow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_zero_mq/model_zero_mq.iml" filepath="$PROJECT_DIR$/model_zero_mq/model_zero_mq.iml" />
       <module fileurl="file://$PROJECT_DIR$/models/java/models.iml" filepath="$PROJECT_DIR$/models/java/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/observers/java/observers.iml" filepath="$PROJECT_DIR$/observers/java/observers.iml" />
       <module fileurl="file://$PROJECT_DIR$/public_project_view.iml" filepath="$PROJECT_DIR$/public_project_view.iml" />

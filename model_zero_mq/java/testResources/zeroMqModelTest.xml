@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zeroMqModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org//zeroMqModelFactoryConfig.xsd">
+  <modelTemplateDirectory>qwerty</modelTemplateDirectory>
+  <modelConfigFile>empty-config-file.toml</modelConfigFile>
+  <inputStateDirectory>qwerty</inputStateDirectory>
+  <outputStateDirectory>qwerty</outputStateDirectory>
+  <executable></executable>
+  <executableArguments></executableArguments>
+  <host>localhost</host>
+  <firstPortNumber>5555</firstPortNumber>
+  <zeroMqModelStateExchangeItems>
+    <limitedExchangeItem>
+      <exchangeItemId>1</exchangeItemId>
+    </limitedExchangeItem>
+  </zeroMqModelStateExchangeItems>
+  <missingValue>-999.0</missingValue>
+</zeroMqModelFactoryConfig>
